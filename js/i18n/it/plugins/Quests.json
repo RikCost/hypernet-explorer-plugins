@@ -58,7 +58,7 @@
   "advanceReceived": "Anticipo ricevuto: ",
   "contributionRegistered": "Contributo registrato.",
   "thinksBetterOfYou": " ha una migliore opinione di te.",
-  "willRememberThat": " se lo ricordera.",
+  "willRememberThat": " se lo ricorderà.",
   "theParty": "il gruppo",
   "wasPaidForAContractPostedBy": "ricevuto per un contratto affisso da ",
   "wasEarnedUnderContract": "guadagnato sotto contratto",
@@ -126,5 +126,5 @@
   "interviewComplete": "Intervista completata: ",
   "debugQuestAccepted": "Missione debug accettata: ",
   "theBoardIsBareNobodyIsPostingToday": "La bacheca è vuota. Nessuno affigge nulla oggi.",
-  "giverIsDead": "Impossibile da completare: chi ha affidato l’incarico e morto."
+  "giverIsDead": "Impossibile da completare: chi ha affidato l’incarico è morto."
 }

@@ -3,5 +3,11 @@
   "defaultChildName": "Piccolo",
   "born": "{name} è nato, ed entra nella famiglia.",
   "cloneJoined": "{parent} si divide. {name} prende posto nel gruppo.",
-  "cloneFollows": "{parent} si divide. Non c'è posto nel gruppo, così {name} segue da dietro."
+  "cloneFollows": "{parent} si divide. Non c'è posto nel gruppo, così {name} segue da dietro.",
+  "training": {
+    "started": "{name} inizia l'addestramento da {className}. Serviranno circa {days} giorni di viaggio insieme.",
+    "stopped": "L'addestramento di {name} viene interrotto.",
+    "readyNoRoom": "{name} ha finito l'addestramento, ma nel gruppo non c'è ancora posto.",
+    "graduated": "{name} completa l'addestramento e si unisce al gruppo come {className}."
+  }
 }

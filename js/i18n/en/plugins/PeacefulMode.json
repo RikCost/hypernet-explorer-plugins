@@ -317,8 +317,5 @@
       "{name} stays where it is, at peace.",
       "{name} seems content to be left alone."
     ]
-  },
-  "cmd": {
-    "talk": "Talk"
   }
 }

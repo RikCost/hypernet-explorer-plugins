@@ -84,5 +84,10 @@
     "calories": "Calorie",
     "protein": "Proteine",
     "fat": "Grassi"
+  },
+  "nutritionShort": {
+    "calories": "Cal",
+    "protein": "Prot",
+    "fat": "Gras"
   }
 }

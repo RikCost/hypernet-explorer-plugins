@@ -977,16 +977,24 @@
             this.applyModelScale(growth);
 
             // Gait: diagonal leg pairs swing in anti-phase; faster on attack.
+            // The stride only plays while the creature really travels (overworld
+            // walk) or lunges on an attack: standing in a battle it keeps its
+            // feet planted and just breathes.
             const fast = (anim === 'attack' || anim === 'specialattack');
+            const stride = this.strideMul(fast);
             const gait = fast ? 9 : 2.4;
-            const amp = fast ? 0.6 : (anim === 'hit' ? 0.0 : 0.22);
+            const amp = (fast ? 0.6 : (anim === 'hit' ? 0.0 : 0.22)) * stride;
             const swing = (leg, ph) => { if (leg && leg.visible) leg.rotation.x = Math.sin(t * gait + ph) * amp; };
             swing(this.frontLeft, 0); swing(this.rearRight, 0);
             swing(this.frontRight, Math.PI); swing(this.rearLeft, Math.PI);
 
-            // Body bob in sync with the gait + hit jolt.
+            // Body bob in sync with the gait + hit jolt; a slow breathing rise
+            // takes its place while the creature stands.
             const hitJolt = anim === 'hit' ? Math.sin(t * 26) * Math.exp(-t * 6) * 0.15 : 0;
-            this.model.position.y = this._baseY + Math.abs(Math.sin(t * gait)) * (fast ? 0.12 : 0.03) * this.scale;
+            const bob = stride
+                ? Math.abs(Math.sin(t * gait)) * (fast ? 0.12 : 0.03) * this.scale
+                : (0.5 + Math.sin(t * 1.3) * 0.5) * 0.012 * this.scale;
+            this.model.position.y = this._baseY + bob;
             this.model.rotation.z = hitJolt;
 
             if (this.head && this.head.visible) this.head.rotation.x = Math.sin(t * 1.6) * 0.06 + (fast ? 0.1 : 0);

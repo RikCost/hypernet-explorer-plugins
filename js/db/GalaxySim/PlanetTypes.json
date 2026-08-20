@@ -398,5 +398,35 @@
     "description_int": "planets.long_period_comet.description",
     "breathable": false,
     "supportLife": false
+  },
+  "rocky": {
+    "minMass": 0.0000001,
+    "maxMass": 0.001,
+    "color": 10506797,
+    "description": "Small airless rock, cratered and inert.",
+    "biome": "AlienMercurian",
+    "description_int": "planets.rocky.description",
+    "breathable": false,
+    "supportLife": false
+  },
+  "irregular": {
+    "minMass": 0.0000000001,
+    "maxMass": 0.0001,
+    "color": 12303291,
+    "description": "Small captured body, irregular shape, chaotic orbit.",
+    "biome": "AlienPlanetesimal",
+    "description_int": "planets.irregular.description",
+    "breathable": false,
+    "supportLife": false
+  },
+  "carbonaceous": {
+    "minMass": 0.000001,
+    "maxMass": 0.001,
+    "color": 5592405,
+    "description": "Dark carbon-rich crust, primordial and unweathered.",
+    "biome": "AlienCTypeAsteroid",
+    "description_int": "planets.carbonaceous.description",
+    "breathable": false,
+    "supportLife": false
   }
 }

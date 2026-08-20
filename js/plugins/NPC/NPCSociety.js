@@ -514,12 +514,12 @@
       ["Food","Survival","Homeopathy"],
       ["Food","Tools","Survival","Crafting"],
       ["Food","Tools","Lifestyle","Medical"],
-      ["Tools","Lifestyle","Medical","Artisan"],
+      ["Tools","Lifestyle","Medical","Artisan","Component"],
       ["Magic","Collectibles","Espionage","Artisan"],
     ],
     // i18n-ignore-end
 
-    generate(eventName, classId) {
+    generate(eventName, classId, mapId) {
       const personalities = DataLoader.personalities;
       const traits        = DataLoader.traits;
       const ideologies    = DataLoader.ideologies;
@@ -548,7 +548,7 @@
       let spriteKey = null;
       let bustIndex = 0;
       let npcGender = 0;
-      let npcArchetype = "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
+      let npcArchetype = "Humanoid"; // i18n-ignore: Archetypes.json id
       let assignedClassId = classId;   // default: keep the class from the event note
       if (worldSeed !== 19002001 && DataLoader.npcData) {
         // The face is dealt through the catalogue rather than out of a flat
@@ -573,7 +573,7 @@
           const entry = DataLoader.npcData[spriteKey];
           bustIndex = rngV.nextInt(0, (entry.busts || ["7"]).length);
           npcGender = entry.Gender || 0;
-          npcArchetype = entry.Archetype || "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
+          npcArchetype = entry.Archetype || "Humanoid"; // i18n-ignore: Archetypes.json id
 
           // Assign class from the entry's classes[] pool
           const classPool = Array.isArray(entry.classes) ? entry.classes : [];
@@ -587,29 +587,47 @@
 
       // 3b. Not everybody in a settlement is a person. A share of them , most
       //     of them in a monster world, one in twenty anywhere else , are
-      //     creatures: one or two archetypes, a walking sprite that archetype
-      //     actually has a body for, and a class off the archetype's own
-      //     roster (see NPCCreature). Dealt on its own stream so an existing
-      //     world's people are not reshuffled by the roll being added, and
-      //     after the catalogue step so it replaces the face rather than
-      //     competing with it.
+      //     creatures: a sheet out of the Creatures/ and Animals/ halves of
+      //     this same catalogue, the archetype that sheet carries, and a class
+      //     off that archetype's own roster (see NPCCreature). Dealt on its own
+      //     stream so an existing world's people are not reshuffled by the roll
+      //     being added, and after the catalogue step so it replaces the face
+      //     rather than competing with it.
       let creature = null;
       const NC = window.NPCCreature;
       if (NC) {
         const rngC = new SeededRng(nameToSeed(eventName + "_creature" + worldSeed));
         if (rngC.next() < NC.creatureChance()) {
-          creature = NC.rollIdentity(rngC);
+          // A stray dog belongs on the street, not the landing of somebody's
+          // staircase: the Animals/ half of the wardrobe is only dealt when
+          // this NPC's own home event sits on an <Exterior> map. Unknown
+          // (no mapId, or a map with neither tag) defaults open, the same as
+          // every other reader of getMapEnvironmentTag. The Creatures/ half
+          // (Mimic, Ghost, Zombie...) is unaffected, those belong anywhere.
+          // A roofed procedural biome (cave, dungeon...) shares map id 636
+          // with the open square it's entered from, so its own note tag still
+          // reads <Exterior>; window.ProceduralInteriors is the only thing
+          // that can actually tell the two apart (see ProceduralMapBiomeGenerator).
+          const proceduralInterior = !!window.ProceduralInteriors?.isCurrent?.();
+          const exterior = !proceduralInterior && (mapId == null ||
+            window.NPCSystem?.getMapEnvironmentTag?.(mapId) !== "Interior");
+          creature = NC.rollIdentity(rngC, exterior);
           if (creature) {
-            spriteKey = creature.spriteKey;   // "Monsters/$Beetle"
-            bustIndex = 0;                    // monster sheets are single-character
+            spriteKey = creature.spriteKey;   // "Animals/!$Dog1"
+            bustIndex = creature.bustIndex || 0;
             npcArchetype = creature.archetype;
             assignedClassId = creature.classId;
           }
         }
       }
-      // A creature played as one of the creature classes holds no conversation
-      // and no politics (see the overrides on the returned profile below).
-      const nonSentient = !!creature && NC.isNonSentientClassId(assignedClassId);
+      // Anything played as one of the creature classes holds no conversation
+      // and no politics (see the overrides on the returned profile below). The
+      // class alone decides it, not the creature roll: the Creatures/ and
+      // Animals/ sheets are in the ordinary pool too and carry class 63 in
+      // their own entries, so a dog dealt at step 3 is as much a dog as one
+      // minted at step 3b. This is also the answer every other reader of the
+      // profile already gives (NPCCreature.isNonSentientProfile).
+      const nonSentient = !!NC && NC.isNonSentientClassId(assignedClassId);
 
       // 4. Ideology (picked early to bias trait selection). An alien is only
       //    ever dealt an alien creed and a citizen is never dealt one, which is
@@ -909,12 +927,12 @@
     // ensureSimFields resolves the address (and through it the home map) from
     // it, and _generatePreexistingRelationships then reads that home map to
     // decide who this person already knows.
-    ensureProfile(eventName, classId, homeGroupName) {
+    ensureProfile(eventName, classId, homeGroupName, mapId) {
       if (!DataLoader.isReady || !eventName || !$gameSystem) return null;
       if (!$gameSystem._npcSociety) $gameSystem._npcSociety = {};
       let profile = $gameSystem._npcSociety[eventName];
       if (!profile) {
-        profile = ProfileGenerator.generate(eventName, classId);
+        profile = ProfileGenerator.generate(eventName, classId, mapId);
         if (!profile) return null; // DataLoader not populated yet
         if (homeGroupName && !profile._homeGroupName) profile._homeGroupName = homeGroupName;
         // A curated identity waiting for this name (CharacterCreationPresets:
@@ -1062,16 +1080,24 @@
     // the plot a stranger's face, so they are treated as map-designed here
     // whatever their profile says, and the profile is re-pinned to the sprite
     // they actually wear (below) so every off-map reader agrees with it.
-    const isStory     = !!window.NPCSystem?.hasStoryTag?.(evData?.note);
-    // A creature's sheet lives in img/characters/Monsters and is not in the
-    // NPCs.json catalogue, so it is assigned on the profile's own say-so.
-    // Everything below the graphic (the bust, the catalogue gender) is a
-    // person's business and is skipped for it: a creature has no bust at all
-    // (the panel draws its 3D model instead, see NPCEmpathizeUI) and its
-    // gender was rolled with the rest of it.
-    const isCreature  = !isStory && !!profile.isCreature && !!profile.spriteKey;
+    // A <Local> event gets the same treatment: it is placed on this specific
+    // map on purpose, same as a <Story> one, and ProfileGenerator.generate
+    // still deals it a seeded catalogue spriteKey (and possibly a creature
+    // roll) with no awareness of the tag, so without this it would be re-drawn
+    // as a random citizen the moment the society sim assigns it a profile.
+    const isStory       = !!window.NPCSystem?.hasStoryTag?.(evData?.note);
+    const isLocal       = !!window.NPCSystem?.hasLocalTag?.(evData?.note);
+    const isMapDesigned = isStory || isLocal;
+    // A creature is dealt out of the Creatures/ and Animals/ halves of the same
+    // catalogue as everybody else, so its sheet is normally found below like
+    // any other. The exception is a monster world, where a Monsters/ sheet may
+    // be worn and that folder is not catalogued at all; there the graphic is
+    // assigned on the profile's own say-so and everything below it (the bust,
+    // the catalogue gender) is skipped, the panel drawing its 3D model instead
+    // (see NPCEmpathizeUI).
+    const isCreature  = !isMapDesigned && !!profile.isCreature && !!profile.spriteKey;
     const hasAssigned = isCreature ||
-      (!isStory && !!(profile.spriteKey && DataLoader.npcData?.[profile.spriteKey]));
+      (!isMapDesigned && !!(profile.spriteKey && DataLoader.npcData?.[profile.spriteKey]));
     // Defining sprite: the society-assigned one, else the sprite the event shows.
     const spriteKey = hasAssigned
       ? profile.spriteKey
@@ -1081,10 +1107,10 @@
       ? (profile.bustIndex ?? 0)
       : (evData.characterIndex ?? evData.pages?.[0]?.image?.characterIndex ?? 0);
 
-    // Pinned before the NPCs.json lookup below, so a written character whose
-    // sheet is not in the catalogue still stops the seeded sprite following
-    // them around the panels, the wiki and the bust resolver.
-    if (isStory && spriteKey) {
+    // Pinned before the NPCs.json lookup below, so a written or placed
+    // character whose sheet is not in the catalogue still stops the seeded
+    // sprite following them around the panels, the wiki and the bust resolver.
+    if (isMapDesigned && spriteKey) {
       profile.spriteKey = spriteKey;
       profile.bustIndex = charIdx;
     }
@@ -1147,7 +1173,7 @@
       for (; i < end; i++) {
         const c  = toDefer[i];
         const ev = evByName.get(c.eventName);
-        SocietyRegistry.ensureProfile(c.eventName, _extractClassId(ev));
+        SocietyRegistry.ensureProfile(c.eventName, _extractClassId(ev), undefined, mapId);
         _applySocietySprite(c.eventName, ev);
       }
       if (i < toDefer.length) requestAnimationFrame(step);
@@ -1239,7 +1265,7 @@
         if (NPCSys.hasHiddenTag?.(ev.note)) continue;
         seen.add(name);
         if (!claims.has(name)) claims.set(name, []);
-        claims.get(name).push({ groupName, eventData: ev });
+        claims.get(name).push({ groupName, eventData: ev, mapId: tpl.mapId });
       }
     }
 
@@ -1249,7 +1275,7 @@
       const classMatch = claim.eventData.note?.match(/NPC-(\d+)/);
       const classId = classMatch ? Number(classMatch[1]) : null;
       try {
-        if (SocietyRegistry.ensureProfile(name, classId, claim.groupName)) minted++;
+        if (SocietyRegistry.ensureProfile(name, classId, claim.groupName, claim.mapId)) minted++;
       } catch (e) {
         console.error(`[NPCSociety] Could not mint "${name}" of "${claim.groupName}"`, e);
       }
@@ -1310,6 +1336,48 @@
     'Estonia': 'Tallinn', 'Latvia': 'Riga', 'Lithuania': 'Vilnius',
   };
   // i18n-ignore-end
+
+  // Nations vs towns. A birthplace is stored under its English id, so the two
+  // are told apart against the world data and not against the label a language
+  // draws: everything the timeline or Countries.json knows is a country, and
+  // anything else (a dossier hometown, an invented "...bledon") is a town.
+  let _nationSet = null, _nationSize = -1;
+  function isNationId(raw) {
+    const name = String(raw == null ? '' : raw).trim();
+    if (!name) return false;
+    if (name === 'Europe') return true; // i18n-ignore: the continent-wide fallback id
+    const listed = (window.WorldGen && window.WorldGen.Countries) || [];
+    if (!_nationSet || _nationSize !== listed.length) {
+      _nationSet = new Set(Object.keys(window.HistorySimulator_COUNTRIES || {}));
+      for (const c of listed) if (c && c.country) _nationSet.add(c.country);
+      _nationSize = listed.length;
+    }
+    return _nationSet.has(name);
+  }
+
+  // The preposition and the article in front of a place belong to the language,
+  // not to the sentence: English says "in Italy" but "in the Netherlands", and
+  // Italian says "in Italia", "nei Paesi Bassi" and "a Bologna". So a bio is
+  // handed a finished locative phrase, keyed on the English id (the only stable
+  // spelling), with the plain "in {place}" rule as the fallback.
+  function locativeOf(rawId, label) {
+    const slug = window.WorldNames
+      ? window.WorldNames.slug(rawId)
+      : String(rawId || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const own = 'NPCSociety.bio.placeIn.' + slug;
+    if (slug && T.has(own)) return T(own, { place: label });
+    return T(isNationId(rawId) ? 'NPCSociety.bio.inCountry' : 'NPCSociety.bio.inTown',
+             { place: label });
+  }
+
+  // One wording out of the bank a key holds, picked by index so the same person
+  // is always written the same way. A language that still ships a single string
+  // instead of a bank answers with that string.
+  function wording(key, params, index) {
+    const bank = T.list(key, params);
+    if (!bank.length) return T(key, params);
+    return bank[((index % bank.length) + bank.length) % bank.length];
+  }
 
   const BackstoryGenerator = {
 
@@ -1415,6 +1483,10 @@
       const seed = {
         gender:     Math.min(profile.gender ?? 0, PRONOUN_COUNT - 1),
         adjIdx:     rng.nextInt(0, ADJECTIVE_COUNT),
+        // Which wording of the era template this person is written with. Drawn
+        // last, so a backstory rolled before wordings varied keeps every other
+        // piece it was rolled with.
+        varIdx:     rng.nextInt(0, 24),
         isCreature: !!profile.isCreature,
         moral:      profile.moralityScore ?? 0,
       };
@@ -1431,39 +1503,57 @@
 
       const pr  = pronounOf(seed.gender);
       const adj = adjectiveAt(seed.adjIdx);
+      // A backstory rolled before the wordings varied has no varIdx of its own,
+      // so one is derived from what it does carry: the same person still reads
+      // the same way every time the bio is drawn.
+      const vIdx = (seed.varIdx != null ? seed.varIdx | 0
+                                        : ((backstory.birthYear | 0) + (seed.adjIdx | 0) * 7)) >>> 0;
       const evs = backstory.formativeEvents || [];
       const ev0 = _shortDesc(_eventText(evs[0]));
       const ev1 = evs[1]
-        ? T('NPCSociety.bio.later', Object.assign({}, pr, { event: _shortDesc(_eventText(evs[1])) }))
+        ? wording('NPCSociety.bio.later',
+                  Object.assign({}, pr, { event: _shortDesc(_eventText(evs[1])) }), vIdx + 1)
         : '';
 
       const moral = seed.moral;
       const band = moral > 60 ? 'high' : moral > 20 ? 'good' : moral > -20 ? 'weary'
                  : moral > -60 ? 'loose' : 'lawless';
-      const moralLine = T('NPCSociety.bio.moral.' + band, pr);
+      // Offset off the era wording, so the closing line does not always fall
+      // with the same opening one.
+      const moralLine = wording('NPCSociety.bio.moral.' + band, pr, vIdx + (seed.adjIdx | 0) + 2);
 
       // A birthplace is a country for most people and a town for anyone born
       // from a dossier hometown; a town reads by its Destinations.json "name",
-      // a country passes through untouched.
-      let birthplace = window.WorkSystem?.destinationName
-        ? window.WorkSystem.destinationName(backstory.birthplace) : backstory.birthplace;
+      // a country by its WorldNames label. Both are stored under their English
+      // id, which is what CITY_BY_COUNTRY and the dossiers match on.
+      const birthplace = window.WorldNames
+        ? window.WorldNames.place(backstory.birthplace)
+        : backstory.birthplace;
+      // Where the sentence says the person is from, preposition and article
+      // included, so a template only ever writes "{born} {placeIn}".
+      let placeIn;
       let key;
       if (seed.isCreature) {
         // Creatures aren't born into a nation, they come out of the wilds near
         // the city closest to their birthplace country.
-        const country = backstory.birthplace;
-        birthplace = T('NPCSociety.bio.wildsNear', { city: CITY_BY_COUNTRY[country] || birthplace });
+        const city = CITY_BY_COUNTRY[backstory.birthplace] || birthplace;
+        placeIn = T('NPCSociety.bio.wildsNear', {
+          city: window.WorldNames ? window.WorldNames.place(city) : city,
+        });
         key = 'creature';
-      } else if (backstory.birthYear <= 1919) key = 'turbulent';
-      else if (backstory.birthYear <= 1945) key = 'warYears';
-      else if (backstory.birthYear <= 1969) key = 'postwar';
-      else key = 'modern';
+      } else {
+        placeIn = locativeOf(backstory.birthplace, birthplace);
+        if (backstory.birthYear <= 1919) key = 'turbulent';
+        else if (backstory.birthYear <= 1945) key = 'warYears';
+        else if (backstory.birthYear <= 1969) key = 'postwar';
+        else key = 'modern';
+      }
 
       const params = Object.assign({}, pr, {
-        year: backstory.birthYear, place: birthplace, adj: adj,
+        year: backstory.birthYear, place: birthplace, placeIn: placeIn, adj: adj,
         event: ev0, later: ev1, moral: moralLine,
       });
-      return T('NPCSociety.bio.' + key, params).replace(/  +/g, ' ').trim();
+      return wording('NPCSociety.bio.' + key, params, vIdx).replace(/  +/g, ' ').trim();
     },
   };
 
@@ -1491,6 +1581,14 @@
         if (ns[n] && ns[n].controller && ns[n].controller !== 'Neutral') extra.push(ns[n].controller);
       }
       if (extra.length) nouns = nouns.concat(extra.filter(Boolean));
+    }
+    // The sentence being reflowed has already been written out in the active
+    // language, so the names inside it are the localized ones. The English list
+    // is kept as well: a world simulated before descriptions were keyed still
+    // quotes English prose.
+    if (window.WorldNames) {
+      const localized = Array.from(window.WorldNames.map().values());
+      if (localized.length) nouns = nouns.concat(localized);
     }
     if (nouns !== _pnNouns) {
       _pnNouns = nouns;
@@ -1589,7 +1687,7 @@
         <div class="npc-backstory-text">${escapeHtml(BackstoryGenerator.narrativeOf(backstory))}</div>
         <div class="npc-backstory-events">${eventsHTML}</div>
         <div class="npc-backstory-meta">${escapeHtml(T('NPCSociety.bio.bornMeta', { year: backstory.birthYear,
-          place: window.WorkSystem?.destinationName ? window.WorkSystem.destinationName(backstory.birthplace) : backstory.birthplace }))}</div>`;
+          place: window.WorldNames ? window.WorldNames.place(backstory.birthplace) : backstory.birthplace }))}</div>`;
     },
   };
 

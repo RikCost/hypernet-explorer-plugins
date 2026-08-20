@@ -1,0 +1,2715 @@
+{
+  "_comment": "National party rosters, keyed by the Countries.json name of the nation they stand in. NPCPolitics merges these with the power-keyed ROSTER_PARTIES it carries for the hyperpowers' own benches, so every nation in the world has a ballot: an NPC votes for a party of their OWN home nation (the country of their Destinations.json hometown) or for nobody at all. Names are deliberately distorted off the real ones, exactly as the curated rosters are; ideologyId points at js/i18n/<lang>/ideology.json.",
+  "Afghanistan": [
+    {
+      "name": "People's Democratic League of Afghanistan",
+      "ideologyId": "orthodox_communist",
+      "founded": 1965
+    },
+    {
+      "name": "Jamiat Council of the Faithful",
+      "ideologyId": "islamist",
+      "founded": 1968
+    },
+    {
+      "name": "Grand Jirga of the Tribes",
+      "ideologyId": "tribal_confederalism",
+      "founded": 1919
+    }
+  ],
+  "Albania": [
+    {
+      "name": "Partia e Punës Shqiptare",
+      "ideologyId": "orthodox_communist",
+      "founded": 1941
+    },
+    {
+      "name": "Aleanca Demokratike e Vendit",
+      "ideologyId": "liberal_conservative",
+      "founded": 1990
+    },
+    {
+      "name": "Lëvizja Socialiste e Vendit",
+      "ideologyId": "social_democrat",
+      "founded": 1991
+    }
+  ],
+  "Algeria": [
+    {
+      "name": "Front de la Libération du Peuple",
+      "ideologyId": "secular_nationalist",
+      "founded": 1954
+    },
+    {
+      "name": "Rassemblement Démocratique du Maghreb",
+      "ideologyId": "managed_democrat",
+      "founded": 1997
+    },
+    {
+      "name": "Mouvement de la Communauté Islamique",
+      "ideologyId": "moderate_islamist",
+      "founded": 1990
+    }
+  ],
+  "Andorra": [
+    {
+      "name": "Demòcrates de les Valls",
+      "ideologyId": "liberal_conservative",
+      "founded": 1998
+    },
+    {
+      "name": "Partit Socialdemòcrata de les Valls",
+      "ideologyId": "social_democrat",
+      "founded": 2000
+    },
+    {
+      "name": "Tercera Via del Principat",
+      "ideologyId": "civic_republican",
+      "founded": 2001
+    }
+  ],
+  "Argentina": [
+    {
+      "name": "Movimiento Justicialista Obrero",
+      "ideologyId": "peronism",
+      "founded": 1946
+    },
+    {
+      "name": "Unión Cívica Radical del Plata",
+      "ideologyId": "social_liberal",
+      "founded": 1891
+    },
+    {
+      "name": "Frente Obrero de Izquierda",
+      "ideologyId": "trade_unionist",
+      "founded": 1982
+    }
+  ],
+  "Armenia": [
+    {
+      "name": "Republican Circle of Armenia",
+      "ideologyId": "conservative",
+      "founded": 1990
+    },
+    {
+      "name": "Dashnak Federation of Ararat",
+      "ideologyId": "secular_nationalist",
+      "founded": 1890
+    },
+    {
+      "name": "Luminous Armenia Alliance",
+      "ideologyId": "social_liberal",
+      "founded": 1998
+    }
+  ],
+  "Australia": [
+    {
+      "name": "Australian Labour Federation",
+      "ideologyId": "social_democrat",
+      "founded": 1901
+    },
+    {
+      "name": "Liberal League of the Commonwealth",
+      "ideologyId": "liberal_conservative",
+      "founded": 1944
+    },
+    {
+      "name": "National Country Federation",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1920
+    }
+  ],
+  "Austria": [
+    {
+      "name": "Österreichische Volksgemeinschaft",
+      "ideologyId": "christian_democrat",
+      "founded": 1945
+    },
+    {
+      "name": "Sozialdemokratischer Bund der Alpen",
+      "ideologyId": "social_democrat",
+      "founded": 1889
+    },
+    {
+      "name": "Freiheitliche Bewegung der Alpen",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 1956
+    }
+  ],
+  "Azerbaijan": [
+    {
+      "name": "Yeni Azərbaycan Cəbhəsi",
+      "ideologyId": "managed_democrat",
+      "founded": 1992
+    },
+    {
+      "name": "Müsavat Cəmiyyəti",
+      "ideologyId": "secular_nationalist",
+      "founded": 1911
+    },
+    {
+      "name": "Xalq Birliyi Partiyası",
+      "ideologyId": "social_liberal",
+      "founded": 1989
+    }
+  ],
+  "Bahrain": [
+    {
+      "name": "Society of National Accord",
+      "ideologyId": "moderate_islamist",
+      "founded": 1971
+    },
+    {
+      "name": "Royal Council of Bahrain",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1971
+    },
+    {
+      "name": "Pearl Roundabout Democrats",
+      "ideologyId": "social_liberal",
+      "founded": 1994
+    }
+  ],
+  "Bangladesh": [
+    {
+      "name": "Awami Jatiya Front",
+      "ideologyId": "secular_nationalist",
+      "founded": 1949
+    },
+    {
+      "name": "Bengal Nationalist Union",
+      "ideologyId": "populist_conservative",
+      "founded": 1978
+    },
+    {
+      "name": "Jamaat Assembly of Believers",
+      "ideologyId": "islamist",
+      "founded": 1941
+    }
+  ],
+  "Belarus": [
+    {
+      "name": "White Rus Union",
+      "ideologyId": "managed_democrat",
+      "founded": 1994
+    },
+    {
+      "name": "Belarusian People's Front",
+      "ideologyId": "secular_nationalist",
+      "founded": 1988
+    },
+    {
+      "name": "Communist Party of the Western Republic",
+      "ideologyId": "orthodox_communist",
+      "founded": 1918
+    }
+  ],
+  "Belgium": [
+    {
+      "name": "Christelijke Volksgemeenschap",
+      "ideologyId": "christian_democrat",
+      "founded": 1945
+    },
+    {
+      "name": "Parti Socialiste de Wallonie",
+      "ideologyId": "social_democrat",
+      "founded": 1885
+    },
+    {
+      "name": "Nieuw-Vlaamse Verbond",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1954
+    }
+  ],
+  "Bhutan": [
+    {
+      "name": "Druk Concord Party",
+      "ideologyId": "buddhist_nationalism",
+      "founded": 2007
+    },
+    {
+      "name": "Dragon People's Council",
+      "ideologyId": "social_liberal",
+      "founded": 2007
+    },
+    {
+      "name": "Royal League of the Dzongs",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1953
+    }
+  ],
+  "Bolivia": [
+    {
+      "name": "Movimiento hacia el Socialismo Indígena",
+      "ideologyId": "indigenist_socialism",
+      "founded": 1997
+    },
+    {
+      "name": "Movimiento Nacional Revolucionario",
+      "ideologyId": "developmentalism",
+      "founded": 1941
+    },
+    {
+      "name": "Acción Democrática Nacional",
+      "ideologyId": "liberal_conservative",
+      "founded": 1979
+    }
+  ],
+  "Bosnia and Herzegovina": [
+    {
+      "name": "Stranka Demokratskog Puta",
+      "ideologyId": "moderate_islamist",
+      "founded": 1990
+    },
+    {
+      "name": "Srpski Narodni Zbor",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1990
+    },
+    {
+      "name": "Socijaldemokratski Zbor BiH",
+      "ideologyId": "social_democrat",
+      "founded": 1990
+    }
+  ],
+  "Brazil": [
+    {
+      "name": "Partido do Trabalho do Brasil",
+      "ideologyId": "democratic_socialist",
+      "founded": 1980
+    },
+    {
+      "name": "Movimento Democrático do Brasil",
+      "ideologyId": "developmentalism",
+      "founded": 1966
+    },
+    {
+      "name": "Partido Social Democrático do Brasil",
+      "ideologyId": "liberal_conservative",
+      "founded": 1945
+    }
+  ],
+  "Brunei": [
+    {
+      "name": "Bornean Solidarity League",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1985
+    },
+    {
+      "name": "Sultanate Development Party",
+      "ideologyId": "developmentalism",
+      "founded": 1985
+    },
+    {
+      "name": "Council of the Royal Mosque",
+      "ideologyId": "islamist",
+      "founded": 1962
+    }
+  ],
+  "Bulgaria": [
+    {
+      "name": "Bulgarska Socialisticheska Druzhina",
+      "ideologyId": "reform_communist",
+      "founded": 1891
+    },
+    {
+      "name": "Sayuz na Svobodnite Grazhdani",
+      "ideologyId": "liberal_conservative",
+      "founded": 1989
+    },
+    {
+      "name": "Dvizhenie za Prava i Ravenstvo",
+      "ideologyId": "social_liberal",
+      "founded": 1990
+    }
+  ],
+  "Cambodia": [
+    {
+      "name": "Khmer People's Union",
+      "ideologyId": "authoritarian",
+      "founded": 1951
+    },
+    {
+      "name": "Royalist Restoration League",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1981
+    },
+    {
+      "name": "National Salvation Front",
+      "ideologyId": "social_liberal",
+      "founded": 1995
+    }
+  ],
+  "Canada": [
+    {
+      "name": "Union Libérale du Canada",
+      "ideologyId": "social_liberal",
+      "founded": 1867
+    },
+    {
+      "name": "Conservative League of Canada",
+      "ideologyId": "liberal_conservative",
+      "founded": 1942
+    },
+    {
+      "name": "New Democratic Federation",
+      "ideologyId": "democratic_socialist",
+      "founded": 1961
+    },
+    {
+      "name": "Bloc du Saint-Laurent",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1991
+    }
+  ],
+  "Cascadia Protectorate": [
+    {
+      "name": "Thaumo-Industrial Directorate",
+      "ideologyId": "thaumo_industrialist",
+      "founded": 1912
+    },
+    {
+      "name": "Evergreen Commons League",
+      "ideologyId": "green_ecologist",
+      "founded": 1968
+    },
+    {
+      "name": "Protectorate Loyalist Union",
+      "ideologyId": "crown_colony_administration",
+      "founded": 1901
+    },
+    {
+      "name": "Leyline Sovereignty Board",
+      "ideologyId": "leyline_sovereigntism",
+      "founded": 1968
+    },
+    {
+      "name": "Rain Coast Conservation League",
+      "ideologyId": "leyline_conservationism",
+      "founded": 1975
+    }
+  ],
+  "Chile": [
+    {
+      "name": "Partido Demócrata Cristiano Chileno",
+      "ideologyId": "christian_democrat",
+      "founded": 1957
+    },
+    {
+      "name": "Partido Socialista de Chile",
+      "ideologyId": "democratic_socialist",
+      "founded": 1933
+    },
+    {
+      "name": "Unión Demócrata de la Nación",
+      "ideologyId": "conservative",
+      "founded": 1983
+    },
+    {
+      "name": "Movimiento de la Patria Larga",
+      "ideologyId": "continental_expansionism",
+      "founded": 1930
+    },
+    {
+      "name": "Liga Cordillerana",
+      "ideologyId": "military_nationalist",
+      "founded": 1927
+    },
+    {
+      "name": "Frente del Sur Austral",
+      "ideologyId": "developmentalism",
+      "founded": 1964
+    }
+  ],
+  "China": [
+    {
+      "name": "Hall of Rites and Order",
+      "ideologyId": "confucian_restoration",
+      "founded": 1978
+    },
+    {
+      "name": "Sangha Assembly of the Middle Way",
+      "ideologyId": "buddhist_statecraft",
+      "founded": 1981
+    },
+    {
+      "name": "Concord of the Ten Thousand Things",
+      "ideologyId": "harmonious_synthesis",
+      "founded": 1992
+    },
+    {
+      "name": "Bureau of Practical Learning",
+      "ideologyId": "technocratic_liberal",
+      "founded": 1984
+    },
+    {
+      "name": "Old Banner Remnant",
+      "ideologyId": "orthodox_communist",
+      "founded": 1921
+    },
+    {
+      "name": "Assembly of the Celestial Mandate",
+      "ideologyId": "mandate_of_heaven",
+      "founded": 1979
+    }
+  ],
+  "Colombia": [
+    {
+      "name": "Partido Liberal de Colombia",
+      "ideologyId": "social_liberal",
+      "founded": 1848
+    },
+    {
+      "name": "Partido Conservador de Colombia",
+      "ideologyId": "conservative",
+      "founded": 1849
+    },
+    {
+      "name": "Unión Patriótica del Pueblo",
+      "ideologyId": "liberation_theology",
+      "founded": 1985
+    }
+  ],
+  "Croatia": [
+    {
+      "name": "Hrvatsko Demokratsko Vijeće",
+      "ideologyId": "conservative",
+      "founded": 1989
+    },
+    {
+      "name": "Socijaldemokratska Stranka Hrvatske",
+      "ideologyId": "social_democrat",
+      "founded": 1990
+    },
+    {
+      "name": "Hrvatska Seljačka Zadruga",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1904
+    }
+  ],
+  "Cyprus": [
+    {
+      "name": "Anorthotiko Komma tis Nisou",
+      "ideologyId": "orthodox_communist",
+      "founded": 1926
+    },
+    {
+      "name": "Dimokratikos Syndesmos",
+      "ideologyId": "liberal_conservative",
+      "founded": 1976
+    },
+    {
+      "name": "Kıbrıs Türk Cemiyeti",
+      "ideologyId": "secular_nationalist",
+      "founded": 1970
+    }
+  ],
+  "Czech Republic": [
+    {
+      "name": "Občanská Demokratická Jednota",
+      "ideologyId": "liberal_conservative",
+      "founded": 1991
+    },
+    {
+      "name": "Česká Sociální Jednota",
+      "ideologyId": "social_democrat",
+      "founded": 1878
+    },
+    {
+      "name": "Komunistická Jednota Čech",
+      "ideologyId": "orthodox_communist",
+      "founded": 1921
+    }
+  ],
+  "Denmark": [
+    {
+      "name": "Socialdemokratisk Samling",
+      "ideologyId": "social_democrat",
+      "founded": 1871
+    },
+    {
+      "name": "Venstre Bondeparti",
+      "ideologyId": "classical_liberal",
+      "founded": 1870
+    },
+    {
+      "name": "Dansk Folkesamling",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 1995
+    }
+  ],
+  "Eastern Seaboard": [
+    {
+      "name": "Colonial Administration Slate",
+      "ideologyId": "punitive_colony_regime",
+      "founded": 1901
+    },
+    {
+      "name": "Free Citizens of the Seaboard",
+      "ideologyId": "civic_republican",
+      "founded": 1949
+    },
+    {
+      "name": "Dockside Labour League",
+      "ideologyId": "trade_unionist",
+      "founded": 1920
+    },
+    {
+      "name": "Crown Colonial Directorate",
+      "ideologyId": "crown_colony_administration",
+      "founded": 1901
+    },
+    {
+      "name": "Penal Reform Society",
+      "ideologyId": "pacifist_humanitarian",
+      "founded": 1955
+    }
+  ],
+  "Ecuador": [
+    {
+      "name": "Alianza del País Soberano",
+      "ideologyId": "bolivarian_socialism",
+      "founded": 1996
+    },
+    {
+      "name": "Partido Social Cristiano del Ecuador",
+      "ideologyId": "christian_democrat",
+      "founded": 1951
+    },
+    {
+      "name": "Izquierda Democrática del Ecuador",
+      "ideologyId": "social_democrat",
+      "founded": 1970
+    }
+  ],
+  "Egypt": [
+    {
+      "name": "National Democratic Rally",
+      "ideologyId": "authoritarian",
+      "founded": 1978
+    },
+    {
+      "name": "Arab Socialist Congress of Egypt",
+      "ideologyId": "arab_socialism",
+      "founded": 1962
+    },
+    {
+      "name": "Brethren Freedom Party",
+      "ideologyId": "islamist",
+      "founded": 1928
+    },
+    {
+      "name": "Wafd Liberal Assembly",
+      "ideologyId": "classical_liberal",
+      "founded": 1919
+    }
+  ],
+  "Estonia": [
+    {
+      "name": "Eesti Uuendusliit",
+      "ideologyId": "classical_liberal",
+      "founded": 1994
+    },
+    {
+      "name": "Eesti Keskühendus",
+      "ideologyId": "social_liberal",
+      "founded": 1991
+    },
+    {
+      "name": "Isamaa Koondis",
+      "ideologyId": "conservative",
+      "founded": 1995
+    }
+  ],
+  "Finland": [
+    {
+      "name": "Suomen Maalaisliitto",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1906
+    },
+    {
+      "name": "Kansallinen Kokoomusseura",
+      "ideologyId": "liberal_conservative",
+      "founded": 1918
+    },
+    {
+      "name": "Suomen Sosialidemokraattinen Seura",
+      "ideologyId": "social_democrat",
+      "founded": 1899
+    }
+  ],
+  "France": [
+    {
+      "name": "Rassemblement pour la Nation",
+      "ideologyId": "conservative_democrat",
+      "founded": 1976
+    },
+    {
+      "name": "Union pour la Démocratie Républicaine",
+      "ideologyId": "liberal_conservative",
+      "founded": 1978
+    },
+    {
+      "name": "Parti des Socialistes",
+      "ideologyId": "social_democrat",
+      "founded": 1969
+    },
+    {
+      "name": "Parti Communiste Ouvrier Français",
+      "ideologyId": "reform_communist",
+      "founded": 1920
+    },
+    {
+      "name": "Front de la Nation",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 1972
+    },
+    {
+      "name": "Les Verdoyants",
+      "ideologyId": "green_ecologist",
+      "founded": 1984
+    },
+    {
+      "name": "Union pour un Mouvement du Peuple",
+      "ideologyId": "liberal_conservative",
+      "founded": 2002
+    },
+    {
+      "name": "Mouvement Citoyen",
+      "ideologyId": "civic_republican",
+      "founded": 1993
+    }
+  ],
+  "Georgia": [
+    {
+      "name": "Ertoba National Circle",
+      "ideologyId": "secular_nationalist",
+      "founded": 1992
+    },
+    {
+      "name": "Kartuli Ocneba League",
+      "ideologyId": "managed_democrat",
+      "founded": 1995
+    },
+    {
+      "name": "Rustaveli Democratic Circle",
+      "ideologyId": "social_liberal",
+      "founded": 2003
+    }
+  ],
+  "Germany": [
+    {
+      "name": "Christlich Demokratische Sammlung",
+      "ideologyId": "christian_democrat",
+      "founded": 1945
+    },
+    {
+      "name": "Christlich-Soziale Sammlung",
+      "ideologyId": "christian_democrat",
+      "founded": 1945
+    },
+    {
+      "name": "Sozialdemokratische Partei der Lande",
+      "ideologyId": "social_democrat",
+      "founded": 1863
+    },
+    {
+      "name": "Freiheitlich Demokratische Partei",
+      "ideologyId": "classical_liberal",
+      "founded": 1948
+    },
+    {
+      "name": "Bündnis 91/Die Grünen",
+      "ideologyId": "green_ecologist",
+      "founded": 1993
+    },
+    {
+      "name": "Partei des Demokratischen Sozialstaats",
+      "ideologyId": "reform_communist",
+      "founded": 1990
+    },
+    {
+      "name": "Die Republikanische Liste",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1983
+    }
+  ],
+  "Greece": [
+    {
+      "name": "Panellinio Sosialistiko Kinima tou Laou",
+      "ideologyId": "social_democrat",
+      "founded": 1974
+    },
+    {
+      "name": "Nea Dimokratiki Parataxi",
+      "ideologyId": "liberal_conservative",
+      "founded": 1974
+    },
+    {
+      "name": "Kommounistiko Metopo tou Laou",
+      "ideologyId": "orthodox_communist",
+      "founded": 1918
+    }
+  ],
+  "Guyana": [
+    {
+      "name": "People's Progressive League",
+      "ideologyId": "democratic_socialist",
+      "founded": 1950
+    },
+    {
+      "name": "National Congress Reform League",
+      "ideologyId": "african_socialism",
+      "founded": 1957
+    },
+    {
+      "name": "Alliance for Guyanese Renewal",
+      "ideologyId": "social_liberal",
+      "founded": 2000
+    }
+  ],
+  "Hungary": [
+    {
+      "name": "Magyar Polgári Kör",
+      "ideologyId": "populist_conservative",
+      "founded": 1988
+    },
+    {
+      "name": "Magyar Szocialista Kör",
+      "ideologyId": "reform_communist",
+      "founded": 1989
+    },
+    {
+      "name": "Szabad Demokraták Szövetsége",
+      "ideologyId": "classical_liberal",
+      "founded": 1988
+    }
+  ],
+  "Iceland": [
+    {
+      "name": "Sjálfstæðisfélag Íslands",
+      "ideologyId": "liberal_conservative",
+      "founded": 1929
+    },
+    {
+      "name": "Framsóknarsambandið",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1916
+    },
+    {
+      "name": "Samfylking Landsins",
+      "ideologyId": "social_democrat",
+      "founded": 2000
+    },
+    {
+      "name": "Da Big Moot Slate",
+      "ideologyId": "rowdy_horde",
+      "founded": 1970
+    },
+    {
+      "name": "Goblin Evangelical Ting",
+      "ideologyId": "goblin_evangelism",
+      "founded": 1972
+    },
+    {
+      "name": "Stone Age Reclamation Moot",
+      "ideologyId": "stone_age_primal",
+      "founded": 1975
+    }
+  ],
+  "India": [
+    {
+      "name": "Bharat National Congress Union",
+      "ideologyId": "social_democrat",
+      "founded": 1885
+    },
+    {
+      "name": "Bharatiya Jan Morcha",
+      "ideologyId": "hindu_nationalism",
+      "founded": 1980
+    },
+    {
+      "name": "Communist Party of Bharat (Bengal)",
+      "ideologyId": "orthodox_communist",
+      "founded": 1925
+    },
+    {
+      "name": "Bahujan Jan Front",
+      "ideologyId": "social_liberal",
+      "founded": 1984
+    },
+    {
+      "name": "Sanatana Rashtra Assembly",
+      "ideologyId": "hindu_nationalism",
+      "founded": 1948
+    },
+    {
+      "name": "Dharmic Restoration Sabha",
+      "ideologyId": "mandate_of_heaven",
+      "founded": 1980
+    },
+    {
+      "name": "Ahimsa Congress Circle",
+      "ideologyId": "anarcho_pacifist",
+      "founded": 1920
+    }
+  ],
+  "Indonesia": [
+    {
+      "name": "Assembly of Functional Groups",
+      "ideologyId": "pancasila_statism",
+      "founded": 1964
+    },
+    {
+      "name": "Union of the Democratic Struggle",
+      "ideologyId": "secular_nationalist",
+      "founded": 1973
+    },
+    {
+      "name": "League of the Ulama Awakening",
+      "ideologyId": "moderate_islamist",
+      "founded": 1926
+    }
+  ],
+  "Iran": [
+    {
+      "name": "Rastakhiz Resurgence Party",
+      "ideologyId": "imperial_monarchist",
+      "founded": 1975
+    },
+    {
+      "name": "Melliyun National Party",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1957
+    },
+    {
+      "name": "Mardom People's Party",
+      "ideologyId": "social_liberal",
+      "founded": 1957
+    },
+    {
+      "name": "National Front of Persia",
+      "ideologyId": "secular_nationalist",
+      "founded": 1949
+    },
+    {
+      "name": "Tudeh Workers' League",
+      "ideologyId": "orthodox_communist",
+      "founded": 1941
+    },
+    {
+      "name": "Court Chamberlain's Circle",
+      "ideologyId": "technocratic_liberal",
+      "founded": 1965
+    }
+  ],
+  "Iraq": [
+    {
+      "name": "Renaissance Command Council",
+      "ideologyId": "baathism",
+      "founded": 1947
+    },
+    {
+      "name": "Nasserist Vanguard League",
+      "ideologyId": "arab_nationalism",
+      "founded": 1955
+    },
+    {
+      "name": "Mesopotamian Communist League",
+      "ideologyId": "orthodox_communist",
+      "founded": 1934
+    },
+    {
+      "name": "Kurdish Democratic Congress",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1946
+    }
+  ],
+  "Ireland": [
+    {
+      "name": "Fianna na Poblachta",
+      "ideologyId": "civic_republican",
+      "founded": 1926
+    },
+    {
+      "name": "Fine Comhairle na hÉireann",
+      "ideologyId": "christian_democrat",
+      "founded": 1933
+    },
+    {
+      "name": "Páirtí Lucht na hOibre",
+      "ideologyId": "social_democrat",
+      "founded": 1912
+    },
+    {
+      "name": "Order of the Emerald Ring",
+      "ideologyId": "thelemic_magus",
+      "founded": 1948
+    },
+    {
+      "name": "Hermetic Circle of the Isle",
+      "ideologyId": "metamagical_imaginism",
+      "founded": 1912
+    },
+    {
+      "name": "Leyline Preservation League",
+      "ideologyId": "leyline_conservationism",
+      "founded": 1969
+    },
+    {
+      "name": "Guild Charter League",
+      "ideologyId": "thaumo_industrialist",
+      "founded": 1948
+    }
+  ],
+  "Israel": [
+    {
+      "name": "Ma'arach Labour Alignment",
+      "ideologyId": "solomonic_laborism",
+      "founded": 1968
+    },
+    {
+      "name": "Herut Nationalist Bloc",
+      "ideologyId": "solomonic_revisionism",
+      "founded": 1948
+    },
+    {
+      "name": "Civic Progressive Alignment",
+      "ideologyId": "solomonic_liberalism",
+      "founded": 1961
+    },
+    {
+      "name": "Accords Movement",
+      "ideologyId": "peace_process_pragmatist",
+      "founded": 1992
+    },
+    {
+      "name": "Council of Torah Elders",
+      "ideologyId": "conservative_theocratic",
+      "founded": 1984
+    },
+    {
+      "name": "Sanhedrin Restoration Council",
+      "ideologyId": "solomonic_restorationism",
+      "founded": 1948
+    },
+    {
+      "name": "Temple Rebuilding Society",
+      "ideologyId": "ritualist_purism",
+      "founded": 1967
+    },
+    {
+      "name": "Seal of Solomon Circle",
+      "ideologyId": "thelemic_magus",
+      "founded": 1972
+    }
+  ],
+  "Italy": [
+    {
+      "name": "Concordia Cristiana",
+      "ideologyId": "christian_democratic",
+      "founded": 1943
+    },
+    {
+      "name": "Partito Comunista della Penisola",
+      "ideologyId": "reform_communist",
+      "founded": 1921
+    },
+    {
+      "name": "Partito Socialista Italico",
+      "ideologyId": "social_democrat",
+      "founded": 1892
+    },
+    {
+      "name": "Moto Sociale d'Italia",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1946
+    },
+    {
+      "name": "Partito Liberale Peninsulare",
+      "ideologyId": "classical_liberal",
+      "founded": 1922
+    },
+    {
+      "name": "Partito Repubblicano d'Italia",
+      "ideologyId": "civic_republican",
+      "founded": 1895
+    },
+    {
+      "name": "Partito Socialdemocratico Peninsulare",
+      "ideologyId": "pragmatic_social_democrat",
+      "founded": 1947
+    },
+    {
+      "name": "Partito Radicalista",
+      "ideologyId": "classical_liberal",
+      "founded": 1955
+    },
+    {
+      "name": "Democrazia dei Proletari",
+      "ideologyId": "orthodox_communist",
+      "founded": 1978
+    },
+    {
+      "name": "Partito Comunista degli Operai",
+      "ideologyId": "orthodox_communist"
+    },
+    {
+      "name": "Alleanza della Nazione",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1995
+    },
+    {
+      "name": "Lega Settentrionale",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1991
+    },
+    {
+      "name": "Rifondazione dei Comunisti",
+      "ideologyId": "orthodox_communist",
+      "founded": 1991
+    },
+    {
+      "name": "Fronte Democratico della Sinistra",
+      "ideologyId": "pragmatic_social_democrat",
+      "founded": 1991
+    },
+    {
+      "name": "Sinistra Democratica Unita",
+      "ideologyId": "pragmatic_social_democrat",
+      "founded": 1998
+    },
+    {
+      "name": "Partito Popolare Peninsulare",
+      "ideologyId": "christian_democratic",
+      "founded": 1994
+    },
+    {
+      "name": "La Trama",
+      "ideologyId": "civic_republican",
+      "founded": 1991
+    },
+    {
+      "name": "Democrazia e Libertà - Il Fiordaliso",
+      "ideologyId": "christian_democratic",
+      "founded": 2001
+    },
+    {
+      "name": "Italia dei Giusti",
+      "ideologyId": "law_and_order_populist",
+      "founded": 1998
+    },
+    {
+      "name": "Partito dei Comunisti Italici",
+      "ideologyId": "orthodox_communist",
+      "founded": 1998
+    },
+    {
+      "name": "Centro Cristiano Popolare",
+      "ideologyId": "christian_democratic",
+      "founded": 1994
+    },
+    {
+      "name": "Cristiani Democratici Riuniti",
+      "ideologyId": "christian_democratic",
+      "founded": 1995
+    },
+    {
+      "name": "Unione dei Democratici Europei",
+      "ideologyId": "pragmatic_social_democrat",
+      "founded": 1999
+    },
+    {
+      "name": "Rinnovamento Peninsulare",
+      "ideologyId": "technocratic_liberal",
+      "founded": 1996
+    },
+    {
+      "name": "Moto Sociale - Fiaccola Tricolore",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1995
+    },
+    {
+      "name": "Vigore Nuovo",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1997
+    },
+    {
+      "name": "Radicali Peninsulari",
+      "ideologyId": "classical_liberal",
+      "founded": 2001
+    },
+    {
+      "name": "Democrazia Continentale",
+      "ideologyId": "christian_democratic",
+      "founded": 2001
+    },
+    {
+      "name": "Nuovo PSP",
+      "ideologyId": "social_democrat",
+      "founded": 2001
+    },
+    {
+      "name": "Forza Nazione",
+      "ideologyId": "media_theocrat",
+      "founded": 1994
+    },
+    {
+      "name": "Federazione Verde",
+      "ideologyId": "green_ecologist",
+      "founded": 1990
+    },
+    {
+      "name": "Südtiroler Landespartei",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1945
+    },
+    {
+      "name": "Lista Petriana",
+      "ideologyId": "theocratic",
+      "founded": 1929
+    },
+    {
+      "name": "Fronte Sociale Teocratico",
+      "ideologyId": "conservative_theocratic",
+      "founded": 1948
+    },
+    {
+      "name": "Movimento degli Esorcismi",
+      "ideologyId": "ritualist_purism",
+      "founded": 1971
+    }
+  ],
+  "Italy - Sardinia": [
+    {
+      "name": "Partito Sardo dell'Autonomia",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1921
+    },
+    {
+      "name": "Unione Democratica di Sardegna",
+      "ideologyId": "christian_democratic",
+      "founded": 1946
+    },
+    {
+      "name": "Sinistra Sarda Unita",
+      "ideologyId": "democratic_socialist",
+      "founded": 1990
+    }
+  ],
+  "Italy - Sicily": [
+    {
+      "name": "Movimento per l'Autonomia dell'Isola",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1943
+    },
+    {
+      "name": "Democrazia Cristiana dell'Isola",
+      "ideologyId": "christian_democratic",
+      "founded": 1944
+    },
+    {
+      "name": "Fronte Popolare dell'Isola",
+      "ideologyId": "orthodox_communist",
+      "founded": 1947
+    }
+  ],
+  "Japan": [
+    {
+      "name": "Jiyū Kokumin Kaigi",
+      "ideologyId": "liberal_conservative",
+      "founded": 1955
+    },
+    {
+      "name": "Nippon Shakai Renmei",
+      "ideologyId": "social_democrat",
+      "founded": 1945
+    },
+    {
+      "name": "Seikō Bukkyō Kai",
+      "ideologyId": "buddhist_nationalism",
+      "founded": 1964
+    }
+  ],
+  "Jordan": [
+    {
+      "name": "Hashemite National Congress",
+      "ideologyId": "hashemite_monarchism",
+      "founded": 1971
+    },
+    {
+      "name": "Islamic Action League of Jordan",
+      "ideologyId": "moderate_islamist",
+      "founded": 1992
+    },
+    {
+      "name": "Jordanian Communist Circle",
+      "ideologyId": "orthodox_communist",
+      "founded": 1951
+    }
+  ],
+  "Kazakhstan": [
+    {
+      "name": "Nurly Otan Fatherland Union",
+      "ideologyId": "managed_democrat",
+      "founded": 1999
+    },
+    {
+      "name": "Ak Zhol Clear Road",
+      "ideologyId": "classical_liberal",
+      "founded": 2002
+    },
+    {
+      "name": "Communist League of the Steppe",
+      "ideologyId": "orthodox_communist",
+      "founded": 1937
+    }
+  ],
+  "Kuwait": [
+    {
+      "name": "Bloc of the National Assembly",
+      "ideologyId": "gulf_federalism",
+      "founded": 1963
+    },
+    {
+      "name": "Islamic Constitutional Circle",
+      "ideologyId": "moderate_islamist",
+      "founded": 1991
+    },
+    {
+      "name": "Kuwaiti Popular Action Bloc",
+      "ideologyId": "social_democrat",
+      "founded": 1962
+    }
+  ],
+  "Kyrgyzstan": [
+    {
+      "name": "Social Democratic Union of the Kyrgyz",
+      "ideologyId": "social_democrat",
+      "founded": 1993
+    },
+    {
+      "name": "Ata-Meken Fatherland Bloc",
+      "ideologyId": "populist_conservative",
+      "founded": 1993
+    },
+    {
+      "name": "Respublika Citizens' Movement",
+      "ideologyId": "social_liberal",
+      "founded": 1999
+    }
+  ],
+  "Laos": [
+    {
+      "name": "Lao People's Revolutionary League",
+      "ideologyId": "orthodox_communist",
+      "founded": 1955
+    },
+    {
+      "name": "Lao Front for National Building",
+      "ideologyId": "managed_democrat",
+      "founded": 1979
+    },
+    {
+      "name": "League of the Mekong Sangha",
+      "ideologyId": "buddhist_nationalism",
+      "founded": 1990
+    }
+  ],
+  "Latvia": [
+    {
+      "name": "Vienotības Apvienība",
+      "ideologyId": "liberal_conservative",
+      "founded": 1998
+    },
+    {
+      "name": "Saskaņas Apvienība",
+      "ideologyId": "social_democrat",
+      "founded": 1998
+    },
+    {
+      "name": "Nacionālā Apvienība",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 1997
+    }
+  ],
+  "Lebanon": [
+    {
+      "name": "Phalangist Union of Lebanon",
+      "ideologyId": "maronite_conservatism",
+      "founded": 1936
+    },
+    {
+      "name": "Beirut Rebuilding List",
+      "ideologyId": "reconstruction_liberal",
+      "founded": 1992
+    },
+    {
+      "name": "Amal Movement of Hope",
+      "ideologyId": "moderate_islamist",
+      "founded": 1974
+    },
+    {
+      "name": "Progressive Socialists of the Mountain",
+      "ideologyId": "democratic_socialist",
+      "founded": 1949
+    }
+  ],
+  "Luxembourg": [
+    {
+      "name": "Chrëschtlech Sozial Vollekslëscht",
+      "ideologyId": "christian_democrat",
+      "founded": 1944
+    },
+    {
+      "name": "Lëtzebuerger Sozialistesch Schafferpartei",
+      "ideologyId": "social_democrat",
+      "founded": 1902
+    },
+    {
+      "name": "Demokratesch Lëscht",
+      "ideologyId": "classical_liberal",
+      "founded": 1945
+    },
+    {
+      "name": "Déi Grénglëscht",
+      "ideologyId": "green_ecologist",
+      "founded": 1983
+    },
+    {
+      "name": "Kommunistesch Liga Lëtzebuerg",
+      "ideologyId": "orthodox_communist",
+      "founded": 1921
+    },
+    {
+      "name": "Alternativ Demokratesch Reformlëscht",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1987
+    }
+  ],
+  "Malaysia": [
+    {
+      "name": "United Malay National Front",
+      "ideologyId": "secular_nationalist",
+      "founded": 1946
+    },
+    {
+      "name": "Democratic Action Assembly",
+      "ideologyId": "social_democrat",
+      "founded": 1965
+    },
+    {
+      "name": "Pan-Malayan Islamic League",
+      "ideologyId": "islamist",
+      "founded": 1951
+    }
+  ],
+  "Malta": [
+    {
+      "name": "Partit tan-Nazzjon",
+      "ideologyId": "christian_democrat",
+      "founded": 1880
+    },
+    {
+      "name": "Maltese Workers' Party",
+      "ideologyId": "social_democrat",
+      "founded": 1920
+    }
+  ],
+  "Mauritania": [
+    {
+      "name": "Parti Républicain du Peuple",
+      "ideologyId": "managed_democrat",
+      "founded": 1991
+    },
+    {
+      "name": "Union des Forces Progressistes",
+      "ideologyId": "social_democrat",
+      "founded": 2000
+    },
+    {
+      "name": "Rassemblement des Tribus",
+      "ideologyId": "tribal_confederalism",
+      "founded": 1978
+    }
+  ],
+  "Mexico": [
+    {
+      "name": "Partido Revolucionario Institucional Mexicano",
+      "ideologyId": "managed_democrat",
+      "founded": 1929
+    },
+    {
+      "name": "Partido de Acción Nacional Mexicana",
+      "ideologyId": "christian_democrat",
+      "founded": 1939
+    },
+    {
+      "name": "Frente Democrático de la Revolución",
+      "ideologyId": "democratic_socialist",
+      "founded": 1989
+    },
+    {
+      "name": "Consejo de los Ajawob del Sur",
+      "ideologyId": "mesoamerican_restorationism",
+      "founded": 1994
+    },
+    {
+      "name": "Casa del Serpiente Emplumado",
+      "ideologyId": "feathered_serpent_divinity",
+      "founded": 1994
+    },
+    {
+      "name": "Orden de los Guerreros Jaguar",
+      "ideologyId": "jaguar_militarism",
+      "founded": 1996
+    },
+    {
+      "name": "Colegio de la Larga Cuenta",
+      "ideologyId": "long_count_technocracy",
+      "founded": 1997
+    },
+    {
+      "name": "Cofradía del Tributo de Sangre",
+      "ideologyId": "blood_tribute_orthodoxy",
+      "founded": 1999
+    }
+  ],
+  "Moldova": [
+    {
+      "name": "Partidul Comuniștilor din Basarabia",
+      "ideologyId": "orthodox_communist",
+      "founded": 1993
+    },
+    {
+      "name": "Partidul Democrat Basarabean",
+      "ideologyId": "social_democrat",
+      "founded": 1997
+    },
+    {
+      "name": "Partidul Liberal Basarabean",
+      "ideologyId": "classical_liberal",
+      "founded": 1993
+    }
+  ],
+  "Monaco": [
+    {
+      "name": "Union du Monégasque",
+      "ideologyId": "liberal_conservative",
+      "founded": 1962
+    },
+    {
+      "name": "Rassemblement des Rochers",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1963
+    },
+    {
+      "name": "Horizon Civique du Rocher",
+      "ideologyId": "social_liberal",
+      "founded": 1993
+    }
+  ],
+  "Mongolia": [
+    {
+      "name": "People's Union of the Mongols",
+      "ideologyId": "reform_communist",
+      "founded": 1920
+    },
+    {
+      "name": "Mongolian Democratic Circle",
+      "ideologyId": "classical_liberal",
+      "founded": 1990
+    },
+    {
+      "name": "Herdsmen's League of the Steppe",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1990
+    },
+    {
+      "name": "Ikh Khuraldai of the Illuminated",
+      "ideologyId": "steppe_illuminism",
+      "founded": 1924
+    },
+    {
+      "name": "Gandan Monastic League",
+      "ideologyId": "buddhist_statecraft",
+      "founded": 1911
+    },
+    {
+      "name": "Steppe Restoration Banner",
+      "ideologyId": "mandate_of_heaven",
+      "founded": 1990
+    }
+  ],
+  "Montenegro": [
+    {
+      "name": "Demokratska Stranka Crne Gore",
+      "ideologyId": "managed_democrat",
+      "founded": 1991
+    },
+    {
+      "name": "Socijalistička Narodna Zajednica",
+      "ideologyId": "social_democrat",
+      "founded": 1998
+    },
+    {
+      "name": "Nova Srpska Zajednica",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1997
+    }
+  ],
+  "Morocco": [
+    {
+      "name": "Hizb al-Siyada",
+      "ideologyId": "conservative_democrat",
+      "founded": 1944
+    },
+    {
+      "name": "Union Socialiste des Forces du Peuple",
+      "ideologyId": "social_democrat",
+      "founded": 1975
+    },
+    {
+      "name": "Parti de la Justice et du Renouveau",
+      "ideologyId": "moderate_islamist",
+      "founded": 1998
+    },
+    {
+      "name": "Rassemblement National des Autonomes",
+      "ideologyId": "liberal_conservative",
+      "founded": 1978
+    },
+    {
+      "name": "Mouvement du Peuple",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1957
+    }
+  ],
+  "Myanmar": [
+    {
+      "name": "Burman Socialist Programme Council",
+      "ideologyId": "military_nationalist",
+      "founded": 1962
+    },
+    {
+      "name": "National Union for Democracy",
+      "ideologyId": "social_liberal",
+      "founded": 1988
+    },
+    {
+      "name": "Association of the Nationalist Sangha",
+      "ideologyId": "buddhist_nationalism",
+      "founded": 1999
+    }
+  ],
+  "Nepal": [
+    {
+      "name": "Nepali Congress Circle",
+      "ideologyId": "social_democrat",
+      "founded": 1947
+    },
+    {
+      "name": "Communist Party of Nepal (United Front)",
+      "ideologyId": "orthodox_communist",
+      "founded": 1949
+    },
+    {
+      "name": "Rastriya Monarchist League",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1990
+    }
+  ],
+  "Netherlands": [
+    {
+      "name": "Volkspartij voor Vrijheid en Welvaart",
+      "ideologyId": "classical_liberal",
+      "founded": 1948
+    },
+    {
+      "name": "Democraten 67",
+      "ideologyId": "social_liberal",
+      "founded": 1966
+    },
+    {
+      "name": "Christen-Democratisch Verbond",
+      "ideologyId": "christian_democrat",
+      "founded": 1980
+    },
+    {
+      "name": "Partij van het Werk",
+      "ideologyId": "social_democrat",
+      "founded": 1946
+    },
+    {
+      "name": "Lijst Vermeulen",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 2002
+    },
+    {
+      "name": "Socialistische Volkspartij",
+      "ideologyId": "trade_unionist",
+      "founded": 1971
+    },
+    {
+      "name": "GroenVerbond",
+      "ideologyId": "green_ecologist",
+      "founded": 1990
+    },
+    {
+      "name": "Collectief van het Hyperkapitaal",
+      "ideologyId": "hypercapitalist_collectivism",
+      "founded": 1979
+    },
+    {
+      "name": "Amsterdamse Beursverbond",
+      "ideologyId": "high_frequency_trader",
+      "founded": 1995
+    },
+    {
+      "name": "Vrijhandelsvereniging",
+      "ideologyId": "anarcho_capitalist",
+      "founded": 1984
+    }
+  ],
+  "North Korea": [
+    {
+      "name": "Workers' Party of the Republic",
+      "ideologyId": "juche",
+      "founded": 1949
+    },
+    {
+      "name": "Social Democratic Union of Korea",
+      "ideologyId": "korean_social_democracy",
+      "founded": 1945
+    }
+  ],
+  "North Macedonia": [
+    {
+      "name": "VMRO-Narodno Sobranie",
+      "ideologyId": "populist_conservative",
+      "founded": 1990
+    },
+    {
+      "name": "Socijaldemokratski Sojuz na Vardar",
+      "ideologyId": "social_democrat",
+      "founded": 1943
+    },
+    {
+      "name": "Demokratska Unija za Sobranie",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1991
+    }
+  ],
+  "Norway": [
+    {
+      "name": "Arbeidersamlaget",
+      "ideologyId": "social_democrat",
+      "founded": 1887
+    },
+    {
+      "name": "Høyresamlaget",
+      "ideologyId": "liberal_conservative",
+      "founded": 1884
+    },
+    {
+      "name": "Senterforbundet",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1920
+    },
+    {
+      "name": "Trollmoot Samling",
+      "ideologyId": "rowdy_horde",
+      "founded": 1971
+    }
+  ],
+  "Oman": [
+    {
+      "name": "Council of the Majlis al-Shura",
+      "ideologyId": "gulf_federalism",
+      "founded": 1991
+    },
+    {
+      "name": "Omani Renaissance Circle",
+      "ideologyId": "developmentalism",
+      "founded": 1970
+    },
+    {
+      "name": "Ibadi Circle of Jurists",
+      "ideologyId": "theocratic",
+      "founded": 1970
+    }
+  ],
+  "OmegaTower": [
+    {
+      "name": "Index Reading Room Caucus",
+      "ideologyId": "universal_librarian",
+      "founded": 1954
+    },
+    {
+      "name": "Stack Nine Committee",
+      "ideologyId": "archive_totalism",
+      "founded": 1971
+    },
+    {
+      "name": "Open Shelf League",
+      "ideologyId": "hypernet_publicism",
+      "founded": 1996
+    },
+    {
+      "name": "Tower Ascension Circle",
+      "ideologyId": "tower_ascensionism",
+      "founded": 1988
+    }
+  ],
+  "Pakistan": [
+    {
+      "name": "Pakistan People's Alliance of the Indus",
+      "ideologyId": "democratic_socialist",
+      "founded": 1967
+    },
+    {
+      "name": "Indus Muslim League",
+      "ideologyId": "moderate_islamist",
+      "founded": 1962
+    },
+    {
+      "name": "Jamaat-e-Islah Council",
+      "ideologyId": "islamist",
+      "founded": 1941
+    }
+  ],
+  "Palestine": [
+    {
+      "name": "Fatiha Liberation Bloc",
+      "ideologyId": "palestinian_nationalism",
+      "founded": 1959
+    },
+    {
+      "name": "Arab Socialist Congress",
+      "ideologyId": "arab_socialism",
+      "founded": 1962
+    },
+    {
+      "name": "Islamic Resistance Assembly",
+      "ideologyId": "islamist",
+      "founded": 1987
+    }
+  ],
+  "Paraguay": [
+    {
+      "name": "Asociación Nacional Republicana del Paraguay",
+      "ideologyId": "authoritarian",
+      "founded": 1887
+    },
+    {
+      "name": "Partido Liberal Radical del Paraguay",
+      "ideologyId": "classical_liberal",
+      "founded": 1887
+    },
+    {
+      "name": "Frente Guasú del Pueblo",
+      "ideologyId": "democratic_socialist",
+      "founded": 1993
+    }
+  ],
+  "Peru": [
+    {
+      "name": "Alianza Popular Revolucionaria del Perú",
+      "ideologyId": "developmentalism",
+      "founded": 1924
+    },
+    {
+      "name": "Fuerza Popular del Perú",
+      "ideologyId": "law_and_order_populist",
+      "founded": 1990
+    },
+    {
+      "name": "Frente Amplio de los Andes",
+      "ideologyId": "indigenist_socialism",
+      "founded": 1994
+    }
+  ],
+  "Philippines": [
+    {
+      "name": "Nacionalista Union of the Islands",
+      "ideologyId": "conservative",
+      "founded": 1907
+    },
+    {
+      "name": "Liberal League of the Islands",
+      "ideologyId": "social_liberal",
+      "founded": 1946
+    },
+    {
+      "name": "Bayanihan Popular Front",
+      "ideologyId": "democratic_socialist",
+      "founded": 1985
+    }
+  ],
+  "Poland": [
+    {
+      "name": "Zjednoczenie Solidarności",
+      "ideologyId": "christian_democrat",
+      "founded": 1980
+    },
+    {
+      "name": "Sojusz Lewicy Krajowej",
+      "ideologyId": "reform_communist",
+      "founded": 1991
+    },
+    {
+      "name": "Platforma Mieszczan",
+      "ideologyId": "liberal_conservative",
+      "founded": 2001
+    },
+    {
+      "name": "Polskie Stronnictwo Wiejskie",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1895
+    }
+  ],
+  "Portugal": [
+    {
+      "name": "Partido Social Democrático",
+      "ideologyId": "liberal_conservative",
+      "founded": 1974
+    },
+    {
+      "name": "Partido dos Socialistas",
+      "ideologyId": "social_democrat",
+      "founded": 1973
+    },
+    {
+      "name": "Centro Democrático Social - Partido do Povo",
+      "ideologyId": "christian_democrat",
+      "founded": 1974
+    },
+    {
+      "name": "Partido Comunista Lusitano",
+      "ideologyId": "orthodox_communist",
+      "founded": 1921
+    }
+  ],
+  "Qatar": [
+    {
+      "name": "Al-Thani Council of Counsel",
+      "ideologyId": "wahhabi_monarchism",
+      "founded": 1972
+    },
+    {
+      "name": "Doha Board of Development",
+      "ideologyId": "technocratic",
+      "founded": 1995
+    },
+    {
+      "name": "Qatari Assembly of the Air",
+      "ideologyId": "media_theocrat",
+      "founded": 1996
+    }
+  ],
+  "Romania": [
+    {
+      "name": "Partidul Social al Românilor",
+      "ideologyId": "social_democrat",
+      "founded": 1893
+    },
+    {
+      "name": "Partidul Liberal Național-Român",
+      "ideologyId": "classical_liberal",
+      "founded": 1875
+    },
+    {
+      "name": "Uniunea Maghiarilor din Ardeal",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1989
+    }
+  ],
+  "Russia": [
+    {
+      "name": "Коммунистическая партия Российских Земель",
+      "ideologyId": "orthodox_communist",
+      "founded": 1993
+    },
+    {
+      "name": "Либерально-демократический союз России",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1989
+    },
+    {
+      "name": "Единение России",
+      "ideologyId": "managed_democrat",
+      "founded": 2001
+    },
+    {
+      "name": "Яблоня",
+      "ideologyId": "social_liberal",
+      "founded": 1993
+    },
+    {
+      "name": "Союз правых течений",
+      "ideologyId": "classical_liberal",
+      "founded": 1999
+    },
+    {
+      "name": "Наш край - Россия",
+      "ideologyId": "liberal_clientelist",
+      "founded": 1995
+    },
+    {
+      "name": "Коммунистическая партия Советских Земель",
+      "ideologyId": "totalitarian_communist",
+      "founded": 1898
+    },
+    {
+      "name": "Vsesoyuznaya Arkhivnaya Druzhina",
+      "ideologyId": "archive_totalism",
+      "founded": 1922
+    },
+    {
+      "name": "Front Kosmicheskoy Raboty",
+      "ideologyId": "atomic_modernist",
+      "founded": 1957
+    }
+  ],
+  "San Marino": [
+    {
+      "name": "Partito Democratico Cristiano del Titano",
+      "ideologyId": "christian_democratic",
+      "founded": 1948
+    },
+    {
+      "name": "Partito Socialista del Titano",
+      "ideologyId": "social_democrat",
+      "founded": 1892
+    },
+    {
+      "name": "Partito Progressista Democratico del Titano",
+      "ideologyId": "reform_communist",
+      "founded": 1990
+    },
+    {
+      "name": "Alleanza Popolare del Monte",
+      "ideologyId": "liberal_conservative",
+      "founded": 1993
+    },
+    {
+      "name": "Sinistra Riunita Sammarinese",
+      "ideologyId": "reform_socialist",
+      "founded": 1993
+    },
+    {
+      "name": "Rifondazione Comunista del Titano",
+      "ideologyId": "orthodox_communist",
+      "founded": 1992
+    }
+  ],
+  "Saudi Arabia": [
+    {
+      "name": "Council of the Two Holy Cities",
+      "ideologyId": "wahhabi_monarchism",
+      "founded": 1932
+    },
+    {
+      "name": "Consultative Majlis Bloc",
+      "ideologyId": "autocrat",
+      "founded": 1992
+    },
+    {
+      "name": "Circle of the Reform Petition",
+      "ideologyId": "moderate_islamist",
+      "founded": 1993
+    },
+    {
+      "name": "Concession Holders' Majlis",
+      "ideologyId": "petrocratic_absolutism",
+      "founded": 1938
+    },
+    {
+      "name": "Well and Pipeline League",
+      "ideologyId": "petro_nationalist",
+      "founded": 1951
+    },
+    {
+      "name": "Company of the Black Road",
+      "ideologyId": "asphalt_theism",
+      "founded": 1974
+    },
+    {
+      "name": "Deep Contract Fellowship",
+      "ideologyId": "petrodemon_contractualism",
+      "founded": 1979
+    }
+  ],
+  "Scotland": [
+    {
+      "name": "Scots National Party",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1934
+    },
+    {
+      "name": "Scots Socialist Party",
+      "ideologyId": "trade_unionist",
+      "founded": 1998
+    }
+  ],
+  "Serbia": [
+    {
+      "name": "Socijalistička stranka Srbije",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 1990
+    },
+    {
+      "name": "Srpska radikalna liga",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1991
+    },
+    {
+      "name": "Demokratska liga",
+      "ideologyId": "civic_republican",
+      "founded": 1990
+    },
+    {
+      "name": "Demokratska zajednica Srbije",
+      "ideologyId": "conservative_democrat",
+      "founded": 1992
+    },
+    {
+      "name": "Srpski pokret preporoda",
+      "ideologyId": "conservative_democrat",
+      "founded": 1990
+    }
+  ],
+  "Singapore": [
+    {
+      "name": "People's Action Board",
+      "ideologyId": "technocratic",
+      "founded": 1954
+    },
+    {
+      "name": "Workers' Front of the Straits",
+      "ideologyId": "social_democrat",
+      "founded": 1957
+    },
+    {
+      "name": "Straits Democratic Alliance",
+      "ideologyId": "social_liberal",
+      "founded": 2001
+    }
+  ],
+  "Slovakia": [
+    {
+      "name": "Hnutie za suverénne Slovensko",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 1991
+    },
+    {
+      "name": "Strana demokratickej roboty",
+      "ideologyId": "reform_socialist",
+      "founded": 1991
+    },
+    {
+      "name": "Slovenská vlastenecká strana",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1989
+    },
+    {
+      "name": "Smer - sociálna obroda",
+      "ideologyId": "social_democrat",
+      "founded": 1999
+    },
+    {
+      "name": "Komunistická strana Slovenskej zeme",
+      "ideologyId": "orthodox_communist",
+      "founded": 1992
+    }
+  ],
+  "Slovenia": [
+    {
+      "name": "Liberalna zveza Slovenije",
+      "ideologyId": "social_liberal",
+      "founded": 1994
+    },
+    {
+      "name": "Združena lista socialnih delavcev",
+      "ideologyId": "reform_socialist",
+      "founded": 1993
+    },
+    {
+      "name": "Slovenska demokratska zveza",
+      "ideologyId": "conservative_democrat",
+      "founded": 1989
+    },
+    {
+      "name": "Slovenska kmečka stranka",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1988
+    }
+  ],
+  "South Korea": [
+    {
+      "name": "Democratic Liberty Assembly",
+      "ideologyId": "liberal_conservative",
+      "founded": 1990
+    },
+    {
+      "name": "Hanguk Minjok Party",
+      "ideologyId": "social_democrat",
+      "founded": 1955
+    },
+    {
+      "name": "Saemaul Reconstruction League",
+      "ideologyId": "developmentalism",
+      "founded": 1970
+    }
+  ],
+  "Spain": [
+    {
+      "name": "Partido del Pueblo",
+      "ideologyId": "liberal_conservative",
+      "founded": 1989
+    },
+    {
+      "name": "Partido Socialista Obrero Ibérico",
+      "ideologyId": "social_democrat",
+      "founded": 1879
+    },
+    {
+      "name": "Izquierda Reunida",
+      "ideologyId": "orthodox_communist",
+      "founded": 1986
+    },
+    {
+      "name": "Convergència i Concòrdia",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1978
+    },
+    {
+      "name": "Partido Nacionalista Vascón",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1895
+    }
+  ],
+  "Sri Lanka": [
+    {
+      "name": "Lankan Freedom Alliance",
+      "ideologyId": "buddhist_nationalism",
+      "founded": 1951
+    },
+    {
+      "name": "United National League of Ceylon",
+      "ideologyId": "liberal_conservative",
+      "founded": 1946
+    },
+    {
+      "name": "Tamil National Congress",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1976
+    }
+  ],
+  "Suriname": [
+    {
+      "name": "Nationale Democratische Verbond",
+      "ideologyId": "developmentalism",
+      "founded": 1987
+    },
+    {
+      "name": "Nieuw Front van Suriname",
+      "ideologyId": "social_democrat",
+      "founded": 1987
+    },
+    {
+      "name": "Pertjajah Luhur Beweging",
+      "ideologyId": "social_liberal",
+      "founded": 1998
+    }
+  ],
+  "Sweden": [
+    {
+      "name": "Socialdemokratiska Arbetarsamfundet",
+      "ideologyId": "social_democrat",
+      "founded": 1889
+    },
+    {
+      "name": "Moderata Samfundet",
+      "ideologyId": "liberal_conservative",
+      "founded": 1904
+    },
+    {
+      "name": "Centersamfundet",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1913
+    }
+  ],
+  "Switzerland": [
+    {
+      "name": "Schweizerische Volksgemeinschaft",
+      "ideologyId": "welfare_chauvinist",
+      "founded": 1971
+    },
+    {
+      "name": "Sozialdemokratischer Bund der Eidgenossen",
+      "ideologyId": "social_democrat",
+      "founded": 1888
+    },
+    {
+      "name": "Freisinnig-Liberale Gemeinschaft",
+      "ideologyId": "classical_liberal",
+      "founded": 1894
+    }
+  ],
+  "Syria": [
+    {
+      "name": "Damascene Regional Command",
+      "ideologyId": "baathism",
+      "founded": 1947
+    },
+    {
+      "name": "Syrian Social Nationalist Circle",
+      "ideologyId": "secular_nationalist",
+      "founded": 1932
+    },
+    {
+      "name": "Brethren Assembly of Syria",
+      "ideologyId": "islamist",
+      "founded": 1945
+    }
+  ],
+  "Taiwan": [
+    {
+      "name": "Nationalist Restoration League",
+      "ideologyId": "military_nationalist",
+      "founded": 1919
+    },
+    {
+      "name": "Democratic Progressive Assembly",
+      "ideologyId": "social_liberal",
+      "founded": 1986
+    },
+    {
+      "name": "Island Sovereignty League",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1996
+    }
+  ],
+  "Tajikistan": [
+    {
+      "name": "People's Democratic League of Tajikistan",
+      "ideologyId": "authoritarian",
+      "founded": 1994
+    },
+    {
+      "name": "Islamic Revival League",
+      "ideologyId": "moderate_islamist",
+      "founded": 1990
+    },
+    {
+      "name": "Communist League of Tajikistan",
+      "ideologyId": "orthodox_communist",
+      "founded": 1924
+    }
+  ],
+  "Thailand": [
+    {
+      "name": "Thai Nation Devotion Party",
+      "ideologyId": "populist_conservative",
+      "founded": 1998
+    },
+    {
+      "name": "Democratic Party of Siam",
+      "ideologyId": "liberal_conservative",
+      "founded": 1946
+    },
+    {
+      "name": "Royal Sangha League of Siam",
+      "ideologyId": "buddhist_nationalism",
+      "founded": 1974
+    }
+  ],
+  "Tunisia": [
+    {
+      "name": "Rassemblement Constitutionnel Républicain",
+      "ideologyId": "managed_democrat",
+      "founded": 1988
+    },
+    {
+      "name": "Mouvement des Socialistes Démocrates",
+      "ideologyId": "social_democrat",
+      "founded": 1978
+    },
+    {
+      "name": "Mouvement Es-Sahwa",
+      "ideologyId": "islamist",
+      "founded": 1981
+    },
+    {
+      "name": "Union Démocratique Unitaire",
+      "ideologyId": "civic_republican",
+      "founded": 1988
+    }
+  ],
+  "Turkey": [
+    {
+      "name": "Anayurt Partisi",
+      "ideologyId": "liberal_conservative",
+      "founded": 1983
+    },
+    {
+      "name": "Doğru İz Partisi",
+      "ideologyId": "liberal_conservative",
+      "founded": 1983
+    },
+    {
+      "name": "Bereket Partisi",
+      "ideologyId": "islamist",
+      "founded": 1983
+    },
+    {
+      "name": "Erdem Partisi",
+      "ideologyId": "moderate_islamist",
+      "founded": 1997
+    },
+    {
+      "name": "Adalet ve Yükseliş Partisi",
+      "ideologyId": "moderate_islamist",
+      "founded": 2001
+    },
+    {
+      "name": "Huzur Partisi",
+      "ideologyId": "islamist",
+      "founded": 2001
+    },
+    {
+      "name": "Milliyetçi Atılım Partisi",
+      "ideologyId": "young_turk_nationalist",
+      "founded": 1985
+    },
+    {
+      "name": "Cumhuriyetçi Ulus Partisi",
+      "ideologyId": "kemalist",
+      "founded": 1923
+    },
+    {
+      "name": "Demokratik Sol Hareket",
+      "ideologyId": "kemalist",
+      "founded": 1985
+    },
+    {
+      "name": "Neo-Ottoman Revival Circle",
+      "ideologyId": "neo_ottoman_islamist",
+      "founded": 1994
+    },
+    {
+      "name": "Constitutional Sultanate League",
+      "ideologyId": "constitutional_sultan",
+      "founded": 1908
+    }
+  ],
+  "Turkmenistan": [
+    {
+      "name": "Democratic League of Turkmenistan",
+      "ideologyId": "autocrat",
+      "founded": 1991
+    },
+    {
+      "name": "Union of Industrialists",
+      "ideologyId": "technocratic",
+      "founded": 1991
+    },
+    {
+      "name": "Agrarian Circle of the Karakum",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1991
+    }
+  ],
+  "UK": [
+    {
+      "name": "Conservative Union",
+      "ideologyId": "conservative",
+      "founded": 1834
+    },
+    {
+      "name": "Labourist Party",
+      "ideologyId": "new_labour",
+      "founded": 1900
+    },
+    {
+      "name": "Liberal Democratic Alliance",
+      "ideologyId": "social_liberal",
+      "founded": 1988
+    },
+    {
+      "name": "Isles Independence Party",
+      "ideologyId": "liberal_conservative",
+      "founded": 1993
+    },
+    {
+      "name": "Britannic Nationalist Party",
+      "ideologyId": "post_fascist_revivalist",
+      "founded": 1982
+    },
+    {
+      "name": "Plaid y Werin",
+      "ideologyId": "regionalist_separatist",
+      "founded": 1925
+    },
+    {
+      "name": "Plebiscite Party",
+      "ideologyId": "constitutionalist",
+      "founded": 1994
+    },
+    {
+      "name": "Official Monstrous Raving Loon Party",
+      "ideologyId": "civic_republican",
+      "founded": 1983
+    },
+    {
+      "name": "Green Alliance (England and Wales)",
+      "ideologyId": "green_ecologist",
+      "founded": 1990
+    },
+    {
+      "name": "Imperial Union League",
+      "ideologyId": "imperial_monarchist",
+      "founded": 1901
+    },
+    {
+      "name": "Crown Colonial Office Bloc",
+      "ideologyId": "crown_colony_administration",
+      "founded": 1926
+    },
+    {
+      "name": "Science Command Committee",
+      "ideologyId": "empiricist_positivist",
+      "founded": 1946
+    }
+  ],
+  "Ukraine": [
+    {
+      "name": "Комуністична партія українських земель",
+      "ideologyId": "orthodox_communist",
+      "founded": 1993
+    },
+    {
+      "name": "Народний поступ України",
+      "ideologyId": "civic_republican",
+      "founded": 1989
+    },
+    {
+      "name": "Партія країв",
+      "ideologyId": "liberal_clientelist",
+      "founded": 2001
+    },
+    {
+      "name": "Рідна Україна",
+      "ideologyId": "classical_liberal",
+      "founded": 2001
+    },
+    {
+      "name": "Соціалістичний союз України",
+      "ideologyId": "reform_socialist",
+      "founded": 1991
+    }
+  ],
+  "United Arab Emirates": [
+    {
+      "name": "Federal Majlis of the Emirates",
+      "ideologyId": "gulf_federalism",
+      "founded": 1971
+    },
+    {
+      "name": "Trucial Merchants' Guild",
+      "ideologyId": "cosmopolitan_mercantilist",
+      "founded": 1971
+    },
+    {
+      "name": "Emirati Council of Heritage",
+      "ideologyId": "conservative_monarchist",
+      "founded": 1971
+    }
+  ],
+  "United States (Free States of Midwest)": [
+    {
+      "name": "Grange Confederation League",
+      "ideologyId": "agrarian_centrist",
+      "founded": 1867
+    },
+    {
+      "name": "Free Labor Congress",
+      "ideologyId": "trade_unionist",
+      "founded": 1886
+    },
+    {
+      "name": "Prairie Liberty Association",
+      "ideologyId": "libertarian_minarchist",
+      "founded": 1971
+    },
+    {
+      "name": "Free States Confederation Committee",
+      "ideologyId": "free_states_confederation",
+      "founded": 1867
+    },
+    {
+      "name": "Prairie Atomic Modernist League",
+      "ideologyId": "atomic_modernist",
+      "founded": 1948
+    }
+  ],
+  "Uruguay": [
+    {
+      "name": "Frente Amplio del Uruguay",
+      "ideologyId": "democratic_socialist",
+      "founded": 1971
+    },
+    {
+      "name": "Partido Colorado de la Banda Oriental",
+      "ideologyId": "social_liberal",
+      "founded": 1836
+    },
+    {
+      "name": "Partido Nacional de los Blancos",
+      "ideologyId": "liberal_conservative",
+      "founded": 1836
+    }
+  ],
+  "Uzbekistan": [
+    {
+      "name": "Liberal Democratic League of Uzbekistan",
+      "ideologyId": "managed_democrat",
+      "founded": 1991
+    },
+    {
+      "name": "People's Democratic Assembly",
+      "ideologyId": "reform_communist",
+      "founded": 1991
+    },
+    {
+      "name": "Milliy Tiklanish Revival Front",
+      "ideologyId": "secular_nationalist",
+      "founded": 1995
+    }
+  ],
+  "Varlenia": [
+    {
+      "name": "Circolo del Silenzio",
+      "ideologyId": "loop_quietism",
+      "founded": 1962
+    },
+    {
+      "name": "Lista dell'Ora Vacante",
+      "ideologyId": "loop_quietism",
+      "founded": 1988
+    },
+    {
+      "name": "Assemblea di Chi Resta",
+      "ideologyId": "civic_republican",
+      "founded": 1949
+    }
+  ],
+  "Venezuela": [
+    {
+      "name": "Movimiento Bolivariano del Pueblo",
+      "ideologyId": "bolivarian_socialism",
+      "founded": 1997
+    },
+    {
+      "name": "Acción Democrática de Venezuela",
+      "ideologyId": "social_democrat",
+      "founded": 1941
+    },
+    {
+      "name": "Comité Electoral Político Independiente",
+      "ideologyId": "christian_democrat",
+      "founded": 1946
+    }
+  ],
+  "Vietnam": [
+    {
+      "name": "Communist Party of the Homeland",
+      "ideologyId": "orthodox_communist",
+      "founded": 1930
+    },
+    {
+      "name": "Homeland Front Assembly",
+      "ideologyId": "managed_democrat",
+      "founded": 1955
+    },
+    {
+      "name": "Bureau of Renovation",
+      "ideologyId": "reform_communist",
+      "founded": 1986
+    }
+  ],
+  "Yemen": [
+    {
+      "name": "General People's Congress League",
+      "ideologyId": "authoritarian",
+      "founded": 1982
+    },
+    {
+      "name": "Socialist League of Aden",
+      "ideologyId": "arab_socialism",
+      "founded": 1978
+    },
+    {
+      "name": "Islah Assembly of Reform",
+      "ideologyId": "islamist",
+      "founded": 1990
+    }
+  ],
+  "The Gods": [
+    {
+      "name": "House of the Thunder",
+      "ideologyId": "abramic_father",
+      "founded": 1900
+    },
+    {
+      "name": "Choir of the Veiled Moons",
+      "ideologyId": "ritualist_purism",
+      "founded": 1900
+    },
+    {
+      "name": "Court of the Embers",
+      "ideologyId": "discordian_chaos",
+      "founded": 1900
+    },
+    {
+      "name": "Host of the Iron Skies",
+      "ideologyId": "human_adoration_doctrine",
+      "founded": 1900
+    }
+  ],
+  "The Tourists": [
+    {
+      "name": "Caste of the Open Lens",
+      "ideologyId": "zeta_touristic_observism",
+      "founded": 1947
+    },
+    {
+      "name": "Excursion of the Red Blade",
+      "ideologyId": "crimson_vivisectionism",
+      "founded": 1961
+    },
+    {
+      "name": "Delegation of the Folded Minds",
+      "ideologyId": "pale_psionic_supremacy",
+      "founded": 1973
+    }
+  ],
+  "The Dargos": [
+    {
+      "name": "The Longer Con",
+      "ideologyId": "trolling_humans",
+      "founded": 1900
+    },
+    {
+      "name": "The Straight Face Committee",
+      "ideologyId": "bureaucratic_proceduralist",
+      "founded": 1958
+    },
+    {
+      "name": "The Recurring Gag",
+      "ideologyId": "chaos_renegade",
+      "founded": 1984
+    }
+  ]
+}

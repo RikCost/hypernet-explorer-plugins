@@ -649,6 +649,12 @@
    * Generate Seabed biome terrain using mountain generation but keeping water tiles
    * Creates underwater cliffs with Ceiling and MountainWall
    * Similar to generateMountainBiomeTerrain but doesn't replace floor with terrain
+   *
+   * NOTE: nothing reaches this today. generateBiomeBody routes on the name
+   * "Seabed" while the biome is called "SeaBed", and tileset 302 declares no
+   * Water feature for the fill either way, so the sea floor is built by the
+   * generic terrain path and walled off from the caves beside it there (see
+   * sealSeabedUndergroundBorders in ProceduralMapBiomeGenerator).
    */
   function generateSeabedBiomeTerrain(
     biome,
@@ -727,42 +733,38 @@
     const procGenData = $gameSystem?._procGenData;
     const isUnderground = procGenData && procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0;
 
-    // Seal borders with MountainWall when bordering non-Seabed underground biomes
+    // Seal borders with MountainWall when bordering non-Seabed underground
+    // biomes. This is the other half of the cave rule (see
+    // ProcGenUtils.undergroundBorderOpenings): a cave never opens onto the sea
+    // floor, and the sea floor never opens onto a cave, so the two squares agree
+    // on a wall from both sides. Seabed against seabed is left wide open --
+    // there is nothing but water between them.
     if (isUnderground && adjacentBiomes) {
-      const borderThickness = 5; // Same as cave biomes
+      const {
+        isSeabedBiomeName,
+        undergroundNeighbourNames,
+        UNDERGROUND_BORDER_THICKNESS,
+      } = window.ProcGenUtils;
+      const borderThickness = UNDERGROUND_BORDER_THICKNESS;
 
-      // Helper function to check if we should seal a border
+      // The surface neighbours, not the ones a descent synthesized: diving from
+      // an Ocean square reports "SeaBed" on all four sides, which would leave
+      // the square open to the caves under the coast next to it.
+      const neighbours = undergroundNeighbourNames(worldCoords, adjacentBiomes, cache);
+
+      // Seal unless what lies under the neighbour is sea floor too.
       const shouldSealBorder = (direction) => {
-        if (!adjacentBiomes[direction]) return false;
+        const neighbourName = neighbours[direction];
+        if (!neighbourName) return false;
+        if (isSeabedBiomeName(neighbourName)) return false;
 
-        // Get the adjacent surface biome name
-        const adjacentSurfaceBiomeName = adjacentBiomes[direction];
+        const neighbourBiome = getBiomeByName ? getBiomeByName(neighbourName) : null;
+        if (!neighbourBiome) return false;
 
-        // Don't seal if adjacent surface is also Ocean (Seabed's surface equivalent)
-        if (adjacentSurfaceBiomeName === "Ocean") {
-          return false;
-        }
+        // Adjacent surface has no underground layer: nothing to connect to.
+        if (!neighbourBiome.lowerLayer) return true;
 
-        // Get the adjacent surface biome object
-        const adjacentSurfaceBiomeObj = getBiomeByName ? getBiomeByName(adjacentSurfaceBiomeName) : null;
-
-        if (!adjacentSurfaceBiomeObj) return false;
-
-        // Get what underground biome the adjacent surface would become
-        const adjacentUndergroundBiomeName = adjacentSurfaceBiomeObj.lowerLayer;
-
-        if (!adjacentUndergroundBiomeName) {
-          // Adjacent surface has no underground layer, seal the border
-          return true;
-        }
-
-        // Don't seal if adjacent underground is also Seabed
-        if (adjacentUndergroundBiomeName === "Seabed") {
-          return false;
-        }
-
-        // Seal if adjacent underground is a different biome (Cave, CaveFlooded, etc.)
-        return true;
+        return !isSeabedBiomeName(neighbourBiome.lowerLayer);
       };
 
       // Check which borders should be sealed

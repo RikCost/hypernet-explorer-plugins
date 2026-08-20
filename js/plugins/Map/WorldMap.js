@@ -3,7 +3,7 @@
  * @plugindesc World Map Plugin v2.3.0 (Zoom, Pan, Detail Tiles & Optimized City Labels)
  * @author Omni-Lex
  * @version 2.3.0
- * @description Minimap (Top-right) + Interactive Fullscreen Map with Labels + Optimized In-Game City Names.
+ * @description Minimap (Bottom-left) + Interactive Fullscreen Map with Labels + Optimized In-Game City Names.
  *
  * @param mapWidth
  * @text Map Width (Mini)
@@ -55,7 +55,7 @@
  *
  * @command showWorldMap
  * @text Show Minimap
- * @desc Shows the minimap overlay (top-right).
+ * @desc Shows the minimap overlay (bottom-left).
  *
  * @command hideWorldMap
  * @text Hide World Map
@@ -950,8 +950,8 @@
         if (currentMapState === 1 || currentMapState === 2) {
             // --- MINI MODE ---
             renderMiniMap();
-            worldMapSprite.x = Graphics.width - mapWidth - 10;
-            worldMapSprite.y = 10;
+            worldMapSprite.x = 10;
+            worldMapSprite.y = Graphics.height - mapHeight - 10;
             worldMapSprite.scale.x = 1;
             worldMapSprite.scale.y = 1;
             worldMapSprite.opacity = paramOpacity;
@@ -2016,8 +2016,13 @@
             }
         }
 
-        // Auto-Open logic for specific maps
-        if (mapId === 315 || mapId === 636) {
+        // Auto-Open logic for specific maps. Map 636 is shared by the open-air
+        // world tile AND every roofed procedural interior (dungeon, crypt,
+        // sewer, cave...); the minimap only makes sense outdoors, so a roofed
+        // interior is treated like any other non-minimap map instead.
+        const isProcInterior = mapId === 636 && window.ProceduralInteriors &&
+            window.ProceduralInteriors.isCurrent && window.ProceduralInteriors.isCurrent();
+        if (mapId === 315 || (mapId === 636 && !isProcInterior)) {
             currentMapState = 1;
         } else if (mapId === BOLOGNA_MAP_ID) {
             // Bologna cells transfer seamlessly at their edges (353 -> 353), which

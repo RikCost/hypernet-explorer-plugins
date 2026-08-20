@@ -17,6 +17,22 @@
  * - NEW: Random +/-10% modifier to hit chance for each part
  * - NEW: Bypass vital part protection with targeted attacks
  * - NEW: Persistent targeting when reopening the window
+ * - NEW: Wrestling. The Wrestle battle command (offered to any body with a
+ *   limb still whole enough to take hold with) aims at one enemy, and once
+ *   that enemy is chosen the
+ *   actor's command menu is REPLACED by the grapple plan: the limb the hold is
+ *   taken with, the limb it is taken on, and the hold itself, each row showing
+ *   the odds it will actually work. Either limb is picked on a page of that
+ *   same menu, listing the whole body with the state each part is in and a
+ *   help line saying what that limb can do or what taking hold of it will be
+ *   like. Holds read different stats (a grapple is
+ *   STR vs DEX, a joint lock DEX vs STR, a choke CON vs CON), and are scaled by
+ *   the character's Wrestling specialization. Grappled/Pinned/Guard Broken/
+ *   Winded/Bleeding/Stun/Concussed/Vital Exposed come off the holds that earn
+ *   them, limbs can be torn away outright, and a character who has trained any
+ *   martial art can finish with that art's real moves without ever having
+ *   learned them as skills. A part at 0 HP, marked damaged, or severed can
+ *   neither grab nor be grabbed on either side of the fight.
  *
  * Enemy Note Tag Format:
  * <Archetype: Humanoid>
@@ -24,7 +40,7 @@
  * <Archetype: Dragon>
  * etc.
  *
- * Add custom archetypes by extending the EnemyArchetypes object.
+ * Add custom archetypes by extending the Archetypes object.
  *
  * @param Decapitation Sound
  * @desc Sound effect to play when decapitation occurs
@@ -79,28 +95,6 @@
   // Non-vital parts have no such protection and can be severed at any HP.
   var VITAL_INSTAKILL_RATE = 0.25;
 
-  let _statsI18n = null;
-
-  const _loadStatsI18n = async () => {
-    const lang = ConfigManager.language || 'en';
-    const url = `js/i18n/${lang}/stats.json`;
-    try {
-      const response = await fetch(url);
-      _statsI18n = await response.json();
-    } catch (e) {
-      console.error('Health_Monsters: Failed to load i18n data from ' + url, e);
-    }
-  };
-
-  const _si18n = (key) => {
-    if (_statsI18n && _statsI18n[key]) {
-      return _statsI18n[key];
-    }
-    return key;
-  };
-
-  _loadStatsI18n();
-
   // Initialize $gameTemp if it doesn't exist
   if (!$gameTemp) {
     $gameTemp = {};
@@ -121,10 +115,10 @@
   // Each archetype defines a set of body parts with their properties
 
   // Dynamic getter to avoid timing issues when window.Health is populated by DataService.js later
-  const getEnemyArchetypes = () => window.Health ? window.Health.EnemyArchetypes : null;
+  const getArchetypes = () => window.Health ? window.Health.Archetypes : null;
 
   function getArchetype(archetypeName) {
-    const archs = getEnemyArchetypes();
+    const archs = getArchetypes();
     return archs ? archs[archetypeName] : null;
   }
 
@@ -175,7 +169,7 @@
           "CRITICAL ERROR: Humanoid archetype not defined. This plugin requires a Humanoid archetype to be defined."
         );
         // Create a basic fallback archetype to prevent crashes
-        const archs = getEnemyArchetypes();
+        const archs = getArchetypes();
         if (archs) {
           archs.Humanoid = {
             parts: {
@@ -523,6 +517,33 @@
   }
 
 
+  /**
+   * A limb does not come off and leave what was on the end of it hanging in the
+   * air. Cut a monster's leg and its foot goes with it, cut its arm and the
+   * hand goes, and the toes and fingers on the end of those follow
+   * (window.HealthCore.dependentPartKeys, the same chain the party's own
+   * anatomy uses).
+   *
+   * Each part that goes takes its own stat penalty, and quietly: the blow that
+   * took the limb has already been announced, and one wound is one line in the
+   * log. A vital part is never taken this way - losing an arm must not kill a
+   * monster outright.
+   */
+  function cascadeSeveredParts(enemy, partKey) {
+    var HC = window.HealthCore;
+    if (!HC || !HC.dependentPartKeys || !enemy || !enemy._bodyParts) return;
+    var archetype = getArchetype(enemy._archetypeName);
+    HC.dependentPartKeys(enemy, partKey).forEach(function (childKey) {
+      var child = enemy._bodyParts[childKey];
+      if (!child || child.destroyed) return;
+      var baseChild = archetype && archetype.parts ? archetype.parts[childKey] : null;
+      if (baseChild && baseChild.vital) return;
+      child.currentHp = 0;
+      child.destroyed = true;
+      if (!child.appliedStatEffect) applyStatEffect(enemy, childKey);
+    });
+  }
+
   // Handle effects of a destroyed body part
   function handleDestroyedBodyPart(enemy, partKey) {
     try {
@@ -575,16 +596,12 @@
         });
       } else {
         // For physical or non-elemental attacks
-        var isIt = T.language() === "it";
         var translatedMsg = getPartDamageMsg(basePart);
         if (translatedMsg) {
           // Custom message if available and resolvable in the current language
           message = T('HealthMonsters.customPartMessage', { enemy: enemy.name(), message: translatedMsg });
         } else if (basePart.canCutoff) {
           // Severing message for parts that can be cut off
-          if (isIt) {
-            part.name = part.name_it || part.name;
-          }
           message = T('HealthMonsters.partSevered', { enemy: enemy.name(), part: part.name });
 
           // Play severing sound
@@ -596,9 +613,6 @@
           });
         } else {
           // Default destruction message
-          if (isIt) {
-            part.name = part.name_it || part.name;
-          }
           message = T('HealthMonsters.partDestroyed', { enemy: enemy.name(), part: part.name });
         }
       }
@@ -639,6 +653,9 @@
       if (window.BloodSplatterFX && window.BloodSplatterFX.onBodyPartLost) {
         window.BloodSplatterFX.onBodyPartLost(enemy, partKey);
       }
+
+      // ...and everything that was on the end of it goes too.
+      cascadeSeveredParts(enemy, partKey);
     } catch (e) {
       console.error("Error in handleDestroyedBodyPart: " + e.message);
       console.error(e.stack);
@@ -885,228 +902,340 @@
     $gameTemp.statEffectMessage = null;
   };
   // ============================================================================
-  // NEW: Window_MonsterInfo - Left side information window
+  // The monster panel: Check (read a body) and Aim (pick the part to strike)
   // ============================================================================
+  // Both commands open the same card, and it is drawn in HTML like the battle
+  // log and the command menu beside it: what it has to show is prose (the
+  // monster's description), a table (its stats), a row of state icons and a
+  // column of bars, none of which the canvas windows fitted on screen. The list
+  // of parts underneath is still a Window_Selectable and still owns the cursor,
+  // the scrolling and the click hit-testing: it is laid out over EXACTLY the
+  // rectangle the HTML rows are painted in (padding and row spacing are zeroed
+  // for that reason), so a click always lands on the row being pointed at.
 
-  function Window_MonsterInfo() {
-    this.initialize.apply(this, arguments);
+  var PART_ROW_H = 26;        // one body-part row, shared with the window below
+  var PANEL_ICON_PX = 18;     // a state icon, from 32px IconSet cells
+  var ICON_SHEET_COLS = 16;   // IconSet.png is 16 cells across
+
+  // getBoundingClientRect() forces a layout, so the canvas rect is read once and
+  // only re-read when the window changes size (same pattern as the command menu).
+  var _panelScale = null;
+  window.addEventListener("resize", function () { _panelScale = null; });
+
+  function panelScale() {
+    if (_panelScale) return _panelScale;
+    var el = document.getElementById("gameCanvas");
+    if (!el) return { sx: 1, sy: 1, ox: 0, oy: 0 };
+    var r = el.getBoundingClientRect();
+    _panelScale = {
+      sx: r.width / Graphics.width,
+      sy: r.height / Graphics.height,
+      ox: r.left,
+      oy: r.top,
+    };
+    return _panelScale;
   }
 
-  Window_MonsterInfo.prototype = Object.create(Window_Base.prototype);
-  Window_MonsterInfo.prototype.constructor = Window_MonsterInfo;
+  function esc(text) {
+    return String(text == null ? "" : text)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
 
-  Window_MonsterInfo.prototype.initialize = function (enemy) {
-    var width = Graphics.boxWidth * 0.55; // Left half
-    var height = 520; // Increased from 440 to 520
-    var x = 0;
-    var y = (Graphics.boxHeight - height) / 2 + 88;
-    var rect = new Rectangle(x, y, width, height);
-    Window_Base.prototype.initialize.call(this, rect);
-    this._enemy = enemy;
-    this._monsterDescription = this.extractMonsterDescription(enemy);
-    this.refresh();
-    this.show();
-    this.z = 9999;
-  };
+  function tr(text) {
+    return typeof translateText === "function" ? translateText(String(text)) : String(text);
+  }
 
-  Window_MonsterInfo.prototype.extractMonsterDescription = function (enemy) {
+  // The card's geometry, in game pixels. Everything is derived from the screen
+  // it has to fit on, and the rows are cut to a whole number of them so the
+  // list never ends on half a bar. listDX/listDY are where the list of parts
+  // sits inside the card: the canvas window is placed there, and the card is
+  // then hung off the window's own position.
+  function panelLayout() {
+    var margin = 12, pad = 12, gap = 10;
+    var headH = 34, listHeadH = 24, footH = 30;
+    var cardW = Math.min(Graphics.boxWidth - margin * 2, 760);
+    var maxH = Math.min(Graphics.boxHeight - margin * 2, 420);
+    var rowsSpace = maxH - pad * 2 - headH - listHeadH - footH;
+    var rowsH = Math.max(PART_ROW_H * 3, Math.floor(rowsSpace / PART_ROW_H) * PART_ROW_H);
+    var cardH = rowsH + pad * 2 + headH + listHeadH + footH;
+    var innerW = cardW - pad * 2;
+    var listW = Math.max(200, Math.floor((innerW - gap) * 0.44));
+    var infoW = innerW - gap - listW;
+    return {
+      cardX: Math.floor((Graphics.boxWidth - cardW) / 2),
+      cardY: Math.floor((Graphics.boxHeight - cardH) / 2),
+      cardW: cardW, cardH: cardH,
+      pad: pad, gap: gap, headH: headH, listHeadH: listHeadH, footH: footH,
+      infoW: infoW, listW: listW, rowsH: rowsH,
+      listDX: pad + infoW + gap,
+      listDY: pad + headH + listHeadH,
+    };
+  }
+
+  // The monster's own description. Descriptions are combinatorial {a | b | c}
+  // inline text, resolved (seeded from the world seed) by the shared
+  // EnemyDescription service.
+  function monsterDescription(enemy) {
     if (!enemy || !enemy.enemy() || !enemy.enemy().note) return "";
-    const data = enemy.enemy();
-    // Descriptions use combinatorial {a | b | c} inline text resolved (seeded
-    // from the world seed) by the shared EnemyDescription service.
-    let desc = "";
-    if (window.EnemyDescription) {
-      desc = window.EnemyDescription.describe(data.id);
-    } else {
-      const enMatch = data.note.match(/<En:\s*([^>]+)>/i);
-      desc = enMatch && enMatch[1] ? enMatch[1].trim() : "";
-    }
-    return desc ? this.addLineBreaks(desc, 20) : "";
-  };
+    var data = enemy.enemy();
+    if (window.EnemyDescription) return window.EnemyDescription.describe(data.id) || "";
+    var m = data.note.match(/<En:\s*([^>]+)>/i);
+    return m && m[1] ? m[1].trim() : "";
+  }
 
-  Window_MonsterInfo.prototype.addLineBreaks = function (text, maxLength) {
-    if (!text || text.length <= maxLength) return text;
-    var result = "";
-    var currentLine = "";
-    var words = text.split(" ");
-    for (var i = 0; i < words.length; i++) {
-      var word = words[i];
-      if (currentLine.length + word.length + 1 > maxLength) {
-        result += currentLine.trim() + "\n";
-        currentLine = word + " ";
-      } else {
-        currentLine += word + " ";
-      }
-    }
-    if (currentLine.length > 0) {
-      result += currentLine.trim();
-    }
-    return result;
-  };
-  Window_MonsterInfo.prototype.refresh = function () {
-    this.contents.clear();
-    if (!this._enemy || !this._enemy._bodyParts) return;
-    var lineHeight = this.lineHeight();
-    var y = 0;
+  function monsterLevel(enemy) {
+    var note = (enemy && enemy.enemy() && enemy.enemy().note) || "";
+    var m = note.match(/<Level:\s*(\d+)>/i);
+    return m ? "L." + m[1] : "";
+  }
 
-    // Draw monster description FIRST
-    if (this._monsterDescription && this._monsterDescription.length > 0) {
-      this.resetTextColor();
-      var descLines = this._monsterDescription.split("\n");
-      for (var i = 0; i < descLines.length; i++) {
-        this.drawText(descLines[i], 10, y, this.contentsWidth() - 20);
-        y += lineHeight;
-      }
-      y += lineHeight / 2; // Add some space after description
-    }
-
-    // Then draw element info
-    this.drawElementInfo(y);
-    y += lineHeight * 2; // Two lines for element info
-
-    y += lineHeight / 2;
-    this.drawHorzLine(y - lineHeight / 2);
-    this.drawEnemyStats(y);
-    y += lineHeight * 2;
-
-    this.drawHorzLine(y - lineHeight / 2);
-    this.drawAppliedStates(y);
-    this.changeTextColor(this.systemColor());
-  };
-
-  Window_MonsterInfo.prototype.drawHorzLine = function (y) {
-    var lineY = y + this.lineHeight() / 2 - 1;
-    this.contents.fillRect(0, lineY, this.contentsWidth(), 2, this.systemColor());
-  };
-
-  Window_MonsterInfo.prototype.drawElementInfo = function (y) {
-    const useTranslation = ConfigManager.language === "it";
-    const lineHeight = this.lineHeight();
-    const enemy = this._enemy;
-
-    let attackElement = "Normal";
-    const traits = enemy.enemy().traits;
-    for (let i = 0; i < traits.length; i++) {
-      const trait = traits[i];
-      if (trait.code === Game_BattlerBase.TRAIT_ATTACK_ELEMENT && trait.dataId > 0) {
-        attackElement = $dataSystem.elements[trait.dataId];
+  // Which element the monster hits with, and everything it takes extra damage
+  // from, worst first.
+  function elementInfo(enemy) {
+    var attack = "";
+    var traits = enemy.enemy().traits || [];
+    for (var i = 0; i < traits.length; i++) {
+      if (traits[i].code === Game_BattlerBase.TRAIT_ATTACK_ELEMENT && traits[i].dataId > 0) {
+        attack = tr($dataSystem.elements[traits[i].dataId]);
         break;
       }
     }
+    var weak = [];
+    for (var e = 1; e < $dataSystem.elements.length; e++) {
+      var rate = Math.round(enemy.elementRate(e) * 100);
+      if (rate > 100) weak.push({ name: tr($dataSystem.elements[e]), rate: rate });
+    }
+    weak.sort(function (a, b) { return b.rate - a.rate; });
+    return { attack: attack, weak: weak };
+  }
 
-    const weaknesses = [];
-    for (let i = 1; i < $dataSystem.elements.length; i++) {
-      const rate = enemy.elementRate(i) * 100;
-      if (rate > 100) {
-        weaknesses.push({ name: $dataSystem.elements[i], rate: rate });
+  function iconStyle(iconIndex, px) {
+    var col = iconIndex % ICON_SHEET_COLS;
+    var row = Math.floor(iconIndex / ICON_SHEET_COLS);
+    return "width:" + px + "px;height:" + px + "px;" +
+      "background-size:" + ICON_SHEET_COLS * px + "px auto;" +
+      "background-position:" + -col * px + "px " + -row * px + "px;";
+  }
+
+  // How healthy a part reads: the row, its bar and the percentage all take
+  // their colour from the same four bands.
+  function partGrade(part) {
+    if (part.destroyed) return "gone";
+    var pct = part.currentHp / part.maxHp;
+    if (pct <= 0.25) return "critical";
+    if (pct <= 0.5) return "hurt";
+    return "whole";
+  }
+
+  var MonsterPanel = {
+    root: null,
+    rowsInner: null,
+    rowEls: [],
+    footEl: null,
+    layout: null,
+    enemy: null,
+    data: null,
+    targeting: false,
+    index: -1,
+    _lastScroll: null,
+    _lastPos: "",
+
+    open: function (enemy, isTargeting, data) {
+      this.close();
+      var L = panelLayout();
+      this.layout = L;
+      this.enemy = enemy;
+      this.data = data;
+      this.targeting = !!isTargeting;
+      this.index = -1;
+
+      var root = document.createElement("div");
+      root.id = "monster-panel-overlay";
+      root.style.cssText =
+        "position:fixed;display:none;z-index:400;pointer-events:none;transform-origin:top left;";
+      root.style.width = L.cardW + "px";
+      root.style.height = L.cardH + "px";
+      root.innerHTML = this.buildHtml();
+      document.body.appendChild(root);
+
+      this.root = root;
+      this.rowsInner = root.querySelector(".mpanel-rows-inner");
+      this.footEl = root.querySelector(".mpanel-foot");
+      this.rowEls = Array.prototype.slice.call(root.querySelectorAll(".mpanel-row"));
+      this._lastScroll = null;
+      this._lastPos = "";
+      return L;
+    },
+
+    buildHtml: function () {
+      var L = this.layout, enemy = this.enemy;
+      var el = elementInfo(enemy);
+      var level = monsterLevel(enemy);
+      var desc = monsterDescription(enemy);
+
+      var head =
+        '<div class="mpanel-head" style="left:' + L.pad + "px;top:" + L.pad +
+          "px;width:" + (L.cardW - L.pad * 2) + "px;height:" + L.headH + 'px">' +
+          '<span class="mpanel-name">' + esc(tr(enemy.name())) + "</span>" +
+          (level ? '<span class="mpanel-level">' + esc(level) + "</span>" : "") +
+          '<span class="mpanel-hp">' + enemy.hp + " / " + enemy.mhp + "</span>" +
+          '<span class="mpanel-mode">' +
+            esc(T(this.targeting ? "HealthMonsters.panel.aim" : "HealthMonsters.panel.check")) +
+          "</span>" +
+        "</div>";
+
+      var kv =
+        '<div class="mpanel-kv"><span class="k">' + esc(T("HealthMonsters.elementLabel")) + "</span>" +
+        '<span class="v">' + esc(el.attack || T("HealthMonsters.none")) + "</span></div>" +
+        '<div class="mpanel-kv"><span class="k">' + esc(T("HealthMonsters.weakToLabel")) + "</span>" +
+        '<span class="v">' + (el.weak.length
+          ? el.weak.map(function (w) {
+              return '<em class="mpanel-weak">' + esc(w.name) + " " + w.rate + "%</em>";
+            }).join(" ")
+          : esc(T("HealthMonsters.none"))) + "</span></div>";
+
+      // The stats as the rest of the game names them (STR, CON, INT, ...), each
+      // against the value the species is born with: a stat the fight has already
+      // moved reads in the colour of which way it went.
+      var stats = "";
+      for (var p = 2; p < 8; p++) {
+        var current = enemy.param(p);
+        var base = enemy.enemy().params[p];
+        var diff = current - base;
+        var cls = diff > 0 ? " up" : diff < 0 ? " down" : "";
+        stats +=
+          '<div class="mpanel-stat"><span class="s-name">' + esc(tr(TextManager.param(p))) + "</span>" +
+          '<span class="s-val' + cls + '">' + current + "</span></div>";
       }
-    }
-    weaknesses.sort((a, b) => b.rate - a.rate);
 
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('HealthMonsters.elementLabel'), 0, y, 140);
-    this.resetTextColor();
-    this.drawText(attackElement, 140, y, this.contentsWidth() - 140);
-    y += lineHeight;
+      var states = enemy.states().map(function (s) {
+        return '<span class="mpanel-state">' +
+          (s.iconIndex > 0
+            ? '<i class="mpanel-state-icon" style="' + iconStyle(s.iconIndex, PANEL_ICON_PX) + '"></i>'
+            : "") +
+          esc(tr(s.name)) + "</span>";
+      }).join("");
 
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('HealthMonsters.weakToLabel'), 0, y, 120);
-    this.resetTextColor();
+      var info =
+        '<div class="mpanel-info" style="left:' + L.pad + "px;top:" + (L.pad + L.headH) +
+          "px;width:" + L.infoW + "px;height:" + (L.cardH - L.pad * 2 - L.headH) + 'px">' +
+          (desc ? '<div class="mpanel-desc">' + esc(desc) + "</div>" : "") +
+          '<div class="mpanel-facts">' + kv + "</div>" +
+          '<div class="mpanel-stats">' + stats + "</div>" +
+          '<div class="mpanel-kv states"><span class="k">' + esc(T("HealthMonsters.statesLabel")) + "</span>" +
+          '<span class="v">' + (states || esc(T("HealthMonsters.none"))) + "</span></div>" +
+        "</div>";
 
-    if (weaknesses.length > 0) {
-      let weaknessText = "";
-      for (let i = 0; i < weaknesses.length; i++) {
-        const weakness = weaknesses[i];
-        if (i > 0) weaknessText += ", ";
-        weaknessText += weakness.name + " " + weakness.rate + "%";
+      var rows = "";
+      for (var i = 0; i < this.data.length; i++) {
+        rows += this.rowHtml(i);
       }
-      this.drawText(weaknessText, 140, y, this.contentsWidth() - 140);
-    } else {
-      this.drawText(T('HealthMonsters.none'), 140, y, this.contentsWidth() - 140);
-    }
-  };
 
-  Window_MonsterInfo.prototype.drawEnemyStats = function (y) {
-    const useTranslation = ConfigManager.language === "it";
-    const enemy = this._enemy;
-    const paramNames = [
-      _si18n("ATT"),
-      _si18n("DEF"),
-      _si18n("M.ATT"),
-      _si18n("M.DEF"),
-      _si18n("AGILITY")
-    ];
+      var list =
+        '<div class="mpanel-list" style="left:' + L.listDX + "px;top:" + (L.pad + L.headH) +
+          "px;width:" + L.listW + "px;height:" + (L.cardH - L.pad * 2 - L.headH) + 'px">' +
+          '<div class="mpanel-listhead" style="height:' + L.listHeadH + 'px">' +
+            esc(T("HealthMonsters.bodyParts")) + "</div>" +
+          '<div class="mpanel-rows" style="height:' + L.rowsH + 'px">' +
+            '<div class="mpanel-rows-inner">' + rows + "</div>" +
+          "</div>" +
+          '<div class="mpanel-foot" style="height:' + L.footH + 'px"></div>' +
+        "</div>";
 
-    const baseValues = [];
-    for (let i = 2; i < 7; i++) {
-      baseValues.push(enemy.enemy().params[i]);
-    }
+      return head + info + list;
+    },
 
-    const currentValues = [];
-    for (let i = 2; i < 7; i++) {
-      currentValues.push(enemy.param(i));
-    }
+    rowHtml: function (index) {
+      var item = this.data[index];
+      var part = item.part;
+      var pct = Math.max(0, Math.min(100, Math.floor((part.currentHp / part.maxHp) * 100)));
+      var grade = partGrade(part);
+      var cls = "mpanel-row " + grade + (item.selectable === false ? " locked" : "");
+      return '<div class="' + cls + '" style="height:' + PART_ROW_H + 'px">' +
+        '<span class="p-name">' + esc(tr(part.name)) + "</span>" +
+        (part.vital ? '<i class="p-vital"></i>' : "") +
+        '<span class="p-bar"><i style="width:' + (part.destroyed ? 0 : pct) + '%"></i></span>' +
+        '<span class="p-pct">' + (part.destroyed ? "&times;" : pct + "%") + "</span>" +
+      "</div>";
+    },
 
-    const startX = 10;
-    const availableWidth = this.contentsWidth() - startX - 10;
-    const colWidth = Math.floor(availableWidth / 6);
-
-    for (let i = 0; i < 5; i++) {
-      const x = startX + i * colWidth;
-      const current = currentValues[i];
-      const base = baseValues[i];
-      const diff = current - base;
-
-      this.changeTextColor(this.systemColor());
-      this.drawText(paramNames[i], x, y, colWidth - 5, 'center');
-
-      if (diff < 0) {
-        this.changeTextColor(this.powerDownColor());
-      } else if (diff > 0) {
-        this.changeTextColor(this.powerUpColor());
+    // The line under the list: everything about the part under the cursor that
+    // does not fit on its row. In Aim mode it opens with the odds of actually
+    // landing the blow there, which is the whole reason the mode exists.
+    footText: function (index) {
+      var item = this.data[index];
+      if (!item) return "";
+      var part = item.part;
+      var bits = [];
+      if (part.destroyed) {
+        bits.push(T("HealthMonsters.panel.destroyed"));
       } else {
-        this.resetTextColor();
+        if (this.targeting) {
+          bits.push(T("HealthMonsters.panel.hitChance", {
+            percent: Math.round(calculateHitChance(this.enemy, item.key)),
+          }));
+        }
+        bits.push(T("HealthMonsters.panel.hp", { current: part.currentHp, max: part.maxHp }));
       }
+      if (part.vital) bits.push(T("HealthMonsters.panel.vital"));
+      if (part.canCutoff) bits.push(T("HealthMonsters.panel.severable"));
+      if (part.regenerates) bits.push(T("HealthMonsters.panel.regenerates"));
+      return bits.join("  ·  ");
+    },
 
-      this.drawText(current, x, y + this.lineHeight(), colWidth - 5, 'center');
-    }
-    this.resetTextColor();
+    setIndex: function (index) {
+      if (!this.root || index === this.index) return;
+      if (this.rowEls[this.index]) this.rowEls[this.index].classList.remove("sel");
+      this.index = index;
+      if (this.rowEls[index]) this.rowEls[index].classList.add("sel");
+      if (this.footEl) this.footEl.textContent = this.footText(index);
+    },
+
+    syncScroll: function (scrollY) {
+      if (!this.rowsInner || scrollY === this._lastScroll) return;
+      this._lastScroll = scrollY;
+      this.rowsInner.style.transform = "translateY(" + -scrollY + "px)";
+    },
+
+    // The card hangs off the list window: that window sits at the list's own
+    // rectangle, so stepping back by listDX/listDY lands on the card's corner.
+    place: function (win) {
+      if (!this.root) return;
+      var L = this.layout;
+      var sc = panelScale();
+      var pt = typeof win.getGlobalPosition === "function"
+        ? win.getGlobalPosition()
+        : { x: win.x, y: win.y };
+      var left = sc.ox + (pt.x - L.listDX) * sc.sx;
+      var top = sc.oy + (pt.y - L.listDY) * sc.sy;
+      // Written only when something actually moved, instead of four style
+      // properties every frame.
+      var pos = left + "|" + top + "|" + sc.sx + "|" + sc.sy;
+      if (pos === this._lastPos) return;
+      this._lastPos = pos;
+      var s = this.root.style;
+      s.left = left + "px";
+      s.top = top + "px";
+      s.transform = "scale(" + sc.sx + ", " + sc.sy + ")";
+      s.display = "block";
+    },
+
+    close: function () {
+      if (this.root && this.root.parentNode) this.root.parentNode.removeChild(this.root);
+      var stray = document.getElementById("monster-panel-overlay");
+      if (stray && stray.parentNode) stray.parentNode.removeChild(stray);
+      this.root = null;
+      this.rowsInner = null;
+      this.rowEls = [];
+      this.footEl = null;
+      this.enemy = null;
+      this.data = null;
+      this.index = -1;
+    },
   };
 
-  Window_MonsterInfo.prototype.drawAppliedStates = function (y) {
-    const useTranslation = ConfigManager.language === "it";
-    const enemy = this._enemy;
-    const states = enemy.states();
-
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('HealthMonsters.statesLabel'), 0, y, 120);
-    this.resetTextColor();
-
-    if (states.length === 0) {
-      this.drawText(T('HealthMonsters.none'), 120, y, this.contentsWidth() - 120);
-      return;
-    }
-
-    let x = 120;
-    const iconWidth = 32;
-
-    for (let i = 0; i < states.length; i++) {
-      const state = states[i];
-      if (x + iconWidth + this.textWidth(state.name) > this.contentsWidth()) {
-        y += this.lineHeight();
-        x = 120;
-      }
-      if (state.iconIndex > 0) {
-        this.drawIcon(state.iconIndex, x, y);
-        x += iconWidth;
-      }
-      const stateNameWidth = Math.min(150, this.textWidth(state.name) + 10);
-      this.drawText(state.name, x, y, stateNameWidth);
-      x += stateNameWidth + 10;
-    }
-  };
   // ============================================================================
-  // NEW: Window_MonsterBodyPartsList - Right side parts list window
+  // Window_MonsterBodyPartsList: the cursor under the HTML list
   // ============================================================================
 
   function Window_MonsterBodyPartsList() {
@@ -1117,24 +1246,20 @@
   Window_MonsterBodyPartsList.prototype.constructor = Window_MonsterBodyPartsList;
 
   Window_MonsterBodyPartsList.prototype.initialize = function (enemy, isTargeting) {
-    var width = Graphics.boxWidth * 0.50;
-    var height = 520;
-    var x = Graphics.boxWidth * 0.45;
-    var y = (Graphics.boxHeight - height) / 2 + 88;
-    var rect = new Rectangle(x, y, width, height);
+    var L = panelLayout();
+    var rect = new Rectangle(L.cardX + L.listDX, L.cardY + L.listDY, L.listW, L.rowsH);
     Window_Selectable.prototype.initialize.call(this, rect);
+    this.opacity = 0;
+    this.backOpacity = 0;
+    this.frameVisible = false;
+    this.hideBackgroundDimmer();
+
     this._enemy = enemy;
     this._isTargeting = isTargeting || false;
     this._data = [];
 
-    if (!$gameTemp) {
-      $gameTemp = {};
-    }
-    if (!$gameTemp.lastTargetSelections) {
-      $gameTemp.lastTargetSelections = {};
-    }
-
-    var enemyId = enemy.enemyId();
+    if (!$gameTemp) $gameTemp = {};
+    if (!$gameTemp.lastTargetSelections) $gameTemp.lastTargetSelections = {};
 
     if (enemy && enemy._bodyParts) {
       for (var partKey in enemy._bodyParts) {
@@ -1145,104 +1270,42 @@
         });
       }
     }
+
+    MonsterPanel.open(enemy, this._isTargeting, this._data);
     this.refresh();
 
+    // In Aim mode the limb picked last time on this species is offered again,
+    // as long as it is still there to be aimed at.
     var indexToSelect = 0;
-
-    // If in targeting mode, try to restore last selected index
-    if (this._isTargeting && $gameTemp.lastTargetSelections[enemyId] !== undefined) {
-      var lastIndex = $gameTemp.lastTargetSelections[enemyId];
-      if (lastIndex >= 0 && lastIndex < this._data.length && this._data[lastIndex].selectable !== false) {
-        indexToSelect = lastIndex;
-      }
+    var last = $gameTemp.lastTargetSelections[enemy.enemyId()];
+    if (this._isTargeting && last !== undefined &&
+        last >= 0 && last < this._data.length && this._data[last].selectable !== false) {
+      indexToSelect = last;
     }
-
     this.select(indexToSelect);
     this.activate();
     this.show();
-    this.z = 9999;
-
-    if (this.parent) {
-      this.parent.removeChild(this);
-      this.parent.addChild(this);
-    }
   };
 
-  Window_MonsterBodyPartsList.prototype.maxItems = function () {
-    return this._data.length;
+  // The rows ARE the window: no frame padding and no spacing between them, so
+  // the rectangle a click is tested against is the rectangle the row is drawn in.
+  Window_MonsterBodyPartsList.prototype.updatePadding = function () { this.padding = 0; };
+  Window_MonsterBodyPartsList.prototype.colSpacing = function () { return 0; };
+  Window_MonsterBodyPartsList.prototype.rowSpacing = function () { return 0; };
+  Window_MonsterBodyPartsList.prototype.itemHeight = function () { return PART_ROW_H; };
+  Window_MonsterBodyPartsList.prototype.maxCols = function () { return 1; };
+  Window_MonsterBodyPartsList.prototype.maxItems = function () { return this._data.length; };
+
+  // Everything visible is HTML.
+  Window_MonsterBodyPartsList.prototype.drawItem = function () {};
+  Window_MonsterBodyPartsList.prototype.drawAllItems = function () {};
+  Window_MonsterBodyPartsList.prototype.refreshCursor = function () {
+    this.setCursorRect(0, 0, 0, 0);
   };
 
-  Window_MonsterBodyPartsList.prototype.itemHeight = function () {
-    return this.lineHeight();
-  };
-
-  Window_MonsterBodyPartsList.prototype.refresh = function () {
-    this.contents.clear();
-    if (!this._enemy || !this._enemy._bodyParts) return;
-
-    var lineHeight = this.lineHeight();
-    var y = 0;
-    var useTranslation = ConfigManager.language === "it";
-
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('HealthMonsters.bodyParts'), 0, y, this.contentsWidth(), 'center');
-    this.resetTextColor();
-    this.itemY = lineHeight * 2;
-
-    this.drawAllItems();
-  };
-
-  Window_MonsterBodyPartsList.prototype.drawItem = function (index) {
-    if (index < 0 || index >= this._data.length) return;
-
-    var item = this._data[index];
-    var part = item.part;
-    var rect = this.itemRect(index);
-    var useTranslation = ConfigManager.language === "it";
-
-    var hpPercent = Math.floor((part.currentHp / part.maxHp) * 100);
-
-    // Highlight if this is the currently targeted part (in targeting mode)
-    var enemyId = this._enemy.enemyId();
-    var isCurrentTarget = this._isTargeting &&
-      $gameTemp.lastTargetSelections &&
-      $gameTemp.lastTargetSelections[enemyId] === index;
-
-    if (isCurrentTarget && index === this.index()) {
-      // Draw selection background with special color
-      this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, 'rgba(255, 255, 0, 0.2)');
-    }
-
-    if (part.destroyed) {
-      this.changeTextColor(ColorManager.deathColor());
-    } else if (hpPercent <= 25) {
-      this.changeTextColor(ColorManager.crisisColor());
-    } else if (hpPercent <= 50) {
-      this.changeTextColor(ColorManager.textColor(17));
-    } else {
-      this.resetTextColor();
-    }
-
-    var partName = useTranslation && part.name_it ? part.name_it : part.name;
-    this.drawText(partName, rect.x + 4, rect.y, rect.width - 60);
-
-    var hpText = part.destroyed ? "X" : hpPercent + "%";
-    this.drawText(hpText, rect.x + rect.width - 70, rect.y, 66, 'right');
-
-    this.resetTextColor();
-
-    if (this._isTargeting && index === this.index()) {
-      this.changePaintOpacity(true);
-    }
-  };
-
-  Window_MonsterBodyPartsList.prototype.itemRect = function (index) {
-    var rect = new Rectangle();
-    rect.width = this.contentsWidth();
-    rect.height = this.lineHeight();
-    rect.x = 0;
-    rect.y = this.itemY + index * rect.height - this._scrollY;
-    return rect;
+  Window_MonsterBodyPartsList.prototype.select = function (index) {
+    Window_Selectable.prototype.select.call(this, index);
+    MonsterPanel.setIndex(index);
   };
 
   Window_MonsterBodyPartsList.prototype.update = function () {
@@ -1252,6 +1315,8 @@
         this.selectNextAvailable();
       }
     }
+    MonsterPanel.syncScroll(this.scrollY());
+    MonsterPanel.place(this);
   };
 
   Window_MonsterBodyPartsList.prototype.selectNextAvailable = function () {
@@ -1269,20 +1334,14 @@
 
   Window_MonsterBodyPartsList.prototype.isCurrentItemEnabled = function () {
     if (this.index() < 0 || this.index() >= this._data.length) return false;
-    var item = this._data[this.index()];
-    return item.selectable !== false;
+    return this._data[this.index()].selectable !== false;
   };
 
   Window_MonsterBodyPartsList.prototype.processOk = function () {
     if (this._isTargeting && this.index() >= 0 && this.isCurrentItemEnabled()) {
-      if (!$gameTemp) {
-        $gameTemp = {};
-      }
-      if (!$gameTemp.lastTargetSelections) {
-        $gameTemp.lastTargetSelections = {};
-      }
-      var enemyId = this._enemy.enemyId();
-      $gameTemp.lastTargetSelections[enemyId] = this.index();
+      if (!$gameTemp) $gameTemp = {};
+      if (!$gameTemp.lastTargetSelections) $gameTemp.lastTargetSelections = {};
+      $gameTemp.lastTargetSelections[this._enemy.enemyId()] = this.index();
       $gameTemp.targetedBodyPart = this._data[this.index()].key;
       // Remember WHICH monster the limb was picked out on, so a field with
       // several of them aims the blow at the one the player was looking at.
@@ -1294,9 +1353,8 @@
 
   Window_MonsterBodyPartsList.prototype.close = function () {
     $gameTemp.checkWindowActive = false;
-    if (!this._isTargeting) {
-      SoundManager.playCancel();
-    }
+    if (!this._isTargeting) SoundManager.playCancel();
+    MonsterPanel.close();
     Window_Selectable.prototype.close.call(this);
     setTimeout(
       function () {
@@ -1305,27 +1363,32 @@
       100
     );
   };
-  Window_MonsterInfo.prototype.powerUpColor = function () {
-    return ColorManager.powerUpColor ? ColorManager.powerUpColor() : ColorManager.textColor(24);
-  };
 
-  Window_MonsterInfo.prototype.powerDownColor = function () {
-    return ColorManager.powerDownColor ? ColorManager.powerDownColor() : ColorManager.textColor(25);
+  Window_MonsterBodyPartsList.prototype.destroy = function (options) {
+    MonsterPanel.close();
+    Window_Selectable.prototype.destroy.call(this, options);
   };
   // Scene_Battle modifications
-  // REPLACE THIS HOOK:
+  // While the panel is up the fight is held: only the list of parts keeps
+  // updating, so nothing acts and no turn advances behind the card.
   var _Scene_Battle_update = Scene_Battle.prototype.update;
   Scene_Battle.prototype.update = function () {
     if ($gameTemp.checkWindowActive) {
       if (this._bodyPartsWindow) {
         this._bodyPartsWindow.update();
       }
-      if (this._monsterInfoWindow) {
-        this._monsterInfoWindow.update();
-      }
     } else {
       _Scene_Battle_update.call(this);
     }
+  };
+
+  // A battle that ends with the panel still up (a monster dying to a poison
+  // tick, the scene being torn down) must not leave the card on screen.
+  var _Scene_Battle_terminate = Scene_Battle.prototype.terminate;
+  Scene_Battle.prototype.terminate = function () {
+    MonsterPanel.close();
+    if ($gameTemp) $gameTemp.checkWindowActive = false;
+    _Scene_Battle_terminate.call(this);
   };
 
   // ---------------------------------------------------------------------------
@@ -1340,11 +1403,7 @@
   Scene_Battle.prototype.openMonsterBodyParts = function (enemy, isTargeting) {
     this._actorCommandWindow.deactivate();
 
-    // Info window (left side)
-    this._monsterInfoWindow = new Window_MonsterInfo(enemy);
-    this.addWindow(this._monsterInfoWindow);
-
-    // Body parts list window (right side)
+    // The card is HTML; this window is the cursor inside its list of parts.
     this._bodyPartsWindow = new Window_MonsterBodyPartsList(enemy, isTargeting);
     this.addWindow(this._bodyPartsWindow);
     if (isTargeting) {
@@ -1424,7 +1483,6 @@
   };
 
   // Handler for targeting window
-  // Replace the onTargetingOk handler
   Scene_Battle.prototype.onTargetingOk = function () {
     // Store the selected index for this enemy
     if (this._bodyPartsWindow && this._bodyPartsWindow._enemy) {
@@ -1435,23 +1493,9 @@
       $gameTemp.lastTargetSelections[enemyId] = this._bodyPartsWindow.index();
     }
 
-    // Close BOTH windows (body parts list and monster info)
     if (this._bodyPartsWindow) {
       this._bodyPartsWindow.close();
       this._bodyPartsWindow = null;
-    }
-
-    if (this._monsterInfoWindow) {
-      this._monsterInfoWindow.close();
-      setTimeout(
-        function () {
-          if (this._monsterInfoWindow && this._monsterInfoWindow.parent) {
-            this._monsterInfoWindow.parent.removeChild(this._monsterInfoWindow);
-          }
-          this._monsterInfoWindow = null;
-        }.bind(this),
-        100
-      );
     }
 
     if ($gameTemp) {
@@ -1481,25 +1525,10 @@
     this.closeBodyPartsWindow();
   };
 
-  // REPLACE THIS METHOD:
   Scene_Battle.prototype.closeBodyPartsWindow = function () {
-    // Close both windows
     if (this._bodyPartsWindow) {
       this._bodyPartsWindow.close();
       this._bodyPartsWindow = null;
-    }
-
-    if (this._monsterInfoWindow) {
-      this._monsterInfoWindow.close();
-      setTimeout(
-        function () {
-          if (this._monsterInfoWindow && this._monsterInfoWindow.parent) {
-            this._monsterInfoWindow.parent.removeChild(this._monsterInfoWindow);
-          }
-          this._monsterInfoWindow = null;
-        }.bind(this),
-        100
-      );
     }
 
     if ($gameTemp) {
@@ -1636,4 +1665,1025 @@
       }
     });
   }
+
+  // ===========================================================================
+  // WRESTLING
+  // ===========================================================================
+  // A grapple is the one attack that is about anatomy rather than weapons, so
+  // it lives here, beside the limb tables it reads. The Wrestle battle command
+  // sets the actor's own body parts against the monster's: the
+  // player picks the limb they take hold WITH, the limb they take hold OF, and
+  // the hold itself, and every one of those three choices moves the odds.
+  //
+  // A part at 0 HP, marked damaged or destroyed, or gone from the body outright
+  // (severed in Blood and Oil) can neither grab nor be grabbed until it is
+  // healed or replaced, on both sides of the fight. Grafts bought in the
+  // prosthetic shop are ordinary entries in the same _bodyParts table, so an
+  // added arm wrestles exactly like a born one, and a creature's archetype is
+  // read off that table too rather than assumed to be human.
+  //
+  // Nothing here rolls damage by hand: a planned hold rides on the Game_Action
+  // itself and is resolved in apply(), so the popup, the battle log, the limb
+  // routing above and the blood FX all run as they do for any other blow.
+  // ===========================================================================
+
+  // Skill 21 is retired as a skill: nobody learns it, no list shows it, and the
+  // Wrestle command is the only way in. The entry stays in the database because
+  // a planned hold is applied THROUGH it - it is the Game_Action's item, which
+  // is what carries the hit type, the popup, the battle log line and the limb
+  // routing, so the grapple resolves exactly like any other blow.
+  const WRESTLE_SKILL_ID = 21;
+  const SPEC_WRESTLING = 301;          // js/db/Skills/Specialization.json
+
+  // Which limb a part is, from its (language-independent) key. Only these
+  // families can take a hold; an organ or an eye is targetable but never the
+  // thing doing the wrestling.
+  function wrestlePartFamily(partKey) {
+    const k = String(partKey || "").toUpperCase();
+    if (/BRAIN|HEART|LUNG|LIVER|STOMACH|SPLEEN|INTESTIN|KIDNEY|EYE|EAR|NOSE|TEETH|FANG|GENITAL|ORGAN|CORE|NERVE|BATTERY|REACTOR/.test(k)) return "INTERNAL";
+    if (/HAND|FINGER|CLAW|PAW|TALON|PINCER|GRIP/.test(k)) return "HAND";
+    if (/ARM|TENTACLE|PSEUDOPOD|WISP|WING/.test(k)) return "ARM";
+    if (/FOOT|FEET|TOE|LEG|HOOF|THIGH|SHIN|KNEE/.test(k)) return "LEG";
+    if (/HEAD|SKULL|FACE|JAW|MOUTH|SNOUT|BEAK|NECK|HORN/.test(k)) return "HEAD";
+    if (/TAIL/.test(k)) return "TAIL";
+    return "BODY";
+  }
+
+  // A part is fit to wrestle with, or to be wrestled, only while it is whole.
+  function wrestlePartUsable(part) {
+    if (!part) return false;
+    if (part.destroyed || part.damaged) return false;
+    if (typeof part.currentHp === "number" && part.currentHp <= 0) return false;
+    return true;
+  }
+
+  // The wrestler's own limbs, in the order their body lists them. This reads
+  // _bodyParts and nothing else, so grafted parts, hybrid creature archetypes
+  // and severed limbs are all already accounted for by whoever wrote that table.
+  function wrestleOwnParts(battler) {
+    const out = [];
+    const parts = battler && battler._bodyParts;
+    if (!parts) return out;
+    for (const key in parts) {
+      const family = wrestlePartFamily(key);
+      if (family === "INTERNAL") continue;
+      if (!wrestlePartUsable(parts[key])) continue;
+      out.push({ key: key, part: parts[key], family: family });
+    }
+    return out;
+  }
+
+  // Every part of the monster still worth taking hold of. Organs are left out
+  // on both sides of the grapple for the same reason: a liver is something to
+  // stab, not something a hand can close on. Aim (above) is still the way to
+  // put a weapon through one.
+  function wrestleTargetParts(enemy) {
+    const out = [];
+    if (!enemy || !enemy._bodyParts) return out;
+    for (const key in enemy._bodyParts) {
+      const family = wrestlePartFamily(key);
+      if (family === "INTERNAL") continue;
+      if (!wrestlePartUsable(enemy._bodyParts[key])) continue;
+      out.push({ key: key, part: enemy._bodyParts[key], family: family });
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------------------
+  // The holds
+  // ---------------------------------------------------------------------------
+  // Each is a different contest: a slam is weight against footing, a joint lock
+  // is speed against strength, a choke is one set of lungs against another.
+  // `stat` is what the wrestler brings, `vs` what the monster answers with, and
+  // `power` scales the damage the hold puts through the limb it is on. `needs`
+  // marks the holds that only exist once the monster is already held.
+  const WRESTLE_HOLDS = [
+    { id: "grapple", icon: 106, stat: "STR", vs: "DEX", base: 72, power: 0.35,
+      limbs: ["HAND", "ARM", "LEG", "TAIL"],
+      states: [{ id: 51, rate: 1.0 }] },
+    { id: "strike",  icon: 77,  stat: "STR", vs: "DEX", base: 82, power: 1.0,
+      limbs: ["HAND", "ARM", "LEG", "HEAD", "TAIL"],
+      states: [{ id: 48, rate: 0.2 }, { id: 60, rate: 0.25, targetFamily: ["HEAD"] }] },
+    { id: "lock",    icon: 73,  stat: "DEX", vs: "STR", base: 58, power: 0.7,
+      limbs: ["HAND", "ARM", "LEG"], needs: "hold",
+      states: [{ id: 52, rate: 1.0 }, { id: 53, rate: 0.4 }] },
+    { id: "wrench",  icon: 223, stat: "STR", vs: "CON", base: 62, power: 1.7,
+      limbs: ["HAND", "ARM"], needs: "hold",
+      states: [{ id: 53, rate: 0.6 }, { id: 48, rate: 0.4 }] },
+    { id: "slam",    icon: 72,  stat: "CON", vs: "DEX", base: 52, power: 2.1,
+      limbs: ["ARM", "BODY", "LEG"], needs: "hold",
+      states: [{ id: 54, rate: 0.6 }, { id: 38, rate: 0.4 }, { id: 13, rate: 0.25 }] },
+    { id: "choke",   icon: 81,  stat: "CON", vs: "CON", base: 48, power: 0.8,
+      limbs: ["HAND", "ARM", "TAIL"], needs: "hold", targetFamily: ["HEAD"],
+      states: [{ id: 54, rate: 0.85 }, { id: 56, rate: 0.4 }, { id: 13, rate: 0.3 }] },
+    { id: "rip",     icon: 1,   stat: "STR", vs: "CON", base: 26, power: 2.6,
+      limbs: ["HAND", "ARM", "HEAD"], needs: "hold", rip: true,
+      states: [{ id: 48, rate: 0.9 }] },
+  ];
+
+  const WRESTLE_STAT_PARAM = { STR: 2, CON: 3, INT: 4, WIS: 5, DEX: 6, PSI: 7 };
+
+  function wrestleStat(battler, statKey) {
+    const paramId = WRESTLE_STAT_PARAM[statKey];
+    return Math.max(1, battler.param(paramId == null ? 2 : paramId));
+  }
+
+  // How trained the wrestler is, 1 (Untrained) to 5 (Master). Everything the
+  // player can feel about being good at this comes off this one number.
+  function wrestleLevel(actor) {
+    if (!actor || typeof actor.specializationLevel !== "function") return 1;
+    return actor.specializationLevel(SPEC_WRESTLING) || 1;
+  }
+
+  function wrestleHeld(enemy) {
+    return !!(enemy && (enemy.isStateAffected(51) || enemy.isStateAffected(52)));
+  }
+
+  // Whether a hold can be attempted with these two limbs, and what it is
+  // waiting for if not. The reason rides on the greyed row rather than being
+  // hidden, so the player can read why the option is closed.
+  function wrestleHoldBlocker(session, hold) {
+    if (!session.myPartData() || !session.theirPartData()) return "limb";
+    if (hold.limbs && !hold.limbs.includes(session.myFamily())) return "limb";
+    if (hold.targetFamily && !hold.targetFamily.includes(session.theirFamily())) return "part";
+    if (hold.needs === "hold" && !wrestleHeld(session.enemy)) return "hold";
+    return null;
+  }
+
+  // The odds, as the row shows them and as apply() rolls them. One function, so
+  // the number the player read is the number that is rolled.
+  function wrestleChance(session, hold) {
+    const actor = session.actor, enemy = session.enemy;
+    const mine = session.myPartData(), theirs = session.theirPartData();
+    if (!mine || !theirs) return 0;
+
+    let chance = hold.base;
+
+    // The contest itself: what the hold asks of the wrestler against what the
+    // monster answers with.
+    const ratio = wrestleStat(actor, hold.stat) / wrestleStat(enemy, hold.vs);
+    chance += Math.max(-30, Math.min(30, Math.round((ratio - 1) * 34)));
+
+    // Training. Untrained is flat; Master is worth a third of a hold.
+    chance += (wrestleLevel(actor) - 1) * 8;
+
+    // The limb doing the work: a battered arm has less to give.
+    const wear = mine.maxHp > 0 ? mine.currentHp / mine.maxHp : 1;
+    chance -= Math.round((1 - wear) * 25);
+
+    // The limb being taken: small, awkward and vital parts are harder to keep.
+    chance -= ((theirs.hitDifficulty || 1) - 1) * 12;
+    if (theirs.vital) chance -= 8;
+
+    // Something already held is far easier to work on.
+    if (enemy.isStateAffected(52)) chance += 22;
+    else if (enemy.isStateAffected(51)) chance += 12;
+
+    return Math.max(5, Math.min(95, Math.round(chance)));
+  }
+
+  // Damage a hold puts through the limb it is on. Training is worth about as
+  // much again at Master as the raw strength behind it.
+  function wrestleDamage(session, hold) {
+    const lvl = wrestleLevel(session.actor);
+    const base = wrestleStat(session.actor, hold.stat) * (0.55 + 0.22 * lvl) * (hold.power || 1);
+    const soak = session.enemy.def * 0.45;
+    return Math.max(1, Math.round((base - soak) * (0.9 + Math.random() * 0.2)));
+  }
+
+  // How readily a hold's states stick, again off training alone.
+  function wrestleStateRate(actor) {
+    return 0.7 + 0.12 * (wrestleLevel(actor) - 1);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Finishers
+  // ---------------------------------------------------------------------------
+  // A wrestler who has trained an art can end an exchange with one of its real
+  // moves whether or not they ever learned it as a skill: the training is the
+  // permission. Every close-quarters unarmed skill in the database is a
+  // candidate, filed under the specialization SkillSpecs already assigns it, so
+  // a boxer brings punches to the same grapple a judoka brings throws to.
+  const WRESTLE_ARTS = [
+    "Wrestling", "Sumo Wrestling", "Grappling", "Arm Wrestling", "Unarmed Combat",
+    "Boxing", "Karate", "Judo", "Aikido", "Capoeira", "Muay Thai", "Taekwondo",
+    "Krav Maga", "Kickboxing", "Tai Chi",
+  ];
+  const WRESTLE_FINISHERS_PER_ART = 2;
+  const WRESTLE_FINISHER_CAP = 14;
+  // Rows a list page holds before it starts turning. The command window is
+  // bottom-pinned and grows upward, so this is what keeps it on screen.
+  const WRESTLE_PAGE_ROWS = 8;
+
+  let _wrestleFinisherPool = null;
+
+  // Training needed to pull a move off cold, read off what it costs a battler
+  // who owns it: the database stays the single word on how hard a move is.
+  function wrestleFinisherTier(skill) {
+    return Math.max(1, Math.min(5, Math.ceil((skill.tpCost || 0) / 14) || 1));
+  }
+
+  function wrestleFinisherPool() {
+    if (_wrestleFinisherPool) return _wrestleFinisherPool;
+    if (!window.SkillSpecs || !window.SkillSpecs.ready) return null;
+    if (!window.Specializations || !window.Specializations.ready) return null;
+    const pool = [];
+    for (const skill of $dataSkills) {
+      if (!skill || !skill.name || !skill.name.trim() || skill.name.startsWith("<--")) continue;
+      if (skill.id === WRESTLE_SKILL_ID) continue;
+      if (skill.stypeId <= 0 || skill.scope !== 1) continue;
+      if (skill.damage.type !== 1) continue;
+      if (skill.occasion !== 0 && skill.occasion !== 1) continue;
+      if (skill.requiredWtypeId1 || skill.requiredWtypeId2) continue;
+      const role = skill.note ? skill.note.match(/<role:\s*(\w+)>/i) : null;
+      if (role && role[1].toLowerCase() !== "offensive") continue;
+      const range = skill.note ? skill.note.match(/<Range:\s*(\d+)>/i) : null;
+      if (range && Number(range[1]) > 2) continue;
+      const spec = window.SkillSpecs.forSkill(skill);
+      if (!spec || WRESTLE_ARTS.indexOf(spec.name) < 0) continue;
+      pool.push({ id: skill.id, spec: spec, tier: wrestleFinisherTier(skill) });
+    }
+    _wrestleFinisherPool = pool;
+    return pool;
+  }
+
+  // What this wrestler can finish with right now: the two best moves of every
+  // art they have actually trained, plus anything they know as a skill outright.
+  // An untrained art offers nothing, which is what makes training one felt.
+  function wrestleFinishers(actor) {
+    const pool = wrestleFinisherPool();
+    if (!pool || !actor || typeof actor.specializationLevel !== "function") return [];
+    const byArt = new Map();
+    const known = [];
+    for (const entry of pool) {
+      if (actor.isLearnedSkill && actor.isLearnedSkill(entry.id)) { known.push(entry); continue; }
+      const level = actor.specializationLevel(entry.spec.id) || 1;
+      if (level < 2 || entry.tier > level) continue;
+      if (!byArt.has(entry.spec.id)) byArt.set(entry.spec.id, []);
+      byArt.get(entry.spec.id).push(entry);
+    }
+    const out = [];
+    for (const list of byArt.values()) {
+      list.sort((a, b) => (b.tier - a.tier) || (a.id - b.id));
+      for (const entry of list.slice(0, WRESTLE_FINISHERS_PER_ART)) out.push(entry);
+    }
+    for (const entry of known) {
+      if (!out.some(e => e.id === entry.id)) out.push(entry);
+    }
+    out.sort((a, b) =>
+      (a.spec.name < b.spec.name ? -1 : a.spec.name > b.spec.name ? 1 : a.tier - b.tier));
+    return out.slice(0, WRESTLE_FINISHER_CAP);
+  }
+
+  // A finisher is a contest too, on the stat its own art runs on: a judo throw
+  // asks a different question of the body than a boxer's uppercut does.
+  function wrestleFinisherChance(session, entry) {
+    const actor = session.actor, enemy = session.enemy;
+    const mine = session.myPartData(), theirs = session.theirPartData();
+    if (!mine || !theirs) return 0;
+    const ratio = wrestleStat(actor, entry.spec.stat || "STR") / wrestleStat(enemy, "DEX");
+    let chance = 66 - (entry.tier - 1) * 7;
+    chance += Math.max(-30, Math.min(30, Math.round((ratio - 1) * 34)));
+    chance += ((actor.specializationLevel(entry.spec.id) || 1) - 1) * 7;
+    chance += (wrestleLevel(actor) - 1) * 3;
+    chance -= Math.round((1 - (mine.maxHp > 0 ? mine.currentHp / mine.maxHp : 1)) * 25);
+    chance -= ((theirs.hitDifficulty || 1) - 1) * 10;
+    if (enemy.isStateAffected(52)) chance += 20;
+    else if (enemy.isStateAffected(51)) chance += 10;
+    return Math.max(5, Math.min(95, Math.round(chance)));
+  }
+
+  // ---------------------------------------------------------------------------
+  // The planning session
+  // ---------------------------------------------------------------------------
+  // Everything the menu shows, and the only thing its rows read. It is rebuilt
+  // whenever the menu opens and again when the hold lands, so a limb lost
+  // mid-fight is simply gone from the next exchange.
+  function wrestleSession(actor, enemy) {
+    const session = {
+      actor: actor,
+      enemy: enemy,
+      page: "root",
+      offset: 0,
+      myParts: wrestleOwnParts(actor),
+      theirParts: wrestleTargetParts(enemy),
+      myKey: null,
+      theirKey: null,
+      myPartData() { return this.actor._bodyParts ? this.actor._bodyParts[this.myKey] : null; },
+      theirPartData() { return this.enemy._bodyParts ? this.enemy._bodyParts[this.theirKey] : null; },
+      myFamily() { return wrestlePartFamily(this.myKey); },
+      theirFamily() { return wrestlePartFamily(this.theirKey); },
+    };
+    // Open on a hand, since that is what a hold is usually taken with, and on
+    // the biggest thing the monster presents.
+    const hand = session.myParts.find(p => p.family === "HAND") ||
+                 session.myParts.find(p => p.family === "ARM") ||
+                 session.myParts[0];
+    session.myKey = hand ? hand.key : null;
+    const bulk = session.theirParts.find(p => p.family === "BODY") ||
+                 session.theirParts.find(p => p.family === "HEAD") ||
+                 session.theirParts[0];
+    session.theirKey = bulk ? bulk.key : null;
+    return session;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Window_WrestleHelp - the line above the limb rows
+  // ---------------------------------------------------------------------------
+  // Which limb a hold is taken with, and which one it is taken on, are chosen
+  // in the battle command menu like everything else the actor does: they are
+  // pages of the grapple plan, not a window of their own. What a limb is good
+  // for does not fit on a row beside its name, so it is said here, in a box
+  // hanging off the top edge of the menu while a limb is under the cursor.
+  const WRESTLE_HELP_WIDTH = 520;
+
+  // Window_Help draws its text in one straight line and lets it run off the
+  // edge, which a sentence naming five holds does immediately (and Italian
+  // sooner than English). This one wraps to the box it was given and then
+  // shrinks the box to the lines it actually used, so the panel is as tall as
+  // the sentence needs and no taller.
+  function Window_WrestleHelp() {
+    this.initialize.apply(this, arguments);
+  }
+
+  Window_WrestleHelp.prototype = Object.create(Window_Help.prototype);
+  Window_WrestleHelp.prototype.constructor = Window_WrestleHelp;
+
+  Window_WrestleHelp.prototype.wrapLines = function (text, maxWidth) {
+    const lines = [];
+    let line = "";
+    for (const word of String(text || "").split(" ")) {
+      const candidate = line ? line + " " + word : word;
+      if (line && this.textWidth(candidate) > maxWidth) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = candidate;
+      }
+    }
+    if (line) lines.push(line);
+    return lines.length ? lines : [""];
+  };
+
+  Window_WrestleHelp.prototype.refresh = function () {
+    const rect = this.baseTextRect();
+    this.contents.clear();
+    const lines = this.wrapLines(this._text, rect.width);
+    for (let i = 0; i < lines.length; i++) {
+      this.drawText(lines[i], rect.x, rect.y + i * this.lineHeight(), rect.width);
+    }
+  };
+
+  // The corner the box grows from: it is pinned to the right edge of the limb
+  // list and to the space above it, and grows leftward and upward from there.
+  Window_WrestleHelp.prototype.anchorTo = function (right, bottom) {
+    if (this._anchorRight === right && this._anchorBottom === bottom) return;
+    this._anchorRight = right;
+    this._anchorBottom = bottom;
+    this.fitToText();
+  };
+
+  Window_WrestleHelp.prototype.fitToText = function () {
+    if (this._anchorRight == null) return;
+    const width = Math.min(WRESTLE_HELP_WIDTH, this._anchorRight - 4);
+    const inner = width - this.padding * 2 - this.itemPadding() * 2;
+    const lines = Math.max(1, Math.min(3, this.wrapLines(this._text, inner).length));
+    const height = this.fittingHeight(lines);
+    this.move(this._anchorRight - width, Math.max(4, this._anchorBottom - height), width, height);
+    this.createContents();
+    this.refresh();
+  };
+
+  Window_WrestleHelp.prototype.setText = function (text) {
+    if (this._text === text) return;
+    this._text = text;
+    this.fitToText();
+  };
+
+  function wrestleCondition(part) {
+    return Math.round(100 * (part && part.maxHp > 0 ? part.currentHp / part.maxHp : 1));
+  }
+
+  // What the highlighted limb means for the grapple: which holds one of yours
+  // can take, and what one of theirs will be like to keep hold of.
+  function wrestleLimbHelp(entry, side) {
+    const part = entry.part;
+    if (side === "mine") {
+      const names = WRESTLE_HOLDS
+        .filter(hold => !hold.limbs || hold.limbs.includes(entry.family))
+        .map(hold => T('HealthMonsters.wrestle.hold.' + hold.id + '.name'));
+      return names.length
+        ? T('HealthMonsters.wrestle.limbs.helpMine', { part: part.name, holds: names.join(", ") })
+        : T('HealthMonsters.wrestle.limbs.helpMineNone', { part: part.name });
+    }
+    const note = part.vital ? "vital"
+               : (part.hitDifficulty || 1) > 1 ? "awkward"
+               : "plain";
+    return T('HealthMonsters.wrestle.limbs.helpTheirs', {
+      part: part.name,
+      note: T('HealthMonsters.wrestle.limbs.note.' + note),
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // The menu, drawn as the actor's command list
+  // ---------------------------------------------------------------------------
+  // A grapple replaces the command menu rather than opening a window over it:
+  // while the hold is being planned there is nothing else the actor can do, and
+  // the rows sit exactly where the player's eye already is. The drawing belongs
+  // to BattleSystemEnhanchedCommands (that window is its), and only the list is
+  // ours; it calls in through window.Wrestling.
+  const Wrestling = {
+    isMenuOpen(win) {
+      return !!(win && win._wrestleSession);
+    },
+
+    // Whether the Wrestle row in the battle command menu
+    // (BattleSystemEnhanchedCommands.js) is live for this body. Grappling is a
+    // thing a body does, not a spell it knows, so what gates it is anatomy: at
+    // least one limb still whole to take hold with, and somebody still standing
+    // to take hold of. The grapple menu is drawn in Scene_Battle's own command
+    // window, so a tactical map fight has no room for it.
+    canCommand(actor) {
+      if (!actor || !actor.isActor || !actor.isActor()) return false;
+      if (!$gameParty.inBattle()) return false;
+      if (window.MapBattleMode && window.MapBattleMode.isActive && window.MapBattleMode.isActive()) return false;
+      if (!$gameTroop || $gameTroop.aliveMembers().length === 0) return false;
+      return wrestleOwnParts(actor).length > 0;
+    },
+
+    // The Wrestle command was chosen: the grapple rides on the ordinary action
+    // as skill 21 (retired from every list and learnset, it is the carrier the
+    // hold is applied through and nothing else), and the monster is picked with
+    // the same target window every single-target action uses. A lone monster is
+    // chosen for the player by the alias below, which opens the plan straight
+    // away. Returns false when there is nothing to wrestle, so the caller can
+    // buzz and hand input back.
+    startFromCommand(scene) {
+      const actor = BattleManager.actor();
+      if (!scene || !actor || !this.canCommand(actor)) return false;
+      const action = BattleManager.inputtingAction();
+      if (!action) return false;
+      action.setSkill(WRESTLE_SKILL_ID);
+      scene.startEnemySelection();
+      return true;
+    },
+
+    // Stands in for Window_ActorCommand.makeCommandList while a hold is being
+    // planned. Rows carry their label in `name`, which that window falls back to
+    // for symbols it does not know.
+    makeCommandList(win) {
+      const session = win._wrestleSession;
+      const push = (name, ext, enabled, icon) =>
+        win.addCommandWithIcon(name, "wrestleRow", enabled !== false, ext, icon, enabled === false);
+      // A shelf can run past what the command window has room for (it is
+      // bottom-pinned and grows upward), so a long one turns a page at a time
+      // instead of running off the top of the screen. Finishers and limbs both
+      // do it, and both count their page off session.offset.
+      const pageOf = (list) => ({
+        shown: list.slice(session.offset, session.offset + WRESTLE_PAGE_ROWS),
+        turns: list.length > WRESTLE_PAGE_ROWS,
+      });
+
+      if (session.page === "finisher") {
+        const finishers = wrestleFinishers(session.actor);
+        if (finishers.length === 0) {
+          push(T('HealthMonsters.wrestle.menu.noFinisher'), { kind: "blocked" }, false, 76);
+        }
+        const page = pageOf(finishers);
+        for (const entry of page.shown) {
+          const skill = $dataSkills[entry.id];
+          push(T('HealthMonsters.wrestle.menu.finisherRow', {
+                 name: skill.name,
+                 art: window.Specializations.displayName(entry.spec),
+                 chance: wrestleFinisherChance(session, entry),
+               }), { kind: "finisher", id: entry.id }, true, skill.iconIndex || 77);
+        }
+        if (page.turns) {
+          push(T('HealthMonsters.wrestle.menu.more', { count: finishers.length }),
+               { kind: "more", total: finishers.length }, true, 4);
+        }
+        push(T('HealthMonsters.wrestle.menu.back'), { kind: "back" }, true, 140);
+        return;
+      }
+
+      // A limb page: the whole body, one part per row, the part the plan is
+      // already using marked as such. Long bodies turn like the finisher shelf
+      // does rather than growing the menu past the top of the screen.
+      if (session.page === "mine" || session.page === "theirs") {
+        const side = session.page;
+        const list = side === "mine" ? session.myParts : session.theirParts;
+        const chosen = side === "mine" ? session.myKey : session.theirKey;
+        const page = pageOf(list);
+        for (const entry of page.shown) {
+          const key = entry.key === chosen ? "limbRowCurrent" : "limbRow";
+          push(T('HealthMonsters.wrestle.menu.' + key, {
+                 part: entry.part.name, percent: wrestleCondition(entry.part),
+               }), { kind: "limb", side: side, key: entry.key }, true,
+               side === "mine" ? 106 : 96);
+        }
+        if (page.turns) {
+          push(T('HealthMonsters.wrestle.menu.more', { count: list.length }),
+               { kind: "more", total: list.length }, true, 4);
+        }
+        push(T('HealthMonsters.wrestle.menu.back'), { kind: "back" }, true, 140);
+        return;
+      }
+
+      // Root: the two limbs, then every hold, then the finisher shelf.
+      const mine = session.myPartData();
+      const theirs = session.theirPartData();
+      push(mine ? T('HealthMonsters.wrestle.menu.myLimb',
+                    { part: mine.name, percent: wrestleCondition(mine) })
+                : T('HealthMonsters.wrestle.menu.noLimb'),
+           { kind: "openMine" }, session.myParts.length > 0, 106);
+      push(theirs ? T('HealthMonsters.wrestle.menu.theirLimb',
+                      { part: theirs.name, percent: wrestleCondition(theirs) })
+                  : T('HealthMonsters.wrestle.menu.noTarget'),
+           { kind: "openTheirs" }, session.theirParts.length > 0, 96);
+
+      for (const hold of WRESTLE_HOLDS) {
+        const name = T('HealthMonsters.wrestle.hold.' + hold.id + '.name');
+        const blocker = wrestleHoldBlocker(session, hold);
+        if (blocker) {
+          push(T('HealthMonsters.wrestle.menu.holdBlocked', {
+                 name: name, reason: T('HealthMonsters.wrestle.menu.blocked.' + blocker),
+               }), { kind: "blocked" }, false, hold.icon);
+        } else {
+          push(T('HealthMonsters.wrestle.menu.holdRow', {
+                 name: name, chance: wrestleChance(session, hold),
+               }), { kind: "hold", id: hold.id }, true, hold.icon);
+        }
+      }
+
+      push(T('HealthMonsters.wrestle.menu.finishers'), { kind: "openFinisher" },
+           !!mine && !!theirs && wrestleFinishers(session.actor).length > 0, 76);
+    },
+  };
+  window.Wrestling = Wrestling;
+
+  // ---------------------------------------------------------------------------
+  // Scene wiring
+  // ---------------------------------------------------------------------------
+
+  function isWrestleAction(action) {
+    const item = action && action.item ? action.item() : null;
+    return !!(item && DataManager.isSkill(item) && item.id === WRESTLE_SKILL_ID);
+  }
+
+  Scene_Battle.prototype.openWrestleMenu = function (enemy) {
+    const actor = BattleManager.actor();
+    const win = this._actorCommandWindow;
+    if (!actor || !enemy || !win) return false;
+    if (!enemy._bodyParts) initializeEnemyBodyParts(enemy);
+    const session = wrestleSession(actor, enemy);
+    if (session.myParts.length === 0 || session.theirParts.length === 0) {
+      SoundManager.playBuzzer();
+      return false;
+    }
+    // Which command opened the list the Wrestle skill was picked from, read
+    // while the window is still showing the actor's own commands. Backing out
+    // of the plan hands that symbol back to the scene's ordinary
+    // onEnemyCancel, so the player lands on the row they left.
+    this._wrestleReturnSymbol = win.currentSymbol();
+    if (this._skillWindow) { this._skillWindow.deactivate(); this._skillWindow.hide(); }
+    if (this._itemWindow) { this._itemWindow.deactivate(); this._itemWindow.hide(); }
+    if (this._actorWindow) { this._actorWindow.deactivate(); this._actorWindow.hide(); }
+    if (this._enemyWindow) { this._enemyWindow.deactivate(); this._enemyWindow.hide(); }
+
+    // The command window's own handlers are put aside whole and given back on
+    // the way out, so nothing else has to know this mode exists.
+    win._wrestleSession = session;
+    win._wrestleSavedHandlers = win._handlers;
+    win._handlers = {};
+    win.setHandler("wrestleRow", this.onWrestleRow.bind(this));
+    win.setHandler("cancel", this.onWrestleCancel.bind(this));
+    win.show();
+    win.refresh();
+    win.select(0);
+    win.activate();
+    return true;
+  };
+
+  Scene_Battle.prototype.closeWrestleMenu = function () {
+    const win = this._actorCommandWindow;
+    this.closeWrestleHelpWindow();
+    if (!win || !win._wrestleSession) return;
+    win._wrestleSession = null;
+    if (win._wrestleSavedHandlers) win._handlers = win._wrestleSavedHandlers;
+    win._wrestleSavedHandlers = null;
+  };
+
+  // Where the cursor should land after the list is rebuilt: the row answering
+  // to this kind (and, for a limb, to this part), so stepping in and out of a
+  // page reads as one continuous plan rather than a menu that keeps losing the
+  // player's place.
+  Scene_Battle.prototype._selectWrestleRow = function (focus) {
+    const win = this._actorCommandWindow;
+    win.refresh();
+    const list = win._list || [];
+    const index = focus
+      ? list.findIndex(row => row.ext && row.ext.kind === focus.kind &&
+                              (focus.key == null || row.ext.key === focus.key))
+      : -1;
+    win.select(index >= 0 ? index : 0);
+    win.activate();
+  };
+
+  Scene_Battle.prototype.onWrestleRow = function () {
+    const win = this._actorCommandWindow;
+    const session = win && win._wrestleSession;
+    const ext = win ? win.currentExt() : null;
+    if (!session || !ext) return;
+
+    let focus = null;
+    switch (ext.kind) {
+      case "openMine":
+      case "openTheirs": {
+        const side = ext.kind === "openMine" ? "mine" : "theirs";
+        const list = side === "mine" ? session.myParts : session.theirParts;
+        if (list.length === 0) { SoundManager.playBuzzer(); win.activate(); return; }
+        // The page opens turned to the limb the plan is already using.
+        const key = side === "mine" ? session.myKey : session.theirKey;
+        const at = list.findIndex(entry => entry.key === key);
+        session.page = side;
+        session.offset = at > 0 ? Math.floor(at / WRESTLE_PAGE_ROWS) * WRESTLE_PAGE_ROWS : 0;
+        focus = { kind: "limb", key: key };
+        break;
+      }
+      case "limb":
+        if (ext.side === "mine") session.myKey = ext.key;
+        else session.theirKey = ext.key;
+        session.page = "root";
+        session.offset = 0;
+        focus = { kind: ext.side === "mine" ? "openMine" : "openTheirs" };
+        break;
+      case "openFinisher": session.page = "finisher"; session.offset = 0; break;
+      case "back":
+        focus = session.page === "mine" ? { kind: "openMine" }
+              : session.page === "theirs" ? { kind: "openTheirs" }
+              : { kind: "openFinisher" };
+        session.page = "root";
+        session.offset = 0;
+        break;
+      case "more":
+        session.offset += WRESTLE_PAGE_ROWS;
+        if (session.offset >= ext.total) session.offset = 0;
+        break;
+      case "hold":
+      case "finisher": {
+        const action = BattleManager.inputtingAction();
+        if (!action) return;
+        // The plan rides on the action and is settled when the turn comes round.
+        action._wrestlePlan = {
+          holdId: ext.kind === "hold" ? ext.id : null,
+          skillId: ext.kind === "finisher" ? ext.id : 0,
+          myPart: session.myKey,
+          theirPart: session.theirKey,
+        };
+        this.closeWrestleMenu();
+        this.selectNextCommand();
+        return;
+      }
+      default:
+        SoundManager.playBuzzer();
+        return;
+    }
+    this._selectWrestleRow(focus);
+  };
+
+  Scene_Battle.prototype.onWrestleCancel = function () {
+    const win = this._actorCommandWindow;
+    const session = win && win._wrestleSession;
+    if (!session) return;
+    if (session.page !== "root") {
+      const focus = session.page === "mine" ? { kind: "openMine" }
+                  : session.page === "theirs" ? { kind: "openTheirs" }
+                  : { kind: "openFinisher" };
+      session.page = "root";
+      session.offset = 0;
+      this._selectWrestleRow(focus);
+      return;
+    }
+    this.closeWrestleMenu();
+    const action = BattleManager.inputtingAction();
+    if (action) action._wrestlePlan = null;
+    win.refresh();
+    if (this._wrestleReturnSymbol) win.selectSymbol(this._wrestleReturnSymbol);
+    // onEnemyCancel is the scene's own way back out of a target choice, and
+    // CategorizedBattleSkills has already taught it about the Basic list.
+    this.onEnemyCancel();
+  };
+
+  // Picking the monster is picking the body. A lone monster is chosen for the
+  // player (BattleSystemEnhanced does that for every single-target action), so
+  // both roads have to end at the planning menu.
+  const _SB_startEnemySelection_WR = Scene_Battle.prototype.startEnemySelection;
+  Scene_Battle.prototype.startEnemySelection = function () {
+    const action = BattleManager.inputtingAction();
+    if (isWrestleAction(action)) {
+      const alive = $gameTroop.aliveMembers();
+      if (alive.length === 1) {
+        action.setTarget(alive[0].index());
+        if (this.openWrestleMenu(alive[0])) return;
+      }
+    }
+    _SB_startEnemySelection_WR.call(this);
+  };
+
+  const _SB_onEnemyOk_WR = Scene_Battle.prototype.onEnemyOk;
+  Scene_Battle.prototype.onEnemyOk = function () {
+    const action = BattleManager.inputtingAction();
+    if (isWrestleAction(action) && this._enemyWindow) {
+      const enemy = this._enemyWindow.enemy();
+      action.setTarget(this._enemyWindow.enemyIndex());
+      if (this.openWrestleMenu(enemy)) return;
+    }
+    _SB_onEnemyOk_WR.call(this);
+  };
+
+  // Backing out of the target picker under the Wrestle command: "wrestle" is a
+  // symbol the engine's own onEnemyCancel knows nothing about, and would leave
+  // no window listening at all.
+  const _SB_onEnemyCancel_WRC = Scene_Battle.prototype.onEnemyCancel;
+  Scene_Battle.prototype.onEnemyCancel = function () {
+    const win = this._actorCommandWindow;
+    if (win && win.currentSymbol() === "wrestle") {
+      if (this._enemyWindow) this._enemyWindow.hide();
+      win.show();
+      win.activate();
+      return;
+    }
+    _SB_onEnemyCancel_WRC.call(this);
+  };
+
+  // A menu left standing when input moves on (the next actor, the end of the
+  // round, a battle finishing under the player) would leave the command window
+  // holding a list that is no longer about anything.
+  const _SB_startActorCommandSelection_WR = Scene_Battle.prototype.startActorCommandSelection;
+  Scene_Battle.prototype.startActorCommandSelection = function () {
+    this.closeWrestleMenu();
+    _SB_startActorCommandSelection_WR.call(this);
+  };
+
+  const _SB_endCommandSelection_WR = Scene_Battle.prototype.endCommandSelection;
+  Scene_Battle.prototype.endCommandSelection = function () {
+    this.closeWrestleMenu();
+    _SB_endCommandSelection_WR.call(this);
+  };
+
+  // The help box that goes with a limb row. It is not an input window: the
+  // command menu keeps the cursor throughout, and this only says what the row
+  // under it means.
+  Scene_Battle.prototype.createWrestleHelpWindow = function () {
+    this._wrestleHelp = new Window_WrestleHelp(new Rectangle(0, 0, WRESTLE_HELP_WIDTH, 120));
+    this._wrestleHelp.hide();
+    this.addWindow(this._wrestleHelp);
+  };
+
+  // Called on every cursor move inside the grapple plan (see the select hook
+  // below). The box shows only while a limb is highlighted: a hold row says
+  // what it needs to say on the row itself.
+  Scene_Battle.prototype.updateWrestleHelp = function () {
+    const cmd = this._actorCommandWindow;
+    const session = cmd && cmd._wrestleSession;
+    const ext = session ? cmd.currentExt() : null;
+    if (!session || !ext || ext.kind !== "limb") {
+      if (this._wrestleHelp) this._wrestleHelp.hide();
+      return;
+    }
+    const list = ext.side === "mine" ? session.myParts : session.theirParts;
+    const entry = list.find(item => item.key === ext.key);
+    if (!entry) {
+      if (this._wrestleHelp) this._wrestleHelp.hide();
+      return;
+    }
+    if (!this._wrestleHelp) this.createWrestleHelpWindow();
+    const help = this._wrestleHelp;
+    // Pinned to the top-right corner of the command menu, which grows and
+    // shrinks with the list it is showing, so the two always share an edge.
+    help.anchorTo(cmd.x + cmd.width, cmd.y - 4);
+    help.setText(wrestleLimbHelp(entry, ext.side));
+    help.show();
+  };
+
+  Scene_Battle.prototype.closeWrestleHelpWindow = function () {
+    if (this._wrestleHelp) this._wrestleHelp.hide();
+  };
+
+  // Every cursor move in the command window is a chance for the help box to
+  // change: the rows the grapple plan puts there are its own, and this is the
+  // only place the scene hears about the cursor landing on one.
+  const _WAC_select_WR = Window_ActorCommand.prototype.select;
+  Window_ActorCommand.prototype.select = function (index) {
+    _WAC_select_WR.call(this, index);
+    const scene = SceneManager._scene;
+    if (this._wrestleSession && scene && scene.updateWrestleHelp) scene.updateWrestleHelp();
+  };
+
+  // ---------------------------------------------------------------------------
+  // Resolving a hold
+  // ---------------------------------------------------------------------------
+
+  // The limb a planned hold is on, forced past the ordinary hit-location roll:
+  // the wrestler already made their roll, in wrestleChance, and rolling again
+  // here would charge them twice for the same aim.
+  let _wrestleForcedPart = null;
+  let _wrestleForcedEnemy = null;
+
+  const _getRandomHitLocation_WR = getRandomHitLocation;
+  getRandomHitLocation = function (enemy) {
+    if (_wrestleForcedPart && _wrestleForcedEnemy === enemy && enemy._bodyParts &&
+        wrestlePartUsable(enemy._bodyParts[_wrestleForcedPart])) {
+      return { key: _wrestleForcedPart, targeted: true };
+    }
+    return _getRandomHitLocation_WR.call(this, enemy);
+  };
+
+  // A planned hold carries its own damage and its own verdict; the formula in
+  // the database is only what the skill panel reads.
+  const _GA_evalDamageFormula_WR = Game_Action.prototype.evalDamageFormula;
+  Game_Action.prototype.evalDamageFormula = function (target) {
+    if (this._wrestleDamage != null) return this._wrestleDamage;
+    return _GA_evalDamageFormula_WR.call(this, target);
+  };
+
+  const _GA_itemHit_WR = Game_Action.prototype.itemHit;
+  Game_Action.prototype.itemHit = function (target) {
+    if (this._wrestleForceMiss) return 0;
+    if (this._wrestleForceHit) return 1;
+    return _GA_itemHit_WR.call(this, target);
+  };
+
+  const _GA_itemEva_WR = Game_Action.prototype.itemEva;
+  Game_Action.prototype.itemEva = function (target) {
+    if (this._wrestleForceHit) return 0;
+    return _GA_itemEva_WR.call(this, target);
+  };
+
+  function wrestleLog(text) {
+    const log = BattleManager._logWindow;
+    if (log && typeof log.push === "function") {
+      log.push("addText", text);
+      log.push("wait");
+    }
+  }
+
+  // A hold that comes apart badly hands the monster the moment: the limb that
+  // reached in pays for reaching in. "Badly" is measured against the odds that
+  // were taken, not against a flat number, so a 90% hold is only reversed on a
+  // genuinely awful roll while a desperate one is reversed about half the times
+  // it fails. A flat threshold made reversals impossible for every hold with
+  // good odds, since the miss band there is narrower than the threshold.
+  function wrestleReversal(session, chance, roll) {
+    const actor = session.actor, enemy = session.enemy;
+    if (roll < chance + (100 - chance) * 0.5) return;
+    if (!actor.isActor || !actor.isActor()) return;
+    const part = session.myPartData();
+    const hurt = Math.max(1, Math.round(enemy.atk * 0.5));
+    actor.gainHp(-hurt);
+    if (window.HealthCore && window.HealthCore.injureBodyPart && actor._bodyParts) {
+      window.HealthCore.injureBodyPart(actor, session.myKey, Math.round(hurt * 0.6));
+    }
+    actor.startDamagePopup();
+    wrestleLog(T('HealthMonsters.wrestle.log.reversal', {
+      actor: actor.name(), enemy: enemy.name(), part: part ? part.name : "",
+    }));
+  }
+
+  const _GA_apply_WR = Game_Action.prototype.apply;
+  Game_Action.prototype.apply = function (target) {
+    const plan = this._wrestlePlan;
+    if (!plan || !isWrestleAction(this) || !target || !target.isEnemy || !target.isEnemy()) {
+      _GA_apply_WR.call(this, target);
+      return;
+    }
+
+    const subject = this.subject();
+    if (!target._bodyParts) initializeEnemyBodyParts(target);
+
+    // A plan is made a turn before it lands and limbs go missing in between, so
+    // it re-anchors onto a part that is still there rather than dropping the turn.
+    const session = wrestleSession(subject, target);
+    if (wrestlePartUsable((subject._bodyParts || {})[plan.myPart])) session.myKey = plan.myPart;
+    if (wrestlePartUsable(target._bodyParts[plan.theirPart])) session.theirKey = plan.theirPart;
+    this._wrestlePlan = null;
+
+    if (!session.myKey || !session.theirKey) {
+      this._wrestleForceMiss = true;
+      _GA_apply_WR.call(this, target);
+      this._wrestleForceMiss = false;
+      wrestleLog(T('HealthMonsters.wrestle.log.noLimb', { actor: subject.name() }));
+      return;
+    }
+
+    if (plan.skillId) this._applyWrestleFinisher(target, session, plan.skillId);
+    else this._applyWrestleHold(target, session, plan.holdId);
+  };
+
+  Game_Action.prototype._applyWrestleHold = function (target, session, holdId) {
+    const subject = this.subject();
+    const partName = session.theirPartData().name;
+    const hold = WRESTLE_HOLDS.find(h => h.id === holdId) || WRESTLE_HOLDS[0];
+    const chance = wrestleChance(session, hold);
+    const roll = Math.random() * 100;
+
+    if (roll >= chance) {
+      this._wrestleForceMiss = true;
+      _GA_apply_WR.call(this, target);
+      this._wrestleForceMiss = false;
+      wrestleLog(T('HealthMonsters.wrestle.hold.' + hold.id + '.miss', {
+        actor: subject.name(), enemy: target.name(), part: partName,
+      }));
+      wrestleReversal(session, chance, roll);
+      return;
+    }
+
+    _wrestleForcedPart = session.theirKey;
+    _wrestleForcedEnemy = target;
+    this._wrestleDamage = wrestleDamage(session, hold);
+    try {
+      _GA_apply_WR.call(this, target);
+    } finally {
+      this._wrestleDamage = null;
+      _wrestleForcedPart = null;
+      _wrestleForcedEnemy = null;
+    }
+
+    wrestleLog(T('HealthMonsters.wrestle.hold.' + hold.id + '.hit', {
+      actor: subject.name(), enemy: target.name(), part: partName,
+    }));
+
+    // The state a hold IS lands with it: a grapple that worked is a grapple,
+    // and rolling a second time for it would make the row's odds a lie. Only
+    // the side effects a hold might also cause are left to training.
+    const stateRate = wrestleStateRate(session.actor);
+    for (const entry of (hold.states || [])) {
+      if (entry.targetFamily && entry.targetFamily.indexOf(session.theirFamily()) < 0) continue;
+      const odds = entry.rate >= 1 ? 1 : entry.rate * stateRate;
+      if (Math.random() < odds) target.addState(entry.id);
+    }
+
+    // Tearing a limb away is the same wound taken to its end. Whether the body
+    // can actually spare it is the limb table's call, not this one's: a vital
+    // part still refuses to come off while the monster has fight left in it.
+    if (hold.rip) {
+      const part = target._bodyParts[session.theirKey];
+      if (part && !part.destroyed && part.currentHp > 0) {
+        applyDamageToBodyPart(target, session.theirKey, part.currentHp, true);
+      }
+      const after = target._bodyParts[session.theirKey];
+      wrestleLog(!after || after.destroyed
+        ? T('HealthMonsters.wrestle.log.ripped',
+            { actor: subject.name(), enemy: target.name(), part: partName })
+        : T('HealthMonsters.wrestle.log.ripHeld', { enemy: target.name(), part: partName }));
+    }
+  };
+
+  Game_Action.prototype._applyWrestleFinisher = function (target, session, skillId) {
+    const subject = this.subject();
+    const skill = $dataSkills[skillId];
+    if (!skill) { this._applyWrestleHold(target, session, "strike"); return; }
+    const partName = session.theirPartData().name;
+    const entry = (wrestleFinisherPool() || []).find(e => e.id === skillId);
+    const chance = entry ? wrestleFinisherChance(session, entry) : 50;
+    const roll = Math.random() * 100;
+
+    if (roll >= chance) {
+      this._wrestleForceMiss = true;
+      _GA_apply_WR.call(this, target);
+      this._wrestleForceMiss = false;
+      wrestleLog(T('HealthMonsters.wrestle.log.finisherMiss', {
+        actor: subject.name(), skill: skill.name, enemy: target.name(),
+      }));
+      wrestleReversal(session, chance, roll);
+      return;
+    }
+
+    wrestleLog(T('HealthMonsters.wrestle.log.finisherHit', {
+      actor: subject.name(), skill: skill.name, part: partName,
+    }));
+
+    // The move runs as itself: its own formula, its own effects, on the limb the
+    // hold was on, paid for by the grapple instead of by its usual cost.
+    _wrestleForcedPart = session.theirKey;
+    _wrestleForcedEnemy = target;
+    const finisher = new Game_Action(subject);
+    finisher.setSkill(skillId);
+    finisher._wrestleForceHit = true;
+    try {
+      finisher.apply(target);
+    } finally {
+      _wrestleForcedPart = null;
+      _wrestleForcedEnemy = null;
+    }
+
+    // A landed finisher ends the hold it was set up from: both fighters are
+    // back on their feet, one of them worse off.
+    target.removeState(51);
+    target.removeState(52);
+    if (Math.random() < wrestleStateRate(session.actor) * 0.6) target.addState(54);
+    if (entry && subject.gainSpecializationExp) subject.gainSpecializationExp(entry.spec.id, 1);
+  };
+
 })();

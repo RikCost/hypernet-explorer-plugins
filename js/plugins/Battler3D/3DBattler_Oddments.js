@@ -262,13 +262,16 @@
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
             this.applyModelScale(growth);
             const fast = (anim === 'attack' || anim === 'specialattack');
+            // Four-legged models only stride while really travelling (overworld
+            // walk) or lunging on an attack; standing in battle they keep still.
+            const stride = this.strideMul(fast);
 
             switch (this.variant) {
                 case 'slowturtle':
                 case 'creepingshade': {
                     this.model.position.y = this._baseY + Math.sin(t * 0.8) * 0.01 * this.scale;
                     if (this.head) this.head.position.z = 0.6 - (fast ? 0 : Math.max(0, Math.sin(t * 0.4)) * 0.35); // shy retract
-                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((lg, i) => { if (lg) lg.rotation.x = 0.3 + Math.sin(t * (fast ? 5 : 1.5) + i) * 0.15; });
+                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((lg, i) => { if (lg) lg.rotation.x = 0.3 + Math.sin(t * (fast ? 5 : 1.5) + i) * 0.15 * stride; });
                     if (this.wisps) this.wisps.children.forEach((w, i) => { w.position.y = 0.9 + Math.sin(t * 2 + w._a) * 0.1; w.material.emissiveIntensity = 0.4 + Math.sin(t * 3 + i) * 0.3; });
                     break;
                 }

@@ -1,237 +1,197 @@
 {
   "_comment": "Sexual and romantic orientation database for the NPC Romance tab. pct fields are the share of the population holding that orientation and are each meant to sum to ~100 within their list. kinsey is the Kinsey-scale value (0-6, or 'X') for orientations that map onto the scale, and null for those that do not. correspondsTo is the thematically matching key in the other list (sexual<->romantic), null when there is none. Consumed by NPCEmpathizeUI.js.",
   "kinseyScale": {
-    "0": "Exclusively heterosexual",
-    "1": "Predominantly heterosexual, incidentally homosexual",
-    "2": "Predominantly heterosexual, more than incidentally homosexual",
-    "3": "Equally heterosexual and homosexual",
-    "4": "Predominantly homosexual, more than incidentally heterosexual",
-    "5": "Predominantly homosexual, incidentally heterosexual",
-    "6": "Exclusively homosexual",
-    "X": "Asexual, no socio-sexual reactions"
+    "0": "Orientations.kinsey.0",
+    "1": "Orientations.kinsey.1",
+    "2": "Orientations.kinsey.2",
+    "3": "Orientations.kinsey.3",
+    "4": "Orientations.kinsey.4",
+    "5": "Orientations.kinsey.5",
+    "6": "Orientations.kinsey.6",
+    "X": "Orientations.kinsey.X"
   },
   "sexual": [
     {
       "key": "heterosexual",
-      "name": "Heterosexual",
-      "name_it": "Eterosessuale",
+      "name": "Orientations.sexual.heterosexual.name",
       "pct": 89.0,
       "kinsey": 0,
       "esoteric": false,
       "correspondsTo": "heteroromantic",
-      "desc": "Sexual attraction toward people of a different gender.",
-      "desc_it": "Attrazione sessuale verso persone di genere diverso."
+      "desc": "Orientations.sexual.heterosexual.desc"
     },
     {
       "key": "bisexual",
-      "name": "Bisexual",
-      "name_it": "Bisessuale",
+      "name": "Orientations.sexual.bisexual.name",
       "pct": 4.0,
       "kinsey": 3,
       "esoteric": false,
       "correspondsTo": "biromantic",
-      "desc": "Sexual attraction toward more than one gender.",
-      "desc_it": "Attrazione sessuale verso piu di un genere."
+      "desc": "Orientations.sexual.bisexual.desc"
     },
     {
       "key": "homosexual",
-      "name": "Homosexual",
-      "name_it": "Omosessuale",
+      "name": "Orientations.sexual.homosexual.name",
       "pct": 3.0,
       "kinsey": 6,
       "esoteric": false,
       "correspondsTo": "homoromantic",
-      "desc": "Sexual attraction exclusively toward people of the same gender.",
-      "desc_it": "Attrazione sessuale esclusivamente verso persone dello stesso genere."
+      "desc": "Orientations.sexual.homosexual.desc"
     },
     {
       "key": "pansexual",
-      "name": "Pansexual",
-      "name_it": "Pansessuale",
+      "name": "Orientations.sexual.pansexual.name",
       "pct": 1.2,
       "kinsey": 3,
       "esoteric": false,
       "correspondsTo": "panromantic",
-      "desc": "Sexual attraction to people regardless of their gender.",
-      "desc_it": "Attrazione sessuale a prescindere dal genere."
+      "desc": "Orientations.sexual.pansexual.desc"
     },
     {
       "key": "asexual",
-      "name": "Asexual",
-      "name_it": "Asessuale",
+      "name": "Orientations.sexual.asexual.name",
       "pct": 1.0,
       "kinsey": "X",
       "esoteric": false,
       "correspondsTo": null,
-      "desc": "Little or no sexual attraction toward anyone.",
-      "desc_it": "Poca o nessuna attrazione sessuale verso chiunque."
+      "desc": "Orientations.sexual.asexual.desc"
     },
     {
       "key": "demisexual",
-      "name": "Demisexual",
-      "name_it": "Demisessuale",
+      "name": "Orientations.sexual.demisexual.name",
       "pct": 0.8,
       "kinsey": null,
       "esoteric": false,
       "correspondsTo": "demiromantic",
-      "desc": "Sexual attraction that only forms after a strong emotional bond.",
-      "desc_it": "Attrazione sessuale che nasce solo dopo un forte legame emotivo."
+      "desc": "Orientations.sexual.demisexual.desc"
     },
     {
       "key": "queer",
-      "name": "Queer",
-      "name_it": "Queer",
+      "name": "Orientations.sexual.queer.name",
       "pct": 0.5,
       "kinsey": null,
       "esoteric": false,
       "correspondsTo": null,
-      "desc": "A fluid or deliberately unlabeled orientation outside the usual categories.",
-      "desc_it": "Un orientamento fluido o volutamente senza etichetta, fuori dalle categorie usuali."
+      "desc": "Orientations.sexual.queer.desc"
     },
     {
       "key": "digisexual",
-      "name": "Digisexual",
-      "name_it": "Digisessuale",
+      "name": "Orientations.sexual.digisexual.name",
       "pct": 0.3,
       "kinsey": null,
       "esoteric": true,
       "correspondsTo": "botromantic",
-      "desc": "Attraction felt only toward synthetic minds: robots, androids and artificial intelligences.",
-      "desc_it": "Attrazione provata solo verso menti sintetiche: robot, androidi e intelligenze artificiali."
+      "desc": "Orientations.sexual.digisexual.desc"
     },
     {
       "key": "dendrosexual",
-      "name": "Dendrosexual",
-      "name_it": "Dendrosessuale",
+      "name": "Orientations.sexual.dendrosexual.name",
       "pct": 0.1,
       "kinsey": null,
       "esoteric": true,
       "correspondsTo": "dendroromantic",
-      "desc": "Attraction felt only toward plants and botanical life.",
-      "desc_it": "Attrazione provata solo verso piante e vita botanica."
+      "desc": "Orientations.sexual.dendrosexual.desc"
     },
     {
       "key": "nanosexual",
-      "name": "Nanosexual (Dwarf-oriented)",
-      "name_it": "Nanosessuale (attratto dai nani)",
+      "name": "Orientations.sexual.nanosexual.name",
       "pct": 0.1,
       "kinsey": null,
       "esoteric": true,
       "correspondsTo": null,
-      "desc": "Attraction felt exclusively toward dwarves.",
-      "desc_it": "Attrazione provata esclusivamente verso i nani."
+      "desc": "Orientations.sexual.nanosexual.desc"
     }
   ],
   "romantic": [
     {
       "key": "heteroromantic",
-      "name": "Heteroromantic",
-      "name_it": "Eteroromantico",
+      "name": "Orientations.romantic.heteroromantic.name",
       "pct": 78.0,
       "kinsey": 0,
       "esoteric": false,
       "correspondsTo": "heterosexual",
-      "desc": "Romantic attraction toward people of a different gender.",
-      "desc_it": "Attrazione romantica verso persone di genere diverso."
+      "desc": "Orientations.romantic.heteroromantic.desc"
     },
     {
       "key": "bubbaromantic",
-      "name": "Bubbaromantic",
-      "name_it": "Bubbaromantico",
+      "name": "Orientations.romantic.bubbaromantic.name",
       "pct": 8.0,
       "kinsey": null,
       "esoteric": true,
       "correspondsTo": null,
-      "desc": "Romantic attraction felt exclusively toward Bubba Wilson, the inventor of the Liminal Engine.",
-      "desc_it": "Attrazione romantica provata esclusivamente verso Bubba Wilson, l'inventore del Motore Liminale.."
+      "desc": "Orientations.romantic.bubbaromantic.desc"
     },
     {
       "key": "biromantic",
-      "name": "Biromantic",
-      "name_it": "Biromantico",
+      "name": "Orientations.romantic.biromantic.name",
       "pct": 5.0,
       "kinsey": 3,
       "esoteric": false,
       "correspondsTo": "bisexual",
-      "desc": "Romantic attraction toward more than one gender.",
-      "desc_it": "Attrazione romantica verso piu di un genere."
+      "desc": "Orientations.romantic.biromantic.desc"
     },
     {
       "key": "aromantic",
-      "name": "Aromantic",
-      "name_it": "Aromantico",
+      "name": "Orientations.romantic.aromantic.name",
       "pct": 3.0,
       "kinsey": null,
       "esoteric": false,
       "correspondsTo": null,
-      "desc": "Little or no romantic attraction toward anyone.",
-      "desc_it": "Poca o nessuna attrazione romantica verso chiunque."
+      "desc": "Orientations.romantic.aromantic.desc"
     },
     {
       "key": "homoromantic",
-      "name": "Homoromantic",
-      "name_it": "Omoromantico",
+      "name": "Orientations.romantic.homoromantic.name",
       "pct": 3.0,
       "kinsey": 6,
       "esoteric": false,
       "correspondsTo": "homosexual",
-      "desc": "Romantic attraction exclusively toward the same gender.",
-      "desc_it": "Attrazione romantica esclusivamente verso lo stesso genere."
+      "desc": "Orientations.romantic.homoromantic.desc"
     },
     {
       "key": "panromantic",
-      "name": "Panromantic",
-      "name_it": "Panromantico",
+      "name": "Orientations.romantic.panromantic.name",
       "pct": 1.5,
       "kinsey": 3,
       "esoteric": false,
       "correspondsTo": "pansexual",
-      "desc": "Romantic attraction to people regardless of their gender.",
-      "desc_it": "Attrazione romantica a prescindere dal genere."
+      "desc": "Orientations.romantic.panromantic.desc"
     },
     {
       "key": "demiromantic",
-      "name": "Demiromantic",
-      "name_it": "Demiromantico",
+      "name": "Orientations.romantic.demiromantic.name",
       "pct": 1.0,
       "kinsey": null,
       "esoteric": false,
       "correspondsTo": "demisexual",
-      "desc": "Romantic attraction that only forms after a strong emotional bond.",
-      "desc_it": "Attrazione romantica che nasce solo dopo un forte legame emotivo."
+      "desc": "Orientations.romantic.demiromantic.desc"
     },
     {
       "key": "sapioromantic",
-      "name": "Sapioromantic",
-      "name_it": "Sapioromantico",
+      "name": "Orientations.romantic.sapioromantic.name",
       "pct": 0.3,
       "kinsey": null,
       "esoteric": false,
       "correspondsTo": null,
-      "desc": "Romantic attraction driven chiefly by a partner's intellect.",
-      "desc_it": "Attrazione romantica guidata soprattutto dall'intelletto del partner."
+      "desc": "Orientations.romantic.sapioromantic.desc"
     },
     {
       "key": "botromantic",
-      "name": "Botromantic",
-      "name_it": "Botromantico",
+      "name": "Orientations.romantic.botromantic.name",
       "pct": 0.1,
       "kinsey": null,
       "esoteric": true,
       "correspondsTo": "digisexual",
-      "desc": "Romantic attraction felt only toward robots and artificial minds.",
-      "desc_it": "Attrazione romantica provata solo verso robot e menti artificiali."
+      "desc": "Orientations.romantic.botromantic.desc"
     },
     {
       "key": "dendroromantic",
-      "name": "Dendroromantic",
-      "name_it": "Dendroromantico",
+      "name": "Orientations.romantic.dendroromantic.name",
       "pct": 0.05,
       "kinsey": null,
       "esoteric": true,
       "correspondsTo": "dendrosexual",
-      "desc": "Romantic attraction felt only toward plants and botanical life.",
-      "desc_it": "Attrazione romantica provata solo verso piante e vita botanica."
+      "desc": "Orientations.romantic.dendroromantic.desc"
     }
   ]
 }

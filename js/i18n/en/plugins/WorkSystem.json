@@ -97,5 +97,7 @@
     "27": "Vatican",
     "30": "Battle Nuns"
   },
-  "ui": {}
+  "ui": {},
+  "guildRegistry": "GUILD LABOR REGISTRY",
+  "guildRegistryCategory": "GUILD LABOR REGISTRY: {category}"
 }

@@ -1447,7 +1447,7 @@
     },
     "cardinalscouncil": {
       "name": "Consiglio dei Cardinali",
-      "description": "La cerchia ristretta e segreta di cardinali che consigliano il Papa and controllano le macchinazioni politiche della Chiesa.",
+      "description": "La cerchia ristretta e segreta di cardinali che consigliano il Papa e controllano le macchinazioni politiche della Chiesa.",
       "troops": {
         "councildeacon": {
           "name": "Diacono del Consiglio"
@@ -2475,6 +2475,276 @@
         },
         "punchlineregent": {
           "name": "Reggente della Battuta"
+        }
+      }
+    },
+    "gandanorder": {
+      "name": "Ordine di Gandan",
+      "description": "L'ordine monastico che riconosce il Khan, tiene il conto degli anni e decide quando una vita è stata vissuta abbastanza bene da meritare una menzione.",
+      "troops": {
+        "noviceofthelamp": {
+          "name": "Novizio della Lampada"
+        },
+        "gandanchanter": {
+          "name": "Cantore di Gandan"
+        },
+        "prayerwheelguard": {
+          "name": "Guardia della Ruota di Preghiera"
+        },
+        "illuminedadept": {
+          "name": "Adepto Illuminato"
+        },
+        "banneroftheeighthsky": {
+          "name": "Stendardo dell'Ottavo Cielo"
+        },
+        "abbotmilitant": {
+          "name": "Abate Militante"
+        }
+      }
+    },
+    "steppebanners": {
+      "name": "Stendardi della Steppa",
+      "description": "Cavallo, arco e feltro. Gli stendardi cavalcano per il Khanato e tornano a casa quando l'erba manca, cosa che il Khanato ha imparato a mettere in conto.",
+      "troops": {
+        "hordeoutrider": {
+          "name": "Esploratore dell'Orda"
+        },
+        "hornbowrider": {
+          "name": "Cavaliere dall'Arco di Corno"
+        },
+        "felttentsergeant": {
+          "name": "Sergente delle Tende di Feltro"
+        },
+        "keshigguard": {
+          "name": "Guardia Keshig"
+        },
+        "khansfalconer": {
+          "name": "Falconiere del Khan"
+        },
+        "standardbearerofthegobi": {
+          "name": "Portastendardo del Gobi"
+        }
+      }
+    },
+    "sanhedringuard": {
+      "name": "Guardia del Sinedrio",
+      "description": "La guardia permanente della Repubblica, giurata alla corte restaurata e non al governo che di volta in volta vi si insedia.",
+      "troops": {
+        "templewatchman": {
+          "name": "Guardiano del Tempio"
+        },
+        "sealbearer": {
+          "name": "Portatore del Sigillo"
+        },
+        "levitesharpshooter": {
+          "name": "Tiratore Levita"
+        },
+        "nasisescort": {
+          "name": "Scorta del Nasi"
+        },
+        "brazenpillarguard": {
+          "name": "Guardia del Pilastro di Bronzo"
+        },
+        "cherubimoperator": {
+          "name": "Operatore dei Cherubini"
+        }
+      }
+    },
+    "shemhamphorasch": {
+      "name": "Scribi del Nome Diviso",
+      "description": "Archiviano i settantadue, tengono i vasi di ottone sigillati e sono estremamente chiari sul fatto che al momento non manca nulla.",
+      "troops": {
+        "nameclerk": {
+          "name": "Scrivano del Nome"
+        },
+        "bindingscribe": {
+          "name": "Scriba dei Vincoli"
+        },
+        "ringbearer": {
+          "name": "Portatore dell'Anello"
+        },
+        "seventytwomaster": {
+          "name": "Maestro dei Settantadue"
+        },
+        "brasspotwarden": {
+          "name": "Custode dei Vasi di Ottone"
+        }
+      }
+    },
+    "concessionguard": {
+      "name": "Guardia della Concessione",
+      "description": "Chi tiene la concessione tiene questi: sorveglianza dell'oleodotto, tiratori delle torri e uomini che risolvono di persona una locazione contesa.",
+      "troops": {
+        "pipelinewatch": {
+          "name": "Sorvegliante dell'Oleodotto"
+        },
+        "derrickmarksman": {
+          "name": "Tiratore della Torre"
+        },
+        "refinerysergeant": {
+          "name": "Sergente di Raffineria"
+        },
+        "concessionenforcer": {
+          "name": "Esattore della Concessione"
+        },
+        "wellheadcaptain": {
+          "name": "Capitano di Pozzo"
+        },
+        "flarelightsniper": {
+          "name": "Cecchino della Fiaccola"
+        }
+      }
+    },
+    "deepcontractors": {
+      "name": "Contraenti del Profondo",
+      "description": "Chi tratta con ciò che la trivella risveglia, e chi mantiene quanto pattuito. Di solito le stesse persone.",
+      "troops": {
+        "signatorydeacon": {
+          "name": "Diacono Firmatario"
+        },
+        "crudehandler": {
+          "name": "Manovratore del Greggio"
+        },
+        "bargainkeeper": {
+          "name": "Custode del Patto"
+        },
+        "deepwellcaller": {
+          "name": "Chiamatore del Pozzo Profondo"
+        },
+        "contractdemonherd": {
+          "name": "Mandriano di Demoni Contrattuali"
+        }
+      }
+    },
+    "pasdaranorder": {
+      "name": "Guardia degli Immortali",
+      "description": "Il reggimento personale dello Shah: diecimila uomini sulla carta e mai contati in pubblico una sola volta.",
+      "troops": {
+        "basijvolunteer": {
+          "name": "Volontario di Leva"
+        },
+        "pasdaranrifleman": {
+          "name": "Fuciliere Immortale"
+        },
+        "qudsoperative": {
+          "name": "Operativo Savak"
+        },
+        "missilecrewman": {
+          "name": "Artigliere Missilistico"
+        },
+        "guardiancommander": {
+          "name": "Comandante degli Immortali"
+        }
+      }
+    },
+    "hawzascholars": {
+      "name": "Accademia Imperiale",
+      "description": "Seminario, tribunale e ospedale sotto lo stesso tetto, e responsabili davanti al trono e non al pulpito.",
+      "troops": {
+        "seminarian": {
+          "name": "Accademico"
+        },
+        "jurisprudent": {
+          "name": "Giurista di Corte"
+        },
+        "fatwaclerk": {
+          "name": "Scrivano della Cancelleria"
+        },
+        "hawzaphysician": {
+          "name": "Medico di Corte"
+        },
+        "marjascounsel": {
+          "name": "Consigliere del Trono"
+        }
+      }
+    },
+    "rashtrasevaks": {
+      "name": "Sevak del Rashtra",
+      "description": "Volontari dell'ordine eterno: addestrati ogni mattina e disponibili ogni sera.",
+      "troops": {
+        "sevakvolunteer": {
+          "name": "Volontario Sevak"
+        },
+        "lathisergeant": {
+          "name": "Sergente del Lathi"
+        },
+        "dhanushmarksman": {
+          "name": "Tiratore Dhanush"
+        },
+        "rashtrasubhedar": {
+          "name": "Subhedar del Rashtra"
+        },
+        "chakrastandardbearer": {
+          "name": "Portastendardo del Chakra"
+        },
+        "mahasenapati": {
+          "name": "Mahasenapati"
+        }
+      }
+    },
+    "mathacircle": {
+      "name": "Circolo dei Matha",
+      "description": "Le case di insegnamento: recitazione, medicina, calendario e la gestione silenziosa di tutto ciò che l'assemblea dimentica.",
+      "troops": {
+        "brahmacharin": {
+          "name": "Brahmacharin"
+        },
+        "vedicreciter": {
+          "name": "Recitatore Vedico"
+        },
+        "acharyasaide": {
+          "name": "Aiutante dell'Acharya"
+        },
+        "yajnakeeper": {
+          "name": "Custode dello Yajna"
+        },
+        "mathaphysician": {
+          "name": "Medico del Matha"
+        }
+      }
+    },
+    "cordilleracorps": {
+      "name": "Corpo della Cordigliera",
+      "description": "L'esercito del lungo sud, addestrato per un confine quasi verticale e mai del tutto dove lo mette la mappa.",
+      "troops": {
+        "conscriptofthesouth": {
+          "name": "Coscritto del Sud"
+        },
+        "andeanranger": {
+          "name": "Ranger Andino"
+        },
+        "cordillerasapper": {
+          "name": "Zappatore della Cordigliera"
+        },
+        "mountainartillerist": {
+          "name": "Artigliere di Montagna"
+        },
+        "longsouthcaptain": {
+          "name": "Capitano del Lungo Sud"
+        },
+        "valdiviasgrenadier": {
+          "name": "Granatiere di Valdivia"
+        }
+      }
+    },
+    "australnavy": {
+      "name": "Flottiglia Australe",
+      "description": "Canali, fiordi e acqua ghiacciata. Non ha mai perso una nave che ammetta di aver avuto.",
+      "troops": {
+        "channelpilot": {
+          "name": "Pilota dei Canali"
+        },
+        "straitmarine": {
+          "name": "Fante degli Stretti"
+        },
+        "icewatermate": {
+          "name": "Nostromo delle Acque Gelate"
+        },
+        "australgunner": {
+          "name": "Cannoniere Australe"
+        },
+        "commodoreofthefjords": {
+          "name": "Commodoro dei Fiordi"
         }
       }
     }

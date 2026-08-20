@@ -926,7 +926,7 @@
             ${window.CCButtons.panel({
               back: window.CCButtons.button(t('no'), { attrs: 'data-yes="0"' }),
               next: window.CCButtons.button(t('yes'), { confirm: true, attrs: 'data-yes="1"' }),
-              style: "margin-top: 0; padding-top: 0; min-width: 380px;",
+              style: "margin-top: 0; padding-top: 0; min-width: 380px; background: transparent; box-shadow: none;",
             })}
           </div>
         `;

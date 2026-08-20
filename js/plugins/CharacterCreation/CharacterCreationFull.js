@@ -399,9 +399,17 @@
     return [];
   }
 
+  // The nation ids the backstory generator draws from. `_birthplaceOverride`
+  // stores one of these verbatim, so the list is of ids; the label each reads as
+  // comes from WorldNames, and the picker sorts on the label.
   function nationList() {
     const countries = window.HistorySimulator_COUNTRIES;
-    return countries ? Object.keys(countries).sort() : [];
+    if (!countries) return [];
+    return Object.keys(countries).sort((a, b) => nationLabel(a).localeCompare(nationLabel(b)));
+  }
+
+  function nationLabel(id) {
+    return window.WorldNames ? window.WorldNames.nation(id) : String(id || "");
   }
 
   // The Romance tab's own copy of this bank is private to NPCEmpathizeUI, so it
@@ -424,10 +432,18 @@
     return _orientationBank;
   }
 
+  // Orientations.json carries i18n keys rather than words, so an orientation
+  // reads in the player's language; anything unkeyed is shown as written.
+  function dbText(value) {
+    if (!value) return "";
+    // window.T, not the local CharCreate-prefixed wrapper: these keys name
+    // their own namespace.
+    const key = String(value);
+    return (window.T && window.T.has && window.T.has(key)) ? window.T(key) : key;
+  }
+
   function orientationName(entry) {
-    if (!entry) return "";
-    return window.ConfigManager && ConfigManager.language === "it"
-      ? (entry.name_it || entry.name) : entry.name;
+    return entry ? dbText(entry.name) : "";
   }
 
   function currentOrientation(kind) {
@@ -449,10 +465,12 @@
     return window._NPCSocietyDataLoader || null;
   }
 
+  // The English `name` is the personality's id; its label comes from
+  // js/i18n/<lang>/plugins/Personality.json.
   function personalityName(entry) {
-    if (!entry) return "";
-    return window.ConfigManager && ConfigManager.language === "it"
-      ? (entry.name_it || entry.name) : entry.name;
+    if (!entry || !entry.name) return "";
+    const key = "Personality." + String(entry.name).toLowerCase().replace(/[^a-z0-9]/g, "") + ".name";
+    return (window.T && window.T.has && window.T.has(key)) ? window.T(key) : String(entry.name);
   }
 
   // A creed is written to the profile by slot AND by name: everything that
@@ -890,7 +908,7 @@
     }
     sections.push({ title: T("detailed.section.identity"), rows: identity });
 
-    const nationValue = profile && profile._birthplaceOverride ? profile._birthplaceOverride : "";
+    const nationValue = profile && profile._birthplaceOverride ? nationLabel(profile._birthplaceOverride) : "";
     sections.push({
       title: T("detailed.section.origins"),
       rows: [
@@ -1158,7 +1176,7 @@
         return {
           title: T("detailed.row.birthNation"),
           options: [{ key: "__random", label: T("detailed.random") }].concat(
-            nationList().map((nation) => ({ key: nation, label: nation }))
+            nationList().map((nation) => ({ key: nation, label: nationLabel(nation) }))
           ),
         };
       case "personality":
@@ -1214,8 +1232,7 @@
           options: list.map((entry) => ({
             key: entry.key,
             label: orientationName(entry),
-            sub: window.ConfigManager && ConfigManager.language === "it"
-              ? (entry.desc_it || entry.desc) : entry.desc,
+            sub: dbText(entry.desc),
           })),
         };
       }

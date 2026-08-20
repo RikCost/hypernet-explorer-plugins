@@ -16,5 +16,6 @@
   "enableOrDisableRealTime": "Abilita o disabilita gli avvisi dei tutorial in tempo reale, i segnaposto della quest e i suggerimenti scritti mentre esplori il mondo.",
   "configureWorldMapHintsAnd": "Regola le preferenze di navigazione ed i suggerimenti sulla mappa nella pagina a destra.",
   "noCodexEntriesFoundIn": "Nessun documento trovato in questa categoria...",
-  "command": "Aiuto"
+  "command": "Aiuto",
+  "noHistoryThisYear": "Nessun evento degno di nota registrato in questo anno."
 }

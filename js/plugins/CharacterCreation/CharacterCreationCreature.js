@@ -32,6 +32,42 @@
     return $dataSkills && $dataSkills[skillId] ? $dataSkills[skillId].name : T('Creature.skillFallback', { id: skillId });
   }
 
+  // Health_Core owns how anatomies are spliced and how a part is named, so the
+  // wizard shows exactly the body the creature will be given. Both fall back to
+  // something sane if the health plugins are not loaded.
+  function mergeParts(keys) {
+    const HC = window.HealthCore;
+    if (HC && HC.mergeArchetypeParts) return HC.mergeArchetypeParts(keys);
+    const { Archetypes } = window.Health || {};
+    const merged = {};
+    (keys || []).forEach((key, index) => {
+      const entry = Archetypes && Archetypes[key];
+      for (const partKey in (entry && entry.parts) || {}) {
+        if (!merged[partKey]) merged[partKey] = Object.assign({}, entry.parts[partKey], { fromArchetype: index });
+      }
+    });
+    return merged;
+  }
+
+  function partName(part) {
+    const HC = window.HealthCore;
+    if (HC && HC.archetypePartName) return HC.archetypePartName(part);
+    return (window.getArchetypeText ? window.getArchetypeText(part.name) : part.name) || part.name;
+  }
+
+  // How many weapons the body could carry, printed under the archetype name so
+  // the choice can be made on it. ItemSystem/ItemSystemEquipment.js is the one
+  // place the rules live; this only asks it.
+  function weaponSlotLine(parts) {
+    const HS = window.HandSlots;
+    if (!HS || !HS.layoutForParts) return "";
+    const layout = HS.layoutForParts(parts);
+    if (!layout.slots) return T('Creature.ui.noWeaponSlots');
+    if (layout.mouth && !layout.hands) return T('Creature.ui.weaponSlotsMouth');
+    if (layout.slots === 1) return T('Creature.ui.weaponSlotsOne');
+    return T('Creature.ui.weaponSlots', { n: layout.slots });
+  }
+
   // ============================================================================
   // Window_ArchetypeSelect - List of available archetypes
   // ============================================================================
@@ -55,8 +91,11 @@
   // rectangle move the index and cycle the cards under the pointer.
   Window_ArchetypeSelect.prototype.processTouch = function () {};
 
+  // Must match the DOM board the cards are drawn on (.cc-select-grid
+  // .cc-three-col): WASD/stick navigation steps by this stride, so a stride
+  // that disagrees with the layout moves the cursor to the wrong card.
   Window_ArchetypeSelect.prototype.maxCols = function () {
-    return 2;
+    return 3;
   };
 
   Window_ArchetypeSelect.prototype.maxItems = function () {
@@ -111,9 +150,9 @@
 
   Window_ArchetypeSelect.prototype.makeItemList = function () {
     this._data = [];
-    const { EnemyArchetypes } = window.Health || {};
-    if (EnemyArchetypes) {
-      for (const key in EnemyArchetypes) {
+    const { Archetypes } = window.Health || {};
+    if (Archetypes) {
+      for (const key in Archetypes) {
         if (HIDDEN_ARCHETYPES.includes(key)) continue;
         if (!archetypeOfferedInPopulation(key)) continue;
         this._data.push({
@@ -122,6 +161,9 @@
         });
       }
     }
+    // Alphabetical by the name the player actually reads, so the roster can be
+    // scanned instead of searched (Archetypes.json order is authoring order).
+    this._data.sort((a, b) => a.name.localeCompare(b.name));
   };
 
   Window_ArchetypeSelect.prototype.drawItem = function (index) {
@@ -305,49 +347,47 @@
   };
 
   // ============================================================================
-  // Animal sprite entries moved from CharacterSpriteGridSelector
-  // isAnimal: true → drawn without forced fixed direction
+  // Creature sheets, read from NPCs.json
+  //
+  // This board is the other half of the humanoid one (CharacterSpriteGridSelector):
+  // that scene offers every sheet EXCEPT the two beast folders, this one offers
+  // those two and nothing else. The same pair of flags divides them, so moving a
+  // sheet between folders changes which board it appears on and neither list has
+  // to be kept by hand - which is what the hardcoded table that used to live here
+  // was for, and why it fell out of step with the folders twice over.
+  //
+  // isAnimal: true -> drawn from the sheet's own frame layout rather than the
+  // forced middle-column/facing-down the Monsters folder is drawn with.
   // ============================================================================
-  const ANIMAL_SPRITE_ENTRIES = [
-    { displayName: 'Animals01Color_0', path: 'NPCs/!$CatButton1', index: 0 },
-    { displayName: 'Animals01Color_1', path: 'NPCs/!$DogTail1', index: 0 },
-    { displayName: 'Animals01Color_2', path: 'NPCs/!$AvianNoble1', index: 0 },
-    { displayName: 'Animals01Color_3', path: 'NPCs/!$Animals01Color4', index: 0 },
-    { displayName: 'Animals01Color_4', path: 'NPCs/!$InsectoidBee1', index: 0 },
-    { displayName: 'FarmAnimals01RM_0', path: 'NPCs/!$FarmAnimals01RM1', index: 0 },
-    { displayName: 'FarmAnimals01RM_1', path: 'NPCs/!$FarmAnimals01RM2', index: 0 },
-    { displayName: 'FarmAnimals01RM_2', path: 'NPCs/!$FarmAnimals01RM3', index: 0 },
-    { displayName: 'FarmAnimals01RM_3', path: 'NPCs/!$FarmAnimals01RM4', index: 0 },
-    { displayName: 'FarmAnimals01RM_4', path: 'NPCs/!$FarmAnimals01RM5', index: 0 },
-    { displayName: 'FarmAnimals01RM_5', path: 'NPCs/!$FarmAnimals01RM6', index: 0 },
-    { displayName: 'FarmAnimals01RM_6', path: 'NPCs/!$FarmAnimals01RM7', index: 0 },
-    { displayName: 'FarmAnimals01RM_7', path: 'NPCs/!$FarmAnimals01RM8', index: 0 },
-    { displayName: 'FarmAnimals02RM_0', path: 'NPCs/!$Horse1', index: 0 },
-    { displayName: 'FarmAnimals02RM_1', path: 'NPCs/!$Horse2', index: 0 },
-    { displayName: 'FarmAnimals02RM_2', path: 'NPCs/!$Horse3', index: 0 },
-    { displayName: 'FarmAnimals02RM_3', path: 'NPCs/!$Horse4', index: 0 },
-    { displayName: 'FarmAnimals02RM_4', path: 'NPCs/!$Horse5', index: 0 },
-    { displayName: 'FarmAnimals02RM_5', path: 'NPCs/!$Horse6', index: 0 },
-    { displayName: 'FarmAnimals02RM_6', path: 'NPCs/!$Horse7', index: 0 },
-    { displayName: 'FarmAnimals02RM_7', path: 'NPCs/!$Horse8', index: 0 },
-    { displayName: 'MV_Chick', path: 'Animals/!$MV_Chick', index: 0 },
-    { displayName: 'MV_Chicken_1', path: 'Animals/!$MV_Chicken_1', index: 0 },
-    { displayName: 'MV_Chicken_2', path: 'Animals/!$MV_Chicken_2', index: 0 },
-    { displayName: 'MV_Chicken_3', path: 'Animals/!$MV_Chicken_3', index: 0 },
-    { displayName: 'MV_Chicken_4', path: 'Animals/!$MV_Chicken_4', index: 0 },
-    { displayName: 'MV_Chicken_5', path: 'Animals/!$MV_Chicken_5', index: 0 },
-    { displayName: 'MV_Chicken_6', path: 'Animals/!$MV_Chicken_6', index: 0 },
-    { displayName: 'MV_Chicken_7', path: 'Animals/!$MV_Chicken_7', index: 0 },
-    { displayName: 'MV_Chicken_Old', path: 'Animals/!$MV_Chicken_Old', index: 0 },
-    { displayName: 'MV_Cow_Baby_1', path: 'Animals/!$MV_Cow_Baby_1', index: 0 },
-    { displayName: 'MV_Cow_Baby_2', path: 'Animals/!$MV_Cow_Baby_2', index: 0 },
-    { displayName: 'MV_Duckling_1', path: 'Animals/!$MV_Duckling_1', index: 0 },
-    { displayName: 'MV_Duckling_2', path: 'Animals/!$MV_Duckling_2', index: 0 },
-    { displayName: 'MV_Goat_Baby_1', path: 'Animals/!$MV_Goat_Baby_1', index: 0 },
-    { displayName: 'MV_Goat_Baby_2', path: 'Animals/!$MV_Goat_Baby_2', index: 0 },
-    { displayName: 'MV_Piglet_1', path: 'Animals/!$MV_Piglet_1', index: 0 },
-    { displayName: 'MV_Piglet_2', path: 'Animals/!$MV_Piglet_2', index: 0 },
-  ];
+  const beastSheetLabel = (key) =>
+    key.slice(key.indexOf('/') + 1)
+      .replace(/[!$]/g, '')
+      .replace(/_/g, ' ')
+      .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+      .replace(/([a-zA-Z])(\d)/g, '$1 $2')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  // Every animal/creature sheet the given archetypes may wear. Archetype is the
+  // second filter and the reason this reads the DB at all: a creature is built
+  // from an archetype first (step 1), so once the player has said "Slime" the
+  // board shows the slimes and not the herd. NPCs.json Archetype values are
+  // Archetypes.json keys, the same vocabulary step 1 picks from, so the
+  // match is a plain lookup. With nothing chosen every beast sheet is offered,
+  // which is what this step did before.
+  const beastSheetEntries = (archetypes) => {
+    const db = window.WorldGen && window.WorldGen.NPCs;
+    if (!db) return [];
+    const wanted = (archetypes && archetypes.length) ? archetypes : null;
+    const out = [];
+    for (const key of Object.keys(db)) {
+      const e = db[key];
+      if (!e || (e.animal !== true && e.creature !== true)) continue;
+      if (wanted && !wanted.includes(e.Archetype)) continue;
+      out.push({ displayName: beastSheetLabel(key), path: key, index: 0, isAnimal: true });
+    }
+    return out;
+  };
 
   // ============================================================================
   // Window_CharacterSelect - Grid of character sprites (monsters + animals)
@@ -404,11 +444,11 @@
 
     const entries = [];
 
-    const { EnemyArchetypes } = window.Health || {};
+    const { Archetypes } = window.Health || {};
     const allowedSprites = new Set();
-    if (EnemyArchetypes && this._archetypes.length > 0) {
+    if (Archetypes && this._archetypes.length > 0) {
       for (const archKey of this._archetypes) {
-        const arch = EnemyArchetypes[archKey];
+        const arch = Archetypes[archKey];
         if (arch && arch.sprites) {
           arch.sprites.forEach(s => allowedSprites.add(s));
         }
@@ -438,13 +478,12 @@
       console.error('Error loading monster character images:', error);
     }
 
-    // Add animal sprites only if no specific archetype filter is active or if specifically allowed
-    // For now, we only show animals if no archetype filter is active
-    if (this._archetypes.length === 0) {
-      for (const a of ANIMAL_SPRITE_ENTRIES) {
-        entries.push({ displayName: formatName(a.displayName), path: a.path, index: a.index, isAnimal: true });
-      }
-    }
+    // Add the animal and creature sheets whose archetype the player chose. An
+    // archetype filter no longer empties this half of the board: it narrows it,
+    // which is the point of tagging the two folders by archetype at all. A
+    // Slime archetype now brings the slime sheets with it instead of leaving
+    // the player none of the folder's own art to pick from.
+    for (const a of beastSheetEntries(this._archetypes)) entries.push(a);
 
     // Sort all entries alphabetically by displayName (case-insensitive)
     entries.sort((a, b) => a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' }));
@@ -591,11 +630,11 @@
 
   Window_ArchetypeParts.prototype.refresh = function () {
     this.contents.clear();
-    const { EnemyArchetypes } = window.Health || {};
-    if (!EnemyArchetypes) return;
+    const { Archetypes } = window.Health || {};
+    if (!Archetypes) return;
 
-    const arch1 = this._arch1Key ? EnemyArchetypes[this._arch1Key] : null;
-    const arch2 = this._arch2Key ? EnemyArchetypes[this._arch2Key] : null;
+    const arch1 = this._arch1Key ? Archetypes[this._arch1Key] : null;
+    const arch2 = this._arch2Key ? Archetypes[this._arch2Key] : null;
 
     if (!arch1 && !arch2) {
       this.drawText(T('Creature.selectAnArchetype'), 0, 0, this.contentsWidth(), "center");
@@ -919,13 +958,16 @@
 
       let leftSubheaderName = "";
       let partsHtml = "";
+      // How many weapons this body could carry, printed under its name.
+      let weaponsLine = "";
 
       if (this._mode === 'baseline') {
         if (activeItem) {
           leftSubheaderName = activeItem.name;
-          const { EnemyArchetypes } = window.Health || {};
-          const arch = EnemyArchetypes ? EnemyArchetypes[activeItem.key] : null;
+          const { Archetypes } = window.Health || {};
+          const arch = Archetypes ? Archetypes[activeItem.key] : null;
           if (arch) {
+            weaponsLine = weaponSlotLine(arch.parts || {});
             // Base skills section
             let skillsHtml = "";
             if (arch.skills && arch.skills.length > 0) {
@@ -941,7 +983,7 @@
               bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.anatomy')}</div>` +
                 Object.keys(arch.parts).map(k => {
                   const p = arch.parts[k];
-                  const name = window.getArchetypeText(p.name) || p.name;
+                  const name = partName(p);
                   const skillName = getSkillDisplayName(p.skillId);
                   const skillInfo = skillName ? `<span style="font-size: 1.132rem; color: var(--text-card-medium)">, ${skillName}</span>` : "";
                   return `
@@ -957,16 +999,17 @@
         }
       } else {
         // Hybrid mode: display parts of BOTH selected archetypes
-        const { EnemyArchetypes } = window.Health || {};
-        const arch1 = this._selectedArchetype1 ? EnemyArchetypes[this._selectedArchetype1] : null;
-        const arch2 = this._selectedArchetype2 ? EnemyArchetypes[this._selectedArchetype2] : null;
+        const { Archetypes } = window.Health || {};
+        const arch1 = this._selectedArchetype1 ? Archetypes[this._selectedArchetype1] : null;
+        const arch2 = this._selectedArchetype2 ? Archetypes[this._selectedArchetype2] : null;
 
         if (!arch1 && !arch2) {
           // No selections: show hovered/active item as preview
           if (activeItem) {
             leftSubheaderName = activeItem.name + ` (${T('CharCreate.preview')})`;
-            const arch = EnemyArchetypes ? EnemyArchetypes[activeItem.key] : null;
+            const arch = Archetypes ? Archetypes[activeItem.key] : null;
             if (arch) {
+              weaponsLine = weaponSlotLine(arch.parts || {});
               // Base skills section
               let skillsHtml = "";
               if (arch.skills && arch.skills.length > 0) {
@@ -982,7 +1025,7 @@
                 bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.anatomy')}</div>` +
                   Object.keys(arch.parts).map(k => {
                     const p = arch.parts[k];
-                    const name = window.getArchetypeText(p.name) || p.name;
+                    const name = partName(p);
                     const skillName = getSkillDisplayName(p.skillId);
                     const skillInfo = skillName ? `<span style="font-size: 1.132rem; color: var(--text-card-medium)">, ${skillName}</span>` : "";
                     return `
@@ -1010,16 +1053,19 @@
             leftSubheaderName = name1 || name2;
           }
 
+          // Exactly the anatomy applyHybridArchetype will build, duplicated
+          // arms and hands included, so the count under the name is the count
+          // the creature ends up with.
+          const splicedParts = mergeParts(
+            [this._selectedArchetype1, this._selectedArchetype2].filter(Boolean));
+          weaponsLine = weaponSlotLine(splicedParts);
           const mergedParts = {};
-          if (arch1) {
-            for (const partKey in arch1.parts) {
-              mergedParts[partKey] = { part: arch1.parts[partKey], from: 1 };
-            }
-          }
-          if (arch2) {
-            for (const partKey in arch2.parts) {
-              mergedParts[partKey] = { part: arch2.parts[partKey], from: 2 };
-            }
+          for (const partKey in splicedParts) {
+            const part = splicedParts[partKey];
+            // fromArchetype is an index into the list above, which drops a
+            // missing primary, so read the badge off the key that is actually there.
+            const owner = this._selectedArchetype1 ? part.fromArchetype : 1;
+            mergedParts[partKey] = { part: part, from: owner === 0 ? 1 : 2 };
           }
 
           // Base skills from both archetypes (unique union)
@@ -1048,7 +1094,7 @@
           let bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.anatomy')}</div>` +
             Object.keys(mergedParts).map(partKey => {
               const { part, from } = mergedParts[partKey];
-              const name = window.getArchetypeText(part.name) || part.name;
+              const name = partName(part);
               const originLabel = from === 2 
                 ? `<span class="cc-role-badge secondary">${T('Creature.ui.secondaryBadge')}</span>`
                 : `<span class="cc-role-badge primary">${T('Creature.ui.primaryBadge')}</span>`;
@@ -1131,6 +1177,7 @@
 
           <div class="cc-dossier-card" style="margin-top: 16px; flex: 1; min-height: 0; overflow-y: auto">
             <h3 class="cc-subheader">${leftSubheaderName || "..."}</h3>
+            ${weaponsLine ? `<div class="cc-weapon-slots">${weaponsLine}</div>` : ""}
             <div class="cc-dossier-grid cc-dossier-grid-single">
               ${partsHtml || `<div class="cc-text-desc" style="width: 100%">${T('CharCreate.noAnatomicalOrgansDefined')}</div>`}
             </div>
@@ -2181,6 +2228,7 @@
         // the model previewed here was built from THIS entry, so record it
         // instead of leaving the status screen to guess from the image name.
         battlerActor._recruitedEnemyId = (item && item.id) || 0;
+        battlerActor._recruitedLook = null;   // the look roll of whoever held the slot before goes with them
       }
       // Keep the randomized 3D look previewed for this creature: the status
       // screen rebuilds the model with this same seed.
@@ -2233,6 +2281,7 @@
         // Drop any species recorded by an earlier creature or talk-menu recruit
         // in this slot: the portrait is the custom model, not that monster.
         modelActor._recruitedEnemyId = 0;
+        modelActor._recruitedLook = null;   // the look roll of whoever held the slot before goes with them
       }
     }
     this.applyCreatureSettings();
@@ -2411,14 +2460,14 @@
   Scene_CreateCreature.prototype.changeArchetypeLocal = function (actor, archetypeName) {
     if (!actor) return false;
 
-    const { EnemyArchetypes } = window.Health || {};
+    const { Archetypes } = window.Health || {};
 
-    if (!EnemyArchetypes || !EnemyArchetypes[archetypeName]) {
-      console.warn(`Archetype "${archetypeName}" not found in EnemyArchetypes`);
+    if (!Archetypes || !Archetypes[archetypeName]) {
+      console.warn(`Archetype "${archetypeName}" not found in Archetypes`);
       return false;
     }
 
-    const archetype = EnemyArchetypes[archetypeName];
+    const archetype = Archetypes[archetypeName];
 
     // Clear existing stat modifiers
     if (actor._statModifiers) {
@@ -2438,7 +2487,7 @@
       const hpPercentage = archetypePart.hpPercent / 100;
 
       actor._bodyParts[partKey] = {
-        name: window.getArchetypeText ? window.getArchetypeText(archetypePart.name) : archetypePart.name,
+        name: partName(archetypePart),
         maxHp: Math.round(actor.mhp * hpPercentage),
         currentHp: Math.round(actor.mhp * hpPercentage),
         vital: false,
@@ -2448,6 +2497,11 @@
         damageMsg: window.getArchetypeText ? window.getArchetypeText(archetypePart.msg) : archetypePart.msg,
         specialEffect: archetypePart.specialEffect || null,
         appliedStatEffect: false,
+        hpPercent: archetypePart.hpPercent,
+        // Without this the creature has nothing to hold a weapon in and no
+        // weapon slots at all (ItemSystem/ItemSystemEquipment.js).
+        canHoldWeapon: !!archetypePart.canHoldWeapon,
+        limbCopy: archetypePart.limbCopy || 0,
         skillId: archetypePart.skillId || [],
       };
     }
@@ -2510,21 +2564,15 @@
   };
 
   Scene_CreateCreature.prototype.applyHybridArchetype = function (actor) {
-    const { EnemyArchetypes } = window.Health || {};
-    const arch1 = EnemyArchetypes[this._selectedArchetype1];
-    const arch2 = EnemyArchetypes[this._selectedArchetype2];
+    const { Archetypes } = window.Health || {};
+    const arch1 = Archetypes[this._selectedArchetype1];
+    const arch2 = Archetypes[this._selectedArchetype2];
     if (!arch1 || !arch2) return;
 
-    const mergedParts = {};
-
-    // Add parts from Arch 1
-    for (const partKey in arch1.parts) {
-      mergedParts[partKey] = arch1.parts[partKey];
-    }
-    // Add/overwrite parts from Arch 2
-    for (const partKey in arch2.parts) {
-      mergedParts[partKey] = arch2.parts[partKey];
-    }
+    // Arms and hands are spliced rather than shared: two archetypes that each
+    // bring a pair make a creature with four, and four weapon slots with them
+    // (HealthCore.mergeArchetypeParts).
+    const mergedParts = mergeParts([this._selectedArchetype1, this._selectedArchetype2]);
 
     // Clear existing actor data
     actor._statModifiers = {};
@@ -2537,7 +2585,7 @@
       const hpPercentage = archetypePart.hpPercent / 100;
 
       actor._bodyParts[partKey] = {
-        name: window.getArchetypeText ? window.getArchetypeText(archetypePart.name) : archetypePart.name,
+        name: partName(archetypePart),
         maxHp: Math.round(actor.mhp * hpPercentage),
         currentHp: Math.round(actor.mhp * hpPercentage),
         vital: false,
@@ -2547,6 +2595,9 @@
         damageMsg: window.getArchetypeText ? window.getArchetypeText(archetypePart.msg) : archetypePart.msg,
         specialEffect: archetypePart.specialEffect || null,
         appliedStatEffect: false,
+        hpPercent: archetypePart.hpPercent,
+        canHoldWeapon: !!archetypePart.canHoldWeapon,
+        limbCopy: archetypePart.limbCopy || 0,
         skillId: archetypePart.skillId || [],
       };
     }
@@ -2635,32 +2686,21 @@
       // screen resolve the species from the image; a stale id from whoever held
       // the slot before would name the wrong monster.
       targetActor._recruitedEnemyId = 0;
+      targetActor._recruitedLook = null;   // the look roll of whoever held the slot before goes with them
     }
     ctx.applyCreatureSettings();
     return ctx;
   };
 
   // ============================================================================
-  // Weapon equip override for creature actors
-  // Allows equipping weapons only when the archetype has a compatible limb part.
-  // Human actors are unaffected (no _isCreatureActor flag).
+  // Weapon slots for creature actors
   // ============================================================================
-  const CREATURE_WEAPON_PARTS = new Set(['LEFT_HAND', 'RIGHT_HAND', 'MOUTH', 'RIGHT_FOOT', 'LEFT_FOOT']);
-
-  const _Game_Actor_equipSlots = Game_Actor.prototype.equipSlots;
-  Game_Actor.prototype.equipSlots = function () {
-    const base = _Game_Actor_equipSlots.call(this);
-    if (!this._isCreatureActor || !this._bodyParts) return base;
-
-    const weaponPartCount = Object.keys(this._bodyParts).filter(k => CREATURE_WEAPON_PARTS.has(k)).length;
-    const nonWeaponSlots = base.filter(s => s !== 1); // strip class-defined weapon slots
-    if (weaponPartCount >= 2) {
-      return [1, 1, ...nonWeaponSlots]; // dual wield
-    } else if (weaponPartCount === 1) {
-      return [1, ...nonWeaponSlots];
-    }
-    return nonWeaponSlots; // no compatible limb → no weapons
-  };
+  // A creature used to get one or two weapon slots here, from a hand-written
+  // list of five part keys. Every body in the game is now read the same way,
+  // creature or person: the parts that declare canHoldWeapon in
+  // Archetypes.json are the slots, and ItemSystem/ItemSystemEquipment.js
+  // (window.HandSlots) is the one place that decides what fits in them. There
+  // is nothing left for this plugin to say about it.
 
   console.log(`${pluginName} loaded successfully.`);
 })();

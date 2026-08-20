@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Blacksmithing v1.0.0 - the forge: every weapon and armor recipe in the game, gated by the trade that makes it.
+ * @plugindesc Blacksmithing v1.1.0 - the forge: every weapon and armor recipe in the game, gated by the trade that makes it, and every piece that leaves it one of a kind.
  * @author Esoteric Heavy Industries
  * @url https://nocoldiz.itch.io/hypernet-explorer
  *
@@ -35,6 +35,43 @@
  *                     supply, with how many lines of the bill are short
  *   Too complex     - everything the trade has not been trained far enough
  *                     for, with the tier it is waiting for
+ *   Forged          - what this party has already beaten out, one row per
+ *                     piece, since no two of them are the same piece
+ *
+ * The board opens on the first of those that has anything on it, so a party
+ * carrying no ore is shown what it could make rather than a blank page.
+ *
+ * ONE OF A KIND
+ * -------------
+ * Nothing leaves this anvil as a copy of a catalogue entry. Each finished piece
+ * is registered as its own database entry with its own id (from 2001 up), which
+ * is what stops the backpack merging two of them into a stack, and it carries a
+ * sheet nobody else's copy has. Three things decide that sheet and one of them
+ * is luck: how far past the required tier the smith's trade is trained, how rich
+ * the bill that went into the crucible was, and the heat on the day. Every
+ * parameter then drifts on its own around it, and the price follows, so a
+ * masterwork climbs the rarity ladder by itself.
+ *
+ * The records live on $gameSystem, not the entries: data/Weapons.json is read
+ * fresh on every load, so the entries are written back out of the records the
+ * moment a save is read.
+ *
+ * FINISHES
+ * --------
+ * The skins the 3D weapon models are already drawn with
+ * (Weapon/WeaponSystemProcedural.js) are offered as a strip of swatches on the
+ * anvil page. Picking one writes `<ForgeTexture:>` onto the finished piece, and
+ * the preview is a promise rather than a suggestion: the seed the model is
+ * turned under is rolled once, shown, and then kept on the piece as
+ * `<ForgeSeed:>`. A piece with no 3D model of its own wears its finish as the
+ * cloth it is laid on.
+ *
+ * THE CRUCIBLE
+ * ------------
+ * The Smelt button melts a piece the party is carrying back down into its
+ * materials: half the bill, and more than that from a piece that was well made.
+ * The recovered amounts are printed against the bill itself, so what the fire
+ * gives back is read on the same lines that say what it costs.
  *
  * WHAT AN ENTRY NEEDS
  * -------------------
@@ -82,10 +119,19 @@
     // What a finished piece teaches its maker, by the tier it demanded.
     const TIER_POINTS = [0, 1, 2, 4, 6, 9];
 
-    // The three sides of the board, in the order they are drawn: what can be
-    // made this minute, what the hands can make but the sack cannot supply,
-    // and what the trade has not been trained far enough for.
-    const TABS = ['ready', 'materials', 'locked'];
+    // The sides of the board, in the order they are drawn: what can be made
+    // this minute, what the hands can make but the sack cannot supply, what the
+    // trade has not been trained far enough for, and finally the pieces this
+    // party has already beaten out on the anvil.
+    const TABS = ['ready', 'materials', 'locked', 'forged'];
+
+    // Runtime ids for forged pieces start past everything the database and the
+    // artifact generator (Crafting/ArctifactGenerator.js, which owns 1501-1600)
+    // can ever hand out, and grow one per piece from there.
+    const FORGE_ID_BASE = 2001;
+
+    // How much of a bill melting a piece down gives back.
+    const SMELT_RATE = 0.5;
 
     // ------------------------------------------------------------------------
     // Reading the entries
@@ -94,7 +140,7 @@
         return x && x.name && x.name.trim() && !x.name.includes('-->');
     }
 
-    const _recipeCache = new Map();
+    const _recipeCache = new WeakMap();
     function parseRecipe(item) {
         if (!item || !item.note) return null;
         if (_recipeCache.has(item)) return _recipeCache.get(item);
@@ -135,8 +181,12 @@
     function forgeEntries() {
         if (_entriesCache && _entriesSource === $dataWeapons) return _entriesCache;
         const out = [];
-        for (const x of $dataWeapons) if (isRealEntry(x) && parseRecipe(x) && craftSpecName(x)) out.push(x);
-        for (const x of $dataArmors) if (isRealEntry(x) && parseRecipe(x) && craftSpecName(x)) out.push(x);
+        // A forged piece carries its base entry's whole note, recipe and trade
+        // included, so it has to be kept off the catalogue explicitly: the board
+        // lists what CAN be made, and its own tab lists what already was.
+        const catalogue = (x) => isRealEntry(x) && !isForged(x) && parseRecipe(x) && craftSpecName(x);
+        for (const x of $dataWeapons) if (catalogue(x)) out.push(x);
+        for (const x of $dataArmors) if (catalogue(x)) out.push(x);
         _entriesCache = out;
         _entriesSource = $dataWeapons;
         return out;
@@ -197,6 +247,239 @@
             hasMaterials(parseRecipe(item))
     };
 
+    // ── Forged pieces ────────────────────────────────────────────────────────
+    // Everything that comes off this anvil is one of a kind. Rather than adding
+    // to the stack of the catalogue entry it was made from, a forged piece is
+    // registered as its own database entry with its own id, so the backpack can
+    // never merge two of them and each keeps the sheet it was beaten out with.
+    //
+    // The record, not the entry, is what the save holds: $dataWeapons is rebuilt
+    // from data/ on every load, so the entries are written back into it from the
+    // records the moment a save is read.
+
+    function isForged(item) {
+        return !!(item && item.meta && item.meta.Forged);
+    }
+
+    // A forged piece's name was already written in the player's language when
+    // the record was turned into an entry, so running it through the translator
+    // a second time could only corrupt it.
+    function displayName(item) {
+        if (!item) return '';
+        return isForged(item) ? item.name : tr(item.name);
+    }
+
+    function forgeStore() {
+        if (!$gameSystem) return [];
+        if (!$gameSystem._forgedPieces) $gameSystem._forgedPieces = [];
+        return $gameSystem._forgedPieces;
+    }
+
+    // The database arrays are indexed by id, and a hole read as `undefined`
+    // breaks every plugin that walks them expecting null for an empty slot.
+    function padSlots(arr, upTo) {
+        while (arr.length <= upTo) arr.push(null);
+    }
+
+    function nextForgeId(kind) {
+        let max = FORGE_ID_BASE - 1;
+        for (const rec of forgeStore()) {
+            if (rec.kind === kind && rec.id > max) max = rec.id;
+        }
+        return max + 1;
+    }
+
+    // How many pieces this smith has already stamped with this same base entry,
+    // so their sixth knife is not called the same thing as their first.
+    function markNumber(rec) {
+        let n = 0;
+        for (const other of forgeStore()) {
+            if (other.kind === rec.kind && other.baseId === rec.baseId && other.smith === rec.smith) n++;
+        }
+        return n;
+    }
+
+    // A forged sheet, in words: five bands across the roll's whole range.
+    const QUALITY_BANDS = ['crude', 'sound', 'fine', 'superb', 'masterwork'];
+    function qualityBand(quality) {
+        const q = Number(quality) || 1;
+        if (q < 1.0) return QUALITY_BANDS[0];
+        if (q < 1.2) return QUALITY_BANDS[1];
+        if (q < 1.4) return QUALITY_BANDS[2];
+        if (q < 1.6) return QUALITY_BANDS[3];
+        return QUALITY_BANDS[4];
+    }
+    const qualityLabel = (quality) => T('Blacksmith.quality.' + qualityBand(quality));
+
+    function forgedDisplayName(base, rec) {
+        const key = rec.mark > 1 ? 'Blacksmith.forgedNameNumbered' : 'Blacksmith.forgedName';
+        return T(key, { name: tr(base.name), smith: rec.smith, mark: rec.mark });
+    }
+
+    // Write one record back into the database as a live entry.
+    function materialize(rec) {
+        const src = rec.kind === 'w' ? $dataWeapons : $dataArmors;
+        const base = src[rec.baseId];
+        if (!base || isForged(base)) return null;
+
+        const entry = JSON.parse(JSON.stringify(base));
+        entry.id = rec.id;
+        entry.params = (rec.params || base.params || []).slice();
+        entry.price = rec.price;
+        entry.name = forgedDisplayName(base, rec);
+        // <Restricted> is the database's word for a row exactly one system
+        // hands out (ItemSystemUtils.isRestrictedEntry): every pool builder in
+        // the game asks before it accepts a row, so a loot roll, a shop shelf,
+        // a vending machine or a picked pocket can never produce a second copy
+        // of a piece that is supposed to be the only one of itself.
+        entry.note = String(base.note || '') +
+            '\n<Restricted>' +
+            `\n<Forged: ${rec.smith}>` +
+            `\n<ForgeQuality: ${rec.quality}>` +
+            `\n<ForgeSeed: ${rec.seed || 0}>` +
+            (rec.texture ? `\n<ForgeTexture: ${rec.texture}>` : '');
+        entry.description = String(base.description || '').trim();
+        const line = T('Blacksmith.forgedDesc', { smith: rec.smith, quality: qualityLabel(rec.quality) });
+        entry.description = entry.description ? entry.description + '\n' + line : line;
+        DataManager.extractMetadata(entry);
+
+        padSlots(src, rec.id);
+        src[rec.id] = entry;
+        return entry;
+    }
+
+    function rebuildForged() {
+        for (const rec of forgeStore()) materialize(rec);
+    }
+
+    // What a piece is worth in materials once the fire has had its share. A
+    // forged piece gives back in proportion to how well it was made.
+    function smeltYield(item) {
+        const recipe = parseRecipe(item);
+        if (!recipe) return null;
+        const q = isForged(item) ? (Number(item.meta.ForgeQuality) || 1) : 1;
+        const out = {};
+        let any = false;
+        for (const [id, need] of Object.entries(recipe)) {
+            const back = Math.min(need, Math.floor(need * SMELT_RATE * q));
+            if (back > 0) { out[id] = back; any = true; }
+        }
+        // A bill of single units rounds away to nothing, which makes the
+        // crucible look broken. One unit of the cheapest line always survives
+        // the fire, so melting a piece down is a loss and never a waste. No
+        // recipe in the game is a single line of one, so this can never hand
+        // back everything that went in.
+        if (!any) {
+            let cheapest = null;
+            for (const id of Object.keys(recipe)) {
+                const mat = $dataItems[parseInt(id)];
+                if (!mat) continue;
+                if (!cheapest || (mat.price || 0) < (cheapest.price || 0)) cheapest = mat;
+            }
+            if (cheapest) out[cheapest.id] = 1;
+        }
+        return out;
+    }
+
+    // How rich the bill is, averaged over every unit that goes in: a blade beaten
+    // out of crystal and titanium starts better than one beaten out of bone.
+    function materialRichness(recipe) {
+        let worth = 0;
+        let units = 0;
+        for (const [id, need] of Object.entries(recipe || {})) {
+            const mat = $dataItems[parseInt(id)];
+            if (!mat) continue;
+            worth += (mat.price || 0) * need;
+            units += need;
+        }
+        if (!units) return 0;
+        return Math.max(0, Math.min(1, (worth / units) / 500));
+    }
+
+    // The sheet a piece comes off the anvil with. Three things decide it and one
+    // of them is luck: how far past the tier the trade is trained, what went into
+    // the crucible, and the heat on the day.
+    function rollQuality(actor, item) {
+        const mastery = Math.max(0, Math.min(4, levelInFor(actor, item) - craftTier(item)));
+        const richness = materialRichness(parseRecipe(item));
+        const q = 0.85 + 0.10 * mastery + 0.20 * richness + 0.35 * Math.random();
+        return Math.round(q * 100) / 100;
+    }
+
+    // Every parameter drifts on its own around that sheet, so two pieces off the
+    // same bill by the same hands are still not the same piece.
+    function rollParams(item, quality) {
+        const out = (item.params || []).slice();
+        // Scaling alone is invisible on the low end of the catalogue, where a
+        // knife's whole sheet is a 1 and a 3 and a fifteen percent roll rounds
+        // straight back to where it started. The grade is a flat point or four
+        // on top, so a masterwork reads as one at every tier.
+        const grade = Math.max(0, Math.round((quality - 1) * 5));
+        for (let i = 0; i < out.length; i++) {
+            const v = out[i] || 0;
+            if (!v) continue;
+            const drift = quality * (0.92 + Math.random() * 0.16);
+            const rolled = Math.round(v * drift) + (v > 0 ? grade : -grade);
+            out[i] = rolled || (v > 0 ? 1 : -1);
+        }
+        return out;
+    }
+
+    // ── Finishes ─────────────────────────────────────────────────────────────
+    // The skins the 3D weapon models are already drawn with
+    // (Weapon/WeaponSystemProcedural.js), offered as a choice at the anvil. The
+    // class-specific run comes first, then everything else, so the swatches a
+    // sword usually wears are the ones under the thumb.
+    function finishClass(item) {
+        if (!DataManager.isWeapon(item)) return 'default';
+        const w = item.wtypeId || 1;
+        if (w === 9 || w === 8) return 'gun';
+        if (w === 1 || w === 2 || w === 10) return 'blade';
+        if (w === 3 || w === 4) return 'heavy';
+        if (w === 6) return 'magic';
+        if (w === 7 || w === 12) return 'wood';
+        return 'default';
+    }
+
+    function finishesFor(item) {
+        const P = window.WeaponSystemProcedural;
+        if (!P || !P.getTexturesForType) return [];
+        const seen = new Set();
+        const out = [];
+        // The class run first, then the dream bank: the strange sheets are a
+        // choice a smith makes on purpose, so they sit at the end of the tray
+        // rather than in among the marbles.
+        for (const f of P.getTexturesForType(finishClass(item)) || []) {
+            if (!seen.has(f)) { seen.add(f); out.push(f); }
+        }
+        for (const f of P.getTexturesForType('dream') || []) {
+            if (!seen.has(f)) { seen.add(f); out.push(f); }
+        }
+        return out;
+    }
+
+    function finishSrc(filename) {
+        const P = window.WeaponSystemProcedural;
+        if (P && P.texturePath) return P.texturePath(filename);
+        return `img/textures/${filename}`;
+    }
+
+    // Records outlive the database entries built from them, so a loaded save has
+    // to put its forged pieces back before anything asks the party what it holds.
+    const _DataManager_extractSaveContents = DataManager.extractSaveContents;
+    DataManager.extractSaveContents = function (contents) {
+        _DataManager_extractSaveContents.call(this, contents);
+        rebuildForged();
+    };
+
+    window.ForgedPieces = {
+        all: forgeStore,
+        isForged,
+        rebuild: rebuildForged,
+        quality: (item) => (isForged(item) ? (Number(item.meta.ForgeQuality) || 1) : 0),
+        smeltYield
+    };
+
     function rarityOf(item) {
         if (window.ItemSystemUtils && window.ItemSystemUtils.getItemRarity) {
             return window.ItemSystemUtils.getItemRarity(item);
@@ -237,6 +520,8 @@
             this._overlayTimer = 0;
             this._overlayData = null;
             this._listDirty = true;
+            this._finishes = {};          // base entry -> chosen skin, this visit
+            this._finishIndex = 0;
 
             // The shared search + filter strip (UI/MenuSearchBar.js), in the
             // anvil's vocabulary: pieces belong to trades and carry a weight and
@@ -253,6 +538,12 @@
                     if (this._forgeBar) this._forgeBar.restoreFocus();
                 }
             }) : null;
+
+            // Opening on Smithable left the board blank for any party that
+            // happened not to be carrying ore, which reads as a forge with no
+            // recipes in it at all. Open on the first side that has something.
+            this._tab = this.firstFilledTab();
+            this._tabIndex = TABS.indexOf(this._tab);
 
             this.createLayout();
             this.refreshForge();
@@ -333,8 +624,29 @@
             return hasMaterials(parseRecipe(item)) ? 'ready' : 'materials';
         }
 
+        // The pieces this party is carrying that came off an anvil, newest
+        // first, so the last thing made is the first thing on the board.
+        forgedOwned() {
+            const out = [];
+            for (const rec of forgeStore()) {
+                const src = rec.kind === 'w' ? $dataWeapons : $dataArmors;
+                const entry = src[rec.id];
+                if (entry && $gameParty.numItems(entry) > 0) out.push(entry);
+            }
+            return out.reverse();
+        }
+
         entriesForTab() {
+            if (this._tab === 'forged') return this.forgedOwned();
             return forgeEntries().filter(e => this.bucketOf(e) === this._tab);
+        }
+
+        firstFilledTab() {
+            for (const key of TABS) {
+                if (key === 'forged') { if (this.forgedOwned().length) return key; continue; }
+                if (forgeEntries().some(e => this.bucketOf(e) === key)) return key;
+            }
+            return 'ready';
         }
 
         trades() {
@@ -362,7 +674,7 @@
             // indexed against the same, already-filtered list.
             if (!this._forgeBar) return pieces;
             return this._forgeBar.apply(pieces, item => ({
-                name: item.name,
+                name: displayName(item),
                 category: craftSpecName(item),
                 weight: (window.ItemSystemUtils && window.ItemSystemUtils.getItemWeight
                     ? window.ItemSystemUtils.getItemWeight(item) : 0) / 1000,
@@ -449,9 +761,12 @@
             const el = document.getElementById('forge-tabs');
             if (!el) return;
             const t = bsText();
-            const counts = { ready: 0, materials: 0, locked: 0 };
+            const counts = { ready: 0, materials: 0, locked: 0, forged: this.forgedOwned().length };
             for (const entry of forgeEntries()) counts[this.bucketOf(entry)]++;
-            const labels = { ready: t.smithable, materials: t.needMaterials, locked: t.tooComplex };
+            const labels = {
+                ready: t.smithable, materials: t.needMaterials,
+                locked: t.tooComplex, forged: t.forgedTab
+            };
             const tab = (key, idx) => {
                 const active = this._tab === key ? 'active' : '';
                 const focused = (this._activeArea === 'tabs' && this._tabIndex === idx) ? 'focused' : '';
@@ -521,7 +836,9 @@
                             // tier a locked piece waits for, how much of the bill
                             // a short one is missing, a plain tick for the rest.
                             let mark;
-                            if (this._tab === 'locked') {
+                            if (this._tab === 'forged') {
+                                mark = `<span class="forge-quality-mark">${escapeHtml(qualityLabel(item.meta.ForgeQuality))}</span>`;
+                            } else if (this._tab === 'locked') {
                                 mark = `<span class="forge-tier-need">${escapeHtml(levelName(craftTier(item)))}</span>`;
                             } else if (this._tab === 'materials') {
                                 mark = `<span class="forge-mat-state short">&#10006; ${missingCount(parseRecipe(item))}</span>`;
@@ -532,7 +849,7 @@
                             <div class="category-row forge-row ${focused}" data-item="${item.id}" data-kind="${DataManager.isWeapon(item) ? 'w' : 'a'}" data-idx="${idx}">
                                 <div class="category-meta-left">
                                     <span class="icon" style="${iconStyle(item.iconIndex, 24)}"></span>
-                                    <span class="blueprint-name" style="color:${rarity.colorCode}">${escapeHtml(tr(item.name))}</span>
+                                    <span class="blueprint-name" style="color:${rarity.colorCode}">${escapeHtml(displayName(item))}</span>
                                 </div>
                                 ${mark}
                             </div>`;
@@ -566,23 +883,34 @@
             const spec = craftSpec(item);
             const tier = craftTier(item);
             const level = this.levelIn(item);
-            const makeable = this.canMake(item);
+            const forged = isForged(item);
+            const makeable = !forged && this.canMake(item);
             const recipe = parseRecipe(item);
             const stocked = hasMaterials(recipe);
+            const owned = $gameParty.numItems(item);
+            const smeltable = owned > 0;
+            const yields = smeltable ? (smeltYield(item) || {}) : {};
 
             // --- what it is
             let head = `
                 <div class="workbench-item-header">
                     <span class="icon" style="${iconStyle(item.iconIndex, 32)}"></span>
-                    <span class="workbench-item-name" style="color:${rarity.colorCode}">${escapeHtml(tr(item.name))}</span>
+                    <span class="workbench-item-name" style="color:${rarity.colorCode}">${escapeHtml(displayName(item))}</span>
                 </div>`;
             if (item.description && String(item.description).trim()) {
-                head += `<p class="workbench-desc">${escapeHtml(tr(String(item.description))).replace(/\n/g, '<br>')}</p>`;
+                const desc = (forged ? String(item.description) : tr(String(item.description)))
+                    .replace(/\s*\n\s*/g, ' ').trim();
+                head += `<p class="workbench-desc">${escapeHtml(desc)}</p>`;
             }
 
-            // --- the trade and the tier it asks for
-            const skillHTML = `
-                <div class="forge-skill ${makeable ? '' : 'locked'}">
+            // --- the trade and the tier it asks for. A piece already made says
+            //     instead whose hands made it and how it came out.
+            const skillHTML = forged
+                ? `<div class="forge-skill forge-made">
+                        <span>${escapeHtml(T('Blacksmith.madeBy', { smith: String(item.meta.Forged).trim() }))}</span>
+                        <span class="forge-skill-have">${escapeHtml(qualityLabel(item.meta.ForgeQuality))}</span>
+                   </div>`
+                : `<div class="forge-skill ${makeable ? '' : 'locked'}">
                     <span>${escapeHtml(T('Blacksmith.needs', {
                         trade: spec ? window.Specializations.displayName(spec) : craftSpecName(item),
                         level: levelName(tier)
@@ -596,50 +924,143 @@
             // --- the same metadata the equip menu shows
             const statsHTML = this.metadataHTML(item);
 
-            // --- the bill of materials
-            let matHTML = `<h4 class="reagents-header">${escapeHtml(t.materials)}</h4><div class="reagents-list">`;
+            // --- the bill of materials, with what the crucible gives back on
+            //     the same line when melting it down is on the table
+            let matRows = '';
             for (const [id, need] of Object.entries(recipe || {})) {
                 const mat = $dataItems[parseInt(id)];
                 if (!mat) continue;
-                const owned = $gameParty.numItems(mat);
-                const ok = isSandbox() || owned >= need;
-                matHTML += `
-                    <div class="reagent-row" style="opacity:${ok ? 1 : 0.6}">
+                const held = $gameParty.numItems(mat);
+                const ok = isSandbox() || held >= need;
+                const back = yields[id] || 0;
+                matRows += `
+                    <div class="reagent-row" style="opacity:${ok || smeltable ? 1 : 0.6}">
                         <div class="reagent-meta">
                             <span class="icon" style="${iconStyle(mat.iconIndex, 24)}"></span>
                             <span class="reagent-name">${escapeHtml(tr(mat.name))}</span>
                         </div>
                         <div class="reagent-count-box">
-                            <span>${owned}/${need}</span>
+                            ${back ? `<span class="reagent-recover">+${back}</span>` : ''}
+                            <span>${held}/${need}</span>
                             <span class="reagent-status-indicator ${ok ? 'satisfied' : 'deficient'}">${ok ? '&#10004;' : '&#10006;'}</span>
                         </div>
                     </div>`;
             }
-            matHTML += '</div>';
+            // A piece with no bill at all (one already off the anvil) is not
+            // given an empty box under its blurb.
+            const matHTML = matRows
+                ? `<h4 class="reagents-header">${escapeHtml(t.materials)}</h4>` +
+                  `<div class="reagents-list reagents-list--grid">${matRows}</div>`
+                : '';
 
-            // --- the button
+            // --- the buttons
             const enabled = makeable && stocked;
             const btnClass = `transmute-btn ${enabled ? 'enabled' : 'disabled'} ${this._activeArea === 'forge' ? 'focused' : ''}`;
-            const btnLabel = !makeable ? t.tooComplexShort : (stocked ? t.forge : t.noMaterials);
+            const btnLabel = forged ? t.alreadyForged
+                : (!makeable ? t.tooComplexShort : (stocked ? t.forge : t.noMaterials));
+            const smeltClass = `transmute-btn ${smeltable ? 'enabled' : 'disabled'} ${this._activeArea === 'smelt' ? 'focused' : ''}`;
+            const smeltLabel = smeltable ? T('Blacksmith.smeltHeld', { n: owned }) : t.smeltNone;
 
             el.innerHTML = `
                 <div class="workbench-active">
                     ${head}
+                    ${matHTML}
                     ${this.previewHTML(item)}
+                    ${this.finishHTML(item)}
                     ${skillHTML}
                     ${statsHTML}
-                    ${matHTML}
-                    <div class="${btnClass}" id="forge-action">${escapeHtml(btnLabel)}</div>
+                    <div class="forge-button-row">
+                        ${forged ? '' : `<div class="${btnClass}" id="forge-action">${escapeHtml(btnLabel)}</div>`}
+                        <div class="${smeltClass}" id="forge-smelt">${escapeHtml(smeltLabel)}</div>
+                    </div>
                 </div>`;
 
             // The dossier is taller than the page, so the button a keyboard
             // player has just moved onto has to be brought into view.
-            if (this._activeArea === 'forge') {
-                const btn = document.getElementById('forge-action');
-                if (btn) btn.scrollIntoView({ block: 'nearest' });
+            if (this._activeArea === 'forge' || this._activeArea === 'smelt' || this._activeArea === 'finish') {
+                const focus = el.querySelector('.transmute-btn.focused, .forge-swatch.focused');
+                if (focus) focus.scrollIntoView({ block: 'nearest' });
             }
 
             this.mount3D(item);
+        }
+
+        // ------------------------------------------------- the finish picker
+        // Which skin the piece comes off the fire wearing. The models are
+        // already drawn with these bitmaps (Weapon/WeaponSystemProcedural.js);
+        // the anvil simply lets the smith pick instead of letting the seed pick.
+        finishKey(item) {
+            return `${DataManager.isWeapon(item) ? 'w' : 'a'}${item.id}`;
+        }
+
+        chosenFinish(item) {
+            return this._finishes[this.finishKey(item)] || '';
+        }
+
+        setFinish(item, filename) {
+            this._finishes[this.finishKey(item)] = filename || '';
+        }
+
+        // The look the piece will keep, held steady while it is on the page, so
+        // the preview is a promise rather than a suggestion.
+        pendingSeed(item) {
+            const key = this.finishKey(item);
+            if (!this._seeds) this._seeds = {};
+            if (this._seeds[key] === undefined) {
+                this._seeds[key] = (Math.random() * 0xFFFFFFFF) >>> 0;
+            }
+            return this._seeds[key];
+        }
+
+        // What the 3D card is asked to draw: the entry itself once it has been
+        // forged, and a stand-in wearing this visit's choices before that.
+        previewItem(item) {
+            if (isForged(item)) return item;
+            const finish = this.chosenFinish(item);
+            const seed = this.pendingSeed(item);
+            return Object.assign({}, item, {
+                note: String(item.note || '') + `\n<ForgeSeed: ${seed}>` +
+                    (finish ? `\n<ForgeTexture: ${finish}>` : ''),
+                meta: Object.assign({}, item.meta, {
+                    ForgeSeed: String(seed),
+                    ForgeTexture: finish || undefined
+                })
+            });
+        }
+
+        finishHTML(item) {
+            // A piece already beaten out wears what it was given; only what is
+            // still on the bill can still be chosen for.
+            if (isForged(item)) return '';
+            const list = finishesFor(item);
+            if (!list.length) return '';
+            const chosen = this.chosenFinish(item);
+            const focused = this._activeArea === 'finish';
+            // The cursor is read off the piece's own choice, so moving between
+            // pieces never leaves it pointing at somebody else's swatch.
+            const at = chosen ? list.indexOf(chosen) : -1;
+            this._finishIndex = at >= 0 ? at + 1 : 0;
+
+            let swatches = `
+                <div class="forge-swatch forge-swatch--auto ${chosen ? '' : 'selected'} ${focused && this._finishIndex === 0 ? 'focused' : ''}"
+                     data-finish="" title="${escapeHtml(T('Blacksmith.finishAuto'))}">
+                    <span>${escapeHtml(T('Blacksmith.finishAuto'))}</span>
+                </div>`;
+            let broke = false;
+            list.forEach((file, idx) => {
+                const sel = chosen === file ? 'selected' : '';
+                const foc = (focused && this._finishIndex === idx + 1) ? 'focused' : '';
+                if (!broke && String(file).startsWith('dream/')) {
+                    broke = true;
+                    swatches += `<div class="forge-swatch-divider">${escapeHtml(T('Blacksmith.finishStrange'))}</div>`;
+                }
+                swatches += `<div class="forge-swatch ${sel} ${foc}" data-finish="${escapeHtml(file)}" data-fidx="${idx + 1}">
+                     <img src="${escapeHtml(finishSrc(file))}" alt="" loading="lazy" decoding="async"></div>`;
+            });
+
+            return `
+                <h4 class="reagents-header">${escapeHtml(T('Blacksmith.finish'))}</h4>
+                <div class="forge-swatches" id="forge-finishes">${swatches}</div>`;
         }
 
         // Everything the custom equip menu puts on screen for a piece of gear,
@@ -685,7 +1106,9 @@
             }
             // Anything else the entry declares (Range, Movement, Level, ...) is
             // shown as written, so a note tag added later surfaces by itself.
-            const SKIP = /^(Recipe|Craft|CraftLevel|Category|Lore|Weight)$/i;
+            // Bookkeeping the smith wrote on the piece, and the model it is
+            // drawn with, are not properties of the thing itself.
+            const SKIP = /^(Recipe|Craft|CraftLevel|Category|Lore|Weight|Forge\w*|Forged|model3d|3DModel)$/i;
             for (const key of Object.keys(item.meta || {})) {
                 if (SKIP.test(key)) continue;
                 const val = item.meta[key];
@@ -694,18 +1117,20 @@
 
             let table = '';
             for (const [label, val] of rows) {
-                table += `<div class="inspect-spec-row"><span class="inspect-spec-label">${escapeHtml(label)}:</span>` +
+                table += `<div class="stat-row"><span class="stat-label">${escapeHtml(label)}</span>` +
                     `<span class="inspect-spec-value">${escapeHtml(val)}</span></div>`;
             }
 
             let lore = '';
             if (window.ItemSystemUtils && window.ItemSystemUtils.loreFor) {
                 const text = window.ItemSystemUtils.loreFor(item);
-                if (text) lore = `<div class="equip-lore" style="opacity:0.78; margin-top:6px">${escapeHtml(text)}</div>`;
+                if (text) lore = `<div class="equip-lore">${escapeHtml(text)}</div>`;
             }
 
-            return (statsGrid ? `<div class="stats-grid">${statsGrid}</div>` : '') +
-                `<div class="forge-meta">${table}</div>${lore}`;
+            const head = (label) => `<h4 class="reagents-header">${escapeHtml(label)}</h4>`;
+            return (statsGrid ? head(T('Blacksmith.bonuses')) + `<div class="stats-grid">${statsGrid}</div>` : '') +
+                (table ? head(T('Blacksmith.specs')) + `<div class="stats-grid forge-meta">${table}</div>` : '') +
+                lore;
         }
 
         // -------------------------------------------------- weapon preview
@@ -716,18 +1141,27 @@
             const canThree = typeof THREE !== 'undefined' && DataManager.isWeapon(item);
             let html = '<div class="weapon-previews-container">';
             if (canThree) {
-                html += `<div class="weapon-preview-card weapon-preview-card--single"><canvas id="forge-preview-canvas" width="140" height="240"></canvas></div>`;
+                html += `<div class="weapon-preview-card weapon-preview-card--single"><canvas id="forge-preview-canvas" width="420" height="300"></canvas></div>`;
             } else {
                 const rarity = rarityOf(item);
+                // Nothing here is drawn in three dimensions, so the finish the
+                // smith picked is shown as the cloth the piece is laid on.
+                const finish = isForged(item)
+                    ? (item.meta.ForgeTexture ? String(item.meta.ForgeTexture).trim() : '')
+                    : this.chosenFinish(item);
+                const skin = finish
+                    ? ` style="background-image:url('${escapeHtml(finishSrc(finish))}'); background-size:cover; background-position:center"`
+                    : '';
                 const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode}"><div class="item-icon" style="${iconStyle(item.iconIndex, 32)}"></div></div></div>`;
-                html += `<div class="weapon-preview-card weapon-preview-card--single">${inner}</div>`;
+                html += `<div class="weapon-preview-card weapon-preview-card--single"${skin}>${inner}</div>`;
             }
             return html + '</div>';
         }
 
-        mount3D(item) {
+        mount3D(baseItem) {
             this.dispose3D();
-            if (typeof THREE === 'undefined' || !DataManager.isWeapon(item)) return;
+            if (typeof THREE === 'undefined' || !DataManager.isWeapon(baseItem)) return;
+            const item = this.previewItem(baseItem);
             const canvas = document.getElementById('forge-preview-canvas');
             if (!canvas) return;
 
@@ -745,7 +1179,7 @@
             const camera = new THREE.PerspectiveCamera(40, width / height, 0.05, 50);
             camera.position.set(0, 0, 2.7);
 
-            const state = { renderer, scene, camera, model: null, raf: null, spin: true };
+            const state = { renderer, scene, camera, model: null, raf: null };
             this._preview = state;
 
             const place = (m) => {
@@ -769,31 +1203,39 @@
                 if (model) place(model);
             }
 
-            // Drag to turn it over, exactly like the equip preview.
+            // Drag slides the view over the piece and the wheel leans in and
+            // out. The piece itself never turns: a finish is picked off a still
+            // object, and a swatch chosen against a spinning one is a guess.
             let dragging = false;
             let prev = { x: 0, y: 0 };
             const down = (e) => {
-                dragging = true; state.spin = false;
+                dragging = true;
                 prev = { x: e.clientX || 0, y: e.clientY || 0 };
+                canvas.style.cursor = 'grabbing';
                 e.preventDefault();
             };
             const move = (e) => {
-                if (!dragging || !state.model) return;
+                if (!dragging) return;
                 const dx = (e.clientX || 0) - prev.x;
                 const dy = (e.clientY || 0) - prev.y;
-                state.model.rotation.y += dx * 0.01;
-                state.model.rotation.x += dy * 0.01;
+                const pan = 0.0022 * camera.position.z;
+                camera.position.x -= dx * pan;
+                camera.position.y += dy * pan;
                 prev = { x: e.clientX || 0, y: e.clientY || 0 };
             };
-            const up = () => { dragging = false; };
+            const up = () => { dragging = false; canvas.style.cursor = ''; };
+            const wheel = (e) => {
+                e.preventDefault();
+                camera.position.z = Math.max(0.35, Math.min(6, camera.position.z + e.deltaY * 0.0015));
+            };
             canvas.addEventListener('mousedown', down);
             window.addEventListener('mousemove', move);
             window.addEventListener('mouseup', up);
-            state.listeners = { canvas, down, move, up };
+            canvas.addEventListener('wheel', wheel, { passive: false });
+            state.listeners = { canvas, down, move, up, wheel };
 
             const tick = () => {
                 if (!state.renderer) return;
-                if (state.model && state.spin) state.model.rotation.y += 0.012;
                 // Moving parts the procedural model declares for itself.
                 if (state.model && window.WeaponSystemProcedural) {
                     WeaponSystemProcedural.tickModelParts(state.model, 16);
@@ -812,6 +1254,7 @@
                 s.listeners.canvas.removeEventListener('mousedown', s.listeners.down);
                 window.removeEventListener('mousemove', s.listeners.move);
                 window.removeEventListener('mouseup', s.listeners.up);
+                s.listeners.canvas.removeEventListener('wheel', s.listeners.wheel);
             }
             if (s.renderer) {
                 s.renderer.dispose();
@@ -842,14 +1285,28 @@
             if (this._overlayTimer > 0 && this._overlayData) {
                 const item = this._overlayData.item;
                 const rarity = rarityOf(item);
+                const smelted = this._overlayData.smelted;
+                let rows = `
+                        <div class="success-item-row">
+                            <span class="icon" style="${iconStyle(item.iconIndex, 32)}"></span>
+                            <span style="font-weight:bold; color:${rarity.colorCode}">${escapeHtml(displayName(item))}</span>
+                        </div>`;
+                if (smelted) {
+                    for (const got of smelted) {
+                        rows += `
+                        <div class="success-item-row">
+                            <span class="icon" style="${iconStyle(got.item.iconIndex, 24)}"></span>
+                            <span>${escapeHtml(tr(got.item.name))} &times;${got.qty}</span>
+                        </div>`;
+                    }
+                } else if (this._overlayData.quality) {
+                    rows += `<div class="success-item-row"><span>${escapeHtml(qualityLabel(this._overlayData.quality))}</span></div>`;
+                }
                 el.innerHTML = `
                     <div class="success-overlay">
                         <div class="cauldron-animation" style="font-size:88px"></div>
-                        <h2 class="success-title">${escapeHtml(bsText().forged)}</h2>
-                        <div class="success-item-row">
-                            <span class="icon" style="${iconStyle(item.iconIndex, 32)}"></span>
-                            <span style="font-weight:bold; color:${rarity.colorCode}">${escapeHtml(tr(item.name))}</span>
-                        </div>
+                        <h2 class="success-title">${escapeHtml(smelted ? bsText().smelted : bsText().forged)}</h2>
+                        ${rows}
                     </div>`;
             } else {
                 el.innerHTML = '';
@@ -870,22 +1327,98 @@
                     $gameParty.loseItem($dataItems[parseInt(id)], qty);
                 }
             }
-            $gameParty.gainItem(item, 1);
+            // Nothing leaves this anvil as a copy of a catalogue entry. The
+            // piece is registered as its own database entry with its own id, so
+            // it stacks with nothing and keeps the sheet it was beaten out with.
+            const made = this.registerForged(item);
+            if (!made) { SoundManager.playBuzzer(); return; }
+            $gameParty.gainItem(made, 1);
             // What came off the anvil, in the party's diary (Diary.js).
-            if (window.Diary) window.Diary.onCrafted('forge', item.name, 1);
+            if (window.Diary) window.Diary.onCrafted('forge', made.name, 1);
 
             const spec = craftSpec(item);
             if (spec && window.SpecializationXP) {
                 window.SpecializationXP.award(spec, TIER_POINTS[craftTier(item)] || 1, { actor: this.smith() });
             }
 
-            this._overlayData = { item };
+            this._overlayData = { item: made, quality: made.meta.ForgeQuality };
             this._overlayTimer = 110;
             this._listDirty = true;
             // Spending the last of the bill moves the piece off the smithable
             // tab and onto the one that needs materials, so the cursor is put
             // back on whatever now holds its place rather than left pointing
             // at a row that has gone.
+            const items = this.itemsForTrade();
+            const idx = items.indexOf(item);
+            if (idx >= 0) {
+                this._itemIndex = idx;
+            } else {
+                this._itemIndex = Math.max(0, Math.min(this._itemIndex, items.length - 1));
+                this._selectedItem = items[this._itemIndex] || null;
+                this._activeArea = this._selectedItem ? 'items' : 'trades';
+                if (!this._selectedItem) this._selectedTrade = null;
+            }
+            SoundManager.playUseItem();
+            this.refreshForge();
+        }
+
+        // One piece, one entry, one id. The record is what the save keeps; the
+        // entry is rebuilt from it every time the game is loaded.
+        registerForged(base) {
+            const kind = DataManager.isWeapon(base) ? 'w' : 'a';
+            const smith = String((this.smith() && this.smith().name()) || '')
+                .replace(/[<>\r\n]/g, '').trim();
+            const quality = rollQuality(this.smith(), base);
+            const rec = {
+                id: nextForgeId(kind),
+                kind,
+                baseId: base.id,
+                smith,
+                quality,
+                texture: this.chosenFinish(base) || '',
+                seed: this.pendingSeed(base),
+                params: rollParams(base, quality),
+                price: Math.max(1, Math.round((base.price || 0) * quality * quality)),
+                mark: 0
+            };
+            rec.mark = markNumber(rec) + 1;
+            forgeStore().push(rec);
+            const entry = materialize(rec);
+            if (!entry) { forgeStore().pop(); return null; }
+            // The look the smith previewed went into the record with it, so the
+            // next piece off the same bill rolls a look of its own.
+            if (this._seeds) delete this._seeds[this.finishKey(base)];
+            return entry;
+        }
+
+        // ------------------------------------------------------------- smelt
+        // Back into the crucible. Half the bill comes out, a well-made piece
+        // gives back more, and a piece that was worn down to nothing gives back
+        // nothing at all.
+        smeltSelected() {
+            const item = this._selectedItem;
+            if (!item || $gameParty.numItems(item) <= 0) {
+                SoundManager.playBuzzer();
+                return;
+            }
+            const yields = smeltYield(item);
+            if (!yields) { SoundManager.playBuzzer(); return; }
+
+            $gameParty.loseItem(item, 1);
+            const got = [];
+            for (const [id, qty] of Object.entries(yields)) {
+                const mat = $dataItems[parseInt(id)];
+                if (!mat || qty <= 0) continue;
+                $gameParty.gainItem(mat, qty);
+                got.push({ item: mat, qty });
+            }
+
+            this._overlayData = { item, smelted: got };
+            this._overlayTimer = 110;
+            this._listDirty = true;
+
+            // Melting the last one down takes the piece off the forged board,
+            // so the cursor is put back on whatever now holds its place.
             const items = this.itemsForTrade();
             const idx = items.indexOf(item);
             if (idx >= 0) {
@@ -942,7 +1475,18 @@
                 return;
             }
 
+            const swatch = e.target.closest('[data-finish]');
+            if (swatch) {
+                this.setFinish(this._selectedItem, swatch.dataset.finish);
+                this._finishIndex = parseInt(swatch.dataset.fidx) || 0;
+                this._activeArea = 'finish';
+                SoundManager.playCursor();
+                this.refreshForge();
+                return;
+            }
+
             if (e.target.closest('#forge-action')) { this.forgeSelected(); return; }
+            if (e.target.closest('#forge-smelt')) { this.smeltSelected(); return; }
         }
 
         setTab(key) {
@@ -1025,7 +1569,7 @@
                     SoundManager.playCursor();
                     this.refreshForge();
                 } else if (Input.isTriggered('ok')) {
-                    this._activeArea = 'forge';
+                    this._activeArea = this.hasFinishes() ? 'finish' : this.firstButtonArea();
                     SoundManager.playOk();
                     this.refreshForge();
                 } else if (cancel) {
@@ -1038,14 +1582,65 @@
                 return;
             }
 
-            if (this._activeArea === 'forge') {
-                if (Input.isTriggered('ok')) this.forgeSelected();
-                else if (cancel || Input.isTriggered('up')) {
+            // The swatch strip: left and right walk it, OK takes the one under
+            // the cursor and drops down to the buttons.
+            if (this._activeArea === 'finish') {
+                const list = finishesFor(this._selectedItem);
+                const last = list.length;   // slot 0 is 'as it falls'
+                const step = Input.isRepeated('right') ? 1 : (Input.isRepeated('left') ? -1 : 0);
+                if (step) {
+                    this._finishIndex = Math.max(0, Math.min(last, this._finishIndex + step));
+                    this.setFinish(this._selectedItem, this._finishIndex ? list[this._finishIndex - 1] : '');
+                    SoundManager.playCursor();
+                    this.refreshForge();
+                } else if (Input.isTriggered('ok') || Input.isTriggered('down')) {
+                    this._activeArea = this.firstButtonArea();
+                    SoundManager.playOk();
+                    this.refreshForge();
+                } else if (cancel || Input.isTriggered('up')) {
                     this._activeArea = 'items';
                     SoundManager.playCancel();
                     this.refreshForge();
                 }
+                return;
             }
+
+            if (this._activeArea === 'forge') {
+                if (Input.isTriggered('ok')) this.forgeSelected();
+                else if (Input.isTriggered('right')) {
+                    this._activeArea = 'smelt';
+                    SoundManager.playCursor();
+                    this.refreshForge();
+                } else if (cancel || Input.isTriggered('up')) {
+                    this._activeArea = this.hasFinishes() ? 'finish' : 'items';
+                    SoundManager.playCancel();
+                    this.refreshForge();
+                }
+                return;
+            }
+
+            if (this._activeArea === 'smelt') {
+                if (Input.isTriggered('ok')) this.smeltSelected();
+                else if (Input.isTriggered('left') && !isForged(this._selectedItem)) {
+                    this._activeArea = 'forge';
+                    SoundManager.playCursor();
+                    this.refreshForge();
+                } else if (cancel || Input.isTriggered('up')) {
+                    this._activeArea = this.hasFinishes() ? 'finish' : 'items';
+                    SoundManager.playCancel();
+                    this.refreshForge();
+                }
+            }
+        }
+
+        hasFinishes() {
+            return !!this._selectedItem && !isForged(this._selectedItem) && finishesFor(this._selectedItem).length > 0;
+        }
+
+        // A piece already made has no Forge button, so the cursor lands on the
+        // crucible instead.
+        firstButtonArea() {
+            return isForged(this._selectedItem) ? 'smelt' : 'forge';
         }
     }
 

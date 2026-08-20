@@ -225,10 +225,20 @@
     BattleManager.displayEscapeSuccessMessage = function() {};
     BattleManager.displayVictoryMessage = function() {};
 
+    // Where the dungeon denies the free way out (any tower floor, above ground
+    // or below, and the accursed market). DungeonFloorSystem owns the answer.
+    function escapeIsContested() {
+        const DF = window.DungeonFloors;
+        return !!(DF && typeof DF.escapeIsContested === "function" && DF.escapeIsContested());
+    }
+
     const _BattleManager_makeEscapeRatio = BattleManager.makeEscapeRatio;
     BattleManager.makeEscapeRatio = function() {
         _BattleManager_makeEscapeRatio.call(this);
-        if (_battleTurnCount <= 1) this._escapeRatio = 1.0;
+        // The free first-turn getaway belongs to the open world. Inside the
+        // tower the odds stay as they were rolled, and a failed run costs a
+        // turn like any other action.
+        if (_battleTurnCount <= 1 && !escapeIsContested()) this._escapeRatio = 1.0;
     };
 
     const _BattleManager_makeRewards = BattleManager.makeRewards;
@@ -273,6 +283,12 @@
         _BattleManager_processVictory.call(this);
         payPetrodemonSpoils();
         recordBossVictory();
+        // Coming home alive is worth something to everyone who did, on the
+        // scale BattleMood keeps (TimeDateSystem.js): a member who fights for
+        // the pleasure of it feels more of it, a pacifist none of it.
+        if (window.BattleMood) {
+            try { window.BattleMood.onVictory(); } catch (e) { /* the fight is still won */ }
+        }
     };
 
     // ========================================================================
@@ -588,7 +604,26 @@
 
         const bId = BSE.State.currentBattleEventId;
         const pData = BSE.State.persistentEnemyData;
-        const storedHp = (bId && pData[bId]) ? pData[bId].enemyHp : null;
+        const record = bId ? pData[bId] : null;
+
+        // A wound record belongs to the creature it was written for, but it is
+        // keyed on the event SLOT ("mapId_eventId") alone. That slot is re-stocked
+        // behind its back: the procedural map re-deals its fauna into the same
+        // event ids on every tile, and a <?> or multi-id troop note re-rolls on
+        // every map load. Left unchecked, a fresh monster inherits whatever the
+        // thing that stood there before was left with. Trust the record only
+        // while the event still carries the troop it was written against.
+        if (record && BSE.State.currentEventId && BSE.State.currentMapId === $gameMap.mapId()) {
+            const ev = $gameMap.event(BSE.State.currentEventId);
+            if (ev && ev._fixedTroopId > 0 && record.troopId > 0 &&
+                ev._fixedTroopId !== record.troopId) {
+                record.troopId = ev._fixedTroopId;
+                record.enemyHp = {};
+                delete record.bodyParts;
+            }
+        }
+
+        const storedHp = record ? record.enemyHp : null;
 
         // Debuff enemy max HP for a lone party member. Applied before restoring
         // persistent HP so stored values (already in debuffed scale) clamp correctly.
@@ -810,12 +845,37 @@
     // world map, proc edge crossing, goDown/goUp, a structure biome entered through
     // a terrain feature), which runs from Scene_Map.onMapLoaded before
     // createDisplayObjects builds the spriteset that reads it.
+    // A creature's wounds last as long as the party's visit, not forever. Every
+    // way a map creature can be hurt - the party fleeing a fight, the ecology's
+    // own brawls, a car running it down - happens while the party is standing on
+    // that map, so walking off it settles the ledger and whatever is still alive
+    // is met whole next time. Without this the record simply accumulated: it is
+    // saved with the game and keyed on the event slot, so a monster hurt hours
+    // ago (or, on the procedural map, a completely different one re-dealt into
+    // the same slot) turned up already bleeding for no reason the player saw.
+    //
+    // Body-part damage is deliberately left alone - a severed limb does not grow
+    // back over a doorway - so an enemy comes back at the full HP its remaining
+    // parts allow, not at the HP it had when it was last hit.
+    BSE.Functions.healPersistentEnemies = function() {
+        const pData = BSE.State.persistentEnemyData;
+        for (const key in pData) {
+            if (pData[key]) pData[key].enemyHp = {};
+        }
+        // Ecology brawls are keyed by event id pair and live on $gameSystem, so
+        // they outlive the map they were started on: a stale pair whose ids
+        // happen to be two adjacent monsters on the NEW map would resume chewing
+        // on them the moment the party arrives.
+        if ($gameSystem) $gameSystem._enemyFights = {};
+    };
+
     const _Game_Player_performTransfer_BSEState = Game_Player.prototype.performTransfer;
     Game_Player.prototype.performTransfer = function() {
         const wasTransferring = this.isTransferring();
         _Game_Player_performTransfer_BSEState.call(this);
         if (!wasTransferring) return;
         _clearMapCorpses();
+        BSE.Functions.healPersistentEnemies();
         // Re-baseline the region key against where the player actually landed, so
         // Scene_Map.start below does not immediately re-clear (harmless) and, more
         // importantly, does not mistake the arrival region for an unchanged one.

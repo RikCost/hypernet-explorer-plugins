@@ -31,6 +31,10 @@
  *   ParchmentToast.reward({ entries, gold, exp, knowledge, lines, title })
  *       entries: [{ id }] item ids, [{ obj }] data objects, or
  *                [{ icon, name, qty }] literals. Duplicates are merged.
+ *       An item whose rarity can be read (anything given as an id or an
+ *       object) is named in its rarity colour, the same ladder the inventory
+ *       and the shop paint. The popup also stays up longer the more lines it
+ *       carries, so a haul of six things is not gone before it is read.
  *
  *   ParchmentToast.need('leisure', +8, { note: '2 technophobes -8' })
  *       Reads the current party median from PartyNeeds, so every need change
@@ -60,6 +64,26 @@
  * ParchmentToast.isLive(key) answers whether one is up.
  *
  * -----------------------------------------------------------------------
+ * Event gains
+ * -----------------------------------------------------------------------
+ * Change Gold, Change Items, Change Weapons and Change Armors report what the
+ * party actually received through reward(), so a chest built in the editor
+ * pops the same popup as battle spoils or random loot without anyone writing
+ * a message for it. Everything one event gains in the same frame is collected
+ * into a single toast, and only the real delta is announced: an inventory
+ * already at 99, or gold at the cap, gains nothing and says nothing. Losses
+ * are silent.
+ *
+ * A gain a plugin already announced itself is not announced twice: reward()
+ * remembers what it drew for a moment, and a matching event gain right after
+ * it is dropped.
+ *
+ * An event whose name starts with "Acquire" or "Treasure" shows no Show Text
+ * or Show Scrolling Text at all. The stock treasure page ends in "\C[?]0\G
+ * were found!", which is what the toast already says, and a message box stops
+ * the player to say it.
+ *
+ * -----------------------------------------------------------------------
  * Several notifications at once
  * -----------------------------------------------------------------------
  * Toasts stack and never replace one another, so a single action can report
@@ -82,6 +106,27 @@
   const FRAME_MS = 1000 / 60;
   const MAX_TOASTS = 6;
   const GROUP_STAGGER_MS = 130;
+
+  // An event named for what it hands over says it in the popup, not in a
+  // message box. Matched case-insensitively on the prefix, so "Treasure
+  // (1200€)" and "Acquire (Bone)" are both covered.
+  const SILENT_EVENT_PREFIXES = ["acquire", "treasure"];  // i18n-ignore  event names in the editor
+
+  // How long a reward already drawn swallows the matching event gain. Long
+  // enough to cover one interaction, short enough that finding the same item
+  // again a moment later still reports it.
+  const GAIN_DEDUPE_MS = 1200;
+
+  // A find of one thing is read at a glance; a find of six is read line by
+  // line, so the popup buys extra time for every line past the first.
+  const REWARD_BASE_FRAMES = 240;
+  const REWARD_LINE_FRAMES = 55;
+  const REWARD_MAX_FRAMES = 660;
+
+  // The rarity ladder ItemSystemUtils reads out of js/db/Items/Rarity.json,
+  // low to high. A row is coloured by where its tier sits in that ladder, not
+  // by its name, so a table that renames or adds tiers still lands on a class.
+  const RARITY_CLASSES = ["common", "uncommon", "rare", "epic", "legendary"];  // i18n-ignore  css class suffixes
 
   let _stackEl = null;
   let _rafId = null;
@@ -112,7 +157,7 @@
     s.left = "auto";
     s.right = (window.innerWidth - r.right) + 20 * sx + "px";
     s.top = r.top + 20 * sy + "px";
-    s.fontSize = Math.round(18 * sy) + "px";
+    s.fontSize = Math.round(20 * sy) + "px";
   }
 
   function tick() {
@@ -181,6 +226,26 @@
       return typeof window.translateText === "function" ? window.translateText(name) : name;
     } catch (e) {
       return name;
+    }
+  }
+
+  // The css class that paints an item's name in its rarity colour. Nothing
+  // is painted for something with no rarity to read (a literal entry, a
+  // reward drawn before ItemSystemUtils loaded).
+  function rarityClass(obj) {
+    const utils = window.ItemSystemUtils;
+    if (!obj || !utils || typeof utils.getItemRarity !== "function") return "";
+    try {
+      const tiers = utils.RARITY_TIERS || [];
+      const index = tiers.indexOf(utils.getItemRarity(obj));
+      if (index < 0) return "";
+      // The ladder is stretched onto the five classes, so a table of three or
+      // of eight tiers still spans common to legendary.
+      const span = Math.max(tiers.length - 1, 1);
+      const slot = Math.round((index / span) * (RARITY_CLASSES.length - 1));
+      return "toast-rarity--" + RARITY_CLASSES[slot];  // i18n-ignore  css class
+    } catch (e) {
+      return "";
     }
   }
 
@@ -386,7 +451,8 @@
     return {
       icon: e.icon != null ? e.icon : (obj ? obj.iconIndex || 0 : 0),
       name,
-      qty: e.qty == null ? 1 : e.qty
+      qty: e.qty == null ? 1 : e.qty,
+      rarity: e.rarity != null ? e.rarity : rarityClass(obj)
     };
   }
 
@@ -405,7 +471,9 @@
 
   function entryRow(e) {
     const qty = e.qty > 1 ? `<span class="toast-qty">&times;${e.qty}</span>` : "";
-    return `<div class="toast-row">${icon(e.icon)}<span>${escapeHtml(e.name)}</span>${qty}</div>`;
+    const rarity = e.rarity ? " " + e.rarity : "";
+    return `<div class="toast-row toast-item${rarity}">${icon(e.icon)}` +
+      `<span class="toast-item-name">${escapeHtml(e.name)}</span>${qty}</div>`;
   }
 
   /**
@@ -436,9 +504,23 @@
     for (const line of lines) html += `<div class="toast-note">${escapeHtml(line)}</div>`;
     for (const e of entries) html += entryRow(e);
 
+    // Remember what was just drawn, so the event command that hands the same
+    // thing over a moment later does not report it a second time. A popup that
+    // came from an event gain in the first place is not remembered: two chests
+    // holding the same item, opened one after the other, are two finds.
+    if (!opts.fromEventGain) noteRewarded(opts.entries, gold);
+
+    // Everything the popup asks to be read counts: the value line, the notes
+    // and every item row.
+    const lineCount = entries.length + lines.length + (head.length ? 1 : 0);
+    const duration = opts.duration || Math.min(
+      REWARD_BASE_FRAMES + REWARD_LINE_FRAMES * Math.max(0, lineCount - 1),
+      REWARD_MAX_FRAMES
+    );
+
     show(html, {
       severity: opts.severity || "info",
-      duration: opts.duration || 240,
+      duration,
       html: true,
       // Rewards are always a fresh event, never a repeat of a live toast.
       key: opts.key || `reward:${Date.now()}:${Math.random()}`  // i18n-ignore  dedupe key
@@ -584,6 +666,164 @@
       html: true,
       key: `levelup:${who}:${level}`  // i18n-ignore  dedupe key
     });
+  }
+
+  // ==========================================================================
+  // Event gains
+  // ==========================================================================
+  // Anything a chest, a shop event or a quest page hands the party is a reward
+  // like any other, so it is drawn by reward() rather than read out in a
+  // message box the player has to close.
+
+  const _rewarded = new Map(); // fingerprint -> timestamp
+
+  function fingerprint(obj) {
+    if (!obj) return null;
+    if (typeof DataManager !== "undefined") {
+      if (DataManager.isWeapon(obj)) return "w" + obj.id;
+      if (DataManager.isArmor(obj)) return "a" + obj.id;
+    }
+    return "i" + obj.id;
+  }
+
+  function goldFingerprint(amount) {
+    return "gold:" + Math.round(amount);  // i18n-ignore  dedupe key
+  }
+
+  function noteRewarded(entries, goldAmount) {
+    const now = Date.now();
+    for (const e of (entries || [])) {
+      if (!e) continue;
+      const fp = e.obj ? fingerprint(e.obj) : (e.id != null ? "i" + e.id : null);
+      if (fp) _rewarded.set(fp, now);
+    }
+    if (goldAmount) _rewarded.set(goldFingerprint(goldAmount), now);
+  }
+
+  function alreadyRewarded(fp) {
+    const at = _rewarded.get(fp);
+    if (at == null) return false;
+    if (Date.now() - at >= GAIN_DEDUPE_MS) {
+      _rewarded.delete(fp);
+      return false;
+    }
+    return true;
+  }
+
+  // One event can hand over money and several items in the same frame, and
+  // that is one find, not four popups: the gains are collected and drawn
+  // together once the interpreter has finished with them.
+  let _pendingGains = null;   // { gold, entries: Map(fingerprint -> { obj, qty }) }
+  let _gainTimer = null;
+
+  function pendingGains() {
+    if (!_pendingGains) _pendingGains = { gold: 0, entries: new Map() };
+    if (_gainTimer === null) _gainTimer = setTimeout(flushGains, 0);
+    return _pendingGains;
+  }
+
+  function queueGoldGain(amount) {
+    const value = Math.round(Number(amount) || 0);
+    if (value <= 0) return;
+    pendingGains().gold += value;
+  }
+
+  function queueItemGain(obj, amount) {
+    const qty = Math.round(Number(amount) || 0);
+    if (!obj || qty <= 0) return;
+    const fp = fingerprint(obj);
+    const entries = pendingGains().entries;
+    const hit = entries.get(fp);
+    if (hit) hit.qty += qty;
+    else entries.set(fp, { obj, qty });
+  }
+
+  function flushGains() {
+    _gainTimer = null;
+    const batch = _pendingGains;
+    _pendingGains = null;
+    if (!batch) return;
+
+    const entries = [];
+    for (const [fp, entry] of batch.entries) {
+      if (alreadyRewarded(fp)) continue;
+      entries.push({ obj: entry.obj, qty: entry.qty });
+    }
+    const goldAmount = alreadyRewarded(goldFingerprint(batch.gold)) ? 0 : batch.gold;
+    if (!entries.length && !goldAmount) return;
+
+    reward({ entries, gold: goldAmount, fromEventGain: true });
+  }
+
+  // The event doing the talking. A common event called from a map event keeps
+  // its caller's id, so a chest that delegates its page still counts as one.
+  function interpreterEventName(interpreter) {
+    if (typeof $gameMap === "undefined" || !$gameMap) return "";
+    const eventId = interpreter && interpreter.eventId ? interpreter.eventId() : 0;
+    if (!eventId) return "";
+    if (interpreter._mapId && interpreter._mapId !== $gameMap.mapId()) return "";
+    const event = $gameMap.event(eventId);
+    const data = event && event.event ? event.event() : null;
+    return data && data.name ? String(data.name).trim() : "";
+  }
+
+  function isSilentEvent(interpreter) {
+    const name = interpreterEventName(interpreter).toLowerCase();
+    return SILENT_EVENT_PREFIXES.some((prefix) => name.startsWith(prefix));
+  }
+
+  if (typeof Game_Interpreter !== "undefined") {
+    // Dropping the command alone would leave its text lines behind as
+    // commands of their own, so they are stepped over exactly as the message
+    // would have consumed them.
+    const skipFollowing = (interpreter, code) => {
+      while (interpreter.nextEventCode() === code) interpreter._index++;
+    };
+
+    const _command101 = Game_Interpreter.prototype.command101;
+    Game_Interpreter.prototype.command101 = function (params) {
+      if (isSilentEvent(this)) {
+        skipFollowing(this, 401);
+        return true;
+      }
+      return _command101.call(this, params);
+    };
+
+    const _command105 = Game_Interpreter.prototype.command105;
+    Game_Interpreter.prototype.command105 = function (params) {
+      if (isSilentEvent(this)) {
+        skipFollowing(this, 405);
+        return true;
+      }
+      return _command105.call(this, params);
+    };
+
+    // The party is measured before and after, so what is announced is what it
+    // actually received.
+    const _command125 = Game_Interpreter.prototype.command125;
+    Game_Interpreter.prototype.command125 = function (params) {
+      const before = $gameParty.gold();
+      const result = _command125.call(this, params);
+      queueGoldGain($gameParty.gold() - before);
+      return result;
+    };
+
+    const hookItemCommand = (code, database) => {
+      const method = "command" + code;
+      const original = Game_Interpreter.prototype[method];
+      Game_Interpreter.prototype[method] = function (params) {
+        const db = database();
+        const obj = db ? db[params[0]] : null;
+        const before = obj ? $gameParty.numItems(obj) : 0;
+        const result = original.call(this, params);
+        if (obj) queueItemGain(obj, $gameParty.numItems(obj) - before);
+        return result;
+      };
+    };
+
+    hookItemCommand(126, () => (typeof $dataItems !== "undefined" ? $dataItems : null));
+    hookItemCommand(127, () => (typeof $dataWeapons !== "undefined" ? $dataWeapons : null));
+    hookItemCommand(128, () => (typeof $dataArmors !== "undefined" ? $dataArmors : null));
   }
 
   window.ParchmentToast = {

@@ -38,7 +38,7 @@
  * - Press Enter/Z button when facing water to get options menu
  * - Touch/click on water tiles adjacent to player to open menu
  * - Swim by changing sprite to boat graphic (no vehicle system)
- * - Fish in water if you have the fishing rod (item ID configurable)
+ * - Fish in water if the party carries fishing gear (see FISHING_ROD_ITEM_IDS)
  * - Random items or encounters when fishing is successful
  * - Supports fishing rod as both items and weapons
  * - Configurable common events for fishing animations
@@ -90,13 +90,13 @@
  * @default 180
  *
  * @param fishingRodItemId
- * @text Fishing Rod Item ID
- * @desc Item ID for the fishing rod
- * @default 124
+ * @text Fishing Rod Item ID (unused)
+ * @desc Kept for old save data. The gear that counts is FISHING_ROD_ITEM_IDS in this file.
+ * @default 123
  *
  * @param fishingRodWeaponIds
- * @text Fishing Rod Weapon IDs
- * @desc Weapon IDs that can be used as fishing rods (comma-separated)
+ * @text Fishing Rod Weapon IDs (unused)
+ * @desc Kept for old save data. The gear that counts is FISHING_ROD_WEAPON_IDS in this file.
  * @default
  *
  * @param fishingAnimationCommonEventId
@@ -231,6 +231,15 @@
     };
   }
 
+  // The gear a party fishes with. The Fishing Rod (item 123) is the plain one;
+  // the Combat Fishing Rod (weapon 241) and weapon 422 are rods somebody has
+  // already made a weapon of, and count whether they sit in the pack or on the
+  // person carrying them. This list is the single answer to "can this party
+  // fish": every water-side menu here asks it, and so does the boat's own options
+  // menu (Vehicle/VehicleSystem.js) through MovementSystem.hasFishingRod.
+  const FISHING_ROD_ITEM_IDS = [123];
+  const FISHING_ROD_WEAPON_IDS = [241, 422];
+
   // --- Configuration ---
   const Config = {
     fishingItems: String(parameters.fishingItems || "1,2,3,4,5").split(",").map(Number),
@@ -238,8 +247,8 @@
     fishingSuccessRate: Number(parameters.fishingSuccessRate || 70),
     waitTime: Number(parameters.waitTime || 180),
     waterRegions: [99],
-    fishingRodId: Number(parameters.fishingRodItemId || 124),
-    fishingRodWeaponIds: String(parameters.fishingRodWeaponIds || "").split(",").filter(id => id !== "").map(Number),
+    fishingRodItemIds: FISHING_ROD_ITEM_IDS,
+    fishingRodWeaponIds: FISHING_ROD_WEAPON_IDS,
     fishingAnimationCommonEventId: Number(parameters.fishingAnimationCommonEventId || 0),
     fishingBattleCommonEventId: Number(parameters.fishingBattleCommonEventId || 0),
     hideCompanions: String(parameters.hideCompanions || "true") === "true",
@@ -390,8 +399,10 @@
       return this.isCharacterFacingNorthOrSouth(character);
     },
 
+    // Carrying it is enough; a rod equipped as a weapon counts too, which is what
+    // the `true` asks $gameParty about.
     hasFishingRod() {
-      if ($gameParty.hasItem($dataItems[Config.fishingRodId])) return true;
+      if (Config.fishingRodItemIds.some(itemId => $gameParty.hasItem($dataItems[itemId]))) return true;
       return Config.fishingRodWeaponIds.some(weaponId => $gameParty.hasItem($dataWeapons[weaponId], true));
     },
 
@@ -1828,6 +1839,15 @@
 
   Scene_Map.prototype.updateSwimFishInput = function () {
     if ($gameMap.mapId() === 315) return;
+    // The sleep/wait popup owns the OK button while it is up. Without this, an
+    // OK press meant for one of its rows ALSO ran the terrain interaction of the
+    // tile the party is facing -- and on a Bed/Campfire/Tent/Bedroll that
+    // interaction is openSleepMenu() itself, which rebuilt the popup with the
+    // cursor back on the first row before SleepMenuInputManager (which runs
+    // later in Scene_Map.update) could read the press. Save and Set respawn
+    // point were unreachable: every confirm snapped back to the top row and did
+    // nothing at all.
+    if ($gameTemp._sleepMenuOpen) return;
     if ($gamePlayer._isSitting) {
       // Suppress sit input (including the stop-sitting prompt) while a message
       // or event is running, e.g. when talking to an event while seated.
@@ -1903,6 +1923,9 @@
     // the swim/dive/drink prompt on the same press that used the item.
     if ($gameMessage.isBusy()) return;
     if ($gamePlayer._hotbarTargeting) return;
+    // Also guarded in updateSwimFishInput above; repeated here because Player 2
+    // (SplitScreenMultiplayer) and MapBattleMode call this entry point directly.
+    if ($gameTemp._sleepMenuOpen) return;
     const isPlayer = character === $gamePlayer;
 
     if (character._isSwimming) {
@@ -2203,7 +2226,9 @@
     // what a player facing open sea actually gets, so the dinghy has to be
     // launchable from here too (see canUseBoatOn for when it shows).
     const canBoat = canUseBoatOn(character);
-    const choices = [T('Movement.dive')];
+    const hasDivingSuit = $gameParty.hasItem($dataItems[DIVING_SUIT_ITEM_ID]);
+    const choices = [];
+    if (hasDivingSuit) choices.push(T('Movement.dive'));
     if (canBoat) choices.push(T('Movement.useBoat'));
     choices.push(drinkLabel, T('Movement.cancel'));
     $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
@@ -2217,7 +2242,7 @@
         MovementSystem.performDrinkWater(character);
         return;
       }
-      if (index === choices.indexOf(T('Movement.dive'))) {
+      if (hasDivingSuit && index === choices.indexOf(T('Movement.dive'))) {
         const interpreter = SceneManager._scene._interpreter || $gameMap._interpreter;
         if (interpreter && PluginManager.callCommand) {
           PluginManager.callCommand(interpreter, "WorldMapReturn", "goDown", {});
@@ -2979,6 +3004,82 @@
       }
   };
 
+  //=========================================================================
+  // Sprint stamina
+  //=========================================================================
+  // AP is not only a battle resource any more: running on the map comes out of
+  // the same meter the skills do, and standing about puts it back. A full meter
+  // is about twenty seconds of running: long enough to cross a clearing or
+  // outpace something, short enough that a sprint held down the length of a map
+  // is paid for, and the pause afterwards is a real one.
+  //
+  // The leader is never stopped from running: the drain is a cost, not a gate,
+  // and a party stranded at walking pace mid-chase would be a worse game. What
+  // the meter does gate is a loose party member's own run (Core/
+  // AutoIdleExplorer.js asks canSprint before setting one off at a run), which
+  // is cosmetic: it changes how they cross the map, never whether they can join
+  // the fight at the end of it.
+  const SPRINT_DRAIN_PER_SEC = 5.0;  // running, per member doing the running
+  const SPRINT_WALK_REGEN = 1.5;     // on the move at walking pace
+  const SPRINT_IDLE_REGEN = 4.0;     // standing still, which is a rest
+
+  const perFrame = (perSecond) => perSecond / 60;
+
+  // Written straight onto the meter rather than through setTp, which runs a
+  // full Game_Actor.refresh (equipment sweep, state clamp) on every call: this
+  // one ticks sixty times a second for every member, and AP moves nothing that
+  // a refresh would have to notice.
+  function addAp(actor, amount) {
+    if (!actor || !amount) return;
+    const max = actor.maxTp ? actor.maxTp() : 100;
+    actor._tp = Math.max(0, Math.min(max, actor.tp + amount));
+  }
+
+  window.SprintStamina = {
+    // Is there anything left to run on? Asked of a member about to break into
+    // a run of their own; the leader never asks.
+    canSprint(actor) {
+      return !!actor && actor.tp > 0;
+    },
+
+    // One frame of running, charged to whoever is doing it.
+    spend(actor) {
+      addAp(actor, -perFrame(SPRINT_DRAIN_PER_SEC));
+    },
+
+    // One frame of the party going about the map. The leader pays for their own
+    // sprint; everybody who is not running gets a little of it back, faster
+    // while the party is standing still than while it is walking.
+    tick() {
+      if (!$gameParty || !$gamePlayer) return;
+      const members = $gameParty.members();
+      if (members.length === 0) return;
+      const leader = members[0];
+      const moving = $gamePlayer.isMoving();
+      const leaderSprinting = moving && $gamePlayer.isDashing();
+      const regen = perFrame(moving ? SPRINT_WALK_REGEN : SPRINT_IDLE_REGEN);
+      for (const actor of members) {
+        const running = actor._sprintRunningThisFrame ||
+          (actor === leader && leaderSprinting);
+        if (running) this.spend(actor);
+        else addAp(actor, regen);
+        actor._sprintRunningThisFrame = false;
+      }
+    },
+
+    // A follower running under their own steam says so, so the tick charges
+    // them for it instead of handing them their rest back.
+    noteRunning(actor) {
+      if (actor) actor._sprintRunningThisFrame = true;
+    }
+  };
+
+  const _Scene_Map_update_sprintStamina = Scene_Map.prototype.update;
+  Scene_Map.prototype.update = function () {
+    _Scene_Map_update_sprintStamina.call(this);
+    window.SprintStamina.tick();
+  };
+
   // Walking onto a damage floor tile (or taking step-based state damage while
   // on the map) still runs the default engine's full-screen red flash. Damage
   // itself is untouched; only the flash is silenced, and only outside battle,
@@ -2995,6 +3096,9 @@
     enterClimbMode: MovementSystem.enterClimbMode.bind(MovementSystem),
     exitClimbMode: MovementSystem.exitClimbMode.bind(MovementSystem),
     performFishing: MovementSystem.performFishing.bind(MovementSystem),
+    hasFishingRod: Utils.hasFishingRod.bind(Utils),
+    fishingRodItemIds: Config.fishingRodItemIds,
+    fishingRodWeaponIds: Config.fishingRodWeaponIds,
     fishingItems: Config.fishingItems,
     fishingEncounterTroopIds: Config.fishingEncounterTroopIds,
     fishingBattleCommonEventId: Config.fishingBattleCommonEventId

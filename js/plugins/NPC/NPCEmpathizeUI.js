@@ -30,8 +30,9 @@
     _hygienePenalty, _hygieneReadout,
     _addNpcAttraction, _npcEffectiveAttraction, _computePartyAttraction,
     _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,
-    _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
-    _isNonSentientActor, FERAL_ACTIONS, FUN_ACTIONS,
+    _bubbaPlaythrough, _isBubbaActor, _bubbaContext,
+    _isNonSentientActor, _isNonSentientNpc, FERAL_ACTIONS, FUN_ACTIONS,
+    _feedKind, _feedCalories, _feedOpinion, _feedItemsInPack,
     _isStoryNpc, STORY_PROTECTED_ACTIONS,
   } = window.NPCEmpathize._helpers;
   const _getT = window.NPCEmpathize._getT;
@@ -73,10 +74,15 @@
       if (!isCreature || !keys.length) return null;
       return { keys, seed: actor.actorId ? actor.actorId() : 0, name: actor.name() };
     }
-    if (!profile || !profile.isCreature) return null;
+    if (!profile) return null;
     const keys = NC.archetypeKeysOf(profile);
-    if (!keys.length) return null;
-    return { keys, seed: _hashName(name || ''), name };
+    // A sheet that names its own model in NPCs.json (every animal and creature
+    // sheet does) is portrayed by that body whether or not the society sim
+    // flagged the profile as a creature: an animal standing in the street has
+    // never had a bust to show and now has a model that was chosen for it.
+    const named = NC.modelKeyForSprite ? NC.modelKeyForSprite(profile.spriteKey) : null;
+    if (!named && (!profile.isCreature || !keys.length)) return null;
+    return { keys, spriteKey: profile.spriteKey, seed: _hashName(name || ''), name };
   }
 
   // The anatomy row on the Info tab. Everybody has one: somebody with nothing
@@ -101,16 +107,44 @@
 
   // The model this subject is portrayed by, plus the identity string that says
   // whether a live viewer is still showing the right thing.
-  function _creatureModelSpec(subject) {
+  function _creatureModelSpec(subject, actor) {
     if (!subject) return null;
+    // A creature in the party is portrayed by the very model the status sheet
+    // portrays it by, so the two screens can never disagree about which creature
+    // this is. An NPC has no actor behind it and keeps the stock model its
+    // anatomy resolves to.
+    const AM = window.ActorModel3D;
+    if (actor && AM && AM.infoFor) {
+      const info = AM.infoFor(actor);
+      if (info) return { info: info, id: AM.keyFor(info) };
+    }
     const NC = window.NPCCreature;
-    const model = NC && NC.modelForArchetypes(subject.keys, subject.seed);
+    // The sheet's own choice of body comes first; the archetype lookup answers
+    // only for a subject whose sheet names no model of its own.
+    const model = (NC && NC.modelForSprite ? NC.modelForSprite(subject.spriteKey) : null)
+      || (NC && NC.modelForArchetypes(subject.keys, subject.seed));
     if (!model) return null;
     return {
       key: model.key,
       enemyData: model.enemyData,
       id: `${subject.name}|${subject.keys.join('/')}|${model.key}|${model.enemyData.id}`,
     };
+  }
+
+  // A dossier that ships a 3D model of the person it describes (Em) is portrayed
+  // by that model in place of her bust, both as a party member and as the NPC
+  // standing on her own map. A party member is resolved through the shared
+  // service, so this panel builds the very model the status sheet builds.
+  function _presetModelSpec(actor, preset) {
+    const CP = window.CharacterPresets;
+    if (!CP) return null;
+    const path = actor
+      ? CP.getActorPresetModel?.(actor)
+      : CP.getPresetModel?.(preset);
+    if (!path) return null;
+    if (window.ActorModel3D?.modelAvailable?.(path) === false) return null;
+    const info = { kind: 'glb', path, actorId: actor ? actor.actorId() : 0 };
+    return { info, id: window.ActorModel3D?.keyFor?.(info) || `glb:${path}` };
   }
 
   // Every box in the panel that is allowed to scroll, in the order they should
@@ -230,7 +264,7 @@
       const job = window.NPCSim?.JobManager?.getJob?.(profile);
       if (job) {
         const mapName = window.NPCSim.JobManager.getJobWorkMapName?.(profile) || '';
-        return T.workAs(job.name, mapName);
+        return T.workAs(window.WorkSystem?.jobName?.(job) || job.name, mapName);
       }
     }
     if (activity === 'shopwork') {
@@ -261,6 +295,19 @@
     };
   }
 
+  // Rows as the player reads them, resolved from ids every time: the display
+  // bank is only in the right language once ConfigManager.load() has resolved,
+  // and the player can switch language afterwards, so names are never cached.
+  function _specRows(levelById) {
+    const rows = [];
+    levelById.forEach((lvl, id) => {
+      const spec = window.Specializations.byId.get(id);
+      if (spec) rows.push({ name: window.Specializations.displayName(spec), levelName: window.Specializations.levelName(lvl) });
+    });
+    rows.sort((a, b) => a.name.localeCompare(b.name));
+    return rows;
+  }
+
   // Specializations (js/db/Skills/Specialization.json via SpecializationMenu.js)
   // an NPC shows as trained: whatever its class/traits grant a head start in,
   // plus 3-6 random ones (deterministic per NPC, cached on the profile so they
@@ -269,7 +316,9 @@
   // picks are simply pre-rolled as already trained (level 2-4).
   function _getNpcSpecializations(profile, classId, dl, npcName) {
     if (!window.Specializations || !window.Specializations.ready) return [];
-    if (profile && profile._specCache) return profile._specCache;
+    // The cache holds the rolled id -> level pairs, not the rendered rows.
+    if (profile && Array.isArray(profile._specCache?.levels))
+      return _specRows(new Map(profile._specCache.levels));
 
     const levelById = new Map();
     const className = (classId != null && $dataClasses?.[classId]) ? $dataClasses[classId].name : null;
@@ -309,15 +358,8 @@
       }
     }
 
-    const rows = [];
-    levelById.forEach((lvl, id) => {
-      const spec = window.Specializations.byId.get(id);
-      if (spec) rows.push({ name: window.Specializations.displayName(spec), levelName: window.Specializations.levelName(lvl) });
-    });
-    rows.sort((a, b) => a.name.localeCompare(b.name));
-
-    if (profile) profile._specCache = rows;
-    return rows;
+    if (profile) profile._specCache = { levels: Array.from(levelById.entries()) };
+    return _specRows(levelById);
   }
 
   // A party member is not an NPC to be guessed at: the specializations they show
@@ -440,9 +482,51 @@
   // Wiki helpers, hyperlinks, linkified text, meters
   // ============================================================================
 
+  // The wiki addresses a nation, a hyperpower, a faction and a historical leader
+  // by their English name, because that name is the id every lookup matches on.
+  // With no explicit label, the label is that id's name in the language being
+  // played: the link still opens the same article, it just reads.
+  const _WIKI_NAMED = { nation: 'nation', power: 'power', faction: 'faction', leader: 'leader' };
+
+  // The heading of a wiki article. `view.name` is the id the article was opened
+  // with; a party, an ideology or an artifact carries its own composed name and
+  // passes straight through.
+  function _viewName(view) {
+    if (!view) return '';
+    return _worldName(view.type, view.name);
+  }
+
+  // One world name, by the kind of thing it names.
+  function _worldName(type, name) {
+    const kind = _WIKI_NAMED[type];
+    return (kind && window.WorldNames) ? window.WorldNames[kind](name) : String(name ?? '');
+  }
+
+  // A power's head-of-state office. The field holds an id ("Supreme Pontifex")
+  // that the record and the politicians' `office` match on; NPCPolitics owns
+  // the label for it, per power.
+  function _headTitle(power) {
+    if (!power) return '';
+    const label = window.NPCPolitics?.powerLabel?.(power, 'headTitle');
+    return label || power.headTitle || '';
+  }
+
+  // A historical leader's ideology. The roster resolves its own labels before
+  // ConfigManager has loaded, so the stored one is always English and the id it
+  // came from is what HistorySimulator can answer in the active language.
+  function _leaderIdeology(leader) {
+    const label = window.HistoryManager?.ideologyLabel?.(leader);
+    return label || leader?.ideology || '?';
+  }
+
   function _wikiLink(type, id, label) {
     const safeId = encodeURIComponent(String(id));
-    return `<span class="npc-wiki-link" onmousedown="event.stopPropagation();window.NPCEmpathize.openEntity('${type}','${safeId}')">${_escapeHtml(label ?? id)}</span>`;
+    let text = label;
+    if (text == null) {
+      const kind = _WIKI_NAMED[type];
+      text = (kind && window.WorldNames) ? window.WorldNames[kind](id) : id;
+    }
+    return `<span class="npc-wiki-link" onmousedown="event.stopPropagation();window.NPCEmpathize.openEntity('${type}','${safeId}')">${_escapeHtml(text)}</span>`;
   }
 
   // In an empty world nobody outlived 1 January 2000. Every roster the wiki
@@ -511,7 +595,7 @@
   }
 
   function _kvRow(iconIdx, label, valueHTML) {
-    return `<div class="npc-ident-row">${_iconSpan(iconIdx, 17)}<span style="opacity:0.65">${_escapeHtml(label)}:</span>&nbsp;<span>${valueHTML}</span></div>`;
+    return `<div class="npc-ident-row">${_iconSpan(iconIdx, 17)}<span style="opacity:0.85">${_escapeHtml(label)}:</span>&nbsp;<span>${valueHTML}</span></div>`;
   }
 
   function _eventRows(events, ICONS) {
@@ -774,35 +858,42 @@
 
     const state = {
       id: spec.id, canvas, renderer, scene, camera, pivot,
-      model: null, rafId: 0, disposed: false, attackTimer: 2.0,
+      model: null, rafId: 0, disposed: false,
       frameAcc: 0, clock: new THREE.Clock(),
     };
     this._portrait3D = state;
 
-    // The model's look is rolled off the enemy id, exactly as the Bestiary
-    // rolls it, so the same creature is the same colours every time.
-    const enemyData = spec.enemyData;
-    const fake = { enemyId: () => enemyData.id, index: () => 0, enemy: () => enemyData };
-    const battler = window.Battler3D.create(spec.key, 0, 0, fake);
-    if (!battler) { this._destroyPortrait3D(); return; }
+    // A party member is built through the shared service, so it is the same
+    // model the status sheet builds, with the same look seed. Anybody else has
+    // their look rolled off the enemy id, exactly as the Bestiary rolls it, so
+    // the same creature is the same colours every time.
+    let loadPromise;
+    if (spec.info && window.ActorModel3D) {
+      loadPromise = window.ActorModel3D.build(spec.info);
+    } else {
+      const enemyData = spec.enemyData;
+      const fake = { enemyId: () => enemyData.id, index: () => 0, enemy: () => enemyData };
+      const made = window.Battler3D.create(spec.key, 0, 0, fake);
+      if (!made) { this._destroyPortrait3D(); return; }
+      loadPromise = Promise.resolve(made.load(null, 0, 0, 0)).then(() => made);
+    }
 
-    Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
-      if (state.disposed || !battler.model) return;
+    loadPromise.then((battler) => {
+      if (state.disposed || !battler || !battler.model) return;
       try { battler.update(1 / 60); } catch (e) {}
-      const box    = new THREE.Box3().setFromObject(battler.model);
-      const size   = new THREE.Vector3(); box.getSize(size);
-      const center = new THREE.Vector3(); box.getCenter(center);
+      // Framed by the same service the status sheet frames it with, so the two
+      // portraits hold the subject alike and not just draw the same model.
       // Centre on a holder rather than on the model: the idle animations
       // rewrite model.position every frame with an absolute value, and would
       // undo an offset written onto the model itself.
+      const fit    = window.ActorModel3D?.framing?.(battler, camera, 1.2);
+      if (!fit) return;
       const holder = new THREE.Group();
-      holder.position.copy(center).multiplyScalar(-1);
+      holder.position.copy(fit.center).multiplyScalar(-1);
       holder.add(battler.model);
       if (window.PSXShader) window.PSXShader.applyToObject(battler.model);
       pivot.add(holder);
-      const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      const fitDist = maxDim / (2 * Math.tan((40 * Math.PI / 180) / 2));
-      camera.position.set(0, 0, fitDist * 1.25);
+      camera.position.set(0, 0, fit.distance);
       camera.lookAt(0, 0, 0);
       state.model = battler;
     }).catch(() => {});
@@ -813,19 +904,10 @@
       state.rafId = requestAnimationFrame(animate);
       state.frameAcc += Math.min(state.clock.getDelta(), 0.05);
       if (state.frameAcc < FRAME) return;
-      const dt = state.frameAcc;
       state.frameAcc = 0;
-      // A slow turn, so a body plan the player has never seen reads as a shape
-      // rather than as a silhouette.
-      pivot.rotation.y += dt * 0.45;
-      if (state.model) {
-        state.attackTimer -= dt;
-        if (state.attackTimer <= 0 && state.model.currentAnimation === 'idle') {
-          try { state.model.playAnimation('attack', false); } catch (e) {}
-          state.attackTimer = 4.5 + Math.random() * 3;
-        }
-        try { state.model.update(dt); } catch (e) {}
-      }
+      // The portrait is a still: the model holds the pose it loaded in, and
+      // neither turns nor plays an animation. The frame is only redrawn so the
+      // picture survives a context or texture arriving late.
       if (window.PSXShader) window.PSXShader.render(renderer, scene, camera);
       else renderer.render(scene, camera);
     };
@@ -879,9 +961,10 @@
   // True while the actions row is showing a picker rather than the standing
   // menu of verbs, i.e. while it is a list the player scrolls and chooses from.
   Scene_NPCEmpathize.prototype._inListSubMode = function () {
-    return !!(this._directionsMode || this._giftMode || this._stealMode ||
-              this._bribeMode || this._socialMode || this._romanceMode ||
-              this._proposeMode || this._cardMode || this._infectMode);
+    return !!(this._directionsMode || this._giftMode || this._feedMode ||
+              this._stealMode || this._bribeMode || this._socialMode ||
+              this._romanceMode || this._proposeMode || this._cardMode ||
+              this._infectMode);
   };
 
   Scene_NPCEmpathize.prototype._activeScrollPane = function () {
@@ -953,7 +1036,7 @@
         '<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%">' +
         '<div style="padding:40px; font-family:\'Lora\',serif; color:#2b1d0e; text-align:center">' +
         `<div style="font-size:1.661rem; font-weight:bold; margin-bottom:8px">${T.npcUnavailable}</div>` +
-        `<div style="font-size:1.299rem; opacity:0.7">${T.pressCancel}</div></div></div>`;
+        `<div style="font-size:1.299rem; opacity:0.88">${T.pressCancel}</div></div></div>`;
     }
     // Every innerHTML rebuild wipes the npc-content-focused class off the Wiki
     // grid tiles, so re-apply the keyboard/controller focus ring after each
@@ -1015,7 +1098,7 @@
     const preset = (!actorMode && !remoteMode && !shiftInfo) ? _presetFromEvent(ev) : null;
 
     const pers     = dl?.personalities?.[profile?.personalityIndex];
-    const persName = pers ? (lang === 'it' ? pers.name_it || pers.name : pers.name) : '';
+    const persName = pers ? _personalityLabel(pers.name) : '';
     // A dossier's own vocation outranks the class the society sim guessed for
     // this NPC, so the panel never contradicts the character sheet.
     const className = actorMode
@@ -1023,7 +1106,12 @@
       : (_presetClassName(preset) || dl?.getClassName?.(profile?.assignedClassId ?? classId) || '');
     const subParts = [className, persName].filter(Boolean);
 
-    if (this._chatHistory.length === 0) {
+    // A beast has no backlog of talk to show: it holds no conversations with
+    // its neighbours, thinks nothing anybody could write down, and has never
+    // said a line into a message box. Everything below is somebody else's
+    // words, so on a non-sentient subject the log opens empty and fills only
+    // with noises (see _prepareBeastMeeting).
+    if (this._chatHistory.length === 0 && !this._isNonSentientSubject?.()) {
       // Recent NPC↔NPC conversations (NPCConversation world-folder log)
       const convoEntries = (window.NPCConversation?.ConversationLog?.getFor?.(npcName) ?? [])
         .slice(-3)
@@ -1058,6 +1146,9 @@
     // noticed: cooed over, backed away from or shooed off by what this NPC
     // makes of the animal in front of them.
     this._prepareFeralMeeting?.();
+    // And a non-sentient NPC does not greet at all: it makes a noise at
+    // whoever has just walked up to it.
+    this._prepareBeastMeeting?.();
 
     const predispositions = _computePartyPredisposition(profile);
     // Tracked apart from disposition: how drawn this NPC is to each party
@@ -1088,7 +1179,13 @@
     // event with no page gated on self-switch A has nothing to fall through to,
     // so it would keep standing there as a twin of the party member — don't
     // offer Join at all for those.
-    const canVanishOnJoin = _hasSelfSwitchAPage(evId);
+    // A shop-shift-covered counter also happens to have such a page (a leftover
+    // template artifact, never meant for this), but the face on display is a
+    // rotating persona borrowed cosmetically, not someone actually free to
+    // travel: flipping the counter's own self-switch A would strand it on its
+    // blank page instead (see ShopShiftManager.isShopEvent), so Join is never
+    // offered on one.
+    const canVanishOnJoin = !shiftInfo && _hasSelfSwitchAPage(evId);
 
     // Nobody far above the party's weight class agrees to be led by them, so
     // Join is not on the table at all for a recruit out of that reach.
@@ -1201,6 +1298,31 @@
       ];
     }
 
+    // The same question asked of the other side: the NPC standing there is
+    // itself a beast (one of the creature classes, 63+, dealt by NPCCreature).
+    // It has no words to be socialised with, no directions to give, nothing to
+    // sell, nothing to be bribed with and no hand to play cards with, so all of
+    // that leaves the board. What is left is what an animal understands, being
+    // fed, being touched, being fought, and the offer to follow the party;
+    // everything it says back is drawn from the non-sentient banks (see
+    // _isNonSentientSubject in NPCEmpathize.js).
+    if (!actorMode && !remoteMode && npcName && _isNonSentientNpc?.(npcName)) {
+      const BEAST_KEEP = new Set(
+        ['freeChat', 'attack', 'cough', 'spit', 'bite', 'infect', 'join']
+          // Two beasts facing each other: the noises the block above put on the
+          // board are the only conversation either of them has, so they stay.
+          .concat((FERAL_ACTIONS || []).map(a => a.id)));
+      this._chatActions = this._chatActions.filter(a => BEAST_KEEP.has(a.id));
+      // An animal is not handed a present, it is touched and it is fed, so
+      // Gift leaves the board and these two take its place at the front of it.
+      // Petting can only ever go well; the tray is dark when the pack is
+      // carrying nothing an animal would put in its mouth.
+      this._chatActions.unshift(
+        { id: 'pet',  label: T.beastLabelPet },
+        { id: 'feed', label: T.beastLabelFeed, disabled: !_feedItemsInPack().length },
+      );
+    }
+
     // Somebody else's party member, standing here because that playthrough was
     // saved on this spot (NPCSystem.js, VisitingParties). Nothing done to them
     // may reach into the savegame they belong to, so everything transactional
@@ -1223,20 +1345,14 @@
     }
 
     // Bubba doing the talking (Switch 49): he does not rob, hit, or infect
-    // anybody, and he is spoken for. Court survives only for a bubbaromantic,
-    // where the single thing on offer is being turned down (_romanceOptions).
+    // anybody. Court survives only for a bubbaromantic, the one person who
+    // has eyes for him at all, and every move on her lands (_romanceOptions).
     if (!actorMode && !remoteMode && _isBubbaActor?.(this._focusActor?.())) {
       const BUBBA_REFUSES = new Set(['attack', 'pickpocket', 'cough', 'spit', 'bite', 'infect']);
       const courtable = _isBubbaromanticNpc(npcName, profile);
       this._chatActions = this._chatActions.filter(
         a => !BUBBA_REFUSES.has(a.id) && (a.id !== 'romance' || courtable)
       );
-      if (courtable) {
-        const rom = _bubbaDb?.()?.romantic;
-        const label = rom?.label;
-        const entry = this._chatActions.find(a => a.id === 'romance');
-        if (entry && label) entry.label = label;
-      }
     }
 
     // A harassment complaint from this person against the member doing the
@@ -1271,12 +1387,15 @@
       className,
       age: npcAge,
     };
-    // A creature is portrayed by its own body rather than by a bust. In
-    // party-member mode that is the actor being inspected; in NPC mode it is
-    // whoever is standing there. Resolved before the panel is built so the
-    // frame is laid out for a canvas from the start.
+    // A creature is portrayed by its own body rather than by a bust, and so is
+    // anybody whose dossier ships a model of them. In party-member mode that is
+    // the actor being inspected; in NPC mode it is whoever is standing there.
+    // Resolved before the panel is built so the frame is laid out for a canvas
+    // from the start.
     const modelSpec = _creatureModelSpec(
-      _creatureSubject(actorMode ? actorObj : null, profile, displayName));
+      _creatureSubject(actorMode ? actorObj : null, profile, displayName),
+      actorMode ? actorObj : null)
+      || _presetModelSpec(actorMode ? actorObj : null, preset);
     const leftHTML = this._buildLeftPanelHTML(
       bustPath, profile, predispositions, T, leftIdent, attractions, modelSpec);
 
@@ -1533,19 +1652,28 @@
     // only move the selected member's standing.
     let switcherHTML = '';
     if (isNpcMode && members.length > 1) {
-      const hint = (window.CharSwitcher?.parts?.(members.length)) || { left: '', right: '' };
+      // Not CharSwitcher.parts(): that names TAB / the bumpers, which in this
+      // panel change tab. Handing the conversation to the next member is SHIFT
+      // on a keyboard and SELECT on a pad, kept in step with the pad coming and
+      // going by _syncTabHint in NPCEmpathize.js.
+      const onPad = !!window.AnalogStickInput?.hasPad?.();
+      // i18n-ignore-start: physical controller / keyboard button ids
+      const hintLabel = onPad ? 'SELECT' : 'SHIFT';
+      // i18n-ignore-end
+      const hint = `<span class="char-switch-hint npc-focus-hint">${hintLabel}</span>`;
+      // Chips were styled off the parchment palette (near-black browns), which
+      // on this panel's black page left the selected name framed in something
+      // invisible. Theme tokens instead, in theme.css with the rest of them.
       const chips = members.map((m, idx) => {
         const on = idx === focusIdx;
-        return `<div onmousedown="event.stopPropagation();SceneManager._scene._selectFocusActor(${idx})" ` +
-          `style="cursor:pointer; padding:3px 9px; font-size:1.173rem; white-space:nowrap; ` +
-          `border:1.5px solid ${on ? '#2b1d0e' : 'rgba(43,29,14,0.3)'}; ` +
-          `background:${on ? 'rgba(43,29,14,0.14)' : 'transparent'}; font-weight:${on ? 'bold' : 'normal'}">` +
+        return `<div class="npc-focus-chip${on ? ' on' : ''}" ` +
+          `onmousedown="event.stopPropagation();SceneManager._scene._selectFocusActor(${idx})">` +
           `${_escapeHtml(m.name())}</div>`;
       }).join('');
       switcherHTML =
-        `<div class="npc-focus-switcher" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px; margin:2px 0 6px">` +
-        `<span style="opacity:0.6; font-size:1.14rem; width:100%; text-align:center">${_escapeHtml(T.interactingAs)}</span>` +
-        `${hint.left}${chips}${hint.right}</div>`;
+        `<div class="npc-focus-switcher">` +
+        `<span class="npc-focus-switcher-lbl">${_escapeHtml(T.interactingAs)}</span>` +
+        `${chips}${hint}</div>`;
     }
 
     let predHTML = '';
@@ -1640,9 +1768,9 @@
       const metLabel = diff <= 0
         ? T('Empathize.metToday')
         : diff === 1 ? T('Empathize.metYesterday') : T.n('Empathize.metDaysAgo', diff, { n: diff });
-      lastMetHTML = `<div style="font-size:1.242rem; opacity:0.72; margin-top:4px; padding:0 4px">${_escapeHtml(metLabel)}</div>`;
+      lastMetHTML = `<div style="font-size:1.242rem; opacity:0.88; margin-top:4px; padding:0 4px">${_escapeHtml(metLabel)}</div>`;
     } else if (profile) {
-      lastMetHTML = `<div style="font-size:1.242rem; opacity:0.62; margin-top:4px; padding:0 4px">${_escapeHtml(T('Empathize.firstMeeting'))}</div>`;
+      lastMetHTML = `<div style="font-size:1.242rem; opacity:0.82; margin-top:4px; padding:0 4px">${_escapeHtml(T('Empathize.firstMeeting'))}</div>`;
     }
 
     let identHTML = '';
@@ -1820,6 +1948,8 @@
       actionsHTML = this._buildInlineStealActions(T);
     } else if (this._giftMode) {
       actionsHTML = this._buildInlineGiftActions(T);
+    } else if (this._feedMode) {
+      actionsHTML = this._buildInlineFeedActions(T);
     } else if (this._infectMode) {
       actionsHTML = this._buildInlineInfectActions(T);
     } else if (this._bribeMode) {
@@ -1884,15 +2014,45 @@
     const items = this._giftItems;
     let html = '';
     if (!items.length) {
-      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noItemsToGive)}</span>`;
+      html = `<span style="opacity:0.82; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noItemsToGive)}</span>`;
     } else {
       html = items.map((item, i) => {
         const qty     = $gameParty.numItems(item);
         const opDelta = Math.round(Math.max(5, Math.min(25, (item.price || 0) / 50)));
         return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._giveItem(${i})">` +
           `${_iconSpan(item.iconIndex || 0, 15)}<span>${_escapeHtml(item.name)}</span>` +
-          `<span style="opacity:0.55; margin-left:4px; font-size:1.15rem">×${qty}</span>` +
+          `<span style="opacity:0.8; margin-left:4px; font-size:1.15rem">×${qty}</span>` +
           `<span style="color:#2a6e4a; margin-left:6px">+${opDelta}♥</span></div>`;
+      }).join('');
+    }
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    return html;
+  };
+
+  // The feeding tray. One row per thing in the pack an animal would eat, each
+  // stating what the mouthful is worth to it: cooked food by its calories, raw
+  // meat and offal as the grudge they earn. The number is the same one
+  // _feedItem lands on the opinion, so the choice is made with the consequence
+  // already under the cursor.
+  Scene_NPCEmpathize.prototype._buildInlineFeedActions = function (T) {
+    const items = this._feedItems || [];
+    let html = '';
+    if (!items.length) {
+      html = `<span style="opacity:0.82; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.nothingToFeed)}</span>`;
+    } else {
+      html = items.map((item, i) => {
+        const qty   = $gameParty.numItems(item);
+        const delta = _feedOpinion(item);
+        const cal   = _feedCalories(item);
+        const colour = delta > 0 ? '#2a6e4a' : '#8a2a2a';
+        const sign   = delta > 0 ? '+' : '';
+        return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._feedItem(${i})">` +
+          `${_iconSpan(item.iconIndex || 0, 15)}<span>${_escapeHtml(item.name)}</span>` +
+          `<span style="opacity:0.8; margin-left:4px; font-size:1.15rem">×${qty}</span>` +
+          (_feedKind(item) === 'food' && cal
+            ? `<span style="opacity:0.78; margin-left:6px; font-size:1.15rem">${_escapeHtml(T.n('Empathize.calories', cal, { n: cal }))}</span>`
+            : '') +
+          `<span style="color:${colour}; margin-left:6px">${sign}${delta}♥</span></div>`;
       }).join('');
     }
     html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
@@ -1910,7 +2070,7 @@
     const chance = _infectChance(this._focusActor());
     let html = '';
     if (!items.length) {
-      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noVialsToOpen)}</span>`;
+      html = `<span style="opacity:0.82; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noVialsToOpen)}</span>`;
     } else {
       const DS = window.DiseaseSystem;
       html = items.map((item, i) => {
@@ -1919,7 +2079,7 @@
         const qty  = $gameParty.numItems(item);
         return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._infectWith(${i})">` +
           `${_iconSpan(item.iconIndex || 0, 15)}<span>${_escapeHtml(name)}</span>` +
-          `<span style="opacity:0.55; margin-left:4px; font-size:1.15rem">×${qty}</span>` +
+          `<span style="opacity:0.8; margin-left:4px; font-size:1.15rem">×${qty}</span>` +
           (covert ? `<span style="color:#8a2a2a; margin-left:6px">~${chance}%</span>` : '') +
           `</div>`;
       }).join('');
@@ -1942,7 +2102,7 @@
         `<span>${_escapeHtml(T.cardStakeFree)}</span></div>`;
       html += stakes.money.map(amount =>
         `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._startCardDuel({type:'money',amount:${amount}})">` +
-        `<span>${_escapeHtml(T.cardStakeMoney)}</span>, <span style="opacity:0.75">${_euros(amount)}</span></div>`
+        `<span>${_escapeHtml(T.cardStakeMoney)}</span>, <span style="opacity:0.9">${_euros(amount)}</span></div>`
       ).join('');
       if (stakes.item) {
         const mine   = $dataItems[stakes.item.playerItem.id];
@@ -1954,23 +2114,23 @@
             .replace(/"/g, '&quot;');
           html += `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._startCardDuel(${arg})">` +
             `${_iconSpan(mine.iconIndex || 0, 15)}<span>${_escapeHtml(mine.name)}</span>` +
-            `<span style="opacity:0.6; margin:0 4px">&rarr;</span>` +
+            `<span style="opacity:0.82; margin:0 4px">&rarr;</span>` +
             `${_iconSpan(theirs.iconIndex || 0, 15)}<span>${_escapeHtml(theirs.name)}</span></div>`;
         }
       }
     } else if (this._cardMode === 'trade') {
       const offers = this._cardTradeOffers();
       if (!offers.length) {
-        html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.cardNothingToSwap)}</span>`;
+        html = `<span style="opacity:0.82; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.cardNothingToSwap)}</span>`;
       } else {
         html = offers.map((offer, i) => {
           const theirs = CGx.nameOf(offer.theirs);
           const mine   = CGx.nameOf(offer.mine);
           return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._doCardTrade(${i})">` +
             `<span>${_escapeHtml(mine)}</span>` +
-            `<span style="opacity:0.6; margin:0 4px">&rarr;</span>` +
+            `<span style="opacity:0.82; margin:0 4px">&rarr;</span>` +
             `<span style="color:#2a6e4a">${_escapeHtml(theirs)}</span>` +
-            `<span style="opacity:0.5; margin-left:6px; font-size:0.964em">${CGx.statTotal(offer.mine)}/${CGx.statTotal(offer.theirs)}</span></div>`;
+            `<span style="opacity:0.78; margin-left:6px; font-size:0.964em">${CGx.statTotal(offer.mine)}/${CGx.statTotal(offer.theirs)}</span></div>`;
         }).join('');
       }
     }
@@ -2009,9 +2169,9 @@
         const extra     = costMult > 1 ? ` <span style="color:#c07020; font-size:0.964em">(×${costMult})</span>` : '';
         return `<div class="npc-chat-action-btn${disabled}" onmousedown="event.stopPropagation();SceneManager._scene._attemptBribe(${i})">` +
           `<span>${_escapeHtml(tier.label)}</span>` +
-          `, <span style="opacity:0.75">${_euros(tier.gold)}</span>${extra}` +
+          `, <span style="opacity:0.9">${_euros(tier.gold)}</span>${extra}` +
           `<span style="color:#2a6e4a; margin-left:6px">+${tier.op}♥</span>` +
-          `<span style="opacity:0.5; margin-left:4px; font-size:0.978em">${tier.chance}%</span></div>`;
+          `<span style="opacity:0.78; margin-left:4px; font-size:0.978em">${tier.chance}%</span></div>`;
       }).join('');
     }
     html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
@@ -2045,7 +2205,7 @@
     const agility = $gameParty.leader()?.agi ?? 10;
     let html = '';
     if (!items.length) {
-      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noItems)}</span>`;
+      html = `<span style="opacity:0.82; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noItems)}</span>`;
     } else {
       html = items.map((item, i) => {
         const key    = `${item.type}_${item.id}`;
@@ -2120,7 +2280,7 @@
       const tags = preset.specializations.map(entry => {
         const spec = window.Specializations.byId.get(entry.id);
         if (!spec) return '';
-        return `<span class="npc-tag">${_escapeHtml(window.Specializations.displayName(spec))} <span style="opacity:0.6">(${_escapeHtml(window.Specializations.levelName(entry.level))})</span></span>`;
+        return `<span class="npc-tag">${_escapeHtml(window.Specializations.displayName(spec))} <span style="opacity:0.82">(${_escapeHtml(window.Specializations.levelName(entry.level))})</span></span>`;
       }).filter(Boolean).join('');
       if (tags) specsHTML = `<div class="npc-sec-hdr" style="margin-top:6px">${_escapeHtml(T.specializations)}</div><div class="npc-tag-wrap">${tags}</div>`;
     }
@@ -2179,7 +2339,7 @@
       </div>`;
 
     const pers         = dl?.personalities?.[profile?.personalityIndex];
-    const persName     = pers ? (lang === 'it' ? pers.name_it || pers.name : pers.name) : '';
+    const persName     = pers ? _personalityLabel(pers.name) : '';
     const persIcon     = pers?.iconIndex || 4;
     const faction      = (profile?.factionIndex >= 0 && dl?.factions) ? dl.factions[profile.factionIndex] : null;
     const ideology     = window.NPCShared?.ideologyFor(profile) ?? null;
@@ -2203,13 +2363,16 @@
         // as a stray colon in front of it.
         const archLbl = T.archetypeLbl || '';
         identHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}` +
-          (archLbl ? `<span style="opacity:0.65">${_escapeHtml(archLbl)}:</span>&nbsp;` : '') +
+          (archLbl ? `<span style="opacity:0.85">${_escapeHtml(archLbl)}:</span>&nbsp;` : '') +
           `<span>${_escapeHtml(archetypeName)}</span></div>`;
       }
+      const genderVal   = actorObj?.gender ? actorObj.gender() : profile?.gender;
+      const genderLabel = _presetGenderLabel(genderVal, T);
+      if (genderLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span style="opacity:0.85">${_escapeHtml(T.genderLbl)}:</span>&nbsp;<span>${_escapeHtml(genderLabel)}</span></div>`;
       if (wealthLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(314, 17)}<span>${_escapeHtml(wealthLabel)}</span></div>`;
       if (ideologyName) identHTML += `<div class="npc-ident-row">${_iconSpan(186, 17)}<span>${_escapeHtml(ideologyName)}</span></div>`;
       if (faction)      identHTML += `<div class="npc-ident-row">${_iconSpan(faction.iconIndex || 187, 17)}${_wikiLink('faction', _factionDisplayName(faction))}</div>`;
-      identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.45">&nbsp;— ${morality}</span></div>`;
+      identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.75">&nbsp;— ${morality}</span></div>`;
       // Em (Switch 48): where this person stands on the witch who fed the
       // spear. Shown only while she is the one doing the talking.
       const emCtx = this._emCtx?.();
@@ -2222,7 +2385,7 @@
             : emCtx.key === 'annoyed' ? '#8a6a30'
             : '#2a6e4a';
           identHTML += `<div class="npc-ident-row">${_iconSpan(79, 17)}` +
-            `<span style="opacity:0.65">${_escapeHtml(T.towardEmLbl)}:</span>&nbsp;` +
+            `<span style="opacity:0.85">${_escapeHtml(T.towardEmLbl)}:</span>&nbsp;` +
             `<span style="color:${stanceColor}">${_escapeHtml(stanceLabel)}</span></div>`;
         }
       }
@@ -2235,7 +2398,7 @@
           : bubbaCtx.data.label;
         if (label) {
           identHTML += `<div class="npc-ident-row">${_iconSpan(79, 17)}` +
-            `<span style="opacity:0.65">${_escapeHtml(T.towardBubbaLbl)}:</span>&nbsp;` +
+            `<span style="opacity:0.85">${_escapeHtml(T.towardBubbaLbl)}:</span>&nbsp;` +
             `<span style="color:#2a6e4a">${_escapeHtml(label)}</span></div>`;
         }
       }
@@ -2257,28 +2420,38 @@
       citizenParts.push(`<span>${_escapeHtml(alien.originName)}</span>`);
       citizenParts.push(_wikiLink('power', alien.power, alien.powerName));
     } else {
-      const homeTown = _homeTownLabel(profile?._homeGroupName);
+      // The row reads town · nation · controlling hyperpower. The simulated
+      // political identity answers for the last two when it exists, otherwise
+      // they are resolved straight from the home group, so procedural citizens
+      // (and anyone the politics sim has not reached yet) still show the nation
+      // their town stands in and the power that nation answers to.
+      const homeGroup = profile?._homeGroupName;
+      const homeTown = _homeTownLabel(homeGroup);
       if (homeTown) citizenParts.push(`<span>${_escapeHtml(homeTown)}</span>`);
-      // Nation of the home map: the simulated political identity when it exists,
-      // otherwise resolve straight from the home group so procedural citizens (and
-      // any NPC not yet processed by the politics sim) still show their nation.
-      const homeNation = identity?.country
-        || window.NPCPolitics?.nationOfGroup?.(profile?._homeGroupName)
-        || null;
-      if (homeNation) citizenParts.push(_wikiLink('nation', homeNation));
-      if (identity?.power && identity.power !== 'Neutral') citizenParts.push(_wikiLink('power', identity.power));
+      const groupPolity = (identity?.country && identity?.power)
+        ? null : window.NPCPolitics?.polityOfGroup?.(homeGroup);
+      const homeNation = identity?.country || groupPolity?.country || null;
+      const homePower  = identity?.power   || groupPolity?.power   || null;
+      // A nation with no archive page of its own (one outside Countries.json)
+      // still names the place; it just is not a link to nowhere.
+      if (homeNation) {
+        let knownNation = false;
+        try { knownNation = !!Wiki.get?.('nation', homeNation); } catch (e) {}
+        citizenParts.push(knownNation ? _wikiLink('nation', homeNation) : `<span>${_escapeHtml(homeNation)}</span>`);
+      }
+      if (homePower && homePower !== 'Neutral') citizenParts.push(_wikiLink('power', homePower));
     }
 
     if (identity || citizenParts.length) {
       politicsHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.politicsSection}</div>`;
       if (citizenParts.length) {
         const label = alien ? T.originLbl : T.citizenOf;
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(label)}:</span>&nbsp;${citizenParts.join('&nbsp;·&nbsp;')}</div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(label)}:</span>&nbsp;${citizenParts.join('&nbsp;·&nbsp;')}</div>`;
       }
       if (alien) {
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(158, 17)}<span style="opacity:0.65">${_escapeHtml(T.casteLbl)}:</span>&nbsp;<span>${_escapeHtml(alien.casteName)}</span></div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(158, 17)}<span style="opacity:0.85">${_escapeHtml(T.casteLbl)}:</span>&nbsp;<span>${_escapeHtml(alien.casteName)}</span></div>`;
         if (alien.casteDesc) {
-          politicsHTML += `<div class="npc-ident-row" style="opacity:0.55">${_escapeHtml(alien.casteDesc)}</div>`;
+          politicsHTML += `<div class="npc-ident-row" style="opacity:0.8">${_escapeHtml(alien.casteDesc)}</div>`;
         }
       }
     }
@@ -2292,19 +2465,19 @@
         : eng < 75 ? (T.engActivist)
         : (T.engOrganizer);
 
-      if (party) politicsHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65">${_escapeHtml(T.partyLbl)}:</span>&nbsp;${_wikiLink('party', party.id, party.name)}</div>`;
-      politicsHTML += `<div class="npc-ident-row">${_iconSpan(83, 17)}<span style="opacity:0.65">${_escapeHtml(T.engagementLbl)}:</span>&nbsp;<span>${_escapeHtml(engLabel)} (${eng})</span></div>`;
+      if (party) politicsHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.85">${_escapeHtml(T.partyLbl)}:</span>&nbsp;${_wikiLink('party', party.id, party.name)}</div>`;
+      politicsHTML += `<div class="npc-ident-row">${_iconSpan(83, 17)}<span style="opacity:0.85">${_escapeHtml(T.engagementLbl)}:</span>&nbsp;<span>${_escapeHtml(engLabel)} (${eng})</span></div>`;
       if (identity.localOffice) {
         const officeLabel = window.NPCPolitics?.LOCAL_OFFICE_LABELS?.[identity.localOffice] || identity.localOffice;
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(T.localOfficeLbl)}:</span>&nbsp;<span>${_escapeHtml(`${officeLabel}${identity.group ? `, ${identity.group}` : ''}`)}</span></div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.85">${_escapeHtml(T.localOfficeLbl)}:</span>&nbsp;<span>${_escapeHtml(`${officeLabel}${identity.group ? `, ${identity.group}` : ''}`)}</span></div>`;
       }
       if (identity.votedLast && power) {
         const voted = window.NPCPolitics?.getPartyOf?.(identity.power, identity.votedLast.partyId);
         const when = window.NPCPolitics?.dateOf?.(identity.votedLast.minute);
-        if (voted) politicsHTML += `<div class="npc-ident-row">${_iconSpan(220, 17)}<span style="opacity:0.65">${_escapeHtml(T.lastVoteLbl)}:</span>&nbsp;<span>${_escapeHtml(voted.name)}${when ? ` <span style="opacity:0.5">(${_escapeHtml(when)})</span>` : ''}</span></div>`;
+        if (voted) politicsHTML += `<div class="npc-ident-row">${_iconSpan(220, 17)}<span style="opacity:0.85">${_escapeHtml(T.lastVoteLbl)}:</span>&nbsp;<span>${_escapeHtml(voted.name)}${when ? ` <span style="opacity:0.78">(${_escapeHtml(when)})</span>` : ''}</span></div>`;
       }
       if (grudgeParty) {
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(1, 17)}<span style="opacity:0.65">${_escapeHtml(T.grudgeLbl)}:</span>&nbsp;<span style="color:#c02020">${_escapeHtml(grudgeParty.name)}</span></div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(1, 17)}<span style="opacity:0.85">${_escapeHtml(T.grudgeLbl)}:</span>&nbsp;<span style="color:#c02020">${_escapeHtml(grudgeParty.name)}</span></div>`;
       }
     }
 
@@ -2324,7 +2497,7 @@
       : _getNpcSpecializations(profile, classId ?? profile?.assignedClassId, dl, npcName);
     if (npcSpecs.length) {
       specsHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.specializations}</div><div class="npc-tag-wrap">`;
-      for (const s of npcSpecs) specsHTML += `<span class="npc-tag">${_escapeHtml(s.name)} <span style="opacity:0.6">(${_escapeHtml(s.levelName)})</span></span>`;
+      for (const s of npcSpecs) specsHTML += `<span class="npc-tag">${_escapeHtml(s.name)} <span style="opacity:0.82">(${_escapeHtml(s.levelName)})</span></span>`;
       specsHTML += '</div>';
     }
 
@@ -2399,7 +2572,7 @@
       }
       if (profile.currentJobId && window.WorkSystem?.getJob) {
         const job = window.WorkSystem.getJob(profile.currentJobId);
-        if (job) simHTML += `<div class="npc-ident-row">${_iconSpan(126, 17)}<span>${_escapeHtml(job.name)}</span></div>`;
+        if (job) simHTML += `<div class="npc-ident-row">${_iconSpan(126, 17)}<span>${_escapeHtml(window.WorkSystem.jobName(job))}</span></div>`;
       }
       if (profile.money !== undefined) {
         simHTML += `<div class="npc-ident-row" style="margin-top:3px">${_iconSpan(314, 17)}<span>${_euros(profile.money)} ${T.onHand}</span></div>`;
@@ -2615,41 +2788,27 @@
 
     if (!all.length) {
       return `
-        <div class="npc-sec-hdr" style="margin-bottom:8px">${T.socialWebTitle}</div>
-        ${graph}
-        <p style="opacity:.6; margin-top:8px">${T.noContacts}</p>
-        <p style="font-size:1.242rem; opacity:.44">${T.contactsHint}</p>`;
+        <div class="npc-web-fullscreen">
+          <div class="npc-sec-hdr" style="margin-bottom:8px">${T.socialWebTitle}</div>
+          ${graph}
+          <p style="opacity:.6; margin-top:8px">${T.noContacts}</p>
+          <p style="font-size:1.242rem; opacity:.44">${T.contactsHint}</p>
+        </div>`;
     }
-
-    // The roster repeats the graph as plain rows: it names everyone in full,
-    // carries whoever did not fit on the rings, and stays readable when the web
-    // gets crowded.
     // i18n-ignore-end
 
-    const meetLabel = n => n
-      ? String(T.webMeetings).replace('{n}', String(n))
-      : (T.webNeverMet);
-    // i18n-ignore-start: row markup and its inline handler
-    const rows = all.map((e, i) => {
-      const off = i >= drawn.length ? ' npc-web-row--offgraph' : '';
-      return `<div class="npc-web-row${off}" ` +
-        `onmousedown="event.stopPropagation();SceneManager._scene._openWebNode(${i})">` +
-        `<span class="npc-web-dot" style="background:${_webEdgeColor(e)}"></span>` +
-        `<span class="npc-web-row-name">${_escapeHtml(e.name)}</span>` +
-        `<span class="npc-web-row-meta">${_escapeHtml(meetLabel(e.meetings))}</span>` +
-        `</div>`;
-      // i18n-ignore-end
-    }).join('');
-
+    // The roster list of plain rows below the graph was dropped so the graph
+    // itself can fill the whole tab; clicking a node is still how a contact's
+    // own panel is opened (see _openWebNode below).
     return `
-      <div class="npc-sec-hdr" style="margin-bottom:8px">${T.socialWebTitle}</div>
-      ${graph}
-      <div class="npc-routine-sub-hdr">${_escapeHtml(T.webRosterTitle)}</div>
-      <div class="npc-web-roster">${rows}</div>`;
+      <div class="npc-web-fullscreen">
+        <div class="npc-sec-hdr" style="margin-bottom:8px">${T.socialWebTitle}</div>
+        ${graph}
+      </div>`;
   };
 
-  // A node or a roster row was clicked: open that person's own panel, on their
-  // own Social Web, so the player keeps walking the same graph outward.
+  // A node was clicked: open that person's own panel, on their own Social
+  // Web, so the player keeps walking the same graph outward.
   Scene_NPCEmpathize.prototype._openWebNode = function (index) {
     const entry = (this._webList || [])[index];
     if (!entry || !entry.name) return;
@@ -2670,13 +2829,15 @@
 
   // Whole-web-on-screen, matching what the fixed viewBox used to guarantee on
   // its own before zoom existed: fit the graph's diameter into the stage the
-  // way it is CSS-sized (a fixed 380px tall, the right page's own width),
-  // read off `_rightEl` since the stage itself is mid-rebuild when this runs.
+  // way it is CSS-sized (the stage now fills the right page top to bottom, so
+  // its height tracks the panel's own clientHeight minus the header/legend
+  // chrome around it), read off `_rightEl` since the stage itself is
+  // mid-rebuild when this runs.
   Scene_NPCEmpathize.prototype._defaultWebZoom = function () {
     const base = this._webBaseSize;
     if (!base) return 1;
     const w = Math.max(280, (this._rightEl ? this._rightEl.clientWidth : 520) - 40);
-    const h = 380;
+    const h = Math.max(240, (this._rightEl ? this._rightEl.clientHeight : 500) - 90);
     const fit = Math.min(w, h) / Math.max(base.w, base.h);
     return Math.max(_WEB_ZOOM_MIN, Math.min(1.4, fit));
   };
@@ -2774,7 +2935,7 @@
 
     let backstoryHTML;
     if (!backstory) {
-      backstoryHTML = `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noBackstory)}</p>`;
+      backstoryHTML = `<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noBackstory)}</p>`;
     } else {
       const ICONS  = window.HistorySimulator_ICONS ?? {};
       const evRows = (backstory.formativeEvents ?? []).map(e => {
@@ -2815,7 +2976,7 @@
 
     const RM = window.NPCSim?.RoutineManager;
     if (!profile || !RM) {
-      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRoutineData)}</p>`;
+      return `${headerHTML}<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRoutineData)}</p>`;
     }
 
     const needLabels = _needLabels(T);
@@ -2833,7 +2994,7 @@
     const pastRows   = past.map(e => row(e.hour, e.activity, e.isPast ? 'past' : 'now')).join('');
     const futureRows = future.length
       ? future.map(e => row(e.hour, e.activity, '')).join('')
-      : `<p style="opacity:0.6">${_escapeHtml(T.routineNothingPlanned)}</p>`;
+      : `<p style="opacity:0.82">${_escapeHtml(T.routineNothingPlanned)}</p>`;
 
     return `
       ${headerHTML}
@@ -2847,7 +3008,7 @@
   // Biologics tab
   // ============================================================================
   // Simplified anatomy readout: the NPC's limbs/organs come straight from
-  // their archetype's part table (window.Health.EnemyArchetypes, the same
+  // their archetype's part table (window.Health.Archetypes, the same
   // data Health_Core builds player body parts from), with per-part condition
   // and congenital missing limbs rolled deterministically from the world
   // seed. Display-only, no Health_BiologicSimulation machinery involved.
@@ -2889,7 +3050,7 @@
     // world-seeded, pre-simulated medical history persisted on the profile.
     const actorObj = this._actorId != null ? $gameActors.actor(this._actorId) : null;
     if (!DS || (!actorObj && (!profile || !npcName))) {
-      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noHealth)}</p>`;
+      return `${headerHTML}<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noHealth)}</p>`;
     }
     if (!actorObj) { try { DS.ensureNpcMedicalHistory(npcName, profile); } catch (e) {} }
     else { try { DS.ensureStoryConditions?.(); } catch (e) {} }
@@ -2911,10 +3072,10 @@
         <div class="npc-ident-row" style="align-items:flex-start">
           <span style="width:10px; height:10px; border-radius:50%; background:${_SEV_COLOR[d.severity] || '#8a6a30'}; margin-top:6px; flex-shrink:0"></span>
           <div style="flex:1">
-            <div><b>${_escapeHtml(d.name)}</b> <span style="opacity:0.5; font-size:0.928em">${_escapeHtml(d.category)}</span></div>
+            <div><b>${_escapeHtml(d.name)}</b> <span style="opacity:0.78; font-size:0.928em">${_escapeHtml(d.category)}</span></div>
             ${tags.length ? `<div class="npc-badge-row" style="margin:2px 0">${tags.join('')}</div>` : ''}
             ${d.desc ? `<div class="npc-thought" style="margin-top:1px">${_escapeHtml(d.desc)}</div>` : ''}
-            ${symptoms ? `<div style="opacity:0.6; font-size:0.928em">${_escapeHtml(T.symptomsLbl)}: ${_escapeHtml(symptoms)}</div>` : ''}
+            ${symptoms ? `<div style="opacity:0.82; font-size:0.928em">${_escapeHtml(T.symptomsLbl)}: ${_escapeHtml(symptoms)}</div>` : ''}
           </div>
         </div>`;
     };
@@ -2927,7 +3088,7 @@
         <div class="npc-ident-row" style="align-items:flex-start">
           ${_iconSpan(icon, 17)}
           <div style="flex:1">
-            <div><b>${_escapeHtml(c.name)}</b> <span style="opacity:0.5; font-size:0.928em">${_escapeHtml(c.category)}</span></div>
+            <div><b>${_escapeHtml(c.name)}</b> <span style="opacity:0.78; font-size:0.928em">${_escapeHtml(c.category)}</span></div>
             ${c.desc ? `<div class="npc-thought" style="margin-top:1px">${_escapeHtml(c.desc)}</div>` : ''}
           </div>
         </div>`;
@@ -2958,7 +3119,7 @@
           <div style="flex:1">
             <div><b>${_escapeHtml(entry.name || (disease ? disease.name : entry.diseaseId))}</b></div>
             <div class="npc-badge-row" style="margin:2px 0">${tags.join('')}</div>
-            <div style="opacity:0.6; font-size:0.928em">${_escapeHtml(entry.place || '')}${entry.date ? `, ${_escapeHtml(String(entry.date))}` : ''}</div>
+            <div style="opacity:0.82; font-size:0.928em">${_escapeHtml(entry.place || '')}${entry.date ? `, ${_escapeHtml(String(entry.date))}` : ''}</div>
           </div>
         </div>`;
     };
@@ -2981,7 +3142,7 @@
         const rows = live.map(e => {
           const pct = (ES.prevalenceAt(place.key, e) * 100).toFixed(1);
           return `<div class="npc-ident-row"><div style="flex:1"><b>${_escapeHtml(e.name)}</b>
-            <div style="opacity:0.6; font-size:0.928em">${_escapeHtml(ES.placeName ? ES.placeName(place.key) : place.key)} &mdash; ${pct}% ${_escapeHtml(T.epidemicIll)}</div></div></div>`;
+            <div style="opacity:0.82; font-size:0.928em">${_escapeHtml(ES.placeName ? ES.placeName(place.key) : place.key)} &mdash; ${pct}% ${_escapeHtml(T.epidemicIll)}</div></div></div>`;
         }).join('');
         localHTML = `<div class="npc-sec-hdr" style="margin-top:10px">${_escapeHtml(T.epidemicLocal)}</div>${rows}`;
       }
@@ -2989,7 +3150,7 @@
 
     const section = (title, body, empty) =>
       `<div class="npc-sec-hdr" style="margin-top:10px">${_escapeHtml(title)}</div>` +
-      (body || `<p style="opacity:0.5">${_escapeHtml(empty)}</p>`);
+      (body || `<p style="opacity:0.78">${_escapeHtml(empty)}</p>`);
 
     return `
       ${headerHTML}
@@ -3008,7 +3169,7 @@
   Scene_NPCEmpathize.prototype._buildActorBiologicsHTML = function (T, actor) {
     const headerHTML = `<div class="npc-sec-hdr">${T.biologicsTitle}</div><hr class="npc-r-sep">`;
     const HC   = window.HealthCore;
-    const keys = HC?.getActorArchetypeKeys ? HC.getActorArchetypeKeys(actor) : ['Humanoid']; // i18n-ignore: EnemyArchetypes.json id
+    const keys = HC?.getActorArchetypeKeys ? HC.getActorArchetypeKeys(actor) : ['Humanoid']; // i18n-ignore: Archetypes.json id
     const label = keys
       .map(k => (HC?.getArchetypeDisplayName ? HC.getArchetypeDisplayName(k) : k))
       .join(' / ');
@@ -3018,7 +3179,7 @@
     // a missing limb rather than simply vanishing off the list.
     const expected = {};
     for (const key of keys) {
-      const table = window.Health?.EnemyArchetypes?.[key]?.parts;
+      const table = window.Health?.Archetypes?.[key]?.parts;
       if (table) for (const [k, part] of Object.entries(table)) if (!expected[k]) expected[k] = part;
     }
     const rows = [];
@@ -3034,7 +3195,7 @@
       });
     }
     if (!rows.length) {
-      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noBiologics)}</p>`;
+      return `${headerHTML}<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noBiologics)}</p>`;
     }
 
     let condSum = 0, condCount = 0;
@@ -3123,10 +3284,10 @@
     if (actorObj) return this._buildActorBiologicsHTML(T, actorObj);
 
     const headerHTML = `<div class="npc-sec-hdr">${T.biologicsTitle}</div><hr class="npc-r-sep">`;
-    const archetype  = profile?.archetype || 'Humanoid'; // i18n-ignore: EnemyArchetypes.json id
-    const parts      = window.Health?.EnemyArchetypes?.[archetype]?.parts;
+    const archetype  = profile?.archetype || 'Humanoid'; // i18n-ignore: Archetypes.json id
+    const parts      = window.Health?.Archetypes?.[archetype]?.parts;
     if (!profile || !parts || !Object.keys(parts).length) {
-      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noBiologics)}</p>`;
+      return `${headerHTML}<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noBiologics)}</p>`;
     }
 
     // World-seeded per-NPC anatomy roll, stable across sessions: the same
@@ -3229,20 +3390,39 @@
     return T.has(key) ? T(key) : 'N/A';
   };
 
+  // Every genital code the DB knows: -1 None, 0 Testes, 1 Uterus, 2 Oviduct,
+  // 3 Spore Gland, 4 Mitosis Gland.
+  const _GENITAL_ALL   = [-1, 0, 1, 2, 3, 4];
+  // An alien sprite (NPCs.json `aliens: true`) never carries a human uterus or
+  // testes, whatever gender it rolled: alien biology is its own thing.
+  const _GENITAL_ALIEN = [-1, 2, 3, 4];
+
   function _npcGenitalCode(npcName, profile) {
     const Shared = window.NPCShared;
     const rng    = Shared ? new Shared.Rng(Shared.nameHash(npcName + '_genitals') ^ Shared.worldSeed()) : null;
-    const rnd    = () => (rng ? rng.next() : 0.5);
+    const pick   = list => (rng ? rng.pick(list) : list[0]);
     const gender = profile?.gender ?? 0;
-    if (gender === 3) return rng ? rng.pick([4, 3, 2]) : 4;  // Cocoon: mitosis / spores / oviparous
-    if (gender === 2) return rng ? rng.pick([0, 1, -1]) : 0; // Non-binary: varied
-    if (gender === 1) return rnd() < 0.08 ? -1 : 1;          // Female-coded: uterus, occasionally none
-    return rnd() < 0.08 ? -1 : 0;                            // Male-coded: testicles, occasionally none
+
+    if (Shared?.isAlienSprite?.(profile?.spriteKey)) return pick(_GENITAL_ALIEN);
+
+    // Non-binary and Cocoon read as "varied", evenly across every option; so
+    // does anybody whose archetype is not a plain Humanoid (Beast, Draconic,
+    // Ooze...), since only a Humanoid body is ever guaranteed to match its
+    // gender at all. Nothing stored defaults to Humanoid, same as everywhere
+    // else that reads this field (see _archetypeRowLabel).
+    const archetype = profile?.archetype || 'Humanoid';
+    if (gender === 2 || gender === 3 || archetype !== 'Humanoid') return pick(_GENITAL_ALL);
+
+    // A Humanoid reads its rolled gender onto its body 80% of the time; the
+    // other 20% it is any of the remaining five options.
+    const matched = gender === 1 ? 1 : 0; // Uterus for Female-coded, Testes for Male-coded
+    if (!rng) return matched;
+    return rng.next() < 0.8 ? matched : pick(_GENITAL_ALL.filter(c => c !== matched));
   }
 
   // A bubbaromantic NPC (Orientations.json: 8% of the population, romantically
   // attached to Bubba Wilson and to nobody else) is the one person Bubba is
-  // offered the Court option with, and the only move on it is turning them down.
+  // offered the Court option with at all.
   function _isBubbaromanticNpc(npcName, profile) {
     if (!npcName) return false;
     try {
@@ -3250,6 +3430,12 @@
     } catch (e) {
       return false;
     }
+  }
+
+  // Bubba (Switch 49) courting the one person who has loved him from a
+  // distance: every Court move on her lands, no roll needed.
+  function _bubbaGuaranteedLand(npcName, profile, actor) {
+    return !!(_isBubbaActor?.(actor) && _isBubbaromanticNpc(npcName, profile));
   }
 
   // Chance that a rolled orientation's romantic/sexual counterpart is forced to
@@ -3309,19 +3495,37 @@
     return rng ? _weightedPick(eligible, rng, 'weight') : eligible[0];
   }
 
+  // Orientations.json and Relationships.json carry i18n keys rather than words
+  // ("Orientations.sexual.heterosexual.name"), so what the panel shows comes
+  // out of js/i18n/<lang>/plugins/. window.T, not the panel's own label object
+  // (which every render function receives as `T`). Anything that resolves to
+  // nothing is shown as written.
+  function _dbText(value) {
+    if (!value) return '';
+    const key = String(value);
+    return (window.T && window.T.has && window.T.has(key)) ? window.T(key) : key;
+  }
+
+  // A personality's English `name` in PersonalityData.json is its id; the word
+  // the dossier prints is reached from it (js/i18n/<lang>/plugins/Personality.json).
+  function _personalityLabel(name) {
+    if (!name) return '';
+    const key = 'Personality.' + String(name).toLowerCase().replace(/[^a-z0-9]/g, '') + '.name';
+    return (window.T && window.T.has && window.T.has(key)) ? window.T(key) : String(name);
+  }
+
   function _npcLink(name) {
     const arg = String(name ?? '').replace(/[\\'"<>]/g, '');
     return `<span class="npc-wiki-link" onmousedown="event.stopPropagation();window.NPCEmpathize.openByName('${arg}')">${_escapeHtml(name)}</span>`;
   }
 
   Scene_NPCEmpathize.prototype._buildRomanceTabHTML = function (T, profile, npcName) {
-    const lang = ConfigManager.language === 'it' ? 'it' : 'en';
-    const nm   = v => (lang === 'it' ? (v?.name_it || v?.name) : v?.name);
-    const ds   = v => (lang === 'it' ? (v?.desc_it || v?.desc) : v?.desc);
+    const nm   = v => _dbText(v?.name);
+    const ds   = v => _dbText(v?.desc);
     const headerHTML = `<div class="npc-sec-hdr">${T.romanceTitle}</div><hr class="npc-r-sep">`;
 
     if (!npcName) {
-      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRomance)}</p>`;
+      return `${headerHTML}<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRomance)}</p>`;
     }
 
     const db = _orientationData();
@@ -3330,16 +3534,16 @@
     const esotericTag = o => o?.esoteric
       ? ` <span class="npc-badge" style="font-size:0.856em">${_escapeHtml(T.esotericTag)}</span>` : '';
     const pctLine = o => o
-      ? `<span style="opacity:0.5; margin-left:6px; font-size:0.964em">${o.pct}% ${_escapeHtml(T.ofPopulation)}</span>` : '';
+      ? `<span style="opacity:0.78; margin-left:6px; font-size:0.964em">${o.pct}% ${_escapeHtml(T.ofPopulation)}</span>` : '';
 
     // ── Orientation ──
     let orientHTML = `<div class="npc-sec-hdr" style="margin-top:4px">${T.orientationLbl}</div>`;
     if (romantic) {
-      orientHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span style="opacity:0.65">${_escapeHtml(T.romanticLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(romantic))}</b></span>${pctLine(romantic)}${esotericTag(romantic)}</div>`;
+      orientHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span style="opacity:0.85">${_escapeHtml(T.romanticLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(romantic))}</b></span>${pctLine(romantic)}${esotericTag(romantic)}</div>`;
       if (ds(romantic)) orientHTML += `<div class="npc-thought" style="margin-top:2px">${_escapeHtml(ds(romantic))}</div>`;
     }
     if (sexual) {
-      orientHTML += `<div class="npc-ident-row" style="margin-top:6px">${_iconSpan(84, 17)}<span style="opacity:0.65">${_escapeHtml(T.sexualLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(sexual))}</b></span>${pctLine(sexual)}${esotericTag(sexual)}</div>`;
+      orientHTML += `<div class="npc-ident-row" style="margin-top:6px">${_iconSpan(84, 17)}<span style="opacity:0.85">${_escapeHtml(T.sexualLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(sexual))}</b></span>${pctLine(sexual)}${esotericTag(sexual)}</div>`;
       if (ds(sexual)) orientHTML += `<div class="npc-thought" style="margin-top:2px">${_escapeHtml(ds(sexual))}</div>`;
     }
 
@@ -3347,10 +3551,13 @@
     let kinseyHTML = '';
     const kv = (sexual && sexual.kinsey !== null && sexual.kinsey !== undefined) ? sexual.kinsey : null;
     if (kv !== null) {
+      // Same in-data shape as every other string in Orientations.json: a key
+      // per step, read through the same resolver the name and desc accessors
+      // above use.
       const scale = db.kinseyScale || {};
-      const desc  = scale[String(kv)] || '';
+      const desc  = _dbText(scale[String(kv)]);
       kinseyHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.kinseyLbl}</div>` +
-        `<div class="npc-ident-row">${_iconSpan(87, 17)}<span><b>${_escapeHtml('Kinsey ' + kv)}</b></span><span style="opacity:0.55">&nbsp;, ${_escapeHtml(desc)}</span></div>`;
+        `<div class="npc-ident-row">${_iconSpan(87, 17)}<span><b>${_escapeHtml('Kinsey ' + kv)}</b></span><span style="opacity:0.8">&nbsp;, ${_escapeHtml(desc)}</span></div>`;
       if (kv !== 'X') {
         let dots = '';
         for (let i = 0; i <= 6; i++) {
@@ -3364,7 +3571,7 @@
     // ── Anatomy: genitals (from the prosthetic reproduction DB) ──
     const genName = _genitalName(genitalCode);
     const anatomyHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.anatomyLbl}</div>` +
-      `<div class="npc-ident-row">${_iconSpan(120, 17)}<span style="opacity:0.65">${_escapeHtml(T.genitalsLbl)}:</span>&nbsp;<span><b>${_escapeHtml(genName)}</b></span></div>`;
+      `<div class="npc-ident-row">${_iconSpan(120, 17)}<span style="opacity:0.85">${_escapeHtml(T.genitalsLbl)}:</span>&nbsp;<span><b>${_escapeHtml(genName)}</b></span></div>`;
 
     // ── Sentimental status (live, from NPCLifeSim) ──
     let statusHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.sentimentalLbl}</div>`;
@@ -3387,16 +3594,16 @@
       else                                       line = _escapeHtml(T.stSingle);
       statusHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span>${line}</span></div>`;
       if (record.timesMarried > 1) {
-        statusHTML += `<div style="font-size:1.15rem; opacity:0.6; margin:2px 0 0 24px">${_escapeHtml((T.timesMarried).replace('{n}', record.timesMarried))}</div>`;
+        statusHTML += `<div style="font-size:1.15rem; opacity:0.82; margin:2px 0 0 24px">${_escapeHtml((T.timesMarried).replace('{n}', record.timesMarried))}</div>`;
       }
       const exes = (record.exPartners || []).filter(Boolean);
       if (exes.length) {
         const exList = exes.slice(-4).map(e => {
           const nmHtml = e.external ? _escapeHtml(e.name) : _npcLink(e.name);
-          const out    = e.outcome ? ` <span style="opacity:0.5">(${_escapeHtml(e.outcome)})</span>` : '';
+          const out    = e.outcome ? ` <span style="opacity:0.78">(${_escapeHtml(e.outcome)})</span>` : '';
           return `${nmHtml}${out}`;
         }).join(', ');
-        statusHTML += `<div class="npc-ident-row" style="margin-top:4px"><span style="opacity:0.65">${_escapeHtml(T.exPartnersLbl)}:</span>&nbsp;<span>${exList}</span></div>`;
+        statusHTML += `<div class="npc-ident-row" style="margin-top:4px"><span style="opacity:0.85">${_escapeHtml(T.exPartnersLbl)}:</span>&nbsp;<span>${exList}</span></div>`;
       }
     } else {
       statusHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span>${_escapeHtml(T.stSingle)}</span></div>`;
@@ -3406,7 +3613,7 @@
     let styleHTML = '';
     const style = _npcRelationshipStyle(npcName, partnered, profile);
     if (style) {
-      styleHTML = `<div class="npc-ident-row" style="margin-top:6px">${_iconSpan(83, 17)}<span style="opacity:0.65">${_escapeHtml(T.relStyleLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(style))}</b></span></div>`;
+      styleHTML = `<div class="npc-ident-row" style="margin-top:6px">${_iconSpan(83, 17)}<span style="opacity:0.85">${_escapeHtml(T.relStyleLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(style))}</b></span></div>`;
       if (ds(style)) styleHTML += `<div class="npc-thought" style="margin-top:2px">${_escapeHtml(ds(style))}</div>`;
     }
 
@@ -3696,8 +3903,6 @@
 
   // The Court submenu's rows, one per move, each carrying its own odds and the
   // reason it cannot land when it cannot.
-  const BUBBA_DECLINE_ID = 'bubbaDecline';
-
   Scene_NPCEmpathize.prototype._romanceOptions = function () {
     const lang       = ConfigManager.language === 'it' ? 'it' : 'en';
     const npcName    = this._targetName();
@@ -3706,30 +3911,19 @@
     const opinion    = this._focusOpinion(profile);
     const attraction = this._focusAttraction(profile);
 
-    // Bubba (Switch 49) has exactly one move, and it is not a move: the person
-    // in front of him has loved him from a distance for years, and he says no.
-    if (_isBubbaActor?.(actor) && _isBubbaromanticNpc(npcName, profile)) {
-      const rom = _bubbaDb?.()?.romantic || {};
-      return [{
-        id:     BUBBA_DECLINE_ID,
-        label:  rom.label || T('Empathize.declineAdvances'),
-        reason: null,
-        reasonLabel: '',
-        chance: 100,
-        gain:   0,
-        loss:   Number(rom.delta) || -70,
-      }];
-    }
+    // Bubba (Switch 49) courting the one person who has loved him from a
+    // distance for years: every move on her lands.
+    const guaranteed = _bubbaGuaranteedLand(npcName, profile, actor);
 
     const moves = _romanceActions().map(def => {
-      const reason = _romanceBlockReason(profile, npcName, actor, def);
+      const reason = guaranteed ? null : _romanceBlockReason(profile, npcName, actor, def);
       const pool   = reason ? _romanceRejection(reason) : null;
       return {
         id:     def.id,
         label:  def.label || def.id,
         reason,
         reasonLabel: pool ? (pool.reasonLabel || '') : '',
-        chance: reason ? 0 : _romanceChance(profile, npcName, actor, def, opinion, attraction),
+        chance: reason ? 0 : (guaranteed ? 100 : _romanceChance(profile, npcName, actor, def, opinion, attraction)),
         gain:   Number(def.successDelta) || 0,
         loss:   Number(def.failDelta)    || 0,
       };
@@ -3768,7 +3962,7 @@
     if (theirs <= _ROM_HYGIENE_HINT_AT) lines.push(T('Empathize.hygieneCourtSelf', { name: npcName }));
     if (mine   <= _ROM_HYGIENE_HINT_AT) lines.push(T('Empathize.hygieneCourtNpc',  { name: npcName }));
     if (!lines.length) return '';
-    return `<div style="opacity:0.7; font-size:0.964em; margin:2px 0 4px">` +
+    return `<div style="opacity:0.88; font-size:0.964em; margin:2px 0 4px">` +
       lines.map(l => _escapeHtml(l)).join('<br>') + `</div>`;
   };
 
@@ -3776,22 +3970,17 @@
     let html = this._buildRomanceHygieneHint();
     html += this._romanceOptions().map(o => {
       const open = `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._romanceInteract('${o.id}')">`;
-      // Bubba's single row: no odds to weigh, only the damage it will do.
-      if (o.id === BUBBA_DECLINE_ID) {
-        return `${open}<span class="${OPT}">${_escapeHtml(o.label)}</span>` +
-          `<span style="color:#b01010; margin-left:6px">${o.loss}♥</span></div>`;
-      }
       if (o.reason) {
-        return `${open}<span class="${OPT}" style="opacity:0.7">${_escapeHtml(o.label)}</span>` +
+        return `${open}<span class="${OPT}" style="opacity:0.88">${_escapeHtml(o.label)}</span>` +
           `<span style="color:#b01010; margin-left:6px">0%</span>` +
-          (o.reasonLabel ? `<span style="opacity:0.55; margin-left:4px; font-size:0.964em">${_escapeHtml(o.reasonLabel)}</span>` : '') +
+          (o.reasonLabel ? `<span style="opacity:0.8; margin-left:4px; font-size:0.964em">${_escapeHtml(o.reasonLabel)}</span>` : '') +
           `</div>`;
       }
       // Propose carries no single chance of its own: it opens a further page,
       // one row per relationship style, each with its own odds.
       if (o.submenu) {
         return `${open}<span class="${OPT}">${_escapeHtml(o.label)}</span>` +
-          `<span style="opacity:0.6; margin-left:6px">&rsaquo;</span></div>`;
+          `<span style="opacity:0.82; margin-left:6px">&rsaquo;</span></div>`;
       }
       const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
       return `${open}<span class="${OPT}">${_escapeHtml(o.label)}</span>` +
@@ -3820,8 +4009,7 @@
   };
 
   Scene_NPCEmpathize.prototype._proposeOptions = function () {
-    const lang        = ConfigManager.language === 'it' ? 'it' : 'en';
-    const nm          = v => (lang === 'it' ? (v?.name_it || v?.name) : v?.name);
+    const nm          = v => _dbText(v?.name);
     const npcName     = this._targetName();
     const profile     = _getProfile(npcName);
     const actor       = this._focusActor();
@@ -3835,7 +4023,7 @@
   };
 
   Scene_NPCEmpathize.prototype._buildInlineProposeActions = function (T) {
-    let html = `<div style="opacity:0.7; font-size:0.964em; margin:2px 0 6px">${_escapeHtml(T.proposeSubtitle)}</div>`;
+    let html = `<div style="opacity:0.88; font-size:0.964em; margin:2px 0 6px">${_escapeHtml(T.proposeSubtitle)}</div>`;
     html += this._proposeOptions().map(o => {
       const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
       return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._proposeInteract('${o.key}')">` +
@@ -3863,8 +4051,7 @@
   // the Romance tab already reads live, so the panel tells the truth about it
   // from the very next render.
   Scene_NPCEmpathize.prototype._proposeInteract = function (styleKey) {
-    const lang    = ConfigManager.language === 'it' ? 'it' : 'en';
-    const nm      = v => (lang === 'it' ? (v?.name_it || v?.name) : v?.name);
+    const nm      = v => _dbText(v?.name);
     const style   = (_relationshipData().styles || []).find(s => s.key === styleKey);
     if (!style) return;
     const npcName = this._targetName();
@@ -3947,49 +4134,7 @@
     }, 350);
   };
 
-  // Bubba turning down somebody who has loved him since the coaches started
-  // running: their confession, his modest refusal, and what it costs him with
-  // them for good. There is no roll, it always lands and it always hurts.
-  Scene_NPCEmpathize.prototype._bubbaDecline = function () {
-    const rom     = _bubbaDb?.()?.romantic || {};
-    const npcName = this._targetName();
-    const profile = _getProfile(npcName);
-    const actor   = this._focusActor();
-    const actorId = actor && actor.actorId();
-    const fill    = s => String(s || '').replace(/\{name\}/g, npcName);
-    const delta   = Number(rom.delta) || -70;
-
-    if (profile && actorId != null) {
-      _addNpcAttraction(profile, actorId, delta);
-      (profile.eventLog ??= []).push({
-        tag: 'romance_' + BUBBA_DECLINE_ID, desc: `turned down (${delta})`, // i18n-ignore: event-log record id
-        timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
-      });
-      if ((profile.factionIndex ?? -1) >= 0 && window.$gameFactions?.changeReputation)
-        window.$gameFactions.changeReputation(profile.factionIndex, Math.round(delta / 8));
-    }
-
-    SoundManager.playBuzzer();
-    this._romanceMode = false;
-    this._proposeMode = false;
-    this._activeTab   = 'chat';
-    this._chatHistory.push({ role: 'npc',    text: fill(_rand(rom.confession)) });
-    this._chatHistory.push({ role: 'player', text: fill(_rand(rom.decline)) });
-    this._isTyping    = true;
-    this._joinMessage = { type: 'reject', text: `${delta} ♥ (${actor ? actor.name() : ''})` };
-    this._render();
-    this._scrollChatToBottom();
-    setTimeout(() => {
-      this._isTyping = false;
-      this._chatHistory.push({ role: 'npc', text: fill(_rand(rom.response)) });
-      if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
-      this._render();
-      this._scrollChatToBottom();
-    }, 350);
-  };
-
   Scene_NPCEmpathize.prototype._romanceInteract = function (id) {
-    if (id === BUBBA_DECLINE_ID) return this._bubbaDecline();
     if (id === 'propose') return this._openPropose();
     const def = _romanceActions().find(a => a.id === id);
     if (!def) return;
@@ -4005,7 +4150,10 @@
     if (_courtRefused(profile, actorId, priorOpinion)) { SoundManager.playBuzzer(); return; }
 
     const priorAttraction = this._focusAttraction(profile);
-    const reason = _romanceBlockReason(profile, npcName, actor, def);
+    // Bubba (Switch 49) courting the one person who has loved him from a
+    // distance for years: every move on her lands, no roll needed.
+    const guaranteed = _bubbaGuaranteedLand(npcName, profile, actor);
+    const reason = guaranteed ? null : _romanceBlockReason(profile, npcName, actor, def);
     const playerLine = fill(_rand(def.player));
     let npcLine, delta, landed = false;
 
@@ -4014,7 +4162,7 @@
       npcLine = fill(_rand(pool.lines));
       delta   = Number(pool.delta) || 0;
     } else {
-      const chance = _romanceChance(profile, npcName, actor, def, priorOpinion, priorAttraction);
+      const chance = guaranteed ? 100 : _romanceChance(profile, npcName, actor, def, priorOpinion, priorAttraction);
       landed  = Math.random() * 100 < chance;
       npcLine = fill(_rand(landed ? def.responseGood : def.responseBad));
       delta   = landed
@@ -4172,18 +4320,18 @@
     this._directionList = [...doors, ...people];
 
     const hdr = text =>
-      `<div style="flex-basis:100%; opacity:0.6; font-size:1.14rem; margin:2px 0 -2px">${_escapeHtml(text)}</div>`;
+      `<div style="flex-basis:100%; opacity:0.82; font-size:1.14rem; margin:2px 0 -2px">${_escapeHtml(text)}</div>`;
     const row = (entry, i) =>
       `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._answerDirections(${i})">` +
       `<span>${_escapeHtml(entry.label)}</span>` +
       (entry.count > 1
-        ? `<span style="opacity:0.55; margin-left:6px">${_escapeHtml(T('Empathize.directionsCount', { count: String(entry.count) }))}</span>`
+        ? `<span style="opacity:0.8; margin-left:6px">${_escapeHtml(T('Empathize.directionsCount', { count: String(entry.count) }))}</span>`
         : '') +
-      `<span style="opacity:0.55; margin-left:6px">${entry.dist} m</span></div>`;
+      `<span style="opacity:0.8; margin-left:6px">${entry.dist} m</span></div>`;
 
     let html = '';
     if (!this._directionList.length) {
-      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.directionsNone)}</span>`;
+      html = `<span style="opacity:0.82; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.directionsNone)}</span>`;
     } else {
       if (doors.length) {
         html += hdr(T.directionsDoors);
@@ -4267,7 +4415,7 @@
     if (!log.length) {
       return emHTML
         ? `${headerHTML}${emHTML}`
-        : `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noLifeHistory)}</p>`;
+        : `${headerHTML}<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noLifeHistory)}</p>`;
     }
 
     const narrative = window.NPCSim?.StoryLogger?.generateNarrative?.(npcName)
@@ -4399,7 +4547,7 @@
         <div class="npc-entity-title">${_escapeHtml(String(ent.id))}</div>`;
       this._rightEl.innerHTML = this._activeTab === 'wiki'
         ? this._buildWikiTabHTML(T)
-        : `<p style="opacity:0.6; margin-top:14px">${_escapeHtml(T.noRecords)}</p>`;
+        : `<p style="opacity:0.82; margin-top:14px">${_escapeHtml(T.noRecords)}</p>`;
       return;
     }
 
@@ -4471,13 +4619,13 @@
       // Show current holy leader for dual-track powers (e.g. Holy Vatican Empire)
       if (view.currentHoly) {
         sideHTML += `<hr class="npc-r-sep">` +
-          `<div class="npc-ident-row">${_iconSpan(245, 17)}<span style="opacity:0.65">${_escapeHtml(T.holyLeader)}:</span>&nbsp;${_wikiLink('leader', view.currentHoly.name)}</div>`;
+          `<div class="npc-ident-row">${_iconSpan(245, 17)}<span style="opacity:0.85">${_escapeHtml(T.holyLeader)}:</span>&nbsp;${_wikiLink('leader', view.currentHoly.name)}</div>`;
       }
     } else if (view.type === 'nation') {
       const ctrlHTML = view.controller !== 'Neutral'
         ? _wikiLink('power', view.controller)
         : `<span>${_escapeHtml(T.independent)}</span>`;
-      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${ctrlHTML}</div>`;
+      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${ctrlHTML}</div>`;
       if (view.government) sideHTML += _kvRow(186, T.government, _escapeHtml(view.government));
       const s = view.power?.state;
       if (s) {
@@ -4497,7 +4645,7 @@
           _statBarRow(T.ambition,   Math.round(p.ambition),  100, '#c02020') +
           _meterRow(T.approval,     p.approval, '#4070d0');
       } else if (view.leader) {
-        sideHTML = _kvRow(186, T.ideologyLbl, _escapeHtml(view.leader.ideology || '?')) +
+        sideHTML = _kvRow(186, T.ideologyLbl, _escapeHtml(_leaderIdeology(view.leader))) +
           _kvRow(220, T.reignLbl, _escapeHtml(`${view.leader.years?.[0] ?? '?'} – ${view.leader.years?.[1] ?? '?'}`));
       }
     } else if (view.type === 'artifact') {
@@ -4516,7 +4664,7 @@
       if (view.rec) {
         sideHTML += _kvRow(220, T.discovered, _escapeHtml(view.rec.date || '?'));
         const holder = view.rec.holders?.[view.rec.holders.length - 1];
-        if (holder) sideHTML += `<div class="npc-ident-row">${_iconSpan(210, 17)}<span style="opacity:0.65">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}</div>`;
+        if (holder) sideHTML += `<div class="npc-ident-row">${_iconSpan(210, 17)}<span style="opacity:0.85">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}</div>`;
       }
     } else if (view.type === 'faction') {
       const h = view.hist;
@@ -4534,13 +4682,13 @@
       // Show parent hyperpower if present
       if (view.parentPower) {
         sideHTML += `<hr class="npc-r-sep">` +
-          `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.parentPower)}</div>`;
+          `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.parentPower)}</div>`;
       }
     } else if (view.type === 'party') {
       const p = view.party;
-      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.power.name)}</div>`;
-      if (view.ideology) sideHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65">${_escapeHtml(T.ideologyLbl)}:</span>&nbsp;${_wikiLink('ideology', view.ideology.id, _ideologyLabel(view.ideology.id))}</div>`;
-      if (view.leader) sideHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
+      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.power.name)}</div>`;
+      if (view.ideology) sideHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.85">${_escapeHtml(T.ideologyLbl)}:</span>&nbsp;${_wikiLink('ideology', view.ideology.id, _ideologyLabel(view.ideology.id))}</div>`;
+      if (view.leader) sideHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.85">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
       sideHTML += `<hr class="npc-r-sep">`;
       if (p.foundedYear != null) sideHTML += _kvRow(220, T.foundedLbl, `${p.foundedYear}`);
       if (p.lastShare != null) sideHTML += _kvRow(216, T.lastShareLbl, `${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}`);
@@ -4562,9 +4710,9 @@
     }
 
     return `
-      <div class="npc-entity-emblem npc-emblem-${view.type}" title="${_escapeHtml(view.name)}">${initials ? _escapeHtml(initials) : emblem.glyph}</div>
+      <div class="npc-entity-emblem npc-emblem-${view.type}" title="${_escapeHtml(_viewName(view))}">${initials ? _escapeHtml(initials) : emblem.glyph}</div>
       <div class="npc-entity-kicker">${_escapeHtml(kicker)}</div>
-      <div class="npc-entity-title">${_escapeHtml(view.name)}</div>
+      <div class="npc-entity-title">${_escapeHtml(_viewName(view))}</div>
       ${deadHTML}
       <div class="npc-vitals-footer">${sideHTML}</div>`;
   };
@@ -4573,22 +4721,23 @@
 
   Scene_NPCEmpathize.prototype._buildNationOverviewHTML = function (view, T) {
     const power = view.power;
-    let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div>`;
-    const sub = [view.government, view.controller !== 'Neutral' ? view.controller : (T.independent)].filter(Boolean);
+    let html = `<div class="npc-profile-name">${_escapeHtml(_viewName(view))}</div>`;
+    const sub = [view.government,
+      view.controller !== 'Neutral' ? _worldName('power', view.controller) : (T.independent)].filter(Boolean);
     html += `<div class="npc-profile-sub">${_escapeHtml(sub.join(' · '))}</div><hr class="npc-r-sep">`;
 
     html += `<div class="npc-sec-hdr">${T.government}</div>`;
     if (view.government) html += _kvRow(186, T.government, _escapeHtml(view.government));
-    html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${
+    html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${
       view.controller !== 'Neutral' ? _wikiLink('power', view.controller) : _escapeHtml(T.independent)
     }</div>`;
     if (view.faction && view.faction !== 'Neutral') {
-      html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiFaction)}:</span>&nbsp;${_linkify(view.faction)}</div>`;
+      html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.85">${_escapeHtml(T.wikiFaction)}:</span>&nbsp;${_linkify(_worldName('faction', view.faction))}</div>`;
     }
     if (power) {
       const head = power.politicians?.[power.headId];
-      html += _kvRow(216, T.seats, `${power.seats}, ${_escapeHtml(power.legislature)}`);
-      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(power.headTitle)}:</span>&nbsp;${_wikiLink('leader', head.name)}</div>`;
+      html += _kvRow(216, T.seats, `${power.seats}, ${_escapeHtml(window.NPCPolitics?.powerLabel?.(power, 'legislature') || power.legislature)}`);
+      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.85">${_escapeHtml(_headTitle(power))}:</span>&nbsp;${_wikiLink('leader', head.name)}</div>`;
       const dateOf = window.NPCPolitics?.dateOf;
       if (power.nextElectionMinute != null && dateOf) {
         html += _kvRow(220, T.nextElection, _escapeHtml(dateOf(power.nextElectionMinute)));
@@ -4612,7 +4761,7 @@
       for (const s of view.settlements) {
         const mayor = s.offices?.mayor;
         html += `<div class="npc-ident-row">${_iconSpan(190, 17)}<span>${_escapeHtml(s.group)}</span>${
-          mayor ? `<span style="opacity:0.55">&nbsp;— ${_escapeHtml(T.mayorLbl)}:&nbsp;</span>${_wikiLink('npc', mayor)}` : ''
+          mayor ? `<span style="opacity:0.8">&nbsp;— ${_escapeHtml(T.mayorLbl)}:&nbsp;</span>${_wikiLink('npc', mayor)}` : ''
         }</div>`;
       }
     }
@@ -4630,7 +4779,7 @@
   Scene_NPCEmpathize.prototype._buildNationGovHistoryHTML = function (view, T) {
     let html = `<div class="npc-sec-hdr">${T.governmentHistory}</div><hr class="npc-r-sep">`;
     if (!view.history.length) {
-      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     // newest first
     html += view.history.slice().reverse().map(rec => `
@@ -4638,7 +4787,7 @@
         <span class="npc-life-time">${_escapeHtml(rec.date)}</span>
         <span><strong>${_escapeHtml(rec.government)}</strong>
           ${rec.controller !== 'Neutral' ? `— ${_wikiLink('power', rec.controller)}` : `— ${_escapeHtml(T.independent)}`}
-          <span style="opacity:0.6">(${_linkify(rec.reason || '')})</span></span>
+          <span style="opacity:0.82">(${_linkify(rec.reason || '')})</span></span>
       </div>`).join('');
     return html;
   };
@@ -4648,7 +4797,7 @@
   Scene_NPCEmpathize.prototype._buildElectionsHTML = function (power, T) {
     let html = `<div class="npc-sec-hdr">${T.electionRecords}</div><hr class="npc-r-sep">`;
     if (!power || !power.elections?.length) {
-      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     const dateOf = window.NPCPolitics?.dateOf;
     if (power.nextElectionMinute != null && dateOf) {
@@ -4667,10 +4816,10 @@
           </div>`;
       }
       if (e.head && e.head !== '—') {
-        html += `<div class="npc-ident-row" style="margin-top:2px">${_iconSpan(215, 15)}<span style="opacity:0.65">${_escapeHtml(power.headTitle)}:</span>&nbsp;${_wikiLink('leader', e.head)}</div>`;
+        html += `<div class="npc-ident-row" style="margin-top:2px">${_iconSpan(215, 15)}<span style="opacity:0.85">${_escapeHtml(_headTitle(power))}:</span>&nbsp;${_wikiLink('leader', e.head)}</div>`;
       }
       for (const n of (e.notes || [])) {
-        html += `<div class="npc-stats-row" style="opacity:0.7">* ${_linkify(n)}</div>`;
+        html += `<div class="npc-stats-row" style="opacity:0.88">* ${_linkify(n)}</div>`;
       }
     }
     return html;
@@ -4680,7 +4829,7 @@
 
   Scene_NPCEmpathize.prototype._buildPowerOverviewHTML = function (view, T) {
     const live = view.live;
-    let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div>`;
+    let html = `<div class="npc-profile-name">${_escapeHtml(_viewName(view))}</div>`;
     const sub = [live?.govType, live?.legislature].filter(Boolean);
     html += `<div class="npc-profile-sub">${_escapeHtml(sub.join(' · '))}</div><hr class="npc-r-sep">`;
 
@@ -4689,9 +4838,9 @@
       const ruling = live.parties?.find(p => p.id === live.rulingPartyId);
       html += `<div class="npc-sec-hdr">${T.government}</div>`;
       html += _kvRow(186, T.government, _escapeHtml(live.govType));
-      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(live.headTitle)}:</span>&nbsp;${_wikiLink('leader', head.name)}<span style="opacity:0.5">&nbsp;(${T.approval} ${Math.round(head.approval)}%)</span></div>`;
+      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.85">${_escapeHtml(_headTitle(live))}:</span>&nbsp;${_wikiLink('leader', head.name)}<span style="opacity:0.78">&nbsp;(${T.approval} ${Math.round(head.approval)}%)</span></div>`;
       else html += _kvRow(215, live.headTitle, _escapeHtml(T.vacant));
-      if (ruling) html += _kvRow(187, T.rulingParty, _wikiLink('party', ruling.id, ruling.name) + (live.coalition?.length > 1 ? ` <span style="opacity:0.55">(+${live.coalition.length - 1})</span>` : ''));
+      if (ruling) html += _kvRow(187, T.rulingParty, _wikiLink('party', ruling.id, ruling.name) + (live.coalition?.length > 1 ? ` <span style="opacity:0.8">(+${live.coalition.length - 1})</span>` : ''));
       else if (head) html += _kvRow(187, T.rulingParty, _escapeHtml(T.independent));
       html += _kvRow(216, T.seats, `${live.seats}, ${_escapeHtml(live.legislature)}`);
       const dateOf = window.NPCPolitics?.dateOf;
@@ -4701,8 +4850,8 @@
         html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.partiesLbl}</div>`;
         for (const p of live.parties) {
           const leader = live.politicians?.[p.leaderId];
-          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_wikiLink('party', p.id, p.name)}</span><span style="opacity:0.55">&nbsp;— ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
-            leader ? `<span style="opacity:0.55">&nbsp;·&nbsp;</span>${_wikiLink('leader', leader.name)}` : ''
+          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_wikiLink('party', p.id, p.name)}</span><span style="opacity:0.8">&nbsp;— ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
+            leader ? `<span style="opacity:0.8">&nbsp;·&nbsp;</span>${_wikiLink('leader', leader.name)}` : ''
           }</div>`;
         }
       }
@@ -4721,13 +4870,21 @@
 
     html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.memberNations} (${view.nations.length})</div><div class="npc-tag-wrap">`;
     html += view.nations.map(n => `<span class="npc-tag">${_wikiLink('nation', n)}</span>`).join('')
-      || `<span style="opacity:0.6">${_escapeHtml(T.noRecords)}</span>`;
+      || `<span style="opacity:0.82">${_escapeHtml(T.noRecords)}</span>`;
     html += `</div>`;
+
+    // The orders, guilds and divisions that answer to this power.
+    const factions = view.factions || [];
+    if (factions.length) {
+      html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.wikiFactions} (${factions.length})</div><div class="npc-tag-wrap">`;
+      html += factions.map(f => `<span class="npc-tag">${_wikiLink('faction', f)}</span>`).join('');
+      html += `</div>`;
+    }
 
     if (live?.rumors?.length) {
       html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.rumorsLbl}</div>`;
       for (const r of live.rumors.slice(0, 5)) {
-        html += `<div class="npc-thought">&ldquo;${_linkify(`${r.subjectName}, ${r.kind}`)}&rdquo; <span style="opacity:0.5">(${_escapeHtml(r.date)})</span></div>`;
+        html += `<div class="npc-thought">&ldquo;${_linkify(`${r.subjectName}, ${r.kind}`)}&rdquo; <span style="opacity:0.78">(${_escapeHtml(r.date)})</span></div>`;
       }
     }
     return html;
@@ -4745,7 +4902,7 @@
       html += headHistory.map(h => `
         <div class="npc-life-row">
           <span class="npc-life-time">${_escapeHtml(h.date)}${h.endDate ? ` → ${_escapeHtml(h.endDate)}` : ''}</span>
-          <span>${_wikiLink('leader', h.name)} <span style="opacity:0.6">(${_escapeHtml(window.NPCPolitics?.accessionLabel?.(h.how) || h.how || '?')})</span>${h.endDate ? '' : ` <span style="color:#2a6e4a">— ${_escapeHtml(T.currentLeader)}</span>`}</span>
+          <span>${_wikiLink('leader', h.name)} <span style="opacity:0.82">(${_escapeHtml(window.NPCPolitics?.accessionLabel?.(h.how) || h.how || '?')})</span>${h.endDate ? '' : ` <span style="color:#2a6e4a">— ${_escapeHtml(T.currentLeader)}</span>`}</span>
         </div>`).join('');
     }
 
@@ -4763,7 +4920,7 @@
         <div class="npc-life-row">
           <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
           <span>${_wikiLink('leader', l.name)}${isDead ? ` <span style="color:#8b1010">✝${deathDate ? ' ' + _escapeHtml(deathDate) : ''}</span>` : ''}
-            <span style="opacity:0.6">— ${_escapeHtml(l.ideology || '?')}</span></span>
+            <span style="opacity:0.82">— ${_escapeHtml(_leaderIdeology(l))}</span></span>
         </div>`;
       }).join('');
     }
@@ -4777,14 +4934,14 @@
         html += `<div class="npc-routine-sub-hdr">${T.politicalClass}</div><div class="npc-tag-wrap">`;
         html += pols.map(p => {
           const dead = _wikiIsDead(!p.alive);
-          return `<span class="npc-tag"${dead ? ' style="opacity:0.55"' : ''}>${_wikiLink('leader', p.name)}${dead ? ' ✝' : ''}</span>`;
+          return `<span class="npc-tag"${dead ? ' style="opacity:0.8"' : ''}>${_wikiLink('leader', p.name)}${dead ? ' ✝' : ''}</span>`;
         }).join('');
         html += `</div>`;
       }
     }
 
     if (html.indexOf('npc-life-row') < 0 && html.indexOf('npc-tag') < 0) {
-      html += `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
+      html += `<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     return html;
   };
@@ -4792,7 +4949,7 @@
   // ── Leader ──────────────────────────────────────────────────────────────────
 
   Scene_NPCEmpathize.prototype._buildLeaderOverviewHTML = function (view, T) {
-    let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div>`;
+    let html = `<div class="npc-profile-name">${_escapeHtml(_viewName(view))}</div>`;
 
     if (view.kind === 'politician' && view.pol && view.power) {
       const p = view.pol;
@@ -4805,7 +4962,7 @@
         html += `<div class="npc-dead-badge" style="margin:4px 0 8px">✝ ${_escapeHtml(T.deceased)}${view.death.date ? `, ${_escapeHtml(view.death.date)}` : ''}${view.death.cause ? ` (${_escapeHtml(view.death.cause)})` : ''}</div>`;
       }
       html += `<hr class="npc-r-sep">`;
-      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', power.name)}</div>`;
+      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', power.name)}</div>`;
       if (party) html += _kvRow(187, T.partyLbl, _wikiLink('party', party.id, party.name));
       else if (p.office) html += _kvRow(187, T.partyLbl, _escapeHtml(T.independent));
       if (p.office) html += _kvRow(215, T.status, _escapeHtml(polOffice));
@@ -4841,8 +4998,8 @@
         html += `<div class="npc-dead-badge" style="margin:4px 0 8px">✝ ${_escapeHtml(T.deceased)}${view.death.date ? `, ${_escapeHtml(view.death.date)}` : ''}${view.death.cause ? ` (${_escapeHtml(view.death.cause)})` : ''}</div>`;
       }
       html += `<hr class="npc-r-sep">`;
-      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(view.ofType === 'power' ? (T.wikiHyperpower) : (T.wikiFaction))}:</span>&nbsp;${_wikiLink(view.ofType, view.of)}</div>`;
-      html += _kvRow(186, T.ideologyLbl, _escapeHtml(l.ideology || '?'));
+      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(view.ofType === 'power' ? (T.wikiHyperpower) : (T.wikiFaction))}:</span>&nbsp;${_wikiLink(view.ofType, view.of)}</div>`;
+      html += _kvRow(186, T.ideologyLbl, _escapeHtml(_leaderIdeology(l)));
       html += _kvRow(220, T.reignLbl, _escapeHtml(`${l.years?.[0] ?? '?'} – ${l.years?.[1] ?? '?'}`));
     }
     return html;
@@ -4871,13 +5028,13 @@
 
     if (view.rec) {
       html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.discovered}</div>`;
-      html += `<div class="npc-life-row"><span class="npc-life-time">${_escapeHtml(view.rec.date || '?')}</span><span>${_linkify(`${view.rec.origin} ${view.rec.action} the ${view.rec.name}.`)}</span></div>`;
+      html += `<div class="npc-life-row"><span class="npc-life-time">${_escapeHtml(view.rec.date || '?')}</span><span>${_linkify(window.T('History.artifact.found', { holder: view.rec.origin, action: view.rec.action, artifact: view.rec.name }))}</span></div>`;
       const holder = view.rec.holders?.[view.rec.holders.length - 1];
       if (holder) {
-        html += `<div class="npc-ident-row" style="margin-top:5px">${_iconSpan(210, 17)}<span style="opacity:0.65">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}<span style="opacity:0.5">&nbsp;(${_escapeHtml(holder.since || '?')})</span></div>`;
+        html += `<div class="npc-ident-row" style="margin-top:5px">${_iconSpan(210, 17)}<span style="opacity:0.85">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}<span style="opacity:0.78">&nbsp;(${_escapeHtml(holder.since || '?')})</span></div>`;
       }
     } else {
-      html += `<hr class="npc-r-sep"><p style="opacity:0.6">${_escapeHtml(T.noRecords)}</p>`;
+      html += `<hr class="npc-r-sep"><p style="opacity:0.82">${_escapeHtml(T.noRecords)}</p>`;
     }
     return html;
   };
@@ -4886,13 +5043,13 @@
     let html = `<div class="npc-sec-hdr">${T.pastHolders}</div><hr class="npc-r-sep">`;
     const holders = view.rec?.holders || [];
     if (!holders.length) {
-      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     html += holders.slice().reverse().map((h, i) => `
       <div class="npc-life-row">
         <span class="npc-life-time">${_escapeHtml(h.since || '?')}</span>
-        <span>${_linkify(h.holder)}${h.power && h.power !== h.holder ? ` <span style="opacity:0.55">(${_linkify(h.power)})</span>` : ''}
-          <span style="opacity:0.6">— ${_escapeHtml(h.how || '?')}</span>${i === 0 ? ` <span style="color:#2a6e4a">— ${_escapeHtml(T.currentHolder)}</span>` : ''}</span>
+        <span>${_linkify(h.holder)}${h.power && h.power !== h.holder ? ` <span style="opacity:0.8">(${_linkify(h.power)})</span>` : ''}
+          <span style="opacity:0.82">— ${_escapeHtml(h.how || '?')}</span>${i === 0 ? ` <span style="color:#2a6e4a">— ${_escapeHtml(T.currentHolder)}</span>` : ''}</span>
       </div>`).join('');
     return html;
   };
@@ -4900,7 +5057,7 @@
   // ── Faction ─────────────────────────────────────────────────────────────────
 
   Scene_NPCEmpathize.prototype._buildFactionOverviewHTML = function (view, T) {
-    let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div>`;
+    let html = `<div class="npc-profile-name">${_escapeHtml(_viewName(view))}</div>`;
     html += `<div class="npc-profile-sub">${_escapeHtml(T.wikiFaction)}</div><hr class="npc-r-sep">`;
     const h = view.hist || view.dlFaction;
     if (h) {
@@ -4916,7 +5073,7 @@
           const isDead = _wikiIsDead(deadList.includes(l.name) || !!deaths[l.name]);
           return `<div class="npc-life-row">
             <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
-            <span>${_wikiLink('leader', l.name)}${isDead ? ' <span style="color:#8b1010">✝</span>' : ''} <span style="opacity:0.6">— ${_escapeHtml(l.ideology || '?')}</span></span>
+            <span>${_wikiLink('leader', l.name)}${isDead ? ' <span style="color:#8b1010">✝</span>' : ''} <span style="opacity:0.82">— ${_escapeHtml(_leaderIdeology(l))}</span></span>
           </div>`;
         }).join('');
       }
@@ -4931,7 +5088,7 @@
   Scene_NPCEmpathize.prototype._buildFactionMembersHTML = function (view, T) {
     let html = `<div class="npc-sec-hdr">${T.factionMembersLbl}</div><hr class="npc-r-sep">`;
     if (!view.members.length) {
-      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     html += `<div class="npc-tag-wrap">` +
       view.members.map(n => `<span class="npc-tag">${_iconSpan(82, 15)}${_wikiLink('npc', n)}</span>`).join('') +
@@ -4945,14 +5102,14 @@
     const p = view.party;
     const power = view.power;
     let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div>`;
-    const sub = [power.name, _ideologyLabel(view.ideology?.id)].filter(Boolean);
+    const sub = [_worldName('power', power.name), _ideologyLabel(view.ideology?.id)].filter(Boolean);
     html += `<div class="npc-profile-sub">${_escapeHtml(sub.join(' · '))}</div>`;
     if (power.rulingPartyId === p.id) {
       html += `<div class="npc-dead-badge" style="background:#2a6e4a">${_escapeHtml(T.rulingParty)}</div>`;
     }
     html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.overview}</div>`;
     if (p.country) html += _kvRow(97, T.originLbl, _escapeHtml(p.country));
-    if (view.leader) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
+    if (view.leader) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.85">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
     if (p.foundedYear != null) html += _kvRow(220, T.foundedLbl, `${p.foundedYear}`);
     html += _kvRow(216, T.lastShareLbl, `${p.lastShare ?? 0}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}`);
     html += _kvRow(314, T.fundsLbl, _euros(p.funds));
@@ -4975,7 +5132,7 @@
     let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div><hr class="npc-r-sep">`;
     html += `<div class="npc-sec-hdr">${T.heldByLbl} (${view.parties.length})</div>`;
     if (!view.parties.length) {
-      html += `<p style="opacity:0.6; margin-top:8px">${_escapeHtml(T.noParties)}</p>`;
+      html += `<p style="opacity:0.82; margin-top:8px">${_escapeHtml(T.noParties)}</p>`;
     } else {
       // Grouped by hyperpower, so "multiple parties, one ideology" reads as
       // the pattern it is rather than a flat unsorted list.
@@ -5001,7 +5158,7 @@
     const fromHistory = view.events || [];
     const fromPolitics = view.type === 'power' ? (view.live?.events || []) : [];
     if (!fromHistory.length && !fromPolitics.length) {
-      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.82; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     if (fromPolitics.length) {
       html += `<div class="npc-routine-sub-hdr">${_escapeHtml(T.eventsTab)}</div>`;
@@ -5166,20 +5323,22 @@
       case 'leaders':
         tiles = Wiki.listLeaders().map(l =>
           _wikiEntryTile('leader', l.name,
-            `${_escapeHtml(l.name)}${l.dead ? ' <span style="color:#8b1010">✝</span>' : ''}`,
-            l.of ? _escapeHtml(l.of) : '')
+            `${_escapeHtml(_worldName('leader', l.name))}${l.dead ? ' <span style="color:#8b1010">✝</span>' : ''}`,
+            l.of ? _escapeHtml(_worldName(l.ofType === 'faction' ? 'faction' : 'power', l.of)) : '')
         ).join('');
         break;
       case 'powers':
         tiles = Wiki.listPowerNames().map(n => {
           const live = window.NPCPolitics?.getPower?.(n);
-          return _wikiEntryTile('power', n, `♛ ${_escapeHtml(n)}`, live ? _escapeHtml(live.govType) : '');
+          return _wikiEntryTile('power', n, `♛ ${_escapeHtml(_worldName('power', n))}`,
+            live ? _escapeHtml(window.NPCPolitics?.powerLabel?.(live, 'govType') || live.govType) : '');
         }).join('');
         break;
       case 'nations':
         tiles = Wiki.listNations().map(n =>
-          _wikiEntryTile('nation', n.name, `⚑ ${_escapeHtml(n.name)}`,
-            n.controller && n.controller !== 'Neutral' ? _escapeHtml(n.controller) : _escapeHtml(T.independent))
+          _wikiEntryTile('nation', n.name, `⚑ ${_escapeHtml(_worldName('nation', n.name))}`,
+            n.controller && n.controller !== 'Neutral'
+              ? _escapeHtml(_worldName('power', n.controller)) : _escapeHtml(T.independent))
         ).join('');
         break;
       case 'artifacts':
@@ -5193,13 +5352,13 @@
         break;
       case 'factions':
         tiles = Wiki.listFactionNames().map(n =>
-          _wikiEntryTile('faction', n, `⚜ ${_escapeHtml(n)}`, '')
+          _wikiEntryTile('faction', n, `⚜ ${_escapeHtml(_worldName('faction', n))}`, '')
         ).join('');
         break;
       case 'politicalParties':
         tiles = Wiki.listPartyNames().map(p => {
           const ideoLabel = _ideologyLabel(p.ideologyId);
-          const sub = [p.powerName, ideoLabel].filter(Boolean).join(' · ');
+          const sub = [_worldName('power', p.powerName), ideoLabel].filter(Boolean).join(' · ');
           return _wikiEntryTile('party', p.id, `⚖ ${_escapeHtml(p.name)}`, _escapeHtml(sub));
         }).join('');
         break;
@@ -5214,7 +5373,7 @@
         break;
     }
     if (!tiles) {
-      tiles = `<p style="opacity:0.6">${_escapeHtml(T.noRecords)}</p>`;
+      tiles = `<p style="opacity:0.82">${_escapeHtml(T.noRecords)}</p>`;
     }
 
     return `${headerHTML}<div class="npc-wiki-grid">${tiles}</div>`;

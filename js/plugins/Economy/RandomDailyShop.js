@@ -294,8 +294,11 @@
 
   // The databases are divided by named separator rows ("<-- Whip -->"), which
   // are real entries as far as the engine is concerned and would otherwise end
-  // up priced on a shelf.
+  // up priced on a shelf. A <Restricted> row is no shop's to sell: it is
+  // granted by the one system that owns it (a seed weapon by a blade seed),
+  // and a hand-picked id does not get it onto a shelf either.
   function isSellableEntry(entry) {
+    if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(entry)) return false;
     return !!(entry && entry.name && !entry.name.trim().startsWith("<"));
   }
 
@@ -666,8 +669,8 @@
       ids: [122, 133, 134, 136, 137, 143, 144, 149, 153, 154, 157, 160, 162,
             179, 185, 186, 190, 193, 721, 726, 394, 852, 853, 854, 135, 130,
             388, 387],
-      fixed: [179, 122],        // batteries, charger
-      categories: ["tools", "lifestyle"],
+      fixed: [179, 122, 1319, 1325],   // batteries, charger, a processor, a memory module
+      categories: ["tools", "lifestyle", "component"],
     },
     // The hardware store absorbed the old tools shop, so anything tagged Tools
     // can be found here on top of its own stock.
@@ -676,7 +679,7 @@
       ids: [138, 156, 814, 811, 813, 132, 119, 807, 118, 121, 115, 870, 859,
             863, 867, 855, 856, 146, 406, 151, 374, 739, 861, 868, 805, 804],
       fixed: [374, 814, 138, 136],   // lockpick, multi-tool, shovel, flashlight
-      categories: ["tools"],
+      categories: ["tools", "component"],
     },
     camping: {
       get label() { return T('DailyShop.shopType.camping'); },
@@ -885,7 +888,7 @@
     florist: {
       get label() { return T('DailyShop.shopType.florist'); },
       ids: [114, 671, 792, 757, 681, 192, 240, 660, 670, 406, 858, 869, 690,
-            165, 674, 626, 229, 119, 546],
+            674, 626, 229, 119, 546],
       fixed: [114, 792],        // rose, dandelion
       // Two growing things is all the database has, so the shelf leans on what
       // else a florist actually sells: gifts and small comforts.
@@ -965,7 +968,8 @@
     junkShop: {
       get label() { return T('DailyShop.shopType.junkShop'); },
       ids: [836, 828, 829, 830, 831, 832, 833, 834, 835, 710, 320, 317, 312,
-            424, 709, 349, 346, 347, 356, 358, 361, 419, 423],
+            424, 709, 349, 346, 347, 356, 358, 361, 419, 423,
+            1329, 1336, 1347, 1352, 1341, 1355, 1359],
       fixed: [374, 836, 709],   // lockpick, rubbish, unidentified item
       categories: ["trash"],
       artifacts: "all",

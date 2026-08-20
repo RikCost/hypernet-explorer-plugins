@@ -162,7 +162,7 @@
   "primaryMastery": "Maestria Primaria",
   "secondaryMastery": "Maestria Secondaria",
   "details": "DETTAGLI",
-  "onlyWhatYourArchetypesSupport": "Solo cio che i tuoi archetipi permettono.",
+  "onlyWhatYourArchetypesSupport": "Solo ciò che i tuoi archetipi permettono.",
   "classes": "CLASSI",
   "startingWeaponProficiencies": "Maestrie Armi Iniziali",
   "startingSpecialSkills": "Abilità Speciali Iniziali",
@@ -423,7 +423,7 @@
     },
     "originCardCollector": {
       "name": "Collezionista di carte",
-      "desc": "Viaggi per il mondo con uno mazzo di carte. Chiunque incontri è qualcuno che potrebbe sedersi a giocare."
+      "desc": "Viaggi per il mondo con un mazzo di carte. Chiunque incontri è qualcuno che potrebbe sedersi a giocare."
     },
     "originArcanist": {
       "name": "Arcanista",
@@ -439,7 +439,7 @@
     },
     "originSkeletonKey": {
       "name": "Portatore di Passepartout",
-      "desc": "Possiedi un Passepartout e apre qualunque serratura comune. Tutto ciò che ti serve è già dietro la porta di qualcun altro.."
+      "desc": "Possiedi un Passepartout e apre qualunque serratura comune. Tutto ciò che ti serve è già dietro la porta di qualcun altro."
     },
     "originPlague": {
       "name": "Untore",
@@ -448,6 +448,10 @@
     "originDiplomat": {
       "name": "Diplomatico",
       "desc": "Inizi a Bruxelles con un seggio alle Nazioni Unite e credenziali diplomatiche. "
+    },
+    "originHypernetExplorer": {
+      "name": "Esploratore Hypernet",
+      "desc": "Ti svegli sul pavimento di uno sconosciuto con una borsa di componenti, un energy drink e nessun ricordo dell'indirizzo. L'Hyperdeck e' montato a meta'. Il resto e' la' fuori, nei negozi, nei cassonetti e nelle case degli altri."
     }
   },
   "hairStyle": {
@@ -570,7 +574,7 @@
   "theMapIsLeftClearNoPartyCardsOverIt": "La mappa resta libera, nessuna scheda del gruppo sopra di essa.",
   "healthMagicStatesAndUrgentNeedsAtAGlance": "Salute, magia, stati e urgenze a colpo d'occhio.",
   "enemyBattlers": "Nemici in Battaglia",
-  "howEnemiesAreShownInBattle2dTheClassicBattle": "Come appaiono i nemici in battaglia. 3D: modelli 3D procedurali (goblin, slime, elementali...). Sprite: lo sprite del personaggio nemico dalle sue info.",
+  "howEnemiesAreShownInBattle2dTheClassicBattle": "Come appaiono i nemici in battaglia. 3D: modelli 3D procedurali (goblin, slime, elementali...). Sprite: lo sprite del personaggio nemico dalle sue info. 2D: un'immagine fissa dello stesso modello 3D, la più leggera delle tre.",
   "3dRendersProceduralModelsSpritesUsesTheEnemy": "3D mostra modelli procedurali, Sprite usa lo sprite del nemico.",
   "globalLighting": "Illuminazione Globale",
   "masterSwitchForTheDynamicLightingSystemStree": "Interruttore principale del sistema di illuminazione dinamica: lampioni, luci degli eventi e velo notturno. Disattiva per le massime prestazioni.",
@@ -582,7 +586,7 @@
   "visualThemeAppliedToMenusAndHudPressToSwitch": "Tema visivo per menu e HUD. Premi ←→ per cambiare. Richiede riavvio per applicare.",
   "settingsPreview": "ANTEPRIMA IMPOSTAZIONI",
   "musicTrack": {
-    "Battle": "Percussioni (Predefinito)",
+    "Battle": "Percussioni",
     "shortcuts": "Scorciatoie",
     "MelodicTechno": "Techno Melodica"
   },
@@ -681,7 +685,7 @@
   "augmentsPerMember": "{min}-{max} a testa, montati sulle proprie sedi",
   "collection": "Collezione",
   "deck": "Mazzo",
-  "cardsInCollection": "{count} carte, tirate su tutte le rarita",
+  "cardsInCollection": "{count} carte, tirate su tutte le rarità",
   "cardsSleevedDeck": "Un mazzo valido costruito con quelle, pronto da giocare",
   "cardCollectorDeckName": "Mazzo del circuito",
   "esotericSpells": "Incantesimi esoterici",
@@ -709,6 +713,13 @@
     "menu": "Menu",
     "leftClick": "Click sinistro",
     "rightClick": "Click destro",
-    "holdShift": "Tieni premuto Shift"
-  }
+    "holdShift": "Tieni premuto Shift",
+    "openMap": "Apri la mappa",
+    "hotbarCycle": "Cambia oggetto della barra",
+    "visitPlace": "Visita questo luogo",
+    "zoom": "Ingrandisci e rimpicciolisci"
+  },
+  "aRandomHouseSomewhere": "La casa di qualcun altro, da qualche parte nel mondo",
+  "components": "Componenti",
+  "componentsCarried": "{count} pezzi sfusi per Hyperdeck"
 }

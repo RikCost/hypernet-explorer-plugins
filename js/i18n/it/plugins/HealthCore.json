@@ -15,5 +15,11 @@
   ],
   "vitalOrganDestroyed": "L'organo vitale ({part}) di {actor} è stato distrutto! È morto all'istante ed è stato rimosso dal gruppo.",
   "partDestroyed": "Il {part} di {actor} è stato distrutto e rimosso!",
-  "augmentLost": "L'innesto installato lì ({augment}) è stato strappato via con esso."
+  "statusBroken": "ROTTO",
+  "statusDestroyed": "DISTRUTTO",
+  "statusCutOff": "AMPUTATO",
+  "partRuined": "Il {part} di {actor} è stato rovinato irrimediabilmente!",
+  "augmentLost": "L'innesto installato lì ({augment}) è stato strappato via con esso.",
+  "partDamagedFallback": "{part} danneggiato!",
+  "limbCopy": "{name} {n}"
 }

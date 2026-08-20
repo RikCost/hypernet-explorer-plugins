@@ -13,10 +13,11 @@
  *           offers Investigate, once and once only. (Lifted out of
  *           GalaxySim_Core.js, which still reaches it as GalaxySim.Anomaly.)
  *
- *   EARTH   One square per biome on the world map (315) carries a "???" marker.
- *           Standing on it and choosing Investigate in the travel menu plays the
- *           adventure written for that biome. WorldMapReturn.js draws the
- *           markers and offers the choice; everything behind it is here.
+ *   EARTH   A handful of squares on the world map (315) carry a "???" marker.
+ *           Standing on one, or facing it from the square next door, and
+ *           choosing Investigate in the travel menu plays the adventure written
+ *           for that biome, in a parchment modal over the map. WorldMapReturn.js
+ *           draws the markers and offers the choice; everything else is here.
  *
  * Either way it is the same shape: a branching encounter where every choice
  * leads somewhere and the last node pays out - a relic, a fight with something
@@ -38,12 +39,35 @@
  *                                    adventures (Paris, the Vatican Citadel...)
  *   Anomaly.earth.countries.<Name>   one Countries.json country has its own
  *   Anomaly.earth.powers.<Name>      every country a hyperpower holds or controls
+ *   Anomaly.earth.eris.Eris          her own scope: the one square a day she
+ *                                    takes, and the adventures on it
  *   Anomaly.earth.fallbackScenarios  played on a biome nothing was written for
  *   Anomaly.scenarios.<id>           { title, start, nodes: { <id>: node } }
  *   node                             { text, choices: [{ text, to }] }
  *   terminal node                    { text, outcome: { kind, mag } }
  *
+ * Prose is combinatorial: {a|b|c} alternates inline and {token} draws from the
+ * banks above, narrowest first, so the same adventure never reads the same way
+ * twice. {leader}, {member}, {member2} name the people who actually walked out
+ * there.
+ *
+ * A node may also carry:
+ *   asides: { <archetype>: line, any: line }
+ *                                    what the companion standing at the
+ *                                    leader's shoulder makes of it, in their own
+ *                                    register (archetypes are PersonalityData's,
+ *                                    lowercased: cautious, brave, cynical...)
+ *   emText                           what the node reads as when Em is the one
+ *                                    playing (switch 48, per savegame)
+ *   bubba                            what Bubba puts in, Em only
+ *
+ * A choice may carry `only` / `not` (lists of archetypes the LEADER must or must
+ * not have for it to be offered), `em` (hers alone) or `notEm`.
+ *
  * outcome.kind: artifact | gear | loot | gold | schrodingerite | harm | heal |
+ *               augment (`augment` names one or a list out of
+ *               ProstheticTypes.json, `who: "member"` fits the companion) |
+ *               needs (the whole ending is the good it did: see `needs`) |
  *               battle (with `reward` naming what winning pays, `fail` what
  *               losing or running costs) | minigame (`game` names it, `reward`
  *               pays for a win, `fail` for a loss) | date (an evening with Eris,
@@ -51,13 +75,23 @@
  *
  * Any outcome may also carry:
  *   rep: { <factionSlug>: delta }    standing moved with one or more factions
+ *   crime: <key> | [<key>]          filed against the party out of
+ *                                    js/db/Messages/PresetCrimes.json
+ *   augment: <key> | [<key>]        fitted through the prosthetic shop
+ *   needs: { hunger, sleep, hygiene, social, leisure }
+ *                                    percentage points put back into everybody
  *   kp / stars                       what the ending is worth in Knowledge
  *                                    (SkillMaster's KP, on the quest curve)
  *
+ * Every answered adventure is written into the party's diary (Core/Diary.js)
+ * with what it paid.
+ *
  * Every marker is one square of the world map, and the set is redrawn once a
- * day: a biome carries as many as it has ground to spread them over, and a
- * named place, a country, or a hyperpower's territory carries its own on top of
- * that. A square answered is answered for good, whichever day it came round on.
+ * day: a biome carries one, two if it is very large, and a named place, a
+ * country, or a hyperpower's territory carries its own on top of that. They are
+ * kept well apart, and never within a square of a door, which owns the OK
+ * button there. A square answered is answered for good, whichever day it came
+ * round on.
  *
  * ----------------------------------------------------------------------------
  * API
@@ -67,6 +101,7 @@
  *   ProceduralAdventure.Earth.isPendingAt(x,y) is there one to play here?
  *   ProceduralAdventure.Earth.beginAt(x,y)     play it (drives the map messages)
  *   ProceduralAdventure.Earth.markerAt(x,y)    what kind of marker stands there
+ *                                              (marker.eris = her square today)
  * ============================================================================
  */
 
@@ -146,12 +181,12 @@
     return (pack.biomes && pack.biomes[session.biome]) || {};
   }
 
-  // An Earth square can belong to something narrower than its biome: a named
-  // place (Paris), a country (France), or the territory of a hyperpower (every
-  // country the Holy Vatican Empire holds). That entry, when there is one, owns
-  // the square's adventures and its word banks; the biome underneath still
-  // contributes its own banks behind it.
-  const EARTH_SCOPES = ["places", "countries", "powers"];   // i18n-ignore: pack section ids
+  // An Earth square can belong to something narrower than its biome: Eris's one
+  // square a day, a named place (Paris), a country (France), or the territory of
+  // a hyperpower (every country the Holy Vatican Empire holds). That entry, when
+  // there is one, owns the square's adventures and its word banks; the biome
+  // underneath still contributes its own banks behind it.
+  const EARTH_SCOPES = ["eris", "places", "countries", "powers"];   // i18n-ignore: pack section ids
   function exclusiveEntry(session) {
     if (!session || !session.earth || !session.scope) return null;
     const pack = packOf(session);
@@ -319,6 +354,98 @@
     return banks;
   }
 
+  // ---- The party ----------------------------------------------------------
+  // An adventure is answered by the people who walked out to it, not by an
+  // anonymous "party": every encounter knows who came, and who says what is
+  // decided by their own archetype out of PersonalityData.json (the same key
+  // PartyBanter reads, so a member sounds the same here as they do on the road).
+  //
+  //   {leader}   whoever is at the head of the party: the one the choices are
+  //              offered to, and whose archetype decides which are offered
+  //   {member}   the companion speaking at THIS node, rotated through the rest
+  //              of the party so a walk out is not narrated by one voice
+  //   {member2}  the next one along, for a line that needs two of them
+  //
+  // A node may carry `asides`, one line per archetype plus an `any` fallback,
+  // which is spoken by whoever {member} is standing in for at that node. A
+  // choice may carry `only` / `not`, listing the archetypes the LEADER must (or
+  // must not) have for that answer to be on the table: the cautious are offered
+  // the way round, the aggressive are offered the door.
+  const ANOM_TRAIT_ANY = "any";   // i18n-ignore: fallback key
+
+  function anomTraitOf(actor) {
+    if (!actor) return null;
+    try {
+      if (window.PartyBanter && window.PartyBanter.personalityKey) {
+        return window.PartyBanter.personalityKey(actor) || null;
+      }
+    } catch (e) { /* banter not loaded */ }
+    // PartyBanter is the only place that owns the mapping; without it every
+    // archetype-gated line falls back to `any`, which every node carries.
+    return null;
+  }
+
+  // Who is out here, in the order they answer: the leader first, then everybody
+  // else. Stored on the session (and so saved with it), because the roster can
+  // change between opening an encounter and finishing it.
+  function anomCastOf() {
+    const members = ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+    return members.filter((a) => a && a.name).map((a) => ({
+      name: a.name(), trait: anomTraitOf(a),
+    }));
+  }
+
+  // The companion who speaks at this node. A party of one has nobody to turn
+  // to, so the leader answers themselves rather than a name going missing.
+  function anomVoiceAt(session, nodeId) {
+    const cast = (session && session.cast) || [];
+    if (!cast.length) return null;
+    const others = cast.length > 1 ? cast.slice(1) : cast;
+    const key = String(nodeId || "");
+    let h = 0;
+    for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+    return {
+      speaker: others[h % others.length],
+      second: others[(h + 1) % others.length],
+      third: others[(h + 2) % others.length],
+    };
+  }
+
+  // Is this answer on the table for the leader the party has? A choice with
+  // neither list is on the table for everybody.
+  function anomChoiceAllowed(choice, trait, em) {
+    if (!choice) return false;
+    if (choice.em && !em) return false;
+    if (choice.notEm && em) return false;
+    const only = choice.only;
+    const not = choice.not;
+    if (Array.isArray(only) && only.length) {
+      if (!trait || only.indexOf(trait) < 0) return false;
+    }
+    if (Array.isArray(not) && not.length && trait && not.indexOf(trait) >= 0) return false;
+    return true;
+  }
+
+  // ---- Em -----------------------------------------------------------------
+  // The wannabe witch out of the Solomonic Ritual, played from her own dossier
+  // (CharacterCreationPresets.js sets switch 48, which is per-savegame, never
+  // world-shared). When she is the one out here the adventures are told from
+  // where she is standing: ninety-two per cent of her life is in a spear
+  // somebody else is holding, romance goes past her without landing, a room
+  // reads her as either the woman who sits where God sat or the woman who
+  // killed Him, and there is always a spellbook worth more to her than the
+  // money. Bubba travels with her and says so, in Texan with Naples in it.
+  //
+  // A node writes `emText` for what she sees instead of what anybody else
+  // would, and `bubba` for what he puts in; a choice writes `em` to be hers
+  // alone, or `notEm` to be everybody else's.
+  const EM_SWITCH = 48;   // i18n-ignore: switch id, CharacterCreationPresets.js
+
+  function anomIsEm() {
+    return !!(typeof $gameSwitches !== "undefined" && $gameSwitches &&
+              $gameSwitches.value(EM_SWITCH));
+  }
+
   function anomResolve(session, tpl) {
     const rng = anomRng(session);
     let s = anomAlt(rng, String(tpl || ""));
@@ -436,6 +563,7 @@
     const pool = [];
     for (let i = 1; i < db.length && i < 1501; i++) {
       const e = db[i];
+      if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(e)) continue;
       if (e && e.name && e.price >= lo && e.price <= hi) pool.push(e);
     }
     if (!pool.length) return null;
@@ -461,6 +589,119 @@
       out.push(matName(id) + " x" + n);
     }
     return out;
+  }
+
+  // ---- Needs --------------------------------------------------------------
+  // An afternoon that does the party good rather than paying them: a bath house,
+  // a long meal, an evening somebody else organised. The meters belong to
+  // TimeDateSystem (hunger and sleep on the actor, hygiene/social/leisure
+  // through PartyNeeds, which knows where a recruited companion keeps theirs),
+  // so an ending only says how much of what, in percentage points.
+  const ANOM_NEED_MAX = 100;
+  function anomApplyNeeds(out, lines) {
+    const needs = out && out.needs;
+    if (!needs) return;
+    const members = ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+    const filled = [];
+    Object.keys(needs).forEach((key) => {
+      const pct = Number(needs[key]) || 0;
+      if (!pct) return;
+      if (key === "hunger" || key === "sleep") {   // i18n-ignore: need ids
+        const max = (window.TimeDateSystem &&
+          (key === "hunger" ? window.TimeDateSystem.maxHunger : window.TimeDateSystem.maxSleep)) || ANOM_NEED_MAX;
+        const amount = max * (pct / 100);
+        members.forEach((a) => {
+          const fn = key === "hunger" ? a.addHunger : a.addSleep;
+          if (typeof fn === "function") fn.call(a, amount);
+        });
+      } else if (window.PartyNeeds && window.PartyNeeds.addNeedToAll) {
+        const max = (window.TimeDateSystem && window.TimeDateSystem.maxNeed) || ANOM_NEED_MAX;
+        window.PartyNeeds.addNeedToAll(key, max * (pct / 100));
+      } else {
+        return;
+      }
+      const label = (window.PartyNeeds && window.PartyNeeds.LABELS &&
+        window.PartyNeeds.LABELS[key]) || key;
+      filled.push(label);
+    });
+    if (filled.length) lines.push(anomText("reward.needs", { list: filled.join(", ") }));
+  }
+
+  // ---- Crime --------------------------------------------------------------
+  // An ending the party is answerable for. `crime` names a key out of
+  // js/db/Messages/PresetCrimes.json and the charge is filed exactly as it would
+  // be if they had done it in front of a shopkeeper: the bounty, the heat, the
+  // Streetwise discount and the record all belong to CrimeSystem, which is the
+  // only place that knows what a burglary is worth this week.
+  function anomApplyCrime(out, lines) {
+    const raw = out && out.crime;
+    if (!raw) return;
+    const keys = Array.isArray(raw) ? raw : [raw];
+    keys.forEach((key) => {
+      const CS = window.CrimeSystem;
+      const preset = (window.PresetCrimes || {})[key];
+      if (!CS || !preset) return;
+      CS.addPresetCrime(key);
+      const name = CS.presetCrimeName ? CS.presetCrimeName(key) : preset.name;
+      lines.push(anomText("reward.crime", { crime: name }));
+    });
+  }
+
+  // ---- Augments -----------------------------------------------------------
+  // Some endings leave somebody changed. The augment is fitted through the
+  // prosthetic shop's own installer (stat effects, learned skills, the lot), so
+  // an implant handed out in a cellar is the same object the clinic sells.
+  function anomAugmentPart(key) {
+    const table = (window.Health && window.Health.ProstheticCompatibility) || null;
+    if (!table) return null;
+    const parts = Object.keys(table);
+    for (let i = 0; i < parts.length; i++) {
+      const list = table[parts[i]];
+      if (Array.isArray(list) && list.indexOf(key) >= 0) return parts[i];
+    }
+    return null;
+  }
+
+  function anomAugmentName(key) {
+    const types = (window.Health && window.Health.ProstheticTypes) || {};
+    const entry = types[key];
+    if (!entry) return String(key);
+    if (entry.name_int && window.T && T.has && T.has(entry.name_int)) return T(entry.name_int);
+    return entry.name_en || String(key);
+  }
+
+  // Who gets it: the leader by default, the companion standing next to them
+  // when the ending says so ("who": "member"), which is who the prose named.
+  function anomAugmentTarget(session, out) {
+    const members = ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+    if (!members.length) return null;
+    if (out && out.who === "member" && members.length > 1) {   // i18n-ignore: outcome field value
+      const name = session && session.ctx ? session.ctx.member : null;
+      const found = members.filter((a) => a && a.name() === name)[0];
+      return found || members[1];
+    }
+    return members[0];
+  }
+
+  function anomApplyAugment(session, out, lines) {
+    const raw = out && out.augment;
+    if (!raw) return false;
+    const shop = window.ProstheticShop;
+    const list = Array.isArray(raw) ? raw : [raw];
+    const rng = anomRng(session);
+    const key = list[Math.floor(rng() * list.length)];
+    const types = (window.Health && window.Health.ProstheticTypes) || {};
+    const actor = anomAugmentTarget(session, out);
+    const part = out.part || anomAugmentPart(key);
+    if (!shop || !shop.installImplant || !types[key] || !actor || !part) return false;
+    try {
+      shop.installImplant(actor, part, key);
+    } catch (e) {
+      console.error("[ProceduralAdventure] augment failed", e);
+      return false;
+    }
+    lines.push(anomText("reward.augment", { name: anomAugmentName(key), who: actor.name() }));
+    return true;
   }
 
   // Standing moved by an ending. `rep` is { slug: delta }, so one ending can
@@ -551,7 +792,26 @@
         a.setHp(a.mhp); a.setMp(a.mmp); a.clearStates();
       });
       lines.push(anomText("reward.heal"));
+    } else if (kind === "needs") {
+      // The whole of the ending is what it did for everybody: applied below,
+      // with nothing else attached.
+      spec("Survival", 1);           // i18n-ignore: specialization id
+    } else if (kind === "augment") {
+      // Nobody fitted it, or the augment is not one this build ships: the
+      // ending still pays, in the coin the party can carry out of a cellar.
+      if (!anomApplyAugment(session, out, lines)) {
+        const gold = Math.round(1200 * mag * (1 + level / 24));
+        if ($gameParty) $gameParty.gainGold(gold);
+        lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
+      }
+      spec("Cybernetics", 3);        // i18n-ignore: specialization id
     }
+
+    // Any ending at all may leave the party answerable for something, may leave
+    // somebody carrying new hardware, and may simply have done everybody good.
+    if (kind !== "augment" && out && out.augment) anomApplyAugment(session, out, lines);
+    anomApplyNeeds(out, lines);
+    anomApplyCrime(out, lines);
 
     // Every ending teaches the away team something, even the empty ones.
     const exp = Math.round((out && out.exp != null ? out.exp : 10) * mag * level);
@@ -714,7 +974,9 @@
       // pays its own way first, so a date that never opens is not a dead end.
       const lines = anomApplyOutcome(session, Object.assign({}, outcome,
         { kind: outcome.reward || "none" }));
-      if (window.ErisDateSystem && window.ErisDateSystem.start) {
+      // She was beaten in this world: whoever the party spent the afternoon
+      // with, it was not her, and no evening follows.
+      if (!erisGone() && window.ErisDateSystem && window.ErisDateSystem.start) {
         _anomPendingDate = {
           mood: outcome.mood || null,
           biome: outcome.dateBiome || session.rawBiome || session.biome || null,
@@ -779,7 +1041,34 @@
       session.view = { title: session.placeName, text: anomText("ui.signalLost"), choices: [], done: true };
       return session.view;
     }
-    let text = anomResolve(session, node.text);
+    // Who is standing at the leader's shoulder for this node, and what kind of
+    // person they are. Pinned into the context before the prose is resolved, so
+    // {member} in the text and the aside underneath it name the same companion.
+    if (!session.cast) {
+      // A session opened before the party was written into it (an older save).
+      session.cast = anomCastOf();
+      session.leaderTrait = session.cast.length ? session.cast[0].trait : null;
+    }
+    const voice = anomVoiceAt(session, session.node);
+    if (voice) {
+      session.ctx.member = voice.speaker.name;
+      session.ctx.member2 = voice.second.name;
+      session.ctx.member3 = voice.third.name;
+    }
+    const em = session.em === undefined ? anomIsEm() : !!session.em;
+    let text = anomResolve(session, (em && node.emText) ? node.emText : node.text);
+    // Bubba is not a companion the party picked up: he is hers, and he talks
+    // over the top of anything he feels like talking over the top of.
+    if (em && node.bubba) text += "\n" + anomResolve(session, node.bubba);
+    // What that companion makes of it, in their own register. A node writes one
+    // line per archetype it has something particular to say for, and an `any`
+    // line for everybody else.
+    const asides = node.asides;
+    if (asides) {
+      const trait = voice ? voice.speaker.trait : null;
+      const line = (trait && asides[trait]) || asides[ANOM_TRAIT_ANY];
+      if (line) text += "\n" + anomResolve(session, line);
+    }
     if (session.node === sc.start) {
       // Resolved once and pinned: a re-render of the opening node (a reload, a
       // panel redraw) must not roll a different afternoon.
@@ -797,7 +1086,16 @@
     if (node.outcome) {
       view.rewards = session.rewards || [];
     } else {
-      view.choices = (node.choices || []).map((c) => ({
+      // What the party can answer depends on who is leading them: the timid are
+      // not offered the fight, the aggressive are not offered the apology. What
+      // survives the filter IS the branch list from here on (Anomaly.choose
+      // reads the view), and a leader whose archetype would leave nothing to
+      // say at all is offered everything rather than a dead end.
+      const trait = session.leaderTrait || null;
+      const all = node.choices || [];
+      let usable = all.filter((c) => anomChoiceAllowed(c, trait, em));
+      if (!usable.length) usable = all;
+      view.choices = usable.map((c) => ({
         text: anomResolve(session, c.text), to: c.to,
       }));
     }
@@ -810,7 +1108,10 @@
   // walking out of the encounter is one of the ways to answer it.
   function anomOpen(session) {
     const db = anomalyDB();
-    session.ctx.leader = ($gameParty && $gameParty.leader()) ? $gameParty.leader().name() : "";
+    session.cast = anomCastOf();
+    session.leaderTrait = session.cast.length ? session.cast[0].trait : null;
+    session.ctx.leader = session.cast.length ? session.cast[0].name : "";
+    session.em = anomIsEm();
     session.scenario = anomScenarioFor(session);
     if (!session.scenario) return null;
     const sc = db.scenarios[session.scenario];
@@ -902,14 +1203,17 @@
       if (node && node.outcome) s.rewards = anomArm(s, node.outcome);
       return anomBuildView(s);
     },
-    // Close the encounter for good and record how it ended.
-    end() {
+    // Close the encounter for good and record how it ended. `finalLines` is what
+    // a handover paid once it knew (a fight won, a game lost); without it the
+    // lines the last node itself read out are what goes in the book.
+    end(finalLines) {
       if (typeof $gameSystem === "undefined" || !$gameSystem) return;
       const s = Anomaly.session();
       if (s) {
         anomalyStore()[s.key] = {
           started: true, done: true, scenario: s.scenario, failed: !!s.failed,
         };
+        anomDiary(s, finalLines);
       }
       $gameSystem._gsAnomalySession = null;
     },
@@ -935,6 +1239,8 @@
                 { kind: pend.outcome.reward || "loot" }))
             : anomApplyFailure(session, pend.outcome);
           anomToast(lines, result === 0);
+          Anomaly.end(lines);
+          return;
         }
         Anomaly.end();
       });
@@ -980,6 +1286,8 @@
               { kind: pend.outcome.reward || "gold" }))
           : anomApplyFailure(session, pend.outcome);
         anomToast(lines, won);
+        Anomaly.end(lines);
+        return true;
       }
       Anomaly.end();
       return true;
@@ -1000,6 +1308,21 @@
       }
     },
   };
+
+  // Every answered adventure goes in the party's own book (Core/Diary.js): the
+  // story they walked into, and what it paid. Written once, as the encounter
+  // closes, so a fight or a game that finished it names what IT paid rather
+  // than the "and then it went for us" line the node ended on.
+  function anomDiary(session, finalLines) {
+    if (!window.Diary || !window.Diary.onAdventure) return;
+    const title = session && (session.title || session.placeName);
+    if (!title) return;
+    const lines = (finalLines && finalLines.length ? finalLines : (session.rewards || []))
+      .filter((l) => l);
+    try {
+      window.Diary.onAdventure(String(title), lines.join(" "), session.placeName || "");
+    } catch (e) { console.error("[ProceduralAdventure] diary", e); }
+  }
 
   // What a handover pays is reported after the fact, on the map the party is
   // standing on rather than in the encounter's own message window: by the time
@@ -1066,6 +1389,32 @@
     return (pg && pg.biomeCoordinateCache) || null;
   }
 
+  // The squares a door stands on, and the ring around each of them. A Teleport
+  // event owns the OK button on its own square AND on any square it is faced
+  // from (see WorldMapReturn's triggerButtonAction), so a marker next door
+  // could never be answered; the "???" plate is drawn upwards from the bottom
+  // of its square as well, so it would sit over the door's own name. Built once
+  // per rebuild of the marker set, because the alternative is asking eventsXy
+  // nine times for every candidate square on the map.
+  const TELEPORT_EVENT_PREFIX = "Teleport";   // i18n-ignore: map event name
+  let _doorBlock = null;
+  function doorBlock() {
+    if (_doorBlock) return _doorBlock;
+    const block = new Set();
+    if (typeof $gameMap === "undefined" || !$gameMap) return block;
+    $gameMap.events().forEach((ev) => {
+      const data = ev && ev.event ? ev.event() : null;
+      if (!data || !data.name || data.name.indexOf(TELEPORT_EVENT_PREFIX) !== 0) return;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          block.add((ev.x + dx) + "," + (ev.y + dy));   // i18n-ignore: coordinate key
+        }
+      }
+    });
+    _doorBlock = block;
+    return block;
+  }
+
   // Can the party stand on this world-map square, and is it free of events
   // (teleports, vehicles) that already own the OK button there?
   function isFreeWorldTile(x, y) {
@@ -1074,6 +1423,7 @@
     if (!$gameMap.isValid(x, y)) return false;
     if ($gameMap.terrainTag(x, y) === 4) return false;                 // wall
     if ($gameMap.eventsXy(x, y).length) return false;
+    if (doorBlock().has(x + "," + y)) return false;                    // i18n-ignore: coordinate key
     return $gameMap.isPassable(x, y, 2) || $gameMap.isPassable(x, y, 4) ||
            $gameMap.isPassable(x, y, 6) || $gameMap.isPassable(x, y, 8);
   }
@@ -1151,11 +1501,14 @@
 
   // How many squares one entry is worth on any given day. Explicitly written
   // markers win; otherwise it goes on how much of that ground the map paints.
-  const EARTH_MARKERS_CAP = 10;
-  const EARTH_MARKERS_SPREAD = 10;   // squares two markers of one entry keep apart
+  // Deliberately sparse: an adventure is worth walking to, and a world map
+  // dotted with "???" everywhere is a chore rather than an invitation. Only the
+  // largest biomes reach two, and nothing reaches more than three.
+  const EARTH_MARKERS_CAP = 3;
+  const EARTH_MARKERS_SPREAD = 24;   // squares two markers of one entry keep apart
   function markerCount(entry, coordCount) {
     if (entry && entry.markers > 0) return Math.min(entry.markers, EARTH_MARKERS_CAP);
-    const byArea = Math.max(1, Math.round(Math.sqrt(coordCount / 16)));
+    const byArea = Math.round(Math.sqrt(coordCount) / 16);
     return Math.max(1, Math.min(EARTH_MARKERS_CAP, byArea));
   }
 
@@ -1205,15 +1558,80 @@
     return null;
   }
 
+  // ---- Eris ---------------------------------------------------------------
+  // She is not a biome and she is not a place: she is one square a day, and she
+  // is wherever the party happens to be. One marker, laid within a morning's
+  // walk of where they are standing when the day turns, carrying whatever she
+  // is asking this time. Beat her in her own court (Economy/ErisTrial.js) and
+  // the square stops being laid at all - in every savegame of that world.
+  const ERIS_SCOPE = "eris";          // i18n-ignore: pack section id
+  const ERIS_ENTRY = "Eris";          // i18n-ignore: pack section entry
+  const ERIS_MIN_RADIUS = 2;          // never right under the party's feet
+  const ERIS_MAX_RADIUS = 14;         // and never further than a morning's walk
+
+  function erisGone() {
+    try {
+      if (window.ErisChallengeBattle && window.ErisChallengeBattle.isErisDefeated) {
+        return !!window.ErisChallengeBattle.isErisDefeated();
+      }
+    } catch (e) { /* trial not loaded */ }
+    return !!(typeof $gameSystem !== "undefined" && $gameSystem &&
+              $gameSystem._erisBountyImmunity);
+  }
+
+  // The square she takes today: the nearest free ring out from the party, walked
+  // from a seeded offset so it is not always due north, and the same square for
+  // the whole day once the set is built.
+  function erisTile(tiles) {
+    if (typeof $gamePlayer === "undefined" || !$gamePlayer) return null;
+    const px = $gamePlayer.x, py = $gamePlayer.y;
+    for (let r = ERIS_MIN_RADIUS; r <= ERIS_MAX_RADIUS; r++) {
+      const ring = [];
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          ring.push({ x: px + dx, y: py + dy });
+        }
+      }
+      if (!ring.length) continue;
+      const start = Math.floor(seededFloat("eris|" + dayIndex() + "|" + r, 4441) * ring.length);   // i18n-ignore: seed salt
+      for (let i = 0; i < ring.length; i++) {
+        const c = ring[(start + i) % ring.length];
+        const key = c.x + "," + c.y;   // i18n-ignore: coordinate key
+        if (tiles.has(key)) continue;
+        if (!isFreeWorldTile(c.x, c.y)) continue;
+        return c;
+      }
+    }
+    return null;
+  }
+
+  function claimErisTile(tiles, pack) {
+    if (erisGone()) return;
+    const section = pack[ERIS_SCOPE];
+    const entry = section && section[ERIS_ENTRY];
+    if (!entry || !(entry.scenarios || []).length) return;
+    const spot = erisTile(tiles);
+    if (!spot) return;
+    tiles.set(spot.x + "," + spot.y, {   // i18n-ignore: coordinate key
+      scope: ERIS_SCOPE, scopeId: ERIS_ENTRY, eris: true,
+      biome: earthBiomeKey(earthBiomeAt(spot.x, spot.y)),
+    });
+  }
+
   // Everything the world map carries, narrowest claim first: a place's own
   // adventure beats the country's, the country's beats its hyperpower's, and
   // the biomes fill in what is left.
   function buildEarthTiles() {
     const tiles = new Map();
+    _doorBlock = null;   // the doors are read fresh for every rebuild
     const cache = biomeCoordinateCache();
     if (!cache) return tiles;
     const pack = earthDB();
     if (!Object.keys(pack.biomes || {}).length) return tiles;
+
+    // ---- Eris, one square a day, wherever the party is ----------------------
+    claimErisTile(tiles, pack);
 
     // ---- Named places (Destinations.json) ----------------------------------
     const places = pack.places || {};
@@ -1393,129 +1811,203 @@
   // ==========================================================================
   // MAP PRESENTER
   // --------------------------------------------------------------------------
-  // On Earth there is no star-map panel to draw the encounter into, so it is
-  // played through the ordinary message window: the node's prose across as many
-  // pages as it needs, then its branches as a choice list. Steps are queued and
-  // run one per frame from Scene_Map.update, because a choice callback fires
-  // while its own message is still closing and cannot open the next one itself.
+  // On Earth the encounter is played in a parchment modal drawn over the map,
+  // the same shape the star map gives it in its own panel: the node's prose
+  // whole, its branches as rows under it, the payout when it ends. It used to
+  // run through the ordinary message window, which paged the prose away before
+  // the choice was made and left the party reading four lines at a time; the
+  // modal keeps the whole node on screen while it is answered.
+  //
+  // The rows answer to the mouse and to the keyboard alike: Input is read from
+  // Scene_Map.update (the modal never takes focus, so the engine still sees
+  // every key), and the party cannot walk while it is open (canMove below).
   // ==========================================================================
 
-  const MAP_LINE_CHARS = 48;   // conservative wrap for the default message font
-  const MAP_PAGE_LINES = 4;
+  const MODAL_ID = "pas-adventure-overlay";   // i18n-ignore: DOM id
+  const MODAL_ARM_FRAMES = 4;   // frames a fresh row list ignores the OK button
 
-  function wrapLine(line, width) {
-    const out = [];
-    let cur = "";
-    String(line).split(/\s+/).forEach((word) => {
-      if (!word) return;
-      if (!cur) { cur = word; return; }
-      if ((cur + " " + word).length <= width) { cur += " " + word; return; }
-      out.push(cur);
-      cur = word;
-    });
-    if (cur) out.push(cur);
-    return out.length ? out : [""];
-  }
-
-  // Prose to message pages: paragraphs wrapped to the window, MAP_PAGE_LINES to
-  // a page, never breaking a paragraph across a page when it fits whole.
-  function paginate(text) {
-    const pages = [];
-    let page = [];
-    String(text || "").split("\n").forEach((para) => {
-      const lines = wrapLine(para, MAP_LINE_CHARS);
-      lines.forEach((l) => {
-        if (page.length >= MAP_PAGE_LINES) { pages.push(page); page = []; }
-        page.push(l);
-      });
-      if (page.length && page.length >= MAP_PAGE_LINES) { pages.push(page); page = []; }
-    });
-    if (page.length) pages.push(page);
-    return pages.length ? pages : [[""]];
-  }
-
-  // A line shown from a plugin has to say that it is already in the player's
-  // language. Hendrix_Localization.js routes $gameMessage.add() into a
-  // translation buffer that only the event interpreter ever flushes, so prose
-  // added from here would never reach the window at all: the branch's choices
-  // would open over an empty screen, and the paragraphs would surface later in
-  // the middle of somebody else's message. This prose is read out of
-  // Anomaly.json, which is translated already.
-  function messageAdd(line) {
-    const before = window.skipLocalization;
-    window.skipLocalization = true;
-    try { $gameMessage.add(line); } finally { window.skipLocalization = before; }
+  // Message-window escape codes (\c[14] and the like) mean nothing to the DOM.
+  function stripCodes(text) {
+    return String(text || "").replace(/\\[a-zA-Z]+\[[^\]]*\]/g, "");
   }
 
   const MapPlay = {
-    _steps: [],
+    _root: null,
+    _panel: null,
+    _rowsEl: null,
+    _rows: [],
+    _index: 0,
+    _arm: 0,
     _running: false,
 
+    // ---- lifecycle ---------------------------------------------------------
+
     start(session) {
-      this._steps = [];
       this._running = true;
+      this.build();
       this.present(session.view || anomBuildView(session));
     },
 
     stop() {
-      this._steps = [];
       this._running = false;
+      this._rows = [];
+      this.destroy();
     },
 
-    queue(fn) { this._steps.push(fn); },
+    build() {
+      this.destroy();
+      if (typeof document === "undefined") return;
+      const root = document.createElement("div");
+      root.id = MODAL_ID;
+      root.className = "pas-adv-overlay";   // i18n-ignore: DOM class
+      // The overlay covers the canvas, so every pointer event that lands on it
+      // is ours: TouchInput must not read a click on a choice as a click on the
+      // map underneath it.
+      ["mousedown", "mouseup", "click", "wheel", "touchstart", "touchend"].forEach((ev) => {
+        root.addEventListener(ev, (e) => { e.stopPropagation(); }, { passive: true });
+      });
+      // Right-click is the mouse's cancel, the same as it is everywhere else:
+      // it takes the last row, which is "leave it" on a branch and "close" on
+      // an ending. The engine never sees the event, so it cannot also read it.
+      root.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!this._rows.length) return;
+        this.select(this._rows.length - 1);
+        this.confirm();
+      });
+      const panel = document.createElement("div");
+      panel.className = "pas-adv-panel";   // i18n-ignore: DOM class
+      root.appendChild(panel);
+      document.body.appendChild(root);
+      this._root = root;
+      this._panel = panel;
+    },
 
-    // One node: its prose, then either its branches or its payout.
+    destroy() {
+      const stale = (typeof document !== "undefined") ? document.getElementById(MODAL_ID) : null;
+      if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+      this._root = null;
+      this._panel = null;
+      this._rowsEl = null;
+    },
+
+    // ---- drawing -----------------------------------------------------------
+
+    // One node: its title, its prose, then either its branches or its payout.
     present(view) {
       if (!view) { this.finish(); return; }
-      const pages = paginate(view.text);
-      const title = view.title ? anomText("ui.mapTitle", { title: view.title }) : null;
-      pages.forEach((lines, i) => {
-        const head = (i === 0 && title) ? [title] : [];
-        const last = i === pages.length - 1;
-        this.queue(() => {
-          head.concat(lines).forEach((l) => messageAdd(l));
-          if (last && !view.done) this.askChoices(view);
-        });
-      });
-      if (view.done) this.queue(() => this.payout(view));
-    },
-
-    askChoices(view) {
-      const labels = view.choices.map((c) => c.text);
-      labels.push(anomText("ui.walkAway"));
-      const cancel = labels.length - 1;
-      $gameMessage.setChoices(labels, 0, cancel);
-      $gameMessage.setChoiceCallback((index) => {
-        if (index >= view.choices.length) {
-          this.queue(() => {
-            messageAdd(anomText("ui.walkedAway"));
-            this.queue(() => this.finish());
-          });
-          return;
-        }
-        const next = Anomaly.choose(index);
-        this.present(next);
-      });
-    },
-
-    // The last node has already applied its outcome (Anomaly.choose did it):
-    // this only reads the lines out and hands over to the fight, if the ending
-    // was a fight.
-    payout(view) {
-      const lines = (view.rewards || []).filter((l) => l);
-      if (lines.length) {
-        paginate(lines.join("\n")).forEach((page) => {
-          this.queue(() => page.forEach((l) => messageAdd(l)));
-        });
+      if (!this._panel) { this.build(); }
+      const panel = this._panel;
+      if (!panel) { this.finish(); return; }
+      panel.innerHTML = "";
+      if (view.title) {
+        const title = document.createElement("div");
+        title.className = "pas-adv-title";   // i18n-ignore: DOM class
+        title.textContent = stripCodes(view.title);
+        panel.appendChild(title);
       }
-      this.queue(() => this.finish());
+      const body = document.createElement("div");
+      body.className = "pas-adv-text";   // i18n-ignore: DOM class
+      String(view.text || "").split("\n").forEach((para) => {
+        const p = document.createElement("p");
+        p.textContent = stripCodes(para);
+        body.appendChild(p);
+      });
+      panel.appendChild(body);
+      if (view.done) {
+        const lines = (view.rewards || []).filter((l) => l);
+        if (lines.length) {
+          const box = document.createElement("div");
+          box.className = "pas-adv-rewards";   // i18n-ignore: DOM class
+          lines.forEach((l) => {
+            const p = document.createElement("p");
+            p.textContent = stripCodes(l);
+            box.appendChild(p);
+          });
+          panel.appendChild(box);
+        }
+        this.setRows([{ label: anomText("ui.mapClose"), run: () => this.finish() }]);
+      } else {
+        const rows = (view.choices || []).map((c, i) => ({
+          label: c.text,
+          run: () => this.present(Anomaly.choose(i)),
+        }));
+        rows.push({ label: anomText("ui.walkAway"), run: () => this.walkAway(view) });
+        this.setRows(rows);
+      }
+      const hint = document.createElement("div");
+      hint.className = "pas-adv-hint";   // i18n-ignore: DOM class
+      hint.textContent = anomText("ui.mapHint");
+      panel.appendChild(hint);
+      body.scrollTop = 0;
+    },
+
+    setRows(rows) {
+      this._rows = rows;
+      this._index = 0;
+      this._arm = MODAL_ARM_FRAMES;
+      const list = document.createElement("div");
+      list.className = "pas-adv-rows";   // i18n-ignore: DOM class
+      rows.forEach((row, i) => {
+        const el = document.createElement("div");
+        el.className = "pas-adv-row";   // i18n-ignore: DOM class
+        el.textContent = stripCodes(row.label);
+        el.addEventListener("mouseenter", () => { this.select(i); });
+        el.addEventListener("mousedown", (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.select(i);
+          this.confirm();
+        });
+        list.appendChild(el);
+      });
+      if (this._panel) this._panel.appendChild(list);
+      this._rowsEl = list;
+      this.select(0);
+    },
+
+    select(index) {
+      if (!this._rows.length) return;
+      const n = this._rows.length;
+      const i = ((index % n) + n) % n;
+      if (i !== this._index) SoundManager.playCursor();
+      this._index = i;
+      if (!this._rowsEl) return;
+      const els = this._rowsEl.children;
+      for (let k = 0; k < els.length; k++) {
+        els[k].classList.toggle("pas-adv-row-sel", k === i);   // i18n-ignore: DOM class
+      }
+    },
+
+    // ---- answering ---------------------------------------------------------
+
+    confirm() {
+      const row = this._rows[this._index];
+      if (!row || !row.run) return;
+      this._rows = [];
+      SoundManager.playOk();
+      row.run();
+    },
+
+    // Walking out is one of the ways an encounter is answered: the square is
+    // spent either way, so it is read out and closed like any other ending.
+    walkAway(view) {
+      this.present({
+        title: (view && view.title) || "",
+        text: anomText("ui.walkedAway"),
+        choices: [],
+        rewards: [],
+        done: true,
+      });
     },
 
     // The prose is read out; whatever the ending owes somewhere else runs now.
     // Each of these closes the encounter itself, once it knows how it went.
     finish() {
       this._running = false;
-      this._steps = [];
+      this._rows = [];
+      this.destroy();
       if (Anomaly.hasPendingBattle()) {
         try { Anomaly.startBattle(); return; } catch (e) { console.error(e); }
       }
@@ -1528,20 +2020,23 @@
       Anomaly.end();
     },
 
-    // One step per frame, and only while the window is free.
+    // ---- input -------------------------------------------------------------
+
     update() {
-      if (!this._steps.length) return;
-      if (typeof $gameMessage === "undefined" || $gameMessage.isBusy()) return;
-      if ($gameMap && $gameMap.isEventRunning()) return;
-      const step = this._steps.shift();
-      try { step(); } catch (e) {
-        console.error("[ProceduralAdventure] " + e);
-        this._steps = [];
-        Anomaly.end();
+      if (!this._running || !this._rows.length) return;
+      if (this._arm > 0) { this._arm--; Input.clear(); return; }
+      if (Input.isRepeated("down")) { this.select(this._index + 1); return; }
+      if (Input.isRepeated("up")) { this.select(this._index - 1); return; }
+      if (Input.isTriggered("ok")) { Input.clear(); this.confirm(); return; }
+      if (Input.isTriggered("cancel") || TouchInput.isCancelled()) {
+        // Cancel is the last row: "leave it" on a branch, "close" on an ending.
+        Input.clear();
+        this.select(this._rows.length - 1);
+        this.confirm();
       }
     },
 
-    isRunning() { return this._running || this._steps.length > 0; },
+    isRunning() { return this._running; },
   };
 
   // ==========================================================================
@@ -1567,13 +2062,20 @@
     MapPlay.update();
   };
 
-  // An encounter runs across several messages, and the frame between two of them
-  // is one the message window is not busy in: without this the party could take
-  // a step (and walk off the square they are investigating) in the gap.
+  // The modal owns the party while it is up: no walking off the square being
+  // investigated, and no button press reaching the map behind it (canMove is
+  // what Game_Player.triggerAction asks before it reads the OK button at all).
   const _PAS_Game_Player_canMove = Game_Player.prototype.canMove;
   Game_Player.prototype.canMove = function () {
     if (MapPlay.isRunning()) return false;
     return _PAS_Game_Player_canMove.call(this);
+  };
+
+  // ...and the same for the menu key, which Scene_Map reads on its own.
+  const _PAS_Scene_Map_isMenuCalled = Scene_Map.prototype.isMenuCalled;
+  Scene_Map.prototype.isMenuCalled = function () {
+    if (MapPlay.isRunning()) return false;
+    return _PAS_Scene_Map_isMenuCalled.call(this);
   };
 
   // Leaving the map (a battle, a transfer, the title screen) drops whatever was

@@ -178,6 +178,41 @@
   window.WorkSystem.statKeyMapping = statKeyMapping;
   window.WorkSystem.si18n = _si18n;
 
+  // A job's wording is not in Jobs.json: the file carries i18n keys
+  // ("Jobs.<id>.name"), and the prose behind them lives in
+  // js/i18n/<lang>/plugins/Jobs.json, so a shift reads in the player's
+  // language. A
+  // value that resolves to nothing is shown as written, which is what keeps a
+  // modded or hand-added job with plain English in it readable.
+  const _jobText = (value) => {
+    if (!value) return '';
+    const key = String(value);
+    return (typeof T === 'function' && T.has && T.has(key)) ? T(key) : key;
+  };
+  window.WorkSystem.jobText = _jobText;
+  window.WorkSystem.jobName = (job) => (job ? _jobText(job.name) : '');
+  window.WorkSystem.jobDescription = (job) => (job ? _jobText(job.description) : '');
+
+  // `category` and `spec` stay English ids in the data - they are what the code
+  // filters and scores on - so the label is derived from the id rather than
+  // stored beside it.
+  window.WorkSystem.categoryLabel = function (category) {
+    if (!category) return '';
+    const key = 'Jobs.category.' + String(category).toLowerCase().replace(/[^a-z0-9]/g, '');
+    return (typeof T === 'function' && T.has && T.has(key)) ? T(key) : String(category);
+  };
+  window.WorkSystem.jobCategoryLabel = (job) => window.WorkSystem.categoryLabel(job && job.category);
+
+  // An outcome's `messages` is a key naming a pool of wordings, taken from the
+  // active language whole (T.pool) so a translation never interleaves with
+  // English. An older array of literal messages still works.
+  window.WorkSystem.outcomeMessages = function (outcome) {
+    if (!outcome || !outcome.messages) return [];
+    if (Array.isArray(outcome.messages)) return outcome.messages;
+    const pool = (typeof T === 'function' && T.pool) ? T.pool(String(outcome.messages)) : [];
+    return pool.length ? pool : [];
+  };
+
   // Resolve a job status (raw name like "Nausea" from Jobs.json, or a numeric
   // state id) to a state id. The name->id map is built lazily from $dataStates
   // by matching state names, then cached. There is no static WorkSystem.Status
@@ -563,8 +598,9 @@
       const outcome = job.outcomes[outcomeType];
 
       // Select random message
-      const messages = outcome.messages;
-      const message = messages[Math.floor(Math.random() * messages.length)];
+      const messages = window.WorkSystem.outcomeMessages(outcome);
+      const message = messages.length
+        ? messages[Math.floor(Math.random() * messages.length)] : '';
 
       // Calculate pay. A tradesman is worth more than a warm body, so the
       // shift pays better once the job's specialization is trained, and a
@@ -595,8 +631,7 @@
         hpDamage: hpDamage,
         mpDamage: mpDamage,
         statuses: statuses,
-        jobName: job.name,
-        jobNameIt: job.name_it
+        jobName: window.WorkSystem.jobName(job)
       };
 
       const event = this.rollEvent(actor, job, outcomeType, options);
@@ -640,7 +675,7 @@
       // A shift is a day of the party's life, so it goes in the diary
       // (Diary.js); the shift is over by the time this runs.
       if (window.Diary) {
-        window.Diary.onWorkShift(job.name, result.pay, job.duration || job.hours || 0, actor);
+        window.Diary.onWorkShift(window.WorkSystem.jobName(job), result.pay, job.duration || job.hours || 0, actor);
       }
 
       // A shift worked is a shift learned from, and it is the worker who
@@ -730,11 +765,10 @@
       if (!job) return;
 
       const rect = this.itemLineRect(index);
-      const useItalian = ConfigManager.language === 'it';
 
       // Job name
       this.resetTextColor();
-      const jobName = useItalian && job.name_it ? job.name_it : job.name;
+      const jobName = window.WorkSystem.jobName(job);
       this.drawText(jobName, rect.x + 4, rect.y, rect.width - 120);
 
       // Duration
@@ -758,8 +792,7 @@
       if (this._helpWindow) {
         const job = this.item();
         if (job) {
-          const useItalian = ConfigManager.language === 'it';
-          const desc = useItalian && job.description_it ? job.description_it : job.description;
+          const desc = window.WorkSystem.jobDescription(job);
           this._helpWindow.setText(desc);
         }
       }
@@ -901,7 +934,6 @@
       const job = this._job;
       const actor = this._actor || $gameParty.leader();
       const lineHeight = this.lineHeight();
-      const useItalian = ConfigManager.language === 'it';
       let y = 0;
 
       // Job description
@@ -911,7 +943,7 @@
       y += lineHeight;
 
       this.resetTextColor();
-      const description = useItalian && job.description_it ? job.description_it : job.description;
+      const description = window.WorkSystem.jobDescription(job);
       const wrappedDesc = this.wrapText(description, this.contentsWidth());
       for (const line of wrappedDesc) {
         this.drawText(line, 10, y, this.contentsWidth() - 10);
@@ -922,7 +954,7 @@
 
       // Job info row
       this.changeTextColor(ColorManager.systemColor());
-      this.drawText(`${job.category}`, 0, y, 200);
+      this.drawText(window.WorkSystem.jobCategoryLabel(job), 0, y, 200);
       this.drawText(`${job.duration}h`, 210, y, 100);
       this.changeTextColor(ColorManager.textColor(14));
       this.drawText(`€${(job.basePay / 100).toFixed(2)}`, 320, y, 100);
@@ -1008,7 +1040,6 @@
 
     drawActorSelection() {
       const lineHeight = this.lineHeight();
-      const useItalian = ConfigManager.language === 'it';
 
       // Draw instruction text
       this.changeTextColor(ColorManager.systemColor());
@@ -1218,7 +1249,6 @@
     refreshUIWorkDOM() {
       if (!this._dndContainer) return;
 
-      const useItalian = ConfigManager.language === 'it';
       const jobs = this._jobListWindow ? this._jobListWindow._data : [];
       const selectedIndex = this._jobListWindow ? this._jobListWindow.index() : 0;
       const selectedJob = this._singleJobMode ? window.WorkSystem.getJob(this._singleJobId) : (jobs[selectedIndex] || null);
@@ -1291,9 +1321,11 @@
     }
 
     getJobsBoardHTML(jobs, selectedIndex) {
-      const useItalian = ConfigManager.language === 'it';
-      const categoryLabel = this._category ? `: ${this._category.toUpperCase()}` : '';
-      const title = useItalian ? `REGISTRO DI GILDA${categoryLabel}` : `GUILD LABOR REGISTRY${categoryLabel}`;
+      const title = this._category
+        ? T('WorkSystem.guildRegistryCategory', {
+            category: window.WorkSystem.categoryLabel(this._category).toUpperCase()
+          })
+        : T('WorkSystem.guildRegistry');
 
       let listHTML = "";
       if (jobs.length === 0) {
@@ -1305,7 +1337,7 @@
       } else {
         jobs.forEach((job, idx) => {
           const isSelected = idx === selectedIndex && this._dndFocusSection === 'list';
-          const jobName = useItalian && job.name_it ? job.name_it : job.name;
+          const jobName = window.WorkSystem.jobName(job);
 
           const itemStyle = `
             cursor: pointer;
@@ -1328,7 +1360,7 @@
                   ${jobName}
                 </span>
                 <span style="font-size:0.915rem; color:#6b5242; font-family:'Lora', serif">
-                  ${job.category} • ${job.duration}h
+                  ${window.WorkSystem.jobCategoryLabel(job)} • ${job.duration}h
                 </span>
               </div>
               <div style="display:flex; flex-direction:column; align-items:flex-end">
@@ -1357,7 +1389,6 @@
     }
 
     getJobContractHTML(job, actor) {
-      const useItalian = ConfigManager.language === 'it';
       if (!job) {
         return `
           <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#5c4b3d; font-family:'Lora', serif; font-size:1.265rem; border:2px dashed #bda881; border-radius:6px; padding:40px">
@@ -1366,8 +1397,8 @@
         `;
       }
 
-      const jobName = useItalian && job.name_it ? job.name_it : job.name;
-      const description = useItalian && job.description_it ? job.description_it : job.description;
+      const jobName = window.WorkSystem.jobName(job);
+      const description = window.WorkSystem.jobDescription(job);
 
       const reqCheck = window.WorkSystem.meetsRequirements(actor, job);
       const successChance = window.WorkSystem.calculateSuccessChance(actor, job);
@@ -1436,7 +1467,7 @@
             <div style="display:flex; flex-direction:column; gap:6px; font-size:1.08rem">
               <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
                 <strong style="color:#5c3516">${T('WorkSystem.categoryLabel')}:</strong>
-                <span>${job.category}</span>
+                <span>${window.WorkSystem.jobCategoryLabel(job)}</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
                 <strong style="color:#5c3516">${T('WorkSystem.duration')}:</strong>
@@ -1513,7 +1544,6 @@
     }
 
     getActorSelectionHTML(actors, selectedActorIndex, selectedJob) {
-      const useItalian = ConfigManager.language === 'it';
 
       let listHTML = "";
       actors.forEach((actor, idx) => {
@@ -1958,8 +1988,7 @@
   };
 
   Scene_Map.prototype.displayWorkResult = function (actor, job, result) {
-    const useItalian = ConfigManager.language === 'it';
-    const jobName = useItalian && job.name_it ? job.name_it : job.name;
+    const jobName = window.WorkSystem.jobName(job);
 
     // Work complete message
     window.skipLocalization = true;

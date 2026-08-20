@@ -46,5 +46,6 @@
     "air": "IN VOLO",
     "water": "A GALLA",
     "underwater": "IN IMMERSIONE"
-  }
+  },
+  "weapon": "Ora impugni: {name}"
 }

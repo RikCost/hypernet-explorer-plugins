@@ -79,6 +79,11 @@
  *     pace, and then go back to their own business. They amble a notch under
  *     the leader's speed otherwise, hurry when they are out of sight, and now
  *     and then take a turn of speed for no reason at all.
+ *   • On the WORLD MAP the leash is a hard two tiles. One tile there is a
+ *     whole region of the continent, so a member who strolls the seven tiles
+ *     they would stroll in a village has walked into another country while
+ *     still sitting comfortably on the screen. They keep their activities, they
+ *     simply keep them at the leader's elbow.
  *   • They swim. A member cut off by water, or following a leader who has swum
  *     off, gets in and swims across it (region 99, or a water tile on the
  *     procedural map) and climbs out on the far bank. They never DIVE: going
@@ -317,6 +322,12 @@
     // A stroll stays a stroll: this is how far a member sets out to go, which is
     // not the same question as when they come back.
     const LOOSE_ROAM = Math.min(Math.max(2, Number(params.looseLeash) || 7), 12);
+    // The world map is the one place where the screen is the wrong leash: a
+    // tile there is a whole region, so a member wandering to the far side of
+    // the screen has wandered across a country. There, and only there, the
+    // leash is a hard tile count, and nobody may be further than this from the
+    // leader whatever errand they are on.
+    const WORLD_LEASH = 2;
 
     // ------------------------------------------------------------------ needs
     // A loose member attends to themselves the way the town's NPCs do, off the
@@ -339,12 +350,24 @@
     // How often a member looking for company looks to their OWN first, the
     // leader or whoever else is walking with them, rather than to the town. A
     // party that only ever talks to strangers reads as a column of strangers.
-    const PARTY_TALK_ODDS = 0.45;
+    // Kept under a half: a party discussion is two to four beats and the town's
+    // greeting is one, so equal odds make the party the louder half of the map.
+    const PARTY_TALK_ODDS = 0.36;
     // A third member standing this close when two of their own start talking is
     // in the conversation, not next to it: they get a line and they get faced.
     const PARTY_THIRD_RANGE = 3;
     const VISIT_COOLDOWN = 1200; // frames before a member calls on the same face again
     const BUBBLE_MS = 3400;   // how long one line of chatter stays up
+    // A party that comments on everything talks over itself and over the town,
+    // so a line is rationed: a member keeps quiet for a while after saying one,
+    // no two members speak on top of each other, and a proper discussion is
+    // something that happens every so often rather than at every stop. The
+    // beats of a discussion already in progress are exempt, they are one
+    // exchange and are paced by their own waits.
+    const CHATTER_COOL = 1500;  // frames before the same member says another line (~25s)
+    const CHATTER_GAP  = 420;   // frames between any two party lines (~7s)
+    const TALK_COOL    = 1200;  // frames before the party holds another discussion (~20s)
+    const IDLE_TALK_ODDS = 0.16; // odds a member standing about voices the thought at all
 
     // Watchdog / dismissal tuning for arbitrary external plugin menus.
     const BLOCK_LIMIT = 240;  // frames the map may stay un-drivable (no message,
@@ -580,7 +603,8 @@
         if (/enemy|monster|slime|beast|foe|bandit|wolf|spider|skab|ghoul|zombie/i.test(name + " " + note)) {
             return true;
         }
-        const list = ev.list && ev.list();
+        const page = ev.page && ev.page();
+        const list = page && page.list;
         if (list) {
             for (const cmd of list) {
                 if (cmd.code === 301) return true; // Battle Processing
@@ -1940,10 +1964,15 @@
             const el = this._element();
             el.textContent = text;
             el.style.display = "block";
+            el.style.visibility = ""; // a recycled element may have gone off-canvas
             el.classList.remove("fading");
             void el.offsetWidth; // restart the transition on a recycled element
             el.classList.add("visible");
-            this._live.push({ el, char, until: Date.now() + BUBBLE_MS, h: el.offsetHeight || 32 });
+            this._live.push({
+                el, char, until: Date.now() + BUBBLE_MS,
+                h: el.offsetHeight || 32,
+                w: el.offsetWidth || 0,
+            });
             this.update();
         },
 
@@ -1988,6 +2017,9 @@
 
         // Anchored off the character's own screen projection (so it tracks zoom,
         // jumps and camera shifts) and scaled onto the canvas' real on-page size.
+        // The final top edge comes from NPCConversation's shared layout arbiter,
+        // which is also what the town's thought bubbles claim against, so a
+        // member talking next to an NPC stacks above them instead of over them.
         update() {
             if (!this._live.length) return;
             if (!(SceneManager._scene instanceof Scene_Map) || !$gameMap) {
@@ -2001,16 +2033,43 @@
             const ox = r ? r.left : 0;
             const oy = r ? r.top : 0;
             const now = Date.now();
+            const layout = window.NPCBubbleLayout || null;
+            // Oldest first, so a member's bubble keeps the spot it was given and
+            // the newer ones stack clear of it. _live is already in that order,
+            // but the release sweep has to run backwards, so do that separately.
             for (let i = this._live.length - 1; i >= 0; i--) {
-                const b = this._live[i];
-                if (now >= b.until) {
-                    this._release(i);
-                    continue;
+                if (now >= this._live[i].until) this._release(i);
+            }
+            const zoom = ($gameScreen && $gameScreen.zoomScale()) || 1;
+            const zx = $gameScreen ? $gameScreen.zoomX() : 0;
+            const zy = $gameScreen ? $gameScreen.zoomY() : 0;
+            for (const b of this._live) {
+                const h = b.h || 32;
+                // The spriteset is scaled about the zoom centre after the fact,
+                // so screenX/Y have to go through the same transform to land on
+                // the head they belong to (Core/MousePan.js).
+                const x = (b.char.screenX() - zx) * zoom + zx;
+                const y = (b.char.screenY() - this._spriteHeight(b) - zy) * zoom + zy;
+                // A speaker who is off the canvas keeps their bubble but stops
+                // drawing it, rather than having it clamped onto the edge.
+                const out = x < 0 || x > Graphics.width || y < 0 || y > Graphics.height;
+                if (b.hidden !== out) {
+                    b.hidden = out;
+                    b.el.style.visibility = out ? "hidden" : "";
                 }
-                const x = b.char.screenX();
-                const y = b.char.screenY() - this._spriteHeight(b) - (b.h || 32) - 16;
-                b.el.style.left = Math.round(ox + x * sx) + "px";
-                b.el.style.top = Math.round(oy + y * sy) + "px";
+                if (out) continue;
+                let left = Math.round(ox + x * sx);
+                let top = Math.round(oy + y * sy - h - 16 * sy);
+                if (layout) {
+                    const slot = layout.place(b, left, top, b.w || 0, h, {
+                        left: ox, right: ox + Graphics.width * sx,
+                        top: oy, bottom: oy + Graphics.height * sy,
+                    });
+                    left = Math.round(slot.x);
+                    top = Math.round(slot.y);
+                }
+                b.el.style.left = left + "px";
+                b.el.style.top = top + "px";
             }
         },
     };
@@ -2024,6 +2083,13 @@
         // into the save as a second copy of that event.
         _states: [],
         mapId: 0,
+        // Chatter rationing. Frame stamps only, so nothing here has to be saved:
+        // who spoke last and when, when the party last held a discussion, and a
+        // hold that outlasts both (a map change, closing ranks).
+        _saidAt: new WeakMap(),
+        _lastLineAt: -CHATTER_GAP,
+        _lastTalkAt: -TALK_COOL,
+        _quietUntil: 0,
 
         mode() {
             return ConfigManager.partyFormation | 0;
@@ -2074,6 +2140,9 @@
 
         resetStates() {
             this._states = [];
+            // Arriving somewhere is not a cue to start talking: give the party a
+            // beat to look around before anybody says anything.
+            this._quietUntil = Graphics.frameCount + CHATTER_COOL;
         },
 
         clearGoal(s) {
@@ -2172,6 +2241,46 @@
             return $gameMap.distance(a.x, a.y, b.x, b.y);
         },
 
+        // Standing on the world map (Map/WorldMapReturn.js), where one tile is
+        // a region of the continent rather than a few paces of ground.
+        onWorldMap() {
+            if (!$gameMap) return false;
+            const wmr = window.WorldMapReturn;
+            const utils = window.ProcGenUtils;
+            const id = (wmr && wmr.worldMapId) || (utils && utils.WORLD_MAP_ID) || 315;
+            return $gameMap.mapId() === id;
+        },
+
+        // The hard limit on how far a member may be from the leader. Off the
+        // world map there is none: what tells them they have been left behind
+        // is the screen, which already carries the scale of the place.
+        leash() {
+            return this.onWorldMap() ? WORLD_LEASH : Infinity;
+        },
+
+        // Is this tile, or this character, inside the leash? Everywhere the
+        // leash is off, everything is.
+        inLeash(x, y) {
+            const max = this.leash();
+            if (!isFinite(max) || !$gamePlayer || !$gameMap) return true;
+            return $gameMap.distance(x, y, $gamePlayer.x, $gamePlayer.y) <= max;
+        },
+
+        inLeashOf(c) {
+            return !!c && this.inLeash(c.x, c.y);
+        },
+
+        // Past the leash, and so on their way back. `returning` asks the
+        // question of somebody already walking home, who keeps walking until
+        // they are a tile INSIDE the limit rather than exactly on it: the same
+        // idea as LOOSE_BACK_INSET at the screen edge, so nobody bounces off
+        // the leash with every step the leader takes.
+        strayed(f, returning) {
+            const max = this.leash();
+            if (!isFinite(max) || !$gamePlayer) return false;
+            return this.dist(f, $gamePlayer) > (returning ? Math.max(1, max - 1) : max);
+        },
+
         // Is this member outside what the player can actually see? Screen
         // coordinates are the honest answer to that: they already carry the
         // camera, the edges of a map too small to centre on, and the zoom the
@@ -2192,11 +2301,31 @@
             return x < -mx || x > Graphics.width + mx || y < -my || y > Graphics.height + my;
         },
 
-        say(char, key) {
+        // Has this member been quiet long enough to say something, and has the
+        // party as a whole? Discussion beats do not ask, they only stamp.
+        _mayTalk(char) {
+            const now = Graphics.frameCount;
+            if (now - this._quietUntil < 0) return false;
+            if (now - (this._saidAt.get(char) || -CHATTER_COOL) < CHATTER_COOL) return false;
+            return now - this._lastLineAt >= CHATTER_GAP;
+        },
+
+        _stampTalk(char) {
+            this._saidAt.set(char, Graphics.frameCount);
+            this._lastLineAt = Graphics.frameCount;
+        },
+
+        // `answer` marks the second half of an exchange somebody already
+        // started: it is said whatever the rationing says, because a greeting
+        // that goes unanswered reads worse than one line too many. Returns
+        // whether anything was actually said, so the caller can drop the rest
+        // of an exchange that never got started.
+        say(char, key, answer) {
             // The chatter is written for the people in the party. A pet or a
             // child walking with them wanders and stops to look at things like
             // everyone else, but it says none of it.
-            if (this.isAlwaysLoose(char)) return;
+            if (this.isAlwaysLoose(char)) return false;
+            if (!answer && !this._mayTalk(char)) return false;
             // A party of two or more says it in their OWN voice: PartyBanter
             // answers out of this member's personality bank (NPC/PartyBanter.js).
             // A lone traveller has no banter to be part of and falls back to the
@@ -2204,18 +2333,22 @@
             const actor = this.partyActorOf(char);
             const own = (actor && window.PartyBanter) ? window.PartyBanter.solo(actor, key) : null;
             if (own) {
+                this._stampTalk(char);
                 Bubbles.show(char, own);
-                return;
+                return true;
             }
             const lines = T.pool(key);
-            if (!lines.length) return;
+            if (!lines.length) return false;
+            this._stampTalk(char);
             Bubbles.show(char, lines[Math.floor(Math.random() * lines.length)]);
+            return true;
         },
 
         // A line already chosen elsewhere (a scripted party discussion), said
         // by this character. Same bubble, no bank lookup.
         sayText(char, text) {
             if (!text || this.isAlwaysLoose(char)) return;
+            this._stampTalk(char);
             Bubbles.show(char, text);
         },
 
@@ -2327,7 +2460,7 @@
                 // hands off them entirely rather than walking them somewhere
                 // else at the same time, and they keep the leader's pace so the
                 // spacing holds instead of concertinaing.
-                if (!gathering && this.inColumn(f)) {
+                if (!gathering && this.inColumn(f) && !this.strayed(f, false)) {
                     f.setMoveSpeed($gamePlayer.realMoveSpeed());
                     return;
                 }
@@ -2350,13 +2483,43 @@
         // under the leader's; keeping up with them or running outright when
         // there is a reason to (coming back into view, tagging along, or one of
         // those moments when somebody simply feels like running).
+        //
+        // A run comes out of their AP, the same meter their skills do (see
+        // Map/MovementInteractionSystem.js), and a member with none left drops
+        // back to a walk. It is a cosmetic thing only: they still catch up, and
+        // a fight that starts a moment later finds them in it either way. In
+        // Close formation nobody asks - the party marches at the leader's pace
+        // and keeps up whatever it costs, because falling out of the column is
+        // not something a marching party does.
         gaitFor(f) {
             const s = this.stateOf(f);
             const base = $gamePlayer.realMoveSpeed();
-            if (s.act === "return") return base + 1;      // out of sight: hurry
-            if (s.act === "follow") return base;          // matching the leader
-            if (s.dash) return base;                      // a turn of speed
+            // "return" is somebody left behind hurrying back into view, "dash"
+            // is somebody who simply felt like running; either way it is a run,
+            // and a run has to be paid for.
+            const running = (s.act === "return" || (s.dash && s.act !== "follow")) &&
+                this.takeBreath(f);
+            if (running) return s.act === "return" ? base + 1 : base;
+            if (s.act === "return" || s.act === "follow") return base;
             return Math.max(3, base - 1);
+        },
+
+        // Has this member the breath left for a run? Asked before setting one
+        // off at one, and it changes nothing on its own.
+        hasBreath(f) {
+            const stamina = window.SprintStamina;
+            if (!stamina) return true;
+            const actor = this.actorOf(f);
+            return !actor || stamina.canSprint(actor);
+        },
+
+        // The same question asked by somebody already running: the answer is
+        // charged to their AP, so a member who keeps running keeps paying.
+        takeBreath(f) {
+            if (!this.hasBreath(f)) return false;
+            const actor = this.actorOf(f);
+            if (actor) window.SprintStamina?.noteRunning?.(actor);
+            return true;
         },
 
         // ------------------------------------------------------------- water
@@ -2434,10 +2597,14 @@
                 this.stepTo(f, $gamePlayer.x, $gamePlayer.y);
                 return;
             }
-            if (this.inColumn(f)) return;
+            const strayed = this.strayed(f, false);
+            if (this.inColumn(f) && !strayed) return;
             // Catching up is a run: the engine only steps the file when the
             // leader steps, so at the leader's own pace a gap would never close.
-            const head = this.precedingOf(f);
+            // A column is as long as the party is, which on the world map is
+            // already further than the leash allows, so out there the tail
+            // closes on the LEADER and the party bunches up instead.
+            const head = strayed ? $gamePlayer : this.precedingOf(f);
             f.setMoveSpeed($gamePlayer.realMoveSpeed() + 1);
             this.stepTo(f, head.x, head.y);
         },
@@ -2492,7 +2659,8 @@
             // back they keep going until a little inside the edge, so nobody
             // stops dead on the rim and drifts straight out of it again.
             const gone = this.offScreen(f, LOOSE_SIGHT_MARGIN);
-            if (gone || (s.act === "return" && this.offScreen(f, -LOOSE_BACK_INSET))) {
+            const strayed = this.strayed(f, s.act === "return");
+            if (gone || strayed || (s.act === "return" && this.offScreen(f, -LOOSE_BACK_INSET))) {
                 if (s.act !== "return") {
                     this.clearGoal(s);
                     s.act = "return";
@@ -2528,8 +2696,8 @@
         pickActivity(f, s) {
             if (this.beginNeed(f, s)) return;
             // Every errand is taken at its own pace, and now and then somebody
-            // takes it at a run.
-            s.dash = Math.random() < FOLLOW_DASH_ODDS;
+            // takes it at a run, if they have the breath for one.
+            s.dash = Math.random() < FOLLOW_DASH_ODDS && this.hasBreath(f);
             if (Math.random() < FOLLOW_ODDS && this.beginFollow(f, s)) return;
             const roll = Math.random();
             if (roll < 0.36 && this.beginVisit(f, s)) return;
@@ -2537,7 +2705,7 @@
             if (roll < 0.86 && this.beginWalk(f, s)) return;
             this.clearGoal(s);
             s.wait = 60 + Math.floor(Math.random() * 150);
-            if (Math.random() < 0.5) this.say(f, "AutoIdle.loose.thought");
+            if (Math.random() < IDLE_TALK_ODDS) this.say(f, "AutoIdle.loose.thought");
         },
 
         // Walking with the leader, of their own accord: they keep a couple of
@@ -2570,12 +2738,13 @@
         },
 
         beginWalk(f, s) {
+            const roam = Math.min(LOOSE_ROAM, this.leash());
             for (let i = 0; i < 20; i++) {
                 const a = Math.random() * Math.PI * 2;
-                const r = 2 + Math.random() * (LOOSE_ROAM - 1);
+                const r = 2 + Math.random() * (roam - 1);
                 const x = Math.round($gamePlayer.x + Math.cos(a) * r);
                 const y = Math.round($gamePlayer.y + Math.sin(a) * r);
-                if ((x !== f.x || y !== f.y) && tilePassable(x, y)) {
+                if ((x !== f.x || y !== f.y) && tilePassable(x, y) && this.inLeash(x, y)) {
                     this.clearGoal(s);
                     s.act = "walk";
                     s.gx = x;
@@ -2634,13 +2803,19 @@
             const own = !!this.partyActorOf(p);
             if (own) return this.stepPartyTalk(f, p, s);
             if (s.beat === 0) {
-                this.say(f, "AutoIdle.loose.greet");
+                // Nothing to say right now: they came over anyway, and the visit
+                // still counts as company, it simply happens without the words.
+                if (!this.say(f, "AutoIdle.loose.greet")) {
+                    s.beat = 2;
+                    s.wait = 40;
+                    return;
+                }
                 s.beat = 1;
                 s.wait = 100;
                 return;
             }
             if (s.beat === 1) {
-                this.say(p, "AutoIdle.loose.reply");
+                this.say(p, "AutoIdle.loose.reply", true);
                 s.beat = 2;
                 s.wait = 110;
                 return;
@@ -2661,6 +2836,15 @@
         // like two people and a spectator.
         stepPartyTalk(f, p, s) {
             if (!s.talk) {
+                // They walked over to each other, but a discussion is not what
+                // two people do every time they meet: too soon after the last
+                // one and the visit is just company, without the words.
+                if (Graphics.frameCount - this._lastTalkAt < TALK_COOL) {
+                    this.settleTalk(f, p);
+                    this.clearGoal(s);
+                    s.wait = 60;
+                    return;
+                }
                 const cast = [];
                 const chars = [];
                 const add = (char) => {
@@ -2691,6 +2875,7 @@
                 s.talk = beats;
                 s.talkChars = chars;
                 s.beat = 0;
+                this._lastTalkAt = Graphics.frameCount;
             }
 
             if (s.beat < s.talk.length) {
@@ -2979,6 +3164,9 @@
                 // A room is rented, never simply used: beginRent owns it.
                 if (m.capability && m.capability.id === "rentable_room") continue;
                 if (m.event._erased || this.stale(s, m.event)) continue;
+                // Nothing worth walking off the leash for: on the world map the
+                // washroom two regions over is not somewhere a party member goes.
+                if (!this.inLeashOf(m.event)) continue;
                 const d = this.dist(f, m.event);
                 if (d <= NEED_SCAN && d < bestD) {
                     best = m.event;
@@ -3007,6 +3195,7 @@
                 if (room.price > gold) continue;
                 const ev = $gameMap.event(room.eventId);
                 if (!ev || ev._erased) continue;
+                if (!this.inLeashOf(ev)) continue;
                 const d = this.dist(f, ev);
                 if (d <= NEED_SCAN && d < bestD) {
                     best = ev;
@@ -3034,6 +3223,7 @@
                     const y = $gameMap.roundY(f.y + dy);
                     if ($gameMap.regionId(x, y) !== REST_REGION) continue;
                     if (!tilePassable(x, y)) continue;
+                    if (!this.inLeash(x, y)) continue;
                     const d = Math.abs(dx) + Math.abs(dy);
                     if (d < bestD) {
                         best = { x, y };
@@ -3247,11 +3437,13 @@
 
         // Someone to talk to. Roughly half the time a member turns to their own
         // company first, the leader or whoever else is walking with them; the
-        // rest of the time it is the town, where the living NPCs the NPC system
-        // is currently running come first (they are the ones with a life to
-        // talk about), then any other person on the map. Whichever was asked
-        // first, the other is the fallback, so nobody stands there with nothing
-        // to say while somebody is standing right next to them.
+        // rest of the time it is the town, but only the living NPCs the NPC
+        // system is actually running (they are the ones with a life to talk
+        // about, tracked as opinions and relationships) - never a bystander
+        // event that merely looks like a person, a shopkeeper or quest giver
+        // included, since those hold no relationship ledger to move. Whichever
+        // was asked first, the other is the fallback, so nobody stands there
+        // with nothing to say while somebody is standing right next to them.
         findCompany(f) {
             const own = Math.random() < PARTY_TALK_ODDS;
             if (own) {
@@ -3263,6 +3455,7 @@
             const s = this.stateOf(f);
             const consider = (c) => {
                 if (!c || c === f || this.stale(s, c)) return;
+                if (!this.inLeashOf(c)) return;
                 const d = this.dist(f, c);
                 if (d <= LOOSE_SCAN && d < bestD) {
                     best = c;
@@ -3276,11 +3469,6 @@
             if (ctrls && ctrls.length) {
                 for (const c of ctrls) {
                     if (c && c.event && !c.event._erased && !c.event.isTransparent()) consider(c.event);
-                }
-            }
-            if (!best) {
-                for (const ev of $gameMap.events()) {
-                    if (isPersonEvent(ev)) consider(ev);
                 }
             }
             if (!best && !own) best = this.findPartyCompany(f);
@@ -3298,6 +3486,7 @@
             const consider = (c) => {
                 if (!c || c === f || this.stale(s, c)) return;
                 if (c.isTransparent && c.isTransparent()) return;
+                if (!this.inLeashOf(c)) return;
                 const d = this.dist(f, c);
                 if (d <= LOOSE_SCAN && d < bestD) {
                     best = c;
@@ -3327,6 +3516,7 @@
             let bestD = LOOSE_SCAN + 1;
             for (const ev of $gameMap.events()) {
                 if (!isSceneryEvent(ev) || this.stale(s, ev)) continue;
+                if (!this.inLeashOf(ev)) continue;
                 const d = this.dist(f, ev);
                 if (d <= LOOSE_SCAN && d < bestD) {
                     best = ev;

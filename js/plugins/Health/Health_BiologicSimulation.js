@@ -201,7 +201,7 @@
   }
 
   // How long a pregnancy runs is the species' business, not this plugin's:
-  // every archetype in EnemyArchetypes.json carries a `pregnancyDuration` in
+  // every archetype in Archetypes.json carries a `pregnancyDuration` in
   // game days and Health_Core resolves it (the median of the two for a hybrid,
   // always one day for mitosis).
   var FALLBACK_TERM = 270; // Health_Core absent; the human term.
@@ -593,7 +593,6 @@
       "leyVeins", "brain", "reproduction", "diseases",
     ];
     this._lastKeyboardScrollY = 0;
-    this._lastTriggerDir = 0;
   };
 
   Scene_BiologicSimulation.prototype.create = function () {
@@ -811,33 +810,42 @@
     this.selectUICategory((this._category + dir + n) % n);
   };
 
-  // L2/R2 analog triggers cycle the character, the way L1/R1 used to, now that
-  // the bumpers own the tabs. Edge triggered so a held trigger moves one step.
-  Scene_BiologicSimulation.prototype.updateUIActorTriggers = function () {
+  // L2/R2 analog triggers scroll the open page, R2 down and L2 up. Analog, so
+  // the further the trigger is pulled the faster the page runs.
+  Scene_BiologicSimulation.prototype.updateUITriggerScroll = function (page) {
+    if (!page) return;
     const pads = window.AnalogStickInput;
     if (!pads || typeof pads.leftTrigger !== 'function') return;
-    const dz = 0.5;
-    const dir = pads.rightTrigger() > dz ? 1 : (pads.leftTrigger() > dz ? -1 : 0);
-    if (dir !== this._lastTriggerDir) {
-      this._lastTriggerDir = dir;
-      if (dir !== 0) this.cycleUIActor(dir);
-    }
+    const dz = 0.15;
+    const down = pads.rightTrigger();
+    const up = pads.leftTrigger();
+    let amount = 0;
+    if (down > dz) amount += (down - dz) / (1 - dz);
+    if (up > dz) amount -= (up - dz) / (1 - dz);
+    if (amount === 0) return;
+    page.scrollTop += amount * 16;
+    this.syncUIScrollVar(page);
   };
 
   Scene_BiologicSimulation.prototype.updateUIBiologicInput = function () {
     if (!this.isActive()) return;
 
-    // L1/R1 (and left/right) switch tabs, matching the options menu.
-    if (Input.isTriggered('right') || Input.isTriggered('pagedown')) {
+    // The arrows own the chapter tabs, the bumpers own the character.
+    if (Input.isTriggered('right')) {
       this.cycleUICategory(1);
-    } else if (Input.isTriggered('left') || Input.isTriggered('pageup')) {
+    } else if (Input.isTriggered('left')) {
       this.cycleUICategory(-1);
     }
 
-    this.updateUIActorTriggers();
+    if (Input.isTriggered('pagedown')) {
+      this.cycleUIActor(1);
+    } else if (Input.isTriggered('pageup')) {
+      this.cycleUIActor(-1);
+    }
 
     const rightPage = this._dndContainer ? this._dndContainer.querySelector(".right-page") : null;
     if (rightPage) {
+      this.updateUITriggerScroll(rightPage);
       if (Input.isPressed('down')) {
         rightPage.scrollTop += 8;
         this.syncUIScrollVar(rightPage);
@@ -869,15 +877,11 @@
             </div>
         `;
     });
-    // Local hints instead of CharSwitcher.inner(): here the bumpers drive the
-    // category tabs, so the character switcher advertises the triggers.
-    const manyMembers = allMembers.length > 1;
-    const padOn = manyMembers && window.CharSwitcher.isControllerConnected();
-    const hintL = padOn ? '<span class="char-switch-hint">L2</span>' : '';
-    const hintR = manyMembers
-      ? `<span class="char-switch-hint">${padOn ? 'R2' : 'TAB'}</span>`
-      : '';
-    const companionHTML = `${hintL}<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0">${companionTabsHTML}</div>${hintR}`;
+    // The bumpers switch character here, so the shared L / R hints apply.
+    const companionHTML = window.CharSwitcher.inner(
+      `<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0">${companionTabsHTML}</div>`,
+      allMembers.length
+    );
 
     const bio = actor._biologicData;
     if (!bio) {
@@ -886,7 +890,7 @@
 
     const bloodType = actor._biologicData.bloodType;
     const personality = actor._biologicData.personality;
-    const pName = useTranslation ? personality.name_it : personality.name;
+    const pName = _personalityText(personality.name, 'name');
     const classLabel = actor.currentClass() ? actor.currentClass().name : T('Biologic.classFallback');
     const repVarId = getReproductionVarId(actor);
     const repTypeNum = $gameVariables.value(repVarId) !== undefined ? $gameVariables.value(repVarId) : -1;
@@ -995,10 +999,14 @@
     for (let key in actor._bodyParts) {
       const part = actor._bodyParts[key];
       if (!part) continue;
-      const isDestroyed = part.damaged || part.currentHp <= 0;
+      // Broken, cut off or destroyed: which word a finished part gets is the
+      // difficulty's and the part's business (window.HealthCore.partStatusLabel).
+      const HC = window.HealthCore;
+      const statusText = (HC && HC.partStatusLabel) ? HC.partStatusLabel(actor, key, part) : "";
+      const isDestroyed = !!statusText || part.damaged || part.currentHp <= 0;
       const rate = part.maxHp > 0 ? (part.currentHp / part.maxHp) * 100 : 0;
       const cellClass = isDestroyed ? "bodypart-cell destroyed" : "bodypart-cell";
-      const hpText = isDestroyed ? (T('Biologic.destroyed')) : `${Math.ceil(part.currentHp)}/${part.maxHp}`;
+      const hpText = isDestroyed ? (statusText || T('Biologic.destroyed')) : `${Math.ceil(part.currentHp)}/${part.maxHp}`;
       const c = isDestroyed ? '#d9433a' : needColor(rate);
 
       partsGridHTML += `
@@ -5222,6 +5230,15 @@
 
   // Generate thought based on biological and brain state
   // Generate thought based on biological and brain state
+  // A personality's English `name` in PersonalityData.json is its id - every
+  // by-name lookup in the other plugins keys on it - so what the player reads
+  // is reached FROM it, out of js/i18n/<lang>/plugins/Personality.json.
+  function _personalityText(name, field) {
+    if (!name) return '';
+    const key = 'Personality.' + String(name).toLowerCase().replace(/[^a-z0-9]/g, '') + '.' + field;
+    return T.has(key) ? T(key) : String(name);
+  }
+
   Window_BiologicSimulation.prototype.generateRandomThought = function () {
     var useItalian = ConfigManager.language === "it";
     var actor = this._actor;
@@ -5239,8 +5256,11 @@
       personality.thoughts &&
       Math.random() < 0.25 // 25% chance
     ) {
-      var lang = T('Biologic.en');
-      var thoughts = personality.thoughts[lang] || personality.thoughts["en"];
+      // PersonalityData.json names its thought pool by key; the lines live in
+      // js/i18n/<lang>/plugins/PersonalityThoughts.json and are taken from the
+      // active language whole (T.pool), never mixed with English.
+      var thoughts = Array.isArray(personality.thoughts)
+        ? personality.thoughts : T.pool(String(personality.thoughts));
       if (thoughts && thoughts.length > 0) {
         return thoughts[Math.floor(Math.random() * thoughts.length)];
       }

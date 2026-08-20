@@ -14,22 +14,24 @@
  *
  * Requires Core/Diary.js, which must load first.
  *
- * The book is a two-page spread of ruled diary paper. Each page is one day of
- * the world's calendar, headed with the date the way somebody would write it
- * at the top of a page, and the day's lines are written under it in ink, each
- * with the hour it happened at, the icon of the kind of thing it was and, in
- * the margin, where it happened. A day is never split across the crease: the
- * left page carries a day, the right page the next one.
+ * The book is a two-page spread of ruled diary paper. Each page is headed with
+ * the date the way somebody would write it at the top of a page, and the day's
+ * lines are written under it in ink, each with the hour it happened at, the
+ * icon of the kind of thing it was and, in the margin, where it happened. A
+ * page is never scrolled: a day with more lines than the paper holds runs on
+ * to the next sheet, headed by the same date marked as continuing.
  *
  *   window.Scene_Diary                the book
  *   Scene_Diary.prepare(world, id)    open somebody else's diary instead of
  *                                     the party's own (the world manager
  *                                     passes a world name and a diary id)
  *
- * Reading is by day, not by line: left and right turn the page, up and down
- * move a day at a time, and the ribbon down the right edge is the filter, one
- * bookmark per category. Everything is rendered through Diary.describe, so a
- * diary written in one language reads in whichever one it is opened in.
+ * Reading is by page, not by line: left and right turn the leaf, up and down
+ * move between categories, and the ribbon down the right edge is the filter,
+ * one bookmark per category. The mouse reads it too: a bookmark takes the
+ * filter, either half of the spread turns that way and the wheel pages
+ * through. Everything is rendered through Diary.describe, so a diary written
+ * in one language reads in whichever one it is opened in.
  */
 
 (() => {
@@ -54,11 +56,30 @@
         return Math.floor((Number(minutes) + EPOCH_OFFSET) / DAY);
     }
 
+    // The ruling of the paper, in pixels, and the room the date at the head of
+    // a page takes out of it. Both are stated in css/theme.css as well: a
+    // written line always stands a whole number of rules tall, so what is
+    // measured here and what is drawn there cannot drift apart.
+    const RULE = 34;
+    const HEAD = 68;
+
     function dateHeading(minutes) {
         const D = window.Diary;
         const dt = D && D.stampAt ? D.stampAt(minutes) : null;
         if (!dt) return "";
         return tr('date.heading', {
+            day: dt.day,
+            month: T('Diary.month.' + String(dt.month).toLowerCase()),
+            year: dt.year
+        });
+    }
+
+    // The same date, on the sheet a day runs on to.
+    function dateContinued(minutes) {
+        const D = window.Diary;
+        const dt = D && D.stampAt ? D.stampAt(minutes) : null;
+        if (!dt) return "";
+        return tr('date.continued', {
             day: dt.day,
             month: T('Diary.month.' + String(dt.month).toLowerCase()),
             year: dt.year
@@ -132,11 +153,90 @@
                     minutes: lines[0].t,
                     lines: lines.slice().sort((a, b) => a.t - b.t)
                 }));
+        }
+
+        // A page holds as much as a page holds. A day with more lines than fit
+        // between the head of the sheet and its foot runs on to the next one,
+        // headed by the same date marked as continuing, so the book is paged
+        // through rather than scrolled the way the paper never could be.
+        _rebuildSheets() {
+            const measure = this._openMeasure();
+            const room = this._pageRoom();
+            const sheets = [];
+            for (const day of this._days) {
+                let sheet = null;
+                let used = 0;
+                let written = 0;
+                for (const line of day.lines) {
+                    const height = this._lineRoom(measure, line);
+                    if (sheet && used + height > room) sheet = null;
+                    if (!sheet) {
+                        sheet = { key: day.key, minutes: day.minutes, lines: [], cont: written > 0 };
+                        written++;
+                        sheets.push(sheet);
+                        used = 0;
+                    }
+                    sheet.lines.push(line);
+                    used += height;
+                }
+            }
+            this._closeMeasure();
+            this._sheets = sheets;
             this._spread = Math.max(0, Math.min(this._spread, this._maxSpread()));
         }
 
         _maxSpread() {
-            return Math.max(0, Math.ceil(this._days.length / 2) - 1);
+            const sheets = this._sheets || [];
+            return Math.max(0, Math.ceil(sheets.length / 2) - 1);
+        }
+
+        // ---- how much a page holds -------------------------------------------
+        // Measured on the real leaf rather than guessed at: the same line reads
+        // as one rule in one language and as three in another, and the book is
+        // opened at whatever size the window happens to be.
+
+        _openMeasure() {
+            const page = this._pageLeftEl;
+            if (!page) return null;
+            const cs = window.getComputedStyle(page);
+            const width = page.clientWidth
+                - (parseFloat(cs.paddingLeft) || 0)
+                - (parseFloat(cs.paddingRight) || 0);
+            if (!(width > 0)) return null;
+            const el = document.createElement("div");
+            el.className = "diary-lines diary-measure";
+            el.style.width = width + "px";
+            page.appendChild(el);
+            this._measureEl = el;
+            return el;
+        }
+
+        _closeMeasure() {
+            if (this._measureEl) {
+                this._measureEl.remove();
+                this._measureEl = null;
+            }
+        }
+
+        _pageRoom() {
+            const page = this._pageLeftEl;
+            const fallback = RULE * 14;
+            if (!page) return fallback;
+            const cs = window.getComputedStyle(page);
+            const room = page.clientHeight
+                - (parseFloat(cs.paddingTop) || 0)
+                - (parseFloat(cs.paddingBottom) || 0)
+                - HEAD;
+            if (!(room >= RULE)) return fallback;
+            return Math.floor(room / RULE) * RULE;
+        }
+
+        _lineRoom(measure, entry) {
+            if (!measure) return RULE;
+            measure.innerHTML = this._renderLine(entry);
+            const el = measure.firstElementChild;
+            const height = el ? el.offsetHeight : 0;
+            return Math.max(RULE, Math.ceil(height / RULE) * RULE);
         }
 
         // ---- DOM ------------------------------------------------------------
@@ -172,7 +272,57 @@
             this._pageLeftEl = this._container.querySelector(".diary-page-left");
             this._pageRightEl = this._container.querySelector(".diary-page-right");
             this._footEl = this._container.querySelector(".diary-foot");
+            this._bindMouse();
+            this._rebuildSheets();
             this._render();
+            // The paper is measured with whatever font is installed at that
+            // moment. If Lora is still on its way in, every line is measured
+            // against the fallback serif and the sheets come out a line short
+            // or a line long, so the book is paged again once the real face
+            // has landed.
+            try {
+                if (document.fonts && document.fonts.ready) {
+                    document.fonts.ready.then(() => {
+                        if (!this._container) return;
+                        this._rebuildSheets();
+                        this._render();
+                    });
+                }
+            } catch (e) { /* the book is already readable */ }
+        }
+
+        // Everything the mouse can do to the book, bound as real listeners on
+        // the one element that outlives every re-render: the marks used to
+        // carry an inline onclick each, and a press on one of them counted
+        // only if the pointer had not drifted by the time it came back up.
+        // Delegating from the container also means the ribbon can be rebuilt
+        // as often as it likes without ever losing its handlers.
+        _bindMouse() {
+            this._onContext = (e) => e.preventDefault();
+            this._onMouseDown = (e) => {
+                if (e.button !== 0 || !e.target || !e.target.closest) return;
+                const mark = e.target.closest(".diary-mark");
+                if (mark) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.setDiaryFilter(mark.dataset.cat);
+                    return;
+                }
+                if (e.target.closest(".diary-page-right")) {
+                    e.preventDefault();
+                    this._turnPage(1);
+                } else if (e.target.closest(".diary-page-left")) {
+                    e.preventDefault();
+                    this._turnPage(-1);
+                }
+            };
+            this._onWheel = (e) => {
+                e.preventDefault();
+                this._turnPage(e.deltaY > 0 ? 1 : -1);
+            };
+            this._container.addEventListener("contextmenu", this._onContext);
+            this._container.addEventListener("mousedown", this._onMouseDown);
+            this._container.addEventListener("wheel", this._onWheel, { passive: false });
         }
 
         _render() {
@@ -190,25 +340,26 @@
                 const active = this._filter === cat;
                 return `<div class="diary-mark ${active ? 'active' : ''}"
                              data-cat="${escapeHtml(cat)}"
-                             title="${escapeHtml(tr('cat.' + cat))}"
-                             onclick="SceneManager._scene.setDiaryFilter('${escapeHtml(cat)}')">
+                             title="${escapeHtml(tr('cat.' + cat))}">
                             <span>${escapeHtml(tr('cat.' + cat))}</span>
                         </div>`;
             }).join("");
         }
 
-        // One page: one day, headed by its date, ruled, written in ink.
+        // One page: one sheet of a day, headed by its date, ruled, written in ink.
         _renderPage(index) {
-            const day = this._days[index];
+            const day = (this._sheets || [])[index];
             if (!day) {
-                // The empty right-hand page of the last spread is not an error,
-                // it is simply the rest of the book waiting to be written on.
-                const message = this._days.length === 0 ? tr('empty') : tr('blankPage');
-                return `<div class="diary-rules"></div>
-                        <div class="diary-blank">${escapeHtml(message)}</div>`;
+                // A page nobody has written on yet says nothing at all: it is
+                // simply the rest of the book, ruled and waiting. Only a diary
+                // with not one line anywhere in it is worth a word, and it is
+                // written once, on the leaf the reader looks at first.
+                const empty = ((this._sheets || []).length === 0 && index === 0)
+                    ? `<div class="diary-blank">${escapeHtml(tr('empty'))}</div>` : "";
+                return `<div class="diary-rules"></div>${empty}`;
             }
 
-            const heading = dateHeading(day.minutes);
+            const heading = day.cont ? dateContinued(day.minutes) : dateHeading(day.minutes);
             const lines = day.lines.map(entry => this._renderLine(entry)).join("");
 
             return `
@@ -251,9 +402,10 @@
             const owner = names
                 ? (this._foreign ? tr('foot.theirs', { names }) : tr('foot.ours', { names }))
                 : tr('foot.unknown');
+            const total = (this._sheets || []).length;
             const page = tr('foot.page', {
-                shown: Math.min(this._days.length, this._spread * 2 + 2),
-                total: this._days.length
+                shown: Math.min(total, this._spread * 2 + 2),
+                total
             });
             return `
                 <span class="diary-foot-owner">${escapeHtml(owner)}</span>
@@ -264,11 +416,12 @@
         // ---- interaction -----------------------------------------------------
 
         setDiaryFilter(cat) {
-            if (this._filter === cat) return;
+            if (!cat || this._filter === cat) return;
             SoundManager.playCursor();
             this._filter = cat;
             this._spread = 0;
             this._rebuildDays();
+            this._rebuildSheets();
             this._render();
         }
 
@@ -278,6 +431,21 @@
             SoundManager.playCursor();
             this._spread = next;
             this._render();
+            this._playTurn(direction);
+        }
+
+        // The leaf being turned: both halves of the spread swing in from the
+        // side the reader is coming from. The class has to come off and go back
+        // on around a reflow, or a second turn in the same direction plays
+        // nothing at all.
+        _playTurn(direction) {
+            const turning = direction > 0 ? "turn-forward" : "turn-back";
+            for (const el of [this._pageLeftEl, this._pageRightEl]) {
+                if (!el) continue;
+                el.classList.remove("turn-forward", "turn-back");
+                void el.offsetWidth;
+                el.classList.add(turning);
+            }
         }
 
         _moveRibbon(direction) {
@@ -306,9 +474,14 @@
 
         terminate() {
             if (this._container) {
+                this._container.removeEventListener("contextmenu", this._onContext);
+                this._container.removeEventListener("mousedown", this._onMouseDown);
+                this._container.removeEventListener("wheel", this._onWheel);
                 this._container.remove();
                 this._container = null;
             }
+            this._onContext = this._onMouseDown = this._onWheel = null;
+            this._measureEl = null;
             this._ribbonEl = this._pageLeftEl = this._pageRightEl = this._footEl = null;
             super.terminate();
         }

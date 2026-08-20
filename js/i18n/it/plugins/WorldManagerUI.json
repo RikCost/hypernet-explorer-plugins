@@ -16,10 +16,6 @@
   "nextYear": "Anno successivo",
   "seed": "Seme",
   "randomizeSeed": "Seme casuale",
-  "betaSprites": "Sprite beta",
-  "betaSpritesEnable": "Usa gli sprite beta dei personaggi",
-  "betaSpritesOn": "Abilitati",
-  "betaSpritesOff": "Disabilitati",
   "createActivate": "CREA E ATTIVA",
   "back": "Indietro",
   "dossier": "DOSSIER",
@@ -71,21 +67,21 @@
   "nextPopulation": "Popolazione successiva",
   "populationModes": {
     "normal": "Normale",
-    "goblin": "Modalita goblin",
+    "goblin": "Modalità goblin",
     "monster": "Mondo di mostri",
     "empty": "Mondo vuoto",
     "zombie": "Apocalisse zombie",
     "death": "Mondo morto"
   },
   "populationNotes": {
-    "normal": "La storia come e andata. Ognuno e chi e e il mondo e popolato come e stato scritto.",
-    "goblin": "Sono tutti goblin. Esistono solo volti, busti e archetipi goblin, ogni personaggio che crei lo e, e i goblin sono di gran lunga la cosa piu comune che si aggira sulla mappa.",
-    "monster": "Qui non cammina nulla di umano. Persone, elfi e goblin sono spariti dalla folla, dal guardaroba e dalla fauna; il mondo e popolato da ogni altro archetipo esistente.",
-    "empty": "Non e rimasto nessuno. Niente persone, niente negozianti, niente notizie, niente epidemie, niente legge e niente lavoro; la storia si ferma al 1 gennaio 2000, gli immobili non valgono nulla e le citta stanno tornando verdi.",
-    "zombie": "I morti si sono alzati. Nove persone su dieci non sono piu persone: dove ci sarebbe stato qualcuno c'e invece un non morto, ancora fermo dove stava lui.",
-    "death": "Non e rimasto nessuno, e non e rimasto niente. Tutto cio che gia manca in un mondo vuoto manca anche qui, e in piu e sparita ogni creatura vagante: nessun mostro, nessuna bestia, nulla ad attendere in un dungeon, su una mappa procedurale o su una costruita a mano. Qualunque fauna ci fosse una volta, ora c'e solo silenzio."
+    "normal": "La storia com'è andata. Ognuno è chi è e il mondo è popolato come è stato scritto.",
+    "goblin": "Sono tutti goblin. Esistono solo volti, busti e archetipi goblin, ogni personaggio che crei lo è, e i goblin sono di gran lunga la cosa più comune che si aggira sulla mappa.",
+    "monster": "Qui non cammina nulla di umano. Persone, elfi e goblin sono spariti dalla folla, dal guardaroba e dalla fauna; il mondo è popolato da ogni altro archetipo esistente.",
+    "empty": "Non è rimasto nessuno. Niente persone, niente negozianti, niente notizie, niente epidemie, niente legge e niente lavoro; la storia si ferma al 1 gennaio 2000, gli immobili non valgono nulla e le città stanno tornando verdi.",
+    "zombie": "I morti si sono alzati. Nove persone su dieci non sono più persone: dove ci sarebbe stato qualcuno c'è invece un non morto, ancora fermo dove stava lui.",
+    "death": "Non è rimasto nessuno, e non è rimasto niente. Tutto ciò che già manca in un mondo vuoto manca anche qui, e in più è sparita ogni creatura vagante: nessun mostro, nessuna bestia, nulla ad attendere in un dungeon, su una mappa procedurale o su una costruita a mano. Qualunque fauna ci fosse una volta, ora c'è solo silenzio."
   },
-  "populationLocked": "Scelta una sola volta, alla creazione: un mondo non puo essere ripopolato in seguito.",
+  "populationLocked": "Scelta una sola volta, alla creazione: un mondo non può essere ripopolato in seguito.",
   "magicalLevel": "Magia",
   "previousMagic": "Livello di magia precedente",
   "nextMagic": "Livello di magia successivo",
@@ -96,8 +92,8 @@
   },
   "magicalNotes": {
     "normal": "",
-    "severed": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e i tradizionalisti della Thatcher hanno avuto la meglio: il codice sorgente della magia e stato riscritto per tenerla tutta dentro la Gilda, e fuori da quelle poche sale non e mai esistita. Non esiste nulla di magico: nessun incantesimo, nessun amuleto, nessuna lama incantata, nessuna creatura che ne viva, nessun volto che solo un incantesimo potrebbe portare. I negozi non la vendono, le casse non la contengono, e non c'e barra MP perche non c'e nulla su cui spenderla. Cio che il gruppo riceve alla creazione resta suo comunque.",
-    "unbound": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e ha avuto la meglio la parte di Crowley: invece di restringere il flusso lo hanno aperto fino in fondo, stappando tutte le linee di ley insieme finche non e rimasto piu nulla di ordinario. Ogni arma e incantata, ogni malattia e una maledizione e ogni creatura che cammina e qualcosa che non dovrebbe. I negozi non vendono nulla di mondano e non si trova mai acciaio semplice. Cio che il gruppo riceve alla creazione resta suo comunque."
+    "severed": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e i tradizionalisti della Thatcher hanno avuto la meglio: il codice sorgente della magia è stato riscritto per tenerla tutta dentro la Gilda, e fuori da quelle poche sale non è mai esistita. Non esiste nulla di magico: nessun incantesimo, nessun amuleto, nessuna lama incantata, nessuna creatura che ne viva, nessun volto che solo un incantesimo potrebbe portare. I negozi non la vendono, le casse non la contengono, e non c'è barra MP perché non c'è nulla su cui spenderla. Ciò che il gruppo riceve alla creazione resta suo comunque.",
+    "unbound": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e ha avuto la meglio la parte di Crowley: invece di restringere il flusso lo hanno aperto fino in fondo, stappando tutte le linee di ley insieme finché non è rimasto più nulla di ordinario. Ogni arma è incantata, ogni malattia è una maledizione e ogni creatura che cammina è qualcosa che non dovrebbe. I negozi non vendono nulla di mondano e non si trova mai acciaio semplice. Ciò che il gruppo riceve alla creazione resta suo comunque."
   },
-  "magicalLocked": "Scelta una sola volta, alla creazione, e indipendente dalla linea temporale: qualsiasi combinazione delle due e un mondo che puoi creare."
+  "magicalLocked": "Scelta una sola volta, alla creazione, e indipendente dalla linea temporale: qualsiasi combinazione delle due è un mondo che puoi creare."
 }

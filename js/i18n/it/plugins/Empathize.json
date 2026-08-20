@@ -88,7 +88,7 @@
   "sleepLabel": "Sonno",
   "hygieneLabel": "Igiene",
   "socialLabel": "Sociale",
-  "leisureLabel": "Tempo libero",
+  "leisureLabel": "Umore",
   "knowsYouWell": "Ti conosce bene",
   "remembersYou": "Ti ricorda",
   "profile": "Profilo",
@@ -447,7 +447,7 @@
   "tellAJoke": "Racconta una Barzelletta",
   "jokeFallback": "È successa una cosa buffa.",
   "funShared": "Vi siete divertiti entrambi, tu e {name}.",
-  "funHint": "Divertimento per te e per loro, se funziona.",
+  "funHint": "Solleva il tuo umore e il loro, se funziona.",
   "oldLegend": "una vecchia leggenda",
   "bribeAccepted": "{name} accetta. +{op} ♥",
   "joinedParty": "{name} si è unito al gruppo!",
@@ -579,6 +579,40 @@
     "yrrr",
     "hnnng"
   ],
+  "beastLabelPet": "Accarezza",
+  "beastLabelFeed": "Nutri",
+  "nothingToFeed": "Non c'è niente qui che mangerebbe.",
+  "calories": {
+    "one": "1 kcal",
+    "other": "{n} kcal"
+  },
+  "fedBeast": "Hai dato {item} da mangiare a {name}.",
+  "beastActPet": [
+    "Gli passi una mano lungo la schiena, piano, come vorresti farlo a te.",
+    "Lo gratti dietro l'orecchio finché una zampa posteriore si dimentica di se stessa.",
+    "Ti accovacci e lo lasci decidere, e lui decide, e si appoggia.",
+    "Gli strofini il palmo aperto sulla testa. Chiude gli occhi.",
+    "Gli lisci il pelo lungo il collo, una volta, due, ancora.",
+    "Allunghi una mano prudente. Ci si spinge dentro e ci resta."
+  ],
+  "beastFedWell": [
+    "{item} sparisce prima che tu abbia finito di abbassare la mano.",
+    "Mangia {item} come mangia una cosa che ha avuto fame a lungo, poi ne cerca ancora.",
+    "Finisce {item} senza mai smettere di guardarti, il che è fiducia oppure contabilità.",
+    "{item} va giù intero. Dopo si appoggia alla tua gamba, con tutto il peso."
+  ],
+  "beastFedPlain": [
+    "Prende {item}, mastica, inghiotte e aspetta di capire se era tutto qui.",
+    "Mangia {item} con educazione, che in un animale vuol dire lentamente.",
+    "Annusa {item} due volte prima di mangiarlo, casomai fosse uno scherzo.",
+    "{item} sparisce. Niente nel {kind} suggerisce che sia stato memorabile."
+  ],
+  "beastFedBadly": [
+    "Mangia {item} perché è cibo, e mentre lo fa ti guarda in un altro modo.",
+    "{item} va giù in due bocconi e qualcosa se ne va da come stava in piedi.",
+    "Prende {item}, lo lascia cadere, ti guarda e poi lo mangia da terra.",
+    "Mastica {item} lentamente e senza piacere. Non era quello che stava aspettando."
+  ],
   "cardDuelLabel": "Duello di carte",
   "cardTradeLabel": "Scambia carte",
   "cardStakeFree": "Gioca senza posta",
@@ -600,26 +634,26 @@
     "scholarly": "Torna a quello che stava leggendo.",
     "stoic": "Ti guarda attraverso e aspetta che te ne vada.",
     "impulsive": "È già a metà strada verso qualcosa di più interessante.",
-    "adventurous": "E venuto qui per una storia, e tu non lo sei.",
+    "adventurous": "È venuto qui per una storia, e tu non lo sei.",
     "nurturing": "Lo dice con gentilezza, il che in qualche modo peggiora le cose.",
-    "sanguine": "Ride, e la risata e tutta la risposta.",
+    "sanguine": "Ride, e la risata è tutta la risposta.",
     "nervous": "Non ti guarda in faccia abbastanza a lungo da acconsentire a nulla.",
     "melancholic": "Oggi non ne vede il senso.",
     "hedonistic": "Al bancone c'è compagnia migliore e sa benissimo dove siede.",
-    "loyal": "Tiene le sue partite per chi se le e guadagnate.",
+    "loyal": "Tiene le sue partite per chi se le è guadagnate.",
     "brave": "Ti affronta volentieri, ma non attraverso un tavolo.",
     "artistic": "Ti congeda con la mano che regge ancora il lavoro.",
     "apathetic": "Alza le spalle con forza sufficiente a chiudere il discorso.",
     "fatalistic": "Dice che finirebbe male comunque andasse.",
     "paranoid": "Vuole sapere chi ti ha mandato.",
     "grumpy": "Ha una parola per chi chiede, e la usa.",
-    "empathetic": "Capisce quanto lo vuoi, ed e esattamente per questo che dice di no.",
+    "empathetic": "Capisce quanto lo vuoi, ed è esattamente per questo che dice di no.",
     "disciplined": "Ha i suoi orari e tu non ci rientri.",
     "cynical": "Chiede dove sia la fregatura e non aspetta la risposta.",
     "timid": "Si scusa due volte e dice comunque di no.",
     "aggressive": "Ti suggerisce, ad alta voce, di cercarti qualcun altro.",
     "possessive": "Stringe un po' di più quello che è suo e scuote la testa.",
     "chaotic": "Accetta, poi rifiuta, poi se ne va a metà frase.",
-    "greedy": "Fa un prezzo che non raggiungerai mai, ed e proprio quello il punto."
+    "greedy": "Fa un prezzo che non raggiungerai mai, ed è proprio quello il punto."
   }
 }

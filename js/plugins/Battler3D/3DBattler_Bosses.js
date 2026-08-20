@@ -775,14 +775,20 @@
             // Broad wings (count from spec).
             this.wings = new THREE.Group();
             const wn = spec.wings || 2;
-            for (let i = 0; i < wn; i++) { const side = i % 2 ? 1 : -1; const tier = (i >> 1); const membrane = new THREE.Mesh(new THREE.ConeGeometry(0.5, 1.6, 3), this._mat(this._jit(p.bodyColor, 0.14), 0.9, 0.85)); membrane.scale.set(0.5, 1, 1); membrane.position.set(side * 0.6, 2.0 - tier * 0.4, -0.4); membrane.rotation.set(0.2, 0, side * (1.2 - tier * 0.18)); this.wings.add(membrane); }
+            for (let i = 0; i < wn; i++) {
+                const side = i % 2 ? 1 : -1; const tier = (i >> 1);
+                const mem = this._mat(this._jit(p.bodyColor, 0.14), 0.9, 0.85);
+                const wing = this.buildDragonWing(mem, side, side * 0.6, 2.0 - tier * 0.4, -0.4, { span: 1.4 - tier * 0.15, angMin: 0.5 - tier * 0.1, angMax: 1.45 - tier * 0.1 });
+                wing.rotation.x = 0.2;
+                this.wings.add(wing);
+            }
             this.bodyGroup.add(this.wings); this._floaters.push(this.wings);
             // Legs + arms (clawed reptilian limbs).
             this.leftLeg = this._dragonLimb(mat, -0.5, 0.55, true); this.rightLeg = this._dragonLimb(mat, 0.5, 0.55, true);
             this.leftArm = this._dragonLimb(mat, -0.62, 1.7, false); this.rightArm = this._dragonLimb(mat, 0.62, 1.7, false);
             // Long tail.
-            this.tail = new THREE.Group(); let pz = 0, r = 0.28;
-            for (let s = 0; s < 7; s++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), mat); seg.position.set(0, 0, pz); this.tail.add(seg); pz -= 0.34; r *= 0.84; }
+            this.tail = new THREE.Group(); let pz = 0, r = 0.28, tPrev = new THREE.Vector3(0, 0, 0), tPrevR = r;
+            for (let s = 0; s < 7; s++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), mat); seg.position.set(0, 0, pz); this.tail.add(seg); const pt = new THREE.Vector3(0, 0, pz); if (s > 0) this.addStrut(this.tail, mat, tPrev, pt, tPrevR * 0.85, r * 0.85); tPrev = pt; tPrevR = r; pz -= 0.34; r *= 0.84; }
             this.tail.position.set(0, 0.9, -0.7); this.bodyGroup.add(this.tail); this._floaters.push(this.tail);
             // Elemental aura flourish.
             if (spec.storm || spec.cosmic) { const g = new THREE.Group(); this.bodyGroup.add(g); this._floaters.push(g); for (let k = 0; k < 3; k++) { const rg = new THREE.Mesh(new THREE.TorusGeometry(1.0 + k * 0.22, 0.03, 8, 28), this._mat(p.accent, 0.6, 0.2, p.accent)); rg.position.y = 1.5; rg.rotation.set(k * 0.7, k * 1.1, 0); g.add(rg); } }

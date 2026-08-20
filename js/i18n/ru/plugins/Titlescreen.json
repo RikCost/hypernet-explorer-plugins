@@ -117,7 +117,9 @@
     "majorTip": "",
     "majorInstalled": "",
     "majorInstalledLine": "",
-    "majorInstalledTip": ""
+    "majorInstalledTip": "",
+    "redownload": "",
+    "redownloadTip": ""
   },
   "hyperverse": {
     "lead": "ГИПЕРВСЕЛЕННАЯ // ",
@@ -181,7 +183,6 @@
     "bestiary": "БЕСТИАРИЙ",
     "artifacts": "АРТЕФАКТЫ",
     "weapons": "ОРУЖИЕ",
-    "enemies3d": "ВРАГИ 3D",
     "random": "СЛУЧАЙНО"
   },
   "artifact": {

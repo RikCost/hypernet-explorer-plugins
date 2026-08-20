@@ -71,6 +71,7 @@
             case "Artisan": return 188;
             case "Combat": return 334;
             case "Collectibles": return 210;
+            case "Component": return 83;
             case "Counterfeits": return 306;
             case "Enhancers": return 179;
             case "Espionage": return 130;
@@ -310,6 +311,7 @@
         Books: 'Bookbinding',
         Collectibles: 'Antique Restoration',
         Combat: 'Improvised Explosives',
+        Component: 'Electronics',
         Counterfeits: 'Counterfeiting',
         Enhancers: 'Alchemy',
         Espionage: 'Electronics',

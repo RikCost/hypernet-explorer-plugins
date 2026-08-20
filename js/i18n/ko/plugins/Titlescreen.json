@@ -117,7 +117,9 @@
     "majorTip": "",
     "majorInstalled": "",
     "majorInstalledLine": "",
-    "majorInstalledTip": ""
+    "majorInstalledTip": "",
+    "redownload": "",
+    "redownloadTip": ""
   },
   "hyperverse": {
     "lead": "하이퍼버스 // ",
@@ -181,7 +183,6 @@
     "bestiary": "몬스터 도감",
     "artifacts": "아티팩트",
     "weapons": "무기",
-    "enemies3d": "3D 적",
     "random": "무작위"
   },
   "artifact": {

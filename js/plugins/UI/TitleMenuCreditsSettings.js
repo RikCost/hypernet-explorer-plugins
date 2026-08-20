@@ -158,6 +158,13 @@
                 { name: 'footsteps concrete', by: 'Yuval', urls: ['freesound.org/people/Yuval/sounds/205748/'] },
                 { name: 'Footsteps - Stone, Rock, Concrete, Cement', by: 'SecureSubset', urls: ['freesound.org/people/SecureSubset/sounds/813622/'] }
             ]
+        },
+        {
+            section: 'data',
+            entries: [
+                { name: 'Disease Descriptions', by: 'Wikipedia contributors', urls: ['wikipedia.org'] },
+                { name: 'News System Content', by: 'Wikipedia contributors', urls: ['wikipedia.org'] }
+            ]
         }
     ];
 

@@ -1,6 +1,7 @@
 {
  "optionName": "Party HUD",
  "fuel": "FUEL",
+ "statChip": "{stat} {rate}x",
  "alert": {
   "dead": "Down",
   "hp": "Wounded",

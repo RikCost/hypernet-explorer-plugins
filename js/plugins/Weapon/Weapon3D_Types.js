@@ -16,8 +16,10 @@
  *
  * One family per weapon type. This one owns the entries that declare no type
  * at all: the riot devices, which are neither club nor firearm and are held
- * like neither. They dispatch by database id alone, so the family carries no
- * type silhouette to fall back on.
+ * like neither, and the shields, which are off-hand armours rather than
+ * weapons and so have no weapon type either. The riot devices dispatch by
+ * database id alone; the shields dispatch through createShieldModel, which
+ * deals a silhouette from the piece's seed and its weight.
  *
  * NOT listed in plugins.js. WeaponSystemProcedural.js injects this file at
  * runtime from its WEAPON3D_FAMILIES list, the same way 3DBattlerSystem.js
@@ -49,6 +51,373 @@
       665: 'createActiveDenialSystemModel'           // Active Denial System
     },
     models: {
+      // ======================================================================
+      // Shields
+      // ======================================================================
+      //
+      // A shield is an off-hand armour, not a weapon, so it declares no weapon
+      // type at all and belongs here with the other untyped things. Hands hold
+      // weapons and shields the same way now (ItemSystem/ItemSystemEquipment.js),
+      // so any hand may show one and two of them at once is a legal loadout.
+      // WeaponSystemProcedural.shieldWeaponFor wraps the armour into the shape
+      // the rest of the pipeline expects and routes it here.
+      //
+      // The silhouette is dealt from the piece's own seed and its weight: a
+      // 500g buckler is never built as a tower shield, and anything that
+      // declares no weight at all is read as a mid-weight round shield. Every
+      // one of them is built face-on (the plate lies in X-Y, the boss pointing
+      // at +Z, the grip behind it) so the model reads as cover from the front.
+
+      createShieldModel(weapon, rand) {
+        // A piece built out of polymer and glass comes off the rack as riot
+        // gear whatever it weighs.
+        if (/<Riot>|<Ballistic>|<Energy>/i.test(weapon.note || '')) {
+          return this.createRiotShieldModel(weapon, rand);
+        }
+        const grams = this.weightOf(weapon);
+        const builders = [];
+        if (grams < 1600) builders.push('createBucklerShieldModel', 'createTargeShieldModel');
+        if (grams >= 1200 && grams < 5000) {
+          builders.push('createHeaterShieldModel', 'createRoundShieldModel', 'createKiteShieldModel');
+        }
+        if (grams >= 3500) builders.push('createTowerShieldModel', 'createScutumShieldModel');
+        if (!builders.length) builders.push('createRoundShieldModel');
+        const name = builders[Math.floor(rand() * builders.length)];
+        return this[name](weapon, rand);
+      },
+
+      // Shared plumbing: the arm behind the plate. Every shield is carried the
+      // same way, on a forearm strap and a fist grip, and the grip is what sits
+      // at the origin so the hand closes on it.
+      _shieldGrip(group, rand, opts) {
+        opts = opts || {};
+        const leather = this._mat(this.getRandomColor(rand, [0x4A2E1B, 0x2A1B12, 0x5C4033, 0x1A1A1A]), {
+          roughness: 0.92, metalness: 0.0
+        });
+        const iron = this._steel(0x6E747C, 0.45);
+        const depth = opts.depth === undefined ? -0.035 : opts.depth;
+        const span = opts.span === undefined ? 0.16 : opts.span;
+
+        const grip = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.014, 0.014, 0.1, this.seg(10, 6)), leather);
+        grip.rotation.z = Math.PI / 2;
+        grip.position.set(0, 0, depth);
+        group.add(grip);
+
+        const strap = new THREE.Mesh(new THREE.TorusGeometry(0.048, 0.008, this.seg(6, 4), this.seg(14, 8)), leather);
+        strap.rotation.y = Math.PI / 2;
+        strap.position.set(0, span * 0.45, depth * 0.7);
+        group.add(strap);
+
+        for (const side of [-1, 1]) {
+          const anchor = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.018, 0.012), iron);
+          anchor.position.set(side * 0.055, 0, depth * 0.45);
+          group.add(anchor);
+        }
+      },
+
+      // Rim, boss and rivets: the trim that separates a shield from a plank.
+      _shieldRim(group, rand, radius, mat, opts) {
+        opts = opts || {};
+        const rim = new THREE.Mesh(
+          new THREE.TorusGeometry(radius, opts.thickness || 0.012, this.seg(8, 4), this.seg(28, 12)), mat);
+        rim.position.z = opts.z || 0;
+        group.add(rim);
+      },
+
+      _shieldBoss(group, rand, mat, opts) {
+        opts = opts || {};
+        const boss = new THREE.Mesh(
+          new THREE.SphereGeometry(opts.radius || 0.05, this.seg(16, 8), this.seg(10, 6), 0, Math.PI * 2, 0, Math.PI / 2),
+          mat);
+        boss.rotation.x = Math.PI / 2;
+        boss.position.set(0, opts.y || 0, (opts.z || 0) + 0.02);
+        group.add(boss);
+        if (this.wantsTrim()) {
+          const studs = this.isLowDetail() ? 4 : 8;
+          for (let i = 0; i < studs; i++) {
+            const a = (i / studs) * Math.PI * 2;
+            const stud = new THREE.Mesh(new THREE.SphereGeometry(0.008, this.seg(8, 4), this.seg(6, 4)), mat);
+            const r = (opts.studRadius || 0.09);
+            stud.position.set(Math.cos(a) * r, (opts.y || 0) + Math.sin(a) * r, (opts.z || 0) + 0.012);
+            group.add(stud);
+          }
+        }
+      },
+
+      // ---- Round shield: planks, iron rim, a boss in the middle -------------
+      createRoundShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const face = this._wood(this.getRandomColor(rand, [0x8B4513, 0x5C4033, 0x7A3B2E, 0x3D2314, 0x2E5B88, 0x8A2C2C]));
+        const iron = this._steel(this.getRandomColor(rand, [0x9AA0A6, 0x6E747C, 0xCD7F32]), 0.4);
+        const radius = 0.24 + rand() * 0.05;
+
+        const plate = new THREE.Mesh(
+          new THREE.CylinderGeometry(radius, radius, 0.022, this.seg(26, 12)), face);
+        plate.rotation.x = Math.PI / 2;
+        group.add(plate);
+
+        // The planks it was glued up from, laid across the face.
+        const planks = this.isLowDetail() ? 0 : 5;
+        for (let i = 0; i < planks; i++) {
+          const seam = new THREE.Mesh(
+            new THREE.BoxGeometry(0.004, radius * 1.9, 0.004), this._wood(0x2A1B12));
+          seam.position.set(-radius * 0.7 + (i / (planks - 1)) * radius * 1.4, 0, 0.013);
+          group.add(seam);
+        }
+        this._shieldRim(group, rand, radius, iron, { thickness: 0.014 });
+        this._shieldBoss(group, rand, iron, { radius: 0.055, studRadius: radius * 0.62 });
+        this._shieldGrip(group, rand, {});
+        return group;
+      },
+
+      // ---- Heater: the pointed knight's shield, quartered -------------------
+      createHeaterShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const field = this._mat(this.getRandomColor(rand, [0x8A2C2C, 0x1D3557, 0x2A6041, 0x3A3A44, 0x6E4A8B, 0xD4AF37]), {
+          roughness: 0.55, metalness: 0.25
+        });
+        const trim = this._steel(this.getRandomColor(rand, [0xD4AF37, 0xC0C0C0, 0xCD7F32]), 0.3);
+        const w = 0.2 + rand() * 0.03;
+        const h = 0.3 + rand() * 0.05;
+
+        const outline = [
+          [-w, h * 0.55], [-w, -h * 0.1], [-w * 0.72, -h * 0.55],
+          [0, -h * 0.72], [w * 0.72, -h * 0.55], [w, -h * 0.1],
+          [w, h * 0.55], [w * 0.86, h * 0.62], [-w * 0.86, h * 0.62]
+        ];
+        const plate = this._plate(outline, 0.02, field);
+        group.add(plate);
+
+        // A charge on the field: a band, a chevron or a cross, whichever the
+        // seed deals. It is what makes two heaters look like two houses.
+        const charge = Math.floor(rand() * 3);
+        if (charge === 0) {
+          const band = new THREE.Mesh(new THREE.BoxGeometry(w * 2, h * 0.16, 0.006), trim);
+          band.position.set(0, h * 0.05, 0.012);
+          band.rotation.z = 0.35;
+          group.add(band);
+        } else if (charge === 1) {
+          for (const side of [-1, 1]) {
+            const arm = new THREE.Mesh(new THREE.BoxGeometry(w * 1.1, h * 0.13, 0.006), trim);
+            arm.position.set(side * w * 0.42, 0, 0.012);
+            arm.rotation.z = side * 0.7;
+            group.add(arm);
+          }
+        } else {
+          const up = new THREE.Mesh(new THREE.BoxGeometry(w * 0.2, h * 1.25, 0.006), trim);
+          up.position.set(0, -h * 0.02, 0.012);
+          group.add(up);
+          const across = new THREE.Mesh(new THREE.BoxGeometry(w * 1.9, h * 0.18, 0.006), trim);
+          across.position.set(0, h * 0.16, 0.012);
+          group.add(across);
+        }
+        if (this.wantsTrim()) {
+          const edge = new THREE.Mesh(new THREE.BoxGeometry(w * 2, 0.012, 0.024), trim);
+          edge.position.set(0, h * 0.615, 0);
+          group.add(edge);
+        }
+        this._shieldGrip(group, rand, { span: h });
+        return group;
+      },
+
+      // ---- Kite: the long cavalry shield, curved across ---------------------
+      createKiteShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const hide = this._mat(this.getRandomColor(rand, [0x5C4033, 0x2E5B88, 0x8A2C2C, 0x3D8B7A, 0x2A1B12]), {
+          roughness: 0.75, metalness: 0.08
+        });
+        const iron = this._steel(0x8A9096, 0.42);
+        const w = 0.17 + rand() * 0.03;
+        const h = 0.4 + rand() * 0.06;
+
+        const outline = [
+          [-w, h * 0.4], [-w * 0.95, h * 0.52], [0, h * 0.6], [w * 0.95, h * 0.52],
+          [w, h * 0.4], [w * 0.55, -h * 0.25], [0, -h * 0.6], [-w * 0.55, -h * 0.25]
+        ];
+        group.add(this._plate(outline, 0.022, hide));
+
+        const spine = new THREE.Mesh(new THREE.BoxGeometry(0.016, h * 1.1, 0.008), iron);
+        spine.position.set(0, 0, 0.014);
+        group.add(spine);
+        const ribs = this.isLowDetail() ? 1 : 3;
+        for (let i = 0; i < ribs; i++) {
+          const rib = new THREE.Mesh(new THREE.BoxGeometry(w * 1.7, 0.01, 0.006), iron);
+          rib.position.set(0, h * 0.36 - i * h * 0.3, 0.013);
+          group.add(rib);
+        }
+        this._shieldBoss(group, rand, iron, { radius: 0.036, y: h * 0.18, studRadius: w * 0.72 });
+        this._shieldGrip(group, rand, { span: h * 0.7 });
+        return group;
+      },
+
+      // ---- Buckler: a fist-sized dome, all boss ----------------------------
+      createBucklerShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const steel = this._steel(this.getRandomColor(rand, [0xC0C0C0, 0x8A9096, 0xCD7F32, 0x4A4A52]), 0.28);
+        const radius = 0.12 + rand() * 0.03;
+
+        const dish = new THREE.Mesh(
+          new THREE.SphereGeometry(radius, this.seg(20, 10), this.seg(12, 6), 0, Math.PI * 2, 0, Math.PI * 0.42),
+          steel);
+        dish.rotation.x = Math.PI / 2;
+        group.add(dish);
+        const back = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.01, this.seg(20, 10)), steel);
+        back.rotation.x = Math.PI / 2;
+        back.position.z = -0.005;
+        group.add(back);
+        this._shieldRim(group, rand, radius, steel, { thickness: 0.009, z: -0.004 });
+        // A spike through the boss turns it into something that hits back.
+        if (rand() < 0.4) {
+          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.09, this.seg(10, 6)), steel);
+          spike.rotation.x = Math.PI / 2;
+          spike.position.z = radius * 0.5 + 0.045;
+          group.add(spike);
+        }
+        this._shieldGrip(group, rand, { depth: -0.02, span: radius });
+        return group;
+      },
+
+      // ---- Targe: small, studded, faced in hide ----------------------------
+      createTargeShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const hide = this._mat(this.getRandomColor(rand, [0x3D2314, 0x5C4033, 0x1A1A1A, 0x7A3B2E]), {
+          roughness: 0.95, metalness: 0.0
+        });
+        const brass = this._steel(this.getRandomColor(rand, [0xCD7F32, 0xD4AF37, 0xAA8822]), 0.35);
+        const radius = 0.155 + rand() * 0.03;
+
+        const plate = new THREE.Mesh(
+          new THREE.CylinderGeometry(radius, radius, 0.018, this.seg(24, 12)), hide);
+        plate.rotation.x = Math.PI / 2;
+        group.add(plate);
+        // Concentric rings of brass tacks, which is the whole decoration.
+        const rings = this.isLowDetail() ? 1 : 2;
+        for (let r = 0; r < rings; r++) {
+          const ringRadius = radius * (0.45 + r * 0.35);
+          const count = 8 + r * 6;
+          for (let i = 0; i < count; i++) {
+            const a = (i / count) * Math.PI * 2;
+            const tack = new THREE.Mesh(new THREE.SphereGeometry(0.007, this.seg(8, 4), this.seg(6, 4)), brass);
+            tack.position.set(Math.cos(a) * ringRadius, Math.sin(a) * ringRadius, 0.011);
+            group.add(tack);
+          }
+        }
+        this._shieldRim(group, rand, radius, brass, { thickness: 0.01 });
+        this._shieldBoss(group, rand, brass, { radius: 0.032, studRadius: radius * 0.7 });
+        this._shieldGrip(group, rand, { depth: -0.03, span: radius });
+        return group;
+      },
+
+      // ---- Tower: a wall with a hand behind it -----------------------------
+      createTowerShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const slab = this._mat(this.getRandomColor(rand, [0x4A4A52, 0x2E3238, 0x6E4A2E, 0x3A5A3A]), {
+          roughness: 0.7, metalness: 0.3
+        });
+        const iron = this._steel(0x7A8088, 0.45);
+        const w = 0.26 + rand() * 0.04;
+        const h = 0.46 + rand() * 0.08;
+
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w * 2, h, 0.03), slab);
+        group.add(body);
+        // Bands across it and a foot spike, which is how it is planted.
+        for (let i = 0; i < 3; i++) {
+          const band = new THREE.Mesh(new THREE.BoxGeometry(w * 2.06, 0.026, 0.036), iron);
+          band.position.set(0, h * 0.36 - i * h * 0.36, 0);
+          group.add(band);
+        }
+        for (const side of [-1, 1]) {
+          const edge = new THREE.Mesh(new THREE.BoxGeometry(0.018, h, 0.038), iron);
+          edge.position.set(side * w, 0, 0);
+          group.add(edge);
+        }
+        const spike = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.11, this.seg(8, 5)), iron);
+        spike.rotation.z = Math.PI;
+        spike.position.set(0, -h * 0.5 - 0.05, 0);
+        group.add(spike);
+        // A slit to look through, because nothing else on it can be seen past.
+        const slit = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, 0.03, 0.05), this._mat(0x0A0A0C, { roughness: 1 }));
+        slit.position.set(0, h * 0.3, 0.002);
+        group.add(slit);
+        this._shieldGrip(group, rand, { depth: -0.045, span: h * 0.6 });
+        return group;
+      },
+
+      // ---- Scutum: the curved legion shield --------------------------------
+      createScutumShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const field = this._mat(this.getRandomColor(rand, [0x8A2C2C, 0x1D3557, 0x2A6041]), {
+          roughness: 0.6, metalness: 0.2
+        });
+        const brass = this._steel(this.getRandomColor(rand, [0xD4AF37, 0xCD7F32]), 0.32);
+        const w = 0.24 + rand() * 0.03;
+        const h = 0.44 + rand() * 0.06;
+
+        // Half a cylinder: the curve is the point of it.
+        const body = new THREE.Mesh(
+          new THREE.CylinderGeometry(w, w, h, this.seg(20, 10), 1, true, -Math.PI * 0.42, Math.PI * 0.84), field);
+        body.position.z = -w * 0.75;
+        group.add(body);
+        body.material.side = THREE.DoubleSide;
+
+        for (const y of [h * 0.5, -h * 0.5]) {
+          const band = new THREE.Mesh(
+            new THREE.CylinderGeometry(w * 1.02, w * 1.02, 0.022, this.seg(20, 10), 1, true, -Math.PI * 0.42, Math.PI * 0.84),
+            brass);
+          band.position.set(0, y, -w * 0.75);
+          band.material.side = THREE.DoubleSide;
+          group.add(band);
+        }
+        const boss = new THREE.Mesh(
+          new THREE.SphereGeometry(0.05, this.seg(16, 8), this.seg(10, 6), 0, Math.PI * 2, 0, Math.PI / 2), brass);
+        boss.rotation.x = Math.PI / 2;
+        boss.position.z = w * 0.28;
+        group.add(boss);
+        // Wings above and below the boss, the legion's mark.
+        if (this.wantsTrim()) {
+          for (const side of [-1, 1]) {
+            const wing = new THREE.Mesh(new THREE.BoxGeometry(w * 0.5, 0.014, 0.006), brass);
+            wing.position.set(side * w * 0.4, h * 0.16, w * 0.2);
+            wing.rotation.z = side * -0.3;
+            group.add(wing);
+          }
+        }
+        this._shieldGrip(group, rand, { depth: -0.02, span: h * 0.5 });
+        return group;
+      },
+
+      // ---- Riot shield: polycarbonate, a stencilled line of text -----------
+      createRiotShieldModel(weapon, rand) {
+        const group = new THREE.Group();
+        const glass = this._mat(0xBFD8E8, {
+          roughness: 0.18, metalness: 0.05, transparent: true, opacity: 0.55
+        });
+        const frame = this._mat(0x1A1C20, { roughness: 0.6, metalness: 0.4 });
+        const w = 0.24 + rand() * 0.03;
+        const h = 0.46 + rand() * 0.06;
+
+        const pane = new THREE.Mesh(new THREE.BoxGeometry(w * 2, h, 0.016), glass);
+        group.add(pane);
+        for (const side of [-1, 1]) {
+          const edge = new THREE.Mesh(new THREE.BoxGeometry(0.016, h, 0.024), frame);
+          edge.position.set(side * w, 0, 0);
+          group.add(edge);
+        }
+        for (const y of [h * 0.5, -h * 0.5]) {
+          const edge = new THREE.Mesh(new THREE.BoxGeometry(w * 2.03, 0.016, 0.024), frame);
+          edge.position.set(0, y, 0);
+          group.add(edge);
+        }
+        // The stencilled band across the face, unreadable at this size and
+        // meant to be: it reads as riot gear, which is the job.
+        const band = new THREE.Mesh(new THREE.BoxGeometry(w * 1.6, 0.05, 0.004), frame);
+        band.position.set(0, h * 0.06, 0.011);
+        group.add(band);
+        this._shieldGrip(group, rand, { depth: -0.03, span: h * 0.6 });
+        return group;
+      },
+
       // ---- 663: Foam Projector ------------------------------------------------
       createFoamProjectorModel(weapon, rand) {
         const group = new THREE.Group();

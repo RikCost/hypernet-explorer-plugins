@@ -1,0 +1,1679 @@
+{
+  "_comment": "Display text for js/db/WorkSystem/Jobs.json, which carries only ids and keys. Keyed by job id; `category` is keyed by the lowercased category id the data uses.",
+  "category": {
+    "labor": "Labor",
+    "social": "Social",
+    "technical": "Technical",
+    "magical": "Magical",
+    "combat": "Combat",
+    "criminal": "Criminal",
+    "general": "General",
+    "faction": "Faction"
+  },
+  "1": {
+    "name": "Warehouse Worker",
+    "description": "Load and unload cargo in the warehouse district.",
+    "outcome": {
+      "success": [
+        "You efficiently moved all the cargo.",
+        "The foreman nods approvingly at your work.",
+        "Another day, another crate moved.",
+        "You finish the shift without incident.",
+        "The work is hard but straightforward."
+      ],
+      "partial": [
+        "You dropped a few boxes but got the job done.",
+        "Your back aches from the heavy lifting.",
+        "You struggled with some of the heavier items.",
+        "The supervisor gives you a warning look.",
+        "You barely kept pace with the others."
+      ],
+      "failure": [
+        "You couldn't keep up with the workload.",
+        "The heavy crates proved too much for you.",
+        "You collapsed from exhaustion halfway through.",
+        "The foreman sent you home early.",
+        "Your body wasn't ready for this kind of work."
+      ],
+      "disaster": [
+        "You dropped a valuable shipment!",
+        "A forklift accident destroys company property!",
+        "You caused a massive pile-up in the warehouse!",
+        "Your carelessness led to a workplace injury!",
+        "The ruined goods are deducted from your pay!"
+      ]
+    }
+  },
+  "2": {
+    "name": "Farm Hand",
+    "description": "Work the fields, tend to crops and livestock.",
+    "outcome": {
+      "success": [
+        "The harvest goes smoothly under your care.",
+        "The animals are well-fed and content.",
+        "You work from dawn to dusk without complaint.",
+        "The farmer thanks you for your hard work.",
+        "Another productive day on the farm."
+      ],
+      "partial": [
+        "The work is exhausting under the hot sun.",
+        "You manage most tasks but fall behind schedule.",
+        "The animals were more unruly than expected.",
+        "Your hands are blistered from the labor.",
+        "You completed the essentials but nothing more."
+      ],
+      "failure": [
+        "The physical labor proves too demanding.",
+        "You suffer from heat exhaustion in the fields.",
+        "The livestock got loose on your watch.",
+        "You couldn't finish even half the work.",
+        "The farmer is disappointed with your performance."
+      ],
+      "disaster": [
+        "You left the barn door open - livestock escaped!",
+        "Your negligence ruined an entire crop section!",
+        "You accidentally poisoned the water supply!",
+        "A fire started from your carelessness!",
+        "The damage costs more than a day's wages!"
+      ]
+    }
+  },
+  "3": {
+    "name": "Bartender",
+    "description": "Serve drinks and manage patrons at the tavern.",
+    "outcome": {
+      "success": [
+        "The drinks flow and tips pile up.",
+        "You handle the evening rush with ease.",
+        "Even the drunkards respect your authority.",
+        "Your charm earns you extra tips.",
+        "A successful night behind the bar."
+      ],
+      "partial": [
+        "You spill a few drinks but manage.",
+        "A drunk patron gives you trouble.",
+        "The tips were mediocre tonight.",
+        "You're exhausted from staying on your feet.",
+        "The night was busier than expected."
+      ],
+      "failure": [
+        "You couldn't keep up with orders.",
+        "Multiple customers complained about slow service.",
+        "A fight broke out that you couldn't stop.",
+        "The owner is unhappy with your performance.",
+        "You broke several glasses in the chaos."
+      ],
+      "disaster": [
+        "A massive bar brawl erupted under your watch!",
+        "You got knocked out trying to break up a fight!",
+        "Expensive bottles were smashed in the chaos!",
+        "The tavern is wrecked and it's your fault!",
+        "You're banned from working here again!"
+      ]
+    }
+  },
+  "4": {
+    "name": "Street Performer",
+    "description": "Entertain crowds with performances for tips.",
+    "outcome": {
+      "success": [
+        "The crowd loves your performance!",
+        "Coins rain into your hat.",
+        "You draw a large and generous audience.",
+        "Your act is the talk of the town.",
+        "A wealthy patron gives you a generous donation."
+      ],
+      "partial": [
+        "A few people stop to watch and tip.",
+        "Your performance is decent but not spectacular.",
+        "The crowd is small but appreciative.",
+        "You earn a modest amount for your efforts.",
+        "Some applause, some indifference."
+      ],
+      "failure": [
+        "The crowd ignores your performance.",
+        "You barely earn anything today.",
+        "Someone heckles you mercilessly.",
+        "Your act falls flat and people walk away.",
+        "You're embarrassed by the poor turnout."
+      ],
+      "disaster": [
+        "The city guards chase you for performing without a permit!",
+        "Thugs rob you of your earnings!",
+        "You're pelted with rotten vegetables!",
+        "A rival performer sabotages your act!",
+        "You're fined for disturbing the peace!"
+      ]
+    }
+  },
+  "5": {
+    "name": "Blacksmith Assistant",
+    "description": "Help the blacksmith forge weapons and tools.",
+    "outcome": {
+      "success": [
+        "You keep the forge running smoothly.",
+        "The blacksmith praises your steady hand.",
+        "Every piece comes out perfect.",
+        "The heat is intense but you manage well.",
+        "Quality work earns quality pay."
+      ],
+      "partial": [
+        "You get singed by the hot metal a few times.",
+        "Some pieces need to be reforged.",
+        "The heat is almost unbearable.",
+        "You complete most of the orders.",
+        "Your hands are covered in minor burns."
+      ],
+      "failure": [
+        "The forge's heat overwhelms you.",
+        "You ruin several expensive pieces.",
+        "A bad burn sends you home early.",
+        "The blacksmith is frustrated with your mistakes.",
+        "You can't handle the physical demands."
+      ],
+      "disaster": [
+        "You spill molten metal everywhere!",
+        "The forge explodes from your negligence!",
+        "You destroy a custom order for a noble!",
+        "Your mistake causes a workshop fire!",
+        "The blacksmith bans you permanently!"
+      ]
+    }
+  },
+  "6": {
+    "name": "Spell Component Gatherer",
+    "description": "Collect rare magical ingredients in dangerous areas.",
+    "outcome": {
+      "success": [
+        "You find all the components on the list.",
+        "A rare mushroom catches your eye - bonus!",
+        "Your magical sense leads you to quality ingredients.",
+        "The client is thrilled with your haul.",
+        "Every component is in perfect condition."
+      ],
+      "partial": [
+        "You find most of what's needed.",
+        "Some ingredients are slightly damaged.",
+        "The search takes longer than expected.",
+        "You encounter minor magical hazards.",
+        "An acceptable but not exceptional haul."
+      ],
+      "failure": [
+        "The magical flora proves too dangerous.",
+        "You can't identify the correct components.",
+        "A magical trap injures you badly.",
+        "You return nearly empty-handed.",
+        "Your magical sense failed you today."
+      ],
+      "disaster": [
+        "You trigger a magical curse!",
+        "The components explode in your bag!",
+        "You anger a territorial magical creature!",
+        "Your mishandling ruins the entire batch!",
+        "The client demands compensation!"
+      ]
+    }
+  },
+  "7": {
+    "name": "Alchemist's Assistant",
+    "description": "Mix potions and manage the alchemist's laboratory.",
+    "outcome": {
+      "success": [
+        "Every potion is perfectly brewed.",
+        "Your precision impresses the alchemist.",
+        "The laboratory runs like clockwork.",
+        "You discover a more efficient mixing method.",
+        "Quality work in the arcane arts."
+      ],
+      "partial": [
+        "A few batches come out slightly off-color.",
+        "You get mild chemical burns from splashes.",
+        "Most potions are acceptable quality.",
+        "The fumes give you a headache.",
+        "Adequate but not exceptional work."
+      ],
+      "failure": [
+        "Multiple batches are ruined by mistakes.",
+        "Toxic fumes overcome you.",
+        "You can't maintain the proper temperatures.",
+        "The alchemist is disappointed.",
+        "Your magical control was insufficient."
+      ],
+      "disaster": [
+        "A massive alchemical explosion rocks the lab!",
+        "You accidentally create a toxic cloud!",
+        "Valuable reagents are destroyed!",
+        "The lab needs expensive repairs!",
+        "You're lucky to escape with your life!"
+      ]
+    }
+  },
+  "8": {
+    "name": "Magical Artifact Restorer",
+    "description": "Repair and restore damaged magical items.",
+    "outcome": {
+      "success": [
+        "The artifact's magic flows perfectly again.",
+        "Your restoration work is flawless.",
+        "The client marvels at the restored power.",
+        "You handle the volatile magic expertly.",
+        "Another masterful restoration complete."
+      ],
+      "partial": [
+        "The artifact works but not at full power.",
+        "You experience magical feedback during work.",
+        "The restoration is functional if imperfect.",
+        "Some enchantments couldn't be fully restored.",
+        "An adequate if uninspiring job."
+      ],
+      "failure": [
+        "The artifact's magic resists your attempts.",
+        "Magical backlash injures you.",
+        "You couldn't restore the item's power.",
+        "The complexity exceeded your skill.",
+        "The client takes their business elsewhere."
+      ],
+      "disaster": [
+        "The artifact explodes catastrophically!",
+        "A magical curse transfers to you!",
+        "The item is destroyed beyond repair!",
+        "Rampant magic damages the workshop!",
+        "You must compensate for the lost artifact!"
+      ]
+    }
+  },
+  "9": {
+    "name": "Caravan Guard",
+    "description": "Protect merchant caravans from bandits and monsters.",
+    "outcome": {
+      "success": [
+        "The journey is peaceful thanks to your presence.",
+        "Bandits take one look at you and flee.",
+        "The merchant arrives safely and grateful.",
+        "Your reputation precedes you.",
+        "An uneventful but profitable escort."
+      ],
+      "partial": [
+        "A skirmish with bandits leaves you wounded.",
+        "You successfully drive off attackers but take hits.",
+        "The caravan arrives with minor losses.",
+        "Combat tested your limits.",
+        "You earned your pay but paid in blood."
+      ],
+      "failure": [
+        "Bandits overwhelm you.",
+        "You fail to protect the cargo.",
+        "Serious injuries force you to retreat.",
+        "The merchant curses your incompetence.",
+        "You barely escaped with your life."
+      ],
+      "disaster": [
+        "The caravan is completely destroyed!",
+        "You're knocked unconscious and robbed!",
+        "Bandits take everything including your weapons!",
+        "The merchant demands compensation!",
+        "Your reputation as a guard is ruined!"
+      ]
+    }
+  },
+  "10": {
+    "name": "Arena Fighter",
+    "description": "Fight in the arena for prize money and glory.",
+    "outcome": {
+      "success": [
+        "You dominate your opponent!",
+        "The crowd roars your name!",
+        "Victory is swift and decisive!",
+        "Your fighting skills are unmatched today!",
+        "The prize money is yours!"
+      ],
+      "partial": [
+        "You win but take serious damage.",
+        "A narrow victory after brutal exchanges.",
+        "You barely edge out your opponent.",
+        "The match was closer than expected.",
+        "Victory, but at a cost."
+      ],
+      "failure": [
+        "You're defeated in the arena.",
+        "Your opponent proves superior.",
+        "The crowd boos as you fall.",
+        "Humiliating defeat.",
+        "No prize money for losers."
+      ],
+      "disaster": [
+        "You're brutally knocked out in the first round!",
+        "The crowd throws garbage at your unconscious body!",
+        "You have to pay medical fees!",
+        "Your humiliation is complete!",
+        "The arena bans you for poor performance!"
+      ]
+    }
+  },
+  "11": {
+    "name": "Monster Exterminator",
+    "description": "Clear out monster infestations from civilian areas.",
+    "outcome": {
+      "success": [
+        "The infestation is completely cleared.",
+        "Not a single monster escaped.",
+        "The townsfolk celebrate your success.",
+        "Professional and efficient work.",
+        "Another clean extermination job."
+      ],
+      "partial": [
+        "Most monsters eliminated but some escaped.",
+        "You're injured in the fighting.",
+        "The job took longer than expected.",
+        "Civilians are mostly satisfied.",
+        "A rough but successful hunt."
+      ],
+      "failure": [
+        "The monsters prove too dangerous.",
+        "You're forced to retreat.",
+        "Several monsters remain at large.",
+        "The town is disappointed.",
+        "You bit off more than you could chew."
+      ],
+      "disaster": [
+        "The monster nest overwhelms you!",
+        "Your incompetence led to civilian casualties!",
+        "Property damage costs more than your fee!",
+        "You're mauled nearly to death!",
+        "The town bans you from ever returning!"
+      ]
+    }
+  },
+  "12": {
+    "name": "Pickpocketing",
+    "description": "Steal from unsuspecting marks in crowded areas.",
+    "outcome": {
+      "success": [
+        "Your fingers are quick and unseen.",
+        "Easy marks and easy money.",
+        "You lift several fat purses.",
+        "Nobody suspects a thing.",
+        "A profitable day in the shadows."
+      ],
+      "partial": [
+        "You manage a few successful lifts.",
+        "One mark almost caught you.",
+        "The crowds weren't as thick as hoped.",
+        "Modest earnings for the risk.",
+        "You got away but it was close."
+      ],
+      "failure": [
+        "You're caught red-handed!",
+        "The guards chase you through the streets!",
+        "You escape but empty-handed!",
+        "A mob of angry citizens pursues you!",
+        "No loot, just bruises!"
+      ],
+      "disaster": [
+        "You picked the wrong mark - they're a noble's bodyguard!",
+        "The city guard beats you senseless!",
+        "You're fined heavily for your crime!",
+        "Your stash is confiscated!",
+        "You narrowly avoid prison!"
+      ]
+    }
+  },
+  "13": {
+    "name": "Smuggling Run",
+    "description": "Transport illegal goods across checkpoints.",
+    "outcome": {
+      "success": [
+        "You slip past the checkpoints undetected.",
+        "The goods are delivered successfully.",
+        "Your contacts are impressed.",
+        "Not a single guard suspected you.",
+        "Clean run, clean profit."
+      ],
+      "partial": [
+        "You had to bribe a guard.",
+        "A close call at the checkpoint.",
+        "Some goods were damaged in transit.",
+        "The route was more dangerous than expected.",
+        "You made it but lost some profit to bribes."
+      ],
+      "failure": [
+        "The guards are on high alert!",
+        "You're forced to dump the cargo and run!",
+        "The operation is compromised!",
+        "You barely escape arrest!",
+        "Your contacts are furious!"
+      ],
+      "disaster": [
+        "You're caught with illegal goods!",
+        "The cargo is seized and you're beaten!",
+        "Your contacts abandon you!",
+        "Massive fines are imposed!",
+        "You're blacklisted from future jobs!"
+      ]
+    }
+  },
+  "14": {
+    "name": "Burglary",
+    "description": "Break into a building and steal valuables.",
+    "outcome": {
+      "success": [
+        "You're in and out like a ghost.",
+        "The safe opens without issue.",
+        "High-value items secured.",
+        "Nobody heard a thing.",
+        "Master thief at work."
+      ],
+      "partial": [
+        "You triggered an alarm but escaped.",
+        "The loot was less than expected.",
+        "A guard nearly spotted you.",
+        "You got something but had to flee.",
+        "Close call but you made it out."
+      ],
+      "failure": [
+        "The alarm brings guards running!",
+        "You escape but empty-handed!",
+        "Dogs chase you into the night!",
+        "The target had better security than expected!",
+        "A botched job from start to finish!"
+      ],
+      "disaster": [
+        "You're caught in the act!",
+        "The guards beat you mercilessly!",
+        "You're robbed of your own equipment!",
+        "Authorities extract a heavy fine!",
+        "Your reputation as a thief is tarnished!"
+      ]
+    }
+  },
+  "15": {
+    "name": "Mechanic",
+    "description": "Repair vehicles and machinery.",
+    "outcome": {
+      "success": [
+        "Every repair is textbook perfect.",
+        "The engines purr under your care.",
+        "Clients praise your expertise.",
+        "You diagnose problems instantly.",
+        "Another satisfied customer."
+      ],
+      "partial": [
+        "The repairs work but aren't elegant.",
+        "You get covered in grease and oil.",
+        "One vehicle gives you trouble.",
+        "The work takes longer than estimated.",
+        "Functional but not your best work."
+      ],
+      "failure": [
+        "You can't diagnose the problem.",
+        "The repairs fail shortly after completion.",
+        "The client is unsatisfied.",
+        "You damaged a component trying to fix it.",
+        "Your technical knowledge was insufficient."
+      ],
+      "disaster": [
+        "You caused an engine explosion!",
+        "Your mistake totals an expensive vehicle!",
+        "Oil sprays everywhere causing injuries!",
+        "The damage exceeds your pay!",
+        "You're banned from the shop!"
+      ]
+    }
+  },
+  "16": {
+    "name": "Locksmith",
+    "description": "Create and repair locks for clients.",
+    "outcome": {
+      "success": [
+        "Every lock functions flawlessly.",
+        "Your craftsmanship is impeccable.",
+        "Clients trust your work completely.",
+        "Complex mechanisms pose no challenge.",
+        "Another perfect day at the bench."
+      ],
+      "partial": [
+        "Most locks work adequately.",
+        "One mechanism keeps jamming.",
+        "The work is tedious and tiring.",
+        "You complete the essential jobs.",
+        "Acceptable but uninspired work."
+      ],
+      "failure": [
+        "Several locks malfunction.",
+        "You can't figure out a complex mechanism.",
+        "Clients complain about quality.",
+        "Your precision was lacking today.",
+        "A frustrating day of failures."
+      ],
+      "disaster": [
+        "You permanently lock a client out!",
+        "A spring mechanism injures your eye!",
+        "You ruin expensive lock components!",
+        "The client sues for damages!",
+        "Your reputation is destroyed!"
+      ]
+    }
+  },
+  "17": {
+    "name": "Clockmaker",
+    "description": "Craft and repair intricate timepieces.",
+    "outcome": {
+      "success": [
+        "Every gear meshes perfectly.",
+        "The timepieces are works of art.",
+        "Your precision is unmatched.",
+        "Clients marvel at your craftsmanship.",
+        "Perfection in every tick."
+      ],
+      "partial": [
+        "The mechanisms work but need adjustment.",
+        "One clock keeps running slow.",
+        "Your eyes strain from the detailed work.",
+        "Adequate repairs if not masterful.",
+        "The work tests your patience."
+      ],
+      "failure": [
+        "The delicate mechanisms defeat you.",
+        "Multiple timepieces fail to function.",
+        "Your hand tremors ruin the work.",
+        "Clients take their business elsewhere.",
+        "The precision required exceeds your skill."
+      ],
+      "disaster": [
+        "You destroy a priceless antique clock!",
+        "A spring flies into your face!",
+        "Years of work ruined in seconds!",
+        "The compensation ban   krupts you!",
+        "You're blacklisted from the trade!"
+      ]
+    }
+  },
+  "18": {
+    "name": "Diplomat",
+    "description": "Negotiate deals and resolve disputes.",
+    "outcome": {
+      "success": [
+        "The negotiations go smoothly.",
+        "Both parties are satisfied with the deal.",
+        "Your silver tongue saves the day.",
+        "Conflict resolved through words alone.",
+        "A diplomatic triumph."
+      ],
+      "partial": [
+        "The deal is reached but both sides grumble.",
+        "Negotiations drag on exhaustingly.",
+        "A compromise rather than victory.",
+        "You manage an acceptable outcome.",
+        "Politics are messier than expected."
+      ],
+      "failure": [
+        "The negotiations collapse.",
+        "Both parties walk away angry.",
+        "Your arguments fall on deaf ears.",
+        "The dispute remains unresolved.",
+        "A diplomatic failure."
+      ],
+      "disaster": [
+        "Your words start a fight!",
+        "You offend everyone involved!",
+        "The dispute escalates to violence!",
+        "You're blamed for the breakdown!",
+        "Your reputation as a diplomat is ruined!"
+      ]
+    }
+  },
+  "19": {
+    "name": "Fortune Teller",
+    "description": "Read fortunes for paying customers.",
+    "outcome": {
+      "success": [
+        "Your predictions resonate deeply.",
+        "Customers leave satisfied and amazed.",
+        "The spirits speak clearly through you.",
+        "Word of your accuracy spreads.",
+        "Tips flow generously."
+      ],
+      "partial": [
+        "Your readings are vague but accepted.",
+        "Some customers seem unconvinced.",
+        "The mystical connection is weak today.",
+        "You earn modest tips.",
+        "A middling day of divination."
+      ],
+      "failure": [
+        "Your predictions are obviously wrong.",
+        "Customers demand refunds.",
+        "The spirits are silent.",
+        "You're accused of being a fraud.",
+        "An embarrassing day."
+      ],
+      "disaster": [
+        "You accidentally curse a customer!",
+        "An angry mob accuses you of witchcraft!",
+        "Your false prediction causes harm!",
+        "You're driven out of town!",
+        "Refunds cost more than you earned!"
+      ]
+    }
+  },
+  "20": {
+    "name": "Courier",
+    "description": "Deliver packages and messages across the city.",
+    "outcome": {
+      "success": [
+        "All deliveries on time.",
+        "Customers tip for your speed.",
+        "You know the city like the back of your hand.",
+        "Not a single package damaged.",
+        "Swift and reliable service."
+      ],
+      "partial": [
+        "Most deliveries made on time.",
+        "You get lost once or twice.",
+        "A package gets slightly damaged.",
+        "The routes were more difficult than expected.",
+        "You earn your pay but barely."
+      ],
+      "failure": [
+        "You get hopelessly lost.",
+        "Multiple deliveries are late.",
+        "A package is severely damaged.",
+        "Clients complain about your service.",
+        "The dispatcher is furious."
+      ],
+      "disaster": [
+        "You lose an important package!",
+        "You're mugged and all deliveries are stolen!",
+        "A valuable parcel is destroyed!",
+        "The losses are deducted from your pay!",
+        "You're fired from the courier service!"
+      ]
+    }
+  },
+  "100": {
+    "name": "Permit Inspector",
+    "description": "Inspect magical practitioners for proper permits and licensing.",
+    "outcome": {
+      "success": [
+        "You find several permit violations and issue fines.",
+        "The bureaucracy flows smoothly through you.",
+        "Unlicensed mages flee at your approach.",
+        "Forms filed in triplicate - perfection.",
+        "Another day upholding Guild regulations."
+      ],
+      "partial": [
+        "You catch some violators but others escape.",
+        "The paperwork is exhausting.",
+        "One mage argues vehemently about technicalities.",
+        "Most violations are minor infractions.",
+        "Adequate enforcement of the rules."
+      ],
+      "failure": [
+        "Unlicensed mages evade your inspection.",
+        "You lose track of the complex regulations.",
+        "A powerful mage intimidates you.",
+        "The paperwork defeats you.",
+        "The Guild is disappointed in your performance."
+      ],
+      "disaster": [
+        "You accidentally revoke a Guild Master's permit!",
+        "An angry mage curses you!",
+        "You lose vital Guild documents!",
+        "Political backlash costs you!",
+        "You're reassigned to the archives!"
+      ]
+    }
+  },
+  "101": {
+    "name": "Ritual Supervisor",
+    "description": "Ensure magical rituals follow Guild protocols exactly.",
+    "outcome": {
+      "success": [
+        "Every ritual proceeds according to the exact specifications.",
+        "The Grandmaster would be proud.",
+        "Stability through proper procedure.",
+        "No deviations from tradition.",
+        "Order maintained, chaos prevented."
+      ],
+      "partial": [
+        "Minor improvisations are noted.",
+        "The rituals work but lack perfect form.",
+        "You have to correct several practitioners.",
+        "Tradition is mostly upheld.",
+        "Adequate though not flawless supervision."
+      ],
+      "failure": [
+        "The ritual deviates dangerously from protocol.",
+        "You can't control the practitioners.",
+        "Magical energies become unstable.",
+        "The Loyalists question your commitment.",
+        "Chaos threatens order."
+      ],
+      "disaster": [
+        "The ritual goes catastrophically wrong!",
+        "Wild magic erupts everywhere!",
+        "Guild property is damaged!",
+        "Your lax supervision is blamed!",
+        "You're stripped of supervisory duties!"
+      ]
+    }
+  },
+  "102": {
+    "name": "Anti-Technology Enforcer",
+    "description": "Seek out and destroy illegal techno-magical fusion devices.",
+    "outcome": {
+      "success": [
+        "Heretical devices are purged with fire and fury.",
+        "Magic remains pure and untainted.",
+        "The old ways are preserved.",
+        "Technology corrupts; you prevent it.",
+        "Another successful raid against modernity."
+      ],
+      "partial": [
+        "Some devices destroyed but others hidden.",
+        "The technomancers flee before you arrive.",
+        "You confiscate most contraband.",
+        "The impure magic leaves you feeling unclean.",
+        "Adequate enforcement of tradition."
+      ],
+      "failure": [
+        "The technomancers overpower you.",
+        "Their machines malfunction dangerously.",
+        "You can't find the hidden workshops.",
+        "Technology defeats tradition today.",
+        "The Traditionalists are disappointed."
+      ],
+      "disaster": [
+        "A techno-magical device explodes!",
+        "You're caught in a machine's malfunction!",
+        "Technomancers capture and humiliate you!",
+        "Expensive Guild property is destroyed!",
+        "Your failure becomes a cautionary tale!"
+      ]
+    }
+  },
+  "103": {
+    "name": "Magitech Engineer",
+    "description": "Develop experimental fusion of magic and machinery.",
+    "outcome": {
+      "success": [
+        "The sigils integrate perfectly with the engine!",
+        "A breakthrough in magitech design!",
+        "Progress marches forward!",
+        "The future is now!",
+        "Magic and machine in perfect harmony!"
+      ],
+      "partial": [
+        "The device works but is unstable.",
+        "Minor explosions are part of progress.",
+        "You advance the cause incrementally.",
+        "Not all experiments succeed.",
+        "Science requires sacrifice."
+      ],
+      "failure": [
+        "The magical and mechanical systems reject each other.",
+        "Catastrophic system failure.",
+        "The experiment sets you back months.",
+        "Your theories were flawed.",
+        "The Technomancers question your competence."
+      ],
+      "disaster": [
+        "The magitech device explodes violently!",
+        "A magical feedback loop nearly kills you!",
+        "The entire laboratory is destroyed!",
+        "Years of research go up in flames!",
+        "You're banned from experimental work!"
+      ]
+    }
+  },
+  "104": {
+    "name": "Spell Categorization Clerk",
+    "description": "Meticulously categorize spells into the 92 distinct schools.",
+    "outcome": {
+      "success": [
+        "Every spell properly classified and filed.",
+        "The taxonomies are perfection.",
+        "Order from chaos through categorization.",
+        "92 schools, no exceptions.",
+        "Academic rigor at its finest."
+      ],
+      "partial": [
+        "Most spells categorized correctly.",
+        "One spell defies easy classification.",
+        "The minutiae is mentally exhausting.",
+        "Your eyes blur from reading ancient texts.",
+        "Adequate if tedious work."
+      ],
+      "failure": [
+        "You misclassify several important spells.",
+        "The system's complexity defeats you.",
+        "Colleagues point out numerous errors.",
+        "The 92 schools blur together.",
+        "Your classifications are rejected."
+      ],
+      "disaster": [
+        "You accidentally merge two schools!",
+        "Your errors corrupt the entire database!",
+        "Decades of work must be redone!",
+        "The 92 schools branch is in chaos!",
+        "You're expelled from academic circles!"
+      ]
+    }
+  },
+  "105": {
+    "name": "Document Redactor",
+    "description": "Remove dangerous knowledge from historical texts.",
+    "outcome": {
+      "success": [
+        "Dangerous truths safely erased.",
+        "The people are protected from knowledge.",
+        "History is properly sanitized.",
+        "Another day preserving ignorance.",
+        "Containment protocols upheld."
+      ],
+      "partial": [
+        "Most dangerous information removed.",
+        "Some texts are difficult to redact cleanly.",
+        "Your hand cramps from the meticulous work.",
+        "Adequate censorship performed.",
+        "The tedium is mind-numbing."
+      ],
+      "failure": [
+        "You miss several dangerous passages.",
+        "The censorship is obviously incomplete.",
+        "Superiors question your commitment.",
+        "Knowledge slips through your fingers.",
+        "The Foundation is displeased."
+      ],
+      "disaster": [
+        "You accidentally publish an uncensored text!",
+        "Forbidden knowledge spreads!",
+        "The Foundation's containment is breached!",
+        "Your career is destroyed!",
+        "You're marked as a security risk!"
+      ]
+    }
+  },
+  "106": {
+    "name": "Artifact Thief",
+    "description": "Steal historical artifacts for the Foundation's collection.",
+    "outcome": {
+      "success": [
+        "The artifact is acquired without incident.",
+        "Your theft is undetected.",
+        "Another relic secured for the Foundation.",
+        "Professional extraction.",
+        "Knowledge contained, mission complete."
+      ],
+      "partial": [
+        "The artifact is secured but alarms triggered.",
+        "You're pursued but escape.",
+        "The extraction was messier than planned.",
+        "Mission successful but not clean.",
+        "The Foundation gets what it wants."
+      ],
+      "failure": [
+        "The security was too tight.",
+        "You're forced to abort the mission.",
+        "The artifact remains beyond reach.",
+        "Your infiltration is detected and thwarted.",
+        "The Foundation is disappointed."
+      ],
+      "disaster": [
+        "You're caught red-handed!",
+        "The artifact is destroyed in the chaos!",
+        "Guards beat you unconscious!",
+        "The Foundation disavows you!",
+        "You're imprisoned and interrogated!"
+      ]
+    }
+  },
+  "107": {
+    "name": "Silent Librarian",
+    "description": "Maintain the archives and permanently silence noisy patrons.",
+    "outcome": {
+      "success": [
+        "The library remains perfectly silent.",
+        "Disruptive patrons are... dealt with.",
+        "The books are preserved, order maintained.",
+        "Silence is golden, and blood red.",
+        "Another quiet day in the archives."
+      ],
+      "partial": [
+        "Most disruptions are handled.",
+        "One patron escapes before silencing.",
+        "The cleanup is messy.",
+        "Order is mostly restored.",
+        "An acceptable day's work."
+      ],
+      "failure": [
+        "Chaos erupts in the library.",
+        "You can't silence the disturbances.",
+        "Patrons flee in terror.",
+        "The Foundation questions your methods.",
+        "Order collapses."
+      ],
+      "disaster": [
+        "You accidentally kill an important scholar!",
+        "Books are destroyed in the struggle!",
+        "Word of the murders spreads!",
+        "The Foundation is exposed!",
+        "You become a liability!"
+      ]
+    }
+  },
+  "108": {
+    "name": "Propaganda Writer",
+    "description": "Craft convincing misinformation for public consumption.",
+    "outcome": {
+      "success": [
+        "Your lies are perfectly believable.",
+        "The public accepts the narrative completely.",
+        "Truth is what we say it is.",
+        "Another successful information campaign.",
+        "The irony of your unit's name amuses you."
+      ],
+      "partial": [
+        "Most people believe the story.",
+        "Some skeptics question the narrative.",
+        "The propaganda is adequate if uninspired.",
+        "Enough believe to matter.",
+        "Plausible if not perfect."
+      ],
+      "failure": [
+        "The lies are obviously transparent.",
+        "The public sees through the propaganda.",
+        "Your narrative collapses under scrutiny.",
+        "The Foundation is displeased.",
+        "Truth slips through your censorship."
+      ],
+      "disaster": [
+        "Your propaganda exposes Foundation secrets!",
+        "The truth accidentally leaks out!",
+        "Public outrage erupts!",
+        "You're blamed for the disaster!",
+        "Your career in misinformation is over!"
+      ]
+    }
+  },
+  "109": {
+    "name": "Internal Investigator",
+    "description": "Root out information leaks within the Foundation.",
+    "outcome": {
+      "success": [
+        "You uncover and eliminate a leak.",
+        "The secret police succeed again.",
+        "Loyalty is enforced through fear.",
+        "The Foundation's secrets remain safe.",
+        "Internal security maintained."
+      ],
+      "partial": [
+        "You identify suspects but lack proof.",
+        "Some evidence slips away.",
+        "The investigation is inconclusive.",
+        "Internal tensions rise.",
+        "Adequate if imperfect security."
+      ],
+      "failure": [
+        "The leak continues undetected.",
+        "Your investigation goes nowhere.",
+        "Suspects elude your grasp.",
+        "The secret police are outwitted.",
+        "Information continues to leak."
+      ],
+      "disaster": [
+        "You're discovered to be the leak!",
+        "Your investigation exposes YOU!",
+        "The secret police turn on you!",
+        "You're interrogated and tortured!",
+        "Your life in the Foundation is over!"
+      ]
+    }
+  },
+  "110": {
+    "name": "Market Manipulator",
+    "description": "Manipulate markets for profit through any means necessary.",
+    "outcome": {
+      "success": [
+        "The market bends to your will.",
+        "Profit margins soar!",
+        "The invisible hand guides your trades.",
+        "Capitalism at its finest.",
+        "Another successful manipulation."
+      ],
+      "partial": [
+        "Modest gains from market movements.",
+        "Some trades go against you.",
+        "Profit is made but not maximized.",
+        "The market is unpredictable today.",
+        "Adequate returns."
+      ],
+      "failure": [
+        "The market moves against you.",
+        "Your manipulation is detected.",
+        "Losses mount quickly.",
+        "The Collective is disappointed.",
+        "Even the free market has limits."
+      ],
+      "disaster": [
+        "A market crash wipes out your position!",
+        "Regulators investigate your activities!",
+        "Massive losses are incurred!",
+        "The Collective demands compensation!",
+        "Your financial reputation is destroyed!"
+      ]
+    }
+  },
+  "111": {
+    "name": "Oil Extraction Overseer",
+    "description": "Maximize oil extraction efficiency through infernal optimization.",
+    "outcome": {
+      "success": [
+        "Extraction rates hit record highs!",
+        "The pact delivers results.",
+        "Black gold flows endlessly.",
+        "Efficiency through damnation.",
+        "Hell's managers are pleased."
+      ],
+      "partial": [
+        "Extraction goals mostly met.",
+        "Minor equipment failures slow progress.",
+        "The workers are exhausted.",
+        "Adequate if not exceptional output.",
+        "The infernal quotas loom."
+      ],
+      "failure": [
+        "Extraction rates fall below targets.",
+        "Equipment failures cascade.",
+        "The infernal pact demands more.",
+        "Your soul is questioned.",
+        "Managers don't accept excuses."
+      ],
+      "disaster": [
+        "A well explodes catastrophically!",
+        "Workers die in the inferno!",
+        "The infernal pact demands your soul NOW!",
+        "Massive damages and deaths!",
+        "Hell comes to collect!"
+      ]
+    }
+  },
+  "112": {
+    "name": "High-Speed Courier",
+    "description": "Deliver packages at breakneck speeds, worshipping velocity.",
+    "outcome": {
+      "success": [
+        "You break your personal speed record!",
+        "Velocity is ecstasy!",
+        "The packages arrive impossibly fast!",
+        "Speed is life, slowness is death!",
+        "The engine screams in joy!"
+      ],
+      "partial": [
+        "Fast, but not fast enough.",
+        "A near-collision slows you down.",
+        "The speed high is diminished.",
+        "Adequate velocity achieved.",
+        "You hunger for more speed."
+      ],
+      "failure": [
+        "You crash trying to go too fast!",
+        "Speed betrays you!",
+        "The packages are destroyed!",
+        "Slowness is death, and you were slow!",
+        "The Speed Demons mock you!"
+      ],
+      "disaster": [
+        "A catastrophic high-speed crash!",
+        "Your vehicle explodes!",
+        "Multiple packages and vehicles destroyed!",
+        "You're banned from high-octane fuel!",
+        "Speed has claimed another victim!"
+      ]
+    }
+  },
+  "113": {
+    "name": "Fuel Monopoly Enforcer",
+    "description": "Ensure the Seven Sisters maintain total fuel market control.",
+    "outcome": {
+      "success": [
+        "Competitors are eliminated efficiently.",
+        "The monopoly is secure.",
+        "Independent refineries burn.",
+        "Market control is absolute.",
+        "The Seven Sisters reward loyalty."
+      ],
+      "partial": [
+        "Some competitors resist.",
+        "The enforcement is messy.",
+        "Monopoly control is maintained but challenged.",
+        "Violence was necessary.",
+        "Adequate market domination."
+      ],
+      "failure": [
+        "Competitors stand their ground.",
+        "Your enforcement fails.",
+        "The monopoly is threatened.",
+        "The Seven Sisters are displeased.",
+        "Market control slips."
+      ],
+      "disaster": [
+        "A competitor destroys your refinery!",
+        "The enforcement backfires spectacularly!",
+        "Public outrage threatens the monopoly!",
+        "The Seven Sisters abandon you!",
+        "Your failure costs millions!"
+      ]
+    }
+  },
+  "114": {
+    "name": "Divine Chaos Agent",
+    "description": "Spread discord and disruption in the name of the Goddess of Chaos.",
+    "outcome": {
+      "success": [
+        "Glorious chaos spreads in your wake!",
+        "Eris smiles upon your disruption!",
+        "Order crumbles before discord!",
+        "Bureaucrats tear their hair out!",
+        "Beautiful, beautiful chaos!"
+      ],
+      "partial": [
+        "Minor disruptions achieved.",
+        "The chaos is contained too quickly.",
+        "Eris expects more from you.",
+        "Adequate discord sown.",
+        "Order proves resilient today."
+      ],
+      "failure": [
+        "Your chaos is quickly suppressed.",
+        "Order prevails today.",
+        "The disruption fails to spread.",
+        "Eris is disappointed.",
+        "Boring stability wins."
+      ],
+      "disaster": [
+        "Your chaos turns on you!",
+        "Order's champions beat you down!",
+        "Eris laughs at your failure!",
+        "The chaos consumes YOU!",
+        "Even discord has consequences!"
+      ]
+    }
+  },
+  "124": {
+    "name": "Vatican Scribe",
+    "description": "Transcribe and maintain sacred texts and church documents.",
+    "outcome": {
+      "success": [
+        "Every word perfectly transcribed.",
+        "The sacred texts are preserved.",
+        "Your devotion shows in your work.",
+        "The church is pleased.",
+        "Another day in service of faith."
+      ],
+      "partial": [
+        "Most texts transcribed correctly.",
+        "Your hand cramps from the writing.",
+        "A few minor errors slip through.",
+        "Adequate service to the church.",
+        "The work is tedious but holy."
+      ],
+      "failure": [
+        "Multiple transcription errors.",
+        "You misquote sacred scripture!",
+        "The texts are corrupted by mistakes.",
+        "The church is disappointed.",
+        "Your devotion is questioned."
+      ],
+      "disaster": [
+        "You spill ink on a priceless manuscript!",
+        "Sacred texts are ruined!",
+        "The church brands you incompetent!",
+        "Centuries of work destroyed!",
+        "You're excommunicated from scribal duties!"
+      ]
+    }
+  },
+  "127": {
+    "name": "Battle Nun Trainee",
+    "description": "Train in both scripture and combat as a Vatican special forces operative.",
+    "outcome": {
+      "success": [
+        "Your devotion and combat skills impress.",
+        "Scripture and steel in perfect harmony.",
+        "The Lord's wrath flows through you.",
+        "Holy violence perfected.",
+        "A warrior nun is born."
+      ],
+      "partial": [
+        "The training is brutally demanding.",
+        "You excel at combat but struggle with theology.",
+        "Scripture and violence don't mix easily.",
+        "Adequate progress in training.",
+        "The holy warrior path is difficult."
+      ],
+      "failure": [
+        "The training defeats you.",
+        "You're not strong enough for this order.",
+        "Scripture and combat both escape you.",
+        "The Battle Nuns reject you.",
+        "Holy warfare requires more."
+      ],
+      "disaster": [
+        "A training accident nearly kills you!",
+        "You accidentally attack a superior!",
+        "Your faith wavers under pressure!",
+        "The Battle Nuns deem you unworthy!",
+        "You're expelled from the order!"
+      ]
+    }
+  },
+  "128": {
+    "name": "Night Watchman",
+    "description": "Guard property through the dangerous night hours.",
+    "outcome": {
+      "success": [
+        "A quiet night on watch.",
+        "No incidents to report.",
+        "Your presence deters trouble.",
+        "The property is secure.",
+        "Another peaceful night."
+      ],
+      "partial": [
+        "Some suspicious activity but nothing major.",
+        "You doze off once or twice.",
+        "A long, boring night.",
+        "Adequate security provided.",
+        "The night drags on endlessly."
+      ],
+      "failure": [
+        "You fall asleep on duty!",
+        "Thieves break in while you're distracted!",
+        "Property is stolen on your watch!",
+        "You're fired immediately!",
+        "One job you had: stay awake!"
+      ],
+      "disaster": [
+        "A major robbery occurs on your watch!",
+        "You're beaten unconscious by thieves!",
+        "Everything is stolen!",
+        "You must compensate for the losses!",
+        "Your career as a watchman is over!"
+      ]
+    }
+  },
+  "129": {
+    "name": "Fisherman",
+    "description": "Catch fish for sale at the market.",
+    "outcome": {
+      "success": [
+        "The nets are full!",
+        "A bountiful catch today.",
+        "The fish are practically jumping into your boat.",
+        "The market will pay well for this haul.",
+        "A fisherman's perfect day."
+      ],
+      "partial": [
+        "A modest catch.",
+        "Enough fish to make it worthwhile.",
+        "The fish weren't biting much today.",
+        "Adequate haul for the effort.",
+        "You've caught better before."
+      ],
+      "failure": [
+        "The fish aren't biting at all.",
+        "You return nearly empty-handed.",
+        "Hours wasted for almost nothing.",
+        "A fisherman's worst day.",
+        "Maybe tomorrow will be better."
+      ],
+      "disaster": [
+        "Your boat capsizes!",
+        "Equipment is lost to the depths!",
+        "You nearly drown!",
+        "The replacement cost exceeds your earnings!",
+        "Perhaps fishing isn't for you!"
+      ]
+    }
+  },
+  "130": {
+    "name": "Street Cleaner",
+    "description": "Clean the filthy city streets.",
+    "outcome": {
+      "success": [
+        "The streets are spotless.",
+        "Honest work, honest pay.",
+        "You take pride in a clean city.",
+        "The work is simple but necessary.",
+        "Another area cleaned thoroughly."
+      ],
+      "partial": [
+        "Most areas cleaned adequately.",
+        "The filth seems endless.",
+        "Your back aches from the labor.",
+        "Good enough for today.",
+        "The city stays dirty no matter what."
+      ],
+      "failure": [
+        "You can't keep up with the filth.",
+        "The work overwhelms you.",
+        "You give up halfway through.",
+        "The supervisor is disappointed.",
+        "The streets remain dirty."
+      ],
+      "disaster": [
+        "You fall into a sewer!",
+        "Disease spreads from untreated waste!",
+        "You're infected by toxic refuse!",
+        "Medical treatment costs more than you earn!",
+        "The city's filth defeats you!"
+      ]
+    }
+  },
+  "131": {
+    "name": "Manager",
+    "description": "Oversee daily operations and keep staff in line.",
+    "outcome": {
+      "success": [
+        "Everything runs like clockwork under your watch.",
+        "Staff and customers alike are pleased.",
+        "You smooth over a tricky situation with ease.",
+        "The books balance perfectly tonight.",
+        "A well-managed shift from start to finish."
+      ],
+      "partial": [
+        "A staffing mix-up keeps you running all shift.",
+        "You manage, but it's a near thing.",
+        "Customers grumble about the wait.",
+        "You patch things up well enough.",
+        "An exhausting but workable shift."
+      ],
+      "failure": [
+        "Nothing goes according to plan today.",
+        "An argument breaks out among the staff.",
+        "Customers walk out unhappy.",
+        "You lose track of the shift entirely.",
+        "Today was a disaster for business."
+      ],
+      "disaster": [
+        "A furious customer trashes the place!",
+        "The till comes up massively short!",
+        "Staff walk out mid-shift!",
+        "An inspection catches you off guard!",
+        "Your reputation as a manager takes a hit!"
+      ]
+    }
+  },
+  "132": {
+    "name": "Waiter",
+    "description": "Take orders and serve food and drinks to customers.",
+    "outcome": {
+      "success": [
+        "Every order comes out right and on time.",
+        "Customers leave generous tips.",
+        "You juggle a full dining room with ease.",
+        "Not a single complaint all shift.",
+        "A smooth, busy shift well handled."
+      ],
+      "partial": [
+        "You mix up a couple of orders.",
+        "Your feet ache by the end of the shift.",
+        "Tips are lighter than usual.",
+        "You keep up, just barely.",
+        "A long, tiring shift."
+      ],
+      "failure": [
+        "You drop a full tray in front of everyone.",
+        "Customers complain about slow service.",
+        "You forget several orders entirely.",
+        "The kitchen falls behind because of you.",
+        "A rough, embarrassing shift."
+      ],
+      "disaster": [
+        "You spill a scalding dish on a customer!",
+        "A tray of glasses shatters across the floor!",
+        "An angry customer demands a refund and a scene!",
+        "You're sent home for the rest of the night!",
+        "The manager docks your pay for the mess!"
+      ]
+    }
+  },
+  "133": {
+    "name": "Cook",
+    "description": "Prepare meals in a busy kitchen.",
+    "outcome": {
+      "success": [
+        "Every dish leaves the kitchen perfect.",
+        "The line moves like clockwork.",
+        "Customers rave about tonight's specials.",
+        "You handle the rush without breaking a sweat.",
+        "A flawless night in the kitchen."
+      ],
+      "partial": [
+        "A few dishes come out late.",
+        "You burn yourself on a hot pan.",
+        "The kitchen falls slightly behind during the rush.",
+        "Most plates are solid, a few aren't.",
+        "A hectic but manageable shift."
+      ],
+      "failure": [
+        "Orders pile up faster than you can cook.",
+        "You ruin several dishes in a row.",
+        "The kitchen descends into chaos.",
+        "Waiters are furious with the delays.",
+        "A miserable shift all around."
+      ],
+      "disaster": [
+        "A grease fire breaks out!",
+        "You're badly burned by a spilled pot!",
+        "The kitchen has to be shut down for the night!",
+        "Food poisoning sends customers to the clinic!",
+        "The restaurant's reputation takes a serious hit!"
+      ]
+    }
+  },
+  "134": {
+    "name": "Museum Curator",
+    "description": "Catalog exhibits and guide visitors through the museum.",
+    "outcome": {
+      "success": [
+        "Visitors are captivated by your knowledge.",
+        "The new exhibit is a triumph.",
+        "You catalog every artifact flawlessly.",
+        "A wealthy donor is impressed by your tour.",
+        "Another day of cultural enrichment well done."
+      ],
+      "partial": [
+        "A few exhibit labels need correcting.",
+        "You lose your place during a tour.",
+        "An unruly group of visitors tests your patience.",
+        "The cataloging takes longer than planned.",
+        "An adequate if unremarkable day."
+      ],
+      "failure": [
+        "You misplace an important record.",
+        "A tour group wanders off and gets lost.",
+        "Visitors complain about your presentation.",
+        "You can't answer basic questions about the collection.",
+        "The director is unimpressed with your work."
+      ],
+      "disaster": [
+        "You accidentally damage a priceless artifact!",
+        "A display case shatters under your care!",
+        "An exhibit is mislabeled and offends a donor!",
+        "The museum demands compensation for the damage!",
+        "Your reputation as a curator is ruined!"
+      ]
+    }
+  },
+  "135": {
+    "name": "Personal Trainer",
+    "description": "Guide clients through workouts and fitness routines.",
+    "outcome": {
+      "success": [
+        "Your clients see real results today.",
+        "You motivate everyone to push past their limits.",
+        "A client tips generously for your expertise.",
+        "Every session runs perfectly on schedule.",
+        "Another excellent day of training."
+      ],
+      "partial": [
+        "A client struggles to keep up with the routine.",
+        "You're worn out from demonstrating exercises.",
+        "Some sessions run a bit short.",
+        "Most clients leave satisfied, a few don't.",
+        "A tiring but workable day."
+      ],
+      "failure": [
+        "A client gives up halfway through.",
+        "You strain a muscle demonstrating a routine.",
+        "Clients leave unhappy with their progress.",
+        "You can't keep the energy up today.",
+        "A disappointing day at the gym."
+      ],
+      "disaster": [
+        "A client gets seriously injured during your session!",
+        "You collapse from overexertion!",
+        "Equipment fails and causes an accident!",
+        "The gym threatens to revoke your contract!",
+        "You're blamed for the injury and lose pay!"
+      ]
+    }
+  },
+  "136": {
+    "name": "Doorman",
+    "description": "Greet guests and control entry at the venue's front door.",
+    "outcome": {
+      "success": [
+        "Every guest is greeted with a smile.",
+        "You keep the line moving smoothly all night.",
+        "Troublemakers think twice before approaching you.",
+        "Generous tips fill your pocket.",
+        "A pleasant, uneventful shift."
+      ],
+      "partial": [
+        "A long line tests your patience.",
+        "You have to turn away a few rude guests.",
+        "Your feet ache from standing all night.",
+        "Most of the night goes smoothly.",
+        "A tiring but ordinary shift."
+      ],
+      "failure": [
+        "You let in a guest who causes trouble.",
+        "An argument at the door gets out of hand.",
+        "You lose track of the guest list.",
+        "The manager scolds you for the chaos.",
+        "A frustrating night at the door."
+      ],
+      "disaster": [
+        "A violent guest knocks you down at the entrance!",
+        "You let in a group that trashes the venue!",
+        "A bribe attempt turns into a confrontation!",
+        "The venue holds you responsible for the chaos!",
+        "You're fired on the spot!"
+      ]
+    }
+  },
+  "137": {
+    "name": "Bouncer",
+    "description": "Keep order and remove troublemakers from the venue.",
+    "outcome": {
+      "success": [
+        "Your presence keeps everyone in line.",
+        "You eject a troublemaker without a scene.",
+        "The night passes without incident.",
+        "Patrons behave themselves under your watchful eye.",
+        "A calm, well-controlled venue tonight."
+      ],
+      "partial": [
+        "A scuffle breaks out but you handle it.",
+        "You take a few hits separating a fight.",
+        "A drunk patron gives you trouble.",
+        "You manage to keep things under control, barely.",
+        "A rough but manageable night."
+      ],
+      "failure": [
+        "A brawl gets out of hand despite your efforts.",
+        "You're overwhelmed by a group of patrons.",
+        "Furniture is broken in the chaos.",
+        "The manager is furious about the damage.",
+        "A bad night for venue security."
+      ],
+      "disaster": [
+        "A massive brawl leaves you knocked out cold!",
+        "The venue is wrecked beyond your control!",
+        "You're ganged up on by a mob of patrons!",
+        "The owner blames you for the destruction!",
+        "You're banned from working venue security again!"
+      ]
+    }
+  },
+  "138": {
+    "name": "Lifeguard",
+    "description": "Watch over swimmers and respond to emergencies in the water.",
+    "outcome": {
+      "success": [
+        "You spot trouble early and prevent any accidents.",
+        "A swimmer thanks you for your quick eyes.",
+        "The waters stay calm and safe all day.",
+        "Your vigilance keeps everyone secure.",
+        "A perfect day on the watchtower."
+      ],
+      "partial": [
+        "You wade in to help a struggling swimmer.",
+        "The sun leaves you exhausted by the end of the shift.",
+        "A close call keeps you on edge.",
+        "Most of the day passes without major issues.",
+        "A tiring but uneventful shift."
+      ],
+      "failure": [
+        "You miss a swimmer in distress until it's almost too late.",
+        "A strong current catches you off guard.",
+        "You're too slow to respond to a call for help.",
+        "Your supervisor questions your attentiveness.",
+        "A stressful, draining shift."
+      ],
+      "disaster": [
+        "A swimmer nearly drowns on your watch!",
+        "You're pulled under while attempting a rescue!",
+        "Panic spreads as the emergency unfolds!",
+        "An investigation is launched into the incident!",
+        "You're suspended pending review!"
+      ]
+    }
+  },
+  "139": {
+    "name": "Defence Lawyer",
+    "description": "Argue for the accused before the Goddess of Justice, who does not recognise a defence bar.",
+    "outcome": {
+      "success": [
+        "You talked a bounty down to nothing and Eris let you.",
+        "The bench overruled you eleven times and acquitted anyway.",
+        "Your client walked. Nobody is sure which argument did it.",
+        "You cited a precedent Eris invented and she was too flattered to object.",
+        "A clean acquittal. The stenographer applauded, briefly, then apologised."
+      ],
+      "partial": [
+        "You argued the sentence down from a season to a fortnight.",
+        "Half the counts were struck. The other half doubled.",
+        "Eris listened, which is not the same as agreeing.",
+        "You lost, politely, and were thanked for the effort.",
+        "Your client is in a cell, but a nicer one."
+      ],
+      "failure": [
+        "You were removed from the courtroom before opening.",
+        "Eris held you in contempt of herself.",
+        "Your submissions were read aloud, mockingly, then burned.",
+        "The court found your client guilty and you tiresome.",
+        "You spent the whole hearing standing very still."
+      ],
+      "disaster": [
+        "You argued so well that Eris convicted your client out of spite.",
+        "The bench turned your briefcase into a pigeon and the pigeon left.",
+        "You were briefly declared a co-defendant.",
+        "Your name is now in the file, underlined, twice.",
+        "The fee was confiscated as evidence of something."
+      ]
+    }
+  }
+}

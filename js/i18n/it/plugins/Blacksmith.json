@@ -22,5 +22,27 @@
   "rarity": "Rarità",
   "value": "Valore",
   "weight": "Peso",
-  "yes": "Sì"
+  "bonuses": "Bonus",
+  "specs": "Proprietà",
+  "yes": "Sì",
+  "searchPlaceholder": "Cerca pezzi…",
+  "forgedTab": "Forgiati",
+  "alreadyForged": "Già uscito dall'incudine",
+  "finish": "Finitura",
+  "finishStrange": "Strane",
+  "finishAuto": "Come viene",
+  "smeltHeld": "Fondi ({n} in sacca)",
+  "smeltNone": "Niente da fondere",
+  "smelted": "Di nuovo nel crogiolo",
+  "madeBy": "Battuto da {smith}",
+  "forgedName": "{name} di {smith}",
+  "forgedNameNumbered": "{name} di {smith} {mark}",
+  "forgedDesc": "Forgiato da {smith}. Lavoro {quality}, è unico nel suo genere.",
+  "quality": {
+    "crude": "grezzo",
+    "sound": "solido",
+    "fine": "pregiato",
+    "superb": "superbo",
+    "masterwork": "da maestro"
+  }
 }

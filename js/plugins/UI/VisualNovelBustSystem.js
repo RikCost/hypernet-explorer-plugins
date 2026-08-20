@@ -263,6 +263,7 @@
             this.activeEventId = null;
             this.lastKnownEventId = null;
             this.hideScheduled = false;
+            this.pendingBust = null;
         }
 
         initialize() {
@@ -319,6 +320,53 @@
             const scale = Math.min(scaleX, scaleY);
             sprite.scale.x = scale;
             sprite.scale.y = scale;
+        }
+
+        // Hold the slide-in until the bitmap can actually be drawn. A bust that
+        // is not in ImageManager's cache yet needs a few frames to decode, so
+        // sliding at request time animates an empty sprite and the bust snaps
+        // into place when the bitmap finally arrives. Only already-cached
+        // busts ,  i.e. every show after the first ,  slid correctly.
+        beginBustLoad(bitmap, key, fallbackImage) {
+            this.pendingBust = { bitmap, key, fallback: fallbackImage || null };
+            this.updatePendingBust();
+        }
+
+        // Polled every frame from update(); load listeners are not used because
+        // they never fire for a bitmap that failed to load.
+        updatePendingBust() {
+            const pending = this.pendingBust;
+            if (!pending) return;
+
+            const { bitmap, key, fallback } = pending;
+            const ready = bitmap.isReady();
+            if (!ready && !bitmap.isError()) return;
+
+            // A different bust was requested while this one was loading.
+            if (this.currentCharacterKey !== key) {
+                this.pendingBust = null;
+                return;
+            }
+
+            if (ready && bitmap.width > 0 && bitmap.height > 0) {
+                this.pendingBust = null;
+                this.characterBust.bitmap = bitmap;
+            } else if (fallback) {
+                console.warn("Failed to load bust image, using fallback busts/7");
+                // Wait on the fallback the same way rather than sliding a
+                // sprite that still has nothing to draw.
+                this.pendingBust = { bitmap: fallback, key, fallback: null };
+                this.updatePendingBust();
+                return;
+            } else {
+                console.error("Failed to load bust image and fallback not available");
+                this.pendingBust = null;
+                this.bustIsVisible = false;
+                return;
+            }
+
+            this.scaleBustToFit(this.characterBust);
+            this.slideIn();
         }
 
         getBustImageForCharacter(characterName, characterIndex) {
@@ -623,34 +671,11 @@
 
             try {
                 const bitmap = ImageManager.loadBitmap('img/', path);
-                bitmap.addLoadListener(() => {
-                    try {
-                        // Check if image loaded successfully
-                        if (bitmap.width > 0 && bitmap.height > 0) {
-                            this.characterBust.bitmap = bitmap;
-                        } else {
-                            // Use fallback if primary image failed
-                            if (fallbackImage) {
-                                this.characterBust.bitmap = fallbackImage;
-                                console.warn("Failed to load custom bust image:", path, "using fallback");
-                            } else {
-                                console.error("Failed to load custom bust image and fallback not available:", path);
-                            }
-                        }
-                        this.scaleBustToFit(this.characterBust);
-                    } catch (err) {
-                        console.error("Error processing custom bust image:", path, err);
-                        if (fallbackImage) {
-                            this.characterBust.bitmap = fallbackImage;
-                            this.scaleBustToFit(this.characterBust);
-                        }
-                    }
-                });
                 this.currentCharacterKey = key;
                 const scene = SceneManager._scene;
                 if (!this.characterBust.parent && scene) addBustToScene(this.characterBust, scene);
 
-                this.slideIn();
+                this.beginBustLoad(bitmap, key, fallbackImage);
                 this.bustIsVisible = true;
 
                 this.activeEventId = 'custom';
@@ -658,12 +683,10 @@
             } catch (err) {
                 console.warn("Failed to load custom bust image:", path, "using fallback", err);
                 if (fallbackImage) {
-                    this.characterBust.bitmap = fallbackImage;
-                    this.scaleBustToFit(this.characterBust);
                     this.currentCharacterKey = key;
                     const scene = SceneManager._scene;
                     if (!this.characterBust.parent && scene) addBustToScene(this.characterBust, scene);
-                    this.slideIn();
+                    this.beginBustLoad(fallbackImage, key, null);
                     this.bustIsVisible = true;
                     this.activeEventId = 'custom';
                     this.hideScheduled = false;
@@ -741,29 +764,6 @@
                 }
                 try {
                     const bitmap = ImageManager.loadBitmap('img/', path);
-                    bitmap.addLoadListener(() => {
-                        try {
-                            // Check if image loaded successfully
-                            if (bitmap.width > 0 && bitmap.height > 0) {
-                                this.characterBust.bitmap = bitmap;
-                            } else {
-                                // Use fallback if primary image failed
-                                if (fallbackImage) {
-                                    this.characterBust.bitmap = fallbackImage;
-                                    console.warn("Failed to load bust image:", path, "using fallback");
-                                } else {
-                                    console.error("Failed to load bust image and fallback not available:", path);
-                                }
-                            }
-                            this.scaleBustToFit(this.characterBust);
-                        } catch (err) {
-                            console.error("Error processing bust image:", path, err);
-                            if (fallbackImage) {
-                                this.characterBust.bitmap = fallbackImage;
-                                this.scaleBustToFit(this.characterBust);
-                            }
-                        }
-                    });
                     this.currentCharacterKey = key;
                     const scene = SceneManager._scene;
                     if (!this.characterBust.parent && scene) addBustToScene(this.characterBust, scene);
@@ -775,13 +775,11 @@
                         this.nameIsVisible = true;
                     }
 
-                    this.slideIn();
+                    this.beginBustLoad(bitmap, key, fallbackImage);
                     this.bustIsVisible = true;
                 } catch (err) {
                     console.warn("Failed to load bust image:", path, "using fallback", err);
                     if (fallbackImage) {
-                        this.characterBust.bitmap = fallbackImage;
-                        this.scaleBustToFit(this.characterBust);
                         this.currentCharacterKey = key;
                         const scene = SceneManager._scene;
                         if (!this.characterBust.parent && scene) addBustToScene(this.characterBust, scene);
@@ -793,7 +791,7 @@
                             this.nameIsVisible = true;
                         }
 
-                        this.slideIn();
+                        this.beginBustLoad(fallbackImage, key, null);
                         this.bustIsVisible = true;
                     } else {
                         console.error("Fallback bust image not available, bust display failed");
@@ -816,6 +814,7 @@
             this.bustIsVisible = false;
             this.activeEventId = null;
             this.hideScheduled = false;
+            this.pendingBust = null;
         }
 
         enableBatchDialogue() {
@@ -874,6 +873,12 @@
 
         slideIn() {
             this.updateBustHiddenPosition();
+            // Start off-screen whenever nothing is currently drawn, so the
+            // slide is a real slide and not a fade in place (the sprite can be
+            // left anywhere by a resolution change or an interrupted slide-out).
+            if (this.characterBust.opacity <= 0) {
+                this.characterBust.x = this.characterBust._hiddenX;
+            }
             this.characterBust._slideTarget = this.characterBust._targetX;
             this.characterBust._slideDuration = fadeInDuration;
             this.characterBust._slideType = 'in';
@@ -886,6 +891,8 @@
         }
 
         update() {
+            this.updatePendingBust();
+
             const s = this.characterBust;
             if (s._slideDuration > 0) {
                 const delta = (s._slideTarget - s.x) / s._slideDuration;
@@ -959,12 +966,16 @@
         }
     };
 
-    // Auto-show on message start
+    // Auto-show on message start. Skipped while an external exchange (see
+    // DialogueSystem.js's startNPCExchange) is driving scene._bustManager one
+    // line at a time: this same-named showBusts() re-derives the bust from
+    // $gameMap._interpreter's own event and would stomp back over whichever
+    // speaker the exchange just set (e.g. the party leader's own portrait).
     const _Window_Message_startMessage = Window_Message.prototype.startMessage;
     Window_Message.prototype.startMessage = function () {
         _Window_Message_startMessage.call(this);
         const scene = SceneManager._scene;
-        if (scene && scene._bustManager) scene._bustManager.showBusts();
+        if (scene && scene._bustManager && !scene._bustManager.exchangeMode) scene._bustManager.showBusts();
     };
 
     const _Window_Message_terminateMessage = Window_Message.prototype.terminateMessage;

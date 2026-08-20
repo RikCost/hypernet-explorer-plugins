@@ -294,7 +294,18 @@
     "Confederation of Cantons": "",
     "City-State Council": "",
     "Crowned Republic": "",
-    "old order": ""
+    "old order": "",
+    "Divine Empire": "Божественная империя",
+    "Hereditary Republic": "Наследственная республика",
+    "Harmonious Empire": "Гармоничная империя",
+    "Clerical Republic": "Клерикальная республика",
+    "Knesset Republic": "Кнессетская республика",
+    "Union Command": "Командование Союза",
+    "Illuminated Khanate": "Просветлённое ханство",
+    "Solomonic Republic": "Соломонова республика",
+    "Petro Monarchy": "Нефтяная монархия",
+    "Dharmic Republic": "Дхармическая республика",
+    "Expansionist Republic": "Экспансионистская республика"
   },
   "fixed": {
     "1914-07": "",

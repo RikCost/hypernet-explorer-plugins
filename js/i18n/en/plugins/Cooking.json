@@ -84,5 +84,10 @@
     "calories": "Calories",
     "protein": "Protein",
     "fat": "Fat"
+  },
+  "nutritionShort": {
+    "calories": "Cal",
+    "protein": "Prot",
+    "fat": "Fat"
   }
 }

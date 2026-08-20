@@ -1363,31 +1363,27 @@
     const _Sprite_BattleBar_refresh = _SBB.prototype.refresh;
     _SBB.prototype.refresh = function () {
       _Sprite_BattleBar_refresh.call(this);
-      if (this._isPlayer || !this._battler || !this._htmlOverlay) return;
+      if (!this._battler || !this._htmlOverlay) return;
       if (window.AsciiMode && window.AsciiMode.active) return;
       if (!partyHasOracle()) return;
       const next = predictEnemyAction(this._battler);
       if (!next) return;
       const label = T("BattlePassives.chip.next") + ": " + translate(next);
-      // A compact bar (several enemies on the field) keeps its last line free for
-      // the telegraph; the large single-enemy bar has room under its gauges.
-      const compact = !!this._minimalEnemy;
-      const y = compact
-        ? (this.bitmap ? this.bitmap.height - 18 : 60)
-        : (this.bitmap ? Math.floor(this.bitmap.height * 0.18) + 44 : 70);
+      // Every monster bar is the compact one now, and it keeps its last line
+      // free for exactly this.
       this._htmlOverlay.addText(
         label,
-        compact ? 8 : 15,
-        y,
-        this.bitmap ? this.bitmap.width - (compact ? 16 : 30) : 400,
+        8,
+        this.bitmap ? this.bitmap.height - 18 : 60,
+        this.bitmap ? this.bitmap.width - 16 : 400,
         "left",
-        compact ? 12 : 16,
+        12,
         "#ffd166",
         true,
         "black",
         1,
         "Lora, serif",
-        compact ? 16 : 22
+        16
       );
     };
   }

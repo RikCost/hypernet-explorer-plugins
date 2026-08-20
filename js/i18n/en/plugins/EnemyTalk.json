@@ -41,5 +41,9 @@
     "follower": "follower",
     "pet": "pet",
     "joined": "{name} now travels with you as your {kind}!"
+  },
+  "menu": {
+    "header": "{name}  {opinion} {value}/100",
+    "row": "{name}  {chance}%"
   }
 }

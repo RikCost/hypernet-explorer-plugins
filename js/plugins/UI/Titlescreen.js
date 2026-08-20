@@ -139,6 +139,11 @@
         return T.has(key) ? T(key) : String(s || '');
     };
     const astroField = (k) => T('Astronomy.field.' + k);
+    // Where a copy sitting behind a major update is sent. Patching cannot carry
+    // it the rest of the way, so the notice offers the whole game instead of an
+    // update. The updater owns the address (its fullDownloadUrl parameter); this
+    // is only what a build running without the updater plugin would use.
+    const FULL_GAME_FALLBACK = "https://drive.google.com/file/d/1p9vo_Rj5xB0Bx3QJogpShveB2z7vbJzk/view?usp=drive_link";
     const DISCLAIMER_LINK = "https://discord.gg/7gVDZa6v7E";
     const LINKTREE_LINK = "https://linktr.ee/nocoldiz";
     // Donation targets, shown as buttons under the links in the same panel.
@@ -418,6 +423,7 @@
     const _Scene_Title_createCommandWindow = Scene_Title.prototype.createCommandWindow;
     Scene_Title.prototype.createCommandWindow = function () {
         _Scene_Title_createCommandWindow.call(this);
+        this._commandWindow.setHandler('quickContinue', this.commandQuickContinue.bind(this));
         this._commandWindow.setHandler('tutorial', this.commandTutorial.bind(this));
         this._commandWindow.setHandler('sandboxGame', this.commandSandboxGame.bind(this));
         this._commandWindow.setHandler('minigames', this.commandMinigames.bind(this));
@@ -453,6 +459,40 @@
         this._commandWindow.close();
         this.fadeOutAll();
         SceneManager.goto(Scene_Map);
+    };
+
+    // One-click Continue: resumes the single most recently written save (the
+    // shared autosave, a playthrough slot or a quicksave, whichever is
+    // newest) without going through the Reconnect slot picker.
+    Scene_Title.prototype.commandQuickContinue = function () {
+        const savefileId = (window.SaveSystem && window.SaveSystem.mostRecentSaveId)
+            ? window.SaveSystem.mostRecentSaveId() : -1;
+        if (savefileId < 0) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        SoundManager.playLoad();
+        this._commandWindow.close();
+        this.fadeOutAll();
+        DataManager.loadGame(savefileId)
+            .then(() => {
+                $gameSystem.onAfterLoad();
+                if ($gameSystem.versionId() !== $dataSystem.versionId) {
+                    const mapId = $gameMap.mapId();
+                    const x = $gamePlayer.x;
+                    const y = $gamePlayer.y;
+                    const d = $gamePlayer.direction();
+                    $gamePlayer.reserveTransfer(mapId, x, y, d, 0);
+                    $gamePlayer.requestMapReload();
+                }
+                SceneManager.goto(Scene_Map);
+            })
+            .catch((error) => {
+                console.error(error);
+                SoundManager.playBuzzer();
+                this._commandWindow.open();
+                this.startFadeIn(this.slowFadeSpeed(), false);
+            });
     };
 
     // Tutorial command: start the tutorial directly (no info popup)
@@ -663,6 +703,21 @@
 
     // Launch helpers -----------------------------------------------------------
     const hasScene = n => !!window[n];
+
+    // Building a Hyperdeck with nothing to build it out of is not a game, so
+    // free play opens the whole catalogue and hands over a machine already
+    // assembled to take apart. A real save keeps whatever it had.
+    function launchHyperdeck() {
+        try {
+            if (MinigameArcade.isFreePlay() && window.HyperDeck
+                && window.HyperDeck.stockFreePlay) {
+                window.HyperDeck.stockFreePlay();
+            }
+        } catch (e) {
+            console.warn('Titlescreen: could not stock the free play Hyperdeck.', e);
+        }
+        SceneManager.push(window.Scene_HyperDeck);
+    }
     const hasCmd = (p, c) => !!(PluginManager._commands && PluginManager._commands[p + ':' + c]);
 
     function launchArcade(scene, gameId) {
@@ -745,6 +800,10 @@
         const all = [
             { name: T('Titlescreen.minigame.arena'),                   avail: () => hasScene('Scene_ArenaPartySelect'),  run: s => SceneManager.push(window.Scene_ArenaPartySelect) },
             { name: T('Titlescreen.minigame.camperDriving'),          avail: () => !!(window.CamperDrivingSystem && window.CamperDrivingSystem.startStandalone), run: s => SceneManager.push(Scene_CamperFreeplay) },
+            // A read-only tour of the star map: no ship, no bridges, no
+            // refuelling or landing, just the catalog and Grand Tour (see
+            // GalaxySim.openStarMapMinigame).
+            { name: T('Titlescreen.minigame.galaxyMap'),               avail: () => !!(window.GalaxySim && window.GalaxySim.openStarMapMinigame), run: s => window.GalaxySim.openStarMapMinigame() },
             // No venue step: a dream rolls its own world and has no interest in
             // where the sleeper was standing when it started.
             { name: T('Titlescreen.minigame.dream'),                   avail: () => hasScene('Scene_DreamFreeplay'),     run: s => SceneManager.push(window.Scene_DreamFreeplay) },
@@ -769,6 +828,7 @@
             // happens at the table is staked, banked or streaked.
             { name: T('Titlescreen.minigame.cardBattle'),             avail: () => !!(window.CardDuel && window.CardGame), run: s => launchCardBattle() },
             { name: T('Titlescreen.minigame.hyperTamer'),             avail: () => hasScene('Scene_HyperTamer'),        run: s => SceneManager.push(window.Scene_HyperTamer) },
+            { name: T('Titlescreen.minigame.hyperdeck'),              avail: () => hasScene('Scene_HyperDeck'),         run: s => launchHyperdeck() },
             { name: T('Titlescreen.minigame.periodicTable'),          avail: () => hasScene('Scene_PeriodicTable'),     run: s => SceneManager.push(window.Scene_PeriodicTable) },
             { name: T('Titlescreen.minigame.boosterPack'),            avail: () => hasCmd('BoosterPackSystem', 'openBoosterPack'), run: s => PluginManager.callCommand(s, 'BoosterPackSystem', 'openBoosterPack', {}) },
             { name: T('Titlescreen.minigame.lockpick'),                avail: () => !!(window.LockpickTetris && window.Scene_LockpickTetris), run: s => launchLockpick() },
@@ -1197,17 +1257,26 @@
         return !!(window.WorldManager && window.WorldManager.activeWorldName);
     }
 
+    // Whether there is any save at all (autosave, playthrough slot or
+    // quicksave) for the one-click Continue command to jump straight into.
+    function hasQuickContinueSave() {
+        return !!(window.SaveSystem && window.SaveSystem.mostRecentSaveId &&
+            window.SaveSystem.mostRecentSaveId() >= 0);
+    }
+
     const _Window_TitleCommand_isContinueEnabled = Window_TitleCommand.prototype.isContinueEnabled;
     Window_TitleCommand.prototype.isContinueEnabled = function () {
         return hasActiveWorld() && _Window_TitleCommand_isContinueEnabled.call(this);
     };
 
-    // Always start the cursor on Reconnect (or Explore if no save data exists),
-    // ignoring the engine's "remember last selected command" behavior. With no
-    // world both are disabled, so the cursor falls to Worlds: the one thing the
-    // player can actually do from here.
+    // Always start the cursor on Continue (or Reconnect, or Explore if no save
+    // data exists), ignoring the engine's "remember last selected command"
+    // behavior. With no world all three are disabled, so the cursor falls to
+    // Worlds: the one thing the player can actually do from here.
     Window_TitleCommand.prototype.selectLast = function () {
-        if (this.isContinueEnabled()) {
+        if (hasActiveWorld() && hasQuickContinueSave()) {
+            this.selectSymbol('quickContinue');
+        } else if (this.isContinueEnabled()) {
             this.selectSymbol('continue');
         } else if (hasActiveWorld()) {
             this.selectSymbol('newGame');
@@ -1219,6 +1288,9 @@
     // Add Tutorial command to the title menu
 Window_TitleCommand.prototype.makeCommandList = function () {
     const worldReady = hasActiveWorld();
+
+    this.addCommand(T('Titlescreen.menu.quickContinue'), 'quickContinue',
+        worldReady && hasQuickContinueSave());
 
     if (!hideStartOptions) {
         this.addCommand(T('Titlescreen.menu.explore'), 'newGame', worldReady);
@@ -2488,6 +2560,26 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         return entry;
     }
 
+    // How an enemy is drawn is one setting for the whole game (the enemy battler
+    // option): 1 the animated 3D model, 2 the <Char:> sprite sheet, 3 the flat
+    // battler image. The bestiary background obeys it too, so the title screen
+    // shows monsters exactly the way the player will meet them in battle.
+    function enemyBattlerMode() {
+        const modes = window.EnemyBattlerModes;
+        if (!modes) return 1;
+        return modes.normalize(
+            (typeof ConfigManager !== 'undefined') ? ConfigManager.enemyBattlers : modes.MODEL_3D);
+    }
+
+    // True when the bestiary should be drawn as live 3D models rather than as
+    // 2D cards (the mode is 3D and the Battler3D stack is actually loaded).
+    function bestiaryWants3D() {
+        const modes = window.EnemyBattlerModes;
+        const model3d = modes ? modes.MODEL_3D : 1;
+        return enemyBattlerMode() === model3d &&
+            !!(window.THREE && window.Battler3D && window.Battler3D.create);
+    }
+
     class FloatingMonster extends PIXI.Container {
         constructor(cardId, lane, laneCount) {
             super();
@@ -2543,38 +2635,49 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             const spriteBoxH = 96;
             let yy = 0;
 
-            // Monster sprite: prefer the character sheet, fall back to the battler
-            let sprite = null;
-            const charMatch = note.match(/<Char:\s*(\$[^>]+)>/i);
-            if (charMatch) {
+            // Monster sprite: the enemy battler option decides which of the two
+            // flat looks leads (Sprites = the <Char:> sheet, 2D = the battler
+            // image out of img/enemies); the other one still stands in when the
+            // first is missing, so a card is never left empty.
+            const buildCharSprite = () => {
+                const charMatch = note.match(/<Char:\s*(\$[^>]+)>/i);
+                if (!charMatch) return null;
                 try {
                     const bmp = ImageManager.loadBitmap('./img/characters/Monsters/', charMatch[1].trim());
-                    sprite = new Sprite(bmp);
+                    const spr = new Sprite(bmp);
                     bmp.addLoadListener(() => {
                         const fw = Math.floor(bmp.width / 3);
                         const fh = Math.floor(bmp.height / 4);
-                        sprite.setFrame(0, 0, fw, fh);
+                        spr.setFrame(0, 0, fw, fh);
                         const s = Math.min(2.5, spriteBoxH / fh);
-                        sprite.scale.set(s, s);
-                        sprite.x = centerX - (fw * s) / 2;
-                        sprite.y = (spriteBoxH - fh * s) / 2;
+                        spr.scale.set(s, s);
+                        spr.x = centerX - (fw * s) / 2;
+                        spr.y = (spriteBoxH - fh * s) / 2;
                     });
-                } catch (e) { sprite = null; }
-            }
-            if (!sprite) {
+                    return spr;
+                } catch (e) { return null; }
+            };
+            const buildBattlerSprite = () => {
+                const bn = enemy.battlerName;
+                if (!bn) return null;
                 try {
-                    const bn = enemy.battlerName;
                     const bmp = ($dataSystem && $dataSystem.optSideView)
                         ? ImageManager.loadSvEnemy(bn) : ImageManager.loadEnemy(bn);
-                    sprite = new Sprite(bmp);
+                    const spr = new Sprite(bmp);
                     bmp.addLoadListener(() => {
                         const s = Math.min(1, layoutW / bmp.width, spriteBoxH / bmp.height);
-                        sprite.scale.set(s, s);
-                        sprite.x = centerX - (bmp.width * s) / 2;
-                        sprite.y = (spriteBoxH - bmp.height * s) / 2;
+                        spr.scale.set(s, s);
+                        spr.x = centerX - (bmp.width * s) / 2;
+                        spr.y = (spriteBoxH - bmp.height * s) / 2;
                     });
-                } catch (e) { sprite = null; }
-            }
+                    return spr;
+                } catch (e) { return null; }
+            };
+            const battlersFirst = window.EnemyBattlerModes &&
+                enemyBattlerMode() === window.EnemyBattlerModes.BATTLERS_2D;
+            let sprite = battlersFirst
+                ? (buildBattlerSprite() || buildCharSprite())
+                : (buildCharSprite() || buildBattlerSprite());
             if (sprite) {
                 sprite.x = centerX - 24;
                 elements.push(sprite);
@@ -3062,14 +3165,16 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     }
 
     // -------------------------------------------------------------------------
-    // Alternative background: real enemies rendered as their 3D model ("Enemies
-    // 3D"). Mirrors ArtifactBackground (its own THREE scene, models float upward,
-    // DOM labels, gold connection strands), but instantiates the modular Battler3D
+    // The bestiary background in its 3D shape: real enemies rendered as their
+    // animated 3D model, chosen when the enemy battler option is set to 3D.
+    // Mirrors ArtifactBackground (its own THREE scene, models float upward, DOM
+    // labels, gold connection strands), but instantiates the modular Battler3D
     // procedural creature that each enemy resolves to, and labels it with the
-    // enemy's actual name, level/archetype and description (matching the bestiary
-    // mode). Each model is built from a fake battler keyed to the enemy id so it
-    // shows that enemy's canonical, textured look (not a random white preview).
-    // Models are built with no physics, so they use the kinematic idle pose.
+    // enemy's actual name, level/archetype and description (the same caption the
+    // flat bestiary cards carry). Each model is built from a fake battler keyed
+    // to the enemy id so it shows that enemy's canonical, textured look (not a
+    // random white preview). Models are built with no physics, so they use the
+    // kinematic idle pose.
     // -------------------------------------------------------------------------
     class Enemies3DBackground {
         constructor() {
@@ -5350,10 +5455,9 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             this._weaponBg = new ArtifactBackground(this._bgMode);
             // Fall back to the classic cards if the 3D stack is unavailable
             if (!this._weaponBg.available) this._bgMode = 'cards';
-        } else if (this._bgMode === 'enemies3d') {
-            this._enemies3dBg = new Enemies3DBackground();
-            // Fall back to the classic cards if Battler3D/THREE is unavailable
-            if (!this._enemies3dBg.available) this._bgMode = 'cards';
+        } else if (this._bgMode === 'bestiary') {
+            // 3D or flat is the enemy battler option's call, not a mode of its own.
+            this.startBestiaryBackground();
         } else if (this._bgMode === 'hyperverse') {
             this._hyperverseBg = new HyperverseBackground();
             // Fall back to the classic cards if GalaxySim/THREE is unavailable
@@ -5408,13 +5512,16 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // (ConfigManager.titleBackground). 0 is the "random" pseudo-mode; the rest
     // map one-to-one to a concrete renderer. Keep this in step with the option
     // ordering in GameOptions.js (titleBgNames).
+    // 6 was the retired standalone "Enemies 3D" preset: the bestiary now draws
+    // its monsters in 3D or flat according to the enemy battler option, so an
+    // old config carrying 6 simply lands on the bestiary.
     const BG_CONFIG_TO_MODE = {
         0: 'random', 1: 'cards', 2: 'space', 3: 'artifacts',
-        4: 'bestiary', 5: 'weapons', 6: 'enemies3d', 7: 'hyperverse', 8: 'autodrive'
+        4: 'bestiary', 5: 'weapons', 6: 'bestiary', 7: 'hyperverse', 8: 'autodrive'
     };
     const BG_MODE_TO_CONFIG = {
         random: 0, cards: 1, space: 2, artifacts: 3,
-        bestiary: 4, weapons: 5, enemies3d: 6, hyperverse: 7, autodrive: 8
+        bestiary: 4, weapons: 5, hyperverse: 7, autodrive: 8
     };
 
     // The option-menu-level selection ('random' or a concrete mode), read from
@@ -5426,7 +5533,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     };
 
     // Map the saved option (0 Random, 1 Cards, 2 Space, 3 Artifacts, 4 Bestiary,
-    // 5 Weapons, 6 Enemies 3D, 7 Hyperverse, 8 Camper Drive) to a concrete
+    // 5 Weapons, 7 Hyperverse, 8 Camper Drive) to a concrete
     // renderer. Hyperverse is the default. The unified "Space" preset mixes
     // planets, stars, black holes and galaxies into one starfield.
     Scene_Title.prototype._resolveBackgroundMode = function () {
@@ -5437,9 +5544,6 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             if (window.THREE && window.WeaponSystemProcedural && window.WeaponThreeScene) {
                 choices.push('artifacts', 'weapons');
             }
-            if (window.THREE && window.Battler3D && window.Battler3D.create) {
-                choices.push('enemies3d');
-            }
             if (window.THREE && window.GalaxySim) {
                 choices.push('hyperverse');
             }
@@ -5448,7 +5552,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             }
             return choices[Math.floor(Math.random() * choices.length)];
         }
-        return { 1: 'cards', 2: 'space', 3: 'artifacts', 4: 'bestiary', 5: 'weapons', 6: 'enemies3d', 7: 'hyperverse', 8: 'autodrive' }[mode] || 'hyperverse';
+        return BG_CONFIG_TO_MODE[mode] || 'hyperverse';
     };
 
     // Human-readable labels for the on-screen background switcher.
@@ -5469,11 +5573,20 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         if (window.THREE && window.WeaponSystemProcedural && window.WeaponThreeScene) {
             modes.push('artifacts', 'weapons');
         }
-        if (window.THREE && window.Battler3D && window.Battler3D.create) {
-            modes.push('enemies3d');
-        }
         modes.push('random');
         return modes;
+    };
+
+    // Bring the bestiary background up in the shape the enemy battler option
+    // asks for: the animated 3D models when it is set to 3D (and the Battler3D
+    // stack is there), otherwise the flat monster cards, which pick the <Char:>
+    // sheet or the battler image for themselves. Nothing to build in the flat
+    // case: the cards are ordinary floating PIXI items.
+    Scene_Title.prototype.startBestiaryBackground = function () {
+        if (!bestiaryWants3D()) return;
+        const bg = new Enemies3DBackground();
+        if (bg.available) this._enemies3dBg = bg;
+        else bg.dispose();
     };
 
     // Step to the next (dir = 1) or previous (dir = -1) selection, wrapping.
@@ -5526,9 +5639,8 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             if (mode === 'artifacts' || mode === 'weapons') {
                 this._weaponBg = new ArtifactBackground(mode);
                 if (!this._weaponBg.available) { this._weaponBg.dispose(); this._weaponBg = null; this._bgMode = 'cards'; }
-            } else if (mode === 'enemies3d') {
-                this._enemies3dBg = new Enemies3DBackground();
-                if (!this._enemies3dBg.available) { this._enemies3dBg.dispose(); this._enemies3dBg = null; this._bgMode = 'cards'; }
+            } else if (mode === 'bestiary') {
+                this.startBestiaryBackground();
             } else if (mode === 'hyperverse') {
                 this._hyperverseBg = new HyperverseBackground();
                 if (!this._hyperverseBg.available) { this._hyperverseBg.dispose(); this._hyperverseBg = null; this._bgMode = 'cards'; }
@@ -5940,6 +6052,14 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         }
     };
 
+    // The address the whole game is downloaded from. The updater carries it as
+    // a plugin parameter so it can be changed in one place; an updater that is
+    // absent or older than this leaves the shipped fallback standing.
+    const fullGameLink = () => {
+        const url = updaterCall('fullDownloadUrl');
+        return (typeof url === 'string' && url) ? url : FULL_GAME_FALLBACK;
+    };
+
     // Docked under the language flags, the way they are docked under the badge.
     Scene_Title.prototype.createUpdateButton = function () {
         const stale = document.getElementById('title-update');
@@ -5972,6 +6092,17 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             e.preventDefault();
             if (SceneManager._scene !== this) return;
             if (btn.style.cursor !== 'pointer') return;
+            // A major update is waiting and this copy is behind it. Patching
+            // across it would leave the game half on the old build, so the
+            // notice never offers the update itself: the press goes straight
+            // out to the download page for the whole game. Taking the files
+            // anyway is still possible, but only from the updater screen, which
+            // says what it costs before it does it.
+            if (this._updateAction === 'fullgame') {
+                SoundManager.playOk();
+                openExternalLink(fullGameLink());
+                return;
+            }
             // Nothing here can be downloaded: a major update is answered off
             // the title screen, so the press opens the updater, which explains
             // it and takes the confirmation that it has been done.
@@ -6085,10 +6216,27 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             return;
         }
 
-        if (result && result.available && !this._updateDone) {
+        // A build is waiting, but taking it would cross a major update and this
+        // copy is behind that update. A patch cannot finish the job, so the
+        // notice does not offer one: it sends the player to the full download
+        // instead, which is the only thing that leaves the copy whole. The
+        // updater screen still lists the build for anyone who wants the files
+        // regardless, and warns there that a download follows either way.
+        if (result && result.available && result.major && !this._updateDone) {
+            this._updateAction = 'fullgame';
+            setUpdateLabel(btn, T('Titlescreen.update.redownload'), majorPendingLine());
+            btn.title = T('Titlescreen.update.redownloadTip');
+            btn.style.display = 'flex';
+            btn.style.cursor = 'pointer';
+            btn.style.pointerEvents = 'auto';
+            btn.style.color = '#FFB347';
+            btn.style.animation = 'title-update-pulse 2.4s ease-in-out infinite';
+        } else if (result && result.available && !this._updateDone) {
+            // An ordinary build: the one above has already taken every major
+            // one, so nothing here needs the second line.
             this._updateAction = 'install';
-            setUpdateLabel(btn, updateBuildLabel(result), result.major ? majorPendingLine() : '');
-            btn.title = result.major ? T('Titlescreen.update.majorTip') : T('Titlescreen.update.tip');
+            setUpdateLabel(btn, updateBuildLabel(result), '');
+            btn.title = T('Titlescreen.update.tip');
             btn.style.display = 'flex';
             btn.style.cursor = 'pointer';
             btn.style.pointerEvents = 'auto';
@@ -6167,6 +6315,15 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         if (updaterCall('isBusy')) return;
         const result = updaterCall('autoResult');
         if (!result || !result.available || !result.latest) return;
+        // Never patch across a major update from here, whatever route reached
+        // this method: the copy would come out half on the old build and the
+        // title screen has nothing to say about it afterwards. The updater
+        // screen is where that trade is explained and taken.
+        if (result.major) {
+            SoundManager.playOk();
+            openExternalLink(fullGameLink());
+            return;
+        }
         // An updater that cannot fetch (an older one, or one loaded without its
         // download half) has nothing this button can drive.
         if (typeof api.check !== 'function' || typeof api.install !== 'function') return;
@@ -6574,13 +6731,14 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
     // Backgrounds that render into their own DOM canvas, which sits ON TOP of
     // the game canvas and would otherwise cover the logo drawn by PIXI.
-    const DOM_CANVAS_MODES = ['hyperverse', 'autodrive', 'artifacts', 'weapons', 'enemies3d'];
+    const DOM_CANVAS_MODES = ['hyperverse', 'autodrive', 'artifacts', 'weapons'];
 
     // For those modes the PIXI logo is hidden and an identically placed <img>
     // is layered above the 3D canvas instead, so planets, galaxies and the road
     // always pass BEHIND the Hypernet Explorer logo.
     Scene_Title.prototype.updateLogoLayer = function () {
-        const needsOverlay = DOM_CANVAS_MODES.includes(this._bgMode);
+        // The bestiary only owns a DOM canvas while it is running in 3D.
+        const needsOverlay = DOM_CANVAS_MODES.includes(this._bgMode) || !!this._enemies3dBg;
         if (!needsOverlay) {
             if (this._logoSprite) this._logoSprite.visible = true;
             if (this._logoOverlay) this._logoOverlay.style.display = 'none';
@@ -6812,6 +6970,8 @@ Window_TitleCommand.prototype.makeCommandList = function () {
                 this._floatingContainer.addChild(new FloatingCelestial(this._cardIdCounter++, d, renderGalaxy, { animated: false }));
             }
         } else if (this._bgMode === 'bestiary') {
+            // 3D bestiary: the models are spawned by their own scene.
+            if (this._enemies3dBg) { this._enemies3dBg.spawn(); return; }
             if (!this._floatingContainer) return;
             const MAX_MONSTERS = 2;
             const monsters = this._floatingContainer.children.filter(c => c._isMonster);
@@ -6828,8 +6988,6 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             this._floatingContainer.addChild(monster);
         } else if (this._bgMode === 'artifacts' || this._bgMode === 'weapons') {
             if (this._weaponBg) this._weaponBg.spawn();
-        } else if (this._bgMode === 'enemies3d') {
-            if (this._enemies3dBg) this._enemies3dBg.spawn();
         } else {
             if (!this._floatingContainer) return;
             const cards = this._floatingContainer.children.filter(c => !c._isPlanet && !c._isMonster && !c._isCelestial);
@@ -6892,6 +7050,12 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         // nowhere to start a game, so every entry that would need one is shown
         // greyed out rather than silently kicking the player to another screen.
         const worldReady = hasActiveWorld();
+
+        commands.push({
+            text: T('Titlescreen.menuOverlay.quickContinue'),
+            symbol: 'quickContinue',
+            enabled: worldReady && hasQuickContinueSave()
+        });
 
         if (!hideStartOptions) {
             commands.push({

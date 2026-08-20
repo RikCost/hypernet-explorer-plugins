@@ -205,7 +205,7 @@
     "name": ""
   },
   "Rainbow land": {
-    "val": "Metallo arcobaleno",
+    "val": "Terra Arcobaleno",
     "excluded": "",
     "name": ""
   },
@@ -245,7 +245,7 @@
     "name": ""
   },
   "Landstrandedland": {
-    "val": "Metallo incolta",
+    "val": "Terraincagliata",
     "excluded": "",
     "name": ""
   },
@@ -1475,7 +1475,7 @@
     "name": ""
   },
   "Okla city": {
-    "val": "Sentimenti di Okla",
+    "val": "Città di Okla",
     "excluded": "",
     "name": ""
   },
@@ -1895,7 +1895,7 @@
     "name": ""
   },
   "Secret inn": {
-    "val": "Segreto in",
+    "val": "Locanda Segreta",
     "excluded": "",
     "name": ""
   },
@@ -1910,7 +1910,7 @@
     "name": ""
   },
   "Toxic clearing": {
-    "val": "Pulizia tossica",
+    "val": "Radura Tossica",
     "excluded": "",
     "name": ""
   },
@@ -2180,7 +2180,7 @@
     "name": ""
   },
   "Papa Office": {
-    "val": "Ufficio del papà",
+    "val": "Ufficio del Papa",
     "excluded": "",
     "name": ""
   },
@@ -2220,7 +2220,7 @@
     "name": ""
   },
   "Ley spot": {
-    "val": "Legge Spot",
+    "val": "Punto Ley",
     "excluded": "",
     "name": ""
   },
@@ -2255,7 +2255,7 @@
     "name": ""
   },
   "Inn": {
-    "val": "Entra",
+    "val": "Locanda",
     "excluded": "",
     "name": ""
   },

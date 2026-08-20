@@ -29,6 +29,22 @@
  * the family walks in the same line as the pets. A child wears the sprite of
  * the party member who bore it and carries a generated name.
  *
+ * A pet or a follower can also be TRAINED into a real party member. Which
+ * trainings are on offer comes off the creature's archetype roster (the
+ * `classes` / `creatureClasses` lists of js/db/Health/Archetypes.json,
+ * read through window.CreatureClasses) and off whether the monster it was
+ * recruited from carries the <Talk> tag: something that talks is never drilled
+ * into one of the creature classes (Beast and everything after it), and an
+ * archetype that supports nothing at all falls back to Beast for an animal and
+ * to Freelancer for somebody who talks. A child born to the party is family and
+ * is never trained; a summon is not the party's to train either.
+ *
+ * Training is measured in world-clock minutes, and the world clock only moves
+ * when the player does: a step walked on the map or an hour waited through.
+ * The party's Animal Training (or Leadership, for a follower who talks) takes
+ * days off the total. Only the companion actually walking with the party makes
+ * progress, so handing the leash to another one stops the drill where it stands.
+ *
  * Public API (window.PetSystem):
  *   registerPet(record)  → adds/updates a pet record, does not change active
  *   recruitPet(record)   → registerPet + setActive (used on recruitment)
@@ -42,6 +58,11 @@
  *   releasePet(id)       → remove a pet from the registry
  *   abandonPet(id)       → file the crime, then remove it (see below)
  *   refreshFollower()    → re-sync the on-map trailing sprite
+ *   canTrain(id)         → is this companion eligible for combat training
+ *   trainingOptions(id)  → [classId, ...] the trainings on offer for it
+ *   trainingDays(id)     → how many days its training would take right now
+ *   trainingInfo(id)     → the live drill record, or null
+ *   startTraining(id, classId) / stopTraining(id) / promoteTrainee(id)
  *
  * Abandonment is the only way to be rid of a companion, and it is an offence:
  * leaving a pet behind is filed with the nEuroPolice as pet abandonment, and
@@ -177,9 +198,9 @@ window.Game_PetFollower = Game_PetFollower;
     // Skab pixel pack, the same wardrobe every procedural citizen is drawn from
     // (js/db/WorldGen/NPCs.json, npc entries under Skab/). A mitosis clone is
     // the exception and is handed its parent's sprite by the caller.
-    // Beta sheets are dealt here only in a world created with beta sprites on,
-    // so the pool is asked for fresh each time rather than memoized: activating
-    // another world changes the answer (window.SpriteCatalog does the caching).
+    // Beta sheets are never dealt here; the pool is asked for fresh each time
+    // rather than memoized, since activating another world can still change
+    // the rest of the answer (window.SpriteCatalog does the caching).
     function _randomSkabSprite() {
         const skab = (k) => k.indexOf("Skab/") === 0;
         const name = window.SpriteCatalog?.pickNpcKey
@@ -275,6 +296,184 @@ window.Game_PetFollower = Game_PetFollower;
         if ($gameVariables) $gameVariables.setValue(29, $gameParty.members().length);
         return clone;
     }
+
+    // ---- Combat training -------------------------------------------------
+    // A companion drilled until it is a party member rather than a passenger.
+    // Which drills are on offer is not written here: every archetype already
+    // carries its own class rosters in js/db/Health/Archetypes.json, read
+    // through window.CreatureClasses, and this only decides which of the two
+    // rosters a given companion is allowed to be drilled out of.
+
+    // Beast is the first of the creature classes and the drill every animal can
+    // always take; Freelancer is the same floor for somebody who talks.
+    const BEAST_CLASS_ID = 63;
+    const FREELANCER_CLASS_ID = 1;
+
+    // What a drill costs, before anybody's training is taken into account. A
+    // bigger creature is a longer job, and the specializations below take days
+    // back off it: Master Animal Training is a little under half the work.
+    const TRAIN_BASE_DAYS = 5;
+    const TRAIN_LEVELS_PER_EXTRA_DAY = 10;
+    const TRAIN_MINUTES_PER_DAY = 1440;
+    // A cryo sleep or a flight across the continent skips the time; it does not
+    // do the work. However far the clock jumps, one pass credits one day.
+    const TRAIN_MINUTES_PER_PASS = TRAIN_MINUTES_PER_DAY;
+    const TRAIN_SPEC_ANIMAL = "Animal Training";  // i18n-ignore  js/db/Skills/Specialization.json name
+    const TRAIN_SPEC_PEOPLE = "Leadership";       // i18n-ignore  ditto
+    const TRAIN_SPEC_STEP = 0.12;                 // days taken off per tier
+    const TRAIN_SPEC_FLOOR = 0.45;                // and never below this share
+
+    function _toast(text, severity) {
+        if (!text) return;
+        if (window.ParchmentToast) {
+            window.ParchmentToast.show(text, { severity: severity || "info", duration: 180 });
+        } else if (typeof $gameMessage !== "undefined" && $gameMessage) {
+            $gameMessage.add(text);
+        }
+    }
+
+    // Sentience is the monster's own <Talk> tag, kept on the record when it was
+    // recruited: something that held a conversation to get here is a person,
+    // and a person is never drilled into a creature class.
+    function _speaks(pet) {
+        return /<Talk>/i.test(String((pet && pet.note) || ""));
+    }
+
+    function _isCreatureClass(classId) {
+        const CC = window.CreatureClasses;
+        if (CC && CC.isCreatureClass) return CC.isCreatureClass(classId);
+        return Number(classId) >= BEAST_CLASS_ID;
+    }
+
+    function _className(classId) {
+        const data = $dataClasses && $dataClasses[classId];
+        if (!data) return "";
+        return window.CCDbName ? window.CCDbName(data) : data.name;
+    }
+
+    // Which specialization the party is leaning on: an animal is conditioned,
+    // a person is led.
+    function _trainSpec(pet) {
+        return _speaks(pet) ? TRAIN_SPEC_PEOPLE : TRAIN_SPEC_ANIMAL;
+    }
+
+    function _trainingOptions(pet) {
+        if (!pet) return [];
+        const CC = window.CreatureClasses;
+        const keys = String(pet.archetype || "")
+            .split("/").map(s => s.trim()).filter(Boolean);
+        const speaks = _speaks(pet);
+        let ids = [];
+        if (CC && CC.groupsForArchetypes) {
+            const groups = CC.groupsForArchetypes(keys[0] || null, keys[1] || null);
+            ids = speaks ? groups.sentient.slice() : groups.creature.concat(groups.sentient);
+        }
+        if (speaks) ids = ids.filter(id => !_isCreatureClass(id));
+        // The drill that is always on the board, whatever the archetype answers.
+        const floor = speaks ? FREELANCER_CLASS_ID : BEAST_CLASS_ID;
+        if (!ids.includes(floor)) ids.unshift(floor);
+        return ids.filter(id => $dataClasses[id] && $dataClasses[id].name);
+    }
+
+    // A summon is not the party's to train: it is something they called and are
+    // holding, and it goes back where it came from (SummonSystem.js).
+    function _isSummoned(pet) {
+        const info = window.SummonSystem && window.SummonSystem.mapSummonInfo
+            ? window.SummonSystem.mapSummonInfo() : null;
+        return !!(info && pet && info.petId === pet.id);
+    }
+
+    function _canTrain(pet) {
+        if (!pet) return false;
+        if (pet.isChild) return false;      // family, not livestock
+        if (pet.training) return false;     // already at it
+        if (_isSummoned(pet)) return false;
+        return _trainingOptions(pet).length > 0;
+    }
+
+    function _trainingDays(pet) {
+        if (!pet) return TRAIN_BASE_DAYS;
+        const base = TRAIN_BASE_DAYS +
+            Math.floor(Math.max(1, pet.level || 1) / TRAIN_LEVELS_PER_EXTRA_DAY);
+        const XP = window.SpecializationXP;
+        const factor = (XP && XP.discount)
+            ? XP.discount(_trainSpec(pet), TRAIN_SPEC_STEP, TRAIN_SPEC_FLOOR)
+            : 1;
+        return Math.max(1, Math.round(base * factor));
+    }
+
+    function _worldMinute() {
+        const TD = window.TimeDateSystem;
+        if (TD && TD.getGameTimeMinutes) return TD.getGameTimeMinutes();
+        return (typeof $gameVariables !== "undefined" && $gameVariables)
+            ? ($gameVariables.value(114) || 0) : 0;
+    }
+
+    // The graduate. It keeps its name, its level, its face and the skills the
+    // monster it was came with; what changes is that it is an actor now, on the
+    // class it was drilled into.
+    function _petIntoActor(actorId, pet) {
+        const actor = $gameActors && $gameActors.actor(actorId);
+        if (!actor) return null;
+        // Start from the database entry so nothing of a previous occupant of
+        // the slot survives into the graduate.
+        actor.setup(actorId);
+        actor.setName(pet.name);
+        actor.changeClass(pet.training.classId, false);
+        actor.changeLevel(Math.max(1, pet.level || 1), false);
+        actor.setCharacterImage(pet.characterName, pet.characterIndex || 0);
+        actor.setFaceImage("", 0);
+        actor.setBattlerImage("");
+        (pet.skillIds || []).forEach(id => { if ($dataSkills[id]) actor.learnSkill(id); });
+        // What it is remains what it was: the battle sheet and the 3D model are
+        // both resolved off the creature it was recruited from.
+        actor._recruitedEnemyId = pet.enemyId || 0;
+        actor._recruitedLook = null;   // the look roll of whoever held the slot before goes with them
+        if (pet.archetype) actor._currentArchetype = pet.archetype;
+        // A graduate on a creature class is still a creature, and every system
+        // that asks does so through this slot's switch.
+        if ($gameSwitches && CREATURE_SWITCHES[actorId]) {
+            $gameSwitches.setValue(CREATURE_SWITCHES[actorId], _isCreatureClass(pet.training.classId));
+        }
+        actor.recoverAll();
+        $gameParty.addActor(actorId);
+        if ($gameVariables) $gameVariables.setValue(29, $gameParty.members().length);
+        return actor;
+    }
+
+    // The world clock only moves when the player does: a step walked on the map
+    // or an hour waited through. Crediting the minutes it gained is therefore
+    // exactly "while the party is travelling with it", and nothing else counts.
+    // Only the companion actually on the leash makes progress, so handing it to
+    // another one leaves the drill standing where it was.
+    function _advanceTraining() {
+        if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+        const now = _worldMinute();
+        const last = $gameSystem._petTrainClock;
+        $gameSystem._petTrainClock = now;
+        if (last == null || now <= last) return;
+        const pet = window.PetSystem.getActivePet();
+        if (!pet || !pet.training || pet.training.ready) return;
+        pet.training.done = Math.min(
+            pet.training.need,
+            (pet.training.done || 0) + Math.min(now - last, TRAIN_MINUTES_PER_PASS)
+        );
+        if (pet.training.done >= pet.training.need) {
+            pet.training.ready = true;
+            const actor = window.PetSystem.promoteTrainee(pet.id);
+            if (!actor) {
+                // Finished, with nowhere to stand. It waits on the Followers
+                // page until a place in the party opens up.
+                _toast(T('PetFollower.training.readyNoRoom', { name: pet.name }), "warning");
+            }
+        }
+    }
+
+    const _Scene_Map_update_pets = Scene_Map.prototype.update;
+    Scene_Map.prototype.update = function () {
+        _Scene_Map_update_pets.call(this);
+        _advanceTraining();
+    };
 
     window.PetSystem = {
         // The rename field in the Pets page caps typing at the same length
@@ -454,6 +653,82 @@ window.Game_PetFollower = Game_PetFollower;
 
         refreshFollower() {
             _refreshFollower();
+        },
+
+        // ---- Combat training ---------------------------------------------
+
+        canTrain(id) {
+            return _canTrain(this.getPet(id));
+        },
+
+        trainingOptions(id) {
+            return _trainingOptions(this.getPet(id));
+        },
+
+        trainingDays(id) {
+            return _trainingDays(this.getPet(id));
+        },
+
+        trainingInfo(id) {
+            const pet = this.getPet(id);
+            return (pet && pet.training) ? pet.training : null;
+        },
+
+        // Put a companion on a drill. It takes the leash at once: walking with
+        // the party IS the training, so nothing else can be following while it
+        // is being done.
+        startTraining(id, classId) {
+            const pet = this.getPet(id);
+            if (!pet || !_canTrain(pet)) return null;
+            const wanted = Number(classId);
+            if (!_trainingOptions(pet).includes(wanted)) return null;
+            const days = _trainingDays(pet);
+            pet.training = {
+                classId: wanted,
+                days: days,
+                need: days * TRAIN_MINUTES_PER_DAY,
+                done: 0,
+                ready: false,
+            };
+            this.setActivePet(pet.id);
+            // Start the clock from here, so time already spent walking with it
+            // before the drill began is not credited to the drill.
+            if ($gameSystem) $gameSystem._petTrainClock = _worldMinute();
+            _toast(T('PetFollower.training.started', {
+                name: pet.name,
+                className: _className(wanted),
+                days: days,
+            }), "info");
+            return pet.training;
+        },
+
+        // Calling the drill off. What was done is done and is not kept: a drill
+        // half-finished is a drill not finished.
+        stopTraining(id) {
+            const pet = this.getPet(id);
+            if (!pet || !pet.training) return null;
+            pet.training = null;
+            _toast(T('PetFollower.training.stopped', { name: pet.name }), "warning");
+            return pet;
+        },
+
+        // A finished trainee taking a place in the party. Answers null when
+        // every companion slot is taken, which leaves it waiting rather than
+        // losing the work.
+        promoteTrainee(id) {
+            const pet = this.getPet(id);
+            if (!pet || !pet.training || !pet.training.ready) return null;
+            const slot = _freeCompanionSlot();
+            if (!slot) return null;
+            const className = _className(pet.training.classId);
+            const actor = _petIntoActor(slot, pet);
+            if (!actor) return null;
+            this.releasePet(pet.id);
+            _toast(T('PetFollower.training.graduated', {
+                name: actor.name(),
+                className: className,
+            }), "info");
+            return actor;
         },
     };
 

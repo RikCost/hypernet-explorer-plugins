@@ -1,244 +1,302 @@
 {
-  "power": {
-    "holyvaticanempire": {
-      "govType": "theocracy",
-      "headTitle": "Supreme Pontifex",
-      "legislature": "Holy Curia",
-      "partyKind": "order",
-      "electorTitle": "Cardinal",
-      "electorTitlePlural": "Cardinals"
-    },
-    "ussr": {
-      "govType": "single-party state",
-      "headTitle": "General Secretary",
-      "legislature": "Supreme Soviet",
-      "partyKind": "faction",
-      "electorTitle": "Politburo Member",
-      "electorTitlePlural": "Politburo Members"
-    },
-    "britannia": {
-      "govType": "parliamentary monarchy",
-      "headTitle": "Prime Minister",
-      "legislature": "Parliament",
-      "partyKind": "party"
-    },
-    "archivefoundation": {
-      "govType": "technocracy",
-      "headTitle": "First Archivist",
-      "legislature": "Index Council",
-      "partyKind": "school"
-    },
-    "ottomanempire": {
-      "govType": "sultanate",
-      "headTitle": "Sultan",
-      "legislature": "Divan",
-      "partyKind": "court faction"
-    },
-    "thegods": {
-      "govType": "divine pantheon",
-      "headTitle": "Prime Deity",
-      "legislature": "Celestial Court",
-      "partyKind": "house"
-    },
-    "sanmarinorepublic": {
-      "govType": "serene republic",
-      "headTitle": "Captain Regent",
-      "legislature": "Grand Council",
-      "partyKind": "party"
-    },
-    "hypercapitalistcollective": {
-      "govType": "corporatocracy",
-      "headTitle": "Chief Executive Sovereign",
-      "legislature": "The Board",
-      "partyKind": "bloc"
-    },
-    "goblinhorde": {
-      "govType": "warband confederacy",
-      "headTitle": "Big Boss",
-      "legislature": "Da Moot",
-      "partyKind": "clan"
-    },
-    "thetourists": {
-      "govType": "caste hierarchy",
-      "headTitle": "Tour Director",
-      "legislature": "The Itinerary",
-      "partyKind": "caste",
-      "electorTitle": "Overseer",
-      "electorTitlePlural": "Overseers"
-    },
-    "thedargos": {
-      "govType": "practical joke",
-      "headTitle": "First Dargos",
-      "legislature": "The Bit",
-      "partyKind": "routine"
-    },
-    "default": {
-      "govType": "republic",
-      "headTitle": "President",
-      "legislature": "Assembly",
-      "partyKind": "party",
-      "electorTitle": "Elector",
-      "electorTitlePlural": "Electors"
-    }
+ "power": {
+  "holyvaticanempire": {
+   "govType": "theocracy",
+   "headTitle": "Supreme Pontifex",
+   "legislature": "Holy Curia",
+   "partyKind": "order",
+   "electorTitle": "Cardinal",
+   "electorTitlePlural": "Cardinals"
   },
-  "election": {
-    "conclave": "Conclave",
-    "plenum": "Party Plenum",
-    "shareholder": "Annual General Meeting",
-    "moot": "Da Moot",
-    "tournament": "Ascension Tournament",
-    "succession": "Succession",
-    "examination": "Great Examination",
-    "parliamentary": "General Election"
+  "ussr": {
+   "govType": "single-party state",
+   "headTitle": "General Secretary",
+   "legislature": "Supreme Soviet",
+   "partyKind": "faction",
+   "electorTitle": "Politburo Member",
+   "electorTitlePlural": "Politburo Members"
   },
-  "office": {
-    "mayor": "Mayor",
-    "guardCaptain": "Captain of the Guard",
-    "taxCollector": "Tax Collector",
-    "highPriest": "High Priest"
+  "britannia": {
+   "govType": "parliamentary monarchy",
+   "headTitle": "Prime Minister",
+   "legislature": "Parliament",
+   "partyKind": "party"
   },
-  "policy": {
-    "taxRate": "the tax rate",
-    "censorship": "censorship",
-    "conscription": "conscription",
-    "welfare": "welfare",
-    "festivals": "festivals"
+  "archivefoundation": {
+   "govType": "technocracy",
+   "headTitle": "First Archivist",
+   "legislature": "Index Council",
+   "partyKind": "school"
   },
-  "rumorKind": {
-    "affair": "affair",
-    "embezzlement": "embezzlement",
-    "secretPact": "secret pact",
-    "forgedCredentials": "forged credentials",
-    "midnightRitual": "midnight ritual",
-    "doubleLife": "double life",
-    "hiddenFortune": "hidden fortune",
-    "blackmail": "blackmail"
+  "ottomanempire": {
+   "govType": "sultanate",
+   "headTitle": "Sultan",
+   "legislature": "Divan",
+   "partyKind": "court faction"
   },
-  "gripe": {
-    "curfew": "the curfew",
-    "taxes": "the taxes",
-    "censors": "the censors",
-    "draft": "the draft"
+  "thegods": {
+   "govType": "divine pantheon",
+   "headTitle": "Prime Deity",
+   "legislature": "Celestial Court",
+   "partyKind": "house"
   },
-  "tag": {
-    "collectivist": "collectivist",
-    "freeMarketeer": "free-marketeer",
-    "libertarian": "libertarian",
-    "authoritarian": "authoritarian",
-    "progressive": "progressive",
-    "traditionalist": "traditionalist",
-    "pacifist": "pacifist",
-    "militarist": "militarist",
-    "rationalist": "rationalist",
-    "mystic": "mystic",
-    "moderate": "moderate"
+  "sanmarinorepublic": {
+   "govType": "serene republic",
+   "headTitle": "Captain Regent",
+   "legislature": "Grand Council",
+   "partyKind": "party"
   },
-  "fallback": {
-    "nobody": "nobody",
-    "noOne": "no one",
-    "oldGuard": "old guard",
-    "partsUnknown": "parts unknown",
-    "spoiledBallot": "spoiled ballot",
-    "establishment": "establishment"
+  "hypercapitalistcollective": {
+   "govType": "corporatocracy",
+   "headTitle": "Chief Executive Sovereign",
+   "legislature": "The Board",
+   "partyKind": "bloc"
   },
-  "event": {
-    "founding": "{power} registered as a hyperpower ({govType}; {n} member territories).",
-    "election": "{election}: {winner} prevails.",
-    "electionWithHead": "{election}: {winner} prevails; {head} is {title}.",
-    "scandal": "{name} engulfed in scandal (#{n}).",
-    "edict": "{title}'s government adjusts {policy}: {before} → {after}.",
-    "protest": "Mass protests against the {govType} sweep {place}.",
-    "riot": "Riots break out; the {legislature} orders a crackdown.",
-    "festival": "A grand state festival lifts spirits across {power}.",
-    "referendum": "National referendum shifts {policy} by {delta}.",
-    "coup": "COUP: {name} seizes power in {power}; {elections}s suspended.",
-    "coupFailed": "A coup attempt against the {title} is crushed.",
-    "revolution": "REVOLUTION: the {govType} of {power} is overthrown; a provisional government calls an emergency {election}.",
-    "assassination": "{name}, {title} of {power}, is assassinated.",
-    "politicianDies": "{name} dies at {age}.",
-    "headDies": "{name} dies at {age}. {power} mourns its {title}."
+  "goblinhorde": {
+   "govType": "warband confederacy",
+   "headTitle": "Big Boss",
+   "legislature": "Da Moot",
+   "partyKind": "clan"
   },
-  "note": {
-    "coalition": "Coalition formed with {party}.",
-    "conclaveBallots": {
-      "one": "Decided after one ballot of the {electors}.",
-      "other": "Decided after {count} ballots of the {electors}."
-    },
-    "purged": "The {party} was purged from the {legislature}.",
-    "officialResults": "Official results. Actual sentiments unrecorded.",
-    "oneCreditOneVote": "One credit, one vote.",
-    "mootLoser": "{name} lost da Moot and was fed to the wolfpigs.",
-    "biggestWins": "Biggest and loudest wins.",
-    "ascension": "Decided by ascension tournament before the Celestial Court.",
-    "successionWar": "The succession descended into open warfare between the heirs.",
-    "successionCasualty": "{name} did not survive the war of succession.",
-    "palaceIntrigue": "Settled by palace intrigue in the Divan.",
-    "examinationScore": "Scored {score}/160 on the Great Examination."
+  "thetourists": {
+   "govType": "caste hierarchy",
+   "headTitle": "Tour Director",
+   "legislature": "The Itinerary",
+   "partyKind": "caste",
+   "electorTitle": "Overseer",
+   "electorTitlePlural": "Overseers"
   },
-  "identity": {
-    "sympathized": "Came to sympathize with the {party}.",
-    "awakened": "Formed political opinions.",
-    "conversion": "Left the {from} for the {to}.",
-    "radicalized": "Hardened views as unrest spread.",
-    "grudge": "Bitter about {winner} winning the {election}.",
-    "electedMayor": "Elected Mayor of {group} ({votes}/{total} votes).",
-    "appointed": "Appointed {office} of {group}."
+  "thedargos": {
+   "govType": "practical joke",
+   "headTitle": "First Dargos",
+   "legislature": "The Bit",
+   "partyKind": "routine"
   },
-  "story": {
-    "electedMayor": "elected Mayor of {group}",
-    "appointed": "appointed {office} of {group}"
+  "kukulkanascendancy": {
+   "govType": "divine empire",
+   "headTitle": "God-Emperor",
+   "legislature": "Council of Ajawob",
+   "partyKind": "cult"
   },
-  "death": {
-    "wolfpigs": "fed to the wolfpigs after losing da Moot",
-    "succession": "killed in the war of succession",
-    "assassinated": "assassinated",
-    "naturalCauses": "died of natural causes at {age}"
+  "default": {
+   "govType": "republic",
+   "headTitle": "President",
+   "legislature": "Assembly",
+   "partyKind": "party",
+   "electorTitle": "Elector",
+   "electorTitlePlural": "Electors"
   },
-  "report": {
-    "noPower": "No hyperpower named \"{power}\".",
-    "noIdentity": "{name}: no political identity.",
-    "header": "=== {power}, {govType} ===",
-    "head": "{title}: {value}",
-    "headValue": "{name} (approval {approval}%)",
-    "vacant": "vacant",
-    "ruling": "Ruling {partyKind}: {party}{partners}",
-    "coalitionPartners": {
-      "one": "(+1 coalition partner)",
-      "other": "(+{n} coalition partners)"
-    },
-    "meters1": "Legitimacy {legitimacy}  Stability {stability}",
-    "meters2": "Unrest     {unrest}  Economy   {economy}",
-    "policies": "Policies: tax {tax}% · censorship {censorship} · conscription {conscription} · welfare {welfare}{curfew}",
-    "curfew": "CURFEW",
-    "lastElection": "Last {election}: {date}, {winner} ({share}%).",
-    "nextElection": "Next {election}: {date}.",
-    "recentEvents": "Recent events:",
-    "electionHeader": "=== {power}, {election} history ===",
-    "next": "Next: {date}",
-    "electionRow": "{date}{snap}, winner: {winner}{turnout}",
-    "snap": "(snap)",
-    "turnout": ", turnout {turnout}%",
-    "resultRow": "   {share}%{seats}, {name}",
-    "seats": {
-      "one": "(1 seat)",
-      "other": "({n} seats)"
-    },
-    "citizen": "{name}, citizen of {country} ({power}).",
-    "sympathizes": "Sympathizes with the {party}.",
-    "leanings": "Leanings: {tags}.",
-    "engagement": "Political engagement: {engagement}/100{note}.",
-    "apathetic": "(apathetic)",
-    "activist": "(activist)",
-    "holdsOffice": "Holds office: {office} of {group}.",
-    "lastVote": "Last vote: {party} ({date}).",
-    "grudge": "Holds a grudge against the {party}."
+  "democraticpeoplesrepublicofkorea": {
+   "govType": "hereditary republic",
+   "headTitle": "Eternal Chairman",
+   "legislature": "Supreme People's Assembly",
+   "partyKind": "party"
   },
-  "officeState": {
-    "disgraced": "disgraced",
-    "deposed": "deposed"
+  "dharmadirectorate": {
+   "govType": "harmonious empire",
+   "headTitle": "Chancellor of Rites",
+   "legislature": "Hall of Ten Thousand Voices",
+   "partyKind": "school",
+   "electorTitle": "Preceptor",
+   "electorTitlePlural": "Preceptors"
   },
-  "accession": {
-    "elected": "elected",
-    "coup": "coup"
+  "illuminatedkhanate": {
+   "govType": "illuminated khanate",
+   "headTitle": "Illuminated Khan",
+   "legislature": "Ikh Khuraldai",
+   "partyKind": "banner",
+   "electorTitle": "Abbot",
+   "electorTitlePlural": "Abbots"
+  },
+  "solomonicrepublic": {
+   "govType": "solomonic republic",
+   "headTitle": "Nasi of the Republic",
+   "legislature": "Restored Sanhedrin",
+   "partyKind": "council"
+  },
+  "petrokingdomofarabia": {
+   "govType": "petro monarchy",
+   "headTitle": "Oil-Emir",
+   "legislature": "Concession Majlis",
+   "partyKind": "concession"
+  },
+  "sanatanarashtra": {
+   "govType": "dharmic republic",
+   "headTitle": "Prime Minister",
+   "legislature": "Rashtra Sabha",
+   "partyKind": "sabha"
+  },
+  "longchile": {
+   "govType": "expansionist republic",
+   "headTitle": "President-Marshal",
+   "legislature": "Congress of the Long South",
+   "partyKind": "movement"
+  },
+  "imperialstateofpersia": {
+   "govType": "imperial state",
+   "headTitle": "Prime Minister",
+   "legislature": "National Consultative Assembly",
+   "partyKind": "party"
   }
+ },
+ "election": {
+  "conclave": "Conclave",
+  "plenum": "Party Plenum",
+  "shareholder": "Annual General Meeting",
+  "moot": "Da Moot",
+  "tournament": "Ascension Tournament",
+  "succession": "Succession",
+  "examination": "Great Examination",
+  "parliamentary": "General Election"
+ },
+ "office": {
+  "mayor": "Mayor",
+  "guardCaptain": "Captain of the Guard",
+  "taxCollector": "Tax Collector",
+  "highPriest": "High Priest"
+ },
+ "policy": {
+  "taxRate": "the tax rate",
+  "censorship": "censorship",
+  "conscription": "conscription",
+  "welfare": "welfare",
+  "festivals": "festivals"
+ },
+ "rumorKind": {
+  "affair": "affair",
+  "embezzlement": "embezzlement",
+  "secretPact": "secret pact",
+  "forgedCredentials": "forged credentials",
+  "midnightRitual": "midnight ritual",
+  "doubleLife": "double life",
+  "hiddenFortune": "hidden fortune",
+  "blackmail": "blackmail"
+ },
+ "gripe": {
+  "curfew": "the curfew",
+  "taxes": "the taxes",
+  "censors": "the censors",
+  "draft": "the draft"
+ },
+ "tag": {
+  "collectivist": "collectivist",
+  "freeMarketeer": "free-marketeer",
+  "libertarian": "libertarian",
+  "authoritarian": "authoritarian",
+  "progressive": "progressive",
+  "traditionalist": "traditionalist",
+  "pacifist": "pacifist",
+  "militarist": "militarist",
+  "rationalist": "rationalist",
+  "mystic": "mystic",
+  "moderate": "moderate"
+ },
+ "fallback": {
+  "nobody": "nobody",
+  "noOne": "no one",
+  "oldGuard": "old guard",
+  "partsUnknown": "parts unknown",
+  "spoiledBallot": "spoiled ballot",
+  "establishment": "establishment"
+ },
+ "event": {
+  "founding": "{power} registered as a hyperpower ({govType}; {n} member territories).",
+  "election": "{election}: {winner} prevails.",
+  "electionWithHead": "{election}: {winner} prevails; {head} is {title}.",
+  "scandal": "{name} engulfed in scandal (#{n}).",
+  "edict": "{title}'s government adjusts {policy}: {before} → {after}.",
+  "protest": "Mass protests against the {govType} sweep {place}.",
+  "riot": "Riots break out; the {legislature} orders a crackdown.",
+  "festival": "A grand state festival lifts spirits across {power}.",
+  "referendum": "National referendum shifts {policy} by {delta}.",
+  "coup": "COUP: {name} seizes power in {power}; {elections}s suspended.",
+  "coupFailed": "A coup attempt against the {title} is crushed.",
+  "revolution": "REVOLUTION: the {govType} of {power} is overthrown; a provisional government calls an emergency {election}.",
+  "assassination": "{name}, {title} of {power}, is assassinated.",
+  "politicianDies": "{name} dies at {age}.",
+  "headDies": "{name} dies at {age}. {power} mourns its {title}."
+ },
+ "note": {
+  "coalition": "Coalition formed with {party}.",
+  "conclaveBallots": {
+   "one": "Decided after one ballot of the {electors}.",
+   "other": "Decided after {count} ballots of the {electors}."
+  },
+  "purged": "The {party} was purged from the {legislature}.",
+  "officialResults": "Official results. Actual sentiments unrecorded.",
+  "oneCreditOneVote": "One credit, one vote.",
+  "mootLoser": "{name} lost da Moot and was fed to the wolfpigs.",
+  "biggestWins": "Biggest and loudest wins.",
+  "ascension": "Decided by ascension tournament before the Celestial Court.",
+  "successionWar": "The succession descended into open warfare between the heirs.",
+  "successionCasualty": "{name} did not survive the war of succession.",
+  "palaceIntrigue": "Settled by palace intrigue in the Divan.",
+  "examinationScore": "Scored {score}/160 on the Great Examination."
+ },
+ "identity": {
+  "sympathized": "Came to sympathize with the {party}.",
+  "awakened": "Formed political opinions.",
+  "conversion": "Left the {from} for the {to}.",
+  "radicalized": "Hardened views as unrest spread.",
+  "grudge": "Bitter about {winner} winning the {election}.",
+  "electedMayor": "Elected Mayor of {group} ({votes}/{total} votes).",
+  "appointed": "Appointed {office} of {group}."
+ },
+ "story": {
+  "electedMayor": "elected Mayor of {group}",
+  "appointed": "appointed {office} of {group}"
+ },
+ "death": {
+  "wolfpigs": "fed to the wolfpigs after losing da Moot",
+  "succession": "killed in the war of succession",
+  "assassinated": "assassinated",
+  "naturalCauses": "died of natural causes at {age}"
+ },
+ "report": {
+  "noPower": "No hyperpower named \"{power}\".",
+  "noIdentity": "{name}: no political identity.",
+  "header": "=== {power}, {govType} ===",
+  "head": "{title}: {value}",
+  "headValue": "{name} (approval {approval}%)",
+  "vacant": "vacant",
+  "ruling": "Ruling {partyKind}: {party}{partners}",
+  "coalitionPartners": {
+   "one": "(+1 coalition partner)",
+   "other": "(+{n} coalition partners)"
+  },
+  "meters1": "Legitimacy {legitimacy}  Stability {stability}",
+  "meters2": "Unrest     {unrest}  Economy   {economy}",
+  "policies": "Policies: tax {tax}% · censorship {censorship} · conscription {conscription} · welfare {welfare}{curfew}",
+  "curfew": "CURFEW",
+  "lastElection": "Last {election}: {date}, {winner} ({share}%).",
+  "nextElection": "Next {election}: {date}.",
+  "recentEvents": "Recent events:",
+  "electionHeader": "=== {power}, {election} history ===",
+  "next": "Next: {date}",
+  "electionRow": "{date}{snap}, winner: {winner}{turnout}",
+  "snap": "(snap)",
+  "turnout": ", turnout {turnout}%",
+  "resultRow": "   {share}%{seats}, {name}",
+  "seats": {
+   "one": "(1 seat)",
+   "other": "({n} seats)"
+  },
+  "citizen": "{name}, citizen of {country} ({power}).",
+  "sympathizes": "Sympathizes with the {party}.",
+  "leanings": "Leanings: {tags}.",
+  "engagement": "Political engagement: {engagement}/100{note}.",
+  "apathetic": "(apathetic)",
+  "activist": "(activist)",
+  "holdsOffice": "Holds office: {office} of {group}.",
+  "lastVote": "Last vote: {party} ({date}).",
+  "grudge": "Holds a grudge against the {party}."
+ },
+ "officeState": {
+  "disgraced": "disgraced",
+  "deposed": "deposed"
+ },
+ "accession": {
+  "elected": "elected",
+  "coup": "coup"
+ }
 }

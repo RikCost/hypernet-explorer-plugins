@@ -592,6 +592,9 @@
       for (const o of arr) {
         if (!o || !o.name || o.price == null) continue;
         if (o.name.startsWith("Empty ")) continue; // i18n-ignore: procedural template sentinel
+        // A <Restricted> row is granted by the system that owns it, never paid
+        // out as a quest reward.
+        if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(o)) continue;
         if (o.price >= lo && o.price <= hi) pool.push({ kind, id: o.id });
       }
     };
@@ -1533,6 +1536,16 @@
     // Upfront costs rise with the grade too.
     if (o.payGold > 0 && star > 0) {
       o.payGold = Math.round(o.payGold * (1 + 0.35 * star) / 10) * 10;
+      ctx.COST = euros(o.payGold);
+    }
+    // Whatever the archetype and the band worked out to, a contract that puts a
+    // figure of money on the poster must always promise more than it asks for.
+    // A scam is a scam because the money never arrives, not because the offer
+    // itself is arithmetic nobody would sign.
+    if (o.payGold > 0 && o.reward.gold > 0 && o.payGold >= o.reward.gold) {
+      const capped = Math.floor(o.reward.gold * 0.7 / 10) * 10;
+      o.payGold = capped >= 10 ? capped : 0;
+      if (o.payGold > 0 && o.penaltyGold > 0) o.penaltyGold = Math.min(o.penaltyGold, o.reward.gold);
       ctx.COST = euros(o.payGold);
     }
     if (!o.deadlineHours) {
@@ -2507,15 +2520,15 @@
         // i18n-ignore-start: sprite sheet names (img/characters/NPCs, one
         // character apiece, so the index is always 0)
         const CRIMINAL_SPRITES = [
-          "NPCs/!$OrcWarrior1", "NPCs/!$Lich3", "NPCs/!$VoidAbstracter1",
-          "NPCs/!$Evil014", "NPCs/!$Evil015", "NPCs/!$GoblinRaider1",
-          "NPCs/!$BotExplorer1", "NPCs/!$Ninja2",
+          "NPCs/!$OrcWarrior1", "Zombies/!$Lich3", "Creatures/!$Ghost3",
+          "Creatures/!$SlimeGreen", "Creatures/!$FloatingEye", "Zombies/!$GoblinRaider1",
+          "NPCs/!$BotExplorer1", "Zombies/!$Ninja2",
         ];
         const BEAST_SPRITES = [
           "NPCs/!$GoblinJester1", "NPCs/!$GoblinKnight1", "NPCs/!$GoblinCourier1",
-          "NPCs/!$GoblinRecruit1", "NPCs/!$GoblinCleric1", "NPCs/!$Lich1",
-          "NPCs/!$Lich2", "NPCs/!$OrcBrawler1", "NPCs/!$GoblinArtist1",
-          "NPCs/!$VoidSpawn1", "NPCs/!$VoidSpawn2",
+          "NPCs/!$GoblinRecruit1", "NPCs/!$GoblinCleric1", "Creatures/!$Lich1",
+          "Creatures/!$Lich2", "Creatures/!$OrcBrawler1", "Animations/!$GoblinArtist1",
+          "Creatures/!$Mushroom1", "Creatures/!$Mushroom3",
         ];
         // i18n-ignore-end
         const pool = b.criminal ? CRIMINAL_SPRITES : BEAST_SPRITES;

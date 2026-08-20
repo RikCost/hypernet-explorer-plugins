@@ -1,0 +1,219 @@
+{
+  "case": {
+    "slab": "Lastra da Campo",
+    "wedge": "Cuneo del Disegnatore",
+    "book": "Piega da Registro",
+    "brick": "Mattone da Cantiere",
+    "palmtop": "Palmare Tascabile",
+    "dualhinge": "Doppia Cerniera"
+  },
+  "kind": {
+    "cpu": "Processore",
+    "ram": "Memoria",
+    "storage": "Archiviazione",
+    "gpu": "Grafica",
+    "display": "Pannello",
+    "battery": "Cella",
+    "modem": "Collegamento",
+    "cooling": "Raffreddamento",
+    "sound": "Audio",
+    "sensor": "Sensore"
+  },
+  "specs": {
+    "heading": "SPECIFICA TOTALE",
+    "processor": "Processore",
+    "memory": "Memoria",
+    "storage": "Archiviazione",
+    "graphics": "Grafica",
+    "battery": "Cella",
+    "draw": "Assorbimento",
+    "slots": "Scheda",
+    "caseLabel": "Telaio"
+  },
+  "unit": {
+    "mhz": "{n} MHz",
+    "mb": "{n} MB",
+    "gb": "{n} GB",
+    "mah": "{n} mAh",
+    "watt": "{n} W",
+    "cells": "{used} celle su {total}",
+    "grid": "griglia {cols} x {rows}"
+  },
+  "value": {
+    "none": "non montato",
+    "infinite": "illimitata"
+  },
+  "required": {
+    "heading": "NECESSARIO"
+  },
+  "rail": {
+    "heading": "PEZZI TRASPORTATI",
+    "empty": "Non stai trasportando componenti.",
+    "count": "x{n}"
+  },
+  "hint": {
+    "idle": "Clicca lo schermo per accendere. Clicca la scheda per aprirla. Trascina o frecce per ruotare, rotella o L2/R2 per lo zoom, tasto centrale per spostare.",
+    "edit": "Trascina un pezzo sulla scheda. L1/R1 o Tab lo ruota. Rotella o L2/R2 zoom, tasto centrale sposta. Esc torna indietro."
+  },
+  "boot": {
+    "banner": "★ Esoteric Heavy Industries",
+    "copyright": "Copyright (C) 2001, Esoteric Systems Division",
+    "firmware": "Archways XP System v3.14",
+    "processor": "Processore Princip.: {name}",
+    "memory": "Test Memoria       : {size} OK",
+    "memoryInfinite": "Test Memoria       : conto... conto... OK",
+    "quantum": "Buffer Quantistico : {size} OK",
+    "storage": "Volume Primario    : {size} OK",
+    "cell": "Cella Alimentaz.   : {size} OK",
+    "detectMaster": "Rilevo Master Primario     ... OK",
+    "detectBioslave": "Rilevo Bioslave Primario      ... OK",
+    "detectNeural": "Rilevo Interfaccia Neurale  ... OK",
+    "detectMana": "Rilevo Condensatori di Mana ... OK",
+    "detectUplink": "Rilevo Collegamento Hypernet ... OK",
+    "detectNoUplink": "Rilevo Collegamento Hypernet ... nessuno",
+    "loadingFiles": "Caricamento file di sistema Archways XP...",
+    "driverKernel": "HEXKERN.SYS",
+    "driverMagic": "MAGIDRV.SYS",
+    "driverLink": "ETHLINK.DRV",
+    "driverLine": "{name} {bar} {pct}%",
+    "protocols": "Inizializzazione Protocolli Arcani...",
+    "manaFlow": "Calibrazione Flusso di Mana... OK",
+    "ethereal": "Sincronia Rete Eterea... OK",
+    "loading": "Caricamento Ambiente di Gioco... ",
+    "ready": "✓ Sistema Pronto - Avvio di Archways XP..."
+  },
+  "post": {
+    "failHeading": "ERRORE DI AVVIO",
+    "failLine": "nessun componente: {kind}",
+    "failFooter": "Monta i pezzi mancanti e riprova.",
+    "overdrawHeading": "GUASTO DI ALIMENTAZIONE",
+    "overdrawLine": "la cella non regge {n} W",
+    "unfedLine": "nessuna {signal} raggiunge {part}"
+  },
+  "tool": {
+    "auto": "MONTA",
+    "case": "TELAIO",
+    "finish": "GUSCIO",
+    "bios": "BIOS",
+    "face": "META INFERIORE",
+    "clear": "SVUOTA",
+    "chip": "CHIP",
+    "boot": "AVVIA",
+    "trace": "PISTA",
+    "traceOn": "PISTA {signal}"
+  },
+  "face": {
+    "keyboard": "Tastiera",
+    "handheld": "Pad da palmare",
+    "phone": "Tastierino telefonico"
+  },
+  "caseWarning": "Cambiare telaio svuota la scheda. Ogni pezzo torna nella borsa.",
+  "fault": {
+    "missing": "Nessun componente: {kind}. La macchina non parte senza.",
+    "power": "Alla cella mancano {n} W rispetto a quanto assorbono i pezzi montati.",
+    "heat": "Nulla raffredda una scheda da {n} W. Aspettati che rallenti.",
+    "uplink": "Nessun collegamento montato. L Hypernet non rispondera.",
+    "video": "Nessun adattatore grafico. Il pannello e pilotato dal processore.",
+    "memory": "Solo {n} MB di memoria. Archways XP arranchera.",
+    "unfed": "{part} non riceve {signal}."
+  },
+  "chip": {
+    "heading": "LABORATORIO CHIP",
+    "hint": "Il tasto sinistro disegna, il destro cancella, il centrale sposta, la rotella zooma. Scegli due volte una casella per scorrerne le impostazioni.",
+    "tile": {
+      "wire": "Filo",
+      "source": "Sorgente",
+      "torch": "Torcia",
+      "repeater": "Ripetitore",
+      "gate": "Porta",
+      "bridge": "Ponte",
+      "in": "Pin di ingresso",
+      "out": "Pin di uscita",
+      "clock": "Clock",
+      "lamp": "Lampada",
+      "chip": "Processore 8066"
+    },
+    "gate": {
+      "and": "AND",
+      "or": "OR",
+      "xor": "XOR",
+      "nand": "NAND",
+      "nor": "NOR",
+      "xnor": "XNOR",
+      "not": "NOT"
+    },
+    "dir": {
+      "0": "nord",
+      "1": "est",
+      "2": "sud",
+      "3": "ovest"
+    },
+    "delay": "ritardo di {n} tick",
+    "period": "ogni {n} tick",
+    "pin": "pin {n}",
+    "facing": "VERSO {d}",
+    "variant": "OPZIONE",
+    "rotate": "RUOTA",
+    "run": "AVVIA",
+    "pause": "PAUSA",
+    "step": "PASSO",
+    "speed": "VELOCITA x{n}",
+    "wipe": "AZZERA",
+    "fabricate": "INCIDI DIE",
+    "done": "INDIETRO",
+    "gates": "Logica",
+    "tiles": "Caselle",
+    "rating": "Stimato",
+    "cost": "Rottami",
+    "pins": "PIN",
+    "scrap": "{n} su {held}",
+    "dieName": "Die Inciso in Casa MK{serial}",
+    "dieDesc": "Un die logico ricavato dai rottami. {gates} porte, stimato a {mhz} MHz.",
+    "made": "{name} inciso, {n} rottami spesi.",
+    "needScrap": "Acciaio recuperato insufficiente: ne servono {n}.",
+    "fail": {
+      "noGates": "Non c'e nulla da incidere. Disegna prima della logica.",
+      "noSlot": "Nessun die vergine libero. Usane o vendine uno vecchio.",
+      "noLab": "Il banco non e pronto."
+    },
+    "gateGroup": "PORTE",
+    "preset": {
+      "inverter": "Invertitore",
+      "latch": "Latch SR",
+      "clock": "Clock",
+      "halfadder": "Semisommatore",
+      "toggle": "Bistabile",
+      "counter": "Contatore ad anello",
+      "cpu8066": "Macchina 8066",
+      "fulladder": "Sommatore completo",
+      "adder4": "Sommatore a 4 bit"
+    },
+    "presetGroup": "CIRCUITI",
+    "stamped": "{name} inserito, {n} caselle.",
+    "rom": {
+      "counter": "ROM: contatore di bus",
+      "fib": "ROM: fibonacci",
+      "strcpy": "ROM: copia stringa",
+      "muldiv": "ROM: moltiplica e dividi"
+    },
+    "bus": "Bus",
+    "instr": "Istr",
+    "presetHeading": "SCHEMI PRONTI",
+    "presetHint": "Scegline uno e viene disegnato dove stai guardando. Tutto cio che posa sono caselle ordinarie: spostale, collegale a qualcosa di piu grande, o incidile cosi come sono.",
+    "placing": "{name} in mano. Clicca per posarlo, tasto destro o Esc per rimetterlo giu."
+  },
+  "bios": {
+    "heading": "CONFIGURAZIONE FIRMWARE HYPERDECK",
+    "tabMain": "PRINCIPALE",
+    "tabHealth": "STATO",
+    "noFaults": "Nessun guasto rilevato. Ogni pezzo montato ha risposto.",
+    "willBoot": "Questa macchina superera il POST.",
+    "willNotBoot": "Questa macchina non superera il POST.",
+    "boot": "ACCENDI",
+    "exit": "ESCI"
+  },
+  "signal": {
+    "power": "corrente",
+    "video": "video"
+  }
+}

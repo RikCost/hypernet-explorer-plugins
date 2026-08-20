@@ -7,8 +7,6 @@
     "noneTrained": "NO SPECIALIZATIONS TRAINED YET!",
     "untrained": "UNTRAINED",
     "noneSelected": "NO SPECIALIZATION SELECTED!",
-    "classes": "CLASSES",
-    "traits": "TRAITS",
     "towards": "TOWARDS {level}",
     "pointsToNext": "{points} MORE POINTS TA {level}",
     "mastered": "FULLY MASTERED. NOTHIN' LEFT TA LEARN!",

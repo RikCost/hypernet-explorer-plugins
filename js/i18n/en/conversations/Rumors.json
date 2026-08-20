@@ -1,0 +1,141 @@
+{
+  "generic": [
+    "They say the road out east has been quiet for weeks. Too quiet for anyone's liking.",
+    "Prices went up again. Nobody will say who decided that.",
+    "Somebody saw lights over the water three nights running.",
+    "The wells have tasted of iron since the spring. Ask anyone.",
+    "There is work going at the old yard, but nobody comes back talking about it.",
+    "A stranger passed through last week and paid in coins nobody recognised.",
+    "Half the town swears the bells rang at the wrong hour.",
+    "The guards changed their patrol. That never happens for nothing.",
+    "Word is a whole caravan turned back before it reached the pass.",
+    "Something got into the storehouse. They are calling it dogs."
+  ],
+  "personality": {
+    "nervous": [
+      "I should not be saying this, but people have been going missing off the north road. Please do not repeat it.",
+      "You did not hear it from me. Something is wrong at the water works and nobody will admit it.",
+      "Every night this week I have heard someone moving outside. Every night. I have stopped opening the shutters."
+    ],
+    "calm": [
+      "There is talk of trouble at the border. I would not act on it yet.",
+      "People are saying the harvest will fail. People say that most years.",
+      "A rumour is going around about the magistrate. I will wait until somebody puts a name to it."
+    ],
+    "aggressive": [
+      "Somebody has been skimming the shipments, and when I find out who, they will be missing teeth.",
+      "Ask the pack at the tavern about the fight last week. Ask them who started it. They will lie.",
+      "There is a crew working this district that thinks nobody is watching. Somebody is."
+    ],
+    "melancholic": [
+      "The old family on the hill left in the night. Nobody has said why, and nobody will.",
+      "They say the river took another one last month. It always takes somebody.",
+      "This place used to be full. Now the rumours are all we have left to pass around."
+    ],
+    "sanguine": [
+      "Have you heard? There is going to be a festival, and the whole street is already arguing about the music.",
+      "Word is somebody came into money and is being very quiet about it. Wonderful, isn't it?",
+      "Everyone is talking about the new arrival. I intend to find out everything before the week is out."
+    ],
+    "cautious": [
+      "I have heard the same story from three people, which is exactly why I do not trust it.",
+      "There is supposed to be easy work down at the docks. Easy work usually costs something.",
+      "Check who holds the debt before you believe anything about that shop closing."
+    ],
+    "impulsive": [
+      "They say the vault under the mill is still full. I nearly went last night.",
+      "There is a fight on at the yard right now, apparently. Come on.",
+      "Somebody left a whole cart unattended by the gate. A whole cart. Unattended."
+    ],
+    "stoic": [
+      "Talk says the winter will be hard. It usually is.",
+      "Two men vanished off the pass road. That is what the road does.",
+      "The prices climbed again. Complaining has never brought one of them down."
+    ],
+    "paranoid": [
+      "Count the guards on the east gate. Then count them tomorrow. You will see.",
+      "The letters are being opened. I do not care who says otherwise, I have seen the seals.",
+      "Whoever is asking questions about the old warehouse is not asking for themselves."
+    ],
+    "empathetic": [
+      "The family on the corner lost everything and the whole street is pretending not to notice.",
+      "They say the innkeeper's boy has not been the same since the spring. I believe it.",
+      "There is gossip going round about her, and I wish people could hear themselves."
+    ],
+    "authoritative": [
+      "The shipment records do not add up, and I intend to have an answer by the week's end.",
+      "There is talk of a strike at the yard. It will be settled properly or it will be settled by me.",
+      "Somebody is giving orders in this district who has no standing to give them."
+    ],
+    "scholarly": [
+      "Three separate accounts describe the same lights over the marsh, and none of them agree on the colour.",
+      "The archive lost a whole year of records to a fire that nobody recorded.",
+      "There is a manuscript circulating that claims the city is older than its charter. Poorly sourced, but interesting."
+    ],
+    "artistic": [
+      "The bells rang wrong on Tuesday and nobody else seems to have heard it. I have not stopped thinking about it.",
+      "They say the painter on the square stopped taking work. I know why. I would have stopped too.",
+      "Something in this town has changed colour this season. I cannot name it, but it has."
+    ],
+    "adventurous": [
+      "There is a pass nobody has walked in ten years, and I have found somebody who says it is open again.",
+      "The maps are wrong about the north ridge. I intend to prove it.",
+      "They say a ship came in with a hold full of things without names. I want to see it."
+    ],
+    "nurturing": [
+      "Those children have been sleeping in the yard again. Somebody ought to do something, so I will.",
+      "They say the old woman on the lane has not opened her door in days. I am going round with soup.",
+      "There is sickness on the south side. Keep your people home if you can."
+    ],
+    "mischievous": [
+      "You want to know who the constable's wife has been visiting? Buy me a drink.",
+      "Somebody swapped the ledgers at the customs house. I would never say who.",
+      "There is a rumour going round that I started, and it has come back to me improved."
+    ],
+    "cynical": [
+      "They say the new tax pays for the roads. Look at the roads.",
+      "Somebody will be blamed for the missing grain. It will not be whoever took it.",
+      "Every rumour in this town is a bill somebody is trying not to pay."
+    ],
+    "disciplined": [
+      "The night watch has been three men short for a month. It is in the roster, if anybody bothered to read it.",
+      "Stores went out unlogged twice this week. That is how a place starts to rot.",
+      "There is talk about the new officer. I will judge them on their drills, not on gossip."
+    ],
+    "fatalistic": [
+      "They say the mine will reopen. It will flood again, the same as before.",
+      "Whatever is coming up the road is already on its way. Talking about it changes nothing.",
+      "The signs are all there. They were there last time too, and nobody moved."
+    ],
+    "grumpy": [
+      "Everyone is repeating the same nonsense about the bridge and not one of them has walked it.",
+      "They put a new stall on the square. Ruined the square.",
+      "Somebody's dog got into the stores. I said this would happen. Nobody listened."
+    ],
+    "loyal": [
+      "People are saying things about my employer that they would not say to his face, and they had better not.",
+      "There is a rumour about the guard captain. I served under her. It is a lie.",
+      "Whatever you have heard about that family, they stood by this town when nobody else did."
+    ],
+    "brave": [
+      "They say something is living in the drains under the market. I am going down there tomorrow.",
+      "Half the street will not walk past the old house after dark. I walk past it every night.",
+      "There is talk of bandits on the east road. Let them come this way."
+    ],
+    "timid": [
+      "I heard something about the tower, but please do not ask me to repeat it.",
+      "People are talking, and I would rather not be seen talking with them.",
+      "There is a man asking about strangers. I did not tell him anything. I promise."
+    ],
+    "hedonistic": [
+      "The cellar at the inn has something new in it, and the innkeeper is pretending it does not exist.",
+      "They say there is a party at the big house that nobody is invited to. Nobody stays uninvited for long.",
+      "Word is the new place on the square pours honestly. That is worth more than any secret."
+    ],
+    "apathetic": [
+      "Something happened at the docks. People are upset about it.",
+      "They say the council is falling apart. I suppose it might be.",
+      "There is a rumour going round. I have not bothered to learn which one."
+    ]
+  }
+}

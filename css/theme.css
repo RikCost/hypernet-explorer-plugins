@@ -188,6 +188,15 @@
     padding-bottom: 4px;
 }
 
+/* How many weapons the body on show could carry, under its name. */
+.cc-weapon-slots {
+    font-family: 'Lora', serif;
+    font-size: 1.245rem;
+    color: var(--text-card-medium);
+    letter-spacing: 0.5px;
+    margin: -6px 0 10px 0;
+}
+
 .cc-text-desc {
     font-size: 1.288rem;
     line-height: 1.5;
@@ -626,11 +635,36 @@
 }
 
 .cc-skins-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
     margin-top: 10px;
     font-size: 1.02rem;
     font-style: normal;
     text-align: center;
     color: var(--text-card-medium);
+}
+
+/* The chip that names the button which leafs through a dossier's looks: the
+   shoulder buttons when a pad is plugged in, TAB otherwise. Same chip the
+   empathize panel and the shop wear, for the same reason: nothing else on the
+   dossier hints that the control exists. Not clickable, so it never eats the
+   thumbnails' own clicks. */
+.cc-skins-hint .cc-key-chip {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    font-size: 0.92em;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    color: var(--accent-gold-pure);
+    border: 1px dashed var(--border-primary-hover-translucent-15);
+    border-radius: 4px;
+    background: var(--bg-primary-hover-translucent-35);
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 /* Flat roster row: the variant for a picker whose entries are a name and
@@ -1498,6 +1532,12 @@
     text-align: left;
 }
 
+/* No corner stamp on a trait card: the row already carries its own cost
+   badge, and the stamp landed on top of it. */
+.cc-trait-grid .cc-card-option.selected::before {
+    content: none;
+}
+
 .cc-trait-grid .cc-option-title {
     margin: 0;
     flex: 1 1 auto;
@@ -1933,11 +1973,14 @@
     padding: 11px 30px;
     text-align: center;
     /* Unselected: black background with gold text and no gold border; the
-       selected/confirm/highlighted variants below add the gold border (#51). */
+       selected/confirm/highlighted variants below add the gold border (#51).
+       The ink is the pure gold rather than the theme's primary hover colour:
+       that colour is a near-black red in the archive theme, which left Back
+       unreadable on its own black plate. */
     background: var(--text-pure-black);
     border: 2px solid transparent;
     border-radius: 4px;
-    color: var(--text-primary-hover);
+    color: var(--accent-gold-pure);
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 10px var(--shadow-primary-hover-translucent-5);
@@ -1945,10 +1988,14 @@
     outline: none;
 }
 
+/* Hover and cursor states darken the plate instead of flipping it white: the
+   white plate kept the gold ink, which is all but invisible on it. The solid
+   gold plate stays reserved for .confirm, so the two remain telling apart. */
 .cc-btn-treaty:hover {
     transform: translateY(-2px);
-    background: var(--text-warning-hover);
-    border-color: var(--text-primary-hover);
+    background: var(--bg-bg-alt-15-hover);
+    border-color: var(--accent-gold-pure);
+    color: var(--accent-gold-pure);
     box-shadow: 0 8px 16px var(--border-primary-hover-translucent-15);
 }
 
@@ -1968,8 +2015,9 @@
 
 .cc-btn-treaty.highlighted {
     transform: translateY(-2px) scale(1.05);
-    background: var(--text-warning-hover);
-    border-color: var(--text-primary-hover);
+    background: var(--bg-bg-alt-15-hover);
+    border-color: var(--accent-gold-pure);
+    color: var(--accent-gold-pure);
     box-shadow: 0 8px 16px var(--border-primary-hover-translucent-15);
 }
 
@@ -2107,8 +2155,14 @@
     outline: 1px solid var(--border-primary-hover-translucent-15);
     outline-offset: -10px;
 
-    /* Paper Rustling Animation Scale-In */
-    animation: paperRustle 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Paper Rustling Animation Scale-In.
+       Kept short on purpose: nothing is being computed while it plays, so every
+       millisecond of it is time the player spends waiting on a menu that is
+       already built. 0.22s matches the container's own opacity fade
+       (UI/CustomMainMenuLayout.js createUIMenuDOM), so the parchment and the
+       backdrop settle together instead of the spread trailing the fade by a
+       quarter of a second. The easing does the rest of the work. */
+    animation: paperRustle 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Procedural Parchment Texture using Inline SVG fractal noise + linear gradients */
     background-image:
@@ -2391,6 +2445,16 @@
     flex-direction: column;
     gap: 8px;
     margin-bottom: 14px;
+}
+
+/* Reminder of the TAB / shoulder-button party walk, sitting under the cards. */
+.party-switch-hint {
+    font-family: 'Lora', serif;
+    font-size: 0.75em;
+    font-style: italic;
+    text-align: center;
+    opacity: 0.65;
+    margin: -8px 0 12px;
 }
 
 .party-bio-card {
@@ -3303,6 +3367,23 @@
     color: var(--text-success-active);
 }
 
+/* Crafting recipe materials: an inline IconSet glyph in front of each name so
+   the row reads like a shopping list rather than plain text. Position/size
+   come inline from recipeMatIconHTML() in ItemSystemInventoryUI.js. */
+.recipe-mat {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+.recipe-mat-icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    background-image: url('../img/system/IconSet.png');
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+
 .inspect-bullet-item {
     font-size: 0.984rem;
     color: var(--text-success-active);
@@ -3395,18 +3476,37 @@
     min-width: 0;
     padding: 6px 12px;
 }
+/* The field and its handle are one item of that toolbar row; collapsed, the
+   handle keeps the right edge and the sort tags take the space back. */
+.inspect-pockets .backpack-search .msb-field-only { flex: 1 1 auto; min-width: 0; margin-bottom: 0; }
+.inspect-pockets .backpack-search .msb-field-only.msb-collapsed { flex: 0 0 auto; order: 9; margin-left: auto; }
 .inspect-pockets .backpack-sort-tags { flex: 0 0 auto; gap: 4px; }
 .inspect-pockets .sort-tag { font-size: 0.83rem; padding: 4px 8px; }
 
 /* Denser pockets: shorter cards, smaller name, subtle select nudge */
-.inspect-pockets .backpack-grid { grid-gap: 6px; margin-bottom: 12px; }
+.inspect-pockets .backpack-grid { grid-gap: 4px; margin-bottom: 12px; }
 .inspect-pockets .item-slot {
-    padding: 5px 10px 5px 12px;
+    padding: 2px 8px 2px 10px;
     border-radius: 6px;
 }
-.inspect-pockets .item-slot-icon { margin-right: 10px; }
-.inspect-pockets .item-slot-name { font-size: 1.019em; }
+.inspect-pockets .item-slot-icon { margin-right: 8px; }
+.inspect-pockets .item-slot-name { font-size: 0.95em; }
 .inspect-pockets .item-slot.selected { transform: translateX(1px); }
+
+/* A pocket now carries one line only: mark, icon, name, count. The weight it
+   used to print under the name lives on the inspect page and in the carry
+   gauge, so the slot is as tall as its icon and no taller. */
+.item-slot--compact {
+    padding: 2px 8px 2px 10px;
+}
+.item-slot--compact .item-slot-icon {
+    width: 24px;
+    height: 24px;
+}
+.item-slot--compact .item-slot-count {
+    flex-shrink: 0;
+    align-self: center;
+}
 
 /* The carry gauge no longer owns a footer band of its own; it rides in the
    quick-slot strip's header row (see .backpack-hotbar-head). */
@@ -3793,6 +3893,30 @@
     border: 1px solid var(--bg-panel);
     border-radius: 4px;
     padding: 12px;
+}
+
+/* The long version of a power's dossier, in the Archive's own wiki. */
+.faction-wiki-button {
+    display: inline-flex;
+    margin-top: 12px;
+    padding: 4px 12px;
+    font-family: 'Lora', serif;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    border: 1.5px solid var(--text-primary-hover);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* The diplomatic accords: one line per hyperpower, which is more lines than the
+   page is tall. The right page itself is overflow:hidden, so the treaties scroll
+   inside their own box (the container's wheel handler knows this id). */
+.faction-accords {
+    max-height: 170px;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
 /* ==========================================================================
@@ -4894,6 +5018,67 @@
 .forge-header .title { border: none; margin: 0; padding: 0; text-align: center; }
 /* The tier a locked piece is waiting for, and whether a smithable one is stocked. */
 .forge-tier-need { font-size: 0.892em; color: var(--text-amber-hint); white-space: nowrap; }
+.forge-quality-mark { font-size: 0.892em; color: var(--text-secondary-active); white-space: nowrap; }
+.forge-made { color: var(--text-secondary-active); }
+
+/* The finish picker: the skins a piece can come off the fire wearing. A scroll
+   box rather than a wrapping block, so a hundred swatches cannot push the
+   materials and the buttons off the bottom of the anvil page. */
+.forge-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-height: 132px;
+    overflow-y: auto;
+    padding: 4px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+}
+.forge-swatch {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    border: 2px solid transparent;
+    border-radius: 3px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.forge-swatch img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+.forge-swatch--auto {
+    width: auto;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    font-size: 0.78em;
+    color: var(--text-primary-hover);
+    background: var(--bg-overlay-subtle, transparent);
+}
+.forge-swatch-divider {
+    flex: 1 0 100%;
+    font-size: 0.76em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-amber-hint);
+    border-top: 1px solid var(--border-secondary-hover-translucent-15);
+    margin-top: 2px;
+    padding-top: 4px;
+}
+.forge-swatch:hover { border-color: var(--text-primary-hover); }
+.forge-swatch.selected { border-color: var(--text-secondary-active); }
+.forge-swatch.focused { border-color: var(--text-success-active); }
+
+.forge-button-row { display: flex; gap: 8px; }
+.forge-button-row .transmute-btn { flex: 1; }
+.reagent-recover { color: var(--text-success-active); font-size: 0.892em; margin-right: 6px; }
 .forge-mat-state.ok    { color: var(--text-success-active); }
 .forge-mat-state.short { color: var(--border-danger-active); }
 .forge-skill {
@@ -4934,18 +5119,36 @@
 }
 #blacksmith-container .weapon-previews-container {
     min-height: 0;
-    height: 170px;
+    height: 300px;
     flex: 0 0 auto;
     margin-bottom: 8px;
     padding: 6px;
 }
+#blacksmith-container .weapon-preview-card canvas { cursor: grab; }
 #blacksmith-container .forge-skill { margin: 6px 0; font-size: 0.892em; }
 #blacksmith-container .stats-grid { gap: 2px 12px; margin-bottom: 8px; }
-#blacksmith-container .forge-meta { margin: 4px 0; }
+#blacksmith-container .forge-meta { margin: 4px 0 10px; }
+.forge-meta .stat-row { gap: 10px; }
+/* A declaration with a long value (a whole weapon type, a nature) is clipped
+   rather than allowed to push its own row wider than its column. */
+.forge-meta .stat-label,
+.forge-meta .inspect-spec-value {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.forge-meta .inspect-spec-value { font-size: 0.892em; text-align: right; }
 #blacksmith-container .inspect-spec-row { font-size: 0.952rem; margin-bottom: 1px; }
-#blacksmith-container .equip-lore { font-size: 0.87em; margin-top: 4px; }
+#blacksmith-container .equip-lore { font-size: 0.87em; margin-top: 4px; opacity: 0.78; }
 #blacksmith-container .reagents-header { font-size: 1.048em; margin-bottom: 6px; padding-bottom: 2px; }
 #blacksmith-container .reagents-list { flex: 0 0 auto; gap: 4px; margin-bottom: 10px; overflow: visible; }
+#blacksmith-container .reagents-list--grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 4px 8px;
+    overflow: visible;
+}
 #blacksmith-container .reagent-row { padding: 3px 8px; }
 #blacksmith-container .transmute-btn { padding: 8px; font-size: 1em; }
 
@@ -6889,6 +7092,7 @@
 #mod-manager-container > *,
 #mp-container > *,
 #mp-type-container > *,
+#pas-adventure-overlay > *,
 #refuel-overlay > *,
 #save-menu-container > *,
 #shop-container > *,
@@ -7025,11 +7229,9 @@
 .status-gauges-box {
     /* Never shrinks: the portrait above absorbs the whole shortfall. */
     flex: 0 0 auto;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    border-radius: 8px;
+    background: transparent;
+    border: none;
     padding: 12px;
-    box-shadow: inset 0 0 10px var(--shadow-primary-hover-translucent-5);
 }
 
 .status-gauge-row {
@@ -7117,7 +7319,7 @@
 .status-needs-rows {
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px dashed var(--border-primary-hover-translucent-15);
+    border-top: none;
 }
 
 .status-gauge-bar-inner.hunger {
@@ -7148,8 +7350,8 @@
 }
 
 .stat-medallion {
-    background: var(--bg-primary-hover-translucent-35);
-    border: 2px solid var(--text-primary-hover);
+    background: transparent;
+    border: none;
     border-radius: 50%;
     width: 80px;
     height: 80px;
@@ -7159,7 +7361,6 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5), inset 0 0 10px var(--border-primary-hover-translucent-15);
 }
 
 .stat-medallion-lbl {
@@ -7201,8 +7402,7 @@
 
 .status-element-box {
     background: transparent;
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    border-radius: 8px;
+    border: none;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -7219,13 +7419,13 @@
 }
 
 .element-badge {
-    background: var(--border-primary-hover-translucent-15);
+    background: transparent;
     color: var(--text-primary-hover);
     font-family: 'Lora', serif;
     font-size: 1.048em;
     font-weight: bold;
     padding: 3px 10px;
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    border: none;
 }
 
 /* The traits page: every trait the character carries, each written out in full,
@@ -7243,7 +7443,7 @@
 }
 
 .status-trait-entry + .status-trait-entry {
-    border-top: 1px dashed var(--border-primary-hover-translucent-15);
+    border-top: none;
 }
 
 .status-traits-empty {
@@ -7326,7 +7526,7 @@
     align-items: flex-start;
     gap: 8px;
     padding: 6px 4px;
-    border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+    border-bottom: none;
 }
 
 .status-passive-row:last-child {
@@ -7474,6 +7674,20 @@
     flex-grow: 1;
     min-height: 180px;
     box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
+}
+
+/* The status sheet is read as a bare page: its cards carry no plate, no rule and
+   no shadow, so only the type and the gauges sit on it. These two classes also
+   dress the Biologic Simulation card, which is why the status reading is scoped
+   here instead of flattened at the declaration above. */
+#status-menu-container .bodyparts-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+#status-menu-container .card-label {
+    border-bottom: none;
 }
 
 .bodyparts-list {
@@ -8026,6 +8240,51 @@
     background: var(--border-primary-hover-translucent-15);
 }
 
+/* The codex is dealt contents-first (UI/HelpMenu.js writes the narrow page
+   before the wide one), so the two pages carry mirrored gutters here. */
+#help-container .left-page {
+    padding: 35px 45px 35px 50px;
+}
+
+#help-container .right-page {
+    padding: 35px 50px 35px 45px;
+}
+
+/* The macrotopic rail. Same chips the backpack files its pockets with, kept
+   short so a long manual does not push the list off the page. */
+#help-container .help-group-chips {
+    flex: 0 0 auto;
+    max-height: 4.6em;
+    overflow-y: auto;
+    gap: 4px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+}
+
+#help-container .help-group-chips .backpack-tab {
+    font-size: 0.86em;
+    padding: 2px 8px;
+}
+
+/* The rule between two macrocategories of the manual (UI/HelpMenu.js). Not a
+   row: nothing selects it, it only says which part of the book you are in. */
+.topic-group-header {
+    font-family: 'Lora', serif;
+    font-size: 0.86em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-secondary-active);
+    padding: 4px 6px 3px 6px;
+    margin: 14px 0 6px 0;
+    border-bottom: 1px dashed var(--border-secondary-hover-translucent-15);
+    opacity: 0.85;
+}
+
+.topic-group-header:first-child {
+    margin-top: 0;
+}
+
 .topic-title-text {
     font-weight: bold;
     color: var(--text-primary-hover);
@@ -8078,7 +8337,62 @@
     font-family: 'Lora', serif;
     color: var(--text-muted-hover);
     text-align: justify;
-    white-space: pre-wrap;
+}
+
+/* A manual page is prose: the column wraps it, the source never does
+   (UI/HelpMenu.js turns blank lines into paragraphs and "- " into bullets). */
+.help-body p {
+    margin: 0 0 0.9em 0;
+}
+
+.help-body p:last-child {
+    margin-bottom: 0;
+}
+
+.help-list {
+    margin: 0 0 0.9em 0;
+    padding-left: 1.4em;
+    text-align: left;
+}
+
+.help-list li {
+    margin-bottom: 0.25em;
+}
+
+/* The one setting the book owns, sitting under the list rather than in it. */
+.help-hints-bar {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    margin-top: 8px;
+    border-top: 2px dashed var(--border-secondary-hover-translucent-15);
+}
+
+.help-hints-button {
+    font-family: 'Lora', serif;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    background: transparent;
+    border: 1.5px solid var(--text-primary-hover);
+    border-radius: 4px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.help-hints-button:hover {
+    background: var(--border-primary-hover-translucent-15);
+}
+
+.help-hints-button.active {
+    background: var(--bg-tertiary-focus-translucent-45);
+    color: var(--text-muted-hover);
+}
+
+.help-hints-button.focused {
+    outline: 2px solid var(--text-primary-hover);
 }
 
 .help-image {
@@ -8965,9 +9279,24 @@
 }
 
 /* The base stat a currently equipped weapon scales its damage on, picked out
-   gold in place of the old separate "Scaling: STR" line. */
-.stat-label--scaling {
+   in the theme accent (gold under Omega Tower, ink red under Archive
+   Foundation) in place of the old separate "Scaling: STR" line. Label and
+   number both, so the row reads as one highlighted entry. */
+.stat-label--scaling,
+.stat-val--scaling {
     color: var(--text-primary-hover);
+    font-weight: 700;
+}
+
+.stat-row--scaling .stat-val-new {
+    font-weight: 700;
+}
+
+/* Weapon proficiency grade (F to S), parenthesized right of the scaling
+   stat's own abbreviation, e.g. "STR (S)". */
+.stat-scaling-grade {
+    font-size: 0.92em;
+    opacity: 0.85;
 }
 
 .stat-val-container {
@@ -9058,38 +9387,6 @@
     justify-content: flex-start;
     gap: 6px;
     margin-bottom: 16px;
-}
-
-.command-btn {
-    font-family: 'Lora', serif;
-    font-size: 0.964em;
-    font-weight: bold;
-    text-align: center;
-    padding: 4px 10px;
-    background: var(--bg-panel);
-    border: 1px solid var(--border-gold-amber-30);
-    border-radius: 3px;
-    color: var(--text-primary-hover);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.command-btn:hover {
-    background: var(--bg-primary-hover-translucent-35);
-    color: var(--text-primary-hover);
-    border-color: var(--text-primary-hover);
-}
-
-.command-btn.active {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover) !important;
-    border-color: var(--text-primary-hover);
-    box-shadow: 0 2px 4px var(--shadow-gold-amber-50);
-}
-
-.command-btn.focused {
-    outline: 2px solid var(--text-primary-hover);
-    outline-offset: 1px;
 }
 
 .equip-main-content {
@@ -9345,7 +9642,7 @@
     min-width: 0;
 }
 
-.item-meta-row > span:first-child {
+.item-meta-row > span:first-child:not(:last-child) {
     flex-shrink: 0;
     margin-right: 4px;
 }
@@ -9374,7 +9671,7 @@
     border: none;
 }
 
-#equip-container .command-btn {
+#equip-container .equip-commands .backpack-tab {
     padding: 4px 10px;
     min-width: 0;
 }
@@ -9411,13 +9708,35 @@
     background: var(--bg-primary-hover-translucent-35);
 }
 
-/* Right page layout */
+/* The equip bench turns the spread around: the slot list is the short page and
+   the bench itself the wide one, so the pieces are shown as large as the screen
+   allows. The crease moves with them. */
+#equip-container .left-page {
+    width: 42%;
+}
+
+#equip-container .right-page {
+    width: 58%;
+}
+
+#equip-container .book-spread::before {
+    left: 42.5%;
+}
+
+/* Right page layout. The companion switcher sits above this block in the
+   normal flow, so the content area takes what is left rather than the full
+   page height, which used to push the weapon preview under the tabs. */
 #equip-container .right-content-area {
-    flex: 1;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    height: 100%;
+    height: auto;
+    min-height: 0;
+}
+
+#equip-container .right-page {
+    justify-content: flex-start;
 }
 
 .equip-right-content {
@@ -9467,6 +9786,9 @@
     position: relative;
 }
 
+/* The card's ground is the battleground of the map the party stands on, set as
+   an inline background-image by the scene; the wash under it is what shows when
+   no battleback can be found. */
 .weapon-preview-card {
     display: flex;
     flex-direction: column;
@@ -9475,10 +9797,29 @@
     height: 100%;
     position: relative;
     border-radius: 6px;
-    background: var(--bg-white-translucent-25);
+    background-color: var(--bg-white-translucent-25);
+    background-position: center bottom;
+    background-size: cover;
+    background-repeat: no-repeat;
     border: 1px solid var(--bg-focus-hover-translucent-10);
     padding: 8px;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* The pieces have to read against a photograph, so the ground is dimmed to the
+   depth the rest of the pane is inked at. */
+.weapon-preview-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--shadow-black-translucent-50, rgba(0, 0, 0, 0.5));
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .weapon-preview-card--single { width: 100%; }
@@ -9886,6 +10227,9 @@
     margin-top: -7px;
     background: var(--accent-gold-pure);
     border-width: 2px;
+    /* A hub is the pin that has to stay readable and clickable where the map
+       crowds: it is drawn over every plain stop it overlaps. */
+    z-index: 11;
 }
 
 .travel-marker.is-hub.travel-kind-city {
@@ -10259,6 +10603,25 @@
     border-bottom: 2px solid var(--text-secondary-active);
 }
 
+/* "TAB" / "L1 R1" chip in front of the two tabs: names the only button that
+   flips between Acquire and Liquidate. Not clickable, so it is skipped by
+   every focus ring, and it never grows at the tabs' expense. */
+.shop-tab-hint {
+    flex: 0 0 auto;
+    align-self: center;
+    padding: 3px 8px;
+    font-size: 0.8em;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    color: var(--text-inverse);
+    border: 1px dashed var(--border-secondary-hover-translucent-15);
+    border-radius: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
 /* The shop's category chips. They are the backpack's own tabs (.backpack-tab),
    so both pages of the book read the same; only the row's own spacing, and the
    ring that shows the cursor is standing on the row, belong to the shop. */
@@ -10286,8 +10649,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 14px;
-    margin-bottom: 8px;
+    padding: 5px 12px;
+    margin-bottom: 4px;
     background: transparent;
     border: 1px solid var(--border-secondary-hover-translucent-15);
     border-radius: 6px;
@@ -10323,7 +10686,7 @@
 }
 
 .item-card-name {
-    font-size: 1.238em;
+    font-size: 1.05em;
     font-weight: bold;
 }
 
@@ -13636,7 +13999,9 @@
       box-shadow: 0 30px 75px var(--shadow-black-translucent-45), inset 0 0 100px var(--border-primary-hover-translucent-15);
       display: flex; flex-direction: column;
       overflow: hidden; box-sizing: border-box;
-      animation: paperRustle 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      /* Same reasoning as .book-spread: the page is already built when this
+         starts, so the duration is pure waiting. Kept in step with it. */
+      animation: paperRustle 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     /* Mouse-only close (X). Not part of keyboard/gamepad nav on purpose. */
     .npc-close-btn {
@@ -13971,14 +14336,15 @@ padding: 2px 8px; font-size: 1.368rem;
     .npc-chat-modal-send:hover { opacity: 0.85; }
     /* ── Shared top-header for sub-panels ──────────────── */
     .npc-panel-top-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    /* ── Social web (inline SVG graph + roster) ────────── */
-    /* The stage has a fixed height rather than an aspect ratio so the graph
-       never depends on the width its container happens to resolve to; the SVG
-       viewBox already fits the whole web at the default zoom. Zooming in grows
+    /* ── Social web (inline SVG graph, fullscreen on the right page) ───── */
+    /* The wrapper is a flex column filling the right panel's own height, so
+       the stage (the only element allowed to grow) takes up whatever is left
+       once the title and legend have taken their own space. Zooming in grows
        the sizer past the stage, which is what makes scrollLeft/scrollTop (i.e.
        dragging, the wheel, or L2/R2) a real pan; see NPCEmpathizeUI.js. */
+    .npc-web-fullscreen { display: flex; flex-direction: column; height: 100%; }
     .npc-web-stage {
-      height: 380px; max-height: 46vh; width: 100%;
+      flex: 1; min-height: 240px; width: 100%;
       border: 2px solid var(--border-primary-hover-translucent-15);
       border-radius: 4px;
       background: var(--bg-primary-hover-translucent-35);
@@ -14022,25 +14388,11 @@ padding: 2px 8px; font-size: 1.368rem;
       text-anchor: middle; dominant-baseline: central;
     }
     /* Web legend */
-    .npc-web-legend { display: flex; gap: 14px; font-size: 1.173rem; color: var(--text-text-alt-4); margin-top: 6px; }
+    .npc-web-legend { display: flex; flex-shrink: 0; gap: 14px; font-size: 1.173rem; color: var(--text-text-alt-4); margin-top: 6px; }
     .npc-legend-item { display: flex; align-items: center; gap: 5px; }
     .npc-legend-line { display: inline-block; width: 22px; height: 3px; border-radius: 2px; }
     .npc-legend-line--single { background: transparent; border-top: 2px dashed var(--border-focus-hover); }
     .npc-legend-line--multi  { background: var(--text-primary-hover); }
-    .npc-web-roster { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
-    .npc-web-row {
-      display: flex; align-items: center; gap: 8px;
-      padding: 6px 10px; border-radius: 4px;
-      border: 1px solid var(--border-primary-hover-translucent-15);
-      background: var(--bg-primary-hover-translucent-35);
-      color: var(--text-primary-hover); font-size: 1.299rem; cursor: pointer;
-    }
-    .npc-web-row:hover { border-color: var(--border-focus-hover); }
-    /* Everyone past the node cap, still listed, just visibly off the rings. */
-    .npc-web-row--offgraph { opacity: 0.62; }
-    .npc-web-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .npc-web-row-name { flex: 1; }
-    .npc-web-row-meta { font-size: 1.173rem; color: var(--text-text-alt-4); }
     /* Steal / Gift / Bribe items */
     .npc-steal-item {
       display: flex; align-items: center; gap: 7px;
@@ -14154,6 +14506,49 @@ padding: 2px 8px; font-size: 1.368rem;
       pointer-events: none;
       white-space: nowrap;
     }
+    /* ── Character switcher (which party member is interacting) ──
+       The names are clickable, and SHIFT / SELECT steps through them; the chip
+       at the end of the row names whichever of those two the player is holding
+       (NPCEmpathize.js keeps it in step when a pad is plugged in or unplugged).
+       Selected reads as the panel's own gold, the unselected ones a step down
+       from it, so which member owns the reputation on screen is never in doubt. */
+    .npc-focus-switcher {
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: center;
+      gap: 5px;
+      margin: 2px 0 6px;
+    }
+    .npc-focus-switcher-lbl {
+      width: 100%;
+      text-align: center;
+      font-size: 1.14rem;
+      color: var(--text-text-alt-4);
+    }
+    .npc-focus-chip {
+      cursor: pointer;
+      padding: 3px 9px;
+      font-size: 1.173rem;
+      white-space: nowrap;
+      color: var(--text-text-alt-2);
+      border: 1.5px solid var(--border-primary-hover-translucent-15);
+      background: transparent;
+      transition: background 0.1s, color 0.1s;
+    }
+    .npc-focus-chip:hover {
+      background: var(--bg-primary-hover-translucent-35);
+    }
+    .npc-focus-chip.on {
+      font-weight: bold;
+      color: var(--text-primary-hover);
+      border-color: var(--text-primary-hover);
+      background: var(--bg-primary-hover-translucent-35);
+    }
+    /* The shared .char-switch-hint sits at 0.732rem/0.7 opacity, which this
+       panel's black page turns into a smudge. */
+    .npc-focus-hint {
+      font-size: 1.02rem;
+      opacity: 0.9;
+    }
     .npc-chat-send.npc-zone-focused {
       outline: 2px solid var(--border-focus-hover);
       outline-offset: 2px;
@@ -14198,28 +14593,31 @@ padding: 2px 8px; font-size: 1.368rem;
       transition: background 0.1s, border-color 0.1s;
     }
     .npc-chat-action-btn .npc-opt-label { color: var(--npc-option-fg, var(--text-primary-hover)); }
-    /* The cursor row goes to the text colour rather than to --border-focus-hover:
-       that token IS the option border under Archive Foundation, so the focus
-       ring used to disappear the moment the two matched. */
-    .npc-chat-action-btn:hover { border-color: var(--npc-option-fg, var(--text-primary-hover)); }
     /* A tinted border alone was not enough to find the cursor inside the long
        pickers (Socialize, Court), where every row already carries badges of its
        own colour — odds, ♥ deltas — and the borders all sit at the same weight.
        The selected row is therefore inked in: highlighter fill, a solid ring in
        the option colour, bold text and a ▸ in the gutter, so it reads as chosen
-       from across the panel rather than on close inspection. */
+       from across the panel rather than on close inspection. Mouse hover shares
+       this exact look rather than its own fainter one: the JS mirrors the two
+       into a single cursor (see _updateSelectionHighlight's onmouseenter), so a
+       hovered row and a keyboard/pad-selected row must render identically or
+       the highlight would appear to jump when the pointer sits still. */
+    .npc-chat-action-btn:hover:not(.npc-action-disabled),
     .npc-chat-action-btn.npc-action-focused {
       border-color: var(--npc-option-fg, var(--text-primary-hover));
       background: var(--bg-tertiary-focus-translucent-45);
       box-shadow: inset 0 0 0 2px var(--npc-option-fg, var(--text-primary-hover));
       font-weight: bold;
     }
+    .npc-chat-action-btn:hover:not(.npc-action-disabled)::before,
     .npc-chat-action-btn.npc-action-focused::before {
       content: '\25B8';
       font-size: 0.92em; line-height: 1;
       color: var(--npc-option-fg, var(--text-primary-hover));
     }
     /* The label rides the row's own weight, or the bold above stops at the span. */
+    .npc-chat-action-btn:hover:not(.npc-action-disabled) .npc-opt-label,
     .npc-chat-action-btn.npc-action-focused .npc-opt-label { font-weight: inherit; }
     /* ── Wiki (entity profiles & hyperlinks) ───────────── */
     .npc-wiki-link {
@@ -14525,6 +14923,34 @@ padding: 2px 10px;
     background: var(--shadow-black-translucent-55);
     font-family: 'Lora', serif;
 }
+/* The channel strip: one tab per branch the build offers, drawn only when
+   there is more than one to move between. */
+.gu-tabs {
+    display: flex; gap: 6px; padding: 2px 4px 0;
+    flex-shrink: 0;
+}
+.gu-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 5px 10px; font-family: inherit;
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-bottom: 1px solid var(--border-focus-hover);
+    background: var(--bg-primary-hover-translucent-35);
+    color: var(--text-text-alt-4);
+    cursor: pointer; -webkit-user-select: none; user-select: none;
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+.gu-tab:hover { color: var(--text-primary-hover); border-color: var(--border-focus-hover); }
+.gu-tab--active {
+    color: var(--text-gold-dark);
+    border-color: var(--border-focus-hover);
+    border-bottom-color: transparent;
+    background: var(--bg-focus-hover-translucent-15);
+}
+.gu-tab-name { font-size: 0.827em; font-weight: bold; letter-spacing: 0.08em; }
+.gu-tab-branch {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72em; opacity: 0.7;
+}
 .gu-build-header {
     font-size: 0.82em; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--text-text-alt-4); padding: 4px 6px 0;
@@ -14621,6 +15047,7 @@ padding: 2px 10px;
    whatever the screen itself has to say. */
 .gu-note-line + .gu-note-line { margin-top: 4px; }
 .gu-note-line--major { color: var(--text-text-alt-5-hover); font-weight: bold; }
+.gu-note-line--unstable { color: var(--text-amber-hint); }
 .gu-note--major { border-color: var(--text-text-alt-5-hover); }
 .gu-changelog {
     margin-top: 8px; padding-top: 6px; margin-bottom: 6px;
@@ -14664,7 +15091,7 @@ padding: 2px 10px;
 /* ==========================================================================
    Shared parchment HTML overlays
    (CountryPopup, AchievementNotif, FloorDisplay, TravelTimer,
-    BorderChoice, TravelDecision)
+    BorderChoice, TravelDecision, PrisonTimer)
    ========================================================================== */
 
 .html-parchment-overlay {
@@ -14703,6 +15130,12 @@ padding: 2px 10px;
 .travel-timer-km       { color: var(--text-text-alt-8); font-size: 0.892em; text-align: center; margin-top: 3px; }
 .travel-timer-complete { color: var(--text-primary-hover); font-size: 1.048em; text-align: center; }
 .travel-timer-hint     { color: var(--text-amber-hint); font-size: 0.856em; text-align: center; margin-top: 4px; }
+
+/* Prison timer, same plate and rhythm as the travel timer above */
+#html-prison-timer     { text-align: center; }
+.prison-timer-label    { color: var(--text-primary-hover); font-size: 0.892em; text-align: center; }
+.prison-timer-time     { color: var(--text-pure-white); font-size: 1.475em; text-align: center; font-weight: bold; line-height: 1.2; }
+.prison-timer-bounty   { color: var(--text-text-alt-8); font-size: 0.892em; text-align: center; margin-top: 3px; }
 
 /* Parchment selection menus */
 #html-border-choice,
@@ -14806,9 +15239,13 @@ padding: 2px 10px;
 }
 #html-toast-stack .html-toast {
     position: static;
-    padding: 0.5em 1.1em;
+    padding: 0.6em 1.15em;
     transition: opacity 0.4s ease;
-    max-width: 24em;
+    max-width: 26em;
+    /* No colour here: the severity class below carries it, and an id rule
+       would outrank it. */
+    line-height: 1.35;
+    letter-spacing: 0.01em;
 }
 /* A standing notification (ParchmentToast.sticky) is up because the condition
    it names is still true, so it wears a heavier frame than a passing one. */
@@ -14816,7 +15253,10 @@ padding: 2px 10px;
     border-color: var(--border-danger-active);
     outline-color: var(--border-danger-active);
 }
-.html-toast--info    { color: var(--border-subtle); }
+/* Info is the plain "here is what happened" plate, read at a glance over a
+   moving map: its body text is a light ink on the dark parchment rather than
+   the frame's own brown, which used to sink into the background. */
+.html-toast--info    { color: var(--toast-text); }
 .html-toast--warning { color: var(--text-text-alt-17); }
 .html-toast--danger  { color: var(--border-danger-active); }
 .html-toast--good    { color: var(--text-gold-dark); }
@@ -14827,7 +15267,8 @@ padding: 2px 10px;
 .toast-title {
     color: var(--text-gold-dark);
     font-weight: bold;
-    margin-bottom: 0.15em;
+    font-size: 1.05em;
+    margin-bottom: 0.25em;
 }
 .toast-row {
     display: flex;
@@ -14843,9 +15284,19 @@ padding: 2px 10px;
     background-repeat: no-repeat;
     image-rendering: pixelated;
 }
-.toast-qty   { opacity: 0.85; }
-.toast-value { color: var(--text-gold-dark); font-weight: bold; }
-.toast-note  { color: var(--text-primary-hover); font-size: 0.892em; opacity: 0.9; }
+.toast-qty   { color: var(--toast-text-muted); }
+.toast-value { color: var(--text-gold-dark); font-weight: bold; font-size: 1.05em; }
+.toast-note  { color: var(--toast-text-muted); font-size: 0.95em; }
+
+/* An item row is named in the colour of its rarity, the same ladder the
+   inventory and the shop paint (js/db/Items/Rarity.json). The class is picked
+   in ParchmentToast.rarityClass(). */
+.toast-item-name { flex: 1; }
+.toast-rarity--common    .toast-item-name { color: var(--rarity-common); }
+.toast-rarity--uncommon  .toast-item-name { color: var(--rarity-uncommon); }
+.toast-rarity--rare      .toast-item-name { color: var(--rarity-rare); }
+.toast-rarity--epic      .toast-item-name { color: var(--rarity-epic); }
+.toast-rarity--legendary .toast-item-name { color: var(--rarity-legendary); }
 .toast-delta-up   { color: var(--text-success-active); font-weight: bold; }
 .toast-delta-down { color: var(--border-danger-active); font-weight: bold; }
 
@@ -14944,6 +15395,49 @@ padding: 2px 10px;
     border-left: 3px solid var(--border-danger-active);
     border-radius: 0 4px 4px 0;
 }
+
+/* Chosen appearance: the 3D viewport and its stepper on the binding page */
+.bs-look {
+    margin: 6px 8px 2px;
+}
+.bs-look-canvas {
+    display: block;
+    width: 100%;
+    height: 150px;
+    border: 1px solid var(--border-border-alt-1);
+    border-radius: 4px;
+    background: var(--bg-bg-alt-25-translucent-8);
+    cursor: grab;
+}
+.bs-look-canvas:active { cursor: grabbing; }
+.bs-look-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+}
+.bs-look-label {
+    flex: 1;
+    text-align: center;
+    font-size: 0.842em;
+    color: var(--text-text-alt-4);
+}
+.bs-look-count {
+    margin-left: 6px;
+    color: var(--text-text-alt-11);
+    font-weight: bold;
+}
+.bs-look-arrow {
+    padding: 2px 10px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: var(--bg-secondary-hover);
+    color: var(--text-primary-hover);
+    font-size: 0.892em;
+    cursor: pointer;
+}
+.bs-look-arrow:hover { background: var(--bg-bg-alt-21-hover); }
 
 /* Scrollable weapon / skill list */
 .bs-weapon-list,
@@ -16178,142 +16672,6 @@ padding: 2px 10px;
     white-space: nowrap;
 }
 
-/* ── Enemy Talk System ────────────────────────────────────── */
-/* Dialogue-style talk menu (matches #html-choice-overlay / #steal-window) */
-/* Anchored bottom-right, over the battle command window. */
-#enemy-talk-panel {
-    position: fixed;
-    right: 16px;
-    bottom: 16px;
-    width: 360px;
-    max-width: 90vw;
-    max-height: 88vh;
-    overflow-y: auto;
-    box-sizing: border-box;
-    padding: 10px 8px;
-    background: var(--text-danger-hover);
-    border: 3px solid var(--border-subtle);
-    border-radius: 6px;
-    outline: 1px solid var(--border-subtle-translucent-40);
-    outline-offset: -7px;
-    background-image: radial-gradient(ellipse at center, transparent 40%, var(--bg-brown-vignette-10) 100%);
-    z-index: 501;
-}
-
-.etalk-header {
-    padding: 2px 18px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.etalk-enemy-name {
-    font-family: 'Lora', serif;
-    font-size: 21px;
-    font-weight: bold;
-    color: var(--accent-orange);
-    text-align: center;
-    letter-spacing: 0.04em;
-}
-
-.etalk-dispo-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.etalk-dispo-label {
-    font-family: 'Lora', serif;
-    font-size: 17px;
-    color: var(--accent-orange);
-    white-space: nowrap;
-}
-
-.etalk-dispo-track {
-    flex: 1;
-    height: 10px;
-    background: rgba(255, 204, 102, 0.10);
-    border: 1px solid var(--border-subtle);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.etalk-dispo-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.4s ease;
-}
-
-.etalk-dispo-high { background: var(--border-success); }
-.etalk-dispo-mid  { background: var(--text-text-alt-14-hover); }
-.etalk-dispo-low  { background: var(--accent-red-3); }
-
-.etalk-dispo-value {
-    font-family: 'Lora', serif;
-    font-size: 17px;
-    color: var(--accent-orange);
-    white-space: nowrap;
-    min-width: 56px;
-    text-align: right;
-}
-
-.etalk-option-list {
-    display: flex;
-    flex-direction: column;
-    padding: 2px 0;
-}
-
-.etalk-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    font-family: 'Lora', serif;
-    font-weight: bold;
-    padding: 5px 18px;
-    border: 2px solid transparent;
-    transition: background 0.1s;
-    user-select: none;
-    line-height: 1.45;
-    cursor: pointer;
-    color: var(--accent-orange);
-}
-
-.etalk-option.selected {
-    background: rgba(255, 204, 102, 0.12);
-    border-color: var(--accent-orange);
-}
-
-.etalk-option-name {
-    flex: 1;
-    font-size: 23px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.etalk-pct {
-    font-size: 22px;
-    font-weight: bold;
-    white-space: nowrap;
-    min-width: 44px;
-    text-align: right;
-}
-
-.etalk-pct-high { color: var(--border-success); }
-.etalk-pct-mid  { color: var(--text-text-alt-14-hover); }
-.etalk-pct-low  { color: var(--accent-red-3); }
-
-.etalk-hint {
-    font-family: 'Lora', serif;
-    padding: 8px 18px 2px;
-    font-size: 0.892em;
-    font-style: normal;
-    color: rgba(255, 204, 102, 0.55);
-    text-align: center;
-    margin: 0;
-}
-
 /* ==========================================================================
    NPCSociety, NPC backstory panel (used by NPCEmpathize dialogue)
    ========================================================================== */
@@ -16328,19 +16686,23 @@ padding: 2px 10px;
 .npc-backstory-events {
     margin-top: 4px;
 }
+/* The formative events and the birth line read at the same weight as the
+   narrative above them rather than a shade under it: this panel's page is
+   black, where every step down the palette costs contrast the small sizes here
+   cannot spare. */
 .npc-backstory-event {
-    font-size: 1.104rem;
-    color: var(--text-text-alt-4);
+    font-size: 1.15rem;
+    color: var(--text-text-alt-2);
     opacity: 1;
     margin: 4px 0;
     padding-left: 6px;
     border-left: 2px solid var(--border-subtle-translucent-40);
-    line-height: 1.5;
+    line-height: 1.55;
 }
 .npc-backstory-meta {
-    font-size: 1.02rem;
-    color: var(--text-text-alt-4);
-    opacity: 0.8;
+    font-size: 1.05rem;
+    color: var(--text-text-alt-2);
+    opacity: 0.95;
     margin-top: 8px;
     letter-spacing: 0.04em;
 }
@@ -16709,6 +17071,15 @@ body, canvas {
 .actorcmd-label {
     font-family: 'Lora', serif;
     font-weight: bold;
+    /* The menu sizes itself to its longest row, so a label normally fits whole.
+       A row carrying a whole sentence (a wrestling hold, a line of talk) can
+       still outrun the cap the plugin puts on that width, and is trimmed with
+       an ellipsis rather than cut off mid-letter at the frame. */
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
     color: var(--text-pure-white);
     text-shadow: -1px -1px 0 var(--text-pure-black), 1px -1px 0 var(--text-pure-black),
                  -1px  1px 0 var(--text-pure-black), 1px  1px 0 var(--text-pure-black),
@@ -16718,13 +17089,312 @@ body, canvas {
     white-space: nowrap;
     z-index: 3;
     position: relative;
-    line-height: 1;
+    /* Room for the whole letter. The line box is what `overflow: hidden` clips
+       against, so at line-height 1 it is exactly the font size and every tail
+       below the baseline (a g, a p, a comma) loses its last few pixels. The
+       row itself is a fixed 40px and the text is centred in it, so a taller
+       line box costs no height anywhere. */
+    line-height: 1.4;
 }
-.actorcmd-label.dim {
+/* The right-aligned tail of a row: what a skill costs, what an ally is
+   holding. The label beside it is the flexible half, so this always sits
+   against the right edge whatever the menu is currently as wide as. */
+.actorcmd-cost {
+    flex: 0 0 auto;
+    margin-right: 12px;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    text-shadow: -1px -1px 0 var(--text-pure-black), 1px -1px 0 var(--text-pure-black),
+                 -1px  1px 0 var(--text-pure-black), 1px  1px 0 var(--text-pure-black);
+    white-space: nowrap;
+    z-index: 3;
+    position: relative;
+    /* Matched to the label so the two sit on the same baseline. */
+    line-height: 1.4;
+}
+.actorcmd-label.dim,
+.actorcmd-cost.dim {
     opacity: 0.38;
 }
 .actorcmd-icon.dim {
     opacity: 0.38;
+}
+
+/* ==========================================================================
+   Health_Monsters, the monster panel (Check reads a body, Aim picks the part
+   the next blow is sent to)
+   ========================================================================== */
+/* The card's geometry (its size, where the two columns sit, how tall a part row
+   is) is written inline from Health_Monsters.js: the list of parts has to line
+   up with the invisible Window_Selectable underneath it or a click lands on the
+   wrong part, so the plugin owns the measurements and this file owns the paint.
+   Rows are border-box for the same reason: their separator must not add height. */
+#monster-panel-overlay {
+    box-sizing: border-box;
+    font-family: 'Lora', serif;
+    color: var(--text-text-alt-7);
+    background: var(--bg-dark-overlay-90);
+    border: 2px solid var(--border-gold-amber);
+    border-radius: 4px;
+    box-shadow: 0 6px 24px var(--shadow-black-translucent-95);
+}
+#monster-panel-overlay * {
+    box-sizing: border-box;
+}
+.mpanel-head,
+.mpanel-info,
+.mpanel-list {
+    position: absolute;
+}
+
+/* The header: who is being read, how strong it still is, and which of the two
+   things the panel is doing. */
+.mpanel-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-parchment-30);
+}
+.mpanel-name {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    text-shadow: 1px 1px 0 var(--text-pure-black);
+}
+.mpanel-level {
+    flex: 0 0 auto;
+    font-size: 13px;
+    color: var(--text-text-alt-12);
+}
+.mpanel-hp {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--text-text-alt-13);
+}
+.mpanel-mode {
+    flex: 0 0 auto;
+    padding: 1px 7px;
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 3px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-primary-hover);
+}
+
+/* Left column: what is known about the monster. */
+.mpanel-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px 0 0;
+    overflow: hidden;
+    /* The rule between the two columns hangs off this one: the list of parts
+       has to start exactly where the window underneath it does, so nothing may
+       be inset on its side. */
+    border-right: 1px solid var(--border-parchment-30);
+}
+.mpanel-desc {
+    flex: 1 1 auto;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-text-alt-2);
+}
+.mpanel-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.mpanel-kv {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13px;
+}
+.mpanel-kv .k {
+    flex: 0 0 auto;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+}
+.mpanel-kv .v {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-text-alt-7);
+}
+.mpanel-kv.states .v {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px 10px;
+}
+.mpanel-weak {
+    font-style: normal;
+    white-space: nowrap;
+    color: var(--text-text-alt-15);
+}
+.mpanel-stats {
+    display: flex;
+    gap: 4px;
+    padding: 5px 0;
+    border-top: 1px solid var(--border-parchment-10);
+    border-bottom: 1px solid var(--border-parchment-10);
+}
+.mpanel-stat {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+.mpanel-stat .s-name {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: var(--text-text-alt-12);
+}
+/* A stat the fight has already moved reads in the colour of which way it went. */
+.mpanel-stat .s-val {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--text-text-alt-13);
+}
+.mpanel-stat .s-val.up {
+    color: var(--text-text-alt-11);
+}
+.mpanel-stat .s-val.down {
+    color: var(--text-text-alt-10);
+}
+.mpanel-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    color: var(--text-text-alt-13);
+}
+.mpanel-state-icon {
+    /* Resolved against css/theme.css, so one level up is the game root. */
+    background-image: url('../img/system/IconSet.png');
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    flex: 0 0 auto;
+}
+
+/* Right column: the body, part by part. */
+.mpanel-list {
+    display: flex;
+    flex-direction: column;
+}
+.mpanel-listhead {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-primary-hover);
+}
+.mpanel-rows {
+    flex: 0 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+/* Scrolled by the window below it, which is the one that knows where the
+   cursor is; the rows themselves never scroll on their own. */
+.mpanel-rows-inner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+.mpanel-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 4px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-parchment-10);
+}
+.mpanel-row .p-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-text-alt-7);
+}
+/* A part the body cannot go on without. */
+.mpanel-row .p-vital {
+    flex: 0 0 auto;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-blood-red);
+}
+.mpanel-row .p-bar {
+    flex: 0 0 60px;
+    height: 7px;
+    overflow: hidden;
+    border: 1px solid var(--border-parchment-30);
+    border-radius: 2px;
+    background: var(--bg-dark-overlay-78);
+}
+.mpanel-row .p-bar i {
+    display: block;
+    height: 100%;
+    background: var(--bg-hp-bar);
+}
+.mpanel-row .p-pct {
+    flex: 0 0 38px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-text-alt-12);
+}
+.mpanel-row.hurt .p-bar i {
+    background: var(--text-text-alt-20);
+}
+.mpanel-row.critical .p-bar i {
+    background: var(--text-text-alt-10);
+}
+.mpanel-row.critical .p-name,
+.mpanel-row.critical .p-pct {
+    color: var(--text-text-alt-10);
+}
+.mpanel-row.gone .p-name {
+    text-decoration: line-through;
+    color: var(--text-text-alt-12);
+}
+.mpanel-row.gone .p-pct {
+    color: var(--text-blood-red);
+}
+/* A part that is already gone cannot be aimed at. */
+.mpanel-row.locked {
+    opacity: 0.38;
+}
+.mpanel-row.sel {
+    background: var(--bg-primary-hover-translucent-35);
+    box-shadow: inset 3px 0 0 var(--text-primary-hover);
+}
+.mpanel-row.sel .p-name {
+    color: var(--text-primary-hover);
+}
+/* Everything about the part under the cursor that does not fit on its row. */
+.mpanel-foot {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    border-top: 1px solid var(--border-parchment-30);
+    font-size: 12px;
+    color: var(--text-text-alt-9);
 }
 
 /* ==========================================================================
@@ -16734,6 +17404,41 @@ body, canvas {
    ========================================================================== */
 .hotbar-row {
     align-items: center;
+}
+.hotbar-slots {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+/* The armed or hovered slot's name, on its own line under the row. Its height
+   is reserved whether or not anything is showing (HotbarUI.LABEL_BLOCK_PX =
+   20 + 4), so the slots never shift as names come and go. */
+.hotbar-label {
+    box-sizing: border-box;
+    height: 20px;
+    margin-top: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 20px;
+    color: var(--text-pure-white);
+    /* Read over the map, a parchment page or a 3D battle: a full 2px ring of
+       black around every glyph, the 1px diagonals filling its corners, then a
+       soft drop to lift the whole line off a busy backdrop. */
+    text-shadow: -2px -2px 0 var(--text-pure-black),  0   -2px 0 var(--text-pure-black),
+                  2px -2px 0 var(--text-pure-black), -2px  0   0 var(--text-pure-black),
+                  2px  0   0 var(--text-pure-black), -2px  2px 0 var(--text-pure-black),
+                  0    2px 0 var(--text-pure-black),  2px  2px 0 var(--text-pure-black),
+                 -1px -1px 0 var(--text-pure-black),  1px -1px 0 var(--text-pure-black),
+                 -1px  1px 0 var(--text-pure-black),  1px  1px 0 var(--text-pure-black),
+                  0    2px 6px var(--shadow-black-translucent-80);
+    pointer-events: none;
+    visibility: hidden;
 }
 .hotbar-slot {
     position: relative;
@@ -16763,6 +17468,11 @@ body, canvas {
     border-color: var(--text-primary-hover);
     box-shadow: 0 0 8px 1px var(--text-primary-hover);
 }
+.hotbar-slot.drag-over {
+    border-color: var(--text-primary-hover);
+    box-shadow: 0 0 10px 2px var(--text-primary-hover);
+    background: var(--shadow-primary-hover-translucent-5);
+}
 .hotbar-icon {
     background-image: url('../img/system/IconSet.png');
     background-repeat: no-repeat;
@@ -16777,8 +17487,11 @@ body, canvas {
     font-size: 15px;
     line-height: 1;
     color: var(--border-gold-amber);
-    text-shadow: -1px -1px 0 var(--text-pure-black), 1px -1px 0 var(--text-pure-black),
-                 -1px  1px 0 var(--text-pure-black), 1px  1px 0 var(--text-pure-black);
+    text-shadow: -1px -1px 0 var(--text-pure-black),  0   -2px 0 var(--text-pure-black),
+                  1px -1px 0 var(--text-pure-black), -2px  0   0 var(--text-pure-black),
+                  2px  0   0 var(--text-pure-black), -1px  1px 0 var(--text-pure-black),
+                  0    2px 0 var(--text-pure-black),  1px  1px 0 var(--text-pure-black),
+                  0    1px 3px var(--shadow-black-translucent-80);
     z-index: 2;
     pointer-events: none;
 }
@@ -16791,8 +17504,11 @@ body, canvas {
     font-size: 14px;
     line-height: 1;
     color: var(--text-pure-white);
-    text-shadow: -1px -1px 0 var(--text-pure-black), 1px -1px 0 var(--text-pure-black),
-                 -1px  1px 0 var(--text-pure-black), 1px  1px 0 var(--text-pure-black);
+    text-shadow: -1px -1px 0 var(--text-pure-black),  0   -2px 0 var(--text-pure-black),
+                  1px -1px 0 var(--text-pure-black), -2px  0   0 var(--text-pure-black),
+                  2px  0   0 var(--text-pure-black), -1px  1px 0 var(--text-pure-black),
+                  0    2px 0 var(--text-pure-black),  1px  1px 0 var(--text-pure-black),
+                  0    1px 3px var(--shadow-black-translucent-80);
     z-index: 2;
     pointer-events: none;
 }
@@ -16849,10 +17565,12 @@ body, canvas {
     height: 4px;
     margin-top: 0;
 }
-/* Unlike the battle bar, which sits over a dark battleback, these two are
-   read against parchment and against whatever the map happens to be. */
+/* All three read against a busy backdrop (parchment, the map, or a 3D
+   battle scene), so every slot gets the same dark backing to keep its icon
+   legible. */
 .backpack-hotbar .hotbar-slot,
-#html-item-hotbar-overlay .hotbar-slot {
+#html-item-hotbar-overlay .hotbar-slot,
+#html-hotbar-overlay .hotbar-slot {
     background: var(--shadow-black-translucent-80);
 }
 
@@ -16934,7 +17652,7 @@ body, canvas {
 
 #bestiary-list-viewport {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     padding: 8px 12px 12px 12px;
     overflow-y: auto;
@@ -16946,7 +17664,9 @@ body, canvas {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 1 / 1;
+    /* Four to a row: the cards grow wide, so they keep a compact height
+       instead of the square they used to be. */
+    min-height: 118px;
     padding: 10px 5px;
     border: 1px solid var(--border-dark-warm-25);
     border-radius: 8px;
@@ -16960,6 +17680,33 @@ body, canvas {
 #bestiary-list-viewport .monster-card.selected {
     border-color: var(--text-secondary-active);
     background: var(--bg-parchment-dark-40);
+}
+/* The lexicon reads as one page: cards and detail rows carry no panel of
+   their own, only their rule lines. */
+#bestiary-list-viewport .monster-card {
+    background: transparent;
+}
+#bestiary-container .ecology-row,
+#bestiary-container .stat-card,
+#bestiary-container .affinity-row,
+#bestiary-container .harvest-row {
+    background: transparent;
+}
+#bestiary-container .stat-card,
+#bestiary-container .harvest-row {
+    border-color: transparent;
+}
+#bestiary-container .ecology-row {
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-radius: 0;
+    padding: 6px 4px;
+}
+#bestiary-container .portrait-sketch {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
 }
 #bestiary-list-viewport .monster-card.focused {
     border-color: var(--border-gold-amber);
@@ -17111,7 +17858,9 @@ body, canvas {
 .fbuild-dd-list::-webkit-scrollbar-thumb { background: var(--accent-dark-blue); border-radius: 6px; }
 .fbuild-dd-list::-webkit-scrollbar-thumb:hover { background: var(--accent-slate); }
 .fbuild-dd-list::-webkit-scrollbar-track { background: transparent; }
-.fbuild-search-icon { flex-shrink: 0; display: flex; align-items: center; opacity: 0.85; }
+/* The shared handle (UI/MenuSearchBar.js) stands in for the old icon: closed it
+   takes the right end of the bar, open it sits beside the field. */
+.fbuild-catbar .msb-toggle:not(.open) { margin-left: auto; }
 .fbuild-search { flex: 1; min-width: 90px; font-family: inherit; font-size: 0.928em;
     color: var(--text-pure-white); background: var(--accent-dark-blue);
     border: 1px solid var(--border-panel-tab); border-radius: 6px; padding: 7px 10px; }
@@ -17466,6 +18215,15 @@ body.ascii-ui-active {
     --text-text-alt-23: #ffcc44;
     --text-text-alt-24: #cc88ff;
     --text-text-alt-25: #ff9999;
+
+    /* --- Toasts: rarity keeps its rank, in terminal phosphor --- */
+    --toast-text: #ffcc66;
+    --toast-text-muted: #b0a080;
+    --rarity-common: #d8d8d8;
+    --rarity-uncommon: #66ff77;
+    --rarity-rare: #66aaff;
+    --rarity-epic: #cc88ff;
+    --rarity-legendary: #ffaa44;
 
     /* --- Borders --- */
     --border-focus-hover: #ffcc66;
@@ -18135,6 +18893,24 @@ body.ascii-ui-active .mp-type-spread {
 #gx-mode { bottom:14px; right:26px; font-size:15px;
   color:var(--text-text-alt-12,#aaa); pointer-events:none; }
 #gx-mode b { color:var(--accent-amber-light,#e9c46a); }
+#gx-ui .gx-btn.gx-tour { border-color:#ffd27a; color:#ffd27a; }
+/* Grand Tour: every other panel, orbit guide and body name goes away, leaving
+   just the space view and this one line telling the player how to end it. */
+#gx-ui.gx-tour-active > *:not(#gx-tour-hint) { display:none !important; }
+#gx-tour-hint { position:absolute; bottom:14px; left:0; right:0; text-align:center;
+  font-size:15px; color:var(--text-text-alt-12,#aaa); pointer-events:none; display:none; }
+/* Minimal viewer mode (Galaxy Map minigame): no ship, no bridges, no engines
+   or fuel to manage - just the catalog, info panels and Grand Tour. */
+#gx-ui.gx-minigame #gx-speed,
+#gx-ui.gx-minigame #gx-fuel,
+#gx-ui.gx-minigame [data-role="ship-btn"],
+#gx-ui.gx-minigame [data-role="bioscan-btn"],
+#gx-ui.gx-minigame [data-role="home-btn"],
+#gx-ui.gx-minigame [data-role="sb-btn"],
+#gx-ui.gx-minigame [data-role="return-earth-btn"],
+#gx-ui.gx-minigame [data-role="return-earth-course-btn"],
+#gx-ui.gx-minigame [data-role="return-earth-eb-btn"] { display:none !important; }
+#gx-tour-hint b { color:var(--accent-amber-light,#e9c46a); }
 /* Controller button chips (Xbox layout), written into hint text as [A], [LB],
    [LS]... and expanded by padGlyphs(). The face buttons keep their pad colours
    so they read at a glance; shoulders/triggers/sticks are plain keycaps. */
@@ -18195,6 +18971,9 @@ body.ascii-ui-active .mp-type-spread {
   color:var(--text-text-alt-12,#aaa); }
 #gx-catalog .gx-cat-life .gx-cat-name { color:var(--accent-green-3,#60b345); }
 #gx-catalog .gx-cat-row { display:flex; align-items:center; gap:6px; padding:3px 0; }
+/* Current System hierarchy: star at depth 0, planets at 1, moons at 2. */
+#gx-catalog .gx-cat-row.gx-cat-depth-1 { padding-left:14px; }
+#gx-catalog .gx-cat-row.gx-cat-depth-2 { padding-left:28px; }
 #gx-catalog .gx-cat-label { flex:1 1 auto; min-width:0; line-height:1.25; }
 #gx-catalog .gx-cat-name { display:block; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap; }
@@ -19169,6 +19948,21 @@ cursor:pointer; font-size:16px; line-height:1.4;
 .kb-detail-close:hover { background: #7a4d24; }
 .kb-detail-close.kb-detail-map { background: #1f4e79; }
 .kb-detail-close.kb-detail-map:hover { background: #2b6aa3; }
+.kb-detail-close.kb-detail-move { background: #3e6b2f; }
+.kb-detail-close.kb-detail-move:hover { background: #4f8a3c; }
+
+/* Carrying a note between columns: by the mouse (kb-ghost follows the pointer,
+   the note left behind fades, the column under it lights up) or by holding OK
+   on the pad (kb-grabbed lifts the focused note off the board). */
+.kb-card { user-select: none; -webkit-user-select: none; }
+.kb-card.kb-dragging { opacity: 0.32; filter: grayscale(0.4); }
+.kb-card.kb-grabbed { transform: rotate(-2deg) scale(1.09); z-index: 6;
+  outline: 3px dashed #ffd76a; box-shadow: 10px 14px 24px rgba(0,0,0,0.65); }
+.kb-ghost { position: fixed; z-index: 200; pointer-events: none; margin: 0;
+  transform: rotate(-3deg) scale(1.04); opacity: 0.92;
+  box-shadow: 10px 16px 28px rgba(0,0,0,0.65); }
+.kb-column.kb-drop { background: rgba(255,215,106,0.12);
+  box-shadow: inset 0 0 0 2px rgba(255,215,106,0.55); border-radius: 10px; }
 
 
 /* ==========================================================================
@@ -19340,7 +20134,9 @@ cursor:pointer; font-size:16px; line-height:1.4;
     box-shadow:
         0 34px 80px var(--shadow-heavy, rgba(0,0,0,0.8)),
         inset 0 0 0 2px var(--border-gold-amber, rgba(196,154,74,0.35));
-    animation: diaryOpen 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Kept in step with .book-spread's entrance: the diary is fully built
+       before this plays, so the duration is time the player waits for nothing. */
+    animation: diaryOpen 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes diaryOpen {
     0%   { opacity: 0; transform: perspective(1800px) rotateX(9deg) scale(0.965); }
@@ -19364,7 +20160,7 @@ cursor:pointer; font-size:16px; line-height:1.4;
     position: relative;
     flex: 1;
     min-width: 0;
-    padding: 42px 44px 54px 52px;
+    padding: 44px 44px 54px 52px;
     box-sizing: border-box;
     overflow: hidden;
     color: var(--ink, #2b2318);
@@ -19382,18 +20178,29 @@ cursor:pointer; font-size:16px; line-height:1.4;
     box-shadow: inset 26px 0 34px -26px rgba(60,40,18,0.75);
 }
 
-/* Feint ruling, and the red margin rule down the gutter side. */
+/* Feint ruling, and the red margin rule down the gutter side.
+   The ruling starts where the written lines start (the page's 44px head plus
+   the 68px the date block stands, both fixed so this can be) and is offset by
+   28px, which puts each rule 3px under the baseline of the line written in
+   that slot: ink sits ON the line, the way a hand writes it, instead of
+   floating halfway between two. Core/DiaryUI.js measures its pages against the
+   same 34px pitch, so a line always stands a whole number of rules tall. */
 #diary-container .diary-rules {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     pointer-events: none;
+}
+#diary-container .diary-rules::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 112px; bottom: 0;
     background-image: repeating-linear-gradient(
         to bottom,
         rgba(0,0,0,0) 0px,
         rgba(0,0,0,0) 33px,
         var(--rule, rgba(96,116,140,0.30)) 33px,
         var(--rule, rgba(96,116,140,0.30)) 34px);
-    background-position: 0 46px;
+    background-position: 0 28px;
 }
 #diary-container .diary-page-left .diary-rules::after,
 #diary-container .diary-page-right .diary-rules::after {
@@ -19435,9 +20242,12 @@ cursor:pointer; font-size:16px; line-height:1.4;
 /* The date somebody wrote at the top of the page. */
 #diary-container .diary-date {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
     gap: 12px;
-    margin: 0 0 10px 0;
+    margin: 0;
+    height: 68px;
+    padding-bottom: 8px;
+    box-sizing: border-box;
     flex-shrink: 0;
 }
 #diary-container .diary-date-text {
@@ -19455,30 +20265,37 @@ cursor:pointer; font-size:16px; line-height:1.4;
     background: var(--rule-margin, rgba(164,74,60,0.5));
 }
 
+/* No scrollbar and no scrolling: a day that outruns the paper is broken over
+   as many sheets as it needs by the plugin, which measures its lines against
+   this very box. */
 #diary-container .diary-lines {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     padding-right: 6px;
 }
-#diary-container .diary-lines::-webkit-scrollbar { width: 6px; }
-#diary-container .diary-lines::-webkit-scrollbar-track { background: transparent; }
-#diary-container .diary-lines::-webkit-scrollbar-thumb {
-    background: var(--rule, rgba(96,116,140,0.4));
-    border-radius: 3px;
+/* The same box, off to the side, where a line is measured before it is
+   written: same width, same rules, never seen. */
+#diary-container .diary-measure {
+    position: absolute;
+    top: 0; left: -10000px;
+    height: auto;
+    flex: none;
+    visibility: hidden;
+    pointer-events: none;
 }
 
-/* One written line. */
+/* One written line. Its line-height IS the ruling's pitch, so a line that
+   wraps takes exactly two rules instead of drifting off them. */
 #diary-container .diary-line {
     display: flex;
     align-items: flex-start;
     gap: 9px;
     min-height: 34px;
-    padding: 4px 6px 2px 6px;
+    padding: 0 6px;
     border-radius: 3px;
     font-size: 1.173rem;
-    line-height: 1.55;
+    line-height: 34px;
     transform-origin: left center;
 }
 #diary-container .diary-hour {
@@ -19487,23 +20304,24 @@ cursor:pointer; font-size:16px; line-height:1.4;
     font-size: 1.032rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+    line-height: 34px;
     opacity: 0.72;
-    padding-top: 3px;
 }
 #diary-container .diary-glyph {
     flex: 0 0 auto;
     width: 32px; height: 32px;
     background-image: url('img/system/IconSet.png');
     background-repeat: no-repeat;
-    transform: scale(0.7);
+    transform: scale(0.72);
     transform-origin: center top;
-    margin-top: -2px;
+    margin-top: 2px;
     filter: sepia(0.35) saturate(0.85);
 }
 #diary-container .diary-text {
     flex: 1 1 auto;
     min-width: 0;
     font-style: normal;
+    line-height: 34px;
     word-break: break-word;
 }
 /* Three shades of the same ink, so a page does not read as printed. */
@@ -19517,8 +20335,8 @@ cursor:pointer; font-size:16px; line-height:1.4;
     font-size: 0.927rem;
     font-style: normal;
     text-align: right;
+    line-height: 34px;
     opacity: 0.55;
-    padding-top: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -19535,6 +20353,22 @@ cursor:pointer; font-size:16px; line-height:1.4;
     opacity: 0.42;
     text-align: center;
     padding: 0 40px;
+}
+
+/* Turning a leaf: both halves of the spread swing about the binding, the ink
+   arriving as the paper settles. The book itself is never re-animated (see the
+   note on .diary-book), only the two pages whose contents just changed. */
+#diary-container .diary-page-left  { transform-origin: right center; }
+#diary-container .diary-page-right { transform-origin: left center; }
+#diary-container .diary-page.turn-forward { animation: diaryLeafForward 0.26s cubic-bezier(0.22, 1, 0.36, 1); }
+#diary-container .diary-page.turn-back    { animation: diaryLeafBack 0.26s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes diaryLeafForward {
+    0%   { transform: perspective(2200px) rotateY(19deg); opacity: 0.15; }
+    100% { transform: perspective(2200px) rotateY(0deg); opacity: 1; }
+}
+@keyframes diaryLeafBack {
+    0%   { transform: perspective(2200px) rotateY(-19deg); opacity: 0.15; }
+    100% { transform: perspective(2200px) rotateY(0deg); opacity: 1; }
 }
 
 /* The ribbon bookmarks down the fore-edge. */
@@ -19558,6 +20392,8 @@ cursor:pointer; font-size:16px; line-height:1.4;
     border-radius: 0 3px 3px 0;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.45);
     cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
     opacity: 0.62;
     transform: translateX(-8px);
     transition: transform 0.14s ease, opacity 0.14s ease;
@@ -19802,6 +20638,47 @@ cursor:pointer; font-size:16px; line-height:1.4;
 }
 .sg-occult.sg-forbidden {
     border-color:var(--text-primary-hover); color:var(--text-primary-hover);
+}
+
+/* Magical Systems wheel (CharacterCreation/SkillMaster.js): one node per
+   <MagicalSystem:> value, laid out on a ring around a decorative pentacle.
+   Shares the atlas node shape (.sg-ring's sizing) under its own class so the
+   two views never fight over the same CSS. */
+.ms-wheel-box { animation:ms-fade-in 0.4s ease-out; }
+@keyframes ms-fade-in { from { opacity:0; transform:scale(0.94); } to { opacity:1; transform:scale(1); } }
+.ms-rim { transform-origin:50% 50%; animation:ms-rim-spin 140s linear infinite; }
+@keyframes ms-rim-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+.ms-pentacle { animation:ms-pentacle-glow 4s ease-in-out infinite; transform-origin:50% 50%; }
+@keyframes ms-pentacle-glow { 0%, 100% { opacity:0.55; } 50% { opacity:0.95; } }
+.ms-node {
+    position:absolute; display:flex; flex-direction:column; align-items:center;
+    width:140px; cursor:pointer; font-family:'Lora', serif; user-select:none;
+    transition:transform 0.15s ease;
+}
+.ms-node:hover { transform:scale(1.06); }
+.ms-ring {
+    width:92px; height:92px; border-radius:50%; box-sizing:border-box;
+    border:3px solid var(--border-secondary-hover-translucent-15);
+    background:var(--bg-card-translucent-5);
+    display:flex; align-items:center; justify-content:center;
+}
+.ms-pct { font-size:1.31rem; font-weight:bold; text-shadow:0 1px 2px var(--shadow-black-translucent-75); }
+.ms-node.ms-selected .ms-ring { animation:ms-select-pulse 1.8s ease-in-out infinite; }
+@keyframes ms-select-pulse {
+    0%, 100% { box-shadow:0 0 0 3px var(--text-secondary-active), 0 0 10px var(--shadow-primary-hover-translucent-5); }
+    50% { box-shadow:0 0 0 4px var(--text-secondary-active), 0 0 22px var(--shadow-primary-hover-translucent-5); }
+}
+/* The pupil's own class affinity: a steady gold ring so it reads apart from
+   the (pulsing) click-selection highlight even when both land on one node. */
+.ms-node.ms-actor .ms-ring { box-shadow:0 0 0 3px var(--accent-gold-pure, #ffd700), 0 0 12px var(--accent-gold-pure, #ffd700); }
+.ms-node.ms-actor.ms-selected .ms-ring { animation:ms-select-pulse-gold 1.8s ease-in-out infinite; }
+@keyframes ms-select-pulse-gold {
+    0%, 100% { box-shadow:0 0 0 3px var(--accent-gold-pure, #ffd700), 0 0 10px var(--accent-gold-pure, #ffd700); }
+    50% { box-shadow:0 0 0 4px var(--accent-gold-pure, #ffd700), 0 0 24px var(--accent-gold-pure, #ffd700); }
+}
+.ms-name {
+    margin-top:7px; font-size:1.21rem; font-weight:bold; text-align:center;
+    text-shadow:0 1px 2px var(--shadow-black-translucent-75);
 }
 
 
@@ -20361,10 +21238,49 @@ cursor:pointer; font-size:16px; line-height:1.4;
     margin-bottom: 10px;
     flex-shrink: 0;
 }
+/* The field's own row: the handle keeps the right edge, the field (when it is
+   open at all) fills everything left of it. */
+.msb-field-only {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+}
+.msb-field-only.msb-collapsed { justify-content: flex-end; }
 .msb-field {
     position: relative;
     display: flex;
     align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.msb-field .backpack-search-input { width: 100%; }
+/* The collapsed handle: the IconSet magnifying glass (247). Never carries
+   '.focusable', so the controller's cursor cannot reach it: a search is
+   opened with a click. */
+.msb-toggle {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 4px;
+    color: var(--text-card-medium);
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+.msb-toggle:hover,
+.msb-toggle.open {
+    color: var(--text-primary-hover);
+    border-color: var(--text-primary-hover);
+}
+.msb-glass {
+    display: block;
 }
 .msb-clear {
     position: absolute;
@@ -20685,6 +21601,13 @@ cursor:pointer; font-size:16px; line-height:1.4;
 #menu-container .backpack-search .msb-field-only {
     flex: 1 1 auto;
 }
+/* Collapsed it is just the handle, so it gives the row back to the sort tags
+   and pins itself to the right edge. */
+#menu-container .backpack-search .msb-field-only.msb-collapsed {
+    flex: 0 0 auto;
+    order: 9;
+    margin-left: auto;
+}
 #menu-container .backpack-search .msb-row {
     flex: 0 0 auto;
 }
@@ -20842,4 +21765,110 @@ cursor:pointer; font-size:16px; line-height:1.4;
         width: 10px;
         height: 10px;
     }
+}
+
+/* ==========================================================================
+   Earth adventures (Procedural/ProceduralAdventureSystem.js)
+   --------------------------------------------------------------------------
+   The parchment modal a "???" world-map square is answered in: the node's
+   prose whole, its branches as rows under it. Same card idiom as
+   .army-dialog, sized for a page of text rather than a yes/no question.
+   ========================================================================== */
+#pas-adventure-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-bg-alt-1-translucent-70);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    box-sizing: border-box;
+    animation: fadeIn 0.2s ease;
+}
+
+.pas-adv-panel {
+    background: var(--bg-secondary-hover);
+    border: 3px double var(--text-primary-hover);
+    border-radius: 6px;
+    box-shadow: 0 10px 25px var(--shadow-primary-hover-translucent-5),
+        inset 0 0 40px var(--shadow-shadow-alt-2-hover-translucent-8);
+    padding: 20px 26px 16px;
+    width: 640px;
+    max-width: 88vw;
+    max-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Lora', serif;
+    box-sizing: border-box;
+}
+
+.pas-adv-title {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-primary-hover-translucent-15);
+    color: var(--text-primary-hover);
+    font-size: 1.285em;
+    text-align: center;
+}
+
+/* The prose is the only thing that scrolls: the rows stay put under it, so a
+   long node never pushes the answer off the bottom of the card. */
+.pas-adv-text {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    color: var(--text-success-active);
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.pas-adv-text p {
+    margin: 0 0 10px 0;
+}
+
+.pas-adv-rewards {
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    color: var(--text-primary-hover);
+    font-size: 0.964em;
+}
+
+.pas-adv-rewards p {
+    margin: 0 0 4px 0;
+}
+
+.pas-adv-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 14px;
+}
+
+.pas-adv-row {
+    padding: 7px 14px;
+    border: 1px solid var(--text-primary-hover);
+    border-radius: 4px;
+    background: var(--bg-primary-hover-translucent-35);
+    color: var(--text-success-active);
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.pas-adv-row-sel,
+.pas-adv-row:hover {
+    background: var(--text-primary-hover);
+    color: var(--bg-secondary-hover);
+    box-shadow: 0 3px 6px var(--shadow-primary-hover-translucent-5);
+}
+
+.pas-adv-hint {
+    margin-top: 10px;
+    color: var(--text-success-active);
+    opacity: 0.55;
+    font-size: 0.785em;
+    text-align: center;
 }

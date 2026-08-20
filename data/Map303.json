@@ -17904,27 +17904,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -18120,27 +18103,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -18370,7 +18336,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$Scarf2",
+            "characterName": "Skab/!$Scarf",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0

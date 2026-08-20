@@ -934,6 +934,149 @@
     return adjacent;
   }
 
+  // ===== UNDERGROUND BORDER CONNECTIONS =====
+  //
+  // A lower layer used to be a sealed 64x64 box: every underground square walled
+  // itself in on all four sides, so the only way out of a cave was back up the
+  // shaft the party came down. Underground is now as connected as the surface --
+  // every side whose neighbour has an underground of its own is opened by a
+  // passage, and there is always at least one passage per open side.
+  //
+  // The two squares that share a border have to cut that passage in the SAME
+  // place, and neither can see the other's tiles: each is generated on its own,
+  // from the world seed and its own coordinates. So the passage is derived from
+  // the BORDER rather than from either square -- named by the square on its
+  // north/west side plus the axis it runs along, which both neighbours spell
+  // identically -- and the two mouths line up.
+
+  // Rock band the underground generators wall their square in with. A passage is
+  // cut through the whole band, out to the outermost ring, so the party can
+  // stand on the border tile the crossing rule watches for.
+  const UNDERGROUND_BORDER_THICKNESS = 5;
+  const UNDERGROUND_PASSAGE_MIN_WIDTH = 5;
+  const UNDERGROUND_PASSAGE_MAX_WIDTH = 9;
+  // Keeps a mouth off the corners, where two passages meeting inside the border
+  // band would open a diagonal gap nothing can walk through.
+  const UNDERGROUND_PASSAGE_MARGIN = 8;
+
+  /**
+   * True for the sea floor under an ocean square, however it is spelled
+   * (Biomes.json says "SeaBed", plenty of call sites say "Seabed").
+   */
+  function isSeabedBiomeName(name) {
+    return (
+      typeof name === "string" &&
+      name.replace(/[\s_-]+/g, "").toLowerCase() === "seabed"
+    );
+  }
+
+  /**
+   * Is the side facing `neighbourName` walled off rather than opened?
+   *
+   * Two reasons to wall it: the neighbour has no lower layer at all, so there is
+   * nothing on the other side to walk into; or what it has is the sea floor,
+   * which is open water held back by rock. A passage into the seabed would be a
+   * hole in the bottom of the sea, so both sides keep their wall -- the seabed
+   * generator seals against the cave in the same breath.
+   *
+   * A neighbour nobody can name (off the world map, missing from the coordinate
+   * cache, not in the biome table) is left OPEN: underground squares are the
+   * rule and the seabed the exception, so guessing "open" agrees with the
+   * neighbour far more often than guessing "sealed" does.
+   */
+  function isUndergroundSideSealed(neighbourName) {
+    if (!neighbourName) return false;
+    // Already a lower-layer name: a descent hands the generator the biome it is
+    // descending into rather than the surface around it.
+    if (isSeabedBiomeName(neighbourName)) return true;
+    const biome = getBiomeByName(normalizeBiomeForEdge(neighbourName));
+    if (!biome) return false;
+    if (!biome.lowerLayer) return true;
+    return isSeabedBiomeName(biome.lowerLayer);
+  }
+
+  /**
+   * The neighbour names an underground square must decide its borders from.
+   *
+   * What a square becomes one layer down is decided by its SURFACE biome's
+   * lowerLayer, so the names that matter are the surface ones around it. An edge
+   * crossing hands those in already, but a descent (goDown, a dungeon door) does
+   * not: it repeats the biome being descended into on all four sides, having no
+   * reason to look the real neighbours up. Reading the coordinate cache instead
+   * is what stops a cave dug under a coast from opening into the sea floor.
+   *
+   * The cache is Earth's, so it is not consulted on an alien planet: those grid
+   * coordinates are planet-local and would collide with real world-map squares.
+   */
+  function undergroundNeighbourNames(worldCoords, adjacentBiomes, cache) {
+    const fallback = adjacentBiomes || {};
+    const pg = typeof $gameSystem !== "undefined" && $gameSystem
+      ? $gameSystem._procGenData : null;
+    if (!worldCoords || !cache || (pg && pg.alienGrid)) return fallback;
+
+    const cached = getAdjacentBiomesFromCache(
+      Math.floor(worldCoords.x || 0),
+      Math.floor(worldCoords.y || 0),
+      cache
+    );
+    return {
+      north: cached.north || fallback.north || null,
+      south: cached.south || fallback.south || null,
+      east: cached.east || fallback.east || null,
+      west: cached.west || fallback.west || null,
+    };
+  }
+
+  /**
+   * Where each side of an underground square opens onto its neighbour.
+   *
+   * Returns { north, south, east, west }, each either null (that side stays
+   * sealed) or { start, end } -- the inclusive tile range the passage occupies
+   * along that side, in x for north/south and in y for east/west.
+   *
+   * @param {Object} worldCoords    {x, y} of the square on the world map
+   * @param {Object} adjacentBiomes {north, south, east, west} neighbour names
+   * @param {number} depth          layer depth, so each layer connects its own way
+   */
+  function undergroundBorderOpenings(worldCoords, adjacentBiomes, depth, width, height) {
+    const openings = { north: null, south: null, east: null, west: null };
+    if (!worldCoords) return openings;
+
+    const wx = Math.floor(worldCoords.x || 0);
+    const wy = Math.floor(worldCoords.y || 0);
+    const adj = adjacentBiomes || {};
+    const d = depth | 0;
+
+    // Each border named by the square north/west of it, so both neighbours name
+    // it the same way: the north border of (x, y) IS the south border of
+    // (x, y-1). The salt separates the horizontal border of a square from its
+    // vertical one.
+    const sides = [
+      ["north", wx, wy, 0x4e, width],
+      ["south", wx, wy + 1, 0x4e, width],
+      ["west", wx, wy, 0x57, height],
+      ["east", wx + 1, wy, 0x57, height],
+    ];
+
+    for (const [dir, ex, ey, salt, span] of sides) {
+      if (isUndergroundSideSealed(adj[dir])) continue;
+
+      const rng = createSeededRandom(procMapSeed(ex, ey, d, salt));
+      const passageWidth =
+        UNDERGROUND_PASSAGE_MIN_WIDTH +
+        Math.floor(rng() * (UNDERGROUND_PASSAGE_MAX_WIDTH - UNDERGROUND_PASSAGE_MIN_WIDTH + 1));
+      const margin = Math.min(
+        UNDERGROUND_PASSAGE_MARGIN,
+        Math.max(0, Math.floor((span - passageWidth) / 2))
+      );
+      const room = Math.max(1, span - 2 * margin - passageWidth);
+      const start = Math.max(0, Math.min(span - passageWidth, margin + Math.floor(rng() * room)));
+      openings[dir] = { start, end: Math.min(span - 1, start + passageWidth - 1) };
+    }
+
+    return openings;
+  }
+
   /**
    * Check biome composition at the borders of an adjacent world map tile (cardinal directions only)
    */
@@ -4056,6 +4199,11 @@
     getAdjacentBiomesOnWorldMap,
     getAdjacentBiomesFromCache,
     checkAdjacentMapBiomesFromCache,
+    isSeabedBiomeName,
+    isUndergroundSideSealed,
+    undergroundNeighbourNames,
+    undergroundBorderOpenings,
+    UNDERGROUND_BORDER_THICKNESS,
     isWaterTileId,
     getRandomFeatureVariant,
     placeMultiTileFeature,

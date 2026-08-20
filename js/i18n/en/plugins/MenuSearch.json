@@ -1,5 +1,7 @@
 {
  "placeholder": "Search…",
+ "open": "Open the search",
+ "close": "Close the search",
  "clear": "Clear the search",
  "anyCategory": "Any category",
  "showing": "{count} shown",

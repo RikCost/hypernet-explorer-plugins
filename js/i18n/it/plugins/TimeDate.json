@@ -71,11 +71,10 @@
   },
   "hud": {
     "food": "Cibo",
-    "temp": "Temp",
+    "temp": "Temperatura",
     "noFood": "niente",
     "weatherClear": "Sereno",
     "awake": "Sveglio",
-    "eta": "ETA",
     "enemies": "Nemici",
     "level": "Liv. {level}"
   },
@@ -83,8 +82,8 @@
     "hunger": "Fame",
     "sleep": "Sonno",
     "hygiene": "Igiene",
-    "social": "Socialita",
-    "leisure": "Svago"
+    "social": "Socialità",
+    "leisure": "Umore"
   },
   "addictionLabel": {
     "nicotine": "Nicotina",
@@ -118,6 +117,11 @@
   "stateNeed": {
     "sleep": "{name}: Riposo +{percent}%",
     "hygiene": "{name}: Igiene +{percent}%"
+  },
+  "mood": {
+    "victory": "Lo scontro \u00e8 vinto",
+    "lost": "{name} non c'\u00e8 pi\u00f9",
+    "member": "{name} {delta}"
   },
   "months": [
     "Gennaio",

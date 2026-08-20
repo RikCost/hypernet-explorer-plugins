@@ -1,9 +1,9 @@
 {
   "lore": {
     "13": "Refounded the Mage Guild in the early 1900s with the backing of Britannia's royal house, styling it as a pseudo-chivalric order, hence the Sir and Lady titles its leaders still carry. As of 2001 he stands as one of the Guild's three pillars, representing the past, and has simply refused to ever step down; no one in the Guild can truly stand against him, since he knows spells even the gods do not.",
-    "11": "Born Joseph Ratzinger, he ascended to the Throne of Peter as Pietro II after John Paul II died from the assassination attempt of May 13, 1981. He has declared war on Jenna of Northpoint, refusing to recognize her as his reincarnation and branding her the Antichrist instead.",
+    "11": "Born Joseph Ratzinger, he ascended to the Throne of Peter as Pietro II after John Paul II died from the assassination attempt of May 13, 1981. He has declared war on Jenna of Northpoint, refusing to recognize her as the Second Coming and branding her the Antichrist instead.",
     "10": "His name is printed on tens of billions of banknotes and financial transaction logs, more times than the name of God across every printed Bible. The euro's security strip is laced with flecks of Fantablack scraped from the Omega Tower's outer walls, and between that arcane residue and the law that names are power, Draghi ascended as the godhead of the market itself, an abstract concept now driving the multiverse's economy from behind the scenes.",
-    "6": "Current president of the Independent Midwest States, one of the three fragments the Americas were split into after independence never fully happened: the Republic of Cascadia on the east coast, the Independent Midwest States in the center, and the Atlantic Protectorate on the west coast under Britannia's control.",
+    "6": "Current president of the Free States of Midwest, one of the three fragments the Americas were split into after independence never fully happened: the Republic of Cascadia on the east coast, the Free States of Midwest in the center, and the Atlantic Protectorate on the west coast under Britannia's control.",
     "5": "Head of the European Space Agency, currently testing new rockets built almost entirely from armor plating meant to be chewed apart by orbital debris, buying astronauts just enough time to clear low orbit. The Kessler Syndrome triggered during the Y2K event turned any ordinary launch into a coin flip with over 90% odds of failure.",
     "1": "A mechanic from Westford, Texas, and something of a living legend. Built the Liminal Engine himself, a device that chews through dimensional energy and lets him drive across realities in a battered camper he calls The Beast. He once spent years running Route 666 with Eris, the goddess of discord, robbing banks by having her bend probability to crack any safe.",
     "9001": "Half of what used to be a person, wired to a mana core that never quite stopped whispering. Anyone this early in their own story is still deciding which half is in charge.",
@@ -72,6 +72,16 @@
       "For now she works for whoever pays, and asks the locals careful questions about their gods."
     ]
   },
+  "emRestlessLines": [
+    "I'm the real protagonist here, you know.",
+    "I know a spell or two. Possibly more than I should.",
+    "This whole game plays better from my side of it.",
+    "Pick me and I promise hours of properly strange adventures.",
+    "I'm dimensionally immortal. Try and stop me.",
+    "Witches never dies! ...you know what I mean.",
+    "Ninety-two percent of my memories are gone and I'm still the best option on this board.",
+    "Still waiting. I've got all the time there is, technically."
+  ],
   "emOriginalLore": "Born in Wimbledon, Britannia, in 1984, on the branch where the Ritual actually happened: this is dimension three, the original. She gave up ninety-two percent of her memories to forge the spear that killed the Father aspect of YHWH, and woke on Ritual Island with no past and a magical potential that has been growing past what she can hold ever since. Every other Em fell here from somewhere else; she never had anywhere to fall from.",
   "emBackstory": [
     "Em was born in {town}, Britannia, and wanted to be a witch in an age that had filed magic away with the fairy tales.",
@@ -117,7 +127,7 @@
   "theParty": "the party",
   "companion": "companion",
   "skins": "Appearance",
-  "skinHint": "Page Up / Page Down or Shift to leaf through the looks.",
+  "skinHint": "leafs through the looks",
   "skin": {
     "statesman": "Statesman",
     "arcane": "Arcane",

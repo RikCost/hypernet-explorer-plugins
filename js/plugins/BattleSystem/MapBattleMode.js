@@ -1609,14 +1609,12 @@
         // notion, and a Window_Selectable stays deaf only if it is deactivated.
         // Without this the one OK press that advances a talk result would ALSO
         // land on the command row the cursor is parked on.
-        const overlayOwnsInput = MBM.isTalkMenuOpen() || $gameMessage.isBusy();
-        MBM._setWindowsDeaf(overlayOwnsInput);
+        MBM._setWindowsDeaf($gameMessage.isBusy());
 
-        if (MBM.isTalkMenuOpen()) {
-            MBM._updateTalkInput();
-            return;
-        }
         if ($gameMessage.isBusy()) return;
+        // The talk menu is the command window wearing another list, so it works
+        // its own input; nothing else on the map may answer while it is up.
+        if (MBM.isTalkMenuOpen()) return;
 
         MBM._updateCursorInput();
         MBM._updateActorInput();
@@ -1877,10 +1875,11 @@
     };
 
     MBM._commandTalk = function () {
-        MBM._closeCommandWindow();
+        // The talk menu is drawn IN the command window now, so it is not closed
+        // on the way in: its rows simply replace the commands.
         if (MBM.openTalkMenu()) return;
         SoundManager.playBuzzer();
-        if (BattleManager.actor()) MBM._openCommandWindow(BattleManager.actor());
+        if (MBM._cmdWindow) MBM._cmdWindow.activate();
     };
 
     MBM._commandEscape = function () {
@@ -2908,8 +2907,11 @@
     };
 
     //=========================================================================
-    // 12. HUD cards (reuse Sprite_BattleBar as-is, parented to Scene_Map)
+    // 12. Monster bars (reuse Sprite_BattleBar as-is, parented to Scene_Map)
     //=========================================================================
+    // The party is already on the shared HUD cards in the top-left corner
+    // (UI/PartyHud.js), which stay up on the map whether or not a fight is
+    // running, so all this deals out is the monsters' own bars.
 
     // The identity of the current card set. The roster is no longer fixed for
     // the fight (monsters pile in, townspeople take sides, both sides fall), so
@@ -2935,26 +2937,15 @@
         const scene = SceneManager._scene;
         if (!window.Sprite_BattleBar || !scene) return;
 
-        const W = 200, H = 110, STEP = H - 14;
-        const members = $gameParty.battleMembers();
-        members.forEach((actor, i) => {
-            const sprite = new window.Sprite_BattleBar(actor, true, W, H);
-            sprite.x = 90;
-            sprite.y = 18 + H + i * STEP;
-            sprite._targetY = sprite.y;
-            scene.addChild(sprite);
-            MBM._hpBars.push(sprite);
-        });
-
         // Reinforcements (section 9c) mean the troop has no fixed size, so the
         // column is cut to what the screen actually holds rather than running
-        // the last few cards off the bottom edge.
-        const enemyW = 400, enemyStep = 90, enemyTop = 40;
+        // the last few bars off the bottom edge.
+        const enemyW = 260, enemyStep = 70, enemyTop = 40;
         const maxRows = Math.max(1, Math.floor((Graphics.height - enemyTop) / enemyStep));
         let row = 0;
         $gameTroop.members().forEach(enemy => {
             if (!enemy.isAlive() || row >= maxRows) return;
-            const sprite = new window.Sprite_BattleBar(enemy, false, enemyW);
+            const sprite = new window.Sprite_BattleBar(enemy, enemyW);
             sprite.x = Graphics.width - enemyW - 40;
             sprite.y = enemyTop + row * enemyStep;
             scene.addChild(sprite);
@@ -2969,9 +2960,9 @@
         // Sprite_BattleBar updates itself via the normal PIXI child update loop
         // (it is added straight to the scene). All that is left is noticing a
         // roster change - a reinforcement, a volunteer, a corpse - and redealing
-        // the cards to match. Joining and dying both refresh the cards
+        // the bars to match. Joining and dying both refresh the bars
         // themselves, so this poll is only a safety net: a few frames of latency
-        // on a stale card is invisible, and rebuilding the roster key every frame
+        // on a stale bar is invisible, and rebuilding the roster key every frame
         // is not worth it.
         if (++MBM._hpBarTick < 10) return;
         MBM._hpBarTick = 0;
@@ -3004,22 +2995,24 @@
     //=========================================================================
     // 14. Talk menu (NPC/EnemyTalkSystem.js) re-hosted on Scene_Map
     //
-    // The whole Chat / Join / Surrender / Insult / Throw Stone / Pet panel is
+    // The whole Chat / Join / Surrender / Insult / Throw Stone / Pet list is
     // authored on Scene_Battle.prototype. Every one of those handlers works off
-    // $gameTroop, $gameMessage and `this._talkEl/_talkOptions/_talkIdx` alone -
-    // the only Scene_Battle-specific parts are opening and closing the panel,
-    // which reach for _actorCommandWindow / _partyCommandWindow. So the rules
-    // are borrowed wholesale by copying those methods onto Scene_Map, and only
-    // open/close/input are reimplemented here against the tactical command menu.
+    // $gameTroop, $gameMessage and `this._talkOptions/_talkIdx` alone - the only
+    // Scene_Battle-specific parts are opening and closing the menu, which reach
+    // for _actorCommandWindow / _partyCommandWindow. So the rules are borrowed
+    // wholesale by copying those methods onto Scene_Map, and only open/close are
+    // reimplemented here against the tactical command menu. The rows themselves
+    // are window.TalkMenu's, which draws into whichever Window_ActorCommand it
+    // is handed: in front view the actor's own, here the tactical one.
     //
     // EnemyTalkSystem loads AFTER this plugin, so the copy happens on first use
     // rather than at load time.
     //=========================================================================
 
     // Methods lifted verbatim from Scene_Battle. Deliberately excludes
-    // openTalkMenu / closeTalkMenu / _updateTalkInput, which are ours below.
+    // openTalkMenu / closeTalkMenu, which are ours below.
     const TALK_BORROWED = [
-        "_buildTalkOptions", "_buildTalkPanelHTML", "_updateTalkHighlight", "_talkOk",
+        "_buildTalkOptions", "_talkOk",
         // Which monster of the brawl the panel is addressing. Required here:
         // unlike a front-view troop, a map battle can hold several monsters at
         // once, so without it every handler would fall back to the first one.
@@ -3049,8 +3042,7 @@
     }
 
     MBM.isTalkMenuOpen = function () {
-        const scene = SceneManager._scene;
-        return !!(scene && scene._talkEl && scene._talkEl.parentElement);
+        return !!(window.TalkMenu && window.TalkMenu.isMenuOpen(MBM._cmdWindow));
     };
 
     // Talking needs somebody left to talk to. The reach rules deliberately do
@@ -3061,49 +3053,15 @@
         return $gameTroop.aliveMembers().length > 0;
     };
 
-    // Returns false when the panel could not be opened, so the caller can buzz
+    // Returns false when the menu could not be opened, so the caller can buzz
     // and hand input back instead of leaving the turn with nothing listening.
     MBM.openTalkMenu = function () {
         if (!MBM.canUseTalkCommand()) return false;
         if (!borrowTalkMethods()) return false;
+        if (!window.TalkMenu || !MBM._cmdWindow) return false;
         const scene = SceneManager._scene;
         if (!(scene instanceof Scene_Map) || MBM.isTalkMenuOpen()) return false;
-
-        scene._talkIdx = 0;
-        scene._talkOptions = scene._buildTalkOptions();
-        scene._talkHandlers = {
-            chat: scene.onTalkChat.bind(scene),
-            joinParty: scene.onTalkJoinParty.bind(scene),
-            joinPet: scene.onTalkJoinPet.bind(scene),
-            surrender: scene.onTalkSurrender.bind(scene),
-            insult: scene.onTalkInsult.bind(scene),
-            throwStone: scene.onThrowStone.bind(scene),
-            pet: scene.onPet.bind(scene),
-            cancel: scene.onTalkCancel.bind(scene)
-        };
-
-        const el = document.createElement("div");
-        el.id = "enemy-talk-panel";
-        el.innerHTML = scene._buildTalkPanelHTML();
-        document.body.appendChild(el);
-        scene._talkEl = el;
-
-        el.addEventListener("mouseover", ev => {
-            const row = ev.target.closest(".etalk-option");
-            if (!row) return;
-            const i = parseInt(row.dataset.idx, 10);
-            if (!isNaN(i) && i !== scene._talkIdx) {
-                scene._talkIdx = i;
-                scene._updateTalkHighlight();
-            }
-        });
-        el.addEventListener("click", ev => {
-            const row = ev.target.closest(".etalk-option");
-            if (!row) return;
-            const i = parseInt(row.dataset.idx, 10);
-            if (!isNaN(i)) { scene._talkIdx = i; scene._talkOk(); }
-        });
-        return true;
+        return window.TalkMenu.open(MBM._cmdWindow, scene);
     };
 
     // Scene_Map has no _actorCommandWindow, so the tactical menu is what comes
@@ -3114,48 +3072,11 @@
     };
 
     MBM._closeTalkMenu = function () {
-        const scene = SceneManager._scene;
-        if (!scene) return;
-        if (scene._talkEl) {
-            scene._talkEl.remove();
-            scene._talkEl = null;
-        }
-        scene._talkOptions = null;
-        scene._talkHandlers = null;
+        if (window.TalkMenu) window.TalkMenu.close(MBM._cmdWindow);
         // A recruit/surrender ends the battle from inside the handler; there is
         // no turn left to hand back to in that case.
         if (MBM.isActive() && BattleManager.actor()) {
             MBM._openCommandWindow(BattleManager.actor());
-        }
-    };
-
-    // Same keys as the front-view panel, routed through the split-screen shim so
-    // Player 2 can work the panel on their own actor's turn.
-    MBM._updateTalkInput = function () {
-        const scene = SceneManager._scene;
-        const opts = scene && scene._talkOptions;
-        if (!opts || opts.length === 0) return;
-        if (MBM.inputTriggered("down")) {
-            MBM.consumeP2Input();
-            if (scene._talkIdx < opts.length - 1) {
-                scene._talkIdx++;
-                SoundManager.playCursor();
-                scene._updateTalkHighlight();
-            }
-        } else if (MBM.inputTriggered("up")) {
-            MBM.consumeP2Input();
-            if (scene._talkIdx > 0) {
-                scene._talkIdx--;
-                SoundManager.playCursor();
-                scene._updateTalkHighlight();
-            }
-        } else if (MBM.inputTriggered("ok")) {
-            MBM.consumeP2Input();
-            scene._talkOk();
-        } else if (MBM.inputTriggered("cancel")) {
-            MBM.consumeP2Input();
-            SoundManager.playCancel();
-            scene.onTalkCancel();
         }
     };
 
@@ -3166,20 +3087,7 @@
         MBM.openTalkMenu();
     };
 
-    // Add the Talk row to the tactical command menu. In Peaceful difficulty
-    // PeacefulMode already adds one (its alias wraps this one, so it appends
-    // after us and would otherwise leave two Talk rows stacked up); there it
-    // stays the owner and this only supplies the handler, above.
-    const _Window_ActorCommand_makeCommandList_MBM = Window_ActorCommand.prototype.makeCommandList;
-    Window_ActorCommand.prototype.makeCommandList = function () {
-        _Window_ActorCommand_makeCommandList_MBM.call(this);
-        if (!MBM.isActive() || !this._actor) return;
-        if (typeof this.addCommandWithIcon !== "function") return;
-        if (!MBM.isTalkSystemLoaded()) return;
-        if (window.PeacefulMode && window.PeacefulMode.isActive && window.PeacefulMode.isActive()) return;
-        if (this._list.some(cmd => cmd.symbol === "talk")) return;
-        this.addCommandWithIcon(T('PeacefulMode.cmd.talk'), "talk", MBM.canUseTalkCommand(), null, 4);
-        // Talk leads, the same position PeacefulMode gives it in front view.
-        this._list.unshift(this._list.pop());
-    };
+    // The Talk row itself is no longer added here: Talk is a standing battle
+    // command built by BattleSystemEnhanchedCommands.js, so the tactical menu
+    // gets it with every other row and only supplies the handler, above.
 })();

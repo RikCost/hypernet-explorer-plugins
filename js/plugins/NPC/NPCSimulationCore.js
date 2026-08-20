@@ -685,9 +685,13 @@
       });
     },
 
-    findWorkLocation(jobName) {
-      if (!jobName) return null;
-      const kw = jobName.toLowerCase().split(" ")[0];
+    // `trade` is matched against map event names, which are authored in
+    // English, so it must be one of the job's English ids (its spec or its
+    // category) and never its displayed name - that reads in the player's
+    // language and would match nothing outside English.
+    findWorkLocation(trade) {
+      if (!trade) return null;
+      const kw = String(trade).toLowerCase().split(" ")[0];
       const candidates = this._scanEvents(rec => {
         const n = rec.nameLower;
         return n.includes(kw) || n.includes("work") || n.includes("job");
@@ -1079,7 +1083,7 @@
       // their shift is simulated off-screen in the main tick instead.
       if (profile.workMapId && profile.workMapId !== $gameMap?.mapId()) return;
 
-      const workSpot = InteractionScanner.findWorkLocation(job.name || "");
+      const workSpot = InteractionScanner.findWorkLocation(job.spec || job.category || "");
       if (workSpot) {
         // goToTile sets state=goingToWork, which on arrival transitions to working
         controller.goToTile(workSpot.x, workSpot.y, "goingToWork", 300000);
@@ -1753,7 +1757,13 @@
       if (!entry) return '';
       if (typeof entry === 'string') return entry;
       if (!entry.key || !T.has(entry.key)) return entry.desc || '';
-      return T(entry.key, entry.params || {});
+      const params = entry.params || {};
+      // A shift logs the job's i18n key ("jobs.12.name"), the way Jobs.json
+      // names it, so the entry reads in whichever language it is opened in.
+      if (typeof params.job === 'string' && T.has(params.job)) {
+        return T(entry.key, Object.assign({}, params, { job: T(params.job) }));
+      }
+      return T(entry.key, params);
     },
 
     generateNarrative(npcName) {
@@ -2572,6 +2582,22 @@
           || !!window.NPCSystem?.hasStoryTag?.(data?.note);
         ev._npcShopRota = tagged && !owned;
         if (tagged && !ev._npcShopRota) this._releaseRota($gameMap?.mapId(), ev.eventId());
+        // A counter can never be recruited (the Join gate in NPCEmpathizeUI now
+        // excludes any shop-shift-covered event), so its self-switch A page is
+        // only ever a leftover template artifact, never a legitimate "joined"
+        // state. A stray ON flips the counter onto that blank/no-command page
+        // (through the ordinary page-condition machinery) and strands it: still
+        // drawn with a face (the persona sprite is written to every page) but
+        // walkable and unresponsive. Cleared the moment the counter is
+        // (re)classified, so a save corrupted before this fix self-heals the
+        // next time the map is entered.
+        if (ev._npcShopRota && $gameMap) {
+          const key = [$gameMap.mapId(), ev.eventId(), 'A'];
+          if ($gameSelfSwitches?.value(key)) {
+            $gameSelfSwitches.setValue(key, false);
+            ev.refresh();
+          }
+        }
       }
       return ev._npcShopRota;
     },
@@ -2619,6 +2645,70 @@
       return Math.floor(hour / SHIFT_HOURS) % SHIFT_COUNT;
     },
 
+    // ---- a zombie world's counters ---------------------------------------
+    // A fifth of the tills were left where they stood when the dead got up:
+    // nobody is ever behind one again and nothing is ever ordered in for it,
+    // its shelf frozen exactly the way an empty world's is (see
+    // ItemSystemShop.getShopDateKey). The ones still trading keep no full rota
+    // either: one person stands the daytime shift and the counter is left to
+    // itself the other sixteen hours, still a till, just nobody minding it.
+    ZOMBIE_ABANDONED_SHARE: 0.2,
+    ZOMBIE_OPEN_SHIFT: 1,   // 08:00-16:00, the only hours anybody keeps
+
+    _isZombieWorld() {
+      return !!window.WorldManager?.isZombieWorld?.();
+    },
+
+    // Was this counter abandoned? Pure in (map, event, world seed, salt), so a
+    // till shut in one savegame of a world is shut in every other. `salt` is
+    // the building coordinate seed for an interior counter, whose map+event
+    // key is shared by every building using that template.
+    isShopAbandoned(mapId, evId, salt) {
+      if (!this._isZombieWorld()) return false;
+      const worldSeed = window.HistoryManager ? window.HistoryManager.getSeed() : 19002001;
+      const h = (nameHash(`${mapId}_${evId}_shopAbandoned`) ^ worldSeed ^ ((salt || 0) >>> 0)) >>> 0;
+      return (h % 1000) / 1000 < this.ZOMBIE_ABANDONED_SHARE;
+    },
+
+    // Is this counter one of the abandoned ones, asked from outside the rota
+    // (ItemSystemShop, for whether its shelf is ever restocked)? Answered off
+    // the rota itself wherever one has been decided, since an interior's rota
+    // is keyed to the building actually entered rather than to the template map
+    // it borrows its id from, and off the seeded roll otherwise.
+    isAbandonedCounter(mapId, evId) {
+      if (!this._isZombieWorld()) return false;
+      const stored = this._getPersonas(`${mapId}_${evId}`);
+      if (stored) return !Object.keys(stored).length;
+      return this.isShopAbandoned(mapId, evId);
+    },
+
+    // The shifts this counter is staffed for at all: every one of them in an
+    // ordinary world, the daytime one alone in a zombie world, none where the
+    // till was abandoned.
+    _shiftsToStaff(mapId, evId, salt) {
+      if (!this._isZombieWorld()) {
+        const all = [];
+        for (let s = 0; s < SHIFT_COUNT; s++) all.push(s);
+        return all;
+      }
+      return this.isShopAbandoned(mapId, evId, salt) ? [] : [this.ZOMBIE_OPEN_SHIFT];
+    },
+
+    // Strips a counter back to an unattended till: the empty world's treatment
+    // (NPCSystem's blankShopCounter), applied per shift rather than for good,
+    // so the same event is manned again when the day shift comes round.
+    _blankCounter(ev) {
+      const data = ev?.event?.();
+      if (!data) return;
+      if (ev._npcShopBlank && !ev.characterName()) return;
+      ev._npcShopBlank = true;
+      for (const page of (data.pages || [])) {
+        if (page?.image) { page.image.characterName = ""; page.image.characterIndex = 0; }
+      }
+      ev.refresh();
+      ev.setImage("", 0);
+    },
+
     // True while any live <Shop> counter on the map is still without a rota.
     // Lets the staging pass (stageShopPersonas, NPCSystem.js) skip the whole
     // candidate-pool walk on the Scene_Map builds that decide nothing new,
@@ -2637,6 +2727,15 @@
     // FIRST and are marked { local: true }. World-wide NPCs (every other group's
     // templates, via the GLOBAL pool) follow as { local: false } fallback, used
     // by assignPersonas only once the local free pool is exhausted.
+    // A non-sentient creature (Feral, Mimic, Monster...) cannot stand a
+    // counter and mind a till, only a monster world's population is made of
+    // exactly that, so there it is the only kind of shopkeeper there is.
+    _shopEligible(name) {
+      if (!!window.WorldManager?.isMonsterWorld?.()) return true;
+      const NC = window.NPCCreature;
+      return !NC?.isNonSentientByName?.(name);
+    },
+
     _candidates(groupName) {
       if (!window.NPCSystem?.getNPCPool) return [];
       const spriteOf = (ev) => {
@@ -2661,7 +2760,7 @@
           }
         }
         for (const name of ($gameSystem?._npcShopkeeperPool?.[groupName] || [])) {
-          if (seen.has(name)) continue;
+          if (seen.has(name) || !this._shopEligible(name)) continue;
           const sprite = spriteOf(byName.get(name));
           if (!sprite) continue;
           seen.add(name);
@@ -2678,7 +2777,7 @@
       for (const tpl of globalTemplates) {
         const ev = tpl?.eventData;
         if (!ev?.name || seen.has(ev.name) || localNames.has(ev.name) || /local/i.test(ev.note || "")
-          || window.NPCSystem?.hasHiddenTag?.(ev.note)) continue;
+          || window.NPCSystem?.hasHiddenTag?.(ev.note) || !this._shopEligible(ev.name)) continue;
         const sprite = spriteOf(ev);
         if (!sprite) continue;
         seen.add(ev.name);
@@ -2729,11 +2828,13 @@
         const worldSeed = window.HistoryManager ? window.HistoryManager.getSeed() : 19002001;
         const rng = new MiniRng(nameHash(key + '_shopShift') ^ worldSeed);
         const shifts = {};
-        for (let s = 0; s < SHIFT_COUNT; s++) {
+        for (const s of this._shiftsToStaff(mapId, evId)) {
           // Last resort (everyone in the world is already booked): reuse a
           // random candidate rather than leave the counter unstaffed.
           shifts[s] = takeNext(rng) || rng.pick(candidates);
         }
+        // An abandoned till is stored as an empty rota rather than left
+        // undecided, so nothing keeps trying to staff it every map load.
         this._setPersonas(key, shifts, true);
         this._recordAssignments(mapId, evId, window.NPCSystem?.extractShopName?.(ev.event()) ?? null, shifts);
       }
@@ -2782,7 +2883,10 @@
         // stable across re-entries yet distinct per shop, like assignPersonas.
         const rng = new MiniRng(nameHash(key + '_interiorShop') ^ baseSeed);
         const shifts = {};
-        for (let s = 0; s < SHIFT_COUNT; s++) {
+        // The building's own seed salts the abandoned roll: this map+event key
+        // belongs to a shared template, so without it a shut till would be shut
+        // in every building drawn from that template.
+        for (const s of this._shiftsToStaff(mapId, evId, baseSeed)) {
           let persona = townPool.length
             ? townPool.splice(rng.int(0, townPool.length - 1), 1)[0]
             : null;
@@ -2796,6 +2900,10 @@
         if (Object.keys(shifts).length) {
           this._setPersonas(key, shifts, false);
           this._recordAssignments(mapId, evId, window.NPCSystem?.extractShopName?.(ev.event()) ?? null, shifts);
+        } else if (this._isZombieWorld()) {
+          // Abandoned: an empty rota, so the counter is never staffed and never
+          // asked again while this interior is entered.
+          this._setPersonas(key, {}, false);
         }
       }
 
@@ -2855,6 +2963,15 @@
         // updateSprites() would then skip it, leaving the shop graphic empty.
         const persona = this._getPersonas(key)?.[slot];
         if (!persona) {
+          // A zombie world has nobody to spare for a stand-in: an abandoned
+          // till, and any till outside its one daytime shift, simply stands
+          // empty (see ZOMBIE_ABANDONED_SHARE).
+          if (this._isZombieWorld()) {
+            this._blankCounter(ev);
+            if (this._getPersonas(key)) this._applied[key] = slot;
+            else allApplied = false;
+            continue;
+          }
           // Rota not built yet (assignPersonas is deferred, or the map's pools
           // weren't ready). Rather than leave the counter standing empty, draw
           // a stand-in citizen once, seeded on the event so it doesn't flicker
@@ -2890,7 +3007,16 @@
         const key = `${mapId}_${ev.eventId()}`;
         if (this._applied[key] === slot) continue;
         const persona = this._getPersonas(key)?.[slot];
-        if (!persona) continue;
+        if (!persona) {
+          // An uncovered shift of a zombie world's counter is drawn empty as
+          // early as any staffed one, so a persona left on the event by the
+          // previous scene is not still standing there when the map appears.
+          if (this._isZombieWorld() && this._getPersonas(key)) {
+            this._applied[key] = slot;
+            this._blankCounter(ev);
+          }
+          continue;
+        }
         this._applied[key] = slot;
         this._applyPersonaSprite(ev, persona);
       }
@@ -2915,6 +3041,7 @@
           page.image.characterIndex = persona.charIdx;
         }
       }
+      ev._npcShopBlank = false;
       ev.refresh();
       ev.setImage(persona.spriteName, persona.charIdx);
     },
@@ -3041,7 +3168,7 @@
 
           const rng = new MiniRng(nameHash(key + '_shopShift') ^ worldSeed);
           const shifts = {};
-          for (let s = 0; s < SHIFT_COUNT; s++) {
+          for (const s of this._shiftsToStaff(mapId, evId)) {
             let persona = free.length ? free.splice(rng.int(0, free.length - 1), 1)[0] : null;
             if (!persona) {
               persona = NPCSys.generateSeededPersona?.(
@@ -3051,7 +3178,13 @@
             }
             if (persona) shifts[s] = persona;
           }
-          if (!Object.keys(shifts).length) continue;
+          if (!Object.keys(shifts).length) {
+            // A zombie world's abandoned tills are recorded as an empty rota
+            // (nobody, ever); anywhere else an empty result means the pools
+            // were not ready, so the counter is left to be decided later.
+            if (this._isZombieWorld()) this._setPersonas(key, {}, true);
+            continue;
+          }
 
           this._setPersonas(key, shifts, true);
           this._recordAssignments(mapId, evId, counter.shopName ?? null, shifts);
@@ -3310,12 +3443,12 @@
           }
         }
 
-        // Thoughts: on-map NPCs muse much more often (every ~3 game-minutes,
-        // so the player actually sees the bustle), off-screen ones stay on
-        // the slower 10-minute cadence since nobody's there to read it.
-        // Each NPC gets a per-name offset so they don't all land on the same
-        // tick and pop their bubbles in unison.
-        const _interval = onMapSet.has(name) ? 3 : 10;
+        // Thoughts: on-map NPCs muse a little more often than the rest (their
+        // thought is the one that pops a bubble, and a street where every face
+        // is thinking out loud at once is unreadable), off-screen ones keep the
+        // slower cadence since nobody is there to read it. Each NPC gets a
+        // per-name offset so they don't all land on the same tick.
+        const _interval = onMapSet.has(name) ? 15 : 20;
         if ((currentMinute + nameHash(name)) % _interval === 0) ThoughtGenerator.generate(profile);
 
         // Wealth → home pool upgrade when money crosses tier thresholds
@@ -3338,7 +3471,7 @@
         profile.currentNeed = ScheduleManager.evaluate(profile, hour);
         satisfyNeedOffscreen(profile, profile.currentNeed, delta);
         if (profile.currentJobId === null) JobManager.assignJob(profile);
-        if ((currentMinute + nameHash(name)) % 3 === 0) ThoughtGenerator.generate(profile);
+        if ((currentMinute + nameHash(name)) % 15 === 0) ThoughtGenerator.generate(profile);
       }
 
       // Dispatch on-map controller states + log NPC social meetings

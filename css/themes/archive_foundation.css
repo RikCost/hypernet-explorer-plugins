@@ -442,6 +442,17 @@
     --text-subtle-translucent-65: rgba(74, 39, 17, 0.65);
     --text-teal: #1d7068;
 
+    /* === Toast notifications (Core/ParchmentToast.js) ===
+       The popup sits on a light parchment plate here, so its body text is ink
+       and the rarity ladder is darkened to hold against it. */
+    --toast-text: #2c2418;
+    --toast-text-muted: #5d4c33;
+    --rarity-common: #2c2418;
+    --rarity-uncommon: #1a6b32;
+    --rarity-rare: #12508f;
+    --rarity-epic: #6a2a9c;
+    --rarity-legendary: #9a4e08;
+
     /* --- Item rarity palette (parchment-tuned: dark, saturated inks) --- */
     --rarity-common: #6b5242;
     --rarity-uncommon: #2e6da4;
@@ -666,23 +677,27 @@ body .name-edit-bracket-box .name-display-text {
 
 /* ==========================================================================
    Travel countdown overlay, parchment-theme readability
-   The road timer (#html-travel-timer) and the starship one
-   (#gx-ship-travel-timer) share .html-parchment-overlay, whose plate resolves
-   to the cream page here, but their inks were picked for the dark tower page:
-   the clock is --text-pure-white (1.13 on cream, the digits are ghosts) and the
-   "N km remaining" line is --text-text-alt-8 #7a7368 (3.37). Re-ink the clock
-   to the near-black this file spends on primary figures and the distance to the
-   same deep sepia as the hint line further down, keeping the three lines in
-   order of weight. The label and the "Arrived at ..." line already paint this
-   theme's deep red (9.9) and are left alone. An id-scoped selector (1,1,0)
-   outranks theme.css's bare class without !important.
+   The road timer (#html-travel-timer), the starship one
+   (#gx-ship-travel-timer) and the prison cell one (#html-prison-timer) share
+   .html-parchment-overlay, whose plate resolves to the cream page here, but
+   their inks were picked for the dark tower page: the clock is
+   --text-pure-white (1.13 on cream, the digits are ghosts) and the
+   "N km remaining" / bounty line is --text-text-alt-8 #7a7368 (3.37). Re-ink
+   the clock to the near-black this file spends on primary figures and the
+   distance/bounty to the same deep sepia as the hint line further down,
+   keeping the three lines in order of weight. The label and the
+   "Arrived at ..." line already paint this theme's deep red (9.9) and are
+   left alone. An id-scoped selector (1,1,0) outranks theme.css's bare class
+   without !important.
    ========================================================================== */
 #html-travel-timer .travel-timer-time,
-#gx-ship-travel-timer .travel-timer-time {
+#gx-ship-travel-timer .travel-timer-time,
+#html-prison-timer .prison-timer-time {
     color: var(--text-muted-hover);
 }
 #html-travel-timer .travel-timer-km,
-#gx-ship-travel-timer .travel-timer-km {
+#gx-ship-travel-timer .travel-timer-km,
+#html-prison-timer .prison-timer-bounty {
     color: #3a2414;
 }
 

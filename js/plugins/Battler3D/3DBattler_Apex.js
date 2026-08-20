@@ -165,8 +165,14 @@
         }
         _tHead(mat, x, baseY, baseZ, yaw, p) {
             const g = new THREE.Group();
-            let y = 0, z = 0, r = 0.17;
-            for (let i = 0; i < 4; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), mat); s.position.set(0, y, z); g.add(s); y += 0.26; z += 0.07; r *= 0.92; }
+            let y = 0, z = 0, r = 0.17, prevR = r, prev = new THREE.Vector3(0, 0, 0);
+            for (let i = 0; i < 4; i++) {
+                const s = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), mat); s.position.set(0, y, z); g.add(s);
+                const pt = new THREE.Vector3(0, y, z);
+                if (i > 0) this.addStrut(g, mat, prev, pt, prevR, r);
+                prev = pt; prevR = r;
+                y += 0.26; z += 0.07; r *= 0.92;
+            }
             const head = new THREE.Group();
             const skull = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.52, 8), mat); skull.rotation.x = Math.PI / 2; skull.position.z = 0.16; head.add(skull);
             const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.06, 0.32), this._mat(0x140a16, 1.0, 0.6)); jaw.position.set(0, -0.09, 0.22); head.add(jaw);
@@ -174,15 +180,14 @@
             this._gEye(head, -0.08, 0.05, 0.2, p.accent, 0.045);
             this._gEye(head, 0.08, 0.05, 0.2, p.accent, 0.045);
             head.position.set(0, y, z + 0.05); g.add(head);
+            this.addStrut(g, mat, prev, head.position, r, 0.16);
             g.position.set(x, baseY, baseZ); g.rotation.y = yaw; g._head = head; this.bodyGroup.add(g);
             this._headList.push(g); return g;
         }
         _tWing(side, p) {
-            const g = new THREE.Group();
-            const mem = this._mat(p.bodyColor, 0.7, 0.6); mem.side = THREE.DoubleSide;
-            const main = new THREE.Mesh(new THREE.ConeGeometry(0.72, 1.7, 3), mem); main.rotation.z = side * Math.PI / 2.1; main.position.x = side * 0.75; main.scale.set(1, 1, 0.08); g.add(main);
-            for (let i = 0; i < 2; i++) { const rib = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.02, 1.3, 5), this._skinMat(p.bodyColor, 0.6)); rib.rotation.z = side * (Math.PI / 2.1 - 0.18 + i * 0.2); rib.position.x = side * 0.62; g.add(rib); }
-            g.position.set(side * 0.5, 1.85, -0.35); g._side = side; this.bodyGroup.add(g); return g;
+            const mem = this._mat(p.bodyColor, 0.72, 0.6); mem.side = THREE.DoubleSide;
+            const g = this.buildDragonWing(mem, side, side * 0.5, 1.85, -0.35, { span: 1.7, fingers: 4 });
+            return g;
         }
         _tLeg(mat, x) {
             const g = new THREE.Group();
@@ -193,8 +198,15 @@
         }
         _tTail(mat, p) {
             const g = new THREE.Group();
-            let y = 0, z = 0, r = 0.24;
-            for (let i = 0; i < 6; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), mat); s.position.set(0, y, z); g.add(s); const spike = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.2, 4), this._mat(p.bone, 1.0, 0.5)); spike.position.set(0, y + r, z); g.add(spike); y -= 0.08; z -= 0.36; r *= 0.85; }
+            let y = 0, z = 0, r = 0.24, prev = new THREE.Vector3(0, 0, 0), prevR = r;
+            for (let i = 0; i < 6; i++) {
+                const s = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), mat); s.position.set(0, y, z); g.add(s);
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.2, 4), this._mat(p.bone, 1.0, 0.5)); spike.position.set(0, y + r, z); g.add(spike);
+                const pt = new THREE.Vector3(0, y, z);
+                if (i > 0) this.addStrut(g, mat, prev, pt, prevR * 0.85, r * 0.85);
+                prev = pt; prevR = r;
+                y -= 0.08; z -= 0.36; r *= 0.85;
+            }
             g.position.set(0, 1.35, -0.75); g.rotation.x = 0.2; this.bodyGroup.add(g); return g;
         }
 

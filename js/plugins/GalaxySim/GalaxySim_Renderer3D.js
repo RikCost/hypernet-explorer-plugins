@@ -444,6 +444,85 @@
     return ((h >>> 0) % 100000) / 100000;
   }
 
+  // A point on the unit sphere from spherical angles.
+  function sphToUnit(theta, phi) {
+    const st = Math.sin(phi);
+    return new THREE.Vector3(st * Math.cos(theta), Math.cos(phi), st * Math.sin(theta));
+  }
+
+  // A handful of glowing coronal-loop "prominence" arcs: two nearby footpoints
+  // on the photosphere joined by a curve that bows outward, the classic
+  // magnetic-loop silhouette real solar coronography (and Elite Dangerous'
+  // star rendering) is known for. Built in the star's own unit-sphere local
+  // space (same as the body/corona meshes in _buildStar) so it scales, spins
+  // and disposes along with everything else on the group. Deterministic from
+  // the star's own numeric seed, so a given star always grows the same arcs.
+  // Each arc keeps its footpoints and apex direction around afterwards (see
+  // updateProminenceArc) so Scene3D_Bodies' animate() can sway and snap the
+  // loop shape every frame instead of it sitting frozen once built.
+  function buildProminenceArcs(seed, colorHex) {
+    const arcs = [], mats = [];
+    const count = 4 + Math.floor(hash(1, 1, seed) * 4); // 4-7 loops
+    for (let i = 0; i < count; i++) {
+      const theta1 = hash(i, 11, seed) * Math.PI * 2;
+      const phi1 = Math.acos(hash(i, 23, seed) * 1.6 - 0.8); // clear of the poles
+      const sep = 0.4 + hash(i, 37, seed) * 0.9; // footpoint separation, radians - wider loops
+      const bearing = hash(i, 53, seed) * Math.PI * 2;
+      const theta2 = theta1 + Math.cos(bearing) * sep;
+      const phi2 = Math.min(Math.PI - 0.15, Math.max(0.15, phi1 + Math.sin(bearing) * sep));
+      const p1 = sphToUnit(theta1, phi1);
+      const p2 = sphToUnit(theta2, phi2);
+      // A wider footpoint separation arcs higher, like a real coronal loop -
+      // kept shallow so a wide loop reads as low and broad, not tall.
+      const archHeight = 1.03 + sep * (0.28 + hash(i, 67, seed) * 0.2);
+      const apexDir = p1.clone().add(p2).normalize();
+      // Lateral axis the apex sways along while the loop "moves": perpendicular
+      // to both the chord and the radial direction, so it reads as the loop
+      // swinging sideways rather than simply breathing in and out.
+      const chordDir = p2.clone().sub(p1).normalize();
+      const swayAxis = new THREE.Vector3().crossVectors(chordDir, apexDir).normalize();
+      if (!isFinite(swayAxis.x) || swayAxis.lengthSq() < 0.5) swayAxis.set(0, 1, 0);
+      const tubeR = 0.006 + hash(i, 79, seed) * 0.01;
+      const mat = new THREE.MeshBasicMaterial({
+        color: colorHex,
+        transparent: true,
+        opacity: 0.55 + hash(i, 83, seed) * 0.35,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      mats.push(mat);
+      const geo = updateProminenceArc(p1, p2, apexDir, archHeight, 0, swayAxis, tubeR);
+      arcs.push({
+        mesh: new THREE.Mesh(geo, mat), mat, baseOpacity: mat.opacity,
+        rate: 0.8 + hash(i, 97, seed) * 1.6, phase: hash(i, 101, seed) * Math.PI * 2,
+        p1, p2, apexDir, archHeight, swayAxis, tubeR,
+        // Sway: a slow lateral drift of the apex, like the loop stirring in
+        // the stellar wind.
+        swayAmp: 0.05 + hash(i, 109, seed) * 0.12,
+        swayRate: 0.15 + hash(i, 113, seed) * 0.35,
+        swayPhase: hash(i, 127, seed) * Math.PI * 2,
+        // Snap: every few (real) seconds the loop briefly collapses toward
+        // the photosphere and springs back with a bright flash, like a real
+        // reconnection event. Purely a function of elapsed time, so it needs
+        // no per-frame state.
+        snapPeriod: 5 + hash(i, 131, seed) * 9,
+        snapPhase: hash(i, 139, seed) * 97,
+        snapWidth: 0.03 + hash(i, 149, seed) * 0.03,
+      });
+    }
+    return { arcs, mats };
+  }
+
+  // (Re)builds one prominence loop's tube geometry from its footpoints and a
+  // current apex offset. Shared by the initial build above and the per-frame
+  // sway/snap update in Scene3D_Bodies' animate(), which disposes the old
+  // geometry and swaps this one in.
+  function updateProminenceArc(p1, p2, apexDir, height, sway, swayAxis, tubeR) {
+    const apex = apexDir.clone().multiplyScalar(height).addScaledVector(swayAxis, sway);
+    const curve = new THREE.CatmullRomCurve3([p1, apex, p2]);
+    return new THREE.TubeGeometry(curve, 20, tubeR, 6, false);
+  }
+
   // A cloud of tiny debris specks as ONE mesh: each fragment is a single
   // randomly-oriented triangle, so a few hundred of them cost one draw call and
   // no per-fragment object. Positions are laid on a shell (rMin..rMax) with an
@@ -1293,6 +1372,60 @@
       ].includes(type);
     },
 
+    // ========================================================================
+    // Ground-truth sampling: the SAME noise field paintTerrestrial/paintRocky
+    // paint the landing-grid picker's equirectangular texture from, exposed as
+    // data instead of pixels. ProceduralMapBiomeGenerator.js's alien-surface
+    // terrain generators sample these at fine (per-tile) resolution so what
+    // grows/erodes under the party's feet is the same shape as what the picker
+    // shows, continuous across every square of the landing grid.
+    // ========================================================================
+
+    // Elevation + terrain band at a point on an `isTerrestrial` planet.
+    // u: longitude fraction [0,1), wraps seamlessly (mirrors fbmTileX's tiling).
+    // v: latitude fraction [0,1), 0 = north edge, 1 = south edge.
+    // Mirrors paintTerrestrial's banding (js/plugins/GalaxySim/GalaxySim_Renderer3D.js
+    // paintTerrestrial) exactly, so a "grass" tile on the ground sits exactly
+    // where the picture paints grass-green.
+    terrestrialElevation(seed, u, v, isOcean) {
+      const e = fbmTileX(u * TEX_W, v * TEX_H, TEX_W, 0.045, seed, 5);
+      const seaLevel = isOcean ? 0.62 : 0.5;
+      let band;
+      if (e < seaLevel) {
+        band = "water";
+      } else {
+        const land = (e - seaLevel) / (1 - seaLevel);
+        if (land < 0.08) band = "beach";
+        else if (land < 0.45) band = "grass";
+        else if (land < 0.72) band = "forest";
+        else band = "rock";
+      }
+      const lat = (v - 0.5) * 2;
+      const iceLine = 0.78 - e * 0.12;
+      if (Math.abs(lat) > iceLine) band = "snow";
+      return { elevation: e, seaLevel, band };
+    },
+
+    // Crater scatter for the ground (alien-surface crater-field terrain):
+    // {u, v, r}. u/v are the SAME longitude/latitude fractions [0,1) paintRocky
+    // hashes its texture craters from, so a crater sits under the same spot the
+    // landing-grid picker shows a pockmark. r is a radius in landing-grid CELL
+    // widths (not texture pixels -- paintRocky's px radii are picture-scale
+    // only and would almost never clear one square) so a walked crater can
+    // credibly span several procedural maps; squared bias keeps most craters
+    // modest with the occasional multi-square impact basin.
+    rockyCraterList(seed, count) {
+      const n = count || 14;
+      const list = [];
+      for (let i = 0; i < n; i++) {
+        const u = hash(i, seed, 3);
+        const v = 0.15 + hash(i, seed, 4) * 0.7;
+        const r = 0.2 + Math.pow(hash(i, seed, 5), 2) * 3.5;
+        list.push({ u, v, r });
+      }
+      return list;
+    },
+
     init() {
       if (this._inited) return this._ok;
       this._inited = true;
@@ -1428,6 +1561,23 @@
       return (this._solTexPending || 0) > 0;
     },
 
+    // Painted planet surfaces (map/bump/spec/emissive/clouds canvases) are
+    // deterministic from name+type+seed, so a given body paints identically
+    // every time - but nothing was caching that, and every buildPlanetGroup
+    // call (every planet AND every moon, every single time the star map is
+    // opened, even revisiting the same system) redid the full per-pixel
+    // synthesis from scratch. That synchronous cost is the star map's real
+    // open-lag: this cache makes every visit after the first one free.
+    _paintCached(key, paintFn) {
+      if (!this._planetTexCache) this._planetTexCache = new Map();
+      let tex = this._planetTexCache.get(key);
+      if (!tex) {
+        tex = paintFn();
+        this._planetTexCache.set(key, tex);
+      }
+      return tex;
+    },
+
     _seedFor(planet, fallback) {
       if (typeof fallback === "number") return fallback;
       const name = (planet && planet.name) || "x";
@@ -1444,12 +1594,13 @@
     getPlanetTextureCanvas(planet, seed) {
       if (this._realPlanetTexture(planet)) return null;
       const type = planet.type;
+      const texKey = (planet.name || "?") + "|" + type + "|" + seed;
       let tex;
-      if (this.isGasGiant(type)) tex = paintGasGiant(planet, seed);
-      else if (this.isVolcanic(type)) tex = paintVolcanic(planet, seed);
-      else if (this.isIcy(type)) tex = paintIcy(planet, seed);
-      else if (this.isTerrestrial(type)) tex = paintTerrestrial(planet, seed);
-      else tex = paintRocky(planet, seed);
+      if (this.isGasGiant(type)) tex = this._paintCached(texKey, () => paintGasGiant(planet, seed));
+      else if (this.isVolcanic(type)) tex = this._paintCached(texKey, () => paintVolcanic(planet, seed));
+      else if (this.isIcy(type)) tex = this._paintCached(texKey, () => paintIcy(planet, seed));
+      else if (this.isTerrestrial(type)) tex = this._paintCached(texKey, () => paintTerrestrial(planet, seed));
+      else tex = this._paintCached(texKey, () => paintRocky(planet, seed));
       return tex.map;
     },
 
@@ -1553,15 +1704,17 @@
         matParams.specular = 0x223344;
         matParams.shininess = 18;
       } else {
-        if (this.isGasGiant(type)) tex = paintGasGiant(planet, seed);
-        else if (this.isVolcanic(type)) tex = paintVolcanic(planet, seed);
-        else if (this.isIcy(type)) tex = paintIcy(planet, seed);
-        else if (this.isTerrestrial(type)) tex = paintTerrestrial(planet, seed);
+        const texKey = (planet.name || "?") + "|" + type + "|" + seed;
+        if (this.isGasGiant(type)) tex = this._paintCached(texKey, () => paintGasGiant(planet, seed));
+        else if (this.isVolcanic(type)) tex = this._paintCached(texKey, () => paintVolcanic(planet, seed));
+        else if (this.isIcy(type)) tex = this._paintCached(texKey, () => paintIcy(planet, seed));
+        else if (this.isTerrestrial(type)) tex = this._paintCached(texKey, () => paintTerrestrial(planet, seed));
         else if (comet) {
           // A comet nucleus is one of the darkest surfaces there is: a crust of
           // sooty dust over the ice, not the bright snowball the coma suggests.
-          tex = paintRocky({ name: planet.name, color: planet.color || "#4a4a52" }, seed);
-        } else tex = paintRocky(planet, seed);
+          tex = this._paintCached(texKey,
+            () => paintRocky({ name: planet.name, color: planet.color || "#4a4a52" }, seed));
+        } else tex = this._paintCached(texKey, () => paintRocky(planet, seed));
 
         matParams.map = this._makeTexture(tex.map, true);
         if (tex.bumpCanvas) {
@@ -1758,8 +1911,9 @@
       group.add(body);
       // additive corona shell
       const col = rgb(system.color || "#ffd27f");
+      const colorHex = (col.r << 16) | (col.g << 8) | col.b;
       const coronaMat = new THREE.MeshBasicMaterial({
-        color: (col.r << 16) | (col.g << 8) | col.b,
+        color: colorHex,
         transparent: true,
         opacity: 0.4,
         side: THREE.BackSide,
@@ -1769,11 +1923,23 @@
       const coronaGeo = new THREE.SphereGeometry(1.18, 32, 24);
       const corona = new THREE.Mesh(coronaGeo, coronaMat);
       group.add(corona);
+
+      // Bright, wispy magnetic prominence loops arcing off the photosphere -
+      // the dramatic "coronal loop" look (Elite Dangerous et al.), not just a
+      // flat glow shell. Riding the body means they spin with its own slow
+      // rotation for free (see Scene3D_Bodies' animate()).
+      const prom = buildProminenceArcs(seed, colorHex);
+      prom.arcs.forEach((a) => body.add(a.mesh));
+      group._arcs = prom.arcs;
+
       group._body = body;
       group._isStar = true;
       group._half = 1.22;
-      group._mats = [mat, coronaMat];
+      group._mats = [mat, coronaMat, ...prom.mats];
       group._textures = [mat.map];
+      // The arcs' own tube geometry is swapped out every frame (sway/snap),
+      // so it is NOT tracked here - _dispose() releases each arc's current
+      // geometry straight off group._arcs instead.
       group._geos = [coronaGeo];
       return group;
     },
@@ -1803,6 +1969,10 @@
       if (group._textures) group._textures.forEach((t) => t && t.dispose && t.dispose());
       if (group._mats) group._mats.forEach((m) => m && m.dispose && m.dispose());
       if (group._geos) group._geos.forEach((g) => g && g.dispose && g.dispose());
+      // Prominence arcs rebuild their own geometry every frame (see
+      // updateProminenceArc), so only whatever is currently attached needs
+      // releasing here.
+      if (group._arcs) group._arcs.forEach((a) => a.mesh && a.mesh.geometry && a.mesh.geometry.dispose());
     },
 
     // ------------------------------------------------------------------
@@ -1952,4 +2122,8 @@
   };
 
   window.GalaxySim.Renderer3D = Renderer3D;
+  // Exposed separately so Scene3D_Bodies' animate() can rebuild one
+  // prominence loop's geometry per frame (sway/snap) without reaching into
+  // this module's private function scope.
+  window.GalaxySim.Renderer3D.updateProminenceArc = updateProminenceArc;
 })();

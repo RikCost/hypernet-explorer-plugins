@@ -294,7 +294,18 @@
     "Confederation of Cantons": "",
     "City-State Council": "",
     "Crowned Republic": "",
-    "old order": ""
+    "old order": "",
+    "Divine Empire": "Empire Divin",
+    "Hereditary Republic": "République Héréditaire",
+    "Harmonious Empire": "Empire Harmonieux",
+    "Clerical Republic": "République Cléricale",
+    "Knesset Republic": "République de la Knesset",
+    "Union Command": "Commandement de l Union",
+    "Illuminated Khanate": "Khanat Illuminé",
+    "Solomonic Republic": "République Salomonienne",
+    "Petro Monarchy": "Pétro-Monarchie",
+    "Dharmic Republic": "République Dharmique",
+    "Expansionist Republic": "République Expansionniste"
   },
   "fixed": {
     "1914-07": "",

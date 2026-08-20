@@ -1,10 +1,98 @@
 {
-  "GENERAL":   { "label": "General",   "traitKeywords": ["cleaner","courier","worker","assistant","civilian","commoner"] },
-  "COMBAT":    { "label": "Combat",    "traitKeywords": ["warrior","brave","fighter","soldier","guard","hunter","mercenary","berserker"] },
-  "MAGICAL":   { "label": "Magical",   "traitKeywords": ["arcane","mage","witch","elementalist","occultist","mystic","enchanter","shaman"] },
-  "SOCIAL":    { "label": "Social",    "traitKeywords": ["charismatic","sociable","leader","diplomat","merchant","noble","preacher","entertainer"] },
-  "TECHNICAL": { "label": "Technical", "traitKeywords": ["mechanic","engineer","scientist","technician","inventor","hacker","programmer"] },
-  "LABOR":     { "label": "Labor",     "traitKeywords": ["farmer","botanist","herbalist","gardener","lumberjack","miner","fisherman","laborer"] },
-  "CRIMINAL":  { "label": "Criminal",  "traitKeywords": ["thief","rogue","criminal","anarchist","smuggler","deceptive","corrupt"] },
-  "FACTION":   { "label": "Faction",   "traitKeywords": ["loyal","devoted","zealot","fanatic"] }
+  "GENERAL": {
+    "label": "General",
+    "traitKeywords": [
+      "cleaner",
+      "courier",
+      "worker",
+      "assistant",
+      "civilian",
+      "commoner"
+    ]
+  },
+  "COMBAT": {
+    "label": "Combat",
+    "traitKeywords": [
+      "warrior",
+      "brave",
+      "fighter",
+      "soldier",
+      "guard",
+      "hunter",
+      "mercenary",
+      "berserker"
+    ]
+  },
+  "MAGICAL": {
+    "label": "Magical",
+    "traitKeywords": [
+      "arcane",
+      "mage",
+      "witch",
+      "elementalist",
+      "occultist",
+      "mystic",
+      "enchanter",
+      "shaman"
+    ]
+  },
+  "SOCIAL": {
+    "label": "Social",
+    "traitKeywords": [
+      "charismatic",
+      "sociable",
+      "leader",
+      "diplomat",
+      "merchant",
+      "noble",
+      "preacher",
+      "entertainer"
+    ]
+  },
+  "TECHNICAL": {
+    "label": "Technical",
+    "traitKeywords": [
+      "mechanic",
+      "engineer",
+      "scientist",
+      "technician",
+      "inventor",
+      "hacker",
+      "programmer"
+    ]
+  },
+  "LABOR": {
+    "label": "Labor",
+    "traitKeywords": [
+      "farmer",
+      "botanist",
+      "herbalist",
+      "gardener",
+      "lumberjack",
+      "miner",
+      "fisherman",
+      "laborer"
+    ]
+  },
+  "CRIMINAL": {
+    "label": "Criminal",
+    "traitKeywords": [
+      "thief",
+      "rogue",
+      "criminal",
+      "anarchist",
+      "smuggler",
+      "deceptive",
+      "corrupt"
+    ]
+  },
+  "FACTION": {
+    "label": "Faction",
+    "traitKeywords": [
+      "loyal",
+      "devoted",
+      "zealot",
+      "fanatic"
+    ]
+  }
 }

@@ -10,6 +10,7 @@
  * Provides:
  * - Weight system calculations
  * - Item category checking
+ * - Restricted goods (<Restricted>), see isRestrictedEntry below
  * - Nutrition value extraction
  * - Text formatting utilities
  * - Actor bust image paths
@@ -72,20 +73,34 @@
     FOOD_COMMON_EVENT_ACTOR3,
 
     /**
-     * Get item weight from note tag
+     * A restricted entry (<Restricted> note tag) is granted by one system and
+     * one system only: a seed weapon grows from a blade seed, nothing else.
+     * It never turns up in a loot roll, on a shop shelf, in a vending machine,
+     * in a stolen pocket or as a quest reward, so every pool builder asks this
+     * before it accepts a row of the database.
+     */
+    isRestrictedEntry: function (entry) {
+      return !!(entry && entry.note && /<Restricted>/i.test(entry.note));
+    },
+
+    /**
+     * Get item weight from note tag.
+     * A <weight: 0> tag, or no tag at all, means the thing is weightless: it is
+     * shown as such in the inspect card, so a stack of it must not quietly add
+     * up against the carry limit either.
      */
     getItemWeight: function (item) {
-      if (!item || !item.note) return 1; // Minimum 1 gram
+      if (!item || !item.note) return 0;
 
       let grams = _itemWeightCache.get(item);
       if (grams === undefined) {
         const match = item.note.match(/<weight:\s*(\d+)>/i);
         if (match) {
-          grams = Math.max(1, parseInt(match[1]));
+          grams = Math.max(0, parseInt(match[1]) || 0);
           // Food is modestly lightened so survival stocking does not overencumber (#141).
-          if (this.isFoodItem(item)) grams = Math.max(1, Math.round(grams * 0.5));
+          if (grams > 0 && this.isFoodItem(item)) grams = Math.max(1, Math.round(grams * 0.5));
         } else {
-          grams = 1; // Default 1 gram
+          grams = 0;
         }
         _itemWeightCache.set(item, grams);
       }
@@ -222,7 +237,7 @@
     // using <calories:>/<protein:>/<fat:> for hunger instead.
     //=========================================================================
     NEED_KEYS: ["hunger", "sleep", "hygiene", "social", "leisure"],
-    // Displayed label per need; "leisure" reads as "Fun" everywhere else in the UI.
+    // Displayed label per need; "leisure" reads as "Mood" everywhere else in the UI.
     // Both label tables now resolve on read; NEED_KEYS above stay the ids.
     get NEED_LABELS() { return T.obj('ItemUtils.need'); },
     get NEED_LABELS_IT() { return T.obj('ItemUtils.need'); },

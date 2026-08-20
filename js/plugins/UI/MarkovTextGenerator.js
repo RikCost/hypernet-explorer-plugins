@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Generates text using Markov chains from selected text sources with proper text wrapping.
+ * @plugindesc Generates text using Markov chains, or a local GGUF language model when one is picked, with proper text wrapping.
  * @author Omni-Lex
  * @url https://nocoldiz.itch.io/hypernet-explorer
  * 
@@ -58,6 +58,56 @@
  * @type boolean
  * @desc Automatically insert periods in long sentences to improve readability.
  * @default true
+ * 
+ * @param llamaServerPath
+ * @text llama.cpp Server Path
+ * @type string
+ * @desc Own llama-server build to use. Left empty, the runtime shipped in models/llama.cpp is used.
+ * @default 
+ * 
+ * @param llamaAutoDownload
+ * @text Fetch Missing Runtime
+ * @type boolean
+ * @desc On a platform the game ships no runtime for, fetch the matching llama.cpp release once, on first use.
+ * @default true
+ * 
+ * @param llamaReleaseApi
+ * @text llama.cpp Release Feed
+ * @type string
+ * @desc Release the runtime is fetched from when one has to be fetched.
+ * @default https://api.github.com/repos/ggml-org/llama.cpp/releases/latest
+ * 
+ * @param llamaPort
+ * @text Language Model Port
+ * @type number
+ * @min 1024
+ * @max 65535
+ * @desc Port the local llama.cpp server listens on. A server already answering there is used as it stands.
+ * @default 8127
+ * 
+ * @param llmContextSize
+ * @text Language Model Context
+ * @type number
+ * @min 256
+ * @max 8192
+ * @desc Context size the language model server is started with.
+ * @default 1024
+ * 
+ * @param llmMaxTokens
+ * @text Language Model Reply Length
+ * @type number
+ * @min 16
+ * @max 512
+ * @desc Maximum tokens the language model writes per reply. The model card recommends 100.
+ * @default 100
+ * 
+ * @param llmTimeout
+ * @text Language Model Timeout
+ * @type number
+ * @min 1
+ * @max 120
+ * @desc Seconds to wait for a reply before the Markov chain answers instead.
+ * @default 20
  * 
  * @command generateText
  * @text Generate Markov Text
@@ -306,6 +356,47 @@
  * 
  * You can also directly set an actor's name to the generated name by providing
  * an Actor ID in the plugin command parameters.
+ * 
+ * == GGUF Language Model (experimental) ==
+ * 
+ * Options > Experimental holds an AI Dialogue Model row. It lists every .gguf
+ * file sitting in the game's models folder, and Off. Pick one and every line
+ * this plugin would have written with a Markov chain is written by that model
+ * instead, with the chain kept as the fallback.
+ * 
+ * Setting it up is putting the .gguf file in the models folder. Nothing else:
+ * the llama.cpp server that runs it ships with the game, under
+ * models/llama.cpp/<platform>-<arch>/, for Windows x64, macOS (Intel and
+ * Apple Silicon) and Linux x64. It is started with the picked model the first
+ * time a line is asked of it and killed when the game closes.
+ * 
+ * This was written against lukasstraub2/gpt2-aidungeon2-gguf, a GPT-2 finetune
+ * of AI Dungeon 2. Any GGUF model llama.cpp can load will run, but a chat model
+ * will answer this prompt format less well than a story completion one.
+ * 
+ * On a platform with no shipped runtime (an ARM desktop, say) the matching
+ * llama.cpp release is fetched once on first use and unpacked into the same
+ * folder. A llama-server the player started themselves on the same port is
+ * used as it stands and is left running, and an own build can be named with
+ * the llama.cpp Server Path parameter or the HYPERNET_LLAMA_SERVER variable.
+ * 
+ * How the model is prompted: it is a text completion model, not a chat model.
+ * It gets a scenario (where the party is, who is speaking, and a few sentences
+ * out of the same text database the chain would have used) followed by an
+ * action line opening with "> ", and it writes the story that follows. ">" is
+ * the stop token, so it stops before inventing the player's next move. It runs
+ * at temperature 0.4, top_p 0.9, top_k 40 for 100 tokens, the values the model
+ * card recommends, and only whole sentences are ever spoken.
+ * 
+ * Events wait for the model, and so does the free chat of the Empathize panel,
+ * where the player writes the prompt themselves. Code that cannot wait
+ * (generateMarkovString) is served lines the model wrote ahead of time for that
+ * database, and hears the chain until the first one lands;
+ * generateMarkovStringAsync() is there for callers that can wait, and
+ * window.MarkovLLM exposes the backend itself, including isReady() and
+ * warmUp() for callers that want the chain rather than a cold start.
+ * 
+ * The model writes English. In another language the chain is the better voice.
  * 
  * == Text Wrapping Parameters ==
  * 
@@ -725,6 +816,805 @@
         }
     }
 
+    //=========================================================================
+    // GGUF language model backend (experimental)
+    //=========================================================================
+    // The Markov chains stay the default voice of the game. Pick a .gguf file
+    // in Options > Experimental and the very same calls are answered by that
+    // model instead, run by a local llama.cpp server, with the chain kept as
+    // the fallback for whatever the model cannot answer in time.
+    //
+    // Written against lukasstraub2/gpt2-aidungeon2-gguf: a GPT-2 finetune of
+    // AI Dungeon 2, so a plain text completion model and not a chat one. It is
+    // fed a scenario followed by an action line opening with "> ", and it
+    // writes the story that follows. ">" is the stop token, so it stops before
+    // inventing the player's next move. Sampler values, reply length and the
+    // stop token are the ones the model card recommends.
+    const LLM_SAMPLER = { temperature: 0.4, top_p: 0.9, top_k: 40 };
+    const LLM_STOP = ['>', '\n>'];
+    // Scenario handed to the model, in characters. Enough for the place, the
+    // speaker and a handful of sentences of the game's own text, short enough
+    // that a 1024 token context still has room to answer in.
+    const LLM_SCENARIO_CHARS = 900;
+    // Ready lines kept per database for the synchronous callers, and how many
+    // databases keep a queue at all.
+    const LLM_CACHE_LINES = 2;
+    const LLM_CACHE_KEYS = 24;
+
+    const llmServerPath = String(parameters.llamaServerPath || '');
+    const llmPort = Number(parameters.llamaPort || 8127);
+    const llmContextSize = Number(parameters.llmContextSize || 1024);
+    const llmMaxTokens = Number(parameters.llmMaxTokens || 100);
+    const llmTimeoutMs = Number(parameters.llmTimeout || 20) * 1000;
+    const llmAutoDownload = parameters.llamaAutoDownload !== 'false';
+    const llmReleaseApi = String(parameters.llamaReleaseApi ||
+        'https://api.github.com/repos/ggml-org/llama.cpp/releases/latest');
+    // A 3 GB model read off a cold disk takes its time; the boot wait is
+    // generous because it is paid once per session, not once per line.
+    const LLM_BOOT_TIMEOUT_MS = 180000;
+
+    const nodeAvailable = Utils.isNwjs() && typeof require === 'function';
+    const NodeIO = nodeAvailable ? {
+        fs: require('fs'),
+        path: require('path'),
+        http: require('http'),
+        cp: require('child_process')
+    } : null;
+
+    function gameBaseDir() {
+        return NodeIO.path.dirname(process.mainModule.filename);
+    }
+
+    function modelsDir() {
+        return NodeIO.path.join(gameBaseDir(), 'models');
+    }
+
+    // The .gguf files sitting in the models folder, cached because the options
+    // menu asks for them once per drawn frame while a row is selected.
+    let ggufCache = null;
+    function listGgufModels() {
+        if (!NodeIO) return [];
+        if (ggufCache) return ggufCache;
+        try {
+            const dir = modelsDir();
+            ggufCache = NodeIO.fs.existsSync(dir)
+                ? NodeIO.fs.readdirSync(dir).filter(f => /\.gguf$/i.test(f)).sort()
+                : [];
+        } catch (e) {
+            console.warn(`[${pluginName}] Could not read the models folder:`, e);
+            ggufCache = [];
+        }
+        return ggufCache;
+    }
+
+    function rescanGgufModels() {
+        ggufCache = null;
+        return listGgufModels();
+    }
+
+    // A model dropped into the folder while the game is running shows up the
+    // next time the options are opened, without a restart.
+    const _Scene_Options_create_markovLlm = Scene_Options.prototype.create;
+    Scene_Options.prototype.create = function () {
+        rescanGgufModels();
+        _Scene_Options_create_markovLlm.call(this);
+    };
+
+    //-------------------------------------------------------------------------
+    // The setting itself
+    //-------------------------------------------------------------------------
+    const LLM_SYMBOL = 'markovLlmModel';
+    ConfigManager[LLM_SYMBOL] = '';
+
+    const _ConfigManager_makeData_markovLlm = ConfigManager.makeData;
+    ConfigManager.makeData = function () {
+        const config = _ConfigManager_makeData_markovLlm.call(this);
+        config[LLM_SYMBOL] = this[LLM_SYMBOL] || '';
+        return config;
+    };
+
+    const _ConfigManager_applyData_markovLlm = ConfigManager.applyData;
+    ConfigManager.applyData = function (config) {
+        _ConfigManager_applyData_markovLlm.call(this, config);
+        this[LLM_SYMBOL] = typeof config[LLM_SYMBOL] === 'string' ? config[LLM_SYMBOL] : '';
+    };
+
+    // The stored file name only counts while the file is still there: a model
+    // deleted between sessions reads as off rather than as a broken setting.
+    function selectedGgufModel() {
+        if (!NodeIO) return '';
+        const name = ConfigManager[LLM_SYMBOL];
+        return name && listGgufModels().includes(name) ? name : '';
+    }
+
+    function llmEnabled() {
+        return !!selectedGgufModel();
+    }
+
+    // Off plus one entry per model on disk, so cycling the row walks the folder.
+    function llmOptionValues() {
+        return [''].concat(listGgufModels());
+    }
+
+    function cycleLlmOption(step) {
+        const values = llmOptionValues();
+        const current = Math.max(0, values.indexOf(ConfigManager[LLM_SYMBOL] || ''));
+        const next = (current + step + values.length) % values.length;
+        ConfigManager[LLM_SYMBOL] = values[next];
+        // A different model means the running server holds the wrong weights,
+        // and the lines already queued were written by the old voice.
+        LlamaServer.stop();
+        llmLineCache.clear();
+        ConfigManager.save();
+    }
+
+    if (window.GameOptions) {
+        window.GameOptions.registerOption(LLM_SYMBOL,
+            () => T('GameOptions.label.markovLlmModel'),
+            () => ConfigManager[LLM_SYMBOL] || '',
+            (value) => { ConfigManager[LLM_SYMBOL] = value || ''; ConfigManager.save(); },
+            'experimental', 'custom',
+            (value) => value ? String(value).replace(/\.gguf$/i, '') : T('Markov.llm.off'),
+            function () { cycleLlmOption(1); },
+            function () { cycleLlmOption(-1); }
+        );
+    }
+
+    //-------------------------------------------------------------------------
+    // Dialogue mode (empathize / markovian)
+    //-------------------------------------------------------------------------
+    // Read by DialogueSystem.js's Rumors command: empathize runs the usual
+    // Socialize exchange and flavour rumour, markovian hands the whole line to
+    // this plugin's per-NPC Markov bank instead.
+    const DIALOGUE_MODE_SYMBOL = 'dialogueMode';
+    const DIALOGUE_MODE_VALUES = ['empathize', 'markovian'];
+    ConfigManager[DIALOGUE_MODE_SYMBOL] = DIALOGUE_MODE_VALUES[0];
+
+    const _ConfigManager_makeData_dialogueMode = ConfigManager.makeData;
+    ConfigManager.makeData = function () {
+        const config = _ConfigManager_makeData_dialogueMode.call(this);
+        config[DIALOGUE_MODE_SYMBOL] = this[DIALOGUE_MODE_SYMBOL] || DIALOGUE_MODE_VALUES[0];
+        return config;
+    };
+
+    const _ConfigManager_applyData_dialogueMode = ConfigManager.applyData;
+    ConfigManager.applyData = function (config) {
+        _ConfigManager_applyData_dialogueMode.call(this, config);
+        this[DIALOGUE_MODE_SYMBOL] = DIALOGUE_MODE_VALUES.includes(config[DIALOGUE_MODE_SYMBOL])
+            ? config[DIALOGUE_MODE_SYMBOL] : DIALOGUE_MODE_VALUES[0];
+    };
+
+    function cycleDialogueMode(step) {
+        const values = DIALOGUE_MODE_VALUES;
+        const current = Math.max(0, values.indexOf(ConfigManager[DIALOGUE_MODE_SYMBOL] || values[0]));
+        const next = (current + step + values.length) % values.length;
+        ConfigManager[DIALOGUE_MODE_SYMBOL] = values[next];
+        ConfigManager.save();
+    }
+
+    if (window.GameOptions) {
+        window.GameOptions.registerOption(DIALOGUE_MODE_SYMBOL,
+            () => T('GameOptions.label.dialogueMode'),
+            () => ConfigManager[DIALOGUE_MODE_SYMBOL] || DIALOGUE_MODE_VALUES[0],
+            (value) => {
+                ConfigManager[DIALOGUE_MODE_SYMBOL] = DIALOGUE_MODE_VALUES.includes(value) ? value : DIALOGUE_MODE_VALUES[0];
+                ConfigManager.save();
+            },
+            'gameplay', 'boolean',
+            (value) => T.list('GameOptions.dialogueMode')[DIALOGUE_MODE_VALUES.indexOf(value)] || T.list('GameOptions.dialogueMode')[0],
+            function () { cycleDialogueMode(1); },
+            function () { cycleDialogueMode(-1); }
+        );
+    }
+
+    //-------------------------------------------------------------------------
+    // The local llama.cpp server
+    //-------------------------------------------------------------------------
+    // Requests go through Node's http rather than fetch: the game runs from a
+    // file:// origin, so a browser request to the loopback server would be a
+    // cross origin one and depend on the server's CORS headers.
+    function llmRequest(pathname, payload, timeoutMs) {
+        return new Promise((resolve, reject) => {
+            if (!NodeIO) return reject(new Error('no node'));
+            const body = payload ? Buffer.from(JSON.stringify(payload), 'utf8') : null;
+            const req = NodeIO.http.request({
+                host: '127.0.0.1',
+                port: llmPort,
+                path: pathname,
+                method: body ? 'POST' : 'GET',
+                headers: body
+                    ? { 'Content-Type': 'application/json', 'Content-Length': body.length }
+                    : {}
+            }, res => {
+                let data = '';
+                res.setEncoding('utf8');
+                res.on('data', chunk => { data += chunk; });
+                res.on('end', () => {
+                    let parsed = null;
+                    try { parsed = JSON.parse(data); } catch (e) { parsed = null; }
+                    resolve({ status: res.statusCode, body: parsed });
+                });
+            });
+            req.on('error', reject);
+            req.setTimeout(timeoutMs, () => { req.destroy(new Error('timeout')); });
+            if (body) req.write(body);
+            req.end();
+        });
+    }
+
+    //-------------------------------------------------------------------------
+    // The llama.cpp runtime
+    //-------------------------------------------------------------------------
+    // The server that runs the model ships with the game, under
+    // models/llama.cpp/<platform>-<arch>/, so dropping a .gguf into the models
+    // folder is the whole of the setup on Windows, macOS and Linux. A platform
+    // that is not shipped (an ARM desktop, an old Mac) fetches the matching
+    // llama.cpp release the first time a model is asked for and unpacks it into
+    // the same place, and a player who would rather use their own build points
+    // at it with the plugin parameter or the environment variable.
+    const LLAMA_RUNTIME_DIR = () => NodeIO.path.join(modelsDir(), 'llama.cpp');
+    const LLAMA_PLATFORM = () => `${process.platform}-${process.arch}`;
+    const LLAMA_EXE = () => process.platform === 'win32' ? 'llama-server.exe' : 'llama-server';
+
+    // llama.cpp names its release archives by platform; the CPU builds are the
+    // ones taken, since they are the only ones that run on any machine.
+    function llamaAssetPatterns() {
+        const table = {
+            'win32-x64': [/bin-win-cpu-x64\.zip$/i, /bin-win-avx2-x64\.zip$/i, /bin-win-x64\.zip$/i],
+            'win32-arm64': [/bin-win-cpu-arm64\.zip$/i, /bin-win-arm64\.zip$/i],
+            'darwin-arm64': [/bin-macos-arm64\.(tar\.gz|zip)$/i],
+            'darwin-x64': [/bin-macos-x64\.(tar\.gz|zip)$/i],
+            'linux-x64': [/bin-ubuntu-x64\.(tar\.gz|zip)$/i],
+            'linux-arm64': [/bin-ubuntu-arm64\.(tar\.gz|zip)$/i]
+        };
+        return table[LLAMA_PLATFORM()] || [];
+    }
+
+    // Everything under the runtime folder is searched, not just this platform's
+    // folder, so an unpacked release keeps working whatever the archive called
+    // its own top directory.
+    function findServerBinary() {
+        const path = NodeIO.path;
+        const fs = NodeIO.fs;
+        const exe = LLAMA_EXE();
+        const isFile = p => {
+            try { return fs.existsSync(p) && fs.statSync(p).isFile(); }
+            catch (e) { return false; }
+        };
+
+        if (llmServerPath) {
+            const explicit = path.isAbsolute(llmServerPath)
+                ? llmServerPath : path.join(gameBaseDir(), llmServerPath);
+            if (isFile(explicit)) return explicit;
+        }
+        if (process.env.HYPERNET_LLAMA_SERVER && isFile(process.env.HYPERNET_LLAMA_SERVER)) {
+            return process.env.HYPERNET_LLAMA_SERVER;
+        }
+
+        const shipped = path.join(LLAMA_RUNTIME_DIR(), LLAMA_PLATFORM(), exe);
+        if (isFile(shipped)) return shipped;
+
+        const roots = [LLAMA_RUNTIME_DIR(), modelsDir(), path.join(gameBaseDir(), 'tools')];
+        for (const root of roots) {
+            const found = searchForFile(root, exe, 3);
+            if (found) return found;
+        }
+        for (const dir of String(process.env.PATH || '').split(path.delimiter)) {
+            if (dir && isFile(path.join(dir, exe))) return path.join(dir, exe);
+        }
+        return '';
+    }
+
+    function searchForFile(dir, name, depth) {
+        const path = NodeIO.path;
+        const fs = NodeIO.fs;
+        if (depth < 0) return '';
+        let entries = [];
+        try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
+        catch (e) { return ''; }
+        for (const entry of entries) {
+            if (entry.isFile() && entry.name === name) return path.join(dir, entry.name);
+        }
+        for (const entry of entries) {
+            if (entry.isDirectory()) {
+                const found = searchForFile(path.join(dir, entry.name), name, depth - 1);
+                if (found) return found;
+            }
+        }
+        return '';
+    }
+
+    // A file that came out of an archive, or out of a checkout that dropped the
+    // permission bits, is not executable yet.
+    function makeRuntimeExecutable(dir) {
+        if (process.platform === 'win32') return;
+        const fs = NodeIO.fs;
+        const path = NodeIO.path;
+        try {
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+                const full = path.join(dir, entry.name);
+                if (entry.isDirectory()) makeRuntimeExecutable(full);
+                else if (entry.isFile()) { try { fs.chmodSync(full, 0o755); } catch (e) { /* not ours */ } }
+            }
+        } catch (e) { /* nothing to fix */ }
+        // macOS refuses to run a binary that came down inside a quarantined
+        // archive until the flag is off it.
+        if (process.platform === 'darwin') {
+            try { NodeIO.cp.spawnSync('xattr', ['-dr', 'com.apple.quarantine', dir], { windowsHide: true }); }
+            catch (e) { /* xattr missing, nothing to strip */ }
+        }
+    }
+
+    // GET that follows GitHub's redirects, either into memory or onto disk.
+    function httpsGet(url, destPath, redirectsLeft = 5) {
+        return new Promise((resolve, reject) => {
+            const https = require('https');
+            const req = https.get(url, {
+                headers: { 'User-Agent': 'HypernetExplorer', 'Accept': '*/*' }
+            }, res => {
+                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                    res.resume();
+                    if (redirectsLeft <= 0) return reject(new Error('too many redirects'));
+                    return resolve(httpsGet(res.headers.location, destPath, redirectsLeft - 1));
+                }
+                if (res.statusCode !== 200) {
+                    res.resume();
+                    return reject(new Error(`HTTP ${res.statusCode} for ${url}`));
+                }
+                if (destPath) {
+                    const file = NodeIO.fs.createWriteStream(destPath);
+                    res.pipe(file);
+                    file.on('finish', () => file.close(() => resolve(destPath)));
+                    file.on('error', reject);
+                } else {
+                    let data = '';
+                    res.setEncoding('utf8');
+                    res.on('data', chunk => { data += chunk; });
+                    res.on('end', () => resolve(data));
+                }
+            });
+            req.on('error', reject);
+            req.setTimeout(120000, () => req.destroy(new Error('timeout')));
+        });
+    }
+
+    function runTool(cmd, args) {
+        return new Promise(resolve => {
+            let child;
+            try { child = NodeIO.cp.spawn(cmd, args, { windowsHide: true, stdio: 'ignore' }); }
+            catch (e) { return resolve(false); }
+            child.on('error', () => resolve(false));
+            child.on('exit', code => resolve(code === 0));
+        });
+    }
+
+    // No unpacker is assumed to be there: tar ships with Windows 10 and up and
+    // with every Unix, unzip with most Unixes, and PowerShell is the last
+    // resort on Windows.
+    async function extractArchive(archivePath, destDir) {
+        const attempts = /\.tar\.gz$/i.test(archivePath)
+            ? [['tar', ['-xzf', archivePath, '-C', destDir]]]
+            : [
+                ['tar', ['-xf', archivePath, '-C', destDir]],
+                ['unzip', ['-q', '-o', archivePath, '-d', destDir]],
+                ['powershell', ['-NoProfile', '-NonInteractive', '-Command',
+                    `Expand-Archive -LiteralPath "${archivePath}" -DestinationPath "${destDir}" -Force`]]
+            ];
+        for (const [cmd, args] of attempts) {
+            if (await runTool(cmd, args)) return true;
+        }
+        return false;
+    }
+
+    const LlamaRuntime = {
+        _fetching: null,
+
+        // Resolves to the path of a llama.cpp server this machine can run, or
+        // to an empty string when there is none and none could be fetched.
+        async ensure() {
+            const existing = findServerBinary();
+            if (existing) {
+                makeRuntimeExecutable(NodeIO.path.dirname(existing));
+                return existing;
+            }
+            if (!llmAutoDownload) return '';
+            if (!this._fetching) {
+                this._fetching = this._download().catch(e => {
+                    console.warn(`[${pluginName}] Could not fetch a llama.cpp runtime:`, e);
+                    return '';
+                });
+                this._fetching.then(() => { this._fetching = null; });
+            }
+            return this._fetching;
+        },
+
+        async _download() {
+            const patterns = llamaAssetPatterns();
+            if (patterns.length === 0) {
+                llmToast('Markov.llm.noRuntime', { platform: LLAMA_PLATFORM() });
+                return '';
+            }
+            llmToast('Markov.llm.fetchingRuntime');
+            const release = JSON.parse(await httpsGet(llmReleaseApi, null));
+            const assets = release.assets || [];
+            let asset = null;
+            for (const pattern of patterns) {
+                asset = assets.find(a => pattern.test(a.name));
+                if (asset) break;
+            }
+            if (!asset) {
+                llmToast('Markov.llm.noRuntime', { platform: LLAMA_PLATFORM() });
+                return '';
+            }
+
+            const fs = NodeIO.fs;
+            const path = NodeIO.path;
+            const destDir = path.join(LLAMA_RUNTIME_DIR(), LLAMA_PLATFORM());
+            fs.mkdirSync(destDir, { recursive: true });
+            const archivePath = path.join(destDir, asset.name);
+            await httpsGet(asset.browser_download_url, archivePath);
+            const unpacked = await extractArchive(archivePath, destDir);
+            try { fs.unlinkSync(archivePath); } catch (e) { /* leave it behind */ }
+            if (!unpacked) {
+                llmToast('Markov.llm.noRuntime', { platform: LLAMA_PLATFORM() });
+                return '';
+            }
+            makeRuntimeExecutable(destDir);
+            const binary = findServerBinary();
+            if (binary) llmToast('Markov.llm.gotRuntime');
+            return binary;
+        }
+    };
+
+    const LlamaServer = {
+        _proc: null,
+        _model: '',
+        _boot: null,
+        _ready: false,
+        _external: false,
+        _warned: false,
+
+        // Whether a line asked for now would be answered rather than waited on.
+        isReadyFor(modelName) {
+            return this._ready && this._model === modelName;
+        },
+
+        async isUp() {
+            try {
+                const res = await llmRequest('/health', null, 2000);
+                return res.status === 200;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        // Resolves true once a server holding this model answers on the port.
+        ensure(modelName) {
+            if (this._ready && this._model === modelName) return Promise.resolve(true);
+            if (this._boot && this._model === modelName) return this._boot;
+            if (this._model && this._model !== modelName) this.stop();
+            this._model = modelName;
+            this._boot = this._start(modelName).catch(e => {
+                console.warn(`[${pluginName}] Language model server failed to start:`, e);
+                return false;
+            });
+            return this._boot;
+        },
+
+        async _start(modelName) {
+            // A server the player started themselves owns the port: it is used
+            // as it stands and is never spawned over or killed on the way out.
+            if (await this.isUp()) {
+                this._external = true;
+                this._ready = true;
+                return true;
+            }
+            const binary = await LlamaRuntime.ensure();
+            if (!binary) {
+                if (!this._warned) {
+                    this._warned = true;
+                    llmToast('Markov.llm.noRuntime', { platform: LLAMA_PLATFORM() });
+                }
+                return false;
+            }
+            const binDir = NodeIO.path.dirname(binary);
+            const modelPath = NodeIO.path.join(modelsDir(), modelName);
+            llmToast('Markov.llm.loading', { model: modelName.replace(/\.gguf$/i, '') });
+            // The server is run from its own folder with that folder on the
+            // library path: the shipped runtime is a binary plus the ggml and
+            // llama shared libraries beside it, and every platform looks for
+            // those in a different variable.
+            const env = Object.assign({}, process.env);
+            const prepend = (key, value) => {
+                env[key] = value + (env[key] ? NodeIO.path.delimiter + env[key] : '');
+            };
+            if (process.platform === 'win32') prepend('PATH', binDir);
+            else if (process.platform === 'darwin') prepend('DYLD_LIBRARY_PATH', binDir);
+            else prepend('LD_LIBRARY_PATH', binDir);
+            this._proc = NodeIO.cp.spawn(binary, [
+                '-m', modelPath,
+                '--host', '127.0.0.1',
+                '--port', String(llmPort),
+                '-c', String(llmContextSize),
+                '-t', String(Math.max(1, Math.min(8, (require('os').cpus() || []).length - 1 || 4)))
+            ], { stdio: 'ignore', windowsHide: true, cwd: binDir, env: env });
+            this._proc.on('error', e => {
+                console.warn(`[${pluginName}] Could not run ${binary}:`, e);
+                this._proc = null;
+            });
+            this._proc.on('exit', () => { this._proc = null; this._ready = false; this._boot = null; });
+
+            const deadline = Date.now() + LLM_BOOT_TIMEOUT_MS;
+            while (Date.now() < deadline) {
+                if (!this._proc) return false;
+                if (await this.isUp()) {
+                    this._ready = true;
+                    llmToast('Markov.llm.ready', { model: modelName.replace(/\.gguf$/i, '') });
+                    return true;
+                }
+                await new Promise(r => setTimeout(r, 750));
+            }
+            this.stop();
+            return false;
+        },
+
+        stop() {
+            if (this._proc && !this._external) {
+                try { this._proc.kill(); } catch (e) { /* already gone */ }
+            }
+            this._proc = null;
+            this._model = '';
+            this._boot = null;
+            this._ready = false;
+            this._external = false;
+        }
+    };
+
+    // The server is a child of the game, so it goes when the game goes. Which
+    // of these fires depends on how the game was closed (window button, alt+F4,
+    // a reload from the console), so all of them are listened for and stop() is
+    // written to be safe to call twice.
+    window.addEventListener('beforeunload', () => LlamaServer.stop());
+    window.addEventListener('unload', () => LlamaServer.stop());
+    try { process.on('exit', () => LlamaServer.stop()); } catch (e) { /* no node here */ }
+    if (nodeAvailable && typeof nw !== 'undefined' && nw.App && nw.App.on) {
+        try { nw.App.on('shutdown', () => { LlamaServer.stop(); nw.App.quit(); }); }
+        catch (e) { /* older NW.js, the listeners above cover it */ }
+    }
+
+    function llmToast(key, params) {
+        const text = T(key, params);
+        if (window.ParchmentToast && window.ParchmentToast.show) window.ParchmentToast.show(text);
+        else console.log(`[${pluginName}] ${text}`);
+    }
+
+    //-------------------------------------------------------------------------
+    // Prompting and cleaning up after the model
+    //-------------------------------------------------------------------------
+    // A run of consecutive sentences out of the database the chain would have
+    // used. It is what keeps the model speaking in the register of this game
+    // rather than in AI Dungeon's.
+    function llmSampleSentences(text, count) {
+        const sentences = String(text || '')
+            .split(/(?<=[\.\?\!])\s+/)
+            .map(s => s.trim())
+            .filter(s => s.length > 12);
+        if (sentences.length === 0) return '';
+        const start = Math.floor(Math.random() * sentences.length);
+        return sentences.slice(start, start + count).join(' ');
+    }
+
+    // Scenario, blank line, action line. The model continues from there.
+    function llmBuildPrompt(spec) {
+        const lines = [];
+        const place = $gameMap && $gameMap.displayName ? $gameMap.displayName() : '';
+        if (place) lines.push(T('Markov.llm.place', { place: place }));
+        if (spec.npcName) lines.push(T('Markov.llm.withNpc', { npc: spec.npcName }));
+        const sample = llmSampleSentences(spec.dbText, 4);
+        if (sample) lines.push(sample);
+        const scenario = lines.join(' ').slice(0, LLM_SCENARIO_CHARS);
+
+        const seed = String(spec.startText || '').trim();
+        const action = seed
+            ? T('Markov.llm.actionSay', { text: seed })
+            : spec.npcName
+                ? T('Markov.llm.actionTalk', { npc: spec.npcName })
+                : T('Markov.llm.actionListen');
+        return `${scenario}\n\n${action}\n`;
+    }
+
+    // What comes back is a slice of an unfinished story: it can run past the
+    // stop token, carry GPT-2's end marker, and break off mid sentence. Only
+    // whole sentences are ever spoken.
+    function llmClean(raw) {
+        let text = String(raw || '').replace(/\r/g, '').replace(/<\|endoftext\|>/g, ' ');
+        const nextTurn = text.indexOf('>');
+        if (nextTurn >= 0) text = text.slice(0, nextTurn);
+        text = text.replace(/\s+/g, ' ').trim();
+        const lastStop = Math.max(text.lastIndexOf('.'), text.lastIndexOf('!'), text.lastIndexOf('?'));
+        if (lastStop >= 0) text = text.slice(0, lastStop + 1);
+        return text.trim();
+    }
+
+    // One completion. Resolves to an empty string on any failure, which is the
+    // caller's signal to speak the chain's line instead.
+    async function llmComplete(prompt) {
+        const model = selectedGgufModel();
+        if (!model) return '';
+        const running = await LlamaServer.ensure(model);
+        if (!running) return '';
+        const payload = Object.assign({
+            prompt: prompt,
+            n_predict: llmMaxTokens,
+            stop: LLM_STOP,
+            cache_prompt: true,
+            stream: false
+        }, LLM_SAMPLER);
+        try {
+            let res = await llmRequest('/completion', payload, llmTimeoutMs);
+            if (res.status === 404) {
+                // An OpenAI compatible server (or a build without the native
+                // route) answers on /v1/completions instead.
+                res = await llmRequest('/v1/completions', {
+                    model: model,
+                    prompt: prompt,
+                    max_tokens: llmMaxTokens,
+                    stop: LLM_STOP,
+                    temperature: LLM_SAMPLER.temperature,
+                    top_p: LLM_SAMPLER.top_p
+                }, llmTimeoutMs);
+            }
+            if (res.status !== 200 || !res.body) return '';
+            const content = res.body.content !== undefined
+                ? res.body.content
+                : (res.body.choices && res.body.choices[0] ? res.body.choices[0].text : '');
+            return llmClean(content);
+        } catch (e) {
+            console.warn(`[${pluginName}] Language model request failed:`, e);
+            return '';
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // Serving the synchronous callers
+    //-------------------------------------------------------------------------
+    // generateMarkovString() has to answer on the spot, and a model does not.
+    // So every call takes a line written ahead of time for that database and
+    // orders the next one; until the first one lands the chain answers, which
+    // is also what happens whenever the model is too slow to keep the queue
+    // filled. A seeded call is not served this way: a reply that echoes the
+    // player's own words cannot be written before they type them.
+    const llmLineCache = new Map();
+    const llmInFlight = new Set();
+
+    function llmPrefetch(key, spec) {
+        if (!llmEnabled() || llmInFlight.has(key)) return;
+        llmInFlight.add(key);
+        llmComplete(llmBuildPrompt(spec)).then(text => {
+            if (!text) return;
+            const queue = llmLineCache.get(key) || [];
+            queue.push(text);
+            while (queue.length > LLM_CACHE_LINES) queue.shift();
+            llmLineCache.delete(key);
+            llmLineCache.set(key, queue);
+            while (llmLineCache.size > LLM_CACHE_KEYS) {
+                llmLineCache.delete(llmLineCache.keys().next().value);
+            }
+        }).catch(() => { /* the chain answers instead */ })
+          .then(() => { llmInFlight.delete(key); });
+    }
+
+    function llmTakeLine(key, spec) {
+        if (!llmEnabled()) return '';
+        const queue = llmLineCache.get(key);
+        const line = queue && queue.length ? queue.shift() : '';
+        llmPrefetch(key, spec);
+        return line;
+    }
+
+    //-------------------------------------------------------------------------
+    // Serving the message box
+    //-------------------------------------------------------------------------
+    // An event can wait, so it does: the interpreter holds on a wait mode of
+    // its own until the model answers or the timeout runs out, and only then
+    // is the line put in the message box.
+    // The standing "thinking" notice, up only while a line is being written.
+    const LLM_THINKING_KEY = 'markov-llm-thinking';  // i18n-ignore  toast key
+    const LLM_THINKING_DELAY_MS = 500;
+
+    function llmSticky(npcName) {
+        const toast = window.ParchmentToast;
+        if (!toast || !toast.sticky) return;
+        toast.sticky(npcName ? T('Markov.llm.thinkingNpc', { npc: npcName }) : T('Markov.llm.thinking'),
+            { key: LLM_THINKING_KEY });
+    }
+
+    function llmStickyDown() {
+        const toast = window.ParchmentToast;
+        if (toast && toast.dismiss) toast.dismiss(LLM_THINKING_KEY);
+    }
+
+    function addGeneratedMessage(text, refine) {
+        llmStickyDown();
+        const line = (typeof refine === 'function' ? (refine(text) || text) : text);
+        window.skipLocalization = true;
+        $gameMessage.add(line);
+        window.skipLocalization = false;
+    }
+
+    function speakGenerated(interpreter, spec, fallbackText, background, position) {
+        $gameMessage.setBackground(background);
+        $gameMessage.setPositionType(position);
+        if (!llmEnabled()) {
+            addGeneratedMessage(fallbackText, spec.refine);
+            interpreter.setWaitMode('message');
+            return;
+        }
+        // Nobody waits on a model that is still reading itself off the disk:
+        // the first lines of a session are the chain's while the server warms
+        // up behind them, and the model takes over once it can answer.
+        if (!LlamaServer.isReadyFor(selectedGgufModel())) {
+            LlamaServer.ensure(selectedGgufModel());
+            addGeneratedMessage(fallbackText, spec.refine);
+            interpreter.setWaitMode('message');
+            return;
+        }
+        const state = { done: false, text: '' };
+        llmComplete(llmBuildPrompt(spec))
+            .then(text => { state.text = text; })
+            .catch(() => { /* the chain answers instead */ })
+            .then(() => { state.done = true; });
+        // An event is never held past the request's own timeout.
+        setTimeout(() => { state.done = true; }, llmTimeoutMs);
+        // A line takes the model seconds, not frames, and a silent pause before
+        // a message box reads as a hang. Anything under half a second passes
+        // unremarked; past that the game says who is thinking.
+        setTimeout(() => {
+            if (!state.done) llmSticky(spec.npcName);
+        }, LLM_THINKING_DELAY_MS);
+        interpreter._markovLlmWait = { state: state, fallback: fallbackText, refine: spec.refine };
+        interpreter.setWaitMode('markovLlm');
+    }
+
+    const _Game_Interpreter_updateWaitMode_markovLlm = Game_Interpreter.prototype.updateWaitMode;
+    Game_Interpreter.prototype.updateWaitMode = function () {
+        if (this._waitMode === 'markovLlm') {
+            const pending = this._markovLlmWait;
+            if (pending && !pending.state.done) return true;
+            this._markovLlmWait = null;
+            if (pending) addGeneratedMessage(pending.state.text || pending.fallback, pending.refine);
+            this.setWaitMode('message');
+            return true;
+        }
+        return _Game_Interpreter_updateWaitMode_markovLlm.call(this);
+    };
+
+    // Read by anything that wants to know whether the model is doing the
+    // talking, and by the async callers that can afford to wait for it.
+    window.MarkovLLM = {
+        isEnabled: llmEnabled,
+        modelName: selectedGgufModel,
+        // Whether the picked model would answer now rather than be waited on,
+        // and the request that gets it there. Loading the weights takes as long
+        // as it takes, so a caller that cannot sit through a cold start asks
+        // first, speaks the chain's line, and has the model from the next one.
+        isReady: () => llmEnabled() && LlamaServer.isReadyFor(selectedGgufModel()),
+        warmUp: () => { if (llmEnabled()) LlamaServer.ensure(selectedGgufModel()); },
+        listModels: listGgufModels,
+        rescan: rescanGgufModels,
+        stopServer: () => LlamaServer.stop(),
+        // Which llama.cpp server this machine would run, and which release
+        // archive it would fetch if it had none. Read by the debug console
+        // when a model refuses to answer, and by scripts/test_markovllm.js.
+        runtime: {
+            platform: LLAMA_PLATFORM,
+            path: findServerBinary,
+            assetPatterns: llamaAssetPatterns
+        },
+        // generate({ dbText, npcName, startText }) -> Promise<string>
+        generate: (spec) => llmComplete(llmBuildPrompt(spec || {}))
+    };
+
     // Log when the plugin command is registered
 
     // Register plugin command for normal text generation
@@ -769,12 +1659,9 @@
         const generatedText = model.generateText(minLength, maxLength);
         const cleanText = generatedText.replace(/\s+/g, ' ').trim();
 
-        $gameMessage.setBackground(background);
-        $gameMessage.setPositionType(position);
-
-        window.skipLocalization = true;
-        $gameMessage.add(cleanText);
-        window.skipLocalization = false;
+        // With a language model picked the chain's line becomes the fallback and
+        // the model writes the line that is actually spoken.
+        speakGenerated(this, { dbText: selectedLanguage }, cleanText, background, position);
     });
 
     function getTextDB(id) {
@@ -950,13 +1837,40 @@
         const generatedText = model.generateText(minLength, maxLength);
         const cleanText = generatedText.replace(/\s+/g, ' ').trim();
 
-        $gameMessage.setBackground(background);
-        $gameMessage.setPositionType(position);
-
-        window.skipLocalization = true;
-        $gameMessage.add(cleanText);
-        window.skipLocalization = false;
+        speakGenerated(this, { dbText: selectedLanguageText }, cleanText, background, position);
     });
+
+    // Plain Markov generation for a given NPC's bank, with no message-box or
+    // bust side effects: shared by the plugin command below and by
+    // window.MarkovNPCDialogue, which DialogueSystem.js's social exchange
+    // calls when Options > Dialogue Mode is set to Markovian. Throws when the
+    // NPC's database cannot be resolved.
+    function generateMarkovTextForNPC(npcName) {
+        const databaseId = $gameSystem._npcSociety?.[npcName]?.markovDb || "all";
+        const database = getTextDB(databaseId);
+
+        const chainOrder = 1;
+        const minLength = 8;
+        // Randomize max length on every interaction (15–50 words)
+        const maxLength = Math.floor(Math.random() * 36) + 15;
+
+        const selectedLanguage = ConfigManager.language === 'it' ? database.it : database.en;
+        const modelKey = `${database.id}_${chainOrder}`;
+        const model = getMarkovModel(modelKey, () => new MarkovChain(selectedLanguage, chainOrder));
+
+        const generatedText = model.generateText(minLength, maxLength);
+        return { text: generatedText.replace(/\s+/g, ' ').trim(), language: selectedLanguage };
+    }
+
+    window.MarkovNPCDialogue = {
+        generateLine(npcName) {
+            try {
+                return generateMarkovTextForNPC(npcName).text;
+            } catch (error) {
+                return '';
+            }
+        }
+    };
 
     // Register plugin command for NPC-specific dialogue generation
     PluginManager.registerCommand(pluginName, "generateNPCDialogue", function (args) {
@@ -973,49 +1887,34 @@
         // Resolve the NPC's associated Markov database from their society profile
         const npcEvent = evId ? $gameMap.event(evId) : null;
         const npcName = npcEvent?.event()?.name;
-        let databaseId = $gameSystem._npcSociety?.[npcName]?.markovDb || "all";
 
-        const chainOrder = 1;
-        const minLength = 8;
-        // Randomize max length on every interaction (15–50 words)
-        const maxLength = Math.floor(Math.random() * 36) + 15;
-
-        let database;
+        let generated;
         try {
-            database = getTextDB(databaseId);
+            generated = generateMarkovTextForNPC(npcName);
         } catch (error) {
             $gameMessage.add(T('Markov.error', { message: error.message.split('] ')[1] || error.message }));
             return;
         }
 
-        const selectedLanguage = ConfigManager.language === 'it' ? database.it : database.en;
-
-        const modelKey = `${database.id}_${chainOrder}`;
-        const model = getMarkovModel(modelKey, () => new MarkovChain(selectedLanguage, chainOrder));
-
-        const generatedText = model.generateText(minLength, maxLength);
-        let cleanText = generatedText.replace(/\s+/g, ' ').trim();
-
-        // A non-sentient creature (NPCCreature: an NPC played as one of the
-        // creature classes) has no words. The chain still runs , the length of
-        // what it wrote is what decides how long the noise is , but what comes
-        // out of the message box is barks and growls, exactly as it is when a
-        // non-sentient PARTY member does the talking (see NPCEmpathize).
-        const EM = window.NPCEmpathize;
-        if (npcName && EM?.isNonSentientNPC?.(npcName)) {
-            cleanText = EM.growlFor(cleanText) || cleanText;
-        }
-
-        // Keep the line on the NPC's society profile so it shows up in their
+        // Whoever wrote the line, chain or model, it is finished the same way:
+        // a non-sentient creature (NPCCreature: an NPC played as one of the
+        // creature classes) has no words, so the length of what was written is
+        // what decides how long the noise is, exactly as it is when a
+        // non-sentient PARTY member does the talking (see NPCEmpathize), and
+        // the line is kept on the NPC's society profile so it shows up in their
         // chat history in the Empathize panel, not just in this message box.
-        if (npcName) window.NPCEmpathize?.recordNPCLine?.(npcName, cleanText);
+        const refine = (text) => {
+            let line = text;
+            const EM = window.NPCEmpathize;
+            if (npcName && EM?.isNonSentientNPC?.(npcName)) {
+                line = EM.growlFor(line) || line;
+            }
+            if (npcName) EM?.recordNPCLine?.(npcName, line);
+            return line;
+        };
 
-        $gameMessage.setBackground(background);
-        $gameMessage.setPositionType(position);
-
-        window.skipLocalization = true;
-        $gameMessage.add(cleanText);
-        window.skipLocalization = false;
+        speakGenerated(this, { dbText: generated.language, npcName: npcName, refine: refine },
+            generated.text, background, position);
     });
 
     // Register plugin command for name generation
@@ -1123,7 +2022,41 @@
                 ? model.generateFrom(String(startText), minLength, maxLength)
                 : model.generateText(minLength, maxLength);
 
+            // A caller that wants an answer this instant gets a line the picked
+            // language model wrote earlier for this database, if one is waiting;
+            // the chain's line covers the wait for the first one. A seeded call
+            // has to be answered by the chain, since a reply echoing the
+            // player's own words cannot have been written before they typed it:
+            // generateMarkovStringAsync() is the way to have the model answer
+            // those, for callers that can wait.
+            if (!startText) {
+                const llmLine = llmTakeLine(`gen_${database.id}`, { dbText: selectedLanguage });
+                if (llmLine) return llmLine;
+            }
+
             return generatedText;
+        };
+    }
+
+    // The awaited form of the above: with a model picked it resolves to what
+    // the model writes, seed and all, and falls back to the chain whenever the
+    // model has nothing to say.
+    if (typeof window.generateMarkovStringAsync === 'undefined') {
+        window.generateMarkovStringAsync = async function (databaseId, options = {}) {
+            if (llmEnabled()) {
+                let database = null;
+                try { database = getTextDB(databaseId); } catch (error) { database = null; }
+                if (database) {
+                    const dbText = ConfigManager.language === 'it' ? database.it : database.en;
+                    const line = await llmComplete(llmBuildPrompt({
+                        dbText: dbText,
+                        npcName: options.npcName,
+                        startText: options.startText
+                    }));
+                    if (line) return line;
+                }
+            }
+            return window.generateMarkovString(databaseId, options);
         };
     }
 

@@ -80,6 +80,32 @@
  * party is now short of. Party of one: nothing is queued at all.
  *
  * ==========================================================================
+ * WHATEVER THE PARTY JUST DID
+ * ==========================================================================
+ * A purchase is only the commonest of a whole class of things: the party forges
+ * a blade, dismantles a bench, reaps a field, robs a shelf, loses an hour to an
+ * arcade cabinet. All of it is already written down the moment it happens, by
+ * Core/Diary.js, so rather than hook two dozen crafting, farming and minigame
+ * plugins one at a time, the diary is READ on the way back to the map: its
+ * newest line becomes the pending topic and the party talks about it walking
+ * away. Any plugin that keeps a diary is covered by that, including plugins
+ * written after this file.
+ *
+ * Four of those have banks of their own, judged by personality the way the
+ * purchase is:
+ *
+ *   craft      something was forged, cooked, brewed or distilled
+ *   dismantle  something on the map was taken apart for its pieces
+ *   build      something was put up or set down
+ *   minigame   the party sat down and played something
+ *
+ * Everything else lands in the generic `deed` bank, which talks about the thing
+ * by name and nothing else. Plugin commands whose names read as gameplay
+ * (anything about crafting, mining, fishing, repairing, playing) queue the same
+ * generic topic, rationed to roughly one in several minutes, which is the only
+ * way to catch a plugin that neither keeps a diary nor publishes an API.
+ *
+ * ==========================================================================
  * ON THE ROAD
  * ==========================================================================
  * Walking about, the talk is driven by Core/AutoIdleExplorer.js: it owns the
@@ -128,6 +154,10 @@
  *                                           who is not one of their own
  *   PartyBanter.noteEvent(topic, ctx)       queue a pending topic by hand
  *   PartyBanter.noteShopBuy(item, price, place)
+ *   PartyBanter.noteDeed(topic, label, ctx) queue "we just did this", for a
+ *                                           plugin that keeps no diary line
+ *   PartyBanter.sweepDiary()                read the newest diary line and queue
+ *                                           whatever the party just did
  *
  *   PartyBanter.travelSetting()             'driving' | 'transit' | 'cabin' | null
  *   PartyBanter.react(kind, ctx)            raise one of the four reactions NOW
@@ -159,6 +189,17 @@
     // party still discussing the first thing on the page.
     const RECENT_MINUTES = 300;
     const RECENT_DEPTH = 10;
+
+    // How fresh a thing the party just DID has to be to be worth remarking on
+    // coming out of the menu it was done in, in world minutes. Short: a forge is
+    // interesting on the way out of the smithy and nowhere else. The diary's own
+    // `recent` bank picks the same event up later as something that happened
+    // today, which is a different conversation and reads like one.
+    const DEED_MINUTES = 45;
+
+    // A gameplay plugin command is a thing the party did too, but there is no
+    // telling what, so a generic word about it is rationed hard.
+    const DEED_COMMAND_GAP = 60 * 210;
 
     const NEED_LINE = 35;      // a meter under this is on that member's mind
     const NEED_FLOOR = 30;     // ...and under this for everybody is the party's
@@ -448,6 +489,88 @@
         return null;
     }
 
+    // ----------------------------------------------------- things just done
+    // Everything the party DOES that is worth a word afterwards - a blade
+    // forged, a bench dismantled, a field reaped, an hour lost to an arcade
+    // cabinet - is already written down the moment it happens, by Core/Diary.js.
+    // Rather than reach into two dozen crafting, farming and minigame plugins
+    // for a hook apiece, the diary is read on the way back to the map: its
+    // newest line becomes the pending topic, and the party talks about it while
+    // walking away. One hook, and every plugin that keeps a diary is covered by
+    // it, including the ones written after this file.
+    //
+    // The map is deliberately where it gets said. A forge, a cabinet and a
+    // workbench are each their own scene, and a bubble over a menu is nobody's
+    // idea of a conversation.
+    const DEED_TOPIC = {
+        'craft.forge': 'craft',
+        'craft.cook': 'craft',
+        'craft.alchemy': 'craft',
+        'craft.brew': 'craft',
+        'build.placed': 'build',
+        'build.dismantled': 'dismantle',
+        'minigame.played': 'minigame',
+        'farm.sown': 'deed',
+        'farm.harvested': 'deed',
+        'apiary.harvest': 'deed',
+        'animal.produce': 'deed',
+        'animal.bought': 'deed',
+        'mining.stripped': 'deed',
+        'tech.researched': 'deed',
+        'bestiary.found': 'deed',
+        'alien.identified': 'deed',
+        'steal.success': 'deed',
+        'work.shift': 'deed',
+    };
+
+    // What the thing was called, for {deed}: whichever of the diary line's own
+    // parameters names the object of it. A line that named nothing queues
+    // nothing, since a generic bank with an empty subject is worse than silence.
+    const DEED_NAMES = ['item', 'items', 'game', 'plant', 'tech', 'creature',
+        'species', 'animal', 'body', 'job', 'programme'];
+
+    function deedLabel(params) {
+        if (!params) return '';
+        for (const key of DEED_NAMES) {
+            const value = params[key];
+            if (value !== undefined && value !== null && String(value) !== '') return String(value);
+        }
+        return '';
+    }
+
+    // The newest diary line, if it is recent enough to still be news and has not
+    // already been read by this sweep. Signature rather than index: the diary is
+    // trimmed as it grows, so a position in it means nothing across a session.
+    let _lastDeed = '';
+
+    function sweepDiary() {
+        if (!active()) return;
+        if (!window.Diary || !window.Diary.entries) return;
+        let entries;
+        try {
+            entries = window.Diary.entries();
+        } catch (e) {
+            return;                         // a diary that will not open owes us nothing
+        }
+        if (!entries || !entries.length) return;
+        const entry = entries[entries.length - 1];
+        if (!entry || !entry.k) return;
+        const topic = DEED_TOPIC[entry.k];
+        if (!topic) return;
+        const signature = entry.k + '|' + entry.t;
+        if (signature === _lastDeed) return;
+        _lastDeed = signature;
+        if (worldMinutes() - Number(entry.t || 0) > DEED_MINUTES) return;
+        const params = entry.p || {};
+        const ctx = Object.assign({}, params);
+        if (topic === 'deed') {
+            const label = deedLabel(params);
+            if (!label) return;
+            ctx.deed = label;
+        }
+        noteEvent(topic, ctx);
+    }
+
     // --------------------------------------------------------------- context
     function baseContext(cast) {
         const id = biomeId();
@@ -640,8 +763,8 @@
 
     // Ambient pacing, in frames. A journey is hours long; a word every minute or
     // two is company, and anything faster is a radio play.
-    const TALK_MIN = 60 * 45;
-    const TALK_MAX = 60 * 110;
+    const TALK_MIN = 60 * 62;
+    const TALK_MAX = 60 * 150;
 
     // A beat is up for as long as it takes to read, which is the same reckoning
     // AutoIdleExplorer uses for a loose conversation.
@@ -654,8 +777,8 @@
     // remarked on every time the party drifts back and forth over a line in the
     // sand.
     const COOLDOWN = {
-        crash: 60 * 20,
-        handover: 60 * 30,
+        crash: 60 * 25,
+        handover: 60 * 36,
         fuel: 60 * 180,
         country: 60 * 360,
     };
@@ -1054,6 +1177,24 @@
             return unresolved(text) ? null : text;
         },
 
+        // Something the party DID, for a plugin that keeps no diary line and
+        // wants the party to remark on it anyway. `topic` may be one the bank
+        // has a reaction for ('craft', 'dismantle', 'build', 'minigame') or
+        // left out entirely, in which case it is the generic one and `label`
+        // names whatever was done.
+        noteDeed(topic, label, ctx) {
+            const kind = topic && knownTopic(topic) ? topic : 'deed';
+            const extra = Object.assign({}, ctx || {});
+            if (label) extra.deed = String(label);
+            if (kind === 'deed' && !extra.deed) return;
+            noteEvent(kind, extra);
+        },
+
+        // Read the diary for the newest thing the party did and queue it. Called
+        // on every arrival back on the map; public so a plugin that logs late can
+        // ask for the sweep again.
+        sweepDiary,
+
         // Something was bought. Queued rather than said: the counter is a
         // separate scene, and the party has its opinions on the way out.
         noteShopBuy(item, price, place) {
@@ -1128,13 +1269,53 @@
             PartyBanter.noteShopBuy(item, String(price || ''), '');
         };
     };
+    // Anything the party did in a menu or a minigame scene: the diary already
+    // wrote it down, and coming back to the map is when there is somebody to say
+    // it to. Read once per arrival, before the pacing is re-armed, so the first
+    // exchange out of a smithy is about the smithy.
     const _Scene_Map_start = Scene_Map.prototype.start;
     Scene_Map.prototype.start = function () {
         _Scene_Map_start.call(this);
         _hookOrder();
         hookDamage();
+        try { sweepDiary(); } catch (e) { /* the deed still happened */ }
         scheduleAmbient();
     };
+
+    // Everything else a plugin does on purpose. A gameplay plugin command is the
+    // one gameplay event with no diary line and no API of its own to hook, so it
+    // is caught where all of them pass: a word about "that", rationed to roughly
+    // one in several minutes, and only for commands that are plainly the party
+    // doing something rather than the engine keeping house.
+    const COMMAND_IGNORE = /^(i18n|debug|dev|test|audio|sound|bgm|se|camera|light|weather|hud|ui|menu|window|text|message|picture|screen|save|load|option|config|cheat|log|toast|notify|tooltip|cursor|fade|transition|shader|filter)/i;
+    const COMMAND_WORTH = /(craft|forge|smith|dismantle|salvage|scrap|build|place|harvest|gather|mine|dig|fish|cook|brew|distil|alchem|plant|sow|repair|upgrade|install|tame|catch|breed|hunt|loot|open|unlock|pick|play|game|race|duel|bet|trade|research|scan|study|analyse|analyze|forg|enchant|refine|craf)/i;
+
+    let _lastCommandDeed = 0;
+
+    function humanise(name) {
+        return String(name || '')
+            .replace(/[_-]+/g, ' ')
+            .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+            .trim()
+            .toLowerCase();
+    }
+
+    if (typeof PluginManager !== 'undefined' && PluginManager.callCommand) {
+        const _callCommand = PluginManager.callCommand;
+        PluginManager.callCommand = function (self, pluginName, commandName, args) {
+            const result = _callCommand.call(this, self, pluginName, commandName, args);
+            try {
+                const now = Graphics.frameCount;
+                if (now - _lastCommandDeed >= DEED_COMMAND_GAP
+                    && !COMMAND_IGNORE.test(String(pluginName))
+                    && COMMAND_WORTH.test(String(commandName))) {
+                    _lastCommandDeed = now;
+                    noteEvent('deed', { deed: humanise(commandName) });
+                }
+            } catch (e) { /* the command still ran */ }
+            return result;
+        };
+    }
 
     // The travelling talk runs off the map's own update: there is nobody walking
     // about for AutoIdleExplorer to drive it from.

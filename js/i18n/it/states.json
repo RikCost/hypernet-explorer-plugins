@@ -298,7 +298,7 @@
     "message1": "%1 è bruciato!",
     "message2": "%1 è bruciato!",
     "message3": "",
-    "message4": "%1 non è più avvelenato!"
+    "message4": "%1 non è più bruciato!"
   },
   "44": {
     "name": "Infetto",
@@ -322,7 +322,7 @@
     "message4": "%1 non è più invisibile!"
   },
   "47": {
-    "name": "oleoso",
+    "name": "Oleoso",
     "message1": "%1 è ora coperto di petrolio",
     "message2": "%1 è ora coperto dal petrolio",
     "message3": "",

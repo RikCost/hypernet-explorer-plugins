@@ -2,6 +2,8 @@
   "Antwerpen": {
     "name": "Antwerpen",
     "type": "city",
+    "country": "Belgium",
+    "nationId": 121,
     "procedural": false,
     "tag": "port",
     "entrance": {},
@@ -36,6 +38,8 @@
   "Frozen Station": {
     "name": "Frozen Station",
     "type": "village",
+    "country": "Scotland",
+    "nationId": 39,
     "procedural": false,
     "tag": "rural",
     "entrance": {
@@ -63,6 +67,8 @@
   "GreenWitch": {
     "name": "Green Witch",
     "type": "city",
+    "country": "UK",
+    "nationId": 38,
     "procedural": false,
     "tag": "rural",
     "mapOffset": {
@@ -96,6 +102,8 @@
   "GreenWitchSpaceCenter": {
     "name": "Green Witch Space Center",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": false,
     "tag": "industrial",
     "mapOffset": {
@@ -123,6 +131,8 @@
   "Ghent": {
     "name": "Ghent",
     "type": "city",
+    "country": "Belgium",
+    "nationId": 121,
     "procedural": false,
     "tag": "residential",
     "mapOffset": {
@@ -166,6 +176,8 @@
   "Kola Superdeep Borehole": {
     "name": "Kola Superdeep Borehole",
     "type": "dungeon",
+    "country": "Russia",
+    "nationId": 28,
     "procedural": false,
     "tag": "industrial",
     "mapOffset": {
@@ -180,6 +192,8 @@
   "Omega Tower": {
     "name": "Omega Tower",
     "type": "village",
+    "country": "OmegaTower",
+    "nationId": 255,
     "procedural": false,
     "tag": "business",
     "entrance": {
@@ -220,6 +234,8 @@
   "Luxembourg": {
     "name": "Luxembourg",
     "type": "village",
+    "country": "Luxembourg",
+    "nationId": 119,
     "procedural": false,
     "tag": "business",
     "entrance": {
@@ -249,6 +265,8 @@
   "Amsterdam": {
     "name": "Amsterdam",
     "type": "city",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -270,6 +288,8 @@
   "The Hague": {
     "name": "The Hague",
     "type": "city",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -291,6 +311,8 @@
   "Rotterdam": {
     "name": "Rotterdam",
     "type": "city",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -312,6 +334,8 @@
   "Ouddorp": {
     "name": "Ouddorp",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -330,6 +354,8 @@
   "Middelburg": {
     "name": "Middelburg",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -348,6 +374,8 @@
   "Harlem": {
     "name": "Harlem",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -367,6 +395,8 @@
   "Alkmaar": {
     "name": "Alkmaar",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -385,6 +415,8 @@
   "Leeuwarden": {
     "name": "Leeuwarden",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -403,6 +435,8 @@
   "Groningen": {
     "name": "Groningen",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -421,6 +455,8 @@
   "Limburg": {
     "name": "Limburg",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -439,6 +475,8 @@
   "Eindhoven": {
     "name": "Eindhoven",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -458,6 +496,8 @@
   "Zwolle": {
     "name": "Zwolle",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -476,6 +516,8 @@
   "Tritunnel Ovest": {
     "name": "Tritunnel Ovest",
     "type": "dungeon",
+    "country": "Belgium",
+    "nationId": 121,
     "procedural": false,
     "tag": "industrial",
     "mapOffset": {
@@ -494,6 +536,8 @@
   "Charleroi": {
     "name": "Charleroi",
     "type": "village",
+    "country": "Belgium",
+    "nationId": 121,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -513,6 +557,8 @@
   "Luik": {
     "name": "Luik",
     "type": "village",
+    "country": "Belgium",
+    "nationId": 121,
     "procedural": true,
     "tag": "ijs/db/WorkSystem/Destinations.jsonndustrial",
     "mapOffset": {
@@ -532,6 +578,8 @@
   "Bologna": {
     "name": "Bologna",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -558,6 +606,8 @@
   "Super sacred shrine": {
     "name": "Super Sacred Shrine",
     "type": "dungeon",
+    "country": "France",
+    "nationId": 102,
     "procedural": false,
     "tag": "rural",
     "mapOffset": {
@@ -575,6 +625,8 @@
   "London": {
     "name": "London",
     "type": "city",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -595,6 +647,8 @@
   "MAXGauntlet": {
     "name": "MAX Gauntlet",
     "type": "dungeon",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": false,
     "tag": "industrial",
     "mapOffset": {
@@ -612,6 +666,8 @@
   "Vatican Citadel": {
     "name": "Vatican Citadel",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -629,6 +685,8 @@
   "MAXTavern": {
     "name": "MAX Tavern",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -646,6 +704,8 @@
   "Cardiff": {
     "name": "Cardiff",
     "type": "city",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -666,6 +726,8 @@
   "Milano": {
     "name": "Milano",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -686,6 +748,8 @@
   "Canicattini Bagni": {
     "name": "Canicattini Bagni",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -703,6 +767,8 @@
   "Casalpusterlengo": {
     "name": "Casalpusterlengo",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -720,6 +786,8 @@
   "Plymouth": {
     "name": "Plymouth",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -738,6 +806,8 @@
   "Canterbury": {
     "name": "Canterbury",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -755,6 +825,8 @@
   "Brighton": {
     "name": "Brighton",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -772,6 +844,8 @@
   "Boston": {
     "name": "Boston",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -789,6 +863,8 @@
   "Manchester": {
     "name": "Manchester",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -806,6 +882,8 @@
   "Birmingham": {
     "name": "Birmingham",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -823,6 +901,8 @@
   "Edinburgh": {
     "name": "Edinburgh",
     "type": "village",
+    "country": "Scotland",
+    "nationId": 39,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -840,6 +920,8 @@
   "Glasgow": {
     "name": "Glasgow",
     "type": "village",
+    "country": "Scotland",
+    "nationId": 39,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -857,6 +939,8 @@
   "Perth": {
     "name": "Perth",
     "type": "village",
+    "country": "Scotland",
+    "nationId": 39,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -874,6 +958,8 @@
   "Oban": {
     "name": "Oban",
     "type": "village",
+    "country": "Scotland",
+    "nationId": 39,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -891,6 +977,8 @@
   "Aberdeen": {
     "name": "Aberdeen",
     "type": "village",
+    "country": "Scotland",
+    "nationId": 39,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -909,6 +997,8 @@
   "Petrocave": {
     "name": "Petrocave",
     "type": "dungeon",
+    "country": "France",
+    "nationId": 102,
     "procedural": false,
     "tag": "industrial",
     "entrance": {},
@@ -933,6 +1023,8 @@
   "Belfast": {
     "name": "Belfast",
     "type": "city",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -953,6 +1045,8 @@
   "Roma": {
     "name": "Roma",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -970,6 +1064,8 @@
   "Messina": {
     "name": "Messina",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -987,6 +1083,8 @@
   "Londonderry": {
     "name": "Londonderry",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1005,6 +1103,8 @@
   "Sligo": {
     "name": "Sligo",
     "type": "village",
+    "country": "Ireland",
+    "nationId": 40,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1022,6 +1122,8 @@
   "Reggio Calabria": {
     "name": "Reggio Calabria",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1039,6 +1141,8 @@
   "Alba Adriatica": {
     "name": "Alba Adriatica",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -1056,6 +1160,8 @@
   "Dublin": {
     "name": "Dublin",
     "type": "city",
+    "country": "Ireland",
+    "nationId": 40,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -1076,6 +1182,8 @@
   "Wexford": {
     "name": "Wexford",
     "type": "village",
+    "country": "Ireland",
+    "nationId": 40,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1094,6 +1202,8 @@
   "Cork": {
     "name": "Cork",
     "type": "village",
+    "country": "Ireland",
+    "nationId": 40,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1112,6 +1222,8 @@
   "Tritunnel East": {
     "name": "Tritunnel East",
     "type": "dungeon",
+    "country": "UK",
+    "nationId": 38,
     "procedural": false,
     "tag": "industrial",
     "mapOffset": {
@@ -1129,6 +1241,8 @@
   "Killarney": {
     "name": "Killarney",
     "type": "village",
+    "country": "Ireland",
+    "nationId": 40,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1146,6 +1260,8 @@
   "Brusselles": {
     "name": "Bruxelles",
     "type": "city",
+    "country": "Belgium",
+    "nationId": 121,
     "procedural": true,
     "tag": "business",
     "entrance": {
@@ -1172,6 +1288,8 @@
   "Reykyavik": {
     "name": "Reykjavik",
     "type": "city",
+    "country": "Iceland",
+    "nationId": 37,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1192,6 +1310,8 @@
   "Dark tower": {
     "name": "Dark Tower",
     "type": "dungeon",
+    "country": "France",
+    "nationId": 102,
     "procedural": false,
     "tag": "industrial",
     "entrance": {},
@@ -1216,6 +1336,8 @@
   "Kalfafell": {
     "name": "Kalfafell",
     "type": "village",
+    "country": "Iceland",
+    "nationId": 37,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1233,6 +1355,8 @@
   "Laugar": {
     "name": "Laugar",
     "type": "village",
+    "country": "Iceland",
+    "nationId": 37,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1250,6 +1374,8 @@
   "Hvammstangi": {
     "name": "Hvammstangi",
     "type": "village",
+    "country": "Iceland",
+    "nationId": 37,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1267,6 +1393,8 @@
   "Klasvik": {
     "name": "Klaksvik",
     "type": "village",
+    "country": "Denmark",
+    "nationId": 0,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1284,6 +1412,8 @@
   "Gasadalur": {
     "name": "Gasadalur",
     "type": "village",
+    "country": "Denmark",
+    "nationId": 0,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1301,6 +1431,8 @@
   "Torshavn": {
     "name": "Torshavn",
     "type": "village",
+    "country": "Denmark",
+    "nationId": 0,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1318,6 +1450,8 @@
   "Sandvik": {
     "name": "Sandvik",
     "type": "village",
+    "country": "Denmark",
+    "nationId": 0,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1335,6 +1469,8 @@
   "Crabby Beach": {
     "name": "Crabby Beach",
     "type": "village",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1352,6 +1488,8 @@
   "Madrid": {
     "name": "Madrid",
     "type": "city",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -1377,6 +1515,8 @@
   "Granada": {
     "name": "Granada",
     "type": "village",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1394,6 +1534,8 @@
   "Valencia": {
     "name": "Valencia",
     "type": "city",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1414,6 +1556,8 @@
   "Genova": {
     "name": "Genova",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1434,6 +1578,8 @@
   "La Spezia": {
     "name": "La Spezia",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1451,6 +1597,8 @@
   "Pisa": {
     "name": "Pisa",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1471,6 +1619,8 @@
   "Livorno": {
     "name": "Livorno",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1488,6 +1638,8 @@
   "Frosinone": {
     "name": "Frosinone",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -1505,6 +1657,8 @@
   "Napoli": {
     "name": "Napoli",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1525,6 +1679,8 @@
   "Capri": {
     "name": "Capri",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -1542,6 +1698,8 @@
   "Taranto": {
     "name": "Taranto",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -1562,6 +1720,8 @@
   "Catanzaro": {
     "name": "Catanzaro",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1579,6 +1739,8 @@
   "Cosenza": {
     "name": "Cosenza",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1596,6 +1758,8 @@
   "Lecce": {
     "name": "Lecce",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1616,6 +1780,8 @@
   "Ancona": {
     "name": "Ancona",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1636,6 +1802,8 @@
   "San Marino": {
     "name": "San Marino",
     "type": "village",
+    "country": "San Marino",
+    "nationId": 236,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -1653,6 +1821,8 @@
   "Verona": {
     "name": "Verona",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1670,6 +1840,8 @@
   "Venezia": {
     "name": "Venezia",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -1690,6 +1862,8 @@
   "Torino": {
     "name": "Torino",
     "type": "city",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -1710,6 +1884,8 @@
   "Lucca": {
     "name": "Lucca",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1727,6 +1903,8 @@
   "Firenze": {
     "name": "Firenze",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -1744,6 +1922,8 @@
   "L'Aquila": {
     "name": "L'Aquila",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1761,6 +1941,8 @@
   "Latina": {
     "name": "Latina",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1778,6 +1960,8 @@
   "Amalfi": {
     "name": "Amalfi",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -1795,6 +1979,8 @@
   "Sorrento": {
     "name": "Sorrento",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -1812,6 +1998,8 @@
   "Crotone": {
     "name": "Crotone",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -1829,6 +2017,8 @@
   "Catania": {
     "name": "Catania",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1846,6 +2036,8 @@
   "Siracusa": {
     "name": "Siracusa",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1863,6 +2055,8 @@
   "Palermo": {
     "name": "Palermo",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1880,6 +2074,8 @@
   "Marsala": {
     "name": "Marsala",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1897,6 +2093,8 @@
   "Lampedusa": {
     "name": "Lampedusa",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1914,6 +2112,8 @@
   "Agrigento": {
     "name": "Agrigento",
     "type": "village",
+    "country": "Italy - Sicily",
+    "nationId": 166,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -1931,6 +2131,8 @@
   "Cagliari": {
     "name": "Cagliari",
     "type": "city",
+    "country": "Italy - Sardinia",
+    "nationId": 237,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -1951,6 +2153,8 @@
   "Sassari": {
     "name": "Sassari",
     "type": "village",
+    "country": "Italy - Sardinia",
+    "nationId": 237,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -1968,6 +2172,8 @@
   "Tunisi": {
     "name": "Tunisi",
     "type": "city",
+    "country": "Tunisia",
+    "nationId": 0,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -1988,6 +2194,8 @@
   "Biserta": {
     "name": "Biserta",
     "type": "village",
+    "country": "Tunisia",
+    "nationId": 0,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2005,6 +2213,8 @@
   "Tripoli": {
     "name": "Tripoli",
     "type": "village",
+    "country": "Libya",
+    "nationId": 0,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -2022,6 +2232,8 @@
   "Algeri": {
     "name": "Algeri",
     "type": "city",
+    "country": "Algeria",
+    "nationId": 42,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2042,6 +2254,8 @@
   "Atene": {
     "name": "Atene",
     "type": "city",
+    "country": "Greece",
+    "nationId": 20,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2062,6 +2276,8 @@
   "Instanbul": {
     "name": "Istanbul",
     "type": "city",
+    "country": "Turkey",
+    "nationId": 41,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2087,6 +2303,8 @@
   "Corfù": {
     "name": "Corfù",
     "type": "village",
+    "country": "Greece",
+    "nationId": 20,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2104,6 +2322,8 @@
   "Odessa": {
     "name": "Odessa",
     "type": "city",
+    "country": "Ukraine",
+    "nationId": 153,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2124,6 +2344,8 @@
   "Berlin": {
     "name": "Berlin",
     "type": "city",
+    "country": "Germany",
+    "nationId": 109,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2144,6 +2366,8 @@
   "Copenaghen": {
     "name": "Copenaghen",
     "type": "city",
+    "country": "Denmark",
+    "nationId": 0,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2164,6 +2388,8 @@
   "Malmo": {
     "name": "Malmo",
     "type": "city",
+    "country": "Sweden",
+    "nationId": 35,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -2184,6 +2410,8 @@
   "Oslo": {
     "name": "Oslo",
     "type": "city",
+    "country": "Norway",
+    "nationId": 34,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2204,6 +2432,8 @@
   "Paris": {
     "name": "Paris",
     "type": "city",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2224,6 +2454,8 @@
   "Marsiglia": {
     "name": "Marsiglia",
     "type": "village",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2241,6 +2473,8 @@
   "Bordeaux": {
     "name": "Bordeaux",
     "type": "village",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2258,6 +2492,8 @@
   "Brest": {
     "name": "Brest",
     "type": "village",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2275,6 +2511,8 @@
   "Berna": {
     "name": "Berna",
     "type": "city",
+    "country": "Switzerland",
+    "nationId": 63,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2295,6 +2533,8 @@
   "Ginevra": {
     "name": "Ginevra",
     "type": "city",
+    "country": "Switzerland",
+    "nationId": 63,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2315,6 +2555,8 @@
   "Zermatt": {
     "name": "Zermatt",
     "type": "village",
+    "country": "Switzerland",
+    "nationId": 63,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2332,6 +2574,8 @@
   "Lugano": {
     "name": "Lugano",
     "type": "village",
+    "country": "Switzerland",
+    "nationId": 63,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2349,6 +2593,8 @@
   "Liechtenstein": {
     "name": "Liechtenstein",
     "type": "city",
+    "country": "Liechtenstein",
+    "nationId": 0,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2369,6 +2615,8 @@
   "Zurigo": {
     "name": "Zurigo",
     "type": "city",
+    "country": "Switzerland",
+    "nationId": 63,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2389,6 +2637,8 @@
   "Basilea": {
     "name": "Basilea",
     "type": "city",
+    "country": "Switzerland",
+    "nationId": 63,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -2409,6 +2659,8 @@
   "Le Havre": {
     "name": "Le Havre",
     "type": "village",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2426,6 +2678,8 @@
   "Lille": {
     "name": "Lille",
     "type": "village",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -2440,6 +2694,8 @@
   "Orleans": {
     "name": "Orleans",
     "type": "village",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -2457,6 +2713,8 @@
   "Le Mans": {
     "name": "Le Mans",
     "type": "city",
+    "country": "France",
+    "nationId": 102,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -2477,6 +2735,8 @@
   "Saint Helier": {
     "name": "Saint Helier",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2494,6 +2754,8 @@
   "Jersey": {
     "name": "Jersey",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2511,6 +2773,8 @@
   "Guernsey": {
     "name": "Guernsey",
     "type": "village",
+    "country": "UK",
+    "nationId": 38,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -2528,6 +2792,8 @@
   "Palma di Maiorca": {
     "name": "Palma di Maiorca",
     "type": "village",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2546,6 +2812,8 @@
   "Ivissa": {
     "name": "Ivissa",
     "type": "village",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "luxury",
     "mapOffset": {
@@ -2563,6 +2831,8 @@
   "Minorca": {
     "name": "Minorca",
     "type": "village",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -2580,6 +2850,8 @@
   "Barcellona": {
     "name": "Barcellona",
     "type": "city",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2600,6 +2872,8 @@
   "Saragozza": {
     "name": "Saragozza",
     "type": "city",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -2620,6 +2894,8 @@
   "Siviglia": {
     "name": "Siviglia",
     "type": "city",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -2640,6 +2916,8 @@
   "Moonlit Station": {
     "name": "Moonlit Station",
     "type": "gasStation",
+    "country": "Netherlands",
+    "nationId": 8,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -2654,6 +2932,8 @@
   "Abandoned Shack": {
     "name": "Abandoned Shack",
     "type": "dungeon",
+    "country": "UK",
+    "nationId": 38,
     "procedural": false,
     "tag": "rural",
     "mapOffset": {
@@ -2668,6 +2948,8 @@
   "Lisbona": {
     "name": "Lisbona",
     "type": "city",
+    "country": "Portugal",
+    "nationId": 109,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2688,6 +2970,8 @@
   "Porto": {
     "name": "Porto",
     "type": "city",
+    "country": "Portugal",
+    "nationId": 109,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2708,6 +2992,8 @@
   "Santiago di Compostela": {
     "name": "Santiago di Compostela",
     "type": "city",
+    "country": "Spain",
+    "nationId": 69,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -2728,6 +3014,8 @@
   "Pola": {
     "name": "Pola",
     "type": "city",
+    "country": "Croatia",
+    "nationId": 16,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2748,6 +3036,8 @@
   "Zara": {
     "name": "Zara",
     "type": "village",
+    "country": "Croatia",
+    "nationId": 16,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2765,6 +3055,8 @@
   "Sarajevo": {
     "name": "Sarajevo",
     "type": "city",
+    "country": "Bosnia and Herzegovina",
+    "nationId": 0,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -2785,6 +3077,8 @@
   "Belgrado": {
     "name": "Belgrado",
     "type": "city",
+    "country": "Serbia",
+    "nationId": 22,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2805,6 +3099,8 @@
   "Novi Sad": {
     "name": "Novi Sad",
     "type": "village",
+    "country": "Serbia",
+    "nationId": 22,
     "procedural": true,
     "tag": "industrial",
     "mapOffset": {
@@ -2822,6 +3118,8 @@
   "Tirana": {
     "name": "Tirana",
     "type": "village",
+    "country": "Albania",
+    "nationId": 19,
     "procedural": true,
     "tag": "residential",
     "mapOffset": {
@@ -2839,6 +3137,8 @@
   "Sofia": {
     "name": "Sofia",
     "type": "city",
+    "country": "Bulgaria",
+    "nationId": 25,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2859,6 +3159,8 @@
   "Bucarest": {
     "name": "Bucarest",
     "type": "city",
+    "country": "Romania",
+    "nationId": 0,
     "procedural": true,
     "tag": "business",
     "mapOffset": {
@@ -2879,6 +3181,8 @@
   "Costanza": {
     "name": "Costanza",
     "type": "village",
+    "country": "Romania",
+    "nationId": 0,
     "procedural": true,
     "tag": "port",
     "mapOffset": {
@@ -2896,6 +3200,8 @@
   "Roccalonga": {
     "name": "Roccalonga",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "rural",
     "mapOffset": {
@@ -2913,6 +3219,8 @@
   "Rome": {
     "name": "Rome",
     "type": "village",
+    "country": "Italy",
+    "nationId": 78,
     "procedural": true,
     "tag": "business",
     "mapOffset": {

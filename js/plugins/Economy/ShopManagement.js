@@ -727,6 +727,9 @@
   // Helper Functions
   function isItemInCategory(item, category) {
     if (!item) return false;
+    // A <Restricted> row is granted by the one system that owns it, so a
+    // player-run shop can neither stock nor produce it.
+    if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(item)) return false;
     const regex = new RegExp(`<Category:\\s*${category}>`, "i");
     return regex.test(item.note);
   }
@@ -1051,10 +1054,10 @@
       "NPCs/!$Stylist1",
       "NPCs/!$Botanist1",
       "NPCs/!$Jogger1",
-      "NPCs/!$OrcStudent2",
-      "NPCs/!$OrcBartender3",
-      "NPCs/!$OrcMercenary2",
-      "NPCs/!$OrcAdventurer2",
+      "Skab/!$OrcStudent",
+      "Skab/!$OrcBartender",
+      "Skab/!$OrcMercenary",
+      "Skab/!$OrcAdventurer",
     ];
 
     shopData.globalData.currentDelivery = {

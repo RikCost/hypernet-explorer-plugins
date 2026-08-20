@@ -191,7 +191,8 @@
                     name: item.name,
                     sub: T('MainMenu.search.wornBy', {
                         name: actor.name(),
-                        slot: slotNames[slots[slotIdx]] || T('Inventory.spec.label.slotFallback')
+                        slot: (actor.equipSlotName ? actor.equipSlotName(slotIdx) : '') ||
+                              slotNames[slots[slotIdx]] || T('Inventory.spec.label.slotFallback')
                     }),
                     iconIndex: item.iconIndex || 0,
                     category: itemCategoryOf(item),
@@ -615,7 +616,9 @@
         const b = ensureBar();
         // Quietly: the callers below are already about to redraw, and a reset
         // that called back into them would refresh the page twice over.
-        if (b) b.resetQuiet();
+        // Leaving the search behind puts its field away too: the pockets get
+        // the handle back, exactly as they wore it before anything was typed.
+        if (b) { b.resetQuiet(); b.collapseField(); }
         state.pending = null;
         state.selected = 0;
         state.resultsKey = '';
@@ -748,9 +751,15 @@
             }
             return;
         }
-        const slots = actor.equipSlots();
-        const etypeId = DataManager.isWeapon(item) ? 1 : item.etypeId;
-        const slot = slots.indexOf(etypeId);
+        // Hands take weapons and shields alike, so an equip type no longer
+        // names one slot (window.HandSlots).
+        let slot = window.HandSlots ? window.HandSlots.emptySlotFor(actor, item) : -1;
+        if (slot < 0) {
+            const slots = actor.equipSlots();
+            slot = window.HandSlots
+                ? slots.findIndex((e, i) => window.HandSlots.slotFits(actor, i, item) && actor.isEquipChangeOk(i))
+                : slots.indexOf(DataManager.isWeapon(item) ? 1 : item.etypeId);
+        }
         if (slot < 0) { SoundManager.playBuzzer(); return; }
         SoundManager.playEquip();
         actor.changeEquip(slot, item);
@@ -865,6 +874,9 @@
             const b = ensureBar();
             if (!b) return;
             SoundManager.playOk();
+            // The tile IS the handle here: the page it opens arrives with the
+            // field already unfolded, whatever the handle was showing.
+            b.openField();
             state.opened = true;
             state.selected = 0;
             state.pending = null;
@@ -882,6 +894,7 @@
         focus() {
             const b = ensureBar();
             if (!b) return;
+            b.openField();
             state.opened = true;
             state.focusInput = true;
             fullRefresh(true);

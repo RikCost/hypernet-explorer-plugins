@@ -47,6 +47,23 @@
     // Get News Data
     const { News, Translations, RealNews } = window.News || { News: {}, Translations: {}, RealNews: [] };
 
+    // RealNews.json carries i18n keys ("RealNews.real_0.title"), not headlines:
+    // the copy lives in js/i18n/<lang>/plugins/RealNews.json, so an archive
+    // bulletin reads in the player's language. A bulletin added by hand with
+    // plain text in it is shown as written.
+    // What an archive bulletin is remembered by once it has been shown. It used
+    // to be the English headline; the file now carries an id of its own, which
+    // says the same thing in every language.
+    function realNewsId(newsItem) {
+        return (newsItem && (newsItem.id || newsItem.title)) || '';
+    }
+
+    function realNewsText(value) {
+        if (!value) return '';
+        const key = String(value);
+        return (typeof T === 'function' && T.has && T.has(key)) ? T(key) : key;
+    }
+
     // Export translations for other plugins
     window.NewsSystemUtils.Translations = Translations;
 
@@ -272,7 +289,7 @@
 
             const now = getGameDateAsJSDate();
             const todaysNews = RealNews.filter(newsItem => {
-                return this.isDateToday(newsItem.date) && !this.usedRealNewsIds.has(newsItem.title);
+                return this.isDateToday(newsItem.date) && !this.usedRealNewsIds.has(realNewsId(newsItem));
             });
 
             // Filter news that should be shown at current time
@@ -298,7 +315,7 @@
             console.log('NewsManager: Processing daily news...');
 
             const todaysNews = RealNews.filter(newsItem => {
-                return this.isDateToday(newsItem.date) && !this.usedRealNewsIds.has(newsItem.title);
+                return this.isDateToday(newsItem.date) && !this.usedRealNewsIds.has(realNewsId(newsItem));
             });
 
             console.log('NewsManager: Found', todaysNews.length, 'news items for today');
@@ -312,7 +329,7 @@
 
             todaysNews.forEach(newsItem => {
                 this.addRealNewsItem(newsItem, false); // false = not historical
-                this.usedRealNewsIds.add(newsItem.title);
+                this.usedRealNewsIds.add(realNewsId(newsItem));
             });
 
             this.lastDailyNewsCheck = getGameDateAsJSDate();
@@ -327,7 +344,7 @@
 
                 timedNews.forEach(newsItem => {
                     this.addRealNewsItem(newsItem, false); // false = not historical, show notification
-                    this.usedRealNewsIds.add(newsItem.title);
+                    this.usedRealNewsIds.add(realNewsId(newsItem));
                 });
             }
         }
@@ -335,9 +352,8 @@
         // Add a real news item
         // Add a real news item
         addRealNewsItem(newsItem) {
-            const lang = T('NewsSystem.ui.en');
-            const title = lang === 'it' && newsItem.titleIt ? newsItem.titleIt : newsItem.title;
-            const description = lang === 'it' && newsItem.desc_it ? newsItem.desc_it : newsItem.desc;
+            const title = realNewsText(newsItem.title);
+            const description = realNewsText(newsItem.desc);
 
             // Priority order: explicit location key > city key > enhanced location detection
             let location;
@@ -410,13 +426,20 @@
             if (this.newsHistory.length > 100) this.newsHistory.pop();
         }
 
+        // A bulletin interrupts nothing. It used to open a message box the
+        // player had to click through, which on the world map meant a textbox
+        // in the middle of travelling; now the headline slides by as a short
+        // toast and the player keeps walking.
         showNewsNotification(title) {
-            $gameMessage.setBackground(1);
-            $gameMessage.setPositionType(0);
-            window.skipLocalization = true;
-            $gameMessage.add(`\\c[6]===== ${t('breakingNews')} =====\\c[0]`);
-            $gameMessage.add(title);
-            window.skipLocalization = false;
+            const line = String(title || "").trim();
+            if (!line) return;
+            if (!window.ParchmentToast) return;
+            window.ParchmentToast.show(line, {
+                title: t('breakingNews'),
+                severity: "info",
+                duration: 180,
+                key: `news:${line}`
+            });
         }
 
         generateInitialProceduralNews() {
@@ -523,9 +546,8 @@
 
             // Add news items in chronological order
             pastNewsItems.forEach(({ newsItem, timestamp }) => {
-                const lang = T('NewsSystem.ui.en');
-                const title = lang === 'it' && newsItem.titleIt ? newsItem.titleIt : newsItem.title;
-                const description = lang === 'it' && newsItem.desc_it ? newsItem.desc_it : newsItem.desc;
+                const title = realNewsText(newsItem.title);
+                const description = realNewsText(newsItem.desc);
 
                 // Priority order: explicit location key > city key > enhanced location detection
                 let location;
@@ -562,7 +584,7 @@
                 };
 
                 this.newsHistory.push(news);
-                this.usedRealNewsIds.add(newsItem.title);
+                this.usedRealNewsIds.add(realNewsId(newsItem));
                 addedCount++;
 
                 // Apply effects if still within duration (1 week from event date)
@@ -620,15 +642,11 @@
                     return (now - newsTime) < 3600000;
                 });
 
+                // Only the freshest headline of the hour is announced, and as
+                // a toast: a whole hour of the wire read out in a message box
+                // was a wall of text nobody asked for.
                 if (recentNews.length > 0) {
-                    $gameMessage.setBackground(1);
-                    $gameMessage.setPositionType(0);
-                    window.skipLocalization = true;
-                    $gameMessage.add(`\\c[6]===== ${t('breakingNews')} =====\\c[0]`);
-                    recentNews.forEach(news => {
-                        $gameMessage.add(news.text);
-                    });
-                    window.skipLocalization = false;
+                    this.showNewsNotification(recentNews[0].text);
                 }
             }
 
@@ -802,7 +820,7 @@
                 const validNewsIds = new Set();
                 RealNews.forEach(newsItem => {
                     if (this.isDateSinceJanuary1st(newsItem.date)) {
-                        validNewsIds.add(newsItem.title);
+                        validNewsIds.add(realNewsId(newsItem));
                     }
                 });
 
@@ -2620,8 +2638,8 @@
             }
 
             // 3. Try to detect location from title and description
-            const title = newsItem.title || newsItem.titleIt || '';
-            const description = newsItem.desc || newsItem.desc_it || '';
+            const title = realNewsText(newsItem.title);
+            const description = realNewsText(newsItem.desc);
 
             const detectedLocation = this.detectLocationFromText(title, description);
             if (detectedLocation) {

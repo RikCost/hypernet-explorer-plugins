@@ -2177,6 +2177,7 @@
   ],
   "ramanChoices": [
     "Check",
-    "Analyze"
+    "Analyze",
+    "Cancel"
   ]
 }

@@ -1,395 +1,419 @@
 {
-  "scale": {
-    "system": "Sistema",
-    "galaxy": "Galassia",
-    "localGroup": "Gruppo Locale",
-    "supercluster": "Superammasso della Vergine",
-    "filaments": "Ragnatela cosmica",
-    "observable": "Universo osservabile",
-    "universe": "Universo",
-    "unknown": "Sconosciuto",
-    "planet": "Pianeta",
-    "cluster": "Ammasso di galassie",
-    "web": "Ragnatela cosmica",
-    "webNode": "nodo della ragnatela cosmica",
-    "unnamedGalaxy": "Galassia senza nome",
-    "proceduralGalaxy": "galassia procedurale",
-    "starSystem": "Sistema stellare",
-    "milkyWay": "Galassia della Via Lattea",
-    "near": "presso {name}"
-  },
-  "sky": {
-    "european": "Europeo",
-    "chinese": "Cinese",
-    "center": "Centra",
-    "zodiac": "Zodiaco",
-    "hint": "trascina o WASD/frecce per scorrere · rotella o Q/E per lo zoom · OK centra la vista · Tab cambia il cielo · Esc chiude",
-    "hintPad": "LS scorri · LB/RB zoom · A centra la vista · X cambia il cielo · B chiude"
-  },
-  "cluster": {
-    "virgo": "Ammasso della Vergine",
-    "hydra": "Superammasso dell'Idra",
-    "centaurus": "Superammasso del Centauro",
-    "pavoIndus": "Superammasso Pavone-Indiano"
-  },
-  "travel": {
-    "yourDestination": "la tua destinazione",
-    "arrivedAt": "Sei arrivato a {place}",
-    "timeToArrival": "Tempo all'arrivo",
-    "lyRemaining": "restano {ly} al"
-  },
-  "bodyType": {
-    "Dark + emission nebula": "Nebulosa oscura e a emissione",
-    "Dark nebula": "Nebulosa oscura",
-    "Dark nebula (Bok globule)": "Nebulosa oscura (globulo di Bok)",
-    "Dark nebula silhouette": "Sagoma di nebulosa oscura",
-    "Emission + reflection nebula": "Nebulosa a emissione e riflessione",
-    "Emission nebula": "Nebulosa a emissione",
-    "Emission nebula (Pillars of Creation)": "Nebulosa a emissione (Pilastri della Creazione)",
-    "Emission nebula (SNR-like arc)": "Nebulosa a emissione (arco tipo resto di supernova)",
-    "Emission/reflection nebula (H II region)": "Nebulosa a emissione e riflessione (regione H II)",
-    "Planetary nebula": "Nebulosa planetaria",
-    "Reflection nebula": "Nebulosa a riflessione",
-    "Supernova remnant": "Resto di supernova",
-    "barred spiral galaxy": "galassia a spirale barrata",
-    "cosmological horizon": "orizzonte cosmologico",
-    "dwarf irregular galaxy": "galassia nana irregolare",
-    "galaxy cluster": "ammasso di galassie",
-    "galaxy group": "gruppo di galassie",
-    "gravitational anomaly": "anomalia gravitazionale",
-    "higher-dimensional anomaly": "anomalia iperdimensionale",
-    "spiral galaxy": "galassia a spirale",
-    "rich galaxy cluster": "ammasso di galassie ricco",
-    "elliptical galaxy": "galassia ellittica"
-  },
-  "row": {
-    "type": "Tipo",
-    "diameter": "Diametro",
-    "members": "Membri",
-    "stars": "Stelle",
-    "distance": "Distanza",
-    "currentLocation": "posizione attuale",
-    "starType": "Tipo stellare",
-    "starClass": "Classe {type}",
-    "mass": "Massa",
-    "radius": "Raggio",
-    "temperature": "Temperatura",
-    "planets": "Pianeti",
-    "memberOf": "Membro di",
-    "companions": "Compagne",
-    "feedingOn": "Si nutre di",
-    "chartedFor": "Mappata per",
-    "megastructure": "Megastruttura",
-    "dyson": "Sfera di Dyson",
-    "dysonAbandoned": "Sfera di Dyson abbandonata",
-    "orbit": "Orbita",
-    "period": "Periodo",
-    "atmosphere": "Atmosfera",
-    "yes": "Sì",
-    "no": "No",
-    "breathableAir": "Aria respirabile",
-    "life": "Vita",
-    "detected": "Rilevata",
-    "moons": "Lune",
-    "oreBody": "Giacimento",
-    "units": "{remaining} / {capacity} unità",
-    "condition": "Condizione",
-    "weakSigns": "Tracce deboli"
-  },
-  "nibiru": {
-    "impactRow": "Impatto con la Terra",
-    "countdownYears": "{years} a {days} g {hh}:{mm}",
-    "countdownDays": "{days} g {hh}:{mm}",
-    "countdownNow": "da un momento all'altro",
-    "noteFar": "Un mondo senza sole, che cade dal buio su una rotta che nessuno ha tracciato e nessuno può piegare. Le effemeridi lo mettono sopra la Terra il ventuno dicembre 2012.",
-    "noteNear": "Ormai dentro il sistema, e non rallenta più. Tiene esattamente l'angolo della Terra, che è un altro modo di dire che non la mancherà.",
-    "saturnNote": "Nibiru è finito dentro il gigante, e il gigante ha preso fuoco. Saturno adesso brucia: troppo poco per essere una stella, troppo per essere ancora un pianeta. Gli anelli sono andati per primi.",
-    "towerNote": "Dove stava la Terra c'è una lancia nera alta dodici chilometri, oro su ogni spigolo, che gira nell'orbita lasciata dal suo mondo. Niente a bordo risponde, e una porta è aperta.",
-    "towerLanding": "Guglia della Torre Omega",
-    "entered": "Nibiru è entrato nel Sistema Solare.",
-    "hitSaturn": "Nibiru ha colpito Saturno. Il gigante sta bruciando.",
-    "hitEarth": "Nibiru ha colpito la Terra. Non c'è più nessuna delle due."
-  },
+ "scale": {
+  "system": "Sistema",
+  "galaxy": "Galassia",
+  "localGroup": "Gruppo Locale",
+  "supercluster": "Superammasso della Vergine",
+  "filaments": "Ragnatela cosmica",
+  "observable": "Universo osservabile",
+  "universe": "Universo",
+  "unknown": "Sconosciuto",
+  "planet": "Pianeta",
+  "cluster": "Ammasso di galassie",
+  "web": "Ragnatela cosmica",
+  "webNode": "nodo della ragnatela cosmica",
   "unnamedGalaxy": "Galassia senza nome",
-  "unit": {
-    "mly": "{n} Mal",
-    "thousandLy": "{n}.000 al",
-    "billionStars": "~{n} miliardi",
-    "galaxies": "~{n} galassie"
+  "proceduralGalaxy": "galassia procedurale",
+  "starSystem": "Sistema stellare",
+  "milkyWay": "Galassia della Via Lattea",
+  "near": "presso {name}"
+ },
+ "sky": {
+  "european": "Europeo",
+  "chinese": "Cinese",
+  "center": "Centra",
+  "zodiac": "Zodiaco",
+  "hint": "trascina o WASD/frecce per scorrere · rotella o Q/E per lo zoom · OK centra la vista · Tab cambia il cielo · Esc chiude",
+  "hintPad": "LS scorri · LB/RB zoom · A centra la vista · X cambia il cielo · B chiude"
+ },
+ "cluster": {
+  "virgo": "Ammasso della Vergine",
+  "hydra": "Superammasso dell'Idra",
+  "centaurus": "Superammasso del Centauro",
+  "pavoIndus": "Superammasso Pavone-Indiano"
+ },
+ "travel": {
+  "yourDestination": "la tua destinazione",
+  "arrivedAt": "Sei arrivato a {place}",
+  "timeToArrival": "Tempo all'arrivo",
+  "lyRemaining": "restano {ly} al"
+ },
+ "bodyType": {
+  "Dark + emission nebula": "Nebulosa oscura e a emissione",
+  "Dark nebula": "Nebulosa oscura",
+  "Dark nebula (Bok globule)": "Nebulosa oscura (globulo di Bok)",
+  "Dark nebula silhouette": "Sagoma di nebulosa oscura",
+  "Emission + reflection nebula": "Nebulosa a emissione e riflessione",
+  "Emission nebula": "Nebulosa a emissione",
+  "Emission nebula (Pillars of Creation)": "Nebulosa a emissione (Pilastri della Creazione)",
+  "Emission nebula (SNR-like arc)": "Nebulosa a emissione (arco tipo resto di supernova)",
+  "Emission/reflection nebula (H II region)": "Nebulosa a emissione e riflessione (regione H II)",
+  "Planetary nebula": "Nebulosa planetaria",
+  "Reflection nebula": "Nebulosa a riflessione",
+  "Supernova remnant": "Resto di supernova",
+  "barred spiral galaxy": "galassia a spirale barrata",
+  "cosmological horizon": "orizzonte cosmologico",
+  "dwarf irregular galaxy": "galassia nana irregolare",
+  "galaxy cluster": "ammasso di galassie",
+  "galaxy group": "gruppo di galassie",
+  "gravitational anomaly": "anomalia gravitazionale",
+  "higher-dimensional anomaly": "anomalia iperdimensionale",
+  "spiral galaxy": "galassia a spirale",
+  "rich galaxy cluster": "ammasso di galassie ricco",
+  "elliptical galaxy": "galassia ellittica"
+ },
+ "row": {
+  "type": "Tipo",
+  "diameter": "Diametro",
+  "members": "Membri",
+  "stars": "Stelle",
+  "distance": "Distanza",
+  "currentLocation": "posizione attuale",
+  "starType": "Tipo stellare",
+  "starClass": "Classe {type}",
+  "mass": "Massa",
+  "radius": "Raggio",
+  "temperature": "Temperatura",
+  "planets": "Pianeti",
+  "memberOf": "Membro di",
+  "companions": "Compagne",
+  "feedingOn": "Si nutre di",
+  "chartedFor": "Mappata per",
+  "megastructure": "Megastruttura",
+  "dyson": "Sfera di Dyson",
+  "dysonAbandoned": "Sfera di Dyson abbandonata",
+  "orbit": "Orbita",
+  "period": "Periodo",
+  "atmosphere": "Atmosfera",
+  "yes": "Sì",
+  "no": "No",
+  "breathableAir": "Aria respirabile",
+  "life": "Vita",
+  "detected": "Rilevata",
+  "moons": "Lune",
+  "oreBody": "Giacimento",
+  "units": "{remaining} / {capacity} unità",
+  "condition": "Condizione",
+  "weakSigns": "Tracce deboli"
+ },
+ "nibiru": {
+  "impactRow": "Impatto con la Terra",
+  "countdownYears": "{years} a {days} g {hh}:{mm}",
+  "countdownDays": "{days} g {hh}:{mm}",
+  "countdownNow": "da un momento all'altro",
+  "noteFar": "Un mondo senza sole, che cade dal buio su una rotta che nessuno ha tracciato e nessuno può piegare. Le effemeridi lo mettono sopra la Terra il ventuno dicembre 2012.",
+  "noteNear": "Ormai dentro il sistema, e non rallenta più. Tiene esattamente l'angolo della Terra, che è un altro modo di dire che non la mancherà.",
+  "saturnNote": "Nibiru è finito dentro il gigante, e il gigante ha preso fuoco. Saturno adesso brucia: troppo poco per essere una stella, troppo per essere ancora un pianeta. Gli anelli sono andati per primi.",
+  "towerNote": "Dove stava la Terra c'è una lancia nera alta dodici chilometri, oro su ogni spigolo, che gira nell'orbita lasciata dal suo mondo. Niente a bordo risponde, e una porta è aperta.",
+  "towerLanding": "Guglia della Torre Omega",
+  "entered": "Nibiru è entrato nel Sistema Solare.",
+  "hitSaturn": "Nibiru ha colpito Saturno. Il gigante sta bruciando.",
+  "hitEarth": "Nibiru ha colpito la Terra. Non c'è più nessuna delle due."
+ },
+ "unnamedGalaxy": "Galassia senza nome",
+ "unit": {
+  "mly": "{n} Mal",
+  "thousandLy": "{n}.000 al",
+  "billionStars": "~{n} miliardi",
+  "galaxies": "~{n} galassie"
+ },
+ "hud": {
+  "centreTheViewOnYour": "Centra la vista sulla tua nave, ovunque si trovi",
+  "sweepEverySystemWithin500": "Analizza ogni sistema entro 500 al in cerca di vita",
+  "quantumBridgeToTheSelected": "Ponte quantistico verso il sistema selezionato (costa 1 Schrödingerite)",
+  "plotACourseHomeMilky": "Traccia una rotta verso casa (solo Via Lattea, se non sei già in orbita attorno alla Terra)",
+  "quantumBridgeStraightHomeCosts": "Ponte quantistico diretto a casa (costa 1 Schrödingerite)",
+  "plotACourseToThis": "Traccia una rotta verso questo sistema",
+  "quantumBridgeStraightIntoOrbit": "Ponte quantistico diretto in orbita (costa 1 Schrödingerite)",
+  "cutTheBodyApartWith": "Taglia il corpo celeste con i laser della nave (consuma Hyperflux)",
+  "openTheServicingBay": "Apri la baia di manutenzione",
+  "zoomTo": "Ingrandisci su",
+  "starSystem": "Sistema stellare",
+  "catalog": "Catalogo",
+  "home": "Casa",
+  "returnToEarth": "Torna sulla Terra",
+  "ebBridge": "Ponte EB",
+  "closeMap": "Chiudi Mappa",
+  "closeMapTooltip": "Chiudi la mappa stellare",
+  "engines": "Motori",
+  "warpSpeed": "Velocità di curvatura",
+  "hyperfluxBurn": "Consumo di Hyperflux",
+  "eta": "Tempo all'arrivo",
+  "stop": "Ferma",
+  "fuel": "Carburante",
+  "hyperfluxReserve": "Riserva di Hyperflux",
+  "hyperflux": "Hyperflux",
+  "schrD": "Schröd.",
+  "mapFuel": "Carburante mappa",
+  "refuel": "Rifornisci",
+  "orbit": "Orbita",
+  "chooseLandingSite": "Scegli il sito di atterraggio",
+  "cancel": "Annulla",
+  "servicingBay": "Baia di manutenzione",
+  "stripMining": "Estrazione a cielo aperto",
+  "cutLasers": "Spegni i laser",
+  "zoom": "Ingrandisci",
+  "enterSystem": "Entra nel sistema",
+  "travelHere": "Viaggia qui",
+  "currentLocation": "Posizione attuale",
+  "parkedInOrbit": "In orbita di parcheggio",
+  "openSchrDingerBohrBridge": "Apri il Ponte di Schrödinger-Bohr",
+  "flyHere": "Vola qui",
+  "landHere": "Atterra qui",
+  "stripMine": "Estrai",
+  "serviceTelescope": "Ripara il telescopio",
+  "serviced": "Riparato",
+  "repair": "Ripara",
+  "close": "Chiudi",
+  "ship": "Nave",
+  "scanForBiosignatures": "Cerca biofirme",
+  "grandTour": "Gran Tour",
+  "grandTourTooltip": "Un volo panoramico e senza comandi tra tutti i corpi di questo sistema",
+  "sbBridge": "Ponte SB",
+  "setCourse": "Imposta la rotta",
+  "parkInOrbit": "Parcheggia in orbita",
+  "stopRefuel": "Interrompi il rifornimento",
+  "harvestSchrDingerite": "Raccogli Schrödingerite",
+  "serviceEverythingAffordable": "Ripara tutto il possibile",
+  "refuelTooltip": "Rifornisci qui, oppure traccia una rotta verso la stella più vicina che possa rifornire la nave",
+  "orbitHint": "trascina per ruotare · rotellina per lo zoom · clic per selezionare · Esc per uscire",
+  "nothingCatalogued": "Nessuna voce nel catalogo.",
+  "rechargesIn": "Si ricarica tra",
+  "nominal": "Nominale",
+  "mineProgress": "{mined} / {capacity} unità · ~{eta}s all'esaurimento",
+  "critical": "CRITICO",
+  "bookmarkAdd": "Aggiungi ai segnalibri",
+  "bookmarkRemove": "Rimuovi dai segnalibri",
+  "bookmarked": "Nei segnalibri",
+  "bookmark": "Segnalibro"
+ },
+ "hubblePart": {
+  "DF-224 Computer": {
+   "label": "Computer DF-224",
+   "note": "Il calcolatore di bordo. 48 kilobyte, tre processori ridondanti, ne resta uno."
   },
-  "hud": {
-    "centreTheViewOnYour": "Centra la vista sulla tua nave, ovunque si trovi",
-    "sweepEverySystemWithin500": "Analizza ogni sistema entro 500 al in cerca di vita",
-    "quantumBridgeToTheSelected": "Ponte quantistico verso il sistema selezionato (costa 1 Schrödingerite)",
-    "plotACourseHomeMilky": "Traccia una rotta verso casa (solo Via Lattea, se non sei già in orbita attorno alla Terra)",
-    "quantumBridgeStraightHomeCosts": "Ponte quantistico diretto a casa (costa 1 Schrödingerite)",
-    "plotACourseToThis": "Traccia una rotta verso questo sistema",
-    "quantumBridgeStraightIntoOrbit": "Ponte quantistico diretto in orbita (costa 1 Schrödingerite)",
-    "cutTheBodyApartWith": "Taglia il corpo celeste con i laser della nave (consuma Hyperflux)",
-    "openTheServicingBay": "Apri la baia di manutenzione",
-    "zoomTo": "Ingrandisci su",
-    "starSystem": "Sistema stellare",
-    "catalog": "Catalogo",
-    "home": "Casa",
-    "returnToEarth": "Torna sulla Terra",
-    "ebBridge": "Ponte EB",
-    "closeMap": "Chiudi Mappa",
-    "closeMapTooltip": "Chiudi la mappa stellare",
-    "engines": "Motori",
-    "warpSpeed": "Velocità di curvatura",
-    "hyperfluxBurn": "Consumo di Hyperflux",
-    "eta": "Tempo all'arrivo",
-    "stop": "Ferma",
-    "fuel": "Carburante",
-    "hyperfluxReserve": "Riserva di Hyperflux",
-    "hyperflux": "Hyperflux",
-    "schrD": "Schröd.",
-    "mapFuel": "Carburante mappa",
-    "refuel": "Rifornisci",
-    "orbit": "Orbita",
-    "chooseLandingSite": "Scegli il sito di atterraggio",
-    "cancel": "Annulla",
-    "servicingBay": "Baia di manutenzione",
-    "stripMining": "Estrazione a cielo aperto",
-    "cutLasers": "Spegni i laser",
-    "zoom": "Ingrandisci",
-    "enterSystem": "Entra nel sistema",
-    "travelHere": "Viaggia qui",
-    "currentLocation": "Posizione attuale",
-    "parkedInOrbit": "In orbita di parcheggio",
-    "openSchrDingerBohrBridge": "Apri il Ponte di Schrödinger-Bohr",
-    "flyHere": "Vola qui",
-    "landHere": "Atterra qui",
-    "stripMine": "Estrai",
-    "serviceTelescope": "Ripara il telescopio",
-    "serviced": "Riparato",
-    "repair": "Ripara",
-    "close": "Chiudi",
-    "ship": "Nave",
-    "scanForBiosignatures": "Cerca biofirme",
-    "sbBridge": "Ponte SB",
-    "setCourse": "Imposta la rotta",
-    "parkInOrbit": "Parcheggia in orbita",
-    "stopRefuel": "Interrompi il rifornimento",
-    "harvestSchrDingerite": "Raccogli Schrödingerite",
-    "serviceEverythingAffordable": "Ripara tutto il possibile",
-    "refuelTooltip": "Rifornisci qui, oppure traccia una rotta verso la stella più vicina che possa rifornire la nave",
-    "orbitHint": "trascina per ruotare · rotellina per lo zoom · clic per selezionare · Esc per uscire",
-    "nothingCatalogued": "Nessuna voce nel catalogo.",
-    "rechargesIn": "Si ricarica tra",
-    "nominal": "Nominale",
-    "mineProgress": "{mined} / {capacity} unità · ~{eta}s all'esaurimento",
-    "critical": "CRITICO",
-    "bookmarkAdd": "Aggiungi ai segnalibri",
-    "bookmarkRemove": "Rimuovi dai segnalibri",
-    "bookmarked": "Nei segnalibri",
-    "bookmark": "Segnalibro"
+  "Thermal Blanket": {
+   "label": "Coperta termica",
+   "note": "Isolamento multistrato, crepato e scrostato dopo un decennio di sole diretto."
   },
-  "hubblePart": {
-    "DF-224 Computer": {
-      "label": "Computer DF-224",
-      "note": "Il calcolatore di bordo. 48 kilobyte, tre processori ridondanti, ne resta uno."
-    },
-    "Thermal Blanket": {
-      "label": "Coperta termica",
-      "note": "Isolamento multistrato, crepato e scrostato dopo un decennio di sole diretto."
-    },
-    "Aperture Door": {
-      "label": "Portello di apertura",
-      "note": "Si chiude se il Sole arriva entro 20 gradi dall'asse. Si è già inceppato."
-    },
-    "High-Gain Antenna": {
-      "label": "Antenna ad alto guadagno",
-      "note": "Il collegamento a terra. Tutto ciò che il telescopio ha visto è passato di qui."
-    },
-    "Battery Bank": {
-      "label": "Banco batterie",
-      "note": "Sei batterie al nichel-idrogeno che reggono il lato notturno di ogni orbita."
-    },
-    "Solar Array (Starboard)": {
-      "label": "Pannello solare (destra)",
-      "note": "Il suo gemello. Stesso difetto, lato opposto."
-    },
-    "Solar Array (Port)": {
-      "label": "Pannello solare (sinistra)",
-      "note": "Venticinque metri quadri di celle. Si deforma a ogni passaggio sul terminatore."
-    },
-    "Reaction Wheels": {
-      "label": "Ruote di reazione",
-      "note": "Quattro ruote che girano l'intero osservatorio girando su se stesse."
-    },
-    "Gyroscope Assembly": {
-      "label": "Gruppo giroscopico",
-      "note": "Sei giroscopi di velocità, tre servono per puntare. Si guastano a scadenza fissa."
-    },
-    "Fine Guidance Sensor": {
-      "label": "Sensore di guida fine",
-      "note": "Si aggancia alle stelle guida. Senza, il telescopio non riesce a stare fermo."
-    },
-    "NICMOS Cooler": {
-      "label": "Refrigeratore NICMOS",
-      "note": "Tiene i rivelatori infrarossi a 60 K. L'azoto solido è finito."
-    },
-    "STIS Spectrograph": {
-      "label": "Spettrografo STIS",
-      "note": "Scompone la luce stellare nelle sue righe. L'alimentazione è al limite."
-    },
-    "WFPC2 Camera": {
-      "label": "Camera WFPC2",
-      "note": "Camera a grande campo e planetaria. Quella che scatta le fotografie."
-    },
-    "Corrective Optics (COSTAR)": {
-      "label": "Ottica correttiva (COSTAR)",
-      "note": "Gli occhiali montati nel 1993 per rimediare all'errore dello specchio."
-    },
-    "Secondary Mirror": {
-      "label": "Specchio secondario",
-      "note": "Tiene il fuoco. Vaiolature da micrometeoroidi su tutto il rivestimento."
-    },
-    "Primary Mirror": {
-      "label": "Specchio primario",
-      "note": "2,4 m, levigato secondo la curvatura sbagliata nel 1981. Aberrazione sferica."
-    }
+  "Aperture Door": {
+   "label": "Portello di apertura",
+   "note": "Si chiude se il Sole arriva entro 20 gradi dall'asse. Si è già inceppato."
   },
-  "hubbleQuest": {
-    "title": "Revisione del Telescopio Spaziale Hubble",
-    "giver": "Registro di manutenzione dell'astronave",
-    "body": "Il vecchio osservatorio è ancora lassù, tiene la sua orbita a un'unità astronomica e non punta più niente. Metà dei suoi gruppi è morta, gli altri lavorano al limite, e il collegamento a terra tace da anni. Accosta la nave, apri la baia di manutenzione e rimetti al lavoro il telescopio un gruppo alla volta.",
-    "objectives": "Ripristina ogni gruppo del Telescopio Spaziale Hubble dalla baia di manutenzione della nave.",
-    "terms": [
-      "La baia si apre solo mentre la nave mantiene la posizione nell'orbita del telescopio, nel sistema di Sol.",
-      "Ogni riparazione si paga in materiali da lavorazione, e un guasto più grave costa di più.",
-      "Qui non c'è nessun tempo limite: un telescopio riparato a metà resta riparato a metà."
-    ],
-    "reward": "Imaging deep field: portata doppia per la scansione di biofirme",
-    "log": {
-      "opened": "Ordine permanente affisso a bordo: il telescopio sull'orbita a 1 UA è un relitto, e tocca a noi rimetterlo a posto.",
-      "serviced": "{name} ripristinato. Ora {done} gruppi su {total} rientrano nei limiti di servizio.",
-      "servicedMany": "{count} gruppi ripristinati. Ora {done} su {total} rientrano nei limiti di servizio.",
-      "complete": "Ogni gruppo rientra nei suoi limiti. Il portello di apertura è aperto, il collegamento a terra è vivo e la survey in campo profondo è in funzione: la scansione di biofirme arriva ora due volte più lontano."
-    }
+  "High-Gain Antenna": {
+   "label": "Antenna ad alto guadagno",
+   "note": "Il collegamento a terra. Tutto ciò che il telescopio ha visto è passato di qui."
   },
-  "core": {
-    "noSpaceports": "Nessuno spazioporto su questo pianeta",
-    "cancel": "Annulla",
-    "theStar": "la stella",
-    "refuellingFrom": "Rifornimento da {star}.",
-    "distanceLy": " ({ly} al)",
-    "coursePlotted": "Rotta tracciata verso {star}{distance}. Rifornimento all'arrivo.",
-    "mayRunOut": "L'iperflusso potrebbe esaurirsi prima dell'arrivo.",
-    "alreadyRefuelling": "Rifornimento da {star} già in corso.",
-    "tankFull": "Il serbatoio di iperflusso è già pieno.",
-    "noStarInRange": "Nessuna stella in grado di rifornire la nave a portata."
+  "Battery Bank": {
+   "label": "Banco batterie",
+   "note": "Sei batterie al nichel-idrogeno che reggono il lato notturno di ogni orbita."
   },
-  "hint": {
-    "cockpit": "<b>Abitacolo</b> &nbsp;·&nbsp; WASD spinta · Spazio/C su·giù · Shift turbo · mouse per guardare · F orbita · Esc esci",
-    "planet": "clicca la stella o allontana lo zoom per uscire",
-    "system": "clicca un pianeta per avvicinarti · cliccalo di nuovo per stringere",
-    "galaxy": "clicca una stella per puntarla · cliccala di nuovo per avvicinarti",
-    "galaxyFocus": "allontana lo zoom per uscire",
-    "cluster": "clicca una galassia per puntarla · cliccala di nuovo per entrarci",
-    "web": "clicca un nodo qualsiasi · cliccalo di nuovo per entrare nel suo ammasso",
-    "outer": "clicca una galassia per puntarla · cliccala di nuovo per entrarci",
-    "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; trascina per ruotare · rotella per lo zoom · Tab per scegliere · {tail} · Spazio per puntare · F abitacolo · Esc esci"
+  "Solar Array (Starboard)": {
+   "label": "Pannello solare (destra)",
+   "note": "Il suo gemello. Stesso difetto, lato opposto."
   },
-  "hintPad": {
-    "cockpit": "<b>Abitacolo</b> &nbsp;·&nbsp; [LS] spinta · [RS] guarda · [RT]/[LT] sali·scendi · [X] turbo · [B] esci",
-    "planet": "[B] o allontana lo zoom per uscire",
-    "system": "[LB]/[RB] scegli un corpo · avvicina lo zoom per raggiungerlo",
-    "galaxy": "[LB]/[RB] scegli una stella · avvicina lo zoom per entrarci",
-    "galaxyFocus": "allontana lo zoom per uscire",
-    "cluster": "[LB]/[RB] scegli una galassia · avvicina lo zoom per entrarci",
-    "web": "[LB]/[RB] scegli un nodo · avvicina lo zoom per entrare nel suo ammasso",
-    "outer": "[LB]/[RB] scegli una galassia · avvicina lo zoom per entrarci",
-    "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; [RS] ruota · [LT]/[RT] zoom · {tail} · [A] punta · [Y] catalogo · [X] abitacolo · [B] esci"
+  "Solar Array (Port)": {
+   "label": "Pannello solare (sinistra)",
+   "note": "Venticinque metri quadri di celle. Si deforma a ogni passaggio sul terminatore."
   },
-  "service": {
-    "hubbleName": "Telescopio Spaziale Hubble",
-    "bayTitle": "Baia di manutenzione · {name}",
-    "footer": "Un telescopio in perfetta efficienza raddoppia la portata della scansione di biofirme.",
-    "operational": "OPERATIVO · imaging deep field in linea",
-    "belowLimit": {
-      "one": "{count} gruppo sotto il limite di servizio",
-      "other": "{count} gruppi sotto il limite di servizio"
-    },
-    "condition": "Condizione generale {pct}% · {state}",
-    "partRestored": "{name} ripristinato.",
-    "notEnoughMaterials": "Materiali insufficienti per quel gruppo.",
-    "serviced": {
-      "one": "Riparato {count} gruppo.",
-      "other": "Riparati {count} gruppi."
-    },
-    "nothingSpared": "Non c'è nulla a bordo da destinare a una riparazione."
+  "Reaction Wheels": {
+   "label": "Ruote di reazione",
+   "note": "Quattro ruote che girano l'intero osservatorio girando su se stesse."
   },
-  "mining": {
-    "lasersCut": "Laser spenti.",
-    "nothingLeft": "In quel corpo non resta nulla da estrarre.",
-    "lasersHot": "Laser accesi. Taglio in corso.",
-    "leftBody": "Corpo abbandonato; laser freddi.",
-    "fuelOut": "Iperflusso esaurito; laser freddi.",
-    "bodyStripped": "Corpo esaurito.",
-    "strippedToBedrock": "{name} spogliato fino alla roccia madre."
+  "Gyroscope Assembly": {
+   "label": "Gruppo giroscopico",
+   "note": "Sei giroscopi di velocità, tre servono per puntare. Si guastano a scadenza fissa."
   },
-  "catalog": {
-    "starSub": "classe {type} · {planets} pianeti",
-    "star": "classe {type} · stella",
-    "companion": "classe {type} · compagna",
-    "donor": "classe {type} · donatrice",
-    "life": " · vita",
-    "moonOf": "{type} · luna di {planet}",
-    "weakLife": " · tracce deboli"
+  "Fine Guidance Sensor": {
+   "label": "Sensore di guida fine",
+   "note": "Si aggancia alle stelle guida. Senza, il telescopio non riesce a stare fermo."
   },
-  "tab": {
-    "current": "Sistema attuale",
-    "currentEmpty": "Nulla di catalogato in questo sistema.",
-    "systemBodies": "Corpi di {name}",
-    "objects": "Oggetti",
-    "objectsEmpty": "Nulla di catalogato.",
-    "galaxies": "Galassie",
-    "clusters": "Ammassi e strutture",
-    "anomalies": "Anomalie pluridimensionali",
-    "nebulae": "Nebulose",
-    "starSystems": "Sistemi stellari",
-    "farSystems": "Sistemi in altre galassie",
-    "bookmarks": "Segnalibri",
-    "bookmarksEmpty": "Nessun segnalibro: usa il pulsante Segnalibro su una selezione qualsiasi.",
-    "bookmarkedBodies": "Corpi nei segnalibri",
-    "biosignatures": "Biofirme",
-    "biosignaturesEmpty": "Nessuna biofirma registrata. Esegui una scansione.",
-    "lifeBearing": "Mondi che ospitano vita",
-    "spaceports": "Spazioporti",
-    "spaceportsEmpty": "Nessuno spazioporto catalogato.",
-    "landingSites": "Siti di atterraggio",
-    "patrons": "Mecenati",
-    "patronsEmpty": "Nessun mondo di mecenati in archivio.",
-    "patronWorlds": "Mondi dei mecenati",
-    "weakSignatures": "Tracce deboli"
+  "NICMOS Cooler": {
+   "label": "Refrigeratore NICMOS",
+   "note": "Tiene i rivelatori infrarossi a 60 K. L'azoto solido è finito."
   },
-  "scan": {
-    "worldsFound": {
-      "one": "<b>Scansione biofirme</b> &nbsp;·&nbsp; {count} mondo con vita entro {radius} al",
-      "other": "<b>Scansione biofirme</b> &nbsp;·&nbsp; {count} mondi con vita entro {radius} al"
-    },
-    "hubbleOnline": " (Hubble in linea)",
-    "newCount": " · {count} nuovi",
-    "loggedInCatalog": " · registrati nel Catalogo",
-    "weakCount": {
-      "one": " · {count} lettura debole",
-      "other": " · {count} letture deboli"
-    }
+  "STIS Spectrograph": {
+   "label": "Spettrografo STIS",
+   "note": "Scompone la luce stellare nelle sue righe. L'alimentazione è al limite."
   },
-  "refuel": {
-    "refuel": "Rifornisci",
-    "stop": "Interrompi",
-    "refuelling": "Rifornimento",
-    "onArrival": "Rifornimento all'arrivo",
-    "courseSet": "Rotta impostata: {target}",
-    "drawingFrom": "Prelievo da {star}",
-    "tankFull": "Serbatoio pieno",
-    "docked": "Attraccati a una stella in fusione",
-    "inSystem": "Stella di rifornimento in questo sistema",
-    "nearest": "Stella di rifornimento più vicina",
-    "mayBeOutOfRange": "La stella più vicina potrebbe essere fuori portata",
-    "noneInRange": "Nessuna stella in fusione a portata"
+  "WFPC2 Camera": {
+   "label": "Camera WFPC2",
+   "note": "Camera a grande campo e planetaria. Quella che scatta le fotografie."
+  },
+  "Corrective Optics (COSTAR)": {
+   "label": "Ottica correttiva (COSTAR)",
+   "note": "Gli occhiali montati nel 1993 per rimediare all'errore dello specchio."
+  },
+  "Secondary Mirror": {
+   "label": "Specchio secondario",
+   "note": "Tiene il fuoco. Vaiolature da micrometeoroidi su tutto il rivestimento."
+  },
+  "Primary Mirror": {
+   "label": "Specchio primario",
+   "note": "2,4 m, levigato secondo la curvatura sbagliata nel 1981. Aberrazione sferica."
   }
+ },
+ "hubbleQuest": {
+  "title": "Revisione del Telescopio Spaziale Hubble",
+  "giver": "Registro di manutenzione dell'astronave",
+  "body": "Il vecchio osservatorio è ancora lassù, tiene la sua orbita a un'unità astronomica e non punta più niente. Metà dei suoi gruppi è morta, gli altri lavorano al limite, e il collegamento a terra tace da anni. Accosta la nave, apri la baia di manutenzione e rimetti al lavoro il telescopio un gruppo alla volta.",
+  "objectives": "Ripristina ogni gruppo del Telescopio Spaziale Hubble dalla baia di manutenzione della nave.",
+  "terms": [
+   "La baia si apre solo mentre la nave mantiene la posizione nell'orbita del telescopio, nel sistema di Sol.",
+   "Ogni riparazione si paga in materiali da lavorazione, e un guasto più grave costa di più.",
+   "Qui non c'è nessun tempo limite: un telescopio riparato a metà resta riparato a metà."
+  ],
+  "reward": "Imaging deep field: portata doppia per la scansione di biofirme",
+  "log": {
+   "opened": "Ordine permanente affisso a bordo: il telescopio sull'orbita a 1 UA è un relitto, e tocca a noi rimetterlo a posto.",
+   "serviced": "{name} ripristinato. Ora {done} gruppi su {total} rientrano nei limiti di servizio.",
+   "servicedMany": "{count} gruppi ripristinati. Ora {done} su {total} rientrano nei limiti di servizio.",
+   "complete": "Ogni gruppo rientra nei suoi limiti. Il portello di apertura è aperto, il collegamento a terra è vivo e la survey in campo profondo è in funzione: la scansione di biofirme arriva ora due volte più lontano."
+  }
+ },
+ "core": {
+  "noSpaceports": "Nessuno spazioporto su questo pianeta",
+  "cancel": "Annulla",
+  "theStar": "la stella",
+  "refuellingFrom": "Rifornimento da {star}.",
+  "distanceLy": " ({ly} al)",
+  "coursePlotted": "Rotta tracciata verso {star}{distance}. Rifornimento all'arrivo.",
+  "mayRunOut": "L'iperflusso potrebbe esaurirsi prima dell'arrivo.",
+  "alreadyRefuelling": "Rifornimento da {star} già in corso.",
+  "tankFull": "Il serbatoio di iperflusso è già pieno.",
+  "noStarInRange": "Nessuna stella in grado di rifornire la nave a portata."
+ },
+ "hint": {
+  "grandTour": "<b>Gran Tour</b> &nbsp;·&nbsp; Esc esci",
+  "cockpit": "<b>Abitacolo</b> &nbsp;·&nbsp; WASD spinta · Spazio/C su·giù · Shift turbo · mouse per guardare · F orbita · Esc esci",
+  "planet": "clicca la stella o allontana lo zoom per uscire",
+  "system": "clicca un pianeta per avvicinarti · cliccalo di nuovo per stringere",
+  "galaxy": "clicca una stella per puntarla · cliccala di nuovo per avvicinarti",
+  "galaxyFocus": "allontana lo zoom per uscire",
+  "cluster": "clicca una galassia per puntarla · cliccala di nuovo per entrarci",
+  "web": "clicca un nodo qualsiasi · cliccalo di nuovo per entrare nel suo ammasso",
+  "outer": "clicca una galassia per puntarla · cliccala di nuovo per entrarci",
+  "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; trascina per ruotare · rotella per lo zoom · Tab per scegliere · {tail} · Spazio per puntare · F abitacolo · Esc esci"
+ },
+ "hintPad": {
+  "grandTour": "<b>Gran Tour</b> &nbsp;·&nbsp; [B] esci",
+  "cockpit": "<b>Abitacolo</b> &nbsp;·&nbsp; [LS] spinta · [RS] guarda · [RT]/[LT] sali·scendi · [X] turbo · [B] esci",
+  "planet": "[B] o allontana lo zoom per uscire",
+  "system": "[LB]/[RB] scegli un corpo · avvicina lo zoom per raggiungerlo",
+  "galaxy": "[LB]/[RB] scegli una stella · avvicina lo zoom per entrarci",
+  "galaxyFocus": "allontana lo zoom per uscire",
+  "cluster": "[LB]/[RB] scegli una galassia · avvicina lo zoom per entrarci",
+  "web": "[LB]/[RB] scegli un nodo · avvicina lo zoom per entrare nel suo ammasso",
+  "outer": "[LB]/[RB] scegli una galassia · avvicina lo zoom per entrarci",
+  "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; [RS] ruota · [LT]/[RT] zoom · {tail} · [A] punta · [Y] catalogo · [L3] barra strumenti · [X] abitacolo · [B] esci"
+ },
+ "service": {
+  "hubbleName": "Telescopio Spaziale Hubble",
+  "bayTitle": "Baia di manutenzione · {name}",
+  "footer": "Un telescopio in perfetta efficienza raddoppia la portata della scansione di biofirme.",
+  "operational": "OPERATIVO · imaging deep field in linea",
+  "belowLimit": {
+   "one": "{count} gruppo sotto il limite di servizio",
+   "other": "{count} gruppi sotto il limite di servizio"
+  },
+  "condition": "Condizione generale {pct}% · {state}",
+  "partRestored": "{name} ripristinato.",
+  "notEnoughMaterials": "Materiali insufficienti per quel gruppo.",
+  "serviced": {
+   "one": "Riparato {count} gruppo.",
+   "other": "Riparati {count} gruppi."
+  },
+  "nothingSpared": "Non c'è nulla a bordo da destinare a una riparazione."
+ },
+ "mining": {
+  "lasersCut": "Laser spenti.",
+  "nothingLeft": "In quel corpo non resta nulla da estrarre.",
+  "lasersHot": "Laser accesi. Taglio in corso.",
+  "leftBody": "Corpo abbandonato; laser freddi.",
+  "fuelOut": "Iperflusso esaurito; laser freddi.",
+  "bodyStripped": "Corpo esaurito.",
+  "strippedToBedrock": "{name} spogliato fino alla roccia madre."
+ },
+ "catalog": {
+  "starSub": "classe {type} · {planets} pianeti",
+  "star": "classe {type} · stella",
+  "companion": "classe {type} · compagna",
+  "donor": "classe {type} · donatrice",
+  "life": " · vita",
+  "moonOf": "{type} · luna di {planet}",
+  "moons": {
+   "one": "{count} luna",
+   "other": "{count} lune"
+  },
+  "weakLife": " · tracce deboli"
+ },
+ "tab": {
+  "current": "Sistema attuale",
+  "currentEmpty": "Nulla di catalogato in questo sistema.",
+  "systemBodies": "Corpi di {name}",
+  "objects": "Oggetti",
+  "objectsEmpty": "Nulla di catalogato.",
+  "galaxies": "Galassie",
+  "clusters": "Ammassi e strutture",
+  "anomalies": "Anomalie pluridimensionali",
+  "nebulae": "Nebulose",
+  "starSystems": "Sistemi stellari",
+  "farSystems": "Sistemi in altre galassie",
+  "bookmarks": "Segnalibri",
+  "bookmarksEmpty": "Nessun segnalibro: usa il pulsante Segnalibro su una selezione qualsiasi.",
+  "bookmarkedBodies": "Corpi nei segnalibri",
+  "biosignatures": "Biofirme",
+  "biosignaturesEmpty": "Nessuna biofirma registrata. Esegui una scansione.",
+  "lifeBearing": "Mondi che ospitano vita",
+  "spaceports": "Spazioporti",
+  "spaceportsEmpty": "Nessuno spazioporto catalogato.",
+  "landingSites": "Siti di atterraggio",
+  "patrons": "Mecenati",
+  "patronsEmpty": "Nessun mondo di mecenati in archivio.",
+  "patronWorlds": "Mondi dei mecenati",
+  "weakSignatures": "Tracce deboli"
+ },
+ "scan": {
+  "worldsFound": {
+   "one": "<b>Scansione biofirme</b> &nbsp;·&nbsp; {count} mondo con vita entro {radius} al",
+   "other": "<b>Scansione biofirme</b> &nbsp;·&nbsp; {count} mondi con vita entro {radius} al"
+  },
+  "hubbleOnline": " (Hubble in linea)",
+  "newCount": " · {count} nuovi",
+  "loggedInCatalog": " · registrati nel Catalogo",
+  "weakCount": {
+   "one": " · {count} lettura debole",
+   "other": " · {count} letture deboli"
+  }
+ },
+ "refuel": {
+  "refuel": "Rifornisci",
+  "stop": "Interrompi",
+  "refuelling": "Rifornimento",
+  "onArrival": "Rifornimento all'arrivo",
+  "courseSet": "Rotta impostata: {target}",
+  "drawingFrom": "Prelievo da {star}",
+  "tankFull": "Serbatoio pieno",
+  "docked": "Attraccati a una stella in fusione",
+  "inSystem": "Stella di rifornimento in questo sistema",
+  "nearest": "Stella di rifornimento più vicina",
+  "mayBeOutOfRange": "La stella più vicina potrebbe essere fuori portata",
+  "noneInRange": "Nessuna stella in fusione a portata"
+ },
+ "bodyNote": {
+  "2060chiron": "Cometa o asteroide, dipende da che anno lo si chiede. Sviluppò una chioma nel 1988, dopo un decennio classificato come pianeta minore, e da allora la disputa non si è chiusa.",
+  "3753cruithne": "La seconda luna della Terra, se si è generosi. Un coorbitale a ferro di cavallo che impiega 770 anni per compiere un giro del suo percorso a fagiolo attorno a noi, e non viene mai catturato.",
+  "433eros": "NEAR Shoemaker vi si posò il 12 febbraio 2001, una sonda non progettata per atterrare su nulla. Continuò a trasmettere dalla superficie per due settimane.",
+  "antichthon": "Filolao collocò una Controterra opposta alla nostra, per sempre dietro il Sole, per arrotondare a dieci il conto dei corpi in movimento. Ogni sonda mandata a verificare è stata puntata altrove.",
+  "earth": "Il guscio attorno non è un ornamento. Quarant'anni di stadi superiori esausti, satelliti morti e refrigerante congelato, e ogni collisione genera i frammenti della successiva.",
+  "hubblespacetelescope": "Lanciato nel 1990 con lo specchio primario molato secondo una prescrizione sbagliata di due micron. Gli sono state inviate tre missioni di manutenzione. Gliene serve una quarta.",
+  "pioneer10": "Lanciata nel 1972. Ogni anno si ritrova un capello più indietro di dove l'aritmetica la vorrebbe. Porta una targa d'oro con due estranei nudi che salutano.",
+  "pioneer11": "Lanciata nel 1973, prima a raggiungere Saturno. Ultimo contatto il 30 novembre 1995: il trasmettitore è morto, la traiettoria è esatta, e la targa a bordo è ancora leggibile per nessuno.",
+  "russellsteapot": "Porcellana, orbita ellittica tra la Terra e Marte, troppo piccola perché il telescopio più potente possa confermarla. L'onere della prova non spetta all'osservatore. Confermata.",
+  "titania": "Un solo oceano, tutto d'acido, avvolto attorno a un buco quattrocentomila volte il Sole. I Dargos vivono sull'acqua e chiamano il buco il vicino. L'umanità ha un invito permanente qui dal 1977 e su Titania nessuno ha ancora smesso di trovarlo divertente.",
+  "tma2": "Una lastra nera nello spazio di Giove, con i lati nel rapporto esatto 1:4:9 fino al limite della misurazione. Ogni strumento puntato su di essa restituisce la riflettanza del nulla.",
+  "voyager1": "L'oggetto umano più lontano dal Sole, che restituisce 160 bit al secondo dal bordo dell'eliosfera. Il Golden Record è imbullonato al suo fianco, e non è mai stato suonato.",
+  "voyager2": "Lanciata nel 1977, l'unica sonda a passare accanto a tutti e quattro i giganti. Il suo strumento al plasma è ancora accesso. Nessuno al Deep Space Network ha mai avuto motivo di spegnerlo.",
+  "vulcan": "Il pianeta che Le Verrier collocò dentro l'orbita di Mercurio nel 1859 per spiegare la deriva del perielio mercuriano. Lo spiegò invece la relatività generale. Vulcano non è mai stato ritirato: si è solo smesso di cercarlo."
+ }
 }

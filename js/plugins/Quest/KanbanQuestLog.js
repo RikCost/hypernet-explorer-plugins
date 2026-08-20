@@ -198,7 +198,7 @@
         const markerColor = markerColorFor(q.id);
         const markerIconCss = iconBadgeStyle(markerIconFor(q.id), 30);
 
-        return `<div class="kb-card${o.focused ? ' focused' : ''}${done || failed ? ' kb-done' : ''}"
+        return `<div class="kb-card${o.focused ? ' focused' : ''}${o.grabbed ? ' kb-grabbed' : ''}${done || failed ? ' kb-done' : ''}"
                      ${o.attrs || ''}
                      style="--rot:${rot}deg; --note-bg:${q.color || '#faf2d3'}; --pin:${pin}; --seal:${seal}; --marker:${markerColor}">
           <div class="kb-pin"></div>
@@ -604,6 +604,10 @@
             this._focusCol      = 0;
             this._focusRow      = 0;
             this._el            = null;
+            this._drag          = null;   // the note the mouse is carrying
+            this._okHeld        = false;  // the note the pad is holding on to
+            this._grabCarried   = false;
+            this._swallowClick  = false;
             if (this._focusQuestId) {
                 const COLS = ['todo', 'inProgress', 'done', 'failed'];
                 for (let ci = 0; ci < COLS.length; ci++) {
@@ -631,6 +635,14 @@
         }
 
         terminate() {
+            if (this._onDragMove) {
+                window.removeEventListener('pointermove', this._onDragMove);
+                window.removeEventListener('pointerup', this._onDragEnd);
+                window.removeEventListener('pointercancel', this._onDragEnd);
+                this._onDragMove = this._onDragEnd = null;
+            }
+            if (this._drag && this._drag.ghost) this._drag.ghost.remove();
+            this._drag = null;
             if (this._el) { this._el.remove(); this._el = null; }
             if (!this._isAppMode) super.terminate();
         }
@@ -654,7 +666,7 @@
             el.addEventListener('contextmenu', ev => ev.preventDefault());
             el.addEventListener('mouseover', ev => {
                 const card = ev.target.closest('.kb-card');
-                if (!card || this._selectedQuest) return;
+                if (!card || this._selectedQuest || this._drag) return;
                 const col = parseInt(card.dataset.col);
                 const row = parseInt(card.dataset.row);
                 if (!isNaN(col) && !isNaN(row)) {
@@ -664,12 +676,17 @@
                 }
             });
             el.addEventListener('click', ev => {
+                // The click browsers fire after a drag would re-open the note
+                // that was just carried across; the drag already answered it.
+                if (this._swallowClick) { this._swallowClick = false; return; }
                 if (ev.target.closest('.kb-board-back')) {
                     // Mirrors the Esc key: an open sheet closes first, then the log.
                     if (this._selectedQuest) this._closeDetail();
                     else { SoundManager.playCancel(); this.popScene(); }
                     return;
                 }
+                const moveBtn = ev.target.closest('.kb-detail-move');
+                if (moveBtn) { this._moveSelectedTo(moveBtn.dataset.target); return; }
                 if (ev.target.closest('.kb-detail-map')) { this._showOnMap(); return; }
                 if (ev.target.closest('.kb-detail-close')) { this._closeDetail(); return; }
                 // Click on the dimmed backdrop (but not the panel itself) closes the detail
@@ -677,6 +694,94 @@
                 const card = ev.target.closest('.kb-card');
                 if (card) this._openDetail(QuestManager.getQuest(card.dataset.id));
             });
+
+            // Dragging a note. The pointer has to be followed on the window and
+            // not on the overlay: a note dropped past the edge of the board (or
+            // released while the cursor sits over the floating copy) still has
+            // to end the drag cleanly.
+            el.addEventListener('pointerdown', ev => this._onDragStart(ev));
+            this._onDragMove = ev => this._onDragOver(ev);
+            this._onDragEnd = ev => this._onDragDrop(ev);
+            window.addEventListener('pointermove', this._onDragMove);
+            window.addEventListener('pointerup', this._onDragEnd);
+            window.addEventListener('pointercancel', this._onDragEnd);
+        }
+
+        _onDragStart(ev) {
+            if (ev.button !== 0 || this._selectedQuest || this._drag) return;
+            const card = ev.target.closest('.kb-card');
+            if (!card) return;
+            const ci = parseInt(card.dataset.col);
+            // Only the two hand-kept columns can be dragged from; a resolved or
+            // failed note is a record, not a task.
+            if (ci !== 0 && ci !== 1) return;
+            const rect = card.getBoundingClientRect();
+            this._drag = {
+                id: card.dataset.id, fromCol: ci, card,
+                startX: ev.clientX, startY: ev.clientY,
+                offX: ev.clientX - rect.left, offY: ev.clientY - rect.top,
+                width: rect.width, live: false, ghost: null, overCol: -1,
+            };
+            // No preventDefault here: cancelling pointerdown can swallow the
+            // click that opens a note. Text selection is held off by CSS.
+        }
+
+        _onDragOver(ev) {
+            const d = this._drag;
+            if (!d) return;
+            if (!d.live) {
+                if (Math.abs(ev.clientX - d.startX) + Math.abs(ev.clientY - d.startY) < 8) return;
+                d.live = true;
+                const ghost = d.card.cloneNode(true);
+                ghost.classList.add('kb-ghost');
+                ghost.classList.remove('focused', 'kb-grabbed');
+                ghost.style.width = d.width + 'px';
+                document.body.appendChild(ghost);
+                d.ghost = ghost;
+                d.card.classList.add('kb-dragging');
+                d.cols = Array.from(this._el.querySelectorAll('.kb-column'));
+            }
+            d.ghost.style.left = (ev.clientX - d.offX) + 'px';
+            d.ghost.style.top = (ev.clientY - d.offY) + 'px';
+            const over = this._columnAt(ev.clientX, ev.clientY, d);
+            if (over !== d.overCol) {
+                d.overCol = over;
+                d.cols.forEach((c, i) => c.classList.toggle('kb-drop', i === over && (i === 0 || i === 1)));
+            }
+        }
+
+        // Which column the pointer is over, by the column strips themselves, so
+        // the whole height of a column takes a drop and not only its notes.
+        _columnAt(x, y, d) {
+            if (!d || !d.cols) return -1;
+            for (let i = 0; i < d.cols.length; i++) {
+                const r = d.cols[i].getBoundingClientRect();
+                if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return i;
+            }
+            return -1;
+        }
+
+        _onDragDrop(ev) {
+            const d = this._drag;
+            if (!d) return;
+            this._drag = null;
+            if (!d.live) return;
+            // Cleared on the next tick as well: a note released past the edge
+            // of the board fires no click at all, and a stale flag would eat
+            // the following one.
+            this._swallowClick = true;
+            setTimeout(() => { this._swallowClick = false; }, 0);
+            if (d.ghost) d.ghost.remove();
+            d.card.classList.remove('kb-dragging');
+            d.cols.forEach(c => c.classList.remove('kb-drop'));
+            const target = this._columnAt(ev.clientX, ev.clientY, d);
+            const COLS = ['todo', 'inProgress', 'done', 'failed'];
+            if (target === d.fromCol || target < 0) { SoundManager.playCancel(); return; }
+            if (target > 1) { SoundManager.playBuzzer(); return; }
+            QuestManager.moveQuest(d.id, COLS[target]);
+            this._focusOn(d.id);
+            SoundManager.playOk();
+            this._refresh();
         }
 
         // One post-it, pinned. Colour, tilt, pin and wax seal are all derived
@@ -687,6 +792,7 @@
             return buildNoteHTML(q, useIt, {
                 colId,
                 focused,
+                grabbed: focused && !!this._okHeld,
                 attrs: `data-id="${esc(q.id)}" data-col="${ci}" data-row="${ri}"`, // i18n-ignore: DOM data attributes
                 progressHTML: this._progressBarHTML(q, useIt),
             });
@@ -761,6 +867,7 @@
               <div class="kb-detail-sec">${T('Kanban.log')}</div>
               <div class="kb-detail-log">${updates}</div>
               <div class="kb-detail-btns">
+                ${this._moveButtonHTML(q)}
                 ${this._mapButtonHTML(useIt)}
                 <button class="kb-detail-close">${T('Kanban.close')}</button>
               </div>
@@ -785,6 +892,38 @@
             }
             const snap = q.meta && q.meta.location;
             return (snap && snap.wx != null) ? snap : null;
+        }
+
+        // The one button that carries an open note between To Do and In
+        // Progress. Resolved and failed sheets carry none: those columns are
+        // written by the quest itself, never by hand.
+        _moveButtonHTML(q) {
+            if (!q || (q.column !== 'todo' && q.column !== 'inProgress')) return '';
+            const toProgress = q.column === 'todo';
+            const target = toProgress ? 'inProgress' : 'todo'; // i18n-ignore: column id
+            const label = toProgress ? T('Kanban.moveToInProgress') : T('Kanban.moveToToDo');
+            return `<button class="kb-detail-close kb-detail-move" data-target="${target}">${label}</button>`;
+        }
+
+        // Carry the open note to another column and keep the board's cursor on
+        // it, so closing the sheet leaves the focus where the note now lies.
+        _moveSelectedTo(targetCol) {
+            const q = this._selectedQuest;
+            if (!q || (targetCol !== 'todo' && targetCol !== 'inProgress')) return;
+            if (q.column === targetCol) { SoundManager.playBuzzer(); return; }
+            QuestManager.moveQuest(q.id, targetCol);
+            this._focusOn(q.id);
+            SoundManager.playOk();
+            this._refresh();
+        }
+
+        // Put the cursor on a quest wherever it now sits.
+        _focusOn(id) {
+            const COLS = ['todo', 'inProgress', 'done', 'failed'];
+            for (let ci = 0; ci < COLS.length; ci++) {
+                const ri = QuestManager.getQuestsInColumn(COLS[ci]).findIndex(q => q && q.id === id);
+                if (ri >= 0) { this._focusCol = ci; this._focusRow = ri; return; }
+            }
         }
 
         _mapButtonHTML(useIt) {
@@ -844,6 +983,7 @@
               <div id="kb-board-header">
                 <div class="back-button kb-board-back">${T('Kanban.back')}</div>
                 <span class="kb-board-title">${T('Kanban.questLog')}</span>
+                <div class="kb-board-hint">${T('Kanban.boardHint')}</div>
               </div>
               <div id="kb-columns">
                 ${colsHTML.join('<div class="kb-col-divider"></div>')}
@@ -871,6 +1011,7 @@
                     && parseInt(el.dataset.row) === this._focusRow
                     && !this._selectedQuest;
                 el.classList.toggle('focused', isFocused);
+                el.classList.toggle('kb-grabbed', isFocused && !!this._okHeld);
             });
             const sel = this._el.querySelector('.kb-card.focused');
             if (sel) sel.scrollIntoView({ block: 'nearest' });
@@ -886,10 +1027,42 @@
             if (this._selectedQuest) {
                 if (cancelled) this._closeDetail();
                 else if (Input.isTriggered('shift')) this._showOnMap();
+                else if (Input.isTriggered('right') || Input.isTriggered('d')) this._moveSelectedTo('inProgress');
+                else if (Input.isTriggered('left') || Input.isTriggered('a')) this._moveSelectedTo('todo');
                 return;
             }
 
             const COLS = ['todo', 'inProgress', 'done', 'failed'];
+
+            // Holding OK (the controller's A) picks the focused note up: left
+            // and right then carry it between To Do and In Progress. Letting go
+            // without having carried it anywhere is a plain tap and opens the
+            // sheet, the way it always did.
+            if (Input.isTriggered('ok')) {
+                this._okHeld = true;
+                this._grabCarried = false;
+                this._updateHighlight();
+            }
+            if (this._okHeld) {
+                if (Input.isPressed('ok')) {
+                    if (Input.isRepeated('right') || Input.isRepeated('d')) {
+                        if (this._moveCard(1, COLS)) this._grabCarried = true;
+                    } else if (Input.isRepeated('left') || Input.isRepeated('a')) {
+                        if (this._moveCard(-1, COLS)) this._grabCarried = true;
+                    }
+                    return;
+                }
+                this._okHeld = false;
+                const carried = this._grabCarried;
+                this._grabCarried = false;
+                this._updateHighlight();
+                if (!carried) {
+                    const held = QuestManager.getQuestsInColumn(COLS[this._focusCol])[this._focusRow];
+                    if (held) this._openDetail(held);
+                }
+                return;
+            }
+
             let moved = false;
 
             if (Input.isRepeated('down') || Input.isRepeated('s')) {
@@ -911,9 +1084,6 @@
                     this._focusCol++;
                     moved = true;
                 }
-            } else if (Input.isTriggered('ok')) {
-                const q = QuestManager.getQuestsInColumn(COLS[this._focusCol])[this._focusRow];
-                if (q) this._openDetail(q);
             } else if (cancelled) {
                 SoundManager.playCancel();
                 this.popScene();
@@ -933,13 +1103,14 @@
             const quest     = quests[this._focusRow];
             const targetIdx = this._focusCol + dir;
             // Cards can only be shuffled between To Do and In Progress by hand.
-            if (!quest || colId === 'done' || colId === 'failed' || targetIdx < 0 || targetIdx > 1) return;
+            if (!quest || colId === 'done' || colId === 'failed' || targetIdx < 0 || targetIdx > 1) return false;
             const targetCol = COLS[targetIdx];
             QuestManager.moveQuest(quest.id, targetCol);
             this._focusCol = targetIdx;
             this._focusRow = QuestManager.getQuestsInColumn(targetCol).length - 1;
             SoundManager.playOk();
             this._refresh();
+            return true;
         }
     }
 

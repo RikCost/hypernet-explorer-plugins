@@ -39,6 +39,13 @@
  * the meter is under 40% (nobody naps at 90%), and once it starts it fills all
  * the way to 100% or until the journey ends, whichever comes first.
  *
+ * A crew taking that rest is asleep for real: everybody but the driver carries
+ * the Sleep state while it lasts, which is what the party HUD and anything else
+ * reading states goes by. They are woken when the nap ends on its own (the meter
+ * fills), when the party gets out, when the party steps into the vehicle's own
+ * cabin - and by a crash, which also keeps them up for the next hour of game
+ * time rather than letting them drop straight back off.
+ *
  * Note that hunger and sleep are ONE meter for the whole party in this game
  * (TimeDateSystem.js keeps them on $gameSystem), so the rest a crew takes shows
  * up on the shared bar. Strain is what is genuinely personal, and it is why the
@@ -62,6 +69,8 @@
  *   VehicleCrew.isDriver(actor)   is this member holding the wheel
  *   VehicleCrew.alertness(actor)  0-100, sleep less that member's wheel strain
  *   VehicleCrew.strainOf(actor)   0-100, time at the wheel since their last rest
+ *   VehicleCrew.isAsleep(actor)   is this member napping in the back right now
+ *   VehicleCrew.wake(reason)      everybody up ("crash" for a shock, else quiet)
  * ============================================================================
  */
 
@@ -89,6 +98,19 @@
   // at ~18/hour (TimeDateSystem), so this is a genuine climb rather than a
   // slower fall.
   const REST_SLEEP_PER_HOUR = 36;
+
+  // The nap made real: while the crew is genuinely making sleep back, everybody
+  // who is not at the wheel carries the engine's own Sleep state (States.json
+  // #10), so the party HUD and everything else that reads states agree that the
+  // three people in the back are out cold. State turns do not tick while the
+  // player is riding (Game_Player#isNormal is false in a vehicle), so the nap
+  // lasts as long as the rest does rather than the state's own 3-5 turns.
+  const SLEEP_STATE_ID = 10;
+
+  // A shock keeps a crew awake for a while afterwards. Without this, a crash at
+  // 20% sleep would put everybody straight back under on the very next step,
+  // since that is exactly the meter reading that opens the rest latch.
+  const WAKE_LOCKOUT_MINUTES = 60;
 
   // A fast travel, a night's sleep or a menu can move the clock hours at a time
   // between two steps. Nothing here should pay out a whole night in one tick.
@@ -142,6 +164,8 @@
   // driverId : who is holding the wheel right now
   // strain   : actorId -> 0..100, hours at the wheel since that member last rested
   // resting  : the sleep-recovery latch (opens under 40%, closes at 100%)
+  // asleep   : actor ids this plugin put the Sleep state on
+  // wokeAt   : the clock reading a shock last woke the crew at
   // chore    : the need the Starship crew is tending, and when it is next tended
   // lastAt   : the clock reading the last tick was paced from
   function state() {
@@ -149,11 +173,12 @@
     let s = $gameSystem._vehicleCrew;
     if (!s) {
       s = $gameSystem._vehicleCrew = {
-        driverId: null, strain: {}, resting: false, chore: null,
-        lastAt: null, warnedTired: false, warnedNoFood: false,
+        driverId: null, strain: {}, resting: false, asleep: [], wokeAt: null,
+        chore: null, lastAt: null, warnedTired: false, warnedNoFood: false,
       };
     }
     if (!s.strain) s.strain = {};
+    if (!s.asleep) s.asleep = [];
     return s;
   }
 
@@ -248,6 +273,72 @@
     return next;
   }
 
+  // ---------------------------------------------------------------------------
+  // Out cold in the back
+  // ---------------------------------------------------------------------------
+  // The ids this plugin put under. Waking the crew only ever lifts the nap this
+  // plugin laid on: a Sleep state from anywhere else (a spell, an event) is not
+  // ours to take off.
+  function napping() {
+    const s = state();
+    return s ? s.asleep : [];
+  }
+
+  function setAsleep(actor, asleep) {
+    if (!actor || !actor.actorId || !actor.addState) return;
+    const list = napping();
+    const id = actor.actorId();
+    const index = list.indexOf(id);
+    if (asleep) {
+      if (index < 0) list.push(id);
+      if (!actor.isStateAffected(SLEEP_STATE_ID)) actor.addState(SLEEP_STATE_ID);
+      return;
+    }
+    if (index < 0) return;
+    list.splice(index, 1);
+    if (actor.isStateAffected(SLEEP_STATE_ID)) actor.removeState(SLEEP_STATE_ID);
+  }
+
+  // Who is out cold right now: everybody the rest latch covers, less whoever is
+  // holding the wheel. Run every tick, so a reload, a party change and a
+  // hand-over at the wheel all settle to the same answer.
+  function syncSleep(crew, atWheel) {
+    const s = state();
+    const out = !!(s && s.resting);
+    for (const actor of crew) setAsleep(actor, out && actor !== atWheel);
+  }
+
+  // Everybody up, and the latch shut so the next tick does not put them back
+  // under. A reason means it was a shock rather than the end of the journey: the
+  // party is told about it, and nobody drifts off again for the next hour of
+  // game time. Returns whether anyone was actually asleep to wake.
+  function wake(reason) {
+    const s = state();
+    const list = napping();
+    const woke = list.length > 0;
+    for (const actor of members()) {
+      if (list.indexOf(actor.actorId()) < 0) continue;
+      if (actor.isStateAffected(SLEEP_STATE_ID)) actor.removeState(SLEEP_STATE_ID);
+    }
+    list.length = 0;
+    if (s) {
+      s.resting = false;
+      if (reason) s.wokeAt = gameMinutes();
+    }
+    if (woke && reason) {
+      toast(T('VehicleCrew.woke.' + reason), 'warning', 'vehiclecrew-woke');
+    }
+    return woke;
+  }
+
+  // A clock that has gone backwards (an older save) simply lets the lockout lapse.
+  function inWakeLockout() {
+    const s = state();
+    if (!s || s.wokeAt == null) return false;
+    const since = gameMinutes() - s.wokeAt;
+    return since >= 0 && since < WAKE_LOCKOUT_MINUTES;
+  }
+
   // Sleep paid back to everyone who is not driving. Two rules from the brief:
   // it only begins once the meter is under 40% (a rested crew does not nap), and
   // once begun it runs all the way to full or to the end of the journey. There
@@ -260,7 +351,7 @@
     const sleeper = resters.find(a => typeof a.addSleep === 'function');
     if (!sleeper) return;
     const pct = sleeper.sleepPercent ? sleeper.sleepPercent() : 100;
-    if (!s.resting && pct < REST_THRESHOLD) s.resting = true;
+    if (!s.resting && pct < REST_THRESHOLD && !inWakeLockout()) s.resting = true;
     if (!s.resting) return;
     if (pct >= 100) { s.resting = false; return; }
     const gain = (REST_SLEEP_PER_HOUR / 60) * minutes * (max / 100);
@@ -422,7 +513,7 @@
     // Off the road: everybody sheds strain, and the journey's latches are shut
     // so the next one starts clean.
     if (!type || !DRIVEN_TYPES[type]) {
-      if (s.driverId != null) release();
+      if (s.driverId != null || napping().length) release();
       for (const actor of crew) setStrain(actor, strainOf(actor) - (STRAIN_SHED_PER_HOUR / 60) * elapsed);
       if (type === 'airship') updateAboard(elapsed);
       else s.chore = null;
@@ -438,13 +529,16 @@
       setStrain(actor, strainOf(actor) + (delta / 60) * elapsed);
     }
     payRest(crew, atWheel, elapsed);
+    syncSleep(crew, atWheel);
   }
 
   // The wheel is let go of: the driver's seat empties and the rest the party was
-  // taking ends, which is what "until you stop driving" means.
+  // taking ends, which is what "until you stop driving" means. Ending the rest
+  // ends the nap with it - nobody is carried out of the car still asleep.
   function release() {
     const s = state();
     if (!s) return;
+    wake();
     s.driverId = null;
     s.resting = false;
     s.warnedTired = false;
@@ -474,6 +568,16 @@
     },
     alertness,
     strainOf,
+    // The engine state a resting passenger carries, and the two questions the
+    // rest of the game asks about it.
+    SLEEP_STATE_ID,
+    isAsleep(actor) {
+      return !!(actor && actor.actorId && napping().indexOf(actor.actorId()) >= 0);
+    },
+    // Everybody up. Pass a reason ("crash") for a shock: it toasts and keeps the
+    // crew awake for an hour afterwards. Called with nothing, it is the quiet end
+    // of a nap (getting out, stepping into the cabin).
+    wake,
     // Only the member at the wheel is learning to drive; if nobody is (the Bike,
     // the Broom, the Starship), the award falls back to the party's usual split.
     xpOptions() {
@@ -499,6 +603,18 @@
     Game_Player.prototype.increaseSteps = function () {
       _Game_Player_increaseSteps_VC.call(this);
       try { update(); } catch (e) { console.error('VehicleCrew: ' + e.message); }
+    };
+
+    // Stepping into the cabin is stepping over somebody's bunk. The nap ends on
+    // arrival rather than on the first step taken inside, and this catches every
+    // way in - the action menu, the fast-travel menu, a plugin command.
+    const _Game_Player_performTransfer_VC = Game_Player.prototype.performTransfer;
+    Game_Player.prototype.performTransfer = function () {
+      _Game_Player_performTransfer_VC.call(this);
+      try {
+        const vs = window.MergedVehicleSystem;
+        if (vs && vs.isOnVehicleInteriorMap && vs.isOnVehicleInteriorMap()) wake();
+      } catch (e) { /* the party still got in */ }
     };
   }
 

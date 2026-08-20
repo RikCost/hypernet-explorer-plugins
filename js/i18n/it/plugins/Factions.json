@@ -66,6 +66,24 @@
     "thegods": "Gli Dei",
     "continentalunion": "Unione Continentale",
     "thetourists": "I Turisti",
-    "thedargos": "I Dargos"
-  }
+    "thedargos": "I Dargos",
+    "kukulkanascendancy": "Ascendenza di Kukulkan",
+    "democraticpeoplesrepublicofkorea": "Repubblica Popolare Democratica di Corea",
+    "dharmadirectorate": "Direttorio del Dharma",
+    "illuminatedkhanate": "Khanato Illuminato",
+    "solomonicrepublic": "Repubblica Salomonica",
+    "petrokingdomofarabia": "Petro-Regno d'Arabia",
+    "sanatanarashtra": "Sanatana Rashtra",
+    "longchile": "Cile Lungo",
+    "imperialstateofpersia": "Stato Imperiale di Persia"
+  },
+  "versus": "vs. {name}",
+  "sortName": "Alfabetico",
+  "searchPlaceholder": "Cerca fazioni…",
+  "versusOwn": "vs. {name} (propria potenza)",
+  "controlledCountries": "Controlla:",
+  "holdsNothing": "nessuna nazione su questa mappa",
+  "openWiki": "Leggi il dossier completo",
+  "moralGuide": "Guida morale:",
+  "politicalLeader": "Guida politica:"
 }

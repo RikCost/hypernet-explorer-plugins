@@ -200,15 +200,19 @@ Game_AIArmy.prototype._generateFactionArmy = function () {
   }
 
   // Select a random leader from the faction's leader pool
-  if (faction.leaders && faction.leaders.length > 0) {
-    const randomLeaderIndex = Math.floor(Math.random() * faction.leaders.length);
-    this._leader = faction.leaders[randomLeaderIndex];
+  // A faction has no roster of its own: it fields the political class of the
+  // nations its power holds (FactionDataManager.getFactionLeaders).
+  const factionLeaders = $gameFactions.getFactionLeaders(faction);
+  if (factionLeaders.length > 0) {
+    const randomLeaderIndex = Math.floor(Math.random() * factionLeaders.length);
+    this._leader = factionLeaders[randomLeaderIndex];
   }
 
   // Get all related subfactions
   const relatedFactions = [faction];
   for (const f of allFactions) {
-    if (f?.parentFaction && f?.parentFaction === faction.id && f.troops && f.troops.length > 0) {
+    if (f?.parentHyperpower && f.parentHyperpower === faction.parentHyperpower
+        && f.id !== faction.id && f.troops && f.troops.length > 0) {
       relatedFactions.push(f);
     }
   }
@@ -248,16 +252,20 @@ Game_AIArmy.prototype._generateFactionArmyForCountry = function (faction, countr
   this._validRegions = [countryId];
 
   // Select a random leader from the faction's leader pool
-  if (faction.leaders && faction.leaders.length > 0) {
-    const randomLeaderIndex = Math.floor(Math.random() * faction.leaders.length);
-    this._leader = faction.leaders[randomLeaderIndex];
+  // A faction has no roster of its own: it fields the political class of the
+  // nations its power holds (FactionDataManager.getFactionLeaders).
+  const factionLeaders = $gameFactions.getFactionLeaders(faction);
+  if (factionLeaders.length > 0) {
+    const randomLeaderIndex = Math.floor(Math.random() * factionLeaders.length);
+    this._leader = factionLeaders[randomLeaderIndex];
   }
 
   // Get all related subfactions
   const allFactions = $gameFactions.getAllFactions();
   const relatedFactions = [faction];
   for (const f of allFactions) {
-    if (f?.parentFaction && f?.parentFaction === faction.id && f.troops && f.troops.length > 0) {
+    if (f?.parentHyperpower && f.parentHyperpower === faction.parentHyperpower
+        && f.id !== faction.id && f.troops && f.troops.length > 0) {
       relatedFactions.push(f);
     }
   }
@@ -1087,10 +1095,10 @@ Sprite_ArmyLabel.prototype.refresh = function () {
     const faction = $gameFactions.getFaction(this._army.getFactionId());
     if (faction) {
       // If this is a subfaction, use parent faction's icon
-      if (faction.parentFaction) {
-        const parentFaction = $gameFactions.getFaction(faction.parentFaction);
-        if (parentFaction) {
-          factionIconIndex = parentFaction.iconIndex || 0;
+      if (faction.parentHyperpower) {
+        const parentPower = $gameFactions.hyperpowerOfFaction(faction);
+        if (parentPower) {
+          factionIconIndex = $gameFactions.hyperpowerIcon(parentPower.id) || 0;
         } else {
           factionIconIndex = faction.iconIndex || 0;
         }

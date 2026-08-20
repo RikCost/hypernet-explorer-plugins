@@ -38,6 +38,10 @@
  * @text Image Name
  * @desc Name of the image in busts/ (without extension).
  *
+ * @command Rumors
+ * @text Rumors
+ * @desc Speaks one rumour in the calling NPC's personality. Elsewhere, a line from the generic bank.
+ *
  * @help
  * DialogueSystem.js
  * -----------------------------------------------------------------------
@@ -197,6 +201,12 @@ Imported.DialogueSystem = true;
             this.activeEventId       = null;
             this.lastKnownEventId    = null;
             this.hideScheduled       = false;
+            // While true, this manager is being driven line by line by an
+            // external exchange (see startNPCExchange below) instead of by the
+            // interpreter's own event: startMessage must not re-derive the bust
+            // from $gameMap._interpreter, and terminateMessage must hand control
+            // to the exchange queue instead of the usual auto-hide check.
+            this.exchangeMode        = false;
         }
 
         initialize() {
@@ -588,6 +598,36 @@ Imported.DialogueSystem = true;
         if (this._bustManager) this._bustManager.update();
     };
 
+    // -------------------------------------------------------------------------
+    // Scene_Battle hooks
+    // -------------------------------------------------------------------------
+    // Busts are not a map-only thing: a boss that talks mid-fight gets the same
+    // portrait and name tag the overworld gets, instead of a bare message box.
+    // The manager is built per battle and driven by the same update; auto-hide
+    // still works, since out of an event the map interpreter reads as ended and
+    // the bust slides away as soon as the message closes.
+    const _Scene_Battle_start = Scene_Battle.prototype.start;
+    Scene_Battle.prototype.start = function () {
+        _Scene_Battle_start.call(this);
+        this._bustManager = new BustManager();
+        this._bustManager.initialize();
+    };
+
+    const _Scene_Battle_update = Scene_Battle.prototype.update;
+    Scene_Battle.prototype.update = function () {
+        _Scene_Battle_update.call(this);
+        if (this._bustManager) this._bustManager.update();
+    };
+
+    const _Scene_Battle_terminate = Scene_Battle.prototype.terminate;
+    Scene_Battle.prototype.terminate = function () {
+        if (this._bustManager) {
+            try { this._bustManager.hideBusts(); } catch (e) {}
+            this._bustManager = null;
+        }
+        _Scene_Battle_terminate.call(this);
+    };
+
     const _Graphics_resize = Graphics.resize;
     Graphics.resize = function (width, height) {
         _Graphics_resize.call(this, width, height);
@@ -682,7 +722,7 @@ Imported.DialogueSystem = true;
             // so there's no blank flash between consecutive dialogue boxes.
         }
         const scene = SceneManager._scene;
-        if (scene && scene._bustManager) scene._bustManager.showBusts();
+        if (scene && scene._bustManager && !scene._bustManager.exchangeMode) scene._bustManager.showBusts();
     };
 
     const _WM_terminateMessage = Window_Message.prototype.terminateMessage;
@@ -695,6 +735,10 @@ Imported.DialogueSystem = true;
         _WM_terminateMessage.call(this);
         if (this._htmlMsgRoot) this._htmlMsgPendingHide = true;
         const scene = SceneManager._scene;
+        if (scene && scene._bustManager && scene._bustManager.exchangeMode) {
+            advanceNPCExchange();
+            return;
+        }
         if (scene && scene._bustManager && scene._bustManager.shouldAutoHide()) {
             scene._bustManager.hideBusts();
         }
@@ -1061,6 +1105,187 @@ Imported.DialogueSystem = true;
     }
 
     // -------------------------------------------------------------------------
+    // Rumors
+    // -------------------------------------------------------------------------
+    // What an NPC says when the player talks to them and the event has nothing
+    // scripted to say. The line is written, not generated: it comes out of the
+    // bank held under the personality NPCSociety dealt that person when they
+    // were minted, so a Paranoid shopkeeper and a Sanguine one pass on the same
+    // town in two different voices.
+    //
+    // An event with nobody behind it (a cat, a signpost, a body double in a
+    // cutscene) has no society profile to read, and speaks from the generic
+    // bank instead, which is also where a personality with no written lines
+    // falls back to.
+
+    function rumorPersonalityKey(eventId) {
+        if (!eventId || typeof $gameMap === 'undefined') return null;
+        const npcName = $gameMap.event(eventId)?.event()?.name;
+        if (!npcName) return null;
+        const profile = window.NPCSocietyRegistry?.getProfile?.(npcName);
+        if (!profile || profile.personalityIndex == null) return null;
+        const list = window._NPCSocietyDataLoader?.personalities
+                  || window.Health?.PersonalityData?.list
+                  || window.Health?.PersonalityData;
+        if (!Array.isArray(list)) return null;
+        // A personality's English `name` in PersonalityData.json is its id, and
+        // the bank is keyed by that id in lower case.
+        const name = list[profile.personalityIndex]?.name;
+        return name ? String(name).toLowerCase() : null;
+    }
+
+    function pickRumor(personalityKey) {
+        const key = personalityKey ? `Rumors.personality.${personalityKey}` : null;
+        let pool = (key && T.has(key)) ? T.pool(key) : [];
+        if (!pool.length) pool = T.pool('Rumors.generic');
+        if (!pool.length) return '';
+        return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    // -------------------------------------------------------------------------
+    // NPC Exchange: a two-line VN beat played out on the map
+    // -------------------------------------------------------------------------
+    // A short player-line/NPC-line exchange, shown one bust at a time through
+    // the same right-side slot showCustomBust already uses, alternating between
+    // the speaking party member and the NPC. Driven from terminateMessage
+    // (see above) rather than the interpreter's own command list, so it works
+    // from a single plugin command call instead of two authored "Show Text"
+    // commands.
+    let _npcExchangeQueue = [];
+
+    function advanceNPCExchange() {
+        const scene = SceneManager._scene;
+        const bm    = scene && scene._bustManager;
+        if (!bm) { _npcExchangeQueue = []; return; }
+        if (!_npcExchangeQueue.length) {
+            bm.exchangeMode      = false;
+            bm.batchDialogueMode = false;
+            bm.hideBusts();
+            return;
+        }
+        const step = _npcExchangeQueue.shift();
+        bm.showCustomBust(step.imageName, step.displayName);
+        $gameMessage.setBackground(0);
+        $gameMessage.setPositionType(2);
+        window.skipLocalization = true;
+        $gameMessage.add(step.text);
+        window.skipLocalization = false;
+    }
+
+    function startNPCExchange(steps) {
+        const scene = SceneManager._scene;
+        const bm    = scene && scene._bustManager;
+        if (!bm || !steps || !steps.length) return false;
+        bm.exchangeMode      = true;
+        bm.batchDialogueMode = true;
+        _npcExchangeQueue    = steps.slice();
+        advanceNPCExchange();
+        return true;
+    }
+
+    // The bust image an NPC event shows normally (same resolution showBusts()
+    // would use), read out manually since exchangeMode skips that call.
+    function _npcExchangeBust(ev) {
+        const scene = SceneManager._scene;
+        const bm    = scene && scene._bustManager;
+        const data  = ev?.event?.();
+        const page  = data?.pages?.find(p => ev.meetsConditions(p));
+        const path  = bm ? bm.getBustImageForCharacter(page?.image?.characterName, page?.image?.characterIndex ?? 0) : null;
+        return path ? path.replace(/^busts\//, '') : '7';
+    }
+
+    // A short, personality-flavoured beat between the party leader and an NPC,
+    // picking one random action out of the same catalogue the Empathize panel's
+    // Socialize submenu offers (praise, small talk, comment on weather, insult,
+    // threaten, ...) and running it through the same tone/delta/personality
+    // math _socialInteract uses (window.NPCEmpathize._helpers), so it reads as
+    // the same system whether or not the panel was ever opened. Returns two
+    // exchange steps (player line, then NPC line) or null if the pieces needed
+    // aren't available.
+    function buildSocialExchange(ev, npcName, profile) {
+        const EM = window.NPCEmpathize;
+        const H  = EM && EM._helpers;
+        if (!H || !H._socialLines || !H._rand) return null;
+
+        const actor   = $gameParty.leader();
+        const actorId = actor && actor.actorId();
+        // A beast at the head of the party has no prose to trade, only the
+        // feral bank the old rumour path already knows how to read from.
+        if (H._isNonSentientActor && H._isNonSentientActor(actor)) return null;
+        const db          = H._socialLines();
+        const interactions = db.interactions || [];
+        if (!interactions.length) return null;
+        const def = interactions[Math.floor(Math.random() * interactions.length)];
+
+        const fill       = s => String(s || '').replace(/\{name\}/g, npcName);
+        const playerLine = fill(H._rand(def.player));
+        if (!playerLine) return null;
+
+        const mult   = tone => H._personalitySocialMult ? H._personalitySocialMult(profile, tone) : 1;
+        const recent = H._countRecentInteractions ? H._countRecentInteractions(profile, 'social_' + def.id, 3) : 0;
+        let delta, sincere;
+        if (def.tone === 'positive') {
+            delta = def.baseDelta - recent * Math.max(2, Math.ceil(def.baseDelta / 2.5));
+            delta = Math.round(delta * mult('positive'));
+            sincere = delta > 0;
+            if (!sincere) delta = -Math.min(8, 2 + recent * 2);
+        } else if (def.tone === 'neutral') {
+            delta   = Math.max(0, (def.baseDelta || 1) - recent);
+            delta   = Math.round(delta * mult('neutral'));
+            sincere = delta > 0;
+        } else { // negative
+            delta   = def.baseDelta - Math.min(6, Math.max(0, recent - 1) * 2);
+            delta   = Math.round(delta * mult('negative'));
+            sincere = false;
+        }
+        // Dialogue mode option: markovian sources the NPC's half of the
+        // exchange from their own Markov word bank instead of the templated
+        // Socialize response pools below. The player's line, the busts and the
+        // opinion math are unaffected either way. Falls through to the usual
+        // banks if the NPC has no Markov database of their own.
+        let npcLine;
+        if (ConfigManager.dialogueMode === 'markovian') {
+            npcLine = window.MarkovNPCDialogue?.generateLine?.(npcName) || '';
+        }
+        // Gossip's own payoff is a teaser ("Well, since you asked...") with
+        // nothing to actually tell: when it lands, the real content comes out
+        // of the Rumors bank (same personality-keyed pools the old Rumors
+        // command read from), tacked on after the teaser.
+        if (!npcLine && def.id === 'gossip' && sincere) {
+            const teaser = fill(H._rand(def.responseGood));
+            const rumor  = pickRumor(rumorPersonalityKey(ev.eventId()));
+            npcLine = rumor ? (teaser ? `${teaser} ${rumor}` : rumor) : teaser;
+        }
+        if (!npcLine) {
+            const pool = def.tone === 'negative' ? def.responseBad : (sincere ? def.responseGood : def.responseBad);
+            npcLine = fill(H._rand(pool)) || fill(H._rand(def.responseGood)) || fill(H._rand(def.responseBad));
+        }
+        if (!npcLine) return null;
+
+        if (profile && actorId != null && H._addNpcOpinion) {
+            H._addNpcOpinion(profile, actorId, delta);
+            (profile.eventLog ??= []).push({
+                tag: 'social_' + def.id, desc: `${def.id} (${delta >= 0 ? '+' : ''}${delta})`, // i18n-ignore: event-log record id
+                timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+            });
+        }
+
+        EM.recordNPCLine?.(npcName, playerLine, 'player');
+        EM.recordNPCLine?.(npcName, npcLine, 'npc');
+
+        const scene           = SceneManager._scene;
+        const bm              = scene && scene._bustManager;
+        const playerBustFull  = H._resolveBustForActor ? H._resolveBustForActor(actor) : 'img/busts/7.png';
+        const playerImageName = String(playerBustFull).replace(/^img\/busts\//, '').replace(/\.png$/, '');
+        const npcDisplayName  = bm ? bm.getCharacterDisplayName(ev.eventId()) : npcName;
+
+        return [
+            { imageName: playerImageName,        displayName: actor ? actor.name() : '', text: playerLine },
+            { imageName: _npcExchangeBust(ev),    displayName: npcDisplayName,            text: npcLine },
+        ];
+    }
+
+    // -------------------------------------------------------------------------
     // Plugin Commands
     // -------------------------------------------------------------------------
     PluginManager.registerCommand(PLUGIN_NAME, "showBust", () => {
@@ -1080,6 +1305,51 @@ Imported.DialogueSystem = true;
 
     PluginManager.registerCommand(PLUGIN_NAME, "playerBatchDialogue", () => {
         // Reserved for player-specific bust display
+    });
+
+    PluginManager.registerCommand(PLUGIN_NAME, "Rumors", function () {
+        const evId = this._eventId;
+        const ev   = evId ? $gameMap.event(evId) : null;
+        if (ev) ev.turnTowardPlayer();
+
+        const npcName = ev?.event()?.name || null;
+        const EM      = window.NPCEmpathize;
+
+        // For now, talking to any sentient NPC with a society profile plays out
+        // a random Socialize action (the same catalogue the Empathize panel
+        // offers: praise, small talk, comment on weather, insult, ...) instead
+        // of the flat environmental rumour, using the same personality-driven
+        // line banks and opinion math the panel's Socialize actions use, even
+        // though the panel itself was never opened.
+        const profile  = npcName ? window.NPCSocietyRegistry?.getProfile?.(npcName) : null;
+        const sentient = !!(profile && profile.personalityIndex != null && !EM?.isNonSentientNPC?.(npcName));
+        if (sentient && EM && ev) {
+            const steps = buildSocialExchange(ev, npcName, profile);
+            if (steps && startNPCExchange(steps)) {
+                this.setWaitMode('message');
+                return;
+            }
+        }
+
+        // No society profile to draw a Socialize action from (a beast, a
+        // signpost, an unregistered body double): the old flavour-line rumour.
+        let line = pickRumor(rumorPersonalityKey(evId));
+        if (!line) return;
+
+        // A non-sentient creature has no words, only a noise as long as the line
+        // it would have spoken, and whatever it says is kept on its profile so
+        // the Empathize panel shows the same history the message box did.
+        if (npcName && EM?.isNonSentientNPC?.(npcName)) line = EM.growlFor(line) || line;
+        if (npcName) EM?.recordNPCLine?.(npcName, line);
+
+        $gameMessage.setBackground(0);
+        $gameMessage.setPositionType(2);
+        // The bank is already in the player's language; the string-for-string
+        // translation pass would only try to match it again.
+        window.skipLocalization = true;
+        $gameMessage.add(line);
+        window.skipLocalization = false;
+        this.setWaitMode('message');
     });
 
     PluginManager.registerCommand(PLUGIN_NAME, "showCustomBust", (args) => {

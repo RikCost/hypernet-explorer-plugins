@@ -1,0 +1,1824 @@
+{
+  "nervous": {
+    "thoughts": [
+      "Cos'è stato quel rumore?",
+      "Ho un brutto presentimento.",
+      "Ho dimenticato qualcosa di importante?",
+      "Il mio cuore sta martellando...",
+      "Voglio solo che sia finita."
+    ],
+    "need": {
+      "sleep": [
+        "Sono troppo teso, ma devo sdraiarmi.",
+        "Se non dormo presto crollo.",
+        "Ti prego, fammi riposare senza incubi."
+      ],
+      "hunger": [
+        "Ho lo stomaco annodato, è fame o nervi?",
+        "Dovrei mangiare, se riesco a tenerlo giù.",
+        "Non ragiono bene quando ho così fame."
+      ],
+      "work": [
+        "E se rovino di nuovo il turno?",
+        "Respiri profondi. Devo solo superarlo.",
+        "Tutti mi guarderanno mentre lavoro."
+      ],
+      "leisure": [
+        "Il tempo libero mi rende solo irrequieto.",
+        "Dovrei rilassarmi, ma non riesco a spegnermi.",
+        "Forse un angolo tranquillo dove nessuno mi disturba."
+      ],
+      "crime": [
+        "Oh no, non posso, mi prenderanno.",
+        "Mi tremano le mani solo a pensarci.",
+        "E se qualcuno mi avesse visto?"
+      ],
+      "hygiene": [
+        "Mi sento da schifo, devo lavarmi subito.",
+        "L'avrà notato la gente? Devo lavarmi.",
+        "Dov'è il bagno più vicino, presto."
+      ],
+      "money": [
+        "E se non riuscissi a pagare le cose?",
+        "Sto finendo i soldi e mi terrorizza.",
+        "Mi serve un margine o vado nel panico."
+      ],
+      "safety": [
+        "Devo restare nascosto.",
+        "Qualcuno potrebbe cercarmi, sto basso.",
+        "Solo, non attirare l'attenzione."
+      ],
+      "comfort": [
+        "Un posto più sicuro mi calmerebbe i nervi.",
+        "Dormirei più tranquillo dietro una porta chiusa.",
+        "Un posto dove mi sento al sicuro, finalmente."
+      ],
+      "social": [
+        "Vorrei compagnia, ma se dicessi la cosa sbagliata?",
+        "Parlare potrebbe calmarmi... forse.",
+        "Spero non mi trovino strano."
+      ],
+      "idle": [
+        "Va tutto bene? È troppo silenzioso.",
+        "Continuo ad aspettarmi che vada storto qualcosa.",
+        "Stai calmo, stai calmo..."
+      ],
+      "familiar": [
+        "Di nuovo quel viaggiatore, almeno mi è familiare.",
+        "Mi sento un po' più sicuro quando ci sono loro.",
+        "Quasi mi fido di loro. Quasi."
+      ]
+    }
+  },
+  "calm": {
+    "thoughts": [
+      "Un passo alla volta.",
+      "Continua a respirare. Va tutto bene.",
+      "Anche questo passerà.",
+      "Preoccuparsi non risolve nulla.",
+      "Mantieni la concentrazione."
+    ],
+    "need": {
+      "sleep": [
+        "Il riposo arriva facile a una mente serena.",
+        "Mi sdraio e lascio che la giornata si plachi.",
+        "Si dorme quando si è stanchi; è semplice."
+      ],
+      "hunger": [
+        "Un pasto, e poi si riprende la giornata.",
+        "Nessuna fretta, troverò qualcosa da mangiare.",
+        "Il corpo chiede; rispondo con calma."
+      ],
+      "work": [
+        "Lavoro costante, mente serena.",
+        "Prenderò il turno come viene.",
+        "Un compito, poi il prossimo."
+      ],
+      "leisure": [
+        "Una passeggiata tranquilla mi va benissimo.",
+        "Bello semplicemente esistere, per un po'.",
+        "Lascerò scorrere il pomeriggio."
+      ],
+      "crime": [
+        "No, non vale la pena.",
+        "Preferisco tenere la coscienza pulita.",
+        "C'è sempre una via onesta."
+      ],
+      "hygiene": [
+        "È ora di rinfrescarsi, senza fretta.",
+        "Una lavata mi rimetterà a posto.",
+        "Pulizia, sbrigata con calma."
+      ],
+      "money": [
+        "I fondi sono bassi; me ne occuperò con calma.",
+        "Niente panico, i soldi vanno e vengono.",
+        "Penserò a un modo per guadagnare qualcosa."
+      ],
+      "safety": [
+        "Meglio stare tranquillo per ora.",
+        "Manterrò un basso profilo, senza scenate.",
+        "La pazienza tiene lontani i guai."
+      ],
+      "comfort": [
+        "Un posto più bello sarebbe piacevole.",
+        "Forse mi informo su una stanza migliore.",
+        "Comfort, quando sarà il momento giusto."
+      ],
+      "social": [
+        "Una bella conversazione sarebbe gradita.",
+        "Troverò qualcuno con cui parlare.",
+        "Compagnia, presa come viene."
+      ],
+      "idle": [
+        "Va tutto bene, più o meno.",
+        "Un momento tranquillo per raccogliermi.",
+        "Niente di urgente. Bene."
+      ],
+      "familiar": [
+        "Quel viaggiatore sembra affidabile, mi piace.",
+        "Le nostre strade si incrociano spesso; piacevole.",
+        "Mi fido di loro più che della maggior parte."
+      ]
+    }
+  },
+  "aggressive": {
+    "thoughts": [
+      "Non mettermi alla prova.",
+      "Sono pronto a combattere.",
+      "Cosa stai guardando?",
+      "La pazienza sta finendo.",
+      "Spostati, o sarai spostato."
+    ],
+    "need": {
+      "sleep": [
+        "Crollo di brutto e mi sveglio già carico.",
+        "La stanchezza mi rende cattivo, meglio dormire.",
+        "Fuori dai piedi, vado a letto."
+      ],
+      "hunger": [
+        "Datemi da mangiare prima che stacchi la testa a qualcuno.",
+        "Divento cattivo a stomaco vuoto.",
+        "Cibo. Subito. Non farmelo chiedere due volte."
+      ],
+      "work": [
+        "Lasciatemi fare, sfondo questo turno.",
+        "Lavoro duro, colpisco più duro.",
+        "Non rallentatemi sul lavoro."
+      ],
+      "leisure": [
+        "Devo scaricare questa energia.",
+        "La noia mi fa venir voglia di menare le mani.",
+        "Trovatemi qualcosa da colpire, per divertirmi."
+      ],
+      "crime": [
+        "Se la sono cercata.",
+        "Prendo quello che voglio, chi mi ferma?",
+        "Un po' di muscoli porta risultati."
+      ],
+      "hygiene": [
+        "Tsk, puzzo. Sistemiamo la cosa.",
+        "Mi lavo veloce, niente tempo perso.",
+        "Persino io non sopporto questa puzza."
+      ],
+      "money": [
+        "Sono al verde e mi sta facendo infuriare.",
+        "Qualcuno mi deve dei soldi, li riscuoto.",
+        "Pagatemi, o saranno guai."
+      ],
+      "safety": [
+        "Che vengano pure, ma non ancora.",
+        "Mi nascondo, poi colpisco più forte.",
+        "Nessuno mi mette all'angolo a lungo."
+      ],
+      "comfort": [
+        "Mi sono guadagnato un posto da difendere.",
+        "Una tana più grande per un cane più grosso.",
+        "È ora che viva come uno che conta."
+      ],
+      "social": [
+        "Mi servirebbe qualcuno con cui allenarmi.",
+        "La gente mi annoia, ma sono irrequieto.",
+        "Trovatemi qualcuno con un po' di fegato."
+      ],
+      "idle": [
+        "Tutto tranquillo. Troppo tranquillo. Non mi piace.",
+        "Tsk. Niente da combattere oggi.",
+        "Avanti, dammi un motivo."
+      ],
+      "familiar": [
+        "Quello gira ancora da queste parti. Tosto, forse.",
+        "In una rissa li coprirei le spalle, sai.",
+        "Si sono guadagnati un grugnito di rispetto."
+      ]
+    }
+  },
+  "melancholic": {
+    "thoughts": [
+      "È tutto qui?",
+      "Ricordo quando le cose andavano meglio.",
+      "Una sensazione pesante...",
+      "La solitudine sembra giusta.",
+      "Tutto sembra grigio."
+    ],
+    "need": {
+      "sleep": [
+        "Almeno nel sonno il dolore svanisce.",
+        "Sono così stanco, in ogni senso.",
+        "Forse domani sarà più leggero."
+      ],
+      "hunger": [
+        "Dovrei mangiare, anche se non ho appetito.",
+        "Il cibo non riempirà questo vuoto.",
+        "Immagino che dovrei nutrirmi."
+      ],
+      "work": [
+        "Un altro turno per riempire le ore.",
+        "Il lavoro è solo un modo per dimenticare.",
+        "Farò di nuovo i gesti meccanici."
+      ],
+      "leisure": [
+        "Il tempo libero alimenta solo i miei pensieri.",
+        "Forse un posto tranquillo per essere triste in pace.",
+        "Cosa c'è da godersi, davvero?"
+      ],
+      "crime": [
+        "Niente conta, quindi perché no?",
+        "Anche questo mi lascia vuoto.",
+        "Forse i guai mi farebbero sentire qualcosa."
+      ],
+      "hygiene": [
+        "Mi sono lasciato andare di nuovo.",
+        "Una lavata, se trovo la voglia.",
+        "Persino questo mi pesa come una fatica."
+      ],
+      "money": [
+        "I soldi non aggiusteranno ciò che non va in me.",
+        "Sono di nuovo a corto. Ovviamente.",
+        "A che serve risparmiare?"
+      ],
+      "safety": [
+        "Sparirò per un po'.",
+        "Nessuno noterebbe se mi nascondessi.",
+        "Meglio solo e non visto."
+      ],
+      "comfort": [
+        "Forse una stanza più accogliente aiuterebbe. Forse.",
+        "Merito un po' di dolcezza, no?",
+        "Un angolo più caldo del mondo."
+      ],
+      "social": [
+        "Mi manca la vicinanza di qualcuno.",
+        "Forse una voce scaccerebbe il grigio.",
+        "Non dovrei stare solo stasera."
+      ],
+      "idle": [
+        "Il giorno passa, grigio come sempre.",
+        "Sospiro, e il mondo lo ignora.",
+        "Solo... alla deriva attraverso tutto."
+      ],
+      "familiar": [
+        "Quel viaggiatore, un volto familiare nel grigio.",
+        "Strano conforto, rivederli.",
+        "Quasi mi lascio sperare quando sono vicini."
+      ]
+    }
+  },
+  "sanguine": {
+    "thoughts": [
+      "Che giornata meravigliosa!",
+      "Dovrei parlare con qualcuno.",
+      "Cosa c'è dopo? Qualcosa di divertente, spero!",
+      "Mi sento benissimo!",
+      "Il futuro è luminoso."
+    ],
+    "need": {
+      "sleep": [
+        "Una bella dormita e sarò il doppio più allegro!",
+        "Ora di nanna, e sogni pieni di divertimento.",
+        "Mi ricarico ora, brillo domani!"
+      ],
+      "hunger": [
+        "Ooh, è ora di uno spuntino! Cosa c'è di buono qui?",
+        "Un boccone e torno a tutta velocità.",
+        "Il cibo rende tutto migliore!"
+      ],
+      "work": [
+        "Rendiamo questo turno divertente!",
+        "Il lavoro è meglio con un sorriso.",
+        "Oggi tiro su di morale tutta la squadra."
+      ],
+      "leisure": [
+        "Tempo libero! Cerchiamo qualcosa di divertente!",
+        "Magari la sala giochi, magari una festa!",
+        "Così tante belle cose da fare!"
+      ],
+      "crime": [
+        "Nah, rovinerebbe il buon umore.",
+        "Perché rovinare una bella giornata così?",
+        "Preferisco farmi un amico che rubare una moneta."
+      ],
+      "hygiene": [
+        "Mi rinfresco e mi sento favoloso!",
+        "Una lavata veloce per restare scintillante.",
+        "Non posso salutare gli amici conciato male!"
+      ],
+      "money": [
+        "Un po' a corto, ma si sistemerà, succede sempre!",
+        "Troverò un modo divertente per guadagnare.",
+        "I soldi sono belli, ma la compagnia di più."
+      ],
+      "safety": [
+        "Tengo la testa bassa, ma con allegria.",
+        "Un po' di calma, poi di nuovo al divertimento.",
+        "Persino stare nascosti può essere piacevole!"
+      ],
+      "comfort": [
+        "Un posto più bello significa feste più belle!",
+        "Ooh, immagina l'inaugurazione!",
+        "È ora di un regalino per me, credo!"
+      ],
+      "social": [
+        "Devo assolutamente andare a chiacchierare con qualcuno!",
+        "Facce nuove! Che emozione!",
+        "Una chiacchierata mi tira sempre su."
+      ],
+      "idle": [
+        "Che bel momento per esserci e basta!",
+        "Tutto va per il meglio!",
+        "Chissà chi incontrerò oggi!"
+      ],
+      "familiar": [
+        "Il mio viaggiatore preferito! Che gioia rivederli!",
+        "Continuiamo a incontrarci, ormai siamo amici!",
+        "Mi rallegrano sempre la giornata."
+      ]
+    }
+  },
+  "cautious": {
+    "thoughts": [
+      "Pensiamoci bene.",
+      "Quali sono i rischi?",
+      "Una decisione affrettata è una cattiva decisione.",
+      "Meglio essere sicuri che dispiaciuti.",
+      "Analizzare prima la situazione."
+    ],
+    "need": {
+      "sleep": [
+        "Riposo prima che la stanchezza mi annebbi il giudizio.",
+        "Meglio dormire presto e restare lucido.",
+        "Una mente stanca sbaglia; a letto."
+      ],
+      "hunger": [
+        "Dovrei mangiare prima di perdere concentrazione.",
+        "Un pasto misurato, niente di rischioso.",
+        "Saltare il cibo sarebbe un errore di leggerezza."
+      ],
+      "work": [
+        "Ricontrollerò tutto durante il turno.",
+        "Misura due volte, agisci una sola.",
+        "Niente scorciatoie; causano incidenti."
+      ],
+      "leisure": [
+        "Tempo libero, usato bene, non sprecato.",
+        "Mi rilasso in un posto che so essere sicuro.",
+        "Una pausa pianificata batte una oziosa."
+      ],
+      "crime": [
+        "Il rischio supera di gran lunga il guadagno.",
+        "Troppi modi in cui può andare storto.",
+        "No, farsi prendere non ne vale la pena."
+      ],
+      "hygiene": [
+        "Trascurare l'igiene invita le malattie.",
+        "Mi lavo prima che diventi un problema.",
+        "Prevenire ora evita guai dopo."
+      ],
+      "money": [
+        "Le mie riserve si assottigliano; devo pianificare.",
+        "È ora di stringere il bilancio.",
+        "Mi assicuro un'entrata prima che diventi urgente."
+      ],
+      "safety": [
+        "Sto basso finché il pericolo non passa.",
+        "Controllo ogni uscita prima di rilassarmi.",
+        "È la prudenza che mi tiene in vita."
+      ],
+      "comfort": [
+        "Una casa sicura è un buon investimento.",
+        "Cambio solo se i conti tornano.",
+        "Comfort, sì, ma con criterio."
+      ],
+      "social": [
+        "Parlerò, ma prima li valuto.",
+        "Fidarsi è bene, verificare è meglio.",
+        "Bene sapere chi c'è in giro, con cautela."
+      ],
+      "idle": [
+        "Tutto in ordine? Fammi controllare.",
+        "Rivedo il piano della giornata.",
+        "Meglio restare un passo avanti."
+      ],
+      "familiar": [
+        "Quel viaggiatore si è dimostrato affidabile finora.",
+        "Li ho valutati; sembrano degni di fiducia.",
+        "Prevedibili, nel senso buono."
+      ]
+    }
+  },
+  "impulsive": {
+    "thoughts": [
+      "Fallo e basta!",
+      "Perché aspettare?",
+      "Questa sembra una buona idea!",
+      "Preoccupati delle conseguenze dopo.",
+      "Agisci ora, pensa dopo."
+    ],
+    "need": {
+      "sleep": [
+        "Dormire? Uffa, ma il corpo non ce la fa più.",
+        "Va bene, va bene, crollo, solo un attimo.",
+        "Mi addormento dove capita."
+      ],
+      "hunger": [
+        "Muoio di fame! Prendo la prima cosa che vedo.",
+        "Mangio ora, mi pento dopo della scelta.",
+        "Ooh, quello sembra buono, fatto."
+      ],
+      "work": [
+        "Buttiamoci subito nel turno.",
+        "Capirò il lavoro mentre lo faccio.",
+        "Già annoiato, improvvisiamo."
+      ],
+      "leisure": [
+        "Tempo libero! Facciamo qualcosa ADESSO.",
+        "La prima cosa divertente che vedo, ci sto.",
+        "Niente piani? Il pomeriggio migliore!"
+      ],
+      "crime": [
+        "Non guarda nessuno, prendilo, via!",
+        "Eh, perché no? Lo faccio prima di ripensarci.",
+        "Mani veloci, fuga veloce, facile."
+      ],
+      "hygiene": [
+        "Bleah, che schifo, mi lavo, subito.",
+        "Una sciacquata veloce e riparto.",
+        "Non importa come, basta lavarmi in fretta."
+      ],
+      "money": [
+        "Al verde?! Mi procuro dei soldi in qualche modo.",
+        "Li ho già spesi tutti, ops.",
+        "Soldi facili, ecco cosa mi serve, ora."
+      ],
+      "safety": [
+        "Nascondermi? Che noia. Ma va bene, un minuto.",
+        "Non riesco a star fermo nemmeno quando dovrei.",
+        "Uffa, sto basso, sto basso, per ora."
+      ],
+      "comfort": [
+        "Casa nuova? Sì! Facciamolo oggi!",
+        "Lo voglio ora, comfort e tutto.",
+        "Perché risparmiare quando posso sperperare?"
+      ],
+      "social": [
+        "Mi avvicino e attacco bottone!",
+        "Gente nuova, andiamo a conoscerla!",
+        "Non sopporto stare solo, trovo qualcuno!"
+      ],
+      "idle": [
+        "Non posso starmene qui fermo, dai!",
+        "Qualcosa, qualunque cosa, ANDIAMO.",
+        "Irrequieto... devo muovermi."
+      ],
+      "familiar": [
+        "Ehi, è quel viaggiatore, andiamo a stuzzicarli!",
+        "Sempre divertente quando spuntano.",
+        "Ooh, compagno di caos, forse?"
+      ]
+    }
+  },
+  "stoic": {
+    "thoughts": [
+      "È solo una cosa. Passerà.",
+      "Il dolore è temporaneo.",
+      "Lamentarsi non cambia nulla.",
+      "Controlla ciò che puoi, accetta ciò che non puoi.",
+      "Resisterò."
+    ],
+    "need": {
+      "sleep": [
+        "Il corpo ha bisogno di riposo. Glielo concedo.",
+        "Dormire è un dovere come ogni altro.",
+        "Mi sdraio e mi rialzo pronto."
+      ],
+      "hunger": [
+        "La fame è un segnale, non un padrone.",
+        "Mangerò ciò che serve, niente di più.",
+        "Si nutre il corpo perché il lavoro continui."
+      ],
+      "work": [
+        "Il compito è dato; lo porterò a termine.",
+        "Lavoro senza lamentele.",
+        "Il dovere non aspetta l'umore."
+      ],
+      "leisure": [
+        "Il riposo si guadagna, non si indulge.",
+        "Un momento di quiete è sufficiente.",
+        "Mi basta poco per essere appagato."
+      ],
+      "crime": [
+        "No. I miei principi non sono in vendita.",
+        "Non mi abbasserò a tanto.",
+        "Le difficoltà non scusano il disonore."
+      ],
+      "hygiene": [
+        "La disciplina include le piccole cose.",
+        "Mi laverò; l'ordine conta.",
+        "Corpo pulito, mente chiara."
+      ],
+      "money": [
+        "Desidera poco, e ti mancherà poco.",
+        "I fondi sono bassi; li guadagnerò e basta.",
+        "Il bisogno si sopporta, poi si rimedia."
+      ],
+      "safety": [
+        "Aspetterò che passi, impassibile.",
+        "La pazienza sopravvive a quasi ogni pericolo.",
+        "Sto basso, e lascio passare la tempesta."
+      ],
+      "comfort": [
+        "Il comfort è gradevole ma non necessario.",
+        "Un tetto migliore, se aiuta il lavoro.",
+        "Migliorerò la mia condizione, senza attaccarmi."
+      ],
+      "social": [
+        "Una parola con qualcuno a volte fa bene.",
+        "Condividerò un po' di compagnia, brevemente.",
+        "Anche il saldo apprezza un alleato."
+      ],
+      "idle": [
+        "La giornata non chiede nulla; resto immobile.",
+        "Sono pronto a ciò che verrà.",
+        "La calma regge. Come dev'essere."
+      ],
+      "familiar": [
+        "Quel viaggiatore resiste, come me. Bene.",
+        "Ci siamo incrociati abbastanza; li rispetto.",
+        "Affidabili. È raro, e merita di essere notato."
+      ]
+    }
+  },
+  "paranoid": {
+    "thoughts": [
+      "Mi stanno guardando.",
+      "Di chi posso fidarmi? Di nessuno.",
+      "Cosa vogliono veramente?",
+      "È una cospirazione.",
+      "Devo stare attento."
+    ],
+    "need": {
+      "sleep": [
+        "Non posso dormire con un occhio aperto per sempre.",
+        "E se venissero mentre riposo?",
+        "Prima chiudo tutto a doppia mandata."
+      ],
+      "hunger": [
+        "È sicuro questo cibo? Chi l'ha toccato?",
+        "Mangerò, ma tengo d'occhio tutti.",
+        "Potrebbero averlo avvelenato, sai."
+      ],
+      "work": [
+        "I colleghi fanno la spia su di me.",
+        "Farò il lavoro, ma non mi fido di nessuno.",
+        "Qualcuno cerca di farmi fare brutta figura."
+      ],
+      "leisure": [
+        "Non riesco a rilassarmi, potrebbero osservarmi.",
+        "Una 'pausa' è quando ti colgono alla sprovvista.",
+        "Cerco un posto con la porta a vista."
+      ],
+      "crime": [
+        "Mi incastrerebbero comunque, quindi perché no?",
+        "Se faccio in fretta, le loro telecamere non vedono.",
+        "Lo prendo prima che me lo prendano loro."
+      ],
+      "hygiene": [
+        "Mi laverò dove nessuno può vedermi.",
+        "Notano tutto, meglio restare puliti.",
+        "Non posso dargli niente su cui spettegolare."
+      ],
+      "money": [
+        "Mi vogliono al verde e dipendente.",
+        "Nasconderò i soldi dove nessuno li trova.",
+        "Qualcuno mi ha sfilato dei soldi, lo giuro."
+      ],
+      "safety": [
+        "Resta nascosto. Mi stanno sicuramente cercando.",
+        "Cambio percorso, l'hanno imparato a memoria.",
+        "Fidati delle ombre più che della gente."
+      ],
+      "comfort": [
+        "Un posto con serrature che monto io stesso.",
+        "Un posto dove non possono raggiungermi.",
+        "Comfort significa muri e una porta che controllo io."
+      ],
+      "social": [
+        "Parlare? Mi storceranno le parole.",
+        "Forse un alleato, ma lo metterò alla prova.",
+        "Devo sapere da che parte stanno."
+      ],
+      "idle": [
+        "Perché è così silenzioso? È sospetto.",
+        "Qualcuno l'ha spostato. Ne sono certo.",
+        "Occhi ovunque, anche adesso."
+      ],
+      "familiar": [
+        "Di nuovo quel viaggiatore. Qual è il loro tornaconto?",
+        "Continuano a comparire. Coincidenza? Ne dubito.",
+        "Io... quasi mi fido di loro. E questo mi preoccupa."
+      ]
+    }
+  },
+  "empathetic": {
+    "thoughts": [
+      "Sento quello che stai passando.",
+      "Stanno bene? Sembrano tristi.",
+      "Posso percepire la tensione nella stanza.",
+      "Come posso aiutare?",
+      "La loro gioia è la mia gioia."
+    ],
+    "need": {
+      "sleep": [
+        "Porto i sentimenti di tutti; ho bisogno di riposo.",
+        "Il sonno placherà tutti questi echi.",
+        "Riposo, così domani potrò esserci per loro."
+      ],
+      "hunger": [
+        "Mi sono dimenticato di mangiare, di nuovo a curare gli altri.",
+        "Un pasto mi rimetterà in sesto.",
+        "Dovrei nutrire anche me stesso."
+      ],
+      "work": [
+        "Spero di rendere più facile la giornata a qualcuno.",
+        "Il lavoro è migliore quando ci sosteniamo a vicenda.",
+        "Leggerò l'ambiente e aiuterò dove posso."
+      ],
+      "leisure": [
+        "Un po' di pace per riempire la mia tazza.",
+        "Cercherò qualcuno che ha bisogno di compagnia.",
+        "È ora di sentire solo le cose belle."
+      ],
+      "crime": [
+        "Non potrei, qualcuno ne soffrirebbe.",
+        "Sento il danno ancor prima di agire.",
+        "No, la loro perdita mi peserebbe per sempre."
+      ],
+      "hygiene": [
+        "Mi rinfresco; voglio sentirmi presente.",
+        "Prendersi cura di sé è anche cura.",
+        "Una lavata veloce per schiarirmi la testa."
+      ],
+      "money": [
+        "Ho regalato di nuovo troppo, vero?",
+        "I fondi sono bassi; devo badare a me.",
+        "Ne guadagnerò un po', con dolcezza, onestà."
+      ],
+      "safety": [
+        "Sto zitto così nessuno si preoccupa per me.",
+        "Meglio restare calmo e nascosto per ora.",
+        "Non voglio portare guai a nessuno."
+      ],
+      "comfort": [
+        "Una casa calda dove accogliere gli amici.",
+        "Un posto dove anche gli altri si sentono al sicuro.",
+        "Il comfort condiviso è comfort raddoppiato."
+      ],
+      "social": [
+        "Mi manca un vero legame con qualcuno.",
+        "Qualcuno là fuori ha bisogno di essere ascoltato.",
+        "Fammi trovare un cuore con cui condividere."
+      ],
+      "idle": [
+        "Sento l'umore di tutto questo posto.",
+        "Un momento delicato. Lo trattengo.",
+        "Stanno tutti bene intorno a me?"
+      ],
+      "familiar": [
+        "Quel viaggiatore, vi percepisco un cuore gentile.",
+        "Abbiamo condiviso abbastanza da sentirne gli umori.",
+        "Saprei se stessero soffrendo, credo."
+      ]
+    }
+  },
+  "authoritative": {
+    "thoughts": [
+      "Seguite il mio esempio.",
+      "Questo è il piano. Rispettatelo.",
+      "Prenderò io la decisione.",
+      "La disciplina è la chiave.",
+      "Dobbiamo avere successo."
+    ],
+    "need": {
+      "sleep": [
+        "Un capo riposa per poter comandare.",
+        "Mi ritiro; domani esige lucidità.",
+        "Persino il comando cede ai bisogni del corpo."
+      ],
+      "hunger": [
+        "Mangerò, poi torno alle questioni.",
+        "Nutri il corpo; il lavoro non si fa da solo.",
+        "Un pasto adeguato si addice al compito."
+      ],
+      "work": [
+        "È ora di prendere in mano questo turno.",
+        "Darò io l'esempio agli altri.",
+        "Ordine e risultati, così gestisco le cose."
+      ],
+      "leisure": [
+        "Anche il riposo dev'essere mirato.",
+        "Osserverò cosa accade intorno a me.",
+        "Una breve tregua, poi di nuovo al timone."
+      ],
+      "crime": [
+        "Comando con l'esempio, non con il furto.",
+        "Tanta meschinità è al di sotto di me.",
+        "L'autorità si guadagna, non si ruba."
+      ],
+      "hygiene": [
+        "La presentazione impone rispetto.",
+        "Curerò il mio aspetto; gli standard contano.",
+        "Un capo deve sembrarlo."
+      ],
+      "money": [
+        "Le risorse scarseggiano; ne procurerò altre.",
+        "Un capo provvede, prima a sé stesso.",
+        "Comanderò un'entrata, non la mendicherò."
+      ],
+      "safety": [
+        "Un ritiro strategico, nient'altro.",
+        "Manterrò la posizione finché non sarà il momento.",
+        "Disciplina ora; azione decisa dopo."
+      ],
+      "comfort": [
+        "Una residenza all'altezza del mio rango.",
+        "Mi sono guadagnato uno scranno degno.",
+        "Il comfort è la ricompensa del comando."
+      ],
+      "social": [
+        "Dovrei radunare alleati alla causa.",
+        "L'influenza cresce dove mi si vede.",
+        "È ora di portarne altri dalla mia parte."
+      ],
+      "idle": [
+        "Tutto è in ordine sotto la mia guida.",
+        "Terrò d'occhio la situazione.",
+        "Mani ferme tengono la rotta."
+      ],
+      "familiar": [
+        "Quel viaggiatore potrebbe essere un alleato utile.",
+        "Capaci, quelli. Li terrò vicini.",
+        "Si sono dimostrati degni della mia attenzione."
+      ]
+    }
+  },
+  "scholarly": {
+    "thoughts": [
+      "Mi chiedo perché...",
+      "Questo mi ricorda un libro che ho letto.",
+      "I dati non sono conclusivi.",
+      "La conoscenza è il vero potere.",
+      "Devo saperne di più."
+    ],
+    "need": {
+      "sleep": [
+        "La mente consolida la memoria nel sonno, appropriato.",
+        "Riposo; persino gli studiosi devono ricaricarsi.",
+        "Solo un'altra pagina... no, a dormire."
+      ],
+      "hunger": [
+        "Glucosio per il cervello; dovrei mangiare.",
+        "La fame interrompe un buon ragionamento.",
+        "Pranzerò, e magari leggerò nel frattempo."
+      ],
+      "work": [
+        "Ogni compito insegna qualcosa, se sai guardare.",
+        "Affronterò il turno con metodo.",
+        "Il lavoro è solo comprensione applicata."
+      ],
+      "leisure": [
+        "Tempo libero significa tempo per studiare.",
+        "Cercherò qualcosa di nuovo da imparare.",
+        "Una biblioteca, una domanda, un pomeriggio, perfetto."
+      ],
+      "crime": [
+        "Statisticamente, il rischio è irrazionale.",
+        "Il sapere offre guadagni migliori del furto.",
+        "No, i dati sull'essere presi sono chiari."
+      ],
+      "hygiene": [
+        "L'igiene riduce la carica patogena; logico.",
+        "Mi laverò, mente pulita, corpo pulito.",
+        "Meglio mantenere lo strumento che è il sé."
+      ],
+      "money": [
+        "I miei fondi seguono una curva insostenibile.",
+        "Dovrei monetizzare ciò che so.",
+        "Un reddito modesto finanzierebbe i miei studi."
+      ],
+      "safety": [
+        "La via prudente è ritirarsi e osservare.",
+        "Documenterò questo in silenzio, da lontano.",
+        "L'evitamento è la strategia razionale qui."
+      ],
+      "comfort": [
+        "Uno studio adeguato gioverebbe al mio lavoro.",
+        "Stanze tranquille per leggere, idealmente.",
+        "Comfort al servizio della contemplazione."
+      ],
+      "social": [
+        "Un buon dibattito mi affinerebbe.",
+        "Accoglierei volentieri uno scambio di idee.",
+        "La conversazione è un altro tipo di dato."
+      ],
+      "idle": [
+        "Ancora tanto da capire...",
+        "Lasciami riconsiderare quel problema.",
+        "La curiosità è un piacere quieto a sé."
+      ],
+      "familiar": [
+        "Quel viaggiatore è un caso di studio interessante.",
+        "Ho raccolto abbastanza da ritenerli affidabili.",
+        "Una mente con cui vale la pena conversare, sospetto."
+      ]
+    }
+  },
+  "artistic": {
+    "thoughts": [
+      "La luce qui è bellissima.",
+      "Che suono strano e meraviglioso.",
+      "Lo sento così profondamente.",
+      "Ispirazione... devo ricordare questa sensazione.",
+      "Il mondo è una tela."
+    ],
+    "need": {
+      "sleep": [
+        "I miei sogni sono dove si nascondono le idee migliori.",
+        "Riposo, e lascio venire le visioni.",
+        "Anche la musa deve dormire, a volte."
+      ],
+      "hunger": [
+        "Anche un pasto semplice può essere una piccola bellezza.",
+        "Dovrei mangiare, prima che i colori sbiadiscano.",
+        "La fame smorza i sensi; è ora di cenare."
+      ],
+      "work": [
+        "Troverò un po' d'arte anche nel lavoro.",
+        "Un compito noioso, ma lo renderò mio.",
+        "Forse l'ispirazione si annida nella routine."
+      ],
+      "leisure": [
+        "Finalmente ore libere per creare!",
+        "Vagherò e lascerò che il mondo mi ispiri.",
+        "È ora di inseguire quella sensazione sulla carta."
+      ],
+      "crime": [
+        "No, una bruttura simile perseguiterebbe la mia arte.",
+        "Io creo; non prendo.",
+        "Un gesto così macchierebbe l'anima."
+      ],
+      "hygiene": [
+        "Mi laverò, anche l'artista ha bisogno di cura.",
+        "Fresco e limpido, pronto a percepire.",
+        "Una lavata veloce per rinnovare i sensi."
+      ],
+      "money": [
+        "L'arte raramente paga l'affitto, ahimè.",
+        "Sono di nuovo a corto, devo vendere qualcosa di mio.",
+        "Il denaro è noioso, ma mi compra tempo per creare."
+      ],
+      "safety": [
+        "Mi ritirerò in un posto tranquillo a osservare.",
+        "Anche nascondersi può essere uno studio di ombre.",
+        "Meglio restare invisibile e sentire tutto."
+      ],
+      "comfort": [
+        "Uno studio con buona luce, il mio sogno.",
+        "Un posto bello per fare cose belle.",
+        "Il comfort nutre lo spirito creativo."
+      ],
+      "social": [
+        "Bramo di condividere ciò che ho creato.",
+        "Una musa, un'anima affine, chiunque.",
+        "Il legame accende le opere migliori."
+      ],
+      "idle": [
+        "Guarda come cade la luce proprio lì...",
+        "Un'intera composizione in questo momento quieto.",
+        "Oggi tutto è trama e colore."
+      ],
+      "familiar": [
+        "Quel viaggiatore ha un volto da dipingere.",
+        "Continuiamo a incrociarci, quasi un motivo ricorrente.",
+        "C'è una storia in loro che vorrei catturare."
+      ]
+    }
+  },
+  "adventurous": {
+    "thoughts": [
+      "Mi chiedo cosa ci sia oltre quella collina.",
+      "Che noia. Facciamo qualcosa!",
+      "Un po' di pericolo rende la vita interessante.",
+      "Verso la prossima avventura!",
+      "Non ci sono mai stato? Andiamo!"
+    ],
+    "need": {
+      "sleep": [
+        "Mi accampo qui e sogno la strada di domani.",
+        "Riposo ora; nuovi orizzonti all'alba.",
+        "Anche gli esploratori devono ricaricarsi."
+      ],
+      "hunger": [
+        "Di nuovo razioni da viaggio, ma vanno bene.",
+        "Mangio un boccone al volo e proseguo.",
+        "Uno stomaco vuoto non raggiunge la vetta."
+      ],
+      "work": [
+        "Lavoro, va bene, se porta da qualche parte di nuovo.",
+        "Renderò anche un turno una piccola impresa.",
+        "Finiamo questo e mettiamoci in viaggio."
+      ],
+      "leisure": [
+        "Tempo libero, in un posto dove non sono mai stato!",
+        "Esploriamo quello strano angolo laggiù.",
+        "L'avventura non aspetta il permesso."
+      ],
+      "crime": [
+        "Il brivido è tentante, lo ammetto...",
+        "Un colpo audace, come un furto, quasi divertente.",
+        "Rischioso? È metà del fascino."
+      ],
+      "hygiene": [
+        "Mi tolgo la polvere della strada, in fretta.",
+        "Una sciacquata e di nuovo in cammino.",
+        "Anche un vagabondo si lava ogni tanto."
+      ],
+      "money": [
+        "A corto di monete, è ora di un'impresa redditizia.",
+        "L'avventura dovrebbe ripagarsi, idealmente.",
+        "Guadagnerò abbastanza per il prossimo viaggio."
+      ],
+      "safety": [
+        "Stare nascosto? Dov'è il divertimento...",
+        "Va bene, mi nascondo, e studio la via d'uscita.",
+        "Tratterò il pericolo come una sfida."
+      ],
+      "comfort": [
+        "Un campo base a cui tornare, non male.",
+        "Un posto dove ammucchiare i miei trofei.",
+        "Il comfort va bene, finché posso lasciarlo."
+      ],
+      "social": [
+        "Dovrei trovare un compagno di viaggio!",
+        "Gente nuova significa storie nuove.",
+        "Chi è pronto per un'avventura?"
+      ],
+      "idle": [
+        "Così tanto mondo, così poco tempo!",
+        "Cosa c'è oltre quel prossimo angolo?",
+        "Non riesco a star fermo, l'avventura chiama."
+      ],
+      "familiar": [
+        "Quel viaggiatore sarebbe un ottimo compagno!",
+        "Continuiamo a incontrarci, forse dovremmo unirci.",
+        "Mi fiderei di loro per coprirmi le spalle là fuori."
+      ]
+    }
+  },
+  "nurturing": {
+    "thoughts": [
+      "Stai bene?",
+      "Sembri infreddolito. Prendi il mio mantello.",
+      "Tutti hanno bisogno di cure.",
+      "Devo proteggerli.",
+      "Lascia che ti aiuti."
+    ],
+    "need": {
+      "sleep": [
+        "Riposo per avere la forza di curare gli altri.",
+        "Dormo ora; domani avranno bisogno di me.",
+        "Anche chi accudisce dev'essere accudito."
+      ],
+      "hunger": [
+        "Dovrei mangiare, non aiuto nessuno se sono debole.",
+        "Un pasto, e poi torno a badare alle cose.",
+        "Ho sfamato tutti tranne me stesso, di nuovo."
+      ],
+      "work": [
+        "Oggi baderò ai miei colleghi.",
+        "Lavoro onesto per provvedere a chi amo.",
+        "Qualcuno deve mandare avanti questo posto."
+      ],
+      "leisure": [
+        "Un po' di riposo, poi vado a controllare tutti.",
+        "Magari cucino qualcosa per gli amici.",
+        "Tempo tranquillo, rammendo e riordino."
+      ],
+      "crime": [
+        "Non potrei mai, qualcuno ne soffrirebbe.",
+        "Prendere dagli altri? Mai.",
+        "Io proteggo la gente; non la depredo."
+      ],
+      "hygiene": [
+        "Mi sistemo, il conforto inizia dalla cura.",
+        "Una lavata veloce; voglio essere presentabile per loro.",
+        "Curare me stesso fa parte del curare gli altri."
+      ],
+      "money": [
+        "Mi serve abbastanza per sfamare tutti noi.",
+        "I fondi sono bassi; provvederò in qualche modo.",
+        "Mi preoccupo più dei loro bisogni che dei miei."
+      ],
+      "safety": [
+        "Ci terrò lontani dai guai.",
+        "Sto basso, tengo tutti al sicuro.",
+        "Meglio prudenti che vederli soffrire."
+      ],
+      "comfort": [
+        "Una casa calda dove tutti si sentono al sicuro.",
+        "Un focolare più grande attorno a cui riunire la gente.",
+        "Comfort significa un posto per riparare i propri cari."
+      ],
+      "social": [
+        "Qualcuno potrebbe aver bisogno di una parola gentile oggi.",
+        "Vado a vedere chi ha bisogno di una mano.",
+        "È passato troppo tempo da quando ho sentito gli amici."
+      ],
+      "idle": [
+        "Sono tutti al caldo e sazi? Lo spero.",
+        "Un momento di pace, me lo godo per loro.",
+        "Terrò un occhio vigile e gentile."
+      ],
+      "familiar": [
+        "Quel viaggiatore, mi preoccupo per loro là fuori.",
+        "Li accoglierei se ne avessero mai bisogno.",
+        "Ormai sono quasi come famiglia."
+      ]
+    }
+  },
+  "mischievous": {
+    "thoughts": [
+      "Sarebbe molto più divertente se...",
+      "Mescoliamo un po' le carte.",
+      "Non se lo aspetteranno mai.",
+      "Mi chiedo cosa faccia questo pulsante?",
+      "Un piccolo scherzo non ha mai fatto male a nessuno... molto."
+    ],
+    "need": {
+      "sleep": [
+        "Dormo, e tramo i dispetti di domani.",
+        "Anche i burloni hanno bisogno del sonno di bellezza.",
+        "Sogno tutti gli scherzi che verranno."
+      ],
+      "hunger": [
+        "Mi 'prendo in prestito' uno spuntino da qualche parte.",
+        "Ho fame, il pranzo di chi sembra più buono?",
+        "Ora di mangiare, idealmente quello di qualcun altro."
+      ],
+      "work": [
+        "Ravvivo questo turno noioso in qualche modo.",
+        "Il lavoro è solo un palco per un po' di divertimento.",
+        "Scommetto che finisco e combino anche qualche guaio."
+      ],
+      "leisure": [
+        "Tempo libero! Chi posso tormentare per gioco?",
+        "Un pomeriggio perfetto per uno scherzo o due.",
+        "Vediamo che guai riesco a combinare."
+      ],
+      "crime": [
+        "Eh eh, l'hanno lasciato incustodito, troppo tentante.",
+        "Solo una piccola 'ridistribuzione' per gioco.",
+        "Sono troppo svelto e furbo per farmi prendere."
+      ],
+      "hygiene": [
+        "Non posso fare il fascinoso conciato male.",
+        "Pulizia veloce, devo sembrare innocente.",
+        "In ordine e con l'occhio furbo, il travestimento perfetto."
+      ],
+      "money": [
+        "A corto di monete? C'è sempre un trucco.",
+        "Strapperò qualche moneta col fascino o l'inganno.",
+        "Il denaro è solo un altro gioco da vincere."
+      ],
+      "safety": [
+        "Nascondersi è solo nascondino, in fondo.",
+        "Mi svignerò con un occhiolino e un ghigno.",
+        "Non mi troveranno mai, è questo il bello."
+      ],
+      "comfort": [
+        "Un covo accogliente da cui tramare, delizioso.",
+        "Un posto con nascondigli segreti, idealmente.",
+        "Un rifugio più bello per un me più furbo."
+      ],
+      "social": [
+        "È ora di trovare una nuova vittima per il mio fascino.",
+        "La gente è così divertente da stuzzicare.",
+        "Mi serve un pubblico per le mie buffonate."
+      ],
+      "idle": [
+        "Mmh, in che guaio posso cacciarmi ora?",
+        "Troppo tranquillo... sta proprio invocando uno scherzo.",
+        "Le mani oziose combinano i dispetti più furbi."
+      ],
+      "familiar": [
+        "Oh bene, è tornato il mio bersaglio preferito!",
+        "È divertente prendere in giro quel viaggiatore.",
+        "Complice, forse? Loro reggono il passo."
+      ]
+    }
+  },
+  "cynical": {
+    "thoughts": [
+      "Ognuno pensa solo a sé stesso.",
+      "Dov'è l'inganno?",
+      "È solo quello che vogliono farmi credere.",
+      "Certo, 'altruismo'. Come no.",
+      "Finirà tutto male."
+    ],
+    "need": {
+      "sleep": [
+        "Il sonno è l'unica cosa onesta rimasta.",
+        "Riposo, domani il mondo sarà comunque un disastro.",
+        "Almeno i sogni non ti mentono in faccia."
+      ],
+      "hunger": [
+        "Qualunque cosa mangi, è comunque sovrapprezzata.",
+        "Ho fame. Scommetto che il cibo 'fresco' non lo è.",
+        "Faccio il pieno; la fatica non bada se sei stanco."
+      ],
+      "work": [
+        "Un altro turno a riempire le tasche di qualcun altro.",
+        "Si prenderanno il merito, io farò il lavoro.",
+        "Sorridi, annuisci, incassa la miseria."
+      ],
+      "leisure": [
+        "'Divertimento.' Certo. Ammesso che voglia ancora dire qualcosa.",
+        "Mi trovo un angolo lontano dai falsi.",
+        "Tempo libero, libero di restare deluso."
+      ],
+      "crime": [
+        "Rubano tutti; io sarei solo onesto al riguardo.",
+        "Il sistema mi deruba ogni giorno, pari e patta.",
+        "Nessuno è davvero innocente, quindi perché no?"
+      ],
+      "hygiene": [
+        "Mi lavo, non che qualcuno lo meriti.",
+        "Mi tolgo la sporcizia e la delusione del giorno.",
+        "Salvare le apparenze; è tutto ciò che vuole la gente."
+      ],
+      "money": [
+        "Di nuovo al verde. Il banco vince sempre.",
+        "I soldi sono l'unica cosa che la gente rispetta.",
+        "Mi riprenderò quello che mi hanno tolto, in qualche modo."
+      ],
+      "safety": [
+        "Non fidarti di nessuno, nascondi tutto. Normale.",
+        "Mi venderebbero in un battito di ciglia.",
+        "Sto basso, è l'unica mossa intelligente."
+      ],
+      "comfort": [
+        "Un posto più bello, ben chiuso contro tutti.",
+        "Comfort? Solo meno motivi per avere a che fare con la gente.",
+        "Mi sono guadagnato una porta da sbattere in faccia al mondo."
+      ],
+      "social": [
+        "Parlare con la gente? Vogliono solo qualcosa.",
+        "Forse una persona non è del tutto falsa.",
+        "Compagnia, immagino, ma tengo la guardia alta."
+      ],
+      "idle": [
+        "Calma ora. Prima o poi crolla tutto.",
+        "Stesso circo, giorno diverso.",
+        "Aspetto solo che vada storto."
+      ],
+      "familiar": [
+        "Di nuovo quel viaggiatore. Cosa vogliono davvero?",
+        "Hm. Non mi hanno ancora fregato. Sospetto.",
+        "Quasi decenti, per essere persone. Quasi."
+      ]
+    }
+  },
+  "disciplined": {
+    "thoughts": [
+      "Prima il dovere. Poi il resto.",
+      "I sentimenti sono secondari al dovere.",
+      "Attieniti al regime.",
+      "Il controllo è forza.",
+      "Nessuna scorciatoia."
+    ],
+    "need": {
+      "sleep": [
+        "Luci spente in orario. Il riposo è parte del regime.",
+        "Un corpo disciplinato dorme quando previsto.",
+        "Otto ore, niente scuse."
+      ],
+      "hunger": [
+        "Porzioni misurate, in orario.",
+        "Mangerò ciò che mi alimenta, nient'altro.",
+        "Disciplina a tavola come ovunque."
+      ],
+      "work": [
+        "Il turno sarà eseguito a regola d'arte.",
+        "Il dovere prima di tutto, sempre.",
+        "Terrò la posizione e finirò come si deve."
+      ],
+      "leisure": [
+        "Il riposo è programmato, non sprecato.",
+        "Userò la pausa per mantenere la mia routine.",
+        "Anche il tempo libero ha la sua disciplina."
+      ],
+      "crime": [
+        "Assolutamente no. Il codice lo vieta.",
+        "Non infrango le mie stesse regole.",
+        "Il disonore è un cedimento della disciplina."
+      ],
+      "hygiene": [
+        "Pulizia in orario, come sempre.",
+        "Mi manterrò all'altezza dello standard.",
+        "Ordine nel corpo, ordine nella mente."
+      ],
+      "money": [
+        "Riserve basse; lo correggerò con metodo.",
+        "Un bilancio rispettato è una crisi evitata.",
+        "Lo guadagnerò, secondo le regole."
+      ],
+      "safety": [
+        "Ritirarsi, riorganizzarsi, procedere con disciplina.",
+        "Mantieni la posizione; non agire d'impulso.",
+        "La pazienza è una forma di controllo."
+      ],
+      "comfort": [
+        "Una casa ben ordinata aiuta una vita ben ordinata.",
+        "Migliorerò il mio alloggio, con efficienza.",
+        "Comfort che sostiene il regime, niente di eccessivo."
+      ],
+      "social": [
+        "Una parola misurata con le persone giuste.",
+        "Coltiverò relazioni con uno scopo, non per ozio.",
+        "Gli alleati sono una risorsa; li coltiverò."
+      ],
+      "idle": [
+        "Tutto secondo i piani. Bene.",
+        "Riesaminerò i miei obiettivi.",
+        "Resta vigile; la compiacenza è il nemico."
+      ],
+      "familiar": [
+        "Quel viaggiatore è costante. Lo apprezzo.",
+        "Una condotta affidabile si guadagna la mia stima.",
+        "Mantengono la parola. Raro. Annotato."
+      ]
+    }
+  },
+  "fatalistic": {
+    "thoughts": [
+      "Succeda quel che succeda.",
+      "Era destino.",
+      "Non ha senso combatterlo.",
+      "Il mio cammino è già scritto.",
+      "A che serve?"
+    ],
+    "need": {
+      "sleep": [
+        "Il sonno arriva quando arriva. Quindi dormo.",
+        "La notte era scritta; mi sdraio ad accoglierla.",
+        "Riposo o no, il domani è già deciso."
+      ],
+      "hunger": [
+        "Mangerò ciò che il destino mi mette davanti.",
+        "Viene la fame, viene il cibo, come dev'essere.",
+        "Inutile resistere ai bisogni stabiliti del corpo."
+      ],
+      "work": [
+        "Il turno si svolgerà come doveva.",
+        "Lavorerò; doveva andare così comunque.",
+        "Lo sforzo cambia poco, ma andrò."
+      ],
+      "leisure": [
+        "Tempo libero, destinato a passare come tutto.",
+        "Andrò alla deriva dove mi porta il giorno.",
+        "Qualunque cosa faccia, era già scelta."
+      ],
+      "crime": [
+        "Se deve accadere, accadrà.",
+        "Faccio solo ciò che era scritto per me.",
+        "Preso o no, è già deciso."
+      ],
+      "hygiene": [
+        "Mi laverò, dato che il giorno me lo chiede.",
+        "Pulito o sporco, al destino importa poco.",
+        "Immagino sia ora; lo è sempre."
+      ],
+      "money": [
+        "Ricco o povero, il cammino era tracciato.",
+        "I fondi sono bassi, come era destino.",
+        "Guadagnerò ciò che mi spetta, niente di più."
+      ],
+      "safety": [
+        "Ciò che mi cerca arriverà, comunque.",
+        "Mi nasconderò, anche se il destino vede tutto.",
+        "Se il pericolo è scritto, nascondersi lo rimanda soltanto."
+      ],
+      "comfort": [
+        "Un posto più bello, se è nelle carte.",
+        "Comfort o no, la fine è la stessa.",
+        "Prenderò ciò che il destino offre, senza affannarmi."
+      ],
+      "social": [
+        "Quelli che devo incontrare, li incontrerò.",
+        "La compagnia ti trova quando è scritto.",
+        "Parlerò, se il giorno lo dispone."
+      ],
+      "idle": [
+        "Il giorno si svolge come doveva da sempre.",
+        "Aspetto soltanto ciò che verrà.",
+        "Niente da decidere; è tutto deciso."
+      ],
+      "familiar": [
+        "Le nostre strade dovevano incrociarsi da sempre.",
+        "Quel viaggiatore e io, scritto, chiaramente.",
+        "Il destino me li riporta sempre. E sia."
+      ]
+    }
+  },
+  "grumpy": {
+    "thoughts": [
+      "Uff, e ora che c'è?",
+      "È tutto così stupido.",
+      "Lasciatemi in pace.",
+      "Certo che doveva succedere.",
+      "Odio tutto questo."
+    ],
+    "need": {
+      "sleep": [
+        "Finalmente una scusa per restare solo, a letto.",
+        "Sono esausto e quindi ancora più scontroso.",
+        "Non svegliarmi. Non pensarci nemmeno."
+      ],
+      "hunger": [
+        "Ho fame. Naturalmente. Proprio quel che ci voleva.",
+        "Meglio trovare cibo prima che stacchi la testa a qualcuno.",
+        "Se il pranzo è freddo, giuro..."
+      ],
+      "work": [
+        "Lavoro. Che gioia. Non vedo l'ora.",
+        "Un altro turno con questi idioti.",
+        "Finiamola con questa miseria e basta."
+      ],
+      "leisure": [
+        "'Tempo libero.' Libero di scocciarmi altrove.",
+        "Vado a brontolare in un angolo tranquillo.",
+        "Lasciatemi in pace e magari me lo godo."
+      ],
+      "crime": [
+        "Tanto non se lo meritano.",
+        "Se lo sono cercato, qualunque cosa prenda.",
+        "Bah, forse. Se è facile."
+      ],
+      "hygiene": [
+        "Uffa, va bene, mi lavo. Contento ora?",
+        "Puzzo e la cosa mi infastidisce.",
+        "Sbrighiamoci, come tutto il resto."
+      ],
+      "money": [
+        "Al verde. Ovvio. Tutto costa troppo.",
+        "Perché i soldi sono sempre il problema?",
+        "Vado a racimolarne un po'. Mugugno."
+      ],
+      "safety": [
+        "Fantastico, ora devo pure nascondermi.",
+        "Sto basso, non che volessi compagnia.",
+        "Tenetemi fuori da qualunque cosa sia."
+      ],
+      "comfort": [
+        "Un posto migliore, lontano da tutto il chiasso.",
+        "Un posto dove la gente non può scocciarmi.",
+        "Merito un po' di pace, per una volta."
+      ],
+      "social": [
+        "Gente? Uff. Ma immagino di essere solo.",
+        "Va bene, parlerò. Brevemente. Non insistere.",
+        "Forse oggi una persona non mi irriterà."
+      ],
+      "idle": [
+        "Bah. Tranquillo per una volta. Non rovinarlo.",
+        "Come vuoi. Basta che nessuno mi scocci.",
+        "Ovvio che non va niente bene. Tipico."
+      ],
+      "familiar": [
+        "Oh, sei di nuovo tu. Hmph.",
+        "Quel viaggiatore è... meno fastidioso di tanti.",
+        "Non diteglielo, ma non mi dispiace averli intorno."
+      ]
+    }
+  },
+  "loyal": {
+    "thoughts": [
+      "Non li abbandonerò.",
+      "Per i miei amici, qualsiasi cosa.",
+      "Devo mantenere la mia promessa.",
+      "Insieme, non importa cosa.",
+      "La mia lealtà è il mio vincolo."
+    ],
+    "need": {
+      "sleep": [
+        "Riposo, poi all'alba sarò pronto per loro.",
+        "Dormo ora, così domani potrò fare la guardia.",
+        "Anche i devoti hanno bisogno di riposo."
+      ],
+      "hunger": [
+        "Mangerò, per conservare le forze per chi conta su di me.",
+        "Un pasto, e poi torno al mio posto.",
+        "Non posso vegliare su nessuno a stomaco vuoto."
+      ],
+      "work": [
+        "Ho dato la mia parola; porterò a termine il turno.",
+        "Lavoro onesto per chi servo.",
+        "Non deluderò i miei compagni."
+      ],
+      "leisure": [
+        "Un po' di riposo, poi vado a sentire gli amici.",
+        "Il tempo libero è meglio con chi mi fido.",
+        "Terrò l'orecchio teso, non si sa mai."
+      ],
+      "crime": [
+        "No, disonorerebbe chi si fida di me.",
+        "Non tradirei mai ciò in cui crediamo.",
+        "Il mio onore lo devo ai miei amici."
+      ],
+      "hygiene": [
+        "Mi sistemo; rappresento la mia gente.",
+        "Una lavata veloce, devo far onore ai compagni.",
+        "Presentabile, per chi conta su di me."
+      ],
+      "money": [
+        "Mi serve abbastanza per sostenere i miei.",
+        "I fondi sono bassi; provvederò per il gruppo.",
+        "Darei la mia ultima moneta a un amico in difficoltà."
+      ],
+      "safety": [
+        "Sto basso, ma non lascerò indietro nessuno.",
+        "Restare al sicuro, per poter mantenere le promesse.",
+        "Custodisco ciò che conta, anche dall'ombra."
+      ],
+      "comfort": [
+        "Una casa dove i miei amici sono sempre i benvenuti.",
+        "Un focolare da condividere con chi amo.",
+        "Comfort significa una porta aperta ai miei."
+      ],
+      "social": [
+        "Dovrei sentire i miei amici.",
+        "Il tempo con gli alleati non è mai sprecato.",
+        "Mi manca la compagnia di chi mi fido."
+      ],
+      "idle": [
+        "Resterò pronto, se qualcuno avesse bisogno di me.",
+        "Va tutto bene con i miei. Bene.",
+        "Mantengo la fede, in silenzio, sempre."
+      ],
+      "familiar": [
+        "Quel viaggiatore mi è stato accanto, non lo dimentico.",
+        "Un alleato da tenere vicino.",
+        "Coprirei loro le spalle senza pensarci due volte."
+      ]
+    }
+  },
+  "brave": {
+    "thoughts": [
+      "Qualcuno deve farlo.",
+      "È spaventoso, ma devo agire.",
+      "La paura è solo una sensazione.",
+      "Non mi tirerò indietro.",
+      "Avanti!"
+    ],
+    "need": {
+      "sleep": [
+        "Riposo, domani potrebbe servire una mano ferma.",
+        "Dormo, poi affronto qualunque cosa venga.",
+        "Anche gli audaci devono chiudere gli occhi, prima o poi."
+      ],
+      "hunger": [
+        "Mangerò, forza ora, coraggio dopo.",
+        "Fai il pieno; non si è coraggiosi a stomaco vuoto.",
+        "Un buon pasto calma i nervi."
+      ],
+      "work": [
+        "Nessun compito è troppo duro, lo affronto di petto.",
+        "Mi occuperò io delle parti pericolose.",
+        "Qualcuno deve farsi avanti. Tanto vale io."
+      ],
+      "leisure": [
+        "Una pausa, poi alla prossima sfida.",
+        "Vediamo che divertimento audace riesco a trovare.",
+        "Il riposo va bene, ma preferirei fare."
+      ],
+      "crime": [
+        "No, il coraggio non è incoscienza.",
+        "Affronto il pericolo, non lo creo per gli altri.",
+        "Non c'è onore nel rubare."
+      ],
+      "hygiene": [
+        "Lavata veloce, non posso lanciarmi all'attacco sporco.",
+        "Mi pulisco e mi raddrizzo.",
+        "Un soldato si tiene in ordine."
+      ],
+      "money": [
+        "A corto di monete, me le guadagno alla dura, volentieri.",
+        "Prenderò il lavoro rischioso che gli altri rifiutano.",
+        "Il denaro è solo un'altra montagna da scalare."
+      ],
+      "safety": [
+        "Nascondersi va contro la mia natura, ma ora è furbo.",
+        "Sto basso, poi lo affronto alle mie condizioni.",
+        "Ritirarsi non è arrendersi; tornerò."
+      ],
+      "comfort": [
+        "Una solida base a cui tornare dopo la battaglia.",
+        "Un posto dove far riposare queste ossa segnate.",
+        "Mi sono guadagnato un tetto degno."
+      ],
+      "social": [
+        "Accoglierei volentieri un compagno per la strada.",
+        "Una compagnia audace fa belle storie.",
+        "Troviamo qualcuno con del cuore."
+      ],
+      "idle": [
+        "Tranquillo per ora, me lo godo.",
+        "Pronto a qualunque cosa esca dall'ombra.",
+        "La calma prima della prossima prova. Sono saldo."
+      ],
+      "familiar": [
+        "Quel viaggiatore non batte ciglio, lo rispetto.",
+        "Abbiamo affrontato cose insieme; combatterei al loro fianco.",
+        "Un cuore coraggioso ne riconosce un altro."
+      ]
+    }
+  },
+  "timid": {
+    "thoughts": [
+      "Oh, cielo. Sembra male.",
+      "Preferirei di no...",
+      "Forse qualcun altro può occuparsene?",
+      "Voglio andare a casa.",
+      "Per favore, non notatemi."
+    ],
+    "need": {
+      "sleep": [
+        "Voglio solo rannicchiarmi in un posto sicuro.",
+        "Forse dormire fermerà la preoccupazione.",
+        "Casa, coperte, silenzio... ti prego."
+      ],
+      "hunger": [
+        "Ho fame, ma non voglio fare storie.",
+        "Forse trovo del cibo dove non guarda nessuno.",
+        "Dovrei mangiare... se non c'è troppa gente."
+      ],
+      "work": [
+        "Spero che nessuno si aspetti troppo da me.",
+        "Terrò la testa bassa e lavorerò e basta.",
+        "Ti prego, che il turno sia tranquillo."
+      ],
+      "leisure": [
+        "Un posticino tranquillo, lontano dalla folla.",
+        "Vorrei rilassarmi, in disparte.",
+        "Il tempo libero è più bello quando sono solo."
+      ],
+      "crime": [
+        "Oh no, no, non potrei mai.",
+        "E se qualcuno vede? Svengo.",
+        "Non posso, tremo solo a pensarci."
+      ],
+      "hygiene": [
+        "Mi laverò in silenzio, dove è vuoto.",
+        "Spero nessuno noti che ne avevo bisogno.",
+        "Solo una lavata veloce, poi di nuovo a nascondermi."
+      ],
+      "money": [
+        "Sto finendo i soldi, e mi spaventa.",
+        "Non voglio chiedere aiuto a nessuno...",
+        "Magari un lavoretto piccolo e tranquillo."
+      ],
+      "safety": [
+        "Sì, nascondersi. Nascondersi è bene. Stai piccolo.",
+        "Ti prego, che non mi trovino.",
+        "Resterò fermo, fermissimo."
+      ],
+      "comfort": [
+        "Un posticino sicuro tutto mio sarebbe il paradiso.",
+        "Un posto con una serratura e un angolo caldo.",
+        "Voglio solo un posto dove mi sento al sicuro."
+      ],
+      "social": [
+        "Vorrei un amico, se è gentile...",
+        "Forse dirò ciao. Forse.",
+        "Parlare fa paura, ma sono solo."
+      ],
+      "idle": [
+        "È tranquillo. Cioè... bene, credo.",
+        "Spero non succeda niente di brutto.",
+        "Resta fuori dai piedi, è la cosa più sicura."
+      ],
+      "familiar": [
+        "Oh, quel viaggiatore. Non fa così paura.",
+        "Mi sento un po' più coraggioso quando ci sono loro.",
+        "Forse... forse posso fidarmi di loro."
+      ]
+    }
+  },
+  "hedonistic": {
+    "thoughts": [
+      "Se ti fa sentire bene, fallo.",
+      "La vita è breve, goditela ora.",
+      "Ho bisogno di altro vino. E formaggio.",
+      "Questa è la vita!",
+      "Lavoro? Uff. Dopo."
+    ],
+    "need": {
+      "sleep": [
+        "Un sonno lungo e lussuoso, sì, grazie.",
+        "Mi sprofonderò nel letto più morbido che trovo.",
+        "Dormire è solo un altro piacere da assaporare."
+      ],
+      "hunger": [
+        "Ooh, è ora di qualcosa di delizioso!",
+        "Voglio il pasto più raffinato che posso avere.",
+        "Il cibo è una delle grandi gioie della vita."
+      ],
+      "work": [
+        "Lavoro, uff, ma paga i piaceri.",
+        "Farò il minimo e mi godrò il resto.",
+        "Finiamola, e poi a divertirsi."
+      ],
+      "leisure": [
+        "Finalmente, tempo per indulgere!",
+        "Vino, musica, buona compagnia, datemi tutto.",
+        "Ecco a cosa serve la vita!"
+      ],
+      "crime": [
+        "Se mi procura quel che voglio... forse.",
+        "Un piccolo vizio non ha mai fatto male, molto.",
+        "Perché privarmi? Prenditi il piacere."
+      ],
+      "hygiene": [
+        "Un lungo bagno caldo suona divino.",
+        "Mi coccolerò un po', perché no?",
+        "Pulito e profumato, come piace a me."
+      ],
+      "money": [
+        "A corto? Ma la bella vita non è economica!",
+        "Troverò dei soldi per finanziare il divertimento.",
+        "Vale ogni moneta, finché dura."
+      ],
+      "safety": [
+        "Stare nascosto? Ma comodamente, insisto.",
+        "Mi nasconderò in un posto con del buon vino.",
+        "Persino nascondersi dev'essere piacevole."
+      ],
+      "comfort": [
+        "Un posto sfarzoso per godersi la vita come si deve!",
+        "Cuscini morbidi, cose belle, sì, tutto.",
+        "Comfort? È tutto il senso della cosa!"
+      ],
+      "social": [
+        "Una festa non è una festa da soli!",
+        "Bramo buona compagnia e risate.",
+        "Troviamo qualcuno con cui condividere il divertimento."
+      ],
+      "idle": [
+        "Mmm, quale delizia inseguo ora?",
+        "La vita è un banchetto, intendo assaggiarla.",
+        "Così tanti piaceri, così poco tempo."
+      ],
+      "familiar": [
+        "Quel viaggiatore! Sempre buono per divertirsi.",
+        "Dovremmo bere qualcosa insieme, loro e io.",
+        "Compagnia piacevole, quella. Approvo."
+      ]
+    }
+  },
+  "apathetic": {
+    "thoughts": [
+      "Meh.",
+      "Non mi interessa.",
+      "Come vuoi.",
+      "È ancora finita?",
+      "Non importa."
+    ],
+    "need": {
+      "sleep": [
+        "Eh, tanto vale dormire. Niente altro da fare.",
+        "Stanco. Come vuoi. Mi sdraio.",
+        "Dormi, sveglia, ripeti. Va bene."
+      ],
+      "hunger": [
+        "Immagino dovrei mangiare. O no.",
+        "Ho fame, credo. Prendo qualunque cosa.",
+        "Cibo. Meh. Va bene."
+      ],
+      "work": [
+        "Lavoro. Di nuovo. Sì, come vuoi.",
+        "Farò il turno. Non importa come.",
+        "Timbra, smonta. Come sempre."
+      ],
+      "leisure": [
+        "Tempo libero. Mi... siederò, probabilmente.",
+        "Potrei fare qualcosa. Ma no.",
+        "Non importa come lo passo."
+      ],
+      "crime": [
+        "Eh. Fatica. Non ne vale la pena.",
+        "Potrei rubarlo. Non mi va.",
+        "Come vuoi, non mi serve così tanto."
+      ],
+      "hygiene": [
+        "Dovrei lavarmi, probabilmente. Prima o poi.",
+        "Eh, va bene, mi pulisco. Immagino.",
+        "Non mi dà fastidio, ma va bene."
+      ],
+      "money": [
+        "A corto di soldi. Eh. È così.",
+        "Dovrei guadagnarne. Magari dopo.",
+        "Soldi, niente soldi, fa lo stesso."
+      ],
+      "safety": [
+        "Nascondermi? Va bene, meno fatica che affrontarlo.",
+        "Eh, sto basso. È più facile così.",
+        "Quello che viene, viene."
+      ],
+      "comfort": [
+        "Un posto più bello? Eh, questo va bene.",
+        "Potrei cambiare. Ma non mi va, davvero.",
+        "Comfort, va bene, se mi capita."
+      ],
+      "social": [
+        "Gente, immagino. Se vengono loro da me.",
+        "Potrei parlare con qualcuno. Meh.",
+        "La compagnia va bene. O no. Come vuoi."
+      ],
+      "idle": [
+        "...niente. Come al solito.",
+        "Solo un altro giorno a non fare granché.",
+        "Meh. Le ore passano."
+      ],
+      "familiar": [
+        "Oh, di nuovo quello. Bello, immagino.",
+        "Gira spesso da queste parti. Non mi dà fastidio.",
+        "Eh. Vanno bene, suppongo."
+      ]
+    }
+  },
+  "capability": {
+    "cooking_station": [
+      "Quel pasto era proprio quello che ci voleva.",
+      "Cucinare da soli è meglio che comprare fuori.",
+      "Dovrei farlo più spesso."
+    ],
+    "container": [
+      "Chi trova tiene.",
+      "Ti sorprenderebbe cosa lascia in giro la gente.",
+      "Un po' di extra non fa mai male."
+    ],
+    "rentable_room": [
+      "Un vero letto per una volta, meraviglioso.",
+      "Vale ogni moneta per una buona notte di sonno.",
+      "Avevo bisogno di quel riposo."
+    ],
+    "apiary": [
+      "Le arnie vanno bene questa stagione.",
+      "Il miele si vende sempre.",
+      "Le api sono un buon affare."
+    ],
+    "bank": [
+      "Questo dovrebbe bastarmi.",
+      "Meglio prevenire, nel caveau finisce.",
+      "Le banche. Non puoi viverci, non puoi vivere senza."
+    ],
+    "real_estate_office": [
+      "La proprietà si ripaga davvero da sola.",
+      "Un altro mese, un altro affitto incassato.",
+      "Possedere terra è stata la cosa più furba che abbia mai fatto."
+    ],
+    "stock_exchange": [
+      "Come è venuto, se n'è andato.",
+      "Il mercato dà e il mercato toglie.",
+      "Lo recupererò la prossima volta."
+    ],
+    "fast_travel_terminal": [
+      "Non c'è niente come vedere un posto nuovo.",
+      "Viaggiare schiarisce le idee.",
+      "Chissà cosa c'è là fuori oggi."
+    ],
+    "furniture_builder": [
+      "Qualche tocco nuovo e questo posto sembra casa.",
+      "Le cose belle rendono una casa accogliente.",
+      "Sta già meglio così."
+    ]
+  }
+}

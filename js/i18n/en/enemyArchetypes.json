@@ -391,6 +391,18 @@
       "tail": {
         "name": "Tail",
         "msg": "Tail hacked off!"
+      },
+      "left_claw": {
+        "name": "Left Foreclaw",
+        "msg": "Left foreclaw torn away!"
+      },
+      "right_claw": {
+        "name": "Right Foreclaw",
+        "msg": "Right foreclaw torn away!"
+      },
+      "maw": {
+        "name": "Maw",
+        "msg": "Maw shattered!"
       }
     },
     "skeleton": {
@@ -418,6 +430,10 @@
       "right_leg": {
         "name": "Right Leg",
         "msg": "Right leg shattered!"
+      },
+      "jaws": {
+        "name": "Jaws",
+        "msg": "Jaws snapped off!"
       }
     },
     "fairy": {
@@ -449,7 +465,11 @@
         "name": "Pixie Dust Sac",
         "msg": "Dust sac ruptured!"
       },
-      "name": "Fairy"
+      "name": "Fairy",
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Mouth torn!"
+      }
     },
     "slime": {
       "name": "Slime",
@@ -472,6 +492,10 @@
       "pseudopod_2": {
         "name": "Pseudopod 2",
         "msg": "Pseudopod 2 melted into sludge!"
+      },
+      "maw": {
+        "name": "Dissolving Maw",
+        "msg": "Dissolving maw collapsed!"
       }
     },
     "undead": {
@@ -499,7 +523,11 @@
         "name": "Right Leg",
         "msg": "Right Leg cut off!"
       },
-      "name": "Undead"
+      "name": "Undead",
+      "jaws": {
+        "name": "Rotting Jaws",
+        "msg": "Rotting jaws crumbled!"
+      }
     },
     "scorpion": {
       "head": {
@@ -561,7 +589,11 @@
         "name": "Rear Right Leg",
         "msg": "Rear Right Leg cut off!"
       },
-      "name": "Scorpion"
+      "name": "Scorpion",
+      "mandibles": {
+        "name": "Mandibles",
+        "msg": "Mandibles crushed!"
+      }
     },
     "spider": {
       "head": {
@@ -638,6 +670,10 @@
       "vine_2": {
         "name": "Vine 2",
         "msg": "Vine 2 ripped into gore!"
+      },
+      "maw": {
+        "name": "Snapping Bud",
+        "msg": "Snapping bud torn open!"
       }
     },
     "elemental": {
@@ -661,7 +697,11 @@
         "name": "Right Appendage",
         "msg": "Right Appendage liquefied on impact!"
       },
-      "name": "Elemental"
+      "name": "Elemental",
+      "maw": {
+        "name": "Elemental Maw",
+        "msg": "Elemental maw scattered!"
+      }
     },
     "aquaticfish": {
       "head": {
@@ -687,7 +727,11 @@
         "name": "Right Pectoral Fin",
         "msg": "Right Pectoral Fin torn to ribbons!"
       },
-      "name": "Aquatic Fish"
+      "name": "Aquatic Fish",
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Mouth torn open!"
+      }
     },
     "octopus": {
       "head": {
@@ -713,7 +757,11 @@
         "name": "Tentacle 4",
         "msg": "Tentacle 4 ripped off!"
       },
-      "name": "Octopus"
+      "name": "Octopus",
+      "beak": {
+        "name": "Beak",
+        "msg": "Beak cracked!"
+      }
     },
     "robot": {
       "head": {
@@ -739,7 +787,11 @@
         "name": "Right Leg",
         "msg": "Right Leg cut off!"
       },
-      "name": "Robot"
+      "name": "Robot",
+      "jaws": {
+        "name": "Servo Jaws",
+        "msg": "Servo jaws jammed!"
+      }
     },
     "bird": {
       "name": "Bird",
@@ -795,7 +847,11 @@
         "name": "Tail",
         "msg": "Tail hacked off!"
       },
-      "name": "Reptilian"
+      "name": "Reptilian",
+      "maw": {
+        "name": "Fanged Maw",
+        "msg": "Fanged maw broken!"
+      }
     },
     "mushroom": {
       "cap": {
@@ -814,7 +870,11 @@
         "name": "Spore Sacs",
         "msg": "Spore Sacs have burst open!"
       },
-      "name": "Mushroom"
+      "name": "Mushroom",
+      "maw": {
+        "name": "Gill Maw",
+        "msg": "Gill maw shredded!"
+      }
     },
     "tree": {
       "name": "Tree",
@@ -856,7 +916,11 @@
         "name": "Toxin Sacs",
         "msg": "Toxin Sacs have burst!"
       },
-      "name": "Bacterial"
+      "name": "Bacterial",
+      "mouth": {
+        "name": "Feeding Pore",
+        "msg": "Feeding pore ruptured!"
+      }
     },
     "doubleheadedhumanoid": {
       "head_left": {
@@ -887,7 +951,11 @@
         "name": "Right Leg",
         "msg": "Right Leg cut off!"
       },
-      "name": "Double-Headed Humanoid"
+      "name": "Double-Headed Humanoid",
+      "mouth": {
+        "name": "Twin Mouths",
+        "msg": "Twin mouths silenced!"
+      }
     },
     "serpent": {
       "head": {
@@ -932,7 +1000,11 @@
         "name": "Right Leg",
         "msg": "Right Leg fractured!"
       },
-      "name": "Golem"
+      "name": "Golem",
+      "maw": {
+        "name": "Stone Maw",
+        "msg": "Stone maw shattered!"
+      }
     },
     "demon": {
       "name": "Demon",
@@ -958,6 +1030,18 @@
       "tail": {
         "name": "Tail",
         "msg": "Tail severed!"
+      },
+      "left_claw": {
+        "name": "Left Claw",
+        "msg": "Left claw severed!"
+      },
+      "right_claw": {
+        "name": "Right Claw",
+        "msg": "Right claw severed!"
+      },
+      "maw": {
+        "name": "Maw",
+        "msg": "Maw split open!"
       }
     },
     "ghost": {
@@ -977,7 +1061,11 @@
         "name": "Right Wisp",
         "msg": "Right Wisp dispersed!"
       },
-      "name": "Ghost"
+      "name": "Ghost",
+      "maw": {
+        "name": "Wailing Maw",
+        "msg": "Wailing maw silenced!"
+      }
     },
     "drone": {
       "sensor_array": {
@@ -996,7 +1084,11 @@
         "name": "Right Propeller",
         "msg": "Right Propeller smashed into wreckage!"
       },
-      "name": "Drone"
+      "name": "Drone",
+      "jaws": {
+        "name": "Grip Jaws",
+        "msg": "Grip jaws seized!"
+      }
     },
     "voidspawn": {
       "abyssal_eye": {
@@ -1045,7 +1137,11 @@
         "name": "Tail Spike",
         "msg": "Tail Spike wrenched free!"
       },
-      "name": "Mutant"
+      "name": "Mutant",
+      "maw": {
+        "name": "Gaping Maw",
+        "msg": "Gaping maw torn!"
+      }
     },
     "crystalentity": {
       "core": {
@@ -1068,7 +1164,11 @@
         "name": "Shield Crystal",
         "msg": "Shield Crystal shattered to shards!"
       },
-      "name": "Crystal Entity"
+      "name": "Crystal Entity",
+      "maw": {
+        "name": "Prism Maw",
+        "msg": "Prism maw fractured!"
+      }
     },
     "amphibian": {
       "head": {
@@ -1112,7 +1212,11 @@
         "name": "Power Stitch",
         "msg": "Power Stitch erupted messily!"
       },
-      "name": "Constructed Undead"
+      "name": "Constructed Undead",
+      "jaws": {
+        "name": "Stitched Jaws",
+        "msg": "Stitched jaws burst apart!"
+      }
     },
     "minotaur": {
       "head": {
@@ -1142,7 +1246,11 @@
         "name": "Right Bull Leg",
         "msg": "Right Bull Leg cut off!"
       },
-      "name": "Minotaur"
+      "name": "Minotaur",
+      "maw": {
+        "name": "Snorting Maw",
+        "msg": "Snorting maw broken!"
+      }
     },
     "goblin": {
       "brain": {
@@ -1277,7 +1385,11 @@
         "name": "Right Foot",
         "msg": "Right foot detached!"
       },
-      "name": "Goblin"
+      "name": "Goblin",
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Mouth torn!"
+      }
     },
     "crustacean": {
       "claw_left": {
@@ -1308,7 +1420,11 @@
         "name": "Antennae",
         "msg": "Antennae crushed!"
       },
-      "name": "Crustacean"
+      "name": "Crustacean",
+      "mandibles": {
+        "name": "Mandibles",
+        "msg": "Mandibles crushed!"
+      }
     },
     "spherical": {
       "core": {
@@ -1331,7 +1447,11 @@
         "name": "Auxiliary Drives",
         "msg": "Auxiliary drives have failed!"
       },
-      "name": "Spherical"
+      "name": "Spherical",
+      "maw": {
+        "name": "Hatch Maw",
+        "msg": "Hatch maw buckled!"
+      }
     },
     "turtle": {
       "shell": {
@@ -1362,7 +1482,11 @@
         "name": "Tail",
         "msg": "Tail clipped!"
       },
-      "name": "Turtle"
+      "name": "Turtle",
+      "beak": {
+        "name": "Beak",
+        "msg": "Beak cracked!"
+      }
     },
     "manticore": {
       "brain": {
@@ -1421,7 +1545,11 @@
         "name": "Right Lung",
         "msg": "Right Lung punctured!"
       },
-      "name": "Manticore"
+      "name": "Manticore",
+      "maw": {
+        "name": "Lion Maw",
+        "msg": "Lion maw broken!"
+      }
     },
     "chestmimic": {
       "core": {
@@ -1506,7 +1634,11 @@
         "name": "Right Leg",
         "msg": "Right leg maimed!"
       },
-      "name": "Ogre"
+      "name": "Ogre",
+      "maw": {
+        "name": "Gaping Maw",
+        "msg": "Gaping maw broken!"
+      }
     },
     "scarecrow": {
       "head": {
@@ -1533,7 +1665,11 @@
         "name": "Right Leg",
         "msg": "Right leg broken!"
       },
-      "name": "Scarecrow"
+      "name": "Scarecrow",
+      "mouth": {
+        "name": "Stitched Mouth",
+        "msg": "Stitched mouth unravelled!"
+      }
     },
     "segmentworm": {
       "head": {
@@ -1552,7 +1688,11 @@
         "name": "Tail",
         "msg": "Tail sliced off!"
       },
-      "name": "Segment Worm"
+      "name": "Segment Worm",
+      "maw": {
+        "name": "Ringed Maw",
+        "msg": "Ringed maw torn apart!"
+      }
     },
     "mineral": {
       "core": {
@@ -1571,7 +1711,11 @@
         "name": "Veins",
         "msg": "Veins disrupted!"
       },
-      "name": "Mineral"
+      "name": "Mineral",
+      "maw": {
+        "name": "Crushing Maw",
+        "msg": "Crushing maw split!"
+      }
     },
     "hydra": {
       "head_one": {
@@ -1594,7 +1738,11 @@
         "name": "Tail",
         "msg": "Tail severed!"
       },
-      "name": "Hydra"
+      "name": "Hydra",
+      "maw": {
+        "name": "Central Maw",
+        "msg": "Central maw torn open!"
+      }
     },
     "vampire": {
       "head": {
@@ -1625,7 +1773,11 @@
         "name": "Right Leg",
         "msg": "Right Leg crippled!"
       },
-      "name": "Vampire"
+      "name": "Vampire",
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso caved in!"
+      }
     },
     "bat": {
       "head": {
@@ -1683,7 +1835,11 @@
         "name": "Tail",
         "msg": "Tail snapped!"
       },
-      "name": "Rabbit"
+      "name": "Rabbit",
+      "teeth": {
+        "name": "Incisors",
+        "msg": "Incisors snapped!"
+      }
     },
     "armoredknight": {
       "helmet": {
@@ -1710,7 +1866,19 @@
         "name": "Right Greaves",
         "msg": "Right greaves buckled!"
       },
-      "name": "Armored Knight"
+      "name": "Armored Knight",
+      "left_gauntlet": {
+        "name": "Left Gauntlet",
+        "msg": "Left gauntlet ripped off!"
+      },
+      "right_gauntlet": {
+        "name": "Right Gauntlet",
+        "msg": "Right gauntlet ripped off!"
+      },
+      "mouth": {
+        "name": "Visor Mouth",
+        "msg": "Visor mouth caved in!"
+      }
     },
     "centaur": {
       "head": {
@@ -1749,7 +1917,11 @@
         "name": "Rear Right Leg",
         "msg": "Rear right leg hacked off!"
       },
-      "name": "Centaur"
+      "name": "Centaur",
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Mouth torn!"
+      }
     },
     "insectswarm": {
       "mandibles": {
@@ -1795,7 +1967,11 @@
         "name": "Sensors",
         "msg": "Sensors offline!"
       },
-      "name": "Robotic Defender"
+      "name": "Robotic Defender",
+      "jaws": {
+        "name": "Clamp Jaws",
+        "msg": "Clamp jaws seized!"
+      }
     },
     "turret": {
       "core": {
@@ -1818,7 +1994,11 @@
         "name": "Ammo Chamber",
         "msg": "Ammo chamber ruptured!"
       },
-      "name": "Turret"
+      "name": "Turret",
+      "jaws": {
+        "name": "Feed Jaws",
+        "msg": "Feed jaws jammed!"
+      }
     },
     "gorgon": {
       "name": "Gorgon",
@@ -1837,6 +2017,18 @@
       "lower_body": {
         "name": "Lower Body",
         "msg": "Lower body shattered!"
+      },
+      "left_hand": {
+        "name": "Left Hand",
+        "msg": "Left hand severed!"
+      },
+      "right_hand": {
+        "name": "Right Hand",
+        "msg": "Right hand severed!"
+      },
+      "fangs": {
+        "name": "Fangs",
+        "msg": "Fangs broken!"
       }
     },
     "abyssalleviathan": {
@@ -1887,7 +2079,11 @@
         "name": "Foot",
         "msg": "Foot crushed!"
       },
-      "name": "Snail"
+      "name": "Snail",
+      "mouth": {
+        "name": "Radula",
+        "msg": "Radula shredded!"
+      }
     },
     "waterelemental": {
       "core": {
@@ -1910,7 +2106,11 @@
         "name": "Right Water Leg",
         "msg": "Right Water Leg evaporated!"
       },
-      "name": "Water Elemental"
+      "name": "Water Elemental",
+      "maw": {
+        "name": "Surging Maw",
+        "msg": "Surging maw scattered!"
+      }
     },
     "thunderelemental": {
       "core": {
@@ -1937,7 +2137,11 @@
         "name": "Right Electric Leg",
         "msg": "Right Electric Leg grounded out!"
       },
-      "name": "Thunder Elemental"
+      "name": "Thunder Elemental",
+      "maw": {
+        "name": "Arcing Maw",
+        "msg": "Arcing maw earthed out!"
+      }
     },
     "stormelemental": {
       "core": {
@@ -1964,7 +2168,11 @@
         "name": "Right Thunder Leg",
         "msg": "Right Thunder Leg struck down!"
       },
-      "name": "Storm Elemental"
+      "name": "Storm Elemental",
+      "maw": {
+        "name": "Howling Maw",
+        "msg": "Howling maw stilled!"
+      }
     },
     "fireelemental": {
       "core": {
@@ -1983,7 +2191,11 @@
         "name": "Ash Legs",
         "msg": "Ash Legs have crumbled!"
       },
-      "name": "Fire Elemental"
+      "name": "Fire Elemental",
+      "maw": {
+        "name": "Blazing Maw",
+        "msg": "Blazing maw snuffed out!"
+      }
     },
     "metalelemental": {
       "core": {
@@ -2002,7 +2214,11 @@
         "name": "Gear Legs",
         "msg": "Gear Legs have jammed!"
       },
-      "name": "Metal Elemental"
+      "name": "Metal Elemental",
+      "jaws": {
+        "name": "Vise Jaws",
+        "msg": "Vise jaws sprung!"
+      }
     },
     "darkelemental": {
       "core": {
@@ -2029,7 +2245,11 @@
         "name": "Right Curse Leg",
         "msg": "Right Curse Leg collapsed!"
       },
-      "name": "Dark Elemental"
+      "name": "Dark Elemental",
+      "maw": {
+        "name": "Void Maw",
+        "msg": "Void maw collapsed!"
+      }
     },
     "sacredelemental": {
       "core": {
@@ -2056,7 +2276,11 @@
         "name": "Right Aura Leg",
         "msg": "Right Aura Leg lost form!"
       },
-      "name": "Sacred Elemental"
+      "name": "Sacred Elemental",
+      "mouth": {
+        "name": "Chorus Mouth",
+        "msg": "Chorus mouth silenced!"
+      }
     },
     "totem": {
       "core": {
@@ -2079,7 +2303,11 @@
         "name": "Base",
         "msg": "Base cracked!"
       },
-      "name": "Totem"
+      "name": "Totem",
+      "mouth": {
+        "name": "Carved Mouth",
+        "msg": "Carved mouth split!"
+      }
     },
     "ophanim": {
       "wheel_one": {
@@ -2102,7 +2330,11 @@
         "name": "Eye Ring",
         "msg": "Eye ring blinded!"
       },
-      "name": "Ophanim"
+      "name": "Ophanim",
+      "mouth": {
+        "name": "Chanting Mouth",
+        "msg": "Chanting mouth silenced!"
+      }
     },
     "angel": {
       "left_wing": {
@@ -2133,7 +2365,19 @@
         "name": "Right Foot",
         "msg": "Right foot broken!"
       },
-      "name": "Angel"
+      "name": "Angel",
+      "left_hand": {
+        "name": "Left Hand",
+        "msg": "Left hand severed!"
+      },
+      "right_hand": {
+        "name": "Right Hand",
+        "msg": "Right hand severed!"
+      },
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Mouth silenced!"
+      }
     },
     "elven": {
       "head": {
@@ -2160,7 +2404,19 @@
         "name": "Right Leg",
         "msg": "Right Leg crippled!"
       },
-      "name": "Elven"
+      "name": "Elven",
+      "left_hand": {
+        "name": "Left Hand",
+        "msg": "Left hand severed!"
+      },
+      "right_hand": {
+        "name": "Right Hand",
+        "msg": "Right hand severed!"
+      },
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Mouth torn!"
+      }
     },
     "gnome": {
       "head": {
@@ -2187,7 +2443,23 @@
         "name": "Right Leg",
         "msg": "Right Leg buckled!"
       },
-      "name": "Gnome"
+      "name": "Gnome",
+      "left_hand": {
+        "name": "Left Hand",
+        "msg": "Left hand severed!"
+      },
+      "right_hand": {
+        "name": "Right Hand",
+        "msg": "Right hand severed!"
+      },
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Mouth torn!"
+      },
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso caved in!"
+      }
     },
     "dwarf": {
       "head": {
@@ -2368,7 +2640,11 @@
         "name": "Body",
         "msg": "Body battered!"
       },
-      "name": "Tentacled Creature"
+      "name": "Tentacled Creature",
+      "beak": {
+        "name": "Beak",
+        "msg": "Beak cracked!"
+      }
     },
     "spiderhumanhybrid": {
       "body": {
@@ -2407,7 +2683,19 @@
         "name": "Rear Right Leg",
         "msg": "Rear right leg dismantled!"
       },
-      "name": "Spider-Human Hybrid"
+      "name": "Spider-Human Hybrid",
+      "left_hand": {
+        "name": "Left Hand",
+        "msg": "Left hand severed!"
+      },
+      "right_hand": {
+        "name": "Right Hand",
+        "msg": "Right hand severed!"
+      },
+      "fangs": {
+        "name": "Fangs",
+        "msg": "Fangs broken!"
+      }
     },
     "spikymonster": {
       "spikes": {
@@ -2430,7 +2718,19 @@
         "name": "Right Leg",
         "msg": "Right Leg crippled!"
       },
-      "name": "Spiky Monster"
+      "name": "Spiky Monster",
+      "left_claw": {
+        "name": "Left Claw",
+        "msg": "Left claw snapped off!"
+      },
+      "right_claw": {
+        "name": "Right Claw",
+        "msg": "Right claw snapped off!"
+      },
+      "maw": {
+        "name": "Bristling Maw",
+        "msg": "Bristling maw torn!"
+      }
     },
     "horse": {
       "head": {
@@ -2461,7 +2761,11 @@
         "name": "Tail",
         "msg": "Tail snapped!"
       },
-      "name": "Horse"
+      "name": "Horse",
+      "mouth": {
+        "name": "Muzzle",
+        "msg": "Muzzle broken!"
+      }
     },
     "unicorn": {
       "horn": {
@@ -2492,7 +2796,11 @@
         "name": "Tail",
         "msg": "Tail clipped!"
       },
-      "name": "Unicorno"
+      "name": "Unicorno",
+      "mouth": {
+        "name": "Muzzle",
+        "msg": "Muzzle broken!"
+      }
     },
     "hellhound": {
       "head": {
@@ -2523,7 +2831,11 @@
         "name": "Hind Right Leg",
         "msg": "Hind Right Leg incapacitated!"
       },
-      "name": "Hellhound"
+      "name": "Hellhound",
+      "maw": {
+        "name": "Burning Maw",
+        "msg": "Burning maw doused!"
+      }
     },
     "wingeddemon": {
       "head": {
@@ -2550,7 +2862,11 @@
         "name": "Claws",
         "msg": "Claws shattered!"
       },
-      "name": "Winged Demon"
+      "name": "Winged Demon",
+      "maw": {
+        "name": "Maw",
+        "msg": "Maw split open!"
+      }
     },
     "trashcreature": {
       "trash_pile": {
@@ -2569,7 +2885,11 @@
         "name": "Heart",
         "msg": "Heart crushed!"
       },
-      "name": "Trash Creature"
+      "name": "Trash Creature",
+      "maw": {
+        "name": "Refuse Maw",
+        "msg": "Refuse maw scattered!"
+      }
     }
   }
 }

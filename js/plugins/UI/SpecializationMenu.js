@@ -53,6 +53,10 @@
  *   - Right page: detail for the selected specialization - its tier name,
  *     a 5-pip level bar, and which classes/traits grant it a head start.
  *
+ * Controls: L1/R1, TAB and left/right cycle the category tabs from anywhere
+ * (the backpack works the same way); up/down walk the list; SHIFT (X on a pad)
+ * changes companion; ESC, controller B and right click close the sheet.
+ *
  * A specialization's level is the highest of:
  *   - trained level  (Game_Actor._specLevels[id], earned through play)
  *   - class bonus    (Specialization.json "classStart"[actor's class name])
@@ -104,6 +108,7 @@
     // =========================================================================
     window.Specializations = {
         levels: LEVEL_NAMES_FALLBACK,
+        levelsBase: LEVEL_NAMES_FALLBACK, // English tier names, the overlay keys
         categories: [],
         list: [],
         byId: new Map(),
@@ -115,7 +120,8 @@
             try {
                 const response = await fetch('js/db/Skills/Specialization.json');
                 const json = await response.json();
-                this.levels = json.levels || LEVEL_NAMES_FALLBACK;
+                this.levelsBase = json.levels || LEVEL_NAMES_FALLBACK;
+                this.levels = this.levelsBase;
                 this.categories = json.categories || [];
                 this.list = json.specializations || [];
                 this.byId.clear();
@@ -128,6 +134,9 @@
                 });
                 await this.loadI18n();
                 this.ready = true;
+                // The config can have resolved while those two fetches were in
+                // flight, in which case the bank just read is the wrong one.
+                this.syncI18n();
             } catch (e) {
                 console.error('SpecializationMenu: failed to load Specialization.json', e);
             }
@@ -140,27 +149,55 @@
         // overlaid outright because level names are shown and never matched on.
         // Categories are NOT overlaid, they are the tab ids; use categoryLabel().
         i18n: null,
+        i18nLang: null,     // language the bank in `i18n` was read for
+        i18nVersion: 0,     // bumped on every swap, so callers can drop caches
+        _i18nPending: null,
 
-        async loadI18n() {
-            this.i18n = null;
-            const lang = (window.ConfigManager && ConfigManager.language) || 'en';
+        activeLang() {
+            return (window.ConfigManager && ConfigManager.language) || 'en';
+        },
+
+        async loadI18n(lang) {
+            const target = lang || this.activeLang();
+            let data = null;
             try {
-                const res = await fetch(`js/i18n/${lang}/Specializations.json`);
-                if (!res.ok) return;
-                const data = await res.json();
-                this.i18n = data;
-                if (Array.isArray(this.levels) && data.level) {
-                    this.levels = this.levels.map(n => data.level[n] || n);
-                }
+                const res = await fetch(`js/i18n/${target}/Specializations.json`);
+                if (res.ok) data = await res.json();
             } catch (e) { /* no bank for this language, English stands */ }
+            // A language switch that raced ahead of this fetch owns the bank now.
+            if (this.i18nLang !== null && this.activeLang() !== target) return;
+            this.i18n = data;
+            this.i18nLang = target;
+            const base = Array.isArray(this.levelsBase) ? this.levelsBase : LEVEL_NAMES_FALLBACK;
+            this.levels = (data && data.level) ? base.map(n => data.level[n] || n) : base;
+            this.i18nVersion++;
+        },
+
+        // ConfigManager.language holds the plugin default until ConfigManager
+        // .load() resolves in Scene_Boot - long after load() above has already
+        // read a bank - and the player can switch language from the options at
+        // any time after that. Every lookup compares the bank against the active
+        // language and re-reads it when they differ, the way DataService's
+        // i18nSync does. The re-read is async, so the call that notices still
+        // answers from the old bank and the next redraw is in the new language;
+        // ConfigManager.applyData below fires it at boot, before anything draws.
+        syncI18n() {
+            const lang = this.activeLang();
+            if (!this.ready || lang === this.i18nLang || lang === this._i18nPending) return;
+            this._i18nPending = lang;
+            this.loadI18n(lang).then(() => {
+                if (this._i18nPending === lang) this._i18nPending = null;
+            });
         },
 
         levelName(level) {
+            this.syncI18n();
             return this.levels[Math.max(0, Math.min(this.levels.length - 1, level - 1))] || this.levels[0];
         },
 
         // The category tab label. `categories` itself stays English, it is the id.
         categoryLabel(category) {
+            this.syncI18n();
             const t = this.i18n && this.i18n.category && this.i18n.category[category];
             return t || category;
         },
@@ -168,6 +205,7 @@
         // The specialization's name as the player reads it. Takes a spec object,
         // an id or an English name, the same three things describe() takes.
         displayName(spec) {
+            this.syncI18n();
             const def = typeof spec === 'object' && spec ? spec
                 : (this.byId.get(spec) || this.byName.get(spec));
             if (!def) return typeof spec === 'string' ? spec : '';
@@ -193,6 +231,7 @@
 
         // Neutral one-line definition, in the language being played.
         describe(spec) {
+            this.syncI18n();
             const def = typeof spec === 'object' && spec ? spec
                 : (this.byId.get(spec) || this.byName.get(spec));
             if (!def) return '';
@@ -201,6 +240,14 @@
         }
     };
     window.Specializations.load();
+
+    // The saved language lands here, and it is the first point where the bank
+    // read at plugin load (the plugin default, always English) can be wrong.
+    const _ConfigManager_applyData_Spec = ConfigManager.applyData;
+    ConfigManager.applyData = function (config) {
+        _ConfigManager_applyData_Spec.call(this, config);
+        window.Specializations.syncI18n();
+    };
 
     // =========================================================================
     // Game_Actor accessors
@@ -993,10 +1040,18 @@
                 }
             }) : null;
 
-            window.CharSwitcher.installTabKey(this, (dir) => {
-                if (dir > 0) this.switchToNextCharacter();
-                else this.switchToPreviousCharacter();
-            });
+            // TAB cycles the category tabs here, the way L1/R1 do in the
+            // backpack: the sheet is read one category at a time, so the tabs
+            // are what the hand reaches for. The party moved onto SHIFT.
+            // Forward only: SHIFT is the party key here, so Shift+TAB would
+            // step back and change companion in the same breath. L1 and left
+            // are the way back.
+            this._specTabListener = (e) => {
+                if (e.key !== 'Tab') return;
+                e.preventDefault();
+                this.cycleCategory(1);
+            };
+            window.addEventListener('keydown', this._specTabListener);
 
             this.initSpecDOM();
         }
@@ -1024,10 +1079,36 @@
 
         terminate() {
             if (this._specBar) { this._specBar.dispose(); this._specBar = null; }
-            window.CharSwitcher.removeTabKey(this);
+            if (this._specTabListener) {
+                window.removeEventListener('keydown', this._specTabListener);
+                this._specTabListener = null;
+            }
             const container = document.getElementById('specialization-container');
             if (container) container.remove();
             super.terminate();
+        }
+
+        // Wraps around, like the backpack's tab strip: the row is a loop, not a
+        // list with two dead ends.
+        cycleCategory(dir) {
+            if (!window.Specializations.ready) return;
+            const count = this._categoryTabs.length;
+            if (count <= 1) return;
+            this._categoryIndex = (this._categoryIndex + dir + count) % count;
+            this._selectedIndex = 0;
+            this._activeArea = 'categories';
+            SoundManager.playCursor();
+            this.refreshSpecDOM();
+        }
+
+        // One way out, whichever of ESC, controller B or right click asked for
+        // it, and guarded so a right click that also reaches TouchInput does not
+        // pop two scenes.
+        closeMenu() {
+            if (this._closing) return;
+            this._closing = true;
+            SoundManager.playCancel();
+            this.popScene();
         }
 
         switchToPreviousCharacter() {
@@ -1076,7 +1157,7 @@
                             <h2 class="title">${T('SpecMenu.ui.specializations')}</h2>
                         </div>
                         <div id="spec-search-slot"></div>
-                        <div id="spec-category-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px"></div>
+                        <div id="spec-category-row" style="display:flex; flex-wrap:wrap; align-items:center; gap:5px; padding:6px 0 10px"></div>
                         <div id="spec-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto"></div>
                     </div>
                     <div class="right-page" style="position:relative">
@@ -1091,6 +1172,23 @@
                 e.stopPropagation();
                 SoundManager.playCancel();
                 this.popScene();
+            });
+
+            // Right click closes the sheet. The press has to have started on
+            // the overlay, so a drag that ends here does not count as one.
+            this._rightClickStartedHere = false;
+            this._dndContainer.addEventListener('mousedown', (e) => {
+                if (e.button === 2) { this._rightClickStartedHere = true; e.stopPropagation(); }
+            });
+            this._dndContainer.addEventListener('mouseup', (e) => {
+                if (e.button === 2) e.stopPropagation();
+            });
+            this._dndContainer.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!this._rightClickStartedHere) return;
+                this._rightClickStartedHere = false;
+                this.closeMenu();
             });
 
             const listBox = document.getElementById('spec-list-content');
@@ -1188,7 +1286,12 @@
                     tabsHTML += `
                         <div class="spec-category-tab" data-cat-idx="${idx}" style="font-family:'Lora',serif; font-size:0.952rem; padding:4px 10px; border-radius:12px; cursor:pointer; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(categoryTabLabel(cat))}</div>`;
                 });
-                categoryRow.innerHTML = tabsHTML;
+                // The shoulder buttons and TAB are what actually move this row,
+                // so the row says so: L1 on the near side, R1 and TAB on the
+                // far one. Button faces, not prose, so they are not translated.
+                const hintL = '<span class="char-switch-hint">L1</span>';  // i18n-ignore  button face
+                const hintR = '<span class="char-switch-hint">R1</span><span class="char-switch-hint">TAB</span>';  // i18n-ignore  button faces
+                categoryRow.innerHTML = hintL + tabsHTML + hintR;
                 categoryRow.querySelectorAll('.spec-category-tab').forEach(tab => {
                     tab.addEventListener('click', () => {
                         const idx = parseInt(tab.getAttribute('data-cat-idx'), 10);
@@ -1217,9 +1320,11 @@
                         const sel = idx === this._currentActorIndex ? 'selected' : '';
                         tabs += `<div class="companion-tab ${sel}" data-actor-idx="${idx}">${escapeHtml(m.name())}</div>`;
                     });
-                    compRow.innerHTML = window.CharSwitcher.inner(
-                        `<div class="companion-tabs-row">${tabs}</div>`, members.length
-                    );
+                    // The party hint cannot be the shared L/R or TAB one any
+                    // more: those cycle the categories here. SHIFT (X on a pad)
+                    // takes the companions instead.
+                    const partyKey = window.CharSwitcher.isControllerConnected() ? 'X' : 'SHIFT';  // i18n-ignore  button faces
+                    compRow.innerHTML = `<div class="companion-tabs-row">${tabs}</div><span class="char-switch-hint">${partyKey}</span>`;
                     compRow.querySelectorAll('.companion-tab').forEach(tab => {
                         tab.addEventListener('click', () => {
                             const idx = parseInt(tab.getAttribute('data-actor-idx'), 10);
@@ -1315,10 +1420,6 @@
 
             const level = actor.specializationLevel(spec.id);
             const levelName = window.Specializations.levelName(level);
-            const currentClassName = actor.currentClass() ? actor.currentClass().name : null;
-            const actorTraitSlugs = (actor._selectedTraits || [])
-                .map(t => t && t.name ? t.name.split('.')[1] : null)
-                .filter(Boolean);
 
             // Training progress towards the next tier (weapon proficiencies
             // train through battle, the rest through play).
@@ -1369,37 +1470,6 @@
                     </div>`;
             }
 
-            let classesHTML = '';
-            if (spec.wtypeId && spec.classStart) {
-                // Every listed class grants the same head start here, so a wrapped
-                // name list reads better than 30-odd identical rows.
-                const names = Object.keys(spec.classStart);
-                classesHTML = `<div style="display:flex; flex-wrap:wrap; gap:4px">` + names.map(cls => {
-                    const active = cls === currentClassName;
-                    return `<span style="padding:1px 6px; border-radius:9px; font-size:0.878rem; border:1px solid var(--border-secondary-hover-translucent-15); ${active ? 'color:var(--text-secondary-active); font-weight:bold; background:var(--bg-tertiary-focus-translucent-45);' : ''}">${escapeHtml(cls)}</span>`;
-                }).join('') + `</div>`;
-            } else if (spec.classStart) {
-                const rows = Object.entries(spec.classStart).map(([cls, lvl]) => {
-                    const active = cls === currentClassName;
-                    return `<div style="display:flex; justify-content:space-between; padding:2px 0; ${active ? 'color:var(--text-secondary-active); font-weight:bold;' : ''}">
-                        <span>${escapeHtml(cls)}</span><span>${escapeHtml(window.Specializations.levelName(lvl))}</span>
-                    </div>`;
-                });
-                classesHTML = rows.join('');
-            }
-
-            let traitsHTML = '';
-            if (spec.traitStart) {
-                const rows = Object.entries(spec.traitStart).map(([slug, lvl]) => {
-                    const active = actorTraitSlugs.includes(slug);
-                    const label = slug.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-                    return `<div style="display:flex; justify-content:space-between; padding:2px 0; ${active ? 'color:var(--text-secondary-active); font-weight:bold;' : ''}">
-                        <span>${escapeHtml(label)}</span><span>${escapeHtml(window.Specializations.levelName(lvl))}</span>
-                    </div>`;
-                });
-                traitsHTML = rows.join('');
-            }
-
             return `
                 <div style="padding:24px; font-family:'Lora',serif">
                     <h2 style="color:var(--text-secondary-active); margin:0 0 4px">${escapeHtml(window.Specializations.displayName(spec))}</h2>
@@ -1411,34 +1481,31 @@
                     </div>
                     ${progressHTML}
                     ${weaponHTML}
-                    ${classesHTML ? `<div style="margin-top:18px"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('SpecMenu.ui.classes')}</div>${classesHTML}</div>` : ''}
-                    ${traitsHTML ? `<div style="margin-top:18px"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('SpecMenu.ui.traits')}</div>${traitsHTML}</div>` : ''}
                 </div>
             `;
         }
 
         updateSpecInput() {
-            if (Input.isTriggered('pageup')) { this.switchToPreviousCharacter(); return; }
-            if (Input.isTriggered('pagedown')) { this.switchToNextCharacter(); return; }
+            // L1 / R1 cycle the category tabs from anywhere, as in the backpack.
+            if (Input.isTriggered('pageup')) { this.cycleCategory(-1); return; }
+            if (Input.isTriggered('pagedown')) { this.cycleCategory(1); return; }
+            // The companions moved off the shoulders to make room for the tabs.
+            if (Input.isTriggered('shift')) { this.switchToNextCharacter(); return; }
 
-            const isCancel = Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled();
+            // ESC, controller B and right click all mean the same thing: leave
+            // the sheet, from whichever half of the spread the cursor sits in.
+            if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
+                this.closeMenu();
+                return;
+            }
+
+            // Left and right belong to the tab row wherever the cursor is: the
+            // list is read top to bottom, so nothing else wants them.
+            if (Input.isTriggered('right') || Input.isRepeated('right')) { this.cycleCategory(1); return; }
+            if (Input.isTriggered('left') || Input.isRepeated('left')) { this.cycleCategory(-1); return; }
 
             if (this._activeArea === 'categories') {
-                if (Input.isTriggered('right') || Input.isRepeated('right')) {
-                    if (this._categoryIndex < this._categoryTabs.length - 1) {
-                        this._categoryIndex++;
-                        this._selectedIndex = 0;
-                        SoundManager.playCursor();
-                        this.refreshSpecDOM();
-                    }
-                } else if (Input.isTriggered('left') || Input.isRepeated('left')) {
-                    if (this._categoryIndex > 0) {
-                        this._categoryIndex--;
-                        this._selectedIndex = 0;
-                        SoundManager.playCursor();
-                        this.refreshSpecDOM();
-                    }
-                } else if (Input.isTriggered('down') || Input.isRepeated('down')) {
+                if (Input.isTriggered('down') || Input.isRepeated('down')) {
                     if (this._listOrder.length) {
                         this._activeArea = 'list';
                         SoundManager.playCursor();
@@ -1446,22 +1513,12 @@
                     }
                 } else if (Input.isTriggered('ok')) {
                     SoundManager.playOk();
-                } else if (isCancel) {
-                    SoundManager.playCancel();
-                    this.popScene();
                 }
                 return;
             }
 
             // 'list' area
-            if (!this._listOrder.length) {
-                if (isCancel) {
-                    this._activeArea = 'categories';
-                    SoundManager.playCancel();
-                    this.refreshSpecDOM();
-                }
-                return;
-            }
+            if (!this._listOrder.length) return;
 
             if (Input.isTriggered('down') || Input.isRepeated('down')) {
                 if (this._selectedIndex < this._listOrder.length - 1) {
@@ -1481,10 +1538,6 @@
                     SoundManager.playCursor();
                     this.refreshSpecDOM();
                 }
-            } else if (isCancel) {
-                this._activeArea = 'categories';
-                SoundManager.playCancel();
-                this.refreshSpecDOM();
             }
         }
 

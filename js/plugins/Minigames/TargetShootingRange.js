@@ -35,14 +35,20 @@
  * CONTROLS
  *   MOUSE          look; the first click grabs the pointer
  *   ARROWS         look, for anyone not using a mouse
- *   CLICK / R1     shoot (Z or Enter do it too)
- *   WHEEL, L2 R2   change weapon, and raise the rack list
+ *   RIGHT STICK    look, on a pad
+ *   CLICK / R1 R2  shoot (Z or Enter do it too)
+ *   D-PAD UP/DOWN  change weapon, and raise the rack list
+ *   WHEEL, L2      the same, on a mouse and on the left trigger
  *   Q / E          the same, on a keyboard
  *   SHIFT          reload, when the thing in hand has a magazine
  *   ESC            leave the range
  *
+ * The d-pad is the rack and nothing else: on a pad the range is aimed with the
+ * right stick, so up and down on the cross are free to step the weapon, and the
+ * arrow KEYS still aim for anyone playing without a mouse.
+ *
  * THE RACK LIST
- * Rolling the wheel or pulling a trigger raises the rack down the right-hand
+ * Stepping the weapon raises the rack down the right-hand
  * side of the screen: every ranged weapon in the game in alphabetical order,
  * with the one in hand lit. It fades out on its own a moment after the last
  * change. The party leader's own weapon is the one dealt first whenever it is
@@ -1354,9 +1360,10 @@
         }
 
         /**
-         * The buttons. R1 is the trigger, on the pad and at the keyboard both;
-         * the analog triggers and the wheel change what is in hand, and only
-         * ever one weapon per pull, so a held trigger does not run the rack.
+         * The buttons. R1 and R2 are both the trigger, on the pad and at the
+         * keyboard both; the d-pad, the wheel and L2 change what is in hand,
+         * and only ever one weapon per press, so a held button does not run the
+         * rack.
          */
         _updateInput(dt) {
             if (this._state === ST.RUN) {
@@ -1366,16 +1373,27 @@
             if (Input.isTriggered('rangePrev')) this.stepWeapon(-1);
             if (Input.isTriggered('rangeNext')) this.stepWeapon(1);
 
+            const pads = window.AnalogStickInput;
+            if (!pads) return;
+
+            // UP and DOWN on the d-pad are the rack. They have to be read as
+            // raw buttons: core folds the left stick into the same Input
+            // directions, and the stick is not asking for another weapon.
+            if (pads.isButtonTriggered && pads.hasPad && pads.hasPad()) {
+                if (pads.isButtonTriggered(pads.BUTTON.DPAD_UP)) this.stepWeapon(-1);
+                if (pads.isButtonTriggered(pads.BUTTON.DPAD_DOWN)) this.stepWeapon(1);
+            }
+
             // L2 / R2. The core gamepad mapper does not carry the analog
             // triggers, so they are read through the shared helper and edged
             // here rather than polled as buttons.
-            const pads = window.AnalogStickInput;
-            if (pads && pads.leftTrigger) {
+            if (pads.leftTrigger) {
                 const lt = pads.leftTrigger();
                 const rt = pads.rightTrigger ? pads.rightTrigger() : 0;
                 if (!this._lt && lt > TRIGGER_ON) { this._lt = true; this.stepWeapon(-1); }
                 else if (this._lt && lt < TRIGGER_OFF) this._lt = false;
-                if (!this._rt && rt > TRIGGER_ON) { this._rt = true; this.stepWeapon(1); }
+                // The trigger finger is the trigger finger: R2 shoots.
+                if (!this._rt && rt > TRIGGER_ON) { this._rt = true; this.shoot(); }
                 else if (this._rt && rt < TRIGGER_OFF) this._rt = false;
             }
         }
@@ -1383,13 +1401,20 @@
         _updateLook(dt) {
             const k = 1.5 * LOOK_SPEED * dt;
             let dy = 0, dp = 0;
+            const pads = window.AnalogStickInput;
+            // Up and down on the d-pad are the rack, not the elevation, so a
+            // press on either is taken off the aim. The arrow KEYS still aim:
+            // core folds the pad's directions into the same Input actions, so
+            // the only way to tell them apart is the raw button.
+            const dpadY = pads && pads.hasPad && pads.hasPad() &&
+                (pads.isButtonPressed(pads.BUTTON.DPAD_UP) ||
+                 pads.isButtonPressed(pads.BUTTON.DPAD_DOWN));
             if (Input.isPressed('left')) dy += k;
             if (Input.isPressed('right')) dy -= k;
-            if (Input.isPressed('up')) dp += k * 0.7;
-            if (Input.isPressed('down')) dp -= k * 0.7;
+            if (Input.isPressed('up') && !dpadY) dp += k * 0.7;
+            if (Input.isPressed('down') && !dpadY) dp -= k * 0.7;
 
             // The right stick, where there is one.
-            const pads = window.AnalogStickInput;
             if (pads && pads.rightX) {
                 dy -= pads.rightX() * 2.4 * LOOK_SPEED * dt;
                 dp -= pads.rightY() * 1.8 * LOOK_SPEED * dt;

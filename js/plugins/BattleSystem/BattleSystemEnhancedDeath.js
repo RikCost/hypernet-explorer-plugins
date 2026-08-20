@@ -350,6 +350,13 @@
         // the party so it can still be resurrected after the battle.
         if (!$gameSwitches.value(9)) return;
         if (!actor || !actor.isDead()) return;
+        // What it does to the ones still standing, read while the body is
+        // still counted as party: grief scaled by how close they were, nothing
+        // at all for whoever is past caring, and a weight off the shoulders of
+        // anybody who could not stand them (BattleMood, TimeDateSystem.js).
+        if (window.BattleMood) {
+            try { window.BattleMood.onMemberLost(actor); } catch (e) { /* the removal still happens */ }
+        }
         $gameParty.removeActor(actor.actorId());
         window.skipLocalization = true;
         $gameMessage.add(T('Battle.actorDied', { actor: actorName }));

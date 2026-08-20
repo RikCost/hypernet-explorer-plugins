@@ -4,688 +4,1720 @@
     "name": "ideology.center_left_technocrat",
     "religions": [],
     "description": "",
-    "traits": [164, 35, 7, 37, 132],
-    "axes": { "econ": -25, "auth": 15, "trad": -10, "mil": 0, "myst": -60 }
+    "traits": [
+      164,
+      35,
+      7,
+      37,
+      132
+    ],
+    "axes": {
+      "econ": -25,
+      "auth": 15,
+      "trad": -10,
+      "mil": 0,
+      "myst": -60
+    }
   },
   {
     "id": "democratic_socialist",
     "name": "ideology.democratic_socialist",
     "religions": [],
     "description": "",
-    "traits": [88, 33, 163, 171, 25],
-    "axes": { "econ": -60, "auth": -10, "trad": -20, "mil": -20, "myst": -30 }
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -60,
+      "auth": -10,
+      "trad": -20,
+      "mil": -20,
+      "myst": -30
+    }
   },
   {
     "id": "high_frequency_trader",
     "name": "ideology.high_frequency_trader",
     "religions": [],
     "description": "",
-    "traits": [87, 40, 85, 103, 24],
-    "axes": { "econ": 90, "auth": 0, "trad": -10, "mil": 0, "myst": -50 }
+    "traits": [
+      87,
+      40,
+      85,
+      103,
+      24
+    ],
+    "axes": {
+      "econ": 90,
+      "auth": 0,
+      "trad": -10,
+      "mil": 0,
+      "myst": -50
+    }
   },
   {
     "id": "internationalist_communist",
     "name": "ideology.internationalist_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -90, "auth": 30, "trad": -40, "mil": 20, "myst": -70 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -90,
+      "auth": 30,
+      "trad": -40,
+      "mil": 20,
+      "myst": -70
+    }
   },
   {
     "id": "managed_democrat",
     "name": "ideology.managed_democrat",
     "religions": [],
     "description": "",
-    "traits": [164, 16, 98, 30, 82],
-    "axes": { "econ": 10, "auth": 55, "trad": 20, "mil": 20, "myst": -20 }
+    "traits": [
+      164,
+      16,
+      98,
+      30,
+      82
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 55,
+      "trad": 20,
+      "mil": 20,
+      "myst": -20
+    }
   },
   {
     "id": "social_democrat",
     "name": "ideology.social_democrat",
     "religions": [],
     "description": "",
-    "traits": [88, 33, 163, 171, 40],
-    "axes": { "econ": -45, "auth": -5, "trad": -10, "mil": -15, "myst": -25 }
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      40
+    ],
+    "axes": {
+      "econ": -45,
+      "auth": -5,
+      "trad": -10,
+      "mil": -15,
+      "myst": -25
+    }
   },
   {
     "id": "pragmatic_social_democrat",
     "name": "ideology.pragmatic_social_democrat",
     "religions": [],
     "description": "",
-    "traits": [164, 88, 98, 16, 40],
-    "axes": { "econ": -30, "auth": 5, "trad": 0, "mil": -5, "myst": -25 }
+    "traits": [
+      164,
+      88,
+      98,
+      16,
+      40
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": 5,
+      "trad": 0,
+      "mil": -5,
+      "myst": -25
+    }
   },
   {
     "id": "pacifist_theocratic",
     "name": "ideology.pacifist_theocratic",
     "religions": [],
     "description": "",
-    "traits": [48, 89, 56, 187, 61],
-    "axes": { "econ": -10, "auth": 20, "trad": 70, "mil": -80, "myst": 85 }
+    "traits": [
+      48,
+      89,
+      56,
+      187,
+      61
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 20,
+      "trad": 70,
+      "mil": -80,
+      "myst": 85
+    }
   },
   {
     "id": "conservative_monarchist",
     "name": "ideology.conservative_monarchist",
     "religions": [],
     "description": "",
-    "traits": [89, 95, 82, 11, 164],
-    "axes": { "econ": 30, "auth": 55, "trad": 85, "mil": 30, "myst": 25 }
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": 55,
+      "trad": 85,
+      "mil": 30,
+      "myst": 25
+    }
   },
   {
     "id": "democratic_capitalist",
     "name": "ideology.democratic_capitalist",
     "religions": [],
     "description": "",
-    "traits": [87, 98, 82, 16, 24],
-    "axes": { "econ": 65, "auth": -5, "trad": 15, "mil": 10, "myst": -35 }
+    "traits": [
+      87,
+      98,
+      82,
+      16,
+      24
+    ],
+    "axes": {
+      "econ": 65,
+      "auth": -5,
+      "trad": 15,
+      "mil": 10,
+      "myst": -35
+    }
   },
   {
     "id": "young_turk_nationalist",
     "name": "ideology.young_turk_nationalist",
     "religions": [],
     "description": "",
-    "traits": [117, 10, 55, 136, 85],
-    "axes": { "econ": 10, "auth": 60, "trad": -20, "mil": 70, "myst": -40 }
+    "traits": [
+      117,
+      10,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 60,
+      "trad": -20,
+      "mil": 70,
+      "myst": -40
+    }
   },
   {
     "id": "media_theocrat",
     "name": "ideology.media_theocrat",
     "religions": [],
     "description": "",
-    "traits": [116, 40, 29, 133, 184],
-    "axes": { "econ": 40, "auth": 45, "trad": 50, "mil": 5, "myst": 70 }
+    "traits": [
+      116,
+      40,
+      29,
+      133,
+      184
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 45,
+      "trad": 50,
+      "mil": 5,
+      "myst": 70
+    }
   },
   {
     "id": "pragmatic_labour",
     "name": "ideology.pragmatic_labour",
     "religions": [],
     "description": "",
-    "traits": [88, 164, 98, 171, 40],
-    "axes": { "econ": -25, "auth": 5, "trad": 0, "mil": 0, "myst": -30 }
+    "traits": [
+      88,
+      164,
+      98,
+      171,
+      40
+    ],
+    "axes": {
+      "econ": -25,
+      "auth": 5,
+      "trad": 0,
+      "mil": 0,
+      "myst": -30
+    }
   },
   {
     "id": "thelemic_magus",
     "name": "ideology.thelemic_magus",
     "religions": [],
     "description": "",
-    "traits": [140, 193, 138, 36, 187],
-    "axes": { "econ": 10, "auth": -40, "trad": -30, "mil": 0, "myst": 95 }
+    "traits": [
+      140,
+      193,
+      138,
+      36,
+      187
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": -40,
+      "trad": -30,
+      "mil": 0,
+      "myst": 95
+    }
   },
   {
     "id": "diplomatic_theocratic",
     "name": "ideology.diplomatic_theocratic",
     "religions": [],
     "description": "",
-    "traits": [48, 89, 56, 61, 7],
-    "axes": { "econ": 5, "auth": 30, "trad": 65, "mil": -40, "myst": 80 }
+    "traits": [
+      48,
+      89,
+      56,
+      61,
+      7
+    ],
+    "axes": {
+      "econ": 5,
+      "auth": 30,
+      "trad": 65,
+      "mil": -40,
+      "myst": 80
+    }
   },
   {
     "id": "theocratic",
     "name": "ideology.theocratic",
     "religions": [],
     "description": "",
-    "traits": [48, 116, 56, 91, 187],
-    "axes": { "econ": 0, "auth": 60, "trad": 85, "mil": 20, "myst": 90 }
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 60,
+      "trad": 85,
+      "mil": 20,
+      "myst": 90
+    }
   },
   {
     "id": "progressive_internationalist",
     "name": "ideology.progressive_internationalist",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -50, "auth": -20, "trad": -70, "mil": -30, "myst": -30 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -50,
+      "auth": -20,
+      "trad": -70,
+      "mil": -30,
+      "myst": -30
+    }
   },
   {
     "id": "imperial_monarchist",
     "name": "ideology.imperial_monarchist",
     "religions": [],
     "description": "",
-    "traits": [89, 91, 123, 95, 164],
-    "axes": { "econ": 25, "auth": 75, "trad": 85, "mil": 65, "myst": 30 }
+    "traits": [
+      89,
+      91,
+      123,
+      95,
+      164
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": 75,
+      "trad": 85,
+      "mil": 65,
+      "myst": 30
+    }
   },
   {
     "id": "diplomatic_monarchist",
     "name": "ideology.diplomatic_monarchist",
     "religions": [],
     "description": "",
-    "traits": [89, 91, 123, 7, 61],
-    "axes": { "econ": 20, "auth": 50, "trad": 75, "mil": -10, "myst": 25 }
+    "traits": [
+      89,
+      91,
+      123,
+      7,
+      61
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 50,
+      "trad": 75,
+      "mil": -10,
+      "myst": 25
+    }
   },
   {
     "id": "liberal_clientelist",
     "name": "ideology.liberal_clientelist",
     "religions": [],
     "description": "",
-    "traits": [98, 16, 87, 40, 82],
-    "axes": { "econ": 45, "auth": 25, "trad": 20, "mil": 0, "myst": -15 }
+    "traits": [
+      98,
+      16,
+      87,
+      40,
+      82
+    ],
+    "axes": {
+      "econ": 45,
+      "auth": 25,
+      "trad": 20,
+      "mil": 0,
+      "myst": -15
+    }
   },
   {
     "id": "anti_communist",
     "name": "ideology.anti_communist",
     "religions": [],
     "description": "",
-    "traits": [116, 95, 82, 91, 89],
-    "axes": { "econ": 60, "auth": 55, "trad": 60, "mil": 50, "myst": 20 }
+    "traits": [
+      116,
+      95,
+      82,
+      91,
+      89
+    ],
+    "axes": {
+      "econ": 60,
+      "auth": 55,
+      "trad": 60,
+      "mil": 50,
+      "myst": 20
+    }
   },
   {
     "id": "machiavellian",
     "name": "ideology.machiavellian",
     "religions": [],
     "description": "",
-    "traits": [29, 94, 87, 164, 82],
-    "axes": { "econ": 30, "auth": 70, "trad": 10, "mil": 40, "myst": -20 }
+    "traits": [
+      29,
+      94,
+      87,
+      164,
+      82
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": 70,
+      "trad": 10,
+      "mil": 40,
+      "myst": -20
+    }
   },
   {
     "id": "conservative_democrat",
     "name": "ideology.conservative_democrat",
     "religions": [],
     "description": "",
-    "traits": [89, 95, 82, 164, 11],
-    "axes": { "econ": 35, "auth": 20, "trad": 60, "mil": 15, "myst": 15 }
+    "traits": [
+      89,
+      95,
+      82,
+      164,
+      11
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": 20,
+      "trad": 60,
+      "mil": 15,
+      "myst": 15
+    }
   },
   {
     "id": "autocrat",
     "name": "ideology.autocrat",
     "religions": [],
     "description": "",
-    "traits": [91, 164, 116, 95, 30],
-    "axes": { "econ": 10, "auth": 95, "trad": 40, "mil": 50, "myst": 0 }
+    "traits": [
+      91,
+      164,
+      116,
+      95,
+      30
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 95,
+      "trad": 40,
+      "mil": 50,
+      "myst": 0
+    }
   },
   {
     "id": "populist_conservative",
     "name": "ideology.populist_conservative",
     "religions": [],
     "description": "",
-    "traits": [116, 133, 164, 95, 40],
-    "axes": { "econ": 10, "auth": 45, "trad": 70, "mil": 25, "myst": 25 }
+    "traits": [
+      116,
+      133,
+      164,
+      95,
+      40
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 45,
+      "trad": 70,
+      "mil": 25,
+      "myst": 25
+    }
   },
   {
     "id": "authoritarian",
     "name": "ideology.authoritarian",
     "religions": [],
     "description": "",
-    "traits": [91, 164, 30, 116, 95],
-    "axes": { "econ": 5, "auth": 90, "trad": 45, "mil": 55, "myst": -10 }
+    "traits": [
+      91,
+      164,
+      30,
+      116,
+      95
+    ],
+    "axes": {
+      "econ": 5,
+      "auth": 90,
+      "trad": 45,
+      "mil": 55,
+      "myst": -10
+    }
   },
   {
     "id": "orthodox_communist",
     "name": "ideology.orthodox_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -90, "auth": 60, "trad": 10, "mil": 40, "myst": -85 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -90,
+      "auth": 60,
+      "trad": 10,
+      "mil": 40,
+      "myst": -85
+    }
   },
   {
     "id": "imperial_democrat",
     "name": "ideology.imperial_democrat",
     "religions": [],
     "description": "",
-    "traits": [89, 123, 40, 82, 16],
-    "axes": { "econ": 40, "auth": 25, "trad": 45, "mil": 55, "myst": -20 }
+    "traits": [
+      89,
+      123,
+      40,
+      82,
+      16
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 25,
+      "trad": 45,
+      "mil": 55,
+      "myst": -20
+    }
   },
   {
     "id": "universal_librarian",
     "name": "ideology.universal_librarian",
     "religions": [],
     "description": "",
-    "traits": [158, 7, 37, 132, 40],
-    "axes": { "econ": -20, "auth": -35, "trad": -20, "mil": -50, "myst": -25 }
+    "traits": [
+      158,
+      7,
+      37,
+      132,
+      40
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": -35,
+      "trad": -20,
+      "mil": -50,
+      "myst": -25
+    }
   },
   {
     "id": "kemalist",
     "name": "ideology.kemalist",
     "religions": [],
     "description": "",
-    "traits": [117, 91, 55, 136, 85],
-    "axes": { "econ": 0, "auth": 55, "trad": -55, "mil": 60, "myst": -85 }
+    "traits": [
+      117,
+      91,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 55,
+      "trad": -55,
+      "mil": 60,
+      "myst": -85
+    }
   },
   {
     "id": "chaos_renegade",
     "name": "ideology.chaos_renegade",
     "religions": [],
     "description": "",
-    "traits": [162, 47, 118, 10, 38],
-    "axes": { "econ": 0, "auth": -90, "trad": -60, "mil": 30, "myst": 60 }
+    "traits": [
+      162,
+      47,
+      118,
+      10,
+      38
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -90,
+      "trad": -60,
+      "mil": 30,
+      "myst": 60
+    }
   },
   {
     "id": "technocratic",
     "name": "ideology.technocratic",
     "religions": [],
     "description": "",
-    "traits": [7, 164, 37, 35, 16],
-    "axes": { "econ": 5, "auth": 45, "trad": -30, "mil": 0, "myst": -85 }
+    "traits": [
+      7,
+      164,
+      37,
+      35,
+      16
+    ],
+    "axes": {
+      "econ": 5,
+      "auth": 45,
+      "trad": -30,
+      "mil": 0,
+      "myst": -85
+    }
   },
   {
     "id": "socialist",
     "name": "ideology.socialist",
     "religions": [],
     "description": "",
-    "traits": [88, 33, 163, 171, 25],
-    "axes": { "econ": -70, "auth": 0, "trad": -20, "mil": -10, "myst": -35 }
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": 0,
+      "trad": -20,
+      "mil": -10,
+      "myst": -35
+    }
   },
   {
     "id": "military_secularist",
     "name": "ideology.military_secularist",
     "religions": [],
     "description": "",
-    "traits": [117, 91, 55, 4, 164],
-    "axes": { "econ": 0, "auth": 65, "trad": -40, "mil": 80, "myst": -80 }
+    "traits": [
+      117,
+      91,
+      55,
+      4,
+      164
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 65,
+      "trad": -40,
+      "mil": 80,
+      "myst": -80
+    }
   },
   {
     "id": "disciplinarian_communist",
     "name": "ideology.disciplinarian_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 91, 88, 30, 164],
-    "axes": { "econ": -85, "auth": 80, "trad": 20, "mil": 55, "myst": -75 }
+    "traits": [
+      163,
+      91,
+      88,
+      30,
+      164
+    ],
+    "axes": {
+      "econ": -85,
+      "auth": 80,
+      "trad": 20,
+      "mil": 55,
+      "myst": -75
+    }
   },
   {
     "id": "center_right",
     "name": "ideology.center_right",
     "religions": [],
     "description": "",
-    "traits": [89, 95, 82, 164, 11],
-    "axes": { "econ": 45, "auth": 15, "trad": 45, "mil": 15, "myst": 5 }
+    "traits": [
+      89,
+      95,
+      82,
+      164,
+      11
+    ],
+    "axes": {
+      "econ": 45,
+      "auth": 15,
+      "trad": 45,
+      "mil": 15,
+      "myst": 5
+    }
   },
   {
     "id": "communist_revolutionary",
     "name": "ideology.communist_revolutionary",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -95, "auth": 40, "trad": -30, "mil": 70, "myst": -60 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -95,
+      "auth": 40,
+      "trad": -30,
+      "mil": 70,
+      "myst": -60
+    }
   },
   {
     "id": "stagnation_communist",
     "name": "ideology.stagnation_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -80, "auth": 65, "trad": 40, "mil": 30, "myst": -60 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -80,
+      "auth": 65,
+      "trad": 40,
+      "mil": 30,
+      "myst": -60
+    }
   },
   {
     "id": "constitutionalist",
     "name": "ideology.constitutionalist",
     "religions": [],
     "description": "",
-    "traits": [7, 16, 98, 37, 164],
-    "axes": { "econ": 15, "auth": -30, "trad": 20, "mil": -10, "myst": -30 }
+    "traits": [
+      7,
+      16,
+      98,
+      37,
+      164
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": -30,
+      "trad": 20,
+      "mil": -10,
+      "myst": -30
+    }
   },
   {
     "id": "liberal_conservative",
     "name": "ideology.liberal_conservative",
     "religions": [],
     "description": "",
-    "traits": [98, 89, 82, 16, 40],
-    "axes": { "econ": 50, "auth": 5, "trad": 45, "mil": 10, "myst": 0 }
+    "traits": [
+      98,
+      89,
+      82,
+      16,
+      40
+    ],
+    "axes": {
+      "econ": 50,
+      "auth": 5,
+      "trad": 45,
+      "mil": 10,
+      "myst": 0
+    }
   },
   {
     "id": "sacrificial_sorceress",
     "name": "ideology.sacrificial_sorceress",
     "religions": [],
     "description": "",
-    "traits": [193, 138, 36, 187, 140],
-    "axes": { "econ": -10, "auth": 30, "trad": 20, "mil": 40, "myst": 95 }
+    "traits": [
+      193,
+      138,
+      36,
+      187,
+      140
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 30,
+      "trad": 20,
+      "mil": 40,
+      "myst": 95
+    }
   },
   {
     "id": "independent_liberal",
     "name": "ideology.independent_liberal",
     "religions": [],
     "description": "",
-    "traits": [98, 16, 7, 40, 37],
-    "axes": { "econ": 35, "auth": -40, "trad": 0, "mil": -20, "myst": -25 }
+    "traits": [
+      98,
+      16,
+      7,
+      40,
+      37
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": -40,
+      "trad": 0,
+      "mil": -20,
+      "myst": -25
+    }
   },
   {
     "id": "petro_nationalist",
     "name": "ideology.petro_nationalist",
     "religions": [],
     "description": "",
-    "traits": [117, 136, 164, 85, 87],
-    "axes": { "econ": 55, "auth": 55, "trad": 45, "mil": 55, "myst": 10 }
+    "traits": [
+      117,
+      136,
+      164,
+      85,
+      87
+    ],
+    "axes": {
+      "econ": 55,
+      "auth": 55,
+      "trad": 45,
+      "mil": 55,
+      "myst": 10
+    }
   },
   {
     "id": "christian_democratic",
     "name": "ideology.christian_democratic",
     "religions": [],
     "description": "",
-    "traits": [48, 89, 56, 164, 91],
-    "axes": { "econ": 15, "auth": 20, "trad": 65, "mil": 0, "myst": 55 }
+    "traits": [
+      48,
+      89,
+      56,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 20,
+      "trad": 65,
+      "mil": 0,
+      "myst": 55
+    }
   },
   {
     "id": "paternalistic_conservative",
     "name": "ideology.paternalistic_conservative",
     "religions": [],
     "description": "",
-    "traits": [89, 95, 82, 11, 164],
-    "axes": { "econ": 5, "auth": 45, "trad": 75, "mil": 20, "myst": 30 }
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 5,
+      "auth": 45,
+      "trad": 75,
+      "mil": 20,
+      "myst": 30
+    }
   },
   {
     "id": "military_nationalist",
     "name": "ideology.military_nationalist",
     "religions": [],
     "description": "",
-    "traits": [117, 91, 55, 4, 164],
-    "axes": { "econ": 15, "auth": 70, "trad": 55, "mil": 90, "myst": -10 }
+    "traits": [
+      117,
+      91,
+      55,
+      4,
+      164
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 70,
+      "trad": 55,
+      "mil": 90,
+      "myst": -10
+    }
   },
   {
     "id": "agrarian_centrist",
     "name": "ideology.agrarian_centrist",
     "religions": [],
     "description": "",
-    "traits": [82, 164, 40, 98, 16],
-    "axes": { "econ": 0, "auth": 10, "trad": 55, "mil": -5, "myst": 15 }
+    "traits": [
+      82,
+      164,
+      40,
+      98,
+      16
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 10,
+      "trad": 55,
+      "mil": -5,
+      "myst": 15
+    }
   },
   {
     "id": "esoteric_psychologist",
     "name": "ideology.esoteric_psychologist",
     "religions": [],
     "description": "",
-    "traits": [140, 193, 138, 7, 37],
-    "axes": { "econ": -10, "auth": -20, "trad": -30, "mil": -30, "myst": 80 }
+    "traits": [
+      140,
+      193,
+      138,
+      7,
+      37
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": -20,
+      "trad": -30,
+      "mil": -30,
+      "myst": 80
+    }
   },
   {
     "id": "abramic_father",
     "name": "ideology.abramic_father",
     "religions": [],
     "description": "",
-    "traits": [48, 116, 56, 91, 187],
-    "axes": { "econ": 0, "auth": 70, "trad": 90, "mil": 30, "myst": 95 }
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 70,
+      "trad": 90,
+      "mil": 30,
+      "myst": 95
+    }
   },
   {
     "id": "islamic_autocrat",
     "name": "ideology.islamic_autocrat",
     "religions": [],
     "description": "",
-    "traits": [48, 91, 164, 116, 30],
-    "axes": { "econ": 10, "auth": 85, "trad": 85, "mil": 45, "myst": 75 }
+    "traits": [
+      48,
+      91,
+      164,
+      116,
+      30
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 85,
+      "trad": 85,
+      "mil": 45,
+      "myst": 75
+    }
   },
   {
     "id": "reform_socialist",
     "name": "ideology.reform_socialist",
     "religions": [],
     "description": "",
-    "traits": [88, 33, 163, 171, 25],
-    "axes": { "econ": -55, "auth": -5, "trad": -15, "mil": -15, "myst": -30 }
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -55,
+      "auth": -5,
+      "trad": -15,
+      "mil": -15,
+      "myst": -30
+    }
   },
   {
     "id": "speed_profit_prophet",
     "name": "ideology.speed_profit_prophet",
     "religions": [],
     "description": "",
-    "traits": [87, 40, 85, 103, 24],
-    "axes": { "econ": 95, "auth": -10, "trad": -25, "mil": 5, "myst": 30 }
+    "traits": [
+      87,
+      40,
+      85,
+      103,
+      24
+    ],
+    "axes": {
+      "econ": 95,
+      "auth": -10,
+      "trad": -25,
+      "mil": 5,
+      "myst": 30
+    }
   },
   {
     "id": "austerity_conservative",
     "name": "ideology.austerity_conservative",
     "religions": [],
     "description": "",
-    "traits": [89, 95, 82, 11, 164],
-    "axes": { "econ": 70, "auth": 30, "trad": 55, "mil": 5, "myst": 0 }
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 70,
+      "auth": 30,
+      "trad": 55,
+      "mil": 5,
+      "myst": 0
+    }
   },
   {
     "id": "transitional_communist",
     "name": "ideology.transitional_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -70, "auth": 35, "trad": -10, "mil": 20, "myst": -55 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": 35,
+      "trad": -10,
+      "mil": 20,
+      "myst": -55
+    }
   },
   {
     "id": "reform_communist",
     "name": "ideology.reform_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -60, "auth": 15, "trad": -15, "mil": 5, "myst": -50 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -60,
+      "auth": 15,
+      "trad": -15,
+      "mil": 5,
+      "myst": -50
+    }
   },
   {
     "id": "fiscal_conservative",
     "name": "ideology.fiscal_conservative",
     "religions": [],
     "description": "",
-    "traits": [89, 95, 82, 11, 164],
-    "axes": { "econ": 75, "auth": 20, "trad": 50, "mil": 10, "myst": -5 }
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 75,
+      "auth": 20,
+      "trad": 50,
+      "mil": 10,
+      "myst": -5
+    }
   },
   {
     "id": "neo_ottoman_islamist",
     "name": "ideology.neo_ottoman_islamist",
     "religions": [],
     "description": "",
-    "traits": [48, 91, 164, 116, 30],
-    "axes": { "econ": 25, "auth": 70, "trad": 80, "mil": 55, "myst": 70 }
+    "traits": [
+      48,
+      91,
+      164,
+      116,
+      30
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": 70,
+      "trad": 80,
+      "mil": 55,
+      "myst": 70
+    }
   },
   {
     "id": "christian_democrat",
     "name": "ideology.christian_democrat",
     "religions": [],
     "description": "",
-    "traits": [48, 89, 56, 164, 91],
-    "axes": { "econ": 20, "auth": 20, "trad": 65, "mil": 5, "myst": 55 }
+    "traits": [
+      48,
+      89,
+      56,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 20,
+      "trad": 65,
+      "mil": 5,
+      "myst": 55
+    }
   },
   {
     "id": "social_liberal",
     "name": "ideology.social_liberal",
     "religions": [],
     "description": "",
-    "traits": [98, 16, 88, 40, 7],
-    "axes": { "econ": -15, "auth": -35, "trad": -35, "mil": -25, "myst": -30 }
+    "traits": [
+      98,
+      16,
+      88,
+      40,
+      7
+    ],
+    "axes": {
+      "econ": -15,
+      "auth": -35,
+      "trad": -35,
+      "mil": -25,
+      "myst": -30
+    }
   },
   {
     "id": "information_leaker",
     "name": "ideology.information_leaker",
     "religions": [],
     "description": "",
-    "traits": [158, 40, 29, 37, 132],
-    "axes": { "econ": -20, "auth": -80, "trad": -40, "mil": -30, "myst": -35 }
+    "traits": [
+      158,
+      40,
+      29,
+      37,
+      132
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": -80,
+      "trad": -40,
+      "mil": -30,
+      "myst": -35
+    }
   },
   {
     "id": "stone_age_primal",
     "name": "ideology.stone_age_primal",
     "religions": [],
     "description": "",
-    "traits": [53, 10, 22, 4, 24],
-    "axes": { "econ": -40, "auth": 20, "trad": 95, "mil": 60, "myst": 55 }
+    "traits": [
+      53,
+      10,
+      22,
+      4,
+      24
+    ],
+    "axes": {
+      "econ": -40,
+      "auth": 20,
+      "trad": 95,
+      "mil": 60,
+      "myst": 55
+    }
   },
   {
     "id": "new_labour",
     "name": "ideology.new_labour",
     "religions": [],
     "description": "",
-    "traits": [88, 164, 98, 171, 40],
-    "axes": { "econ": 10, "auth": 15, "trad": 5, "mil": 15, "myst": -35 }
+    "traits": [
+      88,
+      164,
+      98,
+      171,
+      40
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 15,
+      "trad": 5,
+      "mil": 15,
+      "myst": -35
+    }
   },
   {
     "id": "technocratic_liberal",
     "name": "ideology.technocratic_liberal",
     "religions": [],
     "description": "",
-    "traits": [7, 35, 16, 98, 37],
-    "axes": { "econ": 30, "auth": -10, "trad": -25, "mil": -10, "myst": -75 }
+    "traits": [
+      7,
+      35,
+      16,
+      98,
+      37
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": -10,
+      "trad": -25,
+      "mil": -10,
+      "myst": -75
+    }
   },
   {
     "id": "constitutional_monarchist",
     "name": "ideology.constitutional_monarchist",
     "religions": [],
     "description": "",
-    "traits": [89, 123, 16, 98, 7],
-    "axes": { "econ": 25, "auth": 5, "trad": 65, "mil": 5, "myst": 15 }
+    "traits": [
+      89,
+      123,
+      16,
+      98,
+      7
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": 5,
+      "trad": 65,
+      "mil": 5,
+      "myst": 15
+    }
   },
   {
     "id": "moderate_islamist",
     "name": "ideology.moderate_islamist",
     "religions": [],
     "description": "",
-    "traits": [48, 98, 40, 164, 91],
-    "axes": { "econ": 20, "auth": 35, "trad": 65, "mil": 10, "myst": 65 }
+    "traits": [
+      48,
+      98,
+      40,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 35,
+      "trad": 65,
+      "mil": 10,
+      "myst": 65
+    }
   },
   {
     "id": "constitutional_sultan",
     "name": "ideology.constitutional_sultan",
     "religions": [],
     "description": "",
-    "traits": [89, 91, 123, 98, 7],
-    "axes": { "econ": 25, "auth": 35, "trad": 75, "mil": 20, "myst": 40 }
+    "traits": [
+      89,
+      91,
+      123,
+      98,
+      7
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": 35,
+      "trad": 75,
+      "mil": 20,
+      "myst": 40
+    }
   },
   {
     "id": "discordian_chaos",
     "name": "ideology.discordian_chaos",
     "religions": [],
     "description": "",
-    "traits": [162, 47, 118, 10, 38],
-    "axes": { "econ": -10, "auth": -95, "trad": -70, "mil": 10, "myst": 85 }
+    "traits": [
+      162,
+      47,
+      118,
+      10,
+      38
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": -95,
+      "trad": -70,
+      "mil": 10,
+      "myst": 85
+    }
   },
   {
     "id": "classical_liberal",
     "name": "ideology.classical_liberal",
     "religions": [],
     "description": "",
-    "traits": [98, 16, 82, 7, 40],
-    "axes": { "econ": 60, "auth": -50, "trad": 20, "mil": -15, "myst": -30 }
+    "traits": [
+      98,
+      16,
+      82,
+      7,
+      40
+    ],
+    "axes": {
+      "econ": 60,
+      "auth": -50,
+      "trad": 20,
+      "mil": -15,
+      "myst": -30
+    }
   },
   {
     "id": "islamist",
     "name": "ideology.islamist",
     "religions": [],
     "description": "",
-    "traits": [48, 116, 91, 164, 30],
-    "axes": { "econ": 10, "auth": 70, "trad": 85, "mil": 45, "myst": 80 }
+    "traits": [
+      48,
+      116,
+      91,
+      164,
+      30
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 70,
+      "trad": 85,
+      "mil": 45,
+      "myst": 80
+    }
   },
   {
     "id": "totalitarian_communist",
     "name": "ideology.totalitarian_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 91, 88, 30, 164],
-    "axes": { "econ": -95, "auth": 95, "trad": 15, "mil": 70, "myst": -85 }
+    "traits": [
+      163,
+      91,
+      88,
+      30,
+      164
+    ],
+    "axes": {
+      "econ": -95,
+      "auth": 95,
+      "trad": 15,
+      "mil": 70,
+      "myst": -85
+    }
   },
   {
     "id": "fascist_theocratic",
     "name": "ideology.fascist_theocratic",
     "religions": [],
     "description": "",
-    "traits": [116, 91, 164, 48, 30],
-    "axes": { "econ": 20, "auth": 95, "trad": 85, "mil": 85, "myst": 70 }
+    "traits": [
+      116,
+      91,
+      164,
+      48,
+      30
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 95,
+      "trad": 85,
+      "mil": 85,
+      "myst": 70
+    }
   },
   {
     "id": "secular_nationalist",
     "name": "ideology.secular_nationalist",
     "religions": [],
     "description": "",
-    "traits": [117, 91, 55, 136, 85],
-    "axes": { "econ": 15, "auth": 55, "trad": 25, "mil": 65, "myst": -70 }
+    "traits": [
+      117,
+      91,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 55,
+      "trad": 25,
+      "mil": 65,
+      "myst": -70
+    }
   },
   {
     "id": "scandalous_monarchist",
     "name": "ideology.scandalous_monarchist",
     "religions": [],
     "description": "",
-    "traits": [123, 94, 29, 16, 173],
-    "axes": { "econ": 40, "auth": 30, "trad": 40, "mil": 0, "myst": 10 }
+    "traits": [
+      123,
+      94,
+      29,
+      16,
+      173
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 30,
+      "trad": 40,
+      "mil": 0,
+      "myst": 10
+    }
   },
   {
     "id": "duty_bound_monarchist",
     "name": "ideology.duty_bound_monarchist",
     "religions": [],
     "description": "",
-    "traits": [89, 123, 95, 91, 171],
-    "axes": { "econ": 25, "auth": 55, "trad": 85, "mil": 40, "myst": 30 }
+    "traits": [
+      89,
+      123,
+      95,
+      91,
+      171
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": 55,
+      "trad": 85,
+      "mil": 40,
+      "myst": 30
+    }
   },
   {
     "id": "conservative_theocratic",
     "name": "ideology.conservative_theocratic",
     "religions": [],
     "description": "",
-    "traits": [116, 95, 91, 89, 55],
-    "axes": { "econ": 15, "auth": 65, "trad": 90, "mil": 30, "myst": 80 }
+    "traits": [
+      116,
+      95,
+      91,
+      89,
+      55
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 65,
+      "trad": 90,
+      "mil": 30,
+      "myst": 80
+    }
   },
   {
     "id": "traditionalist_witch",
     "name": "ideology.traditionalist_witch",
     "religions": [],
     "description": "",
-    "traits": [193, 138, 36, 187, 116],
-    "axes": { "econ": -25, "auth": 10, "trad": 70, "mil": -10, "myst": 95 }
+    "traits": [
+      193,
+      138,
+      36,
+      187,
+      116
+    ],
+    "axes": {
+      "econ": -25,
+      "auth": 10,
+      "trad": 70,
+      "mil": -10,
+      "myst": 95
+    }
   },
   {
     "id": "conservative",
     "name": "ideology.conservative",
     "religions": [],
     "description": "",
-    "traits": [89, 95, 11, 91, 164],
-    "axes": { "econ": 40, "auth": 30, "trad": 75, "mil": 20, "myst": 20 }
+    "traits": [
+      89,
+      95,
+      11,
+      91,
+      164
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 30,
+      "trad": 75,
+      "mil": 20,
+      "myst": 20
+    }
   },
   {
     "id": "death_metal_inner_circle",
     "name": "ideology.death_metal_inner_circle",
     "religions": [],
     "description": "",
-    "traits": [162, 47, 118, 10, 38],
-    "axes": { "econ": -20, "auth": -60, "trad": -30, "mil": 75, "myst": 80 }
+    "traits": [
+      162,
+      47,
+      118,
+      10,
+      38
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": -60,
+      "trad": -30,
+      "mil": 75,
+      "myst": 80
+    }
   },
   {
     "id": "rowdy_horde",
     "name": "ideology.rowdy_horde",
     "religions": [],
     "description": "",
-    "traits": [53, 10, 24, 22, 4],
-    "axes": { "econ": -30, "auth": 20, "trad": 60, "mil": 80, "myst": 25 }
+    "traits": [
+      53,
+      10,
+      24,
+      22,
+      4
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": 20,
+      "trad": 60,
+      "mil": 80,
+      "myst": 25
+    }
   },
   {
     "id": "violent_marauders",
     "name": "ideology.violent_marauders",
     "religions": [],
     "description": "",
-    "traits": [53, 47, 157, 4, 60],
-    "axes": { "econ": 10, "auth": 40, "trad": 10, "mil": 95, "myst": 0 }
+    "traits": [
+      53,
+      47,
+      157,
+      4,
+      60
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 40,
+      "trad": 10,
+      "mil": 95,
+      "myst": 0
+    }
   },
   {
     "id": "free_states_confederation",
     "name": "ideology.free_states_confederation",
     "religions": [],
     "description": "",
-    "traits": [98, 16, 82, 7, 40],
-    "axes": { "econ": 55, "auth": -60, "trad": 30, "mil": 10, "myst": -15 }
+    "traits": [
+      98,
+      16,
+      82,
+      7,
+      40
+    ],
+    "axes": {
+      "econ": 55,
+      "auth": -60,
+      "trad": 30,
+      "mil": 10,
+      "myst": -15
+    }
   },
   {
     "id": "crown_colony_administration",
     "name": "ideology.crown_colony_administration",
     "religions": [],
     "description": "",
-    "traits": [89, 123, 7, 37, 164],
-    "axes": { "econ": 40, "auth": 60, "trad": 60, "mil": 45, "myst": -10 }
+    "traits": [
+      89,
+      123,
+      7,
+      37,
+      164
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 60,
+      "trad": 60,
+      "mil": 45,
+      "myst": -10
+    }
   },
   {
     "id": "punitive_colony_regime",
     "name": "ideology.punitive_colony_regime",
     "religions": [],
     "description": "",
-    "traits": [91, 164, 30, 116, 157],
-    "axes": { "econ": 30, "auth": 90, "trad": 50, "mil": 70, "myst": -20 }
+    "traits": [
+      91,
+      164,
+      30,
+      116,
+      157
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": 90,
+      "trad": 50,
+      "mil": 70,
+      "myst": -20
+    }
   },
   {
     "id": "continental_unionist",
     "name": "ideology.continental_unionist",
     "religions": [],
     "description": "",
-    "traits": [98, 163, 7, 40, 82],
-    "axes": { "econ": 10, "auth": 0, "trad": -25, "mil": -30, "myst": -35 }
+    "traits": [
+      98,
+      163,
+      7,
+      40,
+      82
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 0,
+      "trad": -25,
+      "mil": -30,
+      "myst": -35
+    }
   },
   {
     "id": "thaumo_industrialist",
     "name": "ideology.thaumo_industrialist",
     "religions": [],
     "description": "",
-    "traits": [7, 87, 37, 164, 40],
-    "axes": { "econ": 70, "auth": 25, "trad": -20, "mil": 20, "myst": 60 }
+    "traits": [
+      7,
+      87,
+      37,
+      164,
+      40
+    ],
+    "axes": {
+      "econ": 70,
+      "auth": 25,
+      "trad": -20,
+      "mil": 20,
+      "myst": 60
+    }
   },
   {
     "id": "fashion_fascism",
     "name": "ideology.fashion_fascism",
     "religions": [],
     "description": "",
-    "traits": [144, 30, 91, 173, 133],
-    "axes": { "econ": 55, "auth": 80, "trad": 30, "mil": 15, "myst": 25 }
+    "traits": [
+      144,
+      30,
+      91,
+      173,
+      133
+    ],
+    "axes": {
+      "econ": 55,
+      "auth": 80,
+      "trad": 30,
+      "mil": 15,
+      "myst": 25
+    }
   },
   {
     "id": "zeta_touristic_observism",
@@ -693,8 +1725,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [41, 82, 25, 24, 132],
-    "axes": { "econ": 0, "auth": -20, "trad": -30, "mil": -70, "myst": 20 }
+    "traits": [
+      41,
+      82,
+      25,
+      24,
+      132
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -20,
+      "trad": -30,
+      "mil": -70,
+      "myst": 20
+    }
   },
   {
     "id": "crimson_vivisectionism",
@@ -702,8 +1746,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [47, 132, 37, 30, 24],
-    "axes": { "econ": 20, "auth": 70, "trad": -40, "mil": 50, "myst": -30 }
+    "traits": [
+      47,
+      132,
+      37,
+      30,
+      24
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 70,
+      "trad": -40,
+      "mil": 50,
+      "myst": -30
+    }
   },
   {
     "id": "pale_psionic_supremacy",
@@ -711,8 +1767,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [196, 122, 190, 85, 55],
-    "axes": { "econ": 10, "auth": 85, "trad": 20, "mil": 60, "myst": 85 }
+    "traits": [
+      196,
+      122,
+      190,
+      85,
+      55
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 85,
+      "trad": 20,
+      "mil": 60,
+      "myst": 85
+    }
   },
   {
     "id": "human_adoration_doctrine",
@@ -720,8 +1788,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [33, 88, 82, 132, 41],
-    "axes": { "econ": -30, "auth": -20, "trad": 30, "mil": -60, "myst": 45 }
+    "traits": [
+      33,
+      88,
+      82,
+      132,
+      41
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": -20,
+      "trad": 30,
+      "mil": -60,
+      "myst": 45
+    }
   },
   {
     "id": "trolling_humans",
@@ -729,8 +1809,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [29, 81, 24, 103, 47],
-    "axes": { "econ": 0, "auth": -70, "trad": -60, "mil": 20, "myst": 30 }
+    "traits": [
+      29,
+      81,
+      24,
+      103,
+      47
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -70,
+      "trad": -60,
+      "mil": 20,
+      "myst": 30
+    }
   },
   {
     "id": "postbiological_ascendancy",
@@ -738,8 +1830,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [35, 37, 132, 30, 85],
-    "axes": { "econ": 30, "auth": 40, "trad": -95, "mil": 20, "myst": -60 }
+    "traits": [
+      35,
+      37,
+      132,
+      30,
+      85
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": 40,
+      "trad": -95,
+      "mil": 20,
+      "myst": -60
+    }
   },
   {
     "id": "singularity_technocracy",
@@ -747,8 +1851,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [35, 98, 164, 132, 40],
-    "axes": { "econ": 40, "auth": 60, "trad": -90, "mil": 10, "myst": -85 }
+    "traits": [
+      35,
+      98,
+      164,
+      132,
+      40
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 60,
+      "trad": -90,
+      "mil": 10,
+      "myst": -85
+    }
   },
   {
     "id": "quantum_collectivism",
@@ -756,8 +1872,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [88, 163, 33, 190, 200],
-    "axes": { "econ": -95, "auth": 30, "trad": -50, "mil": -20, "myst": 40 }
+    "traits": [
+      88,
+      163,
+      33,
+      190,
+      200
+    ],
+    "axes": {
+      "econ": -95,
+      "auth": 30,
+      "trad": -50,
+      "mil": -20,
+      "myst": 40
+    }
   },
   {
     "id": "void_marauder_creed",
@@ -765,8 +1893,20 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [47, 87, 24, 55, 95],
-    "axes": { "econ": 40, "auth": 30, "trad": -20, "mil": 95, "myst": 20 }
+    "traits": [
+      47,
+      87,
+      24,
+      55,
+      95
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 30,
+      "trad": -20,
+      "mil": 95,
+      "myst": 20
+    }
   },
   {
     "id": "bone_hierarch_savagery",
@@ -774,827 +1914,2659 @@
     "religions": [],
     "description": "",
     "alien": true,
-    "traits": [47, 116, 89, 55, 194],
-    "axes": { "econ": -20, "auth": 80, "trad": 85, "mil": 90, "myst": 70 }
+    "traits": [
+      47,
+      116,
+      89,
+      55,
+      194
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": 80,
+      "trad": 85,
+      "mil": 90,
+      "myst": 70
+    }
   },
   {
     "id": "green_ecologist",
     "name": "ideology.green_ecologist",
     "religions": [],
     "description": "",
-    "traits": [187, 163, 17, 33, 88],
-    "axes": { "econ": -40, "auth": -10, "trad": -30, "mil": -50, "myst": 15 }
+    "traits": [
+      187,
+      163,
+      17,
+      33,
+      88
+    ],
+    "axes": {
+      "econ": -40,
+      "auth": -10,
+      "trad": -30,
+      "mil": -50,
+      "myst": 15
+    }
   },
   {
     "id": "libertarian_minarchist",
     "name": "ideology.libertarian_minarchist",
     "religions": [],
     "description": "",
-    "traits": [37, 87, 164, 175, 98],
-    "axes": { "econ": 80, "auth": -85, "trad": 10, "mil": -10, "myst": -40 }
+    "traits": [
+      37,
+      87,
+      164,
+      175,
+      98
+    ],
+    "axes": {
+      "econ": 80,
+      "auth": -85,
+      "trad": 10,
+      "mil": -10,
+      "myst": -40
+    }
   },
   {
     "id": "corporatist_statist",
     "name": "ideology.corporatist_statist",
     "religions": [],
     "description": "",
-    "traits": [164, 91, 133, 40, 98],
-    "axes": { "econ": 15, "auth": 70, "trad": 55, "mil": 35, "myst": 10 }
+    "traits": [
+      164,
+      91,
+      133,
+      40,
+      98
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 70,
+      "trad": 55,
+      "mil": 35,
+      "myst": 10
+    }
   },
   {
     "id": "trade_unionist",
     "name": "ideology.trade_unionist",
     "religions": [],
     "description": "",
-    "traits": [88, 89, 171, 136, 82],
-    "axes": { "econ": -65, "auth": -15, "trad": 10, "mil": -10, "myst": -30 }
+    "traits": [
+      88,
+      89,
+      171,
+      136,
+      82
+    ],
+    "axes": {
+      "econ": -65,
+      "auth": -15,
+      "trad": 10,
+      "mil": -10,
+      "myst": -30
+    }
   },
   {
     "id": "feminist_emancipationist",
     "name": "ideology.feminist_emancipationist",
     "religions": [],
     "description": "",
-    "traits": [163, 33, 171, 132, 82],
-    "axes": { "econ": -35, "auth": -40, "trad": -85, "mil": -25, "myst": -20 }
+    "traits": [
+      163,
+      33,
+      171,
+      132,
+      82
+    ],
+    "axes": {
+      "econ": -35,
+      "auth": -40,
+      "trad": -85,
+      "mil": -25,
+      "myst": -20
+    }
   },
   {
     "id": "regionalist_separatist",
     "name": "ideology.regionalist_separatist",
     "religions": [],
     "description": "",
-    "traits": [89, 55, 163, 181, 167],
-    "axes": { "econ": 0, "auth": 20, "trad": 60, "mil": 35, "myst": 15 }
+    "traits": [
+      89,
+      55,
+      163,
+      181,
+      167
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 20,
+      "trad": 60,
+      "mil": 35,
+      "myst": 15
+    }
   },
   {
     "id": "civic_republican",
     "name": "ideology.civic_republican",
     "religions": [],
     "description": "",
-    "traits": [171, 163, 98, 132, 89],
-    "axes": { "econ": 0, "auth": -30, "trad": 20, "mil": 0, "myst": -40 }
+    "traits": [
+      171,
+      163,
+      98,
+      132,
+      89
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -30,
+      "trad": 20,
+      "mil": 0,
+      "myst": -40
+    }
   },
   {
     "id": "law_and_order_populist",
     "name": "ideology.law_and_order_populist",
     "religions": [],
     "description": "",
-    "traits": [95, 30, 164, 136, 55],
-    "axes": { "econ": 35, "auth": 75, "trad": 65, "mil": 35, "myst": 5 }
+    "traits": [
+      95,
+      30,
+      164,
+      136,
+      55
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": 75,
+      "trad": 65,
+      "mil": 35,
+      "myst": 5
+    }
   },
   {
     "id": "welfare_chauvinist",
     "name": "ideology.welfare_chauvinist",
     "religions": [],
     "description": "",
-    "traits": [88, 55, 89, 164, 136],
-    "axes": { "econ": -45, "auth": 50, "trad": 65, "mil": 30, "myst": 10 }
+    "traits": [
+      88,
+      55,
+      89,
+      164,
+      136
+    ],
+    "axes": {
+      "econ": -45,
+      "auth": 50,
+      "trad": 65,
+      "mil": 30,
+      "myst": 10
+    }
   },
   {
     "id": "monetarist_banker",
     "name": "ideology.monetarist_banker",
     "religions": [],
     "description": "",
-    "traits": [87, 164, 132, 40, 30],
-    "axes": { "econ": 80, "auth": 25, "trad": 25, "mil": 0, "myst": -50 }
+    "traits": [
+      87,
+      164,
+      132,
+      40,
+      30
+    ],
+    "axes": {
+      "econ": 80,
+      "auth": 25,
+      "trad": 25,
+      "mil": 0,
+      "myst": -50
+    }
   },
   {
     "id": "distributist",
     "name": "ideology.distributist",
     "religions": [],
     "description": "",
-    "traits": [88, 137, 116, 171, 92],
-    "axes": { "econ": -25, "auth": -20, "trad": 70, "mil": -25, "myst": 50 }
+    "traits": [
+      88,
+      137,
+      116,
+      171,
+      92
+    ],
+    "axes": {
+      "econ": -25,
+      "auth": -20,
+      "trad": 70,
+      "mil": -25,
+      "myst": 50
+    }
   },
   {
     "id": "cosmopolitan_mercantilist",
     "name": "ideology.cosmopolitan_mercantilist",
     "religions": [],
     "description": "",
-    "traits": [133, 200, 82, 87, 140],
-    "axes": { "econ": 70, "auth": -10, "trad": -30, "mil": -20, "myst": -25 }
+    "traits": [
+      133,
+      200,
+      82,
+      87,
+      140
+    ],
+    "axes": {
+      "econ": 70,
+      "auth": -10,
+      "trad": -30,
+      "mil": -20,
+      "myst": -25
+    }
   },
   {
     "id": "bureaucratic_proceduralist",
     "name": "ideology.bureaucratic_proceduralist",
     "religions": [],
     "description": "",
-    "traits": [30, 40, 164, 132, 78],
-    "axes": { "econ": 0, "auth": 60, "trad": 35, "mil": 0, "myst": -55 }
+    "traits": [
+      30,
+      40,
+      164,
+      132,
+      78
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 60,
+      "trad": 35,
+      "mil": 0,
+      "myst": -55
+    }
   },
   {
     "id": "student_radical",
     "name": "ideology.student_radical",
     "religions": [],
     "description": "",
-    "traits": [163, 10, 132, 24, 82],
-    "axes": { "econ": -70, "auth": -60, "trad": -70, "mil": 20, "myst": -15 }
+    "traits": [
+      163,
+      10,
+      132,
+      24,
+      82
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": -60,
+      "trad": -70,
+      "mil": 20,
+      "myst": -15
+    }
   },
   {
     "id": "luddite_restorationist",
     "name": "ideology.luddite_restorationist",
     "religions": [],
     "description": "",
-    "traits": [34, 137, 36, 95, 89],
-    "axes": { "econ": -30, "auth": 20, "trad": 90, "mil": 25, "myst": 35 }
+    "traits": [
+      34,
+      137,
+      36,
+      95,
+      89
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": 20,
+      "trad": 90,
+      "mil": 25,
+      "myst": 35
+    }
   },
   {
     "id": "pacifist_humanitarian",
     "name": "ideology.pacifist_humanitarian",
     "religions": [],
     "description": "",
-    "traits": [25, 33, 88, 163, 171],
-    "axes": { "econ": -30, "auth": -40, "trad": -25, "mil": -95, "myst": 0 }
+    "traits": [
+      25,
+      33,
+      88,
+      163,
+      171
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": -40,
+      "trad": -25,
+      "mil": -95,
+      "myst": 0
+    }
   },
   {
     "id": "anarcho_syndicalist",
     "name": "ideology.anarcho_syndicalist",
     "religions": [],
     "description": "",
-    "traits": [88, 163, 82, 171, 136],
-    "axes": { "econ": -85, "auth": -90, "trad": -20, "mil": 5, "myst": -40 }
+    "traits": [
+      88,
+      163,
+      82,
+      171,
+      136
+    ],
+    "axes": {
+      "econ": -85,
+      "auth": -90,
+      "trad": -20,
+      "mil": 5,
+      "myst": -40
+    }
   },
   {
     "id": "anarcho_communist",
     "name": "ideology.anarcho_communist",
     "religions": [],
     "description": "",
-    "traits": [163, 88, 33, 25, 200],
-    "axes": { "econ": -95, "auth": -95, "trad": -40, "mil": 10, "myst": -45 }
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -95,
+      "auth": -95,
+      "trad": -40,
+      "mil": 10,
+      "myst": -45
+    }
   },
   {
     "id": "anarcho_capitalist",
     "name": "ideology.anarcho_capitalist",
     "religions": [],
     "description": "",
-    "traits": [87, 85, 133, 164, 37],
-    "axes": { "econ": 95, "auth": -85, "trad": 5, "mil": 15, "myst": -40 }
+    "traits": [
+      87,
+      85,
+      133,
+      164,
+      37
+    ],
+    "axes": {
+      "econ": 95,
+      "auth": -85,
+      "trad": 5,
+      "mil": 15,
+      "myst": -40
+    }
   },
   {
     "id": "anarcho_primitivist",
     "name": "ideology.anarcho_primitivist",
     "religions": [],
     "description": "",
-    "traits": [97, 187, 34, 189, 50],
-    "axes": { "econ": -45, "auth": -80, "trad": 80, "mil": 25, "myst": 60 }
+    "traits": [
+      97,
+      187,
+      34,
+      189,
+      50
+    ],
+    "axes": {
+      "econ": -45,
+      "auth": -80,
+      "trad": 80,
+      "mil": 25,
+      "myst": 60
+    }
   },
   {
     "id": "individualist_egoist",
     "name": "ideology.individualist_egoist",
     "religions": [],
     "description": "",
-    "traits": [91, 175, 37, 164, 83],
-    "axes": { "econ": 25, "auth": -95, "trad": -30, "mil": 0, "myst": -35 }
+    "traits": [
+      91,
+      175,
+      37,
+      164,
+      83
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": -95,
+      "trad": -30,
+      "mil": 0,
+      "myst": -35
+    }
   },
   {
     "id": "insurrectionary_anarchist",
     "name": "ideology.insurrectionary_anarchist",
     "religions": [],
     "description": "",
-    "traits": [10, 167, 134, 24, 53],
-    "axes": { "econ": -70, "auth": -95, "trad": -45, "mil": 70, "myst": -15 }
+    "traits": [
+      10,
+      167,
+      134,
+      24,
+      53
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": -95,
+      "trad": -45,
+      "mil": 70,
+      "myst": -15
+    }
   },
   {
     "id": "mutualist_federalist",
     "name": "ideology.mutualist_federalist",
     "religions": [],
     "description": "",
-    "traits": [133, 171, 88, 164, 98],
-    "axes": { "econ": -30, "auth": -70, "trad": 5, "mil": -30, "myst": -25 }
+    "traits": [
+      133,
+      171,
+      88,
+      164,
+      98
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": -70,
+      "trad": 5,
+      "mil": -30,
+      "myst": -25
+    }
   },
   {
     "id": "green_anarchist",
     "name": "ideology.green_anarchist",
     "religions": [],
     "description": "",
-    "traits": [187, 163, 138, 33, 25],
-    "axes": { "econ": -60, "auth": -85, "trad": 15, "mil": 5, "myst": 55 }
+    "traits": [
+      187,
+      163,
+      138,
+      33,
+      25
+    ],
+    "axes": {
+      "econ": -60,
+      "auth": -85,
+      "trad": 15,
+      "mil": 5,
+      "myst": 55
+    }
   },
   {
     "id": "anarcho_pacifist",
     "name": "ideology.anarcho_pacifist",
     "religions": [],
     "description": "",
-    "traits": [25, 33, 88, 171, 50],
-    "axes": { "econ": -50, "auth": -90, "trad": -10, "mil": -95, "myst": 15 }
+    "traits": [
+      25,
+      33,
+      88,
+      171,
+      50
+    ],
+    "axes": {
+      "econ": -50,
+      "auth": -90,
+      "trad": -10,
+      "mil": -95,
+      "myst": 15
+    }
   },
   {
     "id": "anarcho_transhumanist",
     "name": "ideology.anarcho_transhumanist",
     "religions": [],
     "description": "",
-    "traits": [35, 7, 132, 37, 24],
-    "axes": { "econ": -20, "auth": -80, "trad": -95, "mil": -10, "myst": -60 }
+    "traits": [
+      35,
+      7,
+      132,
+      37,
+      24
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": -80,
+      "trad": -95,
+      "mil": -10,
+      "myst": -60
+    }
   },
   {
     "id": "crypto_anarchist",
     "name": "ideology.crypto_anarchist",
     "religions": [],
     "description": "",
-    "traits": [35, 175, 132, 37, 83],
-    "axes": { "econ": 45, "auth": -90, "trad": -40, "mil": -10, "myst": -60 }
+    "traits": [
+      35,
+      175,
+      132,
+      37,
+      83
+    ],
+    "axes": {
+      "econ": 45,
+      "auth": -90,
+      "trad": -40,
+      "mil": -10,
+      "myst": -60
+    }
   },
   {
     "id": "empiricist_positivist",
     "name": "ideology.empiricist_positivist",
     "religions": [],
     "description": "",
-    "traits": [37, 7, 132, 164, 35],
-    "axes": { "econ": 10, "auth": 0, "trad": -40, "mil": -10, "myst": -95 }
+    "traits": [
+      37,
+      7,
+      132,
+      164,
+      35
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 0,
+      "trad": -40,
+      "mil": -10,
+      "myst": -95
+    }
   },
   {
     "id": "methodological_rigorist",
     "name": "ideology.methodological_rigorist",
     "religions": [],
     "description": "",
-    "traits": [30, 132, 37, 40, 7],
-    "axes": { "econ": 0, "auth": 35, "trad": 5, "mil": -20, "myst": -90 }
+    "traits": [
+      30,
+      132,
+      37,
+      40,
+      7
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 35,
+      "trad": 5,
+      "mil": -20,
+      "myst": -90
+    }
   },
   {
     "id": "open_science_communard",
     "name": "ideology.open_science_communard",
     "religions": [],
     "description": "",
-    "traits": [88, 132, 37, 163, 200],
-    "axes": { "econ": -55, "auth": -60, "trad": -30, "mil": -30, "myst": -70 }
+    "traits": [
+      88,
+      132,
+      37,
+      163,
+      200
+    ],
+    "axes": {
+      "econ": -55,
+      "auth": -60,
+      "trad": -30,
+      "mil": -30,
+      "myst": -70
+    }
   },
   {
     "id": "transhumanist_accelerationist",
     "name": "ideology.transhumanist_accelerationist",
     "religions": [],
     "description": "",
-    "traits": [35, 7, 24, 132, 85],
-    "axes": { "econ": 35, "auth": -10, "trad": -95, "mil": 0, "myst": -70 }
+    "traits": [
+      35,
+      7,
+      24,
+      132,
+      85
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": -10,
+      "trad": -95,
+      "mil": 0,
+      "myst": -70
+    }
   },
   {
     "id": "hygienic_eugenicist",
     "name": "ideology.hygienic_eugenicist",
     "religions": [],
     "description": "",
-    "traits": [30, 55, 132, 164, 37],
-    "axes": { "econ": 20, "auth": 80, "trad": 40, "mil": 40, "myst": -70 }
+    "traits": [
+      30,
+      55,
+      132,
+      164,
+      37
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 80,
+      "trad": 40,
+      "mil": 40,
+      "myst": -70
+    }
   },
   {
     "id": "geoengineering_pragmatist",
     "name": "ideology.geoengineering_pragmatist",
     "religions": [],
     "description": "",
-    "traits": [35, 164, 7, 37, 132],
-    "axes": { "econ": 20, "auth": 45, "trad": -50, "mil": -10, "myst": -80 }
+    "traits": [
+      35,
+      164,
+      7,
+      37,
+      132
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 45,
+      "trad": -50,
+      "mil": -10,
+      "myst": -80
+    }
   },
   {
     "id": "atomic_modernist",
     "name": "ideology.atomic_modernist",
     "religions": [],
     "description": "",
-    "traits": [35, 7, 164, 40, 132],
-    "axes": { "econ": 35, "auth": 45, "trad": -30, "mil": 45, "myst": -85 }
+    "traits": [
+      35,
+      7,
+      164,
+      40,
+      132
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": 45,
+      "trad": -30,
+      "mil": 45,
+      "myst": -85
+    }
   },
   {
     "id": "cybernetic_planner",
     "name": "ideology.cybernetic_planner",
     "religions": [],
     "description": "",
-    "traits": [35, 132, 164, 7, 40],
-    "axes": { "econ": -80, "auth": 45, "trad": -50, "mil": -10, "myst": -85 }
+    "traits": [
+      35,
+      132,
+      164,
+      7,
+      40
+    ],
+    "axes": {
+      "econ": -80,
+      "auth": 45,
+      "trad": -50,
+      "mil": -10,
+      "myst": -85
+    }
   },
   {
     "id": "orbital_expansionist",
     "name": "ideology.orbital_expansionist",
     "religions": [],
     "description": "",
-    "traits": [35, 7, 24, 85, 140],
-    "axes": { "econ": 30, "auth": 10, "trad": -60, "mil": 10, "myst": -60 }
+    "traits": [
+      35,
+      7,
+      24,
+      85,
+      140
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": 10,
+      "trad": -60,
+      "mil": 10,
+      "myst": -60
+    }
   },
   {
     "id": "pharmacological_utopian",
     "name": "ideology.pharmacological_utopian",
     "religions": [],
     "description": "",
-    "traits": [104, 139, 7, 94, 35],
-    "axes": { "econ": 20, "auth": 15, "trad": -60, "mil": -30, "myst": -45 }
+    "traits": [
+      104,
+      139,
+      7,
+      94,
+      35
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 15,
+      "trad": -60,
+      "mil": -30,
+      "myst": -45
+    }
   },
   {
     "id": "quantum_mystic_convergentist",
     "name": "ideology.quantum_mystic_convergentist",
     "religions": [],
     "description": "",
-    "traits": [36, 7, 196, 132, 52],
-    "axes": { "econ": 0, "auth": -30, "trad": -30, "mil": -40, "myst": 60 }
+    "traits": [
+      36,
+      7,
+      196,
+      132,
+      52
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -30,
+      "trad": -30,
+      "mil": -40,
+      "myst": 60
+    }
   },
   {
     "id": "mutant_supremacist",
     "name": "ideology.mutant_supremacist",
     "religions": [],
     "description": "",
-    "traits": [91, 55, 190, 85, 148],
-    "axes": { "econ": 0, "auth": 70, "trad": -40, "mil": 70, "myst": 35 }
+    "traits": [
+      91,
+      55,
+      190,
+      85,
+      148
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 70,
+      "trad": -40,
+      "mil": 70,
+      "myst": 35
+    }
   },
   {
     "id": "mutant_liberationist",
     "name": "ideology.mutant_liberationist",
     "religions": [],
     "description": "",
-    "traits": [163, 33, 88, 129, 192],
-    "axes": { "econ": -45, "auth": -45, "trad": -60, "mil": 10, "myst": 20 }
+    "traits": [
+      163,
+      33,
+      88,
+      129,
+      192
+    ],
+    "axes": {
+      "econ": -45,
+      "auth": -45,
+      "trad": -60,
+      "mil": 10,
+      "myst": 20
+    }
   },
   {
     "id": "genomic_purity_restorationist",
     "name": "ideology.genomic_purity_restorationist",
     "religions": [],
     "description": "",
-    "traits": [55, 116, 30, 95, 164],
-    "axes": { "econ": 20, "auth": 75, "trad": 85, "mil": 55, "myst": 40 }
+    "traits": [
+      55,
+      116,
+      30,
+      95,
+      164
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 75,
+      "trad": 85,
+      "mil": 55,
+      "myst": 40
+    }
   },
   {
     "id": "splice_fatalist",
     "name": "ideology.splice_fatalist",
     "religions": [],
     "description": "",
-    "traits": [162, 36, 161, 99, 84],
-    "axes": { "econ": -10, "auth": 10, "trad": 20, "mil": -10, "myst": 45 }
+    "traits": [
+      162,
+      36,
+      161,
+      99,
+      84
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 10,
+      "trad": 20,
+      "mil": -10,
+      "myst": 45
+    }
   },
   {
     "id": "grafted_selfhood",
     "name": "ideology.grafted_selfhood",
     "religions": [],
     "description": "",
-    "traits": [35, 145, 24, 7, 192],
-    "axes": { "econ": 30, "auth": -20, "trad": -85, "mil": 10, "myst": -40 }
+    "traits": [
+      35,
+      145,
+      24,
+      7,
+      192
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": -20,
+      "trad": -85,
+      "mil": 10,
+      "myst": -40
+    }
   },
   {
     "id": "radiotrophic_communion",
     "name": "ideology.radiotrophic_communion",
     "religions": [],
     "description": "",
-    "traits": [189, 180, 74, 36, 145],
-    "axes": { "econ": -30, "auth": 20, "trad": -30, "mil": 30, "myst": 55 }
+    "traits": [
+      189,
+      180,
+      74,
+      36,
+      145
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": 20,
+      "trad": -30,
+      "mil": 30,
+      "myst": 55
+    }
   },
   {
     "id": "hybrid_vigor_creed",
     "name": "ideology.hybrid_vigor_creed",
     "religions": [],
     "description": "",
-    "traits": [33, 200, 146, 148, 82],
-    "axes": { "econ": 0, "auth": -30, "trad": -40, "mil": 20, "myst": 25 }
+    "traits": [
+      33,
+      200,
+      146,
+      148,
+      82
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -30,
+      "trad": -40,
+      "mil": 20,
+      "myst": 25
+    }
   },
   {
     "id": "mutagen_accelerationist",
     "name": "ideology.mutagen_accelerationist",
     "religions": [],
     "description": "",
-    "traits": [24, 139, 190, 85, 26],
-    "axes": { "econ": 20, "auth": -40, "trad": -95, "mil": 30, "myst": 40 }
+    "traits": [
+      24,
+      139,
+      190,
+      85,
+      26
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": -40,
+      "trad": -95,
+      "mil": 30,
+      "myst": 40
+    }
   },
   {
     "id": "crowleyan_democratism",
     "name": "ideology.crowleyan_democratism",
     "religions": [],
     "description": "",
-    "traits": [190, 163, 118, 82, 7],
-    "axes": { "econ": -20, "auth": -60, "trad": -70, "mil": -10, "myst": 95 }
+    "traits": [
+      190,
+      163,
+      118,
+      82,
+      7
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": -60,
+      "trad": -70,
+      "mil": -10,
+      "myst": 95
+    }
   },
   {
     "id": "thatcherite_restrictionism",
     "name": "ideology.thatcherite_restrictionism",
     "religions": [],
     "description": "",
-    "traits": [190, 91, 30, 95, 164],
-    "axes": { "econ": 75, "auth": 80, "trad": 60, "mil": 45, "myst": 85 }
+    "traits": [
+      190,
+      91,
+      30,
+      95,
+      164
+    ],
+    "axes": {
+      "econ": 75,
+      "auth": 80,
+      "trad": 60,
+      "mil": 45,
+      "myst": 85
+    }
   },
   {
     "id": "solomonic_restorationism",
     "name": "ideology.solomonic_restorationism",
     "religions": [],
     "description": "",
-    "traits": [116, 190, 132, 40, 122],
-    "axes": { "econ": 0, "auth": 65, "trad": 75, "mil": 30, "myst": 95 }
+    "traits": [
+      116,
+      190,
+      132,
+      40,
+      122
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 65,
+      "trad": 75,
+      "mil": 30,
+      "myst": 95
+    }
   },
   {
     "id": "camelcase_orthodoxy",
     "name": "ideology.camelcase_orthodoxy",
     "religions": [],
     "description": "",
-    "traits": [30, 78, 132, 190, 171],
-    "axes": { "econ": 0, "auth": 70, "trad": 60, "mil": -10, "myst": 90 }
+    "traits": [
+      30,
+      78,
+      132,
+      190,
+      171
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 70,
+      "trad": 60,
+      "mil": -10,
+      "myst": 90
+    }
   },
   {
     "id": "ritualist_purism",
     "name": "ideology.ritualist_purism",
     "religions": [],
     "description": "",
-    "traits": [30, 190, 50, 116, 40],
-    "axes": { "econ": -10, "auth": 40, "trad": 85, "mil": -20, "myst": 95 }
+    "traits": [
+      30,
+      190,
+      50,
+      116,
+      40
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 40,
+      "trad": 85,
+      "mil": -20,
+      "myst": 95
+    }
   },
   {
     "id": "sympathetic_pragmatism",
     "name": "ideology.sympathetic_pragmatism",
     "religions": [],
     "description": "",
-    "traits": [164, 190, 139, 98, 37],
-    "axes": { "econ": 15, "auth": 0, "trad": -10, "mil": 10, "myst": 75 }
+    "traits": [
+      164,
+      190,
+      139,
+      98,
+      37
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 0,
+      "trad": -10,
+      "mil": 10,
+      "myst": 75
+    }
   },
   {
     "id": "metamagical_imaginism",
     "name": "ideology.metamagical_imaginism",
     "religions": [],
     "description": "",
-    "traits": [190, 7, 52, 163, 83],
-    "axes": { "econ": 0, "auth": -50, "trad": -80, "mil": -20, "myst": 85 }
+    "traits": [
+      190,
+      7,
+      52,
+      163,
+      83
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -50,
+      "trad": -80,
+      "mil": -20,
+      "myst": 85
+    }
   },
   {
     "id": "leyline_sovereigntism",
     "name": "ideology.leyline_sovereigntism",
     "religions": [],
     "description": "",
-    "traits": [87, 190, 91, 164, 140],
-    "axes": { "econ": 60, "auth": 65, "trad": 20, "mil": 60, "myst": 80 }
+    "traits": [
+      87,
+      190,
+      91,
+      164,
+      140
+    ],
+    "axes": {
+      "econ": 60,
+      "auth": 65,
+      "trad": 20,
+      "mil": 60,
+      "myst": 80
+    }
   },
   {
     "id": "leyline_conservationism",
     "name": "ideology.leyline_conservationism",
     "religions": [],
     "description": "",
-    "traits": [187, 190, 25, 163, 138],
-    "axes": { "econ": -40, "auth": 20, "trad": 45, "mil": -40, "myst": 85 }
+    "traits": [
+      187,
+      190,
+      25,
+      163,
+      138
+    ],
+    "axes": {
+      "econ": -40,
+      "auth": 20,
+      "trad": 45,
+      "mil": -40,
+      "myst": 85
+    }
   },
   {
     "id": "goetic_contractualism",
     "name": "ideology.goetic_contractualism",
     "religions": [],
     "description": "",
-    "traits": [139, 190, 164, 133, 29],
-    "axes": { "econ": 55, "auth": 35, "trad": 10, "mil": 30, "myst": 90 }
+    "traits": [
+      139,
+      190,
+      164,
+      133,
+      29
+    ],
+    "axes": {
+      "econ": 55,
+      "auth": 35,
+      "trad": 10,
+      "mil": 30,
+      "myst": 90
+    }
   },
   {
     "id": "necrotelephonic_spiritism",
     "name": "ideology.necrotelephonic_spiritism",
     "religions": [],
     "description": "",
-    "traits": [36, 122, 190, 196, 35],
-    "axes": { "econ": 0, "auth": -30, "trad": 35, "mil": -40, "myst": 90 }
+    "traits": [
+      36,
+      122,
+      190,
+      196,
+      35
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -30,
+      "trad": 35,
+      "mil": -40,
+      "myst": 90
+    }
   },
   {
     "id": "deicide_advocacy",
     "name": "ideology.deicide_advocacy",
     "religions": [],
     "description": "",
-    "traits": [117, 118, 190, 167, 85],
-    "axes": { "econ": 0, "auth": -40, "trad": -90, "mil": 75, "myst": 70 }
+    "traits": [
+      117,
+      118,
+      190,
+      167,
+      85
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -40,
+      "trad": -90,
+      "mil": 75,
+      "myst": 70
+    }
   },
   {
     "id": "deicide_abolitionism",
     "name": "ideology.deicide_abolitionism",
     "religions": [],
     "description": "",
-    "traits": [116, 25, 119, 89, 171],
-    "axes": { "econ": 0, "auth": 40, "trad": 70, "mil": -70, "myst": 90 }
+    "traits": [
+      116,
+      25,
+      119,
+      89,
+      171
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 40,
+      "trad": 70,
+      "mil": -70,
+      "myst": 90
+    }
   },
   {
     "id": "maatist_restorationism",
     "name": "ideology.maatist_restorationism",
     "religions": [],
     "description": "",
-    "traits": [171, 163, 119, 89, 122],
-    "axes": { "econ": 0, "auth": 55, "trad": 60, "mil": 20, "myst": 85 }
+    "traits": [
+      171,
+      163,
+      119,
+      89,
+      122
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 55,
+      "trad": 60,
+      "mil": 20,
+      "myst": 85
+    }
   },
   {
     "id": "fantablack_hermeticism",
     "name": "ideology.fantablack_hermeticism",
     "religions": [],
     "description": "",
-    "traits": [131, 190, 133, 175, 132],
-    "axes": { "econ": 70, "auth": 30, "trad": 20, "mil": 0, "myst": 85 }
+    "traits": [
+      131,
+      190,
+      133,
+      175,
+      132
+    ],
+    "axes": {
+      "econ": 70,
+      "auth": 30,
+      "trad": 20,
+      "mil": 0,
+      "myst": 85
+    }
   },
   {
     "id": "draghian_market_theology",
     "name": "ideology.draghian_market_theology",
     "religions": [],
     "description": "",
-    "traits": [87, 131, 133, 116, 164],
-    "axes": { "econ": 95, "auth": 45, "trad": 25, "mil": 0, "myst": 80 }
-  },
-  {
-    "id": "okeanus_deterrence",
-    "name": "ideology.okeanus_deterrence",
-    "religions": [],
-    "description": "",
-    "traits": [136, 190, 12, 95, 164],
-    "axes": { "econ": 20, "auth": 60, "trad": 20, "mil": 90, "myst": 75 }
-  },
-  {
-    "id": "umbra_excidii_inquisitorialism",
-    "name": "ideology.umbra_excidii_inquisitorialism",
-    "religions": [],
-    "description": "",
-    "traits": [116, 55, 142, 95, 190],
-    "axes": { "econ": 10, "auth": 90, "trad": 85, "mil": 60, "myst": 80 }
+    "traits": [
+      87,
+      131,
+      133,
+      116,
+      164
+    ],
+    "axes": {
+      "econ": 95,
+      "auth": 45,
+      "trad": 25,
+      "mil": 0,
+      "myst": 80
+    }
   },
   {
     "id": "theonuclear_disarmament",
     "name": "ideology.theonuclear_disarmament",
     "religions": [],
     "description": "",
-    "traits": [25, 163, 132, 33, 171],
-    "axes": { "econ": -20, "auth": -20, "trad": -20, "mil": -90, "myst": 35 }
+    "traits": [
+      25,
+      163,
+      132,
+      33,
+      171
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": -20,
+      "trad": -20,
+      "mil": -90,
+      "myst": 35
+    }
   },
   {
     "id": "tower_ascensionism",
     "name": "ideology.tower_ascensionism",
     "religions": [],
     "description": "",
-    "traits": [85, 60, 24, 91, 190],
-    "axes": { "econ": 20, "auth": 35, "trad": -60, "mil": 55, "myst": 90 }
+    "traits": [
+      85,
+      60,
+      24,
+      91,
+      190
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 35,
+      "trad": -60,
+      "mil": 55,
+      "myst": 90
+    }
   },
   {
     "id": "dimensional_conservationism",
     "name": "ideology.dimensional_conservationism",
     "religions": [],
     "description": "",
-    "traits": [164, 132, 40, 30, 190],
-    "axes": { "econ": 0, "auth": 45, "trad": 30, "mil": -20, "myst": 75 }
+    "traits": [
+      164,
+      132,
+      40,
+      30,
+      190
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 45,
+      "trad": 30,
+      "mil": -20,
+      "myst": 75
+    }
   },
   {
     "id": "squish_accelerationism",
     "name": "ideology.squish_accelerationism",
     "religions": [],
     "description": "",
-    "traits": [162, 47, 60, 118, 26],
-    "axes": { "econ": 0, "auth": -60, "trad": -95, "mil": 60, "myst": 80 }
+    "traits": [
+      162,
+      47,
+      60,
+      118,
+      26
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": -60,
+      "trad": -95,
+      "mil": 60,
+      "myst": 80
+    }
   },
   {
     "id": "loop_quietism",
     "name": "ideology.loop_quietism",
     "religions": [],
     "description": "",
-    "traits": [50, 86, 95, 164, 161],
-    "axes": { "econ": -30, "auth": 15, "trad": 75, "mil": -70, "myst": 45 }
+    "traits": [
+      50,
+      86,
+      95,
+      164,
+      161
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": 15,
+      "trad": 75,
+      "mil": -70,
+      "myst": 45
+    }
   },
   {
     "id": "eighty_creed",
     "name": "ideology.eighty_creed",
     "religions": [],
     "description": "",
-    "traits": [95, 50, 25, 89, 171],
-    "axes": { "econ": -15, "auth": 35, "trad": 80, "mil": -50, "myst": 50 }
+    "traits": [
+      95,
+      50,
+      25,
+      89,
+      171
+    ],
+    "axes": {
+      "econ": -15,
+      "auth": 35,
+      "trad": 80,
+      "mil": -50,
+      "myst": 50
+    }
   },
   {
     "id": "trucker_knighthood",
     "name": "ideology.trucker_knighthood",
     "religions": [],
     "description": "",
-    "traits": [89, 140, 136, 171, 82],
-    "axes": { "econ": 20, "auth": -30, "trad": 45, "mil": 15, "myst": 35 }
+    "traits": [
+      89,
+      140,
+      136,
+      171,
+      82
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": -30,
+      "trad": 45,
+      "mil": 15,
+      "myst": 35
+    }
   },
   {
     "id": "asphalt_theism",
     "name": "ideology.asphalt_theism",
     "religions": [],
     "description": "",
-    "traits": [140, 36, 116, 24, 119],
-    "axes": { "econ": 10, "auth": -40, "trad": 40, "mil": 0, "myst": 85 }
-  },
-  {
-    "id": "liminal_engineering",
-    "name": "ideology.liminal_engineering",
-    "religions": [],
-    "description": "",
-    "traits": [35, 7, 24, 140, 85],
-    "axes": { "econ": 45, "auth": -45, "trad": -70, "mil": 0, "myst": 55 }
-  },
-  {
-    "id": "scrap_pilgrimage",
-    "name": "ideology.scrap_pilgrimage",
-    "religions": [],
-    "description": "",
-    "traits": [119, 36, 140, 50, 196],
-    "axes": { "econ": -20, "auth": -25, "trad": 35, "mil": -40, "myst": 85 }
+    "traits": [
+      140,
+      36,
+      116,
+      24,
+      119
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": -40,
+      "trad": 40,
+      "mil": 0,
+      "myst": 85
+    }
   },
   {
     "id": "y2k_survivalism",
     "name": "ideology.y2k_survivalism",
     "religions": [],
     "description": "",
-    "traits": [97, 5, 27, 161, 136],
-    "axes": { "econ": -10, "auth": 25, "trad": 70, "mil": 45, "myst": 40 }
-  },
-  {
-    "id": "canadafrica_denialism",
-    "name": "ideology.canadafrica_denialism",
-    "religions": [],
-    "description": "",
-    "traits": [37, 29, 161, 5, 164],
-    "axes": { "econ": 10, "auth": 45, "trad": 55, "mil": 0, "myst": -30 }
-  },
-  {
-    "id": "varlenian_emptiness",
-    "name": "ideology.varlenian_emptiness",
-    "religions": [],
-    "description": "",
-    "traits": [162, 161, 175, 50, 108],
-    "axes": { "econ": -20, "auth": -30, "trad": -40, "mil": -30, "myst": 70 }
+    "traits": [
+      97,
+      5,
+      27,
+      161,
+      136
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 25,
+      "trad": 70,
+      "mil": 45,
+      "myst": 40
+    }
   },
   {
     "id": "tinfoil_dam_paranoia",
     "name": "ideology.tinfoil_dam_paranoia",
     "religions": [],
     "description": "",
-    "traits": [5, 56, 36, 175, 23],
-    "axes": { "econ": -10, "auth": -55, "trad": 30, "mil": 20, "myst": 60 }
+    "traits": [
+      5,
+      56,
+      36,
+      175,
+      23
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": -55,
+      "trad": 30,
+      "mil": 20,
+      "myst": 60
+    }
   },
   {
     "id": "magamui_dormancy_cult",
     "name": "ideology.magamui_dormancy_cult",
     "religions": [],
     "description": "",
-    "traits": [36, 116, 95, 5, 122],
-    "axes": { "econ": -20, "auth": 50, "trad": 80, "mil": -30, "myst": 90 }
+    "traits": [
+      36,
+      116,
+      95,
+      5,
+      122
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": 50,
+      "trad": 80,
+      "mil": -30,
+      "myst": 90
+    }
   },
   {
     "id": "kola_revanchism",
     "name": "ideology.kola_revanchism",
     "religions": [],
     "description": "",
-    "traits": [184, 167, 55, 136, 91],
-    "axes": { "econ": -40, "auth": 60, "trad": 50, "mil": 80, "myst": 20 }
+    "traits": [
+      184,
+      167,
+      55,
+      136,
+      91
+    ],
+    "axes": {
+      "econ": -40,
+      "auth": 60,
+      "trad": 50,
+      "mil": 80,
+      "myst": 20
+    }
   },
   {
     "id": "naguka_unconscious_collectivism",
     "name": "ideology.naguka_unconscious_collectivism",
     "religions": [],
     "description": "",
-    "traits": [189, 53, 89, 184, 36],
-    "axes": { "econ": -70, "auth": 35, "trad": 85, "mil": 70, "myst": 60 }
+    "traits": [
+      189,
+      53,
+      89,
+      184,
+      36
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": 35,
+      "trad": 85,
+      "mil": 70,
+      "myst": 60
+    }
   },
   {
-    "id": "mahyem_metal_theocracy",
-    "name": "ideology.mahyem_metal_theocracy",
+    "id": "junehem_metal_theocracy",
+    "name": "ideology.junehem_metal_theocracy",
     "religions": [],
     "description": "",
-    "traits": [118, 116, 173, 53, 197],
-    "axes": { "econ": -20, "auth": 55, "trad": -40, "mil": 80, "myst": 85 }
+    "traits": [
+      118,
+      116,
+      173,
+      53,
+      197
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": 55,
+      "trad": -40,
+      "mil": 80,
+      "myst": 85
+    }
   },
   {
     "id": "verden_renunciation",
     "name": "ideology.verden_renunciation",
     "religions": [],
     "description": "",
-    "traits": [34, 187, 50, 190, 92],
-    "axes": { "econ": -60, "auth": 20, "trad": 90, "mil": -60, "myst": 85 }
+    "traits": [
+      34,
+      187,
+      50,
+      190,
+      92
+    ],
+    "axes": {
+      "econ": -60,
+      "auth": 20,
+      "trad": 90,
+      "mil": -60,
+      "myst": 85
+    }
   },
   {
     "id": "verden_technophilia",
     "name": "ideology.verden_technophilia",
     "religions": [],
     "description": "",
-    "traits": [35, 7, 132, 200, 163],
-    "axes": { "econ": 25, "auth": -20, "trad": -75, "mil": -20, "myst": 45 }
+    "traits": [
+      35,
+      7,
+      132,
+      200,
+      163
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": -20,
+      "trad": -75,
+      "mil": -20,
+      "myst": 45
+    }
   },
   {
     "id": "goblin_evangelism",
     "name": "ideology.goblin_evangelism",
     "religions": [],
     "description": "",
-    "traits": [116, 119, 55, 164, 29],
-    "axes": { "econ": 10, "auth": 70, "trad": 75, "mil": 60, "myst": 80 }
+    "traits": [
+      116,
+      119,
+      55,
+      164,
+      29
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 70,
+      "trad": 75,
+      "mil": 60,
+      "myst": 80
+    }
   },
   {
     "id": "archive_totalism",
     "name": "ideology.archive_totalism",
     "religions": [],
     "description": "",
-    "traits": [132, 171, 40, 175, 37],
-    "axes": { "econ": -30, "auth": 55, "trad": -45, "mil": 20, "myst": -45 }
+    "traits": [
+      132,
+      171,
+      40,
+      175,
+      37
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": 55,
+      "trad": -45,
+      "mil": 20,
+      "myst": -45
+    }
   },
   {
     "id": "hypercapitalist_collectivism",
     "name": "ideology.hypercapitalist_collectivism",
     "religions": [],
     "description": "",
-    "traits": [87, 133, 85, 29, 94],
-    "axes": { "econ": 98, "auth": 40, "trad": -40, "mil": 30, "myst": 25 }
-  },
-  {
-    "id": "memory_brokerage",
-    "name": "ideology.memory_brokerage",
-    "religions": [],
-    "description": "",
-    "traits": [133, 29, 87, 41, 94],
-    "axes": { "econ": 85, "auth": 20, "trad": -50, "mil": 0, "myst": 55 }
-  },
-  {
-    "id": "unwitnessed_manufacture",
-    "name": "ideology.unwitnessed_manufacture",
-    "religions": [],
-    "description": "",
-    "traits": [175, 40, 35, 30, 190],
-    "axes": { "econ": 70, "auth": 25, "trad": -30, "mil": 10, "myst": 70 }
+    "traits": [
+      87,
+      133,
+      85,
+      29,
+      94
+    ],
+    "axes": {
+      "econ": 98,
+      "auth": 40,
+      "trad": -40,
+      "mil": 30,
+      "myst": 25
+    }
   },
   {
     "id": "petrodemon_contractualism",
     "name": "ideology.petrodemon_contractualism",
     "religions": [],
     "description": "",
-    "traits": [87, 139, 164, 133, 190],
-    "axes": { "econ": 75, "auth": 50, "trad": 10, "mil": 45, "myst": 85 }
+    "traits": [
+      87,
+      139,
+      164,
+      133,
+      190
+    ],
+    "axes": {
+      "econ": 75,
+      "auth": 50,
+      "trad": 10,
+      "mil": 45,
+      "myst": 85
+    }
   },
   {
     "id": "mattei_doctrine",
     "name": "ideology.mattei_doctrine",
     "religions": [],
     "description": "",
-    "traits": [85, 133, 164, 136, 91],
-    "axes": { "econ": 35, "auth": 55, "trad": 35, "mil": 50, "myst": 60 }
+    "traits": [
+      85,
+      133,
+      164,
+      136,
+      91
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": 55,
+      "trad": 35,
+      "mil": 50,
+      "myst": 60
+    }
   },
   {
     "id": "porphyrin_monism",
     "name": "ideology.porphyrin_monism",
     "religions": [],
     "description": "",
-    "traits": [139, 190, 132, 36, 84],
-    "axes": { "econ": 15, "auth": 10, "trad": 0, "mil": 0, "myst": 80 }
+    "traits": [
+      139,
+      190,
+      132,
+      36,
+      84
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 10,
+      "trad": 0,
+      "mil": 0,
+      "myst": 80
+    }
   },
   {
     "id": "hypernet_publicism",
     "name": "ideology.hypernet_publicism",
     "religions": [],
     "description": "",
-    "traits": [35, 132, 175, 163, 37],
-    "axes": { "econ": -25, "auth": -70, "trad": -55, "mil": -20, "myst": -30 }
-  },
-  {
-    "id": "omega_neutralism",
-    "name": "ideology.omega_neutralism",
-    "religions": [],
-    "description": "",
-    "traits": [164, 171, 98, 132, 92],
-    "axes": { "econ": 5, "auth": 20, "trad": 0, "mil": -40, "myst": 40 }
-  },
-  {
-    "id": "euronymous_savantism",
-    "name": "ideology.euronymous_savantism",
-    "religions": [],
-    "description": "",
-    "traits": [75, 83, 196, 175, 41],
-    "axes": { "econ": -10, "auth": -60, "trad": -20, "mil": -30, "myst": 75 }
-  },
-  {
-    "id": "wannabe_witchcraft",
-    "name": "ideology.wannabe_witchcraft",
-    "religions": [],
-    "description": "",
-    "traits": [193, 163, 190, 36, 124],
-    "axes": { "econ": -25, "auth": -50, "trad": -30, "mil": -20, "myst": 90 }
-  },
-  {
-    "id": "bounty_abolitionism",
-    "name": "ideology.bounty_abolitionism",
-    "religions": [],
-    "description": "",
-    "traits": [163, 171, 176, 88, 167],
-    "axes": { "econ": -25, "auth": -75, "trad": -40, "mil": 15, "myst": 40 }
-  },
-  {
-    "id": "silicate_dream_husbandry",
-    "name": "ideology.silicate_dream_husbandry",
-    "religions": [],
-    "description": "",
-    "alien": true,
-    "traits": [187, 186, 132, 50, 196],
-    "axes": { "econ": -40, "auth": 20, "trad": 60, "mil": -50, "myst": 70 }
-  },
-  {
-    "id": "gravity_pilgrim_creed",
-    "name": "ideology.gravity_pilgrim_creed",
-    "religions": [],
-    "description": "",
-    "alien": true,
-    "traits": [140, 119, 50, 95, 24],
-    "axes": { "econ": 0, "auth": -20, "trad": 40, "mil": -30, "myst": 65 }
-  },
-  {
-    "id": "carbon_nostalgia",
-    "name": "ideology.carbon_nostalgia",
-    "religions": [],
-    "description": "",
-    "alien": true,
-    "traits": [161, 132, 165, 41, 108],
-    "axes": { "econ": 10, "auth": -10, "trad": 85, "mil": -40, "myst": 30 }
-  },
-  {
-    "id": "hive_frequency_orthodoxy",
-    "name": "ideology.hive_frequency_orthodoxy",
-    "religions": [],
-    "description": "",
-    "alien": true,
-    "traits": [30, 89, 40, 199, 190],
-    "axes": { "econ": -90, "auth": 85, "trad": 50, "mil": 40, "myst": 60 }
+    "traits": [
+      35,
+      132,
+      175,
+      163,
+      37
+    ],
+    "axes": {
+      "econ": -25,
+      "auth": -70,
+      "trad": -55,
+      "mil": -20,
+      "myst": -30
+    }
   },
   {
     "id": "post_fascist_revivalist",
     "name": "ideology.post_fascist_revivalist",
     "religions": [],
     "description": "",
-    "traits": [91, 55, 136, 11, 164],
-    "axes": { "econ": 15, "auth": 75, "trad": 80, "mil": 55, "myst": 20 }
+    "traits": [
+      91,
+      55,
+      136,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 75,
+      "trad": 80,
+      "mil": 55,
+      "myst": 20
+    }
+  },
+  {
+    "id": "feathered_serpent_divinity",
+    "name": "ideology.feathered_serpent_divinity",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 90,
+      "trad": 95,
+      "mil": 60,
+      "myst": 100
+    }
+  },
+  {
+    "id": "mayan_theocracy",
+    "name": "ideology.mayan_theocracy",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": -5,
+      "auth": 75,
+      "trad": 95,
+      "mil": 45,
+      "myst": 95
+    }
+  },
+  {
+    "id": "blood_tribute_orthodoxy",
+    "name": "ideology.blood_tribute_orthodoxy",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 80,
+      "trad": 90,
+      "mil": 70,
+      "myst": 95
+    }
+  },
+  {
+    "id": "jaguar_militarism",
+    "name": "ideology.jaguar_militarism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      4,
+      164
+    ],
+    "axes": {
+      "econ": 5,
+      "auth": 75,
+      "trad": 80,
+      "mil": 95,
+      "myst": 55
+    }
+  },
+  {
+    "id": "long_count_technocracy",
+    "name": "ideology.long_count_technocracy",
+    "religions": [],
+    "description": "",
+    "traits": [
+      7,
+      164,
+      37,
+      35,
+      16
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 55,
+      "trad": 70,
+      "mil": 20,
+      "myst": 70
+    }
+  },
+  {
+    "id": "mesoamerican_restorationism",
+    "name": "ideology.mesoamerican_restorationism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": -15,
+      "auth": 60,
+      "trad": 95,
+      "mil": 45,
+      "myst": 80
+    }
+  },
+  {
+    "id": "indigenist_land_reform",
+    "name": "ideology.indigenist_land_reform",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": 10,
+      "trad": 55,
+      "mil": 20,
+      "myst": 35
+    }
+  },
+  {
+    "id": "juche",
+    "name": "ideology.juche",
+    "religions": [],
+    "description": "",
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -95,
+      "auth": 95,
+      "trad": 45,
+      "mil": 85,
+      "myst": -30
+    }
+  },
+  {
+    "id": "songun_militarism",
+    "name": "ideology.songun_militarism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -85,
+      "auth": 95,
+      "trad": 50,
+      "mil": 100,
+      "myst": -25
+    }
+  },
+  {
+    "id": "korean_social_democracy",
+    "name": "ideology.korean_social_democracy",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      40
+    ],
+    "axes": {
+      "econ": -50,
+      "auth": 45,
+      "trad": 30,
+      "mil": 40,
+      "myst": -20
+    }
+  },
+  {
+    "id": "confucian_restoration",
+    "name": "ideology.confucian_restoration",
+    "religions": [],
+    "description": "",
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 70,
+      "trad": 95,
+      "mil": 40,
+      "myst": 55
+    }
+  },
+  {
+    "id": "buddhist_statecraft",
+    "name": "ideology.buddhist_statecraft",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 40,
+      "trad": 80,
+      "mil": -20,
+      "myst": 90
+    }
+  },
+  {
+    "id": "harmonious_synthesis",
+    "name": "ideology.harmonious_synthesis",
+    "religions": [],
+    "description": "",
+    "traits": [
+      7,
+      164,
+      37,
+      35,
+      16
+    ],
+    "axes": {
+      "econ": 30,
+      "auth": 65,
+      "trad": 75,
+      "mil": 45,
+      "myst": 60
+    }
+  },
+  {
+    "id": "mandate_of_heaven",
+    "name": "ideology.mandate_of_heaven",
+    "religions": [],
+    "description": "",
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 90,
+      "trad": 90,
+      "mil": 65,
+      "myst": 75
+    }
+  },
+  {
+    "id": "velayat_e_faqih",
+    "name": "ideology.velayat_e_faqih",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 85,
+      "trad": 90,
+      "mil": 55,
+      "myst": 95
+    }
+  },
+  {
+    "id": "reform_islamist",
+    "name": "ideology.reform_islamist",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      98,
+      40,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": -15,
+      "auth": 10,
+      "trad": 45,
+      "mil": 5,
+      "myst": 60
+    }
+  },
+  {
+    "id": "islamic_republican_democrat",
+    "name": "ideology.islamic_republican_democrat",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      98,
+      40,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": -10,
+      "trad": 40,
+      "mil": 0,
+      "myst": 55
+    }
+  },
+  {
+    "id": "pragmatic_clerical",
+    "name": "ideology.pragmatic_clerical",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      98,
+      40,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": 45,
+      "trad": 60,
+      "mil": 30,
+      "myst": 65
+    }
+  },
+  {
+    "id": "dissident_cleric",
+    "name": "ideology.dissident_cleric",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      98,
+      40,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": -25,
+      "auth": -35,
+      "trad": 55,
+      "mil": -20,
+      "myst": 80
+    }
+  },
+  {
+    "id": "solomonic_laborism",
+    "name": "ideology.solomonic_laborism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      40
+    ],
+    "axes": {
+      "econ": -50,
+      "auth": 15,
+      "trad": 35,
+      "mil": 60,
+      "myst": 20
+    }
+  },
+  {
+    "id": "solomonic_revisionism",
+    "name": "ideology.solomonic_revisionism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      4,
+      164
+    ],
+    "axes": {
+      "econ": 40,
+      "auth": 45,
+      "trad": 65,
+      "mil": 85,
+      "myst": 35
+    }
+  },
+  {
+    "id": "solomonic_liberalism",
+    "name": "ideology.solomonic_liberalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      98,
+      16,
+      82,
+      7,
+      40
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": -20,
+      "trad": 30,
+      "mil": 40,
+      "myst": 15
+    }
+  },
+  {
+    "id": "peace_process_pragmatist",
+    "name": "ideology.peace_process_pragmatist",
+    "religions": [],
+    "description": "",
+    "traits": [
+      98,
+      16,
+      88,
+      40,
+      7
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": -15,
+      "trad": 20,
+      "mil": 35,
+      "myst": 5
+    }
+  },
+  {
+    "id": "baathism",
+    "name": "ideology.baathism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": -60,
+      "auth": 85,
+      "trad": 40,
+      "mil": 85,
+      "myst": -30
+    }
+  },
+  {
+    "id": "arab_nationalism",
+    "name": "ideology.arab_nationalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": -30,
+      "auth": 65,
+      "trad": 50,
+      "mil": 75,
+      "myst": -10
+    }
+  },
+  {
+    "id": "arab_socialism",
+    "name": "ideology.arab_socialism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      163,
+      88,
+      33,
+      25,
+      200
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": 60,
+      "trad": 35,
+      "mil": 55,
+      "myst": -20
+    }
+  },
+  {
+    "id": "hashemite_monarchism",
+    "name": "ideology.hashemite_monarchism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 25,
+      "auth": 60,
+      "trad": 80,
+      "mil": 45,
+      "myst": 45
+    }
+  },
+  {
+    "id": "wahhabi_monarchism",
+    "name": "ideology.wahhabi_monarchism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      91,
+      164,
+      30
+    ],
+    "axes": {
+      "econ": 45,
+      "auth": 85,
+      "trad": 95,
+      "mil": 55,
+      "myst": 85
+    }
+  },
+  {
+    "id": "palestinian_nationalism",
+    "name": "ideology.palestinian_nationalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": -35,
+      "auth": 40,
+      "trad": 45,
+      "mil": 70,
+      "myst": 20
+    }
+  },
+  {
+    "id": "maronite_conservatism",
+    "name": "ideology.maronite_conservatism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      89,
+      56,
+      164,
+      91
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": 45,
+      "trad": 80,
+      "mil": 55,
+      "myst": 60
+    }
+  },
+  {
+    "id": "reconstruction_liberal",
+    "name": "ideology.reconstruction_liberal",
+    "religions": [],
+    "description": "",
+    "traits": [
+      98,
+      16,
+      82,
+      7,
+      40
+    ],
+    "axes": {
+      "econ": 65,
+      "auth": 10,
+      "trad": 30,
+      "mil": 10,
+      "myst": 15
+    }
+  },
+  {
+    "id": "gulf_federalism",
+    "name": "ideology.gulf_federalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 60,
+      "auth": 55,
+      "trad": 75,
+      "mil": 25,
+      "myst": 50
+    }
+  },
+  {
+    "id": "peronism",
+    "name": "ideology.peronism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      55,
+      89,
+      164,
+      136
+    ],
+    "axes": {
+      "econ": -55,
+      "auth": 45,
+      "trad": 40,
+      "mil": 40,
+      "myst": 10
+    }
+  },
+  {
+    "id": "bolivarian_socialism",
+    "name": "ideology.bolivarian_socialism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -80,
+      "auth": 55,
+      "trad": 25,
+      "mil": 50,
+      "myst": 15
+    }
+  },
+  {
+    "id": "indigenist_socialism",
+    "name": "ideology.indigenist_socialism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -75,
+      "auth": 25,
+      "trad": 60,
+      "mil": 15,
+      "myst": 45
+    }
+  },
+  {
+    "id": "liberation_theology",
+    "name": "ideology.liberation_theology",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -70,
+      "auth": -20,
+      "trad": 45,
+      "mil": -10,
+      "myst": 70
+    }
+  },
+  {
+    "id": "developmentalism",
+    "name": "ideology.developmentalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      7,
+      164,
+      37,
+      35,
+      16
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": 50,
+      "trad": 30,
+      "mil": 45,
+      "myst": -15
+    }
+  },
+  {
+    "id": "hindu_nationalism",
+    "name": "ideology.hindu_nationalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      89,
+      95,
+      82,
+      11,
+      164
+    ],
+    "axes": {
+      "econ": 35,
+      "auth": 65,
+      "trad": 90,
+      "mil": 65,
+      "myst": 75
+    }
+  },
+  {
+    "id": "buddhist_nationalism",
+    "name": "ideology.buddhist_nationalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": 5,
+      "auth": 55,
+      "trad": 85,
+      "mil": 45,
+      "myst": 85
+    }
+  },
+  {
+    "id": "pancasila_statism",
+    "name": "ideology.pancasila_statism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": 15,
+      "auth": 70,
+      "trad": 60,
+      "mil": 60,
+      "myst": 40
+    }
+  },
+  {
+    "id": "african_socialism",
+    "name": "ideology.african_socialism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      88,
+      33,
+      163,
+      171,
+      25
+    ],
+    "axes": {
+      "econ": -65,
+      "auth": 45,
+      "trad": 45,
+      "mil": 35,
+      "myst": 20
+    }
+  },
+  {
+    "id": "tribal_confederalism",
+    "name": "ideology.tribal_confederalism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      82,
+      164,
+      40,
+      98,
+      16
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 20,
+      "trad": 90,
+      "mil": 55,
+      "myst": 55
+    }
+  },
+  {
+    "id": "nationalist",
+    "name": "ideology.nationalist",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      136,
+      85
+    ],
+    "axes": {
+      "econ": 10,
+      "auth": 60,
+      "trad": 70,
+      "mil": 75,
+      "myst": 10
+    }
+  },
+  {
+    "id": "petrocratic_absolutism",
+    "name": "ideology.petrocratic_absolutism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      91,
+      164,
+      30
+    ],
+    "axes": {
+      "econ": 70,
+      "auth": 90,
+      "trad": 80,
+      "mil": 50,
+      "myst": 40
+    }
+  },
+  {
+    "id": "continental_expansionism",
+    "name": "ideology.continental_expansionism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      117,
+      91,
+      55,
+      4,
+      164
+    ],
+    "axes": {
+      "econ": 20,
+      "auth": 65,
+      "trad": 55,
+      "mil": 90,
+      "myst": 10
+    }
+  },
+  {
+    "id": "steppe_illuminism",
+    "name": "ideology.steppe_illuminism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      48,
+      116,
+      56,
+      91,
+      187
+    ],
+    "axes": {
+      "econ": -10,
+      "auth": 55,
+      "trad": 85,
+      "mil": 45,
+      "myst": 95
+    }
   }
 ]

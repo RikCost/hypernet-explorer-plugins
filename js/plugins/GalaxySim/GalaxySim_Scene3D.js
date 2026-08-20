@@ -48,6 +48,12 @@
   // Reach of the biosignature scanner, in light years.
   const BIOSCAN_RADIUS = 500;
 
+  // Grand Tour: seconds lingering on each body, and the cinematic auto-orbit
+  // rate (radians/second) while it holds. Matches the SYSTEM_MOON_CAP cap in
+  // Scene3D_Bodies (only the moons actually rendered/pickable get a stop).
+  const TOUR_HOLD = 6.5;
+  const TOUR_SPIN = 0.09;
+
   // How many of a point cloud's nearest members controller selection offers:
   // stepping around a ring of thousands of identical stars helps nobody.
   const CYCLE_LIMIT = 48;
@@ -96,6 +102,11 @@
     create() {
       super.create();
 
+      // Consumed once here so it never leaks into a later normal OpenStarMap
+      // call (see GalaxySim.openStarMapMinigame).
+      this._minigameMode = !!(window.GalaxySim && window.GalaxySim.minigameMode);
+      if (window.GalaxySim) window.GalaxySim.minigameMode = false;
+
       // Defensive: Core only pushes us when WebGL is available, but guard so a
       // misconfiguration falls back cleanly instead of throwing.
       if (typeof THREE === "undefined" ||
@@ -116,6 +127,7 @@
 
       this._overlayUI = new GS.Overlay.GalaxyOverlay(this._overlayEl);
       this._overlayUI.create();
+      if (this._minigameMode) this._overlayUI.setMinigameMode(true);
       this._wireOverlayCallbacks();
 
       this._initContent();
@@ -125,6 +137,11 @@
       this._camBoost = 0;
       this._suppressOk = 0;
       this._followShipCam = false;
+      // Set by L3 (see _updatePadButtons): lets a pad reach the persistent
+      // toolbar (Ship/Bioscan/Grand Tour/Home/SB-Bridge/Return-to-Earth) with
+      // the focus ring even with nothing selected and no panel open, which
+      // navActive otherwise reserves for camera panning.
+      this._padFocusActive = false;
 
       // Cockpit toggle (F) and zoom-to-target (Space). Raw keydown so they are
       // independent of the RPG keymap; Space additionally suppresses the "ok"
@@ -542,6 +559,10 @@
         (M.COLORS && M.COLORS.orbit) || "rgba(80,120,200,0.5)";
       this._systemView = GS.Scene3DBodies.buildSystem(this._system, { orbitColor });
       this._scene.add(this._systemView.group);
+      // Minimal viewer mode: no ship to show or fly.
+      if (this._minigameMode && this._systemView.shipGroup) {
+        this._systemView.shipGroup.visible = false;
+      }
       this._rebuildPickList();
 
       // Frame the whole system: pull the orbit camera back to fit the outer
@@ -577,6 +598,8 @@
       this._galaxyShip = GS.Scene3DBodies.buildShip({ beacon: true });
       this._galaxyShip.group.scale.setScalar(1.6);
       this._galaxyView.group.add(this._galaxyShip.group);
+      // Minimal viewer mode: no ship to show or fly.
+      if (this._minigameMode) this._galaxyShip.group.visible = false;
       // Re-arm camera-follow for any flight in progress when the scale is (re)built.
       this._wasTravellingGalaxy = false;
       this._followShip = false;
@@ -1025,11 +1048,17 @@
 
       this._showInfoFor(pick, true);
 
-      // 4. Frame it. A planet gets the dedicated focus path (moons and all).
+      // 4. Frame it. A planet gets the dedicated focus path (moons and all);
+      //    a moon reuses its parent's band but keeps the camera on the moon
+      //    itself (see _focusMoon) - it must never clear the planet focus
+      //    below, or zooming back out would snap onto the parent planet.
       if (this._scale === SCALE_SYSTEM && pick.kind === "planet") {
         this._focusPlanet(pick);
         this._boostCamera();
         return;
+      }
+      if (this._scale === SCALE_SYSTEM && pick.kind === "moon") {
+        if (this._focusMoon(pick, true)) { this._boostCamera(); return; }
       }
       if (this._scale === SCALE_SYSTEM && this._planetFocus) this._clearPlanetFocus(false);
 
@@ -1077,6 +1106,7 @@
     }
 
     _handleClick() {
+      if (this._tour) return; // Grand Tour is hands-off; only cancel breaks it
       if (this._mode === "fly") return; // clicks (re)acquire pointer lock instead
       const ov = this._overlayUI;
       if (this._hovered) {
@@ -1100,8 +1130,13 @@
           // camera actually gets in close (_checkScaleTransition /
           // _selectionEntry). A single click used to jump straight into
           // that close framing instead of easing toward it.
-          if (this._hovered.kind === "planet") this._focusSelection(this._hovered);
-          else if (this._hovered.kind === "star") this._clearPlanetFocus();
+          if (this._hovered.kind === "planet") {
+            // Re-selecting the planet always gives it the camera back, even if
+            // one of its moons was the one being followed.
+            if (this._planetFocus) this._planetFocus.followObject = null;
+            this._focusSelection(this._hovered);
+          } else if (this._hovered.kind === "star") this._clearPlanetFocus();
+          else if (this._hovered.kind === "moon") this._focusMoon(this._hovered, false);
         } else {
           // Galaxy / cosmic scales: selecting also makes the object the camera
           // pivot, so the player orbits and zooms around their target instead
@@ -1222,11 +1257,16 @@
       const again = !!this._planetFocus && this._planetFocus.object === info.object;
       this._planetFocus = {
         object: info.object,
+        planetName: pick.data && pick.data.name,
         radius: info.radius,
         framingDist: Math.max(info.radius * 2.4, info.radius * 1.3 + 0.05),
         // Physical planet radii are small, so the exit band is generous (and
         // floored) - otherwise a nudge of the wheel drops you straight out.
         outDist: Math.max(info.moonOuter * 2.2, info.radius * 16, 1.2),
+        // Set by _focusMoon while one of this planet's moons is selected, so
+        // the camera keeps following the moon instead of snapping back to
+        // the planet (see _updatePlanetFocus).
+        followObject: null,
       };
       this._rebuildPickList(); // pick the newly-revealed moonlets too
       this._rig.minDistance = Math.max(0.05, info.radius * 1.15);
@@ -1254,13 +1294,62 @@
       this._updateModeHint();
     }
 
-    // Each frame keep the camera centred on the orbiting focused planet.
+    // Each frame keep the camera centred on the orbiting focused planet, or
+    // on one of its moons while that moon is the one selected (followObject).
     _updatePlanetFocus() {
       if (!this._planetFocus || this._scale !== SCALE_SYSTEM) return;
-      if (this._planetFocus.object) {
-        this._planetFocus.object.getWorldPosition(this._pickScratch);
+      const obj = this._planetFocus.followObject || this._planetFocus.object;
+      if (obj) {
+        obj.getWorldPosition(this._pickScratch);
         this._rig.setTargetFocus(this._pickScratch);
       }
+    }
+
+    // Selecting a moon must never fall back to the parent planet's framing:
+    // it reuses the planet's already-revealed moon band (entering it first if
+    // the planet isn't already focused) but points the continuous per-frame
+    // follow (_updatePlanetFocus) at the moon itself, so zooming in and out
+    // stays on the satellite instead of snapping back to the planet.
+    // `tight` mirrors the "click the already-targeted body again" zoom-in
+    // _focusPlanet gives a planet (see _zoomToTarget); a bare first click
+    // just re-centres gently, like a planet's first click does.
+    _focusMoon(pick, tight) {
+      if (this._scale !== SCALE_SYSTEM || !pick.planet || !pick.object) return false;
+      const parentName = pick.planet.name;
+      if (!this._planetFocus || this._planetFocus.planetName !== parentName) {
+        this._focusPlanet({ kind: "planet", data: pick.planet });
+        if (!this._planetFocus) return false;
+        tight = false; // _focusPlanet already framed the whole planet band
+      }
+      this._followShipCam = false;
+      this._planetFocus.followObject = pick.object;
+      pick.object.getWorldPosition(this._pickScratch);
+      this._rig.setTargetFocus(this._pickScratch);
+      if (tight) {
+        this._rig.setTargetDistance(Math.max(this._rig.minDistance, this._rig.targetDistance * 0.6));
+      }
+      return true;
+    }
+
+    // Minimal viewer mode: every ship action (travel, land, bridges, park,
+    // refuel, harvest, strip mine, service, investigate) is stripped from the
+    // panel options built by _showInfoFor, leaving only the descriptive
+    // fields (breathable, hasLife, bioTier, mining capacity, bookmark...) so
+    // the body is still fully described, just not actionable.
+    _disableGalaxyActions(opts) {
+      opts.canEnter = false;
+      opts.canTravel = false;
+      opts.canPark = false;
+      opts.canBohrBridge = false;
+      opts.canRefuel = false;
+      opts.canHarvest = false;
+      opts.canTravelTo = false;
+      opts.canLand = false;
+      opts.canStripMine = false;
+      opts.canService = false;
+      opts.canInvestigate = false;
+      opts.canUseLocations = false;
+      return opts;
     }
 
     // `keepTarget` is set when the caller is re-showing the panel for the
@@ -1305,7 +1394,7 @@
         const isParkedHere = isCurrent && !isMoving &&
           !!(ship && ship.parkedBody && ship.parkedBody.name === pick.data.name);
         const dm = this.dataManager;
-        ov.showSystem(pick.data, {
+        const sysOpts = {
           isCurrent,
           canEnter: starBrowsable && !isMoving && !isCompanion,
           canTravel: (starBrowsable || isCompanion) && !isCurrent && !isMoving,
@@ -1325,7 +1414,9 @@
           harvestCooldownMin: (isParkedHere && ship && ship.parkedBody &&
             ship.parkedBody.kind === "blackhole" && dm.schrodingeriteCooldownRemaining)
             ? dm.schrodingeriteCooldownRemaining(ship.parkedBody.name) : 0,
-        });
+        };
+        if (this._minigameMode) this._disableGalaxyActions(sysOpts);
+        ov.showSystem(pick.data, sysOpts);
       } else {
         const sameSystem = !!(this._system && pick.system && pick.system.name === this._system.name);
         const orbitingThis = !isMoving && sameSystem &&
@@ -1347,7 +1438,7 @@
         // only ever once (a half-finished encounter is offered as Resume).
         const A = GS.Anomaly;
         const anomalyOpen = !!(A && pick.kind === "planet" && A.isPending(pick.system, pick.data));
-        ov.showBody(pick.data, pick.system, {
+        const bodyOpts = {
           kind: pick.kind,
           parentPlanet: pick.planet,
           // Always offered for any body of the CURRENT system (planet or
@@ -1390,7 +1481,9 @@
           bioTier: (pick.kind === "planet" && GS.planetBioTier)
             ? GS.planetBioTier(pick.data) : null,
           isBookmarked: this._isBookmarked(pick),
-        });
+        };
+        if (this._minigameMode) this._disableGalaxyActions(bodyOpts);
+        ov.showBody(pick.data, pick.system, bodyOpts);
       }
     }
 
@@ -1421,6 +1514,7 @@
         onGoHome: () => this._goToCurrentSystem(),
         onGoToShip: () => this._goToShip(),
         onBioScan: () => this._scanBiosignatures(),
+        onGrandTour: () => this._toggleGrandTour(),
         onSbBridge: () => this._sbBridge(),
         onReturnEarthToggle: () => this._toggleReturnEarth(),
         onReturnEarthCourse: () => this._setCourseEarth(),
@@ -2012,23 +2106,28 @@
       const local = [];
       const localSys = this._catalogLocalSystem();
       if (localSys) {
-        const addLocal = (name, sub, kind, data) => {
+        const addLocal = (name, sub, kind, data, depth) => {
           const id = "cs" + entries.length;
           entries.push({ id, scale: SCALE_SYSTEM, kind, name: data.name, data, system: localSys });
-          local.push({ id, name, sub, course: false });
+          local.push({ id, name, sub, course: false, depth: depth || 0 });
         };
         const starLabel = localSys.label || localSys.name;
         const classSub = (type, role) => T('Galaxy.catalog.' + role, {
           type: String(type || "?").replace(/_/g, " "),
         });
-        addLocal(starLabel, classSub(localSys.type, 'star'), "star", localSys);
+        // Hierarchical and distance-ordered: the star(s) first, then each
+        // planet nearest-orbit-first with its own moons nested under it.
+        addLocal(starLabel, classSub(localSys.type, 'star'), "star", localSys, 0);
         (localSys.companions || []).forEach((c) =>
-          addLocal(c.name, classSub(c.type, 'companion'), "star", localSys));
+          addLocal(c.name, classSub(c.type, 'companion'), "star", localSys, 0));
         if (localSys.feeding && localSys.feeding.donor) {
           addLocal(localSys.feeding.donor.name,
-            classSub(localSys.feeding.donor.type, 'donor'), "star", localSys);
+            classSub(localSys.feeding.donor.type, 'donor'), "star", localSys, 0);
         }
-        (localSys.planets || []).forEach((planet) => {
+        const orderedPlanets = (localSys.planets || [])
+          .slice()
+          .sort((a, b) => (a.orbitRadius || 0) - (b.orbitRadius || 0));
+        orderedPlanets.forEach((planet) => {
           // A living world is listed by the strength of its biosignature, which
           // is the one thing worth knowing before setting down on it; a world
           // with only tentacles to its name reads as trace signs.
@@ -2040,15 +2139,23 @@
           addLocal(planet.name,
             String(planet.type || "?").replace(/_/g, " ") +
             (planet.orbitRadius != null ? " · " + planet.orbitRadius.toFixed(2) + " AU" : "") + life,
-            "planet", planet);
+            "planet", planet, 1);
           // A moon is never drawn as its own object outside planet focus, so
           // its row targets the planet it orbits (same rule as Spaceports).
-          (planet.moons || []).forEach((moon) =>
-            addLocal("   " + moon.name,
-              T('Galaxy.catalog.moonOf', {
-                type: String(moon.type || "?").replace(/_/g, " "), planet: planet.name,
-              }),
-              "planet", planet));
+          // Past 4 (Scene3D_Bodies' own SYSTEM_MOON_CAP - the wide view only
+          // ever renders/picks that many anyway) a long flat list reads worse
+          // than one summary row, so the family collapses into a count.
+          const moons = planet.moons || [];
+          if (moons.length > 4) {
+            addLocal(T.n('Galaxy.catalog.moons', moons.length), "", "planet", planet, 2);
+          } else {
+            moons.forEach((moon) =>
+              addLocal(moon.name,
+                T('Galaxy.catalog.moonOf', {
+                  type: String(moon.type || "?").replace(/_/g, " "), planet: planet.name,
+                }),
+                "planet", planet, 2));
+          }
         });
       }
 
@@ -2327,6 +2434,147 @@
     }
 
     // ----------------------------------------------------------------------
+    // Grand Tour: a hands-off cinematic flythrough of every body in the
+    // current system, hierarchy-ordered star-first then planet-by-planet in
+    // ascending distance from the star, moons trailing their planet - the
+    // system-scale sibling of the title screen's Hyperverse slideshow. Only
+    // Esc/[B] breaks it; nothing else drives the camera while it runs.
+    // ----------------------------------------------------------------------
+    _toggleGrandTour() {
+      if (this._tour) this._endGrandTour();
+      else this._startGrandTour();
+    }
+
+    _startGrandTour() {
+      if (this._scale !== SCALE_SYSTEM || !this._systemView) {
+        if (window.SoundManager) SoundManager.playBuzzer();
+        return;
+      }
+      const stops = this._grandTourStops();
+      if (!stops.length) {
+        if (window.SoundManager) SoundManager.playBuzzer();
+        return;
+      }
+      const ov = this._overlayUI;
+      if (ov) { ov.setCatalogOpen(false); ov.deselect(); ov.hideTooltip(); }
+      this._clearPlanetFocus(false);
+      this._followShipCam = false;
+      // Orbit stays enabled: mouse drag, wheel, right stick and L2/R2 zoom all
+      // keep working so the player can look around and zoom while the tour
+      // drifts between stops. Only the keyboard/left-stick PAN is suspended -
+      // left/right there instead step to the previous/next stop (see update()).
+      if (this._orbit) this._orbit.suspendKeys = true;
+      this._setOrbitLinesVisible(false);
+      // Wide open so every stop - a moon barely bigger than the ship, or a
+      // companion star out past the belts - is reachable without the
+      // planet-focus min/max band left over from whatever the player was
+      // last looking at.
+      this._rig.minDistance = 0.02;
+      this._rig.maxDistance = ((this._systemOuter || this._systemView.outerRadius || 12)) * 6;
+      this._tour = { stops, index: -1, timer: 0 };
+      this._advanceGrandTour();
+      if (ov) ov.setTourMode(true, this._tourHintText());
+      if (window.SoundManager) SoundManager.playOk();
+    }
+
+    _endGrandTour() {
+      if (!this._tour) return;
+      this._tour = null;
+      this._setOrbitLinesVisible(true);
+      if (this._orbit) {
+        this._orbit.suspendKeys = false;
+        if (this._mode === "orbit") this._orbit.enable(); // no-op if already enabled
+      }
+      this._restoreSystemMinDistance();
+      const outer = this._systemOuter || (this._systemView && this._systemView.outerRadius) || 12;
+      this._rig.maxDistance = outer * 5;
+      const ov = this._overlayUI;
+      if (ov) ov.setTourMode(false);
+      if (window.SoundManager) SoundManager.playCancel();
+    }
+
+    /** Same keyboard/pad split as _updateModeHint, for the one line the
+     * overlay leaves on screen while the tour runs. */
+    _tourHintText() {
+      const pad = !!(window.AnalogStickInput && AnalogStickInput.hasPad &&
+        AnalogStickInput.hasPad());
+      return pad ? T('Galaxy.hintPad.grandTour') : T('Galaxy.hint.grandTour');
+    }
+
+    /** Step to the next (or, with dir -1, previous) stop and set the rig's new
+     * target distance for it. `dir` also drives a manual skip (left/right,
+     * A/D, pad d-pad/stick - see update()), not just the automatic hold timer. */
+    _advanceGrandTour(dir) {
+      const tour = this._tour;
+      const n = tour.stops.length;
+      tour.index = ((tour.index + (dir || 1)) % n + n) % n;
+      tour.timer = 0;
+      const stop = tour.stops[tour.index];
+      const r = Math.max(stop.radius || 0.05, 0.02);
+      const mult = stop.kind === "star" ? 3.4 : (stop.kind === "moon" ? 3.8 : 2.8);
+      this._rig.setTargetDistance(Math.max(r * mult, r * 1.4 + 0.08));
+    }
+
+    /** Per-frame: follow the current stop (bodies keep orbiting), drift the
+     * camera in a slow cinematic spin around it, and advance once its hold
+     * time is up. */
+    _updateGrandTour(delta) {
+      const tour = this._tour;
+      if (!tour) return;
+      const stop = tour.stops[tour.index];
+      if (stop && stop.object) {
+        stop.object.getWorldPosition(this._pickScratch);
+        this._rig.setTargetFocus(this._pickScratch);
+      }
+      this._rig.rotate(delta * TOUR_SPIN, 0);
+      tour.timer += delta;
+      if (tour.timer >= TOUR_HOLD) this._advanceGrandTour();
+    }
+
+    /**
+     * Every body of the current system, star(s) first then planet-by-planet
+     * in ascending orbitRadius, each planet's moons trailing it. Reuses the
+     * live pickables the wide system view already built (Scene3D_Bodies'
+     * SYSTEM_MOON_CAP caps a planet at its 4 nearest moons there too, so a
+     * bigger family naturally gets the same "collapse" the catalog gives it).
+     */
+    _grandTourStops() {
+      const view = this._systemView;
+      if (!view || !view.pickables) return [];
+      const primary = this._system;
+      const stars = [];
+      const planetOrder = [];
+      const byPlanet = new Map();
+      view.pickables.forEach((p) => {
+        if (p.kind === "star") stars.push(p);
+        else if (p.kind === "planet") {
+          byPlanet.set(p.data, { planet: p, moons: [] });
+          planetOrder.push(p.data);
+        } else if (p.kind === "moon" && p.planet) {
+          const entry = byPlanet.get(p.planet);
+          if (entry) entry.moons.push(p);
+        }
+      });
+      // The primary star leads; companions/donor follow in their build order.
+      stars.sort((a, b) => (a.data === primary ? -1 : b.data === primary ? 1 : 0));
+      planetOrder.sort((a, b) => (a.orbitRadius || 0) - (b.orbitRadius || 0));
+      const stops = stars.slice();
+      planetOrder.forEach((data) => {
+        const entry = byPlanet.get(data);
+        stops.push(entry.planet);
+        stops.push(...entry.moons);
+      });
+      return stops;
+    }
+
+    /** Toggle every orbit guide line in the current system view. */
+    _setOrbitLinesVisible(visible) {
+      const root = this._systemView && this._systemView.group;
+      if (!root) return;
+      root.traverse((obj) => { if (obj.name === "gx-orbit") obj.visible = visible; });
+    }
+
+    // ----------------------------------------------------------------------
     // Travel / land / engine actions (drive the shared DataManager logic)
     // ----------------------------------------------------------------------
     /** The system the ship is actually in right now (labels the Home button). */
@@ -2375,6 +2623,13 @@
       // Following only means anything for the orbit rig; the cockpit drives the
       // camera itself, so drop back to orbit first.
       if (this._mode === "fly") this._toggleMode();
+      // Always drop whatever was selected: leaving it as the persistent target
+      // let the zoom ladder re-enter it (or _restoreTarget re-open its panel)
+      // once the camera drifted back inside its entry band while following the
+      // ship - reading as the view snapping back to the old selection.
+      this._setTarget(null);
+      this._selectedPick = null;
+      if (this._overlayUI) this._overlayUI.deselect();
 
       // An inter-system flight is only drawn at galaxy scale; everything else
       // (parked, in orbit, or hopping between planets) lives inside a system.
@@ -3083,7 +3338,7 @@
           if (cur) pos = this._galaxyView.worldOf(cur, this._scratchA);
         }
         if (pos) this._galaxyShip.group.position.copy(pos);
-        this._galaxyShip.update(this._elapsed);
+        this._galaxyShip.update(this._elapsed, travellingHere);
         // Grow the beacon with camera distance so the ship stays findable from
         // a whole-galaxy zoom-out down to a close pass: scaling its WORLD size
         // by distance/beaconRef (no lower clamp) keeps its apparent SCREEN
@@ -3265,6 +3520,10 @@
     // no further step can fire for LADDER_COOLDOWN after one does, so brushing
     // the edge of a band while zooming never rips through several scales.
     _checkScaleTransition(dt) {
+      // The tour drives the rig's distance itself, close in on tiny moons and
+      // wide out on companion stars; none of that is a real zoom gesture, so
+      // it must never trip the scale ladder.
+      if (this._tour) return;
       const td = this._rig.targetDistance;
       // Zooming right in while something is selected goes INTO it, at every
       // scale and inside the views that have no band below them, so the wheel
@@ -3293,12 +3552,17 @@
       if (this._planetFocus) {
         if (td > this._planetFocus.outDist) {
           this._clearPlanetFocus(false);
-          // Without a cooldown, the just-cleared distance (barely past the
-          // planet's own small outDist) is still well inside the system-wide
-          // entry band _selectionEnterDist() computes next frame, so while
-          // the planet stayed targeted the enter-ladder above would fire
-          // again after one LADDER_DWELL and snap straight back into focus -
-          // the exit could never actually get past a mid zoom level.
+          // The cooldown alone isn't enough: the just-cleared distance (barely
+          // past the planet's own small outDist) is still well inside the
+          // system-wide entry band _selectionEnterDist() computes next frame,
+          // so as long as the planet stayed the persistent target, the
+          // enter-ladder above would fire again once the cooldown lapsed and
+          // snap straight back into focus - a slow zoom-out could never
+          // actually get past a mid zoom level. Dropping the target too means
+          // there is nothing left for _selectionEntry() to re-enter.
+          this._setTarget(null);
+          this._selectedPick = null;
+          if (this._overlayUI) this._overlayUI.deselect();
           this._ladderHold = 0;
           this._ladderCooldown = LADDER_COOLDOWN;
         }
@@ -3605,6 +3869,7 @@
 
       if (this._mode === "orbit") {
         this._orbit.update(delta);
+        if (this._tour) this._updateGrandTour(delta);
         this._rig.update(delta); // applies orbit positioning to the camera
       } else {
         this._fly.update(delta); // drives the camera directly; rig not applied
@@ -3647,7 +3912,9 @@
         this._background.rotation.y += delta * 0.002;
       }
 
-      this._updatePicking();
+      // No hover/click picking during the Grand Tour: it is a hands-off
+      // slideshow, not another way to select a body mid-flight.
+      if (!this._tour) this._updatePicking();
       // Time at the eyepiece counts: a slow drip of Astronomy for whoever is
       // actually reading the sky (see SpecializationXP.tick).
       if (window.SpecializationXP) {
@@ -3672,6 +3939,23 @@
       super.update();
       if (this._failed) { this.popScene(); return; }
       if (typeof Input === "undefined") return;
+
+      // Grand Tour lets the camera be looked around/zoomed freely (see
+      // _startGrandTour), but the only DIRECTIONAL input it recognises is
+      // left/right (keyboard, A/D, and a pad's d-pad/left-stick/LB-RB all
+      // resolve to the same "left"/"right" - see input-currentstate-and-wasd)
+      // to manually skip to the previous/next stop, plus the cancel that ends it.
+      if (this._tour) {
+        if (Input.isTriggered("cancel")) { this._endGrandTour(); return; }
+        if (Input.isTriggered("left")) {
+          this._advanceGrandTour(-1);
+          if (window.SoundManager) SoundManager.playCursor();
+        } else if (Input.isTriggered("right")) {
+          this._advanceGrandTour(1);
+          if (window.SoundManager) SoundManager.playCursor();
+        }
+        return;
+      }
 
       const ov = this._overlayUI;
       // Landing-grid picker is a full modal: take over input completely while
@@ -3712,17 +3996,25 @@
       if (pad && pad.hasPad && pad.hasPad() !== this._hintPad) this._updateModeHint();
       const hasSel = !!(ov && ov.hasSelection());
       // Arrow keys / WASD drive a panel's focus ring ONLY while a panel that
-      // needs them is open (selection info, catalog, or the engine panel). The
-      // persistent toolbar (Catalog / Home / SB-Bridge) no longer counts, so
-      // with nothing open the same keys pan the camera around the space view -
-      // WASD works even out of cockpit mode.
+      // needs them is open (selection info, catalog, or the engine panel), or
+      // while a pad has explicitly asked for the toolbar (L3, see
+      // _updatePadButtons). The persistent toolbar (Ship / Bioscan / Grand
+      // Tour / Home / SB-Bridge / Return-to-Earth) is otherwise unreachable
+      // with nothing selected, since with nothing open the same keys instead
+      // pan the camera around the space view - WASD works even out of
+      // cockpit mode.
       const navActive = !!(ov && (hasSel || ov.isCatalogOpen() ||
         (ov.isServiceOpen && ov.isServiceOpen()) ||
         (ov.isMiningOpen && ov.isMiningOpen()) ||
-        (ov.isSpeedShown && ov.isSpeedShown())));
+        (ov.isSpeedShown && ov.isSpeedShown()) ||
+        this._padFocusActive));
       if (this._orbit) this._orbit.suspendKeys = navActive;
 
-      if (Input.isTriggered("cancel")) {
+      // Right-click mirrors Esc/cancel: drop whatever is selected (a body or
+      // the ship marker) first, and only close the map on a second right-click
+      // once nothing is left selected.
+      if (Input.isTriggered("cancel") || TouchInput.isCancelled()) {
+        this._padFocusActive = false;
         // Esc off the lasers first: the cut is the loudest thing on screen.
         if (this._mining) { this._stopStripMining(T('Galaxy.mining.lasersCut')); return; }
         if (this._mode === "fly") { this._toggleMode(); return; }
@@ -3743,6 +4035,9 @@
         // the focused panel button" for the frames around the keydown.
         if (Input.isTriggered("ok")) {
           if (this._suppressOk <= 0) ov.activateFocus();
+          // The toolbar browse-mode L3 opened is done once its target fires;
+          // whatever it opened (a real panel, hasSel, etc.) takes over navActive.
+          this._padFocusActive = false;
           return;
         }
         if (Input.isTriggered("up")) ov.moveFocus("up");
@@ -3771,6 +4066,17 @@
       const pad = window.AnalogStickInput;
       if (!pad || !pad.hasPad || !pad.hasPad()) return;
       const B = pad.BUTTON;
+      // L3: with nothing selected and no panel open (navActive false), the
+      // persistent toolbar (Ship/Bioscan/Grand Tour/Home/SB-Bridge/Return-to-
+      // Earth) has no other pad entry point - the arrow keys/d-pad are busy
+      // panning the camera in that state. L3 hands them to the focus ring
+      // instead (see the navActive/_padFocusActive fold in update()); B/cancel
+      // or actually activating a button (A/ok) hands panning back.
+      if (!navActive && pad.isButtonTriggered(B.L3)) {
+        this._padFocusActive = true;
+        if (this._overlayUI) this._overlayUI.cycleFocus(1);
+        return;
+      }
       // X toggles the cockpit while orbiting, unless a panel is up (there B
       // closes it first); inside the cockpit X is the thrust boost and B is the
       // way out, so it must not double as the toggle there either.

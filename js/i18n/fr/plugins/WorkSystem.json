@@ -79,5 +79,7 @@
     "navAcceptContract": "",
     "navChooseJob": "",
     "navSignContract": ""
-  }
+  },
+  "guildRegistry": "REGISTRE DE TRAVAIL DE LA GUILDE",
+  "guildRegistryCategory": "REGISTRE DE TRAVAIL DE LA GUILDE : {category}"
 }

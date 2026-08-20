@@ -1,14 +1,14 @@
 //=============================================================================
 // Party HUD
-// Version: 2.0.0
+// Version: 3.0.0
 //=============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Party HUD v2.0.0
+ * @plugindesc Party HUD v3.0.0
  * @author Omni-Lex
- * @version 2.0.0
- * @description Top-left HTML map HUD: HP/MP, active states and urgent needs per party member
+ * @version 3.0.0
+ * @description The one party HUD, on the map and in battle: HP/MP/AP, states, needs and whose turn it is
  *
  * @param hudX
  * @text HUD X
@@ -24,7 +24,7 @@
  * @type number
  * @min 0
  * @max 400
- * @default 40
+ * @default 34
  *
  * @param panelWidth
  * @text Panel Width
@@ -32,7 +32,7 @@
  * @type number
  * @min 120
  * @max 480
- * @default 224
+ * @default 264
  *
  * @param maxMembers
  * @text Max Members
@@ -50,22 +50,50 @@
  * @max 12
  * @default 6
  *
- * @param hideDuringMessages
- * @text Hide During Messages
- * @desc Fade the HUD out while a message or choice is on screen.
- * @type boolean
- * @default true
- *
  * @help PartyHud.js
  *
- * Draws the party HUD in the top-left corner of the map as HTML (#party-hud,
- * styled in css/game.css) rather than as a canvas window: one row per party
- * member, the bordered card carrying their name and their HP and MP bars, and
- * a column of chips standing to the right of that card, outside the box.
+ * The party HUD, and there is only one of it: the same cards stand in the
+ * top-left corner of the map and of a battle, so the party never has to be
+ * read twice in two different languages. It is HTML (#party-hud, styled in
+ * css/game.css) rather than a canvas window.
  *
- * The chips read as one list: first the urgent needs, then every state and
- * buff on the member, all spelled out as words rather than drawn as icons, so
- * nothing on the HUD has to be recognised from a 20px picture.
+ * A member is a row: the card and a column of chips standing to the right of
+ * it, outside the box. The card carries no background or border of its own:
+ * it is the bars themselves, laid over whatever is behind them.
+ *
+ * The card reads top to bottom as one stack:
+ *
+ *     > Name L.7
+ *     ==================120/180==   <- HP bar, value written inside it
+ *              (AP)                 <- the AP orb, between the two bars
+ *     ========30/60===========      <- MP bar, value written inside it
+ *
+ * There is no portrait and no walking sprite on it. On the map the member is
+ * already standing on the map, and in battle their turn is called out by the
+ * caret and the lit card rather than by a sprite marching on the spot.
+ *
+ * The AP orb belongs to party members and to nobody else: monsters carry a
+ * bare HP/MP pair (BattleSystem/BattleSystemEnhancedHUD.js) with no orb on it.
+ * AP is spent sprinting on the map as well as in battle, so the orb is up in
+ * both places. See Map/MovementInteractionSystem.js for the sprint meter.
+ *
+ * What the chip column carries depends on where the party is standing:
+ *
+ *   - urgent needs      map only     (hunger, sleep, hygiene, cravings, illness)
+ *   - stat changes      battle only  ("STR 1.4x", the buffs and debuffs in force)
+ *   - class chips       battle only  (pins, combo, chi, ... via the passives plugin)
+ *   - states            both
+ *
+ * A need is a thing to go and see to, which is a map errand; a stat multiplier
+ * is something to plan a turn around, which is a battle one. Statuses matter
+ * wherever the party is, so they show in both. A buff has no chip of its own:
+ * the stat chip already carries where the stat landed, which is what the arrows
+ * were pointing at.
+ *
+ * The chips lie in rows running away from the card, not in a column stacked
+ * under it, and the whole strip is lifted out of the layout: however many
+ * chips a member has picked up, the bars stay exactly where they were and the
+ * member below them never moves.
  *
  * A chip appears whenever something needs seeing to: low health, hunger,
  * sleep, hygiene, social or fun below the warning line (and a second, louder
@@ -74,20 +102,18 @@
  * cravings from window.AddictionSystem, so the HUD reads the same meters the
  * menu and the status screen do.
  *
- * While the party is aboard a vehicle — at the wheel, or on foot inside its
- * cabin — that vehicle stands above the crew as a row of its own, carrying its
- * name, its condition as an HP bar (every maintenance part added up) and its
- * fuel where a member's magic would be, in purple. The row comes down again
- * the moment they get out. See MergedVehicleSystem.getHudVehicleStatus().
+ * While the party is aboard a vehicle on the map, that vehicle stands above
+ * the crew as a row of its own, carrying its name, its condition as an HP bar
+ * (every maintenance part added up) and its fuel where a member's magic would
+ * be, in purple. See MergedVehicleSystem.getHudVehicleStatus().
+ *
+ * In battle the card also does the work the old portrait cards did: the acting
+ * member's card is lit and carries a caret, and a card can be clicked to aim an
+ * ally-targeted skill at whoever stands on it.
  *
  * The HUD is ON by default and is switched off from Options -> Video
  * ("Party HUD") or on the first step of character creation. The setting is
  * stored in ConfigManager.partyHud.
- *
- * It fades out on its own while the map name window is showing and (by
- * parameter) while a message is on screen, so it never sits on top of them.
- *
- * There is no AP/TP bar: the card carries HP and MP only.
  */
 
 (() => {
@@ -106,14 +132,19 @@
     const HUD_X = Number(parameters['hudX'] || 12);
     // The FPS / frame-time counter sits in the same top-left corner, so the
     // first card starts below it rather than underneath it.
-    const HUD_Y = Number(parameters['hudY'] || 40);
-    const PANEL_W = Number(parameters['panelWidth'] || 224);
+    const HUD_Y = Number(parameters['hudY'] || 34);
+    const PANEL_W = Number(parameters['panelWidth'] || 264);
     const MAX_MEMBERS = Number(parameters['maxMembers'] || 4);
     const MAX_STATES = Number(parameters['maxStates'] || 6);
-    const HIDE_ON_MESSAGE = parameters['hideDuringMessages'] !== 'false';
 
     const MAX_ALERTS = 3;           // urgent-need chips per member
     const NEED_REFRESH_FRAMES = 30; // needs move slowly; don't read them per frame
+    // Every chip row allocates an array and a string to be compared against, and
+    // the class chips call into another plugin to build theirs. None of them
+    // change more than a few times a round, so they are read a few times a
+    // second rather than sixty; a state that shows a tenth of a second late is
+    // a state nobody saw arrive late.
+    const CHIP_REFRESH_FRAMES = 6;
     const FLASH_MS = 420;           // damage / healing wash on the HP bar
 
     // Where a meter stops being comfortable and where it becomes an emergency.
@@ -128,6 +159,15 @@
     // AddictionSystem hands out at 100 and only clears again under 80.
     const CRAVING_WARN = 80;
     const CRAVING_CRIT = 95;
+
+    // A stat has to move by more than this before it earns a chip, so a rounding
+    // wobble on a big number never puts one up.
+    const STAT_CHIP_EPSILON = 0.05;
+
+    //=========================================================================
+    // Where the party is standing
+    //=========================================================================
+    const inBattle = () => SceneManager._scene instanceof Scene_Battle;
 
     //=========================================================================
     // ConfigManager
@@ -245,7 +285,10 @@
     // Reads whatever the party is riding in or standing inside, or null on
     // foot. The vehicle plugin owns the question of what counts (see
     // MergedVehicleSystem.getHudVehicleStatus); the HUD only draws the answer.
+    // A vehicle is map furniture: in a battle the fight is what the cards are
+    // for, and the row would only push the party down the screen.
     const vehicleStatus = () => {
+        if (inBattle()) return null;
         const status = window.MergedVehicleSystem?.getHudVehicleStatus?.();
         return status || null;
     };
@@ -255,13 +298,14 @@
     const vehicleCardKey = (status) => 'vehicle:' + status.key;
 
     //=========================================================================
-    // States and buffs
+    // States
     //=========================================================================
     // States are named on the card in words, not drawn as icons. A state with
     // no icon is database plumbing the party is not meant to read, and the
     // death state already has its own "Down" chip, so both are left out.
-    // Buffs have no name of their own, so they are written as the parameter
-    // they move with an arrow for the direction: "ATK ▲", "DEF ▼▼".
+    // Buffs get no chip of their own here: a stack of arrows only says which
+    // way a stat went, while the stat chips below already say exactly where it
+    // landed ("CON 0.8x"), so the arrows were the same news told worse.
     const dbName = (name) =>
         (typeof window.translateText === 'function' ? window.translateText(name) : name) || '';
 
@@ -271,19 +315,74 @@
         for (const state of actor.states()) {
             if (!state || state.id === actor.deathStateId()) continue;
             if (!state.iconIndex || !state.name) continue;
-            out.push({ key: 'state:' + state.id, text: dbName(state.name) });
-        }
-        for (let paramId = 0; paramId < 8; paramId++) {
-            const level = actor.buff(paramId);
-            if (!level) continue;
-            const arrow = (level > 0 ? '▲' : '▼').repeat(Math.min(2, Math.abs(level)));
+            // A state that takes the turn away leans red, the way the monster
+            // cards mark one (BattleSystem/BattleSystemEnhancedHUD.js).
             out.push({
-                key: 'buff:' + paramId + ':' + level,
-                text: TextManager.param(paramId) + ' ' + arrow,
-                debuff: level < 0
+                key: 'state:' + state.id,
+                text: dbName(state.name),
+                debuff: !!(state.restriction && state.restriction > 0)
             });
         }
         return out.slice(0, MAX_STATES);
+    };
+
+    //=========================================================================
+    // Stat changes (battle only)
+    //=========================================================================
+    // What every buff, debuff, state and severed limb between them have made of
+    // a member's stats, as the multiplier standing on each one right now. Read
+    // against the member's own unbuffed value, so a chip means "this is what the
+    // fight has done to you", not "this is what your gear says".
+    // Monsters get no such column anywhere: theirs is called out in the battle
+    // log as it happens, which is where a change belongs rather than as a
+    // standing list under a monster it is describing.
+    const statChipsFor = (actor) => {
+        const out = [];
+        if (!actor) return out;
+        for (let id = 2; id <= 7; id++) {
+            const current = actor.param(id);
+            const base = (typeof actor.paramWithoutStatesAndBuffs === 'function'
+                ? actor.paramWithoutStatesAndBuffs(id)
+                : actor.paramBase(id)) || 1;
+            const rate = current / base;
+            if (Math.abs(rate - 1) <= STAT_CHIP_EPSILON) continue;
+            out.push({
+                key: 'stat:' + id,
+                text: T('PartyHud.statChip', {
+                    stat: TextManager.param(id),
+                    rate: Number(rate.toFixed(1))
+                }),
+                down: rate < 1
+            });
+        }
+        return out;
+    };
+
+    // The live class-gimmick chips (Wrestler pins, Boxer combo, chi, decoys,
+    // souls, ...). The class logic stays in BattleSystemPassiveSkills; the HUD
+    // only stands the answers up in a row.
+    const classChipsFor = (actor) => {
+        const get = window.BattleSystemPassiveSkills?.getBattleChips;
+        if (typeof get !== 'function') return [];
+        return (get(actor) || []).filter(c => c && c.label);
+    };
+
+    //=========================================================================
+    // Whose turn it is
+    //=========================================================================
+    const actingActor = () => {
+        if (!inBattle() || typeof BattleManager === 'undefined') return null;
+        if (BattleManager._currentActor) return BattleManager._currentActor;
+        const subject = BattleManager._subject;
+        return subject && subject.isActor && subject.isActor() ? subject : null;
+    };
+
+    // The ally-target picker, while it is up. A card is clickable exactly while
+    // this window is taking input, and never otherwise.
+    const allyPicker = () => {
+        const scene = SceneManager._scene;
+        const win = scene && scene._actorWindow;
+        return win && win.active ? win : null;
     };
 
     //=========================================================================
@@ -300,7 +399,10 @@
         this._layoutKey = '';
         this._needs = new Map();    // actorId -> needs object
         this._needTimer = NEED_REFRESH_FRAMES;
+        this._chipTimer = 0;
+        this._ascii = false;
         this._lastHp = new Map();   // actorId | 'vehicle:<key>' -> last HP seen
+        this._projectedAp = new Map(); // actorId -> AP left after the armed skill
         this._visible = false;
         this._create();
     }
@@ -315,11 +417,87 @@
         el.style.setProperty('--phud-card-w', PANEL_W + 'px');
         document.body.appendChild(el);
         this._el = el;
+
+        const style = document.createElement('style');
+        style.textContent = `
+            #party-hud .phud-name {
+                color: #ffffff !important;
+                text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 2px rgba(0,0,0,0.8);
+            }
+            #party-hud .phud-card.phud-acting .phud-name {
+                color: #ffd766 !important;
+                text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 8px rgba(255, 210, 90, 0.8) !important;
+            }
+            #party-hud .phud-bars-container {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                margin-top: 3px;
+                padding-left: 26px;
+            }
+            #party-hud .phud-bars-container .phud-bar {
+                margin-top: 0;
+                height: 13px;
+                transform: skewX(-25deg);
+            }
+            #party-hud .phud-bars-container .phud-bar-lbl {
+                transform: skewX(25deg);
+                text-align: left;
+                font-size: 12px;
+                line-height: 13px;
+                padding-left: 10px;
+            }
+            #party-hud .phud-card.phud-vehicle .phud-bar-lbl {
+                padding-left: 6px;
+            }
+            #party-hud .phud-mid {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 10;
+                margin: 0 !important;
+            }
+            #party-hud .phud-hp .phud-fill {
+                background: linear-gradient(to bottom, rgba(255,255,255,0.28) 50%, transparent 50%), linear-gradient(to right, #7a1420, #d94a4a) !important;
+            }
+            #party-hud .phud-mp .phud-fill {
+                background: linear-gradient(to bottom, rgba(255,255,255,0.28) 50%, transparent 50%), linear-gradient(to right, #16386e, #4a86d9) !important;
+            }
+            #party-hud .phud-fuel .phud-fill {
+                background: linear-gradient(to bottom, rgba(255,255,255,0.28) 50%, transparent 50%), linear-gradient(to right, #3d1466, #a05ce0) !important;
+            }
+            #party-hud .phud-bar-low .phud-fill {
+                background: linear-gradient(to bottom, rgba(255,255,255,0.28) 50%, transparent 50%), linear-gradient(to right, #7a4a10, #e0a63a) !important;
+            }
+            #party-hud .phud-bar-critical .phud-fill {
+                background: linear-gradient(to bottom, rgba(255,255,255,0.28) 50%, transparent 50%), linear-gradient(to right, #7a1420, #ff5a5a) !important;
+            }
+            #party-hud.phud-ascii .phud-bar {
+                transform: none;
+                height: 14px;
+            }
+            #party-hud.phud-ascii .phud-bar-lbl {
+                transform: none;
+                font-size: 12px;
+                line-height: 14px;
+                padding-left: 0;
+                text-align: center;
+            }
+            #party-hud.phud-ascii .phud-fill {
+                background: #c0c0c0 !important;
+            }
+        `;
+        document.head.appendChild(style);
+        this._styleEl = style;
     };
 
     PartyHudOverlay.prototype.destroy = function () {
         if (this._el && this._el.parentNode) this._el.parentNode.removeChild(this._el);
         this._el = null;
+        if (this._styleEl && this._styleEl.parentNode) this._styleEl.parentNode.removeChild(this._styleEl);
+        this._styleEl = null;
         this._cards.clear();
         this._vehicleCard = null;
         this._vehicleCardKey = '';
@@ -327,7 +505,10 @@
 
     PartyHudOverlay.prototype.members = function () {
         if (!$gameParty) return [];
-        return $gameParty.members().slice(0, MAX_MEMBERS);
+        // In a fight the cards are the fighters: a reserve member has no turn to
+        // take and nothing to aim a skill at.
+        const roster = inBattle() ? $gameParty.battleMembers() : $gameParty.members();
+        return roster.slice(0, MAX_MEMBERS);
     };
 
     //-------------------------------------------------------------------------
@@ -342,63 +523,125 @@
         flash.className = 'phud-flash';
         const label = document.createElement('span');
         label.className = 'phud-bar-lbl';
-        const value = document.createElement('span');
-        value.className = 'phud-bar-val';
         bar.appendChild(fill);
         bar.appendChild(flash);
         bar.appendChild(label);
-        bar.appendChild(value);
-        return { bar, fill, flash, label, value };
+        return { bar, fill, flash, label };
+    };
+
+    // The AP orb, sitting between the HP and MP bars. It is a party-member
+    // thing only: AP is what their skills and their sprint come out of, and no
+    // monster carries one. The ghost ring behind the fill is the AP an armed
+    // skill is about to take (see setProjectedAp).
+    PartyHudOverlay.prototype._makeOrb = function () {
+        const orb = document.createElement('div');
+        orb.className = 'phud-orb';
+        const ghost = document.createElement('div');
+        ghost.className = 'phud-orb-ghost';
+        const fill = document.createElement('div');
+        fill.className = 'phud-orb-fill';
+        const value = document.createElement('span');
+        value.className = 'phud-orb-val';
+        orb.appendChild(ghost);
+        orb.appendChild(fill);
+        orb.appendChild(value);
+        return { orb, ghost, fill, value };
+    };
+
+    PartyHudOverlay.prototype._makeChipRow = function (cls) {
+        const row = document.createElement('div');
+        row.className = cls + ' phud-alerts-empty';
+        return row;
     };
 
     PartyHudOverlay.prototype._makeCard = function () {
-        // A member is a row: the bordered card, and the chip column standing to
-        // the right of it, outside the box — urgent needs first, then the
-        // states and buffs the member is carrying.
+        // A member is a row: the card and the chip column standing to the
+        // right of it, outside the box.
         const row = document.createElement('div');
         row.className = 'phud-row';
 
         const root = document.createElement('div');
         root.className = 'phud-card';
 
+        // Head: the turn caret and the name.
         const head = document.createElement('div');
         head.className = 'phud-head';
+        const caret = document.createElement('span');
+        caret.className = 'phud-caret';
+        caret.textContent = '▶';
         const name = document.createElement('span');
         name.className = 'phud-name';
+        head.appendChild(caret);
         head.appendChild(name);
 
         const hp = this._makeBar('hp');
         const mp = this._makeBar('mp');
 
+        // Mid: the AP orb, sitting in the gap between the HP and MP bars.
+        const orb = this._makeOrb();
+        const mid = document.createElement('div');
+        mid.className = 'phud-mid';
+        mid.appendChild(orb.orb);
+
         const chips = document.createElement('div');
         chips.className = 'phud-chips';
-        const alerts = document.createElement('div');
-        alerts.className = 'phud-alerts';
-        const states = document.createElement('div');
-        states.className = 'phud-states';
+        const alerts = this._makeChipRow('phud-alerts');
+        const stats = this._makeChipRow('phud-stats');
+        const states = this._makeChipRow('phud-states');
         chips.appendChild(alerts);
+        chips.appendChild(stats);
         chips.appendChild(states);
 
         root.appendChild(head);
-        root.appendChild(hp.bar);
-        root.appendChild(mp.bar);
+
+        const barsContainer = document.createElement('div');
+        barsContainer.className = 'phud-bars-container';
+        barsContainer.appendChild(hp.bar);
+        barsContainer.appendChild(mid);
+        barsContainer.appendChild(mp.bar);
+        root.appendChild(barsContainer);
 
         row.appendChild(root);
         row.appendChild(chips);
 
-        return { row, root, name, states, hp, mp, alerts, statesKey: null, alertsKey: null, deadKey: null };
+        return {
+            row, root, caret, name, mid, states, stats, hp, mp, alerts, orb,
+            statesKey: null, alertsKey: null, statsKey: null, deadKey: null,
+            orbKey: null, activeKey: null, targetKey: null
+        };
     };
 
     // The vehicle's card is a member card with the crew's furniture taken off
-    // it: no chips (a car has no needs and no buffs), and the magic bar turned
-    // into a fuel gauge, which is what the purple `phud-fuel` colours.
+    // it: no orb, no chips (a car has no AP, no needs and no buffs), and the
+    // magic bar turned into a fuel gauge, which is what the purple `phud-fuel`
+    // colours.
     PartyHudOverlay.prototype._makeVehicleCard = function () {
         const card = this._makeCard();
         card.root.classList.add('phud-vehicle');
         card.mp.bar.classList.add('phud-fuel');
+        card.mid.style.display = 'none';
+        card.caret.style.display = 'none';
         card.alerts.classList.add('phud-alerts-empty');
+        card.stats.classList.add('phud-alerts-empty');
         card.states.classList.add('phud-alerts-empty');
         return card;
+    };
+
+    // Aiming an ally-targeted skill by pointing at the card. The engine's own
+    // ally picker is an invisible window (BattleSystemEnhancedHUD hides it), so
+    // the cards ARE the list: hovering one moves its cursor, clicking one
+    // confirms. Bound once per card, at build time.
+    PartyHudOverlay.prototype._bindTargeting = function (card, actor) {
+        const pick = (confirm) => {
+            const win = allyPicker();
+            if (!win) return;
+            const index = $gameParty.battleMembers().indexOf(actor);
+            if (index < 0) return;
+            if (win.index() !== index) win.select(index);
+            if (confirm) win.processOk();
+        };
+        card.row.addEventListener('mouseenter', () => pick(false));
+        card.row.addEventListener('click', () => pick(true));
     };
 
     // Rebuild the card list when the party itself changes (a member joins,
@@ -428,7 +671,11 @@
         const kept = new Map();
         for (const actor of members) {
             const id = actor.actorId();
-            const card = this._cards.get(id) || this._makeCard();
+            let card = this._cards.get(id);
+            if (!card) {
+                card = this._makeCard();
+                this._bindTargeting(card, actor);
+            }
             kept.set(id, card);
             this._el.appendChild(card.row);
         }
@@ -438,15 +685,14 @@
     //-------------------------------------------------------------------------
     // Writing a card
     //-------------------------------------------------------------------------
-    PartyHudOverlay.prototype._writeBar = function (slot, label, current, max, kind) {
+    PartyHudOverlay.prototype._writeBar = function (slot, current, max, kind) {
         // refresh() runs every frame, so nothing is written unless it changed.
-        const key = label + current + '/' + max;
+        const key = current + '/' + max;
         if (key === slot.key) return;
         slot.key = key;
         const rate = max > 0 ? Math.max(0, Math.min(1, current / max)) : 0;
         slot.fill.style.width = (rate * 100).toFixed(1) + '%';
-        slot.label.textContent = label;
-        slot.value.textContent = current + '/' + max;
+        slot.label.textContent = Math.round(current) + '/' + Math.round(max);
         if (kind === 'hp') {
             const critical = rate > 0 && rate <= CRIT_PCT / 100;
             slot.bar.classList.toggle('phud-bar-critical', critical);
@@ -455,35 +701,45 @@
         }
     };
 
-    PartyHudOverlay.prototype._writeStates = function (card, actor) {
-        if (MAX_STATES <= 0) return;
-        const labels = stateLabelsFor(actor);
-        const key = labels.map(s => s.key + s.text).join('|');
-        if (key === card.statesKey) return;
-        card.statesKey = key;
-        card.states.innerHTML = '';
-        for (const label of labels) {
-            const chip = document.createElement('span');
-            chip.className = 'phud-alert phud-state' + (label.debuff ? ' phud-state-down' : '');
-            chip.textContent = label.text;
-            card.states.appendChild(chip);
-        }
-        card.states.classList.toggle('phud-alerts-empty', labels.length === 0);
+    // The AP orb: how much of it is left, and (while a skill is armed) how much
+    // of that the skill is about to take, shown as the dimmer ring the fill
+    // has retreated from.
+    PartyHudOverlay.prototype._writeOrb = function (card, actor) {
+        const max = Math.max(1, actor.maxTp ? actor.maxTp() : 100);
+        const now = Math.floor(actor.tp);
+        const projected = this._projectedAp.has(actor.actorId())
+            ? Math.floor(this._projectedAp.get(actor.actorId()))
+            : now;
+        const key = now + '/' + max + '/' + projected;
+        if (key === card.orbKey) return;
+        card.orbKey = key;
+        card.orb.fill.style.height = (Math.max(0, Math.min(1, projected / max)) * 100).toFixed(1) + '%';
+        card.orb.ghost.style.height = (Math.max(0, Math.min(1, now / max)) * 100).toFixed(1) + '%';
+        card.orb.value.textContent = String(now);
+        card.orb.orb.classList.toggle('phud-orb-spent', projected < now);
+        card.orb.orb.classList.toggle('phud-orb-empty', now <= 0);
     };
 
-    PartyHudOverlay.prototype._writeAlerts = function (card, actor, needs) {
-        const alerts = urgentAlertsFor(actor, needs);
-        const key = alerts.map(a => a.key + a.text + (a.critical ? '!' : '')).join('|');
-        if (key === card.alertsKey) return;
-        card.alertsKey = key;
-        card.alerts.innerHTML = '';
-        for (const alert of alerts) {
-            const chip = document.createElement('span');
-            chip.className = 'phud-alert' + (alert.critical ? ' phud-alert-critical' : '');
-            chip.textContent = alert.text;
-            card.alerts.appendChild(chip);
+    // One chip row. `chips` is [{ key, text, critical?, down? }]; `extraClass`
+    // is what marks the row's own register (a need, a stat, a state).
+    PartyHudOverlay.prototype._writeChips = function (row, keyProp, card, chips, extraClass) {
+        const key = chips.map(c => c.key + c.text + (c.critical ? '!' : '') + (c.down ? '-' : '')).join('|');
+        if (key === card[keyProp]) return;
+        card[keyProp] = key;
+        row.innerHTML = '';
+        for (const chip of chips) {
+            const el = document.createElement('span');
+            el.className = 'phud-alert ' + extraClass +
+                (chip.critical ? ' phud-alert-critical' : '') +
+                (chip.down ? ' phud-state-down' : '');
+            if (chip.color) {
+                el.style.color = chip.color;
+                el.style.borderColor = chip.color;
+            }
+            el.textContent = chip.text;
+            row.appendChild(el);
         }
-        card.alerts.classList.toggle('phud-alerts-empty', alerts.length === 0);
+        row.classList.toggle('phud-alerts-empty', chips.length === 0);
     };
 
     // A change in HP washes the bar: white for a hit, green for a heal. Applied
@@ -524,7 +780,7 @@
             // bar simply follows the maintenance record, and washes red when it
             // drops the way a member's does.
             this._writeFlash(card, vehicleCardKey(status), hp);
-            this._writeBar(card.hp, TextManager.hpA, hp, mhp, 'hp');
+            this._writeBar(card.hp, hp, mhp, 'hp');
             // A vehicle with every critical part gone is not driveable, which
             // reads the same way a downed member does.
             const broken = window.VehicleSystemRepair?.checkCriticalParts?.(status.key);
@@ -536,8 +792,7 @@
 
         card.mp.bar.style.display = status.usesFuel ? '' : 'none';
         if (status.usesFuel) {
-            this._writeBar(card.mp, T('PartyHud.fuel'),
-                Math.round(status.fuel), Math.round(status.maxFuel), 'fuel');
+            this._writeBar(card.mp, Math.round(status.fuel), Math.round(status.maxFuel), 'fuel');
         }
     };
 
@@ -557,39 +812,81 @@
         const vehicle = vehicleStatus();
         this._syncCards(members, vehicle);
         if (vehicle && this._vehicleCard) this._writeVehicle(this._vehicleCard, vehicle);
+
+        const battle = inBattle();
+        const acting = actingActor();
+        const picker = allyPicker();
+        this._chipTimer = (this._chipTimer + 1) % CHIP_REFRESH_FRAMES;
+        const writeChips = this._chipTimer === 0;
+        // The cards only take the mouse while there is something to aim at, so
+        // they never swallow a click meant for the map underneath them.
+        this._el.style.pointerEvents = picker ? 'auto' : 'none';
+
         for (const actor of members) {
             const card = this._cards.get(actor.actorId());
             if (!card) continue;
-            const needs = this._needsFor(actor);
+            const needs = battle ? null : this._needsFor(actor);
             const dead = actor.isDead();
             if (card.deadKey !== dead) {
                 card.deadKey = dead;
                 card.root.classList.toggle('phud-down', dead);
             }
+
+            // Whose turn it is, said plainly: the card lights up and grows a
+            // caret. A party of one has no turn order worth pointing at.
+            const isActing = battle && actor === acting && members.length > 1;
+            if (card.activeKey !== isActing) {
+                card.activeKey = isActing;
+                card.root.classList.toggle('phud-acting', isActing);
+                card.caret.style.visibility = isActing ? 'visible' : 'hidden';
+            }
+            const isTargeted = !!(picker && actor.isSelected && actor.isSelected());
+            if (card.targetKey !== isTargeted) {
+                card.targetKey = isTargeted;
+                card.root.classList.toggle('phud-targeted', isTargeted);
+            }
+
             // Whoever is holding the wheel is named as holding it: on a long
             // drive the rota changes hands by itself (VehicleCrew.js), so the
             // card is the only place the party can see who is driving and who
-            // is asleep in the back.
-            const label = window.VehicleCrew?.isDriver?.(actor)
-                ? actor.name() + ' ' + T('VehicleCrew.drivingTag')
-                : actor.name();
+            // is asleep in the back. In battle the level stands there instead,
+            // which is what a fight needs to know about them.
+            let label = actor.name();
+            if (battle) {
+                if (actor.level) label += ' L.' + actor.level;
+            } else if (window.VehicleCrew?.isDriver?.(actor)) {
+                label += ' ' + T('VehicleCrew.drivingTag');
+            }
             if (card.nameKey !== label) {
                 card.nameKey = label;
                 card.name.textContent = label;
             }
+
             this._writeFlash(card, actor.actorId(), actor.hp);
-            this._writeBar(card.hp, TextManager.hpA, actor.hp, actor.mhp, 'hp');
+            this._writeBar(card.hp, actor.hp, actor.mhp, 'hp');
             // A severed world has nothing to spend magic on, so the bar itself
             // is taken out of the card (`_makeBar` returns the element as
             // `.bar`) rather than drawn empty.
-            if (hideMpBar()) {
-                if (card.mp && card.mp.bar) card.mp.bar.style.display = 'none';
-            } else {
-                if (card.mp && card.mp.bar) card.mp.bar.style.display = '';
-                this._writeBar(card.mp, TextManager.mpA, actor.mp, actor.mmp, 'mp');
+            const noMp = hideMpBar() || actor.mmp <= 0;
+            card.mp.bar.style.display = noMp ? 'none' : '';
+            if (!noMp) {
+                this._writeBar(card.mp, actor.mp, actor.mmp, 'mp');
             }
-            this._writeStates(card, actor);
-            this._writeAlerts(card, actor, needs);
+            this._writeOrb(card, actor);
+
+            // Needs are a map errand, stat multipliers and class gimmicks are a
+            // battle plan, and a status is a fact wherever the party stands.
+            if (!writeChips) continue;
+            this._writeChips(card.alerts, 'alertsKey', card,
+                battle ? [] : urgentAlertsFor(actor, needs), 'phud-need');
+            this._writeChips(card.stats, 'statsKey', card,
+                battle ? statChipsFor(actor).concat(classChipsFor(actor).map(c => ({
+                    key: 'class:' + c.label, text: c.label, color: c.color
+                }))) : [], 'phud-stat');
+            this._writeChips(card.states, 'statesKey', card,
+                MAX_STATES > 0 ? stateLabelsFor(actor).map(s => ({
+                    key: s.key, text: s.text, down: s.debuff
+                })) : [], 'phud-state');
         }
         if (this._needTimer >= NEED_REFRESH_FRAMES) this._needTimer = 0;
     };
@@ -597,17 +894,36 @@
     //-------------------------------------------------------------------------
     // Update
     //-------------------------------------------------------------------------
+    // The option is the only thing allowed to take the HUD down: not a message
+    // box, not ASCII mode (it gets the terminal skin instead, .phud-ascii), not
+    // the card combat layer, and never in battle, where the party's health is
+    // the one thing that cannot go unsaid.
     PartyHudOverlay.prototype.isWanted = function () {
         if (!ConfigManager.partyHud) return false;
         if (!$gameParty || $gameParty.members().length === 0) return false;
-        if (HIDE_ON_MESSAGE && $gameMessage && $gameMessage.isBusy()) return false;
-        // ASCII mode draws its own readout in the same corner.
-        if (ConfigManager.asciiModeEnabled) return false;
         const scene = SceneManager._scene;
-        if (!(scene instanceof Scene_Map)) return false;
-        // The map name window lives in the same corner; yield to it.
-        if (scene._mapNameWindow && scene._mapNameWindow.contentsOpacity > 0) return false;
-        return true;
+        return scene instanceof Scene_Battle || scene instanceof Scene_Map;
+    };
+
+    // The HUD is HTML laid over the canvas, so it follows the canvas rather
+    // than the window: letterboxed, resized or switched to another resolution
+    // (UI/ResolutionSwitcher.js), the cards keep their place inside the game
+    // view and their size against everything drawn in it. The scale rides in a
+    // custom property because the transform itself also carries the fade-in
+    // slide, and the two would otherwise overwrite each other.
+    PartyHudOverlay.prototype._followCanvas = function () {
+        const canvas = document.getElementById('gameCanvas');
+        if (!canvas) return;
+        const view = canvas.getBoundingClientRect();
+        if (!(view.width > 0) || !(view.height > 0)) return;
+        const sx = view.width / Graphics.width;
+        const sy = view.height / Graphics.height;
+        const key = [view.left, view.top, sx, sy].join('|');
+        if (key === this._followKey) return;
+        this._followKey = key;
+        this._el.style.left = (view.left + HUD_X * sx) + 'px';
+        this._el.style.top = (view.top + HUD_Y * sy) + 'px';
+        this._el.style.setProperty('--phud-scale', sy.toFixed(4));
     };
 
     PartyHudOverlay.prototype.update = function () {
@@ -618,11 +934,107 @@
             this._el.classList.toggle('phud-visible', wanted);
         }
         if (!wanted) return;
+        const ascii = !!ConfigManager.asciiModeEnabled;
+        if (ascii !== this._ascii) {
+            this._ascii = ascii;
+            this._el.classList.toggle('phud-ascii', ascii);
+        }
+        this._followCanvas();
         this._needTimer++;
         this.refresh();
     };
 
+    // Where a member's card is standing, in the game's own coordinates rather
+    // than the browser's. The battle scene plays an enemy's attack animation
+    // over the member it lands on (BattleSystemEnhancedHUD.js), and the cards
+    // are HTML laid over the canvas, so the reading has to come back through
+    // the canvas' own scale. Returns null when the card is not up.
+    PartyHudOverlay.prototype.canvasPointFor = function (actor) {
+        if (!this._el || !this._visible || !actor) return null;
+        const card = this._cards.get(actor.actorId());
+        if (!card) return null;
+        const canvas = document.getElementById('gameCanvas');
+        if (!canvas) return null;
+        const view = canvas.getBoundingClientRect();
+        if (!(view.width > 0) || !(view.height > 0)) return null;
+        // Measured, not computed: the box already carries the canvas scale the
+        // overlay is standing at, so dividing it back out lands in game units.
+        const box = card.root.getBoundingClientRect();
+        const sx = view.width / Graphics.width;
+        const sy = view.height / Graphics.height;
+        return new Point(
+            (box.left + box.width / 2 - view.left) / sx,
+            (box.top + box.height / 2 - view.top) / sy
+        );
+    };
+
+    // Where the cards' bars are standing, in the game's own coordinates: the
+    // top of the first member's HP bar and the distance from one member's to
+    // the next. The monster column in the opposite corner lines its own bars
+    // up with these (BattleSystem/BattleSystemEnhancedHUD.js), so the two
+    // columns read as one row of pairs rather than as two lists that happen to
+    // share a screen. Returns null while the cards are not up.
+    PartyHudOverlay.prototype.barRowMetrics = function () {
+        if (!this._el || !this._visible) return null;
+        const cards = Array.from(this._cards.values());
+        if (cards.length === 0) return null;
+        const canvas = document.getElementById('gameCanvas');
+        if (!canvas) return null;
+        const view = canvas.getBoundingClientRect();
+        if (!(view.width > 0) || !(view.height > 0)) return null;
+        const sy = view.height / Graphics.height;
+        if (!(sy > 0)) return null;
+        // Measured rather than computed: the cards carry the canvas' own scale,
+        // so the reading is divided back out into game units.
+        const first = cards[0].hp.bar.getBoundingClientRect();
+        if (!(first.height > 0)) return null;
+        const metrics = { top: (first.top - view.top) / sy, step: null };
+        if (cards.length > 1) {
+            const second = cards[1].hp.bar.getBoundingClientRect();
+            if (second.height > 0) metrics.step = (second.top - first.top) / sy;
+        }
+        return metrics;
+    };
+
+    // The AP a skill the player is looking at would leave the caster with, so
+    // the orb can show the cost before it is paid. Called with null to clear.
+    PartyHudOverlay.prototype.setProjectedAp = function (actor, value) {
+        if (!actor) return;
+        const id = actor.actorId();
+        if (value === null || value === undefined) this._projectedAp.delete(id);
+        else this._projectedAp.set(id, value);
+        const card = this._cards.get(id);
+        if (card) card.orbKey = null; // force the orb to be written again
+    };
+
     window.PartyHudOverlay = PartyHudOverlay;
+
+    //=========================================================================
+    // The live overlay, wherever the party happens to be standing
+    //=========================================================================
+    // One overlay per scene, built by whichever of the two scenes is up. The
+    // façade is what every other plugin talks to, so nothing else has to know
+    // which scene owns the HUD at any moment.
+    let _overlay = null;
+
+    window.PartyHud = {
+        overlay: () => _overlay,
+        canvasPointFor: (actor) => (_overlay ? _overlay.canvasPointFor(actor) : null),
+        barRowMetrics: () => (_overlay ? _overlay.barRowMetrics() : null),
+        setProjectedAp: (actor, value) => { if (_overlay) _overlay.setProjectedAp(actor, value); }
+    };
+
+    function attachHud(scene) {
+        _overlay = new PartyHudOverlay();
+        scene._partyHud = _overlay;
+    }
+
+    function detachHud(scene) {
+        if (!scene._partyHud) return;
+        scene._partyHud.destroy();
+        if (_overlay === scene._partyHud) _overlay = null;
+        scene._partyHud = null;
+    }
 
     //=========================================================================
     // Scene_Map
@@ -630,7 +1042,7 @@
     const _Scene_Map_createAllWindows = Scene_Map.prototype.createAllWindows;
     Scene_Map.prototype.createAllWindows = function () {
         _Scene_Map_createAllWindows.call(this);
-        this._partyHud = new PartyHudOverlay();
+        attachHud(this);
     };
 
     const _Scene_Map_update = Scene_Map.prototype.update;
@@ -641,10 +1053,30 @@
 
     const _Scene_Map_terminate = Scene_Map.prototype.terminate;
     Scene_Map.prototype.terminate = function () {
-        if (this._partyHud) {
-            this._partyHud.destroy();
-            this._partyHud = null;
-        }
+        detachHud(this);
         _Scene_Map_terminate.call(this);
+    };
+
+    //=========================================================================
+    // Scene_Battle
+    //=========================================================================
+    // The same HUD, built the same way, so a fight opens with the party card
+    // the player was already reading on the map.
+    const _Scene_Battle_createAllWindows = Scene_Battle.prototype.createAllWindows;
+    Scene_Battle.prototype.createAllWindows = function () {
+        _Scene_Battle_createAllWindows.call(this);
+        attachHud(this);
+    };
+
+    const _Scene_Battle_update = Scene_Battle.prototype.update;
+    Scene_Battle.prototype.update = function () {
+        _Scene_Battle_update.call(this);
+        if (this._partyHud) this._partyHud.update();
+    };
+
+    const _Scene_Battle_terminate = Scene_Battle.prototype.terminate;
+    Scene_Battle.prototype.terminate = function () {
+        detachHud(this);
+        _Scene_Battle_terminate.call(this);
     };
 })();

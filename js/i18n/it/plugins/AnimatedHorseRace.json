@@ -39,7 +39,7 @@
   "winMessage": "{horseName} vince! Hai vinto {amount} gettoni!",
   "loseMessage": "{horseName} vince! Ritenta la prossima volta!",
   "controlsSelect": "SU/GIU SCELTA    SX/DX PUNTATA    OK SCOMMETTI    ESC ESCI",
-  "controlsRace": "LA CORSA E' IN CORSO",
+  "controlsRace": "LA CORSA È IN CORSO",
   "controlsResults": "OK PROSSIMA CORSA    ESC ESCI",
   "placeOrdinal": ["1o", "2o", "3o", "4o", "5o", "6o"],
   "runnerKind": {

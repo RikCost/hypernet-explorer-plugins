@@ -1,20 +1,20 @@
 {
   "Nervous": {
     "openers": [
-      "Oh no...",
-      "Ehm...",
-      "A-aspetta..."
+      "Oddio...",
+      "Ecco, ehm...",
+      "A-aspetta un attimo..."
     ],
     "closers": [
       "...vero?",
       "S-spero.",
-      "Non citarmi, però."
+      "Poi non dire che l'ho detto io."
     ]
   },
   "Calm": {
     "openers": [
       "Mm.",
-      "Con calma.",
+      "Piano piano.",
       "Per come la vedo io,"
     ],
     "closers": [
@@ -27,7 +27,7 @@
     "openers": [
       "Senti bene.",
       "Tsk.",
-      "Lo dico una volta sola:"
+      "Te lo dico una volta sola:"
     ],
     "closers": [
       "Hai qualcosa da ridire?",
@@ -38,19 +38,19 @@
   "Melancholic": {
     "openers": [
       "*sospira*",
-      "Se conta qualcosa...",
+      "Se poi conta qualcosa...",
       "Per quel poco che vale,"
     ],
     "closers": [
-      "Non che qualcuno ascolti.",
-      "Tanto svanisce tutto.",
-      "...come ogni altra cosa."
+      "Tanto non ascolta nessuno.",
+      "Sbiadisce tutto, comunque.",
+      "...come ogni cosa."
     ]
   },
   "Sanguine": {
     "openers": [
-      "Oh, che bello,",
-      "Sai una cosa?",
+      "Ma che bello,",
+      "Sai che ti dico?",
       "Ah!"
     ],
     "closers": [
@@ -62,44 +62,44 @@
   "Cautious": {
     "openers": [
       "Non corriamo,",
-      "Piano, adesso.",
-      "Prima di ogni altra cosa:"
+      "Piano con le mani.",
+      "Prima di tutto il resto:"
     ],
     "closers": [
       "Meglio andare sul sicuro.",
-      "Misura due volte.",
-      "Non si è mai troppo prudenti."
+      "Misura due volte, taglia una.",
+      "La prudenza non è mai troppa."
     ]
   },
   "Impulsive": {
     "openers": [
       "Ok ok ok,",
-      "Bene, piano nuovo:",
+      "Cambio di programma:",
       "Lascia perdere,"
     ],
     "closers": [
-      "Facciamolo e basta!",
+      "E facciamolo, dai!",
       "Non c'è tempo da perdere!",
       "Deciso!"
     ]
   },
   "Stoic": {
     "openers": [
-      "E così sia.",
-      "Preso atto.",
+      "E sia.",
+      "Preso nota.",
       "È semplice:"
     ],
     "closers": [
       "Non c'è altro da dire.",
       "Non cambia nulla.",
-      "Si resiste."
+      "Si tira avanti."
     ]
   },
   "Paranoid": {
     "openers": [
       "Abbassa la voce,",
-      "Non voltarti, ma",
-      "Fra noi:"
+      "Non voltarti ora, ma",
+      "Fra noi due:"
     ],
     "closers": [
       "Non l'hai sentito da me.",
@@ -109,98 +109,98 @@
   },
   "Empathetic": {
     "openers": [
-      "Oh, cuore mio,",
+      "Ehi, cuore mio,",
       "Lo sento anch'io,",
       "Dimmi la verità:"
     ],
     "closers": [
-      "Reggi il colpo?",
+      "Ma tu stai reggendo?",
       "Io ci sono, lo sai.",
-      "Ne usciremo insieme."
+      "Ne usciamo insieme."
     ]
   },
   "Authoritative": {
     "openers": [
-      "Presta attenzione.",
-      "Segnati queste parole:",
+      "Attenzione.",
+      "Segnatelo bene:",
       "Come ho già detto:"
     ],
     "closers": [
       "È un ordine.",
-      "Vedi che sia fatto.",
+      "Vedi di farlo.",
       "Non si discute."
     ]
   },
   "Scholarly": {
     "openers": [
       "Affascinante,",
-      "Considera questo:",
-      "Se le mie letture sono esatte,"
+      "Consideriamo questo:",
+      "Se ho letto bene,"
     ],
     "closers": [
       "Merita almeno una nota a piè di pagina.",
-      "Parlano le prove.",
-      "Dovrei metterlo per iscritto."
+      "Sono i fatti a parlare.",
+      "Devo prenderne appunto."
     ]
   },
   "Artistic": {
     "openers": [
-      "Oh, ma guarda,",
-      "C'è una poesia in tutto questo:",
-      "Immaginalo:"
+      "Ma guarda un po',",
+      "Qui dentro c'è una poesia:",
+      "Immaginatelo:"
     ],
     "closers": [
-      "Quasi bello, non trovi?",
-      "La musa lavora in modi strani.",
-      "Devo schizzarlo più tardi."
+      "Quasi bello, no?",
+      "La musa lavora per vie storte.",
+      "Devo schizzarlo su carta."
     ]
   },
   "Adventurous": {
     "openers": [
-      "Ora sì che ragioniamo!",
+      "Ah, ora sì che ragioniamo!",
       "Immagina la strada aperta,",
-      "Voce di strada:"
+      "Notizie dalla strada:"
     ],
     "closers": [
       "Che vita è senza un po' di rischio?",
-      "Avanti!",
-      "Meglio che starsene fermi!"
+      "Avanti tutta!",
+      "Sempre meglio che stare fermi!"
     ]
   },
   "Nurturing": {
     "openers": [
-      "Vieni qui, ascolta,",
-      "Che tu sia benedetto,",
+      "Vieni qua, ascolta,",
+      "Benedetto ragazzo,",
       "Allora, tesoro,"
     ],
     "closers": [
-      "Hai mangiato oggi?",
+      "Ma hai mangiato oggi?",
       "Copriti bene, mi raccomando.",
-      "Fammi sapere se ti serve qualcosa."
+      "Se ti serve qualcosa fischia."
     ]
   },
   "Mischievous": {
     "openers": [
       "Eh eh.",
-      "Prometti che non lo dici?",
+      "Giuri che non lo dici?",
       "Oh, questa è bella,"
     ],
     "closers": [
-      "*ghigna*",
+      "*sogghigna*",
       "Non chiedermi come lo so.",
-      "Sarà divertente."
+      "Ci divertiamo."
     ]
   },
   "Cynical": {
     "openers": [
       "Ma certo.",
       "Fammi indovinare,",
-      "Sconvolgente, davvero:"
+      "Che sorpresa, eh:"
     ],
     "closers": [
-      "Cosa ti aspettavi?",
-      "La solita storia.",
-      "Che sorpresa, eh."
+      "E che ti aspettavi?",
+      "Solita minestra.",
+      "Sono sconvolto, davvero."
     ]
   },
   "Disciplined": {
@@ -210,31 +210,31 @@
       "Punto primo:"
     ],
     "closers": [
-      "Torno al lavoro.",
+      "Si torna al lavoro.",
       "Nessuna eccezione.",
-      "Come da prassi."
+      "Come da programma."
     ]
   },
   "Fatalistic": {
     "openers": [
       "Era scritto:",
-      "Come vuole il destino,",
+      "Come voleva il destino,",
       "Inevitabilmente,"
     ],
     "closers": [
-      "Doveva finire così fin dal principio.",
-      "Il filo è già filato.",
+      "Doveva finire così dall'inizio.",
+      "Il filo è già stato filato.",
       "Quel che sarà, sarà."
     ]
   },
   "Grumpy": {
     "openers": [
       "Uffa.",
-      "Oh, meraviglioso.",
+      "Ma che meraviglia.",
       "Vuoi il mio parere?"
     ],
     "closers": [
-      "E adesso lasciami in pace.",
+      "E adesso lasciami stare.",
       "Il solito.",
       "Bah."
     ]
@@ -242,23 +242,23 @@
   "Loyal": {
     "openers": [
       "Sul mio onore,",
-      "Amico,",
-      "Su questo puoi contare:"
+      "Amico mio,",
+      "Su questo ci puoi contare:"
     ],
     "closers": [
-      "Io mantengo la parola.",
+      "Io la parola la mantengo.",
       "Per gli amici, sempre.",
       "Hai la mia parola."
     ]
   },
   "Brave": {
     "openers": [
-      "Non temere,",
-      "Ecco la verità:",
-      "Su la testa,"
+      "Niente paura,",
+      "La verità è questa:",
+      "Testa alta,"
     ],
     "closers": [
-      "Lo affrontiamo di petto.",
+      "Ci andiamo dritti in faccia.",
       "Nessuna ritirata.",
       "Coraggio, amico."
     ]
@@ -266,36 +266,36 @@
   "Timid": {
     "openers": [
       "S-scusa, ma...",
-      "Se posso dirlo...",
-      "Non farci caso, però"
+      "Se posso permettermi...",
+      "Non badare a me, però"
     ],
     "closers": [
       "...se per te va bene.",
       "Scusa. Scusa.",
-      "Adesso sto zitto."
+      "Ecco, sto zitto."
     ]
   },
   "Hedonistic": {
     "openers": [
-      "Mmm, sai,",
-      "La vita è breve,",
+      "Mmm, sai com'è,",
+      "La vita è corta,",
       "Versamene un altro e ascolta:"
     ],
     "closers": [
-      "Allora, dov'è finito il divertimento?",
+      "Ma dov'è finito il bello?",
       "Alla salute.",
-      "Torno ai miei agi."
+      "E io torno ai miei agi."
     ]
   },
   "Apathetic": {
     "openers": [
       "Eh.",
       "Se lo dici tu.",
-      "Non che importi, ma"
+      "Non che conti, però"
     ],
     "closers": [
       "O come ti pare.",
-      "Chi se ne frega.",
+      "Chissene.",
       "Comunque."
     ]
   }

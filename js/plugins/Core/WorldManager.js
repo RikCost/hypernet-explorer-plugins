@@ -60,6 +60,11 @@
  *                       (ContainerSystem). The party's own bags (the
  *                       extradimensional container, the camper and car holds)
  *                       stay in the binary savegame.
+ *     chests.json     - which chests in the world stand open: the procedural
+ *                       map's random chests, keyed by world square and tile,
+ *                       and the authored maps' Treasure / Acquire events
+ *                       (ChestWorldState). A chest emptied by one savegame is
+ *                       empty for every other savegame of the world.
  *     shops.json      - what is left on the shelves today, and the abilities
  *                       already bought from a teaching shop (ItemSystemShop,
  *                       RandomDailyShop). Both reroll at midnight on their own.
@@ -107,8 +112,8 @@
  *   automatically at boot, when the first game is started in it) and recorded
  *   in world.json under "initialized". Current steps, in order: history,
  *   worldgen manifests, the NPC roster (people, homes, jobs), shop counter
- *   rotas, the dungeon layout, politics, the settlement web, the continental
- *   epidemics and Eris's defence bar.
+ *   rotas, the dungeon layout, politics, the factions' diplomatic accords, the
+ *   settlement web, the continental epidemics and Eris's defence bar.
  *
  * World data files are written whenever a savegame is written.
  * ============================================================================
@@ -334,10 +339,19 @@
             // never spent, but each incarnation is a different one and her
             // hometown is her number, so the count belongs to the world rather
             // than to one savegame (CharacterCreationPresets.js).
-            _emIncarnations: "emIncarnations"
+            _emIncarnations: "emIncarnations",
+            // Eris was beaten in her own court (Economy/ErisTrial.js). She is
+            // gone from this WORLD, not from one savegame of it: the bounty
+            // stops growing for everybody who plays here, and she stops turning
+            // up on the world map asking anyone out
+            // (Procedural/ProceduralAdventureSystem.js).
+            _erisBountyImmunity: "erisDefeated"
         },
         history: {
             _historicalEvents: "events",
+            // The two offices every hyperpower holds: who governs it, and who
+            // it answers to (HistorySimulator, Leaders.json `moralGuide`).
+            _historicalMoralGuides: "moralGuides",
             _historicalHyperpowers: "hyperpowers",
             _historicalFactions: "factions",
             _historicalDeadLeaders: "deadLeaders",
@@ -376,6 +390,14 @@
             _npcLifeLastSimMinute: "lifeLastSimMinute",
             _npcPastPartyMembers: "pastPartyMembers",
             _npcPolitics: "politics",
+            // Who has signed what with whom: the hyperpower-to-hyperpower
+            // accords and each branch faction's own line on them, rolled once
+            // from the world seed when the world is made
+            // (FactionDataManager.js). World-shared for the same reason the
+            // governments above it are: two savegames of a world are living in
+            // the same geopolitics. Built once and amended in place, so the
+            // world's copy stands.
+            _factionDiplomacy: { prop: "diplomacy", merge: keepHeld },
             _npcWorldWeb: "worldWeb",
             // Live outbreaks (Health_DiseaseSystem / window.EpidemicSystem).
             // Shared like the world web: an epidemic burning through Milano is
@@ -560,7 +582,7 @@
         }
     };
 
-    const DATA_FILE_KEYS = ["world", "history", "artifacts", "npcs", "dungeon", "state", "variables", "market", "conversations", "terrain", "plants", "containers", "mail", "rentals", "techtree", "bestiary", "shops", "animals", "furniture", "galaxy", "production", "apiary", "party"];
+    const DATA_FILE_KEYS = ["world", "history", "artifacts", "npcs", "dungeon", "state", "variables", "market", "conversations", "terrain", "plants", "containers", "chests", "mail", "rentals", "techtree", "bestiary", "shops", "animals", "furniture", "galaxy", "production", "apiary", "party"];
 
     //=========================================================================
     // Storage backend (NW.js filesystem, localStorage fallback for browser)
@@ -779,12 +801,6 @@
                 // party cannot stand in front of, so the party is not obliged
                 // to start at 1. Read through WorldManager.startingLevel().
                 startLevel: clampStartLevel(options.startLevel),
-                // Whether this world draws its people from the beta character
-                // sheets too (the ones outside the original folder, NPCs.json →
-                // beta). Answered once, here: the world is populated from the
-                // pool this decides, so it is written at creation and never
-                // again. Read through window.SpriteCatalog.betaEnabled().
-                betaSprites: options.betaSprites === true,
                 // See clampPopulationMode above. Written once, at creation.
                 populationMode: clampPopulationMode(options.populationMode),
                 // See clampMagicalLevel above. Its own axis, also permanent.

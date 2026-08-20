@@ -485,6 +485,79 @@
         }
     };
 
+    // The ground the current map would fight on, as a path a DOM panel can hang
+    // behind itself (the equip bench shows the party's own surroundings rather
+    // than a grey box). The map's own battleback comes first; failing that the
+    // map biome's folder, drawn by map id so one place always keeps the same
+    // view; failing that any biome at all. Null when there is nothing to show.
+    let _mapBattlebackCache = { mapId: -1, path: null };
+    window.getMapBattlebackImage = function () {
+        const mapId = ($gameMap && $gameMap.mapId) ? $gameMap.mapId() : 0;
+        if (_mapBattlebackCache.mapId === mapId) return _mapBattlebackCache.path;
+
+        let result = null;
+        try {
+            const fs = require('fs');
+            const path = require('path');
+            const base = path.join(
+                path.dirname(process.mainModule.filename),
+                'img', 'battlebacks1'
+            );
+
+            const imagesIn = (dir) => {
+                if (!fs.existsSync(dir)) return [];
+                let files = fs.readdirSync(dir).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
+                // A night view at noon reads as the wrong place, so the same
+                // time-of-day suffixes the battle itself honours are honoured here.
+                const timeMode = getCurrentTimeMode();
+                const timed = files.filter(file => {
+                    const suffix = file.replace(/\.[^/.]+$/, '').slice(-2);
+                    if (suffix === '_N') return timeMode === CONFIG.TIME_MODES.NIGHT;
+                    if (suffix === '_D') return timeMode === CONFIG.TIME_MODES.DAY;
+                    if (suffix === '_S') return timeMode === CONFIG.TIME_MODES.DUSK || timeMode === CONFIG.TIME_MODES.DAWN;
+                    return true;
+                });
+                return timed.length > 0 ? timed : files;
+            };
+
+            const own = (typeof $dataMap !== 'undefined' && $dataMap) ? $dataMap.battleback1Name : '';
+            if (own) {
+                for (const ext of ['.png', '.jpg', '.jpeg']) {
+                    if (fs.existsSync(path.join(base, own + ext))) {
+                        result = 'img/battlebacks1/' + own + ext;
+                        break;
+                    }
+                }
+            }
+
+            if (!result) {
+                let biome = ($gameMap && $gameMap.getBiome) ? $gameMap.getBiome() : null;
+                if (!biome && $gameMap && $gameMap.mapId() === 636 &&
+                    typeof $gameSystem !== 'undefined' && $gameSystem && $gameSystem._procGenData) {
+                    biome = $gameSystem._procGenData.currentBiome;
+                }
+                const rng = createSeededRandom(mapId + 1);
+                let folder = biome ? resolveBiomeBattlebackFolder(biome) : null;
+                let files = folder ? imagesIn(path.join(base, folder)) : [];
+                if (files.length === 0) {
+                    const all = listBiomeBattlebackFolders();
+                    if (all.length > 0) {
+                        folder = resolveBiomeBattlebackFolder(all[Math.floor(rng() * all.length)]);
+                        files = imagesIn(path.join(base, folder));
+                    }
+                }
+                if (files.length > 0) {
+                    result = 'img/battlebacks1/' + folder + '/' + files[Math.floor(rng() * files.length)];
+                }
+            }
+        } catch (e) {
+            result = null;
+        }
+
+        _mapBattlebackCache = { mapId: mapId, path: result };
+        return result;
+    };
+
     // =============================================================================
     // Dithering System
     // =============================================================================
@@ -1016,6 +1089,13 @@
         const mode = ConfigManager.ebBackgrounds;
         const isBattleTest = typeof DataManager !== 'undefined' &&
             typeof DataManager.isBattleTest === 'function' && DataManager.isBattleTest();
+
+        // A map with its battleback explicitly set in the editor always wins,
+        // overriding biome, forced biome (arena/gauntlet) and random biome alike.
+        // The vanilla createBattleback call above already loaded it.
+        if ($dataMap && $dataMap.specifyBattleback) {
+            return;
+        }
 
         // Biome always takes priority over any hardcoded battleback1 set on the map
         let biome = $gameMap.getBiome();

@@ -267,7 +267,11 @@ FactionDataManager.prototype._loadCountriesData = async function () {
     for (const item of data) {
       this._countries[item.country] = {
         controller: item.controller || 'Neutral',
-        faction: item.faction || 'Neutral'
+        faction: item.faction || 'Neutral',
+        // The continent it stands on. World generation only lets a power take
+        // nations in its own region (HistorySimulator.handleNationPolitics),
+        // so this has to survive the trip from the data file.
+        region: item.region || null
       };
     }
   } catch (e) {
@@ -380,6 +384,29 @@ FactionDataManager.instance = new FactionDataManager();
 PluginManager.registerCommand("FactionDataManager", "open", (args) => {
   SceneManager.push(Scene_FactionStatus);
 });
+
+//=============================================================================
+// World initialization
+//=============================================================================
+
+// The diplomatic accords are rolled when the world is made, not when somebody
+// first opens the faction screen, so every savegame of the world reads the same
+// treaties (they live in the world folder, npcs.json "diplomacy"). Runs after
+// politics, since it is the same layer of the world: who is in office and who
+// they have signed with. Throwing while the faction table is still loading is
+// how a step asks WorldManager to try it again.
+if (typeof window !== "undefined" && window.WorldManager?.registerWorldInitializer) {
+  window.WorldManager.registerWorldInitializer("factionDiplomacy", 55, () => {
+    if (!$gameFactions || !FactionDataManager.instance
+      || !Array.isArray(FactionDataManager.instance._factions)
+      || !FactionDataManager.instance._factions.length) {
+      throw new Error("FactionDataManager: factions not loaded yet");
+    }
+    const table = $gameFactions.generateDiplomacy();
+    if (!table) throw new Error("FactionDataManager: hyperpowers not loaded yet");
+    $gameSystem._factionDiplomacy = table;
+  });
+}
 
 PluginManager.registerCommand("FactionDataManager", "setReputation", (args) => {
   const factionId = Number(args.factionId || 0);
@@ -528,20 +555,14 @@ Game_Factions.prototype.changeReputation = function (factionId, change) {
   }
 };
 
-// Applies `change` to factionId AND every ancestor in its parentFaction chain
-// (walked all the way up, not just one level, since some entries in
-// Factions.json are two hops from their true root). Used by the character
-// creation Faction Leader / Deserter origins, where joining or deserting a
-// sub-faction should also color the player's standing with its parent(s).
+// Applies `change` to a faction AND to the hyperpower it answers to: earning a
+// branch's goodwill colours the power's standing too, which is read under its
+// own "hp:<id>" key (Factions.json `parentHyperpower`).
 Game_Factions.prototype.changeReputationWithParents = function (factionId, change) {
   this.changeReputation(factionId, change);
-  const seen = new Set([factionId]);
-  let current = this.getFaction(factionId);
-  while (current && current.parentFaction !== undefined && !seen.has(current.parentFaction)) {
-    seen.add(current.parentFaction);
-    this.changeReputation(current.parentFaction, change);
-    current = this.getFaction(current.parentFaction);
-  }
+  const faction = this.getFaction(factionId);
+  const hp = this.hyperpowerOfFaction(faction);
+  if (hp) this.changeReputation(this.hyperpowerStandingKey(hp.id), change);
 };
 
 Game_Factions.prototype.updateRelatedFactions = function (factionId, newValue) {
@@ -765,12 +786,11 @@ Game_Factions.prototype.getReputationColorFor = function (actor, factionId) {
 // Hyperpower parentage
 //=============================================================================
 //
-// `parentFaction` in Factions.json holds the id of a HYPERPOWER (the keys of
-// js/db/WorldGen/Hyperpowers.json), NOT of another faction. The two id spaces
-// overlap, which is why grouping the list by matching parentFaction against
-// faction ids put the whole Mages Guild branch (parent 8 = the Mages Guild
-// hyperpower) underneath faction id 8, the Naguka. The lore's tree is
-// hyperpower -> the factions that answer to it, so that is what these resolve.
+// `parentHyperpower` in Factions.json holds the NAME a power is filed under in
+// js/db/WorldGen/Hyperpowers.json. It used to hold that power's numeric id,
+// which collided with the faction ids and filed the whole Mages Guild branch
+// under faction 8, the Naguka. The lore's tree is hyperpower -> the factions
+// that answer to it, so that is what these resolve.
 
 // Ordered [name, data] pairs from Hyperpowers.json, sorted by id.
 Game_Factions.prototype.getHyperpowers = function () {
@@ -787,34 +807,281 @@ Game_Factions.prototype.getHyperpower = function (hyperpowerId) {
   return this.getHyperpowers().find((h) => h.id === hyperpowerId) || null;
 };
 
-// Every faction that answers to a hyperpower, head first.
+// Every faction that answers to a hyperpower. `parentHyperpower` in
+// Factions.json holds the power's NAME, the key it is filed under in
+// Hyperpowers.json, so the two files are joined by name rather than by an id
+// that used to collide with the faction ids.
 Game_Factions.prototype.getHyperpowerFactions = function (hyperpowerId) {
+  const hp = this.getHyperpower(hyperpowerId);
+  if (!hp) return [];
   return this.getAllFactions()
-    .filter((f) => f && f.parentFaction === hyperpowerId)
-    .sort((a, b) => (b.hyperpowerHead ? 1 : 0) - (a.hyperpowerHead ? 1 : 0) || a.id - b.id);
-};
-
-// The faction that speaks for a hyperpower, if it has one. Five do not
-// (Goblin Horde, Free States of Midwest, Cascadia Protectorate, Eastern
-// Seaboard, Continental Union), so this is allowed to answer null.
-Game_Factions.prototype.getHyperpowerHead = function (hyperpowerId) {
-  return this.getAllFactions().find(
-    (f) => f && f.parentFaction === hyperpowerId && f.hyperpowerHead
-  ) || null;
-};
-
-// Factions that answer to nobody: the independents that stand on their own.
-Game_Factions.prototype.getIndependentFactions = function () {
-  return this.getAllFactions()
-    .filter((f) => f && f.parentFaction === undefined)
+    .filter((f) => f && f.parentHyperpower === hp.name)
     .sort((a, b) => a.id - b.id);
 };
 
-// The standing key a hyperpower is read and written through: its head faction
-// when it has one, its synthetic "hp:<id>" key when it does not.
+// The power a faction answers to, or null for an orphan. An orphan is listed in
+// the book like any other faction, but it holds no seat at the assembly, takes
+// no nation and cannot be sworn to.
+Game_Factions.prototype.hyperpowerOfFaction = function (faction) {
+  if (!faction || !faction.parentHyperpower) return null;
+  return this.getHyperpowers().find((hp) => hp.name === faction.parentHyperpower) || null;
+};
+
+Game_Factions.prototype.isOrphanFaction = function (faction) {
+  return !!faction && !faction.parentHyperpower;
+};
+
+// Every nation a power currently holds. The world simulation's map wins, since
+// a century of conquest moves nations between powers; the country table answers
+// for a world whose history was never run.
+Game_Factions.prototype.countriesOfHyperpower = function (powerName) {
+  const held = [];
+  const sim = window.HistoryManager && window.HistoryManager.getNationsState
+    ? window.HistoryManager.getNationsState() : null;
+  if (sim && Object.keys(sim).length) {
+    for (const [nation, info] of Object.entries(sim)) {
+      if (info && info.controller === powerName) held.push(nation);
+    }
+    if (held.length) return held.sort();
+  }
+  const countries = (window.WorldGen && window.WorldGen.Countries) || [];
+  return countries
+    .filter((c) => c && (c.controller === powerName || (c.controller === "Neutral" && c.faction === powerName)))
+    .map((c) => c.country)
+    .sort();
+};
+
+// The leaders a faction can field: it has none of its own any more. It fields
+// the political class of every nation its power holds, and of the nation that
+// power is seated in (Leaders.json `country`). An orphan fields nobody.
+Game_Factions.prototype.getFactionLeaders = function (faction) {
+  const hp = this.hyperpowerOfFaction(faction);
+  if (!hp) return [];
+  const HM = window.HistoryManager;
+  if (HM && typeof HM.leaderPoolFor === "function") {
+    const pool = HM.leaderPoolFor(hp.name);
+    if (pool && pool.length) return pool;
+  }
+  const book = (window.WorldGen && window.WorldGen.Leaders) || {};
+  const nations = new Set(this.countriesOfHyperpower(hp.name));
+  if (hp.data && hp.data.homeNation) nations.add(hp.data.homeNation);
+  return Object.values(book).filter((l) => l && nations.has(l.country));
+};
+
+// No faction speaks for a hyperpower any longer: a power's own head faction is
+// not in Factions.json at all, and its troops were handed down to the branches
+// that answer to it. Kept as a null answer because a good deal of code still
+// asks the question.
+Game_Factions.prototype.getHyperpowerHead = function () {
+  return null;
+};
+
+// The emblem a power is drawn under: its own (Hyperpowers.json `iconIndex`,
+// inherited from the head faction it used to be spoken for by), or the first of
+// its branches to carry one.
+Game_Factions.prototype.hyperpowerIcon = function (hyperpowerId) {
+  const hp = this.getHyperpower(hyperpowerId);
+  if (hp && hp.data && hp.data.iconIndex) return hp.data.iconIndex;
+  const branch = this.getHyperpowerFactions(hyperpowerId).find((f) => f && f.iconIndex);
+  return branch ? branch.iconIndex : 0;
+};
+
+// Factions that answer to nobody: the orphans, which stand on their own.
+Game_Factions.prototype.getIndependentFactions = function () {
+  return this.getAllFactions()
+    .filter((f) => f && !f.parentHyperpower)
+    .sort((a, b) => a.id - b.id);
+};
+
+// The standing key a hyperpower is read and written through. Every power now
+// has one of its own, since none of them is spoken for by a faction.
 Game_Factions.prototype.hyperpowerStandingKey = function (hyperpowerId) {
-  const head = this.getHyperpowerHead(hyperpowerId);
-  return head ? String(head.id) : "hp:" + hyperpowerId;
+  return "hp:" + hyperpowerId;
+};
+
+// The name a hyperpower is read under. Its key in Hyperpowers.json is English
+// prose, so a translation is looked for first, then the localized name of the
+// faction that speaks for it, and only then the raw key.
+Game_Factions.prototype.hyperpowerLabel = function (hp) {
+  if (!hp) return "";
+  const slug = String(hp.name).toLowerCase().replace(/[^a-z0-9]/g, "");
+  const key = "Factions.power." + slug;
+  if (typeof T.has === "function" && T.has(key)) return T(key);
+  return hp.name;
+};
+
+//=============================================================================
+// Diplomatic accords
+//=============================================================================
+//
+// Who has signed what with whom. The accords are rolled ONCE, when the world is
+// made, out of the world seed, and written into the world folder (npcs.json
+// "diplomacy", reached through $gameSystem._factionDiplomacy), so every
+// savegame of a world walks into the same geopolitics instead of each one
+// rolling its own.
+//
+// Two layers:
+//   powers   the hyperpower-to-hyperpower table, and it is symmetric: if
+//            Britannia has signed nothing but threats with the Soviet Union,
+//            the Soviet Union has signed the same with Britannia.
+//   factions one row per faction that answers to a power. It STARTS from its
+//            power's row and then drifts, because a branch is not its parent:
+//            an intelligence bureau can be at war with a power its own
+//            government still trades with. Independents get a row of their own.
+//
+// Values are the same -2..2 scale as getRelationship, so getRelationshipName
+// reads them without translation.
+
+// How likely each accord is when one is rolled from nothing. Weighted towards
+// the middle: a world where every power hates every other power is not a world
+// with any diplomacy left in it.
+Game_Factions.ACCORD_WEIGHTS = [
+  { value: -2, weight: 8 },
+  { value: -1, weight: 20 },
+  { value: 0, weight: 36 },
+  { value: 1, weight: 24 },
+  { value: 2, weight: 12 },
+];
+
+Game_Factions.prototype._accordRng = function (salt) {
+  const shared = window.NPCShared;
+  const seed = shared && typeof shared.worldSeed === "function" ? shared.worldSeed() >>> 0 : 1;
+  let hash = 5381;
+  const text = String(salt);
+  for (let i = 0; i < text.length; i++) hash = ((hash * 33) ^ text.charCodeAt(i)) >>> 0;
+  if (shared && shared.Rng) return new shared.Rng((seed ^ hash) >>> 0);
+  // Standalone fallback (tests, or a build without the NPC suite): the same
+  // xorshift the suite uses, so a seed means the same world either way.
+  let state = ((seed ^ hash) >>> 0) || 1;
+  return {
+    next() {
+      state ^= state << 13; state >>>= 0;
+      state ^= state >> 17;
+      state ^= state << 5; state >>>= 0;
+      return state / 4294967296;
+    },
+  };
+};
+
+Game_Factions.prototype._rollAccord = function (rng) {
+  const table = Game_Factions.ACCORD_WEIGHTS;
+  const total = table.reduce((sum, row) => sum + row.weight, 0);
+  let roll = rng.next() * total;
+  for (const row of table) {
+    roll -= row.weight;
+    if (roll <= 0) return row.value;
+  }
+  return 0;
+};
+
+// A branch's own line on one power, drifted off whatever its parent signed.
+// Most of the row is inherited — a branch that agreed with its government about
+// nothing would not still be one of its branches — so roughly a third of the
+// columns move, and only rarely by the two steps that make a real break.
+Game_Factions.prototype._driftAccord = function (rng, base) {
+  const roll = rng.next();
+  let value = base;
+  if (roll < 0.05) value = base + 2;
+  else if (roll < 0.19) value = base + 1;
+  else if (roll < 0.31) value = base - 1;
+  else if (roll < 0.35) value = base - 2;
+  return Math.max(-2, Math.min(2, value));
+};
+
+// Roll the whole table. Called once per world, by the world initializer below.
+Game_Factions.prototype.generateDiplomacy = function () {
+  const powers = this.getHyperpowers();
+  if (!powers.length) return null;
+
+  const table = { version: 1, powers: {}, factions: {} };
+
+  powers.forEach((hp) => { table.powers[hp.id] = {}; });
+  powers.forEach((a, i) => {
+    powers.slice(i + 1).forEach((b) => {
+      const rng = this._accordRng("accord:" + a.id + ":" + b.id);
+      const value = this._rollAccord(rng);
+      table.powers[a.id][b.id] = value;
+      table.powers[b.id][a.id] = value;
+    });
+  });
+
+  this.getAllFactions().forEach((faction) => {
+    if (!faction) return;
+    const rng = this._accordRng("accord:faction:" + faction.id);
+    const parentPower = this.hyperpowerOfFaction(faction);
+    const parent = parentPower ? parentPower.id : undefined;
+    const row = {};
+    powers.forEach((hp) => {
+      if (parent !== undefined && hp.id === parent) {
+        // Its own power: a branch is loyal by default, and only rarely not.
+        row[hp.id] = rng.next() < 0.15 ? this._driftAccord(rng, 1) : 2;
+        return;
+      }
+      const base = parent !== undefined ? (table.powers[parent] || {})[hp.id] : undefined;
+      row[hp.id] = base === undefined ? this._rollAccord(rng) : this._driftAccord(rng, base);
+    });
+    table.factions[faction.id] = row;
+  });
+
+  return table;
+};
+
+// The world's table, rolled on first ask if the world predates this system.
+Game_Factions.prototype.diplomacy = function () {
+  if (typeof $gameSystem === "undefined" || !$gameSystem) return null;
+  let table = $gameSystem._factionDiplomacy;
+  if (table && table.powers) return table;
+  table = this.generateDiplomacy();
+  if (table) $gameSystem._factionDiplomacy = table;
+  return table;
+};
+
+Game_Factions.prototype.getPowerAccord = function (hyperpowerIdA, hyperpowerIdB) {
+  if (hyperpowerIdA === hyperpowerIdB) return 2;
+  const table = this.diplomacy();
+  const row = table && table.powers ? table.powers[hyperpowerIdA] : null;
+  const value = row ? row[hyperpowerIdB] : undefined;
+  return value === undefined ? 0 : value;
+};
+
+// What one faction has signed with one power. A faction that speaks for a power
+// answers with that power's own line, so the head and the power never disagree.
+Game_Factions.prototype.getFactionAccord = function (factionId, hyperpowerId) {
+  const faction = this.getFaction(factionId);
+  if (!faction) return 0;
+  const table = this.diplomacy();
+  const row = table && table.factions ? table.factions[factionId] : null;
+  const value = row ? row[hyperpowerId] : undefined;
+  if (value !== undefined) return value;
+  // No row: fall back to whatever its power signed, and to nothing at all for
+  // an independent.
+  const parentPower = this.hyperpowerOfFaction(faction);
+  if (parentPower) return this.getPowerAccord(parentPower.id, hyperpowerId);
+  return 0;
+};
+
+// Every accord one list entry holds, one per hyperpower, in the powers' own
+// order. A power is not listed against itself; a BRANCH is listed against its
+// own parent, because that line is the interesting one — a branch that has
+// drifted off its government's row can be reading it as hostile.
+Game_Factions.prototype.getAccordsFor = function (record) {
+  if (!record) return [];
+  const isPower = record.kind === "hyperpower";
+  if (!isPower && !record.faction) return [];
+
+  return this.getHyperpowers()
+    .filter((hp) => !isPower || hp.id !== record.hyperpower.id)
+    .map((hp) => {
+      const value = isPower
+        ? this.getPowerAccord(record.hyperpower.id, hp.id)
+        : this.getFactionAccord(record.faction.id, hp.id);
+      return {
+        hyperpower: hp,
+        name: this.hyperpowerLabel(hp),
+        value: value,
+        isOwnPower: !isPower && record.faction.parentHyperpower === hp.name,
+      };
+    });
 };
 
 Game_Factions.prototype.getRelationship = function (factionId1, factionId2) {
@@ -838,8 +1105,12 @@ Game_Factions.prototype.getRelationshipName = function (
   factionId1,
   factionId2
 ) {
-  const relationship = this.getRelationship(factionId1, factionId2);
+  return this.relationshipNameOf(this.getRelationship(factionId1, factionId2));
+};
 
+// The same five words, read off a bare -2..2 value: the diplomatic accords are
+// scored on that scale too and name themselves through here.
+Game_Factions.prototype.relationshipNameOf = function (relationship) {
   switch (relationship) {
     case 2:
       return T("Factions.relation.allied");
@@ -860,11 +1131,14 @@ Game_Factions.prototype.getAllFactions = function () {
   return FactionDataManager.instance._factions;
 };
 
+// Factions are found by their own `id`, never by their slot in the file: the
+// heads that used to sit in Factions.json are gone and the ids that are left
+// have gaps in them (js/db/WorldGen/Factions.json).
 Game_Factions.prototype.getFaction = function (factionId) {
-  if (factionId >= 0 && factionId < FactionDataManager.instance._factions.length) {
-    return FactionDataManager.instance._factions[factionId];
-  }
-  return null;
+  const id = Number(factionId);
+  if (!Number.isFinite(id)) return null;
+  const all = FactionDataManager.instance._factions || [];
+  return all.find((f) => f && f.id === id) || null;
 };
 
 Game_Factions.prototype.getFactionsByType = function (typeName, variableId) {
@@ -1040,11 +1314,14 @@ Scene_FactionStatus.prototype.create = function () {
 
   // The shared search + filter strip (UI/MenuSearchBar.js), sitting under the
   // title as it does in every other list menu. A faction has a name and
-  // nothing else worth ordering on.
+  // nothing else worth ordering on, and since the list is a tree the ordering
+  // runs A-Z WITHIN it rather than across it, which is what the tag is named
+  // after (see getFactionList).
   this._factionBar = window.MenuSearchBar ? window.MenuSearchBar.create({
     id: 'factions',
     placeholder: T('Factions.searchPlaceholder'),
     sorts: ['name'],
+    sortLabels: { name: T('Factions.sortName') },
     onChange: () => {
       this._dndSelectedIndex = 0;
       this.refreshUIFactions();
@@ -1090,7 +1367,7 @@ Scene_FactionStatus.prototype.createUIFactionsOverlay = function () {
   // reaches the game. Bound on the container, which survives every refresh
   // (the pages inside it are re-rendered).
   this._dndContainer.addEventListener("wheel", (e) => {
-    const box = e.target.closest("#factions-grid, .right-page");
+    const box = e.target.closest("#factions-grid, #faction-accords, .right-page");
     if (box) box.scrollTop += e.deltaY;
     e.stopPropagation();
     e.preventDefault();
@@ -1106,69 +1383,102 @@ Scene_FactionStatus.prototype.createUIFactionsOverlay = function () {
   }, 16);
 };
 
-// The name a hyperpower is shown under. Its key in Hyperpowers.json is English
-// prose, so a translation is looked for first, then the localized name of the
-// faction that speaks for it, and only then the raw key.
-Scene_FactionStatus.prototype.hyperpowerLabel = function (hp, head) {
-  const slug = String(hp.name).toLowerCase().replace(/[^a-z0-9]/g, "");
-  const key = "Factions.power." + slug;
-  if (T.has(key)) return T(key);
-  if (head) return FactionDataManager.instance.t(head.name);
-  return hp.name;
+// The name a hyperpower is shown under, resolved once for both pages
+// (Game_Factions.hyperpowerLabel).
+Scene_FactionStatus.prototype.hyperpowerLabel = function (hp) {
+  return $gameFactions.hyperpowerLabel(hp);
 };
 
 // The tree the lore describes: a hyperpower, then the factions that answer to
 // it, then the independents that answer to nobody.
 //
-// `parentFaction` in Factions.json is a HYPERPOWER id, not a faction id, and
-// the two id spaces overlap. Grouping by matching it against faction ids used
-// to file the whole Mages Guild branch (parent 8 = the Mages Guild hyperpower)
-// under faction id 8, the Naguka.
-//
-// A hyperpower's own row carries its head faction, so the head is never listed
-// a second time as one of its own branches; a hyperpower with no head faction
-// (Goblin Horde, Free States of Midwest, Cascadia Protectorate, Eastern
-// Seaboard, Continental Union) is read through its synthetic "hp:<id>" key.
+// `parentHyperpower` in Factions.json names the power a faction answers to, and
+// no faction speaks for a power: a power's row IS the power, read through its
+// own "hp:<id>" standing key, wearing the emblem of the first branch under it.
+// A faction with no `parentHyperpower` is an orphan: still listed, still with a
+// standing of its own, but sworn to nobody and seated nowhere.
 Scene_FactionStatus.prototype.getFactionList = function () {
-  const list = [];
+  // The tree, built branch by branch. A top-level row carries its own children
+  // rather than the whole thing being flattened up front, so the ordering
+  // below can never move a sub-faction out from under its power.
+  const groups = [];
 
   $gameFactions.getHyperpowers().forEach((hp) => {
-    const head = $gameFactions.getHyperpowerHead(hp.id);
-    list.push({
+    const power = {
       kind: "hyperpower",
       isSub: false,
       hyperpower: hp,
-      faction: head,
-      standingKey: head ? String(head.id) : "hp:" + hp.id,
-      name: this.hyperpowerLabel(hp, head),
-      iconIndex: head ? head.iconIndex : 0,
-    });
-    $gameFactions.getHyperpowerFactions(hp.id).forEach((child) => {
-      if (child.hyperpowerHead) return;
-      list.push({
+      faction: null,
+      standingKey: $gameFactions.hyperpowerStandingKey(hp.id),
+      name: this.hyperpowerLabel(hp),
+      iconIndex: $gameFactions.hyperpowerIcon(hp.id),
+      children: [],
+    };
+    power.children = $gameFactions.getHyperpowerFactions(hp.id)
+      .map((child) => ({
         kind: "faction",
         isSub: true,
         faction: child,
+        hyperpower: hp,
         standingKey: String(child.id),
         name: FactionDataManager.instance.t(child.name),
         iconIndex: child.iconIndex,
-      });
-    });
+      }));
+    groups.push(power);
   });
 
   $gameFactions.getIndependentFactions().forEach((faction) => {
-    list.push({
+    groups.push({
       kind: "faction",
       isSub: false,
       faction: faction,
       standingKey: String(faction.id),
       name: FactionDataManager.instance.t(faction.name),
       iconIndex: faction.iconIndex,
+      children: [],
     });
   });
 
-  if (!this._factionBar) return list;
-  return this._factionBar.apply(list, (row) => ({ name: row.name }));
+  const flatten = (rows) => rows.reduce((out, row) => out.concat([row], row.children || []), []);
+  if (!this._factionBar) return flatten(groups);
+
+  // The search strip filters and orders a FLAT list, and handing it the
+  // flattened tree is what tore every sub-faction away from its power: an A-Z
+  // pass interleaved Britannia's divisions with the Vatican's orders and left
+  // each one sitting under whichever unrelated power happened to land above
+  // it. So the strip's answer is read as a RANK and re-applied within the
+  // tree: powers ordered against powers, children only against their own
+  // siblings. A power whose own name misses the query still stands as the
+  // header for children that match it, so a hit is never shown parentless.
+  const rank = new Map();
+  this._factionBar
+    .apply(flatten(groups), (row) => ({ name: row.name }))
+    .forEach((row, i) => rank.set(row, i));
+
+  const rankOf = (row) => (rank.has(row) ? rank.get(row) : Infinity);
+  // A power stands where its OWN name puts it. Only a power the query filtered
+  // out — kept solely as the header of children that matched — is slotted by
+  // the first of those children instead.
+  const groupRank = (group) =>
+    rank.has(group)
+      ? rank.get(group)
+      : (group.children || []).reduce((best, child) => Math.min(best, rankOf(child)), Infinity);
+
+  const list = [];
+  groups
+    .map((group) => ({
+      group,
+      kids: (group.children || []).filter((child) => rank.has(child))
+        .sort((a, b) => rankOf(a) - rankOf(b)),
+    }))
+    .filter((entry) => rank.has(entry.group) || entry.kids.length)
+    .sort((a, b) => groupRank(a.group) - groupRank(b.group))
+    .forEach((entry) => {
+      list.push(entry.group);
+      entry.kids.forEach((child) => list.push(child));
+    });
+
+  return list;
 };
 
 // Whose standings the page is showing. The switcher lives on the right page,
@@ -1324,6 +1634,26 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       `;
     }
 
+    // The two offices a power holds: who governs it, and who it answers to.
+    // The moral guide is drawn from a fixed set (Leaders.json `moralGuide`) and
+    // succeeds by that power's own rule — a crown by descent, a papacy by
+    // conclave, the Archive's by seniority (HistorySimulator).
+    let officesHTML = "";
+    if (isPower && window.HistoryManager) {
+      const HM = window.HistoryManager;
+      const moral = HM.getMoralGuide ? HM.getMoralGuide(hp.name) : null;
+      const political = (HM.getCurrentLeaders ? HM.getCurrentLeaders() : HM._currentLeaders || {})[hp.name] || null;
+      const row = (labelKey, leader) => leader ? `
+        <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.928em">
+          <span><strong>${T(labelKey)}</strong></span>
+          <span>${FactionDataManager.instance.t(leader.name)}</span>
+        </div>` : "";
+      const both = row("Factions.moralGuide", moral) + row("Factions.politicalLeader", political);
+      if (both) {
+        officesHTML = `<div style="margin-top:12px; border-top:1px solid #c9b4a1; padding-top:10px">${both}</div>`;
+      }
+    }
+
     // The present day, where the roster above is the past: whichever real
     // political party (or, since not everyone answers to one, independent
     // politician) NPCPolitics currently has sitting in this hyperpower's own
@@ -1350,7 +1680,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     // dossier as well as from the list.
     let branchesHTML = "";
     if (isPower) {
-      const branches = $gameFactions.getHyperpowerFactions(hp.id).filter(f => !f.hyperpowerHead);
+      const branches = $gameFactions.getHyperpowerFactions(hp.id);
       if (branches.length) {
         branchesHTML = `
           <div style="margin-top: 12px; font-family: 'Lora', serif; font-size: 0.928em">
@@ -1358,6 +1688,34 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
           </div>
         `;
       }
+    }
+
+    // What it actually holds. The world simulation's map wins (a century of
+    // conquests moves nations between powers); the country table answers for a
+    // world whose history was never run.
+    let countriesHTML = "";
+    if (isPower) {
+      const held = $gameFactions.countriesOfHyperpower(hp.name);
+      countriesHTML = `
+        <div style="margin-top: 12px; font-family: 'Lora', serif; font-size: 0.928em">
+          <strong>${T("Factions.controlledCountries", { count: held.length })}</strong>
+          <span>${held.length
+            ? held.map(n => (window.WorldNames ? window.WorldNames.any(n) : n)).join(", ")
+            : T("Factions.holdsNothing")}</span>
+        </div>
+      `;
+    }
+
+    // ...and the long version of the same dossier, in the Archive's own wiki.
+    let wikiHTML = "";
+    if (isPower && window.NPCEmpathize && typeof window.NPCEmpathize.openEntity === "function") {
+      const target = encodeURIComponent(hp.name).replace(/'/g, "%27");
+      wikiHTML = `
+        <div class="faction-wiki-button focusable"
+             onclick="window.NPCEmpathize.openEntity('power', '${target}')">
+          ${T("Factions.openWiki")}
+        </div>
+      `;
     }
 
     // This character's standing, named as well as numbered.
@@ -1378,26 +1736,21 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       }
     }
 
-    let relationsHTML = "";
-    if (faction) {
-      const otherParentFactions = $gameFactions.getIndependentFactions()
-        .filter(f => f.id !== faction.id).slice(0, 3);
-
-      otherParentFactions.forEach(other => {
-        const relValue = $gameFactions.getRelationship(faction.id, other.id);
-        const relName = $gameFactions.getRelationshipName(faction.id, other.id);
-        let relColor = "#6b5242"; // Neutral
-        if (relValue > 0) relColor = "#2e7d32"; // Allied/Friendly
-        if (relValue < 0) relColor = "#c62828"; // Hostile
-
-        relationsHTML += `
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-family: 'Lora', serif; font-size: 0.928em; border-bottom: 1px dashed #d1c2b4; padding-bottom: 2px">
-            <span>vs. ${FactionDataManager.instance.t(other.name)}</span>
-            <span style="color: ${relColor}; font-weight: bold">${relName}</span>
-          </div>
-        `;
-      });
-    }
+    // Where this entry stands with every hyperpower in the world, not with the
+    // first three independents that happened to be listed. A branch keeps its
+    // own accords, so it can be reading them off a different line from its
+    // parent's (Game_Factions.getAccordsFor).
+    const relationsHTML = $gameFactions.getAccordsFor(selectedRecord).map(accord => {
+      let relColor = "#6b5242"; // Neutral
+      if (accord.value > 0) relColor = "#2e7d32"; // Allied/Friendly
+      if (accord.value < 0) relColor = "#c62828"; // Hostile
+      return `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-family: 'Lora', serif; font-size: 0.928em; border-bottom: 1px dashed #d1c2b4; padding-bottom: 2px">
+          <span>${T(accord.isOwnPower ? "Factions.versusOwn" : "Factions.versus", { name: accord.name })}</span>
+          <span style="color: ${relColor}; font-weight: bold">${$gameFactions.relationshipNameOf(accord.value)}</span>
+        </div>
+      `;
+    }).join("");
 
     rightPageHTML = `
       <div class="right-page">
@@ -1415,15 +1768,20 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
             ${description}
           </div>
 
+          ${officesHTML}
           ${currentGovHTML}
           ${leadersHTML}
           ${branchesHTML}
+          ${countriesHTML}
+          ${wikiHTML}
           ${standingHTML}
           ${postHTML}
 
           <div class="politics-grid">
             <h4 style="font-family: 'Lora', serif; font-size: 1.095em; color: #58180D; margin: 0 0 8px 0; border-bottom: 1px solid #d1c2b4; padding-bottom: 4px">${T("Factions.diplomaticAgreements")}</h4>
-            ${relationsHTML || `<div style="font-family:'Lora', serif; font-size:0.928em; color:#8c715c">${T("Factions.independent")}</div>`}
+            <div class="faction-accords" id="faction-accords">
+              ${relationsHTML || `<div style="font-family:'Lora', serif; font-size:0.928em; color:#8c715c">${T("Factions.independent")}</div>`}
+            </div>
           </div>
 
         </div>
@@ -1658,21 +2016,15 @@ Window_FactionStatus.prototype.initialize = function (rect) {
 
 
 // The canvas fallback list groups the same way the DOM spread does: by
-// hyperpower, since `parentFaction` names one of those and not another faction.
-// The head faction stands in for its power, so it is not repeated underneath.
+// hyperpower, which each faction names in `parentHyperpower`. No faction stands
+// in for a power any more, so a power's row is the power itself.
 Window_FactionStatus.prototype.makeItemList = function () {
 
   this._data = [];
 
   $gameFactions.getHyperpowers().forEach((hp) => {
 
-    const head = $gameFactions.getHyperpowerHead(hp.id);
-
-    if (head) this._data.push({ faction: head, isSub: false });
-
     $gameFactions.getHyperpowerFactions(hp.id).forEach((child) => {
-
-      if (child.hyperpowerHead) return;
 
       this._data.push({ faction: child, isSub: true });
 

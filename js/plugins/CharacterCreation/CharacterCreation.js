@@ -145,6 +145,83 @@
     },
   };
 
+  // Em's dossier grows restless if it sits unpicked on the preset board: ten
+  // seconds in she starts heckling from inside her own card, then again every
+  // few seconds until she is picked or the board closes. It borrows
+  // NPCConversation's speech-bubble look (the "npc-thought-bubble" class)
+  // outright so it reads exactly like the town's bubbles, but anchors on her
+  // card's own screen rect instead of a map event: the preset board is DOM
+  // already, so there is no projection math to do, and no NPCBubbleLayout
+  // arbiter is needed since only one of these can ever be on screen.
+  const EM_RESTLESS_DELAY_MS = 10000;
+  const EM_RESTLESS_INTERVAL_MS = 6000;
+  const EM_RESTLESS_DISPLAY_MS = 4000;
+  const EM_RESTLESS_FADE_MS = 350;
+  window.EmRestlessBubble = window.EmRestlessBubble || {
+    _el: null,
+    _card: null,
+    _hideAt: 0,
+    _fadeAt: 0,
+
+    _element() {
+      if (this._el) return this._el;
+      const el = document.createElement("div");
+      el.className = "npc-thought-bubble";
+      document.body.appendChild(el);
+      this._el = el;
+      return el;
+    },
+
+    show(card, text) {
+      if (!card || !text) return;
+      const el = this._element();
+      el.textContent = text;
+      el.classList.remove("fading");
+      el.style.display = "block";
+      void el.offsetWidth; // restart the transition on a recycled element
+      el.classList.add("visible");
+      this._card = card;
+      this._hideAt = Date.now() + EM_RESTLESS_DISPLAY_MS;
+      this._fadeAt = 0;
+      this._reposition();
+    },
+
+    // Card sits in a scrollable board, so its screen rect is re-read every
+    // frame rather than cached once at show() time.
+    _reposition() {
+      if (!this._card || !this._el) return;
+      const rect = this._card.getBoundingClientRect();
+      const h = this._el.offsetHeight || 0;
+      this._el.style.left = `${rect.left + rect.width / 2}px`;
+      this._el.style.top = `${rect.top - h - 14}px`;
+    },
+
+    update() {
+      if (!this._el || this._el.style.display === "none") return;
+      const now = Date.now();
+      if (this._fadeAt) {
+        if (now >= this._fadeAt) this.release();
+        return;
+      }
+      if (now >= this._hideAt) {
+        this._el.classList.remove("visible");
+        this._el.classList.add("fading");
+        this._fadeAt = now + EM_RESTLESS_FADE_MS;
+        return;
+      }
+      this._reposition();
+    },
+
+    release() {
+      if (!this._el) return;
+      this._el.classList.remove("visible", "fading");
+      this._el.style.display = "none";
+      this._card = null;
+      this._hideAt = 0;
+      this._fadeAt = 0;
+    },
+  };
+
   // Import dependencies from other plugins
   const {
     getLocalizedChoice,
@@ -162,7 +239,19 @@
   // The shared Back / extras / Continue bar (CharacterCreationShared.js).
   const CCButtons = window.CCButtons;
   const { equipRandomCompatibleWeapon, GLOBAL_STARTER_SKILLS, applyStartingGear, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
-  const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, getPresetLore, getPresetHometown, getPresetSkins, getPresetSkin, getPresetSkinLabel, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets } = window.CharacterPresets || {};
+  const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, getPresetLore, getPresetHometown, getPresetSkins, getPresetSkin, getPresetSkinLabel, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets, getEmRestlessLine } = window.CharacterPresets || {};
+  // Which button leafs through a dossier's looks, named on a chip under the
+  // thumbnail row: the shoulder buttons when a pad is plugged in, TAB
+  // otherwise. A pad can be plugged in (or its battery die) while the board is
+  // open, so the chip is kept in step rather than only stamped once.
+  function skinKeyPadOn() {
+    const pad = window.AnalogStickInput;
+    return !!(pad && typeof pad.hasPad === "function" && pad.hasPad());
+  }
+  // i18n-ignore-start: physical controller / keyboard button ids
+  function skinKeyLabel() { return skinKeyPadOn() ? "L1 R1" : "TAB"; }
+  // i18n-ignore-end
+
   // Alternate looks a dossier can be played as. Falls back to the dossier's own
   // sprite and bust when the presets plugin is an older build without skins.
   function presetSkins(preset) {
@@ -531,16 +620,20 @@
   }
 
   // CC_MUSIC_TRACKS plus any player tracks dropped into audio/bgm/BattleMusic,
-  // led by the Random entry so a Random pick made in the options menu still
-  // reads back here instead of silently showing the first track.
+  // led by the Biome and Random entries so a pick made in the options menu still
+  // reads back here instead of silently showing the first track. Biome is the
+  // default battle music, so it heads the list.
   // Resolved at runtime since MusicSelectionSystem.js loads after this plugin.
   function getCCMusicTracks() {
     const mss = window.MusicSelectionSystem;
     const custom = (mss && mss.scanCustomTracks) ? mss.scanCustomTracks() : [];
+    const biome = (mss && mss.MUSIC_BIOME)
+      ? [{ name: T('MusicSelection.trackBiome'), value: mss.MUSIC_BIOME }]
+      : [];
     const random = (mss && mss.MUSIC_RANDOM)
       ? [{ name: T('MusicSelection.trackRandom'), value: mss.MUSIC_RANDOM }]
       : [];
-    return random.concat(ccMusicTracks(), custom);
+    return biome.concat(random, ccMusicTracks(), custom);
   }
 
   // No origin begins inside a vehicle any more: the camper and the car are
@@ -1007,6 +1100,92 @@
     startWorldMapPickerOrigin();
   }
 
+  // --- Backing out of the starting place picker ----------------------------
+  // Picking an origin is not only a line in a menu: by the time the picker
+  // opens the gear has been handed out, the cash paid, the troops recruited and
+  // the switches set. So "back to the origin list" cannot simply close the
+  // picker, it has to undo the choice, and the cheapest honest way to undo
+  // something this wide is to keep a copy of everything it is about to touch.
+  // The copy is taken at the top of the origin handler, before a single grant
+  // runs, and put back when the player asks for the list again.
+  //
+  // Only the persistent game objects are copied. The map and the player are
+  // deliberately left alone: no picker origin reserves a transfer, so the party
+  // is still standing where the wizard left it and the running scene keeps
+  // pointing at objects that are still valid.
+  const ORIGIN_SNAPSHOT_GLOBALS = [
+    "$gameSystem", "$gameSwitches", "$gameVariables", "$gameActors", "$gameParty",
+    // Not every world has these: the army and faction ledgers are their own
+    // plugins' globals, and the warlord, the faction leader and the deserter all
+    // write to them.
+    "$gameArmy", "$gameFactions",
+  ];
+
+  function captureOriginSnapshot() {
+    if (!$gameTemp) return;
+    const snapshot = {};
+    try {
+      for (const key of ORIGIN_SNAPSHOT_GLOBALS) {
+        const value = window[key];
+        if (value) snapshot[key] = JsonEx.stringify(value);
+      }
+    } catch (e) {
+      console.warn("CharacterCreation: could not copy the state the origin is about to change; backing out of the starting place picker will be unavailable.", e);
+      $gameTemp._ccOriginSnapshot = null;
+      return;
+    }
+    $gameTemp._ccOriginSnapshot = snapshot;
+  }
+
+  function clearOriginSnapshot() {
+    if ($gameTemp) $gameTemp._ccOriginSnapshot = null;
+  }
+
+  // True while the origin just chosen can still be taken back.
+  function canReopenOriginStep() {
+    return !!($gameTemp && $gameTemp._ccOriginSnapshot);
+  }
+
+  // Puts the world back the way it stood before the origin was chosen and
+  // reopens the origin step. Answers whether it could.
+  function reopenOriginStep() {
+    if (!canReopenOriginStep()) return false;
+    const snapshot = $gameTemp._ccOriginSnapshot;
+    clearOriginSnapshot();
+    try {
+      for (const key of ORIGIN_SNAPSHOT_GLOBALS) {
+        if (snapshot[key]) window[key] = JsonEx.parse(snapshot[key]);
+      }
+    } catch (e) {
+      console.error("CharacterCreation: could not undo the chosen origin.", e);
+      return false;
+    }
+    // Every flag that was pointing the player at a starting place, including the
+    // one that reopens the picker on the next map frame.
+    $gameTemp._openCharacterCreationTrainTravel = false;
+    $gameTemp._characterCreationTravelMode = false;
+    $gameTemp._characterCreationTravelType = null;
+    $gameTemp._ccVehicleFieldStart = null;
+    $gamePlayer.refresh();
+    Scene_CharacterCreation._isCreatureMode = false;
+    Scene_CharacterCreation._creationMode =
+      storedCreationMode() || Scene_CharacterCreation._creationMode;
+    Scene_CharacterCreation.clearSubScreens();
+    Scene_CharacterCreation._interruptedStep = -1;
+    Scene_CharacterCreation.prepare(STEP.ORIGIN);
+    SceneManager.push(Scene_CharacterCreation);
+    return true;
+  }
+
+  // FastTravelSystem draws the picker and owns its Back button, so it asks here
+  // whether there is an origin to go back to, and says when there is no longer
+  // one (the journey was confirmed, the origin stands).
+  window.CharacterCreationOrigin = {
+    canReopen: canReopenOriginStep,
+    reopen: reopenOriginStep,
+    clearSnapshot: clearOriginSnapshot,
+  };
+
   // --- Starting loadouts ---------------------------------------------------
   // ONE table drives both what an origin hands out and what the "Starting Out"
   // dossier promises: grantOriginLoadout() gives exactly the rows
@@ -1271,6 +1450,12 @@
     origin_skeleton_key: [
       { id: ITEM_SKELETON_KEY, qty: 1 },
     ],
+    // One energy drink, and a bag of Hyperdeck parts rolled on top of it (see
+    // rollHypernetExplorerLoadout). No rations, no light, no map: whoever this
+    // is has been buying components instead of food.
+    origin_hypernet_explorer: [
+      { id: ITEM_ENERGY_DRINK, qty: 1, each: true },
+    ],
     // A seat at the assembly, worked from a distance: one terminal, nothing else.
     origin_diplomat: [
       { id: ITEM_ONU_TERMINAL, qty: 1 },
@@ -1356,6 +1541,9 @@
     origin_skeleton_key: [],
     // Carrying it: seal what leaks, and treat what you catch.
     origin_plague: [ITEM_MEDICAL_SPRAY, ITEM_PAINKILLERS, ITEM_EMPTY_FLASK],
+    // Nothing but the drink: components are occasion "never", so there is
+    // nothing else in this loadout the quick bar can hold.
+    origin_hypernet_explorer: [ITEM_ENERGY_DRINK],
     // One terminal is the whole seat; nothing else to reach for.
     origin_diplomat: [ITEM_ONU_TERMINAL],
   };
@@ -1543,6 +1731,8 @@
   // hardcoded id going stale. Built once: the databases are stable after load
   // and the dossier asks for this on every cursor move.
   let _originPoolCache = null;
+  const ORIGIN_COMPONENT_PRICE_CAP = 60000;   // 600 euro, mundane and near-mundane parts
+
   function originPools() {
     if (_originPoolCache) return _originPoolCache;
     const inCategory = (entry, cat) =>
@@ -1614,6 +1804,12 @@
       // rather than off a list of ids, so a rite added later is picked up
       // without touching this. <Forbidden> is left out, which is what keeps the
       // elder entity out of a level 1 spellbook.
+      // Hyperdeck parts, capped well below the arcane end of the shelf: what
+      // somebody scavenging components would plausibly have accumulated, not a
+      // scrying mirror and a bottled storm.
+      components: items.filter((i) =>
+        inCategory(i, "Component") && i.price <= ORIGIN_COMPONENT_PRICE_CAP
+      ).sort(byPrice),
       summonSkills: $dataSkills.filter((s) => {
         if (!isRealDbEntry(s) || (s.meta && s.meta.Forbidden)) return false;
         if (!/<category:\s*Convokation\s*>/i.test(s.note || "")) return false;
@@ -1643,6 +1839,10 @@
   const PLAGUE_VIALS_MAX = 14;
   const PLAGUE_MEDICINE_MIN = 5;
   const PLAGUE_MEDICINE_MAX = 7;
+  const HYPERNET_PARTS_MIN = 12;
+  const HYPERNET_PARTS_MAX = 20;
+  const HYPERNET_PART_STACK_MIN = 1;
+  const HYPERNET_PART_STACK_MAX = 4;
 
   // A rolled deal has two halves: `perMember` is the gear rolled for one
   // character (so it can be worn by the character it was rolled for) and
@@ -1732,11 +1932,27 @@
     return { perMember: [], entries };
   }
 
+  // Hypernet Explorer: a heap of loose parts and nothing else. Both HOW MANY
+  // distinct parts and HOW MANY of each are rolled, which is what makes it a
+  // heap rather than a list, and the dossier states every count exactly because
+  // it reads these same rows.
+  function rollHypernetExplorerLoadout(rng) {
+    const pools = originPools();
+    const entries = [];
+    rngPickSome(rng, pools.components, rngInt(rng, HYPERNET_PARTS_MIN, HYPERNET_PARTS_MAX))
+      .forEach((part) => entries.push({
+        id: part.id,
+        qty: rngInt(rng, HYPERNET_PART_STACK_MIN, HYPERNET_PART_STACK_MAX),
+      }));
+    return { perMember: [], entries };
+  }
+
   const ORIGIN_ROLLS = {
     origin_arcanist: rollArcanistLoadout,
     origin_mercenary: rollMercenaryLoadout,
     origin_lost_convoker: rollLostConvokerLoadout,
     origin_plague: rollPlagueSpreaderLoadout,
+    origin_hypernet_explorer: rollHypernetExplorerLoadout,
   };
 
   // The deal for an origin, memoized on what it is a function of (the run's
@@ -1753,6 +1969,14 @@
       _originRollCache[key] = roller(seededRng((seed ^ textSalt(symbol)) >>> 0), size);
     }
     return _originRollCache[key];
+  }
+
+  // How many Hyperdeck parts this run's Hypernet Explorer was dealt, counting
+  // the stacks and not the rows, so the dossier states the size of the heap.
+  function hypernetPartCount() {
+    const roll = originRoll("origin_hypernet_explorer");
+    if (!roll) return 0;
+    return roll.entries.reduce((total, entry) => total + (entry.qty || 0), 0);
   }
 
   // How many sealed vials this run's Plague Spreader was dealt, so the dossier
@@ -1948,18 +2172,23 @@
       (share.skillIds || []).forEach((skillId) => {
         if ($dataSkills[skillId]) actor.learnSkill(skillId);
       });
-      const slots = actor.equipSlots(); // etypeId per slot
       const wear = (gear) => {
         if (!gear || !actor.canEquip(gear)) return;
-        // First slot of the right type that is not already holding this piece.
-        const etypeId = gear.etypeId || 1;
+        // The first free slot that would take this piece. A hand takes a
+        // weapon or a shield alike, so the type alone no longer names a slot
+        // (ItemSystem/ItemSystemEquipment.js, window.HandSlots).
+        const slots = actor.equipSlots();
         for (let slotId = 0; slotId < slots.length; slotId++) {
-          if (slots[slotId] !== etypeId) continue;
+          if (actor.equips()[slotId]) continue;
+          const fits = window.HandSlots
+            ? window.HandSlots.hasRoomFor(actor, slotId, gear)
+            : slots[slotId] === (gear.etypeId || 1);
+          if (!fits) continue;
           try {
             actor.changeEquip(slotId, gear);
             return;
           } catch (e) {
-            /* incompatible slot - try the next one of the same type */
+            /* incompatible slot - try the next one it could go in */
           }
         }
       };
@@ -1986,6 +2215,32 @@
     applyRolledPersonalGear("origin_lost_convoker");
     if (startOnProceduralSquare({ rng: Math.random })) return;
     console.warn("CharacterCreation: no overland square for the lost-convoker origin; starting at the tower gate instead.");
+    startDungeonOrigin();
+  }
+
+  // Hypernet Explorer origin: a random square of the world like the convoker's,
+  // and then straight indoors. The house itself is picked by
+  // ProceduralHouseSystem off the tile the party landed on, so which house it
+  // is comes out of the same seeded pool every other door on that square draws
+  // from. The entry cannot be made from here (it needs the square to exist and
+  // the party to be standing on it), so it is deferred to the landing pass in
+  // Scene_Map.onMapLoaded.
+  function startHypernetExplorerOrigin() {
+    // The one origin that already lives inside a Hyperdeck. Every other party
+    // is handed a cupboard cast-off built out of the scrap end of the
+    // catalogue; this one gets a deck rolled from the whole of it.
+    try {
+      if (window.HyperDeck && window.HyperDeck.rollStartingDeck) {
+        window.HyperDeck.rollStartingDeck(Math.random, { everything: true });
+      }
+    } catch (e) {
+      console.warn("CharacterCreation: could not re-roll the starting Hyperdeck.", e);
+    }
+    if (startOnProceduralSquare({ rng: Math.random })) {
+      if ($gameTemp) $gameTemp._ccHypernetHouseLanding = true;
+      return;
+    }
+    console.warn("CharacterCreation: no overland square for the hypernet-explorer origin; starting at the tower gate instead.");
     startDungeonOrigin();
   }
 
@@ -2311,23 +2566,26 @@
     return [];
   }
 
-  // The archetype's name / description in the active language. These live in
-  // js/i18n/<lang>/personality.json as English-source replacements, so they go
-  // through the same translator database names use (this page is DOM and never
-  // reaches the draw-time hooks). Italian also carries them inline on the
-  // record, which is what the Empathize dossier reads, so that wins when set.
+  // The archetype's name / description in the active language. The English
+  // `name` on the record is the personality's id (every by-name lookup in the
+  // other plugins keys on it), so both are reached from it out of
+  // js/i18n/<lang>/plugins/Personality.json.
+  function _personalityKey(entry, field) {
+    if (!entry || !entry.name) return "";
+    return "Personality." + String(entry.name).toLowerCase().replace(/[^a-z0-9]/g, "") + "." + field;
+  }
+
   function personalityLabel(entry) {
     if (!entry) return "";
-    if (ConfigManager && ConfigManager.language === "it" && entry.name_it) return entry.name_it;
+    const key = _personalityKey(entry, "name");
+    if (key && window.T && window.T.has(key)) return window.T(key);
     return window.CCDbName(entry.name || "");
   }
 
   function personalityDescription(entry) {
     if (!entry) return "";
-    if (ConfigManager && ConfigManager.language === "it" && entry.description_it) {
-      return entry.description_it;
-    }
-    return window.CCDbName(entry.description || "");
+    const key = _personalityKey(entry, "description");
+    return (key && window.T && window.T.has(key)) ? window.T(key) : "";
   }
 
   // Writes the pick onto the member's society profile, minting one if this name
@@ -2830,7 +3088,7 @@
           // A person is rolled out of the sentient roster alone (1-62), and
           // narrowed by the world's magic level like every other roll; the
           // creature classes above it belong to the archetypes that list them
-          // in EnemyArchetypes.json.
+          // in Archetypes.json.
           const validClassIds = window.CreatureClasses.sentientRoster();
           if (validClassIds.length > 0) {
             const randomClass = {
@@ -3086,10 +3344,20 @@
           getLocalizedChoice(T('CharCreate.choice.originSkeletonKey.name'), "origin_skeleton_key", T('CharCreate.choice.originSkeletonKey.desc')),
           getLocalizedChoice(T('CharCreate.choice.originPlague.name'), "origin_plague", T('CharCreate.choice.originPlague.desc')),
           getLocalizedChoice(T('CharCreate.choice.originDiplomat.name'), "origin_diplomat", T('CharCreate.choice.originDiplomat.desc')),
+          getLocalizedChoice(T('CharCreate.choice.originHypernetExplorer.name'), "origin_hypernet_explorer", T('CharCreate.choice.originHypernetExplorer.desc')),
         ];
       },
       handler: function (symbol) {
+        // Before a single grant: the state this choice is about to rewrite, kept
+        // so the player can walk back out of the starting place picker and pick
+        // another origin (see reopenOriginStep).
+        captureOriginSnapshot();
         markStepCompleted(STEP.ORIGIN);
+        // Whatever this origin decides below, the party is about to be set down
+        // somewhere for the first time. Checked once on arrival, so no origin
+        // can begin standing inside the scenery of a square that was generated
+        // for it (see the landing pass in Scene_Map.onMapLoaded).
+        if ($gameTemp) $gameTemp._ccOriginLanding = true;
         // Finalize the first creation here (end of the flow). This used to live
         // in the settings step, which now runs first, so it moved to the origin
         // step. markFirstCreationComplete is idempotent.
@@ -3162,6 +3430,8 @@
           startWorldMapPickerOrigin();
         } else if (symbol === "origin_diplomat") {
           startDiplomatOrigin();
+        } else if (symbol === "origin_hypernet_explorer") {
+          startHypernetExplorerOrigin();
         } else if (symbol === "origin_augmented") {
           grantStartingAugments();
           // Nowhere in particular to be: the clinic is behind them and any
@@ -3184,6 +3454,10 @@
         // startWorldMapPickerOrigin, which answers this on its own; everything
         // else has just chosen a spot on a planet that is not there.
         if (startsAtOmegaTower()) startAtOmegaTower();
+        // This origin put the party down itself instead of ending in the
+        // starting place picker, so there is no picker to walk back out of and
+        // no copy of the old world worth keeping.
+        if (!$gameTemp || !$gameTemp._openCharacterCreationTrainTravel) clearOriginSnapshot();
         this.popScene();
       },
     },
@@ -3662,6 +3936,9 @@
           // was on Earth and Earth is gone, in which case there is one
           // address left.
           const target = $dataMapInfos && $dataMapInfos[preset.mapId];
+          // Same landing check every origin gets, for a dossier whose home
+          // address is a procedural square rather than an authored map.
+          if ($gameTemp) $gameTemp._ccOriginLanding = true;
           if (startsAtOmegaTower()) {
             startAtOmegaTower();
           } else if (target) {
@@ -3784,15 +4061,16 @@
       }
 
       // Equip items from preset
-      (preset.equips || []).forEach((itemId, slotId) => {
+      (preset.equips || []).forEach((entry, slotId) => {
+        // Newer dossiers record what each piece was ({ id, w }); older ones
+        // stored a bare id and leaned on the slot's type to tell a weapon from
+        // a shield, which a hand slot can no longer do.
+        const itemId = (entry && typeof entry === 'object') ? entry.id : entry;
         if (itemId > 0) {
-          const etypeId = actor.equipSlots()[slotId];
-          let item = null;
-          if (etypeId === 1) {
-            item = $dataWeapons[itemId];
-          } else {
-            item = $dataArmors[itemId];
-          }
+          const isWeapon = (entry && typeof entry === 'object')
+            ? !!entry.w
+            : actor.equipSlots()[slotId] === 1;
+          const item = isWeapon ? $dataWeapons[itemId] : $dataArmors[itemId];
           if (item) {
             actor.changeEquip(slotId, item);
           }
@@ -3998,6 +4276,7 @@
     // being slow. A scene change is already its own transition.
     terminate() {
       super.terminate();
+      if (window.EmRestlessBubble) window.EmRestlessBubble.release();
       const container = this._dndContainer;
       if (!container) return;
       if (window._ccOverlayTimeout) {
@@ -4307,7 +4586,7 @@
             originRows += `<div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.hometown')}:</span><span class="cc-dossier-value">${presetHometown}</span></div>`;
           }
           if (preset.nationId) {
-            originRows += `<div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.nationOfBirth')}:</span><span class="cc-dossier-value">${preset.nationId}</span></div>`;
+            originRows += `<div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.nationOfBirth')}:</span><span class="cc-dossier-value">${window.WorldNames ? window.WorldNames.nation(preset.nationId) : preset.nationId}</span></div>`;
           }
           if (preset.birthDate) {
             originRows += `<div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.dateOfBirth')}:</span><span class="cc-dossier-value">${this.formatPresetBirthDate(preset.birthDate)}</span></div>`;
@@ -4351,7 +4630,7 @@
                     </div>
                   `).join("")}
                 </div>
-                <div class="cc-skins-hint">${T('CharPresets.skinHint')}</div>
+                <div class="cc-skins-hint"><span class="cc-key-chip" data-pad="${skinKeyPadOn() ? '1' : '0'}">${skinKeyLabel()}</span><span>${T('CharPresets.skinHint')}</span></div>
               </div>
           ` : "";
 
@@ -4469,7 +4748,13 @@
         }).join("");
 
         const firstStep = Scene_CharacterCreation.getStartingStep();
-        const showBackButton = this._step > firstStep;
+        // The character-type step for the 2nd/3rd member IS the starting step
+        // (settings/difficulty/etc. auto-skip once member 1 is done), but it
+        // still has somewhere real to go back to: the previous member's
+        // "add another?" prompt (see previousStep's undo branch).
+        const isLaterMemberTypeStep = this._step === STEP.CHARACTER_TYPE &&
+          (Scene_CharacterCreation._currentPartyMemberIndex || 0) > 0;
+        const showBackButton = this._step > firstStep || isLaterMemberTypeStep;
         // On the very first step of a new game there is nothing to go back to
         // inside the wizard, so the slot holds the way out to the title screen.
         const backBtnHtml = showBackButton
@@ -5080,6 +5365,12 @@
         origin_diplomat: [
           row(T('CharCreate.start'), T('CharCreate.theOnuAssemblyInBrussels')),
         ],
+        origin_hypernet_explorer: [
+          row(T('CharCreate.start'), T('CharCreate.aRandomHouseSomewhere')),
+          row(T('CharCreate.components'), T('CharCreate.componentsCarried', {
+            count: hypernetPartCount(),
+          })),
+        ],
       };
 
       // Cash first (an exact figure, never an adjective), then every item this
@@ -5440,14 +5731,63 @@
       }
     }
 
-    // The highlighted dossier changed look (thumbnail, shoulder button, Shift).
-    // The cursor has not moved, so the overlay's own change check would skip
-    // the redraw: force the full rebuild, since the board poster and the
-    // dossier portrait both follow the look.
+    // Keeps the chip under the look thumbnails naming the button that is
+    // actually there right now. Cheap: the DOM is only touched when the answer
+    // changes.
+    syncSkinKeyChip() {
+      if (!this._dndContainer) return;
+      const chip = this._dndContainer.querySelector(".cc-skins-hint .cc-key-chip");
+      if (!chip) return;
+      const onPad = skinKeyPadOn() ? "1" : "0";
+      if (chip.dataset.pad === onPad) return;
+      chip.dataset.pad = onPad;
+      chip.textContent = skinKeyLabel();
+    }
+
+    // The highlighted dossier changed look (thumbnail, shoulder button, TAB).
+    // Only three things on screen follow the look, so they are patched in
+    // place: rebuilding the spread here reloaded every poster's sprite, which
+    // made the board blink and threw away the dossier's scroll position on
+    // each step through the looks.
     onPresetSkinChange() {
-      this._lastStep = -1;
-      this._lastIndex = -1;
-      this.refreshUIOverlayDOM();
+      if (!this._dndContainer || !this._presetWindow) return;
+      const spread = this._dndContainer.querySelector(".cc-pockets-spread");
+      const preset = this._presetWindow.currentPreset();
+      if (!spread || !preset) {
+        // No spread built yet (or nothing highlighted): fall back to the full
+        // rebuild, which also stamps the board from scratch.
+        this._lastStep = -1;
+        this._lastIndex = -1;
+        this.refreshUIOverlayDOM();
+        return;
+      }
+
+      const skins = presetSkins(preset);
+      const skinIdx = this._presetWindow.skinIndex ? this._presetWindow.skinIndex() : 0;
+      const skin = skins[skinIdx] || skins[0] || preset;
+      const spriteStyle = this.getSpriteStyle(skin.sprite, skin.spriteIndex);
+
+      // The dossier portrait keeps the layout it was drawn with.
+      const portrait = spread.querySelector(".cc-page-right > .cc-wanted-sprite");
+      if (portrait) {
+        portrait.setAttribute(
+          "style",
+          `${spriteStyle}; margin: 0 auto 16px auto; transform: scale(1.6)`
+        );
+      }
+
+      // Which thumbnail wears the stamp.
+      spread.querySelectorAll(".cc-skin-card").forEach((el, i) => {
+        el.classList.toggle("selected", i === skinIdx);
+      });
+
+      // The board poster of the dossier being read, so the two agree. Scoped to
+      // the board so the look thumbnails, which are wanted cards too, are left
+      // alone.
+      const cards = spread.querySelectorAll(".cc-page-left .cc-presets-board .cc-wanted-card");
+      const card = cards[this._presetWindow.index()];
+      const boardSprite = card && card.querySelector(".cc-wanted-sprite");
+      if (boardSprite) boardSprite.setAttribute("style", spriteStyle);
     }
 
     onOptionCardClick(index) {
@@ -5478,7 +5818,10 @@
       if (ConfigManager.fogOfWar === undefined) ConfigManager.fogOfWar = false;
       if (ConfigManager.globalLighting === undefined) ConfigManager.globalLighting = true;
       if (ConfigManager.enemyBattlers === undefined) ConfigManager.enemyBattlers = 1;
-      if (!ConfigManager.battleMusicName) ConfigManager.battleMusicName = "RandomMind/Battle";
+      if (!ConfigManager.battleMusicName) {
+        const mss = window.MusicSelectionSystem;
+        ConfigManager.battleMusicName = (mss && mss.MUSIC_BIOME) || "RandomMind/Battle";
+      }
       // ASCII mode is not offered here; it lives in the in-game options menu
       // (GameOptions.js), which owns its own defaults.
       if (ConfigManager.activeTheme === undefined) ConfigManager.activeTheme = 0;
@@ -5486,9 +5829,10 @@
       if (ConfigManager.cpuPartyMembers === undefined) ConfigManager.cpuPartyMembers = false;
       // Loose (1) is the party's own default, and the row below reads it back.
       if (ConfigManager.partyFormation === undefined) ConfigManager.partyFormation = 1;
-      // Realistic (1) is the default the world is written for; ConfigManager
+      // Party Level (1) is the default the world is written for; ConfigManager
       // seeds the same value, this only covers a config that never had one.
       if (ConfigManager.enemySpawnMode === undefined) ConfigManager.enemySpawnMode = 1;
+      if (ConfigManager.dialogueMode === undefined) ConfigManager.dialogueMode = 'empathize';
       return [
         {
           key: 'language',
@@ -5558,6 +5902,32 @@
           prev() { this._changeBy(-1); },
         },
         {
+          // How a talking NPC with nothing scripted to say answers you: a
+          // personality-driven Socialize line (Empathize) or Markov-generated
+          // text from their own word bank (Markovian). Mirrors Options >
+          // Gameplay > NPC Dialogue Mode, which owns the same
+          // ConfigManager.dialogueMode and can still change it later.
+          key: 'dialogueMode',
+          label: T('GameOptions.label.dialogueMode'),
+          description: T('GameOptions.desc.dialogueMode'),
+          get _modes() { return T.list('GameOptions.dialogueMode'); },
+          get _values() { return ['empathize', 'markovian']; },
+          get currentIndex() {
+            const i = this._values.indexOf(ConfigManager.dialogueMode);
+            return i >= 0 ? i : 0;
+          },
+          get currentLabel() {
+            return this._modes[this.currentIndex] || this._modes[0] || '';
+          },
+          _changeBy(delta) {
+            const values = this._values;
+            const count = values.length;
+            ConfigManager.dialogueMode = values[(this.currentIndex + delta + count) % count];
+          },
+          next() { this._changeBy(1); },
+          prev() { this._changeBy(-1); },
+        },
+        {
           key: 'cpuPartyMembers',
           label: T('CharCreate.cpuPartyMembers'),
           description: T('CharCreate.everyPartyMemberExceptTheLeaderActsAutomatic'),
@@ -5608,7 +5978,8 @@
           label: T('CharCreate.enemyBattlers'),
           description: T('CharCreate.howEnemiesAreShownInBattle2dTheClassicBattle'),
           // No preview images, so this row shows no captions.
-          // 1 = 3D (default), 2 = Sprites. See window.EnemyBattlerModes.
+          // 1 = 3D (default), 2 = Sprites, 3 = 2D battler images. See
+          // window.EnemyBattlerModes.
           _apply(mode) {
             ConfigManager.enemyBattlers = window.EnemyBattlerModes.normalize(mode);
             ConfigManager.charBasedSprites = (ConfigManager.enemyBattlers === 2); // legacy mirror
@@ -5617,7 +5988,10 @@
             return window.EnemyBattlerModes.normalize(ConfigManager.enemyBattlers);
           },
           get currentLabel() {
-            return this.currentIndex === 1 ? "3D" : T('CharCreate.sprites');
+            // Same names the options menu shows, in EnemyBattlerModes order.
+            const names = T.list('GameOptions.enemyBattler');
+            const i = window.EnemyBattlerModes.VALUES.indexOf(this.currentIndex);
+            return names[Math.max(0, i)] || "3D";
           },
           next() { this._apply(window.EnemyBattlerModes.step(this.currentIndex, 1)); },
           prev() { this._apply(window.EnemyBattlerModes.step(this.currentIndex, -1)); },
@@ -5651,7 +6025,14 @@
         {
           key: 'battleMusic',
           label: T('CharCreate.battleMusic'),
-          description: T('CharCreate.musicTrackPlayedDuringCombatPressToPreviewTr'),
+          // A getter, not a fixed line: the Biome entry needs a word of its own
+          // to explain that the track comes from the ground the fight is on.
+          get description() {
+            const mss = window.MusicSelectionSystem;
+            return (mss && ConfigManager.battleMusicName === mss.MUSIC_BIOME)
+              ? T('MusicSelection.biomeEachPlace')
+              : T('CharCreate.musicTrackPlayedDuringCombatPressToPreviewTr');
+          },
           get currentIndex() {
             const idx = getCCMusicTracks().findIndex(t => t.value === ConfigManager.battleMusicName);
             return idx >= 0 ? idx : 0;
@@ -5666,11 +6047,11 @@
             ConfigManager.battleMusicName = tracks[next].value;
             const val = ConfigManager.battleMusicName;
             const mss = window.MusicSelectionSystem;
-            // Random must not reach playBgm as a file name: it auditions one of
-            // its draws instead.
+            // Random and Biome must not reach playBgm as file names: they
+            // audition a draw and the local biome's theme instead.
             if (mss && mss.previewTrackValue) {
               mss.previewTrackValue(val, 90);
-            } else if (val && val !== "__none__" && val !== "__map__") {
+            } else if (val && val !== "__none__" && val !== "__map__" && val !== "__biome__") {
               AudioManager.playBgm({ name: val, volume: 90, pitch: 100, pan: 0 });
             }
           },
@@ -6278,7 +6659,12 @@
 
       // NEW: Conditionally set cancel handler based on current step
       const firstStep = Scene_CharacterCreation.getStartingStep();
-      if (this._step <= firstStep) {
+      // The character-type step is the starting step for the 2nd/3rd member
+      // too, but Back there still has somewhere real to go (the previous
+      // member's "add another?" prompt), so it keeps its cancel handler.
+      const isLaterMemberTypeStep = this._step === STEP.CHARACTER_TYPE &&
+        (Scene_CharacterCreation._currentPartyMemberIndex || 0) > 0;
+      if (this._step <= firstStep && !isLaterMemberTypeStep) {
         // Completely disable cancel handler on first step
         this._gridWindow.setHandler("cancel", null);
       } else {
@@ -6309,6 +6695,21 @@
 
     // NEW: Handles going to the previous step.
     previousStep() {
+      // Character-type step for the second or third party member: this is
+      // where "add_member" landed after adding the actor and jumping ahead,
+      // so Back undoes exactly that (drops the actor it just added) and
+      // returns to the previous member's "add another?" prompt instead of
+      // falling through to the title screen.
+      if (this._step === STEP.CHARACTER_TYPE && (Scene_CharacterCreation._currentPartyMemberIndex || 0) > 0) {
+        const removedIndex = Scene_CharacterCreation._currentPartyMemberIndex;
+        $gameParty.removeActor(removedIndex + 1); // Actor IDs are 1-based
+        Scene_CharacterCreation._currentPartyMemberIndex = removedIndex - 1;
+        Scene_CharacterCreation._isCreatureMode = false;
+        this._step = STEP.ADD_MEMBER;
+        this.setupStep();
+        return;
+      }
+
       // Returning from a "Randomize all party" jump: the whole party was filled
       // and the wizard leapt straight to the origin step. Back should undo that,
       // trim the auto-added members back to the first one, and return to the
@@ -6384,6 +6785,13 @@
     // the title screen. Creations entered from a running game (a second party
     // member, a reprise from the creature builder) must never offer it.
     canExitToTitle() {
+      // hasCompletedFirstCreation only flips at the origin step, which is
+      // reached once per run (after every party member), so it stays false
+      // while building the 2nd/3rd member too. Nothing has been committed
+      // yet ONLY while the first member is still being built; from then on a
+      // full actor already sits in the party, so Back must never drop the
+      // player at the title screen and silently lose it.
+      if ((Scene_CharacterCreation._currentPartyMemberIndex || 0) > 0) return false;
       if (typeof hasCompletedFirstCreation !== "function") return false;
       return !hasCompletedFirstCreation();
     }
@@ -6813,10 +7221,12 @@
 
       // Dossiers that were drawn more than once can be leafed through into
       // their other looks without leaving the card. The shoulder buttons do it
-      // both ways; Shift steps forward, being the one spare keyboard key here
-      // (W is remapped to "up" game-wide).
+      // both ways; TAB steps forward, and is the button the chip under the
+      // thumbnails names on a keyboard. Shift still works, for the builds that
+      // taught it (W is remapped to "up" game-wide, so it is not free).
       if (isPreset && windowObj.cycleSkin) {
-        if (Input.isTriggered('pagedown') || Input.isTriggered('shift')) {
+        if (Input.isTriggered('pagedown') || Input.isTriggered('tab') ||
+            Input.isTriggered('shift')) {
           windowObj.cycleSkin(1);
           return;
         }
@@ -6825,6 +7235,10 @@
           return;
         }
       }
+
+      // A pad can be plugged in, or run out of battery, while the board is
+      // open, so the chip that names the look button is kept in step.
+      if (isPreset) this.syncSkinKeyChip();
 
       let moved = false;
       let index = windowObj.index();
@@ -6874,10 +7288,12 @@
         // handling and was as likely to confirm the highlighted card as to do
         // nothing - which is how backing out could walk the wizard FORWARD.
         const firstStep = Scene_CharacterCreation.getStartingStep();
+        const isLaterMemberTypeStep = this._step === STEP.CHARACTER_TYPE &&
+          (Scene_CharacterCreation._currentPartyMemberIndex || 0) > 0;
         if (isPreset) {
           SoundManager.playCancel();
           this.onPresetCancel();
-        } else if (this._step > firstStep) {
+        } else if (this._step > firstStep || isLaterMemberTypeStep) {
           SoundManager.playCancel();
           this.onCancel();
         } else if (this.canExitToTitle()) {
@@ -6908,7 +7324,41 @@
         this.updateUIInput();
         if (window.CCScroll) window.CCScroll.update(this._dndContainer);
         this.refreshUIOverlayDOM();
+        this.updateEmRestlessBubble();
       }
+    }
+
+    // Em's card starts heckling the player once her dossier has sat unpicked
+    // on the board for EM_RESTLESS_DELAY_MS, and again every
+    // EM_RESTLESS_INTERVAL_MS after that. The clock is kept here rather than
+    // stamped once when the board opens, so re-entering preset mode (Cancel
+    // then back in) always gives her the same ten seconds of patience.
+    updateEmRestlessBubble() {
+      const bubble = window.EmRestlessBubble;
+      if (!bubble) return;
+      if (!this._presetWindow || this._presetApplied) {
+        bubble.release();
+        this._emBoardOpenedAt = 0;
+        this._emBubbleNextAt = 0;
+        return;
+      }
+      if (!this._emBoardOpenedAt) this._emBoardOpenedAt = Date.now();
+      bubble.update();
+
+      const now = Date.now();
+      if (now - this._emBoardOpenedAt < EM_RESTLESS_DELAY_MS) return;
+      if (this._emBubbleNextAt && now < this._emBubbleNextAt) return;
+      if (typeof getEmRestlessLine !== "function" || !this._dndContainer) return;
+
+      const presets = availablePresets();
+      const emIndex = presets.findIndex((p) => p && p.name === "Em");
+      if (emIndex === -1) return; // not on the board this world (already played, or not this preset set)
+      const card = this._dndContainer.querySelectorAll(".cc-page-left .cc-presets-board .cc-wanted-card")[emIndex];
+      if (!card) return;
+
+      this._emBubbleLastLine = getEmRestlessLine(this._emBubbleLastLine);
+      bubble.show(card, this._emBubbleLastLine);
+      this._emBubbleNextAt = now + EM_RESTLESS_INTERVAL_MS;
     }
   }
 
@@ -7175,7 +7625,35 @@
     { id: "cancel", labelKey: "CharCreate.controls.back", key: "X / Esc", mouseKey: "CharCreate.controls.rightClick", pad: "B" },
     { id: "shift", labelKey: "CharCreate.controls.run", keyKey: "CharCreate.controls.holdShift", pad: "X" },
     { id: "menu", labelKey: "CharCreate.controls.menu", key: "Esc", pad: "Y" },
+    { id: "mapSheet", labelKey: "CharCreate.controls.openMap", key: "M" },
+    { id: "hotbar", labelKey: "CharCreate.controls.hotbarCycle", pad: "L1 / R1" },
   ];
+
+  // The world map (315) answers to two controls no other map has: T / Select
+  // stops the journey and walks the party into whatever stands on the square
+  // they are on (WorldMapReturn's wmrToggle), and the triggers pull the camera
+  // in and out (MousePan's zoom, which is confined to that one sheet). They are
+  // listed under the core rows while the party is out there, and they keep
+  // their own "already used once" record, so the legend can finish on the world
+  // map long after the walking rows were learnt indoors.
+  const WORLD_MAP_LEGEND_MAP_ID = 315;
+
+  const WORLD_MAP_CONTROLS = [
+    { id: "visitPlace", labelKey: "CharCreate.controls.visitPlace", key: "T", pad: "Select" },
+    { id: "worldZoom", labelKey: "CharCreate.controls.zoom", key: "+ / -", pad: "L2 / R2" },
+  ];
+
+  function isWorldMapControl(id) {
+    return WORLD_MAP_CONTROLS.some((entry) => entry.id === id);
+  }
+
+  // Which rows of a merged lit-record belong to one list, so each list keeps
+  // its own record and neither can close the other.
+  function litSubset(lit, entries) {
+    const out = {};
+    for (const entry of entries) if (lit[entry.id]) out[entry.id] = true;
+    return out;
+  }
 
   // Arms the legend for the map the tutorial just finished on. Idempotent
   // against a save that has already finished it, so re-running the tutorial
@@ -7187,12 +7665,30 @@
     $gameSystem._tutorialControlsLit = {};
   }
 
+  function coreLegendVisible() {
+    return !!($gameSystem && $gameSystem._tutorialControlsLegendActive &&
+      !$gameSystem._tutorialControlsLegendSeen);
+  }
+
+  // The world map rows stand on their own: standing on map 315 is enough to
+  // show them, whether or not the party ever went through the tutorial, and
+  // they are gone for good once both have been used once.
+  function worldLegendVisible() {
+    if (!$gameSystem || !$gameMap) return false;
+    if ($gameSystem._worldMapControlsSeen) return false;
+    return $gameMap.mapId() === WORLD_MAP_LEGEND_MAP_ID;
+  }
+
   class Window_TutorialControls extends Window_Base {
     initialize(rect) {
       super.initialize(rect);
       // No parchment skin: a plain black panel is painted in refresh() instead.
       this.opacity = 0;
-      this._lit = Object.assign({}, ($gameSystem && $gameSystem._tutorialControlsLit) || {});
+      this._lit = Object.assign(
+        {},
+        ($gameSystem && $gameSystem._tutorialControlsLit) || {},
+        ($gameSystem && $gameSystem._worldMapControlsLit) || {}
+      );
       this.refresh();
     }
 
@@ -7205,7 +7701,21 @@
     }
 
     static windowHeight() {
-      return TUTORIAL_CONTROLS.length * Window_TutorialControls.rowHeight() + 32;
+      const rows = TUTORIAL_CONTROLS.length + WORLD_MAP_CONTROLS.length;
+      return rows * Window_TutorialControls.rowHeight() + 32;
+    }
+
+    // The rows on show right now: the core list until it is done with, plus the
+    // world map pair whenever the party is standing on the world map.
+    entries() {
+      const rows = [];
+      if (coreLegendVisible()) rows.push(...TUTORIAL_CONTROLS);
+      if (worldLegendVisible()) rows.push(...WORLD_MAP_CONTROLS);
+      return rows;
+    }
+
+    isLit(id) {
+      return !!this._lit[id];
     }
 
     // Lights one row if it wasn't already lit, persisting the change so a
@@ -7213,14 +7723,21 @@
     markLit(id) {
       if (this._lit[id]) return false;
       this._lit[id] = true;
-      if ($gameSystem) $gameSystem._tutorialControlsLit = Object.assign({}, this._lit);
+      if ($gameSystem) {
+        $gameSystem._tutorialControlsLit = litSubset(this._lit, TUTORIAL_CONTROLS);
+        $gameSystem._worldMapControlsLit = litSubset(this._lit, WORLD_MAP_CONTROLS);
+      }
       SoundManager.playCursor();
       this.refresh();
       return true;
     }
 
+    isListComplete(entries) {
+      return entries.every((entry) => this._lit[entry.id]);
+    }
+
     isComplete() {
-      return TUTORIAL_CONTROLS.every((entry) => this._lit[entry.id]);
+      return this.isListComplete(TUTORIAL_CONTROLS);
     }
 
     rowText(entry) {
@@ -7233,11 +7750,13 @@
     refresh() {
       if (!this.contents) return;
       this.contents.clear();
-      this.contents.fillRect(0, 0, this.innerWidth, this.innerHeight, "rgba(0, 0, 0, 0.82)");
-      this.contents.fontSize = 16;
+      const rows = this.entries();
+      if (!rows.length) return;
       const rh = Window_TutorialControls.rowHeight();
+      this.contents.fillRect(0, 0, this.innerWidth, rows.length * rh + 12, "rgba(0, 0, 0, 0.82)");
+      this.contents.fontSize = 16;
       let y = 6;
-      for (const entry of TUTORIAL_CONTROLS) {
+      for (const entry of rows) {
         const lit = !!this._lit[entry.id];
         this.changeTextColor(lit ? "#ffd700" : "#ffffff");
         const label = T(entry.labelKey);
@@ -7254,13 +7773,28 @@
   };
 
   Scene_Map.prototype.createTutorialControlsWindow = function () {
-    if (!$gameSystem || !$gameSystem._tutorialControlsLegendActive || $gameSystem._tutorialControlsLegendSeen) return;
+    if (!coreLegendVisible() && !worldLegendVisible()) return;
     const width = Window_TutorialControls.windowWidth();
     const height = Window_TutorialControls.windowHeight();
     const rect = new Rectangle(Graphics.boxWidth - width - 16, 16, width, height);
     this._tutorialControlsWindow = new Window_TutorialControls(rect);
     this.addWindow(this._tutorialControlsWindow);
   };
+
+  // The camera zoom is not a button press: the wheel, the +/- keys and the
+  // triggers all end up moving Game_Screen's scale, so the legend watches the
+  // scale itself and counts any change made on the world map as the control
+  // having been used.
+  let lastLegendZoom = null;
+
+  function zoomControlUsed() {
+    const zoom = $gameScreen ? $gameScreen.zoomScale() : 1;
+    const moved = lastLegendZoom !== null && Math.abs(zoom - lastLegendZoom) > 0.0005;
+    lastLegendZoom = zoom;
+    if (moved) return true;
+    return !!(Input.isRepeated("mapZoomIn") || Input.isRepeated("mapZoomOut") ||
+      Input.isRepeated("zoomIn") || Input.isRepeated("zoomOut"));
+  }
 
   const _Scene_Map_update_tutorialControls = Scene_Map.prototype.update;
   Scene_Map.prototype.update = function () {
@@ -7272,27 +7806,47 @@
     const win = this._tutorialControlsWindow;
     if (!win) return;
 
-    if (Input.isTriggered("up")) win.markLit("up");
-    if (Input.isTriggered("down")) win.markLit("down");
-    if (Input.isTriggered("left")) win.markLit("left");
-    if (Input.isTriggered("right")) win.markLit("right");
-    if (Input.isTriggered("ok") || TouchInput.isTriggered()) win.markLit("ok");
-    if (Input.isTriggered("escape") || TouchInput.isCancelled()) {
-      win.markLit("cancel");
-      win.markLit("menu");
+    if (coreLegendVisible()) {
+      if (Input.isTriggered("up")) win.markLit("up");
+      if (Input.isTriggered("down")) win.markLit("down");
+      if (Input.isTriggered("left")) win.markLit("left");
+      if (Input.isTriggered("right")) win.markLit("right");
+      if (Input.isTriggered("ok") || TouchInput.isTriggered()) win.markLit("ok");
+      if (Input.isTriggered("escape") || TouchInput.isCancelled()) {
+        win.markLit("cancel");
+        win.markLit("menu");
+      }
+      if (Input.isTriggered("menu")) win.markLit("menu");
+      if (Input.isPressed("shift")) win.markLit("shift");
+      // The map sheet (WorldMap.js, M) and the item bar's L1/R1 step
+      // (ItemSystemHotbar.js, pageup/pagedown) are read under their own
+      // symbols, so a rebind still lights the row.
+      if (Input.isTriggered("world_map_toggle")) win.markLit("mapSheet");
+      if (Input.isTriggered("pageup") || Input.isTriggered("pagedown")) win.markLit("hotbar");
     }
-    if (Input.isTriggered("menu")) win.markLit("menu");
-    if (Input.isPressed("shift")) win.markLit("shift");
 
-    if (win.isComplete()) {
+    const onWorldMap = worldLegendVisible();
+    if (onWorldMap) {
+      if (Input.isTriggered("wmrToggle")) win.markLit("visitPlace");
+      if (zoomControlUsed()) win.markLit("worldZoom");
+    } else {
+      lastLegendZoom = null;
+    }
+
+    if (coreLegendVisible() && win.isListComplete(TUTORIAL_CONTROLS) && $gameSystem) {
+      $gameSystem._tutorialControlsLegendSeen = true;
+      $gameSystem._tutorialControlsLegendActive = false;
+      win.refresh();
+    }
+    if (onWorldMap && win.isListComplete(WORLD_MAP_CONTROLS) && $gameSystem) {
+      $gameSystem._worldMapControlsSeen = true;
+      win.refresh();
+    }
+
+    if (!coreLegendVisible() && !worldLegendVisible()) {
       this._windowLayer.removeChild(win);
       win.destroy();
       this._tutorialControlsWindow = null;
-      if ($gameSystem) {
-        $gameSystem._tutorialControlsLegendSeen = true;
-        $gameSystem._tutorialControlsLegendActive = false;
-        $gameSystem._tutorialControlsLit = null;
-      }
     }
   };
 
@@ -7784,44 +8338,92 @@
   // A tile is somewhere to stand only if it can be walked off in every
   // direction (so no party member is boxed in by a feature drawn around them),
   // has nothing already standing on it, and is not a floor that hurts.
-  function ccIsStandableTile(x, y) {
-    if (x < 0 || y < 0 || x >= $gameMap.width() || y >= $gameMap.height()) return false;
-    if (!$gameMap.checkPassage(x, y, 0x0f)) return false;
-    if ($gameMap.eventsXy(x, y).length > 0) return false;
-    if ($gameMap.isDamageFloor(x, y)) return false;
-    return true;
+  //
+  // "Can be walked off" is asked the way the player themselves asks it, through
+  // Game_CharacterBase.canPass. The raw tileset flags (Game_Map.checkPassage)
+  // are not the answer on a procedural square: every special terrain there is
+  // layered on top of Game_Map.isPassable instead - deep water (region 99),
+  // blocked tiles (region 10), the always-open path network (region 5 / 13),
+  // cliffs, mountain (terrain tag 4) and ice (terrain tag 7). Read through the
+  // flags alone a lake and a mountainside both look like open ground, which is
+  // how an origin could still set the party down inside one.
+  const CC_LANDING_DIRS = [2, 4, 6, 8];
+
+  function ccCanStepOff(x, y, d) {
+    return $gamePlayer.canPass(x, y, d);
   }
 
-  // The nearest tile to (cx, cy) that answers to the above, walking outward in
+  // Something solid standing on the tile: an event that blocks a walker. Used
+  // by the relaxed pass, which cares only about what makes a landing
+  // impossible, not about what makes it untidy.
+  function ccBlockingEventAt(x, y) {
+    return $gameMap.eventsXy(x, y).some(
+      (ev) => !ev._erased && ev.isNormalPriority() && !ev.isThrough()
+    );
+  }
+
+  function ccIsStandableTile(x, y) {
+    if (!$gameMap.isValid(x, y)) return false;
+    if ($gameMap.eventsXy(x, y).length > 0) return false;
+    if ($gameMap.isDamageFloor(x, y)) return false;
+    return CC_LANDING_DIRS.every((d) => ccCanStepOff(x, y, d));
+  }
+
+  // The same question asked at its lowest bar: the party is not stuck here.
+  // The tile can be walked off in at least ONE direction and nothing solid is
+  // standing on it. Only ever a second pass, so a square whose open ground is
+  // all narrow - a cave, a corridor, a walled yard, a jetty - still answers
+  // with somewhere to put the party down instead of leaving them in the rock.
+  function ccIsUnstuckTile(x, y) {
+    if (!$gameMap.isValid(x, y)) return false;
+    if (ccBlockingEventAt(x, y)) return false;
+    return CC_LANDING_DIRS.some((d) => ccCanStepOff(x, y, d));
+  }
+
+  // The nearest tile to (cx, cy) the test answers for, walking outward in
   // square rings so the party lands as close to where they were aimed as the
-  // terrain allows. Answers null on a square with nowhere to stand at all.
-  function ccFindStandableTile(cx, cy) {
-    if (ccIsStandableTile(cx, cy)) return { x: cx, y: cy };
+  // terrain allows. Null when the whole map fails the test.
+  function ccFindTileNear(cx, cy, test) {
+    if (test(cx, cy)) return { x: cx, y: cy };
     const reach = Math.max($gameMap.width(), $gameMap.height());
     for (let ring = 1; ring < reach; ring++) {
       for (let dx = -ring; dx <= ring; dx++) {
         for (let dy = -ring; dy <= ring; dy++) {
           // The ring itself, not the filled square inside it.
           if (Math.max(Math.abs(dx), Math.abs(dy)) !== ring) continue;
-          if (ccIsStandableTile(cx + dx, cy + dy)) return { x: cx + dx, y: cy + dy };
+          if (test(cx + dx, cy + dy)) return { x: cx + dx, y: cy + dy };
         }
       }
     }
     return null;
   }
 
+  // Somewhere to stand if the square holds one, and failing that anywhere the
+  // party is at least not walled in. Answers null only for a square with no
+  // walkable tile at all (open sea, which no origin lands on).
+  function ccFindStandableTile(cx, cy) {
+    return ccFindTileNear(cx, cy, ccIsStandableTile) ||
+           ccFindTileNear(cx, cy, ccIsUnstuckTile);
+  }
+
   // Move the party onto a tile they can stand on, if they are not on one
-  // already. Deliberately a no-op when the tile is fine, so it does not fight
-  // VehicleSystem, which puts the vehicle origins down in a 4x4 clearing of its
-  // own choosing (and leaves the player alone when it cannot find one, which is
-  // the case this catches).
+  // already. Deliberately a no-op when the tile the party is on can be walked
+  // out of, so it does not fight the landings that are somebody else's to make:
+  // VehicleSystem puts the vehicle origins down in a 4x4 clearing of its own
+  // choosing (and leaves the player alone when it cannot find one, which is the
+  // case this catches), and an origin that begins in a cellar or a cave means
+  // the cramped tile it named. Only being walled in - or standing on a floor
+  // that hurts - is overruled, and the tile it moves to is a properly open one
+  // wherever the square holds any.
   function ccPlaceOnPassableTile() {
-    if (ccIsStandableTile($gamePlayer.x, $gamePlayer.y)) return;
-    const tile = ccFindStandableTile($gamePlayer.x, $gamePlayer.y);
+    const x = $gamePlayer.x, y = $gamePlayer.y;
+    if (ccIsUnstuckTile(x, y) && !$gameMap.isDamageFloor(x, y)) return;
+    const tile = ccFindStandableTile(x, y);
     if (!tile) {
       console.warn("CharacterCreation: nowhere to stand on the origin's square; the party was left where it landed.");
       return;
     }
+    console.log(`CharacterCreation: landing tile (${x},${y}) cannot be stood on; the party was moved to (${tile.x},${tile.y}).`);
     $gamePlayer.locate(tile.x, tile.y);
   }
 
@@ -7836,6 +8438,26 @@
     isStandableTile: ccIsStandableTile,
   };
 
+  // Opens a house on the square the party is standing on, through the same
+  // command a player-built door uses: alwaysOpen so a night landing is never
+  // met with a lockpick prompt, and no caller event so the door state machine
+  // skips the swing and goes straight to the step-in.
+  function ccEnterRandomHouse() {
+    if (!window.ProceduralHouseSystem) {
+      console.warn("CharacterCreation: ProceduralHouseSystem is not loaded; the hypernet-explorer origin was left outdoors.");
+      return;
+    }
+    try {
+      PluginManager.callCommand({}, "ProceduralHouseSystem", "visitHouse", {
+        poolName: "houses",       // i18n-ignore  house pool id
+        facing: "false",
+        alwaysOpen: "true",
+      });
+    } catch (e) {
+      console.warn("CharacterCreation: could not open a house for the hypernet-explorer origin.", e);
+    }
+  }
+
   const _CC_SceneMap_onMapLoaded = Scene_Map.prototype.onMapLoaded;
   Scene_Map.prototype.onMapLoaded = function () {
     const enteringGameStartMap =
@@ -7846,6 +8468,27 @@
     if ($gameTemp && $gameTemp._ccProcSquareLanding && $gameMap.mapId() === proceduralMapId()) {
       $gameTemp._ccProcSquareLanding = false;
       ccPlaceOnPassableTile();
+    }
+    // The same guarantee for every OTHER route a freshly created party reaches
+    // the procedural map by: the bunker's cellar and any other forced biome
+    // (started through WorldMapReturn rather than through
+    // startOnProceduralSquare), a wrecked ship's alien surface, the square a
+    // picker origin was walked onto. None of them raise the flag above, and all
+    // of them are terrain generated a moment ago, with no guarantee that the
+    // tile the transfer named is anything but the inside of a rock or the
+    // middle of a lake. Answered once, on the first map the party is set down
+    // on after creation, and only when that map is the procedural one.
+    if ($gameTemp && $gameTemp._ccOriginLanding && $gameMap.mapId() !== GAME_START_MAP_ID) {
+      $gameTemp._ccOriginLanding = false;
+      if ($gameMap.mapId() === proceduralMapId()) ccPlaceOnPassableTile();
+    }
+    // The Hypernet Explorer wakes up indoors, so once the square is built and
+    // the party is standing somewhere legal on it, a house is opened for them.
+    // Runs after both landing passes above, which are what guarantee the tile
+    // the door entry starts its forced step from is a standable one.
+    if ($gameTemp && $gameTemp._ccHypernetHouseLanding && $gameMap.mapId() === proceduralMapId()) {
+      $gameTemp._ccHypernetHouseLanding = false;
+      ccEnterRandomHouse();
     }
     // Hide the player sprite the instant it lands on the game-start map, so it
     // never pops in mid-fade; Scene_Map.update below reveals it the moment the

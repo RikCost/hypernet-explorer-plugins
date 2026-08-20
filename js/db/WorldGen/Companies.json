@@ -5,8 +5,7 @@
     "sharePrice": 45,
     "totalShares": 500000,
     "color": "#e0b000",
-    "description": "The zesty consumer-tech conglomerate behind half the gadgets in Europe. Famously overvalued, famously beloved.",
-    "descriptionIt": "Il frizzante conglomerato di tecnologia di consumo dietro metà dei gadget d'Europa. Notoriamente sopravvalutato, notoriamente amato."
+    "description": "RealEstate.company.lemoncorp.description"
   },
   "PetroDyne": {
     "name": "PetroDyne",
@@ -14,8 +13,7 @@
     "sharePrice": 120,
     "totalShares": 800000,
     "color": "#2e7d32",
-    "description": "Oil, gas and everything that burns. Pumps crude from the Petrocave and pays steady, sooty dividends.",
-    "descriptionIt": "Petrolio, gas e tutto ciò che brucia. Estrae greggio dalla Petrocave e paga dividendi costanti e fuligginosi."
+    "description": "RealEstate.company.petrodyne.description"
   },
   "SoulForge": {
     "name": "SoulForge Ltd.",
@@ -23,8 +21,7 @@
     "sharePrice": 88,
     "totalShares": 300000,
     "color": "#7b3f9e",
-    "description": "Refines and trades soul-crystals. Volatile, ethically dubious, spectacularly profitable when the veil is thin.",
-    "descriptionIt": "Raffina e commercia cristalli d'anima. Volatile, eticamente dubbia, straordinariamente redditizia quando il velo è sottile."
+    "description": "RealEstate.company.soulforge.description"
   },
   "HyperNet Systems": {
     "name": "HyperNet Systems",
@@ -32,8 +29,7 @@
     "sharePrice": 210,
     "totalShares": 650000,
     "color": "#1e88a8",
-    "description": "The backbone of the Hypernet itself. Owns the pipes, the towers and most of your data.",
-    "descriptionIt": "La spina dorsale della Hypernet stessa. Possiede i cavi, le torri e gran parte dei tuoi dati."
+    "description": "RealEstate.company.hypernetsystems.description"
   },
   "Ferro Steelworks": {
     "name": "Ferro Steelworks",
@@ -41,8 +37,7 @@
     "sharePrice": 34,
     "totalShares": 1200000,
     "color": "#8b5a2b",
-    "description": "Girders, rails and hull plating. Boring, heavy, and quietly essential to everyone who builds anything.",
-    "descriptionIt": "Travi, rotaie e lamiere per scafi. Noiosa, pesante e silenziosamente essenziale per chiunque costruisca qualcosa."
+    "description": "RealEstate.company.ferrosteelworks.description"
   },
   "GreenWitch Organics": {
     "name": "GreenWitch Organics",
@@ -50,8 +45,7 @@
     "sharePrice": 27,
     "totalShares": 900000,
     "color": "#5c7a3d",
-    "description": "Herbs, tinctures and suspiciously effective produce grown under the GreenWitch canopy.",
-    "descriptionIt": "Erbe, tinture e prodotti sospettosamente efficaci coltivati sotto la volta della GreenWitch."
+    "description": "RealEstate.company.greenwitchorganics.description"
   },
   "Vault Bank Holdings": {
     "name": "Vault Bank Holdings",
@@ -59,8 +53,7 @@
     "sharePrice": 305,
     "totalShares": 400000,
     "color": "#b8860b",
-    "description": "Deposits, loans and the vaults that hold them. If you owe money, you probably owe it here.",
-    "descriptionIt": "Depositi, prestiti e i caveau che li custodiscono. Se hai un debito, probabilmente ce l'hai qui."
+    "description": "RealEstate.company.vaultbankholdings.description"
   },
   "Aether Logistics": {
     "name": "Aether Logistics",
@@ -68,7 +61,6 @@
     "sharePrice": 62,
     "totalShares": 700000,
     "color": "#5a6b8c",
-    "description": "Trains, buses, helicopters and the timetables that bind them. Moves people and cargo across the map.",
-    "descriptionIt": "Treni, autobus, elicotteri e gli orari che li legano. Sposta persone e merci attraverso la mappa."
+    "description": "RealEstate.company.aetherlogistics.description"
   }
 }

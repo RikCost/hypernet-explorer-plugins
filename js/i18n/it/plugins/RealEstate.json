@@ -49,5 +49,42 @@
     "available2": "Disponibili",
     "evicted": "Sfrattato da \"{name}\": affitto non pagato.",
     "appName": "Borsa Immobiliare"
+  },
+  "company": {
+    "lemoncorp": {
+      "description": "Il frizzante conglomerato di tecnologia di consumo dietro metà dei gadget d'Europa. Notoriamente sopravvalutato, notoriamente amato."
+    },
+    "petrodyne": {
+      "description": "Petrolio, gas e tutto ciò che brucia. Estrae greggio dalla Petrocave e paga dividendi costanti e fuligginosi."
+    },
+    "soulforge": {
+      "description": "Raffina e commercia cristalli d'anima. Volatile, eticamente dubbia, straordinariamente redditizia quando il velo è sottile."
+    },
+    "hypernetsystems": {
+      "description": "La spina dorsale della Hypernet stessa. Possiede i cavi, le torri e gran parte dei tuoi dati."
+    },
+    "ferrosteelworks": {
+      "description": "Travi, rotaie e lamiere per scafi. Noiosa, pesante e silenziosamente essenziale per chiunque costruisca qualcosa."
+    },
+    "greenwitchorganics": {
+      "description": "Erbe, tinture e prodotti sospettosamente efficaci coltivati sotto la volta della GreenWitch."
+    },
+    "vaultbankholdings": {
+      "description": "Depositi, prestiti e i caveau che li custodiscono. Se hai un debito, probabilmente ce l'hai qui."
+    },
+    "aetherlogistics": {
+      "description": "Treni, autobus, elicotteri e gli orari che li legano. Sposta persone e merci attraverso la mappa."
+    }
+  },
+  "sector": {
+    "consumertech": "Tecnologia di Consumo",
+    "energy": "Energia",
+    "occult": "Occulto",
+    "telecom": "Telecomunicazioni",
+    "industrial": "Industria",
+    "agriculture": "Agricoltura",
+    "finance": "Finanza",
+    "transport": "Trasporti",
+    "misc": "Varie"
   }
 }

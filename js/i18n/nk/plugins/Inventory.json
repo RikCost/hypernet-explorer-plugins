@@ -22,6 +22,7 @@
     "Lifestyle": "LIFESTYLE",
     "Magic": "MAGIC",
     "Misc": "MISC",
+    "Usable": "USABLE",
     "Quest": "QUEST"
   },
   "itemType": {

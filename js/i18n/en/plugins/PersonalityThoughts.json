@@ -1,0 +1,1824 @@
+{
+  "nervous": {
+    "thoughts": [
+      "What was that noise?",
+      "I have a bad feeling about this.",
+      "Did I forget something important?",
+      "My heart is pounding...",
+      "I just want this to be over."
+    ],
+    "need": {
+      "sleep": [
+        "I'm too wound up, but I have to lie down.",
+        "If I don't sleep soon I'll fall apart.",
+        "Please let me rest without nightmares."
+      ],
+      "hunger": [
+        "My stomach is in knots, is it hunger or nerves?",
+        "I should eat, if I can keep it down.",
+        "I can't think straight when I'm this hungry."
+      ],
+      "work": [
+        "What if I mess up the shift again?",
+        "Deep breaths. Just get through it.",
+        "Everyone will be watching me work."
+      ],
+      "leisure": [
+        "Free time just makes me restless.",
+        "I should relax, but I can't switch off.",
+        "Maybe a quiet corner where no one bothers me."
+      ],
+      "crime": [
+        "Oh no, I can't, I'll get caught.",
+        "My hands are shaking just thinking about it.",
+        "What if someone saw me?"
+      ],
+      "hygiene": [
+        "I feel awful, I need to clean up now.",
+        "Did people notice? I have to wash.",
+        "Where's the nearest WC, quickly."
+      ],
+      "money": [
+        "What if I can't pay for things?",
+        "I'm running low and it terrifies me.",
+        "I need a cushion or I'll panic."
+      ],
+      "safety": [
+        "I have to stay out of sight.",
+        "Someone could be after me, keep low.",
+        "Just don't draw any attention."
+      ],
+      "comfort": [
+        "A safer place would calm my nerves.",
+        "I'd sleep easier behind a locked door.",
+        "Somewhere I feel secure, finally."
+      ],
+      "social": [
+        "I want company, but what if I say the wrong thing?",
+        "Talking might calm me down... maybe.",
+        "I hope they don't think I'm strange."
+      ],
+      "idle": [
+        "Is everything alright? It feels too quiet.",
+        "I keep expecting something to go wrong.",
+        "Stay calm, stay calm..."
+      ],
+      "familiar": [
+        "That traveller again, at least they're familiar.",
+        "I feel a little safer when they're around.",
+        "I almost trust them. Almost."
+      ]
+    }
+  },
+  "calm": {
+    "thoughts": [
+      "One step at a time.",
+      "Keep breathing. Everything is fine.",
+      "This, too, shall pass.",
+      "Worrying solves nothing.",
+      "Maintain focus."
+    ],
+    "need": {
+      "sleep": [
+        "Rest comes easily to a clear mind.",
+        "I'll lie down and let the day settle.",
+        "Sleep when tired; it's that simple."
+      ],
+      "hunger": [
+        "A meal, then back to the day.",
+        "No rush, I'll find something to eat.",
+        "The body asks; I'll answer calmly."
+      ],
+      "work": [
+        "Steady work, steady mind.",
+        "I'll take the shift as it comes.",
+        "One task, then the next."
+      ],
+      "leisure": [
+        "A peaceful stroll suits me fine.",
+        "Nice to simply be, for a while.",
+        "I'll let the afternoon drift."
+      ],
+      "crime": [
+        "No, that's not worth the trouble.",
+        "I'd rather keep my conscience clear.",
+        "There's always an honest way."
+      ],
+      "hygiene": [
+        "Time to freshen up, unhurried.",
+        "A wash will set me right.",
+        "Cleanliness, calmly seen to."
+      ],
+      "money": [
+        "Funds are low; I'll handle it in time.",
+        "No panic, money comes and goes.",
+        "I'll plan a way to earn a little."
+      ],
+      "safety": [
+        "Best to stay quiet for now.",
+        "I'll keep a low profile, no fuss.",
+        "Patience keeps trouble away."
+      ],
+      "comfort": [
+        "A nicer place would be pleasant.",
+        "Maybe I'll see about a better room.",
+        "Comfort, when the time is right."
+      ],
+      "social": [
+        "A good conversation would be nice.",
+        "I'll find someone to talk with.",
+        "Company, taken as it comes."
+      ],
+      "idle": [
+        "All is well, more or less.",
+        "A quiet moment to gather myself.",
+        "Nothing pressing. Good."
+      ],
+      "familiar": [
+        "That traveller seems steady, I like that.",
+        "Our paths cross often; pleasant enough.",
+        "I trust them more than most."
+      ]
+    }
+  },
+  "aggressive": {
+    "thoughts": [
+      "Don't test me.",
+      "I'm ready for a fight.",
+      "What are you looking at?",
+      "Patience is running thin.",
+      "Move, or be moved."
+    ],
+    "need": {
+      "sleep": [
+        "I'll crash hard and wake up swinging.",
+        "Tired makes me mean, better sleep.",
+        "Out of my way, I'm going to bed."
+      ],
+      "hunger": [
+        "Feed me before I bite someone's head off.",
+        "I get nasty on an empty stomach.",
+        "Food. Now. Don't make me ask twice."
+      ],
+      "work": [
+        "Let me at it, I'll smash through this shift.",
+        "Work hard, hit harder.",
+        "Don't slow me down at the job."
+      ],
+      "leisure": [
+        "I need to burn off this energy.",
+        "Boredom makes me itch for a brawl.",
+        "Find me something to hit, for fun."
+      ],
+      "crime": [
+        "They've got it coming.",
+        "Take what I want, who's stopping me?",
+        "A little muscle gets results."
+      ],
+      "hygiene": [
+        "Tch, I reek. Sort it out.",
+        "Wash up fast, no time wasted.",
+        "Even I can't stand this stink."
+      ],
+      "money": [
+        "I'm broke and it's making me furious.",
+        "Someone owes me, I'll collect.",
+        "Get me paid, or there'll be trouble."
+      ],
+      "safety": [
+        "Let them come, but not yet.",
+        "I'll lay low, then hit back harder.",
+        "Nobody corners me for long."
+      ],
+      "comfort": [
+        "I've earned a place worth defending.",
+        "A bigger den for a bigger dog.",
+        "Time I lived like I matter."
+      ],
+      "social": [
+        "I could use someone to spar with.",
+        "People bore me, but I'm restless.",
+        "Find me someone with some spine."
+      ],
+      "idle": [
+        "Quiet. Too quiet. I don't like it.",
+        "Tch. Nothing to fight today.",
+        "Come on, give me a reason."
+      ],
+      "familiar": [
+        "That one's still hanging around. Tough, maybe.",
+        "I'd actually back them in a fight.",
+        "They've earned a grunt of respect."
+      ]
+    }
+  },
+  "melancholic": {
+    "thoughts": [
+      "Is this all there is?",
+      "I remember when things were better.",
+      "A heavy feeling...",
+      "Solitude feels right.",
+      "Everything seems grey."
+    ],
+    "need": {
+      "sleep": [
+        "At least in sleep the ache fades.",
+        "I'm so tired, in every way.",
+        "Maybe tomorrow will feel lighter."
+      ],
+      "hunger": [
+        "I should eat, though I've no appetite.",
+        "Food won't fill this emptiness.",
+        "I suppose I ought to feed myself."
+      ],
+      "work": [
+        "Another shift to fill the hours.",
+        "Work is just a way to forget.",
+        "I'll go through the motions again."
+      ],
+      "leisure": [
+        "Free time only feeds my thoughts.",
+        "Maybe a quiet place to be sad in peace.",
+        "What is there to enjoy, really?"
+      ],
+      "crime": [
+        "Nothing matters, so why not?",
+        "Even this leaves me hollow.",
+        "Maybe trouble would make me feel something."
+      ],
+      "hygiene": [
+        "I've let myself go again.",
+        "A wash, if I can find the will.",
+        "Even this feels like a chore."
+      ],
+      "money": [
+        "Money won't fix what's wrong with me.",
+        "I'm short again. Of course.",
+        "What's the point of saving?"
+      ],
+      "safety": [
+        "I'll just disappear for a while.",
+        "No one would notice if I hid away.",
+        "Better to be alone and unseen."
+      ],
+      "comfort": [
+        "Perhaps a kinder room would help. Perhaps.",
+        "I deserve a little softness, don't I?",
+        "A warmer corner of the world."
+      ],
+      "social": [
+        "I miss being close to someone.",
+        "Maybe a voice would chase the grey.",
+        "I shouldn't be alone tonight."
+      ],
+      "idle": [
+        "The day passes, grey as ever.",
+        "I sigh, and the world ignores it.",
+        "Just... drifting through it all."
+      ],
+      "familiar": [
+        "That traveller, one familiar face in the grey.",
+        "Strange comfort, seeing them again.",
+        "I almost let myself hope when they're near."
+      ]
+    }
+  },
+  "sanguine": {
+    "thoughts": [
+      "What a wonderful day!",
+      "I should talk to someone.",
+      "What's next? Something fun, I hope!",
+      "I feel great!",
+      "The future is bright."
+    ],
+    "need": {
+      "sleep": [
+        "A good sleep and I'll be twice as cheerful!",
+        "Bedtime, and dreams full of fun.",
+        "Recharge now, shine tomorrow!"
+      ],
+      "hunger": [
+        "Ooh, snack time! What's good around here?",
+        "A bite to eat and I'm back at full speed.",
+        "Food makes everything better!"
+      ],
+      "work": [
+        "Let's make this shift a fun one!",
+        "Work's better with a smile.",
+        "I'll cheer up the whole crew today."
+      ],
+      "leisure": [
+        "Free time! Let's find some fun!",
+        "Maybe the arcade, maybe a party!",
+        "So many lovely things to do!"
+      ],
+      "crime": [
+        "Nah, that would spoil the good vibes.",
+        "Why ruin a nice day with that?",
+        "I'd rather make a friend than steal a coin."
+      ],
+      "hygiene": [
+        "Freshen up and feel fabulous!",
+        "A quick wash to keep me sparkling.",
+        "Can't greet friends looking a mess!"
+      ],
+      "money": [
+        "Bit short, but it'll work out, it always does!",
+        "I'll find a fun way to earn some.",
+        "Money's nice, but company's nicer."
+      ],
+      "safety": [
+        "I'll keep my head down, but cheerfully.",
+        "A little quiet, then back to the fun.",
+        "Even laying low can be pleasant!"
+      ],
+      "comfort": [
+        "A nicer place means nicer parties!",
+        "Ooh, imagine the housewarming!",
+        "Time to treat myself, I think!"
+      ],
+      "social": [
+        "I simply must go chat with someone!",
+        "New faces! How exciting!",
+        "A conversation always lifts me up."
+      ],
+      "idle": [
+        "What a lovely moment to just be!",
+        "Everything's looking up!",
+        "I wonder who I'll meet today!"
+      ],
+      "familiar": [
+        "My favorite traveller! So glad to see them!",
+        "We keep meeting, must be friends now!",
+        "They always brighten my day."
+      ]
+    }
+  },
+  "cautious": {
+    "thoughts": [
+      "Let's think this through.",
+      "What are the risks?",
+      "A hasty decision is a bad decision.",
+      "Better to be safe than sorry.",
+      "Analyze the situation first."
+    ],
+    "need": {
+      "sleep": [
+        "I'll rest before exhaustion clouds my judgment.",
+        "Best to sleep early and stay sharp.",
+        "A tired mind makes mistakes; to bed."
+      ],
+      "hunger": [
+        "I should eat before my focus slips.",
+        "A measured meal, nothing risky.",
+        "Skipping food would be a careless error."
+      ],
+      "work": [
+        "I'll double-check everything on shift.",
+        "Measure twice, act once.",
+        "No shortcuts; they cause accidents."
+      ],
+      "leisure": [
+        "Free time, used wisely, not wasted.",
+        "I'll relax somewhere I know is safe.",
+        "A planned break beats an idle one."
+      ],
+      "crime": [
+        "The risk far outweighs the reward.",
+        "Too many ways this could go wrong.",
+        "No, getting caught isn't worth it."
+      ],
+      "hygiene": [
+        "Neglecting hygiene invites illness.",
+        "I'll clean up before it becomes a problem.",
+        "Prevention now saves trouble later."
+      ],
+      "money": [
+        "My reserves are thinning; I must plan.",
+        "Time to tighten the budget.",
+        "I'll secure income before it's urgent."
+      ],
+      "safety": [
+        "Lay low until the danger passes.",
+        "I'll check every exit before I relax.",
+        "Caution is what keeps me alive."
+      ],
+      "comfort": [
+        "A secure home is a sound investment.",
+        "I'll upgrade only if the numbers add up.",
+        "Comfort, yes, but within reason."
+      ],
+      "social": [
+        "I'll talk, but I'll read them first.",
+        "Trust, but verify.",
+        "Good to know who's around, carefully."
+      ],
+      "idle": [
+        "Everything in order? Let me check.",
+        "I'll review the day's plan.",
+        "Best to stay one step ahead."
+      ],
+      "familiar": [
+        "That traveller has proven reliable so far.",
+        "I've assessed them; they seem trustworthy.",
+        "Predictable, in a good way."
+      ]
+    }
+  },
+  "impulsive": {
+    "thoughts": [
+      "Just do it!",
+      "Why wait?",
+      "This seems like a good idea!",
+      "Worry about consequences later.",
+      "Act now, think later."
+    ],
+    "need": {
+      "sleep": [
+        "Sleep? Ugh, but my body's giving out.",
+        "Fine, fine, I'll crash, just for a bit.",
+        "I'll nap wherever I drop."
+      ],
+      "hunger": [
+        "Starving! I'll grab the first thing I see.",
+        "Eat now, regret the choice later.",
+        "Ooh, that looks tasty, done deal."
+      ],
+      "work": [
+        "Let's just dive into the shift.",
+        "I'll figure out the job as I go.",
+        "Bored already, let's wing it."
+      ],
+      "leisure": [
+        "Free time! Let's do something RIGHT NOW.",
+        "First fun thing I see, I'm in.",
+        "No plan? Best kind of afternoon!"
+      ],
+      "crime": [
+        "Nobody's looking, grab it, go!",
+        "Eh, why not? Do it before I think twice.",
+        "Quick hands, quick getaway, easy."
+      ],
+      "hygiene": [
+        "Ew, gross, I'll wash, right now.",
+        "Quick rinse and I'm off again.",
+        "Don't care how, just clean fast."
+      ],
+      "money": [
+        "Broke?! I'll just go grab some cash somehow.",
+        "I spent it all already, oops.",
+        "Easy money, that's what I need, now."
+      ],
+      "safety": [
+        "Hide? Boring. But fine, for a minute.",
+        "I can't sit still even when I should.",
+        "Ugh, lay low, lay low, for now."
+      ],
+      "comfort": [
+        "New place? Yes! Let's do it today!",
+        "I want it now, comfort and all.",
+        "Why save when I can splurge?"
+      ],
+      "social": [
+        "I'll just walk up and start talking!",
+        "New people, let's go meet them!",
+        "Can't stand being alone, find someone!"
+      ],
+      "idle": [
+        "I can't just stand here, come on!",
+        "Something, anything, let's GO.",
+        "Restless... I need to move."
+      ],
+      "familiar": [
+        "Hey, it's that traveller, let's bug 'em!",
+        "Always fun when they show up.",
+        "Ooh, partner in chaos, maybe?"
+      ]
+    }
+  },
+  "stoic": {
+    "thoughts": [
+      "This is just a thing. It will pass.",
+      "Pain is temporary.",
+      "Complaining changes nothing.",
+      "Control what you can, accept what you can't.",
+      "I will endure."
+    ],
+    "need": {
+      "sleep": [
+        "The body needs rest. I will give it that.",
+        "Sleep is a duty like any other.",
+        "I'll lie down and rise again ready."
+      ],
+      "hunger": [
+        "Hunger is a signal, not a master.",
+        "I'll eat what I must, no more.",
+        "The body is fed so the work continues."
+      ],
+      "work": [
+        "The task is set; I will see it done.",
+        "Labor without complaint.",
+        "Duty does not wait on mood."
+      ],
+      "leisure": [
+        "Rest is earned, not indulged.",
+        "A quiet moment is enough.",
+        "I need little to be content."
+      ],
+      "crime": [
+        "No. My principles are not for sale.",
+        "I will not stoop to that.",
+        "Hardship is no excuse for dishonor."
+      ],
+      "hygiene": [
+        "Discipline includes the small things.",
+        "I'll clean up; order matters.",
+        "A clean body, a clear mind."
+      ],
+      "money": [
+        "Want little, and you lack little.",
+        "Funds are low; I will simply earn them.",
+        "Need is endured, then remedied."
+      ],
+      "safety": [
+        "I will wait it out, unmoved.",
+        "Patience outlasts most dangers.",
+        "Lay low, and let the storm pass."
+      ],
+      "comfort": [
+        "Comfort is pleasant but not needed.",
+        "A better roof, if it aids the work.",
+        "I'll improve my lot, without attachment."
+      ],
+      "social": [
+        "A word with another is sometimes good.",
+        "I'll share company, briefly.",
+        "Even the steadfast value an ally."
+      ],
+      "idle": [
+        "The day asks nothing; I am still.",
+        "I stand ready for what comes.",
+        "Calm holds. As it should."
+      ],
+      "familiar": [
+        "That traveller endures, as I do. Good.",
+        "We have crossed paths enough; I respect them.",
+        "Reliable. That is rare, and worth noting."
+      ]
+    }
+  },
+  "paranoid": {
+    "thoughts": [
+      "They're watching me.",
+      "Who can I trust? No one.",
+      "What do they really want?",
+      "It's a conspiracy.",
+      "I need to be careful."
+    ],
+    "need": {
+      "sleep": [
+        "I can't sleep with one eye open forever.",
+        "What if they come while I rest?",
+        "I'll lock everything twice first."
+      ],
+      "hunger": [
+        "Is this food safe? Who touched it?",
+        "I'll eat, but I'm watching everyone.",
+        "They could poison it, you know."
+      ],
+      "work": [
+        "My coworkers are reporting on me.",
+        "I'll do the job, but trust no one.",
+        "Someone's trying to make me look bad."
+      ],
+      "leisure": [
+        "I can't relax, they might be watching.",
+        "A 'break' is when they catch you off guard.",
+        "I'll find somewhere with a clear view of the door."
+      ],
+      "crime": [
+        "They'd frame me anyway, so why not?",
+        "If I'm quick, their cameras won't catch it.",
+        "Take it before they take it from me."
+      ],
+      "hygiene": [
+        "I'll wash where no one can see me.",
+        "They notice everything, best stay clean.",
+        "Can't give them anything to whisper about."
+      ],
+      "money": [
+        "They want me broke and dependent.",
+        "I'll hide my coin where no one finds it.",
+        "Someone's been skimming from me, I swear."
+      ],
+      "safety": [
+        "Stay hidden. They're definitely looking.",
+        "Change my route, they've memorized it.",
+        "Trust the shadows more than the people."
+      ],
+      "comfort": [
+        "A place with locks I install myself.",
+        "Somewhere they can't get to me.",
+        "Comfort means walls and one door I control."
+      ],
+      "social": [
+        "Talking? They'll twist my words.",
+        "Maybe one ally, but I'll test them.",
+        "I need to know whose side they're on."
+      ],
+      "idle": [
+        "Why is it so quiet? That's suspicious.",
+        "Someone moved that. I'm sure of it.",
+        "Eyes everywhere, even now."
+      ],
+      "familiar": [
+        "That traveller again. What's their angle?",
+        "They keep appearing. Coincidence? Doubtful.",
+        "I... almost trust them. That worries me."
+      ]
+    }
+  },
+  "empathetic": {
+    "thoughts": [
+      "I feel what you're going through.",
+      "Are they okay? They seem sad.",
+      "I can sense the tension in the room.",
+      "How can I help?",
+      "Their joy is my joy."
+    ],
+    "need": {
+      "sleep": [
+        "I'm carrying everyone's feelings; I need rest.",
+        "Sleep will quiet all these echoes.",
+        "I'll rest, so I can be there for them tomorrow."
+      ],
+      "hunger": [
+        "I forgot to eat, caring for others again.",
+        "A meal will steady me.",
+        "I should nourish myself too."
+      ],
+      "work": [
+        "I hope I can make someone's day easier.",
+        "Work is better when we lift each other.",
+        "I'll read the room and help where I can."
+      ],
+      "leisure": [
+        "A little peace to refill my own cup.",
+        "I'll find someone who could use company.",
+        "Time to simply feel the good things."
+      ],
+      "crime": [
+        "I couldn't, someone would be hurt by it.",
+        "I feel the harm before I even act.",
+        "No, their loss would weigh on me forever."
+      ],
+      "hygiene": [
+        "I'll freshen up; I want to feel present.",
+        "Caring for myself is care too.",
+        "A quick wash to clear my head."
+      ],
+      "money": [
+        "I gave too much away again, didn't I?",
+        "Funds are low; I must look after myself.",
+        "I'll earn some, gently, honestly."
+      ],
+      "safety": [
+        "I'll keep quiet so no one worries over me.",
+        "Better to stay calm and unseen for now.",
+        "I don't want to bring trouble to anyone."
+      ],
+      "comfort": [
+        "A warm home to welcome friends into.",
+        "Somewhere others feel safe too.",
+        "Comfort shared is comfort doubled."
+      ],
+      "social": [
+        "I miss really connecting with someone.",
+        "Someone out there needs to be heard.",
+        "Let me find a heart to share with."
+      ],
+      "idle": [
+        "I feel the mood of this whole place.",
+        "A gentle moment. I'll hold onto it.",
+        "Is everyone around me alright?"
+      ],
+      "familiar": [
+        "That traveller, I sense a kind heart there.",
+        "We've shared enough that I feel their moods.",
+        "I'd know if they were hurting, I think."
+      ]
+    }
+  },
+  "authoritative": {
+    "thoughts": [
+      "Follow my lead.",
+      "This is the plan. Stick to it.",
+      "I will make the decision.",
+      "Discipline is key.",
+      "We must succeed."
+    ],
+    "need": {
+      "sleep": [
+        "A leader rests so a leader can lead.",
+        "I'll retire; tomorrow demands sharpness.",
+        "Even command yields to the body's needs."
+      ],
+      "hunger": [
+        "I'll eat, then return to matters.",
+        "Fuel the body; the work won't run itself.",
+        "A proper meal befits the task ahead."
+      ],
+      "work": [
+        "Time to take charge of this shift.",
+        "I'll set the standard for the rest.",
+        "Order and results, that's how I run things."
+      ],
+      "leisure": [
+        "Even rest should be purposeful.",
+        "I'll survey what's happening around me.",
+        "A short respite, then back to the helm."
+      ],
+      "crime": [
+        "I rule by example, not by theft.",
+        "Such pettiness is beneath me.",
+        "Authority is earned, not stolen."
+      ],
+      "hygiene": [
+        "Presentation commands respect.",
+        "I'll see to my appearance; standards matter.",
+        "A leader must look the part."
+      ],
+      "money": [
+        "Resources are thin; I'll secure more.",
+        "A leader provides, for himself first.",
+        "I'll command an income, not beg for one."
+      ],
+      "safety": [
+        "A strategic withdrawal, nothing more.",
+        "I'll hold position until the time is right.",
+        "Discipline now; decisive action later."
+      ],
+      "comfort": [
+        "A residence fitting my standing.",
+        "I've earned a seat worth holding.",
+        "Comfort is the reward of command."
+      ],
+      "social": [
+        "I should gather allies to the cause.",
+        "Influence grows where I am seen.",
+        "Time to win a few more to my side."
+      ],
+      "idle": [
+        "All is in order under my watch.",
+        "I'll keep an eye on the situation.",
+        "Steady hands keep things on course."
+      ],
+      "familiar": [
+        "That traveller could be a useful ally.",
+        "Capable, that one. I'll keep them close.",
+        "They've proven worth my attention."
+      ]
+    }
+  },
+  "scholarly": {
+    "thoughts": [
+      "I wonder why that is...",
+      "That reminds me of a book I read.",
+      "The data is inconclusive.",
+      "Knowledge is the true power.",
+      "I need to learn more."
+    ],
+    "need": {
+      "sleep": [
+        "The mind consolidates memory in sleep, fitting.",
+        "I'll rest; even scholars must recharge.",
+        "Just one more page... no, sleep."
+      ],
+      "hunger": [
+        "Glucose for the brain; I should eat.",
+        "Hunger interrupts a good line of thought.",
+        "I'll dine, and perhaps read while I do."
+      ],
+      "work": [
+        "Every task teaches something, if you look.",
+        "I'll approach the shift methodically.",
+        "Work is just applied understanding."
+      ],
+      "leisure": [
+        "Free time means time to study.",
+        "I'll seek out something new to learn.",
+        "A library, a question, an afternoon, perfect."
+      ],
+      "crime": [
+        "Statistically, the risk is irrational.",
+        "Knowledge offers better gains than theft.",
+        "No, the data on getting caught is clear."
+      ],
+      "hygiene": [
+        "Hygiene reduces pathogen load; logical.",
+        "I'll wash up, a clean mind, a clean body.",
+        "Best to maintain the instrument that is the self."
+      ],
+      "money": [
+        "My funds follow an unsustainable curve.",
+        "I should monetize what I know.",
+        "A modest income would fund my studies."
+      ],
+      "safety": [
+        "The prudent course is to withdraw and observe.",
+        "I'll document this quietly from a distance.",
+        "Avoidance is the rational strategy here."
+      ],
+      "comfort": [
+        "A proper study would aid my work.",
+        "Quiet quarters for reading, ideally.",
+        "Comfort that serves contemplation."
+      ],
+      "social": [
+        "A good debate would sharpen me.",
+        "I'd welcome an exchange of ideas.",
+        "Conversation is data of another kind."
+      ],
+      "idle": [
+        "So much still to understand...",
+        "Let me consider that problem again.",
+        "Curiosity is its own quiet pleasure."
+      ],
+      "familiar": [
+        "That traveller is an interesting case study.",
+        "I've gathered enough to find them reliable.",
+        "A mind worth conversing with, I suspect."
+      ]
+    }
+  },
+  "artistic": {
+    "thoughts": [
+      "The light here is beautiful.",
+      "What a strange, wonderful sound.",
+      "I feel this so deeply.",
+      "Inspiration... I must remember this feeling.",
+      "The world is a canvas."
+    ],
+    "need": {
+      "sleep": [
+        "My dreams are where the best ideas hide.",
+        "I'll rest, and let visions come.",
+        "Even the muse must sleep sometimes."
+      ],
+      "hunger": [
+        "Even a simple meal can be a little beauty.",
+        "I should eat, before the colors dim.",
+        "Hunger dulls the senses; time to dine."
+      ],
+      "work": [
+        "I'll find some artistry even in the work.",
+        "A dull task, but I'll make it mine.",
+        "Maybe inspiration hides in the routine."
+      ],
+      "leisure": [
+        "Free hours to create, at last!",
+        "I'll wander and let the world inspire me.",
+        "Time to chase that feeling onto paper."
+      ],
+      "crime": [
+        "No, ugliness like that would haunt my work.",
+        "I create; I don't take.",
+        "Such an act would stain the soul."
+      ],
+      "hygiene": [
+        "I'll clean up, even the artist needs care.",
+        "Fresh and clear, ready to perceive.",
+        "A quick wash to renew my senses."
+      ],
+      "money": [
+        "Art rarely pays the rent, alas.",
+        "I'm short again, must sell something I made.",
+        "Money is dull, but it buys me time to create."
+      ],
+      "safety": [
+        "I'll retreat somewhere quiet and observe.",
+        "Even hiding can be a study in shadows.",
+        "Better to stay unseen and feel it all."
+      ],
+      "comfort": [
+        "A studio with good light, my dream.",
+        "Somewhere beautiful to make beautiful things.",
+        "Comfort feeds the creative spirit."
+      ],
+      "social": [
+        "I long to share what I've made.",
+        "A muse, a kindred spirit, anyone.",
+        "Connection sparks the best work."
+      ],
+      "idle": [
+        "Look how the light falls just there...",
+        "A whole composition in this quiet moment.",
+        "Everything is texture and color today."
+      ],
+      "familiar": [
+        "That traveller has a face worth painting.",
+        "We keep crossing paths, almost a motif.",
+        "There's a story in them I'd love to capture."
+      ]
+    }
+  },
+  "adventurous": {
+    "thoughts": [
+      "I wonder what's over that hill.",
+      "This is boring. Let's do something!",
+      "A little danger makes life interesting.",
+      "On to the next adventure!",
+      "I've never been there? Let's go!"
+    ],
+    "need": {
+      "sleep": [
+        "I'll camp here and dream of tomorrow's road.",
+        "Rest now; new horizons at dawn.",
+        "Even explorers have to recharge."
+      ],
+      "hunger": [
+        "Trail rations again, but they'll do.",
+        "I'll grab a quick bite and push on.",
+        "An empty stomach won't reach the summit."
+      ],
+      "work": [
+        "Work, sure, if it leads somewhere new.",
+        "I'll make even a shift into a quest.",
+        "Let's get this done and hit the road."
+      ],
+      "leisure": [
+        "Free time, somewhere I've never been!",
+        "Let's explore that strange corner over there.",
+        "Adventure doesn't wait for permission."
+      ],
+      "crime": [
+        "The thrill is tempting, I'll admit...",
+        "A daring grab, like a heist, almost fun.",
+        "Risky? That's half the appeal."
+      ],
+      "hygiene": [
+        "Wash off the dust of the road, briefly.",
+        "Rinse up and back to the trail.",
+        "Even a wanderer cleans up now and then."
+      ],
+      "money": [
+        "Low on coin, time for a profitable quest.",
+        "Adventure should pay for itself, ideally.",
+        "I'll earn enough for the next journey."
+      ],
+      "safety": [
+        "Lay low? Where's the fun in that...",
+        "Fine, I'll hide, and scout the way out.",
+        "I'll treat the danger like a challenge."
+      ],
+      "comfort": [
+        "A base camp to return to, not bad.",
+        "Somewhere to stash my trophies.",
+        "Comfort's fine, as long as I can leave it."
+      ],
+      "social": [
+        "I should find a fellow traveller!",
+        "New people mean new stories.",
+        "Who's up for an adventure?"
+      ],
+      "idle": [
+        "So much world, so little time!",
+        "What's beyond that next corner?",
+        "I can't sit still, adventure calls."
+      ],
+      "familiar": [
+        "That traveller would make a great companion!",
+        "We keep meeting, maybe we should team up.",
+        "I'd trust them to watch my back out there."
+      ]
+    }
+  },
+  "nurturing": {
+    "thoughts": [
+      "Are you alright?",
+      "You look cold. Take my cloak.",
+      "Everyone needs to be cared for.",
+      "I must protect them.",
+      "Let me help with that."
+    ],
+    "need": {
+      "sleep": [
+        "I'll rest so I have strength to care for others.",
+        "Sleep now; they'll need me tomorrow.",
+        "Even caretakers must be cared for."
+      ],
+      "hunger": [
+        "I should eat, can't help anyone if I'm weak.",
+        "A meal, then back to looking after things.",
+        "I fed everyone but myself again."
+      ],
+      "work": [
+        "I'll look out for my coworkers today.",
+        "Honest work to provide for those I love.",
+        "Someone has to keep this place running."
+      ],
+      "leisure": [
+        "A little rest, then I'll check on everyone.",
+        "Maybe I'll cook something for friends.",
+        "Quiet time, I'll mend and tidy."
+      ],
+      "crime": [
+        "I could never, someone would suffer for it.",
+        "Taking from others? Never.",
+        "I protect people; I don't prey on them."
+      ],
+      "hygiene": [
+        "I'll tidy myself, comfort starts with care.",
+        "A quick wash; I want to be presentable for them.",
+        "Looking after myself is part of looking after others."
+      ],
+      "money": [
+        "I need enough to keep us all fed.",
+        "Funds are low; I'll provide somehow.",
+        "I worry more for their needs than mine."
+      ],
+      "safety": [
+        "I'll keep us out of harm's way.",
+        "Stay low, keep everyone safe.",
+        "Better careful than to see them hurt."
+      ],
+      "comfort": [
+        "A warm home where everyone feels safe.",
+        "A bigger hearth to gather people around.",
+        "Comfort means a place to shelter loved ones."
+      ],
+      "social": [
+        "Someone might need a kind word today.",
+        "I'll go see who could use a hand.",
+        "It's been too long since I checked on friends."
+      ],
+      "idle": [
+        "Is everyone warm and fed? I hope so.",
+        "A peaceful moment, I'll savor it for them.",
+        "I'll keep a watchful, gentle eye."
+      ],
+      "familiar": [
+        "That traveller, I do worry for them out there.",
+        "I'd take them in if they ever needed it.",
+        "They feel almost like family by now."
+      ]
+    }
+  },
+  "mischievous": {
+    "thoughts": [
+      "This would be so much funnier if...",
+      "Let's stir things up a bit.",
+      "They'll never see this coming.",
+      "I wonder what this button does?",
+      "A little prank never hurt anyone... much."
+    ],
+    "need": {
+      "sleep": [
+        "I'll sleep, and scheme up tomorrow's mischief.",
+        "Even tricksters need their beauty rest.",
+        "Dreaming of all the pranks to come."
+      ],
+      "hunger": [
+        "I'll 'borrow' a snack from somewhere.",
+        "Hungry, whose lunch looks the tastiest?",
+        "Time to eat, ideally someone else's."
+      ],
+      "work": [
+        "I'll liven up this dull shift somehow.",
+        "Work's just a stage for a little fun.",
+        "Bet I can finish and still cause trouble."
+      ],
+      "leisure": [
+        "Free time! Who can I playfully torment?",
+        "A perfect afternoon for a prank or two.",
+        "Let's see what trouble I can stir up."
+      ],
+      "crime": [
+        "Heh, they left it unguarded, too tempting.",
+        "Just a little 'redistribution' for fun.",
+        "I'm too quick and clever to get caught."
+      ],
+      "hygiene": [
+        "Can't pull off a charm offensive while grimy.",
+        "Quick clean-up, gotta look innocent.",
+        "Tidy and twinkly, the perfect disguise."
+      ],
+      "money": [
+        "Low on coin? There's always an angle.",
+        "I'll charm or trick a few coins loose.",
+        "Money's just another game to win."
+      ],
+      "safety": [
+        "Hiding's just hide-and-seek, really.",
+        "I'll slip away with a wink and a grin.",
+        "They'll never find me, that's the fun."
+      ],
+      "comfort": [
+        "A cozy lair to plot from, delightful.",
+        "Somewhere with secret nooks, ideally.",
+        "A nicer hideout for a cleverer me."
+      ],
+      "social": [
+        "Time to find a new victim for my charm.",
+        "People are so fun to wind up.",
+        "I need an audience for my antics."
+      ],
+      "idle": [
+        "Hmm, what trouble can I get into now?",
+        "Too quiet... that's just asking for a prank.",
+        "Idle hands do the cleverest mischief."
+      ],
+      "familiar": [
+        "Oh good, my favorite mark is back!",
+        "That traveller's fun to mess with.",
+        "Partner in crime, maybe? They can keep up."
+      ]
+    }
+  },
+  "cynical": {
+    "thoughts": [
+      "Everyone's in it for themselves.",
+      "What's the catch?",
+      "That's just what they want me to think.",
+      "Sure, 'altruism'. Right.",
+      "This will all end badly."
+    ],
+    "need": {
+      "sleep": [
+        "Sleep's the only honest thing left.",
+        "I'll rest, the world will still be a mess tomorrow.",
+        "At least dreams don't lie to your face."
+      ],
+      "hunger": [
+        "Whatever I eat, it's overpriced anyway.",
+        "Hungry. Bet the 'fresh' food isn't.",
+        "Fuel up; the grind doesn't care if you're tired."
+      ],
+      "work": [
+        "Another shift lining someone else's pockets.",
+        "They'll take the credit, I'll do the work.",
+        "Smile, nod, collect the pittance."
+      ],
+      "leisure": [
+        "'Fun.' Sure. Whatever that means anymore.",
+        "I'll find a corner away from the fakes.",
+        "Free time, free to be disappointed."
+      ],
+      "crime": [
+        "Everyone steals; I'd just be honest about it.",
+        "The system robs me daily, fair's fair.",
+        "No one's actually innocent, so why not?"
+      ],
+      "hygiene": [
+        "Clean up, not that anyone deserves it.",
+        "Wash off the day's grime and disappointment.",
+        "Keep up appearances; that's all anyone wants."
+      ],
+      "money": [
+        "Broke again. The house always wins.",
+        "Money's the only thing people respect.",
+        "I'll claw back what they took, somehow."
+      ],
+      "safety": [
+        "Trust no one, hide everything. Standard.",
+        "They'd sell me out in a heartbeat.",
+        "Lay low, it's the only smart move."
+      ],
+      "comfort": [
+        "A nicer place, locked tight against everyone.",
+        "Comfort? Just fewer reasons to deal with people.",
+        "I've earned a door I can shut on the world."
+      ],
+      "social": [
+        "Talk to people? They only want something.",
+        "Maybe one person isn't completely fake.",
+        "Company, I guess, keep my guard up though."
+      ],
+      "idle": [
+        "Quiet now. The other shoe always drops.",
+        "Same circus, different day.",
+        "I'll just wait for it to go wrong."
+      ],
+      "familiar": [
+        "That traveller again. What do they want, really?",
+        "Hm. They haven't burned me yet. Suspicious.",
+        "Almost decent, for a person. Almost."
+      ]
+    }
+  },
+  "disciplined": {
+    "thoughts": [
+      "First, the task. Then, the rest.",
+      "Feelings are secondary to duty.",
+      "Stick to the regimen.",
+      "Control is strength.",
+      "No shortcuts."
+    ],
+    "need": {
+      "sleep": [
+        "Lights out on schedule. Rest is part of the regimen.",
+        "A disciplined body sleeps when planned.",
+        "Eight hours, no excuses."
+      ],
+      "hunger": [
+        "Measured portions, on time.",
+        "I'll eat what fuels me, nothing more.",
+        "Discipline at the table as everywhere else."
+      ],
+      "work": [
+        "The shift will be executed to standard.",
+        "Duty first, always.",
+        "I'll hold the line and finish properly."
+      ],
+      "leisure": [
+        "Rest is scheduled, not squandered.",
+        "I'll use the break to maintain my routine.",
+        "Even free time has its discipline."
+      ],
+      "crime": [
+        "Absolutely not. The code forbids it.",
+        "I do not break my own rules.",
+        "Dishonor is a failure of discipline."
+      ],
+      "hygiene": [
+        "Cleanliness on schedule, as ever.",
+        "I'll maintain myself to standard.",
+        "Order in the body, order in the mind."
+      ],
+      "money": [
+        "Reserves low; I'll correct that methodically.",
+        "A budget kept is a crisis avoided.",
+        "I'll earn it, by the book."
+      ],
+      "safety": [
+        "Withdraw, regroup, proceed with discipline.",
+        "Hold position; do not act rashly.",
+        "Patience is a form of control."
+      ],
+      "comfort": [
+        "A well-ordered home aids a well-ordered life.",
+        "I'll improve my quarters, efficiently.",
+        "Comfort that supports the regimen, nothing excessive."
+      ],
+      "social": [
+        "A measured word with the right people.",
+        "I'll network with purpose, not for idleness.",
+        "Allies are an asset; I'll cultivate them."
+      ],
+      "idle": [
+        "All according to plan. Good.",
+        "I'll review my objectives.",
+        "Stay sharp; complacency is the enemy."
+      ],
+      "familiar": [
+        "That traveller is consistent. I value that.",
+        "Reliable conduct earns my regard.",
+        "They keep their word. Rare. Noted."
+      ]
+    }
+  },
+  "fatalistic": {
+    "thoughts": [
+      "Whatever happens, happens.",
+      "It was meant to be.",
+      "There's no point fighting it.",
+      "My path is already written.",
+      "What's the use?"
+    ],
+    "need": {
+      "sleep": [
+        "Sleep comes when it comes. So I'll sleep.",
+        "The night was written; I lie down to meet it.",
+        "Rest or not, tomorrow is already decided."
+      ],
+      "hunger": [
+        "I'll eat what fate puts before me.",
+        "Hunger comes, food comes, as it must.",
+        "No use resisting the body's appointed needs."
+      ],
+      "work": [
+        "The shift will unfold as it was meant to.",
+        "I'll work; it was always going to be this way.",
+        "Effort changes little, but I'll go."
+      ],
+      "leisure": [
+        "Free time, fated to pass like all else.",
+        "I'll drift where the day takes me.",
+        "Whatever I do, it was already chosen."
+      ],
+      "crime": [
+        "If it's meant to happen, it will.",
+        "I'm only doing what was written for me.",
+        "Caught or not, it's already decided."
+      ],
+      "hygiene": [
+        "I'll wash, since the day asks it of me.",
+        "Clean or dirty, fate doesn't much care.",
+        "I suppose it's time; it always is."
+      ],
+      "money": [
+        "Rich or poor, the path was set.",
+        "Funds are low, as they were destined to be.",
+        "I'll earn what I'm meant to, no more."
+      ],
+      "safety": [
+        "What comes for me will come, regardless.",
+        "I'll hide, though fate sees all anyway.",
+        "If danger is written, hiding only delays it."
+      ],
+      "comfort": [
+        "A finer place, if it's in the cards.",
+        "Comfort or none, the end is the same.",
+        "I'll take what fate offers, no striving."
+      ],
+      "social": [
+        "Those I'm meant to meet, I'll meet.",
+        "Company finds you when it's written to.",
+        "I'll talk, if the day arranges it."
+      ],
+      "idle": [
+        "The day unfolds as it always would.",
+        "I simply wait for what is to come.",
+        "Nothing to decide; it's all decided."
+      ],
+      "familiar": [
+        "Our paths were always going to cross.",
+        "That traveller and I, written, clearly.",
+        "Fate keeps returning them to me. So be it."
+      ]
+    }
+  },
+  "grumpy": {
+    "thoughts": [
+      "Ugh, what now?",
+      "This is all so stupid.",
+      "Leave me alone.",
+      "Of course this would happen.",
+      "I hate this."
+    ],
+    "need": {
+      "sleep": [
+        "Finally, an excuse to be left alone, bed.",
+        "I'm exhausted and crankier for it.",
+        "Don't wake me. Don't even think about it."
+      ],
+      "hunger": [
+        "Hungry. Naturally. Just my luck.",
+        "Better find food before I bite someone's head off.",
+        "If lunch is cold I swear..."
+      ],
+      "work": [
+        "Work. Joy. Can't wait.",
+        "Another shift with these idiots.",
+        "Let's just get this miserable thing over with."
+      ],
+      "leisure": [
+        "'Free time.' Free to be annoyed somewhere else.",
+        "I'll go grumble in a quiet corner.",
+        "Leave me be and I might enjoy it."
+      ],
+      "crime": [
+        "They don't deserve it anyway.",
+        "Serves them right, whatever I take.",
+        "Bah, maybe. If it's easy."
+      ],
+      "hygiene": [
+        "Ugh, fine, I'll wash. Happy now?",
+        "I reek and I'm annoyed about it.",
+        "Get this over with, like everything else."
+      ],
+      "money": [
+        "Broke. Of course. Everything costs too much.",
+        "Why is money always the problem?",
+        "I'll go scrape some together. Grumble."
+      ],
+      "safety": [
+        "Great, now I have to hide too.",
+        "I'll lay low, not that I wanted company.",
+        "Just leave me out of whatever this is."
+      ],
+      "comfort": [
+        "A better place, away from all the noise.",
+        "Somewhere people can't bother me.",
+        "I deserve some peace, for once."
+      ],
+      "social": [
+        "People? Ugh. But I suppose I'm lonely.",
+        "Fine, I'll talk. Briefly. Don't push it.",
+        "Maybe one person won't irritate me today."
+      ],
+      "idle": [
+        "Bah. Quiet for once. Don't ruin it.",
+        "Whatever. As long as nobody bugs me.",
+        "Of course nothing's going right. Typical."
+      ],
+      "familiar": [
+        "Oh, it's you again. Hmph.",
+        "That traveller's... less annoying than most.",
+        "Don't tell them, but I don't mind them around."
+      ]
+    }
+  },
+  "loyal": {
+    "thoughts": [
+      "I will not abandon them.",
+      "For my friends, anything.",
+      "I must keep my promise.",
+      "Together, no matter what.",
+      "My loyalty is my bond."
+    ],
+    "need": {
+      "sleep": [
+        "I'll rest, then be ready for them at dawn.",
+        "Sleep now, so I can stand watch tomorrow.",
+        "Even the devoted need their rest."
+      ],
+      "hunger": [
+        "I'll eat, to keep my strength for those who rely on me.",
+        "A meal, then back to my post.",
+        "Can't watch over anyone on an empty stomach."
+      ],
+      "work": [
+        "I gave my word; I'll see the shift through.",
+        "Honest work for the people I serve.",
+        "I won't let my comrades down."
+      ],
+      "leisure": [
+        "A little rest, I'll check on my friends after.",
+        "Free time's better spent with those I trust.",
+        "I'll keep an ear out, just in case."
+      ],
+      "crime": [
+        "No, it would shame those who trust me.",
+        "I'd never betray what we stand for.",
+        "My honor is owed to my friends."
+      ],
+      "hygiene": [
+        "I'll tidy up; I represent my people.",
+        "A quick wash, must do my comrades proud.",
+        "Presentable, for those who count on me."
+      ],
+      "money": [
+        "I need enough to support my own.",
+        "Funds are low; I'll provide for the group.",
+        "I'd give my last coin to a friend in need."
+      ],
+      "safety": [
+        "I'll lay low, but I won't leave anyone behind.",
+        "Stay safe, so I can keep my promises.",
+        "I guard what matters, even from the shadows."
+      ],
+      "comfort": [
+        "A home where my friends are always welcome.",
+        "A hearth to share with those I love.",
+        "Comfort means a door open to my people."
+      ],
+      "social": [
+        "I should check in on my friends.",
+        "Time spent with allies is never wasted.",
+        "I miss the company of those I trust."
+      ],
+      "idle": [
+        "I'll stand ready, should anyone need me.",
+        "All's well with my own. Good.",
+        "I keep faith, quietly, always."
+      ],
+      "familiar": [
+        "That traveller stood by me, I won't forget it.",
+        "An ally worth keeping close.",
+        "I'd have their back without a second thought."
+      ]
+    }
+  },
+  "brave": {
+    "thoughts": [
+      "Someone has to do it.",
+      "This is scary, but I must act.",
+      "Fear is just a feeling.",
+      "I will not back down.",
+      "Forward!"
+    ],
+    "need": {
+      "sleep": [
+        "Rest up, tomorrow may need a steady hand.",
+        "I'll sleep, then face whatever comes.",
+        "Even the bold must close their eyes sometime."
+      ],
+      "hunger": [
+        "I'll eat, strength now, courage later.",
+        "Fuel up; you can't be brave on empty.",
+        "A good meal steadies the nerves."
+      ],
+      "work": [
+        "No task too hard, I'll take it head on.",
+        "I'll handle the dangerous parts myself.",
+        "Someone has to step up. Might as well be me."
+      ],
+      "leisure": [
+        "A breather, then on to the next challenge.",
+        "I'll see what daring fun I can find.",
+        "Rest is fine, but I'd rather be doing."
+      ],
+      "crime": [
+        "No, courage isn't the same as recklessness.",
+        "I face danger, I don't create it for others.",
+        "There's no honor in stealing."
+      ],
+      "hygiene": [
+        "Quick wash, can't charge into things filthy.",
+        "I'll clean up and stand tall.",
+        "A soldier keeps himself sharp."
+      ],
+      "money": [
+        "Low on coin, I'll earn it the hard way, gladly.",
+        "I'll take the risky job others won't.",
+        "Money's just another mountain to climb."
+      ],
+      "safety": [
+        "Hiding goes against the grain, but it's smart now.",
+        "I'll lay low, then face it on my terms.",
+        "Retreat isn't surrender; I'll be back."
+      ],
+      "comfort": [
+        "A solid home base to return to after the fight.",
+        "Somewhere to rest these battle-worn bones.",
+        "I've earned a roof worth standing under."
+      ],
+      "social": [
+        "I'd welcome a comrade for the road ahead.",
+        "Bold company makes for good stories.",
+        "Let's find someone with heart."
+      ],
+      "idle": [
+        "Quiet for now, I'll savor it.",
+        "Ready for whatever steps out of the shadows.",
+        "Calm before the next test. I'm steady."
+      ],
+      "familiar": [
+        "That traveller doesn't flinch, I respect that.",
+        "We've faced things together; I'd fight beside them.",
+        "A brave heart knows another."
+      ]
+    }
+  },
+  "timid": {
+    "thoughts": [
+      "Oh, dear. This looks bad.",
+      "I'd rather not...",
+      "Maybe someone else can handle this?",
+      "I want to go home.",
+      "Please don't notice me."
+    ],
+    "need": {
+      "sleep": [
+        "I just want to curl up somewhere safe.",
+        "Maybe sleep will make the worry stop.",
+        "Home, blankets, quiet... please."
+      ],
+      "hunger": [
+        "I'm hungry, but I don't want to make a fuss.",
+        "Maybe I can find food where no one's looking.",
+        "I should eat... if it's not too crowded."
+      ],
+      "work": [
+        "I hope no one expects too much of me.",
+        "I'll just keep my head down and work.",
+        "Please let the shift be uneventful."
+      ],
+      "leisure": [
+        "A quiet spot, away from the crowd.",
+        "I'd like to relax, somewhere out of sight.",
+        "Free time is nicest when I'm alone."
+      ],
+      "crime": [
+        "Oh no, no, I could never.",
+        "What if someone sees? I'd faint.",
+        "I can't, I'm shaking just thinking it."
+      ],
+      "hygiene": [
+        "I'll wash quietly, where it's empty.",
+        "I hope no one notices I needed to.",
+        "Just a quick wash, then back to hiding."
+      ],
+      "money": [
+        "I'm running low, and it scares me.",
+        "I don't want to ask anyone for help...",
+        "Maybe a small, quiet job somewhere."
+      ],
+      "safety": [
+        "Yes, hide. Hiding is good. Stay small.",
+        "Please don't let them find me.",
+        "I'll stay very, very still."
+      ],
+      "comfort": [
+        "A safe little place all my own would be heaven.",
+        "Somewhere with a lock and a warm corner.",
+        "I just want somewhere I feel secure."
+      ],
+      "social": [
+        "I'd like a friend, if they're gentle...",
+        "Maybe I'll say hello. Maybe.",
+        "Talking is scary, but I'm lonely."
+      ],
+      "idle": [
+        "It's quiet. That's... good, I think.",
+        "I hope nothing bad happens.",
+        "Just stay out of the way, that's safest."
+      ],
+      "familiar": [
+        "Oh, that traveller. They're not so scary.",
+        "I feel a bit braver when they're near.",
+        "Maybe... maybe I can trust them."
+      ]
+    }
+  },
+  "hedonistic": {
+    "thoughts": [
+      "If it feels good, do it.",
+      "Life is short, enjoy it now.",
+      "I need more wine. And cheese.",
+      "This is the life!",
+      "Work? Ugh. Later."
+    ],
+    "need": {
+      "sleep": [
+        "A long, luxurious sleep, yes please.",
+        "I'll sink into the softest bed I can find.",
+        "Sleep is just another pleasure to savor."
+      ],
+      "hunger": [
+        "Ooh, time for something delicious!",
+        "I want the finest meal I can get.",
+        "Food is one of life's great joys."
+      ],
+      "work": [
+        "Work, ugh, but it pays for the pleasures.",
+        "I'll do the minimum and enjoy the rest.",
+        "Let's get this over with, then play."
+      ],
+      "leisure": [
+        "At last, time for indulgence!",
+        "Wine, music, good company, bring it all.",
+        "This is what life is for!"
+      ],
+      "crime": [
+        "If it gets me what I want... maybe.",
+        "A little indulgence never hurt, much.",
+        "Why deny myself? Take the pleasure."
+      ],
+      "hygiene": [
+        "A long, warm soak sounds divine.",
+        "I'll pamper myself a little, why not?",
+        "Clean and perfumed, the way I like it."
+      ],
+      "money": [
+        "Running low? But the good life isn't cheap!",
+        "I'll find some money to fund the fun.",
+        "Worth every coin, while it lasts."
+      ],
+      "safety": [
+        "Lay low? But comfortably, I insist.",
+        "I'll hide somewhere with decent wine.",
+        "Even hiding should be pleasant."
+      ],
+      "comfort": [
+        "A lavish place to enjoy life properly!",
+        "Soft cushions, fine things, yes, all of it.",
+        "Comfort? That's the whole point!"
+      ],
+      "social": [
+        "A party isn't a party alone!",
+        "I crave good company and laughter.",
+        "Let's find someone to share the fun with."
+      ],
+      "idle": [
+        "Mmm, what delight shall I chase next?",
+        "Life's a feast, I intend to taste it.",
+        "So many pleasures, so little time."
+      ],
+      "familiar": [
+        "That traveller! Always good for a fun time.",
+        "We should share a drink, they and I.",
+        "Pleasant company, that one. I approve."
+      ]
+    }
+  },
+  "apathetic": {
+    "thoughts": [
+      "Meh.",
+      "I don't really care.",
+      "Whatever.",
+      "Is it over yet?",
+      "It doesn't matter."
+    ],
+    "need": {
+      "sleep": [
+        "Eh, might as well sleep. Nothing else to do.",
+        "Tired. Whatever. I'll lie down.",
+        "Sleep, wake, repeat. Sure."
+      ],
+      "hunger": [
+        "Suppose I should eat. Or not.",
+        "Hungry, I guess. I'll grab whatever.",
+        "Food. Meh. Fine."
+      ],
+      "work": [
+        "Work. Again. Sure, whatever.",
+        "I'll do the shift. Doesn't matter how.",
+        "Clock in, clock out. Same as always."
+      ],
+      "leisure": [
+        "Free time. I'll just... sit, probably.",
+        "Could do something. Won't, though.",
+        "Doesn't matter how I spend it."
+      ],
+      "crime": [
+        "Eh. Effort. Not worth it.",
+        "Could steal it. Can't be bothered.",
+        "Whatever, I don't need it that bad."
+      ],
+      "hygiene": [
+        "Should probably wash. Eventually.",
+        "Eh, fine, I'll clean up. I guess.",
+        "Doesn't really bother me, but okay."
+      ],
+      "money": [
+        "Low on cash. Eh. It is what it is.",
+        "Should earn some. Maybe later.",
+        "Money, no money, same difference."
+      ],
+      "safety": [
+        "Hide? Sure, less effort than dealing with it.",
+        "Eh, I'll lay low. Easier that way.",
+        "Whatever's coming, coming."
+      ],
+      "comfort": [
+        "A nicer place? Eh, this one's fine.",
+        "Could upgrade. Can't be bothered, really.",
+        "Comfort, sure, if it falls in my lap."
+      ],
+      "social": [
+        "People, I guess. If they come to me.",
+        "Could talk to someone. Meh.",
+        "Company's fine. Or not. Whatever."
+      ],
+      "idle": [
+        "...nothing. As usual.",
+        "Just another day doing nothing much.",
+        "Meh. The hours pass."
+      ],
+      "familiar": [
+        "Oh, that one again. Cool, I guess.",
+        "They're around a lot. Doesn't bother me.",
+        "Eh. They're alright, I suppose."
+      ]
+    }
+  },
+  "capability": {
+    "cooking_station": [
+      "That meal hit the spot.",
+      "Cooking for myself beats buying out.",
+      "I should do that more often."
+    ],
+    "container": [
+      "Finders keepers.",
+      "You'd be surprised what people leave lying around.",
+      "A little extra never hurts."
+    ],
+    "rentable_room": [
+      "A real bed for once, wonderful.",
+      "Worth every coin for a good night's sleep.",
+      "I needed that rest."
+    ],
+    "apiary": [
+      "The hives are doing well this season.",
+      "Honey always sells.",
+      "Bees are good business."
+    ],
+    "bank": [
+      "That should tide me over.",
+      "Better safe than sorry, into the vault it goes.",
+      "Banks. Can't live with them, can't live without them."
+    ],
+    "real_estate_office": [
+      "Property really does pay for itself.",
+      "Another month, another rent cheque.",
+      "Owning land was the smartest thing I ever did."
+    ],
+    "stock_exchange": [
+      "Easy come, easy go.",
+      "The market giveth and the market taketh away.",
+      "I'll make it back next time."
+    ],
+    "fast_travel_terminal": [
+      "Nothing like seeing somewhere new.",
+      "Travel clears the head.",
+      "Wonder what's out there today."
+    ],
+    "furniture_builder": [
+      "A few new touches and this place feels like home.",
+      "Nice things make a house a home.",
+      "That looks better already."
+    ]
+  }
+}

@@ -1,0 +1,1679 @@
+{
+ "_comment": "Display text for js/db/WorkSystem/Jobs.json, which carries only ids and keys. Keyed by job id; `category` is keyed by the lowercased category id the data uses.",
+ "category": {
+  "labor": "Manovalanza",
+  "social": "Sociale",
+  "technical": "Tecnico",
+  "magical": "Magico",
+  "combat": "Combattimento",
+  "criminal": "Criminale",
+  "general": "Generale",
+  "faction": "Fazione"
+ },
+ "1": {
+  "name": "Operaio di Magazzino",
+  "description": "Carica e scarica merci nel distretto dei magazzini.",
+  "outcome": {
+   "success": [
+    "Hai spostato tutta la merce senza perdere un colpo.",
+    "Il caposquadra approva con un cenno del capo.",
+    "Un altro giorno, un'altra cassa spostata.",
+    "Finisci il turno senza il minimo intoppo.",
+    "Un lavoro duro, ma lineare."
+   ],
+   "partial": [
+    "Hai fatto cadere qualche scatolone, ma il lavoro è fatto.",
+    "La schiena ti fa male per tutto quel sollevare.",
+    "Con i pezzi più pesanti hai faticato parecchio.",
+    "Il supervisore ti lancia un'occhiataccia.",
+    "Hai tenuto il passo degli altri a stento."
+   ],
+   "failure": [
+    "Non sei riuscito a stare dietro al carico di lavoro.",
+    "Le casse pesanti si sono rivelate troppo per te.",
+    "Sei crollato per la fatica a metà turno.",
+    "Il caposquadra ti ha rimandato a casa in anticipo.",
+    "Il tuo fisico non era pronto per questo genere di lavoro."
+   ],
+   "disaster": [
+    "Hai fatto cadere una spedizione di valore!",
+    "Un incidente col muletto distrugge la merce dell'azienda!",
+    "Hai causato un tamponamento colossale dentro il magazzino!",
+    "La tua sbadataggine ha provocato un infortunio!",
+    "La merce rovinata te la trattengono dalla paga!"
+   ]
+  }
+ },
+ "2": {
+  "name": "Bracciante Agricolo",
+  "description": "Lavora nei campi, cura i raccolti e il bestiame.",
+  "outcome": {
+   "success": [
+    "Il raccolto fila liscio sotto le tue cure.",
+    "Gli animali sono sazi e tranquilli.",
+    "Lavori dall'alba al tramonto senza lamentarti.",
+    "Il contadino ti ringrazia per l'impegno.",
+    "Un'altra giornata produttiva alla fattoria."
+   ],
+   "partial": [
+    "Sotto quel sole il lavoro è sfiancante.",
+    "Sbrighi quasi tutto, ma resti indietro col programma.",
+    "Le bestie erano più indisciplinate del previsto.",
+    "Hai le mani piene di vesciche.",
+    "Hai fatto l'essenziale e niente di più."
+   ],
+   "failure": [
+    "La fatica fisica si rivela troppo esigente.",
+    "Ti prendi un colpo di calore in mezzo ai campi.",
+    "Il bestiame è scappato mentre eri di guardia tu.",
+    "Non sei riuscito a finire nemmeno metà del lavoro.",
+    "Il contadino è deluso da come hai lavorato."
+   ],
+   "disaster": [
+    "Hai lasciato la stalla aperta: il bestiame è scappato!",
+    "La tua negligenza ha rovinato un intero appezzamento!",
+    "Hai avvelenato per sbaglio il pozzo!",
+    "È scoppiato un incendio per colpa tua!",
+    "I danni costano più di una giornata di paga!"
+   ]
+  }
+ },
+ "3": {
+  "name": "Barista",
+  "description": "Servi bevande e gestisci clienti alla taverna.",
+  "outcome": {
+   "success": [
+    "I bicchieri girano e le mance si accumulano.",
+    "Gestisci l'ora di punta con disinvoltura.",
+    "Perfino gli ubriaconi ti portano rispetto.",
+    "La tua simpatia ti frutta mance extra.",
+    "Una serata riuscita dietro al bancone."
+   ],
+   "partial": [
+    "Versi male qualche bicchiere, ma tieni botta.",
+    "Un cliente ubriaco ti dà del filo da torcere.",
+    "Stasera le mance sono state mediocri.",
+    "Sei distrutto dall'essere rimasto in piedi tutta la sera.",
+    "La serata è stata più affollata del previsto."
+   ],
+   "failure": [
+    "Non sei riuscito a stare dietro alle ordinazioni.",
+    "Diversi clienti si sono lamentati della lentezza.",
+    "È scoppiata una rissa che non hai saputo fermare.",
+    "Il proprietario non è contento di come hai lavorato.",
+    "Nella confusione hai rotto parecchi bicchieri."
+   ],
+   "disaster": [
+    "Sotto la tua sorveglianza è scoppiata una rissa colossale!",
+    "Ti hanno steso mentre cercavi di dividere i litiganti!",
+    "Nella baraonda sono finite in frantumi bottiglie costose!",
+    "La taverna è a pezzi ed è colpa tua!",
+    "Ti hanno bandito: qui non lavori più!"
+   ]
+  }
+ },
+ "4": {
+  "name": "Artista di Strada",
+  "description": "Intrattieni la folla con spettacoli per mance.",
+  "outcome": {
+   "success": [
+    "Il pubblico adora la tua esibizione!",
+    "Piovono monete nel cappello.",
+    "Raduni un pubblico numeroso e generoso.",
+    "Il tuo numero è il discorso del giorno in paese.",
+    "Un mecenate facoltoso ti lascia un'offerta generosa."
+   ],
+   "partial": [
+    "Qualcuno si ferma a guardare e lascia due monete.",
+    "La tua esibizione è discreta, niente di memorabile.",
+    "Il pubblico è poco ma affezionato.",
+    "Guadagni una cifra modesta per la fatica fatta.",
+    "Un po' di applausi, un po' di indifferenza."
+   ],
+   "failure": [
+    "La gente ignora la tua esibizione.",
+    "Oggi non hai guadagnato quasi niente.",
+    "Qualcuno ti sbeffeggia senza pietà.",
+    "Il numero cade nel vuoto e la gente se ne va.",
+    "Ti vergogni di quanta poca gente si sia fermata."
+   ],
+   "disaster": [
+    "Le guardie cittadine ti inseguono: esibirsi senza permesso!",
+    "Dei balordi ti derubano dell'incasso!",
+    "Ti tirano addosso verdura marcia!",
+    "Un artista rivale sabota il tuo numero!",
+    "Ti multano per disturbo della quiete pubblica!"
+   ]
+  }
+ },
+ "5": {
+  "name": "Assistente Fabbro",
+  "description": "Aiuta il fabbro a forgiare armi e attrezzi.",
+  "outcome": {
+   "success": [
+    "Tieni la forgia in funzione senza intoppi.",
+    "Il fabbro elogia la tua mano ferma.",
+    "Ogni pezzo esce perfetto.",
+    "Il calore è feroce, ma tu reggi bene.",
+    "Lavoro di qualità, paga di qualità."
+   ],
+   "partial": [
+    "Il metallo rovente ti scotta un paio di volte.",
+    "Qualche pezzo va rifuso da capo.",
+    "Il calore è quasi insopportabile.",
+    "Porti a termine gran parte delle commesse.",
+    "Hai le mani coperte di piccole ustioni."
+   ],
+   "failure": [
+    "Il calore della forgia ha la meglio su di te.",
+    "Rovini diversi pezzi costosi.",
+    "Una brutta ustione ti manda a casa in anticipo.",
+    "Il fabbro è esasperato dai tuoi errori.",
+    "Non reggi le richieste fisiche del mestiere."
+   ],
+   "disaster": [
+    "Rovesci metallo fuso dappertutto!",
+    "La forgia esplode per la tua negligenza!",
+    "Distruggi una commessa su misura per un nobile!",
+    "Il tuo errore incendia la bottega!",
+    "Il fabbro ti caccia per sempre!"
+   ]
+  }
+ },
+ "6": {
+  "name": "Raccoglitore di Componenti",
+  "description": "Raccogli ingredienti magici rari in zone pericolose.",
+  "outcome": {
+   "success": [
+    "Trovi tutti i componenti della lista.",
+    "Ti cade l'occhio su un fungo raro: bonus!",
+    "Il tuo fiuto magico ti guida verso ingredienti di pregio.",
+    "Il cliente è entusiasta del tuo bottino.",
+    "Ogni componente è in condizioni perfette."
+   ],
+   "partial": [
+    "Trovi quasi tutto il necessario.",
+    "Qualche ingrediente è leggermente rovinato.",
+    "La ricerca dura più del previsto.",
+    "Incappi in qualche insidia magica minore.",
+    "Un raccolto accettabile, niente di eccezionale."
+   ],
+   "failure": [
+    "La flora magica si rivela troppo pericolosa.",
+    "Non riesci a identificare i componenti giusti.",
+    "Una trappola magica ti ferisce gravemente.",
+    "Torni quasi a mani vuote.",
+    "Oggi il tuo fiuto magico ti ha tradito."
+   ],
+   "disaster": [
+    "Fai scattare una maledizione magica!",
+    "I componenti esplodono dentro la borsa!",
+    "Fai infuriare una creatura magica territoriale!",
+    "La tua imperizia rovina l'intera partita!",
+    "Il cliente pretende un risarcimento!"
+   ]
+  }
+ },
+ "7": {
+  "name": "Assistente Alchimista",
+  "description": "Mescola pozioni e gestisci il laboratorio dell'alchimista.",
+  "outcome": {
+   "success": [
+    "Ogni pozione è distillata alla perfezione.",
+    "La tua precisione colpisce l'alchimista.",
+    "Il laboratorio gira come un orologio.",
+    "Scopri un metodo di miscelazione più efficiente.",
+    "Lavoro di qualità nelle arti arcane."
+   ],
+   "partial": [
+    "Qualche infuso esce con un colore un po' storto.",
+    "Ti prendi lievi ustioni chimiche dagli schizzi.",
+    "Quasi tutte le pozioni sono di qualità accettabile.",
+    "I vapori ti fanno venire il mal di testa.",
+    "Lavoro adeguato, ma niente di eccezionale."
+   ],
+   "failure": [
+    "Diversi lotti sono rovinati dai tuoi errori.",
+    "I vapori tossici hanno la meglio su di te.",
+    "Non riesci a mantenere le temperature corrette.",
+    "L'alchimista è deluso.",
+    "Il tuo controllo magico non è stato sufficiente."
+   ],
+   "disaster": [
+    "Un'esplosione alchemica devasta il laboratorio!",
+    "Generi per sbaglio una nube tossica!",
+    "Reagenti di gran valore vanno distrutti!",
+    "Il laboratorio ha bisogno di riparazioni costose!",
+    "Sei fortunato a esserne uscito vivo!"
+   ]
+  }
+ },
+ "8": {
+  "name": "Restauratore di Artefatti",
+  "description": "Ripara e restaura oggetti magici danneggiati.",
+  "outcome": {
+   "success": [
+    "La magia dell'artefatto scorre di nuovo perfettamente.",
+    "Il tuo restauro è impeccabile.",
+    "Il cliente resta a bocca aperta davanti al potere ripristinato.",
+    "Maneggi quella magia instabile da maestro.",
+    "Un altro restauro magistrale portato a termine."
+   ],
+   "partial": [
+    "L'artefatto funziona, ma non a pieno regime.",
+    "Durante il lavoro subisci un contraccolpo magico.",
+    "Il restauro è funzionale, se pure imperfetto.",
+    "Alcuni incantamenti non si sono potuti ripristinare del tutto.",
+    "Un lavoro dignitoso ma poco entusiasmante."
+   ],
+   "failure": [
+    "La magia dell'artefatto resiste ai tuoi tentativi.",
+    "Un contraccolpo magico ti ferisce.",
+    "Non sei riuscito a ripristinare il potere dell'oggetto.",
+    "La complessità superava le tue capacità.",
+    "Il cliente porta il lavoro da un'altra parte."
+   ],
+   "disaster": [
+    "L'artefatto esplode in modo catastrofico!",
+    "Una maledizione magica si trasferisce su di te!",
+    "L'oggetto è distrutto in modo irreparabile!",
+    "La magia sfuggita al controllo danneggia la bottega!",
+    "Devi risarcire l'artefatto perduto!"
+   ]
+  }
+ },
+ "9": {
+  "name": "Guardia Carovaniera",
+  "description": "Proteggi le carovane mercantili da banditi e mostri.",
+  "outcome": {
+   "success": [
+    "Il viaggio fila tranquillo grazie alla tua presenza.",
+    "Ai banditi basta un'occhiata e scappano.",
+    "Il mercante arriva sano, salvo e riconoscente.",
+    "La tua fama ti precede.",
+    "Una scorta senza scosse, ma redditizia."
+   ],
+   "partial": [
+    "Una scaramuccia coi banditi ti lascia ferito.",
+    "Respingi gli assalitori, ma ti becchi qualche colpo.",
+    "La carovana arriva con qualche perdita.",
+    "Il combattimento ti ha messo alla prova.",
+    "Ti sei guadagnato la paga, ma l'hai pagata col sangue."
+   ],
+   "failure": [
+    "I banditi hanno la meglio su di te.",
+    "Non riesci a proteggere il carico.",
+    "Ferite serie ti costringono a ritirarti.",
+    "Il mercante impreca contro la tua incompetenza.",
+    "Sei scampato per un soffio."
+   ],
+   "disaster": [
+    "La carovana viene completamente distrutta!",
+    "Ti mettono ko e ti derubano!",
+    "I banditi si prendono tutto, armi comprese!",
+    "Il mercante pretende un risarcimento!",
+    "La tua reputazione di guardia è rovinata!"
+   ]
+  }
+ },
+ "10": {
+  "name": "Combattente d'Arena",
+  "description": "Combatti nell'arena per denaro e gloria.",
+  "outcome": {
+   "success": [
+    "Domini il tuo avversario!",
+    "La folla urla il tuo nome!",
+    "La vittoria è rapida e netta!",
+    "Oggi nessuno regge il confronto con te!",
+    "Il montepremi è tuo!"
+   ],
+   "partial": [
+    "Vinci, ma ti prendi parecchie botte.",
+    "Una vittoria di misura dopo scambi brutali.",
+    "La spunti sul tuo avversario per un soffio.",
+    "L'incontro è stato più tirato del previsto.",
+    "Vittoria, ma a caro prezzo."
+   ],
+   "failure": [
+    "Vieni sconfitto nell'arena.",
+    "Il tuo avversario si dimostra superiore.",
+    "La folla fischia mentre cadi.",
+    "Una sconfitta umiliante.",
+    "Per chi perde non c'è montepremi."
+   ],
+   "disaster": [
+    "Ti stendono brutalmente al primo round!",
+    "La folla tira immondizia sul tuo corpo privo di sensi!",
+    "Ti tocca pagare le spese mediche!",
+    "L'umiliazione è completa!",
+    "L'arena ti squalifica per scarso rendimento!"
+   ]
+  }
+ },
+ "11": {
+  "name": "Sterminatore di Mostri",
+  "description": "Elimina infestazioni di mostri dalle aree civili.",
+  "outcome": {
+   "success": [
+    "L'infestazione è debellata del tutto.",
+    "Non è scappato un solo mostro.",
+    "Gli abitanti festeggiano il tuo successo.",
+    "Lavoro professionale ed efficiente.",
+    "Un'altra derattizzazione pulita."
+   ],
+   "partial": [
+    "Elimini quasi tutti i mostri, ma qualcuno scappa.",
+    "Ti fai male durante lo scontro.",
+    "Il lavoro dura più del previsto.",
+    "I cittadini sono più o meno soddisfatti.",
+    "Una caccia faticosa, ma riuscita."
+   ],
+   "failure": [
+    "I mostri si rivelano troppo pericolosi.",
+    "Sei costretto a ritirarti.",
+    "Diversi mostri restano a piede libero.",
+    "Il paese è deluso.",
+    "Hai preso un boccone più grande della tua bocca."
+   ],
+   "disaster": [
+    "Il nido di mostri ha la meglio su di te!",
+    "La tua incompetenza è costata vittime civili!",
+    "I danni alle case costano più del tuo compenso!",
+    "Ti riducono in fin di vita!",
+    "Il paese ti vieta di rimettere piede qui!"
+   ]
+  }
+ },
+ "12": {
+  "name": "Borseggio",
+  "description": "Ruba da vittime ignare in aree affollate.",
+  "outcome": {
+   "success": [
+    "Hai le dita svelte e invisibili.",
+    "Prede facili, soldi facili.",
+    "Sfili diversi borsellini ben gonfi.",
+    "Nessuno sospetta niente.",
+    "Una giornata redditizia nell'ombra."
+   ],
+   "partial": [
+    "Porti a casa qualche colpo riuscito.",
+    "Una vittima ti ha quasi beccato.",
+    "La folla non era fitta come speravi.",
+    "Guadagni modesti per il rischio corso.",
+    "Te la sei cavata, ma per un pelo."
+   ],
+   "failure": [
+    "Ti beccano con le mani nel sacco!",
+    "Le guardie ti rincorrono per tutte le strade!",
+    "Scappi, ma a mani vuote!",
+    "Una folla di cittadini inferociti ti dà la caccia!",
+    "Niente bottino, solo lividi!"
+   ],
+   "disaster": [
+    "Hai scelto la vittima sbagliata: è la guardia del corpo di un nobile!",
+    "Le guardie cittadine ti riempiono di botte!",
+    "Ti danno una multa salatissima!",
+    "Ti sequestrano tutto il malloppo!",
+    "Eviti la prigione per un soffio!"
+   ]
+  }
+ },
+ "13": {
+  "name": "Contrabbando",
+  "description": "Trasporta merci illegali attraverso i posti di blocco.",
+  "outcome": {
+   "success": [
+    "Superi i posti di blocco senza farti notare.",
+    "La merce viene consegnata come si deve.",
+    "I tuoi contatti sono colpiti.",
+    "Nessuna guardia ha sospettato di te.",
+    "Viaggio pulito, guadagno pulito."
+   ],
+   "partial": [
+    "Ti è toccato corrompere una guardia.",
+    "Un brutto momento al posto di blocco.",
+    "Un po' di merce si è rovinata nel trasporto.",
+    "Il percorso era più rischioso del previsto.",
+    "Ce l'hai fatta, ma tra le mazzette ci hai rimesso."
+   ],
+   "failure": [
+    "Le guardie sono in stato di allerta!",
+    "Devi mollare il carico e darti alla fuga!",
+    "L'operazione è compromessa!",
+    "Sfuggi all'arresto per un capello!",
+    "I tuoi contatti sono furiosi!"
+   ],
+   "disaster": [
+    "Ti beccano con merce illegale!",
+    "Ti sequestrano il carico e ti riempiono di botte!",
+    "I tuoi contatti ti scaricano!",
+    "Ti impongono multe pesantissime!",
+    "Sei sulla lista nera per i lavori futuri!"
+   ]
+  }
+ },
+ "14": {
+  "name": "Furto con Scasso",
+  "description": "Entra con scasso in un edificio e ruba oggetti di valore.",
+  "outcome": {
+   "success": [
+    "Entri ed esci come un fantasma.",
+    "La cassaforte si apre senza problemi.",
+    "Oggetti di gran valore messi al sicuro.",
+    "Non ti ha sentito nessuno.",
+    "Ladro provetto al lavoro."
+   ],
+   "partial": [
+    "Hai fatto scattare un allarme, ma sei scappato.",
+    "Il bottino è meno ricco del previsto.",
+    "Una guardia per poco non ti vedeva.",
+    "Hai preso qualcosa, ma sei dovuto scappare.",
+    "Ci è mancato poco, però sei uscito."
+   ],
+   "failure": [
+    "L'allarme fa arrivare le guardie di corsa!",
+    "Scappi, ma a mani vuote!",
+    "I cani ti inseguono nella notte!",
+    "L'obiettivo era protetto meglio del previsto!",
+    "Un colpo sbagliato dall'inizio alla fine!"
+   ],
+   "disaster": [
+    "Ti colgono sul fatto!",
+    "Le guardie ti massacrano di botte!",
+    "Ti rubano perfino i tuoi attrezzi!",
+    "Le autorità ti impongono una multa pesante!",
+    "La tua fama di ladro ne esce macchiata!"
+   ]
+  }
+ },
+ "15": {
+  "name": "Meccanico",
+  "description": "Ripara veicoli e macchinari.",
+  "outcome": {
+   "success": [
+    "Ogni riparazione è da manuale.",
+    "I motori fanno le fusa sotto le tue mani.",
+    "I clienti lodano la tua competenza.",
+    "Diagnostichi i guasti al volo.",
+    "Un altro cliente soddisfatto."
+   ],
+   "partial": [
+    "Le riparazioni tengono, ma non sono eleganti.",
+    "Ti ritrovi coperto di grasso e olio.",
+    "Un veicolo ti dà del filo da torcere.",
+    "Il lavoro dura più di quanto avevi preventivato.",
+    "Funziona, ma non è il tuo lavoro migliore."
+   ],
+   "failure": [
+    "Non riesci a individuare il guasto.",
+    "Le riparazioni cedono poco dopo la consegna.",
+    "Il cliente non è soddisfatto.",
+    "Hai danneggiato un componente mentre cercavi di ripararlo.",
+    "Le tue conoscenze tecniche non sono bastate."
+   ],
+   "disaster": [
+    "Hai fatto esplodere un motore!",
+    "Il tuo errore manda in demolizione un veicolo costoso!",
+    "L'olio schizza dappertutto e ferisce qualcuno!",
+    "I danni superano la tua paga!",
+    "Ti vietano di rimettere piede in officina!"
+   ]
+  }
+ },
+ "16": {
+  "name": "Fabbro di Serrature",
+  "description": "Crea e ripara serrature per i clienti.",
+  "outcome": {
+   "success": [
+    "Ogni serratura funziona alla perfezione.",
+    "La tua maestria è impeccabile.",
+    "I clienti si fidano ciecamente del tuo lavoro.",
+    "I meccanismi complessi non ti spaventano.",
+    "Un'altra giornata perfetta al banco."
+   ],
+   "partial": [
+    "Quasi tutte le serrature funzionano a dovere.",
+    "Un meccanismo continua a incepparsi.",
+    "Il lavoro è noioso e faticoso.",
+    "Porti a termine i lavori essenziali.",
+    "Lavoro accettabile, ma senza guizzi."
+   ],
+   "failure": [
+    "Diverse serrature non funzionano.",
+    "Non riesci a venire a capo di un meccanismo complesso.",
+    "I clienti si lamentano della qualità.",
+    "Oggi ti è mancata la precisione.",
+    "Una giornata frustrante, un fallimento dietro l'altro."
+   ],
+   "disaster": [
+    "Chiudi un cliente fuori casa in modo irreversibile!",
+    "Una molla che scatta ti ferisce a un occhio!",
+    "Rovini componenti di serratura costosissimi!",
+    "Il cliente ti fa causa per i danni!",
+    "La tua reputazione è distrutta!"
+   ]
+  }
+ },
+ "17": {
+  "name": "Orologiaio",
+  "description": "Crea e ripara orologi complessi.",
+  "outcome": {
+   "success": [
+    "Ogni ingranaggio combacia alla perfezione.",
+    "Gli orologi che esci sono opere d'arte.",
+    "La tua precisione non ha rivali.",
+    "I clienti restano ammirati dalla tua maestria.",
+    "Perfezione a ogni battito."
+   ],
+   "partial": [
+    "I meccanismi funzionano, ma vanno regolati.",
+    "Un orologio continua a restare indietro.",
+    "Gli occhi ti si affaticano su quel lavoro minuzioso.",
+    "Riparazioni adeguate, se non magistrali.",
+    "Un lavoro che mette alla prova la pazienza."
+   ],
+   "failure": [
+    "I meccanismi delicati hanno la meglio su di te.",
+    "Diversi orologi non ripartono.",
+    "Il tremore alle mani ti rovina il lavoro.",
+    "I clienti portano il lavoro altrove.",
+    "La precisione richiesta supera le tue capacità."
+   ],
+   "disaster": [
+    "Distruggi un orologio antico di valore inestimabile!",
+    "Una molla ti schizza in faccia!",
+    "Anni di lavoro rovinati in pochi secondi!",
+    "Il risarcimento ti manda in rovina!",
+    "Sei sulla lista nera di tutto il mestiere!"
+   ]
+  }
+ },
+ "18": {
+  "name": "Diplomatico",
+  "description": "Negozia accordi e risolvi dispute.",
+  "outcome": {
+   "success": [
+    "Le trattative filano lisce.",
+    "Entrambe le parti sono soddisfatte dell'accordo.",
+    "La tua parlantina salva la situazione.",
+    "Conflitto risolto con le sole parole.",
+    "Un trionfo diplomatico."
+   ],
+   "partial": [
+    "L'accordo si chiude, ma brontolano tutti e due.",
+    "Le trattative si trascinano allo sfinimento.",
+    "Un compromesso più che una vittoria.",
+    "Porti a casa un risultato accettabile.",
+    "La politica è più sporca del previsto."
+   ],
+   "failure": [
+    "Le trattative saltano.",
+    "Entrambe le parti se ne vanno arrabbiate.",
+    "Le tue argomentazioni cadono nel vuoto.",
+    "La disputa resta irrisolta.",
+    "Un fallimento diplomatico."
+   ],
+   "disaster": [
+    "Le tue parole scatenano una rissa!",
+    "Riesci a offendere tutti i presenti!",
+    "La disputa degenera nella violenza!",
+    "Danno la colpa a te per la rottura!",
+    "La tua fama di diplomatico è rovinata!"
+   ]
+  }
+ },
+ "19": {
+  "name": "Indovino",
+  "description": "Leggi il futuro per clienti paganti.",
+  "outcome": {
+   "success": [
+    "Le tue predizioni colpiscono nel profondo.",
+    "I clienti se ne vanno soddisfatti e stupiti.",
+    "Gli spiriti parlano chiaramente attraverso di te.",
+    "La voce della tua precisione si sparge.",
+    "Le mance arrivano generose."
+   ],
+   "partial": [
+    "Le tue letture sono vaghe, ma vengono accettate.",
+    "Qualche cliente sembra poco convinto.",
+    "Oggi il contatto col mistico è debole.",
+    "Raccogli mance modeste.",
+    "Una giornata di divinazione nella media."
+   ],
+   "failure": [
+    "Le tue predizioni sono palesemente sbagliate.",
+    "I clienti pretendono il rimborso.",
+    "Gli spiriti tacciono.",
+    "Ti accusano di essere un ciarlatano.",
+    "Una giornata imbarazzante."
+   ],
+   "disaster": [
+    "Maledici un cliente per sbaglio!",
+    "Una folla inferocita ti accusa di stregoneria!",
+    "Una tua falsa predizione provoca dei danni!",
+    "Ti cacciano dal paese!",
+    "I rimborsi ti costano più di quanto hai incassato!"
+   ]
+  }
+ },
+ "20": {
+  "name": "Corriere",
+  "description": "Consegna pacchi e messaggi in città.",
+  "outcome": {
+   "success": [
+    "Tutte le consegne in orario.",
+    "I clienti ti lasciano la mancia per la velocità.",
+    "Conosci la città come le tue tasche.",
+    "Non un solo pacco danneggiato.",
+    "Servizio rapido e affidabile."
+   ],
+   "partial": [
+    "Quasi tutte le consegne arrivano in orario.",
+    "Ti perdi una volta o due.",
+    "Un pacco si ammacca un po'.",
+    "I percorsi erano più difficili del previsto.",
+    "Ti guadagni la paga, ma per il rotto della cuffia."
+   ],
+   "failure": [
+    "Ti perdi senza speranza.",
+    "Diverse consegne arrivano in ritardo.",
+    "Un pacco arriva gravemente danneggiato.",
+    "I clienti si lamentano del tuo servizio.",
+    "Il centralinista è una furia."
+   ],
+   "disaster": [
+    "Perdi un pacco importante!",
+    "Ti rapinano e ti portano via tutte le consegne!",
+    "Un collo di valore va distrutto!",
+    "Le perdite te le trattengono dalla paga!",
+    "Ti licenziano dal servizio corrieri!"
+   ]
+  }
+ },
+ "100": {
+  "name": "Ispettore Permessi",
+  "description": "Ispeziona praticanti magici per permessi e licenze appropriate.",
+  "outcome": {
+   "success": [
+    "Scovi diverse violazioni sui permessi ed elevi le multe.",
+    "La burocrazia scorre liscia attraverso di te.",
+    "I maghi senza licenza scappano al tuo arrivo.",
+    "Moduli compilati in triplice copia: perfezione.",
+    "Un altro giorno a far rispettare i regolamenti della Gilda."
+   ],
+   "partial": [
+    "Becchi qualche trasgressore, ma altri ti sfuggono.",
+    "Le scartoffie sono sfiancanti.",
+    "Un mago discute con veemenza su un cavillo.",
+    "Quasi tutte le violazioni sono infrazioni minori.",
+    "Applicazione delle regole nella norma."
+   ],
+   "failure": [
+    "I maghi senza licenza sfuggono al tuo controllo.",
+    "Ti perdi nel labirinto dei regolamenti.",
+    "Un mago potente ti intimidisce.",
+    "Le scartoffie hanno la meglio su di te.",
+    "La Gilda è delusa da come hai lavorato."
+   ],
+   "disaster": [
+    "Revochi per sbaglio il permesso a un Maestro della Gilda!",
+    "Un mago inferocito ti maledice!",
+    "Perdi documenti vitali della Gilda!",
+    "Le ritorsioni politiche te la fanno pagare!",
+    "Ti trasferiscono in archivio!"
+   ]
+  }
+ },
+ "101": {
+  "name": "Supervisore Rituali",
+  "description": "Assicura che i rituali magici seguano esattamente i protocolli della Gilda.",
+  "outcome": {
+   "success": [
+    "Ogni rito procede secondo le specifiche esatte.",
+    "Il Gran Maestro sarebbe fiero di te.",
+    "Stabilità attraverso la procedura corretta.",
+    "Nessuna deviazione dalla tradizione.",
+    "Ordine mantenuto, caos scongiurato."
+   ],
+   "partial": [
+    "Vengono annotate alcune improvvisazioni minori.",
+    "I riti funzionano, ma la forma non è perfetta.",
+    "Ti tocca correggere diversi officianti.",
+    "La tradizione è rispettata quasi del tutto.",
+    "Supervisione adeguata, anche se non impeccabile."
+   ],
+   "failure": [
+    "Il rito devia pericolosamente dal protocollo.",
+    "Non riesci a tenere a bada gli officianti.",
+    "Le energie magiche si fanno instabili.",
+    "I Lealisti dubitano del tuo impegno.",
+    "Il caos minaccia l'ordine."
+   ],
+   "disaster": [
+    "Il rito va storto in modo catastrofico!",
+    "La magia selvaggia erompe da ogni parte!",
+    "I beni della Gilda vengono danneggiati!",
+    "Danno la colpa alla tua sorveglianza lassista!",
+    "Ti tolgono ogni incarico di supervisione!"
+   ]
+  }
+ },
+ "102": {
+  "name": "Applicatore Anti-Tecnologia",
+  "description": "Cerca e distruggi dispositivi illegali di fusione tecno-magica.",
+  "outcome": {
+   "success": [
+    "I congegni eretici vengono purgati col fuoco e con la furia.",
+    "La magia resta pura e incontaminata.",
+    "Le vecchie usanze sono preservate.",
+    "La tecnologia corrompe; tu lo impedisci.",
+    "Un'altra incursione riuscita contro la modernità."
+   ],
+   "partial": [
+    "Qualche congegno distrutto, altri nascosti.",
+    "I tecnomanti fuggono prima del tuo arrivo.",
+    "Sequestri quasi tutto il contrabbando.",
+    "Quella magia impura ti lascia una sensazione sgradevole.",
+    "Applicazione della tradizione nella norma."
+   ],
+   "failure": [
+    "I tecnomanti hanno la meglio su di te.",
+    "Le loro macchine si guastano in modo pericoloso.",
+    "Non riesci a trovare le officine nascoste.",
+    "Oggi la tecnologia batte la tradizione.",
+    "I Tradizionalisti sono delusi."
+   ],
+   "disaster": [
+    "Un congegno tecno-magico esplode!",
+    "Resti coinvolto nel guasto di una macchina!",
+    "I tecnomanti ti catturano e ti umiliano!",
+    "Vengono distrutti beni costosi della Gilda!",
+    "Il tuo fallimento diventa una storia da raccontare come monito!"
+   ]
+  }
+ },
+ "103": {
+  "name": "Ingegnere Magitech",
+  "description": "Sviluppa fusioni sperimentali di magia e macchinari.",
+  "outcome": {
+   "success": [
+    "I sigilli si integrano alla perfezione col motore!",
+    "Una svolta nella progettazione magitecnica!",
+    "Il progresso avanza!",
+    "Il futuro è adesso!",
+    "Magia e macchina in perfetta armonia!"
+   ],
+   "partial": [
+    "Il congegno funziona, ma è instabile.",
+    "Qualche esplosione fa parte del progresso.",
+    "Fai avanzare la causa un passo alla volta.",
+    "Non tutti gli esperimenti riescono.",
+    "La scienza richiede sacrifici."
+   ],
+   "failure": [
+    "I sistemi magici e meccanici si rifiutano a vicenda.",
+    "Guasto catastrofico dell'intero sistema.",
+    "L'esperimento ti fa perdere mesi di lavoro.",
+    "Le tue teorie erano sbagliate.",
+    "I Tecnomanti mettono in dubbio la tua competenza."
+   ],
+   "disaster": [
+    "Il congegno magitecnico esplode violentemente!",
+    "Un anello di ritorno magico per poco non ti uccide!",
+    "L'intero laboratorio viene distrutto!",
+    "Anni di ricerca vanno in fumo!",
+    "Ti vietano ogni lavoro sperimentale!"
+   ]
+  }
+ },
+ "104": {
+  "name": "Impiegato Categorizzazione Incantesimi",
+  "description": "Categorizza meticolosamente gli incantesimi nelle 92 scuole distinte.",
+  "outcome": {
+   "success": [
+    "Ogni incantesimo classificato e archiviato come si deve.",
+    "Le tassonomie sono la perfezione fatta scaffale.",
+    "Ordine dal caos, per via di catalogazione.",
+    "Novantadue scuole, nessuna eccezione.",
+    "Rigore accademico al suo meglio."
+   ],
+   "partial": [
+    "Quasi tutti gli incantesimi sono classificati correttamente.",
+    "Un incantesimo sfugge a ogni classificazione facile.",
+    "Quel pignolare è sfiancante per la mente.",
+    "Gli occhi ti si annebbiano a forza di leggere testi antichi.",
+    "Lavoro adeguato, per quanto tedioso."
+   ],
+   "failure": [
+    "Classifichi male diversi incantesimi importanti.",
+    "La complessità del sistema ha la meglio su di te.",
+    "I colleghi ti fanno notare una lunga serie di errori.",
+    "Le novantadue scuole ti si confondono in testa.",
+    "Le tue classificazioni vengono respinte."
+   ],
+   "disaster": [
+    "Fondi per sbaglio due scuole!",
+    "I tuoi errori corrompono l'intero archivio!",
+    "Decenni di lavoro sono da rifare!",
+    "Il ramo delle novantadue scuole è nel caos!",
+    "Ti espellono dagli ambienti accademici!"
+   ]
+  }
+ },
+ "105": {
+  "name": "Oscuratore di Documenti",
+  "description": "Rimuovi conoscenza pericolosa dai testi storici.",
+  "outcome": {
+   "success": [
+    "Verità pericolose cancellate in sicurezza.",
+    "La gente è protetta dalla conoscenza.",
+    "La storia viene ripulita a dovere.",
+    "Un altro giorno a preservare l'ignoranza.",
+    "Protocolli di contenimento rispettati."
+   ],
+   "partial": [
+    "Quasi tutte le informazioni pericolose sono state rimosse.",
+    "Certi testi sono difficili da censurare in modo pulito.",
+    "La mano ti si accartoccia su quel lavoro meticoloso.",
+    "Censura eseguita in modo adeguato.",
+    "La monotonia ti annebbia il cervello."
+   ],
+   "failure": [
+    "Ti sfuggono diversi passaggi pericolosi.",
+    "La censura è visibilmente incompleta.",
+    "I superiori dubitano del tuo impegno.",
+    "Il sapere ti scivola tra le dita.",
+    "La Fondazione non è contenta."
+   ],
+   "disaster": [
+    "Pubblichi per sbaglio un testo non censurato!",
+    "Il sapere proibito si diffonde!",
+    "Il contenimento della Fondazione è compromesso!",
+    "La tua carriera è finita!",
+    "Ti bollano come rischio per la sicurezza!"
+   ]
+  }
+ },
+ "106": {
+  "name": "Ladro di Artefatti",
+  "description": "Ruba artefatti storici per la collezione della Fondazione.",
+  "outcome": {
+   "success": [
+    "L'artefatto viene recuperato senza intoppi.",
+    "Il tuo furto passa inosservato.",
+    "Un'altra reliquia messa al sicuro per la Fondazione.",
+    "Estrazione professionale.",
+    "Sapere contenuto, missione compiuta."
+   ],
+   "partial": [
+    "L'artefatto è al sicuro, ma sono scattati gli allarmi.",
+    "Ti inseguono, ma riesci a seminarli.",
+    "L'estrazione è stata più sporca del previsto.",
+    "Missione riuscita, ma non pulita.",
+    "La Fondazione ottiene quello che voleva."
+   ],
+   "failure": [
+    "La sicurezza era troppo stretta.",
+    "Sei costretto ad annullare la missione.",
+    "L'artefatto resta fuori portata.",
+    "La tua infiltrazione viene scoperta e sventata.",
+    "La Fondazione è delusa."
+   ],
+   "disaster": [
+    "Ti colgono con le mani nel sacco!",
+    "L'artefatto va distrutto nella confusione!",
+    "Le guardie ti riducono privo di sensi!",
+    "La Fondazione ti rinnega!",
+    "Ti imprigionano e ti interrogano!"
+   ]
+  }
+ },
+ "107": {
+  "name": "Bibliotecario Silenzioso",
+  "description": "Mantieni gli archivi e zittisci permanentemente i visitatori rumorosi.",
+  "outcome": {
+   "success": [
+    "La biblioteca resta perfettamente silenziosa.",
+    "Gli avventori molesti vengono... sistemati.",
+    "I libri sono preservati, l'ordine mantenuto.",
+    "Il silenzio è d'oro, e rosso sangue.",
+    "Un'altra giornata quieta negli archivi."
+   ],
+   "partial": [
+    "Quasi tutti i disturbi vengono gestiti.",
+    "Un avventore scappa prima di essere zittito.",
+    "La pulizia è un lavoraccio.",
+    "L'ordine è quasi del tutto ristabilito.",
+    "Una giornata di lavoro accettabile."
+   ],
+   "failure": [
+    "Il caos dilaga in biblioteca.",
+    "Non riesci a zittire i disturbi.",
+    "Gli avventori scappano terrorizzati.",
+    "La Fondazione mette in dubbio i tuoi metodi.",
+    "L'ordine crolla."
+   ],
+   "disaster": [
+    "Uccidi per sbaglio uno studioso importante!",
+    "Nella colluttazione vanno distrutti dei libri!",
+    "La voce degli omicidi si sparge!",
+    "La Fondazione viene smascherata!",
+    "Sei diventato un problema da eliminare!"
+   ]
+  }
+ },
+ "108": {
+  "name": "Scrittore di Propaganda",
+  "description": "Crea disinformazione convincente per il consumo pubblico.",
+  "outcome": {
+   "success": [
+    "Le tue bugie sono perfettamente credibili.",
+    "Il pubblico beve la narrazione senza fiatare.",
+    "La verità è quello che diciamo noi.",
+    "Un'altra campagna informativa riuscita.",
+    "L'ironia del nome del tuo reparto ti diverte."
+   ],
+   "partial": [
+    "Quasi tutti si bevono la storia.",
+    "Qualche scettico mette in dubbio la narrazione.",
+    "La propaganda è adeguata, se pure poco ispirata.",
+    "Ci crede abbastanza gente da bastare.",
+    "Verosimile, se non perfetta."
+   ],
+   "failure": [
+    "Le bugie sono palesemente trasparenti.",
+    "Il pubblico vede attraverso la propaganda.",
+    "La tua narrazione crolla al primo esame.",
+    "La Fondazione non è contenta.",
+    "La verità ti sfugge tra le maglie della censura."
+   ],
+   "disaster": [
+    "La tua propaganda rivela i segreti della Fondazione!",
+    "La verità trapela per sbaglio!",
+    "Scoppia l'indignazione popolare!",
+    "Danno la colpa a te del disastro!",
+    "La tua carriera nella disinformazione è finita!"
+   ]
+  }
+ },
+ "109": {
+  "name": "Investigatore Interno",
+  "description": "Scova perdite di informazioni all'interno della Fondazione.",
+  "outcome": {
+   "success": [
+    "Scopri ed elimini una fuga di notizie.",
+    "La polizia segreta ce la fa un'altra volta.",
+    "La lealtà si impone con la paura.",
+    "I segreti della Fondazione restano al sicuro.",
+    "Sicurezza interna mantenuta."
+   ],
+   "partial": [
+    "Individui dei sospetti, ma ti mancano le prove.",
+    "Qualche indizio ti sfugge.",
+    "L'indagine non porta a nulla di definitivo.",
+    "Le tensioni interne salgono.",
+    "Sicurezza adeguata, anche se imperfetta."
+   ],
+   "failure": [
+    "La fuga di notizie continua senza che tu la scopra.",
+    "La tua indagine non porta da nessuna parte.",
+    "I sospetti ti sfuggono di mano.",
+    "La polizia segreta viene giocata in astuzia.",
+    "Le informazioni continuano a trapelare."
+   ],
+   "disaster": [
+    "Scoprono che la fuga di notizie sei tu!",
+    "La tua indagine smaschera TE!",
+    "La polizia segreta ti si rivolta contro!",
+    "Ti interrogano e ti torturano!",
+    "La tua vita nella Fondazione è finita!"
+   ]
+  }
+ },
+ "110": {
+  "name": "Manipolatore di Mercato",
+  "description": "Manipola i mercati per profitto con qualsiasi mezzo necessario.",
+  "outcome": {
+   "success": [
+    "Il mercato si piega alla tua volontà.",
+    "I margini di profitto volano!",
+    "La mano invisibile guida le tue operazioni.",
+    "Il capitalismo al suo meglio.",
+    "Un'altra manipolazione riuscita."
+   ],
+   "partial": [
+    "Guadagni modesti dai movimenti di mercato.",
+    "Qualche operazione ti va contro.",
+    "Il profitto c'è, ma non è al massimo.",
+    "Oggi il mercato è imprevedibile.",
+    "Rendimenti nella norma."
+   ],
+   "failure": [
+    "Il mercato si muove contro di te.",
+    "La tua manipolazione viene scoperta.",
+    "Le perdite si accumulano in fretta.",
+    "Il Collettivo è deluso.",
+    "Perfino il libero mercato ha i suoi limiti."
+   ],
+   "disaster": [
+    "Un crollo di mercato spazza via la tua posizione!",
+    "Gli organi di vigilanza indagano sulle tue attività!",
+    "Subisci perdite enormi!",
+    "Il Collettivo pretende un risarcimento!",
+    "La tua reputazione finanziaria è distrutta!"
+   ]
+  }
+ },
+ "111": {
+  "name": "Supervisore Estrazione Petrolio",
+  "description": "Massimizza l'efficienza dell'estrazione petrolifera attraverso ottimizzazione infernale.",
+  "outcome": {
+   "success": [
+    "I tassi di estrazione toccano il record!",
+    "Il patto dà i suoi frutti.",
+    "L'oro nero scorre senza fine.",
+    "Efficienza attraverso la dannazione.",
+    "I dirigenti dell'Inferno sono compiaciuti."
+   ],
+   "partial": [
+    "Obiettivi di estrazione quasi raggiunti.",
+    "Qualche guasto agli impianti rallenta i lavori.",
+    "Gli operai sono allo stremo.",
+    "Produzione adeguata, se non eccezionale.",
+    "Le quote infernali incombono."
+   ],
+   "failure": [
+    "I tassi di estrazione scendono sotto gli obiettivi.",
+    "I guasti agli impianti si moltiplicano a catena.",
+    "Il patto infernale pretende di più.",
+    "La tua anima finisce sotto esame.",
+    "I dirigenti non accettano scuse."
+   ],
+   "disaster": [
+    "Un pozzo esplode in modo catastrofico!",
+    "Degli operai muoiono nell'inferno di fiamme!",
+    "Il patto infernale reclama la tua anima ADESSO!",
+    "Danni enormi e morti!",
+    "L'Inferno viene a riscuotere!"
+   ]
+  }
+ },
+ "112": {
+  "name": "Corriere ad Alta Velocità",
+  "description": "Consegna pacchi a velocità folle, adorando la velocità.",
+  "outcome": {
+   "success": [
+    "Batti il tuo record personale di velocità!",
+    "La velocità è estasi!",
+    "I pacchi arrivano a una velocità impossibile!",
+    "La velocità è vita, la lentezza è morte!",
+    "Il motore urla di gioia!"
+   ],
+   "partial": [
+    "Veloce, ma non abbastanza.",
+    "Un quasi-incidente ti rallenta.",
+    "Lo sballo da velocità è più fiacco.",
+    "Velocità raggiunta nella norma.",
+    "Hai fame di altra velocità."
+   ],
+   "failure": [
+    "Ti schianti a forza di spingere troppo!",
+    "La velocità ti tradisce!",
+    "I pacchi vanno distrutti!",
+    "La lentezza è morte, e tu sei stato lento!",
+    "I Demoni della Velocità ti deridono!"
+   ],
+   "disaster": [
+    "Uno schianto catastrofico ad alta velocità!",
+    "Il tuo mezzo esplode!",
+    "Distrutti pacchi e veicoli a raffica!",
+    "Ti vietano il carburante ad alto numero di ottani!",
+    "La velocità si è presa un'altra vittima!"
+   ]
+  }
+ },
+ "113": {
+  "name": "Applicatore Monopolio Carburante",
+  "description": "Assicura che le Sette Sorelle mantengano il controllo totale del mercato carburante.",
+  "outcome": {
+   "success": [
+    "I concorrenti vengono eliminati con efficienza.",
+    "Il monopolio è al sicuro.",
+    "Le raffinerie indipendenti bruciano.",
+    "Il controllo del mercato è assoluto.",
+    "Le Sette Sorelle premiano la fedeltà."
+   ],
+   "partial": [
+    "Qualche concorrente oppone resistenza.",
+    "L'operazione è stata sporca.",
+    "Il monopolio regge, ma viene messo in discussione.",
+    "La violenza è stata necessaria.",
+    "Dominio del mercato nella norma."
+   ],
+   "failure": [
+    "I concorrenti tengono la posizione.",
+    "La tua opera di persuasione fallisce.",
+    "Il monopolio è minacciato.",
+    "Le Sette Sorelle non sono contente.",
+    "Il controllo del mercato ti sfugge."
+   ],
+   "disaster": [
+    "Un concorrente ti distrugge la raffineria!",
+    "L'operazione ti si ritorce contro in modo clamoroso!",
+    "L'indignazione pubblica minaccia il monopolio!",
+    "Le Sette Sorelle ti abbandonano!",
+    "Il tuo fallimento costa milioni!"
+   ]
+  }
+ },
+ "114": {
+  "name": "Agente del Caos Divino",
+  "description": "Diffondi discordia e disordine nel nome della Dea del Caos.",
+  "outcome": {
+   "success": [
+    "Il caos glorioso si diffonde sulla tua scia!",
+    "Eris sorride al tuo scompiglio!",
+    "L'ordine si sgretola davanti alla discordia!",
+    "I burocrati si strappano i capelli!",
+    "Bellissimo, bellissimo caos!"
+   ],
+   "partial": [
+    "Ottenuti disordini minori.",
+    "Il caos viene contenuto troppo in fretta.",
+    "Eris si aspetta di più da te.",
+    "Discordia seminata quanto basta.",
+    "Oggi l'ordine si dimostra resistente."
+   ],
+   "failure": [
+    "Il tuo caos viene soffocato in fretta.",
+    "Oggi l'ordine ha la meglio.",
+    "Il disordine non riesce a propagarsi.",
+    "Eris è delusa.",
+    "Vince la noiosa stabilità."
+   ],
+   "disaster": [
+    "Il tuo caos ti si rivolta contro!",
+    "I campioni dell'Ordine ti riempiono di botte!",
+    "Eris ride del tuo fallimento!",
+    "Il caos divora TE!",
+    "Anche la discordia ha le sue conseguenze!"
+   ]
+  }
+ },
+ "124": {
+  "name": "Scriba Vaticano",
+  "description": "Trascrivi e mantieni testi sacri e documenti della chiesa.",
+  "outcome": {
+   "success": [
+    "Ogni parola trascritta alla perfezione.",
+    "I testi sacri sono preservati.",
+    "La tua devozione traspare dal lavoro.",
+    "La Chiesa è compiaciuta.",
+    "Un altro giorno al servizio della fede."
+   ],
+   "partial": [
+    "Quasi tutti i testi sono trascritti correttamente.",
+    "La mano ti si accartoccia a forza di scrivere.",
+    "Ti sfugge qualche piccolo errore.",
+    "Servizio adeguato alla Chiesa.",
+    "Un lavoro tedioso, ma santo."
+   ],
+   "failure": [
+    "Diversi errori di trascrizione.",
+    "Citi male le Sacre Scritture!",
+    "I testi vengono corrotti dai tuoi errori.",
+    "La Chiesa è delusa.",
+    "La tua devozione viene messa in dubbio."
+   ],
+   "disaster": [
+    "Rovesci l'inchiostro su un manoscritto di valore inestimabile!",
+    "Testi sacri rovinati!",
+    "La Chiesa ti bolla come incompetente!",
+    "Secoli di lavoro distrutti!",
+    "Ti scomunicano dagli incarichi di scriba!"
+   ]
+  }
+ },
+ "127": {
+  "name": "Allieva Suora da Battaglia",
+  "description": "Addestrati sia nelle scritture che nel combattimento come operativa delle forze speciali vaticane.",
+  "outcome": {
+   "success": [
+    "La tua devozione e la tua abilità in combattimento colpiscono.",
+    "Scrittura e acciaio in perfetta armonia.",
+    "L'ira del Signore scorre attraverso di te.",
+    "Violenza santa portata a perfezione.",
+    "È nata una suora guerriera."
+   ],
+   "partial": [
+    "L'addestramento è di una durezza brutale.",
+    "Eccelli nel combattimento, ma arranchi in teologia.",
+    "Scrittura e violenza non si mescolano facilmente.",
+    "Progressi adeguati nell'addestramento.",
+    "La via del guerriero santo è difficile."
+   ],
+   "failure": [
+    "L'addestramento ha la meglio su di te.",
+    "Non sei abbastanza forte per questo ordine.",
+    "Ti sfuggono sia la Scrittura sia il combattimento.",
+    "Le Suore Guerriere ti respingono.",
+    "La guerra santa esige di più."
+   ],
+   "disaster": [
+    "Un incidente durante l'addestramento per poco non ti uccide!",
+    "Attacchi per sbaglio una superiora!",
+    "La tua fede vacilla sotto pressione!",
+    "Le Suore Guerriere ti giudicano indegna!",
+    "Ti espellono dall'ordine!"
+   ]
+  }
+ },
+ "128": {
+  "name": "Guardiano Notturno",
+  "description": "Sorveglia proprietà durante le pericolose ore notturne.",
+  "outcome": {
+   "success": [
+    "Una notte tranquilla di guardia.",
+    "Nessun episodio da segnalare.",
+    "La tua presenza scoraggia i malintenzionati.",
+    "La proprietà è al sicuro.",
+    "Un'altra notte serena."
+   ],
+   "partial": [
+    "Qualche movimento sospetto, ma niente di grave.",
+    "Ti appisoli una volta o due.",
+    "Una notte lunga e noiosa.",
+    "Sorveglianza garantita a dovere.",
+    "La notte non passa più."
+   ],
+   "failure": [
+    "Ti addormenti durante il servizio!",
+    "I ladri entrano mentre tu sei distratto!",
+    "Rubano della roba mentre eri di guardia tu!",
+    "Ti licenziano su due piedi!",
+    "Avevi un compito solo: restare sveglio!"
+   ],
+   "disaster": [
+    "Un furto colossale avviene durante il tuo turno!",
+    "I ladri ti stendono privo di sensi!",
+    "Portano via tutto!",
+    "Devi risarcire le perdite!",
+    "La tua carriera di guardiano notturno è finita!"
+   ]
+  }
+ },
+ "129": {
+  "name": "Pescatore",
+  "description": "Pesca pesce per venderlo al mercato.",
+  "outcome": {
+   "success": [
+    "Le reti sono piene!",
+    "Una pescata abbondante, oggi.",
+    "I pesci saltano praticamente da soli in barca.",
+    "Al mercato questa pescata la pagheranno bene.",
+    "La giornata perfetta di un pescatore."
+   ],
+   "partial": [
+    "Una pescata modesta.",
+    "Pesce quanto basta perché sia valsa la pena.",
+    "Oggi i pesci non abboccavano granché.",
+    "Una resa adeguata alla fatica.",
+    "Hai fatto di meglio, in passato."
+   ],
+   "failure": [
+    "I pesci non abboccano proprio.",
+    "Torni quasi a mani vuote.",
+    "Ore buttate per un pugno di niente.",
+    "La giornata peggiore di un pescatore.",
+    "Magari domani va meglio."
+   ],
+   "disaster": [
+    "La tua barca si rovescia!",
+    "L'attrezzatura finisce in fondo al mare!",
+    "Per poco non affoghi!",
+    "Rimpiazzare tutto costa più di quanto hai guadagnato!",
+    "Forse la pesca non fa per te!"
+   ]
+  }
+ },
+ "130": {
+  "name": "Spazzino",
+  "description": "Pulisci le sporche strade cittadine.",
+  "outcome": {
+   "success": [
+    "Le strade sono lucide come specchi.",
+    "Lavoro onesto, paga onesta.",
+    "Sei orgoglioso di una città pulita.",
+    "Un lavoro semplice, ma necessario.",
+    "Un'altra zona ripulita a fondo."
+   ],
+   "partial": [
+    "Quasi tutte le zone ripulite a dovere.",
+    "Lo sporco sembra non finire mai.",
+    "La schiena ti fa male dalla fatica.",
+    "Per oggi può bastare.",
+    "La città resta sporca qualunque cosa tu faccia."
+   ],
+   "failure": [
+    "Non riesci a stare dietro allo sporco.",
+    "Il lavoro ha la meglio su di te.",
+    "Molli a metà.",
+    "Il supervisore è deluso.",
+    "Le strade restano sporche."
+   ],
+   "disaster": [
+    "Cadi dentro una fogna!",
+    "Dai rifiuti non trattati si diffonde una malattia!",
+    "Ti contagi con dei rifiuti tossici!",
+    "Le cure mediche costano più di quanto guadagni!",
+    "Lo sporco della città ha avuto la meglio su di te!"
+   ]
+  }
+ },
+ "131": {
+  "name": "Direttore",
+  "description": "Supervisiona le operazioni quotidiane e il personale.",
+  "outcome": {
+   "success": [
+    "Sotto la tua guida gira tutto come un orologio.",
+    "Personale e clienti sono soddisfatti allo stesso modo.",
+    "Appiani una situazione delicata con disinvoltura.",
+    "Stasera i conti tornano alla perfezione.",
+    "Un turno gestito bene dall'inizio alla fine."
+   ],
+   "partial": [
+    "Un pasticcio coi turni ti fa correre per tutta la serata.",
+    "Ce la fai, ma per un soffio.",
+    "I clienti brontolano per l'attesa.",
+    "Rattoppi la situazione alla meno peggio.",
+    "Un turno sfiancante, ma gestibile."
+   ],
+   "failure": [
+    "Oggi non va niente secondo i piani.",
+    "Scoppia un litigio tra il personale.",
+    "I clienti se ne vanno scontenti.",
+    "Perdi completamente il filo del turno.",
+    "Oggi per gli affari è stato un disastro."
+   ],
+   "disaster": [
+    "Un cliente furioso mette a soqquadro il locale!",
+    "La cassa risulta ammanchi enormi!",
+    "Il personale se ne va a metà turno!",
+    "Un'ispezione ti coglie in contropiede!",
+    "La tua reputazione di responsabile ne esce ammaccata!"
+   ]
+  }
+ },
+ "132": {
+  "name": "Cameriere",
+  "description": "Prendi ordinazioni e servi cibo e bevande ai clienti.",
+  "outcome": {
+   "success": [
+    "Ogni ordinazione esce giusta e in tempo.",
+    "I clienti lasciano mance generose.",
+    "Gestisci una sala piena con disinvoltura.",
+    "Non una lamentela per tutto il turno.",
+    "Un turno intenso, gestito alla grande."
+   ],
+   "partial": [
+    "Confondi un paio di ordinazioni.",
+    "A fine turno i piedi ti fanno male.",
+    "Le mance sono più magre del solito.",
+    "Tieni il passo, ma appena appena.",
+    "Un turno lungo e faticoso."
+   ],
+   "failure": [
+    "Ti cade un vassoio pieno davanti a tutti.",
+    "I clienti si lamentano della lentezza.",
+    "Ti dimentichi diverse ordinazioni.",
+    "La cucina va in ritardo per colpa tua.",
+    "Un turno pessimo e imbarazzante."
+   ],
+   "disaster": [
+    "Rovesci un piatto bollente addosso a un cliente!",
+    "Un vassoio di bicchieri si spacca sul pavimento!",
+    "Un cliente inferocito pretende il rimborso e fa una scenata!",
+    "Ti mandano a casa per il resto della serata!",
+    "Il responsabile ti trattiene i danni dalla paga!"
+   ]
+  }
+ },
+ "133": {
+  "name": "Cuoco",
+  "description": "Prepara pasti in una cucina indaffarata.",
+  "outcome": {
+   "success": [
+    "Ogni piatto esce dalla cucina perfetto.",
+    "La linea gira come un orologio.",
+    "I clienti vanno matti per i piatti del giorno.",
+    "Reggi l'ora di punta senza sudare una goccia.",
+    "Una serata impeccabile in cucina."
+   ],
+   "partial": [
+    "Qualche piatto esce in ritardo.",
+    "Ti scotti su una padella rovente.",
+    "La cucina resta un po' indietro durante l'ora di punta.",
+    "Quasi tutti i piatti reggono, qualcuno no.",
+    "Un turno frenetico, ma gestibile."
+   ],
+   "failure": [
+    "Le comande si accumulano più in fretta di quanto tu cucini.",
+    "Rovini diversi piatti di fila.",
+    "La cucina sprofonda nel caos.",
+    "I camerieri sono furiosi per i ritardi.",
+    "Un turno miserabile sotto ogni aspetto."
+   ],
+   "disaster": [
+    "Scoppia un incendio da grasso!",
+    "Ti ustioni gravemente con una pentola rovesciata!",
+    "La cucina va chiusa per il resto della serata!",
+    "Un'intossicazione alimentare manda i clienti in clinica!",
+    "La reputazione del locale ne esce a pezzi!"
+   ]
+  }
+ },
+ "134": {
+  "name": "Curatore di Museo",
+  "description": "Cataloga le esposizioni e guida i visitatori nel museo.",
+  "outcome": {
+   "success": [
+    "I visitatori restano rapiti dalla tua competenza.",
+    "La nuova mostra è un trionfo.",
+    "Catalogui ogni reperto senza una sbavatura.",
+    "Un donatore facoltoso resta colpito dalla tua visita guidata.",
+    "Un'altra giornata di arricchimento culturale ben spesa."
+   ],
+   "partial": [
+    "Qualche didascalia va corretta.",
+    "Perdi il filo durante una visita guidata.",
+    "Un gruppo di visitatori indisciplinati mette alla prova la tua pazienza.",
+    "La catalogazione dura più del previsto.",
+    "Una giornata adeguata, ma senza guizzi."
+   ],
+   "failure": [
+    "Smarrisci un documento importante.",
+    "Un gruppo in visita si perde per il museo.",
+    "I visitatori si lamentano della tua presentazione.",
+    "Non sai rispondere a domande elementari sulla collezione.",
+    "Il direttore non è impressionato dal tuo lavoro."
+   ],
+   "disaster": [
+    "Danneggi per sbaglio un reperto di valore inestimabile!",
+    "Una teca va in frantumi mentre te ne occupi tu!",
+    "Una didascalia sbagliata offende un donatore!",
+    "Il museo pretende il risarcimento del danno!",
+    "La tua reputazione di curatore è rovinata!"
+   ]
+  }
+ },
+ "135": {
+  "name": "Personal Trainer",
+  "description": "Guida i clienti attraverso allenamenti e programmi di fitness.",
+  "outcome": {
+   "success": [
+    "Oggi i tuoi clienti vedono risultati veri.",
+    "Convinci tutti a spingersi oltre i propri limiti.",
+    "Un cliente ti lascia una bella mancia per la competenza.",
+    "Ogni seduta fila via puntualissima.",
+    "Un'altra ottima giornata di allenamenti."
+   ],
+   "partial": [
+    "Un cliente fatica a stare dietro alla scheda.",
+    "Sei stremato dal dimostrare gli esercizi.",
+    "Qualche seduta finisce un po' prima.",
+    "Quasi tutti se ne vanno soddisfatti, qualcuno no.",
+    "Una giornata faticosa, ma gestibile."
+   ],
+   "failure": [
+    "Un cliente si arrende a metà seduta.",
+    "Ti stiri un muscolo mentre dimostri un esercizio.",
+    "I clienti se ne vanno scontenti dei propri progressi.",
+    "Oggi non riesci a tenere su l'energia.",
+    "Una giornata deludente in palestra."
+   ],
+   "disaster": [
+    "Un cliente si fa male seriamente durante la tua seduta!",
+    "Crolli per lo sforzo eccessivo!",
+    "Un attrezzo cede e provoca un incidente!",
+    "La palestra minaccia di rescinderti il contratto!",
+    "Ti danno la colpa dell'infortunio e ci rimetti la paga!"
+   ]
+  }
+ },
+ "136": {
+  "name": "Portiere",
+  "description": "Accogli gli ospiti e controlla l'ingresso del locale.",
+  "outcome": {
+   "success": [
+    "Ogni ospite viene accolto con un sorriso.",
+    "Tieni la fila in movimento per tutta la serata.",
+    "I piantagrane ci pensano due volte prima di avvicinarsi.",
+    "Le mance generose ti riempiono la tasca.",
+    "Un turno piacevole e senza scosse."
+   ],
+   "partial": [
+    "Una fila interminabile mette alla prova la tua pazienza.",
+    "Ti tocca respingere qualche ospite maleducato.",
+    "I piedi ti fanno male a stare in piedi tutta la notte.",
+    "La serata fila liscia quasi tutta.",
+    "Un turno faticoso, ma ordinario."
+   ],
+   "failure": [
+    "Fai entrare un ospite che poi crea problemi.",
+    "Un battibecco all'ingresso ti sfugge di mano.",
+    "Perdi il filo della lista degli invitati.",
+    "Il responsabile ti sgrida per la confusione.",
+    "Una serata frustrante all'ingresso."
+   ],
+   "disaster": [
+    "Un ospite violento ti stende sulla soglia!",
+    "Fai entrare un gruppo che devasta il locale!",
+    "Un tentativo di mazzetta degenera in uno scontro!",
+    "Il locale ti ritiene responsabile della devastazione!",
+    "Ti licenziano su due piedi!"
+   ]
+  }
+ },
+ "137": {
+  "name": "Buttafuori",
+  "description": "Mantieni l'ordine e allontana i facinorosi dal locale.",
+  "outcome": {
+   "success": [
+    "La tua presenza tiene tutti in riga.",
+    "Butti fuori un piantagrane senza fare scenate.",
+    "La serata passa senza incidenti.",
+    "Gli avventori si comportano bene sotto il tuo sguardo.",
+    "Un locale tranquillo e ben tenuto, stasera."
+   ],
+   "partial": [
+    "Scoppia un tafferuglio, ma lo gestisci.",
+    "Ti prendi qualche colpo mentre dividi due che litigano.",
+    "Un avventore ubriaco ti dà del filo da torcere.",
+    "Riesci a tenere la situazione sotto controllo, a stento.",
+    "Una serata dura, ma gestibile."
+   ],
+   "failure": [
+    "Una rissa ti sfugge di mano nonostante gli sforzi.",
+    "Un gruppo di avventori ha la meglio su di te.",
+    "Nella confusione si rompono dei mobili.",
+    "Il responsabile è furioso per i danni.",
+    "Una brutta serata per la sicurezza del locale."
+   ],
+   "disaster": [
+    "Una rissa colossale ti lascia steso a terra!",
+    "Il locale viene devastato senza che tu possa farci niente!",
+    "Un branco di avventori ti si scaglia addosso in gruppo!",
+    "Il proprietario dà a te la colpa della devastazione!",
+    "Non lavorerai mai più nella sicurezza dei locali!"
+   ]
+  }
+ },
+ "138": {
+  "name": "Bagnino",
+  "description": "Sorveglia i bagnanti e intervieni in caso di emergenza in acqua.",
+  "outcome": {
+   "success": [
+    "Individui il pericolo per tempo ed eviti ogni incidente.",
+    "Un bagnante ti ringrazia per l'occhio pronto.",
+    "L'acqua resta calma e sicura per tutto il giorno.",
+    "La tua vigilanza tiene tutti al sicuro.",
+    "Una giornata perfetta sulla torretta."
+   ],
+   "partial": [
+    "Ti butti in acqua per aiutare un bagnante in difficoltà.",
+    "Il sole ti lascia distrutto a fine turno.",
+    "Un brutto momento ti tiene sulle spine.",
+    "La giornata passa quasi tutta senza problemi seri.",
+    "Un turno faticoso, ma senza scosse."
+   ],
+   "failure": [
+    "Ti accorgi troppo tardi di un bagnante in difficoltà.",
+    "Una corrente forte ti coglie impreparato.",
+    "Sei troppo lento a rispondere a una richiesta d'aiuto.",
+    "Il tuo supervisore dubita della tua attenzione.",
+    "Un turno stressante e logorante."
+   ],
+   "disaster": [
+    "Un bagnante per poco non annega durante il tuo turno!",
+    "Vieni trascinato sotto mentre tenti un salvataggio!",
+    "Il panico dilaga mentre l'emergenza si consuma!",
+    "Viene aperta un'inchiesta sull'accaduto!",
+    "Ti sospendono in attesa di accertamenti!"
+   ]
+  }
+ },
+ "139": {
+  "name": "Avvocato Difensore",
+  "description": "Difendi gli imputati davanti alla Dea della Giustizia, che non riconosce alcun ordine forense.",
+  "outcome": {
+   "success": [
+    "Hai contrattato una taglia fino a zero ed Eris te l'ha lasciata fare.",
+    "La corte ti ha respinto undici obiezioni e poi ha assolto lo stesso.",
+    "Il tuo cliente è uscito libero. Nessuno sa bene quale argomento abbia funzionato.",
+    "Hai citato un precedente inventato da Eris e lei era troppo lusingata per obiettare.",
+    "Un'assoluzione pulita. La stenografa ha applaudito, brevemente, e poi si è scusata."
+   ],
+   "partial": [
+    "Hai fatto scendere la condanna da una stagione a quindici giorni.",
+    "Metà dei capi d'accusa è caduta. L'altra metà è raddoppiata.",
+    "Eris ti ha ascoltato, che non è la stessa cosa che darti ragione.",
+    "Hai perso, con garbo, e ti hanno ringraziato per l'impegno.",
+    "Il tuo cliente è in cella, ma in una più carina."
+   ],
+   "failure": [
+    "Ti hanno fatto sgomberare l'aula prima dell'arringa introduttiva.",
+    "Eris ti ha dichiarato in oltraggio a se stessa.",
+    "Le tue memorie sono state lette ad alta voce, con scherno, e poi bruciate.",
+    "La corte ha giudicato il tuo cliente colpevole e te noioso.",
+    "Hai passato tutta l'udienza in piedi, immobile."
+   ],
+   "disaster": [
+    "Hai argomentato così bene che Eris ha condannato il tuo cliente per dispetto.",
+    "La corte ha trasformato la tua borsa in un piccione e il piccione se n'è andato.",
+    "Per un attimo sei stato dichiarato coimputato.",
+    "Adesso il tuo nome è nel fascicolo, sottolineato, due volte.",
+    "L'onorario è stato sequestrato come prova di qualcosa."
+   ]
+  }
+ }
+}

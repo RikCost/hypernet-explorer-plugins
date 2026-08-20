@@ -49,5 +49,42 @@
     "available2": "Disponible",
     "evicted": "",
     "appName": ""
+  },
+  "company": {
+    "lemoncorp": {
+      "description": "Le pétillant conglomérat de high-tech grand public derrière la moitié des gadgets d'Europe. Notoirement surévalué, notoirement adoré."
+    },
+    "petrodyne": {
+      "description": "Pétrole, gaz et tout ce qui brûle. Pompe le brut de la Petrocave et verse des dividendes réguliers et charbonneux."
+    },
+    "soulforge": {
+      "description": "Raffine et négocie les cristaux d'âme. Volatile, éthiquement douteuse, spectaculairement rentable quand le voile s'amincit."
+    },
+    "hypernetsystems": {
+      "description": "L'épine dorsale de l'Hypernet elle-même. Possède les câbles, les antennes et l'essentiel de vos données."
+    },
+    "ferrosteelworks": {
+      "description": "Poutrelles, rails et bordés de coque. Ennuyeuse, lourde et discrètement indispensable à quiconque construit quoi que ce soit."
+    },
+    "greenwitchorganics": {
+      "description": "Herbes, teintures et produits d'une efficacité suspecte, cultivés sous la canopée de GreenWitch."
+    },
+    "vaultbankholdings": {
+      "description": "Dépôts, prêts et les coffres qui les gardent. Si vous devez de l'argent, c'est probablement ici."
+    },
+    "aetherlogistics": {
+      "description": "Trains, bus, hélicoptères et les horaires qui les relient. Déplace gens et marchandises à travers la carte."
+    }
+  },
+  "sector": {
+    "consumertech": "Tech grand public",
+    "energy": "Énergie",
+    "occult": "Occulte",
+    "telecom": "Télécoms",
+    "industrial": "Industrie",
+    "agriculture": "Agriculture",
+    "finance": "Finance",
+    "transport": "Transport",
+    "misc": "Divers"
   }
 }

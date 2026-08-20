@@ -56,39 +56,22 @@
         return window.CharacterPresets?.emLabel?.(key, label) ?? label;
     }
 
-    // Both travel entries that offer the world map are one row doing two jobs:
+    // Both travel entries that offer the world map are one row doing three jobs:
     // on Earth it goes back to map 315, on another planet's surface there is no
     // world map to go back to and the press opens the landing-site picker
-    // instead (WorldMapReturn's commandWorldMap decides, this only names it).
+    // instead, and on a floor of the tower it calls the lift, which is the only
+    // way off a floor (WorldMapReturn's commandWorldMap decides, this only
+    // names it).
     function worldMapReturnLabel() {
-        const onAlienSurface = !!(window.GalaxySim?.isAlienSurface?.());
-        return T(onAlienSurface ? 'MainMenu.cmd.chooseLandingSite'
-                                : 'MainMenu.cmd.returnToWorldMap');
+        if (window.GalaxySim?.isAlienSurface?.()) return T('MainMenu.cmd.chooseLandingSite');
+        if (window.DungeonFloors?.insideTower?.()) return T('MainMenu.cmd.returnToElevator');
+        return T('MainMenu.cmd.returnToWorldMap');
     }
 
-    // The Hypernet command is only usable while the party carries a device able
-    // to reach the Hypernet. The plain Hexphone Communicator (160) deliberately
-    // does NOT count, it has no Hypernet uplink. Edit this list to add/remove
-    // qualifying gear.
-    const INTERNET_CAPABLE_ITEM_IDS = [
-        153, // Color Flip Mobile Phone ("just enough internet")
-        157, // Encrypted Burner Phone (networked encrypted messaging)
-        162, // EHI Pilot PDA ("stays online")
-        394  // Investigative Laptop (online espionage/decryption software)
-    ];
-
-    // Hypernet is available when the party carries an internet-capable device,
-    // or unconditionally for the "Test" player / while sandbox mode is active.
-    function isHypernetAvailable() {
-        const isTester = typeof $gameActors !== "undefined" && $gameActors && $gameActors.actor(1) && $gameActors.actor(1).name() === "Test"; // i18n-ignore: tester account name, matched literally
-        const isSandbox = !!(typeof $gameSystem !== "undefined" && $gameSystem && $gameSystem._isSandboxMode);
-        if (isTester || isSandbox) return true;
-        if (typeof $gameParty === "undefined" || !$gameParty || typeof $dataItems === "undefined") return false;
-        return INTERNET_CAPABLE_ITEM_IDS.some(id => {
-            const item = $dataItems[id];
-            return item && $gameParty.hasItem(item);
-        });
-    }
+    // The Hyperdeck tile is always usable: every party owns a deck, and the
+    // deck decides for itself whether it can boot. It used to be gated on
+    // carrying an internet-capable device, which is no longer what the machine
+    // is made of.
 
     // The Alchemistry bench is a thing you carry, not a place: the tile is only
     // usable while the party holds the portable kit, and is greyed out (rather
@@ -180,7 +163,7 @@
         factions: 132,
         biologics: 84,
         augments: 223,
-        search: 391,
+        search: 247,
         help: 186,
         options: 83,
         tools: 252,
@@ -337,6 +320,36 @@
             const focused = document.activeElement;
             if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA')) return;
 
+            // Keep the TAB/L1-R1 hint honest with whatever input the player is
+            // actually on right now, not just whichever one the menu happened
+            // to open with (a pad player who starts moving the cursor before
+            // ever pressing a shoulder button should still see "L1 / R1").
+            const hintScene = SceneManager._scene;
+            if (hintScene && hintScene._dndContainer && hintScene.uiSwitchHintText) {
+                const hint = hintScene._dndContainer.querySelector(".party-switch-hint");
+                if (hint) {
+                    const text = hintScene.uiSwitchHintText();
+                    if (hint.textContent !== text) hint.textContent = text;
+                }
+            }
+
+            // Walking the party comes before the back-out check because TAB is
+            // shared between the two: while the roster cards are on the page it
+            // steps to the next member (so the needs panel reports each of them
+            // in turn), and only the cancel key leaves the menu. The shoulder
+            // buttons do the same on a pad, backwards and forwards.
+            const menuScene = SceneManager._scene;
+            if (menuScene && menuScene.canCycleSelectedActor && menuScene.canCycleSelectedActor()) {
+                if (Input.isTriggered('pageup')) {
+                    menuScene.cycleSelectedActor(-1);
+                    return;
+                }
+                if (Input.isTriggered('pagedown') || Input.isTriggered('tab')) {
+                    menuScene.cycleSelectedActor(1);
+                    return;
+                }
+            }
+
             // Backing out is answered before anything else: a page can be empty
             // of focusable tiles (a Followers list with nobody in it, a Vehicles
             // list with nothing owned) and the cancel key still has to work
@@ -436,23 +449,38 @@
     // =========================================================================
     // Canvas window paint deferral
     // =========================================================================
-    // Scene_Menu still builds the engine's own windows, because that is where
-    // every other plugin hangs its command handlers (see triggerUICommand), and
-    // create() hides all of them in the same frame since the parchment draws the
-    // menu itself. Painting them into their contents bitmaps is therefore pure
-    // waste on every open: Window_MenuStatus blits a 144x144 face plus three
-    // gauges per party member (and pulls those faces through ImageManager to do
-    // it), and Window_MenuCommand lays out a couple of dozen rows of text.
+    // Every parchment menu in the game still builds the engine's own windows,
+    // because that is where the plugins hang their command handlers (see
+    // triggerUICommand), and then hides all of them in the same frame because
+    // the DOM overlay draws the menu itself. Scene_Menu does it at the end of
+    // create() below; the backpack does it at ItemSystemInventory.js
+    // Scene_EnhancedItem.prototype.create, and so on through every scene
+    // reachable from the pockets.
     //
-    // Only the drawing is skipped, never makeCommandList or anything else a
-    // plugin might read back, and a window that is ever actually shown paints
-    // itself on its next update, so nothing is permanently blank.
+    // Painting those windows into contents bitmaps nobody ever sees is pure
+    // waste on every open, and it is the expensive half of building them:
+    // Window_MenuStatus blits a 144x144 face plus three gauges per party member
+    // (pulling those faces through ImageManager to do it), and the backpack's
+    // item list lays out an icon and two text runs for every single thing the
+    // party is carrying.
+    //
+    // So: painting is suspended for the whole of any menu scene's create(), and
+    // settled up the instant it returns (SceneManager.onSceneCreate, which runs
+    // immediately after create() and before the scene is ever rendered).
+    // Windows still on screen at that point paint right there, so nothing
+    // flashes blank; windows the scene hid stay unpainted, and pick the work up
+    // on their next update if they are ever shown after all. Only the drawing is
+    // ever skipped, never makeCommandList or anything else a plugin reads back.
     let deferringMenuWindowPaint = false;
+    const deferredPaintWindows = [];
 
     const _Window_Selectable_drawAllItems = Window_Selectable.prototype.drawAllItems;
     Window_Selectable.prototype.drawAllItems = function () {
         if (deferringMenuWindowPaint) {
-            this._dndPaintPending = true;
+            if (!this._dndPaintPending) {
+                this._dndPaintPending = true;
+                deferredPaintWindows.push(this);
+            }
             return;
         }
         _Window_Selectable_drawAllItems.call(this);
@@ -465,6 +493,38 @@
             this.paint();
         }
         _Window_Selectable_update.call(this);
+    };
+
+    // Scene_MenuBase.prototype.create is the first thing every menu scene's own
+    // create() calls, so this is the earliest point at which the suspension can
+    // start and still cover the whole scene.
+    const _Scene_MenuBase_create = Scene_MenuBase.prototype.create;
+    Scene_MenuBase.prototype.create = function () {
+        deferringMenuWindowPaint = true;
+        _Scene_MenuBase_create.call(this);
+    };
+
+    // Belt and braces: if a scene's create() ever throws, onSceneCreate below
+    // never runs, and without this the suspension would stay latched on for the
+    // rest of the session and every list in the game would draw blank.
+    const _SceneManager_changeScene = SceneManager.changeScene;
+    SceneManager.changeScene = function () {
+        deferringMenuWindowPaint = false;
+        deferredPaintWindows.length = 0;
+        _SceneManager_changeScene.call(this);
+    };
+
+    const _SceneManager_onSceneCreate = SceneManager.onSceneCreate;
+    SceneManager.onSceneCreate = function () {
+        deferringMenuWindowPaint = false;
+        while (deferredPaintWindows.length > 0) {
+            const win = deferredPaintWindows.pop();
+            if (win._dndPaintPending && win.visible) {
+                win._dndPaintPending = false;
+                win.paint();
+            }
+        }
+        _SceneManager_onSceneCreate.call(this);
     };
 
     // =========================================================================
@@ -494,12 +554,9 @@
         this._isVehiclesPage = false;
         this._rightClickStartedOnMenu = false;
 
-        deferringMenuWindowPaint = true;
-        try {
-            _Scene_Menu_create.call(this);
-        } finally {
-            deferringMenuWindowPaint = false;
-        }
+        // Painting of the windows built in here is suspended for the whole of
+        // create() and settled up once it returns, see the deferral above.
+        _Scene_Menu_create.call(this);
 
         // Hide ALL default game canvas windows to clean the screen
         if (this._commandWindow) this._commandWindow.visible = false;
@@ -524,6 +581,7 @@
             }
             existing._dndHideToken = (existing._dndHideToken || 0) + 1;
             existing.style.zIndex = ""; // restore the CSS stacking order (1000)
+            existing.style.display = ""; // back into the layout if the dissolve finished
 
             UIMenuInputManager.init(this._dndContainer);
             this.addMenuEventListeners(); // Ensure context menu right-click listener is bound
@@ -568,7 +626,78 @@
         SoundManager.playCursor();
         this._needsActorPinned = true;
         this._selectedActorIndex = index;
-        this.refreshUIMenuDOM(true); // Enable premium smooth transitions!
+        this.updateRightPageSelection();
+    };
+
+    // TAB / L1-R1 and a clicked bio card both land here: only the selection
+    // highlight and the needs/addiction bars actually change, so this patches
+    // those two things in place (letting the CSS transitions already on
+    // .party-bio-card and .survival-bar-fill animate it) instead of fading
+    // out and rebuilding the whole right page for a value change.
+    Scene_Menu.prototype.updateRightPageSelection = function () {
+        const spread = this._dndContainer ? this._dndContainer.querySelector(".book-spread") : null;
+        const rightPageContainer = spread ? spread.querySelector(".right-page") : null;
+        const partyList = rightPageContainer ? rightPageContainer.querySelector(".party-bio-list") : null;
+
+        // The travel codex and a live search own the right page instead of the
+        // party sheet, so there is nothing here to patch: fall back to the
+        // normal fade/rebuild.
+        if (!partyList) {
+            this.refreshUIMenuDOM(true);
+            return;
+        }
+
+        partyList.querySelectorAll(".party-bio-card").forEach((el, idx) => {
+            el.classList.toggle("selected", idx === this._selectedActorIndex);
+        });
+
+        const hint = rightPageContainer.querySelector(".party-switch-hint");
+        if (hint) hint.textContent = this.uiSwitchHintText();
+
+        const box = rightPageContainer.querySelector(".survival-box");
+        if (!box) return;
+
+        const defs = this.getUINeedsCardDefs($gameParty.members());
+        const existing = new Map();
+        box.querySelectorAll(".survival-card").forEach(el => existing.set(el.dataset.need, el));
+
+        // A card the new member doesn't have (an addiction only the previous
+        // member carried) is dropped; one only the new member has is appended.
+        existing.forEach((el, key) => {
+            if (!defs.some(d => d.key === key)) el.remove();
+        });
+
+        defs.forEach(def => {
+            const el = existing.get(def.key);
+            if (!el) {
+                box.insertAdjacentHTML("beforeend", this.renderUINeedsCardHTML(def));
+                return;
+            }
+            const valEl = el.querySelector(".survival-val");
+            valEl.textContent = `${def.val}%`;
+            valEl.style.color = def.color;
+            const fill = el.querySelector(".survival-bar-fill");
+            fill.style.width = `${def.val}%`;
+            fill.style.background = def.color;
+        });
+    };
+
+    // The roster cards only exist on the sheet that carries the needs panel, so
+    // the party walk is offered exactly where it has something to move: not on
+    // the travel codex, not while a search has taken the spread over, and not
+    // for a party of one.
+    Scene_Menu.prototype.canCycleSelectedActor = function () {
+        if (this._isWorldMapPage) return false;
+        if (window.MenuSearch && window.MenuSearch.isActive()) return false;
+        return $gameParty.members().length > 1;
+    };
+
+    Scene_Menu.prototype.cycleSelectedActor = function (delta) {
+        const members = $gameParty.members();
+        if (members.length < 2) return;
+        const count = members.length;
+        const next = ((this._selectedActorIndex + delta) % count + count) % count;
+        this.switchSelectedActor(next);
     };
 
     Scene_Menu.prototype.getMemberNeeds = function (mem) {
@@ -760,6 +889,7 @@
         this._isPetsPage = true;
         this._petRenameId = null;
         this._petAbandonId = null;
+        this._petTrainId = null;
         this.refreshUIMenuDOM(true);
     };
 
@@ -771,6 +901,7 @@
         // with somebody.
         this._petRenameId = null;
         this._petAbandonId = null;
+        this._petTrainId = null;
         this.refreshUIMenuDOM(true);
     };
 
@@ -812,6 +943,63 @@
         if (!window.MergedVehicleSystem) return;
         SoundManager.playOk();
         window.MergedVehicleSystem.openRepairByKey(key);
+    };
+
+    // Sending away whatever the party called. Unlike abandoning an animal this
+    // breaks no law: a summon was never anyone's to keep.
+    Scene_Menu.prototype.dismissSummonUI = function () {
+        if (!window.SummonSystem || !window.SummonSystem.dismissMapSummon) return;
+        SoundManager.playCancel();
+        window.SummonSystem.dismissMapSummon();
+        this.refreshUIMenuDOM(false);
+    };
+
+    // Combat training. Picking a drill takes over the row's button strip the
+    // same way renaming does, so there is no way to abandon or re-leash a
+    // companion with the class chips open.
+    Scene_Menu.prototype.startPetTraining = function (petId) {
+        if (!window.PetSystem || !window.PetSystem.canTrain(petId)) return;
+        SoundManager.playOk();
+        this._petRenameId = null;
+        this._petAbandonId = null;
+        this._petTrainId = petId;
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.cancelPetTraining = function () {
+        if (this._petTrainId == null) return;
+        SoundManager.playCancel();
+        this._petTrainId = null;
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.confirmPetTraining = function (classId) {
+        const petId = this._petTrainId;
+        if (petId == null || !window.PetSystem) return;
+        if (!window.PetSystem.startTraining(petId, classId)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        SoundManager.playOk();
+        this._petTrainId = null;
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.stopPetTraining = function (petId) {
+        if (!window.PetSystem) return;
+        SoundManager.playCancel();
+        window.PetSystem.stopTraining(petId);
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.promotePetTrainee = function (petId) {
+        if (!window.PetSystem) return;
+        if (!window.PetSystem.promoteTrainee(petId)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        SoundManager.playOk();
+        this.refreshUIMenuDOM(false);
     };
 
     Scene_Menu.prototype.setActivePet = function (petId) {
@@ -950,7 +1138,12 @@
         // The canvases only exist on the Pets page, so anywhere else this was
         // one getElementById plus a character-sheet load per pet, child and
         // follower on every refresh, all of it landing on nothing.
-        if (!this._isPetsPage || !window.PetSystem) return;
+        if (!this._isPetsPage) return;
+        // A summon with no registry record of its own still has a row and a
+        // canvas, and it is drawn from the same sprite fields a pet carries.
+        const summon = window.SummonSystem?.mapSummonInfo?.() ?? null;
+        if (summon && !summon.petId) this.drawPetPortrait(summon, 'summon-canvas');
+        if (!window.PetSystem) return;
         window.PetSystem.getPets().forEach(pet => {
             this.drawPetPortrait(pet, `pet-canvas-${pet.id}`);
         });
@@ -1479,7 +1672,14 @@
                 (window.PetSystem?.getPets?.() ?? []).map(p => `${p.id}.${p.name}`).join('-'),
                 window.PetSystem?.getActivePet?.()?.id ?? 0,
                 this._petRenameId || 0,
-                this._petAbandonId || 0
+                this._petAbandonId || 0,
+                this._petTrainId || 0,
+                // A drill advancing, finishing or being called off changes the
+                // row without changing anything else on the page.
+                (window.PetSystem?.getPets?.() ?? [])
+                    .map(p => `${p.id}.${p.training ? p.training.done + '/' + (p.training.ready ? 1 : 0) : ''}`).join('-'),
+                // Calling something, or sending it away, adds or removes a row.
+                window.SummonSystem?.mapSummonInfo?.()?.name ?? ''
             ].join(':')
             : '';
         // A search takes over the left page, and every change to the query, the
@@ -1487,6 +1687,82 @@
         // part of the key.
         const searchKey = window.MenuSearch ? window.MenuSearch.stateKey() : '';
         return `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}_${searchKey}`;
+    };
+
+    // Uniform needs palette: gold when healthy, orange when low, red when
+    // critical. Every needs bar shares this so the page reads as one scale
+    // instead of one arbitrary hue per need. Addictions read the other way
+    // round: the bar fills with the craving, so a full one is somebody in
+    // withdrawal, not somebody content.
+    const needColor = (p) => p <= 20 ? '#d9433a' : (p <= 50 ? '#e2933a' : '#d4a64e');
+    const cravingColor = (p) => p >= 80 ? '#d9433a' : (p >= 50 ? '#e2933a' : '#d4a64e');
+
+    // The needs/addiction cards for the selected member, as a stable-keyed
+    // list. Shared by the full render (generateUIRightPageHTML) and the TAB
+    // in-place update (updateRightPageSelection) below, so the two never
+    // drift apart from each other.
+    Scene_Menu.prototype.getUINeedsCardDefs = function (members) {
+        members = members || $gameParty.members();
+        const allMemberNeeds = members.map(m => this.getMemberNeeds(m));
+        const displayNeeds = allMemberNeeds[this._selectedActorIndex] || allMemberNeeds[0] || {};
+        const medHunger  = displayNeeds.hunger  ?? 100;
+        const medSleep   = displayNeeds.sleep   ?? 100;
+        const medHygiene = displayNeeds.hygiene;
+        const medSocial  = displayNeeds.social;
+        const medLeisure = displayNeeds.leisure;
+
+        const raw = [
+            { key: 'hunger',  label: emLabel("needHunger",  T('MainMenu.need.hunger')),  val: medHunger },
+            { key: 'sleep',   label: emLabel("needSleep",   T('MainMenu.need.sleep')),   val: medSleep },
+            { key: 'hygiene', label: emLabel("needHygiene", T('MainMenu.need.hygiene')), val: medHygiene },
+            { key: 'social',  label: emLabel("needSocial",  T('MainMenu.need.social')),  val: medSocial },
+            { key: 'leisure', label: emLabel("needLeisure", T('MainMenu.need.fun')),     val: medLeisure }
+        ];
+        const defs = raw
+            .filter(n => n.val !== null && n.val !== undefined)
+            .map(n => ({ key: n.key, label: n.label, val: n.val, color: needColor(n.val) }));
+
+        // Until a member has been clicked the panel is the party's, so the
+        // card is one summary line, "Addictions (X)" over the worst craving
+        // anyone is carrying; picking a member opens their own substances one
+        // by one.
+        const addictions = window.AddictionSystem;
+        if (addictions) {
+            if (this._needsActorPinned) {
+                addictions.cravingsFor(members[this._selectedActorIndex]).forEach(c => {
+                    const val = Math.round(c.value);
+                    defs.push({ key: `addiction-${c.key}`, label: escapeHtml(c.label), val, color: cravingColor(val) });
+                });
+            } else {
+                const count = addictions.partyAddictCount();
+                if (count > 0) {
+                    const worst = addictions.partyWorst();
+                    const val = Math.round(worst ? worst.value : 0);
+                    defs.push({ key: 'addiction-party', label: T('TimeDate.addiction.partyCard', { count }), val, color: cravingColor(val) });
+                }
+            }
+        }
+        return defs;
+    };
+
+    Scene_Menu.prototype.renderUINeedsCardHTML = function (def) {
+        return `
+                    <div class="survival-card" data-need="${def.key}">
+                        <span class="survival-lbl">${def.label}</span>
+                        <span class="survival-val" style="color:${def.color}">${def.val}%</span>
+                        <div class="survival-bar">
+                            <div class="survival-bar-fill" style="width:${def.val}%; background:${def.color}"></div>
+                        </div>
+                    </div>`;
+    };
+
+    // The TAB / L1-R1 party-walk hint reflects whichever input the player
+    // last actually used (see lastInputType above), so a pad player is never
+    // told to press a key their controller doesn't have.
+    Scene_Menu.prototype.uiSwitchHintText = function () {
+        return lastInputType === 'gamepad'
+            ? T('MainMenu.roster.switchHintGamepad')
+            : T('MainMenu.roster.switchHintKeyboard');
     };
 
     Scene_Menu.prototype.generateUIRightPageHTML = function () {
@@ -1576,77 +1852,22 @@
         });
 
         // Needs computation: the needs panel reflects the active (selected) member.
-        const allMemberNeeds = members.map(m => this.getMemberNeeds(m));
-        const displayNeeds = allMemberNeeds[this._selectedActorIndex] || allMemberNeeds[0] || {};
-        const medHunger  = displayNeeds.hunger  ?? 100;
-        const medSleep   = displayNeeds.sleep   ?? 100;
-        const medHygiene = displayNeeds.hygiene;
-        const medSocial  = displayNeeds.social;
-        const medLeisure = displayNeeds.leisure;
-
-        // Uniform needs palette: gold when healthy, orange when low, red when
-        // critical. Every needs bar shares this so the page reads as one scale
-        // instead of one arbitrary hue per need.
-        const needColor = (p) => p <= 20 ? '#d9433a' : (p <= 50 ? '#e2933a' : '#d4a64e');
-
-        const needDefs = [
-            { label: emLabel("needHunger",  T('MainMenu.need.hunger')),  val: medHunger },
-            { label: emLabel("needSleep",   T('MainMenu.need.sleep')),   val: medSleep },
-            { label: emLabel("needHygiene", T('MainMenu.need.hygiene')), val: medHygiene },
-            { label: emLabel("needSocial",  T('MainMenu.need.social')),  val: medSocial },
-            { label: emLabel("needLeisure", T('MainMenu.need.fun')),     val: medLeisure }
-        ];
         let needsCardsHTML = "";
-        needDefs.forEach(n => {
-            if (n.val === null || n.val === undefined) return;
-            const c = needColor(n.val);
-            needsCardsHTML += `
-                    <div class="survival-card">
-                        <span class="survival-lbl">${n.label}</span>
-                        <span class="survival-val" style="color:${c}">${n.val}%</span>
-                        <div class="survival-bar">
-                            <div class="survival-bar-fill" style="width:${n.val}%; background:${c}"></div>
-                        </div>
-                    </div>`;
+        this.getUINeedsCardDefs(members).forEach(def => {
+            needsCardsHTML += this.renderUINeedsCardHTML(def);
         });
 
-        // Addictions read the other way round: the bar fills with the craving,
-        // so a full one is somebody in withdrawal, not somebody content. Until
-        // a member has been clicked the panel is the party's, so the card is
-        // one summary line, "Addictions (X)" over the worst craving anyone is
-        // carrying; picking a member opens their own substances one by one.
-        const addictions = window.AddictionSystem;
-        if (addictions) {
-            const cravingColor = (p) => p >= 80 ? '#d9433a' : (p >= 50 ? '#e2933a' : '#d4a64e');
-            const cravingCard = (label, val) => `
-                    <div class="survival-card">
-                        <span class="survival-lbl">${label}</span>
-                        <span class="survival-val" style="color:${cravingColor(val)}">${val}%</span>
-                        <div class="survival-bar">
-                            <div class="survival-bar-fill" style="width:${val}%; background:${cravingColor(val)}"></div>
-                        </div>
-                    </div>`;
-
-            if (this._needsActorPinned) {
-                addictions.cravingsFor(members[this._selectedActorIndex]).forEach(c => {
-                    needsCardsHTML += cravingCard(escapeHtml(c.label), Math.round(c.value));
-                });
-            } else {
-                const count = addictions.partyAddictCount();
-                if (count > 0) {
-                    const worst = addictions.partyWorst();
-                    needsCardsHTML += cravingCard(
-                        T('TimeDate.addiction.partyCard', { count }),
-                        Math.round(worst ? worst.value : 0)
-                    );
-                }
-            }
-        }
+        // Only worth telling the player about the walk when there is somebody
+        // else to walk to.
+        const switchHintHTML = members.length > 1
+            ? `<div class="party-switch-hint">${this.uiSwitchHintText()}</div>`
+            : '';
 
         return `
             <div class="party-bio-list">
                 ${partyBioHTML}
             </div>
+            ${switchHintHTML}
 
             <div class="survival-box">
                 ${needsCardsHTML}
@@ -1764,10 +1985,11 @@
                             <span class="icon" style="background: url('img/system/IconSet.png') -${(187 % 16) * 32}px -${Math.floor(187 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                             <span>${T('MainMenu.tools.hexphone')}</span>
                         </div>
+                        ${isAlchemistryAvailable() ? `
                         <div class="command-item focusable" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUICommand === 'function') SceneManager._scene.triggerUICommand('alchemistry')">
                             <span class="icon" style="background: url('img/system/IconSet.png') -${(180 % 16) * 32}px -${Math.floor(180 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                             <span>${T('MainMenu.tools.alchemistryKit')}</span>
-                        </div>
+                        </div>` : ''}
                         ${this.generateUIToolItemsListHTML()}
                     </div>
                 </div>
@@ -1778,11 +2000,28 @@
             const pets = window.PetSystem ? window.PetSystem.getPets() : [];
             const activePet = window.PetSystem ? window.PetSystem.getActivePet() : null;
             const activeId = activePet ? activePet.id : null;
+            // Whatever the party has called and is walking with (SummonSystem.js).
+            // A familiar is an animal somebody owns as well as a rite they cast,
+            // so it already has a row here: that row gets the send-away button
+            // rather than the creature being listed twice.
+            const summon = window.SummonSystem?.mapSummonInfo?.() ?? null;
+            const summonPetId = summon ? (summon.petId || 0) : 0;
+            const summonNote = (info) => info.bound
+                ? T('MainMenu.pets.summonBound')
+                : T('MainMenu.pets.summonSteps', { steps: info.stepsLeft });
+            const dismissBtn = `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.dismissSummonUI?.()">${T('MainMenu.pets.dismissSummon')}</div>`;
+            const className = (id) => {
+                const data = $dataClasses && $dataClasses[id];
+                if (!data) return '';
+                return window.CCDbName ? window.CCDbName(data) : data.name;
+            };
 
             const petRow = (pet) => {
                 const isActive = (pet.id === activeId);
                 const isRenaming = (this._petRenameId === pet.id);
                 const isAbandoning = (this._petAbandonId === pet.id);
+                const isChoosingDrill = (this._petTrainId === pet.id);
+                const drill = window.PetSystem?.trainingInfo?.(pet.id) ?? null;
                 const typeLabel = pet.isChild
                     ? T('MainMenu.roster.child')
                     : (pet.isFollower ? T('MainMenu.roster.follower') : T('MainMenu.roster.pet'));
@@ -1790,6 +2029,8 @@
                     ? `<div class="command-item" style="flex:1; opacity:0.6; pointer-events:none">${T('MainMenu.roster.following')}</div>`
                     : `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.setActivePet?.(${pet.id})">${T('MainMenu.roster.setActive')}</div>`;
                 const activeTag = isActive ? ` · ${T('MainMenu.pets.active')}` : '';
+                const isSummoned = (summonPetId === pet.id);
+                const summonTag = isSummoned ? ` · ${T('MainMenu.pets.summoned')}` : '';
                 // While a pet is being renamed its row hands the whole button
                 // strip over to the name field, so there is no way to abandon or
                 // re-leash it by mistake with the keyboard captured by typing.
@@ -1809,8 +2050,31 @@
                     // says which charge and what it costs before it is done.
                     buttons = `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.confirmPetAbandon?.()">${T('MainMenu.roster.confirm')}</div>
                         <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.cancelPetAbandon?.()">${T('MainMenu.roster.cancel')}</div>`;
+                } else if (isChoosingDrill) {
+                    // The drills this creature's archetype supports, as chips.
+                    // A humanoid that talks is offered the whole civilised
+                    // roster, so the strip scrolls rather than pushing the rest
+                    // of the page off the parchment.
+                    const options = window.PetSystem?.trainingOptions?.(pet.id) ?? [];
+                    const chips = options.map(id => `
+                        <div class="command-item focusable" style="flex:0 0 auto" onclick="SceneManager._scene?.confirmPetTraining?.(${id})">${escapeHtml(className(id))}</div>`).join('');
+                    buttons = `<div style="flex:1; display:flex; flex-wrap:wrap; gap:6px; max-height:150px; overflow-y:auto">${chips}</div>
+                        <div class="command-item focusable" style="flex:0 0 auto" onclick="SceneManager._scene?.cancelPetTraining?.()">${T('MainMenu.roster.cancel')}</div>`;
                 } else {
+                    // A companion being drilled is doing one thing only: the
+                    // row offers finishing it or calling it off, nothing else.
+                    let drillBtns = '';
+                    if (drill && drill.ready) {
+                        drillBtns = `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.promotePetTrainee?.(${pet.id})">${T('MainMenu.pets.trainJoin')}</div>
+                        <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.stopPetTraining?.(${pet.id})">${T('MainMenu.pets.trainStop')}</div>`;
+                    } else if (drill) {
+                        drillBtns = `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.stopPetTraining?.(${pet.id})">${T('MainMenu.pets.trainStop')}</div>`;
+                    } else if (window.PetSystem?.canTrain?.(pet.id)) {
+                        drillBtns = `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.startPetTraining?.(${pet.id})">${T('MainMenu.pets.train')}</div>`;
+                    }
                     buttons = `${activeBtn}
+                        ${isSummoned ? dismissBtn : ''}
+                        ${drillBtns}
                         <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.startPetAbandon?.(${pet.id})">${T('MainMenu.pets.abandon')}</div>
                         <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.startPetRename?.(${pet.id})">${T('MainMenu.pets.rename')}</div>`;
                 }
@@ -1820,6 +2084,27 @@
                 const warning = isAbandoning
                     ? `<div style="font-size:0.856em; color:#8e2a20; margin-bottom:4px">${this.petAbandonWarning(pet)}</div>`
                     : '';
+                // What the drill is doing right now, or what one would cost.
+                let drillLine = '';
+                if (isChoosingDrill) {
+                    drillLine = T('MainMenu.pets.trainChoose', {
+                        days: window.PetSystem?.trainingDays?.(pet.id) ?? 0,
+                    });
+                } else if (drill && drill.ready) {
+                    drillLine = T('MainMenu.pets.trainReady', { className: className(drill.classId) });
+                } else if (drill) {
+                    const percent = Math.floor(100 * (drill.done || 0) / Math.max(1, drill.need));
+                    drillLine = T('MainMenu.pets.trainProgress', {
+                        className: className(drill.classId),
+                        percent: percent,
+                    });
+                    // Only the companion on the leash is being drilled; the rest
+                    // are waiting their turn, and the row says so.
+                    if (!isActive) drillLine += ' ' + T('MainMenu.pets.trainPaused');
+                }
+                const drillNote = drillLine
+                    ? `<div style="font-size:0.856em; color:#4a5c2a; margin-bottom:4px">${escapeHtml(drillLine)}</div>`
+                    : '';
                 return `
                     <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
                         <div class="portrait-frame">
@@ -1828,8 +2113,10 @@
                         <div style="flex:1">
                             <div style="font-family:'Lora',serif; font-size:1.048em; color:#58180D; font-weight:bold; margin-bottom:4px">
                                 ${escapeHtml(pet.name)}
-                                <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${typeLabel}${activeTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
+                                <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${typeLabel}${activeTag}${summonTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
                             </div>
+                            ${isSummoned ? `<div style="font-size:0.842em; color:#7a5c3a; margin-bottom:4px">${summonNote(summon)}</div>` : ''}
+                            ${drillNote}
                             ${parentLine}
                             ${warning}
                             <div style="display:flex; gap:10px; align-items:center">
@@ -1838,6 +2125,26 @@
                         </div>
                     </div>`;
             };
+
+            // A rite the party is walking with that is nobody's animal: it has no
+            // registry record of its own, so it is drawn as a row of its own and
+            // the only thing that can be done with it is to send it away.
+            const summonRows = (summon && !summonPetId) ? `
+                    <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
+                        <div class="portrait-frame">
+                            <canvas id="summon-canvas" width="48" height="48"></canvas>
+                        </div>
+                        <div style="flex:1">
+                            <div style="font-family:'Lora',serif; font-size:1.048em; color:#58180D; font-weight:bold; margin-bottom:4px">
+                                ${escapeHtml(summon.name)}
+                                <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${T('MainMenu.pets.summoned')} · ${T('MainMenu.roster.levelAbbr')}${summon.level}</span>
+                            </div>
+                            <div style="font-size:0.842em; color:#7a5c3a; margin-bottom:4px">${summonNote(summon)}</div>
+                            <div style="display:flex; gap:10px; align-items:center">
+                                ${dismissBtn}
+                            </div>
+                        </div>
+                    </div>` : '';
 
             // Three kinds of company, kept apart: animals taken in, offspring
             // born to the party, and creatures that talked their way in.
@@ -1852,8 +2159,13 @@
                     <div style="font-family:'Lora',serif; font-size:1.142em; color:#58180D; font-weight:bold; margin:10px 0 8px; border-bottom:2px solid rgba(74,39,17,0.35)">${g.label}</div>
                     ${g.rows.map(petRow).join('')}`)
                 .join('');
-            if (!pets.length) {
+            if (!pets.length && !summonRows) {
                 petRows = `<div style="opacity:0.6; margin-top:24px; font-family:'Lora',serif">${T('MainMenu.pets.none')}</div>`;
+            }
+            if (summonRows) {
+                petRows = `
+                    <div style="font-family:'Lora',serif; font-size:1.142em; color:#58180D; font-weight:bold; margin:10px 0 8px; border-bottom:2px solid rgba(74,39,17,0.35)">${T('MainMenu.pets.groupSummons')}</div>
+                    ${summonRows}${petRows}`;
             }
             leftPageHTML = `
                 <div class="tools-pockets">
@@ -1950,10 +2262,12 @@
                     </div>
             ` : "";
 
-            // On the procedural map (636) surface the "Return to map" travel
-            // command as the very first pockets entry, copied from the World Map
-            // submenu, so the player can bail out to map 315 without drilling in.
-            const procReturnHTML = ($gameMap.mapId() === 636) ? `
+            // Off the world map, surface the "Return to map" travel command as
+            // the very first pockets entry, copied from the World Map submenu, so
+            // the player can bail out to map 315 without drilling in. It is not
+            // the procedural map's alone: a house, a shop, a cellar or a
+            // hand-made town map is left the same way (Map/WorldMapReturn.js).
+            const procReturnHTML = ($gameMap.mapId() !== 315) ? `
                     <div class="command-item focusable" data-symbol="travel_return" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('return')">
                         <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                         <span>${worldMapReturnLabel()}</span>
@@ -2038,7 +2352,7 @@
                 [
                     this.generateUICommandItemHTML(T('MainMenu.cmd.questLog'), "quest_log"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.diary'), "diary"),
-                    this.generateUICommandItemHTML(T('MainMenu.cmd.hypernet'), "hypernet"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.hyperdeck'), "hypernet"),
                     this.generateUICommandItemHTML(emLabel("menuBestiary", T('MainMenu.cmd.bestiary')), "bestiary"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.cards'), "cards"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.archive'), "help"),
@@ -2239,7 +2553,6 @@
         let enabled = true;
         if (symbol === "build") enabled = window.FurnitureSystem?.canBuildOnCurrentMap?.() ?? ($gameMap.mapId() !== 315);
         if (symbol === "sandbox") enabled = sandboxTester || sandboxActive;
-        if (symbol === "hypernet") enabled = isHypernetAvailable();
         if (symbol === "alchemistry") enabled = isAlchemistryAvailable();
 
         const opacity = enabled ? 1 : 0.45;
@@ -2442,7 +2755,11 @@
                     }
                     break;
                 case "cooking":
-                    SceneManager.push(Scene_Cooking);
+                    if (typeof Scene_Cooking !== "undefined") {
+                        SceneManager.push(Scene_Cooking);
+                    } else {
+                        console.warn("Scene_Cooking is not defined!");
+                    }
                     break;
                 case "alchemistry":
                     if (typeof window.Scene_Alchemistry !== "undefined") {
@@ -2455,17 +2772,16 @@
                     SceneManager.push(Scene_Help);
                     break;
                 case "hypernet":
-                    // Open Hypernet consistently with the ungated map W-key shortcut
-                    // and the OpenHypernetOS plugin command, which do not require a
-                    // device. Previously the menu tile alone buzzed when no
-                    // internet-capable item was held, so it "did not work from the
-                    // main menu" while working elsewhere (#68).
-                    if (typeof Scene_HypernetOS !== "undefined") {
-                        SceneManager.push(Scene_HypernetOS);
-                    } else if (typeof window.Scene_HypernetOS !== "undefined") {
+                    // The tile opens the machine, not the desktop: the Hyperdeck
+                    // boots into Archways XP once it has the parts to do it. The
+                    // map W-key shortcut and the OpenHypernetOS plugin command
+                    // still go straight to the desktop with no boot (#68).
+                    if (window.Scene_HyperDeck) {
+                        SceneManager.push(window.Scene_HyperDeck);
+                    } else if (window.Scene_HypernetOS) {
                         SceneManager.push(window.Scene_HypernetOS);
                     } else {
-                        console.warn("Scene_HypernetOS is not defined!");
+                        console.warn("Scene_HyperDeck is not defined!");
                     }
                     break;
                 case "dynamics":
@@ -2701,6 +3017,19 @@
                     container.style.transition = "opacity 0.4s ease-out";
                     container.style.opacity = "0";
                     container.style.pointerEvents = "none";
+
+                    // Once it has finished dissolving, take it out of the layout
+                    // rather than leaving a transparent full-screen parchment
+                    // behind. An opacity:0 tree is still a laid-out tree: it
+                    // matches every "#menu-container ..." rule in theme.css and
+                    // is re-styled and re-measured along with the submenu's own
+                    // spread on top of it, for as long as the player stays in
+                    // that submenu. create() below puts it back.
+                    container._dndHideTimer = setTimeout(() => {
+                        if (container._dndHideToken !== token) return;
+                        container._dndHideTimer = null;
+                        container.style.display = "none";
+                    }, 400);
                 }, 250);
             }
         }
@@ -2784,15 +3113,82 @@
         });
     };
 
-    // Tab opens the pause menu, matching the Bethesda convention (and closing it
-    // again from inside, see UIMenuInputManager). Esc/right-click still work.
-    const _Scene_Map_isMenuCalled = Scene_Map.prototype.isMenuCalled;
-    Scene_Map.prototype.isMenuCalled = function () {
-        return _Scene_Map_isMenuCalled.call(this) || Input.isTriggered('tab');
-    };
+    // Tab steps the item hotbar (see ItemSystemHotbar.js), the same as L1/R1;
+    // it no longer opens the pause menu. Esc/right-click still work for that.
 
     Scene_Menu.prototype.commandWorldMapMenu = function () {
         this.showWorldMapPage();
+    };
+
+    // ─── The screen snapshot every menu backdrop sits on ────────────────────
+    // Scene_Map.terminate snapshots the screen for the incoming menu scene to
+    // sit on (rmmz_scenes.js), and Bitmap.snap pays for that twice: a
+    // gl.readPixels stall that drains the whole GPU pipeline into JS memory,
+    // then PIXI's Extract.arrayPostDivide unpremultiplying those pixels one at
+    // a time in a JS loop. At 1280x720 that is ~920k iterations on the very
+    // frame the menu opens, and it is the most expensive single thing between
+    // the keypress and the parchment appearing.
+    //
+    // None of it is needed. The snapshot is only ever handed to a Sprite (every
+    // SceneManager.backgroundBitmap() consumer in the game does exactly that),
+    // and a Sprite wants a GPU texture, so the pixels never have to come back
+    // to the CPU at all: the stage is rendered straight into a RenderTexture
+    // and the Bitmap is handed out wrapping that texture. Full resolution, no
+    // readback, no blur, no downscale.
+    function snapBackgroundToTexture(stage) {
+        const width = Graphics.width;
+        const height = Graphics.height;
+        const bitmap = new Bitmap();
+        const renderTexture = PIXI.RenderTexture.create({ width, height });
+        if (stage) {
+            const renderer = Graphics.app.renderer;
+            renderer.render(stage, renderTexture);
+            stage.worldTransform.identity();
+        }
+
+        bitmap._renderTexture = renderTexture;
+        bitmap._baseTexture = renderTexture.baseTexture;
+        // Bitmap reads its size off the canvas it does not have here, and
+        // Sprite refuses to draw a bitmap that never reports itself loaded.
+        Object.defineProperty(bitmap, 'width', { value: width, configurable: true });
+        Object.defineProperty(bitmap, 'height', { value: height, configurable: true });
+        bitmap._loadingState = 'loaded';
+
+        // Insurance for any consumer that wants real pixels (blt, getPixel,
+        // anything touching .canvas or .context): pay for the readback then,
+        // once, instead of on every menu open. The texture stays the one the
+        // sprites are drawing, so it must survive the canvas being built.
+        bitmap._ensureCanvas = function () {
+            if (this._canvas) return;
+            const texture = this._renderTexture;
+            const keep = this._baseTexture;
+            Bitmap.prototype._createCanvas.call(this, width, height);
+            this._baseTexture = keep;
+            if (texture) {
+                const canvas = Graphics.app.renderer.extract.canvas(texture);
+                this._context.drawImage(canvas, 0, 0);
+                canvas.width = 0;
+                canvas.height = 0;
+            }
+        };
+
+        bitmap.destroy = function () {
+            if (this._renderTexture) {
+                this._renderTexture.destroy({ destroyBase: true });
+                this._renderTexture = null;
+            }
+            this._baseTexture = null;
+            this._destroyCanvas();
+        };
+
+        return bitmap;
+    }
+
+    SceneManager.snapForBackground = function () {
+        if (this._backgroundBitmap) {
+            this._backgroundBitmap.destroy();
+        }
+        this._backgroundBitmap = snapBackgroundToTexture(this._scene);
     };
 
     // Override Scene_MenuBase background creation to skip the PIXI blur filter

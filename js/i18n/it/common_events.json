@@ -685,7 +685,7 @@
     "name": ""
   },
   "Inn": {
-    "val": "Entra",
+    "val": "Locanda",
     "excluded": "",
     "name": ""
   },
@@ -700,7 +700,7 @@
     "name": ""
   },
   "Set player speed": {
-    "val": "Imposta la velocità del lettore",
+    "val": "Imposta la velocità del giocatore",
     "excluded": "",
     "name": ""
   },

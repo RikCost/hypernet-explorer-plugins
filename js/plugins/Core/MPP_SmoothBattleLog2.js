@@ -704,10 +704,10 @@
         this.frameVisible = false; // This line hides the window border.
         // --- MODIFICATIONS END ---
 
-        // Parallel to _lines: which pushed lines are toast-style (a purple
-        // background), i.e. a notification redirected here instead of a
-        // floating ParchmentToast while in battle. Kept in lockstep with
-        // _lines at every push/shift/clear site below.
+        // Parallel to _lines: which pushed lines are toast-style, i.e. a
+        // notification redirected here instead of a floating ParchmentToast
+        // while in battle. Kept in lockstep with _lines at every
+        // push/shift/clear site below.
         this._lineToast = [];
 
         this._clearDuration = 0;
@@ -879,8 +879,8 @@ Window_BattleLog.prototype.resetFontSettings = function() {
     };
 
     // A transient notification (ParchmentToast and friends, redirected here
-    // while in battle instead of floating over the HUD) drawn with a purple
-    // background so it still reads as a popup rather than a combat line.
+    // while in battle instead of floating over the HUD), drawn as an
+    // ordinary combat line.
     Window_BattleLog.prototype.addToast = function(text) {
         this.addText(text, true);
     };
@@ -1120,21 +1120,16 @@ Window_BattleLog.prototype.resetFontSettings = function() {
                     el._sblCachedHeight = null;
                 }
 
-                // A notification redirected here from ParchmentToast wears a
-                // purple background so it still reads as a popup, not a
-                // combat line. Padding changes the measured height, so an
-                // actual flip invalidates the cache like a font-size change.
+                // A notification redirected here from ParchmentToast reads as
+                // an ordinary combat line, no highlight box behind it.
                 const isToast = !!sprite._isToast;
                 if (el._sblIsToast !== isToast) {
                     el._sblIsToast = isToast;
                     el._sblCachedHeight = null;
                 }
-                // rgba mirrors the theme's --border-purple-medium (#6a3aa0);
-                // an inline style can't resolve a CSS custom property reliably
-                // across every host page this window is drawn over.
-                _setStyleIfChanged(el, 'background', isToast ? 'rgba(106, 58, 160, 0.55)' : 'transparent');
-                _setStyleIfChanged(el, 'borderRadius', isToast ? '4px' : '0');
-                _setStyleIfChanged(el, 'padding', isToast ? '2px 6px' : '0');
+                _setStyleIfChanged(el, 'background', 'transparent');
+                _setStyleIfChanged(el, 'borderRadius', '0');
+                _setStyleIfChanged(el, 'padding', '0');
 
                 // Update position and opacity matching the sprite (only on change)
                 _setStyleIfChanged(el, 'left', (sprite.x * sc.sx) + 'px');

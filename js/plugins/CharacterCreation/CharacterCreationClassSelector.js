@@ -189,7 +189,7 @@
   // and everything after it are the creature classes (Feral, Mimic, Monster,
   // Mana Cyborg, Ghost, Zombie, Mutant, Drone), offered only to a creature
   // whose archetypes list them. See the classes / creatureClasses rosters in
-  // EnemyArchetypes.json.
+  // Archetypes.json.
   const SENTIENT_CLASS_MAX = window.CreatureClasses.sentientMax();
 
   //=============================================================================

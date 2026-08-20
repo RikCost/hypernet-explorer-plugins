@@ -157,7 +157,6 @@
     "learnableSkills": "LEARNABLE SKILLS:"
   },
   "summon": {
-    "battleOnly": "SUMMONS CAN ONLY BE USED IN BATTLE!",
     "alreadyActive": "A SUMMON IZ ALREADY ACTIVE!",
     "summoned": "SUMMONED {name}!",
     "dismissed": "{name} WAZ SENT AWAY.",

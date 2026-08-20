@@ -184,7 +184,7 @@
     "description": "Un pugnale forgiato con mithril."
   },
   "47": {
-    "name": "Daggar di drago",
+    "name": "Pugnale del drago",
     "description": "Un pugnale forgiato con le zanne di un drago."
   },
   "48": {
@@ -524,7 +524,7 @@
     "description": "Un paio di sai - manganelli di metallo a tre punte per parare e colpire."
   },
   "132": {
-    "name": "Personale flessibile",
+    "name": "Bastone flessibile",
     "description": "Pali di bambù indurito legati insieme in un bastone flessibile."
   },
   "133": {
@@ -1456,7 +1456,7 @@
     "description": "Una spada con una lama di pura energia magica che \ninfligge devastanti danni arcani."
   },
   "365": {
-    "name": "Arco cercatore diincantesimi",
+    "name": "Arco cercatore di incantesimi",
     "description": "Un arco che scocca frecce di energia magica concentrata \nche inseguono e colpiscono i loro bersagli."
   },
   "366": {
@@ -1484,7 +1484,7 @@
     "description": "Una lama nera che assorbe gli attacchi magici e \nli converte in ulteriore potenza di taglio."
   },
   "372": {
-    "name": "Amplificaore psichico",
+    "name": "Amplificatore psichico",
     "description": "Un diadema che proietta i pensieri di chi lo indossa come \nattacchi psichici, fornendo al contempo scudi mentali."
   },
   "373": {
@@ -1764,7 +1764,7 @@
     "description": "Un'ascia prodotta in serie con una testa allentata che traballa quando viene fatta oscillare."
   },
   "442": {
-    "name": "Personale apprendista",
+    "name": "Bastone apprendista",
     "description": "Un bastone fragile fatto di legno verde che si piega quando viene colpito con forza."
   },
   "443": {

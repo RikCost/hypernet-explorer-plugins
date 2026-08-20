@@ -104,6 +104,8 @@
  * @value Collectibles
  * @option Combat
  * @value Combat
+ * @option Component
+ * @value Component
  * @option Counterfeits
  * @value Counterfeits
  * @option Crafting
@@ -173,6 +175,8 @@
  * @value Collectibles
  * @option Combat
  * @value Combat
+ * @option Component
+ * @value Component
  * @option Counterfeits
  * @value Counterfeits
  * @option Crafting
@@ -242,6 +246,8 @@
  * @value Collectibles
  * @option Combat
  * @value Combat
+ * @option Component
+ * @value Component
  * @option Counterfeits
  * @value Counterfeits
  * @option Crafting
@@ -354,6 +360,9 @@
             // A sealed vial of a live pathogen is contraband somebody bottled
             // on purpose. It is never what is at the bottom of a crate.
             if (item.note && /<category:\s*Diseases\s*>/i.test(item.note)) return false;
+            // A <Restricted> row is granted by the one system that owns it and
+            // is never found in a container either.
+            if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(item)) return false;
             return true;
         }
 
@@ -479,7 +488,11 @@
                     if (rand <= 0) { pick = entry.item; break; }
                 }
 
-                if (pick && !selected.find(s => s.item === pick)) {
+                // The item database carries a few literal duplicates (same name,
+                // different id, e.g. two "Meta Magic Grimoire" rows) so identity
+                // alone is not enough: dedupe by name too, or a container can
+                // roll both rows and show the same item twice.
+                if (pick && !selected.find(s => s.item === pick || s.item.name === pick.name)) {
                     const rarity = this.getItemRarity(pick);
                     selected.push({ item: pick, quantity: this.generateRandomQuantity(rarity), rarity });
                 }

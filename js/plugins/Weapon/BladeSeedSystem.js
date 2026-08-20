@@ -16,7 +16,8 @@
  * - Spirit evolution at levels 10 and 30 with new images
  * - Elemental spirits with visual indicators
  * - Spirit skill learning system with learning points
- * - Sealed equipment slot (cannot change weapon once bound)
+ * - The weapon is chosen, named and shaped at binding: the player picks its
+ *   look from the procedural variants before committing to it
  * - Custom menu command for spirit management
  * - Class-based weapon compatibility filtering
  * - Reshuffle name and spirit before binding
@@ -44,23 +45,26 @@
     const pluginName = 'BladeSeedSystem';
     const parameters = PluginManager.parameters(pluginName);
     
-    // Hardcoded weapon types list with starting skills
-    // The name doubles as the $dataSystem.weaponTypes vocabulary, so it stays
-    // as written; the panel shows T('BladeSeed.weaponType.<id>') instead.
-    // i18n-ignore-start
+    // The twelve seed weapons, one per weapon type. These are the only way
+    // into the database rows: a seed weapon carries <Restricted>, so no loot
+    // roll, shop shelf or forge recipe can produce one, and the blade seed is
+    // the single thing that grows it.
+    // The panel labels each row with the weapon's own localised name and type,
+    // so nothing here is displayed as written.
+    // i18n-ignore-start  database ids and the $dataSystem.weaponTypes vocabulary
     const weaponTypes = [
-        {"id": 1, "name": "Dagger", "weaponId": "529", "startingSkill": 34}, // Dual Attack or similar
-        {"id": 2, "name": "Sword", "weaponId": "530", "startingSkill": 35}, // Slash
-        {"id": 3, "name": "Mace", "weaponId": "531", "startingSkill": 36}, // Crush
-        {"id": 4, "name": "Axe", "weaponId": "532", "startingSkill": 37}, // Cleave
-        {"id": 5, "name": "Whip", "weaponId": "533", "startingSkill": 38}, // Lash
-        {"id": 6, "name": "Staff", "weaponId": "534", "startingSkill": 7}, // Heal
-        {"id": 7, "name": "Bow", "weaponId": "535", "startingSkill": 39}, // Aimed Shot
-        {"id": 8, "name": "Grimoire", "weaponId": "536", "startingSkill": 8}, // Fire
-        {"id": 9, "name": "Gun", "weaponId": "537", "startingSkill": 40}, // Rapid Fire
-        {"id": 10, "name": "Claw", "weaponId": "538", "startingSkill": 41}, // Rend
-        {"id": 11, "name": "Glove", "weaponId": "539", "startingSkill": 42}, // Power Punch
-        {"id": 12, "name": "Spear", "weaponId": "540", "startingSkill": 43} // Thrust
+        {"id": 1,  "name": "Light",      "weaponId": "12",  "startingSkill": 34}, // Seed Dagger
+        {"id": 2,  "name": "Sword",      "weaponId": "54",  "startingSkill": 35}, // Seed Sword
+        {"id": 3,  "name": "Heavy",      "weaponId": "55",  "startingSkill": 36}, // Seed Mace
+        {"id": 4,  "name": "Axe",        "weaponId": "206", "startingSkill": 37}, // Seed Axe
+        {"id": 5,  "name": "Whip",       "weaponId": "243", "startingSkill": 38}, // Seed Whip
+        {"id": 6,  "name": "Staff",      "weaponId": "284", "startingSkill": 7},  // Seed Staff
+        {"id": 7,  "name": "Bow",        "weaponId": "344", "startingSkill": 39}, // Seed Bow
+        {"id": 8,  "name": "Projectile", "weaponId": "392", "startingSkill": 8},  // Seed Grimoire
+        {"id": 9,  "name": "Gun",        "weaponId": "438", "startingSkill": 40}, // Seed Gun
+        {"id": 10, "name": "Claw",       "weaponId": "545", "startingSkill": 41}, // Seed Claw
+        {"id": 11, "name": "Glove",      "weaponId": "580", "startingSkill": 42}, // Seed Glove
+        {"id": 12, "name": "Spear",      "weaponId": "628", "startingSkill": 43}  // Seed Spear
     ];
     // i18n-ignore-end
     
@@ -231,6 +235,7 @@
                 weaponName: '',
                 weaponId: 0,
                 weaponTypeId: 0,
+                appearanceSeed: 0,
                 spirit: null,
                 level: 1,
                 experience: 0,
@@ -333,13 +338,21 @@
         
         initializeSkills() {
             const elementSkills = spiritSkills[this.element] || spiritSkills[1];
-            return elementSkills.map(skill => ({
-                skillId: skill.skillId,
-                name: skill.name,
-                cost: skill.cost > 0 ? skill.cost : calculateSkillLearningCost(skill.skillId),
-                learned: skill.learned || false,
-                source: skill.learned ? 'spirit' : 'unlearned' // Track source
-            }));
+            // Only skills the database really carries: an id whose row is
+            // missing or blank would sit in the learn list as an empty line and
+            // cost the player points for nothing.
+            return elementSkills
+                .filter(skill => {
+                    const data = $dataSkills[skill.skillId];
+                    return !!(data && (data.name || '').trim());
+                })
+                .map(skill => ({
+                    skillId: skill.skillId,
+                    name: $dataSkills[skill.skillId].name,
+                    cost: skill.cost > 0 ? skill.cost : calculateSkillLearningCost(skill.skillId),
+                    learned: skill.learned || false,
+                    source: skill.learned ? 'spirit' : 'unlearned' // Track source
+                }));
         }
         
         addWeaponSkill(weaponType) {
@@ -466,6 +479,55 @@
     
     // ── Window / Scene UI removed, handled by BladeSeedSystemUI.js ─────────
 
+    // ── Chosen appearance ────────────────────────────────────────────────
+    // A weapon's procedural look is normally derived from the world seed and
+    // its database id, so every copy of a sword looks alike in a given world.
+    // A seed weapon is grown for one person, so its look is theirs to pick.
+    // The seed rides in the same <ForgeSeed:> note the anvil already uses to
+    // keep the piece the smith previewed (WeaponSystemProcedural.seedFor), so
+    // the model system needs to know nothing about blade seeds.
+    const FORGE_SEED_TAG = /\s*<ForgeSeed:[^>]*>/i;
+
+    const randomAppearanceSeed = () => (Math.random() * 0x100000000) >>> 0;
+
+    // One candidate look, as a throwaway copy of the weapon carrying the seed
+    // under test. The panel's 3D preview builds its model from this, so nothing
+    // is written to the database until the player binds.
+    const previewWithAppearance = (weaponId, seed) => {
+        const base = $dataWeapons[weaponId];
+        if (!base) return null;
+        return Object.assign({}, base, {
+            meta: Object.assign({}, base.meta, { ForgeSeed: String(seed >>> 0) })
+        });
+    };
+
+    // Writes the chosen look onto the live database row. Only a blade seed can
+    // produce these weapons and only one can be bound at a time, so the row is
+    // this binding's alone to shape. The database is rebuilt from file on every
+    // boot, hence applyStoredAppearance below.
+    const applyAppearance = (weaponId, seed) => {
+        const weapon = $dataWeapons[weaponId];
+        if (!weapon) return;
+        weapon.note = String(weapon.note || '').replace(FORGE_SEED_TAG, '') +
+            '\n<ForgeSeed: ' + (seed >>> 0) + '>';
+        DataManager.extractMetadata(weapon);
+    };
+
+    const clearAppearance = (weaponId) => {
+        const weapon = $dataWeapons[weaponId];
+        if (!weapon) return;
+        weapon.note = String(weapon.note || '').replace(FORGE_SEED_TAG, '');
+        DataManager.extractMetadata(weapon);
+    };
+
+    // Puts the bound weapon's chosen look back on the database row after a load
+    // or a new game, since $dataWeapons comes off disk unmarked.
+    const applyStoredAppearance = () => {
+        const data = $gameSystem && $gameSystem._bladeSeed;
+        if (!data || !data.bound || !data.weaponId || !data.appearanceSeed) return;
+        applyAppearance(data.weaponId, data.appearanceSeed);
+    };
+
     // Expose data API for BladeSeedSystemUI.js
     window.BladeSeed = {
         weaponTypes,
@@ -478,6 +540,10 @@
         getCompatibleWeaponTypes,
         calculateSkillLearningCost,
         initializeBladeSeedData,
+        randomAppearanceSeed,
+        previewWithAppearance,
+        applyAppearance,
+        clearAppearance,
     };
 
     // Plugin Commands
@@ -519,14 +585,12 @@
         
         // Unequip weapon
         actor.changeEquip(0, null);
-        
-        // Unlock weapon slot
-        if (actor._sealedSlots) {
-            delete actor._sealedSlots[0];
-        }
-        
+
         // Remove weapon from inventory
         $gameParty.loseItem($dataWeapons[weaponId], 1);
+
+        // The chosen look belonged to that binding, not to the database row.
+        clearAppearance(weaponId);
         
         // Remove spirit stats
         if (actor._bladeSeedBonus) {
@@ -539,6 +603,7 @@
             weaponName: '',
             weaponId: 0,
             weaponTypeId: 0,
+            appearanceSeed: 0,
             spirit: null,
             level: 1,
             experience: 0,
@@ -699,15 +764,6 @@
         }
     };
     
-    // Equipment lock system - using custom sealed slots approach
-    const _Game_Actor_isEquipChangeOk = Game_Actor.prototype.isEquipChangeOk;
-    Game_Actor.prototype.isEquipChangeOk = function(slotId) {
-        if (this._sealedSlots && this._sealedSlots[slotId]) {
-            return false;
-        }
-        return _Game_Actor_isEquipChangeOk.call(this, slotId);
-    };
-    
     // Initialize on game load
     const _DataManager_createGameObjects = DataManager.createGameObjects;
     DataManager.createGameObjects = function() {
@@ -734,5 +790,9 @@
         if ($gameSystem._bladeSeed && $gameSystem._bladeSeed.spirit) {
             Object.setPrototypeOf($gameSystem._bladeSeed.spirit, SpiritCompanion.prototype);
         }
+
+        // The database is read off disk unmarked, so the weapon gets its
+        // chosen look back here rather than keeping it in the save file.
+        applyStoredAppearance();
     };
 })();

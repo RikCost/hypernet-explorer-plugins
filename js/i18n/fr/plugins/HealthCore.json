@@ -14,5 +14,6 @@
     ""
   ],
   "vitalOrganDestroyed": "",
-  "partDestroyed": ""
+  "partDestroyed": "",
+  "partDamagedFallback": "{part} endommagé !"
 }

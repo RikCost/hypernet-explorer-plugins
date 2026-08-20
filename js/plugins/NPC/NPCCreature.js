@@ -11,13 +11,23 @@
  * the cellar. This plugin is the single place that decides who, and what they
  * are once decided:
  *
- *   , one or two archetypes out of js/db/Health/EnemyArchetypes.json
- *   , a walking sprite from those archetypes' own `sprites` roster, so what
- *     walks the street is a body the archetype actually has
+ * The sprite is dealt FIRST and everything else follows from it, so what is
+ * minted is always a body the wardrobe actually has art for:
+ *
+ *   , a walking sprite out of the creature wardrobe, which is the `creature`
+ *     and `animal` entries of js/db/WorldGen/NPCs.json (the Creatures/ and
+ *     Animals/ folders) and nothing else. The Monsters/ folder is what a
+ *     battle is drawn with and is NOT dealt here: a beast wearing an enemy
+ *     sheet on a town street reads as a monster the party failed to notice.
+ *     Those sheets come back only in a monster world, where the confusion
+ *     costs nothing because everything walking about IS a monster.
+ *   , the archetype that sprite carries in its own NPCs.json entry, plus a
+ *     second one crossed into it on a 5% roll (25% in a monster world)
  *   , a class from those archetypes' rosters (see window.CreatureClasses),
  *     which is either one of the creature classes (Feral, Mimic, Monster,
- *     Mana Cyborg, Ghost, Zombie, Mutant, Drone , ids 63-70) or one of the
- *     civilised 1-62 the archetype supports
+ *     Mana Cyborg, Ghost, Zombie, Mutant, Drone , ids 63-70) on 95% of rolls
+ *     (50% in a monster world) or one of the civilised 1-62 the archetype
+ *     supports on the rest
  *   , a 3D model resolved from a $dataEnemies entry tagged with one of those
  *     same archetypes, so the model is always one the archetype supports
  *
@@ -30,7 +40,11 @@
  *
  * window.NPCCreature:
  *   creatureChance()              share of new NPCs minted as creatures
- *   rollIdentity(rng)             { archetypes, archetype, spriteKey, classId }
+ *   hybridChance() / nonSentientChance()
+ *   rollIdentity(rng, exterior)   { archetypes, archetype, spriteKey,
+ *                                   bustIndex, classId }, exterior (default
+ *                                   true) gates the Animals/ half of the
+ *                                   wardrobe to NPCs standing outside
  *   isCreatureProfile(profile)
  *   archetypeKeysOf(source)       profile | actor | "A / B" -> ["A", "B"]
  *   archetypeLabel(source)        display names, joined
@@ -38,9 +52,12 @@
  *   isNonSentientProfile(profile)
  *   isNonSentientActor(actor)
  *   isNonSentientByName(name)    party actor first, society profile second
+ *   creatureWardrobe()            [{ spriteKey, archetype, busts }] to deal from
  *   spritesForArchetypes(keys)    walking sprites both archetypes support
  *   enemyForArchetypes(keys, seed) a $dataEnemies entry of that archetype
  *   modelForArchetypes(keys, seed) { key, enemyData } for Battler3D.create
+ *   modelKeyForSprite(spriteKey) / modelForSprite(spriteKey)
+ *                                 the model an NPCs.json sheet names outright
  *
  * Load order: after NPCShared, before NPCSociety.
  */
@@ -52,14 +69,18 @@
   // everywhere else they are the exception that makes a street feel alive.
   const CREATURE_CHANCE_MONSTER = 0.70;
   const CREATURE_CHANCE_NORMAL  = 0.05;
-  // Of those, how many are a second archetype crossed into the first.
-  const HYBRID_CHANCE = 0.25;
+  // Of those, how many are a second archetype crossed into the first. A hybrid
+  // is a curiosity in an ordinary world and an everyday sight in a monster one.
+  const HYBRID_CHANCE_MONSTER = 0.25;
+  const HYBRID_CHANCE_NORMAL  = 0.05;
   // And how many are dealt one of their own creature classes rather than one
-  // of the civilised ones their archetype also supports. Without this the roll
-  // would be swamped: an archetype offers up to 62 civilised classes against a
-  // handful of creature ones, so a flat draw would make nearly every creature
-  // a talking one.
-  const NONSENTIENT_CHANCE = 0.60;
+  // of the civilised ones their archetype also supports. It is not a flat draw
+  // over the two rosters: an archetype offers up to 62 civilised classes
+  // against a handful of creature ones, so a flat draw would make nearly every
+  // creature a talking one. A stray dog is a dog. In a monster world the split
+  // is even, because there a talking beast is half the population.
+  const NONSENTIENT_CHANCE_MONSTER = 0.50;
+  const NONSENTIENT_CHANCE_NORMAL  = 0.95;
 
   // Everything from Feral (63) upward is a creature class. Kept in step with
   // CreatureClasses.sentientMax(), which owns the number; this is the fallback
@@ -69,12 +90,28 @@
   const DEFAULT_ARCHETYPE = "Humanoid";
 
   function archetypes() {
-    return (window.Health && window.Health.EnemyArchetypes) || {};
+    return (window.Health && window.Health.Archetypes) || {};
   }
 
   function sentientMax() {
     const CC = window.CreatureClasses;
     return CC && CC.sentientMax ? CC.sentientMax() : NONSENTIENT_CLASS_MIN - 1;
+  }
+
+  // The one question every share below is asked of. A monster world is the only
+  // place the battle sheets are worn in the street and the only place a talking
+  // beast is unremarkable, so both answers hang off it.
+  function isMonsterWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isMonsterWorld === "function" && WM.isMonsterWorld());
+  }
+
+  function hybridChance() {
+    return isMonsterWorld() ? HYBRID_CHANCE_MONSTER : HYBRID_CHANCE_NORMAL;
+  }
+
+  function nonSentientChance() {
+    return isMonsterWorld() ? NONSENTIENT_CHANCE_MONSTER : NONSENTIENT_CHANCE_NORMAL;
   }
 
   // ---------------------------------------------------------------------------
@@ -136,15 +173,98 @@
     return out;
   }
 
-  // The archetypes a creature NPC may be minted as: the ones that have a
-  // walking sprite on disk, since an NPC with no sprite has no body to stand
-  // in the street with.
-  let _pool = null;
-  function archetypePool() {
-    if (_pool) return _pool;
-    const data = archetypes();
-    _pool = Object.keys(data).filter((key) => spritesForArchetypes([key]).length > 0);
-    return _pool;
+  // ---------------------------------------------------------------------------
+  // The creature wardrobe
+  // ---------------------------------------------------------------------------
+  // What a creature NPC may actually be seen wearing, as
+  // [{ spriteKey, archetype, busts }]. Ordinarily it is the Creatures/ and
+  // Animals/ halves of the NPCs.json catalogue and nothing else, so a beast met
+  // in the street is drawn from the same wardrobe every other inhabitant is and
+  // is never confused with an enemy on the map.
+  //
+  // A monster world adds the Monsters/ sheets on top, one entry per archetype
+  // that lists the sheet, so the battle art walks about there too. That is the
+  // one setting where it cannot mislead: everything in it is a monster.
+  //
+  // Cached per world flavour, since the answer changes with the population mode
+  // and the magic level and a world can be switched inside one session.
+  let _wardrobe = null;
+  let _wardrobeArchetypes = null;
+  let _wardrobeSlot = "";
+
+  function npcData() {
+    return (window.WorldGen && window.WorldGen.NPCs) || {};
+  }
+
+  function wardrobeSlot(exterior) {
+    const magic = (window.MagicNature && window.MagicNature.level)
+      ? window.MagicNature.level() : "normal";
+    return (isMonsterWorld() ? "monster" : "normal") + ":" + magic + ":" + (exterior ? "ext" : "int");
+  }
+
+  // The catalogue half: every `creature` / `animal` entry the world allows.
+  // SpriteCatalog owns the wardrobe and answers this when it is loaded; the
+  // fallback reads the same file directly for the load-order window before
+  // DataService has run.
+  //
+  // `exterior` (default true, permissive) gates the Animals/ half only: a
+  // stray dog belongs on the street, not the landing of somebody's staircase.
+  // The Creatures/ half (Mimic, Ghost, Zombie...) is unaffected, those are as
+  // much at home behind a door as anywhere else.
+  function catalogueKeys(exterior = true) {
+    const SC = window.SpriteCatalog;
+    if (SC && typeof SC.creatureKeys === "function") return SC.creatureKeys({ exterior });
+    const data = npcData();
+    return Object.keys(data).filter((k) => {
+      const e = data[k];
+      if (!e || e.npc !== true) return false;
+      if (e.creature === true) return true;
+      return e.animal === true && exterior;
+    });
+  }
+
+  function creatureWardrobe(exterior = true) {
+    const slot = wardrobeSlot(exterior);
+    if (_wardrobe && _wardrobeSlot === slot) return _wardrobe;
+    _wardrobeSlot = slot;
+
+    const data = npcData();
+    const known = archetypes();
+    const out = [];
+    for (const key of catalogueKeys(exterior)) {
+      const entry = data[key];
+      const archetype = (entry && entry.Archetype) || "";
+      // An entry naming an archetype the health tables never heard of has no
+      // class roster and no anatomy to be built from, so it is not dealt.
+      if (!archetype || !known[archetype]) continue;
+      out.push({ spriteKey: key, archetype, busts: (entry.busts || []).length });
+    }
+
+    if (isMonsterWorld()) {
+      const seen = new Set(out.map((e) => e.spriteKey));
+      for (const archetype of Object.keys(known)) {
+        for (const spriteKey of spritesForArchetypes([archetype])) {
+          if (seen.has(spriteKey)) continue;
+          seen.add(spriteKey);
+          // A Monsters/ sheet is one character wide and carries no bust of
+          // its own; the panel draws its 3D model instead.
+          out.push({ spriteKey, archetype, busts: 0 });
+        }
+      }
+    }
+
+    _wardrobe = out;
+    _wardrobeArchetypes = [...new Set(out.map((e) => e.archetype))];
+    return _wardrobe;
+  }
+
+  // The archetypes a creature NPC may be minted as: the ones some sheet in the
+  // wardrobe actually wears, since an NPC with no sprite has no body to stand
+  // in the street with. Built with the wardrobe and cached with it, the hybrid
+  // roll asks for it on every cross.
+  function archetypePool(exterior = true) {
+    creatureWardrobe(exterior);
+    return _wardrobeArchetypes || [];
   }
 
   // ---------------------------------------------------------------------------
@@ -216,38 +336,47 @@
   // Minting
   // ---------------------------------------------------------------------------
   function creatureChance() {
-    const WM = window.WorldManager;
-    if (WM && typeof WM.isMonsterWorld === "function" && WM.isMonsterWorld()) {
-      return CREATURE_CHANCE_MONSTER;
-    }
-    return CREATURE_CHANCE_NORMAL;
+    return isMonsterWorld() ? CREATURE_CHANCE_MONSTER : CREATURE_CHANCE_NORMAL;
   }
 
   // Deals one creature identity off `rng` (anything with next()/nextInt()).
-  // Returns null when there is no archetype data to build one from, so a
-  // caller with no EnemyArchetypes loaded simply mints an ordinary person.
-  function rollIdentity(rng) {
-    const pool = archetypePool();
-    if (!pool.length) return null;
+  // Returns null when the wardrobe has nothing to dress one in, so a caller
+  // with no catalogue loaded simply mints an ordinary person.
+  //
+  // The order matters and is the whole point: the SHEET is drawn first, and the
+  // archetype is read off the sheet rather than the sheet hunted for the
+  // archetype. A creature is therefore always something the wardrobe has a
+  // picture of, and what it is called is always what it looks like.
+  function rollIdentity(rng, exterior = true) {
+    const wardrobe = creatureWardrobe(exterior);
+    if (!wardrobe.length) return null;
 
-    const first = pool[rng.nextInt(0, pool.length)];
+    // 1. The body.
+    const worn = wardrobe[rng.nextInt(0, wardrobe.length)];
+    const first = worn.archetype;
+
+    // 2. The second half, on the world's hybrid share. Drawn from the
+    //    archetypes the wardrobe itself covers, so a cross is always between
+    //    two things this world has bodies for.
     let second = null;
-    if (rng.next() < HYBRID_CHANCE && pool.length > 1) {
-      for (let tries = 0; tries < 8 && !second; tries++) {
-        const pick = pool[rng.nextInt(0, pool.length)];
-        if (pick !== first) second = pick;
+    if (rng.next() < hybridChance()) {
+      const pool = archetypePool(exterior);
+      if (pool.length > 1) {
+        for (let tries = 0; tries < 8 && !second; tries++) {
+          const pick = pool[rng.nextInt(0, pool.length)];
+          if (pick !== first) second = pick;
+        }
       }
     }
     const keys = second ? [first, second] : [first];
 
-    const sprites = spritesForArchetypes(keys);
-    if (!sprites.length) return null;
-    const spriteKey = sprites[rng.nextInt(0, sprites.length)];
-
     return {
       archetypes: keys,
       archetype: keys.join(" / "),
-      spriteKey,
+      spriteKey: worn.spriteKey,
+      // A catalogue sheet carries its own faces; a Monsters/ sheet is one
+      // character wide and has none.
+      bustIndex: worn.busts > 1 ? rng.nextInt(0, worn.busts) : 0,
       classId: rollClassId(keys, rng),
     };
   }
@@ -259,7 +388,7 @@
     const CC = window.CreatureClasses;
     if (!CC) return NONSENTIENT_CLASS_MIN + 2;
     const groups = CC.groupsForArchetypes(keys[0], keys[1]);
-    const wantCreature = rng.next() < NONSENTIENT_CHANCE;
+    const wantCreature = rng.next() < nonSentientChance();
     const first = wantCreature ? groups.creature : groups.sentient;
     const second = wantCreature ? groups.sentient : groups.creature;
     const list = (first && first.length) ? first : second;
@@ -273,7 +402,7 @@
   // The models are registered per Battler3D archetype key and resolved from a
   // $dataEnemies entry (its <Archetype:> note and its name), which is exactly
   // how the Bestiary picks one. So rather than guess a registry key from an
-  // EnemyArchetypes key, look for an enemy that IS one of these archetypes and
+  // Archetypes key, look for an enemy that IS one of these archetypes and
   // let Battler3D resolve its own: whatever comes back is a model the
   // archetype supports by construction.
   let _enemiesByArchetype = null;
@@ -310,6 +439,44 @@
     if (!candidates.length) return null;
     const n = (Math.abs(Number(seed) || 0)) % candidates.length;
     return candidates[n];
+  }
+
+  // The model a sprite sheet is portrayed by when its own catalogue entry names
+  // one. Every `animal` and `creature` entry in js/db/WorldGen/NPCs.json now
+  // carries a `model` field naming a registered Battler3D key, so a hen is
+  // drawn as a bird and a lich as a lich rather than as whatever the archetype
+  // lookup below happened to land on. Returns null when the sheet names no
+  // model, or names one nothing is registered under (which would draw an empty
+  // frame), and the archetype lookup answers instead.
+  function modelKeyForSprite(spriteKey) {
+    if (!spriteKey) return null;
+    const data = npcData();
+    let entry = data[spriteKey];
+    if (!entry) {
+      const base = String(spriteKey).split("/").pop();
+      for (const key of Object.keys(data)) {
+        if (key.split("/").pop() === base) { entry = data[key]; break; }
+      }
+    }
+    const key = entry && entry.model ? String(entry.model).toLowerCase() : "";
+    if (!key) return null;
+    const B = window.Battler3D;
+    if (!B || !B.create || !B.list) return null;
+    return B.list().indexOf(key) < 0 ? null : key;
+  }
+
+  // The same answer as { key, enemyData }, ready for Battler3D.create. The
+  // stand-in enemy carries an id hashed off the model key, since the id is what
+  // the model's colours are rolled from: every hen is the same hen, and stays
+  // that hen when the panel is closed and opened again.
+  function modelForSprite(spriteKey) {
+    const key = modelKeyForSprite(spriteKey);
+    if (!key) return null;
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < key.length; i++) {
+      h = Math.imul(h ^ key.charCodeAt(i), 16777619) >>> 0;
+    }
+    return { key, enemyData: { id: (h % 900000) + 1000, name: key, note: "", meta: {} } };
   }
 
   // { key, enemyData } ready for Battler3D.create(key, 0, 0, fakeBattler), or
@@ -350,11 +517,13 @@
 
   window.NPCCreature = {
     CREATURE_CHANCE_MONSTER, CREATURE_CHANCE_NORMAL,
-    creatureChance, rollIdentity, rollClassId,
+    creatureChance, hybridChance, nonSentientChance,
+    rollIdentity, rollClassId,
     isCreatureProfile, isNonSentientClassId, isNonSentientProfile, isNonSentientActor,
     isNonSentientByName,
     archetypeKeysOf, archetypeLabel,
-    spritesForArchetypes, spritePathFor, archetypePool,
+    creatureWardrobe, spritesForArchetypes, spritePathFor, archetypePool,
     enemyForArchetypes, modelForArchetypes,
+    modelKeyForSprite, modelForSprite,
   };
 })();

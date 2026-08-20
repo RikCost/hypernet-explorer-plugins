@@ -184,7 +184,97 @@
     };
 
     // ========================================================================
-    // 7. PLUGIN COMMAND FORWARDING
+    // 7. ENEMY MERCY: A NON-BOSS <TALK> ENEMY MAY SPARE THE PARTY
+    //
+    //   On its turn, a <Talk> enemy that is not a <Boss> weighs the fight it is
+    //   in and can walk away unharmed, without a corpse, when any of these
+    //   hold: it so outclasses the party that finishing them is beneath it
+    //   (the same level gap the battle-start danger warning above uses), the
+    //   party has already won it over through the talk menu (EnemyTalkSystem's
+    //   disposition), or the party is already down a member or fighting on
+    //   critical HP and it takes pity rather than finish them off.
+    //   MERCY_CHANCE keeps this a "sometimes", not a guarantee, and the roll
+    //   only happens for an eligible enemy that still has a turn to act, so a
+    //   failed roll is silent and the enemy simply attacks as normal.
+    // ========================================================================
+
+    const MERCY_CHANCE = 0.2;
+    const MERCY_DISPOSITION_THRESHOLD = 70;
+    const MERCY_LEVEL_GAP = 13; // matches checkAndShowDangerousEnemyWarning above
+
+    function enemyMercyEligible(enemy) {
+        if (!enemy || !enemy.isAlive || !enemy.isAlive()) return false;
+        if (($gameSystem && $gameSystem._isSandboxMode)) return false;
+        const leader = $gameParty.leader();
+        if (leader && leader.name() === "Test") return false; // i18n-ignore: playtest character name
+        const data = enemy.enemy();
+        if (!data) return false;
+        const note = data.note || "";
+        if (/<Boss>/i.test(note)) return false;
+        if (!/<Talk>/i.test(note)) return false;
+        if (enemy.isUnrecruitable && enemy.isUnrecruitable()) return false;
+        return true;
+    }
+
+    function enemyOutclassesParty(enemy) {
+        const party = $gameParty.members();
+        if (!party.length) return false;
+        const enemyLevel = BSE.Helpers.getBattlerLevel(enemy);
+        if (enemyLevel <= 0) return false;
+        return enemyLevel > BSE.Helpers.getMedianLevel(party) + MERCY_LEVEL_GAP;
+    }
+
+    function partyWonEnemyOver(enemy) {
+        return !!(enemy.disposition && enemy.disposition() >= MERCY_DISPOSITION_THRESHOLD);
+    }
+
+    function partyIsHurting() {
+        return $gameParty.members().some(m => m && (m.isDead() || m.isDying()));
+    }
+
+    // Which pool of dialogue fits, in priority order: a friendship earned
+    // through the talk menu comes first (the rarer, more deliberate reason),
+    // then pity for a party already reeling, then simple condescension.
+    function mercyReason(enemy) {
+        if (partyWonEnemyOver(enemy)) return 'friendly';
+        if (partyIsHurting()) return 'pity';
+        if (enemyOutclassesParty(enemy)) return 'tooStrong';
+        return null;
+    }
+
+    function rollEnemyMercy(enemy) {
+        if (!enemyMercyEligible(enemy)) return null;
+        const reason = mercyReason(enemy);
+        if (!reason) return null;
+        return Math.random() < MERCY_CHANCE ? reason : null;
+    }
+
+    function spareParty(enemy, reason) {
+        const pool = BSE.Helpers.bi18nList('mercy.' + reason) || [];
+        const line = pool[Math.floor(Math.random() * pool.length)] || '';
+        window.skipLocalization = true;
+        $gameMessage.add(enemy.name() + ": " + line);
+        window.skipLocalization = false;
+        // Gone whole, not killed: no corpse, and its map event is removed
+        // until the player returns to the map, exactly like a talked-round
+        // recruit leaving the field (EnemyTalkSystem.js).
+        enemy.hide();
+        if ($gameTroop.aliveMembers().length === 0) BattleManager.abort();
+    }
+
+    const _Game_Enemy_makeActions_mercy = Game_Enemy.prototype.makeActions;
+    Game_Enemy.prototype.makeActions = function() {
+        const reason = rollEnemyMercy(this);
+        if (reason) {
+            this.clearActions();
+            spareParty(this, reason);
+            return;
+        }
+        _Game_Enemy_makeActions_mercy.call(this);
+    };
+
+    // ========================================================================
+    // 8. PLUGIN COMMAND FORWARDING
     // ========================================================================
 
     BSE.Functions.executeDamageActor = function(args) {

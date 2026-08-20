@@ -25,16 +25,22 @@
 
     const DB_PATH = 'js/db/WorldGen/TVTransmissions.json';
 
-    function isIt() {
-        return typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it';
+    // TVTransmissions.json names its channels and programmes by i18n key
+    // ("HypernetTVGuide.channel.<id>.name"); the listings themselves live in
+    // js/i18n/<lang>/plugins/HypernetTVGuide.json. Anything unkeyed - a
+    // transmission added at runtime - is shown as written.
+    function tvText(value) {
+        if (!value) return '';
+        const key = String(value);
+        return T.has(key) ? T(key) : key;
     }
 
     function channelName(ch) {
-        return (isIt() && ch.nameIt) ? ch.nameIt : ch.name;
+        return ch ? tvText(ch.name) : '';
     }
 
     function programTitle(p) {
-        return (isIt() && p.titleIt) ? p.titleIt : p.title;
+        return p ? tvText(p.title) : '';
     }
 
     // Map the channel "color" field (RMMZ window text color index) to a CSS swatch.

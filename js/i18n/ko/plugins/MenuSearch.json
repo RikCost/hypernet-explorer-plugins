@@ -1,19 +1,19 @@
 {
-  "placeholder": "",
-  "clear": "",
-  "anyCategory": "",
-  "showing": "",
-  "min": "",
-  "max": "",
+  "placeholder": "검색…",
+  "clear": "검색 지우기",
+  "anyCategory": "모든 분류",
+  "showing": "{count}개 표시",
+  "min": "최소",
+  "max": "최대",
   "sort": {
-    "name": "",
-    "level": "",
-    "weight": "",
-    "price": "",
-    "cost": ""
+    "name": "이름",
+    "level": "레벨",
+    "weight": "무게",
+    "price": "가격",
+    "cost": "비용"
   },
   "range": {
-    "weight": "",
-    "price": ""
+    "weight": "무게 (kg)",
+    "price": "가격 (€)"
   }
 }

@@ -41,7 +41,7 @@
     },
     "2": {
       "name": "Acrobatica",
-      "description": "Capriole, volteggi e lavoro di equilibrio controllati in movimento."
+      "description": "Capriole, volteggi e giochi di equilibrio eseguiti in movimento con controllo."
     },
     "3": {
       "name": "Recitazione",
@@ -49,7 +49,7 @@
     },
     "493": {
       "name": "Scienza Attuariale",
-      "description": "Prezzare il rischio con la statistica: mortalità, sinistri e impegni di lungo periodo."
+      "description": "Prezzare il rischio con la statistica: mortalità, sinistri e passività a lungo termine."
     },
     "306": {
       "name": "Tessuti Aerei",
@@ -80,7 +80,7 @@
       "description": "Pilotare un velivolo ad ala fissa, dai controlli prevolo all'atterraggio."
     },
     "309": {
-      "name": "Alchimica",
+      "name": "Alchimia",
       "description": "L'arte prechimica della trasmutazione, della distillazione e della tria prima."
     },
     "9": {
@@ -120,7 +120,7 @@
       "description": "Lo studio comparato delle culture umane, della parentela e della vita materiale."
     },
     "310": {
-      "name": "Armaiolo di Armi Antiche",
+      "name": "Restauro di Armi Antiche",
       "description": "Riparare e restaurare armi da fuoco premoderne e i loro meccanismi."
     },
     "725": {
@@ -196,7 +196,7 @@
       "description": "Capacità generale di correre, saltare e lanciare sotto sforzo."
     },
     "501": {
-      "name": "Battitura d'Asta",
+      "name": "Conduzione d'Asta",
       "description": "Condurre una vendita: cantilena, individuazione dei rilanci e aggiudicazione."
     },
     "846": {
@@ -205,7 +205,7 @@
     },
     "502": {
       "name": "Revisione Contabile",
-      "description": "Verificare conti e procedure contro le prove e le regole."
+      "description": "Verificare conti e procedure alla luce delle prove e delle regole."
     },
     "503": {
       "name": "Detailing Auto",
@@ -229,7 +229,7 @@
     },
     "505": {
       "name": "Cauzioni",
-      "description": "Prestare garanzia per un imputato e rientrare del rischio."
+      "description": "Prestare garanzia per un imputato e coprirsi dal rischio."
     },
     "26": {
       "name": "Panificazione",
@@ -252,7 +252,7 @@
       "description": "Suonare il banjo a cinque corde, tra rulli e clawhammer."
     },
     "317": {
-      "name": "Bottaio",
+      "name": "Costruzione di Botti",
       "description": "Assemblare doghe e cerchi in botti a tenuta stagna."
     },
     "178": {
@@ -340,7 +340,7 @@
       "description": "Riconoscere gli uccelli a vista, al canto e dal comportamento sul campo."
     },
     "40": {
-      "name": "Fabbro Ferraio",
+      "name": "Forgiatura",
       "description": "Forgiare e sagomare ferro e acciaio caldi sull'incudine."
     },
     "321": {
@@ -360,7 +360,7 @@
       "description": "Leggere posizione, tempo e probabilità su una plancia."
     },
     "516": {
-      "name": "Costruzione Navale",
+      "name": "Carpenteria Navale",
       "description": "Costruire scafi da ossatura e fasciame, o da guscio stampato."
     },
     "42": {
@@ -477,7 +477,7 @@
     },
     "527": {
       "name": "Gestione Call Center",
-      "description": "Smaltire chiamate in coda rispettando copione, obiettivo e pazienza."
+      "description": "Smaltire le chiamate in coda tra copione, obiettivi e pazienza."
     },
     "54": {
       "name": "Calligrafia",
@@ -705,7 +705,7 @@
     },
     "553": {
       "name": "Rotazione delle Colture",
-      "description": "Alternare le colture nei campi per tenere il terreno in forza."
+      "description": "Alternare le colture nei campi per mantenere fertile il terreno."
     },
     "554": {
       "name": "Crossfit",
@@ -848,7 +848,7 @@
       "description": "Condurre e governare una muta da lavoro sulla neve."
     },
     "572": {
-      "name": "Dog Sitting",
+      "name": "Portare i Cani a Passeggio",
       "description": "Gestire più cani al guinzaglio senza incidenti."
     },
     "573": {
@@ -1017,7 +1017,7 @@
     },
     "105": {
       "name": "Digiuno",
-      "description": "Restare senza cibo di proposito, e restare funzionanti."
+      "description": "Rinunciare al cibo di proposito, e restare funzionanti."
     },
     "591": {
       "name": "Costruzione di Recinzioni",
@@ -1124,7 +1124,7 @@
       "description": "Sollevare, impilare e manovrare carichi col carrello elevatore."
     },
     "116": {
-      "name": "Cartomanzia",
+      "name": "Predizione del Futuro",
       "description": "Dire a un cliente il suo futuro in termini che accetterà."
     },
     "876": {
@@ -1172,7 +1172,7 @@
       "description": "Terra, clima, popolazione, e come si distribuiscono."
     },
     "844": {
-      "name": "Geriatria",
+      "name": "Gerontologia",
       "description": "La medicina e la cura del corpo e della mente che invecchiano."
     },
     "363": {
@@ -1233,7 +1233,7 @@
     },
     "614": {
       "name": "Spesa Alimentare",
-      "description": "Approvvigionarsi bene contro una lista, un budget e una scadenza."
+      "description": "Fare la spesa bene rispettando lista, budget e date di scadenza."
     },
     "615": {
       "name": "Guerriglia",
@@ -1248,7 +1248,7 @@
       "description": "Macinare e granulare polvere nera senza farla partire."
     },
     "616": {
-      "name": "Armaiolo",
+      "name": "Costruzione di Armi da Fuoco",
       "description": "Costruire, adattare e riparare armi da fuoco."
     },
     "125": {
@@ -1604,7 +1604,7 @@
       "description": "Le norme, la procedura e l'argomentazione che decidono una causa."
     },
     "521": {
-      "name": "Bowls",
+      "name": "Bocce su Prato",
       "description": "Far rotolare bocce sbilanciate verso il pallino sul prato."
     },
     "653": {
@@ -1936,8 +1936,8 @@
       "description": "Suonare l'oboe, costruzione dell'ancia compresa."
     },
     "684": {
-      "name": "Corsa a Ostacoli",
-      "description": "Percorrere un tracciato di salite, trasporti e strisciate."
+      "name": "Percorso a Ostacoli",
+      "description": "Percorrere un tracciato fatto di arrampicate, trasporti e strisciamenti."
     },
     "405": {
       "name": "Oceanografia",
@@ -1964,7 +1964,7 @@
       "description": "Piegare la carta in forme senza tagliarla."
     },
     "688": {
-      "name": "Imballaggio",
+      "name": "Preparazione del Bagaglio",
       "description": "Far stare quel che serve in quel che si riesce davvero a portare."
     },
     "191": {
@@ -2088,7 +2088,7 @@
       "description": "Materia, energia, moto e le leggi cui obbediscono."
     },
     "415": {
-      "name": "Fitodepurazione",
+      "name": "Fitorimedio",
       "description": "Bonificare terreno contaminato con piante che assorbono il veleno."
     },
     "698": {
@@ -2161,7 +2161,7 @@
     },
     "212": {
       "name": "Poesia",
-      "description": "Scrivere versi che si meritano i propri a capo."
+      "description": "Scrivere versi in cui ogni a capo ha una ragione."
     },
     "213": {
       "name": "Resistenza ai Veleni",
@@ -2416,7 +2416,7 @@
       "description": "Condurre una barca a vela su vento, marea e regolazione."
     },
     "438": {
-      "name": "Velaio",
+      "name": "Confezione di Vele",
       "description": "Tagliare e cucire vele che tengano la forma."
     },
     "733": {
@@ -2520,7 +2520,7 @@
       "description": "Conversazione segnata, con una grammatica e uno spazio propri."
     },
     "747": {
-      "name": "Cartelli Pubblicitari",
+      "name": "Rotazione di Cartelli Pubblicitari",
       "description": "Lanciare e far roteare un cartello pubblicitario per farsi notare."
     },
     "448": {
@@ -2528,7 +2528,7 @@
       "description": "Allevare bachi da seta e trarre il filo dai bozzoli."
     },
     "239": {
-      "name": "Argenteria",
+      "name": "Lavorazione dell'Argento",
       "description": "Alzare, saldare e rifinire l'argento."
     },
     "240": {
@@ -2548,12 +2548,12 @@
       "description": "Stare in equilibrio e camminare su una fettuccia tesa."
     },
     "750": {
-      "name": "Slittino",
+      "name": "Discesa in Slitta",
       "description": "Guidare e frenare una slitta in discesa."
     },
     "242": {
       "name": "Privazione del Sonno",
-      "description": "Funzionare anche dopo il sonno che il corpo aveva in credito."
+      "description": "Restare funzionanti quando il corpo reclama il sonno che gli spetta."
     },
     "243": {
       "name": "Gioco di Prestigio",
@@ -2617,7 +2617,7 @@
     },
     "901": {
       "name": "Pilotaggio Spaziale",
-      "description": "Governare una nave nello spazio: accensioni, orbita e allunaggio."
+      "description": "Governare una nave nello spazio: accensioni, orbita e discesa al suolo."
     },
     "251": {
       "name": "Manipolazione Spaziale",
@@ -2796,7 +2796,7 @@
       "description": "Combattere con la spada: guardia, taglio e stoccata."
     },
     "462": {
-      "name": "Mangiatore di Spade",
+      "name": "Ingoiare le Spade",
       "description": "Far scendere una lama in gola senza ferirsi."
     },
     "772": {
@@ -2849,7 +2849,7 @@
     },
     "779": {
       "name": "Tolleranza ai Gas Lacrimogeni",
-      "description": "Continuare a operare in un gas fatto apposta per fermarti."
+      "description": "Continuare a operare in un gas fatto apposta per fermare chi lo respira."
     },
     "273": {
       "name": "Tecnomanzia",
@@ -2944,7 +2944,7 @@
       "description": "Veleni: dose, effetto, rilevamento e antidoto."
     },
     "281": {
-      "name": "Tracciamento",
+      "name": "Lettura delle Tracce",
       "description": "Seguire le tracce lasciate da persone e animali."
     },
     "789": {
@@ -2964,7 +2964,7 @@
       "description": "Portare il senso da una lingua all'altra, non solo le parole."
     },
     "283": {
-      "name": "Trappolaggio",
+      "name": "Caccia con Trappole",
       "description": "Preparare, collocare e controllare trappole per la selvaggina."
     },
     "792": {
@@ -3064,7 +3064,7 @@
       "description": "Intagliare, sgusciare e verniciare violini."
     },
     "803": {
-      "name": "Doppiaggio",
+      "name": "Recitazione Vocale",
       "description": "Recitare con la sola voce, su immagine o su pagina."
     },
     "829": {
@@ -3157,7 +3157,7 @@
     },
     "758": {
       "name": "Degustazione del Vino",
-      "description": "Valutare un vino con occhio, naso e palato, e saperlo nominare."
+      "description": "Valutare un vino con occhio, naso e palato, e sapergli dare un nome."
     },
     "299": {
       "name": "Vinificazione",
@@ -3208,7 +3208,7 @@
       "description": "Scrivere, impaginare e fotocopiare una piccola rivista autoprodotta."
     },
     "819": {
-      "name": "Custodia allo Zoo",
+      "name": "Cura degli Animali allo Zoo",
       "description": "Nutrire, arricchire e gestire animali in cattività."
     },
     "305": {

@@ -17,6 +17,32 @@
       "Questa creatura è troppo forte!\nDovrei scappare!"
     ]
   },
+  "mercy": {
+    "tooStrong": [
+      "Non sei nemmeno una sfida. Tornatene a casa prima che mi annoi.",
+      "Ho battuto di meglio. Andatevene, non vale il mio tempo.",
+      "Uccidervi non proverebbe nulla. Sparite dalla mia vista.",
+      "Mi annoiate. Andatevene, prima che cambi idea.",
+      "Questo non è mai stato un combattimento. Andate, finché vi trovo ancora divertenti.",
+      "Ho schiacciato sciocchi più forti di voi. Andatevene."
+    ],
+    "friendly": [
+      "Abbiamo parlato. Non alzerò una mano contro di voi ora.",
+      "Mi avete parlato come se contassi qualcosa. Non posso combattervi dopo questo.",
+      "No... non voi. Ora ci capiamo. Andate in pace.",
+      "Mi siete simpatici. Andatevene prima che gli altri se ne accorgano.",
+      "Mi avete mostrato gentilezza. Vi devo lo stesso.",
+      "Questo combattimento finisce qui. Non farò del male a chi mi ha ascoltato."
+    ],
+    "pity": [
+      "Guardatevi... non c'è onore nel finire questo. Andate.",
+      "Siete già sconfitti. Non mi accanirò su un cadavere.",
+      "Basta. Non combatto chi sta morendo.",
+      "Portate via i vostri caduti e andate. Ho visto abbastanza sangue oggi.",
+      "Questo non è più un combattimento, è un'eutanasia. Passo.",
+      "Portate via la vostra gente prima che sia troppo tardi."
+    ]
+  },
   "moonPhase": {
     "newMoon": "Luna nuova",
     "waxingCrescent": "Luna crescente",
@@ -69,6 +95,8 @@
     "skill": "Abilità",
     "skills": "Abilità",
     "basic": "Base",
+    "wrestle": "Lotta",
+    "talk": "Parla",
     "reload": "Ricarica",
     "run": "Fuggi"
   },
@@ -156,8 +184,12 @@
     "learnableSkills": "Abilità apprendibili:"
   },
   "summon": {
-    "battleOnly": "Le evocazioni si usano solo in battaglia!",
     "alreadyActive": "C'è già un'evocazione attiva!",
+    "mapWalks": "{name} risponde al richiamo e cammina con il gruppo per {steps} passi.",
+    "mapBound": "{name} risponde al richiamo e cammina con il gruppo finché non viene congedato.",
+    "mapExpired": "Il vincolo si esaurisce e {name} scivola via da dove era venuto.",
+    "mapReplaced": "{name} viene lasciato andare per fare posto a ciò che stai chiamando.",
+    "noBodyToWalk": "{name} non ha un corpo con cui camminare accanto al gruppo.",
     "summoned": "Hai evocato {name}!",
     "dismissed": "{name} è stato congedato.",
     "slain": "{name} è stato distrutto e non si è potuto trattenere.",
@@ -380,5 +412,15 @@
       "l'Ultima Estrazione",
       "che risale dal fondo"
     ]
+  },
+  "weapons": {
+    "pair": "{actor} impugna {first} e {second}."
+  },
+  "escape": {
+    "failed": "Non riesci a svincolarti!",
+    "boss": "Non c'è via di fuga da questo nemico!"
+  },
+  "hud": {
+    "elementChip": "{element} {rate}x"
   }
 }

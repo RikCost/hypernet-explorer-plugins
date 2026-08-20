@@ -21,14 +21,12 @@
  * that only watches:
  *
  *   13 hyperpowers, from js/db/WorldGen/Hyperpowers.json, keyed "hp:<id>".
- *      Nine of them are spoken for by a faction carrying `hyperpowerHead`
- *      in Factions.json, and that faction's reputation slot IS the power's
- *      standing. The other five (Goblin Horde, Free States of Midwest,
- *      Cascadia Protectorate, Eastern Seaboard, Continental Union) have no
- *      faction entry at all, so their standing lives under the "hp:<id>" key
- *      in the character's own ledger.
+ *      No faction speaks for a power any more: each one's standing lives
+ *      under its own "hp:<id>" key in the character's ledger, and the branches
+ *      that answer to it (Factions.json `parentHyperpower`) are listed beneath
+ *      it without standing in its place.
  *
- *    7 independent factions, the ones with no `parentFaction`, keyed
+ *    the independent factions that answer to a power of their own, keyed
  *      "fac:<id>": Naguka, Verden, Truckers Society, Esoteric Heavy
  *      Industries, North Point Army, Inverted Citadel, Petrodemons. The
  *      Goblin Collective Unconscious is not a delegation: it is what the
@@ -40,9 +38,11 @@
  *      species it is commenting on, and it is counted in no division and
  *      offered to no party member, since nobody here can speak for it.
  *
- *    The Dargos of Titania (hyperpower 14) were invited and did not come.
+ *    The Dargos of Titania (hyperpower 14) were invited and did not come, and
+ *    the Gods (hyperpower 11) were never invited: they answer to no assembly
+ *    of mortals and take no part in one.
  *
- * `parentFaction` in Factions.json is a HYPERPOWER id, not a faction id, which
+ * `parentHyperpower` in Factions.json is a HYPERPOWER NAME, not a faction id, which
  * is what decides which branches a seat carries with it.
  *
  * -------------------------------------------------------------------------
@@ -69,10 +69,15 @@
  * unlabelled, they all turn at once, and only the tally is certain.
  *
  * Grave motions (war, admission, territory, artifacts, theonuclear devices,
- * the goblin question) then go to the Security Council: Britannia, the Soviet
- * Union, the Holy Vatican Empire and the Ottoman Empire vote to approve or to
- * veto, majority carries, and a two-two split is broken by the Secretary
- * General. Without one it fails.
+ * the goblin question) then go to the Security Council: the FIVE strongest
+ * powers the century left standing, measured on what the world simulation
+ * ended the year 2000 with (military, economy, population, information,
+ * arcane), so a world where the Ottomans collapsed and the Dharma Directorate
+ * rose seats the Directorate instead. They vote to approve or to veto,
+ * majority carries, and a tie is broken by the Secretary General. Without one
+ * it fails. A world whose history was never run falls back to the four the
+ * charter was written with (Britannia, the Soviet Union, the Vatican, the
+ * Ottoman Empire).
  *
  * -------------------------------------------------------------------------
  * Secretary General
@@ -289,7 +294,9 @@
   const HP_REGISTERS = {
     0: "vatican", 1: "britannia", 2: "soviet", 3: "ottoman", 4: "horde",
     5: "midwest", 6: "cascadia", 7: "seaboard", 8: "guild", 9: "archive",
-    10: "capital", 11: "gods", 12: "union", 13: "tourists",
+    10: "capital", 11: "gods", 12: "union", 13: "tourists", 15: "ascendancy",
+    16: "juche", 17: "harmony", 18: "khanate", 19: "solomonic", 20: "petrokingdom",
+    21: "clerical", 22: "dharmic", 23: "longsouth",
   };
   const FAC_REGISTERS = {
     8: "naguka", 9: "verden", 10: "truckers", 11: "industries",
@@ -304,8 +311,11 @@
   // either, since nobody here can speak for it.
   const OBSERVER_HYPERPOWER_IDS = [13];
   // Hyperpower 14, the Dargos, were invited and did not come, and the joke is
-  // that they never will.
-  const EXCLUDED_HYPERPOWER_IDS = [14];
+  // that they never will. Hyperpower 11, the Gods, hold no seat either: they
+  // answer to no assembly of mortals, keep to their own affairs entirely, and
+  // deal with the world only by handing a relic to a leader or having one
+  // taken off them (HistorySimulator, "secluded" in Hyperpowers.json).
+  const EXCLUDED_HYPERPOWER_IDS = [14, 11];
 
   // militarism, commerce, piety, secrecy, chaos, isolation, science, wildness, order
   const TRAITS = {
@@ -330,6 +340,18 @@
     citadel:     { militarism: .60, commerce: .25, piety: .55, secrecy: .85, chaos: .25, isolation: .90, science: .40, wildness: .45, order: .60 },
     petrodemons: { militarism: .70, commerce: .80, piety: .35, secrecy: .65, chaos: .45, isolation: .50, science: .30, wildness: .60, order: .35 },
     tourists:    { militarism: .05, commerce: .45, piety: .20, secrecy: .10, chaos: .55, isolation: .05, science: .20, wildness: .35, order: .25 },
+    // The Kukulkan Ascendancy: a restoration run as a state religion, which
+    // votes like one — pious, ordered, and in no hurry to be understood.
+    ascendancy:  { militarism: .70, commerce: .35, piety: .95, secrecy: .55, chaos: .25, isolation: .65, science: .30, wildness: .40, order: .85 },
+    // Asia and the Middle East, each voting the way it governs.
+    juche:       { militarism: 1.0, commerce: .05, piety: .45, secrecy: .95, chaos: .10, isolation: 1.0, science: .35, wildness: .10, order: 1.0 },
+    harmony:     { militarism: .65, commerce: .85, piety: .80, secrecy: .70, chaos: .05, isolation: .40, science: .75, wildness: .15, order: .95 },
+    khanate:     { militarism: .55, commerce: .25, piety: .95, secrecy: .40, chaos: .20, isolation: .80, science: .25, wildness: .60, order: .70 },
+    solomonic:   { militarism: .75, commerce: .60, piety: .90, secrecy: .85, chaos: .20, isolation: .55, science: .80, wildness: .10, order: .80 },
+    petrokingdom:{ militarism: .40, commerce: .95, piety: .85, secrecy: .75, chaos: .15, isolation: .60, science: .35, wildness: .20, order: .90 },
+    clerical:    { militarism: .60, commerce: .40, piety: .95, secrecy: .70, chaos: .30, isolation: .75, science: .55, wildness: .15, order: .80 },
+    dharmic:     { militarism: .60, commerce: .55, piety: .95, secrecy: .45, chaos: .25, isolation: .45, science: .60, wildness: .25, order: .85 },
+    longsouth:   { militarism: .90, commerce: .50, piety: .35, secrecy: .55, chaos: .40, isolation: .30, science: .45, wildness: .35, order: .60 },
   };
   const NEUTRAL_TRAITS = { militarism: .5, commerce: .5, piety: .5, secrecy: .5, chaos: .5, isolation: .5, science: .5, wildness: .5, order: .5 };
 
@@ -359,20 +381,19 @@
 
     $gameFactions.getHyperpowers().forEach((hp) => {
       if (EXCLUDED_HYPERPOWER_IDS.indexOf(hp.id) >= 0) return;
-      const head = $gameFactions.getHyperpowerHead(hp.id);
-      const branches = $gameFactions.getHyperpowerFactions(hp.id).filter((f) => !f.hyperpowerHead);
+      const branches = $gameFactions.getHyperpowerFactions(hp.id);
       const register = HP_REGISTERS[hp.id] || "union";
       out.push({
         key: "hp:" + hp.id,
         kind: "hyperpower",
         observer: OBSERVER_HYPERPOWER_IDS.indexOf(hp.id) >= 0,
         hyperpowerId: hp.id,
-        factionId: head ? head.id : null,
-        standingKey: head ? String(head.id) : "hp:" + hp.id,
+        factionId: null,
+        standingKey: $gameFactions.hyperpowerStandingKey(hp.id),
         branchIds: branches.map((f) => f.id),
-        name: powerLabel(hp, head),
-        description: head ? FactionDataManager.instance.t(head.description) : "",
-        iconIndex: head ? head.iconIndex || 0 : 0,
+        name: powerLabel(hp, null),
+        description: "",
+        iconIndex: $gameFactions.hyperpowerIcon(hp.id),
         register: register,
         traits: TRAITS[register] || NEUTRAL_TRAITS,
         stats: {
@@ -386,8 +407,12 @@
       });
     });
 
+    // An orphan faction — one with no `parentHyperpower` — is listed in the
+    // book but holds no chair here: it speaks for no power, nobody may swear to
+    // it, and it is counted in no division.
     $gameFactions.getIndependentFactions().forEach((faction) => {
       if (EXCLUDED_FACTION_IDS.indexOf(faction.id) >= 0) return;
+      if ($gameFactions.isOrphanFaction(faction)) return;
       const register = FAC_REGISTERS[faction.id] || "union";
       out.push({
         key: "fac:" + faction.id,
@@ -408,7 +433,7 @@
           information: faction.information || 0,
           arcane: faction.arcane || 0,
         },
-        leaderKeys: (faction.leaders || []).map((l) => (l && l.name ? l : l)),
+        leaderKeys: $gameFactions.getFactionLeaders(faction),
       });
     });
 
@@ -896,7 +921,40 @@
   // Empire. Majority carries. Two against two is broken by the Secretary
   // General, and without one the motion dies on the tie.
 
+  // The five powers the century ended with. Strength is what the world
+  // simulation left them holding when it stopped in the year 2000: their
+  // military, their economy, the people under them, what they know and what
+  // they can do that nobody can explain (HistoryManager.getHyperpowers()).
+  // A world whose history was never run falls back to the four the charter was
+  // written with.
+  const COUNCIL_SEATS = 5;
+
+  function powerStrength(stats) {
+    if (!stats) return 0;
+    return (stats.military || 0) * 1.6
+      + (stats.economy || 0) * 1.2
+      + (stats.population || 0) * 0.35
+      + (stats.information || 0) * 0.8
+      + (stats.arcane || 0) * 0.9;
+  }
+
   function councilMembers() {
+    const seated = delegations().filter((d) => d.kind === "hyperpower" && !d.observer);
+    const ranked = window.HistoryManager && typeof window.HistoryManager.getHyperpowers === "function"
+      ? window.HistoryManager.getHyperpowers() : null;
+    if (ranked && Object.keys(ranked).length) {
+      // The roster is keyed by hyperpower id; the history is keyed by the name
+      // in Hyperpowers.json, which is not the label the delegation is shown
+      // under, so the two are joined through the id.
+      const rawNames = {};
+      $gameFactions.getHyperpowers().forEach((hp) => { rawNames[hp.id] = hp.name; });
+      const strongest = seated
+        .map((d) => ({ d, strength: powerStrength(ranked[rawNames[d.hyperpowerId]] || d.stats) }))
+        .sort((a, b) => b.strength - a.strength || a.d.hyperpowerId - b.d.hyperpowerId)
+        .slice(0, COUNCIL_SEATS)
+        .map((x) => x.d);
+      if (strongest.length) return strongest;
+    }
     return COUNCIL_FACTION_IDS
       .map((id) => delegations().find((d) => d.factionId === id))
       .filter(Boolean);

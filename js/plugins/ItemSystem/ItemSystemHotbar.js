@@ -23,6 +23,7 @@
  * Controls, on the map
  *   1 - 9      use that slot's item outright
  *   L1 / R1    arm the bar and step the highlight between filled slots
+ *   Tab        same as R1, steps the highlight forward one slot
  *   OK         while armed, use the highlighted slot
  *   Cancel / a step / two idle seconds disarm it again
  *   Click/tap  use that slot
@@ -30,6 +31,7 @@
  * Controls, in the backpack
  *   1 - 9      drop the inspected item into that slot
  *   Click/tap  drop the inspected item into that slot
+ *   Drag       drag a grid item straight onto a slot to assign it
  *   Right click clear the slot
  *   The ☆ next to an item's name still toggles it into the first free slot.
  *
@@ -149,7 +151,10 @@
           iconIndex: item.iconIndex,
           enabled: count > 0,
           count: count,
-          tooltip: `${item.name} ×${count}`
+          tooltip: `${item.name} ×${count}`,
+          // The slot already prints how many are left, so the line under the
+          // bar only has to say what the thing is.
+          label: item.name
         });
       }
       return list;
@@ -402,6 +407,7 @@
     id: 'html-item-hotbar-overlay',
     slots: SLOTS,
     zIndex: 260,
+    showLabel: true,
     onSlotClick: (i) => {
       _mapArmed = false;
       ItemHotbar.use(i);
@@ -458,7 +464,7 @@
       }
     }
 
-    if (Input.isTriggered('pageup') || Input.isTriggered('pagedown')) {
+    if (Input.isTriggered('pageup') || Input.isTriggered('pagedown') || Input.isTriggered('tab')) {
       const dir = Input.isTriggered('pageup') ? -1 : 1;
       const next = _mapArmed
         ? ItemHotbar.stepSlot(_mapIndex, dir)
@@ -534,6 +540,23 @@
   // drops into it on a click, and a right click empties it.
   //===========================================================================
 
+  // Shared by a click on the slot (the inspected item drops in) and a drop
+  // onto the slot (the dragged item drops in): same assignment, two ways to
+  // reach for it.
+  function dropItemOnSlot(i, item) {
+    const scene = SceneManager._scene;
+    if (!(scene instanceof Scene_EnhancedItem)) return;
+    if (!ItemHotbar.isFavoritable(item)) {
+      SoundManager.playBuzzer();
+      return;
+    }
+    // Landing on the slot an item already sits in takes it back off the bar.
+    if (ItemHotbar.slotOf(item) === i) ItemHotbar.clear(i);
+    else ItemHotbar.assign(i, item);
+    SoundManager.playOk();
+    scene.refreshUIbackpack();
+  }
+
   const _inventoryBar = new HotbarUI({
     id: 'backpack-hotbar-row',
     slots: SLOTS,
@@ -542,16 +565,7 @@
     onSlotClick: (i) => {
       const scene = SceneManager._scene;
       if (!(scene instanceof Scene_EnhancedItem)) return;
-      const item = scene._dndSelectedItem;
-      if (!ItemHotbar.isFavoritable(item)) {
-        SoundManager.playBuzzer();
-        return;
-      }
-      // Clicking the slot an item already sits in takes it back off the bar.
-      if (ItemHotbar.slotOf(item) === i) ItemHotbar.clear(i);
-      else ItemHotbar.assign(i, item);
-      SoundManager.playOk();
-      scene.refreshUIbackpack();
+      dropItemOnSlot(i, scene._dndSelectedItem);
     },
     onSlotContext: (i) => {
       const scene = SceneManager._scene;
@@ -559,6 +573,14 @@
       if (!ItemHotbar.clear(i)) return;
       SoundManager.playCancel();
       scene.refreshUIbackpack();
+    },
+    onSlotDrop: (i) => {
+      const scene = SceneManager._scene;
+      if (!(scene instanceof Scene_EnhancedItem)) return;
+      const item = scene._dragItem;
+      scene._dragItem = null;
+      if (!item) return;
+      dropItemOnSlot(i, item);
     }
   });
 

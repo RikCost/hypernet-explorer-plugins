@@ -1657,6 +1657,90 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
     return T("FloorList.lowerFloor", { num: floor, name: name });
   }
 
+  // ---------------------------------------------------------------------------
+  // Bailing out of the tower
+  // ---------------------------------------------------------------------------
+  // "Return to the world map" is offered everywhere now (Map/WorldMapReturn.js),
+  // and the one place it must not be taken at its word is inside the tower: a
+  // floor is not a square of the world, it is somewhere the party climbed into,
+  // and the way out of it is the lift. So the request is handed here first and
+  // the dungeon answers it with the elevator whenever the party is standing on
+  // one of its floors. A false answer means the tower has no claim on them and
+  // the world map may have the press.
+  // ---------------------------------------------------------------------------
+
+  // The lift hall each level of nine authored floors hangs off: floors 1-9 ride
+  // out through floor 10, 11-19 through 20, and everything above 90 through the
+  // last hall there is.
+  function elevatorFloorFor(floor) {
+    return Math.min(Math.ceil(floor / 10) * 10, 90);
+  }
+
+  function onElevatorFloor() {
+    return params.elevatorMaps.indexOf($gameMap.mapId()) >= 0;
+  }
+
+  // Is the party on a floor the lift is the way off of? The elevator halls
+  // themselves are not: the party is already at the doors, so the world map may
+  // take that press and let them out of the tower altogether.
+  function insideTower() {
+    if (typeof $gameMap === "undefined" || !$gameMap) return false;
+    if (currentTowerFloor()) return true;
+    return isDungeonMap($gameMap.mapId()) && !onElevatorFloor();
+  }
+
+  // The map the tower's own market stands on: floor 1, reached from the Stairs
+  // Hall, and the one authored floor that answers to the tower's rules without
+  // being listed among the hand-made floors.
+  const ACCURSED_MARKET_MAP_ID = 101;
+
+  // Where a fight cannot simply be walked out of. Out in the world the party
+  // always gets its first-turn getaway for free; on a tower floor, above ground
+  // or below it, and in the accursed market, the escape is rolled like any
+  // other attempt and a failure costs the runner their turn.
+  function escapeIsContested() {
+    if (typeof $gameMap === "undefined" || !$gameMap) return false;
+    const mapId = $gameMap.mapId();
+    if (mapId === ACCURSED_MARKET_MAP_ID) return true;
+    if (mapId === TOWER.SECRET_STAIRWAY.mapId) return true;
+    if (mapId === TOWER.TIP_OF_THE_SPEAR.mapId) return true;
+    // The procedural map is only a lower floor while a tower session says so:
+    // every other square in the world is drawn on the same map.
+    if (mapId === PROC_MAP_ID) return currentTowerFloor() !== 0;
+    // The lift halls are a hub, not a floor: nothing hunts the party there.
+    return isDungeonMap(mapId) && !onElevatorFloor();
+  }
+
+  function returnToElevator() {
+    if (!insideTower()) return false;
+
+    // The generated lower floors carry their own lift, standing somewhere on the
+    // floor itself, so nothing is loaded: the party simply walks out in front of
+    // its doors.
+    const lower = currentTowerFloor();
+    if (lower) {
+      const layout = towerLayout(lower);
+      const spot = layout && layout.elevatorSpot;
+      if (!spot) return false;
+      if ($gamePlayer.x === spot.x && $gamePlayer.y === spot.y) return false;
+      $gamePlayer.locate(spot.x, spot.y);
+      $gamePlayer.setDirection(spot.dir);
+      return true;
+    }
+
+    const floor = $gameVariables.value(params.currentFloorVariable);
+    if (!(floor >= 1 && floor <= 100)) return false;
+    // Riding a lift out is not the same as having climbed to the hall it stands
+    // in: the deepest floor actually reached stays where it was, or bailing out
+    // of floor 3 would unlock everything down to floor 10.
+    const reached = $gameVariables.value(params.maxFloorVariable) || 0;
+    moveToFloor(elevatorFloorFor(floor), "elevator");
+    if (($gameVariables.value(params.maxFloorVariable) || 0) > reached) {
+      $gameVariables.setValue(params.maxFloorVariable, reached);
+    }
+    return true;
+  }
+
   // The named façade. Everything outside this plugin that has to know how deep
   // the world has been, or what a creature down here weighs, asks through it.
   window.DungeonFloors = {
@@ -1672,6 +1756,13 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
     // The level the creatures on that floor are built around, 0 off the tower.
     currentFloorLevel() { return towerEnemyLevel(currentTowerFloor()); },
     floorLevel: towerEnemyLevel,
+    // The party is on a floor the lift is the only way off of.
+    insideTower,
+    // The tower denies the free first-turn escape from battle.
+    escapeIsContested,
+    // Takes a "leave this place" request and answers it with the elevator.
+    // True when it did, false when the tower has no claim on the press.
+    returnToElevator,
   };
 
   function moveToFloor(floor, spawnMode) {

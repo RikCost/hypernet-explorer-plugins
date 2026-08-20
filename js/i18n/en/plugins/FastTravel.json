@@ -48,6 +48,7 @@
   "destCost": "{place} ({cost}€, {km} km)",
   "ui": {
     "back": "Back",
+    "backToOrigin": "Back to origin selection",
     "edit": "Edit",
     "print": "Print",
     "stations": "Hypermetro stations",

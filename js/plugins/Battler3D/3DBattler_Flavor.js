@@ -2563,6 +2563,9 @@
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
             this.applyModelScale(growth);
             const fast = (anim === 'attack' || anim === 'specialattack');
+            // Four-legged models only stride while really travelling (overworld
+            // walk) or lunging on an attack; standing in battle they keep still.
+            const stride = this.strideMul(fast);
             const floats = (this.variant === 'origami' || this.variant === 'mask' || this.variant === 'paperwork' || this.variant === 'sawblade' || this.variant === 'tidesculptor' || this.variant === 'obsidianvisionary' || this.variant === 'ochrejelly' || this.variant === 'enchantress' || this.variant === 'embersprite' || this.variant === 'frostelemental' || this.variant === 'giantjellyfish' || this.variant === 'fluxlingfurret' || this.variant === 'glimmershrimp' || this.variant === 'insectswarm' || this.variant === 'marshwraith' || this.variant === 'reaganite' || this.variant === 'seraphicemissary' || this.variant === 'shadowstalker' || this.variant === 'shadowwraith' || this.variant === 'stoneguardian' || this.variant === 'stormbanshee' || this.variant === 'thundersprite');
             this.model.position.y = this._baseY + Math.sin(t * 1.3) * (floats ? 0.09 : 0.03) * this.scale;
 
@@ -2660,7 +2663,7 @@
                     if (this.rightArm) this.rightArm.position.z = 0.45 - draw;
                     if (this.arrow) this.arrow.position.z = -0.34 + (fast && Math.sin(t * 6) > 0.9 ? 0.5 : 0);
                     if (this.head) this.head.rotation.y = Math.sin(t * 0.9) * 0.15;
-                    [this.leftLeg, this.rightLeg, this.rearLeftLeg, this.rearRightLeg].forEach((l, i) => { if (l) l.rotation.x = Math.sin(t * 2 + i * 1.6) * (fast ? 0.18 : 0.05); });
+                    [this.leftLeg, this.rightLeg, this.rearLeftLeg, this.rearRightLeg].forEach((l, i) => { if (l) l.rotation.x = Math.sin(t * 2 + i * 1.6) * (fast ? 0.18 : 0.05) * stride; });
                     break;
                 }
                 case 'obsidianvisionary': {

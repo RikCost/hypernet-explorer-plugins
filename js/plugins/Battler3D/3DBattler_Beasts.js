@@ -2470,15 +2470,20 @@
 
             if (this.variant === 'ape' || this.variant === 'bst_maleficentape' || this.variant === 'bst_organgrindermonkey' || this.variant === 'bst_treemonkey') { this._animApe(t, anim, fast); return; }
 
-            // Quadruped gait: diagonal leg pairs swing in anti-phase, faster on attack.
+            // Quadruped gait: diagonal leg pairs swing in anti-phase, faster on
+            // attack. Only strides while really travelling (overworld walk) or
+            // lunging; a beast standing in battle breathes instead of walking.
+            const stride = this.strideMul(fast);
             const gait = fast ? 9 : 2.4;
-            const amp = fast ? 0.5 : (anim === 'hit' ? 0.0 : 0.2);
+            const amp = (fast ? 0.5 : (anim === 'hit' ? 0.0 : 0.2)) * stride;
             const sw = (leg, ph) => { if (leg && leg.visible) leg.rotation.x = Math.sin(t * gait + ph) * amp; };
             sw(this.frontLeft, 0); sw(this.rearRight, 0);
             sw(this.frontRight, Math.PI); sw(this.rearLeft, Math.PI);
 
             const hitJolt = anim === 'hit' ? Math.sin(t * 26) * Math.exp(-t * 6) * 0.15 : 0;
-            this.model.position.y = this._baseY + Math.abs(Math.sin(t * gait)) * (fast ? 0.1 : 0.025) * this.scale;
+            this.model.position.y = this._baseY + (stride
+                ? Math.abs(Math.sin(t * gait)) * (fast ? 0.1 : 0.025) * this.scale
+                : (0.5 + Math.sin(t * 1.3) * 0.5) * 0.01 * this.scale);
             this.model.rotation.z = hitJolt;
             if (this.tail && this.tail.visible) this.tail.rotation.z = Math.sin(t * 3) * 0.25;
             if (this.head && this.head.visible) this.head.rotation.x = Math.sin(t * 1.6) * 0.05;
@@ -2690,7 +2695,9 @@
                 case 'bst_feralhyenapack':
                     // Hunched cackling bob, quicker head jitter.
                     if (this.head && this.head.visible) this.head.rotation.x = (fast ? 0.2 : 0.0) + Math.sin(t * 3.2) * 0.06;
-                    this.model.position.y = this._baseY + Math.abs(Math.sin(t * gait)) * (fast ? 0.1 : 0.025) * this.scale;
+                    this.model.position.y = this._baseY + (stride
+                        ? Math.abs(Math.sin(t * gait)) * (fast ? 0.1 : 0.025) * this.scale
+                        : (0.5 + Math.sin(t * 1.3) * 0.5) * 0.01 * this.scale);
                     break;
                 // ── Bespoke felines: pounce crouch + tail lash ──────────────
                 case 'bst_lazycat':

@@ -3,6 +3,7 @@
     "Holy Vatican Empire": {
       "id": 0,
       "region": "Europe",
+      "homeNation": "Italy",
       "military": 100,
       "economy": 150,
       "population": 80,
@@ -62,11 +63,13 @@
         "director_escriv_iii",
         "numerary_superior_ricardo",
         "vicar_general_felipe"
-      ]
+      ],
+      "iconIndex": 221
     },
     "Britannia": {
       "id": 1,
       "region": "Europe",
+      "homeNation": "UK",
       "military": 120,
       "economy": 100,
       "population": 70,
@@ -109,11 +112,13 @@
         "chief_engineer_tesla_iv",
         "general_turing",
         "professor_faraday_v"
-      ]
+      ],
+      "iconIndex": 121
     },
     "Soviet Union": {
       "id": 2,
       "region": "Europe",
+      "homeNation": "Russia",
       "military": 150,
       "economy": 80,
       "population": 150,
@@ -192,11 +197,13 @@
         "marshal_kulik",
         "general_petrov",
         "hero_grabin"
-      ]
+      ],
+      "iconIndex": 79
     },
     "Ottoman Empire": {
       "id": 3,
       "region": "Europe",
+      "homeNation": "Turkey",
       "military": 80,
       "economy": 60,
       "population": 90,
@@ -240,11 +247,13 @@
         "elite_captain_ibrahim",
         "first_guard_osman",
         "mehmet_ali_agca"
-      ]
+      ],
+      "iconIndex": 110
     },
     "Goblin Horde": {
       "id": 4,
       "region": "Europe",
+      "homeNation": "Iceland",
       "military": 200,
       "economy": 20,
       "population": 300,
@@ -270,26 +279,29 @@
     "Free States of Midwest": {
       "id": 5,
       "region": "North America",
-      "military": 70,
-      "economy": 90,
-      "population": 60,
-      "information": 40,
-      "arcane": 10,
+      "homeNation": "United States (Free States of Midwest)",
+      "military": 45,
+      "economy": 55,
+      "population": 35,
+      "information": 25,
+      "arcane": 8,
       "leaders": [
         "president_lincoln_xiii",
         "speaker_grant",
         "senator_sherman",
-        "chairman_faraday"
+        "chairman_faraday",
+        "bill_clinton"
       ]
     },
     "Cascadia Protectorate": {
       "id": 6,
       "region": "North America",
-      "military": 90,
-      "economy": 130,
-      "population": 30,
-      "information": 80,
-      "arcane": 70,
+      "homeNation": "Cascadia Protectorate",
+      "military": 50,
+      "economy": 70,
+      "population": 18,
+      "information": 45,
+      "arcane": 40,
       "leaders": [
         "governor_general_victoria_vi",
         "thaumo_director_tesla",
@@ -299,20 +311,23 @@
     "Eastern Seaboard": {
       "id": 7,
       "region": "North America",
-      "military": 50,
-      "economy": 30,
-      "population": 80,
-      "information": 20,
+      "homeNation": "Eastern Seaboard",
+      "military": 28,
+      "economy": 22,
+      "population": 40,
+      "information": 12,
       "arcane": 5,
       "leaders": [
         "colonial_admin_cornwallis_ix",
         "director_paine",
-        "warden_arnold"
+        "warden_arnold",
+        "george_w_bush"
       ]
     },
     "Mages Guild": {
       "id": 8,
       "region": "Global",
+      "homeNation": "Ireland",
       "military": 40,
       "economy": 60,
       "population": 20,
@@ -371,11 +386,13 @@
         "scholar_leader_beatrice",
         "educational_master_darius",
         "mentor_archmage_evangeline"
-      ]
+      ],
+      "iconIndex": 110
     },
     "Archive Foundation": {
       "id": 9,
       "region": "Global",
+      "homeNation": "OmegaTower",
       "military": 20,
       "economy": 50,
       "population": 15,
@@ -412,11 +429,13 @@
         "director_compliance",
         "chief_enforcer_ironhand",
         "watchmaster_vigilance"
-      ]
+      ],
+      "iconIndex": 186
     },
     "Hypercapitalist Collective": {
       "id": 10,
       "region": "Global",
+      "homeNation": "Netherlands",
       "military": 60,
       "economy": 150,
       "population": 25,
@@ -457,11 +476,13 @@
         "nothingness_sovereign_erebus",
         "abyss_ruler_nyx",
         "dark_matter_monarch_styx"
-      ]
+      ],
+      "iconIndex": 314
     },
     "The Gods": {
       "id": 11,
       "region": "Global",
+      "secluded": true,
       "military": 100,
       "economy": 80,
       "population": 5,
@@ -491,20 +512,8 @@
         "adam_smith_ascended",
         "invisible_hand",
         "sovereign_of_self"
-      ]
-    },
-    "Continental Union": {
-      "id": 12,
-      "region": "Global",
-      "military": 40,
-      "economy": 60,
-      "population": 10,
-      "information": 60,
-      "arcane": 20,
-      "leaders": [
-        "secretary_adams",
-        "unionist_chair_jefferson"
-      ]
+      ],
+      "iconIndex": 118
     },
     "The Tourists": {
       "id": 13,
@@ -525,7 +534,8 @@
         "scalpel_primarch_thruun",
         "warp_choir_mother_iisha",
         "pale_archon_nuu_6"
-      ]
+      ],
+      "iconIndex": 158
     },
     "The Dargos": {
       "id": 14,
@@ -540,6 +550,207 @@
         "punchline_regent_obb",
         "embassy_clerk_wodwod",
         "prank_marshal_ssein"
+      ],
+      "iconIndex": 182
+    },
+    "Kukulkan Ascendancy": {
+      "id": 15,
+      "region": "South America",
+      "homeNation": "Mexico",
+      "military": 50,
+      "economy": 40,
+      "population": 60,
+      "information": 25,
+      "arcane": 60,
+      "leaders": [
+        "god_emperor_kukulkan",
+        "divine_ajaw_pakal_iii",
+        "high_priestess_ix_chel",
+        "jaguar_general_balam",
+        "calendar_keeper_ah_kin",
+        "restorer_tecpatl",
+        "porfirio_diaz",
+        "francisco_madero",
+        "emiliano_zapata",
+        "pancho_villa",
+        "venustiano_carranza",
+        "alvaro_obregon",
+        "plutarco_elias_calles",
+        "lazaro_cardenas",
+        "manuel_avila_camacho",
+        "miguel_aleman_valdes",
+        "adolfo_ruiz_cortines",
+        "adolfo_lopez_mateos",
+        "gustavo_diaz_ordaz",
+        "luis_echeverria",
+        "jose_lopez_portillo",
+        "miguel_de_la_madrid",
+        "carlos_salinas_de_gortari",
+        "ernesto_zedillo",
+        "vicente_fox",
+        "felipe_calderon"
+      ]
+    },
+    "Democratic People's Republic of Korea": {
+      "id": 16,
+      "region": "Asia",
+      "homeNation": "North Korea",
+      "military": 65,
+      "economy": 15,
+      "population": 35,
+      "information": 18,
+      "arcane": 15,
+      "leaders": [
+        "kim_il_sung",
+        "kim_jong_il",
+        "kim_jong_un",
+        "kim_pyong_il",
+        "kim_yong_nam",
+        "o_jin_u",
+        "choe_yong_rim",
+        "pak_song_chol",
+        "ri_jong_ok",
+        "kang_song_san",
+        "yon_hyong_muk",
+        "hong_song_nam",
+        "pak_pong_ju"
+      ]
+    },
+    "Dharma Directorate": {
+      "id": 17,
+      "region": "Asia",
+      "homeNation": "China",
+      "military": 60,
+      "economy": 60,
+      "population": 100,
+      "information": 35,
+      "arcane": 25,
+      "leaders": [
+        "sun_yat_sen",
+        "chiang_kai_shek",
+        "mao_zedong",
+        "zhou_enlai",
+        "hua_guofeng",
+        "deng_xiaoping",
+        "hu_yaobang",
+        "zhao_ziyang",
+        "jiang_zemin",
+        "zhu_rongji",
+        "hu_jintao",
+        "wen_jiabao",
+        "xi_jinping",
+        "grand_preceptor_kong_wei",
+        "abbot_chancellor_fa_zheng",
+        "harmony_regent_li_shun",
+        "mohammad_reza_pahlavi"
+      ]
+    },
+    "Illuminated Khanate": {
+      "id": 18,
+      "region": "Asia",
+      "homeNation": "Mongolia",
+      "military": 40,
+      "economy": 22,
+      "population": 18,
+      "information": 28,
+      "arcane": 75,
+      "leaders": [
+        "illuminated_khan_temur",
+        "lama_regent_zanabazar_iv",
+        "erdene_abbot_gombojav",
+        "bogd_khan_viii"
+      ]
+    },
+    "Solomonic Republic": {
+      "id": 19,
+      "region": "Middle East",
+      "homeNation": "Israel",
+      "military": 55,
+      "economy": 50,
+      "population": 12,
+      "information": 65,
+      "arcane": 45,
+      "leaders": [
+        "king_solomon",
+        "nasi_prince_sitri",
+        "temple_scribe_duke_bathin",
+        "keeper_of_the_seal_earl_bifrons"
+      ]
+    },
+    "Petro Kingdom of Arabia": {
+      "id": 20,
+      "region": "Middle East",
+      "homeNation": "Saudi Arabia",
+      "military": 35,
+      "economy": 90,
+      "population": 22,
+      "information": 22,
+      "arcane": 25,
+      "leaders": [
+        "oil_emir_abdulaziz_iii",
+        "well_sheikh_muhannad",
+        "concession_regent_sultan",
+        "king_abdulaziz_ibn_saud",
+        "king_saud",
+        "king_khalid"
+      ]
+    },
+    "Sanatana Rashtra": {
+      "id": 22,
+      "region": "Asia",
+      "homeNation": "India",
+      "military": 55,
+      "economy": 50,
+      "population": 110,
+      "information": 30,
+      "arcane": 45,
+      "leaders": [
+        "dharma_regent_vishvamitra",
+        "acharya_of_the_rashtra_bhargava",
+        "atal_bihari_vajpayee",
+        "jawaharlal_nehru",
+        "indira_gandhi"
+      ]
+    },
+    "Long Chile": {
+      "id": 23,
+      "region": "South America",
+      "homeNation": "Chile",
+      "military": 55,
+      "economy": 45,
+      "population": 25,
+      "information": 20,
+      "arcane": 15,
+      "leaders": [
+        "marshal_of_the_long_south_valdivia",
+        "cordillera_general_prat",
+        "carlos_ibanez_del_campo",
+        "augusto_pinochet",
+        "arturo_alessandri"
+      ]
+    },
+    "Imperial State of Persia": {
+      "id": 21,
+      "region": "Middle East",
+      "homeNation": "Iran",
+      "military": 50,
+      "economy": 45,
+      "population": 50,
+      "information": 28,
+      "arcane": 40,
+      "leaders": [
+        "nasser_al_din_shah",
+        "mozaffar_ad_din_shah",
+        "ahmad_shah_qajar",
+        "reza_shah_pahlavi",
+        "mohammad_reza_pahlavi",
+        "reza_pahlavi_ii",
+        "shahbanu_farah",
+        "mohammad_mossadegh",
+        "ali_amini",
+        "asadollah_alam",
+        "amir_abbas_hoveyda",
+        "jamshid_amouzegar"
       ]
     }
   }

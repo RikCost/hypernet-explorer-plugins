@@ -192,6 +192,7 @@
         'battle.petrodemon':  { icon: 71,  cat: CAT.COMBAT },
         'battle.fled':        { icon: 73,  cat: CAT.COMBAT },
         'battle.lost':        { icon: 1,   cat: CAT.COMBAT },
+        'battle.lostAnon':    { icon: 1,   cat: CAT.COMBAT },
         'battle.arena':       { icon: 352, cat: CAT.COMBAT },
 
         // Party
@@ -274,6 +275,7 @@
         'tech.researched':    { icon: 359, cat: CAT.KNOWLEDGE },
         'quest.accepted':     { icon: 193, cat: CAT.KNOWLEDGE },
         'quest.completed':    { icon: 247, cat: CAT.KNOWLEDGE },
+        'adventure.done':     { icon: 231, cat: CAT.KNOWLEDGE },
         'bestiary.found':     { icon: 189, cat: CAT.KNOWLEDGE },
         'alien.identified':   { icon: 281, cat: CAT.KNOWLEDGE },
 
@@ -661,6 +663,36 @@
         return pairs.map(([name, qty]) => (qty > 1 ? T('Diary.fmt.itemCount', { name, count: qty }) : name)).join(", ");
     }
 
+    // "A, B and C": a written list, so a line naming several things reads as a
+    // sentence rather than as a comma separated dump.
+    function joinNames(names) {
+        const kept = (names || []).map(n => String(n || "").trim()).filter(Boolean);
+        if (kept.length === 0) return "";
+        if (kept.length === 1) return kept[0];
+        const last = kept.pop();
+        return T('Diary.fmt.and', { a: kept.join(", "), b: last });
+    }
+
+    // Everything the party was fighting, counted, whether it died or not. What
+    // felled us is never on the list of what we felled, so a lost battle has to
+    // read the troop itself to be able to name anybody at all.
+    function troopNames() {
+        try {
+            if (typeof $gameTroop === 'undefined' || !$gameTroop) return "";
+            const counts = new Map();
+            for (const enemy of $gameTroop.members()) {
+                if (!enemy) continue;
+                let name = "";
+                try { name = enemy.originalName ? enemy.originalName() : (enemy.enemy() || {}).name; }
+                catch (e) { name = ""; }
+                if (!name) continue;
+                counts.set(name, (counts.get(name) || 0) + 1);
+            }
+            return joinNames([...counts.entries()].map(([name, qty]) =>
+                qty > 1 ? T('Diary.fmt.itemCount', { name, count: qty }) : name));
+        } catch (e) { return ""; }
+    }
+
     // A tally kept while a counter is open, drained into one line on the way out.
     function tallyAdd(tally, name, qty) {
         if (!name) return;
@@ -954,8 +986,7 @@
 
             after(BattleManager, 'processVictory', function () {
                 const felled = this._diaryFelled || [];
-                const names = felled.length ? felled.join(", ")
-                    : ($gameTroop && $gameTroop.troop() ? $gameTroop.troop().name : "");
+                const names = felled.length ? joinNames(felled) : troopNames();
                 const rewards = this._rewards || {};
                 log('battle.won', {
                     enemies: names,
@@ -965,7 +996,9 @@
             });
 
             after(BattleManager, 'processDefeat', function () {
-                log('battle.lost', { enemies: (this._diaryFelled && this._diaryFelled.join(", ")) || "" });
+                const names = troopNames();
+                if (names) log('battle.lost', { enemies: names });
+                else log('battle.lostAnon', { place: placeNow() });
             });
 
             after(BattleManager, 'processEscape', function (ok) {
@@ -1263,10 +1296,14 @@
             after(HC, 'removeImplantWithPart', function (lost, args) {
                 const actor = args[0];
                 const partKey = String(args[1] || "");
-                const part = T('bodyparts.' + partKey.toLowerCase(), {});
+                // BodyParts.json names its parts by key; the words are in
+                // js/i18n/<lang>/plugins/BodyParts.json. The raw key is the
+                // last resort for a part the banks do not list.
+                const partNameKey = 'BodyParts.' + partKey.toLowerCase() + '.name';
+                const part = T.has(partNameKey) ? T(partNameKey) : partKey;
                 log('health.partLost', {
                     name: nameOf(actor),
-                    part: (part && part !== 'bodyparts.' + partKey.toLowerCase()) ? part : partKey
+                    part: part
                 }, { who: nameOf(actor) });
                 if (lost && (lost.name || lost.id)) {
                     log('health.augmentLost', { name: nameOf(actor), augment: lost.name || lost.id }, { who: nameOf(actor) });
@@ -1751,6 +1788,20 @@
                 log('quest.completed', { quest: title });
             });
         });
+
+    // An adventure answered: the "???" squares of the world map and the
+    // anomalous worlds of the star map alike (ProceduralAdventureSystem.js
+    // calls this as it closes the encounter). The title is the story the party
+    // walked into; what it paid is written out as they told it afterwards.
+    Diary.onAdventure = function (title, reward, place) {
+        const name = String(title || "").trim();
+        if (!name) return;
+        log('adventure.done', {
+            adventure: name,
+            reward: String(reward || "").trim(),
+            place: place || placeNow()
+        });
+    };
 
     // A creature met for the first time. The bestiary is the world's book and
     // the diary is the party's, so the party writes down the day it met one.

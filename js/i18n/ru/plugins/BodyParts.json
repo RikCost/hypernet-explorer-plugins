@@ -1,0 +1,123 @@
+{
+  "_comment": "Display text for js/db/Health/BodyParts.json, which carries only ids and keys. The root js/i18n/<lang>/bodyparts.json stays as Hendrix_Localization's English-string dictionary for text authored outside the data files.",
+  "brain": {
+    "name": "Мозга",
+    "damage_msg": "получает сотрясение мозга"
+  },
+  "genitals": {
+    "name": "Гениталии",
+    "damage_msg": "получает повреждает гениталии"
+  },
+  "head": {
+    "name": "Голова",
+    "damage_msg": "получает перелом черепа"
+  },
+  "heart": {
+    "name": "Сердце",
+    "damage_msg": "повреждает сердце"
+  },
+  "intestines": {
+    "name": "Кишечник",
+    "damage_msg": "получает разрыв кишечника"
+  },
+  "left_arm": {
+    "name": "Левая Рука",
+    "damage_msg": "повреждает левую руку"
+  },
+  "left_ear": {
+    "name": "Левое Ухо",
+    "damage_msg": "получает повреждение левого уха"
+  },
+  "left_eye": {
+    "name": "Левый Глаз",
+    "damage_msg": "получает отек левого глаза"
+  },
+  "left_fingers": {
+    "name": "Пальцы(ЛР)",
+    "damage_msg": "получает перелом пальцев(ЛР)"
+  },
+  "left_foot": {
+    "name": "Левая Ступня",
+    "damage_msg": "повреждает левую сутпню"
+  },
+  "left_hand": {
+    "name": "Левая Кисть",
+    "damage_msg": "повреждает левую руку"
+  },
+  "left_leg": {
+    "name": "Левая Нога",
+    "damage_msg": "повреждает левую ногу"
+  },
+  "left_lung": {
+    "name": "Левое Легкое",
+    "damage_msg": "получает коллапс левого легкого"
+  },
+  "left_toes": {
+    "name": "Пальцы(ЛН)",
+    "damage_msg": "получает перелом пальцев(ЛН)"
+  },
+  "liver": {
+    "name": "Печень",
+    "damage_msg": "повреждает печень"
+  },
+  "mouth": {
+    "name": "Рот",
+    "damage_msg": "получает вывих челюсти"
+  },
+  "nose": {
+    "name": "Нос",
+    "damage_msg": "получает перелом носа"
+  },
+  "right_arm": {
+    "name": "Правая Рука",
+    "damage_msg": "повреждает правую руку"
+  },
+  "right_ear": {
+    "name": "Правое Ухо",
+    "damage_msg": "получает повреждение правого уха"
+  },
+  "right_eye": {
+    "name": "Правый Глаз",
+    "damage_msg": "получает отек правого глаз"
+  },
+  "right_fingers": {
+    "name": "Пальцы(ПР)",
+    "damage_msg": "получает перелом пальцев(ПР)"
+  },
+  "right_foot": {
+    "name": "Правая Ступня",
+    "damage_msg": "повреждает правую ступню"
+  },
+  "right_hand": {
+    "name": "Правая Кисть",
+    "damage_msg": "повреждает правую кисть"
+  },
+  "right_leg": {
+    "name": "Правая Нога",
+    "damage_msg": "повреждает правую ногу"
+  },
+  "right_lung": {
+    "name": "Правое Легкое",
+    "damage_msg": "получает коллапс левого легкого"
+  },
+  "right_toes": {
+    "name": "Пальцы(ПН)",
+    "damage_msg": "получает перелом пальцев(ПН)"
+  },
+  "spleen": {
+    "name": "Селезенки",
+    "damage_msg": "получает разрыв селезенки"
+  },
+  "stomach": {
+    "name": "Желудок",
+    "damage_msg": "получает разрыв желудка"
+  },
+  "teeth": {
+    "name": "Зубы",
+    "damage_msg": "повреждает зубы"
+  },
+  "torso": {
+    "name": "Туловище",
+    "damage_msg": "получает перелом ребер"
+  }
+}

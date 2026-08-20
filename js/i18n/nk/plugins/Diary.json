@@ -2,9 +2,9 @@
   "title": "DIARY",
   "opening": "{names} OPENED DIS DIARY AT {place}.",
   "empty": "NOTHIN' WRITTEN HERE YET.",
-  "blankPage": "DA REST OF DA PAGE IZ STILL BLANK!",
   "date": {
-    "heading": "{day} {month} {year}"
+    "heading": "{day} {month} {year}",
+    "continued": "{day} {month} {year}, MORE!"
   },
   "month": {
     "jan": "JANUARY",
@@ -39,10 +39,11 @@
     "ours": "DA DIARY OF {names}",
     "theirs": "KEPT BY {names}",
     "unknown": "AN UNSIGNED DIARY",
-    "page": "DAY {shown} OF {total}"
+    "page": "PAGE {shown} OF {total}"
   },
   "fmt": {
-    "itemCount": "{name} X{count}"
+    "itemCount": "{name} X{count}",
+    "and": "{a} AN' {b}"
   },
   "eris": {
     "wonderful": "WONDERFULLY",
@@ -98,6 +99,7 @@
       "petrodemon": "PUT DOWN A PETRODEMON, {name}, LEVEL {level}!",
       "fled": "RAN FOR IT AT {place}.",
       "lost": "LOST DA FIGHT AGAINST {enemies}.",
+      "lostAnon": "LOST DA FIGHT AT {place}.",
       "arena": "ARENA: {streak} WINS IN A ROW."
     },
     "party": {

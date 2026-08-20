@@ -181,7 +181,7 @@
   },
   {
     "name": "Crater",
-    "layer": 1,
+    "layer": 2,
     "ascii": "\u24b8"
   },
   {
@@ -218,6 +218,11 @@
     "name": "Rock",
     "layer": 2,
     "ascii": "\u25cf"
+  },
+  {
+    "name": "RockFormation",
+    "layer": 2,
+    "ascii": "△"
   },
   {
     "name": "Bush",
@@ -550,6 +555,11 @@
     "ascii": "\u25bc"
   },
   {
+    "name": "RockFormationDesert",
+    "layer": 2,
+    "ascii": "▽"
+  },
+  {
     "name": "Kelp",
     "layer": 2,
     "ascii": "\u25d0"
@@ -608,6 +618,11 @@
     "name": "RockIce",
     "layer": 2,
     "ascii": "\u25cf"
+  },
+  {
+    "name": "RockFormationIce",
+    "layer": 2,
+    "ascii": "◭"
   },
   {
     "name": "WeedIce",

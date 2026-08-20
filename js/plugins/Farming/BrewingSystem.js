@@ -87,7 +87,17 @@
                 .then(data => { this._recipes = data; return data; });
         },
         get() { return this._recipes; },
-        findById(id) { return (this._recipes || []).find(r => r.id === id) || null; }
+        findById(id) { return (this._recipes || []).find(r => r.id === id) || null; },
+
+        // brewingRecipes.json carries i18n keys ("Brewing.recipe.<id>.name")
+        // rather than words, so a recipe reads in the player's language; a
+        // value that resolves to nothing is shown as written, which keeps a
+        // hand-added recipe legible.
+        text(value) {
+            if (!value) return '';
+            const key = String(value);
+            return T.has(key) ? T(key) : key;
+        }
     };
 
     //=========================================================================
@@ -310,7 +320,7 @@
                 startMinutes: getGameTimeMinutes()
             };
 
-            this._feedbackMsg   = T('Brewing.started', { recipe: recipe.name });
+            this._feedbackMsg   = T('Brewing.started', { recipe: BrewingRecipeLoader.text(recipe.name) });
             this._feedbackTimer = 120;
             SoundManager.playOk();
             this.refreshUI();
@@ -384,9 +394,9 @@
                     }).join(', ');
                     recipeListHTML += `
                         <div class="brewery-recipe-row${focused ? ' focused' : ''}" data-idx="${i}">
-                            <div class="brewery-recipe-name">${ic(r.icon, 18)} ${r.name}<span class="brewery-recipe-time">${r.fermentHours}h</span></div>
+                            <div class="brewery-recipe-name">${ic(r.icon, 18)} ${BrewingRecipeLoader.text(r.name)}<span class="brewery-recipe-time">${r.fermentHours}h</span></div>
                             <div class="brewery-recipe-meta">${ingNames}</div>
-                            <div class="brewery-recipe-output">${ic(80, 13)} ${r.outputPreview}</div>
+                            <div class="brewery-recipe-output">${ic(80, 13)} ${BrewingRecipeLoader.text(r.outputPreview)}</div>
                         </div>`;
                 }
             }
@@ -466,7 +476,7 @@
                     <h2 class="title" style="border:none; margin:0 0 14px 0; padding:0">${T('Brewing.ui.barrel')}</h2>
                     <div class="apiary-section">
                         <div class="apiary-section-title">${ic(210, 14)} ${T('Brewing.ui.fermentingTitle')}</div>
-                        <div class="apiary-stat-row"><span>${T('Brewing.ui.recipe')}</span><span>${recipe.name}</span></div>
+                        <div class="apiary-stat-row"><span>${T('Brewing.ui.recipe')}</span><span>${BrewingRecipeLoader.text(recipe.name)}</span></div>
                         <div class="apiary-stat-row"><span>${T('Brewing.ui.stage')}</span><span style="color:${stageInfo.color}; font-weight:bold">${stageInfo.text}</span></div>
                         <div style="margin:8px 0 4px">
                             <div class="brewery-stage-bar">

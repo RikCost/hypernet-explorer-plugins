@@ -52,14 +52,15 @@
     },
 
     // The dead got up (WorldManager.populationMode "zombie"). Nine people in
-    // ten never made it: where an NPC would have been staffed there is an
-    // undead creature standing instead, on the same tile, in the same event
-    // slot. The tenth is a survivor and is staffed exactly as always.
+    // ten never made it and are walking their old streets wearing one of the
+    // Zombies/ sheets; the tenth is a survivor and is staffed exactly as
+    // always. Walking into one of the dead starts a fight rather than a
+    // conversation (see the zombie apocalypse section below).
     isZombieWorld() {
       const WM = window.WorldManager;
       return !!(WM && typeof WM.isZombieWorld === "function" && WM.isZombieWorld());
     },
-    ZOMBIE_REPLACE_CHANCE: 0.9,
+    ZOMBIE_SHEET_CHANCE: 0.9,
 
     treasureRoomParentIds: [133],
     get housePoolParentIds() {
@@ -152,9 +153,9 @@
   // Character pool built from NPCs.json (npc:true entries), replaces the old hardcoded
   // CHARACTER_GRAPHICS + SKAB_CHARACTER_GRAPHICS arrays.
   // DataService loads window.WorldGen.NPCs synchronously before any plugin IIFE runs.
-  // Beta sheets are in the pool only for a world created with beta sprites on,
-  // so the memo lives in SpriteCatalog (keyed by that answer) rather than here:
-  // activating a different world must not hand it the previous world's pool.
+  // Beta sheets are never in the pool, so the memo lives in SpriteCatalog
+  // rather than here: activating a different world must not hand it the
+  // previous world's pool.
   function buildNPCCharacterPool() {
     return window.SpriteCatalog?.npcKeys() || [];
   }
@@ -294,10 +295,6 @@
       const data = ev && ev.event ? ev.event() : null;
       if (!data) return false;
       if ($gameSelfSwitches?.value([$gameMap.mapId(), ev.eventId(), 'A'])) return false;
-      // A slot the zombie apocalypse took is not a person any more: it holds a
-      // creature, and a creature is never given an NPC brain, a routine or a
-      // conversation (see zombifyEvent).
-      if (ev._npcZombified) return false;
       return Utils.hasOwnGraphic(data) || Utils.hasShopTag(data.note);
     },
     isExitEvent: (name) => name.startsWith("House") || name.startsWith("Transfer") || name.startsWith("Door ("), // i18n-ignore: event names matched at runtime
@@ -946,12 +943,12 @@
     // <Story> events are excluded for the opposite reason: they are a written
     // person tied to the map they stand on, so their template must never be
     // dealt onto another map's roster (see Utils.hasStoryTag).
-    buildNPCPool: (mapData) => {
+    buildNPCPool: (mapData, mapId) => {
       return (mapData?.events || []).filter(ev =>
         ev && (Utils.hasAITag(ev.note) || Utils.hasLocalTag(ev.note)) &&
         !Utils.hasStoryTag(ev.note) &&
         ev.pages?.length > 0 && ev.pages.some(p => p?.list?.length > 1)
-      ).map(ev => ({ eventData: ev, eventId: ev.id }));
+      ).map(ev => ({ eventData: ev, eventId: ev.id, mapId }));
     },
 
     // Indexes every "shop-like" event on a map: <Shop>-tagged counters, events
@@ -1078,7 +1075,7 @@
           seenMapIds.add(mId);
           const mapData = MapManager.loadMapData(mId);
           if (mapData) {
-            npcPool.push(...SpawnManager.buildNPCPool(mapData));
+            npcPool.push(...SpawnManager.buildNPCPool(mapData, mId));
             shopIndex[mId] = SpawnManager.buildShopIndex(mapData, mId);
           }
         }
@@ -1128,10 +1125,10 @@
           // party member (and strip the flag that keeps them hidden). See
           // NPCSystemParty.joinParty.
           if ($gameSelfSwitches?.value([$gameMap.mapId(), e.eventId(), 'A'])) return false;
-          // A zombified slot is a monster standing where a person used to; never
-          // hand it out as a roster placeholder, or transplantData would paint a
-          // living NPC's face straight over the undead sprite it was just given.
-          if (e._npcZombified) return false;
+          // A slot that rose is one of the dead standing where a person used to;
+          // never hand it out as a roster placeholder, or transplantData would
+          // paint a living NPC's face straight over the sheet it rose in.
+          if (e._npcZombieSheet) return false;
           return name.startsWith("NPC") || name.startsWith("Placeholder") || (includePlayers && name.match(/^Player\d+$/)); // i18n-ignore: event-name prefixes
         })
         .map(ev => ({ event: ev, originalX: ev.x, originalY: ev.y }));
@@ -1181,9 +1178,15 @@
     getShopSocietyCandidates: (groupName) => {
       if (!groupName) return [];
       const society = $gameSystem?._npcSociety || {};
+      const NC = window.NPCCreature;
+      // A non-sentient creature (Feral, Mimic, Monster...) cannot stand a
+      // counter and mind a till, only a monster world's population is made of
+      // exactly that, so there it is the only kind of shopkeeper there is.
+      const monsterWorld = !!window.WorldManager?.isMonsterWorld?.();
       const out = [];
       for (const [name, profile] of Object.entries(society)) {
         if (!profile || profile._homeGroupName !== groupName || !profile.spriteKey) continue;
+        if (!monsterWorld && NC?.isNonSentientProfile?.(profile)) continue;
         out.push({ name, spriteName: profile.spriteKey, charIdx: profile.bustIndex ?? 0, local: true });
       }
       return out;
@@ -1982,7 +1985,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       const charIdx = isBigSprite ? 0 : Math.floor(Utils.seededRandom((seed * 2) >>> 0) * 8);
 
       const classId = ProceduralManager.seededClassId((seed ^ 0x51ed270b) >>> 0);
-      const profile = window.NPCSocietyRegistry?.ensureProfile?.(name, classId)
+      const profile = window.NPCSocietyRegistry?.ensureProfile?.(name, classId, undefined, $gameMap?.mapId?.())
         || $gameSystem._npcSociety?.[name];
       if (profile) {
         profile._homeGroupName = groupName;
@@ -2706,7 +2709,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // simulators evolve over time.
     registerProcCitizen: (name, ev, groupName, classId = null) => {
       if (!name || !groupName) return null;
-      const profile = window.NPCSocietyRegistry?.ensureProfile?.(name, classId)
+      const profile = window.NPCSocietyRegistry?.ensureProfile?.(name, classId, undefined, $gameMap?.mapId?.())
         || $gameSystem._npcSociety?.[name];
       if (profile) {
         profile._homeGroupName = groupName;
@@ -2989,9 +2992,16 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       return id === this.currentSlot();
     },
 
+    // Maps that are private to the playthrough standing on them (the tutorial,
+    // a station interior used as a travel instance) rather than a real place
+    // in the shared world: a save written there is never recorded as the
+    // party's position, so no visitor ever spawns on them.
+    UNRECORDABLE_MAPS: new Set([1414, 708]),
+
     record(savefileId) {
       if (!this.isRecordableSlot(savefileId)) return false;
       if (!$gameParty || !$gameMap || !$gamePlayer) return false;
+      if (this.UNRECORDABLE_MAPS.has($gameMap.mapId())) return false;
       const slot = this.currentSlot();
       const store = this.store(true);
       if (!store) return false;
@@ -4753,82 +4763,81 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   }
 
   // ---- zombie apocalypse -----------------------------------------------
-  // The pool of troops an NPC can have been replaced by: every troop whose
-  // whole line-up is undead, read off the creature table rather than listed
-  // here, so a creature added to Enemies.json joins it without a code change.
-  // An enemy counts as undead when its <Archetype:> is Undead itself or any
-  // sibling archetype the book already treats as undead-family (Skeleton,
-  // ConstructedUndead, and anything else the data ever names "...Undead"),
-  // plus anything with Zombie in its own name regardless of archetype. Any
-  // level: the dead do not scale to the party, and a city street can hold
-  // something far past you.
-  let _zombieTroopPool = null;
-  function zombieTroopPool() {
-    if (_zombieTroopPool) return _zombieTroopPool;
-    const undead = new Set();
-    for (let i = 1; i < $dataEnemies.length; i++) {
-      const e = $dataEnemies[i];
-      if (!e || !e.name) continue;
-      const m = e.note ? e.note.match(/<Archetype:\s*(.+?)>/i) : null;
-      const archetype = m ? m[1].trim() : "";
-      if (/undead|skeleton/i.test(archetype) || /zombie/i.test(e.name)) undead.add(i);
-    }
-    const pool = [];
-    for (let i = 1; i < $dataTroops.length; i++) {
-      const t = $dataTroops[i];
-      if (!t || !t.members || !t.members.length) continue;
-      if (t._bseReinforced || t._bsePetrodemon) continue;
-      if (!t.members.every(mem => undead.has(mem.enemyId))) continue;
-      // The magic level still has the last word: a severed world's dead are
-      // only the ones that rose for some ordinary reason.
-      if (window.MagicNature && !window.MagicNature.allowsData($dataEnemies[t.members[0].enemyId])) continue;
-      pool.push(i);
-    }
-    _zombieTroopPool = pool;
-    return pool;
+  // Nine people in ten never made it, and they are still walking. A zombie
+  // world is populated exactly like any other, its crowd dealt into the same
+  // slots and living the same routines, only nine faces in ten come off the
+  // Zombies/ half of the wardrobe (the `zombie` entries of NPCs.json, see
+  // SpriteCatalog.zombieKeys) instead of the ordinary one. Walk into one of
+  // them and there is no conversation to be had: the fight starts where you
+  // are standing (see startZombieBattle).
+  //
+  // Which slot is a corpse is seeded on (map, event, world seed) rather than
+  // rolled, so the same street holds the same dead every time it is walked
+  // into and two savegames of one world agree about who did not make it.
+  const ZOMBIE_TINT = 0x4f7a2e;        // the green a zombie's body is fought in
+  const ZOMBIE_TROOP_ID = 2;           // the generic person troop, as the Empathize attack uses
+
+  function zombieSheetPool() {
+    const SC = window.SpriteCatalog;
+    return (SC && SC.zombieKeys) ? SC.zombieKeys() : [];
   }
 
-  // Turn one staffed-NPC slot into an undead creature standing where they
-  // were. Seeded on (map, event, world seed) rather than rolled, so the same
-  // street holds the same dead every time it is walked into and two savegames
-  // of one world agree about who did not make it.
-  function zombifyEvent(ev) {
-    const pool = zombieTroopPool();
-    if (!pool.length || !ev || !ev.event) return false;
+  // Is this sheet one of the dead? Asked of whatever graphic an event is
+  // wearing, so a citizen dealt a zombie face by the procedural population
+  // pass (NPCSociety, through SpriteCatalog.pickNpcKey) counts exactly as one
+  // re-skinned here does.
+  function isZombieSheet(name) {
+    const SC = window.SpriteCatalog;
+    return !!(name && SC && SC.isZombieSheet && SC.isZombieSheet(name));
+  }
+
+  // One of the dead walking, and only ever in a zombie world.
+  function isZombieWalker(ev) {
+    if (!ev || ev._erased || !Config.isZombieWorld()) return false;
+    return isZombieSheet(ev.characterName && ev.characterName());
+  }
+
+  // The sheet this slot rose in, or null if whoever stood here made it. Pure
+  // in (map, event, world seed), so the answer never changes.
+  function zombieSheetFor(ev) {
+    const pool = zombieSheetPool();
+    if (!pool.length || !ev || !ev.event) return null;
     const seedBase = (window.HistoryManager && window.HistoryManager.getSeed)
       ? window.HistoryManager.getSeed() : 19002001;
     let h = ($gameMap.mapId() * 73856093) ^ (ev.eventId() * 19349663) ^ seedBase;
     h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
-    const roll = (h % 1000) / 1000;
-    if (roll >= Config.ZOMBIE_REPLACE_CHANCE) return false;   // a survivor
-    const troopId = pool[(h >>> 10) % pool.length];
-    ev._fixedTroopId = troopId;
-    ev._isAquaticEnemy = undefined;
-    ev._isAmphibiousEnemy = undefined;
-    if (window.BSE && BSE.Helpers && BSE.Helpers.applyEnemyMovement) {
-      BSE.Helpers.applyEnemyMovement(ev);
+    if ((h % 1000) / 1000 >= Config.ZOMBIE_SHEET_CHANCE) return null;  // a survivor
+    return pool[(h >>> 10) % pool.length];
+  }
+
+  // Writing the page data as well as the sprite, the same way a shop persona is
+  // applied (ShopShiftManager._applyPersonaSprite): a page refresh re-derives
+  // the graphic from page().image, and a face that only lived on the event
+  // would be lost the first time a switch moved. Every zombie sheet is a
+  // single-character !$ sheet, hence the fixed cell 0.
+  function applyZombieSheet(ev, sheet) {
+    const data = ev && ev.event ? ev.event() : null;
+    if (!data || !sheet) return;
+    for (const page of (data.pages || [])) {
+      if (page?.image) {
+        page.image.characterName = sheet;
+        page.image.characterIndex = 0;
+      }
     }
-    if (ev.updateCharacterSprite) ev.updateCharacterSprite();
+    ev._npcZombieSheet = sheet;
+    ev.setImage(sheet, 0);
     ev.setOpacity(255);
     ev.setThrough(false);
-    ev._npcZombified = true;
-    return true;
+    // $dataMap is re-read from disk on every Scene_Map rebuild, so the face is
+    // snapshotted onto the event itself the way a roster spawn is (see
+    // SpawnManager.snapshotSpawn / restoreSpawnedEventData).
+    SpawnManager.snapshotSpawn(ev);
   }
 
-  // A map that still has a manned till on it is a safe zone: the whole map is
-  // left unzombified so the ordinary staffing passes populate it with living
-  // NPCs the way a non-zombie world would, and (since zombification is the
-  // only source of an undead map event) no undead ever stands on it either.
-  function mapIsZombieSafeZone() {
-    if (!$gameMap) return false;
-    return $gameMap.events().some(ev => Utils.hasShopTag(ev?.event()?.note));
-  }
-
-  // Every slot the crowd would have been dealt into, walked once. Returns the
-  // events that are still people, so the ordinary staffing runs on those alone.
+  // Every slot the crowd is dealt into, walked once: the dead are re-skinned
+  // where they stand, the survivors left exactly as they are.
   function zombifyMapNPCs() {
     if (!$gameMap || !$dataMap) return;
-    if (mapIsZombieSafeZone()) return;
     for (const ev of $gameMap.events()) {
       const data = ev && ev.event ? ev.event() : null;
       if (!data) continue;
@@ -4838,10 +4847,96 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (Utils.hasStoryTag(note)) continue;     // and a written one does not rise
       const isRosterSlot = String(data.name || "").startsWith("NPC"); // i18n-ignore: event name matched at runtime
       if (!isRosterSlot && !Utils.hasAITag(note) && !Utils.hasLocalTag(note)) continue;
-      if (ev._npcZombified) continue;
-      zombifyEvent(ev);
+      if (ev._npcZombieDecided) continue;
+      ev._npcZombieDecided = true;
+      const sheet = zombieSheetFor(ev);
+      if (sheet) applyZombieSheet(ev, sheet);
     }
   }
+
+  // Puts every already-decided slot back in the face it rose in. The staffing
+  // passes paint a roster sprite straight onto the event, so the dead are
+  // re-asserted once the crowd has been dealt.
+  function reassertZombies() {
+    if (!$gameMap) return;
+    for (const ev of $gameMap.events()) {
+      if (!ev || ev._erased || !ev._npcZombieSheet) continue;
+      if (ev.characterName() !== ev._npcZombieSheet) applyZombieSheet(ev, ev._npcZombieSheet);
+    }
+  }
+
+  // ---- walking into one of the dead --------------------------------------
+  // There is nothing to say to a corpse: bumping into one is the fight. The
+  // same machinery the Empathize panel's Attack uses carries it (the generic
+  // person troop, and the target recorded so a kill leaves a body behind on
+  // its own event), with the enemy built as a green procedural humanoid rather
+  // than as whatever battler that troop happens to hold (see the forced body
+  // in 3DBattlerSystem).
+  function requestZombieBattle(ev) {
+    if (!ev || !$gameTemp) return;
+    $gameTemp._npcZombieBattle = {
+      mapId: $gameMap.mapId(),
+      eventId: ev.eventId(),
+      name: ev.event()?.name || "",
+    };
+  }
+
+  function startZombieBattle(request) {
+    BattleManager.setup(ZOMBIE_TROOP_ID, true, false);
+    $gamePlayer.makeEncounterCount();
+    // Armed after setup on purpose: both are cleared at the top of
+    // BattleManager.setup, so a fight begun any other way can never inherit
+    // this victim or wear a zombie's body.
+    $gameTemp._NPCEmpathizeBattleTarget = {
+      mapId: request.mapId, eventId: request.eventId, name: request.name,
+    };
+    $gameTemp._battler3DOverride = { archetype: "humanoid", tint: ZOMBIE_TINT }; // i18n-ignore: Battler3D archetype key
+    SceneManager.push(Scene_Battle);
+  }
+
+  // The bump itself. checkEventTriggerTouch is what RMMZ calls when the party
+  // walks into an event that blocks them, which is every zombie standing in a
+  // street. A vehicle is left to its own collision (a car running one down is
+  // BattleSystemEnhancedEncounters' business, not a fight).
+  const _Game_Player_checkEventTriggerTouch_zombie = Game_Player.prototype.checkEventTriggerTouch;
+  Game_Player.prototype.checkEventTriggerTouch = function (x, y) {
+    if (Config.isZombieWorld() && !this.isInVehicle() && !$gameParty.inBattle() &&
+        !$gameMap.isEventRunning() && !$gameTemp?._npcZombieBattle) {
+      const walker = $gameMap.eventsXy(x, y).find(ev => isZombieWalker(ev));
+      if (walker) { requestZombieBattle(walker); return true; }
+    }
+    return _Game_Player_checkEventTriggerTouch_zombie.call(this, x, y);
+  };
+
+  // And the other way round: one of the dead walking into the party is the same
+  // collision from the other side. An NPC event is trigger 0 (talk to it), so
+  // RMMZ itself would let a zombie shoulder past the player without a word.
+  const _Game_Event_checkEventTriggerTouch_zombie = Game_Event.prototype.checkEventTriggerTouch;
+  Game_Event.prototype.checkEventTriggerTouch = function (x, y) {
+    if (Config.isZombieWorld() && $gamePlayer.pos(x, y) && !$gamePlayer.isInVehicle() &&
+        !$gameParty.inBattle() && !$gameMap.isEventRunning() && !$gameTemp?._npcZombieBattle &&
+        isZombieWalker(this)) {
+      requestZombieBattle(this);
+      return;
+    }
+    _Game_Event_checkEventTriggerTouch_zombie.call(this, x, y);
+  };
+
+  // Started from the scene rather than from inside the map update that noticed
+  // the collision, the way an ordinary encounter is.
+  const _Scene_Map_update_zombie = Scene_Map.prototype.update;
+  Scene_Map.prototype.update = function () {
+    _Scene_Map_update_zombie.call(this);
+    const request = $gameTemp?._npcZombieBattle;
+    if (!request) return;
+    if (SceneManager.isSceneChanging() || $gameParty.inBattle() || $gameMap.isEventRunning()) return;
+    $gameTemp._npcZombieBattle = null;
+    // A transfer between the bump and this tick (a doorway right behind the
+    // party) leaves the request pointing at a map nobody is standing on any
+    // more: dropped rather than fought.
+    if (request.mapId !== $gameMap.mapId()) return;
+    startZombieBattle(request);
+  };
 
   // <Story> NPCs: written characters who belong to the map they stand on. The
   // <AI> and <Local> passes in setupNPCControllers have already covered any
@@ -5055,10 +5150,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       return;
     }
 
-    // Nine in ten of the crowd are undead instead. Run BEFORE the roster is
-    // staffed so the dead are never given a brain, a job or a conversation:
-    // Utils.isControllableEvent refuses a zombified slot, so the <AI> and
-    // <Local> passes below skip them of their own accord.
+    // Nine in ten of the crowd rose instead of dying. Decided BEFORE the roster
+    // is staffed so the dead are settled on their slots first, and re-asserted
+    // after it (see reassertZombies) since staffing paints its own faces on.
     if (Config.isZombieWorld()) zombifyMapNPCs();
 
     $gameSystem._npcMapSizes = $gameSystem._npcMapSizes || {};
@@ -5293,25 +5387,12 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
     wakeStoryNPCs();
 
-    // The dead have the last word. The staffing passes above may have painted
-    // a face onto a slot before isControllableEvent could refuse it (the
-    // roster assignment writes sprites straight onto the event), so the
-    // zombified slots are re-asserted here: same troop, same tile, the
-    // creature's own sprite back on top. Idempotent, and a no-op everywhere
-    // but a zombie world.
+    // The dead have the last word. The staffing passes above write roster
+    // sprites straight onto the events, so the slots that rose are re-asserted
+    // here: same person, same tile, the face they rose in back on top.
+    // Idempotent, and a no-op everywhere but a zombie world.
     if (Config.isZombieWorld()) reassertZombies();
   };
-
-  // Puts every already-zombified slot back the way zombifyEvent left it.
-  function reassertZombies() {
-    if (!$gameMap) return;
-    for (const ev of $gameMap.events()) {
-      if (!ev || !ev._npcZombified || !ev._fixedTroopId) continue;
-      if (ev.updateCharacterSprite) ev.updateCharacterSprite();
-      ev.setOpacity(255);
-      ev.setThrough(false);
-    }
-  }
 
   // Pending hour-boundary refresh stages, processed one per frame (see below)
   let _hourlyRefreshQueue = null;
@@ -5525,6 +5606,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     SEATED_GLOBAL_GROUPS: Config.SEATED_GLOBAL_GROUPS,
     findMapGroupByMap: MapManager.findMapGroupByMap,
     isHouseMap: MapManager.isHouseMap,
+    // <Interior>/<Exterior> tag of any map, authored or procedural-current, see
+    // MapManager.getMapEnvironmentTag. Used to keep the Animals/ wardrobe (see
+    // NPCCreature) off NPCs whose home event is indoors.
+    getMapEnvironmentTag: MapManager.getMapEnvironmentTag,
     loadMapData: MapManager.loadMapData,
     // --- wiki lookup API (NPCEmpathize internal encyclopedia) ---------------
     getGroupNames: () => Object.keys(GroupRegistry.build()),

@@ -60,6 +60,9 @@
  * - window.CharacterPresets.getPresetSkins(preset)
  * - window.CharacterPresets.getPresetSkin(preset, index)
  * - window.CharacterPresets.getPresetSkinLabel(skin)
+ * - window.CharacterPresets.getPresetModel(preset)
+ * - window.CharacterPresets.findPresetForActor(actor)
+ * - window.CharacterPresets.getActorPresetModel(actor)
  * - window.CharacterPresets.getEmBackstory()
  * - window.CharacterPresets.isEmPlaythrough()
  * - window.CharacterPresets.isBeastCrew()
@@ -113,7 +116,7 @@
       y: 48,
       switches: [49, 50],
       birthDate: "1968-07-14", // Date of birth
-      nationId: "Ireland", // Nation of birth (key into HistorySimulator_COUNTRIES)
+      nationId: "Texas", // Nation of birth (key into HistorySimulator_COUNTRIES)
       gender: 0, // 0=Male 1=Female 2=Non-binary 3=Cocoon
       sexualOrientation: "heterosexual", // key into js/db/NPC/Orientations.json (sexual)
       romanticOrientation: "heteroromantic", // key into js/db/NPC/Orientations.json (romantic)
@@ -122,9 +125,9 @@
         { id: 1, amount: 5 },   // Potion x5
         { id: 111, amount: 1 }, // Liminal cuffs - summons The Beast
       ],
-      weapons: [{ id: 459, amount: 1 }], // Axe x1
-      armors: [{ id: 4, amount: 1 }], // Ring x1
-      equips: [null, null, null, null, null],
+      weapons: [{ id: 459, amount: 1 }], // Bubba's Shotgun x1
+      armors: [{ id: 4, amount: 1 }], // Twitching Reflex Cap x1
+      equips: [459, null, 4, null, null],
       skills: [10],
       traits: [],
       specializations: [
@@ -163,12 +166,12 @@
         { id: 111, amount: 1 }, // Liminal cuffs
         { id: 168, amount: 1 }, // Flying broom
       ],
-      weapons: [{ id: 525, amount: 1 }],
+      weapons: [{ id: 525, amount: 1 }], // Vector gun
       armors: [
-        { id: 434, amount: 1 },
-        { id: 435, amount: 1 },
+        { id: 434, amount: 1 }, // Pariah's Cold Jacket
+        { id: 435, amount: 1 }, // Hive-Mind Vestment
       ],
-      equips: [null, null, null, null, null],
+      equips: [525, null, null, 434, null],
       skills: [],
       traits: [],
       specializations: [
@@ -177,6 +180,11 @@
         { id: 164, level: 2 }, // Lucid Dreaming
       ],
       busts: "Em",
+      // The one dossier whose owner was modelled in 3D. Every screen that would
+      // draw her flat bust as a portrait draws this model instead (the status
+      // sheet and the Empathize panel), so her face is the same rig the rest of
+      // the game shows her with.
+      model: "models/Em.glb",
       // The Beast is waiting outside where she left it. Parked on her home map
       // (722) and mirrored onto the world map at 88,131 so it is visible and
       // boardable from map 315 too, not only from the tile it physically sits on.
@@ -239,7 +247,7 @@
       ],
       weapons: [],
       armors: [{ id: 378, amount: 1 }], // Envoy's Sashed Coat
-      equips: [null, null, null, null, null],
+      equips: [null, null, null, 378, null],
       skills: [],
       traits: [7, 98, 116, 174], // Genius, Tactician, Devout, Infamous
       specializations: [
@@ -276,7 +284,7 @@
       items: [{ id: 150, amount: 1 }], // Telescope
       weapons: [],
       armors: [{ id: 404, amount: 1 }], // Shifting Sight Glasses
-      equips: [null, null, null, null, null],
+      equips: [null, null, null, null, 404],
       skills: [],
       traits: [7, 18, 37, 117], // Genius, Vegetarian, Skeptic, Atheist
       specializations: [
@@ -311,7 +319,7 @@
       items: [{ id: 175, amount: 1 }],
       weapons: [{ id: 187, amount: 1 }], // Presidential Saxophone - the sax goes everywhere he does
       armors: [{ id: 311, amount: 1 }], // Deal-Closer Suit
-      equips: [187, null, null, null, null],
+      equips: [187, null, null, 311, null],
       skills: [],
       traits: [81, 132, 143, 174], // Charismatic, Scholar, Bard, Infamous
       specializations: [
@@ -344,7 +352,7 @@
         { id: 325, amount: 1 }, // Il bastone infernale - the cane with the blade in it
       ],
       armors: [{ id: 298, amount: 1 }], // Rhinestone Denim Suit
-      equips: [189, null, null, null, null],
+      equips: [189, null, null, 298, null],
       skills: [],
       traits: [81, 82, 143, 173], // Charismatic, Extrovert, Bard, Famous
       specializations: [
@@ -469,7 +477,7 @@
       items: [],
       weapons: [],
       armors: [{ id: 519, amount: 1 }], // High Cleric's Vestments
-      equips: [null, null, null, null, null],
+      equips: [null, null, null, 519, null],
       skills: [],
       traits: [132, 116, 83, 50], // Scholar, Devout, Introvert, Ascetic
       specializations: [
@@ -500,7 +508,7 @@
       items: [{ id: 954, amount: 1 }], // Penicillin Precursors
       weapons: [],
       armors: [{ id: 511, amount: 1 }], // Iron Conviction Robes
-      equips: [null, null, null, null, null],
+      equips: [null, null, null, 511, null],
       skills: [],
       traits: [7, 40, 97, 129], // Genius, Workaholic, Survivalist, Exiled
       specializations: [
@@ -535,7 +543,7 @@
       items: [{ id: 1404, amount: 1 }], // Forbidden Magic Grimoire
       weapons: [],
       armors: [{ id: 531, amount: 1 }], // Robes of the Great Beast
-      equips: [null, null, null, null, null],
+      equips: [null, null, null, 531, null],
       skills: [1404, 1405, 1477, 1492, 1513, 1558, 1567, 1570, 1580, 1600, 1617, 1655, 1668, 1679, 1685, 1700, 1707],
       traits: [81, 118, 104, 174], // Charismatic, Heretic, Drug Dependent, Infamous
       specializations: [
@@ -571,7 +579,7 @@
       items: [379],
       weapons: [],
       armors: [{ id: 378, amount: 1 }], // Envoy's Sashed Coat
-      equips: [null, null, null, null, null],
+      equips: [null, null, null, 378, null],
       skills: [],
       traits: [33, 81, 88, 171], // Empath, Charismatic, Generous, Honest
       specializations: [
@@ -628,7 +636,7 @@
   // tutorial's character creation opens, so no two tutorials look alike.
   //
   // `characterType` ("humanoid" | "creature") and, for a creature dossier,
-  // `archetypes` (1-2 EnemyArchetypes.json keys, joined "A / B" for a hybrid)
+  // `archetypes` (1-2 Archetypes.json keys, joined "A / B" for a hybrid)
   // are a general extension of the preset schema, not tutorial-only fields:
   // see CharacterCreation.js's _applyPreset, which reads them through
   // window.applyCreatureSelection (CharacterCreationCreature.js) for any
@@ -636,22 +644,20 @@
 
   // i18n-ignore-start: sprite sheet keys, not prose
   const TUTORIAL_SLIME_SPRITES = [
-    "NPCs/!$Slime1", "NPCs/!$Slime2", "NPCs/!$Slime3", "NPCs/!$Slime4",
-    "NPCs/!$Slime5", "NPCs/!$Slime6", "NPCs/!$Slime7", "NPCs/!$Slime8",
+    "Creatures/!$Slime1", "Creatures/!$Slime2", "NPCs/!$Slime3", "Creatures/!$Slime4",
+    "Creatures/!$Slime5", "Creatures/!$Slime6", "Creatures/!$Slime7", "Creatures/!$Slime8",
   ];
   // i18n-ignore-end
 
   // Every walk sheet the sprite catalogue carries for the Goblin archetype
-  // (both the extracted NPCs/ cells and the hand-drawn Skab/ ones). A
-  // beta sheet is left out unless the world was created with beta sprites
-  // on, the same rule SpriteCatalog.npcKeys() applies everywhere else.
+  // (both the extracted NPCs/ cells and the hand-drawn Skab/ ones). A beta
+  // sheet is always left out, the same rule SpriteCatalog.npcKeys() applies
+  // everywhere else.
   function tutorialGoblinSpritePool() {
     const catalog = (window.WorldGen && window.WorldGen.NPCs) || {};
-    const betaOk = !!(window.SpriteCatalog && window.SpriteCatalog.betaEnabled && window.SpriteCatalog.betaEnabled());
     return Object.keys(catalog).filter((key) => {
       const entry = catalog[key];
-      if (!entry || entry.npc !== true || entry.Archetype !== "Goblin") return false;
-      return betaOk || entry.beta !== true;
+      return !!entry && entry.npc === true && entry.Archetype === "Goblin" && entry.beta !== true;
     });
   }
 
@@ -1081,6 +1087,23 @@
   }
 
   /**
+   * A line for Em to heckle the player with when her dossier is sitting on the
+   * board unpicked. Random each call, but never the same line twice in a row.
+   * @param {string} [lastLine] - The line shown last, so it can be excluded
+   * @returns {string} One of CharPresets.emRestlessLines
+   */
+  function getEmRestlessLine(lastLine) {
+    const pool = T.pool('CharPresets.emRestlessLines');
+    if (!pool || !pool.length) return '';
+    if (pool.length === 1) return pool[0];
+    let line = lastLine;
+    while (line === lastLine) {
+      line = pool[Math.floor(Math.random() * pool.length)];
+    }
+    return line;
+  }
+
+  /**
    * What the camper is called for this party.
    * @param {string} [fallback] - Name used by everyone else
    * @returns {string} "The Beast" for Em and Bubba, the fallback otherwise
@@ -1265,6 +1288,56 @@
   function getPresetSkinLabel(skinData) {
     if (!skinData || !skinData.key) return "";
     return T("CharPresets.skin." + skinData.key);
+  }
+
+  //=============================================================================
+  // Dossier 3D models
+  //=============================================================================
+  // A dossier can ship a 3D model of the person it describes (`model`, a path to
+  // a GLB). Where a screen would otherwise draw that character's flat bust as a
+  // portrait, it draws this model: the status sheet's portrait frame and the
+  // Empathize panel both ask for it here, so the two can never disagree about
+  // what the character looks like. Only Em has one.
+
+  /**
+   * The model file a dossier is portrayed by, if it has one.
+   * @param {object} preset - Preset dossier
+   * @returns {string|null} Path to the GLB, or null when the dossier has none
+   */
+  function getPresetModel(preset) {
+    const path = preset && preset.model;
+    return (typeof path === "string" && path) ? path : null;
+  }
+
+  /**
+   * The dossier a party member was made from. Matched on the bust the dossier
+   * gave them first, so a character the player renamed is still recognised as
+   * long as they still wear the dossier's face, and on the name second, for a
+   * dossier character who joined without one being set.
+   * @param {Game_Actor} actor - Party member
+   * @returns {object|null} Preset dossier
+   */
+  function findPresetForActor(actor) {
+    if (!actor) return null;
+    const presets = getCharacterPresets();
+    if (!presets.length) return null;
+    const bust = actor.vnBust ? actor.vnBust() : null;
+    if (bust && bust !== "7" && bust !== 0) {
+      const byBust = presets.find((preset) => preset.busts === bust);
+      if (byBust) return byBust;
+    }
+    const name = actor.name ? String(actor.name() || "").trim().toLowerCase() : "";
+    if (!name) return null;
+    return presets.find((preset) => String(preset.name ?? "").trim().toLowerCase() === name) || null;
+  }
+
+  /**
+   * The model a party member is portrayed by, from the dossier they came from.
+   * @param {Game_Actor} actor - Party member
+   * @returns {string|null} Path to the GLB, or null for everybody else
+   */
+  function getActorPresetModel(actor) {
+    return getPresetModel(findPresetForActor(actor));
   }
 
   //=============================================================================
@@ -1506,7 +1579,10 @@
     const armors = $gameParty
       .armors()
       .map((item) => ({ id: item.id, amount: $gameParty.numItems(item) }));
-    const equips = actor.equips().map((item) => (item ? item.id : null));
+    // A hand slot holds a weapon or a shield, so the slot no longer says which
+    // database the id belongs to: each piece records it for itself.
+    const equips = actor.equips().map((item) =>
+      item ? { id: item.id, w: item.etypeId === 1 } : null);
     const skills = actor.skills().map((skill) => skill.id);
 
     // Get traits from actor if available
@@ -1656,12 +1732,15 @@
     // Gear worn on the way out travels with them. _applyPreset equips out of
     // the party's stock, so every worn piece is listed both as inventory and as
     // an equip slot; nothing is taken off the party that it still holds.
-    const equips = actor.equips().map((item) => (item ? item.id : null));
+    // A hand slot holds a weapon or a shield, so the slot no longer says which
+    // database the id belongs to: each piece records it for itself.
+    const equips = actor.equips().map((item) =>
+      item ? { id: item.id, w: item.etypeId === 1 } : null);
     const weapons = [];
     const armors = [];
     actor.equips().forEach((item, slotId) => {
       if (!item) return;
-      const isWeapon = actor.equipSlots()[slotId] === 1;
+      const isWeapon = item.etypeId === 1;
       (isWeapon ? weapons : armors).push({ id: item.id, amount: 1 });
     });
 
@@ -1819,10 +1898,14 @@
     actor.equips().forEach((item, slotId) => {
       if (item) actor.forceChangeEquip(slotId, null);
     });
-    (preset.equips || []).forEach((itemId, slotId) => {
+    (preset.equips || []).forEach((entry, slotId) => {
+      // Older dossiers stored a bare id per slot; newer ones say what it was.
+      const itemId = (entry && typeof entry === 'object') ? entry.id : entry;
       if (!(itemId > 0)) return;
-      const etypeId = actor.equipSlots()[slotId];
-      const item = etypeId === 1 ? $dataWeapons[itemId] : $dataArmors[itemId];
+      const isWeapon = (entry && typeof entry === 'object')
+        ? !!entry.w
+        : actor.equipSlots()[slotId] === 1;
+      const item = isWeapon ? $dataWeapons[itemId] : $dataArmors[itemId];
       if (!item) return;
       $gameParty.gainItem(item, 1);
       actor.changeEquip(slotId, item);
@@ -1852,6 +1935,7 @@
     // Whoever held the slot before is gone, including the monster it may have
     // been recruited from.
     actor._recruitedEnemyId = 0;
+    actor._recruitedLook = null;   // the look roll of whoever held the slot before goes with them
     if (preset.busts && actor.setVnBust) {
       actor.setVnBust(preset.busts);
       if (actor.setPortraitMode) actor.setPortraitMode("bust");
@@ -1864,6 +1948,7 @@
       actor.setVnBattler(preset.battler);
       if (actor.setPortraitMode) actor.setPortraitMode(0);
       actor._recruitedEnemyId = preset.enemyId || 0;
+      actor._recruitedLook = null;   // the look roll of whoever held the slot before goes with them
     }
 
     // Anatomy skills need no call here: Health_Core grants them on addActor.
@@ -2364,10 +2449,14 @@
     getPresetSkins,
     getPresetSkin,
     getPresetSkinLabel,
+    getPresetModel,
+    findPresetForActor,
+    getActorPresetModel,
     getEmBackstory,
     isEmPlaythrough,
     isBeastCrew,
     emLabel,
+    getEmRestlessLine,
     camperName,
     saveCharacterPresets,
     getNextPresetId,

@@ -324,12 +324,15 @@
                     return seed / 233280;
                 };
 
-                // Gather low/medium value items
+                // Gather low/medium value items. A <Restricted> row is granted
+                // by the system that owns it, so it is never in a pocket.
+                const stealable = (entry) =>
+                    !(window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(entry));
                 const validItems = [];
                 if (typeof $dataItems !== 'undefined') {
                     for (let i = 1; i < $dataItems.length; i++) {
                         const item = $dataItems[i];
-                        if (item && item.name && !item.name.startsWith("---") && item.price > 0 && item.price <= 5000) {
+                        if (item && item.name && !item.name.startsWith("---") && item.price > 0 && item.price <= 5000 && stealable(item)) {
                             validItems.push({ type: 'item', id: i, data: item });
                         }
                     }
@@ -337,7 +340,7 @@
                 if (typeof $dataWeapons !== 'undefined') {
                     for (let i = 1; i < $dataWeapons.length; i++) {
                         const weapon = $dataWeapons[i];
-                        if (weapon && weapon.name && !weapon.name.startsWith("---") && weapon.price > 0 && weapon.price <= 5000) {
+                        if (weapon && weapon.name && !weapon.name.startsWith("---") && weapon.price > 0 && weapon.price <= 5000 && stealable(weapon)) {
                             validItems.push({ type: 'weapon', id: i, data: weapon });
                         }
                     }
@@ -345,7 +348,7 @@
                 if (typeof $dataArmors !== 'undefined') {
                     for (let i = 1; i < $dataArmors.length; i++) {
                         const armor = $dataArmors[i];
-                        if (armor && armor.name && !armor.name.startsWith("---") && armor.price > 0 && armor.price <= 5000) {
+                        if (armor && armor.name && !armor.name.startsWith("---") && armor.price > 0 && armor.price <= 5000 && stealable(armor)) {
                             validItems.push({ type: 'armor', id: i, data: armor });
                         }
                     }

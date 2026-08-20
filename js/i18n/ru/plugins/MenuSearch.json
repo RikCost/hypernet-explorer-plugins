@@ -1,19 +1,19 @@
 {
-  "placeholder": "",
-  "clear": "",
-  "anyCategory": "",
-  "showing": "",
-  "min": "",
-  "max": "",
+  "placeholder": "Поиск…",
+  "clear": "Очистить поиск",
+  "anyCategory": "Любая категория",
+  "showing": "Показано: {count}",
+  "min": "мин",
+  "max": "макс",
   "sort": {
-    "name": "",
-    "level": "",
-    "weight": "",
-    "price": "",
-    "cost": ""
+    "name": "Название",
+    "level": "Уровень",
+    "weight": "Вес",
+    "price": "Цена",
+    "cost": "Стоимость"
   },
   "range": {
-    "weight": "",
-    "price": ""
+    "weight": "Вес (кг)",
+    "price": "Цена (€)"
   }
 }

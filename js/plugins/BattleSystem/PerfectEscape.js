@@ -1,11 +1,16 @@
 /*:
- * @plugindesc Makes player escape from battle 100% successful.
+ * @plugindesc Makes player escape from battle 100% successful, except in the dungeon.
  * @author Omni-Lex
  * @target MZ MV
  * @help PerfectEscape.js
  * 
  * This plugin ensures that player escape attempts from battle
  * always succeed (100% success rate).
+ * 
+ * The dungeon is the exception: on any tower floor, above ground or below,
+ * and in the accursed market, escaping is rolled on the ordinary odds and a
+ * failed attempt costs the runner their turn (each failure improves the next
+ * attempt by 10%). DungeonFloorSystem decides where that is.
  * 
  * No plugin parameters are needed.
  * Just install the plugin and enable it in your project.
@@ -14,17 +19,72 @@
  */
 
 (function() {
+    // The one place the free escape is refused: on a dungeon floor, above ground
+    // or below it, and in the accursed market, the way out has to be earned.
+    // DungeonFloorSystem owns the answer to where that is.
+    function escapeIsContested() {
+        const DF = window.DungeonFloors;
+        return !!(DF && typeof DF.escapeIsContested === "function" && DF.escapeIsContested());
+    }
+
+    // True while any living enemy in the troop carries the <Boss> tag. A boss
+    // fight has no odds to roll against: it ends in victory or death, so the
+    // free escape (and the dungeon's earned-odds exception) never applies here.
+    function troopHasBoss() {
+        try {
+            return $gameTroop.aliveMembers().some(function(enemy) {
+                const data = enemy && enemy.enemy && enemy.enemy();
+                return !!(data && /<Boss>/i.test(data.note || ""));
+            });
+        } catch (e) {
+            return false;
+        }
+    }
+
     // Override the escape success rate calculation
     Game_BattlerBase.prototype.makeEscapeRatio = function() {
         return 1.0; // 100% success rate
     };
-    
+
     // Force the escape ratio to 100% and delegate to the vanilla processEscape
     // so the standard "escaped" message still displays (the previous
-    // reimplementation dropped it by never calling the original).
+    // reimplementation dropped it by never calling the original). Down in the
+    // dungeon the ratio is left alone: whatever it was rolled at when the fight
+    // started, plus whatever failed attempts have added to it since.
     var _BattleManager_processEscape = BattleManager.processEscape;
     BattleManager.processEscape = function() {
-        this._escapeRatio = 1.0;
+        if (troopHasBoss()) {
+            this.displayBossEscapeBlockedMessage();
+            return false;
+        }
+        if (!escapeIsContested()) this._escapeRatio = 1.0;
         return _BattleManager_processEscape.call(this);
+    };
+
+    // The battle log prints nothing any more, so the refusal is announced the
+    // way every other transient line is.
+    BattleManager.displayBossEscapeBlockedMessage = function() {
+        const text = window.T ? window.T("Battle.escape.boss") : "";
+        if (text && window.ParchmentToast) {
+            window.ParchmentToast.show(text, { severity: "danger", duration: 120 });
+        }
+    };
+
+    // A failed run costs the one who tried it their action and nothing more.
+    // The vanilla handler clears the WHOLE party's queued actions and starts
+    // the turn itself, neither of which suits a game where every battler acts
+    // on its own: the command windows already hand the turn on from here.
+    BattleManager.onEscapeFailure = function() {
+        this.displayEscapeFailureMessage();
+        this._escapeRatio += 0.1;
+    };
+
+    // The battle log prints nothing any more, so the refusal is announced the
+    // way every other transient line is.
+    BattleManager.displayEscapeFailureMessage = function() {
+        const text = window.T ? window.T("Battle.escape.failed") : "";
+        if (text && window.ParchmentToast) {
+            window.ParchmentToast.show(text, { severity: "danger", duration: 120 });
+        }
     };
 })();

@@ -287,7 +287,17 @@
   DataManager.makeSaveContents = function () {
     const contents = _DataManager_makeSaveContents.call(this);
 
+    // $gameSystem.starMapData can come back from a core JsonEx round-trip
+    // (the whole $gameSystem object, this field included) as a classless
+    // plain object rather than a StarMapDataManager instance -- JsonEx only
+    // restores a class by looking it up on the global `window`, and old
+    // saves may predate that registration. Rebuild it rather than crash.
     if ($gameSystem.starMapData) {
+      if (typeof $gameSystem.starMapData.toJSON !== "function") {
+        const raw = $gameSystem.starMapData;
+        $gameSystem.starMapData = new window.GalaxySim.DataManager();
+        $gameSystem.starMapData.fromJSON(raw);
+      }
       contents.starMapData = $gameSystem.starMapData.toJSON();
     }
 
@@ -301,6 +311,12 @@
     if (contents.starMapData) {
       $gameSystem.starMapData = new window.GalaxySim.DataManager();
       $gameSystem.starMapData.fromJSON(contents.starMapData);
+    } else if ($gameSystem.starMapData && typeof $gameSystem.starMapData.fromJSON !== "function") {
+      // Old save predating the contents.starMapData mirror: $gameSystem's own
+      // embedded copy is the only data we have, already decoded classless.
+      const raw = $gameSystem.starMapData;
+      $gameSystem.starMapData = new window.GalaxySim.DataManager();
+      $gameSystem.starMapData.fromJSON(raw);
     }
   };
 
@@ -309,6 +325,16 @@
   // ============================================================================
 
   window.GalaxySim.openStarMap = function () {
+    pushStarMapScene();
+  };
+
+  // Free-play viewer for the title screen minigame list: the ship, engines,
+  // fuel and every bridge/landing/refuel action are hidden and disabled (see
+  // Scene_AdvancedStarMap3D.create and the .gx-minigame CSS), leaving a
+  // read-only tour of the catalog and Grand Tour. The flag is consumed once
+  // by the scene's create(), so it never leaks into a normal OpenStarMap call.
+  window.GalaxySim.openStarMapMinigame = function () {
+    window.GalaxySim.minigameMode = true;
     pushStarMapScene();
   };
 
@@ -636,6 +662,26 @@
   // (see planetGridSize) to touch down on; omitted/out-of-range defaults to
   // the grid's center square, matching the previous fixed-landing behavior
   // for callers that don't offer a picker (Sandbox teleport, etc.).
+  // Where the party actually lands on a freshly generated alien square: the
+  // exact center of the map, unless the terrain there is impassable (open
+  // water, a crater rim...), in which case the nearest walkable tile instead.
+  // Earth's own generators each promise their own open center/borders
+  // (mountain ranges keep a clearing, roads/rivers never seal a crossing...),
+  // but the alien elevation-banded terrestrial fill and crater fields are
+  // continuous, so nothing guarantees the map's exact center is solid ground.
+  function alienLandingSpawn(width, height) {
+    const preferX = Math.floor(width / 2);
+    const preferY = Math.floor(height / 2);
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const AT = window.ProcGenAlienTerrain;
+    if (AT && AT.findPassableLandingTile && pg && pg.generatedMapData) {
+      return AT.findPassableLandingTile(
+        pg.generatedMapData, pg.currentBiomeTileset, width, height, preferX, preferY
+      );
+    }
+    return { x: preferX, y: preferY };
+  }
+
   function enterPlanetSurface(planet, opts) {
     if (!planet || !planet.type) return false;
     opts = opts || {};
@@ -676,7 +722,8 @@
     if (!ok) return false;
 
     const PROC_MAP_ID = 636, W = 64, H = 64;
-    $gamePlayer.reserveTransfer(PROC_MAP_ID, Math.floor(W / 2), Math.floor(H / 2), 2, 0);
+    const spawn = alienLandingSpawn(W, H);
+    $gamePlayer.reserveTransfer(PROC_MAP_ID, spawn.x, spawn.y, 2, 0);
     return true;
   }
   window.GalaxySim.enterPlanetSurface = enterPlanetSurface;
@@ -690,6 +737,65 @@
     return grid || null;
   }
   window.GalaxySim.getAlienGridInfo = getAlienGridInfo;
+
+  // ============================================================================
+  // Alien ground terrain bridge
+  // ----------------------------------------------------------------------------
+  // ProceduralMapBiomeGenerator.js's alien-surface terrain generators need two
+  // things from GalaxySim to sample the SAME field the landing-grid picker's
+  // texture was painted from (see Renderer3D.terrestrialElevation /
+  // .rockyCraterList): the planet's noise seed, and (for the rocky/cratered
+  // family) its crater scatter. Both are cheap to recompute but session-cached
+  // per landing so a square regenerated twice (revisit, save/load) samples the
+  // identical data every time.
+  // ============================================================================
+  let _landedTerrainCache = null; // { key, seed, craters }
+  function _landedTerrainState() {
+    const planet = getSurfacePlanet();
+    if (!planet) return null;
+    const key = planet.name || "";
+    if (_landedTerrainCache && _landedTerrainCache.key === key) return _landedTerrainCache;
+    const R3D = window.GalaxySim.Renderer3D;
+    if (!R3D) return null;
+    _landedTerrainCache = { key, seed: R3D._seedFor(planet), craters: null };
+    return _landedTerrainCache;
+  }
+
+  // Noise seed for the current landed planet -- identical to the one the
+  // landing-grid picker's texture was painted with (getAlienGridTextureCanvas).
+  function getLandedPlanetSeed() {
+    const state = _landedTerrainState();
+    return state ? state.seed : 0;
+  }
+  window.GalaxySim.getLandedPlanetSeed = getLandedPlanetSeed;
+
+  // The current landed planet's crater scatter (Renderer3D.rockyCraterList),
+  // cached per landing so every square draws from the same list.
+  function getLandedCraterList(count) {
+    const state = _landedTerrainState();
+    if (!state) return [];
+    if (!state.craters) {
+      const R3D = window.GalaxySim.Renderer3D;
+      state.craters = (R3D && R3D.rockyCraterList) ? R3D.rockyCraterList(state.seed, count) : [];
+    }
+    return state.craters;
+  }
+  window.GalaxySim.getLandedCraterList = getLandedCraterList;
+
+  // Which of Renderer3D's texture-painter families the current landed planet
+  // belongs to: "terrestrial" (paintTerrestrial -- gets the elevation-banded
+  // ocean/coast/mountain ground), "rocky" (the paintRocky fallback bucket --
+  // gets macro crater fields), or null (icy/volcanic/gas-giant: not reworked
+  // yet, ProceduralMapBiomeGenerator.js keeps the plain terrain fill for those).
+  function getLandedTerrainFamily() {
+    const planet = getSurfacePlanet();
+    const R3D = window.GalaxySim.Renderer3D;
+    if (!planet || !R3D) return null;
+    const type = planet.type;
+    if (R3D.isGasGiant(type) || R3D.isVolcanic(type) || R3D.isIcy(type)) return null;
+    return R3D.isTerrestrial(type) ? "terrestrial" : "rocky";
+  }
+  window.GalaxySim.getLandedTerrainFamily = getLandedTerrainFamily;
 
   // Lazily-built, session-cached equirectangular texture canvas for the
   // currently-landed planet (keyed by planet name -- cheap to regenerate, not
@@ -735,7 +841,8 @@
     $gameSystem._procGenData.biomeLayerStack = [];
     if (!($gameSystem.generateProceduralMap && $gameSystem.generateProceduralMap())) return false;
     const PROC_MAP_ID = 636, W = 64, H = 64;
-    $gamePlayer.reserveTransfer(PROC_MAP_ID, Math.floor(W / 2), Math.floor(H / 2), 2, 0);
+    const spawn = alienLandingSpawn(W, H);
+    $gamePlayer.reserveTransfer(PROC_MAP_ID, spawn.x, spawn.y, 2, 0);
     return true;
   }
   window.GalaxySim.relandOnPlanet = relandOnPlanet;

@@ -1740,6 +1740,9 @@
       car._carCrashFrame = now;
       AudioManager.playSe({ name: "Crash", volume: 90, pitch: 80, pan: 0 });  // i18n-ignore  SE file
       damageOwnVehicle(CRASH_VEHICLE_DAMAGE, null, "RoadCar.vehicleCrashed");
+      // Nobody sleeps through a wreck: the passengers VehicleCrew.js has under
+      // are thrown awake, and stay awake for a while after.
+      window.VehicleCrew?.wake?.("crash");  // i18n-ignore  reason id
       // A driving car that has been hit stops steering into the wreck and takes
       // itself off to another entry road.
       if (car._carMode === "driving") car._carStuck = STUCK_LIMIT + 1;

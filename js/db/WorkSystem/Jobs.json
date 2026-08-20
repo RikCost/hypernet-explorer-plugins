@@ -1,13 +1,10 @@
 [
   {
     "id": 1,
-    "name": "Warehouse Worker",
-    "name_int": "jobs.1.name",
-    "name_it": "Operaio di Magazzino",
+    "name": "Jobs.1.name",
     "category": "Labor",
     "spec": "Packing",
-    "description": "Load and unload cargo in the warehouse district.",
-    "description_it": "Carica e scarica merci nel distretto dei magazzini.",
+    "description": "Jobs.1.description",
     "duration": 8,
     "basePay": 12000,
     "locations": [
@@ -26,55 +23,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You efficiently moved all the cargo.",
-          "The foreman nods approvingly at your work.",
-          "Another day, another crate moved.",
-          "You finish the shift without incident.",
-          "The work is hard but straightforward."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.1.success_msgs"
+        "messages": "Jobs.1.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "You dropped a few boxes but got the job done.",
-          "Your back aches from the heavy lifting.",
-          "You struggled with some of the heavier items.",
-          "The supervisor gives you a warning look.",
-          "You barely kept pace with the others."
-        ],
+        "messages": "Jobs.1.outcome.partial",
         "payMultiplier": 0.6,
         "damage": {
           "hp": 10
-        },
-        "messages_int": "jobs.1.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You couldn't keep up with the workload.",
-          "The heavy crates proved too much for you.",
-          "You collapsed from exhaustion halfway through.",
-          "The foreman sent you home early.",
-          "Your body wasn't ready for this kind of work."
-        ],
+        "messages": "Jobs.1.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "hp": 25
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.1.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You dropped a valuable shipment!",
-          "A forklift accident destroys company property!",
-          "You caused a massive pile-up in the warehouse!",
-          "Your carelessness led to a workplace injury!",
-          "The ruined goods are deducted from your pay!"
-        ],
+        "messages": "Jobs.1.outcome.disaster",
         "payMultiplier": -0.5,
         "damage": {
           "hp": 40
@@ -84,19 +54,14 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.1.description",
-    "category_int": "jobs.category.labor"
+    }
   },
   {
     "id": 2,
-    "name": "Farm Hand",
-    "name_int": "jobs.2.name",
-    "name_it": "Bracciante Agricolo",
+    "name": "Jobs.2.name",
     "category": "Labor",
     "spec": "Farming",
-    "description": "Work the fields, tend to crops and livestock.",
-    "description_it": "Lavora nei campi, cura i raccolti e il bestiame.",
+    "description": "Jobs.2.description",
     "duration": 10,
     "basePay": 27000,
     "locations": [
@@ -110,41 +75,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The harvest goes smoothly under your care.",
-          "The animals are well-fed and content.",
-          "You work from dawn to dusk without complaint.",
-          "The farmer thanks you for your hard work.",
-          "Another productive day on the farm."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.2.success_msgs"
+        "messages": "Jobs.2.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "The work is exhausting under the hot sun.",
-          "You manage most tasks but fall behind schedule.",
-          "The animals were more unruly than expected.",
-          "Your hands are blistered from the labor.",
-          "You completed the essentials but nothing more."
-        ],
+        "messages": "Jobs.2.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 15
         },
         "status": [
           "Hot"
-        ],
-        "messages_int": "jobs.2.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "The physical labor proves too demanding.",
-          "You suffer from heat exhaustion in the fields.",
-          "The livestock got loose on your watch.",
-          "You couldn't finish even half the work.",
-          "The farmer is disappointed with your performance."
-        ],
+        "messages": "Jobs.2.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 30
@@ -152,17 +97,10 @@
         "status": [
           "Hot",
           "Nausea"
-        ],
-        "messages_int": "jobs.2.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You left the barn door open - livestock escaped!",
-          "Your negligence ruined an entire crop section!",
-          "You accidentally poisoned the water supply!",
-          "A fire started from your carelessness!",
-          "The damage costs more than a day's wages!"
-        ],
+        "messages": "Jobs.2.outcome.disaster",
         "payMultiplier": -1,
         "damage": {
           "hp": 35
@@ -172,19 +110,14 @@
           "Nausea"
         ]
       }
-    },
-    "description_int": "jobs.2.description",
-    "category_int": "jobs.category.labor"
+    }
   },
   {
     "id": 3,
-    "name": "Bartender",
-    "name_int": "jobs.3.name",
-    "name_it": "Barista",
+    "name": "Jobs.3.name",
     "category": "Social",
     "spec": "Bartending",
-    "description": "Serve drinks and manage patrons at the tavern.",
-    "description_it": "Servi bevande e gestisci clienti alla taverna.",
+    "description": "Jobs.3.description",
     "duration": 8,
     "basePay": 10400,
     "locations": [
@@ -204,55 +137,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The drinks flow and tips pile up.",
-          "You handle the evening rush with ease.",
-          "Even the drunkards respect your authority.",
-          "Your charm earns you extra tips.",
-          "A successful night behind the bar."
-        ],
-        "payMultiplier": 1.3,
-        "messages_int": "jobs.3.success_msgs"
+        "messages": "Jobs.3.outcome.success",
+        "payMultiplier": 1.3
       },
       "partial": {
-        "messages": [
-          "You spill a few drinks but manage.",
-          "A drunk patron gives you trouble.",
-          "The tips were mediocre tonight.",
-          "You're exhausted from staying on your feet.",
-          "The night was busier than expected."
-        ],
+        "messages": "Jobs.3.outcome.partial",
         "payMultiplier": 0.8,
         "damage": {
           "hp": 5
-        },
-        "messages_int": "jobs.3.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You couldn't keep up with orders.",
-          "Multiple customers complained about slow service.",
-          "A fight broke out that you couldn't stop.",
-          "The owner is unhappy with your performance.",
-          "You broke several glasses in the chaos."
-        ],
+        "messages": "Jobs.3.outcome.failure",
         "payMultiplier": 0.4,
         "damage": {
           "hp": 15
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.3.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A massive bar brawl erupted under your watch!",
-          "You got knocked out trying to break up a fight!",
-          "Expensive bottles were smashed in the chaos!",
-          "The tavern is wrecked and it's your fault!",
-          "You're banned from working here again!"
-        ],
+        "messages": "Jobs.3.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 50
@@ -262,19 +168,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.3.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 4,
-    "name": "Street Performer",
-    "name_int": "jobs.4.name",
-    "name_it": "Artista di Strada",
+    "name": "Jobs.4.name",
     "category": "Social",
     "spec": "Acting",
-    "description": "Entertain crowds with performances for tips.",
-    "description_it": "Intrattieni la folla con spettacoli per mance.",
+    "description": "Jobs.4.description",
     "duration": 6,
     "basePay": 7800,
     "locations": [
@@ -289,46 +190,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The crowd loves your performance!",
-          "Coins rain into your hat.",
-          "You draw a large and generous audience.",
-          "Your act is the talk of the town.",
-          "A wealthy patron gives you a generous donation."
-        ],
-        "payMultiplier": 1.5,
-        "messages_int": "jobs.4.success_msgs"
+        "messages": "Jobs.4.outcome.success",
+        "payMultiplier": 1.5
       },
       "partial": {
-        "messages": [
-          "A few people stop to watch and tip.",
-          "Your performance is decent but not spectacular.",
-          "The crowd is small but appreciative.",
-          "You earn a modest amount for your efforts.",
-          "Some applause, some indifference."
-        ],
-        "payMultiplier": 0.9,
-        "messages_int": "jobs.4.partial_msgs"
+        "messages": "Jobs.4.outcome.partial",
+        "payMultiplier": 0.9
       },
       "failure": {
-        "messages": [
-          "The crowd ignores your performance.",
-          "You barely earn anything today.",
-          "Someone heckles you mercilessly.",
-          "Your act falls flat and people walk away.",
-          "You're embarrassed by the poor turnout."
-        ],
-        "payMultiplier": 0.2,
-        "messages_int": "jobs.4.failure_msgs"
+        "messages": "Jobs.4.outcome.failure",
+        "payMultiplier": 0.2
       },
       "disaster": {
-        "messages": [
-          "The city guards chase you for performing without a permit!",
-          "Thugs rob you of your earnings!",
-          "You're pelted with rotten vegetables!",
-          "A rival performer sabotages your act!",
-          "You're fined for disturbing the peace!"
-        ],
+        "messages": "Jobs.4.outcome.disaster",
         "payMultiplier": -0.5,
         "damage": {
           "hp": 10
@@ -337,19 +211,14 @@
           "Nausea"
         ]
       }
-    },
-    "description_int": "jobs.4.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 5,
-    "name": "Blacksmith Assistant",
-    "name_int": "jobs.5.name",
-    "name_it": "Assistente Fabbro",
+    "name": "Jobs.5.name",
     "category": "Technical",
     "spec": "Blacksmithing",
-    "description": "Help the blacksmith forge weapons and tools.",
-    "description_it": "Aiuta il fabbro a forgiare armi e attrezzi.",
+    "description": "Jobs.5.description",
     "duration": 9,
     "basePay": 15300,
     "locations": [
@@ -364,41 +233,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You keep the forge running smoothly.",
-          "The blacksmith praises your steady hand.",
-          "Every piece comes out perfect.",
-          "The heat is intense but you manage well.",
-          "Quality work earns quality pay."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.5.success_msgs"
+        "messages": "Jobs.5.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "You get singed by the hot metal a few times.",
-          "Some pieces need to be reforged.",
-          "The heat is almost unbearable.",
-          "You complete most of the orders.",
-          "Your hands are covered in minor burns."
-        ],
+        "messages": "Jobs.5.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 20
         },
         "status": [
           "Burned"
-        ],
-        "messages_int": "jobs.5.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "The forge's heat overwhelms you.",
-          "You ruin several expensive pieces.",
-          "A bad burn sends you home early.",
-          "The blacksmith is frustrated with your mistakes.",
-          "You can't handle the physical demands."
-        ],
+        "messages": "Jobs.5.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 35
@@ -406,17 +255,10 @@
         "status": [
           "Burned",
           "Hot"
-        ],
-        "messages_int": "jobs.5.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You spill molten metal everywhere!",
-          "The forge explodes from your negligence!",
-          "You destroy a custom order for a noble!",
-          "Your mistake causes a workshop fire!",
-          "The blacksmith bans you permanently!"
-        ],
+        "messages": "Jobs.5.outcome.disaster",
         "payMultiplier": -1.2,
         "damage": {
           "hp": 60
@@ -426,19 +268,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.5.description",
-    "category_int": "jobs.category.technical"
+    }
   },
   {
     "id": 6,
-    "name": "Spell Component Gatherer",
-    "name_int": "jobs.6.name",
-    "name_it": "Raccoglitore di Componenti",
+    "name": "Jobs.6.name",
     "category": "Magical",
     "spec": "Foraging",
-    "description": "Collect rare magical ingredients in dangerous areas.",
-    "description_it": "Raccogli ingredienti magici rari in zone pericolose.",
+    "description": "Jobs.6.description",
     "duration": 7,
     "basePay": 15400,
     "locations": [
@@ -452,39 +289,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You find all the components on the list.",
-          "A rare mushroom catches your eye - bonus!",
-          "Your magical sense leads you to quality ingredients.",
-          "The client is thrilled with your haul.",
-          "Every component is in perfect condition."
-        ],
-        "payMultiplier": 1.2,
-        "messages_int": "jobs.6.success_msgs"
+        "messages": "Jobs.6.outcome.success",
+        "payMultiplier": 1.2
       },
       "partial": {
-        "messages": [
-          "You find most of what's needed.",
-          "Some ingredients are slightly damaged.",
-          "The search takes longer than expected.",
-          "You encounter minor magical hazards.",
-          "An acceptable but not exceptional haul."
-        ],
+        "messages": "Jobs.6.outcome.partial",
         "payMultiplier": 0.8,
         "damage": {
           "hp": 10,
           "mp": 15
-        },
-        "messages_int": "jobs.6.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The magical flora proves too dangerous.",
-          "You can't identify the correct components.",
-          "A magical trap injures you badly.",
-          "You return nearly empty-handed.",
-          "Your magical sense failed you today."
-        ],
+        "messages": "Jobs.6.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 25,
@@ -492,17 +309,10 @@
         },
         "status": [
           "Poison"
-        ],
-        "messages_int": "jobs.6.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You trigger a magical curse!",
-          "The components explode in your bag!",
-          "You anger a territorial magical creature!",
-          "Your mishandling ruins the entire batch!",
-          "The client demands compensation!"
-        ],
+        "messages": "Jobs.6.outcome.disaster",
         "payMultiplier": -0.7,
         "damage": {
           "hp": 40,
@@ -513,19 +323,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.6.description",
-    "category_int": "jobs.category.magical"
+    }
   },
   {
     "id": 7,
-    "name": "Alchemist's Assistant",
-    "name_int": "jobs.7.name",
-    "name_it": "Assistente Alchimista",
+    "name": "Jobs.7.name",
     "category": "Magical",
     "spec": "Alchemy",
-    "description": "Mix potions and manage the alchemist's laboratory.",
-    "description_it": "Mescola pozioni e gestisci il laboratorio dell'alchimista.",
+    "description": "Jobs.7.description",
     "duration": 8,
     "basePay": 16000,
     "locations": [
@@ -539,24 +344,11 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every potion is perfectly brewed.",
-          "Your precision impresses the alchemist.",
-          "The laboratory runs like clockwork.",
-          "You discover a more efficient mixing method.",
-          "Quality work in the arcane arts."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.7.success_msgs"
+        "messages": "Jobs.7.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "A few batches come out slightly off-color.",
-          "You get mild chemical burns from splashes.",
-          "Most potions are acceptable quality.",
-          "The fumes give you a headache.",
-          "Adequate but not exceptional work."
-        ],
+        "messages": "Jobs.7.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 12,
@@ -564,17 +356,10 @@
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.7.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "Multiple batches are ruined by mistakes.",
-          "Toxic fumes overcome you.",
-          "You can't maintain the proper temperatures.",
-          "The alchemist is disappointed.",
-          "Your magical control was insufficient."
-        ],
+        "messages": "Jobs.7.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 25,
@@ -583,17 +368,10 @@
         "status": [
           "Poison",
           "Nausea"
-        ],
-        "messages_int": "jobs.7.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A massive alchemical explosion rocks the lab!",
-          "You accidentally create a toxic cloud!",
-          "Valuable reagents are destroyed!",
-          "The lab needs expensive repairs!",
-          "You're lucky to escape with your life!"
-        ],
+        "messages": "Jobs.7.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "hp": 55,
@@ -605,19 +383,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.7.description",
-    "category_int": "jobs.category.magical"
+    }
   },
   {
     "id": 8,
-    "name": "Magical Artifact Restorer",
-    "name_int": "jobs.8.name",
-    "name_it": "Restauratore di Artefatti",
+    "name": "Jobs.8.name",
     "category": "Magical",
     "spec": "Antique Restoration",
-    "description": "Repair and restore damaged magical items.",
-    "description_it": "Ripara e restaura oggetti magici danneggiati.",
+    "description": "Jobs.8.description",
     "duration": 6,
     "basePay": 18600,
     "locations": [],
@@ -628,41 +401,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The artifact's magic flows perfectly again.",
-          "Your restoration work is flawless.",
-          "The client marvels at the restored power.",
-          "You handle the volatile magic expertly.",
-          "Another masterful restoration complete."
-        ],
-        "payMultiplier": 1.1,
-        "messages_int": "jobs.8.success_msgs"
+        "messages": "Jobs.8.outcome.success",
+        "payMultiplier": 1.1
       },
       "partial": {
-        "messages": [
-          "The artifact works but not at full power.",
-          "You experience magical feedback during work.",
-          "The restoration is functional if imperfect.",
-          "Some enchantments couldn't be fully restored.",
-          "An adequate if uninspiring job."
-        ],
+        "messages": "Jobs.8.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "mp": 20
         },
         "status": [
           "Static"
-        ],
-        "messages_int": "jobs.8.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "The artifact's magic resists your attempts.",
-          "Magical backlash injures you.",
-          "You couldn't restore the item's power.",
-          "The complexity exceeded your skill.",
-          "The client takes their business elsewhere."
-        ],
+        "messages": "Jobs.8.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "hp": 20,
@@ -671,17 +424,10 @@
         "status": [
           "Confusion",
           "Static"
-        ],
-        "messages_int": "jobs.8.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "The artifact explodes catastrophically!",
-          "A magical curse transfers to you!",
-          "The item is destroyed beyond repair!",
-          "Rampant magic damages the workshop!",
-          "You must compensate for the lost artifact!"
-        ],
+        "messages": "Jobs.8.outcome.disaster",
         "payMultiplier": -2,
         "damage": {
           "hp": 50,
@@ -693,19 +439,14 @@
           "Static"
         ]
       }
-    },
-    "description_int": "jobs.8.description",
-    "category_int": "jobs.category.magical"
+    }
   },
   {
     "id": 9,
-    "name": "Caravan Guard",
-    "name_int": "jobs.9.name",
-    "name_it": "Guardia Carovaniera",
+    "name": "Jobs.9.name",
     "category": "Combat",
     "spec": "Crowd Control",
-    "description": "Protect merchant caravans from bandits and monsters.",
-    "description_it": "Proteggi le carovane mercantili da banditi e mostri.",
+    "description": "Jobs.9.description",
     "duration": 12,
     "basePay": 31200,
     "locations": [],
@@ -717,41 +458,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The journey is peaceful thanks to your presence.",
-          "Bandits take one look at you and flee.",
-          "The merchant arrives safely and grateful.",
-          "Your reputation precedes you.",
-          "An uneventful but profitable escort."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.9.success_msgs"
+        "messages": "Jobs.9.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "A skirmish with bandits leaves you wounded.",
-          "You successfully drive off attackers but take hits.",
-          "The caravan arrives with minor losses.",
-          "Combat tested your limits.",
-          "You earned your pay but paid in blood."
-        ],
+        "messages": "Jobs.9.outcome.partial",
         "payMultiplier": 0.8,
         "damage": {
           "hp": 30
         },
         "status": [
           "Bleeding"
-        ],
-        "messages_int": "jobs.9.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "Bandits overwhelm you.",
-          "You fail to protect the cargo.",
-          "Serious injuries force you to retreat.",
-          "The merchant curses your incompetence.",
-          "You barely escaped with your life."
-        ],
+        "messages": "Jobs.9.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 55
@@ -759,17 +480,10 @@
         "status": [
           "Bleeding",
           "Stun"
-        ],
-        "messages_int": "jobs.9.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "The caravan is completely destroyed!",
-          "You're knocked unconscious and robbed!",
-          "Bandits take everything including your weapons!",
-          "The merchant demands compensation!",
-          "Your reputation as a guard is ruined!"
-        ],
+        "messages": "Jobs.9.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "hp": 80
@@ -780,19 +494,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.9.description",
-    "category_int": "jobs.category.combat"
+    }
   },
   {
     "id": 10,
-    "name": "Arena Fighter",
-    "name_int": "jobs.10.name",
-    "name_it": "Combattente d'Arena",
+    "name": "Jobs.10.name",
     "category": "Combat",
     "spec": "Boxing",
-    "description": "Fight in the arena for prize money and glory.",
-    "description_it": "Combatti nell'arena per denaro e gloria.",
+    "description": "Jobs.10.description",
     "duration": 4,
     "basePay": 16000,
     "locations": [
@@ -807,38 +516,18 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You dominate your opponent!",
-          "The crowd roars your name!",
-          "Victory is swift and decisive!",
-          "Your fighting skills are unmatched today!",
-          "The prize money is yours!"
-        ],
-        "payMultiplier": 1.5,
-        "messages_int": "jobs.10.success_msgs"
+        "messages": "Jobs.10.outcome.success",
+        "payMultiplier": 1.5
       },
       "partial": {
-        "messages": [
-          "You win but take serious damage.",
-          "A narrow victory after brutal exchanges.",
-          "You barely edge out your opponent.",
-          "The match was closer than expected.",
-          "Victory, but at a cost."
-        ],
+        "messages": "Jobs.10.outcome.partial",
         "payMultiplier": 1,
         "damage": {
           "hp": 35
-        },
-        "messages_int": "jobs.10.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You're defeated in the arena.",
-          "Your opponent proves superior.",
-          "The crowd boos as you fall.",
-          "Humiliating defeat.",
-          "No prize money for losers."
-        ],
+        "messages": "Jobs.10.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "hp": 60
@@ -846,17 +535,10 @@
         "status": [
           "Bleeding",
           "Stun"
-        ],
-        "messages_int": "jobs.10.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You're brutally knocked out in the first round!",
-          "The crowd throws garbage at your unconscious body!",
-          "You have to pay medical fees!",
-          "Your humiliation is complete!",
-          "The arena bans you for poor performance!"
-        ],
+        "messages": "Jobs.10.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 90
@@ -867,19 +549,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.10.description",
-    "category_int": "jobs.category.combat"
+    }
   },
   {
     "id": 11,
-    "name": "Monster Exterminator",
-    "name_int": "jobs.11.name",
-    "name_it": "Sterminatore di Mostri",
+    "name": "Jobs.11.name",
     "category": "Combat",
     "spec": "Hunting",
-    "description": "Clear out monster infestations from civilian areas.",
-    "description_it": "Elimina infestazioni di mostri dalle aree civili.",
+    "description": "Jobs.11.description",
     "duration": 8,
     "basePay": 25600,
     "locations": [],
@@ -891,41 +568,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The infestation is completely cleared.",
-          "Not a single monster escaped.",
-          "The townsfolk celebrate your success.",
-          "Professional and efficient work.",
-          "Another clean extermination job."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.11.success_msgs"
+        "messages": "Jobs.11.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most monsters eliminated but some escaped.",
-          "You're injured in the fighting.",
-          "The job took longer than expected.",
-          "Civilians are mostly satisfied.",
-          "A rough but successful hunt."
-        ],
+        "messages": "Jobs.11.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 25
         },
         "status": [
           "Poison"
-        ],
-        "messages_int": "jobs.11.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "The monsters prove too dangerous.",
-          "You're forced to retreat.",
-          "Several monsters remain at large.",
-          "The town is disappointed.",
-          "You bit off more than you could chew."
-        ],
+        "messages": "Jobs.11.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 45
@@ -933,17 +590,10 @@
         "status": [
           "Poison",
           "Bleeding"
-        ],
-        "messages_int": "jobs.11.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "The monster nest overwhelms you!",
-          "Your incompetence led to civilian casualties!",
-          "Property damage costs more than your fee!",
-          "You're mauled nearly to death!",
-          "The town bans you from ever returning!"
-        ],
+        "messages": "Jobs.11.outcome.disaster",
         "payMultiplier": -1.8,
         "damage": {
           "hp": 75
@@ -954,19 +604,14 @@
           "Infected"
         ]
       }
-    },
-    "description_int": "jobs.11.description",
-    "category_int": "jobs.category.combat"
+    }
   },
   {
     "id": 12,
-    "name": "Pickpocketing",
-    "name_int": "jobs.12.name",
-    "name_it": "Borseggio",
+    "name": "Jobs.12.name",
     "category": "Criminal",
     "spec": "Pickpocketing",
-    "description": "Steal from unsuspecting marks in crowded areas.",
-    "description_it": "Ruba da vittime ignare in aree affollate.",
+    "description": "Jobs.12.description",
     "duration": 5,
     "basePay": 14000,
     "locations": [
@@ -981,52 +626,25 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Your fingers are quick and unseen.",
-          "Easy marks and easy money.",
-          "You lift several fat purses.",
-          "Nobody suspects a thing.",
-          "A profitable day in the shadows."
-        ],
-        "payMultiplier": 1.4,
-        "messages_int": "jobs.12.success_msgs"
+        "messages": "Jobs.12.outcome.success",
+        "payMultiplier": 1.4
       },
       "partial": {
-        "messages": [
-          "You manage a few successful lifts.",
-          "One mark almost caught you.",
-          "The crowds weren't as thick as hoped.",
-          "Modest earnings for the risk.",
-          "You got away but it was close."
-        ],
-        "payMultiplier": 0.9,
-        "messages_int": "jobs.12.partial_msgs"
+        "messages": "Jobs.12.outcome.partial",
+        "payMultiplier": 0.9
       },
       "failure": {
-        "messages": [
-          "You're caught red-handed!",
-          "The guards chase you through the streets!",
-          "You escape but empty-handed!",
-          "A mob of angry citizens pursues you!",
-          "No loot, just bruises!"
-        ],
+        "messages": "Jobs.12.outcome.failure",
         "payMultiplier": 0,
         "damage": {
           "hp": 20
         },
         "status": [
           "Stun"
-        ],
-        "messages_int": "jobs.12.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You picked the wrong mark - they're a noble's bodyguard!",
-          "The city guard beats you senseless!",
-          "You're fined heavily for your crime!",
-          "Your stash is confiscated!",
-          "You narrowly avoid prison!"
-        ],
+        "messages": "Jobs.12.outcome.disaster",
         "payMultiplier": -1.2,
         "damage": {
           "hp": 50
@@ -1036,19 +654,14 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.12.description",
-    "category_int": "jobs.category.criminal"
+    }
   },
   {
     "id": 13,
-    "name": "Smuggling Run",
-    "name_int": "jobs.13.name",
-    "name_it": "Contrabbando",
+    "name": "Jobs.13.name",
     "category": "Criminal",
     "spec": "Streetwise",
-    "description": "Transport illegal goods across checkpoints.",
-    "description_it": "Trasporta merci illegali attraverso i posti di blocco.",
+    "description": "Jobs.13.description",
     "duration": 10,
     "basePay": 31000,
     "locations": [],
@@ -1060,55 +673,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You slip past the checkpoints undetected.",
-          "The goods are delivered successfully.",
-          "Your contacts are impressed.",
-          "Not a single guard suspected you.",
-          "Clean run, clean profit."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.13.success_msgs"
+        "messages": "Jobs.13.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "You had to bribe a guard.",
-          "A close call at the checkpoint.",
-          "Some goods were damaged in transit.",
-          "The route was more dangerous than expected.",
-          "You made it but lost some profit to bribes."
-        ],
+        "messages": "Jobs.13.outcome.partial",
         "payMultiplier": 0.6,
         "damage": {
           "hp": 10
-        },
-        "messages_int": "jobs.13.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The guards are on high alert!",
-          "You're forced to dump the cargo and run!",
-          "The operation is compromised!",
-          "You barely escape arrest!",
-          "Your contacts are furious!"
-        ],
+        "messages": "Jobs.13.outcome.failure",
         "payMultiplier": 0.1,
         "damage": {
           "hp": 25
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.13.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You're caught with illegal goods!",
-          "The cargo is seized and you're beaten!",
-          "Your contacts abandon you!",
-          "Massive fines are imposed!",
-          "You're blacklisted from future jobs!"
-        ],
+        "messages": "Jobs.13.outcome.disaster",
         "payMultiplier": -2,
         "damage": {
           "hp": 55
@@ -1118,19 +704,14 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.13.description",
-    "category_int": "jobs.category.criminal"
+    }
   },
   {
     "id": 14,
-    "name": "Burglary",
-    "name_int": "jobs.14.name",
-    "name_it": "Furto con Scasso",
+    "name": "Jobs.14.name",
     "category": "Criminal",
     "spec": "Lockpicking",
-    "description": "Break into a building and steal valuables.",
-    "description_it": "Entra con scasso in un edificio e ruba oggetti di valore.",
+    "description": "Jobs.14.description",
     "duration": 6,
     "basePay": 21600,
     "locations": [
@@ -1144,55 +725,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You're in and out like a ghost.",
-          "The safe opens without issue.",
-          "High-value items secured.",
-          "Nobody heard a thing.",
-          "Master thief at work."
-        ],
-        "payMultiplier": 1.2,
-        "messages_int": "jobs.14.success_msgs"
+        "messages": "Jobs.14.outcome.success",
+        "payMultiplier": 1.2
       },
       "partial": {
-        "messages": [
-          "You triggered an alarm but escaped.",
-          "The loot was less than expected.",
-          "A guard nearly spotted you.",
-          "You got something but had to flee.",
-          "Close call but you made it out."
-        ],
+        "messages": "Jobs.14.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 15
-        },
-        "messages_int": "jobs.14.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The alarm brings guards running!",
-          "You escape but empty-handed!",
-          "Dogs chase you into the night!",
-          "The target had better security than expected!",
-          "A botched job from start to finish!"
-        ],
+        "messages": "Jobs.14.outcome.failure",
         "payMultiplier": 0,
         "damage": {
           "hp": 30
         },
         "status": [
           "Bleeding"
-        ],
-        "messages_int": "jobs.14.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You're caught in the act!",
-          "The guards beat you mercilessly!",
-          "You're robbed of your own equipment!",
-          "Authorities extract a heavy fine!",
-          "Your reputation as a thief is tarnished!"
-        ],
+        "messages": "Jobs.14.outcome.disaster",
         "payMultiplier": -1.8,
         "damage": {
           "hp": 65
@@ -1203,19 +757,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.14.description",
-    "category_int": "jobs.category.criminal"
+    }
   },
   {
     "id": 15,
-    "name": "Mechanic",
-    "name_int": "jobs.15.name",
-    "name_it": "Meccanico",
+    "name": "Jobs.15.name",
     "category": "Technical",
     "spec": "Mechanics",
-    "description": "Repair vehicles and machinery.",
-    "description_it": "Ripara veicoli e macchinari.",
+    "description": "Jobs.15.description",
     "duration": 8,
     "basePay": 16000,
     "locations": [
@@ -1231,55 +780,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every repair is textbook perfect.",
-          "The engines purr under your care.",
-          "Clients praise your expertise.",
-          "You diagnose problems instantly.",
-          "Another satisfied customer."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.15.success_msgs"
+        "messages": "Jobs.15.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "The repairs work but aren't elegant.",
-          "You get covered in grease and oil.",
-          "One vehicle gives you trouble.",
-          "The work takes longer than estimated.",
-          "Functional but not your best work."
-        ],
+        "messages": "Jobs.15.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 8
-        },
-        "messages_int": "jobs.15.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You can't diagnose the problem.",
-          "The repairs fail shortly after completion.",
-          "The client is unsatisfied.",
-          "You damaged a component trying to fix it.",
-          "Your technical knowledge was insufficient."
-        ],
+        "messages": "Jobs.15.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 15
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.15.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You caused an engine explosion!",
-          "Your mistake totals an expensive vehicle!",
-          "Oil sprays everywhere causing injuries!",
-          "The damage exceeds your pay!",
-          "You're banned from the shop!"
-        ],
+        "messages": "Jobs.15.outcome.disaster",
         "payMultiplier": -1.3,
         "damage": {
           "hp": 45
@@ -1289,19 +811,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.15.description",
-    "category_int": "jobs.category.technical"
+    }
   },
   {
     "id": 16,
-    "name": "Locksmith",
-    "name_int": "jobs.16.name",
-    "name_it": "Fabbro di Serrature",
+    "name": "Jobs.16.name",
     "category": "Technical",
     "spec": "Lockpicking",
-    "description": "Create and repair locks for clients.",
-    "description_it": "Crea e ripara serrature per i clienti.",
+    "description": "Jobs.16.description",
     "duration": 6,
     "basePay": 14400,
     "locations": [],
@@ -1312,49 +829,22 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every lock functions flawlessly.",
-          "Your craftsmanship is impeccable.",
-          "Clients trust your work completely.",
-          "Complex mechanisms pose no challenge.",
-          "Another perfect day at the bench."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.16.success_msgs"
+        "messages": "Jobs.16.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most locks work adequately.",
-          "One mechanism keeps jamming.",
-          "The work is tedious and tiring.",
-          "You complete the essential jobs.",
-          "Acceptable but uninspired work."
-        ],
-        "payMultiplier": 0.7,
-        "messages_int": "jobs.16.partial_msgs"
+        "messages": "Jobs.16.outcome.partial",
+        "payMultiplier": 0.7
       },
       "failure": {
-        "messages": [
-          "Several locks malfunction.",
-          "You can't figure out a complex mechanism.",
-          "Clients complain about quality.",
-          "Your precision was lacking today.",
-          "A frustrating day of failures."
-        ],
+        "messages": "Jobs.16.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 5
-        },
-        "messages_int": "jobs.16.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "You permanently lock a client out!",
-          "A spring mechanism injures your eye!",
-          "You ruin expensive lock components!",
-          "The client sues for damages!",
-          "Your reputation is destroyed!"
-        ],
+        "messages": "Jobs.16.outcome.disaster",
         "payMultiplier": -1,
         "damage": {
           "hp": 30
@@ -1364,19 +854,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.16.description",
-    "category_int": "jobs.category.technical"
+    }
   },
   {
     "id": 17,
-    "name": "Clockmaker",
-    "name_int": "jobs.17.name",
-    "name_it": "Orologiaio",
+    "name": "Jobs.17.name",
     "category": "Technical",
     "spec": "Clock and Watchmaking",
-    "description": "Craft and repair intricate timepieces.",
-    "description_it": "Crea e ripara orologi complessi.",
+    "description": "Jobs.17.description",
     "duration": 7,
     "basePay": 21000,
     "locations": [
@@ -1390,49 +875,22 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every gear meshes perfectly.",
-          "The timepieces are works of art.",
-          "Your precision is unmatched.",
-          "Clients marvel at your craftsmanship.",
-          "Perfection in every tick."
-        ],
-        "payMultiplier": 1.1,
-        "messages_int": "jobs.17.success_msgs"
+        "messages": "Jobs.17.outcome.success",
+        "payMultiplier": 1.1
       },
       "partial": {
-        "messages": [
-          "The mechanisms work but need adjustment.",
-          "One clock keeps running slow.",
-          "Your eyes strain from the detailed work.",
-          "Adequate repairs if not masterful.",
-          "The work tests your patience."
-        ],
+        "messages": "Jobs.17.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 5
-        },
-        "messages_int": "jobs.17.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The delicate mechanisms defeat you.",
-          "Multiple timepieces fail to function.",
-          "Your hand tremors ruin the work.",
-          "Clients take their business elsewhere.",
-          "The precision required exceeds your skill."
-        ],
-        "payMultiplier": 0.2,
-        "messages_int": "jobs.17.failure_msgs"
+        "messages": "Jobs.17.outcome.failure",
+        "payMultiplier": 0.2
       },
       "disaster": {
-        "messages": [
-          "You destroy a priceless antique clock!",
-          "A spring flies into your face!",
-          "Years of work ruined in seconds!",
-          "The compensation ban   krupts you!",
-          "You're blacklisted from the trade!"
-        ],
+        "messages": "Jobs.17.outcome.disaster",
         "payMultiplier": -2.5,
         "damage": {
           "hp": 25
@@ -1442,19 +900,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.17.description",
-    "category_int": "jobs.category.technical"
+    }
   },
   {
     "id": 18,
-    "name": "Diplomat",
-    "name_int": "jobs.18.name",
-    "name_it": "Diplomatico",
+    "name": "Jobs.18.name",
     "category": "Social",
     "spec": "Diplomacy",
-    "description": "Negotiate deals and resolve disputes.",
-    "description_it": "Negozia accordi e risolvi dispute.",
+    "description": "Jobs.18.description",
     "duration": 6,
     "basePay": 17400,
     "remote": true,
@@ -1468,52 +921,25 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The negotiations go smoothly.",
-          "Both parties are satisfied with the deal.",
-          "Your silver tongue saves the day.",
-          "Conflict resolved through words alone.",
-          "A diplomatic triumph."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.18.success_msgs"
+        "messages": "Jobs.18.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "The deal is reached but both sides grumble.",
-          "Negotiations drag on exhaustingly.",
-          "A compromise rather than victory.",
-          "You manage an acceptable outcome.",
-          "Politics are messier than expected."
-        ],
+        "messages": "Jobs.18.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "mp": 15
-        },
-        "messages_int": "jobs.18.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The negotiations collapse.",
-          "Both parties walk away angry.",
-          "Your arguments fall on deaf ears.",
-          "The dispute remains unresolved.",
-          "A diplomatic failure."
-        ],
+        "messages": "Jobs.18.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "mp": 25
-        },
-        "messages_int": "jobs.18.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "Your words start a fight!",
-          "You offend everyone involved!",
-          "The dispute escalates to violence!",
-          "You're blamed for the breakdown!",
-          "Your reputation as a diplomat is ruined!"
-        ],
+        "messages": "Jobs.18.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 30,
@@ -1523,19 +949,14 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.18.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 19,
-    "name": "Fortune Teller",
-    "name_int": "jobs.19.name",
-    "name_it": "Indovino",
+    "name": "Jobs.19.name",
     "category": "Social",
     "spec": "Divination",
-    "description": "Read fortunes for paying customers.",
-    "description_it": "Leggi il futuro per clienti paganti.",
+    "description": "Jobs.19.description",
     "duration": 5,
     "basePay": 11000,
     "remote": true,
@@ -1549,46 +970,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Your predictions resonate deeply.",
-          "Customers leave satisfied and amazed.",
-          "The spirits speak clearly through you.",
-          "Word of your accuracy spreads.",
-          "Tips flow generously."
-        ],
-        "payMultiplier": 1.4,
-        "messages_int": "jobs.19.success_msgs"
+        "messages": "Jobs.19.outcome.success",
+        "payMultiplier": 1.4
       },
       "partial": {
-        "messages": [
-          "Your readings are vague but accepted.",
-          "Some customers seem unconvinced.",
-          "The mystical connection is weak today.",
-          "You earn modest tips.",
-          "A middling day of divination."
-        ],
-        "payMultiplier": 0.8,
-        "messages_int": "jobs.19.partial_msgs"
+        "messages": "Jobs.19.outcome.partial",
+        "payMultiplier": 0.8
       },
       "failure": {
-        "messages": [
-          "Your predictions are obviously wrong.",
-          "Customers demand refunds.",
-          "The spirits are silent.",
-          "You're accused of being a fraud.",
-          "An embarrassing day."
-        ],
-        "payMultiplier": 0.15,
-        "messages_int": "jobs.19.failure_msgs"
+        "messages": "Jobs.19.outcome.failure",
+        "payMultiplier": 0.15
       },
       "disaster": {
-        "messages": [
-          "You accidentally curse a customer!",
-          "An angry mob accuses you of witchcraft!",
-          "Your false prediction causes harm!",
-          "You're driven out of town!",
-          "Refunds cost more than you earned!"
-        ],
+        "messages": "Jobs.19.outcome.disaster",
         "payMultiplier": -0.6,
         "damage": {
           "mp": 30
@@ -1597,19 +991,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.19.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 20,
-    "name": "Courier",
-    "name_int": "jobs.20.name",
-    "name_it": "Corriere",
+    "name": "Jobs.20.name",
     "category": "General",
     "spec": "Direction Sense",
-    "description": "Deliver packages and messages across the city.",
-    "description_it": "Consegna pacchi e messaggi in città.",
+    "description": "Jobs.20.description",
     "duration": 7,
     "basePay": 11900,
     "locations": [],
@@ -1620,55 +1009,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "All deliveries on time.",
-          "Customers tip for your speed.",
-          "You know the city like the back of your hand.",
-          "Not a single package damaged.",
-          "Swift and reliable service."
-        ],
-        "payMultiplier": 1.2,
-        "messages_int": "jobs.20.success_msgs"
+        "messages": "Jobs.20.outcome.success",
+        "payMultiplier": 1.2
       },
       "partial": {
-        "messages": [
-          "Most deliveries made on time.",
-          "You get lost once or twice.",
-          "A package gets slightly damaged.",
-          "The routes were more difficult than expected.",
-          "You earn your pay but barely."
-        ],
+        "messages": "Jobs.20.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 10
-        },
-        "messages_int": "jobs.20.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You get hopelessly lost.",
-          "Multiple deliveries are late.",
-          "A package is severely damaged.",
-          "Clients complain about your service.",
-          "The dispatcher is furious."
-        ],
+        "messages": "Jobs.20.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 15
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.20.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You lose an important package!",
-          "You're mugged and all deliveries are stolen!",
-          "A valuable parcel is destroyed!",
-          "The losses are deducted from your pay!",
-          "You're fired from the courier service!"
-        ],
+        "messages": "Jobs.20.outcome.disaster",
         "payMultiplier": -1.2,
         "damage": {
           "hp": 35
@@ -1678,20 +1040,15 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.20.description",
-    "category_int": "jobs.category.general"
+    }
   },
   {
     "id": 100,
-    "name": "Permit Inspector",
-    "name_int": "jobs.100.name",
-    "name_it": "Ispettore Permessi",
+    "name": "Jobs.100.name",
     "category": "Faction",
     "spec": "Auditing",
     "factionId": 0,
-    "description": "Inspect magical practitioners for proper permits and licensing.",
-    "description_it": "Ispeziona praticanti magici per permessi e licenze appropriate.",
+    "description": "Jobs.100.description",
     "duration": 8,
     "basePay": 16000,
     "locations": [
@@ -1704,52 +1061,25 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You find several permit violations and issue fines.",
-          "The bureaucracy flows smoothly through you.",
-          "Unlicensed mages flee at your approach.",
-          "Forms filed in triplicate - perfection.",
-          "Another day upholding Guild regulations."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.100.success_msgs"
+        "messages": "Jobs.100.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "You catch some violators but others escape.",
-          "The paperwork is exhausting.",
-          "One mage argues vehemently about technicalities.",
-          "Most violations are minor infractions.",
-          "Adequate enforcement of the rules."
-        ],
+        "messages": "Jobs.100.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "mp": 15
-        },
-        "messages_int": "jobs.100.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "Unlicensed mages evade your inspection.",
-          "You lose track of the complex regulations.",
-          "A powerful mage intimidates you.",
-          "The paperwork defeats you.",
-          "The Guild is disappointed in your performance."
-        ],
+        "messages": "Jobs.100.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "mp": 25
-        },
-        "messages_int": "jobs.100.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "You accidentally revoke a Guild Master's permit!",
-          "An angry mage curses you!",
-          "You lose vital Guild documents!",
-          "Political backlash costs you!",
-          "You're reassigned to the archives!"
-        ],
+        "messages": "Jobs.100.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 20,
@@ -1760,20 +1090,15 @@
           "Silence"
         ]
       }
-    },
-    "description_int": "jobs.100.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 101,
-    "name": "Ritual Supervisor",
-    "name_int": "jobs.101.name",
-    "name_it": "Supervisore Rituali",
+    "name": "Jobs.101.name",
     "category": "Faction",
     "spec": "Divination",
     "factionId": 3,
-    "description": "Ensure magical rituals follow Guild protocols exactly.",
-    "description_it": "Assicura che i rituali magici seguano esattamente i protocolli della Gilda.",
+    "description": "Jobs.101.description",
     "duration": 6,
     "basePay": 16200,
     "locations": [],
@@ -1784,38 +1109,18 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every ritual proceeds according to the exact specifications.",
-          "The Grandmaster would be proud.",
-          "Stability through proper procedure.",
-          "No deviations from tradition.",
-          "Order maintained, chaos prevented."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.101.success_msgs"
+        "messages": "Jobs.101.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Minor improvisations are noted.",
-          "The rituals work but lack perfect form.",
-          "You have to correct several practitioners.",
-          "Tradition is mostly upheld.",
-          "Adequate though not flawless supervision."
-        ],
+        "messages": "Jobs.101.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "mp": 20
-        },
-        "messages_int": "jobs.101.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The ritual deviates dangerously from protocol.",
-          "You can't control the practitioners.",
-          "Magical energies become unstable.",
-          "The Loyalists question your commitment.",
-          "Chaos threatens order."
-        ],
+        "messages": "Jobs.101.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 15,
@@ -1823,17 +1128,10 @@
         },
         "status": [
           "Static"
-        ],
-        "messages_int": "jobs.101.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "The ritual goes catastrophically wrong!",
-          "Wild magic erupts everywhere!",
-          "Guild property is damaged!",
-          "Your lax supervision is blamed!",
-          "You're stripped of supervisory duties!"
-        ],
+        "messages": "Jobs.101.outcome.disaster",
         "payMultiplier": -1.2,
         "damage": {
           "hp": 40,
@@ -1844,20 +1142,15 @@
           "Paralysis"
         ]
       }
-    },
-    "description_int": "jobs.101.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 102,
-    "name": "Anti-Technology Enforcer",
-    "name_int": "jobs.102.name",
-    "name_it": "Applicatore Anti-Tecnologia",
+    "name": "Jobs.102.name",
     "category": "Faction",
     "spec": "Intimidation",
     "factionId": 4,
-    "description": "Seek out and destroy illegal techno-magical fusion devices.",
-    "description_it": "Cerca e distruggi dispositivi illegali di fusione tecno-magica.",
+    "description": "Jobs.102.description",
     "duration": 8,
     "basePay": 24800,
     "locations": [],
@@ -1869,24 +1162,11 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Heretical devices are purged with fire and fury.",
-          "Magic remains pure and untainted.",
-          "The old ways are preserved.",
-          "Technology corrupts; you prevent it.",
-          "Another successful raid against modernity."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.102.success_msgs"
+        "messages": "Jobs.102.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Some devices destroyed but others hidden.",
-          "The technomancers flee before you arrive.",
-          "You confiscate most contraband.",
-          "The impure magic leaves you feeling unclean.",
-          "Adequate enforcement of tradition."
-        ],
+        "messages": "Jobs.102.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 15,
@@ -1894,17 +1174,10 @@
         },
         "status": [
           "Static"
-        ],
-        "messages_int": "jobs.102.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "The technomancers overpower you.",
-          "Their machines malfunction dangerously.",
-          "You can't find the hidden workshops.",
-          "Technology defeats tradition today.",
-          "The Traditionalists are disappointed."
-        ],
+        "messages": "Jobs.102.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 30,
@@ -1913,17 +1186,10 @@
         "status": [
           "Static",
           "Burned"
-        ],
-        "messages_int": "jobs.102.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A techno-magical device explodes!",
-          "You're caught in a machine's malfunction!",
-          "Technomancers capture and humiliate you!",
-          "Expensive Guild property is destroyed!",
-          "Your failure becomes a cautionary tale!"
-        ],
+        "messages": "Jobs.102.outcome.disaster",
         "payMultiplier": -1,
         "damage": {
           "hp": 55,
@@ -1935,20 +1201,15 @@
           "Paralysis"
         ]
       }
-    },
-    "description_int": "jobs.102.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 103,
-    "name": "Magitech Engineer",
-    "name_int": "jobs.103.name",
-    "name_it": "Ingegnere Magitech",
+    "name": "Jobs.103.name",
     "category": "Faction",
     "spec": "Cybernetics",
     "factionId": 5,
-    "description": "Develop experimental fusion of magic and machinery.",
-    "description_it": "Sviluppa fusioni sperimentali di magia e macchinari.",
+    "description": "Jobs.103.description",
     "duration": 9,
     "basePay": 31500,
     "locations": [
@@ -1963,24 +1224,11 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The sigils integrate perfectly with the engine!",
-          "A breakthrough in magitech design!",
-          "Progress marches forward!",
-          "The future is now!",
-          "Magic and machine in perfect harmony!"
-        ],
-        "payMultiplier": 1.2,
-        "messages_int": "jobs.103.success_msgs"
+        "messages": "Jobs.103.outcome.success",
+        "payMultiplier": 1.2
       },
       "partial": {
-        "messages": [
-          "The device works but is unstable.",
-          "Minor explosions are part of progress.",
-          "You advance the cause incrementally.",
-          "Not all experiments succeed.",
-          "Science requires sacrifice."
-        ],
+        "messages": "Jobs.103.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 20,
@@ -1989,17 +1237,10 @@
         "status": [
           "Burned",
           "Static"
-        ],
-        "messages_int": "jobs.103.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "The magical and mechanical systems reject each other.",
-          "Catastrophic system failure.",
-          "The experiment sets you back months.",
-          "Your theories were flawed.",
-          "The Technomancers question your competence."
-        ],
+        "messages": "Jobs.103.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 35,
@@ -2009,17 +1250,10 @@
           "Burned",
           "Static",
           "Confusion"
-        ],
-        "messages_int": "jobs.103.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "The magitech device explodes violently!",
-          "A magical feedback loop nearly kills you!",
-          "The entire laboratory is destroyed!",
-          "Years of research go up in flames!",
-          "You're banned from experimental work!"
-        ],
+        "messages": "Jobs.103.outcome.disaster",
         "payMultiplier": -2,
         "damage": {
           "hp": 70,
@@ -2031,20 +1265,15 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.103.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 104,
-    "name": "Spell Categorization Clerk",
-    "name_int": "jobs.104.name",
-    "name_it": "Impiegato Categorizzazione Incantesimi",
+    "name": "Jobs.104.name",
     "category": "Faction",
     "spec": "Data Analysis",
     "factionId": 6,
-    "description": "Meticulously categorize spells into the 92 distinct schools.",
-    "description_it": "Categorizza meticolosamente gli incantesimi nelle 92 scuole distinte.",
+    "description": "Jobs.104.description",
     "duration": 10,
     "basePay": 21000,
     "remote": true,
@@ -2056,55 +1285,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every spell properly classified and filed.",
-          "The taxonomies are perfection.",
-          "Order from chaos through categorization.",
-          "92 schools, no exceptions.",
-          "Academic rigor at its finest."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.104.success_msgs"
+        "messages": "Jobs.104.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most spells categorized correctly.",
-          "One spell defies easy classification.",
-          "The minutiae is mentally exhausting.",
-          "Your eyes blur from reading ancient texts.",
-          "Adequate if tedious work."
-        ],
+        "messages": "Jobs.104.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "mp": 30
-        },
-        "messages_int": "jobs.104.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You misclassify several important spells.",
-          "The system's complexity defeats you.",
-          "Colleagues point out numerous errors.",
-          "The 92 schools blur together.",
-          "Your classifications are rejected."
-        ],
+        "messages": "Jobs.104.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "mp": 40
         },
         "status": [
           "Confusion"
-        ],
-        "messages_int": "jobs.104.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You accidentally merge two schools!",
-          "Your errors corrupt the entire database!",
-          "Decades of work must be redone!",
-          "The 92 schools branch is in chaos!",
-          "You're expelled from academic circles!"
-        ],
+        "messages": "Jobs.104.outcome.disaster",
         "payMultiplier": -0.9,
         "damage": {
           "mp": 60
@@ -2114,20 +1316,15 @@
           "Nausea"
         ]
       }
-    },
-    "description_int": "jobs.104.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 105,
-    "name": "Document Redactor",
-    "name_int": "jobs.105.name",
-    "name_it": "Oscuratore di Documenti",
+    "name": "Jobs.105.name",
     "category": "Faction",
     "spec": "Copywriting",
     "factionId": 1,
-    "description": "Remove dangerous knowledge from historical texts.",
-    "description_it": "Rimuovi conoscenza pericolosa dai testi storici.",
+    "description": "Jobs.105.description",
     "duration": 8,
     "basePay": 18400,
     "remote": true,
@@ -2139,52 +1336,25 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Dangerous truths safely erased.",
-          "The people are protected from knowledge.",
-          "History is properly sanitized.",
-          "Another day preserving ignorance.",
-          "Containment protocols upheld."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.105.success_msgs"
+        "messages": "Jobs.105.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most dangerous information removed.",
-          "Some texts are difficult to redact cleanly.",
-          "Your hand cramps from the meticulous work.",
-          "Adequate censorship performed.",
-          "The tedium is mind-numbing."
-        ],
+        "messages": "Jobs.105.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "mp": 15
-        },
-        "messages_int": "jobs.105.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You miss several dangerous passages.",
-          "The censorship is obviously incomplete.",
-          "Superiors question your commitment.",
-          "Knowledge slips through your fingers.",
-          "The Foundation is displeased."
-        ],
+        "messages": "Jobs.105.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "mp": 25
-        },
-        "messages_int": "jobs.105.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "You accidentally publish an uncensored text!",
-          "Forbidden knowledge spreads!",
-          "The Foundation's containment is breached!",
-          "Your career is destroyed!",
-          "You're marked as a security risk!"
-        ],
+        "messages": "Jobs.105.outcome.disaster",
         "payMultiplier": -1,
         "damage": {
           "hp": 20,
@@ -2195,20 +1365,15 @@
           "Paralysis"
         ]
       }
-    },
-    "description_int": "jobs.105.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 106,
-    "name": "Artifact Thief",
-    "name_int": "jobs.106.name",
-    "name_it": "Ladro di Artefatti",
+    "name": "Jobs.106.name",
     "category": "Faction",
     "spec": "Sleight of Hand",
     "factionId": 20,
-    "description": "Steal historical artifacts for the Foundation's collection.",
-    "description_it": "Ruba artefatti storici per la collezione della Fondazione.",
+    "description": "Jobs.106.description",
     "duration": 8,
     "basePay": 30400,
     "locations": [],
@@ -2220,41 +1385,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The artifact is acquired without incident.",
-          "Your theft is undetected.",
-          "Another relic secured for the Foundation.",
-          "Professional extraction.",
-          "Knowledge contained, mission complete."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.106.success_msgs"
+        "messages": "Jobs.106.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "The artifact is secured but alarms triggered.",
-          "You're pursued but escape.",
-          "The extraction was messier than planned.",
-          "Mission successful but not clean.",
-          "The Foundation gets what it wants."
-        ],
+        "messages": "Jobs.106.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 20
         },
         "status": [
           "Bleeding"
-        ],
-        "messages_int": "jobs.106.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "The security was too tight.",
-          "You're forced to abort the mission.",
-          "The artifact remains beyond reach.",
-          "Your infiltration is detected and thwarted.",
-          "The Foundation is disappointed."
-        ],
+        "messages": "Jobs.106.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "hp": 30
@@ -2262,17 +1407,10 @@
         "status": [
           "Bleeding",
           "Stun"
-        ],
-        "messages_int": "jobs.106.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You're caught red-handed!",
-          "The artifact is destroyed in the chaos!",
-          "Guards beat you unconscious!",
-          "The Foundation disavows you!",
-          "You're imprisoned and interrogated!"
-        ],
+        "messages": "Jobs.106.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "hp": 70
@@ -2283,20 +1421,15 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.106.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 107,
-    "name": "Silent Librarian",
-    "name_int": "jobs.107.name",
-    "name_it": "Bibliotecario Silenzioso",
+    "name": "Jobs.107.name",
     "category": "Faction",
     "spec": "Stealth Movement",
     "factionId": 21,
-    "description": "Maintain the archives and permanently silence noisy patrons.",
-    "description_it": "Mantieni gli archivi e zittisci permanentemente i visitatori rumorosi.",
+    "description": "Jobs.107.description",
     "duration": 8,
     "basePay": 20800,
     "locations": [
@@ -2311,41 +1444,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The library remains perfectly silent.",
-          "Disruptive patrons are... dealt with.",
-          "The books are preserved, order maintained.",
-          "Silence is golden, and blood red.",
-          "Another quiet day in the archives."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.107.success_msgs"
+        "messages": "Jobs.107.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most disruptions are handled.",
-          "One patron escapes before silencing.",
-          "The cleanup is messy.",
-          "Order is mostly restored.",
-          "An acceptable day's work."
-        ],
+        "messages": "Jobs.107.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 10
         },
         "status": [
           "Bleeding"
-        ],
-        "messages_int": "jobs.107.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "Chaos erupts in the library.",
-          "You can't silence the disturbances.",
-          "Patrons flee in terror.",
-          "The Foundation questions your methods.",
-          "Order collapses."
-        ],
+        "messages": "Jobs.107.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 25
@@ -2353,17 +1466,10 @@
         "status": [
           "Bleeding",
           "Stun"
-        ],
-        "messages_int": "jobs.107.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You accidentally kill an important scholar!",
-          "Books are destroyed in the struggle!",
-          "Word of the murders spreads!",
-          "The Foundation is exposed!",
-          "You become a liability!"
-        ],
+        "messages": "Jobs.107.outcome.disaster",
         "payMultiplier": -1.2,
         "damage": {
           "hp": 45
@@ -2373,20 +1479,15 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.107.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 108,
-    "name": "Propaganda Writer",
-    "name_int": "jobs.108.name",
-    "name_it": "Scrittore di Propaganda",
+    "name": "Jobs.108.name",
     "category": "Faction",
     "spec": "Copywriting",
     "factionId": 22,
-    "description": "Craft convincing misinformation for public consumption.",
-    "description_it": "Crea disinformazione convincente per il consumo pubblico.",
+    "description": "Jobs.108.description",
     "duration": 7,
     "basePay": 16800,
     "remote": true,
@@ -2398,46 +1499,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Your lies are perfectly believable.",
-          "The public accepts the narrative completely.",
-          "Truth is what we say it is.",
-          "Another successful information campaign.",
-          "The irony of your unit's name amuses you."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.108.success_msgs"
+        "messages": "Jobs.108.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most people believe the story.",
-          "Some skeptics question the narrative.",
-          "The propaganda is adequate if uninspired.",
-          "Enough believe to matter.",
-          "Plausible if not perfect."
-        ],
-        "payMultiplier": 0.75,
-        "messages_int": "jobs.108.partial_msgs"
+        "messages": "Jobs.108.outcome.partial",
+        "payMultiplier": 0.75
       },
       "failure": {
-        "messages": [
-          "The lies are obviously transparent.",
-          "The public sees through the propaganda.",
-          "Your narrative collapses under scrutiny.",
-          "The Foundation is displeased.",
-          "Truth slips through your censorship."
-        ],
-        "payMultiplier": 0.25,
-        "messages_int": "jobs.108.failure_msgs"
+        "messages": "Jobs.108.outcome.failure",
+        "payMultiplier": 0.25
       },
       "disaster": {
-        "messages": [
-          "Your propaganda exposes Foundation secrets!",
-          "The truth accidentally leaks out!",
-          "Public outrage erupts!",
-          "You're blamed for the disaster!",
-          "Your career in misinformation is over!"
-        ],
+        "messages": "Jobs.108.outcome.disaster",
         "payMultiplier": -0.9,
         "damage": {
           "mp": 40
@@ -2446,20 +1520,15 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.108.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 109,
-    "name": "Internal Investigator",
-    "name_int": "jobs.109.name",
-    "name_it": "Investigatore Interno",
+    "name": "Jobs.109.name",
     "category": "Faction",
     "spec": "Criminology",
     "factionId": 23,
-    "description": "Root out information leaks within the Foundation.",
-    "description_it": "Scova perdite di informazioni all'interno della Fondazione.",
+    "description": "Jobs.109.description",
     "duration": 9,
     "basePay": 27900,
     "remote": true,
@@ -2474,52 +1543,25 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You uncover and eliminate a leak.",
-          "The secret police succeed again.",
-          "Loyalty is enforced through fear.",
-          "The Foundation's secrets remain safe.",
-          "Internal security maintained."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.109.success_msgs"
+        "messages": "Jobs.109.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "You identify suspects but lack proof.",
-          "Some evidence slips away.",
-          "The investigation is inconclusive.",
-          "Internal tensions rise.",
-          "Adequate if imperfect security."
-        ],
+        "messages": "Jobs.109.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 15
-        },
-        "messages_int": "jobs.109.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The leak continues undetected.",
-          "Your investigation goes nowhere.",
-          "Suspects elude your grasp.",
-          "The secret police are outwitted.",
-          "Information continues to leak."
-        ],
+        "messages": "Jobs.109.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 25
-        },
-        "messages_int": "jobs.109.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "You're discovered to be the leak!",
-          "Your investigation exposes YOU!",
-          "The secret police turn on you!",
-          "You're interrogated and tortured!",
-          "Your life in the Foundation is over!"
-        ],
+        "messages": "Jobs.109.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "hp": 65
@@ -2530,20 +1572,15 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.109.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 110,
-    "name": "Market Manipulator",
-    "name_int": "jobs.110.name",
-    "name_it": "Manipolatore di Mercato",
+    "name": "Jobs.110.name",
     "category": "Faction",
     "spec": "Stock Trading",
     "factionId": 2,
-    "description": "Manipulate markets for profit through any means necessary.",
-    "description_it": "Manipola i mercati per profitto con qualsiasi mezzo necessario.",
+    "description": "Jobs.110.description",
     "duration": 8,
     "basePay": 26400,
     "remote": true,
@@ -2556,49 +1593,22 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The market bends to your will.",
-          "Profit margins soar!",
-          "The invisible hand guides your trades.",
-          "Capitalism at its finest.",
-          "Another successful manipulation."
-        ],
-        "payMultiplier": 1.5,
-        "messages_int": "jobs.110.success_msgs"
+        "messages": "Jobs.110.outcome.success",
+        "payMultiplier": 1.5
       },
       "partial": {
-        "messages": [
-          "Modest gains from market movements.",
-          "Some trades go against you.",
-          "Profit is made but not maximized.",
-          "The market is unpredictable today.",
-          "Adequate returns."
-        ],
-        "payMultiplier": 0.8,
-        "messages_int": "jobs.110.partial_msgs"
+        "messages": "Jobs.110.outcome.partial",
+        "payMultiplier": 0.8
       },
       "failure": {
-        "messages": [
-          "The market moves against you.",
-          "Your manipulation is detected.",
-          "Losses mount quickly.",
-          "The Collective is disappointed.",
-          "Even the free market has limits."
-        ],
+        "messages": "Jobs.110.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "mp": 30
-        },
-        "messages_int": "jobs.110.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "A market crash wipes out your position!",
-          "Regulators investigate your activities!",
-          "Massive losses are incurred!",
-          "The Collective demands compensation!",
-          "Your financial reputation is destroyed!"
-        ],
+        "messages": "Jobs.110.outcome.disaster",
         "payMultiplier": -2.5,
         "damage": {
           "mp": 50
@@ -2608,20 +1618,15 @@
           "Nausea"
         ]
       }
-    },
-    "description_int": "jobs.110.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 111,
-    "name": "Oil Extraction Overseer",
-    "name_int": "jobs.111.name",
-    "name_it": "Supervisore Estrazione Petrolio",
+    "name": "Jobs.111.name",
     "category": "Faction",
     "spec": "Project Management",
     "factionId": 15,
-    "description": "Maximize oil extraction efficiency through infernal optimization.",
-    "description_it": "Massimizza l'efficienza dell'estrazione petrolifera attraverso ottimizzazione infernale.",
+    "description": "Jobs.111.description",
     "duration": 10,
     "basePay": 33000,
     "remote": true,
@@ -2634,41 +1639,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Extraction rates hit record highs!",
-          "The pact delivers results.",
-          "Black gold flows endlessly.",
-          "Efficiency through damnation.",
-          "Hell's managers are pleased."
-        ],
-        "payMultiplier": 1.2,
-        "messages_int": "jobs.111.success_msgs"
+        "messages": "Jobs.111.outcome.success",
+        "payMultiplier": 1.2
       },
       "partial": {
-        "messages": [
-          "Extraction goals mostly met.",
-          "Minor equipment failures slow progress.",
-          "The workers are exhausted.",
-          "Adequate if not exceptional output.",
-          "The infernal quotas loom."
-        ],
+        "messages": "Jobs.111.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 15
         },
         "status": [
           "Burned"
-        ],
-        "messages_int": "jobs.111.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "Extraction rates fall below targets.",
-          "Equipment failures cascade.",
-          "The infernal pact demands more.",
-          "Your soul is questioned.",
-          "Managers don't accept excuses."
-        ],
+        "messages": "Jobs.111.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 35
@@ -2676,17 +1661,10 @@
         "status": [
           "Burned",
           "Nausea"
-        ],
-        "messages_int": "jobs.111.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A well explodes catastrophically!",
-          "Workers die in the inferno!",
-          "The infernal pact demands your soul NOW!",
-          "Massive damages and deaths!",
-          "Hell comes to collect!"
-        ],
+        "messages": "Jobs.111.outcome.disaster",
         "payMultiplier": -2,
         "damage": {
           "hp": 75
@@ -2697,20 +1675,15 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.111.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 112,
-    "name": "High-Speed Courier",
-    "name_int": "jobs.112.name",
-    "name_it": "Corriere ad Alta Velocità",
+    "name": "Jobs.112.name",
     "category": "Faction",
     "spec": "Car Driving",
     "factionId": 16,
-    "description": "Deliver packages at breakneck speeds, worshipping velocity.",
-    "description_it": "Consegna pacchi a velocità folle, adorando la velocità.",
+    "description": "Jobs.112.description",
     "duration": 5,
     "basePay": 16500,
     "locations": [],
@@ -2721,38 +1694,18 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You break your personal speed record!",
-          "Velocity is ecstasy!",
-          "The packages arrive impossibly fast!",
-          "Speed is life, slowness is death!",
-          "The engine screams in joy!"
-        ],
-        "payMultiplier": 1.4,
-        "messages_int": "jobs.112.success_msgs"
+        "messages": "Jobs.112.outcome.success",
+        "payMultiplier": 1.4
       },
       "partial": {
-        "messages": [
-          "Fast, but not fast enough.",
-          "A near-collision slows you down.",
-          "The speed high is diminished.",
-          "Adequate velocity achieved.",
-          "You hunger for more speed."
-        ],
+        "messages": "Jobs.112.outcome.partial",
         "payMultiplier": 0.8,
         "damage": {
           "hp": 20
-        },
-        "messages_int": "jobs.112.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You crash trying to go too fast!",
-          "Speed betrays you!",
-          "The packages are destroyed!",
-          "Slowness is death, and you were slow!",
-          "The Speed Demons mock you!"
-        ],
+        "messages": "Jobs.112.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "hp": 45
@@ -2760,17 +1713,10 @@
         "status": [
           "Bleeding",
           "Stun"
-        ],
-        "messages_int": "jobs.112.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A catastrophic high-speed crash!",
-          "Your vehicle explodes!",
-          "Multiple packages and vehicles destroyed!",
-          "You're banned from high-octane fuel!",
-          "Speed has claimed another victim!"
-        ],
+        "messages": "Jobs.112.outcome.disaster",
         "payMultiplier": -1.8,
         "damage": {
           "hp": 80
@@ -2781,20 +1727,15 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.112.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 113,
-    "name": "Fuel Monopoly Enforcer",
-    "name_int": "jobs.113.name",
-    "name_it": "Applicatore Monopolio Carburante",
+    "name": "Jobs.113.name",
     "category": "Faction",
     "spec": "Intimidation",
     "factionId": 17,
-    "description": "Ensure the Seven Sisters maintain total fuel market control.",
-    "description_it": "Assicura che le Sette Sorelle mantengano il controllo totale del mercato carburante.",
+    "description": "Jobs.113.description",
     "duration": 8,
     "basePay": 27200,
     "locations": [],
@@ -2806,41 +1747,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Competitors are eliminated efficiently.",
-          "The monopoly is secure.",
-          "Independent refineries burn.",
-          "Market control is absolute.",
-          "The Seven Sisters reward loyalty."
-        ],
-        "payMultiplier": 1.1,
-        "messages_int": "jobs.113.success_msgs"
+        "messages": "Jobs.113.outcome.success",
+        "payMultiplier": 1.1
       },
       "partial": {
-        "messages": [
-          "Some competitors resist.",
-          "The enforcement is messy.",
-          "Monopoly control is maintained but challenged.",
-          "Violence was necessary.",
-          "Adequate market domination."
-        ],
+        "messages": "Jobs.113.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 25
         },
         "status": [
           "Bleeding"
-        ],
-        "messages_int": "jobs.113.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "Competitors stand their ground.",
-          "Your enforcement fails.",
-          "The monopoly is threatened.",
-          "The Seven Sisters are displeased.",
-          "Market control slips."
-        ],
+        "messages": "Jobs.113.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 40
@@ -2848,17 +1769,10 @@
         "status": [
           "Bleeding",
           "Stun"
-        ],
-        "messages_int": "jobs.113.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A competitor destroys your refinery!",
-          "The enforcement backfires spectacularly!",
-          "Public outrage threatens the monopoly!",
-          "The Seven Sisters abandon you!",
-          "Your failure costs millions!"
-        ],
+        "messages": "Jobs.113.outcome.disaster",
         "payMultiplier": -2.2,
         "damage": {
           "hp": 65
@@ -2869,20 +1783,15 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.113.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 114,
-    "name": "Divine Chaos Agent",
-    "name_int": "jobs.114.name",
-    "name_it": "Agente del Caos Divino",
+    "name": "Jobs.114.name",
     "category": "Faction",
     "spec": "Deception",
     "factionId": 7,
-    "description": "Spread discord and disruption in the name of the Goddess of Chaos.",
-    "description_it": "Diffondi discordia e disordine nel nome della Dea del Caos.",
+    "description": "Jobs.114.description",
     "duration": 6,
     "basePay": 18600,
     "remote": true,
@@ -2894,46 +1803,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Glorious chaos spreads in your wake!",
-          "Eris smiles upon your disruption!",
-          "Order crumbles before discord!",
-          "Bureaucrats tear their hair out!",
-          "Beautiful, beautiful chaos!"
-        ],
-        "payMultiplier": 1.3,
-        "messages_int": "jobs.114.success_msgs"
+        "messages": "Jobs.114.outcome.success",
+        "payMultiplier": 1.3
       },
       "partial": {
-        "messages": [
-          "Minor disruptions achieved.",
-          "The chaos is contained too quickly.",
-          "Eris expects more from you.",
-          "Adequate discord sown.",
-          "Order proves resilient today."
-        ],
-        "payMultiplier": 0.7,
-        "messages_int": "jobs.114.partial_msgs"
+        "messages": "Jobs.114.outcome.partial",
+        "payMultiplier": 0.7
       },
       "failure": {
-        "messages": [
-          "Your chaos is quickly suppressed.",
-          "Order prevails today.",
-          "The disruption fails to spread.",
-          "Eris is disappointed.",
-          "Boring stability wins."
-        ],
-        "payMultiplier": 0.2,
-        "messages_int": "jobs.114.failure_msgs"
+        "messages": "Jobs.114.outcome.failure",
+        "payMultiplier": 0.2
       },
       "disaster": {
-        "messages": [
-          "Your chaos turns on you!",
-          "Order's champions beat you down!",
-          "Eris laughs at your failure!",
-          "The chaos consumes YOU!",
-          "Even discord has consequences!"
-        ],
+        "messages": "Jobs.114.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 50
@@ -2943,20 +1825,15 @@
           "Rage"
         ]
       }
-    },
-    "description_int": "jobs.114.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 124,
-    "name": "Vatican Scribe",
-    "name_int": "jobs.124.name",
-    "name_it": "Scriba Vaticano",
+    "name": "Jobs.124.name",
     "category": "Faction",
     "spec": "Calligraphy",
     "factionId": 27,
-    "description": "Transcribe and maintain sacred texts and church documents.",
-    "description_it": "Trascrivi e mantieni testi sacri e documenti della chiesa.",
+    "description": "Jobs.124.description",
     "duration": 8,
     "basePay": 16800,
     "locations": [
@@ -2973,46 +1850,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every word perfectly transcribed.",
-          "The sacred texts are preserved.",
-          "Your devotion shows in your work.",
-          "The church is pleased.",
-          "Another day in service of faith."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.124.success_msgs"
+        "messages": "Jobs.124.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most texts transcribed correctly.",
-          "Your hand cramps from the writing.",
-          "A few minor errors slip through.",
-          "Adequate service to the church.",
-          "The work is tedious but holy."
-        ],
-        "payMultiplier": 0.75,
-        "messages_int": "jobs.124.partial_msgs"
+        "messages": "Jobs.124.outcome.partial",
+        "payMultiplier": 0.75
       },
       "failure": {
-        "messages": [
-          "Multiple transcription errors.",
-          "You misquote sacred scripture!",
-          "The texts are corrupted by mistakes.",
-          "The church is disappointed.",
-          "Your devotion is questioned."
-        ],
-        "payMultiplier": 0.25,
-        "messages_int": "jobs.124.failure_msgs"
+        "messages": "Jobs.124.outcome.failure",
+        "payMultiplier": 0.25
       },
       "disaster": {
-        "messages": [
-          "You spill ink on a priceless manuscript!",
-          "Sacred texts are ruined!",
-          "The church brands you incompetent!",
-          "Centuries of work destroyed!",
-          "You're excommunicated from scribal duties!"
-        ],
+        "messages": "Jobs.124.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "mp": 40
@@ -3021,20 +1871,15 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.124.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 127,
-    "name": "Battle Nun Trainee",
-    "name_int": "jobs.127.name",
-    "name_it": "Allieva Suora da Battaglia",
+    "name": "Jobs.127.name",
     "category": "Faction",
     "spec": "Athletics",
     "factionId": 30,
-    "description": "Train in both scripture and combat as a Vatican special forces operative.",
-    "description_it": "Addestrati sia nelle scritture che nel combattimento come operativa delle forze speciali vaticane.",
+    "description": "Jobs.127.description",
     "duration": 10,
     "basePay": 29000,
     "locations": [
@@ -3048,55 +1893,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Your devotion and combat skills impress.",
-          "Scripture and steel in perfect harmony.",
-          "The Lord's wrath flows through you.",
-          "Holy violence perfected.",
-          "A warrior nun is born."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.127.success_msgs"
+        "messages": "Jobs.127.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "The training is brutally demanding.",
-          "You excel at combat but struggle with theology.",
-          "Scripture and violence don't mix easily.",
-          "Adequate progress in training.",
-          "The holy warrior path is difficult."
-        ],
+        "messages": "Jobs.127.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 30
-        },
-        "messages_int": "jobs.127.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "The training defeats you.",
-          "You're not strong enough for this order.",
-          "Scripture and combat both escape you.",
-          "The Battle Nuns reject you.",
-          "Holy warfare requires more."
-        ],
+        "messages": "Jobs.127.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 50
         },
         "status": [
           "Bleeding"
-        ],
-        "messages_int": "jobs.127.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A training accident nearly kills you!",
-          "You accidentally attack a superior!",
-          "Your faith wavers under pressure!",
-          "The Battle Nuns deem you unworthy!",
-          "You're expelled from the order!"
-        ],
+        "messages": "Jobs.127.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 75
@@ -3107,19 +1925,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.127.description",
-    "category_int": "jobs.category.faction"
+    }
   },
   {
     "id": 128,
-    "name": "Night Watchman",
-    "name_int": "jobs.128.name",
-    "name_it": "Guardiano Notturno",
+    "name": "Jobs.128.name",
     "category": "General",
     "spec": "Crowd Reading",
-    "description": "Guard property through the dangerous night hours.",
-    "description_it": "Sorveglia proprietà durante le pericolose ore notturne.",
+    "description": "Jobs.128.description",
     "duration": 10,
     "basePay": 15000,
     "locations": [],
@@ -3130,55 +1943,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "A quiet night on watch.",
-          "No incidents to report.",
-          "Your presence deters trouble.",
-          "The property is secure.",
-          "Another peaceful night."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.128.success_msgs"
+        "messages": "Jobs.128.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Some suspicious activity but nothing major.",
-          "You doze off once or twice.",
-          "A long, boring night.",
-          "Adequate security provided.",
-          "The night drags on endlessly."
-        ],
+        "messages": "Jobs.128.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "mp": 20
-        },
-        "messages_int": "jobs.128.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You fall asleep on duty!",
-          "Thieves break in while you're distracted!",
-          "Property is stolen on your watch!",
-          "You're fired immediately!",
-          "One job you had: stay awake!"
-        ],
+        "messages": "Jobs.128.outcome.failure",
         "payMultiplier": 0.1,
         "damage": {
           "mp": 30
         },
         "status": [
           "Sleep"
-        ],
-        "messages_int": "jobs.128.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A major robbery occurs on your watch!",
-          "You're beaten unconscious by thieves!",
-          "Everything is stolen!",
-          "You must compensate for the losses!",
-          "Your career as a watchman is over!"
-        ],
+        "messages": "Jobs.128.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "hp": 60
@@ -3188,19 +1974,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.128.description",
-    "category_int": "jobs.category.general"
+    }
   },
   {
     "id": 129,
-    "name": "Fisherman",
-    "name_int": "jobs.129.name",
-    "name_it": "Pescatore",
+    "name": "Jobs.129.name",
     "category": "Labor",
     "spec": "Fishing",
-    "description": "Catch fish for sale at the market.",
-    "description_it": "Pesca pesce per venderlo al mercato.",
+    "description": "Jobs.129.description",
     "duration": 8,
     "basePay": 13600,
     "locations": [
@@ -3213,46 +1994,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The nets are full!",
-          "A bountiful catch today.",
-          "The fish are practically jumping into your boat.",
-          "The market will pay well for this haul.",
-          "A fisherman's perfect day."
-        ],
-        "payMultiplier": 1.3,
-        "messages_int": "jobs.129.success_msgs"
+        "messages": "Jobs.129.outcome.success",
+        "payMultiplier": 1.3
       },
       "partial": {
-        "messages": [
-          "A modest catch.",
-          "Enough fish to make it worthwhile.",
-          "The fish weren't biting much today.",
-          "Adequate haul for the effort.",
-          "You've caught better before."
-        ],
-        "payMultiplier": 0.8,
-        "messages_int": "jobs.129.partial_msgs"
+        "messages": "Jobs.129.outcome.partial",
+        "payMultiplier": 0.8
       },
       "failure": {
-        "messages": [
-          "The fish aren't biting at all.",
-          "You return nearly empty-handed.",
-          "Hours wasted for almost nothing.",
-          "A fisherman's worst day.",
-          "Maybe tomorrow will be better."
-        ],
-        "payMultiplier": 0.2,
-        "messages_int": "jobs.129.failure_msgs"
+        "messages": "Jobs.129.outcome.failure",
+        "payMultiplier": 0.2
       },
       "disaster": {
-        "messages": [
-          "Your boat capsizes!",
-          "Equipment is lost to the depths!",
-          "You nearly drown!",
-          "The replacement cost exceeds your earnings!",
-          "Perhaps fishing isn't for you!"
-        ],
+        "messages": "Jobs.129.outcome.disaster",
         "payMultiplier": -1.2,
         "damage": {
           "hp": 35
@@ -3262,19 +2016,14 @@
           "Cold"
         ]
       }
-    },
-    "description_int": "jobs.129.description",
-    "category_int": "jobs.category.labor"
+    }
   },
   {
     "id": 130,
-    "name": "Street Cleaner",
-    "name_int": "jobs.130.name",
-    "name_it": "Spazzino",
+    "name": "Jobs.130.name",
     "category": "Labor",
     "spec": "Street Sweeping",
-    "description": "Clean the filthy city streets.",
-    "description_it": "Pulisci le sporche strade cittadine.",
+    "description": "Jobs.130.description",
     "duration": 8,
     "basePay": 8000,
     "locations": [
@@ -3289,55 +2038,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "The streets are spotless.",
-          "Honest work, honest pay.",
-          "You take pride in a clean city.",
-          "The work is simple but necessary.",
-          "Another area cleaned thoroughly."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.130.success_msgs"
+        "messages": "Jobs.130.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "Most areas cleaned adequately.",
-          "The filth seems endless.",
-          "Your back aches from the labor.",
-          "Good enough for today.",
-          "The city stays dirty no matter what."
-        ],
+        "messages": "Jobs.130.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 10
-        },
-        "messages_int": "jobs.130.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You can't keep up with the filth.",
-          "The work overwhelms you.",
-          "You give up halfway through.",
-          "The supervisor is disappointed.",
-          "The streets remain dirty."
-        ],
+        "messages": "Jobs.130.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 15
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.130.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You fall into a sewer!",
-          "Disease spreads from untreated waste!",
-          "You're infected by toxic refuse!",
-          "Medical treatment costs more than you earn!",
-          "The city's filth defeats you!"
-        ],
+        "messages": "Jobs.130.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 40
@@ -3348,19 +2070,14 @@
           "Nausea"
         ]
       }
-    },
-    "description_int": "jobs.130.description",
-    "category_int": "jobs.category.labor"
+    }
   },
   {
     "id": 131,
-    "name": "Manager",
-    "name_int": "jobs.131.name",
-    "name_it": "Direttore",
+    "name": "Jobs.131.name",
     "category": "Social",
     "spec": "Project Management",
-    "description": "Oversee daily operations and keep staff in line.",
-    "description_it": "Supervisiona le operazioni quotidiane e il personale.",
+    "description": "Jobs.131.description",
     "duration": 8,
     "basePay": 13600,
     "remote": true,
@@ -3375,38 +2092,18 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Everything runs like clockwork under your watch.",
-          "Staff and customers alike are pleased.",
-          "You smooth over a tricky situation with ease.",
-          "The books balance perfectly tonight.",
-          "A well-managed shift from start to finish."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.131.success_msgs"
+        "messages": "Jobs.131.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "A staffing mix-up keeps you running all shift.",
-          "You manage, but it's a near thing.",
-          "Customers grumble about the wait.",
-          "You patch things up well enough.",
-          "An exhausting but workable shift."
-        ],
+        "messages": "Jobs.131.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "mp": 10
-        },
-        "messages_int": "jobs.131.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "Nothing goes according to plan today.",
-          "An argument breaks out among the staff.",
-          "Customers walk out unhappy.",
-          "You lose track of the shift entirely.",
-          "Today was a disaster for business."
-        ],
+        "messages": "Jobs.131.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 5,
@@ -3414,17 +2111,10 @@
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.131.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A furious customer trashes the place!",
-          "The till comes up massively short!",
-          "Staff walk out mid-shift!",
-          "An inspection catches you off guard!",
-          "Your reputation as a manager takes a hit!"
-        ],
+        "messages": "Jobs.131.outcome.disaster",
         "payMultiplier": -0.8,
         "damage": {
           "hp": 15,
@@ -3434,19 +2124,14 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.131.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 132,
-    "name": "Waiter",
-    "name_int": "jobs.132.name",
-    "name_it": "Cameriere",
+    "name": "Jobs.132.name",
     "category": "Social",
     "spec": "Customer Service",
-    "description": "Take orders and serve food and drinks to customers.",
-    "description_it": "Prendi ordinazioni e servi cibo e bevande ai clienti.",
+    "description": "Jobs.132.description",
     "duration": 8,
     "basePay": 9600,
     "locations": [
@@ -3466,55 +2151,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every order comes out right and on time.",
-          "Customers leave generous tips.",
-          "You juggle a full dining room with ease.",
-          "Not a single complaint all shift.",
-          "A smooth, busy shift well handled."
-        ],
-        "payMultiplier": 1.2,
-        "messages_int": "jobs.132.success_msgs"
+        "messages": "Jobs.132.outcome.success",
+        "payMultiplier": 1.2
       },
       "partial": {
-        "messages": [
-          "You mix up a couple of orders.",
-          "Your feet ache by the end of the shift.",
-          "Tips are lighter than usual.",
-          "You keep up, just barely.",
-          "A long, tiring shift."
-        ],
+        "messages": "Jobs.132.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 5
-        },
-        "messages_int": "jobs.132.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You drop a full tray in front of everyone.",
-          "Customers complain about slow service.",
-          "You forget several orders entirely.",
-          "The kitchen falls behind because of you.",
-          "A rough, embarrassing shift."
-        ],
+        "messages": "Jobs.132.outcome.failure",
         "payMultiplier": 0.2,
         "damage": {
           "hp": 10
         },
         "status": [
           "Nausea"
-        ],
-        "messages_int": "jobs.132.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "You spill a scalding dish on a customer!",
-          "A tray of glasses shatters across the floor!",
-          "An angry customer demands a refund and a scene!",
-          "You're sent home for the rest of the night!",
-          "The manager docks your pay for the mess!"
-        ],
+        "messages": "Jobs.132.outcome.disaster",
         "payMultiplier": -0.6,
         "damage": {
           "hp": 20
@@ -3524,19 +2182,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.132.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 133,
-    "name": "Cook",
-    "name_int": "jobs.133.name",
-    "name_it": "Cuoco",
+    "name": "Jobs.133.name",
     "category": "Labor",
     "spec": "Cooking",
-    "description": "Prepare meals in a busy kitchen.",
-    "description_it": "Prepara pasti in una cucina indaffarata.",
+    "description": "Jobs.133.description",
     "duration": 8,
     "basePay": 10400,
     "locations": [
@@ -3552,41 +2205,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every dish leaves the kitchen perfect.",
-          "The line moves like clockwork.",
-          "Customers rave about tonight's specials.",
-          "You handle the rush without breaking a sweat.",
-          "A flawless night in the kitchen."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.133.success_msgs"
+        "messages": "Jobs.133.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "A few dishes come out late.",
-          "You burn yourself on a hot pan.",
-          "The kitchen falls slightly behind during the rush.",
-          "Most plates are solid, a few aren't.",
-          "A hectic but manageable shift."
-        ],
+        "messages": "Jobs.133.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 10
         },
         "status": [
           "Burned"
-        ],
-        "messages_int": "jobs.133.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "Orders pile up faster than you can cook.",
-          "You ruin several dishes in a row.",
-          "The kitchen descends into chaos.",
-          "Waiters are furious with the delays.",
-          "A miserable shift all around."
-        ],
+        "messages": "Jobs.133.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 15
@@ -3594,17 +2227,10 @@
         "status": [
           "Burned",
           "Nausea"
-        ],
-        "messages_int": "jobs.133.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A grease fire breaks out!",
-          "You're badly burned by a spilled pot!",
-          "The kitchen has to be shut down for the night!",
-          "Food poisoning sends customers to the clinic!",
-          "The restaurant's reputation takes a serious hit!"
-        ],
+        "messages": "Jobs.133.outcome.disaster",
         "payMultiplier": -1,
         "damage": {
           "hp": 35
@@ -3614,19 +2240,14 @@
           "Poison"
         ]
       }
-    },
-    "description_int": "jobs.133.description",
-    "category_int": "jobs.category.labor"
+    }
   },
   {
     "id": 134,
-    "name": "Museum Curator",
-    "name_int": "jobs.134.name",
-    "name_it": "Curatore di Museo",
+    "name": "Jobs.134.name",
     "category": "Social",
     "spec": "Art History",
-    "description": "Catalog exhibits and guide visitors through the museum.",
-    "description_it": "Cataloga le esposizioni e guida i visitatori nel museo.",
+    "description": "Jobs.134.description",
     "duration": 7,
     "basePay": 12600,
     "locations": [
@@ -3640,52 +2261,25 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Visitors are captivated by your knowledge.",
-          "The new exhibit is a triumph.",
-          "You catalog every artifact flawlessly.",
-          "A wealthy donor is impressed by your tour.",
-          "Another day of cultural enrichment well done."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.134.success_msgs"
+        "messages": "Jobs.134.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "A few exhibit labels need correcting.",
-          "You lose your place during a tour.",
-          "An unruly group of visitors tests your patience.",
-          "The cataloging takes longer than planned.",
-          "An adequate if unremarkable day."
-        ],
+        "messages": "Jobs.134.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "mp": 10
-        },
-        "messages_int": "jobs.134.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You misplace an important record.",
-          "A tour group wanders off and gets lost.",
-          "Visitors complain about your presentation.",
-          "You can't answer basic questions about the collection.",
-          "The director is unimpressed with your work."
-        ],
+        "messages": "Jobs.134.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "mp": 15
-        },
-        "messages_int": "jobs.134.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "You accidentally damage a priceless artifact!",
-          "A display case shatters under your care!",
-          "An exhibit is mislabeled and offends a donor!",
-          "The museum demands compensation for the damage!",
-          "Your reputation as a curator is ruined!"
-        ],
+        "messages": "Jobs.134.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "mp": 25
@@ -3694,19 +2288,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.134.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 135,
-    "name": "Personal Trainer",
-    "name_int": "jobs.135.name",
-    "name_it": "Personal Trainer",
+    "name": "Jobs.135.name",
     "category": "Social",
     "spec": "Bodybuilding",
-    "description": "Guide clients through workouts and fitness routines.",
-    "description_it": "Guida i clienti attraverso allenamenti e programmi di fitness.",
+    "description": "Jobs.135.description",
     "duration": 6,
     "basePay": 11400,
     "locations": [
@@ -3721,52 +2310,25 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Your clients see real results today.",
-          "You motivate everyone to push past their limits.",
-          "A client tips generously for your expertise.",
-          "Every session runs perfectly on schedule.",
-          "Another excellent day of training."
-        ],
-        "payMultiplier": 1.1,
-        "messages_int": "jobs.135.success_msgs"
+        "messages": "Jobs.135.outcome.success",
+        "payMultiplier": 1.1
       },
       "partial": {
-        "messages": [
-          "A client struggles to keep up with the routine.",
-          "You're worn out from demonstrating exercises.",
-          "Some sessions run a bit short.",
-          "Most clients leave satisfied, a few don't.",
-          "A tiring but workable day."
-        ],
+        "messages": "Jobs.135.outcome.partial",
         "payMultiplier": 0.7,
         "damage": {
           "hp": 8
-        },
-        "messages_int": "jobs.135.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "A client gives up halfway through.",
-          "You strain a muscle demonstrating a routine.",
-          "Clients leave unhappy with their progress.",
-          "You can't keep the energy up today.",
-          "A disappointing day at the gym."
-        ],
+        "messages": "Jobs.135.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 15
-        },
-        "messages_int": "jobs.135.failure_msgs"
+        }
       },
       "disaster": {
-        "messages": [
-          "A client gets seriously injured during your session!",
-          "You collapse from overexertion!",
-          "Equipment fails and causes an accident!",
-          "The gym threatens to revoke your contract!",
-          "You're blamed for the injury and lose pay!"
-        ],
+        "messages": "Jobs.135.outcome.disaster",
         "payMultiplier": -1,
         "damage": {
           "hp": 35
@@ -3775,19 +2337,14 @@
           "Bleeding"
         ]
       }
-    },
-    "description_int": "jobs.135.description",
-    "category_int": "jobs.category.social"
+    }
   },
   {
     "id": 136,
-    "name": "Doorman",
-    "name_int": "jobs.136.name",
-    "name_it": "Portiere",
+    "name": "Jobs.136.name",
     "category": "General",
     "spec": "Customer Service",
-    "description": "Greet guests and control entry at the venue's front door.",
-    "description_it": "Accogli gli ospiti e controlla l'ingresso del locale.",
+    "description": "Jobs.136.description",
     "duration": 9,
     "basePay": 11700,
     "locations": [
@@ -3800,55 +2357,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Every guest is greeted with a smile.",
-          "You keep the line moving smoothly all night.",
-          "Troublemakers think twice before approaching you.",
-          "Generous tips fill your pocket.",
-          "A pleasant, uneventful shift."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.136.success_msgs"
+        "messages": "Jobs.136.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "A long line tests your patience.",
-          "You have to turn away a few rude guests.",
-          "Your feet ache from standing all night.",
-          "Most of the night goes smoothly.",
-          "A tiring but ordinary shift."
-        ],
+        "messages": "Jobs.136.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 5
-        },
-        "messages_int": "jobs.136.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You let in a guest who causes trouble.",
-          "An argument at the door gets out of hand.",
-          "You lose track of the guest list.",
-          "The manager scolds you for the chaos.",
-          "A frustrating night at the door."
-        ],
+        "messages": "Jobs.136.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 10
         },
         "status": [
           "Stun"
-        ],
-        "messages_int": "jobs.136.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A violent guest knocks you down at the entrance!",
-          "You let in a group that trashes the venue!",
-          "A bribe attempt turns into a confrontation!",
-          "The venue holds you responsible for the chaos!",
-          "You're fired on the spot!"
-        ],
+        "messages": "Jobs.136.outcome.disaster",
         "payMultiplier": -1,
         "damage": {
           "hp": 40
@@ -3858,19 +2388,14 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.136.description",
-    "category_int": "jobs.category.general"
+    }
   },
   {
     "id": 137,
-    "name": "Bouncer",
-    "name_int": "jobs.137.name",
-    "name_it": "Buttafuori",
+    "name": "Jobs.137.name",
     "category": "Combat",
     "spec": "Crowd Control",
-    "description": "Keep order and remove troublemakers from the venue.",
-    "description_it": "Mantieni l'ordine e allontana i facinorosi dal locale.",
+    "description": "Jobs.137.description",
     "duration": 8,
     "basePay": 16800,
     "locations": [
@@ -3883,41 +2408,21 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "Your presence keeps everyone in line.",
-          "You eject a troublemaker without a scene.",
-          "The night passes without incident.",
-          "Patrons behave themselves under your watchful eye.",
-          "A calm, well-controlled venue tonight."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.137.success_msgs"
+        "messages": "Jobs.137.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "A scuffle breaks out but you handle it.",
-          "You take a few hits separating a fight.",
-          "A drunk patron gives you trouble.",
-          "You manage to keep things under control, barely.",
-          "A rough but manageable night."
-        ],
+        "messages": "Jobs.137.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 20
         },
         "status": [
           "Bleeding"
-        ],
-        "messages_int": "jobs.137.partial_msgs"
+        ]
       },
       "failure": {
-        "messages": [
-          "A brawl gets out of hand despite your efforts.",
-          "You're overwhelmed by a group of patrons.",
-          "Furniture is broken in the chaos.",
-          "The manager is furious about the damage.",
-          "A bad night for venue security."
-        ],
+        "messages": "Jobs.137.outcome.failure",
         "payMultiplier": 0.3,
         "damage": {
           "hp": 35
@@ -3925,17 +2430,10 @@
         "status": [
           "Bleeding",
           "Stun"
-        ],
-        "messages_int": "jobs.137.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A massive brawl leaves you knocked out cold!",
-          "The venue is wrecked beyond your control!",
-          "You're ganged up on by a mob of patrons!",
-          "The owner blames you for the destruction!",
-          "You're banned from working venue security again!"
-        ],
+        "messages": "Jobs.137.outcome.disaster",
         "payMultiplier": -1.2,
         "damage": {
           "hp": 65
@@ -3946,19 +2444,14 @@
           "Confusion"
         ]
       }
-    },
-    "description_int": "jobs.137.description",
-    "category_int": "jobs.category.combat"
+    }
   },
   {
     "id": 138,
-    "name": "Lifeguard",
-    "name_int": "jobs.138.name",
-    "name_it": "Bagnino",
+    "name": "Jobs.138.name",
     "category": "General",
     "spec": "Swimming",
-    "description": "Watch over swimmers and respond to emergencies in the water.",
-    "description_it": "Sorveglia i bagnanti e intervieni in caso di emergenza in acqua.",
+    "description": "Jobs.138.description",
     "duration": 8,
     "basePay": 24000,
     "locations": [
@@ -3972,55 +2465,28 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You spot trouble early and prevent any accidents.",
-          "A swimmer thanks you for your quick eyes.",
-          "The waters stay calm and safe all day.",
-          "Your vigilance keeps everyone secure.",
-          "A perfect day on the watchtower."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.138.success_msgs"
+        "messages": "Jobs.138.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "You wade in to help a struggling swimmer.",
-          "The sun leaves you exhausted by the end of the shift.",
-          "A close call keeps you on edge.",
-          "Most of the day passes without major issues.",
-          "A tiring but uneventful shift."
-        ],
+        "messages": "Jobs.138.outcome.partial",
         "payMultiplier": 0.75,
         "damage": {
           "hp": 10
-        },
-        "messages_int": "jobs.138.partial_msgs"
+        }
       },
       "failure": {
-        "messages": [
-          "You miss a swimmer in distress until it's almost too late.",
-          "A strong current catches you off guard.",
-          "You're too slow to respond to a call for help.",
-          "Your supervisor questions your attentiveness.",
-          "A stressful, draining shift."
-        ],
+        "messages": "Jobs.138.outcome.failure",
         "payMultiplier": 0.25,
         "damage": {
           "hp": 20
         },
         "status": [
           "Cold"
-        ],
-        "messages_int": "jobs.138.failure_msgs"
+        ]
       },
       "disaster": {
-        "messages": [
-          "A swimmer nearly drowns on your watch!",
-          "You're pulled under while attempting a rescue!",
-          "Panic spreads as the emergency unfolds!",
-          "An investigation is launched into the incident!",
-          "You're suspended pending review!"
-        ],
+        "messages": "Jobs.138.outcome.disaster",
         "payMultiplier": -1.5,
         "damage": {
           "hp": 50
@@ -4030,19 +2496,14 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.138.description",
-    "category_int": "jobs.category.general"
+    }
   },
   {
     "id": 139,
-    "name": "Defence Lawyer",
-    "name_int": "jobs.139.name",
-    "name_it": "Avvocato Difensore",
+    "name": "Jobs.139.name",
     "category": "Social",
     "spec": "Law",
-    "description": "Argue for the accused before the Goddess of Justice, who does not recognise a defence bar.",
-    "description_it": "Difendi gli imputati davanti alla Dea della Giustizia, che non riconosce alcun ordine forense.",
+    "description": "Jobs.139.description",
     "duration": 8,
     "basePay": 23200,
     "locations": [
@@ -4055,46 +2516,19 @@
     },
     "outcomes": {
       "success": {
-        "messages": [
-          "You talked a bounty down to nothing and Eris let you.",
-          "The bench overruled you eleven times and acquitted anyway.",
-          "Your client walked. Nobody is sure which argument did it.",
-          "You cited a precedent Eris invented and she was too flattered to object.",
-          "A clean acquittal. The stenographer applauded, briefly, then apologised."
-        ],
-        "payMultiplier": 1,
-        "messages_int": "jobs.139.success_msgs"
+        "messages": "Jobs.139.outcome.success",
+        "payMultiplier": 1
       },
       "partial": {
-        "messages": [
-          "You argued the sentence down from a season to a fortnight.",
-          "Half the counts were struck. The other half doubled.",
-          "Eris listened, which is not the same as agreeing.",
-          "You lost, politely, and were thanked for the effort.",
-          "Your client is in a cell, but a nicer one."
-        ],
-        "payMultiplier": 0.6,
-        "messages_int": "jobs.139.partial_msgs"
+        "messages": "Jobs.139.outcome.partial",
+        "payMultiplier": 0.6
       },
       "failure": {
-        "messages": [
-          "You were removed from the courtroom before opening.",
-          "Eris held you in contempt of herself.",
-          "Your submissions were read aloud, mockingly, then burned.",
-          "The court found your client guilty and you tiresome.",
-          "You spent the whole hearing standing very still."
-        ],
-        "payMultiplier": 0.2,
-        "messages_int": "jobs.139.failure_msgs"
+        "messages": "Jobs.139.outcome.failure",
+        "payMultiplier": 0.2
       },
       "disaster": {
-        "messages": [
-          "You argued so well that Eris convicted your client out of spite.",
-          "The bench turned your briefcase into a pigeon and the pigeon left.",
-          "You were briefly declared a co-defendant.",
-          "Your name is now in the file, underlined, twice.",
-          "The fee was confiscated as evidence of something."
-        ],
+        "messages": "Jobs.139.outcome.disaster",
         "payMultiplier": -0.5,
         "damage": {
           "hp": 15
@@ -4103,8 +2537,6 @@
           "Stun"
         ]
       }
-    },
-    "description_int": "jobs.139.description",
-    "category_int": "jobs.category.social"
+    }
   }
 ]

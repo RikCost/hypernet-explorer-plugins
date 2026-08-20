@@ -83,11 +83,11 @@
   "effect": {
     "halve": {
       "name": "Marciume",
-      "desc": "Su una creatura: ogni statistica dimezzata, di chiunque sia. Su terreno nudo: la casella e maledetta e la prossima creatura che vi sale arriva dimezzata."
+      "desc": "Su una creatura: ogni statistica dimezzata, di chiunque sia. Su terreno nudo: la casella è maledetta e la prossima creatura che vi sale arriva dimezzata."
     },
     "double": {
       "name": "Doratura",
-      "desc": "Su una creatura: ogni statistica raddoppiata, di chiunque sia. Su terreno nudo: la casella e benedetta e la prossima creatura che vi sale arriva raddoppiata."
+      "desc": "Su una creatura: ogni statistica raddoppiata, di chiunque sia. Su terreno nudo: la casella è benedetta e la prossima creatura che vi sale arriva raddoppiata."
     },
     "cull": {
       "name": "Falcidia",
@@ -99,14 +99,14 @@
     },
     "ward": {
       "name": "Egida",
-      "desc": "Su una creatura: nello scontro vince ogni statistica pari. Su terreno nudo: la casella e chiusa all'avversario per il suo prossimo turno."
+      "desc": "Su una creatura: nello scontro vince ogni statistica pari. Su terreno nudo: la casella è chiusa all'avversario per il suo prossimo turno."
     }
   },
   "capture": {
     "bound": "{name} viene vincolato in una carta e cade.",
     "boundNew": "{name} viene vincolato in una carta, la prima del suo genere, e cade.",
     "failed": "{name} si sottrae al vincolo. (serviva {chance}%)",
-    "tooStrong": "{name} e di livello {level} e non si lascia vincolare da un gruppo di {median}.",
+    "tooStrong": "{name} è di livello {level} e non si lascia vincolare da un gruppo di {median}.",
     "noCard": "Non esiste carta che {name} possa mai essere."
   }
 }

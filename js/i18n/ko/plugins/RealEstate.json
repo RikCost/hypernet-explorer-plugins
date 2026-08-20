@@ -49,5 +49,42 @@
     "available2": "사용 가능",
     "evicted": "",
     "appName": ""
+  },
+  "company": {
+    "lemoncorp": {
+      "description": "유럽 가젯의 절반을 만들어 내는 상큼한 소비자 기술 대기업. 고평가되기로도, 사랑받기로도 유명하다."
+    },
+    "petrodyne": {
+      "description": "석유와 가스, 그리고 타는 모든 것. 페트로케이브에서 원유를 퍼올려 꾸준하고 그을음 섞인 배당을 낸다."
+    },
+    "soulforge": {
+      "description": "영혼 결정을 정제하고 거래한다. 변동이 심하고 윤리적으로 미심쩍지만, 장막이 얇아지면 엄청난 수익을 낸다."
+    },
+    "hypernetsystems": {
+      "description": "하이퍼넷 그 자체의 척추. 회선과 기지국, 그리고 당신의 데이터 대부분을 소유한다."
+    },
+    "ferrosteelworks": {
+      "description": "들보와 레일, 선체 강판. 지루하고 무겁지만 무언가를 짓는 모든 이에게 조용히 필수적이다."
+    },
+    "greenwitchorganics": {
+      "description": "그린위치의 지붕 아래에서 기른 약초와 팅크, 그리고 수상하리만치 효과 좋은 농산물."
+    },
+    "vaultbankholdings": {
+      "description": "예금과 대출, 그리고 그것을 지키는 금고. 빚이 있다면 아마 이곳에 있다."
+    },
+    "aetherlogistics": {
+      "description": "기차와 버스, 헬리콥터, 그리고 그것들을 묶는 시간표. 사람과 화물을 지도 곳곳으로 옮긴다."
+    }
+  },
+  "sector": {
+    "consumertech": "소비자 기술",
+    "energy": "에너지",
+    "occult": "오컬트",
+    "telecom": "통신",
+    "industrial": "산업",
+    "agriculture": "농업",
+    "finance": "금융",
+    "transport": "운송",
+    "misc": "기타"
   }
 }

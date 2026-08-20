@@ -363,21 +363,10 @@ body {
 #map-info-hud .mih-food {
     padding-bottom: 6px;
 }
-#map-info-hud .mih-food .mih-region-lbl {
-    color: var(--text-primary-hover);
-}
+/* The food row reads like every other row of the card: the gold is the card's
+   accent, spent on the numbers that change, not on a standing label. */
 #map-info-hud .mih-food .mih-region-val {
     color: var(--text-success-active);
-    font-weight: 700;
-}
-#map-info-hud .mih-eta {
-    padding-bottom: 6px;
-}
-#map-info-hud .mih-eta .mih-region-lbl {
-    color: var(--text-primary-hover);
-}
-#map-info-hud .mih-eta .mih-region-val {
-    color: var(--text-primary-hover);
     font-weight: 700;
 }
 #map-info-hud .mih-temp .mih-region-val {
@@ -460,13 +449,20 @@ body {
 
 /* ==========================================================================
    Party HUD (js/plugins/UI/PartyHud.js)
-   One row per party member in the top-left corner: the bordered card carries
-   name, HP and MP, and a chip column stands to the right of it, outside the
-   box — urgent needs first, then states and buffs, all as words rather than
-   icons. Position and card width are written inline by the
-   plugin from its parameters (the width as --phud-card-w). Never use the
-   `inset` shorthand here: the game runtime does not honour it (see the bar
-   fills below).
+   The one party HUD, on the map and in battle alike. One row per member in the
+   top-left corner: the card and a chip column standing to the right of it,
+   outside the box. The card carries no panel of its own (no fill, no border):
+   it is the name, the HP bar, the AP orb and the MP bar, laid directly over
+   whatever is behind them. Each bar writes its own current/max value inside
+   itself rather than a separate number standing off the bar.
+
+   The chip strip carries urgent needs (map only), stat multipliers and class
+   chips (battle only) and states (both), all as words rather than icons. It
+   lies alongside the card, out of the layout, so no chip ever moves a bar.
+
+   Position and card width are written inline by the plugin from its parameters
+   (the width as --phud-card-w). Never use the `inset` shorthand here: the game
+   runtime does not honour it (see the bar fills below).
    ========================================================================== */
 #party-hud {
     position: fixed;
@@ -477,46 +473,151 @@ body {
     flex-direction: column;
     gap: 6px;
     opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+    /* --phud-scale is written by the plugin from the canvas' own scale, so the
+       cards keep their size against the game view rather than against the
+       browser window. */
+    transform: scale(var(--phud-scale, 1));
+    transform-origin: top left;
 }
 #party-hud.phud-visible {
     opacity: 1;
-    transform: translateY(0);
 }
 #party-hud .phud-row {
+    position: relative;
     display: flex;
     align-items: flex-start;
     gap: 6px;
+}
+/* The AP orb, in the gap between the HP and MP bars, centred under the card's
+   own width rather than standing outside it. It fills from the bottom like a
+   glass. Monsters never carry one - see BattleSystem/BattleSystemEnhancedHUD.js. */
+#party-hud .phud-mid {
+    display: flex;
+    justify-content: center;
+    margin: 3px 0;
+}
+/* No ring around it: the orb now stands over the head of the gauges rather
+   than beside them, and a hard outline there only cut the bar in two. What it
+   is holding is said by the fill and by the number on it. */
+#party-hud .phud-orb {
+    position: relative;
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: var(--shadow-black-translucent-55);
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow-black-translucent-55);
+}
+#party-hud .phud-orb-fill,
+#party-hud .phud-orb-ghost {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0;
+    transition: height 0.2s ease-out;
+}
+#party-hud .phud-orb-fill {
+    background: linear-gradient(to top, #7a5210, #ffcc33);
+}
+/* What an armed skill is about to take: the fill drops to what would be left
+   and this dimmer band stays behind at the current level, so the cost reads as
+   the gap between the two. */
+#party-hud .phud-orb-ghost {
+    background: rgba(255, 204, 51, 0.28);
+}
+#party-hud .phud-orb-val {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 10px;
+    color: #fff6dd;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9);
+}
+/* A skill is armed and its cost is showing: the rim brightens so the gap
+   between fill and ghost reads as a price about to be paid rather than as the
+   meter simply being part-full. */
+#party-hud .phud-orb-spent {
+    box-shadow: 0 0 10px rgba(255, 210, 90, 0.6);
+}
+/* With no rim left to redden, an empty meter is said by its own number. */
+#party-hud .phud-orb-empty .phud-orb-val {
+    color: var(--text-blood-red);
+}
+/* The same orb, reused by the enemy bars (BattleSystem/BattleSystemEnhancedHUD.js)
+   outside the #party-hud tree: an unscoped copy of the rules above so a
+   monster's AP/TP reads exactly like a party member's, just anchored by JS
+   (.ebar-orb) instead of sitting in a flex row. */
+.phud-orb.ebar-orb {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: var(--shadow-black-translucent-55);
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow-black-translucent-55);
+}
+.ebar-orb .phud-orb-fill,
+.ebar-orb .phud-orb-ghost {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0;
+    transition: height 0.2s ease-out;
+}
+.ebar-orb .phud-orb-fill {
+    background: linear-gradient(to top, #7a5210, #ffcc33);
+}
+.ebar-orb .phud-orb-ghost {
+    background: rgba(255, 204, 51, 0.28);
+}
+.ebar-orb .phud-orb-val {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 10px;
+    color: #fff6dd;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9);
+}
+.phud-orb.ebar-orb.phud-orb-empty .phud-orb-val {
+    color: var(--text-blood-red);
 }
 #party-hud .phud-card {
     width: var(--phud-card-w, 224px);
     flex: 0 0 auto;
     box-sizing: border-box;
-    background: var(--bg-secondary-hover);
-    border: 2px solid var(--text-primary-hover);
-    border-radius: 5px;
-    box-shadow: 0 6px 18px var(--shadow-black-translucent-55);
-    padding: 5px 8px 6px;
+    background: none;
+    border: none;
+    padding: 0;
 }
 /* The vehicle the party is aboard: the same card as a crew member's, in the
    purple its fuel gauge is drawn in, so the row above the party reads as a
    machine rather than as another face. A vehicle with its critical parts gone
    wears .phud-down exactly as a downed member does, and the rules below take
    this one's colours off it. */
-#party-hud .phud-card.phud-vehicle {
-    border-color: #a05ce0;
-}
 #party-hud .phud-card.phud-vehicle .phud-name {
     color: #d8b4ff;
 }
 #party-hud .phud-card.phud-down {
     filter: grayscale(0.7);
-    border-color: var(--text-blood-red);
 }
 #party-hud .phud-head {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 6px;
     margin-bottom: 4px;
 }
@@ -528,6 +629,33 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+/* Whose turn it is, in battle: the caret and the lit card say it together, so
+   the acting member is found without hunting for a moving sprite. */
+#party-hud .phud-caret {
+    flex: 0 0 auto;
+    visibility: hidden;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--text-primary-hover);
+    animation: phud-caret 1s ease-in-out infinite;
+}
+@keyframes phud-caret {
+    0%, 100% { transform: translateX(0); opacity: 1; }
+    50%      { transform: translateX(3px); opacity: 0.6; }
+}
+/* Whose turn it is, and who a skill is aimed at: with no panel of its own to
+   light up, the card says it through the name and a soft ambient glow instead
+   of a border. */
+#party-hud .phud-card.phud-acting .phud-name {
+    color: #ffd766;
+    text-shadow: 0 0 8px rgba(255, 210, 90, 0.85), 1px 1px 0 rgba(0, 0, 0, 0.85);
+}
+#party-hud .phud-card.phud-targeted .phud-name {
+    color: #fff0b0;
+    text-shadow: 0 0 8px rgba(255, 240, 176, 0.85), 1px 1px 0 rgba(0, 0, 0, 0.85);
 }
 #party-hud .phud-card.phud-down .phud-name {
     color: var(--text-blood-red);
@@ -594,38 +722,49 @@ body {
     0%   { opacity: 0.55; }
     100% { opacity: 0; }
 }
-#party-hud .phud-bar-lbl,
-#party-hud .phud-bar-val {
+/* The bar's own current/max value, centred inside it in place of an "HP" or
+   "MP" word standing off to the side. */
+#party-hud .phud-bar-lbl {
     position: absolute;
     top: 0;
-    font-size: 14px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
     font-weight: 700;
     line-height: 14px;
     color: #f4ecd8;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
 }
-#party-hud .phud-bar-lbl {
-    left: 5px;
-    color: var(--text-primary-hover);
-}
-#party-hud .phud-bar-val {
-    right: 5px;
-}
+/* The chip strip stands to the right of the card and is taken out of the row's
+   own layout: chips arrive and leave every turn of a fight, and a strip that
+   counted towards the row would push the bars around under them and shove the
+   member below down the screen every time a debuff landed. Absolutely placed,
+   it can grow as wide and as tall as it likes without a single bar moving.
+   The chips run along the row and wrap to the next line rather than stacking
+   into a column, so a member with nine of them stays one card tall. */
 #party-hud .phud-chips {
+    position: absolute;
+    left: calc(var(--phud-card-w, 224px) + 6px);
+    top: 4px;
     display: flex;
-    flex-direction: column;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    align-content: flex-start;
     gap: 3px;
-    max-width: 200px;
-    padding-top: 4px;
+    width: 360px;
+    pointer-events: none;
 }
 #party-hud .phud-alerts,
+#party-hud .phud-stats,
 #party-hud .phud-states {
     display: flex;
-    flex-direction: column;
+    flex-flow: row wrap;
     align-items: flex-start;
     gap: 3px;
 }
 #party-hud .phud-alerts.phud-alerts-empty,
+#party-hud .phud-stats.phud-alerts-empty,
 #party-hud .phud-states.phud-alerts-empty {
     display: none;
 }
@@ -652,6 +791,20 @@ body {
     color: var(--text-blood-red);
     border-color: var(--text-blood-red);
 }
+/* What the fight has made of a member's stats, battle only: the multiplier in
+   force right now, green when it is in their favour and red when it is not.
+   A monster's changes are called out in the battle log instead of standing
+   under it as a list. */
+#party-hud .phud-stat {
+    color: #7dff9a;
+    background: var(--bg-secondary-hover);
+    border: 1px solid #7dff9a;
+    padding: 0 5px;
+}
+#party-hud .phud-stat.phud-state-down {
+    color: var(--text-blood-red);
+    border-color: var(--text-blood-red);
+}
 #party-hud .phud-alert-critical {
     color: #ffe9e9;
     background: var(--text-blood-red);
@@ -661,11 +814,46 @@ body {
     0%, 100% { opacity: 1; }
     50%      { opacity: 0.55; }
 }
+/* ASCII mode has no party readout of its own in a fight, so the cards stay up
+   and dress for the terminal instead: monospace, a square grey frame and flat
+   fills, so they sit inside the rendered screen rather than on top of it. */
+#party-hud.phud-ascii .phud-card,
+#party-hud.phud-ascii .phud-orb,
+#party-hud.phud-ascii .phud-alert {
+    font-family: 'Courier New', monospace;
+    background: #000;
+    border-color: #c0c0c0;
+    border-radius: 0;
+    box-shadow: none;
+    color: #c0c0c0;
+}
+/* The terminal skin draws frames around everything it has, so the orb takes
+   one back here even though it wears none in the ordinary HUD. */
+#party-hud.phud-ascii .phud-orb {
+    border: 1px solid #c0c0c0;
+    border-radius: 0;
+}
+#party-hud.phud-ascii .phud-name,
+#party-hud.phud-ascii .phud-bar-lbl,
+#party-hud.phud-ascii .phud-caret {
+    color: #c0c0c0;
+}
+#party-hud.phud-ascii .phud-bar {
+    border-radius: 0;
+}
+#party-hud.phud-ascii .phud-fill,
+#party-hud.phud-ascii .phud-orb-fill {
+    background: #c0c0c0;
+    animation: none;
+}
+#party-hud.phud-ascii .phud-orb-ghost {
+    background: #4a4a4a;
+}
 
 /* ==========================================================================
    BOOT SCREEN (js/main.js, Main#showLoadingSpinner)
    --------------------------------------------------------------------------
-   The HexDOS fake POST that runs before the engine is up. It used to be built
+   The Archways fake POST that runs before the engine is up. It used to be built
    entirely from element.style.cssText plus a <style> appended for the caret,
    which meant the boot screen was the one surface in the game with no
    stylesheet at all. It deliberately does NOT use theme tokens: it paints

@@ -110,6 +110,26 @@
     window.SaveSystem.isQuickSlot = isQuickSlot;
     window.SaveSystem.nextQuickSlot = nextQuickSlot;
     window.SaveSystem.latestQuickSlot = latestQuickSlot;
+
+    // The single most recently written save of any kind: the shared autosave
+    // (slot 0), a playthrough's own slot or a quicksave, whichever timestamp
+    // is newest. Used by the title screen's one-click Continue, which unlike
+    // Reconnect skips the slot picker entirely. -1 when nothing has ever been
+    // saved.
+    function mostRecentSaveId() {
+        const globalInfo = DataManager._globalInfo || [];
+        let best = -1;
+        let bestTime = -1;
+        for (let i = 0; i < globalInfo.length; i++) {
+            const info = globalInfo[i];
+            if (info && info.timestamp > bestTime) {
+                bestTime = info.timestamp;
+                best = i;
+            }
+        }
+        return best;
+    }
+    window.SaveSystem.mostRecentSaveId = mostRecentSaveId;
     // Called when character creation completes; the save itself happens on
     // the next Scene_Map start so the player is already on a real map.
     window.SaveSystem.scheduleNewPlaythroughSave = function () {

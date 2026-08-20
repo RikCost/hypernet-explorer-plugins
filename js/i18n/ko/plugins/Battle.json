@@ -69,6 +69,8 @@
     "skill": "스킬",
     "skills": "기술",
     "basic": "기본적인",
+    "wrestle": "붙잡기",
+    "talk": "대화",
     "reload": "재장전",
     "run": "달리기"
   },
@@ -109,7 +111,6 @@
     "learnableSkills": "배울 수 있는 스킬:"
   },
   "summon": {
-    "battleOnly": "소환은 전투 중에만 사용할 수 있습니다!",
     "alreadyActive": "이미 소환이 활성화되어 있습니다!",
     "summoned": "{name}을(를) 소환했다!"
   },

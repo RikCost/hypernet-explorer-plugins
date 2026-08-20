@@ -40,6 +40,7 @@
             this._lastIndex = -1;
             this._archiveMode = "timeline";   // i18n-ignore: shelf id
             this._diseaseIndex = 0;
+            this._fixedOnly = false;
 
             this._historyWindow.activate();
             this._historyWindow.select(0);
@@ -82,9 +83,7 @@
                 return;
             }
 
-            const allEvents = window.HistoryManager
-                ? window.HistoryManager.getEvents()
-                : ($gameSystem._historicalEvents || []);
+            const allEvents = this.getUIHistoryEvents();
             if (allEvents.length === 0) return;
 
             const currentIndex = this._historyWindow.index();
@@ -179,6 +178,29 @@
 
         onSummaryOk() { this.popScene(); }
         onHistoryOk() { /* retained for RMMZ event loop handler safety */ }
+
+        // Canon events are the ones handleFixedEvents wrote (HistorySimulator.js),
+        // tagged type:'fixed'; everything else is a procedural roll. Both the
+        // input clamp and the renderer must read the SAME filtered array, or
+        // the selected index desyncs from the visible cards (see setArchiveMode
+        // for the same concern on the timeline/diseases shelf switch).
+        getUIHistoryEvents() {
+            const all = window.HistoryManager
+                ? window.HistoryManager.getEvents()
+                : ($gameSystem._historicalEvents || []);
+            return this._fixedOnly ? all.filter(e => e && e.type === 'fixed') : all;
+        }
+
+        toggleFixedOnly() {
+            this._fixedOnly = !this._fixedOnly;
+            this._lastIndex = -1;
+            this._uiSpread = null;
+            const container = this._uiContainer || document.getElementById("history-container");
+            if (container) container.innerHTML = "";
+            this._historyWindow.select(0);
+            SoundManager.playCursor();
+            this.syncUIHistoryState();
+        }
 
         initUIHistoryDOM() {
             if (!document.getElementById("history-container")) {
@@ -289,12 +311,16 @@
 
             this._lastIndex = currentIndex;
 
-            const isIt = ConfigManager.language === "it";
-            const allEvents = window.HistoryManager
-                ? window.HistoryManager.getEvents()
-                : ($gameSystem._historicalEvents || []);
+            const allEvents = this.getUIHistoryEvents();
 
-            const titleText = isIt ? "ARCHIVIO STORICO" : "HISTORICAL ARCHIVE";
+            const titleText = T('History.ui.archiveTitle');
+
+            // An event's category is an id on the record and a label on the card.
+            const categoryLabel = (id) => {
+                const key = 'History.category.' + String(id || '');
+                return T.has(key) ? T(key) : String(id || '');
+            };
+            const worldName = (name) => window.WorldNames ? window.WorldNames.any(name) : name;
 
             function getCategoryVars(category) {
                 const map = {
@@ -341,19 +367,19 @@
                         }
                     });
                 } else {
-                    consequenceBadges = `<span style="font-size:0.96rem; color:var(--text-disabled, #5c4b3d)">${isIt ? "Nessuna variazione geopolitica rilevata." : "No geopolitical delta registered."}</span>`;
+                    consequenceBadges = `<span style="font-size:0.96rem; color:var(--text-disabled, #5c4b3d)">${T('History.ui.noDelta')}</span>`;
                 }
 
                 dossierHTML = `
                     <div class="cc-dossier-card">
                         <div style="display:flex; flex-direction:column; gap:10px; font-size:1.02rem; margin-bottom:12px">
                             <div class="cc-dossier-row">
-                                <span class="cc-dossier-label">${isIt ? "Data:" : "Date:"}</span>
+                                <span class="cc-dossier-label">${T('History.ui.dateLbl')}</span>
                                 <span class="cc-dossier-value" style="font-family:'Courier Prime', monospace">${formattedDate}</span>
                             </div>
                             <div class="cc-dossier-row">
-                                <span class="cc-dossier-label">${isIt ? "Tipo:" : "Type:"}</span>
-                                <span class="cc-dossier-value" style="color:${cv.color}; text-transform:uppercase">${selectedEvent.category}</span>
+                                <span class="cc-dossier-label">${T('History.ui.typeLbl')}</span>
+                                <span class="cc-dossier-value" style="color:${cv.color}; text-transform:uppercase">${categoryLabel(selectedEvent.category)}</span>
                                 ${artifactTag}
                             </div>
                         </div>
@@ -361,7 +387,7 @@
                             ${selectedEvent.description}
                         </div>
                         <div>
-                            <div style="font-size:0.915rem; text-transform:uppercase; color:var(--text-disabled, #5c4b3d); font-weight:bold; margin-bottom:6px">${isIt ? "CONSEGUENZE:" : "CONSEQUENCES:"}</div>
+                            <div style="font-size:0.915rem; text-transform:uppercase; color:var(--text-disabled, #5c4b3d); font-weight:bold; margin-bottom:6px">${T('History.ui.consequences')}</div>
                             <div class="conseq-row">
                                 ${consequenceBadges}
                             </div>
@@ -376,7 +402,7 @@
                 // here instead of on every selection change.
                 let timelineHTML = "";
                 if (allEvents.length === 0) {
-                    timelineHTML = `<div style="text-align:center; color:var(--text-disabled, #5c4b3d); margin-top:50px; font-size:1.14rem">${isIt ? "Nessun record registrato..." : "No timeline records found."}</div>`;
+                    timelineHTML = `<div style="text-align:center; color:var(--text-disabled, #5c4b3d); margin-top:50px; font-size:1.14rem">${T('History.ui.noRecords')}</div>`;
                 } else {
                     allEvents.forEach((evt, idx) => {
                         const focused = idx === currentIndex ? "focused" : "";
@@ -411,7 +437,7 @@
 
                 let standingsHTML = `
                     <div class="cc-dossier-card">
-                        <h3 class="cc-subheader">${isIt ? "EQUILIBRIO DELLE HYPERPOTENZE" : "HYPERPOWERS BALANCE"}</h3>
+                        <h3 class="cc-subheader">${T('History.ui.hyperpowersBalance')}</h3>
                         <div style="display:flex; flex-direction:column; gap:10px">
                 `;
 
@@ -421,14 +447,14 @@
 
                     const controlled = [];
                     for (const [cName, cData] of Object.entries(COUNTRIES)) {
-                        if (cData.controller === name) controlled.push(cName);
+                        if (cData.controller === name) controlled.push(worldName(cName));
                     }
                     const territories = controlled.slice(0, 3).join(", ") + (controlled.length > 3 ? "..." : "");
 
                     standingsHTML += `
                         <div style="border-bottom:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.25)); padding-bottom:8px">
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px">
-                                <strong style="font-size:1.02rem; color:var(--text-primary-hover, #2b1c11)">${name}</strong>
+                                <strong style="font-size:1.02rem; color:var(--text-primary-hover, #2b1c11)">${worldName(name)}</strong>
                                 <span style="font-size:0.854rem; color:var(--text-disabled, #5c4b3d); font-family:'Courier Prime', monospace">${territories}</span>
                             </div>
                             <div class="cc-dossier-row">
@@ -468,6 +494,7 @@
                             ${standingsHTML}
                             <div class="cc-button-panel">
                                 <button class="cc-btn-treaty" id="history-back-btn">${backLabel}</button>
+                                <button class="cc-btn-treaty ${this._fixedOnly ? "confirm" : ""}" id="history-canon-btn">${this._fixedOnly ? T('History.ui.showAllEvents') : T('History.ui.showCanonOnly')}</button>
                                 <button class="cc-btn-treaty" id="history-mode-btn">${T('Diseases.ui.showLibrary')}</button>
                                 <button class="cc-btn-treaty confirm" id="history-continue-btn">${continueLabel}</button>
                             </div>
@@ -493,6 +520,9 @@
 
                 const modeBtn = container.querySelector("#history-mode-btn");
                 if (modeBtn) modeBtn.addEventListener("click", () => this.setArchiveMode("diseases"));
+
+                const canonBtn = container.querySelector("#history-canon-btn");
+                if (canonBtn) canonBtn.addEventListener("click", () => this.toggleFixedOnly());
 
                 const backBtn = container.querySelector("#history-back-btn");
                 if (backBtn) {

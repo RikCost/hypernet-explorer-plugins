@@ -317,8 +317,5 @@
       "{name} STAYS WHERE IT IZ, AT PEACE!",
       "{name} SEEMS CONTENT TA BE LEFT ALONE!"
     ]
-  },
-  "cmd": {
-    "talk": "TALK"
   }
 }

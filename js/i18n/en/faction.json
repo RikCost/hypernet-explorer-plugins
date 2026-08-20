@@ -1397,6 +1397,276 @@
           "name": "Punchline Regent"
         }
       }
+    },
+    "gandanorder": {
+      "name": "Gandan Order",
+      "description": "The monastic order that recognises the Khan, keeps the count of years, and decides when a life has been lived well enough to be worth mentioning.",
+      "troops": {
+        "noviceofthelamp": {
+          "name": "Novice of the Lamp"
+        },
+        "gandanchanter": {
+          "name": "Gandan Chanter"
+        },
+        "prayerwheelguard": {
+          "name": "Prayer-Wheel Guard"
+        },
+        "illuminedadept": {
+          "name": "Illumined Adept"
+        },
+        "banneroftheeighthsky": {
+          "name": "Banner of the Eighth Sky"
+        },
+        "abbotmilitant": {
+          "name": "Abbot Militant"
+        }
+      }
+    },
+    "steppebanners": {
+      "name": "Steppe Banners",
+      "description": "Horse, bow and felt. The banners ride for the Khanate and go home when the grass fails, which the Khanate has learned to plan around.",
+      "troops": {
+        "hordeoutrider": {
+          "name": "Horde Outrider"
+        },
+        "hornbowrider": {
+          "name": "Hornbow Rider"
+        },
+        "felttentsergeant": {
+          "name": "Felt-Tent Sergeant"
+        },
+        "keshigguard": {
+          "name": "Keshig Guard"
+        },
+        "khansfalconer": {
+          "name": "Khan's Falconer"
+        },
+        "standardbearerofthegobi": {
+          "name": "Standard-Bearer of the Gobi"
+        }
+      }
+    },
+    "sanhedringuard": {
+      "name": "Sanhedrin Guard",
+      "description": "The Republic's standing guard, sworn to the restored court rather than to whichever government it happens to have seated.",
+      "troops": {
+        "templewatchman": {
+          "name": "Temple Watchman"
+        },
+        "sealbearer": {
+          "name": "Seal-Bearer"
+        },
+        "levitesharpshooter": {
+          "name": "Levite Sharpshooter"
+        },
+        "nasisescort": {
+          "name": "Nasi's Escort"
+        },
+        "brazenpillarguard": {
+          "name": "Brazen Pillar Guard"
+        },
+        "cherubimoperator": {
+          "name": "Cherubim Operator"
+        }
+      }
+    },
+    "shemhamphorasch": {
+      "name": "Clerks of the Divided Name",
+      "description": "They file the seventy-two, they keep the brass pots sealed, and they are extremely clear that nothing is currently missing.",
+      "troops": {
+        "nameclerk": {
+          "name": "Name Clerk"
+        },
+        "bindingscribe": {
+          "name": "Binding Scribe"
+        },
+        "ringbearer": {
+          "name": "Ring-Bearer"
+        },
+        "seventytwomaster": {
+          "name": "Master of the Seventy-Two"
+        },
+        "brasspotwarden": {
+          "name": "Brass-Pot Warden"
+        }
+      }
+    },
+    "concessionguard": {
+      "name": "Concession Guard",
+      "description": "Whoever holds the concession holds these: pipeline watch, derrick marksmen, and the men who settle a disputed lease in person.",
+      "troops": {
+        "pipelinewatch": {
+          "name": "Pipeline Watch"
+        },
+        "derrickmarksman": {
+          "name": "Derrick Marksman"
+        },
+        "refinerysergeant": {
+          "name": "Refinery Sergeant"
+        },
+        "concessionenforcer": {
+          "name": "Concession Enforcer"
+        },
+        "wellheadcaptain": {
+          "name": "Wellhead Captain"
+        },
+        "flarelightsniper": {
+          "name": "Flarelight Sniper"
+        }
+      }
+    },
+    "deepcontractors": {
+      "name": "Deep Contractors",
+      "description": "The people who negotiate with whatever the drilling wakes, and the people who deliver on what was agreed. Usually the same people.",
+      "troops": {
+        "signatorydeacon": {
+          "name": "Signatory Deacon"
+        },
+        "crudehandler": {
+          "name": "Crude Handler"
+        },
+        "bargainkeeper": {
+          "name": "Bargain-Keeper"
+        },
+        "deepwellcaller": {
+          "name": "Deep-Well Caller"
+        },
+        "contractdemonherd": {
+          "name": "Contract Demon-Herd"
+        }
+      }
+    },
+    "pasdaranorder": {
+      "name": "Immortal Guard",
+      "description": "The Shah's own regiment, ten thousand strong on paper and never once counted in public.",
+      "troops": {
+        "basijvolunteer": {
+          "name": "Levy Volunteer"
+        },
+        "pasdaranrifleman": {
+          "name": "Immortal Rifleman"
+        },
+        "qudsoperative": {
+          "name": "Savak Operative"
+        },
+        "missilecrewman": {
+          "name": "Missile Crewman"
+        },
+        "guardiancommander": {
+          "name": "Commander of the Immortals"
+        }
+      }
+    },
+    "hawzascholars": {
+      "name": "Imperial Academy",
+      "description": "Seminary, court and hospital under one roof, and answerable to the throne rather than to the pulpit.",
+      "troops": {
+        "seminarian": {
+          "name": "Academician"
+        },
+        "jurisprudent": {
+          "name": "Court Jurist"
+        },
+        "fatwaclerk": {
+          "name": "Chancery Clerk"
+        },
+        "hawzaphysician": {
+          "name": "Court Physician"
+        },
+        "marjascounsel": {
+          "name": "Counsel to the Throne"
+        }
+      }
+    },
+    "rashtrasevaks": {
+      "name": "Rashtra Sevaks",
+      "description": "Volunteers of the eternal order: drilled every morning, and available every evening.",
+      "troops": {
+        "sevakvolunteer": {
+          "name": "Sevak Volunteer"
+        },
+        "lathisergeant": {
+          "name": "Lathi Sergeant"
+        },
+        "dhanushmarksman": {
+          "name": "Dhanush Marksman"
+        },
+        "rashtrasubhedar": {
+          "name": "Rashtra Subhedar"
+        },
+        "chakrastandardbearer": {
+          "name": "Chakra Standard-Bearer"
+        },
+        "mahasenapati": {
+          "name": "Mahasenapati"
+        }
+      }
+    },
+    "mathacircle": {
+      "name": "Matha Circle",
+      "description": "The teaching houses: recitation, medicine, the calendar, and the quiet running of everything the assembly forgets.",
+      "troops": {
+        "brahmacharin": {
+          "name": "Brahmacharin"
+        },
+        "vedicreciter": {
+          "name": "Vedic Reciter"
+        },
+        "acharyasaide": {
+          "name": "Acharya's Aide"
+        },
+        "yajnakeeper": {
+          "name": "Yajna Keeper"
+        },
+        "mathaphysician": {
+          "name": "Matha Physician"
+        }
+      }
+    },
+    "cordilleracorps": {
+      "name": "Cordillera Corps",
+      "description": "The army of the long south, trained for a border that is mostly vertical and never quite where the map puts it.",
+      "troops": {
+        "conscriptofthesouth": {
+          "name": "Conscript of the South"
+        },
+        "andeanranger": {
+          "name": "Andean Ranger"
+        },
+        "cordillerasapper": {
+          "name": "Cordillera Sapper"
+        },
+        "mountainartillerist": {
+          "name": "Mountain Artillerist"
+        },
+        "longsouthcaptain": {
+          "name": "Captain of the Long South"
+        },
+        "valdiviasgrenadier": {
+          "name": "Valdivia's Grenadier"
+        }
+      }
+    },
+    "australnavy": {
+      "name": "Austral Flotilla",
+      "description": "Channels, fjords and ice water. It has never lost a ship it admits to having had.",
+      "troops": {
+        "channelpilot": {
+          "name": "Channel Pilot"
+        },
+        "straitmarine": {
+          "name": "Strait Marine"
+        },
+        "icewatermate": {
+          "name": "Icewater Mate"
+        },
+        "australgunner": {
+          "name": "Austral Gunner"
+        },
+        "commodoreofthefjords": {
+          "name": "Commodore of the Fjords"
+        }
+      }
     }
   }
 }

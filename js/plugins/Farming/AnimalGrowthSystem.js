@@ -124,15 +124,25 @@
   //   Sheep   -> Cloth       (861)    unchanged: the fleece, as the material
   //
   // Every animal pays `company` whether or not it produces anything, which for
-  // a dog, a donkey and a rooster is the entire point of keeping one.
+  // a dog, a donkey and a rooster is the entire point of keeping one. The
+  // breeds added alongside the Animals folder rework - Horse, Cat, Pigeon,
+  // Crab, Toad - all produce nothing for the same reason: none of them hands
+  // anything over while it lives, so each earns its keep on company and on the
+  // resale, exactly as a dog does.
+  //
+  // Every sheet in img/characters/Animals belongs to one breed below. The two
+  // undead skins are skins, not breeds of their own: a zombie world redraws the
+  // stock it already has, so DogZombie rides with the dogs and CrabZombie with
+  // the crabs rather than splitting either herd in two.
 
   const ANIMAL_DB = {
     Chicken: {
       adultSkins: [
         "Animals/!$MV_Chicken_1", "Animals/!$MV_Chicken_2", "Animals/!$MV_Chicken_3",
-        "Animals/!$MV_Chicken_4", "Animals/!$MV_Chicken_5", "Animals/!$MV_Chicken_6", "Animals/!$MV_Chicken_7"
+        "Animals/!$MV_Chicken_4", "Animals/!$MV_Chicken_5", "Animals/!$MV_Chicken_6", "Animals/!$MV_Chicken_7",
+        "Animals/!$Chicken"
       ],
-      babySkins: ["Animals/!$MV_Chick"],
+      babySkins: ["Animals/!$MV_Chick", "Animals/!$Chick"],
       hasBaby: true,
       buyCostBaby: 2000,
       buyCostAdult: 5000,
@@ -147,9 +157,10 @@
     Cow: {
       adultSkins: [
         "Animals/!$MV_Cow", "Animals/!$MV_Cow_Big", "Animals/!$MV_Cow_Big_2",
-        "Animals/!$MV_Cow_Big_3", "Animals/!$MV_Cow_Big_4", "Animals/!$MV_Cow_Big_5"
+        "Animals/!$MV_Cow_Big_3", "Animals/!$MV_Cow_Big_4", "Animals/!$MV_Cow_Big_5",
+        "Animals/!$Cow"
       ],
-      babySkins: ["Animals/!$MV_Cow_Baby_1", "Animals/!$MV_Cow_Baby_2"],
+      babySkins: ["Animals/!$MV_Cow_Baby_1", "Animals/!$MV_Cow_Baby_2", "Animals/!$BabyCow"],
       hasBaby: true,
       buyCostBaby: 10000,
       buyCostAdult: 30000,
@@ -164,7 +175,8 @@
     Dog: {
       adultSkins: [
         "Animals/!$MV_Dog_Basenji", "Animals/!$MV_Dog_German_Shepherd",
-        "Animals/!$MV_Dog_Labrador", "Animals/!$MV_Dog_Shepherd"
+        "Animals/!$MV_Dog_Labrador", "Animals/!$MV_Dog_Shepherd",
+        "Animals/!$Dog1", "Animals/!$DogTail3", "Animals/!$DogZombie"
       ],
       babySkins: [],
       hasBaby: false,
@@ -226,9 +238,9 @@
     Pig: {
       adultSkins: [
         "Animals/!$MV_Pig_1", "Animals/!$MV_Pig_2", "Animals/!$MV_Pig_3",
-        "Animals/!$MV_Pig_4", "Animals/!$MV_Pig_5"
+        "Animals/!$MV_Pig_4", "Animals/!$MV_Pig_5", "Animals/!$BigPig"
       ],
-      babySkins: ["Animals/!$MV_Piglet_1", "Animals/!$MV_Piglet_2"],
+      babySkins: ["Animals/!$MV_Piglet_1", "Animals/!$MV_Piglet_2", "Animals/!$SmallPig"],
       hasBaby: true,
       buyCostBaby: 5000,
       buyCostAdult: 12000,
@@ -275,9 +287,12 @@
       adultSkins: [
         "Animals/!$MV_Sheep_1", "Animals/!$MV_Sheep_2", "Animals/!$MV_Sheep_3", "Animals/!$MV_Sheep_4",
         "Animals/!$MV_Sheep_5", "Animals/!$MV_Sheep_6", "Animals/!$MV_Sheep_7", "Animals/!$MV_Sheep_8",
-        "Animals/!$MV_Sheep_9", "Animals/!$MV_Sheep_10", "Animals/!$MV_Sheep_11"
+        "Animals/!$MV_Sheep_9", "Animals/!$MV_Sheep_10", "Animals/!$MV_Sheep_11",
+        "Animals/!$Sheep"
       ],
-      babySkins: ["Animals/!$MV_Sheep_Baby_1", "Animals/!$MV_Sheep_Baby_2"],
+      babySkins: [
+        "Animals/!$MV_Sheep_Baby_1", "Animals/!$MV_Sheep_Baby_2", "Animals/!$FarmAnimals01RM6"
+      ],
       hasBaby: true,
       buyCostBaby: 4000,
       buyCostAdult: 10000,
@@ -288,6 +303,72 @@
       produces: [
         { itemId: 861, interval: 3, yieldMin: 1, yieldMax: 3 }
       ]
+    },
+    // A horse is the most expensive thing on the list and gives nothing back
+    // but the ride and the company, which is the whole of the appeal. There is
+    // no foal sheet in the folder, so it is sold grown.
+    Horse: {
+      adultSkins: [
+        "Animals/!$Horse1", "Animals/!$Horse2", "Animals/!$Horse3", "Animals/!$Horse4",
+        "Animals/!$Horse5", "Animals/!$Horse6", "Animals/!$Horse7", "Animals/!$Horse8"
+      ],
+      babySkins: [],
+      hasBaby: false,
+      buyCostAdult: 60000,
+      sellValueAdult: 30000,
+      growthDays: 0,
+      company: 12,
+      produces: []
+    },
+    // The dog's only rival for company, and cheap to keep. Produces nothing.
+    Cat: {
+      adultSkins: [
+        "Animals/!$CatButton1", "Animals/!$CatButton2", "Animals/!$CatButton3",
+        "Animals/!$GrayAnimals014"
+      ],
+      babySkins: [],
+      hasBaby: false,
+      buyCostAdult: 8000,
+      sellValueAdult: 4000,
+      growthDays: 0,
+      company: 13,
+      produces: []
+    },
+    // Kept for the noise and the company rather than for eggs: the coop bird
+    // that lays is the Chicken, and a pigeon on the roof is not that.
+    Pigeon: {
+      adultSkins: [
+        "Animals/!$Pigeon", "Animals/!$AvianNoble1", "Animals/!$AvianNoble3"
+      ],
+      babySkins: [],
+      hasBaby: false,
+      buyCostAdult: 1500,
+      sellValueAdult: 700,
+      growthDays: 0,
+      company: 2,
+      produces: []
+    },
+    Crab: {
+      adultSkins: [
+        "Animals/!$Crab", "Animals/!$CrabZombie"
+      ],
+      babySkins: [],
+      hasBaby: false,
+      buyCostAdult: 2000,
+      sellValueAdult: 1000,
+      growthDays: 0,
+      company: 1,
+      produces: []
+    },
+    Toad: {
+      adultSkins: ["Animals/!$Toad"],
+      babySkins: [],
+      hasBaby: false,
+      buyCostAdult: 1200,
+      sellValueAdult: 600,
+      growthDays: 0,
+      company: 2,
+      produces: []
     }
   };
 

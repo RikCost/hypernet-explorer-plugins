@@ -65,6 +65,7 @@
     notEnoughGold:  ['g'],
     joinRefused:    ['name'],
     gaveItem:       ['name', 'item'],
+    fedBeast:       ['name', 'item'],
     giftRefused:    ['name', 'item'],
     briberyCaught:  ['name'],
     bribeRefused:   ['name'],
@@ -266,6 +267,89 @@
     return db._byId;
   }
   const _rand = arr => (arr && arr.length ? arr[Math.floor(Math.random() * arr.length)] : '');
+
+  // ── Joke grammar ───────────────────────────────────────────────────────────
+  // The joke pools hold bare words, not sentences, so anything a template puts
+  // next to a drawn word has to be inflected or the line comes out broken: "a
+  // alchemist" in English, "una goblin" or "un scheletro" in Italian. Every
+  // rule that decides those forms is language data and lives in the "grammar"
+  // block of the jokes bank, so this code never spells an article itself.
+  //
+  // A placeholder is {^article:pool#tag*~ref}, and every part after the pool
+  // name is optional:
+  //   {noun}          draw from the "noun" pool, remembered as the slot "noun"
+  //   {noun#b}        a second draw from that pool, kept different from the first
+  //   {noun*}         the slot in the plural
+  //   {def:noun}      definite article, inflected to fit the word it lands on
+  //   {a:noun}        any other article or preposition the language declares
+  //   {adj~noun}      a word bent to match the gender and number of slot "noun"
+  //   {adj~noun*}     the same, declaring that slot plural before it is reached
+  //   {^indef:noun}   the same, with the first letter capitalised
+  // A bare {pool} still means exactly what it always meant, so a language file
+  // written before any of this fills the same way it did.
+  const _JOKE_SPEC = /^(\^)?(?:(\w+):)?(\w+)(?:#(\w+))?(\*)?(?:~(\w+(?:#\w+)?)(\*)?)?$/;
+
+  // "strega|f|pl=streghe" -> gender, irregular forms, and whether it inflects.
+  // Flags: m/f gender, inv for a word that never changes, and name=form for an
+  // irregular (pl, fs, fpl) the rule tables would get wrong.
+  function _jokeWord(entry) {
+    const parts = String(entry).split('|');
+    const w = { w: parts[0].trim(), g: 'm', inv: false, forms: {} };
+    for (let i = 1; i < parts.length; i++) {
+      const f  = parts[i].trim();
+      const eq = f.indexOf('=');
+      if (eq > 0) w.forms[f.slice(0, eq).trim()] = f.slice(eq + 1).trim();
+      else if (f === 'f' || f === 'm') w.g = f;
+      else if (f === 'inv') w.inv = true;
+    }
+    return w;
+  }
+
+  // Ordered [pattern, replacement] rows: the first pattern that matches wins,
+  // and a word no row matches is left alone (which is how invariant plurals
+  // like "goblin" survive without needing an entry of their own).
+  function _jokeRules(word, rows) {
+    if (!Array.isArray(rows)) return word;
+    for (const r of rows) {
+      if (!Array.isArray(r) || r.length < 2) continue;
+      const re = new RegExp(r[0]);
+      if (re.test(word)) return word.replace(re, r[1]);
+    }
+    return word;
+  }
+
+  // The written form of a drawn word for one gender and number. Inflection
+  // tables are keyed by pool ("*" for the default) so a language can say that
+  // its nouns take a plural while its adjectives never move, which is what
+  // keeps English out of "they are too haunteds".
+  function _jokeSurface(word, poolName, g, pl, gram) {
+    if (word.inv) return word.w;
+    const rules = (gram.inflect && (gram.inflect[poolName] || gram.inflect['*'])) || {};
+    // A noun carries its own gender; only a word being bent to agree with
+    // something else needs the feminine to be derived.
+    const bend = g === 'f' && word.g !== 'f';
+    let s = word.w;
+    if (bend) s = word.forms.fs || _jokeRules(s, rules.feminine);
+    if (!pl) return s;
+    return word.forms[bend ? 'fpl' : 'pl'] || _jokeRules(s, rules.plural);
+  }
+
+  // Article rows are [gender, pattern, form]: the first row whose gender and
+  // pattern both match the word it will sit in front of wins, so a language
+  // orders them from the special cases down to its default.
+  function _jokeArticle(kind, g, pl, surface, gram) {
+    const table = gram.articles && gram.articles[kind];
+    const rows  = table && (pl ? table.pl : table.sg);
+    if (!Array.isArray(rows)) return '';
+    for (const r of rows) {
+      if (!Array.isArray(r) || r.length < 3) continue;
+      if (r[0] && r[0] !== g) continue;
+      if (r[1] && !new RegExp(r[1], 'i').test(surface)) continue;
+      return r[2];
+    }
+    return '';
+  }
+
 
   // Debug/sandbox recruiting aid: force the party-join chance to 95% when the
   // player character (actor 1) is named "Test" or sandbox mode is active.
@@ -930,7 +1014,7 @@
   // ── Non-sentient party members (classes 63+) ────────────────────────────
   // A creature played as one of the creature classes , Feral, Mimic, Monster,
   // Mana Cyborg, Ghost, Zombie, Mutant, Drone (ids 63-70, the creatureClasses
-  // rosters in js/db/Health/EnemyArchetypes.json) , holds no conversation. When
+  // rosters in js/db/Health/Archetypes.json) , holds no conversation. When
   // one of them is the party member doing the talking, the panel drops every
   // spoken action and offers what a beast can actually do: noises, contact and
   // teeth. Nobody talks BACK to it either; the NPC coos over it, backs away
@@ -994,13 +1078,20 @@
   // creature still has no mouth for them: the length of what was typed decides
   // how long the noise is, and the noise itself is drawn from the bank.
   function _feralGrowlFor(phrase) {
+    const words = String(phrase || '').trim().split(/\s+/).filter(Boolean).length;
+    const noise = _feralNoise(Math.round(words / 2) || 1);
+    return noise || String(phrase || '');
+  }
+
+  // `count` syllables off the bank, as one capitalized noise. Empty when the
+  // bank is missing, which every caller reads as "leave the words alone".
+  function _feralNoise(count) {
     const T = _getT();
     const bank = T.feralGrowlSyllables || [];
-    if (!bank.length) return String(phrase || '');
-    const words = String(phrase || '').trim().split(/\s+/).filter(Boolean).length;
-    const count = Math.max(1, Math.min(6, Math.round(words / 2) || 1));
+    if (!bank.length) return '';
+    const n = Math.max(1, Math.min(6, Number(count) || 1));
     const out = [];
-    for (let i = 0; i < count; i++) out.push(_rand(bank));
+    for (let i = 0; i < n; i++) out.push(_rand(bank));
     const text = out.join(' ');
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
@@ -1047,6 +1138,74 @@
     { id: 'beg',    op:   3, bank: 'feralActBeg'    },
   ];
   const FERAL_ACTION_IDS = new Set(FERAL_ACTIONS.map(a => a.id));
+
+  // ── Petting and feeding a beast ─────────────────────────────────────────
+  // The other side of the same rule: what a non-sentient NPC understands being
+  // done to it. It is not socialised with and not bargained with, it is
+  // touched and it is fed.
+  //
+  // A hand laid on an animal that has let you near it is always welcome, so
+  // petting is the one move in the panel with no band, no roll and no way of
+  // going wrong.
+  const PET_OPINION = 5;
+
+  // Feeding is judged by what is in the bowl. Cooked food does the animal good
+  // in proportion to its calories, raw meat is swallowed without thanks, and a
+  // piece of something that used to be alive is worse still: neither is what a
+  // creature living among people has learned to expect off a hand.
+  const FEED_RAW_MEAT_ID      = 862;        // i18n-ignore: Items.json entry id
+  const FEED_FOOD_CATEGORY    = 'food';     // i18n-ignore: <category:> tag value
+  const FEED_ORGANIC_CATEGORY = 'bodypart'; // i18n-ignore: <category:> tag value
+  const FEED_RAW_OPINION      = -3;
+  const FEED_ORGANIC_OPINION  = -5;
+
+  function _itemCategory(item) {
+    const raw = window.ItemSystemUtils?.getRawCategoryFromNote?.(item)
+      ?? (String(item?.note || '').match(/<category:\s*(\w+)>/i) || [])[1];
+    return String(raw || '').toLowerCase();
+  }
+
+  function _feedCalories(item) {
+    const m = String(item?.note || '').match(/<calories:\s*(\d+)>/i);
+    return m ? Number(m[1]) : 0;
+  }
+
+  // Which of the three things in the bowl this is: 'food', 'raw' (butchered
+  // meat off the crafting shelf) or 'organic' (an organ, a limb, a piece of
+  // somebody). Anything else is not food to an animal and is not offered.
+  function _feedKind(item) {
+    if (!item || item.itypeId !== 1) return '';
+    if (item.id === FEED_RAW_MEAT_ID) return 'raw';
+    const cat = _itemCategory(item);
+    if (cat === FEED_FOOD_CATEGORY)    return 'food';
+    if (cat === FEED_ORGANIC_CATEGORY) return 'organic';
+    return '';
+  }
+
+  // What one mouthful is worth to the animal's opinion of the hand feeding it.
+  function _feedOpinion(item) {
+    switch (_feedKind(item)) {
+      case 'food':    return Math.max(2, Math.min(20, Math.round(_feedCalories(item) / 40)));
+      case 'raw':     return FEED_RAW_OPINION;
+      case 'organic': return FEED_ORGANIC_OPINION;
+      default:        return 0;
+    }
+  }
+
+  // And what it is worth to the animal's stomach, which is a separate question:
+  // offal it resents is still a meal it no longer needs.
+  function _feedNourishment(item) {
+    switch (_feedKind(item)) {
+      case 'food':    return Math.max(5, Math.min(40, Math.round(_feedCalories(item) / 10)));
+      case 'raw':     return 15;
+      case 'organic': return 10;
+      default:        return 0;
+    }
+  }
+
+  function _feedItemsInPack() {
+    return ($gameParty?.items() ?? []).filter(i => _feedKind(i));
+  }
 
   // ── Per-actor NPC reputation ────────────────────────────────────────────
   // Each party member earns their OWN standing with a given NPC, stored in
@@ -1685,6 +1844,11 @@
   const SCROLL_KEY_STEP  = 64;
   const TRIGGER_SPEED    = 26;
   const TRIGGER_DEADZONE = 0.15;
+  // Standard-mapping index of the pad's Select / Back button, which changes who
+  // in the party is doing the talking. Input.gamepadMapper has no action on it
+  // at all, so it is read raw through AnalogStickInput (the same route L2/R2
+  // take below).
+  const PAD_SELECT_BUTTON = 8;
 
   const NPCEmpathizeInputManager = {
     _scene: null, _active: false,
@@ -1699,16 +1863,21 @@
     // whether a pad is plugged in, and a pad can be plugged in (or its battery
     // die) while the panel is open. The tab bar itself only redraws on a tab
     // change, so keep the chip in step here instead of re-rendering the bar.
+    // The character switcher's own chip (SELECT / SHIFT) rides along, for the
+    // same reason: it is drawn once per render, not once per frame.
     _syncTabHint(scene) {
       const pads  = window.AnalogStickInput;
       const onPad = !!(pads && typeof pads.hasPad === 'function' && pads.hasPad());
       if (onPad === this._hintPad) return;
       this._hintPad = onPad;
       const el = scene._overlay?.querySelector('.npc-tab-hint');
-      if (!el) return;
-      el.dataset.pad  = onPad ? '1' : '0';
       // i18n-ignore-start: physical controller / keyboard button ids
-      el.textContent  = onPad ? 'L1 R1' : 'TAB';
+      if (el) {
+        el.dataset.pad  = onPad ? '1' : '0';
+        el.textContent  = onPad ? 'L1 R1' : 'TAB';
+      }
+      const focusEl = scene._overlay?.querySelector('.npc-focus-hint');
+      if (focusEl) focusEl.textContent = onPad ? 'SELECT' : 'SHIFT';
       // i18n-ignore-end
     },
 
@@ -1783,6 +1952,27 @@
       // L2/R2 scroll whatever the open tab is showing, every frame they are held
       this._updateTriggerScroll(scene);
 
+      // Who in the party is doing the talking: SELECT on a pad, SHIFT on a
+      // keyboard, both stepping to the next member (the chip beside the
+      // switcher in the left panel names whichever applies). Every reputation
+      // change lands on that member alone, so the control belongs next to the
+      // tab keys rather than buried in a mouse-only list of names.
+      //
+      // SHIFT is also TAB's "go backwards" modifier, so the keyboard half fires
+      // on the key coming back up and is cancelled outright when the hold was
+      // spent on a tab change instead. Nothing on a pad shares SELECT, so that
+      // half fires on the press.
+      const shiftDown = Input.isPressed('shift');
+      if (!shiftDown) {
+        if (scene._shiftHeldPrev && !scene._shiftTookTab) scene._cycleFocusActor(1);
+        scene._shiftTookTab = false;
+      }
+      scene._shiftHeldPrev = shiftDown;
+      if (window.AnalogStickInput?.isButtonTriggered?.(PAD_SELECT_BUTTON)) {
+        scene._cycleFocusActor(1);
+        return;
+      }
+
       // Tab cycling, from anywhere in the scene: L1/R1 on a pad, TAB (SHIFT+TAB
       // backwards) on a keyboard. These are the ONLY way to change tab -- the
       // d-pad, the stick and WASD all stay inside the tab that is open, where
@@ -1794,6 +1984,9 @@
       if (tabPrev || Input.isTriggered('pagedown') || tabKey) {
         const tabs = scene._tabOrder();
         const back = tabPrev || (tabKey && Input.isPressed('shift'));
+        // The SHIFT hold was a modifier, not a request to hand the conversation
+        // to the next party member.
+        if (tabKey && shiftDown) scene._shiftTookTab = true;
         const cur  = tabs.indexOf(scene._activeTab);
         const next = (cur + (back ? -1 : 1) + tabs.length) % tabs.length;
         scene._setTab(tabs[next]); // plays cursor SE, resets area/index, re-renders
@@ -1939,6 +2132,8 @@
       this._stealAttempted     = {};
       this._giftMode           = false;
       this._giftItems          = [];
+      this._feedMode           = false;
+      this._feedItems          = [];
       this._bribeMode          = false;
       this._attackConfirm      = false;
       this._pickpocketConfirm  = false;
@@ -1951,6 +2146,10 @@
       this._directionsMode     = false;
       this._directionList      = [];
       this._focusActorIndex    = 0; // which party member is interacting
+      // SHIFT hands the conversation to the next member on the key coming up,
+      // unless the hold was spent as TAB's backwards modifier.
+      this._shiftHeldPrev      = false;
+      this._shiftTookTab       = false;
       this._lastSubject        = '';
       this._wasdInput      = { up: false, down: false, left: false, right: false };
       this._wasdHeld       = { up: false, down: false, left: false, right: false };
@@ -2195,8 +2394,9 @@
       if (this._entity) return this._entityTabs || ['overview'];
       const tabs = ['chat', 'info', 'background', 'routine', 'biologics', 'health', 'romance', 'web', 'lifeHistory', 'wiki', 'more'];
       // Nothing is courting anybody through a muzzle: the romance tab is not
-      // on the table while a non-sentient member is the one doing the talking.
-      if (_isNonSentientActor(this._focusActor?.())) {
+      // on the table while a non-sentient member is the one doing the talking,
+      // nor when the one being talked to is the beast.
+      if (_isNonSentientActor(this._focusActor?.()) || this._isNonSentientSubject()) {
         return tabs.filter(t => t !== 'romance');
       }
       // Nor is anybody courting a traveller who belongs to another
@@ -2222,6 +2422,7 @@
       this._activeTab         = tab;
       this._activeArea        = 'tabs';
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -2286,6 +2487,16 @@
         // The pickers are capped at 45% of the panel and scroll, so the cursor
         // can walk off the bottom of the visible strip; keep it in the strip.
         if (on && btns.length > 1) el.scrollIntoView({ block: 'nearest' });
+        // The mouse moves this same cursor rather than drawing a look of its
+        // own: without this, hovering quietly parked _menuIndex somewhere the
+        // highlight never showed, so the next arrow press moved it one step
+        // off from wherever the player's eye actually was.
+        el.onmouseenter = () => {
+          if (this._activeArea === 'actions' && this._menuIndex === i) return;
+          this._activeArea = 'actions';
+          this._menuIndex  = i;
+          this._updateSelectionHighlight();
+        };
       });
       const inContent = this._activeArea === 'content';
       const items = this._contentItems();
@@ -2418,6 +2629,8 @@
       switch (id) {
         case 'freeChat':   this._openChatModal(); break;
         case 'gift':       this._gift();        break;
+        case 'pet':        this._pet();         break;
+        case 'feed':       this._feed();        break;
         case 'bribe':      this._bribe();       break;
         case 'attack':     this._attack();      break;
         case 'pickpocket': this._pickpocket();  break;
@@ -2501,6 +2714,7 @@
       }
 
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -2574,6 +2788,7 @@
       this._infectMode        = true;
       this._infectItems       = vials;
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -2724,6 +2939,16 @@
         || (this._actorId != null ? ($gameActors.actor(this._actorId)?.name() ?? '') : '')
         || this._npcName || '';
     }
+    // Step the switcher by one, wrapping: what SHIFT (keyboard) and SELECT (pad)
+    // do. Only NPC mode has an interacting member to change at all, actor mode
+    // being about one specific party member and remote mode having nobody
+    // standing there, which is also the condition the switcher is drawn under.
+    _cycleFocusActor(dir) {
+      if (this._actorId != null || this._eventId == null) return;
+      const n = $gameParty?.members()?.length ?? 0;
+      if (n <= 1) return;
+      this._selectFocusActor((this._focusIndex() + dir + n) % n);
+    }
     _selectFocusActor(index) {
       const n = $gameParty?.members()?.length ?? 1;
       if (index < 0 || index >= n || index === this._focusIndex()) return;
@@ -2734,11 +2959,13 @@
       this._emGreeted = false;
       this._bubbaGreeted = false;
       this._feralGreeted = false;
+      this._beastGreeted = false;
       // Who is talking decides which buttons exist at all (a beast has no
       // conversation, Bubba refuses half of them), so every half-finished
       // action belongs to the member who is no longer holding it. Drop the
       // lot rather than leave a submenu open over a list that just changed.
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -2795,7 +3022,10 @@
 
       // Reaction to where they stand AFTER it, so a nuzzle that wins them over
       // is answered warmly and a roar is answered by the person it frightened.
-      const reply = _feralLine('feralReact', this._focusOpinion(profile), npcName, kind);
+      // Unless the one being growled at is a beast too, in which case what
+      // comes back is a beast's answer: noise, not a sentence about noise.
+      let reply = _feralLine('feralReact', this._focusOpinion(profile), npcName, kind);
+      if (reply && this._isNonSentientSubject()) reply = _feralGrowlFor(reply);
       if (reply) this._chatHistory.push({ role: 'npc', text: reply });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
 
@@ -2824,6 +3054,127 @@
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
     }
 
+    // The other way round: the panel opened ON a beast. A non-sentient NPC has
+    // no greeting because it has no words for one; what it has is the noise it
+    // makes at whoever has just walked up to it, drawn from the same syllable
+    // bank every other answer of its comes out of.
+    _prepareBeastMeeting() {
+      if (this._entity || this._actorId != null) return;
+      if (this._beastGreeted) return;
+      if (!this._isNonSentientSubject()) return;
+      const line = _feralNoise(2);
+      if (!line) return;
+      this._beastGreeted = true;
+      this._chatHistory.push({ role: 'npc', text: line });
+      if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
+    }
+
+    // ── Petting and feeding (what a beast is offered instead of talk) ───────
+    // The kind of animal this panel is open on, for the lines that name it.
+    // In actor mode that is the party member being inspected, otherwise the
+    // creature standing in front of the party.
+    _beastKind() {
+      if (this._actorId != null) return _feralKind($gameActors.actor(this._actorId));
+      const profile = _getProfile(this._targetName());
+      return (window.NPCCreature?.archetypeLabel?.(profile)) || '';
+    }
+
+    // One line into the log, oldest trimmed off the top like everywhere else.
+    _pushChat(role, text) {
+      if (!text) return;
+      this._chatHistory.push({ role, text: String(text) });
+      if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
+    }
+
+    // A hand laid on the animal. No band and no roll: this is the one action in
+    // the panel that cannot go wrong, and the noise that comes back is the same
+    // one every other answer of a beast's is drawn from.
+    _pet() {
+      const T       = _getT();
+      const npcName = this._targetName() || '';
+      const profile = npcName ? _getProfile(npcName) : null;
+      const kind    = this._beastKind();
+
+      const own = _rand(T.beastActPet || []);
+      this._pushChat('player', String(own || '')
+        .replace(/\{name\}/g, npcName).replace(/\{kind\}/g, kind));
+
+      if (profile) {
+        _addNpcOpinion(profile, this._focusActor()?.actorId(), PET_OPINION);
+        (profile.eventLog ??= []).push({
+          tag: 'feral', desc: 'pet', // i18n-ignore: event-log record id
+          timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+        });
+      }
+      this._pushChat('npc', _feralNoise(2));
+
+      SoundManager.playOk();
+      this._activeTab = 'chat';
+      this._render();
+      this._scrollChatToBottom();
+    }
+
+    // The bowl: everything in the pack an animal would put in its mouth.
+    _feed() {
+      this._feedMode          = true;
+      this._feedItems         = _feedItemsInPack();
+      this._giftMode          = false;
+      this._stealMode         = false;
+      this._bribeMode         = false;
+      this._attackConfirm     = false;
+      this._pickpocketConfirm = false;
+      this._infectMode        = false;
+      this._socialMode        = false;
+      this._romanceMode       = false;
+      this._proposeMode       = false;
+      this._directionsMode    = false;
+      this._transmitConfirm   = null;
+      this._cardMode          = null;
+      this._activeTab         = 'chat';
+      this._menuIndex         = 0;
+      this._render();
+    }
+
+    _feedItem(index) {
+      const item = this._feedItems[index];
+      if (!item) return;
+      const T       = _getT();
+      const npcName = this._targetName() || '';
+      const profile = npcName ? _getProfile(npcName) : null;
+      const kind    = this._beastKind();
+      const delta   = _feedOpinion(item);
+
+      $gameParty.loseItem(item, 1);
+
+      if (profile) {
+        _addNpcOpinion(profile, this._focusActor()?.actorId(), delta);
+        // A fed animal is a fed animal whatever it thought of the meal, so the
+        // stomach is filled even when the opinion drops.
+        profile.hunger = Math.max(0, Math.min(100, (profile.hunger ?? 100) + _feedNourishment(item)));
+        (profile.eventLog ??= []).push({
+          tag: 'feed', desc: `fed ${item.name}`, // i18n-ignore: event-log record id
+          timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+        });
+      }
+
+      // It eats either way; what changes is how it eats. A proper meal is
+      // wolfed down and remembered, a thin one is taken politely, and raw meat
+      // or a piece of somebody is chewed while it watches you differently.
+      const bank = delta <= 0 ? 'beastFedBadly' : delta >= 12 ? 'beastFedWell' : 'beastFedPlain';
+      this._pushChat('npc', String(_rand(T[bank] || []) || '')
+        .replace(/\{item\}/g, item.name).replace(/\{name\}/g, npcName).replace(/\{kind\}/g, kind));
+
+      this._joinMessage = {
+        type: delta > 0 ? 'accept' : 'reject',
+        text: T.fedBeast(npcName, item.name),
+      };
+      if (delta > 0) SoundManager.playOk(); else SoundManager.playBuzzer();
+
+      this._feedMode = false;
+      this._render();
+      this._scrollChatToBottom();
+    }
+
     // ── Social interactions (praise / joke / story / insult / ...) ───────────
     _socialize() {
       this._socialMode        = true;
@@ -2831,6 +3182,7 @@
       this._proposeMode       = false;
       this._directionsMode    = false;
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -2851,6 +3203,7 @@
       this._socialMode        = false;
       this._directionsMode    = false;
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -2871,6 +3224,7 @@
       this._proposeMode       = false;
       this._socialMode        = false;
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -2894,11 +3248,66 @@
       return out;
     }
 
-    // Build a procedural joke from the grammar in SocialLines.json.
+    // Build a procedural joke from the grammar in SocialLines.json. Slots are
+    // drawn once and reused, so a template naming the same pool twice tells one
+    // joke about one goblin, and an article or an adjective sitting next to a
+    // drawn word is inflected to fit it (see _jokeSurface and _jokeArticle).
     _genJoke() {
-      const j = _socialLines().jokes || {};
-      const tmpl = _rand(j.templates || [T('Empathize.jokeFallback')]);
-      return String(tmpl).replace(/\{(\w+)\}/g, (m, k) => _rand(j[k]) || k);
+      const j    = _socialLines().jokes || {};
+      const base = (window.NPC && window.NPC.SocialLines && window.NPC.SocialLines.jokes) || {};
+      // A language that has not translated a pool leaves it full of blanks, so
+      // fall back to the source pool rather than tell a joke made of nothing.
+      const pool = k => {
+        const own = (j[k] || []).filter(w => String(w).trim());
+        return own.length ? own : (base[k] || []).filter(w => String(w).trim());
+      };
+      const gram = j.grammar || base.grammar || {};
+      const tmpl = _rand(pool('templates'));
+      if (!tmpl) return T('Empathize.jokeFallback');
+
+      const slots = {};   // slot key -> { word, g, pl }
+      const drawn = {};   // pool name -> entries already spent in this joke
+
+      // Resolve a slot, drawing it the first time it is asked for. Two slots on
+      // the same pool are kept apart, or the punchline compares a thing to
+      // itself.
+      const slot = (poolName, key, pl) => {
+        if (slots[key]) {
+          if (pl) slots[key].pl = true;
+          return slots[key];
+        }
+        const list = pool(poolName);
+        if (!list.length) return null;
+        const spent = (drawn[poolName] = drawn[poolName] || []);
+        let entry = '';
+        for (let i = 0; i < 8; i++) { entry = _rand(list); if (spent.indexOf(entry) < 0) break; }
+        spent.push(entry);
+        const word = _jokeWord(entry);
+        return (slots[key] = { word, g: word.g, pl: !!pl });
+      };
+
+      return String(tmpl).replace(/\{([^{}]+)\}/g, (m, spec) => {
+        const p = _JOKE_SPEC.exec(String(spec).trim());
+        if (!p) return m;
+        const [, caps, art, poolName, tag, plural, ref, refPlural] = p;
+        let g = 'm', pl = !!plural;
+        // An agreeing word takes gender and number from the slot it points at,
+        // drawing that slot first if the template has not reached it yet. A
+        // determiner that comes before its noun says so with ~noun*, since it
+        // has to know the number before the noun's own slot has declared one.
+        if (ref) {
+          const target = slot(ref.split('#')[0], ref, !!refPlural);
+          if (target) { g = target.g; pl = pl || target.pl; }
+        }
+        const key  = (poolName + (tag ? '#' + tag : '')) + (ref ? '~' + ref : '');
+        const cell = slot(poolName, key, pl);
+        if (!cell) return '';
+        if (!ref) g = cell.g;
+        pl = pl || cell.pl;
+        let out = _jokeSurface(cell.word, poolName, g, pl, gram);
+        if (art) out = _jokeArticle(art, g, pl, out, gram) + out;
+        return caps ? out.charAt(0).toUpperCase() + out.slice(1) : out;
+      });
     }
 
     _socialInteract(id) {
@@ -3062,9 +3471,11 @@
 
     _gift() {
       this._giftMode          = true;
-      // A creature hands over what a creature understands to hand over: food,
-      // or a piece of something that used to be alive.
-      const feral = _isNonSentientActor(this._focusActor());
+      // A creature hands over what a creature understands to hand over, and a
+      // creature is handed only what it understands to take: food, or a piece
+      // of something that used to be alive. Either end of the exchange being a
+      // beast narrows the tray.
+      const feral = _isNonSentientActor(this._focusActor()) || this._isNonSentientSubject();
       this._giftItems         = ($gameParty?.items() ?? [])
         .filter(i => i.itypeId === 1 && (!feral || _feralCanGift(i)));
       this._stealMode         = false;
@@ -3112,6 +3523,7 @@
           });
         }
         this._giftMode = false;
+        this._feedMode = false;
         this._render();
         this._scrollChatToBottom();
         return;
@@ -3152,6 +3564,7 @@
       }
 
       this._giftMode    = false;
+      this._feedMode    = false;
       this._render();
       this._scrollChatToBottom();
     }
@@ -3159,6 +3572,7 @@
     _bribe() {
       this._bribeMode         = true;
       this._giftMode          = false;
+      this._feedMode          = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
@@ -3249,6 +3663,7 @@
       const T       = _getT();
       this._attackConfirm     = true;
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._pickpocketConfirm = false;
@@ -3300,6 +3715,7 @@
       const T = _getT();
       this._pickpocketConfirm = true;
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
@@ -3329,6 +3745,7 @@
 
     _cancelSubMode() {
       this._giftMode          = false;
+      this._feedMode          = false;
       this._bribeMode         = false;
       this._stealMode         = false;
       this._pickpocketConfirm = false;
@@ -3478,7 +3895,7 @@
     // Clears every other submenu without a re-render, so opening a card
     // submenu does not blink the panel twice.
     _cancelSubModeQuiet() {
-      this._giftMode = this._bribeMode = this._stealMode = false;
+      this._giftMode = this._bribeMode = this._stealMode = this._feedMode = false;
       this._pickpocketConfirm = this._attackConfirm = false;
       this._socialMode = this._romanceMode = this._proposeMode = this._directionsMode = false;
       this._infectMode = false;
@@ -3676,9 +4093,13 @@
       const T       = _getT();
 
       // Join gates, mirroring the UI gate in _renderInner: the 3-member party cap,
-      // the level margin, and the event needing a self-switch A page to disappear
-      // behind once it is recruited. No Switch 67 or name-matching.
+      // the level margin, the event needing a self-switch A page to disappear
+      // behind once it is recruited, and never a shop-shift-covered counter
+      // (the face shown is a borrowed persona, not someone free to travel, and
+      // flipping the counter's own self-switch A would strand it, see
+      // ShopShiftManager.isShopEvent). No Switch 67 or name-matching.
       if (_travellingPartyCount() >= 3 || !_hasSelfSwitchAPage(evId)
+          || window.NPCSim?.isShopShiftCovered?.($gameMap?.event(evId))
           || !_joinLevelOk(_presetFromEvent($gameMap?.event(evId))?.level ?? profile?.level)) {
         SoundManager.playBuzzer();
         return;
@@ -3845,33 +4266,67 @@
       this._render();
       this._scrollChatToBottom();
 
-      setTimeout(() => {
-        let response = '';
+      // Free chat is the one line in the panel the player writes themselves, so
+      // it is the one worth waiting on the experimental language model for.
+      const speaker = (this._eventId != null ? _getNPCName(this._eventId) : '')
+        || (this._actorId != null ? ($gameActors.actor(this._actorId)?.name() ?? '') : '')
+        || this._npcName || '';
+      this._answerAsk(phrase, speaker);
+    }
+
+    // Write the answer to a typed line and speak it. With a model picked in
+    // Options > Experimental the reply is the model's, seeded with what was
+    // just typed and told who is being spoken to, and the Markov chain covers
+    // whatever the model cannot answer. With the model off nothing changes:
+    // the chain answers on its own, at the same pace as before.
+    async _answerAsk(phrase, speaker) {
+      // Draw from ALL text databases combined, seeded with the player's own
+      // words so the reply riffs on what was just said. The generator opens
+      // with the seed itself, so the lengths are asked for on top of it and
+      // the echo is pruned back off before the line is spoken.
+      const seedLen = phrase.split(/\s+/).filter(Boolean).length;
+      const opts = { chainOrder: 2, minLength: 8 + seedLen, maxLength: 30 + seedLen, startText: phrase, npcName: speaker };
+      const llm = window.MarkovLLM;
+      let useModel = !!llm?.isEnabled?.() && typeof window.generateMarkovStringAsync === 'function';
+      // Nobody is left staring at a typing indicator while the weights are read
+      // off the disk: the first line of the session is the chain's, the model
+      // loads behind it, and it answers everything from the next line on.
+      if (useModel && llm.isReady && !llm.isReady()) { llm.warmUp?.(); useModel = false; }
+
+      let response = '';
+      if (useModel) {
+        // The model takes seconds of its own, so no pause is put on top of it:
+        // the typing indicator stands until the line comes back.
+        try { response = await window.generateMarkovStringAsync('all', opts); }
+        catch (e) {}
+      } else {
+        // The chain answers on the spot, so it is held back to talking pace.
+        await new Promise(resolve => setTimeout(resolve, 350));
         if (window.generateMarkovString) {
-          // Draw from ALL text databases combined, seeded with the player's own
-          // words so the reply riffs on what was just said. The generator opens
-          // with the seed itself, so the lengths are asked for on top of it and
-          // the echo is pruned back off before the line is spoken.
-          const seedLen = phrase.split(/\s+/).filter(Boolean).length;
-          try { response = window.generateMarkovString('all', { chainOrder: 2, minLength: 8 + seedLen, maxLength: 30 + seedLen, startText: phrase }); }
+          try { response = window.generateMarkovString('all', opts); }
           catch (e) {}
-          if (response && !/^ERROR:/i.test(response)) response = _stripSeedEcho(response, phrase);
-          if (!response || /^ERROR:/i.test(response)) {
-            try { response = window.generateMarkovString('all', { chainOrder: 2, minLength: 8, maxLength: 30 }); }
-            catch (e) {}
-          }
         }
-        if (!response || /^ERROR:/i.test(response)) response = '...';
-        if (response.length > 280) response = response.slice(0, 277) + '…';
-        // And a beast answers the way it was spoken to: whatever the chain
-        // wrote, what actually comes back out is noise the length of it.
-        if (this._isNonSentientSubject()) response = _feralGrowlFor(response);
-        this._isTyping = false;
-        this._chatHistory.push({ role: 'npc', text: response });
-        if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
-        this._render();
-        this._scrollChatToBottom();
-      }, 350);
+      }
+      // The panel can be closed while a line is still being written.
+      if (SceneManager._scene !== this) return;
+
+      if (response && !/^ERROR:/i.test(response)) response = _stripSeedEcho(response, phrase);
+      if (!response || /^ERROR:/i.test(response)) {
+        if (window.generateMarkovString) {
+          try { response = window.generateMarkovString('all', { chainOrder: 2, minLength: 8, maxLength: 30 }); }
+          catch (e) {}
+        }
+      }
+      if (!response || /^ERROR:/i.test(response)) response = '...';
+      if (response.length > 280) response = response.slice(0, 277) + '…';
+      // And a beast answers the way it was spoken to: whoever wrote the line,
+      // what actually comes back out is noise the length of it.
+      if (this._isNonSentientSubject()) response = _feralGrowlFor(response);
+      this._isTyping = false;
+      this._chatHistory.push({ role: 'npc', text: response });
+      if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
+      this._render();
+      this._scrollChatToBottom();
     }
 
     // ── Chat modal ─────────────────────────────────────────────────────────────
@@ -4085,6 +4540,8 @@
     scene._stealAttempted    = {};
     scene._giftMode          = false;
     scene._giftItems         = [];
+    scene._feedMode          = false;
+    scene._feedItems         = [];
     scene._bribeMode         = false;
     scene._attackConfirm     = false;
     scene._pickpocketConfirm = false;
@@ -4102,6 +4559,7 @@
     scene._emGreeted     = false;
     scene._bubbaGreeted  = false;
     scene._feralGreeted  = false;
+    scene._beastGreeted  = false;
     scene._render();
   }
 
@@ -4139,11 +4597,13 @@
     _index: null,     // exact name        → { type, id }
     _escIndex: null,  // HTML-escaped name → { type, id }
     _linkRegex: null,
+    _indexLang: null, // language the index was keyed in
 
     invalidate() {
       this._index = null;
       this._escIndex = null;
       this._linkRegex = null;
+      this._indexLang = null;
     },
 
     _hm() { return window.HistoryManager; },
@@ -4199,10 +4659,33 @@
       const currentHoly = hm?._currentHolyLeaders || hm?._histField?.('holyLeaders', {});
       return {
         type: 'power', name, live, hist, nations,
+        factions: this.listFactionsOfPower(name),
         holy_leaders: holyLeaders,
         currentHoly: currentHoly?.[name] || null,
         events: hm?.getEventsAbout?.(name, 14) ?? [],
       };
+    },
+
+    // The factions that answer to a hyperpower: every Factions.json entry whose
+    // `parentHyperpower` is that power's name. No entry stands for the power
+    // itself any more, so nothing has to be filtered back out of its own list.
+    listFactionsOfPower(name) {
+      const hpData = (this._hm()?.getHyperpowers?.() || {})[name] || null;
+      if (!hpData) return [];
+      const dl = window._NPCSocietyDataLoader;
+      const self = window.NPCPolitics?.getPower?.(name) || null;
+      // "USSR" and "Soviet Union" are one power under two names, so the entry is
+      // recognized through the political registry (which folds the aliases) and
+      // not by string equality alone.
+      const isSelf = (display) => display === name ||
+        (self && window.NPCPolitics?.getPower?.(display) === self);
+      const out = [];
+      for (const f of (dl?.factions || [])) {
+        if (!f || f.parentHyperpower !== name) continue;
+        const display = dl.getFactionName?.(f) || ((f.name || '').split('.')[1] || f.name);
+        if (display && !isSelf(display)) out.push(display);
+      }
+      return out.sort((a, b) => a.localeCompare(b));
     },
 
     // In an empty world nobody outlived 1 January 2000, so anyone the record
@@ -4320,18 +4803,8 @@
           }
         }
       }
-      // Resolve parent hyperpower from dlFaction's parentFaction ID
-      let parentPower = null;
-      const parentFactionId = dlFaction?.parentFaction;
-      if (parentFactionId !== undefined && parentFactionId !== null) {
-        const hpMap = this._hm()?.getHyperpowers?.() || {};
-        for (const [hpName, hpData] of Object.entries(hpMap)) {
-          if (hpData.id === parentFactionId) {
-            parentPower = hpName;
-            break;
-          }
-        }
-      }
+      // The power this faction answers to is named outright in Factions.json.
+      const parentPower = dlFaction?.parentHyperpower || null;
       return {
         type: 'faction', name, hist, dlFaction, dlIndex, members, parentPower,
         events: hm?.getEventsAbout?.(name, 14) ?? [],
@@ -4413,40 +4886,49 @@
       const hm = this._hm();
       const deaths = hm?.getLeaderDeaths?.() || {};
       const deadList = new Set(hm?.getDeadLeaders?.() || []);
-      const out = new Map(); // name → { name, of, dead }
-      const addFrom = (group) => {
+      // `ofType` says which vocabulary names the body they served, so the
+      // listing can label a faction and a hyperpower each in its own terms.
+      const out = new Map(); // name → { name, of, ofType, dead }
+      const addFrom = (group, ofType) => {
         for (const [groupName, data] of Object.entries(group || {})) {
           for (const l of (data?.leaders || [])) {
             if (l?.name && !out.has(l.name)) {
-              out.set(l.name, { name: l.name, of: groupName, dead: deadList.has(l.name) || !!deaths[l.name] });
+              out.set(l.name, { name: l.name, of: groupName, ofType,
+                                dead: deadList.has(l.name) || !!deaths[l.name] });
             }
           }
         }
       };
-      addFrom(hm?.getHyperpowers?.());
-      addFrom(hm?.getHistoricalFactions?.());
+      addFrom(hm?.getHyperpowers?.(), 'power');
+      addFrom(hm?.getHistoricalFactions?.(), 'faction');
       const powers = (typeof $gameSystem !== 'undefined' && $gameSystem?._npcPolitics?.powers) || {};
       for (const p of Object.values(powers)) {
         for (const pol of Object.values(p?.politicians || {})) {
           if (pol?.name && !out.has(pol.name)) {
-            out.set(pol.name, { name: pol.name, of: p.name, dead: !pol.alive });
+            out.set(pol.name, { name: pol.name, of: p.name, ofType: 'power', dead: !pol.alive });
           }
         }
       }
-      return [...out.values()].sort((a, b) => a.name.localeCompare(b.name));
+      // Sorted by the label the listing prints, not by the id behind it, so the
+      // A-Z of the page is the A-Z the reader sees.
+      const label = n => (window.WorldNames ? window.WorldNames.leader(n) : n);
+      return [...out.values()].sort((a, b) => label(a.name).localeCompare(label(b.name)));
     },
 
     listPowerNames() {
       const set = new Set(Object.keys(this._hm()?.getHyperpowers?.() || {}));
       for (const n of (window.NPCPolitics?.listPowers?.() || [])) set.add(n);
-      return [...set].sort((a, b) => a.localeCompare(b));
+      // Sorted by the label, not the id: see listLeaders.
+      const label = n => (window.WorldNames ? window.WorldNames.power(n) : n);
+      return [...set].sort((a, b) => label(a).localeCompare(label(b)));
     },
 
     listNations() {
       const states = this._hm()?.getNationsState?.() || {};
+      const label = n => (window.WorldNames ? window.WorldNames.nation(n) : n);
       return this.listNationNames()
         .map(name => ({ name, controller: states[name]?.controller ?? null }))
-        .sort((a, b) => a.name.localeCompare(b.name));
+        .sort((a, b) => label(a.name).localeCompare(label(b.name)));
     },
 
     listFactionNames() {
@@ -4456,7 +4938,14 @@
         const display = dl.getFactionName?.(f) || ((f?.name || '').split('.')[1] || f?.name);
         if (display) set.add(display);
       }
-      return [...set].sort((a, b) => a.localeCompare(b));
+      // A hyperpower is never listed among the factions: Factions.json carries
+      // an entry for each power (its own household, e.g. "Britannia" under the
+      // power Britannia), and that entry belongs to the Hyperpowers index. Each
+      // power's page lists the orders that answer to it instead.
+      const powers = new Set(this.listPowerNames());
+      const label = n => (window.WorldNames ? window.WorldNames.faction(n) : n);
+      return [...set].filter(n => !powers.has(n))
+        .sort((a, b) => label(a).localeCompare(label(b)));
     },
 
     // Every party currently seated anywhere (power attached), for the wiki's
@@ -4509,16 +4998,29 @@
     },
 
     buildIndex() {
-      if (this._index) return this._index;
+      // The index is keyed by the text a sentence contains, and that text is
+      // written in the language being played, so it is rebuilt on a switch.
+      const lang = (window.T && typeof T.language === 'function') ? T.language() : 'en';
+      if (this._index && this._indexLang === lang) return this._index;
+      this._indexLang = lang;
+      this._linkRegex = null;
       const idx = new Map();
       const esc = new Map();
+      const register = (name, entry) => {
+        if (!name || String(name).length < 3 || idx.has(name)) return;
+        idx.set(name, entry);
+        esc.set(this._escapeForIndex(name), entry);
+      };
       const add = (name, type, id) => {
         if (!name || String(name).length < 3) return;
         name = String(name);
-        if (idx.has(name)) return;
         const entry = { type, id };
-        idx.set(name, entry);
-        esc.set(this._escapeForIndex(name), entry);
+        register(name, entry);
+        // A nation, hyperpower, faction or leader is indexed under its English
+        // id because that is what the record stores, but the prose being
+        // linkified reads its localized label. Both spellings open the same
+        // article: a world simulated in English still holds English sentences.
+        if (window.WorldNames) register(window.WorldNames.any(name), entry);
       };
       const hm = this._hm();
       for (const n of Object.keys(hm?.getHyperpowers?.() || {})) add(n, 'power', n);
@@ -4714,7 +5216,10 @@
       // Non-sentient members (classes 63+): the UI layer builds their action
       // list out of these and hides everything a beast cannot do.
       _isNonSentientActor, _feralKind, _feralBand, _feralCanGift, FERAL_ACTIONS,
-      _feralGrowlFor, _isNonSentientNpc,
+      _feralGrowlFor, _feralNoise, _isNonSentientNpc,
+      // Petting and feeding: the UI layer builds the beast action row and the
+      // feeding tray out of these.
+      _feedKind, _feedCalories, _feedOpinion, _feedItemsInPack, PET_OPINION,
     },
     _getT,
   };

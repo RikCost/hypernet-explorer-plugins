@@ -51,12 +51,15 @@
     "enemyDifficulty": "Difficoltà Nemici",
     "cpuPartyMembers": "Compagni Controllati dalla CPU",
     "sprite": "Sprite",
-    "sprites": "Sprite"
+    "sprites": "Sprite",
+    "markovLlmModel": "Modello di dialogo IA",
+    "dialogueMode": "Modalità Dialogo NPC"
   },
   "warn": {
     "language": "⚠ In lavorazione: solo l'inglese è tradotto per intero. Le altre lingue hanno ancora parti del gioco non tradotte.",
     "cardCombat": "⚠ Sostituisce la battaglia standard e disattiva Battaglia sulla Mappa.",
-    "mapBattleMode": "⚠ Sostituisce la battaglia standard e disattiva Combattimento a Carte."
+    "mapBattleMode": "⚠ Sostituisce la battaglia standard e disattiva Combattimento a Carte.",
+    "markovLlmModel": "⚠ Il modello gira sul processore e vuole qualche gigabyte di memoria. Scrive in inglese, e la prima battuta della sessione attende il caricamento del modello."
   },
   "titleBackground": [
     "Casuale",
@@ -65,7 +68,7 @@
     "Artefatti",
     "Bestiario",
     "Armi",
-    "Nemici 3D",
+    "Bestiario",
     "Iperverso",
     "Camper"
   ],
@@ -75,13 +78,19 @@
     "Bioma",
     "Caos"
   ],
+  "dialogueMode": [
+    "Empatia",
+    "Markoviano"
+  ],
   "enemyBattler": [
     "3D",
-    "Sprite"
+    "Sprite",
+    "2D"
   ],
   "enemyBattlerToast": {
     "model3d": "3D attivato (nemici)",
-    "sprites": "Sprite attivati (nemici)"
+    "sprites": "Sprite attivati (nemici)",
+    "battlers2d": "Combattenti 2D attivati (nemici)"
   },
   "languageProgress": "{name} tradotto all'1%",
   "settingsInSection": "{count} impostazioni in questa sezione.",
@@ -91,7 +100,9 @@
     "partyHud": "Una scheda per ogni membro del gruppo in alto a sinistra: HP, MP, stati e bisogni urgenti.",
     "partyFormation": "Come il resto del gruppo cammina dietro al capogruppo sulla mappa.",
     "musicArtistDisplay": "Se mostrare titolo e autore della musica in riproduzione.",
-    "battleMusicName": "Quale brano parte quando inizia uno scontro. Casuale ne estrae uno diverso tra quelli sotto all'inizio di ogni battaglia."
+    "battleMusicName": "Quale brano parte quando inizia uno scontro. Bioma, l'opzione predefinita, usa il tema di battaglia del luogo in cui stai combattendo. Casuale ne estrae uno diverso tra quelli sotto all'inizio di ogni battaglia.",
+    "markovLlmModel": "Quale modello linguistico GGUF scrive i dialoghi generati. Spento lascia ogni battuta generata alle catene di Markov. Metti un file .gguf nella cartella models del gioco e comparirà qui.",
+    "dialogueMode": "Come risponde un NPC senza nulla di scritto quando gli parli. Empatia esegue un'azione Socializza tratta dalla sua personalità, ripiegando su una battuta di contorno. Markoviano genera invece una nuova frase dal suo stesso archivio di parole."
   },
   "descState": {
     "partyFormation": [

@@ -1,0 +1,96 @@
+{
+  "kinsey": {
+    "0": "Esclusivamente eterosessuale",
+    "1": "Prevalentemente eterosessuale, occasionalmente omosessuale",
+    "2": "Prevalentemente eterosessuale, più che occasionalmente omosessuale",
+    "3": "Eterosessuale e omosessuale in egual misura",
+    "4": "Prevalentemente omosessuale, più che occasionalmente eterosessuale",
+    "5": "Prevalentemente omosessuale, occasionalmente eterosessuale",
+    "6": "Esclusivamente omosessuale",
+    "X": "Asessuale, nessuna reazione socio-sessuale"
+  },
+  "sexual": {
+    "heterosexual": {
+      "name": "Eterosessuale",
+      "desc": "Attrazione sessuale verso persone di genere diverso."
+    },
+    "bisexual": {
+      "name": "Bisessuale",
+      "desc": "Attrazione sessuale verso più di un genere."
+    },
+    "homosexual": {
+      "name": "Omosessuale",
+      "desc": "Attrazione sessuale esclusivamente verso persone dello stesso genere."
+    },
+    "pansexual": {
+      "name": "Pansessuale",
+      "desc": "Attrazione sessuale a prescindere dal genere."
+    },
+    "asexual": {
+      "name": "Asessuale",
+      "desc": "Poca o nessuna attrazione sessuale verso chiunque."
+    },
+    "demisexual": {
+      "name": "Demisessuale",
+      "desc": "Attrazione sessuale che nasce solo dopo un forte legame emotivo."
+    },
+    "queer": {
+      "name": "Queer",
+      "desc": "Un orientamento fluido o volutamente senza etichetta, fuori dalle categorie usuali."
+    },
+    "digisexual": {
+      "name": "Digisessuale",
+      "desc": "Attrazione provata solo verso menti sintetiche: robot, androidi e intelligenze artificiali."
+    },
+    "dendrosexual": {
+      "name": "Dendrosessuale",
+      "desc": "Attrazione provata solo verso piante e vita botanica."
+    },
+    "nanosexual": {
+      "name": "Nanosessuale (attratto dai nani)",
+      "desc": "Attrazione provata esclusivamente verso i nani."
+    }
+  },
+  "romantic": {
+    "heteroromantic": {
+      "name": "Eteroromantico",
+      "desc": "Attrazione romantica verso persone di genere diverso."
+    },
+    "bubbaromantic": {
+      "name": "Bubbaromantico",
+      "desc": "Attrazione romantica provata esclusivamente verso Bubba Wilson, l'inventore del Motore Liminale."
+    },
+    "biromantic": {
+      "name": "Biromantico",
+      "desc": "Attrazione romantica verso più di un genere."
+    },
+    "aromantic": {
+      "name": "Aromantico",
+      "desc": "Poca o nessuna attrazione romantica verso chiunque."
+    },
+    "homoromantic": {
+      "name": "Omoromantico",
+      "desc": "Attrazione romantica esclusivamente verso lo stesso genere."
+    },
+    "panromantic": {
+      "name": "Panromantico",
+      "desc": "Attrazione romantica a prescindere dal genere."
+    },
+    "demiromantic": {
+      "name": "Demiromantico",
+      "desc": "Attrazione romantica che nasce solo dopo un forte legame emotivo."
+    },
+    "sapioromantic": {
+      "name": "Sapioromantico",
+      "desc": "Attrazione romantica guidata soprattutto dall'intelletto del partner."
+    },
+    "botromantic": {
+      "name": "Botromantico",
+      "desc": "Attrazione romantica provata solo verso robot e menti artificiali."
+    },
+    "dendroromantic": {
+      "name": "Dendroromantico",
+      "desc": "Attrazione romantica provata solo verso piante e vita botanica."
+    }
+  }
+}

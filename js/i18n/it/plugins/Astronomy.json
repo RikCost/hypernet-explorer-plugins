@@ -58,7 +58,7 @@
   "geometry": {
     "hypercube": "Tesseratto (4-cubo)",
     "hypersphere": "Ipersfera (3-sfera)",
-    "mobius": "Varieta di Mobius",
+    "mobius": "Varietà di Möbius",
     "klein": "Bottiglia di Klein"
   },
   "field": {

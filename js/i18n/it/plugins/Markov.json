@@ -7,5 +7,20 @@
   "databaseMissing": "[ERRORE] Archivio di testo \"{id}\" non trovato.",
   "allDatabases": "Tutti gli archivi uniti",
   "combined": "Uniti: {list}",
-  "seeded": "Da seme: {list}"
+  "seeded": "Da seme: {list}",
+  "llm": {
+    "off": "Spento",
+    "place": "Ti trovi in {place}.",
+    "withNpc": "{npc} è qui con te.",
+    "actionTalk": "> Parli con {npc}.",
+    "actionSay": "> Dici \"{text}\"",
+    "actionListen": "> Ascolti.",
+    "loading": "Caricamento del modello linguistico {model}. La prima battuta richiederà un po'.",
+    "ready": "Il modello linguistico {model} è pronto.",
+    "fetchingRuntime": "Scaricamento del motore per il modello linguistico. Succede una volta sola.",
+    "gotRuntime": "Motore del modello linguistico installato.",
+    "noRuntime": "Nessun motore per modelli linguistici per {platform}. Le battute generate restano alle catene di Markov.",
+    "thinking": "Sta pensando…",
+    "thinkingNpc": "{npc} sta pensando…"
+  }
 }

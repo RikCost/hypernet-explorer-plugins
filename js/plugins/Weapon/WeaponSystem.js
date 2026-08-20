@@ -598,34 +598,35 @@
         this._skillAnimations = null;
         debugLog(`Tracking attacker: ${subject.name()}`);
       } else if (action.isSkill()) {
-        // Check if skill has Movement animations
         const skill = action.item();
-        if (
-          skill &&
-          skill.weaponAnimations &&
-          skill.weaponAnimations.length > 0
-        ) {
-          // NEW: Check if weapon type should show animation for this skill
-          const weapons = subject.weapons();
-          const shouldShowAnimation = weapons.length > 0 && weapons[0] &&
-            ![7, 8, 9, 10, 11].includes(weapons[0].wtypeId);
+        const weapons = subject.weapons();
+        const wtypeId = (weapons.length && weapons[0]) ? weapons[0].wtypeId : 0;
+        // A weapon that shoots plays its own shot for a skill as well as for a
+        // plain attack. What a bow, a sling or a gun does is decided by the
+        // weapon and not by the name the skill asked for
+        // (WeaponSystemProcedural.rangedMotionFor), so there is no sword swing
+        // to suppress here: suppressing it is what left an archer standing
+        // still for every skill they used, holding a bow that never moved.
+        const shoots = wtypeId === 7 || wtypeId === 8 || wtypeId === 9;
+        const declared = !!(skill && skill.weaponAnimations && skill.weaponAnimations.length > 0);
+        // Claws and gloves are still left out: they have no motion of their own
+        // to fall back on, so a skill would swing them like a sword.
+        const swings = declared && wtypeId !== 10 && wtypeId !== 11;
 
-          if (shouldShowAnimation) {
-            this._lastAttacker = subject;
-            this._multiAttackHitCount = 0;
-            this._skillAnimations = skill.weaponAnimations;
-            debugLog(
-              `Skill ${skill.name} has animations:`,
-              this._skillAnimations
-            );
-          } else {
-            this._lastAttacker = null;
-            this._multiAttackHitCount = 0;
-            this._skillAnimations = null;
-            debugLog(
-              `Skill ${skill.name} has animations but weapon type ${weapons[0]?.wtypeId} should not show them`
-            );
-          }
+        if (shoots && (declared || action.isPhysical())) {
+          this._lastAttacker = subject;
+          this._multiAttackHitCount = 0;
+          // null: its own shot, not whatever movement the skill named.
+          this._skillAnimations = null;
+          debugLog(`Skill ${skill.name} shoots with the weapon's own motion`);
+        } else if (swings) {
+          this._lastAttacker = subject;
+          this._multiAttackHitCount = 0;
+          this._skillAnimations = skill.weaponAnimations;
+          debugLog(
+            `Skill ${skill.name} has animations:`,
+            this._skillAnimations
+          );
         } else {
           this._lastAttacker = null;
           this._multiAttackHitCount = 0;
@@ -1098,9 +1099,11 @@
   };
 
   /**
-   * Put the acting actor's weapons in frame. One model per hand: the right
-   * always, the left only when dual wielding or holding claws. An empty right
-   * hand is not empty, it holds the fist of the character's archetype
+   * Put whatever the acting actor is holding in frame. Two models at most, one
+   * per hand: a character with six arms still only swings two things a turn
+   * (Game_Actor#activeWeapons), and a shield counts as one of them, so sword
+   * and board, two swords and two shields are all drawn the same way. An empty
+   * right hand is not empty, it holds the fist of the character's archetype
    * (WeaponSystemProcedural.unarmedWeaponFor).
    */
   Spriteset_Battle.prototype.updateWeaponSprite = function () {
@@ -1125,19 +1128,32 @@
       return;
     }
 
+    // The weapons swinging this turn come first; a shield fills whichever hand
+    // is left over. Both are drawn through the same model pipeline, the shield
+    // wrapped as a weapon by WeaponSystemProcedural.shieldWeaponFor.
     const weapons = actor.weapons();
-    const isDualWielding = weapons.length >= 2;
-    const isClaws = weapons.length > 0 && weapons[0] && weapons[0].wtypeId === 10;
-    const shouldShowBothHands = isDualWielding || isClaws;
+    const held = window.HandSlots ? window.HandSlots.heldItems(actor) : [];
+    const shields = held.filter(item => item && item.etypeId === 2);
+    const shieldModel = (armor) => (armor && window.WeaponSystemProcedural)
+      ? WeaponSystemProcedural.shieldWeaponFor(armor)
+      : null;
 
-    let rightWeapon = weapons[0];
-    if (!rightWeapon && window.WeaponSystemProcedural) {
+    let rightWeapon = weapons[0] || null;
+    let rightShield = null;
+    if (!rightWeapon && shields.length) rightShield = shields.shift();
+    if (!rightWeapon && !rightShield && window.WeaponSystemProcedural) {
       rightWeapon = WeaponSystemProcedural.unarmedWeaponFor(actor);
     }
-    const leftWeapon = shouldShowBothHands ? weapons[1] : null;
 
-    this.setHeldWeaponModel('right', rightWeapon);
-    this.setHeldWeaponModel('left', leftWeapon);
+    // Claws are a pair even when the database lists one of them.
+    const isClaws = !!(weapons[0] && weapons[0].wtypeId === 10);
+    let leftWeapon = weapons[1] || null;
+    let leftShield = null;
+    if (!leftWeapon && shields.length) leftShield = shields.shift();
+    if (!leftWeapon && !leftShield && isClaws) leftWeapon = weapons[0];
+
+    this.setHeldWeaponModel('right', rightWeapon || shieldModel(rightShield));
+    this.setHeldWeaponModel('left', leftWeapon || shieldModel(leftShield));
   };
 
   /** Show `weapon` in `hand`, rebuilding the model only when it changed. */

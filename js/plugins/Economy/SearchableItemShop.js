@@ -680,6 +680,7 @@
                     case "Artisan": icon = 188; break;
                     case "Combat": icon = 334; break;
                     case "Collectibles": icon = 210; break;
+                    case "Component": icon = 83; break;
                     case "Counterfeits": icon = 306; break;
                     case "Enhancers": icon = 179; break;
                     case "Espionage": icon = 130; break;
@@ -704,6 +705,12 @@
             }
         }
     };
+
+    // A <Restricted> row is granted by the one system that owns it (a seed
+    // weapon by a blade seed) and belongs on no shelf, no search page and no
+    // delivery catalogue, however it was reached.
+    const isShopSellable = (entry) =>
+        !(window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(entry));
 
     // This function is defined twice in the original code. This is the version used by the runtime.
     Window_CategoryGrid.prototype.collectCustomCategories = function () {
@@ -865,7 +872,8 @@
         // Collect items
         for (let i = 1; i < $dataItems.length; i++) {
             const item = $dataItems[i];
-            if (item && item.price > 0 && item.name && item.name.trim() !== '') {
+            if (item && item.price > 0 && item.name && item.name.trim() !== '' &&
+                isShopSellable(item)) {
                 validItems.push(item);
             }
         }
@@ -873,7 +881,8 @@
         // Collect weapons
         for (let i = 1; i < $dataWeapons.length; i++) {
             const weapon = $dataWeapons[i];
-            if (weapon && weapon.price > 0 && weapon.name && weapon.name.trim() !== '') {
+            if (weapon && weapon.price > 0 && weapon.name && weapon.name.trim() !== '' &&
+                isShopSellable(weapon)) {
                 validWeapons.push(weapon);
             }
         }
@@ -980,6 +989,7 @@
     Window_GridItemList.prototype.matchesSearch = function (entry) {
         if (!entry || !this._searchQuery) return false;
         if (!entry.name || entry.name.trim() === '') return false;
+        if (!isShopSellable(entry)) return false;
 
         const haystack = (entry.name + ' ' + (entry.description || '')).toLowerCase();
         return this._searchQuery.split(/\s+/).every(term => haystack.includes(term));
@@ -1093,6 +1103,7 @@
         if (item.price === 0 || !item.name || item.name.trim() === '') {
             return false;
         }
+        if (!isShopSellable(item)) return false;
 
         // In limited mode, only include items that are in the limited selection
         if (this._isLimited) {
@@ -1193,7 +1204,7 @@
                 // Check items
                 for (let i = 1; i < $dataItems.length; i++) {
                     const item = $dataItems[i];
-                    if (item && this.hasCustomCategory(item, categoryName)) {
+                    if (item && isShopSellable(item) && this.hasCustomCategory(item, categoryName)) {
                         // Filter out items with price 0 or empty names
                         if (item.price === 0 || !item.name || item.name.trim() === '') {
                             continue;
@@ -1205,7 +1216,7 @@
                 // Check weapons
                 for (let i = 1; i < $dataWeapons.length; i++) {
                     const weapon = $dataWeapons[i];
-                    if (weapon && this.hasCustomCategory(weapon, categoryName)) {
+                    if (weapon && isShopSellable(weapon) && this.hasCustomCategory(weapon, categoryName)) {
                         // Filter out weapons with price 0 or empty names
                         if (weapon.price === 0 || !weapon.name || weapon.name.trim() === '') {
                             continue;
@@ -1217,7 +1228,7 @@
                 // Check armors
                 for (let i = 1; i < $dataArmors.length; i++) {
                     const armor = $dataArmors[i];
-                    if (armor && this.hasCustomCategory(armor, categoryName)) {
+                    if (armor && isShopSellable(armor) && this.hasCustomCategory(armor, categoryName)) {
                         // Filter out armors with price 0 or empty names
                         if (armor.price === 0 || !armor.name || armor.name.trim() === '') {
                             continue;
@@ -1675,8 +1686,8 @@
     // Modify create to pass limited mode parameters and establish the D&D overlay
     Scene_SearchableShop.prototype.create = function () {
         Scene_MenuBase.prototype.create.call(this);
-        // Name the skill this menu runs on while it is open.
-        if (window.SpecBadge) window.SpecBadge.show('Haggling');  // i18n-ignore  Specialization.json id
+        // Haggling still moves the prices, but the shop shows no skill chip.
+        if (window.SpecBadge) window.SpecBadge.hide();
         this.createHelpWindow();
         this.createHeaderWindow();
         this.createCategoryGridWindow();

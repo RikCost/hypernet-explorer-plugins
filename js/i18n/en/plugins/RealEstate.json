@@ -49,5 +49,42 @@
     "available2": "Available",
     "evicted": "Evicted from \"{name}\": rent unpaid.",
     "appName": "Real Estate Board"
+  },
+  "company": {
+    "lemoncorp": {
+      "description": "The zesty consumer-tech conglomerate behind half the gadgets in Europe. Famously overvalued, famously beloved."
+    },
+    "petrodyne": {
+      "description": "Oil, gas and everything that burns. Pumps crude from the Petrocave and pays steady, sooty dividends."
+    },
+    "soulforge": {
+      "description": "Refines and trades soul-crystals. Volatile, ethically dubious, spectacularly profitable when the veil is thin."
+    },
+    "hypernetsystems": {
+      "description": "The backbone of the Hypernet itself. Owns the pipes, the towers and most of your data."
+    },
+    "ferrosteelworks": {
+      "description": "Girders, rails and hull plating. Boring, heavy, and quietly essential to everyone who builds anything."
+    },
+    "greenwitchorganics": {
+      "description": "Herbs, tinctures and suspiciously effective produce grown under the GreenWitch canopy."
+    },
+    "vaultbankholdings": {
+      "description": "Deposits, loans and the vaults that hold them. If you owe money, you probably owe it here."
+    },
+    "aetherlogistics": {
+      "description": "Trains, buses, helicopters and the timetables that bind them. Moves people and cargo across the map."
+    }
+  },
+  "sector": {
+    "consumertech": "Consumer Tech",
+    "energy": "Energy",
+    "occult": "Occult",
+    "telecom": "Telecom",
+    "industrial": "Industrial",
+    "agriculture": "Agriculture",
+    "finance": "Finance",
+    "transport": "Transport",
+    "misc": "Misc"
   }
 }

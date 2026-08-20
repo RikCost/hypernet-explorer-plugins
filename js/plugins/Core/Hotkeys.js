@@ -6,10 +6,6 @@
  * MenuHotkeys.js
  * 
  * This plugin adds keyboard shortcuts to quickly access different menus:
- * I or Tab - Open Inventory Menu
- * J - Open Skills Menu
- * O - Open Equipment Menu
- * P - Open Status Menu for the first party member
  * H - Call Common Event 12
  * C - Kick action (always uses basic kick regardless of equipped weapon)
  *
@@ -380,9 +376,6 @@
             
                 // Process our custom menu hotkeys
                 switch (event.key.toUpperCase()) {
-                    case 'TAB': // Also open inventory with Tab key
-                        SceneManager.push(Scene_Item);
-                        break;
                     case 'W': // Open the Hypernet Explorer browser
                         // The browser is an app of HypernetOS, not a scene of
                         // its own: the desktop is pushed and told to open it.

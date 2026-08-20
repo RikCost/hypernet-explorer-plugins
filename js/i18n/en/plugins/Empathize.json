@@ -88,7 +88,7 @@
   "sleepLabel": "Sleep",
   "hygieneLabel": "Hygiene",
   "socialLabel": "Social",
-  "leisureLabel": "Fun",
+  "leisureLabel": "Mood",
   "knowsYouWell": "Knows you well",
   "remembersYou": "Remembers you",
   "profile": "Profile",
@@ -447,7 +447,7 @@
   "tellAJoke": "Tell a Joke",
   "jokeFallback": "A funny thing happened.",
   "funShared": "You and {name} both enjoyed that.",
-  "funHint": "Fun for you and for them, when it lands.",
+  "funHint": "Lifts your mood and theirs, when it lands.",
   "oldLegend": "an old legend",
   "bribeAccepted": "{name} accepts. +{op} ♥",
   "joinedParty": "{name} joined the party!",
@@ -578,6 +578,40 @@
     "grrhh",
     "yrrr",
     "hnnng"
+  ],
+  "beastLabelPet": "Pet",
+  "beastLabelFeed": "Feed",
+  "nothingToFeed": "Nothing here it would eat.",
+  "calories": {
+    "one": "1 kcal",
+    "other": "{n} kcal"
+  },
+  "fedBeast": "You fed {item} to {name}.",
+  "beastActPet": [
+    "You run a hand along its back, slowly, the way you would want it done.",
+    "You scratch it behind the ear until one back leg forgets itself.",
+    "You crouch and let it decide, and it decides, and leans in.",
+    "You rub the flat of your palm over its head. It shuts its eyes.",
+    "You smooth the fur down along its neck, once, twice, again.",
+    "You put a careful hand out. It pushes up into it and stays."
+  ],
+  "beastFedWell": [
+    "The {item} is gone before you have finished lowering your hand.",
+    "It eats the {item} the way a thing eats that has been hungry a while, then looks for more.",
+    "It works through the {item} without once looking away from you, which is either trust or accounting.",
+    "The {item} goes down whole. It leans against your leg afterwards, heavily."
+  ],
+  "beastFedPlain": [
+    "It takes the {item}, chews, swallows, and waits to see whether that was all.",
+    "The {item} is eaten politely, which from an animal means slowly.",
+    "It sniffs the {item} twice before eating it, in case you were being funny.",
+    "The {item} disappears. Nothing about the {kind} suggests it was a highlight."
+  ],
+  "beastFedBadly": [
+    "It eats the {item} because it is food, and watches you differently while it does.",
+    "The {item} goes down in two swallows and something goes out of the way it was standing.",
+    "It takes the {item}, drops it, looks at you, and eats it off the floor instead.",
+    "The {item} is chewed slowly and without pleasure. That was not what it was waiting for."
   ],
   "cardDuelLabel": "Card duel",
   "cardTradeLabel": "Swap cards",

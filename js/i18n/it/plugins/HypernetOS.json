@@ -54,5 +54,21 @@
   "protoWin": "Vinci 7 battaglie per avanzare di fascia, se perdi finisce",
   "protoRestore": "Il gruppo originale viene ripristinato del tutto dopo il gauntlet",
   "enterColosseum": "ENTRA NEL COLOSSEO",
-  "colosseumHint": "Scegli una fascia dall'elenco, poi premi Entra nel Colosseo."
+  "colosseumHint": "Scegli una fascia dall'elenco, poi premi Entra nel Colosseo.",
+  "bios": "Configurazione HyperDeck",
+  "biosBanner": "Esoteric Heavy Industries - Firmware HyperDeck v1.04",
+  "biosTabSystem": "Sistema",
+  "biosTabHealth": "Diagnostica",
+  "biosRecheck": "Ripeti test",
+  "biosCase": "Telaio",
+  "biosProcessor": "Processore",
+  "biosMemory": "Memoria",
+  "biosStorage": "Volume primario",
+  "biosCell": "Cella di alimentazione",
+  "biosDraw": "Assorbimento / erogazione",
+  "biosBoard": "Occupazione scheda",
+  "biosNoDeck": "Nessun deck collegato a questo terminale.",
+  "biosNoFaults": "Nessun guasto rilevato. Ogni pezzo montato ha risposto.",
+  "biosWillBoot": "L'avvio riuscirebbe.",
+  "biosWillNotBoot": "L'avvio fallirebbe."
 }

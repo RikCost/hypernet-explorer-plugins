@@ -79,5 +79,7 @@
     "navAcceptContract": "",
     "navChooseJob": "",
     "navSignContract": ""
-  }
+  },
+  "guildRegistry": "길드 노동 등록부",
+  "guildRegistryCategory": "길드 노동 등록부: {category}"
 }

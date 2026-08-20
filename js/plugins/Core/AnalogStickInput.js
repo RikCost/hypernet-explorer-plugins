@@ -134,11 +134,16 @@
         leftTrigger() { return this._lt; },
         rightTrigger() { return this._rt; },
 
-        // Standard gamepad mapping (Xbox layout labels).
+        // Standard gamepad mapping (Xbox layout labels). The four d-pad
+        // buttons are here as themselves: core folds the LEFT STICK into the
+        // same Input directions, so a scene that wants the d-pad alone (a
+        // weapon rack stepped with up/down while the stick still walks) can
+        // only get it by reading the raw buttons.
         // i18n-ignore-start: physical controller button ids
         BUTTON: {
             A: 0, B: 1, X: 2, Y: 3, LB: 4, RB: 5, LT: 6, RT: 7,
-            BACK: 8, START: 9, L3: 10, R3: 11
+            BACK: 8, START: 9, L3: 10, R3: 11,
+            DPAD_UP: 12, DPAD_DOWN: 13, DPAD_LEFT: 14, DPAD_RIGHT: 15
         },
         // i18n-ignore-end
 

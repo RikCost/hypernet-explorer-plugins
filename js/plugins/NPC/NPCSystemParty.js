@@ -23,7 +23,7 @@
  *
  * SetArchetype:
  * - Sets the body archetype for the specified actor ID (1, 2, or 3)
- * - The archetypeName must match a key in window.Health.EnemyArchetypes
+ * - The archetypeName must match a key in window.Health.Archetypes
  * - Updates body parts, reproduction variables (87/115/116), skills, and stat modifiers
  * 
  * @command TransformActor2
@@ -54,7 +54,7 @@
  * @desc Joining NPC's event ID (0 = derive from the calling interpreter/$gameTemp)
  *
  * @command SetArchetype
- * @desc Sets body archetype for the specified actor (must match EnemyArchetypes key)
+ * @desc Sets body archetype for the specified actor (must match Archetypes key)
  *
  * @arg actorId
  * @text Actor ID
@@ -107,12 +107,12 @@
 
     PluginManager.registerCommand(pluginName, "SetArchetype", args => {
         const actorId = Number(args.actorId) || 1;
-        const archetypeName = String(args.archetypeName || "Humanoid"); // i18n-ignore: EnemyArchetypes.json id
+        const archetypeName = String(args.archetypeName || "Humanoid"); // i18n-ignore: Archetypes.json id
         setActorArchetype(actorId, archetypeName);
     });
 
     PluginManager.registerCommand(pluginName, "SetJoinedArchetype", args => {
-        const archetypeName = String(args.archetypeName || "Humanoid"); // i18n-ignore: EnemyArchetypes.json id
+        const archetypeName = String(args.archetypeName || "Humanoid"); // i18n-ignore: Archetypes.json id
         const joinedActorId = getLastJoinedActorId();
         if (joinedActorId) {
             setActorArchetype(joinedActorId, archetypeName);
@@ -326,7 +326,7 @@
         if (success) {
             console.log(`NPCSystemParty.SetArchetype: Successfully set actor ${actorId} archetype to "${archetypeName}"`);
         } else {
-            console.warn(`NPCSystemParty.SetArchetype: Failed to set archetype "${archetypeName}" for actor ${actorId}. Check that it exists in window.Health.EnemyArchetypes.`);
+            console.warn(`NPCSystemParty.SetArchetype: Failed to set archetype "${archetypeName}" for actor ${actorId}. Check that it exists in window.Health.Archetypes.`);
         }
     }
 
@@ -380,13 +380,12 @@
         for (const armorId of equip.armorIds) {
             const armor = $dataArmors[armorId];
             if (!armor) continue;
-            const slots = actor.equipSlots();
-            for (let i = 1; i < slots.length; i++) {
-                if (slots[i] === armor.etypeId && !actor.equips()[i]) {
-                    actor.forceChangeEquip(i, armor);
-                    break;
-                }
-            }
+            // A shield goes in a hand now, so ask what would take it rather
+            // than matching equip types (window.HandSlots).
+            const slot = window.HandSlots
+                ? window.HandSlots.emptySlotFor(actor, armor)
+                : actor.equipSlots().findIndex((e, i) => e === armor.etypeId && !actor.equips()[i]);
+            if (slot >= 0) actor.forceChangeEquip(slot, armor);
         }
     }
 

@@ -10,7 +10,12 @@
       "tries": "cerca",
       "has": "ha",
       "answers": "risponde",
-      "born": "Nato"
+      "born": "Nato",
+      "wasChild": "era bambino",
+      "remembers": "ricorda",
+      "grewUp": "crebbe",
+      "saw": "vide",
+      "had": "aveva"
     },
     "1": {
       "sub": "lei",
@@ -22,7 +27,12 @@
       "tries": "cerca",
       "has": "ha",
       "answers": "risponde",
-      "born": "Nata"
+      "born": "Nata",
+      "wasChild": "era bambina",
+      "remembers": "ricorda",
+      "grewUp": "crebbe",
+      "saw": "vide",
+      "had": "aveva"
     },
     "2": {
       "sub": "loro",
@@ -34,7 +44,12 @@
       "tries": "cercano",
       "has": "hanno",
       "answers": "rispondono",
-      "born": "Nati"
+      "born": "Nati",
+      "wasChild": "erano bambini",
+      "remembers": "ricordano",
+      "grewUp": "crebbero",
+      "saw": "videro",
+      "had": "avevano"
     },
     "3": {
       "sub": "xe",
@@ -46,7 +61,12 @@
       "tries": "cercano",
       "has": "hanno",
       "answers": "rispondono",
-      "born": "Nati"
+      "born": "Nati",
+      "wasChild": "erano bambini",
+      "remembers": "ricordano",
+      "grewUp": "crebbero",
+      "saw": "videro",
+      "had": "avevano"
     }
   },
   "adjective": [
@@ -59,19 +79,83 @@
   "bio": {
     "uncertainTimes": "tempi incerti",
     "wildsNear": "nelle terre selvagge vicino a {city}",
-    "later": "In seguito {sub} {has} conosciuto {event}.",
-    "moral": {
-      "high": "{cap} {is} una persona di integrità incrollabile.",
-      "good": "{cap} {tries} di fare la cosa giusta, quasi sempre.",
-      "weary": "La vita ha lasciato a {obj} poche illusioni.",
-      "loose": "{cap} {has} imparato che le regole valgono per gli altri.",
-      "lawless": "{cap} non {answers} ad altro codice che il {pos}."
+    "inCountry": "in {place}",
+    "inTown": "a {place}",
+    "placeIn": {
+      "unitedkingdom": "nel {place}",
+      "uk": "nel {place}",
+      "netherlands": "nei {place}",
+      "philippines": "nelle {place}",
+      "czechrepublic": "nella {place}",
+      "unitedarabemirates": "negli {place}",
+      "unitedstatesfreestatesofmidwest": "negli {place}",
+      "cascadiaprotectorate": "nel {place}",
+      "easternseaboard": "sulla {place}"
     },
-    "creature": "Di {sub} si sa questo: {born} {place}, lontano dalle città degli uomini, creatura {adj} plasmata da {event}. {later} {moral}",
-    "turbulent": "{born} in {place} nel {year}, in un'epoca turbolenta: {sub} {has} vissuto {event}. {later} {moral}",
-    "warYears": "{born} negli anni di guerra, {sub} {has} passato l'infanzia in {place} e {has} assistito a {event}. {later} {moral}",
-    "postwar": "{born} nel {year} in {place}, {sub} {is} un'anima {adj} plasmata da {event}. {later} {moral}",
-    "modern": "{born} in {place} mentre il mondo si faceva strano, {sub} non {has} mai dimenticato {event}. {later} {moral}",
+    "later": [
+      "In seguito {sub} {has} conosciuto anche il tempo in cui {event}.",
+      "Anni dopo {sub} {saw} da vicino il momento in cui {event}.",
+      "Poi venne la stagione in cui {event}.",
+      "Poco dopo {sub} {has} imparato che cosa significa quando {event}.",
+      "{cap} {remembers} la settimana in cui {event}, e non ne parla volentieri."
+    ],
+    "moral": {
+      "high": [
+        "{cap} {is} una persona di integrità incrollabile.",
+        "La gente si fida di {obj} a prima vista, e di rado sbaglia.",
+        "Non c'è mai stato bisogno di chiedere due volte a {obj} di fare la cosa giusta."
+      ],
+      "good": [
+        "{cap} {tries} di fare la cosa giusta, quasi sempre.",
+        "{cap} {is} perbene, almeno finché non costa troppo.",
+        "{cap} {tries} di lasciare i posti non peggio di come li {has} trovati."
+      ],
+      "weary": [
+        "La vita ha lasciato a {obj} poche illusioni.",
+        "{cap} {has} smesso da anni di aspettarsi qualcosa dagli altri.",
+        "{cap} non {is} né crudele né gentile: {is} soltanto senza più forze."
+      ],
+      "loose": [
+        "{cap} {has} imparato che le regole valgono per gli altri.",
+        "{cap} {has} un rapporto elastico con la legge, e con la verità.",
+        "Quello che {sub} {has} preso, lo {has} preso in silenzio."
+      ],
+      "lawless": [
+        "{cap} non {answers} ad altro codice che il {pos}.",
+        "Non esiste più un limite che {sub} non {has} superato.",
+        "Per quello che {sub} {is} non esiste una parola educata."
+      ]
+    },
+    "creature": [
+      "{born} {placeIn}, lontano dalle città degli uomini: creatura {adj}, segnata dalla stagione in cui {event}. {later} {moral}",
+      "Nessuna città ha mai avuto voce su di {obj}. {born} {placeIn}, creatura {adj} che ancora ricorda quando {event}. {later} {moral}",
+      "Di {sub} non resta atto di nascita. {born} {placeIn}, natura {adj} già cresciuta quando {event}. {later} {moral}",
+      "{born} {placeIn} e di nessun padrone: creatura {adj}, abbastanza vecchia da capire quando {event}. {later} {moral}"
+    ],
+    "turbulent": [
+      "{born} nel {year} {placeIn}, in un'epoca che non sapeva stare ferma: {sub} {wasChild} quando {event}. {later} {moral}",
+      "{born} {placeIn} nel {year}: il {pos} primo ricordo nitido è l'anno in cui {event}. {later} {moral}",
+      "{born} {placeIn} nel {year}, indole {adj} di un secolo cominciato male: {sub} {had} appena iniziato la scuola quando {event}. {later} {moral}",
+      "Nei registri del {year} {placeIn} c'è il {pos} nome. Di quel giorno in cui {event}, {sub} non {has} mai parlato molto. {later} {moral}"
+    ],
+    "warYears": [
+      "{born} negli anni di guerra {placeIn}: {sub} {wasChild} quando {event}. {later} {moral}",
+      "{cap} {grewUp} {placeIn} con le sirene, e {saw} il mattino in cui {event}. {later} {moral}",
+      "{born} nel {year}, {sub} {grewUp} {placeIn} mentre {event}. {later} {moral}",
+      "Un'infanzia {placeIn} fatta di tessere annonarie, e poi la settimana in cui {event}. {later} {moral}"
+    ],
+    "postwar": [
+      "{born} nel {year} {placeIn}, {sub} {is} un'anima {adj} cresciuta negli anni in cui {event}. {later} {moral}",
+      "{cap} {grewUp} {placeIn} in un paese da ricostruire, di tempra {adj} e impaziente, e {saw} tutto da vicino quando {event}. {later} {moral}",
+      "{born} {placeIn} nel {year}, {sub} {has} raccontato mille volte come {event}. {later} {moral}",
+      "Figura {adj} del {year} {placeIn}, {sub} {had} un turno come tanti il giorno in cui {event}. {later} {moral}"
+    ],
+    "modern": [
+      "{born} {placeIn} mentre il mondo si faceva strano, {sub} non {has} mai dimenticato quando {event}. {later} {moral}",
+      "{born} nel {year} {placeIn}, {sub} {grewUp} sentendo raccontare come {event}. {later} {moral}",
+      "{cap} {is} un'anima {adj} di fine secolo, venuta al mondo {placeIn} e segnata ancora dall'anno in cui {event}. {later} {moral}",
+      "{born} {placeIn} nel {year}, tra schermi e disturbi di segnale: {sub} {saw} tutto in diretta quando {event}. {later} {moral}"
+    ],
     "bornMeta": "Nascita {year} · {place}"
   }
 }

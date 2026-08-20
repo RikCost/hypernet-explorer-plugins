@@ -1,401 +1,425 @@
 {
-  "scale": {
-    "system": "System",
-    "galaxy": "Galaxy",
-    "localGroup": "Local Group",
-    "supercluster": "Virgo Supercluster",
-    "filaments": "Cosmic Web",
-    "observable": "Observable Universe",
-    "universe": "Universe",
-    "unknown": "Unknown",
-    "planet": "Planet",
-    "cluster": "Galaxy Cluster",
-    "web": "Cosmic Web",
-    "webNode": "cosmic web node",
-    "unnamedGalaxy": "Unnamed Galaxy",
-    "proceduralGalaxy": "procedural galaxy",
-    "starSystem": "Star System",
-    "milkyWay": "Milky Way Galaxy",
-    "near": "near {name}"
-  },
-  "sky": {
-    "european": "European",
-    "chinese": "Chinese",
-    "center": "Center",
-    "zodiac": "Zodiac",
-    "hint": "drag or WASD/arrows to pan · wheel or Q/E to zoom · OK centers view · Tab switches the sky · Esc closes",
-    "hintPad": "LS pan · LB/RB zoom · A centers view · X switches the sky · B closes"
-  },
-  "cluster": {
-    "virgo": "Virgo Cluster",
-    "hydra": "Hydra Supercluster",
-    "centaurus": "Centaurus Supercluster",
-    "pavoIndus": "Pavo-Indus Supercluster"
-  },
-  "travel": {
-    "yourDestination": "your destination",
-    "arrivedAt": "You have arrived at {place}",
-    "timeToArrival": "Time to Arrival",
-    "lyRemaining": "{ly} ly remaining"
-  },
-  "bodyType": {
-    "Dark + emission nebula": "Dark + emission nebula",
-    "Dark nebula": "Dark nebula",
-    "Dark nebula (Bok globule)": "Dark nebula (Bok globule)",
-    "Dark nebula silhouette": "Dark nebula silhouette",
-    "Emission + reflection nebula": "Emission + reflection nebula",
-    "Emission nebula": "Emission nebula",
-    "Emission nebula (Pillars of Creation)": "Emission nebula (Pillars of Creation)",
-    "Emission nebula (SNR-like arc)": "Emission nebula (SNR-like arc)",
-    "Emission/reflection nebula (H II region)": "Emission/reflection nebula (H II region)",
-    "Planetary nebula": "Planetary nebula",
-    "Reflection nebula": "Reflection nebula",
-    "Supernova remnant": "Supernova remnant",
-    "barred spiral galaxy": "barred spiral galaxy",
-    "cosmological horizon": "cosmological horizon",
-    "dwarf irregular galaxy": "dwarf irregular galaxy",
-    "galaxy cluster": "galaxy cluster",
-    "galaxy group": "galaxy group",
-    "gravitational anomaly": "gravitational anomaly",
-    "higher-dimensional anomaly": "higher-dimensional anomaly",
-    "spiral galaxy": "spiral galaxy",
-    "rich galaxy cluster": "rich galaxy cluster",
-    "elliptical galaxy": "elliptical galaxy"
-  },
-  "row": {
-    "type": "Type",
-    "diameter": "Diameter",
-    "members": "Members",
-    "stars": "Stars",
-    "distance": "Distance",
-    "currentLocation": "current location",
-    "starType": "Star Type",
-    "starClass": "{type} Class",
-    "mass": "Mass",
-    "radius": "Radius",
-    "temperature": "Temperature",
-    "planets": "Planets",
-    "memberOf": "Member of",
-    "companions": "Companions",
-    "feedingOn": "Feeding on",
-    "chartedFor": "Charted for",
-    "megastructure": "Megastructure",
-    "dyson": "Dyson sphere",
-    "dysonAbandoned": "Abandoned Dyson sphere",
-    "orbit": "Orbit",
-    "period": "Period",
-    "atmosphere": "Atmosphere",
-    "yes": "Yes",
-    "no": "No",
-    "breathableAir": "Breathable Air",
-    "life": "Life",
-    "detected": "Detected",
-    "moons": "Moons",
-    "oreBody": "Ore Body",
-    "units": "{remaining} / {capacity} units",
-    "condition": "Condition",
-    "traceSigns": "Trace signs",
-    "bioReading": "Detected · {tier}"
-  },
-  "nibiru": {
-    "impactRow": "Earth Impact",
-    "countdownYears": "{years} y {days} d {hh}:{mm}",
-    "countdownDays": "{days} d {hh}:{mm}",
-    "countdownNow": "any moment now",
-    "noteFar": "A world with no sun, falling in out of the dark on a course nobody plotted and nobody can bend. The ephemerides put it over Earth on the twenty-first of December, 2012.",
-    "noteNear": "Inside the system now, and no longer slowing. It holds Earth's own angle exactly, which is another way of saying it is not going to miss.",
-    "saturnNote": "Nibiru went into the giant instead, and the giant caught. Saturn burns now: not enough to be a star, far too much to still be a planet. The rings went first.",
-    "towerNote": "Where Earth stood there is a black lance twelve kilometres tall, gold at every edge, turning in the orbit its world left behind. Nothing on it answers, and one door is open.",
-    "towerLanding": "Omega Tower Spire",
-    "entered": "Nibiru has crossed into the Solar System.",
-    "hitSaturn": "Nibiru has struck Saturn. The giant is burning.",
-    "hitEarth": "Nibiru has struck the Earth. Both are gone."
-  },
+ "scale": {
+  "system": "System",
+  "galaxy": "Galaxy",
+  "localGroup": "Local Group",
+  "supercluster": "Virgo Supercluster",
+  "filaments": "Cosmic Web",
+  "observable": "Observable Universe",
+  "universe": "Universe",
+  "unknown": "Unknown",
+  "planet": "Planet",
+  "cluster": "Galaxy Cluster",
+  "web": "Cosmic Web",
+  "webNode": "cosmic web node",
   "unnamedGalaxy": "Unnamed Galaxy",
-  "unit": {
-    "mly": "{n} Mly",
-    "thousandLy": "{n},000 ly",
-    "billionStars": "~{n} billion",
-    "galaxies": "~{n} galaxies"
+  "proceduralGalaxy": "procedural galaxy",
+  "starSystem": "Star System",
+  "milkyWay": "Milky Way Galaxy",
+  "near": "near {name}"
+ },
+ "sky": {
+  "european": "European",
+  "chinese": "Chinese",
+  "center": "Center",
+  "zodiac": "Zodiac",
+  "hint": "drag or WASD/arrows to pan · wheel or Q/E to zoom · OK centers view · Tab switches the sky · Esc closes",
+  "hintPad": "LS pan · LB/RB zoom · A centers view · X switches the sky · B closes"
+ },
+ "cluster": {
+  "virgo": "Virgo Cluster",
+  "hydra": "Hydra Supercluster",
+  "centaurus": "Centaurus Supercluster",
+  "pavoIndus": "Pavo-Indus Supercluster"
+ },
+ "travel": {
+  "yourDestination": "your destination",
+  "arrivedAt": "You have arrived at {place}",
+  "timeToArrival": "Time to Arrival",
+  "lyRemaining": "{ly} ly remaining"
+ },
+ "bodyType": {
+  "Dark + emission nebula": "Dark + emission nebula",
+  "Dark nebula": "Dark nebula",
+  "Dark nebula (Bok globule)": "Dark nebula (Bok globule)",
+  "Dark nebula silhouette": "Dark nebula silhouette",
+  "Emission + reflection nebula": "Emission + reflection nebula",
+  "Emission nebula": "Emission nebula",
+  "Emission nebula (Pillars of Creation)": "Emission nebula (Pillars of Creation)",
+  "Emission nebula (SNR-like arc)": "Emission nebula (SNR-like arc)",
+  "Emission/reflection nebula (H II region)": "Emission/reflection nebula (H II region)",
+  "Planetary nebula": "Planetary nebula",
+  "Reflection nebula": "Reflection nebula",
+  "Supernova remnant": "Supernova remnant",
+  "barred spiral galaxy": "barred spiral galaxy",
+  "cosmological horizon": "cosmological horizon",
+  "dwarf irregular galaxy": "dwarf irregular galaxy",
+  "galaxy cluster": "galaxy cluster",
+  "galaxy group": "galaxy group",
+  "gravitational anomaly": "gravitational anomaly",
+  "higher-dimensional anomaly": "higher-dimensional anomaly",
+  "spiral galaxy": "spiral galaxy",
+  "rich galaxy cluster": "rich galaxy cluster",
+  "elliptical galaxy": "elliptical galaxy"
+ },
+ "row": {
+  "type": "Type",
+  "diameter": "Diameter",
+  "members": "Members",
+  "stars": "Stars",
+  "distance": "Distance",
+  "currentLocation": "current location",
+  "starType": "Star Type",
+  "starClass": "{type} Class",
+  "mass": "Mass",
+  "radius": "Radius",
+  "temperature": "Temperature",
+  "planets": "Planets",
+  "memberOf": "Member of",
+  "companions": "Companions",
+  "feedingOn": "Feeding on",
+  "chartedFor": "Charted for",
+  "megastructure": "Megastructure",
+  "dyson": "Dyson sphere",
+  "dysonAbandoned": "Abandoned Dyson sphere",
+  "orbit": "Orbit",
+  "period": "Period",
+  "atmosphere": "Atmosphere",
+  "yes": "Yes",
+  "no": "No",
+  "breathableAir": "Breathable Air",
+  "life": "Life",
+  "detected": "Detected",
+  "moons": "Moons",
+  "oreBody": "Ore Body",
+  "units": "{remaining} / {capacity} units",
+  "condition": "Condition",
+  "traceSigns": "Trace signs",
+  "bioReading": "Detected · {tier}"
+ },
+ "nibiru": {
+  "impactRow": "Earth Impact",
+  "countdownYears": "{years} y {days} d {hh}:{mm}",
+  "countdownDays": "{days} d {hh}:{mm}",
+  "countdownNow": "any moment now",
+  "noteFar": "A world with no sun, falling in out of the dark on a course nobody plotted and nobody can bend. The ephemerides put it over Earth on the twenty-first of December, 2012.",
+  "noteNear": "Inside the system now, and no longer slowing. It holds Earth's own angle exactly, which is another way of saying it is not going to miss.",
+  "saturnNote": "Nibiru went into the giant instead, and the giant caught. Saturn burns now: not enough to be a star, far too much to still be a planet. The rings went first.",
+  "towerNote": "Where Earth stood there is a black lance twelve kilometres tall, gold at every edge, turning in the orbit its world left behind. Nothing on it answers, and one door is open.",
+  "towerLanding": "Omega Tower Spire",
+  "entered": "Nibiru has crossed into the Solar System.",
+  "hitSaturn": "Nibiru has struck Saturn. The giant is burning.",
+  "hitEarth": "Nibiru has struck the Earth. Both are gone."
+ },
+ "unnamedGalaxy": "Unnamed Galaxy",
+ "unit": {
+  "mly": "{n} Mly",
+  "thousandLy": "{n},000 ly",
+  "billionStars": "~{n} billion",
+  "galaxies": "~{n} galaxies"
+ },
+ "hud": {
+  "centreTheViewOnYour": "Centre the view on your ship, wherever it is",
+  "sweepEverySystemWithin500": "Sweep every system within 500 ly for life",
+  "quantumBridgeToTheSelected": "Quantum-bridge to the selected system (costs 1 Schrödingerite)",
+  "plotACourseHomeMilky": "Plot a course home (Milky Way only, while not already orbiting Earth)",
+  "quantumBridgeStraightHomeCosts": "Quantum-bridge straight home (costs 1 Schrödingerite)",
+  "plotACourseToThis": "Plot a course to this system",
+  "quantumBridgeStraightIntoOrbit": "Quantum-bridge straight into orbit (costs 1 Schrödingerite)",
+  "cutTheBodyApartWith": "Cut the body apart with the ship's lasers (burns Hyperflux)",
+  "openTheServicingBay": "Open the servicing bay",
+  "zoomTo": "Zoom To",
+  "starSystem": "Star System",
+  "catalog": "Catalog",
+  "home": "Home",
+  "returnToEarth": "Return to Earth",
+  "ebBridge": "EB Bridge",
+  "closeMap": "Close Map",
+  "closeMapTooltip": "Close the star map",
+  "engines": "Engines",
+  "warpSpeed": "Warp speed",
+  "hyperfluxBurn": "Hyperflux burn",
+  "eta": "Time to arrival",
+  "stop": "Stop",
+  "fuel": "Fuel",
+  "hyperfluxReserve": "Hyperflux reserve",
+  "hyperflux": "Hyperflux",
+  "schrD": "Schröd.",
+  "mapFuel": "Map Fuel",
+  "refuel": "Refuel",
+  "orbit": "Orbit",
+  "chooseLandingSite": "Choose Landing Site",
+  "cancel": "Cancel",
+  "servicingBay": "Servicing Bay",
+  "stripMining": "Strip Mining",
+  "cutLasers": "Cut Lasers",
+  "zoom": "Zoom",
+  "enterSystem": "Enter System",
+  "travelHere": "Travel Here",
+  "currentLocation": "Current location",
+  "parkedInOrbit": "Parked in orbit",
+  "openSchrDingerBohrBridge": "Open Schrödinger Bohr Bridge",
+  "flyHere": "Fly Here",
+  "landHere": "Land Here",
+  "stripMine": "Strip Mine",
+  "serviceTelescope": "Service Telescope",
+  "serviced": "Serviced",
+  "repair": "Repair",
+  "close": "Close",
+  "refuelTooltip": "Refuel here, or plot a course to the nearest star that can refuel the ship",
+  "orbitHint": "drag rotate · wheel zoom · click select · Esc exit",
+  "nothingCatalogued": "Nothing catalogued.",
+  "rechargesIn": "Recharges in",
+  "nominal": "Nominal",
+  "mineProgress": "{mined} / {capacity} units · ~{eta}s to depletion",
+  "ship": "Ship",
+  "scanForBiosignatures": "Scan for Biosignatures",
+  "grandTour": "Grand Tour",
+  "grandTourTooltip": "A scenic, hands-off flythrough of every body in this system",
+  "sbBridge": "SB-Bridge",
+  "setCourse": "Set course",
+  "parkInOrbit": "Park in Orbit",
+  "stopRefuel": "Stop Refuel",
+  "harvestSchrDingerite": "Harvest Schrödingerite",
+  "serviceEverythingAffordable": "Service Everything Affordable",
+  "critical": "CRITICAL",
+  "bookmarkAdd": "Bookmark this",
+  "bookmarkRemove": "Remove bookmark",
+  "bookmarked": "Bookmarked",
+  "bookmark": "Bookmark"
+ },
+ "hubblePart": {
+  "DF-224 Computer": {
+   "label": "DF-224 Computer",
+   "note": "The onboard computer. 48 kilobytes, three redundant processors, one left."
   },
-  "hud": {
-    "centreTheViewOnYour": "Centre the view on your ship, wherever it is",
-    "sweepEverySystemWithin500": "Sweep every system within 500 ly for life",
-    "quantumBridgeToTheSelected": "Quantum-bridge to the selected system (costs 1 Schrödingerite)",
-    "plotACourseHomeMilky": "Plot a course home (Milky Way only, while not already orbiting Earth)",
-    "quantumBridgeStraightHomeCosts": "Quantum-bridge straight home (costs 1 Schrödingerite)",
-    "plotACourseToThis": "Plot a course to this system",
-    "quantumBridgeStraightIntoOrbit": "Quantum-bridge straight into orbit (costs 1 Schrödingerite)",
-    "cutTheBodyApartWith": "Cut the body apart with the ship's lasers (burns Hyperflux)",
-    "openTheServicingBay": "Open the servicing bay",
-    "zoomTo": "Zoom To",
-    "starSystem": "Star System",
-    "catalog": "Catalog",
-    "home": "Home",
-    "returnToEarth": "Return to Earth",
-    "ebBridge": "EB Bridge",
-    "closeMap": "Close Map",
-    "closeMapTooltip": "Close the star map",
-    "engines": "Engines",
-    "warpSpeed": "Warp speed",
-    "hyperfluxBurn": "Hyperflux burn",
-    "eta": "Time to arrival",
-    "stop": "Stop",
-    "fuel": "Fuel",
-    "hyperfluxReserve": "Hyperflux reserve",
-    "hyperflux": "Hyperflux",
-    "schrD": "Schröd.",
-    "mapFuel": "Map Fuel",
-    "refuel": "Refuel",
-    "orbit": "Orbit",
-    "chooseLandingSite": "Choose Landing Site",
-    "cancel": "Cancel",
-    "servicingBay": "Servicing Bay",
-    "stripMining": "Strip Mining",
-    "cutLasers": "Cut Lasers",
-    "zoom": "Zoom",
-    "enterSystem": "Enter System",
-    "travelHere": "Travel Here",
-    "currentLocation": "Current location",
-    "parkedInOrbit": "Parked in orbit",
-    "openSchrDingerBohrBridge": "Open Schrödinger Bohr Bridge",
-    "flyHere": "Fly Here",
-    "landHere": "Land Here",
-    "stripMine": "Strip Mine",
-    "serviceTelescope": "Service Telescope",
-    "serviced": "Serviced",
-    "repair": "Repair",
-    "close": "Close",
-    "refuelTooltip": "Refuel here, or plot a course to the nearest star that can refuel the ship",
-    "orbitHint": "drag rotate · wheel zoom · click select · Esc exit",
-    "nothingCatalogued": "Nothing catalogued.",
-    "rechargesIn": "Recharges in",
-    "nominal": "Nominal",
-    "mineProgress": "{mined} / {capacity} units · ~{eta}s to depletion",
-    "ship": "Ship",
-    "scanForBiosignatures": "Scan for Biosignatures",
-    "sbBridge": "SB-Bridge",
-    "setCourse": "Set course",
-    "parkInOrbit": "Park in Orbit",
-    "stopRefuel": "Stop Refuel",
-    "harvestSchrDingerite": "Harvest Schrödingerite",
-    "serviceEverythingAffordable": "Service Everything Affordable",
-    "critical": "CRITICAL",
-    "bookmarkAdd": "Bookmark this",
-    "bookmarkRemove": "Remove bookmark",
-    "bookmarked": "Bookmarked",
-    "bookmark": "Bookmark"
+  "Thermal Blanket": {
+   "label": "Thermal Blanket",
+   "note": "Multi-layer insulation, cracked and peeling after a decade of raw sunlight."
   },
-  "hubblePart": {
-    "DF-224 Computer": {
-      "label": "DF-224 Computer",
-      "note": "The onboard computer. 48 kilobytes, three redundant processors, one left."
-    },
-    "Thermal Blanket": {
-      "label": "Thermal Blanket",
-      "note": "Multi-layer insulation, cracked and peeling after a decade of raw sunlight."
-    },
-    "Aperture Door": {
-      "label": "Aperture Door",
-      "note": "Shuts if the Sun comes within 20 degrees of the axis. It has stuck before."
-    },
-    "High-Gain Antenna": {
-      "label": "High-Gain Antenna",
-      "note": "The downlink. Everything the telescope has ever seen came through here."
-    },
-    "Battery Bank": {
-      "label": "Battery Bank",
-      "note": "Six nickel-hydrogen batteries carrying the night side of every orbit."
-    },
-    "Solar Array (Starboard)": {
-      "label": "Solar Array (Starboard)",
-      "note": "Its twin. Same fault, opposite side."
-    },
-    "Solar Array (Port)": {
-      "label": "Solar Array (Port)",
-      "note": "Twenty-five square metres of cells. Warps every time it crosses the terminator."
-    },
-    "Reaction Wheels": {
-      "label": "Reaction Wheels",
-      "note": "Four wheels that turn the whole observatory by turning themselves."
-    },
-    "Gyroscope Assembly": {
-      "label": "Gyroscope Assembly",
-      "note": "Six rate gyros, three needed to point. They fail on a schedule."
-    },
-    "Fine Guidance Sensor": {
-      "label": "Fine Guidance Sensor",
-      "note": "Locks onto guide stars. Without it the telescope cannot hold still."
-    },
-    "NICMOS Cooler": {
-      "label": "NICMOS Cooler",
-      "note": "Keeps the infrared detectors at 60 K. The solid nitrogen ran out."
-    },
-    "STIS Spectrograph": {
-      "label": "STIS Spectrograph",
-      "note": "Splits starlight into its lines. Power supply is marginal."
-    },
-    "WFPC2 Camera": {
-      "label": "WFPC2 Camera",
-      "note": "Wide field and planetary camera. The one that takes the pictures."
-    },
-    "Corrective Optics (COSTAR)": {
-      "label": "Corrective Optics (COSTAR)",
-      "note": "The spectacles fitted in 1993 to undo the mirror's error."
-    },
-    "Secondary Mirror": {
-      "label": "Secondary Mirror",
-      "note": "Holds the focus. Micrometeoroid pitting across the coating."
-    },
-    "Primary Mirror": {
-      "label": "Primary Mirror",
-      "note": "2.4 m, ground to the wrong prescription in 1981. Spherical aberration."
-    }
+  "Aperture Door": {
+   "label": "Aperture Door",
+   "note": "Shuts if the Sun comes within 20 degrees of the axis. It has stuck before."
   },
-  "hubbleQuest": {
-    "title": "Refit of the Hubble Space Telescope",
-    "giver": "Starship maintenance log",
-    "body": "The old observatory is still up there, holding its one astronomical unit orbit and pointing at nothing. Half its assemblies are dead, the rest are running on their margins, and the downlink has been quiet for years. Bring the ship alongside, open the servicing bay and put the telescope back to work one assembly at a time.",
-    "objectives": "Restore every assembly of the Hubble Space Telescope from the ship's servicing bay.",
-    "terms": [
-      "The bay only opens while the ship holds station in the telescope's orbit, in the Sol system.",
-      "Every repair is paid for in crafting materials, and a worse fault costs more.",
-      "Nothing here is timed: a half-serviced telescope stays half-serviced."
-    ],
-    "reward": "Deep field imaging: double range on the biosignature sweep",
-    "log": {
-      "opened": "Standing order posted aboard: the telescope in the 1 AU orbit is a wreck, and it is ours to put right.",
-      "serviced": "{name} restored. {done} of {total} assemblies now sit within their service limits.",
-      "servicedMany": "{count} assemblies restored. {done} of {total} now sit within their service limits.",
-      "complete": "Every assembly is within its limits. The aperture door is open, the downlink is live and the deep field survey is running: the biosignature sweep now reaches twice as far."
-    }
+  "High-Gain Antenna": {
+   "label": "High-Gain Antenna",
+   "note": "The downlink. Everything the telescope has ever seen came through here."
   },
-  "core": {
-    "noSpaceports": "No spaceports in this planet",
-    "cancel": "Cancel",
-    "theStar": "the star",
-    "refuellingFrom": "Refuelling from {star}.",
-    "distanceLy": " ({ly} ly)",
-    "coursePlotted": "Course plotted to {star}{distance}. Refuelling on arrival.",
-    "mayRunOut": "Hyperflux may run out before arrival.",
-    "alreadyRefuelling": "Already refuelling from {star}.",
-    "tankFull": "Hyperflux tank is already full.",
-    "noStarInRange": "No star able to refuel the ship within range."
+  "Battery Bank": {
+   "label": "Battery Bank",
+   "note": "Six nickel-hydrogen batteries carrying the night side of every orbit."
   },
-  "hint": {
-    "cockpit": "<b>Cockpit</b> &nbsp;·&nbsp; WASD thrust · Space/C up·down · Shift boost · mouse look · F orbit · Esc exit",
-    "planet": "click the star or zoom out to leave",
-    "system": "click a planet to zoom in · click it again to close in",
-    "galaxy": "click a star to target it · click it again to zoom to it",
-    "galaxyFocus": "zoom out to leave",
-    "cluster": "click a galaxy to target it · click it again to enter it",
-    "web": "click any node · click it again to zoom into its cluster",
-    "outer": "click a galaxy to target it · click it again to enter it",
-    "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; drag rotate · wheel zoom · Tab pick · {tail} · Space zoom to target · F cockpit · Esc exit"
+  "Solar Array (Starboard)": {
+   "label": "Solar Array (Starboard)",
+   "note": "Its twin. Same fault, opposite side."
   },
-  "hintPad": {
-    "cockpit": "<b>Cockpit</b> &nbsp;·&nbsp; [LS] thrust · [RS] look · [RT]/[LT] climb·dive · [X] boost · [B] exit",
-    "planet": "[B] or zoom out to leave",
-    "system": "[LB]/[RB] pick a body · zoom in on it to move in",
-    "galaxy": "[LB]/[RB] pick a star · zoom in on it to enter",
-    "galaxyFocus": "zoom out to leave",
-    "cluster": "[LB]/[RB] pick a galaxy · zoom in on it to enter",
-    "web": "[LB]/[RB] pick a node · zoom in on it to enter its cluster",
-    "outer": "[LB]/[RB] pick a galaxy · zoom in on it to enter",
-    "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; [RS] rotate · [LT]/[RT] zoom · {tail} · [A] zoom to target · [Y] catalog · [X] cockpit · [B] exit"
+  "Solar Array (Port)": {
+   "label": "Solar Array (Port)",
+   "note": "Twenty-five square metres of cells. Warps every time it crosses the terminator."
   },
-  "service": {
-    "hubbleName": "Hubble Space Telescope",
-    "bayTitle": "Servicing Bay · {name}",
-    "footer": "A fully serviced telescope doubles the range of the biosignature sweep.",
-    "operational": "OPERATIONAL · deep field imaging online",
-    "belowLimit": {
-      "one": "{count} assembly below service limit",
-      "other": "{count} assemblies below service limit"
-    },
-    "condition": "Overall condition {pct}% · {state}",
-    "partRestored": "{name} restored.",
-    "notEnoughMaterials": "Not enough materials for that assembly.",
-    "serviced": {
-      "one": "Serviced {count} assembly.",
-      "other": "Serviced {count} assemblies."
-    },
-    "nothingSpared": "Nothing aboard can be spared for a repair."
+  "Reaction Wheels": {
+   "label": "Reaction Wheels",
+   "note": "Four wheels that turn the whole observatory by turning themselves."
   },
-  "mining": {
-    "lasersCut": "Lasers cut.",
-    "nothingLeft": "Nothing left in that body worth cutting.",
-    "lasersHot": "Lasers hot. Cutting.",
-    "leftBody": "Left the body; lasers cold.",
-    "fuelOut": "Hyperflux exhausted; lasers cold.",
-    "bodyStripped": "Body stripped.",
-    "strippedToBedrock": "{name} stripped to bedrock."
+  "Gyroscope Assembly": {
+   "label": "Gyroscope Assembly",
+   "note": "Six rate gyros, three needed to point. They fail on a schedule."
   },
-  "catalog": {
-    "starSub": "{type} class · {planets} planets",
-    "star": "{type} class · star",
-    "companion": "{type} class · companion",
-    "donor": "{type} class · donor",
-    "life": " · life",
-    "moonOf": "{type} · moon of {planet}",
-    "traceLife": " · trace signs"
+  "Fine Guidance Sensor": {
+   "label": "Fine Guidance Sensor",
+   "note": "Locks onto guide stars. Without it the telescope cannot hold still."
   },
-  "tab": {
-    "current": "Current System",
-    "currentEmpty": "Nothing catalogued in this system.",
-    "systemBodies": "{name} bodies",
-    "objects": "Objects",
-    "objectsEmpty": "Nothing catalogued.",
-    "galaxies": "Galaxies",
-    "clusters": "Clusters & Structures",
-    "anomalies": "Higher-Dimensional Anomalies",
-    "nebulae": "Nebulae",
-    "starSystems": "Star Systems",
-    "farSystems": "Systems in Other Galaxies",
-    "bookmarks": "Bookmarks",
-    "bookmarksEmpty": "Nothing bookmarked yet - use the Bookmark button on any selection.",
-    "bookmarkedBodies": "Bookmarked Bodies",
-    "biosignatures": "Biosignatures",
-    "biosignaturesEmpty": "No biosignatures logged. Run a scan.",
-    "lifeBearing": "Life-Bearing Worlds",
-    "spaceports": "Spaceports",
-    "spaceportsEmpty": "No spaceports catalogued.",
-    "landingSites": "Landing Sites",
-    "patrons": "Patrons",
-    "patronsEmpty": "No patron worlds on file.",
-    "patronWorlds": "Patron Worlds",
-    "traceSignatures": "Trace Signatures"
+  "NICMOS Cooler": {
+   "label": "NICMOS Cooler",
+   "note": "Keeps the infrared detectors at 60 K. The solid nitrogen ran out."
   },
-  "scan": {
-    "worldsFound": {
-      "one": "<b>Biosignature Scan</b> &nbsp;·&nbsp; {count} life-bearing world within {radius} ly",
-      "other": "<b>Biosignature Scan</b> &nbsp;·&nbsp; {count} life-bearing worlds within {radius} ly"
-    },
-    "hubbleOnline": " (Hubble online)",
-    "newCount": " · {count} new",
-    "loggedInCatalog": " · logged in the Catalog",
-    "traceCount": {
-      "one": " · {count} trace reading",
-      "other": " · {count} trace readings"
-    }
+  "STIS Spectrograph": {
+   "label": "STIS Spectrograph",
+   "note": "Splits starlight into its lines. Power supply is marginal."
   },
-  "refuel": {
-    "refuel": "Refuel",
-    "stop": "Stop Refuel",
-    "refuelling": "Refuelling",
-    "onArrival": "Refuelling on arrival",
-    "courseSet": "Course set: {target}",
-    "drawingFrom": "Drawing from {star}",
-    "tankFull": "Tank full",
-    "docked": "Docked at a fusing star",
-    "inSystem": "Fuel star in this system",
-    "nearest": "Nearest fuel star",
-    "mayBeOutOfRange": "Nearest fuel star may be out of range",
-    "noneInRange": "No fusing star in range"
+  "WFPC2 Camera": {
+   "label": "WFPC2 Camera",
+   "note": "Wide field and planetary camera. The one that takes the pictures."
   },
-  "bio": {
-    "weak": "Weak",
-    "strong": "Strong",
-    "hyper": "Hyper"
+  "Corrective Optics (COSTAR)": {
+   "label": "Corrective Optics (COSTAR)",
+   "note": "The spectacles fitted in 1993 to undo the mirror's error."
+  },
+  "Secondary Mirror": {
+   "label": "Secondary Mirror",
+   "note": "Holds the focus. Micrometeoroid pitting across the coating."
+  },
+  "Primary Mirror": {
+   "label": "Primary Mirror",
+   "note": "2.4 m, ground to the wrong prescription in 1981. Spherical aberration."
   }
+ },
+ "hubbleQuest": {
+  "title": "Refit of the Hubble Space Telescope",
+  "giver": "Starship maintenance log",
+  "body": "The old observatory is still up there, holding its one astronomical unit orbit and pointing at nothing. Half its assemblies are dead, the rest are running on their margins, and the downlink has been quiet for years. Bring the ship alongside, open the servicing bay and put the telescope back to work one assembly at a time.",
+  "objectives": "Restore every assembly of the Hubble Space Telescope from the ship's servicing bay.",
+  "terms": [
+   "The bay only opens while the ship holds station in the telescope's orbit, in the Sol system.",
+   "Every repair is paid for in crafting materials, and a worse fault costs more.",
+   "Nothing here is timed: a half-serviced telescope stays half-serviced."
+  ],
+  "reward": "Deep field imaging: double range on the biosignature sweep",
+  "log": {
+   "opened": "Standing order posted aboard: the telescope in the 1 AU orbit is a wreck, and it is ours to put right.",
+   "serviced": "{name} restored. {done} of {total} assemblies now sit within their service limits.",
+   "servicedMany": "{count} assemblies restored. {done} of {total} now sit within their service limits.",
+   "complete": "Every assembly is within its limits. The aperture door is open, the downlink is live and the deep field survey is running: the biosignature sweep now reaches twice as far."
+  }
+ },
+ "core": {
+  "noSpaceports": "No spaceports in this planet",
+  "cancel": "Cancel",
+  "theStar": "the star",
+  "refuellingFrom": "Refuelling from {star}.",
+  "distanceLy": " ({ly} ly)",
+  "coursePlotted": "Course plotted to {star}{distance}. Refuelling on arrival.",
+  "mayRunOut": "Hyperflux may run out before arrival.",
+  "alreadyRefuelling": "Already refuelling from {star}.",
+  "tankFull": "Hyperflux tank is already full.",
+  "noStarInRange": "No star able to refuel the ship within range."
+ },
+ "hint": {
+  "grandTour": "<b>Grand Tour</b> &nbsp;·&nbsp; Esc exit",
+  "cockpit": "<b>Cockpit</b> &nbsp;·&nbsp; WASD thrust · Space/C up·down · Shift boost · mouse look · F orbit · Esc exit",
+  "planet": "click the star or zoom out to leave",
+  "system": "click a planet to zoom in · click it again to close in",
+  "galaxy": "click a star to target it · click it again to zoom to it",
+  "galaxyFocus": "zoom out to leave",
+  "cluster": "click a galaxy to target it · click it again to enter it",
+  "web": "click any node · click it again to zoom into its cluster",
+  "outer": "click a galaxy to target it · click it again to enter it",
+  "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; drag rotate · wheel zoom · Tab pick · {tail} · Space zoom to target · F cockpit · Esc exit"
+ },
+ "hintPad": {
+  "grandTour": "<b>Grand Tour</b> &nbsp;·&nbsp; [B] exit",
+  "cockpit": "<b>Cockpit</b> &nbsp;·&nbsp; [LS] thrust · [RS] look · [RT]/[LT] climb·dive · [X] boost · [B] exit",
+  "planet": "[B] or zoom out to leave",
+  "system": "[LB]/[RB] pick a body · zoom in on it to move in",
+  "galaxy": "[LB]/[RB] pick a star · zoom in on it to enter",
+  "galaxyFocus": "zoom out to leave",
+  "cluster": "[LB]/[RB] pick a galaxy · zoom in on it to enter",
+  "web": "[LB]/[RB] pick a node · zoom in on it to enter its cluster",
+  "outer": "[LB]/[RB] pick a galaxy · zoom in on it to enter",
+  "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; [RS] rotate · [LT]/[RT] zoom · {tail} · [A] zoom to target · [Y] catalog · [L3] toolbar · [X] cockpit · [B] exit"
+ },
+ "service": {
+  "hubbleName": "Hubble Space Telescope",
+  "bayTitle": "Servicing Bay · {name}",
+  "footer": "A fully serviced telescope doubles the range of the biosignature sweep.",
+  "operational": "OPERATIONAL · deep field imaging online",
+  "belowLimit": {
+   "one": "{count} assembly below service limit",
+   "other": "{count} assemblies below service limit"
+  },
+  "condition": "Overall condition {pct}% · {state}",
+  "partRestored": "{name} restored.",
+  "notEnoughMaterials": "Not enough materials for that assembly.",
+  "serviced": {
+   "one": "Serviced {count} assembly.",
+   "other": "Serviced {count} assemblies."
+  },
+  "nothingSpared": "Nothing aboard can be spared for a repair."
+ },
+ "mining": {
+  "lasersCut": "Lasers cut.",
+  "nothingLeft": "Nothing left in that body worth cutting.",
+  "lasersHot": "Lasers hot. Cutting.",
+  "leftBody": "Left the body; lasers cold.",
+  "fuelOut": "Hyperflux exhausted; lasers cold.",
+  "bodyStripped": "Body stripped.",
+  "strippedToBedrock": "{name} stripped to bedrock."
+ },
+ "catalog": {
+  "starSub": "{type} class · {planets} planets",
+  "star": "{type} class · star",
+  "companion": "{type} class · companion",
+  "donor": "{type} class · donor",
+  "life": " · life",
+  "moonOf": "{type} · moon of {planet}",
+  "moons": {
+   "one": "{count} moon",
+   "other": "{count} moons"
+  },
+  "traceLife": " · trace signs"
+ },
+ "tab": {
+  "current": "Current System",
+  "currentEmpty": "Nothing catalogued in this system.",
+  "systemBodies": "{name} bodies",
+  "objects": "Objects",
+  "objectsEmpty": "Nothing catalogued.",
+  "galaxies": "Galaxies",
+  "clusters": "Clusters & Structures",
+  "anomalies": "Higher-Dimensional Anomalies",
+  "nebulae": "Nebulae",
+  "starSystems": "Star Systems",
+  "farSystems": "Systems in Other Galaxies",
+  "bookmarks": "Bookmarks",
+  "bookmarksEmpty": "Nothing bookmarked yet - use the Bookmark button on any selection.",
+  "bookmarkedBodies": "Bookmarked Bodies",
+  "biosignatures": "Biosignatures",
+  "biosignaturesEmpty": "No biosignatures logged. Run a scan.",
+  "lifeBearing": "Life-Bearing Worlds",
+  "spaceports": "Spaceports",
+  "spaceportsEmpty": "No spaceports catalogued.",
+  "landingSites": "Landing Sites",
+  "patrons": "Patrons",
+  "patronsEmpty": "No patron worlds on file.",
+  "patronWorlds": "Patron Worlds",
+  "traceSignatures": "Trace Signatures"
+ },
+ "scan": {
+  "worldsFound": {
+   "one": "<b>Biosignature Scan</b> &nbsp;·&nbsp; {count} life-bearing world within {radius} ly",
+   "other": "<b>Biosignature Scan</b> &nbsp;·&nbsp; {count} life-bearing worlds within {radius} ly"
+  },
+  "hubbleOnline": " (Hubble online)",
+  "newCount": " · {count} new",
+  "loggedInCatalog": " · logged in the Catalog",
+  "traceCount": {
+   "one": " · {count} trace reading",
+   "other": " · {count} trace readings"
+  }
+ },
+ "refuel": {
+  "refuel": "Refuel",
+  "stop": "Stop Refuel",
+  "refuelling": "Refuelling",
+  "onArrival": "Refuelling on arrival",
+  "courseSet": "Course set: {target}",
+  "drawingFrom": "Drawing from {star}",
+  "tankFull": "Tank full",
+  "docked": "Docked at a fusing star",
+  "inSystem": "Fuel star in this system",
+  "nearest": "Nearest fuel star",
+  "mayBeOutOfRange": "Nearest fuel star may be out of range",
+  "noneInRange": "No fusing star in range"
+ },
+ "bio": {
+  "weak": "Weak",
+  "strong": "Strong",
+  "hyper": "Hyper"
+ },
+ "bodyNote": {
+  "2060chiron": "Comet or asteroid, depending which year you ask. It grew a coma in 1988, after a decade filed as a minor planet, and the argument has not been settled since.",
+  "3753cruithne": "Earth's second moon, if you are generous. A horseshoe co-orbital that takes 770 years to walk one lap of its bean-shaped path around us, and is never captured.",
+  "433eros": "NEAR Shoemaker touched down here on 12 February 2001, a spacecraft never designed to land on anything. It kept transmitting from the surface for a fortnight.",
+  "antichthon": "Philolaus placed a Counter-Earth opposite our own, forever behind the Sun, to round the count of moving bodies up to ten. Every probe sent to check has been aimed somewhere else.",
+  "earth": "The shell around it is not decoration. Forty years of spent upper stages, dead satellites and frozen coolant, every collision breeding the fragments for the next one.",
+  "hubblespacetelescope": "Launched 1990 with a primary mirror ground to the wrong prescription by two microns. Three servicing missions have been flown to it. It needs a fourth.",
+  "pioneer10": "Launched 1972. It keeps falling short of where the arithmetic says it should be, by a hair, every year. Carries a gold plaque of two naked strangers waving.",
+  "pioneer11": "Launched 1973, first to Saturn. Last contact 30 November 1995: the transmitter is dead, the trajectory is exact, and the plaque aboard is still legible to nobody.",
+  "russellsteapot": "China, elliptical orbit between Earth and Mars, too small for the most powerful telescope to confirm. The burden of proof is not on the observer. Confirmed.",
+  "titania": "One ocean, all of it acid, wrapped around a hole four hundred thousand times the Sun. The Dargos live on the water and refer to the hole as the neighbour. Humanity has had a standing invitation here since 1977 and nobody on Titania has yet stopped finding that funny.",
+  "tma2": "A black slab in Jupiter space, its edges in the exact ratio 1:4:9 to the limit of measurement. Every instrument aimed at it returns the reflectance of nothing at all.",
+  "voyager1": "The furthest human object from the Sun, returning 160 bits a second from the edge of the heliosphere. The Golden Record is bolted to its flank, never once played.",
+  "voyager2": "Launched 1977, the only craft to pass all four giants. Its plasma instrument is still switched on. Nobody at the Deep Space Network has ever had a reason to switch it off.",
+  "vulcan": "The planet Le Verrier put inside Mercury's orbit in 1859 to explain the wandering of Mercury's perihelion. General relativity explained it instead. Vulcan was never withdrawn, only stopped being looked for."
+ }
 }

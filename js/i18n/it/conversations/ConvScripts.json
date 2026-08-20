@@ -7,31 +7,31 @@
       ],
       [
         1,
-        "È davvero gentile da parte tua, {a}! Grazie!"
+        "Sei un pezzo di pane, {a}! Grazie!"
       ],
       [
         0,
-        "Bisogna badare gli uni agli altri!"
+        "Ci si guarda le spalle a vicenda, no?"
       ]
     ],
     [
       [
         0,
-        "*racconta una barzelletta scema*"
+        "*racconta una barzelletta pessima*"
       ],
       [
         1,
-        "*ride* È terribile! Ma avevo bisogno di una risata."
+        "*ride* È orribile! Ma mi ci voleva proprio una risata."
       ],
       [
         0,
-        "A volte bisogna trovare il lato comico del caos!"
+        "Ogni tanto nel casino bisogna trovarci da ridere!"
       ]
     ],
     [
       [
         0,
-        "{b}, lascia che ti fasci quella ferita."
+        "{b}, fammi fasciare quella ferita."
       ],
       [
         1,
@@ -39,7 +39,7 @@
       ],
       [
         0,
-        "Non c'è bisogno che tu lo chieda. Ci prendiamo cura l'uno dell'altro."
+        "Non c'è bisogno che lo chiedi. Ci badiamo l'un l'altro."
       ],
       [
         1,
@@ -49,11 +49,11 @@
     [
       [
         0,
-        "Ti ricordi quando ci siamo conosciuti? Non avrei mai pensato che saremmo arrivati fin qui."
+        "Te lo ricordi quando ci siamo conosciuti? Non pensavo saremmo arrivati fin qui."
       ],
       [
         1,
-        "Ah! Allora hai provato ad attaccare briga con me!"
+        "Ah! Allora avevi provato ad attaccare briga con me!"
       ],
       [
         0,
@@ -67,7 +67,7 @@
     [
       [
         0,
-        "Ho trovato questo in città. Ho pensato che ti sarebbe piaciuto."
+        "Ho trovato questo in paese. Ho pensato che ti sarebbe piaciuto."
       ],
       [
         1,
@@ -79,13 +79,13 @@
       ],
       [
         1,
-        "Per me lo è. Grazie, davvero."
+        "Per me sì, invece. Grazie davvero."
       ]
     ],
     [
       [
         0,
-        "Ho notato che leggevi quel libro sulla magia antica."
+        "Ti ho vista leggere quel libro sulla magia antica."
       ],
       [
         1,
@@ -93,21 +93,21 @@
       ],
       [
         0,
-        "Da sempre! Magari potremmo studiare insieme, prima o poi."
+        "Da sempre! Magari una volta potremmo studiare insieme?"
       ],
       [
         1,
-        "Mi piacerebbe molto!"
+        "Mi farebbe davvero piacere!"
       ]
     ],
     [
       [
         0,
-        "Nemmeno tu riesci a dormire?"
+        "Neanche tu riesci a dormire?"
       ],
       [
         1,
-        "Di nuovo brutti sogni. Questa vita... ti si appiccica addosso."
+        "Di nuovo brutti sogni. Questa vita... ti si attacca addosso."
       ],
       [
         0,
@@ -115,13 +115,13 @@
       ],
       [
         1,
-        "Grazie. Averti qui aiuta già."
+        "Grazie. Già solo averti qui aiuta."
       ]
     ],
     [
       [
         0,
-        "Oggi sembri giù. Va tutto bene?"
+        "Ti vedo giù oggi. Va tutto bene?"
       ],
       [
         1,
@@ -129,7 +129,7 @@
       ],
       [
         0,
-        "Stai scherzando? Sei una delle persone più forti che conosca."
+        "Ma scherzi? Sei una delle persone più forti che conosco."
       ],
       [
         1,
@@ -151,17 +151,17 @@
       ],
       [
         1,
-        "Troveremo altra acqua. A te serve adesso."
+        "L'acqua la troviamo. A te serve adesso."
       ]
     ],
     [
       [
         0,
-        "Non ti ho mai raccontato perché sono venuto in questa città..."
+        "Non ti ho mai raccontato perché sono venuto in questo paese..."
       ],
       [
         1,
-        "Non sei obbligato, se è troppo personale."
+        "Non sei obbligato, se è una cosa troppo personale."
       ],
       [
         0,
@@ -169,7 +169,7 @@
       ],
       [
         1,
-        "Ne sono onorato. Sono qui per ascoltare."
+        "Mi fa onore. Ti ascolto."
       ]
     ],
     [
@@ -183,17 +183,17 @@
       ],
       [
         0,
-        "Mi piacerebbe molto imparare da te!"
+        "Imparare da te sarebbe bellissimo!"
       ]
     ],
     [
       [
         0,
-        "Mi hai coperto le spalle là dietro. Te ne devo una."
+        "Là dietro mi hai coperto. Te ne devo una."
       ],
       [
         1,
-        "Avresti fatto lo stesso. Non pensarci."
+        "Tu avresti fatto lo stesso. Non parliamone più."
       ],
       [
         0,
@@ -201,35 +201,35 @@
       ],
       [
         1,
-        "Allora saremo pari quando verrà il momento."
+        "Allora siamo pari quando servirà."
       ]
     ],
     [
       [
         0,
-        "Ho portato razioni in più. Ho pensato che potremmo cenare insieme stasera."
+        "Ho portato razioni in più. Ho pensato che stasera potevamo mangiare insieme."
       ],
       [
         1,
-        "Non dovevi."
+        "Non eri mica obbligato."
       ],
       [
         0,
-        "Volevo. Sembravi aver bisogno di un pasto come si deve."
+        "Ne avevo voglia. Sembravi uno che ha bisogno di un pasto come si deve."
       ],
       [
         1,
-        "Ne avevo davvero bisogno. Grazie, {a}."
+        "Ne avevo bisogno eccome. Grazie, {a}."
       ]
     ],
     [
       [
         0,
-        "Volevo dirtelo: tu mi ispiri. Il modo in cui vai avanti."
+        "Volevo dirtelo da un po': mi dai forza. Il modo in cui vai avanti."
       ],
       [
         1,
-        "Potrebbe essere la cosa più gentile che qualcuno mi abbia detto in mesi."
+        "Forse è la cosa più gentile che qualcuno mi abbia detto in mesi."
       ],
       [
         0,
@@ -237,31 +237,31 @@
       ],
       [
         1,
-        "Allora continuerò ad andare avanti. Per entrambi."
+        "Allora continuerò ad andare avanti. Per tutti e due."
       ]
     ],
     [
       [
         0,
-        "Posso farti vedere una cosa che ho fatto?"
+        "Ti posso far vedere una cosa che ho fatto?"
       ],
       [
         1,
-        "Certo! Fammi vedere."
+        "Ma certo! Fammi vedere."
       ],
       [
         0,
-        "Non è ancora finita. Ma volevo il tuo parere."
+        "Non è ancora finita. Però volevo il tuo parere."
       ],
       [
         1,
-        "{a}, è meravigliosa. Non cambiare niente."
+        "{a}, è splendida. Non cambiare niente."
       ]
     ],
     [
       [
         0,
-        "Ti ho tenuto il posto. So che ti piace questo angolo."
+        "Ti ho tenuto il posto. So che questo angolo ti piace."
       ],
       [
         1,
@@ -269,11 +269,11 @@
       ],
       [
         0,
-        "Ma certo."
+        "Ma certo che me lo ricordavo."
       ],
       [
         1,
-        "Nessuno lo fa mai per me. Grazie."
+        "Nessuno fa mai una cosa così per me. Grazie."
       ]
     ],
     [
@@ -287,21 +287,21 @@
       ],
       [
         0,
-        "Solo se prometti di non andarci leggero."
+        "Solo se prometti di non farmi sconti."
       ],
       [
         1,
-        "Non lo faccio mai. Dammela qua."
+        "Non ne faccio mai. Dammi qua."
       ]
     ],
     [
       [
         0,
-        "Tu la fai sembrare facile, {b}."
+        "Tu lo fai sembrare facile, {b}."
       ],
       [
         1,
-        "Ah. Nascondo solo la fatica meglio degli altri."
+        "Ah. È solo che nascondo la fatica meglio degli altri."
       ],
       [
         0,
@@ -315,15 +315,15 @@
     [
       [
         0,
-        "Oggi stavo per mollare."
+        "Oggi stavo per mollare tutto."
       ],
       [
         1,
-        "Cosa ti ha fatto cambiare idea?"
+        "E cosa ti ha fatto cambiare idea?"
       ],
       [
         0,
-        "Tu, sinceramente. Guardarti andare avanti."
+        "Tu, sinceramente. Vederti andare avanti."
       ],
       [
         1,
@@ -333,15 +333,15 @@
     [
       [
         0,
-        "Buon compleanno, {b}. Non me ne sono dimenticato."
+        "Buon compleanno, {b}. Non me lo sono dimenticato."
       ],
       [
         1,
-        "Te lo ricordavi. Non ci credo che te lo ricordavi."
+        "Te lo sei ricordato. Non ci posso credere che te lo sei ricordato."
       ],
       [
         0,
-        "Ma certo. Andiamo, ho trovato un bel posto dove mangiare."
+        "Ma certo che sì. Dai, ho trovato un posto dove si mangia bene."
       ],
       [
         1,
@@ -351,7 +351,7 @@
     [
       [
         0,
-        "Ero preoccupato per te. Sei sparito per giorni."
+        "Ero in pensiero per te. Sei sparito per giorni."
       ],
       [
         1,
@@ -359,21 +359,21 @@
       ],
       [
         0,
-        "Puoi sempre dirmi quando ti serve spazio."
+        "Puoi sempre dirmelo, quando ti serve spazio."
       ],
       [
         1,
-        "Lo so. Per questo è facile tornare."
+        "Lo so. È per questo che è facile tornare."
       ]
     ],
     [
       [
         0,
-        "Ce l'abbiamo fatta. Sinceramente non credevo ci saremmo riusciti."
+        "Ce l'abbiamo fatta. Sinceramente non credevo."
       ],
       [
         1,
-        "Nemmeno io, a dirla tutta."
+        "Nemmeno io, a essere onesto."
       ],
       [
         0,
@@ -387,29 +387,29 @@
     [
       [
         0,
-        "Pensavo che le persone come te esistessero solo nelle storie."
+        "Pensavo che la gente come te esistesse solo nei racconti."
       ],
       [
         1,
-        "Persone come me?"
+        "Gente come me?"
       ],
       [
         0,
-        "Quelle che mantengono davvero la parola."
+        "Quelli che la parola data la mantengono davvero."
       ],
       [
         1,
-        "Faccio solo quel che dico. Dovrebbe essere normale."
+        "Faccio solo quello che dico. Dovrebbe essere normale."
       ]
     ],
     [
       [
         0,
-        "Ti capita mai di sentirti solo qui fuori?"
+        "Ti capita mai di sentirti solo, qui fuori?"
       ],
       [
         1,
-        "A volte. Meno di prima."
+        "Ogni tanto. Meno di prima."
       ],
       [
         0,
@@ -427,21 +427,21 @@
       ],
       [
         1,
-        "Era sei mesi fa! Come hai fatto?"
+        "Era sei mesi fa! Ma come?"
       ],
       [
         0,
-        "Sono andato a cercarlo. Immaginavo che ci tenessi."
+        "Sono andato a cercarlo. Ho pensato che ci tenessi."
       ],
       [
         1,
-        "Ci tenevo. Più di quanto abbia detto."
+        "Ci tenevo. Più di quanto avessi detto."
       ]
     ],
     [
       [
         0,
-        "Non hai mai rinunciato a me, nemmeno quando me lo meritavo."
+        "Non hai mai smesso di credere in me, nemmeno quando me lo meritavo."
       ],
       [
         1,
@@ -453,7 +453,7 @@
       ],
       [
         1,
-        "Perché anch'io ho avuto bisogno che qualcuno non rinunciasse a me."
+        "Perché anch'io ho avuto bisogno che qualcuno non smettesse di credere in me."
       ]
     ]
   ],
@@ -465,11 +465,11 @@
       ],
       [
         1,
-        "Non tutti possono essere perfetti come credi di essere tu."
+        "Mica siamo tutti perfetti come credi di essere tu."
       ],
       [
         0,
-        "Sto solo dicendo che dobbiamo restare concentrati..."
+        "Dico solo che dobbiamo restare concentrati..."
       ]
     ],
     [
@@ -505,17 +505,17 @@
       ],
       [
         1,
-        "Già, tu ci pensi troppo su, a tutto."
+        "Sì, tu ci pensi troppo su tutto."
       ]
     ],
     [
       [
         0,
-        "È proprio come quella volta nelle grotte."
+        "È esattamente come quella volta nelle grotte."
       ],
       [
         1,
-        "Stai davvero rispolverando quella storia?"
+        "Ma la stai tirando fuori un'altra volta sul serio?"
       ],
       [
         0,
@@ -529,19 +529,19 @@
     [
       [
         0,
-        "Hai speso QUANTO alla taverna?!"
+        "QUANTO hai speso alla taverna?!"
       ],
       [
         1,
-        "Mi servivano informazioni. Era necessario."
+        "Mi serviva un'informazione. Era necessario."
       ],
       [
         0,
-        "Ti serviva birra, ecco cosa ti serviva!"
+        "Ti serviva la birra, è quello che ti serviva!"
       ],
       [
         1,
-        "Non farmi la predica sui soldi."
+        "Non farmi la lezione sui soldi."
       ]
     ],
     [
@@ -551,11 +551,11 @@
       ],
       [
         1,
-        "La tua l'hai avuta stamattina."
+        "La tua l'hai mangiata stamattina."
       ],
       [
         0,
-        "Quello era ieri! Ma ci fai caso o no?"
+        "Quello era ieri! Ma ci stai con la testa?"
       ],
       [
         1,
@@ -565,7 +565,7 @@
     [
       [
         0,
-        "Il tuo russare mi ha tenuto sveglio tutta la notte!"
+        "Con quel russare non mi hai fatto chiudere occhio!"
       ],
       [
         1,
@@ -573,11 +573,11 @@
       ],
       [
         0,
-        "Sembri un drago raffreddato!"
+        "Sembri un drago con il raffreddore!"
       ],
       [
         1,
-        "Beh, il tuo rigirarti nel letto ha tenuto sveglio ME!"
+        "E tu ti rigiravi tanto che non ho dormito IO!"
       ]
     ],
     [
@@ -595,13 +595,13 @@
       ],
       [
         1,
-        "Senti chi parla!"
+        "Senti da che pulpito!"
       ]
     ],
     [
       [
         0,
-        "Perché hai preso tu l'arma migliore?"
+        "Perché ti sei preso tu l'arma migliore?"
       ],
       [
         1,
@@ -609,21 +609,21 @@
       ],
       [
         0,
-        "Dovremmo dividere in parti uguali!"
+        "Dovremmo dividere le cose equamente!"
       ],
       [
         1,
-        "Allora la prossima volta trovatela da solo."
+        "E allora la prossima volta trovatene una tua."
       ]
     ],
     [
       [
         0,
-        "Da che parte stai davvero?"
+        "Ma tu da che parte stai davvero?"
       ],
       [
         1,
-        "Che cosa vorrebbe dire?"
+        "E che vorrebbe dire?"
       ],
       [
         0,
@@ -641,21 +641,21 @@
       ],
       [
         1,
-        "Non ti avevo chiesto aiuto, per cominciare."
+        "Non l'avevo chiesto io, il tuo aiuto."
       ],
       [
         0,
-        "Eppure eccomi qui, ancora a rimediare ai tuoi pasticci."
+        "Eppure eccomi qua, ancora a rimediare ai tuoi casini."
       ],
       [
         1,
-        "Allora smettila! Nessuno ti obbliga!"
+        "E allora smettila! Non ti sta obbligando nessuno!"
       ]
     ],
     [
       [
         0,
-        "Gli hai raccontato quello che ho detto?!"
+        "Gli hai detto quello che avevo detto io?!"
       ],
       [
         1,
@@ -663,7 +663,7 @@
       ],
       [
         0,
-        "Era una cosa privata. Mi fidavo di te."
+        "Era una cosa privata. Mi ero fidato di te."
       ],
       [
         1,
@@ -671,17 +671,17 @@
       ],
       [
         0,
-        "Ma certo che non lo pensavi."
+        "Certo che non lo pensavi."
       ]
     ],
     [
       [
         0,
-        "Sparisci sempre proprio quando le cose si fanno difficili."
+        "Tu sparisci sempre proprio quando le cose si mettono male."
       ],
       [
         1,
-        "Stavo gestendo i miei problemi!"
+        "Mi stavo occupando dei miei problemi!"
       ],
       [
         0,
@@ -689,7 +689,7 @@
       ],
       [
         1,
-        "Davvero? Perché ultimamente sembra molto a senso unico."
+        "Davvero? Perché ultimamente mi sembra molto a senso unico."
       ]
     ],
     [
@@ -699,21 +699,21 @@
       ],
       [
         1,
-        "Le circostanze cambiano, {a}. Capitano imprevisti."
+        "Le circostanze cambiano, {a}. Succedono cose."
       ],
       [
         0,
-        "Capitano sempre imprevisti. È proprio questo il punto."
+        "Succedono sempre cose. È proprio questo il punto."
       ],
       [
         1,
-        "Va bene. Allora non contare su di me. Meglio per entrambi."
+        "Va bene. Allora non contare su di me. È più facile per tutti e due."
       ]
     ],
     [
       [
         0,
-        "Ti sei preso il merito di quello che ho fatto io?"
+        "Ti sei preso il merito di una cosa che ho fatto io?"
       ],
       [
         1,
@@ -721,11 +721,11 @@
       ],
       [
         0,
-        "È un modo molto elegante di dire che hai mentito."
+        "Che è un modo molto elegante per dire che hai mentito."
       ],
       [
         1,
-        "Preferisco chiamarlo posizionamento."
+        "Io preferisco chiamarlo posizionamento."
       ]
     ],
     [
@@ -739,17 +739,17 @@
       ],
       [
         0,
-        "Non ha nemmeno senso."
+        "Questa non ha nemmeno senso."
       ],
       [
         1,
-        "Nemmeno lamentarsi di come mangia qualcuno."
+        "Nemmeno lamentarsi di come mangia uno."
       ]
     ],
     [
       [
         0,
-        "Mi hai fatto aspettare un'ora."
+        "Mi hai lasciato ad aspettare per un'ora."
       ],
       [
         1,
@@ -761,7 +761,7 @@
       ],
       [
         1,
-        "Allora smettila di stupirtene."
+        "E allora smettila di sorprendertene."
       ]
     ],
     [
@@ -779,13 +779,13 @@
       ],
       [
         1,
-        "E certe cose meritano una risata prima che ti spezzino."
+        "E certe altre meritano di essere buttate in ridere prima che ti spezzino."
       ]
     ],
     [
       [
         0,
-        "Non avevi il diritto di decidere senza di me."
+        "Non avevi nessun diritto di decidere senza di me."
       ],
       [
         1,
@@ -793,7 +793,7 @@
       ],
       [
         0,
-        "Quindi hai deciso per entrambi."
+        "Quindi hai deciso per tutti e due."
       ],
       [
         1,
@@ -807,15 +807,15 @@
       ],
       [
         1,
-        "Lo faccio solo quando hai torto."
+        "Lo faccio solo quando sbagli."
       ],
       [
         0,
-        "Il che a quanto pare è di continuo."
+        "Il che a quanto pare è sempre."
       ],
       [
         1,
-        "L'hai detto tu, non io."
+        "L'hai detto tu, mica io."
       ]
     ],
     [
@@ -833,13 +833,13 @@
       ],
       [
         1,
-        "E tu insisti sempre quando mi serve spazio. Abbiamo i nostri schemi."
+        "E tu insisti sempre quando ho bisogno di spazio. Ognuno ha i suoi schemi."
       ]
     ],
     [
       [
         0,
-        "Quello era mio e lo sapevi."
+        "Quella era mia e lo sapevi."
       ],
       [
         1,
@@ -847,7 +847,7 @@
       ],
       [
         0,
-        "Non tutto ha bisogno di un'etichetta, {b}."
+        "Non su tutto c'è bisogno di scriverlo, {b}."
       ],
       [
         1,
@@ -861,11 +861,11 @@
     [
       [
         0,
-        "Ascolti mai qualcuno che non sia te stesso?"
+        "Ma ascolti mai qualcuno oltre a te stesso?"
       ],
       [
         1,
-        "Ascolto. Semplicemente non sono d'accordo."
+        "Ascolto. Solo che non sono d'accordo."
       ],
       [
         0,
@@ -873,7 +873,7 @@
       ],
       [
         1,
-        "Va bene. Adesso sto ascoltando. Hai intenzione di dire qualcosa che valga la pena sentire?"
+        "Va bene. Adesso ti sto ascoltando. Hai intenzione di dire qualcosa che valga la pena?"
       ]
     ]
   ],
@@ -881,11 +881,11 @@
     [
       [
         0,
-        "Il tempo è strano ultimamente, non trovi?"
+        "Il tempo ultimamente fa cose strane, vero?"
       ],
       [
         1,
-        "Sì, l'ho notato anch'io. Spero non duri."
+        "Sì, l'ho notato anch'io. Speriamo che non duri."
       ],
       [
         0,
@@ -899,11 +899,11 @@
       ],
       [
         1,
-        "A volte. Ma rimuginarci sopra non cambia niente."
+        "Ogni tanto. Ma rimuginarci non cambia niente."
       ],
       [
         0,
-        "Immagino tu abbia ragione. Pensavo a voce alta."
+        "Avrai ragione. Pensavo ad alta voce."
       ]
     ],
     [
@@ -917,25 +917,25 @@
       ],
       [
         0,
-        "Era tre giorni fa."
+        "Quello era tre giorni fa."
       ],
       [
         1,
-        "Il tempo si confonde davvero, eh?"
+        "Il tempo si impasta tutto, eh?"
       ]
     ],
     [
       [
         0,
-        "Notte limpida. Le stelle sono luminose."
+        "Notte limpida. Le stelle si vedono bene."
       ],
       [
         1,
-        "Al mio villaggio le costellazioni sono diverse."
+        "Al mio paese le costellazioni sono diverse."
       ],
       [
         0,
-        "Davvero? Interessante."
+        "Davvero? Che cosa interessante."
       ],
       [
         1,
@@ -955,7 +955,7 @@
     [
       [
         0,
-        "Questa città mi ricorda casa."
+        "Questo paese mi ricorda casa mia."
       ],
       [
         1,
@@ -963,17 +963,17 @@
       ],
       [
         0,
-        "L'odore del pane che cuoce. Uguale dappertutto."
+        "L'odore del pane in forno. È uguale ovunque tu vada."
       ],
       [
         1,
-        "Certe cose sono universali, immagino."
+        "Certe cose sono universali, direi."
       ]
     ],
     [
       [
         0,
-        "Ho fatto il sogno più strano ieri notte."
+        "Ho fatto un sogno stranissimo stanotte."
       ],
       [
         1,
@@ -981,25 +981,25 @@
       ],
       [
         0,
-        "Non me lo ricordo bene. Sembrava solo... importante."
+        "Non me lo ricordo bene. Però mi sembrava... importante."
       ],
       [
         1,
-        "I sogni possono essere così."
+        "I sogni sanno essere così."
       ]
     ],
     [
       [
         0,
-        "Nella mia terra abbiamo un detto..."
+        "Dalle mie parti c'è un detto..."
       ],
       [
         1,
-        "E quale sarebbe?"
+        "Cioè?"
       ],
       [
         0,
-        "\"La montagna ricorda ogni passo.\""
+        "'La montagna si ricorda ogni passo.'"
       ],
       [
         1,
@@ -1031,7 +1031,7 @@
     [
       [
         0,
-        "Poco fa mi ha attraversato la strada un gatto nero."
+        "Prima mi è passato davanti un gatto nero."
       ],
       [
         1,
@@ -1043,21 +1043,21 @@
       ],
       [
         1,
-        "Anche la mia. Aveva un amuleto per ogni cosa."
+        "Anche la mia. Aveva un amuleto per ogni occasione."
       ]
     ],
     [
       [
         0,
-        "Quel mercante sembrava losco."
+        "Quel mercante mi sembrava losco."
       ],
       [
         1,
-        "Lo sono quasi tutti, per quel che ho visto."
+        "Per quella che è la mia esperienza lo sono quasi tutti."
       ],
       [
         0,
-        "Però potrebbe avere informazioni utili."
+        "Però magari ha informazioni utili."
       ],
       [
         1,
@@ -1075,7 +1075,7 @@
       ],
       [
         0,
-        "Vuol dire che l'acqua è probabilmente vicina."
+        "Vuol dire che l'acqua è probabilmente qui vicino."
       ],
       [
         1,
@@ -1089,7 +1089,7 @@
       ],
       [
         1,
-        "Chissà che fine ha fatto chi le ha costruite."
+        "Chissà che fine ha fatto la gente che le ha costruite."
       ],
       [
         0,
@@ -1097,7 +1097,7 @@
       ],
       [
         1,
-        "Il tempo prima o poi vince su tutto."
+        "Prima o poi il tempo si prende tutto."
       ]
     ],
     [
@@ -1107,15 +1107,15 @@
       ],
       [
         1,
-        "Rende più difficile vedere i guai in arrivo."
+        "Così è più difficile vedere i guai in arrivo."
       ],
       [
         0,
-        "Rende anche più difficile ai guai vedere noi."
+        "Ed è anche più difficile per i guai vedere noi."
       ],
       [
         1,
-        "Giusta osservazione."
+        "Osservazione giusta."
       ]
     ],
     [
@@ -1133,21 +1133,21 @@
       ],
       [
         1,
-        "Per lo più."
+        "Quasi sempre."
       ]
     ],
     [
       [
         0,
-        "Hai visto la rissa fuori dalla taverna ieri sera?"
+        "L'hai vista la rissa fuori dalla taverna ieri sera?"
       ],
       [
         1,
-        "Difficile perdersela. Guardava tutta la strada."
+        "Difficile perdersela. Guardava tutta la via."
       ],
       [
         0,
-        "Chissà come è cominciata."
+        "Chissà com'è cominciata."
       ],
       [
         1,
@@ -1169,7 +1169,7 @@
       ],
       [
         1,
-        "Meglio non pensarci troppo a lungo."
+        "Non pensarci troppo a lungo."
       ]
     ],
     [
@@ -1211,7 +1211,7 @@
     [
       [
         0,
-        "Stamattina qualcuno mi ha lasciato del pane sull'uscio."
+        "Stamattina qualcuno mi ha lasciato del pane sulla soglia."
       ],
       [
         1,
@@ -1219,7 +1219,7 @@
       ],
       [
         0,
-        "Nessuna. Ma era ancora caldo."
+        "Nessuna. Però era ancora caldo."
       ],
       [
         1,
@@ -1251,7 +1251,7 @@
       ],
       [
         1,
-        "Era una panetteria, mi pare."
+        "Prima era una panetteria, mi pare."
       ],
       [
         0,
@@ -1259,7 +1259,7 @@
       ],
       [
         1,
-        "Su questo nessuno sembra andare d'accordo."
+        "Su quello non sembra che siano d'accordo in due."
       ]
     ],
     [
@@ -1273,17 +1273,17 @@
       ],
       [
         0,
-        "Abilità utile."
+        "Competenza utile."
       ]
     ],
     [
       [
         0,
-        "Cosa fai quando non riesci a dormire?"
+        "Tu cosa fai quando non riesci a dormire?"
       ],
       [
         1,
-        "Cammino, soprattutto. O mi siedo in un posto tranquillo."
+        "Cammino, di solito. Oppure mi siedo da qualche parte tranquilla."
       ],
       [
         0,
@@ -1291,7 +1291,7 @@
       ],
       [
         1,
-        "Non granché. Ma fa passare il tempo."
+        "Non proprio. Però passa il tempo."
       ]
     ],
     [
@@ -1301,11 +1301,11 @@
       ],
       [
         1,
-        "Troppo presto per dirlo."
+        "È troppo presto per dirlo."
       ],
       [
         0,
-        "L'ultimo non valeva niente."
+        "Quello prima non valeva niente."
       ],
       [
         1,
@@ -1323,25 +1323,25 @@
       ],
       [
         0,
-        "La mia dignità, soprattutto."
+        "La mia dignità, più che altro."
       ],
       [
         1,
-        "Quelle galleggiano. La riprenderai."
+        "Quella galleggia. La riprendi."
       ]
     ],
     [
       [
         0,
-        "Credi nella fortuna?"
+        "Tu ci credi nella fortuna?"
       ],
       [
         1,
-        "Credo nella preparazione e nel tempismo."
+        "Io credo nella preparazione e nel tempismo."
       ],
       [
         0,
-        "Quindi sì."
+        "Quindi sì, insomma."
       ],
       [
         1,
@@ -1351,7 +1351,7 @@
     [
       [
         0,
-        "Il mercato chiude presto nei giorni di festa."
+        "Il mercato nei giorni di festa chiude presto."
       ],
       [
         1,
@@ -1373,15 +1373,15 @@
       ],
       [
         1,
-        "Sopravvivere, soprattutto."
+        "Sopravvivere, più che altro."
       ],
       [
         0,
-        "Cosa facevi prima di tutto questo?"
+        "E prima di tutto questo cosa facevi?"
       ],
       [
         1,
-        "Sopravvivere, soprattutto. Solo con meno urgenza."
+        "Sopravvivevo, più che altro. Solo con meno urgenza."
       ]
     ],
     [
@@ -1405,47 +1405,47 @@
     [
       [
         0,
-        "Credi che questa città sia sempre stata così?"
+        "Secondo te questo paese è sempre stato così?"
       ],
       [
         1,
-        "Probabilmente no. Le città cambiano lentamente, come le persone."
+        "Probabilmente no. I paesi cambiano piano, come le persone."
       ],
       [
         0,
-        "Rassicurante o deprimente?"
+        "È rassicurante o deprimente?"
       ],
       [
         1,
-        "Dipende dalla città."
+        "Dipende dal paese."
       ]
     ],
     [
       [
         0,
-        "Sto pensando a una cosa che hai detto settimane fa."
+        "Sto ripensando a una cosa che hai detto settimane fa."
       ],
       [
         1,
-        "Cosa ho detto?"
+        "Cos'avevo detto?"
       ],
       [
         0,
-        "Ecco il punto. Non me lo ricordo esattamente."
+        "È proprio questo il punto. Non me lo ricordo esattamente."
       ],
       [
         1,
-        "E ci pensi da allora?"
+        "E ci stai pensando da allora?"
       ],
       [
         0,
-        "Sul momento sembrava importante."
+        "Sul momento mi era sembrata importante."
       ]
     ],
     [
       [
         0,
-        "Hai mai lavorato altrove prima di qui?"
+        "Hai mai lavorato da qualche altra parte prima di qui?"
       ],
       [
         1,
@@ -1463,7 +1463,7 @@
     [
       [
         0,
-        "Qual è il posto più lontano in cui sei mai stato?"
+        "Qual è il posto più lontano in cui sei mai arrivato?"
       ],
       [
         1,
@@ -1485,15 +1485,15 @@
       "lines": [
         [
           0,
-          "Il regno ha bisogno di un sovrano forte. La democrazia è caos."
+          "Al regno serve un governante forte. La democrazia è caos."
         ],
         [
           1,
-          "Una sola persona non dovrebbe avere tutto quel potere. La gente merita voce in capitolo!"
+          "Una persona sola non dovrebbe avere tutto quel potere. La gente merita voce in capitolo!"
         ],
         [
           0,
-          "Le masse si lasciano influenzare facilmente. Hanno bisogno di una guida."
+          "Le masse si fanno voltare come vuoi. Hanno bisogno di essere guidate."
         ],
         [
           1,
@@ -1506,11 +1506,11 @@
       "lines": [
         [
           0,
-          "Il sistema è marcio. Serve una rivoluzione completa!"
+          "Il sistema è marcio. Ci vuole una rivoluzione completa!"
         ],
         [
           1,
-          "Cambiare dall'interno è più sicuro. La rivoluzione porta sangue."
+          "Cambiare dall'interno è più sicuro. Le rivoluzioni portano sangue."
         ],
         [
           0,
@@ -1518,7 +1518,7 @@
         ],
         [
           1,
-          "Parole di chi non ha mai visto una guerra..."
+          "Parole di uno che non ha mai visto una guerra..."
         ]
       ]
     },
@@ -1527,11 +1527,11 @@
       "lines": [
         [
           0,
-          "Perché i nobili dovrebbero vivere nel lusso mentre i contadini muoiono di fame?"
+          "Perché i nobili devono vivere nel lusso mentre i contadini fanno la fame?"
         ],
         [
           1,
-          "Offrono protezione e governo. Se lo sono guadagnato."
+          "Danno protezione e governo. Se lo sono guadagnato."
         ],
         [
           0,
@@ -1539,7 +1539,7 @@
         ],
         [
           1,
-          "E dalla nascita portano il peso della responsabilità."
+          "E si portano il peso della responsabilità dalla nascita."
         ]
       ]
     },
@@ -1548,19 +1548,19 @@
       "lines": [
         [
           0,
-          "Abbiamo davvero il libero arbitrio, o è tutto predeterminato?"
+          "Abbiamo davvero il libero arbitrio, o è tutto già stabilito?"
         ],
         [
           1,
-          "Facciamo scelte ogni giorno. Certo che abbiamo il libero arbitrio!"
+          "Facciamo scelte ogni giorno. Certo che ce l'abbiamo!"
         ],
         [
           0,
-          "Ma quelle scelte potrebbero essere illusioni, predeterminate dalla causalità."
+          "Ma quelle scelte potrebbero essere illusioni, già decise dalla catena delle cause."
         ],
         [
           1,
-          "È un modo deprimente di vedere l'esistenza."
+          "Che modo deprimente di vedere l'esistenza."
         ]
       ]
     },
@@ -1569,19 +1569,19 @@
       "lines": [
         [
           0,
-          "Credo che le persone siano intrinsecamente buone."
+          "Io credo che le persone siano buone di natura."
         ],
         [
           1,
-          "E allora perché c'è tanto male nel mondo?"
+          "E allora perché nel mondo c'è tutto questo male?"
         ],
         [
           0,
-          "Sono le circostanze a corrompere. Potendo scegliere, la gente sceglie il bene."
+          "Sono le circostanze a corrompere. Se ne hanno la possibilità, le persone scelgono il bene."
         ],
         [
           1,
-          "Ho visto troppo per credere a quella favola."
+          "Ne ho viste troppe per credere a questa favola."
         ]
       ]
     },
@@ -1590,11 +1590,11 @@
       "lines": [
         [
           0,
-          "Che senso ha tutto questo? Perché lottiamo?"
+          "Ma qual è il senso di tutto questo? Perché ci affanniamo?"
         ],
         [
           1,
-          "Per crescere, per amare, per lasciare il mondo migliore."
+          "Per crescere, per amare, per lasciare il mondo un po' meglio."
         ],
         [
           0,
@@ -1602,7 +1602,7 @@
         ],
         [
           1,
-          "Il viaggio conta più della destinazione."
+          "Conta più il viaggio della destinazione."
         ]
       ]
     },
@@ -1611,15 +1611,15 @@
       "lines": [
         [
           0,
-          "È mai giusto fare il male per un bene superiore?"
+          "È mai giusto fare del male per un bene superiore?"
         ],
         [
           1,
-          "Assolutamente. A volte vanno prese scelte dure."
+          "Assolutamente. A volte bisogna fare scelte dure."
         ],
         [
           0,
-          "Ma chi decide cosa sia il \"bene superiore\"?"
+          "Ma chi decide qual è il 'bene superiore'?"
         ],
         [
           1,
@@ -1632,19 +1632,19 @@
       "lines": [
         [
           0,
-          "Bisogna sempre mettere il dovere davanti alla felicità personale?"
+          "Bisogna sempre mettere il dovere prima della felicità personale?"
         ],
         [
           1,
-          "Il dovere dà senso alla vita. Le ricerche egoistiche sono vuote."
+          "Il dovere dà senso alla vita. Gli scopi egoistici sono vuoti."
         ],
         [
           0,
-          "Ma una vita senza gioia non è affatto una vita!"
+          "Ma una vita senza gioia non è vita!"
         ],
         [
           1,
-          "La gioia viene dal realizzare il proprio scopo."
+          "La gioia viene dall'assolvere il proprio scopo."
         ]
       ]
     },
@@ -1653,19 +1653,19 @@
       "lines": [
         [
           0,
-          "È meglio vivere al sicuro o vivere pienamente?"
+          "È meglio vivere al sicuro o vivere in pieno?"
         ],
         [
           1,
-          "Pienamente. Una vita lunga e vuota è solo una lenta sparizione."
+          "In pieno. Una vita lunga e vuota è solo una sparizione lenta."
         ],
         [
           0,
-          "Ma la gente si fa male inseguendo la pienezza."
+          "Ma la gente si fa male a inseguire il pieno."
         ],
         [
           1,
-          "Si fa male comunque. Almeno una delle due versioni ha una bella storia."
+          "Si fa male in entrambi i casi. Almeno una delle due versioni ha una bella storia da raccontare."
         ]
       ]
     },
@@ -1678,7 +1678,7 @@
         ],
         [
           1,
-          "Sì. La società non può funzionare se ognuno si sceglie le leggi."
+          "Sì. Una società non regge se ognuno si sceglie le sue leggi."
         ],
         [
           0,
@@ -1686,7 +1686,7 @@
         ],
         [
           1,
-          "A questo serve la riforma. Non la ribellione."
+          "È a questo che serve la riforma. Non la ribellione."
         ]
       ]
     },
@@ -1695,23 +1695,23 @@
       "lines": [
         [
           0,
-          "La ricchezza si guadagna, o è soprattutto fortuna e circostanza?"
+          "La ricchezza si guadagna, o è soprattutto fortuna e circostanze?"
         ],
         [
           1,
-          "Si guadagna. Il duro lavoro crea sempre opportunità."
+          "Si guadagna. Il lavoro duro crea sempre delle occasioni."
         ],
         [
           0,
-          "Dillo a chi è nato senza niente, nella città sbagliata."
+          "Vallo a dire a uno nato senza niente, nel paese sbagliato."
         ],
         [
           1,
-          "Un sacco di gente si è sollevata dal nulla."
+          "Un sacco di gente si è tirata su dal niente."
         ],
         [
           0,
-          "E molta di più non ce l'ha fatta. È questo il punto."
+          "E moltissima di più non ce l'ha fatta. È proprio quello il punto."
         ]
       ]
     },
@@ -1720,15 +1720,15 @@
       "lines": [
         [
           0,
-          "Conta quello che facciamo, se nessuno si ricorderà di noi?"
+          "Conta quello che facciamo, se poi non ci ricorda nessuno?"
         ],
         [
           1,
-          "Certo che conta. Le persone attorno a noi ricordano, anche se la storia no."
+          "Certo che conta. Le persone intorno a noi se lo ricordano, anche se la storia no."
         ],
         [
           0,
-          "Un pubblico piccolo è pur sempre un pubblico."
+          "Un pubblico piccolo è comunque un pubblico."
         ],
         [
           1,
@@ -1745,15 +1745,15 @@
         ],
         [
           1,
-          "Sì. A volte la verità fa più male che bene."
+          "Sì. A volte la verità fa più danno che bene."
         ],
         [
           0,
-          "Ma chi decide che aspetto ha il male? Chi mente?"
+          "Ma chi decide che aspetto ha il danno? Chi mente?"
         ],
         [
           1,
-          "Qualcuno deve farlo. La verità non è sempre gentile."
+          "Qualcuno deve pur farlo. La verità non è sempre gentile."
         ],
         [
           0,
@@ -1770,7 +1770,7 @@
         ],
         [
           1,
-          "I diritti richiedono responsabilità. Gli animali non possono averne."
+          "I diritti richiedono doveri. Gli animali non possono assumerseli."
         ],
         [
           0,
@@ -1778,11 +1778,11 @@
         ],
         [
           1,
-          "I neonati crescono verso la responsabilità. È un caso diverso."
+          "I neonati crescono fino alla responsabilità. È un caso diverso."
         ],
         [
           0,
-          "Davvero? Tracciamo la linea dove ci fa comodo."
+          "Davvero? La riga la tiriamo dove ci fa comodo."
         ]
       ]
     },
@@ -1799,11 +1799,11 @@
         ],
         [
           0,
-          "Suona desolante."
+          "Detta così sembra desolante."
         ],
         [
           1,
-          "Io lo trovo bellissimo. C'è sempre altro da scoprire."
+          "Io la trovo bellissima. C'è sempre altro da scoprire."
         ]
       ]
     },
@@ -1820,11 +1820,11 @@
         ],
         [
           0,
-          "Non ci si mangia, un quadro."
+          "Un quadro non lo mangi."
         ],
         [
           1,
-          "E non si vive nemmeno senza qualcosa per cui valga la pena vivere."
+          "E senza qualcosa per cui valga la pena vivere non ci campi nemmeno."
         ]
       ]
     },
@@ -1837,7 +1837,7 @@
         ],
         [
           1,
-          "Non c'è garanzia che il risultato sia buono. Stai scommettendo con la sofferenza altrui."
+          "Non c'è nessuna garanzia che il risultato sarà buono. Stai scommettendo con la sofferenza degli altri."
         ],
         [
           0,
@@ -1845,7 +1845,7 @@
         ],
         [
           1,
-          "Ma l'inazione non ti rende lo strumento del danno."
+          "Ma non agire non ti rende lo strumento del danno."
         ]
       ]
     },
@@ -1854,7 +1854,7 @@
       "lines": [
         [
           0,
-          "Credi che la storia si ripeta, o facciamo solo gli stessi errori con vestiti nuovi?"
+          "Secondo te la storia si ripete, o facciamo solo gli stessi errori con vestiti nuovi?"
         ],
         [
           1,
@@ -1866,7 +1866,7 @@
         ],
         [
           1,
-          "Impariamo a riconoscere il costume, immagino. Poco aiuto, ma qualcosa."
+          "Impariamo a riconoscere il costume, direi. Aiuto minimo, ma è qualcosa."
         ]
       ]
     },
@@ -1883,11 +1883,11 @@
         ],
         [
           0,
-          "E si sono tramandate anche un sacco di cose orribili."
+          "E di roba orribile ne è stata tramandata parecchia."
         ],
         [
           1,
-          "Per questo le esaminiamo, non le buttiamo via tutte."
+          "Appunto per questo la esaminiamo, non la buttiamo via tutta."
         ]
       ]
     },
@@ -1900,19 +1900,19 @@
         ],
         [
           1,
-          "Sì. Pianificherei meglio."
+          "Sì. Mi organizzerei meglio."
         ],
         [
           0,
-          "O vivresti più piccolo. Sapere la fine fa sembrare inutile ogni rischio."
+          "O vivresti più piccolo. Conoscere la fine fa sembrare inutile ogni rischio."
         ],
         [
           1,
-          "Sapere la fine renderebbe ogni giorno intenzionale."
+          "Conoscere la fine farebbe sembrare intenzionale ogni giornata."
         ],
         [
           0,
-          "O paralizzato. Stai dando per scontato che saresti coraggioso al riguardo."
+          "O paralizzata. Stai dando per scontato che saresti coraggioso."
         ]
       ]
     }
@@ -1925,7 +1925,7 @@
       ],
       [
         1,
-        "Come sempre."
+        "Come tutte."
       ]
     ],
     [
@@ -1941,7 +1941,7 @@
     [
       [
         0,
-        "Hai sentito la notizia?"
+        "L'hai sentita la notizia?"
       ],
       [
         1,
@@ -1975,13 +1975,13 @@
       ],
       [
         1,
-        "Tutto tranne la mia paga."
+        "Tutto tranne il mio stipendio."
       ]
     ],
     [
       [
         0,
-        "Sembri stanco."
+        "Hai una brutta cera."
       ],
       [
         1,
@@ -1991,7 +1991,7 @@
     [
       [
         0,
-        "Bel tempo per una volta."
+        "Bel tempo, per una volta."
       ],
       [
         1,
@@ -2015,7 +2015,7 @@
       ],
       [
         1,
-        "Segnalo sul mio conto."
+        "Segnalo sul conto."
       ]
     ],
     [
@@ -2025,13 +2025,13 @@
       ],
       [
         1,
-        "E fa sempre più freddo."
+        "E peggiora."
       ]
     ],
     [
       [
         0,
-        "Sentito niente di buono ultimamente?"
+        "Sentito niente di buono in giro?"
       ],
       [
         1,
@@ -2041,7 +2041,7 @@
     [
       [
         0,
-        "Non ti viene mai voglia di andartene?"
+        "Ti viene mai voglia di andartene e basta?"
       ],
       [
         1,
@@ -2051,31 +2051,31 @@
     [
       [
         0,
-        "Attento a dove metti i piedi là dietro."
+        "Occhio a dove metti i piedi là dietro."
       ],
       [
         1,
-        "Si è rovesciato qualcosa?"
+        "È caduto qualcosa?"
       ]
     ],
     [
       [
         0,
-        "Notte lunga?"
+        "Nottata lunga?"
       ],
       [
         1,
-        "Mattina più lunga."
+        "Mattinata più lunga."
       ]
     ],
     [
       [
         0,
-        "Oggi stai meglio."
+        "Oggi hai un aspetto migliore."
       ],
       [
         1,
-        "L'asticella è bassa, ma me lo prendo."
+        "Partivo da basso, ma me lo prendo."
       ]
     ],
     [
@@ -2091,7 +2091,7 @@
     [
       [
         0,
-        "Qualcun altro se n'è andato."
+        "Un altro che si è licenziato."
       ],
       [
         1,
@@ -2111,11 +2111,11 @@
     [
       [
         0,
-        "Dov'è finita la giornata?"
+        "Ma dov'è andata la giornata?"
       ],
       [
         1,
-        "Dove finiscono sempre."
+        "Dove vanno sempre."
       ]
     ],
     [
@@ -2145,13 +2145,13 @@
       ],
       [
         1,
-        "Dormire, soprattutto."
+        "Dormire, più che altro."
       ]
     ],
     [
       [
         0,
-        "Visti i nuovi arrivati?"
+        "Li hai visti i nuovi arrivati?"
       ],
       [
         1,
@@ -2161,7 +2161,7 @@
     [
       [
         0,
-        "Ti fidi di qualcuno da queste parti?"
+        "Ti fidi di qualcuno qui in giro?"
       ],
       [
         1,
@@ -2171,7 +2171,7 @@
     [
       [
         0,
-        "Quel posto di lavoro è ancora libero?"
+        "È ancora libero quel posto di lavoro?"
       ],
       [
         1,
@@ -2201,11 +2201,11 @@
     [
       [
         0,
-        "Sembra che tu abbia qualcosa da dire."
+        "Hai l'aria di uno che ha qualcosa da dire."
       ],
       [
         1,
-        "Ce l'ho. E non la dirò."
+        "Ce l'ho. E non la dico."
       ]
     ],
     [
@@ -2215,13 +2215,13 @@
       ],
       [
         1,
-        "Anno duro."
+        "Annata dura."
       ]
     ],
     [
       [
         0,
-        "Il capo c'è oggi?"
+        "C'è il capo oggi?"
       ],
       [
         1,
@@ -2241,7 +2241,7 @@
     [
       [
         0,
-        "Ti capita mai di startene seduto a non fare niente?"
+        "Ti capita mai di startene seduto senza fare niente?"
       ],
       [
         1,
@@ -2251,17 +2251,17 @@
     [
       [
         0,
-        "Il mercato era affollato oggi."
+        "Oggi il mercato era pieno."
       ],
       [
         1,
-        "Stagione delle feste. Sopporta."
+        "Stagione di sagre. Portala pazienza."
       ]
     ],
     [
       [
         0,
-        "Facce nuove in città."
+        "Facce nuove in paese."
       ],
       [
         1,
@@ -2275,7 +2275,7 @@
       ],
       [
         1,
-        "Non di recente."
+        "Non ultimamente."
       ]
     ],
     [
@@ -2285,7 +2285,7 @@
       ],
       [
         1,
-        "Il tuo corpo te lo ricorderà."
+        "Te lo ricorderà il corpo."
       ]
     ],
     [
@@ -2345,13 +2345,13 @@
       ],
       [
         1,
-        "Discutibile."
+        "Opinabile."
       ]
     ],
     [
       [
         0,
-        "Hai portato da mangiare oggi?"
+        "L'hai portato il pranzo oggi?"
       ],
       [
         1,

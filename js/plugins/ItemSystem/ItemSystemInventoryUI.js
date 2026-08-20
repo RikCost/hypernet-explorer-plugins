@@ -120,12 +120,24 @@
       const getScopeName      = (s) => (T.list('Inventory.spec.scope')[s] || T('Inventory.spec.none'));
       const getDamageTypeName = (t) => (T.list('Inventory.spec.damageType')[t] || T('Inventory.spec.none'));
 
+      // Icons are 32x32 in a 16-wide sheet; scaling the background to size*16
+      // wide renders any icon at an arbitrary size (same trick FurnitureSystem
+      // uses for its build panel).
+      const recipeMatIconHTML = (iconIndex, size = 16) => {
+        const x = (iconIndex % 16) * size;
+        const y = Math.floor(iconIndex / 16) * size;
+        // i18n-ignore: inline CSS for the IconSet sprite cell
+        return `<span class="recipe-mat-icon" style="width:${size}px;height:${size}px;background-position:-${x}px -${y}px;background-size:${size * 16}px auto;"></span>`;
+      };
+
       const parseRecipeToNames = (recipeStr) => {
         if (!recipeStr) return '';
         return recipeStr.split(',').map(part => {
           const m = part.trim().match(/^(\d+)x(\d+)$/i);
-          if (m) { const obj = $dataItems[parseInt(m[1],10)]; return obj ? `${obj.name} x${m[2]}` : T('Inventory.section.unknownStack', { n: m[2] }); }
-          return part.trim();
+          if (!m) return part.trim();
+          const obj = $dataItems[parseInt(m[1],10)];
+          if (!obj) return T('Inventory.section.unknownStack', { n: m[2] });
+          return `<span class="recipe-mat">${recipeMatIconHTML(obj.iconIndex)}${obj.name} x${m[2]}</span>`;
         }).join(', ');
       };
 
@@ -244,6 +256,11 @@
               const nl = name.toLowerCase();
               if (nl === 'movement' || nl === 'weight' || nl === 'category' || nl === 'uncraftable') return;
               if (nl === 'needrestore') return; // rendered as its own "Needs Restored" section below
+              // <Medicine:>, <Cures:> and <Treats:> are already rendered as
+              // their own "Medicine" section above (getMedicineInfo); listing
+              // them again here just repeats the same facts under the wrong
+              // heading.
+              if (nl === 'medicine' || nl === 'cures' || nl === 'treats') return;
               // <Lore:> holds a bank key, not a sentence. It is already resolved
               // and printed as the flavour paragraph above, so listing it here
               // only leaks the key ("LoreItems.119") onto the page.
@@ -341,7 +358,11 @@
         const canvasId = o.canvasId || 'inspect-canvas';
         const rarity   = rarityOf(item);
         const itemType = typeLabelOf(item);
-        const weightVal = (window.ItemSystemUtils && window.ItemSystemUtils.getItemWeight ? window.ItemSystemUtils.getItemWeight(item) : 0) / 1000;
+        const weightGrams = (window.ItemSystemUtils && window.ItemSystemUtils.getItemWeight ? window.ItemSystemUtils.getItemWeight(item) : 0);
+        const weightVal = weightGrams / 1000;
+        // Anything light enough to round away to 0.00 kg is written in grams
+        // instead, so only a truly weightless thing hides the row (#141).
+        const weightText = weightVal >= 0.01 ? `${weightVal.toFixed(2)} kg` : `${weightGrams} g` /* i18n-ignore: unit */;
         const valueVal  = ((item.price || 0) / 100).toFixed(2);
 
         return `
@@ -355,8 +376,8 @@
               <div class="inspect-rarity" style="color:${rarity.color};">${rarity.name} ${itemType}</div>
             </div>
           </div>
-          <div class="inspect-meta-grid" style="${weightVal === 0 ? 'grid-template-columns:1fr;' : ''}">
-            ${weightVal > 0 ? `<div class="inspect-meta-item"><span>${T('Inventory.section.unitWeight')}</span><span class="inspect-meta-val">${weightVal.toFixed(2)} kg</span></div>` : ''}
+          <div class="inspect-meta-grid" style="${weightGrams === 0 ? 'grid-template-columns:1fr;' : ''}">
+            ${weightGrams > 0 ? `<div class="inspect-meta-item"><span>${T('Inventory.section.unitWeight')}</span><span class="inspect-meta-val">${weightText}</span></div>` : ''}
             <div class="inspect-meta-item"><span>${T('Inventory.section.marketValue')}</span><span class="inspect-meta-val">${valueVal} €</span></div>
           </div>
           ${o.extraHTML || ''}
@@ -432,6 +453,7 @@
     this._discardModalFocusIdx = 0;
     this._discardQty          = 1;
     this._searchText          = '';
+    this._searchOpen          = false;
     this._dndSortKey          = 'name';
     this._dndSortDirection    = 'asc';
 
@@ -597,23 +619,22 @@
       gridLines.push(() => {
         const isFocused  = (this._dndActiveSection === 'items' && this._dndSelectedIndex === idx) ? 'selected' : '';
         const count      = $gameParty.numItems(item);
-        const weight     = window.ItemSystemUtils && window.ItemSystemUtils.getItemWeight ? window.ItemSystemUtils.getItemWeight(item) : 0;
-        const weightTotal = ((weight * count) / 1000).toFixed(2);
         const canvasId   = `item-canvas-${idx}`;
         const rarity     = this.getUIItemRarity(item);
+        // One line per pocket: mark, icon, name, how many. What a thing weighs
+        // is read off the inspect page on the right, which already prints it,
+        // and off the carry gauge under the grid, so printing it again on every
+        // slot only made the slots taller.
         return `
-          <div class="item-slot ${isFocused}" data-icon-index="${item.iconIndex}" data-canvas-id="${canvasId}" onclick="SceneManager._scene.selectUIItem(${idx})">
+          <div class="item-slot item-slot--compact ${isFocused}" data-icon-index="${item.iconIndex}" data-canvas-id="${canvasId}" draggable="true" onclick="SceneManager._scene.selectUIItem(${idx})" ondragstart="SceneManager._scene.onUIItemDragStart(event, ${idx})" ondragend="SceneManager._scene.onUIItemDragEnd(event)">
             <div class="item-rarity-bar" style="background:${rarity.color};"></div>
             <div class="item-slot-icon">
-              <canvas id="${canvasId}" width="32" height="32" style="width:32px;height:32px;"></canvas>
+              <canvas id="${canvasId}" width="32" height="32" style="width:24px;height:24px;"></canvas>
             </div>
             <div class="item-slot-info">
               <div class="item-slot-name">${this.isItemFavorited(item) ? '★ ' : ''}${item.name}</div>
-              <div class="item-slot-meta">
-                ${weight > 0 ? `<span>${weightTotal} kg</span>` : '<span></span>'}
-                <span class="item-slot-count">x${count}</span>
-              </div>
             </div>
+            <span class="item-slot-count">x${count}</span>
           </div>`;
       });
     });
@@ -624,7 +645,6 @@
     const weightPercent  = Math.min(100, Math.floor((currentWeight / maxWeight) * 100));
     const backpackTitle  = T('Inventory.title');
     const backBtnText    = T('Inventory.back');
-    const searchPlaceholder = T('Inventory.searchPlaceholder');
 
     // The carry gauge rides in the quick-slot header rather than owning a band
     // of its own above it: two lines of chrome for one number was a waste of the
@@ -659,13 +679,7 @@
         </div>
         <div class="backpack-tabs">${tabsHTML}</div>
         <div class="backpack-search">
-          <input type="text" id="backpack-search-input" class="backpack-search-input"
-            placeholder="${searchPlaceholder}" autocomplete="off"
-            value="${this._searchText || ''}"
-            oninput="SceneManager._scene.onSearchInput(this.value)"
-            onkeydown="event.stopPropagation(); if(event.key==='Escape'){this.blur();SceneManager._scene.clearSearch();}"
-            onkeyup="event.stopPropagation();"
-            onkeypress="event.stopPropagation();"/>
+          ${this.searchFieldHTML()}
           <div class="backpack-sort-tags">${sortTagsHTML}</div>
         </div>
         <div class="backpack-grid" id="backpack-grid"></div>
@@ -1139,16 +1153,80 @@
     this.refreshUIbackpack();
   };
 
+  // Dragging a grid slot onto a quick slot (ItemSystemHotbar.js's backpack
+  // bar) favourites it, the same as clicking the item then clicking the slot.
+  // Nothing here may touch refreshUIbackpack: rebuilding the grid mid-drag
+  // would tear out the very element the browser is dragging.
+  Scene_EnhancedItem.prototype.onUIItemDragStart = function (event, idx) {
+    const item = this.getFilteredUIItems()[idx];
+    if (!item || !(window.ItemHotbar && window.ItemHotbar.isFavoritable(item))) {
+      event.preventDefault();
+      return;
+    }
+    this._dragItem = item;
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.setData('text/plain', String(item.id));
+  };
+
+  Scene_EnhancedItem.prototype.onUIItemDragEnd = function () {
+    this._dragItem = null;
+  };
+
+  // The pockets wear the same collapsed search every other menu does
+  // (UI/MenuSearchBar.js): a handle at the top right of the page, and the field
+  // itself only once it has been clicked. The handle is never '.focusable', so
+  // the controller walks the tabs and the slots and never the search.
+  Scene_EnhancedItem.prototype.searchFieldHTML = function () {
+    const open = !!this._searchOpen || !!this._searchText;
+    const handle = window.MenuSearchBar
+      ? window.MenuSearchBar.toggleHTML('SceneManager._scene.toggleUISearch()', open)
+      : '';
+    const field = open ? `
+        <div class="msb-field">
+          <input type="text" id="backpack-search-input" class="backpack-search-input"
+            placeholder="${T('Inventory.searchPlaceholder')}" autocomplete="off"
+            value="${this._searchText || ''}"
+            oninput="SceneManager._scene.onSearchInput(this.value)"
+            onkeydown="event.stopPropagation(); if(event.key==='Escape'){this.blur();SceneManager._scene.toggleUISearch();}"
+            onkeyup="event.stopPropagation();"
+            onkeypress="event.stopPropagation();"/>
+        </div>` : '';
+    return `<div class="msb msb-field-only${open ? '' : ' msb-collapsed'}" id="backpack-search-field">${field}${handle}</div>`;
+  };
+
+  // The pockets are patched in place rather than redrawn, so the handle repaints
+  // its own corner of the page.
+  Scene_EnhancedItem.prototype.toggleUISearch = function () {
+    this._searchOpen = !this._searchOpen;
+    SoundManager.playCursor();
+    // A search closed behind the handle would go on narrowing the pockets with
+    // nothing on the page saying so.
+    const hadText = !!this._searchText;
+    if (!this._searchOpen) this._searchText = '';
+    const slot = document.getElementById('backpack-search-field');
+    if (slot) slot.outerHTML = this.searchFieldHTML();
+    if (this._searchOpen) {
+      const input = document.getElementById('backpack-search-input');
+      if (input) input.focus();
+    } else if (hadText) {
+      this._dndSelectedIndex = 0;
+      this.refreshUIbackpack();
+    }
+  };
+
   Scene_EnhancedItem.prototype.onSearchInput = function (text) {
     this._searchText       = text;
     this._dndSelectedIndex = 0;
     this.refreshUIbackpack();
   };
 
+  // Backing out of an active search puts the field away with it, so the page
+  // is left as it was found: pockets, and a handle in the corner.
   Scene_EnhancedItem.prototype.clearSearch = function () {
     this._searchText       = '';
-    const input = document.getElementById('backpack-search-input');
-    if (input) input.value = '';
+    this._searchOpen       = false;
+    const slot = document.getElementById('backpack-search-field');
+    if (slot) slot.outerHTML = this.searchFieldHTML();
     this._dndSelectedIndex = 0;
     this.refreshUIbackpack();
   };

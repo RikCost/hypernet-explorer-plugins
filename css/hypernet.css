@@ -1,5 +1,5 @@
 ﻿:root {
-    /* Windows XP Luna theme */
+    /* Archways XP Luna theme */
     --xp-bg: #ece9d8;
     --xp-border: #7f9db9;
     --xp-blue: #0054e3;
@@ -442,7 +442,7 @@
                     width: 100%;
                 }
 
-                /* --- Windows XP Luna Window styling --- */
+                /* --- Archways XP Luna Window styling --- */
                 .hypernet-os-window {
                     position: absolute;
                     background: var(--xp-bg);
@@ -633,25 +633,18 @@
                     background: linear-gradient(to bottom, #64bd4f 0%, #a4e16d 10%, #7ecb54 45%, #4e9c34 90%, #2c6e20 100%);
                 }
 
-                /* Wavy CSS XP Start Logo */
+                /* Archway XP Start Logo */
                 .start-btn-logo {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 1.5px;
-                    width: 14px;
-                    height: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 18px;
+                    height: 18px;
                     margin-right: 8px;
-                    transform: rotate(-10deg) skewX(-10deg);
                 }
-                .logo-sq {
-                    width: 6px;
-                    height: 6px;
-                    border-radius: 0.8px;
+                .start-btn-logo svg {
+                    filter: drop-shadow(0.5px 0.5px 1px var(--shadow-black-translucent-25));
                 }
-                .l-red { background: #ff3c3c; box-shadow: 0.5px 0.5px 1px var(--shadow-black-translucent-25); }
-                .l-green { background: #32d632; box-shadow: 0.5px 0.5px 1px var(--shadow-black-translucent-25); }
-                .l-blue { background: #3666ff; box-shadow: 0.5px 0.5px 1px var(--shadow-black-translucent-25); }
-                .l-yellow { background: #ffc926; box-shadow: 0.5px 0.5px 1px var(--shadow-black-translucent-25); }
 
                 /* Taskbar Tabs */
                 #hypernet-taskbar-tabs {
@@ -1270,7 +1263,7 @@
 
 
 /* ==========================================================================
-   BankLoanSystem, Windows XP-style bank UI
+   BankLoanSystem, Archways XP-style bank UI
    ========================================================================== */
 #bank-system-content {
     width: 100%;
@@ -1434,7 +1427,7 @@
 }
 
 /* ==========================================================================
-   StockMarketSystem, Windows XP-style stock market UI
+   StockMarketSystem, Archways XP-style stock market UI
    ========================================================================== */
 #stock-container {
     width: 100%;
@@ -1670,7 +1663,7 @@
 }
 
 /* ==========================================================================
-   WorkSystemJobOffers, Windows XP-style job offers UI
+   WorkSystemJobOffers, Archways XP-style job offers UI
    ========================================================================== */
 #job-offers-content {
     width: 100%;
@@ -1828,7 +1821,7 @@
 }
 
 /* ==========================================================================
-   NewsSystem, Windows XP-style news history UI
+   NewsSystem, Archways XP-style news history UI
    ========================================================================== */
 #news-history-content {
     width: 100%;
@@ -2742,3 +2735,65 @@
 .hnb-tip-icon { color: #d8a12a; flex-shrink: 0; }
 .hnb-tip-text { flex: 1 1 auto; line-height: 1.6; font-size: 15px; }
 .hnb-sync-line { margin: 10px 0 4px 0; }
+
+/* HyperDeck Setup: the firmware screen, drawn as an Archways XP window.
+   Deliberately not XP-styled inside: a BIOS is the one screen in the machine
+   that predates the desktop and looks it. */
+.bios-shell {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: #0a1a3a;
+    color: #d8dee9;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.bios-banner {
+    background: #d8dee9;
+    color: #0a1a3a;
+    padding: 4px 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.bios-tabs { display: flex; gap: 2px; padding: 6px 8px 0; }
+.bios-tab {
+    padding: 4px 16px;
+    border: 1px solid #55688f;
+    border-bottom: none;
+    background: #12264d;
+    cursor: pointer;
+}
+.bios-tab.active { background: #1d3a70; color: #ffe9a8; border-color: #ffe9a8; }
+.bios-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin: 0 8px;
+    padding: 8px 12px;
+    border: 1px solid #55688f;
+    background: #071230;
+}
+.bios-row { display: flex; justify-content: space-between; gap: 16px; padding: 3px 0; }
+.bios-row span:first-child { color: #8fa3c8; }
+.bios-row span:last-child { color: #ffe9a8; }
+.bios-fault { display: flex; gap: 10px; padding: 4px 0; color: #ff9d8a; }
+.bios-fault span:first-child { color: #ffd24a; font-weight: bold; }
+.bios-clean { color: #9fe8a4; padding: 6px 0; }
+.bios-empty { color: #8fa3c8; padding: 6px 0; }
+.bios-foot {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px;
+}
+.bios-key {
+    padding: 4px 14px;
+    border: 1px solid #8fa3c8;
+    background: #12264d;
+    cursor: pointer;
+}
+.bios-key:hover { background: #1d3a70; color: #ffe9a8; }
+.bios-note { font-weight: bold; }
+.bios-note.good { color: #9fe8a4; }
+.bios-note.bad { color: #ff9d8a; }

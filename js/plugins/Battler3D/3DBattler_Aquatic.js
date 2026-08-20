@@ -1897,6 +1897,9 @@
             this.applyModelScale(growth);
 
             const fast = (anim === 'attack' || anim === 'specialattack');
+            // Four-legged models only stride while really travelling (overworld
+            // walk) or lunging on an attack; standing in battle they keep still.
+            const stride = this.strideMul(fast);
             const hitJolt = anim === 'hit' ? Math.sin(t * 26) * Math.exp(-t * 6) * 0.18 : 0;
             this.model.rotation.z = hitJolt;
 
@@ -1934,7 +1937,7 @@
                 case 'turtle': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.2) * 0.02 * this.scale;
                     if (this.head && this.head.visible) this.head.position.z = 0.75 + (fast ? 0.1 : 0) + Math.sin(t * 1.5) * 0.03;
-                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2) + i) * 0.2; });
+                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2) + i) * 0.2 * stride; });
                     break;
                 }
                 case 'snail': {
@@ -1956,7 +1959,7 @@
                 case 'gildedzapback': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.2) * 0.02 * this.scale;
                     if (this.head && this.head.visible) this.head.position.z = 0.78 + (fast ? 0.1 : 0) + Math.sin(t * 1.5) * 0.03;
-                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2) + i) * 0.2; });
+                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2) + i) * 0.2 * stride; });
                     if (this.stormOrbs) this.stormOrbs.forEach((o) => { const a = o._a + t * (fast ? 4 : 1.6); o.position.set(Math.cos(a) * 0.7, 0.55 + Math.sin(t * 2 + o._a) * 0.1, Math.sin(a) * 0.7); });
                     if (this.arcs) { this.arcs.visible = (Math.sin(t * (fast ? 22 : 9)) > 0.2); this.arcs.rotation.y = t * 2; }
                     break;
@@ -2000,7 +2003,7 @@
                 case 'shadowtortoise': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.1) * 0.04 * this.scale;
                     if (this.head && this.head.visible) this.head.position.z = 0.78 + (fast ? 0.1 : 0) + Math.sin(t * 1.4) * 0.04;
-                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2.5) + i) * 0.3; });
+                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2.5) + i) * 0.3 * stride; });
                     if (this.smoke) this.smoke.forEach((puff) => { const a = puff._a + t * 0.8; puff.position.set(Math.cos(a) * 0.6, puff._yb + Math.sin(t * 1.5 + puff._a) * 0.15, Math.sin(a) * 0.6); puff.material.opacity = 0.3 + Math.abs(Math.sin(t + puff._a)) * 0.25; });
                     break;
                 }
@@ -2040,7 +2043,7 @@
                 case 'nightcursetortoise': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.1) * 0.03 * this.scale;
                     if (this.head && this.head.visible) this.head.position.z = (this.variant === 'shellbreakerbulwark' ? 0.85 : 0.84) + (fast ? 0.1 : 0) + Math.sin(t * 1.4) * 0.04;
-                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2.5) + i) * 0.2; });
+                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2.5) + i) * 0.2 * stride; });
                     if (this.gusts) this.gusts.forEach((g, i) => { g.material.opacity = 0.25 + Math.abs(Math.sin(t * 3 + i)) * 0.3; g.scale.z = 1.4 + Math.sin(t * 4 + i) * 0.5; });
                     if (this.runes) this.runes.forEach((r, i) => { r.material.emissiveIntensity = 0.3 + Math.abs(Math.sin(t * 2 + i)) * 0.6; });
                     if (this.motes) this.motes.forEach((m) => { const a = m._a + t * 0.9; m.position.set(Math.cos(a) * 0.55, m._yb + Math.sin(t * 1.5 + m._a) * 0.2, Math.sin(a) * 0.55); m.material.opacity = 0.4 + Math.abs(Math.sin(t + m._a)) * 0.3; });
@@ -2052,7 +2055,7 @@
                 case 'tidalcarapacetortoise': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.1) * 0.03 * this.scale;
                     if (this.head && this.head.visible) this.head.position.z = 0.84 + (fast ? 0.1 : 0) + Math.sin(t * 1.4) * 0.04;
-                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2.5) + i) * 0.2; });
+                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2.5) + i) * 0.2 * stride; });
                     if (this.rays) this.rays.forEach((r, i) => { if (r.material) r.material.emissiveIntensity = 0.3 + Math.abs(Math.sin(t * 1.6 + i)) * 0.5; });
                     if (this.fissures) this.fissures.forEach((f, i) => { if (f.material) f.material.emissiveIntensity = 0.3 + Math.abs(Math.sin(t * (fast ? 5 : 2.4) + i)) * 0.6; });
                     if (this.arcs) { this.arcs.visible = (Math.sin(t * (fast ? 24 : 10)) > 0.1); this.arcs.rotation.y = t * 2.4; }
@@ -2081,7 +2084,7 @@
                 case 'primordialdragonturtle': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.0) * 0.025 * this.scale;
                     if (this.head && this.head.visible) this.head.position.z = (this.variant === 'armoredrexlord' ? 0.95 : (this.variant === 'primordialdragonturtle' ? 0.92 : 0.85)) + (fast ? 0.1 : 0) + Math.sin(t * 1.3) * 0.03;
-                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2) + i) * 0.18; });
+                    [this.frontLeft, this.frontRight, this.rearLeft, this.rearRight].forEach((l, i) => { if (l && l.visible) l.rotation.x = Math.sin(t * (fast ? 7 : 2) + i) * 0.18 * stride; });
                     if (this.horns && this.head && this.head.visible) this.head.rotation.x = (fast ? -0.2 : 0) + Math.sin(t * 1.5) * 0.05;
                     if (this.breath) { this.breath.material.opacity = (fast ? 0.5 : 0.2) + Math.abs(Math.sin(t * (fast ? 6 : 2.2))) * 0.25; this.breath.scale.z = 1.2 + Math.sin(t * 3) * 0.4; }
                     break;

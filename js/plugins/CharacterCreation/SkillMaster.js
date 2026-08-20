@@ -358,6 +358,47 @@
         return match ? match[1].trim() : null;
     }
 
+    // js/db/Skills/MagicalSystems.json (window.Skills.MagicalSystems) is the
+    // single list of every system a class's <MagicalSystem:> tag can name; the
+    // Magical Systems wheel just walks it rather than re-deriving the set from
+    // $dataClasses each time.
+    function getAllMagicalSystems() {
+        return (window.Skills && Array.isArray(window.Skills.MagicalSystems)) ? window.Skills.MagicalSystems : [];
+    }
+
+    function getMagicSystemDisplayName(id) {
+        const key = 'SkillMaster.magicSystem.systems.' + id + '.name';
+        return T.has(key) ? T(key) : id;
+    }
+
+    function getMagicSystemDesc(id) {
+        const key = 'SkillMaster.magicSystem.systems.' + id + '.desc';
+        return T.has(key) ? T(key) : '';
+    }
+
+    // Every class whose own <MagicalSystem:> tag names this system, in book order.
+    function getClassesForMagicSystem(id) {
+        const names = [];
+        for (const cls of $dataClasses) {
+            if (!cls || !cls.note) continue;
+            const match = cls.note.match(/<MagicalSystem:\s*([^>]+)>/i);
+            if (match && match[1].trim() === id) names.push(cls.name);
+        }
+        return names;
+    }
+
+    // Every real skill whose own (skill-level) <MagicSystem:> tag names this
+    // system, in book order. Fused spells never carry the tag on their own, so
+    // they are excluded like everywhere else in this file.
+    function getSkillsForMagicSystem(id) {
+        const list = [];
+        for (const skill of $dataSkills) {
+            if (!skill || !skill.name || skill._customSpell) continue;
+            if (getSkillMagicSystem(skill.id) === id) list.push(skill);
+        }
+        return list;
+    }
+
     const actorCategoryManager = {
         _primary: [],
         _secondary: [],
@@ -3307,6 +3348,13 @@
             return;
         }
 
+        // The Magical Systems wheel owns a self-contained renderer too (left
+        // page = the wheel, right page = the selected system's write-up).
+        if (this._viewMode === 'magicSystems') {
+            this.renderMagicSystemsView();
+            return;
+        }
+
         // Shared renderer for a column of category cards (used by both pages in
         // 'category' mode: pane 0 = Skills on the left, pane 1 = Magic on the right).
         const renderCategoryCardsHTML = (list, pane) => {
@@ -3506,6 +3554,11 @@
                 // this out of flow and drop it on top of the real Back button.
                 const fuseBtn = `
                     <div class="fuse-spells-btn focusable" onclick="SceneManager._scene.openSpellEditor()" title="${T('SkillMaster.fuseSpellsShiftX')}" style="position:relative; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:12px; padding:10px 14px; font-family:'Lora',serif; font-size:1.292rem; background:var(--bg-card-translucent-5); color:var(--text-secondary-active); border-radius:6px; font-weight:bold; cursor:pointer; border:1.5px solid var(--text-secondary-active); text-transform:uppercase; letter-spacing:0.5px; user-select:none">${fuseLabel}</div>`;
+                // A second full-width launcher, same shape as Fuse Spells but its
+                // own class so the Fuse Spells focus/gamepad wiring (which grabs
+                // .fuse-spells-btn by itself) is untouched.
+                const magicSystemsBtn = `
+                    <div class="magic-systems-btn focusable" onclick="SceneManager._scene.openMagicSystems()" style="position:relative; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px; padding:10px 14px; font-family:'Lora',serif; font-size:1.292rem; background:var(--bg-card-translucent-5); color:var(--text-secondary-active); border-radius:6px; font-weight:bold; cursor:pointer; border:1.5px solid var(--text-secondary-active); text-transform:uppercase; letter-spacing:0.5px; user-select:none">${T('SkillMaster.magicSystem.tabLabel')}</div>`;
                 rightPageHTML = `
                     <div style="position: relative; display:flex; align-items:center; justify-content:center; border-bottom: 2px dashed var(--border-success); padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
                       <h2 class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 2.542rem">${magicTitle}</h2>
@@ -3514,6 +3567,7 @@
                         ${magicListHTML}
                     </div>
                     ${fuseBtn}
+                    ${magicSystemsBtn}
                     ${pupilLine}
                 `;
             } else if (this._viewMode === 'list' || this._viewMode === 'detail') {
@@ -3541,6 +3595,180 @@
         // Detail action buttons (Teach / Preview) are re-rendered with their
         // focus styling whenever _selectedActionIndex changes (see the rebuild
         // condition above), so no extra DOM patching is needed here.
+    };
+
+    //=========================================================================
+    // Magical Systems wheel
+    //
+    // Every <MagicalSystem:> a class can carry (window.Skills.MagicalSystems),
+    // laid out as a ring around a central seal, Nen-chart style: one node per
+    // system, a hexagon of guide lines linking neighbours and spokes to the
+    // heart, and a plain pentacle at the centre with no mechanical meaning of
+    // its own. Clicking a node writes its name, flavour and the classes tagged
+    // with it onto the facing page.
+    //=========================================================================
+
+    Scene_SkillEncyclopedia.prototype.openMagicSystems = function () {
+        this._viewMode = 'magicSystems';
+        this._magicSystemSelected = null;
+        SoundManager.playOk();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.closeMagicSystems = function () {
+        this._viewMode = 'category';
+        SoundManager.playCancel();
+        // Force a clean rebuild of the shared pages after leaving the wheel.
+        this._lastLeftMode = null;
+        this._lastLeftCategory = null;
+        this._lastRightMode = null;
+        this._lastRightSkillId = null;
+        this._lastRightKnowledge = null;
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.selectMagicSystem = function (id) {
+        if (this._magicSystemSelected === id) return;
+        this._magicSystemSelected = id;
+        SoundManager.playCursor();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderMagicSystemsView = function () {
+        const leftPageBox = document.getElementById('left-page-content');
+        const rightPageBox = document.getElementById('right-page-content');
+        if (!leftPageBox || !rightPageBox) return;
+
+        leftPageBox.innerHTML = `
+            <div class="page-header-bar" style="width:100%">
+              <div class="back-button focusable" onclick="SceneManager._scene.closeMagicSystems()">${T('SkillMaster.back')}</div>
+              <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; text-align:center; font-size:2.542rem">${T('SkillMaster.magicSystem.title')}</h2>
+            </div>
+            ${this.renderMagicSystemWheelHTML()}
+        `;
+        rightPageBox.innerHTML = this.renderMagicSystemDetailHTML();
+
+        this._lastLeftMode = 'magicSystems';   // i18n-ignore: cache key
+        this._lastRightMode = 'magicSystems';   // i18n-ignore: cache key
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderMagicSystemWheelHTML = function () {
+        const systems = getAllMagicalSystems();
+        const size = 720;
+        const cx = size / 2, cy = size / 2;
+        const outerR = 270;
+        const pentR = 64;
+        const n = Math.max(1, systems.length);
+        const selected = this._magicSystemSelected;
+        const actor = this.getTeachActor();
+        // A class with no <MagicalSystem:> tag of its own highlights nothing:
+        // the wheel never implies an affinity the pupil doesn't actually have.
+        const actorSystem = actor ? getActorMagicSystem(actor.actorId()) : null;
+
+        const pts = systems.map((sys, i) => {
+            const angle = -Math.PI / 2 + (i / n) * TAU;
+            return { sys, x: cx + Math.cos(angle) * outerR, y: cy + Math.sin(angle) * outerR };
+        });
+
+        // The rim: each system linked to its neighbour, and to the heart.
+        let ringHTML = '';
+        for (let i = 0; i < pts.length; i++) {
+            const a = pts[i], b = pts[(i + 1) % pts.length];
+            ringHTML += `<line x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1.5" />`;
+        }
+        let spokesHTML = '';
+        for (const p of pts) {
+            spokesHTML += `<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1" stroke-dasharray="3,4" />`;
+        }
+
+        // A slow-turning decorative rim behind everything: pure ornament, the
+        // wheel reads the same with or without it.
+        const rimHTML = `<circle class="ms-rim" cx="${cx}" cy="${cy}" r="${outerR + 38}" fill="none" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1" stroke-dasharray="2,10" />`;
+
+        // A plain pentacle at the heart: a five-point star in a circle, purely
+        // decorative, the same for every world.
+        const starPts = [];
+        for (let i = 0; i < 5; i++) {
+            const a = -Math.PI / 2 + i * (TAU / 5);
+            starPts.push([cx + Math.cos(a) * pentR, cy + Math.sin(a) * pentR]);
+        }
+        const order = [0, 2, 4, 1, 3, 0];
+        const starPath = order.map((idx, i) => `${i === 0 ? 'M' : 'L'} ${starPts[idx][0].toFixed(1)} ${starPts[idx][1].toFixed(1)}`).join(' ') + ' Z';
+
+        let nodesHTML = '';
+        for (const p of pts) {
+            const isSel = selected === p.sys.id;
+            const isActor = actorSystem === p.sys.id;
+            const skills = getSkillsForMagicSystem(p.sys.id);
+            const known = actor ? skills.filter(s => actor.isLearnedSkill(s.id)).length : 0;
+            const pctLabel = skills.length ? Math.round(known / skills.length * 100) + '%' : '&mdash;';
+            nodesHTML += `
+                <div class="ms-node ${isSel ? 'ms-selected' : ''} ${isActor ? 'ms-actor' : ''}" data-id="${p.sys.id}" onclick="SceneManager._scene.selectMagicSystem('${p.sys.id}')" title="${isActor ? T('SkillMaster.magicSystem.yourSystem') : ''}" style="left:${(p.x - 70).toFixed(1)}px; top:${(p.y - 46).toFixed(1)}px">
+                    <div class="ms-ring" style="border-color:${p.sys.color}"><span class="ms-pct" style="color:${p.sys.color}">${pctLabel}</span></div>
+                    <div class="ms-name" style="color:${p.sys.color}">${getMagicSystemDisplayName(p.sys.id)}</div>
+                </div>`;
+        }
+
+        return `
+            <div style="flex:1; display:flex; align-items:center; justify-content:center; min-height:0">
+                <div class="ms-wheel-box" style="position:relative; width:${size}px; height:${size}px; flex-shrink:0">
+                    <svg width="${size}" height="${size}" style="position:absolute; left:0; top:0">
+                        ${rimHTML}
+                        <g>${ringHTML}${spokesHTML}</g>
+                        <g class="ms-pentacle">
+                            <circle cx="${cx}" cy="${cy}" r="${pentR + 10}" fill="none" stroke="var(--text-secondary-active)" stroke-width="1.5" />
+                            <path d="${starPath}" fill="none" stroke="var(--text-secondary-active)" stroke-width="1.5" />
+                        </g>
+                    </svg>
+                    ${nodesHTML}
+                </div>
+            </div>
+            <div style="text-align:center; opacity:0.65; font-family:'Lora', serif; font-size:1.15rem; padding-top:4px">${T('SkillMaster.magicSystem.hint')}</div>
+        `;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderMagicSystemDetailHTML = function () {
+        const id = this._magicSystemSelected;
+        if (!id) {
+            return `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; gap:16px; padding:20px; box-sizing:border-box">
+                    <h3 class="cc-header-gothic" style="font-size:1.9rem; color:var(--text-secondary-active); margin:0">${T('SkillMaster.magicSystem.empty')}</h3>
+                </div>`;
+        }
+        const sys = getAllMagicalSystems().find(s => s.id === id);
+        const color = sys ? sys.color : 'var(--text-secondary-active)';
+        const classNames = getClassesForMagicSystem(id);
+        const classesHTML = classNames.length
+            ? `<ul style="margin:8px 0 0 0; padding-left:20px">${classNames.map(n => `<li style="margin-bottom:4px">${n}</li>`).join('')}</ul>`
+            : `<div style="opacity:0.65; margin-top:8px">${T('SkillMaster.magicSystem.noClasses')}</div>`;
+
+        const actor = this.getTeachActor();
+        const skills = getSkillsForMagicSystem(id);
+        const known = actor ? skills.filter(s => actor.isLearnedSkill(s.id)).length : 0;
+        const fractionLine = skills.length
+            ? `<div style="font-family:'Lora', serif; font-size:1.1rem; color:${color}; margin-top:4px">${T('SkillMaster.magicSystem.knownFraction', { known: known, total: skills.length, pct: Math.round(known / skills.length * 100) })}</div>`
+            : '';
+        const spellsHTML = skills.length
+            ? `<ul style="margin:8px 0 0 0; padding-left:20px">${skills.map(s => {
+                const isKnown = actor && actor.isLearnedSkill(s.id);
+                return `<li style="margin-bottom:4px; ${isKnown ? 'color:var(--text-forest-complete); font-weight:bold;' : ''}">${isKnown ? '&#10003; ' : ''}${s.name}</li>`;
+              }).join('')}</ul>`
+            : `<div style="opacity:0.65; margin-top:8px">${T('SkillMaster.magicSystem.noSpells')}</div>`;
+
+        return `
+            <div style="display:flex; flex-direction:column; height:100%; box-sizing:border-box">
+                <div style="display:flex; align-items:center; gap:10px; border-bottom:2px dashed var(--border-success); padding-bottom:10px; margin-bottom:6px">
+                    <span style="width:22px; height:22px; border-radius:50%; background:${color}; flex-shrink:0; box-shadow:0 0 8px ${color}"></span>
+                    <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; font-size:2.1rem">${getMagicSystemDisplayName(id)}</h2>
+                </div>
+                ${fractionLine}
+                <div style="font-family:'Lora', serif; font-size:1.2rem; line-height:1.5; color:var(--text-card-medium); margin-top:10px">${getMagicSystemDesc(id)}</div>
+                <h3 class="cc-header-gothic" style="font-size:1.4rem; margin-top:18px">${T('SkillMaster.magicSystem.classesHeading')}</h3>
+                <div style="font-family:'Lora', serif; font-size:1.15rem; color:var(--text-pure-white); max-height:26%; overflow-y:auto">${classesHTML}</div>
+                <h3 class="cc-header-gothic" style="font-size:1.4rem; margin-top:14px">${T('SkillMaster.magicSystem.spellsHeading')}</h3>
+                <div class="skill-scroll-box" style="flex:1; overflow-y:auto; font-family:'Lora', serif; font-size:1.15rem; color:var(--text-pure-white)">${spellsHTML}</div>
+            </div>
+        `;
     };
 
     // Pupil switch from the persistent top-right tabs (or Tab / bumpers), the same
@@ -4722,6 +4950,10 @@
             }
         } else if (this._viewMode === 'spellEditor') {
             this.updateSpellEditorInput();
+        } else if (this._viewMode === 'magicSystems') {
+            if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
+                this.closeMagicSystems();
+            }
         }
     };
 

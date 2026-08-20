@@ -11,5 +11,573 @@
   "programs": "Programs",
   "noPrograms": "No programs scheduled.",
   "transmission": "Transmission",
-  "tuneInHint": "Select a program above to tune in."
+  "tuneInHint": "Select a program above to tune in.",
+  "channel": {
+    "history": {
+      "name": "The History of Ages Channel"
+    },
+    "news": {
+      "name": "Temporal News 24/7"
+    },
+    "chaos": {
+      "name": "Chaos Broadcasting Co."
+    },
+    "kitchen": {
+      "name": "The Alchemist's Kitchen"
+    },
+    "kids": {
+      "name": "Memory Lane Playhouse"
+    },
+    "latenight": {
+      "name": "Midnight on the Road"
+    },
+    "faith": {
+      "name": "Anoki Faith Hour"
+    },
+    "shopping": {
+      "name": "Hypercapitalist Shopping Network"
+    },
+    "mediahex": {
+      "name": "Mediahex"
+    }
+  },
+  "program": {
+    "history": {
+      "chronicles": {
+        "title": "Chronicles of the Age"
+      },
+      "great_debates": {
+        "title": "The Great Debates"
+      },
+      "in_memoriam": {
+        "title": "In Memoriam"
+      },
+      "this_week_in_history": {
+        "title": "This Week in History"
+      },
+      "before_the_tower": {
+        "title": "Before The Tower"
+      },
+      "ninety_two": {
+        "title": "Ninety-Two: An Anatomy of the Squishing"
+      },
+      "kola_file": {
+        "title": "The Kola File"
+      },
+      "pillars": {
+        "title": "Three Pillars, One Argument"
+      },
+      "deicide_hour": {
+        "title": "The Deicide Hour"
+      },
+      "falklands": {
+        "title": "Okeanus: The Falklands Reconstruction"
+      },
+      "road_of_ages": {
+        "title": "The Road of Ages"
+      },
+      "archive_reading": {
+        "title": "Reading Room: The Archive Explains"
+      },
+      "footnotes": {
+        "title": "Footnotes & Grievances"
+      },
+      "y2k_retrospective": {
+        "title": "Two Billion: A Y2K Retrospective"
+      },
+      "ask_the_archive": {
+        "title": "Ask The Archive"
+      },
+      "long_reconstruction": {
+        "title": "The Long Reconstruction"
+      },
+      "voices_from_the_loop": {
+        "title": "Voices From The Loop"
+      },
+      "kola_tapes": {
+        "title": "The Kola Tapes"
+      },
+      "old_world_court": {
+        "title": "Court Records of the Old World"
+      },
+      "ledger_of_empires": {
+        "title": "The Ledger of Empires"
+      },
+      "antiques_parish": {
+        "title": "Antiques of the Parish Hall"
+      }
+    },
+    "news": {
+      "evening_desk": {
+        "title": "The Evening Desk"
+      },
+      "breaking": {
+        "title": "Breaking Transmission"
+      },
+      "forecast": {
+        "title": "The Reality Forecast"
+      },
+      "morning_brief": {
+        "title": "Morning Brief"
+      },
+      "boundary_watch": {
+        "title": "Boundary Watch"
+      },
+      "road_report": {
+        "title": "The Long Haul Report"
+      },
+      "closing_bell": {
+        "title": "The Closing Bell"
+      },
+      "docket": {
+        "title": "The Docket from the Judiciary Dimension"
+      },
+      "above_the_cloud": {
+        "title": "Above The Cloud"
+      },
+      "your_call": {
+        "title": "Your Call, Our Signal"
+      },
+      "civil_advisory": {
+        "title": "Civil Advisory Feed"
+      },
+      "goblin_ball": {
+        "title": "Goblin-Ball Roundup"
+      },
+      "correspondents": {
+        "title": "Correspondents at Large"
+      },
+      "night_desk": {
+        "title": "The Night Desk"
+      },
+      "weekend_review": {
+        "title": "The Weekend Review"
+      },
+      "foreign_desk": {
+        "title": "The Foreign Desk"
+      },
+      "ministerial": {
+        "title": "The Ministerial Address"
+      },
+      "late_bulletin": {
+        "title": "The Late Bulletin"
+      },
+      "obituaries": {
+        "title": "The Obituaries"
+      },
+      "signal_check": {
+        "title": "Signal Check"
+      },
+      "consumer_corner": {
+        "title": "Consumer Corner"
+      }
+    },
+    "chaos": {
+      "wheel": {
+        "title": "Wheel of Temporal Fortune"
+      },
+      "static_hour": {
+        "title": "The Static Hour"
+      },
+      "prophecy_corner": {
+        "title": "Prophecy Corner"
+      },
+      "panic_at_six": {
+        "title": "Panic At Six"
+      },
+      "bubble_house": {
+        "title": "Bubble House"
+      },
+      "who_remembers": {
+        "title": "Who Still Remembers This?"
+      },
+      "signal_bleed": {
+        "title": "Signal Bleed"
+      },
+      "carrier_wave": {
+        "title": "Carrier Wave"
+      },
+      "corpse_paint_countdown": {
+        "title": "The Corpse Paint Countdown"
+      },
+      "the_reckoning": {
+        "title": "The Reckoning with Gideon Graves"
+      },
+      "flatmates": {
+        "title": "Two Mages, One Leyline"
+      },
+      "dead_air": {
+        "title": "Dead Air"
+      },
+      "spin_again": {
+        "title": "Spin Again, Forever"
+      },
+      "open_lines": {
+        "title": "Open Lines, Open Doors"
+      },
+      "unofficial_emergency": {
+        "title": "Emergency Broadcast (Unofficial)"
+      },
+      "weather_probably": {
+        "title": "The Weather, Probably"
+      },
+      "chef_chaos": {
+        "title": "Chef Chaos"
+      },
+      "sermon_of_static": {
+        "title": "Sermon of the Static"
+      },
+      "chaos_docket": {
+        "title": "The Chaos Docket"
+      },
+      "playtime_for_adults": {
+        "title": "Playtime For Adults"
+      }
+    },
+    "kitchen": {
+      "frugal": {
+        "title": "The Frugal Alchemist"
+      },
+      "tavern_rescue": {
+        "title": "Tavern Rescue"
+      },
+      "pixie_dust": {
+        "title": "A Pinch of Pixie Dust"
+      },
+      "one_loop_meals": {
+        "title": "One-Loop Meals"
+      },
+      "verden_table": {
+        "title": "The Verden Table"
+      },
+      "broken_leyline_bakes": {
+        "title": "Broken Leyline Bakes"
+      },
+      "pantry_politics": {
+        "title": "Pantry Politics"
+      },
+      "field_rations": {
+        "title": "Field Rations of the Long Haul"
+      },
+      "kitchen_calls": {
+        "title": "Kitchen Calls"
+      },
+      "front_of_house": {
+        "title": "Front of House"
+      },
+      "sunday_roast": {
+        "title": "The Very Long Sunday Roast"
+      },
+      "cellar_hour": {
+        "title": "The Cellar Hour"
+      },
+      "market_morning": {
+        "title": "Market Morning"
+      },
+      "larder_run": {
+        "title": "The Long Haul Larder"
+      },
+      "kitchen_court": {
+        "title": "Kitchen Court"
+      },
+      "beagle_confidential": {
+        "title": "Kitchen Confidential: Beagle"
+      },
+      "recipe_emergency": {
+        "title": "Recipe Emergency"
+      },
+      "sermon_roast": {
+        "title": "The Sunday Sermon Roast"
+      },
+      "allotment_hour": {
+        "title": "The Allotment Hour"
+      },
+      "two_rooms_ladder": {
+        "title": "Two Rooms and a Ladder"
+      }
+    },
+    "kids": {
+      "tommy": {
+        "title": "Temporal Tommy's Time Adventures"
+      },
+      "rangers": {
+        "title": "Reality Rangers"
+      },
+      "camelcase": {
+        "title": "The Magic of CamelCase"
+      },
+      "sockington": {
+        "title": "Mister Sockington Explains The Rules"
+      },
+      "eighty_song": {
+        "title": "The Eighty Song"
+      },
+      "first_spell": {
+        "title": "Your Very First Spell"
+      },
+      "goblin_friends": {
+        "title": "Are Goblins Our Friends? (No)"
+      },
+      "leyline_lessons": {
+        "title": "Leyline Lessons"
+      },
+      "puppet_court": {
+        "title": "Sock Court"
+      },
+      "storytime": {
+        "title": "Storytime Before The Reset"
+      },
+      "tower_tour": {
+        "title": "A Very Tall Tower: A Tour"
+      },
+      "pip_lost": {
+        "title": "Pip Gets Lost Again"
+      },
+      "cadet_lines": {
+        "title": "Ranger Cadets Phone-In"
+      },
+      "very_small_news": {
+        "title": "The Very Small News"
+      },
+      "songs_from_the_road": {
+        "title": "Songs From The Road"
+      },
+      "sports_day": {
+        "title": "Sports Day"
+      },
+      "pets_people": {
+        "title": "Pets and Their People"
+      }
+    },
+    "latenight": {
+      "insomnia": {
+        "title": "The Insomnia Files"
+      },
+      "witching_hour": {
+        "title": "The Witching Hour Broadcast"
+      },
+      "after_dark": {
+        "title": "After Hours Reality Check"
+      },
+      "long_haul_lines": {
+        "title": "Long Haul Lines"
+      },
+      "third_shift": {
+        "title": "The Third Shift"
+      },
+      "under_the_asphalt": {
+        "title": "Under The Asphalt"
+      },
+      "who_owns_the_dark": {
+        "title": "Who Owns The Dark"
+      },
+      "night_convoy": {
+        "title": "Night Convoy"
+      },
+      "the_estate": {
+        "title": "The Estate at Marrow Hollow"
+      },
+      "small_hours_music": {
+        "title": "Small Hours, Loud Gods"
+      },
+      "sign_off": {
+        "title": "Sign Off"
+      },
+      "unaired": {
+        "title": "The Unaired Tape"
+      },
+      "night_kitchen": {
+        "title": "Nobody Sleeps in Marrow Hollow"
+      },
+      "small_hours_desk": {
+        "title": "The Small Hours Desk"
+      },
+      "nightschool": {
+        "title": "Nightschool"
+      },
+      "overnight_docket": {
+        "title": "The Overnight Docket"
+      },
+      "cold_kitchen": {
+        "title": "Cold Kitchen"
+      },
+      "three_am_weather": {
+        "title": "The 3AM Weather"
+      },
+      "repeats": {
+        "title": "Repeats"
+      },
+      "late_quiz": {
+        "title": "The Late Quiz"
+      },
+      "night_bus": {
+        "title": "The Night Bus"
+      }
+    },
+    "faith": {
+      "gospel": {
+        "title": "The Gospel According to Margaret"
+      },
+      "infinite_loops": {
+        "title": "The Church of Infinite Loops"
+      },
+      "testimony": {
+        "title": "Temporal Testimony Time"
+      },
+      "ringtone_vespers": {
+        "title": "Ringtone Vespers"
+      },
+      "the_stone_gods": {
+        "title": "The Stone Gods of the White Desert"
+      },
+      "from_the_citadel": {
+        "title": "From the Floating Citadel"
+      },
+      "the_widow_maat": {
+        "title": "A Prayer for the Woman Under the Crust"
+      },
+      "discord_docket": {
+        "title": "The Mercy of Discord"
+      },
+      "open_line_to_heaven": {
+        "title": "Open Line to Whatever Answers"
+      },
+      "seven_artefacts": {
+        "title": "Seven Artefacts, One Night"
+      },
+      "catechism": {
+        "title": "Catechism for a Reduced Heaven"
+      },
+      "the_signal_is_the_message": {
+        "title": "The Signal Is The Message"
+      },
+      "faithful_line": {
+        "title": "The Faithful Line"
+      },
+      "sacred_science": {
+        "title": "Sacred Science"
+      },
+      "reduced_miracle": {
+        "title": "The Reduced Miracle"
+      },
+      "quiet_heaven": {
+        "title": "Hymns for a Quiet Heaven"
+      },
+      "parish_notices": {
+        "title": "Parish Notices"
+      },
+      "the_vigil": {
+        "title": "The Vigil"
+      }
+    },
+    "shopping": {
+      "midnight_deals": {
+        "title": "Midnight Deals Marathon"
+      },
+      "as_seen": {
+        "title": "As Seen On The Road"
+      },
+      "fire_sale": {
+        "title": "Reality Anchor Fire Sale"
+      },
+      "loop_escape_hour": {
+        "title": "The Loop Escape Hour"
+      },
+      "warehouse_appears": {
+        "title": "It Simply Appeared In The Warehouse"
+      },
+      "the_ticker": {
+        "title": "The Ticker"
+      },
+      "pyramid_hour": {
+        "title": "Opportunity Hour"
+      },
+      "bid_your_memories": {
+        "title": "Bid Your Memories"
+      },
+      "customer_lines": {
+        "title": "Customer Lines Are Open Forever"
+      },
+      "unboxing_the_tower": {
+        "title": "Unboxing The Tower"
+      },
+      "clearance": {
+        "title": "Terminal Clearance"
+      },
+      "brand_devotional": {
+        "title": "A Devotional For The Market God"
+      },
+      "depot_report": {
+        "title": "Depot Report"
+      },
+      "unclaimed_auction": {
+        "title": "Auction of the Unclaimed"
+      },
+      "complaints_line": {
+        "title": "The Complaints Line"
+      },
+      "warehouse_live": {
+        "title": "Warehouse Live"
+      },
+      "sponsored_weather": {
+        "title": "Sponsored Weather"
+      },
+      "before_the_boundary": {
+        "title": "Buy It Before The Boundary"
+      },
+      "car_boot": {
+        "title": "The Car Boot"
+      }
+    },
+    "mediahex": {
+      "slither_news": {
+        "title": "Slither The News"
+      },
+      "wheel_fortunes": {
+        "title": "The Wheel of Fortunes"
+      },
+      "price_correct": {
+        "title": "OK, The Price Is Correct"
+      },
+      "papperissima": {
+        "title": "Papperissima"
+      },
+      "sarabander": {
+        "title": "Sarabander"
+      },
+      "not_the_rye": {
+        "title": "It Isn't The Rye"
+      },
+      "costanza_show": {
+        "title": "The Maurice Costanza Show"
+      },
+      "forum_hex": {
+        "title": "Forum"
+      },
+      "lunch_served": {
+        "title": "Lunch Is Served"
+      },
+      "telemick": {
+        "title": "Telemick"
+      },
+      "studio_open": {
+        "title": "Studio Open"
+      },
+      "beautifool": {
+        "title": "Beautifool"
+      },
+      "bim_bum_bang": {
+        "title": "Bim Bum Bang"
+      },
+      "superchart": {
+        "title": "Superchart Show"
+      },
+      "coalpo_grosso": {
+        "title": "Coalpo Grosso"
+      },
+      "know_the_latest": {
+        "title": "Do You Know The Latest?"
+      }
+    }
+  }
 }

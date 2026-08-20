@@ -15,5 +15,6 @@
   ],
   "vitalOrganDestroyed": "{actor}'S VITAL ORGAN ({part}) WAZ DESTROYED! DEY DIED INSTANTLY AN' WAZ REMOVED FROM DA PARTY!",
   "partDestroyed": "{actor}'S {part} WAZ DESTROYED AN' REMOVED!",
-  "augmentLost": "DA AUGMENT INSTALLED DERE ({augment}) WAZ TORN OFF WIT IT!"
+  "augmentLost": "DA AUGMENT INSTALLED DERE ({augment}) WAZ TORN OFF WIT IT!",
+  "partDamagedFallback": "{part} DAMAGED!"
 }

@@ -2183,6 +2183,11 @@
   // ============================================================================
 
   window.GalaxySim.DataManager = StarMapDataManager;
+  // Also exposed by its bare class name: JsonEx's save/load round-trip tags
+  // encoded instances with their constructor name and looks it up on the
+  // global `window` to restore the prototype, so $gameSystem.starMapData
+  // needs the class findable there too, not just under GalaxySim.DataManager.
+  window.StarMapDataManager = StarMapDataManager;
   // Exposed so the 3D scene's lazy star field maps world coords to chunks with
   // the exact same cell size used here.
   StarMapDataManager.LAZY_CHUNK_LY = LAZY_CHUNK_LY;

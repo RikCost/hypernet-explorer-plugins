@@ -228,6 +228,9 @@
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.7);
             this.applyModelScale(growth);
             const fast = (anim === 'attack' || anim === 'specialattack');
+            // Four-legged models only stride while really travelling (overworld
+            // walk) or lunging on an attack; standing in battle they keep still.
+            const stride = this.strideMul(fast);
             // Blink/dilate the cat eyes occasionally for life.
             const dilate = 1.0 + Math.sin(t * 0.7) * 0.15;
             if (this.catEyeL) this.catEyeL.scale.y = dilate;
@@ -250,10 +253,10 @@
                     break;
                 }
                 case 'catizard': {
-                    const gait = fast ? 8 : 2.4, amp = fast ? 0.4 : 0.2;
+                    const gait = fast ? 8 : 2.4, amp = (fast ? 0.4 : 0.2) * stride;
                     const sw = (leg, ph) => { if (leg && leg.visible) leg.rotation.x = Math.sin(t * gait + ph) * amp; };
                     sw(this.fl, 0); sw(this.rr, 0); sw(this.fr, Math.PI); sw(this.rl, Math.PI);
-                    this.model.position.y = this._baseY + Math.abs(Math.sin(t * gait)) * 0.02 * this.scale;
+                    this.model.position.y = this._baseY + (stride ? Math.abs(Math.sin(t * gait)) * 0.02 : (0.5 + Math.sin(t * 1.3) * 0.5) * 0.01) * this.scale;
                     if (this.tail && this.tail.visible) this.tail.rotation.y = Math.sin(t * (fast ? 6 : 2)) * (fast ? 0.5 : 0.25);
                     if (this.head && this.head.visible) this.head.rotation.z = Math.sin(t * 1.6) * 0.05;
                     break;

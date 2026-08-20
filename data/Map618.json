@@ -1418,27 +1418,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -1583,27 +1566,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -1748,27 +1714,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -1964,27 +1913,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -2129,27 +2061,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -2261,7 +2176,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$ElvenStylist2",
+            "characterName": "Zombies/!$ElvenStylist2",
             "direction": 2,
             "pattern": 2,
             "characterIndex": 0
@@ -2294,27 +2209,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -2459,27 +2357,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -2624,27 +2505,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -2789,27 +2653,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -3213,27 +3060,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -3345,7 +3175,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$Evil015",
+            "characterName": "Creatures/!$FloatingEye",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -3378,27 +3208,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -3543,27 +3356,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -3708,27 +3504,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -3873,27 +3652,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -4038,27 +3800,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -4203,27 +3948,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -4335,7 +4063,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$LeatherDaddy2",
+            "characterName": "Skab/!$LeatherDaddy",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -4368,27 +4096,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -4533,27 +4244,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -4698,27 +4392,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -4830,7 +4507,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$OrcTrader1",
+            "characterName": "Zombies/!$OrcTrader1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -5043,7 +4720,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$PirateHacker2",
+            "characterName": "Skab/!$PirateHacker",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -5656,27 +5333,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -5872,27 +5532,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -7277,7 +6920,7 @@
       "x": 4,
       "y": 5
     },
-    {"id":37,"name":"NPC","note":"AI 0","pages":[{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":true,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"tileId":0,"characterName":"Skab/!$PirateHacker","direction":2,"pattern":1,"characterIndex":0},"list":[{"code":102,"indent":0,"parameters":[["Talk","Empathize","Cancel"],3,0,2,0]},{"code":402,"indent":0,"parameters":[0,"Talk"]},{"code":357,"indent":1,"parameters":["UI/MarkovTextGenerator","generateNPCDialogue","Generate NPC Dialogue",{"background":"0","position":"2"}]},{"code":657,"indent":1,"parameters":["Background = 0"]},{"code":657,"indent":1,"parameters":["Position = 2"]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[1,"Empathize"]},{"code":357,"indent":1,"parameters":["NPC/NPCEmpathize","Open","Open",{"eventName":""}]},{"code":657,"indent":1,"parameters":["NPC Event Name = "]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[2,"Cancel"]},{"code":0,"indent":1,"parameters":[]},{"code":404,"indent":0,"parameters":[]},{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":0,"priorityType":1,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true},{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":true,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"characterIndex":0,"characterName":"","direction":2,"pattern":0,"tileId":0},"list":[{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":0,"priorityType":0,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true}],"x":5,"y":6},
+    {"id":37,"name":"NPC","note":"AI 0","pages":[{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":true,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"tileId":0,"characterName":"Skab/!$PirateHacker","direction":2,"pattern":1,"characterIndex":0},"list":[{"code":102,"indent":0,"parameters":[["Talk","Empathize","Cancel"],3,0,2,0]},{"code":402,"indent":0,"parameters":[0,"Talk"]},{"code":357,"indent":1,"parameters":["NPC/DialogueSystem","Rumors","Rumors",{}]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[1,"Empathize"]},{"code":357,"indent":1,"parameters":["NPC/NPCEmpathize","Open","Open",{"eventName":""}]},{"code":657,"indent":1,"parameters":["NPC Event Name = "]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[2,"Cancel"]},{"code":0,"indent":1,"parameters":[]},{"code":404,"indent":0,"parameters":[]},{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":0,"priorityType":1,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true},{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":true,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"characterIndex":0,"characterName":"","direction":2,"pattern":0,"tileId":0},"list":[{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":0,"priorityType":0,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true}],"x":5,"y":6},
     {
       "id": 38,
       "name": "NPC",
@@ -7645,7 +7288,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$Mastermind1",
+            "characterName": "Skab/!$Mastermind",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -7678,27 +7321,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -8082,27 +7708,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -8214,7 +7823,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$ElvenStylist2",
+            "characterName": "Zombies/!$ElvenStylist2",
             "direction": 2,
             "pattern": 2,
             "characterIndex": 0
@@ -8247,27 +7856,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -8412,27 +8004,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -8544,7 +8119,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$DogTail1",
+            "characterName": "Animals/!$Dog1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -8578,27 +8153,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -8787,27 +8345,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -8919,7 +8460,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$Nun1",
+            "characterName": "Skab/!$Nun",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -8952,27 +8493,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -9168,27 +8692,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -9333,27 +8840,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -9549,27 +9039,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -9714,27 +9187,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -9930,27 +9386,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -10095,27 +9534,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -10260,27 +9682,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {
@@ -10476,27 +9881,10 @@
               "code": 357,
               "indent": 1,
               "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateNPCDialogue",
-                "Generate NPC Dialogue",
-                {
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 1,
-              "parameters": [
-                "Position = 2"
+                "NPC/DialogueSystem",
+                "Rumors",
+                "Rumors",
+                {}
               ]
             },
             {

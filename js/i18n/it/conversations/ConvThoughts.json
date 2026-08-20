@@ -1,118 +1,118 @@
 {
   "need": {
     "sleep": [
-      "Ho davvero bisogno di riposare...",
-      "Non riesco quasi più a tenere gli occhi aperti.",
-      "Casa mi sta chiamando.",
-      "Ancora qualche passo e poi dormo."
+      "Ho bisogno di stendermi, sul serio...",
+      "Mi si chiudono gli occhi da soli.",
+      "Casa mi sta chiamando a gran voce.",
+      "Ancora quattro passi e poi crollo."
     ],
     "hunger": [
-      "Mi brontola lo stomaco...",
-      "Mangerei davvero qualcosa adesso.",
-      "C'è un distributore automatico qui vicino?",
-      "Devo trovare del cibo."
+      "Lo stomaco mi sta facendo una serenata...",
+      "Adesso mangerei qualsiasi cosa, anche il cartone.",
+      "Qui vicino ci sarà pure un distributore.",
+      "Devo trovare da mangiare, e in fretta."
     ],
     "work": [
-      "È ora di un altro turno.",
-      "Almeno la paga è sicura.",
-      "Dovrei mettermi al lavoro.",
-      "Un altro giorno, un'altra moneta."
+      "Un altro turno che comincia.",
+      "Almeno lo stipendio arriva puntuale. Quasi.",
+      "Dovrei muovermi, che il lavoro non si fa da solo.",
+      "Un altro giorno, un altro euro."
     ],
     "leisure": [
-      "Bella giornata per una passeggiata.",
-      "Magari faccio un salto alla sala giochi.",
-      "Chissà cosa succede da queste parti.",
-      "Ho un po' di tempo libero, cosa faccio?"
+      "Bella giornata per due passi.",
+      "Magari faccio un salto in sala giochi.",
+      "Chissà cosa bolle in pentola da queste parti.",
+      "Ho del tempo libero e non so cosa farmene."
     ],
     "crime": [
       "Non guarda nessuno...",
-      "Solo per questa volta.",
-      "A me i soldi servono più che a loro.",
-      "Se faccio in fretta, nessuno se ne accorge."
+      "Solo per stavolta.",
+      "A me quei soldi servono più che a loro.",
+      "Se faccio in fretta non se ne accorge nessuno."
     ],
     "hygiene": [
       "Ho proprio bisogno di lavarmi.",
-      "Mi sento lercio, dov'è il lavandino più vicino?",
-      "Un salto al bagno non mi farebbe male.",
-      "Dovrei darmi una ripulita."
+      "Mi sento appiccicoso, dov'è il lavandino più vicino?",
+      "Una tappa in bagno non guasterebbe.",
+      "Datemi cinque minuti e un po' d'acqua."
     ],
     "money": [
-      "Sto rimanendo a corto di fondi.",
-      "Devo trovare il modo di fare un po' di soldi.",
-      "Le cose stanno diventando care...",
-      "Devo rimpinguare il portafoglio."
+      "Il portafoglio si sta svuotando.",
+      "Devo inventarmi qualcosa per far cassa.",
+      "Aumenta tutto, tranne quello che guadagno io...",
+      "Serve una ricarica al portafoglio."
     ],
     "safety": [
-      "Farei meglio a stare nell'ombra per un po'.",
-      "Meglio nascondere questo in un posto sicuro.",
-      "Non voglio guai adesso.",
-      "Meglio darsi alla macchia finché non si calmano le acque."
+      "Per un po' conviene stare buoni.",
+      "Meglio mettere questa roba al sicuro.",
+      "Adesso non voglio grane, davvero.",
+      "Sto sotto traccia finché non si calmano le acque."
     ],
     "comfort": [
-      "Mi servirebbe un posto più decente dove stare.",
-      "Forse è ora di migliorare la mia sistemazione.",
-      "Un letto vero, per una volta, sarebbe bello.",
-      "Ho messo da parte abbastanza: perché non concedermelo?"
+      "Mi meriterei un posto un po' più decente.",
+      "Forse è ora di cambiare sistemazione.",
+      "Un letto vero, per una volta, non sarebbe male.",
+      "Ho messo da parte abbastanza, perché non viziarmi un po'?"
     ],
     "social": [
-      "Dovrei andare a conoscere gente nuova.",
-      "È da un po' che non faccio una bella chiacchierata.",
-      "Chissà chi c'è in giro oggi.",
-      "Magari incontro qualcuno di interessante."
+      "Dovrei uscire a conoscere gente nuova.",
+      "È un pezzo che non faccio due chiacchiere come si deve.",
+      "Chissà chi si vede in giro oggi.",
+      "Magari incrocio qualcuno che vale la pena."
     ],
     "null": [
       "..."
     ]
   },
   "crimeIntent": [
-    "{item}: starebbe meglio nella mia tasca...",
-    "Lo voglio proprio: {item}.",
-    "A nessuno mancherebbe, un pezzo solo di {item}, no?",
-    "Se faccio in fretta, {item} è roba mia.",
-    "Solo un pezzo di {item}. Non se ne accorgeranno mai."
+    "{item} starebbe molto meglio nella mia tasca...",
+    "Lo voglio, quel {item}. Lo voglio proprio.",
+    "Chi vuoi che senta la mancanza di un {item}?",
+    "Se sono svelto, quel {item} è mio.",
+    "Un {item} solo. Manco se ne accorgono."
   ],
   "crimeSuccess": [
-    "Preso: {item}. Cammina normale. Cammina normale.",
-    "{item}, a costo zero.",
+    "Preso il {item}. Cammina normale. Cammina normale.",
+    "Un {item}, gentilmente offerto dalla casa.",
     "È stato quasi troppo facile.",
-    "Adesso {item} è roba mia."
+    "Questo {item} adesso ha un nuovo proprietario."
   ],
   "crimeCaught": [
-    "Mi hanno visto prendere {item}...",
-    "Non avrei dovuto metterci le mani sopra: {item}.",
-    "Fantastico. Adesso ho una taglia sulla testa.",
-    "Sparisci. Sparisci. Sparisci."
+    "Mi hanno visto prendere il {item}...",
+    "Non dovevo toccarlo, quel {item}.",
+    "Perfetto. Adesso ho pure una taglia sulla testa.",
+    "Sotto traccia. Sotto traccia. Sotto traccia."
   ],
   "itemBuy": {
     "cheap": [
-      "Bella cosetta, {item}, e non è costata quasi niente.",
-      "{item} andrà benissimo.",
-      "Con {item} a buon mercato non si sbaglia mai.",
-      "Contento del mio acquisto: {item}.",
-      "Proprio quello che mi serviva: {item}."
+      "Un bel {item}, e mi è costato due spiccioli.",
+      "Questo {item} fa proprio al caso mio.",
+      "Con un {item} a questo prezzo non si sbaglia.",
+      "Contento del mio {item}.",
+      "Ecco, mi mancava giusto un {item}."
     ],
     "pricey": [
-      "{item}: mi è costata cara, ma ne vale la pena.",
-      "Roba come {item} non si trova a poco prezzo.",
-      "Ho fatto una follia per {item}. Nessun rimpianto.",
-      "{item}, roba di qualità. Si ottiene quel che si paga.",
-      "{item} costa un occhio, ma me lo merito."
+      "Questo {item} mi è costato, ma se lo merita.",
+      "Un {item} così non lo trovi mica in saldo.",
+      "Mi sono sfondato per un {item}. Zero rimpianti.",
+      "{item} di qualità. Chi più spende meno spende.",
+      "Un {item} caro, ma me lo sono guadagnato."
     ]
   },
   "itemBrowse": {
     "cheap": [
-      "{item} costa così poco che mi tenta.",
-      "{item}, hm. Magari un altro giorno.",
-      "Niente male, {item}.",
-      "Roba come {item} mi tornerebbe utile.",
-      "{item} mi attira l'occhio."
+      "Questo {item} costa così poco che mi sta tentando.",
+      "Un {item}, mah. Magari un'altra volta.",
+      "Non è male, questo {item}.",
+      "Un {item} così mi tornerebbe utile.",
+      "Quel {item} mi ha fatto l'occhiolino."
     ],
     "pricey": [
-      "{item}: decisamente fuori dalla mia portata.",
-      "{item} a quel prezzo? Un furto bell'e buono.",
-      "Roba come {item} posso solo ammirarla.",
-      "Bella roba, {item}: peccato per il prezzo.",
-      "Chi se la può permettere {item} di questi tempi?"
+      "Quel {item} è fuori dalla mia portata, e di parecchio.",
+      "Un {item} a questo prezzo? Ma è rapina a mano armata.",
+      "Un {item} così io posso solo guardarlo.",
+      "Bello il {item}, peccato per il cartellino.",
+      "Ma chi se lo permette un {item}, di questi tempi?"
     ]
   },
   "itemDisposition": {
@@ -122,142 +122,142 @@
       "Non è mai abbastanza."
     ],
     "frugal": [
-      "Però dovrei risparmiare le mie monete.",
-      "Mi serve davvero?",
-      "Una moneta risparmiata..."
+      "Però dovrei mettere da parte.",
+      "Ma mi serve davvero?",
+      "Chi risparmia guadagna due volte."
     ],
     "vain": [
-      "Sarò l'invidia della via.",
-      "L'aspetto conta.",
+      "Mi invidierà tutta la via.",
+      "L'apparenza conta, diciamocelo.",
       "Per me solo il meglio."
     ],
     "generous": [
       "Magari lo regalo a qualcuno.",
-      "Condividere è già una ricompensa.",
-      "A qualcuno potrebbe servire."
+      "Dare è già una ricompensa.",
+      "A qualcuno servirà più che a me."
     ]
   },
   "familiar": [
-    "Chissà se rivedrò quel viandante.",
-    "Quella persona gira parecchio da queste parti ultimamente.",
-    "È quasi come se lo conoscessi.",
+    "Chissà se lo rivedo, quel viandante.",
+    "Quella persona ultimamente si vede spesso da queste parti.",
+    "Ho quasi l'impressione di conoscerla.",
     "Strano come continuiamo a incrociarci.",
-    "Mi fido di loro più che della maggior parte degli sconosciuti."
+    "Di lui mi fido più che della media degli sconosciuti."
   ],
   "capability": {
     "cooking_station": [
-      "Quel pasto era proprio quello che ci voleva.",
-      "Cucinare da sé è meglio che comprare fuori.",
+      "Quel piatto era proprio quello che ci voleva.",
+      "Cucinarsi da soli batte il mangiare fuori, e di parecchio.",
       "Dovrei farlo più spesso."
     ],
     "container": [
       "Chi trova, tiene.",
-      "Ti sorprenderebbe cosa si lascia in giro la gente.",
-      "Un piccolo extra non ha mai fatto male."
+      "Ti stupiresti di cosa lascia in giro la gente.",
+      "Un extra non ha mai fatto male a nessuno."
     ],
     "rentable_room": [
-      "Un letto vero per una volta, meraviglioso.",
-      "Vale ogni moneta per una notte di sonno.",
-      "Avevo bisogno di quel riposo."
+      "Un letto vero, finalmente.",
+      "Vale ogni euro, una notte dormita bene.",
+      "Ne avevo bisogno, di quel riposo."
     ],
     "apiary": [
-      "Gli alveari vanno bene questa stagione.",
+      "Le arnie quest'anno stanno andando alla grande.",
       "Il miele si vende sempre.",
       "Le api sono un buon affare."
     ],
     "bank": [
-      "Questo dovrebbe bastarmi per un po'.",
-      "Meglio prevenire che curare: nel caveau ci va.",
-      "Le banche. Non ci puoi vivere, non ci puoi vivere senza."
+      "Con questi dovrei tirare avanti.",
+      "Meglio metterli al sicuro, in cassaforte e via.",
+      "Le banche. Non ci puoi vivere e non ci puoi campare senza."
     ],
     "real_estate_office": [
-      "Gli immobili si ripagano davvero da soli.",
+      "Il mattone si ripaga da solo, non c'è che dire.",
       "Un altro mese, un altro affitto incassato.",
-      "Comprare terra è stata la cosa più intelligente che abbia mai fatto."
+      "Comprare quella terra è stata la mossa più furba della mia vita."
     ],
     "stock_exchange": [
-      "Come viene, così se ne va.",
+      "Come sono venuti, se ne sono andati.",
       "Il mercato dà e il mercato toglie.",
-      "Me li riprendo la prossima volta."
+      "La prossima volta me li riprendo."
     ],
     "fast_travel_terminal": [
       "Non c'è niente come vedere un posto nuovo.",
-      "Viaggiare schiarisce le idee.",
+      "Viaggiare libera la testa.",
       "Chissà cosa c'è là fuori oggi."
     ],
     "furniture_builder": [
-      "Qualche tocco nuovo e questo posto sembra casa.",
-      "Le belle cose fanno di una casa un focolare.",
-      "Già così sta meglio."
+      "Bastano due ritocchi e qui dentro sembra casa.",
+      "Sono le belle cose a fare di quattro muri una casa.",
+      "Ecco, già così è tutta un'altra storia."
     ]
   },
   "craving": {
     "nicotine": [
-      "Ammazzerei per una sigaretta, adesso.",
-      "Solo una, poi per oggi smetto.",
-      "Qualcuno ha da accendere? Chiunque?",
-      "Le mani hanno ricominciato a fare quella cosa.",
-      "C'era un pacchetto in questo cappotto. C'era di sicuro un pacchetto in questo cappotto."
+      "Adesso mi farei una sigaretta anche a costo di rubarla.",
+      "Solo una, poi per oggi basta. Come sempre.",
+      "Qualcuno ha un accendino? Qualcuno? Chiunque?",
+      "Le mani hanno ricominciato a fare quella cosa lì.",
+      "In questa giacca c'era un pacchetto. Ci giurerei che c'era un pacchetto."
     ],
     "alcohol": [
-      "È quasi abbastanza tardi da chiamarlo un bicchiere.",
-      "Un bicchiere. Per calmarmi. Nient'altro.",
-      "Quel bar è ancora aperto a quest'ora?",
-      "Ho la bocca secca in un modo che l'acqua non sistema.",
+      "È quasi tardi abbastanza per chiamarlo aperitivo.",
+      "Un bicchiere. Per calmarmi. Poi basta.",
+      "Sarà ancora aperto quel bar a quest'ora?",
+      "Ho la bocca secca in un modo che l'acqua non risolve.",
       "Continuo a sentire bottiglie che non ci sono."
     ],
     "caffeine": [
-      "Mi serve un caffè prima di essere legalmente una persona.",
-      "Il mal di testa ricomincia dietro gli occhi.",
-      "Dove si trova un espresso decente da queste parti?",
-      "Ho riletto lo stesso cartello quattro volte.",
+      "Prima del caffè non rispondo di me e nemmeno alle domande.",
+      "Il mal di testa è ripartito da dietro gli occhi.",
+      "Ma un espresso decente, in questo posto, dove lo trovo?",
+      "Ho letto quel cartello quattro volte e non so cosa dice.",
       "Va tutto troppo piano ed è colpa mia."
     ],
     "narcotic": [
-      "Sta passando. Sento esattamente dove finisce.",
-      "Avevo detto che avrei aspettato stasera. Non è stasera.",
-      "I bordi delle cose sono tornati tutti.",
-      "Solo quel tanto che basta per stare pari. Non per sballare.",
-      "Conosco un posto. Non voglio conoscere un posto."
+      "Sta passando. Sento esattamente il punto dove finisce.",
+      "Avevo detto stasera. Non è ancora stasera.",
+      "I bordi delle cose sono tornati tutti al loro posto.",
+      "Solo quanto basta per stare dritto. Non per stare su.",
+      "So dove andare. Vorrei non saperlo."
     ],
     "gambling": [
-      "Un'altra schedina. Stavolta le quote sono giuste.",
-      "Mi è dovuta una vincita. Matematicamente mi è dovuta.",
-      "Il ricevitore chiude alle quattro e non ho giocato niente.",
-      "Ieri sentivo che stava girando. Lo sentivo.",
+      "Un'ultima giocata. Stavolta i numeri sono dalla mia.",
+      "Una vincita me la devono. Matematicamente me la devono.",
+      "Chiude alle quattro e io non ho ancora puntato niente.",
+      "Ieri lo sentivo che stava girando. Lo sentivo.",
       "Solo quello che ho in tasca. Niente di più."
     ]
   },
   "withdrawal": {
     "nicotine": [
-      "Non sento nient'altro oltre alla voglia di fumare.",
-      "A questo punto la raccatterei dal marciapiede.",
-      "Oggi non mi entra in testa niente di quello che mi dicono.",
-      "Ho la testa come un fiammifero acceso senza niente da accendere."
+      "Non sento nient'altro oltre alla voglia di una sigaretta.",
+      "A questo punto la raccatterei da terra.",
+      "Oggi quello che mi dite entra da un orecchio ed esce dall'altro.",
+      "Ho in testa un fiammifero acceso e niente da accendere."
     ],
     "alcohol": [
-      "Il tremore è cominciato e da solo non passa.",
+      "Il tremore è cominciato e da solo non se ne va.",
       "Non sto bene. Non sto bene da stamattina.",
-      "Non parlatemi finché non ho bevuto qualcosa.",
+      "Non parlatemi finché non ho buttato giù qualcosa.",
       "La stanza arriva sempre un secondo dopo di me."
     ],
     "caffeine": [
       "Ho un chiodo che entra dietro l'occhio e non si ferma.",
-      "Non servo a nessuno. Proprio a nessuno.",
+      "Non servo a niente e a nessuno. Proprio a niente.",
       "Sono sveglio da ore e ho dormito per tutto il tempo.",
-      "Qualcuno mi metta un caffè in mano prima che dica qualcosa."
+      "Mettetemi un caffè in mano prima che dica qualcosa di brutto."
     ],
     "narcotic": [
-      "Ogni osso che ho ha un'opinione al riguardo.",
+      "Ogni singolo osso che ho ha un'opinione in merito.",
       "Ho freddo e fuori non fa freddo.",
-      "A questo punto farei quasi qualunque cosa, e lo so.",
+      "A questo punto farei quasi qualsiasi cosa, e lo so bene.",
       "L'orologio si è fermato. L'ho controllato quattro volte."
     ],
     "gambling": [
-      "Non riesco a stare fermo e non riesco a dire perché ad alta voce.",
-      "Ho contato i soldi che ho in tasca undici volte.",
-      "C'è una corsa che sta partendo proprio adesso senza di me.",
-      "Vado al ricevitore. L'ho già deciso. L'avevo deciso ore fa."
+      "Non riesco a stare fermo e non posso dire ad alta voce perché.",
+      "Ho contato i soldi in tasca undici volte.",
+      "C'è una corsa che parte adesso e io non ci sono dentro.",
+      "Vado alla ricevitoria. È già deciso. L'ho deciso ore fa."
     ]
   }
 }

@@ -1,1282 +1,1668 @@
 {
   "archmage_eldrin": {
     "name": "Archmage Eldrin",
+    "personality": "personalities.cautious",
+    "country": "Ireland",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.cautious"
+    ]
   },
   "magister_lyra": {
     "name": "Magister Lyra",
+    "personality": "personalities.authoritative",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.authoritative"
+    ]
   },
   "councilor_theron": {
     "name": "Councilor Theron",
+    "personality": "personalities.mischievous",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.mischievous"
+    ]
   },
   "spellweaver_mira": {
     "name": "Spellweaver Mira",
+    "personality": "personalities.authoritative",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.authoritative"
+    ]
   },
   "enchanter_kael": {
     "name": "Enchanter Kael",
+    "personality": "personalities.calm",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.calm"
+    ]
   },
   "wizard_lord_varen": {
     "name": "Wizard Lord Varen",
+    "personality": "personalities.scholarly",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.scholarly"
+    ]
   },
   "sage_celeste": {
     "name": "Sage Celeste",
+    "personality": "personalities.stoic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.stoic"
+    ]
   },
   "grand_magus_dorian": {
     "name": "Grand Magus Dorian",
+    "personality": "personalities.impulsive",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.impulsive"
+    ]
   },
   "curator_magnus": {
     "name": "Curator Magnus",
+    "personality": "personalities.adventurous",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.adventurous"
+    ]
   },
   "archivist_vera": {
     "name": "Archivist Vera",
+    "personality": "personalities.nurturing",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.nurturing"
+    ]
   },
   "keeper_silas": {
     "name": "Keeper Silas",
+    "personality": "personalities.sanguine",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.sanguine"
+    ]
   },
   "librarian_octavia": {
     "name": "Librarian Octavia",
+    "personality": "personalities.calm",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.calm"
+    ]
   },
   "scribe_matthias": {
     "name": "Scribe Matthias",
+    "personality": "personalities.nervous",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$PirateHacker1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.nervous"
+    ]
   },
   "record_master_elena": {
     "name": "Record Master Elena",
+    "personality": "personalities.melancholic",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$CyberWitch1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.melancholic"
+    ]
   },
   "chronicle_guard_dorian": {
     "name": "Chronicle Guard Dorian",
+    "personality": "personalities.calm",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ElvenArcher1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.calm"
+    ]
   },
   "vault_warden_iris": {
     "name": "Vault Warden Iris",
+    "personality": "personalities.hedonistic",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ValiantKnight1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.hedonistic"
+    ]
   },
   "ceo_marcellus": {
     "name": "CEO Marcellus",
+    "personality": "personalities.loyal",
+    "country": "Netherlands",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.loyal"
+    ]
   },
   "tycoon_victoria": {
     "name": "Tycoon Victoria",
+    "personality": "personalities.melancholic",
+    "country": "Netherlands",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.melancholic"
+    ]
   },
   "mogul_cassius": {
     "name": "Mogul Cassius",
+    "personality": "personalities.stoic",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.stoic"
+    ]
   },
   "trader_supreme_ada": {
     "name": "Trader Supreme Ada",
+    "personality": "personalities.loyal",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.loyal"
+    ]
   },
   "market_lord_felix": {
     "name": "Market Lord Felix",
+    "personality": "personalities.brave",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.brave"
+    ]
   },
   "commerce_king_sophia": {
     "name": "Commerce King Sophia",
+    "personality": "personalities.nurturing",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.nurturing"
+    ]
   },
   "merchant_prince_julian": {
     "name": "Merchant Prince Julian",
+    "personality": "personalities.cautious",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.cautious"
+    ]
   },
   "corp_director_lydia": {
     "name": "Corp Director Lydia",
+    "personality": "personalities.stoic",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2012
-    ],
-    "personality": "personalities.stoic"
+    ]
   },
   "loyalist_magus_tiberius": {
     "name": "Loyalist Magus Tiberius",
+    "personality": "Artistic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "devoted_enchanter_aria": {
     "name": "Devoted Enchanter Aria",
+    "personality": "Apathetic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Apathetic"
+    "spriteindex": 0
   },
   "true_mage_cornelius": {
     "name": "True Mage Cornelius",
+    "personality": "Fatalistic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Fatalistic"
+    "spriteindex": 0
   },
   "faithful_sage_meredith": {
     "name": "Faithful Sage Meredith",
+    "personality": "Paranoid",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "orthodox_wizard_quinn": {
     "name": "Orthodox Wizard Quinn",
+    "personality": "Nurturing",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "decree_keeper_thalia": {
     "name": "Decree Keeper Thalia",
+    "personality": "Adventurous",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "guild_champion_marcus": {
     "name": "Guild Champion Marcus",
+    "personality": "Grumpy",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "sacred_spellcaster_nora": {
     "name": "Sacred Spellcaster Nora",
+    "personality": "Empathetic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "traditional_mage_lucius": {
     "name": "Traditional Mage Lucius",
+    "personality": "Empathetic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "pure_magic_scholar_elara": {
     "name": "Pure Magic Scholar Elara",
+    "personality": "Sanguine",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Sanguine"
+    "spriteindex": 0
   },
   "purist_elder_cassius": {
     "name": "Purist Elder Cassius",
+    "personality": "Paranoid",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "hermetic_master_isolde": {
     "name": "Hermetic Master Isolde",
+    "personality": "Empathetic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "ancient_scholar_regulus": {
     "name": "Ancient Scholar Regulus",
+    "personality": "Fatalistic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Fatalistic"
+    "spriteindex": 0
   },
   "traditionalist_sage_vivian": {
     "name": "Traditionalist Sage Vivian",
+    "personality": "Mischievous",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "orthodox_keeper_gaius": {
     "name": "Orthodox Keeper Gaius",
+    "personality": "Brave",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "pure_magus_helena": {
     "name": "Pure Magus Helena",
+    "personality": "Melancholic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "esoteric_lord_flavius": {
     "name": "Esoteric Lord Flavius",
+    "personality": "Adventurous",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "sacred_scholar_portia": {
     "name": "Sacred Scholar Portia",
+    "personality": "Nurturing",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "classical_wizard_maximus": {
     "name": "Classical Wizard Maximus",
+    "personality": "Scholarly",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "original_doctrine_keeper_diana": {
     "name": "Original Doctrine Keeper Diana",
+    "personality": "Grumpy",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "tech_mage_orion": {
     "name": "Tech-Mage Orion",
+    "personality": "Authoritative",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "inventor_sage_lyanna": {
     "name": "Inventor Sage Lyanna",
+    "personality": "Brave",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "gear_scholar_tobias": {
     "name": "Gear Scholar Tobias",
+    "personality": "Adventurous",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "steam_wizard_isadora": {
     "name": "Steam Wizard Isadora",
+    "personality": "Brave",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "arcane_engineer_cyrus": {
     "name": "Arcane Engineer Cyrus",
+    "personality": "Nurturing",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "magitek_master_freya": {
     "name": "Magitek Master Freya",
+    "personality": "Empathetic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "innovation_lord_kane": {
     "name": "Innovation Lord Kane",
+    "personality": "Impulsive",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "progress_mage_selene": {
     "name": "Progress Mage Selene",
+    "personality": "Grumpy",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "mechanical_sage_viktor": {
     "name": "Mechanical Sage Viktor",
+    "personality": "Calm",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "future_spellcrafter_zara": {
     "name": "Future Spellcrafter Zara",
+    "personality": "Loyal",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "headmaster_aurelius": {
     "name": "Headmaster Aurelius",
+    "personality": "Impulsive",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "school_dean_ophelia": {
     "name": "School Dean Ophelia",
+    "personality": "Brave",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "master_teacher_lucan": {
     "name": "Master Teacher Lucan",
+    "personality": "Artistic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "polymath_sage_rowena": {
     "name": "Polymath Sage Rowena",
+    "personality": "Disciplined",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "academy_lord_cedric": {
     "name": "Academy Lord Cedric",
+    "personality": "Adventurous",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "pedagogue_mage_astrid": {
     "name": "Pedagogue Mage Astrid",
+    "personality": "Empathetic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "professor_supreme_hadrian": {
     "name": "Professor Supreme Hadrian",
+    "personality": "Adventurous",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "scholar_leader_beatrice": {
     "name": "Scholar Leader Beatrice",
+    "personality": "Hedonistic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "educational_master_darius": {
     "name": "Educational Master Darius",
+    "personality": "Stoic",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Stoic"
+    "spriteindex": 0
   },
   "mentor_archmage_evangeline": {
     "name": "Mentor Archmage Evangeline",
+    "personality": "Cautious",
+    "country": "Ireland",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "high_priest_nihilus": {
     "name": "High Priest Nihilus",
+    "personality": "Calm",
+    "country": null,
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "chaos_oracle_morgana": {
     "name": "Chaos Oracle Morgana",
+    "personality": "Nurturing",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "entropy_lord_xander": {
     "name": "Entropy Lord Xander",
+    "personality": "Sanguine",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Sanguine"
+    "spriteindex": 0
   },
   "discord_sage_lilith": {
     "name": "Discord Sage Lilith",
+    "personality": "Nurturing",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "void_master_balthazar": {
     "name": "Void Master Balthazar",
+    "personality": "Nervous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "anarchy_champion_raven": {
     "name": "Anarchy Champion Raven",
+    "personality": "Nervous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "disorder_keeper_malachi": {
     "name": "Disorder Keeper Malachi",
+    "personality": "Melancholic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "chaos_weaver_seraphina": {
     "name": "Chaos Weaver Seraphina",
+    "personality": "Hedonistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "swamp_chief_gorrok": {
     "name": "Swamp Chief Gorrok",
+    "personality": "Adventurous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "poison_shaman_zzara": {
     "name": "Poison Shaman Zzara",
+    "personality": "Nervous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "bog_warrior_thrax": {
     "name": "Bog Warrior Thrax",
+    "personality": "Cynical",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "venom_elder_nyx": {
     "name": "Venom Elder Nyx",
+    "personality": "Impulsive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "marsh_lord_kreth": {
     "name": "Marsh Lord Kreth",
+    "personality": "Cautious",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "toxic_oracle_sssara": {
     "name": "Toxic Oracle Sssara",
+    "personality": "Timid",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "wetland_guardian_brognak": {
     "name": "Wetland Guardian Brognak",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "plague_keeper_vyx": {
     "name": "Plague Keeper Vyx",
+    "personality": "Stoic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Stoic"
+    "spriteindex": 0
   },
   "mire_champion_grax": {
     "name": "Mire Champion Grax",
+    "personality": "Empathetic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "fungal_sage_mycellia": {
     "name": "Fungal Sage Mycellia",
+    "personality": "Impulsive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "forest_elder_sylvara": {
     "name": "Forest Elder Sylvara",
+    "personality": "Mischievous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "grove_guardian_thorne": {
     "name": "Grove Guardian Thorne",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "leaf_sage_verdant": {
     "name": "Leaf Sage Verdant",
+    "personality": "Melancholic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "tree_keeper_fauna": {
     "name": "Tree Keeper Fauna",
+    "personality": "Authoritative",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "woodland_champion_ash": {
     "name": "Woodland Champion Ash",
+    "personality": "Aggressive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "nature_oracle_moss": {
     "name": "Nature Oracle Moss",
+    "personality": "Empathetic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "branch_warrior_rowan": {
     "name": "Branch Warrior Rowan",
+    "personality": "Adventurous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "vine_master_flora": {
     "name": "Vine Master Flora",
+    "personality": "Grumpy",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "root_defender_oakley": {
     "name": "Root Defender Oakley",
+    "personality": "Hedonistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "wildwood_sage_ivy": {
     "name": "Wildwood Sage Ivy",
+    "personality": "Brave",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "road_king_diesel": {
     "name": "Road King Diesel",
+    "personality": "Melancholic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "highway_boss_cassie": {
     "name": "Highway Boss Cassie",
+    "personality": "Cynical",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "convoy_master_hank": {
     "name": "Convoy Master Hank",
+    "personality": "Empathetic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "trucker_chief_rita": {
     "name": "Trucker Chief Rita",
+    "personality": "Cautious",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "route_lord_duke": {
     "name": "Route Lord Duke",
+    "personality": "Sanguine",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Sanguine"
+    "spriteindex": 0
   },
   "wheeler_commander_sarah": {
     "name": "Wheeler Commander Sarah",
+    "personality": "Nurturing",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "freight_captain_buck": {
     "name": "Freight Captain Buck",
+    "personality": "Fatalistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Fatalistic"
+    "spriteindex": 0
   },
   "road_warrior_maxine": {
     "name": "Road Warrior Maxine",
+    "personality": "Melancholic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "factory_baron_forge": {
     "name": "Factory Baron Forge",
+    "personality": "Cautious",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "steel_mistress_clara": {
     "name": "Steel Mistress Clara",
+    "personality": "Artistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "industry_lord_marcus": {
     "name": "Industry Lord Marcus",
+    "personality": "Impulsive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "production_chief_ingrid": {
     "name": "Production Chief Ingrid",
+    "personality": "Loyal",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "machine_master_viktor": {
     "name": "Machine Master Viktor",
+    "personality": "Empathetic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "foundry_king_brutus": {
     "name": "Foundry King Brutus",
+    "personality": "Authoritative",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "assembly_boss_natasha": {
     "name": "Assembly Boss Natasha",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "metal_warlord_rex": {
     "name": "Metal Warlord Rex",
+    "personality": "Impulsive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "king_harald": {
     "name": "King Harald",
+    "personality": "Melancholic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "queen_astrid": {
     "name": "Queen Astrid",
+    "personality": "Calm",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "jarl_magnus": {
     "name": "Jarl Magnus",
+    "personality": "Sanguine",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Sanguine"
+    "spriteindex": 0
   },
   "shield_maiden_sigrid": {
     "name": "Shield-Maiden Sigrid",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "frost_lord_erik": {
     "name": "Frost Lord Erik",
+    "personality": "Cynical",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "ice_queen_freya": {
     "name": "Ice Queen Freya",
+    "personality": "Nervous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "snow_king_olaf": {
     "name": "Snow King Olaf",
+    "personality": "Disciplined",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "winter_matriarch_brunhilde": {
     "name": "Winter Matriarch Brunhilde",
+    "personality": "Loyal",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "crime_boss_vito": {
     "name": "Crime Boss Vito",
+    "personality": "Timid",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "shadow_matriarch_carmilla": {
     "name": "Shadow Matriarch Carmilla",
+    "personality": "Hedonistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "syndicate_don_marco": {
     "name": "Syndicate Don Marco",
+    "personality": "Timid",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "night_queen_selena": {
     "name": "Night Queen Selena",
+    "personality": "Grumpy",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "dark_lord_vincent": {
     "name": "Dark Lord Vincent",
+    "personality": "Disciplined",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "underground_empress_rosa": {
     "name": "Underground Empress Rosa",
+    "personality": "Cautious",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "twilight_king_luca": {
     "name": "Twilight King Luca",
+    "personality": "Timid",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "noir_mistress_angelica": {
     "name": "Noir Mistress Angelica",
+    "personality": "Authoritative",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "hive_mind_alpha": {
     "name": "Hive Mind Alpha",
+    "personality": "Paranoid",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "unity_leader_sigma": {
     "name": "Unity Leader Sigma",
+    "personality": "Cautious",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "collective_prime_delta": {
     "name": "Collective Prime Delta",
+    "personality": "Loyal",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "harmony_master_omega": {
     "name": "Harmony Master Omega",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "synergy_lord_epsilon": {
     "name": "Synergy Lord Epsilon",
+    "personality": "Mischievous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "group_consciousness_theta": {
     "name": "Group Consciousness Theta",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "network_queen_phi": {
     "name": "Network Queen Phi",
+    "personality": "Disciplined",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "shared_mind_king_psi": {
     "name": "Shared Mind King Psi",
+    "personality": "Adventurous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "demon_lord_azaroth": {
     "name": "Demon Lord Azaroth",
+    "personality": "Cynical",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "infernal_queen_lilith": {
     "name": "Infernal Queen Lilith",
+    "personality": "Sanguine",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Sanguine"
+    "spriteindex": 0
   },
   "hell_king_baal": {
     "name": "Hell King Baal",
+    "personality": "Timid",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "abyss_mistress_morrigan": {
     "name": "Abyss Mistress Morrigan",
+    "personality": "Brave",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "chaos_demon_xalvador": {
     "name": "Chaos Demon Xalvador",
+    "personality": "Aggressive",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "shadow_lord_beleth": {
     "name": "Shadow Lord Beleth",
+    "personality": "Mischievous",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "nether_queen_astarte": {
     "name": "Nether Queen Astarte",
+    "personality": "Cynical",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "void_king_mammon": {
     "name": "Void King Mammon",
+    "personality": "Apathetic",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Apathetic"
+    "spriteindex": 0
   },
   "high_seraph_gabriel": {
     "name": "High Seraph Gabriel",
+    "personality": "Disciplined",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "divine_empress_aurora": {
     "name": "Divine Empress Aurora",
+    "personality": "Authoritative",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "celestial_king_raphael": {
     "name": "Celestial King Raphael",
+    "personality": "Stoic",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Stoic"
+    "spriteindex": 0
   },
   "holy_matriarch_seraphina": {
     "name": "Holy Matriarch Seraphina",
+    "personality": "Artistic",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "light_lord_michael": {
     "name": "Light Lord Michael",
+    "personality": "Nervous",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "sacred_queen_uriel": {
     "name": "Sacred Queen Uriel",
+    "personality": "Timid",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "heaven_s_champion_azrael": {
     "name": "Heaven's Champion Azrael",
+    "personality": "Melancholic",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "radiant_mistress_cassiel": {
     "name": "Radiant Mistress Cassiel",
+    "personality": "Loyal",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "void_emperor_nihil": {
     "name": "Void Emperor Nihil",
+    "personality": "Melancholic",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "entropy_empress_umbra": {
     "name": "Entropy Empress Umbra",
+    "personality": "Aggressive",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "null_king_vacuus": {
     "name": "Null King Vacuus",
+    "personality": "Nurturing",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "oblivion_queen_tenebris": {
     "name": "Oblivion Queen Tenebris",
+    "personality": "Brave",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "emptiness_lord_khaos": {
     "name": "Emptiness Lord Khaos",
+    "personality": "Cautious",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "nothingness_sovereign_erebus": {
     "name": "Nothingness Sovereign Erebus",
+    "personality": "Timid",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "abyss_ruler_nyx": {
     "name": "Abyss Ruler Nyx",
+    "personality": "Timid",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "dark_matter_monarch_styx": {
     "name": "Dark Matter Monarch Styx",
+    "personality": "Authoritative",
+    "country": "Netherlands",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "zeus_the_thunderer": {
     "name": "Zeus the Thunderer",
+    "personality": "Authoritative",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "athena_the_wise": {
     "name": "Athena the Wise",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "ares_the_warmonger": {
     "name": "Ares the Warmonger",
+    "personality": "Aggressive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "hades_the_indifferent": {
     "name": "Hades the Indifferent",
+    "personality": "Melancholic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "artemis_the_hunter": {
     "name": "Artemis the Hunter",
+    "personality": "Adventurous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "dionysus_the_reveler": {
     "name": "Dionysus the Reveler",
+    "personality": "Hedonistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "apollo_the_radiant": {
     "name": "Apollo the Radiant",
+    "personality": "Artistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "hera_the_jealous": {
     "name": "Hera the Jealous",
+    "personality": "Possessive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Possessive"
+    "spriteindex": 0
   },
   "high_archivist_mnemosyne": {
     "name": "High Archivist Mnemosyne",
+    "personality": "Scholarly",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "elder_erasmus": {
     "name": "Elder Erasmus",
+    "personality": "Cautious",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "truth_keeper_alexandria": {
     "name": "Truth-Keeper Alexandria",
+    "personality": "Authoritative",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "curator_oblivion": {
     "name": "Curator Oblivion",
+    "personality": "Cynical",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "spymaster_cipher": {
     "name": "Spymaster Cipher",
+    "personality": "Paranoid",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "agent_codex": {
     "name": "Agent Codex",
+    "personality": "Mischievous",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "director_shadow": {
     "name": "Director Shadow",
+    "personality": "Cautious",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "operative_raven": {
     "name": "Operative Raven",
+    "personality": "Adventurous",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "chief_librarian_silence": {
     "name": "Chief Librarian Silence",
+    "personality": "Disciplined",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "conservator_grimoire": {
     "name": "Conservator Grimoire",
+    "personality": "Scholarly",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "keeper_codex": {
     "name": "Keeper Codex",
+    "personality": "Grumpy",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "archivist_quietus": {
     "name": "Archivist Quietus",
+    "personality": "Timid",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "director_doubletalk": {
     "name": "Director Doubletalk",
+    "personality": "Mischievous",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "minister_redact": {
     "name": "Minister Redact",
+    "personality": "Cynical",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "chief_spin_doctor_orwell": {
     "name": "Chief Spin Doctor Orwell",
+    "personality": "Authoritative",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "propagandist_in_chief_pravda": {
     "name": "Propagandist-in-Chief Pravda",
+    "personality": "Hedonistic",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "grand_inquisitor_loyalty": {
     "name": "Grand Inquisitor Loyalty",
+    "personality": "Paranoid",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "director_compliance": {
     "name": "Director Compliance",
+    "personality": "Disciplined",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "chief_enforcer_ironhand": {
     "name": "Chief Enforcer Ironhand",
+    "personality": "Authoritative",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "watchmaster_vigilance": {
     "name": "Watchmaster Vigilance",
+    "personality": "Cautious",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "ayn_rand_the_divine": {
     "name": "Ayn Rand the Divine",
+    "personality": "Cynical",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "adam_smith_ascended": {
     "name": "Adam Smith Ascended",
+    "personality": "Scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "invisible_hand": {
     "name": "Invisible Hand",
+    "personality": "Mischievous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "sovereign_of_self": {
     "name": "Sovereign of Self",
+    "personality": "Brave",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "hive_alpha_griknak": {
     "name": "Hive Alpha Griknak",
+    "personality": "Nervous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "psychic_prime_skizzik": {
     "name": "Psychic Prime Skizzik",
+    "personality": "Mischievous",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "collective_one_gribblik": {
     "name": "Collective One Gribblik",
+    "personality": "Chaotic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Chaotic"
+    "spriteindex": 0
   },
   "mind_unity_zogwort": {
     "name": "Mind-Unity Zogwort",
+    "personality": "Empathetic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "ambassador_zyx_7": {
     "name": "Ambassador Zyx-7",
     "ideology": "ideology.zeta_touristic_observism",
+    "personality": "personalities.calm",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienGrey",
     "spriteindex": 0,
-    "personality": "personalities.calm",
     "years": [
       1900,
       2100
@@ -1285,9 +1671,11 @@
   "overseer_qel_9": {
     "name": "Overseer Qel-9",
     "ideology": "ideology.crimson_vivisectionism",
+    "personality": "personalities.scholarly",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienXori",
     "spriteindex": 0,
-    "personality": "personalities.scholarly",
     "years": [
       1900,
       2100
@@ -1296,9 +1684,11 @@
   "tourist_director_vrax_3": {
     "name": "Tourist Director Vrax-3",
     "ideology": "ideology.zeta_touristic_observism",
+    "personality": "personalities.hedonistic",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienTrucker",
     "spriteindex": 0,
-    "personality": "personalities.hedonistic",
     "years": [
       1900,
       2100
@@ -1307,9 +1697,11 @@
   "observer_prime_klix_5": {
     "name": "Observer Prime Klix-5",
     "ideology": "ideology.pale_psionic_supremacy",
+    "personality": "personalities.cautious",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienMindmaster",
     "spriteindex": 0,
-    "personality": "personalities.cautious",
     "years": [
       1900,
       2100
@@ -1317,73 +1709,87 @@
   },
   "pope_petrus_ii": {
     "name": "Pope Petrus II",
+    "personality": "personalities.authoritative",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
     "spriteindex": 0,
     "protected": true,
     "years": [
       1981,
       2100
-    ],
-    "personality": "personalities.authoritative"
+    ]
   },
   "cardinal_secretary_lorenzo": {
     "name": "Cardinal Secretary Lorenzo",
+    "personality": "personalities.scholarly",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1990,
       2012
-    ],
-    "personality": "personalities.scholarly"
+    ]
   },
   "archbishop_militaris": {
     "name": "Archbishop Militaris",
+    "personality": "personalities.brave",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1980,
       2010
-    ],
-    "personality": "personalities.brave"
+    ]
   },
   "mother_superior_magdalena": {
     "name": "Mother Superior Magdalena",
+    "personality": "personalities.disciplined",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1970,
       2012
-    ],
-    "personality": "personalities.disciplined"
+    ]
   },
   "papal_chamberlain_dante": {
     "name": "Papal Chamberlain Dante",
+    "personality": "personalities.loyal",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$PirateHacker1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1995,
       2012
-    ],
-    "personality": "personalities.loyal"
+    ]
   },
   "cardinal_defender_maximus": {
     "name": "Cardinal Defender Maximus",
+    "personality": "personalities.aggressive",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$CyberWitch1",
     "spriteindex": 0,
     "protected": false,
     "years": [
       2000,
       2012
-    ],
-    "personality": "personalities.aggressive"
+    ]
   },
   "pope_leo_xiii": {
     "name": "Pope Leo XIII",
     "ideology": "ideology.theocratic",
+    "country": "Italy",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1900,
@@ -1393,6 +1799,8 @@
   "pope_pius_x": {
     "name": "Pope Pius X",
     "ideology": "ideology.conservative_theocratic",
+    "country": "Italy",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1903,
@@ -1402,6 +1810,8 @@
   "pope_benedict_xv": {
     "name": "Pope Benedict XV",
     "ideology": "ideology.pacifist_theocratic",
+    "country": "Italy",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1914,
@@ -1411,6 +1821,8 @@
   "benito_mussolini": {
     "name": "Benito Mussolini",
     "ideology": "ideology.fascist_theocratic",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1922,
@@ -1420,6 +1832,8 @@
   "antonio_gramsci": {
     "name": "Antonio Gramsci",
     "ideology": "ideology.socialist",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1922,
@@ -1429,6 +1843,8 @@
   "pope_pius_xii": {
     "name": "Pope Pius XII",
     "ideology": "ideology.diplomatic_theocratic",
+    "country": "Italy",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1939,
@@ -1438,6 +1854,8 @@
   "aldo_moro": {
     "name": "Aldo Moro",
     "ideology": "ideology.christian_democratic",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1960,
@@ -1447,6 +1865,8 @@
   "giulio_andreotti": {
     "name": "Giulio Andreotti",
     "ideology": "ideology.machiavellian",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": true,
     "years": [
       1972,
@@ -1456,6 +1876,8 @@
   "pope_john_paul_ii": {
     "name": "Pope John Paul II",
     "ideology": "ideology.anti_communist",
+    "country": "Italy",
+    "moralGuide": true,
     "protected": true,
     "years": [
       1978,
@@ -1465,6 +1887,8 @@
   "silvio_berlusconi": {
     "name": "Silvio Berlusconi",
     "ideology": "ideology.media_theocrat",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": true,
     "years": [
       1994,
@@ -1473,751 +1897,1001 @@
   },
   "cardinal_prefect_giovanni": {
     "name": "Cardinal Prefect Giovanni",
+    "personality": "Scholarly",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "prince_cardinal_alessandro": {
     "name": "Prince-Cardinal Alessandro",
+    "personality": "Authoritative",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "cardinal_secretary_bernardo": {
     "name": "Cardinal Secretary Bernardo",
+    "personality": "Cynical",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "dean_of_cardinals_francesco": {
     "name": "Dean of Cardinals Francesco",
+    "personality": "Cautious",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "president_calvi_ii": {
     "name": "President Calvi II",
+    "personality": "Paranoid",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "director_marcinkus_iii": {
     "name": "Director Marcinkus III",
+    "personality": "Cynical",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "treasurer_monsignor_luciano": {
     "name": "Treasurer Monsignor Luciano",
+    "personality": "Greedy",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Greedy"
+    "spriteindex": 0
   },
   "auditor_bishop_santoro": {
     "name": "Auditor Bishop Santoro",
+    "personality": "Cautious",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "abbess_militant_catherine": {
     "name": "Abbess Militant Catherine",
+    "personality": "Disciplined",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "sister_commander_maria": {
     "name": "Sister Commander Maria",
+    "personality": "Brave",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "mother_warrior_theresa": {
     "name": "Mother Warrior Theresa",
+    "personality": "Aggressive",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "prioress_joanna": {
     "name": "Prioress Joanna",
+    "personality": "Loyal",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "chief_hexorcist_raphael": {
     "name": "Chief Hexorcist Raphael",
+    "personality": "Scholarly",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "tech_bishop_alan_turing": {
     "name": "Tech-Bishop Alan Turing",
+    "personality": "Nervous",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "cyber_cardinal_neo": {
     "name": "Cyber-Cardinal Neo",
+    "personality": "Disciplined",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "digital_prelate_morpheus": {
     "name": "Digital Prelate Morpheus",
+    "personality": "Cautious",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "father_sebastian": {
     "name": "Father Sebastian",
+    "personality": "Empathetic",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "monsignor_gabriel": {
     "name": "Monsignor Gabriel",
+    "personality": "Nurturing",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "cardinal_advocate_antonio": {
     "name": "Cardinal Advocate Antonio",
+    "personality": "Brave",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "bishop_reformer_matteo": {
     "name": "Bishop Reformer Matteo",
+    "personality": "Loyal",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "prelate_josemar_a_ii": {
     "name": "Prelate Josemaría II",
+    "personality": "Authoritative",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "director_escriv_iii": {
     "name": "Director Escrivá III",
+    "personality": "Disciplined",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "numerary_superior_ricardo": {
     "name": "Numerary Superior Ricardo",
+    "personality": "Paranoid",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "vicar_general_felipe": {
     "name": "Vicar General Felipe",
+    "personality": "Cautious",
+    "country": "Italy",
+    "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "commandant_wilhelm_tell_iii": {
     "name": "Commandant Wilhelm Tell III",
+    "personality": "Brave",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "colonel_hans_pfyffer": {
     "name": "Colonel Hans Pfyffer",
+    "personality": "Disciplined",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "captain_kaspar_von_silenen": {
     "name": "Captain Kaspar von Silenen",
+    "personality": "Loyal",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "lieutenant_urs_graf": {
     "name": "Lieutenant Urs Graf",
+    "personality": "Aggressive",
+    "country": "Italy",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "marshal_zhukov": {
     "name": "Marshal Zhukov",
+    "personality": "Cynical",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "general_rokossovsky": {
     "name": "General Rokossovsky",
+    "personality": "Apathetic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Apathetic"
+    "spriteindex": 0
   },
   "marshal_konev": {
     "name": "Marshal Konev",
+    "personality": "Calm",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "general_chuikov": {
     "name": "General Chuikov",
+    "personality": "Brave",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "admiral_kuznetsov": {
     "name": "Admiral Kuznetsov",
+    "personality": "Cautious",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "general_vasilevsky": {
     "name": "General Vasilevsky",
+    "personality": "Calm",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "marshal_timoshenko": {
     "name": "Marshal Timoshenko",
+    "personality": "Brave",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "general_malinovsky": {
     "name": "General Malinovsky",
+    "personality": "Apathetic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Apathetic"
+    "spriteindex": 0
   },
   "colonel_petrov": {
     "name": "Colonel Petrov",
+    "personality": "Timid",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "major_ivanov": {
     "name": "Major Ivanov",
+    "personality": "Empathetic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "captain_sokolov": {
     "name": "Captain Sokolov",
+    "personality": "Apathetic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Apathetic"
+    "spriteindex": 0
   },
   "lieutenant_kozlov": {
     "name": "Lieutenant Kozlov",
+    "personality": "Nervous",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "sergeant_volkov": {
     "name": "Sergeant Volkov",
+    "personality": "Grumpy",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "hero_popov": {
     "name": "Hero Popov",
+    "personality": "Loyal",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "general_lebedev": {
     "name": "General Lebedev",
+    "personality": "Empathetic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "marshal_fedorov": {
     "name": "Marshal Fedorov",
+    "personality": "Calm",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "commander_smirnov": {
     "name": "Commander Smirnov",
+    "personality": "Timid",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "hero_morozov": {
     "name": "Hero Morozov",
+    "personality": "Scholarly",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "tank_general_katukov": {
     "name": "Tank General Katukov",
+    "personality": "Hedonistic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "colonel_rotmistrov": {
     "name": "Colonel Rotmistrov",
+    "personality": "Melancholic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "ace_commander_lavrinenko": {
     "name": "Ace Commander Lavrinenko",
+    "personality": "Grumpy",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "major_burda": {
     "name": "Major Burda",
+    "personality": "Melancholic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "hero_kolobanov": {
     "name": "Hero Kolobanov",
+    "personality": "Mischievous",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "brigade_leader_getman": {
     "name": "Brigade Leader Getman",
+    "personality": "Cautious",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "general_rybalko": {
     "name": "General Rybalko",
+    "personality": "Brave",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "tank_marshal_bogdanov": {
     "name": "Tank Marshal Bogdanov",
+    "personality": "Empathetic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Empathetic"
+    "spriteindex": 0
   },
   "commander_baryatinsky": {
     "name": "Commander Baryatinsky",
+    "personality": "Adventurous",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "ace_oskin": {
     "name": "Ace Oskin",
+    "personality": "Artistic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "colonel_gorbatov": {
     "name": "Colonel Gorbatov",
+    "personality": "Timid",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Timid"
+    "spriteindex": 0
   },
   "major_shumilov": {
     "name": "Major Shumilov",
+    "personality": "Loyal",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "captain_rodimtsev": {
     "name": "Captain Rodimtsev",
+    "personality": "Apathetic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Apathetic"
+    "spriteindex": 0
   },
   "sniper_zaitsev": {
     "name": "Sniper Zaitsev",
+    "personality": "Brave",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "hero_pavlichenko": {
     "name": "Hero Pavlichenko",
+    "personality": "Aggressive",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "general_govorov": {
     "name": "General Govorov",
+    "personality": "Paranoid",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "commander_batov": {
     "name": "Commander Batov",
+    "personality": "Nurturing",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "marshal_meretskov": {
     "name": "Marshal Meretskov",
+    "personality": "Fatalistic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Fatalistic"
+    "spriteindex": 0
   },
   "hero_gromov": {
     "name": "Hero Gromov",
+    "personality": "Nurturing",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Nurturing"
+    "spriteindex": 0
   },
   "sergeant_pavlov": {
     "name": "Sergeant Pavlov",
+    "personality": "Scholarly",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "general_glagolev": {
     "name": "General Glagolev",
+    "personality": "Grumpy",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "colonel_margelov": {
     "name": "Colonel Margelov",
+    "personality": "Paranoid",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "major_levashov": {
     "name": "Major Levashov",
+    "personality": "Authoritative",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "captain_denisov": {
     "name": "Captain Denisov",
+    "personality": "Disciplined",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "jump_hero_yegorov": {
     "name": "Jump Hero Yegorov",
+    "personality": "Calm",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "airborne_ace_kantaria": {
     "name": "Airborne Ace Kantaria",
+    "personality": "Cautious",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "commander_belov": {
     "name": "Commander Belov",
+    "personality": "Melancholic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "marshal_shaposhnikov": {
     "name": "Marshal Shaposhnikov",
+    "personality": "Cynical",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "hero_krylov": {
     "name": "Hero Krylov",
+    "personality": "Impulsive",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "elite_trooper_nesterov": {
     "name": "Elite Trooper Nesterov",
+    "personality": "Adventurous",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "artillery_marshal_voronov": {
     "name": "Artillery Marshal Voronov",
+    "personality": "Grumpy",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Grumpy"
+    "spriteindex": 0
   },
   "general_kazakov": {
     "name": "General Kazakov",
+    "personality": "Artistic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "colonel_nedelin": {
     "name": "Colonel Nedelin",
+    "personality": "Melancholic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "major_kurchevsky": {
     "name": "Major Kurchevsky",
+    "personality": "Melancholic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Melancholic"
+    "spriteindex": 0
   },
   "rocket_hero_tukhachevsky": {
     "name": "Rocket Hero Tukhachevsky",
+    "personality": "Nervous",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "katyusha_ace_kostikov": {
     "name": "Katyusha Ace Kostikov",
+    "personality": "Sanguine",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0,
-    "personality": "Sanguine"
+    "spriteindex": 0
   },
   "commander_yakovlev": {
     "name": "Commander Yakovlev",
+    "personality": "Impulsive",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "marshal_kulik": {
     "name": "Marshal Kulik",
+    "personality": "Nervous",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "general_petrov": {
     "name": "General Petrov",
+    "personality": "Hedonistic",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0,
-    "personality": "Hedonistic"
+    "spriteindex": 0
   },
   "hero_grabin": {
     "name": "Hero Grabin",
+    "personality": "Impulsive",
+    "country": "Russia",
+    "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0,
-    "personality": "Impulsive"
+    "spriteindex": 0
   },
   "sultan_osman_vi": {
     "name": "Sultan Osman VI",
+    "personality": "Authoritative",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "grand_vizier_ahmet": {
     "name": "Grand Vizier Ahmet",
+    "personality": "Disciplined",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "marshal_fevzi_pasha": {
     "name": "Marshal Fevzi Pasha",
+    "personality": "Brave",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "admiral_barbaros_iii": {
     "name": "Admiral Barbaros III",
+    "personality": "Adventurous",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "grand_bureaucrat_midhat_pasha": {
     "name": "Grand Bureaucrat Midhat Pasha",
+    "personality": "Scholarly",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "reform_minister_ali_pasha": {
     "name": "Reform Minister Ali Pasha",
+    "personality": "Cautious",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "chief_administrator_fuad_effendi": {
     "name": "Chief Administrator Fuad Effendi",
+    "personality": "Disciplined",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "inspector_general_reshid_bey": {
     "name": "Inspector General Reshid Bey",
+    "personality": "Cynical",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "captain_reis_murat": {
     "name": "Captain Reis Murat",
+    "personality": "Cautious",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$Jogger1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "admiral_salih": {
     "name": "Admiral Salih",
+    "personality": "Calm",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$TechnoBarbarian1",
-    "spriteindex": 0,
-    "personality": "Calm"
+    "spriteindex": 0
   },
   "spymaster_hakan_the_silent": {
     "name": "Spymaster Hakan the Silent",
+    "personality": "Paranoid",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "intelligence_chief_mehmed_bey": {
     "name": "Intelligence Chief Mehmed Bey",
+    "personality": "Cautious",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "assassin_master_selim_the_shadow": {
     "name": "Assassin Master Selim the Shadow",
+    "personality": "Mischievous",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Mischievous"
+    "spriteindex": 0
   },
   "director_of_secrets_kemal_pasha": {
     "name": "Director of Secrets Kemal Pasha",
+    "personality": "Cynical",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Cynical"
+    "spriteindex": 0
   },
   "grand_a_a_suleiman": {
     "name": "Grand Ağa Suleiman",
+    "personality": "Brave",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "koruma_commander_mustafa": {
     "name": "Koruma Commander Mustafa",
+    "personality": "Disciplined",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "elite_captain_ibrahim": {
     "name": "Elite Captain Ibrahim",
+    "personality": "Loyal",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Loyal"
+    "spriteindex": 0
   },
   "first_guard_osman": {
     "name": "First Guard Osman",
+    "personality": "Aggressive",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Aggressive"
+    "spriteindex": 0
   },
   "king_george_ix": {
     "name": "King George IX",
+    "personality": "Disciplined",
+    "country": "UK",
+    "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "field_marshal_montgomery_ii": {
     "name": "Field Marshal Montgomery II",
+    "personality": "Brave",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "admiral_nelson_iv": {
     "name": "Admiral Nelson IV",
+    "personality": "Adventurous",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "commander_victoria": {
     "name": "Commander Victoria",
+    "personality": "Authoritative",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "admiral_drake_iv": {
     "name": "Admiral Drake IV",
+    "personality": "Adventurous",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "commodore_hawkins": {
     "name": "Commodore Hawkins",
+    "personality": "Brave",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "captain_beatty": {
     "name": "Captain Beatty",
+    "personality": "Disciplined",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "fleet_admiral_hood": {
     "name": "Fleet Admiral Hood",
+    "personality": "Authoritative",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Authoritative"
+    "spriteindex": 0
   },
   "regiment_commander_stirling": {
     "name": "Regiment Commander Stirling",
+    "personality": "Brave",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "sbs_director_laycock": {
     "name": "SBS Director Laycock",
+    "personality": "Cautious",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "sas_captain_price": {
     "name": "SAS Captain Price",
+    "personality": "Disciplined",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "squadron_leader_macleod": {
     "name": "Squadron Leader MacLeod",
+    "personality": "Adventurous",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Adventurous"
+    "spriteindex": 0
   },
   "m_director_general": {
     "name": "M (Director General)",
+    "personality": "Paranoid",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Paranoid"
+    "spriteindex": 0
   },
   "q_technical_director": {
     "name": "Q (Technical Director)",
+    "personality": "Scholarly",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "c_chief_of_station": {
     "name": "C (Chief of Station)",
+    "personality": "Cautious",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Cautious"
+    "spriteindex": 0
   },
   "agent_007_field_director": {
     "name": "Agent 007 (Field Director)",
+    "personality": "Brave",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Brave"
+    "spriteindex": 0
   },
   "director_hawking_iii": {
     "name": "Director Hawking III",
+    "personality": "Scholarly",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0,
-    "personality": "Scholarly"
+    "spriteindex": 0
   },
   "chief_engineer_tesla_iv": {
     "name": "Chief Engineer Tesla IV",
+    "personality": "Artistic",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0,
-    "personality": "Artistic"
+    "spriteindex": 0
   },
   "general_turing": {
     "name": "General Turing",
+    "personality": "Disciplined",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0,
-    "personality": "Disciplined"
+    "spriteindex": 0
   },
   "professor_faraday_v": {
     "name": "Professor Faraday V",
+    "personality": "Nervous",
+    "country": "UK",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0,
-    "personality": "Nervous"
+    "spriteindex": 0
   },
   "victor_emmanuel_iii": {
     "name": "Victor Emmanuel III",
     "ideology": "ideology.imperial_monarchist",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1900,
@@ -2227,6 +2901,8 @@
   "giovanni_giolitti": {
     "name": "Giovanni Giolitti",
     "ideology": "ideology.liberal_clientelist",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1900,
@@ -2236,6 +2912,8 @@
   "alcide_de_gasperi": {
     "name": "Alcide De Gasperi",
     "ideology": "ideology.christian_democratic",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1945,
@@ -2245,6 +2923,8 @@
   "enrico_mattei": {
     "name": "Enrico Mattei",
     "ideology": "ideology.petro_nationalist",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1945,
@@ -2254,6 +2934,8 @@
   "romano_prodi": {
     "name": "Romano Prodi",
     "ideology": "ideology.center_left_technocrat",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1996,
@@ -2263,6 +2945,8 @@
   "mario_monti": {
     "name": "Mario Monti",
     "ideology": "ideology.technocratic",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2011,
@@ -2272,6 +2956,8 @@
   "mario_draghi": {
     "name": "Mario Draghi",
     "ideology": "ideology.technocratic_liberal",
+    "country": "Italy",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2021,
@@ -2281,6 +2967,8 @@
   "queen_victoria": {
     "name": "Queen Victoria",
     "ideology": "ideology.imperial_monarchist",
+    "country": "UK",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1837,
@@ -2290,6 +2978,8 @@
   "edward_vii": {
     "name": "Edward VII",
     "ideology": "ideology.diplomatic_monarchist",
+    "country": "UK",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1901,
@@ -2299,6 +2989,8 @@
   "george_v": {
     "name": "George V",
     "ideology": "ideology.conservative_monarchist",
+    "country": "UK",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1910,
@@ -2308,6 +3000,8 @@
   "edward_viii": {
     "name": "Edward VIII",
     "ideology": "ideology.scandalous_monarchist",
+    "country": "UK",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1936,
@@ -2317,6 +3011,8 @@
   "george_vi": {
     "name": "George VI",
     "ideology": "ideology.duty_bound_monarchist",
+    "country": "UK",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1936,
@@ -2326,6 +3022,8 @@
   "winston_churchill": {
     "name": "Winston Churchill",
     "ideology": "ideology.imperial_democrat",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1940,
@@ -2335,6 +3033,8 @@
   "clement_attlee": {
     "name": "Clement Attlee",
     "ideology": "ideology.socialist",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1945,
@@ -2344,6 +3044,8 @@
   "elizabeth_ii": {
     "name": "Elizabeth II",
     "ideology": "ideology.constitutional_monarchist",
+    "country": "UK",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1952,
@@ -2353,6 +3055,8 @@
   "margaret_thatcher": {
     "name": "Margaret Thatcher",
     "ideology": "ideology.traditionalist_witch",
+    "country": "UK",
+    "moralGuide": false,
     "protected": true,
     "years": [
       1979,
@@ -2362,6 +3066,8 @@
   "tony_blair": {
     "name": "Tony Blair",
     "ideology": "ideology.new_labour",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1997,
@@ -2371,6 +3077,8 @@
   "harold_macmillan": {
     "name": "Harold Macmillan",
     "ideology": "ideology.paternalistic_conservative",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1957,
@@ -2380,6 +3088,8 @@
   "harold_wilson": {
     "name": "Harold Wilson",
     "ideology": "ideology.social_democrat",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1964,
@@ -2389,6 +3099,8 @@
   "david_cameron": {
     "name": "David Cameron",
     "ideology": "ideology.austerity_conservative",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2010,
@@ -2398,6 +3110,8 @@
   "boris_johnson": {
     "name": "Boris Johnson",
     "ideology": "ideology.populist_conservative",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2019,
@@ -2407,6 +3121,8 @@
   "rishi_sunak": {
     "name": "Rishi Sunak",
     "ideology": "ideology.fiscal_conservative",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2022,
@@ -2416,6 +3132,8 @@
   "keir_starmer": {
     "name": "Keir Starmer",
     "ideology": "ideology.pragmatic_labour",
+    "country": "UK",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2012,
@@ -2425,6 +3143,8 @@
   "nicholas_ii": {
     "name": "Nicholas II",
     "ideology": "ideology.autocrat",
+    "country": "Russia",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1894,
@@ -2434,6 +3154,8 @@
   "vladimir_lenin": {
     "name": "Vladimir Lenin",
     "ideology": "ideology.communist_revolutionary",
+    "country": "Russia",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1917,
@@ -2443,6 +3165,8 @@
   "leon_trotsky": {
     "name": "Leon Trotsky",
     "ideology": "ideology.internationalist_communist",
+    "country": "Russia",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1917,
@@ -2452,6 +3176,8 @@
   "joseph_stalin": {
     "name": "Joseph Stalin",
     "ideology": "ideology.totalitarian_communist",
+    "country": "Russia",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1924,
@@ -2461,6 +3187,8 @@
   "nikita_khrushchev": {
     "name": "Nikita Khrushchev",
     "ideology": "ideology.reform_communist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1953,
@@ -2470,6 +3198,8 @@
   "leonid_brezhnev": {
     "name": "Leonid Brezhnev",
     "ideology": "ideology.stagnation_communist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1964,
@@ -2479,6 +3209,8 @@
   "mikhail_gorbachev": {
     "name": "Mikhail Gorbachev",
     "ideology": "ideology.reform_socialist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1985,
@@ -2488,6 +3220,8 @@
   "boris_yeltsin": {
     "name": "Boris Yeltsin",
     "ideology": "ideology.democratic_capitalist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1991,
@@ -2497,6 +3231,8 @@
   "vladimir_putin": {
     "name": "Vladimir Putin",
     "ideology": "ideology.authoritarian",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1999,
@@ -2506,6 +3242,8 @@
   "alexander_kerensky": {
     "name": "Alexander Kerensky",
     "ideology": "ideology.democratic_socialist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1917,
@@ -2515,6 +3253,8 @@
   "georgy_malenkov": {
     "name": "Georgy Malenkov",
     "ideology": "ideology.transitional_communist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1953,
@@ -2524,6 +3264,8 @@
   "yuri_andropov": {
     "name": "Yuri Andropov",
     "ideology": "ideology.disciplinarian_communist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1982,
@@ -2533,6 +3275,8 @@
   "konstantin_chernenko": {
     "name": "Konstantin Chernenko",
     "ideology": "ideology.orthodox_communist",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1984,
@@ -2542,6 +3286,8 @@
   "dmitry_medvedev": {
     "name": "Dmitry Medvedev",
     "ideology": "ideology.managed_democrat",
+    "country": "Russia",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2008,
@@ -2551,6 +3297,8 @@
   "abdul_hamid_ii": {
     "name": "Abdul Hamid II",
     "ideology": "ideology.islamic_autocrat",
+    "country": "Turkey",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1876,
@@ -2560,6 +3308,8 @@
   "mehmed_v": {
     "name": "Mehmed V",
     "ideology": "ideology.constitutional_sultan",
+    "country": "Turkey",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1909,
@@ -2569,6 +3319,8 @@
   "enver_pasha": {
     "name": "Enver Pasha",
     "ideology": "ideology.young_turk_nationalist",
+    "country": "Turkey",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1913,
@@ -2578,6 +3330,8 @@
   "mustafa_kemal_atat_rk": {
     "name": "Mustafa Kemal Atatürk",
     "ideology": "ideology.secular_nationalist",
+    "country": "Turkey",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1923,
@@ -2587,6 +3341,8 @@
   "i_smet_i_n_n": {
     "name": "İsmet İnönü",
     "ideology": "ideology.kemalist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1938,
@@ -2596,6 +3352,8 @@
   "adnan_menderes": {
     "name": "Adnan Menderes",
     "ideology": "ideology.conservative_democrat",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1950,
@@ -2605,6 +3363,8 @@
   "s_leyman_demirel": {
     "name": "Süleyman Demirel",
     "ideology": "ideology.center_right",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1965,
@@ -2614,6 +3374,8 @@
   "turgut_zal": {
     "name": "Turgut Özal",
     "ideology": "ideology.liberal_conservative",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1983,
@@ -2623,6 +3385,8 @@
   "tansu_iller": {
     "name": "Tansu Çiller",
     "ideology": "ideology.center_right",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1993,
@@ -2632,6 +3396,8 @@
   "necmettin_erbakan": {
     "name": "Necmettin Erbakan",
     "ideology": "ideology.islamist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1996,
@@ -2641,6 +3407,8 @@
   "b_lent_ecevit": {
     "name": "Bülent Ecevit",
     "ideology": "ideology.social_democrat",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1999,
@@ -2650,6 +3418,8 @@
   "cel_l_bayar": {
     "name": "Celâl Bayar",
     "ideology": "ideology.conservative_democrat",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1950,
@@ -2659,6 +3429,8 @@
   "cemal_g_rsel": {
     "name": "Cemal Gürsel",
     "ideology": "ideology.military_secularist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1960,
@@ -2668,6 +3440,8 @@
   "cevdet_sunay": {
     "name": "Cevdet Sunay",
     "ideology": "ideology.military_nationalist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1966,
@@ -2677,6 +3451,8 @@
   "kenan_evren": {
     "name": "Kenan Evren",
     "ideology": "ideology.military_nationalist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1980,
@@ -2686,6 +3462,8 @@
   "ahmet_necdet_sezer": {
     "name": "Ahmet Necdet Sezer",
     "ideology": "ideology.constitutionalist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2000,
@@ -2695,6 +3473,8 @@
   "abdullah_g_l": {
     "name": "Abdullah Gül",
     "ideology": "ideology.moderate_islamist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2007,
@@ -2704,6 +3484,8 @@
   "recep_tayyip_erdo_an": {
     "name": "Recep Tayyip Erdoğan",
     "ideology": "ideology.neo_ottoman_islamist",
+    "country": "Turkey",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2003,
@@ -2713,6 +3495,8 @@
   "the_great_goblin": {
     "name": "The Great Goblin",
     "ideology": "ideology.stone_age_primal",
+    "country": "Iceland",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1970,
@@ -2722,6 +3506,8 @@
   "griznak": {
     "name": "Griznak",
     "ideology": "ideology.rowdy_horde",
+    "country": "Iceland",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1905,
@@ -2731,6 +3517,8 @@
   "krazz": {
     "name": "Krazz",
     "ideology": "ideology.violent_marauders",
+    "country": "Iceland",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1908,
@@ -2740,6 +3528,8 @@
   "zog": {
     "name": "Zog",
     "ideology": "ideology.rowdy_horde",
+    "country": "Iceland",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1924,
@@ -2749,6 +3539,8 @@
   "droop": {
     "name": "Droop",
     "ideology": "ideology.violent_marauders",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1945,
@@ -2758,6 +3550,8 @@
   "skab": {
     "name": "Skab",
     "ideology": "ideology.rowdy_horde",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1965,
@@ -2767,6 +3561,8 @@
   "blight": {
     "name": "Blight",
     "ideology": "ideology.violent_marauders",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1971,
@@ -2776,6 +3572,8 @@
   "snarl": {
     "name": "Snarl",
     "ideology": "ideology.rowdy_horde",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1976,
@@ -2785,6 +3583,8 @@
   "grub": {
     "name": "Grub",
     "ideology": "ideology.violent_marauders",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1981,
@@ -2794,6 +3594,8 @@
   "grizelda": {
     "name": "Grizelda",
     "ideology": "ideology.rowdy_horde",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1981,
@@ -2803,6 +3605,8 @@
   "krix": {
     "name": "Krix",
     "ideology": "ideology.death_metal_inner_circle",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1997,
@@ -2812,6 +3616,8 @@
   "grum": {
     "name": "Grum",
     "ideology": "ideology.death_metal_inner_circle",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2000,
@@ -2821,6 +3627,8 @@
   "snot": {
     "name": "Snot",
     "ideology": "ideology.death_metal_inner_circle",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2013,
@@ -2830,6 +3638,8 @@
   "vile": {
     "name": "Vile",
     "ideology": "ideology.death_metal_inner_circle",
+    "country": "Iceland",
+    "moralGuide": false,
     "protected": false,
     "years": [
       2021,
@@ -2839,15 +3649,19 @@
   "aleister_crowley": {
     "name": "Aleister Crowley",
     "ideology": "ideology.thelemic_magus",
+    "country": "Ireland",
+    "moralGuide": true,
     "protected": true,
     "years": [
-      1901,
-      2012
+      1900,
+      1947
     ]
   },
   "dion_fortune": {
     "name": "Dion Fortune",
     "ideology": "ideology.esoteric_psychologist",
+    "country": "Ireland",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1920,
@@ -2857,6 +3671,8 @@
   "em": {
     "name": "Em",
     "ideology": "ideology.sacrificial_sorceress",
+    "country": "Ireland",
+    "moralGuide": true,
     "protected": false,
     "years": [
       2001,
@@ -2866,6 +3682,8 @@
   "brewster_kahle": {
     "name": "Brewster Kahle",
     "ideology": "ideology.universal_librarian",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1996,
@@ -2875,6 +3693,8 @@
   "julian_assange": {
     "name": "Julian Assange",
     "ideology": "ideology.information_leaker",
+    "country": "OmegaTower",
+    "moralGuide": true,
     "protected": false,
     "years": [
       2001,
@@ -2884,6 +3704,8 @@
   "the_pyramid_overlord": {
     "name": "The Pyramid Overlord",
     "ideology": "ideology.speed_profit_prophet",
+    "country": "Netherlands",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1990,
@@ -2893,6 +3715,8 @@
   "the_shadow_ceo": {
     "name": "The Shadow CEO",
     "ideology": "ideology.high_frequency_trader",
+    "country": "Netherlands",
+    "moralGuide": true,
     "protected": false,
     "years": [
       1990,
@@ -2902,6 +3726,8 @@
   "yhwh": {
     "name": "YHWH",
     "ideology": "ideology.abramic_father",
+    "country": null,
+    "moralGuide": true,
     "protected": true,
     "years": [
       0,
@@ -2911,6 +3737,8 @@
   "eris": {
     "name": "Eris",
     "ideology": "ideology.discordian_chaos",
+    "country": null,
+    "moralGuide": true,
     "protected": true,
     "years": [
       1999,
@@ -2920,6 +3748,8 @@
   "malal": {
     "name": "Malal",
     "ideology": "ideology.chaos_renegade",
+    "country": null,
+    "moralGuide": true,
     "protected": false,
     "years": [
       1990,
@@ -2929,6 +3759,8 @@
   "president_lincoln_xiii": {
     "name": "President Lincoln XIII",
     "ideology": "ideology.free_states_confederation",
+    "country": "United States (Free States of Midwest)",
+    "moralGuide": false,
     "protected": true,
     "years": [
       1900,
@@ -2938,6 +3770,8 @@
   "speaker_grant": {
     "name": "Speaker Grant",
     "ideology": "ideology.free_states_confederation",
+    "country": "United States (Free States of Midwest)",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1900,
@@ -2947,6 +3781,8 @@
   "senator_sherman": {
     "name": "Senator Sherman",
     "ideology": "ideology.free_states_confederation",
+    "country": "United States (Free States of Midwest)",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1945,
@@ -2956,6 +3792,8 @@
   "chairman_faraday": {
     "name": "Chairman Faraday",
     "ideology": "ideology.free_states_confederation",
+    "country": "United States (Free States of Midwest)",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1970,
@@ -2965,6 +3803,8 @@
   "governor_general_victoria_vi": {
     "name": "Governor-General Victoria VI",
     "ideology": "ideology.crown_colony_administration",
+    "country": "Cascadia Protectorate",
+    "moralGuide": false,
     "protected": true,
     "years": [
       1900,
@@ -2974,6 +3814,8 @@
   "thaumo_director_tesla": {
     "name": "Thaumo-Director Tesla",
     "ideology": "ideology.thaumo_industrialist",
+    "country": "Cascadia Protectorate",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1900,
@@ -2983,6 +3825,8 @@
   "commissioner_douglas": {
     "name": "Commissioner Douglas",
     "ideology": "ideology.crown_colony_administration",
+    "country": "Cascadia Protectorate",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1950,
@@ -2992,6 +3836,8 @@
   "colonial_admin_cornwallis_ix": {
     "name": "Colonial Admin Cornwallis IX",
     "ideology": "ideology.punitive_colony_regime",
+    "country": "Eastern Seaboard",
+    "moralGuide": false,
     "protected": true,
     "years": [
       1900,
@@ -3001,6 +3847,8 @@
   "director_paine": {
     "name": "Director Paine",
     "ideology": "ideology.punitive_colony_regime",
+    "country": "Eastern Seaboard",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1900,
@@ -3010,6 +3858,8 @@
   "warden_arnold": {
     "name": "Warden Arnold",
     "ideology": "ideology.punitive_colony_regime",
+    "country": "Eastern Seaboard",
+    "moralGuide": false,
     "protected": false,
     "years": [
       1975,
@@ -3019,6 +3869,8 @@
   "secretary_adams": {
     "name": "Secretary Adams",
     "ideology": "ideology.continental_unionist",
+    "country": null,
+    "moralGuide": false,
     "protected": false,
     "years": [
       1900,
@@ -3028,6 +3880,8 @@
   "unionist_chair_jefferson": {
     "name": "Unionist Chair Jefferson",
     "ideology": "ideology.continental_unionist",
+    "country": null,
+    "moralGuide": false,
     "protected": false,
     "years": [
       1920,
@@ -3037,133 +3891,1717 @@
   "mehmet_ali_agca": {
     "name": "Mehmet Ali Ağca",
     "ideology": "ideology.nationalist",
+    "personality": "personalities.aggressive",
+    "country": "Turkey",
+    "moralGuide": false,
     "spritename": "NPCs/!$ArmorDiver1",
     "spriteindex": 0,
     "protected": true,
     "years": [
       1958,
       2100
-    ],
-    "personality": "personalities.aggressive"
+    ]
   },
   "shutter_warden_hlee_2": {
     "name": "Shutter-Warden Hlee-2",
     "ideology": "ideology.zeta_touristic_observism",
+    "personality": "personalities.calm",
+    "country": null,
+    "moralGuide": false,
     "spritename": "Skab/!$AlienGrey",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.calm"
+    ]
   },
   "itinerary_grey_omm_4": {
     "name": "Itinerary-Grey Omm-4",
     "ideology": "ideology.zeta_touristic_observism",
+    "personality": "personalities.hedonistic",
+    "country": null,
+    "moralGuide": false,
     "spritename": "Skab/!$AlienTrucker",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.hedonistic"
+    ]
   },
   "chief_analyzer_vess_1": {
     "name": "Chief Analyzer Vess-1",
     "ideology": "ideology.crimson_vivisectionism",
+    "personality": "personalities.scholarly",
+    "country": null,
+    "moralGuide": false,
     "spritename": "Skab/!$AlienXori",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.scholarly"
+    ]
   },
   "scalpel_primarch_thruun": {
     "name": "Scalpel-Primarch Thruun",
     "ideology": "ideology.crimson_vivisectionism",
+    "personality": "personalities.aggressive",
+    "country": null,
+    "moralGuide": false,
     "spritename": "Skab/!$AlienXori",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.aggressive"
+    ]
   },
   "warp_choir_mother_iisha": {
     "name": "Warp-Choir Mother Iisha",
     "ideology": "ideology.pale_psionic_supremacy",
+    "personality": "personalities.authoritative",
+    "country": null,
+    "moralGuide": false,
     "spritename": "Skab/!$AlienMystic",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.authoritative"
+    ]
   },
   "pale_archon_nuu_6": {
     "name": "Pale Archon Nuu-6",
     "ideology": "ideology.pale_psionic_supremacy",
+    "personality": "personalities.paranoid",
+    "country": null,
+    "moralGuide": false,
     "spritename": "Skab/!$AlienMindmaster",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.paranoid"
+    ]
   },
   "dargos_the_first": {
     "name": "Dargos the First",
     "ideology": "ideology.trolling_humans",
+    "personality": "personalities.mischievous",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienDargos",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.mischievous"
+    ]
   },
   "punchline_regent_obb": {
     "name": "Punchline-Regent Obb",
     "ideology": "ideology.trolling_humans",
+    "personality": "personalities.mischievous",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienDargos",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.mischievous"
+    ]
   },
   "embassy_clerk_wodwod": {
     "name": "Embassy Clerk Wodwod",
     "ideology": "ideology.trolling_humans",
+    "personality": "personalities.apathetic",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienDargos",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.apathetic"
+    ]
   },
   "prank_marshal_ssein": {
     "name": "Prank-Marshal Ssein",
     "ideology": "ideology.trolling_humans",
+    "personality": "personalities.impulsive",
+    "country": null,
+    "moralGuide": true,
     "spritename": "Skab/!$AlienDargos",
     "spriteindex": 0,
     "protected": false,
     "years": [
       1900,
       2100
-    ],
-    "personality": "personalities.impulsive"
+    ]
+  },
+  "god_emperor_kukulkan": {
+    "name": "K'uk'ulkan, the Feathered God-Emperor",
+    "ideology": "ideology.feathered_serpent_divinity",
+    "country": "Mexico",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1900,
+      2100
+    ]
+  },
+  "divine_ajaw_pakal_iii": {
+    "name": "Divine Ajaw Pakal III",
+    "ideology": "ideology.mayan_theocracy",
+    "country": "Mexico",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1922,
+      1979
+    ]
+  },
+  "high_priestess_ix_chel": {
+    "name": "High Priestess Ix Chel",
+    "ideology": "ideology.blood_tribute_orthodoxy",
+    "country": "Mexico",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1958,
+      2012
+    ]
+  },
+  "jaguar_general_balam": {
+    "name": "Jaguar General Balam",
+    "ideology": "ideology.jaguar_militarism",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1935,
+      1994
+    ]
+  },
+  "calendar_keeper_ah_kin": {
+    "name": "Calendar Keeper Ah Kin",
+    "ideology": "ideology.long_count_technocracy",
+    "country": "Mexico",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1901,
+      2012
+    ]
+  },
+  "restorer_tecpatl": {
+    "name": "Restorer Tecpatl",
+    "ideology": "ideology.mesoamerican_restorationism",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1900,
+      1968
+    ]
+  },
+  "porfirio_diaz": {
+    "name": "Porfirio Díaz",
+    "ideology": "ideology.autocrat",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1876,
+      1911
+    ]
+  },
+  "francisco_madero": {
+    "name": "Francisco I. Madero",
+    "ideology": "ideology.social_liberal",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1911,
+      1913
+    ]
+  },
+  "emiliano_zapata": {
+    "name": "Emiliano Zapata",
+    "ideology": "ideology.indigenist_land_reform",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1911,
+      1919
+    ]
+  },
+  "pancho_villa": {
+    "name": "Pancho Villa",
+    "ideology": "ideology.military_nationalist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1913,
+      1920
+    ]
+  },
+  "venustiano_carranza": {
+    "name": "Venustiano Carranza",
+    "ideology": "ideology.constitutionalist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1917,
+      1920
+    ]
+  },
+  "alvaro_obregon": {
+    "name": "Álvaro Obregón",
+    "ideology": "ideology.military_secularist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1920,
+      1928
+    ]
+  },
+  "plutarco_elias_calles": {
+    "name": "Plutarco Elías Calles",
+    "ideology": "ideology.military_secularist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1924,
+      1935
+    ]
+  },
+  "lazaro_cardenas": {
+    "name": "Lázaro Cárdenas",
+    "ideology": "ideology.petro_nationalist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1934,
+      1940
+    ]
+  },
+  "manuel_avila_camacho": {
+    "name": "Manuel Ávila Camacho",
+    "ideology": "ideology.conservative_democrat",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1940,
+      1946
+    ]
+  },
+  "miguel_aleman_valdes": {
+    "name": "Miguel Alemán Valdés",
+    "ideology": "ideology.democratic_capitalist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1946,
+      1952
+    ]
+  },
+  "adolfo_ruiz_cortines": {
+    "name": "Adolfo Ruiz Cortines",
+    "ideology": "ideology.paternalistic_conservative",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1952,
+      1958
+    ]
+  },
+  "adolfo_lopez_mateos": {
+    "name": "Adolfo López Mateos",
+    "ideology": "ideology.progressive_internationalist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1958,
+      1964
+    ]
+  },
+  "gustavo_diaz_ordaz": {
+    "name": "Gustavo Díaz Ordaz",
+    "ideology": "ideology.authoritarian",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1964,
+      1970
+    ]
+  },
+  "luis_echeverria": {
+    "name": "Luis Echeverría",
+    "ideology": "ideology.managed_democrat",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1970,
+      1976
+    ]
+  },
+  "jose_lopez_portillo": {
+    "name": "José López Portillo",
+    "ideology": "ideology.petro_nationalist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1976,
+      1982
+    ]
+  },
+  "miguel_de_la_madrid": {
+    "name": "Miguel de la Madrid",
+    "ideology": "ideology.austerity_conservative",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1982,
+      1988
+    ]
+  },
+  "carlos_salinas_de_gortari": {
+    "name": "Carlos Salinas de Gortari",
+    "ideology": "ideology.technocratic_liberal",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1988,
+      1994
+    ]
+  },
+  "ernesto_zedillo": {
+    "name": "Ernesto Zedillo",
+    "ideology": "ideology.monetarist_banker",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1994,
+      2000
+    ]
+  },
+  "vicente_fox": {
+    "name": "Vicente Fox",
+    "ideology": "ideology.christian_democrat",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2000,
+      2006
+    ]
+  },
+  "felipe_calderon": {
+    "name": "Felipe Calderón",
+    "ideology": "ideology.law_and_order_populist",
+    "country": "Mexico",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2006,
+      2012
+    ]
+  },
+  "kim_il_sung": {
+    "name": "Kim Il-sung",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1948,
+      1994
+    ]
+  },
+  "kim_jong_il": {
+    "name": "Kim Jong-il",
+    "ideology": "ideology.songun_militarism",
+    "country": "North Korea",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1994,
+      2011
+    ]
+  },
+  "kim_jong_un": {
+    "name": "Kim Jong-un",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      2011,
+      2012
+    ]
+  },
+  "kim_pyong_il": {
+    "name": "Kim Pyong-il",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1979,
+      2012
+    ]
+  },
+  "kim_yong_nam": {
+    "name": "Kim Yong-nam",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1998,
+      2012
+    ]
+  },
+  "o_jin_u": {
+    "name": "O Jin-u",
+    "ideology": "ideology.songun_militarism",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1976,
+      1995
+    ]
+  },
+  "choe_yong_rim": {
+    "name": "Choe Yong-rim",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2010,
+      2012
+    ]
+  },
+  "pak_song_chol": {
+    "name": "Pak Song-chol",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1976,
+      1977
+    ]
+  },
+  "ri_jong_ok": {
+    "name": "Ri Jong-ok",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1977,
+      1984
+    ]
+  },
+  "kang_song_san": {
+    "name": "Kang Song-san",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1984,
+      1992
+    ]
+  },
+  "yon_hyong_muk": {
+    "name": "Yon Hyong-muk",
+    "ideology": "ideology.juche",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1988,
+      1992
+    ]
+  },
+  "hong_song_nam": {
+    "name": "Hong Song-nam",
+    "ideology": "ideology.korean_social_democracy",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1997,
+      2003
+    ]
+  },
+  "pak_pong_ju": {
+    "name": "Pak Pong-ju",
+    "ideology": "ideology.korean_social_democracy",
+    "country": "North Korea",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2003,
+      2007
+    ]
+  },
+  "sun_yat_sen": {
+    "name": "Sun Yat-sen",
+    "ideology": "ideology.civic_republican",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1912,
+      1925
+    ]
+  },
+  "chiang_kai_shek": {
+    "name": "Chiang Kai-shek",
+    "ideology": "ideology.military_nationalist",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1928,
+      1949
+    ]
+  },
+  "mao_zedong": {
+    "name": "Mao Zedong",
+    "ideology": "ideology.orthodox_communist",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1949,
+      1976
+    ]
+  },
+  "zhou_enlai": {
+    "name": "Zhou Enlai",
+    "ideology": "ideology.reform_communist",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1949,
+      1976
+    ]
+  },
+  "hua_guofeng": {
+    "name": "Hua Guofeng",
+    "ideology": "ideology.orthodox_communist",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1976,
+      1981
+    ]
+  },
+  "deng_xiaoping": {
+    "name": "Deng Xiaoping",
+    "ideology": "ideology.harmonious_synthesis",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1978,
+      1992
+    ]
+  },
+  "hu_yaobang": {
+    "name": "Hu Yaobang",
+    "ideology": "ideology.confucian_restoration",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1981,
+      1987
+    ]
+  },
+  "zhao_ziyang": {
+    "name": "Zhao Ziyang",
+    "ideology": "ideology.reform_socialist",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1987,
+      1989
+    ]
+  },
+  "jiang_zemin": {
+    "name": "Jiang Zemin",
+    "ideology": "ideology.confucian_restoration",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1989,
+      2002
+    ]
+  },
+  "zhu_rongji": {
+    "name": "Zhu Rongji",
+    "ideology": "ideology.technocratic_liberal",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1998,
+      2003
+    ]
+  },
+  "hu_jintao": {
+    "name": "Hu Jintao",
+    "ideology": "ideology.harmonious_synthesis",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2002,
+      2012
+    ]
+  },
+  "wen_jiabao": {
+    "name": "Wen Jiabao",
+    "ideology": "ideology.buddhist_statecraft",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2003,
+      2012
+    ]
+  },
+  "xi_jinping": {
+    "name": "Xi Jinping",
+    "ideology": "ideology.mandate_of_heaven",
+    "country": "China",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2012,
+      2012
+    ]
+  },
+  "grand_preceptor_kong_wei": {
+    "name": "Grand Preceptor Kong Wei",
+    "ideology": "ideology.confucian_restoration",
+    "country": "China",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1949,
+      2012
+    ]
+  },
+  "abbot_chancellor_fa_zheng": {
+    "name": "Abbot-Chancellor Fa Zheng",
+    "ideology": "ideology.buddhist_statecraft",
+    "country": "China",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1958,
+      2012
+    ]
+  },
+  "harmony_regent_li_shun": {
+    "name": "Harmony Regent Li Shun",
+    "ideology": "ideology.harmonious_synthesis",
+    "country": "China",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1976,
+      2012
+    ]
+  },
+  "mohammad_reza_pahlavi": {
+    "name": "Mohammad Reza Pahlavi",
+    "ideology": "ideology.imperial_monarchist",
+    "country": "Iran",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1941,
+      1979
+    ]
+  },
+  "mohammad_mossadegh": {
+    "name": "Mohammad Mossadegh",
+    "ideology": "ideology.secular_nationalist",
+    "country": "Iran",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1951,
+      1953
+    ]
+  },
+  "duke_agares": {
+    "name": "Duke Agares",
+    "ideology": "ideology.solomonic_liberalism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1949,
+      1952
+    ]
+  },
+  "king_paimon": {
+    "name": "King Paimon",
+    "ideology": "ideology.solomonic_laborism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1948,
+      1963
+    ]
+  },
+  "marquis_naberius": {
+    "name": "Marquis Naberius",
+    "ideology": "ideology.solomonic_laborism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1954,
+      1955
+    ]
+  },
+  "duke_berith": {
+    "name": "Duke Berith",
+    "ideology": "ideology.ritualist_purism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1963,
+      1969
+    ]
+  },
+  "duke_astaroth": {
+    "name": "Duke Astaroth",
+    "ideology": "ideology.solomonic_laborism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1969,
+      1974
+    ]
+  },
+  "president_marax": {
+    "name": "President Marax",
+    "ideology": "ideology.peace_process_pragmatist",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1974,
+      1995
+    ]
+  },
+  "earl_furfur": {
+    "name": "Earl Furfur",
+    "ideology": "ideology.solomonic_revisionism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1977,
+      1983
+    ]
+  },
+  "duke_vepar": {
+    "name": "Duke Vepar",
+    "ideology": "ideology.solomonic_revisionism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1983,
+      1992
+    ]
+  },
+  "marquis_orias": {
+    "name": "Marquis Orias",
+    "ideology": "ideology.peace_process_pragmatist",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1984,
+      2007
+    ]
+  },
+  "king_balam": {
+    "name": "King Balam",
+    "ideology": "ideology.solomonic_revisionism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1996,
+      2012
+    ]
+  },
+  "duke_gremory": {
+    "name": "Duke Gremory",
+    "ideology": "ideology.solomonic_restorationism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1999,
+      2001
+    ]
+  },
+  "marquis_andras": {
+    "name": "Marquis Andras",
+    "ideology": "ideology.solomonic_revisionism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2001,
+      2006
+    ]
+  },
+  "gamal_abdel_nasser": {
+    "name": "Gamal Abdel Nasser",
+    "ideology": "ideology.arab_socialism",
+    "country": "Egypt",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1954,
+      1970
+    ]
+  },
+  "anwar_sadat": {
+    "name": "Anwar Sadat",
+    "ideology": "ideology.arab_nationalism",
+    "country": "Egypt",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1970,
+      1981
+    ]
+  },
+  "hosni_mubarak": {
+    "name": "Hosni Mubarak",
+    "ideology": "ideology.authoritarian",
+    "country": "Egypt",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1981,
+      2011
+    ]
+  },
+  "faisal_ii_of_iraq": {
+    "name": "Faisal II of Iraq",
+    "ideology": "ideology.hashemite_monarchism",
+    "country": "Iraq",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1939,
+      1958
+    ]
+  },
+  "abd_al_karim_qasim": {
+    "name": "Abd al-Karim Qasim",
+    "ideology": "ideology.arab_nationalism",
+    "country": "Iraq",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1958,
+      1963
+    ]
+  },
+  "ahmed_hassan_al_bakr": {
+    "name": "Ahmed Hassan al-Bakr",
+    "ideology": "ideology.baathism",
+    "country": "Iraq",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1968,
+      1979
+    ]
+  },
+  "saddam_hussein": {
+    "name": "Saddam Hussein",
+    "ideology": "ideology.baathism",
+    "country": "Iraq",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1979,
+      2003
+    ]
+  },
+  "hafez_al_assad": {
+    "name": "Hafez al-Assad",
+    "ideology": "ideology.baathism",
+    "country": "Syria",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1971,
+      2000
+    ]
+  },
+  "bashar_al_assad": {
+    "name": "Bashar al-Assad",
+    "ideology": "ideology.baathism",
+    "country": "Syria",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2000,
+      2012
+    ]
+  },
+  "king_hussein_of_jordan": {
+    "name": "King Hussein of Jordan",
+    "ideology": "ideology.hashemite_monarchism",
+    "country": "Jordan",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1952,
+      1999
+    ]
+  },
+  "abdullah_ii_of_jordan": {
+    "name": "Abdullah II of Jordan",
+    "ideology": "ideology.hashemite_monarchism",
+    "country": "Jordan",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1999,
+      2012
+    ]
+  },
+  "camille_chamoun": {
+    "name": "Camille Chamoun",
+    "ideology": "ideology.maronite_conservatism",
+    "country": "Lebanon",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1952,
+      1958
+    ]
+  },
+  "bachir_gemayel": {
+    "name": "Bachir Gemayel",
+    "ideology": "ideology.maronite_conservatism",
+    "country": "Lebanon",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1982,
+      1982
+    ]
+  },
+  "rafic_hariri": {
+    "name": "Rafic Hariri",
+    "ideology": "ideology.reconstruction_liberal",
+    "country": "Lebanon",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1992,
+      2004
+    ]
+  },
+  "yasser_arafat": {
+    "name": "Yasser Arafat",
+    "ideology": "ideology.palestinian_nationalism",
+    "country": "Palestine",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1969,
+      2004
+    ]
+  },
+  "mahmoud_abbas": {
+    "name": "Mahmoud Abbas",
+    "ideology": "ideology.palestinian_nationalism",
+    "country": "Palestine",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2005,
+      2012
+    ]
+  },
+  "king_faisal_of_saudi_arabia": {
+    "name": "King Faisal of Saudi Arabia",
+    "ideology": "ideology.wahhabi_monarchism",
+    "country": "Saudi Arabia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1964,
+      1975
+    ]
+  },
+  "king_fahd": {
+    "name": "King Fahd",
+    "ideology": "ideology.wahhabi_monarchism",
+    "country": "Saudi Arabia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1982,
+      2005
+    ]
+  },
+  "zayed_bin_sultan_al_nahyan": {
+    "name": "Zayed bin Sultan Al Nahyan",
+    "ideology": "ideology.gulf_federalism",
+    "country": "United Arab Emirates",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1971,
+      2004
+    ]
+  },
+  "sultan_qaboos": {
+    "name": "Sultan Qaboos of Oman",
+    "ideology": "ideology.gulf_federalism",
+    "country": "Oman",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1970,
+      2012
+    ]
+  },
+  "bogd_khan_viii": {
+    "name": "The Bogd Khan VIII",
+    "ideology": "ideology.buddhist_statecraft",
+    "country": "Mongolia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1911,
+      1924
+    ]
+  },
+  "damdin_sukhbaatar": {
+    "name": "Damdin Sükhbaatar",
+    "ideology": "ideology.orthodox_communist",
+    "country": "Mongolia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1921,
+      1923
+    ]
+  },
+  "khorloogiin_choibalsan": {
+    "name": "Khorloogiin Choibalsan",
+    "ideology": "ideology.orthodox_communist",
+    "country": "Mongolia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1939,
+      1952
+    ]
+  },
+  "yumjaagiin_tsedenbal": {
+    "name": "Yumjaagiin Tsedenbal",
+    "ideology": "ideology.stagnation_communist",
+    "country": "Mongolia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1952,
+      1984
+    ]
+  },
+  "jambyn_batmunkh": {
+    "name": "Jambyn Batmönkh",
+    "ideology": "ideology.reform_communist",
+    "country": "Mongolia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1984,
+      1990
+    ]
+  },
+  "punsalmaagiin_ochirbat": {
+    "name": "Punsalmaagiin Ochirbat",
+    "ideology": "ideology.classical_liberal",
+    "country": "Mongolia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1990,
+      1997
+    ]
+  },
+  "nambaryn_enkhbayar": {
+    "name": "Nambaryn Enkhbayar",
+    "ideology": "ideology.social_democrat",
+    "country": "Mongolia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1997,
+      2009
+    ]
+  },
+  "illuminated_khan_temur": {
+    "name": "The Illuminated Khan Temür",
+    "ideology": "ideology.steppe_illuminism",
+    "country": "Mongolia",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1924,
+      2012
+    ]
+  },
+  "lama_regent_zanabazar_iv": {
+    "name": "Lama-Regent Zanabazar IV",
+    "ideology": "ideology.steppe_illuminism",
+    "country": "Mongolia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1930,
+      1998
+    ]
+  },
+  "erdene_abbot_gombojav": {
+    "name": "Erdene Abbot Gombojav",
+    "ideology": "ideology.buddhist_statecraft",
+    "country": "Mongolia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1955,
+      2012
+    ]
+  },
+  "nasi_prince_sitri": {
+    "name": "Prince Sitri, Nasi of the Restored Sanhedrin",
+    "ideology": "ideology.solomonic_restorationism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": true,
+    "years": [
+      1948,
+      2012
+    ]
+  },
+  "temple_scribe_duke_bathin": {
+    "name": "Duke Bathin, Temple Scribe",
+    "ideology": "ideology.ritualist_purism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1960,
+      2012
+    ]
+  },
+  "keeper_of_the_seal_earl_bifrons": {
+    "name": "Earl Bifrons, Keeper of the Seal",
+    "ideology": "ideology.solomonic_restorationism",
+    "country": "Israel",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1972,
+      2012
+    ]
+  },
+  "king_abdulaziz_ibn_saud": {
+    "name": "King Abdulaziz Ibn Saud",
+    "ideology": "ideology.wahhabi_monarchism",
+    "country": "Saudi Arabia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1932,
+      1953
+    ]
+  },
+  "king_saud": {
+    "name": "King Saud",
+    "ideology": "ideology.wahhabi_monarchism",
+    "country": "Saudi Arabia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1953,
+      1964
+    ]
+  },
+  "king_khalid": {
+    "name": "King Khalid",
+    "ideology": "ideology.wahhabi_monarchism",
+    "country": "Saudi Arabia",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1975,
+      1982
+    ]
+  },
+  "king_abdullah_of_saudi_arabia": {
+    "name": "King Abdullah of Saudi Arabia",
+    "ideology": "ideology.petro_nationalist",
+    "country": "Saudi Arabia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2005,
+      2012
+    ]
+  },
+  "oil_emir_abdulaziz_iii": {
+    "name": "Oil-Emir Abdulaziz III",
+    "ideology": "ideology.petrocratic_absolutism",
+    "country": "Saudi Arabia",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1938,
+      2012
+    ]
+  },
+  "well_sheikh_muhannad": {
+    "name": "Well-Sheikh Muhannad",
+    "ideology": "ideology.asphalt_theism",
+    "country": "Saudi Arabia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1961,
+      2012
+    ]
+  },
+  "concession_regent_sultan": {
+    "name": "Concession-Regent Sultan",
+    "ideology": "ideology.petrodemon_contractualism",
+    "country": "Saudi Arabia",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1974,
+      2011
+    ]
+  },
+  "mohandas_gandhi": {
+    "name": "Mohandas Gandhi",
+    "ideology": "ideology.anarcho_pacifist",
+    "country": "India",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1915,
+      1948
+    ]
+  },
+  "jawaharlal_nehru": {
+    "name": "Jawaharlal Nehru",
+    "ideology": "ideology.democratic_socialist",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1947,
+      1964
+    ]
+  },
+  "vallabhbhai_patel": {
+    "name": "Vallabhbhai Patel",
+    "ideology": "ideology.conservative",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1947,
+      1950
+    ]
+  },
+  "bhimrao_ambedkar": {
+    "name": "Bhimrao Ambedkar",
+    "ideology": "ideology.social_liberal",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1947,
+      1956
+    ]
+  },
+  "indira_gandhi": {
+    "name": "Indira Gandhi",
+    "ideology": "ideology.authoritarian",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1966,
+      1984
+    ]
+  },
+  "rajiv_gandhi": {
+    "name": "Rajiv Gandhi",
+    "ideology": "ideology.technocratic_liberal",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1984,
+      1991
+    ]
+  },
+  "pv_narasimha_rao": {
+    "name": "P. V. Narasimha Rao",
+    "ideology": "ideology.technocratic_liberal",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1991,
+      1996
+    ]
+  },
+  "atal_bihari_vajpayee": {
+    "name": "Atal Bihari Vajpayee",
+    "ideology": "ideology.hindu_nationalism",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1996,
+      2004
+    ]
+  },
+  "manmohan_singh": {
+    "name": "Manmohan Singh",
+    "ideology": "ideology.monetarist_banker",
+    "country": "India",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2004,
+      2012
+    ]
+  },
+  "dharma_regent_vishvamitra": {
+    "name": "Dharma-Regent Vishvamitra",
+    "ideology": "ideology.hindu_nationalism",
+    "country": "India",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1948,
+      2012
+    ]
+  },
+  "acharya_of_the_rashtra_bhargava": {
+    "name": "Acharya Bhargava of the Rashtra",
+    "ideology": "ideology.hindu_nationalism",
+    "country": "India",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1962,
+      2012
+    ]
+  },
+  "arturo_alessandri": {
+    "name": "Arturo Alessandri",
+    "ideology": "ideology.classical_liberal",
+    "country": "Chile",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1920,
+      1938
+    ]
+  },
+  "carlos_ibanez_del_campo": {
+    "name": "Carlos Ibáñez del Campo",
+    "ideology": "ideology.military_nationalist",
+    "country": "Chile",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1927,
+      1958
+    ]
+  },
+  "eduardo_frei_montalva": {
+    "name": "Eduardo Frei Montalva",
+    "ideology": "ideology.christian_democrat",
+    "country": "Chile",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1964,
+      1970
+    ]
+  },
+  "salvador_allende": {
+    "name": "Salvador Allende",
+    "ideology": "ideology.democratic_socialist",
+    "country": "Chile",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1970,
+      1973
+    ]
+  },
+  "augusto_pinochet": {
+    "name": "Augusto Pinochet",
+    "ideology": "ideology.military_nationalist",
+    "country": "Chile",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1973,
+      1990
+    ]
+  },
+  "patricio_aylwin": {
+    "name": "Patricio Aylwin",
+    "ideology": "ideology.christian_democrat",
+    "country": "Chile",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1990,
+      1994
+    ]
+  },
+  "ricardo_lagos": {
+    "name": "Ricardo Lagos",
+    "ideology": "ideology.social_democrat",
+    "country": "Chile",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      2000,
+      2006
+    ]
+  },
+  "marshal_of_the_long_south_valdivia": {
+    "name": "Marshal Valdivia of the Long South",
+    "ideology": "ideology.continental_expansionism",
+    "country": "Chile",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1930,
+      2012
+    ]
+  },
+  "cordillera_general_prat": {
+    "name": "Cordillera-General Prat",
+    "ideology": "ideology.continental_expansionism",
+    "country": "Chile",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1955,
+      2004
+    ]
+  },
+  "nasser_al_din_shah": {
+    "name": "Nasser al-Din Shah Qajar",
+    "ideology": "ideology.imperial_monarchist",
+    "country": "Iran",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1848,
+      1896
+    ]
+  },
+  "mozaffar_ad_din_shah": {
+    "name": "Mozaffar ad-Din Shah Qajar",
+    "ideology": "ideology.constitutional_monarchist",
+    "country": "Iran",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1896,
+      1907
+    ]
+  },
+  "ahmad_shah_qajar": {
+    "name": "Ahmad Shah Qajar",
+    "ideology": "ideology.constitutional_monarchist",
+    "country": "Iran",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1909,
+      1925
+    ]
+  },
+  "reza_shah_pahlavi": {
+    "name": "Reza Shah Pahlavi",
+    "ideology": "ideology.military_secularist",
+    "country": "Iran",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1925,
+      1941
+    ]
+  },
+  "shahbanu_farah": {
+    "name": "Shahbanu Farah",
+    "ideology": "ideology.liberal_conservative",
+    "country": "Iran",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1961,
+      2012
+    ]
+  },
+  "reza_pahlavi_ii": {
+    "name": "Reza Pahlavi II",
+    "ideology": "ideology.constitutional_monarchist",
+    "country": "Iran",
+    "moralGuide": true,
+    "protected": false,
+    "years": [
+      1980,
+      2012
+    ]
+  },
+  "amir_abbas_hoveyda": {
+    "name": "Amir-Abbas Hoveyda",
+    "ideology": "ideology.technocratic_liberal",
+    "country": "Iran",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1965,
+      1977
+    ]
+  },
+  "jamshid_amouzegar": {
+    "name": "Jamshid Amouzegar",
+    "ideology": "ideology.technocratic",
+    "country": "Iran",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1977,
+      1978
+    ]
+  },
+  "ali_amini": {
+    "name": "Ali Amini",
+    "ideology": "ideology.social_liberal",
+    "country": "Iran",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1961,
+      1962
+    ]
+  },
+  "asadollah_alam": {
+    "name": "Asadollah Alam",
+    "ideology": "ideology.conservative_monarchist",
+    "country": "Iran",
+    "moralGuide": false,
+    "protected": false,
+    "years": [
+      1962,
+      1964
+    ]
+  },
+  "bill_clinton": {
+    "name": "Bill Clinton",
+    "ideology": "ideology.pragmatic_social_democrat",
+    "country": "United States (Free States of Midwest)",
+    "moralGuide": false,
+    "protected": true,
+    "years": [
+      1993,
+      2012
+    ]
+  },
+  "george_w_bush": {
+    "name": "George W. Bush",
+    "ideology": "ideology.populist_conservative",
+    "country": "Eastern Seaboard",
+    "moralGuide": false,
+    "protected": true,
+    "years": [
+      2001,
+      2012
+    ]
+  },
+  "king_solomon": {
+    "name": "King Solomon",
+    "ideology": "ideology.solomonic_restorationism",
+    "country": "Israel",
+    "moralGuide": true,
+    "protected": true,
+    "years": [
+      1900,
+      2100
+    ]
   }
 }

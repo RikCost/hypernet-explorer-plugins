@@ -29,6 +29,9 @@
     "Failed"
   ],
   "showOnMapAt": "Show on map ({x}, {y}) · Shift",
+  "moveToInProgress": "Move to In Progress · →",
+  "moveToToDo": "Move back to To Do · ←",
+  "boardHint": "Drag a note, or hold OK and press ←/→, to move it between columns",
   "mapMarker": "Map marker",
   "notify": {
     "newQuest": "New Quest: {title}",

@@ -9,7 +9,8 @@
     "preferences": "Preferences",
     "mods": "Mods",
     "exit": "Exit",
-    "continue": "Continue"
+    "continue": "Continue",
+    "quickContinue": "Continue"
   },
   "menuOverlay": {
     "explore": "EXPLORE",
@@ -21,11 +22,13 @@
     "preferences": "PREFERENCES",
     "mods": "MODS",
     "exit": "EXIT",
-    "noWorld": "NO WORLD"
+    "noWorld": "NO WORLD",
+    "quickContinue": "CONTINUE"
   },
   "minigame": {
     "arena": "Arena",
     "camperDriving": "Camper Driving",
+    "galaxyMap": "Galaxy Map",
     "dream": "Dream",
     "surfing": "Surfing",
     "targetRange": "Shooting Range",
@@ -54,7 +57,8 @@
     "arcadeManpac": "Arcade: Manpac",
     "arcadeAsteroids": "Arcade: Asteroids",
     "arcadeCentipede": "Arcade: Centipede",
-    "piano": "Piano"
+    "piano": "Piano",
+    "hyperdeck": "Build a Hyperdeck"
   },
   "minigameSetup": {
     "venueTitle": "Where",
@@ -68,7 +72,7 @@
     "back": "Back"
   },
   "disclaimer": {
-    "text": "This first playable build requires your help! Please report any bug, collision problem, features you want to be added or things to rebalance in #bug-feedback channel of Esoteric Heavy Industries server",
+    "text": "",
     "noclip": "If you get stuck in a wall, hold CTRL to use noclip mode."
   },
   "news": {
@@ -142,7 +146,9 @@
     "majorTip": "This build is a major update. It installs from here, but the whole game must be downloaded again for full compatibility.",
     "majorInstalled": "MAJOR UPDATE INSTALLED",
     "majorInstalledLine": "DOWNLOAD THE FULL GAME AGAIN FOR FULL COMPATIBILITY",
-    "majorInstalledTip": "This copy was patched across a major update. Download the whole game again for full compatibility."
+    "majorInstalledTip": "This copy was patched across a major update. Download the whole game again for full compatibility.",
+    "redownload": "✦ REDOWNLOAD THE GAME",
+    "redownloadTip": "A major update is out and this copy is behind it. Patching cannot finish the job, so the whole game has to be downloaded again. Click to open the download page; the updater screen can still install the build by hand."
   },
   "hyperverse": {
     "lead": "HYPERVERSE // ",
@@ -206,7 +212,6 @@
     "bestiary": "BESTIARY",
     "artifacts": "ARTIFACTS",
     "weapons": "WEAPONS",
-    "enemies3d": "ENEMIES 3D",
     "random": "RANDOM"
   },
   "artifact": {

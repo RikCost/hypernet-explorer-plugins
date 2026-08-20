@@ -44,5 +44,25 @@
   "selectHint": "",
   "councilLeaders": "",
   "independent": "",
-  "diplomaticAgreements": ""
+  "diplomaticAgreements": "",
+  "versus": "vs. {name}",
+  "sortName": "가나다순",
+  "searchPlaceholder": "세력 검색…",
+  "versusOwn": "vs. {name} (소속 세력)",
+  "power": {
+    "kukulkanascendancy": "쿠쿨칸 승천 세력",
+    "democraticpeoplesrepublicofkorea": "조선민주주의인민공화국",
+    "dharmadirectorate": "다르마 집정부",
+    "illuminatedkhanate": "광명 칸국",
+    "solomonicrepublic": "솔로몬 공화국",
+    "petrokingdomofarabia": "아라비아 석유 왕국",
+    "sanatanarashtra": "사나타나 라슈트라",
+    "longchile": "긴 칠레",
+    "imperialstateofpersia": "페르시아 제국"
+  },
+  "controlledCountries": "지배 국가:",
+  "holdsNothing": "이 지도에 없음",
+  "openWiki": "전체 문서 열기",
+  "moralGuide": "정신적 지도자:",
+  "politicalLeader": "정치 지도자:"
 }

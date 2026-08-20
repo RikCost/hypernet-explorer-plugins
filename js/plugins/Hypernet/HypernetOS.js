@@ -1,13 +1,13 @@
 /*:
  * @target MZ
- * @plugindesc v2.1.0 Simulated Esoteric Operating System (Windows XP inspired) for RPG Maker MZ.
+ * @plugindesc v2.1.0 Simulated Esoteric Operating System (Archways XP inspired) for RPG Maker MZ.
  * @author Omni-Lex
  *
  * @help
  * HypernetOS.js
  *
  * This plugin creates a highly complex, modular, and fully functional simulated
- * Windows XP Luna-themed Operating System inside RPG Maker MZ.
+ * Archways XP Luna-themed Operating System inside RPG Maker MZ.
  *
  * Accessibility / Input:
  *   - WASD or Arrow keys: move the focus ring between interactive elements.
@@ -1048,7 +1048,7 @@
             document.head.appendChild(fonts);
         }
 
-        // Complete Windows XP Luna styling
+        // Complete Archways XP Luna styling
         if (!document.getElementById('hypernet-os-styles')) {
             const link = document.createElement('link');
             link.id = 'hypernet-os-styles';
@@ -1081,7 +1081,7 @@
                 <div id="hypernet-desktop-icons-container"></div>
             </div>
 
-            <!-- Windows XP Start Menu -->
+            <!-- Archways XP Start Menu -->
             <div id="hypernet-start-menu">
                 <div class="start-menu-header">
                     <div class="start-menu-avatar">${userAvatarHTML}</div>
@@ -1127,10 +1127,15 @@
             <div id="hypernet-taskbar">
                 <button id="hypernet-start-btn">
                     <div class="start-btn-logo">
-                        <div class="logo-sq l-red"></div>
-                        <div class="logo-sq l-green"></div>
-                        <div class="logo-sq l-blue"></div>
-                        <div class="logo-sq l-yellow"></div>
+                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="archLogoGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#fff2cf"/>
+                                    <stop offset="100%" stop-color="#d9a441"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M3,21 L3,9 A9,9 0 0 1 21,9 L21,21 L17,21 L17,11 A5,5 0 0 0 7,11 L7,21 Z" fill="url(#archLogoGrad)"/>
+                        </svg>
                     </div>
                     start
                 </button>
@@ -1957,7 +1962,7 @@
     window.HypernetOS.registerApp({
         id: 'app-colosseum',
         name: T('HypernetOS.colosseum'),
-        icon: '',
+        icon: 132, // visored helmet, the closest thing to a gladiator
         desktopShortcut: true,
         launchFn: function () {
             const BRACKETS = [
@@ -2073,7 +2078,7 @@
                 contentHTML,
                 width: 680,
                 height: 460,
-                icon: ''
+                icon: 132
             });
 
             window._hcSelect = function (idx) {
@@ -2109,6 +2114,105 @@
 
             renderList();
             renderRight();
+        }
+    });
+
+    // --- BIOS Setup App ---
+    // The firmware screen of whatever machine this desktop is running on. It
+    // reads the Hyperdeck rather than keeping a second copy of its rules, and
+    // it is an Archways XP window like everything else here, because the OS is
+    // what owns window chrome in this game.
+    window.HypernetOS.registerApp({
+        id: 'app-bios',
+        name: T('HypernetOS.bios'),
+        icon: 234,
+        desktopShortcut: false,
+        launchFn: function () {
+            const HD = window.HyperDeck;
+            let tab = 'system';   // i18n-ignore  tab id
+
+            const specRows = () => {
+                if (!HD) return [];
+                const s = HD.specs();
+                const f = HD.format;
+                return [
+                    [T('HypernetOS.biosCase'), f.caseName(HD.caseDef())],
+                    [T('HypernetOS.biosProcessor'), f.mhz(s.mhz)],
+                    [T('HypernetOS.biosMemory'), f.ram(s.ram)],
+                    [T('HypernetOS.biosStorage'), f.store(s.mb)],
+                    [T('HypernetOS.biosCell'), f.mah(s.mah)],
+                    [T('HypernetOS.biosDraw'), f.watt(s.draw) + ' / ' + f.watt(s.supply)],
+                    [T('HypernetOS.biosBoard'), s.used + ' / ' + s.cells]
+                ];
+            };
+
+            const contentHTML = `
+                <div class="bios-shell">
+                    <div class="bios-banner">${T('HypernetOS.biosBanner')}</div>
+                    <div class="bios-tabs">
+                        <div class="bios-tab focusable" id="bios-tab-system" tabindex="0">${T('HypernetOS.biosTabSystem')}</div>
+                        <div class="bios-tab focusable" id="bios-tab-health" tabindex="0">${T('HypernetOS.biosTabHealth')}</div>
+                    </div>
+                    <div class="bios-body" id="bios-body"></div>
+                    <div class="bios-foot">
+                        <div class="bios-key focusable" id="bios-recheck" tabindex="0">${T('HypernetOS.biosRecheck')}</div>
+                        <div class="bios-note" id="bios-verdict"></div>
+                    </div>
+                </div>`;
+
+            const win = window.HypernetOS.WindowManager.createWindow({
+                id: 'win-bios',
+                title: T('HypernetOS.bios'),
+                icon: 234,
+                width: 620,
+                height: 440,
+                contentHTML: contentHTML
+            });
+
+            const body = win.querySelector('#bios-body');
+            const verdict = win.querySelector('#bios-verdict');
+
+            function render() {
+                win.querySelector('#bios-tab-system').classList.toggle('active', tab === 'system');
+                win.querySelector('#bios-tab-health').classList.toggle('active', tab === 'health');
+                if (!HD) {
+                    body.innerHTML = `<div class="bios-empty">${T('HypernetOS.biosNoDeck')}</div>`;
+                    verdict.textContent = '';
+                    return;
+                }
+                if (tab === 'system') {
+                    body.innerHTML = specRows().map(([k, v]) =>
+                        `<div class="bios-row"><span>${k}</span><span>${v}</span></div>`).join('');
+                } else {
+                    const faults = HD.faults();
+                    body.innerHTML = faults.length
+                        ? faults.map(f => `<div class="bios-fault"><span>!</span><span>${f.text}</span></div>`).join('')
+                        : `<div class="bios-clean">${T('HypernetOS.biosNoFaults')}</div>`;
+                }
+                const ok = HD.canBoot();
+                verdict.textContent = ok ? T('HypernetOS.biosWillBoot') : T('HypernetOS.biosWillNotBoot');
+                verdict.className = 'bios-note ' + (ok ? 'good' : 'bad');
+            }
+
+            win.querySelector('#bios-tab-system').addEventListener('click', (e) => {
+                e.stopPropagation();
+                tab = 'system';   // i18n-ignore  tab id
+                if (window.SoundManager) SoundManager.playCursor();
+                render();
+            });
+            win.querySelector('#bios-tab-health').addEventListener('click', (e) => {
+                e.stopPropagation();
+                tab = 'health';   // i18n-ignore  tab id
+                if (window.SoundManager) SoundManager.playCursor();
+                render();
+            });
+            win.querySelector('#bios-recheck').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.SoundManager) SoundManager.playOk();
+                render();
+            });
+
+            render();
         }
     });
 

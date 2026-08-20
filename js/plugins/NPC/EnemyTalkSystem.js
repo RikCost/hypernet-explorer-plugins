@@ -312,13 +312,123 @@
     // Scene_Battle
     //-----------------------------------------------------------------------------
 
+    // -------------------------------------------------------------------------
+    // The talk menu, drawn as the actor's command list
+    // -------------------------------------------------------------------------
+    // A conversation is planned where every other action is planned: the choices
+    // REPLACE the actor's command rows instead of opening a modal of their own,
+    // the same way the grapple menu does (Health_Monsters.js). The drawing
+    // belongs to BattleSystemEnhanchedCommands (that window is its) and only the
+    // list is ours; it calls in through window.TalkMenu. Because the session
+    // lives on the window, the tactical map menu (MapBattleMode.js) opens the
+    // very same rows on its own command window.
+    // -------------------------------------------------------------------------
+
+    const TALK_ROW_ICONS = {
+        chat:       246,
+        joinParty:   84,
+        joinPet:    298,
+        surrender:  125,
+        insult:      85,
+        throwStone: 161,
+        pet:        249,
+        cancel:     140,
+    };
+
+    const TalkMenu = {
+        isMenuOpen(win) {
+            return !!(win && win._talkSession);
+        },
+
+        // Stands in for Window_ActorCommand.makeCommandList while a conversation
+        // is open. Rows carry their label in `name` (which that window falls back
+        // to for symbols it does not know) and their place in the option list in
+        // `ext`, which is what onTalkRow reads back.
+        makeCommandList(win) {
+            const scene   = win._talkSession.scene;
+            const options = scene._talkOptions || [];
+            const enemy   = scene._talkEnemy ? scene._talkEnemy() : null;
+            // Who is being addressed and what they make of the party: the header
+            // the panel used to carry, as a row nothing can pick.
+            if (enemy) {
+                win.addCommandWithIcon(
+                    T('EnemyTalk.menu.header', {
+                        name: enemy.name(),
+                        opinion: T('EnemyTalk.opinion'),
+                        value: enemy.disposition(),
+                    }),
+                    "talkRow", false, null, TALK_ROW_ICONS.chat, true);
+            }
+            options.forEach((opt, i) => {
+                const label = (opt.pct === null || opt.pct === undefined)
+                    ? opt.label
+                    : T('EnemyTalk.menu.row', { name: opt.label, chance: opt.pct });
+                win.addCommandWithIcon(label, "talkRow", true, { idx: i },
+                    TALK_ROW_ICONS[opt.key] || TALK_ROW_ICONS.chat);
+            });
+        },
+
+        // Take the command window over. Its own handlers are put aside whole and
+        // given back on the way out, so nothing else has to know this mode exists.
+        open(win, scene) {
+            if (!win || !scene || typeof scene._buildTalkOptions !== "function") return false;
+            scene._talkIdx     = 0;
+            scene._talkOptions = scene._buildTalkOptions();
+            scene._talkHandlers = {
+                chat:       scene.onTalkChat.bind(scene),
+                joinParty:  scene.onTalkJoinParty.bind(scene),
+                joinPet:    scene.onTalkJoinPet.bind(scene),
+                surrender:  scene.onTalkSurrender.bind(scene),
+                insult:     scene.onTalkInsult.bind(scene),
+                throwStone: scene.onThrowStone.bind(scene),
+                pet:        scene.onPet.bind(scene),
+                cancel:     scene.onTalkCancel.bind(scene),
+            };
+
+            win._talkSession       = { scene };
+            win._talkSavedHandlers = win._handlers;
+            win._handlers = {};
+            // A row was confirmed: it carries its place in the option list, and
+            // the dispatch in _talkOk does the rest, exactly as it did when the
+            // rows were DOM elements.
+            win.setHandler("talkRow", () => {
+                const ext = win.currentExt();
+                if (!ext || ext.idx == null) { SoundManager.playBuzzer(); return; }
+                scene._talkIdx = ext.idx;
+                scene._talkOk();
+            });
+            win.setHandler("cancel",  scene.onTalkCancel.bind(scene));
+            win.show();
+            win.refresh();
+            // The header is a row too, and a dead one: the cursor starts on the
+            // first thing that can actually be said.
+            const first = (win._list || []).findIndex(cmd => cmd.enabled !== false);
+            win.select(first < 0 ? 0 : first);
+            win.activate();
+            return true;
+        },
+
+        close(win) {
+            const scene = (win && win._talkSession) ? win._talkSession.scene : null;
+            if (scene) {
+                scene._talkOptions  = null;
+                scene._talkHandlers = null;
+            }
+            if (!win || !win._talkSession) return;
+            win._talkSession = null;
+            if (win._talkSavedHandlers) win._handlers = win._talkSavedHandlers;
+            win._talkSavedHandlers = null;
+        },
+    };
+    window.TalkMenu = TalkMenu;
+
     // With more than one monster standing, which one is being addressed is a
-    // choice, not a guess: hand it to the ordinary battle target window
-    // (the same one a single-target skill uses), exactly the way Health_Monsters'
+    // choice, not a guess: hand it to the ordinary battle target window (the
+    // same one a single-target skill uses), exactly the way Health_Monsters'
     // Check/Aim and the card system's target step already borrow it, so the
-    // target chevron marker comes with it for free. A lone enemy, or no
-    // enemy window to borrow (should not happen in Scene_Battle), opens the
-    // panel straight away.
+    // target chevron over the monster and the named target rows come with it
+    // for free. A lone enemy, or no enemy window to borrow (should not happen
+    // in Scene_Battle), opens the menu straight away.
     Scene_Battle.prototype.openTalkMenu = function () {
         const alive = $gameTroop.aliveMembers();
         if (alive.length > 1 && this._enemyWindow) {
@@ -329,8 +439,10 @@
     };
 
     Scene_Battle.prototype._selectTalkTarget = function () {
-        this._actorCommandWindow.deactivate();
-        this._actorCommandWindow.hide();
+        // The picker hides the actor's command list itself and puts it back if
+        // the choice is backed out of (BattleSystemEnhancedHUD.js), which is
+        // exactly what a single-target skill gets: the same chevron over the
+        // monster and the same named rows where the commands were.
         this._partyCommandWindow.deactivate();
         this._partyCommandWindow.hide();
 
@@ -376,46 +488,35 @@
     };
 
     Scene_Battle.prototype._openTalkPanel = function () {
-        this._actorCommandWindow.deactivate();
-        this._actorCommandWindow.hide();
         this._partyCommandWindow.deactivate();
         this._partyCommandWindow.hide();
-
-        this._talkIdx     = 0;
-        this._talkOptions = this._buildTalkOptions();
-        this._talkHandlers = {
-            chat:       this.onTalkChat.bind(this),
-            joinParty:  this.onTalkJoinParty.bind(this),
-            joinPet:    this.onTalkJoinPet.bind(this),
-            surrender:  this.onTalkSurrender.bind(this),
-            insult:     this.onTalkInsult.bind(this),
-            throwStone: this.onThrowStone.bind(this),
-            pet:        this.onPet.bind(this),
-            cancel:     this.onTalkCancel.bind(this),
-        };
-
-        const el = document.createElement('div');
-        el.id = 'enemy-talk-panel';
-        el.innerHTML = this._buildTalkPanelHTML();
-        document.body.appendChild(el);
-        this._talkEl = el;
-
-        el.addEventListener('mouseover', ev => {
-            const row = ev.target.closest('.etalk-option');
-            if (!row) return;
-            const i = parseInt(row.dataset.idx);
-            if (!isNaN(i) && i !== this._talkIdx) {
-                this._talkIdx = i;
-                this._updateTalkHighlight();
-            }
-        });
-        el.addEventListener('click', ev => {
-            const row = ev.target.closest('.etalk-option');
-            if (!row) return;
-            const i = parseInt(row.dataset.idx);
-            if (!isNaN(i)) { this._talkIdx = i; this._talkOk(); }
-        });
+        TalkMenu.open(this._actorCommandWindow, this);
     };
+
+    // The party is three strong, and a summon is not one of the three: it borrows
+    // a slot for the length of a fight (SummonSystem.js) and is gone by the end
+    // of it, so a monster talked round while a familiar is out still has a place
+    // to join. Everyone else in the party counts.
+    const PARTY_CAP = 3;
+    const RECRUIT_ACTOR_IDS = [2, 3];
+
+    function partyCompanions() {
+        const summon = window.SummonSystem;
+        return $gameParty.members().filter(m =>
+            m && !(summon && summon.isProxyActor(m.actorId())));
+    }
+
+    function isPartyFull() {
+        return partyCompanions().length >= PARTY_CAP;
+    }
+
+    // The recruit slot to move into: the first companion actor not already in
+    // the party. Read rather than guessed from the party size, which a summon
+    // standing in the 4th slot would otherwise throw off by one.
+    function freeRecruitSlot() {
+        const taken = $gameParty.members().map(m => m.actorId());
+        return RECRUIT_ACTOR_IDS.find(id => !taken.includes(id)) || 0;
+    }
 
     // Label for the "recruit as pet/follower" option. Cosmetic only: enemies
     // with the <Talk> tag become "followers", the rest become "pets".
@@ -451,7 +552,7 @@
         const talk       = canTalk ? this.calculateTalkSuccessChance() : 0;
         // Party is capped at 3 members: only offer the full "Join Party" option
         // while there is an open slot. The pet/follower option is always shown.
-        const partyFull  = $gameParty.size() >= 3;
+        const partyFull  = isPartyFull();
 
         // Nothing that cannot be recruited is offered a way in: no join, no
         // follower, no petting it. What is left is what you can do to it.
@@ -496,47 +597,6 @@
         // disposition-based, with a flat bonus and a friendly floor.
         const base = this.calculateTalkSuccessChance();
         return Math.max(25, Math.min(95, base + 15));
-    };
-
-    Scene_Battle.prototype._buildTalkPanelHTML = function () {
-        const enemy = this._talkEnemy();
-        let headerHTML = '';
-        if (enemy) {
-            const dispo      = enemy.disposition();
-            const dispoLabel = T('EnemyTalk.opinion');
-            const fillCls    = dispo >= 70 ? 'etalk-dispo-high' : dispo >= 40 ? 'etalk-dispo-mid' : 'etalk-dispo-low';
-            headerHTML = `
-              <div class="etalk-header">
-                <span class="etalk-enemy-name">${enemy.name()}</span>
-                <div class="etalk-dispo-wrap">
-                  <span class="etalk-dispo-label">${dispoLabel}</span>
-                  <div class="etalk-dispo-track">
-                    <div class="etalk-dispo-fill ${fillCls}" style="width:${dispo}%"></div>
-                  </div>
-                  <span class="etalk-dispo-value">${dispo}/100</span>
-                </div>
-              </div>`;
-        }
-        const rows = this._talkOptions.map((opt, i) => {
-            let pctHTML = '';
-            if (opt.pct !== null) {
-                const cls = opt.pct >= 70 ? 'etalk-pct-high' : opt.pct >= 40 ? 'etalk-pct-mid' : 'etalk-pct-low';
-                pctHTML = `<span class="etalk-pct ${cls}">${opt.pct}%</span>`;
-            }
-            return `<div class="etalk-option${i === 0 ? ' selected' : ''}" data-idx="${i}">
-              <span class="etalk-option-name">${opt.label}</span>${pctHTML}
-            </div>`;
-        }).join('');
-        return `${headerHTML}<div class="etalk-option-list">${rows}</div>`;
-    };
-
-    Scene_Battle.prototype._updateTalkHighlight = function () {
-        if (!this._talkEl) return;
-        this._talkEl.querySelectorAll('.etalk-option').forEach((el, i) => {
-            el.classList.toggle('selected', i === this._talkIdx);
-        });
-        const sel = this._talkEl.querySelector('.etalk-option.selected');
-        if (sel) sel.scrollIntoView({ block: 'nearest' });
     };
 
     Scene_Battle.prototype._talkOk = function () {
@@ -838,13 +898,13 @@
         // Every sheet below holds a single character (img/characters/NPCs), so
         // the index is always 0; the joined sheets these were cut out of are
         // gone.
-        // i18n-ignore-start: EnemyArchetypes.json ids and sprite sheet names
+        // i18n-ignore-start: Archetypes.json ids and sprite sheet names
         switch (archetype) {
             case 'Goblin':
                 const goblinSheets = [
                     'NPCs/!$GoblinJester1', 'NPCs/!$GoblinKnight1',
                     'NPCs/!$GoblinCourier1', 'NPCs/!$GoblinRecruit1',
-                    'NPCs/!$GoblinCleric1', 'NPCs/!$OrcBrawler1',
+                    'NPCs/!$GoblinCleric1', 'Creatures/!$OrcBrawler1',
                     'NPCs/!$BotSpacer1'
                 ];
                 characterName = goblinSheets[Math.floor(Math.random() * goblinSheets.length)];
@@ -868,7 +928,7 @@
                 break;
 
             case 'Ghost':
-                characterName = 'NPCs/!$Slime9';
+                characterName = 'Creatures/!$Ghost';
                 characterIndex = 0;
                 break;
 
@@ -878,7 +938,7 @@
                 break;
 
             // i18n-ignore-end
-            case 'Humanoid': // i18n-ignore: EnemyArchetypes.json id
+            case 'Humanoid': // i18n-ignore: Archetypes.json id
                 // Random sprite out of the people the old NPCs/Actor/Heroes
                 // sheets held.
                 const humanSheets = [
@@ -887,7 +947,7 @@
                     'NPCs/!$Employee1', 'NPCs/!$FastfoodWorker1', 'NPCs/!$King2',
                     'NPCs/!$Queen2', 'NPCs/!$Page3', 'NPCs/!$NobleHeir2',
                     'NPCs/!$NobleGuard3', 'NPCs/!$Scarf4', 'NPCs/!$Maid2',
-                    'NPCs/!$LeatherDaddy2', 'NPCs/!$Catboy2', 'NPCs/!$GnomeExplorer2',
+                    'Skab/!$LeatherDaddy', 'NPCs/!$Catboy2', 'NPCs/!$GnomeExplorer2',
                     'NPCs/!$Archivist2', 'NPCs/!$Pirate1', 'NPCs/!$Operator1',
                     'NPCs/!$Librarian4', 'NPCs/!$Tracker1', 'NPCs/!$Mafia1',
                     'NPCs/!$WarSniper1', 'NPCs/!$UniversityStudent1', 'NPCs/!$DJ1',
@@ -917,7 +977,7 @@
                 break;
 
             default:
-                characterName = 'NPCs/!$VoidPerson1';
+                characterName = 'Creatures/!$Slime11';
                 characterIndex = 0;
                 break;
         }
@@ -965,9 +1025,18 @@
     // the actor's portrait image, and the status screen builds the procedural
     // 3D model of the recorded enemy when one resolves, falling back to the
     // flat battler image otherwise (what an unset portrait mode means).
-    Scene_Battle.prototype.applyRecruitPortrait = function (actor, enemyData) {
+    Scene_Battle.prototype.applyRecruitPortrait = function (actor, enemyData, enemy) {
         if (!actor || !enemyData) return;
         const slot = actor.actorId();
+        // The body it was standing in front of the party in. Every fight rolls
+        // its own look for the monsters in it, so the creature that walks off
+        // with the party has to carry that roll with it or it would be redrawn
+        // as some other member of its species on the status sheet and in the
+        // Empathize panel. Its place in the troop comes along too: that is what
+        // told two of the same monster apart in the fight.
+        actor._recruitedLook = (window.Battler3D && window.Battler3D.currentLook)
+            ? window.Battler3D.currentLook(enemy && enemy.index ? enemy.index() : 0)
+            : null;
         if (actor.setVnBust) actor.setVnBust("");
         // "sprite" = portrayed by an existing monster species (its procedural 3D
         // model, with the flat battler image as the fallback), as opposed to the
@@ -981,11 +1050,57 @@
             $gameSwitches.setValue(76 + slot, !!enemyData.battlerName);
         }
         // Drop the previous occupant's custom 3D model and look seed: the
-        // recruit is portrayed by its own species, not by theirs.
+        // recruit is portrayed by its own species, with its own roll (above),
+        // not by theirs.
         if (window.CC3DModel) {
             if (window.CC3DModel.setConfig) window.CC3DModel.setConfig(slot, null);
             if (window.CC3DModel.setCreatureSeed) window.CC3DModel.setCreatureSeed(slot, null);
         }
+    };
+
+    // Give the recruit the body it is standing in front of the party with.
+    //
+    // The actor slot may still be carrying the last occupant's anatomy, and the
+    // monster may be short a limb: the fight it was talked out of is the same
+    // fight somebody cut its arm off in. A limb a blade took off does not grow
+    // back because its owner changed sides, so the recruit is built from its own
+    // archetype and then the severed parts are taken off it for good - out of
+    // the health menu, out of the equip slots, and out of the 3D portrait
+    // (window.HealthCore.partStates). Parts that were merely wrecked, and every
+    // part on a body nothing was severed from, come across whole: joining the
+    // party is a fresh start for everything but what is physically gone.
+    Scene_Battle.prototype.applyRecruitAnatomy = function (actor, enemy) {
+        const HC = window.HealthCore;
+        if (!actor || !enemy || !HC || !window.initializeBodyParts) return;
+
+        // The anatomy archetype Health_Monsters built the enemy out of, which
+        // is not always the archetype its talk lines come from.
+        const archetypeName = enemy._archetypeName || enemy.getArchetype();
+        const Archetypes = window.Health && window.Health.Archetypes;
+        // Whatever it turns out to be, it is not the last occupant's: an
+        // unrecognised archetype falls back to the default body rather than
+        // leaving the recruit wearing somebody else's anatomy.
+        actor._currentArchetype = (archetypeName && Archetypes && Archetypes[archetypeName])
+            ? archetypeName : null;
+
+        actor._bodyParts = null;
+        actor._statModifiers = {};
+        actor._removedPartDebuffs = {};
+        actor._severedParts = {};
+        window.initializeBodyParts(actor);
+
+        // Only what came off comes off. A part that was destroyed but could
+        // never be severed (a torso, a mouth) is still on the creature.
+        const enemyParts = enemy._bodyParts || {};
+        for (const partKey in enemyParts) {
+            const part = enemyParts[partKey];
+            if (!part || !part.destroyed) continue;
+            if (!part.canCutoff) continue;
+            if (HC.loseBodyPart) HC.loseBodyPart(actor, partKey);
+        }
+
+        if (HC.ensureBodyPartSkills) HC.ensureBodyPartSkills(actor);
+        actor.refresh();
     };
 
     Scene_Battle.prototype.onTalkJoinParty = function () {
@@ -999,8 +1114,7 @@
 
         if (this._refuseUnrecruitable(enemy)) return;
 
-        const partySize = $gameParty.size();
-        if (partySize >= 3) {
+        if (isPartyFull()) {
             window.skipLocalization = true;
             $gameMessage.add(systemMessages.partyFull);
             window.skipLocalization = false;
@@ -1030,8 +1144,8 @@
             $gameMessage.add(message);
             window.skipLocalization = false;
 
-            const actorIdToAdd = partySize === 1 ? 2 : 3;
-            const newActor = $gameActors.actor(actorIdToAdd);
+            const actorIdToAdd = freeRecruitSlot();
+            const newActor = actorIdToAdd ? $gameActors.actor(actorIdToAdd) : null;
 
             // Guard: the actor slot may be missing from the database (bad id or
             // trimmed $dataActors). Abort recruitment safely instead of crashing
@@ -1072,10 +1186,10 @@
 
             // Portrait: the monster's own battler art / 3D model, replacing
             // whatever the slot inherited from its previous occupant.
-            this.applyRecruitPortrait(newActor, enemy.enemy());
+            this.applyRecruitPortrait(newActor, enemy.enemy(), enemy);
 
             // Set level to median of current party
-            const levels = $gameParty.members().map(m => m.level);
+            const levels = partyCompanions().map(m => m.level);
             levels.sort((a, b) => a - b);
             const medianLevel = levels.length % 2 === 0
                 ? Math.floor((levels[levels.length / 2 - 1] + levels[levels.length / 2]) / 2)
@@ -1085,8 +1199,27 @@
             // Copy skills from enemy
             this.copyEnemySkillsToActor(enemy, newActor);
 
-            // Add to party
+            // The body it walks in with: its own species' anatomy, minus
+            // whatever the fight took off it.
+            this.applyRecruitAnatomy(newActor, enemy);
+
+            // The slot may still hold the last recruit's ruin (dead, poisoned,
+            // half a hit point). A monster that just agreed to travel with the
+            // party walks in whole - bar the limbs it no longer has.
+            newActor.recoverAll();
+
+            // Add to party. Joining happens on the spot, in the middle of the
+            // fight it was decided in: the recruit is given the battle state
+            // every other combatant got when the fight opened (without it they
+            // would stand in the party with no turn, no actions and no bars),
+            // and the field is refreshed so their sprite and gauges appear.
             $gameParty.addActor(actorIdToAdd);
+            if ($gameParty.inBattle()) {
+                newActor.onBattleStart();
+                newActor.clearActions();
+                if (typeof BattleManager.refreshStatus === 'function') BattleManager.refreshStatus();
+                $gameTemp.requestBattleRefresh();
+            }
 
             // Play Victory2 ME
             AudioManager.playMe({ name: "Victory2", volume: 90, pitch: 100, pan: 0 });
@@ -1214,23 +1347,17 @@
     };
 
     Scene_Battle.prototype.closeTalkMenu = function () {
-        if (this._talkEl) {
-            this._talkEl.remove();
-            this._talkEl      = null;
-        }
-        this._talkOptions  = null;
-        this._talkHandlers = null;
+        TalkMenu.close(this._actorCommandWindow);
 
         if (this._talkInterpreter && this._talkInterpreter._waitMode === 'talk') {
             this._talkInterpreter.setWaitMode('');
             this._talkInterpreter = null;
         }
 
+        this._actorCommandWindow.refresh();
         this._actorCommandWindow.show();
         this._actorCommandWindow.activate();
     };
-
-
 
     Scene_Battle.prototype.copyEnemySkillsToActor = function (enemy, actor) {
         const enemyActions = enemy.enemy().actions;
@@ -1251,46 +1378,20 @@
         }
     };
 
-    const _Scene_Battle_isAnyInputWindowActive = Scene_Battle.prototype.isAnyInputWindowActive;
-    Scene_Battle.prototype.isAnyInputWindowActive = function () {
-        if (this._talkEl && this._talkEl.parentElement) return true;
-        return _Scene_Battle_isAnyInputWindowActive.call(this);
+    // A talk list left standing when input moves on (the next actor, the end of
+    // the round, a battle finishing under the player) would leave the command
+    // window holding rows that are no longer about anything. Same guard the
+    // grapple menu keeps (Health_Monsters.js).
+    const _SB_startActorCommandSelection_TALK = Scene_Battle.prototype.startActorCommandSelection;
+    Scene_Battle.prototype.startActorCommandSelection = function () {
+        TalkMenu.close(this._actorCommandWindow);
+        _SB_startActorCommandSelection_TALK.call(this);
     };
 
-    const _Scene_Battle_update = Scene_Battle.prototype.update;
-    Scene_Battle.prototype.update = function () {
-        if (this._talkEl && this._talkEl.parentElement) {
-            Scene_Base.prototype.update.call(this);
-            this._updateTalkInput();
-            if (this._logWindow)    this._logWindow.update();
-            if (this._spriteset)    this._spriteset.update();
-            if (this._statusWindow) this._statusWindow.update();
-            return;
-        }
-        _Scene_Battle_update.call(this);
-    };
-
-    Scene_Battle.prototype._updateTalkInput = function () {
-        const opts = this._talkOptions;
-        if (!opts) return;
-        if (Input.isRepeated('down') || Input.isRepeated('s')) {
-            if (this._talkIdx < opts.length - 1) {
-                this._talkIdx++;
-                SoundManager.playCursor();
-                this._updateTalkHighlight();
-            }
-        } else if (Input.isRepeated('up') || Input.isRepeated('w')) {
-            if (this._talkIdx > 0) {
-                this._talkIdx--;
-                SoundManager.playCursor();
-                this._updateTalkHighlight();
-            }
-        } else if (Input.isTriggered('ok')) {
-            this._talkOk();
-        } else if (Input.isTriggered('cancel')) {
-            SoundManager.playCancel();
-            this.onTalkCancel();
-        }
+    const _SB_endCommandSelection_TALK = Scene_Battle.prototype.endCommandSelection;
+    Scene_Battle.prototype.endCommandSelection = function () {
+        TalkMenu.close(this._actorCommandWindow);
+        _SB_endCommandSelection_TALK.call(this);
     };
 
 })();

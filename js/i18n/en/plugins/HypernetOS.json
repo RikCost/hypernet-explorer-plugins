@@ -54,5 +54,21 @@
   "protoWin": "Win 7 battles to advance bracket, lose and it ends",
   "protoRestore": "Your original party is fully restored after the gauntlet",
   "enterColosseum": "ENTER THE COLOSSEUM",
-  "colosseumHint": "Select a bracket from the list, then click Enter the Colosseum."
+  "colosseumHint": "Select a bracket from the list, then click Enter the Colosseum.",
+  "bios": "HyperDeck Setup",
+  "biosBanner": "Esoteric Heavy Industries - HyperDeck Firmware v1.04",
+  "biosTabSystem": "System",
+  "biosTabHealth": "Diagnostics",
+  "biosRecheck": "Re-test",
+  "biosCase": "Chassis",
+  "biosProcessor": "Processor",
+  "biosMemory": "Memory",
+  "biosStorage": "Primary volume",
+  "biosCell": "Power cell",
+  "biosDraw": "Draw / supply",
+  "biosBoard": "Board occupancy",
+  "biosNoDeck": "No deck is attached to this terminal.",
+  "biosNoFaults": "No faults found. Every fitted part answered.",
+  "biosWillBoot": "POST would pass.",
+  "biosWillNotBoot": "POST would fail."
 }

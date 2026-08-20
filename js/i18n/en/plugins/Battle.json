@@ -17,6 +17,32 @@
       "This creature is too strong!\nI should run away!"
     ]
   },
+  "mercy": {
+    "tooStrong": [
+      "You're not even a challenge. Go home before I get bored.",
+      "I've beaten better. Run along, this isn't worth my time.",
+      "Killing you wouldn't prove anything. Get out of my sight.",
+      "You bore me. Leave, before I change my mind.",
+      "This was never a fight. Go, while I still find you amusing.",
+      "I've crushed stronger fools than you. Walk away."
+    ],
+    "friendly": [
+      "We've talked. I won't raise a hand against you now.",
+      "You spoke to me like I mattered. I can't fight you after that.",
+      "No... not you. We understand each other now. Go in peace.",
+      "I like you too much for this. Get out of here before the others notice.",
+      "You showed me kindness. I owe you the same.",
+      "This fight ends here. I won't hurt someone who listened to me."
+    ],
+    "pity": [
+      "Look at you... there's no honor in finishing this. Go.",
+      "You're already beaten. I won't stand over a corpse.",
+      "Enough. I don't fight the dying.",
+      "Take your fallen and go. I've seen enough blood today.",
+      "This isn't a fight anymore, it's a mercy killing. I'll pass.",
+      "Get your people out of here before it's too late."
+    ]
+  },
   "moonPhase": {
     "newMoon": "New Moon",
     "waxingCrescent": "Waxing Crescent",
@@ -69,6 +95,8 @@
     "skill": "Skill",
     "skills": "Skills",
     "basic": "Basic",
+    "wrestle": "Wrestle",
+    "talk": "Talk",
     "reload": "Reload",
     "run": "Run"
   },
@@ -156,8 +184,12 @@
     "learnableSkills": "Learnable Skills:"
   },
   "summon": {
-    "battleOnly": "Summons can only be used in battle!",
     "alreadyActive": "A summon is already active!",
+    "mapWalks": "{name} answers the call and walks with the party for {steps} steps.",
+    "mapBound": "{name} answers the call and walks with the party until it is sent away.",
+    "mapExpired": "The binding runs out, and {name} slips back where it came from.",
+    "mapReplaced": "{name} is let go to make room for what is being called.",
+    "noBodyToWalk": "{name} has no body it could walk beside the party in.",
     "summoned": "Summoned {name}!",
     "dismissed": "{name} was sent away.",
     "slain": "{name} was destroyed and could not be held.",
@@ -338,5 +370,15 @@
       "the Last Extraction",
       "who seeps upward"
     ]
+  },
+  "weapons": {
+    "pair": "{actor} takes up {first} and {second}."
+  },
+  "escape": {
+    "failed": "You fail to break away!",
+    "boss": "There is no escaping this foe!"
+  },
+  "hud": {
+    "elementChip": "{element} {rate}x"
   }
 }

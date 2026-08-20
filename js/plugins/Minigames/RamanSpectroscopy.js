@@ -575,6 +575,30 @@
         return events[0] || null;
     }
 
+    // A scan is a one-time discovery per savegame. Regular maps are addressed
+    // by mapId + local tile; the shared procedural map (636) reuses the same
+    // mapId and local layout everywhere, so its objects are addressed by the
+    // world square they were generated on instead.
+    function scanKeyForEvent(ev) {
+        const mapId = $gameMap.mapId();
+        const wmt = window.WorldMapTransfer;
+        if (wmt && mapId === wmt.procMapId) {
+            const wc = wmt.currentWorldCoords();
+            return `${mapId}:${wc.x},${wc.y}:${ev.x},${ev.y}`;
+        }
+        return `${mapId}:${ev.x},${ev.y}`;
+    }
+
+    function grantScanKnowledge(ev) {
+        if (!ev || !$gameSystem || !$gameSystem.addKnowledge) return;
+        const key = scanKeyForEvent(ev);
+        if (!$gameSystem._ramanScanLog) $gameSystem._ramanScanLog = {};
+        if ($gameSystem._ramanScanLog[key]) return;
+        $gameSystem._ramanScanLog[key] = true;
+        $gameSystem.addKnowledge(1);
+        if (window.ParchmentToast) window.ParchmentToast.reward({ knowledge: 1 });
+    }
+
     function seededRNG(seed) {
         let s = (seed >>> 0) || 1;
         return () => {
@@ -1052,6 +1076,47 @@
     // PLUGIN COMMAND
     // =========================================================
 
+    // A Hyperdeck with a probe head fitted is a scanner the player carries, so
+    // the analysis stops being something an event has to offer and becomes
+    // something you can just do to whatever you are standing in front of.
+    function hasProbeFitted() {
+        return !!(window.HyperDeck && window.HyperDeck.hasFittedTag
+            && window.HyperDeck.hasFittedTag('RamanProbe'));
+    }
+
+    function openScan(ev, result) {
+        grantScanKnowledge(ev);
+        window._ramanDisplay = new RamanDisplay(
+            result.materialKey, result.objectType,
+            ev ? ev.event().name : T('Raman.unknown'));
+        SceneManager.push(Scene_RamanScan);
+    }
+
+    // Runs after the normal action button has had its go: if nothing on the map
+    // wanted the press and the thing in front can be read, the probe reads it.
+    const _Game_Player_triggerButtonAction = Game_Player.prototype.triggerButtonAction;
+    Game_Player.prototype.triggerButtonAction = function () {
+        if (_Game_Player_triggerButtonAction.call(this)) return true;
+        if (!Input.isTriggered('ok') || !hasProbeFitted()) return false;
+        const ev = getEventInFront();
+        const result = getMaterialForEvent(ev);
+        if (!result) return false;
+        SoundManager.playOk();
+        openScan(ev, result);
+        return true;
+    };
+
+    window.RamanScanner = {
+        hasProbe: hasProbeFitted,
+        scanFront() {
+            const ev = getEventInFront();
+            const result = getMaterialForEvent(ev);
+            if (!result) return false;
+            openScan(ev, result);
+            return true;
+        }
+    };
+
     PluginManager.registerCommand(pluginName, 'ScanFront', function () {
         // console.log('[Raman] ScanFront command triggered');
         // console.log('[Raman] Player dir:', $gamePlayer.direction(), '| x:', $gamePlayer.x, 'y:', $gamePlayer.y);
@@ -1075,6 +1140,8 @@
         // console.log('[Raman] Creating display for material:', result.materialKey, '| type:', result.objectType);
         // console.log('[Raman] SceneManager._scene:', SceneManager._scene);
         // console.log('[Raman] Graphics.width/height:', Graphics.width, Graphics.height);
+
+        grantScanKnowledge(ev);
 
         const display = new RamanDisplay(
             result.materialKey,

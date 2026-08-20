@@ -26,10 +26,11 @@
   "diary": "Diary",
   "bestiary": "Bestiary",
   "cards": "Cards",
-  "archive": "Archive",
+  "archive": "Help",
   "factions": "Factions",
   "assets": "Assets",
   "hypernet": "Hypernet",
+  "hyperdeck": "Hyperdeck",
   "multiplayer": "Multiplayer",
   "save": "Save",
   "preferences": "Preferences",
@@ -38,6 +39,7 @@
   "returnToShip": "Return to Ship",
   "teleportToShip": "Teleport to Ship",
   "returnToWorldMap": "Return to map",
+  "returnToElevator": "Return to the elevator",
   "chooseLandingSite": "Choose landing site",
   "stopTravel": "Stop travel"
  },
@@ -97,6 +99,8 @@
   "none": "None",
   "left": "Left {date}",
   "levelAbbr": "Lv.",
+  "switchHintKeyboard": "TAB to switch member",
+  "switchHintGamepad": "L1 / R1 to switch member",
   "thatMember": "That member",
   "following": "Following",
   "setActive": "Set Active",
@@ -114,7 +118,7 @@
   "sleep": "Sleep",
   "hygiene": "Hygiene",
   "social": "Social",
-  "fun": "Fun"
+  "fun": "Mood"
  },
  "place": {
   "unknownLand": "Unknown Land",
@@ -181,7 +185,19 @@
   "childOf": "Child of {parent}",
   "groupPets": "Pets",
   "groupChildren": "Offspring",
-  "groupFollowers": "Followers"
+  "groupFollowers": "Followers",
+  "groupSummons": "Called",
+  "summoned": "Summoned",
+  "summonSteps": "Held for {steps} more steps.",
+  "summonBound": "Bound: it stays until it is sent away or falls in battle.",
+  "dismissSummon": "Send away",
+  "train": "Train",
+  "trainChoose": "Pick a training. About {days} days of travelling together.",
+  "trainProgress": "Training as {className}: {percent}%",
+  "trainPaused": "Paused while another companion walks with the party.",
+  "trainReady": "Trained as {className}, waiting for a place in the party.",
+  "trainJoin": "Join the party",
+  "trainStop": "Call it off"
  },
  "vehicles": {
   "spawn": "Spawn",

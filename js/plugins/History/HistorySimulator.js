@@ -98,6 +98,10 @@
 
     let HYPERPOWERS = {};
     let FACTIONS = {};
+    // Every leader in Leaders.json, filed under the nation they belong to
+    // (their `country`). A power seats the leaders of whatever it holds, so
+    // this is read whenever a nation changes hands (leaderPoolFor).
+    let LEADERS_BY_COUNTRY = {};
 
     // Module-level JSON reader. Everything the simulator needs is normally
     // already on window (DataService loads the db folder); this is the fallback
@@ -144,7 +148,33 @@
                 } else {
                     ideology = rawKey;
                 }
-                return { name: raw.name, ideology, years: raw.years || [1900, 2012], protected: raw.protected === true };
+                // `ideology` is the finished label, kept because saves and other
+                // readers already hold it. `ideologyKey` is the id it was
+                // resolved from, and is what a later read localizes through:
+                // this block runs before ConfigManager.load(), so the label it
+                // writes is always the English one.
+                return { name: raw.name, ideology, ideologyKey: rawKey || null,
+                         country: raw.country || null,
+                         // Whether this one may hold a power's MORAL office
+                         // (Leaders.json `moralGuide`); everyone else governs.
+                         moralGuide: raw.moralGuide === true,
+                         years: raw.years || [1900, 2012], protected: raw.protected === true };
+            }
+
+            // Everyone in the book, filed by the nation they belong to. This is
+            // what a conqueror inherits: hold a nation and its political class
+            // is available to you (HistoryManager.leaderPoolFor).
+            if (leadersData) {
+                for (const id of Object.keys(leadersData)) {
+                    const nation = leadersData[id] && leadersData[id].country;
+                    if (!nation) continue;
+                    const leader = resolveLeader(id);
+                    if (!leader) continue;
+                    (LEADERS_BY_COUNTRY[nation] = LEADERS_BY_COUNTRY[nation] || []).push(leader);
+                }
+                for (const list of Object.values(LEADERS_BY_COUNTRY)) {
+                    list.sort((a, b) => a.years[0] - b.years[0]);
+                }
             }
 
             if (hpData && hpData.hyperpowers) {
@@ -154,6 +184,13 @@
                     HYPERPOWERS[name] = {
                         leaders,
                         holy_leaders: holyLeaders.length ? holyLeaders : undefined,
+                        // The ground a power stands on: the region it may act
+                        // in at all, and the one nation nobody may ever take
+                        // off it. Both are read straight from Hyperpowers.json
+                        // (see regionOfPower / homeNationOwner below).
+                        region:      data.region      || null,
+                        homeNation:  data.homeNation  || null,
+                        secluded:    data.secluded === true,
                         population:  data.population  || 10000000,
                         economy:     data.economy     || 100,
                         military:    data.military    || 100,
@@ -172,13 +209,15 @@
                         realName = factionI18n.factions[key].name;
                     }
                     if (!FACTIONS[realName]) {
-                        const leaders = (f.leaders || []).map(resolveLeader).filter(Boolean);
-                        if (leaders.length === 0) {
-                            // Deleted again by exportProperNouns; the label a player
-                            // ever sees is History.leader.unknown.
-                            leaders.push({ name: 'Unknown Leader', ideology: 'Unknown', years: [1900, 2012] });  // i18n-ignore  placeholder leader id
-                        }
+                        // A faction has no roster of its own any more: it fields
+                        // the political class of the nations its power holds
+                        // (`parentHyperpower` in Factions.json, resolved against
+                        // LEADERS_BY_COUNTRY through leaderPoolFor). An orphan
+                        // faction fields nobody and simply never headlines an
+                        // event.
+                        const leaders = [];
                         FACTIONS[realName] = {
+                            parentPower: f.parentHyperpower || null,
                             leaders,
                             arcane:      f.arcane      || 50,
                             tech:        f.velocity    || f.tech || 50,
@@ -267,14 +306,16 @@
             'NumberStation', 'GeometryFailure', 'LanguageDecay', 'ThePaleVisitor', 'WeepingSky',
             'InfiniteStaircase', 'TelepathicPlague', 'ColorLoss', 'MoonSickness', 'SkyLeviathan',
             'ChronoEcho', 'CorpseAwakening', 'FleshTelegraph', 'StaticSermon', 'DreamQuarantine',
-            'ShadowTax', 'UnbornChoir', 'GlassRain', 'CompassFailure', 'AnimalCouncil', 'NameTheft'
+            'ShadowTax', 'UnbornChoir', 'GlassRain', 'CompassFailure', 'AnimalCouncil', 'NameTheft',
+            'PetrodemonAttack', 'PetrodemonSwarm', 'PetrodemonWellBreach', 'PetrodemonPact'
         ],
         occult: [
             'grimoire recovered', 'coven exposed', 'ritual sacrifice', 'summoning gone wrong',
             'relic consecration', 'ley survey', 'public exorcism', 'alchemical breakthrough',
             'necromantic scandal', 'blood moon rite', 'oracle installed', 'curse laid',
             'canonization', 'heresy trial', 'astrological decree', 'spirit binding',
-            'occult academy founded', 'forbidden translation'
+            'occult academy founded', 'forbidden translation',
+            'mass sacrifice', 'heart offering', 'sacrificial procession', 'temple reconsecrated'
         ],
         scientific: [
             'polar expedition', 'observatory built', 'particle experiment', 'vaccine trial',
@@ -315,6 +356,54 @@
         royal: 5
     };
 
+    // --- How dense a day is ---------------------------------------------------
+    // The century is written a day at a time. Everything that used to be rolled
+    // once a month keeps its old odds by being divided by the length of one:
+    // MONTHLY(x) is "x per month, asked every day". The random-event strand is
+    // the exception — it is the chronicle itself, and is set here rather than
+    // derived, at roughly twenty entries a year with several of them landing on
+    // one day.
+    const DAYS_PER_MONTH = 30.44;
+    const MONTHLY = (chance) => chance / DAYS_PER_MONTH;
+
+    // The date a record is stamped with, in LOCAL time. toISOString() answers in
+    // UTC, which stamps a January morning with the previous December's date
+    // anywhere west of Greenwich — invisible while everything was dated to the
+    // month, and a day off once records carry days.
+    const dayStr = (date) =>
+        `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    const monthStr = (date) =>
+        `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+    // The chance that a day carries any random event at all, and then the
+    // chances of a second, a third, a fourth and a fifth on top of it. Once a
+    // day is eventful it usually is not eventful just once: the Archive reads
+    // a busy day by its single most newsworthy entry (historyPickHeadline,
+    // HelpMenu.js), so a day needs real odds of rolling several before that
+    // pick means anything.
+    const DAILY_EVENT_CHANCE = 0.07;
+    const EXTRA_EVENT_CHANCES = [0.55, 0.30, 0.12, 0.04];
+
+    // Powers whose moral office passes by descent rather than by election.
+    // i18n-ignore-start  hyperpower ids
+    const MORAL_DYNASTIES = ['Britannia', 'Imperial State of Persia', 'Kukulkan Ascendancy',
+        'Illuminated Khanate', 'Petro Kingdom of Arabia', 'Democratic People\'s Republic of Korea',
+        'Solomonic Republic', 'Sanatana Rashtra', 'Dharma Directorate', 'Long Chile'];
+
+    // How the century is required to end, whatever year it is asked to end in.
+    // These four are the world's own furniture: the Archive, the wiki and every
+    // NPC who talks about the present day is written against them, so the last
+    // pass of the simulation seats them and nothing after it moves them.
+    const FINAL_MORAL_GUIDES = {
+        'Holy Vatican Empire': 'Pope Petrus II',
+    };
+    const FINAL_POLITICAL_LEADERS = {
+        'Britannia': 'Margaret Thatcher',
+        'Free States of Midwest': 'Bill Clinton',
+        'Eastern Seaboard': 'George W. Bush',
+    };
+    // i18n-ignore-end
+
     const ICONS = {
         political: 191,
         military: 115,
@@ -352,7 +441,16 @@
         'Goblin Horde': 'Warband Confederacy',
         'Free States of Midwest': 'Free Confederation',
         'Cascadia Protectorate': 'Crown Protectorate',
-        'Eastern Seaboard': 'Punitive Colony Regime'
+        'Eastern Seaboard': 'Punitive Colony Regime',
+        'Kukulkan Ascendancy': 'Divine Empire',
+        "Democratic People's Republic of Korea": 'Hereditary Republic',
+        'Dharma Directorate': 'Harmonious Empire',
+        'Illuminated Khanate': 'Illuminated Khanate',
+        'Solomonic Republic': 'Solomonic Republic',
+        'Petro Kingdom of Arabia': 'Petro Monarchy',
+        'Islamic Republic of Iran': 'Clerical Republic',
+        'Sanatana Rashtra': 'Dharmic Republic',
+        'Long Chile': 'Expansionist Republic'
     };
 
     // Independent (Neutral) nations get a stable, name-seeded flavor of
@@ -447,6 +545,12 @@
         if (isLK(v)) return renderLK(v.$k, v.$p);
         if (isFD(v)) return renderFD(v.$fd);
         if (isAR(v)) return renderAR(v);
+        // A plain string param is nearly always a world name: the nation an
+        // event happened in, the hyperpower or faction behind it, the leader who
+        // ordered it. Those are stored under their English name because that
+        // name is the id, so the label is resolved on the way out. Matching is
+        // whole-value and exact, so an event type id or a number passes through.
+        if (typeof v === 'string' && window.WorldNames) return window.WorldNames.any(v);
         return v;
     }
 
@@ -467,10 +571,14 @@
     }
 
     // The sentence for a stored record in the active language, falling back to
-    // the prose a world simulated before descriptions were keyed.
+    // the prose a world simulated before descriptions were keyed. That prose is
+    // finished English and cannot be rebuilt, but the world names inside it are
+    // still recognisable, so at least those follow the language.
     function renderRecord(rec) {
         if (!rec) return '';
-        return rec.descKey ? renderLK(rec.descKey, rec.descParams) : String(rec.description || '');
+        if (rec.descKey) return renderLK(rec.descKey, rec.descParams);
+        const prose = String(rec.description || '');
+        return window.WorldNames ? window.WorldNames.localize(prose) : prose;
     }
 
     // Which written-out field each kind of record rebuilds, and the key/params
@@ -632,11 +740,13 @@
             this._deadLeaders = new Set();
             this._currentLeaders = {};
             this._currentHolyLeaders = {};  // for powers with holy_leaders dual-track (e.g. Holy Vatican Empire)
+            this._currentMoralGuides = {};  // power → the leader holding its moral office
             this._currentFactionLeaders = {};
             this._nationHistory = {};   // country → [{date, controller, government, reason}]
             this._artifactRecords = {}; // "kind:id" → {name, date, action, holders:[...]}
             this._leaderDeaths = {};    // leader name → {date, cause}
             this._epidemics = [];       // the century's plagues and panics
+            this._earthRegionSet = null; // rebuilt from the countries below
 
             const fdm = FactionDataManager.instance;
             const useFdm = fdm && fdm._ready;
@@ -789,41 +899,105 @@
 
             const emptyWorld = isEmptyWorld();
 
+            // The century is written DAY BY DAY. A world's history used to move
+            // in monthly steps, which meant every conquest, plague and rite in
+            // it was dated the first of some month and nothing ever happened on
+            // the same day as anything else. Now every day is rolled, and a day
+            // can carry several entries: the rates below are per-day versions of
+            // the old per-month ones (DAY_RATE), so the passes that were monthly
+            // still land about as often as they did — they just land on a real
+            // date. The exception is the random-event strand, which is what a
+            // chronicle is mostly made of, and which is deliberately much denser
+            // than it was.
             while (date <= endDate) {
                 // An empty world's history simply stops: the run is cut on
-                // 1 January 2000 and every month after it is left blank rather
+                // 1 January 2000 and every day after it is left blank rather
                 // than generated and hidden, so nothing downstream (the
                 // Archive, the wiki, the news ticker) has to filter it out.
                 if (emptyWorld && date > EMPTY_WORLD_CUTOFF) break;
                 const year = date.getFullYear();
-                this.updateActiveLeaders(date);
+                const firstOfMonth = date.getDate() === 1;
 
-                // Monthly check for events
-                this.handleFixedEvents(date);
+                // Who is in office is a monthly question: a leader roster is
+                // dated in years, and re-reading it every day would cost 30x
+                // for an answer that cannot have changed.
+                if (firstOfMonth) {
+                    this.updateActiveLeaders(date);
+                    // A fixed event is keyed by its month (History.fixed.<yyyy-mm>),
+                    // so it is still read once, on the first.
+                    this.handleFixedEvents(date);
+
+                    const dateKey = monthStr(date);
+                    artifactEvents.filter(e => e.dateKey === dateKey).forEach(planned => {
+                        const artEvent = this.generateSpecificArtifactEvent(date, planned.item, planned.kind);
+                        if (artEvent) this._events.push(artEvent);
+                    });
+                }
+
                 this.handleEpidemics(date);
                 this.handleInternalPolitics(date, false);
                 this.handleInternalPolitics(date, true);
                 this.handleNationPolitics(date);
                 this.handleArtifactTransfers(date);
 
-                if (this._rand() < 0.15) {
+                // Several things can happen on one day, and on a busy day they
+                // do: one roll decides whether the day is eventful at all, and
+                // the rest decide how eventful.
+                let entries = this._rand() < DAILY_EVENT_CHANCE ? 1 : 0;
+                if (entries) {
+                    for (const chance of EXTRA_EVENT_CHANCES) {
+                        if (this._rand() >= chance) break;
+                        entries++;
+                    }
+                }
+                for (let i = 0; i < entries; i++) {
                     const event = this.generateRandomEvent(date);
                     if (event) this._events.push(event);
                 }
 
-                const dateKey = `${year}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                const plannedArtifacts = artifactEvents.filter(e => e.dateKey === dateKey);
-                plannedArtifacts.forEach(planned => {
-                    const artEvent = this.generateSpecificArtifactEvent(date, planned.item, planned.kind);
-                    if (artEvent) this._events.push(artEvent);
-                });
-
-                // Advance one month
-                date.setMonth(date.getMonth() + 1);
+                // Advance one day
+                date.setDate(date.getDate() + 1);
             }
 
+            this.sealFinalOffices();
             this.saveToGameSystem();
             console.log(`[HistorySimulator] Simulation complete. ${this._events.length} events generated.`);
+        }
+
+        // However the century went, it ends here. Petrus II is on the throne of
+        // Peter, Thatcher is in Downing Street, Clinton has the Free States and
+        // Bush has the Seaboard — the world every savegame opens into is written
+        // against those four, so the last pass of the simulation seats them and
+        // marks them protected, which keeps them there for the live chronicle
+        // that runs on afterwards.
+        sealFinalOffices() {
+            const seat = (table, into) => {
+                for (const [power, name] of Object.entries(table)) {
+                    if (!this._currentHyperpowers[power]) continue;
+                    const pool = [].concat(
+                        this._currentHyperpowers[power].holy_leaders || [],
+                        this.leaderPoolFor(power));
+                    const chosen = pool.find(l => l && l.name === name);
+                    if (!chosen) continue;
+                    chosen.protected = true;
+                    this._deadLeaders.delete(chosen.name);
+                    delete this._leaderDeaths[chosen.name];
+                    into[power] = chosen;
+                }
+            };
+            seat(FINAL_MORAL_GUIDES, this._currentMoralGuides);
+            seat(FINAL_MORAL_GUIDES, this._currentHolyLeaders);   // the old dual-track reader
+            seat(FINAL_POLITICAL_LEADERS, this._currentLeaders);
+        }
+
+        // The two offices, for anything that wants to print them.
+        getMoralGuide(power) {
+            const held = this._histField("moralGuides", this._currentMoralGuides) || {};
+            return held[power] || null;
+        }
+
+        getMoralGuides() {
+            return this._histField("moralGuides", this._currentMoralGuides) || {};
         }
 
         // Stable, name-seeded government label for a nation under a controller.
@@ -860,11 +1034,29 @@
 
         initNationRecords(startYear) {
             this._nationHistory = {};
+            // A nation that names a hyperpower as its `faction` is PART of it
+            // from the first day, whether or not the table also names it as the
+            // controller: the faction column is what the world starts sworn to.
+            // The Gods are the exception, since they hold no ground at all.
+            for (const [name, info] of Object.entries(this._currentCountries || {})) {
+                if (info.controller && info.controller !== 'Neutral') continue;  // i18n-ignore  controller id
+                const faction = info.faction;                                     // i18n-ignore  faction id
+                if (!faction || faction === 'Neutral') continue;                  // i18n-ignore  faction id
+                if (!this._currentHyperpowers[faction] || this.isSecludedPower(faction)) continue;
+                info.controller = faction;
+                void name;
+            }
+            // A power holds its own seat from the first day of the century,
+            // whatever the country table happens to say about it.
+            for (const [power, hp] of Object.entries(this._currentHyperpowers || {})) {
+                const seat = hp && hp.homeNation && (this._currentCountries || {})[hp.homeNation];
+                if (seat) seat.controller = power;
+            }
             for (const [name, info] of Object.entries(this._currentCountries || {})) {
                 const controller = info.controller || 'Neutral';  // i18n-ignore  controller id
                 const govId = this.governmentIdFor(controller, name);
                 this._nationHistory[name] = [{
-                    date: `${startYear}-01`,
+                    date: `${startYear}-01-01`,
                     controller,
                     government: governmentLabel(govId),
                     governmentId: govId,
@@ -892,6 +1084,81 @@
             });
         }
 
+        // --- Where a power may act -------------------------------------------
+        // A hyperpower that holds ground on one continent has no business on
+        // another: Britannia never annexes a nation of North America, and the
+        // Kukulkan Ascendancy never turns up in a Soviet story. A power whose
+        // region is not one of the regions the nations themselves carry — the
+        // global orders (Mages Guild, Archive Foundation, the Collective) and
+        // the off-world visitors (The Tourists, The Dargos) — is unconfined,
+        // which is exactly what being global means. All of it is read from
+        // Hyperpowers.json "region" and Countries.json "region".
+
+        // Every region the world's nations actually stand in.
+        _earthRegions() {
+            if (this._earthRegionSet) return this._earthRegionSet;
+            const set = new Set();
+            for (const info of Object.values(this._currentCountries || {})) {
+                if (info && info.region) set.add(info.region);
+            }
+            this._earthRegionSet = set;
+            return set;
+        }
+
+        regionOfPower(power) {
+            const hp = (this._currentHyperpowers || {})[power];
+            return (hp && hp.region) || null;
+        }
+
+        // The built-in fallback country table is Europe-only and carries no
+        // region of its own, so that is what an entry without one is.
+        regionOfNation(nation) {
+            const info = (this._currentCountries || {})[nation];
+            return (info && info.region) || 'Europe';   // i18n-ignore  region id
+        }
+
+        // True for a power that holds ground in exactly one earthly region.
+        isConfinedPower(power) {
+            const region = this.regionOfPower(power);
+            return !!region && this._earthRegions().has(region);
+        }
+
+        powerReaches(power, region) {
+            return !this.isConfinedPower(power) || this.regionOfPower(power) === region;
+        }
+
+        // A power that keeps to itself. The Gods hold no ground, take no
+        // nation and share no event with anybody: whatever they are doing, they
+        // are doing it to each other. The one traffic between heaven and the
+        // world is an artifact — see mayTradeArtifacts.
+        isSecludedPower(power) {
+            return ((this._currentHyperpowers || {})[power] || {}).secluded === true;
+        }
+
+        // Whether two powers may appear in the same event at all.
+        powersMayInteract(a, b) {
+            if (this.isSecludedPower(a) || this.isSecludedPower(b)) return false;
+            if (!this.isConfinedPower(a) || !this.isConfinedPower(b)) return true;
+            return this.regionOfPower(a) === this.regionOfPower(b);
+        }
+
+        // ...and the exception. A god may hand a relic to a world leader, and a
+        // world leader may help themselves to one out of heaven; that, and
+        // nothing else, is how the two ever end up in the same sentence.
+        mayTradeArtifacts(a, b) {
+            if (this.isSecludedPower(a) || this.isSecludedPower(b)) return true;
+            return this.powersMayInteract(a, b);
+        }
+
+        // The power a nation is the seat of, if any: its capital ground, which
+        // world generation may never take off it and which never revolts.
+        homeNationOwner(nation) {
+            for (const [power, hp] of Object.entries(this._currentHyperpowers || {})) {
+                if (hp && hp.homeNation === nation) return power;
+            }
+            return null;
+        }
+
         // Monthly chance that one nation changes hands: a hyperpower annexes /
         // conquers it (its government becomes the conqueror's archetype), or a
         // controlled nation wins independence and restores its own government.
@@ -900,12 +1167,15 @@
             const nations = Object.keys(this._currentCountries || {});
             const powers = Object.keys(this._currentHyperpowers || {});
             if (!nations.length || !powers.length) return;
-            if (this._rand() > 0.035) return;
+            if (this._rand() > MONTHLY(0.035)) return;
 
             const nation = nations[Math.floor(this._rand() * nations.length)];
+            // A power's own seat is not on the table: Ireland is the Mages
+            // Guild's and stays theirs, in every century this rolls.
+            if (this.homeNationOwner(nation)) return;
             const info = this._currentCountries[nation];
             const current = info.controller || 'Neutral';  // i18n-ignore  controller id
-            const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            const dateStr = dayStr(date);
             const prevRecs = this._nationHistory[nation];
             const prevRec = prevRecs && prevRecs.length ? prevRecs[prevRecs.length - 1] : null;
             // A record written before governments were keyed keeps its label.
@@ -927,7 +1197,11 @@
                 return;
             }
 
-            const candidates = powers.filter(p => p !== current);
+            // Only powers whose reach covers this nation's own region, and only
+            // powers that take nations at all (the Gods do not).
+            const region = this.regionOfNation(nation);
+            const candidates = powers.filter(p => p !== current
+                && !this.isSecludedPower(p) && this.powerReaches(p, region));
             if (!candidates.length) return;
             let total = 0;
             const weights = candidates.map(p => {
@@ -1006,8 +1280,8 @@
         }
 
         handleEpidemics(date) {
-            // Roughly one remembered epidemic every four years.
-            if (this._rand() > 0.021) return;
+            // Roughly one remembered epidemic every four years, asked daily.
+            if (this._rand() > MONTHLY(0.021)) return;
             const pool = this._epidemicDiseases();
             const towns = this._epidemicTowns();
             if (!pool.length || !towns.length) return;
@@ -1048,8 +1322,8 @@
             const infected = Math.round((900 + this._rand() * 26000) * places.length *
                 (disease.r0 > 4 ? 1.8 : 1));
             const deaths = Math.round(infected * (disease.cfr || 0) * (0.35 + this._rand() * 0.5));
-            const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-            const endStr = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}`;
+            const dateStr = dayStr(date);
+            const endStr = dayStr(end);
             const nameKey = hysteria ? 'History.epidemic.hysteriaName' : 'History.epidemic.medicalName';
             const nameParams = { disease: disease.name, origin: townName(origin), year: date.getFullYear() };
 
@@ -1083,7 +1357,7 @@
         // is appended to the artifact's permanent provenance record.
         handleArtifactTransfers(date) {
             for (const rec of Object.values(this._artifactRecords)) {
-                if (this._rand() > 0.002) continue;
+                if (this._rand() > MONTHLY(0.002)) continue;
                 // An artifact in the party's own hands is out of the world's
                 // reach: nobody steals, buys or exhumes a thing off the people
                 // who are carrying it.
@@ -1096,8 +1370,22 @@
                 const holderName = pool[actor] ? pool[actor].name : actor;
                 const last = rec.holders[rec.holders.length - 1];
                 if (last && last.holder === holderName) continue;
-                const action = ARTIFACT_TRANSFER_ACTIONS[Math.floor(this._rand() * ARTIFACT_TRANSFER_ACTIONS.length)];
-                const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                // A relic is the only thing that crosses between heaven and the
+                // world, and it crosses in only two ways: the Gods give it to a
+                // world leader, or a world leader takes it off them.
+                const from = last ? last.power : rec.originPower;
+                const divine = !isFaction && (this.isSecludedPower(actor) || this.isSecludedPower(from));
+                let action;
+                if (divine) {
+                    action = this.isSecludedPower(from) ? (this._rand() < 0.5 ? 'was gifted' : 'stole') : 'stole';
+                } else if (!isFaction && from && from !== actor && !this.mayTradeArtifacts(actor, from)) {
+                    // Two powers with no business in each other's affairs do not
+                    // trade relics either; this one simply turns up elsewhere.
+                    continue;
+                } else {
+                    action = ARTIFACT_TRANSFER_ACTIONS[Math.floor(this._rand() * ARTIFACT_TRANSFER_ACTIONS.length)];
+                }
+                const dateStr = dayStr(date);
                 const howKey = 'History.artifact.action.' + action;
                 rec.holders.push({ holder: holderName, power: actor, since: dateStr,
                     how: T(howKey), howKey, howParams: null });
@@ -1118,11 +1406,110 @@
         // language the world is opened in; a plain string is still accepted.
         _markLeaderDead(name, date, cause) {
             this._leaderDeaths[name] = {
-                date: date.toISOString().split('T')[0],
+                date: dayStr(date),
                 cause: isLK(cause) ? renderLK(cause.$k, cause.$p) : (cause || null),
                 causeKey: isLK(cause) ? cause.$k : null,
                 causeParams: isLK(cause) ? cause.$p : null
             };
+        }
+
+        // Whoever a power can put in office right now: its own roster, plus the
+        // roster of every nation it currently holds. A conquered nation hands
+        // its political class to its conqueror — take Persia and its ministers
+        // are yours to seat; lose it and they go back to being Persia's problem.
+        // A leader's nation is `country` in Leaders.json.
+        leaderPoolFor(power) {
+            const own = this._currentHyperpowers[power]?.leaders || [];
+            const index = LEADERS_BY_COUNTRY;
+            if (!index) return own;
+            const pool = own.slice();
+            const seen = new Set(own.map(l => l && l.name));
+            for (const [nation, info] of Object.entries(this._currentCountries || {})) {
+                if ((info.controller || 'Neutral') !== power) continue;   // i18n-ignore  controller id
+                for (const leader of index[nation] || []) {
+                    if (leader && !seen.has(leader.name)) { seen.add(leader.name); pool.push(leader); }
+                }
+            }
+            return pool;
+        }
+
+        // --- The two offices ---------------------------------------------------
+        // Every hyperpower has a POLITICAL leader and a MORAL guide, and they
+        // are never the same person. The political one governs and is replaced
+        // by whatever the century does to them; the moral one is drawn from a
+        // fixed, limited set (`moralGuide: true` in Leaders.json) and is
+        // replaced by that power's own rule of succession:
+        //
+        //   dynastic     the crown or the throne, in order of reign. Britannia's
+        //                kings and queens, the Shah of the Imperial State of
+        //                Persia. Whoever's years cover the date wears it.
+        //   conclave     elected from whoever is eligible and alive, and held
+        //                until death. The Holy Vatican Empire's popes, chosen
+        //                out of the cardinals on file.
+        //   seniority    the oldest eligible elder, and when they die the next
+        //                oldest. The Archive Foundation, which has never
+        //                elected anything in its life.
+        //
+        // A power with no eligible set simply has no moral guide, which is its
+        // own kind of answer.
+        moralSuccessionOf(power) {
+            if (power === 'Archive Foundation') return 'seniority';                       // i18n-ignore  power id
+            if (power === 'Holy Vatican Empire') return 'conclave';                       // i18n-ignore  power id
+            if (MORAL_DYNASTIES.includes(power)) return 'dynastic';                       // i18n-ignore  power id
+            return 'dynastic';
+        }
+
+        // Everyone this power may raise to its moral office: its own roster and
+        // its second track, never a leader borrowed from a conquered nation —
+        // a crown is not something you inherit by invasion.
+        moralPoolFor(power) {
+            const hp = this._currentHyperpowers[power] || {};
+            return [].concat(hp.holy_leaders || [], hp.leaders || []).filter(l => l && l.moralGuide);
+        }
+
+        updateMoralGuide(power, date) {
+            const year = date.getFullYear();
+            const pool = this.moralPoolFor(power);
+            if (!pool.length) { this._currentMoralGuides[power] = null; return; }
+            // A power with exactly one eligible guide has no succession at all.
+            // The Solomonic Republic answers to Solomon, who does not die and is
+            // not replaced; that is the whole of its constitution.
+            if (pool.length === 1) {
+                this._deadLeaders.delete(pool[0].name);
+                this._currentMoralGuides[power] = pool[0];
+                return;
+            }
+            const living = pool.filter(l => !this._deadLeaders.has(l.name));
+            const current = this._currentMoralGuides[power];
+            if (current && living.includes(current)) {
+                // A dynasty still hands over when the reign ends; a conclave and
+                // an archive hold their office until death.
+                if (this.moralSuccessionOf(power) !== 'dynastic') return;
+                if (year >= current.years[0] && year <= current.years[1]) return;
+            }
+            const succession = this.moralSuccessionOf(power);
+            if (succession === 'seniority') {
+                // The oldest elder on file: the earliest-born of those still
+                // living. When they die the next oldest takes the office.
+                this._currentMoralGuides[power] = living.slice()
+                    .sort((a, b) => a.years[0] - b.years[0])[0] || null;
+                return;
+            }
+            const inReign = living.filter(l => year >= l.years[0] && year <= l.years[1]);
+            if (succession === 'conclave') {
+                // Elected out of whoever is eligible now, and kept until death.
+                const field = inReign.length ? inReign : living;
+                this._currentMoralGuides[power] = field[Math.floor(this._rand() * field.length)] || null;
+                return;
+            }
+            // Dynastic: whoever's reign covers the date; failing that the next
+            // in line to come; failing that the last of the line still living,
+            // who holds it as a regent. Only a line that has died out entirely
+            // leaves the office empty.
+            this._currentMoralGuides[power] = inReign[0]
+                || living.filter(l => l.years[0] > year).sort((a, b) => a.years[0] - b.years[0])[0]
+                || living.slice().sort((a, b) => b.years[0] - a.years[0])[0]
+                || null;
         }
 
         updateActiveLeaders(date) {
@@ -1130,8 +1517,10 @@
             const month = date.getMonth();
             for (let power in this._currentHyperpowers) {
                 const hp = this._currentHyperpowers[power];
-                // Political leaders
-                const available = (hp.leaders || []).filter(l => {
+                // Political leaders. A moral guide never governs: the crown does
+                // not stand for election, and the Shah is not his own minister.
+                const available = this.leaderPoolFor(power).filter(l => {
+                    if (l.moralGuide) return false;
                     if (power === 'Goblin Horde' && (year < 1970 || (year === 1970 && month < 4))) {  // i18n-ignore  hyperpower id
                         return false;
                     }
@@ -1140,6 +1529,7 @@
                 if (!this._currentLeaders[power] || !available.includes(this._currentLeaders[power])) {
                     this._currentLeaders[power] = available[0] || null;
                 }
+                this.updateMoralGuide(power, date);
                 // Holy leaders (dual-track system, e.g. Holy Vatican Empire)
                 if (hp.holy_leaders) {
                     const holyAvail = hp.holy_leaders.filter(l =>
@@ -1165,7 +1555,12 @@
                 }
             }
             for (let faction in this._currentFactions) {
-                const available = this._currentFactions[faction].leaders.filter(l =>
+                const entry = this._currentFactions[faction];
+                // Its power's pool, which is every nation that power holds.
+                if (entry.parentPower && this._currentHyperpowers[entry.parentPower]) {
+                    entry.leaders = this.leaderPoolFor(entry.parentPower);
+                }
+                const available = (entry.leaders || []).filter(l =>
                     year >= l.years[0] && year <= l.years[1] && !this._deadLeaders.has(l.name)
                 );
                 if (!this._currentFactionLeaders[faction] || !available.includes(this._currentFactionLeaders[faction])) {
@@ -1175,7 +1570,7 @@
         }
 
         handleFixedEvents(date) {
-            const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            const dateStr = monthStr(date);
             const fixed = this.getFixedEvent(dateStr);
             if (fixed) {
                 this._events.push({
@@ -1207,6 +1602,12 @@
             // History.fixed.<yyyy-mm>, keyed by the date handleFixedEvents
             // looked it up with.
             const events = {
+                '1900-04': {
+                    type: 'occult'
+                },
+                '1918-03': {
+                    type: 'paranormal'
+                },
                 '1914-07': {
                     type: 'military',
                     callback: (mgr) => { for (let h in mgr._currentHyperpowers) mgr._currentHyperpowers[h].military += 30; }
@@ -1232,6 +1633,9 @@
                         mgr._currentHyperpowers['Soviet Union'].economy += 50;
                         mgr._currentHyperpowers['Britannia'].economy += 50;
                     }
+                },
+                '1961-09': {
+                    type: 'paranormal'
                 },
                 '1970-05': {
                     type: 'paranormal',
@@ -1263,15 +1667,41 @@
                         }
                     }
                 },
+                '1978-12': {
+                    type: 'paranormal'
+                },
                 '1992-01': {
                     type: 'paranormal',
                     callback: (mgr) => { for (let f in mgr._currentFactions) mgr._currentFactions[f].arcane += 10; }
+                },
+                '1996-01': {
+                    type: 'paranormal'
+                },
+                '1999-07': {
+                    type: 'paranormal',
+                    callback: (mgr) => { const t = mgr._currentHyperpowers['The Tourists']; if (t) t.information += 30; }
+                },
+                '1999-12': {
+                    type: 'disaster',
+                    callback: (mgr) => {
+                        for (let h in mgr._currentHyperpowers) mgr._currentHyperpowers[h].population *= 0.97;
+                        const af = mgr._currentFactions['Archive Foundation'];
+                        if (af) af.arcane += 20;
+                    }
                 },
                 '2001-09': {
                     type: 'military',
                     callback: (mgr) => {
                         mgr._currentHyperpowers['Britannia'].information += 80;
                         for (let f in mgr._currentFactions) mgr._currentFactions[f].information *= 0.7;
+                    }
+                },
+                '2001-12': {
+                    type: 'occult',
+                    callback: (mgr) => {
+                        const hve = mgr._currentHyperpowers['Holy Vatican Empire'];
+                        if (hve) hve.arcane = Math.max(0, hve.arcane - 30);
+                        for (let f in mgr._currentFactions) mgr._currentFactions[f].arcane += 15;
                     }
                 }
             };
@@ -1286,9 +1716,10 @@
             const actorNames = Object.keys(actors);
 
             actorNames.forEach(actor => {
-                if (this._rand() > 0.02) return; // Rare check
+                if (this._rand() > MONTHLY(0.02)) return; // Rare check
 
                 const available = (isFaction ? this._currentFactions[actor] : this._currentHyperpowers[actor]).leaders.filter(l =>
+                    !l.moralGuide &&
                     year >= l.years[0] && year <= l.years[1] && !this._deadLeaders.has(l.name)
                 );
 
@@ -1357,7 +1788,7 @@
 
                     if (outcome) {
                         this._events.push({
-                            date: date.toISOString().split('T')[0],
+                            date: dayStr(date),
                             category: 'internal',
                             type: struggleType,
                             ...descOf(outcome.$k, outcome.$p),
@@ -1403,7 +1834,7 @@
             const results = this.applyEffects(actor, isFaction, type);
 
             return {
-                date: date.toISOString().split('T')[0],
+                date: dayStr(date),
                 category: category,
                 type: type,
                 ...descOf(desc.$k, desc.$p),
@@ -1419,7 +1850,10 @@
         // record stores. The draws made here are unchanged, so a seed still
         // writes the same century.
         getEventDescriptor(category, type, actor, leader, year) {
-            const rawIdeology = leader.ideology || leader.personality;
+            // The id, not the label: `ideology` was written out in English when
+            // the roster loaded, and FD() can only translate the "ideology.x" /
+            // "personalities.x" path it came from.
+            const rawIdeology = leader.ideologyKey || leader.ideology || leader.personality;
             // FactionDataManager.t returns the path verbatim when it has no
             // entry, so the placeholder needs resolving here rather than there.
             const ideology = rawIdeology === 'Unknown'   // i18n-ignore: placeholder ideology id
@@ -1510,6 +1944,7 @@
                 WM.setField("history", "artifactRecords", this._artifactRecords);
                 WM.setField("history", "leaderDeaths", this._leaderDeaths);
                 WM.setField("history", "holyLeaders", this._currentHolyLeaders);
+                WM.setField("history", "moralGuides", this._currentMoralGuides);
                 WM.setField("history", "epidemics", this._epidemics);
                 if (this._seed !== undefined) {
                     WM.setField("history", "seed", this._seed);
@@ -1529,6 +1964,7 @@
                 $gameSystem._historicalArtifactRecords = this._artifactRecords;
                 $gameSystem._historicalLeaderDeaths = this._leaderDeaths;
                 $gameSystem._historicalHolyLeaders = this._currentHolyLeaders;
+                $gameSystem._historicalMoralGuides = this._currentMoralGuides;
                 $gameSystem._historicalEpidemics = this._epidemics;
                 if (this._seed !== undefined) {
                     $gameSystem._historySeed = this._seed;
@@ -1552,6 +1988,7 @@
                     hyperpowers: "_historicalHyperpowers",
                     factions: "_historicalFactions",
                     deadLeaders: "_historicalDeadLeaders",
+                    moralGuides: "_historicalMoralGuides",
                     startYear: "_historicalStartYear",
                     countries: "_historicalCountries",
                     nationHistory: "_historicalNationHistory",
@@ -1630,11 +2067,34 @@
             return renderRecord(rec);
         }
 
+        // A leader's ideology, in the language being played. The roster loads
+        // before ConfigManager does, so the `ideology` field on the record is
+        // always English; `ideologyKey` is the id it came from and is what the
+        // faction vocabulary can answer. A save written before the key was
+        // stored keeps the English label.
+        ideologyLabel(leader) {
+            if (!leader) return '';
+            const key = leader.ideologyKey;
+            if (key && key !== 'Unknown') {   // i18n-ignore: placeholder ideology id
+                const label = renderFD(key);
+                if (label && label !== key) return label;
+            }
+            const raw = leader.ideology || leader.personality || '';
+            return raw === 'Unknown' ? T('History.leader.unknownIdeology') : String(raw);   // i18n-ignore: placeholder ideology id
+        }
+
+        // Events mentioning a name. The name is an English id and the sentences
+        // it is searched in are written in the language being played, so the
+        // label the id now reads as is searched for as well; a world simulated
+        // before descriptions were keyed still holds the English.
         getEventsAbout(name, limit = 20) {
             const needle = String(name || "");
             if (!needle) return [];
+            const label = window.WorldNames ? window.WorldNames.any(needle) : needle;
             return this.getEvents()
-                .filter(e => e && typeof e.description === "string" && e.description.includes(needle))
+                .filter(e => e && typeof e.description === "string" &&
+                             (e.description.includes(needle) ||
+                              (label !== needle && e.description.includes(label))))
                 .slice(-limit);
         }
 
@@ -1652,7 +2112,12 @@
 
             let actionLK;
             if (action === 'stole') {
-                const targets = actorPool.filter(a => a !== actor);
+                // Powers only steal from powers they could plausibly reach:
+                // two hyperpowers of different regions never share an event
+                // (powersMayInteract). Factions hold no ground, so they are
+                // free to rob each other wherever they are.
+                const targets = actorPool.filter(a => a !== actor
+                    && (isFaction || this.mayTradeArtifacts(actor, a)));
                 if (targets.length > 0) {
                     const target = targets[Math.floor(this._rand() * targets.length)];
                     const targetLeader = isFaction ? this._currentFactionLeaders[target] : this._currentLeaders[target];
@@ -1666,7 +2131,7 @@
             }
             const actionStr = renderLK(actionLK.$k, actionLK.$p);
 
-            const dateStr = date.toISOString().split('T')[0];
+            const dateStr = dayStr(date);
 
             if (kind) {
                 this._artifactRecords[`${kind}:${item.id}`] = {
@@ -1880,9 +2345,7 @@
         return new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), 12, 0, 0);
     }
 
-    function liveDateStr(date) {
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    }
+    const liveDateStr = dayStr;
 
     HistoryManager.prototype._liveGet = function (prop) {
         if (window.WorldManager) return window.WorldManager.getField("history", prop);
@@ -1993,6 +2456,14 @@
             }
             const event = this.generateRandomEvent(date);
             if (event) this._events.push(event);
+            // A live day can be as busy as a simulated one: the same odds of
+            // a second, third, fourth and fifth entry apply on top of the
+            // guaranteed first.
+            for (const chance of EXTRA_EVENT_CHANCES) {
+                if (this._rand() >= chance) break;
+                const extra = this.generateRandomEvent(date);
+                if (extra) this._events.push(extra);
+            }
         } catch (e) {
             console.warn("[HistorySimulator] live day", liveDateStr(date), e);
         } finally {

@@ -150,5 +150,11 @@
   "oddsSelf": "own hands {value}",
   "surgeryFailed": "The operation failed.",
   "surgeryFailedWound": "The knife slipped: the {part} took {damage} damage.",
-  "surgeryFailedPartLost": "The knife slipped, and the {part} was lost."
+  "surgeryFailedPartLost": "The knife slipped, and the {part} was lost.",
+  "needsBareArm": "Needs a bare arm",
+  "needsBareLimb": "Needs a bare limb",
+  "attachmentPoint": "Attachment Point",
+  "chooseAttachmentPoint": "Choose the limb to fit {p1} onto. A hand goes onto a leg as readily as onto an arm.",
+  "attachTo": "Fit here",
+  "attachedTo": "Fitted to {p1}"
 }

@@ -116,8 +116,11 @@
     if (spec) window.SpecializationXP.awardCapped(spec, 2);
   }
 
-  function graftBodyPart(actor, item, partKey, archPart, itemId) {
+  function graftBodyPart(actor, item, partKey, archPart, itemId, socketKey) {
     if (!actor._bodyParts) actor._bodyParts = {};
+    // The socket is filled again, so the portrait draws that limb once more
+    // (Health_Core's severed-part register, read by partStates).
+    if (actor._severedParts) delete actor._severedParts[partKey];
     const hpPercentage = item.hpPercent / 100;
     actor._bodyParts[partKey] = {
       name: item.name,
@@ -129,10 +132,18 @@
       childParts: archPart.childParts || [],
       multiple: archPart.multiple || false,
       appliedStatEffect: false,
+      // A prosthetic arm is still an arm: it holds a weapon if the part it
+      // replaced did (ItemSystem/ItemSystemEquipment.js).
+      canHoldWeapon: !!archPart.canHoldWeapon,
       hpPercent: item.hpPercent,
       statEffect: item.statEffect,
       skillId: item.skillId || 0,
       itemId: itemId,
+      // The limb it was fitted onto, when it is a hand or a foot. Names alone
+      // cannot say it any more: a foot may be screwed onto an arm, and this is
+      // what tells the body it comes off with that arm rather than with the
+      // leg it is named after (HealthCore.dependentPartKeys).
+      attachedTo: socketKey || null,
     };
 
     if (item.statEffect && item.statBonus > 0) {
@@ -344,12 +355,45 @@
     weather: surgeryWeather
   };
 
-  // Sockets on this body that any implant fits, in the body's own part order.
+  // A hand is not something that can be stuck straight onto a body, and neither
+  // is a foot: both go on the end of a limb, so fitting either needs an arm or
+  // a leg with nothing on the end of it yet. To rebuild a whole leg the surgeon
+  // therefore fits the leg first and the foot after
+  // (window.HealthCore.openLimbSockets).
+  //
+  // Which limb is the patient's business and nothing else's: a left hand goes
+  // onto a right arm perfectly well, a foot goes onto an arm, a hand goes onto
+  // a leg, and somebody may leave the clinic with two right arms. The one thing
+  // a limb cannot do is carry two.
+  //
+  // Returns the reason the graft is refused, or null when it can go ahead.
+  function graftBlockedReason(actor, partKey) {
+    const HC = window.HealthCore;
+    if (!HC || !HC.needsLimbSocket || !HC.openLimbSockets) return null;
+    // Limbs, organs and every grasping thing that stands on its own - a
+    // tentacle, a pseudopod, a wisp - go straight onto the body and add their
+    // weapon slot with them. Only what fits on the END of a limb waits for one.
+    if (!HC.needsLimbSocket(partKey)) return null;
+    if (HC.openLimbSockets(actor).length > 0) return null;
+    return T('Prosthetics.needsBareLimb');
+  }
+
+  // The limb a graft goes onto: the one the patient picked, or the only one
+  // going. Anything that is not an extremity answers null and is fitted to the
+  // body itself, exactly as before.
+  function socketForGraft(actor, partKey, chosen) {
+    const HC = window.HealthCore;
+    if (!HC || !HC.needsLimbSocket || !HC.needsLimbSocket(partKey)) return null;
+    if (chosen) return chosen;
+    const open = HC.openLimbSockets(actor);
+    return open.length === 1 ? open[0] : null;
+  }
+
   function implantablePartKeys(actor) {
     if (!actor || !actor._bodyParts) return [];
     return Object.keys(actor._bodyParts).filter((k) => implantsForPart(k).length > 0);
   }
-  const getEnemyArchetypes = () => window.Health ? window.Health.EnemyArchetypes : null;
+  const getArchetypes = () => window.Health ? window.Health.Archetypes : null;
 
   // --- Utility constants & functions ---
 
@@ -406,6 +450,7 @@
         const hpPercentage = basePart.hp / 100;
         actor._bodyParts[partKey] = {
           name: getTranslated(basePart, "name"),
+          damageMsg: getTranslated(basePart, "damageMsg") || null,
           maxHp: Math.round(actor.mhp * hpPercentage),
           currentHp: Math.round(actor.mhp * hpPercentage),
           vital: basePart.vital,
@@ -441,9 +486,9 @@
   // Helper: look up statEffect for a part key
   function lookupStatEffect(partKey, part, actor) {
     if (part.statEffect) return part.statEffect;
-    const EnemyArchetypes = getEnemyArchetypes();
-    if (actor._currentArchetype && EnemyArchetypes) {
-      const arch = EnemyArchetypes[actor._currentArchetype];
+    const Archetypes = getArchetypes();
+    if (actor._currentArchetype && Archetypes) {
+      const arch = Archetypes[actor._currentArchetype];
       if (arch && arch.parts && arch.parts[partKey]) return arch.parts[partKey].statEffect;
     }
     return null;
@@ -519,10 +564,10 @@
     const cacheKey = `${mapId}_${x}_${y}_${dateKey}`;
     if (prostheticShopCache[cacheKey]) return prostheticShopCache[cacheKey];
 
-    const EnemyArchetypes = getEnemyArchetypes();
-    if (!EnemyArchetypes) return null;
+    const Archetypes = getArchetypes();
+    if (!Archetypes) return null;
 
-    const allKeys = Object.keys(EnemyArchetypes);
+    const allKeys = Object.keys(Archetypes);
     const dateNum = parseInt(dateKey.replace(/-/g, ''), 10);
     const base = mapId * 10000000 + x * 10000 + y * 100 + (dateNum % 10000);
     const seed = (base ^ _prostheticGetWorldSeed()) >>> 0;
@@ -542,10 +587,10 @@
 
   function buildBodyPartItemLookup() {
     const lookup = {};
-    const EnemyArchetypes = getEnemyArchetypes();
-    if (!EnemyArchetypes) return lookup;
-    for (const archKey of Object.keys(EnemyArchetypes)) {
-      const arch = EnemyArchetypes[archKey];
+    const Archetypes = getArchetypes();
+    if (!Archetypes) return lookup;
+    for (const archKey of Object.keys(Archetypes)) {
+      const arch = Archetypes[archKey];
       if (!arch || !arch.parts) continue;
       for (const partKey of Object.keys(arch.parts)) {
         const part = arch.parts[partKey];
@@ -605,6 +650,7 @@
           itemId: i,
           archetypeKey,
           partKey,
+          blockedReason: graftBlockedReason(actor, partKey),
           name: getTranslated(part, "name"),
           hpPercent: part.hpPercent,
           vital: part.vital,
@@ -697,9 +743,9 @@
   Window_ArchetypeSelect.prototype.maxCols = function () { return 3; };
 
   Window_ArchetypeSelect.prototype.makeCommandList = function () {
-    const EnemyArchetypes = getEnemyArchetypes();
-    if (!EnemyArchetypes) return;
-    for (const key of Object.keys(EnemyArchetypes)) {
+    const Archetypes = getArchetypes();
+    if (!Archetypes) return;
+    for (const key of Object.keys(Archetypes)) {
       const label = key.replace(/([A-Z])/g, " $1").trim();
       this.addCommand(label, "archetype", true, key);
     }
@@ -747,9 +793,9 @@
 
   Window_ArchetypePartList.prototype.setupPartList = function () {
     this._partList = [];
-    const EnemyArchetypes = getEnemyArchetypes();
-    if (!this._archetypeKey || !EnemyArchetypes) return;
-    const archetype = EnemyArchetypes[this._archetypeKey];
+    const Archetypes = getArchetypes();
+    if (!this._archetypeKey || !Archetypes) return;
+    const archetype = Archetypes[this._archetypeKey];
     if (!archetype || !archetype.parts) return;
 
     for (const partKey of Object.keys(archetype.parts)) {
@@ -784,6 +830,7 @@
       this._partList.push({
         isArchetypePart: true,
         partKey,
+        blockedReason: graftBlockedReason(this._actor, partKey),
         archetypeKey: this._archetypeKey,
         name: getTranslated(part, "name"),
         hpPercent: part.hpPercent,
@@ -807,7 +854,7 @@
     const width = rect.width - 8;
     this.contents.clearRect(rect.x, rect.y, rect.width, rect.height);
 
-    if (item.alreadyOwned) {
+    if (item.alreadyOwned || item.blockedReason) {
       this.contents.paintOpacity = 96;
       this.changeTextColor(getTextColor.call(this, 7));
     } else {
@@ -822,6 +869,9 @@
     if (item.alreadyOwned) {
       this.changeTextColor(getTextColor.call(this, 3));
       this.drawText(T('Prosthetics.owned'), x + width - 160, rect.y, 160, "right");
+    } else if (item.blockedReason) {
+      this.changeTextColor(getTextColor.call(this, 7));
+      this.drawText(item.blockedReason, x + width - 320, rect.y, 320, "right");
     } else {
       this.resetTextColor();
       this.drawText(formatPriceInEuros(item.cost), x + width - 160, rect.y, 160, "right");
@@ -852,7 +902,7 @@
 
   Window_ArchetypePartList.prototype.isOkEnabled = function () {
     const item = this._partList[this.index()];
-    return !!(item && !item.alreadyOwned);
+    return !!(item && !item.alreadyOwned && !item.blockedReason);
   };
 
   Window_ArchetypePartList.prototype.processOk = function () {
@@ -1072,7 +1122,7 @@
 
   Window_ReplacePartList.prototype.setupPartList = function () {
     this._partList = [];
-    const EnemyArchetypes = getEnemyArchetypes();
+    const Archetypes = getArchetypes();
     if (!this._actor || !this._actor._bodyParts) return;
 
     for (const partKey of Object.keys(this._actor._bodyParts)) {
@@ -1084,9 +1134,9 @@
 
       // Only show parts that have at least one replacement option in any archetype
       let hasReplacement = false;
-      if (EnemyArchetypes) {
-        for (const archKey of Object.keys(EnemyArchetypes)) {
-          const arch = EnemyArchetypes[archKey];
+      if (Archetypes) {
+        for (const archKey of Object.keys(Archetypes)) {
+          const arch = Archetypes[archKey];
           if (arch && arch.parts && arch.parts[partKey]) { hasReplacement = true; break; }
         }
       }
@@ -1195,11 +1245,11 @@
 
   Window_ReplaceArchetypePartList.prototype.setupPartList = function () {
     this._partList = [];
-    const EnemyArchetypes = getEnemyArchetypes();
-    if (!this._partKey || !EnemyArchetypes) return;
+    const Archetypes = getArchetypes();
+    if (!this._partKey || !Archetypes) return;
 
-    for (const archKey of Object.keys(EnemyArchetypes)) {
-      const archetype = EnemyArchetypes[archKey];
+    for (const archKey of Object.keys(Archetypes)) {
+      const archetype = Archetypes[archKey];
       if (!archetype || !archetype.parts) continue;
       const part = archetype.parts[this._partKey];
       if (!part) continue;
@@ -1207,7 +1257,7 @@
       const installCost = part.hpPercent * 1000 + Math.abs((part.statEffect && part.statEffect.amount) || 0) * 10000;
       const totalCost = installCost + this._removalFee;
       const statBonus = computeStatBonus(part.statEffect);
-      const partName = ConfigManager.language === "it" && part.name_it ? part.name_it : part.name;
+      const partName = getTranslated(part, "name");
       const archLabel = archKey.replace(/([A-Z])/g, " $1").trim();
 
       this._partList.push({
@@ -1921,7 +1971,7 @@
     this._selectedArchetypeKey = null;
     this._selectedPartKey = null;
     this._removalFee = 0;
-    this._viewState = 'party'; // 'party', 'command', 'install_archetype', 'install_part', 'remove_part', 'replace_part', 'replace_archetype', 'implant_select_part', 'implant_select_prosthetic', 'surgeon_select'
+    this._viewState = 'party'; // 'party', 'command', 'install_archetype', 'install_part', 'remove_part', 'replace_part', 'replace_archetype', 'implant_select_part', 'implant_select_prosthetic', 'surgeon_select', 'socket_select'
     this._activeListItems = [];
     this._notification = null;
     this._notificationTimeout = null;
@@ -2134,10 +2184,10 @@
       leftDesc = T('Prosthetics.chooseArchetypeCode') +
         (_dailyCount ? T('Prosthetics.suppliersAvailable', { count: _dailyCount }) : "");
 
-      const EnemyArchetypes = getEnemyArchetypes();
-      const _archetypeKeys = (this._dailyArchetypes && EnemyArchetypes)
-        ? this._dailyArchetypes.filter(k => EnemyArchetypes[k])
-        : (EnemyArchetypes ? Object.keys(EnemyArchetypes) : []);
+      const Archetypes = getArchetypes();
+      const _archetypeKeys = (this._dailyArchetypes && Archetypes)
+        ? this._dailyArchetypes.filter(k => Archetypes[k])
+        : (Archetypes ? Object.keys(Archetypes) : []);
       leftPageHTML += '<div class="shop-scroll" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start;">';
       cols = 2;
       leftPageHTML += `
@@ -2160,9 +2210,9 @@
       leftDesc = T('Prosthetics.selectALimbOrOrganToGraftFromTheSource', { p1: this._selectedArchetypeKey ? this._selectedArchetypeKey.replace(/([A-Z])/g, " $1").trim() : "" });
 
       this._activeListItems = [];
-      const EnemyArchetypes = getEnemyArchetypes();
-      if (this._selectedArchetypeKey && EnemyArchetypes) {
-        const archetype = EnemyArchetypes[this._selectedArchetypeKey];
+      const Archetypes = getArchetypes();
+      if (this._selectedArchetypeKey && Archetypes) {
+        const archetype = Archetypes[this._selectedArchetypeKey];
         if (archetype && archetype.parts) {
           for (const partKey of Object.keys(archetype.parts)) {
             const part = archetype.parts[partKey];
@@ -2191,6 +2241,7 @@
             this._activeListItems.push({
               isArchetypePart: true,
               partKey,
+              blockedReason: graftBlockedReason(this._selectedActor, partKey),
               archetypeKey: this._selectedArchetypeKey,
               name: getTranslated(part, "name"),
               hpPercent: part.hpPercent,
@@ -2208,7 +2259,7 @@
 
       leftPageHTML += '<div class="shop-scroll">';
       this._activeListItems.forEach((item, idx) => {
-        const opacity = item.alreadyOwned ? "opacity: 0.55;" : "";
+        const opacity = (item.alreadyOwned || item.blockedReason) ? "opacity: 0.55;" : "";
         leftPageHTML += `
           <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
               <div style="flex-grow:1;">
@@ -2219,7 +2270,9 @@
                   </p>
               </div>
               <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
-                  ${item.alreadyOwned ? T('Prosthetics.owned') : formatPriceInEuros(item.cost)}
+                  ${item.alreadyOwned ? T('Prosthetics.owned')
+                    : item.blockedReason ? item.blockedReason
+                    : formatPriceInEuros(item.cost)}
               </div>
           </div>
         `;
@@ -2315,7 +2368,7 @@
       leftDesc = T('Prosthetics.chooseAnActiveBiologicalPartToReplaceWithAnA');
 
       this._activeListItems = [];
-      const EnemyArchetypes = getEnemyArchetypes();
+      const Archetypes = getArchetypes();
       if (this._selectedActor && this._selectedActor._bodyParts) {
         for (const partKey of Object.keys(this._selectedActor._bodyParts)) {
           const part = this._selectedActor._bodyParts[partKey];
@@ -2325,9 +2378,9 @@
           const statBonus = computeStatBonus(statEffect);
 
           let hasReplacement = false;
-          if (EnemyArchetypes) {
-            for (const archKey of Object.keys(EnemyArchetypes)) {
-              const arch = EnemyArchetypes[archKey];
+          if (Archetypes) {
+            for (const archKey of Object.keys(Archetypes)) {
+              const arch = Archetypes[archKey];
               if (arch && arch.parts && arch.parts[partKey]) { hasReplacement = true; break; }
             }
           }
@@ -2366,13 +2419,13 @@
       leftDesc = T('Prosthetics.chooseAReplacementDeviceModelToInstallOntoPa', { p1: this._selectedPartKey || "" });
 
       this._activeListItems = [];
-      const EnemyArchetypes = getEnemyArchetypes();
-      const _replaceArchKeys = (this._dailyArchetypes && EnemyArchetypes)
-        ? this._dailyArchetypes.filter(k => EnemyArchetypes[k])
-        : (EnemyArchetypes ? Object.keys(EnemyArchetypes) : []);
+      const Archetypes = getArchetypes();
+      const _replaceArchKeys = (this._dailyArchetypes && Archetypes)
+        ? this._dailyArchetypes.filter(k => Archetypes[k])
+        : (Archetypes ? Object.keys(Archetypes) : []);
       if (this._selectedPartKey && _replaceArchKeys.length > 0) {
         for (const archKey of _replaceArchKeys) {
-          const archetype = EnemyArchetypes[archKey];
+          const archetype = Archetypes[archKey];
           if (!archetype || !archetype.parts) continue;
           const part = archetype.parts[this._selectedPartKey];
           if (!part) continue;
@@ -2380,7 +2433,7 @@
           const installCost = part.hpPercent * 1000 + Math.abs((part.statEffect && part.statEffect.amount) || 0) * 10000;
           const totalCost = installCost + this._removalFee;
           const statBonus = computeStatBonus(part.statEffect);
-          const partName = ConfigManager.language === "it" && part.name_it ? part.name_it : part.name;
+          const partName = getTranslated(part, "name");
           const archLabel = archKey.replace(/([A-Z])/g, " $1").trim();
 
           this._activeListItems.push({
@@ -2414,6 +2467,37 @@
               </div>
               <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
                   ${formatPriceInEuros(item.cost)}
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'socket_select') {
+      // A hand or a foot has to go somewhere, and with more than one bare limb
+      // going the patient says which. Sides mean nothing here: the list is
+      // every arm and leg with a free end, and any of them takes either.
+      const pendingGraft = this._pendingGraft;
+      leftTitle = T('Prosthetics.attachmentPoint');
+      leftDesc = T('Prosthetics.chooseAttachmentPoint', { p1: (pendingGraft && pendingGraft.item.name) || "" });
+
+      const socketHC = window.HealthCore;
+      const sockets = (socketHC && socketHC.openLimbSockets)
+        ? socketHC.openLimbSockets(this._selectedActor) : [];
+      this._activeListItems = sockets.map(partKey => {
+        const part = this._selectedActor._bodyParts[partKey];
+        return { isSocket: true, partKey, name: (part && part.name) || partKey, cost: 0 };
+      });
+
+      leftPageHTML += '<div class="shop-scroll">';
+      this._activeListItems.forEach((entry, idx) => {
+        leftPageHTML += `
+          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${entry.name}</h4>
+              </div>
+              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
+                  ${T('Prosthetics.attachTo')}
               </div>
           </div>
         `;
@@ -2725,6 +2809,21 @@
       return;
     }
 
+    // Nor is picking the limb: the card itself is the choice, and the operation
+    // goes ahead the moment it is made.
+    if (this._viewState === 'socket_select') {
+      const fitting = this._pendingGraft ? this._pendingGraft.item.name : "";
+      previewContainer.innerHTML = `
+        <div class="surgery-blueprint" style="font-family:'Lora', serif;">
+            <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.095em; margin:0 0 4px 0;">${T('Prosthetics.attachmentPoint')}</h4>
+            <p style="margin:0; font-size:0.892em; line-height:1.4; color:#5d483b;">${T('Prosthetics.attachedTo', { p1: item.name })}</p>
+            <p style="margin:6px 0 0; font-size:0.892em; line-height:1.4; color:#5d483b;">${fitting}</p>
+        </div>
+      `;
+      UIShopInputManager.actionElements = [];
+      return;
+    }
+
     const actor = this._selectedActor;
     const isAffordable = $gameParty.gold() >= this.priceOf(item.cost);
     const costColor = isAffordable ? "#2e7d32" : "#c62828";
@@ -2779,6 +2878,8 @@
     if (this._viewState === 'remove_part' && item.vital) isOkEnabled = false;
     if (this._viewState === 'implant_select_prosthetic' && item.isRemoveOption && !item.canRemove) isOkEnabled = false;
     if ((this._viewState === 'install_part' || this._viewState === 'install_inventory') && item.alreadyOwned) isOkEnabled = false;
+    // A hand with no bare arm to go on, and anything else the body cannot take.
+    if (item.blockedReason) isOkEnabled = false;
     if (!isAffordable && actionSymbol !== "remove_implant" && !(this._viewState === 'implant_select_prosthetic' && item.isRemoveOption)) isOkEnabled = false;
 
     const ledgerHTML = this._fieldMode
@@ -2838,6 +2939,12 @@
       this.refreshUIShopDOM();
     } else if (this._viewState === 'replace_archetype') {
       this._viewState = 'replace_part';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'socket_select') {
+      // Backing out abandons the graft, and nothing has been charged for it:
+      // the limb is chosen before the knife comes out.
+      this._viewState = (this._pendingGraft && this._pendingGraft.returnState) || 'command';
+      this._pendingGraft = null;
       this.refreshUIShopDOM();
     } else if (this._viewState === 'implant_select_part') {
       this._viewState = 'command';
@@ -2993,6 +3100,8 @@
         this._viewState = 'implant_select_prosthetic';
         this.refreshUIShopDOM();
       }
+    } else if (this._viewState === 'socket_select') {
+      this.chooseGraftSocket(idx);
     } else {
       UIShopInputManager.focusIndex = idx;
       UIShopInputManager.mode = 'actions';
@@ -3001,12 +3110,51 @@
     }
   };
 
-  Scene_ProstheticShop.prototype.executeSurgeryAction = function (action) {
+  /**
+   * Does this graft need the patient to say where it goes? Only a hand or a
+   * foot does, and only when there is more than one bare limb to choose
+   * between: with a single free limb there is nothing to decide, and with none
+   * the graft was refused before it got here (graftBlockedReason).
+   */
+  Scene_ProstheticShop.prototype.needsSocketChoice = function (item) {
+    if (this._graftSocketKey) return false;
+    const HC = window.HealthCore;
+    if (!HC || !HC.needsLimbSocket || !item || !HC.needsLimbSocket(item.partKey)) return false;
+    return HC.openLimbSockets(this._selectedActor).length > 1;
+  };
+
+  /** The limb was picked: fit the part that was waiting on the answer. */
+  Scene_ProstheticShop.prototype.chooseGraftSocket = function (idx) {
+    const socket = this._activeListItems[idx];
+    const pending = this._pendingGraft;
+    if (!socket || !pending) return;
+    this._graftSocketKey = socket.partKey;
+    this._viewState = pending.returnState;
+    this._pendingGraft = null;
+    try {
+      this.executeSurgeryAction('install', pending.item);
+    } finally {
+      this._graftSocketKey = null;
+    }
+  };
+
+  Scene_ProstheticShop.prototype.executeSurgeryAction = function (action, itemOverride) {
     const focusIndex = UIShopInputManager.focusIndex;
-    const item = this._activeListItems[focusIndex];
+    const item = itemOverride || this._activeListItems[focusIndex];
     if (!item) return;
 
     const actor = this._selectedActor;
+
+    // A hand or a foot goes on the end of a limb, and which limb is the
+    // patient's call. Asked before anything is charged and before the knife
+    // comes out, so backing out of the question costs nothing.
+    if (action === "install" && this.needsSocketChoice(item)) {
+      this._pendingGraft = { item, returnState: this._viewState };
+      this._viewState = 'socket_select';
+      this.refreshUIShopDOM();
+      return;
+    }
+
     this._forceRightPageRedraw = true;
 
     // A field operation is rolled first: a failure costs the patient a wound
@@ -3023,7 +3171,8 @@
 
       const archPart = item.archPart;
       const itemId = item.itemId || (archPart && archPart.itemId) || 0;
-      graftBodyPart(actor, item, item.partKey, archPart, itemId);
+      graftBodyPart(actor, item, item.partKey, archPart, itemId,
+        socketForGraft(actor, item.partKey, this._graftSocketKey));
 
       actor.refresh();
       SoundManager.playShop();
@@ -3055,6 +3204,11 @@
         $gameParty.gainItem($dataItems[removedPart.itemId], 1);
       }
 
+      // Off the body, so the portrait stops drawing it.
+      if (window.HealthCore && window.HealthCore.partStates) {
+        actor._severedParts = actor._severedParts || {};
+        actor._severedParts[item.partKey] = true;
+      }
       delete actor._bodyParts[item.partKey];
       actor.refresh();
       SoundManager.playShop();
@@ -3089,7 +3243,8 @@
         }
       }
 
-      graftBodyPart(actor, item, partKey, archPart, (archPart && archPart.itemId) || 0);
+      graftBodyPart(actor, item, partKey, archPart, (archPart && archPart.itemId) || 0,
+        (oldPart && oldPart.attachedTo) || socketForGraft(actor, partKey, null));
 
       actor.refresh();
       SoundManager.playShop();

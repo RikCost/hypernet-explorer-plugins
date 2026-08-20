@@ -986,13 +986,15 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
     function handleRamanChoice(onCheck, onAnalyze) {
         if ($gameParty.hasItem($dataItems[RAMAN_PROBE_ID])) {
             const choices = T.list('ConvBooks.ramanChoices');
-            
-            $gameMessage.setChoices(choices, 0, 0);
+            const cancelIndex = choices.length - 1;
+
+            $gameMessage.setChoices(choices, 0, cancelIndex);
             $gameMessage.setChoiceBackground(0);
             $gameMessage.setChoicePositionType(2);
             $gameMessage.setChoiceCallback(n => {
                 if (n === 0) onCheck();
                 if (n === 1) onAnalyze();
+                // n === cancelIndex (or -1 on cancel input): do nothing.
             });
         } else {
             onCheck();
@@ -1000,11 +1002,14 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
     }
 
     // Plugin command handlers
-    PluginManager.registerCommand(pluginName, "ShowRandomBook", args => {
-        const eventId = $gameMap._interpreter ? $gameMap._interpreter._eventId : null;
-        displayRandomBook(eventId);
+    PluginManager.registerCommand(pluginName, "ShowRandomBook", function (args) {
+        const eventId = this._eventId;
+        handleRamanChoice.call(this,
+            () => displayRandomBook(eventId),
+            () => PluginManager.callCommand(this, 'RamanSpectroscopy', 'ScanFront', {})
+        );
     });
-    
+
 
     PluginManager.registerCommand(pluginName, "ShowStatueDescription", function(args) {
         const subject = args.subject || "";

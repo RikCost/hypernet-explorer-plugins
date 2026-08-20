@@ -33,7 +33,21 @@
   const ROW_HEIGHT = 40;
   const ICON_PX    = 22;   // IconSet cells are 32px, scaled down to this
   const LABEL_PX   = 16;
-  const MENU_WIDTH = 176;
+  // The menu is as wide as the longest row it is showing, between these two.
+  // The plain command list is short ("Attack", "Run") and sits at the minimum;
+  // the lists other plugins hand this window (wrestling holds, talk openers)
+  // write whole sentences into a row, and used to run off the edge of a fixed
+  // box. Measuring is done once per rebuild, off the same font the rows paint
+  // in, so the box is exactly as wide as its text needs and never wider.
+  const MENU_WIDTH     = 176;
+  const MENU_WIDTH_MAX = 420;
+  // What a row spends on anything that is not the label: the icon and the
+  // margins around it (see .actorcmd-icon / .actorcmd-label in theme.css), plus
+  // a little air on the right so a label never touches the frame.
+  const ROW_ICON_SPACE = 11 + ICON_PX + 8;
+  const ROW_TAIL_SPACE = 16;
+  // The gap between a label and the cost tail behind it.
+  const ROW_COST_SPACE = 18;
 
   const ICON_SHEET_COLS = 16;   // IconSet.png is 16 cells across
 
@@ -52,10 +66,26 @@
     guard:        { accent: "#ffdd44", rgb: [140, 120, 25 ] },
     switchspirit: { accent: "#cc66ff", rgb: [120, 50,  170] },
     escape:       { accent: "#aaaaaa", rgb: [90,  90,  90 ] },
+    wrestle:      { accent: "#c8863c", rgb: [130, 80,  30 ] },
+    talk:         { accent: "#dfc06a", rgb: [140, 110, 40 ] },
+    // Wrestling (Health_Monsters.js) and the talk menu (EnemyTalkSystem.js)
+    // borrow the whole menu for their own rows.
+    wrestleRow:   { accent: "#c8863c", rgb: [130, 80,  30 ] },
+    talkRow:      { accent: "#dfc06a", rgb: [140, 110, 40 ] },
+    // The battle skill list (CategorizedBattleSkills.js) does the same, and
+    // paints each of its rows itself: a skill row carries the colour of what
+    // the skill is FOR, a party row the colour of the ally being pointed at.
+    skillRow:     { accent: "#9944ee", rgb: [90,  35,  170] },
+    allyRow:      { accent: "#44cc88", rgb: [25,  140, 80 ] },
   };
 
   const getCommandColors = (symbol) =>
     COMMAND_COLORS[symbol] || { accent: "#888888", rgb: [60, 60, 60] };
+
+  // A row painted by whoever pushed it, when the symbol alone does not say
+  // enough: every skill in a list shares the symbol "skillRow", but each one
+  // is coloured by the role it answers to.
+  const getRowColors = (cmd) => cmd.colors || getCommandColors(cmd.symbol);
 
   // Fallback icons for commands injected by other plugins through the base
   // addCommand (which carries no iconIndex), keyed by symbol.
@@ -64,18 +94,34 @@
     attack:       97,
     reload:       115,
     defense:      81,
-    skill:        101,
+    skill:        76,
     basic:        248,
     item:         209,
+    talk:         246,
+    wrestle:      106,
     guard:        125,
     switchspirit: 73,
     escape:       140,
+    wrestleRow:   106,
+    talkRow:      246,
+    skillRow:     76,
+    allyRow:      73,
   };
 
   // Mirrors CategorizedBattleSkills' category resolution: skills without an explicit
   // <category:...> note fall into the "Basic" catch-all category.
   const getSkillCategory = (skill) =>
     (skill && skill.meta && typeof skill.meta.category === 'string' && skill.meta.category.trim()) || "Basic";
+
+  // Talk (EnemyTalkSystem.js) is offered to every body that can hold a
+  // conversation. From this class on (Feral, Mimic, Monster, Ghost, Zombie,
+  // Drone and the rest of the unspeaking bodies) the row is greyed: the mouth
+  // is there, what comes out of it is not language.
+  const TALK_MUTE_CLASS_ID = 63;
+
+  const canActorTalk = (actor) =>
+    !!actor && typeof actor.currentClass === "function" &&
+    !!actor.currentClass() && actor.currentClass().id < TALK_MUTE_CLASS_ID;
 
   const isUsableSkill = (skill) =>
     skill && skill.name && skill.name.trim() && !skill.name.startsWith('<--');
@@ -110,6 +156,31 @@
 
   Window_ActorCommand.prototype.makeCommandList = function () {
     if (!this._actor) return;
+
+    // Wrestling (Health_Monsters.js) takes this menu over whole while a grapple
+    // is being planned: its limbs and holds REPLACE the actor's commands rather
+    // than crowd in beside them, because while a hold is being chosen there is
+    // nothing else the actor can do. The rows are its list; the look is ours.
+    if (window.Wrestling && window.Wrestling.isMenuOpen(this)) {
+      window.Wrestling.makeCommandList(this);
+      return;
+    }
+
+    // The talk menu (EnemyTalkSystem.js) takes the list over the same way while
+    // a conversation is being steered: its choices are the rows, and there is
+    // nothing else to do until one of them is said.
+    if (window.TalkMenu && window.TalkMenu.isMenuOpen(this)) {
+      window.TalkMenu.makeCommandList(this);
+      return;
+    }
+
+    // The battle skill list (CategorizedBattleSkills.js) does it too: the
+    // carried skills, the basic kit and the party being pointed at are all
+    // rows here rather than a panel of their own.
+    if (window.BattleSkillMenu && window.BattleSkillMenu.isMenuOpen(this)) {
+      window.BattleSkillMenu.makeCommandList(this);
+      return;
+    }
 
     // Map Battle Mode (MapBattleMode.js): lets the acting battler reposition
     // on the map (range driven by DEX/agi) before choosing an action. Only
@@ -156,23 +227,20 @@
       this.addCommandWithIcon("", "defense", canDefend, null, defenseIcon);
     }
 
-    // One command per skill type (Magic, Skills, ...), each opening that type's
-    // carried loadout (CategorizedBattleSkills.js). A type holding nothing the
-    // actor can pay for greys out but still OPENS: the list is where the reason
-    // is legible, one greyed cost per skill, and each unaffordable skill buzzes
-    // there instead. Only a type with nothing carried refuses to open, since
+    // A single Skills command holding every skill type at once (Magic, Skills,
+    // ...): the carried loadout is small enough that splitting it per type only
+    // added a menu level. ext 0 is what BattleLoadout.battleSkills reads as "no
+    // type filter", so the list opens on the whole loadout. A loadout holding
+    // nothing the actor can pay for greys out but still OPENS: the list is where
+    // the reason is legible, one greyed cost per skill, and each unaffordable
+    // skill buzzes there instead. Only an empty loadout refuses to open, since
     // there would be nothing to read.
-    const skillTypes = this._actor.skillTypes();
-    for (let i = skillTypes.length - 1; i >= 0; i--) {
-      const stypeId = skillTypes[i];
-      const iconIndex = stypeId === 2 ? 76 : 101;
-      const carried = window.BattleLoadout
-        ? window.BattleLoadout.battleSkills(this._actor, stypeId)
-        : this._actor.skills().filter(skill => skill && skill.stypeId === stypeId);
-      const listed = carried.filter(isUsableSkill);
-      this.addCommandWithIcon("", "skill", listed.length > 0, stypeId, iconIndex,
-        !this.hasCastableSkill(listed));
-    }
+    const carried = window.BattleLoadout
+      ? window.BattleLoadout.battleSkills(this._actor, 0)
+      : this._actor.skills().filter(skill => skill && skill.stypeId > 0);
+    const listed = carried.filter(isUsableSkill);
+    this.addCommandWithIcon("", "skill", listed.length > 0, 0, 76,
+      !this.hasCastableSkill(listed));
 
     // The Basic kit is its own top-level command: those are the engine's
     // fallback moves and are always carried, so they never crowd a loadout.
@@ -180,6 +248,19 @@
       .filter(skill => isUsableSkill(skill) && getSkillCategory(skill) === "Basic"); // i18n-ignore: <category:Basic> note tag
     this.addCommandWithIcon("", "basic", basicKit.length > 0, null, 248,
       !this.hasCastableSkill(basicKit));
+
+    // Wrestle and Talk are commands, not skills: grappling and talking are
+    // things a body does, so they are offered here rather than hidden in a skill
+    // list. Both sit directly above the backpack, Wrestle first. Each is only
+    // shown when the plugin that owns it is loaded, and greyed out when that
+    // plugin says this body cannot do it (no limb free to take hold with; a
+    // class from 63 on, which has no language).
+    if (window.Wrestling && window.Wrestling.canCommand) {
+      this.addCommandWithIcon("", "wrestle", window.Wrestling.canCommand(this._actor), null, 106);
+    }
+    if (typeof Scene_Battle.prototype.openTalkMenu === "function") {
+      this.addCommandWithIcon("", "talk", canActorTalk(this._actor), null, 246);
+    }
 
     // Backpack/Item: disabled (greyed + buzzer) when the party holds no
     // battle-usable item. Mirrors Window_BattleItem.includes ($gameParty.canUse).
@@ -216,8 +297,10 @@
   // `enabled` is the gate the input layer reads (a disabled row buzzes and opens
   // nothing); `dim` is the look alone, for a row that still opens but has
   // nothing usable behind it.
-  Window_ActorCommand.prototype.addCommandWithIcon = function (name, symbol, enabled, ext, iconIndex, dim) {
-    this._list.push({ name, symbol, enabled, ext, iconIndex, dim: !!dim });
+  // `colors` overrides the symbol's palette for this row alone; `cost` is the
+  // short right-aligned tail a row can carry (a skill's MP/AP, an ally's HP).
+  Window_ActorCommand.prototype.addCommandWithIcon = function (name, symbol, enabled, ext, iconIndex, dim, colors, cost) {
+    this._list.push({ name, symbol, enabled, ext, iconIndex, dim: !!dim, colors: colors || null, cost: cost || "" });
   };
 
   Window_ActorCommand.prototype.getCommandName = function (symbol, ext) {
@@ -232,10 +315,47 @@
       case "basic":   return T('Battle.cmd.basic');
       case "guard":   return TextManager.guard;
       case "item":    return TextManager.item;
+      case "talk":    return T('Battle.cmd.talk');
+      case "wrestle": return T('Battle.cmd.wrestle');
       case "reload":  return T('Battle.cmd.reload');
       case "escape":  return T('Battle.cmd.run');
       default:        return "";
     }
+  };
+
+  // The text a row actually paints: the window's own name for the symbol when it
+  // knows one, otherwise the name the command was pushed with (plugin rows carry
+  // theirs). Both the HTML builder and the width measurement read it here, so
+  // the box is measured against the very string it ends up showing.
+  Window_ActorCommand.prototype.commandLabelText = function (cmd) {
+    const name = this.getCommandName(cmd.symbol, cmd.ext) || cmd.name || "";
+    return (typeof translateText === 'function') ? translateText(name) : name;
+  };
+
+  // Measured off a canvas of its own rather than the window's contents: the rows
+  // are HTML, drawn in Lora at LABEL_PX, and the window's own bitmap font is
+  // neither. One context is kept for the whole session.
+  let _cmdMeasureCtx = null;
+  function _cmdTextWidth(text) {
+    if (!_cmdMeasureCtx) {
+      _cmdMeasureCtx = document.createElement('canvas').getContext('2d');
+      _cmdMeasureCtx.font = `bold ${LABEL_PX}px 'Lora', serif`;
+    }
+    return _cmdMeasureCtx.measureText(String(text || "")).width;
+  }
+
+  Window_ActorCommand.prototype._fittingCommandWidth = function () {
+    if (!this._list || this._list.length === 0) return MENU_WIDTH;
+    let widest = 0;
+    for (const cmd of this._list) {
+      const tail = cmd.cost ? _cmdTextWidth(cmd.cost) + ROW_COST_SPACE : 0;
+      widest = Math.max(widest, _cmdTextWidth(this.commandLabelText(cmd)) + tail);
+    }
+    const inner = ROW_ICON_SPACE + Math.ceil(widest) + ROW_TAIL_SPACE;
+    // However long a row's sentence is, the menu stops short of taking over the
+    // screen: past that the label is trimmed with an ellipsis (theme.css).
+    const cap = Math.min(MENU_WIDTH_MAX, Graphics.boxWidth - 60);
+    return Math.max(MENU_WIDTH, Math.min(cap, inner + this.padding * 2));
   };
 
   //=============================================================================
@@ -264,9 +384,20 @@
   Window_ActorCommand.prototype.refresh = function () {
     _Window_ActorCommand_refresh.call(this);
     const h = this.fittingHeight(this._visibleCommandCount());
-    if (this.height !== h) {
-      this.height = h;
+    const w = this._fittingCommandWidth();
+    const resized = this.height !== h || this.width !== w;
+    if (this.width !== w) {
+      this.width = w;
+      // The rows are laid out over the inner rect, so a box that changed width
+      // has to hand them their new one; and the menu keeps the screen edge it
+      // was placed against instead of growing off it.
+      const scene = SceneManager._scene;
+      if (scene && scene._bseCommandX) this.x = scene._bseCommandX(w);
+    }
+    if (this.height !== h) this.height = h;
+    if (resized) {
       this.createContents();
+      this._rebuildCmdHtml();
     }
     // Bottom-align the menu: keep the list's bottom edge pinned so adding or
     // removing commands grows the window upward instead of pushing the lower
@@ -338,7 +469,7 @@
       // Locked and merely-nothing-usable both read as greyed; only the first
       // refuses to open.
       const isLit     = cmd.enabled !== false && !cmd.dim;
-      const { accent, rgb } = getCommandColors(cmd.symbol);
+      const { accent, rgb } = getRowColors(cmd);
 
       // Outer item container
       const item = document.createElement('div');
@@ -401,12 +532,21 @@
 
       // Label (fall back to the command's own name for symbols this window
       // doesn't know about, e.g. plugin-injected commands)
-      const name  = this.getCommandName(cmd.symbol, cmd.ext) || cmd.name || "";
       const label = document.createElement('div');
       label.className = 'actorcmd-label' + (isLit ? '' : ' dim');
       label.style.fontSize = LABEL_PX + 'px';
-      label.textContent = (typeof translateText === 'function') ? translateText(name) : name;
+      label.textContent = this.commandLabelText(cmd);
       item.appendChild(label);
+
+      // The tail: what the row costs, or what the ally it names is holding.
+      // The label is the flexible half, so this always sits at the right edge.
+      if (cmd.cost) {
+        const cost = document.createElement('div');
+        cost.className = 'actorcmd-cost' + (isLit ? '' : ' dim');
+        cost.style.fontSize = Math.round(LABEL_PX * 0.9) + 'px';
+        cost.textContent = cmd.cost;
+        item.appendChild(cost);
+      }
 
       root.appendChild(item);
     }
@@ -561,6 +701,8 @@
     this._actorCommandWindow.setHandler("defense", this.commandDefense.bind(this));
     this._actorCommandWindow.setHandler("basic",   this.commandBasic.bind(this));
     this._actorCommandWindow.setHandler("escape",  this.commandEscape.bind(this));
+    this._actorCommandWindow.setHandler("talk",    this.commandTalk.bind(this));
+    this._actorCommandWindow.setHandler("wrestle", this.commandWrestle.bind(this));
   };
 
   // Guard: refuse to open a skill/magic/basic menu when its command is disabled
@@ -573,31 +715,46 @@
     return win.isCurrentCommandEnabled();
   };
 
-  // Open the skill window showing only Basic-category skills across all skill types.
-  Scene_Battle.prototype.commandBasic = function () {
-    if (!this._bseCurrentCommandEnabled()) {
+  // Skills and the Basic kit are lists of rows in this very menu, not a panel
+  // beside it (CategorizedBattleSkills.js owns what goes in them): a skill is
+  // chosen exactly where Attack and Run are, with its cost on the row and the
+  // row greyed out when the actor cannot pay it.
+  Scene_Battle.prototype._bseOpenSkillMenu = function (mode, stypeId) {
+    const win = this._actorCommandWindow;
+    if (!this._bseCurrentCommandEnabled() || !window.BattleSkillMenu ||
+        !window.BattleSkillMenu.open(win, this, mode, stypeId, win.currentSymbol())) {
       SoundManager.playBuzzer();
-      this._actorCommandWindow.activate();
-      return;
+      win.activate();
     }
-    this._skillWindow.setActor(BattleManager.actor());
-    if (this._skillWindow.setBasicMode) this._skillWindow.setBasicMode(true);
-    this._skillWindow.setStypeId(0);
-    this._skillWindow.refresh();
-    this._skillWindow.show();
-    this._skillWindow.activate();
   };
 
-  // A normal skill-type command clears any lingering Basic view.
-  const _Scene_Battle_commandSkill = Scene_Battle.prototype.commandSkill;
+  Scene_Battle.prototype.commandBasic = function () {
+    this._bseOpenSkillMenu("basic", 0);
+  };
+
   Scene_Battle.prototype.commandSkill = function () {
-    if (!this._bseCurrentCommandEnabled()) {
+    this._bseOpenSkillMenu("skill", this._actorCommandWindow.currentExt() || 0);
+  };
+
+  // Talk: hand over to EnemyTalkSystem's menu, which picks the monster being
+  // addressed with the ordinary target window when more than one is standing.
+  Scene_Battle.prototype.commandTalk = function () {
+    if (!this._bseCurrentCommandEnabled() || typeof this.openTalkMenu !== "function") {
       SoundManager.playBuzzer();
       this._actorCommandWindow.activate();
       return;
     }
-    if (this._skillWindow.setBasicMode) this._skillWindow.setBasicMode(false);
-    _Scene_Battle_commandSkill.call(this);
+    this.openTalkMenu();
+  };
+
+  // Wrestle: hand over to Health_Monsters, which picks the monster with the
+  // ordinary target window and then draws its grapple plan in this same menu.
+  Scene_Battle.prototype.commandWrestle = function () {
+    if (!this._bseCurrentCommandEnabled() || !window.Wrestling ||
+        !window.Wrestling.startFromCommand(this)) {
+      SoundManager.playBuzzer();
+      this._actorCommandWindow.activate();
+    }
   };
 
   Scene_Battle.prototype.commandDefense = function () {
@@ -649,7 +806,7 @@
   // Compatibility stubs
   //=============================================================================
 
-  Window_ActorCommand.prototype.addSkillCommand  = function (stypeId) { this.addCommand("", "skill", true, stypeId, 101); };
+  Window_ActorCommand.prototype.addSkillCommand  = function (stypeId) { this.addCommand("", "skill", true, stypeId, 76); };
   Window_ActorCommand.prototype.addItemCommand   = function ()         { this.addCommand("", "item",  true, 176); };
   Window_ActorCommand.prototype.addGuardCommand  = function ()         { this.addCommand("", "guard", this._actor.canGuard(), 52); };
 

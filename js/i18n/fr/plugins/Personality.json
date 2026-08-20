@@ -1,0 +1,103 @@
+{
+  "_comment": "Display text for the personality list in js/db/Health/PersonalityData.json, which carries only keys. The thought pools are in PersonalityThoughts.json.",
+  "nervous": {
+    "name": "Nerveux",
+    "description": "Sujet à l'anxiété et au stress élevé."
+  },
+  "calm": {
+    "name": "Calme",
+    "description": "Résiste au stress et garde les idées claires."
+  },
+  "aggressive": {
+    "name": "Agressif",
+    "description": "Prompt à la colère, avec une forte agressivité physique."
+  },
+  "melancholic": {
+    "name": "Mélancolique",
+    "description": "Sujet à la tristesse et à l'introspection."
+  },
+  "sanguine": {
+    "name": "Optimiste",
+    "description": "Énergique, optimiste et sociable."
+  },
+  "cautious": {
+    "name": "Prudent",
+    "description": "Réfléchit avant d'agir et analyse les risques."
+  },
+  "impulsive": {
+    "name": "Impulsif",
+    "description": "Agit à l'instinct, faible maîtrise de soi."
+  },
+  "stoic": {
+    "name": "Stoïque",
+    "description": "Endure les épreuves sans se plaindre."
+  },
+  "paranoid": {
+    "name": "Paranoïaque",
+    "description": "Méfiant et soupçonneux envers les autres."
+  },
+  "empathetic": {
+    "name": "Empathique",
+    "description": "Très sensible aux émotions des autres."
+  },
+  "authoritative": {
+    "name": "Autoritaire",
+    "description": "Meneur naturel, décisif et imposant."
+  },
+  "scholarly": {
+    "name": "Érudit",
+    "description": "Guidé par l'intellect, curieux et analytique."
+  },
+  "artistic": {
+    "name": "Artistique",
+    "description": "Sensible, créatif et perceptif."
+  },
+  "adventurous": {
+    "name": "Aventureux",
+    "description": "Recherche la nouveauté et les sensations fortes, attiré par le risque."
+  },
+  "nurturing": {
+    "name": "Bienveillant",
+    "description": "Attentionné, bienveillant et compatissant."
+  },
+  "mischievous": {
+    "name": "Espiègle",
+    "description": "Joueur, malin et amateur de chaos."
+  },
+  "cynical": {
+    "name": "Cynique",
+    "description": "Se méfie de la sincérité ou de l'intégrité humaine."
+  },
+  "disciplined": {
+    "name": "Discipliné",
+    "description": "Grande maîtrise de soi, suit un code strict."
+  },
+  "fatalistic": {
+    "name": "Fataliste",
+    "description": "Croit que tous les événements sont prédéterminés."
+  },
+  "grumpy": {
+    "name": "Grognon",
+    "description": "Chroniquement irritable et de mauvaise humeur."
+  },
+  "loyal": {
+    "name": "Loyal",
+    "description": "Fidèle et dévoué à ses alliés."
+  },
+  "brave": {
+    "name": "Courageux",
+    "description": "Affronte le danger et cède rarement à la peur."
+  },
+  "timid": {
+    "name": "Timide",
+    "description": "Facilement effrayé, évite les conflits."
+  },
+  "hedonistic": {
+    "name": "Hédoniste",
+    "description": "Considère la recherche du plaisir comme le bien suprême."
+  },
+  "apathetic": {
+    "name": "Apathique",
+    "description": "Manque d'intérêt, d'enthousiasme ou d'inquiétude."
+  }
+}

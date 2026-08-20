@@ -2409,8 +2409,10 @@
   //
   // What is announced is the RECOVERY, not the meter: the party is told each
   // time another quarter of a full bar has been paid back, which is why the
-  // running total is kept rather than watched for the bar crossing a line. The
-  // toast is the ordinary one, so it reads the same in a fight and on the map.
+  // running total is kept rather than watched for the bar crossing a line.
+  // The credit still accrues turn by turn in battle, but the announcement
+  // itself waits until the party is back on the map, so a needs update never
+  // interrupts a fight.
   //=============================================================================
   const STATE_SLEEP = 10;   // Sleep, States.json
   const STATE_WET   = 28;   // Wet
@@ -2431,7 +2433,8 @@
       let after = before + gain;
       const step = max * ANNOUNCE_STEP;
       const quarters = Math.floor(after / step);
-      if (quarters > Math.floor(before / step) && window.ParchmentToast) {
+      const inBattle = $gameParty && $gameParty.inBattle && $gameParty.inBattle();
+      if (quarters > Math.floor(before / step) && window.ParchmentToast && !inBattle) {
         window.ParchmentToast.show(
           T('TimeDate.stateNeed.' + key, {
             name: actor.name(),
@@ -2612,6 +2615,190 @@
   };
 
   //=============================================================================
+  // BattleMood - what a fight does to the Mood meter
+  //=============================================================================
+  // The sibling of MinigameFun above, on the same 0-100 Mood (leisure) meter:
+  // an evening at the arcade is one way a party keeps its spirits up, and
+  // coming home alive from a fight is the other. A won battle pays VICTORY_GAIN
+  // to everyone still standing; losing somebody for good in permadeath costs
+  // the survivors far more than any victory pays back.
+  //
+  // WHO the member is decides how much of it they actually feel. Two ledgers
+  // answer that, and either one is enough: the traits bought at creation
+  // (js/db/Health/Traits.json, on the actor or on the society profile of a
+  // recruited companion) and the personality the society dealt them
+  // (js/db/Health/PersonalityData.json). Somebody who fights for the pleasure
+  // of it enjoys a win more than most; a pacifist takes nothing from one at
+  // all; and nobody uncaring enough grieves a comrade, however long they
+  // marched together.
+  //=============================================================================
+  const MOOD = {
+    VICTORY_GAIN:    15,   // percent of the whole meter, per won fight
+    BLOODLUST_MULT:  1.8,  // what a win is worth to somebody who wanted it
+    DEATH_LOSS:      25,   // the flat cost of losing a comrade for good
+    DEATH_PER_BOND:  5,    // and this again per BOND_STEP of standing toward them
+    BOND_STEP:       10,
+    HATRED_AT:      -25    // a standing this low is not grief, it is relief
+  };
+
+  // Trait ids, Traits.json. A trait can sit in two groups at once: a sadist
+  // enjoys the fight AND feels nothing when the body count includes a friend.
+  const MOOD_TRAITS = {
+    bloodlust:     [4, 24, 26, 47, 167],    // trigger happy, adrenaline junkie, pyromaniac, sadist, vengeful
+    pacifist:      [25, 48],                // pacifist, hemophobic
+    callous:       [32, 47, 162, 166],      // sociopath, sadist, nihilist, cynic
+    compassionate: [33, 88, 89, 165, 168]   // empath, generous, loyal, romantic, forgiving
+  };
+
+  // Personality names, PersonalityData.json list ids rather than shown text.
+  // i18n-ignore-start: PersonalityData.json ids, matched by name
+  const MOOD_PERSONALITIES = {
+    bloodlust:     ['Aggressive'],
+    pacifist:      [],
+    callous:       ['Apathetic', 'Cynical'],
+    compassionate: ['Empathetic', 'Nurturing']
+  };
+  // i18n-ignore-end
+
+  window.BattleMood = {
+    // ── Who the member is ─────────────────────────────────────────────────
+    _profile(member) {
+      if (!member || !member.name) return null;
+      try { return window.NPCSocietyRegistry?.getProfile?.(member.name()) || null; }
+      catch (e) { return null; }
+    },
+
+    // The traits the player bought at creation, falling back to the set the
+    // society rolled for a companion whose actor carries none of its own.
+    _traitIds(member) {
+      const bought = (member?._selectedTraits ?? []).map(t => t && t.id).filter(id => id != null);
+      if (bought.length) return bought;
+      const rolled = this._profile(member)?.traitIds;
+      return Array.isArray(rolled) ? rolled : [];
+    },
+
+    _personality(member) {
+      const profile = this._profile(member);
+      if (!profile) return null;
+      const helper = window.NPCEmpathize?._helpers?._personalityName;
+      if (helper) {
+        try { return helper(profile); } catch (e) { /* fall through */ }
+      }
+      return window._NPCSocietyDataLoader?.personalities?.[profile.personalityIndex]?.name || null;
+    },
+
+    // Whether this member belongs to one of the four dispositions above.
+    is(member, group) {
+      if (!member) return false;
+      const traits = MOOD_TRAITS[group] || [];
+      const ids = this._traitIds(member);
+      if (traits.some(id => ids.includes(id))) return true;
+      const persona = this._personality(member);
+      return !!persona && (MOOD_PERSONALITIES[group] || []).includes(persona);
+    },
+
+    // What one member thinks of another: the same standing the Empathize panel
+    // shows, so the person somebody has been rude to for a month is the person
+    // they are measurably less sorry to lose. Answers 0 when neither of them
+    // has a society record to read it off.
+    standing(member, toward) {
+      const profile = this._profile(member);
+      const opinion = window.NPCEmpathize?._helpers?._npcEffectiveOpinion;
+      if (!profile || !toward || !opinion) return 0;
+      try { return Number(opinion(profile, toward)) || 0; }
+      catch (e) { return 0; }
+    },
+
+    // ── Paying it ─────────────────────────────────────────────────────────
+    // Straight onto the member's own meter rather than through
+    // PartyNeeds.addLeisureToAll: every member is owed a different number here.
+    _pay(member, delta) {
+      if (!member || !delta) return 0;
+      if (delta > 0) {
+        if (member.addLeisure) member.addLeisure(delta);
+      } else if (member.reduceLeisure) {
+        member.reduceLeisure(-delta);
+      }
+      return delta;
+    },
+
+    // One toast for the whole party: the number most of them felt, with the
+    // members who felt something else named underneath it. The headline is a
+    // number somebody actually got (the commonest one, the leader's when they
+    // all differ), never an average of numbers nobody felt.
+    _announce(paid, headline) {
+      if (!paid.length || !window.ParchmentToast) return;
+      const tally = new Map();
+      for (const p of paid) tally.set(p.delta, (tally.get(p.delta) || 0) + 1);
+      let typical = paid[0].delta;
+      for (const [delta, count] of tally) {
+        if (count > tally.get(typical)) typical = delta;
+      }
+      const odd = paid.filter(p => p.delta !== typical)
+        .map(p => T('TimeDate.mood.member', {
+          name: p.name,
+          delta: (p.delta > 0 ? '+' : '') + p.delta
+        }));
+      const note = odd.length ? `${headline} (${odd.join(', ')})` : headline;
+      try {
+        window.ParchmentToast.need('leisure', typical, { note });
+      } catch (e) { /* a popup never breaks the end of a battle */ }
+    },
+
+    // ── A fight won ───────────────────────────────────────────────────────
+    victoryGain(member) {
+      if (this.is(member, 'pacifist')) return 0;
+      const gain = MOOD.VICTORY_GAIN * (this.is(member, 'bloodlust') ? MOOD.BLOODLUST_MULT : 1);
+      return Math.round(gain);
+    },
+
+    onVictory() {
+      if (!$gameParty) return [];
+      const paid = [];
+      for (const member of $gameParty.members()) {
+        if (!member) continue;
+        const delta = this.victoryGain(member);
+        this._pay(member, delta);
+        paid.push({ name: member.name(), delta });
+      }
+      this._announce(paid, T('TimeDate.mood.victory'));
+      return paid;
+    },
+
+    // ── A member lost for good ────────────────────────────────────────────
+    // What losing `fallen` does to `member`. The bond is read as the survivor's
+    // standing toward the dead: the closer they were, the worse it lands, and
+    // somebody they could not stand is a weight off their shoulders instead.
+    lossFor(member, fallen) {
+      if (!member || !fallen || member === fallen) return 0;
+      if (this.is(member, 'callous')) return 0;
+      const standing = this.standing(member, fallen);
+      if (standing <= MOOD.HATRED_AT && !this.is(member, 'compassionate')) {
+        const steps = Math.floor(-standing / MOOD.BOND_STEP);
+        return Math.round(MOOD.DEATH_PER_BOND * steps);
+      }
+      const steps = Math.floor(Math.max(0, standing) / MOOD.BOND_STEP);
+      return -Math.round(MOOD.DEATH_LOSS + MOOD.DEATH_PER_BOND * steps);
+    },
+
+    // Called as a permadeath removal takes a member out of the party, while
+    // they are still standing in it: every survivor who is not past caring
+    // pays for it, and the one who hated them quietly does not.
+    onMemberLost(fallen) {
+      if (!fallen || !$gameParty) return [];
+      const paid = [];
+      for (const member of $gameParty.members()) {
+        if (!member || member === fallen || member.isDead()) continue;
+        const delta = this.lossFor(member, fallen);
+        this._pay(member, delta);
+        paid.push({ name: member.name(), delta });
+      }
+      this._announce(paid, T('TimeDate.mood.lost', { name: fallen.name() }));
+      return paid;
+    }
+  };
+
+  //=============================================================================
   // MapInfoHUD - DOM-based info card, bottom-right corner of the screen
   //=============================================================================
   function MapInfoHUD() {
@@ -2768,6 +2955,11 @@
     `</div>`;
   };
 
+  // i18n-ignore-start  Countries.json ids, never shown as they are written here
+  const OMEGA_TOWER_COUNTRY = 'OmegaTower';
+  const NEUTRAL_CONTROLLER = 'Neutral';
+  // i18n-ignore-end
+
   // Country the player is standing in, plus the hyperpower controlling it.
   // The world map sets the country by region id (see WeatherSystem.js); the
   // active entry lives on $gameWeather.currentCountry, with Variable 86 as a
@@ -2779,8 +2971,21 @@
       cc = window.WorldGen.Countries.find(c => c.id === id);
     }
     if (!cc) return null;
-    const controller = (cc.controller && cc.controller !== 'Neutral') // i18n-ignore: faction id ? cc.controller : '';
-    return { country: cc.country || '', controller };
+    // The tower is not a country the party is travelling through: it is the
+    // place the card already names on the line above, and the entry only exists
+    // because the world data needs a default somewhere. Naming it twice, once
+    // as the location and once as the nation, says nothing.
+    const country = cc.country || '';
+    if (!country || country === OMEGA_TOWER_COUNTRY) return null;
+    // Ids, both of them (Countries.json "country" and "controller"), so they are
+    // lifted into the player's language on the way out.
+    const rawController = (cc.controller && cc.controller !== NEUTRAL_CONTROLLER)
+      ? cc.controller : '';
+    const names = window.WorldNames;
+    return {
+      country: names ? names.nation(country) : country,
+      controller: (rawController && names) ? names.power(rawController) : rawController
+    };
   };
 
   // Total hunger the party's food stock can restore, using the same nutrition
@@ -2798,7 +3003,10 @@
       const cal = item.note.match(/<calories:(\d+)>/i);
       const fat = item.note.match(/<fat:(\d+)>/i);
       const pro = item.note.match(/<protein:(\d+)>/i);
-      const isFood = (utils && utils.hasItemCategory && utils.hasItemCategory(item, 'Food')) // i18n-ignore: item category tag || cal || pro || fat;
+      // i18n-ignore-start  item category tag
+      const isFood = (utils && utils.hasItemCategory && utils.hasItemCategory(item, 'Food'))
+        || cal || pro || fat;
+      // i18n-ignore-end
       if (!isFood) continue;
       const recovery =
         (cal ? Number(cal[1]) : 0) * calorieFactor +
@@ -2922,20 +3130,6 @@
     `</div>`;
   };
 
-  // Arrival countdown, mm:ss, read straight off the fast-travel data - only
-  // meaningful (and only ever drawn) while MapInfoHUD is in 'travel' mode.
-  MapInfoHUD.prototype._travelTimer = function () {
-    const data = ($gameSystem && $gameSystem.getFastTravelData) ? $gameSystem.getFastTravelData() : null;
-    if (!data || !data.timerActive) return '';
-    const t = Math.max(0, Math.floor(data.timerRemainingTime));
-    const mm = String(Math.floor(t / 60)).padStart(2, '0');
-    const ss = String(t % 60).padStart(2, '0');
-    return `<div class="mih-region mih-eta">` +
-      `<span class="mih-region-lbl">${T("TimeDate.hud.eta")}</span>` +
-      `<span class="mih-region-val">${mm}:${ss}</span>` +
-    `</div>`;
-  };
-
   MapInfoHUD.prototype._refresh = function () {
     if (!this._el) return;
     const mode = this._activeMode();
@@ -2993,7 +3187,6 @@
       // leads with the countdown instead of a location.
       html =
         `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.dateShort} ${dt.time24}</div>` +
-        this._travelTimer() +
         this._temperature() +
         this._food() +
         this._insomnia(needs) +

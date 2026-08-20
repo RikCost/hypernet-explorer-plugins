@@ -1,0 +1,103 @@
+{
+  "_comment": "Display text for the personality list in js/db/Health/PersonalityData.json, which carries only keys. The thought pools are in PersonalityThoughts.json.",
+  "nervous": {
+    "name": "긴장한",
+    "description": "걱정과 스트레스가 많다."
+  },
+  "calm": {
+    "name": "차분한",
+    "description": "항상 침착하게 생각할 수 있다."
+  },
+  "aggressive": {
+    "name": "공격적인",
+    "description": "쉽게 화를 내고 폭력적으로 변한다."
+  },
+  "melancholic": {
+    "name": "우울한",
+    "description": "쉽게 슬퍼지고 내향적이다."
+  },
+  "sanguine": {
+    "name": "낙천적인",
+    "description": "에너지가 넘치고 긍정적이며 사회성이 좋다."
+  },
+  "cautious": {
+    "name": "신중한",
+    "description": "행동하기 전에 생각하고 위험을 분석한다."
+  },
+  "impulsive": {
+    "name": "충동적인",
+    "description": "본능에 따라 행동하며 자기 통제력이 낮다."
+  },
+  "stoic": {
+    "name": "금욕적인",
+    "description": "어려움을 불평 없이 견뎌낸다."
+  },
+  "paranoid": {
+    "name": "편집적인",
+    "description": "타인을 의심하고 불신하는 경향이 있다."
+  },
+  "empathetic": {
+    "name": "공감적인",
+    "description": "타인의 감정에 매우 민감하게 반응한다."
+  },
+  "authoritative": {
+    "name": "권위적인",
+    "description": "결단력 있고 지배적이며 리더의 자질이 있다."
+  },
+  "scholarly": {
+    "name": "학구적인",
+    "description": "지적 호기심이 강하고 분석적이다."
+  },
+  "artistic": {
+    "name": "예술적인",
+    "description": "감수성이 풍부하고 창의적이며 통찰력이 있다."
+  },
+  "adventurous": {
+    "name": "모험적인",
+    "description": "새로움과 자극을 추구하며 위험을 감수한다."
+  },
+  "nurturing": {
+    "name": "보살피는",
+    "description": "배려 깊고 보호적이며 공감 능력이 높다."
+  },
+  "mischievous": {
+    "name": "장난기 많은",
+    "description": "장난스럽고 영리하며 혼란을 즐긴다."
+  },
+  "cynical": {
+    "name": "냉소적인",
+    "description": "인간의 진정성이나 도덕성을 믿지 않는 경향이 있다."
+  },
+  "disciplined": {
+    "name": "규율적인",
+    "description": "자기 통제력이 높고 엄격한 규칙을 따른다."
+  },
+  "fatalistic": {
+    "name": "숙명론적인",
+    "description": "모든 결과가 미리 정해져 있다고 믿는다."
+  },
+  "grumpy": {
+    "name": "까다로운",
+    "description": "만성적으로 짜증을 잘 내고 불만이 많다."
+  },
+  "loyal": {
+    "name": "충성스러운",
+    "description": "동료와의 관계에 대해 헌신적이다."
+  },
+  "brave": {
+    "name": "용감한",
+    "description": "두려움이 적고 위험에 정면으로 맞선다."
+  },
+  "timid": {
+    "name": "소심한",
+    "description": "쉽게 겁을 먹고 갈등을 피한다."
+  },
+  "hedonistic": {
+    "name": "쾌락주의적인",
+    "description": "항상 쾌락을 추구한다."
+  },
+  "apathetic": {
+    "name": "무관심한",
+    "description": "흥미와 열정, 관심이 부족하다."
+  }
+}

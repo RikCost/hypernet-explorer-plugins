@@ -10,7 +10,12 @@
       "tries": "tries",
       "has": "has",
       "answers": "answers",
-      "born": "Born"
+      "born": "Born",
+      "wasChild": "was a child",
+      "remembers": "remembers",
+      "grewUp": "grew up",
+      "saw": "saw",
+      "had": "had"
     },
     "1": {
       "sub": "she",
@@ -22,7 +27,12 @@
       "tries": "tries",
       "has": "has",
       "answers": "answers",
-      "born": "Born"
+      "born": "Born",
+      "wasChild": "was a child",
+      "remembers": "remembers",
+      "grewUp": "grew up",
+      "saw": "saw",
+      "had": "had"
     },
     "2": {
       "sub": "they",
@@ -34,7 +44,12 @@
       "tries": "try",
       "has": "have",
       "answers": "answer",
-      "born": "Born"
+      "born": "Born",
+      "wasChild": "were a child",
+      "remembers": "remember",
+      "grewUp": "grew up",
+      "saw": "saw",
+      "had": "had"
     },
     "3": {
       "sub": "xe",
@@ -46,7 +61,12 @@
       "tries": "try",
       "has": "have",
       "answers": "answer",
-      "born": "Born"
+      "born": "Born",
+      "wasChild": "were a child",
+      "remembers": "remember",
+      "grewUp": "grew up",
+      "saw": "saw",
+      "had": "had"
     }
   },
   "adjective": [
@@ -58,20 +78,84 @@
   ],
   "bio": {
     "uncertainTimes": "uncertain times",
-    "wildsNear": "the wilds near {city}",
-    "later": "Later, {sub} {has} been touched by {event}.",
-    "moral": {
-      "high": "{cap} {is} known for an unwavering moral compass.",
-      "good": "{cap} {tries} to do right by people, most of the time.",
-      "weary": "Life has left {obj} with few illusions.",
-      "loose": "{cap} {has} learned that rules are for others.",
-      "lawless": "{cap} {answers} to no code but {pos} own."
+    "wildsNear": "in the wilds near {city}",
+    "inCountry": "in {place}",
+    "inTown": "in {place}",
+    "placeIn": {
+      "unitedkingdom": "in the {place}",
+      "uk": "in the {place}",
+      "netherlands": "in the {place}",
+      "philippines": "in the {place}",
+      "czechrepublic": "in the {place}",
+      "unitedarabemirates": "in the {place}",
+      "unitedstatesfreestatesofmidwest": "in the {place}",
+      "cascadiaprotectorate": "in the {place}",
+      "easternseaboard": "on the {place}"
     },
-    "creature": "{born} in {place}, {sub} came into the world far from human cities, a {adj} creature shaped by {event}. {later} {moral}",
-    "turbulent": "{born} in {year} in {place} during a turbulent age, {sub} {has} lived through {event}. {later} {moral}",
-    "warYears": "{born} in the war years, {sub} {has} spent childhood in {place} and {has} witnessed {event}. {later} {moral}",
-    "postwar": "{born} in {year} in {place}, {sub} {is} a {adj} soul shaped by {event}. {later} {moral}",
-    "modern": "{born} in {place} as the world grew strange, {sub} {has} never forgotten {event}. {later} {moral}",
+    "later": [
+      "Later, {sub} {was} there too when {event}.",
+      "Years on, {sub} {was} close enough to see when {event}.",
+      "Then came the season when {event}.",
+      "Not long after, {sub} {had} to learn what it means when {event}.",
+      "{cap} {remembers} the week when {event}, and says little about it."
+    ],
+    "moral": {
+      "high": [
+        "{cap} {is} known for an unwavering moral compass.",
+        "People trust {obj} on sight, and are rarely wrong to.",
+        "Nobody has ever had to ask {obj} twice to do the decent thing."
+      ],
+      "good": [
+        "{cap} {tries} to do right by people, most of the time.",
+        "{cap} {is} decent enough, as long as it isn't expensive.",
+        "{cap} {tries} to leave a place no worse than {sub} found it."
+      ],
+      "weary": [
+        "Life has left {obj} with few illusions.",
+        "{cap} stopped expecting much of anyone years ago.",
+        "{cap} {is} neither cruel nor kind, only worn through."
+      ],
+      "loose": [
+        "{cap} {has} learned that rules are for other people.",
+        "{cap} {is} flexible about the law, and about the truth.",
+        "Whatever {sub} {has} taken, {sub} {has} taken quietly."
+      ],
+      "lawless": [
+        "{cap} {answers} to no code but {pos} own.",
+        "There is no line left that {sub} would not step over.",
+        "There is no polite word for what {sub} {is}."
+      ]
+    },
+    "creature": [
+      "{born} {placeIn}, {sub} came into the world far from human cities, a {adj} creature shaped by the season when {event}. {later} {moral}",
+      "No city ever had a claim on {obj}: born {placeIn}, a {adj} creature that still remembers when {event}. {later} {moral}",
+      "No register holds {pos} birth. {cap} {was} simply there, {placeIn}, a {adj} thing already grown by the time {event}. {later} {moral}",
+      "{born} {placeIn} and owned by nobody, a {adj} creature old enough to understand when {event}. {later} {moral}"
+    ],
+    "turbulent": [
+      "{born} in {year} {placeIn}, into an age that would not sit still: {sub} {wasChild} when {event}. {later} {moral}",
+      "{born} {placeIn} in {year}, {sub} {has} one first clear memory, the year when {event}. {later} {moral}",
+      "{born} {placeIn} in {year}, a {adj} child of a century that opened badly, {sub} {had} barely started school when {event}. {later} {moral}",
+      "The {year} registers {placeIn} carry {pos} name. {cap} {has} never said much about the day when {event}. {later} {moral}"
+    ],
+    "warYears": [
+      "{born} in the war years {placeIn}, {sub} {wasChild} when {event}. {later} {moral}",
+      "{cap} {grewUp} {placeIn} with the sirens going, and {saw} the morning when {event}. {later} {moral}",
+      "{born} in {year}, {sub} {grewUp} {placeIn} while {event}. {later} {moral}",
+      "A childhood {placeIn} of rationed things, and then the week when {event}. {later} {moral}"
+    ],
+    "postwar": [
+      "{born} in {year} {placeIn}, {sub} {is} a {adj} soul who came of age around the time when {event}. {later} {moral}",
+      "{cap} {grewUp} {placeIn} in a country being rebuilt, {adj} and impatient, and {saw} it all first hand when {event}. {later} {moral}",
+      "{born} {placeIn} in {year}, {sub} {has} told the story a hundred times: how {event}. {later} {moral}",
+      "A {adj} product of {year} {placeIn}, {sub} {had} an ordinary shift like any other on the day when {event}. {later} {moral}"
+    ],
+    "modern": [
+      "{born} {placeIn} as the world grew strange, {sub} {has} never forgotten when {event}. {later} {moral}",
+      "{born} in {year} {placeIn}, {sub} {grewUp} hearing how {event}. {later} {moral}",
+      "{cap} {is} a {adj} soul of the late century, born {placeIn} and still marked by the year when {event}. {later} {moral}",
+      "{born} {placeIn} in {year}, into screens and static: {sub} {was} watching when {event}. {later} {moral}"
+    ],
     "bornMeta": "Born {year} · {place}"
   }
 }

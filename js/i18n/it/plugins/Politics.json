@@ -1,244 +1,302 @@
 {
-  "power": {
-    "holyvaticanempire": {
-      "govType": "teocrazia",
-      "headTitle": "Sommo Pontefice",
-      "legislature": "Santa Curia",
-      "partyKind": "ordine",
-      "electorTitle": "Cardinale",
-      "electorTitlePlural": "Cardinali"
-    },
-    "ussr": {
-      "govType": "stato a partito unico",
-      "headTitle": "Segretario Generale",
-      "legislature": "Soviet Supremo",
-      "partyKind": "fazione",
-      "electorTitle": "Membro del Politburo",
-      "electorTitlePlural": "Membri del Politburo"
-    },
-    "britannia": {
-      "govType": "monarchia parlamentare",
-      "headTitle": "Primo Ministro",
-      "legislature": "Parlamento",
-      "partyKind": "partito"
-    },
-    "archivefoundation": {
-      "govType": "tecnocrazia",
-      "headTitle": "Primo Archivista",
-      "legislature": "Consiglio dell'Indice",
-      "partyKind": "scuola"
-    },
-    "ottomanempire": {
-      "govType": "sultanato",
-      "headTitle": "Sultano",
-      "legislature": "Divano",
-      "partyKind": "fazione di corte"
-    },
-    "thegods": {
-      "govType": "pantheon divino",
-      "headTitle": "Divinità Prima",
-      "legislature": "Corte Celeste",
-      "partyKind": "casata"
-    },
-    "sanmarinorepublic": {
-      "govType": "serenissima repubblica",
-      "headTitle": "Capitano Reggente",
-      "legislature": "Consiglio Grande",
-      "partyKind": "partito"
-    },
-    "hypercapitalistcollective": {
-      "govType": "corporatocrazia",
-      "headTitle": "Sovrano Amministratore Delegato",
-      "legislature": "Il Consiglio",
-      "partyKind": "blocco"
-    },
-    "goblinhorde": {
-      "govType": "confederazione di bande",
-      "headTitle": "Capoccia",
-      "legislature": "Da Moot",
-      "partyKind": "clan"
-    },
-    "thetourists": {
-      "govType": "gerarchia di caste",
-      "headTitle": "Direttore del Tour",
-      "legislature": "L'Itinerario",
-      "partyKind": "casta",
-      "electorTitle": "Sorvegliante",
-      "electorTitlePlural": "Sorveglianti"
-    },
-    "thedargos": {
-      "govType": "scherzo organizzato",
-      "headTitle": "Primo Dargos",
-      "legislature": "La Gag",
-      "partyKind": "numero"
-    },
-    "default": {
-      "govType": "repubblica",
-      "headTitle": "Presidente",
-      "legislature": "Assemblea",
-      "partyKind": "partito",
-      "electorTitle": "Elettore",
-      "electorTitlePlural": "Elettori"
-    }
+ "power": {
+  "holyvaticanempire": {
+   "govType": "teocrazia",
+   "headTitle": "Sommo Pontefice",
+   "legislature": "Santa Curia",
+   "partyKind": "ordine",
+   "electorTitle": "Cardinale",
+   "electorTitlePlural": "Cardinali"
   },
-  "election": {
-    "conclave": "Conclave",
-    "plenum": "Plenum del Partito",
-    "shareholder": "Assemblea Generale Annuale",
-    "moot": "Da Moot",
-    "tournament": "Torneo di Ascensione",
-    "succession": "Successione",
-    "examination": "Grande Esame",
-    "parliamentary": "Elezioni Generali"
+  "ussr": {
+   "govType": "stato a partito unico",
+   "headTitle": "Segretario Generale",
+   "legislature": "Soviet Supremo",
+   "partyKind": "fazione",
+   "electorTitle": "Membro del Politburo",
+   "electorTitlePlural": "Membri del Politburo"
   },
-  "office": {
-    "mayor": "Sindaco",
-    "guardCaptain": "Capitano delle Guardie",
-    "taxCollector": "Esattore",
-    "highPriest": "Sommo Sacerdote"
+  "britannia": {
+   "govType": "monarchia parlamentare",
+   "headTitle": "Primo Ministro",
+   "legislature": "Parlamento",
+   "partyKind": "partito"
   },
-  "policy": {
-    "taxRate": "le imposte",
-    "censorship": "la censura",
-    "conscription": "la leva",
-    "welfare": "il welfare",
-    "festivals": "le feste"
+  "archivefoundation": {
+   "govType": "tecnocrazia",
+   "headTitle": "Primo Archivista",
+   "legislature": "Consiglio dell'Indice",
+   "partyKind": "scuola"
   },
-  "rumorKind": {
-    "affair": "relazione clandestina",
-    "embezzlement": "malversazione",
-    "secretPact": "patto segreto",
-    "forgedCredentials": "titoli falsi",
-    "midnightRitual": "rito di mezzanotte",
-    "doubleLife": "doppia vita",
-    "hiddenFortune": "fortuna nascosta",
-    "blackmail": "ricatto"
+  "ottomanempire": {
+   "govType": "sultanato",
+   "headTitle": "Sultano",
+   "legislature": "Divano",
+   "partyKind": "fazione di corte"
   },
-  "gripe": {
-    "curfew": "il coprifuoco",
-    "taxes": "le tasse",
-    "censors": "i censori",
-    "draft": "la leva"
+  "thegods": {
+   "govType": "pantheon divino",
+   "headTitle": "Divinità Prima",
+   "legislature": "Corte Celeste",
+   "partyKind": "casata"
   },
-  "tag": {
-    "collectivist": "collettivista",
-    "freeMarketeer": "liberista",
-    "libertarian": "libertario",
-    "authoritarian": "autoritario",
-    "progressive": "progressista",
-    "traditionalist": "tradizionalista",
-    "pacifist": "pacifista",
-    "militarist": "militarista",
-    "rationalist": "razionalista",
-    "mystic": "mistico",
-    "moderate": "moderato"
+  "sanmarinorepublic": {
+   "govType": "serenissima repubblica",
+   "headTitle": "Capitano Reggente",
+   "legislature": "Consiglio Grande",
+   "partyKind": "partito"
   },
-  "fallback": {
-    "nobody": "nessuno",
-    "noOne": "nessuno",
-    "oldGuard": "vecchia guardia",
-    "partsUnknown": "luoghi ignoti",
-    "spoiledBallot": "scheda nulla",
-    "establishment": "establishment"
+  "hypercapitalistcollective": {
+   "govType": "corporatocrazia",
+   "headTitle": "Sovrano Amministratore Delegato",
+   "legislature": "Il Consiglio",
+   "partyKind": "blocco"
   },
-  "event": {
-    "founding": "{power} registrata come iperpotenza ({govType}; {n} territori membri).",
-    "election": "{election}: {winner} prevale.",
-    "electionWithHead": "{election}: {winner} prevale; {head} è {title}.",
-    "scandal": "{name} travolto da uno scandalo (#{n}).",
-    "edict": "Il governo di {title} corregge {policy}: {before} → {after}.",
-    "protest": "Proteste di massa contro {govType} attraversano {place}.",
-    "riot": "Scoppiano tumulti; {legislature} ordina la repressione.",
-    "festival": "Una grande festa di stato solleva gli animi in tutta {power}.",
-    "referendum": "Un referendum nazionale sposta {policy} di {delta}.",
-    "coup": "COLPO DI STATO: {name} prende il potere in {power}; {elections} sospese.",
-    "coupFailed": "Un tentativo di colpo di stato contro {title} viene schiacciato.",
-    "revolution": "RIVOLUZIONE: {govType} di {power} viene rovesciata; un governo provvisorio indice {election} d'emergenza.",
-    "assassination": "{name}, {title} di {power}, viene assassinato.",
-    "politicianDies": "{name} muore a {age} anni.",
-    "headDies": "{name} muore a {age} anni. {power} piange il suo {title}."
+  "goblinhorde": {
+   "govType": "confederazione di bande",
+   "headTitle": "Capoccia",
+   "legislature": "Da Moot",
+   "partyKind": "clan"
   },
-  "note": {
-    "coalition": "Coalizione formata con {party}.",
-    "conclaveBallots": {
-      "one": "Deciso dopo una votazione dei {electors}.",
-      "other": "Deciso dopo {count} votazioni dei {electors}."
-    },
-    "purged": "{party} è stato epurato da {legislature}.",
-    "officialResults": "Risultati ufficiali. Sentimenti reali non registrati.",
-    "oneCreditOneVote": "Un credito, un voto.",
-    "mootLoser": "{name} ha perso da Moot ed è stato dato in pasto ai lupomaiali.",
-    "biggestWins": "Vince il più grosso e il più rumoroso.",
-    "ascension": "Deciso da torneo di ascensione davanti alla Corte Celeste.",
-    "successionWar": "La successione è degenerata in guerra aperta fra gli eredi.",
-    "successionCasualty": "{name} non è sopravvissuto alla guerra di successione.",
-    "palaceIntrigue": "Risolto per intrigo di palazzo nel Divano.",
-    "examinationScore": "Punteggio {score}/160 al Grande Esame."
+  "thetourists": {
+   "govType": "gerarchia di caste",
+   "headTitle": "Direttore del Tour",
+   "legislature": "L'Itinerario",
+   "partyKind": "casta",
+   "electorTitle": "Sorvegliante",
+   "electorTitlePlural": "Sorveglianti"
   },
-  "identity": {
-    "sympathized": "Ha iniziato a simpatizzare per {party}.",
-    "awakened": "Si è formato opinioni politiche.",
-    "conversion": "Ha lasciato {from} per {to}.",
-    "radicalized": "Ha irrigidito le proprie posizioni mentre cresceva il malcontento.",
-    "grudge": "Amareggiato dalla vittoria di {winner} alle {election}.",
-    "electedMayor": "Eletto Sindaco di {group} ({votes}/{total} voti).",
-    "appointed": "Nominato {office} di {group}."
+  "thedargos": {
+   "govType": "scherzo organizzato",
+   "headTitle": "Primo Dargos",
+   "legislature": "La Gag",
+   "partyKind": "numero"
   },
-  "story": {
-    "electedMayor": "eletto Sindaco di {group}",
-    "appointed": "nominato {office} di {group}"
+  "kukulkanascendancy": {
+   "govType": "impero divino",
+   "headTitle": "Dio-Imperatore",
+   "legislature": "Consiglio degli Ajawob",
+   "partyKind": "culto"
   },
-  "death": {
-    "wolfpigs": "dato in pasto ai lupomaiali dopo aver perso da Moot",
-    "succession": "ucciso nella guerra di successione",
-    "assassinated": "assassinato",
-    "naturalCauses": "morto per cause naturali a {age} anni"
+  "default": {
+   "govType": "repubblica",
+   "headTitle": "Presidente",
+   "legislature": "Assemblea",
+   "partyKind": "partito",
+   "electorTitle": "Elettore",
+   "electorTitlePlural": "Elettori"
   },
-  "report": {
-    "noPower": "Nessuna iperpotenza di nome \"{power}\".",
-    "noIdentity": "{name}: nessuna identità politica.",
-    "header": "=== {power}, {govType} ===",
-    "head": "{title}: {value}",
-    "headValue": "{name} (consenso {approval}%)",
-    "vacant": "vacante",
-    "ruling": "{partyKind} al governo: {party}{partners}",
-    "coalitionPartners": {
-      "one": "(+1 alleato di coalizione)",
-      "other": "(+{n} alleati di coalizione)"
-    },
-    "meters1": "Legittimità {legitimacy}  Stabilità {stability}",
-    "meters2": "Malcontento {unrest}  Economia  {economy}",
-    "policies": "Politiche: tasse {tax}% · censura {censorship} · leva {conscription} · welfare {welfare}{curfew}",
-    "curfew": "COPRIFUOCO",
-    "lastElection": "Ultime {election}: {date}, {winner} ({share}%).",
-    "nextElection": "Prossime {election}: {date}.",
-    "recentEvents": "Eventi recenti:",
-    "electionHeader": "=== {power}, storia: {election} ===",
-    "next": "Prossime: {date}",
-    "electionRow": "{date}{snap}, vincitore: {winner}{turnout}",
-    "snap": "(anticipate)",
-    "turnout": ", affluenza {turnout}%",
-    "resultRow": "   {share}%{seats}, {name}",
-    "seats": {
-      "one": "(1 seggio)",
-      "other": "({n} seggi)"
-    },
-    "citizen": "{name}, cittadino di {country} ({power}).",
-    "sympathizes": "Simpatizza per {party}.",
-    "leanings": "Orientamento: {tags}.",
-    "engagement": "Impegno politico: {engagement}/100{note}.",
-    "apathetic": "(apatico)",
-    "activist": "(attivista)",
-    "holdsOffice": "Ricopre la carica di {office} di {group}.",
-    "lastVote": "Ultimo voto: {party} ({date}).",
-    "grudge": "Serba rancore verso {party}."
+  "democraticpeoplesrepublicofkorea": {
+   "govType": "repubblica ereditaria",
+   "headTitle": "Presidente Eterno",
+   "legislature": "Assemblea Suprema del Popolo",
+   "partyKind": "partito"
   },
-  "officeState": {
-    "disgraced": "in disgrazia",
-    "deposed": "deposto"
+  "dharmadirectorate": {
+   "govType": "impero armonioso",
+   "headTitle": "Cancelliere dei Riti",
+   "legislature": "Sala delle Diecimila Voci",
+   "partyKind": "scuola",
+   "electorTitle": "Precettore",
+   "electorTitlePlural": "Precettori"
   },
-  "accession": {
-    "elected": "eletto",
-    "coup": "colpo di stato"
+  "illuminatedkhanate": {
+   "govType": "khanato illuminato",
+   "headTitle": "Khan Illuminato",
+   "legislature": "Ikh Khuraldai",
+   "partyKind": "stendardo",
+   "electorTitle": "Abate",
+   "electorTitlePlural": "Abati"
+  },
+  "solomonicrepublic": {
+   "govType": "repubblica salomonica",
+   "headTitle": "Nasi della Repubblica",
+   "legislature": "Sinedrio Restaurato",
+   "partyKind": "consiglio"
+  },
+  "petrokingdomofarabia": {
+   "govType": "petro-monarchia",
+   "headTitle": "Emiro del Petrolio",
+   "legislature": "Majlis delle Concessioni",
+   "partyKind": "concessione"
+  },
+  "sanatanarashtra": {
+   "govType": "repubblica dharmica",
+   "headTitle": "Primo Ministro",
+   "legislature": "Rashtra Sabha",
+   "partyKind": "sabha"
+  },
+  "longchile": {
+   "govType": "repubblica espansionista",
+   "headTitle": "Presidente-Maresciallo",
+   "legislature": "Congresso del Lungo Sud",
+   "partyKind": "movimento"
+  },
+  "imperialstateofpersia": {
+   "govType": "stato imperiale",
+   "headTitle": "Primo Ministro",
+   "legislature": "Assemblea Consultiva Nazionale",
+   "partyKind": "partito"
   }
+ },
+ "election": {
+  "conclave": "Conclave",
+  "plenum": "Plenum del Partito",
+  "shareholder": "Assemblea Generale Annuale",
+  "moot": "Da Moot",
+  "tournament": "Torneo di Ascensione",
+  "succession": "Successione",
+  "examination": "Grande Esame",
+  "parliamentary": "Elezioni Generali"
+ },
+ "office": {
+  "mayor": "Sindaco",
+  "guardCaptain": "Capitano delle Guardie",
+  "taxCollector": "Esattore",
+  "highPriest": "Sommo Sacerdote"
+ },
+ "policy": {
+  "taxRate": "le imposte",
+  "censorship": "la censura",
+  "conscription": "la leva",
+  "welfare": "il welfare",
+  "festivals": "le feste"
+ },
+ "rumorKind": {
+  "affair": "relazione clandestina",
+  "embezzlement": "malversazione",
+  "secretPact": "patto segreto",
+  "forgedCredentials": "titoli falsi",
+  "midnightRitual": "rito di mezzanotte",
+  "doubleLife": "doppia vita",
+  "hiddenFortune": "fortuna nascosta",
+  "blackmail": "ricatto"
+ },
+ "gripe": {
+  "curfew": "il coprifuoco",
+  "taxes": "le tasse",
+  "censors": "i censori",
+  "draft": "la leva"
+ },
+ "tag": {
+  "collectivist": "collettivista",
+  "freeMarketeer": "liberista",
+  "libertarian": "libertario",
+  "authoritarian": "autoritario",
+  "progressive": "progressista",
+  "traditionalist": "tradizionalista",
+  "pacifist": "pacifista",
+  "militarist": "militarista",
+  "rationalist": "razionalista",
+  "mystic": "mistico",
+  "moderate": "moderato"
+ },
+ "fallback": {
+  "nobody": "nessuno",
+  "noOne": "nessuno",
+  "oldGuard": "vecchia guardia",
+  "partsUnknown": "luoghi ignoti",
+  "spoiledBallot": "scheda nulla",
+  "establishment": "establishment"
+ },
+ "event": {
+  "founding": "{power} registrata come iperpotenza ({govType}; {n} territori membri).",
+  "election": "{election}: {winner} prevale.",
+  "electionWithHead": "{election}: {winner} prevale; {head} è {title}.",
+  "scandal": "{name} travolto da uno scandalo (#{n}).",
+  "edict": "Il governo di {title} corregge {policy}: {before} → {after}.",
+  "protest": "Proteste di massa contro {govType} attraversano {place}.",
+  "riot": "Scoppiano tumulti; {legislature} ordina la repressione.",
+  "festival": "Una grande festa di stato solleva gli animi in tutta {power}.",
+  "referendum": "Un referendum nazionale sposta {policy} di {delta}.",
+  "coup": "COLPO DI STATO: {name} prende il potere in {power}; {elections} sospese.",
+  "coupFailed": "Un tentativo di colpo di stato contro {title} viene schiacciato.",
+  "revolution": "RIVOLUZIONE: {govType} di {power} viene rovesciata; un governo provvisorio indice {election} d'emergenza.",
+  "assassination": "{name}, {title} di {power}, viene assassinato.",
+  "politicianDies": "{name} muore a {age} anni.",
+  "headDies": "{name} muore a {age} anni. {power} piange il suo {title}."
+ },
+ "note": {
+  "coalition": "Coalizione formata con {party}.",
+  "conclaveBallots": {
+   "one": "Deciso dopo una votazione dei {electors}.",
+   "other": "Deciso dopo {count} votazioni dei {electors}."
+  },
+  "purged": "{party} è stato epurato da {legislature}.",
+  "officialResults": "Risultati ufficiali. Sentimenti reali non registrati.",
+  "oneCreditOneVote": "Un credito, un voto.",
+  "mootLoser": "{name} ha perso da Moot ed è stato dato in pasto ai lupomaiali.",
+  "biggestWins": "Vince il più grosso e il più rumoroso.",
+  "ascension": "Deciso da torneo di ascensione davanti alla Corte Celeste.",
+  "successionWar": "La successione è degenerata in guerra aperta fra gli eredi.",
+  "successionCasualty": "{name} non è sopravvissuto alla guerra di successione.",
+  "palaceIntrigue": "Risolto per intrigo di palazzo nel Divano.",
+  "examinationScore": "Punteggio {score}/160 al Grande Esame."
+ },
+ "identity": {
+  "sympathized": "Ha iniziato a simpatizzare per {party}.",
+  "awakened": "Si è formato opinioni politiche.",
+  "conversion": "Ha lasciato {from} per {to}.",
+  "radicalized": "Ha irrigidito le proprie posizioni mentre cresceva il malcontento.",
+  "grudge": "Amareggiato dalla vittoria di {winner} alle {election}.",
+  "electedMayor": "Eletto Sindaco di {group} ({votes}/{total} voti).",
+  "appointed": "Nominato {office} di {group}."
+ },
+ "story": {
+  "electedMayor": "eletto Sindaco di {group}",
+  "appointed": "nominato {office} di {group}"
+ },
+ "death": {
+  "wolfpigs": "dato in pasto ai lupomaiali dopo aver perso da Moot",
+  "succession": "ucciso nella guerra di successione",
+  "assassinated": "assassinato",
+  "naturalCauses": "morto per cause naturali a {age} anni"
+ },
+ "report": {
+  "noPower": "Nessuna iperpotenza di nome \"{power}\".",
+  "noIdentity": "{name}: nessuna identità politica.",
+  "header": "=== {power}, {govType} ===",
+  "head": "{title}: {value}",
+  "headValue": "{name} (consenso {approval}%)",
+  "vacant": "vacante",
+  "ruling": "{partyKind} al governo: {party}{partners}",
+  "coalitionPartners": {
+   "one": "(+1 alleato di coalizione)",
+   "other": "(+{n} alleati di coalizione)"
+  },
+  "meters1": "Legittimità {legitimacy}  Stabilità {stability}",
+  "meters2": "Malcontento {unrest}  Economia  {economy}",
+  "policies": "Politiche: tasse {tax}% · censura {censorship} · leva {conscription} · welfare {welfare}{curfew}",
+  "curfew": "COPRIFUOCO",
+  "lastElection": "Ultime {election}: {date}, {winner} ({share}%).",
+  "nextElection": "Prossime {election}: {date}.",
+  "recentEvents": "Eventi recenti:",
+  "electionHeader": "=== {power}, storia: {election} ===",
+  "next": "Prossime: {date}",
+  "electionRow": "{date}{snap}, vincitore: {winner}{turnout}",
+  "snap": "(anticipate)",
+  "turnout": ", affluenza {turnout}%",
+  "resultRow": "   {share}%{seats}, {name}",
+  "seats": {
+   "one": "(1 seggio)",
+   "other": "({n} seggi)"
+  },
+  "citizen": "{name}, cittadino di {country} ({power}).",
+  "sympathizes": "Simpatizza per {party}.",
+  "leanings": "Orientamento: {tags}.",
+  "engagement": "Impegno politico: {engagement}/100{note}.",
+  "apathetic": "(apatico)",
+  "activist": "(attivista)",
+  "holdsOffice": "Ricopre la carica di {office} di {group}.",
+  "lastVote": "Ultimo voto: {party} ({date}).",
+  "grudge": "Serba rancore verso {party}."
+ },
+ "officeState": {
+  "disgraced": "in disgrazia",
+  "deposed": "deposto"
+ },
+ "accession": {
+  "elected": "eletto",
+  "coup": "colpo di stato"
+ }
 }

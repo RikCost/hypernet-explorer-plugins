@@ -54,7 +54,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Hitman"
+    ],
     "bgsNight": [
       "winchester-wind-ambience"
     ],
@@ -129,8 +131,8 @@
         "density": 0.25
       },
       {
-        "name": "RockDesert",
-        "density": 0.4
+        "name": "RockFormationDesert",
+        "density": 0.01
       },
       {
         "name": "Pebble",
@@ -138,7 +140,7 @@
       },
       {
         "name": "Crater",
-        "density": 0.12
+        "density": 0.02
       },
       {
         "name": "Crack",
@@ -211,7 +213,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle8"
+    ],
     "bgsNight": [
       "winchester-wind-ambience"
     ],
@@ -287,12 +291,16 @@
         "density": 0.44
       },
       {
+        "name": "RockFormation",
+        "density": 0.035
+      },
+      {
         "name": "RockPath",
         "density": 0.16
       },
       {
         "name": "Crater",
-        "density": 0.2
+        "density": 0.02
       },
       {
         "name": "Pebble",
@@ -366,7 +374,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Exotic Battle"
+    ],
     "bgsNight": [
       "night-crickets",
       "mountain-wind",
@@ -483,6 +493,10 @@
       {
         "name": "Rock",
         "density": 0.4
+      },
+      {
+        "name": "RockFormation",
+        "density": 0.032
       },
       {
         "name": "Branches",
@@ -701,7 +715,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Boss Battle"
+    ],
     "bgsNight": [
       "crickets5",
       "night-crickets",
@@ -873,7 +889,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle5"
+    ],
     "bgsNight": [
       "night-crickets",
       "crickets5",
@@ -968,6 +986,10 @@
       {
         "name": "Rock",
         "density": 0.3
+      },
+      {
+        "name": "RockFormation",
+        "density": 0.025
       },
       {
         "name": "Cliff",
@@ -1090,7 +1112,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Battle of the Creek"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -1183,6 +1207,10 @@
       {
         "name": "RockIce",
         "density": 0.18
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.027
       },
       {
         "name": "PlantIce",
@@ -1310,7 +1338,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Battle of the Creek"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -1405,6 +1435,10 @@
         "density": 0.2
       },
       {
+        "name": "RockFormationIce",
+        "density": 0.03
+      },
+      {
         "name": "SnowPile",
         "density": 0.16
       },
@@ -1497,7 +1531,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Battle of the Creek"
+    ],
     "bgsNight": [
       "ocean-night",
       "ocean-night2"
@@ -1701,7 +1737,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle8"
+    ],
     "bgsNight": [
       "lava-loop-1",
       "lava-loop-2",
@@ -1790,8 +1828,12 @@
         "density": 0.1
       },
       {
+        "name": "RockFormation",
+        "density": 0.025
+      },
+      {
         "name": "Crater",
-        "density": 0.08
+        "density": 0.02
       },
       {
         "name": "Crack",
@@ -1884,7 +1926,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle3"
+    ],
     "bgsNight": [
       "desert-ambience",
       "desert-monolit"
@@ -1971,8 +2015,8 @@
         "density": 0.3
       },
       {
-        "name": "RockDesert",
-        "density": 0.6
+        "name": "RockFormationDesert",
+        "density": 0.015
       },
       {
         "name": "Cactus",
@@ -2055,7 +2099,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle6"
+    ],
     "bgsNight": [
       "jungle-night",
       "crickets5",
@@ -2223,7 +2269,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Moogify/MelodicTechno"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-arctic",
@@ -2306,6 +2354,10 @@
       {
         "name": "RockIce",
         "density": 0.2
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.03
       },
       {
         "name": "TreIce",
@@ -2415,7 +2467,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Random Battle"
+    ],
     "bgsNight": [
       "frogs-croaking-at-night",
       "night-swamp",
@@ -2621,7 +2675,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Battle Metal"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -2710,6 +2766,10 @@
       {
         "name": "RockIce",
         "density": 0.16
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.025
       },
       {
         "name": "WeedIce",
@@ -2804,7 +2864,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Moogify/MelodicTechno"
+    ],
     "bgsNight": [
       "lava-loop-1",
       "lava-loop-2",
@@ -2893,8 +2955,12 @@
         "density": 0.12
       },
       {
+        "name": "RockFormation",
+        "density": 0.025
+      },
+      {
         "name": "Crater",
-        "density": 0.1
+        "density": 0.02
       },
       {
         "name": "Crack",
@@ -3016,7 +3082,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle7"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -3231,7 +3299,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "ZaneMusic/shortcuts"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -3320,6 +3390,10 @@
       {
         "name": "RockIce",
         "density": 0.2
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.03
       },
       {
         "name": "PebbleIce",
@@ -3446,7 +3520,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Battle Metal"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -3535,6 +3611,10 @@
       {
         "name": "RockIce",
         "density": 0.24
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.036
       },
       {
         "name": "PebbleIce",
@@ -3660,7 +3740,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle1"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -3753,6 +3835,10 @@
       {
         "name": "RockIce",
         "density": 0.18
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.027
       },
       {
         "name": "PebbleIce",
@@ -3870,7 +3956,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Random Battle"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -4053,7 +4141,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle1"
+    ],
     "bgsNight": [
       "lava-loop-1",
       "lava-loop-2",
@@ -4142,12 +4232,16 @@
         "density": 0.16
       },
       {
+        "name": "RockFormation",
+        "density": 0.025
+      },
+      {
         "name": "MetalScrap",
         "density": 0.2
       },
       {
         "name": "Crater",
-        "density": 0.16
+        "density": 0.02
       },
       {
         "name": "Crack",
@@ -4225,7 +4319,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle6"
+    ],
     "bgsNight": [
       "old-mine-ambience",
       "cave-deep",
@@ -4395,7 +4491,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "RandomMind/Battle"
+    ],
     "bgsNight": [
       "landfill"
     ],
@@ -4554,7 +4652,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle1"
+    ],
     "bgsNight": [
       "crickets5",
       "night-crickets",
@@ -4649,6 +4749,10 @@
         "density": 0.1
       },
       {
+        "name": "RockFormation",
+        "density": 0.025
+      },
+      {
         "name": "CrystalTentacle",
         "density": 0.12,
         "lifeSign": "weak"
@@ -4725,7 +4829,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle3"
+    ],
     "bgsNight": [
       "lava-loop-1",
       "lava-loop-2",
@@ -4814,6 +4920,10 @@
         "density": 0.12
       },
       {
+        "name": "RockFormation",
+        "density": 0.025
+      },
+      {
         "name": "Stalagmite",
         "density": 0.14
       },
@@ -4827,7 +4937,7 @@
       },
       {
         "name": "Crater",
-        "density": 0.1
+        "density": 0.02
       },
       {
         "name": "Oil",
@@ -4899,7 +5009,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle3"
+    ],
     "bgsNight": [
       "horror",
       "abyss-ambience",
@@ -5068,7 +5180,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Hitman"
+    ],
     "bgsNight": [
       "horror",
       "abyss-ambience",
@@ -5233,7 +5347,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle4"
+    ],
     "bgsNight": [
       "horror",
       "abyss-ambience",
@@ -5401,7 +5517,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/The Great Battle"
+    ],
     "bgsNight": [
       "spaceship",
       "drone",
@@ -5570,7 +5688,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Boss Battle"
+    ],
     "bgsNight": [
       "crickets5",
       "night-crickets2",
@@ -5796,7 +5916,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Battle Metal"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -5885,6 +6007,10 @@
       {
         "name": "RockIce",
         "density": 0.24
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.036
       },
       {
         "name": "PebbleIce",
@@ -6012,7 +6138,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle7"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -6101,6 +6229,10 @@
       {
         "name": "RockIce",
         "density": 0.2
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.03
       },
       {
         "name": "PebbleIce",
@@ -6222,7 +6354,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Random Battle"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -6313,6 +6447,10 @@
         "density": 0.28
       },
       {
+        "name": "RockFormationIce",
+        "density": 0.042
+      },
+      {
         "name": "PebbleIce",
         "density": 0.24
       },
@@ -6387,7 +6525,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle6"
+    ],
     "bgsNight": [
       "winchester-wind-ambience"
     ],
@@ -6462,8 +6602,8 @@
         "density": 0.3
       },
       {
-        "name": "RockDesert",
-        "density": 0.4
+        "name": "RockFormationDesert",
+        "density": 0.01
       },
       {
         "name": "Pebble",
@@ -6471,7 +6611,7 @@
       },
       {
         "name": "Crater",
-        "density": 0.2
+        "density": 0.02
       },
       {
         "name": "Crack",
@@ -6544,7 +6684,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "ZaneMusic/shortcuts"
+    ],
     "bgsNight": [
       "winchester-wind-ambience"
     ],
@@ -6620,8 +6762,12 @@
         "density": 0.44
       },
       {
-        "name": "RockDesert",
-        "density": 0.2
+        "name": "RockFormation",
+        "density": 0.035
+      },
+      {
+        "name": "RockFormationDesert",
+        "density": 0.008
       },
       {
         "name": "Pebble",
@@ -6629,7 +6775,7 @@
       },
       {
         "name": "Crater",
-        "density": 0.18
+        "density": 0.02
       },
       {
         "name": "Cliff",
@@ -6702,7 +6848,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle4"
+    ],
     "bgsNight": [
       "old-mine-ambience",
       "cave-deep",
@@ -6868,7 +7016,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Battle of the Creek"
+    ],
     "bgsNight": [
       "winchester-wind-ambience"
     ],
@@ -6943,8 +7093,8 @@
         "density": 0.3
       },
       {
-        "name": "RockDesert",
-        "density": 0.36
+        "name": "RockFormationDesert",
+        "density": 0.009
       },
       {
         "name": "Pebble",
@@ -6952,7 +7102,7 @@
       },
       {
         "name": "Crater",
-        "density": 0.22
+        "density": 0.02
       },
       {
         "name": "Crack",
@@ -7071,7 +7221,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "BattleMusic/Fast Fight"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -7164,6 +7316,10 @@
       {
         "name": "RockIce",
         "density": 0.24
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.036
       },
       {
         "name": "IcePool",
@@ -7282,7 +7438,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "Battle7"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -7371,6 +7529,10 @@
       {
         "name": "RockIce",
         "density": 0.28
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.042
       },
       {
         "name": "PebbleIce",
@@ -7493,7 +7655,9 @@
       "KevinMacLeod/Atmospheric/Distant Tension",
       "KevinMacLeod/Atmospheric/Floating Cities"
     ],
-    "bgmBattle": [],
+    "bgmBattle": [
+      "ZaneMusic/shortcuts"
+    ],
     "bgsNight": [
       "wind-blizzard",
       "wind-blizzard2",
@@ -7586,6 +7750,10 @@
       {
         "name": "RockIce",
         "density": 0.2
+      },
+      {
+        "name": "RockFormationIce",
+        "density": 0.03
       },
       {
         "name": "Crystal",

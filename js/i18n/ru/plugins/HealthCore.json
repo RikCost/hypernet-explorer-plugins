@@ -14,5 +14,6 @@
     "ПСИ"
   ],
   "vitalOrganDestroyed": "",
-  "partDestroyed": ""
+  "partDestroyed": "",
+  "partDamagedFallback": "{part} повреждено!"
 }

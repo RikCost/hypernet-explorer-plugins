@@ -1,5 +1,5 @@
 {
- "mitosisCompleteAPerfectCloneHasBeenCreated": "Mitosi completa! Un clone perfetto à¨ stato creato.",
+ "mitosisCompleteAPerfectCloneHasBeenCreated": "Mitosi completa! Un clone perfetto è stato creato.",
  "noReproductiveSystemPresent": "Nessun sistema riproduttivo presente",
  "type": "Tipo:",
  "pregnancyInProgress": "GRAVIDANZA IN CORSO",
@@ -77,7 +77,7 @@
  "normalRange": "Range normale",
  "belowNormalHypogonadism": "Sotto il normale (Ipogonadismo)",
  "noReproductiveSystemAvailableSetVariable87Fi": "Nessun sistema riproduttivo disponibile. Imposta prima la Variabile 87.",
- "alreadyInReproductiveProcess": "Già  in processo riproduttivo!",
+ "alreadyInReproductiveProcess": "Già in processo riproduttivo!",
  "pregnancyInitiatedDue": {
   "one": "Gravidanza iniziata! Parto previsto tra {count} giorno.",
   "other": "Gravidanza iniziata! Parto previsto tra {count} giorni."
@@ -95,9 +95,9 @@
   "other": "Mitosi iniziata! Divisione cellulare completerà in {count} giorni."
  },
  "notCurrentlyInReproductiveProcess": "Non attualmente in processo riproduttivo.",
- "pregnancyAcceleratedToCompletionBirthIsImmin": "Gravidanza accelerata al completamento! Il parto à¨ imminente.",
+ "pregnancyAcceleratedToCompletionBirthIsImmin": "Gravidanza accelerata al completamento! Il parto è imminente.",
  "eggDevelopmentAcceleratedToCompletionEggsRea": "Sviluppo uova accelerato al completamento! Uova pronte da deporre.",
- "seedGenerationAcceleratedToCompletionSeedIsR": "Generazione seme accelerata al completamento! Seme à¨ pronto.",
+ "seedGenerationAcceleratedToCompletionSeedIsR": "Generazione seme accelerata al completamento! Seme è pronto.",
  "mitosisAcceleratedToCompletionCellDivisionCo": "Mitosi accelerata al completamento! Divisione cellulare completa.",
  "thisCommandOnlyWorksForPlantTypeReproduction": "Questo comando funziona solo per riproduzione di tipo vegetale.",
  "noSeedsAvailableToPlant": "Nessun seme disponibile da piantare.",
@@ -601,14 +601,14 @@
   "veryRare": "Molto raro"
  },
  "bloodTypes": {
-  "o_pos": { "name": "0 Positivo", "desc": "Il tipo più comune in assoluto, e un donatore sicuro per qualsiasi altro paziente Rh positivo." },
+  "o_pos": { "name": "0 Positivo", "desc": "Il tipo più comune in assoluto, è un donatore sicuro per qualsiasi altro paziente Rh positivo." },
   "a_pos": { "name": "A Positivo", "desc": "Comune; compatibile con pazienti A e AB anch'essi Rh positivi." },
   "b_pos": { "name": "B Positivo", "desc": "Meno comune; compatibile con pazienti B e AB anch'essi Rh positivi." },
   "ab_pos": { "name": "AB Positivo", "desc": "Il ricevente universale, può ricevere sangue di qualsiasi combinazione ABO e Rh." },
   "o_neg": { "name": "0 Negativo", "desc": "Il donatore universale, sicuro per qualsiasi ricevente indipendentemente dal proprio gruppo." },
   "a_neg": { "name": "A Negativo", "desc": "Compatibile con qualsiasi paziente A o AB, Rh positivo o negativo." },
   "b_neg": { "name": "B Negativo", "desc": "Compatibile con qualsiasi paziente B o AB, Rh positivo o negativo." },
-  "ab_neg": { "name": "AB Negativo", "desc": "Il più raro degli otto tipi comuni, e un donatore solo per altri pazienti AB." },
+  "ab_neg": { "name": "AB Negativo", "desc": "Il più raro degli otto tipi comuni, è un donatore solo per altri pazienti AB." },
   "rh_null": { "name": "Rh-null (Sangue Dorato)", "desc": "Non porta alcun antigene Rh, quindi può essere trasfuso quasi a chiunque abbia un fenotipo Rh, ma può essere rifornito solo da un altro donatore Rh-null." },
   "duffy_neg": { "name": "Duffy Negativo", "desc": "Privo dell'antigene Duffy; resiste naturalmente ad alcuni parassiti trasmessi per via ematica, ma trasfusioni ripetute richiedono un donatore Duffy-compatibile per evitare una reazione immunitaria." },
   "diego_b_neg": { "name": "Diego(b-)", "desc": "Un profilo antigenico estremamente raro; una trasfusione sicura richiede un donatore privo dello stesso antigene." },
@@ -647,10 +647,10 @@
   "prompt": "Chi si prende {disease}?",
   "cancel": "Nessuno",
   "source": "una fiala",
-  "already": "{actor} ha gia' {disease}"
+  "already": "{actor} ha già {disease}"
  },
  "diagnose": {
-  "header": "La visita e' finita.",
+  "header": "La visita è finita.",
   "line": "{actor}: {diseases}",
   "clean": "{actor}: niente",
   "none": "Nessuno nel gruppo si porta dietro niente."

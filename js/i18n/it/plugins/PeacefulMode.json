@@ -317,8 +317,5 @@
       "{name} resta dov'è, in pace.",
       "{name} sembra felice di essere lasciato in pace."
     ]
-  },
-  "cmd": {
-    "talk": "Parla"
   }
 }

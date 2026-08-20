@@ -1,0 +1,219 @@
+{
+  "case": {
+    "slab": "Field Slab",
+    "wedge": "Draughtsman's Wedge",
+    "book": "Ledger Fold",
+    "brick": "Site Brick",
+    "palmtop": "Pocket Palm",
+    "dualhinge": "Twin Hinge"
+  },
+  "kind": {
+    "cpu": "Processor",
+    "ram": "Memory",
+    "storage": "Storage",
+    "gpu": "Graphics",
+    "display": "Panel",
+    "battery": "Cell",
+    "modem": "Uplink",
+    "cooling": "Cooling",
+    "sound": "Audio",
+    "sensor": "Sensor"
+  },
+  "specs": {
+    "heading": "TOTAL SPECIFICATION",
+    "processor": "Processor",
+    "memory": "Memory",
+    "storage": "Storage",
+    "graphics": "Graphics",
+    "battery": "Cell",
+    "draw": "Draw",
+    "slots": "Board",
+    "caseLabel": "Case"
+  },
+  "unit": {
+    "mhz": "{n} MHz",
+    "mb": "{n} MB",
+    "gb": "{n} GB",
+    "mah": "{n} mAh",
+    "watt": "{n} W",
+    "cells": "{used} of {total} cells",
+    "grid": "{cols} x {rows} board"
+  },
+  "value": {
+    "none": "not fitted",
+    "infinite": "unbounded"
+  },
+  "required": {
+    "heading": "REQUIRED"
+  },
+  "rail": {
+    "heading": "PARTS CARRIED",
+    "empty": "You are carrying no components.",
+    "count": "x{n}"
+  },
+  "hint": {
+    "idle": "Click the screen to switch on. Click the board to open it. Drag or arrows to turn, wheel or L2/R2 to zoom, middle button to pan.",
+    "edit": "Drag a part onto the board. L1/R1 or Tab turns it. Wheel or L2/R2 zooms, middle button pans. Esc steps back."
+  },
+  "boot": {
+    "banner": "★ Esoteric Heavy Industries",
+    "copyright": "Copyright (C) 2001, Esoteric Systems Division",
+    "firmware": "Archways XP System v3.14",
+    "processor": "Main Processor    : {name}",
+    "memory": "Memory Test       : {size} OK",
+    "memoryInfinite": "Memory Test       : counting... counting... OK",
+    "quantum": "Quantum Buffer    : {size} OK",
+    "storage": "Primary Volume    : {size} OK",
+    "cell": "Power Cell        : {size} OK",
+    "detectMaster": "Detecting Primary Master   ... OK",
+    "detectBioslave": "Detecting Primary Bioslave    ... OK",
+    "detectNeural": "Detecting Neural Interface  ... OK",
+    "detectMana": "Detecting Mana Capacitors  ... OK",
+    "detectUplink": "Detecting Hypernet Uplink  ... OK",
+    "detectNoUplink": "Detecting Hypernet Uplink  ... none detected",
+    "loadingFiles": "Loading Archways XP System Files...",
+    "driverKernel": "HEXKERN.SYS",
+    "driverMagic": "MAGIDRV.SYS",
+    "driverLink": "ETHLINK.DRV",
+    "driverLine": "{name} {bar} {pct}%",
+    "protocols": "Initializing Arcane Protocols...",
+    "manaFlow": "Calibrating Mana Flow... OK",
+    "ethereal": "Syncing Ethereal Network... OK",
+    "loading": "Loading Game Environment... ",
+    "ready": "✓ System Ready - Launching Archways XP..."
+  },
+  "post": {
+    "failHeading": "POST FAILURE",
+    "failLine": "no {kind} detected",
+    "failFooter": "Fit the missing parts and try again.",
+    "overdrawHeading": "POWER FAULT",
+    "overdrawLine": "the cell cannot carry {n} W",
+    "unfedLine": "no {signal} reaches the {part}"
+  },
+  "tool": {
+    "auto": "AUTO-FIT",
+    "case": "CASE",
+    "finish": "SHELL",
+    "bios": "BIOS",
+    "face": "LOWER HALF",
+    "clear": "CLEAR",
+    "chip": "CHIP",
+    "boot": "BOOT",
+    "trace": "TRACE",
+    "traceOn": "TRACE {signal}"
+  },
+  "face": {
+    "keyboard": "Keyboard",
+    "handheld": "Handheld pad",
+    "phone": "Telephone keypad"
+  },
+  "caseWarning": "Changing the case empties the board. Every part goes back in the bag.",
+  "fault": {
+    "missing": "No {kind} is fitted. The machine will not start without one.",
+    "power": "The cell is {n} W short of what the fitted parts draw.",
+    "heat": "Nothing is cooling a {n} W board. Expect it to throttle.",
+    "uplink": "No uplink fitted. The Hypernet will not answer.",
+    "video": "No graphics adapter. The panel is being driven by the processor.",
+    "memory": "Only {n} MB of memory. Archways XP will crawl.",
+    "unfed": "{part} has no {signal} reaching it."
+  },
+  "chip": {
+    "heading": "CHIP LAB",
+    "hint": "Left button draws, right button rubs out, middle button pans, wheel zooms. Pick a tile twice to step through its settings.",
+    "tile": {
+      "wire": "Wire",
+      "source": "Source",
+      "torch": "Torch",
+      "repeater": "Repeater",
+      "gate": "Gate",
+      "bridge": "Bridge",
+      "in": "Input pin",
+      "out": "Output pin",
+      "clock": "Clock",
+      "lamp": "Lamp",
+      "chip": "8066 processor"
+    },
+    "gate": {
+      "and": "AND",
+      "or": "OR",
+      "xor": "XOR",
+      "nand": "NAND",
+      "nor": "NOR",
+      "xnor": "XNOR",
+      "not": "NOT"
+    },
+    "dir": {
+      "0": "north",
+      "1": "east",
+      "2": "south",
+      "3": "west"
+    },
+    "delay": "{n} tick delay",
+    "period": "every {n} ticks",
+    "pin": "pin {n}",
+    "facing": "FACING {d}",
+    "variant": "SETTING",
+    "rotate": "TURN",
+    "run": "RUN",
+    "pause": "PAUSE",
+    "step": "STEP",
+    "speed": "SPEED x{n}",
+    "wipe": "WIPE",
+    "fabricate": "ETCH DIE",
+    "done": "BACK",
+    "gates": "Logic",
+    "tiles": "Tiles",
+    "rating": "Rated",
+    "cost": "Scrap",
+    "pins": "PINS",
+    "scrap": "{n} of {held}",
+    "dieName": "Home-Etched Die MK{serial}",
+    "dieDesc": "A logic die cut from scrap. {gates} gates, rated {mhz} MHz.",
+    "made": "{name} etched, {n} scrap spent.",
+    "needScrap": "Not enough salvaged steel: {n} needed.",
+    "fail": {
+      "noGates": "Nothing to etch. Draw some logic first.",
+      "noSlot": "No blank die left. Use or sell an old one.",
+      "noLab": "The bench is not ready."
+    },
+    "gateGroup": "GATES",
+    "preset": {
+      "inverter": "Inverter",
+      "latch": "SR latch",
+      "clock": "Clock",
+      "halfadder": "Half adder",
+      "toggle": "Toggle",
+      "counter": "Ring counter",
+      "cpu8066": "8066 machine",
+      "fulladder": "Full adder",
+      "adder4": "4-bit adder"
+    },
+    "presetGroup": "CIRCUITS",
+    "stamped": "{name} stamped, {n} tiles.",
+    "rom": {
+      "counter": "ROM: bus counter",
+      "fib": "ROM: fibonacci",
+      "strcpy": "ROM: string copy",
+      "muldiv": "ROM: multiply and divide"
+    },
+    "bus": "Bus",
+    "instr": "Instr",
+    "presetHeading": "CANNED SCHEMATICS",
+    "presetHint": "Pick one and it is drawn where you are looking. Everything it puts down is ordinary tiles: pull it about, wire it into something bigger, or etch it as it stands.",
+    "placing": "{name} in hand. Click to place it, right button or Esc to put it back."
+  },
+  "bios": {
+    "heading": "HYPERDECK FIRMWARE SETUP",
+    "tabMain": "MAIN",
+    "tabHealth": "HEALTH",
+    "noFaults": "No faults reported. Every fitted part answered.",
+    "willBoot": "This machine will POST.",
+    "willNotBoot": "This machine will not POST.",
+    "boot": "POWER ON",
+    "exit": "EXIT"
+  },
+  "signal": {
+    "power": "power",
+    "video": "video"
+  }
+}

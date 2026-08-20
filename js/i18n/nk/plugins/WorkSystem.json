@@ -82,5 +82,7 @@
     "navAcceptContract": "W/S: NAVIGATE | OK: ACCEPT CONTRACT",
     "navChooseJob": "W/S: NAVIGATE | OK: CHOOSE JOB",
     "navSignContract": "W/S: NAVIGATE | OK: SIGN CONTRACT"
-  }
+  },
+  "guildRegistry": "GUILD LABOR REGISTRY",
+  "guildRegistryCategory": "GUILD LABOR REGISTRY: {category}"
 }

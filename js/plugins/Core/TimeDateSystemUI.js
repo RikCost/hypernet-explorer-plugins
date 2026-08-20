@@ -403,7 +403,17 @@
   // Scene_Map, sleep menu popup
   //=============================================================================
 
+  // Re-opening a popup that is already up would throw the cursor back to the
+  // first row and swallow the press that arrived with it (see the _openedFrame
+  // guard in SleepMenuInputManager). Nothing legitimately opens this menu twice
+  // -- post_sleep is raised after the popup has closed -- so a second call is
+  // always a stray re-trigger from the map underneath, and is ignored.
+  function alreadyOpen(scene) {
+    return !!scene._sleepMenuEl;
+  }
+
   Scene_Map.prototype.openSleepMenu = function (mode) {
+    if (alreadyOpen(this)) return;
     this._sleepMenuMode = mode || "main";
     this._sleepMenuIndex = 0;
     // Remember whether the wait list is the entry point (T with no bed nearby)
@@ -438,6 +448,7 @@
 
   // Opens directly to cryogenic sleep year selection (bypassing the main menu)
   Scene_Map.prototype.openCryogenicSleepMenu = function () {
+    if (alreadyOpen(this)) return;
     this._sleepMenuMode = "cryo";
     this._sleepMenuIndex = 0;
     this._sleepMenuDirectWait = false;

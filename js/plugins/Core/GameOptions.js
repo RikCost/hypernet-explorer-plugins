@@ -79,20 +79,23 @@
  */
 
 /**
- * How an enemy is drawn in battle. There are two modes and the numbers are
- * historical: 1 is the 3D battler (procedural or GLB, the default) and 2 is
- * the enemy's own <Char:> sprite sheet. The third mode, 0, was the flat
- * battler image out of img/enemies, and it retired with that art; the values
- * are left where they are so an existing config keeps its meaning, and a
- * config still carrying 0 is read as 3D.
+ * How an enemy is drawn in battle. The numbers are historical: 1 is the 3D
+ * battler (procedural or GLB, the default), 2 is the enemy's own <Char:> sprite
+ * sheet, and 3 is the flat battler image named by the enemy's battlerName, out
+ * of img/enemies. Mode 3 was once mode 0 and retired with the old art; it is
+ * back because tools/enemies/export_enemy_sprites.mjs renders every 3D battler
+ * to a front-facing 256x256 PNG, so the still image IS the model, at no
+ * per-frame cost. Mode 0 is dead and reads as 3D, so an existing config that
+ * still carries it keeps working.
  */
 window.EnemyBattlerModes = {
     MODEL_3D: 1,
     SPRITES: 2,
-    VALUES: [1, 2],
+    BATTLERS_2D: 3,
+    VALUES: [1, 2, 3],
     // The one place a stored or passed-in value is turned into a real mode.
     normalize(v) {
-        return v === 2 ? 2 : 1;
+        return (v === 2 || v === 3) ? v : 1;
     },
     // Cycle to the next/previous mode, wrapping.
     step(v, dir) {
@@ -521,7 +524,7 @@ window.GameOptions = GameOptions;
     // where the party started decides what lives there
     // (BattleSystemEnhancedEncounters.js, section 4b).
     const ENEMY_SPAWN_MODE_COUNT = 4;
-    const ENEMY_SPAWN_MODE_DEFAULT = 0;
+    const ENEMY_SPAWN_MODE_DEFAULT = 1; // Party Level
 
     // Slider value -> signed stat percentage shown to the player.
     const enemyDifficultyPercent = function (value) {
@@ -587,12 +590,12 @@ window.GameOptions = GameOptions;
         if (this.masterVolume === undefined) this.masterVolume = 100;
 
         // Enemy battler display mode: 1 = 3D (procedural/GLB models, the
-        // default), 2 = Sprites (<Char:> sprite from enemy info). The old
-        // 0 = flat battler image went with img/enemies' 2D art, so a config
-        // still carrying it reads as 3D. Migrates the old standalone
-        // charBasedSprites toggle into the pair.
+        // default), 2 = Sprites (<Char:> sprite from enemy info), 3 = 2D
+        // battler images (img/enemies, rendered from the 3D models). A config
+        // still carrying the dead 0 reads as 3D. Migrates the old standalone
+        // charBasedSprites toggle into the set.
         this.enemyBattlers = config.enemyBattlers !== undefined
-            ? (config.enemyBattlers === 2 ? 2 : 1)
+            ? window.EnemyBattlerModes.normalize(config.enemyBattlers)
             : (config.charBasedSprites ? 2 : 1);
         // Back-compat mirror for any code still reading charBasedSprites.
         this.charBasedSprites = (this.enemyBattlers === 2);
@@ -600,8 +603,12 @@ window.GameOptions = GameOptions;
         this.showFps = config.showFps !== undefined ? config.showFps : false;
         // Title screen background style: 0 Random, 1 Cards, 2 Space
         // (planets + stars + black holes + galaxies), 3 Artifacts, 4 Bestiary,
-        // 5 Weapons, 6 Enemies 3D, 7 Hyperverse (default), 8 Camper Drive
+        // 5 Weapons, 7 Hyperverse (default), 8 Camper Drive. 6 was the separate
+        // "Enemies 3D" preset, now folded into the bestiary: the bestiary draws
+        // its monsters as 3D models or as flat cards according to enemyBattlers,
+        // so a config still carrying 6 reads as the bestiary.
         this.titleBackground = config.titleBackground !== undefined ? config.titleBackground : 7;
+        if (this.titleBackground === 6) this.titleBackground = 4;
         // CPU party members: when on, every party member except the leader
         // (first member) is auto-controlled in battle. Disabled by default.
         this.cpuPartyMembers = config.cpuPartyMembers !== undefined ? config.cpuPartyMembers : false;
@@ -616,11 +623,11 @@ window.GameOptions = GameOptions;
         // the menu never shows two "on" rows that fight over the next battle.
         if (this.cardCombat && this.mapBattleMode) this.mapBattleMode = false;
         // Enemy spawn mode (BattleSystemEnhancedEncounters.js): 0 = Distance
-        // from spawn (default; the whole biome roster, pitched at how far the
-        // ground lies from where the party started), 1 = Party Level (roaming
-        // enemies at/below party level + one much-higher boss per proc map),
-        // 2 = Biome (the biome's whole roster, flat, any level to 100),
-        // 3 = Chaos.
+        // from spawn (the whole biome roster, pitched at how far the ground
+        // lies from where the party started), 1 = Party Level (default;
+        // roaming enemies at/below party level + one much-higher boss per
+        // proc map), 2 = Biome (the biome's whole roster, flat, any level to
+        // 100), 3 = Chaos.
         //
         // Two migrations, each with its own marker, applied oldest first:
         //
@@ -1124,9 +1131,9 @@ window.GameOptions = GameOptions;
         // every language.
         partyFormation:  { states: ['PartyFormationClose', 'PartyFormationLoose'] },
         // Video
-        // Indexed by the mode value itself, and mode 0 (the retired flat
-        // battler image) no longer exists, so index 0 is deliberately empty.
-        enemyBattlers:   { states: [null, 'EnemyBattlers3D', 'EnemyBattlersSprites'] },
+        // Indexed by the mode value itself, and mode 0 (the dead value that
+        // reads as 3D) no longer exists, so index 0 is deliberately empty.
+        enemyBattlers:   { states: [null, 'EnemyBattlers3D', 'EnemyBattlersSprites', 'EnemyBattlers2D'] },
         fullscreen:      { on: 'FullscreenON',      off: 'FullscreenOFF' },
         globalLighting:  { on: 'GlobalLightingON',  off: 'GlobalLightingOFF' },
         nightLight:      { on: 'NightLightON',      off: 'NightLightOFF' },
@@ -1779,10 +1786,11 @@ window.GameOptions = GameOptions;
         },
         'audio', 'number');
 
-    // Enemy battler display mode: cycle 3D -> Sprites. Replaces the old
+    // Enemy battler display mode: cycle 3D -> Sprites -> 2D. Replaces the old
     // standalone Char-based Sprites toggle (Sprites == that behaviour).
-    // 3D (the procedural models) is the default. The retired third mode, the
-    // flat battler image, is gone along with the 2D art it drew.
+    // 3D (the procedural models) is the default; 2D draws the still render of
+    // that same model out of img/enemies, for machines that would rather not
+    // run WebGL in a fight.
     const ENEMY_BATTLER_MODES = window.EnemyBattlerModes.VALUES;
     // The name list is one entry per mode in ENEMY_BATTLER_MODES order, so it
     // is looked up by position rather than by the mode number.
@@ -1968,9 +1976,10 @@ window.GameOptions = GameOptions;
     // Cycle order as seen by the player: Hyperverse (the default) first, Camper
     // Drive second, then the rest, with Random always last. The stored config
     // ids keep their original numbering so existing configs stay valid; only the
-    // order they are stepped through changes. Mirrors
+    // order they are stepped through changes. 6 (the old Enemies 3D preset) is
+    // gone from the cycle: the bestiary covers it. Mirrors
     // Scene_Title.getAvailableBackgroundModes in Titlescreen.js.
-    const TITLE_BG_ORDER = [7, 8, 1, 2, 4, 3, 5, 6, 0];
+    const TITLE_BG_ORDER = [7, 8, 1, 2, 4, 3, 5, 0];
     const stepTitleBg = (v, dir) => {
         let i = TITLE_BG_ORDER.indexOf(v);
         if (i < 0) i = 0;
@@ -1980,7 +1989,7 @@ window.GameOptions = GameOptions;
         () => ConfigManager.titleBackground !== undefined ? ConfigManager.titleBackground : 7,
         (value) => ConfigManager.titleBackground = value,
         'video', 'boolean',
-        (value) => titleBgNames()[value] || titleBgNames()[0],
+        (value) => titleBgNames()[value === 6 ? 4 : value] || titleBgNames()[0],
         function () {
             this.setConfigValue('titleBackground', stepTitleBg(this.getConfigValue('titleBackground'), 1));
         },

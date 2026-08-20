@@ -624,6 +624,27 @@
     const getRoleDisplayName = roleKey => getRoleInfo(roleKey).name;
     const getRoleDescription = roleKey => getRoleInfo(roleKey).description;
 
+    // What a skill takes out of the pool it is actually paid from, so cards
+    // sharing a role sort cheapest first regardless of which pool that is.
+    function battleSkillCost(actor, skill) {
+        const tp = actor.skillTpCost(skill);
+        if (tp > 0) return tp;
+        return actor.skillMpCost(skill);
+    }
+
+    // Role first (Offensive/Healing/Support, ROLE_KEYS order), cost second: the
+    // grouping the battle skill list is divided into and the ordering inside
+    // each group.
+    function battleSkillSortCompare(actor) {
+        return (a, b) => {
+            const roleDiff = ROLE_KEYS.indexOf(getSkillRole(a)) - ROLE_KEYS.indexOf(getSkillRole(b));
+            if (roleDiff !== 0) return roleDiff;
+            const costDiff = battleSkillCost(actor, a) - battleSkillCost(actor, b);
+            if (costDiff !== 0) return costDiff;
+            return a.name.localeCompare(b.name);
+        };
+    }
+
     //=============================================================================
     // Battle loadout ,  what a character actually carries into a fight
     //=============================================================================
@@ -1076,6 +1097,43 @@
         return `background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; vertical-align: middle; image-rendering: pixelated; transform: scale(0.75); margin-right: 4px;`;
     }
 
+    // What a row is FOR is painted onto the row rather than written over a
+    // group of them: the list is sorted by role anyway, so the colour bands
+    // read as the grouping the headers used to spell out, and the page loses
+    // three lines of shouting text. The palette is the battle command menu's
+    // (BattleSystemEnhanchedCommands.js): attack red, heal green, support
+    // blue, and the engine's own basic kit in its teal, so a skill row and a
+    // command row of the same colour mean the same kind of thing.
+    const ROLE_ROW_COLORS = {
+        Offensive: { accent: '#e63232', rgb: [180, 25,  25 ] },
+        Healing:   { accent: '#44cc88', rgb: [25,  140, 80 ] },
+        Support:   { accent: '#3388ff', rgb: [25,  80,  180] },
+    };
+    const BASIC_ROW_COLORS = { accent: '#66bbdd', rgb: [40, 120, 150] };
+
+    function skillRowColors(skill) {
+        if (!skill || isBasicSkill(skill)) return BASIC_ROW_COLORS;
+        return ROLE_ROW_COLORS[getSkillRole(skill)] || BASIC_ROW_COLORS;
+    }
+
+    // The whole look of one row, lit or not: the same dark base under the same
+    // left-to-right colour wash the command rows carry, brightened when the
+    // cursor is on it. Called from the builder and again from update() as the
+    // cursor moves, so both states come out of one place.
+    function paintSkillRow(el, skill, selected) {
+        const { accent, rgb } = skillRowColors(skill);
+        const a0 = selected ? 0.88 : 0.42;
+        const a1 = selected ? 0.32 : 0.12;
+        el.style.backgroundColor = selected
+            ? 'var(--bg-dark-overlay-78)' : 'var(--bg-dark-overlay-90)';
+        el.style.backgroundImage =
+            `linear-gradient(to right, rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a0}) 0%, ` +
+            `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a1}) 55%, transparent 100%)`;
+        el.style.borderColor = selected ? accent : 'transparent';
+        el.style.borderLeft = (selected ? '6px' : '4px') + ' solid ' + accent;
+        el.style.boxShadow = selected ? '0 0 6px 1px ' + accent : 'none';
+    }
+
     // ── The battle list page geometry (idempotent across plugins) ─────────────
     // The skill page, the item page (BattleSystemEnhancedHUD) and the
     // description box that sits on top of them are three panels that have to
@@ -1121,7 +1179,7 @@
         root.style.cssText =
             'position:fixed;z-index:501;pointer-events:none;' +
             'box-sizing:border-box;overflow-y:auto;display:grid;' +
-            'background:var(--text-danger-hover);' +
+            'background:var(--shadow-black-translucent-75);' +
             'border:3px solid var(--border-subtle);border-radius:6px;' +
             'outline:1px solid var(--border-subtle-translucent-40);outline-offset:-7px;' +
             'background-image:radial-gradient(ellipse at center,' +
@@ -1274,7 +1332,8 @@
                 .filter(skill => skill && !isDummySkill(skill) && isBasicSkill(skill))
                 .sort((a, b) => a.name.localeCompare(b.name));
         } else {
-            this._data = BattleLoadout.battleSkills(this._actor, this._stypeId);
+            this._data = BattleLoadout.battleSkills(this._actor, this._stypeId)
+                .sort(battleSkillSortCompare(this._actor));
         }
     };
 
@@ -1358,8 +1417,8 @@
         // to an ordinary skill list; the delegated pointer handlers read this
         // to know which window a click should land on.
         this._actorTargetWindow = null;
-        // Rows are recreated fresh (transparent), so force update() to re-apply
-        // the selection highlight and font size on its next pass. The page is
+        // Rows are recreated unlit, so force update() to re-apply the selection
+        // highlight and the font size on its next pass. The page is
         // sized off the rows, so the layout pass has to run again too: a list
         // that shed or gained entries is a page of a different height.
         this._lastSkillIdx = null;
@@ -1379,16 +1438,20 @@
 
         const items = this._data || [];
 
+        // The list is sorted by role and coloured by it (paintSkillRow); there
+        // are no group headers, so every line on the page is a line the player
+        // can pick.
         this._htmlSkillEls = items.map((item, i) => {
             const el = document.createElement('div');
             el.dataset.idx = i;
             el.style.cssText =
-                'font-family:\'Lora\',serif;font-weight:bold;color:var(--text-primary-hover);' +
-                'padding:6px 12px;border-radius:4px;cursor:pointer;' +
+                'font-family:\'Lora\',serif;font-weight:bold;color:var(--text-pure-white);' +
+                'padding:6px 12px;border-radius:3px;cursor:pointer;' +
                 'border:2px solid transparent;transition:background 0.1s, border-color 0.1s;' +
                 'display:flex;align-items:center;justify-content:space-between;' +
-                'user-select:none;box-sizing:border-box;min-height:40px;';
+                'user-select:none;box-sizing:border-box;min-height:40px;overflow:hidden;';
             el.style.fontSize = scaledFont + 'px';
+            paintSkillRow(el, item, false);
 
             const leftDiv = document.createElement('div');
             leftDiv.style.cssText = 'display:flex;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
@@ -1676,15 +1739,15 @@
             const prevIdx = idxChanged ? this._prevSkillHiIdx : idx;
             // Only recolour the two rows whose highlight state flips; the font
             // size is stamped by the layout pass above, which measures off it.
-            this._htmlSkillEls.forEach((el, i) => {
-                if (i === idx) {
-                    el.style.background = 'var(--bg-subtle-translucent-15)';
-                    el.style.borderColor = 'var(--border-subtle)';
-                } else if (i === prevIdx || layoutChanged) {
-                    el.style.background = 'transparent';
-                    el.style.borderColor = 'transparent';
-                }
-            });
+            // Only while the rows are skills: handed over to the party list
+            // (_buildActorTargetItems) they are actors, and paint themselves.
+            const rowData = this._actorTargetWindow ? null : (this._data || []);
+            if (rowData) {
+                this._htmlSkillEls.forEach((el, i) => {
+                    if (i === idx) paintSkillRow(el, rowData[i], true);
+                    else if (i === prevIdx || layoutChanged) paintSkillRow(el, rowData[i], false);
+                });
+            }
             this._prevSkillHiIdx = idx;
 
             // Scroll the selected element into view for keyboard/controller navigation
@@ -1700,6 +1763,355 @@
                 }
             }
         }
+    };
+
+
+    //=============================================================================
+    // The battle skill menu, drawn as the actor's command list
+    //=============================================================================
+    // A skill is chosen where every other action is chosen. The carried skills
+    // (and the Basic kit, and the party an ally-scoped skill is pointed at)
+    // REPLACE the actor's command rows, the same takeover the grapple plan
+    // (Health_Monsters.js) and the talk menu (EnemyTalkSystem.js) do: each row
+    // carries its own cost, greys out when the actor cannot pay it, and wears
+    // the colour of the role it answers to. The drawing belongs to
+    // BattleSystemEnhanchedCommands (that window is its); only the list is
+    // ours, and it calls in through window.BattleSkillMenu.
+    //
+    // The description box (BattleSystemEnhancedHUD.js) still reads the scene's
+    // help window, so it follows the cursor down the rows exactly as it did
+    // when the list was a panel; it is anchored to the top edge of the menu
+    // through window.BattleListPage.
+
+    const BATTLE_MENU_ROWS = 9;      // skills shown on one page of the menu
+    const ALLY_ROW_ICON    = 73;
+
+    // What a row's tail says: the pool the skill is actually paid from.
+    function battleRowCost(actor, skill) {
+        const tp = actor.skillTpCost(skill);
+        if (tp > 0) return T('SkillsMenu.cost.ap', { n: tp });
+        const mp = actor.skillMpCost(skill);
+        if (mp > 0) return T('SkillsMenu.cost.mp', { n: mp });
+        return '';
+    }
+
+    // The same two lists Window_BattleSkill.makeItemList builds, in the same
+    // order: the Basic kit answers to no role and stays alphabetical, and
+    // everything else is the carried loadout, sorted by role then by cost.
+    function battleMenuSkills(actor, mode, stypeId) {
+        if (!actor) return [];
+        if (mode === 'basic') {
+            return actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && isBasicSkill(skill))
+                .sort((a, b) => a.name.localeCompare(b.name));
+        }
+        return BattleLoadout.battleSkills(actor, stypeId || 0)
+            .sort(battleSkillSortCompare(actor));
+    }
+
+    const BattleSkillMenu = {
+        isMenuOpen(win) {
+            return !!(win && win._skillSession);
+        },
+
+        // Stands in for Window_ActorCommand.makeCommandList while a skill (or
+        // the ally it lands on) is being chosen.
+        makeCommandList(win) {
+            const session = win._skillSession;
+            const ally = session.mode === 'ally';
+            const push = (name, ext, enabled, icon, colors, cost, dim) =>
+                win.addCommandWithIcon(name, ally ? "allyRow" : "skillRow",
+                    enabled !== false, ext, icon, enabled === false || !!dim, colors, cost);
+
+            // Pointing at an ally: the party is the list. The rows mirror
+            // Window_BattleActor, which keeps the cursor (see openAlly), so a
+            // fallen member is greyed rather than locked, since a revive is
+            // aimed at one on purpose.
+            if (ally) {
+                $gameParty.battleMembers().forEach((member, i) => {
+                    push(member.name(), { kind: 'ally', index: i }, true, ALLY_ROW_ICON, null,
+                         member.hp + '/' + member.mhp + ' ' + TextManager.hpA, !member.isAlive());
+                });
+                return;
+            }
+
+            const actor = session.actor;
+            const list = session.list;
+            if (list.length === 0) {
+                push(T('SkillsMenu.battle.none'), { kind: 'blocked' }, false, 76, null, '');
+            }
+            for (const skill of list.slice(session.offset, session.offset + BATTLE_MENU_ROWS)) {
+                push(skill.name, { kind: 'skill', id: skill.id }, actor.canUse(skill),
+                     skill.iconIndex, skillRowColors(skill), battleRowCost(actor, skill));
+            }
+            // A loadout longer than one page turns instead of growing the menu
+            // off the top of the screen (it is bottom-pinned and grows upward).
+            if (list.length > BATTLE_MENU_ROWS) {
+                push(T('SkillsMenu.battle.more', { count: list.length }), { kind: 'more' }, true, 4, null, '');
+            }
+            push(T('SkillsMenu.battle.back'), { kind: 'back' }, true, 140, null, '');
+        },
+
+        // Take the command menu over. Its own handlers are put aside whole and
+        // given back on the way out, so nothing else has to know this exists.
+        open(win, scene, mode, stypeId, returnSymbol) {
+            const actor = BattleManager.actor();
+            if (!win || !actor) return false;
+            const list = battleMenuSkills(actor, mode, stypeId);
+            if (list.length === 0) return false;
+            win._skillSession = {
+                mode: mode, stypeId: stypeId, actor: actor, list: list, offset: 0,
+                returnSymbol: returnSymbol || win.currentSymbol(),
+            };
+            // Only the FIRST takeover puts the menu's own handlers aside;
+            // opening over a list that is already ours would otherwise save
+            // our handlers as if they were the menu's and never give the real
+            // ones back.
+            if (!win._skillSavedHandlers) win._skillSavedHandlers = win._handlers;
+            win._handlers = {};
+            win.setHandler("skillRow", scene.onBattleSkillRow.bind(scene));
+            win.setHandler("cancel", scene.onBattleSkillCancel.bind(scene));
+            win.show();
+            win.refresh();
+            win.select(0);
+            win.activate();
+            scene.updateBattleSkillHelp();
+            return true;
+        },
+
+        close(win) {
+            if (!win || !win._skillSession || win._skillSession.mode === 'ally') return null;
+            const session = win._skillSession;
+            win._skillSession = null;
+            if (win._skillSavedHandlers) win._handlers = win._skillSavedHandlers;
+            win._skillSavedHandlers = null;
+            restoreHelpAnchor();
+            // Back to the actor's own commands at once: the rows are drawn on
+            // refresh, so a menu left unrefreshed would go on showing the list
+            // the skill was just picked from while the target is chosen.
+            win.refresh();
+            if (session.returnSymbol) win.selectSymbol(session.returnSymbol);
+            return session;
+        },
+
+        // The party list, mirroring Window_BattleActor rather than replacing
+        // it: that window keeps the cursor (the party HUD cards read it to know
+        // when they are clickable), and these rows follow its index.
+        openAlly(win, actorWindow) {
+            if (!win || !actorWindow) return;
+            this.close(win);
+            win._skillSession = { mode: 'ally', actorWindow: actorWindow, wasVisible: win.visible };
+            win.show();
+            win.refresh();
+            win.select(Math.max(0, actorWindow.index()));
+            win.deactivate();
+            // The party window keeps its old cursor between choices; without a
+            // row under it there would be nothing for these to mirror.
+            if (actorWindow.index() < 0) actorWindow.select(0);
+        },
+
+        closeAlly(win) {
+            if (!win || !win._skillSession || win._skillSession.mode !== 'ally') return;
+            const wasVisible = win._skillSession.wasVisible;
+            win._skillSession = null;
+            if (!wasVisible) win.hide();
+        },
+    };
+    window.BattleSkillMenu = BattleSkillMenu;
+
+    // -------------------------------------------------------------------------
+    // The description box, above the menu
+    // -------------------------------------------------------------------------
+    // The box is drawn by BattleSystemEnhancedHUD off the scene's help window,
+    // and placed against whichever list published its corner (BattleListPage).
+    // While the rows live in the command menu, that corner is the menu's own
+    // top edge, which moves as the list grows and shrinks.
+    let _savedPageTop = null;
+
+    function anchorHelpToMenu(win) {
+        const page = window.BattleListPage;
+        if (!page || !win) return;
+        if (_savedPageTop === null) _savedPageTop = page.TOP;
+        page.width = PAGE_WIDTH;
+        page.TOP = Math.max(80, win.y);
+    }
+
+    function restoreHelpAnchor() {
+        const page = window.BattleListPage;
+        if (page && _savedPageTop !== null) page.TOP = _savedPageTop;
+        _savedPageTop = null;
+        const scene = SceneManager._scene;
+        if (scene && scene._helpWindow) {
+            scene._helpWindow.setText('');
+            scene._helpWindow.hide();
+        }
+    }
+
+    Scene_Battle.prototype.updateBattleSkillHelp = function () {
+        const win = this._actorCommandWindow;
+        const session = win && win._skillSession;
+        const help = this._helpWindow;
+        if (!help) return;
+        if (!session || session.mode === 'ally') {
+            help.setText('');
+            help.hide();
+            return;
+        }
+        const ext = win.currentExt();
+        const skill = ext && ext.kind === 'skill' ? $dataSkills[ext.id] : null;
+        anchorHelpToMenu(win);
+        help.setText(skill ? buildBattleSkillHelpText(skill, session.actor) : '');
+        help.show();
+    };
+
+    // Every cursor move in the command menu is a chance for the description to
+    // change; this is the only place the scene hears about one.
+    const _WAC_select_BSM = Window_ActorCommand.prototype.select;
+    Window_ActorCommand.prototype.select = function (index) {
+        _WAC_select_BSM.call(this, index);
+        const scene = SceneManager._scene;
+        if (this._skillSession && scene && scene.updateBattleSkillHelp) {
+            scene.updateBattleSkillHelp();
+        }
+    };
+
+    // -------------------------------------------------------------------------
+    // Picking a row
+    // -------------------------------------------------------------------------
+    Scene_Battle.prototype.onBattleSkillRow = function () {
+        const win = this._actorCommandWindow;
+        const session = win && win._skillSession;
+        const ext = win ? win.currentExt() : null;
+        if (!session || !ext) return;
+
+        switch (ext.kind) {
+            case 'more':
+                session.offset += BATTLE_MENU_ROWS;
+                if (session.offset >= session.list.length) session.offset = 0;
+                win.refresh();
+                win.select(0);
+                win.activate();
+                return;
+            case 'back':
+                this.onBattleSkillCancel();
+                return;
+            case 'skill': {
+                const skill = $dataSkills[ext.id];
+                const action = BattleManager.inputtingAction();
+                if (!skill || !action) return;
+                action.setSkill(skill.id);
+                session.actor.setLastBattleSkill(skill);
+                // Where to come back to if the target choice is backed out of.
+                this._battleSkillReturn = {
+                    mode: session.mode, stypeId: session.stypeId,
+                    offset: session.offset, index: win.index(),
+                    symbol: session.returnSymbol,
+                };
+                BattleSkillMenu.close(win);
+                this.onSelectAction();
+                return;
+            }
+            default:
+                SoundManager.playBuzzer();
+        }
+    };
+
+    Scene_Battle.prototype.onBattleSkillCancel = function () {
+        const win = this._actorCommandWindow;
+        // close() already puts the actor's own commands back and lands the
+        // cursor on the row the list was opened from.
+        BattleSkillMenu.close(win);
+        this._battleSkillReturn = null;
+        if (win) win.activate();
+    };
+
+    // Backing out of a target choice puts the list back exactly as it was left.
+    Scene_Battle.prototype.reopenBattleSkillMenu = function () {
+        const ret = this._battleSkillReturn;
+        const win = this._actorCommandWindow;
+        if (!ret || !win) return false;
+        if (!BattleSkillMenu.open(win, this, ret.mode, ret.stypeId, ret.symbol)) return false;
+        win._skillSession.offset = ret.offset || 0;
+        win.refresh();
+        win.select(ret.index != null ? ret.index : 0);
+        win.activate();
+        return true;
+    };
+
+    // -------------------------------------------------------------------------
+    // Target selection
+    // -------------------------------------------------------------------------
+    const _SB_startActorSelection_BSM = Scene_Battle.prototype.startActorSelection;
+    Scene_Battle.prototype.startActorSelection = function () {
+        _SB_startActorSelection_BSM.call(this);
+        // Only for a skill picked out of this menu. An item is chosen on a page
+        // of its own (BattleSystemEnhancedHUD.js) which stays open over the
+        // same corner of the screen, and would sit on top of these rows.
+        if (this._battleSkillReturn) {
+            BattleSkillMenu.openAlly(this._actorCommandWindow, this._actorWindow);
+        }
+    };
+
+    // The party rows follow the window that owns the cursor.
+    const _WBA_select_BSM = Window_BattleActor.prototype.select;
+    Window_BattleActor.prototype.select = function (index) {
+        _WBA_select_BSM.call(this, index);
+        const scene = SceneManager._scene;
+        const win = scene && scene._actorCommandWindow;
+        if (win && win._skillSession && win._skillSession.mode === 'ally' && index >= 0 &&
+            win.index() !== index) {
+            win.select(index);
+        }
+    };
+
+    const _SB_onActorOk_BSM = Scene_Battle.prototype.onActorOk;
+    Scene_Battle.prototype.onActorOk = function () {
+        this._battleSkillReturn = null;
+        BattleSkillMenu.closeAlly(this._actorCommandWindow);
+        _SB_onActorOk_BSM.call(this);
+    };
+
+    const _SB_onActorCancel_BSM = Scene_Battle.prototype.onActorCancel;
+    Scene_Battle.prototype.onActorCancel = function () {
+        BattleSkillMenu.closeAlly(this._actorCommandWindow);
+        if (this._battleSkillReturn) {
+            if (this._actorWindow) this._actorWindow.hide();
+            if (this.reopenBattleSkillMenu()) return;
+        }
+        _SB_onActorCancel_BSM.call(this);
+    };
+
+    const _SB_onEnemyOk_BSM = Scene_Battle.prototype.onEnemyOk;
+    Scene_Battle.prototype.onEnemyOk = function () {
+        this._battleSkillReturn = null;
+        _SB_onEnemyOk_BSM.call(this);
+    };
+
+    const _SB_onEnemyCancel_BSM = Scene_Battle.prototype.onEnemyCancel;
+    Scene_Battle.prototype.onEnemyCancel = function () {
+        if (this._battleSkillReturn) {
+            if (this._enemyWindow) this._enemyWindow.hide();
+            if (this.reopenBattleSkillMenu()) return;
+        }
+        _SB_onEnemyCancel_BSM.call(this);
+    };
+
+    // A list left standing when input moves on (the next actor, the end of the
+    // round, a battle finishing under the player) would leave the command menu
+    // holding rows that are no longer about anything.
+    const _SB_startActorCommandSelection_BSM = Scene_Battle.prototype.startActorCommandSelection;
+    Scene_Battle.prototype.startActorCommandSelection = function () {
+        this._battleSkillReturn = null;
+        BattleSkillMenu.closeAlly(this._actorCommandWindow);
+        BattleSkillMenu.close(this._actorCommandWindow);
+        _SB_startActorCommandSelection_BSM.call(this);
+    };
+
+    const _SB_endCommandSelection_BSM = Scene_Battle.prototype.endCommandSelection;
+    Scene_Battle.prototype.endCommandSelection = function () {
+        BattleSkillMenu.closeAlly(this._actorCommandWindow);
+        BattleSkillMenu.close(this._actorCommandWindow);
+        _SB_endCommandSelection_BSM.call(this);
     };
 
 
@@ -1735,6 +2147,9 @@
         // UI UI states
         this._dndActiveSection = "types"; // "types", "skills", "actions", "targets"
         this._dndSelectedTypeIndex = 0;
+        // The two loadout chips ride the tab rail: when the cursor stands on one
+        // of them this holds its kind, and no tab is lit as focused.
+        this._dndSelectedPreset = null;
         this._dndSelectedIndex = 0; // selected skill row
         this._dndSelectedActionIndex = 0;
         this._dndSelectedTargetIndex = 0;
@@ -2028,6 +2443,31 @@
         list.push({ name: T('SkillsMenu.cmd.levelUp'), ext: "levelup", type: "levelup" });
 
         return list;
+    };
+
+    // The tab rail as the cursor walks it: the roles with the two loadout chips
+    // sitting where they are drawn, right after the overview tab. Left and right
+    // step through this, so the chips are reachable without the mouse.
+    Scene_Skill.prototype.getUISkillRail = function () {
+        const rail = [];
+        this.getUISkillTypes().forEach((type, index) => {
+            rail.push({ kind: "type", index: index, name: type.name });
+            if (type.ext === "all") {
+                rail.push({ kind: "preset", preset: "best" });
+                rail.push({ kind: "preset", preset: "random" });
+            }
+        });
+        return rail;
+    };
+
+    // Where the cursor stands on that rail.
+    Scene_Skill.prototype.getUIRailIndex = function (rail) {
+        const entries = rail || this.getUISkillRail();
+        const preset = this._dndSelectedPreset;
+        const found = entries.findIndex(e => preset
+            ? (e.kind === "preset" && e.preset === preset)
+            : (e.kind === "type" && e.index === this._dndSelectedTypeIndex));
+        return found >= 0 ? found : 0;
     };
 
     Scene_Skill.prototype.isUILevelUpTab = function () {
@@ -2489,17 +2929,17 @@
         // The two presets that fill the whole carried row ride the same rail,
         // between the overview tab and the roles: they act on the loadout rather
         // than filter the list, so they are inked apart from the tabs proper.
-        const presetTagsHTML = `
-            <div class="backpack-tab preset-tab" onclick="SceneManager._scene.applyUILoadoutPreset('best')">${escapeHtml(T('SkillsMenu.loadout.best'))}</div>
-            <div class="backpack-tab preset-tab" onclick="SceneManager._scene.applyUILoadoutPreset('random')">${escapeHtml(T('SkillsMenu.loadout.random'))}</div>
-        `;
+        const onTypesRail = this._dndActiveSection === "types";
         let typesRowHTML = "";
-        types.forEach((type, idx) => {
-            const isActive = this._dndSelectedTypeIndex === idx ? "active" : "";
-            const isFocused = (this._dndActiveSection === "types" && this._dndSelectedTypeIndex === idx) ? "selected" : "";
-            typesRowHTML += `<div class="backpack-tab ${isActive} ${isFocused}" onclick="SceneManager._scene.selectUISkillType(${idx})">${escapeHtml(type.name)}</div>`;
-            // After "All Skills", before the roles.
-            if (type.ext === "all") typesRowHTML += presetTagsHTML;
+        this.getUISkillRail().forEach(entry => {
+            if (entry.kind === "preset") {
+                const isFocused = (onTypesRail && this._dndSelectedPreset === entry.preset) ? "selected" : "";
+                typesRowHTML += `<div class="backpack-tab preset-tab ${isFocused}" data-rail="preset:${entry.preset}" onclick="SceneManager._scene.applyUILoadoutPreset('${entry.preset}')">${escapeHtml(T('SkillsMenu.loadout.' + entry.preset))}</div>`;
+                return;
+            }
+            const isActive = this._dndSelectedTypeIndex === entry.index ? "active" : "";
+            const isFocused = (onTypesRail && !this._dndSelectedPreset && this._dndSelectedTypeIndex === entry.index) ? "selected" : "";
+            typesRowHTML += `<div class="backpack-tab ${isActive} ${isFocused}" data-rail="type:${entry.index}" onclick="SceneManager._scene.selectUISkillType(${entry.index})">${escapeHtml(entry.name)}</div>`;
         });
 
         const skillTypesRowHTML = `
@@ -2646,18 +3086,18 @@
             // Left page already drawn! Update only the type tabs' classes
             // in-place (companion tabs live on the right page and are rebuilt
             // above; the cards themselves are repainted with the window below).
-            const typeTabs = leftPageContainer.querySelectorAll(".backpack-tab");
-            typeTabs.forEach((tab, idx) => {
-                if (idx === this._dndSelectedTypeIndex) {
-                    tab.classList.add("active");
-                } else {
+            const typeTabs = leftPageContainer.querySelectorAll(".backpack-tab[data-rail]");
+            typeTabs.forEach((tab) => {
+                const tag = tab.dataset.rail || "";
+                if (tag.indexOf("preset:") === 0) {
+                    // A loadout chip is never the open filter, only ever focused.
                     tab.classList.remove("active");
+                    tab.classList.toggle("selected", onTypesRail && this._dndSelectedPreset === tag.slice(7));
+                    return;
                 }
-                if (idx === this._dndSelectedTypeIndex && this._dndActiveSection === "types") {
-                    tab.classList.add("selected");
-                } else {
-                    tab.classList.remove("selected");
-                }
+                const idx = parseInt(tag.slice(5), 10);
+                tab.classList.toggle("active", idx === this._dndSelectedTypeIndex);
+                tab.classList.toggle("selected", onTypesRail && !this._dndSelectedPreset && idx === this._dndSelectedTypeIndex);
             });
         }
 
@@ -2793,6 +3233,7 @@
         if (type) {
             SoundManager.playCursor();
             this.clearUIInspect();
+            this._dndSelectedPreset = null;
             this._dndSelectedTypeIndex = idx;
             this._dndSelectedIndex = 0;
             this._itemWindow.setStypeId(type.ext);
@@ -2960,6 +3401,7 @@
             scene._actorIndex = (scene._actorIndex + dir + allMembers.length) % allMembers.length;
             scene.changeActor();
             scene.clearUIInspect();
+            scene._dndSelectedPreset = null;
             scene._dndSelectedIndex = 0;
             scene.refreshUISkill();
         },
@@ -2983,34 +3425,36 @@
             const skillsOnlyList = scene.getUISkillsOnlyList();
 
             if (section === "types") {
-                if (dir === "left") {
-                    if (scene._dndSelectedTypeIndex > 0) {
-                        SoundManager.playCursor();
-                        scene._dndSelectedTypeIndex--;
+                // The cursor walks the whole rail, loadout chips included, so
+                // they are reached with the same step that changes a filter.
+                if (dir === "left" || dir === "right") {
+                    const rail = scene.getUISkillRail();
+                    const step = dir === "left" ? -1 : 1;
+                    const next = scene.getUIRailIndex(rail) + step;
+                    if (next < 0 || next >= rail.length) {
+                        // Walking off either end hands the page to the neighbour.
+                        if (step < 0) scene.previousActor(); else scene.nextActor();
+                        const newTypes = scene.getUISkillTypes();
+                        scene._dndSelectedPreset = null;
+                        scene._dndSelectedTypeIndex = step < 0 ? Math.max(0, newTypes.length - 1) : 0;
                         scene._dndSelectedIndex = 0;
-                        scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
+                        if (newTypes[scene._dndSelectedTypeIndex]) {
+                            scene._itemWindow.setStypeId(newTypes[scene._dndSelectedTypeIndex].ext);
+                        }
                         scene.refreshUISkill();
-                    } else {
-                        scene.previousActor();
-                        scene._dndSelectedTypeIndex = types.length - 1;
-                        scene._dndSelectedIndex = 0;
-                        scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
-                        scene.refreshUISkill();
+                        return;
                     }
-                } else if (dir === "right") {
-                    if (scene._dndSelectedTypeIndex < types.length - 1) {
-                        SoundManager.playCursor();
-                        scene._dndSelectedTypeIndex++;
-                        scene._dndSelectedIndex = 0;
-                        scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
-                        scene.refreshUISkill();
+                    SoundManager.playCursor();
+                    const entry = rail[next];
+                    if (entry.kind === "preset") {
+                        scene._dndSelectedPreset = entry.preset;
                     } else {
-                        scene.nextActor();
-                        scene._dndSelectedTypeIndex = 0;
+                        scene._dndSelectedPreset = null;
+                        scene._dndSelectedTypeIndex = entry.index;
                         scene._dndSelectedIndex = 0;
-                        scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
-                        scene.refreshUISkill();
+                        scene._itemWindow.setStypeId(types[entry.index].ext);
                     }
+                    scene.refreshUISkill();
                 } else if (dir === "down") {
                     if (skillsOnlyList.length > 0) {
                         SoundManager.playCursor();
@@ -3104,6 +3548,10 @@
             const section = scene._dndActiveSection;
 
             if (section === "types") {
+                if (scene._dndSelectedPreset) {
+                    scene.applyUILoadoutPreset(scene._dndSelectedPreset);
+                    return;
+                }
                 if (scene.getUISkillsOnlyList().length > 0) {
                     SoundManager.playOk();
                     scene._dndActiveSection = "skills";

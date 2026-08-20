@@ -14,7 +14,9 @@
  * that mean something in it:
  *
  *   the field       always shown
- *   sort keys       config.sorts, from name | level | weight | price | cost
+ *   sort keys       config.sorts, from name | level | weight | price | cost,
+ *                   each named MenuSearch.sort.<key> unless config.sortLabels
+ *                   gives that menu its own word for one
  *   kind chips      config.kinds, e.g. Earth / Petrodemons / Aliens
  *   category picker config.categories(), a list the HOST computes from what it
  *                   is actually showing, so it is always in that menu's own
@@ -54,6 +56,14 @@
  * dozen the page can actually show. A menu wearing this strip should mount its
  * list through that plugin rather than assigning innerHTML itself.
  *
+ * Every field starts COLLAPSED: all the page shows is the IconSet magnifier
+ * (247) at its top right, and the field itself only exists once that handle is clicked (it
+ * autofocuses then, and empties itself again when collapsed). The handle is a
+ * plain DOM element without the '.focusable' class every menu's navigator
+ * collects, so a controller can never land on it: opening a search is a click.
+ * A host that patches its page in place instead of redrawing the strip needs to
+ * do nothing, toggleField() repaints its own markup.
+ *
  * A focused field owns the keyboard: every key event is stopped at the element,
  * so neither Input.keyMapper nor a scene's own window-level WASD listener ever
  * sees the typing. Scenes that read Input directly should still bail out of
@@ -70,6 +80,29 @@
         return String(str ?? '').replace(/[&<>"']/g, c => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
         })[c]);
+    }
+
+    // The IconSet magnifying glass (247), drawn as a background sprite so the
+    // handle needs no font glyph.
+    const SEARCH_GLASS_ICON = 247;
+    function iconStyle(index, size) {
+        const col = index % 16;
+        const row = Math.floor(index / 16);
+        return `display:block; width:${size}px; height:${size}px; ` +
+            `background-image:url('img/system/IconSet.png'); background-size:${size * 16}px auto; ` +
+            `background-position:-${col * size}px -${row * size}px; image-rendering:pixelated;`;
+    }
+
+    // The collapsed handle every search field in the game wears. Shared, so the
+    // few menus that still keep a search field of their own (the backpack, the
+    // build panel, the sandbox) wear exactly the same handle as the ones on
+    // this strip.
+    function toggleHTML(onclick, expanded) {
+        const title = expanded ? T('MenuSearch.close') : T('MenuSearch.open');
+        return `<div class="msb-toggle${expanded ? ' open' : ''}" tabindex="-1"
+                    title="${escapeHtml(title)}"
+                    onmousedown="event.preventDefault()"
+                    onclick="event.stopPropagation(); ${onclick}"><span class="msb-glass" style="${iconStyle(SEARCH_GLASS_ICON, 20)}"></span></div>`;
     }
 
     // Every sort key the strip knows how to offer, and where each reads its
@@ -102,6 +135,7 @@
         // A bar is remade every time its scene is opened; the newest one wins
         // the id so the inline handlers always reach the live scene.
         const state = {
+            expanded: !!cfg.startExpanded,   // the field is a handle until clicked
             query: '',
             kind: cfg.kinds && cfg.kinds.length ? cfg.kinds[0].key : '',
             sortKey: (cfg.sorts && cfg.sorts[0]) || 'name',
@@ -115,6 +149,11 @@
 
         const sorts = (cfg.sorts || []).filter(k => SORT_KEYS.includes(k));
         const ranges = (cfg.ranges || []).filter(k => RANGE_KEYS.includes(k));
+
+        // A sort tag is named MenuSearch.sort.<key> unless the host has a
+        // better word for it in its own list: "Name" says nothing useful on a
+        // page whose rows are a tree, where the ordering is A-Z within it.
+        const sortLabel = (key) => (cfg.sortLabels && cfg.sortLabels[key]) || T('MenuSearch.sort.' + key);
 
         const changed = () => { if (cfg.onChange) cfg.onChange(); };
 
@@ -146,9 +185,18 @@
                 return this.fieldHTML() + this.filtersHTML();
             },
 
+            // Collapsed, the field is one handle sitting at the top right of the
+            // page; open, the handle stays there and the field fills the row to
+            // its left. A query keeps it open on its own, so a page redrawn
+            // while something is typed in it never swallows the filter.
+            isFieldOpen() {
+                return state.expanded || !!state.query;
+            },
+
             fieldHTML() {
-                return `
-                    <div class="msb msb-field-only">
+                const open = this.isFieldOpen();
+                const handle = toggleHTML(call('toggleField', ''), open);
+                const field = open ? `
                         <div class="msb-field">
                             <input type="text" id="msb-input-${id}" class="backpack-search-input"
                                 placeholder="${escapeHtml(cfg.placeholder || T('MenuSearch.placeholder'))}"
@@ -156,7 +204,10 @@
                                 value="${escapeHtml(state.query)}"
                                 oninput="${call('setQuery', 'this.value')}" ${STOP}>
                             ${state.query ? `<div class="msb-clear" title="${escapeHtml(T('MenuSearch.clear'))}" onclick="${call('reset', '')}">✕</div>` : ''}
-                        </div>
+                        </div>` : '';
+                return `
+                    <div class="msb msb-field-only${open ? '' : ' msb-collapsed'}" data-msb="${id}">${field}
+                        ${handle}
                     </div>`;
             },
 
@@ -174,7 +225,7 @@
                     const arrow = state.sortDir === 'asc' ? '▲' : '▼';
                     bits.push(`<div class="backpack-sort-tags">${sorts.map(key => {
                         const active = state.sortKey === key;
-                        return `<div class="sort-tag${active ? ' active' : ''}" onclick="${call('setSort', `'${key}'`)}">${escapeHtml(T('MenuSearch.sort.' + key))}${active ? ' ' + arrow : ''}</div>`;
+                        return `<div class="sort-tag${active ? ' active' : ''}" onclick="${call('setSort', `'${key}'`)}">${escapeHtml(sortLabel(key))}${active ? ' ' + arrow : ''}</div>`;
                     }).join('')}</div>`);
                 }
 
@@ -276,6 +327,45 @@
                 this.restoreFocus();
             },
 
+            // The handle. Opening autofocuses the fresh field; closing drops
+            // whatever was typed, so a filter can never keep narrowing a page
+            // from behind a handle that shows no sign of it.
+            toggleField() {
+                state.expanded = !state.expanded;
+                if (!state.expanded) { state.query = ''; state.caret = null; }
+                if (window.SoundManager) SoundManager.playCursor();
+                changed();
+                this.syncField();
+                if (state.expanded) this.restoreFocus();
+            },
+
+            // Shut it again without telling the host, for a caller that is
+            // already redrawing: leaving the search behind puts the handle back.
+            collapseField() {
+                state.expanded = false;
+                state.query = '';
+                state.caret = null;
+            },
+
+            // Force it open without a toggle, for a host whose page IS the
+            // search (the main menu's results page opens with the field hot).
+            // The caret is the caller's business: the main menu's Search tile
+            // wants the field open with the arrow keys still on the results.
+            openField() {
+                if (state.expanded) return;
+                state.expanded = true;
+                this.syncField();
+            },
+
+            // Repaint the field's own markup, for the hosts that patch their
+            // page in place rather than rebuilding the strip out of html().
+            syncField() {
+                const nodes = document.querySelectorAll(`.msb-field-only[data-msb="${id}"]`);
+                if (!nodes.length) return;
+                const markup = this.fieldHTML();
+                Array.from(nodes).forEach(node => { node.outerHTML = markup; });
+            },
+
             setKind(kind) {
                 if (state.kind === kind) return;
                 state.kind = kind;
@@ -358,12 +448,15 @@
     window.MenuSearchBar = {
         create,
         isTyping,
+        toggleHTML,
         get(id) {
             // A dead id would take an inline handler down with it, and these
             // handlers are strings in markup that can outlive their scene.
             return bars.get(id) || {
                 setQuery() {}, setKind() {}, setSort() {}, setCategory() {},
-                setRange() {}, reset() {}, restoreFocus() {}, restoreFocusTo() {}
+                setRange() {}, reset() {}, restoreFocus() {}, restoreFocusTo() {},
+                toggleField() {}, syncField() {}, openField() {}, collapseField() {},
+                isFieldOpen() { return false; }
             };
         },
 

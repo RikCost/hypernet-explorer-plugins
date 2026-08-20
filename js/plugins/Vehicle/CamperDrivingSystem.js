@@ -38,6 +38,13 @@
  *   First person  - free-roam cabin view, reached by interacting with a door
  *                   while driving or climbing back in on foot; WASD walks.
  *
+ * On foot the leader's own weapon is in frame and in hand: R1, R2 or a click
+ * swings it, and UP / DOWN on the d-pad step through every weapon in the party's
+ * bags the leader is allowed to hold, really changing their equipment as the
+ * equip menu would. The d-pad is nothing else out there, which is what leaves it
+ * free to be the rack; the same cross does the same job in a dream and on the
+ * shooting range.
+ *
  * Driving model (v5): automatic 5-speed gearbox with an RPM engine note,
  * lateral slip (handbrake drifts), surface grip (asphalt / dirt shoulders /
  * grass / sand / snow / rock), slope gravity, terrain-aligned chassis, traffic
@@ -2235,8 +2242,17 @@
             if (this.drivingSeat) return;   // seated at the wheel: look only
             // Merge raw WASD (key events above) with arrow keys / d-pad via the
             // Input API, so movement works on keyboard and controller alike.
-            const fwd   = this.move.forward  || Input.isPressed('up');
-            const back  = this.move.backward || Input.isPressed('down');
+            // UP and DOWN ON THE PAD'S CROSS are the exception: on foot they are
+            // the weapon rack (CamperWeapon.step), so they are taken back off
+            // the walk. The stick is untouched, and so are the arrow keys: core
+            // folds all three into the same Input actions, and only the raw
+            // button tells them apart.
+            const pads = window.AnalogStickInput;
+            const dpadY = !!(pads && pads.hasPad && pads.hasPad() && CamperWeapon._visible &&
+                (pads.isButtonPressed(pads.BUTTON.DPAD_UP) ||
+                 pads.isButtonPressed(pads.BUTTON.DPAD_DOWN)));
+            const fwd   = this.move.forward  || (Input.isPressed('up') && !dpadY);
+            const back  = this.move.backward || (Input.isPressed('down') && !dpadY);
             const left  = this.move.left     || Input.isPressed('left');
             const right = this.move.right    || Input.isPressed('right');
             const sprint = this.move.sprint || Input.isPressed('shift');
@@ -4773,6 +4789,48 @@
             return new Sprite_3DWeapon(weapon, weaponScreenX(isLeft), weaponScreenY());
         },
 
+        /**
+         * The rack the d-pad steps through: whatever the leader is holding,
+         * followed by every other weapon in the party's bags they are allowed
+         * to hold. There is no dream weapon here and no imaginary one - the
+         * driver is armed with their own equipment, so stepping the rack really
+         * does change it, exactly as the equip menu would.
+         */
+        rack() {
+            const actor = (typeof $gameParty !== 'undefined' && $gameParty) ? $gameParty.leader() : null;
+            if (!actor) return [];
+            const list = [];
+            const held = actor.weapons()[0];
+            if (held) list.push(held);
+            for (const item of $gameParty.weapons()) {
+                if (item && list.indexOf(item) < 0 && actor.canEquip(item)) list.push(item);
+            }
+            return list;
+        },
+
+        /**
+         * @param {number} dir -1 for d-pad up, 1 for d-pad down.
+         */
+        step(dir) {
+            if (!this._visible) return;
+            const actor = (typeof $gameParty !== 'undefined' && $gameParty) ? $gameParty.leader() : null;
+            if (!actor) return;
+            const list = this.rack();
+            if (list.length < 2) return;
+            const held = actor.weapons()[0];
+            let i = Math.max(0, list.indexOf(held));
+            i = ((i + dir) % list.length + list.length) % list.length;
+            const next = list[i];
+            if (!next || next === held) return;
+            actor.changeEquip(0, next);   // slot 0 is the weapon hand
+            this.refresh();
+            if (typeof SoundManager !== 'undefined') SoundManager.playEquip();
+            if (window.ParchmentToast) {
+                window.ParchmentToast.show(T('CamperDrive.weapon', { name: next.name }),
+                    { duration: 120 });
+            }
+        },
+
         /** One blow at a time, out of whichever hand is holding something. */
         swing() {
             if (!this._visible) return;
@@ -4801,12 +4859,38 @@
             // weapon changed in the menu turns up in the driver's hand.
             this.refresh();
             if (typeof Input !== 'undefined' && Input.isTriggered('pagedown')) this.swing();
+            this._updatePad();
             for (const s of [this._right, this._left]) {
                 if (!s) continue;
                 s._aimPoint = null;
                 s.update();
             }
             window.WeaponThreeScene.render();
+        },
+
+        /**
+         * The pad, walking about outside the van. UP and DOWN on the d-pad step
+         * the rack and R2 is the trigger finger, the same as they are in a
+         * dream and on the shooting range. Both have to be read raw: core folds
+         * the left stick into the d-pad directions, and its mapper does not
+         * carry the analog triggers at all.
+         */
+        _updatePad() {
+            const pads = window.AnalogStickInput;
+            if (!pads || !pads.hasPad || !pads.hasPad()) { this._padWas = null; return; }
+            // Edged against the DRIVE's own loop rather than against the
+            // engine's: the helper's isButtonTriggered is edged on Input.update,
+            // and whenever two drive frames fall inside one engine frame the
+            // same press would step the rack twice.
+            const was = this._padWas || {};
+            const up = pads.isButtonPressed(pads.BUTTON.DPAD_UP);
+            const down = pads.isButtonPressed(pads.BUTTON.DPAD_DOWN);
+            if (up && !was.up) this.step(-1);
+            if (down && !was.down) this.step(1);
+            this._padWas = { up: up, down: down };
+            const rt = pads.rightTrigger ? pads.rightTrigger() : 0;
+            if (!this._rtDown && rt > 0.55) { this._rtDown = true; this.swing(); }
+            else if (this._rtDown && rt < 0.30) this._rtDown = false;
         },
 
         end() {
@@ -4820,6 +4904,7 @@
             }
             this._held = false;
             this._visible = false;
+            this._rtDown = false;
             // Last, so the count only reaches zero once the sprites have let go.
             window.WeaponThreeScene.deref();
         }
@@ -6370,10 +6455,12 @@
             if (typeof AudioManager !== 'undefined') {
                 AudioManager.playSe({ name: 'Water2', pan: 0, pitch: 90, volume: 90 });
             }
-            // Crash damage from the emergency water landing.
+            // Crash damage from the emergency water landing, which is also the
+            // end of anybody's nap in the back (VehicleCrew.js).
             if (window.VehicleUpgrades && typeof window.VehicleUpgrades.applyDamage === 'function') {
                 window.VehicleUpgrades.applyDamage('camper', 30);
             }
+            if (window.VehicleCrew && window.VehicleCrew.wake) window.VehicleCrew.wake('crash');
             if (window.ParchmentToast) {
                 window.ParchmentToast.show(T('CamperDrive.splashdown'),
                     { severity: 'warning', duration: 180 });
@@ -6760,6 +6847,9 @@
                 if (!this._titleMode && impact > 20 && window.VehicleUpgrades &&
                     typeof window.VehicleUpgrades.applyDamage === 'function') {
                     window.VehicleUpgrades.applyDamage('camper', Math.min(16, impact * 0.22));
+                    // ...and a hit that hard throws anybody sleeping in the back
+                    // awake (VehicleCrew.js holds the nap).
+                    if (window.VehicleCrew && window.VehicleCrew.wake) window.VehicleCrew.wake('crash');
                 }
                 break;
             }

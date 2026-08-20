@@ -320,7 +320,7 @@
     },
     "Rn": {
       "name": "Radon",
-      "desc": "Un gas nobile radioattivo prodotto dal decadimento naturale di uranio e radio nel suolo e nelle rocce. Seeping negli edifici, è la seconda causa principale di cancro ai polmoni dopo il fumo."
+      "desc": "Un gas nobile radioattivo prodotto dal decadimento naturale di uranio e radio nel suolo e nelle rocce. Infiltrandosi negli edifici, è la seconda causa principale di cancro ai polmoni dopo il fumo."
     },
     "Fr": {
       "name": "Francio",
@@ -496,7 +496,7 @@
     },
     "Fm": {
       "name": "Fermio",
-      "desc": "Prende il nome da Enrico Fermi. Rilevato anch'esso nelle ricadute di bombe nucleari. Può essere prodotto solo in quantità di nanogrammi negli reattori nucleari ad alto flusso; nessuna applicazione pratica."
+      "desc": "Prende il nome da Enrico Fermi. Rilevato anch'esso nelle ricadute di bombe nucleari. Può essere prodotto solo in quantità di nanogrammi nei reattori nucleari ad alto flusso; nessuna applicazione pratica."
     },
     "Md": {
       "name": "Mendelevio",

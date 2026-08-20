@@ -55,7 +55,7 @@
  *
  * @param bountyReductionRate
  * @text Bounty Reduction Rate
- * @desc Amount of bounty reduced per in-game minute in prison (in gold)
+ * @desc Amount of bounty reduced per real-time second in prison (in gold)
  * @type number
  * @default 100
  *
@@ -248,72 +248,37 @@
   };
 
   //=============================================================================
-  // Window_TrialBounty
-  // A window to display the player's bounty.
-  //=============================================================================
-  function Window_TrialBounty() {
-    this.initialize(...arguments);
-  }
-
-  Window_TrialBounty.prototype = Object.create(Window_Base.prototype);
-  Window_TrialBounty.prototype.constructor = Window_TrialBounty;
-
-  Window_TrialBounty.prototype.initialize = function (bounty) {
-    this._bounty = bounty;
-    const width = this.windowWidth();
-    const height = this.windowHeight();
-    const x = Graphics.boxWidth - width - 9;
-    const y = 8;
-    Window_Base.prototype.initialize.call(this, new Rectangle(x, y, width, height));
-    this.refresh();
-  };
-
-  Window_TrialBounty.prototype.windowWidth = function () {
-    return 340;
-  };
-
-  Window_TrialBounty.prototype.windowHeight = function () {
-    return this.fittingHeight(1);
-  };
-
-  Window_TrialBounty.prototype.setBounty = function (bounty) {
-    if (this._bounty !== bounty) {
-      this._bounty = bounty;
-      this.refresh();
-    }
-  };
-
-  Window_TrialBounty.prototype.refresh = function () {
-
-    this.contents.clear();
-    const bountyText = T('ErisTrial.line.bounty');
-    const euros = (this._bounty / 100).toFixed(2) + "€";
-    const text = `${bountyText} ${euros}`;
-    this.drawText(text, 0, 0, this.contentsWidth(), 'left');
-  };
-
-  //=============================================================================
   // Prison Manager
   //=============================================================================
+  // Same shared overlay shell every parchment HUD uses (FastTravelSystem's
+  // Window_TravelTimer, RentSystem's room list, ...). The cell countdown is
+  // drawn the same way on purpose: it is the same kind of "something is
+  // ticking in the background" readout, so it should look like one.
+  function formatSentenceRemain(remainMinutes) {
+    const minutes = Math.max(0, Math.floor(remainMinutes));
+    const days = Math.floor(minutes / 1440);
+    const hh = String(Math.floor((minutes % 1440) / 60)).padStart(2, '0');
+    const mm = String(minutes % 60).padStart(2, '0');
+    const clock = `${hh}:${mm}`;
+    return days > 0 ? T('ErisTrial.line.prisonDays', { n: days }) + clock : clock;
+  }
+
   class PrisonManager {
     constructor() {
-      this._bountyWindow = null;
+      this._htmlEl = null;
       this._isInPrison = false;
-      this._lastGameTime = null; // Track game time for bounty reduction
       this._sentenceReleaseTime = null; // Fixed-length sentence (game minutes, var 114)
       this._servedSentence = false;     // True while a fixed term is being served
+      this._tickFrame = 0;              // real-time accumulator, ticks the bounty down once a second
+      this._releasing = false;          // guards releasePrisoner against re-entry
     }
 
     startPrisonTime(initialBounty, sentenceMinutes) {
       if (this._isInPrison) return;
 
       this._isInPrison = true;
-      this._bountyWindow = new Window_TrialBounty(initialBounty);
-      SceneManager._scene.addChild(this._bountyWindow);
-
-      // Initialize game time tracking for bounty reduction
-      // Get current game time from TimeDateSystem's game time variable (Variable 114)
-      this._lastGameTime = $gameVariables.value(114) || 0; // Variable 114 stores game time in minutes
+      this._tickFrame = 0;
+      this._createOverlay();
 
       // Fixed-length sentence (e.g. one month after losing/fleeing the Eris
       // challenge). Released by game time (Variable 114) regardless of bounty.
@@ -325,32 +290,68 @@
       // A fixed term is served by the clock, so the bounty is never ground down
       // inside the cell: releasePrisoner writes it off once the time is done.
       this._servedSentence = this._sentenceReleaseTime !== null;
+      this._refresh(initialBounty);
     }
 
-    reduceBounty() {
-      // Get current game time from TimeDateSystem
-      const currentGameTime = $gameVariables.value(114) || 0; // Variable 114 = game time minutes
-      const timeDelta = currentGameTime - this._lastGameTime;
+    _createOverlay() {
+      const old = document.getElementById('html-prison-timer');
+      if (old) old.remove();
+      const el = document.createElement('div');
+      el.id = 'html-prison-timer';
+      el.className = 'html-parchment-overlay';
+      this._htmlEl = el;
+      document.body.appendChild(el);
+    }
 
-      if (timeDelta <= 0) {
-        return; // No time has passed
+    _syncPos() {
+      const canvas = document.getElementById('gameCanvas');
+      if (!canvas || !this._htmlEl) return;
+      const r = canvas.getBoundingClientRect();
+      const sx = r.width / Graphics.width, sy = r.height / Graphics.height;
+      const s = this._htmlEl.style;
+      s.right    = (window.innerWidth - r.right + 9 * sx) + 'px';
+      s.top      = (r.top + 8 * sy) + 'px';
+      s.padding  = `${Math.round(12 * sy)}px ${Math.round(20 * sx)}px`;
+      s.minWidth = Math.round(220 * sx) + 'px';
+      s.fontSize = Math.round(16 * sy) + 'px';
+    }
+
+    _refresh(bounty) {
+      if (!this._htmlEl) return;
+      const euros = window.CrimeSystem ? window.CrimeSystem.goldToEuros(bounty)
+        : ((bounty / 1000) * 10).toFixed(2) + '€';
+
+      let timeHtml;
+      if (this._sentenceReleaseTime !== null) {
+        const remain = this._sentenceReleaseTime - ($gameVariables.value(114) || 0);
+        timeHtml = `<div class="prison-timer-time">${formatSentenceRemain(remain)}</div>`;
+      } else {
+        const secs = bounty > 0 ? Math.ceil(bounty / Math.max(1, bountyReductionRate)) : 0;
+        const mm = String(Math.floor(secs / 60)).padStart(2, '0');
+        const ss = String(secs % 60).padStart(2, '0');
+        timeHtml = `<div class="prison-timer-time">${mm}:${ss}</div>`;
       }
 
-      this._lastGameTime = currentGameTime;
+      this._htmlEl.innerHTML =
+        `<div class="prison-timer-label">${T('ErisTrial.line.prisonTimeRemaining')}</div>` +
+        timeHtml +
+        `<div class="prison-timer-bounty">${T('ErisTrial.line.bounty')} ${euros}</div>`;
+      this._htmlEl.style.display = 'block';
+      this._syncPos();
+    }
 
-      const currentBounty = $gameVariables.value(bountyVariableId);
-
+    // Consumed once per real second, not per game-minute: a cell is too
+    // small to pace out the ten steps a game-minute used to cost, which is
+    // what left the old countdown looking dead while the party sat still.
+    reduceBounty() {
+      const currentBounty = $gameVariables.value(bountyVariableId) || 0;
       if (currentBounty <= 0) {
         this.releasePrisoner();
         return;
       }
 
-      // Reduce bounty based on minutes passed (bountyReductionRate per minute)
-      const newBounty = settleBountyTo(Math.max(0, currentBounty - (bountyReductionRate * timeDelta)));
-
-      if (this._bountyWindow) {
-        this._bountyWindow.setBounty(newBounty);
-      }
+      const newBounty = settleBountyTo(Math.max(0, currentBounty - bountyReductionRate));
+      this._refresh(newBounty);
 
       if (newBounty <= 0) {
         this.releasePrisoner();
@@ -358,6 +359,8 @@
     }
 
     async releasePrisoner() {
+      if (this._releasing) return;
+      this._releasing = true;
       this.stopPrisonTime();
 
       // Time served settles the debt, record and all: a fixed-term sentence
@@ -378,6 +381,7 @@
       $gameVariables.setValue(returnMapVariable, 0);
       $gameVariables.setValue(returnXVariable, 0);
       $gameVariables.setValue(returnYVariable, 0);
+      this._releasing = false;
     }
 
     async showReleaseMessage() {
@@ -402,18 +406,15 @@
     }
 
     stopPrisonTime() {
-      if (this._bountyWindow) {
-        if (this._bountyWindow.parent) {
-          this._bountyWindow.parent.removeChild(this._bountyWindow);
-        }
-        this._bountyWindow.destroy();
-        this._bountyWindow = null;
+      if (this._htmlEl) {
+        if (this._htmlEl.parentNode) this._htmlEl.parentNode.removeChild(this._htmlEl);
+        this._htmlEl = null;
       }
 
       this._isInPrison = false;
-      this._lastGameTime = null;
       this._sentenceReleaseTime = null;
       this._servedSentence = false;
+      this._tickFrame = 0;
     }
 
     update() {
@@ -424,9 +425,14 @@
             this.releasePrisoner();
             return;
           }
-        } else {
+          if (Graphics.frameCount % 60 === 0) {
+            this._refresh($gameVariables.value(bountyVariableId) || 0);
+          }
+        } else if (++this._tickFrame >= 60) {
+          this._tickFrame = 0;
           this.reduceBounty();
         }
+        if (this._htmlEl) this._syncPos();
       }
 
       // Check if player left prison map
@@ -456,23 +462,58 @@
   // real, lethal battle begins.
   //=============================================================================
   const ERIS_TROOP_ID = 1342;
+  // Her battle portrait: the wasteland DJ, tagged with her own name.
+  const ERIS_BUST_IMAGE = "WastelandDJ";
 
   window.ErisChallengeBattle = {
     _lastTurn: -1,
 
+    // Has she been beaten in this WORLD? The flag behind this is world-scoped
+    // (Core/WorldManager.js, world file field `erisDefeated`), so every
+    // savegame of the world she was beaten in agrees that she is gone: the
+    // bounty stops growing here, and nothing offers an evening with her again.
+    isErisDefeated() {
+      return !!(typeof $gameSystem !== "undefined" && $gameSystem &&
+                $gameSystem._erisBountyImmunity);
+    },
+
     reset() {
       this._lastTurn = -1;
+      // A fresh fight, a fresh body: she rolls a new one and starts
+      // shifting again from the top.
+      if (window.ErisAppearance) window.ErisAppearance.reset();
     },
 
     isErisBattle() {
       return $gameParty.inBattle() && $gameTroop._troopId === ERIS_TROOP_ID;
     },
 
+    // Her portrait slides in beside the line, name on the tag, the same
+    // way an NPC talks on the map.
+    _showBust() {
+      const scene = SceneManager._scene;
+      const bm = scene && scene._bustManager;
+      if (!bm) return false;
+      try {
+        const name = T('ErisTrial.line.erisName');
+        bm.showCustomBust(ERIS_BUST_IMAGE, name);
+        if (bm.nameWindow) {
+          bm.nameWindow.setCharacterName(name);
+          bm.nameWindow.showName();
+          bm.nameIsVisible = true;
+        }
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
+
     _say(text) {
-      const it = ConfigManager.language === "it";
-      const speaker = T('ErisTrial.line.eris');
+      const withBust = this._showBust();
       window.skipLocalization = true;
-      $gameMessage.add("\\C[3]" + speaker + "\\C[0]" + text);
+      // With the bust up her name is on the tag; without one, keep the old
+      // inline speaker so the line never loses its voice.
+      $gameMessage.add(withBust ? text : ("\\C[3]" + T('ErisTrial.line.eris') + "\\C[0]" + text));
       window.skipLocalization = false;
     },
 
@@ -521,6 +562,10 @@
       const it = ConfigManager.language === "it";
 
       if (turn < 10) {
+        // While she is still playing, she wears a different body every
+        // turn: skin, hair, eyes and clothes all re-roll where they can
+        // see it happen.
+        if (window.ErisAppearance) window.ErisAppearance.shift();
         if (turn % 3 === 0) {
           // Heal the whole party to 100%, mockingly.
           this._fullHealParty();
@@ -531,7 +576,10 @@
           this._randomInsanity();
         }
       } else if (turn === 10) {
-        // Stop coddling them; heal herself and start the real fight.
+        // Stop coddling them; heal herself and start the real fight. She
+        // settles into the body she is standing in, her own hair back, and
+        // that is the shape she fights in from here.
+        if (window.ErisAppearance) window.ErisAppearance.lock();
         this._fullHealEris();
         this._say(this._pick(T.pool('ErisTrial.bank.onTurnEnd.lines3')));
       }
@@ -612,18 +660,32 @@
     _Scene_Map_onMapLoaded.call(this);
 
     // Check if we need to start prison time
-    if ($gameTemp._startPrisonOnLoad && $gameMap.mapId() === prisonMapId) {
-      const bounty = $gameTemp._prisonBounty || $gameVariables.value(bountyVariableId);
-      const sentence = $gameTemp._prisonSentenceMinutes || 0;
-      if (window.prisonManager) {
-        window.prisonManager.startPrisonTime(bounty, sentence);
+    if ($gameMap.mapId() === prisonMapId) {
+      if ($gameTemp._startPrisonOnLoad) {
+        const bounty = $gameTemp._prisonBounty || $gameVariables.value(bountyVariableId);
+        const sentence = $gameTemp._prisonSentenceMinutes || 0;
+        if (window.prisonManager) {
+          window.prisonManager.startPrisonTime(bounty, sentence);
+        }
+        // The day the doors closed, in the party's own diary (Diary.js), which
+        // puts the sentence into words of its own.
+        if (window.Diary) window.Diary.onTrial('prison', { minutes: sentence });
+        $gameTemp._startPrisonOnLoad = false;
+        $gameTemp._prisonBounty = null;
+        $gameTemp._prisonSentenceMinutes = null;
+      } else if (window.prisonManager && !window.prisonManager.isInPrison()) {
+        // Standing on the prison map without having just been sent here
+        // (a loaded save, a debug teleport, a stray transfer): a cell with
+        // nothing owed does not hold anyone, whatever put them here, so they
+        // are walked straight back out. Time still owed picks the open-ended
+        // sentence back up instead of leaving the countdown dead.
+        const bounty = $gameVariables.value(bountyVariableId) || 0;
+        if (bounty <= 0) {
+          window.prisonManager.releasePrisoner();
+        } else {
+          window.prisonManager.startPrisonTime(bounty, 0);
+        }
       }
-      // The day the doors closed, in the party's own diary (Diary.js), which
-      // puts the sentence into words of its own.
-      if (window.Diary) window.Diary.onTrial('prison', { minutes: sentence });
-      $gameTemp._startPrisonOnLoad = false;
-      $gameTemp._prisonBounty = null;
-      $gameTemp._prisonSentenceMinutes = null;
     }
 
     // The player defeated Eris in the challenge battle: her court stands empty.

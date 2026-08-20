@@ -31,27 +31,96 @@
     //=============================================================================
     let _helpI18n = null;
 
-    const _loadHelpI18n = async () => {
-        const lang = ConfigManager.language || 'en';
-        const url = `js/i18n/${lang}/HelpTopics.json`;
-        try {
-            const response = await fetch(url);
-            _helpI18n = await response.json();
-        } catch (e) {
-            console.error('HelpMenu: Failed to load i18n data from ' + url, e);
+    // The manual and the lore are written in two banks, because they are two
+    // different jobs: HelpTopics.json is how the game WORKS (the states
+    // included, since those are rules), HelpLore.json is what the world IS.
+    // Both are read into one map, so a key resolves the same way whichever
+    // bank it was written in. What lives in neither is the macrocategory a
+    // page belongs to: that is a key in js/db/Messages/HelpTopics.json, the
+    // same in every language, and only the label it prints is translated.
+    const HELP_I18N_FILES = ['HelpTopics.json', 'HelpLore.json'];
+    const HELP_I18N_FALLBACK = 'en';
+
+    // English is always read first and the played language is laid over it, one
+    // entry at a time, so a page nobody has translated yet reads as English
+    // rather than as its own key. That matters here more than anywhere: the
+    // manual is written and rewritten in English and a translation is always
+    // behind it by some number of pages.
+    const _mergeBank = (into, from) => {
+        Object.keys(from || {}).forEach((ns) => {
+            const rows = from[ns];
+            if (!rows || typeof rows !== 'object') { into[ns] = rows; return; }
+            if (!into[ns]) into[ns] = {};
+            Object.keys(rows).forEach((key) => {
+                const row = rows[key];
+                if (row && typeof row === 'object' && into[ns][key] && typeof into[ns][key] === 'object') {
+                    Object.keys(row).forEach((field) => {
+                        // A blank translation is not a translation.
+                        if (row[field] !== '' && row[field] != null) into[ns][key][field] = row[field];
+                    });
+                } else if (row !== '' && row != null) {
+                    into[ns][key] = row;
+                }
+            });
+        });
+        return into;
+    };
+
+    const _readHelpBank = async (lang) => {
+        const bank = {};
+        for (const file of HELP_I18N_FILES) {
+            const url = `js/i18n/${lang}/${file}`;
+            try {
+                const response = await fetch(url);
+                _mergeBank(bank, await response.json());
+            } catch (e) {
+                // A language that has not been given this bank yet is not an
+                // error; it simply keeps the English underneath.
+                if (lang === HELP_I18N_FALLBACK) console.error('HelpMenu: Failed to load ' + url, e);
+            }
         }
+        return bank;
+    };
+
+    let _helpI18nLang = null;
+
+    const _loadHelpI18n = async () => {
+        const lang = ConfigManager.language || HELP_I18N_FALLBACK;
+        const merged = await _readHelpBank(HELP_I18N_FALLBACK);
+        if (lang !== HELP_I18N_FALLBACK) _mergeBank(merged, await _readHelpBank(lang));
+        _helpI18n = merged;
+        _helpI18nLang = lang;
+    };
+
+    // The banks are read once at boot, but the language can be changed from the
+    // options at any point afterwards, so the book checks on the way in and
+    // reads them again when it is holding the wrong language.
+    const _ensureHelpI18n = (onReady) => {
+        const lang = ConfigManager.language || HELP_I18N_FALLBACK;
+        if (_helpI18n && _helpI18nLang === lang) return;
+        _loadHelpI18n().then(() => { if (onReady) onReady(); });
     };
 
     // Resolve a key (e.g. 'HelpTopics.Squishing.title')
-    function _hi18n(path) {
-        if (!_helpI18n) return path;
+    function _read(path) {
         const parts = path.split('.');
         let val = _helpI18n;
         for (const p of parts) {
             if (val) val = val[p];
         }
-        if (typeof val === 'string') {
-            return val;
+        return typeof val === 'string' ? val : null;
+    }
+
+    function _hi18n(path) {
+        if (!_helpI18n) return path;
+        const direct = _read(path);
+        if (direct !== null) return direct;
+        // The lore used to live in the help bank. A language that was
+        // translated before the split still has it filed there, so a missing
+        // HelpLore key is looked for under its old name before giving up.
+        if (path.startsWith('HelpLore.')) {
+            const legacy = _read('HelpTopics.' + path.slice('HelpLore.'.length));
+            if (legacy !== null) return legacy;
         }
         return path;
     }
@@ -122,19 +191,70 @@
         }
     };
 
+    // A macrocategory label ("Getting Started", "Needs and the Body", ...).
+    // The groups themselves live in the same HelpTopics file the entries do,
+    // under HelpGroups, so a group is named once and read in whatever language
+    // the game is running in.
+    const getGroupLabel = (key) => {
+        if (!key) return "";
+        const val = _hi18n('HelpGroups.' + key);
+        return val === ('HelpGroups.' + key) ? key : val;
+    };
+
+    // The mechanics pages are a reading order, not an index: Controls first,
+    // the minigames last, everything else in the order a player meets it. An
+    // entry that carries no order (the lore, the states, the elements) keeps
+    // the alphabetical listing those categories have always had.
     function sortTopics(topics) {
         if (!topics) return [];
         return topics.filter(t => t && t.title).sort((a, b) => {
+            const orderA = Number.isFinite(a.order) ? a.order : Infinity;
+            const orderB = Number.isFinite(b.order) ? b.order : Infinity;
+            if (orderA !== orderB) return orderA - orderB;
             const titleA = getLocalizedTitle(a).toLowerCase();
             const titleB = getLocalizedTitle(b).toLowerCase();
             return titleA < titleB ? -1 : titleA > titleB ? 1 : 0;
         });
     }
 
+    // A page is written as prose, not as a shape: paragraphs are separated by a
+    // blank line and NOTHING else is a line break. A single newline inside a
+    // paragraph is just where the author's editor happened to wrap, so it is
+    // read as a space and the column wraps the text itself. A line opening with
+    // "- " is a bullet and keeps its own line, which is the one exception.
+    function paragraphsToHtml(text) {
+        const blocks = String(text).split(/\n\s*\n/);
+        return blocks.map(block => {
+            const lines = block.split("\n").map(l => l.trim()).filter(l => l.length);
+            if (!lines.length) return "";
+            // A block may open with a lead-in and then list under it. A line
+            // that does not open a bullet CONTINUES the one above it, because a
+            // long bullet is wrapped in the source like any other prose; only a
+            // blank line ends a list.
+            const head = [];
+            const items = [];
+            lines.forEach(line => {
+                if (line.startsWith("- ")) {
+                    items.push(line.slice(2).trim());
+                } else if (items.length) {
+                    items[items.length - 1] += " " + line;
+                } else {
+                    head.push(line);
+                }
+            });
+            let html = head.length ? `<p>${head.join(' ')}</p>` : '';
+            if (items.length) {
+                html += '<ul class="help-list">' +
+                    items.map(item => `<li>${item}</li>`).join('') + '</ul>';
+            }
+            return html;
+        }).join('');
+    }
+
     function parseDescriptionToHtml(text) {
         if (!text) return "";
         let parsed = ControlTagParser.parseControlText(text);
-        parsed = parsed.replace(/\n/g, "<br>");
+        parsed = paragraphsToHtml(parsed);
 
         const colorMap = {
             0: "#2b1207",  // Default dark mahogany
@@ -192,6 +312,49 @@
     };
 
     // =============================================================================
+    // Add Help to the title menu, above Credits
+    // =============================================================================
+    // The book is worth reading before a world exists, so the title screen
+    // carries it too. The entry is spliced in above Credits (or above Exit when
+    // the credits plugin has not patched the list yet), which puts it in the
+    // same place whichever of the two loads first.
+    const _insertTitleHelp = (list, entry, symbolOf) => {
+        let at = list.findIndex(c => symbolOf(c) === "credits");
+        if (at < 0) at = list.findIndex(c => symbolOf(c) === "exitGame");
+        if (at < 0) list.push(entry);
+        else list.splice(at, 0, entry);
+        return list;
+    };
+
+    const _Window_TitleCommand_makeCommandList_help = Window_TitleCommand.prototype.makeCommandList;
+    Window_TitleCommand.prototype.makeCommandList = function () {
+        _Window_TitleCommand_makeCommandList_help.call(this);
+        _insertTitleHelp(this._list,
+            { name: T('HelpMenu.command'), symbol: "help", enabled: true, ext: null },
+            c => c.symbol);
+    };
+
+    // Titlescreen.js draws its own overlay from this list and maps the clicked
+    // index straight onto the command window, so the two must agree exactly.
+    if (Scene_Title.prototype.getTitleCommandText) {
+        const _Scene_Title_getTitleCommandText_help = Scene_Title.prototype.getTitleCommandText;
+        Scene_Title.prototype.getTitleCommandText = function () {
+            return _insertTitleHelp(_Scene_Title_getTitleCommandText_help.call(this),
+                { text: T('HelpMenu.command'), symbol: "help" },
+                c => c.symbol);
+        };
+    }
+
+    const _Scene_Title_createCommandWindow_help = Scene_Title.prototype.createCommandWindow;
+    Scene_Title.prototype.createCommandWindow = function () {
+        _Scene_Title_createCommandWindow_help.call(this);
+        this._commandWindow.setHandler("help", () => {
+            SceneManager.push(Scene_Help);
+            SceneManager.prepareNextScene({ hideTopics: true });
+        });
+    };
+
+    // =============================================================================
     // Scene_Help - Premium D&D HTML Overlay
     // =============================================================================
     function Scene_Help() {
@@ -203,6 +366,18 @@
 
     Scene_Help.prototype.initialize = function () {
         Scene_MenuBase.prototype.initialize.call(this);
+        this._hideTopics = false;
+    };
+
+    // Opened from the title screen there is no party yet, so the shelf of what
+    // the party has been told has nothing to be about: the tab is left out
+    // rather than shown empty.
+    Scene_Help.prototype.prepare = function (options) {
+        this._hideTopics = !!(options && options.hideTopics);
+    };
+
+    Scene_Help.prototype.categories = function () {
+        return this._hideTopics ? ["general", "lore", "history"] : ["general", "topics", "lore", "history"];
     };
 
     Scene_Help.prototype.create = function () {
@@ -218,8 +393,31 @@
         this._listIndex = 0;
         this._selectedTopic = null;
 
+        // The shared search + filter strip (UI/MenuSearchBar.js), asked for
+        // nothing but the field: a codex page is found by a word, and the
+        // reading order of the pages is the whole point of the list, so a sort
+        // control would only take it apart. The query is matched against the
+        // body of every page as well as its title, so "hygiene" finds the page
+        // that explains what washing does to what people think of you.
+        this._helpBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+            id: 'helpcodex',
+            placeholder: T('HelpMenu.searchPlaceholder'),
+            onChange: () => {
+                this._listIndex = 0;
+                this.refreshUIHelp();
+            }
+        }) : null;
+
         this.initUIHelp();
         this.refreshUIHelp();
+        // Repaint once the banks land, in case they were not read yet or the
+        // language was changed since they were.
+        _ensureHelpI18n(() => {
+            this._topicCache = null;
+            this._searchCache = null;
+            this._lastCategory = null;
+            if (SceneManager._scene === this) this.refreshUIHelp();
+        });
     };
 
     Scene_Help.prototype.update = function () {
@@ -228,6 +426,7 @@
     };
 
     Scene_Help.prototype.terminate = function () {
+        if (this._helpBar) { this._helpBar.dispose(); this._helpBar = null; }
         const container = document.getElementById("help-container");
         if (container) container.remove();
         const style = document.getElementById("help-style");
@@ -235,38 +434,148 @@
         Scene_MenuBase.prototype.terminate.call(this);
     };
 
-    // The world's own timeline, newest first: the century that was generated
-    // before the world was played AND everything that has happened in it
-    // since. It lives in the world folder (history.json), so every savegame of
-    // the world reads the same story, whichever of them wrote a given day.
-    const HISTORY_PAGE_MAX = 500;
+    // The world's own timeline, one chapter per year: the century that was
+    // generated before the world was played AND everything that has happened
+    // in it since. It lives in the world folder (history.json), so every
+    // savegame of the world reads the same story, whichever of them wrote a
+    // given day. The left page lists every year from 1900 to whichever one
+    // the game is currently living in; the right page opens that year's
+    // chronicle, month by month.
+    const HISTORY_START_YEAR = 1900;
+
+    // How newsworthy each event category reads as, for the days that rolled
+    // more than one entry: a canon date (handleFixedEvents, HistorySimulator.js)
+    // always leads regardless of category, since that is the spine the setting
+    // is written against; everything else falls back to this table so the
+    // headline picked for a busy day is the one a reader would expect to see
+    // above the fold rather than whichever the generator happened to roll last.
+    const HISTORY_CATEGORY_WEIGHT = {
+        military: 10, conquest: 10, epidemic: 9, disaster: 8, royal: 7,
+        political: 6, occult: 6, internal: 5, criminal: 5, paranormal: 5,
+        scientific: 4, social: 4, economic: 3
+    };
+
+    // The year the game is currently living in: the century was simulated up
+    // to 2001 before the world was ever played, and the live chronicle keeps
+    // writing from there as the clock advances, so this is not always 2001.
+    function historyCurrentYear() {
+        try {
+            if (window.TimeDateSystem && typeof window.TimeDateSystem.getCurrentDateObj === "function") {
+                const d = window.TimeDateSystem.getCurrentDateObj();
+                if (d) return d.getFullYear();
+            }
+        } catch (e) { /* no clock yet: read as the canon end year */ }
+        return 2001;
+    }
+
+    // "1998-07-17" -> "17 07 1998", day before month before year.
+    function historyFormatDate(dateStr) {
+        const parts = String(dateStr || "").split("-");
+        if (parts.length < 3) return String(dateStr || "");
+        const [y, m, d] = parts;
+        return `${d.padStart(2, '0')} ${m.padStart(2, '0')} ${y}`;
+    }
+
+    // The one entry a day is remembered by. A canon date wins outright; among
+    // procedural rolls, whichever category weighs the most carries the day.
+    function historyPickHeadline(dayEvents) {
+        const canon = dayEvents.find(e => e && e.type === 'fixed');
+        if (canon) return canon;
+        let best = dayEvents[0];
+        let bestWeight = HISTORY_CATEGORY_WEIGHT[best && best.category] || 3;
+        for (let i = 1; i < dayEvents.length; i++) {
+            const w = HISTORY_CATEGORY_WEIGHT[dayEvents[i].category] || 3;
+            if (w > bestWeight) { best = dayEvents[i]; bestWeight = w; }
+        }
+        return best;
+    }
+
+    // One line of the chronicle. A canon record is written "NAME: sentence"
+    // in the source text (History.fixed.<yyyy-mm>), so its name is pulled out
+    // and stamped between !!! marks; a record with no such prefix (the rare
+    // fixed entry with none) has its whole sentence marked instead. dateKey is
+    // passed in rather than read off the record because a canon record is
+    // stamped with its month only (handleFixedEvents, HistorySimulator.js
+    // keys it History.fixed.<yyyy-mm>) and the day grouping below fills the
+    // day back in as the 1st.
+    function historyEventLine(rec, hm, dateKey) {
+        const text = String(typeof hm.describeRecord === "function"
+            ? hm.describeRecord(rec)
+            : (rec.description || "")).trim();
+        const dateLabel = historyFormatDate(dateKey);
+        if (rec.type === 'fixed') {
+            const sep = text.indexOf(':');
+            const named = sep > 0 && sep < 60 && text.slice(0, sep) === text.slice(0, sep).toUpperCase();
+            const name = named ? text.slice(0, sep).trim() : text;
+            const rest = named ? text.slice(sep + 1).trim() : '';
+            return `- ${dateLabel}: !!! ${name} !!!` + (rest ? ` ${rest}` : '');
+        }
+        return `- ${dateLabel}: ${text}`;
+    }
 
     function historyTopics() {
         const hm = window.HistoryManager;
         if (!hm || typeof hm.getEvents !== "function") return [];
         let events = [];
         try { events = hm.getEvents() || []; } catch (e) { return []; }
-        const sortKey = (rec) => {
-            const parts = String(rec && rec.date || "").split("-");
-            const year = Number(parts[0]) || 0;
-            const month = Number(parts[1]) || 0;
-            const day = Number(parts[2]) || 0;
-            return year * 10000 + month * 100 + day;
-        };
-        return events
-            .filter((rec) => rec && (rec.description || rec.descKey))
-            .slice()
-            .sort((a, b) => sortKey(b) - sortKey(a))
-            .slice(0, HISTORY_PAGE_MAX)
-            .map((rec) => ({
+
+        // Almost every record is stamped with a full day; a canon record
+        // (handleFixedEvents) is stamped with its month only, since it is
+        // keyed History.fixed.<yyyy-mm> rather than to a specific day, and is
+        // always generated on the 1st. That gets filled back in here so it
+        // groups into the same calendar as everything else instead of being
+        // silently dropped.
+        const byDay = new Map();
+        events.forEach((rec) => {
+            if (!rec || (!rec.description && !rec.descKey)) return;
+            const raw = String(rec.date || "");
+            const parts = raw.split("-");
+            if (parts.length < 2) return;
+            const key = parts.length >= 3 ? raw : `${parts[0]}-${parts[1]}-01`;
+            if (!byDay.has(key)) byDay.set(key, []);
+            byDay.get(key).push(rec);
+        });
+
+        const dayKeysSorted = Array.from(byDay.keys()).sort();
+
+        const monthNames = T.list('TimeDate.months');
+        const noEvents = T('HelpMenu.noHistoryThisYear');
+        const endYear = Math.max(historyCurrentYear(), HISTORY_START_YEAR);
+
+        const years = [];
+        for (let year = endYear; year >= HISTORY_START_YEAR; year--) {
+            const prefix = year + '-';
+            const dayKeys = dayKeysSorted.filter(k => k.indexOf(prefix) === 0);
+
+            let body;
+            if (!dayKeys.length) {
+                body = noEvents;
+            } else {
+                const blocks = [];
+                let curMonth = -1;
+                let lines = [];
+                dayKeys.forEach((key) => {
+                    const month = Number(key.split('-')[1]) || 0;
+                    if (month !== curMonth) {
+                        if (lines.length) { blocks.push(lines.join('\n')); lines = []; }
+                        curMonth = month;
+                        blocks.push('\\c[18]' + (monthNames[month - 1] || key) + '\\c[0]');
+                    }
+                    lines.push(historyEventLine(historyPickHeadline(byDay.get(key)), hm, key));
+                });
+                if (lines.length) blocks.push(lines.join('\n'));
+                body = blocks.join('\n\n');
+            }
+
+            years.push({
                 raw: true,
                 type: "history",
-                title: String(rec.date || ""),
-                description: (typeof hm.describeRecord === "function"
-                    ? hm.describeRecord(rec)
-                    : String(rec.description || "")),
-                category: rec.category || "",
-            }));
+                title: String(year),
+                description: body,
+                category: "history",
+            });
+        }
+        return years;
     }
 
     // Every disease the world knows how to generate, the same library the
@@ -293,21 +602,107 @@
             }));
     }
 
+    // What the party has been TOLD. A line of dialogue written with a topic in
+    // square brackets, [Hardware], teaches that topic to everyone present, and
+    // a conversation option that needs it stays out of sight until somebody
+    // knows it (NPC/DialogueSystem.js keeps them on the actor, _keywords).
+    // This page is the list of the ones they have picked up, and who knows
+    // each: nothing here is written in advance, a topic exists because it was
+    // said to them.
+    function conversationTopics() {
+        if (typeof $gameParty === "undefined" || !$gameParty) return [];
+        const owners = new Map();
+        $gameParty.members().forEach((actor) => {
+            (actor._keywords || []).forEach((word) => {
+                if (!owners.has(word)) owners.set(word, []);
+                owners.get(word).push(actor.name());
+            });
+        });
+        // A topic that has a page written for it (a `topic` entry in
+        // js/db/Messages/HelpTopics.json, matched on its keyword) prints that
+        // page; one that has none is still listed, with who knows it, because
+        // what this shelf is for is what the party has been told.
+        const authored = new Map();
+        getHelpTopics().forEach((t) => {
+            if (t && t.type === 'topic' && t.keyword) authored.set(String(t.keyword).toLowerCase(), t);
+        });
+        return Array.from(owners.keys())
+            .sort((a, b) => String(a).localeCompare(String(b)))
+            .map((word) => {
+                const known = T('HelpMenu.topicKnownBy', { names: owners.get(word).join(", ") });
+                const page = authored.get(String(word).toLowerCase());
+                if (page) {
+                    return {
+                        raw: true,
+                        type: "topic",
+                        title: getLocalizedTitle(page),
+                        description: getLocalizedDescription(page) + "\n\n" + known
+                    };
+                }
+                return {
+                    raw: true,
+                    type: "topic",
+                    title: word,
+                    description: known + "\n\n" + T('HelpMenu.topicExplainer')
+                };
+            });
+    }
+
     Scene_Help.prototype.getFilteredTopics = function (category) {
-        if (category === "diseases") return diseaseTopics();
+        if (category === "topics") return conversationTopics();
+        if (category === "lore") {
+            // One shelf, two macrocategories: what the world is, and what it
+            // can catch. The world's chronicle used to be appended here too;
+            // it now has its own tab (see "history" below), so a player
+            // looking for a single event does not have to wade through every
+            // spell and faction first.
+            const written = sortTopics(getHelpTopics().filter(t => t && t.title && t.type === 'lore'))
+                .map(t => Object.assign({}, t, { group: 'lore' }));
+            const sick = diseaseTopics().map(t => Object.assign({}, t, { group: 'diseases' }));
+            return written.concat(sick);
+        }
         if (category === "history") return historyTopics();
         const all = getHelpTopics();
         let filtered = [];
         if (category === "general") {
-            filtered = all.filter(t => t && t.title && (!t.type || (t.type !== 'lore' && t.type !== 'state' && t.type !== 'element')));
-        } else if (category === "lore") {
-            filtered = all.filter(t => t && t.title && t.type === 'lore');
-        } else if (category === "state") {
-            filtered = all.filter(t => t && t.title && t.type === 'state');
-        } else if (category === "element") {
-            filtered = all.filter(t => t && t.title && t.type === 'element');
+            // The manual: every page that explains how something WORKS, the
+            // states and the elements included. They used to be tabs of their
+            // own; they are macrocategories of the one reading order now, so a
+            // player looking for Bleeding finds it filed under the combat
+            // pages that inflict it rather than in a separate drawer.
+            filtered = all.filter(t => t && t.title && t.type !== 'lore' && t.type !== 'topic');
         }
         return sortTopics(filtered);
+    };
+
+    // What the list actually shows: the category, narrowed by whatever is
+    // typed in the search field. Everything that walks the list reads this, so
+    // the cursor can never point at a page the page is not showing.
+    //
+    // Both halves are cached for the life of the scene, because this is read
+    // once per FRAME by the input handler: the lore shelf builds a record per
+    // disease and per day of the world's chronicle, which is several hundred
+    // objects, and rebuilding them sixty times a second to answer "which page
+    // is the cursor on" is how a book becomes a slideshow. Nothing behind them
+    // can change while the book is open.
+    Scene_Help.prototype.visibleTopics = function (category) {
+        if (!this._topicCache) this._topicCache = {};
+        if (!this._topicCache[category]) this._topicCache[category] = this.getFilteredTopics(category);
+        const topics = this._topicCache[category];
+        if (!this._helpBar || this._helpBar.isEmpty()) return topics;
+
+        const query = this._helpBar.query;
+        const key = category + '|' + query;
+        if (!this._searchCache || this._searchCache.key !== key) {
+            this._searchCache = {
+                key,
+                rows: topics.filter(t => this._helpBar.matches({
+                    name: getLocalizedTitle(t),
+                    subtitle: getLocalizedDescription(t)
+                }))
+            };
+        }
+        return this._searchCache.rows;
     };
 
     Scene_Help.prototype.initUIHelp = function () {
@@ -325,9 +720,9 @@
         const lang = ConfigManager.language || 'en';
         const useTranslation = lang === 'it';
 
-        const categories = ["general", "lore", "state", "element", "diseases", "history", "hints"];
+        const categories = this.categories();
         const activeCategory = categories[this._tabIndex];
-        const topics = this.getFilteredTopics(activeCategory);
+        const topics = this.visibleTopics(activeCategory);
 
         // Clamping indexes safely
         if (topics.length > 0) {
@@ -340,22 +735,23 @@
         // Translation strings
         const tCodex =T('HelpMenu.archiveEntry');
         const tGeneral =T('HelpMenu.general');
+        const tTopics =T('HelpMenu.topics');
         const tLore =T('HelpMenu.lore');
-        const tStates =T('HelpMenu.states');
-        const tElements =T('HelpMenu.elements');
-        const tDiseases =T('HelpMenu.diseases');
         const tHistory =T('HelpMenu.history');
-        const tHints =T('HelpMenu.hints');
         const tSelectTopic =T('HelpMenu.selectATopicToStart');
         const backBtnText =T('HelpMenu.back');
 
         // Ensure the book spread exists
         let spread = container.querySelector(".book-spread");
         if (!spread) {
+            // The book is laid out contents-first: the narrow column of pages
+            // (.right-page, 42%) is dealt on the LEFT and the page being read
+            // (.left-page, 58%) on the right, which is the way a reader holds
+            // an index open beside the entry it points at.
             container.innerHTML = `
                 <div class="book-spread">
-                    <div class="left-page"></div>
                     <div class="right-page"></div>
+                    <div class="left-page"></div>
                 </div>
             `;
             spread = container.querySelector(".book-spread");
@@ -375,29 +771,7 @@
 
         // 1. LEFT PAGE: Detailed Content
         let rightHTML = "";
-        if (activeCategory === "hints") {
-            // Hints Toggle Screen
-            const isTutorialActive = $gameSwitches.value(75);
-            const isSwitchFocused = this._activeArea === "content";
-            const toggleClass = isTutorialActive ? "toggle-switch active" : "toggle-switch";
-            const finalToggleClass = isSwitchFocused ? `${toggleClass} focused` : toggleClass;
-            const statusLabel = isTutorialActive ? (T('HelpMenu.on')) : (T('HelpMenu.off'));
-
-            rightHTML = `
-                <div class="hints-container">
-                    <div class="hints-label">
-                        ${T('HelpMenu.worldMapHints')}
-                    </div>
-                    <div class="hints-desc">
-                        ${T('HelpMenu.enableOrDisableRealTime')}
-                    </div>
-                    <div class="${finalToggleClass}" id="tutorial-toggle">
-                        <div class="toggle-knob"></div>
-                        <div class="toggle-text">${statusLabel}</div>
-                    </div>
-                </div>
-            `;
-        } else if (!this._selectedTopic) {
+        if (!this._selectedTopic) {
             rightHTML = `<div class="placeholder-message">${tSelectTopic}</div>`;
         } else {
             const topic = this._selectedTopic;
@@ -418,6 +792,19 @@
             `;
         }
 
+        // The one setting this book owns, under it rather than in it: whether
+        // the map talks to the player as they walk (the compass targets, the
+        // written tips, the tutorial lines). A press turns it on and off.
+        const hintsOn = $gameSwitches.value(75);
+        const hintsFocused = this._activeArea === "hintsbtn";
+        const hintsHTML = `
+            <div class="help-hints-bar">
+                <div class="help-hints-button${hintsOn ? ' active' : ''}${hintsFocused ? ' focused' : ''}"
+                     id="tutorial-toggle" title="${T('HelpMenu.enableOrDisableRealTime')}">
+                    ${T('HelpMenu.showMapTooltip')}
+                </div>
+            </div>`;
+
         leftPage.innerHTML = `
             <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
               <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
@@ -429,35 +816,47 @@
         `;
 
         // 2. RIGHT PAGE: Sidebar List & Tabs (Updates only when category changes, completely preventing flickering)
-        const needsRightPageRedraw = !rightPage.innerHTML || this._lastCategory !== activeCategory;
+        const query = this._helpBar ? this._helpBar.query : '';
+        const needsRightPageRedraw = !rightPage.innerHTML
+            || this._lastCategory !== activeCategory || this._lastQuery !== query;
         this._lastCategory = activeCategory;
+        this._lastQuery = query;
+
+        // The macrotopics of whatever the tab is showing, in reading order. They
+        // are printed as the same chips the backpack files its pockets with
+        // (.backpack-tab), and they are a rail rather than a filter: picking one
+        // scrolls the list down to that part of the manual.
+        this._groups = [];
+        topics.forEach(t => {
+            if (t.group && !this._groups.includes(t.group)) this._groups.push(t.group);
+        });
 
         if (needsRightPageRedraw) {
             let tabsHTML = "";
             categories.forEach((cat, idx) => {
-                const label = cat === "general" ? tGeneral : cat === "lore" ? tLore : cat === "state" ? tStates
-                    : cat === "element" ? tElements : cat === "diseases" ? tDiseases
-                    : cat === "history" ? tHistory : tHints;
+                const label = cat === "general" ? tGeneral : cat === "topics" ? tTopics : cat === "lore" ? tLore : tHistory;
                 tabsHTML += `<div class="tab" data-idx="${idx}">${label}</div>`;
             });
 
             let listHTML = "";
-            if (activeCategory === "hints") {
-                listHTML = `
-                    <div class="placeholder-message">
-                        ${T('HelpMenu.configureWorldMapHintsAnd')}
-                    </div>
-                `;
-            } else if (topics.length === 0) {
-                listHTML = `
-                    <div class="placeholder-message">
-                        ${T('HelpMenu.noCodexEntriesFoundIn')}
-                    </div>
-                `;
+            if (topics.length === 0) {
+                const empty = activeCategory === "topics"
+                    ? T('HelpMenu.noTopicsLearnedYet')
+                    : T('HelpMenu.noCodexEntriesFoundIn');
+                listHTML = `<div class="placeholder-message">${empty}</div>`;
             } else {
+                // The pages are read in macrocategories, so the list is
+                // headed the way a manual's contents page is. A header is not
+                // a row: the cursor never lands on one, it only tells the
+                // reader which part of the manual they have scrolled into.
                 listHTML = `<div class="topic-list-container">`;
+                let lastGroup = null;
                 topics.forEach((topic, idx) => {
                     const titleText = getLocalizedTitle(topic);
+                    if (topic.group && topic.group !== lastGroup) {
+                        lastGroup = topic.group;
+                        listHTML += `<div class="topic-group-header" data-group="${topic.group}">${getGroupLabel(topic.group)}</div>`;
+                    }
                     listHTML += `
                         <div class="topic-item" data-idx="${idx}">
                             <span class="topic-title-text">${titleText}</span>
@@ -467,13 +866,29 @@
                 listHTML += `</div>`;
             }
 
+            let chipsHTML = "";
+            if (this._groups.length > 1) {
+                chipsHTML = `<div class="backpack-tabs help-group-chips">` +
+                    this._groups.map(g => `<div class="backpack-tab" data-group="${g}">${getGroupLabel(g)}</div>`).join('') +
+                    `</div>`;
+            }
+
             rightPage.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%"></div>
+                <div id="help-search-slot" style="display: flex; align-items: center; justify-content: flex-end; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%"></div>
                 <div class="tabs-bar">
                     ${tabsHTML}
                 </div>
+                ${chipsHTML}
                 ${listHTML}
+                ${hintsHTML}
             `;
+
+            // The strip is rebuilt with the page, then handed its caret back.
+            const searchSlot = rightPage.querySelector("#help-search-slot");
+            if (searchSlot && this._helpBar) {
+                searchSlot.innerHTML = this._helpBar.fieldHTML();
+                this._helpBar.restoreFocus();
+            }
 
             // Bind click events on recreated tabs
             const tabElements = rightPage.querySelectorAll(".tab");
@@ -488,8 +903,15 @@
                 });
             });
 
+            // Bind click events on the macrotopic chips
+            rightPage.querySelectorAll(".help-group-chips .backpack-tab").forEach(elem => {
+                elem.addEventListener("click", () => {
+                    this.goToGroup(elem.getAttribute("data-group"));
+                });
+            });
+
             // Bind click events on recreated topics
-            if (activeCategory !== "hints") {
+            {
                 const itemElements = rightPage.querySelectorAll(".topic-item");
                 itemElements.forEach(elem => {
                     elem.addEventListener("click", () => {
@@ -517,7 +939,7 @@
             else elem.classList.remove("focused");
         });
 
-        if (activeCategory !== "hints") {
+        {
             const itemElements = rightPage.querySelectorAll(".topic-item");
             itemElements.forEach((elem, idx) => {
                 const isActive = this._selectedTopic === topics[idx];
@@ -531,12 +953,73 @@
             });
         }
 
-        const tutorialBtn = leftPage.querySelector("#tutorial-toggle");
-        if (tutorialBtn) {
-            tutorialBtn.addEventListener("click", () => {
-                this.toggleTutorialSwitch();
+        {
+            const current = this._selectedTopic && this._selectedTopic.group;
+            const rail = rightPage.querySelector(".help-group-chips");
+            rightPage.querySelectorAll(".help-group-chips .backpack-tab").forEach(elem => {
+                const on = elem.getAttribute("data-group") === current;
+                elem.classList.toggle("active", on);
+                // The rail is short and scrolls; the chip that is lit has to be
+                // on it, or a reader stepping past the fold sees nothing move.
+                if (on && rail && rail.scrollHeight > rail.clientHeight) {
+                    const top = elem.offsetTop - rail.offsetTop;
+                    if (top < rail.scrollTop) rail.scrollTop = top;
+                    else if (top + elem.offsetHeight > rail.scrollTop + rail.clientHeight) {
+                        rail.scrollTop = top + elem.offsetHeight - rail.clientHeight;
+                    }
+                }
             });
         }
+
+        const tutorialBtn = rightPage.querySelector("#tutorial-toggle");
+        if (tutorialBtn) {
+            tutorialBtn.classList.toggle("active", $gameSwitches.value(75));
+            tutorialBtn.classList.toggle("focused", this._activeArea === "hintsbtn");
+            if (!tutorialBtn.dataset.bound) {
+                tutorialBtn.dataset.bound = "1";
+                tutorialBtn.addEventListener("click", () => {
+                    this._activeArea = "hintsbtn";
+                    this.toggleTutorialSwitch();
+                });
+            }
+        }
+    };
+
+    // Put the reader at the head of a macrotopic: the cursor lands on its first
+    // page and the list is scrolled so its header sits at the top of the column,
+    // which is what makes the rail read as a table of contents rather than as a
+    // filter. Nothing is hidden, the book is only wound to that place.
+    Scene_Help.prototype.goToGroup = function (group) {
+        if (!group) return;
+        const topics = this.visibleTopics(this.categories()[this._tabIndex]);
+        const at = topics.findIndex(t => t.group === group);
+        if (at < 0) return;
+        this._listIndex = at;
+        this._activeArea = "list";
+        SoundManager.playCursor();
+        this.refreshUIHelp();
+        this.scrollListToGroup(group);
+    };
+
+    Scene_Help.prototype.scrollListToGroup = function (group) {
+        const container = document.querySelector("#help-container .topic-list-container");
+        if (!container) return;
+        const header = container.querySelector(`.topic-group-header[data-group="${group}"]`);
+        if (!header) return;
+        container.scrollTop += header.getBoundingClientRect().top - container.getBoundingClientRect().top;
+    };
+
+    // L1/R1 and Tab step the rail. Which macrotopic is current is read off the
+    // page the cursor is on, not kept beside it, so walking the list with the
+    // arrows and stepping the rail can never disagree.
+    Scene_Help.prototype.stepGroup = function (dir) {
+        const groups = this._groups || [];
+        if (!groups.length) return;
+        const current = this._selectedTopic && this._selectedTopic.group;
+        const at = groups.indexOf(current);
+        const next = at < 0 ? (dir > 0 ? 0 : groups.length - 1)
+            : (at + dir + groups.length) % groups.length;
+        this.goToGroup(groups[next]);
     };
 
     Scene_Help.prototype.toggleTutorialSwitch = function () {
@@ -546,11 +1029,27 @@
     };
 
     Scene_Help.prototype.updateUIHelpInput = function () {
-        const categories = ["general", "lore", "state", "element", "diseases", "history", "hints"];
+        // A focused search field owns the keyboard (UI/MenuSearchBar.js).
+        if (window.MenuSearchBar && window.MenuSearchBar.isTyping()) return;
+        const categories = this.categories();
         const activeCategory = categories[this._tabIndex];
-        const topics = this.getFilteredTopics(activeCategory);
+        const topics = this.visibleTopics(activeCategory);
 
-        // L1/R1 cycle category tabs from anywhere in the scene
+        // L1/R1, and Tab with Shift for the other direction, walk the
+        // macrotopic rail from anywhere in the scene.
+        const groups = this._groups || [];
+        if (groups.length > 1) {
+            const backwards = Input.isTriggered('pageup')
+                || (Input.isTriggered('tab') && Input.isPressed('shift'));
+            const forwards = Input.isTriggered('pagedown') || Input.isTriggered('tab');
+            if (backwards || forwards) {
+                this.stepGroup(backwards ? -1 : 1);
+                return;
+            }
+        }
+
+        // A shelf with no macrotopics of its own leaves the shoulder buttons to
+        // the category tabs, which is what they did before the rail existed.
         if (Input.isTriggered('pageup') || Input.isTriggered('pagedown')) {
             const dir = Input.isTriggered('pageup') ? -1 : 1;
             this._tabIndex = (this._tabIndex + dir + categories.length) % categories.length;
@@ -573,13 +1072,13 @@
                 SoundManager.playCursor();
                 this.refreshUIHelp();
             } else if (Input.isRepeated('down')) {
-                if (activeCategory === "hints") {
-                    this._activeArea = "content";
-                    SoundManager.playCursor();
-                    this.refreshUIHelp();
-                } else if (topics.length > 0) {
+                if (topics.length > 0) {
                     this._activeArea = "list";
                     this._listIndex = 0;
+                    SoundManager.playCursor();
+                    this.refreshUIHelp();
+                } else {
+                    this._activeArea = "hintsbtn";
                     SoundManager.playCursor();
                     this.refreshUIHelp();
                 }
@@ -588,8 +1087,21 @@
                 SoundManager.playCancel();
             }
         } else if (this._activeArea === "list") {
+            // A query that matches nothing leaves the list empty; the cursor
+            // goes back to the tabs rather than walking a list of none.
+            if (topics.length === 0) {
+                this._activeArea = "tabs";
+                this.refreshUIHelp();
+                return;
+            }
             if (Input.isRepeated('down')) {
-                this._listIndex = (this._listIndex + 1) % topics.length;
+                if (this._listIndex >= topics.length - 1) {
+                    this._activeArea = "hintsbtn";
+                    SoundManager.playCursor();
+                    this.refreshUIHelp();
+                    return;
+                }
+                this._listIndex = this._listIndex + 1;
                 SoundManager.playCursor();
                 this.refreshUIHelp();
 
@@ -614,7 +1126,7 @@
                         if (row) row.scrollIntoView({ block: "nearest" });
                     }
                 }
-            } else if (Input.isTriggered('left') || Input.isTriggered('ok')) {
+            } else if (Input.isTriggered('right') || Input.isTriggered('ok')) {
                 if (this._selectedTopic) {
                     this._activeArea = "content";
                     SoundManager.playOk();
@@ -628,34 +1140,39 @@
                 this.refreshUIHelp();
             }
         } else if (this._activeArea === "content") {
-            if (activeCategory === "hints") {
-                if (Input.isTriggered('ok')) {
-                    this.toggleTutorialSwitch();
-                } else if (Input.isRepeated('up')) {
-                    this._activeArea = "tabs";
-                    SoundManager.playCursor();
-                    this.refreshUIHelp();
-                } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
-                    this._activeArea = "tabs";
-                    SoundManager.playCancel();
-                    this.refreshUIHelp();
+            // Scroll page content smoothly using arrows
+            const contentDiv = document.getElementById("help-content-scroll");
+            if (contentDiv) {
+                if (Input.isPressed('down')) {
+                    contentDiv.scrollTop += 8;
+                } else if (Input.isPressed('up')) {
+                    contentDiv.scrollTop -= 8;
                 }
-            } else {
-                // Scroll page content smoothly using arrows
-                const contentDiv = document.getElementById("help-content-scroll");
-                if (contentDiv) {
-                    if (Input.isPressed('down')) {
-                        contentDiv.scrollTop += 8;
-                    } else if (Input.isPressed('up')) {
-                        contentDiv.scrollTop -= 8;
-                    }
-                }
+            }
 
-                if (Input.isTriggered('cancel') || TouchInput.isCancelled() || Input.isTriggered('right')) {
+            if (Input.isTriggered('cancel') || TouchInput.isCancelled() || Input.isTriggered('left')) {
+                this._activeArea = "list";
+                SoundManager.playCancel();
+                this.refreshUIHelp();
+            }
+        } else if (this._activeArea === "hintsbtn") {
+            // The map-tooltip button, sitting under the list. Up puts the
+            // cursor back on the last page of the list.
+            if (Input.isTriggered('ok')) {
+                this.toggleTutorialSwitch();
+            } else if (Input.isRepeated('up')) {
+                if (topics.length > 0) {
                     this._activeArea = "list";
-                    SoundManager.playCancel();
-                    this.refreshUIHelp();
+                    this._listIndex = topics.length - 1;
+                } else {
+                    this._activeArea = "tabs";
                 }
+                SoundManager.playCursor();
+                this.refreshUIHelp();
+            } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+                this._activeArea = "tabs";
+                SoundManager.playCancel();
+                this.refreshUIHelp();
             }
         }
     };

@@ -31,12 +31,17 @@
  * - Smooth animations and transitions
  * 
  * Controls:
- * - Left Arrow / Page Up / Mouse Click Left Side: Previous page
- * - Right Arrow / Page Down / Mouse Click Right Side: Next page
- * - Up Arrow: Jump backward 10 pages
- * - Down Arrow: Jump forward 10 pages
+ * - Left Arrow / Mouse Click Left Side: Previous page
+ * - Right Arrow / Mouse Click Right Side: Next page
+ * - Up Arrow / Down Arrow: Jump backward / forward 10 pages
+ * - Page Up / Page Down (keyboard) or L1 / R1 (gamepad): Jump backward / forward 10 pages
+ * - Shift (keyboard) or L2 (gamepad): Jump to the cover
+ * - C (keyboard) or R2 (gamepad): Jump to the last page
  * - Escape / Right Click: Close book
  * - Mouse Wheel: Scroll pages
+ *
+ * Every book opens on a generated cover page (title and author, guessed from
+ * the source text) before its actual content.
  */
 
 (() => {
@@ -183,8 +188,51 @@
             if (pages.length % 2 === 1) {
                 pages.push('');
             }
-            
+
             return pages;
+        }
+
+        // Best-effort title/author guess so every book can show a cover,
+        // even though the source text carries no metadata of its own.
+        static parseCoverInfo(text, bookName) {
+            const rawLines = text.split(/\r?\n/);
+            let title = '';
+            let titleIndex = -1;
+
+            for (let i = 0; i < Math.min(rawLines.length, 60); i++) {
+                const line = rawLines[i].trim();
+                if (!line) continue;
+                if (/^\*+/.test(line)) continue;
+                if (/^(by|author)[:\s]/i.test(line)) continue;
+                if (line.length < 3 || line.length > 60) continue;
+                title = line;
+                titleIndex = i;
+                break;
+            }
+
+            let author = '';
+            if (titleIndex >= 0) {
+                const searchEnd = Math.min(rawLines.length, titleIndex + 20);
+                for (let i = titleIndex + 1; i < searchEnd; i++) {
+                    const line = rawLines[i].trim();
+                    if (!line) continue;
+                    const match = line.match(/^by\s+(.+)$/i);
+                    if (match) {
+                        author = match[1].trim();
+                        break;
+                    }
+                    if (line.length > 60) break;
+                }
+            }
+
+            if (!title) {
+                title = bookName
+                    .replace(/[_-]+/g, ' ')
+                    .replace(/\b\w/g, c => c.toUpperCase())
+                    .trim() || bookName;
+            }
+
+            return { title, author };
         }
     }
 
@@ -212,10 +260,19 @@
         loadBookData() {
             try {
                 const bookData = BookManager.loadBook(this._bookName);
-                this._pages = BookManager.splitIntoPages(
-                    bookData.text, 
+                const contentPages = BookManager.splitIntoPages(
+                    bookData.text,
                     this._config.charsPerPage
                 );
+                const cover = BookManager.parseCoverInfo(bookData.text, this._bookName);
+
+                // The cover always takes the first page slot; pad back to an
+                // even count so the left/right pairing stays intact.
+                this._pages = [{ cover: true, title: cover.title, author: cover.author }, ...contentPages];
+                if (this._pages.length % 2 !== 0) {
+                    this._pages.push('');
+                }
+
                 this._currentPageIndex = BookManager.getLastPage(this._bookName);
                 this._totalPages = this._pages.length;
             } catch (e) {
@@ -333,7 +390,23 @@
             this._rightPageText.anchor.y = 0.5;
             this._rightPageText.x = this._config.spineWidth/2 + 10;
             this._bookContainer.addChild(this._rightPageText);
-            
+
+            // Soft shadow cast by the flipping page onto the page it is
+            // uncovering, brightest at the spine and strongest mid-flip.
+            this._flipShadow = new Sprite();
+            this._flipShadow.bitmap = new Bitmap(160, bookHeight);
+            const shadowCtx = this._flipShadow.bitmap.context;
+            const shadowGradient = shadowCtx.createLinearGradient(0, 0, 160, 0);
+            shadowGradient.addColorStop(0, 'rgba(0, 0, 0, 0.35)');
+            shadowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            shadowCtx.fillStyle = shadowGradient;
+            shadowCtx.fillRect(0, 0, 160, bookHeight);
+            this._flipShadow.anchor.x = 0;
+            this._flipShadow.anchor.y = 0.5;
+            this._flipShadow.x = 0;
+            this._flipShadow.visible = false;
+            this._bookContainer.addChild(this._flipShadow);
+
             this.addChild(this._bookContainer);
             
             // Initial opacity for animation
@@ -476,12 +549,18 @@
             const anim = this._flipAnimation;
             anim.progress++;
 
-            const t = anim.progress / anim.duration;
+            const rawT = anim.progress / anim.duration;
+            const t = this.easeInOutQuad(rawT);
             const angle = t * Math.PI;
 
             // Calculate flip position and scale
             const flipX = Math.cos(angle);
             const scaleX = Math.abs(flipX);
+            // Slight vertical bulge simulates the page curling as it turns.
+            const curl = 1 - 0.05 * Math.sin(angle);
+
+            this._flipPage.scale.y = curl;
+            this._flipPageBack.scale.y = curl;
 
             if (anim.direction > 0) {
                 // Flipping forward (right to left)
@@ -513,10 +592,22 @@
             this._flipPage.opacity = 255 - shadowOpacity * 50;
             this._flipPageBack.opacity = 255 - shadowOpacity * 50;
 
+            // Cast the spine shadow onto the page being uncovered, peaking
+            // when the flipping page is edge-on (angle = 90deg).
+            if (this._flipShadow) {
+                const shadowStrength = Math.sin(angle);
+                this._flipShadow.visible = shadowStrength > 0.02;
+                this._flipShadow.opacity = 220 * shadowStrength;
+                this._flipShadow.scale.x = (anim.direction > 0 ? 1 : -1) * (0.3 + 0.7 * shadowStrength);
+            }
+
             if (anim.progress >= anim.duration) {
                 anim.active = false;
                 this._flipPage.visible = false;
                 this._flipPageBack.visible = false;
+                this._flipPage.scale.y = 1;
+                this._flipPageBack.scale.y = 1;
+                if (this._flipShadow) this._flipShadow.visible = false;
                 this._currentPageIndex = anim.endPage;
                 this.drawCurrentPages();
 
@@ -526,15 +617,27 @@
         }
         
         updateInput() {
+            // 'run' and 'kick' are the L2/R2 (LT/RT) action slots in this
+            // game's gamepad map, reused here as jump-to-cover / jump-to-end.
             if (Input.isTriggered('cancel') || TouchInput.isTriggered() && TouchInput.isLongPressed()) {
                 this.onCancel();
+            } else if (Input.isTriggered('run')) {
+                this.goToStart();
+            } else if (Input.isTriggered('kick')) {
+                this.goToEnd();
+            } else if (Input.isRepeated('pagedown')) {
+                // R1 on a gamepad, Page Down on keyboard
+                this.jumpForward();
+            } else if (Input.isRepeated('pageup')) {
+                // L1 on a gamepad, Page Up on keyboard
+                this.jumpBackward();
             } else if (Input.isRepeated('down')) {
                 this.jumpForward();
             } else if (Input.isRepeated('up')) {
                 this.jumpBackward();
-            } else if (Input.isRepeated('right') || Input.isRepeated('pagedown')) {
+            } else if (Input.isRepeated('right')) {
                 this.nextPage();
-            } else if (Input.isRepeated('left') || Input.isRepeated('pageup')) {
+            } else if (Input.isRepeated('left')) {
                 this.previousPage();
             }
         }
@@ -553,36 +656,87 @@
             this.drawPageNumbers();
         }
         
-        drawPage(bitmap, text, isLeft) {
+        drawPage(bitmap, page, isLeft) {
             bitmap.clear();
-            
-            if (!text) return;
-            
+
+            if (!page) return;
+
+            if (typeof page === 'object' && page.cover) {
+                this.drawCoverPage(bitmap, page.title, page.author);
+                return;
+            }
+
+            const text = page;
+
             // Set font
             bitmap.fontFace = FONT_CONFIG.family;
             bitmap.fontSize = this._fontConfig.text;
             bitmap.textColor = FONT_CONFIG.color.text;
-            
+
             const lines = this.wrapText(text, bitmap.width - 20);
             const lineHeight = this._fontConfig.text * FONT_CONFIG.lineHeight;
-            
+
             for (let i = 0; i < lines.length; i++) {
                 const y = 10 + i * lineHeight;
                 if (y + lineHeight > bitmap.height) break;
-                
+
                 bitmap.drawText(lines[i], 10, y, bitmap.width - 20, lineHeight, isLeft ? 'left' : 'left');
             }
         }
-        
+
+        drawCoverPage(bitmap, title, author) {
+            const w = bitmap.width;
+            const h = bitmap.height;
+            const ctx = bitmap.context;
+
+            // Decorative double border
+            const inset = 14;
+            ctx.strokeStyle = 'rgba(61, 40, 23, 0.55)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(inset, inset, w - inset * 2, h - inset * 2);
+            ctx.lineWidth = 1;
+            ctx.strokeRect(inset + 6, inset + 6, w - (inset + 6) * 2, h - (inset + 6) * 2);
+
+            bitmap.fontFace = FONT_CONFIG.family;
+            bitmap.fontSize = this._fontConfig.title;
+            bitmap.textColor = FONT_CONFIG.color.title;
+
+            const titleLines = this.wrapText(title || '', w - 80);
+            const lineHeight = this._fontConfig.title * FONT_CONFIG.lineHeight;
+            const blockHeight = titleLines.length * lineHeight;
+            let y = h / 2 - blockHeight / 2 - (author ? 30 : 0);
+
+            for (const line of titleLines) {
+                bitmap.drawText(line, 20, y, w - 40, lineHeight, 'center');
+                y += lineHeight;
+            }
+
+            // Flourish beneath the title
+            ctx.strokeStyle = 'rgba(139, 115, 85, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(w / 2 - 40, y + 8);
+            ctx.lineTo(w / 2 + 40, y + 8);
+            ctx.stroke();
+
+            if (author) {
+                bitmap.fontSize = this._fontConfig.pageNumber + 4;
+                bitmap.textColor = FONT_CONFIG.color.pageNumber;
+                bitmap.drawText(author, 20, y + 20, w - 40, 30, 'center');
+            }
+        }
+
         drawPageNumbers() {
+            const leftPage = this._pages[this._currentPageIndex];
+            const rightPage = this._pages[this._currentPageIndex + 1];
             const leftNum = this._currentPageIndex + 1;
             const rightNum = this._currentPageIndex + 2;
-            
+
             // Clear previous numbers area
             const numY = this._leftPageText.bitmap.height - 30;
-            
-            // Left page number
-            if (leftNum <= this._totalPages) {
+
+            // Left page number (covers do not show a page number)
+            if (leftNum <= this._totalPages && !(leftPage && leftPage.cover)) {
                 this._leftPageText.bitmap.fontSize = this._fontConfig.pageNumber;
                 this._leftPageText.bitmap.textColor = FONT_CONFIG.color.pageNumber;
                 this._leftPageText.bitmap.drawText(
@@ -596,7 +750,7 @@
             }
             
             // Right page number
-            if (rightNum <= this._totalPages) {
+            if (rightNum <= this._totalPages && !(rightPage && rightPage.cover)) {
                 this._rightPageText.bitmap.fontSize = this._fontConfig.pageNumber;
                 this._rightPageText.bitmap.textColor = FONT_CONFIG.color.pageNumber;
                 this._rightPageText.bitmap.drawText(
@@ -692,10 +846,7 @@
             // Don't move if we're already at or past the target
             if (targetPage <= this._currentPageIndex) return;
 
-            // Jump directly without animation
-            this._currentPageIndex = targetPage;
-            this.drawCurrentPages();
-            AudioManager.playSe({ name: 'Book1', volume: 50, pitch: 100, pan: 0 });
+            this.startFlipAnimation(1, targetPage, 14);
         }
 
         jumpBackward() {
@@ -717,13 +868,22 @@
             // Don't move if we're already at or before the target
             if (targetPage >= this._currentPageIndex) return;
 
-            // Jump directly without animation
-            this._currentPageIndex = targetPage;
-            this.drawCurrentPages();
-            AudioManager.playSe({ name: 'Book1', volume: 50, pitch: 100, pan: 0 });
+            this.startFlipAnimation(-1, targetPage, 14);
         }
 
-        startFlipAnimation(direction) {
+        goToStart() {
+            if (this._flipAnimation.active || this._currentPageIndex <= 0) return;
+            this.startFlipAnimation(-1, 0, 18);
+        }
+
+        goToEnd() {
+            if (this._flipAnimation.active) return;
+            const lastPage = this._totalPages - 2;
+            if (this._currentPageIndex >= lastPage) return;
+            this.startFlipAnimation(1, lastPage, 18);
+        }
+
+        startFlipAnimation(direction, endPage, duration = 20) {
             // Safety check: ensure flip sprites are properly initialized
             if (!this._flipPage || !this._flipPageBack ||
                 !this._flipPage.anchor || !this._flipPageBack.anchor) {
@@ -742,9 +902,12 @@
             const anim = this._flipAnimation;
             anim.active = true;
             anim.progress = 0;
+            anim.duration = duration;
             anim.direction = direction;
             anim.startPage = this._currentPageIndex;
-            anim.endPage = this._currentPageIndex + (direction > 0 ? 2 : -2);
+            anim.endPage = (endPage !== undefined && endPage !== null)
+                ? endPage
+                : this._currentPageIndex + (direction > 0 ? 2 : -2);
 
             // Prepare flip page content
             if (direction > 0) {
@@ -790,7 +953,11 @@
         easeInCubic(t) {
             return t * t * t;
         }
-        
+
+        easeInOutQuad(t) {
+            return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        }
+
         terminate() {
             super.terminate();
             // Clean up event listeners
@@ -813,6 +980,7 @@
             if (this._bookContainer) {
                 this._bookContainer.destroy({ children: true });
                 this._bookContainer = null;
+                this._flipShadow = null;
             }
             if (this._flipContainer) {
                 this._flipContainer.destroy({ children: true });

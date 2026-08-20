@@ -1,0 +1,64 @@
+{
+  "style": {
+    "monogamous": {
+      "name": "Monogamous",
+      "desc": "One exclusive partner at a time."
+    },
+    "civil_union": {
+      "name": "Civil union",
+      "desc": "A legally recognized partnership without a formal marriage."
+    },
+    "long_distance": {
+      "name": "Long-distance",
+      "desc": "A committed couple separated by geography."
+    },
+    "open_relationship": {
+      "name": "Open relationship",
+      "desc": "A primary couple who agree to additional partners."
+    },
+    "polyamorous": {
+      "name": "Polyamorous",
+      "desc": "Several loving relationships maintained openly and at once."
+    },
+    "companionate": {
+      "name": "Companionate",
+      "desc": "Deep affection and partnership with little or no passion."
+    },
+    "throuple": {
+      "name": "Throuple",
+      "desc": "A committed relationship between three people."
+    },
+    "arranged_marriage": {
+      "name": "Arranged marriage",
+      "desc": "A union arranged by families rather than chosen by the couple."
+    },
+    "portland_polycule": {
+      "name": "Portland Polycule",
+      "desc": "A sprawling, densely interconnected network of polyamorous partners, metamours and their exes, all somehow still on good terms."
+    },
+    "serial_monogamy": {
+      "name": "Serial monogamist",
+      "desc": "One exclusive partner at a time, in a long string of relationships."
+    },
+    "single_content": {
+      "name": "Contentedly single",
+      "desc": "Not seeking a partner and at peace with it."
+    },
+    "situationship": {
+      "name": "Situationship",
+      "desc": "An undefined romantic entanglement that never quite becomes a relationship."
+    },
+    "friends_with_benefits": {
+      "name": "Friends with benefits",
+      "desc": "Casual intimacy between friends with no romantic commitment."
+    },
+    "queerplatonic": {
+      "name": "Queerplatonic partnership",
+      "desc": "A committed bond stronger than friendship but not romantic."
+    },
+    "aromantic_solo": {
+      "name": "Aromantic solo",
+      "desc": "Living by choice without any romantic partnership."
+    }
+  }
+}

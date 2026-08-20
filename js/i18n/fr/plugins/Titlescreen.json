@@ -117,7 +117,9 @@
     "majorTip": "",
     "majorInstalled": "",
     "majorInstalledLine": "",
-    "majorInstalledTip": ""
+    "majorInstalledTip": "",
+    "redownload": "",
+    "redownloadTip": ""
   },
   "hyperverse": {
     "lead": "HYPERVERS // ",
@@ -181,7 +183,6 @@
     "bestiary": "BESTIAIRE",
     "artifacts": "ARTEFACTS",
     "weapons": "ARMES",
-    "enemies3d": "ENNEMIS 3D",
     "random": "ALÉATOIRE"
   },
   "artifact": {

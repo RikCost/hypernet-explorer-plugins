@@ -208,6 +208,7 @@
                 let activeButton  = -1;
                 let prevPosition  = { x: 0, y: 0 };
                 let isDragging    = false;
+                const ROTATE_SPEED = 0.01;
 
                 const onStart = (e) => {
                     if (e.button === 0 || e.button === 1) {
@@ -217,17 +218,21 @@
                         if (e.button === 1) e.preventDefault();
                     }
                 };
+                // The left button turns the piece in the hand, which is what one
+                // wants of a weapon on a counter. Sliding the view across it is
+                // the wheel button's job, so an ordinary drag never loses the
+                // piece off the edge of the pane.
                 const onMove = (e) => {
                     if (activeButton === -1) return;
                     const dx = e.clientX - prevPosition.x;
                     const dy = e.clientY - prevPosition.y;
-                    if (activeButton === 0 && model) {
-                        model.rotation.y += dx * 0.015;
-                        model.rotation.x += dy * 0.015;
-                    } else if (activeButton === 1) {
+                    if (activeButton === 1) {
                         const panSpeed = 0.002 * camera.position.z;
                         camera.position.x -= dx * panSpeed;
                         camera.position.y += dy * panSpeed;
+                    } else if (model) {
+                        model.rotation.y += dx * ROTATE_SPEED;
+                        model.rotation.x += dy * ROTATE_SPEED;
                     }
                     prevPosition = { x: e.clientX, y: e.clientY };
                 };
@@ -250,12 +255,15 @@
                         prevPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
                     }
                 };
+                // A finger turns the piece too: there is no wheel button to pan with.
                 const onTouchMove = (e) => {
-                    if (e.touches.length === 1 && model) {
+                    if (e.touches.length === 1) {
                         const dx = e.touches[0].clientX - prevPosition.x;
                         const dy = e.touches[0].clientY - prevPosition.y;
-                        model.rotation.y += dx * 0.015;
-                        model.rotation.x += dy * 0.015;
+                        if (model) {
+                            model.rotation.y += dx * ROTATE_SPEED;
+                            model.rotation.x += dy * ROTATE_SPEED;
+                        }
                         prevPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
                     }
                 };
@@ -338,8 +346,6 @@
                         }
                     }
 
-                    if (!isDragging && model) model.rotation.y += 0.007;
-
                     if (model && window.WeaponSystemProcedural) {
                         // Gears, drifting shards and pulsing runes declared by the
                         // model itself, same as in battle.
@@ -402,17 +408,31 @@
         })();
     }
 
+    // The thing a preview card should draw for a held piece, or null when it is
+    // not something held at all.
+    function previewModelFor(item) {
+        if (!item) return null;
+        if (DataManager.isWeapon(item)) return item;
+        if (item.etypeId === 2 && window.WeaponSystemProcedural) {
+            return window.WeaponSystemProcedural.shieldWeaponFor(item);
+        }
+        return null;
+    }
+
     Scene_Equip.prototype.init3DWeaponPreview = function () {
         this.cleanup3DWeaponPreview();
 
+        // Whatever the first two hands are holding, shields included: a shield
+        // has a model of its own, built through the weapon pipeline
+        // (WeaponSystemProcedural.shieldWeaponFor).
         const equips  = this._hoverPreviewEquips || this._actor.equips();
         const weapons = [];
-        const w0 = equips[0];
-        if (w0 && DataManager.isWeapon(w0)) weapons.push({ item: w0, canvasId: 'weapon-preview-canvas-0' });
-        const w1 = equips[1];
-        if (w1 && DataManager.isWeapon(w1)) {
-            weapons.push({ item: w1, canvasId: weapons.length === 0 ? 'weapon-preview-canvas-0' : 'weapon-preview-canvas-1' });
-        }
+        // Keyed by the hand, not by how many cards have been filled: the card
+        // for the second hand is canvas 1 even when the first hand is empty.
+        [equips[0], equips[1]].forEach((item, index) => {
+            const model = previewModelFor(item);
+            if (model) weapons.push({ item: model, canvasId: 'weapon-preview-canvas-' + index });
+        });
         if (weapons.length === 0) return;
 
         this._previewRenderers = [];
@@ -458,13 +478,19 @@
         const slotId  = this._slotIndex;
         if (slotId < 0) return [];
 
-        const etypeId = actor.equipSlots()[slotId];
         const lang    = ConfigManager.language || 'en';
         const t       = i18n[lang] || i18n['en'];
 
         let items = [];
-        if (etypeId === 1) {
-            items = $gameParty.weapons().filter(w => actor.canEquip(w));
+        // A hand slot is locked shut while the character has no free hand left
+        // to fill it: a two-handed weapon in the other one, an arm lost. There
+        // is nothing to offer there until something is put down.
+        if (!actor.isEquipChangeOk(slotId)) {
+            items.unshift({ name: t.noEquip, id: -1, isRemoveOption: true });
+            return items;
+        }
+        items = actor.slotCandidates(slotId);
+        if (window.HandSlots && window.HandSlots.slotKind(actor, slotId)) {
             // Every weapon is equippable now, so weapons this character has no
             // proficiency in are still listed - just pushed below the ones they
             // can actually use. Array#sort is stable, so each group keeps its
@@ -473,8 +499,6 @@
             if (prof) {
                 items.sort((a, b) => (prof.isUntrained(actor, a) ? 1 : 0) - (prof.isUntrained(actor, b) ? 1 : 0));
             }
-        } else {
-            items = $gameParty.armors().filter(a => a.etypeId === etypeId && actor.canEquip(a));
         }
         items.unshift({ name: t.noEquip, id: -1, isRemoveOption: true });
         return items;
@@ -519,12 +543,28 @@
         // Weapon scaling: which base stat(s) the equipped weapon(s) scale on.
         // Instead of a separate "Scaling: STR" line, the scaling stat's own
         // label in the grid below is picked out in gold.
-        const weapon1 = tempActor ? tempActor.equips()[0] : actor.equips()[0];
-        const weapon2 = tempActor ? tempActor.equips()[1] : actor.equips()[1];
+        // Whatever is in the character's hands, in slot order. With more than
+        // two hands the first two are the ones the page reports on.
+        const holder  = tempActor || actor;
+        const held    = window.HandSlots ? window.HandSlots.heldItems(holder)
+                                         : [holder.equips()[0], holder.equips()[1]];
+        const weapon1 = held[0];
+        const weapon2 = held[1];
         const s1 = actor.getWeaponScalingType(weapon1);
         const s2 = actor.getWeaponScalingType(weapon2);
         const scalingCodes = new Set([s1, s2].filter(c => c && c !== 'MIX'));
         if (scalingCodes.size === 0) scalingCodes.add('STR');
+
+        // Proficiency grade (F to S) per scaling code, read off the weapon that
+        // earns it. Shown right of the stat's own abbreviation in the grid below.
+        const weaponProf = window.WeaponProficiency;
+        const codeGradeMap = {};
+        if (weaponProf && s1 && s1 !== 'MIX' && weapon1 && DataManager.isWeapon(weapon1)) {
+            codeGradeMap[s1] = weaponProf.gradeFor(actor, weapon1);
+        }
+        if (weaponProf && s2 && s2 !== 'MIX' && weapon2 && DataManager.isWeapon(weapon2)) {
+            codeGradeMap[s2] = weaponProf.gradeFor(actor, weapon2);
+        }
 
         // Base + alchemical stats, interleaved into one 3-column grid: the
         // custom stats (Arcane/Substance/Stealth/Intimidation) ride as plain
@@ -555,12 +595,16 @@
             const diff = stat.valAfter - stat.valBefore;
             const diffHtml = diff > 0 ? `<span class="stat-diff positive">+${diff}${unit}</span>`
                            : diff < 0 ? `<span class="stat-diff negative">${diff}${unit}</span>` : '';
-            const labelCls = stat.code && scalingCodes.has(stat.code) ? 'stat-label stat-label--scaling' : 'stat-label';
+            const isScaling = !!(stat.code && scalingCodes.has(stat.code));
+            const grade     = isScaling ? codeGradeMap[stat.code] : null;
+            const labelCls  = isScaling ? 'stat-label stat-label--scaling' : 'stat-label';
+            const valCls    = isScaling ? 'stat-val stat-val--scaling' : 'stat-val';
+            const labelHtml = grade ? `${stat.label} <span class="stat-scaling-grade">(${grade})</span>` : stat.label;
             statsGridHTML += `
-                <div class="stat-row">
-                    <span class="${labelCls}">${stat.label}</span>
+                <div class="stat-row${isScaling ? ' stat-row--scaling' : ''}">
+                    <span class="${labelCls}">${labelHtml}</span>
                     <span class="stat-val-container">
-                        <span class="stat-val">${stat.valBefore}${unit}</span>
+                        <span class="${valCls}">${stat.valBefore}${unit}</span>
                         ${tempActor && diff !== 0 ? `➔ <span class="stat-val-new">${stat.valAfter}${unit}</span>` : ''}
                         ${diffHtml}
                     </span>
@@ -568,11 +612,19 @@
         }
 
         // Weapon preview box
-        const w0 = tempActor ? tempActor.equips()[0] : actor.equips()[0];
-        const w1 = tempActor ? tempActor.equips()[1] : actor.equips()[1];
-        const hasW0   = w0 && DataManager.isWeapon(w0);
-        const hasW1   = w1 && DataManager.isWeapon(w1);
+        const w0 = weapon1;
+        const w1 = weapon2;
+        const hasW0   = !!previewModelFor(w0);
+        const hasW1   = !!previewModelFor(w1);
         const hasThree = typeof THREE !== 'undefined';
+
+        // The bench stands wherever the party stands: the ground behind the
+        // pieces is the battleground this map fights on (BattleSystem/
+        // AnimatedBattleBackgrounds.js), not a grey box.
+        const groundImg = (typeof window.getMapBattlebackImage === 'function')
+            ? window.getMapBattlebackImage() : null;
+        const groundStyle = groundImg
+            ? ` style="background-image:url('${groundImg.replace(/['"]/g, '')}');"` : '';
 
         let previewBoxHTML = '<div class="weapon-previews-container">';
 
@@ -583,13 +635,13 @@
         // the card falls back to the item's icon on its rarity ring.
         const addCardHTML = (weapon, canvasId) => {
             if (hasThree) {
-                return `<div class="weapon-preview-card ${cardClass}"><canvas id="weapon-preview-canvas-${canvasId}" width="140" height="380"></canvas></div>`;
+                return `<div class="weapon-preview-card ${cardClass}"${groundStyle}><canvas id="weapon-preview-canvas-${canvasId}" width="140" height="380"></canvas></div>`;
             }
             const iconIdx    = weapon.iconIndex;
             const iconStyle  = `background:url('img/system/IconSet.png') -${(iconIdx%16)*32}px -${Math.floor(iconIdx/16)*32}px no-repeat;`;
             const rarity     = window.ItemSystemUtils ? window.ItemSystemUtils.getItemRarity(weapon) : { colorCode: '#bba16d' };
             const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode};"><div class="item-icon" style="${iconStyle}"></div></div></div>`;
-            return `<div class="weapon-preview-card ${cardClass}">${inner}</div>`;
+            return `<div class="weapon-preview-card ${cardClass}"${groundStyle}>${inner}</div>`;
         };
 
         if (hasW0) previewBoxHTML += addCardHTML(w0, 0);
@@ -644,10 +696,12 @@
 
         const commands      = ['equip', 'optimize', 'random', 'clear'];
         const commandLabels = [t.equip, t.optimize, t.random, t.clear];
+        // The command rail is the same rail the Skills menu wears: the backpack's
+        // own chips, so a row of tabs reads the same wherever it is met.
         let commandsBtnsHTML = '';
         commands.forEach((cmd, idx) => {
-            let cls = 'command-btn';
-            if (idx === this._commandIndex && this._activeArea === 'commands') cls += ' active focused';  // i18n-ignore  css classes
+            let cls = 'backpack-tab';
+            if (idx === this._commandIndex && this._activeArea === 'commands') cls += ' active selected';  // i18n-ignore  css classes
             commandsBtnsHTML += `<div class="${cls}" data-cmd="${cmd}">${commandLabels[idx]}</div>`;
         });
 
@@ -664,7 +718,9 @@
 
         const commandBarHTML = `
             <div class="equip-command-bar">
-                <div class="equip-commands">${commandsBtnsHTML}</div>
+                <div class="backpack-tabs equip-commands">
+                    <div class="backpack-tabs-row">${commandsBtnsHTML}</div>
+                </div>
             </div>`;
 
         // ── Left: main content (slots or inventory) ────────────────────────────
@@ -674,11 +730,11 @@
 
         if (this._activeArea === 'inventory') {
             const itemList  = this.getInventoryItemsForSlot();
-            const slotName  = $dataSystem.equipTypes[actor.equipSlots()[this._slotIndex]] || t.emptySlot;
+            const slotName  = actor.equipSlotName(this._slotIndex) || t.emptySlot;
 
             mainContentHTML = `
                 <div class="inventory-header">
-                    <span>${t.inventory}: ${slotName}</span>
+                    <span>${slotName}</span>
                     <span class="inventory-back-btn" id="inventory-back">◀ ${t.clear}</span>
                 </div>`;
 
@@ -732,7 +788,6 @@
                                 <div class="item-details" style="margin-left:8px;">
                                     <div class="item-name-row"><span class="item-name">${item.name}</span>${profTag}</div>
                                     <div class="item-meta-row">
-                                        <span>${rarity.name}</span>
                                         <span>${paramDesc.join(', ')}</span>
                                     </div>
                                 </div>
@@ -745,7 +800,7 @@
             const slots  = actor.equipSlots();
             const equips = actor.equips();
             slots.forEach((etypeId, idx) => {
-                const slotTypeName  = $dataSystem.equipTypes[etypeId] || t.emptySlot;
+                const slotTypeName  = actor.equipSlotName(idx) || t.emptySlot;
                 const equippedItem  = equips[idx];
                 const focused       = (idx === this._slotIndex && this._activeArea === 'slots') ? 'focused' : '';
 
@@ -788,8 +843,8 @@
                         <div class="left-commands-area"></div>
                         <div class="left-content-area equip-main-content"></div>
                     </div>
-                    <div class="right-page" style="position:relative;">
-                        <div class="companion-switcher" id="equip-companion-switcher" style="position:absolute; top:6px; left:0; right:0; z-index:5; justify-content:center; min-height:26px;"></div>
+                    <div class="right-page">
+                        <div class="companion-switcher" id="equip-companion-switcher" style="flex:0 0 auto; justify-content:center; min-height:26px; margin-bottom:8px;"></div>
                         <div class="right-content-area"></div>
                     </div>
                 </div>`;
@@ -821,7 +876,7 @@
 
         // ── Mouse / click bindings ─────────────────────────────────────────────
 
-        container.querySelectorAll('.command-btn').forEach((btn, idx) => {
+        container.querySelectorAll('.equip-commands .backpack-tab').forEach((btn, idx) => {
             btn.addEventListener('click', () => {
                 this._commandIndex = idx;
                 this._activeArea   = 'commands';

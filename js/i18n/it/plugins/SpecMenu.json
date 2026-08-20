@@ -7,8 +7,6 @@
     "noneTrained": "Nessuna specializzazione ancora addestrata.",
     "untrained": "Non addestrate",
     "noneSelected": "Nessuna specializzazione selezionata.",
-    "classes": "Classi",
-    "traits": "Tratti",
     "towards": "Verso {level}",
     "pointsToNext": "{points} punti ancora per {level}",
     "mastered": "Padronanza completa. Non c'è più nulla da imparare.",

@@ -448,6 +448,10 @@
     "originDiplomat": {
       "name": "Diplomat",
       "desc": "Begin in Brussels with an ONU Terminal, remote access into the assembly. No rations, no rope: a seat at the table is the only thing you brought."
+    },
+    "originHypernetExplorer": {
+      "name": "Hypernet Explorer",
+      "desc": "You wake on a stranger's floor with a bag of components, an energy drink and no memory of the address. The deck is half built. The rest of it is out there somewhere, in shops, in skips, and in other people's houses."
     }
   },
   "hairStyle": {
@@ -570,7 +574,7 @@
   "theMapIsLeftClearNoPartyCardsOverIt": "The map is left clear, no party cards over it.",
   "healthMagicStatesAndUrgentNeedsAtAGlance": "Health, magic, states and urgent needs at a glance.",
   "enemyBattlers": "Enemy Battlers",
-  "howEnemiesAreShownInBattle2dTheClassicBattle": "How enemies are shown in battle. 3D: procedural 3D models (goblins, slimes, elementals...). Sprites: the enemy's character sprite from its info.",
+  "howEnemiesAreShownInBattle2dTheClassicBattle": "How enemies are shown in battle. 3D: procedural 3D models (goblins, slimes, elementals...). Sprites: the enemy's character sprite from its info. 2D: a still picture of the same 3D model, the lightest of the three.",
   "3dRendersProceduralModelsSpritesUsesTheEnemy": "3D renders procedural models, Sprites uses the enemy's character sprite.",
   "globalLighting": "Global Lighting",
   "masterSwitchForTheDynamicLightingSystemStree": "Master switch for the dynamic lighting system: streetlights, event lights and the night-light overlay. Turn off for maximum performance.",
@@ -582,7 +586,7 @@
   "visualThemeAppliedToMenusAndHudPressToSwitch": "Visual theme applied to menus and HUD. Press ←→ to switch. Requires restart to apply.",
   "settingsPreview": "SETTINGS PREVIEW",
   "musicTrack": {
-    "Battle": "Drums (Default)",
+    "Battle": "Drums",
     "shortcuts": "Shortcuts",
     "MelodicTechno": "Melodic Techno"
   },
@@ -709,6 +713,13 @@
     "menu": "Menu",
     "leftClick": "Left Click",
     "rightClick": "Right Click",
-    "holdShift": "Hold Shift"
-  }
+    "holdShift": "Hold Shift",
+    "openMap": "Open the map",
+    "hotbarCycle": "Change hotbar item",
+    "visitPlace": "Visit this place",
+    "zoom": "Zoom in and out"
+  },
+  "aRandomHouseSomewhere": "Somebody else's house, somewhere in the world",
+  "components": "Components",
+  "componentsCarried": "{count} loose Hyperdeck parts"
 }

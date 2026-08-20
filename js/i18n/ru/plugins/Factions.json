@@ -44,5 +44,25 @@
   "selectHint": "",
   "councilLeaders": "",
   "independent": "",
-  "diplomaticAgreements": ""
+  "diplomaticAgreements": "",
+  "versus": "против {name}",
+  "sortName": "По алфавиту",
+  "searchPlaceholder": "Поиск фракций…",
+  "versusOwn": "против {name} (своя держава)",
+  "power": {
+    "kukulkanascendancy": "Вознесение Кукулькана",
+    "democraticpeoplesrepublicofkorea": "Корейская Народно-Демократическая Республика",
+    "dharmadirectorate": "Директорат Дхармы",
+    "illuminatedkhanate": "Просветлённое ханство",
+    "solomonicrepublic": "Соломонова республика",
+    "petrokingdomofarabia": "Нефтяное королевство Аравии",
+    "sanatanarashtra": "Санатана Раштра",
+    "longchile": "Длинное Чили",
+    "imperialstateofpersia": "Имперское государство Персия"
+  },
+  "controlledCountries": "Контролирует:",
+  "holdsNothing": "ни одной страны на этой карте",
+  "openWiki": "Открыть полное досье",
+  "moralGuide": "Духовный глава:",
+  "politicalLeader": "Политический лидер:"
 }

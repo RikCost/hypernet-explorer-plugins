@@ -138,6 +138,9 @@
         `<span class="gx-btn gx-bio focusable" tabindex="0" data-action="bioscan" ` +
         `data-role="bioscan-btn" title="${T('Galaxy.hud.sweepEverySystemWithin500')}">` +
         `${T('Galaxy.hud.scanForBiosignatures')}</span>` +
+        `<span class="gx-btn gx-tour focusable" tabindex="0" data-action="grand-tour" ` +
+        `data-role="tour-btn" title="${T('Galaxy.hud.grandTourTooltip')}">` +
+        `${T('Galaxy.hud.grandTour')}</span>` +
         `<span class="gx-btn gx-land focusable" tabindex="0" data-action="home" ` +
         `data-role="home-btn">${T('Galaxy.hud.home')}</span>` +
         `<span class="gx-btn gx-sb gx-disabled focusable" tabindex="0" data-action="sb-bridge" ` +
@@ -209,6 +212,11 @@
       const mode = document.createElement("div");
       mode.id = "gx-mode";
       mode.innerHTML = `<b>${T('Galaxy.hud.orbit')}</b> &nbsp;·&nbsp; ${T('Galaxy.hud.orbitHint')}`;
+
+      // Grand Tour: the one line left on screen while the slideshow runs -
+      // every other panel, orbit guide and name is hidden (see .gx-tour-active).
+      const tourHint = document.createElement("div");
+      tourHint.id = "gx-tour-hint";
 
       // Zoom position within the current scale's distance range: the "slider"
       // the wheel travels along, so the player can see how much range is left
@@ -292,6 +300,7 @@
       root.appendChild(catalog);
       root.appendChild(fuel);
       root.appendChild(mode);
+      root.appendChild(tourHint);
       root.appendChild(zoom);
       root.appendChild(tooltip);
       root.appendChild(warp);
@@ -322,6 +331,7 @@
       this.els.mfFill = fuel.querySelector('[data-role="mf-fill"]');
       this.els.mfVal = fuel.querySelector('[data-role="mf-val"]');
       this.els.mode = mode;
+      this.els.tourHint = tourHint;
       this.els.zoom = zoom;
       this.els.zoomKnob = zoom.querySelector('[data-role="zoom-knob"]');
       this.els.zoomFill = zoom.querySelector('[data-role="zoom-fill"]');
@@ -428,8 +438,9 @@
     /**
      * @param {{id:string,title:string,empty:string,
      *          groups:{title:string,life:boolean,
-     *            items:{id:string,name:string,sub:string,course:boolean}[]}[]
-     *         }[]} tabs
+     *            items:{id:string,name:string,sub:string,course:boolean,depth:number}[]}[]
+     *         }[]} tabs  `depth` (0/1/2) indents a row under its parent - the
+     *          Current System tab's star/planet/moon hierarchy.
      * @param {string} [activeId] tab to show (defaults to the current one)
      * @param {boolean} [expandFirst] open the active tab's first drawer
      */
@@ -467,7 +478,8 @@
       const groups = (active && active.groups) || [];
       const body = groups.map((g) => {
         const rows = g.items.map((it) =>
-          `<div class="gx-cat-row${g.life ? " gx-cat-life" : ""}"><span class="gx-cat-label">` +
+          `<div class="gx-cat-row${g.life ? " gx-cat-life" : ""}` +
+          `${it.depth ? " gx-cat-depth-" + it.depth : ""}"><span class="gx-cat-label">` +
           `<span class="gx-cat-name">${esc(it.name)}</span>` +
           (it.sub ? `<span class="gx-cat-type">${esc(it.sub)}</span>` : "") +
           `</span>` +
@@ -745,11 +757,34 @@
       if (this.els.scaleName) this.els.scaleName.textContent = name || "";
       if (this.els.scaleSub) this.els.scaleSub.textContent = sub || "";
     }
+    // Minimal viewer mode (see GalaxySim.openStarMapMinigame): hides the ship,
+    // engines, fuel and every bridge/return-home control via CSS (.gx-minigame
+    // in theme.css), leaving the catalog, info panels and Grand Tour untouched.
+    setMinigameMode(on) {
+      if (this.root) this.root.classList.toggle("gx-minigame", !!on);
+      this._invalidateFocusables();
+    }
     setModeHint(html) {
       if (this.els.mode) {
         this.els.mode.innerHTML = padGlyphs(html);
         this._invalidateFocusables();
       }
+    }
+
+    // ---- Grand Tour: every panel, orbit guide and name hidden, one line left --
+    isTourActive() { return !!this._tourActive; }
+    /** @param {boolean} active @param {string} [hintHtml] shown while active */
+    setTourMode(active, hintHtml) {
+      if (!this.root) return;
+      const on = !!active;
+      if (on === this._tourActive) return;
+      this._tourActive = on;
+      this.root.classList.toggle("gx-tour-active", on);
+      if (this.els.tourHint) {
+        if (on) this.els.tourHint.innerHTML = padGlyphs(hintHtml || "");
+        this.els.tourHint.style.display = on ? "block" : "none";
+      }
+      this._invalidateFocusables();
     }
 
     // ---- Tooltip ----------------------------------------------------------
@@ -940,7 +975,12 @@
       }
       // A star marks any body that has hand-authored landing sites.
       const star = locs ? ` <span class="gx-loc-star">★</span>` : "";
-      const note = body.note ? `<div class="gx-note">${esc(body.note)}</div>` : "";
+      // A hand-authored note on a body in Systems.json. The body name is the id
+      // it is keyed under, so the copy follows the language and the data field
+      // stays the fallback for a system a mod adds.
+      const noteKey = "Galaxy.bodyNote." + String(body.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+      const noteText = T.has(noteKey) ? T(noteKey) : body.note;
+      const note = noteText ? `<div class="gx-note">${esc(noteText)}</div>` : "";
       this.els.info.innerHTML =
         `<div class="gx-title">${esc(body.name)}${star}</div>` +
         `<div class="gx-sub">${esc(system ? (system.label || system.name) : "")}</div>` +
@@ -1314,6 +1354,8 @@
         cb.onGoToShip();
       } else if (action === "bioscan" && cb.onBioScan) {
         cb.onBioScan();
+      } else if (action === "grand-tour" && cb.onGrandTour) {
+        cb.onGrandTour();
       } else if (action === "sb-bridge" && cb.onSbBridge) {
         cb.onSbBridge();
       } else if (action === "return-earth-toggle" && cb.onReturnEarthToggle) {

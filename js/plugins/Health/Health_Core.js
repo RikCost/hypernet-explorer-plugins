@@ -46,7 +46,7 @@
  * @arg archetypeName
  * @type string
  * @default Humanoid
- * @desc Name of the archetype (must match EnemyArchetypes key)
+ * @desc Name of the archetype (must match Archetypes key)
  *
  * @command CreateCreature
  * @desc Opens creature creator UI (archetype, battler, character sprite selection)
@@ -158,7 +158,13 @@
     if (!key) return "";
     // If it doesn't look like a key, return as is
     if (typeof key === "string" && !key.includes('.')) return key;
-    
+
+    // Anatomy is named from more than one book: the archetypes below, and
+    // BodyParts.json, whose wording lives in the ordinary i18n tree
+    // (js/i18n/<lang>/bodyparts.json). Ask the resolver first so any keyed
+    // data file is answered for, then fall back to the archetype banks.
+    if (typeof T === "function" && T.has && T.has(key)) return T(key);
+
     if (i18nData.enemyArchetypes) {
       const localized = resolveI18nPath(key, i18nData.enemyArchetypes);
       if (localized) return localized;
@@ -210,6 +216,350 @@
       : dataObject[propertyName];
   }
 
+  // ===========================================================================
+  // Splicing anatomies
+  // ===========================================================================
+  //
+  // A hybrid is built by merging its archetypes' parts. Most of the body merges
+  // by key: two archetypes that each name a head make a creature with one head,
+  // and the primary archetype's version of it is the one that stands.
+  //
+  // Limbs are the exception. Arms and hands are what a creature holds a weapon
+  // with (window.HandSlots), and splicing something with arms onto something
+  // else with arms makes a creature with four of them, not two. So a limb whose
+  // key is already taken is kept ALONGSIDE the one already there, under a
+  // numbered key: LEFT_ARM and LEFT_ARM_2, LEFT_HAND and LEFT_HAND_2. Any
+  // number of them merges the same way, so a four-armed archetype spliced onto
+  // a two-armed one comes out with six.
+  //
+  // i18n-ignore-start: body-part key tokens, matched against data, never shown
+  const LIMB_TOKENS = new Set([
+    "HAND", "HANDS", "ARM", "ARMS", "FOREARM", "CLAW", "CLAWS", "PINCER",
+    "PINCERS", "TALON", "TALONS", "TENTACLE", "TENTACLES", "TENDRIL",
+    "PSEUDOPOD", "APPENDAGE", "LIMB", "LIMBS", "VINE", "BRANCH", "WISP",
+    "SPIRE", "GAUNTLET", "GRIPPER", "FINGER", "FINGERS",
+  ]);
+  // i18n-ignore-end
+
+  function isLimbPartKey(partKey) {
+    for (const token of String(partKey || "").toUpperCase().split("_")) {
+      if (LIMB_TOKENS.has(token)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * The anatomy an archetype (or a spliced pair, or any longer list) comes to.
+   * Every entry is a copy carrying `fromArchetype`, the index of the archetype
+   * that brought it, and, on a duplicated limb, `limbCopy`, which is 2 for the
+   * second left arm and counts up from there.
+   */
+  function mergeArchetypeParts(keys) {
+    const { Archetypes } = window.Health || {};
+    const merged = {};
+    if (!Archetypes) return merged;
+    (keys || []).forEach((key, index) => {
+      const entry = Archetypes[key];
+      if (!entry || !entry.parts) return;
+      for (const partKey in entry.parts) {
+        const part = Object.assign({}, entry.parts[partKey], { fromArchetype: index });
+        if (!merged[partKey]) {
+          merged[partKey] = part;
+          continue;
+        }
+        // The primary keeps every shared part that is not a limb.
+        if (!isLimbPartKey(partKey)) continue;
+        let copy = 2;
+        while (merged[partKey + "_" + copy]) copy++;
+        part.limbCopy = copy;
+        merged[partKey + "_" + copy] = part;
+      }
+    });
+    return merged;
+  }
+
+  /**
+   * What a part is called on screen. A limb a splice gave the body a second of
+   * is numbered, so "Left Arm" and "Left Arm 2" are told apart in the health
+   * menu and in the equip screen.
+   */
+  function archetypePartName(part) {
+    if (!part) return "";
+    const base = getArchetypeText(part.name) || part.name || "";
+    if (!part.limbCopy) return base;
+    return T("HealthCore.limbCopy", { name: base, n: part.limbCopy });
+  }
+
+  /**
+   * Whether a part is something the body can carry a weapon in. The flag lives
+   * on the archetype (js/db/Health/Archetypes.json); a body part built before
+   * the flag existed, or copied by something that did not carry it across, is
+   * answered from the archetype the body was built out of. A numbered limb
+   * (LEFT_ARM_2) asks about the limb it is a copy of.
+   */
+  function canPartHoldWeapon(actor, partKey, part) {
+    const live = part || (actor && actor._bodyParts ? actor._bodyParts[partKey] : null);
+    if (live && live.canHoldWeapon !== undefined) return !!live.canHoldWeapon;
+    const { Archetypes } = window.Health || {};
+    if (!Archetypes) return false;
+    const base = String(partKey || "").replace(/_\d+$/, "");
+    for (const key of getActorArchetypeKeys(actor)) {
+      const entry = Archetypes[key];
+      const source = entry && entry.parts && (entry.parts[partKey] || entry.parts[base]);
+      if (source) return !!source.canHoldWeapon;
+    }
+    return false;
+  }
+
+  // ===========================================================================
+  // What happens to a part that reaches zero
+  // ===========================================================================
+  //
+  // Three words cover every difficulty, and which one applies is a fact about
+  // the mode and about the part:
+  //
+  //   Broken     - every difficulty but Blood and Oil. The limb is ruined and
+  //                its stat penalty is on, but it is still attached and still
+  //                the character's: rest, a potion or a spell mend it, and the
+  //                penalty lifts the moment it is back above 1 HP.
+  //   Cut off    - Blood and Oil, on a part the archetype says can come off
+  //                (canCutoff). It leaves the body for good, taking its slot,
+  //                its skills, its augment and whatever it was holding.
+  //   Destroyed  - Blood and Oil, on a part that cannot be severed: a torso, a
+  //                mouth, an eye socket. It stays where it is, at zero, ruined
+  //                for the rest of the run. Its penalty never lifts, and it can
+  //                no longer be used for anything - a destroyed mouth carries
+  //                no weapon until a new one is grafted on.
+  //
+  // The penalty itself is applied on every difficulty (handleDamagedBodyPart);
+  // only its permanence is Blood and Oil's doing.
+
+  function isBloodAndOil() {
+    return !!(window.$gameSystem && $gameSystem._bloodAndOilMode);
+  }
+
+  /**
+   * Whether a part comes off the body when it is finished, rather than being
+   * ruined in place. Read off the live part when it carries the flag (bodies
+   * built before it existed do not), otherwise off the archetype the body was
+   * built out of, exactly as canPartHoldWeapon does.
+   */
+  function partCanCutoff(actor, partKey, part) {
+    const live = part || (actor && actor._bodyParts ? actor._bodyParts[partKey] : null);
+    if (live && live.canCutoff !== undefined) return !!live.canCutoff;
+    const { Archetypes } = window.Health || {};
+    if (!Archetypes) return false;
+    const base = String(partKey || "").replace(/_\d+$/, "");
+    for (const key of getActorArchetypeKeys(actor)) {
+      const entry = Archetypes[key];
+      const source = entry && entry.parts && (entry.parts[partKey] || entry.parts[base]);
+      if (source) return !!source.canCutoff;
+    }
+    return false;
+  }
+
+  /** Is this part finished: at zero and marked, however it got there. */
+  function isPartBroken(part) {
+    return !!part && (part.damaged || part.destroyed || part.currentHp <= 0);
+  }
+
+  /**
+   * The one word every screen prints over a finished part. Anything still
+   * standing gets an empty string, so a caller can use it as the test as well
+   * as the label.
+   */
+  function partStatusLabel(actor, partKey, part) {
+    const live = part || (actor && actor._bodyParts ? actor._bodyParts[partKey] : null);
+    if (!isPartBroken(live)) return "";
+    if (!isBloodAndOil()) return T('HealthCore.statusBroken');
+    return partCanCutoff(actor, partKey, live)
+      ? T('HealthCore.statusCutOff')
+      : T('HealthCore.statusDestroyed');
+  }
+
+  // ===========================================================================
+  // What hangs off what
+  // ===========================================================================
+  //
+  // A hand is on the end of an arm, and an arm that is cut off in Blood and Oil
+  // takes the hand with it - along with the fingers on the end of that, and
+  // whatever the hand was holding. Legs carry feet and toes the same way.
+  // Sides are matched so a lost left arm never costs the right hand, and a limb
+  // a splice gave the body a second of (LEFT_ARM_2) only answers for its own
+  // hand (LEFT_HAND_2).
+  // i18n-ignore-start: body-part key tokens, matched against data, never shown
+  const LIMB_CHAINS = [
+    [
+      ["ARM", "ARMS"],
+      ["FOREARM"],
+      ["HAND", "HANDS", "CLAW", "CLAWS", "PINCER", "PINCERS", "GAUNTLET"],
+      ["FINGER", "FINGERS", "DIGIT", "DIGITS", "TALON", "TALONS"]
+    ],
+    [
+      ["LEG", "LEGS", "THIGH", "HAUNCH", "GREAVES"],
+      ["SHIN", "KNEE", "CALF", "ANKLE"],
+      ["FOOT", "FEET", "PAW", "PAWS", "HOOF", "HOOVES", "SOLE", "SOLES"],
+      ["TOE", "TOES"]
+    ]
+  ];
+  // A hand and a foot sit at the same depth in their chains, and that depth is
+  // what an extremity is: the thing on the END of a limb rather than the limb
+  // itself. Everything above it (an arm, a forearm, a thigh, a shin) is a
+  // socket something can be grafted onto.
+  const EXTREMITY_RANK = 2;
+  const SIDE_TOKENS = ["LEFT", "RIGHT", "FRONT", "REAR", "HIND", "MID", "MIDDLE"];
+  // i18n-ignore-end
+
+  /** Which chain a key belongs to and how far down it sits, or null. */
+  function limbChainRank(partKey) {
+    const tokens = String(partKey || "").toUpperCase().replace(/_\d+$/, "").split("_");
+    for (let chain = 0; chain < LIMB_CHAINS.length; chain++) {
+      for (let rank = LIMB_CHAINS[chain].length - 1; rank >= 0; rank--) {
+        if (LIMB_CHAINS[chain][rank].some(token => tokens.includes(token))) {
+          return { chain, rank };
+        }
+      }
+    }
+    return null;
+  }
+
+  /** The side words in a key, so LEFT_ARM and LEFT_HAND are seen to match. */
+  function limbSideOf(partKey) {
+    const raw = String(partKey || "").toUpperCase();
+    const copy = /_(\d+)$/.exec(raw);
+    const tokens = raw.replace(/_\d+$/, "").split("_").filter(t => SIDE_TOKENS.includes(t));
+    return tokens.join("_") + (copy ? "#" + copy[1] : "");
+  }
+
+  /**
+   * Everything that comes off with this limb: the parts further down the same
+   * chain, on the same side. An arm hands over its hand and its fingers, a leg
+   * its foot and its toes, and a hand or a foot hands over the digits on the
+   * end of it.
+   *
+   * A part the surgeon grafted somewhere unusual says where it went
+   * (`attachedTo`), and that beats its name: a foot screwed onto a right arm
+   * comes off with the arm, not with the leg it is named after. Those links are
+   * followed through, so the toes on that foot go too.
+   */
+  function dependentPartKeys(actor, partKey) {
+    const parts = (actor && actor._bodyParts) || {};
+    if (!parts[partKey] && !limbChainRank(partKey)) return [];
+    const seen = { [partKey]: true };
+    const out = [];
+    const queue = [partKey];
+    while (queue.length) {
+      const current = queue.shift();
+      const from = limbChainRank(current);
+      const side = limbSideOf(current);
+      for (const key in parts) {
+        if (seen[key] || !parts[key]) continue;
+        const attached = parts[key].attachedTo;
+        let follows;
+        if (attached) {
+          // Grafted onto something by hand: only that socket owns it.
+          follows = attached === current;
+        } else if (!from) {
+          follows = false;
+        } else {
+          const rank = limbChainRank(key);
+          follows = !!rank && rank.chain === from.chain && rank.rank > from.rank &&
+            limbSideOf(key) === side;
+        }
+        if (!follows) continue;
+        seen[key] = true;
+        out.push(key);
+        queue.push(key);
+      }
+    }
+    return out;
+  }
+
+  // ===========================================================================
+  // Sockets: what a hand or a foot can be grafted onto
+  // ===========================================================================
+  //
+  // A hand is not something that can be stuck straight onto a torso. It goes on
+  // the end of a limb, and so does a foot: to fit either, the patient needs a
+  // limb with nothing on the end of it yet, and to grow a whole leg back the
+  // surgeon fits the leg first and the foot after.
+  //
+  // Which limb is the patient's choice and nothing more. A left hand goes onto
+  // a right arm perfectly well, a foot goes onto an arm, a hand goes onto a
+  // leg, and somebody may walk out of the clinic with two right arms and a hand
+  // where their shin used to end. What the socket cannot do is take two: one
+  // limb, one extremity.
+
+  /** A hand, a foot, a claw, a set of toes: anything past the limb itself. */
+  function isExtremityKey(partKey) {
+    const rank = limbChainRank(partKey);
+    return !!rank && rank.rank >= EXTREMITY_RANK;
+  }
+
+  /**
+   * Does fitting this need a bare limb to fit it to? Only what goes DIRECTLY
+   * onto one does: a hand, a foot, a claw, a paw. Fingers and toes go on the
+   * end of those rather than on the limb, and the clinic has never asked them
+   * to wait for an arm, so they are left alone.
+   */
+  function needsLimbSocket(partKey) {
+    const rank = limbChainRank(partKey);
+    return !!rank && rank.rank === EXTREMITY_RANK;
+  }
+
+  /** An arm, a forearm, a leg, a thigh, a shin: something a hand or a foot goes on. */
+  function isLimbSocketKey(partKey) {
+    const rank = limbChainRank(partKey);
+    return !!rank && rank.rank < EXTREMITY_RANK;
+  }
+
+  /**
+   * The limbs on this body with nothing on the end of them, in the body's own
+   * part order. One entry per limb, and it is the DEEPEST segment that is
+   * offered: a goblin's hand goes on its forearm, not on its upper arm.
+   */
+  function openLimbSockets(actor) {
+    const parts = (actor && actor._bodyParts) || {};
+    const groupOf = (key) => {
+      const rank = limbChainRank(key);
+      return rank ? rank.chain + "|" + limbSideOf(key) : null;
+    };
+    const groups = new Map();
+
+    // The deepest limb segment on each side is the one a graft goes onto.
+    for (const key in parts) {
+      const part = parts[key];
+      if (!part || part.attachedTo) continue;
+      const rank = limbChainRank(key);
+      if (!rank || rank.rank >= EXTREMITY_RANK) continue;
+      const id = rank.chain + "|" + limbSideOf(key);
+      const group = groups.get(id) || { socketKey: null, socketRank: -1, taken: false };
+      if (rank.rank > group.socketRank) { group.socketRank = rank.rank; group.socketKey = key; }
+      groups.set(id, group);
+    }
+
+    // ...and it is spoken for once something is on the end of it. A grafted
+    // part is counted against the socket it names rather than against the side
+    // its own name suggests.
+    for (const key in parts) {
+      const part = parts[key];
+      if (!part) continue;
+      const rank = limbChainRank(key);
+      if (!rank || rank.rank < EXTREMITY_RANK) continue;
+      const id = part.attachedTo ? groupOf(part.attachedTo) : rank.chain + "|" + limbSideOf(key);
+      const group = id && groups.get(id);
+      if (group) group.taken = true;
+    }
+
+    const open = [];
+    for (const group of groups.values()) {
+      if (group.socketKey && !group.taken) open.push(group.socketKey);
+    }
+    // Back into the body's own order, so the clinic lists limbs the way every
+    // other screen does.
+    return Object.keys(parts).filter(key => open.includes(key));
+  }
+
   // Initialize actor body parts.
   //
   // The anatomy is the actor's OWN archetype, not the humanoid one: a creature
@@ -227,21 +577,12 @@
       actor._statModifiers = {};
       actor._removedPartDebuffs = {};
 
-      const { EnemyArchetypes } = window.Health;
-      const humanoid = EnemyArchetypes && EnemyArchetypes.Humanoid;
-      let source = humanoid;
-      const sourceParts = {};
-      if (EnemyArchetypes) {
-        // Reversed, so the first archetype's version of a shared part is the
-        // one left standing.
-        const keys = getActorArchetypeKeys(actor).slice().reverse();
-        for (const key of keys) {
-          const entry = EnemyArchetypes[key];
-          if (!entry || !entry.parts) continue;
-          Object.assign(sourceParts, entry.parts);
-          source = entry; // hit locations come from the primary (last assigned)
-        }
-      }
+      const { Archetypes } = window.Health;
+      const humanoid = Archetypes && Archetypes.Humanoid;
+      const keys = getActorArchetypeKeys(actor);
+      const sourceParts = mergeArchetypeParts(keys);
+      // Hit locations come from the primary.
+      let source = (Archetypes && Archetypes[keys[0]]) || humanoid;
       if (!Object.keys(sourceParts).length) {
         Object.assign(sourceParts, (humanoid && humanoid.parts) || {});
         source = humanoid;
@@ -252,7 +593,7 @@
         const hpPercentage = archetypePart.hpPercent / 100;
 
         actor._bodyParts[partKey] = {
-          name: getArchetypeText(archetypePart.name),
+          name: archetypePartName(archetypePart),
           maxHp: Math.round(actor.mhp * hpPercentage),
           currentHp: Math.round(actor.mhp * hpPercentage),
           vital: archetypePart.vital,
@@ -263,6 +604,13 @@
           damageMsg: getArchetypeText(archetypePart.msg) || null,
           appliedStatEffect: false,
           hpPercent: archetypePart.hpPercent,
+          // What the body can hold a weapon in, which is what decides how many
+          // weapon slots it has (ItemSystem/ItemSystemEquipment.js).
+          canHoldWeapon: !!archetypePart.canHoldWeapon,
+          // Whether the part comes off the body when it is finished, or is
+          // only ever ruined where it stands (partStatusLabel).
+          canCutoff: !!archetypePart.canCutoff,
+          limbCopy: archetypePart.limbCopy || 0,
         };
       }
 
@@ -295,8 +643,11 @@
   // Extra skills granted purely by the kind of body part, keyed off the part's
   // (language-independent) key. Matched by substring so Left/Right variants,
   // clusters, etc. are all covered.
+  // Talking and wrestling are battle COMMANDS, not skills anybody learns
+  // (BattleSystemEnhanchedCommands.js): both read the body themselves, so a
+  // mouth grants spitting and a hand grants pushing, and nothing else.
   const PART_TYPE_BONUS_SKILLS = [
-    { test: (k) => k.includes("MOUTH"), skills: [7, 10] },
+    { test: (k) => k.includes("MOUTH"), skills: [10] },
     { test: (k) => k.includes("HAND"), skills: [11] },
     { test: (k) => k.includes("EYE"), skills: [12] },
     { test: (k) => k.includes("FOOT") || k.includes("FEET"), skills: [8] },
@@ -484,14 +835,14 @@
   //---------------------------------------------------------------------------
   // Archetype identity and gestation
   //---------------------------------------------------------------------------
-  // Every archetype in EnemyArchetypes.json declares how long one of its kind is
+  // Every archetype in Archetypes.json declares how long one of its kind is
   // carried, as `pregnancyDuration` in game days. That figure is the only source
   // a pregnancy reads: a hybrid is carried for the median of its two archetypes'
   // terms, and mitosis is always over in a day, since a split is not a gestation.
   const DEFAULT_ARCHETYPE = "Humanoid";
   const MITOSIS_DURATION = 1;
   const REPRODUCTION_MITOSIS = 4;
-  // Only reached when EnemyArchetypes has not loaded at all.
+  // Only reached when Archetypes has not loaded at all.
   const FALLBACK_PREGNANCY_DURATION = 270;
 
   // An actor's archetype is stored as "A" (one) or "A / B" (a hybrid), written
@@ -518,7 +869,7 @@
   //---------------------------------------------------------------------------
   // Object archetypes
   //---------------------------------------------------------------------------
-  // ObjectArchetypes.json is a SEPARATE list from EnemyArchetypes.json and is
+  // ObjectArchetypes.json is a SEPARATE list from Archetypes.json and is
   // deliberately never merged into it: a chair has no class, no creature class,
   // no gestation and no anatomy skills, so it is never offered by the creature
   // archetype selector nor dealt to anything that breeds. Its parts carry HP
@@ -544,8 +895,8 @@
   }
 
   function getArchetypePregnancyDuration(key) {
-    const { EnemyArchetypes } = window.Health || {};
-    const entry = EnemyArchetypes && EnemyArchetypes[key];
+    const { Archetypes } = window.Health || {};
+    const entry = Archetypes && Archetypes[key];
     const days = entry ? Number(entry.pregnancyDuration) : 0;
     return days > 0 ? days : 0;
   }
@@ -574,15 +925,15 @@
   function changeArchetype(actor, archetypeName) {
     if (!actor) return false;
 
-    // Get EnemyArchetypes from ProstheticsData
-    const { EnemyArchetypes } = window.Health;
+    // Get Archetypes from ProstheticsData
+    const { Archetypes } = window.Health;
 
-    if (!EnemyArchetypes || !EnemyArchetypes[archetypeName]) {
-      console.warn(`Archetype "${archetypeName}" not found in EnemyArchetypes`);
+    if (!Archetypes || !Archetypes[archetypeName]) {
+      console.warn(`Archetype "${archetypeName}" not found in Archetypes`);
       return false;
     }
 
-    const archetype = EnemyArchetypes[archetypeName];
+    const archetype = Archetypes[archetypeName];
 
     // Clear existing stat modifiers
     if (actor._statModifiers) {
@@ -595,6 +946,8 @@
 
     // Clear removed parts debuffs
     actor._removedPartDebuffs = {};
+    // A new body is a whole body: nothing is missing off it yet.
+    actor._severedParts = {};
 
     // Initialize new body parts from archetype
     actor._bodyParts = {};
@@ -615,6 +968,7 @@
         damageMsg: getArchetypeText(archetypePart.msg),
         specialEffect: archetypePart.specialEffect || null,
         appliedStatEffect: false,
+        canHoldWeapon: !!archetypePart.canHoldWeapon,
         // Part-granted skill(s): number or array of numbers. Stored so
         // ensureBodyPartSkills() teaches the archetype's thematic abilities.
         skillId: archetypePart.skillId || [],
@@ -742,6 +1096,167 @@
     return name || "";
   }
 
+  /**
+   * Forget what a part granted, but only what nothing else still grants.
+   *
+   * A part's own skills leave with it. The skills it granted for being the KIND
+   * of part it is (a mouth spits, a hand pushes, a foot kicks) are shared with
+   * every other part of that kind, so they only go when the last one does: a
+   * one-handed character can still push, and the kick goes with the second foot
+   * rather than the first. A prosthetic counts as a part for this, and a limb
+   * ruined in Blood and Oil counts for nothing.
+   */
+  function forgetPartSkills(actor, part, partKey) {
+    const losing = getPartSkillIds(part, partKey);
+    if (!losing.length) return;
+
+    const kept = new Set();
+    const parts = actor._bodyParts || {};
+    for (const key in parts) {
+      if (key === partKey) continue;
+      const other = parts[key];
+      if (!other || other.ruined) continue;
+      for (const id of getPartSkillIds(other, key)) kept.add(id);
+    }
+    const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
+    if (ProstheticTypes && actor._prosthetics) {
+      for (const key in actor._prosthetics) {
+        if (key === partKey) continue;
+        const prosthetic = ProstheticTypes[actor._prosthetics[key]];
+        if (prosthetic) for (const id of normalizeSkillIds(prosthetic.skill)) kept.add(id);
+      }
+    }
+
+    for (const id of losing) {
+      if (!kept.has(id)) actor.forgetSkill(id);
+    }
+  }
+
+  /**
+   * Remember that a limb is not on the body any more. The anatomy itself drops
+   * the part - it is gone, and nothing in the health menu should offer to mend
+   * it - but a portrait has to be told, or the model keeps drawing an arm that
+   * came off two fights ago.
+   */
+  function markPartMissing(actor, partKey) {
+    if (!actor) return;
+    if (!actor._severedParts) actor._severedParts = {};
+    actor._severedParts[partKey] = true;
+  }
+
+  /**
+   * What every 3D portrait is shown: the parts the body still has, at whatever
+   * HP they are on, plus the ones it no longer has at all. Battler3D's
+   * hideBrokenParts reads `destroyed` / `currentHp`, and a limb that is off the
+   * body has neither unless it is put back on the list here.
+   */
+  function partStates(actor) {
+    const states = {};
+    const parts = (actor && actor._bodyParts) || {};
+    for (const key in parts) {
+      if (parts[key]) states[key] = parts[key];
+    }
+    const severed = (actor && actor._severedParts) || {};
+    for (const key in severed) {
+      if (severed[key] && !states[key]) states[key] = { destroyed: true, currentHp: 0, maxHp: 1 };
+    }
+    return states;
+  }
+
+  /**
+   * A limb this character simply does not have: a monster that joins the party
+   * still missing what a fight took off it, and never grows back. The penalty
+   * it owes stands for good, its skills are not this character's, and anything
+   * further down the limb goes with it.
+   */
+  function loseBodyPart(actor, partKey) {
+    if (!actor || !actor._bodyParts) return;
+    const part = actor._bodyParts[partKey];
+    if (!part) { markPartMissing(actor, partKey); return; }
+
+    dependentPartKeys(actor, partKey).forEach(function (childKey) {
+      loseBodyPart(actor, childKey);
+    });
+
+    if (part.statEffect && part.statEffect.param !== 0) {
+      const paramId = part.statEffect.param;
+      if (!actor._statModifiers) actor._statModifiers = {};
+      if (!part.appliedStatEffect) {
+        actor._statModifiers[paramId] = (actor._statModifiers[paramId] || 0) + part.statEffect.amount;
+      }
+      if (!actor._removedPartDebuffs) actor._removedPartDebuffs = {};
+      actor._removedPartDebuffs[partKey] = { param: paramId, amount: part.statEffect.amount };
+    }
+
+    forgetPartSkills(actor, part, partKey);
+
+    releaseEquipmentForPart(actor, partKey);
+    markPartMissing(actor, partKey);
+    delete actor._bodyParts[partKey];
+  }
+
+  /**
+   * Hand back whatever a part was carrying. Only the equipment layer knows
+   * which slot a given hand (or mouth) answers for, so it is asked; if it is
+   * not loaded yet nothing is held and there is nothing to give back.
+   */
+  function releaseEquipmentForPart(actor, partKey) {
+    const HS = window.HandSlots;
+    if (HS && HS.releaseSlotForPart) {
+      try { HS.releaseSlotForPart(actor, partKey); } catch (e) { /* equip layer not up */ }
+    }
+  }
+
+  /**
+   * Blood and Oil, on a part that cannot be severed: it stays on the body and
+   * is finished where it stands. Its penalty is already on (handleDamagedBodyPart
+   * ran first); what this adds is permanence. The skills it granted are gone,
+   * it can no longer be used for anything - a destroyed mouth carries no
+   * weapon - and no amount of rest or healing brings it back.
+   */
+  function destroyPartInPlace(actor, partKey) {
+    var part = actor._bodyParts[partKey];
+    if (!part || part.ruined) return;
+    part.currentHp = 0;
+    part.damaged = true;
+    part.ruined = true;
+
+    forgetPartSkills(actor, part, partKey);
+
+    // Whatever hung off it is finished with it, each on its own terms.
+    dependentPartKeys(actor, partKey).forEach(function (childKey) {
+      const child = actor._bodyParts[childKey];
+      if (!child || child.ruined) return;
+      if (!child.damaged) {
+        child.currentHp = 0;
+        child.damaged = true;
+        handleDamagedBodyPart(actor, childKey);
+      }
+      if (partCanCutoff(actor, childKey, child)) removeBodyPartOnZeroHp(actor, childKey);
+      else destroyPartInPlace(actor, childKey);
+    });
+
+    releaseEquipmentForPart(actor, partKey);
+
+    var purpleName = "\c[25]" + part.name + "\c[0]";
+    reportPartLoss(T('HealthCore.partRuined', { actor: actor.name(), part: purpleName }));
+    actor.refresh();
+  }
+
+  /**
+   * A part has reached zero in Blood and Oil. A vital one kills, one the body
+   * can shed is cut off, and anything else is ruined where it stands.
+   */
+  function finishPartInBloodAndOil(actor, partKey) {
+    const part = actor._bodyParts ? actor._bodyParts[partKey] : null;
+    if (!part) return;
+    if (part.vital || partCanCutoff(actor, partKey, part)) {
+      removeBodyPartOnZeroHp(actor, partKey);
+    } else {
+      destroyPartInPlace(actor, partKey);
+    }
+  }
+
   // Remove a body part entirely from the actor and apply a permanent stat debuff
   function removeBodyPartOnZeroHp(actor, partKey) {
     var part = actor._bodyParts[partKey];
@@ -776,6 +1291,19 @@
       });
     }
 
+    // An arm does not come off and leave its hand hanging in the air. Whatever
+    // is further down the limb goes with it, and each of those parts is severed
+    // in its own right, so their penalties, skills and augments are accounted
+    // for exactly as this one's are.
+    dependentPartKeys(actor, partKey).forEach(function (childKey) {
+      removeBodyPartOnZeroHp(actor, childKey);
+    });
+
+    // The limb is about to be gone, so what it was holding is handed back now,
+    // while the slot list still says which slot was its. Once the part is off
+    // the body the hands renumber and the wrong weapon would be the one to go.
+    releaseEquipmentForPart(actor, partKey);
+
     // Apply the permanent stat effect/debuff to actor._statModifiers if not already applied
     if (part.statEffect) {
       var paramId = part.statEffect.param;
@@ -800,11 +1328,10 @@
       }
     }
 
-    // Forget skill(s) granted by this part's own skillId if any. Type-based
-    // bonus skills (Mouth/Hands/Eyes/Feet) are innate and left untouched.
-    for (const sid of normalizeSkillIds(part.skillId)) {
-      actor.forgetSkill(sid);
-    }
+    // Forget what the part granted: its own skills always, and the ones it
+    // granted for being a mouth, a hand, an eye or a foot once it was the last
+    // of its kind on the body (forgetPartSkills).
+    forgetPartSkills(actor, part, partKey);
 
     // An augment goes with the part it was installed on: the limb is off the
     // body (blood and oil), so its stat bonus, its skills and the record itself
@@ -812,7 +1339,10 @@
     // this lives here and not in handleDamagedBodyPart.
     var lostImplant = removeImplantWithPart(actor, partKey);
 
-    // Delete the body part from the actor's body parts map
+    // Delete the body part from the actor's body parts map. The key is kept on
+    // a separate register: the anatomy no longer has the limb, but the 3D
+    // portrait still has to know not to draw it (partStates).
+    markPartMissing(actor, partKey);
     delete actor._bodyParts[partKey];
     actor.refresh();
 
@@ -863,7 +1393,10 @@
         handleDamagedBodyPart(actor, partKey);
 
         // --- Blood and Oil mode check ---
-        if ($gameSystem && $gameSystem._bloodAndOilMode) {
+        // Only here is a finished part permanent: cut off if the body can shed
+        // it, ruined where it stands if it cannot. On every other difficulty
+        // the limb is merely broken and mends (healBodyParts).
+        if (isBloodAndOil()) {
           if (part.vital) {
             // Vital organ check
             actor.die();
@@ -884,8 +1417,7 @@
               }
             }
           } else {
-            // Non-vital organ
-            removeBodyPartOnZeroHp(actor, partKey);
+            finishPartInBloodAndOil(actor, partKey);
           }
         }
       }
@@ -912,9 +1444,10 @@
     }
     part.damaged = true;
     handleDamagedBodyPart(actor, partKey);
-    if ($gameSystem && $gameSystem._bloodAndOilMode) {
-      // Severs the part (with its augment), or kills outright on a vital one.
-      removeBodyPartOnZeroHp(actor, partKey);
+    if (isBloodAndOil()) {
+      // Severs the part (with its augment), ruins it where it stands if the
+      // body cannot shed it, or kills outright on a vital one.
+      finishPartInBloodAndOil(actor, partKey);
     }
     actor.refresh();
     return applied;
@@ -984,7 +1517,7 @@
       $gameTemp.limbDamageLog = {
         name: actor.name(),
         partName: part.name,
-        damageMsg: part.damageMsg || (part.name + " damaged!"),
+        damageMsg: part.damageMsg || T('HealthCore.partDamagedFallback', { part: part.name }),
         paramName:
           part.statEffect && part.statEffect.param !== 0
             ? getParamName(part.statEffect.param)
@@ -998,20 +1531,49 @@
   }
 
   // Restore all body parts function - used for respawn
+  // Put the body back together: a night's sleep, a Recover All, a respawn.
+  // Every part that is still the character's own mends completely and its
+  // penalty lifts with it. In Blood and Oil a finished part is finished - cut
+  // off or ruined for good - so those keep their zero and their penalty, and
+  // only what is still standing is made whole.
   function restoreAllBodyParts(actor) {
     if (!actor._bodyParts) return;
+    const permanent = isBloodAndOil();
 
-    // Reset all stat modifiers
+    // The penalties owed by limbs that are no longer on the body outlive any
+    // amount of rest, so the tally is rebuilt from them rather than wiped.
     actor._statModifiers = {};
+    const removed = actor._removedPartDebuffs || {};
+    for (const key in removed) {
+      const debuff = removed[key];
+      if (!debuff || !debuff.param) continue;
+      actor._statModifiers[debuff.param] = (actor._statModifiers[debuff.param] || 0) + debuff.amount;
+    }
 
     for (var part in actor._bodyParts) {
       var bodyPart = actor._bodyParts[part];
+
+      if (permanent && bodyPart.ruined) {
+        // Ruined where it stands, and it stays that way. Its penalty is one of
+        // the standing ones, so it is put back on the tally.
+        bodyPart.currentHp = 0;
+        bodyPart.damaged = true;
+        if (bodyPart.statEffect && bodyPart.statEffect.param !== 0) {
+          const paramId = bodyPart.statEffect.param;
+          actor._statModifiers[paramId] = (actor._statModifiers[paramId] || 0) + bodyPart.statEffect.amount;
+          bodyPart.appliedStatEffect = true;
+        }
+        continue;
+      }
 
       // Fully restore the part
       bodyPart.currentHp = bodyPart.maxHp;
       bodyPart.damaged = false;
       bodyPart.appliedStatEffect = false;
     }
+
+    // A limb that is whole again is a limb whose abilities come back.
+    ensureBodyPartSkills(actor);
 
     // Refresh actor to update stats
     actor.refresh();
@@ -1062,25 +1624,37 @@
       window.SpecializationXP.awardCapped('First Aid', 1);
     }
 
-    // Reset stat modifiers for fully healed parts
+    // A broken limb is only broken. Anything the character still has mends
+    // under a potion or a spell, whether it was ruined or merely bruised, and
+    // the penalty it carries lifts the moment it is back above 1 HP - the
+    // point at which the limb is doing something again rather than hanging.
+    // Blood and Oil is the exception: a part finished there is finished, so it
+    // is passed over and its penalty stands for the rest of the run.
+    const permanent = isBloodAndOil();
     var needsRefresh = false;
+    var mended = false;
 
     for (var part in actor._bodyParts) {
       var bodyPart = actor._bodyParts[part];
 
-      // If part is damaged and has a stat effect
-      if (bodyPart.damaged && bodyPart.appliedStatEffect) {
-        // Heal the part
-        bodyPart.currentHp = Math.min(
-          bodyPart.maxHp,
-          bodyPart.currentHp + amount
-        );
+      if (bodyPart.damaged && (permanent || bodyPart.ruined)) continue;
 
-        // If substantially healed, remove the damage status and stat effect
-        if (bodyPart.currentHp >= bodyPart.maxHp / 2) {
-          bodyPart.damaged = false;
+      bodyPart.currentHp = Math.min(
+        bodyPart.maxHp,
+        bodyPart.currentHp + amount
+      );
+
+      if (!bodyPart.damaged) continue;
+
+      // Back above 1 HP: the limb works again, so the penalty comes off with
+      // the broken flag and the abilities it granted come back.
+      if (bodyPart.currentHp > 1) {
+        bodyPart.damaged = false;
+        mended = true;
+        needsRefresh = true;
+
+        if (bodyPart.appliedStatEffect) {
           bodyPart.appliedStatEffect = false;
-
           // Reset the stat modifier if it exists and it's not affecting max HP
           if (bodyPart.statEffect && bodyPart.statEffect.param !== 0) {
             var paramId = bodyPart.statEffect.param;
@@ -1091,24 +1665,29 @@
               }
             }
           }
-
-          needsRefresh = true;
         }
-      }
-      // Regular healing for undamaged parts
-      else if (!bodyPart.damaged) {
-        bodyPart.currentHp = Math.min(
-          bodyPart.maxHp,
-          bodyPart.currentHp + amount
-        );
+        if (actor._removedPartDebuffs) delete actor._removedPartDebuffs[part];
       }
     }
+
+    if (mended) ensureBodyPartSkills(actor);
 
     // Refresh actor to update stats if needed
     if (needsRefresh) {
       actor.refresh();
     }
   }
+
+  // A full recovery is a full recovery. The event command "Recover All", the
+  // night's sleep that calls it (Core/TimeDateSystem.js) and every respawn all
+  // come through here, and all of them put the body back together as well as
+  // the hit points - except in Blood and Oil, where what is cut off or ruined
+  // stays that way (restoreAllBodyParts).
+  var _Game_Actor_recoverAll_bodyParts = Game_Actor.prototype.recoverAll;
+  Game_Actor.prototype.recoverAll = function () {
+    _Game_Actor_recoverAll_bodyParts.call(this);
+    if (this._bodyParts) restoreAllBodyParts(this);
+  };
 
   // Override param calculation to apply body part damage effects
   var _Game_Actor_param = Game_Actor.prototype.param;
@@ -1311,7 +1890,8 @@
 
       // Draw HP gauge
       if (part.damaged) {
-        var damagedText = T('HealthCore.damaged');
+        // Broken, cut off or destroyed, in the difficulty's own words.
+        var damagedText = partStatusLabel(this._actor, item.key, part) || T('HealthCore.damaged');
         this.drawText(damagedText, x + textWidth + 10, rect.y, gaugeWidth);
 
         if (Utils.RPGMAKER_NAME === "MZ") {
@@ -1864,23 +2444,23 @@
             // Variable 87 already set by changeArchetype
           } else if (actorId === 2) {
             // Set variable 115 for player 2
-            const { EnemyArchetypes } = window.Health;
-            const archetype = EnemyArchetypes[archetypeName];
+            const { Archetypes } = window.Health;
+            const archetype = Archetypes[archetypeName];
             if (archetype && $gameVariables) {
               var reproductionValue = archetype.reproduction !== undefined ? archetype.reproduction : 0;
               $gameVariables.setValue(115, reproductionValue);
             }
           } else if (actorId === 3) {
             // Set variable 116 for player 3
-            const { EnemyArchetypes } = window.Health;
-            const archetype = EnemyArchetypes[archetypeName];
+            const { Archetypes } = window.Health;
+            const archetype = Archetypes[archetypeName];
             if (archetype && $gameVariables) {
               var reproductionValue = archetype.reproduction !== undefined ? archetype.reproduction : 0;
               $gameVariables.setValue(116, reproductionValue);
             }
           }
         } else {
-          console.warn(`Failed to change archetype to ${archetypeName}. Check that it exists in EnemyArchetypes.`);
+          console.warn(`Failed to change archetype to ${archetypeName}. Check that it exists in Archetypes.`);
         }
       }
     });
@@ -1925,6 +2505,22 @@
   // Archetype identity + gestation, read by the biologic simulation and the
   // status screen.
   window.HealthCore.getActorArchetypeKeys = getActorArchetypeKeys;
+  window.HealthCore.mergeArchetypeParts = mergeArchetypeParts;
+  window.HealthCore.archetypePartName = archetypePartName;
+  window.HealthCore.canPartHoldWeapon = canPartHoldWeapon;
+  window.HealthCore.partCanCutoff = partCanCutoff;
+  window.HealthCore.partStates = partStates;
+  window.HealthCore.loseBodyPart = loseBodyPart;
+  window.HealthCore.isPartBroken = isPartBroken;
+  window.HealthCore.partStatusLabel = partStatusLabel;
+  window.HealthCore.dependentPartKeys = dependentPartKeys;
+  window.HealthCore.isExtremityKey = isExtremityKey;
+  window.HealthCore.needsLimbSocket = needsLimbSocket;
+  window.HealthCore.isLimbSocketKey = isLimbSocketKey;
+  window.HealthCore.openLimbSockets = openLimbSockets;
+  window.HealthCore.isBloodAndOil = isBloodAndOil;
+  window.HealthCore.healBodyParts = healBodyParts;
+  window.HealthCore.isLimbPartKey = isLimbPartKey;
   window.HealthCore.getArchetypeDisplayName = getArchetypeDisplayName;
   // The inanimate list, kept apart from the creature one on purpose.
   window.HealthCore.getObjectArchetypes = getObjectArchetypes;

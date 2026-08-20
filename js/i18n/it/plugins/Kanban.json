@@ -29,6 +29,9 @@
     "Fallite"
   ],
   "showOnMapAt": "Mostra sulla mappa ({x}, {y}) · Shift",
+  "moveToInProgress": "Sposta in In Corso · →",
+  "moveToToDo": "Riporta in Da Fare · ←",
+  "boardHint": "Trascina un foglio, o tieni premuto OK e premi ←/→, per spostarlo tra le colonne",
   "mapMarker": "Indicatore mappa",
   "notify": {
     "newQuest": "Nuovo incarico: {title}",

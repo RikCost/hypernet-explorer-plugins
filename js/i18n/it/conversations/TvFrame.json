@@ -1,418 +1,418 @@
 {
   "open": {
     "serious": [
-      "{channel}. Ovunque {stiate ricevendo|stiate captando|vi arrivi} questo, {sedetevi|mettetevi comodi|trovate una sedia}: \"{title}\".",
-      "{Buonasera|Sera|Buonasera a voi}. {channel}, ora {hour}, ed ecco \"{title}\".",
-      "\"{title}\". {channel}. Tutto quel che segue questa frase e {provvisorio|soggetto a revisione|non confermato}.",
-      "{State|Vi trovate a} {guardando|ricevendo|sintonizzati su} {channel}. Questo e \"{title}\".",
-      "{channel}. L'ora è {hour}, la linea temporale è {provvisoria|instabile|in revisione}, e questo è \"{title}\".",
-      "Questo e \"{title}\", su {channel}, {trasmesso|in onda|che vi arriva} dal terreno neutrale della Torre.",
-      "{channel} all'ora {hour}. \"{title}\", e {niente di quel che segue e garantito|non una parola e garantita|nessuna parte e certificata}.",
-      "Da {channel}, {come da programma|puntuale|come annunciato}: \"{title}\"."
+      "{channel}. Ovunque {stiate ricevendo|stiate captando|vi arrivi} questo segnale, {sedetevi|mettetevi comodi|trovatevi una sedia}: \"{title}\".",
+      "{Buonasera|Sera|Buonasera a voi}. {channel}, ore {hour}, e \"{title}\".",
+      "\"{title}\". {channel}. Tutto quello che viene dopo questa frase è {provvisorio|soggetto a revisione|non confermato}.",
+      "{Siete|Vi trovate} {sintonizzati su|in ricezione su|collegati con} {channel}. Questo è \"{title}\".",
+      "{channel}. Sono le {hour}, la linea temporale è {provvisoria|instabile|in revisione}, e questo è \"{title}\".",
+      "Questo è \"{title}\", su {channel}, {in onda|in trasmissione|che vi arriva} dal terreno neutrale della Torre.",
+      "{channel}, ore {hour}. \"{title}\", e {niente di quello che segue è garantito|non una parola è garantita|nessuna parte è certificata}.",
+      "Da {channel}, {come da palinsesto|puntuali|come annunciato}: \"{title}\"."
     ],
     "solemn": [
-      "{channel}. Ci {hanno|è stato} chiesto di {trasmettere|mandare in onda|portarvi} \"{title}\" senza musica.",
-      "{Stasera|Questa sera}, su {channel}: \"{title}\". {Nessuno|Non c'è nessuno che} ci ha chiesto di {alleggerirlo|addolcirlo|renderlo più facile}.",
-      "\"{title}\", da {channel}, per {chi sta ancora contando|coloro che contano ancora|chiunque tenga ancora il conto}.",
-      "{channel} presenta, {con il cuore pesante|senza alcun piacere|con riluttanza}, \"{title}\".",
+      "{channel}. Ci hanno chiesto di {mandare in onda|trasmettere|portarvi} \"{title}\" senza musica.",
+      "{Stasera|Questa sera}, su {channel}: \"{title}\". {Nessuno|Non c'è nessuno che} ci ha chiesto di {alleggerirlo|addolcirlo|renderlo più digeribile}.",
+      "\"{title}\", da {channel}, per {chi sta ancora contando|quelli che contano ancora|chiunque tenga ancora il conto}.",
+      "{channel} presenta, {a malincuore|senza alcun piacere|con riluttanza}, \"{title}\".",
       "{State fermi|Sedete in silenzio|Restate con noi}. {channel} vi porta \"{title}\".",
-      "\"{title}\". {channel}. {Sedetevi prima che cominciamo|Sedetevi prima di iniziare|Prendete posto prima di proseguire}.",
-      "{channel}. \"{title}\". {Non c'è modo leggero di dire tutto questo|Niente di tutto ciò si può dire con leggerezza|Non abbiamo trovato un modo gentile di dirlo}.",
-      "{Siamo|Ci sentiamo} {obbligati|tenuti|in dovere} di leggere \"{title}\" per intero. {channel}, ora {hour}."
+      "\"{title}\". {channel}. {Per favore sedetevi prima che cominciamo|Sedetevi prima di cominciare|Prendete posto prima che si vada avanti}.",
+      "{channel}. \"{title}\". {Non c'è un modo leggero per dire niente di tutto questo|Niente di tutto questo si può dire alla leggera|Un modo gentile per dirlo non l'abbiamo trovato}.",
+      "{Siamo|Ci sentiamo} {obbligati|tenuti|in dovere} di leggere \"{title}\" per intero. {channel}, ore {hour}."
     ],
     "wry": [
-      "\"{title}\". {channel}. Abbiamo {provato a tirarcene fuori|davvero provato a tirarcene fuori|chiesto di essere dispensati}.",
-      "Sono le {hour} e {channel} e {contrattualmente obbligata|legalmente obbligata|pagata} per presentare \"{title}\".",
-      "{Di nuovo qui, eh|Ancora voi|Tornati, dunque}? Bene. {channel}. \"{title}\".",
-      "Ancora {channel}? Si. {E ora di|E il momento di} \"{title}\".",
-      "{Bentornati a|Fa piacere riavervi su|Di nuovo su} \"{title}\", qui su {channel}, dove {niente è verificato|niente viene controllato|la verifica è compito di qualcun altro}.",
-      "\"{title}\". {channel}. {Qualcuno|Qualcun altro} deve pur farlo.",
-      "\"{title}\", su {channel}, {perché l'alternativa era il silenzio|dato che l'alternativa era l'etere muto|in mancanza di meglio}.",
-      "{channel}, ora {hour}. \"{title}\", e {si, lo sappiamo|si, ne siamo consapevoli|si, ce ne siamo accorti}."
+      "\"{title}\". {channel}. {Abbiamo provato a sottrarci|Ci abbiamo provato, a sottrarci|Avevamo chiesto di essere esonerati}.",
+      "Sono le {hour} e {channel} è {contrattualmente obbligato|legalmente obbligato|pagato} per presentare \"{title}\".",
+      "{Di nuovo qui, eh|Ancora voi|Tornati, vedo}? Bene. {channel}. \"{title}\".",
+      "Ancora {channel}? Sì. {È l'ora di|Tocca a} \"{title}\".",
+      "{Bentornati a|Che piacere riavervi su|Di nuovo con noi su} \"{title}\", qui su {channel}, dove {non si verifica niente|non si controlla niente|la verifica è un reparto di qualcun altro}.",
+      "\"{title}\". {channel}. Qualcuno lo deve pur fare.",
+      "\"{title}\", su {channel}, {perché l'alternativa era il silenzio|visto che l'alternativa era il vuoto d'antenna|in mancanza di meglio}.",
+      "{channel}, ore {hour}. \"{title}\", e {sì, lo sappiamo|sì, ne siamo consapevoli|sì, ce ne siamo accorti}."
     ],
     "zany": [
-      "{channel}! \"{title}\"! LO STUDIO E STRUTTURALMENTE A POSTO!",
-      "ORA {hour}! {channel}! \"{title}\"! {NESSUNO|NON C'è NESSUNO CHE} HA IL CONTROLLO!",
-      "Avete {trovato|localizzato|inciampato su} {channel}! Non potete più non trovarlo! \"{title}\"!",
-      "{BENVENUTI BENVENUTI|CIAO CIAO|AVANTI AVANTI} su {channel}! E \"{title}\"!!!",
-      "{channel} vi {travolge|colpisce|assale} con \"{title}\"! Niente rimborsi, niente ancore, niente pietà!",
-      "E \"{title}\"! SU {channel}! L'ANTENNA E PAGATA FINO ALLE {hour}!",
-      "{channel}!! \"{title}\"!! {NON ABBIAMO PROVATO|NESSUNO HA PROVATO|NON C'è STATA NESSUNA PROVA}!!",
-      "{ALZATE IL VOLUME|PIÙ FORTE|VOLUME SU}! {channel}! \"{title}\"! ORA {hour} E SI SALE!"
+      "{channel}! \"{title}\"! LO STUDIO STRUTTURALMENTE STA BENE!",
+      "ORE {hour}! {channel}! \"{title}\"! {NESSUNO|NON C'È NESSUNO CHE} HA IL CONTROLLO!",
+      "Avete {trovato|scovato|beccato} {channel}! Non lo potete più s-trovare! \"{title}\"!",
+      "{BENVENUTI BENVENUTI|CIAO CIAO|AVANTI AVANTI} su {channel}! È \"{title}\"!!!",
+      "{channel} vi {spara addosso|colpisce con|scaraventa} \"{title}\"! Niente rimborsi, niente conduttori, niente pietà!",
+      "È \"{title}\"! SU {channel}! L'ANTENNA È PAGATA FINO ALLE {hour}!",
+      "{channel}!! \"{title}\"!! {NON ABBIAMO PROVATO|NESSUNO HA PROVATO|LE PROVE NON CI SONO STATE}!!",
+      "{ALZATE IL VOLUME|PIÙ FORTE|VOLUME SU}! {channel}! \"{title}\"! ORE {hour} E SI SALE!"
     ],
     "urgent": [
-      "{channel}. {Mollate quello|Posate qualunque cosa} che state facendo. \"{title}\".",
-      "{La programmazione e sospesa|Il palinsesto e sospeso|Le trasmissioni previste sono interrotte}. {channel} presenta \"{title}\".",
-      "\"{title}\". {channel}. {Ascoltatelo tutto|Sentitelo tutto|Non smettete di ascoltare a metà}.",
-      "{Interrompiamo|Irrompiamo su|Tagliamo} {channel} per \"{title}\".",
-      "QUI {channel}. \"{title}\". Restate dove {siete|vi trovate} e restate sotto gli 80.",
-      "{channel}. {Quest'ora l'abbiamo tolta a qualcun altro|Quest'ora era di qualcun altro|La scaletta è stata sospesa}. \"{title}\".",
-      "{channel}. Ora {hour}. \"{title}\". {Non può aspettare il palinsesto|Il palinsesto può aspettare|Questo non si conserva}.",
+      "{channel}. {Mollate quello che|Posate qualunque cosa} state facendo. \"{title}\".",
+      "{Il palinsesto è sospeso|La programmazione è sospesa|Le trasmissioni previste sono interrotte}. {channel} presenta \"{title}\".",
+      "\"{title}\". {channel}. {Ascoltatelo tutto|Sentitelo fino in fondo|Non smettete di ascoltare a metà}.",
+      "{Interrompiamo|Entriamo su|Tagliamo} {channel} per \"{title}\".",
+      "QUI È {channel}. \"{title}\". Restate dove siete e restate sotto gli 80.",
+      "{channel}. {Quest'ora l'abbiamo tolta a qualcun altro|Quest'ora era di qualcun altro|Il palinsesto è stato sospeso}. \"{title}\".",
+      "{channel}. Ore {hour}. \"{title}\". {Questo non può aspettare il palinsesto|Il palinsesto può aspettare|Questo non si conserva}.",
       "{Attenzione|Ascoltate|A tutte le stazioni}. {channel}. \"{title}\", e ogni parola conta."
     ],
     "cryptic": [
-      "...la portante si {stabilizza|assesta|posa}... {channel}... \"{title}\"...",
-      "{channel} stava già {trasmettendo|mandando in onda|in onda}. \"{title}\" era già a metà.",
-      "...\"{title}\"... vi siete sintonizzati su {channel} all'ora {hour} per una ragione che non vi è stata detta...",
-      "...{channel}... il segnale si {apre|separa|allarga}... \"{title}\"...",
-      "Non avete {scelto|trovato|selezionato} {channel}. E \"{title}\" ad aver scelto voi.",
-      "L'antenna si è girata {da sola|per conto suo|senza una mano sopra}. {channel}. \"{title}\".",
-      "...{channel}, ora {hour}... \"{title}\"... {eravate attesi|siete attesi|contavamo su di voi}...",
-      "...da qualche parte questo è già {finito|concluso|chiuso}. {channel}. \"{title}\"..."
+      "...la portante {si stabilizza|si assesta|si posa}... {channel}... \"{title}\"...",
+      "{channel} stava già {trasmettendo|andando in onda|sull'antenna}. \"{title}\" era già a metà.",
+      "...\"{title}\"... vi siete sintonizzati su {channel} alle {hour} per un motivo che non vi hanno detto...",
+      "...{channel}... il segnale {si apre|si scosta|si allarga}... \"{title}\"...",
+      "Non {avete scelto|avete trovato|avete selezionato} voi {channel}. È \"{title}\" che ha scelto voi.",
+      "L'antenna si è girata {da sola|per conto suo|senza che nessuno la toccasse}. {channel}. \"{title}\".",
+      "...{channel}, ore {hour}... \"{title}\"... {vi aspettavamo|siete attesi|contavamo su di voi}...",
+      "...da qualche parte questa cosa è già {finita|conclusa|chiusa}. {channel}. \"{title}\"..."
     ],
     "weird": [
-      "{channel}. Ora {hour}. \"{title}\". L'edificio e {vuoto tranne noi|vuoto a parte noi|per il resto vuoto}.",
-      "{Ancora svegli|Ancora in piedi|Non dormite}? {channel} si. \"{title}\".",
-      "\"{title}\", su {channel}, registrato in un posto che non è questo studio.",
-      "{È tardi|Si è fatto tardi|Tardi, vero}. Siete ancora svegli. E {channel}, e questo è \"{title}\".",
+      "{channel}. Ore {hour}. \"{title}\". Il palazzo è {vuoto tranne noi|vuoto a parte noi|per il resto vuoto}.",
+      "{Ancora svegli|Ancora in piedi|Non dormite}? {channel} non dorme. \"{title}\".",
+      "\"{title}\", su {channel}, registrato da qualche parte che non è questo studio.",
+      "{È tardi|Si è fatto tardi|Tardi, eh}. Voi siete ancora in piedi. Qui è {channel}, e questo è \"{title}\".",
       "{channel} dopo il tramonto. \"{title}\". {Non sbattete le palpebre|Cercate di non sbattere le palpebre|Tenete gli occhi aperti}.",
-      "Ora {hour} su {channel}. \"{title}\", per {chiunque stia ancora ricevendo|chiunque riceva ancora|i pochi ancora sintonizzati}.",
-      "{channel}. \"{title}\". {La regia e al buio e io non chiedo perché|Nessuno ha acceso le luci della regia|La regia è rimasta al buio tutta la notte}.",
-      "Qui {channel}, ora {hour}, e \"{title}\" {è quel che abbiamo|è tutto quel che abbiamo|è tutto quel che resta del palinsesto}."
+      "Ore {hour} su {channel}. \"{title}\", per {chiunque stia ancora ricevendo|chi riceve ancora|i pochi rimasti sintonizzati}.",
+      "{channel}. \"{title}\". {La regia è al buio e io non chiedo perché|Le luci della regia non le ha accese nessuno|La regia è rimasta al buio tutta la notte}.",
+      "Qui è {channel}, ore {hour}, e \"{title}\" {è quello che abbiamo|è tutto quello che abbiamo|è tutto quello che resta del palinsesto}."
     ],
     "light": [
-      "{Che bello avervi qui|Che piacere avervi|Gentile da parte vostra unirvi a noi}! {channel}, ed e \"{title}\"!",
-      "Qui {channel}! \"{title}\"! {Niente di terribile|Niente di cupo|Neanche una cosa terribile} per una mezz'ora intera!",
-      "{Accomodatevi|Mettetevi seduti|Mettetevi comodi} - {channel} vi porta \"{title}\".",
-      "{Ciaooo|Salve a voi|Ah, salve}, e benvenuti su {channel}! Oggi a \"{title}\"...",
-      "Qui {channel}, sono le {hour}, e c'è \"{title}\". {Non c'è niente che vi spaventi|Niente di spaventoso, oggi|Non una cosa che faccia paura}.",
-      "{Acqua sul fuoco|Tè pronto|Comodi}? Bene. {channel}, \"{title}\", {e mettetevi comodi|e per mezz'ora niente brutte notizie|e c'è una poltrona che vi aspetta}.",
-      "{Che bello|Che piacere|Delizioso}! {channel}, ora {hour}, e \"{title}\" a tenervi compagnia.",
-      "{channel}! \"{title}\"! {Piedi in alto|Mettete i piedi in alto|Sedetevi pure}, oggi è tutto abbastanza innocuo."
+      "{Che bello avervi qui|Che piacere avervi|Grazie di essere con noi}! {channel}, ed è \"{title}\"!",
+      "Qui {channel}! \"{title}\"! {Niente di brutto|Niente di cupo|Nemmeno una cosa brutta} per una mezz'ora intera!",
+      "{Mettetevi comodi|Sedetevi|Accomodatevi} - {channel} vi porta \"{title}\".",
+      "{Ciaooo|Buongiorno a voi|Ah, eccovi}, benvenuti su {channel}! Oggi a \"{title}\"...",
+      "Qui {channel}, orologio sulle {hour}, e \"{title}\". {Non c'è dentro niente che vi spaventi|Niente di spaventoso oggi|Non una cosa che faccia paura}.",
+      "{Caffè pronto|Tè fatto|Comodi}? Bene. {channel}, \"{title}\", {e piedi sul divano|e per mezz'ora niente brutte notizie|e c'è una sedia col vostro nome sopra}.",
+      "{Che bello|Che piacere|Che meraviglia}! {channel}, ore {hour}, e \"{title}\" a farvi compagnia.",
+      "{channel}! \"{title}\"! {Piedi in alto|Mettetevi comodi|Sedetevi pure}, {oggi è|è} tutto assolutamente innocuo."
     ],
     "earnest": [
-      "{channel}. \"{title}\". {Carta e penna|Penna e quaderno|Qualcosa per scrivere}, se avete entrambi.",
-      "Questo e \"{title}\", su {channel}, e {sarà nel compito|e materia d'esame|contera dopo}.",
-      "{channel} presenta \"{title}\". {Due parti, con una pausa in mezzo|Ci fermiamo a metà per farvi recuperare|C'è un intervallo a metà, e vi servirà}.",
-      "{Benvenuti, allievi|Benvenuti, studenti|Benvenuti a tutti} su {channel}. Oggi: \"{title}\".",
-      "{channel} e {fiera|lieta|contenta} di presentare \"{title}\".",
-      "\"{title}\", su {channel}. Appunti facoltativi. Attenzione {obbligatoria|imprescindibile|non negoziabile}.",
-      "{channel}, ora {hour}. \"{title}\". {Cominciamo dall'inizio|Partiamo dall'inizio|Partiremo dai primi principi}.",
-      "\"{title}\" su {channel}. {Fate domande|Fatele pure, le domande|Domande benvenute}, anche quelle ovvie."
+      "{channel}. \"{title}\". {Carta e penna|Penna e quaderno|Qualcosa per scrivere}, se li avete tutti e due.",
+      "Questo è \"{title}\", su {channel}, e {all'esame ve lo chiedono|è materia d'esame|dopo vi servirà}.",
+      "{channel} presenta \"{title}\". {Due parti, con una pausa in mezzo|Ci fermiamo a metà così recuperate|C'è un intervallo a metà, e vi servirà}.",
+      "{Benvenuti, allievi|Benvenuti, studenti|Benvenuti a tutti voi} su {channel}. Oggi: \"{title}\".",
+      "{channel} è {orgoglioso|lieto|felice} di presentare \"{title}\".",
+      "\"{title}\", su {channel}. Appunti facoltativi. Attenzione {obbligatoria|tassativa|non negoziabile}.",
+      "{channel}, ore {hour}. \"{title}\". {Cominciamo dall'inizio|Partiamo dall'inizio|Partiamo dai principi primi}.",
+      "\"{title}\" su {channel}. {Fate domande|Fatele, le domande|Le domande sono benvenute}, anche quelle ovvie."
     ],
     "unsettling": [
-      "{channel}. \"{title}\". Il televisore e già {caldo|caldo al tatto|più caldo di quanto dovrebbe}.",
-      "\"{title}\" {comincia|inizia} adesso su {channel}. E {cominciato|iniziato} tempo fa.",
-      "{channel}... \"{title}\"... grazie per essere rimasti sintonizzati su {noi in particolare|proprio noi|questa frequenza e nessun'altra}...",
+      "{channel}. \"{title}\". Il televisore è già {caldo|caldo al tatto|più caldo di quanto dovrebbe}.",
+      "\"{title}\" {comincia|inizia} adesso su {channel}. Era {cominciato|iniziato} già da un pezzo.",
+      "{channel}... \"{title}\"... grazie di essere rimasti sintonizzati {proprio su di noi|su noi in particolare|su questa frequenza e nessun'altra}...",
       "{channel}.....{title}.....{restate seduti, per favore|restate seduti|non alzatevi dalla sedia}.",
-      "{channel} sta {vivendo|attraversando|ospitando} \"{title}\".",
-      "\"{title}\". {channel}. Questa {trasmissione|emissione} è stata registrata {prima che accendeste il televisore|prima che il vostro apparecchio fosse acceso|in anticipo sul vostro guardarla}.",
-      "{channel}, ora {hour}. \"{title}\". {Sapevamo che l'avreste trovato|Sapevamo che sareste stati qui|Il vostro arrivo era in programma}.",
-      "\"{title}\", su {channel}, {di nuovo|ancora una volta|per la {n}esima volta questa settimana}. {Non ve ne siete ancora accorti|Non ve n'eravate accorti|Nessuno se ne accorge le prime volte}."
+      "{channel} {sta subendo|sta attraversando|ospita} \"{title}\".",
+      "\"{title}\". {channel}. Questa {trasmissione|puntata} è stata registrata {prima che accendeste il televisore|prima che il vostro apparecchio fosse acceso|in anticipo rispetto alla vostra visione}.",
+      "{channel}, ore {hour}. \"{title}\". {Sapevamo che l'avreste trovato|Sapevamo che sareste stati qui|Il vostro arrivo era in scaletta}.",
+      "\"{title}\", su {channel}, {ancora|di nuovo|per la {n}esima volta questa settimana}. {Non ve ne siete ancora accorti|Non ve n'eravate accorti|Le prime volte non se ne accorge nessuno}."
     ]
   },
   "close": {
     "serious": [
-      "{channel}, chiudo. Qualunque cosa accada dopo, sarà indicizzata.",
-      "{Ecco|E qui} dove lo lasciamo. Non restera dove lo lasciamo.",
-      "I nostri ringraziamenti a {faction}, che non ha aiutato.",
-      "Questo e il mondo {stasera|questa sera|a quest'ora}. Tenetevi sotto gli 80 e tenete i documenti indicizzati.",
-      "Resteremo su questa storia finché lei restera su di noi. {channel}, {chiude|si congeda|va fuori onda}.",
-      "Altro quando ci sarà altro. {Statisticamente|Per come è andata finora|A giudicare dalle medie}, ci sarà.",
-      "{channel}, ora {hour}, {chiuso|finito|fuori}. {Tenete la testa bassa|Tenete bassa la velocità|Tenetevi i documenti addosso}.",
-      "{Questo è tutto ciò di cui rispondiamo|Questo è tutto ciò che sosterremo|Più in là di così il verbale non va}. {channel}, chiudo."
+      "{channel}, chiudo. Qualunque cosa succeda adesso, verrà indicizzata.",
+      "{È|Ed è} qui che lo lasciamo. Dove lo lasciamo non ci resterà.",
+      "Ringraziamo {faction}, che non ci ha aiutato.",
+      "Questo è il mondo {stasera|questa sera|a quest'ora}. Tenetelo sotto gli 80 e tenete i documenti indicizzati.",
+      "Ci restiamo sopra finché lui resta sopra a noi. {channel}, {chiude|chiude le trasmissioni|esce dall'antenna}.",
+      "Altro quando ci sarà altro. {Statisticamente|Vista l'esperienza|A giudicare dalle medie}, ci sarà.",
+      "{channel}, ore {hour}, {chiuso|finito|fuori}. {Testa bassa|Piede leggero|Documenti addosso}.",
+      "{Fin qui possiamo metterci la faccia|Oltre non ci mettiamo la faccia|Più in là gli atti non arrivano}. {channel}, chiudo."
     ],
     "solemn": [
-      "Chiudiamo il fascicolo. Il fascicolo non {si richiude|ricambia la chiusura|accetta di essere chiuso}.",
-      "{Buonanotte|Buona notte}. Tenetevi stretto {tutto ciò che sapete ancora nominare|tutto ciò a cui sapete ancora dare un nome|quello che sapete ancora chiamare per nome}.",
-      "{channel} chiude la {trasmissione|emissione}. Il {ricordare|resto del ricordare} tocca a voi.",
-      "{Che l'Archivio li accolga con dolcezza|Che l'Archivio sia gentile con loro|Che il fascicolo sia gentile con loro}. {Buonanotte|Buona notte} da {channel}.",
-      "{Perduti, ma indicizzati|Andati, ma indicizzati|Perduti, e indicizzati}. Sempre indicizzati.",
+      "Chiudiamo il fascicolo. Il fascicolo {non si chiude a sua volta|non ricambia|non accetta di essere chiuso}.",
+      "{Buonanotte|Buona notte}. Tenetevi stretto {tutto quello che sapete ancora nominare|quello a cui sapete ancora dare un nome|ciò che riuscite ancora a chiamare per nome}.",
+      "{channel} chiude le {trasmissioni|comunicazioni}. {Il ricordare|Il resto del ricordare} tocca a voi.",
+      "{Che Archive Foundation li custodisca con delicatezza|Che Archive Foundation sia gentile con loro|Che il fascicolo sia gentile con loro}. {Buonanotte|Buona notte} da {channel}.",
+      "{Andati, ma indicizzati|Perduti, ma indicizzati|Andati, e indicizzati}. Indicizzati sempre.",
       "La registrazione finisce qui. Il {ricordare|piangere|contare} no.",
-      "{Abbiamo|Vi abbiamo} letto i nomi. {Questa è tutta|Questa è proprio tutta|Questa è l'intera} la funzione.",
-      "{channel} chiude. {Restateci un momento|Restate un momento con questo|Datevi un attimo} prima di alzarvi."
+      "Abbiamo letto i nomi. {La funzione è tutta qui|È tutta qui la funzione|Il servizio è tutto qui}.",
+      "{channel} chiude. {Restateci un momento|Restate un attimo con questa cosa|Datele un momento} prima di alzarvi."
     ],
     "wry": [
-      "{Questo è tutto|Ecco tutto|E tutto qui}. Lamentatevi con {faction}; a loro {piace|piace parecchio|ci vivono}.",
-      "{Lo rifaremo|Rifaremo tutto questo}, {a quanto pare|evidentemente|a detta di tutti}, che siamo d'accordo o no.",
-      "{channel}, {chiude|si congeda|va fuori onda} prima che {qualcuno faccia una domanda di seguito|qualcuno faccia una seconda domanda|comincino le repliche}.",
-      "E la gente dice che {qui non succede mai niente|qui non succede niente|qua fuori e tranquillo}. {channel}, chiudo.",
-      "{Stessa ora il prossimo loop|Stessa ora nel prossimo loop|Stesso slot il prossimo loop}, {ammesso che ci sia un prossimo loop|se ci sarà un prossimo loop|loop permettendo}.",
-      "{Questo e quanto|Ecco quanto|Questo è tutto per voi}. Lamentatevi pure - la linea reclami e un buco nel muro.",
-      "{channel}. {Queste erano le notizie|Questo era il programma|Questo era tutto}, all'incirca, {fatti a parte|nonostante i fatti|salvo i fatti}.",
-      "{Bene, io ho finito|Ecco, io ho finito|Be', io ho chiuso}. {Qualcun altro|Qualcuno} può tenere l'antenna per un po'."
+      "{Questo è quanto|È tutto|Tutto qui}. Lamentatevi con {faction}; {ci gode|ci gode parecchio|vive per quello}.",
+      "{Lo rifaremo|Rifaremo tutto}, {a quanto pare|evidentemente|a detta di tutti}, che siamo d'accordo o no.",
+      "{channel} {chiude|esce dall'antenna|va giù} prima che {qualcuno faccia una domanda di rimando|arrivi la seconda domanda|comincino le repliche}.",
+      "E poi dicono che {qui non succede mai niente|qui non succede niente|qui fuori è tranquillo}. {channel}, chiudo.",
+      "{Stessa ora al prossimo loop|Stesso orario al prossimo loop|Stessa fascia al prossimo loop}, {ammesso che ci sia un prossimo loop|se un prossimo loop ci sarà|loop permettendo}.",
+      "{Questo è quanto|Per noi è tutto|Per voi è tutto}. Lamentatevi pure: il numero verde dei reclami è un buco nel muro.",
+      "{channel}. {Questo era il notiziario|Questa era la trasmissione|Questo era tutto}, più o meno, {a occhio e croce|fatti a parte|salvo i fatti}.",
+      "{Ecco, io ho finito|Bene, io ho finito|Beh, io ho chiuso}. L'antenna la tenga su {qualcun altro|un altro} per un po'."
     ],
     "zany": [
       "BUONANOTTE! L'ANTENNA VA A FUOCO! {IN MODO DIVERTENTE|IN SENSO BUONO|MA ALLEGRAMENTE}!",
-      "{SIAMO FUORI|SIAMO USCITI|ECCOCI FUORI}! NON SIAMO MAI STATI DENTRO! {channel}! CIAO!",
-      "E tutto - {lo sponsor si porta via i mobili|lo sponsor si porta via le sedie|lo sponsor sta smontando lo studio}! BUONANOTTE!",
-      "E TUTTO! BUONANOTTE! {NON SUPERATE GLI 80|STATE SOTTO GLI 80|OTTANTA E IL LIMITE}! STAVOLTA DICIAMO SUL SERIO!",
-      "{Abbiamo finito il|Ci è finito il} budget, {finito il|è finito il} tempo, e {ci manca un conduttore|un conduttore in meno|manca un conduttore}! CIAO!",
+      "{SIAMO FUORI|SIAMO USCITI|NOI ABBIAMO CHIUSO}! NON SIAMO MAI STATI DENTRO! {channel}! CIAO!",
+      "È tutto: {lo sponsor si sta portando via i mobili|lo sponsor si porta via le sedie|lo sponsor sta smontando la scenografia}! BUONANOTTE!",
+      "È TUTTO! BUONANOTTE! {NON SUPERATE GLI 80|STATE SOTTO GLI 80|OTTANTA È IL LIMITE}! STAVOLTA DICIAMO SUL SERIO!",
+      "{Abbiamo finito il|Ci è finito il} budget, {finito il|e finito il} tempo, e {ci manca un conduttore|un conduttore in meno|manca all'appello un conduttore}! CIAO!",
       "I titoli di coda vanno a fuoco! {Mandateli lo stesso|Mandateli comunque|Mandateli, mandateli}! BUONANOTTE!",
-      "{QUESTO E LO SPETTACOLO|QUESTO ERA LO SPETTACOLO|SPETTACOLO FINITO}! {NESSUNO|NON C'è NESSUNO CHE} SI è FATTO MALE! {PROBABILMENTE|PER LO PIÙ|CREDIAMO}! CIAO!",
-      "{CIAO|ARRIVEDERCI|ALLA PROSSIMA}! {channel}! {STESSA FOLLIA LA PROSSIMA SETTIMANA|ANCORA DI QUESTO LA PROSSIMA SETTIMANA|LO RIFAREMO}!"
+      "{QUESTO È LO SPETTACOLO|QUESTO ERA LO SPETTACOLO|SPETTACOLO FINITO}! {NESSUNO|NON UNO} SI È FATTO MALE! {PROBABILMENTE|QUASI NESSUNO|CREDIAMO}! CIAO!",
+      "{CIAO|ARRIVEDERCI|ALLA PROSSIMA}! {channel}! {STESSA FOLLIA LA PROSSIMA SETTIMANA|ANCORA COSÌ LA PROSSIMA SETTIMANA|LO RIFACCIAMO}!"
     ],
     "urgent": [
-      "{Restate sintonizzati|Lasciate acceso|Non toccate la manopola} su {channel}. Restate sotto gli ottanta. Restate rintracciabili.",
-      "Questa {trasmissione|emissione} finisce. La situazione no. {channel}.",
-      "Se il segnale cade, {presumete il peggio|presumete il peggio possibile|prendete la lettura peggiore} e tenete bassa la velocità.",
-      "{Restate dove siete|Restate esattamente dove siete|Non muovetevi da dove siete}. Restate sotto gli 80. {channel} tornera a trasmettere.",
-      "Questo avviso resta valido finché non viene {ritirato|revocato|sospeso}. Non è {mai stato|neanche una volta stato|mai ancora stato} ritirato.",
-      "Se state ancora ricevendo questo, siete ancora nel raggio. Restate nel raggio.",
-      "{channel} ripetera questo {allo scoccare dell'ora|ogni ora|finché non sarà revocato}. {Non date per scontato|Non pensate} che la ripetizione significhi che sia finita.",
-      "{Questo e l'avviso|Questo è tutto l'avviso|Questo e l'intero avviso}. {Agite di conseguenza|Applicatelo tutto|Fate come dice}."
+      "{Restate sintonizzati|Tenete acceso|Lasciate la manopola dov'è} su {channel}. State sotto gli ottanta. Restate rintracciabili.",
+      "Questa {trasmissione|diretta} finisce. La situazione {no|non finisce|non è finita}. {channel}.",
+      "Se il segnale cade, {mettetevi nel caso peggiore|date per buona l'ipotesi peggiore|prendete la lettura peggiore} e tenete bassa la velocità.",
+      "{Restate dove siete|State esattamente dove siete|Non muovetevi da dove siete}. Restate sotto gli 80. {channel} tornerà a trasmettere.",
+      "Questo avviso resta valido finché non viene {revocato|ritirato|sospeso}. {Non è mai stato revocato|Revocato non lo è mai stato|Non lo ha revocato mai nessuno}.",
+      "Se state ancora ricevendo, siete ancora in copertura. Restate in copertura.",
+      "{channel} ripeterà l'avviso {a ogni ora|ogni ora|finché non viene revocato}. {Non date per scontato|Non pensate} che la ripetizione voglia dire che è finita.",
+      "{Questo è l'avviso|Questo è tutto l'avviso|L'avviso è tutto qui}. {Attenetevi|Attenetevi a tutto|Fate come dice}."
     ],
     "cryptic": [
-      "...la portante si {assottiglia|restringe|fa sottile}... non siamo mai stati noi a parlare...",
-      "...grazie per l'attenzione. {È stata|E già stata} {raccolta|presa|registrata}...",
+      "...la portante {si assottiglia|si restringe|si fa sottile}... non siamo mai stati noi a parlare...",
+      "...grazie per l'attenzione. {È stata|L'abbiamo} {raccolta|presa|registrata}...",
       "...{channel} chiude. Qualcos'altro tiene la frequenza {calda|aperta|viva}...",
-      "...il segnale si ripiega... contate i secondi... ce ne sarà {uno di troppo|uno più del dovuto|uno in più}...",
-      "...avete già visto questo. Lo {rivedrete|guarderete di nuovo}. {Ciao|Ciao di nuovo|Bentornati}...",
-      "...da qualche parte fra due fotogrammi, qualcosa ha {risalutato|guardato indietro|risposto}. {Buonanotte|Buona notte}...",
+      "...il segnale si ripiega... contate i secondi... ne verrà {uno di troppo|uno più di quanti dovrebbero essere|uno in più}...",
+      "...questo l'avete già visto. Lo {rivedrete|guarderete di nuovo}. {Ciao|Ciao di nuovo|Bentornati}...",
+      "...da qualche parte fra due fotogrammi, qualcosa {ha salutato|ha ricambiato lo sguardo|ha risposto}. {Buonanotte|Buona notte}...",
       "...l'ora si chiude {senza il nostro aiuto|da sola|che finiamo o no}. {channel}...",
-      "...non ringraziateci. Non {eravamo|siamo stati} noi a {trasmettere|parlare|essere sulla frequenza}..."
+      "...non ringraziateci. {Non eravamo|Non siamo} noi {a trasmettere|a parlare|sulla frequenza}..."
     ],
     "weird": [
       "Le luci dello studio restano accese. Restano sempre accese. {Buonanotte|Buona notte}.",
-      "{Io ho finito|Questo sono io|Io ho chiuso}. Chi e in cabina può finire l'ora da solo.",
-      "{channel} adesso tace. Tacere non è {la stessa cosa che|lo stesso di|una cosa diversa da} spegnere.",
-      "Le linee sono aperte. {Nessuno|Non chiama nessuno} sta chiamando. {Nessuno|Non} chiama mai. {Buonanotte|Buona notte}.",
-      "{Resta con me|Restate con noi|Tienimi compagnia}. La notte e lunga qua fuori sulla Strada.",
-      "Avete sentito? No? ...Bene. {channel}, fino a {domani|alla prossima|quando che sia}.",
-      "{Lascio|Lascero} il microfono aperto. {Sembra preferire così|La stanza preferisce così|Qualcosa lo preferisce aperto}.",
-      "{channel}, ora {hour}. {Dormite se ci riuscite|Cercate di dormire un po'|Provate a dormire}. {Alcuni di noi|Qualcuno di noi|Noi altri} restiamo svegli."
+      "{Noi abbiamo finito|Io ho finito|Per me è finita}. Chi sta in cabina si finisca l'ora per conto suo.",
+      "{channel} adesso va in silenzio. Silenzio {non è la stessa cosa di|non è lo stesso di|è un'altra cosa rispetto a} spento.",
+      "Le linee sono aperte. {Non chiama nessuno|Nessuno sta chiamando}. Non chiama mai nessuno. {Buonanotte|Buona notte}.",
+      "{Restate con me|Restate con noi|Fatemi compagnia}. La notte è lunga qui fuori sulla Strada.",
+      "L'avete sentito? No? ...Bene. {channel}, fino a {domani|alla prossima|quando sarà}.",
+      "{Lascio|Lascerò} il microfono aperto. {Pare che preferisca così|La stanza preferisce così|Qualcosa preferisce averlo aperto}.",
+      "{channel}, ore {hour}. {Dormite, se ci riuscite|Cercate di dormire|Provate a dormire}. {Alcuni di noi|Qualcuno di noi|Noi altri} restiamo svegli."
     ],
     "light": [
-      "{Bene, il te si è freddato|Be', il te si è freddato|Ecco, il te e freddo} - e adesso via! Ciao!",
-      "Grazie della compagnia. {Davvero|Sinceramente|Veramente}. Aiuta. Ciao ciao!",
-      "Abbiatevi cura, e {attenti al confine|attenti alle bolle|occhio al confine} tornando a casa!",
+      "{Ecco, il caffè si è freddato|Beh, il tè è freddo|Allora, il caffè è freddo} - e adesso via! Ciao!",
+      "Grazie della compagnia. {Davvero|Sinceramente|Sul serio}. Aiuta. Ciao ciao!",
+      "State attenti a voi, e {occhio al confine|occhio alle bolle|attenzione al confine} tornando a casa!",
       "Che {bel|bello|discreto} pezzo di mondo ci è capitato oggi, tutto sommato. Ciao ciao!",
-      "Scriveteci! La nostra buca delle lettere e {un buco nel muro|una fessura nel muro|una fessura in un muro}, ma scriveteci!",
-      "Alla prossima, {se ci SARÀ una prossima|se la prossima ci sarà|prossima volta permettendo}! Ciao ciao!",
-      "{Splendido|Magnifico|Meraviglioso}. {Abbiamo finito|Noi abbiamo finito|Finito}. {Mettete su il bollitore|Andate a mettere il bollitore|Sedetevi un po'}!",
-      "{Siate gentili gli uni con gli altri|Abbiatevi cura a vicenda|Trattatevi bene} la fuori, e {occhio alla velocità|attenti alla velocità|tenetela sotto gli ottanta}. Ciao!"
+      "Scriveteci! La nostra buca delle lettere è {un buco nel muro|una fessura nel muro|una feritoia nel muro}, ma scriveteci!",
+      "Alla prossima, {se una prossima CI SARÀ|se la prossima ci sarà|prossima volta permettendo}! Ciao ciao!",
+      "{Benissimo|Magnifico|Meraviglioso}. {Abbiamo finito|Per noi è finita|Finito}. {Mettete su il caffè|Andate a mettere su il caffè|Fatevi una bella seduta}!",
+      "{Siate gentili gli uni con gli altri|Voletevi bene|Trattatevi bene} là fuori, e {occhio alla velocità|piede leggero|tenetela sotto gli ottanta}. Ciao!"
     ],
     "earnest": [
-      "{Rileggetelo domani|Rileggetelo domattina|Ripassatelo domani}. Il domani non è garantito, ma rileggetelo.",
-      "{Questa e|Ecco} la lezione. {channel} vi ringrazia di essere rimasti.",
-      "Sapete più di quanto sapeste {all'inizio dell'ora|allo scoccare dell'ora|a inizio ora}. Tenetevelo.",
-      "Se avete imparato una cosa {stasera|questa sera|a quest'ora}, la {trasmissione|puntata|ora} si è ripagata.",
-      "{La conoscenza e l'unica ancora che tiene|La conoscenza e la sola ancora che tiene|La comprensione e l'unica ancora che tiene}. Studiate bene.",
-      "Non c'è vergogna nel chiedere di nuovo. Chiedete di nuovo. {Buonanotte|Buona notte}.",
-      "{Scrivetelo prima di dormire|Mettetelo su carta prima di dormire|Fatevelo scrivere stanotte}. {La memoria va alla deriva|La memoria scivola|La memoria vaga}, qua fuori.",
-      "{Questa e|Ecco} l'ora. {Insegnatela a qualcuno|Passatela a qualcuno|Raccontatela a qualcun altro} che se l'è persa."
+      "{Rileggetelo domani|Rileggetelo domattina|Ripassatelo domani}. Domani non è garantito, ma rileggetelo.",
+      "{È|Questa è} la lezione. {channel} vi ringrazia di essere rimasti fino in fondo.",
+      "Adesso ne sapete più di {a inizio ora|un'ora fa|quando abbiamo cominciato}. Tenetevelo.",
+      "Se avete imparato una cosa {stasera|questa sera|in quest'ora}, {la trasmissione|la puntata|l'ora} si è ripagata da sola.",
+      "{Il sapere è l'unica ancora che tiene|La conoscenza è la sola ancora che tiene|Capire è l'unica ancora che tiene}. Studiate bene.",
+      "{Non c'è da|Non ci si deve} vergognare a chiedere di nuovo. Chiedete di nuovo. {Buonanotte|Buona notte}.",
+      "{Scrivetelo prima di dormire|Mettetelo su carta prima di dormire|Fatevelo scrivere stanotte}. {La memoria va alla deriva|La memoria scivola|La memoria vaga}, qui fuori.",
+      "{È|Questa è} l'ora. {Insegnatela a qualcuno|Passatela a qualcuno|Raccontatela a qualcuno} che se l'è persa."
     ],
     "unsettling": [
-      "La {trasmissione|emissione} finisce. Al vostro televisore servira {un momento|un minuto} per essere d'accordo.",
-      "Grazie per aver guardato. {Sapevamo che l'avreste fatto|Sapevamo che lo avreste fatto|Era in programma}.",
-      "{channel} si ritira. {Per favore, non|Vi preghiamo di non|Vi chiediamo di non} seguirci.",
-      "{Restate seduti, per favore|Restate seduti|Restate sulla sedia} ancora un po'. {La sedia|La poltrona|La stanza} si è accorta di voi.",
-      "Siamo contrattualmente obbligati a definire tutto ciò {normale|di routine|niente di che}. {Buonanotte|Buona notte}.",
-      "Il pubblico ha applaudito. {Non c'è|Non esiste} nessun pubblico. {channel} ha finito con voi.",
-      "{channel} si ferma qui. {Il vostro televisore no|Il televisore no} - {non subito|non immediatamente|non per un po'}.",
-      "{Buonanotte|Buona notte}. {Saremo|Ci saremo} {qui|nella stanza|su questa frequenza} quando riaccenderete. {Non ce ne siamo|Non ce ne siamo mai} andati."
+      "La {trasmissione|diretta} finisce. Il vostro televisore ci metterà {un momento|un minuto} a essere d'accordo.",
+      "Grazie per averci seguito. {Sapevamo che l'avreste fatto|Lo sapevamo|Era in scaletta}.",
+      "{channel} si ritira. {Per favore non|Vi preghiamo di non|Vi chiediamo di non} seguirci.",
+      "{Restate seduti, per favore|Restate seduti|Non alzatevi dalla sedia} ancora un po'. {Il posto|La sedia|La stanza} sa che ci siete.",
+      "{Siamo|Ci sentiamo} contrattualmente obbligati a definire questa cosa {normale|ordinaria|priva di rilievo}. {Buonanotte|Buona notte}.",
+      "Il pubblico ha applaudito. Pubblico non ce n'è. {channel} con voi ha finito.",
+      "{channel} si ferma qui. {Il vostro televisore no|L'apparecchio no} - {non subito|non immediatamente|non per un po'}.",
+      "{Buonanotte|Buona notte}. {Saremo|Ci saremo} {qui|in questa stanza|su questa frequenza} la prossima volta che accendete. {Non ce ne siamo|Non ce ne siamo mai} andati."
     ]
   },
   "lead": {
     "puppet_show": [
-      "{Ciao bambini|Ciao a voi, bambini|Buongiorno bambini}! Oggi il signor Calzington vi {spiega|illustra|parla del}la Regola degli Ottanta!",
-      "{Allora, è in onda|Siamo in onda? È in onda|Il pupazzo è su}? {Ciao bambini|Buongiorno bambini}! Mister Sockington {ha avuto una nottataccia|oggi è di malumore|oggi non è in sé}, quindi {la facciamo breve|siate gentili con lui|nessuno urli}."
+      "{Ciao bambini|Ciao a tutti, bambini|Buongiorno bambini}! Oggi il Signor Sockington {ci spiega|ci illustra|ci racconta} la Regola dell'Ottanta!",
+      "{Allora, è in onda|Siamo in onda? È in onda|Il pupazzo è su}? {Ciao, bambini|Buongiorno, bambini}! Il Signor Sockington {ha passato una brutta notte|oggi è di malumore|oggi non è in sé}, quindi {facciamola breve|siate gentili con lui|nessuno urli}."
     ],
     "royal_address": [
-      "Sudditi di {realm}, {ascoltate|ascoltate ora|udite questo}.",
-      "{Quello che segue viene trasmesso integralmente|I prossimi quattro minuti vanno in onda integralmente|Questo viene trasmesso senza tagli}, {per disposizione permanente|come previsto|per ordine}. {Non ci è consentito commentare|Nessun commento è ammesso|Il commento, semmai, viene dopo}."
+      "Sudditi di {realm}, {attenzione|udite|ascoltate}.",
+      "{Quello che segue va in onda integralmente|I prossimi quattro minuti vanno in onda integralmente|Questo va in onda senza tagli}, {per ordine permanente|come da obbligo|per disposizione}. {Non ci è permesso commentare|Nessun commento è consentito|Il commento arriva dopo, semmai}."
     ],
     "court_report": [
       "Dalla dimensione giudiziaria, il ruolo di oggi, che è {anche il ruolo di ogni giorno|lo stesso ruolo di ogni giorno|indistinguibile da quello di qualunque altro giorno}.",
-      "Il ruolo di udienza, allora. {Novecento pagine stamattina|Quaranta pagine che riusciamo a leggere|Più lungo di ieri, e ieri era lungo}. {Le prendiamo nell'ordine di deposito|Cominciamo dall'alto|Prima i nomi, poi i capi d'accusa}."
+      "Il ruolo, dunque. {Novecento pagine stamattina|Quaranta pagine, quelle ce le facciamo|Più lungo di ieri, e ieri era lungo}. {Le prendiamo nell'ordine in cui sono state depositate|Cominciamo dall'alto|Prima i nomi, poi i capi d'accusa}."
     ],
     "market_report": [
-      "Mercati. Il Collettivo chiude in rialzo del {pct}%, cosa che loro {attribuiscono alla domanda|imputano alla domanda|accreditano alla domanda} e tutti gli altri {attribuiscono alla paura|imputano alla paura|chiamano panico}.",
-      "{Mercati|Contrattazioni|Allora, i mercati}. {Il Collettivo ha chiuso a {pct}%|Collettivo, {pct}%|Ho il Collettivo a {pct}%}, {e la spiegazione è arrivata insieme alla cifra, il che non è mai un buon segno|e sto leggendo quello che mi ha passato la redazione|e non chiedetemi di difenderla}."
+      "Mercati. Il Collettivo ha chiuso in rialzo del {pct}%, cosa che loro {attribuiscono alla domanda|mettono in conto alla domanda|accreditano alla domanda} e tutti gli altri {attribuiscono alla paura|mettono in conto alla paura|chiamano panico}.",
+      "{Mercati|Contrattazioni|Allora, mercati}. {Il Collettivo è uscito a {pct}%|Collettivo, {pct}%|Ho il Collettivo a {pct}%}, {e la spiegazione era allegata al numero, che non è mai buon segno|e io leggo quello che mi ha passato la redazione|e non chiedetemi di difenderlo}."
     ],
     "phone_in": [
-      "Le linee sono aperte. {Siete|Vi trovate} in collegamento con {channel}. {Da dove chiamate e vi state muovendo|Da dove chiamate, e siete in movimento|Dateci la vostra posizione e la vostra velocità}?",
-      "{Il centralino è aperto|Le linee sono aperte|Linee aperte}. {Sei in attesa|Quattro in attesa|Due in linea}, {il che per noi è una buona serata|quindi ne facciamo quante riusciamo|e uno è lì dalla trasmissione precedente}. {Nome, città, e vi state muovendo|Nome e città, per favore|Ditemi nome e città}?"
+      "Linee aperte. {Siete|Vi trovate} in collegamento con {channel}. {Da dove chiamate e siete in movimento|Da dove ci chiamate, e siete in movimento|Dateci posizione e velocità}?",
+      "{Il centralino è aperto|Linee aperte|Le linee sono aperte}. {Sei in attesa|Quattro in attesa|Due in linea}, {che per noi è una bella serata|quindi facciamo quello che riusciamo|e uno di loro è lì dalla trasmissione precedente}. {Nome, città, e siete in movimento|Nome e città, per favore|Dateci un nome e una città}?"
     ],
     "sports": [
-      "Risultati della Lega di Goblin-Ball, e {place} ha vinto di nuovo con uno scarto che {nessuno|nessuno di noi} {vuole descrivere|se la sente di descrivere|e disposto a leggere}.",
-      "{Risultati|I punteggi|Sport}. {Li leggo di fila, senza commento|Solo i risultati, siamo corti|Li leggo tutti di seguito}: prima {place}, {poi gli altri nell'ordine in cui sono atterrati i piccioni|poi gli altri come sono arrivati|e il resto dopo}."
+      "Risultati della Lega di Goblin-Ball, e {place} ha vinto di nuovo con uno scarto che nessuno {vuole descrivere|se la sente di descrivere|se la sente di leggere ad alta voce}.",
+      "{Risultati|I punteggi|Sport}. {Filati, senza commento|Solo i punteggi, stasera siamo corti|Ve li leggo di fila}: {place} in testa, {poi gli altri nell'ordine in cui sono atterrati i piccioni|poi gli altri nell'ordine di arrivo|e il resto dopo}."
     ],
     "road_report": [
-      "Avviso della Società dei Camionisti per la tratta verso {dest}: deriva del confine, {n} chilometri, {in movimento verso l'interno|in deriva verso l'interno|che avanza verso l'interno}.",
-      "{Allora, le strade|Strade|La tratta per {dest}}. {Ho tre foglietti e uno è la lista della spesa di qualcuno|Due appunti e una macchia|Una pagina dalla centrale, e metà è bagnata}. {Portate pazienza|Facciamo quel che si può|Andiamo}."
+      "Avviso della Società dei Camionisti per la tratta verso {dest}: deriva di confine, {n} chilometri, {in movimento verso l'interno|in deriva verso l'interno|che lavora verso l'interno}.",
+      "{Allora, le strade|Strade|La tratta verso {dest}}. {Ho tre appunti qui e uno è la lista della spesa di qualcuno|Due appunti e una macchia|Un foglio dal centralino, e metà è bagnato}. {Portate pazienza|Facciamo quel che si può|Andiamo}."
     ],
     "historical_epic": [
-      "Siamo nell'anno {year}. La Torre e conficcata nel terreno da abbastanza tempo perché il mondo {ci costruisca dentro degli uffici|ci metta dentro degli uffici|cominci ad affittarci uffici}.",
-      "{Quattro ore, questo|Dura parecchio, questo|Questo è quello lungo}. {C'è una pausa, al matrimonio|Una pausa sola, a metà|C'è un intervallo}. {Mettetevi comodi|Sistematevi bene|Non cominciatelo se siete stanchi}."
+      "Siamo nel {year}. La Torre sta piantata a terra da abbastanza tempo perché il mondo {ci abbia costruito dentro degli uffici|ci abbia messo dentro degli uffici|abbia cominciato ad affittarci dentro uffici}.",
+      "{Quattro ore, questo|Dura parecchio, questo|Questo è quello lungo}. {Ci fermiamo una volta, al matrimonio|Un intervallo, a metà|C'è un intervallo}. {Mettetevi comodi|State comodi|Non iniziatelo se siete stanchi}."
     ],
     "soap_opera": [
-      "Negli episodi precedenti, a {place}: un testamento, una leyline e un corpo che {continua a tornare all'alba|torna all'alba|non resta sepolto oltre l'alba}.",
+      "Nelle puntate precedenti, presso {place}: un testamento, una leyline e un cadavere che {all'alba torna sempre|torna all'alba|dopo l'alba non resta sepolto}.",
       "{Se vi siete persi la settimana scorsa|La settimana scorsa, in breve|Per chi se l'è persa}: {un testamento, una leyline e un cadavere|il testamento, la leyline, il cadavere}. {Il cadavere è quello da tenere d'occhio|Vi basta questo|Non vi siete persi granché}."
     ],
     "test_pattern": [
-      "Questo e un monoscopio. Non c'è {niente|nulla} da guardare. {Lo state guardando|Voi lo state guardando}.",
-      "{Niente in programma fino alle {hour}|Nessuna trasmissione fino alle {hour}|La prossima trasmissione è alle {hour}}. {Il tono è voluto|Il tono che sentite è voluto|Il tono ci deve essere}. {La cartolina resta su|Lasciamo la cartolina|La lasciamo lì}."
+      "Questo è un monoscopio. Non c'è {niente da guardare|nulla da vedere}. E voi lo state guardando.",
+      "{Niente in programma fino alle {hour}|Nessuna trasmissione fino alle {hour}|La prossima trasmissione è alle {hour}}. {Il tono è voluto|Il tono che sentite è voluto|Il tono ci deve stare}. {Il cartello resta su|Lasciamo su il cartello|Lo lasciamo su}."
     ],
     "reality_tv": [
-      "{n} concorrenti. Una bolla. {Nessuno|Non} esce finché {qualcuno|qualcun altro} non capisce che l'uscita e sopra gli ottanta.",
-      "{Giorno {n} nella bolla|Giorno {n}|Settimana {n} nella bolla}. {Hanno smesso di chiedere dell'uscita|Ancora nessuno ci è arrivato|Nessuno ci è ancora arrivato}. {Non possiamo dirglielo|Lo sappiamo. Il montaggio lo facciamo noi|Potremmo dirglielo. Non lo facciamo}."
+      "{n} concorrenti. Una bolla. Nessuno esce finché qualcuno non capisce che l'uscita sta sopra gli ottanta.",
+      "{Giorno {n} nella bolla|Giorno {n}|Settimana {n} nella bolla}. {Hanno smesso di chiedere dell'uscita|Ancora nessuno ci è arrivato|Non ci è ancora arrivato nessuno}. {Non ci è permesso dirglielo|Noi lo sappiamo. Noi montiamo|Potremmo dirglielo. Non lo facciamo}."
     ],
     "music_video": [
-      "Ora, dalla Norvegia, {venerati da un'intera specie|adorati da una specie intera|riveriti da un'intera specie}: i Mahyem.",
-      "{Subito|Il prossimo|Ecco}: i Mahyem, {dalla Norvegia|Norvegia}. {Abbassate prima del secondo ritornello|Attenzione al volume|Il secondo ritornello porta via l'antenna}."
+      "Adesso, dalla Norvegia, {venerati da un'intera specie|adorati da una specie intera|riveriti da un'intera specie}: i Junehem.",
+      "{Subito|Avanti|Ecco}: i Junehem, {dalla Norvegia|Norvegia}. {Abbassate prima del secondo ritornello|Occhio al volume|Il secondo ritornello vi porta via l'antenna}."
     ],
     "history_obituary": [
-      "Ci fermiamo per {ricordare|rammentare|segnare} ciò che la linea temporale ci ha tolto.",
-      "{Stasera abbiamo {n} nomi|{n} nomi stasera|L'elenco stasera è di {n}}. {Due non siamo riusciti a datarli|Alcuni sono solo iniziali|Per quasi tutti abbiamo una data}. {Leggiamo quello che c'è|Leggiamo quello che abbiamo}."
+      "Ci fermiamo per {ricordare|rammentare|segnare} quello che la linea temporale ci ha portato via.",
+      "{Stasera abbiamo {n} nomi|{n} nomi stasera|L'elenco stasera arriva a {n}}. {Due non siamo riusciti a datarli|Alcuni sono solo iniziali|Per quasi tutti abbiamo una data}. {Leggiamo quello che c'è|Leggiamo quello che abbiamo}."
     ],
     "educational": [
       "La lezione di oggi {riguarda|verte su|tratta di} {magic} e sul perché vi farà male.",
-      "{Libri aperti|Allora, libri aperti|Aprite il libro}, {alla figura|secondo capitolo|alla pagina con la figura}. {Siamo indietro|Abbiamo perso una settimana con gli azzeramenti|La teoria l'abbiamo fatta la scorsa settimana e metà di voi era in loop}."
+      "{Libri aperti|Allora, libri aperti|Aprite il libro}, {alla figura|al secondo capitolo|alla pagina con lo schema}. {Siamo indietro|Abbiamo perso una settimana per i reset|La teoria l'abbiamo fatta la settimana scorsa e metà di voi era in loop}."
     ],
     "magic_lesson": [
-      "{Bacchette giù|Via le bacchette|Mani giù}. Oggi: perché la vicinanza a una leyline non è {la stessa cosa della|lo stesso della|una cosa diversa dalla} competenza.",
-      "{Bacchette giù|Mani giù|Bacchette via}. {Prima una cosa|Prima di cominciare|Una cosa}: {oggi in quest'aula non lancia nessuno|oggi qui non si lancia|oggi nessuno lancia}. {Neanche uno di voi|Neanche una sillaba|Neanche quello facile}."
+      "{Bacchette giù|Bacchette via|Mani giù}. Oggi: perché la vicinanza a una leyline {non è la stessa cosa della|non è lo stesso della|è un'altra cosa rispetto alla} competenza.",
+      "{Bacchette giù|Mani giù|Bacchette via}. {Prima una cosa|Prima di cominciare|Innanzitutto}: {oggi in questa stanza non lancia nessuno|oggi qui dentro non si lancia|oggi non lancia nessuno}. {Nemmeno uno di voi|Nemmeno una sillaba|Nemmeno quello facile}."
     ],
     "emergency": [
-      "Questa e una {trasmissione|comunicazione} di emergenza da {faction}. {Restate dove siete|Restate esattamente dove siete|Non muovetevi da dove siete}.",
-      "{Questa non è la trasmissione prevista|La trasmissione prevista non è in onda|Siamo usciti dalla scaletta}. {faction}. {Tutto quanto, per favore|Non spegnete a metà|Ascoltate tutto}."
+      "Questa è una {trasmissione|comunicazione} di emergenza di {faction}. {Restate dove siete|State esattamente dove siete|Non muovetevi da dove siete}.",
+      "{Questa non è la trasmissione prevista|La trasmissione prevista non va in onda|Siamo usciti dal palinsesto}. {faction}. {Tutto quanto, per favore|Non spegnete a metà|Ascoltate tutto}."
     ],
     "news_breaking": [
       "ULTIM'ORA: {news}",
-      "{Sta arrivando mentre lo leggo|Lo leggo mentre arriva|Direttamente dalla telescrivente}: {news}"
+      "{Sta arrivando mentre lo leggo|Lo leggo mentre arriva|Direttamente dalle agenzie}: {news}"
     ],
     "news_desk": [
-      "La notizia di apertura: {news}",
-      "{Si apre con questa|In apertura|Cominciamo da qui}: {news}"
+      "Apriamo con questa notizia: {news}",
+      "{Prima notizia|In apertura di edizione|Cominciamo da qui}: {news}"
     ],
     "cooking": [
-      "Oggi {lavoriamo|stiamo lavorando} con una cosa che ho {barattato con|preso da|scambiato con} un {job} a {place}. {Non chiedete|Non domandate|Meglio non chiedere}.",
-      "{Allora|Dunque|Bene}. {Grembiule|Mani lavate|Mettetevi il grembiule}. {Quello di oggi viene da un {job} di {place}|Un {job} di {place} mi ha venduto quello di oggi|Quello che abbiamo viene da un {job} di {place}}, {e l'ho pagato più del dovuto|ed è costato più di quanto valesse|e preferirei non dire con cosa}."
+      "Oggi {lavoriamo|lavoreremo} con una cosa che ho {barattato con|preso da|scambiato con} un {job} presso {place}. {Non chiedete|Non chiedetelo|Meglio non chiedere}.",
+      "{Allora|Dunque|Ecco}. {Grembiule|Mani lavate|Mettetevi il grembiule}. {Quello di oggi arriva da un {job} presso {place}|Un {job} presso {place} mi ha venduto quello di oggi|Quello che abbiamo arriva da un {job} presso {place}}, {e l'ho pagato più del dovuto|e mi è costato più di quanto valesse|e preferirei non dire con che cosa}."
     ],
     "history_panel": [
-      "La domanda di stasera: {è successo davvero|è successo qualcosa di tutto ciò|è vero}? {hist}",
-      "{Stasera in studio|Con me stasera|Il panel di stasera}: {due storici e uno che c'era|uno storico, un archivista e un testimone che nessuno può verificare|tre persone che non sono d'accordo}. {hist} {Non la risolveremo|Non le risolviamo mai, queste|Non ne verremo a capo}."
+      "La domanda di stasera: {è successo davvero|è successo qualcosa di tutto questo|è vero}? {hist}",
+      "{Nel panel di stasera|Con me stasera|Il panel di stasera}: {due storici e uno che c'era|uno storico, un archivista e un testimone oculare che nessuno riesce a verificare|tre persone che non vanno d'accordo}. {hist} {Non la risolveremo|Queste non le risolviamo mai|Non ne verremo a capo}."
     ]
   },
   "tail": {
     "history_doc": [
-      "E così l'epoca {si volto|si chiuse|fini}, come fanno le epoche, portandosi via il {pct}% delle scartoffie.",
-      "{Il fascicolo si ferma lì|Lì il fascicolo finisce|Il registro si ferma lì}. {Semplicemente qualcuno ha posato la penna|Non perché l'epoca si sia fermata|Qualcuno ha smesso di scrivere}."
+      "E così l'epoca {si voltò|si chiuse|finì}, come fanno le epoche, portandosi via il {pct}% delle scartoffie.",
+      "{Il fascicolo si ferma lì|Il fascicolo finisce lì|Gli atti si fermano lì}. {Qualcuno ha posato la penna, tutto qui|Non perché l'epoca sia finita|Qualcuno ha smesso di scrivere}."
     ],
     "history_panel": [
-      "{Siamo|Siamo ormai} fuori tempo. Siamo sempre fuori tempo. {Questo è tutto|Ecco tutto|Questo e l'intero} il problema.",
-      "{Abbiamo sforato|Siamo fuori tempo|Abbiamo sforato di parecchio}. {Gli ospiti avevano altro. Ce l'hanno sempre|Chiedo scusa agli ospiti, che avevano altro|Metà del tempo l'ho preso io, scusate}."
+      "{Siamo fuori tempo|Il tempo è finito}. Il tempo è sempre finito. {Il problema è tutto qui|È tutto qui il problema|Sta tutto lì}.",
+      "{Abbiamo sforato|Ecco, abbiamo sforato|Siamo andati lunghi}. {Il panel aveva altro. Ce l'ha sempre|Mi scuso col panel, che aveva altro da dire|Metà era colpa mia, scusate}."
     ],
     "history_obituary": [
       "Per questa parte non c'è musica. Non c'è mai stata.",
-      "{Questo è l'elenco come ce l'hanno dato|Questo è tutto quello che ci hanno dato|Questo è l'elenco}. {Scriveteci se un nome è sbagliato e lo rileggiamo|Mandate le correzioni e le rileggiamo|Le correzioni le leggiamo la settimana prossima}."
+      "{L'elenco è questo, per quel che ci risulta|Questo è tutto quello che ci hanno dato|L'elenco è questo}. {Scriveteci se un nome è sbagliato e lo rileggiamo|Mandate le correzioni e le rileggiamo|Le correzioni si leggono la settimana prossima}."
     ],
     "news_breaking": [
-      "Altro appena ci saranno sviluppi. Se ci saranno. Se 'altro' {significa ancora qualcosa|vuol dire ancora qualcosa|ha ancora un senso}.",
-      "{Restiamo su questa notizia|Ci restiamo sopra|La redazione resta aperta}. {Aggiornamenti all'ora|Prossimo aggiornamento alle {hour}|Tornate all'ora esatta}."
+      "Altro appena ci sono sviluppi. Se ci sono sviluppi. Se \"altro\" {vuol dire ancora qualcosa|significa ancora qualcosa|ha ancora un significato}.",
+      "{Restiamo su questa storia|Ci restiamo sopra|La redazione resta presidiata}. {Aggiornamenti all'ora esatta|Prossimo aggiornamento alle {hour}|Tornate all'ora esatta}."
     ],
     "weather": [
-      "I meteorologi temporali consigliano di {mettere al sicuro i ricordi sciolti|legare i ricordi sciolti|riporre i ricordi sciolti} prima del calare della notte.",
-      "{Queste sono le previsioni|Questo è quello che abbiamo|Ecco le previsioni}. {La mappa ha un'ora|Fatta un'ora fa, per quel che vale|Era giusta quando l'hanno disegnata}."
+      "I meteorologi temporali consigliano di {mettere al sicuro i ricordi sciolti|legare i ricordi sciolti|riporre in luogo sicuro i ricordi sciolti} prima che faccia notte.",
+      "{Questa è la tendenza|Questo è quello che abbiamo|Queste sono le previsioni}. {La mappa ha un'ora|Disegnata un'ora fa, per quel che vale|Quando l'ha disegnata la redazione era giusta}."
     ],
     "game_show": [
-      "Il tabellone va in tilt. {Vincono tutti|Vince chiunque}. {Non vince nessuno|Nessuno vince}. {faction} si tiene la differenza.",
-      "{Il tabellone si è rotto|Il tabellone ha rinunciato|Il tabellone è fuori uso}. {I punteggi la settimana prossima|Pubblichiamo i punteggi la settimana prossima|Ci penserà la produzione}, {se c'è una settimana prossima|se il tabellone torna|ammesso che ci sia}."
+      "Il tabellone sta andando in glitch. Vincono tutti. Non vince nessuno. La differenza se la tiene {faction}.",
+      "{Il tabellone ha smesso di funzionare|Il tabellone si è arreso|Il tabellone è fuori uso}. {Punteggi la settimana prossima|I punteggi li pubblichiamo la settimana prossima|Ci pensi la produzione}, {se una settimana prossima ci sarà|se il tabellone torna|ammesso che ci sia una prossima settimana}."
     ],
     "cooking": [
-      "Ed ECCO come si {sopravvive a|supera|porta a casa} un'altra settimana. Buon appetito.",
-      "{Lavate la padella finché è calda|Lavate i piatti prima che si secchi|Lavate la padella da calda}. {Viene via meglio|Davvero|Dico sul serio}."
+      "Ed ecco COME si {sopravvive|tira avanti|supera} un'altra settimana. Buon appetito.",
+      "{Lavate la padella finché è calda|Lavate i piatti prima che si secchi|Lavate mentre la padella è ancora calda}. {Viene via meglio|Fidatevi|Dico sul serio}."
     ],
     "children_show": [
-      "Ed ecco perché non si spezza {mai e poi mai|mai e poi mai|assolutamente mai} una leyline. {Anche se sembra divertente|Anche quando sembra divertente|Per quanto sembri divertente}.",
-      "{È ora di andare|Per oggi è tutto|Abbiamo finito}! {Pastelli via|Pastelli nella scatola|Mettete a posto i pastelli}! {E nessuno tocchi una leyline|E LASCIATE STARE le leyline|E NON toccate le leyline}!"
+      "Ed ecco perché non si spezza {mai e poi mai|mai mai|assolutamente mai} una leyline. {Anche se sembra divertente|Anche quando sembra divertente|Per quanto sembri divertente}.",
+      "{È ora di andare|Per oggi è tutto|Abbiamo finito}! {Pastelli via|Rimettete i pastelli nella scatola|Riordinate i pastelli}! {E nessuno tocchi una leyline|E LASCIATE STARE le leyline|E NON toccate le leyline}!"
     ],
     "educational": [
-      "Ci sarà una verifica. C'è {sempre|sempre} una verifica.",
-      "{Compiti|Per la prossima volta|Prima della settimana prossima}: {il capitolo, tutto|leggete il capitolo, tutte e due le parti|il capitolo intero, non il riassunto}. {Me ne accorgo|Lo capisco|Lo so sempre}."
+      "Ci sarà una verifica. C'è sempre una verifica.",
+      "{Compiti|Per la prossima volta|Prima della settimana prossima}: {il capitolo, tutto|leggete il capitolo, tutte e due le parti|tutto il capitolo, non il riassunto}. {Io lo capisco|Me ne accorgo|Me ne accorgo sempre}."
     ],
     "magic_lesson": [
-      "Esercitatevi. Esercitatevi dove il terreno è morto, e dove {nessuno|non c'è nessuno che} può sentirvi coniugare.",
-      "{Esercitatevi su terreno morto|Solo terreno morto|Trovate terreno morto ed esercitatevi lì}. {Se non ne trovate, non esercitatevi|Niente terreno morto, niente esercizio|Se non c'è, lasciate perdere}."
+      "Esercitatevi. Esercitatevi dove il terreno è morto, e dove nessuno vi sente coniugare.",
+      "{Esercitatevi su terreno morto|Solo terreno morto|Trovate terreno morto ed esercitatevi lì}. {Se non ne trovate, non esercitatevi|Niente terreno morto, niente esercizio|Se non ce n'è, lasciate perdere}."
     ],
     "religious": [
-      "Amen, e tenetevi sotto gli ottanta.",
-      "{Il piatto è in fondo|La questua in fondo, come sempre|C'è un piatto vicino alla porta}, {e il fondo per il tetto non va bene|e sì, è ancora per il tetto|e il tetto è sempre il tetto}. {Andate piano|Andate con prudenza|Fate attenzione}."
+      "Amen, e tenetela sotto gli ottanta.",
+      "{Il piattino è in fondo|La questua in fondo, come sempre|C'è un piattino accanto alla porta}, {e la raccolta per il tetto non va bene|e sì, è ancora per il tetto|e il tetto è sempre il tetto}. {Andate piano|Andate con prudenza|Fate buon viaggio}."
     ],
     "road_report": [
-      "Tenete onesto l'ago e fredda la cabina. {Ecco tutto|Questo è tutto|Questo e l'intero} il mestiere.",
-      "{Prossimo bollettino alle {hour}|Un altro alle {hour}|Torniamo alle {hour}}. {La centrale dovrebbe avere i confini per allora|Se la centrale li manda, li leggiamo|I confini dovrebbero arrivare per allora}."
+      "Tenete l'ago onesto e la cabina fredda. {Il mestiere è tutto qui|Il lavoro è tutto qui|Sta tutto lì}.",
+      "{Prossimo aggiornamento alle {hour}|Un altro alle {hour}|Ci risentiamo alle {hour}}. {Per allora il centralino dovrebbe avere i confini|Se il centralino ce li manda, li leggiamo|I confini dovrebbero arrivare per allora}."
     ],
     "sports": [
-      "Fine partita. O quanto più vicino a essa {chiunque qui possa dimostrare|chiunque qui sia in grado di dimostrare|riusciamo a dimostrare}.",
-      "{Fine partita|Ed è finita|E il tempo è finito}. {Classifiche sul televideo, pagina 302|Classifiche complete sulla pagina del televideo|Classifiche sul televideo}."
+      "Fine partita. O quanto di più vicino {qualcuno qui riesca a dimostrare|chiunque qui riesca a dimostrare|riusciamo a dimostrare}.",
+      "{Fine partita|Ed è finita|E il tempo è finito}. {Classifiche sul Televideo, pagina 302|Classifiche complete sulla pagina Televideo|Classifiche sul Televideo}."
     ],
     "documentary": [
-      "Quel che avete appena visto {era vero quando l'abbiamo registrato|era esatto quando l'abbiamo registrato|era corretto al momento della registrazione}.",
-      "{Girato in due anni|Due anni di riprese|Girato in diciotto mesi}, {e uno dei paesi che vedete non c'è più|anche se due delle persone riprese non si fanno più sentire|e tre di loro sono stati poi indicizzati}."
+      "Quello che avete appena visto {era vero quando l'abbiamo registrato|era esatto quando l'abbiamo registrato|era corretto al momento della registrazione}.",
+      "{Girato in due anni|Due anni di lavorazione|Girato in diciotto mesi}, {e uno dei paesi che si vedono adesso non c'è più|anche se due delle persone che si vedono da allora non parlano più|e tre di loro nel frattempo sono stati indicizzati}."
     ],
     "conspiracy": [
-      "Vi {hanno|è stato} detto che questo è un {programma|show|trasmissione} di frangia. Lo state guardando lo stesso. Bene.",
-      "{Stessa ora la settimana prossima|La settimana prossima, stessa ora|Stesso posto la settimana prossima}, {se l'antenna è ancora mia|se sono ancora qui|ammesso che mi lascino l'antenna}. {Di solito ci sono|Probabilmente sì|Non scrivetelo a penna}."
+      "{Vi hanno detto|Vi han detto} che questa è una {trasmissione|roba|cosa} di frangia. E la state guardando lo stesso. Bene.",
+      "{Stessa ora la settimana prossima|La settimana prossima, stessa ora|Stessa fascia la settimana prossima}, {se l'antenna è ancora mia|se sono ancora qui|ammesso che lascino stare l'antenna}. {Di solito ci sono|Probabilmente ci sarò|Non scrivetelo a penna}."
     ],
     "music_video": [
-      "E questa è la classifica. La classifica {non arriva mai all'uno|non arriva all'uno|non è mai arrivata all'uno}.",
-      "{Richieste all'indirizzo di sempre|Richieste per piccione, come sempre|Mandate le richieste all'indirizzo solito}. {Le leggiamo davvero|Le leggiamo tutte|Qualcuna riusciamo anche a suonarla}."
+      "E questa era la classifica. La classifica {non arriva mai all'uno|all'uno non ci arriva|non è mai arrivata all'uno}.",
+      "{Richieste all'indirizzo solito|Richieste per piccione, come sempre|Mandate le richieste all'indirizzo solito}. {Le leggiamo|Le leggiamo tutte|Qualcuna riusciamo perfino a suonarla}."
     ],
     "test_pattern": [
-      "Il servizio riprendera. Il servizio e ripreso. Entrambe le cose sono agli atti.",
-      "{Programmi regolari alle {hour}|Le trasmissioni riprendono alle {hour}|Torniamo alle {hour}}. {Qualcuno è salito sul traliccio|Un tecnico è per strada|C'è un uomo che sta andando al trasmettitore}."
+      "Le trasmissioni riprenderanno. Le trasmissioni sono riprese. Sono agli atti tutte e due le cose.",
+      "{Programmi regolari alle {hour}|Le trasmissioni riprendono alle {hour}|Torniamo alle {hour}}. {Qualcuno è salito al ripetitore|Un tecnico è in strada|C'è un uomo in viaggio verso il trasmettitore}."
     ],
     "reality_tv": [
       "Le nomination sono aperte. Le nomination sono sempre state aperte. Le nomination sono la casa.",
-      "{Votate per piccione|Voti per piccione, come al solito|Mandate il voto per piccione}. {Un francobollo e un uccello|Il voto costa un francobollo e un uccello|Il vostro piccione non torna indietro}."
+      "{Si vota per piccione|Voti per piccione, come al solito|Mandate il vostro voto per piccione}. {Un francobollo e un uccello|Votare costa un francobollo e un uccello|Il vostro piccione non torna indietro}."
     ],
     "sitcom": [
-      "Ed ecco, {gente|amici}, perché non {prendiamo|si prende} la scorciatoia per {place}.",
-      "{Be'|Bene|Oh cielo}. {Non lo rifà più nessuno|Non lo rifacciamo più|Mai più, niente di tutto ciò}. {A giovedì|Ci vediamo giovedì|Alla prossima settimana}!"
+      "Ed ecco, {ragazzi|amici}, perché non si prende la scorciatoia per {place}.",
+      "{Beh|Ecco|Oddio}. {Non lo rifà più nessuno|Non lo rifacciamo più|Mai più, niente di tutto questo}. {Fino a giovedì|Ci vediamo giovedì|Alla settimana prossima}!"
     ],
     "drama": [
-      "La prossima settimana: le conseguenze, finalmente, e un matrimonio a cui {nessuno|non} sopravvive nessuno.",
-      "{Era la quarta di sei puntate|Mancano tre puntate|Quella era la quarta}. {La prossima dura un'ora piena|La prossima è più lunga|La settimana prossima è quella lunga}."
+      "La settimana prossima: le conseguenze, finalmente, e un matrimonio a cui non sopravvive nessuno.",
+      "{Questa era la quarta di sei|Mancano tre puntate|Quarta puntata, questa}. {La prossima settimana arriva all'ora piena|La prossima dura di più|La prossima è quella lunga}."
     ],
     "soap_opera": [
-      "{La prossima settimana|La prossima volta}: la lettura del testamento, e la lettura dell'aria che tira.",
-      "{Per questa settimana è tutto|Stessa ora giovedì|Torniamo giovedì}. {La prossima non guardatela da soli|Portatevi qualcuno|La prossima è peggio}."
+      "{La settimana prossima|La prossima volta}: la lettura del testamento, e la lettura della stanza.",
+      "{Per questa settimana è tutto|Stessa ora giovedì|Ci vediamo giovedì}. {Non guardate la prossima da soli|Portatevi qualcuno|La prossima è peggio}."
     ],
     "royal_address": [
-      "Andate con quella grazia che ancora si sta {fabbricando|producendo|emettendo}.",
-      "{Il discorso viene ritrasmesso alle {hour}|Una replica segue alle {hour}|Viene ritrasmesso alle {hour}}. {La partecipazione viene annotata|La partecipazione è attesa|La partecipazione, come sempre, viene annotata}."
+      "Andate con quella grazia che è ancora in {produzione|lavorazione|emissione}.",
+      "{Il discorso viene ritrasmesso alle {hour}|Una replica segue alle {hour}|Questo va in onda di nuovo alle {hour}}. {La presenza viene annotata|La presenza è attesa|La presenza, come sempre, viene annotata}."
     ],
     "puppet_show": [
-      "Il signor Calzington e stanco. Il signor Calzington e in onda dal {year}.",
-      "{Salutate Mister Sockington|Dite ciao a Mister Sockington|Un saluto da Mister Sockington}! {Adesso torna nella scatola|Nella scatola, ecco|Vive nella scatola, e ci torna}! {Dice che gli piace lì dentro|Non gli dispiace|La scatola gli piace}!"
+      "Il Signor Sockington è stanco. Il Signor Sockington è in onda dal {year}.",
+      "{Salutate il Signor Sockington|Dite ciao al Signor Sockington|Un saluto dal Signor Sockington}! {E nella scatola torna|Adesso va nella scatola|Nella scatola ci abita, e via che va}! {Dice che gli piace stare lì dentro|Non gli dispiace|La scatola gli piace}!"
     ],
     "court_report": [
-      "Miliardi di processi simultanei, un solo giudice, nessun precedente. Qui l'ordine e una diceria.",
-      "{Il ruolo passa a domani|Quello che non abbiamo letto passa a domani|Il resto slitta a domani}. {Non si accorcia mai|Passa sempre a domani|Slitta ogni giorno dal deicidio in poi}."
+      "Miliardi di processi in contemporanea, un giudice solo, nessun precedente. Qui l'ordine è una diceria.",
+      "{Il ruolo si riporta a domani|Quello che non abbiamo trattato si riporta|Il resto passa a domani}. {Non si accorcia mai|Si riporta sempre|Si riporta ogni giorno dal deicidio in poi}."
     ],
     "market_report": [
-      "{Ecco la chiusura|Questa e la chiusura}. O l'apertura. La campana e {dentro una bolla|dentro una bolla di loop|dentro una delle bolle}.",
-      "{Valori di chiusura sul televideo|Dati completi sul televideo|Numeri sulla pagina del televideo}, {quando qualcuno li batte a macchina|aggiornati alla chiusura|quando qualcuno se ne ricorda}."
+      "{Questa è la chiusura|Ed è la chiusura}. O l'apertura. La campanella sta {dentro una bolla|dentro una bolla di loop|dentro una delle bolle}.",
+      "{Valori di chiusura sul Televideo|Valori completi sul Televideo|Numeri sulla pagina Televideo}, {quando qualcuno li batte a macchina|aggiornati alla chiusura|aggiornati quando qualcuno si ricorda}."
     ],
     "phone_in": [
-      "{E tutto|Questo è tutto} il tempo che abbiamo. Le linee restano aperte. Le linee sono sempre aperte.",
-      "{Grazie a tutti quelli che sono passati|Grazie a tutti quelli che hanno chiamato|Grazie a chi è riuscito a entrare}, {e scusate ai quattro che sono rimasti fuori|e scusate a chi è ancora in attesa|e scusate a chi non abbiamo preso}."
+      "{È|Questo è} tutto il tempo che abbiamo. Le linee restano aperte. Le linee sono sempre aperte.",
+      "{Grazie a tutti quelli che sono riusciti a entrare|Grazie a tutti voi che avete chiamato|Grazie a chi è riuscito a entrare}, {e scusate i quattro che non ci sono riusciti|e scusate chi è rimasto in attesa|e ci scusiamo con quelli che non abbiamo preso}."
     ],
     "science_report": [
-      "La revisione paritaria {è difficile|è dura|non è cosa da poco} quando metà dei revisori sono {dentro una bolla|dentro una bolla di loop|dentro una delle bolle} e stanno ancora revisionando martedì scorso.",
-      "{L'articolo è depositato presso la Gilda|L'articolo è andato alla Gilda|Il testo completo è alla Gilda}, {dove resterà fermo un anno|che non è veloce|che ci si siederà sopra}."
+      "La revisione tra pari {è difficile|è dura|non è cosa semplice} quando metà dei pari {sta in una bolla|sta in una bolla di loop|sta dentro una delle bolle} e sta ancora revisionando martedì scorso.",
+      "{L'articolo è depositato presso la Gilda|L'articolo è andato alla Gilda|Il testo completo è alla Gilda}, {dove resterà fermo un anno|che non è veloce|che ci starà sopra seduta}."
     ],
     "historical_epic": [
       "E così l'epoca {si volta|si chiude|finisce}, come fanno le epoche, nell'ultima bobina.",
-      "{Restaurato da tre copie|Rimontato con le copie sopravvissute|Restaurato da due copie superstiti}, {una delle quali è stata sott'acqua|e le bobine non combaciano del tutto|due delle quali non coincidono}."
+      "{Restaurato da tre copie|Ricomposto dalle copie sopravvissute|Restaurato da due copie superstiti}, {una delle quali stava sott'acqua|e le bobine non combaciano del tutto|due delle quali non vanno d'accordo}."
     ],
     "emergency": [
-      "Questo avviso si ripete ogni {n} minuti finché non viene {ritirato|revocato|sospeso}. Non è {mai|neanche una volta|in nessun momento} stato ritirato.",
+      "Questo avviso si ripete ogni {n} minuti fino a {revoca|ritiro|sospensione}. Revocato non lo è {mai stato|stato mai|stato in nessun momento}.",
       "{Non chiamate la stazione|Per favore non telefonate|Non telefonateci}. {La linea serve|Ci serve la linea|La linea è per i soccorsi}."
     ],
     "prophetic": [
-      "...uno di voi che sta guardando sarà la causa. Il segnale non dice quale...",
-      "...{il nastro finisce qui|il nastro si esaurisce qui|qui il nastro si ferma}... {l'etichetta è sbagliata|qualcuno l'ha etichettato male|è etichettato per l'anno prossimo}..."
+      "...uno di voi che sta guardando sarà il motivo. Il segnale non dice quale...",
+      "...{il nastro finisce qui|il nastro si esaurisce qui|qui il nastro si ferma}... {l'etichetta è sbagliata|qualcuno l'ha etichettato male|c'è scritto l'anno prossimo}..."
     ],
     "late_night": [
-      "{Resta con me|Restate con noi|Tienimi compagnia}. La notte e lunga qua fuori sulla Strada.",
-      "{Domani sono di nuovo qui|Domani si ricomincia|Domani ci sono}. {Ci sono sempre|Dove dovrei essere, sennò|Sono sempre in onda}. {Dormite, se ci riuscite|Provate a dormire|Cercate di dormire}."
+      "{Restate con me|Restate con noi|Fatemi compagnia}. La notte è lunga qui fuori sulla Strada.",
+      "{Domani sono di nuovo qui|Domani ci risiamo|Domani ci sarò}. {Ci sono sempre|Dove altro dovrei essere|Sono sempre in onda}. {Dormite, se ci riuscite|Provate a dormire|Fatevi una dormita}."
     ]
   },
   "gameShowIntro": "Benvenuti a {show}! Il prossimo concorrente rischierà tutto per {prize}!",
-  "technicalDifficulties": "Difficoltà tecniche. Restate in linea.",
+  "technicalDifficulties": "Interruzione momentanea delle trasmissioni. Ci scusiamo per il disagio.",
   "advertisementSpeaker": "Pubblicità",
   "narratorSpeaker": "Voce narrante",
   "tuneInChoices": [

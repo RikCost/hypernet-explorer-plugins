@@ -1,144 +1,866 @@
 {
+  "HelpGroups": {
+    "controls": "Controlli",
+    "party": "Gruppo",
+    "progress": "Crescita",
+    "gear": "Equipaggiamento",
+    "needs": "Salute",
+    "combat": "Combattimento",
+    "states": "Stati",
+    "elements": "Elementi",
+    "world": "Mondo",
+    "travel": "Viaggi",
+    "society": "Società",
+    "economy": "Economia",
+    "crafting": "Creazione",
+    "galaxy": "Galassia",
+    "hypernet": "Hypernet",
+    "minigames": "Svaghi",
+    "topics": "Argomenti",
+    "lore": "Tradizioni",
+    "diseases": "Malattie",
+    "history": "Cronaca"
+  },
   "HelpTopics": {
-    "squishing": {
-      "title": "Lore: Lo Squishing",
-      "description": "Il 21 dicembre 2012 la dea della discordia Eris ucciderà la dea della giustizia Maat scagliandole contro la Torre Omega. È già accaduto, nel futuro. Ciò che ha raggiunto questa dimensione è l'eco del colpo, rispedita vent'anni indietro e attraverso le 92 dimensioni, atterrata il 21 dicembre 1992 nel cielo della dimensione 3, la nostra.\n\nDa allora il paradosso sta sfaldando la linea temporale e la stabilità delle 92 dimensioni. A partire dal 1992 lo spaziotempo ha iniziato ad annodarsi in bolle di loop temporale locali (vedi: la Regola degli 80), e frammenti di altre dimensioni hanno iniziato a collassare nella nostra, primo fra tutti il continente vuoto di Varlenia. Il danno si accumula: per il 2012, quando il colpo atterrerà per davvero, si stima che la distorsione renderà questa dimensione del tutto inabitabile.\n\nLo Squishing non colpisce ogni dimensione allo stesso modo: più alto è il numero di una dimensione, più in fretta si disfa; i Green Fields, dimensione numero 77, sono già in gran parte inabitabili. La Torre Omega, conficcata nella terra dallo stesso colpo che ha scatenato tutto questo, è l'unica cosa che impedisce ancora alle 92 dimensioni di collassare l'una sull'altra; senza di essa, secondo molti, sarebbe già successo.",
-      "type": "lore"
+    "controlsMoving": {
+      "title": "",
+      "description": ""
     },
-    "ruleOf80": {
-      "title": "Lore: La Regola degli 80",
-      "description": "Da quando è iniziato lo Squishing, qualsiasi cosa si muova a più di 80 km/h viene attratta dalla bolla di loop temporale più vicina: una porzione di spaziotempo, da pochi metri a centinaia di chilometri di diametro, in cui la giornata si azzera alla fine come se non fosse mai successa. Una volta dentro, la regola si inverte: l'unico modo per uscirne è tornare a muoversi verso l'esterno oltre gli 80 km/h, e restare sotto quella soglia significa restare intrappolati nel loop.\n\nDall'esterno le bolle sono quasi invisibili, poco più di una distorsione nell'aria vista da vicino, per questo sono segnate su ogni mappa stradale, per evitare che un viaggiatore ci finisca dentro per sbaglio. Il loro numero e le loro dimensioni crescono dal 1992 e continuano a farlo con l'avvicinarsi del 2012.\n\nVivere in un loop ha un suo cupo vantaggio: l'unico modo per morire per sempre dentro una bolla è morire muovendosi a più di 80 km/h, o essere colpiti da qualcosa che lo fa. Tutto il resto semplicemente si azzera. Il prezzo è la stagnazione: la mente si abitua alla ripetizione più in fretta di quanto si creda, e chi vive nel loop conserva i ricordi di ogni giorno precedente anche mentre il mondo attorno si resetta. Nessun segnale, elettronico, mentale o magico, attraversa il confine di una bolla, motivo per cui i piccioni viaggiatori con una penna USB legata alla zampa (possono superare i 90-100 km/h col vento in coda) restano la posta più affidabile fra un loop e l'altro, e motivo per cui esiste la Società dei Camionisti: qualcuno deve pur portare persone, merci e notizie fra comunità che vivono in bolle diverse. Il motore liminale di Bubba è l'unico modo noto per attraversare una bolla in auto senza mai scendere sotto la soglia.",
-      "type": "lore"
+    "controlsMenus": {
+      "title": "",
+      "description": ""
     },
-    "encompassingRoad": {
-      "title": "Lore: La Strada Avvolgente",
-      "description": "Ogni strada di ogni mondo del multiverso è, in fondo, la stessa strada. Il motore liminale di Bubba comprime il tratto di strada davanti al veicolo e, se calibrato correttamente, apre l'accesso alla Strada Omnicomprensiva stessa: una modalità di viaggio in cui una normale uscita autostradale può portare altrove, in un altro luogo, un'altra dimensione, un altro tempo, perfino fino agli Scarti della Creazione.\n\nLa strada precede chiunque la percorra. Si narra che trilioni di anni fa il concetto stesso di strada sia nato dal Dio dell'Asfalto, che tracciò la prima, e ne fu anche la prima vittima, investito da un dio superiore che non si fermò.",
-      "type": "lore"
+    "controlsMouse": {
+      "title": "",
+      "description": ""
     },
-    "magesGuild": {
-      "title": "Lore: La Gilda dei Maghi",
-      "description": "Fondata nel 950 a.C. da Re Salomone, la Gilda dei Maghi ha governato in segreto gli equilibri del mondo per millenni, finché Margaret Thatcher non ha rivelato in mondovisione l'esistenza della magia e i suoi usi militari durante la guerra delle Falkland. All'inizio del '900 la Gilda è stata rifondata da Sir Aleister Crowley con l'appoggio della casa reale di Britannia come pseudo-ordine cavalleresco, da cui l'uso ancora oggi dei titoli Sir e Lady per i suoi vertici.\n\nOltre a ricostruire con la magia le tecnologie perdute per conto dei vari governi, il compito dichiarato della Gilda è proteggere il mondo dalle minacce extradimensionali e dagli orrori che lo Squishing continua a far entrare. Al suo interno convivono tante correnti quante sono le scuole di magia, ma ogni decisione importante passa dai Tre Pilastri, che rappresentano passato, presente e futuro. Nel 2001 i seggi sono occupati da Sir Aleister Crowley (il passato), Lady Margaret Thatcher (il presente) e 'il Padre' Shoko Asahara (il futuro).\n\nOccupare il seggio di un Pilastro ne ferma l'invecchiamento per tutta la durata dell'incarico; un mandato dura di norma cinquant'anni. Crowley non ha mai accettato di lasciare il suo, e nessuno rimasto nella Gilda è davvero in grado di opporglisi: conosce incantesimi che nemmeno gli dèi conoscono.",
-      "type": "lore"
+    "controlsGamepad": {
+      "title": "",
+      "description": ""
     },
-    "hypercapitalistCollective": {
-      "title": "Lore: Collettivo Ipercapitalista",
-      "description": "Il Collettivo Ipercapitalista è uno schema piramidale grande quanto un continente che gestisce il commercio fra le dimensioni. I suoi membri hanno preso la Regola degli 80 e ne hanno fatto dottrina: a furia di restare sopra la soglia, i loro corpi hanno smesso di azzerarsi anche da fermi, così mentre il resto del mondo va in loop e dimentica, il Collettivo ricorda tutto, indefinitamente.\n\nQuella memoria è l'intero modello di business. Vendono fughe dai loop a chi ci resta intrappolato dentro, e commerciano letteralmente qualsiasi altra cosa, ricordi ed emozioni comprese. Detengono anche il monopolio sull'unica risorsa da cui non si può fuggire in loop: controllano ogni fonte d'acqua pulita rimasta, mentre tutto il resto è tagliato con l'LSD.\n\nIl Collettivo è in guerra aperta con la Archive Foundation, la cui dottrina di trasparenza radicale si oppone direttamente a un impero commerciale costruito su segreti e leva; è invece alleato con gli Dei.",
-      "type": "lore"
+    "controlsRemap": {
+      "title": "",
+      "description": ""
     },
-    "emTheMemoryWitch": {
-      "title": "Lore: Em, la Strega della Memoria",
-      "description": "Em è nata nel 1984 a Wimbledon, in Britannia, e voleva fare la strega in un'epoca che aveva archiviato la magia tra le favole. Le cose sono cambiate quando Margaret Thatcher, che dietro le quinte era un pezzo grosso della Gilda dei Maghi, ha avuto bisogno di un fulcro per il Rituale di Salomone e ha scelto lei.\n\nIl prezzo del rituale è stato il 92% dei suoi ricordi. Non sono spariti nel nulla: sono stati forgiati nella Lancia della Memoria, la stessa arma con cui più tardi Eris ha ucciso l'aspetto Padre di YHWH. Em si è svegliata da sola sull'Isola Rituale il primo gennaio del 2001, senza un passato da ricordare e con un potere che sta ancora imparando a maneggiare.\n\nDa allora è in viaggio, a bordo del camper che divide con Bubba, diretta a un appuntamento a Beagle di cui riesce a malapena a ricordare di aver accettato.",
-      "type": "lore"
+    "controlsScreen": {
+      "title": "",
+      "description": ""
     },
-    "camelcaseMagic": {
-      "title": "Lore: Magia CamelCase",
-      "description": "Ogni incantesimo lanciato dopo lo Squishing va scritto e pronunciato in CamelCase: parole attaccate, maiuscola a ogni inizio di parola. Non è una questione di stile, e non è facoltativo. FireBall funziona. 'Palla di fuoco' no, e pronunciarlo costa caro a chi ci prova.\n\nLe formule a più parole appartengono a un'altra categoria: i trascendentali, incantesimi abbastanza potenti da rimodellare la realtà a piacimento, riserva esclusiva degli dèi. Se un mortale stacca le parole di un incantesimo, l'universo lo legge come un tentativo di trascendentale e gli presenta il conto: dalla perdita delle corde vocali a guai ben peggiori.\n\nI grimori rendono visibile la regola: un incantesimo scritto male sulla pagina inizia a contagiare le parole vicine con copie di sé stesso, e un libro non bruciato finisce per divorare qualsiasi cosa gli venga lasciata accanto. Gli incantesimi attivi si scelgono mentre si dorme, ciascuno con un proprio tetto di usi giornalieri. Infilarne due nello stesso slot li fonde in un incantesimo temporaneo finché regge; le versioni permanenti delle combinazioni che funzionano si comprano ai distributori automatici, o si conquistano con un rituale.",
-      "type": "lore"
+    "controlsSearch": {
+      "title": "",
+      "description": ""
     },
-    "alagaddaCityOfMasks": {
-      "title": "Lore: Alagadda, Città delle Maschere",
-      "description": "[Dossier della Archive Foundation, incompleto]\n\nAlagadda non compare su nessuna mappa che la Gilda o la Foundation siano mai riuscite a fissare, e ogni squadra sul campo mandata a cercarla è tornata con un racconto diverso su come ci sia entrata, quando è tornata. Ciò che sopravvive a ogni versione, e che ogni testimone insiste a ripetere per primo, è l'unica regola che la città impone senza eccezioni: ogni visitatore indossa una maschera, e non se la toglie.\n\nToglierla, per qualsiasi motivo, anche solo per un istante, e la città smette di contarti come persona. La condizione ha un nome negli archivi, Non-Persona, e una descrizione coerente in ogni testimonianza: invisibile, intoccabile, incapace di andarsene, alla deriva per strade che non registrano più la tua esistenza.\n\nNonostante la Divulgazione Totale, questo è tutto ciò che la Foundation è disposta a mettere per iscritto. Alle squadre sul campo si raccomanda: maschera indossata, maschera assicurata, maschera mai rimossa.",
-      "type": "lore"
+    "savingGame": {
+      "title": "",
+      "description": ""
     },
-    "bladeSeeds": {
-      "title": "Semi delle Lame",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "worldsFolders": {
+      "title": "",
+      "description": ""
     },
-    "beginningYourJourney": {
-      "title": "Iniziare il Viaggio",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "optionsMenu": {
+      "title": "",
+      "description": ""
     },
-    "combatSystem": {
-      "title": "Sistema di Combattimento",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "modsUpdates": {
+      "title": "",
+      "description": ""
     },
-    "cookingSystem": {
-      "title": "Sistema di Cucina",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "partyBasics": {
+      "title": "",
+      "description": ""
     },
-    "craftingThinkerSystem": {
-      "title": "Artigianato (Sistema Assembla)",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "partyCreation": {
+      "title": "",
+      "description": ""
     },
-    "crimeLawSystem": {
-      "title": "Sistema Crimine e Legge",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+    "partyClasses": {
+      "title": "",
+      "description": ""
     },
-    "datingSystem": {
-      "title": "Sistema di Appuntamenti",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "partyTraits": {
+      "title": "",
+      "description": ""
     },
-    "deathGravestones": {
-      "title": "Morte e Lapidi",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "partyAttributes": {
+      "title": "",
+      "description": ""
     },
-    "dungeonSystem": {
-      "title": "Sistema del Dungeon",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+    "partyCreatures": {
+      "title": "",
+      "description": ""
     },
-    "factionsReputation": {
-      "title": "Fazioni e Reputazione",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    "partyPortraits": {
+      "title": "",
+      "description": ""
     },
-    "fogOfWar": {
-      "title": "Nebbia di Guerra",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "partyRecruiting": {
+      "title": "",
+      "description": ""
     },
-    "hungerSleep": {
-      "title": "Fame e Sonno",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    "partyPets": {
+      "title": "",
+      "description": ""
     },
-    "hypernetShopping": {
-      "title": "Hypernet e Shopping",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "partyReproduction": {
+      "title": "",
+      "description": ""
     },
-    "lockpicking": {
-      "title": "Scassinamento",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    "partyDeath": {
+      "title": "",
+      "description": ""
     },
-    "newsSystem": {
-      "title": "Sistema Notizie",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    "partyBanterPage": {
+      "title": "",
+      "description": ""
     },
-    "partySystem": {
-      "title": "Sistema del Party",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+    "partyAutoIdle": {
+      "title": "",
+      "description": ""
     },
-    "realEstateMarket": {
-      "title": "Mercato Immobiliare",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    "progressLevels": {
+      "title": "",
+      "description": ""
     },
-    "savingYourGame": {
-      "title": "Salvare il Gioco",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+    "progressKnowledge": {
+      "title": "",
+      "description": ""
     },
-    "skillsTraining": {
-      "title": "Abilità e Allenamento",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    "progressAtlas": {
+      "title": "",
+      "description": ""
     },
-    "scalingAttributes": {
-      "title": "Scalatura e Attributi",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "progressTraining": {
+      "title": "",
+      "description": ""
     },
-    "statusEffects": {
-      "title": "Effetti di Stato",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "progressSpecializations": {
+      "title": "",
+      "description": ""
     },
-    "stockMarket": {
-      "title": "Mercato Azionario",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "progressPassives": {
+      "title": "",
+      "description": ""
     },
-    "travelVehicles": {
-      "title": "Viaggi e Veicoli",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+    "progressLoadout": {
+      "title": "",
+      "description": ""
     },
-    "weatherTime": {
-      "title": "Meteo e Tempo",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "progressFusion": {
+      "title": "",
+      "description": ""
     },
-    "worldMap": {
-      "title": "Mappa del Mondo",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    "progressGrimoires": {
+      "title": "",
+      "description": ""
+    },
+    "progressBladeSeeds": {
+      "title": "",
+      "description": ""
+    },
+    "gearSlots": {
+      "title": "",
+      "description": ""
+    },
+    "gearProficiency": {
+      "title": "",
+      "description": ""
+    },
+    "gearScaling": {
+      "title": "",
+      "description": ""
+    },
+    "gearArmor": {
+      "title": "",
+      "description": ""
+    },
+    "gearModifiers": {
+      "title": "",
+      "description": ""
+    },
+    "gearWeight": {
+      "title": "",
+      "description": ""
+    },
+    "gearBackpack": {
+      "title": "",
+      "description": ""
+    },
+    "gearArtifacts": {
+      "title": "",
+      "description": ""
+    },
+    "gearContainers": {
+      "title": "",
+      "description": ""
+    },
+    "gearRarity": {
+      "title": "",
+      "description": ""
+    },
+    "needsOverview": {
+      "title": "",
+      "description": ""
+    },
+    "needsHunger": {
+      "title": "",
+      "description": ""
+    },
+    "needsSleep": {
+      "title": "",
+      "description": ""
+    },
+    "needsHygiene": {
+      "title": "",
+      "description": ""
+    },
+    "needsSocial": {
+      "title": "",
+      "description": ""
+    },
+    "needsLeisure": {
+      "title": "",
+      "description": ""
+    },
+    "needsAddiction": {
+      "title": "",
+      "description": ""
+    },
+    "bodyParts": {
+      "title": "",
+      "description": ""
+    },
+    "bodyBiologics": {
+      "title": "",
+      "description": ""
+    },
+    "healthDiseases": {
+      "title": "",
+      "description": ""
+    },
+    "healthEpidemics": {
+      "title": "",
+      "description": ""
+    },
+    "healthSurgery": {
+      "title": "",
+      "description": ""
+    },
+    "healthAugments": {
+      "title": "",
+      "description": ""
+    },
+    "healthWeatherBody": {
+      "title": "",
+      "description": ""
+    },
+    "combatBasics": {
+      "title": "",
+      "description": ""
+    },
+    "combatCommands": {
+      "title": "",
+      "description": ""
+    },
+    "combatAP": {
+      "title": "",
+      "description": ""
+    },
+    "combatBodyParts": {
+      "title": "",
+      "description": ""
+    },
+    "combatWrestle": {
+      "title": "",
+      "description": ""
+    },
+    "combatTalk": {
+      "title": "",
+      "description": ""
+    },
+    "combatEnemyLevels": {
+      "title": "",
+      "description": ""
+    },
+    "combatMovementAI": {
+      "title": "",
+      "description": ""
+    },
+    "combatSafety": {
+      "title": "",
+      "description": ""
+    },
+    "combatModes": {
+      "title": "",
+      "description": ""
+    },
+    "combatMapBattle": {
+      "title": "",
+      "description": ""
+    },
+    "combatCards": {
+      "title": "",
+      "description": ""
+    },
+    "combatSummons": {
+      "title": "",
+      "description": ""
+    },
+    "combatArena": {
+      "title": "",
+      "description": ""
+    },
+    "combatBulletHell": {
+      "title": "",
+      "description": ""
+    },
+    "combatSpirits": {
+      "title": "",
+      "description": ""
+    },
+    "combatMimic": {
+      "title": "",
+      "description": ""
+    },
+    "combatThrow": {
+      "title": "",
+      "description": ""
+    },
+    "combatCorpses": {
+      "title": "",
+      "description": ""
+    },
+    "elementsOverview": {
+      "title": "",
+      "description": ""
+    },
+    "elementPhysical": {
+      "title": "",
+      "description": ""
+    },
+    "elementFire": {
+      "title": "",
+      "description": ""
+    },
+    "elementIce": {
+      "title": "",
+      "description": ""
+    },
+    "elementThunder": {
+      "title": "",
+      "description": ""
+    },
+    "elementWater": {
+      "title": "",
+      "description": ""
+    },
+    "petro": {
+      "title": "",
+      "description": ""
+    },
+    "elementWind": {
+      "title": "",
+      "description": ""
+    },
+    "elementSacred": {
+      "title": "",
+      "description": ""
+    },
+    "elementCursed": {
+      "title": "",
+      "description": ""
+    },
+    "worldMapPage": {
+      "title": "",
+      "description": ""
+    },
+    "worldProcedural": {
+      "title": "",
+      "description": ""
+    },
+    "worldBiomes": {
+      "title": "",
+      "description": ""
+    },
+    "worldStructures": {
+      "title": "",
+      "description": ""
+    },
+    "worldHouses": {
+      "title": "",
+      "description": ""
+    },
+    "worldTerrain": {
+      "title": "",
+      "description": ""
+    },
+    "worldDungeon": {
+      "title": "",
+      "description": ""
+    },
+    "worldPuzzles": {
+      "title": "",
+      "description": ""
+    },
+    "worldFog": {
+      "title": "",
+      "description": ""
+    },
+    "worldDigging": {
+      "title": "",
+      "description": ""
+    },
+    "worldMovement": {
+      "title": "",
+      "description": ""
+    },
+    "worldWeather": {
+      "title": "",
+      "description": ""
+    },
+    "worldDreams": {
+      "title": "",
+      "description": ""
+    },
+    "worldAdventures": {
+      "title": "",
+      "description": ""
+    },
+    "worldBologna": {
+      "title": "",
+      "description": ""
+    },
+    "worldPlatformer": {
+      "title": "",
+      "description": ""
+    },
+    "worldFlying": {
+      "title": "",
+      "description": ""
+    },
+    "worldConnections": {
+      "title": "",
+      "description": ""
+    },
+    "worldTreasure": {
+      "title": "",
+      "description": ""
+    },
+    "worldTechTree": {
+      "title": "",
+      "description": ""
+    },
+    "travelOverview": {
+      "title": "",
+      "description": ""
+    },
+    "travelModes": {
+      "title": "",
+      "description": ""
+    },
+    "vehiclesOverview": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleCamper": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleCar": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleBike": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleBroom": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleBoat": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleStarship": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleFuel": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleRepair": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleUpgrades": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleCrew": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleDriving": {
+      "title": "",
+      "description": ""
+    },
+    "roadTraffic": {
+      "title": "",
+      "description": ""
+    },
+    "peopleOverview": {
+      "title": "",
+      "description": ""
+    },
+    "peopleEmpathize": {
+      "title": "",
+      "description": ""
+    },
+    "peopleOpinion": {
+      "title": "",
+      "description": ""
+    },
+    "peopleLives": {
+      "title": "",
+      "description": ""
+    },
+    "peopleTalking": {
+      "title": "",
+      "description": ""
+    },
+    "peopleSettlements": {
+      "title": "",
+      "description": ""
+    },
+    "peoplePolitics": {
+      "title": "",
+      "description": ""
+    },
+    "peopleFactions": {
+      "title": "",
+      "description": ""
+    },
+    "peopleONU": {
+      "title": "",
+      "description": ""
+    },
+    "lawCrime": {
+      "title": "",
+      "description": ""
+    },
+    "lawPolice": {
+      "title": "",
+      "description": ""
+    },
+    "lawTrial": {
+      "title": "",
+      "description": ""
+    },
+    "lawPrison": {
+      "title": "",
+      "description": ""
+    },
+    "lawEris": {
+      "title": "",
+      "description": ""
+    },
+    "societyMail": {
+      "title": "",
+      "description": ""
+    },
+    "societyNews": {
+      "title": "",
+      "description": ""
+    },
+    "societyDiary": {
+      "title": "",
+      "description": ""
+    },
+    "societyTopics": {
+      "title": "",
+      "description": ""
+    },
+    "societyArmy": {
+      "title": "",
+      "description": ""
+    },
+    "societyMultiplayer": {
+      "title": "",
+      "description": ""
+    },
+    "societyHistory": {
+      "title": "",
+      "description": ""
+    },
+    "econMoney": {
+      "title": "",
+      "description": ""
+    },
+    "econShops": {
+      "title": "",
+      "description": ""
+    },
+    "econStealing": {
+      "title": "",
+      "description": ""
+    },
+    "econBank": {
+      "title": "",
+      "description": ""
+    },
+    "econStocks": {
+      "title": "",
+      "description": ""
+    },
+    "econProperty": {
+      "title": "",
+      "description": ""
+    },
+    "econShopOwning": {
+      "title": "",
+      "description": ""
+    },
+    "econWork": {
+      "title": "",
+      "description": ""
+    },
+    "econQuests": {
+      "title": "",
+      "description": ""
+    },
+    "econNotices": {
+      "title": "",
+      "description": ""
+    },
+    "econVending": {
+      "title": "",
+      "description": ""
+    },
+    "craftThinker": {
+      "title": "",
+      "description": ""
+    },
+    "craftForge": {
+      "title": "",
+      "description": ""
+    },
+    "craftAlchemy": {
+      "title": "",
+      "description": ""
+    },
+    "craftCooking": {
+      "title": "",
+      "description": ""
+    },
+    "craftBrewing": {
+      "title": "",
+      "description": ""
+    },
+    "craftFurniture": {
+      "title": "",
+      "description": ""
+    },
+    "craftPlants": {
+      "title": "",
+      "description": ""
+    },
+    "craftAnimals": {
+      "title": "",
+      "description": ""
+    },
+    "craftApiary": {
+      "title": "",
+      "description": ""
+    },
+    "craftArtifacts": {
+      "title": "",
+      "description": ""
+    },
+    "craftLoot": {
+      "title": "",
+      "description": ""
+    },
+    "craftContainers": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyOverview": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyTravel": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyShip": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyLanding": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyAnomalies": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyBodies": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyPatrons": {
+      "title": "",
+      "description": ""
+    },
+    "galaxySky": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetOS": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetBrowser": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetMyComputer": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetNotepad": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetControlPanel": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetTVGuide": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetObjectIndex": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetNeuroPolice": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetEurodemics": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetArtifactAnalyzer": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetTokenExchange": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetPhone": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetTV": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetRadio": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetMusic": {
+      "title": "",
+      "description": ""
+    },
+    "gamesOverview": {
+      "title": "",
+      "description": ""
+    },
+    "gamesArcade": {
+      "title": "",
+      "description": ""
+    },
+    "gamesBowling": {
+      "title": "",
+      "description": ""
+    },
+    "gamesPool": {
+      "title": "",
+      "description": ""
+    },
+    "gamesBasketball": {
+      "title": "",
+      "description": ""
+    },
+    "gamesChess": {
+      "title": "",
+      "description": ""
+    },
+    "gamesFishing": {
+      "title": "",
+      "description": ""
+    },
+    "gamesSurfing": {
+      "title": "",
+      "description": ""
+    },
+    "gamesShooting": {
+      "title": "",
+      "description": ""
+    },
+    "gamesHorseRace": {
+      "title": "",
+      "description": ""
+    },
+    "gamesTournament": {
+      "title": "",
+      "description": ""
+    },
+    "gamesGambling": {
+      "title": "",
+      "description": ""
+    },
+    "gamesPiano": {
+      "title": "",
+      "description": ""
+    },
+    "gamesLockpick": {
+      "title": "",
+      "description": ""
+    },
+    "gamesHyperTamer": {
+      "title": "",
+      "description": ""
+    },
+    "gamesCards": {
+      "title": "",
+      "description": ""
+    },
+    "gamesRaman": {
+      "title": "",
+      "description": ""
+    },
+    "gamesPeriodic": {
+      "title": "",
+      "description": ""
+    },
+    "topicHardwareStore": {
+      "title": "",
+      "description": ""
+    },
+    "topicEsotericHeavyParticles": {
+      "title": "",
+      "description": ""
+    },
+    "topicCERN": {
+      "title": "",
+      "description": ""
     },
     "arcaneSurge": {
       "title": "Stato: Impeto Arcano",
@@ -219,10 +941,6 @@
       "title": "Stato: Bagnato",
       "description": "Riduce il danno fuoco subito del 50% e aumenta il danno fulmine subito del 100%. Dura 5 turni.",
       "type": "state"
-    },
-    "petro": {
-      "title": "Petro",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
     },
     "immortal": {
       "title": "Stato: Immortale",

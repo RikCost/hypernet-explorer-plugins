@@ -364,55 +364,89 @@
     this.popScene();
   };
 
-  // The tabs are not a fixed list. There is no point offering a Magic tab to a
-  // party carrying no charms, and a hard-coded row can never offer the tab for
-  // whatever a mod or a new region put in the pockets: the row is read off what
-  // is actually in them, so every category that exists has a tab and no
-  // category that does not.
-  //
-  // The label is the item's own category name — the <category:> tag, or the
-  // weapon/armour type where there is no tag — which is what the item sheet and
-  // the shop's own grouping quote, so a thing is never filed under a name the
-  // tab of that name would not show.
-  const ALL_CATEGORY = "All";        // i18n-ignore  item-category id
+  // The tabs are a fixed row of shelves, not one tab per <category:> tag the
+  // loot happens to carry. The tags are a stock-keeping vocabulary, not a way
+  // to find something in a hurry: a row of twenty of them wrapped over three
+  // lines and still buried the potions. What a player opens the pockets for is
+  // what a thing DOES, so that is what the row asks.
+  const ALL_CATEGORY = "All";              // i18n-ignore  item-category id
   const FAVORITES_CATEGORY = "Favorites";  // i18n-ignore  item-category id
-  const MISC_CATEGORY = "Misc";      // i18n-ignore  item-category id
+  const MISC_CATEGORY = "Misc";            // i18n-ignore  item-category id
 
-  const uiCategoryOf = (item) => {
+  // i18n-ignore-start  item-category ids; the caption is Inventory.category.<id>
+  const MEDICAL_CATEGORY = "Medical";
+  const FOOD_CATEGORY = "Food";
+  const USABLE_CATEGORY = "Usable";
+  const COMBAT_CATEGORY = "Combat";
+  const BOOKS_CATEGORY = "Books";
+  const WEAPONS_CATEGORY = "Weapons";
+  const ARMOR_CATEGORY = "Armor";
+  // i18n-ignore-end
+
+  // The shelves, in the order the row reads them.
+  const UI_CATEGORIES = [
+    ALL_CATEGORY, FAVORITES_CATEGORY, MEDICAL_CATEGORY, FOOD_CATEGORY,
+    USABLE_CATEGORY, COMBAT_CATEGORY, BOOKS_CATEGORY, MISC_CATEGORY,
+    WEAPONS_CATEGORY, ARMOR_CATEGORY
+  ];
+
+  const rawCategoryOf = (item) => {
     const utils = window.ItemSystemUtils;
-    const label = utils && typeof utils.getItemCategoryName === "function"
-      ? String(utils.getItemCategoryName(item) || "").trim()
-      : "";
-    return label || MISC_CATEGORY;
+    const raw = utils && typeof utils.getRawCategoryFromNote === "function"
+      ? utils.getRawCategoryFromNote(item)
+      : null;
+    return String(raw || "").trim().toLowerCase();
   };
 
-  // Alphabetical is fair but it is not useful: Medical and Tools are what the
-  // backpack gets opened for in a hurry, so they head the row whatever letter
-  // they start with, and Materials and Body Parts trail it — stock and salvage
-  // nobody opens the backpack to reach. Everything else keeps the alphabetical
-  // middle, and this one table orders the tab row and the drawers alike so a
-  // category does not move when the player switches view.
-  const CATEGORY_FIRST = ["medical", "tools"];   // i18n-ignore  item-category ids
-  const CATEGORY_LAST = ["materials", "bodypart"];  // i18n-ignore  item-category ids
+  // A book is anything the party reads rather than drinks or swings: the Books
+  // tag, a title that names itself one, or a page that teaches a skill. The
+  // grimoires and skill books are filed under Tools in the database, so the tag
+  // alone would leave the whole library out of its own shelf.
+  // i18n-ignore-next-line  item-name heuristic, matched against the raw English name
+  const BOOK_NAME_RE = /grimoire|spellbook|skill book|\bbook\b|\btome\b|\bcodex\b/i;
 
-  // A tagged item names its category by the raw <category:> tag, an untagged one
-  // by a translated type name, so a caption folds back onto its id before it can
-  // be ranked. Spacing is dropped with it: "Body Parts" ranks as "bodyparts".
-  const categoryRankKey = (label) => {
-    const key = String(label || "").trim().toLowerCase();
-    const named = (id) => String(T(id) || "").trim().toLowerCase();
-    if (key === named('ItemUtils.category.tools')) return "tools";
-    if (key === named('ItemUtils.category.materials')) return "materials";
-    return key.replace(/[\s_-]+/g, "");
+  // Effect 43 is LEARN_SKILL: a skill book by what it does, whatever it is called.
+  const LEARN_SKILL_EFFECT = 43;
+
+  const isBookItem = (item) => {
+    if (rawCategoryOf(item) === "books") return true;  // i18n-ignore  category tag
+    if (BOOK_NAME_RE.test(String(item.name || ""))) return true;
+    return (item.effects || []).some((e) => e && e.code === LEARN_SKILL_EFFECT);
+  };
+
+  // Potions and medicines alike. The tag catches the apothecary's own stock;
+  // the effects catch everything else that puts HP or MP back or lifts a state
+  // off, which is what a potion is whatever shelf it was filed under.
+  const HEAL_EFFECT_CODES = [11, 12, 22];  // recover HP, recover MP, remove state
+
+  const isMedicalItem = (item) => {
+    const raw = rawCategoryOf(item);
+    if (raw === "medical" || raw === "homeopathy") return true;  // i18n-ignore  category tags
+    return (item.effects || []).some((e) => e && HEAL_EFFECT_CODES.includes(e.code));
+  };
+
+  // The one shelf an item stands on. Gear first, because a sword that heals is
+  // still a sword; then the library; then what it is made of; and only then
+  // when it can be used, so an item nothing can be done with falls to Misc.
+  // occasion: 0 always, 1 battle only, 2 menu only, 3 never.
+  const uiCategoryOf = (item) => {
+    if (!item) return MISC_CATEGORY;
+    if (DataManager.isWeapon(item)) return WEAPONS_CATEGORY;
+    if (DataManager.isArmor(item)) return ARMOR_CATEGORY;
+    if (isBookItem(item)) return BOOKS_CATEGORY;
+    const utils = window.ItemSystemUtils;
+    if (utils && typeof utils.isFoodItem === "function" && utils.isFoodItem(item)) {
+      return FOOD_CATEGORY;
+    }
+    if (isMedicalItem(item)) return MEDICAL_CATEGORY;
+    if (item.occasion === 1) return COMBAT_CATEGORY;
+    if (item.occasion === 0 || item.occasion === 2) return USABLE_CATEGORY;
+    return MISC_CATEGORY;
   };
 
   const categoryRank = (label) => {
-    const key = categoryRankKey(label);
-    const head = CATEGORY_FIRST.findIndex((c) => key.startsWith(c));
-    if (head >= 0) return head;
-    const tail = CATEGORY_LAST.findIndex((c) => key.startsWith(c));
-    if (tail >= 0) return CATEGORY_FIRST.length + 1 + tail;
-    return CATEGORY_FIRST.length;
+    const idx = UI_CATEGORIES.indexOf(label);
+    return idx >= 0 ? idx : UI_CATEGORIES.length;
   };
 
   const compareCategories = (a, b) =>
@@ -424,27 +458,22 @@
     if (category === FAVORITES_CATEGORY) {
       return !!window.ItemHotbar && window.ItemHotbar.isFavorited(item);
     }
-    return uiCategoryOf(item).toLowerCase() === String(category).toLowerCase();
+    return uiCategoryOf(item) === category;
   }
 
-  // The row itself: the two standing tabs, then a tab per category the pockets
-  // hold, in the order above. Favourites earns its place whatever is carried —
-  // it is a shelf the player builds rather than one the loot decides.
+  // The row itself: the two standing tabs, then whichever shelves are not
+  // empty, in the fixed order above. Favourites earns its place whatever is
+  // carried, it is a shelf the player builds rather than one the loot decides.
   Scene_EnhancedItem.prototype.uiCategories = function () {
-    const present = new Map();
-    for (const item of $gameParty.allItems()) {
-      const label = uiCategoryOf(item);
-      const key = label.toLowerCase();
-      if (!present.has(key)) present.set(key, label);
-    }
-    const labels = Array.from(present.values()).sort(compareCategories);
-    return [ALL_CATEGORY, FAVORITES_CATEGORY, ...labels];
+    const present = new Set();
+    for (const item of $gameParty.allItems()) present.add(uiCategoryOf(item));
+    return UI_CATEGORIES.filter((cat) =>
+      cat === ALL_CATEGORY || cat === FAVORITES_CATEGORY || present.has(cat));
   };
 
   // The caption a tab or a heading is printed under. Inventory.category is the
-  // one table the whole game names item categories out of — the shop's own chips
-  // and group headings read it too — and a tag nobody has written a caption for
-  // reads as itself.
+  // one table the whole game names item categories out of, and a shelf nobody
+  // has written a caption for reads as itself.
   Scene_EnhancedItem.prototype.uiCategoryLabel = function (category) {
     const key = 'Inventory.category.' + category;
     return T.has(key) ? T(key) : String(category);
@@ -456,7 +485,7 @@
   };
 
   // The All tab is a categorized list rather than one long roll: the sort
-  // orders each heading's own contents, the headings run alphabetically.
+  // orders each heading's own contents, the headings run in shelf order.
   Scene_EnhancedItem.prototype.isUIGroupedView = function () {
     return this._activeUICategory === ALL_CATEGORY;
   };
@@ -722,22 +751,17 @@
   Scene_EnhancedItem.prototype.equipItemToActor = function (item, actor) {
     if (!item || !actor) return;
 
-    let slotId = -1;
-
-    if (DataManager.isWeapon(item)) {
-      slotId = actor.equipSlots().indexOf(1);
-    } else if (DataManager.isArmor(item)) {
+    // A hand takes a weapon or a shield, so the slot is chosen by what would
+    // accept the piece rather than by matching equip types. A free hand wins;
+    // failing that the first hand whose contents can be swapped out.
+    let slotId = window.HandSlots ? window.HandSlots.emptySlotFor(actor, item) : -1;
+    if (slotId < 0) {
       const equipSlots = actor.equipSlots();
       for (let i = 0; i < equipSlots.length; i++) {
-        if (equipSlots[i] === 2 && $dataArmors[item.id].etypeId === 2) {
-          slotId = i; break;
-        } else if (equipSlots[i] === 3 && $dataArmors[item.id].etypeId === 3) {
-          slotId = i; break;
-        } else if (equipSlots[i] === 4 && $dataArmors[item.id].etypeId === 4) {
-          slotId = i; break;
-        } else if (equipSlots[i] === 5 && $dataArmors[item.id].etypeId === 5) {
-          slotId = i; break;
-        }
+        if (window.HandSlots && !window.HandSlots.slotFits(actor, i, item)) continue;
+        if (!window.HandSlots && equipSlots[i] !== item.etypeId) continue;
+        if (!actor.isEquipChangeOk(i)) continue;
+        slotId = i; break;
       }
     }
 
@@ -892,10 +916,13 @@
 
   // The item's own common event, if it carries one. Reserving it is what tells
   // the caller the use has to be played out on the map.
+  //
+  // Nothing else is staged here: an item taken on the map used to answer with a
+  // white flash over the whole screen, which is a great deal of screen for a
+  // bandage. The sound the use already plays is the confirmation.
   function reserveItemCommonEvent(item) {
     const commonEventId = commonEventEffectOf(item);
     if (commonEventId > 0) $gameTemp.reserveCommonEvent(commonEventId);
-    else $gameScreen.startFlash([255, 255, 255, 128], 8);
     return commonEventId;
   }
 
@@ -983,20 +1010,15 @@
 
       playItemSound(item);
       $gameParty.consumeItem(item);
-      let successfulUses = 0;
       for (const actor of targets) {
         const action = new Game_Action(actor);
         action.setItemObject(item);
         action.apply(actor);
-        if (actor.result().isHit()) successfulUses++;
         utils.applyNeedRestores(actor, item);
         actor.refresh();
       }
 
-      const commonEventId = commonEventEffectOf(item);
-      if (commonEventId > 0) $gameTemp.reserveCommonEvent(commonEventId);
-      else if (successfulUses > 0) $gameScreen.startFlash([255, 255, 255, 128], 8);
-      return { used: true, commonEvent: commonEventId };
+      return { used: true, commonEvent: reserveItemCommonEvent(item) };
     },
 
     /**
@@ -1035,7 +1057,6 @@
         }
       }
 
-      $gameScreen.startFlash([255, 255, 255, 128], 8);
       return { used: true, commonEvent: 0 };
     },
 

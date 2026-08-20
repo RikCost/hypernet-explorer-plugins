@@ -1,0 +1,123 @@
+{
+  "_comment": "Display text for js/db/Health/BodyParts.json, which carries only ids and keys. The root js/i18n/<lang>/bodyparts.json stays as Hendrix_Localization's English-string dictionary for text authored outside the data files.",
+  "brain": {
+    "name": "Cervello",
+    "damage_msg": "commozione cerebrale subita"
+  },
+  "genitals": {
+    "name": "Genitali",
+    "damage_msg": "genitali danneggiati"
+  },
+  "head": {
+    "name": "Testa",
+    "damage_msg": "cranio fratturato"
+  },
+  "heart": {
+    "name": "Cuore",
+    "damage_msg": "cuore lesionato"
+  },
+  "intestines": {
+    "name": "Intestino",
+    "damage_msg": "intestini perforati"
+  },
+  "left_arm": {
+    "name": "Braccio sinistro",
+    "damage_msg": "braccio sinistro danneggiato"
+  },
+  "left_ear": {
+    "name": "Orecchio sinistro",
+    "damage_msg": "orecchio sinistro fischiante"
+  },
+  "left_eye": {
+    "name": "Occhio sinistro",
+    "damage_msg": "occhio sinistro gonfio"
+  },
+  "left_fingers": {
+    "name": "Dita della mano sinistra",
+    "damage_msg": "dita della mano sinistra rotte"
+  },
+  "left_foot": {
+    "name": "Piede sinistro",
+    "damage_msg": "piede sinistro danneggiato"
+  },
+  "left_hand": {
+    "name": "Mano sinistra",
+    "damage_msg": "mano sinistra maciullata"
+  },
+  "left_leg": {
+    "name": "Gamba sinistra",
+    "damage_msg": "gamba sinistra danneggiata"
+  },
+  "left_lung": {
+    "name": "Polmone sinistro",
+    "damage_msg": "polmone sinistro collassato"
+  },
+  "left_toes": {
+    "name": "Dita del piede sinistro",
+    "damage_msg": "dita del piede sinistro schiacciate"
+  },
+  "liver": {
+    "name": "Fegato",
+    "damage_msg": "fegato lacerato"
+  },
+  "mouth": {
+    "name": "Bocca",
+    "damage_msg": "mascella lussata"
+  },
+  "nose": {
+    "name": "Naso",
+    "damage_msg": "naso rotto"
+  },
+  "right_arm": {
+    "name": "Braccio destro",
+    "damage_msg": "braccio destro danneggiato"
+  },
+  "right_ear": {
+    "name": "Orecchio destro",
+    "damage_msg": "orecchio destro fischiante"
+  },
+  "right_eye": {
+    "name": "Occhio destro",
+    "damage_msg": "occhio destro gonfio"
+  },
+  "right_fingers": {
+    "name": "Dita della mano destra",
+    "damage_msg": "dita della mano destra rotte"
+  },
+  "right_foot": {
+    "name": "Piede destro",
+    "damage_msg": "piede destro danneggiato"
+  },
+  "right_hand": {
+    "name": "Mano destra",
+    "damage_msg": "mano destra maciullata"
+  },
+  "right_leg": {
+    "name": "Gamba destra",
+    "damage_msg": "gamba destra danneggiata"
+  },
+  "right_lung": {
+    "name": "Polmone destro",
+    "damage_msg": "polmone destro collassato"
+  },
+  "right_toes": {
+    "name": "Dita del piede destro",
+    "damage_msg": "dita del piede destro schiacciate"
+  },
+  "spleen": {
+    "name": "Milza",
+    "damage_msg": "milza lacerata"
+  },
+  "stomach": {
+    "name": "Stomaco",
+    "damage_msg": "stomaco perforato"
+  },
+  "teeth": {
+    "name": "Denti",
+    "damage_msg": "denti divelti"
+  },
+  "torso": {
+    "name": "Torace",
+    "damage_msg": "costole rotte"
+  }
+}

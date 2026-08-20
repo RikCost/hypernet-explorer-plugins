@@ -9,8 +9,6 @@
     "noMatches": "Nothing under that name.",
     "untrained": "Untrained",
     "noneSelected": "No specialization selected.",
-    "classes": "Classes",
-    "traits": "Traits",
     "towards": "Towards {level}",
     "pointsToNext": "{points} more points to {level}",
     "mastered": "Fully mastered. Nothing left to learn.",

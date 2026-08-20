@@ -145,7 +145,6 @@
     // Import utilities from News System
     const t = window.NewsSystemUtils.t;
     const getLocations = window.NewsSystemUtils.getLocations;
-    const isItalian = window.NewsSystemUtils.isItalian;
 
     // Property types with their characteristics.
     // basePrice indices are 1-5 stars. Stars 1-3 are deliberately steep and
@@ -714,6 +713,24 @@
         // Company share market
         // =====================================================================
 
+        // What the player reads about a company. Companies.json carries an i18n
+        // key ("RealEstate.company.<key>.description") rather than a sentence,
+        // so a listing reads in the player's language; a company registered at
+        // runtime with plain prose is shown as written.
+        companyText(value) {
+            if (!value) return '';
+            const key = String(value);
+            return T.has(key) ? T(key) : key;
+        }
+
+        // The sector stays an English id in the data - it is what the market
+        // sorts and events match on - so its label is derived from the id.
+        sectorLabel(sector) {
+            if (!sector) return '';
+            const key = 'RealEstate.sector.' + String(sector).toLowerCase().replace(/[^a-z0-9]/g, '');
+            return T.has(key) ? T(key) : String(sector);
+        }
+
         // Merged company definitions: static Companies.json (window.WorldGen.
         // Companies) overlaid with any runtime-registered custom companies.
         getCompanyDefs() {
@@ -748,8 +765,8 @@
                     name: def.name || key,
                     sector: def.sector || '',
                     color: def.color || '#8b5a2b',
-                    description: def.description || '',
-                    descriptionIt: def.descriptionIt || def.description || '',
+                    description: this.companyText(def.description),
+                    sectorLabel: this.sectorLabel(def.sector),
                     basePrice: Number(def.sharePrice) || price,
                     price,
                     totalShares: total,
@@ -833,8 +850,7 @@
                 sharePrice: Number(opts.sharePrice) || 50,
                 totalShares: Number(opts.totalShares) || 100000,
                 color: opts.color || '#8b5a2b',
-                description: opts.description || '',
-                descriptionIt: opts.descriptionIt || opts.description || ''
+                description: opts.description || ''
             };
             // Seed the live price so it appears immediately.
             this.companyPrices[key] = this.customCompanies[key].sharePrice;
@@ -1229,7 +1245,6 @@
 
         // Tab bar switching the left list between properties and companies.
         buildTabBarHTML() {
-            const it = isItalian();
             const tab = (mode, label) => {
                 const active = this._viewMode === mode ? ' re-tab--active' : '';
                 return `<div class="re-tab${active}" onclick="SceneManager._scene.switchView('${mode}')">${label}</div>`;
@@ -1276,7 +1291,6 @@
         }
 
         buildLeftPageHTML() {
-            const it = isItalian();
             const dismissText = T('RealEstate.ui.dismiss');
             const registryTitle = this._viewMode === 'companies'
                 ? (T('RealEstate.ui.companyExchange'))
@@ -1336,7 +1350,6 @@
         }
 
         buildRightPageHTML() {
-            const it = isItalian();
             if (this._viewMode === 'companies') {
                 const companies = $realEstateManager.getCompanies();
                 const company = companies[this._companyIndex] || null;
@@ -1408,7 +1421,6 @@
         }
 
         buildCompanyListHTML(companies, selectedIndex) {
-            const it = isItalian();
             return companies.map((c, idx) => {
                 const isSelected = idx === selectedIndex;
                 const owned = c.sharesOwned > 0;
@@ -1421,7 +1433,7 @@
                         <div class="re-co-bar" style="background:${c.color}"></div>
                         <div class="item-slot-info">
                             <div class="item-slot-name">${c.name}</div>
-                            <div class="item-slot-meta"><span>${c.sector} • €${c.price.toLocaleString()}/${T('RealEstate.ui.sh')}</span></div>
+                            <div class="item-slot-meta"><span>${c.sectorLabel || c.sector} • €${c.price.toLocaleString()}/${T('RealEstate.ui.sh')}</span></div>
                         </div>
                         <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; margin-left:10px">
                             <span style="color:${statusColor}; font-family:'Lora', serif; font-size:0.952rem; font-weight:bold; letter-spacing:0.5px">${statusLabel}</span>
@@ -1432,7 +1444,6 @@
         }
 
         buildProspectusHTML(company) {
-            const it = isItalian();
             if (!company) {
                 return `
                     <div class="item-inspect item-inspect--empty" style="justify-content:center; padding:40px 10px; flex:1">
@@ -1469,7 +1480,7 @@
                 return `<div class="inspect-btn${mod} ${isSel ? 'selected' : ''}" onclick="SceneManager._scene.executeCompanyCommand('${cmd.action}')">${cmd.label}</div>`;
             }).join('');
 
-            const desc = it ? company.descriptionIt : company.description;
+            const desc = company.description;
             let ownedRows = '';
             if (company.sharesOwned > 0) {
                 ownedRows = row(T('RealEstate.ui.sharesHeld'), company.sharesOwned.toLocaleString())
@@ -1482,7 +1493,7 @@
                 <div class="item-inspect">
                     <h3 class="title" style="font-size:1.57em">${company.name}</h3>
                     <div class="inspect-section-title">${T('RealEstate.ui.shareProspectus2')}</div>
-                    ${row(T('RealEstate.ui.sector'), company.sector)}
+                    ${row(T('RealEstate.ui.sector'), company.sectorLabel || company.sector)}
                     ${row(T('RealEstate.ui.sharePrice'), `€${company.price.toLocaleString()}`, 'color:var(--text-primary-hover);')}
                     ${row(T('RealEstate.ui.totalShares'), company.totalShares.toLocaleString())}
                     ${row(T('RealEstate.ui.available2'), company.available.toLocaleString())}

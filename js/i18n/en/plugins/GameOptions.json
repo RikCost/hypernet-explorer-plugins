@@ -51,12 +51,15 @@
     "enemyDifficulty": "Enemy Difficulty",
     "cpuPartyMembers": "CPU Party Members",
     "sprite": "Sprite",
-    "sprites": "Sprites"
+    "sprites": "Sprites",
+    "markovLlmModel": "AI Dialogue Model",
+    "dialogueMode": "NPC Dialogue Mode"
   },
   "warn": {
     "language": "⚠ Work in progress: only English is fully translated. Any other language leaves large parts of the game untranslated.",
     "cardCombat": "⚠ Replaces the standard battle scene. Turning this on turns Map Battle off.",
-    "mapBattleMode": "⚠ Replaces the standard battle scene. Turning this on turns Card Combat off."
+    "mapBattleMode": "⚠ Replaces the standard battle scene. Turning this on turns Card Combat off.",
+    "markovLlmModel": "⚠ The model runs on the processor and wants a few gigabytes of memory. It writes English, and the first line of a session waits for the model to load."
   },
   "titleBackground": [
     "Random",
@@ -65,7 +68,7 @@
     "Artifacts",
     "Bestiary",
     "Weapons",
-    "Enemies 3D",
+    "Bestiary",
     "Hyperverse",
     "Camper Drive"
   ],
@@ -75,13 +78,19 @@
     "Biome",
     "Chaos"
   ],
+  "dialogueMode": [
+    "Empathize",
+    "Markovian"
+  ],
   "enemyBattler": [
     "3D",
-    "Sprites"
+    "Sprites",
+    "2D"
   ],
   "enemyBattlerToast": {
     "model3d": "3D enabled (enemies)",
-    "sprites": "Sprites enabled (enemies)"
+    "sprites": "Sprites enabled (enemies)",
+    "battlers2d": "2D battlers enabled (enemies)"
   },
   "languageProgress": "{name} 1% done",
   "settingsInSection": "{count} settings in this section.",
@@ -91,7 +100,9 @@
     "partyHud": "A card per party member in the top-left: HP, MP, states and urgent needs.",
     "partyFormation": "How the rest of the party walks behind the leader on the map.",
     "musicArtistDisplay": "Whether the game tells you what music is playing and who made it.",
-    "battleMusicName": "Which track plays when a fight starts. Random draws a different one of the tracks below at the start of every battle."
+    "battleMusicName": "Which track plays when a fight starts. Biome, the default, uses the battle theme of the place you are fighting in. Random draws a different one of the tracks below at the start of every battle.",
+    "markovLlmModel": "Which GGUF language model writes generated dialogue. Off leaves every generated line to the Markov chains. Drop a .gguf file into the game's models folder and it is listed here.",
+    "dialogueMode": "How an NPC with nothing scripted to say responds when you talk to them. Empathize plays out a Socialize action from their personality, falling back to a flavour rumour. Markovian generates a fresh line from the NPC's own word bank instead."
   },
   "descState": {
     "partyFormation": [

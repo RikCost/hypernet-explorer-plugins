@@ -158,12 +158,14 @@
     // ============================================================================
     // ADVENTURE MARKERS ("???" world-map tiles)
     // ----------------------------------------------------------------------------
-    // ProceduralAdventureSystem.js puts exactly one adventure on every biome the
-    // world map paints, on a square picked from the world seed. This draws them:
+    // ProceduralAdventureSystem.js spreads a few adventures over the biomes the
+    // world map paints, on squares picked from the world seed. This draws them:
     // a "???" plate on each square that still has its adventure to give, and the
-    // "Investigate" row openTravelDecision() offers while standing on one. The
-    // squares themselves, the encounter and the record of which have been
-    // answered all belong to that plugin (ProceduralAdventure.Earth).
+    // "Investigate" row openTravelDecision() offers while standing on one or
+    // facing it from the square next door (facing one opens that menu ahead of
+    // everything else the OK button does out here). The squares themselves, the
+    // encounter and the record of which have been answered all belong to that
+    // plugin (ProceduralAdventure.Earth).
     // ============================================================================
     const MYSTERY_FONT_SIZE     = 18;
     let   mysteryTiles          = null;  // Set<"x,y"> for the current map-315 visit
@@ -428,6 +430,35 @@
         return (isNight && night.length > 0) ? night : day;
     }
 
+    // The biome whose music a biome with no pool of its own borrows. The road
+    // family is the reason it exists: a road is not a place with a sound of its
+    // own, it is a line drawn across whatever country it crosses, so it carries
+    // no bgm in Biomes.json and takes the music of the terrain it was painted
+    // over (recorded as currentUnderBiome) or, failing that, of a neighbouring
+    // world square. Anything itself silent - another road, a biome the
+    // generator has no tracks for - is skipped, and null means "there is
+    // nothing to borrow", which leaves whatever is playing alone.
+    function borrowedMusicBiome(biomeName, procGenData, isNight) {
+        if (!procGenData) return null;
+        const candidates = [procGenData.currentUnderBiome];
+        if (procGenData.underBiomeMap) {
+            candidates.push(procGenData.underBiomeMap[`${procGenData.originX},${procGenData.originY}`]);
+        }
+        const cache = procGenData.biomeCoordinateCache;
+        if (cache && getAdjacentBiomesFromCache) {
+            const adj = getAdjacentBiomesFromCache(procGenData.originX, procGenData.originY, cache);
+            candidates.push(adj.north, adj.east, adj.south, adj.west);
+        }
+        for (const name of candidates) {
+            if (!name || name === biomeName) continue;
+            const candidate = getBiomeByName(name);
+            if (!candidate) continue;
+            if (biomeTrackPool(candidate, isNight).length === 0) continue;
+            return { name, biome: candidate };
+        }
+        return null;
+    }
+
     function isNightTimeNow() {
         const dateStr   = ($gameVariables && $gameVariables.value(113)) || '01 JAN 2001 12:00';
         const parts     = String(dateStr).split(' ').filter(Boolean);
@@ -517,8 +548,20 @@
             // the pick is seeded as day whatever the clock says: otherwise the
             // track would change at 20:00 for no reason the player can see.
             const seedNight = emptyOverride ? false : isNightTime;
-            const tracks = biomeTrackPool(biome, isNightTime);
-            const target = pickBiomeTrack(biomeName, tracks, seedNight);
+            // A biome with no music of its own borrows it from the ground it
+            // sits on or from next door. Only the music: the ambience below
+            // stays the biome's own, so a road still sounds like a road.
+            let musicBiome = biome, musicBiomeName = biomeName;
+            if (biomeTrackPool(biome, isNightTime).length === 0) {
+                const borrowed = borrowedMusicBiome(biomeName, procGenData, isNightTime);
+                if (borrowed) {
+                    musicBiome     = borrowed.biome;
+                    musicBiomeName = borrowed.name;
+                    console.log(`[updateBiomeAudio] ${biomeName} has no music of its own, borrowing ${musicBiomeName}`);  // i18n-ignore  console diagnostic
+                }
+            }
+            const tracks = biomeTrackPool(musicBiome, isNightTime);
+            const target = pickBiomeTrack(musicBiomeName, tracks, seedNight);
             const playing = AudioManager._currentBgm && AudioManager._currentBgm.name;
             if (!target) {
                 // A biome with no track list (house interiors, generic homes, ...)
@@ -531,7 +574,7 @@
                 console.log(`[updateBiomeAudio] Keeping BGM: ${playing} for biome: ${biomeName}`);
             } else {
                 AudioManager.playBgm({ name: target, volume: 90, pitch: 100, pan: 0 });
-                console.log(`[updateBiomeAudio] Playing BGM: ${target} for biome: ${biomeName} ` +
+                console.log(`[updateBiomeAudio] Playing BGM: ${target} for biome: ${musicBiomeName} ` +
                             `(nation ${currentNationId()}, ${tracks.length} candidates)`);  // i18n-ignore  console diagnostic
             }
         }
@@ -613,9 +656,19 @@
                 event.setOpacity(shouldShow ? 255 : 0);
                 if (isWaterBiome && (event.x !== 0 || event.y !== 0)) event.setPosition(0, 0);
             } else if (chestNames.includes(eventName)) {
-                const shouldShow = isUnderground && currentBiome !== 'Seabed';  // i18n-ignore  biome id
-                event.setOpacity(shouldShow ? 255 : 0);
-                if (currentBiome === 'Seabed' && (event.x !== 0 || event.y !== 0)) event.setPosition(0, 0);  // i18n-ignore  biome id
+                // Visibility follows PLACEMENT, never the layer stack. Every
+                // structure entered off a terrain feature (a flight of stairs, a
+                // grate, a cave mouth, a patron's hatch) is generated by
+                // startForcedBiome as a fresh depth-0 map with an EMPTY layer
+                // stack, so keying this on isUnderground left every dungeon,
+                // crypt and cellar chest placed, solid and openable but drawn at
+                // zero opacity. placeChestEvents is the one authority on which
+                // chests exist here: it parks the rest at (0,0).
+                event.setOpacity((event.x > 0 || event.y > 0) ? 255 : 0);
+                if (currentBiome === 'Seabed' && (event.x !== 0 || event.y !== 0)) {  // i18n-ignore  biome id
+                    event.setPosition(0, 0);
+                    event.setOpacity(0);
+                }
             }
         }
 
@@ -771,11 +824,29 @@
         mysteryRevision = (Earth && Earth.revision) ? Earth.revision() : null;
     }
 
+    // Most squares wear a "???" plate. Eris's one square a day wears a heart
+    // instead, in her own red: the party is meant to know which of the two they
+    // are walking towards before they get there.
+    const MYSTERY_PLATE      = '???';       // i18n-ignore: marker glyph
+    const MYSTERY_PLATE_COLOR = '#ffe066';
+    const ERIS_PLATE         = '\u2665';    // i18n-ignore: marker glyph
+    const ERIS_PLATE_COLOR   = '#ff5c7a';
+
+    function mysteryPlateAt(x, y) {
+        const Earth = adventureSystem();
+        let marker = null;
+        try { marker = (Earth && Earth.markerAt) ? Earth.markerAt(x, y) : null; } catch (e) { }
+        return (marker && marker.eris)
+            ? { text: ERIS_PLATE, color: ERIS_PLATE_COLOR }
+            : { text: MYSTERY_PLATE, color: MYSTERY_PLATE_COLOR };
+    }
+
     class Sprite_MysteryMarker extends Sprite {
-        initialize(tileX, tileY) {
+        initialize(tileX, tileY, plate) {
             super.initialize();
             this._tileX = tileX;
             this._tileY = tileY;
+            this._plate = plate || { text: MYSTERY_PLATE, color: MYSTERY_PLATE_COLOR };
             this._bitmapCreated = false;
             this.z = 7; // above characters
             this.visible = false; // shown once positioned by the per-frame pass
@@ -788,8 +859,8 @@
             this.bitmap.fontBold = true;
             this.bitmap.outlineWidth = 4;
             this.bitmap.outlineColor = 'black';
-            this.bitmap.textColor = '#ffe066';
-            this.bitmap.drawText('???', 0, 0, 64, 40, 'center');
+            this.bitmap.textColor = this._plate.color;
+            this.bitmap.drawText(this._plate.text, 0, 0, 64, 40, 'center');
             this.anchor.x = 0.5;
             this.anchor.y = 1;
             this._bitmapCreated = true;
@@ -814,7 +885,8 @@
         mysterySprites = [];
         for (const key of mysteryTiles) {
             const parts = key.split(',');
-            const sprite = new Sprite_MysteryMarker(Number(parts[0]), Number(parts[1]));
+            const mx = Number(parts[0]), my = Number(parts[1]);
+            const sprite = new Sprite_MysteryMarker(mx, my, mysteryPlateAt(mx, my));
             scene._spriteset._tilemap.addChild(sprite);
             mysterySprites.push(sprite);
         }
@@ -1715,6 +1787,37 @@
     // DATAMANAGER OVERRIDE
     // ============================================================================
 
+    // Lay the generated tiles over whatever base Map636.json the engine loaded.
+    // Answers false when there is no $dataMap yet to lay them on, which is the
+    // usual case right after a load has been asked for: the engine's loadMapData
+    // is asynchronous, it nulls $dataMap on the spot and only fills it in when
+    // the file lands.
+    function applyProcGenDataToDataMap() {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (!$dataMap || !pg || !pg.generatedMapData) return false;
+        $dataMap.data   = pg.generatedMapData;
+        $dataMap.width  = PROC_MAP_WIDTH;
+        $dataMap.height = PROC_MAP_HEIGHT;
+        if (pg.currentBiomeTileset) $dataMap.tilesetId = pg.currentBiomeTileset;
+        // The map name window reads the biome's declared name, not its id
+        // ("ForestTropical" -> "Tropical Forest"), and a generated structure is
+        // named outright.
+        $dataMap.displayName = procMapDisplayName();
+        return true;
+    }
+
+    // A load of map 636 that has been asked for but whose file has not landed
+    // yet, so the tiles above still have to be laid on when it does. Every route
+    // that ends on the procedural map EXCEPT one gets away without this: they
+    // all go through performTransfer, which RMMZ runs from Scene_Map.onMapLoaded,
+    // by which time the file is in and $dataMap can be written to directly.
+    // Loading a SAVE made on the procedural map is the one route with no
+    // transfer in it at all -- Scene_Map.create asks for $gameMap.mapId()
+    // outright -- so the blank base map landed after the only chance anyone had
+    // to overwrite it, and the party woke up on an empty 636 with all of their
+    // events still standing on it. Remembered here, finished in DataManager.onLoad.
+    let procMapLoadPending = false;
+
     const _DataManager_loadMapData = DataManager.loadMapData;
     DataManager.loadMapData = function(mapId) {
         if (mapId === PROC_MAP_ID &&
@@ -1742,22 +1845,27 @@
                 $gameSystem._procGenData.lastLoadedProcMapX !== currentWorldX ||
                 $gameSystem._procGenData.lastLoadedProcMapY !== currentWorldY) {
                 _DataManager_loadMapData.call(this, mapId);
-                if ($dataMap) {
-                    $dataMap.data      = $gameSystem._procGenData.generatedMapData;
-                    $dataMap.width     = PROC_MAP_WIDTH;
-                    $dataMap.height    = PROC_MAP_HEIGHT;
-                    $dataMap.tilesetId = $gameSystem._procGenData.currentBiomeTileset;
-                    // The map name window reads the biome's declared name, not
-                    // its id ("ForestTropical" -> "Tropical Forest"), and a
-                    // generated structure is named outright.
-                    $dataMap.displayName = procMapDisplayName();
-                }
+                procMapLoadPending = !applyProcGenDataToDataMap();
                 $gameSystem._procGenData.lastLoadedProcMapX = currentWorldX;
                 $gameSystem._procGenData.lastLoadedProcMapY = currentWorldY;
             }
             return;
         }
+        procMapLoadPending = false;
         _DataManager_loadMapData.call(this, mapId);
+    };
+
+    // The map file has landed. If it is the procedural map's, put the generated
+    // tiles back on it before Scene_Map ever gets to see it: isMapLoaded() only
+    // turns true through this call, and onMapLoaded (which builds the tilemap)
+    // runs on the frame after.
+    const _WMR_DataManager_onLoad = DataManager.onLoad;
+    DataManager.onLoad = function(object) {
+        _WMR_DataManager_onLoad.call(this, object);
+        if (procMapLoadPending && object && object === $dataMap) {
+            procMapLoadPending = false;
+            applyProcGenDataToDataMap();
+        }
     };
 
     // The edge-transition callback is a runtime closure that does not survive
@@ -2393,13 +2501,7 @@
             $gameSystem._procGenData &&
             $gameSystem._procGenData.generatedMapData) {
             if (!$dataMap || !$dataMap.data) DataManager.loadMapData(procMapId);
-            if ($dataMap) {
-                $dataMap.data      = $gameSystem._procGenData.generatedMapData;
-                $dataMap.width     = PROC_MAP_WIDTH;
-                $dataMap.height    = PROC_MAP_HEIGHT;
-                $dataMap.tilesetId = $gameSystem._procGenData.currentBiomeTileset;
-                $dataMap.displayName = procMapDisplayName();
-            }
+            applyProcGenDataToDataMap();
         }
 
         // Biome-to-biome moves reserve a transfer from map 636 back to map 636
@@ -2453,6 +2555,21 @@
             const y2           = $gameMap.roundYWithDirection(this.y, this.direction());
             const facingEvents = $gameMap.eventsXy(x2, y2);
 
+            // A "???" square the party is *facing* answers the OK button before
+            // anything else on the map: they walked up to the plate and turned
+            // towards it, and the travel menu that opens carries its Investigate
+            // row (plus whatever the square they are standing on still offers).
+            // Nothing contests it - an adventure square never carries an event,
+            // and none is ever placed next to a door (see the adventure plugin's
+            // doorBlock), so the faced square is one or the other, never both.
+            if (hasAdventureAt(x2, y2)) {
+                const scene = SceneManager._scene;
+                if (scene && scene.openTravelDecision) {
+                    scene.openTravelDecision();
+                    return true;
+                }
+            }
+
             // A Teleport event the party is *facing* owns the OK button outright:
             // the player deliberately walked up to it and turned towards it, so it
             // wins even on a named hardcoded square whose own travel menu would
@@ -2504,7 +2621,8 @@
                 // tiles, so isSettlementBiomeHere() is true for them; they must still
                 // get the "Visit <name>" travel menu, hence the hardcoded override.
                 if (scene && scene.openTravelDecision && !$gameMessage.isBusy() &&
-                    (!isSettlementBiomeHere() || isHardcodedBiomeHere() || hasAdventureHere())) {
+                    (!isSettlementBiomeHere() || isHardcodedBiomeHere() || hasAdventureHere() ||
+                     hasFacedInteraction())) {
                     scene.openTravelDecision();
                     return true;
                 }
@@ -2677,44 +2795,60 @@
         $gamePlayer.clearProcGenBorderArrows();
         if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
 
-        if (sess.type === 'bunker') {
-            // Climbing out of the character-creation bunker: rebuild the world
-            // square the hatch belongs to (the biome the world map holds there,
-            // with the hatch stamped back on) and step out one tile south of it.
-            // Set both by the Bunker origin and by descending the hatch itself
-            // (ProceduralTerrainInteractions), so every trip out lands the same.
-            const rec = $gameSystem._bunkerOrigin;
-            const built = rec && $gameSystem.generateBunkerSurfaceMap && $gameSystem.generateBunkerSurfaceMap();
-            if (built && rec.entranceX !== null && rec.entranceY !== null) {
-                $gameVariables.setValue(110, 1);
-                $gameVariables.setValue(111, 1);
-                $gamePlayer.reserveTransfer(procMapId, rec.entranceX, rec.entranceY + 1, 2, 0);
-            } else {
-                logWarn('Bunker exit: surface map unavailable, falling back to the world map.');
-                $gameSystem.clearProcGenData();
-                $gamePlayer.reserveTransfer(worldMapId, rec ? rec.worldX : $gamePlayer.x, rec ? rec.worldY : $gamePlayer.y, 2, 0);
-            }
-        } else if (sess.type === 'sandbox') {
-            // Structure entered off the procedural map: put that square back
-            // exactly as it was, world coordinates and tiles included, and step
-            // out onto the very entrance tile the party went in by.
-            //
-            // Wiping the procgen data here (what this used to do) left the return
-            // transfer with no terrain, and performTransfer's fallback then
-            // re-resolved the biome off $gameMap -- which at that moment is the
-            // structure's own 64x64 map, not the world map -- so the party
-            // surfaced onto a square built from tiles read out of the dungeon.
-            if (sess.mapId === procMapId && restoreProcSurface(sess.surface)) {
-                $gamePlayer.reserveTransfer(procMapId, sess.x, sess.y, sess.dir || d, 0);
-            } else {
-                // Sandbox Mode invoked from an authored map: a plain trip back.
-                $gameSystem.clearProcGenData();
-                $gamePlayer.reserveTransfer(sess.mapId, sess.x, sess.y, sess.dir || d, 0);
-            }
-        } else {
-            // Door dungeon: goUp regenerates the surface and returns to goDownEventX/Y.
+        if (sess.type !== 'bunker' && sess.type !== 'sandbox') {
+            // Door dungeon: goUp regenerates the surface and returns to
+            // goDownEventX/Y, fading and waiting on its own.
             PluginManager.callCommand($gameMap._interpreter || {}, PLUGIN_PMT, 'goUp', {});
+            return;
         }
+
+        // Wait for the screen to go fully black before swapping the tileset:
+        // reserveTransfer used to fire the instant the fade started, so the
+        // surface popped in while the dungeon was still visible underneath it.
+        // Reuses the same "wait for $gameScreen brightness 0" hook the biome
+        // edge-crossing transition drives (see Game_Screen.prototype.update below).
+        $gameScreen.startFadeOut(10);
+        pg._edgeTransitionScheduled = true;
+        pg._edgeTransitionCallback = () => {
+            if (!pg._edgeTransitionScheduled) return;
+            pg._edgeTransitionScheduled = false;
+
+            if (sess.type === 'bunker') {
+                // Climbing out of the character-creation bunker: rebuild the world
+                // square the hatch belongs to (the biome the world map holds there,
+                // with the hatch stamped back on) and step out one tile south of it.
+                // Set both by the Bunker origin and by descending the hatch itself
+                // (ProceduralTerrainInteractions), so every trip out lands the same.
+                const rec = $gameSystem._bunkerOrigin;
+                const built = rec && $gameSystem.generateBunkerSurfaceMap && $gameSystem.generateBunkerSurfaceMap();
+                if (built && rec.entranceX !== null && rec.entranceY !== null) {
+                    $gameVariables.setValue(110, 1);
+                    $gameVariables.setValue(111, 1);
+                    $gamePlayer.reserveTransfer(procMapId, rec.entranceX, rec.entranceY + 1, 2, 0);
+                } else {
+                    logWarn('Bunker exit: surface map unavailable, falling back to the world map.');
+                    $gameSystem.clearProcGenData();
+                    $gamePlayer.reserveTransfer(worldMapId, rec ? rec.worldX : $gamePlayer.x, rec ? rec.worldY : $gamePlayer.y, 2, 0);
+                }
+            } else {
+                // Structure entered off the procedural map: put that square back
+                // exactly as it was, world coordinates and tiles included, and step
+                // out onto the very entrance tile the party went in by.
+                //
+                // Wiping the procgen data here (what this used to do) left the return
+                // transfer with no terrain, and performTransfer's fallback then
+                // re-resolved the biome off $gameMap -- which at that moment is the
+                // structure's own 64x64 map, not the world map -- so the party
+                // surfaced onto a square built from tiles read out of the dungeon.
+                if (sess.mapId === procMapId && restoreProcSurface(sess.surface)) {
+                    $gamePlayer.reserveTransfer(procMapId, sess.x, sess.y, sess.dir || d, 0);
+                } else {
+                    // Sandbox Mode invoked from an authored map: a plain trip back.
+                    $gameSystem.clearProcGenData();
+                    $gamePlayer.reserveTransfer(sess.mapId, sess.x, sess.y, sess.dir || d, 0);
+                }
+            }
+        };
     }
 
     // Fade out and schedule the seamless biome-to-biome edge transition for the
@@ -3032,17 +3166,35 @@
         system._procGenData.displayAsIsland = alienBiome ? false : (shouldDisplayAsIsland ? shouldDisplayAsIsland(biomeName, adjacentBiomesForNewTile) : false);
 
         const worldCoords = { x: adjacentCoords.x, y: adjacentCoords.y };
+        // Same Earth-cache-into-alien-coordinates hazard as generateProceduralMap
+        // (ProceduralMapBiomeGenerator.js): the alien grid's small (gx,gy) can
+        // coincidentally match a real Earth world-map coordinate, so the water-
+        // corner lookups inside drawWaterEdges must never see Earth's cache here.
         system._procGenData.generatedMapData = generateProceduralTerrain(
             biome, seed, roadDirection, adjacentBiomesForNewTile,
-            cacheInfoForCheck, worldCoords, system._procGenData.biomeCoordinateCache
+            cacheInfoForCheck, worldCoords, alienBiome ? null : system._procGenData.biomeCoordinateCache
         );
         console.log(`[WorldMapReturn-Edge] Terrain generation complete`);
 
         updateBiomeAudio();
 
         const edgePos = system.getEdgeCoordinateForDirection(storedExitDir, storedPlayerX, storedPlayerY);
-        console.log(`[WorldMapReturn-Edge] Transferring to (${edgePos.x},${edgePos.y})`);
-        $gamePlayer.reserveTransfer(procMapId, edgePos.x, edgePos.y, storedExitDir, 0);
+        // The alien elevation-banded terrestrial fill and crater fields are
+        // continuous, so nothing guarantees the exact edge tile a crossing
+        // lands on is walkable (open water, a crater rim...) the way Earth's
+        // own generators each promise their borders are. Search outward from
+        // the intended edge tile for the nearest one that actually is.
+        let spawnX = edgePos.x, spawnY = edgePos.y;
+        const AT = window.ProcGenAlienTerrain;
+        if (alienBiome && AT && AT.findPassableLandingTile && system._procGenData.generatedMapData) {
+            const spot = AT.findPassableLandingTile(
+                system._procGenData.generatedMapData, system._procGenData.currentBiomeTileset,
+                PROC_MAP_WIDTH, PROC_MAP_HEIGHT, edgePos.x, edgePos.y
+            );
+            spawnX = spot.x; spawnY = spot.y;
+        }
+        console.log(`[WorldMapReturn-Edge] Transferring to (${spawnX},${spawnY})`);
+        $gamePlayer.reserveTransfer(procMapId, spawnX, spawnY, storedExitDir, 0);
     }
 
     // Trigger edge transition callback once the screen is fully black
@@ -3244,18 +3396,27 @@
 
         $gameScreen.clearWeather();
         $gameScreen.startFadeOut(10);
-        if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-        // The two "the procedural map is live" flags startProcGen raises. Already
-        // set when the descent starts on map 636, but a dig straight off the world
-        // map has to raise them itself: clearProcGenData zeroed them on the way out.
-        $gameVariables.setValue(110, 1);
-        $gameVariables.setValue(111, 1);
-        $gamePlayer.reserveTransfer(procMapId, Math.floor(PROC_MAP_WIDTH / 2), Math.floor(PROC_MAP_HEIGHT / 2), $gamePlayer.direction(), 0);
+        // Wait for the screen to go fully black before swapping the tileset:
+        // reserveTransfer used to fire the instant the fade started, so the
+        // cave popped in while the surface was still visible underneath it.
+        procGenData._edgeTransitionScheduled = true;
+        procGenData._edgeTransitionCallback = () => {
+            if (!procGenData._edgeTransitionScheduled) return;
+            procGenData._edgeTransitionScheduled = false;
 
-        setTimeout(() => updateEventVisibility(), 100);
-        setTimeout(() => refreshEnemiesForBiome(), 100);
-        setTimeout(() => updateBiomeAudio(), 100);
-        setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
+            // The two "the procedural map is live" flags startProcGen raises. Already
+            // set when the descent starts on map 636, but a dig straight off the world
+            // map has to raise them itself: clearProcGenData zeroed them on the way out.
+            $gameVariables.setValue(110, 1);
+            $gameVariables.setValue(111, 1);
+            $gamePlayer.reserveTransfer(procMapId, Math.floor(PROC_MAP_WIDTH / 2), Math.floor(PROC_MAP_HEIGHT / 2), $gamePlayer.direction(), 0);
+
+            setTimeout(() => updateEventVisibility(), 100);
+            setTimeout(() => refreshEnemiesForBiome(), 100);
+            setTimeout(() => updateBiomeAudio(), 100);
+            setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+        };
     });
 
     // ── DoorDungeon feature descent ─────────────────────────────────────────
@@ -3340,13 +3501,22 @@
 
         $gameScreen.clearWeather();
         $gameScreen.startFadeOut(10);
-        if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-        $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 0);
+        // Wait for the screen to go fully black before swapping the tileset:
+        // reserveTransfer used to fire the instant the fade started, so the
+        // dungeon popped in while the surface was still visible underneath it.
+        procGenData._edgeTransitionScheduled = true;
+        procGenData._edgeTransitionCallback = () => {
+            if (!procGenData._edgeTransitionScheduled) return;
+            procGenData._edgeTransitionScheduled = false;
 
-        setTimeout(() => updateEventVisibility(), 100);
-        setTimeout(() => refreshEnemiesForBiome(), 100);
-        setTimeout(() => updateBiomeAudio(), 100);
-        setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
+            $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 0);
+
+            setTimeout(() => updateEventVisibility(), 100);
+            setTimeout(() => refreshEnemiesForBiome(), 100);
+            setTimeout(() => updateBiomeAudio(), 100);
+            setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+        };
     });
 
     // Generate an arbitrary biome as a fresh top-level procedural map and teleport
@@ -3451,13 +3621,22 @@
         $gameVariables.setValue(111, 1);
         $gameScreen.clearWeather();
         $gameScreen.startFadeOut(10);
-        if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-        $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 0);
+        // Wait for the screen to go fully black before swapping the tileset:
+        // reserveTransfer used to fire the instant the fade started, so the
+        // structure popped in while the surface was still visible underneath it.
+        pg._edgeTransitionScheduled = true;
+        pg._edgeTransitionCallback = () => {
+            if (!pg._edgeTransitionScheduled) return;
+            pg._edgeTransitionScheduled = false;
 
-        setTimeout(() => updateEventVisibility(), 100);
-        setTimeout(() => refreshEnemiesForBiome(), 100);
-        setTimeout(() => updateBiomeAudio(), 100);
-        setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
+            $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 0);
+
+            setTimeout(() => updateEventVisibility(), 100);
+            setTimeout(() => refreshEnemiesForBiome(), 100);
+            setTimeout(() => updateBiomeAudio(), 100);
+            setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+        };
     });
 
     PluginManager.registerCommand(PLUGIN_PMT, 'goUp', () => {
@@ -3497,13 +3676,22 @@
 
         $gameScreen.clearWeather();
         $gameScreen.startFadeOut(10);
-        if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-        $gamePlayer.reserveTransfer(procMapId, goDownX, goDownY, $gamePlayer.direction(), 0);
+        // Wait for the screen to go fully black before swapping the tileset:
+        // reserveTransfer used to fire the instant the fade started, so the
+        // surface popped in while the dungeon was still visible underneath it.
+        procGenData._edgeTransitionScheduled = true;
+        procGenData._edgeTransitionCallback = () => {
+            if (!procGenData._edgeTransitionScheduled) return;
+            procGenData._edgeTransitionScheduled = false;
 
-        setTimeout(() => updateEventVisibility(), 100);
-        setTimeout(() => refreshEnemiesForBiome(), 100);
-        setTimeout(() => updateBiomeAudio(), 100);
-        setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
+            $gamePlayer.reserveTransfer(procMapId, goDownX, goDownY, $gamePlayer.direction(), 0);
+
+            setTimeout(() => updateEventVisibility(), 100);
+            setTimeout(() => refreshEnemiesForBiome(), 100);
+            setTimeout(() => updateBiomeAudio(), 100);
+            setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+        };
     });
 
     PluginManager.registerCommand(PLUGIN_PMT, 'switchLayer', () => {
@@ -3530,13 +3718,22 @@
                 rebuildSurfaceFromSeed(procGenData, previousBiomeName, previousBiome);
             }
 
+            // Wait for the screen to go fully black before swapping the tileset:
+            // reserveTransfer used to fire the instant the fade started, so the
+            // surface popped in while the lower layer was still visible underneath it.
             $gameScreen.clearWeather(); $gameScreen.startFadeOut(10);
-            if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-            $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 0);
-            setTimeout(() => updateEventVisibility(), 100);
-            setTimeout(() => refreshEnemiesForBiome(), 100);
-            setTimeout(() => updateBiomeAudio(), 100);
-            setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            procGenData._edgeTransitionScheduled = true;
+            procGenData._edgeTransitionCallback = () => {
+                if (!procGenData._edgeTransitionScheduled) return;
+                procGenData._edgeTransitionScheduled = false;
+
+                if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
+                $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 0);
+                setTimeout(() => updateEventVisibility(), 100);
+                setTimeout(() => refreshEnemiesForBiome(), 100);
+                setTimeout(() => updateBiomeAudio(), 100);
+                setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            };
 
         } else {
             if (!procGenData.currentBiome) procGenData.currentBiome = 'Cave';
@@ -3576,13 +3773,22 @@
             const worldCoords = { x: procGenData.originX, y: procGenData.originY };
             procGenData.generatedMapData = generateProceduralTerrain(lowerBiome, seed, null, adjacentBiomes, null, worldCoords, procGenData.biomeCoordinateCache);
 
+            // Wait for the screen to go fully black before swapping the tileset:
+            // reserveTransfer used to fire the instant the fade started, so the
+            // lower layer popped in while the surface was still visible underneath it.
             $gameScreen.clearWeather(); $gameScreen.startFadeOut(10);
-            if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-            $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 0);
-            setTimeout(() => updateEventVisibility(), 100);
-            setTimeout(() => refreshEnemiesForBiome(), 100);
-            setTimeout(() => updateBiomeAudio(), 100);
-            setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            procGenData._edgeTransitionScheduled = true;
+            procGenData._edgeTransitionCallback = () => {
+                if (!procGenData._edgeTransitionScheduled) return;
+                procGenData._edgeTransitionScheduled = false;
+
+                if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
+                $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 0);
+                setTimeout(() => updateEventVisibility(), 100);
+                setTimeout(() => refreshEnemiesForBiome(), 100);
+                setTimeout(() => updateBiomeAudio(), 100);
+                setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+            };
         }
     });
 
@@ -3780,12 +3986,9 @@
     };
 
     Window_WorldMapChoice.prototype.makeCommandList = function() {
-        // The same row does two jobs: on Earth it goes back to the world map, on
-        // another planet it opens the landing-site picker (see commandWorldMap).
-        this.addCommand(
-            isAlienSurfaceNow() ? T('WorldMapReturn.chooseLandingSite')
-                                : T('WorldMapReturn.returnToWorldMap'),
-            'return');
+        // One row, three jobs: the world map on Earth, the landing-site picker on
+        // another planet, the lift on a tower floor (see commandWorldMap).
+        this.addCommand(worldMapReturnLabel(), 'return');
         if ($gameMap.mapId() === procMapId) {
             const procGenData   = $gameSystem._procGenData;
             const isUnderground = procGenData && procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0;
@@ -4117,6 +4320,18 @@
         return true;
     }
 
+    // One row, three jobs: on Earth it goes back to map 315, on another planet's
+    // surface it opens the landing-site picker, and on a tower floor it calls the
+    // lift. commandWorldMap decides which; this only names it.
+    function worldMapReturnLabel() {
+        if (isAlienSurfaceNow()) return T('WorldMapReturn.chooseLandingSite');
+        const tower = window.DungeonFloors;
+        if (tower && tower.insideTower && tower.insideTower()) {
+            return T('WorldMapReturn.returnToElevator');
+        }
+        return T('WorldMapReturn.returnToWorldMap');
+    }
+
     function isAlienSurfaceNow() {
         return !!(window.GalaxySim && window.GalaxySim.isAlienSurface &&
                   window.GalaxySim.isAlienSurface());
@@ -4286,43 +4501,133 @@
         return tag ? setPlayerWorldCoords(tag.x, tag.y) : false;
     }
 
+    // Does the square at (x, y) still have its adventure to give? A town square
+    // suppresses the travel menu, so this has to be able to open it on its own:
+    // the town's own adventure is reached no other way.
+    function hasAdventureAt(x, y) {
+        const Earth = adventureSystem();
+        return !!(Earth && $gameMap.mapId() === worldMapId && Earth.isPendingAt(x, y));
+    }
+
+    function hasAdventureHere() {
+        return hasAdventureAt($gamePlayer.x, $gamePlayer.y);
+    }
+
+    // The world square the party is turned towards. Walking up to a "???" plate
+    // or to a named place and facing it is the same act of interaction as
+    // standing on it, so the travel menu answers for that square too and the
+    // party never has to take the last step onto it.
+    function facedWorldCoords() {
+        if (!$gamePlayer || $gameMap.mapId() !== worldMapId) return null;
+        const d = $gamePlayer.direction();
+        const x = $gameMap.roundXWithDirection($gamePlayer.x, d);
+        const y = $gameMap.roundYWithDirection($gamePlayer.y, d);
+        if (!$gameMap.isValid(x, y)) return null;
+        if (x === $gamePlayer.x && y === $gamePlayer.y) return null;
+        return { x, y };
+    }
+
+    // The destination key of the place occupying (x, y), or '' for open country.
+    // HardcodedBiomeNames is Destinations.json's own footprint, flattened tile by
+    // tile at load time (see DataService), so every square of a named place
+    // answers with that place.
+    function destinationKeyAt(x, y) {
+        const named = window.WorldGen && window.WorldGen.HardcodedBiomeNames;
+        return (named && named[`${x},${y}`]) || '';
+    }
+
+    // How a world square reads in a menu row: the readable name of the place
+    // standing on it, its biome otherwise.
+    function squareLabel(x, y) {
+        const key = destinationKeyAt(x, y);
+        if (key) {
+            return (window.WorkSystem && window.WorkSystem.destinationName)
+                ? window.WorkSystem.destinationName(key) : key;
+        }
+        return localizeName(worldSquareName(x, y)) || T('WorldMapReturn.wilderness');
+    }
+
+    // The faced square's own place, when it is one the party can walk into and
+    // is not simply the far side of the place they are already standing in.
+    // Visiting puts them on that square first, so a square they could not step
+    // onto is not offered: they would come back out of the map stranded on it.
+    function facedDestination(faced) {
+        if (!faced) return '';
+        const key = destinationKeyAt(faced.x, faced.y);
+        if (!key || key === destinationKeyAt($gamePlayer.x, $gamePlayer.y)) return '';
+        if (!$gamePlayer.canPass($gamePlayer.x, $gamePlayer.y, $gamePlayer.direction())) return '';
+        return squareLabel(faced.x, faced.y);
+    }
+
+    // Is there anything on the faced square worth opening the menu for on its
+    // own, over ground that would otherwise suppress it (a town tile, say)?
+    function hasFacedInteraction() {
+        const faced = facedWorldCoords();
+        if (!faced) return false;
+        return hasAdventureAt(faced.x, faced.y) || !!facedDestination(faced);
+    }
+
     // Shared gate for the travel-decision menu. Named hardcoded locations
     // usually sit on City/Burg tiles, so isSettlementBiomeHere() is true for
     // them. They still get a "Visit <name>" travel choice, so only suppress the
-    // menu over plain settlement tiles that are NOT a named hardcoded location.
-    // Is the party standing on a square whose biome still has its adventure to
-    // give? A town square suppresses the travel menu, so this has to be able to
-    // open it on its own: the town's own adventure is reached no other way.
-    function hasAdventureHere() {
-        const Earth = adventureSystem();
-        return !!(Earth && $gameMap.mapId() === worldMapId &&
-            Earth.isPendingAt($gamePlayer.x, $gamePlayer.y));
-    }
-
+    // menu over plain settlement tiles that are NOT a named hardcoded location,
+    // hold no unplayed adventure and face nothing worth interacting with.
     function canOpenTravelDecisionHere() {
         if ($gameMessage.isBusy()) return false;
         if (window.ProceduralAdventure && window.ProceduralAdventure.isPlaying()) return false;
         if ($gameMap.mapId() !== worldMapId) return false;
-        return !isSettlementBiomeHere() || isHardcodedBiomeHere() || hasAdventureHere();
+        return !isSettlementBiomeHere() || isHardcodedBiomeHere() || hasAdventureHere() ||
+            hasFacedInteraction();
     }
 
     Scene_Map.prototype.openTravelDecision = function() {
         if (!canOpenTravelDecisionHere()) return;
-        // Standing on a "???" square, the biome's own adventure is offered first
-        // and above everything else: it is the reason the plate is there.
         const Earth = adventureSystem();
-        const adventure = !!(Earth && Earth.isPendingAt($gamePlayer.x, $gamePlayer.y));
-        const visitLabel = T('WorldMapReturn.visit', { place: getCurrentLocationName() });
-        const choices = [];
-        if (adventure) choices.push(T('Anomaly.ui.investigate'));
-        choices.push(visitLabel, T('WorldMapReturn.makeCamp'), T('WorldMapReturn.cancel'));
-        const cancelIndex = choices.length - 1;
-        $gameMessage.setChoices(choices, 0, cancelIndex);
+        const faced = facedWorldCoords();
+        // Every row carries the action it performs, so the order below is the
+        // only place that decides what the menu reads like.
+        const rows = [];
+        // Standing on a "???" square, the biome's own adventure is offered first
+        // and above everything else: it is the reason the plate is there. A
+        // plate the party is only facing comes right after it, named after its
+        // square so the two are never confused for one another.
+        if (hasAdventureHere()) {
+            rows.push({
+                label: T('Anomaly.ui.investigate'),
+                run: () => { Earth.beginAt($gamePlayer.x, $gamePlayer.y); },
+            });
+        }
+        if (faced && hasAdventureAt(faced.x, faced.y)) {
+            rows.push({
+                label: T('WorldMapReturn.investigatePlace', { place: squareLabel(faced.x, faced.y) }),
+                run: () => { Earth.beginAt(faced.x, faced.y); },
+            });
+        }
+        rows.push({
+            label: T('WorldMapReturn.visit', { place: getCurrentLocationName() }),
+            run: () => { performStopTravel(); },
+        });
+        const facedPlace = facedDestination(faced);
+        if (facedPlace) {
+            rows.push({
+                label: T('WorldMapReturn.visit', { place: facedPlace }),
+                // Visiting the next square over IS entering it, so the party is
+                // put on it first: vars 43/44, the generator's origin and the
+                // door picked for the side crossed all read the same square the
+                // player aimed at, exactly as if they had taken the last step.
+                run: () => { $gamePlayer.locate(faced.x, faced.y); performStopTravel(); },
+            });
+        }
+        rows.push({
+            label: T('WorldMapReturn.makeCamp'),
+            run: () => { $gameTemp._pendingWorldMapCommand = 'makeCamp'; },
+        });
+        rows.push({ label: T('WorldMapReturn.cancel'), run: null });
+        const cancelIndex = rows.length - 1;
+        $gameMessage.setChoices(rows.map(r => r.label), 0, cancelIndex);
         $gameMessage.setChoiceCallback((choice) => {
-            const index = adventure ? choice - 1 : choice;
-            if (adventure && choice === 0) { Earth.beginAt($gamePlayer.x, $gamePlayer.y); }
-            else if (index === 0) { performStopTravel(); }
-            else if (index === 1) { $gameTemp._pendingWorldMapCommand = 'makeCamp'; }
+            const row = rows[choice];
+            if (row && row.run) row.run();
         });
         Input.clear();
         // The click destination is still the tile the player is standing on, and
@@ -4334,17 +4639,21 @@
     function updateWorldMapToggleHotkey() {
         if (!Input.isTriggered(WMR_TOGGLE_KEY)) return;
         if ($gameMessage.isBusy() || $gameMap.isEventRunning() || $gamePlayer.isTransferring()) return;
-        const mapId = $gameMap.mapId();
-        if (mapId === procMapId) {
-            // procMapId (636) is also what an alien planet's surface stands on
-            // (GalaxySim_Core's isAlienSurface). performReturnToWorldMap() already
-            // asks divertedToLandingPicker() first, which opens the landing-grid
-            // picker instead of transferring to Earth's map 315 whenever the party
-            // is off-world, so T reaches the right "go back up" screen either way.
-            performReturnToWorldMap();
-        } else if (mapId === worldMapId) {
+        if ($gameMap.mapId() === worldMapId) {
             performStopTravel();
+            return;
         }
+        // Everywhere else the key leads out: the procedural map, but equally a
+        // house, a shop, a cellar, a hand-made town map -- anywhere the party
+        // walked into off the world map is somewhere they can walk back out of.
+        // procMapId (636) is also what an alien planet's surface stands on
+        // (GalaxySim_Core's isAlienSurface). performReturnToWorldMap() asks
+        // divertedToLandingPicker() first, which opens the landing-grid picker
+        // instead of transferring to Earth's map 315 whenever the party is
+        // off-world, so T reaches the right "go back up" screen either way, and
+        // divertedToElevator() after it, which keeps the tower's floors leading
+        // to the lift rather than to the world map.
+        performReturnToWorldMap();
     }
 
     const _Scene_Map_update_wmr = Scene_Map.prototype.update;
@@ -4466,12 +4775,11 @@
         if ($gameMap.mapId() === 1414 && $gameSwitches.value(100)) {
             this.playBuzzerSound(); return;
         }
-        // Planetside this entry is the landing-site picker, not a way home.
-        if (divertedToLandingPicker()) return;
-        const saved = playerWorldCoords();
-        if (saved.x !== 0 || saved.y !== 0) {
-            $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
-        }
+        // Planetside this entry is the landing-site picker, not a way home, and
+        // inside the tower it is the lift: both answer inside the call below,
+        // which is false only when the press opened a scene of its own or led
+        // nowhere at all. The menu closes on everything else.
+        if (!performReturnToWorldMap()) return;
         SceneManager.pop();
     };
 
@@ -4533,12 +4841,25 @@
         return `proc:${pg.currentBiome}:${wx},${wy}:${depth}${salt}`;
     };
 
+    // The tower's floors are not squares of the world: the party climbed into
+    // them and the lift is the way back out, so Map/DungeonFloorSystem.js is
+    // offered the request before the world map ever sees it. True means it took
+    // the press and put the party at the elevator instead.
+    function divertedToElevator() {
+        const tower = window.DungeonFloors;
+        return !!(tower && tower.returnToElevator && tower.returnToElevator());
+    }
+
+    // True when the press was used up: a transfer reserved, or the tower or the
+    // landing picker answering in the world map's place. False means nothing
+    // happened and the caller should leave its own scene alone.
     function performReturnToWorldMap() {
-        if (divertedToLandingPicker()) return;
+        if (divertedToLandingPicker()) return false;
+        if (divertedToElevator()) return true;
         const saved = playerWorldCoords();
-        if (saved.x !== 0 || saved.y !== 0) {
-            $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
-        }
+        if (saved.x === 0 && saved.y === 0) return false;
+        $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
+        return true;
     }
 
     // ============================================================================

@@ -374,6 +374,51 @@
         return resolveFromData(ed.meta || {}, ed.name);
     }
 
+    // ── One fight's forced body ─────────────────────────────────────────────
+    // A battle can be told what its enemies look like regardless of what the
+    // troop holds, as { archetype, tint }: the archetype names a registered
+    // procedural model every enemy of that fight is built as, and the tint is a
+    // colour their whole body is pulled towards. The zombie apocalypse is what
+    // it was written for (NPCSystem walks the party into one of the dead and
+    // the fight is against a green procedural body, not against whatever
+    // battler the generic person troop carries), and it is cleared at the top
+    // of BattleManager.setup below so no later fight can inherit it.
+    function battleOverride() {
+        const o = (typeof $gameTemp !== 'undefined' && $gameTemp) ? $gameTemp._battler3DOverride : null;
+        return (o && typeof o === 'object') ? o : null;
+    }
+
+    // The archetype key one enemy of THIS fight renders as: the override's, if
+    // this battle has one and it names a model that is actually registered.
+    function battleArchetype(enemy) {
+        const o = battleOverride();
+        if (o && o.archetype) {
+            const k = String(o.archetype).toLowerCase();
+            if (ArchetypeRegistry[k]) return k;
+        }
+        return resolveArchetype(enemy);
+    }
+
+    // Pull every material of a built model towards one colour. Mutated in
+    // place rather than cloned: a procedural body builds its own materials per
+    // instance, and the part-loss flashes, the death fade and the spawn fade
+    // all hold references to exactly these, so replacing them would leave that
+    // bookkeeping pointing at materials nothing renders.
+    const OVERRIDE_TINT_STRENGTH = 0.55;
+    function applyModelTint(root, tint) {
+        if (!root || typeof root.traverse !== 'function' || typeof THREE === 'undefined') return;
+        const target = new THREE.Color(tint);
+        root.traverse(obj => {
+            const mat = obj.material;
+            if (!mat) return;
+            const list = Array.isArray(mat) ? mat : [mat];
+            for (const m of list) {
+                if (m && m.color && m.color.lerp) m.color.lerp(target, OVERRIDE_TINT_STRENGTH);
+                if (m && m.emissive && m.emissive.lerp) m.emissive.lerp(target, OVERRIDE_TINT_STRENGTH * 0.5);
+            }
+        });
+    }
+
     //=============================================================================
     // BattlerModel3D - Manages an individual GLB model (unchanged from v1)
     //=============================================================================
@@ -740,7 +785,11 @@
             // World / generation seed hash (0 for the canonical default "esoteric").
             // Folded into the SPECIES identity below so a different world seed
             // re-rolls a species' skin texture, colour AND baseline proportions.
-            const gseed = (window.Battler3D && window.Battler3D.genSeedHash) ? window.Battler3D.genSeedHash() : 0;
+            // In battle this is the fight's own randomised roll, everywhere
+            // else the world seed (see Battler3D.lookSeedHash).
+            const gseed = (window.Battler3D && window.Battler3D.lookSeedHash)
+                ? window.Battler3D.lookSeedHash()
+                : ((window.Battler3D && window.Battler3D.genSeedHash) ? window.Battler3D.genSeedHash() : 0);
 
             // Species identity: keyed to the enemy id + world seed ONLY (NOT the
             // battle event / troop index), so EVERY instance of a species under a
@@ -886,6 +935,93 @@
         applySkin(mat) {
             if (mat) { mat.map = this.skinTex(); mat.needsUpdate = true; }
             return mat;
+        }
+
+        // ── Shared draconic-family geometry helpers ──────────────────────────
+        // A tapered cylinder strut linking two points, used to bridge chained
+        // ball/segment bodies (necks, tails, spines) into a continuous silhouette
+        // instead of a loose row of floating spheres.
+        addStrut(parent, mat, p0, p1, r0, r1, radialSegments) {
+            const a = (p0 instanceof THREE.Vector3) ? p0 : new THREE.Vector3(p0.x, p0.y, p0.z);
+            const b = (p1 instanceof THREE.Vector3) ? p1 : new THREE.Vector3(p1.x, p1.y, p1.z);
+            const dir = new THREE.Vector3().subVectors(b, a);
+            const len = dir.length();
+            if (len < 1e-4 || !parent) return null;
+            const cyl = new THREE.Mesh(new THREE.CylinderGeometry(Math.max(0.01, r1), Math.max(0.01, r0), len, radialSegments || 6), mat);
+            cyl.position.copy(a).lerp(b, 0.5);
+            cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+            parent.add(cyl);
+            return cyl;
+        }
+
+        // A darker, opaque clone of a membrane material for wing/rib bone struts,
+        // cached per source material so repeat calls reuse the same instance.
+        _wingBoneMat(mat) {
+            if (!this._wingBoneCache) this._wingBoneCache = new Map();
+            let bone = this._wingBoneCache.get(mat);
+            if (!bone) {
+                bone = mat.clone();
+                bone.color.multiplyScalar(0.5);
+                bone.transparent = false; bone.opacity = 1.0;
+                bone.emissiveIntensity = 0;
+                this._wingBoneCache.set(mat, bone);
+            }
+            return bone;
+        }
+
+        // A batlike dragon wing: an arm bone from the shoulder to a "knuckle",
+        // several finger struts fanning out from there, and a scalloped membrane
+        // (a triangle fan with the trailing edge between fingers pulled back
+        // toward the knuckle) so the wing reads as webbed skin stretched over
+        // bones rather than one solid flat sail. Kept to the same call shape as
+        // the old flat-cone `_wing(mat, side, x, y, z)` so every caller across
+        // the draconic families can swap in unchanged: `x,y,z` is the shoulder
+        // attachment point on the body, `side` is -1 (left) or 1 (right).
+        buildDragonWing(mat, side, x, y, z, opts) {
+            opts = opts || {};
+            const g = new THREE.Group();
+            const fingers = opts.fingers || 4;
+            const span = opts.span !== undefined ? opts.span : 1.5;
+            const angMin = opts.angMin !== undefined ? opts.angMin : 0.55;
+            const angMax = opts.angMax !== undefined ? opts.angMax : 1.55;
+            const droop = opts.droop !== undefined ? opts.droop : 0.22;
+            const boneMat = this._wingBoneMat(mat);
+
+            const armLen = span * 0.32;
+            this.addStrut(g, boneMat, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, armLen, 0.02), 0.065, 0.045);
+            const knuckle = new THREE.Vector3(0, armLen, 0.02);
+
+            const tips = [];
+            for (let i = 0; i < fingers; i++) {
+                const t = fingers > 1 ? i / (fingers - 1) : 0;
+                const ang = angMin + (angMax - angMin) * t;
+                const len = span * (1.0 - t * 0.32);
+                const tip = new THREE.Vector3(0, len, 0);
+                tip.applyAxisAngle(new THREE.Vector3(0, 0, 1), side * ang);
+                tip.add(knuckle);
+                tips.push(tip);
+                this.addStrut(g, boneMat, knuckle, tip, 0.035, 0.02);
+            }
+
+            const shoulder = new THREE.Vector3(0, 0, 0);
+            const verts = [];
+            const pushTri = (a, b, c) => { verts.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z); };
+            pushTri(shoulder, knuckle, tips[0]);
+            for (let i = 0; i < tips.length - 1; i++) {
+                pushTri(shoulder, tips[i], tips[i + 1]);
+                const scallop = tips[i].clone().lerp(tips[i + 1], 0.5).lerp(knuckle, droop);
+                pushTri(tips[i], scallop, tips[i + 1]);
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+            geo.computeVertexNormals();
+            const membrane = new THREE.Mesh(geo, mat);
+            g.add(membrane);
+
+            g.position.set(x, y, z); g._side = side; g._wingTips = tips;
+            this.bodyGroup.add(g);
+            if (this._wings) this._wings.push(g);
+            return g;
         }
 
         // Apply this.scale plus the per-id non-uniform body proportions to the
@@ -1036,6 +1172,21 @@
         hasAnimation(animName) {
             animName = animName.toLowerCase().replace(/[0-9]/g, '');
             return ANIM_STATES.includes(animName);
+        }
+
+        // ── Standing still vs actually travelling ────────────────────────────
+        // True only while a locomotion loop plays, i.e. the model is really
+        // crossing the overworld rather than holding its ground in a battle.
+        isLocomoting() {
+            return LOCO_STATES.includes(this.currentAnimation);
+        }
+
+        // Multiplier a family applies to its own leg-swing gait: a full stride
+        // while walking the world or lunging on an attack, none while the model
+        // is just standing there. Quadrupeds used to walk on the spot for the
+        // whole battle; now they plant their feet and only breathe.
+        strideMul(fast) {
+            return (fast || this.isLocomoting()) ? 1 : 0;
         }
 
         // ── Locomotion (walk / run / fly / swim) ─────────────────────────────
@@ -1897,6 +2048,9 @@
 
                 battlerModel.model.position.set(x, actualY, z);
                 if (window.PSXShader) window.PSXShader.applyToObject(battlerModel.model);
+                if (battlerModel._overrideTint != null) {
+                    applyModelTint(battlerModel.model, battlerModel._overrideTint);
+                }
                 armModelFades(battlerModel.model);
                 this.scene.add(battlerModel.model);
                 this.models.set(key, battlerModel);
@@ -1996,6 +2150,15 @@
             debugLog('3D scene disposed');
         }
     }
+
+    // A forced body belongs to the one fight it was armed for: cleared here, so
+    // the caller arms it AFTER BattleManager.setup (the way NPCSystem's zombie
+    // collision does) and no later battle can inherit it.
+    const _BattleManager_setup_battler3DOverride = BattleManager.setup;
+    BattleManager.setup = function (troopId, canEscape, canLose) {
+        if (typeof $gameTemp !== 'undefined' && $gameTemp) $gameTemp._battler3DOverride = null;
+        _BattleManager_setup_battler3DOverride.call(this, troopId, canEscape, canLose);
+    };
 
     //=============================================================================
     // Public API (registry + base class) for family plugins
@@ -2380,6 +2543,77 @@
     // (bestiary/title) -> a stable canonical look per enemy id.
     window.Battler3D._battleOriginSeed = 0;
 
+    // Every fight also rolls its OWN look seed, which stands in for the world
+    // generation seed for as long as the battle runs: the monsters the party
+    // meets in the field are not one look per species handed down by the world,
+    // each one is its own creature. The roll is kept against the event that
+    // started the fight (in the save), so a monster fled from is wearing the
+    // same body when the party runs into it again -- that same event, not just
+    // another monster out of the same troop. A fight with no event behind it (a
+    // plain random encounter) rolls fresh every time and remembers nothing.
+    window.Battler3D._battleLookSeed = 0;
+    window.Battler3D._battleOriginKey = '';
+
+    function _randomLookSeed() {
+        return (Math.floor(Math.random() * 4294967296) >>> 0) || 1;
+    }
+
+    function _lookSeedStore() {
+        if (typeof $gameSystem === 'undefined' || !$gameSystem) return null;
+        if (!$gameSystem._b3dLookSeeds) $gameSystem._b3dLookSeeds = {};
+        return $gameSystem._b3dLookSeeds;
+    }
+
+    // How many fled-from monsters are remembered. Only a fight that was NOT won
+    // leaves an entry behind, so the list grows slowly; past the cap the oldest
+    // rolls are let go and those monsters are strangers again.
+    const LOOK_SEED_MEMORY = 400;
+
+    function _lookSeedFor(key) {
+        const store = key ? _lookSeedStore() : null;
+        if (!store) return _randomLookSeed();
+        if (!store[key]) {
+            const keys = Object.keys(store);
+            for (let i = 0; i <= keys.length - LOOK_SEED_MEMORY; i++) delete store[keys[i]];
+            store[key] = _randomLookSeed();
+        }
+        return store[key] >>> 0;
+    }
+
+    // What a model actually folds in as its generation seed. A seed somebody
+    // asked for by name always wins: the bestiary, the creature wizard and the
+    // viewer each set one around the model they are about to build, and they
+    // must get the creature they asked for even mid-fight. With none set (the
+    // whole of ordinary play, where the seed stays at its default) it is the
+    // running battle's own roll, and 0 -- the canonical look -- outside battle.
+    window.Battler3D.lookSeedHash = function () {
+        const g = window.Battler3D.genSeedHash ? window.Battler3D.genSeedHash() : 0;
+        if (g) return g;
+        return (window.Battler3D._battleLookSeed || 0) >>> 0;
+    };
+
+    // The identity of the body a battler is wearing right now, small enough to
+    // be written onto an actor and read back later: a monster recruited out of
+    // a fight keeps the body it was talked to in, on the status sheet and in
+    // the Empathize panel.
+    window.Battler3D.currentLook = function (index) {
+        return {
+            seed: (window.Battler3D._battleLookSeed || 0) >>> 0,
+            origin: (window.Battler3D._battleOriginSeed || 0) >>> 0,
+            index: index || 0
+        };
+    };
+
+    // Build something with a recorded look instead of the current one.
+    window.Battler3D.withLook = function (look, fn) {
+        const B = window.Battler3D;
+        if (!look || (!look.seed && !look.origin)) return fn();
+        const ps = B._battleLookSeed, po = B._battleOriginSeed;
+        B._battleLookSeed = (look.seed || 0) >>> 0;
+        B._battleOriginSeed = (look.origin || 0) >>> 0;
+        try { return fn(); } finally { B._battleLookSeed = ps; B._battleOriginSeed = po; }
+    };
+
     function _strHash(s) {
         s = String(s);
         let h = 2166136261;
@@ -2387,30 +2621,26 @@
         return h >>> 0;
     }
 
-    function computeBattleOrigin() {
+    // Which monster event this fight belongs to. Empty when there is nothing
+    // stable behind the battle: a plain random encounter, a preview.
+    function computeBattleOriginKey(pending) {
         try {
-            let mapId = ($gameMap && $gameMap.mapId) ? $gameMap.mapId() : 0;
-            let evId = 0;
-            // The event running the (BSE or vanilla) battle trigger.
-            if ($gameMap && $gameMap._interpreter && $gameMap._interpreter._eventId) {
-                evId = $gameMap._interpreter._eventId;
-            }
-            // Fall back to the BattleSystemEnhanced battle context.
-            if (!evId && window.BattleSystemEnhanced && window.BattleSystemEnhanced.State) {
-                const st = window.BattleSystemEnhanced.State;
-                if (st.currentEventId) { evId = st.currentEventId; mapId = st.currentMapId || mapId; }
-            }
-            let x = 0, y = 0;
-            if (evId && $gameMap && $gameMap.event) {
-                const ev = $gameMap.event(evId);
-                if (ev) { x = ev.x; y = ev.y; }
-            }
-            if (!evId && !mapId) return 0; // no stable context (e.g. random encounter)
-            // Key on map + event id (stable identity even if the event roams);
-            // include coords only when there is no event id to lean on.
-            return _strHash(mapId + ':' + evId + (evId ? '' : (':' + x + ':' + y)));
+            // The battle system names the map event a fight was set up against
+            // (the same identity it keys that monster's kept HP on) and drops
+            // the name when the fight ends, so it is both the most accurate
+            // answer and the only one that cannot be left over from before.
+            const st = window.BattleSystemEnhanced && window.BattleSystemEnhanced.State;
+            if (st && st.currentBattleEventId) return String(st.currentBattleEventId);
+            // A vanilla Battle Processing knows its own event, parallel ones
+            // included, and said so on the way in.
+            if (pending) return String(pending);
+            // Otherwise whichever event is running the trigger.
+            const mapId = ($gameMap && $gameMap.mapId) ? $gameMap.mapId() : 0;
+            const evId = ($gameMap && $gameMap._interpreter) ? ($gameMap._interpreter._eventId || 0) : 0;
+            if (!evId || !mapId) return '';
+            return mapId + ':' + evId;
         } catch (e) {
-            return 0;
+            return '';
         }
     }
 
@@ -2420,23 +2650,33 @@
     const _GameInterpreter_command301 = Game_Interpreter.prototype.command301;
     Game_Interpreter.prototype.command301 = function(params) {
         if (this._eventId && $gameMap && $gameMap.mapId) {
-            window.Battler3D._pendingOrigin = _strHash($gameMap.mapId() + ':' + this._eventId);
+            window.Battler3D._pendingOrigin = $gameMap.mapId() + ':' + this._eventId;
         }
         return _GameInterpreter_command301.call(this, params);
     };
 
     const _BattleManager_setup = BattleManager.setup;
     BattleManager.setup = function(troopId, canEscape, canLose) {
-        let origin = window.Battler3D._pendingOrigin || 0;
-        window.Battler3D._pendingOrigin = 0;
-        if (!origin) origin = computeBattleOrigin();
-        window.Battler3D._battleOriginSeed = origin;
+        const key = computeBattleOriginKey(window.Battler3D._pendingOrigin);
+        window.Battler3D._pendingOrigin = '';
+        window.Battler3D._battleOriginKey = key;
+        window.Battler3D._battleOriginSeed = key ? _strHash(key) : 0;
+        window.Battler3D._battleLookSeed = _lookSeedFor(key);
         _BattleManager_setup.call(this, troopId, canEscape, canLose);
     };
 
     const _BattleManager_endBattle = BattleManager.endBattle;
     BattleManager.endBattle = function(result) {
+        // Won: that creature is dead, so its roll is dropped and whatever
+        // stands on the spot next is a body of its own. A flee or a loss keeps
+        // it, because the same monster is still out there waiting.
+        if (result === 0 && window.Battler3D._battleOriginKey) {
+            const store = _lookSeedStore();
+            if (store) delete store[window.Battler3D._battleOriginKey];
+        }
         window.Battler3D._battleOriginSeed = 0; // canonical look again outside battle
+        window.Battler3D._battleLookSeed = 0;
+        window.Battler3D._battleOriginKey = '';
         _BattleManager_endBattle.call(this, result);
     };
 
@@ -2565,7 +2805,7 @@
         const pending = [];
 
         // Pre-count procedural creatures so we can spread them across the field.
-        const procCount = enemies.filter(e => resolveArchetype(e)).length;
+        const procCount = enemies.filter(e => battleArchetype(e)).length;
         let procSlot = 0;
 
         // A crowd is drawn a little smaller than a lone monster (see
@@ -2574,19 +2814,19 @@
         // it. Every model in the fight takes the same factor, procedural or
         // authored GLB, so the troop keeps its relative sizes.
         const modelCount = enemies.filter(
-            e => e.enemy().meta['3d_model'] || resolveArchetype(e)
+            e => battleArchetype(e) || e.enemy().meta['3d_model']
         ).length;
         const crowdScale = troopScaleFactor(modelCount);
 
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
             const data = enemy.enemy().meta;
-            const archetypeKey = resolveArchetype(enemy);
+            const archetypeKey = battleArchetype(enemy);
             const def = archetypeKey ? ArchetypeRegistry[archetypeKey] : null;
 
             debugLog(`Enemy ${i}:`, enemy.enemy().name, 'Archetype:', archetypeKey, 'Meta:', data);
 
-            if (data['3d_model'] || def) {
+            if (def || data['3d_model']) {
                 let scale = Number(data['3d_scale'] || 0);
                 if (!scale) scale = def ? (def.scale || 1.0) : 1.0; // per-archetype default
                 scale *= crowdScale;
@@ -2610,6 +2850,11 @@
                     }
 
                     battlerModel = def.create(scale, offsetY, enemy, weaponType, archetypeKey);
+                    // A forced body is a forced colour too (see battleOverride):
+                    // the tint is applied once the model has built itself, in
+                    // Battle3DScene.addModel.
+                    const ov = battleOverride();
+                    if (battlerModel && ov && ov.tint != null) battlerModel._overrideTint = ov.tint;
                 } else {
                     const filename = data['3d_model'];
                     debugLog(`Configuring 3D enemy: ${filename}`);
@@ -2678,6 +2923,27 @@
     const ENEMY_SPREAD_GAP = 1.6;   // clear air between two neighbours
     const ENEMY_SPREAD_HALF_SPAN = 5.6;
     const ENEMY_SPREAD_FALLBACK_W = 2.2; // for a model that measures as nothing
+
+    // A row of three or more used the whole half-span, which walks the outer
+    // creatures out under the battle log running across the middle of the
+    // screen. From three up the line is pulled in towards the centre instead,
+    // and the air between neighbours with it, so the whole pack stands in the
+    // clear band the log leaves; the z stagger below is what keeps them apart.
+    const ENEMY_SPREAD_PACK_FROM = 3;
+    const ENEMY_SPREAD_PACK_SPAN = 0.72; // of the half-span, for a pack
+    const ENEMY_SPREAD_PACK_GAP = 0.55;  // of the gap, for a pack
+
+    function spreadHalfSpan(count) {
+        return count >= ENEMY_SPREAD_PACK_FROM
+            ? ENEMY_SPREAD_HALF_SPAN * ENEMY_SPREAD_PACK_SPAN
+            : ENEMY_SPREAD_HALF_SPAN;
+    }
+
+    function spreadGap(count) {
+        return count >= ENEMY_SPREAD_PACK_FROM
+            ? ENEMY_SPREAD_GAP * ENEMY_SPREAD_PACK_GAP
+            : ENEMY_SPREAD_GAP;
+    }
     let _spreadBoxScratch = null;        // one box, reused (the pass runs twice)
 
     Spriteset_Battle.prototype.spreadEnemyModels = function() {
@@ -2709,8 +2975,8 @@
 
         if (row.length > 1) {
             const totalW = row.reduce((sum, e) => sum + e.width, 0);
-            const maxSpan = ENEMY_SPREAD_HALF_SPAN * 2;
-            let gap = ENEMY_SPREAD_GAP;
+            const maxSpan = spreadHalfSpan(row.length) * 2;
+            let gap = spreadGap(row.length);
             if (totalW + gap * (row.length - 1) > maxSpan) {
                 gap = Math.max(0.15, (maxSpan - totalW) / (row.length - 1));
             }

@@ -2,7 +2,7 @@
   {
     "id": 19,
     "country": "Albania",
-    "region":"Europe",
+    "region": "Europe",
     "faction": "Neutral",
     "seasons": {
       "winter": {
@@ -55,8 +55,8 @@
   {
     "id": 42,
     "country": "Algeria",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:51",
@@ -108,8 +108,8 @@
   {
     "id": 0,
     "country": "Andorra",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:06",
@@ -161,8 +161,8 @@
   {
     "id": 0,
     "country": "Armenia",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:19",
@@ -214,8 +214,8 @@
   {
     "id": 98,
     "country": "Austria",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:37",
@@ -267,8 +267,8 @@
   {
     "id": 0,
     "country": "Azerbaijan",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:59",
@@ -320,8 +320,8 @@
   {
     "id": 32,
     "country": "Belarus",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "09:09",
@@ -373,8 +373,8 @@
   {
     "id": 121,
     "country": "Belgium",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:31",
@@ -426,8 +426,8 @@
   {
     "id": 0,
     "country": "Bosnia and Herzegovina",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:20",
@@ -479,8 +479,8 @@
   {
     "id": 25,
     "country": "Bulgaria",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -532,8 +532,8 @@
   {
     "id": 16,
     "country": "Croatia",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:28",
@@ -585,8 +585,8 @@
   {
     "id": 0,
     "country": "Cyprus",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "06:51",
@@ -638,8 +638,8 @@
   {
     "id": 0,
     "country": "Czech Republic",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:49",
@@ -691,8 +691,8 @@
   {
     "id": 0,
     "country": "Denmark",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
@@ -744,8 +744,8 @@
   {
     "id": 31,
     "country": "Estonia",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:58",
@@ -797,8 +797,8 @@
   {
     "id": 36,
     "country": "Finland",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "09:12",
@@ -850,8 +850,8 @@
   {
     "id": 102,
     "country": "France",
-    "region":"Europe",
-"faction": "Britannia",
+    "region": "Europe",
+    "faction": "Britannia",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
@@ -903,8 +903,8 @@
   {
     "id": 0,
     "country": "Georgia",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:23",
@@ -956,8 +956,8 @@
   {
     "id": 109,
     "country": "Germany",
-    "region":"Europe",
-"faction": "Holy Vatican Empire",
+    "region": "Europe",
+    "faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "08:09",
@@ -1009,8 +1009,8 @@
   {
     "id": 20,
     "country": "Greece",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:33",
@@ -1062,8 +1062,8 @@
   {
     "id": 0,
     "country": "Hungary",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:27",
@@ -1115,8 +1115,8 @@
   {
     "id": 37,
     "country": "Iceland",
-    "region":"Europe",
-"faction": "Goblin Horde",
+    "region": "Europe",
+    "faction": "Goblin Horde",
     "seasons": {
       "winter": {
         "sunrise": "10:49",
@@ -1163,13 +1163,13 @@
         "nightHumidity": 96
       }
     },
-    "controller": "Neutral"
+    "controller": "Goblin Horde"
   },
   {
     "id": 40,
     "country": "Ireland",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Mages Guild",
     "seasons": {
       "winter": {
         "sunrise": "08:21",
@@ -1216,13 +1216,13 @@
         "nightHumidity": 92
       }
     },
-    "controller": "Neutral"
+    "controller": "Mages Guild"
   },
   {
     "id": 78,
     "country": "Italy",
-    "region":"Europe",
-"faction": "The Gods",
+    "region": "Europe",
+    "faction": "The Gods",
     "seasons": {
       "winter": {
         "sunrise": "07:31",
@@ -1274,8 +1274,8 @@
   {
     "id": 255,
     "country": "OmegaTower",
-    "region":"Europe",
-"faction": "Archive Foundation",
+    "region": "Europe",
+    "faction": "Archive Foundation",
     "seasons": {
       "winter": {
         "sunrise": "07:31",
@@ -1322,13 +1322,13 @@
         "nightHumidity": 87
       }
     },
-    "controller": "Neutral"
+    "controller": "Archive Foundation"
   },
   {
     "id": 30,
     "country": "Latvia",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:48",
@@ -1380,8 +1380,8 @@
   {
     "id": 119,
     "country": "Luxembourg",
-    "region":"Europe",
-"faction": "Archive Foundation",
+    "region": "Europe",
+    "faction": "Archive Foundation",
     "seasons": {
       "winter": {
         "sunrise": "08:19",
@@ -1433,8 +1433,8 @@
   {
     "id": 0,
     "country": "Malta",
-    "region":"Europe",
-"faction": "Holy Vatican Empire",
+    "region": "Europe",
+    "faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:06",
@@ -1486,8 +1486,8 @@
   {
     "id": 0,
     "country": "Mauritania",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:38",
@@ -1539,8 +1539,8 @@
   {
     "id": 27,
     "country": "Moldova",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -1592,8 +1592,8 @@
   {
     "id": 0,
     "country": "Monaco",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:51",
@@ -1645,8 +1645,8 @@
   {
     "id": 19,
     "country": "Montenegro",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:08",
@@ -1698,8 +1698,8 @@
   {
     "id": 0,
     "country": "Morocco",
-    "region":"Europe",
-"faction": "Ottoman Empire",
+    "region": "Europe",
+    "faction": "Ottoman Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:28",
@@ -1751,8 +1751,8 @@
   {
     "id": 8,
     "country": "Netherlands",
-    "region":"Europe",
-"faction": "Hypercapitalist Collective",
+    "region": "Europe",
+    "faction": "Hypercapitalist Collective",
     "seasons": {
       "winter": {
         "sunrise": "08:34",
@@ -1799,13 +1799,13 @@
         "nightHumidity": 92
       }
     },
-    "controller": "Neutral"
+    "controller": "Hypercapitalist Collective"
   },
   {
     "id": 0,
     "country": "North Macedonia",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "06:54",
@@ -1857,8 +1857,8 @@
   {
     "id": 34,
     "country": "Norway",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "09:03",
@@ -1910,8 +1910,8 @@
   {
     "id": 141,
     "country": "Poland",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:38",
@@ -1963,8 +1963,8 @@
   {
     "id": 109,
     "country": "Portugal",
-    "region":"Europe",
-"faction": "Holy Vatican Empire",
+    "region": "Europe",
+    "faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:49",
@@ -2016,8 +2016,8 @@
   {
     "id": 0,
     "country": "Romania",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -2069,8 +2069,8 @@
   {
     "id": 28,
     "country": "Russia",
-    "region":"Europe",
-"faction": "Archive Foundation",
+    "region": "Europe",
+    "faction": "Archive Foundation",
     "seasons": {
       "winter": {
         "sunrise": "08:44",
@@ -2122,8 +2122,8 @@
   {
     "id": 236,
     "country": "San Marino",
-    "region":"Europe",
-"faction": "San Marino Republic",
+    "region": "Europe",
+    "faction": "San Marino Republic",
     "seasons": {
       "winter": {
         "sunrise": "07:33",
@@ -2175,8 +2175,8 @@
   {
     "id": 22,
     "country": "Serbia",
-    "region":"Europe",
-"faction": "USSR",
+    "region": "Europe",
+    "faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:09",
@@ -2228,8 +2228,8 @@
   {
     "id": 0,
     "country": "Slovakia",
-    "region":"Europe",
-"faction": "USSR",
+    "region": "Europe",
+    "faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:31",
@@ -2281,8 +2281,8 @@
   {
     "id": 15,
     "country": "Slovenia",
-    "region":"Europe",
-"faction": "USSR",
+    "region": "Europe",
+    "faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:34",
@@ -2334,8 +2334,8 @@
   {
     "id": 69,
     "country": "Spain",
-    "region":"Europe",
-"faction": "Holy Vatican Empire",
+    "region": "Europe",
+    "faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
@@ -2387,8 +2387,8 @@
   {
     "id": 35,
     "country": "Sweden",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
@@ -2440,8 +2440,8 @@
   {
     "id": 63,
     "country": "Switzerland",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:04",
@@ -2493,8 +2493,8 @@
   {
     "id": 0,
     "country": "Tunisia",
-    "region":"Europe",
-"faction": "Ottoman Empire",
+    "region": "Europe",
+    "faction": "Ottoman Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:25",
@@ -2546,8 +2546,8 @@
   {
     "id": 41,
     "country": "Turkey",
-    "region":"Europe",
-"faction": "Neutral",
+    "region": "Europe",
+    "faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:14",
@@ -2599,8 +2599,8 @@
   {
     "id": 39,
     "country": "Scotland",
-    "region":"Europe",
-"faction": "Britannia",
+    "region": "Europe",
+    "faction": "Britannia",
     "seasons": {
       "winter": {
         "sunrise": "08:45",
@@ -2652,8 +2652,8 @@
   {
     "id": 153,
     "country": "Ukraine",
-    "region":"Europe",
-"faction": "USSR",
+    "region": "Europe",
+    "faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -2705,8 +2705,8 @@
   {
     "id": 38,
     "country": "UK",
-    "region":"Europe",
-"faction": "Britannia",
+    "region": "Europe",
+    "faction": "Britannia",
     "seasons": {
       "winter": {
         "sunrise": "08:00",
@@ -2753,13 +2753,13 @@
         "nightHumidity": 91
       }
     },
-    "controller": "Neutral"
+    "controller": "Britannia"
   },
   {
     "id": 166,
     "country": "Italy - Sicily",
-    "region":"Europe",
-"faction": "Holy Vatican Empire",
+    "region": "Europe",
+    "faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:15",
@@ -2811,8 +2811,8 @@
   {
     "id": 237,
     "country": "Italy - Sardinia",
-    "region":"Europe",
-"faction": "Holy Vatican Empire",
+    "region": "Europe",
+    "faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:25",
@@ -2868,28 +2868,48 @@
     "faction": "Neutral",
     "seasons": {
       "winter": {
-        "sunrise": "06:40", "sunset": "17:35",
-        "dayTemp": 23.5, "nightTemp": 15.2,
-        "precipitation": 2.5, "windSpeed": 12.0,
-        "cloudCover": 40, "dayHumidity": 60, "nightHumidity": 75
+        "sunrise": "06:40",
+        "sunset": "17:35",
+        "dayTemp": 23.5,
+        "nightTemp": 15.2,
+        "precipitation": 2.5,
+        "windSpeed": 12.0,
+        "cloudCover": 40,
+        "dayHumidity": 60,
+        "nightHumidity": 75
       },
       "spring": {
-        "sunrise": "05:45", "sunset": "18:10",
-        "dayTemp": 27.8, "nightTemp": 18.5,
-        "precipitation": 4.1, "windSpeed": 14.5,
-        "cloudCover": 55, "dayHumidity": 65, "nightHumidity": 80
+        "sunrise": "05:45",
+        "sunset": "18:10",
+        "dayTemp": 27.8,
+        "nightTemp": 18.5,
+        "precipitation": 4.1,
+        "windSpeed": 14.5,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 80
       },
       "summer": {
-        "sunrise": "05:20", "sunset": "18:45",
-        "dayTemp": 31.2, "nightTemp": 23.0,
-        "precipitation": 6.8, "windSpeed": 10.5,
-        "cloudCover": 65, "dayHumidity": 75, "nightHumidity": 88
+        "sunrise": "05:20",
+        "sunset": "18:45",
+        "dayTemp": 31.2,
+        "nightTemp": 23.0,
+        "precipitation": 6.8,
+        "windSpeed": 10.5,
+        "cloudCover": 65,
+        "dayHumidity": 75,
+        "nightHumidity": 88
       },
       "autumn": {
-        "sunrise": "06:05", "sunset": "18:00",
-        "dayTemp": 26.5, "nightTemp": 19.8,
-        "precipitation": 3.2, "windSpeed": 11.2,
-        "cloudCover": 45, "dayHumidity": 68, "nightHumidity": 82
+        "sunrise": "06:05",
+        "sunset": "18:00",
+        "dayTemp": 26.5,
+        "nightTemp": 19.8,
+        "precipitation": 3.2,
+        "windSpeed": 11.2,
+        "cloudCover": 45,
+        "dayHumidity": 68,
+        "nightHumidity": 82
       }
     }
   },
@@ -2900,28 +2920,48 @@
     "faction": "Neutral",
     "seasons": {
       "winter": {
-        "sunrise": "07:50", "sunset": "16:30",
-        "dayTemp": -4.5, "nightTemp": -12.8,
-        "precipitation": 3.0, "windSpeed": 18.5,
-        "cloudCover": 70, "dayHumidity": 75, "nightHumidity": 85
+        "sunrise": "07:50",
+        "sunset": "16:30",
+        "dayTemp": -4.5,
+        "nightTemp": -12.8,
+        "precipitation": 3.0,
+        "windSpeed": 18.5,
+        "cloudCover": 70,
+        "dayHumidity": 75,
+        "nightHumidity": 85
       },
       "spring": {
-        "sunrise": "06:15", "sunset": "20:00",
-        "dayTemp": 12.5, "nightTemp": 2.5,
-        "precipitation": 2.8, "windSpeed": 15.0,
-        "cloudCover": 55, "dayHumidity": 60, "nightHumidity": 70
+        "sunrise": "06:15",
+        "sunset": "20:00",
+        "dayTemp": 12.5,
+        "nightTemp": 2.5,
+        "precipitation": 2.8,
+        "windSpeed": 15.0,
+        "cloudCover": 55,
+        "dayHumidity": 60,
+        "nightHumidity": 70
       },
       "summer": {
-        "sunrise": "05:30", "sunset": "21:15",
-        "dayTemp": 25.0, "nightTemp": 14.5,
-        "precipitation": 2.2, "windSpeed": 12.5,
-        "cloudCover": 35, "dayHumidity": 55, "nightHumidity": 65
+        "sunrise": "05:30",
+        "sunset": "21:15",
+        "dayTemp": 25.0,
+        "nightTemp": 14.5,
+        "precipitation": 2.2,
+        "windSpeed": 12.5,
+        "cloudCover": 35,
+        "dayHumidity": 55,
+        "nightHumidity": 65
       },
       "autumn": {
-        "sunrise": "07:10", "sunset": "18:20",
-        "dayTemp": 10.8, "nightTemp": 3.2,
-        "precipitation": 3.5, "windSpeed": 16.2,
-        "cloudCover": 60, "dayHumidity": 65, "nightHumidity": 78
+        "sunrise": "07:10",
+        "sunset": "18:20",
+        "dayTemp": 10.8,
+        "nightTemp": 3.2,
+        "precipitation": 3.5,
+        "windSpeed": 16.2,
+        "cloudCover": 60,
+        "dayHumidity": 65,
+        "nightHumidity": 78
       }
     }
   },
@@ -2932,28 +2972,48 @@
     "faction": "Neutral",
     "seasons": {
       "winter": {
-        "sunrise": "06:50", "sunset": "16:40",
-        "dayTemp": 9.2, "nightTemp": 2.1,
-        "precipitation": 1.8, "windSpeed": 14.0,
-        "cloudCover": 45, "dayHumidity": 50, "nightHumidity": 65
+        "sunrise": "06:50",
+        "sunset": "16:40",
+        "dayTemp": 9.2,
+        "nightTemp": 2.1,
+        "precipitation": 1.8,
+        "windSpeed": 14.0,
+        "cloudCover": 45,
+        "dayHumidity": 50,
+        "nightHumidity": 65
       },
       "spring": {
-        "sunrise": "05:30", "sunset": "18:20",
-        "dayTemp": 18.5, "nightTemp": 10.0,
-        "precipitation": 3.5, "windSpeed": 12.5,
-        "cloudCover": 50, "dayHumidity": 60, "nightHumidity": 75
+        "sunrise": "05:30",
+        "sunset": "18:20",
+        "dayTemp": 18.5,
+        "nightTemp": 10.0,
+        "precipitation": 3.5,
+        "windSpeed": 12.5,
+        "cloudCover": 50,
+        "dayHumidity": 60,
+        "nightHumidity": 75
       },
       "summer": {
-        "sunrise": "04:30", "sunset": "19:00",
-        "dayTemp": 30.5, "nightTemp": 24.2,
-        "precipitation": 5.2, "windSpeed": 10.0,
-        "cloudCover": 60, "dayHumidity": 78, "nightHumidity": 88
+        "sunrise": "04:30",
+        "sunset": "19:00",
+        "dayTemp": 30.5,
+        "nightTemp": 24.2,
+        "precipitation": 5.2,
+        "windSpeed": 10.0,
+        "cloudCover": 60,
+        "dayHumidity": 78,
+        "nightHumidity": 88
       },
       "autumn": {
-        "sunrise": "05:50", "sunset": "17:10",
-        "dayTemp": 21.0, "nightTemp": 14.5,
-        "precipitation": 4.8, "windSpeed": 11.5,
-        "cloudCover": 55, "dayHumidity": 65, "nightHumidity": 80
+        "sunrise": "05:50",
+        "sunset": "17:10",
+        "dayTemp": 21.0,
+        "nightTemp": 14.5,
+        "precipitation": 4.8,
+        "windSpeed": 11.5,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 80
       }
     }
   },
@@ -2964,28 +3024,48 @@
     "faction": "Neutral",
     "seasons": {
       "winter": {
-        "sunrise": "07:10", "sunset": "17:00",
-        "dayTemp": 16.5, "nightTemp": 7.8,
-        "precipitation": 1.5, "windSpeed": 16.0,
-        "cloudCover": 35, "dayHumidity": 55, "nightHumidity": 70
+        "sunrise": "07:10",
+        "sunset": "17:00",
+        "dayTemp": 16.5,
+        "nightTemp": 7.8,
+        "precipitation": 1.5,
+        "windSpeed": 16.0,
+        "cloudCover": 35,
+        "dayHumidity": 55,
+        "nightHumidity": 70
       },
       "spring": {
-        "sunrise": "06:00", "sunset": "18:30",
-        "dayTemp": 24.0, "nightTemp": 13.5,
-        "precipitation": 1.2, "windSpeed": 18.5,
-        "cloudCover": 30, "dayHumidity": 50, "nightHumidity": 65
+        "sunrise": "06:00",
+        "sunset": "18:30",
+        "dayTemp": 24.0,
+        "nightTemp": 13.5,
+        "precipitation": 1.2,
+        "windSpeed": 18.5,
+        "cloudCover": 30,
+        "dayHumidity": 50,
+        "nightHumidity": 65
       },
       "summer": {
-        "sunrise": "05:40", "sunset": "20:10",
-        "dayTemp": 32.5, "nightTemp": 20.1,
-        "precipitation": 0.8, "windSpeed": 14.2,
-        "cloudCover": 20, "dayHumidity": 45, "nightHumidity": 60
+        "sunrise": "05:40",
+        "sunset": "20:10",
+        "dayTemp": 32.5,
+        "nightTemp": 20.1,
+        "precipitation": 0.8,
+        "windSpeed": 14.2,
+        "cloudCover": 20,
+        "dayHumidity": 45,
+        "nightHumidity": 60
       },
       "autumn": {
-        "sunrise": "06:30", "sunset": "17:45",
-        "dayTemp": 23.8, "nightTemp": 14.2,
-        "precipitation": 2.1, "windSpeed": 15.5,
-        "cloudCover": 40, "dayHumidity": 60, "nightHumidity": 75
+        "sunrise": "06:30",
+        "sunset": "17:45",
+        "dayTemp": 23.8,
+        "nightTemp": 14.2,
+        "precipitation": 2.1,
+        "windSpeed": 15.5,
+        "cloudCover": 40,
+        "dayHumidity": 60,
+        "nightHumidity": 75
       }
     }
   },
@@ -2996,124 +3076,207 @@
     "faction": "Neutral",
     "seasons": {
       "winter": {
-        "sunrise": "06:45", "sunset": "17:15",
-        "dayTemp": 20.5, "nightTemp": 10.2,
-        "precipitation": 0.2, "windSpeed": 15.0,
-        "cloudCover": 15, "dayHumidity": 45, "nightHumidity": 60
+        "sunrise": "06:45",
+        "sunset": "17:15",
+        "dayTemp": 20.5,
+        "nightTemp": 10.2,
+        "precipitation": 0.2,
+        "windSpeed": 15.0,
+        "cloudCover": 15,
+        "dayHumidity": 45,
+        "nightHumidity": 60
       },
       "spring": {
-        "sunrise": "05:30", "sunset": "18:20",
-        "dayTemp": 28.5, "nightTemp": 15.5,
-        "precipitation": 0.0, "windSpeed": 18.5,
-        "cloudCover": 10, "dayHumidity": 35, "nightHumidity": 50
+        "sunrise": "05:30",
+        "sunset": "18:20",
+        "dayTemp": 28.5,
+        "nightTemp": 15.5,
+        "precipitation": 0.0,
+        "windSpeed": 18.5,
+        "cloudCover": 10,
+        "dayHumidity": 35,
+        "nightHumidity": 50
       },
       "summer": {
-        "sunrise": "04:55", "sunset": "18:55",
-        "dayTemp": 36.5, "nightTemp": 24.0,
-        "precipitation": 0.0, "windSpeed": 14.0,
-        "cloudCover": 0, "dayHumidity": 30, "nightHumidity": 45
+        "sunrise": "04:55",
+        "sunset": "18:55",
+        "dayTemp": 36.5,
+        "nightTemp": 24.0,
+        "precipitation": 0.0,
+        "windSpeed": 14.0,
+        "cloudCover": 0,
+        "dayHumidity": 30,
+        "nightHumidity": 45
       },
       "autumn": {
-        "sunrise": "05:55", "sunset": "17:35",
-        "dayTemp": 29.0, "nightTemp": 18.5,
-        "precipitation": 0.1, "windSpeed": 16.2,
-        "cloudCover": 10, "dayHumidity": 40, "nightHumidity": 55
+        "sunrise": "05:55",
+        "sunset": "17:35",
+        "dayTemp": 29.0,
+        "nightTemp": 18.5,
+        "precipitation": 0.1,
+        "windSpeed": 16.2,
+        "cloudCover": 10,
+        "dayHumidity": 40,
+        "nightHumidity": 55
       }
     }
   },
   {
     "id": 405,
     "country": "United States (Free States of Midwest)",
+    "controller": "Free States of Midwest",
     "region": "North America",
     "faction": "Continental Union",
     "seasons": {
       "winter": {
-        "sunrise": "07:20", "sunset": "16:40",
-        "dayTemp": -2.0, "nightTemp": -10.5,
-        "precipitation": 2.0, "windSpeed": 18.0,
-        "cloudCover": 70, "dayHumidity": 75, "nightHumidity": 85
+        "sunrise": "07:20",
+        "sunset": "16:40",
+        "dayTemp": -2.0,
+        "nightTemp": -10.5,
+        "precipitation": 2.0,
+        "windSpeed": 18.0,
+        "cloudCover": 70,
+        "dayHumidity": 75,
+        "nightHumidity": 85
       },
       "spring": {
-        "sunrise": "06:10", "sunset": "19:50",
-        "dayTemp": 15.0, "nightTemp": 5.0,
-        "precipitation": 3.5, "windSpeed": 15.0,
-        "cloudCover": 50, "dayHumidity": 60, "nightHumidity": 70
+        "sunrise": "06:10",
+        "sunset": "19:50",
+        "dayTemp": 15.0,
+        "nightTemp": 5.0,
+        "precipitation": 3.5,
+        "windSpeed": 15.0,
+        "cloudCover": 50,
+        "dayHumidity": 60,
+        "nightHumidity": 70
       },
       "summer": {
-        "sunrise": "05:40", "sunset": "20:30",
-        "dayTemp": 28.0, "nightTemp": 18.0,
-        "precipitation": 4.0, "windSpeed": 12.0,
-        "cloudCover": 35, "dayHumidity": 55, "nightHumidity": 65
+        "sunrise": "05:40",
+        "sunset": "20:30",
+        "dayTemp": 28.0,
+        "nightTemp": 18.0,
+        "precipitation": 4.0,
+        "windSpeed": 12.0,
+        "cloudCover": 35,
+        "dayHumidity": 55,
+        "nightHumidity": 65
       },
       "autumn": {
-        "sunrise": "07:00", "sunset": "17:50",
-        "dayTemp": 14.0, "nightTemp": 6.0,
-        "precipitation": 2.5, "windSpeed": 15.0,
-        "cloudCover": 55, "dayHumidity": 65, "nightHumidity": 78
+        "sunrise": "07:00",
+        "sunset": "17:50",
+        "dayTemp": 14.0,
+        "nightTemp": 6.0,
+        "precipitation": 2.5,
+        "windSpeed": 15.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 78
       }
     }
   },
   {
     "id": 406,
     "country": "Cascadia Protectorate",
+    "controller": "Cascadia Protectorate",
     "region": "North America",
     "faction": "Britannia",
     "seasons": {
       "winter": {
-        "sunrise": "07:50", "sunset": "16:30",
-        "dayTemp": 6.0, "nightTemp": 1.0,
-        "precipitation": 5.5, "windSpeed": 22.0,
-        "cloudCover": 85, "dayHumidity": 85, "nightHumidity": 92
+        "sunrise": "07:50",
+        "sunset": "16:30",
+        "dayTemp": 6.0,
+        "nightTemp": 1.0,
+        "precipitation": 5.5,
+        "windSpeed": 22.0,
+        "cloudCover": 85,
+        "dayHumidity": 85,
+        "nightHumidity": 92
       },
       "spring": {
-        "sunrise": "06:15", "sunset": "20:00",
-        "dayTemp": 14.0, "nightTemp": 7.0,
-        "precipitation": 3.5, "windSpeed": 18.0,
-        "cloudCover": 65, "dayHumidity": 65, "nightHumidity": 78
+        "sunrise": "06:15",
+        "sunset": "20:00",
+        "dayTemp": 14.0,
+        "nightTemp": 7.0,
+        "precipitation": 3.5,
+        "windSpeed": 18.0,
+        "cloudCover": 65,
+        "dayHumidity": 65,
+        "nightHumidity": 78
       },
       "summer": {
-        "sunrise": "05:30", "sunset": "21:00",
-        "dayTemp": 22.0, "nightTemp": 13.0,
-        "precipitation": 1.5, "windSpeed": 14.0,
-        "cloudCover": 30, "dayHumidity": 55, "nightHumidity": 68
+        "sunrise": "05:30",
+        "sunset": "21:00",
+        "dayTemp": 22.0,
+        "nightTemp": 13.0,
+        "precipitation": 1.5,
+        "windSpeed": 14.0,
+        "cloudCover": 30,
+        "dayHumidity": 55,
+        "nightHumidity": 68
       },
       "autumn": {
-        "sunrise": "07:10", "sunset": "17:40",
-        "dayTemp": 13.0, "nightTemp": 7.0,
-        "precipitation": 4.0, "windSpeed": 19.0,
-        "cloudCover": 70, "dayHumidity": 75, "nightHumidity": 85
+        "sunrise": "07:10",
+        "sunset": "17:40",
+        "dayTemp": 13.0,
+        "nightTemp": 7.0,
+        "precipitation": 4.0,
+        "windSpeed": 19.0,
+        "cloudCover": 70,
+        "dayHumidity": 75,
+        "nightHumidity": 85
       }
     }
   },
   {
     "id": 407,
     "country": "Eastern Seaboard",
+    "controller": "Eastern Seaboard",
     "region": "North America",
     "faction": "Britannia",
     "seasons": {
       "winter": {
-        "sunrise": "07:15", "sunset": "16:50",
-        "dayTemp": 0.0, "nightTemp": -6.0,
-        "precipitation": 2.8, "windSpeed": 16.0,
-        "cloudCover": 75, "dayHumidity": 80, "nightHumidity": 88
+        "sunrise": "07:15",
+        "sunset": "16:50",
+        "dayTemp": 0.0,
+        "nightTemp": -6.0,
+        "precipitation": 2.8,
+        "windSpeed": 16.0,
+        "cloudCover": 75,
+        "dayHumidity": 80,
+        "nightHumidity": 88
       },
       "spring": {
-        "sunrise": "06:05", "sunset": "19:40",
-        "dayTemp": 13.0, "nightTemp": 4.0,
-        "precipitation": 2.5, "windSpeed": 14.0,
-        "cloudCover": 60, "dayHumidity": 62, "nightHumidity": 75
+        "sunrise": "06:05",
+        "sunset": "19:40",
+        "dayTemp": 13.0,
+        "nightTemp": 4.0,
+        "precipitation": 2.5,
+        "windSpeed": 14.0,
+        "cloudCover": 60,
+        "dayHumidity": 62,
+        "nightHumidity": 75
       },
       "summer": {
-        "sunrise": "05:35", "sunset": "20:20",
-        "dayTemp": 26.0, "nightTemp": 17.0,
-        "precipitation": 3.5, "windSpeed": 11.0,
-        "cloudCover": 40, "dayHumidity": 58, "nightHumidity": 70
+        "sunrise": "05:35",
+        "sunset": "20:20",
+        "dayTemp": 26.0,
+        "nightTemp": 17.0,
+        "precipitation": 3.5,
+        "windSpeed": 11.0,
+        "cloudCover": 40,
+        "dayHumidity": 58,
+        "nightHumidity": 70
       },
       "autumn": {
-        "sunrise": "06:50", "sunset": "17:55",
-        "dayTemp": 14.0, "nightTemp": 7.0,
-        "precipitation": 2.2, "windSpeed": 14.0,
-        "cloudCover": 60, "dayHumidity": 70, "nightHumidity": 82
+        "sunrise": "06:50",
+        "sunset": "17:55",
+        "dayTemp": 14.0,
+        "nightTemp": 7.0,
+        "precipitation": 2.2,
+        "windSpeed": 14.0,
+        "cloudCover": 60,
+        "dayHumidity": 70,
+        "nightHumidity": 82
       }
     }
   },
@@ -3125,28 +3288,2857 @@
     "controller": "Neutral",
     "seasons": {
       "winter": {
-        "sunrise": "08:35", "sunset": "16:35",
-        "dayTemp": 4.0, "nightTemp": -1.0,
-        "precipitation": 4.2, "windSpeed": 17.0,
-        "cloudCover": 82, "dayHumidity": 86, "nightHumidity": 92
+        "sunrise": "08:35",
+        "sunset": "16:35",
+        "dayTemp": 4.0,
+        "nightTemp": -1.0,
+        "precipitation": 4.2,
+        "windSpeed": 17.0,
+        "cloudCover": 82,
+        "dayHumidity": 86,
+        "nightHumidity": 92
       },
       "spring": {
-        "sunrise": "06:35", "sunset": "20:45",
-        "dayTemp": 13.0, "nightTemp": 5.0,
-        "precipitation": 3.1, "windSpeed": 15.0,
-        "cloudCover": 64, "dayHumidity": 71, "nightHumidity": 84
+        "sunrise": "06:35",
+        "sunset": "20:45",
+        "dayTemp": 13.0,
+        "nightTemp": 5.0,
+        "precipitation": 3.1,
+        "windSpeed": 15.0,
+        "cloudCover": 64,
+        "dayHumidity": 71,
+        "nightHumidity": 84
       },
       "summer": {
-        "sunrise": "05:25", "sunset": "21:55",
-        "dayTemp": 21.0, "nightTemp": 12.0,
-        "precipitation": 2.4, "windSpeed": 12.0,
-        "cloudCover": 48, "dayHumidity": 63, "nightHumidity": 78
+        "sunrise": "05:25",
+        "sunset": "21:55",
+        "dayTemp": 21.0,
+        "nightTemp": 12.0,
+        "precipitation": 2.4,
+        "windSpeed": 12.0,
+        "cloudCover": 48,
+        "dayHumidity": 63,
+        "nightHumidity": 78
       },
       "autumn": {
-        "sunrise": "07:45", "sunset": "18:25",
-        "dayTemp": 12.0, "nightTemp": 6.0,
-        "precipitation": 4.6, "windSpeed": 18.0,
-        "cloudCover": 78, "dayHumidity": 82, "nightHumidity": 90
+        "sunrise": "07:45",
+        "sunset": "18:25",
+        "dayTemp": 12.0,
+        "nightTemp": 6.0,
+        "precipitation": 4.6,
+        "windSpeed": 18.0,
+        "cloudCover": 78,
+        "dayHumidity": 82,
+        "nightHumidity": 90
+      }
+    }
+  },
+  {
+    "id": 409,
+    "country": "Mexico",
+    "region": "South America",
+    "faction": "Kukulkan Ascendancy",
+    "controller": "Kukulkan Ascendancy",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:05",
+        "sunset": "18:00",
+        "dayTemp": 21.5,
+        "nightTemp": 7,
+        "precipitation": 0.4,
+        "windSpeed": 9.5,
+        "cloudCover": 30,
+        "dayHumidity": 48,
+        "nightHumidity": 72
+      },
+      "spring": {
+        "sunrise": "06:20",
+        "sunset": "19:55",
+        "dayTemp": 27.5,
+        "nightTemp": 12.5,
+        "precipitation": 0.9,
+        "windSpeed": 11,
+        "cloudCover": 35,
+        "dayHumidity": 40,
+        "nightHumidity": 62
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "20:15",
+        "dayTemp": 28,
+        "nightTemp": 15.5,
+        "precipitation": 6.5,
+        "windSpeed": 9,
+        "cloudCover": 65,
+        "dayHumidity": 65,
+        "nightHumidity": 84
+      },
+      "autumn": {
+        "sunrise": "06:50",
+        "sunset": "18:35",
+        "dayTemp": 24,
+        "nightTemp": 11,
+        "precipitation": 3.2,
+        "windSpeed": 8.5,
+        "cloudCover": 50,
+        "dayHumidity": 58,
+        "nightHumidity": 78
+      }
+    }
+  },
+  {
+    "id": 410,
+    "country": "Argentina",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "08:00",
+        "sunset": "17:55",
+        "dayTemp": 15,
+        "nightTemp": 6.5,
+        "precipitation": 2.4,
+        "windSpeed": 14,
+        "cloudCover": 55,
+        "dayHumidity": 70,
+        "nightHumidity": 84
+      },
+      "spring": {
+        "sunrise": "06:35",
+        "sunset": "19:15",
+        "dayTemp": 22.5,
+        "nightTemp": 11.5,
+        "precipitation": 3,
+        "windSpeed": 16.5,
+        "cloudCover": 50,
+        "dayHumidity": 62,
+        "nightHumidity": 78
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:10",
+        "dayTemp": 30,
+        "nightTemp": 19.5,
+        "precipitation": 3.6,
+        "windSpeed": 15,
+        "cloudCover": 40,
+        "dayHumidity": 58,
+        "nightHumidity": 74
+      },
+      "autumn": {
+        "sunrise": "07:15",
+        "sunset": "18:25",
+        "dayTemp": 21,
+        "nightTemp": 12,
+        "precipitation": 2.8,
+        "windSpeed": 13,
+        "cloudCover": 52,
+        "dayHumidity": 68,
+        "nightHumidity": 82
+      }
+    }
+  },
+  {
+    "id": 411,
+    "country": "Bolivia",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "18:20",
+        "dayTemp": 17,
+        "nightTemp": 1,
+        "precipitation": 0.2,
+        "windSpeed": 8.5,
+        "cloudCover": 20,
+        "dayHumidity": 38,
+        "nightHumidity": 62
+      },
+      "spring": {
+        "sunrise": "06:20",
+        "sunset": "18:35",
+        "dayTemp": 20.5,
+        "nightTemp": 5.5,
+        "precipitation": 1.4,
+        "windSpeed": 10.5,
+        "cloudCover": 40,
+        "dayHumidity": 45,
+        "nightHumidity": 68
+      },
+      "summer": {
+        "sunrise": "06:05",
+        "sunset": "19:00",
+        "dayTemp": 19.5,
+        "nightTemp": 7,
+        "precipitation": 5.8,
+        "windSpeed": 9,
+        "cloudCover": 70,
+        "dayHumidity": 68,
+        "nightHumidity": 86
+      },
+      "autumn": {
+        "sunrise": "06:35",
+        "sunset": "18:25",
+        "dayTemp": 18.5,
+        "nightTemp": 4.5,
+        "precipitation": 2,
+        "windSpeed": 8,
+        "cloudCover": 45,
+        "dayHumidity": 55,
+        "nightHumidity": 76
+      }
+    }
+  },
+  {
+    "id": 412,
+    "country": "Chile",
+    "region": "South America",
+    "faction": "Long Chile",
+    "controller": "Long Chile",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:45",
+        "sunset": "17:50",
+        "dayTemp": 12.5,
+        "nightTemp": 4,
+        "precipitation": 4.2,
+        "windSpeed": 13.5,
+        "cloudCover": 70,
+        "dayHumidity": 78,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:40",
+        "sunset": "19:05",
+        "dayTemp": 19,
+        "nightTemp": 7.5,
+        "precipitation": 1.8,
+        "windSpeed": 15,
+        "cloudCover": 45,
+        "dayHumidity": 62,
+        "nightHumidity": 78
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "20:50",
+        "dayTemp": 28.5,
+        "nightTemp": 13,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 20,
+        "dayHumidity": 45,
+        "nightHumidity": 68
+      },
+      "autumn": {
+        "sunrise": "07:20",
+        "sunset": "18:35",
+        "dayTemp": 19.5,
+        "nightTemp": 8,
+        "precipitation": 2.6,
+        "windSpeed": 12.5,
+        "cloudCover": 55,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      }
+    }
+  },
+  {
+    "id": 413,
+    "country": "Colombia",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:05",
+        "sunset": "18:05",
+        "dayTemp": 20,
+        "nightTemp": 10.5,
+        "precipitation": 1.6,
+        "windSpeed": 8,
+        "cloudCover": 55,
+        "dayHumidity": 72,
+        "nightHumidity": 88
+      },
+      "spring": {
+        "sunrise": "05:55",
+        "sunset": "18:10",
+        "dayTemp": 21,
+        "nightTemp": 11,
+        "precipitation": 6.4,
+        "windSpeed": 7.5,
+        "cloudCover": 75,
+        "dayHumidity": 80,
+        "nightHumidity": 92
+      },
+      "summer": {
+        "sunrise": "05:50",
+        "sunset": "18:20",
+        "dayTemp": 21.5,
+        "nightTemp": 11.5,
+        "precipitation": 2.2,
+        "windSpeed": 9,
+        "cloudCover": 58,
+        "dayHumidity": 74,
+        "nightHumidity": 88
+      },
+      "autumn": {
+        "sunrise": "05:55",
+        "sunset": "17:55",
+        "dayTemp": 20.5,
+        "nightTemp": 11,
+        "precipitation": 7,
+        "windSpeed": 7,
+        "cloudCover": 78,
+        "dayHumidity": 82,
+        "nightHumidity": 93
+      }
+    }
+  },
+  {
+    "id": 414,
+    "country": "Ecuador",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:15",
+        "sunset": "18:20",
+        "dayTemp": 19.5,
+        "nightTemp": 9.5,
+        "precipitation": 3.8,
+        "windSpeed": 8.5,
+        "cloudCover": 68,
+        "dayHumidity": 76,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:10",
+        "sunset": "18:15",
+        "dayTemp": 20,
+        "nightTemp": 10,
+        "precipitation": 4.6,
+        "windSpeed": 8,
+        "cloudCover": 72,
+        "dayHumidity": 78,
+        "nightHumidity": 91
+      },
+      "summer": {
+        "sunrise": "06:10",
+        "sunset": "18:15",
+        "dayTemp": 20.5,
+        "nightTemp": 10,
+        "precipitation": 1.2,
+        "windSpeed": 9.5,
+        "cloudCover": 50,
+        "dayHumidity": 68,
+        "nightHumidity": 85
+      },
+      "autumn": {
+        "sunrise": "06:10",
+        "sunset": "18:10",
+        "dayTemp": 20,
+        "nightTemp": 9.5,
+        "precipitation": 2.4,
+        "windSpeed": 8.5,
+        "cloudCover": 60,
+        "dayHumidity": 72,
+        "nightHumidity": 88
+      }
+    }
+  },
+  {
+    "id": 415,
+    "country": "Guyana",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:00",
+        "sunset": "17:55",
+        "dayTemp": 29,
+        "nightTemp": 23,
+        "precipitation": 6.2,
+        "windSpeed": 12,
+        "cloudCover": 70,
+        "dayHumidity": 80,
+        "nightHumidity": 92
+      },
+      "spring": {
+        "sunrise": "05:45",
+        "sunset": "18:05",
+        "dayTemp": 30.5,
+        "nightTemp": 23.5,
+        "precipitation": 4,
+        "windSpeed": 13.5,
+        "cloudCover": 60,
+        "dayHumidity": 76,
+        "nightHumidity": 90
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "18:20",
+        "dayTemp": 31.5,
+        "nightTemp": 24,
+        "precipitation": 8.4,
+        "windSpeed": 11,
+        "cloudCover": 78,
+        "dayHumidity": 82,
+        "nightHumidity": 93
+      },
+      "autumn": {
+        "sunrise": "05:50",
+        "sunset": "17:55",
+        "dayTemp": 30,
+        "nightTemp": 23.5,
+        "precipitation": 7,
+        "windSpeed": 11.5,
+        "cloudCover": 74,
+        "dayHumidity": 81,
+        "nightHumidity": 92
+      }
+    }
+  },
+  {
+    "id": 416,
+    "country": "Paraguay",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "17:45",
+        "dayTemp": 22.5,
+        "nightTemp": 12,
+        "precipitation": 2.2,
+        "windSpeed": 11,
+        "cloudCover": 50,
+        "dayHumidity": 68,
+        "nightHumidity": 86
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:35",
+        "dayTemp": 29,
+        "nightTemp": 17.5,
+        "precipitation": 4,
+        "windSpeed": 12.5,
+        "cloudCover": 55,
+        "dayHumidity": 66,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:35",
+        "sunset": "19:15",
+        "dayTemp": 34.5,
+        "nightTemp": 23,
+        "precipitation": 5.2,
+        "windSpeed": 11.5,
+        "cloudCover": 50,
+        "dayHumidity": 64,
+        "nightHumidity": 82
+      },
+      "autumn": {
+        "sunrise": "06:25",
+        "sunset": "18:05",
+        "dayTemp": 27.5,
+        "nightTemp": 17,
+        "precipitation": 3.4,
+        "windSpeed": 10,
+        "cloudCover": 52,
+        "dayHumidity": 70,
+        "nightHumidity": 87
+      }
+    }
+  },
+  {
+    "id": 417,
+    "country": "Peru",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:25",
+        "sunset": "17:50",
+        "dayTemp": 18.5,
+        "nightTemp": 13.5,
+        "precipitation": 0.1,
+        "windSpeed": 11.5,
+        "cloudCover": 82,
+        "dayHumidity": 84,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:05",
+        "sunset": "18:05",
+        "dayTemp": 21,
+        "nightTemp": 15,
+        "precipitation": 0.2,
+        "windSpeed": 12,
+        "cloudCover": 68,
+        "dayHumidity": 78,
+        "nightHumidity": 87
+      },
+      "summer": {
+        "sunrise": "05:50",
+        "sunset": "18:30",
+        "dayTemp": 27,
+        "nightTemp": 19.5,
+        "precipitation": 0.4,
+        "windSpeed": 10.5,
+        "cloudCover": 40,
+        "dayHumidity": 70,
+        "nightHumidity": 82
+      },
+      "autumn": {
+        "sunrise": "06:15",
+        "sunset": "18:00",
+        "dayTemp": 23,
+        "nightTemp": 17,
+        "precipitation": 0.3,
+        "windSpeed": 10,
+        "cloudCover": 60,
+        "dayHumidity": 76,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 418,
+    "country": "Suriname",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:20",
+        "sunset": "18:20",
+        "dayTemp": 29.5,
+        "nightTemp": 23,
+        "precipitation": 7.6,
+        "windSpeed": 10,
+        "cloudCover": 74,
+        "dayHumidity": 82,
+        "nightHumidity": 93
+      },
+      "spring": {
+        "sunrise": "06:10",
+        "sunset": "18:25",
+        "dayTemp": 31,
+        "nightTemp": 23.5,
+        "precipitation": 5.4,
+        "windSpeed": 11,
+        "cloudCover": 66,
+        "dayHumidity": 78,
+        "nightHumidity": 91
+      },
+      "summer": {
+        "sunrise": "06:05",
+        "sunset": "18:35",
+        "dayTemp": 32,
+        "nightTemp": 24,
+        "precipitation": 6.8,
+        "windSpeed": 9.5,
+        "cloudCover": 72,
+        "dayHumidity": 80,
+        "nightHumidity": 92
+      },
+      "autumn": {
+        "sunrise": "06:10",
+        "sunset": "18:15",
+        "dayTemp": 30.5,
+        "nightTemp": 23.5,
+        "precipitation": 8.2,
+        "windSpeed": 9,
+        "cloudCover": 78,
+        "dayHumidity": 83,
+        "nightHumidity": 94
+      }
+    }
+  },
+  {
+    "id": 419,
+    "country": "Uruguay",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:45",
+        "sunset": "17:55",
+        "dayTemp": 14.5,
+        "nightTemp": 7,
+        "precipitation": 3,
+        "windSpeed": 17.5,
+        "cloudCover": 62,
+        "dayHumidity": 76,
+        "nightHumidity": 88
+      },
+      "spring": {
+        "sunrise": "06:35",
+        "sunset": "19:05",
+        "dayTemp": 21,
+        "nightTemp": 12,
+        "precipitation": 3.4,
+        "windSpeed": 18,
+        "cloudCover": 55,
+        "dayHumidity": 70,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:55",
+        "sunset": "20:05",
+        "dayTemp": 28.5,
+        "nightTemp": 18.5,
+        "precipitation": 2.8,
+        "windSpeed": 16,
+        "cloudCover": 42,
+        "dayHumidity": 66,
+        "nightHumidity": 80
+      },
+      "autumn": {
+        "sunrise": "07:10",
+        "sunset": "18:25",
+        "dayTemp": 20.5,
+        "nightTemp": 12.5,
+        "precipitation": 3.6,
+        "windSpeed": 15.5,
+        "cloudCover": 58,
+        "dayHumidity": 74,
+        "nightHumidity": 87
+      }
+    }
+  },
+  {
+    "id": 420,
+    "country": "Venezuela",
+    "region": "South America",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:30",
+        "sunset": "18:10",
+        "dayTemp": 28,
+        "nightTemp": 19,
+        "precipitation": 0.6,
+        "windSpeed": 13,
+        "cloudCover": 35,
+        "dayHumidity": 62,
+        "nightHumidity": 82
+      },
+      "spring": {
+        "sunrise": "06:15",
+        "sunset": "18:20",
+        "dayTemp": 30.5,
+        "nightTemp": 21,
+        "precipitation": 1.8,
+        "windSpeed": 12,
+        "cloudCover": 45,
+        "dayHumidity": 66,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "06:05",
+        "sunset": "18:40",
+        "dayTemp": 31,
+        "nightTemp": 22.5,
+        "precipitation": 6,
+        "windSpeed": 10,
+        "cloudCover": 70,
+        "dayHumidity": 78,
+        "nightHumidity": 90
+      },
+      "autumn": {
+        "sunrise": "06:15",
+        "sunset": "18:15",
+        "dayTemp": 29,
+        "nightTemp": 21,
+        "precipitation": 5.4,
+        "windSpeed": 10.5,
+        "cloudCover": 66,
+        "dayHumidity": 76,
+        "nightHumidity": 89
+      }
+    }
+  },
+  {
+    "id": 421,
+    "country": "China",
+    "region": "Asia",
+    "faction": "Dharma Directorate",
+    "controller": "Dharma Directorate",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:01",
+        "sunset": "16:59",
+        "dayTemp": 8,
+        "nightTemp": -1,
+        "precipitation": 1.4,
+        "windSpeed": 16,
+        "cloudCover": 50,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 20,
+        "nightTemp": 11,
+        "precipitation": 2.6,
+        "windSpeed": 10,
+        "cloudCover": 52,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "summer": {
+        "sunrise": "04:59",
+        "sunset": "19:01",
+        "dayTemp": 30,
+        "nightTemp": 21,
+        "precipitation": 3.4,
+        "windSpeed": 13,
+        "cloudCover": 55,
+        "dayHumidity": 70,
+        "nightHumidity": 84
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 21,
+        "nightTemp": 12,
+        "precipitation": 1.8,
+        "windSpeed": 16,
+        "cloudCover": 45,
+        "dayHumidity": 64,
+        "nightHumidity": 78
+      }
+    }
+  },
+  {
+    "id": 422,
+    "country": "North Korea",
+    "region": "Asia",
+    "faction": "Democratic People's Republic of Korea",
+    "controller": "Democratic People's Republic of Korea",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:13",
+        "sunset": "16:47",
+        "dayTemp": -6,
+        "nightTemp": -17,
+        "precipitation": 0.6,
+        "windSpeed": 12,
+        "cloudCover": 45,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 15,
+        "nightTemp": 4,
+        "precipitation": 1.6,
+        "windSpeed": 15,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "04:47",
+        "sunset": "19:13",
+        "dayTemp": 28,
+        "nightTemp": 17,
+        "precipitation": 2.6,
+        "windSpeed": 9,
+        "cloudCover": 52,
+        "dayHumidity": 64,
+        "nightHumidity": 78
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 13,
+        "nightTemp": 2,
+        "precipitation": 1,
+        "windSpeed": 12,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 423,
+    "country": "South Korea",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:05",
+        "sunset": "16:55",
+        "dayTemp": 8,
+        "nightTemp": -1,
+        "precipitation": 1.4,
+        "windSpeed": 9,
+        "cloudCover": 50,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 20,
+        "nightTemp": 11,
+        "precipitation": 2.6,
+        "windSpeed": 12,
+        "cloudCover": 52,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "summer": {
+        "sunrise": "04:55",
+        "sunset": "19:05",
+        "dayTemp": 30,
+        "nightTemp": 21,
+        "precipitation": 3.4,
+        "windSpeed": 15,
+        "cloudCover": 55,
+        "dayHumidity": 70,
+        "nightHumidity": 84
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 21,
+        "nightTemp": 12,
+        "precipitation": 1.8,
+        "windSpeed": 9,
+        "cloudCover": 45,
+        "dayHumidity": 64,
+        "nightHumidity": 78
+      }
+    }
+  },
+  {
+    "id": 424,
+    "country": "Mongolia",
+    "region": "Asia",
+    "faction": "Illuminated Khanate",
+    "controller": "Illuminated Khanate",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:35",
+        "sunset": "16:25",
+        "dayTemp": -6,
+        "nightTemp": -17,
+        "precipitation": 0.6,
+        "windSpeed": 10,
+        "cloudCover": 45,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 15,
+        "nightTemp": 4,
+        "precipitation": 1.6,
+        "windSpeed": 13,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "04:25",
+        "sunset": "19:35",
+        "dayTemp": 28,
+        "nightTemp": 17,
+        "precipitation": 2.6,
+        "windSpeed": 16,
+        "cloudCover": 52,
+        "dayHumidity": 64,
+        "nightHumidity": 78
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 13,
+        "nightTemp": 2,
+        "precipitation": 1,
+        "windSpeed": 10,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 425,
+    "country": "Taiwan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:38",
+        "sunset": "17:22",
+        "dayTemp": 24,
+        "nightTemp": 14,
+        "precipitation": 0.4,
+        "windSpeed": 14,
+        "cloudCover": 30,
+        "dayHumidity": 60,
+        "nightHumidity": 74
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 23,
+        "precipitation": 1.2,
+        "windSpeed": 8,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:22",
+        "sunset": "18:38",
+        "dayTemp": 34,
+        "nightTemp": 24,
+        "precipitation": 8.5,
+        "windSpeed": 11,
+        "cloudCover": 80,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 20,
+        "precipitation": 3.2,
+        "windSpeed": 14,
+        "cloudCover": 58,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 426,
+    "country": "Vietnam",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:25",
+        "sunset": "17:35",
+        "dayTemp": 24,
+        "nightTemp": 14,
+        "precipitation": 0.4,
+        "windSpeed": 15,
+        "cloudCover": 30,
+        "dayHumidity": 60,
+        "nightHumidity": 74
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 23,
+        "precipitation": 1.2,
+        "windSpeed": 9,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:35",
+        "sunset": "18:25",
+        "dayTemp": 34,
+        "nightTemp": 24,
+        "precipitation": 8.5,
+        "windSpeed": 12,
+        "cloudCover": 80,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 20,
+        "precipitation": 3.2,
+        "windSpeed": 15,
+        "cloudCover": 58,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 427,
+    "country": "Laos",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:28",
+        "sunset": "17:32",
+        "dayTemp": 24,
+        "nightTemp": 14,
+        "precipitation": 0.4,
+        "windSpeed": 8,
+        "cloudCover": 30,
+        "dayHumidity": 60,
+        "nightHumidity": 74
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 23,
+        "precipitation": 1.2,
+        "windSpeed": 11,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:32",
+        "sunset": "18:28",
+        "dayTemp": 34,
+        "nightTemp": 24,
+        "precipitation": 8.5,
+        "windSpeed": 14,
+        "cloudCover": 80,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 20,
+        "precipitation": 3.2,
+        "windSpeed": 8,
+        "cloudCover": 58,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 428,
+    "country": "Cambodia",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:18",
+        "sunset": "17:42",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 4.5,
+        "windSpeed": 11,
+        "cloudCover": 65,
+        "dayHumidity": 80,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6,
+        "windSpeed": 14,
+        "cloudCover": 70,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "summer": {
+        "sunrise": "05:42",
+        "sunset": "18:18",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6.5,
+        "windSpeed": 8,
+        "cloudCover": 72,
+        "dayHumidity": 84,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 5.5,
+        "windSpeed": 11,
+        "cloudCover": 68,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      }
+    }
+  },
+  {
+    "id": 429,
+    "country": "Thailand",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:21",
+        "sunset": "17:39",
+        "dayTemp": 24,
+        "nightTemp": 14,
+        "precipitation": 0.4,
+        "windSpeed": 13,
+        "cloudCover": 30,
+        "dayHumidity": 60,
+        "nightHumidity": 74
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 23,
+        "precipitation": 1.2,
+        "windSpeed": 16,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:39",
+        "sunset": "18:21",
+        "dayTemp": 34,
+        "nightTemp": 24,
+        "precipitation": 8.5,
+        "windSpeed": 10,
+        "cloudCover": 80,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 20,
+        "precipitation": 3.2,
+        "windSpeed": 13,
+        "cloudCover": 58,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 430,
+    "country": "Myanmar",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:31",
+        "sunset": "17:29",
+        "dayTemp": 24,
+        "nightTemp": 14,
+        "precipitation": 0.4,
+        "windSpeed": 10,
+        "cloudCover": 30,
+        "dayHumidity": 60,
+        "nightHumidity": 74
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 23,
+        "precipitation": 1.2,
+        "windSpeed": 13,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:29",
+        "sunset": "18:31",
+        "dayTemp": 34,
+        "nightTemp": 24,
+        "precipitation": 8.5,
+        "windSpeed": 16,
+        "cloudCover": 80,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 20,
+        "precipitation": 3.2,
+        "windSpeed": 10,
+        "cloudCover": 58,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 431,
+    "country": "Malaysia",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:06",
+        "sunset": "17:54",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 4.5,
+        "windSpeed": 12,
+        "cloudCover": 65,
+        "dayHumidity": 80,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6,
+        "windSpeed": 15,
+        "cloudCover": 70,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "summer": {
+        "sunrise": "05:54",
+        "sunset": "18:06",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6.5,
+        "windSpeed": 9,
+        "cloudCover": 72,
+        "dayHumidity": 84,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 5.5,
+        "windSpeed": 12,
+        "cloudCover": 68,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      }
+    }
+  },
+  {
+    "id": 432,
+    "country": "Singapore",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:01",
+        "sunset": "17:59",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 4.5,
+        "windSpeed": 9,
+        "cloudCover": 65,
+        "dayHumidity": 80,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6,
+        "windSpeed": 12,
+        "cloudCover": 70,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "summer": {
+        "sunrise": "05:59",
+        "sunset": "18:01",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6.5,
+        "windSpeed": 15,
+        "cloudCover": 72,
+        "dayHumidity": 84,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 5.5,
+        "windSpeed": 9,
+        "cloudCover": 68,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      }
+    }
+  },
+  {
+    "id": 433,
+    "country": "Indonesia",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "05:57",
+        "sunset": "18:03",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 4.5,
+        "windSpeed": 10,
+        "cloudCover": 65,
+        "dayHumidity": 80,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6,
+        "windSpeed": 13,
+        "cloudCover": 70,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "summer": {
+        "sunrise": "06:03",
+        "sunset": "17:57",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6.5,
+        "windSpeed": 16,
+        "cloudCover": 72,
+        "dayHumidity": 84,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 5.5,
+        "windSpeed": 10,
+        "cloudCover": 68,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      }
+    }
+  },
+  {
+    "id": 434,
+    "country": "Philippines",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:20",
+        "sunset": "17:40",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 4.5,
+        "windSpeed": 12,
+        "cloudCover": 65,
+        "dayHumidity": 80,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6,
+        "windSpeed": 15,
+        "cloudCover": 70,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "18:20",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6.5,
+        "windSpeed": 9,
+        "cloudCover": 72,
+        "dayHumidity": 84,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 5.5,
+        "windSpeed": 12,
+        "cloudCover": 68,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      }
+    }
+  },
+  {
+    "id": 435,
+    "country": "India",
+    "region": "Asia",
+    "faction": "Sanatana Rashtra",
+    "controller": "Sanatana Rashtra",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:33",
+        "sunset": "17:27",
+        "dayTemp": 24,
+        "nightTemp": 14,
+        "precipitation": 0.4,
+        "windSpeed": 11,
+        "cloudCover": 30,
+        "dayHumidity": 60,
+        "nightHumidity": 74
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 23,
+        "precipitation": 1.2,
+        "windSpeed": 14,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:27",
+        "sunset": "18:33",
+        "dayTemp": 34,
+        "nightTemp": 24,
+        "precipitation": 8.5,
+        "windSpeed": 8,
+        "cloudCover": 80,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 20,
+        "precipitation": 3.2,
+        "windSpeed": 11,
+        "cloudCover": 58,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 436,
+    "country": "Pakistan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:50",
+        "sunset": "17:10",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 11,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "05:10",
+        "sunset": "18:50",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 8,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 11,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 437,
+    "country": "Bangladesh",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:38",
+        "sunset": "17:22",
+        "dayTemp": 24,
+        "nightTemp": 14,
+        "precipitation": 0.4,
+        "windSpeed": 14,
+        "cloudCover": 30,
+        "dayHumidity": 60,
+        "nightHumidity": 74
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 23,
+        "precipitation": 1.2,
+        "windSpeed": 8,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:22",
+        "sunset": "18:38",
+        "dayTemp": 34,
+        "nightTemp": 24,
+        "precipitation": 8.5,
+        "windSpeed": 11,
+        "cloudCover": 80,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 20,
+        "precipitation": 3.2,
+        "windSpeed": 14,
+        "cloudCover": 58,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      }
+    }
+  },
+  {
+    "id": 438,
+    "country": "Nepal",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:46",
+        "sunset": "17:14",
+        "dayTemp": 6,
+        "nightTemp": -6,
+        "precipitation": 0.4,
+        "windSpeed": 9,
+        "cloudCover": 35,
+        "dayHumidity": 50,
+        "nightHumidity": 64
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 17,
+        "nightTemp": 5,
+        "precipitation": 1.6,
+        "windSpeed": 12,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "05:14",
+        "sunset": "18:46",
+        "dayTemp": 24,
+        "nightTemp": 12,
+        "precipitation": 5.5,
+        "windSpeed": 15,
+        "cloudCover": 68,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 16,
+        "nightTemp": 4,
+        "precipitation": 1.4,
+        "windSpeed": 9,
+        "cloudCover": 44,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 439,
+    "country": "Bhutan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:44",
+        "sunset": "17:16",
+        "dayTemp": 6,
+        "nightTemp": -6,
+        "precipitation": 0.4,
+        "windSpeed": 8,
+        "cloudCover": 35,
+        "dayHumidity": 50,
+        "nightHumidity": 64
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 17,
+        "nightTemp": 5,
+        "precipitation": 1.6,
+        "windSpeed": 11,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "05:16",
+        "sunset": "18:44",
+        "dayTemp": 24,
+        "nightTemp": 12,
+        "precipitation": 5.5,
+        "windSpeed": 14,
+        "cloudCover": 68,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 16,
+        "nightTemp": 4,
+        "precipitation": 1.4,
+        "windSpeed": 8,
+        "cloudCover": 44,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 440,
+    "country": "Sri Lanka",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:11",
+        "sunset": "17:49",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 4.5,
+        "windSpeed": 15,
+        "cloudCover": 65,
+        "dayHumidity": 80,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6,
+        "windSpeed": 9,
+        "cloudCover": 70,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "summer": {
+        "sunrise": "05:49",
+        "sunset": "18:11",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6.5,
+        "windSpeed": 12,
+        "cloudCover": 72,
+        "dayHumidity": 84,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 5.5,
+        "windSpeed": 15,
+        "cloudCover": 68,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      }
+    }
+  },
+  {
+    "id": 441,
+    "country": "Brunei",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:06",
+        "sunset": "17:54",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 4.5,
+        "windSpeed": 12,
+        "cloudCover": 65,
+        "dayHumidity": 80,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6,
+        "windSpeed": 15,
+        "cloudCover": 70,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      },
+      "summer": {
+        "sunrise": "05:54",
+        "sunset": "18:06",
+        "dayTemp": 31,
+        "nightTemp": 24,
+        "precipitation": 6.5,
+        "windSpeed": 9,
+        "cloudCover": 72,
+        "dayHumidity": 84,
+        "nightHumidity": 96
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 30,
+        "nightTemp": 23,
+        "precipitation": 5.5,
+        "windSpeed": 12,
+        "cloudCover": 68,
+        "dayHumidity": 82,
+        "nightHumidity": 96
+      }
+    }
+  },
+  {
+    "id": 442,
+    "country": "Kazakhstan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:38",
+        "sunset": "16:22",
+        "dayTemp": -6,
+        "nightTemp": -17,
+        "precipitation": 0.6,
+        "windSpeed": 11,
+        "cloudCover": 45,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 15,
+        "nightTemp": 4,
+        "precipitation": 1.6,
+        "windSpeed": 14,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "04:22",
+        "sunset": "19:38",
+        "dayTemp": 28,
+        "nightTemp": 17,
+        "precipitation": 2.6,
+        "windSpeed": 8,
+        "cloudCover": 52,
+        "dayHumidity": 64,
+        "nightHumidity": 78
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 13,
+        "nightTemp": 2,
+        "precipitation": 1,
+        "windSpeed": 11,
+        "cloudCover": 42,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 443,
+    "country": "Uzbekistan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:16",
+        "sunset": "16:44",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 13,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 16,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "04:44",
+        "sunset": "19:16",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 10,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 13,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 444,
+    "country": "Turkmenistan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:10",
+        "sunset": "16:50",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 11,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "04:50",
+        "sunset": "19:10",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 8,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 11,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 445,
+    "country": "Kyrgyzstan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:16",
+        "sunset": "16:44",
+        "dayTemp": 6,
+        "nightTemp": -6,
+        "precipitation": 0.4,
+        "windSpeed": 13,
+        "cloudCover": 35,
+        "dayHumidity": 50,
+        "nightHumidity": 64
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 17,
+        "nightTemp": 5,
+        "precipitation": 1.6,
+        "windSpeed": 16,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "04:44",
+        "sunset": "19:16",
+        "dayTemp": 24,
+        "nightTemp": 12,
+        "precipitation": 5.5,
+        "windSpeed": 10,
+        "cloudCover": 68,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 16,
+        "nightTemp": 4,
+        "precipitation": 1.4,
+        "windSpeed": 13,
+        "cloudCover": 44,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 446,
+    "country": "Tajikistan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:10",
+        "sunset": "16:50",
+        "dayTemp": 6,
+        "nightTemp": -6,
+        "precipitation": 0.4,
+        "windSpeed": 11,
+        "cloudCover": 35,
+        "dayHumidity": 50,
+        "nightHumidity": 64
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 17,
+        "nightTemp": 5,
+        "precipitation": 1.6,
+        "windSpeed": 14,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "04:50",
+        "sunset": "19:10",
+        "dayTemp": 24,
+        "nightTemp": 12,
+        "precipitation": 5.5,
+        "windSpeed": 8,
+        "cloudCover": 68,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 16,
+        "nightTemp": 4,
+        "precipitation": 1.4,
+        "windSpeed": 11,
+        "cloudCover": 44,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 447,
+    "country": "Iran",
+    "region": "Middle East",
+    "faction": "Imperial State of Persia",
+    "controller": "Imperial State of Persia",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:54",
+        "sunset": "17:06",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 13,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 16,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "05:06",
+        "sunset": "18:54",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 10,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 13,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 448,
+    "country": "Iraq",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:56",
+        "sunset": "17:04",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 14,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 8,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "05:04",
+        "sunset": "18:56",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 11,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 449,
+    "country": "Israel",
+    "region": "Middle East",
+    "faction": "Solomonic Republic",
+    "controller": "Solomonic Republic",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:52",
+        "sunset": "17:08",
+        "dayTemp": 15,
+        "nightTemp": 6,
+        "precipitation": 3,
+        "windSpeed": 12,
+        "cloudCover": 55,
+        "dayHumidity": 68,
+        "nightHumidity": 82
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 23,
+        "nightTemp": 14,
+        "precipitation": 1.4,
+        "windSpeed": 15,
+        "cloudCover": 38,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:08",
+        "sunset": "18:52",
+        "dayTemp": 32,
+        "nightTemp": 23,
+        "precipitation": 0.1,
+        "windSpeed": 9,
+        "cloudCover": 12,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 25,
+        "nightTemp": 16,
+        "precipitation": 1.8,
+        "windSpeed": 12,
+        "cloudCover": 40,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      }
+    }
+  },
+  {
+    "id": 450,
+    "country": "Palestine",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:52",
+        "sunset": "17:08",
+        "dayTemp": 15,
+        "nightTemp": 6,
+        "precipitation": 3,
+        "windSpeed": 12,
+        "cloudCover": 55,
+        "dayHumidity": 68,
+        "nightHumidity": 82
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 23,
+        "nightTemp": 14,
+        "precipitation": 1.4,
+        "windSpeed": 15,
+        "cloudCover": 38,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:08",
+        "sunset": "18:52",
+        "dayTemp": 32,
+        "nightTemp": 23,
+        "precipitation": 0.1,
+        "windSpeed": 9,
+        "cloudCover": 12,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 25,
+        "nightTemp": 16,
+        "precipitation": 1.8,
+        "windSpeed": 12,
+        "cloudCover": 40,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      }
+    }
+  },
+  {
+    "id": 451,
+    "country": "Lebanon",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:56",
+        "sunset": "17:04",
+        "dayTemp": 15,
+        "nightTemp": 6,
+        "precipitation": 3,
+        "windSpeed": 14,
+        "cloudCover": 55,
+        "dayHumidity": 68,
+        "nightHumidity": 82
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 23,
+        "nightTemp": 14,
+        "precipitation": 1.4,
+        "windSpeed": 8,
+        "cloudCover": 38,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "05:04",
+        "sunset": "18:56",
+        "dayTemp": 32,
+        "nightTemp": 23,
+        "precipitation": 0.1,
+        "windSpeed": 11,
+        "cloudCover": 12,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 25,
+        "nightTemp": 16,
+        "precipitation": 1.8,
+        "windSpeed": 14,
+        "cloudCover": 40,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      }
+    }
+  },
+  {
+    "id": 452,
+    "country": "Syria",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:01",
+        "sunset": "16:59",
+        "dayTemp": 15,
+        "nightTemp": 6,
+        "precipitation": 3,
+        "windSpeed": 16,
+        "cloudCover": 55,
+        "dayHumidity": 68,
+        "nightHumidity": 82
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 23,
+        "nightTemp": 14,
+        "precipitation": 1.4,
+        "windSpeed": 10,
+        "cloudCover": 38,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      },
+      "summer": {
+        "sunrise": "04:59",
+        "sunset": "19:01",
+        "dayTemp": 32,
+        "nightTemp": 23,
+        "precipitation": 0.1,
+        "windSpeed": 13,
+        "cloudCover": 12,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 25,
+        "nightTemp": 16,
+        "precipitation": 1.8,
+        "windSpeed": 16,
+        "cloudCover": 40,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      }
+    }
+  },
+  {
+    "id": 453,
+    "country": "Jordan",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:52",
+        "sunset": "17:08",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 12,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 15,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "05:08",
+        "sunset": "18:52",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 9,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 12,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 454,
+    "country": "Saudi Arabia",
+    "region": "Middle East",
+    "faction": "Petro Kingdom of Arabia",
+    "controller": "Petro Kingdom of Arabia",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:38",
+        "sunset": "17:22",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 14,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 8,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "05:22",
+        "sunset": "18:38",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 11,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 455,
+    "country": "Yemen",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:23",
+        "sunset": "17:37",
+        "dayTemp": 20,
+        "nightTemp": 7,
+        "precipitation": 0.3,
+        "windSpeed": 14,
+        "cloudCover": 28,
+        "dayHumidity": 45,
+        "nightHumidity": 59
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 32,
+        "nightTemp": 19,
+        "precipitation": 0.2,
+        "windSpeed": 8,
+        "cloudCover": 18,
+        "dayHumidity": 30,
+        "nightHumidity": 44
+      },
+      "summer": {
+        "sunrise": "05:37",
+        "sunset": "18:23",
+        "dayTemp": 43,
+        "nightTemp": 30,
+        "precipitation": 0.05,
+        "windSpeed": 11,
+        "cloudCover": 8,
+        "dayHumidity": 20,
+        "nightHumidity": 34
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 20,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 18,
+        "dayHumidity": 32,
+        "nightHumidity": 46
+      }
+    }
+  },
+  {
+    "id": 456,
+    "country": "Oman",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:33",
+        "sunset": "17:27",
+        "dayTemp": 24,
+        "nightTemp": 16,
+        "precipitation": 0.5,
+        "windSpeed": 11,
+        "cloudCover": 25,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 25,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 15,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "summer": {
+        "sunrise": "05:27",
+        "sunset": "18:33",
+        "dayTemp": 42,
+        "nightTemp": 34,
+        "precipitation": 0.02,
+        "windSpeed": 8,
+        "cloudCover": 8,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 34,
+        "nightTemp": 26,
+        "precipitation": 0.2,
+        "windSpeed": 11,
+        "cloudCover": 15,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 457,
+    "country": "United Arab Emirates",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:38",
+        "sunset": "17:22",
+        "dayTemp": 24,
+        "nightTemp": 16,
+        "precipitation": 0.5,
+        "windSpeed": 14,
+        "cloudCover": 25,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 25,
+        "precipitation": 0.2,
+        "windSpeed": 8,
+        "cloudCover": 15,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "summer": {
+        "sunrise": "05:22",
+        "sunset": "18:38",
+        "dayTemp": 42,
+        "nightTemp": 34,
+        "precipitation": 0.02,
+        "windSpeed": 11,
+        "cloudCover": 8,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 34,
+        "nightTemp": 26,
+        "precipitation": 0.2,
+        "windSpeed": 14,
+        "cloudCover": 15,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 458,
+    "country": "Qatar",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "17:20",
+        "dayTemp": 24,
+        "nightTemp": 16,
+        "precipitation": 0.5,
+        "windSpeed": 15,
+        "cloudCover": 25,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 25,
+        "precipitation": 0.2,
+        "windSpeed": 9,
+        "cloudCover": 15,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "summer": {
+        "sunrise": "05:20",
+        "sunset": "18:40",
+        "dayTemp": 42,
+        "nightTemp": 34,
+        "precipitation": 0.02,
+        "windSpeed": 12,
+        "cloudCover": 8,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 34,
+        "nightTemp": 26,
+        "precipitation": 0.2,
+        "windSpeed": 15,
+        "cloudCover": 15,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 459,
+    "country": "Bahrain",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:42",
+        "sunset": "17:18",
+        "dayTemp": 24,
+        "nightTemp": 16,
+        "precipitation": 0.5,
+        "windSpeed": 16,
+        "cloudCover": 25,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 25,
+        "precipitation": 0.2,
+        "windSpeed": 10,
+        "cloudCover": 15,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "summer": {
+        "sunrise": "05:18",
+        "sunset": "18:42",
+        "dayTemp": 42,
+        "nightTemp": 34,
+        "precipitation": 0.02,
+        "windSpeed": 13,
+        "cloudCover": 8,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 34,
+        "nightTemp": 26,
+        "precipitation": 0.2,
+        "windSpeed": 16,
+        "cloudCover": 15,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 460,
+    "country": "Kuwait",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:48",
+        "sunset": "17:12",
+        "dayTemp": 24,
+        "nightTemp": 16,
+        "precipitation": 0.5,
+        "windSpeed": 10,
+        "cloudCover": 25,
+        "dayHumidity": 62,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 33,
+        "nightTemp": 25,
+        "precipitation": 0.2,
+        "windSpeed": 13,
+        "cloudCover": 15,
+        "dayHumidity": 52,
+        "nightHumidity": 66
+      },
+      "summer": {
+        "sunrise": "05:12",
+        "sunset": "18:48",
+        "dayTemp": 42,
+        "nightTemp": 34,
+        "precipitation": 0.02,
+        "windSpeed": 16,
+        "cloudCover": 8,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 34,
+        "nightTemp": 26,
+        "precipitation": 0.2,
+        "windSpeed": 10,
+        "cloudCover": 15,
+        "dayHumidity": 58,
+        "nightHumidity": 72
+      }
+    }
+  },
+  {
+    "id": 461,
+    "country": "Afghanistan",
+    "region": "Middle East",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:58",
+        "sunset": "17:02",
+        "dayTemp": 6,
+        "nightTemp": -6,
+        "precipitation": 0.4,
+        "windSpeed": 15,
+        "cloudCover": 35,
+        "dayHumidity": 50,
+        "nightHumidity": 64
+      },
+      "spring": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 17,
+        "nightTemp": 5,
+        "precipitation": 1.6,
+        "windSpeed": 9,
+        "cloudCover": 48,
+        "dayHumidity": 55,
+        "nightHumidity": 69
+      },
+      "summer": {
+        "sunrise": "05:02",
+        "sunset": "18:58",
+        "dayTemp": 24,
+        "nightTemp": 12,
+        "precipitation": 5.5,
+        "windSpeed": 12,
+        "cloudCover": 68,
+        "dayHumidity": 72,
+        "nightHumidity": 86
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "18:00",
+        "dayTemp": 16,
+        "nightTemp": 4,
+        "precipitation": 1.4,
+        "windSpeed": 15,
+        "cloudCover": 44,
+        "dayHumidity": 58,
+        "nightHumidity": 72
       }
     }
   }

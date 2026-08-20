@@ -27,16 +27,28 @@
             const leaderName = leader ? leader.name() : T('ControlPanel.defaultUser');
             const leaderLvl = leader ? leader.level : 1;
             
-            const cpuName = T('ControlPanel.cpuName', { user: leaderName, level: leaderLvl });
-            const ramSize = leader ? T('ControlPanel.ramSize', { mb: leader.mmp })
-                : T('ControlPanel.ramDefault');
-            const gpuName = leader ? T('ControlPanel.gpuName', { mhz: leader.agi })
-                : T('ControlPanel.gpuDefault');
-            const psuName = leader ? T('ControlPanel.psuName', { watts: leader.mhp })
-                : T('ControlPanel.psuDefault');
-            
+            // The specs are the machine's, whenever there is a machine: the
+            // Hyperdeck's fitted components ARE the hardware this desktop runs
+            // on. Party stats only stand in for a deck that has nothing in it,
+            // which is what a save from before the Hyperdeck looks like.
+            const rig = window.HyperDeck && window.HyperDeck.summary
+                ? window.HyperDeck.summary() : null;
+
+            const cpuName = rig ? rig.processor
+                : T('ControlPanel.cpuName', { user: leaderName, level: leaderLvl });
+            const ramSize = rig ? rig.memory
+                : (leader ? T('ControlPanel.ramSize', { mb: leader.mmp })
+                    : T('ControlPanel.ramDefault'));
+            const gpuName = rig ? rig.graphics
+                : (leader ? T('ControlPanel.gpuName', { mhz: leader.agi })
+                    : T('ControlPanel.gpuDefault'));
+            const psuName = rig ? rig.power
+                : (leader ? T('ControlPanel.psuName', { watts: leader.mhp })
+                    : T('ControlPanel.psuDefault'));
+
             const totalGold = typeof $gameParty !== 'undefined' ? $gameParty.gold() : 0;
-            const hddSize = T('ControlPanel.hddSize', { gb: Math.max(10, Math.floor(totalGold / 10)) });
+            const hddSize = rig ? rig.storage
+                : T('ControlPanel.hddSize', { gb: Math.max(10, Math.floor(totalGold / 10)) });
 
             // Class stats
             const strStat = leader ? leader.atk : 10;

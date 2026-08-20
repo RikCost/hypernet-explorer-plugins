@@ -833,6 +833,39 @@
     };
 
     // ------------------------------------------------------------------
+    // 15d. WHICH TWO WEAPONS SWING THIS TURN
+    //
+    //   A character with more than two hands can carry up to eight weapons,
+    //   but nobody swings eight of them. Two are drawn at random when the turn
+    //   is handed over (Game_Actor#rollTurnWeapons, ItemSystemEquipment.js) and
+    //   only those two contribute their elements, their attack skills and their
+    //   sounds for the round. Since the pair is a roll, the log says out loud
+    //   which two came to hand: the player is choosing their next action on the
+    //   strength of it.
+    //
+    //   Everyone carrying two weapons or fewer is silent here, which is almost
+    //   everyone.
+    // ------------------------------------------------------------------
+    const _BattleManager_startAction_pair = BattleManager.startAction;
+    BattleManager.startAction = function() {
+        const subject = this._subject;
+        if (subject && subject.isActor && subject.isActor() && subject.allWeapons
+            && subject.allWeapons().length > 2 && this._logWindow) {
+            const pair = subject.activeWeapons();
+            // _turnWeaponIndexes is replaced by each roll and by nothing else,
+            // so comparing the reference announces the pair once per turn
+            // rather than once per repeat of a multi-hit action.
+            if (pair.length >= 2 && subject._pairAnnouncedFor !== subject._turnWeaponIndexes) {
+                subject._pairAnnouncedFor = subject._turnWeaponIndexes;
+                this._logWindow.push("addText", T('Battle.weapons.pair', {
+                    actor: subject.name(), first: pair[0].name, second: pair[1].name
+                }));
+            }
+        }
+        _BattleManager_startAction_pair.call(this);
+    };
+
+    // ------------------------------------------------------------------
     // 16. Scene_Gameover – redirect to map
     // ------------------------------------------------------------------
     Scene_Gameover.prototype.start = function() {

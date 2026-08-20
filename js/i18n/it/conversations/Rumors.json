@@ -1,0 +1,141 @@
+{
+  "generic": [
+    "Dicono che la strada a est sia tranquilla da settimane. Troppo tranquilla, per i gusti di chiunque.",
+    "I prezzi sono saliti di nuovo. Nessuno vuole dire chi l'ha deciso.",
+    "Qualcuno ha visto delle luci sull'acqua per tre notti di fila.",
+    "L'acqua dei pozzi sa di ferro dalla primavera. Chiedi a chi vuoi.",
+    "Al vecchio cantiere c'è lavoro, ma nessuno torna a parlarne.",
+    "La settimana scorsa è passato uno straniero e ha pagato con monete che nessuno ha riconosciuto.",
+    "Mezzo paese giura che le campane hanno suonato all'ora sbagliata.",
+    "Le guardie hanno cambiato il giro di ronda. Non lo fanno mai senza motivo.",
+    "Si dice che un'intera carovana sia tornata indietro prima del passo.",
+    "Qualcosa è entrato nel magazzino. Lo chiamano cani."
+  ],
+  "personality": {
+    "nervous": [
+      "Non dovrei dirlo, ma sulla strada a nord la gente sparisce. Ti prego, non ripeterlo.",
+      "Non l'hai sentito da me. All'acquedotto c'è qualcosa che non va e nessuno lo ammette.",
+      "Ogni notte di questa settimana ho sentito qualcuno muoversi fuori. Ogni notte. Ho smesso di aprire le imposte."
+    ],
+    "calm": [
+      "Si parla di guai al confine. Non mi muoverei ancora.",
+      "Dicono che il raccolto andrà male. Lo dicono quasi ogni anno.",
+      "Gira una voce sul magistrato. Aspetto che qualcuno ci metta un nome."
+    ],
+    "aggressive": [
+      "Qualcuno ruba dai carichi, e quando scoprirò chi è, gli mancheranno dei denti.",
+      "Chiedi a quelli della taverna della rissa della settimana scorsa. Chiedi chi l'ha cominciata. Ti mentiranno.",
+      "In questo quartiere lavora una banda che crede che nessuno stia guardando. Qualcuno guarda."
+    ],
+    "melancholic": [
+      "La vecchia famiglia sulla collina se n'è andata di notte. Nessuno ha detto perché, e nessuno lo dirà.",
+      "Dicono che il fiume ne abbia preso un altro il mese scorso. Ne prende sempre qualcuno.",
+      "Questo posto una volta era pieno. Adesso ci restano solo le voci da passarci."
+    ],
+    "sanguine": [
+      "Hai sentito? Ci sarà una festa, e tutta la via sta già litigando sulla musica.",
+      "Si dice che qualcuno abbia messo su dei soldi e se ne stia molto zitto. Meraviglioso, no?",
+      "Parlano tutti del nuovo arrivato. Voglio sapere tutto prima di fine settimana."
+    ],
+    "cautious": [
+      "Ho sentito la stessa storia da tre persone, ed è proprio per questo che non ci credo.",
+      "Dicono che al porto ci sia lavoro facile. Il lavoro facile di solito si paga.",
+      "Guarda chi ha in mano i debiti prima di credere a qualsiasi cosa sulla chiusura di quel negozio."
+    ],
+    "impulsive": [
+      "Dicono che la cantina sotto il mulino sia ancora piena. Ieri notte per poco non ci andavo.",
+      "A quanto pare al cantiere stanno facendo a botte proprio adesso. Andiamo.",
+      "Qualcuno ha lasciato un carro intero incustodito vicino alla porta. Intero. Incustodito."
+    ],
+    "stoic": [
+      "Si dice che l'inverno sarà duro. Di solito lo è.",
+      "Due uomini sono spariti sulla strada del passo. È quello che fa quella strada.",
+      "I prezzi sono saliti di nuovo. Lamentarsi non ne ha mai fatto scendere uno."
+    ],
+    "paranoid": [
+      "Conta le guardie alla porta est. Poi contale domani. Vedrai.",
+      "Le lettere vengono aperte. Non mi importa chi dice il contrario, ho visto i sigilli.",
+      "Chi fa domande sul vecchio magazzino non le fa per sé."
+    ],
+    "empathetic": [
+      "La famiglia all'angolo ha perso tutto e tutta la via finge di non accorgersene.",
+      "Dicono che il figlio dell'oste non sia più lo stesso dalla primavera. Ci credo.",
+      "Girano voci su di lei, e vorrei che la gente si sentisse parlare."
+    ],
+    "authoritative": [
+      "I registri dei carichi non tornano, e voglio una risposta entro fine settimana.",
+      "Si parla di uno sciopero al cantiere. Si risolverà come si deve, oppure lo risolverò io.",
+      "In questo quartiere c'è qualcuno che dà ordini senza averne il diritto."
+    ],
+    "scholarly": [
+      "Tre resoconti distinti descrivono le stesse luci sulla palude, e nessuno concorda sul colore.",
+      "L'archivio ha perso un anno intero di registri in un incendio che nessuno ha registrato.",
+      "Circola un manoscritto che sostiene che la città sia più antica del suo statuto. Fonti pessime, ma interessante."
+    ],
+    "artistic": [
+      "Martedì le campane hanno suonato sbagliato e pare che nessun altro l'abbia sentito. Non ho smesso di pensarci.",
+      "Dicono che il pittore della piazza non accetti più lavori. So perché. Avrei smesso anch'io.",
+      "Qualcosa in questa città ha cambiato colore questa stagione. Non so dargli un nome, ma è successo."
+    ],
+    "adventurous": [
+      "C'è un passo che nessuno percorre da dieci anni, e ho trovato uno che dice che è di nuovo aperto.",
+      "Le mappe sbagliano sul crinale a nord. Ho intenzione di dimostrarlo.",
+      "Dicono che sia arrivata una nave con la stiva piena di cose senza nome. Voglio vederla."
+    ],
+    "nurturing": [
+      "Quei bambini hanno dormito di nuovo nel cortile. Qualcuno dovrebbe fare qualcosa, quindi lo farò io.",
+      "Dicono che la vecchia del vicolo non apra la porta da giorni. Ci vado con la minestra.",
+      "Nel quartiere sud c'è una malattia. Se puoi, tieni i tuoi in casa."
+    ],
+    "mischievous": [
+      "Vuoi sapere chi va a trovare la moglie del conestabile? Offrimi da bere.",
+      "Qualcuno ha scambiato i registri alla dogana. Io non direi mai chi.",
+      "Gira una voce che ho messo in giro io, e mi è tornata indietro migliorata."
+    ],
+    "cynical": [
+      "Dicono che la nuova tassa serva per le strade. Guarda le strade.",
+      "Qualcuno pagherà per il grano sparito. Non sarà chi l'ha preso.",
+      "Ogni voce in questa città è un conto che qualcuno cerca di non pagare."
+    ],
+    "disciplined": [
+      "La ronda notturna è sotto di tre uomini da un mese. È sul registro, se qualcuno si degnasse di leggerlo.",
+      "Due volte questa settimana sono uscite scorte senza registrazione. È così che un posto comincia a marcire.",
+      "Si parla del nuovo ufficiale. Lo giudicherò sulle esercitazioni, non sulle chiacchiere."
+    ],
+    "fatalistic": [
+      "Dicono che la miniera riaprirà. Si allagherà di nuovo, come l'altra volta.",
+      "Quello che sta arrivando per la strada è già in cammino. Parlarne non cambia niente.",
+      "I segni ci sono tutti. C'erano anche l'altra volta, e nessuno si è mosso."
+    ],
+    "grumpy": [
+      "Ripetono tutti le stesse sciocchezze sul ponte e non uno di loro ci ha camminato sopra.",
+      "Hanno messo una bancarella nuova in piazza. Piazza rovinata.",
+      "Il cane di qualcuno è entrato nelle scorte. L'avevo detto che sarebbe successo. Nessuno mi ha ascoltato."
+    ],
+    "loyal": [
+      "La gente dice cose sul mio padrone che non gli direbbe in faccia, e farebbero bene a non dirle.",
+      "Gira una voce sul capitano delle guardie. Ho servito sotto di lei. È una bugia.",
+      "Qualunque cosa tu abbia sentito su quella famiglia, sono stati vicini a questa città quando nessun altro lo era."
+    ],
+    "brave": [
+      "Dicono che nelle fogne sotto il mercato viva qualcosa. Domani ci scendo.",
+      "Mezza via non passa davanti alla vecchia casa dopo il tramonto. Io ci passo ogni sera.",
+      "Si parla di banditi sulla strada a est. Che vengano da questa parte."
+    ],
+    "timid": [
+      "Ho sentito una cosa sulla torre, ma per favore non chiedermi di ripeterla.",
+      "La gente parla, e preferirei non farmi vedere a parlare con loro.",
+      "C'è un uomo che fa domande sugli stranieri. Non gli ho detto niente. Te lo giuro."
+    ],
+    "hedonistic": [
+      "Nella cantina dell'osteria è arrivato qualcosa di nuovo, e l'oste fa finta che non esista.",
+      "Dicono che alla villa ci sia una festa a cui nessuno è invitato. Nessuno resta non invitato a lungo.",
+      "Si dice che il locale nuovo in piazza versi onestamente. Vale più di qualsiasi segreto."
+    ],
+    "apathetic": [
+      "È successo qualcosa al porto. La gente ci è rimasta male.",
+      "Dicono che il consiglio stia crollando. Immagino sia possibile.",
+      "Gira una voce. Non mi sono preso la briga di capire quale."
+    ]
+  }
+}

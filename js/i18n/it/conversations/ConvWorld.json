@@ -1,275 +1,275 @@
 {
   "topic": {
     "crimeWave": [
-      "Terzo furto con scasso nella mia via questo mese. Chiudi bene le porte.",
-      "Guardie a ogni angolo, adesso. Era ora, con tutti questi ladri.",
-      "Non giro più per {group} dopo il tramonto. Non di questi tempi.",
-      "Dicono che il giro di vite stia funzionando. Io dico: tieniti stretta la borsa.",
-      "Tutti conoscono qualcuno che è stato derubato ultimamente. Tutti."
+      "Terzo furto in casa nella mia via questo mese. Chiudete a chiave.",
+      "Adesso c'è una guardia a ogni angolo. Era ora, con tutto questo rubare.",
+      "Dopo il tramonto per {group} non ci passo più. Non di questi tempi.",
+      "Dicono che la stretta funziona. Io dico tieniti stretta la borsa.",
+      "Conoscono tutti qualcuno a cui hanno rubato qualcosa. Tutti."
     ],
     "boom": [
-      "Lavoro ovunque guardi! {group} non vedeva tempi così da anni.",
-      "Mio cugino è stato assunto il giorno stesso che l'ha chiesto. Il giorno stesso!",
-      "I soldi scorrono a {group}. Perfino i mendicanti fanno gli schizzinosi.",
-      "Se non trovi lavoro in questa stagione, non lo stai cercando.",
-      "Gli affitti salgono insieme ai bei tempi. C'è sempre un rovescio."
+      "Lavoro dappertutto! A {group} non si vedevano annate così da un pezzo.",
+      "Mio cugino l'hanno assunto il giorno stesso che ha chiesto. Il giorno stesso!",
+      "A {group} girano soldi. Perfino i mendicanti fanno gli schizzinosi.",
+      "Se non trovi lavoro in questa stagione vuol dire che non lo stai cercando.",
+      "Con la ripresa salgono anche gli affitti. C'è sempre il rovescio della medaglia."
     ],
     "bust": [
-      "Metà delle botteghe della mia via sono al buio ormai. Tempi duri.",
-      "Nessuno assume a {group}. Nessuno.",
-      "Ho visto tre amici perdere il lavoro questa stagione. Tre.",
-      "Quando il lavoro si prosciuga, la gente si dispera. Si sente nell'aria.",
-      "Stringi la cinghia. Questa crisi non ha ancora finito con {group}."
+      "Metà delle botteghe della mia via ha le luci spente. Tempi duri.",
+      "A {group} non assume nessuno. Nessuno.",
+      "Ho visto tre amici perdere il posto in questa stagione. Tre.",
+      "Quando il lavoro finisce la gente si dispera. Si sente nell'aria.",
+      "Stringi la cinghia. Questa crisi con {group} non ha ancora finito."
     ],
     "festival": [
       "Ci vai a {festival}? Ci vanno tutti.",
-      "Le strade odorano di frittelle e olio di lampada. Adoro {festival}.",
-      "La settimana più bella dell'anno, {festival}! Occhio alle tasche nella calca, però.",
-      "Ho ballato fino all'alba ieri notte. {festival} viene solo una volta all'anno."
+      "Per strada c'è odore di frittelle e olio di lampada. Adoro {festival}.",
+      "La settimana più bella dell'anno, {festival}! Occhio alle tasche, però, con tutta quella calca.",
+      "Ho ballato fino all'alba. {festival} capita una volta l'anno."
     ],
     "epidemic": [
-      "Copriti la bocca. Gira {epidemic}.",
-      "Due case nel mio vicolo sono sbarrate per {epidemic}. Stanne alla larga.",
-      "I mercati sono mezzi vuoti. Nessuno vuole prendersi {epidemic}.",
-      "Lavati le mani, forestiero. A {epidemic} non importa chi sei."
+      "Copriti la bocca. In giro c'è {epidemic}.",
+      "Nel mio vicolo due case sono sbarrate per {epidemic}. Gira alla larga.",
+      "I mercati sono mezzi vuoti. Nessuno vuole beccarsi {epidemic}.",
+      "Lavati le mani, forestiero. A {epidemic} non interessa chi sei."
     ],
     "headline": [
-      "Hai sentito? {headline}",
+      "L'hai sentita? {headline}",
       "Non si parla d'altro: {headline}",
-      "Le notizie dicono: {headline}, che tempi ci tocca vivere."
+      "Sul giornale c'è scritto: {headline}, in che tempi viviamo."
     ],
     "outlaw": [
       "Quella faccia mi dice qualcosa... non c'era un avviso di taglia?",
-      "Sta' attento. Ultimamente girano tipi ricercati.",
-      "La guardia va in giro mostrando un ritratto. Ti somigliava parecchio, forestiero."
+      "Occhi aperti. Ultimamente in giro c'è gente ricercata.",
+      "La guardia va in giro con un ritratto. Ti somigliava parecchio, forestiero."
     ],
     "market": {
       "bullish": [
-        "Il mio agente dice che il petrolio da qui può solo salire. Comprano tutti.",
-        "Perfino gli scaricatori di porto adesso giocano in borsa. Bei tempi."
+        "Il mio agente dice che il petrolio da qui sale e basta. Comprano tutti.",
+        "Adesso giocano in borsa perfino gli scaricatori di porto. Bei tempi."
       ],
       "bearish": [
-        "Ho venduto le azioni prima che non valessero più niente. Il mercato è marcio.",
-        "Non mettere i tuoi risparmi in borsa adesso. Fidati."
+        "Ho venduto tutto prima che valesse zero. Il mercato è marcio.",
+        "Adesso i risparmi in borsa non mettercela. Fidati."
       ]
     },
     "earthDestroyed": {
       "Nervous": [
-        "Siamo davvero gli ultimi? Tutti noi, a galleggiare in questa torre, e basta?",
-        "Non riesco a smettere di guardare fuori dalla finestra. Non c'è niente là fuori. Proprio niente."
+        "Siamo davvero gli ultimi? Tutti quanti dentro questa torre, e basta?",
+        "Non riesco a smettere di guardare fuori. Là fuori non c'è niente. Proprio niente."
       ],
       "Calm": [
-        "Il mondo è finito e in qualche modo siamo ancora qui. Ho fatto pace con la torre.",
-        "Fuori da queste mura ormai ci sono solo stelle. Ho smesso di aver bisogno d'altro."
+        "Il mondo è finito e noi siamo ancora qui. Con la torre ho fatto pace.",
+        "Fuori da queste pareti ci sono solo stelle, adesso. Ho smesso di volere di più."
       ],
       "Aggressive": [
-        "Un sasso ha fatto quello che niente altro poteva fare. Mi viene voglia di rompere qualcosa.",
-        "La Terra non c'è più e io respiro ancora. Qualunque cosa sia rimasta, la difenderò a pugni."
+        "Un sasso ha fatto quello che non era riuscito a nessuno. Mi viene voglia di prendere a pugni un muro.",
+        "La Terra non c'è più e io respiro ancora. Per quello che resta mi batto."
       ],
       "Melancholic": [
-        "Tutto quello che ho conosciuto è polvere da qualche parte là fuori. Certe notti lo sogno ancora.",
-        "Non c'è più una casa da rimpiangere. Solo questa torre, e il buio dove una volta c'era casa."
+        "Tutto quello che conoscevo è polvere là fuori. Certe notti me lo sogno ancora.",
+        "Non c'è più una casa di cui sentire la mancanza. Solo questa torre e il buio dove stava casa."
       ],
       "Sanguine": [
-        "Siamo vivi! Non è cosa da poco, dopo quello che è successo a tutto il resto.",
-        "Ogni mattina in cui mi sveglio in questa torre è una mattina che non pensavo di avere."
+        "Siamo vivi! Non è poco, non dopo quello che è successo a tutto il resto.",
+        "Ogni mattina che mi sveglio in questa torre è una mattina che non mi aspettavo."
       ],
       "Cautious": [
-        "Riciclatori d'aria, depuratori d'acqua, scorte di scorte. In questa torre non ci si può permettere leggerezze.",
-        "Tengo un elenco di chi è ancora vivo. Si accorcia più di quanto vorrei."
+        "Ricircolo dell'aria, recupero dell'acqua, riserve sulle riserve. Con questa torre non ci si può permettere distrazioni.",
+        "Tengo una lista di chi è ancora vivo. Si accorcia più di quanto vorrei."
       ],
       "Impulsive": [
-        "Andiamo a GUARDARE fuori, dai. Cosa può succedere di peggio, ormai?",
-        "La Terra non c'è più, e allora? Non me ne sto qui ferma ad aspettare che finisca l'aria anche qui."
+        "Andiamo a GUARDARE fuori, dai. Cosa può succederci ancora, sinceramente?",
+        "La Terra non c'è più, e allora? Non sto qui fermo ad aspettare che finisca l'aria anche qui."
       ],
       "Stoic": [
-        "Il pianeta non c'è più. La torre resiste. Io mi occupo di ciò che resiste.",
-        "Il dolore non riempie i serbatoi d'acqua. Il lavoro sì."
+        "Il pianeta non c'è più. La torre sta in piedi. Io mi occupo di quello che sta in piedi.",
+        "Il dolore non riempie i serbatoi dell'acqua. Il lavoro sì."
       ],
       "Paranoid": [
-        "Qualcuno in questa torre lo sapeva che sarebbe successo e non ha detto niente. Ci scommetto.",
-        "Ogni porta chiusa qui dentro nasconde una decisione che nessuno ci ha spiegato."
+        "Qualcuno in questa torre lo sapeva e non ha detto niente. Ci scommetto.",
+        "Ogni porta chiusa qui dentro nasconde una decisione che a noi non l'hanno raccontata."
       ],
       "Empathetic": [
-        "Ognuno qui dentro ha perso tutti quelli che conosceva. Cerco di stare vicino a chi ne ha bisogno.",
-        "Siamo tutto quello che ci resta l'uno dell'altro. Mi assicuro che nessuno pianga da solo qui dentro."
+        "Qui dentro tutti hanno perso tutti quelli che conoscevano. Provo a stare seduto accanto a chi ne ha bisogno.",
+        "Siamo l'unica cosa che ci resta. Faccio in modo che qui nessuno pianga da solo."
       ],
       "Authoritative": [
-        "Il panico non tiene accese le luci. Turni, razioni, sorveglianza. È così che si resiste.",
-        "Ogni anima rimasta risponde a qualcuno, ormai. Meglio così che il caos in una torre alla deriva."
+        "Il panico non tiene accese le luci. Turni, razioni, guardie. Si dura così.",
+        "Ogni anima rimasta risponde a qualcuno, adesso. Sempre meglio del caos in una torre che galleggia."
       ],
       "Scholarly": [
-        "Un impatto di quella portata avrebbe dovuto vaporizzare anche la torre insieme al resto. Voglio sapere perché non è successo.",
-        "Sto catalogando tutto ciò che ricordiamo della Terra prima che i ricordi comincino a sfumare."
+        "Un impatto di quelle dimensioni avrebbe dovuto vaporizzare anche la torre. Voglio sapere perché non è successo.",
+        "Sto catalogando tutto quello che ricordiamo della Terra, prima che i ricordi comincino a sfaldarsi."
       ],
       "Artistic": [
-        "Lo sto dipingendo a memoria prima di dimenticare il colore di un cielo vero.",
+        "La dipingo a memoria, prima di dimenticarmi il colore di un cielo vero.",
         "La torre non ha più un orizzonte da dipingere. Solo il buio, e noi dentro."
       ],
       "Adventurous": [
-        "Da qualche parte oltre quella finestra c'è ogni direzione che sia mai esistita. Intendo vederne qualcuna.",
-        "Il pianeta intero non c'è più e in qualche modo voglio ancora sapere cosa c'è oltre il prossimo corridoio."
+        "Là fuori da quella finestra ci sono tutte le direzioni che sono mai esistite. Qualcuna intendo vederla.",
+        "È sparito un pianeta intero e io voglio ancora sapere cosa c'è in fondo al corridoio."
       ],
       "Nurturing": [
-        "I bambini nati in questa torre non sapranno mai che profumo ha l'erba. Glielo racconto lo stesso.",
-        "Qui dentro siamo tutti famiglia di qualcuno, ormai, che lo si sia voluto o no."
+        "I bambini nati in questa torre non sapranno mai che odore ha l'erba. Io glielo racconto lo stesso.",
+        "Qui dentro sono tutti famiglia di qualcuno, che lo volessero o no."
       ],
       "Mischievous": [
-        "Ultimi sopravvissuti e stiamo ANCORA litigando su chi tocca pulire i riciclatori.",
-        "Fine del mondo, e sono sempre io quella che nasconde la tazza del capitano. Priorità."
+        "Ultimi esseri umani vivi e stiamo ANCORA litigando su chi tocca pulire i ricircolatori.",
+        "È finito il mondo e sono ancora io quello che ha nascosto la tazza del capitano. Priorità."
       ],
       "Cynical": [
-        "Ci mancherebbe. Il pianeta si è finalmente preso quel che si meritava, e siamo noi a dover ripulire dopo.",
-        "Ultimi sopravvissuti dell'umanità. Scommetto che qualcuno sta già cercando di far pagare l'affitto per una branda."
+        "Ci mancava. Il pianeta finalmente si è preso quello che si meritava, e a pulire tocca a noi.",
+        "Ultimi superstiti dell'umanità. Scommetto che qualcuno sta già provando a farci pagare l'affitto della branda."
       ],
       "Disciplined": [
-        "La routine non si ferma solo perché il pianeta l'ha fatto. Il turno inizia in orario.",
-        "Esercitazioni, rotazioni, manutenzione. La disciplina è l'unica cosa che rende questa torre una casa e non una bara."
+        "La routine non si ferma perché si è fermato il pianeta. Il turno inizia in orario.",
+        "Esercitazioni, rotazioni, manutenzione. È l'ordine l'unica cosa che tiene questa torre una casa e non una bara."
       ],
       "Fatalistic": [
-        "Quel sasso stava arrivando da sempre. È solo capitato che fossimo noi ancora in piedi quando è arrivato.",
-        "La Terra ha avuto il suo turno. Ora tocca a questa torre. Tutto finisce da qualche parte."
+        "Quel sasso doveva arrivare da sempre. Il caso ha voluto che fossimo noi quelli ancora in piedi.",
+        "La Terra ha avuto il suo turno. Adesso è il turno della torre. Tutto finisce da qualche parte."
       ],
       "Grumpy": [
-        "Fine del mondo e ANCORA non riesco a farmi un pasto caldo qui dentro.",
-        "Sparito un intero pianeta e a rompersi sono proprio i riciclatori. Ovviamente."
+        "È finito il mondo e ANCORA non riesco a mangiare qualcosa di caldo qui dentro.",
+        "Sparisce un pianeta intero e a rompersi sono i ricircolatori. Ma certo."
       ],
       "Loyal": [
-        "Ho perso tutto il mio mondo, ma ho ancora chi mi sta accanto in questa torre.",
-        "Qualunque cosa resti dell'umanità, io resto al fianco di ognuno di loro."
+        "Ho perso un mondo intero, ma ho ancora la gente che mi sta accanto in questa torre.",
+        "Qualunque cosa resti dell'umanità, io resto con ognuno di loro."
       ],
       "Brave": [
-        "Il pianeta non c'è più. Va bene. Noi ci siamo ancora, e intendo farne qualcosa.",
-        "Qualcuno deve tenere in piedi questa torre. Tanto vale che sia io."
+        "Il pianeta non c'è più. Va bene. Noi ci siamo, e da quello che resta voglio tirare fuori qualcosa.",
+        "Qualcuno deve tenere insieme questa torre. Tanto vale che sia io."
       ],
       "Timid": [
-        "Non mi piace più guardare fuori dalla finestra. C'è solo... niente, là fuori.",
-        "Ormai resto nei corridoi interni. Meno cose di cui aver paura, qui."
+        "Non mi piace più guardare fuori dalla finestra. Là fuori c'è... niente.",
+        "Adesso sto nei corridoi interni. Qui dentro c'è meno roba di cui avere paura."
       ],
       "Hedonistic": [
-        "Il mondo è finito, quindi tanto vale goderci quel che resta nelle scorte.",
-        "Niente più Terra, niente più regole su cosa sia opportuno. Stasera mi prendo le razioni buone."
+        "Il mondo è finito, quindi tanto vale goderci quello che resta in dispensa.",
+        "Niente più Terra, niente più regole su cosa sia decoroso. Stasera apro le razioni buone."
       ],
       "Apathetic": [
-        "La Terra non c'è più. La torre sì, a quanto pare, e anch'io.",
-        "Ultimi dell'umanità, eh. Non mi cambia poi tanto la giornata."
+        "La Terra non c'è più. La torre sì. E a quanto pare anch'io.",
+        "Ultimi dell'umanità, eh. Non è che mi cambi granché la giornata."
       ],
       "default": [
-        "La Terra non c'è più. Questa torre è tutto ciò che ne resta, e tutto ciò che resta di noi.",
-        "Siamo gli ultimi dell'umanità ormai, a galleggiare in quella che era l'orbita di casa."
+        "La Terra non c'è più. Questa torre è tutto quello che ne resta, e tutto quello che resta di noi.",
+        "Siamo gli ultimi dell'umanità, sospesi nell'orbita di quella che era casa."
       ]
     },
     "earthSaved": {
       "Nervous": [
-        "Ci ha mancati. Ci ha davvero mancati. Non smetterò di tremare per una settimana.",
-        "C'è una nuova luce nel cielo ormai e trasalisco ancora ogni volta che la guardo."
+        "Ci ha mancati. Ci ha mancati davvero. Tremo ancora e tremerò per una settimana.",
+        "Adesso in cielo c'è una luce nuova e io sobbalzo ancora ogni volta che la vedo."
       ],
       "Calm": [
-        "Il cielo ha una nuova stella e la Terra gira ancora sotto i miei piedi. Mi va bene così.",
-        "Saturno brucia adesso al posto nostro. Cerco di non pensare troppo a quanto ci siamo andati vicini."
+        "Il cielo ha una stella in più e la Terra gira ancora sotto i miei piedi. Mi accontento.",
+        "Adesso brucia Saturno al posto nostro. Cerco di non pensare troppo a quanto poco è mancato."
       ],
       "Aggressive": [
-        "Quella cosa voleva noi e si è presa Saturno invece. Bene. Che bruci pure.",
-        "Siamo ancora in piedi. Chiunque abbia deviato quel sasso, gli devo da bere."
+        "Quel coso voleva noi e si è preso Saturno. Bene. Che bruci.",
+        "Siamo ancora in piedi. A chi ha spostato quel sasso devo da bere."
       ],
       "Melancholic": [
-        "Siamo stati salvati, eppure non riesco a scrollarmi di dosso il freddo che ho sentito aspettando la fine.",
-        "Tutti festeggiano la nuova stella. Io ricordo solo quanto siamo andati vicini a non vederla mai."
+        "Ci hanno salvati, e non mi va comunque via il freddo che ho sentito mentre aspettavo la fine.",
+        "Festeggiano tutti la stella nuova. Io mi ricordo solo quanto ci è mancato di non vederla."
       ],
       "Sanguine": [
-        "Guarda in alto! C'è una stella tutta nuova nel cielo e possiamo continuare a vivere sotto di essa!",
-        "La Terra è ancora qui! Da adesso ogni singolo giorno sembra un regalo!"
+        "Guarda in alto! C'è una stella nuova di zecca e noi possiamo continuare a viverci sotto!",
+        "La Terra è ancora qui! Da oggi in poi ogni giorno mi sembra un regalo!"
       ],
       "Cautious": [
-        "Essere stati salvati una volta non vuol dire essere al sicuro per sempre. Tengo le scorte pronte comunque.",
-        "Osservo quella nuova stella ogni notte. Non si sa mai che altro decida di cadere."
+        "Salvi una volta non vuol dire al sicuro per sempre. Le scorte le tengo pronte lo stesso.",
+        "Quella stella nuova la guardo ogni sera. Non si sa mai che decida di cadere qualcos'altro."
       ],
       "Impulsive": [
-        "Il mondo non è finito! Facciamo davvero qualcosa con il tempo che non abbiamo perso!",
-        "Nuova stella nel cielo e sono la prima a salire sul tetto della torre per vederla da vicino."
+        "Il mondo non è finito! E allora andiamo a FARE qualcosa col tempo che non abbiamo perso!",
+        "Stella nuova in cielo e io sono il primo che sale sul tetto della torre a vederla da vicino."
       ],
       "Stoic": [
         "La minaccia è passata. La vita riprende. Non c'è altro da dire.",
-        "Saturno brucia perché noi non dovessimo. Ne prendo atto e torno al lavoro."
+        "Saturno brucia perché non dovessimo farlo noi. Ne prendo atto e torno al lavoro."
       ],
       "Paranoid": [
-        "Qualcuno lassù nella torre ha fatto succedere questo. Voglio sapere esattamente chi, e perché.",
-        "Uno scampato pericolo così non si risolve da solo. Qualcuno nasconde come ha fatto."
+        "Qualcuno lassù nella torre ha fatto succedere questa cosa. Voglio sapere chi, e perché.",
+        "Un pericolo scampato così non si risolve da solo. Qualcuno sta nascondendo come ha fatto."
       ],
       "Empathetic": [
-        "Ho abbracciato ogni vicino che ho il giorno in cui il cielo si è acceso su Saturno invece che su di noi.",
-        "Tante persone erano terrorizzate. Sono solo felice che possiamo consolarci a vicenda invece di piangere."
+        "Il giorno che il cielo si è acceso su Saturno invece che su di noi ho abbracciato tutti i vicini che ho.",
+        "Quanta gente terrorizzata. Sono solo contento che possiamo consolarci invece che piangerci addosso."
       ],
       "Authoritative": [
-        "La crisi è passata perché la gente è rimasta al proprio posto. Ricordatelo, la prossima volta che ne arriva una.",
-        "L'ordine ha retto mentre il cielo quasi ci cadeva addosso. Non è fortuna, è disciplina. Continuate così."
+        "La crisi è passata perché la gente è rimasta al proprio posto. Ricordatelo, alla prossima.",
+        "L'ordine ha tenuto mentre il cielo stava cadendo. Non è fortuna, è disciplina. Continuate così."
       ],
       "Scholarly": [
-        "Un pianeta è appena diventato una stella. Non ho mai avuto così tante domande in vita mia.",
-        "La meccanica orbitale di quel mancato impatto da sola mi terrà occupato per anni."
+        "Un pianeta è appena diventato una stella. Non ho mai avuto tante domande in vita mia.",
+        "Solo la meccanica orbitale di quel passaggio ravvicinato mi terrà occupato per anni."
       ],
       "Artistic": [
-        "C'è un colore del tutto nuovo nel cielo notturno ormai. Devo dipingerlo prima di farci l'abitudine.",
-        "Saturno che brucia così, è terrificante ed è la cosa più bella che abbia mai visto."
+        "Nel cielo notturno c'è un colore che prima non esisteva. Devo dipingerlo prima di abituarmici.",
+        "Saturno che brucia così è una cosa spaventosa ed è la cosa più bella che io abbia mai visto."
       ],
       "Adventurous": [
-        "Una stella completamente nuova è appena comparsa sopra le nostre teste. Voglio vederla da ogni angolazione possibile.",
-        "Il mondo per poco non finiva e invece ci siamo ritrovati un nuovo punto di riferimento nel cielo. Non lo spreco."
+        "Ci è spuntata una stella nuova sopra la testa. La voglio vedere da tutte le angolazioni possibili.",
+        "Il mondo stava per finire e invece ci è venuto un punto di riferimento nuovo in cielo. Non lo sprecherò."
       ],
       "Nurturing": [
-        "Ho stretto forte i più piccoli la notte in cui il cielo è cambiato. Ora li guardo crescere sotto quella luce.",
-        "Ogni bambino nato dopo crescerà sotto quella nuova stella. Voglio che sappia cosa è costata."
+        "La notte che il cielo è cambiato ho tenuto stretti i piccoli. Adesso li guardo crescere là sotto.",
+        "Tutti i bambini nati da qui in poi cresceranno sotto quella stella. Voglio che sappiano quanto è costata."
       ],
       "Mischievous": [
-        "Nuova stella, nuove ombre, nuovi posti che nessuno ha ancora pensato di controllare. Mi piacciono le probabilità.",
-        "Il mondo ha avuto una tregua e in qualche modo sono ancora la prima sospettata quando manca qualcosa."
+        "Stella nuova, ombre nuove, posti nuovi dove nessuno ha ancora pensato di controllare. Mi piacciono le probabilità.",
+        "Il mondo ottiene una proroga e io resto comunque il primo sospettato quando sparisce qualcosa."
       ],
       "Cynical": [
-        "Siamo stati fortunati. Non fatevi raccontare che è stato altro.",
-        "Saturno si prende il colpo al posto nostro e la gente si comporta come se l'universo ci dovesse qualcosa. Non è così."
+        "Ci è andata bene. Non lasciarti raccontare che sia stato altro.",
+        "Saturno si becca il colpo per noi e la gente si comporta come se l'universo ci dovesse un favore. Non ce ne doveva nessuno."
       ],
       "Disciplined": [
-        "Crisi o no, il programma tiene. È esattamente così che ce l'abbiamo fatta.",
-        "Le esercitazioni hanno pagato. Continuiamo ad addestrarci, nuova stella nel cielo o no."
+        "Crisi o non crisi, il programma tiene. È esattamente così che ne siamo usciti.",
+        "Le esercitazioni sono servite. E allora continuiamo a farle, stella nuova o no."
       ],
       "Fatalistic": [
-        "Doveva cadere da qualche parte, comunque. Questa volta, per fortuna, non su di noi.",
-        "È toccato a Saturno invece che a noi. Non chiedo perché. Continuo solo a vivere i giorni che ho."
+        "Da qualche parte doveva cadere. Stavolta, per fortuna, non addosso a noi.",
+        "È arrivato il turno di Saturno al posto del nostro. Non chiedo perché. Mi vivo i giorni che ho."
       ],
       "Grumpy": [
-        "Il mondo per poco non finiva e ho dovuto fare le stesse faccende di sempre dopo. Tipico.",
-        "Tutti a fissare la nuova stella. Qualcuno deve pur sempre aggiustare lo steccato."
+        "Il mondo stava per finire e subito dopo ho dovuto fare le stesse identiche faccende. Come sempre.",
+        "Stanno tutti a fissare la stella nuova. Lo steccato però qualcuno lo deve aggiustare."
       ],
       "Loyal": [
-        "Ho passato tutta quella notte con le persone che contano per me. Lo rifarei volentieri.",
-        "Ce l'abbiamo fatta insieme. È l'unica ragione per cui m'importa di avercela fatta."
+        "Quella notte l'ho passata tutta con le persone che contano per me. Lo rifarei volentieri.",
+        "Ce l'abbiamo fatta insieme. È l'unico motivo per cui mi importa che ce l'abbiamo fatta."
       ],
       "Brave": [
-        "Ho guardato in faccia la fine di tutto e non ci ha portati via. Dopo quello, niente mi spaventa più allo stesso modo.",
-        "Abbiamo fissato il cielo stesso e ha ceduto per primo lui. Quella sfida la accetto sempre volentieri."
+        "Ho guardato in faccia la fine di tutto e non si è presa niente. Dopo una cosa così non c'è più molto che mi spaventi.",
+        "Abbiamo fissato negli occhi il cielo stesso e ha battuto le palpebre per primo. Questa sfida la accetto ogni giorno."
       ],
       "Timid": [
-        "Mi sono nascosta per tutta la notte in cui è successo. Sono contenta di avere ancora un posto dove nascondermi.",
-        "La nuova stella è bellissima, da molto lontano, attraverso una finestra ben chiusa."
+        "Quella notte mi sono nascosto per intero. Sono contento di avere ancora un posto dove nascondermi.",
+        "La stella nuova è bellissima, da molto lontano, attraverso una finestra ben chiusa."
       ],
       "Hedonistic": [
-        "Non siamo morti! Festeggio come si deve, a partire da stasera.",
-        "Niente ti fa apprezzare un buon pasto come rischiare di non poterne mangiare un altro."
+        "Non siamo morti! Festeggio come si deve, e comincio stasera.",
+        "Non c'è niente come rischiare di non mangiarne un'altra per farti apprezzare una bella cena."
       ],
       "Apathetic": [
-        "Toh. Non siamo morti. Immagino che continuerò a fare quello che facevo.",
-        "Nuova stella, vecchia vita. Per me non cambia poi molto."
+        "Toh. Non siamo morti. Allora continuo con quello che stavo facendo.",
+        "Stella nuova, vita vecchia. In un senso o nell'altro non mi cambia granché."
       ],
       "default": [
-        "Nibiru ha colpito Saturno invece di noi. La Terra è sopravvissuta, e nel cielo notturno brucia una nuova stella a dimostrarlo.",
-        "Siamo stati risparmiati. Ora Saturno brucia dove Nibiru avrebbe dovuto colpire la Terra."
+        "Nibiru ha colpito Saturno invece di noi. La Terra è sopravvissuta, e a dimostrarlo c'è una stella nuova che brucia nel cielo di notte.",
+        "Ce la siamo cavata. Adesso brucia Saturno dove Nibiru si sarebbe presa la Terra."
       ]
     }
   },
   "fallback": {
-    "group": "città",
-    "festival": "la festa",
-    "epidemic": "una malattia",
+    "group": "il paese",
+    "festival": "la sagra",
+    "epidemic": "il contagio",
     "headline": "strane notizie da lontano"
   }
 }

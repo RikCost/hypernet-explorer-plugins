@@ -34,5 +34,92 @@
   "weakToLabel": "Weak to:",
   "statesLabel": "States:",
   "bodyParts": "Body Parts",
-  "none": "None"
+  "none": "None",
+  "panel": {
+    "check": "Check",
+    "aim": "Aim",
+    "hitChance": "Hit {percent}%",
+    "hp": "{current} / {max} HP",
+    "vital": "Vital",
+    "severable": "Severable",
+    "regenerates": "Regenerates",
+    "destroyed": "Destroyed"
+  },
+  "wrestle": {
+    "menu": {
+      "myLimb": "With: {part} ({percent}%)",
+      "theirLimb": "On: {part} ({percent}%)",
+      "limbRow": "{part}  {percent}%",
+      "limbRowCurrent": "{part}  {percent}%  (chosen)",
+      "noLimb": "No limb free",
+      "noTarget": "Nothing to take hold of",
+      "back": "Back",
+      "more": "More... ({count})",
+      "holdRow": "{name}  {chance}%",
+      "holdBlocked": "{name}  ({reason})",
+      "blocked": {
+        "limb": "wrong limb",
+        "part": "wrong target",
+        "hold": "no hold yet"
+      },
+      "finishers": "Finishers",
+      "finisherRow": "{name}  {chance}%  [{art}]",
+      "noFinisher": "No art trained"
+    },
+    "limbs": {
+      "helpMine": "{part} can take: {holds}.",
+      "helpMineNone": "{part} is no use for taking a hold.",
+      "helpTheirs": "{part}: {note}",
+      "note": {
+        "vital": "a vital part, and it fights to stay out of your hands.",
+        "awkward": "small and awkward, and hard to keep a grip on.",
+        "plain": "solid enough to get both hands around."
+      }
+    },
+    "hold": {
+      "grapple": {
+        "name": "Grapple",
+        "hit": "{actor} seizes {enemy}'s {part} and holds on!",
+        "miss": "{enemy} twists its {part} out of {actor}'s hands."
+      },
+      "strike": {
+        "name": "Strike",
+        "hit": "{actor} drives a blow into {enemy}'s {part}!",
+        "miss": "{actor} swings at {enemy}'s {part} and finds only air."
+      },
+      "lock": {
+        "name": "Joint Lock",
+        "hit": "{actor} folds {enemy}'s {part} the wrong way and pins it down!",
+        "miss": "{enemy} slips the lock before {actor} can set it."
+      },
+      "wrench": {
+        "name": "Wrench",
+        "hit": "{actor} wrenches {enemy}'s {part} until something gives!",
+        "miss": "{actor} hauls at {enemy}'s {part}, but it will not turn."
+      },
+      "slam": {
+        "name": "Slam",
+        "hit": "{actor} lifts {enemy} and drives it down on its {part}!",
+        "miss": "{actor} tries to lift {enemy} and cannot get under it."
+      },
+      "choke": {
+        "name": "Choke",
+        "hit": "{actor} closes on {enemy}'s {part} and squeezes the air out of it!",
+        "miss": "{enemy} tucks its {part} away before the choke closes."
+      },
+      "rip": {
+        "name": "Tear Off",
+        "hit": "{actor} braces against {enemy} and hauls at its {part}!",
+        "miss": "{actor} cannot get a grip worth pulling on."
+      }
+    },
+    "log": {
+      "ripped": "{part} comes away in {actor}'s hands!",
+      "ripHeld": "{enemy}'s {part} holds, barely.",
+      "reversal": "{enemy} turns the hold around and wrings {actor}'s {part}!",
+      "noLimb": "{actor} has nothing left to wrestle with.",
+      "finisherHit": "{actor} sets up and lands {skill} on the {part}!",
+      "finisherMiss": "{actor} goes for {skill}, but {enemy} is not where it should be."
+    }
+  }
 }

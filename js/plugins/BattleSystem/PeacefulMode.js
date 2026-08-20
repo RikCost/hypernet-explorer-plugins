@@ -4,7 +4,7 @@
 
 /*:
  * @target MZ
- * @plugindesc v1.0.0 Peaceful difficulty: enemies don't attack unless hurt, a Talk battle command, and no-death respawns.
+ * @plugindesc v1.0.0 Peaceful difficulty: enemies don't attack unless hurt, and no-death respawns.
  * @author Assistant
  *
  * @help PeacefulMode.js
@@ -23,9 +23,6 @@
  *    skill or attack during the player's turn. Provocation is per-enemy, so
  *    untouched monsters keep idling.
  *
- *  - A new "Talk" battle command is added before Attack. It opens the
- *    EnemyTalkSystem talk menu.
- *
  *  - On a party wipe / game over the party simply respawns at the last respawn
  *    point and no party member dies (the whole party is revived and healed).
  *
@@ -33,8 +30,7 @@
  *    Approach>) wander randomly instead (handled in
  *    BattleSystemEnhancedEncounters.js).
  *
- * Load order: AFTER BattleSystemEnhanchedCommands.js, EnemyTalkSystem.js,
- * BattleSystemEnhancedDeath.js and IndividualBattleTurns.js.
+ * Load order: AFTER BattleSystemEnhancedDeath.js and IndividualBattleTurns.js.
  */
 
 (() => {
@@ -115,53 +111,11 @@
   };
 
   //=============================================================================
-  // Talk battle command (added before Attack)
+  // Talk battle command
   //=============================================================================
-
-  // The talk menu lives in EnemyTalkSystem.js; only add the command if present.
-  const talkSystemLoaded = () => typeof Scene_Battle.prototype.openTalkMenu === "function";
-
-  const _Window_ActorCommand_makeCommandList = Window_ActorCommand.prototype.makeCommandList;
-  Window_ActorCommand.prototype.makeCommandList = function () {
-    _Window_ActorCommand_makeCommandList.call(this);
-    // Talk is a Peaceful-mode-only battle command.
-    if (!PeacefulMode.isActive()) return;
-    if (!this._actor || !talkSystemLoaded()) return;
-    if (typeof this.addCommandWithIcon !== "function") return;
-    // Build the Talk entry, then move it to the very front so it sits before Attack.
-    this.addCommandWithIcon(T("PeacefulMode.cmd.talk"), "talk", true, null, 4);
-    const talkCmd = this._list.pop();
-    this._list.unshift(talkCmd);
-  };
-
-  const _Scene_Battle_createActorCommandWindow = Scene_Battle.prototype.createActorCommandWindow;
-  Scene_Battle.prototype.createActorCommandWindow = function () {
-    _Scene_Battle_createActorCommandWindow.call(this);
-    if (this._actorCommandWindow) {
-      this._actorCommandWindow.setHandler("talk", this.commandTalk.bind(this));
-    }
-  };
-
-  // Peaceful adds the Talk row, so the command menu is one row taller. Lift it
-  // up so the bottom command (e.g. Flee) stays on-screen.
-  const _Scene_Battle_actorCommandWindowRect = Scene_Battle.prototype.actorCommandWindowRect;
-  Scene_Battle.prototype.actorCommandWindowRect = function () {
-    const rect = _Scene_Battle_actorCommandWindowRect.call(this);
-    if (PeacefulMode.isActive()) {
-      const shift = Math.floor(Graphics.boxHeight * 0.12);
-      rect.y = Math.max(0, rect.y - shift);
-      rect.height += shift;
-    }
-    return rect;
-  };
-
-  Scene_Battle.prototype.commandTalk = function () {
-    if (typeof this.openTalkMenu === "function") {
-      this.openTalkMenu();
-    } else if (this._actorCommandWindow) {
-      this._actorCommandWindow.activate();
-    }
-  };
+  // Talk is no longer a Peaceful-mode row: it is a standing battle command,
+  // built and wired next to the backpack in BattleSystemEnhanchedCommands.js so
+  // every fight offers it and the class decides whether it is greyed out.
 
   //=============================================================================
   // No-death respawn: on a wipe the whole party is revived and respawned

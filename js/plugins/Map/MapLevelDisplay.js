@@ -287,18 +287,19 @@
             // Reposition/restyle only when the text or layout inputs change (map
             // change / resize), not every frame. Scale is captured here and reused.
             const sc = _msgGetScale();
-            const layoutSig = text + '|' + sc.sx + ',' + sc.sy + ',' + sc.ox + ',' + sc.oy +
-                '|' + this.x + ',' + this.y;
+            const layoutSig = text + '|' + sc.sx + ',' + sc.sy + ',' + sc.ox + ',' + sc.oy;
             if (!this._htmlShown || layoutSig !== this._htmlLayoutSig) {
                 this._htmlLayoutSig = layoutSig;
                 this._htmlMapNameRoot.textContent = text;
                 s.display = 'block';
-                s.left = (sc.ox + this.x * sc.sx) + 'px';
-                s.top = (sc.oy + this.y * sc.sy) + 'px';
-                const padX = Math.round(24 * sc.sx);
-                const padY = Math.round(10 * sc.sy);
+                s.left = 'auto';
+                s.top = (sc.oy + 8 * sc.sy) + 'px';
+                const rightEdge = window.innerWidth - (sc.ox + sc.sx * Graphics.width);
+                s.right = (rightEdge + 8 * sc.sx) + 'px';
+                const padX = Math.round(18 * sc.sx);
+                const padY = Math.round(8 * sc.sy);
                 s.padding = `${padY}px ${padX}px`;  // i18n-ignore  css value
-                const scaledFont = Math.round(24 * sc.sy * 0.85);
+                const scaledFont = Math.round(20 * sc.sy * 0.85);
                 s.fontSize = scaledFont + 'px';
                 this._htmlShown = true;
             }

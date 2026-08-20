@@ -79,5 +79,7 @@
     "navAcceptContract": "",
     "navChooseJob": "",
     "navSignContract": ""
-  }
+  },
+  "guildRegistry": "ГИЛЬДЕЙСКИЙ РЕЕСТР РАБОТ",
+  "guildRegistryCategory": "ГИЛЬДЕЙСКИЙ РЕЕСТР РАБОТ: {category}"
 }

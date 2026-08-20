@@ -195,11 +195,14 @@
   // Overall length of the player ship in system/galaxy world units. The old
   // placeholder-hull footprint (0.3, a sizeable fraction of Earth's own 0.15
   // visual diameter - see compressRadius) made the ship read as comparable to
-  // a planet rather than the ~1 km craft it is; shrunk by an order of
-  // magnitude so a planet actually looms over it, while staying well clear of
-  // the system-scale camera near plane (0.01, see GalaxySim_World3D's clip
-  // table) so the hull can still be framed close up without clipping.
-  const SHIP_WORLD_LENGTH = 0.03;
+  // a planet rather than the ~1 km craft it is. Shrunk again here (0.03 still
+  // read as a sizeable fraction of a gas giant, ~11% of Jupiter's 0.28 visual
+  // radius) so even a giant planet truly looms over it. The ship-cam framing
+  // distance floors at 0.02 regardless of this value (see _updateShipCamFollow),
+  // safely clear of the system-scale camera near plane (0.01, see
+  // GalaxySim_World3D's clip table), so shrinking further here never risks
+  // clipping the hull out of view when framed close up.
+  const SHIP_WORLD_LENGTH = 0.008;
 
   /**
    * Fallback craft used when GalaxySim_ShipModel failed to load: the original
@@ -336,12 +339,13 @@
       beaconGroup.add(label.sprite);
     }
 
-    function update(t) {
+    function update(t, moving) {
       // The body animates itself (drive plumes, blinkers, appearance reloads).
       if (body.update) body.update(t);
-      // Gentle vertical bob only (translation, so it never fights an orient()
-      // lookAt); the beacon sprites face the camera on their own and just pulse.
-      hull.position.y = Math.sin(t * 1.1) * 0.015;
+      // Gentle vertical bob only while actually under way (translation, so it
+      // never fights an orient() lookAt); parked/idle the hull sits still.
+      // The beacon sprites face the camera on their own and just pulse either way.
+      hull.position.y = moving ? Math.sin(t * 1.1) * 0.015 : 0;
       if (beaconGlow) {
         const pulse = 1 + Math.sin(t * 3.0) * 0.18;
         beaconGlow.sprite.scale.set(1.1 * pulse, 1.1 * pulse, 1);
@@ -958,6 +962,35 @@
     function animate(t) {
       const gameMin = gameClockMinutes();
       if (starGroup && starGroup._body) starGroup._body.rotation.y = t * 0.05;
+      // Magnetic prominence loops flicker independently of each other so the
+      // corona reads as active plasma, not a static decal. Each loop also
+      // sways sideways and, every few seconds, snaps: a quick collapse
+      // toward the photosphere and a bright springy release, like a real
+      // reconnection event. Both are pure functions of elapsed time, so nothing
+      // needs to be tracked frame to frame beyond the arc's own fixed timing.
+      if (starGroup && starGroup._arcs) {
+        const updateArc = GS.Renderer3D.updateProminenceArc;
+        for (const a of starGroup._arcs) {
+          const cyclePos = (((t + a.snapPhase) % a.snapPeriod) / a.snapPeriod + 1) % 1;
+          let heightMul = 1, flash = 0;
+          if (cyclePos < a.snapWidth) {
+            const u = cyclePos / a.snapWidth;
+            // Quick collapse (u: 0 -> 0.4), springy overshoot back out (0.4 -> 1).
+            const collapse = u < 0.4 ? (u / 0.4) : (1 - (u - 0.4) / 0.6);
+            heightMul = 1 - collapse * 0.85;
+            flash = Math.sin(Math.min(u, 1) * Math.PI);
+          }
+          const sway = Math.sin(t * a.swayRate + a.swayPhase) * a.swayAmp;
+          const height = 1 + (a.archHeight - 1) * heightMul;
+          if (updateArc) {
+            const newGeo = updateArc(a.p1, a.p2, a.apexDir, height, sway * heightMul, a.swayAxis, a.tubeR);
+            a.mesh.geometry.dispose();
+            a.mesh.geometry = newGeo;
+          }
+          const flicker = 0.62 + 0.38 * Math.sin(t * a.rate + a.phase);
+          a.mat.opacity = Math.min(1, a.baseOpacity * flicker * (1 + flash * 1.8));
+        }
+      }
       if (blackHole) blackHole.animate(t);
       if (exoticStar) exoticStar.animate(t);
       if (dyson) dyson.animate(t);
@@ -1067,7 +1100,14 @@
         g.lookAt(to);
       } else if (state.mode === "parkedPlanet" && planetHolders[state.planetName]) {
         const h = planetHolders[state.planetName].position;
-        const r = planetVisualRadius({ radius: 1 }) + 0.3;
+        // The parking orbit has to clear the ACTUAL planet's own visual
+        // radius, not a hardcoded Earth-sized stand-in - that stand-in put
+        // the ship a fixed distance out regardless of what it was orbiting,
+        // so any planet bigger than Earth (a gas giant especially) buried the
+        // ship inside its own surface instead of parking near it.
+        const po = orbiters.find((o) => o.planetData && o.planetData.name === state.planetName);
+        const planetR = po ? po.planetVisR : planetVisualRadius({ radius: 1 });
+        const r = planetR + Math.max(0.06, planetR * 0.4);
         // Very slow parking orbit around the planet.
         const a = t * 0.03;
         g.position.set(h.x + Math.cos(a) * r, h.y + 0.22, h.z + Math.sin(a) * r);
@@ -1084,7 +1124,7 @@
         g.position.set(cx + Math.cos(a) * r, 0.4, cz + Math.sin(a) * r);
         g.lookAt(cx + Math.cos(a + 0.1) * r, 0.4, cz + Math.sin(a + 0.1) * r);
       }
-      ship.update(t);
+      ship.update(t, state.mode === "traveling");
     }
 
     function dispose() {

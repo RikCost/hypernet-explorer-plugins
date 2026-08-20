@@ -92,6 +92,13 @@ var WeaponSystemProcedural = {
 
   /** Deterministic per-weapon seed derived from the world seed. */
   seedFor(weapon) {
+    // A piece beaten out at the anvil carries the seed it was previewed under,
+    // so what the smith looked at is what came off the fire.
+    const forged = weapon && weapon.meta && weapon.meta.ForgeSeed;
+    if (forged) {
+      const n = Number(forged);
+      if (Number.isFinite(n)) return n >>> 0;
+    }
     const id = (weapon && weapon.id) || 0;
     let h = (this.worldSeed() ^ this.WEAPON_SEED_SALT) >>> 0;
     h = Math.imul(h ^ (id + 0x9E3779B9), 0x85EBCA6B) >>> 0;
@@ -109,11 +116,26 @@ var WeaponSystemProcedural = {
   // legal, which it never was at 750px).
   TEXTURE_SIZE: 128,
 
+  /**
+   * Where a finish name lives on disk. Three banks answer to one list of
+   * names: the seamless stone and marble sheets in `img/textures/`, the effect
+   * plates under `effects/`, and the strange bank the dream keeps, whose names
+   * carry a `dream/` prefix so nothing else can collide with them.
+   */
+  DREAM_PREFIX: 'dream/',
+
+  texturePath(filename) {
+    const name = String(filename || '');
+    if (name.startsWith(this.DREAM_PREFIX)) return `img/dreamtextures/${name.slice(this.DREAM_PREFIX.length)}`;
+    return name.endsWith('.jpg')
+      ? `img/textures/${name}`
+      : `effects/MAGICALxSPIRAL/Texture/${name}`;
+  },
+
   getTexture(filename) {
     if (!filename) return null;
     if (typeof THREE === 'undefined') return null;
-    const isImgTexture = filename.endsWith('.jpg');
-    const path = isImgTexture ? `img/textures/${filename}` : `effects/MAGICALxSPIRAL/Texture/${filename}`;
+    const path = this.texturePath(filename);
     if (this._textureCache[path]) {
       return this._textureCache[path];
     }
@@ -169,6 +191,35 @@ var WeaponSystemProcedural = {
     return this.getTexture(filename);
   },
 
+  /**
+   * The finish a forged piece was given at the anvil, if any.
+   * `<ForgeTexture: teal_marble.jpg>` names one of getTexturesForType()'s files.
+   */
+  forcedTextureFor(weapon) {
+    const raw = weapon && weapon.meta && weapon.meta.ForgeTexture;
+    const name = raw ? String(raw).trim() : '';
+    return name ? this.getTexture(name) : null;
+  },
+
+  /**
+   * The strange bank (img/dreamtextures/): public-domain faces and unearthly
+   * surfaces. It is deliberately kept OUT of the class lists below, because
+   * those are what a weapon's seeded appearance is drawn from and lengthening
+   * one would re-roll every weapon in every world. It is offered as a choice
+   * instead: the finishes the anvil lays out beside the marbles, and the sheets
+   * a dream re-dresses what you are holding with.
+   */
+  DREAM_TEXTURES: [
+      'dream/face_anatomical_wax_1.jpg', 'dream/face_anatomical_wax_2.jpg', 'dream/face_arcimboldo_1.jpg', 'dream/face_arcimboldo_2.jpg',
+      'dream/face_bosch_detail_1.jpg', 'dream/face_bosch_detail_2.jpg', 'dream/face_character_head_1.jpg', 'dream/face_character_head_2.jpg',
+      'dream/face_death_mask_1.jpg', 'dream/face_death_mask_2.jpg', 'dream/face_demon_1.jpg', 'dream/face_demon_2.jpg',
+      'dream/face_ensor_mask_2.jpg', 'dream/face_gargoyle_1.jpg', 'dream/face_gargoyle_2.jpg', 'dream/face_goya_grotesque_1.jpg',
+      'dream/face_goya_grotesque_2.jpg', 'dream/face_grotesque_1.jpg', 'dream/face_grotesque_2.jpg', 'dream/face_mask_noh_1.jpg',
+      'dream/face_mask_noh_2.jpg', 'dream/face_mask_ritual_1.jpg', 'dream/face_mask_ritual_2.jpg', 'dream/face_mummy_portrait_1.jpg',
+      'dream/face_mummy_portrait_2.jpg', 'dream/face_phrenology_1.jpg', 'dream/face_phrenology_2.jpg', 'dream/face_skull_engraving_1.jpg',
+      'dream/face_skull_engraving_2.jpg', 'dream/marbled_paper_1.jpg', 'dream/marbled_paper_2.jpg'
+  ],
+
   getTexturesForType(type) {
     const generalTextures = [
       'amber_onyx_marble.jpg', 'amber_paper.jpg', 'beige_sandstone.jpg', 'blue_slate.jpg', 'bright_gold.jpg',
@@ -194,6 +245,8 @@ var WeaponSystemProcedural = {
     ];
 
     switch(type) {
+      case 'dream':
+        return this.DREAM_TEXTURES;
       case 'gun':
         return ['ExperimentalNoise.png', 'ExperimentalBlur.png', 'PolkaDot.png', 'Thunder10.png', 'blue_fire.png', 'magma.png', 'cell_trans2048.png', 'Glass.png', ...generalTextures.slice(0, 20)];
       case 'blade':
@@ -408,7 +461,12 @@ var WeaponSystemProcedural = {
   createModel(weapon) {
     if (!window.THREE || !weapon) return null;
 
-    const key = this.worldSeed() + ':' + (weapon.id || 0) + ':' + (this.isLowDetail() ? 'lo' : 'hi');
+    // The finish and the seed are part of the key: the forge previews the same
+    // database entry under a dozen different skins before anything is made.
+    const meta = weapon.meta || {};
+    const key = this.worldSeed() + ':' + (weapon.id || 0) +
+      ':' + (meta.ForgeSeed || '') + ':' + (meta.ForgeTexture || '') +
+      ':' + (this.isLowDetail() ? 'lo' : 'hi');
     const cached = this._modelCache.get(key);
     if (cached) {
       // Map preserves insertion order, so re-inserting is the whole LRU touch.
@@ -641,6 +699,11 @@ var WeaponSystemProcedural = {
     const wtypeId = weapon.wtypeId || 1;
     const note = weapon.note || '';
 
+    // A piece that came off the forge with a finish chosen at the anvil wears
+    // that finish instead of the one its seed would have dealt it
+    // (Crafting/BlacksmithingMenu.js writes the tag when the piece is made).
+    const forcedTex = this.forcedTextureFor(weapon);
+
     const OriginalMeshStandardMaterial = THREE.MeshStandardMaterial;
     // One texture per material class per weapon instead of one per material.
     const texMemo = {};
@@ -663,7 +726,10 @@ var WeaponSystemProcedural = {
         type = 'gun';
       }
       
-      const tex = WeaponSystemProcedural.getRandomTexture(rand, type, texMemo);
+      // The RNG is consumed either way, so a chosen finish never shifts the
+      // rest of the model's seeded appearance.
+      const rolled = WeaponSystemProcedural.getRandomTexture(rand, type, texMemo);
+      const tex = forcedTex || rolled;
       if (tex) {
         params.map = tex;
       }
@@ -676,6 +742,10 @@ var WeaponSystemProcedural = {
       // An empty hand: the fist is chosen by the character's archetype, not
       // by any database entry.
       if (weapon.unarmedArchetype) return this.finish(this.buildUnarmed(weapon, rand), weapon);
+
+      // A shield has no weapon type to fall back on, so it never reaches the
+      // TYPE_MODELS table below.
+      if (weapon.shieldArmorId) return this.finish(this.build('createShieldModel', weapon, rand), weapon);
 
       // Bespoke per-weapon models, keyed by database id exactly like the i18n
       // name/description tables are. A weapon that has one never falls back to
@@ -963,6 +1033,11 @@ var WeaponSystemProcedural = {
     // it has to be declared before the welder decides it is a part that came
     // out in the wrong place.
     this.prepareCane(model);
+    // Same reason one rack over: a string is drawn to hang clear of its own
+    // limbs and an arrow lies off the riser, so both read as parts that came
+    // out in the wrong place. Declaring them first keeps the welder off them,
+    // and tickBow poses them from where the builder put them.
+    if (weapon.wtypeId === 7 || this.isCrossbow(weapon, model)) this.prepareBow(model, weapon);
     // Pull anything that came out floating back onto the weapon, before the
     // gun parts are tagged (prepareGun measures the muzzle off the geometry).
     this.weldLooseParts(model);
@@ -1385,6 +1460,424 @@ var WeaponSystemProcedural = {
     }
   },
 
+  // ============================================================
+  // Bows and crossbows
+  // ============================================================
+  // A bow reads entirely on a part that moves. Nothing about a bow sliding
+  // across the screen says "loosed" the way a string coming back to the cheek,
+  // limbs bending with it and the whole thing snapping flat does, so the shot
+  // is driven the way a gun's action is rather than being left to the whole
+  // model's keyframes.
+  //
+  // The overlay camera is orthographic, so an arrow travelling down +Z moves no
+  // pixels by itself. What sells the flight is that a bow is AIMED: the resting
+  // rotation keeps AIM_SCREEN_SHARE of its length across the screen, so most of
+  // that travel does land on screen, and shrinking the arrow spends the rest of
+  // it going away from the camera.
+  //
+  // Builders declare the moving parts by tagging them:
+  //
+  //   userData.bow = 'stringTop' | 'stringBot'  half of the string, running from
+  //        a limb tip to the nocking point. Carries bowTip, bowNock and bowLen,
+  //        plus bowRelease on a crossbow (where the string rests forward of the
+  //        nut it is spanned back onto). _bowString builds and tags them.
+  //   userData.bow = 'limbTop' | 'limbBot'      a limb group flexed by the draw
+  //   userData.bow = 'limbLeft' | 'limbRight'   a crossbow prod arm, same job
+  //   userData.bow = 'arrow'                    the arrow or bolt on the string
+  //   userData.bow = 'nock'                     serving or glow riding the nock
+  //   model.userData.crossbow = true            shot with a trigger, not drawn
+  //
+  // Everything tagged is kept out of the static mesh merge. A model that tags
+  // nothing still gets a shot: prepareBow finds the nocked arrow off the
+  // geometry, or builds one, the way prepareGun synthesises a muzzle.
+
+  // Windows of the attack clip, as fractions of its own duration. MOTIONS.draw
+  // and MOTIONS.crossbow are written against these same numbers, so the hand
+  // kicks on the frame the string goes.
+  BOW_SHOT: { rise: 0.06, full: 0.34, loose: 0.54, again: 0.84 },
+  BOLT_SHOT: { loose: 0.36, again: 0.7 },
+  // How far the string comes back, as a share of the bow's tip-to-tip span,
+  // and how far the arrow travels before it is out of the frame.
+  BOW_PULL: 0.3,
+  BOW_FLIGHT: 3.6,
+
+  /**
+   * The string, as the two halves it bends into: a straight line from tip to
+   * tip is only what a string looks like when nothing is pulling on it.
+   * @param top,bot {THREE.Vector3} limb tips
+   * @param opts { r, nock, release, pulse }
+   * @returns {THREE.Vector3} the nocking point the halves meet at
+   */
+  _bowString(group, mat, top, bot, opts) {
+    const o = opts || {};
+    const r = o.r || 0.0018;
+    const nock = o.nock ? o.nock.clone() : top.clone().add(bot).multiplyScalar(0.5);
+    const up = new THREE.Vector3(0, 1, 0);
+    const pairs = [[top, 'stringTop'], [bot, 'stringBot']];
+    for (const pair of pairs) {
+      const tip = pair[0];
+      const d = nock.clone().sub(tip);
+      const len = Math.max(1e-4, d.length());
+      const half = new THREE.Mesh(
+        new THREE.CylinderGeometry(r, r, len, this.seg(5, 3)), mat);
+      half.position.copy(tip).add(nock).multiplyScalar(0.5);
+      half.quaternion.setFromUnitVectors(up, d.normalize());
+      half.userData.bow = pair[1];
+      half.userData.bowTip = { x: tip.x, y: tip.y, z: tip.z };
+      half.userData.bowNock = { x: nock.x, y: nock.y, z: nock.z };
+      half.userData.bowLen = len;
+      if (o.release) half.userData.bowRelease = { x: o.release.x, y: o.release.y, z: o.release.z };
+      if (o.pulse) half.userData.pulse = o.pulse;
+      group.add(half);
+    }
+    return nock;
+  },
+
+  /**
+   * Fits a bow out for shooting: keeps every declared part out of the mesh
+   * merge, and makes sure there is an arrow on the string to loose. Runs once
+   * per build, before the merge.
+   */
+  prepareBow(model, weapon) {
+    if (!model || typeof THREE === 'undefined') return model;
+    let arrow = null;
+    model.traverse((obj) => {
+      const tag = obj.userData && obj.userData.bow;
+      if (!tag) return;
+      obj.userData.dynamic = true;
+      if (tag === 'arrow') arrow = obj;
+    });
+    if (!arrow) arrow = this._gatherNockedArrow(model);
+    if (!arrow) arrow = this._buildNockedArrow(model, weapon);
+    if (arrow) {
+      arrow.userData.bow = 'arrow';
+      arrow.userData.dynamic = true;
+    }
+    this._adoptLimbFurniture(model);
+    // Remembered on the weapon itself, the way its whip and flail flags are:
+    // how a bow is posed and how big it is drawn are asked long before and
+    // long after the model that knew it was a crossbow is to hand.
+    if (weapon && this.isCrossbow(weapon, model)) weapon.isCrossbow = true;
+    return model;
+  },
+
+  /**
+   * Hands everything sitting out at the limb tips over to the limb it belongs
+   * to: nocks, bindings, leaves, siyahs, the ice growing off a frozen bow.
+   * Builders hang those on the model rather than on the limb, and a limb that
+   * bends away from its own tip cap is worse than one that does not bend.
+   * The share of the limb below which a part is riser furniture, not limb
+   * furniture, is deliberately generous: the riser sits at the middle.
+   */
+  _adoptLimbFurniture(model) {
+    const parts = this.bowPartsOf(model);
+    const top = parts.limbTop, bot = parts.limbBot;
+    if (!top || !bot) return;
+    const tip = parts.stringTop && parts.stringTop.userData.bowTip;
+    const reach = tip ? Math.abs(tip.y) : 0;
+    if (!(reach > 0)) return;
+    const edge = reach * 0.55;
+    for (const child of model.children.slice()) {
+      if (!child.isMesh || (child.userData && child.userData.bow)) continue;
+      if (Math.abs(child.position.y) < edge) continue;
+      const limb = child.position.y > 0 ? top : bot;
+      if (limb.attach) limb.attach(child); else limb.add(child);
+    }
+    model._bowParts = null;
+  },
+
+  /**
+   * The arrow already on the string, taken off the geometry: every builder
+   * draws it the same way, as a shaft lying along the bow's line of fire with
+   * its head and fletching threaded on the same axis. They are collected into
+   * one group so the head does not stay behind when the shaft leaves.
+   */
+  _gatherNockedArrow(model) {
+    const shafts = [];
+    // An arrow starts ON the string. Without that test the longest thing
+    // pointing down range wins, and a target bow shoots its own stabiliser.
+    const parts = this.bowPartsOf(model);
+    const nockZ = (parts.stringTop || parts.stringBot) ? this._bowNockRest(parts).z : null;
+    model.traverse((obj) => {
+      if (!obj.isMesh || !obj.geometry || !obj.geometry.parameters) return;
+      const type = obj.geometry.type || '';
+      if (type.indexOf('Cylinder') === -1 && type.indexOf('Cone') === -1) return;
+      const p = obj.geometry.parameters;
+      const radius = Math.max(p.radiusTop || 0, p.radiusBottom || 0, p.radius || 0);
+      if (radius > 0.02) return;
+      // Lying along the line of fire rather than across the bow: this is what
+      // separates an arrow from the grip, the wraps and the limbs.
+      if (Math.abs(Math.cos(obj.rotation.x)) > 0.25) return;
+      if (Math.abs(obj.position.x) > 0.03 || obj.position.z < -0.06) return;
+      const len = p.height || 0;
+      if (nockZ !== null && Math.abs(obj.position.z - len * 0.5 - nockZ) > 0.12) return;
+      shafts.push({ obj: obj, len: len });
+    });
+    if (!shafts.length) return null;
+    let main = shafts[0];
+    for (const s of shafts) if (s.len > main.len) main = s;
+    if (main.len < 0.08) return null;
+
+    const group = new THREE.Group();
+    group.userData.bow = 'arrow';
+    group.userData.dynamic = true;
+    model.add(group);
+    const zMin = main.obj.position.z - main.len * 0.5 - 0.06;
+    const zMax = main.obj.position.z + main.len * 0.5 + 0.06;
+    for (const s of shafts) {
+      if (s !== main) {
+        if (s.obj.position.z < zMin || s.obj.position.z > zMax) continue;
+        if (Math.abs(s.obj.position.y - main.obj.position.y) > 0.03) continue;
+        if (Math.abs(s.obj.position.x - main.obj.position.x) > 0.02) continue;
+      }
+      if (group.attach) group.attach(s.obj); else group.add(s.obj);
+    }
+    return group;
+  },
+
+  /** An arrow for a bow that was drawn without one. */
+  _buildNockedArrow(model, weapon) {
+    // A crossbow with nothing in the groove is empty on purpose as often as by
+    // omission, and its own frame draws a bolt when it wants one.
+    if (this.isCrossbow(weapon, model)) return null;
+    const parts = this.bowPartsOf(model);
+    const span = this._bowSpan(model, parts);
+    const nock = this._bowNockRest(parts);
+    const len = span * 0.72;
+    const shaftMat = this._mat(0x9A7B4F, { roughness: 0.85, metalness: 0.04 });
+    const headMat = this._mat(0x9AA0A6, { roughness: 0.4, metalness: 0.8 });
+    const group = new THREE.Group();
+    group.userData.bow = 'arrow';
+    group.userData.dynamic = true;
+    const shaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.004, 0.004, len, this.seg(7, 5)), shaftMat);
+    shaft.rotation.x = Math.PI / 2;
+    shaft.position.set(nock.x, nock.y, nock.z + len * 0.5);
+    group.add(shaft);
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.008, 0.03, this.seg(7, 5)), headMat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(nock.x, nock.y, nock.z + len + 0.012);
+    group.add(head);
+    for (let i = 0; i < (this.isLowDetail() ? 2 : 3); i++) {
+      const vane = new THREE.Mesh(new THREE.ConeGeometry(0.008, 0.026, this.seg(5, 3)), shaftMat);
+      vane.rotation.x = -Math.PI / 2;
+      vane.rotation.z = (i / 3) * Math.PI * 2;
+      vane.position.set(nock.x, nock.y, nock.z + 0.026);
+      group.add(vane);
+    }
+    model.add(group);
+    // The parts were resolved before the arrow existed, so the cache has to go.
+    model._bowParts = null;
+    return group;
+  },
+
+  /** Whether this weapon is spanned and shot rather than drawn and loosed. */
+  isCrossbow(weapon, model) {
+    if (weapon && weapon.isCrossbow) return true;
+    if (model && model.userData && model.userData.crossbow) return true;
+    return /<Crossbow>/i.test((weapon && weapon.note) || '');
+  },
+
+  /** Resolves the tagged parts of this instance (clone-safe: not in userData). */
+  bowPartsOf(model) {
+    if (model._bowParts) return model._bowParts;
+    const parts = {};
+    model.traverse((obj) => {
+      const tag = obj.userData && obj.userData.bow;
+      if (!tag || parts[tag]) return;
+      parts[tag] = obj;
+      obj.userData._bowRest = {
+        x: obj.position.x, y: obj.position.y, z: obj.position.z,
+        rx: obj.rotation.x, ry: obj.rotation.y, rz: obj.rotation.z
+      };
+    });
+    model._bowParts = parts;
+    return parts;
+  },
+
+  /** Tip to tip, in model units: everything the shot is measured against. */
+  _bowSpan(model, parts) {
+    const a = parts.stringTop && parts.stringTop.userData.bowTip;
+    const b = parts.stringBot && parts.stringBot.userData.bowTip;
+    if (a && b) return Math.max(0.05, Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z));
+    return model.userData._fitExtent || 0.55;
+  },
+
+  /** Where the nocking point sits with nothing pulling on the string. */
+  _bowNockRest(parts) {
+    const half = parts.stringTop || parts.stringBot;
+    const n = half && (half.userData.bowRelease || half.userData.bowNock);
+    return n ? { x: n.x, y: n.y, z: n.z } : { x: 0, y: 0.01, z: 0 };
+  },
+
+  /**
+   * Starts a shot. Called with the attack clip's own duration so the string
+   * goes on the frame the hand kicks.
+   */
+  beginBowShot(model, weapon, durationMs) {
+    if (!model) return;
+    const parts = this.bowPartsOf(model);
+    const crossbow = this.isCrossbow(weapon, model);
+    const span = this._bowSpan(model, parts);
+    model._bowShot = {
+      elapsed: 0,
+      duration: Math.max(1, durationMs || 600),
+      crossbow: crossbow,
+      // A crossbow is carried already spanned, so nothing draws back: its
+      // string and its bolt only ever travel forward, on the loose.
+      pull: crossbow ? 0 : span * this.BOW_PULL,
+      flight: span * this.BOW_FLIGHT,
+      flex: crossbow ? 0.09 : 0.17
+    };
+  },
+
+  /**
+   * Drives the string, the limbs and the arrow of a bow being shot. Cheap when
+   * nothing is being shot: a single property check.
+   */
+  tickBow(model, dtMs) {
+    const shot = model && model._bowShot;
+    if (!shot) return;
+    const parts = this.bowPartsOf(model);
+    shot.elapsed += dtMs;
+    const t = Math.min(1, shot.elapsed / shot.duration);
+    const loose = shot.crossbow ? this.BOLT_SHOT.loose : this.BOW_SHOT.loose;
+
+    // How far back the string is held, 1 at full draw. A crossbow starts there
+    // and stays there: being spanned is its resting state.
+    let k;
+    if (shot.crossbow) k = 1;
+    else if (t <= this.BOW_SHOT.rise) k = 0;
+    else if (t < this.BOW_SHOT.full) {
+      const u = (t - this.BOW_SHOT.rise) / (this.BOW_SHOT.full - this.BOW_SHOT.rise);
+      k = u * u * (3 - 2 * u);
+    } else k = 1;
+
+    let flown = 0;
+    if (t > loose) {
+      const u = (t - loose) / Math.max(1e-4, 1 - loose);
+      // The string does not stop where it rests: it runs past it and rings
+      // down, which is the whole sound of the shot made visible.
+      k *= Math.cos(u * 17) * Math.exp(-u * 6.5);
+      flown = 1 - Math.pow(1 - Math.min(1, u / 0.3), 2);
+    }
+
+    // Nothing is left standing empty. Over the tail of the clip another arrow
+    // comes onto the string, and a crossbow is spanned back onto its nut,
+    // rather than the whole weapon snapping back into shape on the last frame.
+    const again = shot.crossbow ? this.BOLT_SHOT.again : this.BOW_SHOT.again;
+    if (t > again) {
+      let r = Math.min(1, (t - again) / Math.max(1e-4, 0.97 - again));
+      r = r * r * (3 - 2 * r);
+      if (shot.crossbow) k = k * (1 - r) + r;
+      if (r >= 0.5) flown = 0;
+    }
+
+    this._poseBowString(parts.stringTop, k, shot);
+    this._poseBowString(parts.stringBot, k, shot);
+
+    // Everything except the string is posed relative to how the weapon was
+    // BUILT, and a crossbow is built spanned: at rest its k is already 1, so
+    // its limbs and its bolt only move once the string starts forward.
+    const kk = shot.crossbow ? k - 1 : k;
+    const flex = shot.flex * kk;
+    this._flexLimb(parts.limbTop, 'x', -flex);
+    this._flexLimb(parts.limbBot, 'x', flex);
+    this._flexLimb(parts.limbLeft, 'y', flex);
+    this._flexLimb(parts.limbRight, 'y', -flex);
+
+    if (parts.nock) {
+      const r = parts.nock.userData._bowRest;
+      parts.nock.position.z = r.z - shot.pull * kk;
+    }
+
+    if (parts.arrow) {
+      const r = parts.arrow.userData._bowRest;
+      // On a bow the arrow comes back with the string; on a crossbow it is
+      // already lying in the groove and waits there for the nut to turn.
+      parts.arrow.position.z = r.z - shot.pull * kk + shot.flight * flown;
+      const s = 1 - flown * 0.4;
+      parts.arrow.scale.set(s, s, s);
+      parts.arrow.visible = flown < 0.82;
+    }
+
+    // A crossbow has an action as well as a string: the finger comes back and
+    // the nut turns the bolt loose. Both are already tagged as gun parts by
+    // whatever drew them, so they are read from there rather than tagged twice.
+    if (shot.crossbow) {
+      const gun = this.gunPartsOf(model);
+      if (gun.trigger) {
+        const r = gun.trigger.userData._gunRest;
+        gun.trigger.rotation.x = r.rx + Math.min(1, t / loose) * 0.5;
+      }
+      if (gun.cylinder) {
+        const r = gun.cylinder.userData._gunRest;
+        gun.cylinder.rotation.z = r.rz + (t > loose ? Math.min(1, (t - loose) * 9) * 1.1 : 0);
+      }
+    }
+
+    if (t >= 1) {
+      this._restBowParts(model, parts, shot);
+      model._bowShot = null;
+    }
+  },
+
+  /** Bends one half of a string to a nocking point k of the way back. */
+  _poseBowString(half, k, shot) {
+    if (!half) return;
+    const ud = half.userData;
+    const tip = ud.bowTip;
+    const rest = ud.bowRelease || ud.bowNock;
+    if (!tip || !rest) return;
+    // Where the string is held: a bow is pulled back off its rest, a crossbow
+    // is spanned back onto its nut and rests forward of it.
+    const back = ud.bowRelease ? ud.bowNock : { x: rest.x, y: rest.y, z: rest.z - shot.pull };
+    const nx = rest.x + (back.x - rest.x) * k;
+    const ny = rest.y + (back.y - rest.y) * k;
+    const nz = rest.z + (back.z - rest.z) * k;
+    const dx = nx - tip.x, dy = ny - tip.y, dz = nz - tip.z;
+    const len = Math.max(1e-4, Math.hypot(dx, dy, dz));
+    half.position.set((tip.x + nx) / 2, (tip.y + ny) / 2, (tip.z + nz) / 2);
+    if (!this._bowUp) this._bowUp = new THREE.Vector3(0, 1, 0);
+    if (!this._bowDir) this._bowDir = new THREE.Vector3();
+    half.quaternion.setFromUnitVectors(this._bowUp, this._bowDir.set(dx / len, dy / len, dz / len));
+    half.scale.y = len / (ud.bowLen || len);
+  },
+
+  /** Bends one limb about the grip, which is what moves its tip. */
+  _flexLimb(limb, axis, amount) {
+    if (!limb) return;
+    limb.rotation[axis] = limb.userData._bowRest[axis === 'x' ? 'rx' : 'ry'] + amount;
+  },
+
+  /** Puts a bow back the way it was built. */
+  _restBowParts(model, parts, shot) {
+    for (const key of Object.keys(parts)) {
+      const p = parts[key];
+      const r = p.userData._bowRest;
+      p.position.set(r.x, r.y, r.z);
+      p.rotation.set(r.rx, r.ry, r.rz);
+      p.scale.set(1, 1, 1);
+      p.visible = true;
+    }
+    // The halves are posed rather than placed, so they are rebuilt at rest
+    // instead of being trusted to the transform they were built with. A
+    // crossbow rests spanned, which is the far end of the same travel.
+    const rest = { pull: 0 };
+    const k = shot && shot.crossbow ? 1 : 0;
+    this._poseBowString(parts.stringTop, k, rest);
+    this._poseBowString(parts.stringBot, k, rest);
+    const gun = model._gunParts;
+    if (gun) {
+      for (const key of ['trigger', 'cylinder']) {
+        const p = gun[key];
+        if (!p) continue;
+        const r = p.userData._gunRest;
+        p.rotation.set(r.rx, r.ry, r.rz);
+      }
+    }
+  },
+
   /**
    * Re-tints every material into gold while keeping the model's own light and
    * shade: the hue and saturation are replaced, the lightness the builder chose
@@ -1518,8 +2011,14 @@ var WeaponSystemProcedural = {
       case 4:  return 0.70; // Axe
       case 5:  return 0.74; // Whip
       case 6:  return 0.84; // Staff
-      case 7:  return 0.62; // Bow (drawn face-on: this is the whole limb span)
-      case 8:  return 0.34; // Projectile
+      // A bow is the tallest thing anyone carries, and it is held out at
+      // arm's length rather than tucked in like a gun: drawn any smaller it
+      // reads as a twig at the edge of the frame. A crossbow is a shoulder
+      // weapon of ordinary size and keeps the old figure.
+      case 7:  return weapon.isCrossbow ? 0.62 : 0.86;
+      // Thrown weapons are small in the hand; a crossbow filed in the same
+      // rack is not one of them.
+      case 8:  return weapon.isCrossbow ? 0.62 : 0.34;
       case 9:  return 0.58; // Gun (first-person)
       case 10: return 0.42; // Claw
       case 11: return 0.40; // Glove
@@ -1547,6 +2046,9 @@ var WeaponSystemProcedural = {
     // is what separates it from a held Glove weapon (boxing gloves, knuckle
     // dusters, ...) sharing the same wtypeId.
     if (weapon.unarmedArchetype) return { x: 12, y: -10, z: -8 };
+    // A shield rests across the body with its face turned out, angled just
+    // enough to read as a plate rather than an edge.
+    if (weapon.shieldArmorId) return { x: -6, y: -22, z: 4 };
     switch (weapon.wtypeId || 1) {
       case 1: return { x: 0, y: 0, z: -20 };   // Light (dagger)
       case 2: return { x: 0, y: 0, z: -15 };   // Sword
@@ -1934,7 +2436,8 @@ var WeaponSystemProcedural = {
     RifleRecoil: { kind: 'recoil', power: 1.5 },
     Shoot: { kind: 'recoil' },
     Reload: { kind: 'reload' },
-    BowDrawAndRelease: { kind: 'draw' }
+    BowDrawAndRelease: { kind: 'draw' },
+    CrossbowShot: { kind: 'crossbow' }
   },
 
   // The motion a weapon falls back to when the caller asks for a name nothing
@@ -1944,10 +2447,10 @@ var WeaponSystemProcedural = {
     7: 'draw', 8: 'hurl', 9: 'recoil', 10: 'arc', 11: 'thrust', 12: 'thrust'
   },
 
-  motionForWeapon(weapon) {
+  motionForWeapon(weapon, model) {
     if (weapon.isWhip) return 'lash';
     if (weapon.isFlail) return 'arc';
-    const ranged = this.rangedMotionFor(weapon);
+    const ranged = this.rangedMotionFor(weapon, model);
     if (ranged) return ranged;
     return this.TYPE_MOTIONS[weapon.wtypeId] || 'arc';
   },
@@ -1958,9 +2461,12 @@ var WeaponSystemProcedural = {
    * hand; none of them is ever a club, whatever a skill or a <Movement:> tag
    * asks for.
    */
-  rangedMotionFor(weapon) {
+  rangedMotionFor(weapon, model) {
     if (!weapon) return null;
     if (weapon.wtypeId === 9) return 'recoil';
+    // A crossbow is not drawn: it is carried spanned and let off with a
+    // finger, so it takes the trigger motion rather than the archer's one.
+    if (this.isCrossbow(weapon, model)) return 'crossbow';
     if (weapon.wtypeId === 7) return 'draw';
     if (weapon.wtypeId === 8) return this.isLauncher(weapon) ? 'draw' : 'hurl';
     return null;
@@ -1971,19 +2477,44 @@ var WeaponSystemProcedural = {
   RANGED_KEEP: { reload: true, guard: true },
 
   /**
+   * The motion an empty hand is REQUIRED to use, or null for a hand holding
+   * something. A bare fist has no blade to sweep and no shaft to bring over,
+   * so whatever a skill name or a <Movement:> tag asked for, an unarmed
+   * strike is thrown as a punch (MOTIONS.punch still shapes itself around
+   * what was asked, so an uppercut comes up from under and a swing turns
+   * into a hook). Only the Humanoid fist is thrown this way: every other
+   * archetype swings a claw, a hoof or a pseudopod, none of which punches.
+   */
+  fistMotionFor(weapon) {
+    if (!weapon || weapon.unarmedArchetype !== 'Humanoid') return null;
+    return 'punch';
+  },
+
+  // What a fist is still allowed to do instead of punching: put itself in the
+  // way. Everything else it does, it does by hitting something.
+  FIST_KEEP: { guard: true },
+
+  /**
    * Generates the attack clip for a weapon and an animation name.
    * @returns {{duration:number, frames:Array}} in the same shape the fixed
    *   MovementKeyFrame3d clips use, so nothing downstream changes.
    */
   buildAttack(weapon, name, model) {
-    let motion = this.ATTACK_MOTIONS[name] || { kind: this.motionForWeapon(weapon) };
+    let motion = this.ATTACK_MOTIONS[name] || { kind: this.motionForWeapon(weapon, model) };
     // What a weapon that shoots does is decided by the weapon, never by the
     // name the skill asked for: most firearms and every sling in the database
     // carry a <Movement:> tag written for a blade, or none at all (which used
     // to mean 'Swing'), and were bashing the enemy with the stock.
-    const ranged = this.rangedMotionFor(weapon);
+    const ranged = this.rangedMotionFor(weapon, model);
     if (ranged && motion.kind !== ranged && !this.RANGED_KEEP[motion.kind]) {
       motion = Object.assign({}, motion, { kind: ranged });
+    }
+    // Same reasoning one step further along: a character with nothing in
+    // their hand punches. The motion that was asked for is kept as `from`,
+    // so the punch that replaces it can still be the right SHAPE of punch.
+    const fist = this.fistMotionFor(weapon);
+    if (fist && motion.kind !== fist && !this.FIST_KEEP[motion.kind]) {
+      motion = Object.assign({}, motion, { kind: fist, from: motion.kind });
     }
     const build = this.MOTIONS[motion.kind] || this.MOTIONS.arc;
     const m = this.weaponMetrics(weapon, model);
@@ -1998,6 +2529,14 @@ var WeaponSystemProcedural = {
     // The blade has to leave the shaft on the same clock the shaft is moving
     // on, so the draw is started from the finished clip's own duration.
     if (motion.kind === 'swordcane' && model) this.beginCaneDraw(model, clip.duration);
+    // The hand tightening into the blow it is throwing, on the same clock the
+    // arm is travelling on.
+    if (motion.kind === 'punch' && model) this.beginPunch(model, clip.duration);
+    // Same clock for the string, the limbs and the arrow: the hand kicks on
+    // the frame they let go.
+    if ((motion.kind === 'draw' || motion.kind === 'crossbow') && model) {
+      this.beginBowShot(model, weapon, clip.duration);
+    }
     return clip;
   },
 
@@ -2123,6 +2662,89 @@ var WeaponSystemProcedural = {
           { t: hit, x: -dir * drift, y: drift * 0.5, z: 220, rx: 14, ry: -dir * 6, rz: -dir * 4, scale: zoom, ease: 'snap' },
           { t: hit + 0.06, x: -dir * drift * 1.2, y: drift * 0.7, z: 240, rx: 16, ry: -dir * 4, rz: -dir * 2, scale: zoom * 1.03, ease: 'inOut' },
           { t: 0.8, x: -dir * drift * 0.4, y: drift * 0.2, z: 90, rx: 6, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.3, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A bare fist.
+    //
+    // None of the swinging motions fit an empty hand: there is no blade to
+    // sweep, no shaft to bring over and no mass to let carry the arm through
+    // the blow. A punch is the opposite shape of movement, and it is written
+    // here as one: a short chamber back toward the shoulder, a straight line
+    // out at everything the arm has, and a hand snatched back to the guard
+    // faster than it went out, because a fist left hanging out there is how
+    // people get hit back.
+    //
+    // The overlay camera is ORTHOGRAPHIC, so distance covered has to be
+    // spoken as scale (as with `thrust`). That is doing most of the work
+    // here: the fist grows to half again its size at full extension, which is
+    // what sells an arm reaching the length a held weapon never has to.
+    //
+    // `from` is the motion the skill originally asked for before the fist
+    // took it over, so a swing becomes a hook, an uppercut comes up from
+    // under and an overhead drops as a hammer fist. All three run on the same
+    // clock and all three still read as a punch rather than as a sword swing
+    // performed by a hand.
+    punch(m, o, H) {
+      const from = o.from;
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = o.power || 1;
+      const hook = from === 'arc' || from === 'spin' || from === 'lash';
+      const rise = from === 'rising';
+      const drop = from === 'overhead';
+      // The chamber is small: it is the furthest from the camera the hand
+      // ever gets, and a fist pulled back too far reads as a wind-up rather
+      // than as a guard being left.
+      const pull = (0.07 + m.heft * 0.05) * H;
+      // A hook travels across the frame and lands short; a straight punch
+      // spends everything it has going away from the camera instead.
+      const zoom = 1 + (hook ? 0.32 : 0.54) * power;
+      const cross = hook ? (0.28 + m.reach * 0.16) * H * power : (0.05 + m.reach * 0.04) * H;
+      const lift = rise ? -(0.24 + m.reach * 0.12) * H
+        : (drop ? (0.28 + m.reach * 0.12) * H : 0.025 * H);
+      // Fast: the wind-up is a snap of the elbow, not a haul of the shoulder.
+      const windEnd = 0.20 + m.heft * 0.09;
+      const hit = windEnd + 0.14;
+      return {
+        duration: 250 + m.heft * 180,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          // Chambered: back, turned over, and at its smallest.
+          {
+            t: windEnd,
+            x: dir * pull * (hook ? 1.5 : 1),
+            y: rise ? pull * 0.9 : (drop ? -pull * 1.5 : -pull * 0.25),
+            z: -0.11 * H,
+            rx: rise ? 24 : (drop ? -38 : -14),
+            ry: dir * 20, rz: dir * (hook ? 26 : 12),
+            scale: 0.80, ease: 'expoOut'
+          },
+          // Landed. Everything arrives on this frame at once: the reach, the
+          // turn of the fist and the size of it.
+          {
+            t: hit,
+            x: -dir * cross, y: lift, z: 0.26 * H,
+            rx: rise ? -32 : (drop ? 44 : 12),
+            ry: -dir * (hook ? 26 : 8), rz: -dir * (hook ? 34 : 10),
+            scale: zoom, ease: 'snap'
+          },
+          // The give of the thing that was hit.
+          {
+            t: hit + 0.05,
+            x: -dir * cross * 1.08, y: lift * 1.08, z: 0.22 * H,
+            rx: rise ? -36 : (drop ? 48 : 14),
+            ry: -dir * (hook ? 22 : 6), rz: -dir * (hook ? 30 : 8),
+            scale: zoom * 1.03, ease: 'inOut'
+          },
+          // Snatched back to the guard.
+          {
+            t: 0.72,
+            x: -dir * cross * 0.3, y: lift * 0.25, z: 0.05 * H,
+            rx: rise ? -10 : (drop ? 14 : 4), ry: -dir * 4, rz: -dir * 6,
+            scale: 1 + (zoom - 1) * 0.22, ease: 'out'
+          },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
@@ -2263,20 +2885,65 @@ var WeaponSystemProcedural = {
       };
     },
 
-    // Draw, hold at full tension, loose. The hold is what sells the power, so
-    // it gets longer the heavier the bow is.
+    // Bring it up, draw, hold, loose, and let the bow turn over in the hand.
+    //
+    // The string, the limbs and the arrow are NOT in here: tickBow drives them
+    // off this clip's own duration (BOW_SHOT), and what is left for the hand is
+    // small on purpose. An archer at full draw is the stillest thing in a
+    // fight, so the shot reads on the string coming back and on the two frames
+    // where the bow jumps, not on the whole weapon being flung across the view.
+    //
+    // The overlay camera is orthographic, so depth is spent in `scale` rather
+    // than in z: pushing the bow out to arm's length grows it a little, and the
+    // hand dropping back on the loose shrinks it.
     draw(m, o, H) {
-      const pull = (0.14 + m.heft * 0.12) * H;
-      const hold = 0.5 + m.heft * 0.12;
+      const w = this.BOW_SHOT;
+      const reach = (0.012 + m.reach * 0.02) * H;
+      const kick = (0.008 + m.heft * 0.016) * H;
+      // A heavy bow fights the hand harder when it goes.
+      const turn = 6 + m.heft * 14;
       return {
-        duration: 520 + m.heft * 420,
+        // Fast: an archer under fire does not hold at full draw, and a shot
+        // that outlasts the turn it belongs to reads as a stall.
+        duration: 340 + m.heft * 220 + m.reach * 80,
         frames: [
           { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
-          { t: 0.34, x: -pull * 0.7, y: 0.02 * H, z: -60, rx: 2, ry: -20, rz: 4, scale: 0.95, ease: 'inOut' },
-          { t: hold, x: -pull, y: 0.01 * H, z: -90, rx: 0, ry: -26, rz: 6, scale: 0.9, ease: 'linear' },
-          { t: hold + 0.06, x: -pull * 0.98, y: 0.01 * H, z: -88, rx: 0, ry: -25, rz: 6, scale: 0.9, ease: 'expoOut' },
-          { t: hold + 0.16, x: 0.06 * H, y: -0.03 * H, z: 180, rx: -12, ry: 14, rz: -10, scale: 1.22, ease: 'out' },
-          { t: 0.9, x: 0.015 * H, y: 0, z: 50, rx: -3, ry: 4, rz: -2, scale: 1.03, ease: 'out' },
+          // Up onto the line of sight, bow arm going out.
+          { t: w.rise, x: -reach * 0.5, y: reach * 0.35, z: 0, rx: 1.5, ry: 1, rz: -2, scale: 1.015, ease: 'inOut' },
+          // Full draw: braced, and holding still.
+          { t: w.full, x: -reach, y: reach * 0.5, z: 0, rx: 2.5, ry: 2, rz: -3.5, scale: 1.03, ease: 'linear' },
+          { t: (w.full + w.loose) / 2, x: -reach * 1.02, y: reach * 0.52, z: 0, rx: 2.6, ry: 2.1, rz: -3.6, scale: 1.03, ease: 'linear' },
+          { t: w.loose, x: -reach, y: reach * 0.5, z: 0, rx: 2.5, ry: 2, rz: -3.5, scale: 1.03, ease: 'expoOut' },
+          // Loosed: the hand is thrown back off the tension it was holding.
+          { t: w.loose + 0.05, x: reach * 0.35 + kick, y: reach * 0.1 - kick, z: 0, rx: -4, ry: -3, rz: turn, scale: 0.965, ease: 'out' },
+          // And the bow rolls forward in the loose grip before it is caught.
+          { t: w.loose + 0.18, x: kick * 0.5, y: -kick * 0.7, z: 0, rx: -1.5, ry: -1, rz: turn * 1.5, scale: 0.99, ease: 'inOut' },
+          { t: 0.86, x: 0, y: -kick * 0.2, z: 0, rx: 0, ry: 0, rz: turn * 0.5, scale: 1.005, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A crossbow is already spanned when it comes up: there is no draw, only a
+    // brace, a trigger and the jolt of a prod letting go. tickBow throws the
+    // string and the bolt forward on the same frame the jolt lands (BOLT_SHOT).
+    crossbow(m, o, H) {
+      const w = this.BOLT_SHOT;
+      const jolt = (0.014 + m.heft * 0.03) * H;
+      const rise = 5 + m.heft * 9;
+      return {
+        duration: 280 + m.heft * 170,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'inOut' },
+          // Into the shoulder and levelled.
+          { t: 0.2, x: -jolt * 0.3, y: jolt * 0.25, z: 0, rx: 1.5, ry: 1, rz: -1.5, scale: 1.03, ease: 'linear' },
+          { t: w.loose, x: -jolt * 0.32, y: jolt * 0.26, z: 0, rx: 1.6, ry: 1, rz: -1.5, scale: 1.03, ease: 'snap' },
+          // The prod lets go: everything the limbs were holding comes back
+          // through the stock at once.
+          { t: w.loose + 0.04, x: jolt * 0.55, y: jolt * 0.5, z: 0, rx: rise, ry: -2, rz: 4, scale: 0.955, ease: 'out' },
+          { t: w.loose + 0.12, x: jolt * 0.2, y: jolt * 0.16, z: 0, rx: rise * 0.4, ry: -1, rz: 1.5, scale: 0.99, ease: 'inOut' },
+          // Held on the target a moment before it comes down.
+          { t: 0.78, x: 0, y: jolt * 0.05, z: 0, rx: rise * 0.12, ry: 0, rz: 0.4, scale: 1.005, ease: 'out' },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
@@ -2901,7 +3568,7 @@ var WeaponSystemProcedural = {
   // A character with nothing in their hand still has a hand, and what it
   // looks like depends on what they are: a Humanoid's fist, a Dragon's claw
   // and a Slime's pseudopod are not the same weapon. Builders are registered
-  // per EnemyArchetypes.json key rather than per weapon id, since there is no
+  // per Archetypes.json key rather than per weapon id, since there is no
   // database weapon to key on.
   UNARMED_MODELS: {},
   DEFAULT_ARCHETYPE: 'Humanoid',
@@ -2950,6 +3617,35 @@ var WeaponSystemProcedural = {
     return weapon;
   },
 
+  /**
+   * A shield is an off-hand armour, and hands hold weapons and shields alike
+   * (ItemSystem/ItemSystemEquipment.js), so one has to be able to appear in
+   * frame beside a sword. Wrapping it as a weapon is all it takes: the cache,
+   * the fit, the pose and the procedural attack clip all work off the same
+   * fields. It is typed as Heavy, which is how a shield is swung when it is
+   * swung at all, and keeps the armour's own <Weight:> so a buckler and a
+   * tower shield are not built to the same silhouette.
+   */
+  shieldWeaponFor(armor) {
+    if (!armor) return null;
+    if (!this._shieldWeapons) this._shieldWeapons = {};
+    if (this._shieldWeapons[armor.id]) return this._shieldWeapons[armor.id];
+    const weapon = {
+      // Negative, and a different band from the unarmed fists, so neither can
+      // collide with a database weapon or with each other in the model cache.
+      id: -200000 - armor.id,
+      name: armor.name,
+      wtypeId: 3,
+      note: armor.note || '',
+      meta: armor.meta || {},
+      iconIndex: armor.iconIndex,
+      shieldArmorId: armor.id,
+      weaponAnimations: []
+    };
+    this._shieldWeapons[armor.id] = weapon;
+    return weapon;
+  },
+
   /** Builds the fist for an archetype, falling back to the default one. */
   buildUnarmed(weapon, rand) {
     const key = weapon.unarmedArchetype;
@@ -2961,6 +3657,91 @@ var WeaponSystemProcedural = {
       console.warn('[WeaponSystemProcedural] no unarmed model for archetype ' + key);
     }
     return null;
+  },
+
+  // ============================================================
+  // The hand on the end of the punch
+  // ============================================================
+  // MOTIONS.punch moves the whole arm; this moves the hand it ends in. Two
+  // things separate a punch that was thrown from a fist being carried across
+  // the screen, and neither of them is travel: the hand turns over against
+  // the forearm on its way out, because a fist lands on its knuckles rather
+  // than on its thumb, and the fingers, carried loose the rest of the time,
+  // clench on the one frame the blow arrives. Both are declared by the model
+  // as plain data (Weapon3D_Unarmed tags its hand node and every digit with
+  // `punch`) so that a cached model can still be cloned, exactly as the
+  // ambient moving parts are.
+
+  // Windows of the punch's own duration: the fist loosens in the chamber,
+  // shuts on the way out, holds through the impact and opens on the way back.
+  PUNCH_WINDOWS: { open: 0.20, shut: 0.36, hold: 0.56, back: 0.82 },
+  // How far it loosens first, as a share of how hard it then shuts: a hand
+  // cannot tighten from nothing, and that slack is what makes the clench read
+  // as a clench rather than as a fist that was always closed.
+  PUNCH_SLACK: 0.42,
+
+  /** The hand node and digits a punch drives, cached on the model. */
+  punchPartsOf(model) {
+    if (model._punchParts) return model._punchParts;
+    const parts = [];
+    model.traverse((obj) => {
+      const ud = obj.userData;
+      if (!ud || !ud.punch) return;
+      ud._punchRest = { x: obj.rotation.x, z: obj.rotation.z };
+      parts.push(obj);
+    });
+    model._punchParts = parts;
+    return parts;
+  },
+
+  beginPunch(model, durationMs) {
+    if (!model) return;
+    if (!this.punchPartsOf(model).length) return;
+    model._punch = { elapsed: 0, duration: Math.max(1, durationMs || 320) };
+  },
+
+  /**
+   * Drives the clench and the turn of the wrist over the clip. Cheap when
+   * nothing is being thrown: a single property check.
+   */
+  tickPunch(model, dtMs) {
+    const punch = model && model._punch;
+    if (!punch) return;
+    const parts = this.punchPartsOf(model);
+    if (!parts.length) { model._punch = null; return; }
+
+    punch.elapsed += dtMs;
+    const t = punch.elapsed / punch.duration;
+    const w = this.PUNCH_WINDOWS;
+    const slack = this.PUNCH_SLACK;
+    // Negative while the hand is chambered and loose, 1 on the frames it is
+    // shut, and unwound rather than snapped back on the recovery.
+    let k;
+    if (t <= w.open) {
+      k = -slack * (t / w.open);
+    } else if (t < w.shut) {
+      const u = (t - w.open) / (w.shut - w.open);
+      k = -slack + (1 + slack) * (1 - Math.pow(1 - u, 4));
+    } else if (t <= w.hold) {
+      k = 1;
+    } else if (t < w.back) {
+      const u = (t - w.hold) / (w.back - w.hold);
+      k = 1 - u * u;
+    } else {
+      k = 0;
+    }
+
+    const done = t >= 1;
+    for (let i = 0; i < parts.length; i++) {
+      const obj = parts[i];
+      const ud = obj.userData;
+      const rest = ud._punchRest;
+      const p = ud.punch;
+      const bend = p.curl !== undefined ? p.curl : (p.pitch || 0);
+      obj.rotation.x = rest.x + (done ? 0 : bend * k);
+      if (p.roll) obj.rotation.z = rest.z + (done ? 0 : p.roll * k);
+    }
+    if (done) model._punch = null;
   },
 
   registerFamily(family) {
@@ -3329,6 +4110,13 @@ var WeaponSystemProcedural = {
         WeaponSystemProcedural.tickGun(this._model, deltaMs);
         // The blade leaving a sword cane's shaft and going back into it.
         WeaponSystemProcedural.tickCane(this._model, deltaMs);
+        // The string coming back to the cheek, the limbs bending with it and
+        // the arrow leaving. Last, so it owns the parts it drives.
+        WeaponSystemProcedural.tickBow(this._model, deltaMs);
+        // A bare hand clenching into the punch it is throwing, and turning
+        // over on the wrist as it goes. Same reason it comes after the
+        // ambient parts: it owns the rotations it writes.
+        WeaponSystemProcedural.tickPunch(this._model, deltaMs);
       }
 
       // ---- Tick Verlet rope physics for whips and flails ----
@@ -3411,7 +4199,7 @@ const WEAPON3D_FAMILIES = [
   'Weapon3D_Gloves',      // wtypeId 11
   'Weapon3D_Spears',      // wtypeId 12 spears and polearms
   'Weapon3D_Types',       // the entries that declare no weapon type
-  'Weapon3D_Unarmed'      // one fist per EnemyArchetypes.json archetype
+  'Weapon3D_Unarmed'      // one fist per Archetypes.json archetype
 ];
 
 (function loadWeapon3DFamilies() {

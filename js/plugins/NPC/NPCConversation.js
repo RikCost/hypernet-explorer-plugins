@@ -350,10 +350,13 @@
   const START_DIST           = 2;      // tiles: close enough to stop and chat
   const AMBIENT_DIST         = 6;      // tiles: "same room" chatter range
   const PLAYER_RANGE         = 30;     // only converse near the player (visible flavour)
-  const PAIR_COOLDOWN_MIN    = 45;     // game minutes between same-pair chats
-  const AMBIENT_COOLDOWN_MIN = 20;
-  const START_CHANCE         = 0.18;   // per eligible pair per scan
-  const AMBIENT_CHANCE       = 0.07;
+  // A town where everyone is always mid-sentence reads as noise rather than as
+  // life, so a chat is a thing that happens now and then: the odds per scan are
+  // low and the same two people leave a long gap before starting again.
+  const PAIR_COOLDOWN_MIN    = 120;    // game minutes between same-pair chats
+  const AMBIENT_COOLDOWN_MIN = 60;
+  const START_CHANCE         = 0.07;   // per eligible pair per scan
+  const AMBIENT_CHANCE       = 0.025;
 
   // States in which an NPC can be pulled into a full stop-and-chat
   const FACE_STATES    = ['idle', 'wandering', 'socializing', 'inZone'];
@@ -940,6 +943,122 @@
   const BUBBLE_FADE_MS     = 800;  // ms of the fade-out transition
   const BUBBLE_MAX_ONSCREEN = 9;   // pooled bubble elements (one per chatty NPC)
 
+  // Every bubble is its own DOM element pinned over the head of whoever is
+  // speaking, so two people standing close together used to print one bubble on
+  // top of the other and neither could be read. Rather than position blind, a
+  // bubble claims the rectangle it wants from this arbiter once per frame; the
+  // arbiter remembers what has already been claimed and slides a late claim
+  // clear of the ones before it. Claims are keyed by the bubble that made them,
+  // so re-claiming within the same frame just updates that bubble's rectangle.
+  // Core/AutoIdleExplorer.js's party bubbles claim through the same registry
+  // (window.NPCBubbleLayout), so party and town chatter never stack either.
+  const BubbleLayout = (typeof document === 'undefined') ? null : (() => {
+    const GAP_X = 8;        // page px of clear space kept between two bubbles
+    const GAP_Y = 6;
+    const SIDE_COST = 2.5;  // sideways displacement costs this much more than upward
+    const MAX_PASSES = 12;  // give up rather than loop forever on a dense crowd
+
+    let _frame = -1;
+    let _claims = [];
+
+    function _hits(l, t, w, h, r) {
+      return l < r.right + GAP_X && l + w > r.left - GAP_X &&
+             t < r.bottom + GAP_Y && t + h > r.top - GAP_Y;
+    }
+
+    function _free(key, l, t, w, h) {
+      for (const r of _claims) if (r.key !== key && _hits(l, t, w, h, r)) return false;
+      return true;
+    }
+
+    // Last resort for a crowd too thick to find a clean slot in: shove the rect
+    // straight up out of everything it touches, then clamp back on screen.
+    function _shoveUp(key, l, t, w, h) {
+      for (let pass = 0; pass < MAX_PASSES; pass++) {
+        let moved = false;
+        for (const r of _claims) {
+          if (r.key === key || !_hits(l, t, w, h, r)) continue;
+          t = r.top - GAP_Y - h;
+          moved = true;
+        }
+        if (!moved) break;
+      }
+      return t;
+    }
+
+    return {
+      // Claim where a bubble wants to sit and get back where it may actually
+      // sit, as { x, y }: x is its horizontal centre, y its top edge, both page
+      // px, as are the caller's centerX/top/w/h. `bounds` (page px left/right/
+      // top/bottom of the canvas) keeps a displaced bubble on screen.
+      //
+      // The natural spot wins whenever it is free. Otherwise the candidates are
+      // the slots flush against the bubbles already claimed — directly above or
+      // below one, or alongside one — and the cheapest free candidate wins,
+      // counting sideways moves as dearer than vertical ones so a bubble stays
+      // over its speaker's head where it can and only steps aside in a real
+      // crush.
+      place(key, centerX, top, w, h, bounds) {
+        const frame = (typeof Graphics !== 'undefined') ? Graphics.frameCount : 0;
+        if (frame !== _frame) { _frame = frame; _claims.length = 0; }
+        else _claims = _claims.filter(r => r.key !== key);
+
+        const b = bounds || {};
+        const l0 = centerX - w / 2;
+        let best = null;
+
+        const consider = (l, t) => {
+          if (b.top    != null && t < b.top)        return;
+          if (b.bottom != null && t + h > b.bottom) return;
+          if (b.left   != null && l < b.left)       return;
+          if (b.right  != null && l + w > b.right)  return;
+          const cost = Math.abs(t - top) + SIDE_COST * Math.abs(l - l0);
+          if (best && cost >= best.cost) return;
+          if (!_free(key, l, t, w, h)) return;
+          best = { l, t, cost };
+        };
+
+        consider(l0, top);
+        if (!best) {
+          // Flush against one neighbour, still over the speaker horizontally
+          for (const r of _claims) {
+            if (r.key === key) continue;
+            consider(l0, r.top - GAP_Y - h);
+            consider(l0, r.bottom + GAP_Y);
+            consider(r.left - GAP_X - w, top);
+            consider(r.right + GAP_X, top);
+          }
+        }
+        if (!best) {
+          // Boxed in: every corner where one neighbour's column meets another's row
+          for (const a of _claims) {
+            if (a.key === key) continue;
+            for (const c of _claims) {
+              if (c.key === key || c === a) continue;
+              consider(a.left - GAP_X - w, c.top - GAP_Y - h);
+              consider(a.left - GAP_X - w, c.bottom + GAP_Y);
+              consider(a.right + GAP_X,    c.top - GAP_Y - h);
+              consider(a.right + GAP_X,    c.bottom + GAP_Y);
+            }
+          }
+        }
+
+        let l = best ? best.l : l0;
+        let t = best ? best.t : _shoveUp(key, l0, top, w, h);
+        if (!best) {
+          if (b.top    != null) t = Math.max(t, b.top);
+          if (b.bottom != null) t = Math.min(t, b.bottom - h);
+        }
+        _claims.push({ key, left: l, right: l + w, top: t, bottom: t + h });
+        return { x: l + w / 2, y: t };
+      },
+
+      // Forget every claim, e.g. when the whole layer is torn down on a map change
+      clear() { _claims.length = 0; },
+    };
+  })();
+  if (BubbleLayout && typeof window !== 'undefined') window.NPCBubbleLayout = BubbleLayout;
+
   const ThoughtBubbleManager = (typeof document === 'undefined') ? null : (() => {
 
     // Screen-space helpers (mirrors MousePan's Window_EventHover projection).
@@ -986,8 +1105,11 @@
         this._ev         = null; // resolved Game_Event, cached per map
         this._evMapId    = 0;
         this._height     = 0;    // offsetHeight, re-read only when text changes
+        this._width      = 0;    // offsetWidth, likewise; the layout arbiter needs both
+        this._shownAt    = 0;
         this._lastLeft   = null;
         this._lastTop    = null;
+        this._offscreen  = false;
       }
 
       show(npcName, text) {
@@ -999,8 +1121,10 @@
         // Force a reflow so the transition restarts cleanly when a bubble is reused mid-fade
         void this.el.offsetWidth;
         this.el.classList.add('visible');
-        // Height only changes with the text, so measure once here instead of per frame
+        // Size only changes with the text, so measure once here instead of per frame
         this._height = this.el.offsetHeight || 32;
+        this._width  = this.el.offsetWidth  || 0;
+        this._shownAt = Date.now();
         this._lastLeft = null;
         this._lastTop  = null;
 
@@ -1020,6 +1144,17 @@
         this._ev = null;
         this.el.style.display = 'none';
         this.el.classList.remove('visible', 'fading');
+        this._setOffscreen(false);
+      }
+
+      // A speaker who has walked off the edge of the canvas keeps their bubble,
+      // it just stops being drawn: pinning it to the nearest edge instead would
+      // put words in the air next to somebody who isn't there, and letting it
+      // sit off-canvas would print it over the page around the game.
+      _setOffscreen(off) {
+        if (off === this._offscreen) return;
+        this._offscreen = off;
+        this.el.style.visibility = off ? 'hidden' : '';
       }
 
       _clearTimers() {
@@ -1032,15 +1167,32 @@
         if (this.el.parentNode) this.el.parentNode.removeChild(this.el);
       }
 
-      updatePosition(ev) {
+      updatePosition(ev, sc) {
         if (!ev || !$gameMap) return;
-        const sc  = _msgGetScale();
+        sc = sc || _msgGetScale();
         const pos = _tileScreenPos(ev);
         const h   = this._height || 32;
-        const y   = pos.y - h - 16; // float just above the sprite's head
+        const w   = this._width  || 0;
+        // Off the canvas: hide it and claim nothing, so it neither shows up
+        // stuck to an edge nor pushes the bubbles of the people still in view
+        if (pos.x < 0 || pos.x > Graphics.width || pos.y < 0 || pos.y > Graphics.height) {
+          this._setOffscreen(true);
+          return;
+        }
+        this._setOffscreen(false);
         // left points to the NPC's horizontal center; CSS translateX(-50%) centers the bubble on it
-        const left = Math.round(sc.ox + pos.x * sc.sx);
-        const top  = Math.round(sc.oy + y * sc.sy);
+        let left = Math.round(sc.ox + pos.x * sc.sx);
+        // The bubble's own size is page px while the projection is canvas px, so
+        // convert the anchor first and float the bubble above it from there.
+        let top = Math.round(sc.oy + pos.y * sc.sy - h - 16 * sc.sy);
+        if (BubbleLayout) {
+          const slot = BubbleLayout.place(this, left, top, w, h, {
+            left: sc.ox, right: sc.ox + Graphics.width * sc.sx,
+            top: sc.oy,  bottom: sc.oy + Graphics.height * sc.sy,
+          });
+          left = Math.round(slot.x);
+          top  = Math.round(slot.y);
+        }
         if (left !== this._lastLeft) { this.el.style.left = left + 'px'; this._lastLeft = left; }
         if (top  !== this._lastTop)  { this.el.style.top  = top  + 'px'; this._lastTop  = top;  }
       }
@@ -1069,6 +1221,12 @@
 
       queue(npcName, text) {
         if (!npcName || !text || !$gameMap) return;
+        // A non-sentient NPC (one of the creature classes, see NPCCreature) has
+        // no sentences to think in. Whatever the simulation wrote for it is
+        // heard the way an animal is heard, off the same growl bank every other
+        // answer of its comes out of (NPCEmpathize.growlFor).
+        const EM = window.NPCEmpathize;
+        if (EM?.isNonSentientNPC?.(npcName)) text = EM.growlFor(text) || text;
         // Only worth showing if the NPC is actually on the current map
         const ev = $gameMap.events().find(e => (e.event()?.name || '') === npcName);
         if (!ev || ev.isTransparent()) return;
@@ -1087,8 +1245,14 @@
       update() {
         if (!$gameMap) return;
         const mapId = $gameMap.mapId();
-        for (const bubble of this._bubbles) {
-          if (!bubble.npcName) continue;
+        const sc = _msgGetScale();
+        // Oldest first: whoever has been on screen longest keeps its spot and
+        // later arrivals stack clear of it. Ordering by age rather than by
+        // position means a bubble never hops as two NPCs walk past each other.
+        const live = this._bubbles
+          .filter(b => b.npcName)
+          .sort((a, b) => a._shownAt - b._shownAt);
+        for (const bubble of live) {
           let ev = bubble._ev;
           // Cached Game_Event is only valid on the map it was resolved on
           if (!ev || bubble._evMapId !== mapId) {
@@ -1101,13 +1265,14 @@
             bubble.fade();
             continue;
           }
-          bubble.updatePosition(ev);
+          bubble.updatePosition(ev, sc);
         }
       },
 
       hideAll() {
         for (const bubble of this._bubbles) bubble.release();
         this._byName.clear();
+        if (BubbleLayout) BubbleLayout.clear();
       },
     };
   })();
@@ -1162,6 +1327,7 @@
     PoliticsProvider,
     WorldProvider,
     ThoughtBubbleManager, // null when running headless (Node test harness)
+    BubbleLayout,         // ditto; also on window as NPCBubbleLayout
     // Full dialogue database, exposed for debugging / future tools
     // Read live, so the debug view follows a language switch too.
     get DialogueDB() {

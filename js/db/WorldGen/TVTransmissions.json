@@ -13,7 +13,7 @@
   "channels": [
     {
       "id": "history",
-      "name": "The History of Ages Channel",
+      "name": "HypernetTVGuide.channel.history.name",
       "tone": "serious",
       "color": 8,
       "room": {
@@ -25,7 +25,7 @@
         {
           "id": "chronicles",
           "format": "history_doc",
-          "title": "Chronicles of the Age",
+          "title": "HypernetTVGuide.program.history.chronicles.title",
           "tone": "serious",
           "cast": [
             {
@@ -33,13 +33,12 @@
               "characterSprite": "Skab/!$Archivist",
               "bustName": "Archivist"
             }
-          ],
-          "titleIt": "Cronache del Secolo"
+          ]
         },
         {
           "id": "great_debates",
           "format": "history_panel",
-          "title": "The Great Debates",
+          "title": "HypernetTVGuide.program.history.great_debates.title",
           "tone": "wry",
           "cast": [
             {
@@ -57,13 +56,12 @@
               "characterSprite": "Skab/!$MageSage",
               "bustName": "MageSage"
             }
-          ],
-          "titleIt": "I Grandi Dibattiti"
+          ]
         },
         {
           "id": "in_memoriam",
           "format": "history_obituary",
-          "title": "In Memoriam",
+          "title": "HypernetTVGuide.program.history.in_memoriam.title",
           "tone": "solemn",
           "cast": [
             {
@@ -71,13 +69,12 @@
               "characterSprite": "Skab/!$OldNun",
               "bustName": "OldNun"
             }
-          ],
-          "titleIt": "In Memoriam"
+          ]
         },
         {
           "id": "this_week_in_history",
           "format": "history_doc",
-          "title": "This Week in History",
+          "title": "HypernetTVGuide.program.history.this_week_in_history.title",
           "tone": "serious",
           "cast": [
             {
@@ -85,13 +82,12 @@
               "characterSprite": "Skab/!$ArchivistLibrarian",
               "bustName": "ArchivistLibrarian"
             }
-          ],
-          "titleIt": "Questa Settimana nella Storia"
+          ]
         },
         {
           "id": "before_the_tower",
           "format": "history_doc",
-          "title": "Before The Tower",
+          "title": "HypernetTVGuide.program.history.before_the_tower.title",
           "tone": "solemn",
           "cast": [
             {
@@ -99,29 +95,26 @@
               "characterSprite": "Skab/!$MageSage",
               "bustName": "MageSage"
             }
-          ],
-          "titleIt": "Prima della Torre"
+          ]
         },
         {
           "id": "ninety_two",
           "format": "documentary",
-          "title": "Ninety-Two: An Anatomy of the Squishing",
+          "title": "HypernetTVGuide.program.history.ninety_two.title",
           "tone": "serious",
-          "cast": [],
-          "titleIt": "Novantadue: Anatomia dello Squishing"
+          "cast": []
         },
         {
           "id": "kola_file",
           "format": "documentary",
-          "title": "The Kola File",
+          "title": "HypernetTVGuide.program.history.kola_file.title",
           "tone": "unsettling",
-          "cast": [],
-          "titleIt": "Il Dossier Kola"
+          "cast": []
         },
         {
           "id": "pillars",
           "format": "history_panel",
-          "title": "Three Pillars, One Argument",
+          "title": "HypernetTVGuide.program.history.pillars.title",
           "tone": "wry",
           "cast": [
             {
@@ -134,13 +127,12 @@
               "characterSprite": "Skab/!$Archeologist",
               "bustName": "Archeologist"
             }
-          ],
-          "titleIt": "Tre Pilastri, Una Tesi"
+          ]
         },
         {
           "id": "deicide_hour",
           "format": "history_obituary",
-          "title": "The Deicide Hour",
+          "title": "HypernetTVGuide.program.history.deicide_hour.title",
           "tone": "solemn",
           "cast": [
             {
@@ -148,29 +140,26 @@
               "characterSprite": "Skab/!$UndeadSage",
               "bustName": "UndeadSage"
             }
-          ],
-          "titleIt": "L'Ora del Deicidio"
+          ]
         },
         {
           "id": "falklands",
           "format": "historical_epic",
-          "title": "Okeanus: The Falklands Reconstruction",
+          "title": "HypernetTVGuide.program.history.falklands.title",
           "tone": "serious",
-          "cast": [],
-          "titleIt": "Okeanus: la Ricostruzione delle Falkland"
+          "cast": []
         },
         {
           "id": "road_of_ages",
           "format": "historical_epic",
-          "title": "The Road of Ages",
+          "title": "HypernetTVGuide.program.history.road_of_ages.title",
           "tone": "earnest",
-          "cast": [],
-          "titleIt": "La Strada dei Secoli"
+          "cast": []
         },
         {
           "id": "archive_reading",
           "format": "educational",
-          "title": "Reading Room: The Archive Explains",
+          "title": "HypernetTVGuide.program.history.archive_reading.title",
           "tone": "earnest",
           "cast": [
             {
@@ -178,13 +167,12 @@
               "characterSprite": "Skab/!$ArchivistLibrarian",
               "bustName": "ArchivistLibrarian"
             }
-          ],
-          "titleIt": "Sala di Lettura: l'Archivio Spiega"
+          ]
         },
         {
           "id": "footnotes",
           "format": "history_panel",
-          "title": "Footnotes & Grievances",
+          "title": "HypernetTVGuide.program.history.footnotes.title",
           "tone": "wry",
           "cast": [
             {
@@ -197,21 +185,19 @@
               "characterSprite": "Skab/!$OldNun",
               "bustName": "OldNun"
             }
-          ],
-          "titleIt": "Note a Piè di Pagina e Rimostranze"
+          ]
         },
         {
           "id": "y2k_retrospective",
           "format": "documentary",
-          "title": "Two Billion: A Y2K Retrospective",
+          "title": "HypernetTVGuide.program.history.y2k_retrospective.title",
           "tone": "solemn",
-          "cast": [],
-          "titleIt": "Due Miliardi: Retrospettiva sul Millennium Bug"
+          "cast": []
         },
         {
           "id": "ask_the_archive",
           "format": "phone_in",
-          "title": "Ask The Archive",
+          "title": "HypernetTVGuide.program.history.ask_the_archive.title",
           "tone": "earnest",
           "cast": [
             {
@@ -224,21 +210,19 @@
               "characterSprite": "Skab/!$Archivist",
               "bustName": "Archivist"
             }
-          ],
-          "titleIt": "Chiedilo all'Archivio"
+          ]
         },
         {
           "id": "long_reconstruction",
           "format": "documentary",
-          "title": "The Long Reconstruction",
+          "title": "HypernetTVGuide.program.history.long_reconstruction.title",
           "tone": "earnest",
-          "cast": [],
-          "titleIt": "La Lunga Ricostruzione"
+          "cast": []
         },
         {
           "id": "voices_from_the_loop",
           "format": "talk_show",
-          "title": "Voices From The Loop",
+          "title": "HypernetTVGuide.program.history.voices_from_the_loop.title",
           "tone": "solemn",
           "cast": [
             {
@@ -251,21 +235,19 @@
               "characterSprite": "Skab/!$UndeadSage",
               "bustName": "UndeadSage"
             }
-          ],
-          "titleIt": "Voci dall'Anello"
+          ]
         },
         {
           "id": "kola_tapes",
           "format": "glitch",
-          "title": "The Kola Tapes",
+          "title": "HypernetTVGuide.program.history.kola_tapes.title",
           "tone": "unsettling",
-          "cast": [],
-          "titleIt": "I Nastri di Kola"
+          "cast": []
         },
         {
           "id": "old_world_court",
           "format": "court_report",
-          "title": "Court Records of the Old World",
+          "title": "HypernetTVGuide.program.history.old_world_court.title",
           "tone": "serious",
           "cast": [
             {
@@ -278,13 +260,12 @@
               "characterSprite": "Skab/!$ArchivistLibrarian",
               "bustName": "ArchivistLibrarian"
             }
-          ],
-          "titleIt": "Atti Giudiziari del Vecchio Mondo"
+          ]
         },
         {
           "id": "ledger_of_empires",
           "format": "market_report",
-          "title": "The Ledger of Empires",
+          "title": "HypernetTVGuide.program.history.ledger_of_empires.title",
           "tone": "wry",
           "cast": [
             {
@@ -292,13 +273,12 @@
               "characterSprite": "Skab/!$GoldTrader",
               "bustName": "GoldTrader"
             }
-          ],
-          "titleIt": "Il Libro Mastro degli Imperi"
+          ]
         },
         {
           "id": "antiques_parish",
           "format": "talk_show",
-          "title": "Antiques of the Parish Hall",
+          "title": "HypernetTVGuide.program.history.antiques_parish.title",
           "tone": "light",
           "cast": [
             {
@@ -311,15 +291,13 @@
               "characterSprite": "Skab/!$Pensioner",
               "bustName": "Pensioner"
             }
-          ],
-          "titleIt": "Antiquariato dell'Oratorio"
+          ]
         }
-      ],
-      "nameIt": "Il Canale della Storia dei Secoli"
+      ]
     },
     {
       "id": "news",
-      "name": "Temporal News 24/7",
+      "name": "HypernetTVGuide.channel.news.name",
       "tone": "serious",
       "color": 4,
       "room": {
@@ -331,7 +309,7 @@
         {
           "id": "evening_desk",
           "format": "news_desk",
-          "title": "The Evening Desk",
+          "title": "HypernetTVGuide.program.news.evening_desk.title",
           "tone": "serious",
           "cast": [
             {
@@ -344,13 +322,12 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ],
-          "titleIt": "La Redazione della Sera"
+          ]
         },
         {
           "id": "breaking",
           "format": "news_breaking",
-          "title": "Breaking Transmission",
+          "title": "HypernetTVGuide.program.news.breaking.title",
           "tone": "urgent",
           "cast": [
             {
@@ -358,13 +335,12 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ],
-          "titleIt": "Trasmissione Straordinaria"
+          ]
         },
         {
           "id": "forecast",
           "format": "weather",
-          "title": "The Reality Forecast",
+          "title": "HypernetTVGuide.program.news.forecast.title",
           "tone": "serious",
           "cast": [
             {
@@ -372,13 +348,12 @@
               "characterSprite": "Skab/!$Astronomer",
               "bustName": "Astronomer"
             }
-          ],
-          "titleIt": "Le Previsioni della Realtà"
+          ]
         },
         {
           "id": "morning_brief",
           "format": "news_desk",
-          "title": "Morning Brief",
+          "title": "HypernetTVGuide.program.news.morning_brief.title",
           "tone": "serious",
           "cast": [
             {
@@ -386,13 +361,12 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ],
-          "titleIt": "Il Punto del Mattino"
+          ]
         },
         {
           "id": "boundary_watch",
           "format": "weather",
-          "title": "Boundary Watch",
+          "title": "HypernetTVGuide.program.news.boundary_watch.title",
           "tone": "urgent",
           "cast": [
             {
@@ -405,13 +379,12 @@
               "characterSprite": "Skab/!$OPSec",
               "bustName": "OPSec"
             }
-          ],
-          "titleIt": "Osservatorio di Confine"
+          ]
         },
         {
           "id": "road_report",
           "format": "road_report",
-          "title": "The Long Haul Report",
+          "title": "HypernetTVGuide.program.news.road_report.title",
           "tone": "wry",
           "cast": [
             {
@@ -419,13 +392,12 @@
               "characterSprite": "Skab/!$Trucker",
               "bustName": "Trucker"
             }
-          ],
-          "titleIt": "Report del Lungo Tragitto"
+          ]
         },
         {
           "id": "closing_bell",
           "format": "market_report",
-          "title": "The Closing Bell",
+          "title": "HypernetTVGuide.program.news.closing_bell.title",
           "tone": "serious",
           "cast": [
             {
@@ -433,13 +405,12 @@
               "characterSprite": "Skab/!$Banker",
               "bustName": "Banker"
             }
-          ],
-          "titleIt": "La Campana di Chiusura"
+          ]
         },
         {
           "id": "docket",
           "format": "court_report",
-          "title": "The Docket from the Judiciary Dimension",
+          "title": "HypernetTVGuide.program.news.docket.title",
           "tone": "unsettling",
           "cast": [
             {
@@ -447,13 +418,12 @@
               "characterSprite": "Skab/!$Lawyer",
               "bustName": "Lawyer"
             }
-          ],
-          "titleIt": "Il Ruolo dalla Dimensione Giudiziaria"
+          ]
         },
         {
           "id": "above_the_cloud",
           "format": "science_report",
-          "title": "Above The Cloud",
+          "title": "HypernetTVGuide.program.news.above_the_cloud.title",
           "tone": "earnest",
           "cast": [
             {
@@ -461,13 +431,12 @@
               "characterSprite": "Skab/!$Scientist",
               "bustName": "Scientist"
             }
-          ],
-          "titleIt": "Sopra la Nuvola"
+          ]
         },
         {
           "id": "your_call",
           "format": "phone_in",
-          "title": "Your Call, Our Signal",
+          "title": "HypernetTVGuide.program.news.your_call.title",
           "tone": "wry",
           "cast": [
             {
@@ -480,13 +449,12 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ],
-          "titleIt": "La Tua Chiamata, il Nostro Segnale"
+          ]
         },
         {
           "id": "civil_advisory",
           "format": "emergency",
-          "title": "Civil Advisory Feed",
+          "title": "HypernetTVGuide.program.news.civil_advisory.title",
           "tone": "urgent",
           "cast": [
             {
@@ -494,13 +462,12 @@
               "characterSprite": "Skab/!$OPSec",
               "bustName": "OPSec"
             }
-          ],
-          "titleIt": "Canale della Protezione Civile"
+          ]
         },
         {
           "id": "goblin_ball",
           "format": "sports",
-          "title": "Goblin-Ball Roundup",
+          "title": "HypernetTVGuide.program.news.goblin_ball.title",
           "tone": "zany",
           "cast": [
             {
@@ -513,13 +480,12 @@
               "characterSprite": "Skab/!$GymInstructor",
               "bustName": "GymInstructor"
             }
-          ],
-          "titleIt": "Speciale Palla-Goblin"
+          ]
         },
         {
           "id": "correspondents",
           "format": "talk_show",
-          "title": "Correspondents at Large",
+          "title": "HypernetTVGuide.program.news.correspondents.title",
           "tone": "serious",
           "cast": [
             {
@@ -532,13 +498,12 @@
               "characterSprite": "Skab/!$Journalist",
               "bustName": "Journalist"
             }
-          ],
-          "titleIt": "Corrispondenti in Giro"
+          ]
         },
         {
           "id": "night_desk",
           "format": "news_desk",
-          "title": "The Night Desk",
+          "title": "HypernetTVGuide.program.news.night_desk.title",
           "tone": "weird",
           "cast": [
             {
@@ -546,13 +511,12 @@
               "characterSprite": "Skab/!$AndroidJournalist",
               "bustName": "AndroidJournalist"
             }
-          ],
-          "titleIt": "La Redazione di Notte"
+          ]
         },
         {
           "id": "weekend_review",
           "format": "history_panel",
-          "title": "The Weekend Review",
+          "title": "HypernetTVGuide.program.news.weekend_review.title",
           "tone": "wry",
           "cast": [
             {
@@ -570,21 +534,19 @@
               "characterSprite": "Skab/!$Banker",
               "bustName": "Banker"
             }
-          ],
-          "titleIt": "La Settimana in Rassegna"
+          ]
         },
         {
           "id": "foreign_desk",
           "format": "documentary",
-          "title": "The Foreign Desk",
+          "title": "HypernetTVGuide.program.news.foreign_desk.title",
           "tone": "serious",
-          "cast": [],
-          "titleIt": "La Redazione Esteri"
+          "cast": []
         },
         {
           "id": "ministerial",
           "format": "royal_address",
-          "title": "The Ministerial Address",
+          "title": "HypernetTVGuide.program.news.ministerial.title",
           "tone": "solemn",
           "cast": [
             {
@@ -592,13 +554,12 @@
               "characterSprite": "Skab/!$Regent",
               "bustName": "Regent"
             }
-          ],
-          "titleIt": "Il Discorso del Ministro"
+          ]
         },
         {
           "id": "late_bulletin",
           "format": "news_breaking",
-          "title": "The Late Bulletin",
+          "title": "HypernetTVGuide.program.news.late_bulletin.title",
           "tone": "weird",
           "cast": [
             {
@@ -606,13 +567,12 @@
               "characterSprite": "Skab/!$AndroidJournalist",
               "bustName": "AndroidJournalist"
             }
-          ],
-          "titleIt": "L'Ultimo Notiziario"
+          ]
         },
         {
           "id": "obituaries",
           "format": "history_obituary",
-          "title": "The Obituaries",
+          "title": "HypernetTVGuide.program.news.obituaries.title",
           "tone": "solemn",
           "cast": [
             {
@@ -620,21 +580,19 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ],
-          "titleIt": "I Necrologi"
+          ]
         },
         {
           "id": "signal_check",
           "format": "test_pattern",
-          "title": "Signal Check",
+          "title": "HypernetTVGuide.program.news.signal_check.title",
           "tone": "serious",
-          "cast": [],
-          "titleIt": "Prova Segnale"
+          "cast": []
         },
         {
           "id": "consumer_corner",
           "format": "talk_show",
-          "title": "Consumer Corner",
+          "title": "HypernetTVGuide.program.news.consumer_corner.title",
           "tone": "wry",
           "cast": [
             {
@@ -642,15 +600,13 @@
               "characterSprite": "Skab/!$Manager",
               "bustName": "Manager"
             }
-          ],
-          "titleIt": "Lo Spazio del Consumatore"
+          ]
         }
-      ],
-      "nameIt": "Notizie Temporali 24 su 24"
+      ]
     },
     {
       "id": "chaos",
-      "name": "Chaos Broadcasting Co.",
+      "name": "HypernetTVGuide.channel.chaos.name",
       "tone": "zany",
       "color": 2,
       "room": {
@@ -662,7 +618,7 @@
         {
           "id": "wheel",
           "format": "game_show",
-          "title": "Wheel of Temporal Fortune",
+          "title": "HypernetTVGuide.program.chaos.wheel.title",
           "tone": "zany",
           "cast": [
             {
@@ -675,21 +631,19 @@
               "characterSprite": "Skab/!$PunkWitch",
               "bustName": "PunkWitch"
             }
-          ],
-          "titleIt": "La Ruota della Fortuna Temporale"
+          ]
         },
         {
           "id": "static_hour",
           "format": "glitch",
-          "title": "The Static Hour",
+          "title": "HypernetTVGuide.program.chaos.static_hour.title",
           "tone": "unsettling",
-          "cast": [],
-          "titleIt": "L'Ora del Disturbo"
+          "cast": []
         },
         {
           "id": "prophecy_corner",
           "format": "prophetic",
-          "title": "Prophecy Corner",
+          "title": "HypernetTVGuide.program.chaos.prophecy_corner.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -697,13 +651,12 @@
               "characterSprite": "Skab/!$PunkWitch",
               "bustName": "PunkWitch"
             }
-          ],
-          "titleIt": "Angolo della Profezia"
+          ]
         },
         {
           "id": "panic_at_six",
           "format": "history_panel",
-          "title": "Panic At Six",
+          "title": "HypernetTVGuide.program.chaos.panic_at_six.title",
           "tone": "zany",
           "cast": [
             {
@@ -721,13 +674,12 @@
               "characterSprite": "Skab/!$CreepyJester",
               "bustName": "CreepyJester"
             }
-          ],
-          "titleIt": "Panico alle Sei"
+          ]
         },
         {
           "id": "bubble_house",
           "format": "reality_tv",
-          "title": "Bubble House",
+          "title": "HypernetTVGuide.program.chaos.bubble_house.title",
           "tone": "zany",
           "cast": [
             {
@@ -760,13 +712,12 @@
               "characterSprite": "Skab/!$BrainSurgeon",
               "bustName": "BrainSurgeon"
             }
-          ],
-          "titleIt": "La Casa nella Bolla"
+          ]
         },
         {
           "id": "who_remembers",
           "format": "game_show",
-          "title": "Who Still Remembers This?",
+          "title": "HypernetTVGuide.program.chaos.who_remembers.title",
           "tone": "zany",
           "cast": [
             {
@@ -774,29 +725,26 @@
               "characterSprite": "Skab/!$CreepyJester",
               "bustName": "CreepyJester"
             }
-          ],
-          "titleIt": "Chi se lo Ricorda Ancora?"
+          ]
         },
         {
           "id": "signal_bleed",
           "format": "glitch",
-          "title": "Signal Bleed",
+          "title": "HypernetTVGuide.program.chaos.signal_bleed.title",
           "tone": "weird",
-          "cast": [],
-          "titleIt": "Sbavatura di Segnale"
+          "cast": []
         },
         {
           "id": "carrier_wave",
           "format": "test_pattern",
-          "title": "Carrier Wave",
+          "title": "HypernetTVGuide.program.chaos.carrier_wave.title",
           "tone": "unsettling",
-          "cast": [],
-          "titleIt": "Onda Portante"
+          "cast": []
         },
         {
           "id": "corpse_paint_countdown",
           "format": "music_video",
-          "title": "The Corpse Paint Countdown",
+          "title": "HypernetTVGuide.program.chaos.corpse_paint_countdown.title",
           "tone": "zany",
           "cast": [
             {
@@ -804,13 +752,12 @@
               "characterSprite": "Skab/!$BikerSkull",
               "bustName": "BikerSkull"
             }
-          ],
-          "titleIt": "La Classifica in Corpse Paint"
+          ]
         },
         {
           "id": "the_reckoning",
           "format": "conspiracy",
-          "title": "The Reckoning with Gideon Graves",
+          "title": "HypernetTVGuide.program.chaos.the_reckoning.title",
           "tone": "urgent",
           "cast": [
             {
@@ -818,13 +765,12 @@
               "characterSprite": "Skab/!$ConspiracyTheorist",
               "bustName": "ConspiracyTheorist"
             }
-          ],
-          "titleIt": "La Resa dei Conti con Gideon Graves"
+          ]
         },
         {
           "id": "flatmates",
           "format": "sitcom",
-          "title": "Two Mages, One Leyline",
+          "title": "HypernetTVGuide.program.chaos.flatmates.title",
           "tone": "light",
           "cast": [
             {
@@ -842,21 +788,19 @@
               "characterSprite": "Skab/!$OgreWitch",
               "bustName": "OgreWitch"
             }
-          ],
-          "titleIt": "Due Maghi, Una Linea di Ley"
+          ]
         },
         {
           "id": "dead_air",
           "format": "test_pattern",
-          "title": "Dead Air",
+          "title": "HypernetTVGuide.program.chaos.dead_air.title",
           "tone": "cryptic",
-          "cast": [],
-          "titleIt": "Silenzio in Onda"
+          "cast": []
         },
         {
           "id": "spin_again",
           "format": "game_show",
-          "title": "Spin Again, Forever",
+          "title": "HypernetTVGuide.program.chaos.spin_again.title",
           "tone": "zany",
           "cast": [
             {
@@ -869,13 +813,12 @@
               "characterSprite": "Skab/!$PunkGirl",
               "bustName": "PunkGirl"
             }
-          ],
-          "titleIt": "Gira Ancora, per Sempre"
+          ]
         },
         {
           "id": "open_lines",
           "format": "phone_in",
-          "title": "Open Lines, Open Doors",
+          "title": "HypernetTVGuide.program.chaos.open_lines.title",
           "tone": "weird",
           "cast": [
             {
@@ -883,13 +826,12 @@
               "characterSprite": "Skab/!$PunkWitch",
               "bustName": "PunkWitch"
             }
-          ],
-          "titleIt": "Linee Aperte, Porte Aperte"
+          ]
         },
         {
           "id": "unofficial_emergency",
           "format": "emergency",
-          "title": "Emergency Broadcast (Unofficial)",
+          "title": "HypernetTVGuide.program.chaos.unofficial_emergency.title",
           "tone": "zany",
           "cast": [
             {
@@ -897,13 +839,12 @@
               "characterSprite": "Skab/!$ConspiracyTheorist",
               "bustName": "ConspiracyTheorist"
             }
-          ],
-          "titleIt": "Trasmissione di Emergenza (Non Ufficiale)"
+          ]
         },
         {
           "id": "weather_probably",
           "format": "weather",
-          "title": "The Weather, Probably",
+          "title": "HypernetTVGuide.program.chaos.weather_probably.title",
           "tone": "zany",
           "cast": [
             {
@@ -911,13 +852,12 @@
               "characterSprite": "Skab/!$Astrologist",
               "bustName": "Astrologist"
             }
-          ],
-          "titleIt": "Il Tempo, Probabilmente"
+          ]
         },
         {
           "id": "chef_chaos",
           "format": "cooking",
-          "title": "Chef Chaos",
+          "title": "HypernetTVGuide.program.chaos.chef_chaos.title",
           "tone": "zany",
           "cast": [
             {
@@ -925,13 +865,12 @@
               "characterSprite": "Skab/!$OrcCook",
               "bustName": "OrcCook"
             }
-          ],
-          "titleIt": "Chef Caos"
+          ]
         },
         {
           "id": "sermon_of_static",
           "format": "religious",
-          "title": "Sermon of the Static",
+          "title": "HypernetTVGuide.program.chaos.sermon_of_static.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -939,13 +878,12 @@
               "characterSprite": "Skab/!$Cultist",
               "bustName": "Cultist"
             }
-          ],
-          "titleIt": "Omelia del Disturbo"
+          ]
         },
         {
           "id": "chaos_docket",
           "format": "court_report",
-          "title": "The Chaos Docket",
+          "title": "HypernetTVGuide.program.chaos.chaos_docket.title",
           "tone": "zany",
           "cast": [
             {
@@ -953,13 +891,12 @@
               "characterSprite": "Skab/!$OrcJester",
               "bustName": "OrcJester"
             }
-          ],
-          "titleIt": "Il Ruolo del Caos"
+          ]
         },
         {
           "id": "playtime_for_adults",
           "format": "puppet_show",
-          "title": "Playtime For Adults",
+          "title": "HypernetTVGuide.program.chaos.playtime_for_adults.title",
           "tone": "unsettling",
           "cast": [
             {
@@ -972,15 +909,13 @@
               "characterSprite": "Skab/!$Mannequin",
               "bustName": "Mannequin"
             }
-          ],
-          "titleIt": "Ricreazione per Adulti"
+          ]
         }
-      ],
-      "nameIt": "Radiotelevisione del Caos"
+      ]
     },
     {
       "id": "kitchen",
-      "name": "The Alchemist's Kitchen",
+      "name": "HypernetTVGuide.channel.kitchen.name",
       "tone": "light",
       "color": 3,
       "room": {
@@ -992,7 +927,7 @@
         {
           "id": "frugal",
           "format": "cooking",
-          "title": "The Frugal Alchemist",
+          "title": "HypernetTVGuide.program.kitchen.frugal.title",
           "tone": "light",
           "cast": [
             {
@@ -1000,13 +935,12 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ],
-          "titleIt": "L'Alchimista Parsimonioso"
+          ]
         },
         {
           "id": "tavern_rescue",
           "format": "talk_show",
-          "title": "Tavern Rescue",
+          "title": "HypernetTVGuide.program.kitchen.tavern_rescue.title",
           "tone": "wry",
           "cast": [
             {
@@ -1019,13 +953,12 @@
               "characterSprite": "Skab/!$VillageTavernkeeper",
               "bustName": "VillageTavernkeeper"
             }
-          ],
-          "titleIt": "Taverne da Incubo"
+          ]
         },
         {
           "id": "pixie_dust",
           "format": "cooking",
-          "title": "A Pinch of Pixie Dust",
+          "title": "HypernetTVGuide.program.kitchen.pixie_dust.title",
           "tone": "light",
           "cast": [
             {
@@ -1033,13 +966,12 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ],
-          "titleIt": "Un Pizzico di Polvere di Fata"
+          ]
         },
         {
           "id": "one_loop_meals",
           "format": "cooking",
-          "title": "One-Loop Meals",
+          "title": "HypernetTVGuide.program.kitchen.one_loop_meals.title",
           "tone": "wry",
           "cast": [
             {
@@ -1047,13 +979,12 @@
               "characterSprite": "Skab/!$SushiCook",
               "bustName": "SushiCook"
             }
-          ],
-          "titleIt": "Piatti in un Anello Solo"
+          ]
         },
         {
           "id": "verden_table",
           "format": "cooking",
-          "title": "The Verden Table",
+          "title": "HypernetTVGuide.program.kitchen.verden_table.title",
           "tone": "earnest",
           "cast": [
             {
@@ -1061,13 +992,12 @@
               "characterSprite": "Skab/!$OldChef",
               "bustName": "OldChef"
             }
-          ],
-          "titleIt": "La Tavola di Verden"
+          ]
         },
         {
           "id": "broken_leyline_bakes",
           "format": "cooking",
-          "title": "Broken Leyline Bakes",
+          "title": "HypernetTVGuide.program.kitchen.broken_leyline_bakes.title",
           "tone": "light",
           "cast": [
             {
@@ -1080,13 +1010,12 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ],
-          "titleIt": "Dolci sulla Ley Spezzata"
+          ]
         },
         {
           "id": "pantry_politics",
           "format": "talk_show",
-          "title": "Pantry Politics",
+          "title": "HypernetTVGuide.program.kitchen.pantry_politics.title",
           "tone": "wry",
           "cast": [
             {
@@ -1099,21 +1028,19 @@
               "characterSprite": "Skab/!$Trader",
               "bustName": "Trader"
             }
-          ],
-          "titleIt": "Politica della Dispensa"
+          ]
         },
         {
           "id": "field_rations",
           "format": "documentary",
-          "title": "Field Rations of the Long Haul",
+          "title": "HypernetTVGuide.program.kitchen.field_rations.title",
           "tone": "earnest",
-          "cast": [],
-          "titleIt": "Razioni da Campo del Lungo Tragitto"
+          "cast": []
         },
         {
           "id": "kitchen_calls",
           "format": "phone_in",
-          "title": "Kitchen Calls",
+          "title": "HypernetTVGuide.program.kitchen.kitchen_calls.title",
           "tone": "light",
           "cast": [
             {
@@ -1126,13 +1053,12 @@
               "characterSprite": "Skab/!$SushiCook",
               "bustName": "SushiCook"
             }
-          ],
-          "titleIt": "Telefonate in Cucina"
+          ]
         },
         {
           "id": "front_of_house",
           "format": "sitcom",
-          "title": "Front of House",
+          "title": "HypernetTVGuide.program.kitchen.front_of_house.title",
           "tone": "light",
           "cast": [
             {
@@ -1155,13 +1081,12 @@
               "characterSprite": "Skab/!$FastfoodWorker",
               "bustName": "FastfoodWorker"
             }
-          ],
-          "titleIt": "Sala e Clienti"
+          ]
         },
         {
           "id": "sunday_roast",
           "format": "cooking",
-          "title": "The Very Long Sunday Roast",
+          "title": "HypernetTVGuide.program.kitchen.sunday_roast.title",
           "tone": "light",
           "cast": [
             {
@@ -1169,13 +1094,12 @@
               "characterSprite": "Skab/!$OldChef",
               "bustName": "OldChef"
             }
-          ],
-          "titleIt": "Il Lunghissimo Pranzo della Domenica"
+          ]
         },
         {
           "id": "cellar_hour",
           "format": "talk_show",
-          "title": "The Cellar Hour",
+          "title": "HypernetTVGuide.program.kitchen.cellar_hour.title",
           "tone": "weird",
           "cast": [
             {
@@ -1183,13 +1107,12 @@
               "characterSprite": "Skab/!$VillageTavernkeeper",
               "bustName": "VillageTavernkeeper"
             }
-          ],
-          "titleIt": "L'Ora della Cantina"
+          ]
         },
         {
           "id": "market_morning",
           "format": "market_report",
-          "title": "Market Morning",
+          "title": "HypernetTVGuide.program.kitchen.market_morning.title",
           "tone": "light",
           "cast": [
             {
@@ -1197,13 +1120,12 @@
               "characterSprite": "Skab/!$Trader",
               "bustName": "Trader"
             }
-          ],
-          "titleIt": "Mattina al Mercato"
+          ]
         },
         {
           "id": "larder_run",
           "format": "road_report",
-          "title": "The Long Haul Larder",
+          "title": "HypernetTVGuide.program.kitchen.larder_run.title",
           "tone": "light",
           "cast": [
             {
@@ -1211,13 +1133,12 @@
               "characterSprite": "Skab/!$TruckerShopkeeper",
               "bustName": "TruckerShopkeeper"
             }
-          ],
-          "titleIt": "La Dispensa del Lungo Tragitto"
+          ]
         },
         {
           "id": "kitchen_court",
           "format": "court_report",
-          "title": "Kitchen Court",
+          "title": "HypernetTVGuide.program.kitchen.kitchen_court.title",
           "tone": "wry",
           "cast": [
             {
@@ -1230,21 +1151,19 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ],
-          "titleIt": "Tribunale in Cucina"
+          ]
         },
         {
           "id": "beagle_confidential",
           "format": "documentary",
-          "title": "Kitchen Confidential: Beagle",
+          "title": "HypernetTVGuide.program.kitchen.beagle_confidential.title",
           "tone": "wry",
-          "cast": [],
-          "titleIt": "Cucine Segrete: Beagle"
+          "cast": []
         },
         {
           "id": "recipe_emergency",
           "format": "emergency",
-          "title": "Recipe Emergency",
+          "title": "HypernetTVGuide.program.kitchen.recipe_emergency.title",
           "tone": "zany",
           "cast": [
             {
@@ -1252,13 +1171,12 @@
               "characterSprite": "Skab/!$SushiCook",
               "bustName": "SushiCook"
             }
-          ],
-          "titleIt": "Ricetta di Emergenza"
+          ]
         },
         {
           "id": "sermon_roast",
           "format": "religious",
-          "title": "The Sunday Sermon Roast",
+          "title": "HypernetTVGuide.program.kitchen.sermon_roast.title",
           "tone": "light",
           "cast": [
             {
@@ -1271,13 +1189,12 @@
               "characterSprite": "Skab/!$OldChef",
               "bustName": "OldChef"
             }
-          ],
-          "titleIt": "L'Arrosto dell'Omelia"
+          ]
         },
         {
           "id": "allotment_hour",
           "format": "educational",
-          "title": "The Allotment Hour",
+          "title": "HypernetTVGuide.program.kitchen.allotment_hour.title",
           "tone": "earnest",
           "cast": [
             {
@@ -1290,13 +1207,12 @@
               "characterSprite": "Skab/!$Botanist",
               "bustName": "Botanist"
             }
-          ],
-          "titleIt": "L'Ora dell'Orto"
+          ]
         },
         {
           "id": "two_rooms_ladder",
           "format": "educational",
-          "title": "Two Rooms and a Ladder",
+          "title": "HypernetTVGuide.program.kitchen.two_rooms_ladder.title",
           "tone": "light",
           "cast": [
             {
@@ -1309,15 +1225,13 @@
               "characterSprite": "Skab/!$Mechanic",
               "bustName": "Mechanic"
             }
-          ],
-          "titleIt": "Due Stanze e una Scala"
+          ]
         }
-      ],
-      "nameIt": "La Cucina dell'Alchimista"
+      ]
     },
     {
       "id": "kids",
-      "name": "Memory Lane Playhouse",
+      "name": "HypernetTVGuide.channel.kids.name",
       "tone": "light",
       "color": 14,
       "room": {
@@ -1329,15 +1243,14 @@
         {
           "id": "tommy",
           "format": "children_show",
-          "title": "Temporal Tommy's Time Adventures",
+          "title": "HypernetTVGuide.program.kids.tommy.title",
           "tone": "light",
-          "cast": [],
-          "titleIt": "Le Avventure Temporali di Tommy"
+          "cast": []
         },
         {
           "id": "rangers",
           "format": "children_show",
-          "title": "Reality Rangers",
+          "title": "HypernetTVGuide.program.kids.rangers.title",
           "tone": "light",
           "cast": [
             {
@@ -1355,13 +1268,12 @@
               "characterSprite": "Skab/!$WarCadet",
               "bustName": "WarCadet"
             }
-          ],
-          "titleIt": "I Ranger della Realtà"
+          ]
         },
         {
           "id": "camelcase",
           "format": "educational",
-          "title": "The Magic of CamelCase",
+          "title": "HypernetTVGuide.program.kids.camelcase.title",
           "tone": "earnest",
           "cast": [
             {
@@ -1369,13 +1281,12 @@
               "characterSprite": "Skab/!$ScienceTeacher",
               "bustName": "ScienceTeacher"
             }
-          ],
-          "titleIt": "La Magia del CamelCase"
+          ]
         },
         {
           "id": "sockington",
           "format": "puppet_show",
-          "title": "Mister Sockington Explains The Rules",
+          "title": "HypernetTVGuide.program.kids.sockington.title",
           "tone": "light",
           "cast": [
             {
@@ -1388,21 +1299,19 @@
               "characterSprite": "Skab/!$ElvenSinger",
               "bustName": "ElvenSinger"
             }
-          ],
-          "titleIt": "Il Signor Calzino Spiega le Regole"
+          ]
         },
         {
           "id": "eighty_song",
           "format": "children_show",
-          "title": "The Eighty Song",
+          "title": "HypernetTVGuide.program.kids.eighty_song.title",
           "tone": "light",
-          "cast": [],
-          "titleIt": "La Canzone degli Ottanta"
+          "cast": []
         },
         {
           "id": "first_spell",
           "format": "magic_lesson",
-          "title": "Your Very First Spell",
+          "title": "HypernetTVGuide.program.kids.first_spell.title",
           "tone": "earnest",
           "cast": [
             {
@@ -1410,13 +1319,12 @@
               "characterSprite": "Skab/!$Witch1",
               "bustName": "Witch1"
             }
-          ],
-          "titleIt": "Il Tuo Primissimo Incantesimo"
+          ]
         },
         {
           "id": "goblin_friends",
           "format": "children_show",
-          "title": "Are Goblins Our Friends? (No)",
+          "title": "HypernetTVGuide.program.kids.goblin_friends.title",
           "tone": "light",
           "cast": [
             {
@@ -1429,13 +1337,12 @@
               "characterSprite": "Skab/!$GoblinRecruit",
               "bustName": "GoblinRecruit"
             }
-          ],
-          "titleIt": "I Goblin Sono Nostri Amici? (No)"
+          ]
         },
         {
           "id": "leyline_lessons",
           "format": "educational",
-          "title": "Leyline Lessons",
+          "title": "HypernetTVGuide.program.kids.leyline_lessons.title",
           "tone": "earnest",
           "cast": [
             {
@@ -1443,13 +1350,12 @@
               "characterSprite": "Skab/!$ScienceTeacher",
               "bustName": "ScienceTeacher"
             }
-          ],
-          "titleIt": "Lezioni di Linee di Ley"
+          ]
         },
         {
           "id": "puppet_court",
           "format": "puppet_show",
-          "title": "Sock Court",
+          "title": "HypernetTVGuide.program.kids.puppet_court.title",
           "tone": "wry",
           "cast": [
             {
@@ -1462,21 +1368,19 @@
               "characterSprite": "Skab/!$Sheepman",
               "bustName": "Sheepman"
             }
-          ],
-          "titleIt": "Il Tribunale dei Calzini"
+          ]
         },
         {
           "id": "storytime",
           "format": "children_show",
-          "title": "Storytime Before The Reset",
+          "title": "HypernetTVGuide.program.kids.storytime.title",
           "tone": "light",
-          "cast": [],
-          "titleIt": "Favole Prima del Reset"
+          "cast": []
         },
         {
           "id": "tower_tour",
           "format": "educational",
-          "title": "A Very Tall Tower: A Tour",
+          "title": "HypernetTVGuide.program.kids.tower_tour.title",
           "tone": "earnest",
           "cast": [
             {
@@ -1484,13 +1388,12 @@
               "characterSprite": "Skab/!$TowerController",
               "bustName": "TowerController"
             }
-          ],
-          "titleIt": "Una Torre Altissima: la Visita"
+          ]
         },
         {
           "id": "pip_lost",
           "format": "puppet_show",
-          "title": "Pip Gets Lost Again",
+          "title": "HypernetTVGuide.program.kids.pip_lost.title",
           "tone": "light",
           "cast": [
             {
@@ -1503,13 +1406,12 @@
               "characterSprite": "Skab/!$SchoolTeacher",
               "bustName": "SchoolTeacher"
             }
-          ],
-          "titleIt": "Pip si Perde di Nuovo"
+          ]
         },
         {
           "id": "cadet_lines",
           "format": "phone_in",
-          "title": "Ranger Cadets Phone-In",
+          "title": "HypernetTVGuide.program.kids.cadet_lines.title",
           "tone": "light",
           "cast": [
             {
@@ -1522,13 +1424,12 @@
               "characterSprite": "Skab/!$ForestRanger",
               "bustName": "ForestRanger"
             }
-          ],
-          "titleIt": "Filo Diretto con le Reclute Ranger"
+          ]
         },
         {
           "id": "very_small_news",
           "format": "news_desk",
-          "title": "The Very Small News",
+          "title": "HypernetTVGuide.program.kids.very_small_news.title",
           "tone": "light",
           "cast": [
             {
@@ -1536,21 +1437,19 @@
               "characterSprite": "Skab/!$GnomeVillager",
               "bustName": "GnomeVillager"
             }
-          ],
-          "titleIt": "Il Telegiornale Piccolissimo"
+          ]
         },
         {
           "id": "songs_from_the_road",
           "format": "music_video",
-          "title": "Songs From The Road",
+          "title": "HypernetTVGuide.program.kids.songs_from_the_road.title",
           "tone": "light",
-          "cast": [],
-          "titleIt": "Canzoni dalla Strada"
+          "cast": []
         },
         {
           "id": "sports_day",
           "format": "sports",
-          "title": "Sports Day",
+          "title": "HypernetTVGuide.program.kids.sports_day.title",
           "tone": "light",
           "cast": [
             {
@@ -1563,13 +1462,12 @@
               "characterSprite": "Skab/!$ElvenJester",
               "bustName": "ElvenJester"
             }
-          ],
-          "titleIt": "Giornata dello Sport"
+          ]
         },
         {
           "id": "pets_people",
           "format": "children_show",
-          "title": "Pets and Their People",
+          "title": "HypernetTVGuide.program.kids.pets_people.title",
           "tone": "light",
           "cast": [
             {
@@ -1582,15 +1480,13 @@
               "characterSprite": "Skab/!$DogNoble",
               "bustName": "DogNoble"
             }
-          ],
-          "titleIt": "Gli Animali e i Loro Umani"
+          ]
         }
-      ],
-      "nameIt": "Il Teatrino dei Ricordi"
+      ]
     },
     {
       "id": "latenight",
-      "name": "Midnight on the Road",
+      "name": "HypernetTVGuide.channel.latenight.name",
       "tone": "weird",
       "color": 6,
       "room": {
@@ -1602,7 +1498,7 @@
         {
           "id": "insomnia",
           "format": "late_night",
-          "title": "The Insomnia Files",
+          "title": "HypernetTVGuide.program.latenight.insomnia.title",
           "tone": "weird",
           "cast": [
             {
@@ -1610,13 +1506,12 @@
               "characterSprite": "Skab/!$DJ",
               "bustName": "DJ"
             }
-          ],
-          "titleIt": "Gli Archivi dell'Insonnia"
+          ]
         },
         {
           "id": "witching_hour",
           "format": "late_night",
-          "title": "The Witching Hour Broadcast",
+          "title": "HypernetTVGuide.program.latenight.witching_hour.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -1624,13 +1519,12 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ],
-          "titleIt": "Trasmissione dell'Ora delle Streghe"
+          ]
         },
         {
           "id": "after_dark",
           "format": "talk_show",
-          "title": "After Hours Reality Check",
+          "title": "HypernetTVGuide.program.latenight.after_dark.title",
           "tone": "weird",
           "cast": [
             {
@@ -1643,13 +1537,12 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ],
-          "titleIt": "Controllo Realtà a Notte Fonda"
+          ]
         },
         {
           "id": "long_haul_lines",
           "format": "phone_in",
-          "title": "Long Haul Lines",
+          "title": "HypernetTVGuide.program.latenight.long_haul_lines.title",
           "tone": "weird",
           "cast": [
             {
@@ -1662,13 +1555,12 @@
               "characterSprite": "Skab/!$DJ",
               "bustName": "DJ"
             }
-          ],
-          "titleIt": "Linee del Lungo Tragitto"
+          ]
         },
         {
           "id": "third_shift",
           "format": "late_night",
-          "title": "The Third Shift",
+          "title": "HypernetTVGuide.program.latenight.third_shift.title",
           "tone": "unsettling",
           "cast": [
             {
@@ -1676,13 +1568,12 @@
               "characterSprite": "Skab/!$DJ",
               "bustName": "DJ"
             }
-          ],
-          "titleIt": "Il Terzo Turno"
+          ]
         },
         {
           "id": "under_the_asphalt",
           "format": "conspiracy",
-          "title": "Under The Asphalt",
+          "title": "HypernetTVGuide.program.latenight.under_the_asphalt.title",
           "tone": "urgent",
           "cast": [
             {
@@ -1690,13 +1581,12 @@
               "characterSprite": "Skab/!$ConspiracyTheorist",
               "bustName": "ConspiracyTheorist"
             }
-          ],
-          "titleIt": "Sotto l'Asfalto"
+          ]
         },
         {
           "id": "who_owns_the_dark",
           "format": "conspiracy",
-          "title": "Who Owns The Dark",
+          "title": "HypernetTVGuide.program.latenight.who_owns_the_dark.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -1709,13 +1599,12 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ],
-          "titleIt": "A Chi Appartiene il Buio"
+          ]
         },
         {
           "id": "night_convoy",
           "format": "road_report",
-          "title": "Night Convoy",
+          "title": "HypernetTVGuide.program.latenight.night_convoy.title",
           "tone": "weird",
           "cast": [
             {
@@ -1723,13 +1612,12 @@
               "characterSprite": "Skab/!$TruckerWanderer",
               "bustName": "TruckerWanderer"
             }
-          ],
-          "titleIt": "Convoglio Notturno"
+          ]
         },
         {
           "id": "the_estate",
           "format": "drama",
-          "title": "The Estate at Marrow Hollow",
+          "title": "HypernetTVGuide.program.latenight.the_estate.title",
           "tone": "solemn",
           "cast": [
             {
@@ -1757,37 +1645,33 @@
               "characterSprite": "Skab/!$Lawyer",
               "bustName": "Lawyer"
             }
-          ],
-          "titleIt": "La Tenuta di Marrow Hollow"
+          ]
         },
         {
           "id": "small_hours_music",
           "format": "music_video",
-          "title": "Small Hours, Loud Gods",
+          "title": "HypernetTVGuide.program.latenight.small_hours_music.title",
           "tone": "weird",
-          "cast": [],
-          "titleIt": "Ore Piccole, Dei Rumorosi"
+          "cast": []
         },
         {
           "id": "sign_off",
           "format": "test_pattern",
-          "title": "Sign Off",
+          "title": "HypernetTVGuide.program.latenight.sign_off.title",
           "tone": "cryptic",
-          "cast": [],
-          "titleIt": "Chiusura delle Trasmissioni"
+          "cast": []
         },
         {
           "id": "unaired",
           "format": "glitch",
-          "title": "The Unaired Tape",
+          "title": "HypernetTVGuide.program.latenight.unaired.title",
           "tone": "unsettling",
-          "cast": [],
-          "titleIt": "Il Nastro Mai Andato in Onda"
+          "cast": []
         },
         {
           "id": "night_kitchen",
           "format": "soap_opera",
-          "title": "Nobody Sleeps in Marrow Hollow",
+          "title": "HypernetTVGuide.program.latenight.night_kitchen.title",
           "tone": "weird",
           "cast": [
             {
@@ -1830,13 +1714,12 @@
               "characterSprite": "Skab/!$Woodworker",
               "bustName": "Woodworker"
             }
-          ],
-          "titleIt": "Nessuno Dorme a Marrow Hollow"
+          ]
         },
         {
           "id": "small_hours_desk",
           "format": "news_desk",
-          "title": "The Small Hours Desk",
+          "title": "HypernetTVGuide.program.latenight.small_hours_desk.title",
           "tone": "weird",
           "cast": [
             {
@@ -1844,13 +1727,12 @@
               "characterSprite": "Skab/!$AndroidJournalist",
               "bustName": "AndroidJournalist"
             }
-          ],
-          "titleIt": "La Redazione delle Ore Piccole"
+          ]
         },
         {
           "id": "nightschool",
           "format": "magic_lesson",
-          "title": "Nightschool",
+          "title": "HypernetTVGuide.program.latenight.nightschool.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -1858,13 +1740,12 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ],
-          "titleIt": "Scuola Serale"
+          ]
         },
         {
           "id": "overnight_docket",
           "format": "court_report",
-          "title": "The Overnight Docket",
+          "title": "HypernetTVGuide.program.latenight.overnight_docket.title",
           "tone": "unsettling",
           "cast": [
             {
@@ -1872,13 +1753,12 @@
               "characterSprite": "Skab/!$Judge",
               "bustName": "Judge"
             }
-          ],
-          "titleIt": "Il Ruolo della Notte"
+          ]
         },
         {
           "id": "cold_kitchen",
           "format": "cooking",
-          "title": "Cold Kitchen",
+          "title": "HypernetTVGuide.program.latenight.cold_kitchen.title",
           "tone": "weird",
           "cast": [
             {
@@ -1886,13 +1766,12 @@
               "characterSprite": "Skab/!$Butcher",
               "bustName": "Butcher"
             }
-          ],
-          "titleIt": "Cucina Fredda"
+          ]
         },
         {
           "id": "three_am_weather",
           "format": "weather",
-          "title": "The 3AM Weather",
+          "title": "HypernetTVGuide.program.latenight.three_am_weather.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -1900,21 +1779,19 @@
               "characterSprite": "Skab/!$Astrologist",
               "bustName": "Astrologist"
             }
-          ],
-          "titleIt": "Il Meteo delle Tre"
+          ]
         },
         {
           "id": "repeats",
           "format": "historical_epic",
-          "title": "Repeats",
+          "title": "HypernetTVGuide.program.latenight.repeats.title",
           "tone": "weird",
-          "cast": [],
-          "titleIt": "Repliche"
+          "cast": []
         },
         {
           "id": "late_quiz",
           "format": "game_show",
-          "title": "The Late Quiz",
+          "title": "HypernetTVGuide.program.latenight.late_quiz.title",
           "tone": "wry",
           "cast": [
             {
@@ -1927,13 +1804,12 @@
               "characterSprite": "Skab/!$UniversityStudent",
               "bustName": "UniversityStudent"
             }
-          ],
-          "titleIt": "Il Quiz di Fine Serata"
+          ]
         },
         {
           "id": "night_bus",
           "format": "talk_show",
-          "title": "The Night Bus",
+          "title": "HypernetTVGuide.program.latenight.night_bus.title",
           "tone": "light",
           "cast": [
             {
@@ -1941,15 +1817,13 @@
               "characterSprite": "Skab/!$TaxiDriver",
               "bustName": "TaxiDriver"
             }
-          ],
-          "titleIt": "L'Autobus Notturno"
+          ]
         }
-      ],
-      "nameIt": "Mezzanotte sulla Strada"
+      ]
     },
     {
       "id": "faith",
-      "name": "Anoki Faith Hour",
+      "name": "HypernetTVGuide.channel.faith.name",
       "tone": "solemn",
       "color": 17,
       "room": {
@@ -1961,7 +1835,7 @@
         {
           "id": "gospel",
           "format": "religious",
-          "title": "The Gospel According to Margaret",
+          "title": "HypernetTVGuide.program.faith.gospel.title",
           "tone": "solemn",
           "cast": [
             {
@@ -1969,13 +1843,12 @@
               "characterSprite": "Skab/!$Priest",
               "bustName": "Priest"
             }
-          ],
-          "titleIt": "Il Vangelo Secondo Margaret"
+          ]
         },
         {
           "id": "infinite_loops",
           "format": "religious",
-          "title": "The Church of Infinite Loops",
+          "title": "HypernetTVGuide.program.faith.infinite_loops.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -1983,13 +1856,12 @@
               "characterSprite": "Skab/!$Cardinal",
               "bustName": "Cardinal"
             }
-          ],
-          "titleIt": "La Chiesa degli Anelli Infiniti"
+          ]
         },
         {
           "id": "testimony",
           "format": "prophetic",
-          "title": "Temporal Testimony Time",
+          "title": "HypernetTVGuide.program.faith.testimony.title",
           "tone": "solemn",
           "cast": [
             {
@@ -1997,13 +1869,12 @@
               "characterSprite": "Skab/!$Oracle",
               "bustName": "Oracle"
             }
-          ],
-          "titleIt": "Testimonianze Temporali"
+          ]
         },
         {
           "id": "ringtone_vespers",
           "format": "religious",
-          "title": "Ringtone Vespers",
+          "title": "HypernetTVGuide.program.faith.ringtone_vespers.title",
           "tone": "solemn",
           "cast": [
             {
@@ -2011,13 +1882,12 @@
               "characterSprite": "Skab/!$Vestal",
               "bustName": "Vestal"
             }
-          ],
-          "titleIt": "Vespri con Suoneria"
+          ]
         },
         {
           "id": "the_stone_gods",
           "format": "history_obituary",
-          "title": "The Stone Gods of the White Desert",
+          "title": "HypernetTVGuide.program.faith.the_stone_gods.title",
           "tone": "solemn",
           "cast": [
             {
@@ -2025,13 +1895,12 @@
               "characterSprite": "Skab/!$Monk",
               "bustName": "Monk"
             }
-          ],
-          "titleIt": "Gli Dei di Pietra del Deserto Bianco"
+          ]
         },
         {
           "id": "from_the_citadel",
           "format": "royal_address",
-          "title": "From the Floating Citadel",
+          "title": "HypernetTVGuide.program.faith.from_the_citadel.title",
           "tone": "solemn",
           "cast": [
             {
@@ -2039,13 +1908,12 @@
               "characterSprite": "Skab/!$ArchPriest",
               "bustName": "ArchPriest"
             }
-          ],
-          "titleIt": "Dalla Cittadella Fluttuante"
+          ]
         },
         {
           "id": "the_widow_maat",
           "format": "religious",
-          "title": "A Prayer for the Woman Under the Crust",
+          "title": "HypernetTVGuide.program.faith.the_widow_maat.title",
           "tone": "solemn",
           "cast": [
             {
@@ -2053,13 +1921,12 @@
               "characterSprite": "Skab/!$MotherNun",
               "bustName": "MotherNun"
             }
-          ],
-          "titleIt": "Una Preghiera per la Donna Sotto la Crosta"
+          ]
         },
         {
           "id": "discord_docket",
           "format": "court_report",
-          "title": "The Mercy of Discord",
+          "title": "HypernetTVGuide.program.faith.discord_docket.title",
           "tone": "unsettling",
           "cast": [
             {
@@ -2067,13 +1934,12 @@
               "characterSprite": "Skab/!$Inquisitor",
               "bustName": "Inquisitor"
             }
-          ],
-          "titleIt": "La Misericordia della Discordia"
+          ]
         },
         {
           "id": "open_line_to_heaven",
           "format": "phone_in",
-          "title": "Open Line to Whatever Answers",
+          "title": "HypernetTVGuide.program.faith.open_line_to_heaven.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -2086,21 +1952,19 @@
               "characterSprite": "Skab/!$Vestal",
               "bustName": "Vestal"
             }
-          ],
-          "titleIt": "Linea Aperta con Chiunque Risponda"
+          ]
         },
         {
           "id": "seven_artefacts",
           "format": "documentary",
-          "title": "Seven Artefacts, One Night",
+          "title": "HypernetTVGuide.program.faith.seven_artefacts.title",
           "tone": "solemn",
-          "cast": [],
-          "titleIt": "Sette Artefatti, Una Notte"
+          "cast": []
         },
         {
           "id": "catechism",
           "format": "educational",
-          "title": "Catechism for a Reduced Heaven",
+          "title": "HypernetTVGuide.program.faith.catechism.title",
           "tone": "earnest",
           "cast": [
             {
@@ -2108,13 +1972,12 @@
               "characterSprite": "Skab/!$Monk",
               "bustName": "Monk"
             }
-          ],
-          "titleIt": "Catechismo per un Paradiso Ridotto"
+          ]
         },
         {
           "id": "the_signal_is_the_message",
           "format": "prophetic",
-          "title": "The Signal Is The Message",
+          "title": "HypernetTVGuide.program.faith.the_signal_is_the_message.title",
           "tone": "cryptic",
           "cast": [
             {
@@ -2122,13 +1985,12 @@
               "characterSprite": "Skab/!$Oracle",
               "bustName": "Oracle"
             }
-          ],
-          "titleIt": "Il Segnale è il Messaggio"
+          ]
         },
         {
           "id": "faithful_line",
           "format": "phone_in",
-          "title": "The Faithful Line",
+          "title": "HypernetTVGuide.program.faith.faithful_line.title",
           "tone": "solemn",
           "cast": [
             {
@@ -2136,13 +1998,12 @@
               "characterSprite": "Skab/!$MotherNun",
               "bustName": "MotherNun"
             }
-          ],
-          "titleIt": "La Linea dei Fedeli"
+          ]
         },
         {
           "id": "sacred_science",
           "format": "science_report",
-          "title": "Sacred Science",
+          "title": "HypernetTVGuide.program.faith.sacred_science.title",
           "tone": "earnest",
           "cast": [
             {
@@ -2150,29 +2011,26 @@
               "characterSprite": "Skab/!$BioScientist",
               "bustName": "BioScientist"
             }
-          ],
-          "titleIt": "Scienza Sacra"
+          ]
         },
         {
           "id": "reduced_miracle",
           "format": "documentary",
-          "title": "The Reduced Miracle",
+          "title": "HypernetTVGuide.program.faith.reduced_miracle.title",
           "tone": "solemn",
-          "cast": [],
-          "titleIt": "Il Miracolo Ridotto"
+          "cast": []
         },
         {
           "id": "quiet_heaven",
           "format": "music_video",
-          "title": "Hymns for a Quiet Heaven",
+          "title": "HypernetTVGuide.program.faith.quiet_heaven.title",
           "tone": "solemn",
-          "cast": [],
-          "titleIt": "Inni per un Paradiso Silenzioso"
+          "cast": []
         },
         {
           "id": "parish_notices",
           "format": "news_desk",
-          "title": "Parish Notices",
+          "title": "HypernetTVGuide.program.faith.parish_notices.title",
           "tone": "earnest",
           "cast": [
             {
@@ -2180,23 +2038,20 @@
               "characterSprite": "Skab/!$Vestal",
               "bustName": "Vestal"
             }
-          ],
-          "titleIt": "Avvisi Parrocchiali"
+          ]
         },
         {
           "id": "the_vigil",
           "format": "test_pattern",
-          "title": "The Vigil",
+          "title": "HypernetTVGuide.program.faith.the_vigil.title",
           "tone": "solemn",
-          "cast": [],
-          "titleIt": "La Veglia"
+          "cast": []
         }
-      ],
-      "nameIt": "Anoki, Ora della Fede"
+      ]
     },
     {
       "id": "shopping",
-      "name": "Hypercapitalist Shopping Network",
+      "name": "HypernetTVGuide.channel.shopping.name",
       "tone": "zany",
       "color": 24,
       "room": {
@@ -2208,7 +2063,7 @@
         {
           "id": "midnight_deals",
           "format": "infomercial",
-          "title": "Midnight Deals Marathon",
+          "title": "HypernetTVGuide.program.shopping.midnight_deals.title",
           "tone": "zany",
           "cast": [
             {
@@ -2221,13 +2076,12 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ],
-          "titleIt": "Maratona di Offerte di Mezzanotte"
+          ]
         },
         {
           "id": "as_seen",
           "format": "commercial",
-          "title": "As Seen On The Road",
+          "title": "HypernetTVGuide.program.shopping.as_seen.title",
           "tone": "zany",
           "cast": [
             {
@@ -2235,13 +2089,12 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ],
-          "titleIt": "Visto sulla Strada"
+          ]
         },
         {
           "id": "fire_sale",
           "format": "infomercial",
-          "title": "Reality Anchor Fire Sale",
+          "title": "HypernetTVGuide.program.shopping.fire_sale.title",
           "tone": "zany",
           "cast": [
             {
@@ -2249,13 +2102,12 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ],
-          "titleIt": "Svendita di Ancore di Realtà"
+          ]
         },
         {
           "id": "loop_escape_hour",
           "format": "infomercial",
-          "title": "The Loop Escape Hour",
+          "title": "HypernetTVGuide.program.shopping.loop_escape_hour.title",
           "tone": "zany",
           "cast": [
             {
@@ -2263,13 +2115,12 @@
               "characterSprite": "Skab/!$SpacerSalesman",
               "bustName": "SpacerSalesman"
             }
-          ],
-          "titleIt": "L'Ora della Fuga dall'Anello"
+          ]
         },
         {
           "id": "warehouse_appears",
           "format": "commercial",
-          "title": "It Simply Appeared In The Warehouse",
+          "title": "HypernetTVGuide.program.shopping.warehouse_appears.title",
           "tone": "wry",
           "cast": [
             {
@@ -2277,13 +2128,12 @@
               "characterSprite": "Skab/!$FactoryWorker",
               "bustName": "FactoryWorker"
             }
-          ],
-          "titleIt": "È Semplicemente Apparso in Magazzino"
+          ]
         },
         {
           "id": "the_ticker",
           "format": "market_report",
-          "title": "The Ticker",
+          "title": "HypernetTVGuide.program.shopping.the_ticker.title",
           "tone": "serious",
           "cast": [
             {
@@ -2291,13 +2141,12 @@
               "characterSprite": "Skab/!$Banker",
               "bustName": "Banker"
             }
-          ],
-          "titleIt": "Il Tabellone"
+          ]
         },
         {
           "id": "pyramid_hour",
           "format": "talk_show",
-          "title": "Opportunity Hour",
+          "title": "HypernetTVGuide.program.shopping.pyramid_hour.title",
           "tone": "zany",
           "cast": [
             {
@@ -2310,13 +2159,12 @@
               "characterSprite": "Skab/!$Billionaire",
               "bustName": "Billionaire"
             }
-          ],
-          "titleIt": "L'Ora delle Opportunità"
+          ]
         },
         {
           "id": "bid_your_memories",
           "format": "game_show",
-          "title": "Bid Your Memories",
+          "title": "HypernetTVGuide.program.shopping.bid_your_memories.title",
           "tone": "zany",
           "cast": [
             {
@@ -2324,13 +2172,12 @@
               "characterSprite": "Skab/!$TicketMaster",
               "bustName": "TicketMaster"
             }
-          ],
-          "titleIt": "Metti i Tuoi Ricordi allAsta"
+          ]
         },
         {
           "id": "customer_lines",
           "format": "phone_in",
-          "title": "Customer Lines Are Open Forever",
+          "title": "HypernetTVGuide.program.shopping.customer_lines.title",
           "tone": "zany",
           "cast": [
             {
@@ -2343,13 +2190,12 @@
               "characterSprite": "Skab/!$Secretary",
               "bustName": "Secretary"
             }
-          ],
-          "titleIt": "Le Linee Clienti Sono Aperte per Sempre"
+          ]
         },
         {
           "id": "unboxing_the_tower",
           "format": "reality_tv",
-          "title": "Unboxing The Tower",
+          "title": "HypernetTVGuide.program.shopping.unboxing_the_tower.title",
           "tone": "zany",
           "cast": [
             {
@@ -2367,13 +2213,12 @@
               "characterSprite": "Skab/!$GoblinCourier",
               "bustName": "GoblinCourier"
             }
-          ],
-          "titleIt": "Apriamo la Torre"
+          ]
         },
         {
           "id": "clearance",
           "format": "infomercial",
-          "title": "Terminal Clearance",
+          "title": "HypernetTVGuide.program.shopping.clearance.title",
           "tone": "urgent",
           "cast": [
             {
@@ -2381,13 +2226,12 @@
               "characterSprite": "Skab/!$SpacerSalesman",
               "bustName": "SpacerSalesman"
             }
-          ],
-          "titleIt": "Liquidazione Finale"
+          ]
         },
         {
           "id": "brand_devotional",
           "format": "religious",
-          "title": "A Devotional For The Market God",
+          "title": "HypernetTVGuide.program.shopping.brand_devotional.title",
           "tone": "solemn",
           "cast": [
             {
@@ -2395,13 +2239,12 @@
               "characterSprite": "Skab/!$Cultist",
               "bustName": "Cultist"
             }
-          ],
-          "titleIt": "Devozionale per il Dio del Mercato"
+          ]
         },
         {
           "id": "depot_report",
           "format": "road_report",
-          "title": "Depot Report",
+          "title": "HypernetTVGuide.program.shopping.depot_report.title",
           "tone": "zany",
           "cast": [
             {
@@ -2409,13 +2252,12 @@
               "characterSprite": "Skab/!$Trucker",
               "bustName": "Trucker"
             }
-          ],
-          "titleIt": "Report dal Deposito"
+          ]
         },
         {
           "id": "unclaimed_auction",
           "format": "game_show",
-          "title": "Auction of the Unclaimed",
+          "title": "HypernetTVGuide.program.shopping.unclaimed_auction.title",
           "tone": "zany",
           "cast": [
             {
@@ -2428,13 +2270,12 @@
               "characterSprite": "Skab/!$GoblinCourier",
               "bustName": "GoblinCourier"
             }
-          ],
-          "titleIt": "Asta dei Beni Non Reclamati"
+          ]
         },
         {
           "id": "complaints_line",
           "format": "phone_in",
-          "title": "The Complaints Line",
+          "title": "HypernetTVGuide.program.shopping.complaints_line.title",
           "tone": "wry",
           "cast": [
             {
@@ -2442,13 +2283,12 @@
               "characterSprite": "Skab/!$Secretary",
               "bustName": "Secretary"
             }
-          ],
-          "titleIt": "La Linea Reclami"
+          ]
         },
         {
           "id": "warehouse_live",
           "format": "reality_tv",
-          "title": "Warehouse Live",
+          "title": "HypernetTVGuide.program.shopping.warehouse_live.title",
           "tone": "zany",
           "cast": [
             {
@@ -2466,13 +2306,12 @@
               "characterSprite": "Skab/!$BotAssistant",
               "bustName": "BotAssistant"
             }
-          ],
-          "titleIt": "Magazzino in Diretta"
+          ]
         },
         {
           "id": "sponsored_weather",
           "format": "weather",
-          "title": "Sponsored Weather",
+          "title": "HypernetTVGuide.program.shopping.sponsored_weather.title",
           "tone": "zany",
           "cast": [
             {
@@ -2480,13 +2319,12 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ],
-          "titleIt": "Il Meteo Sponsorizzato"
+          ]
         },
         {
           "id": "before_the_boundary",
           "format": "emergency",
-          "title": "Buy It Before The Boundary",
+          "title": "HypernetTVGuide.program.shopping.before_the_boundary.title",
           "tone": "zany",
           "cast": [
             {
@@ -2494,13 +2332,12 @@
               "characterSprite": "Skab/!$SpacerSalesman",
               "bustName": "SpacerSalesman"
             }
-          ],
-          "titleIt": "Compralo Prima del Confine"
+          ]
         },
         {
           "id": "car_boot",
           "format": "reality_tv",
-          "title": "The Car Boot",
+          "title": "HypernetTVGuide.program.shopping.car_boot.title",
           "tone": "light",
           "cast": [
             {
@@ -2513,15 +2350,13 @@
               "characterSprite": "Skab/!$TravelingSalesman",
               "bustName": "TravelingSalesman"
             }
-          ],
-          "titleIt": "Il Mercatino del Baule"
+          ]
         }
-      ],
-      "nameIt": "Rete Ipercapitalista di Acquisti"
+      ]
     },
     {
       "id": "mediahex",
-      "name": "Mediahex",
+      "name": "HypernetTVGuide.channel.mediahex.name",
       "tone": "zany",
       "color": 18,
       "room": {
@@ -2533,7 +2368,7 @@
         {
           "id": "slither_news",
           "format": "news_desk",
-          "title": "Slither The News",
+          "title": "HypernetTVGuide.program.mediahex.slither_news.title",
           "tone": "wry",
           "cast": [
             {
@@ -2551,13 +2386,12 @@
               "characterSprite": "Skab/!$ElephantMascotte",
               "bustName": "ElephantMascotte"
             }
-          ],
-          "titleIt": "Striscia la Notizia"
+          ]
         },
         {
           "id": "wheel_fortunes",
           "format": "game_show",
-          "title": "The Wheel of Fortunes",
+          "title": "HypernetTVGuide.program.mediahex.wheel_fortunes.title",
           "tone": "zany",
           "cast": [
             {
@@ -2570,13 +2404,12 @@
               "characterSprite": "Skab/!$SnobStylist",
               "bustName": "SnobStylist"
             }
-          ],
-          "titleIt": "La Ruota della Fortuna"
+          ]
         },
         {
           "id": "price_correct",
           "format": "game_show",
-          "title": "OK, The Price Is Correct",
+          "title": "HypernetTVGuide.program.mediahex.price_correct.title",
           "tone": "zany",
           "cast": [
             {
@@ -2584,13 +2417,12 @@
               "characterSprite": "Skab/!$OperaGoddess",
               "bustName": "OperaGoddess"
             }
-          ],
-          "titleIt": "OK, il Prezzo è Giusto"
+          ]
         },
         {
           "id": "papperissima",
           "format": "reality_tv",
-          "title": "Papperissima",
+          "title": "HypernetTVGuide.program.mediahex.papperissima.title",
           "tone": "light",
           "cast": [
             {
@@ -2603,13 +2435,12 @@
               "characterSprite": "Skab/!$ElephantMascotte",
               "bustName": "ElephantMascotte"
             }
-          ],
-          "titleIt": "Papperissima"
+          ]
         },
         {
           "id": "sarabander",
           "format": "game_show",
-          "title": "Sarabander",
+          "title": "HypernetTVGuide.program.mediahex.sarabander.title",
           "tone": "zany",
           "cast": [
             {
@@ -2617,13 +2448,12 @@
               "characterSprite": "Skab/!$CityDJ",
               "bustName": "CityDJ"
             }
-          ],
-          "titleIt": "Sarabander"
+          ]
         },
         {
           "id": "not_the_rye",
           "format": "music_video",
-          "title": "It Isn't The Rye",
+          "title": "HypernetTVGuide.program.mediahex.not_the_rye.title",
           "tone": "light",
           "cast": [
             {
@@ -2631,13 +2461,12 @@
               "characterSprite": "Skab/!$NobleSinger",
               "bustName": "NobleSinger"
             }
-          ],
-          "titleIt": "Non è la Segale"
+          ]
         },
         {
           "id": "costanza_show",
           "format": "talk_show",
-          "title": "The Maurice Costanza Show",
+          "title": "HypernetTVGuide.program.mediahex.costanza_show.title",
           "tone": "serious",
           "cast": [
             {
@@ -2645,13 +2474,12 @@
               "characterSprite": "Skab/!$Wiseman",
               "bustName": "Wiseman"
             }
-          ],
-          "titleIt": "Il Maurizio Costanza Show"
+          ]
         },
         {
           "id": "forum_hex",
           "format": "court_report",
-          "title": "Forum",
+          "title": "HypernetTVGuide.program.mediahex.forum_hex.title",
           "tone": "wry",
           "cast": [
             {
@@ -2664,13 +2492,12 @@
               "characterSprite": "Skab/!$Judge",
               "bustName": "Judge"
             }
-          ],
-          "titleIt": "Forum"
+          ]
         },
         {
           "id": "lunch_served",
           "format": "cooking",
-          "title": "Lunch Is Served",
+          "title": "HypernetTVGuide.program.mediahex.lunch_served.title",
           "tone": "light",
           "cast": [
             {
@@ -2678,13 +2505,12 @@
               "characterSprite": "Skab/!$Innkeeper",
               "bustName": "Innkeeper"
             }
-          ],
-          "titleIt": "Il Pranzo è Servito"
+          ]
         },
         {
           "id": "telemick",
           "format": "game_show",
-          "title": "Telemick",
+          "title": "HypernetTVGuide.program.mediahex.telemick.title",
           "tone": "light",
           "cast": [
             {
@@ -2692,13 +2518,12 @@
               "characterSprite": "Skab/!$Instructor",
               "bustName": "Instructor"
             }
-          ],
-          "titleIt": "Telemick"
+          ]
         },
         {
           "id": "studio_open",
           "format": "news_desk",
-          "title": "Studio Open",
+          "title": "HypernetTVGuide.program.mediahex.studio_open.title",
           "tone": "urgent",
           "cast": [
             {
@@ -2706,13 +2531,12 @@
               "characterSprite": "Skab/!$BotJournalist",
               "bustName": "BotJournalist"
             }
-          ],
-          "titleIt": "Studio Aperto"
+          ]
         },
         {
           "id": "beautifool",
           "format": "soap_opera",
-          "title": "Beautifool",
+          "title": "HypernetTVGuide.program.mediahex.beautifool.title",
           "tone": "solemn",
           "cast": [
             {
@@ -2750,13 +2574,12 @@
               "characterSprite": "Skab/!$Hairdresser",
               "bustName": "Hairdresser"
             }
-          ],
-          "titleIt": "Beautifool"
+          ]
         },
         {
           "id": "bim_bum_bang",
           "format": "puppet_show",
-          "title": "Bim Bum Bang",
+          "title": "HypernetTVGuide.program.mediahex.bim_bum_bang.title",
           "tone": "light",
           "cast": [
             {
@@ -2769,13 +2592,12 @@
               "characterSprite": "Skab/!$BotMarionette",
               "bustName": "BotMarionette"
             }
-          ],
-          "titleIt": "Bim Bum Bang"
+          ]
         },
         {
           "id": "superchart",
           "format": "music_video",
-          "title": "Superchart Show",
+          "title": "HypernetTVGuide.program.mediahex.superchart.title",
           "tone": "light",
           "cast": [
             {
@@ -2783,13 +2605,12 @@
               "characterSprite": "Skab/!$WastelandDJ",
               "bustName": "WastelandDJ"
             }
-          ],
-          "titleIt": "Superclassifica Show"
+          ]
         },
         {
           "id": "coalpo_grosso",
           "format": "late_night",
-          "title": "Coalpo Grosso",
+          "title": "HypernetTVGuide.program.mediahex.coalpo_grosso.title",
           "tone": "weird",
           "cast": [
             {
@@ -2797,13 +2618,12 @@
               "characterSprite": "Skab/!$Partygoer",
               "bustName": "Partygoer"
             }
-          ],
-          "titleIt": "Coalpo Grosso"
+          ]
         },
         {
           "id": "know_the_latest",
           "format": "talk_show",
-          "title": "Do You Know The Latest?",
+          "title": "HypernetTVGuide.program.mediahex.know_the_latest.title",
           "tone": "zany",
           "cast": [
             {
@@ -2811,11 +2631,9 @@
               "characterSprite": "Skab/!$Jester",
               "bustName": "Jester"
             }
-          ],
-          "titleIt": "Lo Sai l'Ultima?"
+          ]
         }
-      ],
-      "nameIt": "Mediahex"
+      ]
     }
   ]
 }

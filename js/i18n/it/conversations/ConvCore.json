@@ -1,177 +1,177 @@
 {
   "Nervous": [
-    "Cos'era quel rumore?",
-    "Ho un brutto presentimento.",
-    "Ho dimenticato qualcosa di importante?",
-    "Mi batte forte il cuore...",
-    "Voglio solo che finisca."
+    "Ma quel rumore l'avete sentito anche voi o sono io?",
+    "Ho un presentimento bruttissimo, e i miei presentimenti ci prendono sempre.",
+    "Ho lasciato il gas acceso. Lo so che ho lasciato il gas acceso.",
+    "Il cuore mi va a mille, me lo sento pure nelle orecchie.",
+    "Voglio solo che finisca, poi mi metto a letto per tre giorni."
   ],
   "Calm": [
-    "Un passo alla volta.",
-    "Continua a respirare. Va tutto bene.",
-    "Anche questo passerà.",
-    "Preoccuparsi non risolve nulla.",
-    "Mantieni la concentrazione."
+    "Un passo alla volta, che la strada la fanno i passi.",
+    "Respira. Non è mai grave come sembra alle tre di notte.",
+    "Passerà anche questa, come è passato tutto il resto.",
+    "Agitarsi non ha mai raddrizzato niente.",
+    "Con calma. La fretta è una cattiva consigliera."
   ],
   "Aggressive": [
-    "Non mettermi alla prova.",
-    "Sono pronto a fare a botte.",
-    "Che cosa guardi?",
-    "La pazienza si sta esaurendo.",
-    "Spostati, o ti sposto io."
+    "Non mi provocare, che oggi non è giornata.",
+    "Se cerchi rogne sei capitato nel posto giusto.",
+    "Che c'è, ho la faccia strana? Guarda da un'altra parte.",
+    "La pazienza mi sta finendo, e al mercato non la vendono.",
+    "O ti sposti tu, o ti sposto io."
   ],
   "Melancholic": [
-    "È tutto qui?",
-    "Ricordo quando le cose andavano meglio.",
-    "Una sensazione pesante...",
-    "La solitudine mi si addice.",
-    "Sembra tutto grigio."
+    "E quindi era tutto qui. Bella roba.",
+    "Una volta si stava meglio. O ero solo più giovane io.",
+    "Ho un peso sullo stomaco, e non è la cena.",
+    "Da solo si sta bene: non c'è nessuno da deludere.",
+    "Il mondo l'hanno lavato a novanta gradi ed è uscito tutto grigio."
   ],
   "Sanguine": [
-    "Che giornata meravigliosa!",
-    "Dovrei parlare con qualcuno.",
-    "E adesso? Qualcosa di divertente, spero!",
-    "Mi sento benissimo!",
-    "Il futuro è luminoso."
+    "Che giornata, eh? Una di quelle da cartolina.",
+    "Devo assolutamente raccontare una cosa a qualcuno.",
+    "E adesso? Qualcosa di allegro, spero.",
+    "Sto una favola e non chiedermi perché.",
+    "Andrà benissimo, ci scommetto una cena."
   ],
   "Cautious": [
-    "Ragioniamoci su.",
-    "Quali sono i rischi?",
-    "Una decisione affrettata è una cattiva decisione.",
-    "Meglio prevenire che curare.",
-    "Prima analizziamo la situazione."
+    "Ragioniamoci sopra, che dopo piangere non serve.",
+    "Facciamo la lista di cosa può andare storto. È lunga.",
+    "Chi va piano va sano e va lontano.",
+    "Meglio un no oggi che un guaio domani.",
+    "Prima guardo, poi tocco. Mai il contrario."
   ],
   "Impulsive": [
-    "Fallo e basta!",
-    "Perché aspettare?",
-    "Mi sembra una buona idea!",
-    "Alle conseguenze penseremo dopo.",
-    "Prima agisci, poi pensa."
+    "Dai dai dai, si parte.",
+    "Aspettare cosa? Il permesso scritto?",
+    "Mi sembra un'ottima idea, quindi la faccio.",
+    "Alle conseguenze ci penso quando bussano.",
+    "Prima si fa, poi si ragiona. Se avanza tempo."
   ],
   "Stoic": [
-    "È solo una cosa. Passerà.",
-    "Il dolore è temporaneo.",
-    "Lamentarsi non cambia niente.",
-    "Controlla ciò che puoi, accetta ciò che non puoi.",
-    "Resisterò."
+    "È una cosa. Passerà come le altre.",
+    "Il dolore fa il suo mestiere, io faccio il mio.",
+    "Lamentarsi non ha mai spostato una pietra.",
+    "Quello che dipende da me lo faccio. Il resto lo accetto.",
+    "Reggo. È quello che so fare meglio."
   ],
   "Paranoid": [
-    "Mi stanno osservando.",
-    "Di chi posso fidarmi? Di nessuno.",
-    "Cosa vogliono davvero?",
-    "È un complotto.",
-    "Devo stare attento."
+    "Mi guardano. Non voltarti, ho detto che mi guardano.",
+    "Fidarsi è bene, e infatti non mi fido di nessuno.",
+    "Cosa ci guadagnano? Perché qualcosa ci guadagnano di sicuro.",
+    "È tutto organizzato, e viene dall'alto.",
+    "Acqua in bocca. Qui anche i muri hanno le orecchie."
   ],
   "Empathetic": [
-    "Sento quello che stai passando.",
-    "Staranno bene? Sembrano tristi.",
-    "Percepisco la tensione nella stanza.",
-    "Come posso aiutare?",
-    "La loro gioia è la mia gioia."
+    "Si vede che stai messo male, non serve che parli.",
+    "Quello sta soffrendo. Si capisce da come tiene le spalle.",
+    "In questa stanza c'è una tensione che la tagli col coltello.",
+    "Dimmi come ti do una mano, che una mano ce l'ho libera.",
+    "Se sei contento tu sono contento io, funziona così."
   ],
   "Authoritative": [
-    "Seguite me.",
-    "Questo è il piano. Attenetevi ad esso.",
-    "La decisione la prendo io.",
-    "La disciplina è tutto.",
-    "Dobbiamo riuscirci."
+    "Si fa come dico io, poi ne riparliamo.",
+    "Il piano è questo. Qui non si improvvisa.",
+    "Decido io e me la prendo io, la responsabilità.",
+    "Senza disciplina siamo solo gente che cammina insieme.",
+    "Si torna a casa col risultato, non con le scuse."
   ],
   "Scholarly": [
-    "Mi chiedo perché sia così...",
-    "Questo mi ricorda un libro che ho letto.",
-    "I dati non sono conclusivi.",
-    "La conoscenza è il vero potere.",
-    "Devo saperne di più."
+    "Mi domando quale sia il meccanismo, là sotto.",
+    "Ne parlava un volume che ho letto, ma non ricordo l'autore. E mi rode.",
+    "I dati non bastano. I dati non bastano mai.",
+    "Il sapere è l'unico bene che non ti possono sequestrare.",
+    "Devo studiarci sopra, mi manca un pezzo."
   ],
   "Artistic": [
-    "La luce qui è bellissima.",
-    "Che suono strano e meraviglioso.",
-    "Lo sento nel profondo.",
-    "Ispirazione... devo ricordare questa sensazione.",
-    "Il mondo è una tela."
+    "Guarda che luce. Uno si fermerebbe qui per sempre.",
+    "Ha fatto un rumore bellissimo, e non lo rifarà mai più.",
+    "Questa cosa mi arriva dritta allo stomaco.",
+    "Ecco, è arrivata l'idea. Non farmela scordare.",
+    "Il mondo è una tela, e qualcuno l'ha lasciata al sole troppo a lungo."
   ],
   "Adventurous": [
-    "Chissà cosa c'è oltre quella collina.",
-    "Che noia. Facciamo qualcosa!",
-    "Un po' di pericolo rende la vita interessante.",
-    "Avanti verso la prossima avventura!",
-    "Non ci sono mai stato? Andiamoci!"
+    "Chissà cosa c'è dietro quella collina. Andiamo a vedere.",
+    "Qui ci si annoia. Muoviamoci.",
+    "Un pizzico di pericolo dà sapore, come il sale.",
+    "Prossima tappa, prossima storia da raccontare al ritorno.",
+    "Non ci sono mai stato? Motivo in più per andarci."
   ],
   "Nurturing": [
-    "Tutto bene?",
-    "Sembri infreddolito. Prendi il mio mantello.",
-    "Tutti hanno bisogno di essere accuditi.",
-    "Devo proteggerli.",
-    "Lascia che ti dia una mano."
+    "Tutto bene? Guardami in faccia quando rispondi.",
+    "Sei viola dal freddo. Mettiti questo e non discutere.",
+    "Tutti hanno bisogno di qualcuno che gli chieda come sta.",
+    "Finché ci sono io non gli succede niente.",
+    "Dai qua, faccio io."
   ],
   "Mischievous": [
-    "Sarebbe molto più divertente se...",
-    "Mettiamo un po' di scompiglio.",
-    "Non se lo aspetteranno mai.",
-    "Chissà cosa fa questo pulsante?",
-    "Uno scherzetto non ha mai fatto male a nessuno... quasi."
+    "Sarebbe molto più divertente se glielo scambiassi mentre non guarda.",
+    "Mettiamo un po' di pepe in questa storia.",
+    "Non se lo aspettano, ed è proprio questo il bello.",
+    "E se schiaccio questo? Domanda legittima.",
+    "Uno scherzo non ha mai ucciso nessuno. Quasi mai."
   ],
   "Cynical": [
-    "Fanno tutti il proprio interesse.",
-    "Dov'è la fregatura?",
-    "È esattamente quello che vogliono farmi credere.",
-    "Ma certo, 'altruismo'. Come no.",
-    "Andrà tutto a finire male."
+    "Ognuno tira l'acqua al suo mulino, senza eccezioni.",
+    "Dov'è la fregatura? Perché c'è sempre.",
+    "È esattamente quello che vogliono farci credere.",
+    "Ma certo, 'per il bene di tutti'. Figuriamoci.",
+    "Finirà male. Non so ancora come, ma finirà male."
   ],
   "Disciplined": [
-    "Prima il compito. Poi il resto.",
-    "I sentimenti vengono dopo il dovere.",
-    "Attieniti alla routine.",
-    "Il controllo è forza.",
-    "Nessuna scorciatoia."
+    "Prima il dovere. Il resto se avanza.",
+    "I sentimenti li archivio a fine turno.",
+    "Il programma è il programma.",
+    "Il controllo è forza, il resto è chiacchiera.",
+    "Le scorciatoie si pagano, e si pagano care."
   ],
   "Fatalistic": [
-    "Quel che succede, succede.",
-    "Doveva andare così.",
-    "Non ha senso opporsi.",
-    "Il mio cammino è già scritto.",
-    "A che serve?"
+    "Quel che sarà, sarà.",
+    "Era scritto. Ci sta.",
+    "Opporsi è fatica sprecata.",
+    "La mia strada è già segnata, io la cammino e basta.",
+    "Tanto è uguale."
   ],
   "Grumpy": [
-    "Uffa, e adesso?",
-    "È tutto così stupido.",
-    "Lasciami in pace.",
-    "Ovvio che doveva succedere.",
-    "Odio tutto questo."
+    "Uffa, e mo' che c'è?",
+    "Ma che roba è. Roba da matti.",
+    "Lasciatemi in pace, è chiedere tanto?",
+    "Ovvio. Doveva succedere per forza.",
+    "Ai miei tempi almeno le cose funzionavano."
   ],
   "Loyal": [
-    "Non li abbandonerò.",
-    "Per i miei amici, qualsiasi cosa.",
-    "Devo mantenere la promessa.",
-    "Insieme, qualunque cosa accada.",
-    "La mia lealtà è il mio vincolo."
+    "Non li lascio. Punto.",
+    "Per gli amici tutto, anche quello che non mi conviene.",
+    "Ho dato la mia parola, e la parola vale.",
+    "Insieme si è arrivati, insieme si torna.",
+    "La mia lealtà non è in vendita, e non è nemmeno in affitto."
   ],
   "Brave": [
-    "Qualcuno deve pur farlo.",
-    "Fa paura, ma devo agire.",
-    "La paura è solo una sensazione.",
-    "Non farò un passo indietro.",
-    "Avanti!"
+    "Qualcuno lo deve fare. Lo faccio io.",
+    "Ho paura, e ci vado lo stesso.",
+    "La paura è una sensazione, mica un ordine.",
+    "Da qui non mi muovo.",
+    "Avanti, che indietro non si torna."
   ],
   "Timid": [
-    "Oh, cielo. Si mette male.",
-    "Preferirei di no...",
-    "Magari può occuparsene qualcun altro?",
+    "Oh mamma. Si mette male.",
+    "Preferirei... no, niente, lascia stare.",
+    "Non è che potrebbe farlo qualcun altro? Chiedo per un amico.",
     "Voglio andare a casa.",
-    "Per favore, non notatemi."
+    "Se non mi notano forse passa liscia."
   ],
   "Hedonistic": [
-    "Se dà piacere, fallo.",
-    "La vita è breve, godiamocela adesso.",
-    "Mi serve altro vino. E formaggio.",
-    "Questa sì che è vita!",
-    "Lavorare? Uffa. Più tardi."
+    "Se è bello si fa, se è buono si mangia.",
+    "La vita è corta e il vino invecchia: facciamo due conti.",
+    "Serve altro vino. E del formaggio. Anzi, solo formaggio.",
+    "Questa sì che è vita.",
+    "Lavorare? Sì sì, dopo. Dopo dopo."
   ],
   "Apathetic": [
-    "Mah.",
-    "Non mi interessa granché.",
-    "Come ti pare.",
-    "È finita?",
-    "Non ha importanza."
+    "Boh.",
+    "Non è che mi cambi granché.",
+    "Vabbè.",
+    "È finita? No? Vabbè.",
+    "Mah. Fate voi."
   ]
 }

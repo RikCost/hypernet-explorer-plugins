@@ -83,26 +83,34 @@
  * the dream is reported on waking.
  *
  * In the dream:
- *   - WASD / arrows walk on foot, mouse (click to lock) or right-stick looks.
- *   - SPACE jumps, on the press itself: hold it for the whole rise and let go
- *     early for a hop, and it is remembered for a moment either side of a
- *     landing or an edge, so a press near the ground is never swallowed. In
- *     mid-air it kicks off a wall the sleeper is facing, as often as there is
- *     wall to kick off.
- *   - DOUBLE-TAP SPACE STANDING to take off; hold SPACE to climb and CTRL to
- *     sink; double-tap again to land. Flight cannot be switched on in mid-jump:
- *     a pair of taps begun in the air is a wall kick, never take-off.
- *   - Hold Shift to move faster.
- *   - The ACTION BUTTON (Enter / gamepad A / a click once the mouse is locked)
- *     uses the weapon in the sleeper's right hand: a blade is swung, a gun is
- *     fired, a bow is drawn, each with its own sound.
- *   - Esc / Cancel opens the wake-up prompt, drawn as a DOM overlay ON the 3D dream
+ *   - WASD / arrows walk on foot, mouse (click to lock) looks about. On a pad
+ *     the LEFT STICK walks and the RIGHT STICK looks, both analog: half a push
+ *     is half the speed, and the middle of the look stick's throw is for aiming
+ *     rather than for turning round.
+ *   - SPACE (Y on a pad) jumps, on the press itself: hold it for the whole rise
+ *     and let go early for a hop, and it is remembered for a moment either side
+ *     of a landing or an edge, so a press near the ground is never swallowed.
+ *     In mid-air it kicks off a wall the sleeper is facing, as often as there
+ *     is wall to kick off.
+ *   - DOUBLE-TAP SPACE / Y STANDING to take off; hold it to climb, CTRL or L1
+ *     to sink; double-tap again to land. Flight cannot be switched on in
+ *     mid-jump: a pair of taps begun in the air is a wall kick, never take-off.
+ *   - Hold Shift (L3) to move faster.
+ *   - The ACTION BUTTON (Enter / gamepad A / R1 / R2 / a click once the mouse
+ *     is locked) uses the weapon in the sleeper's right hand: a blade is swung,
+ *     a gun is fired, a bow is drawn, each with its own sound.
+ *   - UP and DOWN ON THE D-PAD (the wheel, or L2) change what is in that hand,
+ *     stepping the shuffled rack of every weapon in the database. The d-pad is
+ *     never movement in here, which is what leaves it free to be the rack.
+ *   - Esc / B opens the wake-up prompt, drawn as a DOM overlay ON the 3D dream
  *     (not RPG Maker choices). "Pinch cheeks" wakes; "Keep dreaming" resumes.
- *   - TOUCHING a dream entity triggers an LSD-emulator strobe and drops you into
- *     another dream.
- *   - WALKING STRAIGHT INTO A WALL does the same: lean on any solid face-first
- *     for a moment on foot and the screen strobes and the sleeper is somewhere
- *     else, the way a wall is a link in LSD Dream Emulator. Only head-on
+ *   - TOUCHING anything that is alive triggers an LSD-emulator strobe and drops
+ *     you into another dream: a wandering 3D battler, a card of monster art, or
+ *     one of the walking sprites off a character sheet.
+ *   - WALKING INTO A WALL does the same, either by leaning on any solid
+ *     face-first for a moment on foot, or by walking into it over and over: a
+ *     few separate shoves inside a few seconds open it just as a long lean
+ *     does, the way a wall is a link in LSD Dream Emulator. Only head-on
  *     contact counts, so a wall clipped while running past it or slid along a
  *     corner is nothing; a wall met in mid-air is still a wall kick, and one
  *     met in flight is still a wall.
@@ -234,6 +242,14 @@
  * equipped on the actor: what the sleeper is holding lasts as long as the
  * dream does, and falling into another dream deals another weapon.
  *
+ * And then the dream DRESSES it. Every surface of the model is re-textured out
+ * of the whole procedural texture bank rather than out of the bank its own
+ * material class draws from, and re-coloured, so what is in hand is never quite
+ * the weapon it says it is: a magic circle printed down a rifle stock, fire on
+ * a mace head, a crystal on a bowstring, and a part or two lit from inside. The
+ * textures are the shared singletons the procedural system already caches, so
+ * nothing is uploaded twice and no real weapon is ever changed by it.
+ *
  * Using it on something that is wandering about wounds it, and two to six blows
  * stop it being a creature at all: it collapses into a bare primitive or into a
  * piece of furniture out of another game, and the dream pays in Knowledge,
@@ -334,6 +350,48 @@
     // and the sleeper has fallen out of this dream and into another.
     const VOID_FLOOR = -520;
     const TALK_RANGE = 210;      // how near an apparition has to be before it is heard
+    // Walking into a wall over and over is asking to leave: this many separate
+    // walks into one, inside WALL_BUMP_WINDOW seconds of each other, opens the
+    // dream even if none of them was leant on long enough to open it alone.
+    const WALL_BUMPS = 3;
+    const WALL_BUMP_WINDOW = 3.2;
+
+    // ---- the pad -------------------------------------------------------------
+    // A dream is played on a controller as often as at a keyboard, and the
+    // engine's own mapper only carries the face buttons: the sticks are folded
+    // into the d-pad directions and the analog triggers are not carried at all.
+    // Everything spatial in here is therefore read straight off the shared
+    // helper instead (AnalogStickInput), which is also the only way the d-pad
+    // can be told apart from the left stick.
+    const PAD_LOOK_X = 3.1;      // radians a second at full deflection
+    const PAD_LOOK_Y = 2.2;
+    const TRIGGER_ON = 0.55;     // how far a trigger is pulled before it counts
+    const TRIGGER_OFF = 0.30;    // and how far back it comes before it may fire again
+
+    function padHelper() {
+        const p = window.AnalogStickInput;
+        return (p && p.hasPad && p.hasPad()) ? p : null;
+    }
+    /**
+     * A button going down, edged against the DREAM'S own frame rather than
+     * against the engine's. The helper's isButtonTriggered is edged against
+     * Input.update, and a dream is drawn from its own requestAnimationFrame
+     * loop: whenever two dream frames fall inside one engine frame the same
+     * press reads as triggered twice, which steps the rack two weapons at a
+     * time and turns a single tap of Y into a double tap (i.e. into flight).
+     * Reading the HELD state and remembering it here cannot do that.
+     *
+     * Each name must be asked for exactly once a frame, which is what makes the
+     * remembered state the previous frame's.
+     */
+    const _padWas = {};
+    function padEdge(name) {
+        const p = padHelper();
+        const down = p ? p.isButtonPressed(p.BUTTON[name]) : false;
+        const was = !!_padWas[name];
+        _padWas[name] = down;
+        return down && !was;
+    }
 
     let dreamActive = false;
     window.dreamActive = false;
@@ -3083,9 +3141,21 @@
             // sleeper has been pushing into one, and the direction they are
             // asking to go in, which is what says pushing from brushing past.
             this.wallPush = 0;
+            // Walked into a wall, let go, walked into it again: each fresh
+            // shove is counted, and enough of them inside the window is the
+            // same request as one long lean (see _countBumps).
+            this.wallBumps = 0;
+            this.bumpTimer = 0;
+            this._wasPushing = false;
             this._wishX = 0;
             this._wishZ = 0;
             this._solids = [];
+            // Y on a pad is what SPACE is at the keyboard: held it climbs, and
+            // a double tap takes off. Kept apart from spaceHeld, which also
+            // means "the engine read this as the action button, do not swing".
+            this.padRise = false;
+            this.padSink = false;
+            this._padYWas = false;
 
             this._onMouseMove = this._onMouseMove.bind(this);
             this._onClick = this._onClick.bind(this);
@@ -3114,7 +3184,14 @@
             this.jumpBuffer = -1;
             this.coyoteTimer = 0;
             this.jumpCutPending = false;
+            this.wallPush = 0;
+            this.wallBumps = 0;
+            this.bumpTimer = 0;
+            this._wasPushing = false;
         }
+
+        /** SPACE at the keyboard, Y on a pad: the same request, either way. */
+        isRising() { return this.spaceHeld || this.padRise; }
 
         _onMouseMove(e) {
             if (!this.isLocked) return;
@@ -3247,15 +3324,76 @@
 
         toggleFlight() { this.setFlying(!this.flying); }
 
-        update(delta) {
-            const fwd = (this.move.f || Input.isPressed('up')) ? 1 : 0;
-            const back = (this.move.b || Input.isPressed('down')) ? 1 : 0;
-            const lft = (this.move.l || Input.isPressed('left')) ? 1 : 0;
-            const rgt = (this.move.r || Input.isPressed('right')) ? 1 : 0;
-            const sprint = this.move.sprint || Input.isPressed('shift');
+        /**
+         * The pad, read raw once a frame: the right stick looks about, Y is
+         * the jump (and a double tap of it is flight), L1 sinks while flying.
+         * The left stick is read in update() with the rest of the movement.
+         *
+         * The d-pad is NOT movement in a dream: up and down on it change what
+         * is in the sleeper's hand (DreamWeapon), which is why every direction
+         * here comes off the stick rather than off Input's folded directions.
+         */
+        _updatePad(delta) {
+            const p = padHelper();
+            if (!p || this._menuOpen()) { this.padRise = false; this._padYWas = false; return; }
+            const B = p.BUTTON;
+            // Edged against this loop, not against the engine's: see padEdge.
+            // A single tap of Y read twice would be a double tap, and a double
+            // tap is take-off.
+            const y = p.isButtonPressed(B.Y);
+            if (y && !this._padYWas) this._handleSpace();
+            this._padYWas = y;
+            this.padRise = y;
+            // L1 is the other end of Y: it takes the flier back down, the way
+            // CTRL does at the keyboard. Kept apart from move.down, which only
+            // a key release is ever allowed to clear.
+            this.padSink = p.isButtonPressed(B.LB);
 
-            const dz = fwd - back;        // forward axis
-            const dx = rgt - lft;         // strafe axis
+            const rx = p.rightX(), ry = p.rightY();
+            if (rx || ry) {
+                // Squared response: the middle of the stick's throw is for
+                // aiming and the edge of it is for turning round.
+                this.yaw.rotation.y -= rx * Math.abs(rx) * PAD_LOOK_X * delta;
+                this.pitch.rotation.x -= ry * Math.abs(ry) * PAD_LOOK_Y * delta;
+                this.pitch.rotation.x = Math.max(-Math.PI / 2 + 0.05,
+                    Math.min(Math.PI / 2 - 0.05, this.pitch.rotation.x));
+            }
+        }
+
+        update(delta) {
+            const pad = padHelper();
+            // The d-pad is the weapon rack in here, so a press on it is not a
+            // request to walk anywhere, even though the engine folds the same
+            // directions in from the stick.
+            const dpadY = pad && (pad.isButtonPressed(pad.BUTTON.DPAD_UP) ||
+                                  pad.isButtonPressed(pad.BUTTON.DPAD_DOWN));
+            this._updatePad(delta);
+
+            // The left stick, as an analog LEAN rather than as four more
+            // buttons: half a push is half the speed, which is the whole reason
+            // to hold a stick instead of a key. While it is being pushed the
+            // engine's own directions are ignored, because core folds this very
+            // stick into them and reading both would put every walk back to a
+            // flat full speed.
+            const stickX = pad ? pad.leftX() : 0;
+            const stickY = pad ? pad.leftY() : 0;   // grows downward
+            const onStick = !!(stickX || stickY);
+            const key = (name) => !onStick && Input.isPressed(name);
+
+            const fwd = (this.move.f || (key('up') && !dpadY)) ? 1 : 0;
+            const back = (this.move.b || (key('down') && !dpadY)) ? 1 : 0;
+            const lft = (this.move.l || key('left')) ? 1 : 0;
+            const rgt = (this.move.r || key('right')) ? 1 : 0;
+            const sprint = this.move.sprint || Input.isPressed('shift') ||
+                (pad && pad.isButtonPressed(pad.BUTTON.L3));
+
+            let dz = fwd - back;          // forward axis
+            let dx = rgt - lft;           // strafe axis
+            dx += stickX;
+            dz -= stickY;
+            // How hard the sleeper is asking, 0 to 1. The direction is
+            // normalised below; this is what is left of the stick's throw.
+            const lean = Math.min(1, Math.hypot(dx, dz));
             // A pressed jump keeps for a moment: on landing, or on a wall found
             // a fraction of a second later, it goes off by itself.
             if (this.jumpBuffer > 0) {
@@ -3279,9 +3417,10 @@
                 let tx = dir.x * dz * spd + right.x * dx * spd;
                 let ty = dir.y * dz * spd;
                 let tz = dir.z * dz * spd + right.z * dx * spd;
-                // SPACE climbs and CTRL sinks, whatever the head is pointed at.
-                if (this.spaceHeld) ty += spd * 0.85;
-                if (this.move.down) ty -= spd * 0.85;
+                // SPACE / Y climbs and CTRL / L1 sinks, whatever the head is
+                // pointed at.
+                if (this.isRising()) ty += spd * 0.85;
+                if (this.move.down || this.padSink) ty -= spd * 0.85;
                 const k = 1 - Math.exp(-6.5 * delta);
                 this.vx += (tx - this.vx) * k;
                 this.vy += (ty - this.vy) * k;
@@ -3305,13 +3444,17 @@
                     const wx = (dx * cosY - dz * sinY);
                     const wz = (-dz * cosY - dx * sinY);
                     const len = Math.hypot(wx, wz) || 1;
-                    tx = (wx / len) * spd;
-                    tz = (wz / len) * spd;
+                    // Direction from the stick, speed from how far it is
+                    // pushed: a key is always a full push, so nothing changes
+                    // at the keyboard.
+                    tx = (wx / len) * spd * lean;
+                    tz = (wz / len) * spd * lean;
                 }
                 // Kept unit-length and unscaled by speed: the wall test asks
                 // which way the sleeper is leaning, not how fast.
-                this._wishX = tx / spd;
-                this._wishZ = tz / spd;
+                const wish = Math.hypot(tx, tz) || 1;
+                this._wishX = tx / wish;
+                this._wishZ = tz / wish;
                 // On the ground the sleeper goes where they are told almost at
                 // once, and stops nearly as fast. In the air only a third of
                 // that authority is left, and with nothing asked for there is
@@ -3326,9 +3469,9 @@
                 this.yaw.position.x += this.vx * delta;
                 this.yaw.position.z += this.vz * delta;
 
-                // Letting go of SPACE while still rising cuts the rise: a tap is
-                // a hop, a hold is the whole jump.
-                if (this.jumpCutPending && !this.spaceHeld) {
+                // Letting go of SPACE (or of Y) while still rising cuts the
+                // rise: a tap is a hop, a hold is the whole jump.
+                if (this.jumpCutPending && !this.isRising()) {
                     this.jumpCutPending = false;
                     if (this.vy > 0) this.vy *= this.jumpCut;
                 }
@@ -3344,6 +3487,28 @@
                 // the ground has gone, so an edge taken at a run is not a fall.
                 if (this.onGround) this.coyoteTimer = this.coyote;
                 else this.coyoteTimer -= delta;
+            }
+            this._countBumps(delta);
+        }
+
+        /**
+         * How many separate times the sleeper has walked into something. One
+         * long lean opens a dream on its own (wallPush, in the scene's loop);
+         * this is the other way of asking, which is what somebody actually
+         * does at a wall: walk into it, back off, walk into it again. The tally
+         * forgets itself after WALL_BUMP_WINDOW seconds of not being added to,
+         * so a day of incidental bumping never adds up to a door.
+         */
+        _countBumps(delta) {
+            const pushing = this.wallPush > 0;
+            if (pushing && !this._wasPushing) {
+                this.wallBumps++;
+                this.bumpTimer = WALL_BUMP_WINDOW;
+            }
+            this._wasPushing = pushing;
+            if (this.bumpTimer > 0) {
+                this.bumpTimer -= delta;
+                if (this.bumpTimer <= 0) this.wallBumps = 0;
             }
         }
 
@@ -3486,6 +3651,9 @@
         _sprite: null,
         _weapon: null,
         _held: false,       // the overlay reference this sleep holds
+        _bag: null,         // every weapon in the database, shuffled
+        _index: 0,
+        _weirded: false,    // whether the thing in hand has been dressed yet
 
         available() {
             return !!(hasTHREE && window.Sprite_3DWeapon && window.WeaponThreeScene &&
@@ -3504,13 +3672,21 @@
             this._held = true;
             document.addEventListener('mousedown', this._onMouseDown);
             document.addEventListener('wheel', this._onWheel, { passive: true });
+            this._bag = null;
             this.roll();
         },
 
         /** A new dream is a new thing in hand. */
         roll() {
             if (!this._held) return;
-            const weapon = this.pick();
+            const bag = this.bag();
+            if (!bag.length) return;
+            this._index = Math.floor(Math.random() * bag.length);
+            this.equip(bag[this._index]);
+        },
+
+        /** Builds the model, and then makes it strange. */
+        equip(weapon) {
             if (!weapon) return;
             // Same patch the battle spriteset applies before building one:
             // without it the procedural models, poses and motions are absent.
@@ -3518,17 +3694,92 @@
             if (this._sprite) this._sprite.terminate();
             this._weapon = weapon;
             this._sprite = new Sprite_3DWeapon(weapon);
+            this._weirded = false;
             const canvas = window.WeaponThreeScene.canvas;
             if (canvas) canvas.style.zIndex = DREAM_WEAPON_Z;
         },
 
-        /** Whatever the database has; a dream is not choosy. */
-        pick() {
-            if (typeof $dataWeapons === 'undefined' || !$dataWeapons) return null;
+        /**
+         * Every weapon in the database, shuffled once for the whole sleep: the
+         * rack the d-pad steps through. Shuffled rather than sorted because a
+         * dream's rack is not a shop's, and stepping it should never feel like
+         * reading a list.
+         */
+        bag() {
+            if (this._bag) return this._bag;
             const pool = [];
-            for (const w of $dataWeapons) if (w && w.name) pool.push(w);
-            if (pool.length === 0) return null;
-            return pool[Math.floor(Math.random() * pool.length)];
+            if (typeof $dataWeapons !== 'undefined' && $dataWeapons) {
+                for (const w of $dataWeapons) if (w && w.name) pool.push(w);
+            }
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+            }
+            this._bag = pool;
+            return pool;
+        },
+
+        // ---- what a dream does to a weapon ----------------------------------
+        // The model is the one a battle builds, and then every surface of it is
+        // re-dressed out of the whole texture bank rather than out of the bank
+        // its own material class draws from: a magic circle printed on a rifle
+        // stock, fire on a mace head, a crystal on a bowstring. The textures
+        // are the shared singletons the procedural system caches, so nothing is
+        // uploaded twice and nothing is ever freed from under a real weapon;
+        // only the materials, which the model owns, are touched.
+        // 'dream' is the strange bank (img/dreamtextures/): faces, marbling,
+        // things off a slide. It is listed twice so a sleeping weapon wears one
+        // about a third of the time, which is often enough to be a rule of the
+        // place and rare enough to still be a shock.
+        WEIRD_CLASSES: ['gun', 'blade', 'heavy', 'wood', 'magic', 'default', 'dream', 'dream'],
+
+        _weirdTexture() {
+            const P = window.WeaponSystemProcedural;
+            if (!P || !P.getTexturesForType) return null;
+            const cls = this.WEIRD_CLASSES[Math.floor(Math.random() * this.WEIRD_CLASSES.length)];
+            const list = P.getTexturesForType(cls) || [];
+            if (!list.length) return null;
+            return P.getTexture(list[Math.floor(Math.random() * list.length)]);
+        },
+
+        /**
+         * @param {object} sprite the held Sprite_3DWeapon. Its model is built
+         *   on the spot for a procedural weapon and loaded in the background
+         *   for a GLB one, so this is attempted every frame until it lands.
+         */
+        _weird(sprite) {
+            const model = sprite && sprite._model;
+            if (!model || typeof model.traverse !== 'function') return false;
+            // One hue for the whole thing, and every part a little off it: a
+            // weapon dressed in six unrelated colours is confetti, and a dream
+            // object has to read as one object before it reads as wrong.
+            const hue = Math.random();
+            const spread = 0.05 + Math.random() * 0.22;
+            model.traverse((o) => {
+                if (!o.isMesh || !o.material) return;
+                const mats = Array.isArray(o.material) ? o.material : [o.material];
+                for (const mat of mats) {
+                    if (!mat) continue;
+                    // Only the map is taken. How a surface blends is left
+                    // exactly as the model built it: the glow shells and gem
+                    // overlays are transparent on purpose, and forcing those
+                    // opaque would board the weapon up rather than dress it.
+                    const tex = this._weirdTexture();
+                    if (tex) mat.map = tex;
+                    // A dream has its own opinion about colour, and about which
+                    // parts of a thing are lit from inside.
+                    if (mat.color && mat.color.setHSL) {
+                        mat.color.setHSL(hue + (Math.random() - 0.5) * spread,
+                            0.35 + Math.random() * 0.5, 0.4 + Math.random() * 0.35);
+                    }
+                    if (mat.emissive && Math.random() < 0.28) {
+                        mat.emissive.setHSL(hue + 0.5, 0.8, 0.35);
+                        if (mat.emissiveIntensity !== undefined) mat.emissiveIntensity = 0.6;
+                    }
+                    mat.needsUpdate = true;
+                }
+            });
+            return true;
         },
 
         /**
@@ -3554,47 +3805,57 @@
         },
 
         /**
-         * Another weapon, on the wheel, on L1 or on either analog trigger. A
-         * dream does not carry a rack, and it is never shown one: what is in the
-         * sleeper's hand is simply something else now, and it is announced
-         * because the swap is otherwise only visible once they swing.
+         * One step along the rack: UP and DOWN on the d-pad, the wheel, or L2.
+         * A dream is never shown the rack itself, so what is in hand is simply
+         * something else now, and it is announced, because otherwise the swap
+         * is only visible once the sleeper swings.
          */
-        swap() {
+        step(dir) {
             const now = performance.now();
-            if (now - (this._swapAt || 0) < 220) return;   // one weapon a flick of the wheel
+            if (now - (this._swapAt || 0) < 180) return;   // one weapon a flick of the wheel
             this._swapAt = now;
-            const before = this._weapon;
-            this.roll();
-            if (!this._weapon || this._weapon === before) return;
+            const bag = this.bag();
+            if (bag.length < 2) return;
+            this._index = ((this._index + dir) % bag.length + bag.length) % bag.length;
+            this.equip(bag[this._index]);
             if (typeof SoundManager !== 'undefined') SoundManager.playEquip();
             const scene = DreamSystem._scene;
             if (scene && scene.showToast) scene.showToast(T('Dream.weapon', { name: this._weapon.name }));
         },
 
+        swap() { this.step(1); },
+
         _onWheel(e) {
             if (!dreamActive) return;
             const scene = DreamSystem._scene;
             if (scene && scene._menuOpen) return;
-            DreamWeapon.swap();
+            DreamWeapon.step(e.deltaY > 0 ? 1 : -1);
         },
 
         /**
-         * L2 and R2, the wheel's other twin on a pad. Core's gamepad mapper
-         * does not carry the analog triggers, so they are read through the
-         * shared helper and edged here: one weapon per pull, not one a frame
-         * for as long as the trigger is held down.
+         * The analog triggers. Core's gamepad mapper does not carry them, so
+         * they are read through the shared helper and edged here: R2 is the
+         * trigger finger and fires once a pull rather than once a frame, and
+         * L2 steps back up the rack.
          */
         _updateTriggers() {
             const pads = window.AnalogStickInput;
             if (!pads || !pads.leftTrigger) return;
             const scene = DreamSystem._scene;
             if (scene && scene._menuOpen) return;
-            const pulled = Math.max(pads.leftTrigger(), pads.rightTrigger ? pads.rightTrigger() : 0);
-            if (!this._trigDown && pulled > 0.55) {
-                this._trigDown = true;
-                this.swap();
-            } else if (this._trigDown && pulled < 0.30) {
-                this._trigDown = false;
+            const rt = pads.rightTrigger ? pads.rightTrigger() : 0;
+            if (!this._rtDown && rt > TRIGGER_ON) {
+                this._rtDown = true;
+                this.swing();
+            } else if (this._rtDown && rt < TRIGGER_OFF) {
+                this._rtDown = false;
+            }
+            const lt = pads.leftTrigger();
+            if (!this._ltDown && lt > TRIGGER_ON) {
+                this._ltDown = true;
+                this.step(-1);
+            } else if (this._ltDown && lt < TRIGGER_OFF) {
+                this._ltDown = false;
             }
         },
 
@@ -3624,11 +3885,18 @@
             if (typeof Input !== 'undefined') {
                 if (!blockAction && Input.isTriggered('ok')) this.swing();
                 // R1 (pagedown) is the trigger, here and on the shooting range
-                // both. L1 is the wheel's twin on a pad and changes the weapon.
+                // both. L1 belongs to flight in a dream (it sinks), so it is
+                // not read here.
                 if (Input.isTriggered('pagedown')) this.swing();
-                if (Input.isTriggered('pageup')) this.swap();
             }
+            // UP and DOWN on the d-pad are the rack, which is why the walking
+            // code ignores them: the stick walks, the cross changes weapon.
+            if (padEdge('DPAD_UP')) this.step(-1);
+            if (padEdge('DPAD_DOWN')) this.step(1);
             this._updateTriggers();
+            // A dream weapon is dressed the frame its model exists, which for
+            // a GLB is several frames after it was asked for.
+            if (!this._weirded && this._weird(s)) this._weirded = true;
             // Nothing to aim at out here: the weapon rests, breathes and swings
             // its own arc rather than turning on a battlefield target.
             s._aimPoint = null;
@@ -3655,6 +3923,9 @@
             this._sprite = null;
             this._weapon = null;
             this._held = false;
+            this._bag = null;
+            this._weirded = false;
+            this._rtDown = this._ltDown = false;
             // Last, so the count only reaches zero once the sprite has let go.
             window.WeaponThreeScene.deref();
         }
@@ -3786,6 +4057,10 @@
             };
             document.addEventListener('keydown', this._onKey);
 
+            // Where this is, said once and then let go of, since the standing
+            // caption that used to say it is gone.
+            this.showToast(this._dream.name);
+
             this._loop = this._loop.bind(this);
             this._animId = requestAnimationFrame(this._loop);
         }
@@ -3836,12 +4111,13 @@
             // The renderer's own element is appended after these (it is built
             // once the overlay exists), and with every layer positioned and no
             // z-index of its own the canvas painted last and covered the lot:
-            // the caption, the toasts and every subtitle a figure ever said.
-            const cap = document.createElement('div');
-            cap.style.cssText = 'position:absolute;left:0;right:0;bottom:18px;text-align:center;color:#cfc;font:14px monospace;text-shadow:0 0 6px #000;opacity:0.55;pointer-events:none;z-index:3;';
-            cap.textContent = this._dream.name + T('Dream.caption');
-            el.appendChild(cap);
-            this._caption = cap;
+            // the toasts and every subtitle a figure ever said.
+            //
+            // There is no standing caption along the bottom any more. It sat in
+            // exactly the strip the weapon is drawn in, printed the controls
+            // over the sleeper's own hands, and a dream that explains itself in
+            // a status bar is not a dream. Where a place is, and which level of
+            // the stack it is on, is said once, as a toast, and then stops.
 
             // Anything the dream has to say (knowledge carried out of it, a
             // thing killed, the ground starting to change) is announced here:
@@ -4732,6 +5008,26 @@
                     app.mesh.scale.setScalar(1);
                 }
                 if (app.talks && app.mesh.visible && d < nearD) { nearD = d; near = app; }
+
+                // Walking into one of the figures is the same door as walking
+                // into one of the wandering creatures: the card of monster art
+                // and the walking sprite off a character sheet both let go of
+                // the dream when they are touched. The reach is the width of
+                // the card, kept short enough that a giant standing in the sky
+                // does not grab from the horizon, and its height has to be near
+                // the sleeper's own, so a figure hung fifty units overhead is
+                // walked under rather than into.
+                if (!this._transitioning && !this._menuOpen && this._time > 1.2 &&
+                    app.mesh.visible) {
+                    const reach = 5 + Math.min(app.w, 90) * 0.35;
+                    const dy = Math.abs(app.mesh.position.y - P.y);
+                    if (d < reach && dy < Math.max(22, app.h * 0.6)) {
+                        this._transitioning = true;
+                        this._hideSubtitle();
+                        DreamSystem.collideShift();
+                        return;
+                    }
+                }
             }
 
             // Whoever is nearest and near enough is the one talking. It says
@@ -5190,7 +5486,7 @@
          * Some regions are places the dream is already thinking of leaving.
          * Stand in one long enough and the whole world shifts to another dream,
          * which is how a sleeper wanders out of a corridor and into a drowned
-         * city without ever finding a door. The caption says so first, so it
+         * city without ever finding a door. The dream says so first, so it
          * reads as somewhere rather than as a glitch.
          */
         _updateDrift(delta) {
@@ -5202,18 +5498,16 @@
             if (this.tierAt(P.y) >= 0) { this._driftTime = 0; return; }
             const rg = this.regionAt(P.x, P.z);
             if (!rg || !rg.drift) {
-                if (this._driftTime > 0 && this._caption) {
-                    this._caption.textContent = this._dream.name + T('Dream.caption');
-                }
                 this._driftTime = 0;
+                this._driftWarned = false;
                 return;
             }
             this._driftTime += delta;
-            if (this._driftTime > 2.2 && this._caption && !this._driftWarned) {
+            if (this._driftTime > 2.2 && !this._driftWarned) {
                 this._driftWarned = true;
-                this._caption.textContent = T('Dream.drifting', { place: rg.name });
-                // The caption has been taken off the climb; let the next level
-                // crossed announce itself again.
+                this.showToast(T('Dream.drifting', { place: rg.name }));
+                // Whatever was said last has been taken off the climb; let the
+                // next level crossed announce itself again.
                 this._tierShown = null;
             }
             if (this._driftTime > DRIFT_SECONDS) {
@@ -5249,15 +5543,19 @@
             // The level is announced as it is crossed into, and the first level
             // of a stratum is announced with the name of the stratum, since
             // that is the one thing about a climb that ever changes.
-            if (k !== this._tierShown && this._caption) {
+            if (k !== this._tierShown) {
                 const was = this._tierShown === null ? -1 : Math.floor(Math.max(0, this._tierShown) / TIER_THEME);
+                const first = this._tierShown === null;
                 this._tierShown = k;
+                // Coming back down to the ground says nothing: the sleeper is
+                // simply where they started, and has already been told where
+                // that is.
                 if (k < 0) {
-                    this._caption.textContent = this._dream.name + T('Dream.caption');
+                    if (!first) this.showToast(this._dream.name);
                 } else if (theme.block !== was) {
-                    this._caption.textContent = T('Dream.levelNew', { n: k + 1, place: theme.name });
+                    this.showToast(T('Dream.levelNew', { n: k + 1, place: theme.name }));
                 } else {
-                    this._caption.textContent = T('Dream.level', { n: k + 1 });
+                    this.showToast(T('Dream.level', { n: k + 1 }));
                 }
             }
             return t;
@@ -5553,9 +5851,13 @@
                 this._controller.eye = 9 + Math.sin(this._time * 0.08) * 6.5;
             }
 
-            // Controller back / cancel button -> wake prompt (gamepads never emit a
-            // DOM 'Escape' keydown, so poll the engine's input here).
-            if (dreamActive && typeof Input !== 'undefined' && Input.isTriggered('cancel')) {
+            // B on the pad (and Escape, and anything else the engine reads as
+            // cancel) -> the wake prompt, where the sleeper is offered their
+            // own cheeks to pinch. Gamepads never emit a DOM 'Escape' keydown,
+            // so the button is polled here as well as read off Input, which a
+            // remapped pad can take the 'cancel' binding away from.
+            if (dreamActive && typeof Input !== 'undefined' &&
+                (Input.isTriggered('cancel') || padEdge('B'))) {
                 this._openWakePrompt();
                 return;
             }
@@ -5589,14 +5891,18 @@
                 return;
             }
 
-            // Walk face-first into a wall and hold against it: the dream
-            // strobes and lets go, and the sleeper is somewhere else. The same
-            // grace as the entities, so a dream that opens with the sleeper's
-            // nose against a monolith is not over before it starts.
+            // Walk face-first into a wall and hold against it, or simply walk
+            // into it again and again: the dream strobes and lets go, and the
+            // sleeper is somewhere else. Anything the sleeper collides with
+            // counts, since in here everything standing is the same wall. The
+            // same grace as the entities, so a dream that opens with the
+            // sleeper's nose against a monolith is not over before it starts.
             if (!this._transitioning && !this._menuOpen && this._time > 1.2 &&
-                this._controller.wallPush > WALL_SECONDS) {
+                (this._controller.wallPush > WALL_SECONDS ||
+                 this._controller.wallBumps >= WALL_BUMPS)) {
                 this._transitioning = true;
                 this._controller.wallPush = 0;
+                this._controller.wallBumps = 0;
                 this._hideSubtitle();
                 dreamSe(this._dream.sfx.gone[0], 80, 110, 0);
                 DreamSystem.collideShift();

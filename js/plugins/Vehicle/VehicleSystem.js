@@ -359,11 +359,6 @@
       canRefuelAtPump: false,
       roadBoost: true,
       boatSubType: 'bike',
-      // The one vehicle that comes indoors. A bicycle is wheeled through a
-      // doorway, carried down a flight of stairs and ridden along a corridor,
-      // so it alone may be summoned, parked and ridden on an <Interior> map and
-      // in a procedural interior (dungeon, crypt, sewer, loot cellar, cave).
-      indoorsAllowed: true,
       summonItemId: 131
     };
 
@@ -400,8 +395,6 @@
       // A road is no shortcut to something that never touches one.
       roadBoost: false,
       boatSubType: 'broom',
-      // Carried in the hand and ridden down a corridor, exactly like the Bike.
-      indoorsAllowed: true,
       // Ignores terrain, walls, water and events, and lands where it likes.
       flying: true,
       summonItemId: 168
@@ -710,9 +703,7 @@
   //   interior       the procedural interior the park was made in ("" in the open
   //                  air). A dungeon, cellar or sewer is generated onto the same
   //                  map id, world square and layer as the field it was entered
-  //                  from, so only this tells the two apart. Only the Bike ever
-  //                  carries a non-empty one: it is the one vehicle allowed
-  //                  indoors (VehicleConfig.BIKE.indoorsAllowed)
+  //                  from, so only this tells the two apart.
   //   order          park sequence, so when several vehicles share one tile the
   //                  last one parked there is the one drawn
 
@@ -732,6 +723,11 @@
   // The reused procedural map's id (owned by WorldMapReturn; 636 by default).
   function proceduralMapId() {
     return (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
+  }
+
+  // The world map's id (owned by WorldMapReturn; 315 by default).
+  function worldMapId() {
+    return (window.WorldMapReturn && window.WorldMapReturn.worldMapId) || 315;
   }
 
   // True while the loaded procedural map is an alien planet's landing grid.
@@ -762,26 +758,6 @@
     if (wmt) return wmt.currentInterior();
     const api = window.ProceduralInteriors;
     return (api && typeof api.currentBiome === 'function' && api.currentBiome()) || '';
-  }
-
-  // Vehicles are outdoor things, with one exception: the Bike (config flag
-  // `indoorsAllowed`). It may be summoned, parked and ridden inside a house, a
-  // dungeon or a cave; every other vehicle is refused there.
-  function configAllowedIndoors(config) {
-    return !!(config && config.indoorsAllowed);
-  }
-
-  function keyAllowedIndoors(key) {
-    return configAllowedIndoors(configForVehicleKey(key));
-  }
-
-  // The config a summon(type, subType) call is asking for, resolved BEFORE the
-  // shared 'boat' slot has been switched over to that sub-type.
-  function configForSummon(vehicleType, subType) {
-    if (vehicleType === 'boat') return configForVehicleKey(subType || 'car');
-    if (vehicleType === 'ship') return VehicleConfig.CAMPER;
-    if (vehicleType === 'airship') return VehicleConfig.AIRSHIP;
-    return null;
   }
 
   // How deep in the layer stack (cave floors, ocean depths) the loaded procedural
@@ -842,6 +818,15 @@
     if (worldX !== undefined && worldY !== undefined) {
       loc.worldX = Number(worldX) || 0;
       loc.worldY = Number(worldY) || 0;
+    } else if (Number(mapId) === worldMapId()) {
+      // On the world map a tile IS a world square, so the park answers for
+      // itself. Asked without world coords, locateOnMap() would hand back the
+      // PARTY's square (where the player stands), which is only the same tile
+      // while they are still aboard: a caller recording a vehicle the player
+      // has just stepped away from would otherwise file it under the player's
+      // new tile and the vehicle would be shown one step off, underneath them.
+      loc.worldX = loc.x;
+      loc.worldY = loc.y;
     }
     return loc;
   }
@@ -1562,10 +1547,6 @@
     savePosition(vehicle) {
       const config = this.getConfig(vehicle);
       if (!config) return;
-      // Indoors only the Bike keeps a park record; leaving any other vehicle on
-      // an interior map is a state the store must never learn about, so its last
-      // outdoor spot stands.
-      if (mapCache.isInterior($gameMap.mapId()) && !configAllowedIndoors(config)) return;
       const key = VehiclePosition.keyForConfig(config);
       const mapId = $gameMap.mapId();
 
@@ -1575,7 +1556,10 @@
       // shown on map 315 no matter where it is actually parked, and (for the proc
       // map) identify which biome it was left in so it is only re-placed in that
       // biome, at the same internal tile, when that world square is revisited.
-      const wc = currentWorldCoords();
+      // The world square of the VEHICLE's tile, not of the party: on the world
+      // map they part company the instant the player steps out of the vehicle,
+      // and the "stop driving" flow saves the park again after that step.
+      const wc = worldCoordsForMap(mapId, vehicle.x, vehicle.y);
       VehiclePosition.set(key, mapId, vehicle.x, vehicle.y, wc.x, wc.y);
       // The vehicle just parked is the one drawn where it stands, so it comes out
       // on top of anything already parked on that tile.
@@ -1590,17 +1574,6 @@
     }
 
     summon(vehicleType, subType) {
-      // Indoors covers both the hand-made <Interior> maps and the procedural
-      // interiors (dungeon, crypt, sewer, loot cellar, cave...), which carry no
-      // note tag of their own. The Bike is exempt: it goes wherever the player
-      // goes. The Vehicles menu greys its Spawn button out on the same test, so
-      // this is the last line rather than the usual one.
-      if (mapCache.isInterior($gameMap.mapId()) &&
-        !configAllowedIndoors(configForSummon(vehicleType, subType))) {
-        showLocalizedMessage(T('VehicleSystem.noSummonIndoors'));
-        return;
-      }
-
       if (vehicleType === 'boat') {
         $gameSystem._boatType = subType || 'car';
       }
@@ -1844,9 +1817,6 @@
     if (typeof $gameSystem === 'undefined' || !$gameSystem) return;
     if (!mapId) return;
     const config = vehicleManager.getConfig(this);
-    // Same rule as savePosition: an interior park is only ever recorded for the
-    // Bike, so nothing else can be memorized standing in a house or a dungeon.
-    if (mapCache.isInterior(mapId) && !configAllowedIndoors(config)) return;
     const key = VehiclePosition.keyForConfig(config);
     if (!key) return;
     const pos = VehiclePosition.get(key);
@@ -1930,18 +1900,16 @@
       // sort of thing it is meant to go straight over.
       if (isFlyingVehicle(this)) return $gameMap.isValid(x2, y2);
 
-      // Indoors (a house, a dungeon, a cave) the Bike is the only vehicle that
-      // may move at all, and there it simply goes wherever the player could
-      // walk: the outdoor terrain-tag whitelist below describes open country
-      // and would refuse every corridor tile.
+      // Indoors (a house, a dungeon, a cave) every vehicle simply goes wherever
+      // the player could walk: the outdoor terrain-tag whitelist below describes
+      // open country and would refuse every corridor tile.
       if (mapCache.isInterior($gameMap.mapId())) {
-        if (!configAllowedIndoors(vehicleManager.getConfig(this))) return false;
         if (isVehicleBlockedTile(x2, y2, $gameMap.mapId())) return false;
         return $gameMap.isPassable(x2, y2, this.reverseDir(d));
       }
 
       // The Starship is an airship: it flies over everything (blocked tiles and
-      // water alike). Only fuel and the interior-map rule above restrict it (#156).
+      // water alike) outdoors. Only fuel and the interior-map rule above restrict it (#156).
       if (this.isAirship()) return true;
 
       // The Boat (dinghy) is water-only: passability is fully defined by
@@ -2108,6 +2076,10 @@
   const _Game_Vehicle_getOff = Game_Vehicle.prototype.getOff;
   Game_Vehicle.prototype.getOff = function () {
     if (this.isShip() || this.isBoat() || this.isAirship()) {
+      // A vehicle being stepped out of is standing on the map that is loaded,
+      // whichever map it was boarded on. Claim it before the refresh below
+      // decides whether to draw the parked sprite.
+      if (this._driving) this._mapId = $gameMap.mapId();
       vehicleManager.savePosition(this);
       $gamePlayer._dashing = false;
     }
@@ -3014,6 +2986,22 @@
       handlers.push(() => window.TunableRadio.open());
     }
 
+    // Boat only: fishing over the side. A dinghy is sitting on open water
+    // wherever it is, so the only question is whether anybody in the party is
+    // carrying something to fish with - which Map/MovementInteractionSystem.js
+    // answers, since it owns both the gear list and the minigame.
+    if (isRiding && isBoatSubType(vehicle) && window.MovementSystem &&
+        typeof window.MovementSystem.hasFishingRod === 'function' &&
+        window.MovementSystem.hasFishingRod()) {
+      choices.push(T('VehicleSystem.fish'));
+      // The choice list is still closing, so the minigame is pushed on the next
+      // frame the message system is free again (as fast travel and the star map
+      // are).
+      handlers.push(() => {
+        setTimeout(() => window.MovementSystem.performFishing($gamePlayer), 100);
+      });
+    }
+
     // World map only: events the vehicle is parked on (or that the player is
     // standing on while the vehicle is in front of them) are unreachable with
     // the action button, because opening this menu already consumed the press.
@@ -3214,42 +3202,11 @@
       const events = $gameMap.eventsXy(x, y);
       return events.some(e => e && e.event() && e.event().name && e.event().name.toLowerCase().startsWith('transfer'));
     }
-
-    static getTransferMapId(x, y) {
-      const events = $gameMap.eventsXy(x, y);
-      for (const event of events) {
-        const name = event.event().name;
-        if (name.toLowerCase().startsWith('transfer')) {
-          const match = name.match(/\((\d+)/);
-          if (match) return parseInt(match[1]);
-        }
-      }
-      return null;
-    }
-
-    static checkVehicleInteriorBlock(x, y, vehicle) {
-      if ($gameMap.mapId() === 315) return false;
-      if (!this.isTransferEvent(x, y)) return false;
-
-      const mapId = this.getTransferMapId(x, y);
-      if (mapId && mapCache.isInterior(mapId)) {
-        const config = vehicleManager.getConfig(vehicle);
-        if (!config) return false;
-        // The Bike is wheeled in through the door with the player.
-        if (configAllowedIndoors(config)) return false;
-        showLocalizedMessage(T('VehicleSystem.cannotFit', { vehicle: vehicleNounName(config) }));
-        return true;
-      }
-      return false;
-    }
   }
 
   const _Game_Player_checkEventTriggerHere = Game_Player.prototype.checkEventTriggerHere;
   Game_Player.prototype.checkEventTriggerHere = function (triggers) {
     if (isPlayerRidingCustomVehicle() && $gameMap.mapId() !== 315) {
-      if (EventInteractionControl.checkVehicleInteriorBlock(this.x, this.y, $gamePlayer.vehicle())) {
-        return false;
-      }
       if (!EventInteractionControl.isTransferEvent(this.x, this.y)) {
         return false;
       }
@@ -3264,9 +3221,6 @@
       const x2 = $gameMap.roundXWithDirection(this.x, d);
       const y2 = $gameMap.roundYWithDirection(this.y, d);
 
-      if (EventInteractionControl.checkVehicleInteriorBlock(x2, y2, $gamePlayer.vehicle())) {
-        return false;
-      }
       if (!EventInteractionControl.isTransferEvent(x2, y2)) {
         return false;
       }
@@ -4132,16 +4086,10 @@
       return ownsVehicleConfig(configByVehicleKey(key));
     },
 
-    // False wherever the given vehicle may not be summoned: any hand-made
-    // <Interior> map, a vehicle's own cabin, and every PROCEDURAL INTERIOR
-    // (dungeon, crypt, sewer, loot cellar, temple inside, cave den, patron
-    // vault, cave, or any layer below the surface). The Bike answers true
-    // everywhere, being the one vehicle that comes indoors. The Vehicles menu
-    // greys out its Spawn button per row on this answer.
+    // False only when there is no map loaded to summon onto. Every vehicle may
+    // be summoned indoors and out.
     canSpawnHere(key) {
-      if (typeof $gameMap === 'undefined' || !$gameMap) return false;
-      if (!mapCache.isInterior($gameMap.mapId())) return true;
-      return keyAllowedIndoors(key);
+      return typeof $gameMap !== 'undefined' && !!$gameMap;
     },
 
     // Summons the vehicle the party last drove to a tile beside them: what a
@@ -4232,6 +4180,15 @@
       const config = vehicleManager.getConfig(this);
       if (config) {
         if (this._driving) {
+          // The ridden vehicle travels with the player, so it belongs to
+          // whatever map is loaded now. The engine's own refresh() does this,
+          // and this override replaces it wholesale: without the line, a
+          // vehicle driven across a map transfer keeps the id of the map it
+          // set off from, and the moment the player steps out the branch below
+          // reads it as "parked somewhere else" and blanks the sprite, so the
+          // vehicle vanishes from under them (most visibly on the world map,
+          // which is always reached by driving into it).
+          this._mapId = $gameMap.mapId();
           this._characterName = "";
           this._characterIndex = 0;
           this._isObjectCharacter = false;
@@ -4353,7 +4310,27 @@
     // A game that hides the party by configuration (Options > transparent) is
     // left alone: that is a choice, not the vehicle.
     if ($dataSystem && $dataSystem.optTransparent) return;
+    // While the party is boarding a vehicle with seats, transparency is decided
+    // per member rather than copied off the leader: the ones who have arrived are
+    // sitting in it, the ones still walking over are on the map and must stay
+    // visible even after the leader has sat down and gone transparent.
+    if (boardingSeatedVehicle()) {
+      this.setTransparent(hasReachedVehicle(this));
+      return;
+    }
     if (this.isTransparent() && riddenPortableConfig()) this.setTransparent(false);
+  };
+
+  // The leader sits down the same way, the moment they step onto the hull, rather
+  // than standing on the deck until the last of the party has caught up. Nothing
+  // puts the body back: boarding ends with the engine making the player
+  // transparent anyway, and getting off clears it.
+  const _Game_Player_update_VSseats = Game_Player.prototype.update;
+  Game_Player.prototype.update = function (sceneActive) {
+    _Game_Player_update_VSseats.call(this, sceneActive);
+    if (boardingSeatedVehicle() && hasReachedVehicle(this) && !this.isTransparent()) {
+      this.setTransparent(true);
+    }
   };
 
   // ============================================================================
@@ -4454,14 +4431,78 @@
       ? [driver].concat(members.filter(a => a !== driver))
       : members;
     for (const actor of ordered) {
-      out.push({ name: actor.characterName(), index: actor.characterIndex() });
+      out.push({
+        name: actor.characterName(),
+        index: actor.characterIndex(),
+        char: characterForActor(actor),
+      });
     }
     const pet = window.PetSystem && window.PetSystem.getActivePet
       ? window.PetSystem.getActivePet() : null;
     if (pet && pet.characterName) {
-      out.push({ name: pet.characterName, index: pet.characterIndex || 0 });
+      out.push({
+        name: pet.characterName,
+        index: pet.characterIndex || 0,
+        char: petFollowerCharacter(),
+      });
     }
     return out.filter(r => !!r.name);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Boarding, one member at a time
+  // ---------------------------------------------------------------------------
+  //
+  // The engine claims the vehicle the moment the party is called in, so the whole
+  // crew used to appear in their seats while half of them were still three tiles
+  // away. In Loose formation (Core/AutoIdleExplorer.js) the party is scattered by
+  // design, and the engine's Gather Party then walks every member to the hull from
+  // wherever they were standing - which is the walk worth watching. So each member
+  // is sat down at the moment they reach the vehicle: the benches fill one after
+  // another, the body of whoever has arrived is taken off the tile (they are in
+  // the boat now, not standing on it), and nobody is drawn aboard a boat they have
+  // not got to yet.
+
+  /**
+   * The body walking the map for this party member: the player for whoever is
+   * leading the party, and the follower carrying that actor for everybody else.
+   */
+  function characterForActor(actor) {
+    if (!actor || !$gamePlayer || typeof $gameParty === 'undefined' || !$gameParty) return null;
+    if ($gameParty.leader() === actor) return $gamePlayer;
+    const followers = $gamePlayer.followers();
+    const data = followers && followers.data ? followers.data() : [];
+    return data.find(f => f && f.actor && f.actor() === actor) || null;
+  }
+
+  /** The follower slot the active pet walks in (PetFollowerSystem.js), or null. */
+  function petFollowerCharacter() {
+    if (!window.Game_PetFollower || !$gamePlayer) return null;
+    const followers = $gamePlayer.followers();
+    const data = followers && followers.data ? followers.data() : [];
+    return data.find(f => f instanceof window.Game_PetFollower) || null;
+  }
+
+  /**
+   * The seated vehicle the player is stepping into right now, or null. Boarding is
+   * over the frame the engine sits everybody down, and outside it there is nobody
+   * to wait for.
+   */
+  function boardingSeatedVehicle() {
+    if (!$gamePlayer || !$gamePlayer._vehicleGettingOn) return null;
+    const ride = ridingSeats();
+    return ride ? ride.vehicle : null;
+  }
+
+  /**
+   * Has this member reached the vehicle being boarded? Standing on its tile with
+   * the step finished is what counts as aboard. True for everybody whenever no
+   * boarding is in progress, so the crew is simply drawn as it always was.
+   */
+  function hasReachedVehicle(character) {
+    const vehicle = boardingSeatedVehicle();
+    if (!vehicle) return true;
+    return !!character && !character.isMoving() && character.pos(vehicle.x, vehicle.y);
   }
 
   const _Spriteset_Map_createCharacters_VS = Spriteset_Map.prototype.createCharacters;
@@ -4504,12 +4545,15 @@
     const z = ride ? ride.vehicle.screenZ() : 3;
     for (let i = 0; i < sprites.length; i++) {
       const sprite = sprites[i];
-      const seat = ride && i < riders.length ? ride.seats[i] : null;
+      const rider = ride && i < riders.length ? riders[i] : null;
+      // A member still walking over to the hull keeps their own body and has no
+      // seat drawn for them yet (see "Boarding, one member at a time" above).
+      const seat = rider && hasReachedVehicle(rider.char) ? ride.seats[i] : null;
       if (!seat) {
         sprite.visible = false;
         continue;
       }
-      sprite.setRider(riders[i].name, riders[i].index);
+      sprite.setRider(rider.name, rider.index);
       sprite.updateRiderFrame(direction);
       sprite.x = baseX + seat[0];
       sprite.y = baseY + seat[1];

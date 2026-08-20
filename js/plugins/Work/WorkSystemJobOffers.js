@@ -325,7 +325,6 @@
     refreshUIJobOffersDOM() {
       if (!this._dndContainer) return;
 
-      const useItalian = ConfigManager.language === 'it';
       const jobs = this._jobListWindow ? this._jobListWindow._data : [];
       const selectedIndex = this._jobListWindow ? this._jobListWindow.index() : 0;
       const selectedJob = jobs[selectedIndex] || null;
@@ -407,7 +406,6 @@
     }
 
     getJobsOffersBoardHTML(jobs, selectedIndex) {
-      const useItalian = ConfigManager.language === 'it';
       const title =T('WorkSystem.jobBoardOffers');
       // In OS app mode the active RMMZ scene is Scene_HypernetOS (no job handlers),
       // so inline onclicks must target the live app instance instead.
@@ -424,7 +422,7 @@
         } else {
           jobs.forEach((job, idx) => {
             const isSelected = idx === selectedIndex && this._dndFocusSection === 'list';
-            const jobName = useItalian && job.name_it ? job.name_it : job.name;
+            const jobName = window.WorkSystem.jobName(job);
             const hourlyPay = Math.round(job.basePay / job.duration);
 
             listHTML += `
@@ -434,7 +432,7 @@
                       ${jobName}
                     </span>
                     <span style="font-size:13px; color:#555; display:flex; align-items:center; gap:5px">
-                      ${job.category} • ${job.duration}h ${this.getRemoteTagHTML(job)}
+                      ${window.WorkSystem.jobCategoryLabel(job)} • ${job.duration}h ${this.getRemoteTagHTML(job)}
                     </span>
                   </div>
                   <div style="display:flex; flex-direction:column; align-items:flex-end">
@@ -472,7 +470,7 @@
       } else {
         jobs.forEach((job, idx) => {
           const isSelected = idx === selectedIndex && this._dndFocusSection === 'list';
-          const jobName = useItalian && job.name_it ? job.name_it : job.name;
+          const jobName = window.WorkSystem.jobName(job);
           const hourlyPay = Math.round(job.basePay / job.duration);
 
           const itemStyle = `
@@ -496,7 +494,7 @@
                     ${jobName}
                   </span>
                   <span style="font-size:0.915rem; color:#6b5242; font-family:'Lora', serif; display:flex; align-items:center; gap:6px">
-                    ${job.category} • ${job.duration}h ${this.getRemoteTagHTML(job)}
+                    ${window.WorkSystem.jobCategoryLabel(job)} • ${job.duration}h ${this.getRemoteTagHTML(job)}
                   </span>
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:flex-end">
@@ -529,7 +527,6 @@
     }
 
     getJobOfferContractHTML(job, actor) {
-      const useItalian = ConfigManager.language === 'it';
       if (!job) {
         if (this._isAppMode) {
           return `
@@ -545,8 +542,8 @@
           `;
       }
 
-      const jobName = useItalian && job.name_it ? job.name_it : job.name;
-      const description = useItalian && job.description_it ? job.description_it : job.description;
+      const jobName = window.WorkSystem.jobName(job);
+      const description = window.WorkSystem.jobDescription(job);
 
       const reqCheck = window.WorkSystem.meetsRequirements(actor, job);
       const successChance = window.WorkSystem.calculateSuccessChance(actor, job);
@@ -626,7 +623,7 @@
                 <div style="display:flex; flex-direction:column; gap:4px; font-size:14px">
                   <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
                     <strong style="color:#333">${T('WorkSystem.categoryLabel')}:</strong>
-                    <span>${job.category}</span>
+                    <span>${window.WorkSystem.jobCategoryLabel(job)}</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
                     <strong style="color:#333">${T('WorkSystem.duration')}:</strong>
@@ -731,7 +728,7 @@
               <div style="display:flex; flex-direction:column; gap:6px; font-size:1.08rem">
                 <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
                   <strong style="color:#5c3516">${T('WorkSystem.categoryLabel')}:</strong>
-                  <span>${job.category}</span>
+                  <span>${window.WorkSystem.jobCategoryLabel(job)}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
                   <strong style="color:#5c3516">${T('WorkSystem.duration')}:</strong>
@@ -880,7 +877,6 @@
     }
 
     getActorSelectionHTML(actors, selectedActorIndex, selectedJob) {
-      const useItalian = ConfigManager.language === 'it';
       const sref = this._isAppMode ? 'window.HypernetJobsApp.appInstance' : 'SceneManager._scene';
 
       if (this._isAppMode) {
@@ -1215,7 +1211,7 @@
 
       const rect = this.itemLineRect(index);
       const language = ConfigManager.language || 'en';
-      const jobName = language === 'it' ? job.name_it : job.name;
+      const jobName = window.WorkSystem.jobName(job);
       const hourlyPay = Math.round(job.basePay / job.duration);
 
       // Draw job name
@@ -1275,7 +1271,7 @@
       y += lineHeight;
 
       this.changeTextColor(ColorManager.normalColor());
-      const description = language === 'it' ? this._job.description_it : this._job.description;
+      const description = window.WorkSystem.jobDescription(this._job);
       const wrappedDesc = this.wrapText(description, this.contentsWidth());
       for (const line of wrappedDesc) {
         this.drawText(line, 0, y, this.contentsWidth());

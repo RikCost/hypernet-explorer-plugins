@@ -492,6 +492,12 @@
         data.travelCompleted = true;
         $gameSwitches.setValue(55, false);
 
+        if (window.ParchmentToast) {
+            const destName = data.timerDestination
+                ? destLabel(data.timerDestination) : T('FastTravel.yourDestination');
+            ParchmentToast.show(T('FastTravel.arrivedAt', { place: destName }), { severity: 'good' });
+        }
+
         this.updateAllTravelTimerWindows();
     };
 
@@ -1029,6 +1035,11 @@
 
         if ($gameTemp && $gameTemp._characterCreationTravelMode) {
             $gameTemp._characterCreationTravelMode = false;
+            // The party is on its way: the origin is settled and the copy kept
+            // to undo it is not needed any more.
+            if (window.CharacterCreationOrigin && window.CharacterCreationOrigin.clearSnapshot) {
+                window.CharacterCreationOrigin.clearSnapshot();
+            }
             $gamePlayer.setMovementLock(true);
             $gameScreen.startFadeOut(24);
             const actualDest = getActualDestination(destination, data.selectedTransport);
@@ -1514,10 +1525,10 @@
 
     // Nobody is set down in a boulder, a wall, a pond or the inside of the very
     // shelter they got off at. CharacterCreation settles its own origins on a
-    // square the same way and its test is the stricter one (passable in every
-    // direction, nothing standing on it, no floor that hurts), so it is used
-    // where it is loaded and the plain passability test stands in where it is
-    // not.
+    // square the same way, and its test is the one that reads the terrain as the
+    // player does (Game_CharacterBase.canPass, so water regions, cliffs and
+    // mountain tags all count), so it is used where it is loaded; the plain
+    // tileset-flag test below only stands in where it is not.
     function placeOnStandableTile() {
         const CCP = window.CCOriginPlacement;
         if (CCP && typeof CCP.placeOnStandableTile === 'function') {
@@ -1769,19 +1780,6 @@
             }
         }
 
-        const destinationsWithDistance = filtered
-            .map(dest => {
-                const worldDest = getWorldPosition(dest);
-                const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
-                return { destination: dest, distance: distance };
-            })
-            .sort((a, b) => a.distance - b.distance);
-
-        // Build the HTML overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'travel-overlay';
-        _travelOverlayEl = overlay;
-
         // Gold is the transport network, and nothing else. A place reads as a hub
         // when its Destinations.json entry declares an arrival stop of its own -
         // any of them, a platform, a bus bay, a helipad - and that is the only
@@ -1790,6 +1788,28 @@
         // they are travelling.
         const isHub = dest => !!(dest && dest.transportOverrides
             && TRANSPORT_KEYS.some(key => dest.transportOverrides[key]));
+
+        // The places the network actually reaches are read first: every hub
+        // heads the list, everything else follows, and inside each of the two
+        // groups the nearest stop still comes first. A hub pin is also drawn
+        // last so it lies OVER the plain stops it shares a corner of the map
+        // with, and stays the one the click lands on.
+        const destinationsWithDistance = filtered
+            .map(dest => {
+                const worldDest = getWorldPosition(dest);
+                const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
+                return { destination: dest, distance: distance };
+            })
+            .sort((a, b) => {
+                const hubDelta = (isHub(b.destination) ? 1 : 0) - (isHub(a.destination) ? 1 : 0);
+                if (hubDelta !== 0) return hubDelta;
+                return a.distance - b.distance;
+            });
+
+        // Build the HTML overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'travel-overlay';
+        _travelOverlayEl = overlay;
 
         // What kind of place it is comes from the entry's own "type" (city,
         // village, dungeon, gasStation), which decides the SHAPE of the pin.
@@ -1838,7 +1858,7 @@
             `;
         }).join('');
 
-        const markersHTML = destinationsWithDistance.map(item => {
+        const markersHTML = destinationsWithDistance.slice().reverse().map(item => {
             const dest = item.destination;
             const pix = destPixel(dest);
             const x = pix.x;
@@ -1863,11 +1883,29 @@
             ? T('FastTravel.fuelRate', { rate: fuelConsumptionRate })
             : T('FastTravel.rateMultiplier', { multiplier: multiplier.toFixed(1) });
 
-        const backButtonHTML = isCCTravel
+        // The picker a character is created in cannot be cancelled - a party has
+        // to begin SOMEWHERE - but the choice that opened it can still be taken
+        // back: the Back button here hands the player to the origin list again,
+        // and CharacterCreation undoes everything the chosen origin granted on
+        // the way (CharacterCreationOrigin.reopen). The hometown step's picker
+        // is a different question with a step of its own to return to, so it
+        // keeps no button.
+        const ccCanReopenOrigin = isCCTravel
+            && !($gameTemp && $gameTemp._ccHometownPick)
+            && !!(window.CharacterCreationOrigin
+                && window.CharacterCreationOrigin.canReopen
+                && window.CharacterCreationOrigin.canReopen());
+
+        const backButtonLabel = isCCTravel ? T('FastTravel.ui.backToOrigin') : T('FastTravel.ui.back');
+        const backButtonAction = isCCTravel
+            ? "SceneManager._scene.reopenCreationOriginStep()"
+            : "SceneManager._scene.closeTravelUIOverlay()";
+
+        const backButtonHTML = (isCCTravel && !ccCanReopenOrigin)
             ? ""
             : `
             <div style="margin-top: auto; padding-top: 15px; border-top: 1.5px dashed rgba(139, 90, 43, 0.15)">
-                <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box" onclick="SceneManager._scene.closeTravelUIOverlay()">${T('FastTravel.ui.back')}</div>
+                <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box" onclick="${backButtonAction}">${backButtonLabel}</div>
             </div>
             `;
 
@@ -1961,6 +1999,14 @@
         `;
 
         document.body.appendChild(overlay);
+
+        // Character creation steps out to this picker behind a full-screen black
+        // veil (CCTransitionVeil), so the map it briefly returns to never shows.
+        // The veil is the destination screen's to lift, and this is that screen:
+        // the list is attached and painted, so there is nothing left to hide.
+        // Without this the picker sat under an opaque sheet until the veil's own
+        // 8-second watchdog fired, which read as the game failing to load.
+        if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
 
         this._travelEditModeActive = false;
         this._travelEditPositions = {};
@@ -2423,6 +2469,22 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         if (routeLineBg) routeLineBg.setAttribute('d', '');
     };
 
+    // Back out of the starting place picker and into the origin list. Only
+    // character creation ever gets here, and only while the origin it opened the
+    // picker for can still be undone.
+    Scene_Map.prototype.reopenCreationOriginStep = function () {
+        const CCOrigin = window.CharacterCreationOrigin;
+        if (!CCOrigin || !CCOrigin.canReopen || !CCOrigin.canReopen()) return;
+        clearFastTravelData();
+        this.closeTravelUIOverlay();
+        // Failing here would leave the player on the map with no picker and no
+        // origin list, so the picker is put back rather than abandoned.
+        if (!CCOrigin.reopen()) {
+            $gameTemp._openCharacterCreationTrainTravel = true;
+            $gameTemp._characterCreationTravelMode = true;
+        }
+    };
+
     Scene_Map.prototype.closeTravelUIOverlay = function (skipSound) {
         if (!skipSound) SoundManager.playCancel();
         const overlay = document.getElementById('travel-overlay');
@@ -2487,6 +2549,12 @@ Scene_Map.prototype.printTravelCoordinates = function () {
                     this.closeTravelConfirmModal();
                 } else if (!($gameTemp && $gameTemp._characterCreationTravelMode)) {
                     this.closeTravelUIOverlay();
+                } else {
+                    // Creation's own picker: cancel is not "close", it is the
+                    // Back button drawn beside the list - the origin list again,
+                    // with the origin undone. Where there is no origin to go
+                    // back to it does nothing, as before.
+                    this.reopenCreationOriginStep();
                 }
                 Input.clear();
                 TouchInput.clear();
@@ -2639,25 +2707,25 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             if (!data.timerActive) { this._htmlEl.style.display = 'none'; return; }
 
             if (data.timerRemainingTime <= 0 && data.travelCompleted) {
-                const destName = data.timerDestination
-                    ? destLabel(data.timerDestination) : T('FastTravel.yourDestination');
-                this._htmlEl.innerHTML =
-                    `<div class="travel-timer-complete">${T('FastTravel.arrivedAt', { place: destName })}</div>`;
-            } else {
-                const t = data.timerRemainingTime;
-                const mm = String(Math.floor(t / 60)).padStart(2, '0');
-                const ss = String(t % 60).padStart(2, '0');
-                let kmHtml = '';
-                if (data.totalDistanceKm > 0 && data.timerDuration > 0) {
-                    const progress = (data.timerDuration - t) / data.timerDuration;
-                    const remKm = Math.max(0, Math.round(data.totalDistanceKm * (1 - progress)));
-                    kmHtml = `<div class="travel-timer-km">${T('FastTravel.kmRemaining', { km: remKm })}</div>`;
-                }
-                this._htmlEl.innerHTML =
-                    `<div class="travel-timer-label">${T('FastTravel.timeToArrival')}</div>` +
-                    `<div class="travel-timer-time">${mm}:${ss}</div>` +
-                    kmHtml;
+                // The arrival itself is announced by the toast fired in
+                // completeTravelTimer; the countdown box just goes away.
+                this._htmlEl.style.display = 'none';
+                return;
             }
+
+            const t = data.timerRemainingTime;
+            const mm = String(Math.floor(t / 60)).padStart(2, '0');
+            const ss = String(t % 60).padStart(2, '0');
+            let kmHtml = '';
+            if (data.totalDistanceKm > 0 && data.timerDuration > 0) {
+                const progress = (data.timerDuration - t) / data.timerDuration;
+                const remKm = Math.max(0, Math.round(data.totalDistanceKm * (1 - progress)));
+                kmHtml = `<div class="travel-timer-km">${T('FastTravel.kmRemaining', { km: remKm })}</div>`;
+            }
+            this._htmlEl.innerHTML =
+                `<div class="travel-timer-label">${T('FastTravel.timeToArrival')}</div>` +
+                `<div class="travel-timer-time">${mm}:${ss}</div>` +
+                kmHtml;
             this._htmlEl.style.display = 'block';
             this._syncPos();
         }
@@ -2669,7 +2737,8 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             const sx = r.width / Graphics.width, sy = r.height / Graphics.height;
             const s = this._htmlEl.style;
             s.left     = (r.left + 20 * sx) + 'px';
-            s.top      = (r.top  + 80 * sy) + 'px';
+            s.top      = 'auto';
+            s.bottom   = (window.innerHeight - r.bottom + 20 * sy) + 'px';
             s.padding  = `${Math.round(12 * sy)}px ${Math.round(20 * sx)}px`;  // i18n-ignore  css value
             s.minWidth = Math.round(200 * sx) + 'px';
             s.fontSize = Math.round(16 * sy) + 'px';

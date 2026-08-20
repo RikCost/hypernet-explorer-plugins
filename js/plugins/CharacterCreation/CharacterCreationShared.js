@@ -181,7 +181,7 @@
   // The body every actor already starts with (Health_Core initializes a new
   // actor's parts from the Humanoid archetype), so a sheet that answers
   // "Humanoid" has nothing to change and the actor is left alone.
-  const DEFAULT_ARCHETYPE = "Humanoid"; // i18n-ignore: EnemyArchetypes.json key
+  const DEFAULT_ARCHETYPE = "Humanoid"; // i18n-ignore: Archetypes.json key
 
   /**
    * Settle a character's gender and body archetype from the sprite sheet they
@@ -623,9 +623,9 @@
   };
 
   //=============================================================================
-  // Creature classes , which classes an EnemyArchetypes archetype can be played
-  // as. Every archetype in js/db/Health/EnemyArchetypes.json carries its own
-  // roster (DataService loads the file as window.Health.EnemyArchetypes), as
+  // Creature classes , which classes an Archetypes archetype can be played
+  // as. Every archetype in js/db/Health/Archetypes.json carries its own
+  // roster (DataService loads the file as window.Health.Archetypes), as
   // two arrays of $dataClasses ids:
   //
   //   classes         , the civilised roster, ids 1-62. The humanoids, the
@@ -653,7 +653,7 @@
 
   const CreatureClasses = {
     _data() {
-      return (window.Health && window.Health.EnemyArchetypes) || null;
+      return (window.Health && window.Health.Archetypes) || null;
     },
 
     // Drops ids no class in the database answers to.

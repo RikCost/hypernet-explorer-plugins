@@ -216,7 +216,8 @@
     // and their skins) live here as npc:false entries.
     //
     //   { "Skab/!$Adept": { npc, aliens, busts, beta, animations,
-    //                       Archetype, Gender, chars, color, classes, markovDB } }
+    //                       Archetype, model, Gender, chars, color, classes,
+    //                       markovDB } }
     //
     //   npc        the sheet may be dealt to a procedural inhabitant
     //   aliens     the sheet is not a person of this world. An alien is dealt at
@@ -226,6 +227,10 @@
     //              is kept out of every automatic pick unless the world was created
     //              with beta sprites enabled, see window.SpriteCatalog below.
     //   animations the sheet is an animation/pose sheet, not a 3x4 walk sheet
+    //   model      a registered Battler3D key this sheet is portrayed by in place
+    //              of a bust. Carried by every `animal` and `creature` sheet: a
+    //              beast has no bust and never will, so the panels draw the 3D
+    //              body named here (see NPCCreature.modelForSprite)
     //
     // Every bust plugin reads SpritesAssociation[spriteName][characterIndex] →
     // bustName, so the flat bust map is rebuilt here from the busts arrays and
@@ -245,14 +250,9 @@
     // The one place that answers "which character sheets may this world use?".
     //
     // A beta sheet is one that is not in the original folder: it is drawn, it is
-    // in the game, and the character grid offers it, but nothing picks it on the
-    // player's behalf. A world can opt in at creation time ("beta sprites",
-    // world.json → betaSprites), and only at creation time: the answer decides
-    // which faces the world was populated with, so it cannot be taken back or
-    // granted later without the world's people changing under it. Turning it on
-    // widens the pool for everyone dealt from then on; whoever already has a face
-    // keeps it, since a settlement's pool is stored in the world folder
-    // (npcs.json → poolCache) once it has been dealt.
+    // in the game, and the character grid offers it for the player's own
+    // character, but it is never dealt to anyone else. Nothing picks one on the
+    // player's behalf, in any world.
     (function () {
         // Pools are rebuilt only when the beta answer changes, which happens at
         // most once per world activation.
@@ -269,6 +269,15 @@
         const ALIEN_SHARE_TRANSPORT = 0.25;
         const ALIEN_SHARE_OFFWORLD = 0.90;
         const TRANSPORT_GROUP = "PublicTransport"; // i18n-ignore: MapGroups.json key
+
+        // The share of a zombie world's crowd that is one of the dead walking
+        // (WorldManager.populationMode "zombie"). The `zombie` sheets of
+        // NPCs.json (the Zombies/ folder) are a pool of their own there, dealt
+        // on the same single draw the aliens are: nine faces in ten are a
+        // corpse still on its feet, the tenth is somebody who made it. Those
+        // sheets stay in the ordinary pool of every OTHER world, where they are
+        // simply one more face somebody can be wearing.
+        const ZOMBIE_SHARE = 0.9;
 
         // Varlenia, and the people who are from there. A sheet flagged
         // `varlenian` in NPCs.json is a Varlenian face, and a Varlenian face is
@@ -549,14 +558,6 @@
                 return MN.allows(e && e.magical === true);
             },
 
-            // Whether the active world was created with beta sprites enabled.
-            betaEnabled() {
-                const WM = window.WorldManager;
-                if (!WM || !WM.hasActiveWorld || !WM.hasActiveWorld()) return false;
-                const info = WM.worldInfo();
-                return !!(info && info.betaSprites === true);
-            },
-
             // Who this world is populated with, answered once at creation
             // (WorldManager.populationMode). Read here rather than stored, so a
             // world switched under a running session is never read stale.
@@ -641,10 +642,17 @@
                        String(bustName).toLowerCase().includes("goblin");
             },
 
-            // Every sheet that may be dealt to a procedural inhabitant. Beta
-            // sheets follow the world's answer unless includeBeta says otherwise
-            // (the character grid passes true: the player browses everything).
-            // Aliens are never in it: they are dealt by pickNpcKey alone.
+            // Every sheet that may be dealt to a procedural inhabitant. A beta
+            // sheet (not in the original folder) is never in it: it is browsable
+            // in the character grid, but nothing is ever dealt one on the
+            // player's behalf. Aliens are never in it either: they are dealt by
+            // pickNpcKey alone. Nor are the `creature` / `animal` entries: a
+            // creature is never a person, it is dealt by NPCCreature's own (much
+            // rarer) roll, see creatureKeys. Leaving them in here would deal a
+            // stray dog or a Mimic at their flat share of the whole wardrobe
+            // (well over a tenth of it for `animal` alone) on top of
+            // NPCCreature's own roll, far more often than either is meant to
+            // turn up.
             // The population mode is part of the cache key: a goblin world and
             // a normal one are two different pools off the same file, and the
             // cache outlives a world switch inside one session.
@@ -653,9 +661,6 @@
             // it everywhere else (see isVarlenianPlace), which is why that
             // answer is part of the cache key rather than a filter on top.
             npcKeys(options) {
-                const includeBeta = (options && options.includeBeta !== undefined)
-                    ? !!options.includeBeta
-                    : this.betaEnabled();
                 const mode = (options && options.populationMode)
                     ? options.populationMode
                     : this.populationMode();
@@ -663,17 +668,52 @@
                 const varlenia = (options && options.varlenia !== undefined)
                     ? !!options.varlenia
                     : this.isVarlenianPlace(options && options.mapId);
-                const slot = (includeBeta ? "all" : "stable") + ":" + mode + ":" + magic +
-                    (varlenia ? ":varlenia" : "");
+                const slot = mode + ":" + magic + (varlenia ? ":varlenia" : "");
                 if (!poolCache[slot]) {
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
                         const e = data[k];
                         if (!e || e.npc !== true || e.aliens === true) return false;
-                        if (!includeBeta && e.beta === true) return false;
+                        if (e.creature === true || e.animal === true) return false;
+                        if (e.beta === true) return false;
                         if (e.varlenian === true && !varlenia) return false;
+                        // A zombie world deals its dead off zombieKeys, on a
+                        // share of the same draw, so the people pool there is
+                        // the survivors alone.
+                        if (mode === "zombie" && e.zombie === true) return false;
                         if (!this.allowedInMagic(k, e)) return false;
                         return this.allowedInPopulation(k, e, mode);
+                    });
+                }
+                return poolCache[slot];
+            },
+
+            // Is this sheet one of the dead walking? The `zombie` flag of
+            // NPCs.json, which is the Zombies/ folder. Asked of a sheet NAME
+            // (what an event carries), so anything holding a graphic can be
+            // told apart from a person without knowing where it came from.
+            isZombieSheet(key) {
+                const e = this.entry(key);
+                return !!(e && e.zombie === true);
+            },
+
+            // The zombie half of the wardrobe: the sheets a zombie world's
+            // crowd is dealt from (see ZOMBIE_SHARE). Filtered exactly like the
+            // ordinary pool, magic level included, so a severed world's dead
+            // are only the ones that rose for some ordinary reason; when that
+            // leaves nothing at all the pick simply falls back to the people
+            // pool rather than emptying the streets.
+            zombieKeys() {
+                const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
+                const slot = "zombieAll:" + magic;
+                if (!poolCache[slot]) {
+                    const data = db();
+                    poolCache[slot] = Object.keys(data).filter(k => {
+                        const e = data[k];
+                        if (!e || e.npc !== true || e.zombie !== true) return false;
+                        if (e.creature === true || e.animal === true) return false;
+                        if (e.beta === true) return false;
+                        return this.allowedInMagic(k, e);
                     });
                 }
                 return poolCache[slot];
@@ -704,6 +744,43 @@
                         // world has none of them and a severed one keeps all six.
                         if (!this.allowedInMagic(k, e)) return false;
                         return this.allowedInPopulation(k, e, mode);
+                    });
+                }
+                return poolCache[slot];
+            },
+
+            // The creature half of the wardrobe: the sheets a NON-SENTIENT
+            // inhabitant may be dealt. It is exactly the `creature` and
+            // `animal` entries of NPCs.json , the Creatures/ and Animals/
+            // folders , and nothing else. The Monsters/ folder is deliberately
+            // not part of it: those sheets are what a fight is drawn with, and
+            // an animal wearing one on a town street reads as an enemy the
+            // party failed to notice. They come back only in a monster world,
+            // where everything walking about is a monster anyway, and even then
+            // they are added by NPCCreature rather than listed here.
+            //
+            // The beta answer does not apply (no creature sheet is beta) but
+            // the magic level does, so a severed world keeps no magical beast.
+            // The population mode does NOT apply either: a creature is never a
+            // person, so no narrowing of the people pool has anything to say
+            // about it, and a goblin world still has stray dogs in it.
+            //
+            // options.exterior (default true, permissive) gates the `animal`
+            // half of the pool: a stray dog belongs on the street, not the
+            // landing of somebody's staircase. The `creature` half (Mimic,
+            // Ghost, Zombie...) is unaffected, those are as much at home
+            // behind a door as anywhere else.
+            creatureKeys(options) {
+                const exterior = (options && options.exterior !== undefined) ? !!options.exterior : true;
+                const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
+                const slot = "creatureAll:" + magic + ":" + (exterior ? "ext" : "int");
+                if (!poolCache[slot]) {
+                    const data = db();
+                    poolCache[slot] = Object.keys(data).filter(k => {
+                        const e = data[k];
+                        if (!e || e.npc !== true) return false;
+                        if (e.creature !== true && !(e.animal === true && exterior)) return false;
+                        return this.allowedInMagic(k, e);
                     });
                 }
                 return poolCache[slot];
@@ -785,17 +862,32 @@
             // caller holding one seeded float (which is every caller: an NPC's
             // face has to be the same face in every savegame of the world) still
             // gets both the exact share and a uniform pick inside the pool.
-            // options: { mapId, includeBeta, filter }.
+            // options: { mapId, filter }.
             pickNpcKey(r, options) {
                 const opts = options || {};
                 let pool = this.npcKeys(opts);
                 let aliens = this.alienKeys();
+                let zombies = (opts.populationMode || this.populationMode()) === "zombie"
+                    ? this.zombieKeys() : [];
                 if (typeof opts.filter === "function") {
                     pool = pool.filter(opts.filter);
                     aliens = aliens.filter(opts.filter);
+                    zombies = zombies.filter(opts.filter);
                 }
-                if (!pool.length && !aliens.length) return null;
-                const draw = (typeof r === "number" && r >= 0 && r < 1) ? r : Math.random();
+                if (!pool.length && !aliens.length && !zombies.length) return null;
+                let draw = (typeof r === "number" && r >= 0 && r < 1) ? r : Math.random();
+                // The dead come off the head of the draw in a zombie world, the
+                // aliens and the survivors sharing what is left of it, so one
+                // seeded float still deals the exact shares and a uniform pick
+                // inside whichever pool it lands in.
+                if (zombies.length) {
+                    const zShare = (pool.length || aliens.length) ? ZOMBIE_SHARE : 1;
+                    if (draw < zShare) {
+                        return zombies[Math.min(zombies.length - 1,
+                            Math.floor((draw / zShare) * zombies.length))];
+                    }
+                    draw = (draw - zShare) / (1 - zShare);
+                }
                 const share = aliens.length ? (pool.length ? this.alienShare(opts) : 1) : 0;
                 if (draw < share) {
                     return aliens[Math.min(aliens.length - 1, Math.floor((draw / share) * aliens.length))];
@@ -807,8 +899,7 @@
             // May the spawn systems deal this sheet in this world?
             isSpawnable(key) {
                 const e = this.entry(key);
-                if (!e || e.npc !== true) return false;
-                return e.beta !== true || this.betaEnabled();
+                return !!(e && e.npc === true && e.beta !== true);
             }
         };
     })();
@@ -861,15 +952,25 @@
     (function () {
         const destNorm = s => String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
         let destIndex = null;
+        let countryIndex = null;
 
         function buildIndex() {
             if (destIndex) return destIndex;
             destIndex = {};
+            countryIndex = {};
             const dest = (window.WorkSystem && window.WorkSystem.Destinations) || {};
             for (const [key, data] of Object.entries(dest)) {
                 const label = (data && typeof data.name === 'string' && data.name.trim()) || key;
                 destIndex[destNorm(key)] = label;
                 destIndex[destNorm(label)] = label;
+                // Every entry also declares the nation the place stands in
+                // ("country", plus the world-map region id as "nationId"), so a
+                // town resolves to its real nation instead of a seeded one.
+                if (data && data.country) {
+                    const polity = { country: data.country, nationId: data.nationId ?? 0 };
+                    countryIndex[destNorm(key)] = polity;
+                    countryIndex[destNorm(label)] = polity;
+                }
             }
             return destIndex;
         }
@@ -882,6 +983,17 @@
             if (!raw) return raw;
             const label = buildIndex()[destNorm(raw)] || raw;
             return (typeof window.translateText === 'function') ? window.translateText(label) : label;
+        };
+
+        // The nation a destination belongs to, from its key or from any
+        // spelling of it: { country, nationId }, or null for a place with no
+        // declared nation (and for anything that is not a destination at all,
+        // e.g. a "Proc:x,y" settlement key, which carries its own nationId).
+        window.WorkSystem.destinationCountry = function (key) {
+            const raw = String(key == null ? '' : key);
+            if (!raw) return null;
+            buildIndex();
+            return countryIndex[destNorm(raw)] || null;
         };
 
         // Every destination label, in the order the file declares them.
@@ -1239,6 +1351,208 @@
             entry: function (id) {
                 const raw = String(id == null ? '' : id).trim();
                 return raw ? (biomeIndex()[raw.toLowerCase()] || null) : null;
+            }
+        };
+    })();
+
+    // ── World proper nouns ──────────────────────────────────────────────────
+    // A nation, a hyperpower, a faction and a historical leader are each stored
+    // under their English name, because that name IS the id: the timeline, the
+    // world folder, HistorySimulator's COUNTRIES table, Hyperpowers.json and
+    // every wiki lookup match on it, so it can never be reworded. What a player
+    // reads is resolved here, at the moment the name is drawn, out of
+    // js/i18n/<lang>/plugins/WorldNames.json. Same rule as BiomeNames above and
+    // as governmentLabel() in HistorySimulator: keep the id, lift the face.
+    //
+    // Faction names are deliberately NOT duplicated into that file. They already
+    // live in js/i18n/<lang>/faction.json under the slug of their English name,
+    // which is exactly what FactionDataManager reads, so the faction branch asks
+    // it rather than growing a second copy to keep in step.
+    (function () {
+        // The tight slug (no separators) is the convention the rest of the world
+        // data already uses: faction.json's keys and NPCPolitics' powerSlug().
+        function slug(name) {
+            return String(name == null ? '' : name).toLowerCase().replace(/[^a-z0-9]+/g, '');
+        }
+
+        function look(kind, name) {
+            const s = slug(name);
+            if (!s) return null;
+            const key = 'WorldNames.' + kind + '.' + s;
+            return T.has(key) ? T(key) : null;
+        }
+
+        // How many leading words of a leader's name may be read as an office.
+        // "Dean of Cardinals Francesco" is the longest in the shipped roster.
+        const MAX_TITLE_WORDS = 4;
+
+        // The set of English names worth scanning a finished sentence for, and
+        // the label each one now reads as. Cached against the language and the
+        // size of the noun export, so a read is two comparisons.
+        let _mapLang = null, _mapSize = -1, _map = null, _re = null;
+        let _anyLang = null, _any = new Map();
+
+        function properNouns() {
+            const out = [];
+            const listed = window.HistorySimulator_PROPER_NOUNS;
+            if (Array.isArray(listed)) out.push.apply(out, listed);
+            // HistorySimulator's export only covers the nations its own timeline
+            // moves (the European theatre); the full roster is Countries.json,
+            // and an event may name any of it.
+            const countries = window.WorldGen && window.WorldGen.Countries;
+            if (Array.isArray(countries)) {
+                for (const c of countries) if (c && c.country) out.push(c.country);
+            }
+            // Powers and nations the simulation invented after the static export
+            // was built, plus their leaders, so a dynamic name localizes too.
+            const hm = window.HistoryManager;
+            if (hm) {
+                const hp = (hm.getHyperpowers && hm.getHyperpowers()) || {};
+                for (const name of Object.keys(hp)) {
+                    out.push(name);
+                    const data = hp[name] || {};
+                    for (const l of (data.leaders || [])) if (l && l.name) out.push(l.name);
+                    for (const l of (data.holy_leaders || [])) if (l && l.name) out.push(l.name);
+                }
+                const ns = (hm.getNationsState && hm.getNationsState()) || {};
+                for (const name of Object.keys(ns)) {
+                    out.push(name);
+                    const c = ns[name] && ns[name].controller;
+                    if (c && c !== 'Neutral') out.push(c);
+                }
+            }
+            return out;
+        }
+
+        function buildMap() {
+            const lang = T.language();
+            const nouns = properNouns();
+            if (_map && _mapLang === lang && _mapSize === nouns.length) return _map;
+            _map = new Map();
+            for (const name of nouns) {
+                if (!name) continue;
+                const label = window.WorldNames.any(name);
+                if (label && label !== name) _map.set(name, label);
+            }
+            _mapLang = lang;
+            _mapSize = nouns.length;
+            // Longest first, so a multi-word name wins over its own substrings
+            // ("Italy" must not eat the front of "Italy - Sicily"). The
+            // lookarounds stand in for \b, which a name ending in ")" fails.
+            const keys = Array.from(_map.keys()).sort(function (a, b) { return b.length - a.length; });
+            _re = keys.length
+                ? new RegExp('(?<![A-Za-z0-9])(' + keys.map(function (k) {
+                      return k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  }).join('|') + ')(?![A-Za-z0-9])', 'g')
+                : null;
+            return _map;
+        }
+
+        window.WorldNames = {
+            slug: slug,
+
+            // A nation as stored in COUNTRIES / Countries.json.
+            nation: function (name) {
+                const raw = String(name == null ? '' : name).trim();
+                return raw ? (look('nation', raw) || raw) : '';
+            },
+
+            // A hyperpower / controller, as keyed in Hyperpowers.json.
+            power: function (name) {
+                const raw = String(name == null ? '' : name).trim();
+                if (!raw) return '';
+                // 'Neutral' is a controller id meaning "nobody", and reads through
+                // History's own vocabulary wherever it is shown.
+                return look('power', raw) || look('nation', raw) || raw;
+            },
+
+            // A faction by its English display name, through faction.json.
+            faction: function (name) {
+                const raw = String(name == null ? '' : name).trim();
+                if (!raw) return '';
+                const own = look('faction', raw);
+                if (own) return own;
+                const fdm = window.FactionDataManager && window.FactionDataManager.instance;
+                if (fdm && typeof fdm.t === 'function') {
+                    const path = 'factions.' + slug(raw) + '.name';
+                    const label = fdm.t(path);
+                    // .t() answers with the path it was given when it has no
+                    // entry, which is not a name.
+                    if (label && label !== path) return label;
+                }
+                return raw;
+            },
+
+            // A leader. The shipped roster (js/db/WorldGen/Leaders.json) is
+            // listed name by name, because an office translates as a phrase and
+            // not word by word: "Chief Engineer" is "Ingegnere Capo", so no
+            // per-word rule can produce it. A politician composed at run time by
+            // NPCPolitics is not in that roster, and falls through to the office
+            // vocabulary in front of the person's own name, which is left alone.
+            leader: function (name) {
+                const raw = String(name == null ? '' : name).trim();
+                if (!raw) return '';
+                const whole = look('leader', raw);
+                if (whole) return whole;
+                const words = raw.split(/\s+/);
+                for (let n = Math.min(MAX_TITLE_WORDS, words.length); n >= 1; n--) {
+                    const office = look('title', words.slice(0, n).join(' '));
+                    if (office) return (office + ' ' + words.slice(n).join(' ')).trim();
+                }
+                return raw;
+            },
+
+            // One office on its own ("Grand Vizier", "Comrade").
+            title: function (name) {
+                const raw = String(name == null ? '' : name).trim();
+                return raw ? (look('title', raw) || raw) : '';
+            },
+
+            // A birthplace or hometown: a town if Destinations.json knows it,
+            // otherwise a nation. Both spellings are stored in the same field by
+            // the character dossiers and by NPCSociety's backstories.
+            place: function (name) {
+                const raw = String(name == null ? '' : name).trim();
+                if (!raw) return '';
+                if (window.WorkSystem && window.WorkSystem.destinationName) {
+                    const town = window.WorkSystem.destinationName(raw);
+                    if (town && town !== raw) return town;
+                }
+                return window.WorldNames.nation(raw);
+            },
+
+            // Whatever kind of world name this is, or the name itself. Used
+            // where a record only says "a name" (event params, wiki links).
+            // Memoized per language: HistorySimulator asks this of every string
+            // param of every event it writes out, and the Historical Archive
+            // draws thousands of them in one pass.
+            any: function (name) {
+                const raw = String(name == null ? '' : name).trim();
+                if (!raw) return '';
+                const lang = T.language();
+                if (lang !== _anyLang) { _anyLang = lang; _any = new Map(); }
+                let hit = _any.get(raw);
+                if (hit === undefined) {
+                    hit = look('nation', raw) || look('power', raw) ||
+                          look('leader', raw) || window.WorldNames.faction(raw) || raw;
+                    _any.set(raw, hit);
+                }
+                return hit;
+            },
+
+            // Every English world name a finished sentence may contain, mapped to
+            // what it reads as now. Only the names that actually change are in it.
+            map: function () { return buildMap(); },
+
+            // Rewrite the world names inside prose that was composed in English.
+            // This is the only path open to a record that stored its finished
+            // sentence instead of the key it was written from.
+            localize: function (text) {
+                const raw = String(text == null ? '' : text);
+                if (!raw) return raw;
+                const map = buildMap();
+                if (!_re || !map.size) return raw;
+                return raw.replace(_re, function (m) { return map.get(m) || m; });
             }
         };
     })();

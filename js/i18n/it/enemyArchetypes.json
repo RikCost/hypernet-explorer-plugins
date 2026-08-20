@@ -391,7 +391,19 @@
         "name": "Coda",
         "msg": "Coda mozzata!"
       },
-      "name": "Dragone"
+      "name": "Dragone",
+      "left_claw": {
+        "name": "Artiglio Anteriore Sinistro",
+        "msg": "Artiglio anteriore sinistro strappato!"
+      },
+      "right_claw": {
+        "name": "Artiglio Anteriore Destro",
+        "msg": "Artiglio anteriore destro strappato!"
+      },
+      "maw": {
+        "name": "Fauci",
+        "msg": "Fauci frantumate!"
+      }
     },
     "skeleton": {
       "head": {
@@ -418,7 +430,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra andata in frantumi!"
       },
-      "name": "Scheletro"
+      "name": "Scheletro",
+      "jaws": {
+        "name": "Mascelle",
+        "msg": "Mascelle spezzate!"
+      }
     },
     "fairy": {
       "head": {
@@ -447,9 +463,13 @@
       },
       "pixie_dust_sac": {
         "name": "Sacca di Polvere Fatata",
-        "msg": "Sacca di polvere magica lacercata!"
+        "msg": "Sacca di polvere magica lacerata!"
       },
-      "name": "Fata"
+      "name": "Fata",
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Bocca lacerata!"
+      }
     },
     "slime": {
       "core": {
@@ -472,7 +492,11 @@
         "name": "Pseudopodo 2",
         "msg": "Pseudopodo 2 sciolto in fanghiglia!"
       },
-      "name": "Slime"
+      "name": "Slime",
+      "maw": {
+        "name": "Fauci Dissolventi",
+        "msg": "Fauci dissolventi collassate!"
+      }
     },
     "undead": {
       "skull": {
@@ -499,7 +523,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra tagliata!"
       },
-      "name": "Non-morto"
+      "name": "Non-morto",
+      "jaws": {
+        "name": "Mascelle Putride",
+        "msg": "Mascelle putride sbriciolate!"
+      }
     },
     "scorpion": {
       "head": {
@@ -561,7 +589,11 @@
         "name": "Zampa Posteriore Destra",
         "msg": "Zampa posteriore destra tagliata!"
       },
-      "name": "Scorpione"
+      "name": "Scorpione",
+      "mandibles": {
+        "name": "Mandibole",
+        "msg": "Mandibole frantumate!"
+      }
     },
     "spider": {
       "head": {
@@ -638,7 +670,11 @@
         "name": "Rampicante 2",
         "msg": "Rampicante 2 ridotto in poltiglia!"
       },
-      "name": "Pianta"
+      "name": "Pianta",
+      "maw": {
+        "name": "Bocciolo Mordace",
+        "msg": "Bocciolo mordace squarciato!"
+      }
     },
     "elemental": {
       "core": {
@@ -661,7 +697,11 @@
         "name": "Appendice Destra",
         "msg": "Appendice destra liquefatta all'impatto!"
       },
-      "name": "Elementale"
+      "name": "Elementale",
+      "maw": {
+        "name": "Fauci Elementali",
+        "msg": "Fauci elementali disperse!"
+      }
     },
     "aquaticfish": {
       "head": {
@@ -687,7 +727,11 @@
         "name": "Pinna Pettorale Destra",
         "msg": "Pinna pettorale destra ridotta a brandelli!"
       },
-      "name": "Pesce Acquatico"
+      "name": "Pesce Acquatico",
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Bocca squarciata!"
+      }
     },
     "octopus": {
       "head": {
@@ -713,7 +757,11 @@
         "name": "Tentacolo 4",
         "msg": "Tentacolo 4 strappato via!"
       },
-      "name": "Polpo"
+      "name": "Polpo",
+      "beak": {
+        "name": "Becco",
+        "msg": "Becco incrinato!"
+      }
     },
     "robot": {
       "head": {
@@ -739,7 +787,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra tagliata!"
       },
-      "name": "Robot"
+      "name": "Robot",
+      "jaws": {
+        "name": "Mascelle Servoassistite",
+        "msg": "Mascelle servoassistite bloccate!"
+      }
     },
     "bird": {
       "head": {
@@ -795,7 +847,11 @@
         "name": "Coda",
         "msg": "Coda mozzata!"
       },
-      "name": "Rettiliano"
+      "name": "Rettiliano",
+      "maw": {
+        "name": "Fauci Zannute",
+        "msg": "Fauci zannute spezzate!"
+      }
     },
     "mushroom": {
       "cap": {
@@ -814,7 +870,11 @@
         "name": "Sacche Sporali",
         "msg": "Sacche sporali esplose!"
       },
-      "name": "Fungo"
+      "name": "Fungo",
+      "maw": {
+        "name": "Fauci Lamellari",
+        "msg": "Fauci lamellari sbrindellate!"
+      }
     },
     "tree": {
       "crown": {
@@ -856,7 +916,11 @@
         "name": "Sacche Tossiche",
         "msg": "Sacche tossiche esplose!"
       },
-      "name": "Batterico"
+      "name": "Batterico",
+      "mouth": {
+        "name": "Poro Nutritivo",
+        "msg": "Poro nutritivo lacerato!"
+      }
     },
     "doubleheadedhumanoid": {
       "head_left": {
@@ -887,7 +951,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra tagliata!"
       },
-      "name": "Umanoide Bicefalo"
+      "name": "Umanoide Bicefalo",
+      "mouth": {
+        "name": "Bocche Gemelle",
+        "msg": "Bocche gemelle zittite!"
+      }
     },
     "serpent": {
       "head": {
@@ -932,7 +1000,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra fratturata!"
       },
-      "name": "Golem"
+      "name": "Golem",
+      "maw": {
+        "name": "Fauci di Pietra",
+        "msg": "Fauci di pietra frantumate!"
+      }
     },
     "demon": {
       "head": {
@@ -958,7 +1030,19 @@
         "name": "Coda",
         "msg": "Coda recisa!"
       },
-      "name": "Demone"
+      "name": "Demone",
+      "left_claw": {
+        "name": "Artiglio Sinistro",
+        "msg": "Artiglio sinistro reciso!"
+      },
+      "right_claw": {
+        "name": "Artiglio Destro",
+        "msg": "Artiglio destro reciso!"
+      },
+      "maw": {
+        "name": "Fauci",
+        "msg": "Fauci spalancate a forza!"
+      }
     },
     "ghost": {
       "face": {
@@ -977,7 +1061,11 @@
         "name": "Fantasma Destro",
         "msg": "Fantasma destro disperso!"
       },
-      "name": "Fantasma"
+      "name": "Fantasma",
+      "maw": {
+        "name": "Fauci Ululanti",
+        "msg": "Fauci ululanti zittite!"
+      }
     },
     "drone": {
       "sensor_array": {
@@ -996,7 +1084,11 @@
         "name": "Elica Destra",
         "msg": "Elica destra ridotta in rottami!"
       },
-      "name": "Drone"
+      "name": "Drone",
+      "jaws": {
+        "name": "Pinze di Presa",
+        "msg": "Pinze di presa bloccate!"
+      }
     },
     "voidspawn": {
       "abyssal_eye": {
@@ -1045,7 +1137,11 @@
         "name": "Aculeo Caudale",
         "msg": "Aculeo caudale staccato!"
       },
-      "name": "Mutante"
+      "name": "Mutante",
+      "maw": {
+        "name": "Fauci Spalancate",
+        "msg": "Fauci spalancate lacerate!"
+      }
     },
     "crystalentity": {
       "core": {
@@ -1068,7 +1164,11 @@
         "name": "Cristallo Scudo",
         "msg": "Cristallo scudo frantumato in schegge!"
       },
-      "name": "Entità di Cristallo"
+      "name": "Entità di Cristallo",
+      "maw": {
+        "name": "Fauci Prismatiche",
+        "msg": "Fauci prismatiche fratturate!"
+      }
     },
     "amphibian": {
       "head": {
@@ -1112,7 +1212,11 @@
         "name": "Cucitura di Forza",
         "msg": "Cucitura di forza esplosa disordinatamente!"
       },
-      "name": "Non-morto Costruito"
+      "name": "Non-morto Costruito",
+      "jaws": {
+        "name": "Mascelle Cucite",
+        "msg": "Mascelle cucite scoppiate!"
+      }
     },
     "minotaur": {
       "head": {
@@ -1142,7 +1246,11 @@
         "name": "Zampa di Toro Destra",
         "msg": "Zampa di toro destra tagliata via!"
       },
-      "name": "Minotauro"
+      "name": "Minotauro",
+      "maw": {
+        "name": "Fauci Sbuffanti",
+        "msg": "Fauci sbuffanti spezzate!"
+      }
     },
     "goblin": {
       "brain": {
@@ -1277,7 +1385,11 @@
         "name": "Piede Destro",
         "msg": "Piede destro staccato!"
       },
-      "name": "Goblin"
+      "name": "Goblin",
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Bocca lacerata!"
+      }
     },
     "crustacean": {
       "claw_left": {
@@ -1308,7 +1420,11 @@
         "name": "Antenne",
         "msg": "Antenne schiacciate!"
       },
-      "name": "Crostaceo"
+      "name": "Crostaceo",
+      "mandibles": {
+        "name": "Mandibole",
+        "msg": "Mandibole frantumate!"
+      }
     },
     "spherical": {
       "core": {
@@ -1331,7 +1447,11 @@
         "name": "Propulsori Ausiliari",
         "msg": "Propulsori ausiliari hanno smesso di funzionare!"
       },
-      "name": "Sferico"
+      "name": "Sferico",
+      "maw": {
+        "name": "Fauci a Portello",
+        "msg": "Fauci a portello deformate!"
+      }
     },
     "turtle": {
       "shell": {
@@ -1362,7 +1482,11 @@
         "name": "Coda",
         "msg": "Coda tagliata!"
       },
-      "name": "Tartaruga"
+      "name": "Tartaruga",
+      "beak": {
+        "name": "Becco",
+        "msg": "Becco incrinato!"
+      }
     },
     "manticore": {
       "brain": {
@@ -1421,7 +1545,11 @@
         "name": "Polmone Destro",
         "msg": "Polmone destro perforato!"
       },
-      "name": "Manticora"
+      "name": "Manticora",
+      "maw": {
+        "name": "Fauci Leonine",
+        "msg": "Fauci leonine spezzate!"
+      }
     },
     "chestmimic": {
       "core": {
@@ -1506,7 +1634,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra mutilata!"
       },
-      "name": "Orco"
+      "name": "Orco",
+      "maw": {
+        "name": "Fauci Spalancate",
+        "msg": "Fauci spalancate spezzate!"
+      }
     },
     "scarecrow": {
       "head": {
@@ -1533,7 +1665,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra rotta!"
       },
-      "name": "Spaventapasseri"
+      "name": "Spaventapasseri",
+      "mouth": {
+        "name": "Bocca Cucita",
+        "msg": "Bocca cucita scucita!"
+      }
     },
     "segmentworm": {
       "head": {
@@ -1552,7 +1688,11 @@
         "name": "Coda",
         "msg": "Coda recisa!"
       },
-      "name": "Verme Segmentato"
+      "name": "Verme Segmentato",
+      "maw": {
+        "name": "Fauci Anulari",
+        "msg": "Fauci anulari squarciate!"
+      }
     },
     "mineral": {
       "core": {
@@ -1571,7 +1711,11 @@
         "name": "Vene Minerali",
         "msg": "Vene interrotte!"
       },
-      "name": "Minerale"
+      "name": "Minerale",
+      "maw": {
+        "name": "Fauci Frantumanti",
+        "msg": "Fauci frantumanti spaccate!"
+      }
     },
     "hydra": {
       "head_one": {
@@ -1594,7 +1738,11 @@
         "name": "Coda",
         "msg": "Coda recisa!"
       },
-      "name": "Idra"
+      "name": "Idra",
+      "maw": {
+        "name": "Fauci Centrali",
+        "msg": "Fauci centrali squarciate!"
+      }
     },
     "vampire": {
       "head": {
@@ -1607,7 +1755,7 @@
       },
       "fangs": {
         "name": "Zanne",
-        "msg": "Zanne frantumulate!"
+        "msg": "Zanne frantumate!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
@@ -1625,7 +1773,11 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra compromessa!"
       },
-      "name": "Vampiro"
+      "name": "Vampiro",
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso sfondato!"
+      }
     },
     "bat": {
       "head": {
@@ -1683,7 +1835,11 @@
         "name": "Coda",
         "msg": "Coda spezzata!"
       },
-      "name": "Coniglio"
+      "name": "Coniglio",
+      "teeth": {
+        "name": "Incisivi",
+        "msg": "Incisivi spezzati!"
+      }
     },
     "armoredknight": {
       "helmet": {
@@ -1710,7 +1866,19 @@
         "name": "Gambali Destri",
         "msg": "Gambali destri piegati!"
       },
-      "name": "Cavaliere Corazzato"
+      "name": "Cavaliere Corazzato",
+      "left_gauntlet": {
+        "name": "Guanto Sinistro",
+        "msg": "Guanto sinistro strappato via!"
+      },
+      "right_gauntlet": {
+        "name": "Guanto Destro",
+        "msg": "Guanto destro strappato via!"
+      },
+      "mouth": {
+        "name": "Bocca della Visiera",
+        "msg": "Bocca della visiera sfondata!"
+      }
     },
     "centaur": {
       "head": {
@@ -1749,7 +1917,11 @@
         "name": "Zampa Posteriore Destra",
         "msg": "Zampa posteriore destra mozzata!"
       },
-      "name": "Centauro"
+      "name": "Centauro",
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Bocca lacerata!"
+      }
     },
     "insectswarm": {
       "mandibles": {
@@ -1788,14 +1960,18 @@
         "msg": "Torace violato!"
       },
       "leg_joints": {
-        "name": "Giacoltà Gambe",
+        "name": "Articolazioni delle Gambe",
         "msg": "Giacoltà gambe bloccate!"
       },
       "sensors": {
         "name": "Sensori",
         "msg": "Sensori offline!"
       },
-      "name": "Difensore Robotico"
+      "name": "Difensore Robotico",
+      "jaws": {
+        "name": "Ganasce",
+        "msg": "Ganasce bloccate!"
+      }
     },
     "turret": {
       "core": {
@@ -1818,7 +1994,11 @@
         "name": "Camera Munizioni",
         "msg": "Camera munizioni lacerata!"
       },
-      "name": "Torretta"
+      "name": "Torretta",
+      "jaws": {
+        "name": "Ganasce di Alimentazione",
+        "msg": "Ganasce di alimentazione inceppate!"
+      }
     },
     "gorgon": {
       "eyes": {
@@ -1837,7 +2017,19 @@
         "name": "Corpo Inferiore",
         "msg": "Corpo inferiore frantumato!"
       },
-      "name": "Gorgone"
+      "name": "Gorgone",
+      "left_hand": {
+        "name": "Mano Sinistra",
+        "msg": "Mano sinistra recisa!"
+      },
+      "right_hand": {
+        "name": "Mano Destra",
+        "msg": "Mano destra recisa!"
+      },
+      "fangs": {
+        "name": "Zanne",
+        "msg": "Zanne spezzate!"
+      }
     },
     "abyssalleviathan": {
       "eye": {
@@ -1887,7 +2079,11 @@
         "name": "Piede",
         "msg": "Piede schiacciato!"
       },
-      "name": "Lumaca"
+      "name": "Lumaca",
+      "mouth": {
+        "name": "Radula",
+        "msg": "Radula sbrindellata!"
+      }
     },
     "waterelemental": {
       "core": {
@@ -1910,7 +2106,11 @@
         "name": "Gamba d'Acqua Destra",
         "msg": "Gamba d'acqua destra evaporata!"
       },
-      "name": "Elementale dell'Acqua"
+      "name": "Elementale dell'Acqua",
+      "maw": {
+        "name": "Fauci Impetuose",
+        "msg": "Fauci impetuose disperse!"
+      }
     },
     "thunderelemental": {
       "core": {
@@ -1937,7 +2137,11 @@
         "name": "Gamba Elettrica Destra",
         "msg": "Gamba elettrica destra messa a terra!"
       },
-      "name": "Elementale del Tuono"
+      "name": "Elementale del Tuono",
+      "maw": {
+        "name": "Fauci Folgoranti",
+        "msg": "Fauci folgoranti scaricate!"
+      }
     },
     "stormelemental": {
       "core": {
@@ -1964,7 +2168,11 @@
         "name": "Gamba di Tuono Destra",
         "msg": "Gamba di tuono destra abbattuta!"
       },
-      "name": "Elementale della Tempesta"
+      "name": "Elementale della Tempesta",
+      "maw": {
+        "name": "Fauci Ululanti",
+        "msg": "Fauci ululanti placate!"
+      }
     },
     "fireelemental": {
       "core": {
@@ -1983,7 +2191,11 @@
         "name": "Gambe di Cenere",
         "msg": "Gambe di cenere sbriciolate!"
       },
-      "name": "Elementale del Fuoco"
+      "name": "Elementale del Fuoco",
+      "maw": {
+        "name": "Fauci Ardenti",
+        "msg": "Fauci ardenti spente!"
+      }
     },
     "metalelemental": {
       "core": {
@@ -2002,7 +2214,11 @@
         "name": "Gambe Ingranaggio",
         "msg": "Gambe ingranaggio bloccate!"
       },
-      "name": "Elementale del Metallo"
+      "name": "Elementale del Metallo",
+      "jaws": {
+        "name": "Ganasce a Morsa",
+        "msg": "Ganasce a morsa saltate!"
+      }
     },
     "darkelemental": {
       "core": {
@@ -2011,7 +2227,7 @@
       },
       "body": {
         "name": "Corpo d'Ombra",
-        "msg": "Ccorpo d'ombra appassito!"
+        "msg": "Corpo d'ombra appassito!"
       },
       "left_arm": {
         "name": "Braccio Spettrale Sinistro",
@@ -2029,7 +2245,11 @@
         "name": "Gamba Maledetta Destra",
         "msg": "Gamba maledetta destra crollata!"
       },
-      "name": "Elementale dell'Oscurità"
+      "name": "Elementale dell'Oscurità",
+      "maw": {
+        "name": "Fauci del Vuoto",
+        "msg": "Fauci del vuoto collassate!"
+      }
     },
     "sacredelemental": {
       "core": {
@@ -2056,7 +2276,11 @@
         "name": "Gamba d'Aura Destra",
         "msg": "Gamba d'aura destra ha perso forma!"
       },
-      "name": "Elementale Sacro"
+      "name": "Elementale Sacro",
+      "mouth": {
+        "name": "Bocca Corale",
+        "msg": "Bocca corale zittita!"
+      }
     },
     "totem": {
       "core": {
@@ -2079,7 +2303,11 @@
         "name": "Base",
         "msg": "Base incrinata!"
       },
-      "name": "Totem"
+      "name": "Totem",
+      "mouth": {
+        "name": "Bocca Intagliata",
+        "msg": "Bocca intagliata spaccata!"
+      }
     },
     "ophanim": {
       "wheel_one": {
@@ -2102,7 +2330,11 @@
         "name": "Anello di Occhi",
         "msg": "Anello di Occhi accecato!"
       },
-      "name": "Ophanim"
+      "name": "Ophanim",
+      "mouth": {
+        "name": "Bocca Salmodiante",
+        "msg": "Bocca salmodiante zittita!"
+      }
     },
     "angel": {
       "left_wing": {
@@ -2133,7 +2365,19 @@
         "name": "Piede Destro",
         "msg": "Piede destro rotto!"
       },
-      "name": "Angelo"
+      "name": "Angelo",
+      "left_hand": {
+        "name": "Mano Sinistra",
+        "msg": "Mano sinistra recisa!"
+      },
+      "right_hand": {
+        "name": "Mano Destra",
+        "msg": "Mano destra recisa!"
+      },
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Bocca zittita!"
+      }
     },
     "elven": {
       "head": {
@@ -2160,7 +2404,19 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra compromessa!"
       },
-      "name": "Elfico"
+      "name": "Elfico",
+      "left_hand": {
+        "name": "Mano Sinistra",
+        "msg": "Mano sinistra recisa!"
+      },
+      "right_hand": {
+        "name": "Mano Destra",
+        "msg": "Mano destra recisa!"
+      },
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Bocca lacerata!"
+      }
     },
     "gnome": {
       "head": {
@@ -2187,7 +2443,23 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra ceduta!"
       },
-      "name": "Gnomo"
+      "name": "Gnomo",
+      "left_hand": {
+        "name": "Mano Sinistra",
+        "msg": "Mano sinistra recisa!"
+      },
+      "right_hand": {
+        "name": "Mano Destra",
+        "msg": "Mano destra recisa!"
+      },
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Bocca lacerata!"
+      },
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso sfondato!"
+      }
     },
     "dwarf": {
       "head": {
@@ -2368,7 +2640,11 @@
         "name": "Corpo",
         "msg": "Corpo maltrattato!"
       },
-      "name": "Creatura Tentacolata"
+      "name": "Creatura Tentacolata",
+      "beak": {
+        "name": "Becco",
+        "msg": "Becco incrinato!"
+      }
     },
     "spiderhumanhybrid": {
       "body": {
@@ -2407,7 +2683,19 @@
         "name": "Zampa Posteriore Destra",
         "msg": "Zampa posteriore destra smantellata!"
       },
-      "name": "Ibrido Ragno-Umano"
+      "name": "Ibrido Ragno-Umano",
+      "left_hand": {
+        "name": "Mano Sinistra",
+        "msg": "Mano sinistra recisa!"
+      },
+      "right_hand": {
+        "name": "Mano Destra",
+        "msg": "Mano destra recisa!"
+      },
+      "fangs": {
+        "name": "Zanne",
+        "msg": "Zanne spezzate!"
+      }
     },
     "spikymonster": {
       "spikes": {
@@ -2430,7 +2718,19 @@
         "name": "Gamba Destra",
         "msg": "Gamba destra compromessa!"
       },
-      "name": "Mostro Spinoso"
+      "name": "Mostro Spinoso",
+      "left_claw": {
+        "name": "Artiglio Sinistro",
+        "msg": "Artiglio sinistro spezzato!"
+      },
+      "right_claw": {
+        "name": "Artiglio Destro",
+        "msg": "Artiglio destro spezzato!"
+      },
+      "maw": {
+        "name": "Fauci Irte",
+        "msg": "Fauci irte lacerate!"
+      }
     },
     "horse": {
       "head": {
@@ -2461,7 +2761,11 @@
         "name": "Coda",
         "msg": "Coda spezzata!"
       },
-      "name": "Cavallo"
+      "name": "Cavallo",
+      "mouth": {
+        "name": "Muso",
+        "msg": "Muso spezzato!"
+      }
     },
     "unicorn": {
       "horn": {
@@ -2492,7 +2796,11 @@
         "name": "Coda",
         "msg": "Coda tagliata!"
       },
-      "name": "Unicorno"
+      "name": "Unicorno",
+      "mouth": {
+        "name": "Muso",
+        "msg": "Muso spezzato!"
+      }
     },
     "hellhound": {
       "head": {
@@ -2523,7 +2831,11 @@
         "name": "Gamba Posteriore Destra",
         "msg": "Gamba posteriore destra resa incapace!"
       },
-      "name": "Segugio Infernale"
+      "name": "Segugio Infernale",
+      "maw": {
+        "name": "Fauci Ardenti",
+        "msg": "Fauci ardenti spente!"
+      }
     },
     "wingeddemon": {
       "head": {
@@ -2550,7 +2862,11 @@
         "name": "Artigli",
         "msg": "Artigli frantumati!"
       },
-      "name": "Demone Alato"
+      "name": "Demone Alato",
+      "maw": {
+        "name": "Fauci",
+        "msg": "Fauci spalancate a forza!"
+      }
     },
     "trashcreature": {
       "trash_pile": {
@@ -2569,7 +2885,11 @@
         "name": "Cuore",
         "msg": "Cuore schiacciato!"
       },
-      "name": "Creatura dei Rifiuti"
+      "name": "Creatura dei Rifiuti",
+      "maw": {
+        "name": "Fauci di Rifiuti",
+        "msg": "Fauci di rifiuti disperse!"
+      }
     }
   }
 }

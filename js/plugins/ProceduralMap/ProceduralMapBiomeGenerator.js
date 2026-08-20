@@ -97,6 +97,10 @@
     getAdjacentBiomesFromCache,
     checkAdjacentMapBiomesFromCache,
     checkDiagonalMapBiomesFromCache,
+    isSeabedBiomeName,
+    undergroundNeighbourNames,
+    undergroundBorderOpenings,
+    UNDERGROUND_BORDER_THICKNESS,
     isWaterTileId,
     getRandomFeatureVariant,
     placeMultiTileFeature,
@@ -198,6 +202,7 @@
     generateCityBiome: generateCityBiomeUtil,
     isBurgBiome,
     generateBurgBiome: generateBurgBiomeUtil,
+    isTilePassableInTileset,
 
   } = DungeonGen;
 
@@ -776,12 +781,6 @@
   function isCaveBiome(biomeName) {
     return biomeName.toLowerCase().includes("cave");
   }
-
-  /**
-   * Determine which cave borders are open for global underground connections
-   * Uses world coordinates to ensure adjacent caves connect properly
-   * Returns object with open borders: { north, south, east, west }
-   */
 
   /**
    * Check if biome is a mountain surface biome
@@ -2165,12 +2164,19 @@
   /**
    * Generate cave biome terrain - uses separate rendering path without scattered terrain features
    * Only generates cave structure (floor, ceiling, walls) and places features on floor tiles
+   *
+   * The square is walled in along all four borders and then opened again, side by
+   * side, wherever the neighbour has an underground to walk into (see
+   * ProcGenUtils.undergroundBorderOpenings): the caves of a world join up into
+   * one network instead of each being a box with a ladder in it.
    */
   function generateCaveBiomeTerrain(
     biome,
     seed,
     allFeatures,
-    worldCoords
+    worldCoords,
+    adjacentBiomes,
+    cache
   ) {
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
@@ -2274,8 +2280,10 @@
       }
     }
 
-    // Seal cave borders with Ceiling tiles (3 tiles thick from each edge)
-    const borderThickness = 5;  // 3 tiles from edge
+    // Seal cave borders with Ceiling tiles. The passages agreed with the
+    // neighbours are cut back out of this band further down, once nothing is
+    // left that would paint over them.
+    const borderThickness = UNDERGROUND_BORDER_THICKNESS;
 
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
@@ -2519,6 +2527,89 @@
       }
     }
 
+    // ===== BORDER PASSAGES =====
+    //
+    // Cut last, after the wall-face passes and the feature scatter: both of
+    // those paint over whatever they find under a ceiling tile, and a passage
+    // painted over is a cave sealed shut again.
+    const pgForDepth = (typeof $gameSystem !== "undefined" && $gameSystem)
+      ? $gameSystem._procGenData : null;
+    const layerDepth = (pgForDepth && pgForDepth.biomeLayerStack)
+      ? pgForDepth.biomeLayerStack.length : 1;
+
+    const openings = undergroundBorderOpenings(
+      worldCoords,
+      undergroundNeighbourNames(worldCoords, adjacentBiomes, cache),
+      layerDepth,
+      width,
+      height
+    );
+
+    const carveFloor = (x, y) => {
+      if (x < 0 || x >= width || y < 0 || y >= height) return;
+      mapData[calculateIndex(x, y, 0, width, height)] = caveFloorTile;
+      // Nothing may decorate a passage: one impassable prop dropped on a
+      // three-tile corridor is the same as never having cut it.
+      for (let z = 1; z <= 3; z++) {
+        mapData[calculateIndex(x, y, z, width, height)] = 0;
+      }
+    };
+
+    const carvePassageRect = (x0, y0, x1, y1) => {
+      for (let y = y0; y <= y1; y++) {
+        for (let x = x0; x <= x1; x++) carveFloor(x, y);
+      }
+    };
+
+    // The carve that made the cave is organic and owes the border nothing, so
+    // each mouth is joined to the safe spawn area in the middle by a corridor of
+    // its own. Without it a passage can open onto solid rock.
+    const carveCorridor = (fromX, fromY, toX, toY, radius) => {
+      let x = fromX, y = fromY;
+      const dx = Math.abs(toX - x), dy = Math.abs(toY - y);
+      const sx = x < toX ? 1 : -1, sy = y < toY ? 1 : -1;
+      let err = dx - dy;
+      for (;;) {
+        carvePassageRect(x - radius, y - radius, x + radius, y + radius);
+        if (x === toX && y === toY) break;
+        const e2 = 2 * err;
+        if (e2 > -dy) { err -= dy; x += sx; }
+        if (e2 < dx) { err += dx; y += sy; }
+      }
+    };
+
+    // Through the whole sealed band and a little past it, so the party can stand
+    // on the outermost ring (which is the tile the border crossing watches for)
+    // and still has cave floor under them on the way in.
+    const mouthDepth = borderThickness + 2;
+
+    for (const direction of ["north", "south", "east", "west"]) {
+      const opening = openings[direction];
+      if (!opening) continue;
+      const mid = Math.floor((opening.start + opening.end) / 2);
+
+      if (direction === "north") {
+        carvePassageRect(opening.start, 0, opening.end, mouthDepth);
+        carveCorridor(mid, mouthDepth, centerX, centerY, 1);
+      } else if (direction === "south") {
+        carvePassageRect(opening.start, height - 1 - mouthDepth, opening.end, height - 1);
+        carveCorridor(mid, height - 1 - mouthDepth, centerX, centerY, 1);
+      } else if (direction === "west") {
+        carvePassageRect(0, opening.start, mouthDepth, opening.end);
+        carveCorridor(mouthDepth, mid, centerX, centerY, 1);
+      } else {
+        carvePassageRect(width - 1 - mouthDepth, opening.start, width - 1, opening.end);
+        carveCorridor(width - 1 - mouthDepth, mid, centerX, centerY, 1);
+      }
+    }
+
+    log(
+      `[ProceduralMap] Cave border passages: ` +
+      ["north", "south", "east", "west"]
+        .map((d) => `${d}=${openings[d] ? `${openings[d].start}-${openings[d].end}` : "sealed"}`)
+        .join(" ")
+    );
+
     // Clear any features in forbidden zones (borders and center)
     clearForbiddenZoneFeatures(mapData, width, height);
 
@@ -2560,6 +2651,89 @@
     mapData.caveFloorTile = caveFloorTile;
 
     return mapData;
+  }
+
+  /**
+   * Wall the sea floor off from whatever is NOT sea floor beside it.
+   *
+   * The other half of the cave rule (ProcGenUtils.undergroundBorderOpenings): a
+   * cave never opens onto the seabed, and the seabed never opens onto a cave, so
+   * both squares of such a seam draw rock and neither leads the party into a
+   * wall. Seabed against seabed is left wide open -- one sea floor runs straight
+   * into the next.
+   *
+   * A no-op above ground and in every biome that is not the sea floor.
+   */
+  function sealSeabedUndergroundBorders(
+    mapData, biome, allFeatures, adjacentBiomes, worldCoords, cache, width, height
+  ) {
+    if (!mapData || !biome || !isSeabedBiomeName(biome.name)) return;
+
+    const procGenData = ($gameSystem && $gameSystem._procGenData) || null;
+    const underground = !!(procGenData && procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0);
+    if (!underground) return;
+
+    // Rock the party cannot swim through, picked by the tileset's own passage
+    // flags rather than by name: the seabed tileset draws MountainWall and
+    // Ceiling as passable scenery, so sealing with either of those would paint a
+    // wall the player walks straight through.
+    const flags = ($dataTilesets && $dataTilesets[biome.tilesetId] && $dataTilesets[biome.tilesetId].flags) || null;
+    const isImpassable = (tileId) => !!flags && tileId > 0 && (flags[tileId] & 0x0f) === 0x0f;
+
+    const candidates = [];
+    for (const name of ["MountainCeiling", "MountainCenter", "MountainLeft", "MountainWall", "Ceiling"]) {
+      for (const variant of allFeatures[name] || []) {
+        const tileId = variant.type === "single"
+          ? variant.tileId
+          : (variant.tiles && variant.tiles[0] && variant.tiles[0][0]);
+        if (tileId) candidates.push(tileId);
+      }
+    }
+    const wallTile = candidates.find(isImpassable) || candidates[0];
+    if (!wallTile) {
+      logWarn(`[ProceduralMap] Seabed at (${worldCoords?.x},${worldCoords?.y}): no wall tile to seal its borders with`);
+      return;
+    }
+
+    // The surface neighbours, not the ones a descent synthesized: diving off an
+    // Ocean square reports the sea floor on all four sides, which would leave
+    // the square open to the caves under the coast next to it.
+    const neighbours = undergroundNeighbourNames(worldCoords, adjacentBiomes, cache);
+    const facesSeabed = (name) => {
+      if (!name) return true;                       // unknown: leave it open
+      if (isSeabedBiomeName(name)) return true;
+      const neighbourBiome = getBiomeByName(name);
+      if (!neighbourBiome) return true;
+      return isSeabedBiomeName(neighbourBiome.lowerLayer);
+    };
+
+    const seal = {
+      north: !facesSeabed(neighbours.north),
+      south: !facesSeabed(neighbours.south),
+      east: !facesSeabed(neighbours.east),
+      west: !facesSeabed(neighbours.west),
+    };
+    if (!seal.north && !seal.south && !seal.east && !seal.west) return;
+
+    const band = UNDERGROUND_BORDER_THICKNESS;
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const sealed =
+          (seal.north && y < band) ||
+          (seal.south && y >= height - band) ||
+          (seal.west && x < band) ||
+          (seal.east && x >= width - band);
+        if (!sealed) continue;
+        mapData[calculateIndex(x, y, 0, width, height)] = wallTile;
+        // Kelp and coral scattered over what is now solid rock.
+        for (let z = 1; z <= 3; z++) mapData[calculateIndex(x, y, z, width, height)] = 0;
+      }
+    }
+
+    log(
+      `[ProceduralMap] Seabed borders sealed: ` +
+      ["north", "south", "east", "west"].filter((d) => seal[d]).join(",")
+    );
   }
 
   /**
@@ -2809,6 +2983,259 @@
     return mapData;
   }
 
+  // ==========================================================================
+  // Alien-surface terrain: per-square variety that matches the landing-grid
+  // picker's painted planet texture (GalaxySim_Renderer3D.js), instead of one
+  // fixed biome edge-to-edge. Every alien tileset is re-tinted from the same
+  // shared reference sheet (tools/tilesets/gen_alien_biome_tilesets.py), so
+  // Water/Beach/MountainWall/MountainLeft-Center-Right/Ceiling/Crater tiles are
+  // already present in allFeatures for every one of them -- this is pure
+  // orchestration, no new art or Biomes.json content involved.
+  // ==========================================================================
+
+  // Which of Renderer3D's texture-painter families this alien square belongs
+  // to, and (for the terrestrial family) whether THIS square's coarse
+  // elevation crests into the mountain band. Returns null off an alien
+  // surface, or when the family isn't reworked yet (icy/volcanic/gas-giant)
+  // -- generateBiomeBody falls back to the plain terrain fill in that case.
+  function resolveAlienRoute(biome, worldCoords) {
+    const GS = window.GalaxySim;
+    if (!GS) return null;
+    const family = GS.getLandedTerrainFamily ? GS.getLandedTerrainFamily() : null;
+    if (family === "rocky") return "crater";
+    if (family !== "terrestrial") return null;
+    const R3D = GS.Renderer3D;
+    if (!R3D || !R3D.terrestrialElevation) return "terrestrial";
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const grid = (pg && pg.alienGrid) || {};
+    const gridW = grid.w || 1;
+    const gridH = grid.h || 1;
+    const planet = GS.getSurfacePlanet ? GS.getSurfacePlanet() : null;
+    const isOcean = !!(planet && planet.type === "ocean");
+    const seed = GS.getLandedPlanetSeed ? GS.getLandedPlanetSeed() : 0;
+    const u = (worldCoords.x + 0.5) / gridW;
+    const v = (worldCoords.y + 0.5) / gridH;
+    const info = R3D.terrestrialElevation(seed, u, v, isOcean);
+    return info.band === "rock" ? "mountain" : "terrestrial";
+  }
+
+  // Continuous elevation-banded terrain for the terrestrial/breathable alien
+  // family (earth_like, ocean, habitable): every tile samples
+  // Renderer3D.terrestrialElevation at the same fine (gx+localX/64) resolution
+  // the picker's texture is coarsely sampled at, so a coastline or forest belt
+  // comes out as one continuous shape across however many squares it spans --
+  // no border-seam geometry needed, since neighbouring squares are just
+  // evaluating adjacent points of the same field.
+  function generateAlienTerrestrialTerrain(biome, seed, allFeatures, worldCoords) {
+    const width = PROC_MAP_WIDTH;
+    const height = PROC_MAP_HEIGHT;
+    const mapData = new Array(width * height * 4).fill(0);
+    const rng = createSeededRandom(seed);
+
+    const GS = window.GalaxySim;
+    const R3D = GS && GS.Renderer3D;
+    if (!R3D || !R3D.terrestrialElevation) {
+      // No GalaxySim bridge available (e.g. a harness that only loads the
+      // ProceduralMap plugins): degrade to the family's plain fill.
+      fillTerrainLayer(mapData, biome, allFeatures, width, height, rng, null);
+      return mapData;
+    }
+
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const grid = (pg && pg.alienGrid) || {};
+    const gridW = grid.w || 1;
+    const gridH = grid.h || 1;
+    const planet = GS.getSurfacePlanet ? GS.getSurfacePlanet() : null;
+    const isOcean = !!(planet && planet.type === "ocean");
+    const planetSeed = GS.getLandedPlanetSeed ? GS.getLandedPlanetSeed() : 0;
+
+    const firstTileId = (name) => {
+      const list = allFeatures[name];
+      if (!list || !list.length) return 0;
+      const variant = list[0];
+      return variant.type === "single"
+        ? variant.tileId
+        : ((variant.tiles && variant.tiles[0] && variant.tiles[0][0]) || 0);
+    };
+    const waterTile = firstTileId("Water");
+    const beachTile = firstTileId("Beach") || waterTile;
+    const grassTile = firstTileId("Grass") || firstTileId("GrassDark");
+    const rockTile = firstTileId("GrassRock") || firstTileId("Rock") || firstTileId("Badland") || grassTile;
+    const snowTile = firstTileId("Snow") || grassTile;
+    const floorFallback = grassTile || rockTile || waterTile || 0;
+    const bandTile = {
+      water: waterTile, beach: beachTile, grass: grassTile,
+      forest: grassTile, rock: rockTile, snow: snowTile,
+    };
+
+    const bands = new Array(width * height);
+    for (let y = 0; y < height; y++) {
+      const v = (worldCoords.y + y / height) / gridH;
+      for (let x = 0; x < width; x++) {
+        const u = (worldCoords.x + x / width) / gridW;
+        const info = R3D.terrestrialElevation(planetSeed, u, v, isOcean);
+        const cell = y * width + x;
+        bands[cell] = info.band;
+        mapData[calculateIndex(x, y, 0, width, height)] = bandTile[info.band] || floorFallback;
+      }
+    }
+
+    // Autotile the water with the existing 16-shape A1 classifier (already
+    // exported, never wired up before now) so the coastline this field draws
+    // reads as a real shoreline instead of a flat block of the base tile.
+    if (waterTile && BeachGen && BeachGen.getWaterAutotileIndex) {
+      const waterSet = new Set([waterTile]);
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (bands[y * width + x] !== "water") continue;
+          const idx = calculateIndex(x, y, 0, width, height);
+          const offset = BeachGen.getWaterAutotileIndex(x, y, mapData, width, height, waterSet);
+          mapData[idx] = BeachGen.getWaterTileForAutotiling([waterTile], offset);
+        }
+      }
+    }
+
+    // Light decoration on top of the floor: trees through the forest band,
+    // occasional flowers on plain grass -- the same density-scatter idea every
+    // other terrain path in this file already uses, just gated by band instead
+    // of a weighted feature roll.
+    const treeTiles = (allFeatures["Tree"] || []).filter((v) => v.type === "single").map((v) => v.tileId);
+    const flowerTiles = (allFeatures["Flower"] || []).filter((v) => v.type === "single").map((v) => v.tileId);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const band = bands[y * width + x];
+        if (band === "forest" && treeTiles.length && rng() < 0.35) {
+          mapData[calculateIndex(x, y, 1, width, height)] = treeTiles[Math.floor(rng() * treeTiles.length)];
+        } else if (band === "grass" && flowerTiles.length && rng() < 0.05) {
+          mapData[calculateIndex(x, y, 1, width, height)] = flowerTiles[Math.floor(rng() * flowerTiles.length)];
+        }
+      }
+    }
+
+    return mapData;
+  }
+
+  // Macro crater fields for the rocky/airless alien family (paintRocky's
+  // fallback bucket: sub_mercurian, mercurian, dwarf, centaur, planetesimal,
+  // the asteroid and comet types, ...). Starts from the family's existing
+  // plain terrain fill, then stamps every planet-wide crater
+  // (GalaxySim.getLandedCraterList, positioned at the same spot paintRocky's
+  // texture dot sits at) that could overlap this square, using a torus-
+  // shortest-distance offset so a crater whose radius exceeds one square is
+  // reconstructed identically -- rim, slope and floor alike -- by every square
+  // it touches. Mirrors the "border-owned shape" principle
+  // ProceduralBeachGenerator.js's coastlineDepth already uses for coastlines,
+  // circular instead of linear.
+  function generateAlienCraterFieldTerrain(biome, seed, allFeatures, worldCoords) {
+    const width = PROC_MAP_WIDTH;
+    const height = PROC_MAP_HEIGHT;
+    const rng = createSeededRandom(seed);
+    const mapData = new Array(width * height * 4).fill(0);
+    fillTerrainLayer(mapData, biome, allFeatures, width, height, rng, null);
+
+    const GS = window.GalaxySim;
+    const craters = GS && GS.getLandedCraterList ? GS.getLandedCraterList() : [];
+    if (!craters.length) return mapData;
+
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const grid = (pg && pg.alienGrid) || {};
+    const gridW = grid.w || 1;
+    const gridH = grid.h || 1;
+
+    const firstTileId = (name) => {
+      const list = allFeatures[name];
+      if (!list || !list.length) return 0;
+      const variant = list[0];
+      return variant.type === "single"
+        ? variant.tileId
+        : ((variant.tiles && variant.tiles[0] && variant.tiles[0][0]) || 0);
+    };
+    // CaveFloor, not MountainWall: the rim has to be walkable ground (a raised
+    // lip you can stand on and cross), not a solid cliff wall that would seal
+    // a slice of the crater off from the rest of the square.
+    const rimTile = firstTileId("CaveFloor");
+    const slopeTiles = ["MountainLeft", "MountainCenter", "MountainRight"]
+      .map(firstTileId).filter(Boolean);
+    if (!rimTile && !slopeTiles.length) return mapData;
+    const craterTiles = (allFeatures["Crater"] || []).filter((v) => v.type === "single").map((v) => v.tileId);
+
+    for (const crater of craters) {
+      // Torus-shortest offset from this square's center to the crater's
+      // center, in grid-cell units -- the same wrap WorldMapReturn.js's alien
+      // branch already applies to gx/gy.
+      let du = crater.u * gridW - (worldCoords.x + 0.5);
+      du -= gridW * Math.round(du / gridW);
+      let dv = crater.v * gridH - (worldCoords.y + 0.5);
+      dv -= gridH * Math.round(dv / gridH);
+      // Cull craters that cannot reach this square at all (a little slack for
+      // the square's own half-diagonal).
+      if (Math.hypot(du, dv) - 0.8 > crater.r) continue;
+
+      const localCx = du * width + width / 2;
+      const localCy = dv * height + height / 2;
+      const localR = crater.r * width;
+      const rimBand = Math.max(1, localR * 0.15);
+      const slopeBand = Math.max(1, localR * 0.15);
+
+      const minX = Math.max(0, Math.floor(localCx - localR - 1));
+      const maxX = Math.min(width - 1, Math.ceil(localCx + localR + 1));
+      const minY = Math.max(0, Math.floor(localCy - localR - 1));
+      const maxY = Math.min(height - 1, Math.ceil(localCy + localR + 1));
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
+          const dist = Math.hypot(x - localCx, y - localCy);
+          if (dist > localR) continue;
+          if (dist > localR - rimBand) {
+            if (rimTile) mapData[calculateIndex(x, y, 0, width, height)] = rimTile;
+          } else if (dist > localR - rimBand - slopeBand) {
+            if (slopeTiles.length) {
+              mapData[calculateIndex(x, y, 0, width, height)] =
+                slopeTiles[Math.floor(rng() * slopeTiles.length)];
+            }
+          } else if (craterTiles.length && rng() < 0.08) {
+            mapData[calculateIndex(x, y, 1, width, height)] =
+              craterTiles[Math.floor(rng() * craterTiles.length)];
+          }
+        }
+      }
+    }
+
+    return mapData;
+  }
+
+  // Nearest passable tile to (preferX, preferY) in a freshly generated alien
+  // square. Earth's generators each guarantee their own open borders/center
+  // (mountain ranges keep a clearing, coastlines never draw over a road...),
+  // but the elevation-banded terrestrial fill and the crater fields are new
+  // and continuous -- the map's exact center can legitimately land in open
+  // water or inside a crater's rim -- so entering/re-entering an alien planet
+  // always has to search for solid ground instead of assuming the center is
+  // it. Checks every layer (a scattered tree/rock also blocks passage), then
+  // spirals outward ring by ring from the preferred point.
+  function findPassableLandingTile(mapData, tilesetId, width, height, preferX, preferY) {
+    const passable = (x, y) => {
+      if (x < 0 || x >= width || y < 0 || y >= height) return false;
+      for (let z = 0; z <= 3; z++) {
+        const tileId = mapData[calculateIndex(x, y, z, width, height)];
+        if (tileId && !isTilePassableInTileset(tilesetId, tileId)) return false;
+      }
+      return true;
+    };
+    if (passable(preferX, preferY)) return { x: preferX, y: preferY };
+    const maxRadius = Math.max(width, height);
+    for (let r = 1; r <= maxRadius; r++) {
+      for (let dx = -r; dx <= r; dx++) {
+        for (let dy = -r; dy <= r; dy++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue; // ring only
+          const x = preferX + dx;
+          const y = preferY + dy;
+          if (passable(x, y)) return { x, y };
+        }
+      }
+    }
+    return { x: preferX, y: preferY }; // exhausted the whole map: give up
+  }
+
   // Persist the building-lot / placement hints a structure generator wrote onto
   // its allOtherData arg so the (separately hooked) prefab placement pass can
   // align prefabs to those lots instead of falling back to grid placement.
@@ -3040,12 +3467,30 @@
       }
     }
 
+    // Alien-surface terrain: route by the planet's texture-painter family so
+    // the ground matches what the landing-grid picker shows. Only fires with
+    // $gameSystem._procGenData.alienGrid set, i.e. never for Earth biomes
+    // (map 636 is reused for both).
+    if ($gameSystem && $gameSystem._procGenData && $gameSystem._procGenData.alienGrid) {
+      const alienRoute = resolveAlienRoute(biome, worldCoords);
+      if (alienRoute === "terrestrial") {
+        return generateAlienTerrestrialTerrain(biome, seed, allFeatures, worldCoords);
+      } else if (alienRoute === "crater") {
+        return generateAlienCraterFieldTerrain(biome, seed, allFeatures, worldCoords);
+      } else if (alienRoute === "mountain") {
+        // Fall through to the existing, unmodified mountain generator below,
+        // via a clone renamed just for this call so isMountainBiome() fires --
+        // currentBiome (BGM/tileset/audio lookups) is left untouched.
+        biome = Object.assign({}, biome, { name: biome.name + "Mountain" });
+      }
+    }
+
     // For cave biomes, use separate cave-only rendering (no scattered terrain
     // features). "CaveDen" is excluded: despite the name it is a dungeon-family
     // structure biome (single sealed chamber with a south-border entrance)
     // rendered by the dungeon generator below.
     if (isCaveBiome(biome.name) && !isDungeonBiome(biome.name)) {
-      return generateCaveBiomeTerrain(biome, seed, allFeatures, worldCoords);
+      return generateCaveBiomeTerrain(biome, seed, allFeatures, worldCoords, adjacentBiomes, cache);
     }
 
     // For mountain biomes, generate Perlin noise-based cliff terrain
@@ -3053,7 +3498,14 @@
       return generateMountainSurfaceTerrainForBiome(biome, seed, allFeatures, adjacentBiomes, cacheInfo, worldCoords, cache);
     }
 
-    // For Seabed biome, generate underwater cliffs with water tiles as base
+    // For Seabed biome, generate underwater cliffs with water tiles as base.
+    //
+    // Left matching "Seabed" exactly, which the biome (Biomes.json spells it
+    // "SeaBed") never does: tileset 302 declares no Water feature at all, so
+    // generateSeabedBiomeTerrain bails out and returns null. The sea floor is
+    // built by the generic path below -- as a floor walked on, not swum over --
+    // and it is that path that walls it off from the caves beside it (see
+    // sealSeabedUndergroundBorders).
     if (biome.name === "Seabed") {
       if (BeachGen && BeachGen.generateSeabedBiomeTerrain) {
         return BeachGen.generateSeabedBiomeTerrain(biome, seed, allFeatures, adjacentBiomes, cacheInfo, worldCoords, cache);
@@ -3368,6 +3820,12 @@
     // Uses global Perlin noise for organic, non-triangular blending
     // Use the actual water tiles to avoid overwriting beaches
     blendBiomesTerrainOnly(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+
+    // ...and then wall the sea floor back in, over the blend, wherever the
+    // square next to it is not sea floor as well.
+    sealSeabedUndergroundBorders(
+      mapData, biome, allFeatures, adjacentBiomes, worldCoords, cache, width, height
+    );
 
     // Clear any features in forbidden zones (borders and center)
     if ((biome.name !== "Ocean") && (biome.name !== "Seabed")) {
@@ -4007,6 +4465,13 @@
     this._procGenData.displayAsIsland = shouldDisplayAsIsland(biomeName, adjacentBiomes);
 
     const worldCoords = { x: originX, y: originY };
+    // An alien landing grid's (gx, gy) is planet-local and small, so it can
+    // coincidentally land on real Earth world-map coordinates. Feeding those
+    // into Earth's cache is exactly the bridge/hardcodedOverride mismatch
+    // already guarded above (alienGrid), and it leaks in here too: diagonal
+    // water lookups (checkDiagonalMapBiomesFromCache in drawWaterEdges) would
+    // read Earth's coastline at that coordinate and draw a beach/water corner
+    // on an alien surface nowhere near any sea.
     this._procGenData.generatedMapData = generateProceduralTerrain(
       biome,
       seed,
@@ -4014,7 +4479,7 @@
       adjacentBiomes,
       cacheInfo,
       worldCoords,
-      this._procGenData.biomeCoordinateCache
+      alienGrid ? null : this._procGenData.biomeCoordinateCache
     );
 
     // Play biome BGS if defined (night or day version)
@@ -4638,6 +5103,12 @@
   // strongrooms hung off it, so the rest are cloned from those seven.
   const VAULT_CHEST_COUNT = 26;
 
+  // Odds that a square nobody built anything on carries a single chest. Open air
+  // is deliberately near-barren - a chest in a field should be a story, not
+  // scenery - while a dug layer that is not a strongroom pays for the descent.
+  const SURFACE_CHEST_CHANCE = 0.03;
+  const UNDERGROUND_CHEST_CHANCE = 0.30;
+
   /**
    * Top the map up to VAULT_CHEST_COUNT chest events by cloning the ones the
    * template carries. Idempotent: it counts what is already on the map, so the
@@ -4679,8 +5150,17 @@
    *   - Cave-family: loot is RARE - most coordinates have no chest; when one does
    *     spawn it rolls RARE loot (via $gameSystem._lootRarityBonus, read by
    *     RandomLootSystem). ~20% of cave maps carry a single chest.
-   *   - Any other biome (overground / non-dungeon underground): no chests.
+   *   - Any other dug layer (Underdark, a river bank, a flooded seam): uncommon,
+   *     one chest on roughly a third of the squares, and worth the climb down.
+   *   - Open air (every surface biome): a chest lying out in the world is a
+   *     genuine find, so only a few squares in a hundred carry one.
+   *   - An alien surface holds nothing unless the world is HABITABLE: a vacuum
+   *     rock nobody could ever have walked on has nobody to have left a chest
+   *     there. A breathable world is treated as ordinary open air.
    * Chests not selected are parked at (0,0); visibility follows position.
+   * Which of the placed chests already stand open - because another savegame of
+   * this world emptied them, or because they were generated derelict - is
+   * ChestWorldState's answer, applied once the positions are final.
    */
   function placeChestEvents() {
     const procGenData = $gameSystem._procGenData;
@@ -4712,9 +5192,13 @@
     const rng = Utils2.createSeededRandom(baseSeed);
 
     // How many chests, and how rare their loot is.
+    const isAlien = /^alien/.test(biome);
     let numChests = 0;
     let rarityBonus = 0;
-    if (isLootCellar &&
+    if (isAlien && !isHabitableAlienSurface(procGenData)) {
+      // A world with no air nobody ever settled: nothing was left behind there.
+      numChests = 0;
+    } else if (isLootCellar &&
         procGenData.generatedMapData && procGenData.generatedMapData.cellarGrand) {
       // The rare grand cellar is stocked like a dungeon rather than like the
       // cramped hole most cellars are.
@@ -4725,6 +5209,19 @@
     } else if (isCave) {
       numChests = rng() < 0.15 ? 1 : 0;      // very rare - most caves have none
       rarityBonus = 55;                      // but rare loot when present
+    } else if (isUndergroundSquare(procGenData, biome)) {
+      // A dug layer that nobody built: the Underdark, a river bank seam, a
+      // flooded gallery. Not a strongroom, but worth the climb down. The bonus
+      // is only raised on the squares that actually carry a chest - it applies
+      // to every loot draw on the map, and an empty field must not pay better
+      // than a dungeon just because a chest COULD have rolled there.
+      numChests = rng() < UNDERGROUND_CHEST_CHANCE ? 1 : 0;
+      rarityBonus = numChests ? 35 : 0;
+    } else {
+      // Open air. A chest standing in a field is a genuine find, so it has to
+      // stay one: a handful of squares in a hundred, never more than one.
+      numChests = rng() < SURFACE_CHEST_CHANCE ? 1 : 0;
+      rarityBonus = numChests ? 25 : 0;
     }
     // Feed RandomLootSystem so cave chests roll toward the top rarity tiers.
     $gameSystem._lootRarityBonus = rarityBonus;
@@ -4765,6 +5262,65 @@
         event.setPosition(0, 0); // parked / hidden
       }
     });
+
+    // Positions are final: hand the whole set to the world record, which decides
+    // which of them stand open. Map 636 is one map reused for every square, so
+    // the self switches left by the LAST square's chests are still raised here -
+    // this is also what puts them down again.
+    const CWS = window.ChestWorldState;
+    if (CWS && typeof CWS.applyProcChestState === "function") {
+      CWS.applyProcChestState(chestEvents, baseSeed);
+    }
+  }
+
+  /**
+   * Is this square a dug layer rather than open air? True while the party is
+   * below the surface (a non-empty layer stack), for every biome that is some
+   * surface biome's lowerLayer, and inside a generated structure - which is
+   * entered as a fresh depth-0 map (startForcedBiome) and so has no layer stack
+   * to read.
+   */
+  let _lowerLayerBiomes = null;
+  function isUndergroundSquare(procGenData, lowerBiomeName) {
+    if (procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0) return true;
+    const D = window.ProcGenDungeon;
+    if (D && typeof D.isStructure === "function" && D.isStructure(lowerBiomeName)) return true;
+    if (!_lowerLayerBiomes) {
+      const list = Biomes || [];
+      if (!list.length) return false;   // biomes not loaded yet: do not cache
+      _lowerLayerBiomes = new Set();
+      list.forEach(b => { if (b && b.lowerLayer) _lowerLayerBiomes.add(String(b.lowerLayer).toLowerCase()); });
+    }
+    return _lowerLayerBiomes.has(lowerBiomeName);
+  }
+
+  /**
+   * Can anybody live on the alien world underfoot? Habitability is the planet
+   * type's `breathable` flag (js/db/GalaxySim/PlanetTypes.json). The landing
+   * descriptor answers it directly; a Sandbox jump straight into an "Alien*"
+   * biome has no descriptor, so the biome name is mapped back to the type that
+   * declares it.
+   */
+  let _breathableAlienBiomes = null;
+  function isHabitableAlienSurface(procGenData) {
+    const G = window.GalaxySim;
+    if (!G) return false;
+    const landed = $gameSystem._landedPlanet;
+    if (landed && landed.type && typeof G.planetBreathable === "function") {
+      return !!G.planetBreathable(landed);
+    }
+    if (!_breathableAlienBiomes) {
+      const PT = G.PlanetTypes;
+      if (!PT) return false;            // types not loaded yet: do not cache
+      _breathableAlienBiomes = new Set();
+      for (const key of Object.keys(PT)) {
+        const info = PT[key];
+        if (info && info.breathable && info.biome) {
+          _breathableAlienBiomes.add(String(info.biome).toLowerCase());
+        }
+      }
+    }
+    return _breathableAlienBiomes.has(String(procGenData.currentBiome || "").toLowerCase());
   }
 
   /**
@@ -5185,5 +5741,17 @@
       const data = $gameSystem && $gameSystem._procGenData;
       return (data && data.currentBiome) || "";
     }
+  };
+
+  // Alien-surface terrain generators (see the block above generateBiomeBody's
+  // dispatch), exported for scripts/test_alienterrain.js -- the generateBiomeBody
+  // dispatch itself is exercised through Game_System.prototype.generateProceduralMap
+  // in normal play, but these three are the pure, self-contained pieces a Node
+  // harness can call directly without a full RMMZ stub.
+  window.ProcGenAlienTerrain = {
+    resolveAlienRoute,
+    generateAlienTerrestrialTerrain,
+    generateAlienCraterFieldTerrain,
+    findPassableLandingTile,
   };
 })();

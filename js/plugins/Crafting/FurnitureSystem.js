@@ -1798,43 +1798,64 @@
     // compute a shape. computeAutotileTileId() below derives it from the four
     // real shipped rendering tables (Tilemap.FLOOR_AUTOTILE_TABLE / WALL_ /
     // WATERFALL_AUTOTILE_TABLE in js/rmmz_core.js), reading which of the four
-    // cardinal neighbours (N/E/S/W) also hold a same-kind tile — straight edges,
-    // corners, T-junctions and islands all render correctly — but does not
-    // distinguish the smooth-vs-notched corner sub-variant that also depends on
-    // the diagonal neighbour (a finer distinction that could not be safely
-    // reverse-engineered without loading the game to check, which this
-    // project's rules disallow); inner corners always render as the smooth
-    // variant instead of the notch. Every fallback below always resolves to a
-    // shape index that genuinely exists in the table, so a gap in that
-    // derivation is at worst a slightly-off corner, never a broken tile.
+    // cardinal neighbours (N/E/S/W) also hold a same-kind tile — straight
+    // edges, corners, T-junctions and islands all render correctly.
+    //
+    // Each table entry is the 4 quadrants [topLeft, topRight, bottomLeft,
+    // bottomRight] of the tile, given as [x, y] into that autotile's source
+    // block. A quadrant reaching the block's outer column/row is what DRAWS a
+    // border on that side, i.e. that side is OPEN (no same-kind neighbour):
+    //   west  open <-> topLeft.x === 0        east  open <-> topRight.x === 3
+    //   north open <-> topLeft.y === openN    south open <-> bottomLeft.y === openS
+    // The tables disagree on the row markers — the floor/blob table borders
+    // north at y 2 and south at y 5, the 16-entry wall table at y 0 and y 3,
+    // and the 4-entry waterfall table has no north/south at all — so those
+    // rows are passed in per table rather than assumed. Getting this wrong is
+    // not a subtle mis-corner: it silently resolves the FILLED interior of a
+    // region to a corner-notch shape, so a solid block of wall tiles up tiles
+    // with a repeating angle instead of reading as flat fill.
 
     const PLACED_TILE_LAYER = 3; // top-most tile data slot (same one TerrainInteractions treats as safely clearable)
     const WOOD_ITEM_ID = 859;
 
     // ── Shape index tables, built once from the shipped engine data ────────────
-    function buildAutotileShapeIndex(table) {
+    // `cornerRows` are the source rows holding the INNER-CORNER pieces, i.e.
+    // the little notch drawn when a diagonal neighbour is missing but both of
+    // its cardinals are present. Several floor-table shapes share one cardinal
+    // signature and differ only in how many notches they carry; we track
+    // cardinals only, so the variant with the fewest notches is the honest
+    // match. (The wall and waterfall tables have no such variants.)
+    function buildAutotileShapeIndex(table, openNorthY, openSouthY, cornerRows) {
         const index = {};
+        const notches = {};
+        const corners = cornerRows || [];
         for (let shape = 0; shape < table.length; shape++) {
             const [tl, tr, bl] = table[shape];
-            const west = tl[0] === 2;
-            const north = tl[1] !== 0;
-            const east = tr[0] === 3;
-            const south = bl[1] !== 1;
-            const key = (west ? 1 : 0) + ',' + (east ? 1 : 0) + ',' + (north ? 1 : 0) + ',' + (south ? 1 : 0);
-            if (!(key in index)) index[key] = shape;
+            const westOpen = tl[0] === 0;
+            const eastOpen = tr[0] === 3;
+            const northOpen = tl[1] === openNorthY;
+            const southOpen = bl[1] === openSouthY;
+            // Connected is the negation of open; the key is west,east,north,south.
+            const key = (westOpen ? 0 : 1) + ',' + (eastOpen ? 0 : 1) + ',' +
+                (northOpen ? 0 : 1) + ',' + (southOpen ? 0 : 1);
+            let n = 0;
+            for (const q of table[shape]) if (corners.indexOf(q[1]) >= 0) n++;
+            if (!(key in index) || n < notches[key]) { index[key] = shape; notches[key] = n; }
         }
         return index;
     }
-    const FLOOR_SHAPE_INDEX = buildAutotileShapeIndex(Tilemap.FLOOR_AUTOTILE_TABLE);
-    const WALL_SHAPE_INDEX = buildAutotileShapeIndex(Tilemap.WALL_AUTOTILE_TABLE);
-    const WATERFALL_SHAPE_INDEX = buildAutotileShapeIndex(Tilemap.WATERFALL_AUTOTILE_TABLE);
+    // -1 for a marker row the table does not have, so that side always reads
+    // as connected (the waterfall table only ever borders west/east).
+    const FLOOR_SHAPE_INDEX = buildAutotileShapeIndex(Tilemap.FLOOR_AUTOTILE_TABLE, 2, 5, [0, 1]);
+    const WALL_SHAPE_INDEX = buildAutotileShapeIndex(Tilemap.WALL_AUTOTILE_TABLE, 0, 3, []);
+    const WATERFALL_SHAPE_INDEX = buildAutotileShapeIndex(Tilemap.WATERFALL_AUTOTILE_TABLE, -1, -1, []);
 
     function lookupShape(index, west, east, north, south) {
         const key = (west ? 1 : 0) + ',' + (east ? 1 : 0) + ',' + (north ? 1 : 0) + ',' + (south ? 1 : 0);
         if (key in index) return index[key];
         const fallbacks = [
             (west ? 1 : 0) + ',' + (east ? 1 : 0) + ',1,1',
-            '0,0,0,0'
+            '1,1,1,1'
         ];
         for (const k of fallbacks) if (k in index) return index[k];
         return 0;
@@ -1886,6 +1907,53 @@
             $dataMap.data[idx] = computeAutotileTileId(px, py, Tilemap.getAutotileKind(tileId));
         }
         if ($gameMap) $gameMap.requestRefresh();
+    }
+
+    // ── Ceiling always stands on a wall ───────────────────────────────────────
+    // An A4 autotile sheet packs each wall material as a PAIR of kinds: a
+    // "top" (the flat roof of the wall mass, kind % 16 < 8, blended with the
+    // floor table) and, exactly 8 kinds later, the matching "side" — the
+    // vertical face you actually see (kind % 16 >= 8, blended with the wall
+    // table). That pairing is a fixed engine convention, not a per-tileset
+    // choice (Tilemap.isWallTopTile / isWallSideTile).
+    //
+    // A ceiling with nothing under it reads as a slab floating in mid air, so
+    // placing one always puts its own face on the tile below. Returns the
+    // matching side kind, or -1 when `kind` is not a ceiling at all (A3, a
+    // terrain kind, or an A4 side kind — those stand on their own).
+    function ceilingSideKind(kind) {
+        const sample = Tilemap.makeAutotileId(kind, 0);
+        if (!Tilemap.isTileA4(sample) || (kind % 16) >= 8) return -1;
+        return kind + 8;
+    }
+
+    // Is there already something under (x, y) that can carry a ceiling? Any
+    // placed wall/terrain autotile counts — including another ceiling tile of
+    // the same mass, which carries its own face further down.
+    function hasWallUnder(x, y) {
+        const below = findPlacedTileRecordAt(x, y + 1);
+        return !!(below && (below.kind === 'wall' || below.kind === 'terrain'));
+    }
+
+    // Stamps the matching wall face beneath a just-placed ceiling tile. Costs
+    // nothing extra: the face is part of the same piece, exactly as the map
+    // editor draws one when you paint an A4 wall. Linked to its ceiling by
+    // `skirtOf` so removing the ceiling takes the face with it.
+    function placeCeilingFace(mapKey, parentRec, x, y, kind) {
+        const sideKind = ceilingSideKind(kind);
+        if (sideKind < 0) return;
+        const by = y + 1;
+        if (!$gameMap || !$gameMap.isValid(x, by)) return;
+        if (findPlacedTileRecordAt(x, by)) return;   // something already stands there
+        const tileId = Tilemap.makeAutotileId(sideKind, 0);
+        $gameSystem.placeMapTile(mapKey, {
+            kind: 'wall', x: x, y: by, tileId: tileId, layer: PLACED_TILE_LAYER,
+            autoKind: sideKind, name: parentRec ? parentRec.name : null, cost: {},
+            // Ids start at 0, so this is compared with != null, never truthily.
+            skirtOf: parentRec ? parentRec.id : null
+        });
+        writeMapDataTile(x, by, PLACED_TILE_LAYER, tileId);
+        refreshAutotileBlendAround(x, by);
     }
 
     function writeMapDataTile(x, y, layer, tileId) {
@@ -2536,6 +2604,20 @@
             .join(' ');
     }
 
+    // A piece's own name and blurb. Every entry in Furniture.json already
+    // carries `name_int`, the i18n path holding its copy ("furniture.<id>.name"),
+    // but nothing was reading it, so the build menu drew the English `name`
+    // field in every language. Same shape, and the same guard, as
+    // CrimeSystem's crime.name_int: the key wins where it resolves, and the
+    // data field stays the fallback for a piece the banks do not list (which
+    // most of the 9,000 asset-set pieces are, their names being asset ids).
+    function furnitureName(id, f) {
+        const rec = f || Furniture[id] || null;
+        const key = rec && rec.name_int;
+        if (key && T.has(key)) return T(key);
+        return (rec && rec.name) || String(id || '');
+    }
+
     // Special pseudo-category shown first in the dropdown: only the pieces the
     // player can actually build with their current materials (all pieces while
     // free-building). It is the default view when the build menu opens.
@@ -2578,7 +2660,6 @@
         hammer: 223,   // War Hammer   - Build Mode title / Construct mode
         money: 191,    // Gold Nuggets - gold amounts and purchase prices
         wallet: 187,   // Wallet       - Purchase mode
-        search: 247,   // magnifier    - search field
         demolish: 218, // Bomb         - clear everything built on this map
         warn: 281,     // "!" sign     - clear-all confirmation
         blocked: 282,  // No Entry     - piece the player cannot afford
@@ -2805,6 +2886,9 @@
             this.category = (_cats[0] || { symbol: '' }).symbol;
             this.topTab = 'buildables';
             this.search = '';
+            // The field lives behind a handle, like every other search in the
+            // game (UI/MenuSearchBar.js).
+            this.searchOpen = false;
             this.container = document.createElement('div');
             this.container.id = 'fbuild-panel';
             document.body.appendChild(this.container);
@@ -2881,7 +2965,7 @@
                 // pieces regardless of their folder category.
                 for (const [id, f] of Object.entries(Furniture)) {
                     if (query) {
-                        if ((f.name || id).toLowerCase().includes(query)) items.push({ id, ...f });
+                        if (furnitureName(id, f).toLowerCase().includes(query)) items.push({ id, ...f });
                     } else if (this.category === BUILDABLE_SYMBOL) {
                         if (affordFn(f)) items.push({ id, ...f });
                     } else if (f.category === this.category) {
@@ -2893,7 +2977,7 @@
                 if (purchasing && this.category === BUILDABLE_SYMBOL && !query) {
                     items.sort((a, b) => getFurniturePrice(a) - getFurniturePrice(b));
                 } else {
-                    items.sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id));
+                    items.sort((a, b) => furnitureName(a.id, a).localeCompare(furnitureName(b.id, b)));
                 }
             } else if (topTab === 'walls' || topTab === 'terrain') {
                 // Kick off (once) the async tileset bitmap load and re-render
@@ -2908,7 +2992,7 @@
                     const info = resolvePlaceable(prefix + kind);
                     if (info) items.push(info);
                 }
-                items.sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id));
+                items.sort((a, b) => furnitureName(a.id, a).localeCompare(furnitureName(b.id, b)));
             } else if (topTab === 'houses') {
                 for (const mapId of Object.keys(getHouseCatalog())) {
                     const info = resolvePlaceable('house:' + mapId);
@@ -2920,7 +3004,7 @@
                     const info = resolvePlaceable('feature:' + name);
                     if (info) items.push(info);
                 }
-                items.sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id));
+                items.sort((a, b) => furnitureName(a.id, a).localeCompare(furnitureName(b.id, b)));
             } else if (topTab === 'animals') {
                 for (const id of Object.keys(getAnimalCatalog())) {
                     const info = resolvePlaceable(id);
@@ -2950,6 +3034,8 @@
             // Escaped once, out of the markup, so the attribute value is not a
             // literal the scanner has to reason about.
             const searchValue = String(this.search || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'); // i18n-ignore: HTML entity escaping
+            // Collapsed until the handle is clicked; a live query keeps it open.
+            const searchOpen = !!this.searchOpen || !!this.search;
             if (topTab === 'buildables') {
                 const currentCat = categories.find(c => c.symbol === this.category);
                 const currentName = currentCat ? currentCat.name : T('Furniture.categoryLabel');
@@ -2970,9 +3056,9 @@
                         </button>
                         <div class="fbuild-dd-list">${ddOptionsHTML}</div>
                     </div>
-                    <span class="fbuild-search-icon">${iconHTML(UI_ICONS.search, 18)}</span>
-                    <input class="fbuild-search" type="search" placeholder="${T('Furniture.searchPlaceholder')}"
-                        value="${searchValue}">
+                    ${searchOpen ? `<input class="fbuild-search" type="search" placeholder="${T('Furniture.searchPlaceholder')}"
+                        value="${searchValue}">` : ''}
+                    ${window.MenuSearchBar ? window.MenuSearchBar.toggleHTML('', searchOpen) : ''}
                 </div>`;
             }
 
@@ -3067,7 +3153,7 @@
                             ${isArmed ? `<span class="fbuild-card-armed-badge">${T('Furniture.placing')}</span>` : ''}
                             ${(!affordable && !free) ? `<span class="fbuild-card-lock" title="${T('Furniture.tip.cannotAfford')}">${iconHTML(UI_ICONS.blocked, 16)}</span>` : ''}
                         </div>
-                        <div class="fbuild-card-name">${item.name || item.id}</div>
+                        <div class="fbuild-card-name">${furnitureName(item.id, item)}</div>
                         <div class="fbuild-card-folder">${folderName}</div>
                         <div class="fbuild-card-meta">
                             <span class="fbuild-card-size">${item.width}×${item.height}</span>
@@ -3094,7 +3180,7 @@
                             : placeholderIconHTML(24)}
                     </div>
                     <div class="fbuild-armed-info">
-                        <div class="fbuild-armed-name">${armed.name || armedId}</div>
+                        <div class="fbuild-armed-name">${furnitureName(armedId, armed)}</div>
                         <div class="fbuild-armed-sub ${armedAfford ? 'ok' : 'bad'}">
                             ${armedAfford ? T('Furniture.hint.placeSweep') : T('Furniture.hint.cannotAfford')}
                             &nbsp;·&nbsp; ${T('Furniture.help.armed')}
@@ -3235,6 +3321,7 @@
                     if ((this.topTab || 'buildables') === tab) return;
                     this.topTab = tab;
                     this.search = ''; // switching tabs clears an active search
+                    this.searchOpen = false;
                     SoundManager.playCursor();
                     this.render();
                 });
@@ -3262,6 +3349,7 @@
                         e.stopPropagation();
                         this.category = opt.dataset.cat;
                         this.search = '';   // picking a category clears an active search
+                        this.searchOpen = false;
                         SoundManager.playCursor();
                         this.render();
                     });
@@ -3273,6 +3361,21 @@
             // RPG Maker's global input (arrows/space/backspace would otherwise be
             // consumed as game controls). Mouse focus over the canvas is unreliable,
             // so pointerdown force-focuses the field.
+            // The handle: a click unfolds the field (and takes the caret with
+            // it), a second click puts both the field and its query away. It is
+            // wired by pointerdown like every other control on this panel, and
+            // sits outside the card grid the pad walks.
+            const searchToggle = this.container.querySelector('.fbuild-catbar .msb-toggle');
+            if (searchToggle) {
+                searchToggle.addEventListener('pointerdown', e => {
+                    e.stopPropagation();
+                    this.searchOpen = !this.searchOpen;
+                    if (!this.searchOpen) this.search = '';
+                    this._restoreSearchCaret = this.searchOpen ? 0 : null;
+                    SoundManager.playCursor();
+                    this.render();
+                });
+            }
             const searchInput = this.container.querySelector('.fbuild-search');
             if (searchInput) {
                 ['keydown', 'keyup', 'keypress'].forEach(ev =>
@@ -3384,6 +3487,7 @@
             i = (i + dir + tabs.length) % tabs.length;
             this.topTab = tabs[i];
             this.search = '';
+            this.searchOpen = false;
             SoundManager.playCursor();
             this.render();
             const first = this.container.querySelector('.fbuild-card');
@@ -3430,7 +3534,7 @@
                             : placeholderIconHTML(24)}
                     </div>
                     <div class="fbuild-armed-info">
-                        <div class="fbuild-armed-name">${armed.name || armedId}</div>
+                        <div class="fbuild-armed-name">${furnitureName(armedId, armed)}</div>
                         <div class="fbuild-armed-sub ${afford ? 'ok' : 'bad'}">
                             ${afford ? T('Furniture.hint.place') : (armed.__specialGoldPrice != null ? T('Furniture.hint.noMoney') : T('Furniture.hint.noMaterials'))}
                             &nbsp;·&nbsp; ${T('Furniture.help.armed')}
@@ -3718,7 +3822,7 @@
         // What the party built, in its own diary (Diary.js). Only what the
         // PLAYER puts up: the seeded furnishing of a procedural interior goes
         // through placeFurniture too and is nobody's doing.
-        if (window.Diary) window.Diary.onBuilt(f.name || id);
+        if (window.Diary) window.Diary.onBuilt(furnitureName(id, f));
         // Placed set + materials/gold changed: force the build-mode validity recompute.
         this._fbPlaceCacheKey = null;
         fbPlayBuildSound(() => SoundManager.playOk());
@@ -3734,6 +3838,13 @@
     // autotiles) blends it and its neighbours to the correct connected shape.
     Scene_Map.prototype.placeArmedTile = function (x, y, info) {
         if (!canPlaceTileAt(x, y, info.__placeKind)) { SoundManager.playBuzzer(); return; }
+        // A ceiling is never placed without a wall under it: either one is
+        // already there, or there is a tile below to build its face on.
+        if (ceilingSideKind(info.__autoKind) >= 0 &&
+            !hasWallUnder(x, y) &&
+            !($gameMap && $gameMap.isValid(x, y + 1))) {
+            SoundManager.playBuzzer(); return;
+        }
         const cost = info.__specialCost || {};
         if (!isFreeBuild()) {
             for (const [matId, qty] of Object.entries(cost)) {
@@ -3754,7 +3865,7 @@
         }
         const isTileFeature = info.__placeKind === 'feature';
         const baseTileId = isTileFeature ? info.__tileId : Tilemap.makeAutotileId(info.__autoKind, 0);
-        $gameSystem.placeMapTile(mapKey, {
+        const rec = $gameSystem.placeMapTile(mapKey, {
             kind: info.__placeKind, x, y, tileId: baseTileId,
             layer: PLACED_TILE_LAYER, autoKind: info.__autoKind, name: info.name, cost
         });
@@ -3762,6 +3873,7 @@
         if (isTileFeature) {
             if ($gameMap) $gameMap.requestRefresh();
         } else {
+            if (!hasWallUnder(x, y)) placeCeilingFace(mapKey, rec, x, y, info.__autoKind);
             refreshAutotileBlendAround(x, y);
         }
         this._fbPlaceCacheKey = null;
@@ -3826,6 +3938,15 @@
         if (!rec) return false;
         $gameSystem.removePlacedTile(mapKey, rec.id);
         clearMapDataTile(tx, ty, rec.layer != null ? rec.layer : PLACED_TILE_LAYER);
+        // The wall face auto-built under a ceiling belongs to it: pulling the
+        // ceiling down takes its face too, rather than leaving a lone slice of
+        // wall standing with nothing on top.
+        const face = list.find(t => t.skirtOf != null && t.skirtOf === rec.id);
+        if (face) {
+            $gameSystem.removePlacedTile(mapKey, face.id);
+            clearMapDataTile(face.x, face.y, face.layer != null ? face.layer : PLACED_TILE_LAYER);
+            refreshAutotileBlendAround(face.x, face.y);
+        }
         if (rec.kind === 'wall' || rec.kind === 'terrain') {
             refreshAutotileBlendAround(tx, ty);
         } else if ($gameMap) {
@@ -3896,7 +4017,7 @@
                 $gameSystem.removePlacedFurniture(mapId, p.id);
                 if (this._spriteset) this._spriteset.removeFurnitureSprite(p.id);
                 refundFurnitureMaterials(f);
-                if (window.Diary) window.Diary.onDismantled(f.name || p.furnitureId);
+                if (window.Diary) window.Diary.onDismantled(furnitureName(p.furnitureId, f));
                 // Placed set + materials changed: force the validity recompute.
                 this._fbPlaceCacheKey = null;
                 fbPlayBuildSound(() => SoundManager.playUseItem());
@@ -4257,6 +4378,7 @@
         if (tab && TOP_TABS.some(t => t.key === tab)) {
             scene._fbUI.topTab = tab;
             scene._fbUI.search = '';
+            scene._fbUI.searchOpen = false;
             scene._fbUI.render();
         }
         return true;

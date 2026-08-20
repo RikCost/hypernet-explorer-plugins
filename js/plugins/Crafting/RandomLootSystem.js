@@ -71,11 +71,14 @@
     
     // Section-header / divider rows (e.g. "<-- Light -->") and nameless
     // placeholder entries exist only to group shop lists. Never loot them.
+    // A <Restricted> row is not loot either: it is granted by the one system
+    // that owns it (ItemSystemUtils.isRestrictedEntry).
     function isSelectableLootItem(item) {
         if (!item) return false;
         const name = (item.name || '').trim();
         if (name === '') return false;
         if (/^<--.*-->$/.test(name)) return false;
+        if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(item)) return false;
         return true;
     }
 

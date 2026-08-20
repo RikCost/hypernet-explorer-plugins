@@ -620,8 +620,8 @@
                 const m = enemyData && enemyData.note && enemyData.note.match(/<Archetype:\s*(.+?)>/i);
                 archetypeName = m ? m[1].trim() : null;
             }
-            const archetype = archetypeName && window.Health && window.Health.EnemyArchetypes
-                ? window.Health.EnemyArchetypes[archetypeName] : null;
+            const archetype = archetypeName && window.Health && window.Health.Archetypes
+                ? window.Health.Archetypes[archetypeName] : null;
             if (!archetype) { this._partKeys = []; return; }
             this._archetypeName = archetypeName;
             this._archetype     = archetype;

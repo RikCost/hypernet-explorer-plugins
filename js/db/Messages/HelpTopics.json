@@ -1,277 +1,2189 @@
 {
-  "squishing": {
-    "type": "lore",
-    "title": "HelpTopics.squishing.title",
-    "description": "HelpTopics.squishing.description",
+  "controlsMoving": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 10,
+    "title": "HelpTopics.controlsMoving.title",
+    "description": "HelpTopics.controlsMoving.description",
     "image": ""
   },
-  "ruleOf80": {
-    "type": "lore",
-    "title": "HelpTopics.ruleOf80.title",
-    "description": "HelpTopics.ruleOf80.description",
+  "controlsMenus": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 20,
+    "title": "HelpTopics.controlsMenus.title",
+    "description": "HelpTopics.controlsMenus.description",
     "image": ""
   },
-  "encompassingRoad": {
-    "type": "lore",
-    "title": "HelpTopics.encompassingRoad.title",
-    "description": "HelpTopics.encompassingRoad.description",
+  "controlsMouse": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 30,
+    "title": "HelpTopics.controlsMouse.title",
+    "description": "HelpTopics.controlsMouse.description",
     "image": ""
   },
-  "magesGuild": {
-    "type": "lore",
-    "title": "HelpTopics.magesGuild.title",
-    "description": "HelpTopics.magesGuild.description",
+  "controlsGamepad": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 40,
+    "title": "HelpTopics.controlsGamepad.title",
+    "description": "HelpTopics.controlsGamepad.description",
     "image": ""
   },
-  "hypercapitalistCollective": {
-    "type": "lore",
-    "title": "HelpTopics.hypercapitalistCollective.title",
-    "description": "HelpTopics.hypercapitalistCollective.description",
+  "controlsRemap": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 50,
+    "title": "HelpTopics.controlsRemap.title",
+    "description": "HelpTopics.controlsRemap.description",
     "image": ""
   },
-  "emTheMemoryWitch": {
-    "type": "lore",
-    "title": "HelpTopics.emTheMemoryWitch.title",
-    "description": "HelpTopics.emTheMemoryWitch.description",
+  "controlsScreen": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 60,
+    "title": "HelpTopics.controlsScreen.title",
+    "description": "HelpTopics.controlsScreen.description",
     "image": ""
   },
-  "camelcaseMagic": {
-    "type": "lore",
-    "title": "HelpTopics.camelcaseMagic.title",
-    "description": "HelpTopics.camelcaseMagic.description",
+  "controlsSearch": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 70,
+    "title": "HelpTopics.controlsSearch.title",
+    "description": "HelpTopics.controlsSearch.description",
     "image": ""
   },
-  "alagaddaCityOfMasks": {
-    "type": "lore",
-    "title": "HelpTopics.alagaddaCityOfMasks.title",
-    "description": "HelpTopics.alagaddaCityOfMasks.description",
+  "savingGame": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 80,
+    "title": "HelpTopics.savingGame.title",
+    "description": "HelpTopics.savingGame.description",
     "image": ""
   },
-  "bladeSeeds": {
-    "title": "HelpTopics.bladeSeeds.title",
-    "description": "HelpTopics.bladeSeeds.description",
+  "worldsFolders": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 90,
+    "title": "HelpTopics.worldsFolders.title",
+    "description": "HelpTopics.worldsFolders.description",
     "image": ""
   },
-  "beginningYourJourney": {
-    "title": "HelpTopics.beginningYourJourney.title",
-    "description": "HelpTopics.beginningYourJourney.description",
+  "optionsMenu": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 100,
+    "title": "HelpTopics.optionsMenu.title",
+    "description": "HelpTopics.optionsMenu.description",
     "image": ""
   },
-  "combatSystem": {
-    "title": "HelpTopics.combatSystem.title",
-    "description": "HelpTopics.combatSystem.description",
+  "modsUpdates": {
+    "type": "mechanic",
+    "group": "controls",
+    "order": 110,
+    "title": "HelpTopics.modsUpdates.title",
+    "description": "HelpTopics.modsUpdates.description",
     "image": ""
   },
-  "cookingSystem": {
-    "title": "HelpTopics.cookingSystem.title",
-    "description": "HelpTopics.cookingSystem.description",
+  "partyBasics": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1010,
+    "title": "HelpTopics.partyBasics.title",
+    "description": "HelpTopics.partyBasics.description",
     "image": ""
   },
-  "craftingThinkerSystem": {
-    "title": "HelpTopics.craftingThinkerSystem.title",
-    "description": "HelpTopics.craftingThinkerSystem.description",
+  "partyCreation": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1020,
+    "title": "HelpTopics.partyCreation.title",
+    "description": "HelpTopics.partyCreation.description",
     "image": ""
   },
-  "crimeLawSystem": {
-    "title": "HelpTopics.crimeLawSystem.title",
-    "description": "HelpTopics.crimeLawSystem.description",
+  "partyClasses": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1030,
+    "title": "HelpTopics.partyClasses.title",
+    "description": "HelpTopics.partyClasses.description",
     "image": ""
   },
-  "datingSystem": {
-    "title": "HelpTopics.datingSystem.title",
-    "description": "HelpTopics.datingSystem.description",
+  "partyTraits": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1040,
+    "title": "HelpTopics.partyTraits.title",
+    "description": "HelpTopics.partyTraits.description",
     "image": ""
   },
-  "deathGravestones": {
-    "title": "HelpTopics.deathGravestones.title",
-    "description": "HelpTopics.deathGravestones.description",
+  "partyAttributes": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1050,
+    "title": "HelpTopics.partyAttributes.title",
+    "description": "HelpTopics.partyAttributes.description",
     "image": ""
   },
-  "dungeonSystem": {
-    "title": "HelpTopics.dungeonSystem.title",
-    "description": "HelpTopics.dungeonSystem.description",
+  "partyCreatures": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1060,
+    "title": "HelpTopics.partyCreatures.title",
+    "description": "HelpTopics.partyCreatures.description",
     "image": ""
   },
-  "factionsReputation": {
-    "title": "HelpTopics.factionsReputation.title",
-    "description": "HelpTopics.factionsReputation.description",
+  "partyPortraits": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1070,
+    "title": "HelpTopics.partyPortraits.title",
+    "description": "HelpTopics.partyPortraits.description",
     "image": ""
   },
-  "fogOfWar": {
-    "title": "HelpTopics.fogOfWar.title",
-    "description": "HelpTopics.fogOfWar.description",
+  "partyRecruiting": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1080,
+    "title": "HelpTopics.partyRecruiting.title",
+    "description": "HelpTopics.partyRecruiting.description",
     "image": ""
   },
-  "hungerSleep": {
-    "title": "HelpTopics.hungerSleep.title",
-    "description": "HelpTopics.hungerSleep.description",
+  "partyPets": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1090,
+    "title": "HelpTopics.partyPets.title",
+    "description": "HelpTopics.partyPets.description",
     "image": ""
   },
-  "hypernetShopping": {
-    "title": "HelpTopics.hypernetShopping.title",
-    "description": "HelpTopics.hypernetShopping.description",
+  "partyReproduction": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1100,
+    "title": "HelpTopics.partyReproduction.title",
+    "description": "HelpTopics.partyReproduction.description",
     "image": ""
   },
-  "lockpicking": {
-    "title": "HelpTopics.lockpicking.title",
-    "description": "HelpTopics.lockpicking.description",
+  "partyDeath": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1110,
+    "title": "HelpTopics.partyDeath.title",
+    "description": "HelpTopics.partyDeath.description",
     "image": ""
   },
-  "newsSystem": {
-    "title": "HelpTopics.newsSystem.title",
-    "description": "HelpTopics.newsSystem.description",
+  "partyBanterPage": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1120,
+    "title": "HelpTopics.partyBanterPage.title",
+    "description": "HelpTopics.partyBanterPage.description",
     "image": ""
   },
-  "partySystem": {
-    "title": "HelpTopics.partySystem.title",
-    "description": "HelpTopics.partySystem.description",
+  "partyAutoIdle": {
+    "type": "mechanic",
+    "group": "party",
+    "order": 1130,
+    "title": "HelpTopics.partyAutoIdle.title",
+    "description": "HelpTopics.partyAutoIdle.description",
     "image": ""
   },
-  "realEstateMarket": {
-    "title": "HelpTopics.realEstateMarket.title",
-    "description": "HelpTopics.realEstateMarket.description",
+  "progressLevels": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2010,
+    "title": "HelpTopics.progressLevels.title",
+    "description": "HelpTopics.progressLevels.description",
     "image": ""
   },
-  "savingYourGame": {
-    "title": "HelpTopics.savingYourGame.title",
-    "description": "HelpTopics.savingYourGame.description",
+  "progressKnowledge": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2020,
+    "title": "HelpTopics.progressKnowledge.title",
+    "description": "HelpTopics.progressKnowledge.description",
     "image": ""
   },
-  "skillsTraining": {
-    "title": "HelpTopics.skillsTraining.title",
-    "description": "HelpTopics.skillsTraining.description",
+  "progressAtlas": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2030,
+    "title": "HelpTopics.progressAtlas.title",
+    "description": "HelpTopics.progressAtlas.description",
     "image": ""
   },
-  "scalingAttributes": {
-    "title": "HelpTopics.scalingAttributes.title",
-    "description": "HelpTopics.scalingAttributes.description",
+  "progressTraining": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2040,
+    "title": "HelpTopics.progressTraining.title",
+    "description": "HelpTopics.progressTraining.description",
     "image": ""
   },
-  "statusEffects": {
-    "title": "HelpTopics.statusEffects.title",
-    "description": "HelpTopics.statusEffects.description",
+  "progressSpecializations": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2050,
+    "title": "HelpTopics.progressSpecializations.title",
+    "description": "HelpTopics.progressSpecializations.description",
     "image": ""
   },
-  "stockMarket": {
-    "title": "HelpTopics.stockMarket.title",
-    "description": "HelpTopics.stockMarket.description",
+  "progressPassives": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2060,
+    "title": "HelpTopics.progressPassives.title",
+    "description": "HelpTopics.progressPassives.description",
     "image": ""
   },
-  "travelVehicles": {
-    "title": "HelpTopics.travelVehicles.title",
-    "description": "HelpTopics.travelVehicles.description",
+  "progressLoadout": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2070,
+    "title": "HelpTopics.progressLoadout.title",
+    "description": "HelpTopics.progressLoadout.description",
     "image": ""
   },
-  "weatherTime": {
-    "title": "HelpTopics.weatherTime.title",
-    "description": "HelpTopics.weatherTime.description",
+  "progressFusion": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2080,
+    "title": "HelpTopics.progressFusion.title",
+    "description": "HelpTopics.progressFusion.description",
     "image": ""
   },
-  "worldMap": {
-    "title": "HelpTopics.worldMap.title",
-    "description": "HelpTopics.worldMap.description",
+  "progressGrimoires": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2090,
+    "title": "HelpTopics.progressGrimoires.title",
+    "description": "HelpTopics.progressGrimoires.description",
+    "image": ""
+  },
+  "progressBladeSeeds": {
+    "type": "mechanic",
+    "group": "progress",
+    "order": 2100,
+    "title": "HelpTopics.progressBladeSeeds.title",
+    "description": "HelpTopics.progressBladeSeeds.description",
+    "image": ""
+  },
+  "gearSlots": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3010,
+    "title": "HelpTopics.gearSlots.title",
+    "description": "HelpTopics.gearSlots.description",
+    "image": ""
+  },
+  "gearProficiency": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3020,
+    "title": "HelpTopics.gearProficiency.title",
+    "description": "HelpTopics.gearProficiency.description",
+    "image": ""
+  },
+  "gearScaling": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3030,
+    "title": "HelpTopics.gearScaling.title",
+    "description": "HelpTopics.gearScaling.description",
+    "image": ""
+  },
+  "gearArmor": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3040,
+    "title": "HelpTopics.gearArmor.title",
+    "description": "HelpTopics.gearArmor.description",
+    "image": ""
+  },
+  "gearModifiers": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3050,
+    "title": "HelpTopics.gearModifiers.title",
+    "description": "HelpTopics.gearModifiers.description",
+    "image": ""
+  },
+  "gearWeight": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3060,
+    "title": "HelpTopics.gearWeight.title",
+    "description": "HelpTopics.gearWeight.description",
+    "image": ""
+  },
+  "gearBackpack": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3070,
+    "title": "HelpTopics.gearBackpack.title",
+    "description": "HelpTopics.gearBackpack.description",
+    "image": ""
+  },
+  "gearArtifacts": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3080,
+    "title": "HelpTopics.gearArtifacts.title",
+    "description": "HelpTopics.gearArtifacts.description",
+    "image": ""
+  },
+  "gearContainers": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3090,
+    "title": "HelpTopics.gearContainers.title",
+    "description": "HelpTopics.gearContainers.description",
+    "image": ""
+  },
+  "gearRarity": {
+    "type": "mechanic",
+    "group": "gear",
+    "order": 3100,
+    "title": "HelpTopics.gearRarity.title",
+    "description": "HelpTopics.gearRarity.description",
+    "image": ""
+  },
+  "needsOverview": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4010,
+    "title": "HelpTopics.needsOverview.title",
+    "description": "HelpTopics.needsOverview.description",
+    "image": ""
+  },
+  "needsHunger": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4020,
+    "title": "HelpTopics.needsHunger.title",
+    "description": "HelpTopics.needsHunger.description",
+    "image": ""
+  },
+  "needsSleep": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4030,
+    "title": "HelpTopics.needsSleep.title",
+    "description": "HelpTopics.needsSleep.description",
+    "image": ""
+  },
+  "needsHygiene": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4040,
+    "title": "HelpTopics.needsHygiene.title",
+    "description": "HelpTopics.needsHygiene.description",
+    "image": ""
+  },
+  "needsSocial": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4050,
+    "title": "HelpTopics.needsSocial.title",
+    "description": "HelpTopics.needsSocial.description",
+    "image": ""
+  },
+  "needsLeisure": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4060,
+    "title": "HelpTopics.needsLeisure.title",
+    "description": "HelpTopics.needsLeisure.description",
+    "image": ""
+  },
+  "needsAddiction": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4070,
+    "title": "HelpTopics.needsAddiction.title",
+    "description": "HelpTopics.needsAddiction.description",
+    "image": ""
+  },
+  "bodyParts": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4080,
+    "title": "HelpTopics.bodyParts.title",
+    "description": "HelpTopics.bodyParts.description",
+    "image": ""
+  },
+  "bodyBiologics": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4090,
+    "title": "HelpTopics.bodyBiologics.title",
+    "description": "HelpTopics.bodyBiologics.description",
+    "image": ""
+  },
+  "healthDiseases": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4100,
+    "title": "HelpTopics.healthDiseases.title",
+    "description": "HelpTopics.healthDiseases.description",
+    "image": ""
+  },
+  "healthEpidemics": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4110,
+    "title": "HelpTopics.healthEpidemics.title",
+    "description": "HelpTopics.healthEpidemics.description",
+    "image": ""
+  },
+  "healthSurgery": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4120,
+    "title": "HelpTopics.healthSurgery.title",
+    "description": "HelpTopics.healthSurgery.description",
+    "image": ""
+  },
+  "healthAugments": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4130,
+    "title": "HelpTopics.healthAugments.title",
+    "description": "HelpTopics.healthAugments.description",
+    "image": ""
+  },
+  "healthWeatherBody": {
+    "type": "mechanic",
+    "group": "needs",
+    "order": 4140,
+    "title": "HelpTopics.healthWeatherBody.title",
+    "description": "HelpTopics.healthWeatherBody.description",
+    "image": ""
+  },
+  "combatBasics": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5010,
+    "title": "HelpTopics.combatBasics.title",
+    "description": "HelpTopics.combatBasics.description",
+    "image": ""
+  },
+  "combatCommands": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5020,
+    "title": "HelpTopics.combatCommands.title",
+    "description": "HelpTopics.combatCommands.description",
+    "image": ""
+  },
+  "combatAP": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5030,
+    "title": "HelpTopics.combatAP.title",
+    "description": "HelpTopics.combatAP.description",
+    "image": ""
+  },
+  "combatBodyParts": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5040,
+    "title": "HelpTopics.combatBodyParts.title",
+    "description": "HelpTopics.combatBodyParts.description",
+    "image": ""
+  },
+  "combatWrestle": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5050,
+    "title": "HelpTopics.combatWrestle.title",
+    "description": "HelpTopics.combatWrestle.description",
+    "image": ""
+  },
+  "combatTalk": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5060,
+    "title": "HelpTopics.combatTalk.title",
+    "description": "HelpTopics.combatTalk.description",
+    "image": ""
+  },
+  "combatEnemyLevels": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5070,
+    "title": "HelpTopics.combatEnemyLevels.title",
+    "description": "HelpTopics.combatEnemyLevels.description",
+    "image": ""
+  },
+  "combatMovementAI": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5080,
+    "title": "HelpTopics.combatMovementAI.title",
+    "description": "HelpTopics.combatMovementAI.description",
+    "image": ""
+  },
+  "combatSafety": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5090,
+    "title": "HelpTopics.combatSafety.title",
+    "description": "HelpTopics.combatSafety.description",
+    "image": ""
+  },
+  "combatModes": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5100,
+    "title": "HelpTopics.combatModes.title",
+    "description": "HelpTopics.combatModes.description",
+    "image": ""
+  },
+  "combatMapBattle": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5110,
+    "title": "HelpTopics.combatMapBattle.title",
+    "description": "HelpTopics.combatMapBattle.description",
+    "image": ""
+  },
+  "combatCards": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5120,
+    "title": "HelpTopics.combatCards.title",
+    "description": "HelpTopics.combatCards.description",
+    "image": ""
+  },
+  "combatSummons": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5130,
+    "title": "HelpTopics.combatSummons.title",
+    "description": "HelpTopics.combatSummons.description",
+    "image": ""
+  },
+  "combatArena": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5140,
+    "title": "HelpTopics.combatArena.title",
+    "description": "HelpTopics.combatArena.description",
+    "image": ""
+  },
+  "combatBulletHell": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5150,
+    "title": "HelpTopics.combatBulletHell.title",
+    "description": "HelpTopics.combatBulletHell.description",
+    "image": ""
+  },
+  "combatSpirits": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5160,
+    "title": "HelpTopics.combatSpirits.title",
+    "description": "HelpTopics.combatSpirits.description",
+    "image": ""
+  },
+  "combatMimic": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5170,
+    "title": "HelpTopics.combatMimic.title",
+    "description": "HelpTopics.combatMimic.description",
+    "image": ""
+  },
+  "combatThrow": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5180,
+    "title": "HelpTopics.combatThrow.title",
+    "description": "HelpTopics.combatThrow.description",
+    "image": ""
+  },
+  "combatCorpses": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5190,
+    "title": "HelpTopics.combatCorpses.title",
+    "description": "HelpTopics.combatCorpses.description",
+    "image": ""
+  },
+  "elementsOverview": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7010,
+    "title": "HelpTopics.elementsOverview.title",
+    "description": "HelpTopics.elementsOverview.description",
+    "image": ""
+  },
+  "elementPhysical": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7020,
+    "title": "HelpTopics.elementPhysical.title",
+    "description": "HelpTopics.elementPhysical.description",
+    "image": ""
+  },
+  "elementFire": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7030,
+    "title": "HelpTopics.elementFire.title",
+    "description": "HelpTopics.elementFire.description",
+    "image": ""
+  },
+  "elementIce": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7040,
+    "title": "HelpTopics.elementIce.title",
+    "description": "HelpTopics.elementIce.description",
+    "image": ""
+  },
+  "elementThunder": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7050,
+    "title": "HelpTopics.elementThunder.title",
+    "description": "HelpTopics.elementThunder.description",
+    "image": ""
+  },
+  "elementWater": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7060,
+    "title": "HelpTopics.elementWater.title",
+    "description": "HelpTopics.elementWater.description",
+    "image": ""
+  },
+  "petro": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7070,
+    "title": "HelpTopics.petro.title",
+    "description": "HelpTopics.petro.description",
+    "image": ""
+  },
+  "elementWind": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7080,
+    "title": "HelpTopics.elementWind.title",
+    "description": "HelpTopics.elementWind.description",
+    "image": ""
+  },
+  "elementSacred": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7090,
+    "title": "HelpTopics.elementSacred.title",
+    "description": "HelpTopics.elementSacred.description",
+    "image": ""
+  },
+  "elementCursed": {
+    "type": "mechanic",
+    "group": "elements",
+    "order": 7100,
+    "title": "HelpTopics.elementCursed.title",
+    "description": "HelpTopics.elementCursed.description",
+    "image": ""
+  },
+  "worldMapPage": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8010,
+    "title": "HelpTopics.worldMapPage.title",
+    "description": "HelpTopics.worldMapPage.description",
+    "image": ""
+  },
+  "worldProcedural": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8020,
+    "title": "HelpTopics.worldProcedural.title",
+    "description": "HelpTopics.worldProcedural.description",
+    "image": ""
+  },
+  "worldBiomes": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8030,
+    "title": "HelpTopics.worldBiomes.title",
+    "description": "HelpTopics.worldBiomes.description",
+    "image": ""
+  },
+  "worldStructures": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8040,
+    "title": "HelpTopics.worldStructures.title",
+    "description": "HelpTopics.worldStructures.description",
+    "image": ""
+  },
+  "worldHouses": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8050,
+    "title": "HelpTopics.worldHouses.title",
+    "description": "HelpTopics.worldHouses.description",
+    "image": ""
+  },
+  "worldTerrain": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8060,
+    "title": "HelpTopics.worldTerrain.title",
+    "description": "HelpTopics.worldTerrain.description",
+    "image": ""
+  },
+  "worldDungeon": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8070,
+    "title": "HelpTopics.worldDungeon.title",
+    "description": "HelpTopics.worldDungeon.description",
+    "image": ""
+  },
+  "worldPuzzles": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8080,
+    "title": "HelpTopics.worldPuzzles.title",
+    "description": "HelpTopics.worldPuzzles.description",
+    "image": ""
+  },
+  "worldFog": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8090,
+    "title": "HelpTopics.worldFog.title",
+    "description": "HelpTopics.worldFog.description",
+    "image": ""
+  },
+  "worldDigging": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8100,
+    "title": "HelpTopics.worldDigging.title",
+    "description": "HelpTopics.worldDigging.description",
+    "image": ""
+  },
+  "worldMovement": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8110,
+    "title": "HelpTopics.worldMovement.title",
+    "description": "HelpTopics.worldMovement.description",
+    "image": ""
+  },
+  "worldWeather": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8120,
+    "title": "HelpTopics.worldWeather.title",
+    "description": "HelpTopics.worldWeather.description",
+    "image": ""
+  },
+  "worldDreams": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8130,
+    "title": "HelpTopics.worldDreams.title",
+    "description": "HelpTopics.worldDreams.description",
+    "image": ""
+  },
+  "worldAdventures": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8140,
+    "title": "HelpTopics.worldAdventures.title",
+    "description": "HelpTopics.worldAdventures.description",
+    "image": ""
+  },
+  "worldBologna": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8150,
+    "title": "HelpTopics.worldBologna.title",
+    "description": "HelpTopics.worldBologna.description",
+    "image": ""
+  },
+  "worldPlatformer": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8160,
+    "title": "HelpTopics.worldPlatformer.title",
+    "description": "HelpTopics.worldPlatformer.description",
+    "image": ""
+  },
+  "worldFlying": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8170,
+    "title": "HelpTopics.worldFlying.title",
+    "description": "HelpTopics.worldFlying.description",
+    "image": ""
+  },
+  "worldConnections": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8180,
+    "title": "HelpTopics.worldConnections.title",
+    "description": "HelpTopics.worldConnections.description",
+    "image": ""
+  },
+  "worldTreasure": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8190,
+    "title": "HelpTopics.worldTreasure.title",
+    "description": "HelpTopics.worldTreasure.description",
+    "image": ""
+  },
+  "worldTechTree": {
+    "type": "mechanic",
+    "group": "world",
+    "order": 8200,
+    "title": "HelpTopics.worldTechTree.title",
+    "description": "HelpTopics.worldTechTree.description",
+    "image": ""
+  },
+  "travelOverview": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9010,
+    "title": "HelpTopics.travelOverview.title",
+    "description": "HelpTopics.travelOverview.description",
+    "image": ""
+  },
+  "travelModes": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9020,
+    "title": "HelpTopics.travelModes.title",
+    "description": "HelpTopics.travelModes.description",
+    "image": ""
+  },
+  "vehiclesOverview": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9030,
+    "title": "HelpTopics.vehiclesOverview.title",
+    "description": "HelpTopics.vehiclesOverview.description",
+    "image": ""
+  },
+  "vehicleCamper": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9040,
+    "title": "HelpTopics.vehicleCamper.title",
+    "description": "HelpTopics.vehicleCamper.description",
+    "image": ""
+  },
+  "vehicleCar": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9050,
+    "title": "HelpTopics.vehicleCar.title",
+    "description": "HelpTopics.vehicleCar.description",
+    "image": ""
+  },
+  "vehicleBike": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9060,
+    "title": "HelpTopics.vehicleBike.title",
+    "description": "HelpTopics.vehicleBike.description",
+    "image": ""
+  },
+  "vehicleBroom": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9070,
+    "title": "HelpTopics.vehicleBroom.title",
+    "description": "HelpTopics.vehicleBroom.description",
+    "image": ""
+  },
+  "vehicleBoat": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9080,
+    "title": "HelpTopics.vehicleBoat.title",
+    "description": "HelpTopics.vehicleBoat.description",
+    "image": ""
+  },
+  "vehicleStarship": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9090,
+    "title": "HelpTopics.vehicleStarship.title",
+    "description": "HelpTopics.vehicleStarship.description",
+    "image": ""
+  },
+  "vehicleFuel": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9100,
+    "title": "HelpTopics.vehicleFuel.title",
+    "description": "HelpTopics.vehicleFuel.description",
+    "image": ""
+  },
+  "vehicleRepair": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9110,
+    "title": "HelpTopics.vehicleRepair.title",
+    "description": "HelpTopics.vehicleRepair.description",
+    "image": ""
+  },
+  "vehicleUpgrades": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9120,
+    "title": "HelpTopics.vehicleUpgrades.title",
+    "description": "HelpTopics.vehicleUpgrades.description",
+    "image": ""
+  },
+  "vehicleCrew": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9130,
+    "title": "HelpTopics.vehicleCrew.title",
+    "description": "HelpTopics.vehicleCrew.description",
+    "image": ""
+  },
+  "vehicleDriving": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9140,
+    "title": "HelpTopics.vehicleDriving.title",
+    "description": "HelpTopics.vehicleDriving.description",
+    "image": ""
+  },
+  "roadTraffic": {
+    "type": "mechanic",
+    "group": "travel",
+    "order": 9150,
+    "title": "HelpTopics.roadTraffic.title",
+    "description": "HelpTopics.roadTraffic.description",
+    "image": ""
+  },
+  "peopleOverview": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10010,
+    "title": "HelpTopics.peopleOverview.title",
+    "description": "HelpTopics.peopleOverview.description",
+    "image": ""
+  },
+  "peopleEmpathize": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10020,
+    "title": "HelpTopics.peopleEmpathize.title",
+    "description": "HelpTopics.peopleEmpathize.description",
+    "image": ""
+  },
+  "peopleOpinion": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10030,
+    "title": "HelpTopics.peopleOpinion.title",
+    "description": "HelpTopics.peopleOpinion.description",
+    "image": ""
+  },
+  "peopleLives": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10040,
+    "title": "HelpTopics.peopleLives.title",
+    "description": "HelpTopics.peopleLives.description",
+    "image": ""
+  },
+  "peopleTalking": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10050,
+    "title": "HelpTopics.peopleTalking.title",
+    "description": "HelpTopics.peopleTalking.description",
+    "image": ""
+  },
+  "peopleSettlements": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10060,
+    "title": "HelpTopics.peopleSettlements.title",
+    "description": "HelpTopics.peopleSettlements.description",
+    "image": ""
+  },
+  "peoplePolitics": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10070,
+    "title": "HelpTopics.peoplePolitics.title",
+    "description": "HelpTopics.peoplePolitics.description",
+    "image": ""
+  },
+  "peopleFactions": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10080,
+    "title": "HelpTopics.peopleFactions.title",
+    "description": "HelpTopics.peopleFactions.description",
+    "image": ""
+  },
+  "peopleONU": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10090,
+    "title": "HelpTopics.peopleONU.title",
+    "description": "HelpTopics.peopleONU.description",
+    "image": ""
+  },
+  "lawCrime": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10100,
+    "title": "HelpTopics.lawCrime.title",
+    "description": "HelpTopics.lawCrime.description",
+    "image": ""
+  },
+  "lawPolice": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10110,
+    "title": "HelpTopics.lawPolice.title",
+    "description": "HelpTopics.lawPolice.description",
+    "image": ""
+  },
+  "lawTrial": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10120,
+    "title": "HelpTopics.lawTrial.title",
+    "description": "HelpTopics.lawTrial.description",
+    "image": ""
+  },
+  "lawPrison": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10130,
+    "title": "HelpTopics.lawPrison.title",
+    "description": "HelpTopics.lawPrison.description",
+    "image": ""
+  },
+  "lawEris": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10140,
+    "title": "HelpTopics.lawEris.title",
+    "description": "HelpTopics.lawEris.description",
+    "image": ""
+  },
+  "societyMail": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10150,
+    "title": "HelpTopics.societyMail.title",
+    "description": "HelpTopics.societyMail.description",
+    "image": ""
+  },
+  "societyNews": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10160,
+    "title": "HelpTopics.societyNews.title",
+    "description": "HelpTopics.societyNews.description",
+    "image": ""
+  },
+  "societyDiary": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10170,
+    "title": "HelpTopics.societyDiary.title",
+    "description": "HelpTopics.societyDiary.description",
+    "image": ""
+  },
+  "societyTopics": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10180,
+    "title": "HelpTopics.societyTopics.title",
+    "description": "HelpTopics.societyTopics.description",
+    "image": ""
+  },
+  "societyArmy": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10190,
+    "title": "HelpTopics.societyArmy.title",
+    "description": "HelpTopics.societyArmy.description",
+    "image": ""
+  },
+  "societyMultiplayer": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10200,
+    "title": "HelpTopics.societyMultiplayer.title",
+    "description": "HelpTopics.societyMultiplayer.description",
+    "image": ""
+  },
+  "societyHistory": {
+    "type": "mechanic",
+    "group": "society",
+    "order": 10210,
+    "title": "HelpTopics.societyHistory.title",
+    "description": "HelpTopics.societyHistory.description",
+    "image": ""
+  },
+  "econMoney": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11010,
+    "title": "HelpTopics.econMoney.title",
+    "description": "HelpTopics.econMoney.description",
+    "image": ""
+  },
+  "econShops": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11020,
+    "title": "HelpTopics.econShops.title",
+    "description": "HelpTopics.econShops.description",
+    "image": ""
+  },
+  "econStealing": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11030,
+    "title": "HelpTopics.econStealing.title",
+    "description": "HelpTopics.econStealing.description",
+    "image": ""
+  },
+  "econBank": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11040,
+    "title": "HelpTopics.econBank.title",
+    "description": "HelpTopics.econBank.description",
+    "image": ""
+  },
+  "econStocks": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11050,
+    "title": "HelpTopics.econStocks.title",
+    "description": "HelpTopics.econStocks.description",
+    "image": ""
+  },
+  "econProperty": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11060,
+    "title": "HelpTopics.econProperty.title",
+    "description": "HelpTopics.econProperty.description",
+    "image": ""
+  },
+  "econShopOwning": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11070,
+    "title": "HelpTopics.econShopOwning.title",
+    "description": "HelpTopics.econShopOwning.description",
+    "image": ""
+  },
+  "econWork": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11080,
+    "title": "HelpTopics.econWork.title",
+    "description": "HelpTopics.econWork.description",
+    "image": ""
+  },
+  "econQuests": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11090,
+    "title": "HelpTopics.econQuests.title",
+    "description": "HelpTopics.econQuests.description",
+    "image": ""
+  },
+  "econNotices": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11100,
+    "title": "HelpTopics.econNotices.title",
+    "description": "HelpTopics.econNotices.description",
+    "image": ""
+  },
+  "econVending": {
+    "type": "mechanic",
+    "group": "economy",
+    "order": 11110,
+    "title": "HelpTopics.econVending.title",
+    "description": "HelpTopics.econVending.description",
+    "image": ""
+  },
+  "craftThinker": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12010,
+    "title": "HelpTopics.craftThinker.title",
+    "description": "HelpTopics.craftThinker.description",
+    "image": ""
+  },
+  "craftForge": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12020,
+    "title": "HelpTopics.craftForge.title",
+    "description": "HelpTopics.craftForge.description",
+    "image": ""
+  },
+  "craftAlchemy": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12030,
+    "title": "HelpTopics.craftAlchemy.title",
+    "description": "HelpTopics.craftAlchemy.description",
+    "image": ""
+  },
+  "craftCooking": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12040,
+    "title": "HelpTopics.craftCooking.title",
+    "description": "HelpTopics.craftCooking.description",
+    "image": ""
+  },
+  "craftBrewing": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12050,
+    "title": "HelpTopics.craftBrewing.title",
+    "description": "HelpTopics.craftBrewing.description",
+    "image": ""
+  },
+  "craftFurniture": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12060,
+    "title": "HelpTopics.craftFurniture.title",
+    "description": "HelpTopics.craftFurniture.description",
+    "image": ""
+  },
+  "craftPlants": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12070,
+    "title": "HelpTopics.craftPlants.title",
+    "description": "HelpTopics.craftPlants.description",
+    "image": ""
+  },
+  "craftAnimals": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12080,
+    "title": "HelpTopics.craftAnimals.title",
+    "description": "HelpTopics.craftAnimals.description",
+    "image": ""
+  },
+  "craftApiary": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12090,
+    "title": "HelpTopics.craftApiary.title",
+    "description": "HelpTopics.craftApiary.description",
+    "image": ""
+  },
+  "craftArtifacts": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12100,
+    "title": "HelpTopics.craftArtifacts.title",
+    "description": "HelpTopics.craftArtifacts.description",
+    "image": ""
+  },
+  "craftLoot": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12110,
+    "title": "HelpTopics.craftLoot.title",
+    "description": "HelpTopics.craftLoot.description",
+    "image": ""
+  },
+  "craftContainers": {
+    "type": "mechanic",
+    "group": "crafting",
+    "order": 12120,
+    "title": "HelpTopics.craftContainers.title",
+    "description": "HelpTopics.craftContainers.description",
+    "image": ""
+  },
+  "galaxyOverview": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13010,
+    "title": "HelpTopics.galaxyOverview.title",
+    "description": "HelpTopics.galaxyOverview.description",
+    "image": ""
+  },
+  "galaxyTravel": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13020,
+    "title": "HelpTopics.galaxyTravel.title",
+    "description": "HelpTopics.galaxyTravel.description",
+    "image": ""
+  },
+  "galaxyShip": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13030,
+    "title": "HelpTopics.galaxyShip.title",
+    "description": "HelpTopics.galaxyShip.description",
+    "image": ""
+  },
+  "galaxyLanding": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13040,
+    "title": "HelpTopics.galaxyLanding.title",
+    "description": "HelpTopics.galaxyLanding.description",
+    "image": ""
+  },
+  "galaxyAnomalies": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13050,
+    "title": "HelpTopics.galaxyAnomalies.title",
+    "description": "HelpTopics.galaxyAnomalies.description",
+    "image": ""
+  },
+  "galaxyBodies": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13060,
+    "title": "HelpTopics.galaxyBodies.title",
+    "description": "HelpTopics.galaxyBodies.description",
+    "image": ""
+  },
+  "galaxyPatrons": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13070,
+    "title": "HelpTopics.galaxyPatrons.title",
+    "description": "HelpTopics.galaxyPatrons.description",
+    "image": ""
+  },
+  "galaxySky": {
+    "type": "mechanic",
+    "group": "galaxy",
+    "order": 13080,
+    "title": "HelpTopics.galaxySky.title",
+    "description": "HelpTopics.galaxySky.description",
+    "image": ""
+  },
+  "hypernetOS": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14010,
+    "title": "HelpTopics.hypernetOS.title",
+    "description": "HelpTopics.hypernetOS.description",
+    "image": ""
+  },
+  "hypernetBrowser": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14020,
+    "title": "HelpTopics.hypernetBrowser.title",
+    "description": "HelpTopics.hypernetBrowser.description",
+    "image": ""
+  },
+  "hypernetMyComputer": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14030,
+    "title": "HelpTopics.hypernetMyComputer.title",
+    "description": "HelpTopics.hypernetMyComputer.description",
+    "image": ""
+  },
+  "hypernetNotepad": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14040,
+    "title": "HelpTopics.hypernetNotepad.title",
+    "description": "HelpTopics.hypernetNotepad.description",
+    "image": ""
+  },
+  "hypernetControlPanel": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14050,
+    "title": "HelpTopics.hypernetControlPanel.title",
+    "description": "HelpTopics.hypernetControlPanel.description",
+    "image": ""
+  },
+  "hypernetTVGuide": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14060,
+    "title": "HelpTopics.hypernetTVGuide.title",
+    "description": "HelpTopics.hypernetTVGuide.description",
+    "image": ""
+  },
+  "hypernetObjectIndex": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14070,
+    "title": "HelpTopics.hypernetObjectIndex.title",
+    "description": "HelpTopics.hypernetObjectIndex.description",
+    "image": ""
+  },
+  "hypernetNeuroPolice": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14080,
+    "title": "HelpTopics.hypernetNeuroPolice.title",
+    "description": "HelpTopics.hypernetNeuroPolice.description",
+    "image": ""
+  },
+  "hypernetEurodemics": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14090,
+    "title": "HelpTopics.hypernetEurodemics.title",
+    "description": "HelpTopics.hypernetEurodemics.description",
+    "image": ""
+  },
+  "hypernetArtifactAnalyzer": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14100,
+    "title": "HelpTopics.hypernetArtifactAnalyzer.title",
+    "description": "HelpTopics.hypernetArtifactAnalyzer.description",
+    "image": ""
+  },
+  "hypernetTokenExchange": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14110,
+    "title": "HelpTopics.hypernetTokenExchange.title",
+    "description": "HelpTopics.hypernetTokenExchange.description",
+    "image": ""
+  },
+  "hypernetPhone": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14120,
+    "title": "HelpTopics.hypernetPhone.title",
+    "description": "HelpTopics.hypernetPhone.description",
+    "image": ""
+  },
+  "hypernetTV": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14130,
+    "title": "HelpTopics.hypernetTV.title",
+    "description": "HelpTopics.hypernetTV.description",
+    "image": ""
+  },
+  "hypernetRadio": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14140,
+    "title": "HelpTopics.hypernetRadio.title",
+    "description": "HelpTopics.hypernetRadio.description",
+    "image": ""
+  },
+  "hypernetMusic": {
+    "type": "mechanic",
+    "group": "hypernet",
+    "order": 14150,
+    "title": "HelpTopics.hypernetMusic.title",
+    "description": "HelpTopics.hypernetMusic.description",
+    "image": ""
+  },
+  "gamesOverview": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15010,
+    "title": "HelpTopics.gamesOverview.title",
+    "description": "HelpTopics.gamesOverview.description",
+    "image": ""
+  },
+  "gamesArcade": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15020,
+    "title": "HelpTopics.gamesArcade.title",
+    "description": "HelpTopics.gamesArcade.description",
+    "image": ""
+  },
+  "gamesBowling": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15030,
+    "title": "HelpTopics.gamesBowling.title",
+    "description": "HelpTopics.gamesBowling.description",
+    "image": ""
+  },
+  "gamesPool": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15040,
+    "title": "HelpTopics.gamesPool.title",
+    "description": "HelpTopics.gamesPool.description",
+    "image": ""
+  },
+  "gamesBasketball": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15050,
+    "title": "HelpTopics.gamesBasketball.title",
+    "description": "HelpTopics.gamesBasketball.description",
+    "image": ""
+  },
+  "gamesChess": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15060,
+    "title": "HelpTopics.gamesChess.title",
+    "description": "HelpTopics.gamesChess.description",
+    "image": ""
+  },
+  "gamesFishing": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15070,
+    "title": "HelpTopics.gamesFishing.title",
+    "description": "HelpTopics.gamesFishing.description",
+    "image": ""
+  },
+  "gamesSurfing": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15080,
+    "title": "HelpTopics.gamesSurfing.title",
+    "description": "HelpTopics.gamesSurfing.description",
+    "image": ""
+  },
+  "gamesShooting": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15090,
+    "title": "HelpTopics.gamesShooting.title",
+    "description": "HelpTopics.gamesShooting.description",
+    "image": ""
+  },
+  "gamesHorseRace": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15100,
+    "title": "HelpTopics.gamesHorseRace.title",
+    "description": "HelpTopics.gamesHorseRace.description",
+    "image": ""
+  },
+  "gamesTournament": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15110,
+    "title": "HelpTopics.gamesTournament.title",
+    "description": "HelpTopics.gamesTournament.description",
+    "image": ""
+  },
+  "gamesGambling": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15120,
+    "title": "HelpTopics.gamesGambling.title",
+    "description": "HelpTopics.gamesGambling.description",
+    "image": ""
+  },
+  "gamesPiano": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15130,
+    "title": "HelpTopics.gamesPiano.title",
+    "description": "HelpTopics.gamesPiano.description",
+    "image": ""
+  },
+  "gamesLockpick": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15140,
+    "title": "HelpTopics.gamesLockpick.title",
+    "description": "HelpTopics.gamesLockpick.description",
+    "image": ""
+  },
+  "gamesHyperTamer": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15150,
+    "title": "HelpTopics.gamesHyperTamer.title",
+    "description": "HelpTopics.gamesHyperTamer.description",
+    "image": ""
+  },
+  "gamesCards": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15160,
+    "title": "HelpTopics.gamesCards.title",
+    "description": "HelpTopics.gamesCards.description",
+    "image": ""
+  },
+  "gamesRaman": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15170,
+    "title": "HelpTopics.gamesRaman.title",
+    "description": "HelpTopics.gamesRaman.description",
+    "image": ""
+  },
+  "gamesPeriodic": {
+    "type": "mechanic",
+    "group": "minigames",
+    "order": 15180,
+    "title": "HelpTopics.gamesPeriodic.title",
+    "description": "HelpTopics.gamesPeriodic.description",
+    "image": ""
+  },
+  "topicHardwareStore": {
+    "type": "topic",
+    "group": "topics",
+    "order": 16010,
+    "keyword": "Hardware store",
+    "title": "HelpTopics.topicHardwareStore.title",
+    "description": "HelpTopics.topicHardwareStore.description",
+    "image": ""
+  },
+  "topicEsotericHeavyParticles": {
+    "type": "topic",
+    "group": "topics",
+    "order": 16020,
+    "keyword": "Esoteric Heavy Particles",
+    "title": "HelpTopics.topicEsotericHeavyParticles.title",
+    "description": "HelpTopics.topicEsotericHeavyParticles.description",
+    "image": ""
+  },
+  "topicCERN": {
+    "type": "topic",
+    "group": "topics",
+    "order": 16030,
+    "keyword": "CERN",
+    "title": "HelpTopics.topicCERN.title",
+    "description": "HelpTopics.topicCERN.description",
     "image": ""
   },
   "arcaneSurge": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.arcaneSurge.title",
     "description": "HelpTopics.arcaneSurge.description",
     "image": ""
   },
   "berserk": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.berserk.title",
     "description": "HelpTopics.berserk.description",
     "image": ""
   },
   "bleeding": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.bleeding.title",
     "description": "HelpTopics.bleeding.description",
     "image": ""
   },
   "blind": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.blind.title",
     "description": "HelpTopics.blind.description",
     "image": ""
   },
   "burned": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.burned.title",
     "description": "HelpTopics.burned.description",
     "image": ""
   },
   "charm": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.charm.title",
     "description": "HelpTopics.charm.description",
     "image": ""
   },
   "cold": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.cold.title",
     "description": "HelpTopics.cold.description",
     "image": ""
   },
   "confusion": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.confusion.title",
     "description": "HelpTopics.confusion.description",
     "image": ""
   },
   "shadow": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.shadow.title",
     "description": "HelpTopics.shadow.description",
     "image": ""
   },
   "silence": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.silence.title",
     "description": "HelpTopics.silence.description",
     "image": ""
   },
   "sleep": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.sleep.title",
     "description": "HelpTopics.sleep.description",
     "image": ""
   },
   "static": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.static.title",
     "description": "HelpTopics.static.description",
     "image": ""
   },
   "stun": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.stun.title",
     "description": "HelpTopics.stun.description",
     "image": ""
   },
   "unbalanced": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.unbalanced.title",
     "description": "HelpTopics.unbalanced.description",
     "image": ""
   },
   "vulnerability": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.vulnerability.title",
     "description": "HelpTopics.vulnerability.description",
     "image": ""
   },
   "wet": {
     "type": "state",
+    "group": "states",
+    "order": 6000,
     "title": "HelpTopics.wet.title",
     "description": "HelpTopics.wet.description",
     "image": ""
   },
-  "petro": {
-    "type": "element",
-    "title": "HelpTopics.petro.title",
-    "description": "HelpTopics.petro.description",
+  "immortal": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.immortal.title",
+    "description": "HelpTopics.immortal.description",
+    "image": ""
+  },
+  "poison": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.poison.title",
+    "description": "HelpTopics.poison.description",
+    "image": ""
+  },
+  "rage": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.rage.title",
+    "description": "HelpTopics.rage.description",
+    "image": ""
+  },
+  "freeze": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.freeze.title",
+    "description": "HelpTopics.freeze.description",
+    "image": ""
+  },
+  "paralysis": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.paralysis.title",
+    "description": "HelpTopics.paralysis.description",
+    "image": ""
+  },
+  "lockedOn": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.lockedOn.title",
+    "description": "HelpTopics.lockedOn.description",
+    "image": ""
+  },
+  "hpRegeneration": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.hpRegeneration.title",
+    "description": "HelpTopics.hpRegeneration.description",
+    "image": ""
+  },
+  "mpRegeneration": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.mpRegeneration.title",
+    "description": "HelpTopics.mpRegeneration.description",
+    "image": ""
+  },
+  "apRegeneration": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.apRegeneration.title",
+    "description": "HelpTopics.apRegeneration.description",
+    "image": ""
+  },
+  "magicReflection": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.magicReflection.title",
+    "description": "HelpTopics.magicReflection.description",
+    "image": ""
+  },
+  "protect": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.protect.title",
+    "description": "HelpTopics.protect.description",
+    "image": ""
+  },
+  "provoke": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.provoke.title",
+    "description": "HelpTopics.provoke.description",
+    "image": ""
+  },
+  "hide": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.hide.title",
+    "description": "HelpTopics.hide.description",
+    "image": ""
+  },
+  "counterAttack": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.counterAttack.title",
+    "description": "HelpTopics.counterAttack.description",
+    "image": ""
+  },
+  "statusAilmentBlock": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.statusAilmentBlock.title",
+    "description": "HelpTopics.statusAilmentBlock.description",
+    "image": ""
+  },
+  "inspired": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.inspired.title",
+    "description": "HelpTopics.inspired.description",
+    "image": ""
+  },
+  "hot": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.hot.title",
+    "description": "HelpTopics.hot.description",
+    "image": ""
+  },
+  "divineShield": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.divineShield.title",
+    "description": "HelpTopics.divineShield.description",
+    "image": ""
+  },
+  "deathMark": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.deathMark.title",
+    "description": "HelpTopics.deathMark.description",
+    "image": ""
+  },
+  "perfectFocus": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.perfectFocus.title",
+    "description": "HelpTopics.perfectFocus.description",
+    "image": ""
+  },
+  "ethereal": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.ethereal.title",
+    "description": "HelpTopics.ethereal.description",
+    "image": ""
+  },
+  "lifeLink": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.lifeLink.title",
+    "description": "HelpTopics.lifeLink.description",
+    "image": ""
+  },
+  "nausea": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.nausea.title",
+    "description": "HelpTopics.nausea.description",
+    "image": ""
+  },
+  "drunk": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.drunk.title",
+    "description": "HelpTopics.drunk.description",
+    "image": ""
+  },
+  "infected": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.infected.title",
+    "description": "HelpTopics.infected.description",
+    "image": ""
+  },
+  "floating": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.floating.title",
+    "description": "HelpTopics.floating.description",
+    "image": ""
+  },
+  "invisible": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.invisible.title",
+    "description": "HelpTopics.invisible.description",
+    "image": ""
+  },
+  "oily": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.oily.title",
+    "description": "HelpTopics.oily.description",
+    "image": ""
+  },
+  "dodge": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.dodge.title",
+    "description": "HelpTopics.dodge.description",
+    "image": ""
+  },
+  "withdrawal": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.withdrawal.title",
+    "description": "HelpTopics.withdrawal.description",
+    "image": ""
+  },
+  "grappled": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.grappled.title",
+    "description": "HelpTopics.grappled.description",
+    "image": ""
+  },
+  "pinned": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.pinned.title",
+    "description": "HelpTopics.pinned.description",
+    "image": ""
+  },
+  "guardBroken": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.guardBroken.title",
+    "description": "HelpTopics.guardBroken.description",
+    "image": ""
+  },
+  "winded": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.winded.title",
+    "description": "HelpTopics.winded.description",
+    "image": ""
+  },
+  "comboReady": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.comboReady.title",
+    "description": "HelpTopics.comboReady.description",
+    "image": ""
+  },
+  "vitalExposed": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.vitalExposed.title",
+    "description": "HelpTopics.vitalExposed.description",
+    "image": ""
+  },
+  "rootedStance": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.rootedStance.title",
+    "description": "HelpTopics.rootedStance.description",
+    "image": ""
+  },
+  "flowState": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.flowState.title",
+    "description": "HelpTopics.flowState.description",
+    "image": ""
+  },
+  "chiBurn": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.chiBurn.title",
+    "description": "HelpTopics.chiBurn.description",
+    "image": ""
+  },
+  "concussed": {
+    "type": "state",
+    "group": "states",
+    "order": 6000,
+    "title": "HelpTopics.concussed.title",
+    "description": "HelpTopics.concussed.description",
+    "image": ""
+  },
+  "squishing": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.squishing.title",
+    "description": "HelpLore.squishing.description",
+    "image": ""
+  },
+  "ruleOf80": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.ruleOf80.title",
+    "description": "HelpLore.ruleOf80.description",
+    "image": ""
+  },
+  "encompassingRoad": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.encompassingRoad.title",
+    "description": "HelpLore.encompassingRoad.description",
+    "image": ""
+  },
+  "magesGuild": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.magesGuild.title",
+    "description": "HelpLore.magesGuild.description",
+    "image": ""
+  },
+  "hypercapitalistCollective": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.hypercapitalistCollective.title",
+    "description": "HelpLore.hypercapitalistCollective.description",
+    "image": ""
+  },
+  "emTheMemoryWitch": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.emTheMemoryWitch.title",
+    "description": "HelpLore.emTheMemoryWitch.description",
+    "image": ""
+  },
+  "camelcaseMagic": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.camelcaseMagic.title",
+    "description": "HelpLore.camelcaseMagic.description",
+    "image": ""
+  },
+  "alagaddaCityOfMasks": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.alagaddaCityOfMasks.title",
+    "description": "HelpLore.alagaddaCityOfMasks.description",
     "image": ""
   }
 }

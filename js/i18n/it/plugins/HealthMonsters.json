@@ -34,5 +34,92 @@
   "weakToLabel": "Debole a:",
   "statesLabel": "Stati:",
   "bodyParts": "Parti del Corpo",
-  "none": "Nessuno"
+  "none": "Nessuno",
+  "panel": {
+    "check": "Esamina",
+    "aim": "Mira",
+    "hitChance": "Colpo {percent}%",
+    "hp": "{current} / {max} PV",
+    "vital": "Vitale",
+    "severable": "Recidibile",
+    "regenerates": "Si rigenera",
+    "destroyed": "Distrutto"
+  },
+  "wrestle": {
+    "menu": {
+      "myLimb": "Con: {part} ({percent}%)",
+      "theirLimb": "Su: {part} ({percent}%)",
+      "limbRow": "{part}  {percent}%",
+      "limbRowCurrent": "{part}  {percent}%  (scelto)",
+      "noLimb": "Nessun arto libero",
+      "noTarget": "Niente da afferrare",
+      "back": "Indietro",
+      "more": "Altro... ({count})",
+      "holdRow": "{name}  {chance}%",
+      "holdBlocked": "{name}  ({reason})",
+      "blocked": {
+        "limb": "arto sbagliato",
+        "part": "bersaglio sbagliato",
+        "hold": "nessuna presa"
+      },
+      "finishers": "Mosse finali",
+      "finisherRow": "{name}  {chance}%  [{art}]",
+      "noFinisher": "Nessuna arte allenata"
+    },
+    "limbs": {
+      "helpMine": "{part} può fare: {holds}.",
+      "helpMineNone": "{part} non serve a nulla per una presa.",
+      "helpTheirs": "{part}: {note}",
+      "note": {
+        "vital": "una parte vitale, e lotta per restare fuori dalla tua portata.",
+        "awkward": "piccola e scomoda, difficile da tenere.",
+        "plain": "abbastanza solida da afferrarla con due mani."
+      }
+    },
+    "hold": {
+      "grapple": {
+        "name": "Presa",
+        "hit": "{actor} afferra il {part} di {enemy} e non molla!",
+        "miss": "{enemy} sfila il suo {part} dalle mani di {actor}."
+      },
+      "strike": {
+        "name": "Colpo",
+        "hit": "{actor} scaglia un colpo sul {part} di {enemy}!",
+        "miss": "{actor} colpisce verso il {part} di {enemy} e trova solo aria."
+      },
+      "lock": {
+        "name": "Leva articolare",
+        "hit": "{actor} piega il {part} di {enemy} dalla parte sbagliata e lo immobilizza!",
+        "miss": "{enemy} scivola via prima che {actor} chiuda la leva."
+      },
+      "wrench": {
+        "name": "Torsione",
+        "hit": "{actor} torce il {part} di {enemy} finché qualcosa cede!",
+        "miss": "{actor} tira il {part} di {enemy}, ma non gira."
+      },
+      "slam": {
+        "name": "Schianto",
+        "hit": "{actor} solleva {enemy} e lo schianta sul suo {part}!",
+        "miss": "{actor} prova a sollevare {enemy} e non riesce a passarci sotto."
+      },
+      "choke": {
+        "name": "Strangolamento",
+        "hit": "{actor} stringe il {part} di {enemy} e gli toglie il fiato!",
+        "miss": "{enemy} ritira il suo {part} prima che la stretta si chiuda."
+      },
+      "rip": {
+        "name": "Strappa via",
+        "hit": "{actor} punta i piedi contro {enemy} e tira il suo {part}!",
+        "miss": "{actor} non trova una presa su cui valga la pena tirare."
+      }
+    },
+    "log": {
+      "ripped": "Il {part} resta nelle mani di {actor}!",
+      "ripHeld": "Il {part} di {enemy} regge, per un soffio.",
+      "reversal": "{enemy} rovescia la presa e storce il {part} di {actor}!",
+      "noLimb": "{actor} non ha più niente con cui lottare.",
+      "finisherHit": "{actor} prepara e piazza {skill} sul {part}!",
+      "finisherMiss": "{actor} tenta {skill}, ma {enemy} non è dove dovrebbe essere."
+    }
+  }
 }

@@ -87,6 +87,22 @@
 
   const weightOf = (item) => safe("getItemWeight", () => utils.getItemWeight(item), 1);
 
+  // Which button flips between Acquire and Liquidate, named on a chip in front
+  // of the tab row: the shoulder buttons when a pad is plugged in, TAB
+  // otherwise. The same chip the empathize panel wears, for the same reason:
+  // the directions stay inside the open tab, so without it the control is
+  // invisible. A pad can be plugged in (or its battery die) while the shop is
+  // open, so the chip is kept in step every frame rather than only on a
+  // redraw.
+  const padPluggedIn = () => {
+    const pad = window.AnalogStickInput;
+    return !!(pad && typeof pad.hasPad === "function" && pad.hasPad());
+  };
+
+  // i18n-ignore-start: physical controller / keyboard button ids
+  const tabHintLabel = () => (padPluggedIn() ? "L1 R1" : "TAB");
+  // i18n-ignore-end
+
   const formatWeight = (grams) =>
     safe("formatWeight", () => utils.formatWeight(grams), String(grams));
 
@@ -849,9 +865,14 @@
     const value = trait.value;
 
     switch (code) {
-      case Game_BattlerBase.TRAIT_ELEMENT_RATE:
+      case Game_BattlerBase.TRAIT_ELEMENT_RATE: {
         if (value === 1) return null;
-        return "Elem: " + this.getElementName(dataId) + " x" + Math.floor(value * 100) + "%";
+        // Element 0 (none) and 1 (the physical placeholder) have no name to
+        // print; without this the chip reads "Elem: null".
+        const rateElement = this.getElementName(dataId);
+        if (!rateElement) return null;
+        return "Elem: " + rateElement + " x" + Math.floor(value * 100) + "%";
+      }
       case Game_BattlerBase.TRAIT_DEBUFF_RATE:
         if (value === 1) return null;
         return "Debuff: " + this.getParameterName(dataId) + " x" + Math.floor(value * 100) + "%";
@@ -869,8 +890,11 @@
       case Game_BattlerBase.TRAIT_SPARAM:
         if (value === 0 || value === 1) return null;
         return (T('Shop.skill')) + this.getSParameterName(dataId) + " x" + Math.floor(value * 100) + "%";
-      case Game_BattlerBase.TRAIT_ATTACK_ELEMENT:
-        return (T('Shop.element2')) + this.getElementName(dataId);
+      case Game_BattlerBase.TRAIT_ATTACK_ELEMENT: {
+        const attackElement = this.getElementName(dataId);
+        if (!attackElement) return null;
+        return (T('Shop.element2')) + attackElement;
+      }
       case Game_BattlerBase.TRAIT_ATTACK_STATE:
         if (value === 0) return null;
         return (T('Shop.state')) + this.getStateName(dataId) + " " + Math.floor(value * 100) + "%";
@@ -1090,9 +1114,9 @@
     if (this._buyWindow) this._buyWindow.refresh();
     this.initUIShopDOM();
 
-    // Both sides of the counter are skills: what the party pays and what it
-    // gets paid. Name them while the shop is open.
-    if (window.SpecBadge) safe("SpecBadge", () => window.SpecBadge.show(['Haggling', 'Appraising']), null);  // i18n-ignore  Specialization.json ids
+    // Haggling and Appraising still decide the numbers on the counter, but the
+    // shop keeps them off screen: no chips over the shelves.
+    if (window.SpecBadge) safe("SpecBadge", () => window.SpecBadge.hide(), null);
 
     borrowShopKeys();
     this._shopKeysBorrowed = true;
@@ -1227,6 +1251,19 @@
     }
   };
 
+  // The chip in front of the tab row, kept in step with whether a pad is
+  // plugged in. The row itself is only rebuilt on a redraw, so the label is
+  // moved here rather than re-rendering the tabs every frame.
+  Scene_Shop.prototype.syncShopTabHint = function () {
+    const onPad = padPluggedIn();
+    if (this._shopHintPad === onPad) return;
+    this._shopHintPad = onPad;
+    const el = this._shopContainer && this._shopContainer.querySelector(".shop-tab-hint");
+    if (!el) return;
+    el.dataset.pad = onPad ? "1" : "0";
+    el.textContent = tabHintLabel();
+  };
+
   // Base price() looks the item up by identity in _data. An item the list does
   // not hold (a stale selection after a refresh, or a line a category chip is
   // currently hiding) used to return undefined and poison every total
@@ -1248,6 +1285,8 @@
   Scene_Shop.prototype.update = function () {
     _Scene_Shop_update.call(this);
     if (this._shopClosing || !this.isShopReady() || SceneManager._scene !== this) return;
+
+    this.syncShopTabHint();
 
     // Robust native input/controller backup checks
     if (Input.isTriggered('shopBack') && !this._numberWindow.active) {
@@ -1276,12 +1315,28 @@
       }
     }
 
-    // Tab takes the whole category the cursor is standing in, or puts it back:
-    // the keyboard's half of the press on a category header. TAB has no entry
-    // in Input.gamepadMapper, so a pad reaches it through Y ('menu'), the one
-    // face button the shop leaves free: A is OK, B is cancel, X is the
+    // TAB alone flips between Acquire and Liquidate, which is what the chip in
+    // front of the tab row names. A pad reaches the same flip through the
+    // bumpers, so the chip reads L1 R1 there instead.
+    if (Input.isTriggered('tab') && !Input.isPressed('shift') && !this._numberWindow.active) {
+      if (this._buyWindow.active) {
+        SoundManager.playCursor();
+        this.switchToSell();
+        return;
+      }
+      if (this._sellWindow.active || this._categoryWindow.active) {
+        SoundManager.playCursor();
+        this.switchToBuy();
+        return;
+      }
+    }
+
+    // SHIFT+TAB takes the whole category the cursor is standing in, or puts it
+    // back: the keyboard's half of the press on a category header. TAB has no
+    // entry in Input.gamepadMapper, so a pad reaches it through Y ('menu'), the
+    // one face button the shop leaves free: A is OK, B is cancel, X is the
     // single-line multi-select above, and the bumpers switch Buy/Sell.
-    if ((Input.isTriggered('tab') || Input.isTriggered('menu')) && !this._numberWindow.active) {
+    if (((Input.isTriggered('tab') && Input.isPressed('shift')) || Input.isTriggered('menu')) && !this._numberWindow.active) {
       const buying = this._buyWindow.active;
       const selling = this._sellWindow.active && !this._chipFocus;
       if (buying || selling) {
@@ -1410,6 +1465,7 @@
                     ${T('Shop.availableFunds')} <span class="shop-funds-value">0.00 €</span>
                 </div>
                 <div class="shop-tabs">
+                    <div class="shop-tab-hint" data-pad="0">${esc(tabHintLabel())}</div>
                     <div class="shop-tab" id="tab-buy">${T('Shop.acquireGoods')}</div>
                     <div class="shop-tab" id="tab-sell">${T('Shop.liquidateAssets')}</div>
                 </div>
@@ -1657,7 +1713,7 @@
         for (const group of this.shopCategoryGroups(data, isBuyMode)) {
           itemsHTML += this.categoryHeaderHTML(group);
           for (const idx of group.indices) {
-            itemsHTML += this.itemCardHTML(data[idx], idx, isBuyMode, cart, worn,
+            itemsHTML += this.itemCardHTML(data[idx], idx, isBuyMode, cart,
               listFocused && activeIndex === idx);
           }
         }
@@ -1760,6 +1816,37 @@
         const isFood = safe("isFoodItem", () => utils.isFoodItem(selectedItem), false);
         const category = categoryOf(selectedItem) || T('Shop.item');
         const weight = formatWeight(weightOf(selectedItem));
+
+        // How many of this there are lives on the description page, next to the
+        // weight, rather than on the line: the left page is a price list, and a
+        // line that also carried its own weight and its own two counts read as
+        // four numbers where one was wanted.
+        const wornHere = worn.get(selectedItem) || 0;
+        const ownedHere = $gameParty.numItems(selectedItem) + wornHere;
+        let countBadgesHTML = `
+            <div class="detail-spec-badge">
+                <span class="badge-lbl">${esc(T('Shop.ui.owned'))}</span>
+                <span class="badge-val">${ownedHere}</span>
+            </div>
+        `;
+        if (isBuyMode) {
+          const shelfStock = this.getStock(selectedItem);
+          countBadgesHTML += `
+            <div class="detail-spec-badge">
+                <span class="badge-lbl">${esc(T('Shop.ui.stock'))}</span>
+                <span class="badge-val">${shelfStock === UNLIMITED_STOCK ? "∞" : shelfStock}</span>
+            </div>
+          `;
+        } else if (wornHere > 0) {
+          // Gear on someone's back is sellable too, but say so: the sale takes
+          // it off them.
+          countBadgesHTML += `
+            <div class="detail-spec-badge">
+                <span class="badge-lbl">${esc(T('Shop.ui.worn'))}</span>
+                <span class="badge-val">${wornHere}</span>
+            </div>
+          `;
+        }
 
         let scaleBadgeHTML = "";
         if (DataManager.isWeapon(selectedItem) && this._itemDetailWindow) {
@@ -2036,31 +2123,46 @@
           `;
         }
 
-        // Compatibility
-        let compatibilityHTML = "";
-        if (DataManager.isWeapon(selectedItem) || DataManager.isArmor(selectedItem)) {
-          let comps = "";
+        // Proficiency. A weapon is trained through the specialization the
+        // Specializations menu lists for its weapon type, so the panel reports
+        // where every party member stands in that one skill rather than a bare
+        // yes/no. Items with no weapon specialization say nothing here.
+        let proficiencyHTML = "";
+        const profSpec = safe("weaponSpec", () => {
+          const prof = window.WeaponProficiency;
+          if (!prof || !DataManager.isWeapon(selectedItem)) return null;
+          return prof.specFor(selectedItem);
+        }, null);
+
+        if (profSpec) {
+          const prof = window.WeaponProficiency;
+          const specs = window.Specializations;
+          const specName = (specs && specs.ready) ? specs.displayName(profSpec) : profSpec.name;
+          let rows = "";
 
           partyMembers().forEach(actor => {
-            const canEquip = isProficientWith(actor, selectedItem);
-            const color = canEquip ? "#27ae60" : "rgba(94,47,23,0.4)";
-            const dot = canEquip ? "●" : "○";
+            const level = prof.levelFor(actor, selectedItem);
+            const trained = level >= prof.PROFICIENT_LEVEL;
+            const tier = (specs && specs.ready) ? specs.levelName(level) : "";
+            const color = trained ? "#27ae60" : "rgba(94,47,23,0.55)";
 
-            comps += `
-              <div style="display:flex; align-items:center; gap:8px; font-size:16px; color:${color}; font-weight:${canEquip ? 'bold' : 'normal'};">
-                  <span>${dot}</span>
-                  <span>${esc(actorLabel(actor))}</span>
+            rows += `
+              <div style="display:flex; align-items:baseline; gap:8px; font-size:16px; color:${color}; font-weight:${trained ? 'bold' : 'normal'};">
+                  <span style="flex:1 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(actorLabel(actor))}</span>
+                  <span style="font-size:14px;">${esc(tier)}</span>
+                  <span style="font-weight:bold; font-size:14px;">${esc(prof.gradeFor(actor, selectedItem))}</span>
               </div>
             `;
           });
 
-          compatibilityHTML = `
+          proficiencyHTML = `
             <div style="margin-bottom:10px;">
-                <div class="card-lbl" style="border-bottom: 1px dashed rgba(94,47,23,0.15); padding-bottom:4px; margin-bottom:10px; font-weight:bold; font-size:15px;">
-                    ${esc(T('Shop.compatibilityLedger'))}
+                <div class="card-lbl" style="border-bottom: 1px dashed rgba(94,47,23,0.15); padding-bottom:4px; margin-bottom:10px; font-weight:bold; font-size:15px; display:flex; justify-content:space-between; gap:10px;">
+                    <span>${esc(T('Shop.proficiency'))}</span>
+                    <span style="font-weight:normal;">${esc(specName)}</span>
                 </div>
-                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; padding-left:4px;">
-                    ${comps}
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px 18px; padding-left:4px;">
+                    ${rows}
                 </div>
             </div>
           `;
@@ -2084,6 +2186,7 @@
                       <span class="badge-lbl">${esc(T('Shop.ui.weight'))}</span>
                       <span class="badge-val">${esc(weight)}</span>
                   </div>
+                  ${countBadgesHTML}
                   ${scaleBadgeHTML}
                   ${slotBadgeHTML}
               </div>
@@ -2094,7 +2197,7 @@
               ${nutritionSectionHTML}
               ${needsSectionHTML}
               ${effectsSectionHTML}
-              ${compatibilityHTML}
+              ${proficiencyHTML}
           </div>
 
           <div class="action-btn confirm" id="right-action-btn" style="margin-top: 10px; font-size: 19px; padding: 12px 6px; flex-shrink: 0; flex: none;">
@@ -2668,10 +2771,18 @@
   // counter is stocked with whatever was on it the day everyone went and is
   // never restocked again. What is taken off it (bought, or stolen through
   // StealingSystem) is gone for good.
-  const getShopDateKey = () => {
+  const getShopDateKey = (mapId, eventId) => {
     const WM = window.WorldManager;
     if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) {
       return "EMPTYWORLD";
+    }
+    // A zombie world's abandoned tills (a fifth of them, see
+    // ShopShiftManager.isAbandonedCounter) are read the same way: nobody is left
+    // to order anything in for that counter, so it keeps whatever was on it
+    // the day the dead got up and is never restocked. The counters still
+    // trading, manned for one daytime shift, restock daily like any other.
+    if (window.NPCSim?.ShopShiftManager?.isAbandonedCounter?.(mapId, eventId)) {
+      return "ABANDONEDSHOP";
     }
     // Var 113 may hold a number; coerce to string before substring or it throws.
     const dateStr = String($gameVariables.value(113) || "");
@@ -2685,7 +2796,7 @@
     const stocks = $gameSystem._shopStocks;
     const mapId = this._shopMapId;
     const eventId = this._shopEventId;
-    const dateKey = getShopDateKey();
+    const dateKey = getShopDateKey(mapId, eventId);
 
     if (!stocks[mapId]) stocks[mapId] = {};
     if (!stocks[mapId][eventId]) stocks[mapId][eventId] = { date: "" };
@@ -3568,27 +3679,12 @@
     `;
   };
 
-  Scene_Shop.prototype.itemCardHTML = function (item, idx, buying, cart, worn, focused) {
+  Scene_Shop.prototype.itemCardHTML = function (item, idx, buying, cart, focused) {
     if (!item) return "";
     const mode = buying ? "buy" : "sell";
     // Both sides quote the price the till will actually use, so a card can never
     // advertise a figure the receipt does not honour.
     const price = this.cartUnitPrice(item, buying);
-
-    let stockDisplay;
-    if (buying) {
-      const stock = this.getStock(item);
-      const stockValText = stock === UNLIMITED_STOCK ? "∞" : stock;
-      stockDisplay = T('Shop.ownedStock', { owned: $gameParty.numItems(item), stock: stockValText });
-    } else {
-      const wornHere = worn.get(item) || 0;
-      // What the shop happens to keep on its own shelves says nothing about a
-      // sale, so the sell line counts the party's copies only.
-      stockDisplay = T('Shop.ownedCount', { owned: $gameParty.numItems(item) + wornHere });
-      // Gear on someone's back is sellable too, but say so: the sale takes it
-      // off them.
-      if (wornHere > 0) stockDisplay += ` ${T('Shop.wornCount', { count: wornHere })}`;
-    }
 
     // A line on the counter carries its own quantity and subtotal, so a pile of
     // several can still be trimmed one at a time.
@@ -3610,12 +3706,10 @@
                       <div class="item-card-icon" style="${this.getIconStyle(item.iconIndex)}"></div>
                       <div class="item-card-info">
                           <span class="item-card-name">${esc(itemName(item))}</span>
-                          <span class="item-card-sub">${esc(formatWeight(weightOf(item)))}</span>
                       </div>
                   </div>
                   <div class="item-card-right">
-                      <span class="item-card-price">${money(price)} €</span>
-                      <span class="item-card-stock" style="font-size: 15px; opacity: 0.95; margin-top: 2px;">${esc(stockDisplay)}</span>${qtyHTML}
+                      <span class="item-card-price">${money(price)} €</span>${qtyHTML}
                   </div>
               </div>
             `;

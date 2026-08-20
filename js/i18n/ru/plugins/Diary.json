@@ -2,9 +2,9 @@
   "title": "",
   "opening": "",
   "empty": "",
-  "blankPage": "",
   "date": {
-    "heading": ""
+    "heading": "",
+    "continued": ""
   },
   "month": {
     "jan": "",
@@ -42,7 +42,8 @@
     "page": ""
   },
   "fmt": {
-    "itemCount": ""
+    "itemCount": "",
+    "and": ""
   },
   "eris": {
     "wonderful": "",
@@ -98,6 +99,7 @@
       "petrodemon": "",
       "fled": "",
       "lost": "",
+      "lostAnon": "",
       "arena": ""
     },
     "party": {

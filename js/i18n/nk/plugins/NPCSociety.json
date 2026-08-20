@@ -10,7 +10,12 @@
       "tries": "TRIES",
       "has": "HAB",
       "answers": "ANSWERS",
-      "born": "BORN"
+      "born": "BORN",
+      "wasChild": "WAZ A LIL RUNT",
+      "remembers": "REMEMBERS",
+      "grewUp": "GREW UP",
+      "saw": "SAW",
+      "had": "HAD"
     },
     "1": {
       "sub": "SHE",
@@ -22,7 +27,12 @@
       "tries": "TRIES",
       "has": "HAB",
       "answers": "ANSWERS",
-      "born": "BORN"
+      "born": "BORN",
+      "wasChild": "WAZ A LIL RUNT",
+      "remembers": "REMEMBERS",
+      "grewUp": "GREW UP",
+      "saw": "SAW",
+      "had": "HAD"
     },
     "2": {
       "sub": "DEY",
@@ -34,7 +44,12 @@
       "tries": "TRY",
       "has": "HAB",
       "answers": "ANSWER",
-      "born": "BORN"
+      "born": "BORN",
+      "wasChild": "WAZ A LIL RUNT",
+      "remembers": "REMEMBER",
+      "grewUp": "GREW UP",
+      "saw": "SAW",
+      "had": "HAD"
     },
     "3": {
       "sub": "XE",
@@ -46,7 +61,12 @@
       "tries": "TRY",
       "has": "HAB",
       "answers": "ANSWER",
-      "born": "BORN"
+      "born": "BORN",
+      "wasChild": "WAZ A LIL RUNT",
+      "remembers": "REMEMBER",
+      "grewUp": "GREW UP",
+      "saw": "SAW",
+      "had": "HAD"
     }
   },
   "adjective": [
@@ -58,20 +78,84 @@
   ],
   "bio": {
     "uncertainTimes": "UNCERTAIN TIMES",
-    "wildsNear": "DA WILDS NEAR {city}",
-    "later": "LATER, {sub} {has} BEEN TOUCHED BY {event}!",
-    "moral": {
-      "high": "{cap} {is} KNOWN FOR AN UNWAVERIN' MORAL COMPASS!",
-      "good": "{cap} {tries} TA DO RIGHT BY PEOPLE, MOST OF DA TIME!",
-      "weary": "LIFE HAB LEFT {obj} WIT FEW ILLUSIONS!",
-      "loose": "{cap} {has} LEARNED DAT RULES IZ FOR OTHERS!",
-      "lawless": "{cap} {answers} TA NO CODE BUT {pos} OWN."
+    "wildsNear": "IN DA WILDS NEAR {city}",
+    "inCountry": "IN {place}",
+    "inTown": "IN {place}",
+    "placeIn": {
+      "unitedkingdom": "IN DA {place}",
+      "uk": "IN DA {place}",
+      "netherlands": "IN DA {place}",
+      "philippines": "IN DA {place}",
+      "czechrepublic": "IN DA {place}",
+      "unitedarabemirates": "IN DA {place}",
+      "unitedstatesfreestatesofmidwest": "IN DA {place}",
+      "cascadiaprotectorate": "IN DA {place}",
+      "easternseaboard": "ON DA {place}"
     },
-    "creature": "{born} IN {place}, {sub} CAME INTO DA WORLD FAR FROM HUMAN CITIES, A {adj} CREATURE SHAPED BY {event}. {later} {moral}",
-    "turbulent": "{born} IN {year} IN {place} DURIN' A TURBULENT AGE, {sub} {has} LIVED THROUGH {event}. {later} {moral}",
-    "warYears": "{born} IN DA WAR YEARS, {sub} {has} SPENT CHILDHOOD IN {place} AN' {has} WITNESSED {event}. {later} {moral}",
-    "postwar": "{born} IN {year} IN {place}, {sub} {is} A {adj} SOUL SHAPED BY {event}. {later} {moral}",
-    "modern": "{born} IN {place} AS DA WORLD GREW STRANGE, {sub} {has} NEVER FORGOTTEN {event}. {later} {moral}",
+    "later": [
+      "LATER, {sub} {was} DERE TOO WHEN {event}!",
+      "YEARS ON, {sub} {was} CLOSE ENUFF TA SEE WHEN {event}!",
+      "DEN CAME DA SEASON WHEN {event}!",
+      "NOT LONG AFTER, {sub} {had} TA LEARN WOT IT MEANS WHEN {event}!",
+      "{cap} {remembers} DA WEEK WHEN {event}, AN' SAYS LITTLE ABOUT IT!"
+    ],
+    "moral": {
+      "high": [
+        "{cap} {is} KNOWN FOR AN UNWAVERIN' MORAL COMPASS!",
+        "PEOPLE TRUST {obj} ON SIGHT, AN' DEY IZ RARELY WRONG!",
+        "NOBODY EVER HAD TA ASK {obj} TWICE TA DO DA DECENT FING!"
+      ],
+      "good": [
+        "{cap} {tries} TA DO RIGHT BY PEOPLE, MOST OF DA TIME!",
+        "{cap} {is} DECENT ENUFF, LONG AZ IT AIN'T EXPENSIVE!",
+        "{cap} {tries} TA LEAVE A PLACE NO WORSE DAN {sub} FOUND IT!"
+      ],
+      "weary": [
+        "LIFE HAB LEFT {obj} WIT FEW ILLUSIONS!",
+        "{cap} STOPPED EXPECTIN' MUCH OF ANYONE YEARS AGO!",
+        "{cap} {is} NEIVER CRUEL NOR KIND, JUST WORN FROO!"
+      ],
+      "loose": [
+        "{cap} {has} LEARNED DAT RULES IZ FOR OTHERS!",
+        "{cap} {is} FLEXIBLE ABOUT DA LAW, AN' ABOUT DA TRUFF!",
+        "WOTEVER {sub} {has} TAKEN, {sub} {has} TAKEN IT QUIET!"
+      ],
+      "lawless": [
+        "{cap} {answers} TA NO CODE BUT {pos} OWN.",
+        "DERE AIN'T NO LINE LEFT DAT {sub} WOULDN'T STOMP OVER!",
+        "DERE AIN'T NO POLITE WORD FOR WOT {sub} {is}!"
+      ]
+    },
+    "creature": [
+      "{born} {placeIn}, {sub} CAME INTO DA WORLD FAR FROM HUMAN CITIES, A {adj} CREATURE SHAPED BY DA SEASON WHEN {event}. {later} {moral}",
+      "NO CITY EVER HAD A CLAIM ON {obj}: BORN {placeIn}, A {adj} CREATURE DAT STILL REMEMBERS WHEN {event}. {later} {moral}",
+      "NO REGISTER HOLDS {pos} BIRF. {cap} {was} JUST DERE, {placeIn}, A {adj} FING ALREADY GROWN BY DA TIME {event}. {later} {moral}",
+      "{born} {placeIn} AN' OWNED BY NOBODY, A {adj} CREATURE OLD ENUFF TA UNNERSTAND WHEN {event}. {later} {moral}"
+    ],
+    "turbulent": [
+      "{born} IN {year} {placeIn}, INTO AN AGE DAT WOULDN'T SIT STILL: {sub} {wasChild} WHEN {event}. {later} {moral}",
+      "{born} {placeIn} IN {year}, {sub} {has} ONE FIRST CLEAR MEMORY, DA YEAR WHEN {event}. {later} {moral}",
+      "{born} {placeIn} IN {year}, A {adj} RUNT OF A CENTURY DAT OPENED BAD, {sub} {had} BARELY STARTED SKOOL WHEN {event}. {later} {moral}",
+      "DA {year} REGISTERS {placeIn} CARRY {pos} NAME. {cap} {has} NEVER SAID MUCH ABOUT DA DAY WHEN {event}. {later} {moral}"
+    ],
+    "warYears": [
+      "{born} IN DA WAR YEARS {placeIn}, {sub} {wasChild} WHEN {event}. {later} {moral}",
+      "{cap} {grewUp} {placeIn} WIT DA SIRENS GOIN', AN' {saw} DA MORNIN' WHEN {event}. {later} {moral}",
+      "{born} IN {year}, {sub} {grewUp} {placeIn} WHILE {event}. {later} {moral}",
+      "A CHILDHOOD {placeIn} OF RATIONED FINGS, AN' DEN DA WEEK WHEN {event}. {later} {moral}"
+    ],
+    "postwar": [
+      "{born} IN {year} {placeIn}, {sub} {is} A {adj} SOUL DAT GREW UP ROUND DA TIME WHEN {event}. {later} {moral}",
+      "{cap} {grewUp} {placeIn} IN A COUNTRY BEIN' REBUILT, {adj} AN' IMPATIENT, AN' {saw} IT ALL FIRST HAND WHEN {event}. {later} {moral}",
+      "{born} {placeIn} IN {year}, {sub} {has} TOLD DA STORY A HUNDRED TIMES: HOW {event}. {later} {moral}",
+      "A {adj} PRODUCT OF {year} {placeIn}, {sub} {had} AN ORDINARY SHIFT LIKE ANY OTHER ON DA DAY WHEN {event}. {later} {moral}"
+    ],
+    "modern": [
+      "{born} {placeIn} AZ DA WORLD GREW STRANGE, {sub} {has} NEVER FORGOTTEN WHEN {event}. {later} {moral}",
+      "{born} IN {year} {placeIn}, {sub} {grewUp} HEARIN' HOW {event}. {later} {moral}",
+      "{cap} {is} A {adj} SOUL OF DA LATE CENTURY, BORN {placeIn} AN' STILL MARKED BY DA YEAR WHEN {event}. {later} {moral}",
+      "{born} {placeIn} IN {year}, INTO SCREENS AN' STATIC: {sub} {was} WATCHIN' WHEN {event}. {later} {moral}"
+    ],
     "bornMeta": "BORN {year} · {place}"
   }
 }

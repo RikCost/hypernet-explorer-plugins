@@ -2,9 +2,9 @@
  "title": "Diario",
  "opening": "{names} ha aperto questo diario a {place}.",
  "empty": "Qui non c'è ancora scritto nulla.",
- "blankPage": "Il resto della pagina è ancora bianco.",
  "date": {
-  "heading": "{day} {month} {year}"
+  "heading": "{day} {month} {year}",
+  "continued": "{day} {month} {year}, continua"
  },
  "month": {
   "jan": "gennaio",
@@ -39,10 +39,11 @@
   "ours": "Il diario di {names}",
   "theirs": "Tenuto da {names}",
   "unknown": "Un diario senza firma",
-  "page": "Giorno {shown} di {total}"
+  "page": "Pagina {shown} di {total}"
  },
  "fmt": {
-  "itemCount": "{name} x{count}"
+  "itemCount": "{name} x{count}",
+  "and": "{a} e {b}"
  },
  "eris": {
   "wonderful": "meravigliosamente",
@@ -98,6 +99,7 @@
    "petrodemon": "Steso un petrodemone, {name}, livello {level}.",
    "fled": "Scappati via da {place}.",
    "lost": "Persa la battaglia contro {enemies}.",
+   "lostAnon": "Persa la battaglia a {place}.",
    "arena": "Arena: {streak} vittorie di fila."
   },
   "party": {
@@ -237,6 +239,9 @@
   },
   "mining": {
    "stripped": "Smantellato del tutto {body}, nel sistema di {system}."
+  },
+  "adventure": {
+   "done": "Risolto {adventure} a {place}. {reward}"
   }
  },
  "game": {

@@ -2393,7 +2393,7 @@
  },
  "599": {
   "name": "Blade seed",
-  "description": "Contains a blade spirit, the binding\nprocess is irreversible."
+  "description": "Contains a blade spirit. Grows into a\nweapon of the shape you choose."
  },
  "600": {
   "name": "Digital bestiary",
@@ -2894,6 +2894,286 @@
  "946": {
   "name": "Lithium Carbonate",
   "description": "A salt from a rock. Half a gram either way is the difference between well and poisoned."
+ },
+ "1318": {
+  "name": "Hex-9 Celer 500",
+  "description": "Budget 500 MHz processor."
+ },
+ "1319": {
+  "name": "Hex-9 Core 733",
+  "description": "Mainstream 733 MHz processor."
+ },
+ "1320": {
+  "name": "Omni-Lex Obelisk 1.0",
+  "description": "One gigahertz, at last."
+ },
+ "1321": {
+  "name": "Omni-Lex Obelisk 1.4",
+  "description": "Fast, hot, and enormous."
+ },
+ "1322": {
+  "name": "Aokin Sylph Mobile 600",
+  "description": "Low-power mobile processor."
+ },
+ "1323": {
+  "name": "Crusader Crux 800",
+  "description": "Reliable 800 MHz processor."
+ },
+ "1324": {
+  "name": "Aokin PC100 Sliver 64MB",
+  "description": "64 MB of PC100 memory."
+ },
+ "1325": {
+  "name": "Aokin PC133 Sliver 128MB",
+  "description": "128 MB of PC133 memory."
+ },
+ "1326": {
+  "name": "EHI SO-DIMM 256MB",
+  "description": "256 MB in a long module."
+ },
+ "1327": {
+  "name": "Omni-Lex DDR266 128MB",
+  "description": "128 MB of the new fast memory."
+ },
+ "1328": {
+  "name": "Omni-Lex DDR266 256MB",
+  "description": "256 MB of the new fast memory."
+ },
+ "1329": {
+  "name": "Salvaged EDO Stick 32MB",
+  "description": "Thirty-two megabytes, if it works."
+ },
+ "1330": {
+  "name": "Slimline Floppy Drive",
+  "description": "Reads and writes diskettes."
+ },
+ "1331": {
+  "name": "Hex 6GB Travel Disk",
+  "description": "Six gigabytes of spinning storage."
+ },
+ "1332": {
+  "name": "Hex 20GB Travel Disk",
+  "description": "Twenty gigabytes of storage."
+ },
+ "1333": {
+  "name": "EHI 30GB Ruggedised Disk",
+  "description": "Shock-mounted thirty gigabyte drive."
+ },
+ "1334": {
+  "name": "CompactFlash Cage 128MB",
+  "description": "Solid state, no moving parts."
+ },
+ "1335": {
+  "name": "Aokin CD-RW Sled",
+  "description": "Burns and reads compact discs."
+ },
+ "1336": {
+  "name": "Salvaged 540MB Drive",
+  "description": "Half a gigabyte, probably."
+ },
+ "1337": {
+  "name": "Vireo Mobility 4MB",
+  "description": "Four megabytes of video memory."
+ },
+ "1338": {
+  "name": "Vireo Rage Go 8MB",
+  "description": "Eight megabytes of video memory."
+ },
+ "1339": {
+  "name": "Vireo Sylvan 2 Go 16MB",
+  "description": "Sixteen megabytes, hardware transform."
+ },
+ "1340": {
+  "name": "Omni-Lex Kestrel 32MB",
+  "description": "Thirty-two megabytes of video memory."
+ },
+ "1341": {
+  "name": "Hex Frame Buffer 2MB",
+  "description": "Bare minimum picture generator."
+ },
+ "1342": {
+  "name": "Monochrome STN Panel",
+  "description": "Grey on grey, but it sips power."
+ },
+ "1343": {
+  "name": "Aokin 5.8in DSTN Panel",
+  "description": "Colour, from directly in front."
+ },
+ "1344": {
+  "name": "EHI 6.4in TFT Panel",
+  "description": "Active matrix, 640 by 480."
+ },
+ "1345": {
+  "name": "EHI 8.4in TFT Panel",
+  "description": "Active matrix, 800 by 600."
+ },
+ "1346": {
+  "name": "Omni-Lex 10.4in TFT Panel",
+  "description": "The biggest panel that folds."
+ },
+ "1347": {
+  "name": "Cracked Panel, Half Lit",
+  "description": "Works. Mostly. On one side."
+ },
+ "1348": {
+  "name": "NiCd Stick Pack",
+  "description": "Old chemistry, stubborn memory."
+ },
+ "1349": {
+  "name": "NiMH Cell Bar",
+  "description": "Twice the charge, no memory."
+ },
+ "1350": {
+  "name": "Aokin Li-Ion 3600",
+  "description": "Lithium ion, 3600 mAh."
+ },
+ "1351": {
+  "name": "EHI Li-Polymer Slab",
+  "description": "A flat brick of charge."
+ },
+ "1352": {
+  "name": "Field Cell, Leaking",
+  "description": "It holds a charge. Briefly."
+ },
+ "1353": {
+  "name": "Solar Trickle Wing",
+  "description": "Charges slowly, forever."
+ },
+ "1354": {
+  "name": "56k Soft Modem",
+  "description": "Dials out over a phone line."
+ },
+ "1355": {
+  "name": "IrDA Eye",
+  "description": "Line-of-sight infrared link."
+ },
+ "1356": {
+  "name": "PCMCIA Ethernet Card",
+  "description": "A wire is still the fastest way."
+ },
+ "1357": {
+  "name": "Hex 802.11b Radio",
+  "description": "Networking without a wire."
+ },
+ "1358": {
+  "name": "GSM Data Sleeve",
+  "description": "Carries a phone card and dials out."
+ },
+ "1359": {
+  "name": "Aluminium Heat Spreader",
+  "description": "A plate that moves heat sideways."
+ },
+ "1360": {
+  "name": "Copper Finstack",
+  "description": "Copper fins, no moving parts."
+ },
+ "1361": {
+  "name": "Micro Blower Fan",
+  "description": "A very small, very loud fan."
+ },
+ "1362": {
+  "name": "Heat Pipe Loop",
+  "description": "Moves heat around a corner."
+ },
+ "1363": {
+  "name": "16-bit Audio Chip",
+  "description": "Beeps, boops and voices."
+ },
+ "1364": {
+  "name": "FM Synth Daughterboard",
+  "description": "Makes music out of arithmetic."
+ },
+ "1365": {
+  "name": "Wavetable Bank",
+  "description": "Recorded instruments, in a chip."
+ },
+ "1366": {
+  "name": "Thaumic Coprocessor",
+  "description": "Silicon that has been talked to."
+ },
+ "1367": {
+  "name": "Sigil-Etched SDRAM",
+  "description": "Half a gigabyte, under a ward."
+ },
+ "1368": {
+  "name": "Leyline Modem",
+  "description": "Dials the ground, not the wire."
+ },
+ "1369": {
+  "name": "Alchemical Battery",
+  "description": "A cell fed on reagents."
+ },
+ "1370": {
+  "name": "Scrying TFT Panel",
+  "description": "Shows what is there, and a little more."
+ },
+ "1371": {
+  "name": "Homunculus Cache",
+  "description": "A small mind kept for remembering."
+ },
+ "1372": {
+  "name": "Orgone Heat Sink",
+  "description": "Draws the heat somewhere else."
+ },
+ "1373": {
+  "name": "Aether Spindle Drive",
+  "description": "A drive with no platters in it."
+ },
+ "1374": {
+  "name": "Hexadic Sound Engine",
+  "description": "Six voices, one of them uninvited."
+ },
+ "1375": {
+  "name": "Astral Frame Buffer",
+  "description": "Draws faster than it is fed."
+ },
+ "1376": {
+  "name": "Resonating Quartz Core",
+  "description": "A crystal that thinks when struck."
+ },
+ "1377": {
+  "name": "Familiar-Bone Memory",
+  "description": "It remembers on your behalf."
+ },
+ "1378": {
+  "name": "Ectoplasm Capacitor",
+  "description": "Charge, wrung out of the dead."
+ },
+ "1379": {
+  "name": "Obsidian Scrying Mirror",
+  "description": "A black glass that shows the machine."
+ },
+ "1380": {
+  "name": "Bottled Lightning Cell",
+  "description": "A storm, kept in a small jar."
+ },
+ "1381": {
+  "name": "Grimoire Platter",
+  "description": "A book, spinning, read by light."
+ },
+ "1382": {
+  "name": "Whispering Brass Astrolabe",
+  "description": "It calculates the picture by turning."
+ },
+ "1383": {
+  "name": "Salt Circle Isolator",
+  "description": "Nothing crosses. Not even heat."
+ },
+ "1384": {
+  "name": "Choir of Small Bells",
+  "description": "Every sound, sung by hand."
+ },
+ "1385": {
+  "name": "Sending Stone Pair",
+  "description": "One half here, one half elsewhere."
+ },
+ "1386": {
+  "name": "Ouroboros Memory Loop",
+  "description": "Memory that never fills."
+ },
+ "1387": {
+  "name": "Cogitator Ganglion",
+  "description": "Wet silicon, grown to order."
  },
  "1443": {
   "name": "First Aid Kit",
@@ -4258,5 +4538,9 @@
  "1793": {
   "name": "Goat Milk",
   "description": "A pail of goat's milk, tangy and still warm. 168 cal."
+ },
+ "1794": {
+  "name": "Raman Probe Head",
+  "description": "Laser probe head. Fitted to a deck, it reads what a thing is made of."
  }
 }

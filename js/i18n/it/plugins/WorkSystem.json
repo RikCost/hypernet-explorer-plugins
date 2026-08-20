@@ -97,5 +97,7 @@
     "27": "Vaticano",
     "30": "Suore Combattenti"
   },
-  "ui": {}
+  "ui": {},
+  "guildRegistry": "REGISTRO DI GILDA",
+  "guildRegistryCategory": "REGISTRO DI GILDA: {category}"
 }

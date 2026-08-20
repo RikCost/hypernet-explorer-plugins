@@ -92,6 +92,12 @@
         const up = new THREE.Vector3(0, 1, 0);
         const tips = [];
         for (const dir of [1, -1]) {
+          // Each limb is its own group so the draw can bend it about the grip:
+          // a bow whose limbs stand still while the string comes back reads as
+          // a prop being waved rather than a bow being shot. See tickBow.
+          const limb = new THREE.Group();
+          limb.userData.bow = dir > 0 ? 'limbTop' : 'limbBot';
+          group.add(limb);
           const pts = [];
           for (let i = 0; i <= n; i++) {
             const t = i / n;
@@ -108,28 +114,24 @@
               d.length() * 1.1, this.seg(8, 5)), mat);
             seg.position.copy(a).add(b).multiplyScalar(0.5);
             seg.quaternion.setFromUnitVectors(up, d.clone().normalize());
-            group.add(seg);
+            limb.add(seg);
           }
           const tip = pts[pts.length - 1];
           tips.push(tip);
           if (o.nockMat) {
             const nock = new THREE.Mesh(new THREE.SphereGeometry(0.008, this.seg(8, 5), this.seg(6, 4)), o.nockMat);
             nock.position.copy(tip);
-            group.add(nock);
+            limb.add(nock);
           }
         }
         if (o.stringMat) {
-          const a = tips[0], b = tips[1];
-          const d = b.clone().sub(a);
-          const string = new THREE.Mesh(new THREE.CylinderGeometry(
-            o.stringR || 0.0018, o.stringR || 0.0018, d.length(), this.seg(5, 3)), o.stringMat);
-          string.position.copy(a).add(b).multiplyScalar(0.5);
-          string.quaternion.setFromUnitVectors(up, d.clone().normalize());
-          group.add(string);
+          // Two halves meeting at the nocking point, not one line tip to tip:
+          // that is the only shape a string can be drawn into.
+          const nockPt = this._bowString(group, o.stringMat, tips[0], tips[1], { r: o.stringR || 0.0018 });
           if (o.serving) {
             const serving = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.05, this.seg(7, 5)), o.stringMat);
-            serving.position.copy(string.position);
-            serving.quaternion.copy(string.quaternion);
+            serving.position.copy(nockPt);
+            serving.userData.bow = 'nock';
             group.add(serving);
           }
         }
@@ -393,6 +395,7 @@
         const scrap = this._mat(0x8A8F95, { roughness: 0.7, metalness: 0.6 });
         const band = this._mat(0x2A2A2E, { roughness: 0.95, metalness: 0.02 });
         const tape = this._wood(0x9A8A50);
+        group.userData.crossbow = true;
         // A plank, a car leaf spring and an inner tube. It fires, mostly.
         const stock = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.026, 0.28), plank);
         stock.position.set(0, 0.0, 0.02);
@@ -405,11 +408,20 @@
         prod.rotation.z = 0.05;
         group.add(prod);
         for (const s of [-1, 1]) {
-          const strap = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.006, 0.11), band);
-          strap.position.set(s * 0.06, 0.014, 0.06);
+          // The leaf spring does the prod's job here, so it springs like one.
+          const arm = new THREE.Group();
+          arm.userData.bow = s > 0 ? 'limbLeft' : 'limbRight';
+          group.add(arm);
+          const strap = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.006, 0.05), band);
+          strap.position.set(s * 0.09, 0.014, 0.1);
           strap.rotation.y = -s * 0.4;
-          group.add(strap);
+          arm.add(strap);
         }
+        // The inner tube, hooked over the ends of the spring and held back on
+        // the latch until the trigger lets it go.
+        this._bowString(group, band,
+          new THREE.Vector3(0.115, 0.014, 0.12), new THREE.Vector3(-0.115, 0.014, 0.12),
+          { r: 0.004, nock: new THREE.Vector3(0, 0.014, 0.02), release: new THREE.Vector3(0, 0.014, 0.12) });
         const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.16, this.seg(7, 5)), scrap);
         bolt.rotation.x = Math.PI / 2;
         bolt.position.set(0, 0.022, 0.08);
@@ -619,19 +631,22 @@
         this._crossbowFrame(group, steel, cord, wood, { span: 0.12, stockLen: 0.24 });
         // A four-pronged spreader with the net folded between the arms and a
         // weight on each corner.
+        const shot = new THREE.Group();
+        shot.userData.bow = 'arrow';
+        group.add(shot);
         const canister = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.03, 0.06, this.seg(12, 7)), steel);
         canister.rotation.x = Math.PI / 2;
         canister.position.set(0, 0.03, 0.11);
-        group.add(canister);
+        shot.add(canister);
         for (let i = 0; i < 4; i++) {
           const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
           const prong = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.005, 0.05, this.seg(7, 5)), steel);
           prong.position.set(Math.cos(a) * 0.024, 0.03 + Math.sin(a) * 0.024, 0.155);
           prong.rotation.set(Math.PI / 2 - 0.3 * Math.sin(a), 0, 0.3 * Math.cos(a));
-          group.add(prong);
+          shot.add(prong);
           const w = new THREE.Mesh(new THREE.SphereGeometry(0.009, this.seg(8, 5), this.seg(6, 4)), weight);
           w.position.set(Math.cos(a) * 0.04, 0.03 + Math.sin(a) * 0.04, 0.175);
-          group.add(w);
+          shot.add(w);
         }
         // The net itself, bunched in the canister mouth.
         const knots = this.isLowDetail() ? 5 : 10;
@@ -640,7 +655,7 @@
           const k = new THREE.Mesh(new THREE.TorusGeometry(0.006, 0.0015, this.seg(4, 3), this.seg(8, 5)), netMat);
           k.position.set(Math.cos(a) * r, 0.03 + Math.sin(a) * r, 0.138 + rand() * 0.01);
           k.rotation.set(rand(), rand(), rand());
-          group.add(k);
+          shot.add(k);
         }
         return group;
       },
@@ -663,27 +678,28 @@
           group.add(cut);
         }
         for (const dir of [1, -1]) {
+          const arm = new THREE.Group();
+          arm.userData.bow = dir > 0 ? 'limbTop' : 'limbBot';
+          group.add(arm);
           const l = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.1, 0.014), limb);
           l.position.set(0, dir * 0.17, -0.02);
           l.rotation.x = dir * 0.35;
-          group.add(l);
+          arm.add(l);
           const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.03, 0.028), riser);
           pocket.position.set(0, dir * 0.12, -0.006);
-          group.add(pocket);
+          arm.add(pocket);
           const cam = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.008, this.seg(14, 8)), bright);
           cam.rotation.y = Math.PI / 2;
           cam.position.set(0, dir * 0.225, -0.05);
           cam.userData.spin = { axis: 'x', speed: dir * 0.35 };
-          group.add(cam);
+          arm.add(cam);
           const axle = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.02, this.seg(9, 6)), bright);
           axle.rotation.z = Math.PI / 2;
           axle.position.set(0, dir * 0.225, -0.05);
-          group.add(axle);
+          arm.add(axle);
         }
         // String and the two cables that make it a compound.
-        const string = new THREE.Mesh(new THREE.CylinderGeometry(0.0018, 0.0018, 0.45, this.seg(5, 3)), cable);
-        string.position.z = -0.075;
-        group.add(string);
+        this._bowString(group, cable, new THREE.Vector3(0, 0.225, -0.075), new THREE.Vector3(0, -0.225, -0.075), { r: 0.0018 });
         for (const s of [-1, 1]) {
           const c = new THREE.Mesh(new THREE.CylinderGeometry(0.0015, 0.0015, 0.42, this.seg(5, 3)), cable);
           c.position.set(s * 0.008, 0, -0.055);
@@ -717,7 +733,11 @@
         const cord = this._mat(0xD8CFA8, { roughness: 0.85, metalness: 0.05 });
         const bright = this._mat(0x9BA1A7, { roughness: 0.35, metalness: 0.88 });
         this._crossbowFrame(group, steel, cord, wood, { span: 0.13, stockLen: 0.26 });
-        // Three grooves instead of one, and a bolt sitting in each.
+        // Three grooves instead of one, and a bolt sitting in each. All three
+        // go at once, so they leave together as one part.
+        const volley = new THREE.Group();
+        volley.userData.bow = 'arrow';
+        group.add(volley);
         for (let i = 0; i < 3; i++) {
           const x = (i - 1) * 0.02;
           const groove = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.008, 0.18), steel);
@@ -727,11 +747,11 @@
           const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.15, this.seg(6, 4)), bright);
           bolt.rotation.x = Math.PI / 2;
           bolt.position.set(x * 1.3, 0.036, 0.07);
-          group.add(bolt);
+          volley.add(bolt);
           const head = new THREE.Mesh(new THREE.ConeGeometry(0.007, 0.022, 3), bright);
           head.rotation.x = Math.PI / 2;
           head.position.set(x * 1.6, 0.036, 0.156);
-          group.add(head);
+          volley.add(head);
         }
         const spreader = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.014, 0.02), steel);
         spreader.position.set(0, 0.03, 0.14);
@@ -767,26 +787,28 @@
           group.add(cut);
         }
         for (const dir of [1, -1]) {
+          const arm = new THREE.Group();
+          arm.userData.bow = dir > 0 ? 'limbTop' : 'limbBot';
+          group.add(arm);
           const l = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.09, 0.012), carbon);
           l.position.set(0, dir * 0.175, -0.024);
           l.rotation.x = dir * 0.4;
-          group.add(l);
+          arm.add(l);
           const cam = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.009, this.seg(14, 8)), bright);
           cam.rotation.y = Math.PI / 2;
           cam.position.set(0, dir * 0.23, -0.06);
           cam.userData.spin = { axis: 'x', speed: dir * 0.4 };
-          group.add(cam);
+          arm.add(cam);
           const mod = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.011, this.seg(12, 7)), riser);
           mod.rotation.y = Math.PI / 2;
           mod.position.set(0, dir * 0.23, -0.06);
-          group.add(mod);
+          arm.add(mod);
         }
-        const string = new THREE.Mesh(new THREE.CylinderGeometry(0.0018, 0.0018, 0.46, this.seg(5, 3)), cable);
-        string.position.z = -0.085;
-        group.add(string);
+        this._bowString(group, cable, new THREE.Vector3(0, 0.23, -0.085), new THREE.Vector3(0, -0.23, -0.085), { r: 0.0018 });
         const peep = new THREE.Mesh(new THREE.TorusGeometry(0.005, 0.0015, this.seg(4, 3), this.seg(9, 6)), bright);
         peep.position.set(0, 0.07, -0.085);
         peep.rotation.y = Math.PI / 2;
+        peep.userData.bow = 'nock';
         group.add(peep);
         // Stabiliser and vibration dampers.
         const stab = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.18, this.seg(10, 6)), carbon);
@@ -1349,25 +1371,27 @@
         const spine = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.26, 0.036), corporate);
         group.add(spine);
         for (const dir of [1, -1]) {
+          const arm = new THREE.Group();
+          arm.userData.bow = dir > 0 ? 'limbTop' : 'limbBot';
+          group.add(arm);
           const limb = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.12, 0.018), corporate);
           limb.position.set(0, dir * 0.18, -0.03);
           limb.rotation.x = dir * 0.4;
-          group.add(limb);
+          arm.add(limb);
           const tipCap = new THREE.Mesh(new THREE.SphereGeometry(0.014, this.seg(11, 7), this.seg(8, 5)), accent);
           tipCap.position.set(0, dir * 0.24, -0.075);
-          group.add(tipCap);
+          arm.add(tipCap);
           const emit = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.005, this.seg(11, 7)), blank);
           emit.rotation.z = Math.PI / 2;
           emit.position.set(0.012, dir * 0.24, -0.075);
           emit.userData.pulse = { min: 0.3, max: 1.0, freq: 1.1, phase: dir > 0 ? 0 : 1 };
-          group.add(emit);
+          arm.add(emit);
         }
         // The "string" is a field between the caps, so it never wears out and
-        // never needs servicing, which is in the brochure.
-        const field = new THREE.Mesh(new THREE.CylinderGeometry(0.002, 0.002, 0.48, this.seg(6, 4)), blank);
-        field.position.z = -0.075;
-        field.userData.pulse = { min: 0.4, max: 0.9, freq: 0.8 };
-        group.add(field);
+        // never needs servicing, which is in the brochure. It is still drawn.
+        this._bowString(group, blank,
+          new THREE.Vector3(0, 0.24, -0.075), new THREE.Vector3(0, -0.24, -0.075),
+          { r: 0.002, pulse: { min: 0.4, max: 0.9, freq: 0.8 } });
         const panel = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.05, 0.006), grey);
         panel.position.set(0, 0.06, 0.019);
         group.add(panel);
@@ -1404,13 +1428,16 @@
           group.add(flute);
         }
         for (const dir of [1, -1]) {
+          const arm = new THREE.Group();
+          arm.userData.bow = dir > 0 ? 'limbTop' : 'limbBot';
+          group.add(arm);
           const yoke = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.05, 0.024), trim);
           yoke.position.set(0, dir * 0.13, -0.014);
           yoke.rotation.x = dir * 0.3;
-          group.add(yoke);
+          arm.add(yoke);
           const emitter = new THREE.Mesh(new THREE.SphereGeometry(0.016, this.seg(12, 7), this.seg(9, 6)), trim);
           emitter.position.set(0, dir * 0.165, -0.032);
-          group.add(emitter);
+          arm.add(emitter);
           // The limb itself: an arc of energy, not a stave.
           const n = this.seg(6, 4);
           for (let i = 0; i < n; i++) {
@@ -1422,13 +1449,12 @@
             seg.position.copy(p1).add(p2).multiplyScalar(0.5);
             seg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize());
             seg.userData.pulse = { min: 0.5, max: 1.2, freq: 1.0, phase: i };
-            group.add(seg);
+            arm.add(seg);
           }
         }
-        const string = new THREE.Mesh(new THREE.CylinderGeometry(0.0022, 0.0022, 0.56, this.seg(6, 4)), core);
-        string.position.z = -0.11;
-        string.userData.pulse = { min: 0.5, max: 1.3, freq: 1.4 };
-        group.add(string);
+        this._bowString(group, core,
+          new THREE.Vector3(0, 0.28, -0.11), new THREE.Vector3(0, -0.28, -0.11),
+          { r: 0.0022, pulse: { min: 0.5, max: 1.3, freq: 1.4 } });
         const nocked = new THREE.Mesh(new THREE.ConeGeometry(0.009, 0.2, this.seg(7, 5)), core);
         nocked.rotation.x = Math.PI / 2;
         nocked.position.set(0, 0.0, 0.05);
@@ -1457,31 +1483,33 @@
         const spine = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.24, 0.04), corporate);
         group.add(spine);
         for (const dir of [1, -1]) {
+          const arm = new THREE.Group();
+          arm.userData.bow = dir > 0 ? 'limbTop' : 'limbBot';
+          group.add(arm);
           const vessel = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.12, this.seg(12, 7)), corporate);
           vessel.position.set(0, dir * 0.18, -0.02);
           vessel.rotation.x = dir * 0.35;
-          group.add(vessel);
+          arm.add(vessel);
           const ribs = this.isLowDetail() ? 2 : 4;
           for (let i = 0; i < ribs; i++) {
             const rib = new THREE.Mesh(new THREE.TorusGeometry(0.023, 0.004, this.seg(4, 3), this.seg(12, 7)), grey);
             rib.position.set(0, dir * (0.145 + i * 0.024), -0.02 - i * 0.008 * dir * dir);
             rib.rotation.x = Math.PI / 2 + dir * 0.35;
-            group.add(rib);
+            arm.add(rib);
           }
           const valve = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.016, this.seg(10, 6)), accent);
           valve.position.set(0.02, dir * 0.2, -0.03);
           valve.rotation.z = Math.PI / 2;
           valve.userData.spin = { axis: 'x', speed: dir * 0.9 };
-          group.add(valve);
+          arm.add(valve);
           const hose = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.1, this.seg(8, 5)), grey);
           hose.position.set(0.014, dir * 0.12, -0.006);
           hose.rotation.z = 0.2 * dir;
-          group.add(hose);
+          arm.add(hose);
         }
-        const field = new THREE.Mesh(new THREE.CylinderGeometry(0.0022, 0.0022, 0.46, this.seg(6, 4)), pressure);
-        field.position.z = -0.062;
-        field.userData.pulse = { min: 0.45, max: 1.2, freq: 2.4 };
-        group.add(field);
+        this._bowString(group, pressure,
+          new THREE.Vector3(0, 0.23, -0.062), new THREE.Vector3(0, -0.23, -0.062),
+          { r: 0.0022, pulse: { min: 0.45, max: 1.2, freq: 2.4 } });
         // The gauge, whose needle sits past the last mark.
         const gauge = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.008, this.seg(14, 8)), grey);
         gauge.rotation.z = Math.PI / 2;
@@ -1521,31 +1549,32 @@
         const woodMat = new THREE.MeshStandardMaterial({ color: bowColor, roughness: 0.9 });
         const accentMat = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.35, metalness: 0.85 });
         const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, emissive: gemColor, emissiveIntensity: 0.6 });
-        const stringMat = new THREE.LineBasicMaterial({ color: 0xFFFFFF });
+        const stringMat = this._mat(0xE8E4D8, { roughness: 0.9, metalness: 0.02 });
 
         // Bow variations: Longbow, Recurve Bow, Compound Bow!
         const bowStyle = Math.floor(rand() * 3);
         const height = 0.32 + rand() * 0.08;
 
         if (bowStyle === 0) {
-          // 1. Classic Longbow - simple elegant D-curve
+          // 1. Classic Longbow - simple elegant D-curve. The stave is one piece
+          // of wood, so the whole of it bends as a single limb.
+          const arm = new THREE.Group();
+          arm.userData.bow = 'limbTop';
+          group.add(arm);
           const curve = new THREE.QuadraticBezierCurve3(
             new THREE.Vector3(0, height, -0.1),
             new THREE.Vector3(0, 0, 0.12),
             new THREE.Vector3(0, -height, -0.1)
           );
           const bow = new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.016, 6, false), woodMat);
-          group.add(bow);
+          arm.add(bow);
 
           // Leather grip wrap in center
           const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.08, 6), accentMat);
           group.add(grip);
 
-          // Single bowstring
-          const stringPoints = [new THREE.Vector3(0, height, -0.1), new THREE.Vector3(0, -height, -0.1)];
-          const stringGeo = new THREE.BufferGeometry().setFromPoints(stringPoints);
-          const stringLine = new THREE.Line(stringGeo, stringMat);
-          group.add(stringLine);
+          this._bowString(group, stringMat,
+            new THREE.Vector3(0, height, -0.1), new THREE.Vector3(0, -height, -0.1), { r: 0.002 });
 
         } else if (bowStyle === 1) {
           // 2. Elegant Recurve Bow - double curved limb tips (S-like sweep at ends)
@@ -1567,8 +1596,14 @@
 
           const upperLimb = new THREE.Mesh(new THREE.TubeGeometry(upperCurve, 12, 0.015, 6, false), woodMat);
           const lowerLimb = new THREE.Mesh(new THREE.TubeGeometry(lowerCurve, 12, 0.015, 6, false), woodMat);
-          group.add(upperLimb);
-          group.add(lowerLimb);
+          const upperArm = new THREE.Group();
+          upperArm.userData.bow = 'limbTop';
+          upperArm.add(upperLimb);
+          group.add(upperArm);
+          const lowerArm = new THREE.Group();
+          lowerArm.userData.bow = 'limbBot';
+          lowerArm.add(lowerLimb);
+          group.add(lowerArm);
 
           // Ornate central riser block with a gem sight
           const riser = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.09, 0.035), accentMat);
@@ -1579,23 +1614,27 @@
           gem.position.set(0, 0.02, 0.07);
           group.add(gem);
 
-          // String
-          const stringPoints = [new THREE.Vector3(0, height, -0.12), new THREE.Vector3(0, -height, -0.12)];
-          const stringGeo = new THREE.BufferGeometry().setFromPoints(stringPoints);
-          const stringLine = new THREE.Line(stringGeo, stringMat);
-          group.add(stringLine);
+          this._bowString(group, stringMat,
+            new THREE.Vector3(0, height, -0.12), new THREE.Vector3(0, -height, -0.12), { r: 0.002 });
 
         } else {
           // 3. Futuristic Compound Bow - angled carbon limbs, round pulleys/cams at tips, multi-string
+          const upperArm = new THREE.Group();
+          upperArm.userData.bow = 'limbTop';
+          group.add(upperArm);
+          const lowerArm = new THREE.Group();
+          lowerArm.userData.bow = 'limbBot';
+          group.add(lowerArm);
+
           const limbUpper = new THREE.Mesh(new THREE.BoxGeometry(0.014, height * 0.9, 0.03), woodMat);
           limbUpper.position.set(0, height * 0.45, 0.05);
           limbUpper.rotation.x = -Math.PI / 10;
-          group.add(limbUpper);
+          upperArm.add(limbUpper);
 
           const limbLower = new THREE.Mesh(new THREE.BoxGeometry(0.014, height * 0.9, 0.03), woodMat);
           limbLower.position.set(0, -height * 0.45, 0.05);
           limbLower.rotation.x = Math.PI / 10;
-          group.add(limbLower);
+          lowerArm.add(limbLower);
 
           // Pulleys (Cams) at the limb tips
           const camGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.01, 8);
@@ -1604,23 +1643,25 @@
           const camYPos = height * 0.88;
           const camZPos = -0.05;
           camU.position.set(0, camYPos, camZPos);
-          group.add(camU);
+          upperArm.add(camU);
 
           const camL = camU.clone();
           camL.position.set(0, -camYPos, camZPos);
-          group.add(camL);
+          lowerArm.add(camL);
 
-          // Compound multi-string (double strings intersecting)
-          const sPoints1 = [new THREE.Vector3(0, camYPos, camZPos), new THREE.Vector3(0, -camYPos, camZPos)];
-          const sPoints2 = [new THREE.Vector3(0, camYPos, camZPos - 0.01), new THREE.Vector3(0, 0, camZPos + 0.06)];
-          const sPoints3 = [new THREE.Vector3(0, -camYPos, camZPos - 0.01), new THREE.Vector3(0, 0, camZPos + 0.06)];
-
-          const string1 = new THREE.Line(new THREE.BufferGeometry().setFromPoints(sPoints1), stringMat);
-          const string2 = new THREE.Line(new THREE.BufferGeometry().setFromPoints(sPoints2), stringMat);
-          const string3 = new THREE.Line(new THREE.BufferGeometry().setFromPoints(sPoints3), stringMat);
-          group.add(string1);
-          group.add(string2);
-          group.add(string3);
+          // The string proper, and the two cables that make it a compound.
+          this._bowString(group, stringMat,
+            new THREE.Vector3(0, camYPos, camZPos), new THREE.Vector3(0, -camYPos, camZPos), { r: 0.002 });
+          for (const dir of [1, -1]) {
+            const a = new THREE.Vector3(0, dir * camYPos, camZPos - 0.01);
+            const b = new THREE.Vector3(0, 0, camZPos + 0.06);
+            const d = b.clone().sub(a);
+            const cableRun = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.0015, 0.0015, d.length(), this.seg(5, 3)), stringMat);
+            cableRun.position.copy(a).add(b).multiplyScalar(0.5);
+            cableRun.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize());
+            group.add(cableRun);
+          }
 
           // Tech grip riser
           const riser = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.12, 0.04), accentMat);
@@ -1634,6 +1675,7 @@
       // <Crossbow>, Mechanical crossbow with prod, rail, stock, and string
       createCrossbowModel(weapon, rand) {
         const group = new THREE.Group();
+        group.userData.crossbow = true;
         const woodColors = [0x7A4020, 0x5C3010, 0x8B5020, 0x333333];
         const woodColor  = woodColors[Math.floor(rand() * woodColors.length)];
         const woodMat  = new THREE.MeshStandardMaterial({ color: woodColor, roughness: 0.75 });
@@ -1663,25 +1705,41 @@
 
         // Limbs
         for (const side of [-1, 1]) {
+          const arm = new THREE.Group();
+          arm.userData.bow = side > 0 ? 'limbLeft' : 'limbRight';
+          group.add(arm);
           const limb = new THREE.Mesh(new THREE.BoxGeometry(0.010, 0.014, 0.11), metalMat);
           limb.position.set(side * 0.065, 0.001, 0.115);
           limb.rotation.z = side * 0.18;
-          group.add(limb);
+          arm.add(limb);
           const limbTip = new THREE.Mesh(new THREE.BoxGeometry(0.013, 0.013, 0.02), metalMat);
           limbTip.position.set(side * 0.114, 0.002, 0.118);
           limbTip.rotation.z = side * 0.18;
-          group.add(limbTip);
+          arm.add(limbTip);
         }
 
-        // Bowstring
-        const str = new THREE.Mesh(new THREE.CylinderGeometry(0.002, 0.002, 0.24, 4), strMat);
-        str.rotation.z = Math.PI / 2;
-        str.position.set(0, 0.002, 0.118);
-        group.add(str);
+        // Bowstring, spanned back onto the nut and waiting to be let off.
+        this._bowString(group, strMat,
+          new THREE.Vector3(0.12, 0.002, 0.118), new THREE.Vector3(-0.12, 0.002, 0.118),
+          { r: 0.002, nock: new THREE.Vector3(0, 0.002, 0.03), release: new THREE.Vector3(0, 0.002, 0.118) });
+
+        // The bolt lying in the rail.
+        const shot = new THREE.Group();
+        shot.userData.bow = 'arrow';
+        group.add(shot);
+        const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.15, 7), woodMat);
+        shaft.rotation.x = Math.PI / 2;
+        shaft.position.set(0, 0.036, 0.09);
+        shot.add(shaft);
+        const head = new THREE.Mesh(new THREE.ConeGeometry(0.007, 0.024, 7), metalMat);
+        head.rotation.x = Math.PI / 2;
+        head.position.set(0, 0.036, 0.177);
+        shot.add(head);
 
         // Trigger
         const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.024, 0.014), metalMat);
         trigger.position.set(0, -0.016, -0.008);
+        trigger.userData.gun = 'trigger';
         group.add(trigger);
 
         // Stirrup at front

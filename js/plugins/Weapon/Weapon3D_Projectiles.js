@@ -1115,25 +1115,35 @@
         const o = opts || {};
         const span = o.span || 0.13;
         const stockLen = o.stockLen || 0.3;
+        // Read by isCrossbow: this is what makes the weapon let off with a
+        // finger rather than being drawn like a bow.
+        group.userData.crossbow = true;
         const tiller = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.03, stockLen), stock);
         tiller.position.set(0, 0.01, stockLen * 0.5 - 0.16);
         group.add(tiller);
+        // Where the string sits spanned (on the nut) and where it snaps to.
+        const cocked = new THREE.Vector3(0, 0.02, 0.004);
+        const released = new THREE.Vector3(0, 0.02, 0.06);
+        const tips = {};
         for (const s of [-1, 1]) {
+          // The prod arms are grouped so they can spring straight on the shot,
+          // the way a bow's limbs do. See tickBow.
+          const arm = new THREE.Group();
+          arm.userData.bow = s > 0 ? 'limbLeft' : 'limbRight';
+          group.add(arm);
           const curve = new THREE.QuadraticBezierCurve3(
             new THREE.Vector3(0, 0.02, 0.12),
             new THREE.Vector3(s * span * 0.6, 0.02, 0.1),
             new THREE.Vector3(s * span, 0.02, 0.06)
           );
-          const arm = new THREE.Mesh(new THREE.TubeGeometry(curve, this.seg(7, 4), 0.008, this.seg(6, 4), false), limb);
-          group.add(arm);
+          const bow = new THREE.Mesh(new THREE.TubeGeometry(curve, this.seg(7, 4), 0.008, this.seg(6, 4), false), limb);
+          arm.add(bow);
           const nock = new THREE.Mesh(new THREE.SphereGeometry(0.008, this.seg(8, 5), this.seg(6, 4)), stock);
           nock.position.set(s * span, 0.02, 0.06);
-          group.add(nock);
-          const half = new THREE.Mesh(new THREE.CylinderGeometry(0.0022, 0.0022, span * 1.06, this.seg(5, 3)), string);
-          half.position.set(s * span * 0.5, 0.02, 0.032);
-          half.rotation.set(0, 0.3 * s, Math.PI / 2);
-          group.add(half);
+          arm.add(nock);
+          tips[s] = new THREE.Vector3(s * span, 0.02, 0.06);
         }
+        this._bowString(group, string, tips[1], tips[-1], { r: 0.0022, nock: cocked, release: released });
         const nut = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.024, this.seg(10, 6)), limb);
         nut.rotation.z = Math.PI / 2;
         nut.position.set(0, 0.024, 0.0);
@@ -1143,14 +1153,19 @@
         groove.position.set(0, 0.028, 0.06);
         group.add(groove);
         if (o.boltMat) {
+          // Shaft and head together: the head cannot stay in the groove when
+          // the bolt goes.
+          const shot = new THREE.Group();
+          shot.userData.bow = 'arrow';
+          group.add(shot);
           const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.15, this.seg(7, 5)), o.boltMat);
           bolt.rotation.x = Math.PI / 2;
           bolt.position.set(0, 0.033, 0.07);
-          group.add(bolt);
+          shot.add(bolt);
           const tip = new THREE.Mesh(new THREE.ConeGeometry(0.007, 0.024, this.seg(7, 5)), o.tipMat || o.boltMat);
           tip.rotation.x = Math.PI / 2;
           tip.position.set(0, 0.033, 0.157);
-          group.add(tip);
+          shot.add(tip);
         }
         this._gunTrigger(group, limb, 0, -0.02, -0.06, { guardR: 0.018 });
         return group;
@@ -1970,24 +1985,28 @@
         const rail = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.02, 0.16), corporate);
         rail.position.set(0, 0.036, 0.05);
         group.add(rail);
-        // The dart: a glass ampoule with the payload glowing in it.
+        // The dart: a glass ampoule with the payload glowing in it, and it
+        // leaves the rail in one piece.
+        const shot = new THREE.Group();
+        shot.userData.bow = 'arrow';
+        group.add(shot);
         const ampoule = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.07, this.seg(11, 7)), glass);
         ampoule.rotation.x = Math.PI / 2;
         ampoule.position.set(0, 0.052, 0.08);
-        group.add(ampoule);
+        shot.add(ampoule);
         const payload = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.05, this.seg(11, 7)), idea);
         payload.rotation.x = Math.PI / 2;
         payload.position.set(0, 0.052, 0.078);
         payload.userData.pulse = { min: 0.4, max: 1.3, freq: 1.2 };
-        group.add(payload);
+        shot.add(payload);
         const needle = new THREE.Mesh(new THREE.CylinderGeometry(0.002, 0.002, 0.05, this.seg(6, 4)), bright);
         needle.rotation.x = Math.PI / 2;
         needle.position.set(0, 0.052, 0.14);
-        group.add(needle);
+        shot.add(needle);
         const plunger = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.01, this.seg(11, 7)), accent);
         plunger.rotation.x = Math.PI / 2;
         plunger.position.set(0, 0.052, 0.042);
-        group.add(plunger);
+        shot.add(plunger);
         // Spare ampoules in a branded rack.
         const rack = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.026, 0.07), accent);
         rack.position.set(0, -0.026, -0.06);

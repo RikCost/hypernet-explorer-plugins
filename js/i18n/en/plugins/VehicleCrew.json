@@ -2,6 +2,9 @@
   "drivingTag": "(Driving)",
   "tookWheel": "{name} takes the wheel.",
   "allTired": "{name} is driving on fumes — nobody aboard is rested enough to take over.",
+  "woke": {
+    "crash": "The crash throws everyone in the back awake."
+  },
   "aboard": {
     "hunger": "Something is cooking in the galley.",
     "sleep": "The off-shift crew turns in.",

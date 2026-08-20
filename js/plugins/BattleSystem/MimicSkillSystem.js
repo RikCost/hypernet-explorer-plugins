@@ -177,8 +177,8 @@
         const archetypeName = getEnemyArchetypeName(enemyDataObj);
         if (archetypeName &&
             window.Health &&
-            window.Health.EnemyArchetypes &&
-            window.Health.EnemyArchetypes[archetypeName] &&
+            window.Health.Archetypes &&
+            window.Health.Archetypes[archetypeName] &&
             typeof window.changeArchetypeForActor === 'function') {
             window.changeArchetypeForActor(actor, archetypeName);
         }
@@ -269,8 +269,8 @@
         const archetypeName = target._currentArchetype;
         if (archetypeName &&
             window.Health &&
-            window.Health.EnemyArchetypes &&
-            window.Health.EnemyArchetypes[archetypeName] &&
+            window.Health.Archetypes &&
+            window.Health.Archetypes[archetypeName] &&
             typeof window.changeArchetypeForActor === 'function') {
             window.changeArchetypeForActor(actor, archetypeName);
         }
@@ -303,12 +303,12 @@
     // =========================================================================
 
     function applyMimicMutation(actor) {
-        const { EnemyArchetypes } = window.Health || {};
-        if (!EnemyArchetypes) {
+        const { Archetypes } = window.Health || {};
+        if (!Archetypes) {
             return;
         }
 
-        const keys = Object.keys(EnemyArchetypes);
+        const keys = Object.keys(Archetypes);
         if (keys.length < 2) {
             return;
         }
@@ -320,11 +320,15 @@
 
         const key1 = keys[idx1];
         const key2 = keys[idx2];
-        const arch1 = EnemyArchetypes[key1];
-        const arch2 = EnemyArchetypes[key2];
+        const arch1 = Archetypes[key1];
+        const arch2 = Archetypes[key2];
 
-        // Merge parts, arch2 overrides arch1 for duplicate part keys (arch2 is dominant).
-        const mergedParts = Object.assign({}, arch1.parts, arch2.parts);
+        // Merge parts. The dominant archetype keeps every shared part it names;
+        // arms and hands are the exception and are spliced on alongside, so a
+        // mimicked body ends up with both pairs (HealthCore.mergeArchetypeParts).
+        const mergedParts = (window.HealthCore && window.HealthCore.mergeArchetypeParts)
+            ? window.HealthCore.mergeArchetypeParts([key2, key1])
+            : Object.assign({}, arch1.parts, arch2.parts);
 
         // Clear existing body parts and stat modifiers.
         actor._statModifiers = {};
@@ -350,6 +354,8 @@
                 damageMsg: getArchText(p.msg) || p.msg || '',
                 specialEffect: p.specialEffect || null,
                 appliedStatEffect: false,
+                canHoldWeapon: !!p.canHoldWeapon,
+                limbCopy: p.limbCopy || 0,
                 skillId: p.skillId || [],
                 hpPercent: p.hpPercent || 10,
             };

@@ -838,6 +838,105 @@
   }
 
   // ===========================================================================
+  // A4 WALL AUTOTILES
+  // ===========================================================================
+  // Real RPG Maker A4 "wall" blob autotiles instead of a hand-picked 3-tile
+  // column: a tileset's A4 sheet packs its wall materials in pairs of autotile
+  // kinds - a passable "top/ledge" kind (blended with the FLOOR shape table)
+  // directly followed, 8 kinds later, by the matching impassable "side/body"
+  // kind of the SAME material (blended with the WALL shape table); this is a
+  // fixed, universal MZ convention (Tilemap.isWallTopTile/isWallSideTile: kind
+  // % 16 < 8 is the top, >= 8 is the side), never something a tileset chooses.
+  // Which kind numbers a given tileset's A4 image actually has painted is not
+  // discoverable without loading the PNG (fragile at map-generation time,
+  // before the scene owns that tileset), so the handful of tilesets that ship
+  // a real dungeon A4 sheet are registered here once the art is confirmed. The
+  // Dungeon tileset's A4 (MightyPack Int-A4) has 3 confirmed top/side pairs of
+  // 8 colours each, at rows 80/88, 96/104 and 112/120.
+  const A4_WALL_TOP_KINDS = {
+    304: [80, 81, 82, 83, 84, 85, 86, 87, 96, 97, 98, 99, 100, 101, 102, 103, 112, 113, 114, 115, 116, 117, 118, 119],
+  };
+
+  function pickA4WallMaterial(tilesetId, rng) {
+    const tops = A4_WALL_TOP_KINDS[tilesetId];
+    if (!tops || !tops.length) return null;
+    const top = tops[Math.floor(rng() * tops.length)];
+    return { top, side: top + 8 };
+  }
+
+  // Shape-index tables built once from the shipped engine data. The map editor
+  // bakes a blob tile's final shape in from its 4 cardinal same-kind
+  // neighbours when a human paints it, and the running game never redoes that
+  // on its own, so any tile WE write into raw map data has to bake its own
+  // shape the same way.
+  //
+  // Each table entry is the 4 quadrants [topLeft, topRight, bottomLeft,
+  // bottomRight] of the tile, given as [x, y] into that autotile's source
+  // block. A quadrant reaching the block's outer column/row is what DRAWS a
+  // border on that side, i.e. that side is OPEN (no same-kind neighbour):
+  //   west  open  <-> topLeft.x  === 0        east open <-> topRight.x === 3
+  //   north open  <-> topLeft.y  === openN    south open <-> bottomLeft.y === openS
+  // The two tables disagree on the row markers - the floor/blob table borders
+  // north at y 2 and south at y 5, the 16-entry wall table at y 0 and y 3 -
+  // so the row values are passed in per table rather than assumed. Getting
+  // this wrong is not a subtle mis-corner: it silently resolves the FILLED
+  // interior of a region to a corner-notch shape, which tiles the whole rock
+  // mass with a repeating angle instead of flat fill.
+  // `cornerRows` are the source rows holding the INNER-CORNER pieces, i.e. the
+  // little notch drawn when a diagonal neighbour is missing but both of its
+  // cardinals are present. Several shapes share one cardinal signature and
+  // differ only in how many of those notches they carry; we track cardinals
+  // only, so the variant with the fewest notches is the honest match. (The
+  // 16-entry wall table has no such variants and passes an empty list.)
+  function buildAutotileShapeIndex(table, openNorthY, openSouthY, cornerRows) {
+    const index = {};
+    const notches = {};
+    const corners = cornerRows || [];
+    for (let shape = 0; shape < table.length; shape++) {
+      const [tl, tr, bl] = table[shape];
+      const westOpen = tl[0] === 0;
+      const eastOpen = tr[0] === 3;
+      const northOpen = tl[1] === openNorthY;
+      const southOpen = bl[1] === openSouthY;
+      // Connected is the negation of open; the key is west,east,north,south.
+      const key = (westOpen ? 0 : 1) + "," + (eastOpen ? 0 : 1) + "," +
+        (northOpen ? 0 : 1) + "," + (southOpen ? 0 : 1);
+      let n = 0;
+      for (const q of table[shape]) if (corners.indexOf(q[1]) >= 0) n++;
+      if (!(key in index) || n < notches[key]) { index[key] = shape; notches[key] = n; }
+    }
+    return index;
+  }
+  function lookupAutotileShape(index, west, east, north, south) {
+    const key = (west ? 1 : 0) + "," + (east ? 1 : 0) + "," + (north ? 1 : 0) + "," + (south ? 1 : 0);
+    if (key in index) return index[key];
+    const fallbacks = [(west ? 1 : 0) + "," + (east ? 1 : 0) + ",1,1", "1,1,1,1"];
+    for (const k of fallbacks) if (k in index) return index[k];
+    return 0;
+  }
+  let _floorShapeIndex = null;
+  let _wallShapeIndex = null;
+  function floorShapeIndex() {
+    return _floorShapeIndex ||
+      (_floorShapeIndex = buildAutotileShapeIndex(Tilemap.FLOOR_AUTOTILE_TABLE, 2, 5, [0, 1]));
+  }
+  function wallShapeIndex() {
+    return _wallShapeIndex ||
+      (_wallShapeIndex = buildAutotileShapeIndex(Tilemap.WALL_AUTOTILE_TABLE, 0, 3, []));
+  }
+  // Ceiling/rim rock: the wall material's passable top kind, blended against
+  // its own kind's cardinal neighbours so a rim region reads as one blob
+  // (bordered at its outer edge, plain within) rather than a repeated tile.
+  function ceilingAutotileId(kind, west, east, north, south) {
+    return Tilemap.makeAutotileId(kind, lookupAutotileShape(floorShapeIndex(), west, east, north, south));
+  }
+  // Wall face: the material's impassable side kind, blended the same way so a
+  // ring can close around a carved region on all four sides at once.
+  function wallAutotileId(kind, west, east, north, south) {
+    return Tilemap.makeAutotileId(kind, lookupAutotileShape(wallShapeIndex(), west, east, north, south));
+  }
+
+  // ===========================================================================
   // PALETTE
   // ===========================================================================
   // A structure is paved from a LIMITED set of ground textures: one main tile
@@ -921,6 +1020,9 @@
       main, accents,
       rim: rimTile(p.rim, allFeatures, rng),
       wall,
+      // A real A4 wall/ceiling autotile pair, when this tileset's A4 sheet is
+      // registered (see A4_WALL_TOP_KINDS); null falls back to `wall`/`rim`.
+      wallA4: pickA4WallMaterial(tilesetId, rng),
       water: waterList && waterList.length ? waterList[0] : 0,
       lava: lavaList && lavaList.length ? lavaList[Math.floor(rng() * lavaList.length)] : 0,
       patterns: (S && S.patterns && S.patterns.length) ? S.patterns : ["none"],
@@ -1108,12 +1210,14 @@
     // `nearFloor` marks out.
     const ceilingTile = pal.rim;
     const wall = pal.wall;
+    const wallA4 = pal.wallA4;
     const waterTile = pal.water;
 
     // --- 1. Layout: carved[y][x] = walkable floor ---------------------------
     const carved = Array.from({ length: height }, () => new Array(width).fill(false));
     const rooms = [];
     const canalRows = [];
+    let sewerWaterWidth = 1;
     const dungeonNarrowCorridors = [];
     // A loot cellar that came out roomy and well stocked instead of the cramped
     // hole most of them are. Rolled in the cellar branch below, read again by
@@ -1380,12 +1484,16 @@
           }
       }
     } else if (isSewer) {
-      // A grid of wide (3-tile) tunnels reading as a canal network.
+      // A grid of tunnels reading as a canal network. The water itself runs
+      // 2-4 tiles wide down the middle (one width per sewer), with a dry lane
+      // to walk on each side of it.
+      sewerWaterWidth = 2 + Math.floor(rng() * 3); // 2-4
+      const tunnelThick = sewerWaterWidth + 2;
       const pitch = 10;
       const colsX = [];
-      for (let y = MARGIN + 4; y < height - MARGIN - 4; y += pitch) { carveH(MARGIN, width - MARGIN - 1, y, 3); canalRows.push(y + 1); }
-      for (let x = MARGIN + 4; x < width - MARGIN - 4; x += pitch) { carveV(MARGIN, height - MARGIN - 1, x, 3); colsX.push(x); }
-      for (const cy of canalRows) for (const cx of colsX) rooms.push({ x: cx - 1, y: cy - 1, width: 5, height: 5 });
+      for (let y = MARGIN + 4; y < height - MARGIN - 4; y += pitch) { carveH(MARGIN, width - MARGIN - 1, y, tunnelThick); canalRows.push(y + 1); }
+      for (let x = MARGIN + 4; x < width - MARGIN - 4; x += pitch) { carveV(MARGIN, height - MARGIN - 1, x, tunnelThick); colsX.push(x); }
+      for (const cy of canalRows) for (const cx of colsX) rooms.push({ x: cx - 1, y: cy - 1, width: tunnelThick + 2, height: tunnelThick + 2 });
     } else if (isCrypt) {
       // A regular grid of small tomb chambers joined by straight corridors.
       const pitch = 9, chamber = 5;
@@ -1878,12 +1986,100 @@
         }
       }
     }
+    const isFloor = (x, y) => x >= 0 && x < width && y >= 0 && y < height && carved[y][x];
     const mapData = new Array(width * height * 4).fill(0);
     const rand = (arr) => arr[Math.floor(rng() * arr.length)];
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        mapData[calculateIndex(x, y, 0, width, height)] =
-          carved[y][x] ? rand(floorTiles) : (nearFloor[y][x] ? ceilingTile : 0);
+    // ceilingMask marks every cell actually painted with the rim tile, real A4
+    // blend or the old flat tile alike, so later passes (lavaFlow) can ask
+    // "is this rock" without caring which of the two rendered it.
+    const ceilingMask = Array.from({ length: height }, () => new Array(width).fill(false));
+
+    if (wallA4) {
+      // Real A4 blob walls: a tall (3-tile) impassable face on the north edge
+      // only, matching the look every structure already shares - south, east
+      // and west stay open onto the ledge/ceiling kind instead of a second
+      // wall line, so a narrow corridor never reads as walled on both flanks.
+      // Both kinds are blended against their own kind's cardinal neighbours,
+      // exactly the way the map editor bakes a hand-painted autotile; the
+      // ceiling kind is flagged impassable on every shape in the Dungeon
+      // tileset (data/Tilesets.json) precisely so it is safe to leave open -
+      // it reads as ambient rock but is never a second, walkable path.
+      const WALL_HEIGHT = 3;
+      const wallCells = Array.from({ length: height }, () => new Array(width).fill(false));
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (!carved[y][x] || isFloor(x, y - 1)) continue;
+          // How much solid rock actually stands above this floor tile.
+          let depth = 0;
+          while (y - 1 - depth >= 0 && !carved[y - 1 - depth][x]) depth++;
+          // The topmost rock row is ALWAYS left to the ceiling, so a wall face
+          // is never drawn with open space (or another room's floor) directly
+          // above it - a wall with no ceiling capping it reads as a floating
+          // slab. A 1-tile-thin divider between two rooms therefore carries no
+          // wall at all and is drawn purely as ceiling.
+          const wallH = Math.min(WALL_HEIGHT, depth - 1);
+          for (let k = 1; k <= wallH; k++) wallCells[y - k][x] = true;
+        }
+      }
+      const isWallCell = (x, y) => x >= 0 && x < width && y >= 0 && y < height && wallCells[y][x];
+      // The ceiling is the SOLID FILL of the whole dead mass, not a rim around
+      // it. A blob autotile only reads as rock when it is a filled region: the
+      // interior renders as flat fill and only the boundary against the floor
+      // draws an edge. Laid as a 1-tile ring instead, every single tile draws
+      // its own rounded outline on BOTH sides and the mass comes out as
+      // scattered pebbles floating in the void, which is what the thin rim did.
+      // (The old flat A5 rim tile had to be kept thin - repeating one detailed
+      // rubble tile over the whole map was pure noise - but that limitation is
+      // exactly what the real autotile removes.)
+      const isCeil = (x, y) =>
+        x >= 0 && x < width && y >= 0 && y < height && !carved[y][x] && !wallCells[y][x];
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (carved[y][x]) {
+            mapData[calculateIndex(x, y, 0, width, height)] = rand(floorTiles);
+          } else if (wallCells[y][x]) {
+            mapData[calculateIndex(x, y, 0, width, height)] = wallAutotileId(
+              wallA4.side, isWallCell(x - 1, y), isWallCell(x + 1, y), isWallCell(x, y - 1), isWallCell(x, y + 1));
+          } else {
+            ceilingMask[y][x] = true;
+            mapData[calculateIndex(x, y, 0, width, height)] =
+              ceilingAutotileId(wallA4.top, isCeil(x - 1, y), isCeil(x + 1, y), isCeil(x, y - 1), isCeil(x, y + 1));
+          }
+        }
+      }
+    } else {
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const ceiling = !carved[y][x] && nearFloor[y][x];
+          if (ceiling) ceilingMask[y][x] = true;
+          mapData[calculateIndex(x, y, 0, width, height)] = carved[y][x] ? rand(floorTiles) : (ceiling ? ceilingTile : 0);
+        }
+      }
+
+      // --- 4. Walls: north faces only ----------------------------------------
+      // Only the north edge of the carved space is ever walled: south, east
+      // and west stay open onto the Ceiling rim (and the void beyond it).
+      // `wall.mid` is the 1-tile ring tile stamped directly above a floor
+      // tile's north edge before the second pass below lays a full 3-tall
+      // north face over it.
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (carved[y][x]) continue;
+          if (isFloor(x, y + 1)) {
+            mapData[calculateIndex(x, y, 0, width, height)] = wall.mid;
+          }
+        }
+      }
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (!carved[y][x] || isFloor(x, y - 1)) continue;
+          const face = [[1, wall.bot], [2, wall.mid], [3, wall.top]];
+          for (const [k, tile] of face) {
+            const wy = y - k;
+            if (wy < 0 || carved[wy][x]) break;
+            mapData[calculateIndex(x, wy, 0, width, height)] = tile;
+          }
+        }
       }
     }
 
@@ -1910,50 +2106,33 @@
       paintPattern(setFloorTile, r, pal.main, accent, kind, rng);
     }
 
-    // --- 4. Walls: north faces only ------------------------------------------
-    // Only the north edge of the carved space is ever walled: south, east and
-    // west stay open onto the Ceiling rim (and the void beyond it), which is
-    // the look every structure now shares. `wall.mid` is the 1-tile ring tile
-    // stamped directly above a floor tile's north edge before the second pass
-    // below lays a full 3-tall north face over it.
-    const isFloor = (x, y) => x >= 0 && x < width && y >= 0 && y < height && carved[y][x];
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        if (carved[y][x]) continue;
-        if (isFloor(x, y + 1)) {
-          mapData[calculateIndex(x, y, 0, width, height)] = wall.mid;
-        }
-      }
-    }
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        if (!carved[y][x] || isFloor(x, y - 1)) continue;
-        const face = [[1, wall.bot], [2, wall.mid], [3, wall.top]];
-        for (const [k, tile] of face) {
-          const wy = y - k;
-          if (wy < 0 || carved[wy][x]) break;
-          mapData[calculateIndex(x, wy, 0, width, height)] = tile;
-        }
-      }
-    }
-
     // --- 5. Region data + the ornaments that change what the ground IS -------
     // Water and lava are not props: they replace the floor, so they are laid
     // here rather than in the decoration pass. Both follow the same rule the
     // sewer's canals always did - a flooded tile must have floor above AND
     // below it, so a channel can never cut the plan in two.
     const regiondata = new Array(width * height).fill(0);
-    const floodRow = (cy) => {
+    // bandWidth floods `cy` and the (bandWidth - 1) rows south of it as one
+    // solid channel - the sewer's 2-4 tile wide water - always requiring dry
+    // floor immediately above and below the whole band, so a channel can
+    // never cut the plan in two.
+    const floodRow = (cy, bandWidth = 1) => {
       for (let x = MARGIN; x < width - MARGIN; x++) {
-        if (isFloor(x, cy) && isFloor(x, cy - 1) && isFloor(x, cy + 1)) {
-          mapData[calculateIndex(x, cy, 0, width, height)] = waterTile;
-          regiondata[cy * width + x] = 99;
+        if (!isFloor(x, cy - 1) || !isFloor(x, cy + bandWidth)) continue;
+        let clear = true;
+        for (let dy = 0; dy < bandWidth; dy++) {
+          if (!isFloor(x, cy + dy)) { clear = false; break; }
+        }
+        if (!clear) continue;
+        for (let dy = 0; dy < bandWidth; dy++) {
+          mapData[calculateIndex(x, cy + dy, 0, width, height)] = waterTile;
+          regiondata[(cy + dy) * width + x] = 99;
         }
       }
     };
     if (waterTile && hasOrnament("waterLanes")) {
       if (canalRows.length) {
-        for (const cy of canalRows) floodRow(cy);
+        for (const cy of canalRows) floodRow(cy, sewerWaterWidth);
       } else {
         // A cistern has no canal rows of its own: flood every third bay so the
         // hall reads as standing water walked around on the dry lanes.
@@ -1991,9 +2170,8 @@
       // the impassable wall ring, so it glows without ever being stood on.
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          if (carved[y][x]) continue;
+          if (carved[y][x] || !ceilingMask[y][x]) continue;
           const idx = calculateIndex(x, y, 0, width, height);
-          if (mapData[idx] !== ceilingTile || !ceilingTile) continue;
           // A coarse vein pattern rather than a wash, so it reads as flowing.
           const vein = Math.sin(x * 0.21 + y * 0.13) + Math.sin(y * 0.31 - x * 0.07);
           if (vein > 1.1 && rng() < 0.75) mapData[idx] = pal.lava;
@@ -2383,16 +2561,24 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const roadFeatureTiles = getFeatureTiles("Road", allFeatures);
     const cardinalRoadTile = roadFeatureTiles ? roadFeatureTiles[0] : pathTile;
 
+    // A village street is a carriageway, not a track worn into the grass: it is
+    // laid with the same Road tile the border connections and the city grid use,
+    // and it carries the same painted centre line - the tileset's DashedLine, or
+    // its orientation-aware variants where the tileset declares them. Path keeps
+    // the job it always had, the footpath that links a lot to the street.
+    const streetTile = cardinalRoadTile;
+    const villageDashedLines = getDashedLinesForFeatures(allFeatures);
+    const streetIsPaved = streetTile !== pathTile;
+
     // --- STEP 0: Draw cardinal border roads ---
     const borderDirs = getCityBorderRoadDirections(adjacentBiomes);
     const hasCardinalRoads = borderDirs.north || borderDirs.south || borderDirs.east || borderDirs.west;
     const borderRoadOccupied = new Array(width * height).fill(false);
 
     if (hasCardinalRoads) {
-      const dashedLines = getDashedLinesForFeatures(allFeatures);
       const zebra = getZebraForFeatures(allFeatures);
 
-      applyBorderRoadConnections(mapData, width, height, adjacentBiomes, cardinalRoadTile, dashedLines, zebra, rng);
+      applyBorderRoadConnections(mapData, width, height, adjacentBiomes, cardinalRoadTile, villageDashedLines, zebra, rng);
 
       // ... (Border road marking logic kept identical to previous version) ...
       const centerX = Math.floor(width / 2);
@@ -2421,7 +2607,7 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       const x = 10 + Math.floor(rng() * (width - 20));
       const y = 10 + Math.floor(rng() * (height - 20));
       const idx = calculateIndex(x, y, 0, width, height);
-      mapData[idx] = pathTile;
+      mapData[idx] = streetTile;
       pathSeeds.push({ x, y });
     }
 
@@ -2492,7 +2678,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const idx = calculateIndex(x, y, 0, width, height);
-        if (mapData[idx] === pathTile && !borderRoadOccupied[y * width + x]) {
+        const surface = mapData[idx];
+        if ((surface === streetTile || surface === pathTile) &&
+            !borderRoadOccupied[y * width + x]) {
           roadSet.add(`${x},${y}`);
         }
       }
@@ -2502,36 +2690,43 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
      * UPDATED SETROAD: Checks if target tile is valid terrain before writing.
      * Prevents roads from cutting through Prefab walls/floors.
      */
-    function setRoad(x, y) {
+    function setRoad(x, y, tile) {
       if (x < 1 || x >= width - 1 || y < 1 || y >= height - 1) return;
       if (borderRoadOccupied[y * width + x]) return;
-      
+
       const idx = calculateIndex(x, y, 0, width, height);
       const currentTile = mapData[idx];
 
       // PROTECTION CHECK:
-      // If the tile is occupied by something that is NOT base terrain, 
-      // NOT an existing path, and NOT empty (0), it is a Prefab. 
+      // If the tile is occupied by something that is NOT base terrain,
+      // NOT an existing street or footpath, and NOT empty (0), it is a Prefab.
       // Do not overwrite it.
-      if (currentTile !== baseTile && currentTile !== 0 && currentTile !== pathTile) {
-          return; 
+      if (currentTile !== baseTile && currentTile !== 0 &&
+          currentTile !== pathTile && currentTile !== streetTile) {
+          return;
       }
 
-      mapData[idx] = pathTile;
+      mapData[idx] = tile;
       roadSet.add(`${x},${y}`);
     }
 
-    function drawBrush(cx, cy, radius = 1) {
+    function drawBrush(cx, cy, radius, tile) {
       for (let y = cy - radius; y <= cy + radius; y++) {
         for (let x = cx - radius; x <= cx + radius; x++) {
           if (Math.abs(x - cx) + Math.abs(y - cy) <= radius + 0.5) {
-            setRoad(x, y);
+            setRoad(x, y, tile);
           }
         }
       }
     }
 
-    function drawOrganicPath(x1, y1, x2, y2, brushSize = 1) {
+    // Every centre tile of every street, in the order it was laid, with the way
+    // the street was running when it got there. The centre line is painted from
+    // this once the whole network is down, so no dash ends up buried under a
+    // street drawn afterwards.
+    const streetSpine = [];
+
+    function drawOrganicPath(x1, y1, x2, y2, brushSize = 1, tile = pathTile, spine = null) {
       let cx = x1, cy = y1;
       while (Math.abs(cx - x2) > 2 || Math.abs(cy - y2) > 2) {
         const dx = x2 - cx, dy = y2 - cy;
@@ -2539,14 +2734,17 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
         let vx = dx / dist, vy = dy / dist;
         if (rng() < 0.3) { vx += (rng() - 0.5) * 0.6; vy += (rng() - 0.5) * 0.6; }
         cx += vx; cy += vy;
-        drawBrush(Math.floor(cx), Math.floor(cy), brushSize);
+        const tx = Math.floor(cx), ty = Math.floor(cy);
+        drawBrush(tx, ty, brushSize, tile);
+        if (spine) spine.push({ x: tx, y: ty, horizontal: Math.abs(vx) >= Math.abs(vy) });
       }
       return { x: Math.floor(cx), y: Math.floor(cy) };
     }
 
-    // Connect seeds
+    // Connect seeds: this run is the village's street, wide enough for two lanes
+    // and for the paint down the middle of them.
     for (let i = 0; i < pathSeeds.length - 1; i++) {
-      drawOrganicPath(pathSeeds[i].x, pathSeeds[i].y, pathSeeds[i+1].x, pathSeeds[i+1].y, 1);
+      drawOrganicPath(pathSeeds[i].x, pathSeeds[i].y, pathSeeds[i+1].x, pathSeeds[i+1].y, 1, streetTile, streetSpine);
     }
     // Extra loops
     const extraConnections = Math.max(1, Math.floor(pathSeeds.length / 5));
@@ -2565,12 +2763,42 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       if (minDist > 12 && minDist < 40) drawOrganicPath(lot.x, lot.y, nearestSeed.x, nearestSeed.y, 0);
     }
 
+    // --- Centre line down the streets ---
+    // Three tiles of paint then one of gap, the cadence the border roads and the
+    // city grid already use. Laid on layer 1, and only where the street is still
+    // there underneath, so a dash never strays onto a prefab, a yard or a verge.
+    // A tileset with no Road feature has no carriageway to paint on: its village
+    // is footpaths all the way down and gets no markings.
+    if (streetIsPaved) {
+      const DASH_LENGTH = 3;
+      const DASH_CYCLE = DASH_LENGTH + 1;
+      let dashStep = 0;
+      let lastSpineKey = null;
+      for (const point of streetSpine) {
+        const key = `${point.x},${point.y}`;
+        // The walk advances by less than a tile at a time, so the same centre
+        // tile turns up repeatedly: it is one step of the dash cycle, not many.
+        if (key === lastSpineKey) continue;
+        lastSpineKey = key;
+        const onCycle = dashStep++ % DASH_CYCLE < DASH_LENGTH;
+        if (!onCycle) continue;
+        const dashTile = point.horizontal
+          ? villageDashedLines.horizontal
+          : villageDashedLines.vertical;
+        if (!dashTile) continue;
+        if (point.x < 1 || point.x >= width - 1 || point.y < 1 || point.y >= height - 1) continue;
+        if (borderRoadOccupied[point.y * width + point.x]) continue;
+        if (mapData[calculateIndex(point.x, point.y, 0, width, height)] !== streetTile) continue;
+        mapData[calculateIndex(point.x, point.y, 1, width, height)] = dashTile;
+      }
+    }
+
     // --- Sidewalks ---
     // UPDATED Call: Passes baseTile to ensure sidewalks don't overwrite prefabs
     const sidewalkTiles = getFeatureTiles(pathFeatureName, allFeatures);
     if (sidewalkTiles) {
       const tilesToProtect = [...pathTiles];
-      if (hasCardinalRoads && cardinalRoadTile !== pathTile) tilesToProtect.push(cardinalRoadTile);
+      if (streetIsPaved) tilesToProtect.push(streetTile);
       // Pass baseTile as the last argument
       placeSidewalksAroundRoads(mapData, width, height, roadSet, sidewalkTiles, rng, tilesToProtect, baseTile);
     }
@@ -4608,6 +4836,7 @@ function generateBurgBiome(biome, seed, allFeatures, adjacentBiomes, allOtherDat
     isBurgBiome,
     getFeatureTiles,
     getRandomFeatureTile,
+    isTilePassableInTileset,
     generateDungeonBiome,
     generateVillageBiome,
     generateCityBiome,

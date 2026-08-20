@@ -154,7 +154,7 @@
       "title": "Mozione di {sponsor}: lo status dei Naguka",
       "text": [
         "{sponsor} interviene sullo status dei Naguka: {riconoscimento|contenimento|una commissione di confine e nient'altro}. {leader} sceglie le parole con cura, {perché l'inconscio collettivo ascolta|perché ferirne uno significa ferirli tutti|e a metà smette di sceglierle con cura}.",
-        "La questione goblin. {sponsor} dice che il pozzo di Kola andava {riempito|sorvegliato|lasciato stare}. {leader} osserva che qualunque cosa decida l'assemblea, {i Naguka la sentiranno|il Vaticano ha già aperto relazioni|i Mahyem la metteranno in musica}.",
+        "La questione goblin. {sponsor} dice che il pozzo di Kola andava {riempito|sorvegliato|lasciato stare}. {leader} osserva che qualunque cosa decida l'assemblea, {i Naguka la sentiranno|il Vaticano ha già aperto relazioni|i Junehem la metteranno in musica}.",
         "{sponsor} chiede all'assemblea di stabilire cosa siano i Naguka: {un popolo|un'invasione|una specie con una sola mente e qualche milione di corpi}. {target} si oppone a tutte e tre le formulazioni."
       ]
     },
@@ -316,14 +316,14 @@
         "La delegazione dell'Orda {ulula una volta per l'ordine|è già in piedi|sta in piedi sul tavolo da quando la seduta è aperta}."
       ],
       "for": [
-        "\"MAHYEM DICE SÌ!\" grida {leader}. \"{topic} È VERO! È NERO! È FREDDO! VOTIAMO!\"",
-        "\"Gli dèi del metallo guardano {topic} e sono contenti. {Siamo contenti|L'Orda è contenta|Varg è contento, il che è più raro}.\"",
+        "\"JUNEHEM DICE SÌ!\" grida {leader}. \"{topic} È VERO! È NERO! È FREDDO! VOTIAMO!\"",
+        "\"Gli dèi del metallo guardano {topic} e sono contenti. {Siamo contenti|L'Orda è contenta|Grissnack è contento, il che è più raro}.\"",
         "\"Prendiamo {topic}. La prendiamo come abbiamo preso il pozzo di Kola. {SU|VERSO L'ALTO|SU E FUORI}.\"",
         "\"SÌ. E i tamburi dicono sì. E i tamburi non sbagliano.\""
       ],
       "against": [
         "\"NO!\" dice {leader}. \"{topic} È {TIEPIDA|MOLLE|FATTA DI CARTA}! L'ORDA SPUTA!\"",
-        "\"Mahyem ha sentito {topic} e Mahyem ha spento l'amplificatore. Non era mai successo. Votiamo no.\"",
+        "\"Junehem ha sentito {topic} e Junehem ha spento l'amplificatore. Non era mai successo. Votiamo no.\"",
         "\"Ci avete sepolti per dieci milioni di anni e adesso ci scrivete {topic}? {NO|L'Orda dice no|Ripetilo in faccia, in corridoio}.\"",
         "\"L'Orda si oppone. L'Orda spiegherà l'opposizione {fuori|dopo|con gli strumenti}.\""
       ],

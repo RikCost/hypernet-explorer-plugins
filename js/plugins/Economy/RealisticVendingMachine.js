@@ -293,7 +293,10 @@
     // An item has to be an ordinary consumable with a real price to be worth a
     // coil. Key items, the "<-- Section -->" headers and price-0 quest props
     // are never merchandise.
+    // A <Restricted> row is granted by the one system that owns it, so no coil
+    // ever holds one either.
     function isVendable(item) {
+        if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(item)) return false;
         return !!item && !!item.name && item.itypeId === 1 && item.price > 0 &&
             item.name.indexOf('<--') !== 0;
     }

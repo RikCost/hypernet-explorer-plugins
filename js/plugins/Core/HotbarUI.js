@@ -9,9 +9,14 @@
  *   - BattleSystemEnhancedHUD.js  , the acting member's carried skills
  *   - ItemSystemHotbar.js         , the party's favourite items (map + backpack)
  *
- * The widget owns the slot markup, the icon blitting, the tooltip and the
- * canvas-synced placement; each caller owns what a slot means and what a
- * click does. Styling lives in css/theme.css under `.hotbar-slot`.
+ * The widget owns the slot markup, the icon blitting, the tooltip, the name
+ * line and the canvas-synced placement; each caller owns what a slot means and
+ * what a click does. Styling lives in css/theme.css under `.hotbar-slot`.
+ *
+ * Bars built with `showLabel` carry a name line under the row: whatever slot
+ * is armed or hovered says what it is, and goes quiet again the moment it is
+ * used or left alone. The line's height is always reserved (see
+ * HotbarUI.LABEL_BLOCK_PX), so the row never jumps as names come and go.
  *
  * Placement modes:
  *   fixed  (default) , bottom-centre of the game canvas, scaled with it.
@@ -63,11 +68,19 @@
     if (el) el.style.display = 'none';
   }
 
+  // Height the name line costs the bar: the text box plus its gap above.
+  // Reserved whether or not a name is showing, so an appearing name never
+  // shoves the row it belongs to upwards. Mirrors `.hotbar-label` in theme.css.
+  const LABEL_BLOCK_PX = 24;
+
   /**
    * A row of numbered slots.
    *
    * Entries passed to render() are either null (empty slot) or:
-   *   { iconIndex, enabled, count, tooltip }
+   *   { iconIndex, enabled, count, tooltip, label }
+   *
+   * `label` is what the name line under the row says for that slot; it falls
+   * back to `tooltip` when a caller has only the one string.
    *
    * Options:
    *   id            DOM id of the root element (required, unique per bar)
@@ -76,8 +89,16 @@
    *   zIndex        stacking order of the root
    *   inline        true to let the caller mount the root itself
    *   emptyClickable  true when empty slots are meaningful targets too
+   *   showLabel     true to carry the name line under the row (and to let it
+   *                 take the hover tooltip's job, rather than say the same
+   *                 thing twice in two places)
    *   onSlotClick   (index, entry, event) on left click / tap
    *   onSlotContext (index, entry, event) on right click
+   *   onSlotDrop    (index, entry, event) when something dragged from
+   *                 elsewhere in the page (an inventory slot, say) is
+   *                 dropped on this slot. Only bars that pass this become
+   *                 drop targets at all; the battle skill bar leaves it
+   *                 unset and stays inert to drags.
    */
   class HotbarUI {
     constructor(options) {
@@ -87,23 +108,33 @@
       this.slotPx = o.slotPx || 52;
       this.gapPx = o.gapPx || 6;
       this.iconPx = o.iconPx || 32;
-      // The bars ride right on the bottom edge of the box, so they eat as
-      // little of the play area as possible.
-      this.marginBottom = o.marginBottom !== undefined ? o.marginBottom : 0;
+      // Fixed bars default to a small lift off the bottom edge so they never
+      // touch the canvas border; callers can still override per bar.
+      this.marginBottom = o.marginBottom !== undefined ? o.marginBottom : (o.inline ? 0 : 10);
       this.zIndex = o.zIndex || 352;
       this.inline = !!o.inline;
       // Bars that only fire filled slots (the battle and map ones) leave empty
       // slots looking inert; an assignment bar wants every slot to invite a click.
       this.emptyClickable = !!o.emptyClickable;
+      this.showLabel = !!o.showLabel;
       this.onSlotClick = o.onSlotClick || null;
       this.onSlotContext = o.onSlotContext || null;
+      this.onSlotDrop = o.onSlotDrop || null;
       this._root = null;
+      this._labelEl = null;
       this._entries = [];
+      this._state = {};
+      this._hoverIndex = -1;
     }
 
     /** Total width of the row, in canvas pixels. */
     width() {
       return this.slots * this.slotPx + (this.slots - 1) * this.gapPx;
+    }
+
+    /** Total height of the widget, name line included, in canvas pixels. */
+    height() {
+      return this.slotPx + (this.showLabel ? LABEL_BLOCK_PX : 0);
     }
 
     root() {
@@ -114,9 +145,10 @@
         root = document.createElement('div');
         root.id = this.id;
         root.className = 'hotbar-row';
+        // A column: the row of slots, then the name line under it.
         root.style.cssText = this.inline
-          ? 'position:relative;display:none;flex-direction:row;'
-          : 'position:fixed;display:none;flex-direction:row;transform-origin:top left;';
+          ? 'position:relative;display:none;flex-direction:column;align-items:center;'
+          : 'position:fixed;display:none;flex-direction:column;align-items:center;transform-origin:top left;';
         root.style.zIndex = String(this.zIndex);
         root.style.pointerEvents = 'auto';
         if (!this.inline) document.body.appendChild(root);
@@ -167,9 +199,42 @@
       return parts.join(',') + '|' + (state.selected != null ? state.selected : -1) + '|' + (state.active ? 1 : 0);
     }
 
+    /** The name the line under the row should be showing, '' for none. */
+    _labelText(entries, state) {
+      const st = state || {};
+      // What the pointer is on wins over what the keys have armed: the hand is
+      // asking about that slot right now.
+      const index = this._hoverIndex >= 0 ? this._hoverIndex
+        : (st.active && st.selected != null ? st.selected : -1);
+      const entry = index >= 0 ? entries[index] : null;
+      return entry ? (entry.label || entry.tooltip || '') : '';
+    }
+
+    _syncLabel() {
+      const el = this._labelEl;
+      if (!el) return;
+      const text = this._labelText(this._entries, this._state);
+      if (el.dataset.text === text) return;
+      el.dataset.text = text;
+      el.textContent = text;
+      // Hidden rather than removed: the row must not shuffle when a name goes.
+      el.style.visibility = text ? 'visible' : 'hidden';
+    }
+
     _build(entries, state) {
       const root = this.root();
       root.innerHTML = '';
+      this._labelEl = null;
+      // The slots the pointer was over are about to be thrown away, and a
+      // discarded element never sends its mouseleave: forget the hover rather
+      // than leave a name up for a slot that no longer exists. The next mouse
+      // move puts it back.
+      this._hoverIndex = -1;
+      // Not `row`: the icon blitting below already uses that name for the
+      // icon sheet's row.
+      const rowEl = document.createElement('div');
+      rowEl.className = 'hotbar-slots';
+      rowEl.style.gap = this.gapPx + 'px';
       for (let i = 0; i < this.slots; i++) {
         const entry = entries[i] || null;
         const slot = document.createElement('div');
@@ -208,11 +273,27 @@
         if (entry || (this.emptyClickable && this.onSlotClick)) slot.style.cursor = 'pointer';
         slot.addEventListener('mouseenter', () => {
           const cur = this._entries[i];
-          if (cur && cur.tooltip) this.showTooltip(cur.tooltip, slot);
+          if (this.showLabel) {
+            this._hoverIndex = i;
+            this._syncLabel();
+          } else if (cur && cur.tooltip) {
+            this.showTooltip(cur.tooltip, slot);
+          }
         });
-        slot.addEventListener('mouseleave', hideTooltip);
+        slot.addEventListener('mouseleave', () => {
+          if (this.showLabel) {
+            if (this._hoverIndex === i) this._hoverIndex = -1;
+            this._syncLabel();
+          } else {
+            hideTooltip();
+          }
+        });
         slot.addEventListener('pointerup', (e) => {
           if (e.button !== undefined && e.button !== 0) return;
+          // Whatever the click did, it answered the question the name was
+          // asking; it comes back if the pointer leaves and returns.
+          this._hoverIndex = -1;
+          this._syncLabel();
           if (this.onSlotClick) this.onSlotClick(i, this._entries[i] || null, e);
         });
         slot.addEventListener('pointerdown', (e) => {
@@ -221,7 +302,38 @@
           }
         });
 
-        root.appendChild(slot);
+        // Only a bar the caller wired a drop handler onto (the backpack's
+        // assignment strip) becomes a drop target; the battle skill bar and
+        // the map bar leave onSlotDrop unset and stay inert to drags.
+        if (this.onSlotDrop) {
+          slot.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            slot.classList.add('drag-over');
+          });
+          slot.addEventListener('dragleave', () => {
+            slot.classList.remove('drag-over');
+          });
+          slot.addEventListener('drop', (e) => {
+            e.preventDefault();
+            slot.classList.remove('drag-over');
+            this.onSlotDrop(i, this._entries[i] || null, e);
+          });
+        }
+
+        rowEl.appendChild(slot);
+      }
+      root.appendChild(rowEl);
+
+      if (this.showLabel) {
+        const label = document.createElement('div');
+        label.className = 'hotbar-label';
+        // Pinned to the row's own width so a long name is clipped rather than
+        // widening the column and dragging the slots off-centre.
+        label.style.width = this.width() + 'px';
+        label.style.visibility = 'hidden';
+        root.appendChild(label);
+        this._labelEl = label;
+        this._syncLabel();
       }
     }
 
@@ -229,10 +341,15 @@
       const root = this.root();
       const sc = canvasScale();
       const x = (Graphics.width - this.width()) / 2;
-      // Letterboxed builds centre the box inside the canvas; the bar follows
-      // the box's bottom edge, not the canvas's.
-      const yOffset = Math.floor((Graphics.height - Graphics.boxHeight) / 2);
-      const y = Graphics.height - this.slotPx - this.marginBottom - yOffset;
+      // Anchored to the canvas's own bottom edge (Graphics.height), the same
+      // frame `x` uses (Graphics.width). Graphics.boxHeight is the UI-safe
+      // area RPG Maker centres inside the canvas for letterboxed aspect
+      // ratios; ResolutionSwitcher.js resizes Graphics.height without ever
+      // touching boxHeight, so keying off boxHeight here left the bar riding
+      // a stale, much smaller frame and made marginBottom mostly a no-op.
+      // The name line sits between the slots and that edge, so the block that
+      // has to fit above the bottom is the row plus the line.
+      const y = Graphics.height - this.height() - this.marginBottom;
       root.style.left = (sc.ox + x * sc.sx) + 'px';
       root.style.top = (sc.oy + y * sc.sy) + 'px';
       // Scale from the corner the left/top above describe: the default
@@ -249,18 +366,25 @@
       const root = this.root();
       const key = this._key(list, st);
       this._entries = list;
+      this._state = st;
       if (root.dataset.key !== key) {
         root.dataset.key = key;
         this._build(list, st);
       }
+      this._syncLabel();
       root.style.display = 'flex';
-      root.style.gap = this.gapPx + 'px';
       if (!this.inline) this._position();
     }
 
     hide() {
       const root = document.getElementById(this.id);
       if (root) root.style.display = 'none';
+      // A bar that vanishes under the pointer never gets its mouseleave, and a
+      // hidden bar has nothing armed either: the line starts blank when the bar
+      // comes back, rather than flashing the name it went away on.
+      this._hoverIndex = -1;
+      this._state = {};
+      this._syncLabel();
       hideTooltip();
     }
 
@@ -269,11 +393,15 @@
       const root = document.getElementById(this.id);
       if (root && root.parentNode) root.parentNode.removeChild(root);
       this._root = null;
+      this._labelEl = null;
       this._entries = [];
+      this._state = {};
+      this._hoverIndex = -1;
       hideTooltip();
     }
   }
 
+  HotbarUI.LABEL_BLOCK_PX = LABEL_BLOCK_PX;
   HotbarUI.canvasScale = canvasScale;
   HotbarUI.hideTooltip = hideTooltip;
 

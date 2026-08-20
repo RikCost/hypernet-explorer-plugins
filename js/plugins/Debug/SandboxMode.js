@@ -520,6 +520,7 @@
         this._focusedActionIndex = 0;
         this._searchQuery = "";
         this._searchFocusActive = false;
+        this._searchOpen = false;
 
         this.createUIDOM();
     };
@@ -783,7 +784,7 @@
                     <h2 class="title" style="margin-bottom: 12px">${rightPageTitle}</h2>
                     
                     <div style="padding: 0 4px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden">
-                        <input type="text" id="sandbox-search" placeholder="Search outcomes..." value="${escapeHtml(this._searchQuery)}" oninput="SceneManager._scene.handleSearchInput(this.value)" style="width: 100%; box-sizing: border-box; padding: 8px 12px; background: var(--bg-white-translucent-25); border: 1px solid var(--border-focus-hover); border-radius: 4px; font-family: 'Lora', serif; margin-bottom: 10px; font-size: 0.914em; color: var(--text-text-alt-2); outline: none">
+                        ${this.searchFieldHTML()}
                         
                         <div class="actions-list-container" style="flex-grow: 1; overflow-y: auto; padding-right: 4px">
                             ${actionsHTML}
@@ -1046,10 +1047,12 @@
         this._focusedActionIndex = 0;
         this._listWindow.setMode(symbol);
         // Category change only swaps the right-page actions list; rebuild just
-        // that instead of the whole two-page overlay. Sync the search box value
-        // to the (now cleared) query since refreshActionsListDOM leaves it alone.
-        const searchInput = document.getElementById("sandbox-search");
-        if (searchInput) searchInput.value = "";
+        // that instead of the whole two-page overlay. The field goes back to its
+        // handle with the query it was holding, since refreshActionsListDOM
+        // leaves that corner of the page alone.
+        this._searchOpen = false;
+        const searchSlot = document.getElementById("sandbox-search-field");
+        if (searchSlot) searchSlot.outerHTML = this.searchFieldHTML();
         this.refreshActionsListDOM();
     };
 
@@ -1061,6 +1064,7 @@
         this._isWishMode = true;
         this._wishReturnToSandbox = !!fromSandbox;
         this._searchQuery = "";
+        this._searchOpen = false;
         this._searchFocusActive = false;
         this._activeLeftFocus = false;
         this._focusedActionIndex = 0;
@@ -1077,6 +1081,7 @@
             this._isWishMode = false;
             this._wishReturnToSandbox = false;
             this._searchQuery = "";
+            this._searchOpen = false;
             this._searchFocusActive = false;
             this._activeLeftFocus = true;
             this._focusedCategoryIndex = defaultCategoryIndex();
@@ -1213,6 +1218,40 @@
                 this._listWindow.select(bgIdx);
                 this.onListOk();
             }
+        }
+    };
+
+    // The outcomes search wears the same collapsed handle as every other menu
+    // (UI/MenuSearchBar.js): a magnifier at the top right of the list, and the
+    // field itself only once it has been clicked. The handle is outside both
+    // cursor lists, so the pad walks categories and outcomes and nothing else.
+    Scene_SandboxMenu.prototype.searchFieldHTML = function () {
+        const open = !!this._searchOpen || !!this._searchQuery;
+        const handle = window.MenuSearchBar
+            ? window.MenuSearchBar.toggleHTML('SceneManager._scene.toggleSearchField()', open)
+            : '';
+        const field = open
+            ? `<div class="msb-field"><input type="text" id="sandbox-search" placeholder="Search outcomes..." value="${escapeHtml(this._searchQuery)}" oninput="SceneManager._scene.handleSearchInput(this.value)" style="width: 100%; box-sizing: border-box; padding: 8px 12px; background: var(--bg-white-translucent-25); border: 1px solid var(--border-focus-hover); border-radius: 4px; font-family: 'Lora', serif; font-size: 0.914em; color: var(--text-text-alt-2); outline: none"></div>`
+            : '';
+        return `<div class="msb msb-field-only${open ? '' : ' msb-collapsed'}" id="sandbox-search-field">${field}${handle}</div>`;
+    };
+
+    // Only the field's own corner is repainted: the list under it is rebuilt
+    // separately, and only when closing actually dropped a query.
+    Scene_SandboxMenu.prototype.toggleSearchField = function () {
+        this._searchOpen = !this._searchOpen;
+        const hadQuery = !!this._searchQuery;
+        if (!this._searchOpen) this._searchQuery = "";
+        this._searchFocusActive = this._searchOpen;
+        this._focusedActionIndex = 0;
+        const slot = document.getElementById("sandbox-search-field");
+        if (slot) slot.outerHTML = this.searchFieldHTML();
+        SoundManager.playCursor();
+        if (this._searchOpen) {
+            const input = document.getElementById("sandbox-search");
+            if (input) input.focus();
+        } else if (hadQuery) {
+            this.refreshActionsListDOM();
         }
     };
 
@@ -2232,7 +2271,7 @@
 
             // ── Body parts (display-side override read by the Biologics tab) ──
             case "npc_body_remove": {
-                const parts = window.Health?.EnemyArchetypes?.[profile.archetype || "Humanoid"]?.parts;
+                const parts = window.Health?.Archetypes?.[profile.archetype || "Humanoid"]?.parts;
                 if (!parts) return false;
                 profile._bioOverride = profile._bioOverride || {};
                 const cuttable = Object.keys(parts).filter(k =>
@@ -2242,7 +2281,7 @@
                 return true;
             }
             case "npc_body_regen": {
-                const parts = window.Health?.EnemyArchetypes?.[profile.archetype || "Humanoid"]?.parts;
+                const parts = window.Health?.Archetypes?.[profile.archetype || "Humanoid"]?.parts;
                 if (!parts) return false;
                 profile._bioOverride = profile._bioOverride || {};
                 Object.keys(parts).forEach(k => { profile._bioOverride[k] = { missing: false, cond: 100 }; });

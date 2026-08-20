@@ -547,6 +547,12 @@
     Scene_Cooking.prototype = Object.create(Scene_MenuBase.prototype);
     Scene_Cooking.prototype.constructor = Scene_Cooking;
 
+    // The scene lives inside this IIFE, so it has to be published the way
+    // Scene_Blacksmithing and Scene_Alchemistry are: the main menu tile, the K
+    // hotkey and AutoIdleExplorer all reach the kitchen by the global name and
+    // without this they either threw a ReferenceError or silently did nothing.
+    window.Scene_Cooking = Scene_Cooking;
+
     Scene_Cooking.prototype.initialize = function () {
         Scene_MenuBase.prototype.initialize.call(this);
         CookingSystem.clearSelectedItems();
@@ -1284,7 +1290,7 @@
                             <div class="item-details">
                                 <span class="item-name">${window.translateText ? window.translateText(item.name) : item.name}</span>
                                 <span class="item-stats">
-                                    Cal: ${nut.hunger} | Prot: ${nut.tp} | Fat: ${nut.mp}
+                                    ${_ci18n('nutritionShort.calories')}: ${nut.hunger} | ${_ci18n('nutritionShort.protein')}: ${nut.tp} | ${_ci18n('nutritionShort.fat')}: ${nut.mp}
                                 </span>
                             </div>
                             <span class="item-qty">x${$gameParty.numItems(item)}</span>
@@ -1364,7 +1370,7 @@
                         <div class="item-icon" style="${iconStyle}"></div>
                         <div class="item-details">
                             <span class="item-name">${window.translateText ? window.translateText(item1.name) : item1.name}</span>
-                            <span class="item-stats">Cal: ${item1.meta.calories || 0} | Prot: ${item1.meta.protein || 0} | Fat: ${item1.meta.fat || 0}</span>
+                            <span class="item-stats">${_ci18n('nutritionShort.calories')}: ${item1.meta.calories || 0} | ${_ci18n('nutritionShort.protein')}: ${item1.meta.protein || 0} | ${_ci18n('nutritionShort.fat')}: ${item1.meta.fat || 0}</span>
                         </div>
                     </div>
                 `;
@@ -1387,7 +1393,7 @@
                         <div class="item-icon" style="${iconStyle}"></div>
                         <div class="item-details">
                             <span class="item-name">${window.translateText ? window.translateText(item2.name) : item2.name}</span>
-                            <span class="item-stats">Cal: ${item2.meta.calories || 0} | Prot: ${item2.meta.protein || 0} | Fat: ${item2.meta.fat || 0}</span>
+                            <span class="item-stats">${_ci18n('nutritionShort.calories')}: ${item2.meta.calories || 0} | ${_ci18n('nutritionShort.protein')}: ${item2.meta.protein || 0} | ${_ci18n('nutritionShort.fat')}: ${item2.meta.fat || 0}</span>
                         </div>
                     </div>
                 `;

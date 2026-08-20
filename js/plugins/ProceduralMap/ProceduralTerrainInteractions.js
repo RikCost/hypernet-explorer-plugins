@@ -230,6 +230,7 @@
   // ("Rockj" is a typo the AlienBase tileset carries; it is a rock like the rest.)
   assign([
     "Rock", "RockDesert", "RockIce", "RockGrass", "RockJungle", "JungleRock", "RockPath", "Rockj",
+    "RockFormation", "RockFormationDesert", "RockFormationIce",
     "WaterRock", "Pebble", "PebbleIce", "Stalagmite", "Stalactite",
     "Stalattite", "Rubble", "Wall", "WoodPillar", "Arch", "Aqueduct", "Column", "Pillar",
     "ColumnBroken", "StoneBlock", "Pyramid", "MysticStone", "Marble", "Monument",
@@ -1088,6 +1089,7 @@
     const out = [];
     for (let i = 1; i < $dataWeapons.length; i++) {
       const w = $dataWeapons[i];
+      if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(w)) continue;
       if (w && w.name && w.name.trim() !== "" && w.price > 0 && w.price <= maxPrice) out.push(w);
     }
     return randomFrom(out);
@@ -1100,6 +1102,7 @@
     const out = [];
     for (let i = 1; i < $dataWeapons.length; i++) {
       const w = $dataWeapons[i];
+      if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(w)) continue;
       if (w && w.name && w.name.trim() !== "" && w.price >= minPrice) out.push(w);
     }
     return randomFrom(out);

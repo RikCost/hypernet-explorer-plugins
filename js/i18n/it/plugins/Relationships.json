@@ -1,0 +1,64 @@
+{
+  "style": {
+    "monogamous": {
+      "name": "Monogamo",
+      "desc": "Un unico partner esclusivo alla volta."
+    },
+    "civil_union": {
+      "name": "Unione civile",
+      "desc": "Un'unione riconosciuta legalmente senza un matrimonio formale."
+    },
+    "long_distance": {
+      "name": "A distanza",
+      "desc": "Una coppia impegnata separata dalla distanza."
+    },
+    "open_relationship": {
+      "name": "Relazione aperta",
+      "desc": "Una coppia principale che ammette altri partner."
+    },
+    "polyamorous": {
+      "name": "Poliamoroso",
+      "desc": "Più relazioni amorose portate avanti apertamente e insieme."
+    },
+    "companionate": {
+      "name": "Compagni di vita",
+      "desc": "Affetto profondo e vita in comune, con poca o nessuna passione."
+    },
+    "throuple": {
+      "name": "Triade",
+      "desc": "Una relazione impegnata fra tre persone."
+    },
+    "arranged_marriage": {
+      "name": "Matrimonio combinato",
+      "desc": "Un'unione combinata dalle famiglie più che scelta dalla coppia."
+    },
+    "portland_polycule": {
+      "name": "Policula di Portland",
+      "desc": "Una vasta e fittamente interconnessa rete di partner poliamorosi, metamour e loro ex, tutti chissà come ancora in buoni rapporti."
+    },
+    "serial_monogamy": {
+      "name": "Monogamo seriale",
+      "desc": "Un partner esclusivo alla volta, in una lunga serie di relazioni."
+    },
+    "single_content": {
+      "name": "Single appagato",
+      "desc": "Non in cerca di un partner e in pace con questo."
+    },
+    "situationship": {
+      "name": "Situazione indefinita",
+      "desc": "Un legame romantico indefinito che non diventa mai davvero una relazione."
+    },
+    "friends_with_benefits": {
+      "name": "Amici di letto",
+      "desc": "Intimità informale fra amici senza impegno romantico."
+    },
+    "queerplatonic": {
+      "name": "Rapporto queerplatonico",
+      "desc": "Un legame impegnato più forte dell'amicizia ma non romantico."
+    },
+    "aromantic_solo": {
+      "name": "Aromantico solitario",
+      "desc": "Vivere per scelta senza alcun legame romantico."
+    }
+  }
+}

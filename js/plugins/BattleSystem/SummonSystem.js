@@ -431,10 +431,66 @@
  * map battles of MapBattleMode.js, where the summon takes the 4th body in the
  * follower train and is placed next to whoever called it.
  *
+ * OUTSIDE A FIGHT the same rites are answered too. What they call takes a
+ * trailing slot of its own (alongside the pet of PetFollowerSystem.js, never
+ * instead of it) and walks with the party. What holds it there is what the rite
+ * cost: every point of MP the caster paid buys a fixed number of steps, and
+ * when the last one is walked the binding lets go with a notice. A familiar is
+ * bound rather than rented and is never counted down: it stays until it falls
+ * in a fight or is sent away from the Followers page, where everything the
+ * party is walking with can be dismissed.
+ *
+ * A summon walking with the party joins any fight the party gets into, at the
+ * stature it was called with. It owes no upkeep and has no turn limit there,
+ * having been paid for on the road; if it survives the fight it goes back to
+ * walking, and if it falls it is gone from the map with it.
+ *
  * Requires the BattleSystemEnhanced suite (loaded BEFORE this plugin).
  *
  * ============================================================================
  */
+
+//-----------------------------------------------------------------------------
+// Game_SummonFollower  (global so JsonEx can reconstruct it from saves)
+//
+// The body a summon walks in outside a fight. Like the pet slot of
+// PetFollowerSystem.js it is not backed by a party member: it draws whatever
+// rite the party is currently holding on the map, and nothing at all when
+// there is none. The moment the summon steps into a fight it is the proxy
+// actor's own body that stands in the line, so this slot goes blank and the
+// two are never on the field at once.
+//-----------------------------------------------------------------------------
+function Game_SummonFollower() {
+    this.initialize(...arguments);
+}
+
+Game_SummonFollower.prototype = Object.create(Game_Follower.prototype);
+Game_SummonFollower.prototype.constructor = Game_SummonFollower;
+
+Game_SummonFollower.prototype.initialize = function (memberIndex) {
+    Game_Follower.prototype.initialize.call(this, memberIndex);
+};
+
+// Not backed by an actor.
+Game_SummonFollower.prototype.actor = function () {
+    return null;
+};
+
+Game_SummonFollower.prototype.sprite = function () {
+    const S = window.SummonSystem;
+    return (S && S.mapSummonSprite) ? S.mapSummonSprite() : null;
+};
+
+Game_SummonFollower.prototype.isVisible = function () {
+    return !!this.sprite() && $gamePlayer.followers().isVisible();
+};
+
+Game_SummonFollower.prototype.refresh = function () {
+    const look = this.isVisible() ? this.sprite() : null;
+    this.setImage(look ? look.characterName : '', look ? (look.characterIndex || 0) : 0);
+};
+
+window.Game_SummonFollower = Game_SummonFollower;
 
 (() => {
     'use strict';
@@ -589,7 +645,7 @@
             ult: { anim: 254, element: 1, scope: 'all', bonus: 'none' }
         },
         knight: {
-            archetypes: ['ArmoredKnight', 'Humanoid', 'Humanoid_Roguelite', 'Elven'],
+            archetypes: ['ArmoredKnight', 'Humanoid', 'Elven'],
             upkeep: { type: 'gold', amount: 300 },
             share: 0.95,
             ult: { anim: 1343, element: 1, scope: 'one', bonus: 'heal' }
@@ -695,6 +751,28 @@
     let lastUpkeepFrame = -1;   // dedupe: one upkeep per frame, whatever calls it
     let heldBody = null;        // the follower slot a tactical summon stands in
     let gauge = null;           // the HYPER sprite, while a summon is on the field
+
+    // ------------------------------------------------------------------
+    // Outside a fight the rite is answered all the same, and what it calls
+    // walks behind the party instead of standing in a battle line. What holds
+    // it there is what the rite cost: every point of MP the caster paid buys a
+    // number of steps beside them, and when the last one is walked the binding
+    // lets go. A familiar is the one exception and is never counted down: it is
+    // its summoner's own animal and stays until something kills it in a fight
+    // or they send it away from the Followers page.
+    //
+    // Unlike a battle summon, a map summon IS save data: it lives on
+    // $gameSystem so it survives a map change, a save and a load.
+    // ------------------------------------------------------------------
+    const MAP_STEPS_PER_MP = 4;
+    const MAP_STEPS_MIN = 40;
+    const MAP_STEPS_MAX = 2000;
+    const MAP_STEPS_NO_RITE = 120;   // an event called it, and events pay nothing
+    const RITE_WINDOW = 600;         // frames a paid rite still counts as the one being cast
+
+    let riteCost = 0;           // MP the skill now casting took from its caster
+    let riteActorId = 0;        // who paid it
+    let riteFrame = -Infinity;  // when, so a stale rite never prices a later one
 
     // ==================================================================
     // 1. HELPERS
@@ -814,8 +892,21 @@
         for (const c of candidates) {
             if (c && c.isActor && c.isActor() && c.actorId() !== summonActorId) return c;
         }
+        // Outside a fight nobody is "taking a turn", so the caster is whoever
+        // just paid for the rite from the skill menu. It matters: a familiar is
+        // measured against its own summoner and nobody else's.
+        const caster = riteCaster();
+        if (caster) return caster;
         const party = realMembers();
         return party.find(a => a.isAlive()) || party[0] || null;
+    }
+
+    // The traveller whose skill reserved the common event now running, while
+    // that is still recent enough to be the rite being cast.
+    function riteCaster() {
+        if ((Graphics.frameCount - riteFrame) > RITE_WINDOW) return null;
+        const actor = (riteActorId && $gameActors) ? $gameActors.actor(riteActorId) : null;
+        return (actor && actor.actorId() !== summonActorId) ? actor : null;
     }
 
     // Every enemy carrying one of these archetypes. Built once and cached: the
@@ -1044,6 +1135,7 @@
         const existing = record.petId ? pets.getPet(record.petId) : null;
         if (existing) {
             existing.level = spec.level;
+            linkMapSummonPet(existing.id);
             return;
         }
         const pet = pets.registerPet({
@@ -1060,6 +1152,7 @@
         });
         if (!pet) return;
         record.petId = pet.id;
+        linkMapSummonPet(pet.id);
         toast(T('Battle.summon.familiar.bound', {
             name: spec.name,
             summoner: summoner.name()
@@ -1426,11 +1519,12 @@
     // 5. SUMMONING AND DISMISSING
     // ==================================================================
 
+    // A rite cast outside a fight is never refused for being outside one: it is
+    // answered on the map instead, and what it calls walks with the party (see
+    // section 5b). Only a fight has room for exactly one summon at a time.
     function canSummonNow() {
-        if (!$gameParty || !$gameParty.inBattle()) {
-            toast(T('Battle.summon.battleOnly'), 'warning');
-            return false;
-        }
+        if (!$gameParty) return false;
+        if (!$gameParty.inBattle()) return true;
         if (active) {
             toast(T('Battle.summon.alreadyActive'), 'warning');
             return false;
@@ -1442,9 +1536,14 @@
 
     function beginSummon(spec) {
         if (!spec || !canSummonNow()) return false;
+        // No fight to stand in: the thing walks with the party instead.
+        if (!$gameParty.inBattle()) return beginMapSummon(spec);
 
         const summoner = resolveSummoner();
-        const upkeep = spec.kind && spec.kind.upkeep ? spec.kind.upkeep : null;
+        // A summon that walked into the fight beside the party is already paid
+        // for, in steps or in the bond of a familiar. It asks for nothing more
+        // and it has no clock on it: only a blade takes it off the field.
+        const upkeep = (!spec.mapBound && spec.kind && spec.kind.upkeep) ? spec.kind.upkeep : null;
 
         // The first turn is paid for up front, so a rite nobody can afford never
         // gets to act at all.
@@ -1456,7 +1555,7 @@
         active = Object.assign({}, spec, {
             summonerId: summoner ? summoner.actorId() : 0,
             upkeep,
-            turnsLeft: (spec.kind && spec.kind.turns) || 0,
+            turnsLeft: spec.mapBound ? 0 : ((spec.kind && spec.kind.turns) || 0),
             turnsServed: 0,
             hyper: 0,
             hyperMax: hyperThreshold()
@@ -1519,6 +1618,7 @@
         if (actor.setPortraitMode) actor.setPortraitMode('sprite');
         if (actor.setVnBattler) actor.setVnBattler(spec.battlerName || '');
         actor._recruitedEnemyId = spec.enemyId || 0;
+        actor._recruitedLook = null;   // the look roll of whoever held the slot before goes with them
 
         actor.recoverAll();
         actor.clearActions();
@@ -1529,6 +1629,11 @@
     function dismissSummon(reasonKey) {
         if (!active) return;
         const name = active.name;
+        // A summon that walked in from the map goes back to walking with the
+        // party when the fight simply ends (no reason given). Anything else -
+        // a blade, a broken binding, an order to go - is a real departure and
+        // takes it off the map with it.
+        const wasMapBound = !!active.mapBound;
         active = null;              // unlocks removeActor and the param overrides
         pendingLeave = null;
         pendingUltimate = false;
@@ -1550,6 +1655,9 @@
             actor.clearActions();
             actor.setup(summonActorId);   // reset the proxy to its database state
         }
+
+        if (wasMapBound && reasonKey) dismissMapSummon(null);
+        refreshFollowers();
 
         rebuildBars();
         refreshBattle();
@@ -1574,6 +1682,122 @@
             }
         }
         dismissSummon(pendingLeave);
+    }
+
+    // ==================================================================
+    // 5b. MAP SUMMONS: the rite answered outside a fight
+    //
+    // A rite cast from the skill menu calls the same creature it would call in
+    // a fight, but there is no line for it to stand in, so it takes a body of
+    // its own in the follower train (Game_SummonFollower, above) and walks with
+    // the party exactly as a pet does. The two are separate slots and both walk
+    // at once: a party can travel with its animal AND with something it called.
+    //
+    // The whole record is kept on $gameSystem, so what the party is walking
+    // with survives a map change, a save and a load. When a fight starts it is
+    // handed straight to beginSummon() and the thing the party has been
+    // travelling with is the thing that fights beside them.
+    // ==================================================================
+
+    function refreshFollowers() {
+        if ($gamePlayer && $gamePlayer.followers()) $gamePlayer.followers().refresh();
+    }
+
+    function mapSummon() {
+        return ($gameSystem && $gameSystem._mapSummon) || null;
+    }
+
+    // A familiar is bound rather than rented: it is not counted down in steps,
+    // and nothing but a death or an order sends it away.
+    function isBoundKind(spec) {
+        return !!spec && spec.kindKey === 'familiar';               // i18n-ignore: internal tag
+    }
+
+    // How far a rite carries. Every point of MP the caster paid buys the same
+    // number of steps, floored so even a free rite is worth walking with and
+    // capped so an enormous one is not effectively permanent. A rite an event
+    // cast (an event pays nothing) gets the flat allowance instead.
+    function riteSteps() {
+        if ((Graphics.frameCount - riteFrame) > RITE_WINDOW) return MAP_STEPS_NO_RITE;
+        return clamp(Math.round(riteCost * MAP_STEPS_PER_MP), MAP_STEPS_MIN, MAP_STEPS_MAX);
+    }
+
+    function beginMapSummon(spec) {
+        // Everything that answers a rite carries a walking sprite (archetypePool
+        // only ever deals creatures that have one), but a hand-written event can
+        // still name something that does not, and an empty slot would follow the
+        // party invisibly forever.
+        if (!spec.characterName) {
+            toast(T('Battle.summon.noBodyToWalk', { name: spec.name }), 'warning');
+            return false;
+        }
+        const previous = mapSummon();
+        if (previous) {
+            $gameSystem._mapSummon = null;
+            toast(T('Battle.summon.mapReplaced', { name: previous.spec.name }), 'warning');
+        }
+
+        const bound = isBoundKind(spec);
+        const steps = bound ? 0 : riteSteps();
+        // KINDS is code, not save data: only the key is written down, and the
+        // kind itself is looked up again when the thing goes into a fight.
+        const stored = Object.assign({}, spec);
+        delete stored.kind;
+
+        $gameSystem._mapSummon = {
+            spec: stored,
+            bound,
+            petId: 0,
+            stepsLeft: steps,
+            stepsTotal: steps
+        };
+        refreshFollowers();
+        toast(bound
+            ? T('Battle.summon.mapBound', { name: spec.name })
+            : T('Battle.summon.mapWalks', { name: spec.name, steps }), 'info');
+        return true;
+    }
+
+    // Send away whatever is walking with the party. `reasonKey` names the line
+    // they read; a silent dismissal (the summon stepping into a fight and dying
+    // there, which has already been announced) passes none.
+    function dismissMapSummon(reasonKey) {
+        const record = mapSummon();
+        if (!record) return false;
+        const name = record.spec.name;
+        $gameSystem._mapSummon = null;
+        refreshFollowers();
+        if (reasonKey) toast(T('Battle.summon.' + reasonKey, { name }), 'warning');
+        return true;
+    }
+
+    // A familiar already has a record in the Followers page (it is an animal
+    // somebody owns, not a spell they cast), so the two are tied together: the
+    // Pets page puts the "send away" button on that row rather than listing the
+    // same creature twice.
+    function linkMapSummonPet(petId) {
+        const record = mapSummon();
+        if (record && petId) record.petId = petId;
+    }
+
+    // One step walked. Nothing is counted while the summon is in a fight: there
+    // it is held by the battle, not by the road.
+    function walkMapSummon() {
+        const record = mapSummon();
+        if (!record || record.bound || active) return;
+        record.stepsLeft = Math.max(0, (record.stepsLeft || 0) - 1);
+        if (record.stepsLeft <= 0) dismissMapSummon('mapExpired');  // i18n-ignore: key fragment
+    }
+
+    // The fight opens and what the party has been walking with joins it, at the
+    // stature it was called with and owing nothing further.
+    function joinBattleFromMap() {
+        const record = mapSummon();
+        if (!record || active) return;
+        const spec = Object.assign({}, record.spec);
+        spec.kind = KINDS[spec.kindKey] || null;
+        spec.mapBound = true;
+        beginSummon(spec);
     }
 
     // ==================================================================
@@ -2121,6 +2345,72 @@
         flushLeave();
     };
 
+    // What a rite cost, remembered for the moment. A skill used from the menu
+    // reserves its common event and that event runs a few frames later on the
+    // map, so by the time the summon command fires there is nothing left to
+    // read the cost off: it is written down here, where the action still knows
+    // both the skill and who paid for it.
+    const _Game_Action_applyGlobal = Game_Action.prototype.applyGlobal;
+    Game_Action.prototype.applyGlobal = function () {
+        const item = this.item();
+        const subject = this.subject();
+        if (item && DataManager.isSkill(item) && subject && subject.isActor && subject.isActor()) {
+            riteCost = subject.skillMpCost ? subject.skillMpCost(item) : (item.mpCost || 0);
+            riteActorId = subject.actorId();
+            riteFrame = Graphics.frameCount;
+        }
+        _Game_Action_applyGlobal.call(this);
+    };
+
+    // The trailing slot the summon walks in, appended to the follower chain the
+    // same way PetFollowerSystem.js appends the pet's. They are two slots and
+    // the party keeps both: the animal it owns and the thing it called.
+    Game_Followers.prototype.ensureSummonFollower = function () {
+        if (!this._data) this._data = [];
+        if (this._data.some(f => f instanceof Game_SummonFollower)) return;
+        const slot = new Game_SummonFollower(this._data.length);
+        // Snap to the player so a slot created mid-map (an old save that
+        // predates it) does not flash at the map corner on its way over.
+        // $dataMap is null while DataManager builds the game objects, and
+        // locate() reads its width, so that pass is left to the map setup.
+        if (typeof $dataMap !== 'undefined' && $dataMap &&
+            typeof $gamePlayer !== 'undefined' && $gamePlayer && $gamePlayer.locate) {
+            slot.locate($gamePlayer.x, $gamePlayer.y);
+        }
+        this._data.push(slot);
+    };
+
+    const _Game_Followers_setup = Game_Followers.prototype.setup;
+    Game_Followers.prototype.setup = function () {
+        _Game_Followers_setup.call(this);
+        this.ensureSummonFollower();
+    };
+
+    // The slot has to be in _data before the spriteset builds its follower
+    // sprites, so a save made before this existed still gets one.
+    const _Spriteset_Map_createCharacters = Spriteset_Map.prototype.createCharacters;
+    Spriteset_Map.prototype.createCharacters = function () {
+        if ($gamePlayer && $gamePlayer.followers()) {
+            $gamePlayer.followers().ensureSummonFollower();
+        }
+        _Spriteset_Map_createCharacters.call(this);
+    };
+
+    // The road is what pays for a summon outside a fight.
+    const _Game_Player_increaseSteps = Game_Player.prototype.increaseSteps;
+    Game_Player.prototype.increaseSteps = function () {
+        _Game_Player_increaseSteps.call(this);
+        walkMapSummon();
+    };
+
+    // A fight opens: whatever the party is walking with steps into it. This is
+    // the one call both the battle scene and the tactical map battles make.
+    const _Game_Party_onBattleStart = Game_Party.prototype.onBattleStart;
+    Game_Party.prototype.onBattleStart = function (advantage) {
+        _Game_Party_onBattleStart.call(this, advantage);
+        joinBattleFromMap();
+    };
+
     const _BattleManager_endBattle = BattleManager.endBattle;
     BattleManager.endBattle = function (result) {
         if (active) dismissSummon(null);
@@ -2149,7 +2439,10 @@
         updateHyperGauge();
     };
 
-    // Battle-only, always: a save can never hold one, and a load never restores one.
+    // The BATTLE summon is battle-only, always: a save can never hold one and a
+    // load never restores one. The map summon is the opposite and lives on
+    // $gameSystem, so a loaded save resumes walking with whatever it was
+    // walking with; the follower train is refreshed once the map is up.
     const _Game_System_onAfterLoad = Game_System.prototype.onAfterLoad;
     Game_System.prototype.onAfterLoad = function () {
         _Game_System_onAfterLoad.call(this);
@@ -2296,6 +2589,17 @@
         beginSummon(buildRevenantSpec(entry));
     }
 
+    // Sending a summon away, wherever it happens to be standing. In a fight
+    // that is the battle line; on the road it is the follower train; a summon
+    // that walked into a fight is both at once and leaves both.
+    function dismissAnySummon() {
+        if (active) {
+            dismissSummon('dismissed');                             // i18n-ignore: key fragment
+            return true;
+        }
+        return dismissMapSummon('dismissed');                       // i18n-ignore: key fragment
+    }
+
     function register(name, fn) {
         PluginManager.registerCommand(pluginName, name, fn);
     }
@@ -2348,7 +2652,7 @@
 
     register('markNpc', () => markNpc());
     register('markEnemy', args => markEnemy(args && args.enemyId));
-    register('dismissSummon', () => dismissSummon('dismissed'));    // i18n-ignore: key fragment
+    register('dismissSummon', () => dismissAnySummon());            // i18n-ignore: none
 
     // v2 events call this with a bare enemy id. An event that names none (the
     // ConvokeRite common event does not) used to be answered with enemy 1 every
@@ -2380,6 +2684,36 @@
         reflection() { summonReflection(); },
         revenant(name) { summonRevenant(name); },
         dismiss(reasonKey) { dismissSummon(reasonKey || 'dismissed'); },  // i18n-ignore: key fragment
+        // Whatever the party is walking with, for the Followers page and for
+        // the follower slot that draws it.
+        isMapActive() { return !!mapSummon(); },
+        mapSummonSprite() {
+            // While it is fighting, the proxy actor's own body is on the field:
+            // the trailing slot must not draw a second copy of it.
+            const record = active ? null : mapSummon();
+            if (!record) return null;
+            return {
+                characterName: record.spec.characterName,
+                characterIndex: record.spec.characterIndex || 0
+            };
+        },
+        mapSummonInfo() {
+            const record = mapSummon();
+            if (!record) return null;
+            return {
+                name: record.spec.name,
+                characterName: record.spec.characterName,
+                characterIndex: record.spec.characterIndex || 0,
+                level: record.spec.level || 1,
+                kindKey: record.spec.kindKey,
+                petId: record.petId || 0,
+                bound: !!record.bound,
+                stepsLeft: record.stepsLeft || 0,
+                stepsTotal: record.stepsTotal || 0,
+                fighting: !!active
+            };
+        },
+        dismissMapSummon() { return dismissAnySummon(); },
         markNpc,
         markEnemy,
         marks() { return marks(); },

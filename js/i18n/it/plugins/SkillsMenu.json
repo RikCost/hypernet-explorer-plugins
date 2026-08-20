@@ -9,6 +9,11 @@
     "mp": "{n} MP",
     "ap": "{n} AP"
   },
+  "battle": {
+    "more": "Altro... ({count})",
+    "back": "Indietro",
+    "none": "Niente da lanciare"
+  },
   "discipline": {
     "basic": "Disciplina di base",
     "standard": "Disciplina ordinaria"

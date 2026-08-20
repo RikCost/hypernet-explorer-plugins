@@ -11,5 +11,573 @@
   "programs": "Programmi",
   "noPrograms": "Nessun programma in palinsesto.",
   "transmission": "Trasmissione",
-  "tuneInHint": "Scegli un programma qui sopra per sintonizzarti."
+  "tuneInHint": "Scegli un programma qui sopra per sintonizzarti.",
+  "channel": {
+    "history": {
+      "name": "Il Canale della Storia delle Ere"
+    },
+    "news": {
+      "name": "Telegiornale Temporale 24 su 24"
+    },
+    "chaos": {
+      "name": "Radiotelevisione del Caos"
+    },
+    "kitchen": {
+      "name": "La Cucina dell'Alchimista"
+    },
+    "kids": {
+      "name": "Il Teatrino del Viale dei Ricordi"
+    },
+    "latenight": {
+      "name": "Mezzanotte sulla Strada"
+    },
+    "faith": {
+      "name": "L'Ora della Fede Anoki"
+    },
+    "shopping": {
+      "name": "Rete Acquisti Ipercapitalista"
+    },
+    "mediahex": {
+      "name": "Mediahex"
+    }
+  },
+  "program": {
+    "history": {
+      "chronicles": {
+        "title": "Cronache dell'Era"
+      },
+      "great_debates": {
+        "title": "I Grandi Dibattiti"
+      },
+      "in_memoriam": {
+        "title": "In Memoriam"
+      },
+      "this_week_in_history": {
+        "title": "Questa Settimana nella Storia"
+      },
+      "before_the_tower": {
+        "title": "Prima della Torre"
+      },
+      "ninety_two": {
+        "title": "Novantadue: Anatomia dello Squishing"
+      },
+      "kola_file": {
+        "title": "Il Dossier Kola"
+      },
+      "pillars": {
+        "title": "Tre Pilastri, Una Tesi"
+      },
+      "deicide_hour": {
+        "title": "L'Ora del Deicidio"
+      },
+      "falklands": {
+        "title": "Okeanus: la Ricostruzione delle Falkland"
+      },
+      "road_of_ages": {
+        "title": "La Strada delle Ere"
+      },
+      "archive_reading": {
+        "title": "Sala di Lettura: l'Archivio Spiega"
+      },
+      "footnotes": {
+        "title": "Note a Piè di Pagina e Rimostranze"
+      },
+      "y2k_retrospective": {
+        "title": "Due Miliardi: Retrospettiva sull'Y2K"
+      },
+      "ask_the_archive": {
+        "title": "Chiedilo all'Archivio"
+      },
+      "long_reconstruction": {
+        "title": "La Lunga Ricostruzione"
+      },
+      "voices_from_the_loop": {
+        "title": "Voci dal Loop"
+      },
+      "kola_tapes": {
+        "title": "I Nastri di Kola"
+      },
+      "old_world_court": {
+        "title": "Atti Giudiziari del Vecchio Mondo"
+      },
+      "ledger_of_empires": {
+        "title": "Il Libro Mastro degli Imperi"
+      },
+      "antiques_parish": {
+        "title": "Antiquariato dell'Oratorio"
+      }
+    },
+    "news": {
+      "evening_desk": {
+        "title": "La Redazione della Sera"
+      },
+      "breaking": {
+        "title": "Trasmissione Straordinaria"
+      },
+      "forecast": {
+        "title": "Le Previsioni della Realtà"
+      },
+      "morning_brief": {
+        "title": "Il Punto del Mattino"
+      },
+      "boundary_watch": {
+        "title": "Osservatorio di Confine"
+      },
+      "road_report": {
+        "title": "Report del Lungo Raggio"
+      },
+      "closing_bell": {
+        "title": "La Campanella di Chiusura"
+      },
+      "docket": {
+        "title": "Il Ruolo dalla Dimensione Giudiziaria"
+      },
+      "above_the_cloud": {
+        "title": "Sopra la Nube"
+      },
+      "your_call": {
+        "title": "La Tua Chiamata, il Nostro Segnale"
+      },
+      "civil_advisory": {
+        "title": "Canale della Protezione Civile"
+      },
+      "goblin_ball": {
+        "title": "Speciale Goblin-Ball"
+      },
+      "correspondents": {
+        "title": "Inviati Speciali"
+      },
+      "night_desk": {
+        "title": "La Redazione di Notte"
+      },
+      "weekend_review": {
+        "title": "La Settimana in Rassegna"
+      },
+      "foreign_desk": {
+        "title": "La Redazione Esteri"
+      },
+      "ministerial": {
+        "title": "Il Discorso del Ministro"
+      },
+      "late_bulletin": {
+        "title": "L'Ultimo Notiziario"
+      },
+      "obituaries": {
+        "title": "I Necrologi"
+      },
+      "signal_check": {
+        "title": "Controllo Segnale"
+      },
+      "consumer_corner": {
+        "title": "Lo Spazio del Consumatore"
+      }
+    },
+    "chaos": {
+      "wheel": {
+        "title": "La Ruota della Fortuna Temporale"
+      },
+      "static_hour": {
+        "title": "L'Ora del Fruscio"
+      },
+      "prophecy_corner": {
+        "title": "L'Angolo della Profezia"
+      },
+      "panic_at_six": {
+        "title": "Panico alle Sei"
+      },
+      "bubble_house": {
+        "title": "La Casa nella Bolla"
+      },
+      "who_remembers": {
+        "title": "Chi se lo Ricorda Ancora?"
+      },
+      "signal_bleed": {
+        "title": "Trasudazione di Segnale"
+      },
+      "carrier_wave": {
+        "title": "Onda Portante"
+      },
+      "corpse_paint_countdown": {
+        "title": "La Classifica in Corpse Paint"
+      },
+      "the_reckoning": {
+        "title": "La Resa dei Conti con Gideon Graves"
+      },
+      "flatmates": {
+        "title": "Due Maghi, Una Leyline"
+      },
+      "dead_air": {
+        "title": "Vuoto d'Antenna"
+      },
+      "spin_again": {
+        "title": "Gira Ancora, per Sempre"
+      },
+      "open_lines": {
+        "title": "Linee Aperte, Porte Aperte"
+      },
+      "unofficial_emergency": {
+        "title": "Trasmissione di Emergenza (Non Ufficiale)"
+      },
+      "weather_probably": {
+        "title": "Il Meteo, Probabilmente"
+      },
+      "chef_chaos": {
+        "title": "Chef Caos"
+      },
+      "sermon_of_static": {
+        "title": "Omelia del Fruscio"
+      },
+      "chaos_docket": {
+        "title": "Il Ruolo del Caos"
+      },
+      "playtime_for_adults": {
+        "title": "Ricreazione per Adulti"
+      }
+    },
+    "kitchen": {
+      "frugal": {
+        "title": "L'Alchimista Parsimonioso"
+      },
+      "tavern_rescue": {
+        "title": "Taverne da Incubo"
+      },
+      "pixie_dust": {
+        "title": "Un Pizzico di Polvere di Fata"
+      },
+      "one_loop_meals": {
+        "title": "Piatti in un Loop Solo"
+      },
+      "verden_table": {
+        "title": "La Tavola Verden"
+      },
+      "broken_leyline_bakes": {
+        "title": "Dolci sulla Leyline Spezzata"
+      },
+      "pantry_politics": {
+        "title": "Politica della Dispensa"
+      },
+      "field_rations": {
+        "title": "Razioni da Campo del Lungo Raggio"
+      },
+      "kitchen_calls": {
+        "title": "Telefonate in Cucina"
+      },
+      "front_of_house": {
+        "title": "Il Servizio in Sala"
+      },
+      "sunday_roast": {
+        "title": "Il Lunghissimo Pranzo della Domenica"
+      },
+      "cellar_hour": {
+        "title": "L'Ora della Cantina"
+      },
+      "market_morning": {
+        "title": "Mattina al Mercato"
+      },
+      "larder_run": {
+        "title": "La Dispensa del Lungo Raggio"
+      },
+      "kitchen_court": {
+        "title": "Tribunale in Cucina"
+      },
+      "beagle_confidential": {
+        "title": "Cucine Segrete: Beagle"
+      },
+      "recipe_emergency": {
+        "title": "Ricetta di Emergenza"
+      },
+      "sermon_roast": {
+        "title": "L'Arrosto dell'Omelia"
+      },
+      "allotment_hour": {
+        "title": "L'Ora dell'Orto"
+      },
+      "two_rooms_ladder": {
+        "title": "Due Stanze e una Scala"
+      }
+    },
+    "kids": {
+      "tommy": {
+        "title": "Le Avventure nel Tempo di Tommy Temporale"
+      },
+      "rangers": {
+        "title": "I Ranger della Realtà"
+      },
+      "camelcase": {
+        "title": "La Magia del CamelCase"
+      },
+      "sockington": {
+        "title": "Il Signor Sockington Spiega le Regole"
+      },
+      "eighty_song": {
+        "title": "La Canzone degli Ottanta"
+      },
+      "first_spell": {
+        "title": "Il Tuo Primissimo Incantesimo"
+      },
+      "goblin_friends": {
+        "title": "I Goblin Sono Nostri Amici? (No)"
+      },
+      "leyline_lessons": {
+        "title": "Lezioni di Leyline"
+      },
+      "puppet_court": {
+        "title": "Il Tribunale di Sockington"
+      },
+      "storytime": {
+        "title": "Favole Prima del Reset"
+      },
+      "tower_tour": {
+        "title": "Una Torre Altissima: la Visita"
+      },
+      "pip_lost": {
+        "title": "Pip si Perde di Nuovo"
+      },
+      "cadet_lines": {
+        "title": "Filo Diretto con le Reclute Ranger"
+      },
+      "very_small_news": {
+        "title": "Il Telegiornale Piccolissimo"
+      },
+      "songs_from_the_road": {
+        "title": "Canzoni dalla Strada"
+      },
+      "sports_day": {
+        "title": "Giornata dello Sport"
+      },
+      "pets_people": {
+        "title": "Gli Animali e i Loro Umani"
+      }
+    },
+    "latenight": {
+      "insomnia": {
+        "title": "I Fascicoli dell'Insonnia"
+      },
+      "witching_hour": {
+        "title": "Trasmissione dell'Ora delle Streghe"
+      },
+      "after_dark": {
+        "title": "Controllo Realtà a Notte Fonda"
+      },
+      "long_haul_lines": {
+        "title": "Linee del Lungo Raggio"
+      },
+      "third_shift": {
+        "title": "Il Terzo Turno"
+      },
+      "under_the_asphalt": {
+        "title": "Sotto l'Asfalto"
+      },
+      "who_owns_the_dark": {
+        "title": "A Chi Appartiene il Buio"
+      },
+      "night_convoy": {
+        "title": "Convoglio Notturno"
+      },
+      "the_estate": {
+        "title": "La Tenuta di Marrow Hollow"
+      },
+      "small_hours_music": {
+        "title": "Ore Piccole, Dèi Rumorosi"
+      },
+      "sign_off": {
+        "title": "Chiusura delle Trasmissioni"
+      },
+      "unaired": {
+        "title": "Il Nastro Mai Andato in Onda"
+      },
+      "night_kitchen": {
+        "title": "Nessuno Dorme a Marrow Hollow"
+      },
+      "small_hours_desk": {
+        "title": "La Redazione delle Ore Piccole"
+      },
+      "nightschool": {
+        "title": "Scuola Serale"
+      },
+      "overnight_docket": {
+        "title": "Il Ruolo della Notte"
+      },
+      "cold_kitchen": {
+        "title": "Cucina Fredda"
+      },
+      "three_am_weather": {
+        "title": "Il Meteo delle Tre"
+      },
+      "repeats": {
+        "title": "Repliche"
+      },
+      "late_quiz": {
+        "title": "Il Quiz di Fine Serata"
+      },
+      "night_bus": {
+        "title": "L'Autobus Notturno"
+      }
+    },
+    "faith": {
+      "gospel": {
+        "title": "Il Vangelo Secondo Margaret"
+      },
+      "infinite_loops": {
+        "title": "La Chiesa dei Loop Infiniti"
+      },
+      "testimony": {
+        "title": "Testimonianze Temporali"
+      },
+      "ringtone_vespers": {
+        "title": "Vespri con Suoneria"
+      },
+      "the_stone_gods": {
+        "title": "Gli Dèi di Pietra del Deserto Bianco"
+      },
+      "from_the_citadel": {
+        "title": "Dalla Cittadella Fluttuante"
+      },
+      "the_widow_maat": {
+        "title": "Una Preghiera per la Donna Sotto la Crosta"
+      },
+      "discord_docket": {
+        "title": "La Misericordia della Discordia"
+      },
+      "open_line_to_heaven": {
+        "title": "Linea Aperta con Chiunque Risponda"
+      },
+      "seven_artefacts": {
+        "title": "Sette Artefatti, Una Notte"
+      },
+      "catechism": {
+        "title": "Catechismo per un Paradiso Ridotto"
+      },
+      "the_signal_is_the_message": {
+        "title": "Il Segnale è il Messaggio"
+      },
+      "faithful_line": {
+        "title": "La Linea dei Fedeli"
+      },
+      "sacred_science": {
+        "title": "Scienza Sacra"
+      },
+      "reduced_miracle": {
+        "title": "Il Miracolo Ridotto"
+      },
+      "quiet_heaven": {
+        "title": "Inni per un Paradiso Silenzioso"
+      },
+      "parish_notices": {
+        "title": "Avvisi Parrocchiali"
+      },
+      "the_vigil": {
+        "title": "La Veglia"
+      }
+    },
+    "shopping": {
+      "midnight_deals": {
+        "title": "Maratona di Offerte di Mezzanotte"
+      },
+      "as_seen": {
+        "title": "Visto sulla Strada"
+      },
+      "fire_sale": {
+        "title": "Svendita di Ancore di Realtà"
+      },
+      "loop_escape_hour": {
+        "title": "L'Ora della Fuga dal Loop"
+      },
+      "warehouse_appears": {
+        "title": "È Semplicemente Apparso in Magazzino"
+      },
+      "the_ticker": {
+        "title": "Il Tabellone"
+      },
+      "pyramid_hour": {
+        "title": "L'Ora delle Opportunità"
+      },
+      "bid_your_memories": {
+        "title": "Metti i Tuoi Ricordi all'Asta"
+      },
+      "customer_lines": {
+        "title": "Le Linee Clienti Sono Aperte per Sempre"
+      },
+      "unboxing_the_tower": {
+        "title": "Apriamo la Torre"
+      },
+      "clearance": {
+        "title": "Liquidazione Finale"
+      },
+      "brand_devotional": {
+        "title": "Un Devozionale per il Dio del Mercato"
+      },
+      "depot_report": {
+        "title": "Report dal Deposito"
+      },
+      "unclaimed_auction": {
+        "title": "Asta dei Beni Non Reclamati"
+      },
+      "complaints_line": {
+        "title": "La Linea Reclami"
+      },
+      "warehouse_live": {
+        "title": "Magazzino in Diretta"
+      },
+      "sponsored_weather": {
+        "title": "Il Meteo Sponsorizzato"
+      },
+      "before_the_boundary": {
+        "title": "Compralo Prima del Confine"
+      },
+      "car_boot": {
+        "title": "Il Mercatino del Baule"
+      }
+    },
+    "mediahex": {
+      "slither_news": {
+        "title": "Striscia la Notizia"
+      },
+      "wheel_fortunes": {
+        "title": "La Ruota della Fortuna"
+      },
+      "price_correct": {
+        "title": "OK, il Prezzo è Giusto"
+      },
+      "papperissima": {
+        "title": "Papperissima"
+      },
+      "sarabander": {
+        "title": "Sarabander"
+      },
+      "not_the_rye": {
+        "title": "Non è la Segale"
+      },
+      "costanza_show": {
+        "title": "Il Maurizio Costanza Show"
+      },
+      "forum_hex": {
+        "title": "Forum"
+      },
+      "lunch_served": {
+        "title": "Il Pranzo è Servito"
+      },
+      "telemick": {
+        "title": "Telemick"
+      },
+      "studio_open": {
+        "title": "Studio Aperto"
+      },
+      "beautifool": {
+        "title": "Beautifool"
+      },
+      "bim_bum_bang": {
+        "title": "Bim Bum Bang"
+      },
+      "superchart": {
+        "title": "Superclassifica Show"
+      },
+      "coalpo_grosso": {
+        "title": "Coalpo Grosso"
+      },
+      "know_the_latest": {
+        "title": "Lo Sai l'Ultima?"
+      }
+    }
+  }
 }

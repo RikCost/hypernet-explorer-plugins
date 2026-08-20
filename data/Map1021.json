@@ -2911,7 +2911,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$DogTail1",
+            "characterName": "Animals/!$Dog1",
             "direction": 8,
             "pattern": 1,
             "characterIndex": 0
@@ -3266,7 +3266,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$GoblinArtist1",
+            "characterName": "Animations/!$GoblinArtist1",
             "direction": 6,
             "pattern": 1,
             "characterIndex": 0
@@ -4063,7 +4063,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$DogTail1",
+            "characterName": "Animals/!$Dog1",
             "direction": 6,
             "pattern": 0,
             "characterIndex": 0
@@ -4211,7 +4211,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$AvianNoble1",
+            "characterName": "Animals/!$AvianNoble1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0

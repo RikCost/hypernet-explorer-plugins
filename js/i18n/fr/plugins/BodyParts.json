@@ -1,0 +1,123 @@
+{
+  "_comment": "Display text for js/db/Health/BodyParts.json, which carries only ids and keys. The root js/i18n/<lang>/bodyparts.json stays as Hendrix_Localization's English-string dictionary for text authored outside the data files.",
+  "brain": {
+    "name": "Cerveau",
+    "damage_msg": "le cerveau a subi une commotion"
+  },
+  "genitals": {
+    "name": "Organes génitaux",
+    "damage_msg": "les organes génitaux ont été blessés"
+  },
+  "head": {
+    "name": "Tête",
+    "damage_msg": "le crâne a été fracturé"
+  },
+  "heart": {
+    "name": "Coeur",
+    "damage_msg": "le coeur a été endommagé"
+  },
+  "intestines": {
+    "name": "Intestins",
+    "damage_msg": "les intestins ont été perforés"
+  },
+  "left_arm": {
+    "name": "Bras gauche",
+    "damage_msg": "le bras gauche a été blessé"
+  },
+  "left_ear": {
+    "name": "Oreille gauche",
+    "damage_msg": "l'oreille gauche bourdonne"
+  },
+  "left_eye": {
+    "name": "Oeil gauche",
+    "damage_msg": "l'oeil gauche est trop enflé pour s'ouvrir"
+  },
+  "left_fingers": {
+    "name": "Doigts gauches",
+    "damage_msg": "les doigts gauches ont été cassés"
+  },
+  "left_foot": {
+    "name": "Pied gauche",
+    "damage_msg": "le pied gauche a été blessé"
+  },
+  "left_hand": {
+    "name": "Main gauche",
+    "damage_msg": "la main gauche a été mutilée"
+  },
+  "left_leg": {
+    "name": "Jambe gauche",
+    "damage_msg": "la jambe gauche a été blessée"
+  },
+  "left_lung": {
+    "name": "Poumon gauche",
+    "damage_msg": "le poumon gauche s'est affaissé"
+  },
+  "left_toes": {
+    "name": "Orteils gauches",
+    "damage_msg": "les orteils gauches ont été écrasés"
+  },
+  "liver": {
+    "name": "Foie",
+    "damage_msg": "le foie a été lacéré"
+  },
+  "mouth": {
+    "name": "Bouche",
+    "damage_msg": "la mâchoire a été déboîtée"
+  },
+  "nose": {
+    "name": "Nez",
+    "damage_msg": "le nez a été cassé"
+  },
+  "right_arm": {
+    "name": "Bras droit",
+    "damage_msg": "le bras droit a été blessé"
+  },
+  "right_ear": {
+    "name": "Oreille droite",
+    "damage_msg": "l'oreille droite bourdonne"
+  },
+  "right_eye": {
+    "name": "Oeil droit",
+    "damage_msg": "l'oeil droit est trop enflé pour s'ouvrir"
+  },
+  "right_fingers": {
+    "name": "Doigts droits",
+    "damage_msg": "les doigts droits ont été cassés"
+  },
+  "right_foot": {
+    "name": "Pied droit",
+    "damage_msg": "le pied droit a été blessé"
+  },
+  "right_hand": {
+    "name": "Main droite",
+    "damage_msg": "la main droite a été mutilée"
+  },
+  "right_leg": {
+    "name": "Jambe droite",
+    "damage_msg": "la jambe droite a été blessée"
+  },
+  "right_lung": {
+    "name": "Poumon droit",
+    "damage_msg": "le poumon droit s'est affaissé"
+  },
+  "right_toes": {
+    "name": "Orteils droits",
+    "damage_msg": "les orteils droits ont été écrasés"
+  },
+  "spleen": {
+    "name": "Rate",
+    "damage_msg": "la rate a été rompue"
+  },
+  "stomach": {
+    "name": "Estomac",
+    "damage_msg": "l'estomac a été rompu"
+  },
+  "teeth": {
+    "name": "Dents",
+    "damage_msg": "des dents ont été arrachées"
+  },
+  "torso": {
+    "name": "Torse",
+    "damage_msg": "des côtes ont été cassées"
+  }
+}

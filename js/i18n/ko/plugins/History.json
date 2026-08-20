@@ -294,7 +294,18 @@
     "Confederation of Cantons": "",
     "City-State Council": "",
     "Crowned Republic": "",
-    "old order": ""
+    "old order": "",
+    "Divine Empire": "신성 제국",
+    "Hereditary Republic": "세습 공화국",
+    "Harmonious Empire": "조화 제국",
+    "Clerical Republic": "성직 공화국",
+    "Knesset Republic": "크네세트 공화국",
+    "Union Command": "연합 사령부",
+    "Illuminated Khanate": "광명 칸국",
+    "Solomonic Republic": "솔로몬 공화국",
+    "Petro Monarchy": "석유 군주국",
+    "Dharmic Republic": "다르마 공화국",
+    "Expansionist Republic": "팽창주의 공화국"
   },
   "fixed": {
     "1914-07": "",

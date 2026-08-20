@@ -7,5 +7,20 @@
   "databaseMissing": "[ERROR] Text database \"{id}\" not found.",
   "allDatabases": "All Databases Combined",
   "combined": "Combined: {list}",
-  "seeded": "Seeded: {list}"
+  "seeded": "Seeded: {list}",
+  "llm": {
+    "off": "Off",
+    "place": "You are in {place}.",
+    "withNpc": "{npc} is here with you.",
+    "actionTalk": "> You talk to {npc}.",
+    "actionSay": "> You say \"{text}\"",
+    "actionListen": "> You listen.",
+    "loading": "Loading the language model {model}. The first line will take a while.",
+    "ready": "Language model {model} is ready.",
+    "fetchingRuntime": "Fetching the language model runtime for this machine. This happens only once.",
+    "gotRuntime": "Language model runtime installed.",
+    "noRuntime": "No language model runtime for {platform}. Generated lines stay with the Markov chains.",
+    "thinking": "Thinking…",
+    "thinkingNpc": "{npc} is thinking…"
+  }
 }

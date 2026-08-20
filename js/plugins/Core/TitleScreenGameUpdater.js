@@ -14,9 +14,19 @@
  * @default hypernet-explorer-plugins
  *
  * @param branch
- * @text Branch
- * @desc The only branch the updater reads. Its history is the build list.
+ * @text Stable branch
+ * @desc The branch the STABLE tab reads. Its history is the build list.
  * @default main
+ *
+ * @param unstableBranch
+ * @text Unstable branch
+ * @desc The branch the UNSTABLE tab reads. Leave it empty to drop the tab.
+ * @default unstable
+ *
+ * @param fullDownloadUrl
+ * @text Full download link
+ * @desc Where a player is sent to download the whole game again after a major update.
+ * @default https://drive.google.com/file/d/1p9vo_Rj5xB0Bx3QJogpShveB2z7vbJzk/view?usp=drive_link
  *
  * @param historySize
  * @text Builds per page
@@ -50,9 +60,20 @@
  * request. Setting the flag to false turns it back into a read-only report
  * that fetches nothing and touches no local file.
  *
- * Only one branch is read (main). Its commit history is the build list: the
- * newest build sits at the top and every past build under it, so a player can
- * install the latest one or go back to any earlier build. Older builds are
+ * Two branches are offered, side by side as tabs at the head of the build list:
+ * STABLE (the branch parameter, main) and UNSTABLE (the unstableBranch
+ * parameter). Only one of them is read at a time, whichever tab is on, and the
+ * choice is remembered in save/updater/state.json so a copy stays on the
+ * channel it was put on. Each tab keeps its own build list, so switching back
+ * and forth costs nothing after the first read; switching tabs starts the same
+ * automatic update the screen runs when it opens, against the branch just
+ * chosen. Every build carries its own commit hash whichever branch lists it, so
+ * moving between the two is an ordinary switch: the files of the build picked
+ * replace whatever is here.
+ *
+ * The branch on show is read as one history. Its commit history is the build
+ * list: the newest build sits at the top and every past build under it, so a
+ * player can install the latest one or go back to any earlier build. Older builds are
  * fetched a page at a time, and only the commits published after the numbering
  * origin (the baseCommit parameter) are listed. The origin itself is the floor
  * the numbering counts from, not a build to install, so it never appears; when
@@ -60,9 +81,17 @@
  * says so.
  *
  * How an update runs
- *   Switching to a build is a single action. The player highlights it and
- *   confirms once, on the build itself or on the one button in the action list,
- *   and everything below happens without another press.
+ *   Opening the screen runs one on its own: the branch is read, the newest
+ *   build compared and, when it holds anything this copy lacks, downloaded and
+ *   applied, all without a press. Esc stops it at any point and nothing outside
+ *   save/updater/tmp has been touched until every file is down. The one thing
+ *   it will not do by itself is cross a major update (below): there it stops
+ *   after the comparison and says what has to be downloaded instead, since a
+ *   patched copy is not a whole one.
+ *
+ *   Switching to a build by hand is a single action too. The player highlights
+ *   it and confirms once, on the build itself or on the one button in the
+ *   action list, and everything below happens without another press.
  *   1. The branch history is read from the GitHub API and the player picks a
  *      build. The newest one is picked and compared on opening the screen, so
  *      the button already knows how large the switch will be.
@@ -96,12 +125,21 @@
  * Major updates
  *   A build whose commit message says "major update" anywhere, in its name or
  *   in the notes under it, is one this patching cannot fully carry. It is still
- *   installed the ordinary way, but the build list marks it, the build dossier
- *   says so and the title screen says so, all of them asking for the whole game
- *   to be downloaded again for full compatibility. The warning covers every
- *   build a switch crosses, not only the one being installed, and once a copy
- *   has taken one it keeps saying so (save/updater/state.json) until the player
- *   confirms on the updater screen that they have downloaded the game again.
+ *   installed the ordinary way when the player asks for it, but the build list
+ *   marks it, the build dossier says so and the title screen says so, all of
+ *   them asking for the whole game to be downloaded again for full
+ *   compatibility. The warning covers every build a switch crosses, not only
+ *   the one being installed, and once a copy has taken one it keeps saying so
+ *   (save/updater/state.json) until the player confirms on the updater screen
+ *   that they have downloaded the game again.
+ *
+ *   A copy sitting behind a major update is the one case a patch cannot answer,
+ *   so both screens offer the whole game instead of only naming it: a DOWNLOAD
+ *   THE FULL GAME button, on the title screen under the update notice and in
+ *   the updater's action list, opens the fullDownloadUrl parameter in the
+ *   player's own browser. The automatic update stops there rather than patching
+ *   across it on its own; the ordinary install is still offered under it for a
+ *   player who wants the files anyway.
  *
  * The build number and the build name
  *   Whichever build is installed is also a number: how many commits on the
@@ -135,6 +173,7 @@
  *   Up / Down / W / S  , move between builds or actions
  *   Right / D          , enter the action list
  *   Left / A           , back to the build list
+ *   PageUp / PageDown  , switch between the STABLE and UNSTABLE tabs
  *   OK / Enter         , switch to the highlighted build, or run the action
  *   Cancel / Esc       , back to the title (aborts a running download)
  * ============================================================================
@@ -148,11 +187,32 @@
 
     const OWNER        = String(params.owner || 'nocoldiz');
     const REPO         = String(params.repo || 'hypernet-explorer-plugins');
-    const BRANCH       = String(params.branch || 'main');
     const PAGE_SIZE    = Math.max(5, Math.min(100, Number(params.historySize) || 20));
     const CONCURRENCY  = Math.max(1, Math.min(16, Number(params.concurrency) || 5));
     // Build numbering counts the commits that came after this one.
     const BASE_COMMIT  = String(params.baseCommit || 'b2092245d04a8c27bc652cb0326dfbd2198555ea');
+
+    // The two channels the tabs offer. A branch left empty in the parameters
+    // simply has no tab, which is how a build that ships one branch only keeps
+    // the screen it always had. `stable` is always present: it is the branch
+    // every copy falls back to, including one whose saved channel no longer
+    // names a branch this build knows.
+    const CHANNELS = (function () {
+        const list = [{ key: 'stable', branch: String(params.branch || 'main') }];
+        const unstable = String(params.unstableBranch === undefined ? 'unstable' : params.unstableBranch).trim();
+        if (unstable && unstable !== list[0].branch) list.push({ key: 'unstable', branch: unstable });
+        return list;
+    })();
+    const DEFAULT_CHANNEL = 'stable';
+    function channelBranch(key) {
+        const found = CHANNELS.find(c => c.key === key);
+        return (found || CHANNELS[0]).branch;
+    }
+
+    // Where a copy that cannot be patched the rest of the way is sent. It is
+    // opened in the player's own browser, never in a window of the game's.
+    const FULL_DOWNLOAD_URL = String(params.fullDownloadUrl ||
+        'https://drive.google.com/file/d/1p9vo_Rj5xB0Bx3QJogpShveB2z7vbJzk/view?usp=drive_link'); // i18n-ignore: url
 
     const USER_AGENT  = 'HypernetExplorer-Updater';
     const TIMEOUT_MS  = 30000;
@@ -281,6 +341,36 @@
     }
 
     const isAvailable = () => !!fs;
+
+    // A plain window.open under NW.js spawns a bare in-app window with no
+    // address bar and no way back, so the shell hands the link to the browser
+    // the player actually uses. Every route is guarded: failing to open a page
+    // must never throw out of a button press.
+    function openExternal(url) {
+        if (!url) return false;
+        try {
+            if (typeof nw !== 'undefined' && nw.Shell && nw.Shell.openExternal) {
+                nw.Shell.openExternal(url);
+                return true;
+            }
+        } catch (e) { /* not running under NW.js */ }
+        try {
+            if (typeof require === 'function') {
+                const gui = require('nw.gui');
+                if (gui && gui.Shell && gui.Shell.openExternal) {
+                    gui.Shell.openExternal(url);
+                    return true;
+                }
+            }
+        } catch (e) { /* no nw.gui either */ }
+        try {
+            window.open(url, '_blank');
+            return true;
+        } catch (e) {
+            console.warn(PLUGIN_NAME + ': could not open ' + url, e);
+            return false;
+        }
+    }
 
     // =========================================================================
     // File helpers
@@ -492,9 +582,10 @@
         _state: null,
         _hashes: null,
         _plans: {},          // commit sha -> last check result
-        _commits: [],        // branch history, newest first
-        _historyPage: 0,
-        _historyEnd: false,
+        _channel: null,      // 'stable' | 'unstable', read from the state file
+        // channel key -> { commits (newest first), page, end }. Each tab keeps
+        // its own list, so going back to one already read costs no request.
+        _history: {},
         _busy: false,
         _cancelled: false,
         _restartPending: false,
@@ -505,8 +596,9 @@
 
         isAvailable,
         downloadsEnabled: () => DOWNLOADS_ENABLED,
-        branch: BRANCH,
         baseCommit: BASE_COMMIT,
+        fullDownloadUrl: () => FULL_DOWNLOAD_URL,
+        openFullDownload: () => openExternal(FULL_DOWNLOAD_URL),
         isMajorMessage,
         isMajorCommit,
 
@@ -524,8 +616,13 @@
                 // longer mean anything: drop them and let them be asked again.
                 const sameOrigin = raw.base === BASE_COMMIT;
                 if (!sameOrigin && installed) installed = Object.assign({}, installed, { build: null });
+                // A channel this build no longer offers (the unstable branch
+                // taken out of the parameters, or a name from an older file)
+                // falls back to the stable one rather than reading nothing.
+                const channel = CHANNELS.some(c => c.key === raw.channel) ? raw.channel : DEFAULT_CHANNEL;
                 this._state = {
                     base: BASE_COMMIT,
+                    channel: channel,
                     installed: installed && installed.sha ? installed : null,
                     // sha -> how many commits came after the origin commit
                     builds: (sameOrigin && raw.builds && typeof raw.builds === 'object') ? raw.builds : {}
@@ -538,6 +635,54 @@
         },
         installedInfo() {
             return this.state().installed;
+        },
+
+        // ---------------------------------------------------------------------
+        // Channels, the two branches the tabs offer
+        // ---------------------------------------------------------------------
+
+        // The tabs to draw, in the order they are drawn. One entry means the
+        // build ships a single branch and the strip has nothing to switch
+        // between, which is what the screen checks before drawing it at all.
+        channels() {
+            return CHANNELS.slice();
+        },
+        channel() {
+            if (!this._channel) this._channel = this.state().channel || DEFAULT_CHANNEL;
+            return this._channel;
+        },
+        // The branch behind the tab that is on: everything that reads GitHub
+        // asks this rather than a constant, so one switch moves the whole
+        // screen, the history, the checks and the raw file URLs alike.
+        branchName() {
+            return channelBranch(this.channel());
+        },
+
+        // Moving to the other tab. The build list, how far down it has been
+        // read and the launch answer all belong to the branch that was on, so
+        // they are put aside per channel rather than thrown away: a tab already
+        // read comes back without a request. Comparisons (`_plans`) are kept
+        // whole, since a plan is measured against a commit and the local files,
+        // neither of which cares which branch happened to list it.
+        setChannel(key) {
+            const wanted = CHANNELS.some(c => c.key === key) ? key : DEFAULT_CHANNEL;
+            if (wanted === this.channel()) return false;
+            this._channel = wanted;
+            this.state().channel = wanted;
+            this.saveState();
+            // The launch answer named the newest build of the branch that was
+            // on, so it says nothing about this one until it is asked again.
+            this._auto = null;
+            this._autoPromise = null;
+            return true;
+        },
+
+        // The list, page and end-of-history mark of one channel, made on first
+        // use so a tab never read is simply empty rather than absent.
+        _hist(key) {
+            const ch = key || this.channel();
+            if (!this._history[ch]) this._history[ch] = { commits: [], page: 0, end: false };
+            return this._history[ch];
         },
 
         // ---------------------------------------------------------------------
@@ -567,7 +712,7 @@
         // genuinely behind.
         majorAhead(sha) {
             if (!sha) return null;
-            const list = this._commits;
+            const list = this.commits();
             const target = list.findIndex(c => c.sha === sha);
             if (target < 0) {
                 const lone = this.commitInfo(sha) || this._plans[sha];
@@ -658,9 +803,30 @@
         // already names the build outright. Returns that version, so the badge
         // can show it alone instead of hanging it off the shipped number as a
         // second version ("0.2.0a - 0.0.3a").
+        //
+        // A hotfix is published under the version it fixes rather than a new
+        // one ("0.2.18a hotfix", "0.2.18a hotfix 2"), so the version alone is
+        // not the whole name and dropping the rest would leave two builds
+        // wearing the same badge. Both halves are read here and the badge says
+        // "0.2.18a hotfix 2"; before this the message matched nothing and the
+        // badge hung it off the shipped version as a second one
+        // ("0.2.3a - 0.2.18a hotfix 2"), which is the label that broke.
+        //
+        // The version itself is two fields or three ("0.04a" was published as
+        // well), and the marker may lead or follow it, with or without the
+        // punctuation a commit habit puts between them.
         _versionName(name) {
-            const m = String(name || '').trim().match(/^v?(\d+\.\d+\.\d+[A-Za-z]*)$/);
-            return m ? m[1] : null;
+            const str = String(name || '').trim();
+            const VERSION = '(\\d+\\.\\d+(?:\\.\\d+)?[A-Za-z]*)';
+            const FIX = '(hotfix|hot-fix|patch|hf)\\s*[.#]?\\s*(\\d+)?';
+            const plain = str.match(new RegExp('^v?' + VERSION + '$', 'i'));
+            if (plain) return plain[1];
+            const trailing = str.match(new RegExp('^v?' + VERSION + '\\s*[-–—:,]?\\s*' + FIX + '$', 'i'));
+            const leading  = trailing ? null
+                : str.match(new RegExp('^' + FIX + '\\s*[-–—:,]?\\s*v?' + VERSION + '$', 'i'));
+            if (trailing) return trailing[1] + ' hotfix' + (trailing[3] ? ' ' + trailing[3] : '');
+            if (leading)  return leading[3] + ' hotfix' + (leading[2] ? ' ' + leading[2] : '');
+            return null;
         },
 
         // Replaces whatever the version string says after the number with the
@@ -676,7 +842,7 @@
             const asVersion = this._versionName(name);
             if (asVersion) return asVersion;
             const str = String(text === undefined || text === null ? '' : text);
-            const head = str.match(/^\s*\d+\.\d+\.\d+[A-Za-z]*/);
+            const head = str.match(/^\s*\d+\.\d+(?:\.\d+)?[A-Za-z]*/);
             if (!head) return str;
             const trimmed = name.length > BUILD_NAME_MAX
                 ? name.slice(0, BUILD_NAME_MAX - 1).replace(/\s+$/, '') + '…'
@@ -799,13 +965,14 @@
             // The badge names the installed build, so fill the name in as soon
             // as the history that holds it is here.
             this._nameInstalled();
-            const latest = this._commits[0];
+            const latest = this.commits()[0];
             // Nothing published after the origin: the copy being played is the
             // newest there is, so there is no update to raise.
             if (!latest) {
                 this._auto = {
                     ran: true, available: false, latest: null, latestDate: null,
                     latestBuild: null, latestName: null, build: this.buildNumber(),
+                    channel: this.channel(), branch: this.branchName(),
                     files: 0, bytes: 0, error: null,
                     major: false, majorName: null,
                     majorInstalled: this.majorInstalled()
@@ -852,12 +1019,17 @@
                 // update by name rather than by number.
                 latestName: latest.message || null,
                 build: this.buildNumber(),
+                channel: this.channel(),
+                branch: this.branchName(),
                 files: plan ? plan.changed.length : 0,
                 bytes: plan ? plan.bytes : 0,
                 error: null,
-                // The update waiting is (or crosses) a major one.
+                // The update waiting is (or crosses) a major one. A patch
+                // cannot carry this copy the rest of the way, so the title
+                // screen offers the whole game instead of the download.
                 major: !!major,
                 majorName: major ? (major.message || null) : null,
+                fullDownloadUrl: FULL_DOWNLOAD_URL,
                 // This copy already took one and has not been downloaded whole.
                 majorInstalled: this.majorInstalled()
             };
@@ -871,20 +1043,21 @@
             return this._plans[sha] || null;
         },
         commits() {
-            return this._commits;
+            return this._hist().commits;
         },
         commitInfo(sha) {
-            return this._commits.find(c => c.sha === sha) || null;
+            return this.commits().find(c => c.sha === sha) || null;
         },
         isLatest(sha) {
-            return !!(this._commits.length && sha && this._commits[0].sha === sha);
+            const list = this.commits();
+            return !!(list.length && sha && list[0].sha === sha);
         },
         // How far down the history a build sits, so an older one can say so.
         indexOf(sha) {
-            return this._commits.findIndex(c => c.sha === sha);
+            return this.commits().findIndex(c => c.sha === sha);
         },
         historyExhausted() {
-            return this._historyEnd;
+            return this._hist().end;
         },
         isBusy() {
             return this._busy;
@@ -930,18 +1103,23 @@
         async loadHistory(more, onProgress) {
             const T = getT();
             const report = onProgress || function () {};
-            if (more && this._historyEnd) return this._commits;
+            // The branch is read once and held, so a switch made while a page
+            // is in flight cannot land its rows in the other tab's list.
+            const channel = this.channel();
+            const branch = this.branchName();
+            const hist = this._hist(channel);
+            if (more && hist.end) return hist.commits;
 
             this._busy = true;
             this._cancelled = false;
             try {
-                const page = more ? this._historyPage + 1 : 1;
-                report({ phase: 'history', text: fmt(T.logHistory, BRANCH) });
+                const page = more ? hist.page + 1 : 1;
+                report({ phase: 'history', text: fmt(T.logHistory, branch) });
 
                 const list = await githubApi(
-                    `/repos/${OWNER}/${REPO}/commits?sha=${encodeURIComponent(BRANCH)}&per_page=${PAGE_SIZE}&page=${page}` // i18n-ignore: api path
+                    `/repos/${OWNER}/${REPO}/commits?sha=${encodeURIComponent(branch)}&per_page=${PAGE_SIZE}&page=${page}` // i18n-ignore: api path
                 );
-                if (!Array.isArray(list)) throw new Error('branch ' + BRANCH + ' not found'); // i18n-ignore: diagnostic
+                if (!Array.isArray(list)) throw new Error('branch ' + branch + ' not found'); // i18n-ignore: diagnostic
 
                 // Only the builds published after the numbering origin are
                 // listed. The origin itself is the floor the count starts from,
@@ -964,22 +1142,22 @@
                     });
                 }
 
-                if (!more) this._commits = [];
-                const seen = new Set(this._commits.map(c => c.sha));
+                if (!more) hist.commits = [];
+                const seen = new Set(hist.commits.map(c => c.sha));
                 for (const row of rows) {
-                    if (!seen.has(row.sha)) this._commits.push(row);
+                    if (!seen.has(row.sha)) hist.commits.push(row);
                 }
-                this._historyPage = page;
-                this._historyEnd  = reachedOrigin || list.length < PAGE_SIZE;
+                hist.page = page;
+                hist.end  = reachedOrigin || list.length < PAGE_SIZE;
 
                 // An empty list is a real answer, not a failure: the branch tip
                 // is the origin itself, so nothing newer has been published.
                 report({
                     phase: 'history',
-                    text: this._commits.length ? fmt(T.logHistoryFound, this._commits.length) : T.logNoNewer,
+                    text: hist.commits.length ? fmt(T.logHistoryFound, hist.commits.length) : T.logNoNewer,
                     ratio: 1
                 });
-                return this._commits;
+                return hist.commits;
             } finally {
                 this._busy = false;
             }
@@ -1056,7 +1234,7 @@
                 this.saveHashes();
 
                 const plan = {
-                    branch: BRANCH,
+                    branch: this.branchName(),
                     sha: commit.sha,
                     date: commit.date,
                     author: commit.author,
@@ -1331,6 +1509,11 @@
                 return;
             }
 
+            // The tabs sit above both panels, so their keys work from either
+            // one rather than asking the player to walk back to the list first.
+            if (Input.isTriggered('pageup'))   { scene._stepChannel(-1); return; }
+            if (Input.isTriggered('pagedown')) { scene._stepChannel(1);  return; }
+
             if (scene._section === 'builds') {
                 const total = GameUpdater.commits().length;
                 if (isUp && scene._buildIndex > 0) {
@@ -1403,6 +1586,9 @@
             this._buildIndex   = 0;
             this._section      = 'builds';
             this._actionIndex  = 0;
+            // The automatic update runs once per opening, and once again for
+            // each tab the player switches to.
+            this._autoRan      = false;
             this._log          = [];
             this._progress     = null;
             this._status       = {};   // commit sha -> 'checking' | 'failed'
@@ -1424,18 +1610,9 @@
             UpdaterInput.activate(this);
             setTimeout(() => { if (this._container) this._container.style.opacity = '1'; }, 16);
 
-            // Read the build list straight away, then check the newest one, so
-            // the player sees an answer without pressing anything.
-            if (isAvailable() && !GameUpdater.commits().length) {
-                this._loadHistory(false, true);
-            } else if (GameUpdater.autoPending()) {
-                // The title screen's launch check is still running and has left
-                // the list here already: take its answer when it lands rather
-                // than leaving the page reading "not checked".
-                GameUpdater.autoCheck().then(() => {
-                    if (SceneManager._scene === this && this._container) this._refreshDOM();
-                });
-            }
+            // Opening the screen is itself the request for an update: the
+            // branch is read and the newest build taken, without a press.
+            this._autoStart();
         }
 
         update() {
@@ -1514,6 +1691,13 @@
                 return list;
             }
             if (!isAvailable()) return list;
+            // A copy behind a major update cannot be finished by patching, so
+            // the whole game is offered above everything else. The ordinary
+            // install stays under it: a player who wants the files anyway can
+            // still take them, warned by the note that they are only half of it.
+            if (this._majorPending() || GameUpdater.majorInstalled()) {
+                list.push({ key: 'fullDownload', label: T.actFullDownload });
+            }
             // Offered before the build list is even read, since it is the answer
             // to a notice that stands whatever the branch holds.
             if (GameUpdater.majorInstalled()) {
@@ -1580,7 +1764,91 @@
             this._runAction(DOWNLOADS_ENABLED ? 'switch' : 'check');
         }
 
-        // `thenCheck` chains the first check onto the very first listing, so
+        // Whether switching to the highlighted build would cross a major
+        // update, i.e. whether this copy is behind one. That is the state
+        // neither screen can answer with a patch.
+        _majorPending() {
+            const commit = this._selectedBuild();
+            return !!(commit && GameUpdater.majorAhead(commit.sha));
+        }
+
+        // Opening the screen IS the request for an update: the build list is
+        // read, the newest build compared, and whatever it holds that this copy
+        // lacks downloaded and applied, with no press at all. Esc stops it
+        // wherever it has got to, and nothing outside save/updater/tmp has been
+        // written until every file is down.
+        //
+        // Two things hold it back. A build already fetched and waiting only on
+        // the game closing has nothing left to download; and the title screen's
+        // own launch check may still be reading the branch, in which case this
+        // takes that answer when it lands rather than asking GitHub the same
+        // question a second time.
+        _autoStart() {
+            if (!isAvailable() || this._autoRan) return;
+            this._autoRan = true;
+            if (GameUpdater.needsRestart()) return;
+            if (GameUpdater.autoPending()) {
+                GameUpdater.autoCheck().then(() => {
+                    if (SceneManager._scene !== this || !this._container) return;
+                    this._refreshDOM();
+                    this._autoRun();
+                });
+                return;
+            }
+            // A list already read for this tab (by the launch check, or by an
+            // earlier visit to this screen) is the same list a fresh read would
+            // return, so it is used as it stands.
+            if (GameUpdater.commits().length) this._autoRun();
+            else this._loadHistory(false, () => this._autoRun());
+        }
+
+        // Take the newest build of the branch on show: compare it, then install
+        // whatever differs. The one thing this will not do is cross a major
+        // update, which _runSwitch stops at because a patched copy is not a
+        // whole one.
+        _autoRun() {
+            if (!isAvailable() || this._isWorking()) return;
+            const latest = GameUpdater.commits()[0];
+            if (!latest) return;
+            this._buildIndex = 0;
+            this._selectionChanged();
+            if (!DOWNLOADS_ENABLED) { this._runAction('check'); return; }
+            // A copy already on it falls out of the compare with nothing to
+            // fetch and is simply told so, which is the answer it came for.
+            this._runSwitch(latest.sha, true);
+        }
+
+        // -- channels --------------------------------------------------------
+
+        _stepChannel(delta) {
+            const list = GameUpdater.channels();
+            if (list.length < 2) return;
+            const at = list.findIndex(c => c.key === GameUpdater.channel());
+            const next = list[((at < 0 ? 0 : at) + delta + list.length) % list.length];
+            this._switchChannel(next.key);
+        }
+
+        // Moving to the other tab reads that branch and takes its newest build
+        // the same way opening the screen does, so choosing UNSTABLE is the
+        // whole of switching to it rather than the first half.
+        _switchChannel(key) {
+            const T = getT();
+            if (!isAvailable() || this._isWorking()) return;
+            if (!GameUpdater.setChannel(key)) return;
+            SoundManager.playOk();
+            this._buildIndex  = 0;
+            this._actionIndex = 0;
+            this._section     = 'builds';
+            this._status      = {};
+            this._progress    = null;
+            this._pushLog(fmt(T.logChannel, GameUpdater.branchName()));
+            this._refreshDOM();
+            this._autoRan = false;
+            this._autoStart();
+        }
+
+        // `thenCheck` chains what happens once the list is in: a function is
+        // called, anything else truthy runs the ordinary check. That is how
         // opening the screen answers "is there a new build" on its own.
         _loadHistory(more, thenCheck) {
             const T = getT();
@@ -1598,7 +1866,9 @@
                         this._pushLog(T.logNoMore);
                     }
                     this._refreshDOM();
-                    if (thenCheck && GameUpdater.commits().length) this._runAction('check');
+                    if (!thenCheck || !GameUpdater.commits().length) return;
+                    if (typeof thenCheck === 'function') thenCheck();
+                    else this._runAction('check');
                 })
                 .catch((err) => {
                     this._progress = null;
@@ -1627,6 +1897,15 @@
             if (key === 'history' || key === 'more') {
                 SoundManager.playOk();
                 this._loadHistory(key === 'more', key === 'history');
+                return;
+            }
+            // The one thing this screen cannot do for the player: the whole
+            // game is a download of its own, so the link goes to their browser.
+            if (key === 'fullDownload') {
+                SoundManager.playOk();
+                GameUpdater.openFullDownload();
+                this._pushLog(fmt(T.logFullDownload, GameUpdater.fullDownloadUrl()));
+                this._refreshDOM();
                 return;
             }
             if (key === 'restart') {
@@ -1687,7 +1966,14 @@
         // then download and apply whatever differs. A build already compared
         // skips straight to the download, and one that holds nothing new simply
         // reports so.
-        _runSwitch(sha) {
+        //
+        // `auto` marks the run nobody asked for by name, the one opening the
+        // screen or switching tab starts. That one stops short of installing
+        // across a major update: patching a copy over one leaves it half on the
+        // old build, and the only thing that finishes it is a download this
+        // screen cannot do. The player is told so and the buttons under the
+        // notice, the whole game first, are left for them to choose from.
+        _runSwitch(sha, auto) {
             const T = getT();
             const onProgress = (info) => this._onProgress(info);
             const finish = () => {
@@ -1717,6 +2003,12 @@
                     // Nothing to fetch: the compare has already recorded this
                     // build as the one running.
                     if (!plan || !plan.changed.length) return null;
+                    const major = auto ? GameUpdater.majorAhead(sha) : null;
+                    if (major) {
+                        this._pushLog(fmt(T.logMajorHold, major.message || shortSha(major.sha)));
+                        this._pushLog(fmt(T.logFullDownloadHint, GameUpdater.fullDownloadUrl()));
+                        return null;
+                    }
                     this._progress = 0;
                     this._refreshDOM();
                     return GameUpdater.install(sha, onProgress);
@@ -1755,6 +2047,7 @@
                             <button class="back-button" id="gu-back-btn">${T.back}</button>
                             <h2 class="title">${T.title}</h2>
                         </div>
+                        <div class="gu-tabs" id="gu-tabs"></div>
                         <div class="gu-build-header" id="gu-build-header"></div>
                         <div class="gu-build-list" id="gu-build-list"></div>
                         <div class="gu-console" id="gu-console">
@@ -1784,6 +2077,7 @@
 
             const q = (sel) => this._container.querySelector(sel);
             this._dom = {
+                tabs:     q('#gu-tabs'),
                 header:   q('#gu-build-header'),
                 hint:     q('#gu-hint'),
                 list:     q('#gu-build-list'),
@@ -1818,6 +2112,34 @@
             this._cache[key] = html;
             node.innerHTML = html;
             return true;
+        }
+
+        // The channel strip. Two branches means two tabs; a build that ships a
+        // single branch draws none at all, which is the screen as it was before
+        // the unstable one existed.
+        _tabsHTML(T) {
+            const list = GameUpdater.channels();
+            if (list.length < 2) return '';
+            const label = { stable: T.tabStable, unstable: T.tabUnstable };
+            const current = GameUpdater.channel();
+            return list.map(ch => `
+                <button class="gu-tab${ch.key === current ? ' gu-tab--active' : ''}" data-channel="${esc(ch.key)}">
+                    <span class="gu-tab-name">${esc(label[ch.key] || ch.key.toUpperCase())}</span>
+                    <span class="gu-tab-branch">${esc(ch.branch)}</span>
+                </button>`).join('');
+        }
+
+        _renderTabs(T) {
+            const html = this._tabsHTML(T);
+            if (this._setRegion('tabs', this._dom.tabs, html)) this._wireTabs();
+            if (this._dom.tabs) this._dom.tabs.style.display = html ? '' : 'none';
+        }
+
+        _wireTabs() {
+            if (!this._dom.tabs) return;
+            this._dom.tabs.querySelectorAll('.gu-tab[data-channel]').forEach(btn => {
+                btn.addEventListener('click', () => this._switchChannel(btn.dataset.channel));
+            });
         }
 
         _buildListHTML(T) {
@@ -1875,7 +2197,7 @@
                 </div>`;
 
             let specs = '';
-            specs += row(T.branch, BRANCH);
+            specs += row(T.branch, GameUpdater.branchName());
             specs += row(T.installed, installed
                 ? `${shortSha(installed.sha)}  (${formatDate(installed.at ? new Date(installed.at).toISOString() : null) || T.unknown})`
                 : T.never);
@@ -1947,6 +2269,7 @@
                 return fmt(T.majorInstalledNote,
                     GameUpdater.majorInstalledName() || shortSha(info && info.sha) || T.unknown);
             }
+            // Nothing crossed and nothing taken: the caller drops the line.
             return '';
         }
 
@@ -1968,8 +2291,13 @@
             // Installing an older build walks the game backwards; say so plainly.
             else if (position > 0 && plan && plan.changed.length) { text = T.olderNote; }
 
+            // What the unstable tab is, said on the tab itself rather than only
+            // in the help: these builds are published before they are tested.
+            const unstable = GameUpdater.channel() === 'unstable' ? T.unstableNote : '';
+
             return {
                 text: (major ? line(major, 'gu-note-line gu-note-line--major') : '') +
+                      (unstable ? line(unstable, 'gu-note-line gu-note-line--unstable') : '') +
                       (text ? line(text, 'gu-note-line') : ''),
                 bad: bad,
                 major: !!major
@@ -2017,7 +2345,8 @@
             if (!this._container) return;
             const T = getT();
             if (!this._dom) this._buildSkeleton(T);
-            this._setRegion('header', this._dom.header, fmt(T.buildsOn, BRANCH));
+            this._renderTabs(T);
+            this._setRegion('header', this._dom.header, fmt(T.buildsOn, GameUpdater.branchName()));
             this._setRegion('hint', this._dom.hint, T.hint);
             this._renderBuildList(T);
             this._renderInspect(T);

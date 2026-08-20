@@ -2,9 +2,9 @@
  "title": "Diary",
  "opening": "{names} opened this diary at {place}.",
  "empty": "Nothing written here yet.",
- "blankPage": "The rest of the page is still blank.",
  "date": {
-  "heading": "{day} {month} {year}"
+  "heading": "{day} {month} {year}",
+  "continued": "{day} {month} {year}, continued"
  },
  "month": {
   "jan": "January",
@@ -39,10 +39,11 @@
   "ours": "The diary of {names}",
   "theirs": "Kept by {names}",
   "unknown": "An unsigned diary",
-  "page": "Day {shown} of {total}"
+  "page": "Page {shown} of {total}"
  },
  "fmt": {
-  "itemCount": "{name} x{count}"
+  "itemCount": "{name} x{count}",
+  "and": "{a} and {b}"
  },
  "eris": {
   "wonderful": "wonderfully",
@@ -98,6 +99,7 @@
    "petrodemon": "Put down a petrodemon, {name}, level {level}.",
    "fled": "Ran for it at {place}.",
    "lost": "Lost the fight against {enemies}.",
+   "lostAnon": "Lost the fight at {place}.",
    "arena": "Arena: {streak} wins in a row."
   },
   "party": {
@@ -237,6 +239,9 @@
   },
   "mining": {
    "stripped": "Stripped {body} out entirely, in {system}."
+  },
+  "adventure": {
+   "done": "Answered {adventure} at {place}. {reward}"
   }
  },
  "game": {

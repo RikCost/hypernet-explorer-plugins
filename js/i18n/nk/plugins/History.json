@@ -294,7 +294,18 @@
     "Confederation of Cantons": "CONFEDERATION OF CANTONS",
     "City-State Council": "CITY-STATE COUNCIL",
     "Crowned Republic": "CROWNED REPUBLIC",
-    "old order": "OLD ORDER"
+    "old order": "OLD ORDER",
+    "Divine Empire": "DIVINE EMPIRE",
+    "Hereditary Republic": "HEREDITARY REPUBLIC",
+    "Harmonious Empire": "HARMONIOUS EMPIRE",
+    "Clerical Republic": "CLERICAL REPUBLIC",
+    "Knesset Republic": "KNESSET REPUBLIC",
+    "Union Command": "UNION COMMAND",
+    "Illuminated Khanate": "ILLUMINATED KHANATE",
+    "Solomonic Republic": "SOLOMONIC REPUBLIC",
+    "Petro Monarchy": "PETRO MONARCHY",
+    "Dharmic Republic": "DHARMIC REPUBLIC",
+    "Expansionist Republic": "EXPANSIONIST REPUBLIC"
   },
   "fixed": {
     "1914-07": "WORLD WAR ME BEGINS: ARCHDUKE FRANZ FERDINAND IZ ASSASSINATED. DA ALLIANCE SYSTEMS OF DA HYPERPOWERS TRIGGER A GLOBAL CONFLICT!",

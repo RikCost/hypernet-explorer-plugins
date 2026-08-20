@@ -180,6 +180,17 @@
     --text-cost-bad: #e36a6a;
     --text-teal: #2a9d8f;
 
+    /* === Toast notifications (Core/ParchmentToast.js) ===
+       The popup sits on the dark parchment plate, so its body text is light
+       and the rarity ladder is tuned to read against it. */
+    --toast-text: #f0e3c4;
+    --toast-text-muted: #cbb894;
+    --rarity-common: #f0e3c4;
+    --rarity-uncommon: #5fdc7c;
+    --rarity-rare: #62b0ff;
+    --rarity-epic: #c48cff;
+    --rarity-legendary: #ffab45;
+
     /* === Border Colors === */
     --border-accent-hover-translucent-5: rgba(139, 90, 43, 0.05);
     --border-border-alt-1: #5a4a2a;

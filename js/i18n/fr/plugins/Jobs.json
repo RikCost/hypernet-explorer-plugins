@@ -1,0 +1,209 @@
+{
+  "_comment": "Display text for js/db/WorkSystem/Jobs.json, which carries only ids and keys. Keyed by job id; `category` is keyed by the lowercased category id the data uses.",
+  "category": {
+    "labor": "Travail manuel",
+    "social": "Social",
+    "technical": "Technique",
+    "magical": "Magique",
+    "combat": "Combat",
+    "criminal": "Criminel",
+    "general": "Général",
+    "faction": "Faction"
+  },
+  "1": {
+    "name": "Manutentionnaire",
+    "description": "Charger et décharger des marchandises dans le quartier des entrepôts."
+  },
+  "2": {
+    "name": "Ouvrier agricole",
+    "description": "Travailler aux champs, s'occuper des cultures et du bétail."
+  },
+  "3": {
+    "name": "Barman",
+    "description": "Servir des boissons et gérer les clients à la taverne."
+  },
+  "4": {
+    "name": "Artiste de rue",
+    "description": "Divertir la foule avec des spectacles contre des pourboires."
+  },
+  "5": {
+    "name": "Assistant forgeron",
+    "description": "Aider le forgeron à fabriquer des armes et des outils."
+  },
+  "6": {
+    "name": "Collecteur de composants de sort",
+    "description": "Récolter des ingrédients magiques rares dans des zones dangereuses."
+  },
+  "7": {
+    "name": "Assistant d'alchimiste",
+    "description": "Mélanger des potions et gérer le laboratoire de l'alchimiste."
+  },
+  "8": {
+    "name": "Restaurateur d'artefacts magiques",
+    "description": "Réparer et restaurer des objets magiques endommagés."
+  },
+  "9": {
+    "name": "Garde de caravane",
+    "description": "Protéger les caravanes marchandes des bandits et des monstres."
+  },
+  "10": {
+    "name": "Combattant d'arène",
+    "description": "Combattre dans l'arène pour l'argent et la gloire."
+  },
+  "11": {
+    "name": "Exterminateur de monstres",
+    "description": "Nettoyer les zones civiles infestées de monstres."
+  },
+  "12": {
+    "name": "Pickpocket",
+    "description": "Voler des cibles sans méfiance dans les lieux bondés."
+  },
+  "13": {
+    "name": "Trajet de contrebande",
+    "description": "Transporter des marchandises illégales à travers les points de contrôle."
+  },
+  "14": {
+    "name": "Cambriolage",
+    "description": "Entrer par effraction dans un bâtiment et voler des objets de valeur."
+  },
+  "15": {
+    "name": "Mécanicien",
+    "description": "Réparer des véhicules et des machines."
+  },
+  "16": {
+    "name": "Serrurier",
+    "description": "Créer et réparer des serrures pour des clients."
+  },
+  "17": {
+    "name": "Horloger",
+    "description": "Fabriquer et réparer des mécanismes d'horlogerie complexes."
+  },
+  "18": {
+    "name": "Diplomate",
+    "description": "Négocier des accords et résoudre des conflits."
+  },
+  "19": {
+    "name": "Voyant",
+    "description": "Lire l'avenir à des clients payants."
+  },
+  "20": {
+    "name": "Coursier",
+    "description": "Livrer des colis et des messages à travers la ville."
+  },
+  "100": {
+    "name": "Inspecteur des permis",
+    "description": "Contrôler les praticiens de la magie pour vérifier leurs permis et licences."
+  },
+  "101": {
+    "name": "Superviseur de rituel",
+    "description": "S'assurer que les rituels magiques suivent exactement les protocoles de la Guilde."
+  },
+  "102": {
+    "name": "Exécuteur anti-technologie",
+    "description": "Traquer et détruire les dispositifs illégaux de fusion techno-magique."
+  },
+  "103": {
+    "name": "Ingénieur magitech",
+    "description": "Développer des fusions expérimentales entre magie et machinerie."
+  },
+  "104": {
+    "name": "Greffier de catégorisation des sorts",
+    "description": "Classer méticuleusement les sorts dans les 92 écoles distinctes."
+  },
+  "105": {
+    "name": "Censeur de documents",
+    "description": "Retirer les connaissances dangereuses des textes historiques."
+  },
+  "106": {
+    "name": "Voleur d'artefacts",
+    "description": "Voler des artefacts historiques pour la collection de la Fondation."
+  },
+  "107": {
+    "name": "Bibliothécaire silencieux",
+    "description": "Entretenir les archives et réduire définitivement au silence les usagers bruyants."
+  },
+  "108": {
+    "name": "Rédacteur de propagande",
+    "description": "Fabriquer de la désinformation convaincante pour le grand public."
+  },
+  "109": {
+    "name": "Enquêteur interne",
+    "description": "Éliminer les fuites d'informations au sein de la Fondation."
+  },
+  "110": {
+    "name": "Manipulateur de marché",
+    "description": "Manipuler les marchés pour le profit par tous les moyens nécessaires."
+  },
+  "111": {
+    "name": "Superviseur d'extraction pétrolière",
+    "description": "Maximiser l'efficacité de l'extraction pétrolière par optimisation infernale."
+  },
+  "112": {
+    "name": "Coursier à grande vitesse",
+    "description": "Livrer des colis à une vitesse folle, en vénérant la vélocité."
+  },
+  "113": {
+    "name": "Exécuteur du monopole du carburant",
+    "description": "S'assurer que les Sept Soeurs conservent un contrôle total du marché du carburant."
+  },
+  "114": {
+    "name": "Agent du chaos divin",
+    "description": "Répandre la discorde et la perturbation au nom de la Déesse du Chaos."
+  },
+  "124": {
+    "name": "Scribe du Vatican",
+    "description": "Transcrire et entretenir les textes sacrés et les documents de l'Église."
+  },
+  "127": {
+    "name": "Novice nonne de combat",
+    "description": "S'entraîner aux Écritures comme au combat en tant qu'agent des forces spéciales du Vatican."
+  },
+  "128": {
+    "name": "Veilleur de nuit",
+    "description": "Garder une propriété pendant les dangereuses heures de la nuit."
+  },
+  "129": {
+    "name": "Pêcheur",
+    "description": "Attraper du poisson pour le vendre au marché."
+  },
+  "130": {
+    "name": "Nettoyeur de rue",
+    "description": "Nettoyer les rues immondes de la ville."
+  },
+  "131": {
+    "name": "Directeur",
+    "description": "Superviser les opérations quotidiennes et tenir le personnel en main."
+  },
+  "132": {
+    "name": "Serveur",
+    "description": "Prendre les commandes et servir plats et boissons aux clients."
+  },
+  "133": {
+    "name": "Cuisinier",
+    "description": "Préparer les repas dans une cuisine sous pression."
+  },
+  "134": {
+    "name": "Conservateur de musée",
+    "description": "Cataloguer les collections et guider les visiteurs à travers le musée."
+  },
+  "135": {
+    "name": "Coach personnel",
+    "description": "Guider les clients dans leurs séances et leurs programmes de remise en forme."
+  },
+  "136": {
+    "name": "Portier",
+    "description": "Accueillir les invités et contrôler l'entrée de l'établissement."
+  },
+  "137": {
+    "name": "Videur",
+    "description": "Maintenir l'ordre et expulser les fauteurs de troubles de l'établissement."
+  },
+  "138": {
+    "name": "Maître-nageur",
+    "description": "Surveiller les baigneurs et intervenir en cas d'urgence dans l'eau."
+  },
+  "139": {
+    "name": "Avocat de la défense",
+    "description": "Plaider pour les accusés devant la Déesse de la Justice, qui ne reconnaît aucun barreau."
+  }
+}

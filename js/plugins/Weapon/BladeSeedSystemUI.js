@@ -11,7 +11,8 @@
  * Scene_BladeSeedBind:  weapon selection → preview → confirm binding
  * Scene_BladeSeedStatus: spirit info / stats / skill learning
  *
- * Navigation: ↑↓ / WASD; L1/R1 cycle right-page tabs; OK / Esc confirm/cancel.
+ * Navigation: ↑↓ / WASD; ←→ / AD cycle the weapon's look on the preview page;
+ * L1/R1 cycle right-page tabs; OK / Esc confirm/cancel.
  */
 
 (() => {
@@ -35,24 +36,27 @@
   };
 
   // ── WASD helper ───────────────────────────────────────────────────────────
+  // Four directions: up/down walk a list, left/right step the weapon's look.
+  const WASD_KEYS = { w: 'up', s: 'down', a: 'left', d: 'right' };
+  const DIRS = ['up', 'down', 'left', 'right'];
+
   function makeWasd(scene) {
+    const blank = () => DIRS.reduce((o, d) => (o[d] = false, o), {});
     const s = {
-      pending: { up: false, down: false },
-      held:    { up: false, down: false },
-      frames:  { up: 0,     down: 0 },
+      pending: blank(),
+      held:    blank(),
+      frames:  DIRS.reduce((o, d) => (o[d] = 0, o), {}),
       onDown: (e) => {
         if (e.repeat) return;
-        const k = e.key.toLowerCase();
-        if (k === 'w') { s.pending.up   = true; s.held.up   = true; e.preventDefault(); }
-        if (k === 's') { s.pending.down  = true; s.held.down  = true; e.preventDefault(); }
+        const d = WASD_KEYS[e.key.toLowerCase()];
+        if (d) { s.pending[d] = true; s.held[d] = true; e.preventDefault(); }
       },
       onUp: (e) => {
-        const k = e.key.toLowerCase();
-        if (k === 'w') { s.held.up   = false; s.frames.up   = 0; }
-        if (k === 's') { s.held.down  = false; s.frames.down  = 0; }
+        const d = WASD_KEYS[e.key.toLowerCase()];
+        if (d) { s.held[d] = false; s.frames[d] = 0; }
       },
       tick() {
-        for (const d of ['up', 'down']) {
+        for (const d of DIRS) {
           if (s.held[d]) {
             s.frames[d]++;
             const t = s.frames[d];
@@ -63,10 +67,12 @@
             s.frames[d] = 0;
           }
         }
-        const up   = Input.isRepeated('up')   || s.pending.up;
-        const down = Input.isRepeated('down') || s.pending.down;
-        s.pending.up = s.pending.down = false;
-        return { up, down };
+        const out = {};
+        for (const d of DIRS) {
+          out[d] = Input.isRepeated(d) || s.pending[d];
+          s.pending[d] = false;
+        }
+        return out;
       },
       attach() {
         window.addEventListener('keydown', s.onDown);
@@ -98,6 +104,23 @@
     } catch (_) {}
   }
 
+  // ── Weapon naming helper ──────────────────────────────────────────────────
+  // The seed weapons are ordinary database rows, so their own localised name
+  // and type label are what the panel shows: nothing is written in English here.
+  const tr = (text) => (window.translateText ? window.translateText(text) : text);
+
+  // The $dataSystem weapon-type vocabulary (Light, Sword, Heavy, ...), which
+  // the localisation layer already covers, rather than the <Category:> note,
+  // which reads "Weapons" for every one of them.
+  const weaponTypeLabel = (weapon) =>
+    tr((($dataSystem && $dataSystem.weaponTypes) || [])[weapon ? weapon.wtypeId : 0] || '');
+
+  // ── Appearance variants ───────────────────────────────────────────────────
+  // How many looks the player is offered for the weapon they are about to
+  // grow. Each is a seed the procedural model system builds from, so stepping
+  // the list redraws the whole weapon: silhouette, materials and trinkets.
+  const APPEARANCE_VARIANTS = 12;
+
   // ── Overlay teardown helper ───────────────────────────────────────────────
   function fadeRemove(el) {
     if (!el) return;
@@ -119,6 +142,9 @@
       this._spirit  = null;
       this._wt      = null;
       this._wName   = '';
+      this._looks   = [];      // candidate appearance seeds
+      this._lookIdx = 0;
+      this._preview = [];      // mounted Weapon3DPreview entries
       this._wasd    = makeWasd(this);
 
       this._wasd.attach();
@@ -134,7 +160,7 @@
 
     update() {
       Scene_MenuBase.prototype.update.call(this);
-      const { up, down } = this._wasd.tick();
+      const { up, down, left, right } = this._wasd.tick();
 
       if (this._phase === 'weaponSelect') {
         if (up   && this._selIdx > 0)                     { this._selIdx--; SoundManager.playCursor(); this._updateSel(); }
@@ -142,6 +168,8 @@
         if (Input.isTriggered('ok'))                        this._onWeaponOk();
         if (Input.isTriggered('cancel') || Input.isTriggered('escape')) this._onCancel();
       } else {
+        if (left)                                           this._stepLook(-1);
+        if (right)                                          this._stepLook(1);
         if (Input.isTriggered('ok'))                        this._onConfirm();
         if (Input.isTriggered('cancel') || Input.isTriggered('escape')) this._onBack();
       }
@@ -149,6 +177,7 @@
 
     terminate() {
       this._wasd.detach();
+      this._disposePreview();
       const el = this._el; this._el = null;
       fadeRemove(el);
       Scene_MenuBase.prototype.terminate.call(this);
@@ -161,9 +190,48 @@
       this._spirit = new BD.SpiritCompanion();
       this._spirit.addWeaponSkill(wt);
       this._wName  = BD.generateWeaponName(this._spirit.element, wt);
-      this._phase  = 'preview';
+      // A fresh set of looks for this weapon, the first of them shown at once.
+      this._looks   = [];
+      for (let i = 0; i < APPEARANCE_VARIANTS; i++) this._looks.push(BD.randomAppearanceSeed());
+      this._lookIdx = 0;
+      this._phase   = 'preview';
       SoundManager.playOk();
       this._render();
+    }
+
+    // Steps through the looks on offer. Only the 3D viewport changes, so the
+    // page is left standing and just the model is rebuilt.
+    _stepLook(step) {
+      if (this._phase !== 'preview' || !this._looks.length) return;
+      this._lookIdx = (this._lookIdx + step + this._looks.length) % this._looks.length;
+      SoundManager.playCursor();
+      this._mountWeaponPreview();
+      const counter = this._el && this._el.querySelector('#bsb-look-count');
+      if (counter) {
+        counter.textContent = T('BladeSeed.lookCount',
+          { index: this._lookIdx + 1, total: this._looks.length });
+      }
+    }
+
+    _disposePreview() {
+      if (window.Weapon3DPreview && this._preview && this._preview.length) {
+        window.Weapon3DPreview.disposeAll(this._preview);
+      }
+      this._preview = [];
+    }
+
+    // Builds the weapon under the currently selected seed and shows it turning.
+    // disposeAll swaps the canvas for a clean node (a lost WebGL context never
+    // comes back on the element it was taken from), so the element is looked up
+    // again every time rather than held on to.
+    _mountWeaponPreview() {
+      this._disposePreview();
+      if (!this._el || !window.Weapon3DPreview) return;
+      const canvas = this._el.querySelector('#bsb-weapon-3d');
+      if (!canvas) return;
+      const item = BD.previewWithAppearance(parseInt(this._wt.weaponId), this._looks[this._lookIdx]);
+      const entry = window.Weapon3DPreview.mount(canvas, item);
+      if (entry) this._preview.push(entry);
     }
 
     _onReshuffle() {
@@ -179,19 +247,21 @@
       if (this._phase !== 'preview') return;
       const wid  = parseInt(this._wt.weaponId);
       const sp   = this._spirit;
+      const look = this._looks[this._lookIdx] || 0;
       $gameSystem._bladeSeed = {
         bound: true, weaponName: this._wName, weaponId: wid,
-        weaponTypeId: $dataWeapons[wid].wtypeId, spirit: sp,
+        weaponTypeId: $dataWeapons[wid].wtypeId, appearanceSeed: look, spirit: sp,
         level: 1, experience: 0, learningPoints: 0,
         originalWeaponName: $dataWeapons[wid].name,
       };
+      // The look the player settled on is what the weapon is grown as, here and
+      // in every session after this one.
+      BD.applyAppearance(wid, look);
       $gameSystem._bladeSeedWeaponData = Object.assign(
         JSON.parse(JSON.stringify($dataWeapons[wid])), { name: this._wName });
       $gameParty.gainItem($dataWeapons[wid], 1);
       const actor = $gameActors.actor(1);
       actor.changeEquip(0, $dataWeapons[wid]);
-      actor._sealedSlots = actor._sealedSlots || {};
-      actor._sealedSlots[0] = true;
       actor._bladeSeedBonus = {
         0: sp.currentStats.mhp, 1: sp.currentStats.mmp, 2: sp.currentStats.atk,
         3: sp.currentStats.def, 4: sp.currentStats.mat, 5: sp.currentStats.mdf,
@@ -220,6 +290,9 @@
 
     _render() {
       if (!this._el) return;
+      // The page is rebuilt from scratch below, so any viewport standing on it
+      // has to give its WebGL context back before its canvas is thrown away.
+      this._disposePreview();
 
       if (this._phase === 'weaponSelect') {
         this._el.innerHTML = `
@@ -229,7 +302,7 @@
                 <button class="back-button">← ${T('BladeSeed.cancel')}</button>
                 <h2 class="title">${T('BladeSeed.forgeTitle')}</h2>
               </div>
-              <div class="bs-warning">${T('BladeSeed.irreversible')}</div>
+              <div class="bs-warning">${T('BladeSeed.bindNotice')}</div>
               <div class="bs-weapon-list">
                 ${this._weapons.map((wt, i) => {
                   const sel  = i === this._selIdx ? ' selected' : '';
@@ -237,7 +310,7 @@
                   const skill = wt.startingSkill ? $dataSkills[wt.startingSkill] : null;
                   return `<div class="item-slot${sel}" data-idx="${i}">
                     <div class="item-slot-info">
-                      <span class="item-slot-name">${wt.name}</span>
+                      <span class="item-slot-name">${wd ? tr(wd.name) : weaponTypeLabel(wd)}</span>
                       <span class="item-slot-meta">
                         ${wd ? `<span class="item-slot-count">ATK +${wd.params[2]}</span>` : ''}
                         ${skill ? `<span class="bs-skill-hint">${skill.name}</span>` : ''}
@@ -269,6 +342,7 @@
         const elClr   = _EL_CLR[sp.element] || 'var(--text-primary-hover)';
         const learned = sp.getLearnedSkills();
         const st      = sp.currentStats;
+        const wd      = $dataWeapons[parseInt(this._wt.weaponId)];
 
         this._el.innerHTML = `
           <div class="book-spread">
@@ -278,10 +352,21 @@
                 <h2 class="title bs-weapon-title">${this._wName}</h2>
                 <span class="bs-el-badge" style="color:${elClr}">${BD.elementNames[sp.element]}</span>
               </div>
+              <div class="bs-look">
+                <canvas id="bsb-weapon-3d" class="bs-look-canvas"></canvas>
+                <div class="bs-look-bar">
+                  <button class="bs-look-arrow" id="bsb-look-prev">◀</button>
+                  <span class="bs-look-label">
+                    ${T('BladeSeed.appearance')}
+                    <span id="bsb-look-count" class="bs-look-count">${T('BladeSeed.lookCount', { index: this._lookIdx + 1, total: this._looks.length })}</span>
+                  </span>
+                  <button class="bs-look-arrow" id="bsb-look-next">▶</button>
+                </div>
+              </div>
               <div class="inspect-section-title">${T('BladeSeed.weapon')}</div>
               <div class="inspect-spec-row">
                 <span class="inspect-spec-label">${T('BladeSeed.type')}</span>
-                <span class="inspect-spec-value">${this._wt.name}</span>
+                <span class="inspect-spec-value">${weaponTypeLabel(wd)}</span>
               </div>
               <div class="inspect-spec-row">
                 <span class="inspect-spec-label">${T('BladeSeed.element')}</span>
@@ -328,6 +413,9 @@
           </div>`;
 
         drawSpiritImage(this._el.querySelector('#bsb-spirit-img'), sp);
+        this._mountWeaponPreview();
+        this._el.querySelector('#bsb-look-prev')?.addEventListener('mousedown', () => this._stepLook(-1));
+        this._el.querySelector('#bsb-look-next')?.addEventListener('mousedown', () => this._stepLook(1));
         this._el.querySelector('#bsb-back')?.addEventListener('mousedown', () => this._onBack());
         this._el.querySelector('#bsb-confirm')?.addEventListener('mousedown', () => this._onConfirm());
         this._el.querySelector('#bsb-reshuffle')?.addEventListener('mousedown', () => this._onReshuffle());

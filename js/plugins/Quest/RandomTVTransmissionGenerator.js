@@ -134,111 +134,111 @@
     // The prose below lives in js/i18n/<lang>/conversations/. The banks are lazy
     // views onto those files, re-resolved when the language changes, so nothing
     // is frozen at load time and this file holds keys rather than words.
-    let _tvLegacyBankLang = null;
-    const _tvLegacyBankCache = new Map();
-    function tvLegacyBank(key) {
+    let _tvGenBankLang = null;
+    const _tvGenBankCache = new Map();
+    function tvGenBank(key) {
         const lang = T.language();
-        if (lang !== _tvLegacyBankLang) { _tvLegacyBankLang = lang; _tvLegacyBankCache.clear(); }
-        if (!_tvLegacyBankCache.has(key)) _tvLegacyBankCache.set(key, T.obj(key));
-        return _tvLegacyBankCache.get(key);
+        if (lang !== _tvGenBankLang) { _tvGenBankLang = lang; _tvGenBankCache.clear(); }
+        if (!_tvGenBankCache.has(key)) _tvGenBankCache.set(key, T.obj(key));
+        return _tvGenBankCache.get(key);
     }
 
-    const tvChannels = () => tvLegacyBank('TvLegacy.tvChannels');
+    const tvChannels = () => tvGenBank('TvGen.tvChannels');
     
-    const newsAnchors = () => tvLegacyBank('TvLegacy.newsAnchors');
+    const newsAnchors = () => tvGenBank('TvGen.newsAnchors');
     
-    const commercialProducts = () => tvLegacyBank('TvLegacy.commercialProducts');
+    const commercialProducts = () => tvGenBank('TvGen.commercialProducts');
     
-    const weatherLocations = () => tvLegacyBank('TvLegacy.weatherLocations');
+    const weatherLocations = () => tvGenBank('TvGen.weatherLocations');
     
-    const celebrities = () => tvLegacyBank('TvLegacy.celebrities');
+    const celebrities = () => tvGenBank('TvGen.celebrities');
     
-    const gameShows = () => tvLegacyBank('TvLegacy.gameShows');
+    const gameShows = () => tvGenBank('TvGen.gameShows');
     
-    const cookingShows = () => tvLegacyBank('TvLegacy.cookingShows');
+    const cookingShows = () => tvGenBank('TvGen.cookingShows');
     
-    const documentaries = () => tvLegacyBank('TvLegacy.documentaries');
+    const documentaries = () => tvGenBank('TvGen.documentaries');
     
-    const educationalShows = () => tvLegacyBank('TvLegacy.educationalShows');
+    const educationalShows = () => tvGenBank('TvGen.educationalShows');
     
-    const programTypes = () => tvLegacyBank('TvLegacy.programTypes');
+    const programTypes = () => tvGenBank('TvGen.programTypes');
     
     // Extended content arrays...
-    const newsTemplates = () => tvLegacyBank('TvLegacy.newsTemplates');
+    const newsTemplates = () => tvGenBank('TvGen.newsTemplates');
     
-    const companies = () => tvLegacyBank('TvLegacy.companies');
-    const documents = () => tvLegacyBank('TvLegacy.documents');
-    const security = () => tvLegacyBank('TvLegacy.security');
-    const research = () => tvLegacyBank('TvLegacy.research');
-    const criticism = () => tvLegacyBank('TvLegacy.criticism');
-    const models = () => tvLegacyBank('TvLegacy.models');
-    const anomalies = () => tvLegacyBank('TvLegacy.anomalies');
-    const emotions = () => tvLegacyBank('TvLegacy.emotions');
-    const services = () => tvLegacyBank('TvLegacy.services');
-    const victims = () => tvLegacyBank('TvLegacy.victims');
+    const companies = () => tvGenBank('TvGen.companies');
+    const documents = () => tvGenBank('TvGen.documents');
+    const security = () => tvGenBank('TvGen.security');
+    const research = () => tvGenBank('TvGen.research');
+    const criticism = () => tvGenBank('TvGen.criticism');
+    const models = () => tvGenBank('TvGen.models');
+    const anomalies = () => tvGenBank('TvGen.anomalies');
+    const emotions = () => tvGenBank('TvGen.emotions');
+    const services = () => tvGenBank('TvGen.services');
+    const victims = () => tvGenBank('TvGen.victims');
     
     // Extended weather templates with more variables
-    const weatherTemplates = () => tvLegacyBank('TvLegacy.weatherTemplates');
+    const weatherTemplates = () => tvGenBank('TvGen.weatherTemplates');
     
-    const weather_types = () => tvLegacyBank('TvLegacy.weather_types');
-    const precipitations = () => tvLegacyBank('TvLegacy.precipitations');
-    const directions = () => tvLegacyBank('TvLegacy.directions');
-    const stabilities = () => tvLegacyBank('TvLegacy.stabilities');
-    const intensities = () => tvLegacyBank('TvLegacy.intensities');
-    const hazards = () => tvLegacyBank('TvLegacy.hazards');
-    const time_references = () => tvLegacyBank('TvLegacy.time_references');
+    const weather_types = () => tvGenBank('TvGen.weather_types');
+    const precipitations = () => tvGenBank('TvGen.precipitations');
+    const directions = () => tvGenBank('TvGen.directions');
+    const stabilities = () => tvGenBank('TvGen.stabilities');
+    const intensities = () => tvGenBank('TvGen.intensities');
+    const hazards = () => tvGenBank('TvGen.hazards');
+    const time_references = () => tvGenBank('TvGen.time_references');
     
     // Commercial templates with more variety
-    const commercialTemplates = () => tvLegacyBank('TvLegacy.commercialTemplates');
+    const commercialTemplates = () => tvGenBank('TvGen.commercialTemplates');
     
-    const problems = () => tvLegacyBank('TvLegacy.problems');
-    const side_effects = () => tvLegacyBank('TvLegacy.side_effects');
-    const phone_numbers = () => tvLegacyBank('TvLegacy.phone_numbers');
-    const impossible_things = () => tvLegacyBank('TvLegacy.impossible_things');
-    const actions = () => tvLegacyBank('TvLegacy.actions');
+    const problems = () => tvGenBank('TvGen.problems');
+    const side_effects = () => tvGenBank('TvGen.side_effects');
+    const phone_numbers = () => tvGenBank('TvGen.phone_numbers');
+    const impossible_things = () => tvGenBank('TvGen.impossible_things');
+    const actions = () => tvGenBank('TvGen.actions');
     
     // Talk show templates with more dialogue
-    const talkShowTemplates = () => tvLegacyBank('TvLegacy.talkShowTemplates');
+    const talkShowTemplates = () => tvGenBank('TvGen.talkShowTemplates');
     
-    const show_names = () => tvLegacyBank('TvLegacy.show_names');
+    const show_names = () => tvGenBank('TvGen.show_names');
     
-    const claims = () => tvLegacyBank('TvLegacy.claims');
+    const claims = () => tvGenBank('TvGen.claims');
     
     // Emergency broadcasts with more urgency
-    const emergencyTemplates = () => tvLegacyBank('TvLegacy.emergencyTemplates');
+    const emergencyTemplates = () => tvGenBank('TvGen.emergencyTemplates');
     
-    const violation_types = () => tvLegacyBank('TvLegacy.violation_types');
-    const consequences = () => tvLegacyBank('TvLegacy.consequences');
-    const threat_types = () => tvLegacyBank('TvLegacy.threat_types');
-    const disease_types = () => tvLegacyBank('TvLegacy.disease_types');
+    const violation_types = () => tvGenBank('TvGen.violation_types');
+    const consequences = () => tvGenBank('TvGen.consequences');
+    const threat_types = () => tvGenBank('TvGen.threat_types');
+    const disease_types = () => tvGenBank('TvGen.disease_types');
     
     // Memory fragments with more variety
-    const memoryFragments = () => tvLegacyBank('TvLegacy.memoryFragments');
+    const memoryFragments = () => tvGenBank('TvGen.memoryFragments');
     
     // Prophetic content with more mystery
-    const prophecies = () => tvLegacyBank('TvLegacy.prophecies');
+    const prophecies = () => tvGenBank('TvGen.prophecies');
     
     // Static content with more variation
-    const staticContent = () => tvLegacyBank('TvLegacy.staticContent');
+    const staticContent = () => tvGenBank('TvGen.staticContent');
     
     // Program content with more complexity
-    const soapOperaTemplates = () => tvLegacyBank('TvLegacy.soapOperaTemplates');
+    const soapOperaTemplates = () => tvGenBank('TvGen.soapOperaTemplates');
     
-    const soap_names = () => tvLegacyBank('TvLegacy.soap_names');
+    const soap_names = () => tvGenBank('TvGen.soap_names');
     
-    const children_show_templates = () => tvLegacyBank('TvLegacy.children_show_templates');
+    const children_show_templates = () => tvGenBank('TvGen.children_show_templates');
     
-    const kids_shows = () => tvLegacyBank('TvLegacy.kids_shows');
+    const kids_shows = () => tvGenBank('TvGen.kids_shows');
     
     // Religious/cult programming
-    const religiousTemplates = () => tvLegacyBank('TvLegacy.religiousTemplates');
+    const religiousTemplates = () => tvGenBank('TvGen.religiousTemplates');
     
-    const religious_shows = () => tvLegacyBank('TvLegacy.religious_shows');
+    const religious_shows = () => tvGenBank('TvGen.religious_shows');
     
     // Late night programming
-    const lateNightTemplates = () => tvLegacyBank('TvLegacy.lateNightTemplates');
+    const lateNightTemplates = () => tvGenBank('TvGen.lateNightTemplates');
     
-    const late_shows = () => tvLegacyBank('TvLegacy.late_shows');
+    const late_shows = () => tvGenBank('TvGen.late_shows');
     // ==================================
     // === LANGUAGE CONTENT MANAGER ===
     // ==================================
@@ -349,7 +349,7 @@
     // is the one thing a procedural broadcast must not do. Banks are namespaced
     // per generator because the same token means different things in different
     // formats ({action} in a weather bulletin is not {action} in an emergency).
-    const GEN = () => tvLegacyBank('TvGen');
+    const GEN = () => tvGenBank('TvGen');
 
     const generator = {
         news: () => {
@@ -729,8 +729,14 @@
     })();
 
     function tvChannelById(id) { return loadTVDB().channels.find(c => c.id === id) || null; }
-    function tvChannelName(ch) { return ch.name; }
-    function tvProgramTitle(p) { return p.title; }
+    // The schedule data carries i18n keys, not titles (see HypernetTVGuide).
+    function tvText(value) {
+        if (!value) return '';
+        const key = String(value);
+        return (typeof T === 'function' && T.has && T.has(key)) ? T(key) : key;
+    }
+    function tvChannelName(ch) { return ch ? tvText(ch.name) : ''; }
+    function tvProgramTitle(p) { return p ? tvText(p.title) : ''; }
     function tvProgramById(ch, id) { return (ch.programs || []).find(p => p.id === id) || null; }
 
     function tvDayNames() {
@@ -1019,10 +1025,13 @@
         su: { il: "sul", lo: "sullo", la: "sulla", i: "sui", gli: "sugli", le: "sulle", "l'": "sull'" }
     };
     function tvFixItalianArticles(text) {
-        return String(text).replace(/\b(di|a|da|in|su)\s+(il|lo|la|i|gli|le|l')(?=\s|$|[a-zàèéìòù])/gi,
-            (m, prep, art) => {
+        // The article has to end where the word ends, or "di lavoro" reads as
+        // "di" + "la" and goes out as "dellavoro". Only the elided "l'" may run
+        // straight into its noun.
+        return String(text).replace(/\b(di|a|da|in|su)\s+(?:(il|lo|la|i|gli|le)\b|(l')(?=[a-zàèéìòùA-ZÀÈÉÌÒÙ]))/gi,
+            (m, prep, art, elided) => {
                 const table = TV_IT_PREPOSITIONS[prep.toLowerCase()];
-                const joined = table && table[art.toLowerCase()];
+                const joined = table && table[(art || elided).toLowerCase()];
                 if (!joined) return m;
                 // "Da la" opening a sentence has to come back as "Dalla".
                 return (prep[0] === prep[0].toUpperCase())

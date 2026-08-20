@@ -13,11 +13,10 @@
 * to track all encountered enemies.
 *
 * Left Page: Discovered creatures pockets with walking character animations.
-* Right Page: Highly detailed creature portfolios with 4 custom alchemical tabs:
-*   - Info: High-res battler portrait and description.
-*   - Combat: D&D stats (STR, CON, etc.) and active element weaknesses/resists.
+* Right Page: Highly detailed creature portfolios with 3 custom alchemical tabs:
+*   - Lexicon: portrait, description, D&D stats and element weaknesses/resists.
 *   - Ecology: Biomes, time of day, blood types, weights, speeds, and abilities.
-*   - Spoils: Harvester drops, percentage drop rates, and combat skills.
+*   - Extraction: Harvester drops, percentage drop rates, and combat skills.
 *
 * Fully supports keyboard, mouse, and gamepad arrow navigation.
 * Keeps original AsciiMode compatibility in tact.
@@ -282,7 +281,7 @@
 
             this._monsterList = [];
             this._selectedIndex = 0;
-            this._activeTab = 0; // 0: Info, 1: Combat, 2: Ecology, 3: Drops
+            this._activeTab = 0; // 0: Lexicon, 1: Ecology, 2: Drops
             this._activeArea = 'list'; // 'list' or 'tabs'
             this._pageTab = 0; // Left-page pockets: 0 = Earth, 1 = Petrodemons, 2 = Aliens
 
@@ -715,7 +714,6 @@
                     // Render tabs
                     const tabs = [
                         T('Bestiary.lexicon'),
-                        T('Bestiary.vitality'),
                         T('Bestiary.ecology'),
                         T('Bestiary.extraction')
                     ];
@@ -726,6 +724,77 @@
                         tabsHTML += `<div class="portfolio-tab ${activeClass} ${focusedClass}" data-tab="${idx}">${tab}</div>`;
                     });
                     tabsHTML += `</div>`;
+
+                    // Vitality: stats and elemental affinities, folded into
+                    // the Lexicon page under the portrait.
+                    const params = enemy.params || [0, 0, 0, 0, 0, 0, 0, 0];
+
+                    let statsGridHTML = `<div class="stats-grid">`;
+                    for (let i = 0; i < 8; i++) {
+
+
+
+
+                        statsGridHTML += `
+                            <div class="stat-card">
+                                <span class="stat-label">${getShortParamName(i)}</span>
+                                <span class="stat-val">${params[i]}</span>
+                            </div>
+                        `;
+                    }
+                    statsGridHTML += `</div>`;
+
+
+
+
+
+                    // Calculate active element rate weaknesses
+                    const elements = T.list('Bestiary.elements');
+                    const rates = {};
+                    for (let i = 1; i < elements.length; i++) {
+                        rates[i] = 1.0;
+                    }
+                    if (enemy.traits) {
+                        enemy.traits.forEach(trait => {
+                            if (trait.code === 11) { // Element Rate
+                                const elId = trait.dataId;
+                                if (rates[elId] !== undefined) {
+                                    rates[elId] *= trait.value;
+                                }
+                            }
+                        });
+                    }
+
+                    let affinitiesGridHTML = "";
+                    const activeRates = [];
+                    for (let i = 1; i < elements.length; i++) {
+                        if (rates[i] !== 1.0) {
+                            activeRates.push({ name: elements[i], rate: rates[i] });
+                        }
+                    }
+
+                    if (activeRates.length > 0) {
+                        affinitiesGridHTML += `
+                            <h4 class="affinities-header">${T('Bestiary.elementalAffinities')}</h4>
+                            <div class="affinities-grid">
+                        `;
+                        activeRates.forEach(obj => {
+                            const valClass = obj.rate > 1.0 ? "weakness" : "resistance";
+                            const formattedRate = obj.rate + "x";
+                            affinitiesGridHTML += `
+                                <div class="affinity-row">
+                                    <span style="font-weight:bold; color:#8c7667">${obj.name}</span>
+                                    <span class="affinity-val ${valClass}">${formattedRate}</span>
+                                </div>
+                            `;
+                        });
+                        affinitiesGridHTML += `</div>`;
+                    } else {
+                        affinitiesGridHTML += `
+                            <h4 class="affinities-header">${T('Bestiary.elementalAffinities')}</h4>
+                            <p style="font-size:15px; color:rgba(94,47,23,0.5)">${T('Bestiary.noElementalWeaknessOrResistance')}</p>
+                        `;
+                    }
 
                     // Render active tab contents
                     let contentHTML = "";
@@ -768,11 +837,10 @@
                                </div>`
                             : "";
 
-                        // The live 3D model gets a larger, transparent viewport (no
-                        // dark inset gradient) so the bigger battler reads against the
-                        // parchment page; the 2D sketch keeps the framed look.
+                        // The live 3D model gets a larger viewport so the bigger
+                        // battler reads against the page; neither view is framed.
                         const sketchStyle = can3D
-                            ? "position:relative; height:380px; background:transparent; box-shadow:none; border-color:rgba(94,47,23,0.22);"
+                            ? "position:relative; height:380px;"
                             : "position:relative;";
 
                         contentHTML = `
@@ -783,84 +851,11 @@
                             ${hintHTML}
                             ${seedHTML}
                             <p class="portfolio-description">${noteData.description || (T('Bestiary.noBiologicalDescriptionRegistered'))}</p>
-                        `;
-                    } else if (this._activeTab === 1) {
-                        // Tab 1: Vitality / Stats & Elemental Affinities
-                        const params = enemy.params || [0, 0, 0, 0, 0, 0, 0, 0];
-
-                        let statsGridHTML = `<div class="stats-grid">`;
-                        for (let i = 0; i < 8; i++) {
-
-
-
-
-                            statsGridHTML += `
-                                <div class="stat-card">
-                                    <span class="stat-label">${getShortParamName(i)}</span>
-                                    <span class="stat-val">${params[i]}</span>
-                                </div>
-                            `;
-                        }
-                        statsGridHTML += `</div>`;
-
-
-
-
-
-                        // Calculate active element rate weaknesses
-                        const elements = T.list('Bestiary.elements');
-                        const rates = {};
-                        for (let i = 1; i < elements.length; i++) {
-                            rates[i] = 1.0;
-                        }
-                        if (enemy.traits) {
-                            enemy.traits.forEach(trait => {
-                                if (trait.code === 11) { // Element Rate
-                                    const elId = trait.dataId;
-                                    if (rates[elId] !== undefined) {
-                                        rates[elId] *= trait.value;
-                                    }
-                                }
-                            });
-                        }
-
-                        let affinitiesGridHTML = "";
-                        const activeRates = [];
-                        for (let i = 1; i < elements.length; i++) {
-                            if (rates[i] !== 1.0) {
-                                activeRates.push({ name: elements[i], rate: rates[i] });
-                            }
-                        }
-
-                        if (activeRates.length > 0) {
-                            affinitiesGridHTML += `
-                                <h4 class="affinities-header">${T('Bestiary.elementalAffinities')}</h4>
-                                <div class="affinities-grid">
-                            `;
-                            activeRates.forEach(obj => {
-                                const valClass = obj.rate > 1.0 ? "weakness" : "resistance";
-                                const formattedRate = obj.rate + "x";
-                                affinitiesGridHTML += `
-                                    <div class="affinity-row">
-                                        <span style="font-weight:bold; color:#8c7667">${obj.name}</span>
-                                        <span class="affinity-val ${valClass}">${formattedRate}</span>
-                                    </div>
-                                `;
-                            });
-                            affinitiesGridHTML += `</div>`;
-                        } else {
-                            affinitiesGridHTML += `
-                                <h4 class="affinities-header">${T('Bestiary.elementalAffinities')}</h4>
-                                <p style="font-size:15px; color:rgba(94,47,23,0.5)">${T('Bestiary.noElementalWeaknessOrResistance')}</p>
-                            `;
-                        }
-
-                        contentHTML = `
                             ${statsGridHTML}
                             ${affinitiesGridHTML}
                         `;
-                    } else if (this._activeTab === 2) {
-                        // Tab 2: Ecology / Biology specs list
+                    } else if (this._activeTab === 1) {
+                        // Tab 1: Ecology / Biology specs list
                         let speedText = noteData.speed || "3";
                         const speedVal = parseInt(speedText);
                         if (speedVal <= 1) speedText = T('Bestiary.slower');
@@ -938,8 +933,8 @@
                                 </div>
                             </div>
                         `;
-                    } else if (this._activeTab === 3) {
-                        // Tab 3: Drops / Reagents harvesting, rewards and actions
+                    } else if (this._activeTab === 2) {
+                        // Tab 2: Drops / Reagents harvesting, rewards and actions
                         let spoilsHTML = `
                             <div class="drops-section">
                                 <h4 class="affinities-header">${T('Bestiary.rewards')}</h4>
@@ -1222,7 +1217,7 @@
             // L1/R1 cycle the right-page detail tabs from anywhere in the scene
             if (Input.isTriggered('pageup') || Input.isTriggered('pagedown')) {
                 const dir = Input.isTriggered('pageup') ? -1 : 1;
-                this._activeTab = (this._activeTab + dir + 4) % 4;
+                this._activeTab = (this._activeTab + dir + 3) % 3;
                 SoundManager.playCursor();
                 this.refreshUIBestiary();
                 return;
@@ -1249,7 +1244,7 @@
                     if (viewport) window.MenuVirtualList.scrollToIndex(viewport, this._selectedIndex);
                 } else if (Input.isRepeated('left')) {
                     this._activeArea = 'tabs';
-                    this._activeTab = 3; // Focus rightmost tab (Extraction) on left page
+                    this._activeTab = 2; // Focus rightmost tab (Extraction) on left page
                     SoundManager.playOk();
                     this.refreshUIBestiary();
                 } else if (Input.isTriggered('ok')) {
@@ -1263,21 +1258,18 @@
                 }
             } else if (this._activeArea === 'tabs') {
                 if (Input.isRepeated('right')) {
-                    if (this._activeTab === 3) {
-                        this._activeArea = 'list';
-                    } else {
-                        this._activeTab = (this._activeTab + 1) % 4;
-                    }
+                    // The tabs never hand focus back to the list: right wraps
+                    // around them and cancel leaves the book altogether.
+                    this._activeTab = (this._activeTab + 1) % 3;
                     SoundManager.playCursor();
                     this.refreshUIBestiary();
                 } else if (Input.isRepeated('left')) {
-                    this._activeTab = (this._activeTab - 1 + 4) % 4;
+                    this._activeTab = (this._activeTab - 1 + 3) % 3;
                     SoundManager.playCursor();
                     this.refreshUIBestiary();
                 } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
-                    this._activeArea = 'list';
+                    this.popScene();
                     SoundManager.playCancel();
-                    this.refreshUIBestiary();
                 }
             }
         }

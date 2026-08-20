@@ -1,19 +1,19 @@
 {
-  "placeholder": "",
-  "clear": "",
-  "anyCategory": "",
-  "showing": "",
-  "min": "",
-  "max": "",
+  "placeholder": "Rechercher…",
+  "clear": "Effacer la recherche",
+  "anyCategory": "Toute catégorie",
+  "showing": "{count} affichés",
+  "min": "min",
+  "max": "max",
   "sort": {
-    "name": "",
-    "level": "",
-    "weight": "",
-    "price": "",
-    "cost": ""
+    "name": "Nom",
+    "level": "Niveau",
+    "weight": "Poids",
+    "price": "Prix",
+    "cost": "Coût"
   },
   "range": {
-    "weight": "",
-    "price": ""
+    "weight": "Poids (kg)",
+    "price": "Prix (€)"
   }
 }

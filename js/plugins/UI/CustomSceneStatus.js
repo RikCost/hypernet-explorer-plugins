@@ -1095,7 +1095,7 @@
         }
 
         const tpTextEl = spread.querySelector("#status-tp-text");
-        if (tpTextEl) tpTextEl.textContent = `${actor.tp} / ${actor.maxTp()}`;
+        if (tpTextEl) tpTextEl.textContent = `${Math.ceil(actor.tp)} / ${actor.maxTp()}`;
         const tpBarEl = spread.querySelector("#status-tp-bar");
         if (tpBarEl) tpBarEl.style.width = `${(actor.tp / actor.maxTp()) * 100}%`;
 
@@ -1334,7 +1334,9 @@
         const bodyParts = [];
         if (actor._bodyParts) {
             for (const key in actor._bodyParts) {
-                if (actor._bodyParts[key]) bodyParts.push(actor._bodyParts[key]);
+                // The key comes along: it is what says whether the part can be
+                // cut off, and so which word goes over a ruined one.
+                if (actor._bodyParts[key]) bodyParts.push(Object.assign({ key }, actor._bodyParts[key]));
             }
         }
         bodyParts.sort((a, b) => {
@@ -1348,12 +1350,20 @@
             bodyPartsHTML = `<div style="font-family: 'Lora', serif; text-align: center; color: var(--text-card-medium); padding: 12px; font-size:0.892em">${T('SceneStatus.ui.noVitals')}</div>`;
         } else {
             bodyParts.forEach((part, idx) => {
-                const isDestroyed = part.destroyed || part.currentHp <= 0;
+                // Broken, cut off or destroyed: one word, and which one is
+                // the difficulty's and the part's business, not this screen's
+                // (window.HealthCore.partStatusLabel).
+                const HC = window.HealthCore;
+                const statusText = HC && HC.partStatusLabel
+                    ? HC.partStatusLabel(actor, part.key, part) : "";
+                const isDestroyed = !!statusText || part.destroyed || part.currentHp <= 0;
                 const hpRate = part.maxHp > 0 ? (part.currentHp / part.maxHp) : 0;
                 const hpPercent = Math.round(hpRate * 100);
                 const isSelected = (this._dndActiveSection === "bodyparts" && this._dndSelectedIndex === idx) ? "selected" : "";
                 const strikeClass = isDestroyed ? "destroyed" : "";
-                const hpText = isDestroyed ? "DESTROYED" : `${part.currentHp}/${part.maxHp}`;
+                const hpText = isDestroyed
+                    ? (statusText || T('HealthCore.statusBroken'))
+                    : `${part.currentHp}/${part.maxHp}`;
                 const barWidth = isDestroyed ? 0 : hpPercent;
                 const partName = (typeof part.name === 'string' && part.name.includes('.') && window.getArchetypeText)
                     ? window.getArchetypeText(part.name)
@@ -1406,7 +1416,10 @@
         this._dndActiveTab = tabId;
         rememberStatusTab(tabId);
         if (!silent) SoundManager.playCursor();
-        this.refreshUIStatus();
+        // Only the right page changes. Every panel is filled on refresh and then
+        // hidden, so showing another one is a class toggle: a full refresh here
+        // would redraw the left page and tear the 3D portrait down with it.
+        this.applyStatusTab();
     };
 
     Scene_Status.prototype.cycleStatusTab = function (direction) {
@@ -1525,7 +1538,11 @@
         if (recruited && battlerField && recruited.battlerName === battlerField) {
             const recruitKey = window.Battler3D.resolveKey(recruited);
             if (recruitKey) {
-                return { kind: 'enemy', archKey: recruitKey, enemyId: recruited.id, actorId: actor.actorId() };
+                // ...rebuilt with the look it was wearing in the fight it was
+                // talked out of, so it is that individual and not another one
+                // of its kind (window.Battler3D.withLook).
+                return { kind: 'enemy', archKey: recruitKey, enemyId: recruited.id,
+                         actorId: actor.actorId(), look: actor._recruitedLook || null };
             }
         }
 
@@ -1542,6 +1559,17 @@
                 if (key) return { kind: 'enemy', archKey: key, enemyId: enemy.id, actorId: actor.actorId() };
             }
             return null;
+        }
+
+        // A dossier that shipped a 3D model of the person it describes (Em) is
+        // portrayed by that model wherever her flat bust would have been drawn,
+        // whatever portrait style the slot carries. A model that could not be
+        // read is never asked for twice, so a missing file falls back to the
+        // bust rather than to an empty frame.
+        const presetModel = window.CharacterPresets && window.CharacterPresets.getActorPresetModel
+            ? window.CharacterPresets.getActorPresetModel(actor) : null;
+        if (presetModel && !glbPortraitFailed[presetModel]) {
+            return { kind: 'glb', path: presetModel, actorId: actor.actorId() };
         }
 
         // Humanoids: the portrait style is an exclusive choice made at character
@@ -1563,10 +1591,130 @@
     // Stable identity for a 3D portrait: rebuilding is only needed when the
     // subject actually changes (different creature, edited custom config).
     function status3DKey(info) {
-        return info.kind === 'custom'
-            ? 'custom:' + info.actorId + ':' + JSON.stringify(info.cfg)
-            : 'enemy:' + info.enemyId;
+        if (info.kind === 'glb') return 'glb:' + info.path;
+        if (info.kind === 'custom') return 'custom:' + info.actorId + ':' + JSON.stringify(info.cfg);
+        // The look roll is part of the identity: two recruits of the same
+        // species are two different bodies, and moving between them has to
+        // rebuild the model rather than reuse the one already standing.
+        const look = info.look;
+        return 'enemy:' + info.enemyId + (look ? ':' + look.seed + ':' + look.origin + ':' + look.index : '');
     }
+
+    // Dossier GLB portraits. The file is parsed once and the scene it yields is
+    // reused by every viewer that asks for it afterwards: only one portrait is
+    // ever on screen at a time, and re-reading a multi-megabyte model each time
+    // the status sheet opens would stall the menu. A failed load is remembered
+    // too, so a missing file is not retried on every refresh.
+    const glbPortraitCache = {};
+    const glbPortraitFailed = {};
+    function loadPortraitGLB(path) {
+        if (typeof THREE === 'undefined' || !THREE.GLTFLoader) return Promise.resolve(null);
+        if (!glbPortraitCache[path]) {
+            glbPortraitCache[path] = new Promise((resolve) => {
+                const fail = () => { glbPortraitFailed[path] = true; resolve(null); };
+                try {
+                    new THREE.GLTFLoader().load(path,
+                        (gltf) => {
+                            if (gltf && gltf.scene) resolve(gltf.scene);
+                            else fail();
+                        },
+                        undefined,
+                        fail);
+                } catch (e) { fail(); }
+            });
+        }
+        // Dressed in what the viewers expect of a battler: a still figure with
+        // no animations to play, framed like the bust it stands in for.
+        return glbPortraitCache[path].then((scene) => scene ? {
+            model: scene,
+            portraitCrop: 0.5,
+            currentAnimation: null,
+            update() {},
+            hasAnimation() { return false; },
+            playAnimation() {}
+        } : null);
+    }
+
+    // Where a portrait viewer puts the camera, and where the subject has to be
+    // moved to sit centred in the frame. A creature is framed whole, on both
+    // axes. A model standing in for a bust says so with `portraitCrop`, the
+    // fraction of its height a portrait should show, and only that top slice is
+    // fitted, and only vertically: the head and chest fill the frame the way the
+    // bust art did, and arms held out to the sides fall outside it.
+    function portraitFraming(battler, camera, margin) {
+        const box    = new THREE.Box3().setFromObject(battler.model);
+        const size   = new THREE.Vector3(); box.getSize(size);
+        const center = new THREE.Vector3(); box.getCenter(center);
+        const vHalf  = (camera.fov * Math.PI / 180) / 2;
+        const crop   = battler.portraitCrop || 0;
+        if (crop > 0 && crop < 1) {
+            const sliceHeight = size.y * crop;
+            center.y = box.max.y - sliceHeight / 2;
+            return { center, distance: Math.max((sliceHeight / 2) / Math.tan(vHalf), 0.1) * margin };
+        }
+        // 40 degrees is the VERTICAL field, so on a frame taller than it is wide
+        // the horizontal one is the narrower of the two, and a wide body (a
+        // quadruped seen side on) overflows it if only the vertical is fitted.
+        // Yaw is the player's to turn, so the depth is fitted as a width too.
+        const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
+        const distV = (size.y / 2) / Math.tan(vHalf);
+        const distH = (Math.max(size.x, size.z) / 2) / Math.tan(hHalf);
+        return { center, distance: Math.max(distV, distH, 0.1) * margin };
+    }
+
+    // Builds what a portrait info object names: the custom humanoid assembled
+    // in character creation, or a creature archetype model rebuilt with the look
+    // seed it was rolled with. Resolves to null when nothing can be built.
+    function buildActorModel3D(info) {
+        if (!info) return Promise.resolve(null);
+        if (info.kind === "glb") {
+            return loadPortraitGLB(info.path);
+        }
+        if (info.kind === "custom") {
+            return Promise.resolve(window.CC3DModel.buildModel(info.cfg, info.actorId));
+        }
+        const look = info.look || null;
+        const fakeBattler = { enemyId: () => info.enemyId, index: () => (look ? (look.index || 0) : 0) };
+        const storedSeed = (window.CC3DModel && window.CC3DModel.getCreatureSeed)
+            ? window.CC3DModel.getCreatureSeed(info.actorId) : null;
+        const make = () => window.Battler3D.create(info.archKey, 0, 0, fakeBattler);
+        // A monster recruited out of a battle carries that battle's look roll,
+        // which stands in for the world seed here the way it did in the fight.
+        // A creature built in the wizard carries the seed it was rolled under.
+        let built;
+        if (look && window.Battler3D.withLook) built = window.Battler3D.withLook(look, make);
+        else if (storedSeed && window.CC3DModel && window.CC3DModel.withGenSeed) built = window.CC3DModel.withGenSeed(storedSeed, make);
+        else built = make();
+        if (!built) return Promise.resolve(null);
+        return Promise.resolve(built.load(null, 0, 0, 0)).then(() => built);
+    }
+
+    // What the portrait is told about this character's anatomy: the parts they
+    // still have plus the ones they no longer have at all, which is the only
+    // way a missing limb reads as missing rather than as never mentioned
+    // (window.HealthCore.partStates).
+    function actorPartStates(actor) {
+        if (!actor) return null;
+        const HC = window.HealthCore;
+        if (HC && HC.partStates) return HC.partStates(actor);
+        return actor._bodyParts || null;
+    }
+
+    // The one answer to "which 3D model portrays this character". It is resolved
+    // from the character's own identity: the species it was recruited from, the
+    // battler it carries, or the model built for it in character creation, with
+    // the look seed that model was rolled with. Every screen that draws the same
+    // character reads it from here, so no two of them can disagree about who it
+    // is (the Empathize panel is the other caller).
+    window.ActorModel3D = {
+        infoFor(actor) { return Scene_Status.prototype.getStatus3DInfo(actor); },
+        keyFor(info)   { return info ? status3DKey(info) : ""; },
+        build(info)    { return buildActorModel3D(info); },
+        framing(battler, camera, margin) { return portraitFraming(battler, camera, margin || 1); },
+        // A model file that could not be read once is not asked for again: the
+        // screens that would have shown it fall back to the flat bust.
+        modelAvailable(path)  { return !!path && !glbPortraitFailed[path]; }
+    };
 
     Scene_Status.prototype.syncStatus3D = function (info) {
         const canvas = document.getElementById('status-bust-3d');
@@ -1575,7 +1723,7 @@
         // limbs are hidden (they may have broken/healed since), then bail.
         if (this._status3D && canvas && this._status3D.canvas === canvas && this._status3DKey === key) {
             const m = this._status3D.model;
-            const parts = (this.actor() && this.actor()._bodyParts) || null;
+            const parts = actorPartStates(this.actor());
             if (m && parts && m.hideBrokenParts) { try { m.hideBrokenParts(parts); } catch (e) {} }
             return;
         }
@@ -1603,7 +1751,13 @@
         }
         canvas.style.display = 'block';
 
-        const width = 440, height = 500;
+        // The buffer matches the box it is drawn in, so the portrait uses the
+        // whole width the page gives it rather than being letterboxed down from
+        // a fixed portrait buffer. The constants are the fallback for a box that
+        // has not been laid out yet.
+        const rect   = canvas.getBoundingClientRect();
+        const width  = Math.max(1, Math.round(rect.width)  || 440);
+        const height = Math.max(1, Math.round(rect.height) || 500);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
         renderer.setSize(width, height, false);
         renderer.setPixelRatio(1);
@@ -1629,45 +1783,34 @@
         // Build the subject: a creature's archetype model (rebuilt with the
         // random look seed rolled at creation, when one was saved) or the
         // custom humanoid assembled in the character-creation 3D step.
-        let loadPromise;
-        if (info.kind === 'custom') {
-            loadPromise = window.CC3DModel.buildModel(info.cfg, info.actorId);
-        } else {
-            const fakeBattler = { enemyId: () => info.enemyId, index: () => 0 };
-            const storedSeed = (window.CC3DModel && window.CC3DModel.getCreatureSeed)
-                ? window.CC3DModel.getCreatureSeed(info.actorId) : null;
-            const make = () => window.Battler3D.create(info.archKey, 0, 0, fakeBattler);
-            const built = (storedSeed && window.CC3DModel && window.CC3DModel.withGenSeed)
-                ? window.CC3DModel.withGenSeed(storedSeed, make) : make();
-            if (!built) {
-                try { renderer.dispose(); } catch (e) {}
-                try { if (renderer.forceContextLoss) renderer.forceContextLoss(); } catch (e) {}
-                this._status3D = null;
-                return;
-            }
-            loadPromise = Promise.resolve(built.load(null, 0, 0, 0)).then(() => built);
-        }
+        const loadPromise = buildActorModel3D(info);
 
         // Reflect this creature's broken limbs: hide the meshes of any destroyed
-        // body part (root parts are protected by the model, so it never blanks
-        // the whole figure).
-        const brokenParts = (this.actor() && this.actor()._bodyParts) || null;
+        // body part, and of any part that is no longer on the body at all
+        // (root parts are protected by the model, so it never blanks the whole
+        // figure).
+        const brokenParts = actorPartStates(this.actor());
 
         loadPromise.then((battler) => {
-            if (!battler || state.disposed || !battler.model) return;
+            if (state.disposed) return;
+            // Nothing could be built for this subject: drop the viewer rather
+            // than leaving a live context behind an empty frame.
+            if (!battler || !battler.model) {
+                this.cleanupStatus3D();
+                // A dossier model that failed to load is now off the table, so
+                // asking again draws the flat bust instead of nothing at all.
+                if (info.kind === 'glb') this.drawUIStatusBust(this.actor(), 'status-bust');
+                return;
+            }
             try { battler.update(1 / 60); } catch (e) {}
             try { if (brokenParts && battler.hideBrokenParts) battler.hideBrokenParts(brokenParts); } catch (e) {}
-            const box    = new THREE.Box3().setFromObject(battler.model);
-            const size   = new THREE.Vector3(); box.getSize(size);
-            const center = new THREE.Vector3(); box.getCenter(center);
+            const fit    = portraitFraming(battler, camera, 1.15);
             const holder = new THREE.Group();
-            holder.position.copy(center).multiplyScalar(-1);
+            holder.position.copy(fit.center).multiplyScalar(-1);
             holder.add(battler.model);
             if (window.PSXShader) window.PSXShader.applyToObject(battler.model);
             pivot.add(holder);
-            const maxDim = Math.max(size.x, size.y, size.z) || 1;
-            const fitDist = maxDim / (2 * Math.tan((40 * Math.PI / 180) / 2));
-            camera.position.set(0, 0, fitDist * 1.2);
+            camera.position.set(0, 0, fit.distance);
             camera.lookAt(0, 0, 0);
             state.model = battler;
             state.attackTimer = 1.2;

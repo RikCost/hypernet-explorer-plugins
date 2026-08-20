@@ -81,6 +81,30 @@
   "kpMultiplier3x": "3.0X KP",
   "kpMultiplier15x": "1.5X KP",
   "foreignSchool": "SELF-TAUGHT (3x cost)",
+  "magicSystem": {
+    "tabLabel": "Magical Systems",
+    "title": "Magical Systems",
+    "hint": "Select a system to see which classes draw on it",
+    "empty": "Choose a system from the wheel",
+    "classesHeading": "Classes",
+    "noClasses": "No known class draws on this system yet.",
+    "spellsHeading": "Spells",
+    "noSpells": "No spells belong to this system yet.",
+    "knownFraction": "{known} / {total} known ({pct}%)",
+    "yourSystem": "Your class's system",
+    "systems": {
+      "Arcane": { "name": "Arcane", "desc": "Old magic, learned from books and formulae." },
+      "Sacred": { "name": "Sacred", "desc": "Power drawn down from higher orders." },
+      "Sympathetic": { "name": "Sympathetic", "desc": "Like calls to like: object bound to object." },
+      "Dimensional": { "name": "Dimensional", "desc": "Magic that bends space, time and probability." },
+      "Psionics": { "name": "Psionics", "desc": "Power projected from the mind alone." },
+      "Technomagic": { "name": "Technomagic", "desc": "The occult fused with the machine." },
+      "Pataphysic": { "name": "Pataphysic", "desc": "Magic that answers to no consistent law." },
+      "Natural": { "name": "Natural", "desc": "Power drawn from plant, beast and earth." },
+      "Thermodynamics": { "name": "Thermodynamics", "desc": "Magic that lives in heat, cold and current." },
+      "Ritual": { "name": "Ritual", "desc": "Power bought with rite, blood or bargain." }
+    }
+  },
   "graph": {
     "legendLearned": "Learned",
     "legendOpen": "Open",

@@ -75,7 +75,6 @@
     "noFood": "NONE",
     "weatherClear": "CLEAR",
     "awake": "AWAKE",
-    "eta": "ETA",
     "enemies": "ENEMIES",
     "level": "LV. {level}"
   },

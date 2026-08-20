@@ -1,104 +1,104 @@
 {
-  "_comment": "Empathize social-interaction text. Structure (ids, tone, baseDelta, tier, deltas, toneMult) lives in js/db/NPC/SocialLines.json; this file carries only the prose and is deep-merged over it per language by NPCEmpathize.js. {name} = NPC name.",
+  "_comment": "Testi delle interazioni sociali di Empatia. La struttura (ids, tone, baseDelta, tier, deltas, toneMult) sta in js/db/NPC/SocialLines.json; questo file porta solo la prosa e viene fuso sopra quello per lingua da NPCEmpathize.js. {name} = nome dell'NPC.",
   "interactions": {
     "praise": {
       "label": "Elogia",
       "player": [
-        "Te la sei cavata meglio di chiunque altro conosca, {name}.",
-        "Sinceramente, {name}, sei una delle persone più sveglie qui.",
-        "Ho visto tanta gente, ma tu spicchi, {name}.",
-        "È stato davvero notevole, {name}.",
-        "La gente dovrebbe fare più attenzione a quello che fai, {name}.",
-        "Hai un vero talento, {name}. Non sprecarlo."
+        "L'hai gestita meglio di chiunque altro io conosca, {name}.",
+        "Sinceramente {name}, sei una delle teste più sveglie che ci siano qui.",
+        "Ne ho viste passare tante di persone, ma tu spicchi, {name}.",
+        "Quella è stata roba da applausi veri, {name}.",
+        "La gente dovrebbe guardare di più quello che fai, {name}.",
+        "Hai del talento vero, {name}. Non sprecarlo."
       ],
       "responseGood": [
-        "{name} raddrizza la schiena, con un piccolo sorriso orgoglioso. \"...Grazie. Avevo bisogno di sentirmelo dire.\"",
-        "\"Lo pensi davvero?\" dice {name}, palesemente compiaciuto.",
-        "{name} distoglie lo sguardo, imbarazzato. \"È gentile da parte tua dirlo.\"",
-        "\"Non in molti se ne accorgono,\" ammette {name}. \"Lo apprezzo.\"",
-        "{name} si illumina visibilmente. \"Detto da te, significa qualcosa.\""
+        "...Grazie. Avevo bisogno di sentirmelo dire.",
+        "Lo pensi davvero?",
+        "Sei gentile a dirlo.",
+        "Non se ne accorgono in molti. Te ne sono grato.",
+        "Detto da te, ha un peso."
       ],
       "responseBad": [
-        "{name} sospira. \"Lo dici tutte le sante volte. Sta perdendo il suo effetto.\"",
-        "\"Ancora complimenti?\" dice {name} con tono piatto. \"Non sono uno sciocco.\"",
-        "{name} aggrotta la fronte. \"Se elogi tutto, non elogi niente.\"",
-        "\"Risparmiatelo,\" borbotta {name}. \"Questo discorso l'ho già sentito.\"",
-        "{name} inarca un sopracciglio. \"Che cosa vuoi ottenere da me?\""
+        "Me lo dici ogni singola volta. Sta perdendo lo smalto.",
+        "Ancora complimenti? Non sono mica scemo.",
+        "Se lodi tutto, non lodi niente.",
+        "Risparmiatelo. Questa predica l'ho già sentita.",
+        "Che cosa mi devi chiedere?"
       ]
     },
     "compliment": {
       "label": "Fai un complimento",
       "player": [
         "Ti sta bene addosso, {name}.",
-        "Hai ottimo gusto, {name}.",
+        "Hai un gran gusto, {name}.",
         "Mi piace il modo in cui ti porti, {name}.",
-        "Sembri sempre così in ordine, {name}.",
-        "C'è qualcosa di rassicurante in te, {name}.",
+        "Sembri sempre in ordine, {name}.",
+        "Hai qualcosa di rassicurante, {name}.",
         "Rendi questo posto un po' più luminoso, {name}."
       ],
       "responseGood": [
-        "{name} sorride. \"Ma guarda che tipo affascinante.\"",
-        "\"Oh, smettila,\" ride {name}, compiaciuto.",
-        "{name} si tocca il colletto, imbarazzato. \"Grazie, davvero.\"",
-        "\"È dolce da parte tua,\" dice {name} con calore.",
-        "{name} sorride. \"Mi hai reso la giornata un po' migliore.\""
+        "Ma senti che complimenti.",
+        "Ma smettila.",
+        "Grazie, davvero.",
+        "Che pensiero carino.",
+        "Mi hai migliorato la giornata."
       ],
       "responseBad": [
-        "{name} accenna un sorriso tirato. \"Stai di nuovo esagerando.\"",
-        "\"Ogni giorno lo stesso complimento,\" dice {name}. \"Ormai suona vuoto.\"",
-        "{name} scrolla le spalle. \"Le lusinghe stancano, sai.\"",
-        "\"Mmh-mmh,\" dice {name}, poco convinto.",
-        "{name} sembra scettico. \"Che cosa vuoi da me?\""
+        "La stai spalmando un po' troppo densa.",
+        "Ogni giorno lo stesso complimento. Ormai suona vuoto.",
+        "Le lusinghe scadono, sai.",
+        "Mhm.",
+        "Che cosa vuoi da me?"
       ]
     },
     "encourage": {
       "label": "Incoraggia",
       "player": [
-        "Non mollare, {name}. Ce la puoi fare.",
-        "Qualunque cosa tu stia affrontando, {name}, la puoi gestire.",
-        "Vai avanti, {name}. Diventerà più facile.",
-        "Credo in te, {name}. Davvero.",
+        "Non mollare, {name}. Ce la fai.",
+        "Qualunque cosa tu abbia davanti, {name}, sei in grado di reggerla.",
+        "Vai avanti, {name}. Poi diventa più facile.",
+        "Io credo in te, {name}. Sul serio.",
         "Sei più forte di quanto pensi, {name}.",
-        "Un passo alla volta, {name}. Ci arriverai."
+        "Un passo alla volta, {name}. Ci arrivi."
       ],
       "responseGood": [
-        "{name} annuisce lentamente. \"...Forse hai ragione. Grazie.\"",
-        "\"Avevo bisogno che qualcuno me lo dicesse,\" ammette {name} a bassa voce.",
-        "{name} prende fiato. \"Va bene. Continuerò a provarci.\"",
-        "\"Mi aiuta più di quanto immagini,\" dice {name}.",
-        "{name} accenna un piccolo sorriso. \"Okay. Okay, ce la posso fare.\""
+        "...Forse hai ragione. Grazie.",
+        "Avevo bisogno che qualcuno me lo dicesse.",
+        "Va bene. Continuo.",
+        "Aiuta più di quanto immagini.",
+        "Ok. Ok, ce la posso fare."
       ],
       "responseBad": [
-        "{name} scuote la testa. \"Parole vuote, dette troppe volte.\"",
-        "\"Continui a fare il tifo, ma non aiuti mai davvero,\" dice {name}.",
-        "{name} sospira. \"Il discorsetto motivazionale l'ho già sentito.\"",
-        "\"Incoraggiamenti senza sostanza,\" borbotta {name}.",
-        "{name} sembra stanco. \"Ti prego, non di nuovo.\""
+        "Parole vuote, dette troppe volte.",
+        "Tu fai il tifo, ma non dai mai una mano vera.",
+        "Il discorsetto motivazionale l'ho già sentito.",
+        "Incoraggiamento senza sostanza.",
+        "Ti prego, non di nuovo."
       ]
     },
     "flatter": {
-      "label": "Lusinga",
+      "label": "Adula",
       "player": [
-        "Di certo una persona in gamba come te lo sa già, {name}.",
-        "Una persona del tuo rango merita il meglio, {name}.",
-        "Qui sarebbero perduti senza di te, {name}.",
-        "Sei chiaramente il più capace nella stanza, {name}.",
-        "Mi fido solo di qualcuno saggio come te, {name}.",
-        "Tutti parlano così bene di te, {name}."
+        "Uno intelligente come te lo saprà già, {name}.",
+        "Una persona del tuo rango si merita il meglio, {name}.",
+        "Qui dentro senza di te sarebbero perduti, {name}.",
+        "Sei chiaramente il più capace in questa stanza, {name}.",
+        "Io mi fido solo di uno saggio come te, {name}.",
+        "Parlano tutti benissimo di te, {name}."
       ],
       "responseGood": [
-        "{name} si pavoneggia un po'. \"Hai un giudizio eccellente.\"",
-        "\"Continua pure,\" dice {name}, godendosela chiaramente.",
-        "{name} ridacchia. \"Faccio del mio meglio.\"",
-        "\"Finalmente qualcuno con del buonsenso,\" esulta {name}.",
-        "{name} annuisce con grazia. \"Mi lusinghi.\""
+        "Hai ottimo giudizio.",
+        "Continua, continua.",
+        "Ci provo, ecco.",
+        "Finalmente qualcuno con la testa.",
+        "Mi lusinghi."
       ],
       "responseBad": [
-        "Il sorriso di {name} svanisce. \"Adesso stai solo facendo il leccapiedi.\"",
-        "\"Le lusinghe le sento a un miglio di distanza,\" dice {name} con freddezza.",
-        "{name} incrocia le braccia. \"Dove vuoi arrivare?\"",
-        "\"Troppo miele rivolta lo stomaco,\" dice {name}.",
-        "{name} sbuffa. \"Mi credi così vanitoso?\""
+        "Adesso stai solo ungendo.",
+        "La lisciata la sento da un chilometro.",
+        "Dove vuoi arrivare?",
+        "Troppo miele stucca.",
+        "Mi credi così vanitoso?"
       ]
     },
     "thank": {
@@ -106,30 +106,30 @@
       "player": [
         "Grazie di tutto, {name}.",
         "Te ne devo una, {name}. Davvero.",
-        "Non dimenticherò la tua gentilezza, {name}.",
+        "Non me la dimentico la tua gentilezza, {name}.",
         "Mi sei stato di grande aiuto, {name}. Grazie.",
         "Ti sono grato, {name}.",
-        "Grazie, {name}. Lo dico sul serio."
+        "Alla salute, {name}. E lo dico sul serio."
       ],
       "responseGood": [
-        "{name} fa un cenno con la mano. \"Non pensarci nemmeno.\"",
-        "\"Quando vuoi,\" dice {name} con un cenno caloroso.",
-        "{name} sorride. \"Le persone servono a questo.\"",
-        "\"Di niente. Davvero,\" dice {name}.",
-        "{name} sembra commosso. \"Non è stato nulla, ma... grazie.\""
+        "Ma figurati.",
+        "Quando vuoi.",
+        "Le persone servono a questo.",
+        "Di niente. Davvero.",
+        "Non era niente, ma... grazie."
       ],
       "responseBad": [
-        "{name} aggrotta la fronte. \"Mi ringrazi, ma non ricambi mai il favore.\"",
-        "\"Le parole non costano nulla,\" dice {name}.",
-        "{name} scrolla le spalle. \"Di nuovo gratitudine? Dimostramelo, non dirmelo.\"",
-        "\"Uff. Grazie e nient'altro,\" borbotta {name}.",
-        "{name} sospira. \"Preferirei che facessi qualcosa davvero.\""
+        "Mi ringrazi, però il favore non lo ricambi mai.",
+        "Le parole non costano niente.",
+        "Ancora gratitudine? Dimostramelo, non dirmelo.",
+        "Mah. Grazie e nient'altro.",
+        "Preferirei che facessi qualcosa, piuttosto."
       ]
     },
     "smalltalk": {
-      "label": "Chiacchiere",
+      "label": "Due chiacchiere",
       "player": [
-        "Giornata impegnativa, {name}?",
+        "Giornata piena, {name}?",
         "Come vanno le cose da queste parti, {name}?",
         "Novità, {name}?",
         "Tutto bene, {name}?",
@@ -137,143 +137,143 @@
         "Allora, come ti tratta la vita, {name}?"
       ],
       "responseGood": [
-        "{name} scrolla le spalle. \"Come sempre, ma non mi lamento.\"",
-        "\"Oh, sai com'è. Una cosa dietro l'altra,\" dice {name}.",
-        "{name} annuisce. \"Si tira avanti. E tu?\"",
-        "\"Tranquilla, per fortuna,\" risponde {name}.",
-        "{name} sorride appena. \"Gentile a chiedermelo.\""
+        "Come sempre, ma non mi lamento.",
+        "Eh, sai com'è. Una cosa dopo l'altra.",
+        "Si tira avanti. E tu?",
+        "Tranquilla, per fortuna.",
+        "Gentile da parte tua chiedere."
       ],
       "responseBad": [
-        "{name} ha un'aria annoiata. \"Parliamo del nulla tutte le volte.\"",
-        "\"Ancora chiacchiere?\" dice {name}. \"Non hai altro?\"",
-        "{name} guarda altrove. \"Sono un po' impegnato per le chiacchiere.\"",
-        "\"Bene, bene, sempre bene,\" dice {name}, spazientito.",
-        "{name} sbuffa. \"Potresti semplicemente dire cosa vuoi davvero.\""
+        "Ogni volta parliamo del nulla.",
+        "Di nuovo chiacchiere da bar? Non hai altro?",
+        "Sono un po' occupato per le ciance.",
+        "Bene, bene, sempre bene.",
+        "Potresti anche dire direttamente cosa vuoi."
       ]
     },
     "gossip": {
-      "label": "Spettegola",
+      "label": "Pettegolezzi",
       "player": [
         "Sentito niente di interessante ultimamente, {name}?",
-        "La gente parla, {name}. Hai sentito?",
-        "Tra noi, {name}, cosa si dice in giro?",
-        "Tu sai sempre i pettegolezzi, {name}. Sputa il rospo.",
-        "Qualche notizia succosa da queste parti, {name}?",
-        "Dai, {name}, raccontami qualcosa che non so."
+        "La gente parla, {name}. Ti è arrivato niente?",
+        "Detto fra noi, {name}, che si dice in giro?",
+        "Tu le sai sempre tutte, {name}. Sputa il rospo.",
+        "Novità succose da queste parti, {name}?",
+        "Dai, {name}, dimmi qualcosa che non so."
       ],
       "responseGood": [
-        "{name} si sporge in avanti. \"Beh, visto che me lo chiedi...\"",
-        "\"Non l'hai sentito da me,\" sussurra {name}, deliziato.",
-        "{name} sorride. \"Oh, ho un paio di cosette.\"",
-        "\"Ecco, QUESTA sì che è una conversazione,\" dice {name}, scaldandosi.",
-        "{name} abbassa la voce. \"Che resti tra noi, intesi?\""
+        "Beh, visto che me lo chiedi...",
+        "Non l'hai sentito da me.",
+        "Oh, qualcosina ce l'ho.",
+        "Ecco, QUESTA è una conversazione.",
+        "Acqua in bocca, eh?"
       ],
       "responseBad": [
-        "{name} scuote la testa. \"Con te non scambio più pettegolezzi.\"",
-        "\"Stai sempre a scavare,\" dice {name}, diffidente.",
-        "{name} aggrotta la fronte. \"È così che nascono le voci su di ME.\"",
-        "\"Attento,\" avverte {name}. \"Le chiacchiere tagliano da entrambi i lati.\"",
-        "{name} si chiude a riccio. \"Non stavolta.\""
+        "Con te non faccio più commercio di chiacchiere.",
+        "Tu scavi sempre.",
+        "È così che nascono le voci su di ME.",
+        "Attento. La lingua lunga taglia da tutte e due le parti.",
+        "Stavolta no."
       ]
     },
     "weather": {
-      "label": "Commenta il tempo",
+      "label": "Parla del tempo",
       "player": [
-        "Strano tempo, {name}.",
-        "C'è un po' di freddo nell'aria oggi, {name}.",
-        "Pensi che la pioggia terrà duro, {name}?",
-        "Bel cielo oggi, non trovi, {name}?",
-        "Non ci si può mai fidare delle previsioni, eh, {name}?",
+        "Che tempo strano, {name}.",
+        "Oggi c'è un'arietta fredda, {name}.",
+        "Secondo te la pioggia regge, {name}?",
+        "Bel cielo oggi, vero {name}?",
+        "Le previsioni non ci azzeccano mai, eh {name}?",
         "Bella giornata per stare fuori, {name}."
       ],
       "responseGood": [
-        "{name} alza lo sguardo. \"Già, non si può dire il contrario.\"",
-        "\"Sa di temporale in arrivo,\" riflette {name}.",
-        "{name} annuisce. \"Ti fa venire voglia di restare dentro, vero.\"",
-        "\"Poteva andare peggio,\" dice {name}.",
-        "{name} sorride debolmente. \"I piaceri semplici.\""
+        "Eh, non si può dire il contrario.",
+        "Sa di temporale in arrivo.",
+        "Ti fa venire voglia di restare in casa, eh.",
+        "Poteva andare peggio.",
+        "Piaceri semplici."
       ],
       "responseBad": [
-        "{name} risponde impassibile. \"Il tempo. Di nuovo. Avvincente.\"",
-        "\"Parliamo solo del cielo?\" sospira {name}.",
-        "{name} alza gli occhi al cielo. \"Sì. Il tempo esiste.\"",
-        "\"Conversazione davvero appassionante,\" dice {name} con sarcasmo.",
-        "{name} non sembra impressionato. \"...E allora?\""
+        "Il tempo. Di nuovo. Avvincente.",
+        "Ma parliamo solo del cielo?",
+        "Sì. Il tempo esiste.",
+        "Conversazione davvero appassionante.",
+        "...E quindi?"
       ]
     },
     "insult": {
       "label": "Insulta",
       "player": [
         "Sei uno spreco di spazio, {name}.",
-        "Sinceramente, {name}, fai pena.",
-        "Ho conosciuto sassi più intelligenti di te, {name}.",
+        "Sinceramente {name}, fai pena.",
+        "Ho conosciuto sassi più svegli di te, {name}.",
         "Sei un imbarazzo, {name}.",
-        "Non piaci davvero a nessuno, {name}.",
+        "Non è che piaci a qualcuno davvero, {name}.",
         "Sei inutile, {name}, e lo sanno tutti."
       ],
       "responseGood": [
-        "{name} indietreggia, ferito. \"...Che cosa ti ho fatto di male?\"",
-        "\"Non era il caso,\" dice {name}, e il dolore diventa rabbia.",
-        "Il volto di {name} si indurisce. \"Te ne pentirai.\"",
-        "\"Sparisci dalla mia vista,\" sbotta {name}.",
-        "{name} stringe i pugni. \"Bada a come parli.\""
+        "...Ma io cosa ti ho fatto?",
+        "Questa era gratuita.",
+        "Te ne pentirai.",
+        "Sparisci dalla mia vista.",
+        "Occhio a come parli."
       ],
       "responseBad": [
-        "{name} ride amaramente. \"Ancora insulti? Sei prevedibile.\"",
-        "\"È tutto quello che sai fare?\" sogghigna {name}.",
-        "{name} sputa per terra. \"Non vali più nemmeno la mia rabbia.\"",
-        "\"Continua a parlare,\" ringhia {name}. \"Un giorno ti risponderò.\"",
-        "{name} lo fulmina con lo sguardo. \"Tutte le volte. Fai pietà.\""
+        "Di nuovo insulti? Sei prevedibile.",
+        "È l'unica cosa che sai fare?",
+        "Non vali più nemmeno la mia rabbia.",
+        "Continua a parlare. Un giorno rispondo.",
+        "Ogni volta. Fai pietà."
       ]
     },
     "mock": {
-      "label": "Deridi",
+      "label": "Prendi in giro",
       "player": [
         "Bel lavoro, {name}. Ti sei allenato a fallire?",
-        "Oh, piano brillante, {name}. Davvero ispirato.",
-        "Wow, {name}, devi essere fierissimo di te.",
-        "Attento, {name}, tutto quel pensare potrebbe farti male.",
-        "Carino il tentativo, {name}. Adorabile, davvero.",
-        "Bravo, {name}. Una performance memorabile."
+        "Ah, piano geniale, {name}. Davvero ispirato.",
+        "Wow, {name}, sarai fierissimo di te stesso.",
+        "Attento {name}, tutto quel pensare potrebbe farti male.",
+        "Carino il tentativo, {name}. Adorabile, sul serio.",
+        "Bravo, {name}. Una prestazione da tramandare ai posteri."
       ],
       "responseGood": [
-        "Le guance di {name} arrossiscono. \"Molto divertente. Davvero.\"",
-        "\"Ridi pure,\" borbotta {name}, umiliato.",
-        "{name} guarda altrove, con la mascella serrata. \"Ti credi spiritoso.\"",
-        "\"Divertiti,\" dice {name} con freddezza.",
-        "{name} si irrigidisce. \"Continua a deridermi. Vedi dove ti porta.\""
+        "Divertentissimo. Davvero.",
+        "Ridi, ridi.",
+        "Ti credi spiritoso.",
+        "Divertiti pure.",
+        "Continua a sfottere. Vediamo dove ti porta."
       ],
       "responseBad": [
-        "{name} scrolla le spalle. \"Le tue battute hanno stancato da un pezzo.\"",
-        "\"Sempre le stesse prese in giro,\" dice {name}, annoiato.",
-        "{name} sbadiglia platealmente. \"Impegnati di più.\"",
-        "\"Ho smesso di ascoltarti,\" dice {name} con tono piatto.",
-        "{name} sogghigna. \"Sinceramente, adesso la barzelletta sei tu.\""
+        "Le tue battute sono scadute da un pezzo.",
+        "Le solite prese in giro stantie.",
+        "Impegnati di più.",
+        "Ho smesso di ascoltarti.",
+        "La barzelletta ormai sei tu, sinceramente."
       ]
     },
     "criticize": {
       "label": "Critica",
       "player": [
-        "Avresti potuto farlo molto meglio, {name}.",
-        "È stato un lavoro fatto male, {name}.",
+        "Potevi farlo molto meglio, {name}.",
+        "Quello era un lavoro fatto male, {name}.",
         "Mi aspettavo di più da te, {name}.",
-        "Stai tagliando gli angoli, {name}. Si vede.",
-        "Francamente, {name}, non è stato abbastanza.",
+        "Stai tagliando gli angoli, {name}. E si vede.",
+        "Francamente {name}, non era abbastanza.",
         "Continui a fare gli stessi errori, {name}."
       ],
       "responseGood": [
-        "{name} si irrigidisce. \"...Ne terrò conto.\"",
-        "\"Sono tutti critici,\" dice {name}, sulla difensiva.",
-        "{name} aggrotta la fronte. \"Ho fatto del mio meglio, veramente.\"",
-        "\"Annotato,\" dice {name} seccamente.",
-        "{name} trattiene una risposta. \"Va bene. Ho capito.\""
+        "...Ne terrò conto.",
+        "Siete tutti critici.",
+        "Ho fatto del mio meglio, veramente.",
+        "Preso nota.",
+        "Va bene. Il punto è chiaro."
       ],
       "responseBad": [
-        "{name} sbotta. \"Critichi ma non muovi mai un dito.\"",
-        "\"Sempre l'esperto, eh,\" dice {name} con amarezza.",
-        "{name} alza le mani. \"Non ti va bene niente.\"",
-        "\"Sono stufo delle tue lagne,\" dice {name}.",
-        "{name} si volta dall'altra parte. \"Risparmiami le prediche.\""
+        "Tu critichi e non alzi mai un dito.",
+        "Sempre l'esperto, eh.",
+        "Non ti va mai bene niente.",
+        "Sono stufo delle tue lagne.",
+        "Tienile per te, le prediche."
       ]
     },
     "threaten": {
@@ -281,24 +281,24 @@
       "player": [
         "Mettiti contro di me e te ne pentirai, {name}.",
         "Non ti conviene avermi come nemico, {name}.",
-        "Sta' attento, {name}. Ti sto avvisando.",
+        "Occhio a te, {name}. Ti sto avvertendo.",
         "Una mossa sbagliata, {name}, e per te è finita.",
         "Potrei renderti la vita molto difficile, {name}.",
-        "Ricorda con chi stai parlando, {name}."
+        "Ricordati con chi stai parlando, {name}."
       ],
       "responseGood": [
-        "{name} impallidisce. \"...Va bene. Non ce n'è bisogno.\"",
-        "\"Questa è una minaccia?\" dice {name}, turbato.",
-        "{name} fa un passo indietro. \"Hai reso chiaro il concetto.\"",
-        "\"Calma, calma,\" dice {name} nervosamente.",
-        "{name} deglutisce. \"Non voglio guai.\""
+        "...Va bene. Non ce n'è bisogno.",
+        "Questa è una minaccia?",
+        "Il concetto è chiaro.",
+        "Calma, calma.",
+        "Io non voglio guai."
       ],
       "responseBad": [
-        "{name} si fa avanti. \"Minacci, ma non passi mai ai fatti.\"",
-        "\"Minacce a vuoto,\" dice {name}, ormai senza paura.",
-        "{name} ride. \"Ancora tu? Ho smesso di aver paura.\"",
-        "\"Fa' pure del tuo peggio,\" dice {name} con freddezza.",
-        "{name} si avvicina. \"Attento. La mia pazienza è finita.\""
+        "Minacci e poi non fai mai niente.",
+        "Minacce a vuoto.",
+        "Ancora tu? Ho smesso di avere paura.",
+        "Fai pure il peggio che sai.",
+        "Attento. La pazienza è finita."
       ]
     }
   },
@@ -307,327 +307,327 @@
       "flirt": {
         "label": "Flirta",
         "player": [
-          "Allora, {name}, qualcuno qui riesce mai a starti dietro?",
-          "Ti sporgi appena in avanti. \"Speravo di trovarti qui, {name}.\"",
-          "\"Attento, {name}. Potrei farci l'abitudine.\"",
-          "\"Ti ho in testa più di quanto sia ragionevole, {name}.\""
+          "Allora {name}, qualcuno qui in giro riesce mai a starti dietro?",
+          "Ti avvicini un po'. \"Speravo di trovarti qui, {name}.\"",
+          "\"Attento, {name}. Rischio di prenderci gusto.\"",
+          "\"Mi passi per la testa più di quanto sia ragionevole, {name}.\""
         ],
         "responseGood": [
-          "{name} ride, e ti regge lo sguardo un attimo di troppo. \"Ah sì?\"",
-          "\"Sei un guaio,\" dice {name}, sorridendo comunque.",
-          "{name} inclina la testa. \"Continua a parlare così e finirò per crederti.\"",
-          "Le orecchie di {name} diventano rosa. \"...Non sei per niente sottile, vero.\""
+          "Ah sì?",
+          "Tu sei un guaio.",
+          "Continua così e finisce che ci credo.",
+          "...Non sei tanto sottile, eh."
         ],
         "responseBad": [
-          "{name} sbatte le palpebre. \"Facciamo finta che tu non l'abbia detto.\"",
-          "\"Quella battuta funzionerà con qualcuno, ne sono certo,\" dice {name}. \"Non con me.\"",
-          "{name} fa un passo indietro. \"Preferirei restare in amicizia.\"",
-          "\"No,\" dice semplicemente {name}, e lascia che sia il silenzio a fare il resto."
+          "Facciamo finta che tu non l'abbia detto.",
+          "Questa battuta con qualcuno funziona di sicuro. Con me no.",
+          "Preferirei restare sul piano dell'amicizia.",
+          "No."
         ]
       },
       "admire": {
         "label": "Ammiralo",
         "player": [
           "\"Chi ti ha detto che ti sta bene aveva ragione, {name}.\"",
-          "Ti accorgi di stare fissando. \"Scusa. È che è difficile distogliere lo sguardo.\"",
-          "\"C'è qualcosa nel modo in cui ti porti, {name}.\"",
+          "Ti accorgi di stare fissando. \"Scusa. È che è difficile guardare da un'altra parte.\"",
+          "\"C'è qualcosa nel modo in cui ti muovi, {name}.\"",
           "\"Sei entrato e la stanza si è rimpicciolita,\" dici a {name}."
         ],
         "responseGood": [
-          "{name} abbassa lo sguardo, trattenendo un sorriso. \"Te ne sei accorto?\"",
-          "\"Beh,\" dice {name}, raddrizzandosi, \"adesso ci penserò tutto il giorno.\"",
-          "{name} si tocca la manica, agitato. \"Questo è... grazie.\"",
-          "\"Hai buon gusto,\" dice {name}, e lascia che il complimento resti lì."
+          "L'hai notato?",
+          "Ecco. Adesso ci penserò tutto il giorno.",
+          "Ma... grazie.",
+          "Hai buon gusto."
         ],
         "responseBad": [
-          "{name} incrocia le braccia. \"Preferirei essere notato per altro.\"",
-          "\"Quindi mi stavi guardando,\" dice {name} con freddezza.",
-          "{name} sospira. \"La gente lo dice quando vuole qualcosa.\"",
-          "\"Ti prego, no,\" dice {name}, e si gira per metà."
+          "Preferirei essere notato per altro.",
+          "Quindi mi stavi guardando.",
+          "La gente dice così quando vuole qualcosa.",
+          "Ti prego, no."
         ]
       },
       "loveLetter": {
-        "label": "Lascia una lettera d'amore",
+        "label": "Fai scivolare una lettera d'amore",
         "player": [
-          "Premi una lettera piegata nella mano di {name} e fai un passo indietro prima di potertene pentire.",
-          "\"Non leggerla qui,\" dici, porgendo a {name} un biglietto sigillato.",
-          "Lasci una lettera dove {name} la troverà, chiusa da un goffo sigillo di ceralacca.",
+          "Metti una lettera piegata nella mano di {name} e arretri prima di potertene pentire.",
+          "\"Non leggerla qui,\" dici, passando a {name} un biglietto sigillato.",
+          "Lasci una lettera dove {name} la troverà, chiusa con un sigillo di ceralacca sbilenco.",
           "\"L'ho scritta male tre volte,\" ammetti, dando a {name} il quarto tentativo."
         ],
         "responseGood": [
-          "{name} la legge due volte, poi la ripone con cura. \"Non mi scrive nessuno da anni.\"",
-          "\"Hai scritto tutto questo? Per me?\" dice {name}, con la voce più bassa di prima.",
-          "{name} ripiega la lettera lungo le pieghe. \"La tengo. Ovviamente.\"",
-          "\"Tre stesure,\" dice {name}, sorridendo alla pagina. \"Si vede. Mi piace.\""
+          "Non mi scrive nessuno da anni.",
+          "Hai scritto tutto questo? Per me?",
+          "La tengo. Ovviamente.",
+          "Tre stesure. Si vede. E mi piace."
         ],
         "responseBad": [
-          "{name} ti restituisce la lettera senza aprirla. \"Non credo di doverla leggere.\"",
-          "\"È tantissimo,\" dice {name}, reggendo il foglio come se potesse mordere.",
-          "{name} scorre due righe e fa una smorfia. \"Mi conosci a malapena.\"",
-          "\"Questa me la tengo,\" dice {name} con tono piatto, \"come promemoria per essere più chiaro con te.\""
+          "Non credo che dovrei leggerla.",
+          "È troppo.",
+          "Mi conosci a malapena.",
+          "Questa me la tengo. Come promemoria per essere più chiaro con te."
         ]
       },
       "serenade": {
         "label": "Fagli una serenata",
         "player": [
-          "Prendi fiato e canti per {name}, male, e del tutto di proposito.",
-          "Attacchi una canzone sotto la finestra di {name}, e arrivi in fondo alla strofa.",
-          "\"Questa è per te,\" dici, e la canti a {name} davanti a tutti.",
-          "Canticchi un vecchio motivo, poi metti il nome di {name} nel ritornello."
+          "Prendi fiato e canti per {name}, malissimo, e del tutto di proposito.",
+          "Attacchi una canzone sotto la finestra di {name} e ti fai tutta la strofa.",
+          "\"Questa è tua,\" dici, e la canti a {name} davanti a tutti.",
+          "Canticchi un motivo vecchio, poi infili il nome di {name} nel ritornello."
         ],
         "responseGood": [
-          "{name} si copre la faccia, ridendo. \"Smettila, smettila, ci guardano tutti, non smettere.\"",
-          "\"È stato orribile,\" dice {name}, raggiante. \"Rifai l'ultimo pezzo.\"",
-          "{name} ascolta fino in fondo, e poi non dice niente per un bel po'.",
-          "\"Nessuno si è mai reso ridicolo per me,\" dice {name}, deliziato."
+          "Basta, basta, ci guardano tutti, non smettere.",
+          "Era orribile. Rifai l'ultimo pezzo.",
+          "{name} ascolta fino in fondo, e poi per un po' non dice niente.",
+          "Nessuno si era mai reso ridicolo per me."
         ],
         "responseBad": [
-          "{name} guarda la folla che si raduna. \"Ti prego. Smettila.\"",
-          "\"Adesso ne hai fatto un affare di tutti,\" sibila {name}.",
+          "Ti prego. Smettila.",
+          "Adesso l'hai reso un affare di tutti.",
           "{name} se ne va a metà della seconda strofa.",
-          "\"Quella,\" dice {name}, \"era una recita. Non era per me, era contro di me.\""
+          "Quella. Era una prestazione. Non era per me, era contro di me."
         ]
       },
       "askDance": {
         "label": "Invitalo a ballare",
         "player": [
-          "Offri la mano a {name}. \"Un ballo. Nessuno deve sapere perché.\"",
+          "Porgi la mano a {name}. \"Un ballo. Non deve saperlo nessuno il perché.\"",
           "\"Balla con me, {name}. Condurrò male, ma condurrò.\"",
-          "Fai un inchino fin troppo formale, e aspetti che {name} ti prenda la mano.",
+          "Fai un inchino decisamente troppo formale e aspetti che {name} ti prenda la mano.",
           "\"Da qualche parte c'è della musica,\" dici a {name}. \"Basta e avanza. Balla con me.\""
         ],
         "responseGood": [
-          "{name} ti prende la mano. \"Uno. E conta i passi ad alta voce, mi raccomando.\"",
-          "\"E va bene,\" dice {name}, già sorridendo, e ti segue nel giro.",
-          "{name} ride e si avvicina. Balla molto meglio di te, e non di poco.",
-          "\"Ti pentirai di avermelo chiesto,\" dice {name}, prendendoti comunque la mano."
+          "Uno. E i passi li conti ad alta voce, chiaro.",
+          "E va bene.",
+          "{name} ride e si fa avanti. Balla molto meglio di te, e di parecchio.",
+          "Ti pentirai di avermelo chiesto."
         ],
         "responseBad": [
-          "{name} guarda la tua mano, poi la tua faccia. \"No. Grazie.\"",
-          "\"Io non ballo,\" dice {name}, con un tono che chiude l'argomento.",
-          "{name} arretra fuori portata. \"Sei molto vicino.\"",
-          "\"Chiedilo a qualcuno a cui farebbe piacere,\" dice {name}, e tira dritto."
+          "No. Grazie.",
+          "Io non ballo.",
+          "Sei molto vicino.",
+          "Chiedilo a qualcuno a cui farebbe piacere."
         ]
       },
       "holdHands": {
         "label": "Prendigli la mano",
         "player": [
-          "Allunghi la mano e prendi quella di {name}, abbastanza lentamente da lasciargli il tempo di ritrarsi.",
-          "Le tue dita trovano quelle di {name}, e restano lì.",
-          "\"Va bene così?\" chiedi, con la mano sospesa su quella di {name}.",
-          "Intrecci le dita a quelle di {name} senza dire niente."
+          "Allunghi la mano e prendi quella di {name}, abbastanza piano da lasciargli il tempo di ritrarsi.",
+          "Le tue dita trovano quelle di {name}, e le lasci lì.",
+          "\"Va bene così?\" chiedi, con la mano sospesa sopra quella di {name}.",
+          "Intrecci le dita con quelle di {name} senza dire assolutamente niente."
         ],
         "responseGood": [
-          "{name} non si ritrae. La stretta si fa più salda, appena appena.",
-          "\"...Sì,\" dice {name} a bassa voce. \"Va bene così.\"",
+          "{name} non si ritrae. La stretta si fa un po' più forte.",
+          "...Sì. Va bene.",
           "{name} guarda le vostre mani unite come se fossero un rompicapo, poi si rilassa.",
           "{name} non dice niente, e non lascia la presa."
         ],
         "responseBad": [
-          "{name} ritira la mano di scatto. \"Non farlo.\"",
-          "\"Avresti dovuto chiedere,\" dice {name}, asciugandosi il palmo sul cappotto.",
-          "{name} si irrigidisce, poi arretra fuori portata. \"Questo no, no.\"",
-          "\"Farò finta che sia stato un incidente,\" dice {name}."
+          "No.",
+          "Dovevi chiedere.",
+          "Questo no, no.",
+          "Faccio finta che sia stato un incidente."
         ]
       },
       "askOut": {
-        "label": "Invitalo a uscire",
+        "label": "Chiedigli di uscire",
         "player": [
-          "\"Esci con me, {name}. In un posto rumoroso o in uno tranquillo, scegli tu.\"",
-          "\"Una sera,\" dici. \"Io e te, {name}, e nient'altro in programma.\"",
-          "\"Lascia che ti offra una cena, {name}. Cucinata male, offerta con sincerità.\"",
-          "\"Mi piacerebbe vederti quando nessuno dei due sta lavorando, {name}.\""
+          "\"Usciamo, {name}. Un posto rumoroso o un posto tranquillo, scegli tu.\"",
+          "\"Una sera,\" dici. \"Io e te, {name}, e niente altro in programma.\"",
+          "\"Fatti offrire una cena, {name}. Cucinata male, offerta onestamente.\"",
+          "\"Mi piacerebbe vederti quando non stiamo lavorando né io né te, {name}.\""
         ],
         "responseGood": [
-          "\"Va bene,\" dice {name}, sorpreso di se stesso. \"Va bene, sì.\"",
-          "{name} ci pensa fin troppo a lungo, poi annuisce. \"Mi farebbe piacere.\"",
-          "\"Un posto tranquillo,\" decide {name}. \"E paghi tu.\"",
-          "\"Ce ne hai messo di tempo a chiedermelo,\" dice {name}."
+          "Va bene. Va bene, sì.",
+          "Mi farebbe piacere.",
+          "Un posto tranquillo. E offri tu.",
+          "Ce n'è voluto per chiedermelo."
         ],
         "responseBad": [
-          "{name} scuote la testa. \"Non credo che finirebbe bene per nessuno dei due.\"",
-          "\"No,\" dice {name} con dolcezza, il che in qualche modo peggiora le cose.",
-          "{name} sbuffa. \"Mi sono trovato bene. Vorrei che restasse esattamente quello che è.\"",
-          "\"Hai frainteso qualcosa,\" dice {name}. \"Ed è colpa di entrambi.\""
+          "Non credo che finirebbe bene per nessuno dei due.",
+          "No.",
+          "Mi sono trovato bene. E vorrei che restasse esattamente questo.",
+          "Hai frainteso qualcosa. E la colpa è di tutti e due."
         ]
       },
       "confess": {
         "label": "Dichiarati",
         "player": [
           "\"Sono innamorato di te, {name}. Me lo porto dietro da un po'.\"",
-          "\"Devo dirlo una volta, ad alta voce, e poi farne quello che vuoi. Ti amo, {name}.\"",
+          "\"Devo dirlo una volta, ad alta voce, e poi fanne quello che vuoi. Ti amo, {name}.\"",
           "Smetti di fingere. \"Sei tu, {name}. Lo sei da un pezzo.\"",
           "\"Preferisco rovinare tutto piuttosto che continuare a mentire,\" dici a {name}. \"Ti amo.\""
         ],
         "responseGood": [
-          "{name} ti fissa. \"Ripetilo. Più piano.\"",
-          "\"Lo so,\" dice {name}, con gli occhi lucidi. \"Aspettavo che lo dicessi tu per primo.\"",
-          "{name} lascia andare un respiro trattenuto a lungo. \"Allora siamo due idioti.\"",
-          "\"Hai scelto un momento pessimo,\" dice {name}, \"e non me ne importa niente.\""
+          "Ripetilo. Più piano.",
+          "Lo so. Aspettavo che lo dicessi tu per primo.",
+          "Allora siamo scemi tutti e due.",
+          "Hai scelto un momento pessimo. E non me ne importa assolutamente niente."
         ],
         "responseBad": [
-          "{name} sembra colpito. \"Oh. Oh, no. Mi dispiace.\"",
-          "\"Avrei preferito che non lo dicessi,\" dice {name} a bassa voce. \"Adesso devo essere onesto a mia volta.\"",
-          "{name} scuote lentamente la testa. \"Io non provo questo. Non l'ho mai provato.\"",
-          "\"Non è stato leale,\" dice {name}. \"Mettermi addosso questo, qui.\""
+          "Oh. Oh no. Mi dispiace.",
+          "Avrei preferito che non lo dicessi. Adesso devo essere onesto anch'io.",
+          "Io non provo questo. Non l'ho mai provato.",
+          "Non è stato leale. Scaricarmelo addosso, qui."
         ]
       },
       "kiss": {
         "label": "Bacialo",
         "player": [
-          "Colmi la distanza e baci {name}.",
-          "Sollevi il mento di {name} e lo baci prima che ti manchi il coraggio.",
+          "Accorci la distanza e baci {name}.",
+          "Sollevi il mento di {name} e lo baci prima che ti passi il coraggio.",
           "\"Dimmi di fermarmi,\" dici, già chinandoti verso {name}.",
-          "Baci {name} come se la conversazione non avesse mai puntato altrove."
+          "Baci {name} come se il discorso avesse sempre puntato solo lì."
         ],
         "responseGood": [
           "{name} ricambia il bacio, con le mani strette nel tuo colletto.",
-          "{name} emette un piccolo suono di sorpresa, poi ti tira più vicino.",
-          "\"Finalmente,\" sospira {name}, quando riprendete fiato.",
+          "{name} emette un piccolo suono sorpreso, poi ti tira più vicino.",
+          "Finalmente.",
           "{name} appoggia la fronte alla tua e per un momento non si muove."
         ],
         "responseBad": [
-          "{name} ti spinge via con forza. \"Ma che problemi hai?\"",
-          "{name} gira la faccia all'ultimo istante. \"No. Assolutamente no.\"",
-          "\"Non sta a te deciderlo per me,\" dice {name}, furioso.",
-          "{name} si asciuga la bocca e ti fissa. \"Non farlo mai più.\""
+          "Ma cosa ti prende?",
+          "No. Assolutamente no.",
+          "Non tocca a te deciderlo per me.",
+          "Non farlo mai più."
         ]
       }
     },
     "rejection": {
       "taken": {
-        "reasonLabel": "impegnato/a",
+        "reasonLabel": "è impegnato",
         "lines": [
-          "{name} alza una mano. \"Sono impegnato, e intendo restarlo.\"",
-          "\"Sto con qualcuno,\" dice {name}. \"Solo qualcuno. L'accordo è tutto qui.\"",
-          "{name} scuote la testa con fermezza. \"Non lo faccio alle spalle di nessuno.\"",
-          "\"Sai che sono impegnato,\" dice {name} con freddezza, \"e me l'hai chiesto lo stesso.\""
+          "Sono impegnato, e intendo restarci.",
+          "Sto con una persona. Una sola. L'accordo è tutto qui.",
+          "Io alle spalle di nessuno non ci vado.",
+          "Lo sai che sono impegnato. E me l'hai chiesto lo stesso."
         ]
       },
       "orientation": {
-        "reasonLabel": "non il suo tipo",
+        "reasonLabel": "non è il suo tipo",
         "lines": [
-          "{name} sorride, con garbo. \"Sei una persona adorabile. E non sei ciò che mi attira.\"",
-          "\"Non credo tu abbia capito chi guardo,\" dice {name}.",
-          "{name} scuote la testa. \"Non sei tu. Semplicemente non sono fatto così.\"",
-          "\"Non sarebbe mai andata a segno,\" dice {name}. \"Senza offesa.\""
+          "Sei una bella persona. E non sei quello che mi attira.",
+          "Non credo tu abbia capito da che parte guardo.",
+          "Non sei tu. È che proprio non sono fatto così.",
+          "Non sarebbe mai andata a segno. Senza offesa."
         ]
       },
       "aromantic": {
-        "reasonLabel": "aromantico/a",
+        "reasonLabel": "aromantico",
         "lines": [
-          "\"Io non mi innamoro,\" dice {name} con semplicità. \"Di nessuno. Non è una ferita, è solo così.\"",
-          "{name} scrolla le spalle. \"Il romanticismo è una lingua che non ho mai parlato.\"",
-          "\"Vuoi qualcosa che non ho da dare,\" dice {name}. \"L'amicizia quella sì.\"",
-          "{name} sembra quasi dispiaciuto. \"Non c'è niente da raggiungere. Non c'è mai.\""
+          "Io non mi innamoro. Di nessuno. Non è una ferita, è solo come stanno le cose.",
+          "Il romanticismo è una lingua che non ho mai parlato.",
+          "Mi chiedi una cosa che non ho da dare. L'amicizia quella sì.",
+          "Non c'è niente lì da raggiungere. Non c'è mai stato."
         ]
       },
       "asexual": {
         "reasonLabel": "asessuale",
         "lines": [
-          "{name} fa un passo indietro. \"Quello no. Con nessuno, prima che tu lo chieda.\"",
-          "\"Non voglio quel tipo di contatto,\" dice {name}. \"Né da te né da altri.\"",
-          "{name} scuote la testa. \"Parlami quanto vuoi. Quella parte è chiusa.\"",
-          "\"La mia compagnia è tua,\" dice {name}, \"e nient'altro.\""
+          "Quello no. Con nessuno, prima che tu lo chieda.",
+          "Non voglio quel tipo di contatto. Né da te né da nessun altro.",
+          "Parlami quanto ti pare. Quella parte lì è chiusa.",
+          "La mia compagnia è a tua disposizione. E nient'altro."
         ]
       },
       "synthetic": {
-        "reasonLabel": "cerca una macchina",
+        "reasonLabel": "vuole una macchina",
         "lines": [
-          "{name} sospira. \"Siete tutti caldi e umidi e imprevedibili. Preferisco una scheda logica pulita.\"",
-          "\"Senza offesa,\" dice {name}, \"ma mi innamoro solo di cose che ronzano.\"",
-          "{name} si batte il petto. \"La carne non mi fa niente. Portami un telaio.\"",
-          "\"Sono stato con un'unità aritmetica,\" dice {name}. \"Tu saresti un passo indietro.\""
+          "Siete tutti caldi, umidi e imprevedibili. Io preferisco una scheda logica pulita.",
+          "Senza offesa. Ma io mi innamoro solo di cose che ronzano.",
+          "La carne non mi fa niente. Portami un telaio.",
+          "Sono stato con un'unità aritmetica. Tu saresti un declassamento."
         ]
       },
       "botanic": {
-        "reasonLabel": "cerca una pianta",
+        "reasonLabel": "vuole una pianta",
         "lines": [
-          "{name} guarda oltre le tue spalle una felce in vaso. \"...Scusa. Dicevi?\"",
-          "\"Tu non fai la fotosintesi,\" dice {name} con tristezza. \"Non funzionerebbe mai.\"",
-          "{name} scuote la testa. \"Mi serve qualcuno radicato. Radicato alla lettera.\"",
-          "\"Il mio ultimo compagno era una siepe,\" dice {name}. \"Siamo rimasti amici.\""
+          "...Scusa. Dicevi?",
+          "Tu non fai la fotosintesi. Non funzionerebbe mai.",
+          "Mi serve qualcuno radicato. Radicato in senso letterale.",
+          "La mia ultima storia era con una siepe. Siamo rimasti amici."
         ]
       },
       "dwarf": {
         "reasonLabel": "solo nani",
         "lines": [
-          "{name} ti squadra con uno sguardo piatto. \"Troppo alto. Decisamente troppo alto.\"",
-          "\"Ho un tipo,\" dice {name}, \"e viene con la barba e una concessione mineraria.\"",
-          "{name} scuote la testa. \"Torna quando sarai un metro più basso.\"",
-          "\"Sei molto gentile,\" dice {name}, \"e hai le gambe decisamente troppo lunghe.\""
+          "Troppo alto. Decisamente troppo alto.",
+          "Io ho un tipo. E viene con la barba e una concessione mineraria.",
+          "Torna quando sarai un metro più basso.",
+          "Sei molto gentile. E hai le gambe decisamente troppo lunghe."
         ]
       },
       "bubba": {
         "reasonLabel": "ama Bubba Wilson",
         "lines": [
-          "{name} sfiora un medaglione. \"C'è sempre stato un solo uomo per me, e ha costruito il Motore Liminale.\"",
-          "\"Tu non sei Bubba Wilson,\" dice {name}, come se questo chiudesse la questione. E la chiude.",
-          "{name} sorride sognante. \"Scusa. Il mio cuore appartiene a un ingegnere dell'Ohio.\"",
-          "\"Gli ho scritto quattrocento lettere,\" dice {name}. \"Un giorno risponderà.\""
+          "C'è sempre stato un solo uomo per me, e ha costruito il Motore Liminale.",
+          "Tu non sei Bubba Wilson.",
+          "Scusa. Il mio cuore appartiene a un meccanico dell'Ohio.",
+          "Gli ho scritto quattrocento lettere. Un giorno risponderà."
         ]
       },
       "bubbaHimself": {
         "reasonLabel": "è impegnato, con una dea",
         "lines": [
-          "\"Eh, chiano chiano,\" dice {name}, con le mani unte alzate. \"Sei l'amica migliore che ho in novantadue dimensioni. E lì si ferma, tesoro.\"",
-          "\"C'è una sola donna nel mio cuore e quella tira le montagne,\" dice {name}. \"Non è giusto per te e di sicuro non è sicuro.\"",
-          "{name} scuote la testa, con dolcezza. \"Sto guidando fino a Beagle per firmare delle carte, mica per cominciare qualcosa. Amice simme e amice restammo.\"",
-          "\"Guagliò, mettilo via prima che la caffettiera salti di nuovo giù dal fornello,\" dice {name}. \"Quella guarda, sai. Guarda sempre.\"",
-          "\"Tesoro, ti voglio bene come a una sorella con un carattere peggiore,\" dice {name}. \"È tutto qui.\"",
-          "{name} ride, poi smette di ridere, poi ti passa un caffè. \"Nah, guaglio'. Abbiamo qualcosa di meglio.\"",
-          "\"Tu vuoi qualcuno che resti,\" dice {name} con gentilezza. \"Io sono un uomo con la strada sotto. Non è la stessa cosa.\"",
-          "\"Madonna, e poi chi lo aggiusta il camper dopo che lei lo sfascia?\" dice {name}. \"Sii pratica, Em.\"",
+          "Uhé, chiano chiano. Tu sei la migliore amica che ho in novantadue dimensioni. E lì si ferma, core mio.",
+          "C'è una sola donna nel mio cuore e quella tira montagne. Non è giusto per te e di sicuro non è sicuro.",
+          "Io a Beagle ci vado a firmare delle carte, non a combinare guai. Amice simme e amice restammo.",
+          "Guagliò, mettila via prima che la caffettiera salti di nuovo giù dal fornello. Quella guarda, sai. Guarda sempre.",
+          "Core mio, ti voglio bene come a una sorella col carattere peggiore. È tutto qui.",
+          "Nun se po', guagliò. Noi due abbiamo qualcosa di meglio.",
+          "Tu vuoi qualcuno che resti. Io sono un uomo con la strada sotto. Non è la stessa cosa.",
+          "Madonna, e poi chi lo aggiusta il camper dopo che me lo sfascia? Sii pratica, Em.",
           "{name} finge, malissimo, di non aver sentito, e parla del collettore per dieci minuti."
         ]
       },
       "emZealot": {
-        "reasonLabel": "non si fa corteggiare dall'uccisora di dei",
+        "reasonLabel": "non si fa corteggiare dall'uccisora di dèi",
         "lines": [
-          "{name} arretra come se la proposta fosse una miccia accesa. \"Hai dato un dio in pasto a una lancia. Non hai il diritto di essere affascinante.\"",
-          "\"Corteggerei prima il buco nel cielo,\" dice {name}.",
-          "{name} solleva un pendente tra voi due come uno scudo. \"Non tu. Mai tu.\"",
-          "\"Qualunque cosa tu sia adesso,\" dice {name}, \"non è qualcosa che voglio più vicina.\"",
-          "\"Vuoi amore da me,\" dice {name}. \"C'è una fila, e comincia dai morti.\"",
-          "{name} ride, e viene fuori sbagliato. \"Corteggiami. Dio è morto e la strega flirta.\"",
-          "\"Ho una moglie, una madre e una parrocchia,\" dice {name}, \"e tutte e tre brucerebbero il letto.\"",
+          "Hai dato un dio in pasto a una lancia. Non hai diritto di essere affascinante.",
+          "Corteggerei prima il buco nel cielo.",
+          "Non tu. Mai tu.",
+          "Qualunque cosa tu sia adesso. Non è una cosa che voglio più vicina.",
+          "Vuoi amore da me. C'è una fila, e comincia dai morti.",
+          "Corteggiarmi. Dio è morto e la strega fa la civetta.",
+          "Ho una moglie, una madre e una parrocchia. E tutte e tre darebbero fuoco al letto.",
           "{name} non risponde. {name} va alla porta e la tiene aperta.",
-          "\"Non in questa vita,\" dice {name}, \"e non ne è rimasta un'altra da prometterti.\""
+          "Non in questa vita. E non ne è rimasta un'altra da prometterti."
         ]
       },
       "emAnnoyed": {
-        "reasonLabel": "vuole che la strega famosa se ne vada",
+        "reasonLabel": "vuole che la strega famosa tiri dritto",
         "lines": [
-          "{name} ride una volta sola, senza allegria. \"No. Ho già abbastanza tempeste nella mia vita.\"",
-          "\"Giovedì te ne sarai andata e qualcosa starà bruciando,\" dice {name}. \"È lo schema.\"",
-          "{name} scuote la testa. \"Non voglio essere un paragrafo nella tua storia.\"",
-          "\"Chiedilo a qualcuno che vuole il proprio nome sui giornali,\" dice {name}. \"Ti prego. Chiunque altro.\"",
-          "\"Assolutamente no,\" dice {name}. \"Ho un'attività e un tetto e vorrei tenermeli entrambi.\"",
-          "{name} si pizzica la radice del naso. \"Fra tutte le persone di questa città. Fra tutte.\"",
-          "\"Venerdì sarei sui giornali,\" dice {name}. \"Mia madre legge i giornali.\"",
-          "{name} dice di no in tre parole e trova qualcosa da fare con le mani.",
-          "\"Trova qualcuno che voglia una vita interessante,\" dice {name}. \"Io ne ho avuta una. Era orribile.\""
+          "No. Ho già abbastanza tempesta nella mia vita.",
+          "Entro giovedì te ne sarai andata e qualcosa starà bruciando. Lo schema è quello.",
+          "Non voglio essere un capoverso nella tua storia.",
+          "Chiedilo a qualcuno che vuole finire sul giornale. Ti prego. Chiunque altro.",
+          "Assolutamente no. Ho un'attività e un tetto e mi piacerebbe tenerli tutti e due.",
+          "Fra tutta la gente di questo paese. Fra tutta.",
+          "Entro venerdì sarei sul giornale. E mia madre il giornale lo legge.",
+          "{name} dice di no in tre parole e trova subito qualcosa da fare con le mani.",
+          "Trovati qualcuno che vuole una vita interessante. Io ne ho avuta una. Era orribile."
         ]
       }
     },
     "propose": {
       "player": [
-        "\"Voglio qualcosa di vero con te, {name}. {style}, se vuoi.\"",
-        "\"Ci penso da un po'. {style}, con te. È qualcosa che vorresti anche tu?\"",
-        "\"{name}, te lo chiedo apertamente. {style}, noi due.\"",
-        "Fai un respiro. \"{style}, {name}. Dico sul serio.\""
+        "\"Voglio qualcosa di vero con te, {name}. {style}, se ci stai.\"",
+        "\"Ci ho pensato parecchio. {style}, con te. È una cosa che vorresti?\"",
+        "\"{name}, te lo chiedo chiaramente. {style}, noi due.\"",
+        "Prendi fiato. \"{style}, {name}. Lo dico sul serio.\""
       ],
       "accept": [
-        "{name} resta in silenzio un momento, poi sorride. \"Sì. {style}. Facciamolo.\"",
-        "\"Speravo me lo chiedessi,\" dice {name}. \"{style} mi sembra perfetto.\"",
-        "{name} ti prende la mano. \"Sì. Lo voglio anch'io.\"",
-        "\"Ci hai messo abbastanza,\" dice {name}, sorridendo. \"Sì.\""
+        "Sì. {style}. Facciamolo.",
+        "Speravo me lo chiedessi. {style} suona esattamente giusto.",
+        "Sì. Lo voglio anch'io.",
+        "Ce n'è voluto. Sì."
       ],
       "reject": [
-        "{name} distoglie lo sguardo. \"Non così. Mi dispiace.\"",
-        "\"Non credo di essere pronto/a per questo,\" dice {name} a bassa voce.",
-        "{name} scuote la testa lentamente. \"Non è questo che voglio. Non con te, non così.\"",
-        "\"Chiedimelo un'altra volta,\" dice {name}, anche se non suona come un sì rimandato."
+        "Non così. Mi dispiace.",
+        "Non credo di essere pronto per una cosa del genere.",
+        "Non è quello che voglio. Non con te, non così.",
+        "Richiedimelo un'altra volta."
       ]
     }
   },
@@ -635,118 +635,323 @@
     "story": {
       "label": "Racconta una storia",
       "player": [
-        "Ti metti comodo e imbastisci un lungo racconto su {subject}.",
+        "Ti metti comodo e sciorini un lungo racconto su {subject}.",
         "Racconti a {name} una storia tortuosa su {subject}.",
-        "\"Lascia che ti racconti la storia di {subject},\" cominci.",
-        "Rievochi una vecchia leggenda che riguarda {subject}.",
-        "Intessi per {name} una storia di avventura e {subject}."
+        "\"Lascia che ti racconti la vicenda di {subject},\" cominci.",
+        "Ripercorri una vecchia leggenda che riguarda {subject}.",
+        "Intrecci per {name} una storia di avventura e {subject}."
       ],
       "good": [
-        "{name} ascolta, rapito. \"{subject}... che racconto. Raccontamene un'altra, prima o poi.\"",
-        "\"Potrei ascoltarti parlare di {subject} per ore,\" dice {name}.",
-        "{name} sorride. \"Bella storia. Hai un dono per questo.\"",
-        "\"{subject},\" mormora {name}, commosso. \"Mi ha smosso qualcosa dentro.\"",
-        "{name} si sporge in avanti. \"E poi? No, no, finiscila dopo. Meraviglioso.\""
+        "{subject}... che racconto. Prima o poi raccontamene un altro.",
+        "Potrei ascoltarti parlare di {subject} per ore.",
+        "Bella storia. Hai un dono per queste cose.",
+        "{subject}. Mi ha smosso qualcosa dentro.",
+        "E poi? No, no, finiscila dopo. Meraviglioso."
       ],
       "bad": [
-        "{name} sbadiglia a metà racconto. \"{subject}? Non ho pazienza per storie del genere.\"",
-        "\"Quel racconto su {subject} mi ha annoiato a morte,\" dice {name}.",
-        "{name} aggrotta la fronte. \"Non fa proprio per me.\"",
-        "\"Ti ho perso a {subject},\" sospira {name}.",
-        "{name} ti interrompe. \"Stiamo andando da qualche parte? Ho da fare.\""
+        "{subject}? Non ho pazienza per certe storie.",
+        "Quella storia di {subject} mi ha annoiato a morte.",
+        "Non fa proprio per me.",
+        "Mi hai perso a {subject}.",
+        "Ma va a parare da qualche parte? Ho delle cose da fare."
       ]
     },
     "poem": {
       "label": "Recita una poesia",
       "player": [
-        "Ti schiarisci la voce e reciti dei versi su {subject}.",
+        "Ti schiarisci la gola e reciti dei versi su {subject}.",
         "Offri a {name} una breve poesia su {subject}.",
-        "\"Due versi, su {subject},\" dici, e cominci.",
+        "\"Un versetto, su {subject},\" dici, e cominci.",
         "Reciti un'ode sentita a {subject}.",
         "Improvvisi una rima su {subject} per {name}."
       ],
       "good": [
-        "Gli occhi di {name} si illuminano. \"Una poesia su {subject}... bellissima.\"",
-        "\"Hai l'animo di un poeta,\" dice {name} a bassa voce.",
-        "{name} applaude piano. \"{subject}, reso così finemente.\"",
-        "\"Quei versi su {subject} mi resteranno addosso,\" dice {name}.",
-        "{name} sospira felice. \"Ancora. Ti prego, un'altra.\""
+        "Una poesia su {subject}... bellissima.",
+        "Hai l'anima del poeta.",
+        "{subject}, reso così finemente.",
+        "Quei versi su {subject} me li porto dietro.",
+        "Ancora. Ti prego, un'altra."
       ],
       "bad": [
-        "{name} fa una smorfia. \"Poesie su {subject}? Risparmiami.\"",
-        "\"Quella rima su {subject} mi ha fatto male alle orecchie,\" dice {name}.",
-        "{name} si agita a disagio. \"Non vado matto per i versi.\"",
-        "\"{subject}? Roba terribile,\" borbotta {name}.",
-        "{name} trattiene una risata. \"Doveva essere una cosa seria?\""
+        "Poesia su {subject}? Risparmiami.",
+        "Quella rima su {subject} mi ha fatto male alle orecchie.",
+        "I versi non mi dicono granché.",
+        "{subject}? Roba terribile.",
+        "Ma era una cosa seria?"
       ]
     }
   },
   "jokes": {
     "landGood": [
-      "{name} scoppia a ridere. \"Ah! Questa è bella.\"",
-      "{name} sbuffa dal naso. \"Okay, questa mi ha preso davvero.\"",
-      "\"Terribile,\" sorride {name}, \"ma ho riso. Maledetto te.\"",
-      "{name} ridacchia suo malgrado. \"Ma dove le senti queste?\"",
-      "\"Ah! Va bene, questa era arguta,\" dice {name}."
+      "Ah! Questa è bella.",
+      "Ok, questa mi ha preso davvero.",
+      "Orribile. Ma ho riso. Maledetto te.",
+      "Ma dove le senti queste?",
+      "Ah! Va bene, questa era arguta."
     ],
     "landGroan": [
-      "{name} geme. \"Era pessima. In un certo senso la adoro.\"",
-      "\"...Non posso credere che abbia funzionato su di me,\" dice {name}, sorridendo.",
-      "{name} scuote la testa, ridacchiando. \"Che schifo. Che schifo.\"",
-      "\"Dovresti vergognarti,\" ride {name}.",
-      "{name} alza gli occhi al cielo e sorride. \"Uffa. Va bene. Divertente.\""
+      "Era pessima. E in qualche modo la adoro.",
+      "...Non ci posso credere che abbia funzionato su di me.",
+      "Che schifo. Che schifo.",
+      "Dovresti vergognarti.",
+      "Uffa. E va bene. Fa ridere."
     ],
     "flop": [
-      "{name} ti fissa senza espressione. \"...Doveva far ridere?\"",
-      "\"Non l'ho capita,\" dice {name}.",
-      "{name} accenna un colpetto di tosse educato. \"Ah. Ah. Ah.\"",
-      "\"Questa me l'hai già raccontata,\" sospira {name}.",
-      "{name} resta impassibile. \"Ti prego, smettila.\""
+      "...Doveva far ridere?",
+      "Non l'ho capita.",
+      "Ah. Ah. Ah.",
+      "Questa me l'hai già raccontata.",
+      "Ti prego, basta."
     ],
     "templates": [
-      "Perché il {noun} ha deciso di {verb}? Perché era completamente {adj}!",
-      "Come si chiama un {noun} {adj}? Un {noun2}!",
-      "Un {profession} entra {place} e dice: \"Prendo quello che c'è di {adj}.\"",
-      "Basta un {noun} per {verb}? No, è troppo {adj}.",
-      "Il mio {noun} è così {adj} che nemmeno il {profession} lo vuole toccare.",
-      "Che differenza c'è tra un {noun} e un {noun2}? Una manciata di monete e un malinteso {adj}.",
-      "Ho detto un segreto al mio {noun}, e adesso lo sanno tutti {place}. Molto {adj} da parte sua.",
-      "Dicono che {place} ci sia un {noun} {adj}. Secondo me serve solo un {profession}."
+      "Perché {def:noun} ha deciso di {verb}? Perché era completamente {adj~noun}!",
+      "Come si chiama {indef:noun} {adj~noun}? {^indef:noun2}!",
+      "{^indef:profession} entra in {indef:place} e dice: \"Per me qualcosa di {adj}.\"",
+      "{^howMany~noun*} {noun*} ci vogliono per {verb}? Non bastano: sono troppo {adj~noun}.",
+      "{^def:noun} che ho in casa è così {adj~noun} che perfino {def:profession} preferisce non avvicinarsi.",
+      "Che differenza c'è tra {indef:noun} e {indef:noun2}? Due monete e un aggettivo tipo \"{adj}\".",
+      "Ho confidato un segreto {a:noun} e adesso lo sa {whole~place} {def:place}. Proprio da {adj~noun}.",
+      "Dicono che {in:place} ci sia {indef:noun} {adj~noun}. Secondo me serve solo {indef:profession}."
     ],
+    "grammar": {
+      "articles": {
+        "indef": {
+          "sg": [
+            [
+              "f",
+              "^[aeiouàèéìíòóùú]",
+              "un'"
+            ],
+            [
+              "f",
+              "",
+              "una "
+            ],
+            [
+              "m",
+              "^(?:s[^aeiouàèéìíòóùúh]|z|gn|pn|ps|x|y|i[aeouàèéòó])",
+              "uno "
+            ],
+            [
+              "",
+              "",
+              "un "
+            ]
+          ]
+        },
+        "def": {
+          "sg": [
+            [
+              "f",
+              "^[aeiouàèéìíòóùú]",
+              "l'"
+            ],
+            [
+              "f",
+              "",
+              "la "
+            ],
+            [
+              "m",
+              "^(?:s[^aeiouàèéìíòóùúh]|z|gn|pn|ps|x|y|i[aeouàèéòó])",
+              "lo "
+            ],
+            [
+              "m",
+              "^[aeiouàèéìíòóùú]",
+              "l'"
+            ],
+            [
+              "",
+              "",
+              "il "
+            ]
+          ],
+          "pl": [
+            [
+              "f",
+              "",
+              "le "
+            ],
+            [
+              "m",
+              "^(?:s[^aeiouàèéìíòóùúh]|z|gn|pn|ps|x|y|i[aeouàèéòó])",
+              "gli "
+            ],
+            [
+              "m",
+              "^[aeiouàèéìíòóùú]",
+              "gli "
+            ],
+            [
+              "",
+              "",
+              "i "
+            ]
+          ]
+        },
+        "a": {
+          "sg": [
+            [
+              "f",
+              "^[aeiouàèéìíòóùú]",
+              "all'"
+            ],
+            [
+              "f",
+              "",
+              "alla "
+            ],
+            [
+              "m",
+              "^(?:s[^aeiouàèéìíòóùúh]|z|gn|pn|ps|x|y|i[aeouàèéòó])",
+              "allo "
+            ],
+            [
+              "m",
+              "^[aeiouàèéìíòóùú]",
+              "all'"
+            ],
+            [
+              "",
+              "",
+              "al "
+            ]
+          ]
+        },
+        "in": {
+          "sg": [
+            [
+              "f",
+              "^[aeiouàèéìíòóùú]",
+              "nell'"
+            ],
+            [
+              "f",
+              "",
+              "nella "
+            ],
+            [
+              "m",
+              "^(?:s[^aeiouàèéìíòóùúh]|z|gn|pn|ps|x|y|i[aeouàèéòó])",
+              "nello "
+            ],
+            [
+              "m",
+              "^[aeiouàèéìíòóùú]",
+              "nell'"
+            ],
+            [
+              "",
+              "",
+              "nel "
+            ]
+          ]
+        }
+      },
+      "inflect": {
+        "*": {
+          "plural": [
+            [
+              "([oe])$",
+              "i"
+            ],
+            [
+              "a$",
+              "e"
+            ]
+          ]
+        },
+        "adj": {
+          "feminine": [
+            [
+              "o$",
+              "a"
+            ]
+          ],
+          "plural": [
+            [
+              "([oe])$",
+              "i"
+            ],
+            [
+              "a$",
+              "e"
+            ]
+          ]
+        },
+        "howMany": {
+          "feminine": [
+            [
+              "o$",
+              "a"
+            ]
+          ],
+          "plural": [
+            [
+              "([oe])$",
+              "i"
+            ],
+            [
+              "a$",
+              "e"
+            ]
+          ]
+        },
+        "whole": {
+          "feminine": [
+            [
+              "o$",
+              "a"
+            ]
+          ],
+          "plural": [
+            [
+              "([oe])$",
+              "i"
+            ],
+            [
+              "a$",
+              "e"
+            ]
+          ]
+        }
+      }
+    },
     "noun": [
       "goblin",
-      "tubero",
-      "mago",
+      "strega|f|pl=streghe",
+      "mago|pl=maghi",
       "caprone",
-      "tostapane",
-      "fantasma",
-      "banchiere",
+      "tostapane|pl=tostapane",
+      "fantasma|pl=fantasmi",
+      "bancario|pl=bancari",
       "cavolo",
-      "drago",
+      "drago|pl=draghi",
       "calzino",
-      "bollitore",
+      "caffettiera|f",
       "doccione",
       "piccione",
-      "barile",
-      "fungo",
+      "zanzara|f",
+      "fungo|pl=funghi",
       "scheletro"
     ],
     "noun2": [
       "disastro",
       "mito",
-      "imbroglio",
+      "fregatura|f",
       "miracolo",
-      "cataclisma",
-      "affare",
-      "enigma",
-      "flagello",
+      "cataclisma|pl=cataclismi",
+      "affarone",
+      "enigma|pl=enigmi",
+      "sciagura|f",
       "capolavoro"
     ],
     "verb": [
       "attraversare la strada",
       "arruolarsi",
       "licenziarsi",
-      "andare in terapia",
+      "andare in analisi",
       "candidarsi a sindaco",
       "imparare il liuto",
       "fondare una setta",
@@ -756,517 +961,523 @@
       "infestato",
       "stracotto",
       "sospetto",
-      "in bancarotta",
+      "in bancarotta|inv",
       "incantato",
-      "umidiccio",
-      "squilibrato",
+      "umido",
+      "fuori di testa|inv",
       "senziente",
       "infiammabile",
-      "aristocratico",
+      "aristocratico|fpl=aristocratiche",
       "maledetto",
       "tiepido",
       "radioattivo"
     ],
     "profession": [
-      "esattore delle tasse",
-      "alchimista",
+      "esattore delle tasse|pl=esattori delle tasse",
+      "alchimista|pl=alchimisti",
       "becchino",
-      "bardo",
-      "idraulico",
+      "cantastorie|pl=cantastorie",
+      "idraulico|pl=idraulici",
       "negromante",
-      "pescivendolo",
-      "filosofo",
+      "pescivendola|f|pl=pescivendole",
+      "filosofo|pl=filosofi",
       "fabbro"
     ],
     "place": [
-      "in taverna",
-      "in cattedrale",
-      "nella fogna",
-      "nella sala del consiglio",
-      "all'obitorio",
-      "al mercato",
-      "nella palude",
-      "al teatro dell'opera"
+      "bar|inv",
+      "taverna|f",
+      "duomo",
+      "consiglio comunale|inv",
+      "obitorio",
+      "mercato",
+      "pantano",
+      "cattedrale|f|pl=cattedrali"
+    ],
+    "howMany": [
+      "quanto"
+    ],
+    "whole": [
+      "tutto"
     ]
   },
   "em": {
     "stances": {
       "zealot": {
-        "label": "incolpa Em per la morte del Padre",
+        "label": "incolpa Em della morte del Padre",
         "greeting": [
-          "{name} si fa il segno della croce al contrario, come si insegna per le cose maledette. \"La strega. Naturalmente.\"",
-          "\"Ogni parola sacra che possedevo è morta la notte di Capodanno,\" dice {name}. \"E tu sei qui, che ancora respiri.\"",
-          "{name} non ti guarda dritto in faccia. \"Dicono che i tuoi ricordi siano stati affilati in una lancia. Il mio era una preghiera che funzionava.\"",
-          "\"Tu eri il sacrificio,\" dice {name}. \"I sacrifici devono restare sull'altare.\"",
-          "{name} sputa con cura da un lato. \"Legna da ardere per l'uccisione di un dio.\"",
-          "\"Mia madre ha avuto l'ultima estrema unzione che ha avuto effetto,\" dice {name}. \"Fa' tu i conti.\"",
-          "{name} finisce la preghiera prima di degnarti di uno sguardo, ed è una preghiera lunga. \"Ecco. Adesso di' quello che sei venuta a dire.\"",
-          "\"In questo paese la domenica c'erano quattro messe,\" dice {name}. \"Adesso ce n'è una, e il prete la legge come una lista della spesa.\"",
+          "La strega. Ma certo.",
+          "Ogni parola sacra che possedevo è morta la notte di capodanno. E tu sei qui, ancora a respirare.",
+          "Dicono che i tuoi ricordi li abbiano affilati in una lancia. Il mio era una preghiera che funzionava.",
+          "Tu eri il sacrificio. I sacrifici devono restare sull'altare.",
+          "Legna da ardere per ammazzare un dio.",
+          "A mia madre l'estrema unzione ha fatto effetto. I conti fatteli da sola.",
+          "Ecco. Adesso di' quello che sei venuta a dire.",
+          "In questo paese la domenica si dicevano quattro messe. Adesso ce n'è una, e il prete la legge come la lista della spesa.",
           "{name} posa quello che aveva in mano, come se la tua presenza richiedesse entrambe le mani libere.",
-          "\"Mio fratello è andato all'Isola del Rituale a guardare il buco,\" dice {name}. \"È tornato sbagliato ed è tornato zitto.\"",
-          "{name} sgrana i grani senza guardarli. \"Abitudine. Una volta era più di un'abitudine.\"",
-          "\"Dicono che trasalisci alle campane,\" osserva {name}. \"Bene. Qualcosa in te sa ancora cosa ha fatto.\""
+          "Mio fratello è andato all'Isola dei Rituali a guardare il buco. È tornato sbagliato ed è tornato zitto.",
+          "Abitudine. Una volta era più di un'abitudine.",
+          "Dicono che sussulti al suono delle campane. Bene. Qualcosa dentro di te sa ancora cos'ha fatto."
         ],
         "positive": [
-          "\"Un elogio da te è una macchia,\" dice {name}. \"Me la laverò via dopo.\"",
-          "{name} non si ammorbidisce. \"Lusingami per un anno. I miei santi resteranno comunque muti.\"",
-          "\"Risparmia il fascino per la Gilda,\" dice {name}. \"Ti hanno già comprata una volta.\"",
-          "{name} non accetta nulla, e fa un piccolo gesto scaramantico sotto il tavolo.",
-          "\"Sei gentile con me come è caldo un incendio,\" dice {name}. \"Non ho dimenticato cosa fanno gli incendi.\"",
-          "{name} ti ascolta fino in fondo, poi dice: \"E dopo il complimento? Me Lo restituisci?\"",
-          "\"Preferirei essere insultato onestamente,\" dice {name}, \"che lusingato dalla causa.\"",
-          "{name} ti ringrazia con la voce piatta che tiene da parte per gli esattori.",
-          "\"Quel fascino l'hai comprato con un ricordo che non era tuo da spendere,\" dice {name}. \"Tienitelo.\"",
-          "{name} registra la gentilezza come si registra un sintomo."
+          "Un elogio da te è una macchia. Poi la lavo via.",
+          "Adulami per un anno. I miei santi resteranno muti lo stesso.",
+          "Il fascino tienilo per la Gilda. Ti hanno già comprata una volta.",
+          "{name} non accetta niente, e fa un piccolo gesto scaramantico sotto il tavolo.",
+          "Tu sei gentile con me come è caldo un incendio. Non ho scordato cosa fanno gli incendi.",
+          "E dopo il complimento? Me Lo ridai indietro?",
+          "Preferirei essere insultato onestamente. Che adulato dal motivo.",
+          "{name} ti ringrazia con la voce piatta che tiene per gli esattori.",
+          "Quel fascino l'hai comprato con un ricordo che non era tuo da spendere. Tienitelo.",
+          "{name} annota la gentilezza come si annota un sintomo."
         ],
         "neutral": [
-          "{name} risponde con il minor numero di parole che la lingua consenta, una mano su un pendente.",
-          "\"Il tempo,\" ripete {name}. \"Vuoi parlare del tempo. Con me.\"",
+          "{name} risponde col minor numero di parole che la lingua consenta, una mano sul pendaglio.",
+          "Il tempo. Vuoi discutere del tempo. Con me.",
           "{name} parla a un punto quindici centimetri alla tua sinistra per tutta la conversazione.",
-          "\"Fa' le tue domande a qualcuno che ha ancora qualcosa da perdere,\" dice {name}.",
-          "\"Chiacchiere. Dalla donna della prima pagina,\" dice {name}. \"Chiedilo al muro. Ha più pazienza.\"",
-          "{name} risponde in modo corretto, completo, e senza sciogliersi neppure per un istante.",
-          "\"C'è una parola per la conversazione con quelli come te,\" dice {name}. \"Non la userò per strada.\"",
-          "{name} si tiene una porta alle spalle per tutta la durata della conversazione.",
-          "\"Sale sul gradino, sale sul davanzale,\" dice {name}. \"Parla quanto vuoi. Io ho fatto il mio stamattina.\"",
-          "{name} risponde a ogni domanda con l'anno in cui è successo, e nient'altro."
+          "Le tue domande falle a qualcuno che ha ancora qualcosa da perdere.",
+          "Chiacchiere. Da parte della donna in prima pagina. Chiedilo al muro. Ha più pazienza.",
+          "{name} risponde in modo corretto, completo, e senza sciogliere mai la mascella.",
+          "C'è una parola per le conversazioni con quelli come te. Non la userò in mezzo alla strada.",
+          "{name} tiene una porta alle proprie spalle per tutta la durata dello scambio.",
+          "Sale sul gradino, sale sul davanzale. Parla quanto ti pare. Io il mio l'ho fatto stamattina.",
+          "{name} risponde a ogni domanda con l'anno in cui è successo, e niente altro."
         ],
         "negative": [
-          "\"Sì,\" dice {name}, quasi grato. \"Di' qualcosa di brutto. Si addice a ciò che sei.\"",
-          "{name} alza la voce perché tutta la strada sappia quale strega si trova qui.",
-          "\"Minacciami,\" dice {name}. \"Lassù non è rimasto nessuno a sentirmi urlare.\"",
-          "{name} sorride appena. \"Bene. Adesso nessuno dei due deve più fingere.\"",
-          "\"Non puoi dannarmi,\" dice {name}. \"Quell'ufficio è vacante. Ci hai pensato tu.\"",
-          "{name} incassa l'insulto come una benedizione rivoltata, e se lo ripete sottovoce.",
-          "\"Più forte,\" dice {name}. \"Voglio testimoni di cosa è uscito da quella bocca.\"",
+          "Sì. Di' qualcosa di brutto. Si addice a quello che sei.",
+          "{name} alza la voce così che tutta la strada impari quale strega si trova qui.",
+          "Minacciami. Lassù non è rimasto nessuno a sentirmi urlare.",
+          "Bene. Adesso non dobbiamo più fingere né io né te.",
+          "Non puoi dannarmi. Quell'ufficio è vacante. Ci hai pensato tu.",
+          "{name} prende l'insulto come una benedizione rovesciata, e se lo ripete sottovoce.",
+          "Più forte. Voglio dei testimoni per quello che è uscito da quella bocca.",
           "{name} non risponde, e comincia, molto deliberatamente, a pregare contro di te.",
-          "\"Fammi male, allora. Aggiungilo al registro,\" dice {name}. \"Tanto è già illeggibile.\"",
-          "{name} annota il tuo nome. \"Qualcuno di noi tiene ancora delle liste. Qualcuno deve farlo.\""
+          "E allora fammi male. Aggiungilo al registro. Tanto è già illeggibile.",
+          "Qualcuno di noi tiene ancora delle liste. Qualcuno deve pur farlo."
         ]
       },
       "annoyed": {
         "label": "vorrebbe che Em fosse famosa altrove",
         "greeting": [
-          "{name} sbuffa dal naso. \"Sei quella dei giornali. Meraviglioso.\"",
-          "\"Qualunque cosa sia,\" dice {name}, \"potresti andare a farla un po' più in là?\"",
-          "{name} continua a lavorare. \"Ho undici casse da spostare e tu hai una leggenda da essere. Siamo impegnati entrambi.\"",
-          "\"L'ultima volta che è passato qualcuno come te, il cielo ha fatto una cosa,\" dice {name}. \"Tira dritto.\"",
-          "{name} guarda prima le tue mani, poi la tua faccia. \"Niente incantesimi al chiuso. È tutta la regola.\"",
-          "\"No,\" dice {name}, prima che tu abbia chiesto niente. \"Qualunque cosa sia. No.\"",
-          "{name} sposta la cassa un po' più in là da te, senza commentare.",
-          "\"Tu sei la donna del tempo,\" dice {name}. \"Non quella delle previsioni. L'altro tipo.\"",
-          "{name} sospira verso il soffitto. \"Due mesi tranquilli. Era tutta l'ambizione.\"",
-          "\"Se è per il rituale, io dormivo,\" dice {name}. \"Come tutti.\"",
+          "Sei quella dei giornali. Meraviglioso.",
+          "Qualunque cosa sia. Potresti andare a esserlo un po' più giù per la strada?",
+          "Io ho undici casse da spostare e tu hai una leggenda da fare. Siamo occupati tutti e due.",
+          "L'ultima volta che è passato uno come te, il cielo ha fatto una cosa. Tira dritto.",
+          "Niente incantesimi qui dentro. È l'unica regola.",
+          "No. Qualunque cosa sia. No.",
+          "{name} sposta la cassa un po' più lontano da te, senza commentare.",
+          "Tu sei la donna del tempo. Non quella delle previsioni. L'altro tipo.",
+          "Due mesi tranquilli. L'ambizione era tutta lì.",
+          "Se è per via del rituale, io dormivo. Come tutti.",
           "{name} serve prima l'uomo dietro di te, poi te, poi di nuovo l'uomo dietro di te.",
-          "\"Ho letto l'articolo due volte, perché la gente continua a portarmelo dentro,\" dice {name}. \"Congratulazioni.\""
+          "L'articolo l'ho letto due volte, perché continuano a portarmelo dentro. Complimenti."
         ],
         "positive": [
-          "\"Adorabile,\" dice {name}. \"Adesso va' a essere adorabile due strade più in là.\"",
-          "{name} annuisce senza ascoltare. \"Mmh. Compri qualcosa, o?\"",
-          "\"Sei molto gentile per una che ha aperto un buco in paradiso,\" dice {name} con tono piatto.",
-          "\"Sì, molto bene,\" dice {name}. \"C'era altro?\"",
+          "Che carina. Adesso va' a essere carina due strade più in là.",
+          "Mhm. Compri qualcosa, o?",
+          "Sei molto gentile, per essere una che ha aperto un buco in paradiso.",
+          "Sì, molto bene. Serviva altro?",
           "{name} accetta il complimento come si accetta un volantino.",
-          "\"Sei piacevole. Lo era anche l'ultimo,\" dice {name}. \"Mi ha portato via il tetto.\"",
-          "{name} ti ringrazia e comincia a riordinare cose che erano già in ordine.",
-          "\"Risparmialo per chi ti stamperà la prossima volta,\" dice {name}.",
-          "{name} sorride solo con la metà inferiore della faccia.",
-          "\"Farà una bella lettura,\" dice {name}. \"Cittadino del posto conquistato. Prima pagina.\""
+          "Tu sei simpatica. Lo era anche l'ultimo. Ci ha portato via il tetto.",
+          "{name} ti ringrazia e comincia a riordinare roba che era già in ordine.",
+          "Tienitelo per chi ti stamperà la prossima volta.",
+          "{name} sorride soltanto con la metà inferiore della faccia.",
+          "Verrà benissimo per iscritto. Persona del posto conquistata. Prima pagina."
         ],
         "neutral": [
-          "\"Pioggia più tardi. Ecco la conversazione,\" dice {name}, già voltandosi.",
+          "Più tardi piove. La conversazione è tutta qui.",
           "{name} risponde, controlla la porta, risponde di nuovo, controlla la porta.",
-          "\"Io non seguo le notizie e preferirei che loro non seguissero me,\" dice {name}.",
-          "\"Bene. Come ieri. Come domani, se ti spostassi,\" dice {name}.",
-          "{name} ti risponde guardando oltre la tua spalla se c'è fila.",
-          "\"Vuoi la conversazione normale,\" dice {name}. \"Con te non resta mai normale.\"",
-          "{name} ti dà la risposta vera più breve a disposizione.",
-          "\"Le strade sono strade,\" scrolla le spalle {name}. \"Prendine una.\"",
+          "Io le notizie non le seguo e preferirei che loro non seguissero me.",
+          "Bene. Come ieri. Come domani, se ti sposti.",
+          "{name} ti risponde guardando oltre la tua spalla per vedere se c'è fila.",
+          "Tu vuoi la conversazione normale. Con te normale non resta mai.",
+          "{name} ti dà la risposta vera più corta a disposizione.",
+          "Le strade sono strade. Prendine una.",
           "{name} tiene una mano sulla saracinesca per tutto il tempo.",
-          "\"Non ho niente che valga la pena citare,\" dice {name}. \"Prova altrove, per favore.\""
+          "Non ho niente che valga la pena citare. Prova altrove, ti prego."
         ],
         "negative": [
-          "\"Ecco qua,\" dice {name}. \"Avanti, maledici il negozio. L'hanno fatto tutti.\"",
-          "{name} indica la strada col pollice. \"Fuori. E portati dietro il tempo.\"",
-          "\"Giovedì te ne sarai andata,\" dice {name}. \"Continuo a ripetermelo.\"",
-          "\"Giusto. E quello è il famoso caratteraccio,\" dice {name}. \"Splendido. Fallo fuori.\"",
-          "{name} non abbocca. \"Dillo a quelli che ti stampano. Loro pagheranno per sentirlo.\"",
-          "\"Insultami quanto vuoi,\" dice {name}. \"Il negozio per te resta chiuso comunque.\"",
+          "Ecco qua. Avanti, maledici il negozio. L'hanno fatto tutti.",
+          "Fuori. E portati via il tempo atmosferico.",
+          "Entro giovedì te ne sarai andata. Me lo ripeto in continuazione.",
+          "Giusto. E questo sarebbe il famoso caratteraccio. Splendido. Portalo fuori.",
+          "Dillo a quelli che ti stampano. Loro te lo pagano.",
+          "Insultami quanto ti pare. Il negozio per te resta chiuso comunque.",
           "{name} comincia a contare alla rovescia da dieci con voce molto ferma.",
-          "\"Ecco qua,\" dice {name}, quasi sollevato. \"Adesso va' a esserlo da un'altra parte.\"",
-          "{name} scrive qualcosa sul dorso della mano: il tuo nome, e un'ora.",
-          "\"In questo paese sarai una storia per trent'anni,\" dice {name}, \"e io dovrò sentirmele tutte.\""
+          "Ecco qua. Adesso va' a esserlo da un'altra parte.",
+          "{name} si scrive qualcosa sul dorso della mano: il tuo nome e un'ora.",
+          "Per trent'anni sarai una storia in questo paese. E io me le dovrò sorbire tutte."
         ]
       },
       "fan": {
         "label": "un ammiratore invadente",
         "greeting": [
-          "{name} ti afferra per la manica. \"SEI tu. Di' la parola. Di' quella del giornale.\"",
-          "\"Mio cugino era all'Isola del Rituale la settimana dopo,\" dice {name}, fin troppo vicino. \"Quindi siamo praticamente parenti.\"",
-          "{name} tira fuori un giornale stropicciato con la tua faccia sopra e una penna. \"Firmalo di traverso sul buco della storia.\"",
-          "\"Fa' la cosa con le mani,\" dice {name}. \"La cosa magica. Una volta. Ti prego.\"",
-          "{name} si è già voltato a gridare il tuo nome a qualcuno dall'altra parte della stanza.",
-          "\"LO SAPEVO che era oggi,\" dice {name}. \"Avevo una sensazione. Ho delle sensazioni su di te.\"",
-          "{name} ti mostra un album con la tua faccia ritagliata da quattro giornali diversi, tutti con la stessa fotografia.",
-          "\"È vero che non riesci a sollevare la lancia?\" chiede {name}. \"È quella la parte che mi prende. È quella la parte tragica.\"",
-          "{name} ti chiama con un soprannome inventato dai giornali, entusiasta di essere il primo in sala a usarlo.",
-          "\"Mia sorella diceva che non ti avrei mai incontrata e adesso STARÀ MALE,\" dice {name}, già cercandola con lo sguardo.",
+          "Sei TU. Dilla. Di' la frase del giornale.",
+          "Mio cugino era all'Isola dei Rituali la settimana dopo. Quindi siamo praticamente parenti.",
+          "Firma sopra il buco della storia.",
+          "Fai quella cosa con le mani. La cosa magica. Una volta. Ti prego.",
+          "{name} si è già girato a urlare il tuo nome a qualcuno dall'altra parte della stanza.",
+          "LO SAPEVO che era oggi. Avevo una sensazione. Su di te ho delle sensazioni.",
+          "{name} ti mostra un album con la tua faccia ritagliata da quattro giornali diversi, tutte volte la stessa fotografia.",
+          "È vero che non riesci a sollevare la lancia? È quella la parte che mi uccide. È quella la parte tragica.",
+          "{name} ti chiama con un soprannome inventato dai rotocalchi, elettrizzato di essere il primo nella stanza a usarlo.",
+          "Mia sorella diceva che non ti avrei mai incontrata e adesso le viene un COLPO.",
           "{name} ti tocca la manica, poi il cappotto, poi si scusa, poi lo rifà.",
-          "\"Di' qualcosa sul novantadue per cento,\" chiede {name}. \"Non deve per forza essere triste.\""
+          "Di' qualcosa sul novantadue per cento. Non deve per forza essere triste."
         ],
         "positive": [
-          "{name} stringe il complimento come una ricevuta. \"L'ha detto A ME. L'avete sentito tutti.\"",
-          "\"Lo ripeterò parola per parola per il resto della mia vita,\" dice {name}, e lo pensa davvero.",
-          "{name} è raggiante e chiede se può camminare con te. Solo fino all'angolo. Solo fino al prossimo angolo.",
-          "\"È stata GENTILE con me,\" annuncia {name} a una stanza che ha smesso di ascoltare. \"Gentile.\"",
+          "L'ha detto A ME. L'avete sentito tutti.",
+          "Lo ripeterò parola per parola per il resto della mia vita.",
+          "{name} è raggiante e ti chiede se può camminare con te. Solo fino all'angolo. Solo fino al prossimo angolo.",
+          "È stata GENTILE con me. Gentile.",
           "{name} scrive il complimento sul retro di uno scontrino e lo mette al sicuro.",
-          "\"Quello finisce sul muro, accanto alla fotografia,\" dice {name}.",
-          "{name} chiede se può raccontare in giro che l'hai detto, e non aspetta la risposta.",
-          "\"Lo dici a tutti?\" chiede {name}, poi in fretta: \"No. Non me lo dire. Lasciamelo.\"",
+          "Quello va sul muro, accanto alla fotografia.",
+          "{name} chiede se può raccontare in giro che gliel'hai detto, e non aspetta la risposta.",
+          "Lo dici a tutti? No. Non dirmelo. Lasciamelo.",
           "{name} diventa rossissimo e ti stringe la mano tre volte separate.",
-          "\"La cosa più bella che mi sia capitata dal rituale,\" dice {name}, si sente dirlo, e non lo ritira."
+          "La cosa più bella che mi sia capitata dal rituale in poi."
         ],
         "neutral": [
-          "\"Chiacchiere. Con Em. Sul PANE,\" sussurra {name}, mettendolo via nella memoria.",
-          "{name} risponde a tre domande che non hai fatto, tutte su di te.",
-          "\"Dicevano che eri più alta,\" dice {name}, contentissimo che tu non lo sia.",
-          "{name} annuisce a una storia che non racconta niente, rapito, come fosse scrittura sacra.",
-          "\"Com'è il tempo da dove vieni? Non qui,\" dice {name}. \"Là. L'altra.\"",
+          "Due chiacchiere. Con Em. Sul PANE.",
+          "{name} risponde a tre domande che non hai fatto, tutte e tre su di te.",
+          "Dicevano che eri più alta.",
+          "{name} annuisce a una storia che non parla di niente, rapito, come se fosse Scrittura.",
+          "Che tempo fa da dove vieni? Non qui. Là. L'altro posto.",
           "{name} si dichiara entusiasticamente d'accordo prima che tu abbia finito la frase.",
-          "\"Vado anch'io da quella parte,\" dice {name}, che andava dall'altra.",
-          "{name} fa quattro domande di seguito, nessuna sulla cosa che hai detto.",
-          "\"Raccontami qualcosa di ordinario su di te,\" dice {name}, con il taccuino già aperto.",
-          "{name} ride a un punto che non faceva ridere, poi controlla se la stanza l'ha colto."
+          "Vado da quella parte anch'io.",
+          "{name} fa quattro domande di seguito, nessuna delle quali riguarda quello che hai detto.",
+          "Raccontami una cosa qualunque di te.",
+          "{name} ride in un punto che non faceva ridere, poi controlla se la stanza l'ha colto."
         ],
         "negative": [
-          "{name} si illumina. \"Mi ha insultato. È meglio dell'autografo.\"",
-          "\"Ridillo, più lento,\" implora {name}. \"Voglio riferirlo giusto.\"",
+          "Mi ha insultato. È meglio dell'autografo.",
+          "Ridillo, più piano. Voglio riferirlo bene.",
           "{name} se la ride del tutto. Niente di quello che fai qui andrà a segno.",
-          "\"Ti è permesso,\" dice {name} con calore. \"Dopo quello che hai passato, ti è permesso tutto.\"",
+          "Ne hai il diritto. Dopo quello che hai passato, hai diritto a tutto.",
           "{name} chiede scusa A TE per essere stato insultato.",
-          "\"Ecco il fuoco,\" dice {name}. \"È quello che ha fatto fuori il Padre, proprio quello lì.\"",
+          "Ecco il fuoco. È quello che ha sistemato il Padre, proprio quello lì.",
           "{name} fa un piccolo passo indietro e poi un grande passo avanti.",
-          "\"Rifallo, ma mettendoci il mio nome,\" chiede {name}.",
-          "{name} tratta l'intera cosa come uno spettacolo, e alla fine applaude.",
-          "\"Sono stato sgridato da gente peggiore per molto meno,\" dice {name}, raggiante."
+          "Rifallo, ma col mio nome dentro.",
+          "{name} tratta tutta la faccenda come uno spettacolo, e alla fine applaude.",
+          "Mi hanno urlato contro persone peggiori per molto meno."
         ]
       },
       "clout": {
-        "label": "cordiale solo perché Em è famosa",
+        "label": "cordiale perché Em è famosa",
         "greeting": [
-          "I modi di {name} cambiano nell'istante in cui atterra il tuo nome. \"Em! Siediti, siediti. Cosa bevi? Offro io.\"",
-          "\"Dico in giro che ti conosco,\" ammette {name} allegramente. \"Adesso tecnicamente è vero.\"",
-          "{name} ti orienta verso la finestra, dove la strada può vedere dentro. \"Mettiti lì. Senza motivo.\"",
-          "\"Tra noi,\" dice {name}, con una voce calibrata per il tavolo accanto, \"cos'è successo davvero quella notte?\"",
-          "\"Em. EM. Gente, questa è Em,\" dice {name}, a una stanza che lo sapeva già.",
+          "Em! Siediti, siediti. Cosa bevi? Offro io.",
+          "Io in giro dico che ti conosco. Adesso è tecnicamente vero.",
+          "Mettiti lì. Senza motivo.",
+          "Fra noi. Cos'è successo davvero quella notte?",
+          "Em. EM. Gente, questa è Em.",
           "{name} ti stringe la mano un secondo più a lungo di quanto la stretta richieda.",
-          "\"L'ho sempre detto che i giornali ti avevano capita male,\" dice {name}, che il mese scorso diceva il contrario.",
+          "L'ho sempre detto io che i giornali ti avevano fraintesa.",
           "{name} tira fuori una sedia da chissà dove, e una storia su un cugino che c'era quasi.",
-          "\"Ti serve il tavolo buono,\" dice {name}, spostandone via due persone.",
-          "{name} ti chiede della salute ad alta voce, e degli affari sottovoce.",
-          "\"C'è un uomo della Gilda che dovresti conoscere,\" dice {name}. \"Lui preferirebbe conoscere te.\"",
-          "\"Io non credo a niente di tutto questo,\" dice {name}, \"ma in te ci credo, ovviamente.\""
+          "Tu vorrai il tavolo buono.",
+          "{name} si informa sulla tua salute a voce alta, e sui tuoi affari a voce bassa.",
+          "C'è un tale nella Gilda che dovresti conoscere. Anzi, è lui che vorrebbe conoscere te.",
+          "Io a quella roba non credo. Ma in te ci credo, ovviamente."
         ],
         "positive": [
-          "\"Detto da Em, è praticamente una targa,\" dice {name}, già provando come ripeterlo.",
+          "Detto da Em, è praticamente una targa commemorativa.",
           "{name} ti ringrazia con calore e controlla chi era abbastanza vicino da sentire.",
-          "\"Da Em, questo,\" ripete {name}, per la sala. \"L'avete sentita tutti, la signora.\"",
-          "{name} ti ringrazia e subito ti offre qualcosa che non può permettersi di dare.",
-          "\"Adesso siamo amici, no,\" dice {name}. \"Di' che siamo amici.\"",
-          "{name} se lo annota. Non con affetto. Con precisione.",
-          "\"Devi lasciare che ti presenti come si deve,\" dice {name}. \"Alla gente giusta.\"",
+          "Da Em, questa. Avete sentito tutti la signora.",
+          "{name} ti ringrazia e ti offre subito qualcosa che non si può permettere di dare.",
+          "Adesso siamo amici, vero. Di' che siamo amici.",
+          "{name} se lo scrive. Non con affetto. Con precisione.",
+          "Devi lasciarti presentare come si deve. Alla gente giusta.",
           "{name} ride un attimo di troppo, in direzione della porta.",
-          "\"Quella è la versione che racconterò,\" dice {name}, \"e la racconterò meglio di com'è andata.\"",
+          "Questa è la versione che racconterò io. E la racconterò meglio di com'è andata.",
           "{name} ti dà un colpetto sul braccio e sbircia chi è appena entrato."
         ],
         "neutral": [
-          "{name} tira avanti la conversazione ben oltre la sua fine naturale, guardandosi intorno per vedere chi osserva.",
-          "\"Dovremmo farlo come si deve, una volta,\" dice {name}, che non lo farà.",
-          "{name} ti tiene a parlare del nulla finché non passa qualcuno da impressionare.",
-          "\"Affascinante,\" dice {name}, che non ha sentito.",
-          "{name} riporta la conversazione, con delicatezza e ripetutamente, alla notte sull'Isola del Rituale.",
-          "\"Volevo chiederti una cosa,\" dice {name}, e per dieci minuti non chiede niente.",
-          "{name} è d'accordo con la tua opinione, e poi con quella opposta, dal tavolo accanto.",
-          "\"Oggi sui giornali c'è il tempo. E ci sei tu,\" dice {name}, compiaciuto.",
+          "{name} tira per le lunghe la conversazione ben oltre la sua fine naturale, guardandosi intorno per vedere chi osserva.",
+          "Dovremmo rifarlo con calma una volta.",
+          "{name} ti tiene a parlare del nulla finché non passa qualcuno che vale la pena impressionare.",
+          "Affascinante.",
+          "{name} riporta la conversazione, con garbo e insistenza, sulla notte all'Isola dei Rituali.",
+          "Volevo chiederti una cosa.",
+          "{name} si dichiara d'accordo con la tua opinione, e poi con quella opposta, dal tavolo accanto.",
+          "Oggi sul giornale c'è il tempo. E ci sei anche tu.",
           "{name} si offre di presentarti persone che hai già davanti agli occhi.",
-          "\"Il prossimo lo offro io, mi raccomando,\" dice {name}, che se lo ricorderà e lo farà notare."
+          "Il prossimo lo prendo io."
         ],
         "negative": [
-          "Il sorriso di {name} resta esattamente dov'è. Dietro, l'amicizia viene riquotata.",
-          "\"Ah,\" dice {name}, ridendo per la sala. \"Ha un caratterino. Splendido.\"",
-          "\"Giusto, giusto,\" dice {name}, archiviandolo tra le cose da ripetere più tardi.",
+          "Il sorriso di {name} resta esattamente dov'è. Dietro, l'amicizia viene riprezzata.",
+          "Ah. Ha un caratterino. Splendido.",
+          "Giusto, giusto.",
           "{name} incassa l'insulto in pubblico e con allegria, il che costa più a te che a lui.",
-          "\"Ha diritto a un caratteraccio. Se l'è guadagnato,\" dice {name}, a tutti.",
-          "{name} ne fa una battuta e lascia decidere alla sala chi ha vinto.",
-          "\"Io non litigo con Em per una parola,\" dice {name}, ad alta voce, così che non possa farlo nessun altro.",
-          "{name} sembra per un attimo davvero ferito, e poi si rimette la faccia.",
-          "\"Questa varrà la pena di raccontarla,\" dice {name}. \"Non con benevolenza, però.\"",
-          "{name} alza il bicchiere alla tua salute, e smette in silenzio di raccomandarti."
+          "Ha diritto a un caratteraccio. Se l'è guadagnato.",
+          "{name} ci scherza su e lascia decidere alla sala chi ha vinto.",
+          "Io con Em non litigo per una parola.",
+          "{name} sembra per un attimo davvero punto sul vivo, poi si rimette la faccia.",
+          "Questa varrà la pena raccontarla. Non con benevolenza, però.",
+          "{name} alza il bicchiere alla tua salute, e smette silenziosamente di raccomandarti."
         ]
       },
       "gawker": {
         "label": "tratta Em come un reperto",
         "greeting": [
-          "{name} ti studia come si studia una campana incrinata. \"Novantadue per cento. È come una stanza a cui hanno tolto i mobili?\"",
-          "\"Ti ricordi la faccia di tua madre,\" chiede {name}, prima ancora di salutare.",
-          "{name} si avvicina, poi arretra. \"Scusa. Di gente come te ho solo letto.\"",
-          "\"Dicono che abbiano conservato la lancia. La senti mai mentre la trasportano?\" chiede {name}.",
-          "{name} chiede di vederti le mani, e resta deluso che sembrino ordinarie.",
-          "\"Posso farti una domanda difficile,\" dice {name}, che la farà comunque.",
-          "{name} controlla il pavimento ai tuoi piedi in cerca di un'ombra, e sta attento a come controlla.",
-          "\"Il vuoto è un vuoto,\" chiede {name}, \"o è più che la stanza non è mai stata costruita?\"",
-          "{name} ti offre una sedia come si offre una sedia a un esemplare.",
-          "\"Mi hanno detto che trasalisci alle campane. Ho spostato l'orologio,\" dice {name}. \"Non si sa mai.\"",
+          "Novantadue per cento. È come una stanza a cui hanno portato via i mobili?",
+          "Ti ricordi la faccia di tua madre.",
+          "Scusa. Di gente come te avevo solo letto.",
+          "Dicono che la lancia l'abbiano conservata. Ti capita mai di sentirla mentre la portano?",
+          "{name} chiede di vederti le mani, ed è deluso dal fatto che sembrino normali.",
+          "Posso farti una domanda difficile.",
+          "{name} controlla il pavimento ai tuoi piedi per vedere se hai un'ombra, e fa attenzione a come lo controlla.",
+          "Il vuoto è un vuoto. O è piuttosto che la stanza non è mai stata costruita?",
+          "{name} ti offre una sedia come si offre una sedia a un campione da laboratorio.",
+          "Mi hanno detto che sussulti alle campane. Ho spostato l'orologio. Per sicurezza.",
           "{name} si siede di fronte a te con l'aria di chi sta cominciando un capitolo.",
-          "\"Hai tenuto i compleanni e non le facce,\" dice {name}. \"Ci ho pensato tutta la settimana.\""
+          "Ti sono rimasti i compleanni e non le facce. È tutta la settimana che ci penso."
         ],
         "positive": [
-          "\"Interessante,\" dice {name}, scrivendo. \"La cortesia è sopravvissuta al rituale. Non tutto ce l'ha fatta.\"",
-          "{name} ti ringrazia e chiede, subito, che effetto faccia un elogio quando manca quasi tutta una vita.",
-          "\"Gratitudine,\" dice {name} pensieroso. \"Più antica della maggior parte di ciò che ti hanno preso, direi.\"",
+          "Interessante. La buona educazione è sopravvissuta al rituale. Non tutto ce l'ha fatta.",
+          "{name} ti ringrazia e chiede, subito, che effetto faccia un elogio quando ti manca quasi tutta la vita.",
+          "La gratitudine. Più antica di gran parte di quello che ti hanno preso, immagino.",
           "{name} ti ringrazia, e chiede se il complimento venga da prima o da dopo.",
-          "\"Interpreti la gentilezza molto bene,\" dice {name}, intendendolo come una lode.",
-          "{name} emette un piccolo suono soddisfatto, come se un'ipotesi avesse tenuto.",
-          "\"Era caloroso,\" dice {name}. \"Mi chiedevo se il calore fosse sopravvissuto.\"",
-          "{name} lo accetta, e poi, terribilmente, ti chiede di ripeterlo esattamente.",
-          "\"Sai perché l'hai detto?\" chiede {name}. \"Prenditi il tempo che ti serve.\"",
+          "Interpreti la gentilezza molto bene.",
+          "{name} emette un piccolo suono soddisfatto, come se un'ipotesi avesse retto.",
+          "Quello era caldo. Mi chiedevo se il caldo fosse sopravvissuto.",
+          "{name} lo accetta, e poi, in modo terribile, ti chiede di ripeterlo esattamente uguale.",
+          "Sai perché l'hai detto? Prenditi il tempo che vuoi.",
           "{name} scrive: soggetto cortese, soggetto stanco, soggetto ancora qui."
         ],
         "neutral": [
           "{name} risponde, poi chiede se sogni, e se i sogni siano tuoi.",
-          "\"Avanti, continua a parlare,\" dice {name}. \"Voglio sentire dove sono i vuoti.\"",
-          "{name} segue le chiacchiere da vicino, come se le chiacchiere fossero la prova.",
-          "\"Ancora cose ordinarie,\" dice {name}. \"È nelle cose ordinarie che si vedono i vuoti.\"",
-          "{name} ti interrompe una volta, per chiedere in che lingua l'hai pensato.",
-          "\"Dici noi parlando di un posto che non sai nominare,\" dice {name}. \"Lo trovo notevole.\"",
+          "Vai avanti, continua a parlare. Voglio sentire dove sono i buchi.",
+          "{name} segue le tue chiacchiere da vicino, come se le chiacchiere fossero la prova.",
+          "Altre cose ordinarie. È nelle cose ordinarie che si vedono i buchi.",
+          "{name} ti interrompe una volta, per chiedere in quale lingua l'hai pensato.",
+          "Dici noi parlando di un posto che non sai nominare. Lo trovo notevole.",
           "{name} cronometra le tue pause, e non nasconde l'orologio.",
-          "\"Che tempo faceva il giorno prima?\" chiede {name}, intendendo il rituale.",
-          "{name} chiede se hai sognato stanotte, e annota la risposta due volte.",
-          "\"Ecco. Quella esitazione,\" dice {name}, deliziato. \"Quello è il novantadue per cento, non è vero.\""
+          "Che tempo faceva il giorno prima?",
+          "{name} chiede se hai sognato stanotte, e scrive la risposta due volte.",
+          "Ecco. Quell'esitazione. Quello è il novantadue per cento, non è vero."
         ],
         "negative": [
-          "{name} non trasalisce. \"Anche la rabbia. Bene. È un'altra cosa che ti hanno lasciato.\"",
-          "\"Nota il lessico,\" mormora {name}, a nessuno. \"Intatto. Affascinante.\"",
-          "\"Esibizione di minaccia,\" mormora {name}. \"Intatta. Perfino proporzionata.\"",
-          "{name} annuisce lentamente. \"Dicevano che saresti stata più arrabbiata. Sei arrabbiata esattamente come una persona.\"",
-          "\"Lo senti nel petto o nelle mani?\" chiede {name}, non senza garbo.",
-          "{name} si scusa per le domande, e poi chiede se anche la rabbia fosse in prestito.",
-          "\"Bestemmi come chi l'ha imparato di recente,\" osserva {name}.",
-          "{name} non si muove affatto, il che è peggio del trasalire.",
-          "\"Ridillo quando sarai calma,\" dice {name}, \"e vedremo se è la stessa frase.\"",
-          "{name} scrive una parola, la sottolinea, e volta la pagina."
+          "Anche la rabbia. Bene. È un'altra cosa che ti hanno lasciato.",
+          "Nota il lessico. Intatto. Affascinante.",
+          "Esibizione di minaccia. Intatta. Perfino proporzionata.",
+          "Dicevano che saresti stata più arrabbiata. Sei arrabbiata esattamente quanto una persona.",
+          "Lo senti nel petto o nelle mani?",
+          "{name} si scusa per le domande, e poi chiede se anche la rabbia sia stata presa in prestito.",
+          "Bestemmi come chi l'ha imparato da poco.",
+          "{name} non si muove affatto, il che è peggio che sussultare.",
+          "Ridillo quando sei calma. E vediamo se è la stessa frase.",
+          "{name} scrive una parola, la sottolinea, e gira la pagina."
         ]
       },
       "genuine": {
         "label": "vede la persona, non la storia",
         "greeting": [
-          "{name} guarda te, non la storia su di te. \"Strada lunga? Siediti prima di cadere.\"",
-          "\"Non mi importa cosa hanno fatto di te i giornali,\" dice {name}. \"Hai mangiato oggi?\"",
-          "{name} sposta una sedia con un piede. \"Nessuna domanda sul rituale. Hai la mia parola.\"",
-          "\"Hai una stanchezza che il sonno non aggiusta,\" dice {name}. \"Quella la conosco.\"",
-          "{name} non nomina né i giornali né il rituale né la lancia. \"Fa freddo. Entra come si deve.\"",
-          "\"Em, giusto. Io sono {name},\" dice, come se fosse tutto lì.",
-          "{name} versa due tazze senza chiedere, e te ne spinge una davanti.",
-          "\"Una domanda, e non riguarda il dio,\" dice {name}. \"Stai bene?\"",
-          "{name} ti trova un posto con le spalle alla finestra e alla strada. Di proposito.",
-          "\"La gente ti parlerà addosso tutto il giorno,\" dice {name}. \"Siediti e fatti parlare intorno per un po'.\"",
-          "{name} ti saluta per nome, correttamente, e non ne fa una scena.",
-          "\"Se qualcuno qui dentro comincia,\" dice {name} a bassa voce, \"tu dillo a me, e quello se ne va.\""
+          "Strada lunga? Siediti prima di cadere.",
+          "Non mi importa cosa hanno fatto di te i giornali. Hai mangiato oggi?",
+          "Nessuna domanda sul rituale. Hai la mia parola.",
+          "Hai una stanchezza che il sonno non aggiusta. Quella la conosco.",
+          "Fa freddo fuori. Entra come si deve.",
+          "Em, giusto. Io sono {name}.",
+          "{name} versa due tazze senza chiedere, e ne spinge una dalla tua parte.",
+          "Una domanda, e non riguarda il dio. Tu stai bene?",
+          "{name} ti trova un posto con le spalle alla vetrina e alla strada. Di proposito.",
+          "Ti staranno addosso a parlare tutto il giorno. Siediti e fatti parlare intorno per un po'.",
+          "{name} ti saluta col tuo nome, pronunciato bene, e non ne fa uno spettacolo.",
+          "Se qui dentro qualcuno comincia. Tu dillo a me, e quello se ne va."
         ],
         "positive": [
-          "{name} lo prende con semplicità. \"Grazie. E qui dentro ti è concesso essere una persona, se può servire.\"",
-          "\"È gentile,\" dice {name}. \"Più gentile di quanto la maggior parte riesca a essere con te, immagino.\"",
-          "\"È bello da parte tua,\" dice {name}. \"Lo prendo per quello che è, se non ti dispiace.\"",
-          "{name} sorride per davvero, come sorride chi non sta contando niente.",
-          "\"Sei più brava in questo di quanto i giornali ti lascino spazio per essere,\" dice {name}.",
-          "{name} ti ringrazia e cambia discorso passando a qualcosa di facile, di proposito.",
-          "\"Attenta. Potrei abituarmi a sentirmi parlare così,\" dice {name}.",
+          "Grazie. E qui dentro ti è concesso di essere una persona, se può servire.",
+          "Sei gentile. Più gentile di quanto la maggior parte riesca a essere con te, immagino.",
+          "È una bella cosa da parte tua. La prendo per buona, se non ti dispiace.",
+          "{name} sorride come si deve, come sorridono quelli che non stanno contando niente.",
+          "Sei più brava in questo di quanto i giornali ti lascino spazio per essere.",
+          "{name} ti ringrazia e cambia discorso su qualcosa di facile, di proposito.",
+          "Attenta. Rischio di abituarmi a sentirmi parlare così.",
           "{name} lo prende, se lo tiene, e non lo ripete a nessuno.",
-          "\"Potresti smettere di scusarti per il fatto di esistere, sai,\" dice {name}. \"Solo un pensiero.\"",
-          "{name} sembra contento, e un po' triste per te, e lascia vedere entrambe le cose."
+          "Potresti anche smettere di chiedere scusa per il fatto di esistere, sai. È solo un pensiero.",
+          "{name} sembra contento, e un po' triste per te, e lascia vedere tutte e due le cose."
         ],
         "neutral": [
-          "{name} parla con te del nulla, generosamente, per tutto il tempo che vuoi.",
-          "\"No, vai avanti,\" dice {name}. \"È bello sentirti parlare di qualcosa di piccolo.\"",
-          "{name} parla a lungo della propria settimana, così che tu non debba parlare della tua.",
-          "\"No, quella parte è interessante. Raccontami la parte noiosa,\" dice {name}.",
-          "{name} discute con te allegramente di pane, guarda un po', per un quarto d'ora.",
-          "\"Con me non devi riempire il silenzio,\" dice {name}. \"Io nel silenzio ci sto bene.\"",
-          "{name} chiede della strada, del tempo e del camper, e niente del cielo.",
-          "\"Preferisco sentire cosa mangi stasera che cosa ne pensano i giornali,\" dice {name}.",
-          "{name} ascolta la fine della tua frase. Tutta. Ogni volta.",
-          "\"Ripassa quando sei di passaggio,\" dice {name}, e lo pensa davvero."
+          "{name} parla con te del nulla assoluto, con generosità, per tutto il tempo che vuoi.",
+          "No, vai avanti. È bello sentirti parlare di qualcosa di piccolo.",
+          "{name} racconta a lungo la propria settimana, così che tu non debba raccontare la tua.",
+          "No, quella parte è interessante. Raccontami la parte noiosa.",
+          "{name} litiga allegramente con te sul pane, proprio sul pane, per un quarto d'ora.",
+          "Con me non devi riempire il silenzio. Io nel silenzio ci sto bene.",
+          "{name} ti chiede della strada, del tempo e del camper, e niente di niente sul cielo.",
+          "Preferisco sentire cosa mangi stasera che cosa ne pensano i rotocalchi.",
+          "{name} ascolta la tua frase fino in fondo. Tutta. Ogni volta.",
+          "Ripassa di qui quando sei da queste parti."
         ],
         "negative": [
-          "{name} incassa e sospira. \"Hai avuto un anno duro. Lo prendo come l'anno che parla.\"",
-          "\"Dimenticherò che l'hai detto,\" dice {name} a bassa voce, \"se vuoi.\"",
-          "{name} lascia che il silenzio si depositi, poi dice: \"Vuoi riprovarci, o lasciamo perdere?\"",
-          "\"Quella è andata a segno,\" dice {name} con calma. \"Sopravvivrò. Siediti.\"",
-          "{name} non risponde per le rime, il che in qualche modo è peggio e in qualche modo è meglio.",
-          "\"Ti è concesso essere furiosa,\" dice {name}. \"Non con me, però, eh.\"",
-          "{name} mette su l'acqua e non dice assolutamente niente al riguardo.",
-          "\"Ecco. È di nuovo l'anno che parla,\" dice {name}. \"Aspetto.\"",
+          "Hai avuto un anno duro. Lo prendo come l'anno che parla.",
+          "Faccio finta che non l'hai detto. Se preferisci così.",
+          "Vuoi riprovarci, o lasciamo perdere?",
+          "Quella è arrivata. Sopravvivo. Siediti.",
+          "{name} non risponde per le rime, il che è in qualche modo peggio e in qualche modo meglio.",
+          "Hai diritto a essere furiosa. Non con me, però, eh.",
+          "{name} mette su il caffè e non dice assolutamente niente in merito.",
+          "Ecco. Questo è di nuovo l'anno che parla. Aspetto.",
           "{name} ti dice chiaramente che ha fatto male, e poi ti chiede se stai mangiando.",
-          "\"Preferisco che tu urli qui dentro che là fuori,\" dice {name}. \"Là fuori lo stampano.\""
+          "Preferisco che urli qui dentro piuttosto che là fuori. Là fuori lo stampano."
         ]
       }
     },
     "bubba": {
-      "label": "l'unico amico che ha",
+      "label": "l'unica amica che ha",
       "greeting": [
-        "\"Uè, Em!\" {name} si asciuga le mani su uno straccio che non è mai stato pulito nemmeno una volta. \"Mettiti a sedere, guagliò, la Bestia non va da nessuna parte finché quel collettore non si raffredda.\"",
-        "\"Mannaggia, tesoro, hai la faccia di ottanta chilometri di strada brutta,\" dice {name}. \"Il caffè è sul fornello, 'a tazzulella è tua.\"",
-        "{name} sguscia fuori da sotto il camper disteso sulla schiena. \"Jamme, sali. Stiamo bruciando la luce del giorno e io sto bruciando olio.\"",
-        "\"Statt' bbuono, strega,\" dice {name}, sorridendoti dal basso. \"Non c'è niente in novantadue dimensioni che passi da quella porta finché ho la chiave inglese.\"",
-        "\"A Beagle entro giovedì, chiano chiano,\" dice {name}. \"Carte da firmare, e poi vediamo cosa vuole la strada.\"",
-        "\"Se la caffettiera salta di nuovo giù dal fornello, non sei tu e non sono io,\" dice {name}. \"'A gelusia è una brutta bestia, tesoro.\"",
-        "{name} bussa con le nocche sul Motore Liminale, affettuoso come un uomo col suo cane. \"Ha tenuto. Te l'avevo detto che teneva, guagliò.\"",
-        "\"Uè, guarda chi ha sputato fuori la strada,\" dice {name}. \"Siediti, siediti. C'è il caffè e c'è una sedia, e una delle due è pulita.\"",
-        "{name} solleva un pezzo che non sai riconoscere. \"Questo qui cerca di ammazzarci da martedì. Non più, guaglio'.\"",
-        "\"Hai mangiato oggi? Non mentirmi, tesoro, lo capisco,\" dice {name}, già allungandosi verso la padella.",
+        "Uè, Em! Siediti, guagliò, la Bestia non va da nessuna parte finché quel collettore non si raffredda.",
+        "Mannaggia, core mio, hai la faccia di ottanta chilometri di strada brutta. Il caffè sta sul fuoco, 'a tazzulella è tua.",
+        "Jamme, sali. Stiamo bruciando luce e io sto bruciando olio.",
+        "Statte bbuono, strega. In novantadue dimensioni non passa niente da quella porta finché ho io la chiave inglese.",
+        "Beagle per giovedì, chiano chiano. Carte da firmare, e poi si vede cosa vuole la strada.",
+        "Se la caffettiera salta di nuovo giù dal fornello, non sei tu e non sono io. 'A gelusia è una brutta bestia, core mio.",
+        "Ha tenuto. Te l'avevo detto che teneva, guagliò.",
+        "Uè, guarda chi ha sputato fuori la strada. Siediti, siediti. C'è il caffè e c'è una sedia, e una delle due è pulita.",
+        "Questo qua cerca di ammazzarci da martedì. Non più, guagliò.",
+        "Hai mangiato oggi? Non mentirmi, core mio, io me ne accorgo.",
         "{name} ha la radio su qualcosa con troppa fisarmonica dentro, e nessuna intenzione di cambiare.",
-        "\"Ho sognato il Motore,\" dice {name}. \"Cantava. Non è buono né cattivo, tesoro, è solo un segno.\"",
-        "\"Novantadue per cento andato e ti ricordi ancora dove tengo la chiave da dieci,\" dice {name}. \"Questa sì che è amicizia.\"",
-        "{name} indica il bancone con un cacciavite. \"Siediti. Hai quella faccia da quando il cielo ti ha detto di nuovo qualcosa.\""
+        "Ho sognato il Motore. Cantava. Non è buono né brutto, core mio, è solo un segno.",
+        "Novantadue per cento andato e ti ricordi ancora dove tengo la chiave del dieci. Questa è amicizia, questa.",
+        "Siediti. Hai quella faccia di quando il cielo ti ha detto di nuovo qualcosa."
       ],
       "positive": [
-        "{name} ride, grosso e leggero. \"Aoh, sentila. Continua a parlare così e ti scrivo il nome sul motore.\"",
-        "\"Grazie assaje, tesoro,\" dice {name}. \"Ora passami la chiave da dieci prima che mi metta a dire cose sentimentali.\"",
-        "{name} si imbarazza e lo nasconde sotto il cofano. \"Eh, va be'. Nemmeno tu sei male, guagliona.\"",
-        "\"Ecco perché ti tengo intorno,\" dice {name}. \"Quello, e sei l'unica anima che controlla l'olio.\"",
-        "\"Aoh, smettila, sono un uomo semplice,\" dice {name}, che non lo è. \"Mi fai piangere dentro la coppa dell'olio.\"",
-        "{name} ride così forte che gli cade la chiave, e poi dà la colpa alla chiave.",
-        "\"Scrivilo, che tanto nessuno crederà mai che me l'hanno detto,\" dice {name}.",
-        "\"Mannaggia, attenta, tesoro,\" dice {name}, sorridendo. \"Se quella sente parole gentili su di me le vengono idee, e poi piovono sassi.\"",
-        "{name} dà due colpetti sulla fiancata del camper. \"Hai sentito, Bestia? Le piacciamo.\"",
-        "\"Vuoi qualcosa, vero,\" dice {name}, deliziato. \"Nah. Non vuoi niente. È pure peggio.\""
+        "Aoh, sentitela. Continua a parlare così che ti scrivo il nome sul motore.",
+        "Grazie assaje, core mio. Adesso passami la chiave del dieci prima che mi metta a dire cose sentimentali.",
+        "Eh, vabbè. Manco tu sei male, guagliona.",
+        "Ecco, è per questo che ti tengo intorno. Quello, e sei l'unica anima che controlla l'olio.",
+        "Aoh, basta, io sono un uomo semplice. Finisce che piango dentro la coppa dell'olio.",
+        "{name} ride così forte che gli cade la chiave inglese, e poi dà la colpa alla chiave inglese.",
+        "Scrivitelo, che tanto nessuno crederà mai che me l'hanno detto.",
+        "Mannaggia, piano, core mio. Quella sente belle parole su di me, si fa delle idee, e poi piovono sassi.",
+        "Hai sentito, Bestia? Le stiamo simpatici.",
+        "Tu vuoi qualcosa, di' la verità. Nah. Non vuoi niente. È peggio."
       ],
       "neutral": [
-        "\"Il tempo è tempo,\" scrolla le spalle {name}. \"Sotto gli ottanta, qualunque cosa faccia, la fa.\"",
+        "Il tempo è tempo. Sotto gli ottanta, faccia quello che vuole.",
         "{name} ti rispiega il Motore Liminale da capo, tutto quanto, con la stessa gioia della prima volta.",
-        "\"La Route 666 era peggio,\" dice {name}. \"Chiedimelo una volta che non stiamo guidando.\"",
-        "\"Uagliò, passami quella chiave e continua a parlare,\" dice {name}. \"Ascolto meglio con qualcosa in mano.\"",
-        "\"Prima il caffè, poi i problemi. È tutta la filosofia, guaglio',\" dice {name}.",
-        "{name} spiega, a lungo, la differenza tra un rumore che non costa niente e un rumore che costa tutto.",
-        "\"La burocrazia a Beagle, madonna,\" sospira {name}. \"Quattro timbri e un tizio di nome Deniz a cui non sto simpatico.\"",
+        "La Statale 666 era peggio. Chiedimelo una volta che non stiamo guidando.",
+        "Guagliò, passami quella chiave e continua a parlare. Ascolto meglio con qualcosa in mano.",
+        "Prima il caffè, poi i problemi. La filosofia è tutta qua, guagliò.",
+        "{name} spiega, per esteso, la differenza fra un rumore che non costa niente e un rumore che costa tutto.",
+        "La burocrazia a Beagle, madonna. Quattro timbri e un tale di nome Deniz che non mi vede bene.",
         "{name} litiga con la radio per un po', e poi le dà ragione.",
-        "\"Hanno messo un cartello nuovo alla curva,\" dice {name}. \"Stessa curva. Stesso fosso. Cartello nuovo.\"",
-        "{name} ti chiede della giornata, e poi aspetta davvero la risposta, con le mani che continuano a lavorare."
+        "Hanno messo un cartello nuovo alla curva. Stessa curva. Stesso fosso. Cartello nuovo.",
+        "{name} ti chiede com'è andata la giornata, e poi aspetta davvero la risposta, con le mani che continuano a lavorare."
       ],
       "negative": [
-        "{name} ti guarda e basta, paziente come un mulo. \"Giornataccia, eh. Siediti, metto su il caffè.\"",
-        "\"Puoi urlarmi addosso quanto vuoi, tesoro,\" dice {name}. \"Io non vado da nessuna parte. Chiano chiano.\"",
-        "{name} se lo lascia passare addosso. \"Novantadue dimensioni e sei ancora la seconda donna più spaventosa che conosco.\"",
-        "\"Va bene, va bene, chiano chiano,\" dice {name}, asciugandosi le mani. \"Con chi ce l'abbiamo, e sono io?\"",
-        "{name} non abbocca. \"Hai la lingua lunga oggi. Siediti, bevi qualcosa.\"",
-        "\"Mi ha insultato in due lingue una donna che tira le montagne,\" dice {name}. \"Devi impegnarti di più, tesoro.\"",
-        "{name} continua a lavorare per tutto il tempo, e alla fine ti passa una tazza.",
-        "\"Quella aveva i denti,\" ammette {name}. \"Va bene. Andiamo lo stesso a Beagle.\"",
-        "\"Se vuoi litigare, litiga col collettore,\" dice {name}. \"Ha cominciato lui.\""
+        "Giornataccia, eh. Siediti, metto su la caffettiera.",
+        "Puoi urlarmi contro quanto ti pare, core mio. Io non vado da nessuna parte. Chiano chiano.",
+        "Novantadue dimensioni e sei ancora la seconda donna più spaventosa che conosco.",
+        "Va bene, va bene, chiano chiano. Con chi ce l'abbiamo, e sono io?",
+        "Oggi hai la lingua tagliente. Siediti, bevi qualcosa.",
+        "Mi ha mandato a quel paese in due lingue una donna che tira montagne. Ti devi impegnare di più, core mio.",
+        "{name} lavora dritto per tutta la durata della sfuriata, e alla fine ti mette in mano una tazza.",
+        "Quella aveva i denti. Va bene. A Beagle ci andiamo lo stesso.",
+        "Se vuoi litigare, litiga col collettore. Ha cominciato lui."
       ],
       "refuseJoin": [
-        "\"Io, venire con voi? Guagliò, qualcuno deve tenere insieme questo camper,\" dice {name}. \"Sarò qui quando la strada torna indietro.\"",
-        "\"Io nella mia vita non faccio il passeggero, tesoro,\" dice {name}. \"'A Bestia non si guida da sola.\"",
-        "{name} resta zitto un secondo. \"Quella farebbe cadere una montagna su qualunque paese in cui dormiamo. Vai avanti tu, Em. Chiano chiano.\"",
-        "\"Prima le carte, prima Beagle,\" dice {name}, battendo sul volante. \"Poi parliamo di viaggiare insieme come gente perbene.\"",
-        "\"Qualcuno deve tenere onesto il Motore, guaglio',\" dice {name}. \"E quel qualcuno ha la mia faccia.\"",
-        "{name} scuote lentamente la testa. \"Là fuori non servo a granché. Qui dentro, con una chiave inglese, sono un esercito intero, tesoro.\"",
-        "\"L'ultimo tizio che ha viaggiato con me a tempo pieno si è preso il tempo addosso,\" dice {name}. \"Tempo vero. No grazie.\"",
-        "\"Richiedimelo dopo che le carte sono firmate,\" dice {name}. \"Chiano chiano. Tutto dopo le carte.\""
+        "Io, venire con te? Guagliò, qualcuno deve tenere insieme questo camper. Sto qua quando la strada torna indietro.",
+        "Io nella mia vita non faccio il passeggero, core mio. 'A Bestia non si guida da sola.",
+        "Quella lascerebbe cadere una montagna sul paese dove dormiamo. Vai avanti tu, Em. Chiano chiano.",
+        "Prima le carte, prima Beagle. Poi parliamo di viaggiare insieme come due persone civili.",
+        "Qualcuno deve tenere onesto il Motore, guagliò. E quel qualcuno ha la mia faccia.",
+        "Là fuori non servo a molto. Qua dentro, con una chiave in mano, sono un esercito intero, core mio.",
+        "L'ultimo tale che ha viaggiato con me a tempo pieno si è preso il tempo addosso. Tempo vero. No grazie.",
+        "Richiedimelo dopo che sono firmate le carte. Chiano chiano. Tutto dopo le carte."
       ]
     }
   },
   "bubba": {
     "label": "sa chi ha costruito il Motore Liminale",
     "greeting": [
-      "{name} per poco non lascia cadere quello che ha in mano. \"Sei tu. Sei l'uomo del Motore Liminale.\"",
-      "\"Wilson,\" dice {name}, con la voce che la gente usa per il tempo e per i miracoli. \"Tutta la mia famiglia prende un autobus che funziona grazie a te.\"",
-      "{name} si asciuga la mano sul cappotto prima di porgertela, due volte. \"Un onore. Un onore vero.\"",
-      "\"Ti hanno dato il Nobel e sei venuto qui,\" dice {name}. \"Qui. In questo paese.\"",
-      "{name} ti punta addosso un dito deliziato e accusatorio. \"È quello del motore. È lui.\"",
-      "\"Ho letto la conferenza,\" dice {name}. \"Non ho capito una parola dopo la prima pagina, e le ho amate tutte.\"",
-      "{name} abbassa la voce come se la notizia potesse spaventarti. \"Mio cugino è rimasto bloccato in una bolla di anello per sei anni. Sei. Poi hanno cominciato a passare le corriere.\"",
-      "\"Hai compresso la strada,\" dice {name}. \"La gente lo dice come se fosse semplice. Non è semplice.\"",
-      "{name} guarda oltre le tue spalle in cerca del camper, speranzoso. \"È qui? La Bestia? È parcheggiata davanti?\"",
-      "\"Mia figlia ha la tua foto sul muro accanto a un cavallo,\" dice {name}. \"Tu, mi dicono, sei il secondo preferito.\"",
-      "{name} è raggiante. \"L'uomo che ci ha rimesso in tasca gli ottanta all'ora.\"",
-      "\"Ho sempre detto che chi ci sarebbe riuscito sarebbe stato un professore,\" dice {name}, guardandoti le mani. \"Ed è stato un meccanico. Adoro che sia stato un meccanico.\"",
-      "{name} si raddrizza come se fosse in corso un'ispezione. \"Signor Wilson. Cosa mai può fare per lei questo posto?\"",
-      "\"Sai cosa sei?\" dice {name}. \"Sei l'unica buona notizia dal novantadue.\""
+      "Sei tu. Sei quello del Motore Liminale.",
+      "Wilson. Tutta la mia famiglia prende una corriera che funziona grazie a te.",
+      "Un onore. Un onore vero.",
+      "Ti hanno dato il Nobel e tu sei venuto qui. Qui. In questo paese.",
+      "Quello è il tale del motore. È lui.",
+      "Ho letto la conferenza. Non ho capito una parola dopo la prima pagina, e le ho amate tutte.",
+      "Mio cugino è rimasto bloccato in una bolla ricorsiva per sei anni. Sei. Poi hanno ricominciato a passare le corriere.",
+      "Hai compresso la strada. La gente lo dice come se fosse semplice. Non è semplice.",
+      "C'è? La Bestia? È parcheggiata qui davanti?",
+      "Mia figlia ha la tua foto sul muro accanto a un cavallo. Tu, mi dicono, sei il secondo preferito.",
+      "L'uomo che ci ha rimesso in tasca gli ottanta all'ora.",
+      "Ho sempre detto che chi ci sarebbe riuscito sarebbe stato un professore. Ed è stato un meccanico. Adoro che sia stato un meccanico.",
+      "Signor Wilson. Cosa può mai fare per lei questo posto?",
+      "Sai cosa sei? Sei l'unica buona notizia dal novantadue in poi."
     ],
     "positive": [
-      "{name} si illumina. \"Detto dall'uomo che ha compresso un continente, questo finisce dritto nel mio diario.\"",
-      "\"Non ti azzardare a fare il modesto,\" dice {name}, deliziato. \"Non tu.\"",
-      "{name} scuote la testa, sorridendo. \"Ed è pure gentile. Ma certo che è pure gentile.\"",
-      "\"Lo racconto a tutti,\" annuncia {name}. \"A tutti. Prima a mia madre.\"",
-      "{name} diventa rosso fino alle orecchie. \"Ma guarda un po'. Ma guarda.\"",
-      "\"Quello è l'uomo più intelligente al mondo che è gentile con me,\" dice {name} a nessuno in particolare.",
-      "{name} ride, elettrizzato. \"Uno penserebbe che un Nobel renda insopportabili. E invece no.\"",
-      "\"Mi hai fatto la settimana ed è solo martedì,\" dice {name}.",
-      "{name} annuisce lentamente, commosso. \"Grazie. Davvero. E grazie per le strade.\"",
-      "\"Qualunque cosa ti serva in questo paese, la chiedi a me,\" dice {name}. \"Lo dico sul serio.\""
+      "Detto dall'uomo che ha compresso un continente, questa finisce dritta nel mio diario.",
+      "E non provare a fare il modesto. Non tu.",
+      "Ed è pure gentile. Ma certo che è pure gentile.",
+      "Lo racconto a tutti. A tutti. Prima a mia madre.",
+      "Ma guarda. Ma guarda un po'.",
+      "L'uomo più intelligente vivente è gentile con me.",
+      "Uno penserebbe che un Nobel renda insopportabile una persona. Non è successo.",
+      "Mi hai fatto la settimana ed è solo martedì.",
+      "Grazie. Davvero. E grazie per le strade.",
+      "Qualunque cosa ti serva in questo paese, la chiedi a me. E lo dico sul serio."
     ],
     "neutral": [
       "{name} ascolta con una serietà che l'osservazione non si era guadagnata.",
-      "\"Ridillo più piano,\" chiede {name}. \"Voglio ricordarmi come l'hai detto.\"",
-      "{name} annuisce come se da qualche parte si stessero prendendo appunti.",
-      "\"Ecco il cervello da ingegnere,\" dice {name}, soddisfatto.",
-      "{name} resta appeso alla fine della frase e sembra vagamente deluso quando finisce.",
-      "\"Buffo,\" dice {name}. \"Non l'avrei mai vista così, e adesso non riesco più a non vederla.\"",
-      "{name} emette un piccolo suono compiaciuto. \"Wilson in persona, che parla del tempo con me.\"",
-      "\"Sei sempre così facile da ascoltare?\" chiede {name}. \"Scommetto di sì.\"",
-      "{name} scrolla le spalle, contento. \"Qualunque cosa dici è più interessante di quello che stavo facendo.\"",
-      "\"Preferisco una parola semplice da te che un discorso da chiunque altro,\" dice {name}."
+      "Ridillo più piano. Voglio ricordarmi come l'hai messa.",
+      "{name} annuisce come se da qualche parte qualcuno stesse prendendo appunti.",
+      "Ecco, quello è il cervello dell'ingegnere.",
+      "{name} resta appeso alla fine della frase e sembra vagamente deluso quando si ferma.",
+      "Buffo. Non l'avrei mai vista così, e adesso non riesco più a non vederla così.",
+      "Wilson in persona, che parla con me del tempo.",
+      "Sei sempre così facile da ascoltare? Scommetto di sì.",
+      "Qualsiasi cosa tu dica è più interessante di quello che stavo facendo.",
+      "Preferisco una parola semplice da te che un discorso da chiunque altro."
     ],
     "negative": [
-      "{name} sbatte le palpebre, poi decide che dev'essere una battuta, perché viene da te. \"Ah! Certo. Ah.\"",
-      "\"Ha la lingua lunga,\" dice {name}, con ammirazione, a nessuno. \"Ma guarda.\"",
-      "{name} incassa senza fiatare. \"Probabilmente hai ragione. Di solito ce l'hai.\"",
-      "\"Se lo dice Bubba Wilson, qualcosa di vero c'è,\" dice {name}, ferito ma d'accordo.",
-      "{name} se la ride, un po' troppo in fretta. \"Me ne hanno dette di peggio uomini che non hanno mai costruito niente.\"",
-      "\"Giusto,\" dice {name}, arrossendo. \"Giusto. Farò meglio.\"",
-      "{name} sembra ferito per un attimo, poi si riprende. \"Giornataccia. Anche i geni hanno le giornatacce, no?\"",
-      "\"Da te lo accetto e da nessun altro,\" dice {name}, e lo pensa davvero.",
-      "{name} scaccia la cosa con la mano. \"Te lo sei guadagnato un caratteraccio. Chissà cosa ti porti dietro.\""
+      "Ah! Giusto. Ah.",
+      "Ha una bella parlantina. Ma guarda quello.",
+      "Probabilmente hai ragione. Di solito ce l'hai.",
+      "Se lo dice Bubba Wilson, qualcosa di vero c'è.",
+      "Mi hanno chiamato di peggio uomini che non hanno mai costruito niente.",
+      "Giusto. Giusto. Farò meglio.",
+      "Giornataccia. Anche i geni hanno le giornatacce, no?",
+      "Questa la prendo da te e da nessun altro.",
+      "Ti sei guadagnato il diritto a un caratteraccio. Chissà cosa ti porti dietro."
     ],
     "player": [
-      "\"Non è niente, tesoro. Ci sarebbe arrivato chiunque con un capanno e poco cervello.\"",
-      "\"Ho solo continuato a girarlo finché non ha smesso di protestare, guagliò. È tutto il trucco.\"",
-      "\"Il Motore non è più mio. È di chiunque stia guidando.\"",
+      "\"Non è niente, core mio. Ci arrivava chiunque avesse un capanno e poco cervello.\"",
+      "\"Ho solo continuato a girarlo finché non ha smesso di protestare, guagliò. Il trucco è tutto lì.\"",
+      "\"Il Motore non è più mio. È di chiunque ci stia guidando.\"",
       "\"Mannaggia, non cominciare. Sono un meccanico che è stato fortunato due volte.\"",
-      "\"Il premio sta in una scatola sotto la cuccetta. Bel peso per tenere aperta una porta.\"",
-      "\"Non era intelligenza, era testardaggine. C'è una differenza e non è a mio favore.\"",
-      "\"Se qualcuno ti dice che sono in gamba, chiedigli quante volte è saltata per aria prima. La risposta è undici.\"",
+      "\"Il premio sta in una scatola sotto la branda. Bel peso, per tenere ferma una porta.\"",
+      "\"Non era intelligenza, era testardaggine. C'è una differenza e non gioca a mio favore.\"",
+      "\"Se qualcuno ti dice che sono in gamba, chiedigli quante volte è esplosa prima. Risposta: undici.\"",
       "\"Uè, sei gentile. Però preferirei sentir parlare di te, sinceramente.\"",
-      "\"Ho messo un motore in un camper, tutto qui. Il resto l'ha fatto la strada.\"",
-      "\"Statt' bbuono. Risparmia le parole grosse per qualcuno che se le merita.\"",
+      "\"Ho messo un motore dentro un camper, tutto qui. Il resto l'ha fatto la strada.\"",
+      "\"Statte bbuono. Le parole grosse tienile per qualcuno che se le merita.\"",
       "\"L'hanno fatto le mie mani, e le mie mani oggi non accettano complimenti.\"",
-      "\"Chiano chiano, adesso. Mi fai arrossire davanti a tutta la strada.\""
+      "\"Chiano chiano, adesso. Finisce che arrossisco davanti a tutta la strada.\""
     ],
     "romantic": {
-      "label": "Rifiuta le avances",
+      "label": "Respingi le avance",
       "confession": [
-        "{name} è diventato immobile. \"Ti amo da quando hanno cominciato a girare le corriere. Ho bisogno che tu lo sappia prima che tu dica qualsiasi cosa.\"",
-        "\"Ho conservato ogni ritaglio,\" dice {name}, con le mani che tremano. \"C'è un cassetto intero. È da matti? È da matti.\"",
-        "{name} prende fiato come un tuffatore. \"Portami con te. Nel camper. Non aggiusterò niente, ci sarò e basta.\"",
-        "\"Non ho mai voluto nessun altro,\" dice {name}. \"Neanche una volta. Mai. Solo te.\"",
-        "{name} guarda il pavimento. \"L'avevo provato. L'ho provato per anni ed è uscito tutto dalla testa.\"",
-        "\"Di' una parola e stasera chiudo bottega,\" dice {name}. \"Stasera, signor Wilson.\""
+        "Ti amo da quando hanno ricominciato a passare le corriere. Ho bisogno che tu lo sappia prima di dire qualsiasi cosa.",
+        "Ho conservato ogni ritaglio. C'è un cassetto intero. È una follia? È una follia.",
+        "Portami con te. Nel camper. Non aggiusterò niente, starò lì e basta.",
+        "Non ho mai voluto nessun altro. Neanche una volta. Mai. Solo te.",
+        "L'avevo provata. L'ho provata per anni e mi è uscita tutta dalla testa.",
+        "Dimmi una parola e stasera chiudo bottega. Stasera, signor Wilson."
       ],
       "decline": [
-        "\"Tesoro, fermati. Fermati prima di dire il resto. C'è una donna in mezzo e non sei tu, e non se ne va nemmeno.\"",
-        "\"Uè, ascoltami. Chiunque tu ti sia costruito in testa con quei ritagli, quel tizio è meglio di me. Sposa lui, non questo.\"",
-        "\"Mannaggia. Sono onorato, guagliona, e la risposta è no, e no resterà.\"",
-        "\"Sono impegnato con qualcosa a cui non riesco nemmeno a telefonare. Non è giusto per te, non è giusto per nessuno. Quindi: no.\"",
-        "\"Ti meriti un uomo che la sera è a casa. Io sono un uomo che sta a ottanta all'ora da tutto.\"",
-        "\"Chiano chiano. Butta via il cassetto, tesoro, e va' a trovare qualcuno che possa guardarti come si deve.\""
+        "Core mio, fermati. Fermati prima di dire il resto. C'è una donna in mezzo e non sei tu, e non se ne va nemmeno.",
+        "Uè, ascoltami. Chiunque tu ti sia costruito in testa con quei ritagli, quel tale è meglio di me. Sposa lui, non questo qua.",
+        "Mannaggia. Mi fa onore, guagliona, e la risposta è no, e no resterà.",
+        "Io sono impegnato con una cosa a cui non riesco nemmeno a telefonare. Non è giusto per te, non è giusto per nessuno. Quindi: no.",
+        "Tu ti meriti un uomo che la sera sta a casa. Io sono un uomo che sta a ottanta chilometri all'ora da qualsiasi cosa.",
+        "Chiano chiano. Butta quel cassetto, core mio, e va' a trovarti qualcuno che ti possa guardare indietro come si deve."
       ],
       "response": [
         "{name} annuisce, e continua ad annuire, molto dopo che non c'è più niente a cui annuire.",
-        "\"Giusto,\" dice {name}. \"Giusto. Certo. Ma certo.\" E non alza più lo sguardo.",
-        "{name} ride, una nota orribile. \"Vent'anni. Vent'anni di un cassetto.\"",
-        "\"Non ripassare da questo paese,\" dice {name} a bassa voce. \"Ti prego. Semplicemente non farlo.\"",
-        "{name} si volta e comincia a mettere in ordine qualcosa che era già in ordine.",
-        "\"Avrei preferito che fossi stato crudele,\" dice {name}. \"Quello l'avrei superato.\""
+        "Giusto. Giusto. Certo. Ma certo.",
+        "Vent'anni. Vent'anni di cassetto.",
+        "Non ripassare da questo paese. Ti prego. Proprio non ripassarci.",
+        "{name} si gira e comincia a riordinare qualcosa che era già in ordine.",
+        "Avrei preferito che fossi stato crudele. Quello me lo sarei fatto passare."
       ]
     }
   }

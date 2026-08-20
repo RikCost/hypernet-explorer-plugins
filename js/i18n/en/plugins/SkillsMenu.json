@@ -9,6 +9,11 @@
   "mp": "{n} MP",
   "ap": "{n} AP"
  },
+ "battle": {
+  "more": "More... ({count})",
+  "back": "Back",
+  "none": "Nothing to cast"
+ },
  "discipline": {
   "basic": "Basic Discipline",
   "standard": "Standard Discipline"

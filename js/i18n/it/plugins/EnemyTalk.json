@@ -41,5 +41,9 @@
     "follower": "seguace",
     "pet": "animale",
     "joined": "{name} ora ti accompagna come {kind}!"
+  },
+  "menu": {
+    "header": "{name}  {opinion} {value}/100",
+    "row": "{name}  {chance}%"
   }
 }

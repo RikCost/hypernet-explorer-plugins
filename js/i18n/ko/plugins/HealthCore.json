@@ -14,5 +14,6 @@
     ""
   ],
   "vitalOrganDestroyed": "",
-  "partDestroyed": ""
+  "partDestroyed": "",
+  "partDamagedFallback": "{part} 부위가 손상되었다!"
 }

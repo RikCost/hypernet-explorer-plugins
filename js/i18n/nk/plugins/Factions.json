@@ -63,6 +63,24 @@
     "thegods": "DA GODS",
     "continentalunion": "CONTINENTAL UNION",
     "thetourists": "DA TOURISTS",
-    "thedargos": "DA DARGOS"
-  }
+    "thedargos": "DA DARGOS",
+    "kukulkanascendancy": "KUKULKAN ASCENDANCY",
+    "democraticpeoplesrepublicofkorea": "DEMOCRATIC PEOPLE'S REPUBLIC OF KOREA",
+    "dharmadirectorate": "DHARMA DIRECTORATE",
+    "illuminatedkhanate": "ILLUMINATED KHANATE",
+    "solomonicrepublic": "SOLOMONIC REPUBLIC",
+    "petrokingdomofarabia": "PETRO KINGDOM OF ARABIA",
+    "sanatanarashtra": "SANATANA RASHTRA",
+    "longchile": "LONG CHILE",
+    "imperialstateofpersia": "IMPERIAL STATE OF PERSIA"
+  },
+  "versus": "VS. {name}",
+  "sortName": "A-Z",
+  "searchPlaceholder": "SEARCH FACTIONS…",
+  "versusOwn": "VS. {name} (ITS OWN BOSS)",
+  "controlledCountries": "HOLDS:",
+  "holdsNothing": "NUFFIN ON DIS MAP",
+  "openWiki": "READ DA WHOLE FILE",
+  "moralGuide": "MORAL GUIDE:",
+  "politicalLeader": "POLITICAL BOSS:"
 }

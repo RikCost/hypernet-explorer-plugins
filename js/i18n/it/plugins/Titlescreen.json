@@ -9,7 +9,8 @@
     "preferences": "Preferenze",
     "mods": "Mods",
     "exit": "Esci",
-    "continue": "Continua"
+    "continue": "Continua",
+    "quickContinue": "Continua"
   },
   "menuOverlay": {
     "explore": "ESPLORA",
@@ -21,11 +22,13 @@
     "preferences": "PREFERENZE",
     "mods": "MODS",
     "exit": "ESCI",
-    "noWorld": "NESSUN MONDO"
+    "noWorld": "NESSUN MONDO",
+    "quickContinue": "CONTINUA"
   },
   "minigame": {
     "arena": "Arena",
     "camperDriving": "Guida Camper",
+    "galaxyMap": "Mappa Galattica",
     "dream": "Sogno",
     "surfing": "Surf",
     "targetRange": "Poligono di Tiro",
@@ -54,7 +57,8 @@
     "arcadeManpac": "Arcade: Manpac",
     "arcadeAsteroids": "Arcade: Asteroids",
     "arcadeCentipede": "Arcade: Centipede",
-    "piano": "Pianoforte"
+    "piano": "Pianoforte",
+    "hyperdeck": "Costruisci un Hyperdeck"
   },
   "minigameSetup": {
     "venueTitle": "Dove",
@@ -68,8 +72,8 @@
     "back": "Indietro"
   },
   "disclaimer": {
-    "text": "Questa prima build giocabile ha bisogno del tuo aiuto! Segnala qualsiasi bug, problema di collisione, funzionalita che vorresti aggiungere o cose da riequilibrare nel canale #bug-feedback del server Esoteric Heavy Industries",
-    "noclip": "Se resti bloccato in un muro, tieni premuto CTRL per usare la modalita noclip."
+    "text": "Questa prima build giocabile ha bisogno del tuo aiuto! Segnala qualsiasi bug, problema di collisione, funzionalità che vorresti aggiungere o cose da riequilibrare nel canale #bug-feedback del server Esoteric Heavy Industries",
+    "noclip": "Se resti bloccato in un muro, tieni premuto CTRL per usare la modalità noclip."
   },
   "news": {
     "header": "NOTIZIE // BUILD INIZIALE"
@@ -142,7 +146,9 @@
     "majorTip": "Questa build è un aggiornamento major. Si installa da qui, ma per la piena compatibilità va riscaricato l'intero gioco.",
     "majorInstalled": "AGGIORNAMENTO MAJOR INSTALLATO",
     "majorInstalledLine": "RISCARICA L'INTERO GIOCO PER LA PIENA COMPATIBILITÀ",
-    "majorInstalledTip": "Questa copia è stata aggiornata attraverso un aggiornamento major. Riscarica l'intero gioco per la piena compatibilità."
+    "majorInstalledTip": "Questa copia è stata aggiornata attraverso un aggiornamento major. Riscarica l'intero gioco per la piena compatibilità.",
+    "redownload": "✦ RISCARICA IL GIOCO",
+    "redownloadTip": "È uscito un aggiornamento major e questa copia è indietro. Le patch non bastano: va riscaricato il gioco intero. Clicca per aprire la pagina di download; dalla schermata degli aggiornamenti puoi comunque installare la build a mano."
   },
   "hyperverse": {
     "lead": "IPERVERSO // ",
@@ -206,7 +212,6 @@
     "bestiary": "BESTIARIO",
     "artifacts": "ARTEFATTI",
     "weapons": "ARMI",
-    "enemies3d": "NEMICI 3D",
     "random": "CASUALE"
   },
   "artifact": {

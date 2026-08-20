@@ -133,13 +133,7 @@
             eye.position.set(x, y, z); parent.add(eye); return eye;
         }
         _wing(mat, side, x, y, z) {
-            const g = new THREE.Group();
-            const membrane = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.4, 4), mat);
-            membrane.position.set(side * 0.7, 0, -0.1); membrane.rotation.z = side * 1.5; membrane.scale.set(1, 1, 0.08);
-            g.add(membrane);
-            g.position.set(x, y, z); g._side = side;
-            this.bodyGroup.add(g); this._wings.push(g);
-            return g;
+            return this.buildDragonWing(mat, side, x, y, z);
         }
         _limb(mat, x, y, z, len) {
             const g = new THREE.Group();
@@ -153,10 +147,14 @@
         }
         _neckHead(mat, baseX, baseY, baseZ, accent, curl) {
             const g = new THREE.Group();
-            let py = 0, pz = 0;
+            let py = 0, pz = 0, pr = 0.2, prevPt = new THREE.Vector3(0, 0, 0);
             for (let i = 0; i < 4; i++) {
-                const seg = new THREE.Mesh(new THREE.SphereGeometry(0.2 - i * 0.02, 10, 10), mat);
+                const r = 0.2 - i * 0.02;
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat);
                 seg.position.set(0, py, pz); g.add(seg);
+                const pt = new THREE.Vector3(0, py, pz);
+                if (i > 0) this.addStrut(g, mat, prevPt, pt, pr * 0.85, r * 0.85);
+                prevPt = pt; pr = r;
                 py += 0.26; pz += curl * 0.06 * i;
             }
             const head = new THREE.Group();
@@ -167,6 +165,7 @@
             jaw.position.set(0, -0.12, 0.18); head.add(jaw);
             head.position.set(0, py + 0.1, pz + 0.18); head.rotation.x = 0.3;
             g.add(head);
+            this.addStrut(g, mat, prevPt, head.position, pr * 0.85, 0.18);
             g._head = head;
             g.position.set(baseX, baseY, baseZ);
             this.bodyGroup.add(g);
@@ -207,10 +206,14 @@
         }
         _tail(mat, dir) {
             const g = new THREE.Group();
-            let py = 1.2, pz = -0.7;
+            let py = 1.2, pz = -0.7, pr = 0.22, prevPt = new THREE.Vector3(0, py, pz);
             for (let i = 0; i < 5; i++) {
-                const seg = new THREE.Mesh(new THREE.SphereGeometry(0.22 - i * 0.035, 10, 10), mat);
+                const r = 0.22 - i * 0.035;
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat);
                 seg.position.set(0, py, pz); g.add(seg);
+                const pt = new THREE.Vector3(0, py, pz);
+                if (i > 0) this.addStrut(g, mat, prevPt, pt, pr * 0.85, r * 0.85);
+                prevPt = pt; pr = r;
                 pz -= 0.3; py -= 0.05 * i;
             }
             this.bodyGroup.add(g); return g;
@@ -376,8 +379,8 @@
             this.rightLeg = this._limb(mat, 0.32, 0.55, 0.15, 0.45);
             // Short curly tail.
             this.tail = new THREE.Group();
-            let ty = 0.9, tz = -0.5;
-            for (let i = 0; i < 4; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.17 - i * 0.03, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.22; ty -= 0.06 * i; }
+            let ty = 0.9, tz = -0.5, tr = 0.17, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 4; i++) { const r = 0.17 - i * 0.03; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.22; ty -= 0.06 * i; }
             const tip = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.3, 6), this._mat(p.accent, 0.9, 0.3, p.accent)); tip.position.set(0, ty, tz - 0.1); tip.rotation.x = -Math.PI / 2; this.tail.add(tip);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -449,8 +452,8 @@
             this.rightLeg = this._limb(mat, 0.3, 0.6, 0.15, 0.5);
             // Short tail with crystal tip.
             this.tail = new THREE.Group();
-            let ty = 0.95, tz = -0.55;
-            for (let i = 0; i < 4; i++) { const seg = new THREE.Mesh(new THREE.OctahedronGeometry(0.15 - i * 0.025, 0), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.24; }
+            let ty = 0.95, tz = -0.55, tr = 0.15, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 4; i++) { const r = 0.15 - i * 0.025; const seg = new THREE.Mesh(new THREE.OctahedronGeometry(r, 0), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.8, r * 0.8); tPrev = pt; tr = r; tz -= 0.24; }
             const ttip = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.35, 4), crysMat); ttip.position.set(0, ty, tz - 0.1); ttip.rotation.x = -Math.PI / 2; this.tail.add(ttip);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -464,11 +467,14 @@
             const crysMat = this._mat(p.accent, 0.95, 0.2, p.accent);
             // Long serpentine body built from a chain of segments arching upright.
             this.body = new THREE.Group();
-            let sy = 0.6, sz = -0.7;
+            let sy = 0.6, sz = -0.7, sr = 0.38, sPrev = new THREE.Vector3(0, sy, sz);
             for (let i = 0; i < 8; i++) {
-                const r = 0.38 - Math.abs(i - 2) * 0.02;
-                const seg = new THREE.Mesh(new THREE.SphereGeometry(Math.max(0.16, r), 12, 10), mat);
+                const r = Math.max(0.16, 0.38 - Math.abs(i - 2) * 0.02);
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat);
                 seg.position.set(0, sy, sz); this.body.add(seg);
+                const pt = new THREE.Vector3(0, sy, sz);
+                if (i > 0) this.addStrut(this.body, mat, sPrev, pt, sr * 0.85, r * 0.85);
+                sPrev = pt; sr = r;
                 sy += (i < 4 ? 0.18 : -0.02); sz += 0.22;
             }
             this.bodyGroup.add(this.body);
@@ -494,8 +500,8 @@
             this.rightLeg = this._limb(mat, 0.28, 0.5, 0.0, 0.4);
             // Tapering tail off the base of the body.
             this.tail = new THREE.Group();
-            let ty = 0.55, tz = -0.85;
-            for (let i = 0; i < 6; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.2 - i * 0.03, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.26; ty -= 0.02; }
+            let ty = 0.55, tz = -0.85, tr = 0.2, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 6; i++) { const r = 0.2 - i * 0.03; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.26; ty -= 0.02; }
             const ttip = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.4, 5), crysMat); ttip.position.set(0, ty, tz - 0.12); ttip.rotation.x = -Math.PI / 2; this.tail.add(ttip);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -572,10 +578,14 @@
             // Long serpentine neck builder (taller than _neckHead) reused for 3 heads.
             const longNeck = (bx, by, bz, lean) => {
                 const g = new THREE.Group();
-                let py = 0, pz = 0;
+                let py = 0, pz = 0, pr = 0.22, prevPt = new THREE.Vector3(0, 0, 0);
                 for (let i = 0; i < 7; i++) {
-                    const seg = new THREE.Mesh(new THREE.SphereGeometry(0.22 - i * 0.018, 10, 10), mat);
+                    const r = 0.22 - i * 0.018;
+                    const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat);
                     seg.position.set(lean * 0.05 * i, py, pz); g.add(seg);
+                    const pt = new THREE.Vector3(lean * 0.05 * i, py, pz);
+                    if (i > 0) this.addStrut(g, mat, prevPt, pt, pr * 0.85, r * 0.85);
+                    prevPt = pt; pr = r;
                     py += 0.3; pz += 0.04 * i;
                 }
                 const head = new THREE.Group();
@@ -587,7 +597,9 @@
                 const frill = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.3, 6), this._mat(p.accent, 0.85, 0.4, p.accent));
                 frill.position.set(0, 0.1, -0.18); frill.scale.set(1, 1, 0.18); head.add(frill);
                 head.position.set(lean * 0.35, py + 0.1, pz + 0.2); head.rotation.x = 0.35;
-                g.add(head); g._head = head;
+                g.add(head);
+                this.addStrut(g, mat, prevPt, head.position, pr * 0.85, 0.2);
+                g._head = head;
                 g.position.set(bx, by, bz); g.rotation.z = lean * 0.12;
                 this.bodyGroup.add(g);
                 return g;
@@ -603,8 +615,8 @@
             this.head3 = longNeck(0.42, 1.5, 0.4, 1);
             // Thick muscular tail.
             this.tail = new THREE.Group();
-            let ty = 0.9, tz = -0.9;
-            for (let i = 0; i < 6; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.3 - i * 0.04, 12, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.32; ty -= 0.05 * i; }
+            let ty = 0.9, tz = -0.9, tr = 0.3, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 6; i++) { const r = 0.3 - i * 0.04; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.32; ty -= 0.05 * i; }
             this.bodyGroup.add(this.tail);
             this._partMeshMap = { BODY: this.body, HEAD_ONE: this.head1, HEAD_TWO: this.head2, HEAD_THREE: this.head3, TAIL: this.tail };
             this._cascadeRules = [
@@ -689,8 +701,8 @@
             this.rightLeg = this._limb(mat, 0.3, 0.6, 0.15, 0.5);
             // Forked lightning-bolt tail.
             this.tail = new THREE.Group();
-            let ty = 0.9, tz = -0.5;
-            for (let i = 0; i < 3; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.14 - i * 0.025, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.22; }
+            let ty = 0.9, tz = -0.5, tr = 0.14, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 3; i++) { const r = 0.14 - i * 0.025; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.22; }
             const fork = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.4, 4), arcMat); fork.position.set(0, ty, tz - 0.1); fork.rotation.x = -Math.PI / 2; this.tail.add(fork);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -730,8 +742,8 @@
             this.rightLeg = this._limb(mat, 0.4, 0.5, 0.15, 0.45);
             // Short fat tail.
             this.tail = new THREE.Group();
-            let ty = 0.78, tz = -0.55;
-            for (let i = 0; i < 4; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.22 - i * 0.04, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.24; }
+            let ty = 0.78, tz = -0.55, tr = 0.22, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 4; i++) { const r = 0.22 - i * 0.04; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.24; }
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
         }
@@ -804,8 +816,8 @@
             this.rightLeg = this._limb(mat, 0.34, 0.6, 0.15, 0.55);
             // Short tail with a small ember tip.
             this.tail = new THREE.Group();
-            let ty = 0.95, tz = -0.6;
-            for (let i = 0; i < 4; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.18 - i * 0.03, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.24; ty -= 0.04 * i; }
+            let ty = 0.95, tz = -0.6, tr = 0.18, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 4; i++) { const r = 0.18 - i * 0.03; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.24; ty -= 0.04 * i; }
             const tip = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.3, 6), lavaMat); tip.position.set(0, ty, tz - 0.1); tip.rotation.x = -Math.PI / 2; this.tail.add(tip);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -819,10 +831,15 @@
             const glowMat = this._mat(p.accent, 0.9, 0.2, p.accent);
             // Serpentine coiling torso (S-curve chain of segments).
             this.body = new THREE.Group();
-            let by = 1.0, bz = -0.5;
+            let by = 1.0, bz = -0.5, br = 0.42, bPrev = new THREE.Vector3(Math.sin(0) * 0.35, by, bz);
             for (let i = 0; i < 8; i++) {
-                const seg = new THREE.Mesh(new THREE.SphereGeometry(0.42 - Math.abs(i - 3) * 0.03, 12, 10), mat);
-                seg.position.set(Math.sin(i * 0.9) * 0.35, by, bz); this.body.add(seg);
+                const r = 0.42 - Math.abs(i - 3) * 0.03;
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat);
+                const bx = Math.sin(i * 0.9) * 0.35;
+                seg.position.set(bx, by, bz); this.body.add(seg);
+                const pt = new THREE.Vector3(bx, by, bz);
+                if (i > 0) this.addStrut(this.body, mat, bPrev, pt, br * 0.85, r * 0.85);
+                bPrev = pt; br = r;
                 by += (i < 4 ? 0.1 : 0.02); bz += 0.28;
             }
             // Dorsal sail fin running down the spine.
@@ -846,8 +863,8 @@
             const fin2 = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.3, 5), finMat); fin2.position.y = -0.7; fin2.scale.set(1, 0.5, 1.4); this.rightLeg.add(fin2);
             // Eel-like tail ending in a wide caudal fin.
             this.tail = new THREE.Group();
-            let ty = 1.0, tz = -0.8;
-            for (let i = 0; i < 6; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.26 - i * 0.035, 10, 10), mat); seg.position.set(Math.sin(i * 0.8) * 0.2, ty, tz); this.tail.add(seg); tz -= 0.3; ty -= 0.04 * i; }
+            let ty = 1.0, tz = -0.8, tr = 0.26, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 6; i++) { const r = 0.26 - i * 0.035; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat); const tx = Math.sin(i * 0.8) * 0.2; seg.position.set(tx, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(tx, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.3; ty -= 0.04 * i; }
             const fluke = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.5, 4), finMat); fluke.position.set(0, ty, tz - 0.15); fluke.rotation.x = -Math.PI / 2; fluke.scale.set(1, 1, 0.15); this.tail.add(fluke);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -861,10 +878,14 @@
             const starMat = this._mat(p.accent, 1.0, 0.1, p.accent);
             // Long tapering wyrm torso, segments shrinking toward the dissolving end.
             this.body = new THREE.Group();
-            let by = 1.2, bz = -0.6;
+            let by = 1.2, bz = -0.6, br = 0.5, bPrev = new THREE.Vector3(0, by, bz);
             for (let i = 0; i < 7; i++) {
-                const seg = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5 - i * 0.05, 0), mat);
+                const r = 0.5 - i * 0.05;
+                const seg = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), mat);
                 seg.position.set(0, by, bz); seg.rotation.set(this.idRand() * 3, this.idRand() * 3, 0); this.body.add(seg);
+                const pt = new THREE.Vector3(0, by, bz);
+                if (i > 0) this.addStrut(this.body, mat, bPrev, pt, br * 0.85, r * 0.85);
+                bPrev = pt; br = r;
                 by += 0.05; bz += 0.3;
             }
             this.bodyGroup.add(this.body);
@@ -886,8 +907,8 @@
             this.rightLeg = this._limb(mat, 0.4, 0.9, 0.15, 0.8);
             // Tail that frays into pure static (shrinking cubes).
             this.tail = new THREE.Group();
-            let ty = 1.15, tz = -0.85;
-            for (let i = 0; i < 6; i++) { const r = 0.24 - i * 0.035; const seg = new THREE.Mesh(i < 3 ? new THREE.SphereGeometry(r, 10, 10) : new THREE.BoxGeometry(r, r, r), i < 3 ? mat : starMat); seg.position.set((this.idRand() - 0.5) * 0.2 * i, ty, tz); this.tail.add(seg); tz -= 0.3; }
+            let ty = 1.15, tz = -0.85, tr = 0.24, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 6; i++) { const r = 0.24 - i * 0.035; const seg = new THREE.Mesh(i < 3 ? new THREE.SphereGeometry(r, 10, 10) : new THREE.BoxGeometry(r, r, r), i < 3 ? mat : starMat); const tx = (this.idRand() - 0.5) * 0.2 * i; seg.position.set(tx, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(tx, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.8, r * 0.8); tPrev = pt; tr = r; tz -= 0.3; }
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
         }
@@ -900,10 +921,14 @@
             // Rocky neck + geode head: faceted stone neck, crystal-clustered skull.
             const geodeNeck = (bx, by, bz, lean) => {
                 const g = new THREE.Group();
-                let py = 0, pz = 0;
+                let py = 0, pz = 0, pr = 0.24, prevPt = new THREE.Vector3(0, 0, 0);
                 for (let i = 0; i < 5; i++) {
-                    const seg = new THREE.Mesh(new THREE.DodecahedronGeometry(0.24 - i * 0.025, 0), mat);
+                    const r = 0.24 - i * 0.025;
+                    const seg = new THREE.Mesh(new THREE.DodecahedronGeometry(r, 0), mat);
                     seg.position.set(lean * 0.05 * i, py, pz); seg.rotation.y = this.idRand() * 3; g.add(seg);
+                    const pt = new THREE.Vector3(lean * 0.05 * i, py, pz);
+                    if (i > 0) this.addStrut(g, mat, prevPt, pt, pr * 0.8, r * 0.8);
+                    prevPt = pt; pr = r;
                     py += 0.3; pz += 0.04 * i;
                 }
                 const head = new THREE.Group();
@@ -913,7 +938,9 @@
                 this._eye(head, -0.1, 0.04, 0.26, 0.05, p.accent);
                 this._eye(head, 0.1, 0.04, 0.26, 0.05, p.accent);
                 head.position.set(lean * 0.25, py + 0.1, pz + 0.18); head.rotation.x = 0.3;
-                g.add(head); g._head = head;
+                g.add(head);
+                this.addStrut(g, mat, prevPt, head.position, pr * 0.8, 0.2);
+                g._head = head;
                 g.position.set(bx, by, bz); g.rotation.z = lean * 0.1;
                 this.bodyGroup.add(g);
                 return g;
@@ -929,8 +956,8 @@
             this.head3 = geodeNeck(0.42, 1.4, 0.4, 1);
             // Stubby rocky tail spangled with crystals.
             this.tail = new THREE.Group();
-            let ty = 0.9, tz = -0.9;
-            for (let i = 0; i < 5; i++) { const seg = new THREE.Mesh(new THREE.DodecahedronGeometry(0.28 - i * 0.045, 0), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.3; ty -= 0.04 * i; }
+            let ty = 0.9, tz = -0.9, tr = 0.28, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 5; i++) { const r = 0.28 - i * 0.045; const seg = new THREE.Mesh(new THREE.DodecahedronGeometry(r, 0), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.8, r * 0.8); tPrev = pt; tr = r; tz -= 0.3; ty -= 0.04 * i; }
             const ttip = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.5, 5), crysMat); ttip.position.set(0, ty, tz - 0.12); ttip.rotation.x = -Math.PI / 2; this.tail.add(ttip);
             this.bodyGroup.add(this.tail);
             this._partMeshMap = { BODY: this.body, HEAD_ONE: this.head1, HEAD_TWO: this.head2, HEAD_THREE: this.head3, TAIL: this.tail };
@@ -951,10 +978,14 @@
             // Sagging swamp neck + venom-dripping maw.
             const mireNeck = (bx, by, bz, lean) => {
                 const g = new THREE.Group();
-                let py = 0, pz = 0;
+                let py = 0, pz = 0, pr = 0.24, prevPt = new THREE.Vector3(0, 0, 0);
                 for (let i = 0; i < 6; i++) {
-                    const seg = new THREE.Mesh(new THREE.SphereGeometry(0.24 - i * 0.02, 10, 10), mat);
+                    const r = 0.24 - i * 0.02;
+                    const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat);
                     seg.position.set(lean * 0.04 * i, py, pz); g.add(seg);
+                    const pt = new THREE.Vector3(lean * 0.04 * i, py, pz);
+                    if (i > 0) this.addStrut(g, mat, prevPt, pt, pr * 0.85, r * 0.85);
+                    prevPt = pt; pr = r;
                     py += 0.26; pz += 0.05 * i;
                 }
                 const head = new THREE.Group();
@@ -965,7 +996,9 @@
                 // Venom mire dripping from the jaw.
                 for (let d = 0; d < 3; d++) { const drip = new THREE.Mesh(new THREE.SphereGeometry(0.05 + d * 0.01, 8, 8), venomMat); drip.position.set((d - 1) * 0.08, -0.22 - d * 0.05, 0.28); drip.scale.set(1, 1.8, 1); head.add(drip); }
                 head.position.set(lean * 0.28, py + 0.1, pz + 0.18); head.rotation.x = 0.4;
-                g.add(head); g._head = head;
+                g.add(head);
+                this.addStrut(g, mat, prevPt, head.position, pr * 0.85, 0.2);
+                g._head = head;
                 g.position.set(bx, by, bz); g.rotation.z = lean * 0.14;
                 this.bodyGroup.add(g);
                 return g;
@@ -981,8 +1014,8 @@
             this.head3 = mireNeck(0.4, 1.35, 0.45, 1);
             // Thick muddy tail.
             this.tail = new THREE.Group();
-            let ty = 0.85, tz = -0.9;
-            for (let i = 0; i < 6; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.3 - i * 0.04, 12, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); tz -= 0.3; ty -= 0.04 * i; }
+            let ty = 0.85, tz = -0.9, tr = 0.3, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 6; i++) { const r = 0.3 - i * 0.04; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat); seg.position.set(0, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(0, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.3; ty -= 0.04 * i; }
             this.bodyGroup.add(this.tail);
             this._partMeshMap = { BODY: this.body, HEAD_ONE: this.head1, HEAD_TWO: this.head2, HEAD_THREE: this.head3, TAIL: this.tail };
             this._cascadeRules = [
@@ -1037,10 +1070,15 @@
             const boltMat = this._mat(p.accent, 1.0, 0.1, p.accent);
             // Long slender coiling serpent body (sinuous chain of thin segments).
             this.body = new THREE.Group();
-            let by = 0.9, bz = -0.7;
+            let by = 0.9, bz = -0.7, br = 0.3, bPrev = new THREE.Vector3(0, by, bz);
             for (let i = 0; i < 10; i++) {
-                const seg = new THREE.Mesh(new THREE.SphereGeometry(0.3 - Math.abs(i - 4) * 0.015, 12, 10), mat);
-                seg.position.set(Math.sin(i * 0.7) * 0.4, by, bz); this.body.add(seg);
+                const r = 0.3 - Math.abs(i - 4) * 0.015;
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat);
+                const bx = Math.sin(i * 0.7) * 0.4;
+                seg.position.set(bx, by, bz); this.body.add(seg);
+                const pt = new THREE.Vector3(bx, by, bz);
+                if (i > 0) this.addStrut(this.body, mat, bPrev, pt, br * 0.85, r * 0.85);
+                bPrev = pt; br = r;
                 by += (i < 5 ? 0.16 : -0.01); bz += 0.24;
             }
             // Lightning veins crawling along the spine.
@@ -1067,8 +1105,8 @@
             this.rightLeg = this._limb(mat, 0.3, 0.75, 0.1, 0.6);
             // Tapering coiling tail with a feathered tip.
             this.tail = new THREE.Group();
-            let ty = 0.85, tz = -0.85;
-            for (let i = 0; i < 6; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.2 - i * 0.028, 10, 10), mat); seg.position.set(Math.sin(i * 0.8) * 0.25, ty, tz); this.tail.add(seg); tz -= 0.28; ty -= 0.02 * i; }
+            let ty = 0.85, tz = -0.85, tr = 0.2, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 6; i++) { const r = 0.2 - i * 0.028; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat); const tx = Math.sin(i * 0.8) * 0.25; seg.position.set(tx, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(tx, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.28; ty -= 0.02 * i; }
             for (let i = -1; i <= 1; i++) { const f = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.5, 5), featherMat); f.position.set(i * 0.1, ty, tz - 0.2); f.rotation.x = -Math.PI / 2 + i * 0.2; f.scale.set(1, 1, 0.2); this.tail.add(f); }
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -1195,10 +1233,14 @@
             const voidMat = this._mat(p.accent, 1.0, 0.1, p.accent);
             // Coiling void torus-segmented torso (rings of swirling energy).
             this.body = new THREE.Group();
-            let by = 1.1, bz = -0.7;
+            let by = 1.1, bz = -0.7, bPrev = new THREE.Vector3(0, by, bz);
             for (let i = 0; i < 8; i++) {
                 const seg = new THREE.Mesh(new THREE.TorusGeometry(0.32 - i * 0.018, 0.14, 8, 14), mat);
-                seg.position.set(Math.sin(i * 1.1) * 0.4, by, bz); seg.rotation.set(Math.PI / 2, this.idRand() * 3, 0); this.body.add(seg);
+                const bx = Math.sin(i * 1.1) * 0.4;
+                seg.position.set(bx, by, bz); seg.rotation.set(Math.PI / 2, this.idRand() * 3, 0); this.body.add(seg);
+                const pt = new THREE.Vector3(bx, by, bz);
+                if (i > 0) this.addStrut(this.body, mat, bPrev, pt, 0.1, 0.1);
+                bPrev = pt;
                 by += (i < 4 ? 0.16 : -0.02); bz += 0.28;
             }
             this.bodyGroup.add(this.body);
@@ -1271,10 +1313,15 @@
             const waterMat = this._mat(p.accent, 0.5, 0.15, p.accent);
             // Long coiling eel-like ocean body (sweeping S-curve).
             this.body = new THREE.Group();
-            let by = 1.0, bz = -0.7;
+            let by = 1.0, bz = -0.7, br = 0.44, bPrev = new THREE.Vector3(0, by, bz);
             for (let i = 0; i < 9; i++) {
-                const seg = new THREE.Mesh(new THREE.SphereGeometry(0.44 - Math.abs(i - 3) * 0.03, 14, 12), mat);
-                seg.position.set(Math.sin(i * 0.8) * 0.45, by, bz); this.body.add(seg);
+                const r = 0.44 - Math.abs(i - 3) * 0.03;
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), mat);
+                const bx = Math.sin(i * 0.8) * 0.45;
+                seg.position.set(bx, by, bz); this.body.add(seg);
+                const pt = new THREE.Vector3(bx, by, bz);
+                if (i > 0) this.addStrut(this.body, mat, bPrev, pt, br * 0.85, r * 0.85);
+                bPrev = pt; br = r;
                 by += (i < 4 ? 0.12 : 0.01); bz += 0.27;
             }
             this.bodyGroup.add(this.body);
@@ -1300,8 +1347,8 @@
             const fl2 = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.32, 5), finMat); fl2.position.y = -0.7; fl2.scale.set(1, 0.5, 1.5); this.rightLeg.add(fl2);
             // Coiling tail ending in a wide caudal fluke.
             this.tail = new THREE.Group();
-            let ty = 1.0, tz = -0.85;
-            for (let i = 0; i < 7; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.28 - i * 0.032, 12, 10), mat); seg.position.set(Math.sin(i * 0.8) * 0.25, ty, tz); this.tail.add(seg); tz -= 0.3; ty -= 0.03 * i; }
+            let ty = 1.0, tz = -0.85, tr = 0.28, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 7; i++) { const r = 0.28 - i * 0.032; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat); const tx = Math.sin(i * 0.8) * 0.25; seg.position.set(tx, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(tx, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.3; ty -= 0.03 * i; }
             const fluke = new THREE.Mesh(new THREE.ConeGeometry(0.36, 0.55, 4), finMat); fluke.position.set(0, ty, tz - 0.15); fluke.rotation.x = -Math.PI / 2; fluke.scale.set(1, 1, 0.15); this.tail.add(fluke);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -1315,11 +1362,15 @@
             const lavaMat = this._mat(p.accent, 1.0, 0.3, p.accent);  // molten glow
             // Long sinuous serpentine body: thick chain of cooled-rock segments arching up then down.
             this.body = new THREE.Group();
-            let by = 0.65, bz = -0.8;
+            let by = 0.65, bz = -0.8, br = 0.42, bPrev = new THREE.Vector3(0, by, bz);
             for (let i = 0; i < 10; i++) {
-                const r = 0.42 - Math.abs(i - 3) * 0.025;
-                const seg = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.max(0.18, r), 0), rockMat);
-                seg.position.set(Math.sin(i * 0.65) * 0.32, by, bz); seg.rotation.set(this.idRand() * 3, this.idRand() * 3, 0); this.body.add(seg);
+                const r = Math.max(0.18, 0.42 - Math.abs(i - 3) * 0.025);
+                const seg = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), rockMat);
+                const bx = Math.sin(i * 0.65) * 0.32;
+                seg.position.set(bx, by, bz); seg.rotation.set(this.idRand() * 3, this.idRand() * 3, 0); this.body.add(seg);
+                const pt = new THREE.Vector3(bx, by, bz);
+                if (i > 0) this.addStrut(this.body, rockMat, bPrev, pt, br * 0.85, r * 0.85);
+                bPrev = pt; br = r;
                 by += (i < 4 ? 0.2 : -0.04); bz += 0.26;
             }
             // Molten glowing veins running between the crust plates the length of the spine.
@@ -1349,8 +1400,8 @@
             this.rightLeg = this._limb(rockMat, 0.3, 0.5, 0.05, 0.45);
             // Long tapering molten tail trailing off the base, ending in a glowing ember tip.
             this.tail = new THREE.Group();
-            let ty = 0.6, tz = -0.95;
-            for (let i = 0; i < 8; i++) { const r = 0.24 - i * 0.025; const seg = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.max(0.06, r), 0), i < 6 ? rockMat : lavaMat); seg.position.set(Math.sin(i * 0.7) * 0.2, ty, tz); this.tail.add(seg); tz -= 0.28; ty -= 0.015 * i; }
+            let ty = 0.6, tz = -0.95, tr = 0.24, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 8; i++) { const r = Math.max(0.06, 0.24 - i * 0.025); const seg = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), i < 6 ? rockMat : lavaMat); const tx = Math.sin(i * 0.7) * 0.2; seg.position.set(tx, ty, tz); this.tail.add(seg); const pt = new THREE.Vector3(tx, ty, tz); if (i > 0) this.addStrut(this.tail, rockMat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.28; ty -= 0.015 * i; }
             const ember = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), lavaMat); ember.position.set(0, ty, tz - 0.05); ember.scale.set(1, 1.4, 1); this.tail.add(ember);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();
@@ -1373,13 +1424,17 @@
             };
             // Long, serene, gold-ringed coiling torso (calm S-curve).
             this.body = new THREE.Group();
-            let by = 1.1, bz = -0.8;
+            let by = 1.1, bz = -0.8, br = 0.5, bPrev = new THREE.Vector3(0, by, bz);
             for (let i = 0; i < 9; i++) {
-                const r = 0.5 - Math.abs(i - 3) * 0.028;
-                const seg = new THREE.Mesh(new THREE.SphereGeometry(Math.max(0.2, r), 16, 14), mat);
-                seg.position.set(Math.sin(i * 0.55) * 0.32, by, bz); this.body.add(seg);
+                const r = Math.max(0.2, 0.5 - Math.abs(i - 3) * 0.028);
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 14), mat);
+                const bx = Math.sin(i * 0.55) * 0.32;
+                seg.position.set(bx, by, bz); this.body.add(seg);
                 // Gold scale-ring banding every other segment.
                 if (i % 2 === 0) { const band = new THREE.Mesh(new THREE.TorusGeometry(r * 1.02, 0.04, 6, 18), goldMat); band.position.copy(seg.position); band.rotation.y = Math.PI / 2; this.body.add(band); }
+                const pt = new THREE.Vector3(bx, by, bz);
+                if (i > 0) this.addStrut(this.body, mat, bPrev, pt, br * 0.85, r * 0.85);
+                bPrev = pt; br = r;
                 by += (i < 4 ? 0.16 : 0.0); bz += 0.26;
             }
             this.bodyGroup.add(this.body);
@@ -1387,8 +1442,8 @@
             for (let i = 0; i < 6; i++) { const t2 = i / 6; wisdomEye(this.body, (i % 2 ? 1 : -1) * 0.4, 1.0 + Math.sin(t2 * Math.PI) * 1.0, -0.6 + i * 0.28, 0.07); }
             // Graceful upward neck rising from the crest of the coil.
             this.neck = new THREE.Group();
-            let ny = 0, nz = 0;
-            for (let i = 0; i < 5; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.24 - i * 0.02, 12, 10), mat); seg.position.set(0, ny, nz); this.neck.add(seg); ny += 0.28; nz += 0.05 * i; }
+            let ny = 0, nz = 0, nr = 0.24, nPrev = new THREE.Vector3(0, ny, nz);
+            for (let i = 0; i < 5; i++) { const r = 0.24 - i * 0.02; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat); seg.position.set(0, ny, nz); this.neck.add(seg); const pt = new THREE.Vector3(0, ny, nz); if (i > 0) this.addStrut(this.neck, mat, nPrev, pt, nr * 0.85, r * 0.85); nPrev = pt; nr = r; ny += 0.28; nz += 0.05 * i; }
             const ncoil = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.04, 6, 16), goldMat); ncoil.position.set(0, 0.7, 0.1); this.neck.add(ncoil);
             this.neck.position.set(Math.sin(3 * 0.55) * 0.32, by + 0.2, bz - 0.2); this.bodyGroup.add(this.neck);
             // Broad serene head facing forward (front-facing, all-knowing).
@@ -1423,8 +1478,8 @@
             const claw2 = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 5), goldMat); claw2.position.y = -0.82; claw2.rotation.x = Math.PI; this.rightLeg.add(claw2);
             // Long flowing tail trailing more serene eyes and a gold tassel.
             this.tail = new THREE.Group();
-            let ty = 1.1, tz = -0.95;
-            for (let i = 0; i < 7; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.28 - i * 0.032, 12, 10), mat); seg.position.set(Math.sin(i * 0.6) * 0.2, ty, tz); this.tail.add(seg); if (i % 2 === 1) wisdomEye(this.tail, Math.sin(i * 0.6) * 0.2, ty + 0.2, tz, 0.05); tz -= 0.3; ty -= 0.025 * i; }
+            let ty = 1.1, tz = -0.95, tr = 0.28, tPrev = new THREE.Vector3(0, ty, tz);
+            for (let i = 0; i < 7; i++) { const r = 0.28 - i * 0.032; const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat); const tx = Math.sin(i * 0.6) * 0.2; seg.position.set(tx, ty, tz); this.tail.add(seg); if (i % 2 === 1) wisdomEye(this.tail, tx, ty + 0.2, tz, 0.05); const pt = new THREE.Vector3(tx, ty, tz); if (i > 0) this.addStrut(this.tail, mat, tPrev, pt, tr * 0.85, r * 0.85); tPrev = pt; tr = r; tz -= 0.3; ty -= 0.025 * i; }
             const tassel = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.45, 6), goldMat); tassel.position.set(0, ty, tz - 0.12); tassel.rotation.x = -Math.PI / 2; tassel.scale.set(1, 1, 0.4); this.tail.add(tassel);
             this.bodyGroup.add(this.tail);
             this._wireDragonRig();

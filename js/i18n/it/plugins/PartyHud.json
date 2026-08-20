@@ -1,5 +1,7 @@
 {
  "optionName": "HUD del gruppo",
+ "fuel": "CARB.",
+ "statChip": "{stat} {rate}x",
  "alert": {
   "dead": "A terra",
   "hp": "Ferito",

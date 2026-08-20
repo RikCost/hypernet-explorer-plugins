@@ -69,6 +69,8 @@
     "skill": "Compétence",
     "skills": "Compétences",
     "basic": "Basique",
+    "wrestle": "Lutter",
+    "talk": "Parler",
     "reload": "Recharger",
     "run": "Courir"
   },
@@ -109,7 +111,6 @@
     "learnableSkills": "Compétences apprenables :"
   },
   "summon": {
-    "battleOnly": "Les invocations ne peuvent servir qu'au combat !",
     "alreadyActive": "Une invocation est déjà active !",
     "summoned": "{name} invoqué !"
   },

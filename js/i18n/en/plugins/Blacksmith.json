@@ -22,6 +22,27 @@
   "rarity": "Rarity",
   "value": "Value",
   "weight": "Weight",
+  "bonuses": "Bonuses",
+  "specs": "Properties",
   "yes": "Yes",
-  "searchPlaceholder": "Search pieces…"
+  "searchPlaceholder": "Search pieces…",
+  "forgedTab": "Forged",
+  "alreadyForged": "Already off the anvil",
+  "finish": "Finish",
+  "finishStrange": "Strange",
+  "finishAuto": "As it falls",
+  "smeltHeld": "Smelt ({n} held)",
+  "smeltNone": "None to smelt",
+  "smelted": "Back into the crucible",
+  "madeBy": "Beaten out by {smith}",
+  "forgedName": "{smith}'s {name}",
+  "forgedNameNumbered": "{smith}'s {name} {mark}",
+  "forgedDesc": "Forged by {smith}. {quality} work, and one of a kind.",
+  "quality": {
+    "crude": "Crude",
+    "sound": "Sound",
+    "fine": "Fine",
+    "superb": "Superb",
+    "masterwork": "Masterwork"
+  }
 }

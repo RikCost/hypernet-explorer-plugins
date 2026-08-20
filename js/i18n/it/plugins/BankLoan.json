@@ -86,6 +86,6 @@
     "actionBorrowed": "preso in prestito",
     "actionRepaid": "rimborsato",
     "ratePerDays": "{rate}% / {days} giorni",
-    "noOneLeft": "La filiale e al buio e le porte sono chiuse. Non e rimasto nessuno con cui fare banca."
+    "noOneLeft": "La filiale è al buio e le porte sono chiuse. Non è rimasto nessuno con cui fare banca."
   }
 }

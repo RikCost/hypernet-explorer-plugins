@@ -265,6 +265,16 @@
     if (record.lifeEvents.length > LIFE_EVENT_CAP) record.lifeEvents.pop();
   }
 
+  // A career segment records the job's i18n key ("jobs.12.name"), the way
+  // Jobs.json names it, rather than the wording - so a life simulated in one
+  // language still reads in whichever one it is opened in. A record written
+  // before the change (or a modded job) holds prose already and passes through.
+  function jobLabel(name) {
+    if (!name) return "";
+    const key = String(name);
+    return T.has(key) ? T(key) : key;
+  }
+
   // Places are recorded by their Destinations.json key; a biography reads out
   // the "name" that entry carries ("GreenWitch" -> "Green Witch"). Anything the
   // catalogue does not know (a map group, a country) passes through unchanged.
@@ -345,12 +355,15 @@
     if (typeof entry === "string") return entry;
     if (!entry.key || !T.has(entry.key)) return entry.desc || "";
     const params = entry.params || {};
-    if (params.place == null) return T(entry.key, params);
-    // `wild` is only ever on a non-sentient creature's events, and turns the
-    // place into the country around it (see stopLabel).
-    return T(entry.key, Object.assign({}, params, {
-      place: stopLabel({ place: params.place, wild: params.wild || null }),
-    }));
+    const values = Object.assign({}, params);
+    // Jobs and places are logged as ids, not as words, and are put into the
+    // reader's language here. `wild` is only ever on a non-sentient creature's
+    // events, and turns the place into the country around it (see stopLabel).
+    if (params.job != null) values.job = jobLabel(params.job);
+    if (params.place != null) {
+      values.place = stopLabel({ place: params.place, wild: params.wild || null });
+    }
+    return T(entry.key, values);
   }
 
   function rollHonesty(name, profile, rng) {
@@ -1204,7 +1217,7 @@
     } else if (record.employment === "retired") {
       lines.push(T.n('NPCLife.bio.retired', record.careerHistory.length, { n: record.careerHistory.length }));
     } else if (openJob) {
-      lines.push(T('NPCLife.bio.worksAs', { job: openJob.jobName, year: openJob.fromYear }));
+      lines.push(T('NPCLife.bio.worksAs', { job: jobLabel(openJob.jobName), year: openJob.fromYear }));
     } else {
       lines.push(T('NPCLife.bio.betweenJobs'));
     }
@@ -1212,7 +1225,7 @@
     if (pastJobs.length) {
       lines.push(T('NPCLife.bio.pastWork', {
         jobs: pastJobs.slice(-3).map(j => T('NPCLife.bio.pastJob', {
-          job: j.jobName, from: j.fromYear, to: j.toYear,
+          job: jobLabel(j.jobName), from: j.fromYear, to: j.toYear,
         })).join(", "),
       }));
     }

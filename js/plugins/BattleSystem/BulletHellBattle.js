@@ -187,43 +187,67 @@ if ($gameParty.inBattle()) {
 }
 });
 
+// How long the score stays on screen after the last bullet, in frames.
+const OUTRO_FRAMES = 60;
+// While the sequence is this young we keep looking for a better picture of the
+// enemy, because a 3D model reaches the scene asynchronously.
+const AVATAR_RESOLVE_FRAMES = 120;
+// The enemy is drawn at a readable size in the field whatever it measures on
+// the battlefield, so a boss and a walking sprite are dodged the same way.
+const AVATAR_TARGET_HEIGHT = 150;
+const AVATAR_MAX_WIDTH = 260;
+const AVATAR_MODEL_PAD = 0.08;
+
 BattleManager.startBulletHell = function() {
+const scene = SceneManager._scene;
+// Nothing to duel: opening the field on a corpse ended the sequence on its
+// first frame and left the battle paused behind it.
+if (!scene || !scene.startBulletHell || !scene.bulletHellTargetSprite ||
+    !scene.bulletHellTargetSprite()) {
+    return;
+}
 this._bulletHellMode = true;
-this._bulletHellFrames = $gameTemp.bulletHellParams.duration;
+this._bulletHellEnding = false;
 this._savedInputting = this._inputting;
 this._savedPhase = this._phase;
 this._inputting = false;
 this._phase = "bullet-hell";
-SceneManager._scene.startBulletHell();
+scene.startBulletHell();
 };
 
+// The sequence is winding down: the score goes up, the battle stays paused.
+// The fight only resumes in finishBulletHell, once the outro has played, so
+// there is no longer a stretch where turns run on behind a live bullet field
+// and open a command window nobody restored the visibility of.
 BattleManager.endBulletHell = function() {
+if (!this._bulletHellMode || this._bulletHellEnding) return;
+this._bulletHellEnding = true;
+
+const layer = SceneManager._scene && SceneManager._scene._bulletHellLayer;
+if (layer && layer._damageCounter) {
+    layer._damageCounter.visible = true;
+}
+if (layer && layer._totalDamageDealt > 0) {
+    safeBattleLog(T('Battle.bulletHellDamage', { amount: layer._totalDamageDealt }));
+}
+};
+
+// Hands the battle back. Called by the layer's own countdown, and again from
+// Scene_Battle#terminate as a backstop, so the paused phase can never outlive
+// the sequence that paused it.
+BattleManager.finishBulletHell = function() {
+if (!this._bulletHellMode) return;
 this._bulletHellMode = false;
+this._bulletHellEnding = false;
 this._inputting = this._savedInputting;
 this._phase = this._savedPhase;
 
-// Make the damage counter visible before ending
-if (SceneManager._scene._bulletHellLayer &&
-    SceneManager._scene._bulletHellLayer._damageCounter) {
-    SceneManager._scene._bulletHellLayer._damageCounter.visible = true;
-}
+// The shoot button is very likely still held down as the field closes, and
+// the command window that comes back up would read it as a confirmation.
+Input.clear();
 
-const logWindow = this._logWindow;
-if (SceneManager._scene._bulletHellLayer && logWindow && logWindow.addText) {
-    const totalDamage = SceneManager._scene._bulletHellLayer._totalDamageDealt;
-    if (totalDamage > 0) {
-        const text = T('Battle.bulletHellDamage', { amount: totalDamage });
-        safeBattleLog(text);
-    }
-}
-
-// Add a small delay before ending to show the final damage
 const scene = SceneManager._scene;
-setTimeout(() => {
-    if (scene && scene.endBulletHell) {
-        scene.endBulletHell();
-    }
-}, 1000);
+if (scene && scene.endBulletHell) scene.endBulletHell();
 };
 
 const _BattleManager_update = BattleManager.update;
@@ -235,11 +259,18 @@ if (this._bulletHellMode) {
 }
 };
 
+// The countdown lives on the layer, which Scene_Battle ticks every frame even
+// while a message window holds the battle process. Timing it here meant a popup
+// mid-sequence froze the clock and the bullet field never ended.
 BattleManager.updateBulletHellSequence = function() {
-this._bulletHellFrames--;
-if (this._bulletHellFrames <= 0) {
-    this.endBulletHell();
-}
+};
+
+const _BattleManager_setup_BH = BattleManager.setup;
+BattleManager.setup = function(troopId, canEscape, canLose) {
+// A fight abandoned mid-duel must not hand its paused phase to the next one.
+this._bulletHellMode = false;
+this._bulletHellEnding = false;
+_BattleManager_setup_BH.call(this, troopId, canEscape, canLose);
 };
 
 const _Scene_Battle_initialize = Scene_Battle.prototype.initialize;
@@ -255,127 +286,120 @@ this.createBulletHellLayer();
 };
 
 Scene_Battle.prototype.endBulletHell = function() {
+if (!this._bulletHellActive) return;
 this._bulletHellActive = false;
 this.showBattleWindows();
 this.removeBulletHellLayer();
 };
 
-Scene_Battle.prototype.hideBattleWindows = function() {
-if (this._partyCommandWindow) this._partyCommandWindow.hide();
-if (this._actorCommandWindow) this._actorCommandWindow.hide();
-if (this._skillWindow) this._skillWindow.hide();
-if (this._itemWindow) this._itemWindow.hide();
-if (this._actorWindow) this._actorWindow.hide();
-if (this._enemyWindow) this._enemyWindow.hide();
-if (this._helpWindow) this._helpWindow.hide();
-if (this._statusWindow) this._statusWindow.hide();
+// Every window that goes down for the sequence is remembered exactly as it
+// stood and put back exactly as it stood. The old pair hid windows outright and
+// only ever showed a hand-picked few again, so the actor command window stayed
+// invisible for the rest of the fight: MZ opens that window without ever
+// setting visible, so the player was handed an active menu they could not see,
+// which reads as the battle having frozen. The battle log was worse off still,
+// being handed a flat 255 back over the transparent frame it actually had.
+const BATTLE_WINDOW_KEYS = [
+"_partyCommandWindow", "_actorCommandWindow", "_skillWindow", "_itemWindow",
+"_actorWindow", "_enemyWindow", "_helpWindow", "_statusWindow",
+"_logWindow", "_pastLogWindow"
+];
 
-if (this._logWindow) {
-    if (this._logWindow._logSprites) {
-        this._logWindow.opacity = 0;
-        this._logWindow.backOpacity = 0;
-        this._logWindow.contentsOpacity = 0;
-        for (const sprite of this._logWindow._logSprites) {
-            if (sprite) {
-                sprite.opacity = 0;
-            }
-        }
-        if (this._pastLogWindow) {
-            this._pastLogWindow.hide();
-            this._pastLogWindow.deactivate();
-        }
-    } else {
-        this._logWindow.hide();
+Scene_Battle.prototype.hideBattleWindows = function() {
+const saved = [];
+const seen = new Set();
+const remember = win => {
+    if (!win || seen.has(win)) return;
+    seen.add(win);
+    saved.push({
+        win: win,
+        visible: win.visible,
+        opacity: win.opacity,
+        backOpacity: win.backOpacity,
+        contentsOpacity: win.contentsOpacity
+    });
+};
+
+for (const key of BATTLE_WINDOW_KEYS) remember(this[key]);
+if (this._windowLayer) {
+    for (const child of this._windowLayer.children) {
+        if (child instanceof Window_Base) remember(child);
     }
 }
+for (const child of this.children) {
+    if (child instanceof Window_Base) remember(child);
+}
 
-this.children.forEach(child => {
-    if (child instanceof Window_Base) {
-        child.hide();
+this._bulletHellSavedWindows = saved;
+for (const entry of saved) entry.win.visible = false;
+
+// The scrolling battle log (MPP_SmoothBattleLog2) draws through its own
+// sprites, which sit outside the window's visibility.
+const log = this._logWindow;
+if (log && log._logSprites) {
+    this._bulletHellSavedLogOpacity = log._logSprites.map(s => (s ? s.opacity : 0));
+    for (const sprite of log._logSprites) {
+        if (sprite) sprite.opacity = 0;
     }
-});
+}
+if (this._pastLogWindow) this._pastLogWindow.deactivate();
 };
 
 Scene_Battle.prototype.showBattleWindows = function() {
-if (BattleManager._phase === "input" && BattleManager.isInputting()) {
-    if (BattleManager.actor()) {
-        this._actorCommandWindow.show();
-    } else {
-        this._partyCommandWindow.show();
+for (const entry of this._bulletHellSavedWindows || []) {
+    entry.win.visible = entry.visible;
+    entry.win.opacity = entry.opacity;
+    entry.win.backOpacity = entry.backOpacity;
+    entry.win.contentsOpacity = entry.contentsOpacity;
+}
+this._bulletHellSavedWindows = null;
+
+const log = this._logWindow;
+const savedOpacity = this._bulletHellSavedLogOpacity;
+if (log && log._logSprites && savedOpacity) {
+    for (let i = 0; i < log._logSprites.length; i++) {
+        const sprite = log._logSprites[i];
+        if (sprite) sprite.opacity = savedOpacity[i] !== undefined ? savedOpacity[i] : 255;
     }
 }
-
-if (this._statusWindow) this._statusWindow.show();
-
-if (this._logWindow) {
-    if (this._logWindow._logSprites) {
-        this._logWindow.opacity = 255;
-        this._logWindow.backOpacity = 255;
-        this._logWindow.contentsOpacity = 255;
-        for (const sprite of this._logWindow._logSprites) {
-            if (sprite) {
-                sprite.opacity = 255;
-            }
-        }
-    } else {
-        this._logWindow.show();
-    }
-}
+this._bulletHellSavedLogOpacity = null;
 };
 
+// The duel is fought against an enemy that is actually still standing. The
+// first sprite in the spriteset can be a corpse from earlier in the fight, and
+// a dead battler ended the sequence on its opening frame.
+Scene_Battle.prototype.bulletHellTargetSprite = function() {
+const sprites = (this._spriteset && this._spriteset._enemySprites) || [];
+for (const sprite of sprites) {
+    if (sprite && sprite._battler && sprite._battler.isAlive()) return sprite;
+}
+return sprites[0] || null;
+};
+
+// The real battler is never moved, scaled or reparented any more: the enemy is
+// redrawn as its own avatar inside the field (see createEnemyAvatar), which is
+// the only way the sequence can work for all three enemy render modes at once.
 Scene_Battle.prototype.createBulletHellLayer = function() {
-// Create the bullet hell layer
 this._bulletHellLayer = new BulletHellLayer(
     $gameTemp.bulletHellParams,
-    this._spriteset._enemySprites[0]
+    this.bulletHellTargetSprite()
 );
-
-// First bring the enemy sprite to the front before adding bullet hell layer
-const enemySprite = this._spriteset._enemySprites[0];
-if (enemySprite && enemySprite.parent) {
-    enemySprite.parent.removeChild(enemySprite);
-}
-
-// Add the bullet hell layer
 this.addChild(this._bulletHellLayer);
-
-// Now add the enemy sprite on top of the bullet hell layer
-if (enemySprite) {
-    this.addChild(enemySprite);
-    // Store reference to know we moved it
-    this._bulletHellLayer._movedEnemySprite = true;
-}
 };
 
 Scene_Battle.prototype.removeBulletHellLayer = function() {
-if (this._bulletHellLayer) {
-    // Restore enemy sprite to its original container if we moved it
-    if (this._bulletHellLayer._movedEnemySprite && this._bulletHellLayer._enemySprite) {
-        this.removeChild(this._bulletHellLayer._enemySprite);
-        if (this._spriteset && this._spriteset._enemySprites) {
-            // Find the correct container to return the sprite to
-            const spritesetBattler = this._spriteset._battleField || this._spriteset;
-            if (spritesetBattler && spritesetBattler.addChild) {
-                spritesetBattler.addChild(this._bulletHellLayer._enemySprite);
-            }
-        }
-    }
-    
-    // Reset enemy sprite appearance
-    if (this._bulletHellLayer._enemySprite && this._bulletHellLayer._originalEnemyScale) {
-        this._bulletHellLayer._enemySprite.scale.x = this._bulletHellLayer._originalEnemyScale.x;
-        this._bulletHellLayer._enemySprite.scale.y = this._bulletHellLayer._originalEnemyScale.y;
-    }
-    
-    if (this._bulletHellLayer._enemySprite && this._bulletHellLayer._originalEnemyPosition) {
-        this._bulletHellLayer._enemySprite.x = this._bulletHellLayer._originalEnemyPosition.x;
-        this._bulletHellLayer._enemySprite.y = this._bulletHellLayer._originalEnemyPosition.y;
-    }
-    
-    // Remove bullet hell layer
-    this.removeChild(this._bulletHellLayer);
-    this._bulletHellLayer = null;
-}
+if (!this._bulletHellLayer) return;
+this._bulletHellLayer.dispose();
+this.removeChild(this._bulletHellLayer);
+this._bulletHellLayer = null;
+};
+
+const _Scene_Battle_terminate_BH = Scene_Battle.prototype.terminate;
+Scene_Battle.prototype.terminate = function() {
+// The sequence must never outlive the scene it is drawn in: a battle that ended
+// mid-duel used to leave BattleManager sitting in the "bullet-hell" phase.
+if (BattleManager._bulletHellMode) BattleManager.finishBulletHell();
+_Scene_Battle_terminate_BH.call(this);
 };
 
 const _Scene_Battle_update = Scene_Battle.prototype.update;
@@ -419,16 +443,24 @@ updateDamageCounter() {
 
 initialize(params, enemySprite) {
     this._params = params;
-    this._enemySprite = enemySprite;
+    // The battler's own sprite is read for its picture only; what flies around
+    // the field is the avatar built in createEnemyAvatar.
+    this._battlerSprite = enemySprite;
+    this._enemySprite = null;
     this._enemy = enemySprite ? enemySprite._battler : null;
     this._player = $gameParty.battleMembers()[0];
+    this._duration = Number(params && params.duration) || 300;
+    this._outroFrames = OUTRO_FRAMES;
+    // Set before anything reads it: the avatar is built during this very
+    // constructor and its first resolve pass consults the frame count.
+    this._frames = 0;
 
     // Store adjusted player and enemy luck values for later use
     this._playerLuck = this._player ? this._player.luk : 0;
     this._enemyLuck = this._enemy ? this._enemy.luk : 0;
 
-    // Guard so teardown (endBulletHell) runs only once during the ~1000ms
-    // fade-out window instead of re-firing every frame.
+    // Guard so the teardown runs once: while the outro plays out, the clock
+    // and the collisions must not start a second one (see endSequence).
     this._bulletHellEnding = false;
 
     // Extract enemy level from notes
@@ -442,21 +474,7 @@ initialize(params, enemySprite) {
     
     this.width = Graphics.boxWidth;
     this.height = Graphics.boxHeight;
-    
-    // Store original enemy sprite properties
-    this._originalEnemyScale = {
-        x: this._enemySprite.scale.x,
-        y: this._enemySprite.scale.y
-    };
-    this._originalEnemyPosition = {
-        x: this._enemySprite.x,
-        y: this._enemySprite.y
-    };
-    
-    // Scale down enemy sprite
-    this._enemySprite.scale.x *= 0.65;
-    this._enemySprite.scale.y *= 0.65;
-    
+
     // Calculate difficulty factor based on enemy level and luck
     // Luck has 70% weight, Level has 30% weight
     // Luck soft caps at 200, common range is 30-50
@@ -542,7 +560,27 @@ initialize(params, enemySprite) {
     this._secondaryPatternTimer = 0;
     this._secondaryPatternInterval = Math.max(30, 120 - this._enemyLuck);
 
-        
+    // Create background. Opaque on purpose: the battlefield behind it holds the
+    // enemy's real sprite or its 3D model, standing where it always stood, and
+    // a ghost of it showing through while its avatar flew about the field read
+    // as two copies of the same monster.
+    this._background = new PIXI.Graphics();
+    this._background.beginFill(0x0A0A12, 1);
+    this._background.drawRect(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this._background.endFill();
+    this.addChild(this._background);
+    
+    // Create game field
+    this._bulletHellField = new PIXI.Graphics();
+    this._bulletHellField.beginFill(0x000000, 0);
+    this._bulletHellField.drawRect(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this._bulletHellField.endFill();
+    this._bulletHellField.y = 0;
+    this.addChild(this._bulletHellField);
+
+    // The enemy, redrawn inside the field
+    this.createEnemyAvatar();
+
     // Setup enemy movement parameters
     this._enemyMovement = {
         pattern: this.getRandomMovementPattern(),
@@ -555,29 +593,13 @@ initialize(params, enemySprite) {
         centerX: this._enemySprite.x,
         centerY: this._enemySprite.y
     };
-    
-    // Create background
-    this._background = new PIXI.Graphics();
-    this._background.beginFill(0x111111, 0.7); // Darker background (almost black)
-    this._background.drawRect(0, 0, Graphics.boxWidth, Graphics.boxHeight);
-    this._background.endFill();
-    this.addChild(this._background);
-    
-    // Create game field
-    this._bulletHellField = new PIXI.Graphics();
-    this._bulletHellField.beginFill(0x000000, 0);
-    this._bulletHellField.drawRect(0, 0, Graphics.boxWidth, Graphics.boxHeight);
-    this._bulletHellField.endFill();
-    this._bulletHellField.y = 0;
-    this.addChild(this._bulletHellField);
-    
+
     // Create player ship, bullets, damage counter
     this.createPlayerShip();
     this.createBullets();
     this.createDamageCounter();
     
     // Set up state variables
-    this._frames = 0;
     this._playerBulletTimer = 0;
     this._enemyBulletTimer = 0;
     this._totalDamageDealt = 0;
@@ -592,6 +614,186 @@ initialize(params, enemySprite) {
     
     // Pattern change timer based on enemy luck
     this._patternChangeTime = Math.floor(180 / this._difficultyFactor);
+}
+
+//-------------------------------------------------------------------------
+// The enemy avatar
+//
+// The sequence used to fly the real Sprite_Enemy around the screen, which only
+// ever worked for a plain 2D battler. With the 3D battlers that sprite is
+// hidden and the creature is drawn through the shared three.js canvas; in
+// Sprites mode the sprite's own bitmap is blanked and a scaled <Char:> child
+// carries the picture. Either way the thing being flown about was an empty,
+// zero-sized sprite, so the player faced an invisible enemy they could not hit
+// (the hitbox is measured off it) while the real one stood still behind the
+// overlay. The enemy is now cut out of whatever it is actually drawn with and
+// redrawn as an avatar inside the field.
+//-------------------------------------------------------------------------
+
+createEnemyAvatar() {
+    const avatar = new PIXI.Sprite(PIXI.Texture.EMPTY);
+    avatar.anchor.set(0.5, 0.5);
+    avatar.x = Graphics.boxWidth / 2;
+    avatar.y = Graphics.boxHeight * 0.28;
+    this._enemySprite = avatar;
+    this._avatarMode = null;
+    this._avatarBitmap = null;
+    this._avatarTexture = null;
+    this._avatarFrameKey = null;
+    this.addChild(avatar);
+    this.updateEnemyAvatar();
+}
+
+// The enemy's 3D model, when this fight is drawing its monsters as models.
+resolve3DSource() {
+    const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+    if (!spriteset || !spriteset.get3DModel || !spriteset._battle3DSprite) return null;
+    if (!spriteset._battle3DScene || spriteset._battle3DScene._disposed) return null;
+    if (typeof THREE === 'undefined') return null;
+    const model = spriteset.get3DModel(this._enemy);
+    if (!model || !model.model || model.model.visible === false) return null;
+    return { mode: "model3d", model: model, spriteset: spriteset };
+}
+
+// The enemy's 2D picture: the <Char:> walking sprite in Sprites mode, the
+// battler image otherwise. The character sprite is checked first because in
+// Sprites mode the battler's own bitmap has been blanked out behind it.
+resolveSpriteSource() {
+    const sprite = this._battlerSprite;
+    const charSprite = sprite && sprite._charSprite;
+    if (charSprite && charSprite.visible && charSprite.bitmap && charSprite.bitmap.isReady()) {
+        return { mode: "charSprite", bitmap: charSprite.bitmap, frame: charSprite._frame };
+    }
+    if (sprite && sprite.bitmap && sprite.bitmap.isReady() && sprite.bitmap.width > 1) {
+        const bitmap = sprite.bitmap;
+        return {
+            mode: "battler",
+            bitmap: bitmap,
+            frame: new PIXI.Rectangle(0, 0, bitmap.width, bitmap.height)
+        };
+    }
+    return null;
+}
+
+updateEnemyAvatar() {
+    if (!this._enemySprite) return;
+
+    // A 3D crop keeps itself current: it is a window onto the live canvas, so
+    // the creature goes on breathing and swinging inside the avatar.
+    if (this._avatarMode === "model3d") return;
+
+    // While the sequence is young anything may still be arriving (a battler
+    // bitmap loading, a 3D model reaching the scene), so a better picture is
+    // taken up as soon as it appears. Once settled we stay with the kind of
+    // picture already chosen, because changing it that late would resize the
+    // enemy out from under the player's fire.
+    const settled = this._frames > AVATAR_RESOLVE_FRAMES;
+
+    if (!settled || this._avatarMode === null) {
+        const model = this.resolve3DSource();
+        // A model whose box cannot be measured yet falls through to its 2D
+        // picture rather than leaving the field empty.
+        if (model && this.applyAvatarSource(model)) return;
+    }
+
+    const sprite = this.resolveSpriteSource();
+    if (!sprite) return;
+    if (settled && sprite.mode !== this._avatarMode) return;
+    this.applyAvatarSource(sprite);
+}
+
+// Returns whether the avatar is now standing on this source.
+applyAvatarSource(source) {
+    if (source.mode === "model3d") return this.applyModel3DAvatar(source);
+
+    const frame = source.frame;
+    if (!frame || !(frame.width > 0) || !(frame.height > 0)) return false;
+
+    const key = frame.x + "," + frame.y + "," + frame.width + "," + frame.height;
+    if (source.mode === this._avatarMode &&
+        source.bitmap === this._avatarBitmap &&
+        key === this._avatarFrameKey) {
+        return true;
+    }
+    this._avatarMode = source.mode;
+    this._avatarBitmap = source.bitmap;
+    this._avatarFrameKey = key;
+
+    this.setAvatarTexture(new PIXI.Texture(
+        source.bitmap.baseTexture,
+        new PIXI.Rectangle(frame.x, frame.y, frame.width, frame.height)
+    ));
+    this.fitAvatar(frame.width, frame.height);
+    return true;
+}
+
+// Cuts the model's own rectangle out of the 3D canvas the battle renders into.
+// The texture behind it is re-uploaded every drawn frame, so the avatar is the
+// animated model rather than a snapshot of it.
+applyModel3DAvatar(source) {
+    const scene3d = source.spriteset._battle3DScene;
+    const camera = scene3d.camera;
+    const canvas = scene3d.renderer && scene3d.renderer.domElement;
+    const root = source.model.model;
+    const base = source.spriteset._battle3DSprite.texture.baseTexture;
+    if (!camera || !canvas || !root || !base) return false;
+
+    const box = new THREE.Box3().setFromObject(root);
+    if (box.isEmpty()) return false;
+
+    const corner = new THREE.Vector3();
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (let i = 0; i < 8; i++) {
+        corner.set(
+            (i & 1) ? box.max.x : box.min.x,
+            (i & 2) ? box.max.y : box.min.y,
+            (i & 4) ? box.max.z : box.min.z
+        );
+        corner.project(camera);
+        if (!isFinite(corner.x) || !isFinite(corner.y)) return false;
+        const px = (corner.x * 0.5 + 0.5) * canvas.width;
+        const py = (-corner.y * 0.5 + 0.5) * canvas.height;
+        minX = Math.min(minX, px); maxX = Math.max(maxX, px);
+        minY = Math.min(minY, py); maxY = Math.max(maxY, py);
+    }
+
+    // A little air around the box so a limb thrown out mid-animation is not
+    // sliced off at the edge of the cut-out.
+    const limitW = Math.min(canvas.width, base.realWidth || canvas.width);
+    const limitH = Math.min(canvas.height, base.realHeight || canvas.height);
+    const padX = (maxX - minX) * AVATAR_MODEL_PAD;
+    const padY = (maxY - minY) * AVATAR_MODEL_PAD;
+    const x = Math.max(0, Math.floor(minX - padX));
+    const y = Math.max(0, Math.floor(minY - padY));
+    const w = Math.min(limitW - x, Math.ceil(maxX - minX + padX * 2));
+    const h = Math.min(limitH - y, Math.ceil(maxY - minY + padY * 2));
+    if (!(w > 4) || !(h > 4)) return false;
+
+    this._avatarMode = "model3d";
+    this._avatarBitmap = null;
+    this._avatarFrameKey = null;
+    this.setAvatarTexture(new PIXI.Texture(base, new PIXI.Rectangle(x, y, w, h)));
+    this.fitAvatar(w, h);
+    return true;
+}
+
+setAvatarTexture(texture) {
+    const previous = this._avatarTexture;
+    this._avatarTexture = texture;
+    this._enemySprite.texture = texture;
+    if (previous && previous !== texture) previous.destroy(false);
+}
+
+// Whatever the enemy measures on the battlefield, it is drawn here at a size
+// the player can read and dodge around: a 3D boss and a 48 pixel walking
+// sprite end up about as tall as each other.
+fitAvatar(sourceWidth, sourceHeight) {
+    if (!(sourceWidth > 0) || !(sourceHeight > 0)) return;
+    let scale = AVATAR_TARGET_HEIGHT / sourceHeight;
+    const scaledWidth = sourceWidth * scale;
+    if (scaledWidth > AVATAR_MAX_WIDTH) scale *= AVATAR_MAX_WIDTH / scaledWidth;
+    this._enemySprite.scale.set(scale, scale);
+    this.updateEnemyHitbox();
 }
 
 createPlayerShip() {
@@ -633,16 +835,22 @@ createBullets() {
 
 createCollisionAreas() {
     this._playerHitbox = { radius: 8 };
-    
-    const enemyWidth = this._enemySprite.width * 0.8;
-    const enemyHeight = this._enemySprite.height * 0.6;
-    
-    this._enemyHitbox = {
-        x: this._enemySprite.x,
-        y: this._enemySprite.y - 200,  // Offset to position hitbox correctly
-        width: enemyWidth,
-        height: enemyHeight
-    };
+    this._enemyHitbox = { x: 0, y: 0, width: 0, height: 0 };
+    this.updateEnemyHitbox();
+}
+
+// Measured off the avatar every frame rather than once at the start. The
+// picture only settles when its bitmap or its 3D model has finished loading,
+// and a hitbox frozen at that first empty size is what left the enemy
+// unhittable for the whole sequence. Centred on the avatar too: the old box
+// sat 200 pixels above the sprite to make up for the battler's bottom anchor.
+updateEnemyHitbox() {
+    const avatar = this._enemySprite;
+    if (!avatar || !this._enemyHitbox) return;
+    this._enemyHitbox.x = avatar.x;
+    this._enemyHitbox.y = avatar.y;
+    this._enemyHitbox.width = Math.max(40, Math.abs(avatar.width) * 0.8);
+    this._enemyHitbox.height = Math.max(40, Math.abs(avatar.height) * 0.7);
 }
 
 setupControls() {
@@ -652,9 +860,20 @@ setupControls() {
 
 update() {
     this._frames++;
-    
+
+    // Winding down: the volley already in the air plays itself out, but nothing
+    // new is fired and nothing can be hit any more.
+    if (this._bulletHellEnding) {
+        this.updateEnemyAvatar();
+        this.updateBullets();
+        this.updateFadeEffects();
+        if (--this._outroFrames <= 0) BattleManager.finishBulletHell();
+        return;
+    }
+
     this.updateInput();
     this.updatePlayerShip();
+    this.updateEnemyAvatar();
     this.updateEnemyMovement();
     this.updateBullets();
     this.updateHealthDisplay(); // Update health display each frame
@@ -666,6 +885,32 @@ update() {
     
     this.checkCollisions();
     this.updateFadeEffects();
+
+    if (this._frames >= this._duration) this.endSequence();
+}
+
+// One place decides the duel is over, so the outro can never be started twice:
+// the clock running out on the very frame the enemy dropped used to fire two
+// teardowns and hand the battle back before the score had been shown.
+endSequence() {
+    if (this._bulletHellEnding) return;
+    this._bulletHellEnding = true;
+    this._outroFrames = OUTRO_FRAMES;
+    BattleManager.endBulletHell();
+}
+
+dispose() {
+    if (this._enemySprite) {
+        this._enemySprite.filters = null;
+        this._enemySprite.texture = PIXI.Texture.EMPTY;
+    }
+    if (this._playerShip) this._playerShip.filters = null;
+    // Only the cut-out: its base is the enemy's own bitmap or the shared 3D
+    // canvas, and both of those outlive the sequence.
+    if (this._avatarTexture) {
+        this._avatarTexture.destroy(false);
+        this._avatarTexture = null;
+    }
 }
 
 updateInput() {
@@ -1077,8 +1322,7 @@ checkCollisions() {
     if (this._bulletHellEnding) return;
     // If enemy is defeated, end the sequence
     if (!this._enemy || this._enemy.hp <= 0) {
-        this._bulletHellEnding = true;
-        BattleManager.endBulletHell();
+        this.endSequence();
         return;
     }
     
@@ -1188,7 +1432,7 @@ checkCollisions() {
             
             // End sequence if enemy defeated
             if (this._enemy.hp <= 0) {
-                BattleManager.endBulletHell();
+                this.endSequence();
                 return;
             }
         }
@@ -1226,10 +1470,7 @@ playerHit() {
     
     // Check if player is defeated
     if (this._player.hp <= 0) {
-        if (!this._bulletHellEnding) {
-            this._bulletHellEnding = true;
-            BattleManager.endBulletHell();
-        }
+        this.endSequence();
         return;
     }
     
@@ -1697,11 +1938,14 @@ updateEnemyMovement() {
         movement.radius = 60 + Math.random() * 60 * this._difficultyFactor;
     }
     
-    // Calculate movement bounds
-    const minX = this._enemySprite.width / 2;
-    const maxX = Graphics.boxWidth - this._enemySprite.width / 2;
-    const minY = this._enemySprite.height / 2;
-    const maxY = Graphics.boxHeight / 2;  // Only top half of screen
+    // Calculate movement bounds from the avatar's drawn size, so a wide model
+    // cannot walk half of itself off the edge of the field.
+    const halfW = Math.abs(this._enemySprite.width) / 2;
+    const halfH = Math.abs(this._enemySprite.height) / 2;
+    const minX = halfW;
+    const maxX = Graphics.boxWidth - halfW;
+    const minY = halfH;
+    const maxY = Math.max(minY, Graphics.boxHeight / 2);  // Only top half of screen
     
     // Apply different movement patterns
     switch (movement.pattern) {
@@ -1765,10 +2009,8 @@ updateEnemyMovement() {
     // Keep enemy within bounds
     this._enemySprite.x = Math.max(minX, Math.min(maxX, this._enemySprite.x));
     this._enemySprite.y = Math.max(minY, Math.min(maxY, this._enemySprite.y));
-    
-    // Update hitbox position
-    this._enemyHitbox.x = this._enemySprite.x;
-    this._enemyHitbox.y = this._enemySprite.y - 200; // Offset
+
+    this.updateEnemyHitbox();
     
     // Uncomment for debugging hitbox
     //this.updateHitboxVisualizer();

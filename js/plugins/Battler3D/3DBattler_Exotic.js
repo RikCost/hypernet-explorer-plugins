@@ -577,6 +577,9 @@
             this.applyModelScale(growth);
 
             const fast = (anim === 'attack' || anim === 'specialattack');
+            // Four-legged models only stride while really travelling (overworld
+            // walk) or lunging on an attack; standing in battle they keep still.
+            const stride = this.strideMul(fast);
             const hitJolt = anim === 'hit' ? Math.sin(t * 26) * Math.exp(-t * 6) * 0.14 : 0;
             this.model.rotation.z = hitJolt;
             this.model.position.y = this._baseY + Math.sin(t * 1.4) * 0.05 * this.scale;
@@ -613,8 +616,8 @@
                 }
                 case 'centaur': {
                     const gait = fast ? 8 : 2.4;
-                    [this.frontLeft, this.rearRight].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait) * 0.2; });
-                    [this.frontRight, this.rearLeft].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait + Math.PI) * 0.2; });
+                    [this.frontLeft, this.rearRight].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait) * 0.2 * stride; });
+                    [this.frontRight, this.rearLeft].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait + Math.PI) * 0.2 * stride; });
                     if (this.head) this.head.rotation.x = Math.sin(t * 1.6) * 0.05;
                     break;
                 }
@@ -627,8 +630,8 @@
                 }
                 case 'cindermawhound': {
                     const gait = fast ? 9 : 3;
-                    [this.frontLeft, this.hindRight].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait) * 0.25; });
-                    [this.frontRight, this.hindLeft].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait + Math.PI) * 0.25; });
+                    [this.frontLeft, this.hindRight].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait) * 0.25 * stride; });
+                    [this.frontRight, this.hindLeft].forEach(l => { if (l) l.rotation.x = Math.sin(t * gait + Math.PI) * 0.25 * stride; });
                     if (this.emberSparks) this.emberSparks.children.forEach((s, i) => { s.position.y += Math.sin(t * 6 + i) * 0.004; if (s.material) s.material.emissiveIntensity = 0.5 + Math.sin(t * 8 + i) * 0.4; });
                     if (this.head) this.head.rotation.x = Math.sin(t * 1.3) * 0.06;
                     break;

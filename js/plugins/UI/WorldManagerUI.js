@@ -128,6 +128,23 @@
     // the world it auto-creates on an empty world folder never disagree.
     const DEFAULT_WORLD_SEED = (window.WorldManager && window.WorldManager.DEFAULT_SEED) || "esoteric";
 
+    // Every new world starts on a seed of its own. The form still opens on a
+    // readable word the player may overwrite, but never on the same one twice,
+    // so two worlds made in a row are two different worlds unless the player
+    // deliberately types the same seed back in.
+    function randomSeedWord() {
+        // Short pronounceable syllables so the seed stays readable and
+        // editable, while still hashing to a distinct uint32 RNG root.
+        const syllables = ["ka", "zo", "mi", "ru", "ne", "va", "th", "lo", "qu", "en",
+                           "sha", "dri", "mor", "lux", "vex", "nim", "tor", "ael", "ix", "um"];
+        let seed = "";
+        const parts = 2 + Math.floor(Math.random() * 2); // 2 or 3 syllables
+        for (let i = 0; i < parts; i++) {
+            seed += syllables[Math.floor(Math.random() * syllables.length)];
+        }
+        return seed;
+    }
+
     function monthName(month) {
         return T.list("WorldManagerUI.months")[month - 1] || "";
     }
@@ -200,6 +217,16 @@
     // Resolved lazily: the global may be populated after this plugin loads.
     function getCountries() { return window.HistorySimulator_COUNTRIES || {}; }
 
+    // A nation or hyperpower is stored under its English name because that name
+    // is the id; the label reads through WorldNames (see Core/DataService.js).
+    function worldName(name) { return window.WorldNames ? window.WorldNames.any(name) : name; }
+
+    // An event's category is an id on the record and a label on the card.
+    function categoryLabel(id) {
+        const key = 'History.category.' + String(id || '');
+        return T.has(key) ? T(key) : String(id || '');
+    }
+
     // i18n-ignore-start: theme tokens
     function categoryVars(category) {
         const map = {
@@ -235,7 +262,7 @@
                 <div class="wm-event-card" style="--event-card-accent:${cv.color}">
                     <div class="wm-card-header">
                         <span class="wm-card-date">${escapeHtml(formattedDate)}</span>
-                        <span class="wm-card-badge" style="color:${cv.color}; background:${cv.bg}; border:1px solid ${cv.color}30">${escapeHtml(evt.category)}</span>
+                        <span class="wm-card-badge" style="color:${cv.color}; background:${cv.bg}; border:1px solid ${cv.color}30">${escapeHtml(categoryLabel(evt.category))}</span>
                         ${artifactTag}
                     </div>
                     <div class="wm-card-desc">${escapeHtml(evt.description)}</div>
@@ -256,13 +283,13 @@
             const ecoPct = Math.min(100, Math.max(5, (data.economy / 250) * 100));
             const controlled = [];
             for (const [cName, cData] of Object.entries(getCountries())) {
-                if (cData.controller === name) controlled.push(cName);
+                if (cData.controller === name) controlled.push(worldName(cName));
             }
             const territories = controlled.slice(0, 3).join(", ") + (controlled.length > 3 ? "..." : "");
             html += `
                 <div style="border-bottom:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.25)); padding-bottom:8px; margin-bottom:8px">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px">
-                        <strong style="font-size:1.02rem; color:var(--text-primary-hover, #2b1c11)">${escapeHtml(name)}</strong>
+                        <strong style="font-size:1.02rem; color:var(--text-primary-hover, #2b1c11)">${escapeHtml(worldName(name))}</strong>
                         <span style="font-size:0.854rem; color:var(--text-disabled, #5c4b3d); font-family:'Courier Prime', monospace">${escapeHtml(territories)}</span>
                     </div>
                     <div class="cc-dossier-row">
@@ -407,8 +434,6 @@
                         scene._changePopulationMode(dir === "left" ? -1 : 1);
                     } else if ((dir === "left" || dir === "right") && focusedId === "wm-magic") {
                         scene._changeMagicalLevel(dir === "left" ? -1 : 1);
-                    } else if ((dir === "left" || dir === "right") && focusedId === "wm-beta-toggle") {
-                        scene._toggleBetaSprites();
                     }
                 } else if (sec === "modalclose") {
                     if (dir === "down")                     scene._setFocus("create", 0);
@@ -531,13 +556,16 @@
                 : (worlds.length > 0 ? "list" : "newworld");
             this._focusIndex = 0;
             this._suggestedName = window.WorldManager.randomWorldName();
-            this._seedValue = DEFAULT_WORLD_SEED;
+            this._seedValue = randomSeedWord();
+            // Coming in with nothing, the player is here to make their first
+            // world, not to browse: once it exists the screen has done its job
+            // and hands them straight back to the title menu.
+            this._startedWithNoWorlds = worlds.length === 0;
             this._startYear = START_YEAR_MIN;
             this._startMonth = 1;
             this._startLevel = START_LEVEL_DEFAULT;
             this._populationMode = POPULATION_DEFAULT;
             this._magicalLevel = MAGICAL_DEFAULT;
-            this._betaSprites = false;
             this._wasdInput = { up: false, down: false, left: false, right: false };
             this.createUIDOM();
             WorldManageInputManager.activate(this);
@@ -562,7 +590,7 @@
                 case "newworld":   return [document.getElementById("wm-create-open-btn")].filter(Boolean);
                 case "create":     return ["wm-name-input", "wm-start-month", "wm-start-year",
                                         "wm-start-level", "wm-population", "wm-magic", "wm-seed-input",
-                                        "wm-seed-random-btn", "wm-beta-toggle", "wm-create-btn"]
+                                        "wm-seed-random-btn", "wm-create-btn"]
                                     .map(id => document.getElementById(id)).filter(Boolean);
                 case "modalclose": return [document.getElementById("wm-create-close-btn")].filter(Boolean);
                 case "back":    return [document.getElementById("wm-back-btn")].filter(Boolean);
@@ -715,35 +743,10 @@
         }
 
         _randomizeSeed() {
-            // Build a short pronounceable random seed word so it stays readable
-            // and editable, while still hashing to a distinct uint32 RNG root.
-            const syllables = ["ka", "zo", "mi", "ru", "ne", "va", "th", "lo", "qu", "en",
-                               "sha", "dri", "mor", "lux", "vex", "nim", "tor", "ael", "ix", "um"];
-            let seed = "";
-            const parts = 2 + Math.floor(Math.random() * 2); // 2 or 3 syllables
-            for (let i = 0; i < parts; i++) {
-                seed += syllables[Math.floor(Math.random() * syllables.length)];
-            }
+            const seed = randomSeedWord();
             this._seedValue = seed;
             const input = document.getElementById("wm-seed-input");
             if (input) input.value = seed;
-            SoundManager.playCursor();
-        }
-
-        // Beta character sheets: the drawings that are not in the original
-        // folder. A world that takes them is populated from the wider pool; a
-        // world that does not never sees them outside the character grid. The
-        // answer belongs to the world's people, so it is asked once here and is
-        // not offered again on an existing world.
-        _toggleBetaSprites() {
-            this._betaSprites = !this._betaSprites;
-            const el = document.getElementById("wm-beta-toggle");
-            if (el) {
-                el.dataset.on = this._betaSprites ? "1" : "0";
-                el.setAttribute("aria-checked", this._betaSprites ? "true" : "false");
-                const box = el.querySelector(".wm-check-box");
-                if (box) box.textContent = this._betaSprites ? "☑" : "☐";
-            }
             SoundManager.playCursor();
         }
 
@@ -1018,13 +1021,6 @@
                                         title="${T('WorldManagerUI.randomizeSeed')}"
                                         aria-label="${T('WorldManagerUI.randomizeSeed')}">&#9851;</button>
                             </div>
-                            <label>${T('WorldManagerUI.betaSprites')}</label>
-                            <div id="wm-beta-toggle" class="wm-check-row" data-on="${this._betaSprites ? "1" : "0"}"
-                                 role="checkbox" tabindex="0" aria-checked="${this._betaSprites ? "true" : "false"}"
-                                 onclick="SceneManager._scene._toggleBetaSprites()">
-                                <span class="wm-check-box">${this._betaSprites ? "☑" : "☐"}</span>
-                                <span class="wm-check-label">${T('WorldManagerUI.betaSpritesEnable')}</span>
-                            </div>
                             <button id="wm-create-btn" class="cc-btn-treaty confirm" onclick="SceneManager._scene.onCreateWorld()">
                                 ${T('WorldManagerUI.createActivate')}
                             </button>
@@ -1149,12 +1145,6 @@
                     <div class="cc-dossier-row">
                         <span class="cc-dossier-label">${T('WorldManagerUI.seed')}</span>
                         <span class="cc-dossier-value">${world.seed !== undefined ? world.seed : "?"}</span>
-                    </div>
-                    <div class="cc-dossier-row">
-                        <span class="cc-dossier-label">${T('WorldManagerUI.betaSprites')}</span>
-                        <span class="cc-dossier-value">${world.betaSprites === true
-                            ? T('WorldManagerUI.betaSpritesOn')
-                            : T('WorldManagerUI.betaSpritesOff')}</span>
                     </div>
                     <div class="cc-dossier-row" title="${T('WorldManagerUI.populationLocked')}">
                         <span class="cc-dossier-label">${T('WorldManagerUI.magicalLevel')}</span>
@@ -1409,12 +1399,9 @@
 
             setTimeout(async () => {
                 try {
-                    // betaSprites is written before initializeWorld() below, so
-                    // the pool the world is populated from already knows about it.
                     WM.createWorld(name, {
                         worldTimeMinutes, seed, startYear, startMonth,
                         startLevel: this._startLevel || START_LEVEL_DEFAULT,
-                        betaSprites: this._betaSprites === true,
                         // Written before initializeWorld() below, so the pool
                         // the world is populated from already knows who is in
                         // it (and an empty world is never populated at all).
@@ -1445,6 +1432,10 @@
                     this._creatingWorld = false;
                     Scene_WorldManage._mode = "manage";
                     this._suggestedName = WM.randomWorldName();
+                    if (this._startedWithNoWorlds) {
+                        this.popScene();
+                        return;
+                    }
                     this.refreshUIDOM(true);
                     this._setFocus("tabs", RIGHT_TABS.indexOf(this._rightTab));
                 } catch (e) {

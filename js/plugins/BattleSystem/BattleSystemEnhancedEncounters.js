@@ -991,8 +991,18 @@
     // rule) is handed the object rather than the id.
     BSE.Helpers.troopDataAllowedInPopulation = function(troop) {
         const mode = BSE.Helpers.getPopulationMode();
-        if (mode !== "monster" && mode !== "empty" && mode !== "zombie") return true;
         if (!troop || !troop.members || !troop.members.length) return true;
+        // A <Boss> creature is a hand-authored encounter, not ambient fauna: it
+        // never turns up through the ordinary biome spawn roster, the era
+        // elites or the level-band boss pools alike. An empty world is the one
+        // exception, since nothing else is left roaming it to meet the party.
+        if (mode !== "empty" && troop.members.some(m => {
+            const data = $dataEnemies[m.enemyId];
+            return !!(data && /<Boss>/i.test(data.note || ""));
+        })) {
+            return false;
+        }
+        if (mode !== "monster" && mode !== "empty" && mode !== "zombie") return true;
         // One disallowed member disqualifies the troop: a troop is spawned
         // whole, so there is no way to place "most" of it.
         return !troop.members.some(m => {
@@ -1109,10 +1119,10 @@
     // costs no migration - REORDERING one does (see GameOptions.js,
     // enemySpawnMode, and its enemySpawnModeV3 marker).
     const SPAWN_MODES = ['distance', 'balanced', 'biome', 'chaos'];
-    // Distance from spawn is what the world is written for: the one mode where
-    // the map itself says how dangerous a place is, so it leads the list.
-    // GameOptions defaults the stored setting to the same index.
-    const DEFAULT_SPAWN_MODE = 0;
+    // Party Level is the default: it keeps the world matched to whoever is
+    // playing, distance mode remains index 0 for those who choose it in
+    // Options. GameOptions defaults the stored setting to the same index.
+    const DEFAULT_SPAWN_MODE = 1;
 
     // The modes that hide one encounter far above the band on each world tile.
     // Biome and Chaos need no help: neither holds anything back to begin with.
@@ -2099,6 +2109,11 @@
         $gameSystem._procGenEnemyTroops = {};
         $gameSystem._procGenEnemyPositions = {};
         $gameSystem._procGenDefeatedEnemies = [];
+        // The tile's fauna is being re-dealt into the same event ids, so every
+        // wound remembered against those ids belonged to a creature that no
+        // longer exists. Covers the re-stocks that happen without a transfer
+        // (WorldMapReturn's refreshEnemiesForBiome, a chaos-mode re-deal).
+        if (BSE.Functions.healPersistentEnemies) BSE.Functions.healPersistentEnemies();
     };
 
     // Chaos mode re-deals a procedural map's monsters on every entrance, so it
@@ -2439,6 +2454,31 @@
             spawnTiles.length = 0;
             spawnTiles.push(...offRoadTiles);
         }
+
+        // Two tiles a roaming monster must not be standing on when the map
+        // fades in. The RIM: the party walks onto a procedural square, a
+        // dungeon floor or an underground layer at its edge, so a creature
+        // spawned in the border band is already on top of them before they can
+        // read what it is, with the map edge at their back and nowhere to
+        // retreat to. The ARRIVAL TILE itself, for the same reason - the party
+        // is standing where the transfer put them, and the first thing they
+        // should be able to do is look around. Both are preferences rather
+        // than rules: a map too small, or too hemmed in, to seat every enemy
+        // inland keeps whatever tiles it has.
+        const BORDER_MARGIN = 4;
+        const ARRIVAL_CLEARANCE = 6;
+        const preferSpawnTiles = pred => {
+            const kept = spawnTiles.filter(pred);
+            if (kept.length >= enemyEvents.length && kept.length < spawnTiles.length) {
+                spawnTiles.length = 0;
+                spawnTiles.push(...kept);
+            }
+        };
+        preferSpawnTiles(t =>
+            t.x >= BORDER_MARGIN && t.y >= BORDER_MARGIN &&
+            t.x < w - BORDER_MARGIN && t.y < h - BORDER_MARGIN);
+        preferSpawnTiles(t =>
+            $gameMap.distance(t.x, t.y, $gamePlayer.x, $gamePlayer.y) > ARRIVAL_CLEARANCE);
 
         const selectWeightedRandom = list => {
             const total = list.reduce((sum, it) => sum + it.weight, 0);
@@ -3209,6 +3249,12 @@
             const speedMatch = enemyData.note.match(/<Speed:\s*([1-6](?:\.\d+)?)>/i);
             if (speedMatch) event.setMoveSpeed(Number(speedMatch[1]));
         }
+        // Whatever the template event or the <Speed:> tag asked for, an idling
+        // creature is held under a walking party (see roamSpeedCap): a monster
+        // the player cannot walk away from is a monster the player has to fight.
+        if (event._moveSpeed > 0) {
+            event.setMoveSpeed(Math.min(event._moveSpeed, roamSpeedCap()));
+        }
         event._bseBehTroop = -1; // force a re-derive on the next read
         const beh = BSE.Helpers.getEventBehavior(event);
         if (!beh) return;
@@ -3356,6 +3402,31 @@
         return Math.max(1, Math.min(6, v));
     }
 
+    // How fast a roaming creature is allowed to be is measured against the
+    // party, not written down in absolute numbers: the player walks at their
+    // own move speed and dashes one point above it, and a monster that matches
+    // either of those can never be broken away from - it simply arrives, and
+    // the whole telegraph-and-kite loop the AI is built around stops being
+    // playable. So a creature at rest stays half a point under a walking
+    // party, and a committed one may outpace a walk but never a run. RMMZ
+    // speed is logarithmic (every point doubles the distance per frame), so
+    // half a point is already a comfortable margin to escape into.
+    function playerTopSpeed() {
+        const base = ($gamePlayer && $gamePlayer._moveSpeed > 0) ? $gamePlayer._moveSpeed : 4;
+        // A map that forbids dashing (and a party riding something) takes the
+        // extra point away, and the caps have to come down with it or the run
+        // the player is being asked to make is one they cannot make.
+        const canDash = !!$gameMap && !$gameMap.isDashDisabled() &&
+            !($gamePlayer && $gamePlayer.isInVehicle());
+        return base + (canDash ? 1 : 0);
+    }
+    function roamSpeedCap() {
+        return clampSpeed(playerTopSpeed() - 1.5);
+    }
+    function chaseSpeedCap() {
+        return clampSpeed(playerTopSpeed() - 0.5);
+    }
+
     // ------------------------------------------------------------------------
     // The state machine
     // ------------------------------------------------------------------------
@@ -3372,7 +3443,9 @@
         if (was === state) return;
         const beh = this._bseBeh;
         if (state === 'commit' && beh && beh.chaseSpeed && this._moveSpeed > 0) {
-            this.setMoveSpeed(clampSpeed((this._aiBaseSpeed || this._moveSpeed) + beh.chaseSpeed));
+            this.setMoveSpeed(Math.min(
+                clampSpeed((this._aiBaseSpeed || this._moveSpeed) + beh.chaseSpeed),
+                chaseSpeedCap()));
         } else if (was === 'commit') {
             // A dive or a charge belongs to the run it was started on: leaving
             // the chase for any reason has to put the creature back on its feet.
@@ -4246,6 +4319,7 @@
             const damage = 5 + Math.floor(atkLv / 2) + Math.floor(Math.random() * 6);
             if (defender.enemyHp === undefined) defender.enemyHp = defender.getMaxHpForEvent();
             defender.enemyHp -= damage;
+            BSE.Functions.recordMapEnemyDamage(defender, damage);
 
             const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
             if (spriteset && spriteset._characterSprites) {
@@ -4258,6 +4332,42 @@
                 delete fights[key];
             }
         }
+    };
+
+    // ------------------------------------------------------------------------
+    // A creature standing on the map keeps TWO HP tracks and anything that hurts
+    // it out here has to move both: `ev.enemyHp` is the single pool the ecology
+    // fights over (it is what kills it out on the map), and the persistent record
+    // is the per-member ledger its next BATTLE restores from. Only the car ram
+    // (RoadCarAI.ramMapEnemy) ever wrote the second one, so a monster mauled
+    // half to death by a rival was still met at full strength.
+    //
+    // The blow is spread over the troop as a share of the event's HP pool, the
+    // same way the ram spreads its own, since the map only ever tracks one pool
+    // for what may be a multi-member troop.
+    // ------------------------------------------------------------------------
+    BSE.Functions.recordMapEnemyDamage = function(ev, damage) {
+        const troopId = ev && ev._fixedTroopId;
+        if (!troopId || !$dataTroops[troopId] || !(damage > 0)) return;
+        const max = (ev.getMaxHpForEvent && ev.getMaxHpForEvent()) || 100;
+        const share = Math.min(1, damage / Math.max(1, max));
+        const pData = BSE.State.persistentEnemyData;
+        const key = `${$gameMap.mapId()}_${ev.eventId()}`;
+        const record = pData[key] || (pData[key] = { troopId: troopId, enemyHp: {} });
+        record.troopId = troopId;
+        if (!record.enemyHp) record.enemyHp = {};
+        // Match the scale the battle will build the enemy at: the difficulty
+        // option is applied at paramBase, so a stored figure read off the raw
+        // database row would be a wound of the wrong size on either setting.
+        const mult = (window.GameOptions && window.GameOptions.enemyStatMultiplier)
+            ? window.GameOptions.enemyStatMultiplier() : 1;
+        $dataTroops[troopId].members.forEach((member, index) => {
+            const data = $dataEnemies[member.enemyId];
+            if (!data) return;
+            const memberMax = Math.max(1, Math.round((data.params[0] || 1) * mult));
+            const current = record.enemyHp[index] != null ? record.enemyHp[index] : memberMax;
+            record.enemyHp[index] = Math.max(1, Math.round(current - memberMax * share));
+        });
     };
 
     // ------------------------------------------------------------------------
@@ -4290,13 +4400,17 @@
         if (spriteset && spriteset.addCorpseSprite) spriteset.addCorpseSprite(corpse);
 
         ev.enemyHp = 0;
+        // Nothing left for a battle to restore from, and the slot may be re-used
+        // by the next spawn pass - leaving the ledger behind would hand its
+        // successor a dead creature's wounds.
+        delete BSE.State.persistentEnemyData[`${$gameMap.mapId()}_${ev.eventId()}`];
         $gameMap.eraseEvent(ev.eventId());
     };
 
     function applyMapDeathPartDamage(enemyId, enemyData, killerLevel) {
         if (!enemyId || !enemyData || !BSE.State.enemyPartDamage) return;
         const archetypeName = BSE.Helpers.getEnemyArchetype(enemyData);
-        const archetypes = window.Health && window.Health.EnemyArchetypes;
+        const archetypes = window.Health && window.Health.Archetypes;
         const archetype = archetypeName && archetypes ? archetypes[archetypeName] : null;
         if (!archetype || !archetype.parts) return;
 

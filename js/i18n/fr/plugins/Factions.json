@@ -44,5 +44,25 @@
   "selectHint": "",
   "councilLeaders": "",
   "independent": "",
-  "diplomaticAgreements": ""
+  "diplomaticAgreements": "",
+  "versus": "vs. {name}",
+  "sortName": "Alphabétique",
+  "searchPlaceholder": "Rechercher des factions…",
+  "versusOwn": "vs. {name} (sa puissance)",
+  "power": {
+    "kukulkanascendancy": "Ascendance de Kukulkan",
+    "democraticpeoplesrepublicofkorea": "République Populaire Démocratique de Corée",
+    "dharmadirectorate": "Directoire du Dharma",
+    "illuminatedkhanate": "Khanat Illuminé",
+    "solomonicrepublic": "République Salomonienne",
+    "petrokingdomofarabia": "Pétro-Royaume d'Arabie",
+    "sanatanarashtra": "Sanatana Rashtra",
+    "longchile": "Long Chili",
+    "imperialstateofpersia": "État Impérial de Perse"
+  },
+  "controlledCountries": "Contrôle :",
+  "holdsNothing": "aucune nation sur cette carte",
+  "openWiki": "Lire le dossier complet",
+  "moralGuide": "Guide moral :",
+  "politicalLeader": "Dirigeant politique :"
 }

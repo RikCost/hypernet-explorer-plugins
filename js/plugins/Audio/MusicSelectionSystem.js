@@ -23,6 +23,12 @@
  * "None") draws a different one of the tracks below, custom ones included, at
  * the start of every battle.
  *
+ * The default entry is "Biome": the fight takes the battle theme the biome it
+ * happens in declares in `bgmBattle` (js/db/WorldGen/Biomes.json and
+ * AlienBiomes.json), so a forest, a sewer and a gas giant each sound like
+ * themselves. One track per biome, no draw. A place with no biome, or a biome
+ * with no track, falls back to the engine's own battle BGM.
+ *
  * Available Battle Music:
  * - Drums (RandomMind/Battle)
  * - Shortcuts (ZaneMusic/shortcuts)
@@ -44,6 +50,7 @@
   const MUSIC_NONE     = "__none__";
   const MUSIC_RANDOM   = "__random__";
   const MUSIC_MAP      = "__map__";
+  const MUSIC_BIOME    = "__biome__";
 
   // Folder (under audio/bgm/) players can drop their own battle tracks into.
   const CUSTOM_FOLDER = "BattleMusic";
@@ -52,6 +59,7 @@
   const MUSIC_TRACKS = [
     { get name() { return T('MusicSelection.trackNone'); },              value: MUSIC_NONE, composer: "" },
     { get name() { return T('MusicSelection.trackRandom'); },            value: MUSIC_RANDOM, composer: "" },
+    { get name() { return T('MusicSelection.trackBiome'); },             value: MUSIC_BIOME, composer: "" },
     { get name() { return T('MusicSelection.trackMap'); }, value: MUSIC_MAP,  composer: "" },
     { name: "Drums", value: "RandomMind/Battle", composer: "RandomMind" },  // i18n-ignore  bgm track, named after its file
     { name: "Shortcuts", value: "ZaneMusic/shortcuts", composer: "ZaneMusic" },  // i18n-ignore  bgm track, named after its file
@@ -103,7 +111,7 @@
   // Battle Music Configuration
   Object.defineProperty(ConfigManager, "battleMusicName", {
     get: function () {
-      return this._battleMusicName !== undefined ? this._battleMusicName : "RandomMind/Battle";
+      return this._battleMusicName !== undefined ? this._battleMusicName : MUSIC_BIOME;
     },
     set: function (value) {
       this._battleMusicName = value;
@@ -127,7 +135,7 @@
   ConfigManager.readBattleMusicName = function (config) {
     return config.battleMusicName !== undefined
       ? config.battleMusicName
-      : "RandomMind/Battle";
+      : MUSIC_BIOME;
   };
 
   // ---------------------------------------------------------------------------
@@ -138,7 +146,8 @@
   // in the draw like any shipped one.
   function playableTracks() {
     return MUSIC_TRACKS.filter(t =>
-      t.value !== MUSIC_NONE && t.value !== MUSIC_MAP && t.value !== MUSIC_RANDOM);
+      t.value !== MUSIC_NONE && t.value !== MUSIC_MAP &&
+      t.value !== MUSIC_RANDOM && t.value !== MUSIC_BIOME);
   }
 
   // What Random resolved to for the battle currently starting. Drawn once per
@@ -159,11 +168,49 @@
     return _randomPick;
   }
 
+  // ---------------------------------------------------------------------------
+  // Biome track ("Biome" entry, the default)
+  // ---------------------------------------------------------------------------
+  // Every biome in js/db/WorldGen/Biomes.json and AlienBiomes.json carries one
+  // battle theme of its own in `bgmBattle`, so a fight sounds like the place it
+  // is fought in. Unlike the map ambience there is no pool and no seeding: one
+  // biome, one battle track, the same on every planet and in every world.
+
+  // The biome the party is standing in. The procedural generator's own biome
+  // only speaks while the procedural map is the loaded one; anywhere else the
+  // map's <Biome:> note decides, and a hand-made map with no note of its own
+  // (a house interior, say) falls back to the square it was entered from.
+  function currentBiomeName() {
+    const proc = window.$gameSystem && $gameSystem._procGenData;
+    const procMapId = window.WorldMapReturn ? window.WorldMapReturn.procMapId : 636;
+    if (proc && proc.currentBiome && window.$gameMap && $gameMap.mapId() === procMapId) {
+      return proc.currentBiome;
+    }
+    const meta = window.$dataMap && $dataMap.meta && $dataMap.meta.Biome;
+    if (typeof meta === "string" && meta.trim()) return meta.trim();
+    return (proc && proc.currentBiome) || null;
+  }
+
+  // The current biome's battle theme, or null when there is no biome to read
+  // (the world map, a map tagged with nothing) or the catalogue has no track
+  // for it. Null means "fall back", never silence.
+  function biomeBattleTrack() {
+    const name = currentBiomeName();
+    if (!name) return null;
+    const entry = (window.BiomeNames && window.BiomeNames.entry)
+      ? window.BiomeNames.entry(name) : null;
+    const list = entry && entry.bgmBattle;
+    if (!Array.isArray(list)) return null;
+    return list.find(n => n && n.trim()) || null;
+  }
+
   // Turn a stored selection into something playable. None and Map pass through
   // as themselves (their callers special-case them); Random becomes this
-  // battle's draw. Anything else is already a bgm file name.
+  // battle's draw and Biome the battle theme of the ground underfoot. Anything
+  // else is already a bgm file name.
   function resolveBattleBgmName(selection) {
     const sel = selection !== undefined ? selection : ConfigManager.battleMusicName;
+    if (sel === MUSIC_BIOME) return biomeBattleTrack();
     if (sel !== MUSIC_RANDOM) return sel;
     return _randomPick || rollRandomTrack();
   }
@@ -192,9 +239,12 @@
   };
 
   // Audition a selection from a menu. Random draws a fresh example so the entry
-  // demonstrates itself instead of going silent.
+  // demonstrates itself instead of going silent, and Biome auditions the theme
+  // of the ground the party is standing on.
   function previewTrackValue(value, volume) {
-    const sel = value === MUSIC_RANDOM ? rollRandomTrack() : value;
+    let sel = value;
+    if (value === MUSIC_RANDOM) sel = rollRandomTrack();
+    else if (value === MUSIC_BIOME) sel = biomeBattleTrack();
     if (sel === MUSIC_NONE) AudioManager.stopBgm();
     else if (sel === MUSIC_MAP || !sel) { /* leave whatever is playing */ }
     else AudioManager.playBgm({ name: sel, volume: volume, pitch: 100, pan: 0 });
@@ -242,7 +292,7 @@
 
   Window_Options.prototype.battleMusicStatusText = function () {
     const track = MUSIC_TRACKS.find(t => t.value === ConfigManager.battleMusicName);
-    return track ? track.name : "RandomMind/Battle";
+    return track ? track.name : T('MusicSelection.trackBiome');
   };
 
   // Step the selection one entry either way. A stored value that is no longer in
@@ -263,8 +313,9 @@
 
   // Public API for MusicSelectionSystemUI.js and CharacterCreation.js
   window.MusicSelectionSystem = {
-    MUSIC_TRACKS, MUSIC_NONE, MUSIC_MAP, MUSIC_RANDOM,
+    MUSIC_TRACKS, MUSIC_NONE, MUSIC_MAP, MUSIC_RANDOM, MUSIC_BIOME,
     getLocalizedText, scanCustomTracks,
-    playableTracks, resolveBattleBgmName, rollRandomTrack, previewTrackValue
+    playableTracks, resolveBattleBgmName, rollRandomTrack, previewTrackValue,
+    currentBiomeName, biomeBattleTrack
   };
 })();

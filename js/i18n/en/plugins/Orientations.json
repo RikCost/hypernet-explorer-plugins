@@ -1,0 +1,96 @@
+{
+  "kinsey": {
+    "0": "Exclusively heterosexual",
+    "1": "Predominantly heterosexual, incidentally homosexual",
+    "2": "Predominantly heterosexual, more than incidentally homosexual",
+    "3": "Equally heterosexual and homosexual",
+    "4": "Predominantly homosexual, more than incidentally heterosexual",
+    "5": "Predominantly homosexual, incidentally heterosexual",
+    "6": "Exclusively homosexual",
+    "X": "Asexual, no socio-sexual reactions"
+  },
+  "sexual": {
+    "heterosexual": {
+      "name": "Heterosexual",
+      "desc": "Sexual attraction toward people of a different gender."
+    },
+    "bisexual": {
+      "name": "Bisexual",
+      "desc": "Sexual attraction toward more than one gender."
+    },
+    "homosexual": {
+      "name": "Homosexual",
+      "desc": "Sexual attraction exclusively toward people of the same gender."
+    },
+    "pansexual": {
+      "name": "Pansexual",
+      "desc": "Sexual attraction to people regardless of their gender."
+    },
+    "asexual": {
+      "name": "Asexual",
+      "desc": "Little or no sexual attraction toward anyone."
+    },
+    "demisexual": {
+      "name": "Demisexual",
+      "desc": "Sexual attraction that only forms after a strong emotional bond."
+    },
+    "queer": {
+      "name": "Queer",
+      "desc": "A fluid or deliberately unlabeled orientation outside the usual categories."
+    },
+    "digisexual": {
+      "name": "Digisexual",
+      "desc": "Attraction felt only toward synthetic minds: robots, androids and artificial intelligences."
+    },
+    "dendrosexual": {
+      "name": "Dendrosexual",
+      "desc": "Attraction felt only toward plants and botanical life."
+    },
+    "nanosexual": {
+      "name": "Nanosexual (Dwarf-oriented)",
+      "desc": "Attraction felt exclusively toward dwarves."
+    }
+  },
+  "romantic": {
+    "heteroromantic": {
+      "name": "Heteroromantic",
+      "desc": "Romantic attraction toward people of a different gender."
+    },
+    "bubbaromantic": {
+      "name": "Bubbaromantic",
+      "desc": "Romantic attraction felt exclusively toward Bubba Wilson, the inventor of the Liminal Engine."
+    },
+    "biromantic": {
+      "name": "Biromantic",
+      "desc": "Romantic attraction toward more than one gender."
+    },
+    "aromantic": {
+      "name": "Aromantic",
+      "desc": "Little or no romantic attraction toward anyone."
+    },
+    "homoromantic": {
+      "name": "Homoromantic",
+      "desc": "Romantic attraction exclusively toward the same gender."
+    },
+    "panromantic": {
+      "name": "Panromantic",
+      "desc": "Romantic attraction to people regardless of their gender."
+    },
+    "demiromantic": {
+      "name": "Demiromantic",
+      "desc": "Romantic attraction that only forms after a strong emotional bond."
+    },
+    "sapioromantic": {
+      "name": "Sapioromantic",
+      "desc": "Romantic attraction driven chiefly by a partner's intellect."
+    },
+    "botromantic": {
+      "name": "Botromantic",
+      "desc": "Romantic attraction felt only toward robots and artificial minds."
+    },
+    "dendroromantic": {
+      "name": "Dendroromantic",
+      "desc": "Romantic attraction felt only toward plants and botanical life."
+    }
+  }
+}

@@ -30,6 +30,7 @@
   "factions": "Fazioni",
   "assets": "Beni",
   "hypernet": "Hypernet",
+  "hyperdeck": "Hyperdeck",
   "multiplayer": "Multigiocatore",
   "save": "Salva",
   "preferences": "Preferenze",
@@ -38,6 +39,7 @@
   "returnToShip": "Torna alla Nave",
   "teleportToShip": "Teletrasporto alla Nave",
   "returnToWorldMap": "Torna alla mappa",
+  "returnToElevator": "Torna all'ascensore",
   "chooseLandingSite": "Scegli il sito di atterraggio",
   "stopTravel": "Interrompi viaggio"
  },
@@ -53,7 +55,7 @@
   "moveUp": "Su",
   "moveDown": "Giù",
   "wiki": "Wiki",
-  "wikiHint": "Voci del gruppo nell enciclopedia",
+  "wikiHint": "Voci del gruppo nell'enciclopedia",
   "history": "Cronologia",
   "historyHint": "Chiunque abbia mai viaggiato con te",
   "inactiveHint": "",
@@ -97,6 +99,8 @@
   "none": "Nessuno",
   "left": "Andato via il {date}",
   "levelAbbr": "Liv.",
+  "switchHintKeyboard": "TAB per cambiare membro",
+  "switchHintGamepad": "L1 / R1 per cambiare membro",
   "thatMember": "Quel membro",
   "following": "Al seguito",
   "setActive": "Rendi attivo",
@@ -113,8 +117,8 @@
   "hunger": "Fame",
   "sleep": "Sonno",
   "hygiene": "Igiene",
-  "social": "Socialita",
-  "fun": "Svago"
+  "social": "Socialità",
+  "fun": "Umore"
  },
  "place": {
   "unknownLand": "Terra Sconosciuta",
@@ -181,7 +185,19 @@
   "childOf": "Figlio di {parent}",
   "groupPets": "Animali",
   "groupChildren": "Prole",
-  "groupFollowers": "Seguaci"
+  "groupFollowers": "Seguaci",
+  "groupSummons": "Evocazioni",
+  "summoned": "Evocato",
+  "summonSteps": "Trattenuto per altri {steps} passi.",
+  "summonBound": "Vincolato: resta finché non viene congedato o cade in battaglia.",
+  "dismissSummon": "Congeda",
+  "train": "Addestra",
+  "trainChoose": "Scegli un addestramento. Circa {days} giorni di viaggio insieme.",
+  "trainProgress": "Addestramento da {className}: {percent}%",
+  "trainPaused": "In pausa: con il gruppo cammina un altro compagno.",
+  "trainReady": "Addestrato da {className}, aspetta un posto nel gruppo.",
+  "trainJoin": "Unisciti al gruppo",
+  "trainStop": "Interrompi"
  },
  "vehicles": {
   "spawn": "Evoca",
