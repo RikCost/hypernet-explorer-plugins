@@ -198,7 +198,7 @@
     //   failed roll is silent and the enemy simply attacks as normal.
     // ========================================================================
 
-    const MERCY_CHANCE = 0.2;
+    const MERCY_CHANCE = 0.05;
     const MERCY_DISPOSITION_THRESHOLD = 70;
     const MERCY_LEVEL_GAP = 13; // matches checkAndShowDangerousEnemyWarning above
 

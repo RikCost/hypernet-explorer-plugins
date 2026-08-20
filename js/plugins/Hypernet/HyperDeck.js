@@ -915,7 +915,12 @@
             if (present[kind]) return;
             if (fitBestCarried(carried[kind], freeCells(), true)) fitted++;
         });
-        return fitted + topUpPower();
+        const added = fitted + topUpPower();
+        // Same reason the factory roll needs it: auto-fit packs the gpu
+        // wherever it still fits, not necessarily touching the panel, so the
+        // video line has to be drawn by hand or the board fails its own POST.
+        autoWireVideo();
+        return added;
     }
 
     // Cells go on last as well as first. Whatever the finished board draws, the

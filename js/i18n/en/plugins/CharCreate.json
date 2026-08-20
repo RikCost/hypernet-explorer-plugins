@@ -254,8 +254,8 @@
       "desc": "Start at the tower gate with a delve kit: extra potions, the tower routes map, a flashlight and a climbing rope."
     },
     "originLot": {
-      "name": "Empty lot",
-      "desc": "Begin standing on a random patch of open country with a large stockpile of crafting materials."
+      "name": "Full automation",
+      "desc": "Build your utopia: every party member starts with advanced crafting specializations, and the workshop is already fully stocked. The machines will do the rest — all you need is the vision."
     },
     "originBike": {
       "name": "Start on bike",
@@ -695,6 +695,7 @@
   "aRandomSquareOfTheWorld": "A random square of the world",
   "summoningRites": "Summoning rites",
   "summoningRitesPerMember": "{count} each, and no map to go with them",
+  "craftingSpecsAllMembers": "{count} crafting specializations each, Advanced to Master (randomized per member)",
   "supplies": "Supplies",
   "nothingButTheKey": "None. The key is everything you carry.",
   "partyFormation": "Party Formation",

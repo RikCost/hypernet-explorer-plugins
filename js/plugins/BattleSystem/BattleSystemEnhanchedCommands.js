@@ -679,10 +679,47 @@
   };
 
   // Re-place the command window each time an actor starts inputting so it
-  // follows whichever player is active during a split-screen battle.
+  // follows whichever player is active during a split-screen battle. Also
+  // checks for a continuing grapple: if the actor's previous turn was a
+  // wrestle and the enemy is still held (state 51 / 52), the wrestling menu
+  // reopens automatically so the player can pick the next hold without
+  // re-selecting the Wrestle command and the target.
   const _BSEC_startActorCommandSelection = Scene_Battle.prototype.startActorCommandSelection;
   Scene_Battle.prototype.startActorCommandSelection = function () {
     _BSEC_startActorCommandSelection.call(this);
+
+    // Auto-continue wrestling: if the actor has an ongoing grapple target
+    // that is still alive and held, reopen the wrestle menu in place of the
+    // normal command list. Only the same party member who initiated the grapple
+    // gets the auto-open; other actors see their normal commands.
+    const actor = BattleManager.actor();
+    if (this._wrestleContinueTargetIndex != null && window.Wrestling &&
+        BattleManager.isInputting() && actor &&
+        actor.actorId() === this._wrestleContinueActorId) {
+      const target = $gameTroop.members()[this._wrestleContinueTargetIndex];
+      if (target && target.isAlive() &&
+          (target.isStateAffected(51) || target.isStateAffected(52)) &&
+          window.Wrestling.canCommand(actor)) {
+        const action = BattleManager.inputtingAction();
+        if (action) {
+          // Use the Wrestle carrier skill (id 21, retired from every learnset)
+          // and target the held enemy directly, then open the plan menu.
+          action.setSkill(21);
+          action.setTarget(target.index());
+          if (this.openWrestleMenu(target)) {
+            if (this._actorCommandWindow) {
+              this._actorCommandWindow.x = this._bseCommandX(this._actorCommandWindow.width);
+            }
+            return;
+          }
+        }
+      } else {
+        // The target is no longer held or alive — clear the stale reference
+        // so the next turn doesn't retry.
+        this._wrestleContinueTargetIndex = null;
+      }
+    }
+
     if (this._actorCommandWindow) {
       this._actorCommandWindow.x = this._bseCommandX(this._actorCommandWindow.width);
     }
@@ -726,6 +763,19 @@
       SoundManager.playBuzzer();
       win.activate();
     }
+  };
+
+  // -------------------------------------------------------------------------
+  // Attack: targets a random enemy instead of opening the target picker.
+  // The base BattleManager.selectNextCommand also randomises for isAttack(),
+  // so the result is the same — a random alive enemy — without the player
+  // having to pick one manually.
+  // -------------------------------------------------------------------------
+  Scene_Battle.prototype.commandAttack = function () {
+    const action = BattleManager.inputtingAction();
+    if (!action) { SoundManager.playBuzzer(); return; }
+    action.setAttack();
+    this.selectNextCommand();
   };
 
   Scene_Battle.prototype.commandBasic = function () {
@@ -775,6 +825,26 @@
       }
       this.selectNextCommand();
     }
+  };
+
+  // -------------------------------------------------------------------------
+  // Wrestling auto-continue
+  // -------------------------------------------------------------------------
+  // Track which enemy the wrestle menu was opened on, so the next time this
+  // actor's turn comes around the grapple menu can be reopened automatically
+  // if the enemy is still held (state 51 / 52). The reference is cleared
+  // naturally when the target dies, the hold state expires (checked in
+  // startActorCommandSelection), or when a fresh openWrestleMenu call
+  // overwrites it for a different target.
+  const _SB_openWrestleMenu = Scene_Battle.prototype.openWrestleMenu;
+  Scene_Battle.prototype.openWrestleMenu = function (enemy) {
+    const result = _SB_openWrestleMenu.call(this, enemy);
+    if (result && enemy) {
+      const actor = BattleManager.actor();
+      this._wrestleContinueTargetIndex = enemy.isEnemy ? enemy.index() : null;
+      this._wrestleContinueActorId = actor ? actor.actorId() : null;
+    }
+    return result;
   };
 
   Scene_Battle.prototype.selectPreviousCommand = function () {

@@ -350,7 +350,7 @@
     "message4": "%1 non è più in astinenza!"
   },
   "51": {
-    "name": "In Presa",
+    "name": "Presa",
     "message1": "%1 è bloccato in una presa!",
     "message2": "%1 è bloccato in una presa!",
     "message3": "%1 si dimena nella presa...",
@@ -378,28 +378,28 @@
     "message4": "%1 riprende fiato."
   },
   "55": {
-    "name": "Combo Pronta",
+    "name": "Combo",
     "message1": "%1 vede l'apertura!",
     "message2": "%1 vede l'apertura!",
     "message3": "%1 attende il colpo successivo...",
     "message4": "%1 perde l'apertura."
   },
   "56": {
-    "name": "Punto Vitale Esposto",
+    "name": "Esposto",
     "message1": "I punti vitali di %1 sono esposti!",
     "message2": "I punti vitali di %1 sono esposti!",
     "message3": "%1 non riesce a coprire l'apertura...",
     "message4": "%1 richiude la guardia."
   },
   "57": {
-    "name": "Posizione Radicata",
+    "name": "In posizione",
     "message1": "%1 pianta la sua posizione!",
     "message2": "%1 pianta la sua posizione!",
     "message3": "%1 tiene la posizione...",
     "message4": "%1 abbandona la posizione."
   },
   "58": {
-    "name": "Stato di Flusso",
+    "name": "Flusso",
     "message1": "%1 entra nel flusso!",
     "message2": "%1 entra nel flusso!",
     "message3": "%1 si muove con l'attacco...",

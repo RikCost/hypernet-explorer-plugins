@@ -378,28 +378,28 @@
     "message4": "%1 catches their breath."
   },
   "55": {
-    "name": "Combo Ready",
+    "name": "Combo",
     "message1": "%1 sees the opening!",
     "message2": "%1 sees the opening!",
     "message3": "%1 waits for the follow-up...",
     "message4": "%1 loses the opening."
   },
   "56": {
-    "name": "Vital Exposed",
+    "name": "Exposed",
     "message1": "%1's vitals are exposed!",
     "message2": "%1's vitals are exposed!",
     "message3": "%1 cannot cover the opening...",
     "message4": "%1 closes their guard over it."
   },
   "57": {
-    "name": "Rooted Stance",
+    "name": "Rooted",
     "message1": "%1 plants their stance!",
     "message2": "%1 plants their stance!",
     "message3": "%1 holds the ground...",
     "message4": "%1 lifts out of the stance."
   },
   "58": {
-    "name": "Flow State",
+    "name": "Flow",
     "message1": "%1 slips into flow!",
     "message2": "%1 slips into flow!",
     "message3": "%1 moves with the attack...",

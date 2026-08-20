@@ -1695,6 +1695,48 @@
   const WRESTLE_SKILL_ID = 21;
   const SPEC_WRESTLING = 301;          // js/db/Skills/Specialization.json
 
+  // -------------------------------------------------------------------------
+  // Sound effects helper: picks a random entry from a list of SE names (with
+  // optional subfolder paths) and plays it through the engine's audio manager.
+  // -------------------------------------------------------------------------
+  function _playWrestleSe(list) {
+    if (typeof AudioManager === "undefined" || !list || list.length === 0) return;
+    const name = list[Math.floor(Math.random() * list.length)];
+    AudioManager.playSe({ name, volume: 85, pitch: 90 + Math.floor(Math.random() * 21), pan: 0 });
+  }
+
+  // Sound banks for each wrestling event. Using subfolder paths into audio/se/
+  // so the engine resolves them correctly (e.g. "Melee/hit01_mp3").
+  const _WRESTLE_SE = {
+    // A hold or strike connects
+    holdHit: [
+      "Melee/hit01_mp3", "Melee/hit03_mp3", "Melee/hit05_mp3",
+      "Melee/hit08_mp3", "Melee/hit12_mp3", "Melee/hit15_mp3",
+      "Melee/hit19_mp3", "Melee/hit22_mp3", "Melee/hit27_mp3",
+    ],
+    // A hold or finisher misses
+    holdMiss: ["Miss", "Evasion1", "Evasion2"],
+    // The enemy reverses the grapple back on the actor
+    reversal: [
+      "Impact/bfh1_hit_01", "Impact/bfh1_hit_03", "Impact/bfh1_hit_06",
+      "Impact/bfh1_hit_10",
+    ],
+    // A finisher connects — bigger impact
+    finisherHit: [
+      "Impact/crack01_mp3", "Impact/crack03_mp3", "Impact/crack05_mp3",
+      "Impact/bfh1_breaking_01", "Impact/bfh1_breaking_03",
+      "Crash", "Explosion1",
+    ],
+    // A limb is torn off
+    rip: [
+      "Impact/bfh1_breaking_01", "Impact/bfh1_breaking_02",
+      "Impact/bfh1_rock_breaking_01", "Impact/bfh1_rock_breaking_03",
+      "Break", "Collapse1",
+    ],
+    // The actor has no usable limb (cannot grapple at all)
+    noLimb: ["Buzzer1", "Buzzer2"],
+  };
+
   // Which limb a part is, from its (language-independent) key. Only these
   // families can take a hold; an organ or an eye is targetable but never the
   // thing doing the wrestling.
@@ -2546,6 +2588,7 @@
       window.HealthCore.injureBodyPart(actor, session.myKey, Math.round(hurt * 0.6));
     }
     actor.startDamagePopup();
+    _playWrestleSe(_WRESTLE_SE.reversal);
     wrestleLog(T('HealthMonsters.wrestle.log.reversal', {
       actor: actor.name(), enemy: enemy.name(), part: part ? part.name : "",
     }));
@@ -2570,6 +2613,7 @@
     this._wrestlePlan = null;
 
     if (!session.myKey || !session.theirKey) {
+      _playWrestleSe(_WRESTLE_SE.noLimb);
       this._wrestleForceMiss = true;
       _GA_apply_WR.call(this, target);
       this._wrestleForceMiss = false;
@@ -2595,6 +2639,7 @@
       wrestleLog(T('HealthMonsters.wrestle.hold.' + hold.id + '.miss', {
         actor: subject.name(), enemy: target.name(), part: partName,
       }));
+      _playWrestleSe(_WRESTLE_SE.holdMiss);
       wrestleReversal(session, chance, roll);
       return;
     }
@@ -2613,6 +2658,7 @@
     wrestleLog(T('HealthMonsters.wrestle.hold.' + hold.id + '.hit', {
       actor: subject.name(), enemy: target.name(), part: partName,
     }));
+    _playWrestleSe(_WRESTLE_SE.holdHit);
 
     // The state a hold IS lands with it: a grapple that worked is a grapple,
     // and rolling a second time for it would make the row's odds a lie. Only
@@ -2633,6 +2679,7 @@
         applyDamageToBodyPart(target, session.theirKey, part.currentHp, true);
       }
       const after = target._bodyParts[session.theirKey];
+      _playWrestleSe(_WRESTLE_SE.rip);
       wrestleLog(!after || after.destroyed
         ? T('HealthMonsters.wrestle.log.ripped',
             { actor: subject.name(), enemy: target.name(), part: partName })
@@ -2656,6 +2703,7 @@
       wrestleLog(T('HealthMonsters.wrestle.log.finisherMiss', {
         actor: subject.name(), skill: skill.name, enemy: target.name(),
       }));
+      _playWrestleSe(_WRESTLE_SE.holdMiss);
       wrestleReversal(session, chance, roll);
       return;
     }
@@ -2663,6 +2711,7 @@
     wrestleLog(T('HealthMonsters.wrestle.log.finisherHit', {
       actor: subject.name(), skill: skill.name, part: partName,
     }));
+    _playWrestleSe(_WRESTLE_SE.finisherHit);
 
     // The move runs as itself: its own formula, its own effects, on the limb the
     // hold was on, paid for by the grapple instead of by its usual cost.

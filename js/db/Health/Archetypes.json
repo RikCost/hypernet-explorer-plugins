@@ -145,7 +145,6 @@
         "vital": false,
         "skillId": [
           1790,
-          312,
           98
         ],
         "canCutoff": true,
@@ -162,7 +161,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -178,7 +176,6 @@
         "hpPercent": 20,
         "vital": true,
         "skillId": [
-          1771,
           1772,
           1773
         ],
@@ -380,8 +377,7 @@
         "hpPercent": 15,
         "vital": true,
         "skillId": [
-          328,
-          1768
+          328
         ],
         "canCutoff": false,
         "statEffect": {
@@ -502,8 +498,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1790,
-          312
+          1790
         ],
         "canCutoff": true,
         "multiple": true,
@@ -516,8 +511,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -791,8 +785,7 @@
         "vital": false,
         "skillId": [
           263,
-          1786,
-          312
+          1786
         ],
         "canCutoff": true,
         "statEffect": {
@@ -1094,8 +1087,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -1128,7 +1120,6 @@
         "vital": false,
         "skillId": [
           1790,
-          312,
           98
         ],
         "canCutoff": true,
@@ -1162,8 +1153,7 @@
         "vital": false,
         "skillId": [
           1790,
-          263,
-          312
+          263
         ],
         "canCutoff": true,
         "statEffect": {
@@ -1313,9 +1303,7 @@
         "hpPercent": 15,
         "vital": false,
         "skillId": [
-          899,
-          328,
-          1768
+          328
         ],
         "canCutoff": true,
         "statEffect": {
@@ -1351,8 +1339,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1790,
-          312
+          1790
         ],
         "canCutoff": true,
         "statEffect": {
@@ -1385,7 +1372,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -1840,8 +1826,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -1857,7 +1842,6 @@
         "vital": false,
         "skillId": [
           1790,
-          312,
           98
         ],
         "canCutoff": true,
@@ -2006,7 +1990,6 @@
         "vital": false,
         "skillId": [
           323,
-          214,
           1724
         ],
         "canCutoff": true,
@@ -2024,7 +2007,6 @@
         "vital": false,
         "skillId": [
           323,
-          214,
           1724
         ],
         "canCutoff": true,
@@ -2210,7 +2192,6 @@
         "vital": false,
         "skillId": [
           890,
-          1721,
           472
         ],
         "canCutoff": false,
@@ -2228,8 +2209,7 @@
         "vital": false,
         "skillId": [
           398,
-          54,
-          1721
+          54
         ],
         "canCutoff": false,
         "statEffect": {
@@ -2426,7 +2406,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -2635,7 +2614,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -2652,8 +2630,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -2669,7 +2646,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -2703,7 +2679,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -2720,8 +2695,7 @@
         "vital": false,
         "skillId": [
           263,
-          1786,
-          312
+          1786
         ],
         "canCutoff": true,
         "statEffect": {
@@ -2966,8 +2940,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -2983,7 +2956,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -3051,7 +3023,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -3068,8 +3039,7 @@
         "vital": false,
         "skillId": [
           342,
-          1786,
-          312
+          1786
         ],
         "canCutoff": true,
         "statEffect": {
@@ -3161,7 +3131,6 @@
         "hpPercent": 20,
         "vital": true,
         "skillId": [
-          899,
           887,
           894
         ],
@@ -4009,7 +3978,6 @@
         "vital": false,
         "skillId": [
           1803,
-          258,
           325
         ],
         "canCutoff": true,
@@ -4026,8 +3994,7 @@
         "vital": false,
         "skillId": [
           323,
-          347,
-          214
+          347
         ],
         "canCutoff": true,
         "statEffect": {
@@ -4043,7 +4010,6 @@
         "vital": false,
         "skillId": [
           323,
-          214,
           1724
         ],
         "canCutoff": true,
@@ -4211,8 +4177,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -4357,7 +4322,6 @@
         "hpPercent": 40,
         "vital": true,
         "skillId": [
-          899,
           897,
           894
         ],
@@ -4469,7 +4433,6 @@
         "hpPercent": 25,
         "vital": true,
         "skillId": [
-          899,
           887,
           897
         ],
@@ -4504,7 +4467,6 @@
         "vital": true,
         "skillId": [
           888,
-          899,
           887
         ],
         "canCutoff": false,
@@ -4634,9 +4596,7 @@
         "hpPercent": 15,
         "vital": false,
         "skillId": [
-          321,
-          305,
-          899
+          305
         ],
         "canCutoff": true,
         "statEffect": {
@@ -4833,8 +4793,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -5611,7 +5570,6 @@
         "vital": false,
         "skillId": [
           323,
-          214,
           1724
         ],
         "canCutoff": true,
@@ -5628,8 +5586,7 @@
         "vital": false,
         "skillId": [
           323,
-          347,
-          214
+          347
         ],
         "canCutoff": true,
         "statEffect": {
@@ -6168,9 +6125,7 @@
         "hpPercent": 10,
         "vital": false,
         "skillId": [
-          305,
-          899,
-          1768
+          305
         ],
         "canCutoff": true,
         "statEffect": {
@@ -6187,7 +6142,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -6204,8 +6158,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1790,
-          312
+          1790
         ],
         "canCutoff": true,
         "statEffect": {
@@ -6603,7 +6556,6 @@
         "hpPercent": 5,
         "vital": true,
         "skillId": [
-          1771,
           1772,
           1773
         ],
@@ -6756,8 +6708,7 @@
         "hpPercent": 8,
         "vital": false,
         "skillId": [
-          328,
-          1768
+          328
         ],
         "canCutoff": false,
         "statEffect": {
@@ -6858,8 +6809,7 @@
         "vital": false,
         "skillId": [
           322,
-          328,
-          1768
+          328
         ],
         "canCutoff": false,
         "statEffect": {
@@ -6942,9 +6892,7 @@
         "hpPercent": 2,
         "vital": false,
         "skillId": [
-          321,
-          899,
-          1768
+          899
         ],
         "canCutoff": true,
         "statEffect": {
@@ -7040,7 +6988,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -7057,7 +7004,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -7074,7 +7020,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -7091,7 +7036,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -7108,8 +7052,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1790,
-          312
+          1790
         ],
         "canCutoff": true,
         "statEffect": {
@@ -7125,8 +7068,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -7645,7 +7587,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -7662,7 +7603,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -8233,9 +8173,7 @@
         "hpPercent": 20,
         "vital": false,
         "skillId": [
-          899,
-          328,
-          1768
+          328
         ],
         "canCutoff": true,
         "statEffect": {
@@ -8573,8 +8511,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1790,
-          312
+          1790
         ],
         "canCutoff": true,
         "statEffect": {
@@ -8590,8 +8527,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -8751,7 +8687,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -9450,7 +9385,6 @@
         "vital": false,
         "skillId": [
           347,
-          214,
           1724
         ],
         "canCutoff": true,
@@ -9467,7 +9401,6 @@
         "vital": false,
         "skillId": [
           347,
-          214,
           1724
         ],
         "canCutoff": true,
@@ -9601,8 +9534,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -9618,8 +9550,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -9652,8 +9583,7 @@
         "vital": false,
         "skillId": [
           342,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -9821,7 +9751,6 @@
         "hpPercent": 10,
         "vital": false,
         "skillId": [
-          312,
           398,
           34
         ],
@@ -10042,8 +9971,7 @@
         "vital": false,
         "skillId": [
           342,
-          263,
-          312
+          263
         ],
         "canCutoff": true,
         "statEffect": {
@@ -10076,8 +10004,7 @@
         "vital": false,
         "skillId": [
           263,
-          1786,
-          312
+          1786
         ],
         "canCutoff": true,
         "statEffect": {
@@ -10093,7 +10020,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -10197,7 +10123,6 @@
         "vital": false,
         "skillId": [
           347,
-          214,
           1724
         ],
         "canCutoff": true,
@@ -10465,7 +10390,6 @@
         "vital": false,
         "skillId": [
           1040,
-          1041,
           1049
         ],
         "canCutoff": true,
@@ -10959,8 +10883,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -11037,8 +10960,7 @@
         "vital": true,
         "skillId": [
           407,
-          1808,
-          1721
+          1808
         ],
         "canCutoff": false,
         "statEffect": {
@@ -11101,7 +11023,6 @@
         "hpPercent": 10,
         "vital": false,
         "skillId": [
-          1721,
           472,
           1786
         ],
@@ -11485,9 +11406,7 @@
         "hpPercent": 25,
         "vital": true,
         "skillId": [
-          404,
-          1712,
-          416
+          404
         ],
         "canCutoff": false,
         "statEffect": {
@@ -11534,7 +11453,6 @@
         "vital": false,
         "skillId": [
           404,
-          416,
           98
         ],
         "canCutoff": false,
@@ -11608,8 +11526,7 @@
         "vital": true,
         "skillId": [
           408,
-          1810,
-          1727
+          1810
         ],
         "canCutoff": false,
         "statEffect": {
@@ -11655,7 +11572,6 @@
         "hpPercent": 20,
         "vital": false,
         "skillId": [
-          312,
           98,
           890
         ],
@@ -12556,7 +12472,6 @@
         "vital": false,
         "skillId": [
           1789,
-          899,
           897
         ],
         "canCutoff": true,
@@ -12641,8 +12556,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -12823,8 +12737,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -12840,8 +12753,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -13068,7 +12980,6 @@
         "vital": false,
         "skillId": [
           1790,
-          312,
           98
         ],
         "canCutoff": true,
@@ -13085,7 +12996,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -13101,7 +13011,6 @@
         "hpPercent": 18,
         "vital": true,
         "skillId": [
-          1771,
           1772,
           1773
         ],
@@ -13303,8 +13212,7 @@
         "hpPercent": 18,
         "vital": true,
         "skillId": [
-          328,
-          1768
+          328
         ],
         "canCutoff": false,
         "statEffect": {
@@ -13425,8 +13333,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1790,
-          312
+          1790
         ],
         "canCutoff": true,
         "multiple": true,
@@ -13439,8 +13346,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -13615,8 +13521,6 @@
         "hpPercent": 25,
         "vital": false,
         "skillId": [
-          321,
-          899,
           45
         ],
         "canCutoff": true,
@@ -13702,7 +13606,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,
@@ -14006,8 +13909,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -14023,7 +13925,6 @@
         "vital": false,
         "skillId": [
           1790,
-          312,
           98
         ],
         "canCutoff": true,
@@ -14057,7 +13958,6 @@
         "vital": false,
         "skillId": [
           342,
-          312,
           98
         ],
         "canCutoff": true,
@@ -14219,7 +14119,6 @@
         "vital": false,
         "skillId": [
           1786,
-          312,
           98
         ],
         "canCutoff": true,
@@ -14236,8 +14135,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1790,
-          312
+          1790
         ],
         "canCutoff": true,
         "statEffect": {
@@ -14372,8 +14270,7 @@
         "vital": false,
         "skillId": [
           263,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -14389,8 +14286,7 @@
         "vital": false,
         "skillId": [
           1790,
-          1786,
-          312
+          1786
         ],
         "canCutoff": true,
         "statEffect": {
@@ -14406,8 +14302,7 @@
         "vital": false,
         "skillId": [
           1786,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -14593,7 +14488,6 @@
         "vital": false,
         "skillId": [
           342,
-          312,
           98
         ],
         "canCutoff": true,
@@ -14610,7 +14504,6 @@
         "vital": false,
         "skillId": [
           1790,
-          312,
           98
         ],
         "canCutoff": true,
@@ -14743,8 +14636,7 @@
         "vital": true,
         "skillId": [
           404,
-          1805,
-          1712
+          1805
         ],
         "canCutoff": false,
         "statEffect": {
@@ -14760,8 +14652,7 @@
         "vital": false,
         "skillId": [
           342,
-          1786,
-          312
+          1786
         ],
         "canCutoff": true,
         "statEffect": {
@@ -14777,8 +14668,7 @@
         "vital": false,
         "skillId": [
           342,
-          1793,
-          312
+          1793
         ],
         "canCutoff": true,
         "statEffect": {
@@ -14794,7 +14684,6 @@
         "vital": false,
         "skillId": [
           1793,
-          312,
           98
         ],
         "canCutoff": true,

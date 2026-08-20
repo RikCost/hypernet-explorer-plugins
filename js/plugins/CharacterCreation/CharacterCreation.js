@@ -932,16 +932,56 @@
     startDungeonOrigin();
   }
 
-  // Empty-lot origin: a RANDOM land square of the world, standing on the ground
-  // of it, with a big pile of crafting materials (handed out by the origin's
-  // loadout) and nothing built on it yet.
+  // Full Automation origin: a RANDOM land square of the world, standing on the ground
+  // of it, with 4x the usual pile of crafting materials (handed out by the origin's
+  // loadout), and every party member trained in the full spectrum of crafting
+  // specializations used by the Thinker and Blacksmithing systems.
   const MATERIAL_ITEM_ID_MIN = 849; // first <category:Crafting> material
   const MATERIAL_ITEM_ID_MAX = 871; // last  <category:Crafting> material
-  const EMPTY_LOT_MATERIAL_QTY = 40; // of every material
+  const EMPTY_LOT_MATERIAL_QTY = 160; // of every material (4x)
+
+  // Crafting specializations granted by the Full Automation origin.
+  // These cover everything the Thinker system (Fabrication, Weaponsmithing, Armor Smithing, Carpentry,
+  // Metalworking, Cooking, Alchemy, Electronics) and the Blacksmithing system (Bladesmithing, Tailoring,
+  // Leatherworking, Jewelry Making, Gunsmithing, etc.) use.
+  const CRAFTING_SPEC_IDS = [
+    20,   // Armor Smithing     (Crafting) — Blacksmithing main
+    321,  // Bladesmithing      (Crafting) — Blacksmithing main
+    40,   // Blacksmithing      (Crafting) — Blacksmithing main
+    102,  // Fabrication        (Crafting) — Thinker main bench
+    807,  // Weaponsmithing     (Crafting) — Thinker weapons
+    58,   // Carpentry          (Crafting) — Thinker lifestyle / building
+    269,  // Tailoring          (Crafting) — Blacksmithing armor
+    157,  // Leatherworking     (Crafting) — Blacksmithing armor
+    176,  // Metalworking       (Crafting) — Thinker tools / building
+    643,  // Jewelry Making     (Crafting) — Blacksmithing accessories
+    616,  // Gunsmithing        (Crafting) — Blacksmithing ranged
+    540,  // CNC Machining      (Crafting) — precision fabrication
+    121,  // Glassblowing       (Crafting) — artisan goods
+    215,  // Pottery            (Crafting) — artisan goods
+    287,  // Upholstery         (Crafting) — furniture
+    460,  // Underwater Welding (Crafting) — advanced fabrication
+    309,  // Alchemy            (Arcana)   — Thinker potions / magic items
+    49,   // Brewing            (Culinary) — Thinker beverages
+    75,   // Cooking            (Culinary) — Thinker food
+    328,  // Campfire Cooking   (Culinary) — survival food
+    98,   // Electronics        (Science)  — Thinker espionage / gadgets
+  ];
 
   function startEmptyLotOrigin() {
+    // Grant every party member randomized medium-high levels in all crafting
+    // specializations used by the Thinker and Blacksmithing systems.
+    const members = $gameParty.members();
+    members.forEach(actor => {
+      if (!actor || !actor.setSpecializationTrainedLevel) return;
+      CRAFTING_SPEC_IDS.forEach(specId => {
+        // Randomize level between 3 (Advanced) and 5 (Master)
+        const level = 3 + Math.floor(Math.random() * 3);
+        actor.setSpecializationTrainedLevel(specId, level);
+      });
+    });
     if (startOnProceduralSquare({ rng: Math.random })) return;
-    console.warn("CharacterCreation: no overland square for the empty-lot origin; starting at the tower gate instead.");
+    console.warn("CharacterCreation: no overland square for the Full Automation origin; starting at the tower gate instead.");
     startDungeonOrigin();
   }
 
@@ -5291,7 +5331,10 @@
         origin_camper: [row(T('CharCreate.start'), T('CharCreate.yourCamperParkedInACity'))],
         origin_car: [row(T('CharCreate.start'), T('CharCreate.yourCarParkedInACity'))],
         origin_bike: [row(T('CharCreate.start'), T('CharCreate.aRandomOverlandBiome'))],
-        origin_lot: [row(T('CharCreate.start'), T('CharCreate.aRandomWorldMapTile'))],
+        origin_lot: [
+          row(T('CharCreate.start'), T('CharCreate.aRandomWorldMapTile')),
+          row(T('CharCreate.specializations'), T('CharCreate.craftingSpecsAllMembers', { count: CRAFTING_SPEC_IDS.length })),
+        ],
         origin_dungeon: [row(T('CharCreate.start'), T('CharCreate.theTowerGate'))],
         origin_mayor: [row(T('CharCreate.start'), T('CharCreate.aCityOfYourChoice'))],
         origin_criminal: [
@@ -7626,7 +7669,7 @@
     { id: "shift", labelKey: "CharCreate.controls.run", keyKey: "CharCreate.controls.holdShift", pad: "X" },
     { id: "menu", labelKey: "CharCreate.controls.menu", key: "Esc", pad: "Y" },
     { id: "mapSheet", labelKey: "CharCreate.controls.openMap", key: "M" },
-    { id: "hotbar", labelKey: "CharCreate.controls.hotbarCycle", pad: "L1 / R1" },
+    { id: "hotbar", labelKey: "CharCreate.controls.hotbarCycle", key: "Tab", pad: "L1 / R1" },
   ];
 
   // The world map (315) answers to two controls no other map has: T / Select
@@ -7822,7 +7865,7 @@
       // (ItemSystemHotbar.js, pageup/pagedown) are read under their own
       // symbols, so a rebind still lights the row.
       if (Input.isTriggered("world_map_toggle")) win.markLit("mapSheet");
-      if (Input.isTriggered("pageup") || Input.isTriggered("pagedown")) win.markLit("hotbar");
+      if (Input.isTriggered("pageup") || Input.isTriggered("pagedown") || Input.isTriggered("tab")) win.markLit("hotbar");
     }
 
     const onWorldMap = worldLegendVisible();

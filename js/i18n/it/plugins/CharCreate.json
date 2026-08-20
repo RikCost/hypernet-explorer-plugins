@@ -254,8 +254,8 @@
       "desc": "Inizia al cancello della torre con un kit da esplorazione: pozioni extra, la mappa dei percorsi della torre, una torcia e una corda da arrampicata."
     },
     "originLot": {
-      "name": "Terreno libero",
-      "desc": "Inizi in un tratto di campagna a caso con una grande scorta di materiali da costruzione."
+      "name": "Full automation",
+      "desc": "Costruisci la tua utopia: ogni membro del gruppo inizia con specializzazioni artigianali avanzate e l'officina già completamente rifornita. Le macchine faranno il resto — tutto ciò che serve è la visione."
     },
     "originBike": {
       "name": "Inizia in bici",
@@ -695,6 +695,7 @@
   "aRandomSquareOfTheWorld": "Un riquadro qualsiasi del mondo",
   "summoningRites": "Riti di evocazione",
   "summoningRitesPerMember": "{count} a testa, e nessuna mappa che li accompagni",
+  "craftingSpecsAllMembers": "{count} specializzazioni artigianali a testa, da Avanzato a Maestro (randomizzate per membro)",
   "supplies": "Provviste",
   "nothingButTheKey": "Nessuna. La chiave è tutto ciò che porti.",
   "partyFormation": "Formazione del gruppo",
