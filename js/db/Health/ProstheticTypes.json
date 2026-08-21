@@ -40,7 +40,7 @@
     "name_it": "Ghiandola Androgena",
     "type": "biological",
     "effects": {
-      "0": 15,
+      "0": 20,
       "2": 6
     },
     "skill": null,
@@ -52,8 +52,8 @@
     "name_it": "Autoiniettore di Estrogeni",
     "type": "technological",
     "effects": {
-      "4": 4,
-      "5": 4
+      "4": 3,
+      "5": 3
     },
     "skill": null,
     "cost": 60000
@@ -64,8 +64,8 @@
     "name_it": "Corteccia Mentale Cristallina",
     "type": "magical",
     "effects": {
-      "3": 8,
-      "4": 5
+      "3": 6,
+      "4": 3
     },
     "skill": null,
     "cost": 130000
@@ -88,7 +88,7 @@
     "name_it": "Orbe dell'Antica Saggezza",
     "type": "magical",
     "effects": {
-      "1": 15,
+      "1": 20,
       "3": 12
     },
     "skill": null,
@@ -101,7 +101,7 @@
     "type": "biological",
     "effects": {
       "0": 20,
-      "5": 8
+      "5": 6
     },
     "skill": null,
     "cost": 280000
@@ -112,7 +112,7 @@
     "name_it": "Impianto Occhio di Falco",
     "type": "biological",
     "effects": {
-      "2": 4,
+      "2": 3,
       "6": 3
     },
     "skill": null,
@@ -124,8 +124,7 @@
     "name_it": "Suite Ottica Cibernetica",
     "type": "technological",
     "effects": {
-      "2": 7,
-      "6": 2
+      "2": 6
     },
     "skill": null,
     "cost": 90000
@@ -148,8 +147,7 @@
     "name_it": "Sguardo del Drago",
     "type": "magical",
     "effects": {
-      "2": 2,
-      "4": 8
+      "4": 6
     },
     "skill": null,
     "cost": 100000
@@ -161,8 +159,7 @@
     "type": "technological",
     "skill": null,
     "effects": {
-      "2": 6,
-      "3": 2
+      "2": 6
     },
     "cost": 80000
   },
@@ -173,7 +170,7 @@
     "type": "biological",
     "skill": null,
     "effects": {
-      "6": 5,
+      "6": 3,
       "7": 3
     },
     "cost": 80000
@@ -185,7 +182,7 @@
     "type": "technological",
     "skill": null,
     "effects": {
-      "3": 4,
+      "3": 3,
       "5": 3
     },
     "cost": 700000
@@ -197,8 +194,7 @@
     "type": "biological",
     "skill": null,
     "effects": {
-      "3": 2,
-      "6": 4
+      "6": 3
     },
     "cost": 600000
   },
@@ -220,8 +216,8 @@
     "type": "magical",
     "skill": null,
     "effects": {
-      "1": 12,
-      "4": 5
+      "1": 10,
+      "4": 3
     },
     "cost": 170000
   },
@@ -231,7 +227,7 @@
     "name_it": "Zanne Rigenerative Vampiriche",
     "type": "biological",
     "effects": {
-      "0": 25,
+      "0": 30,
       "2": 3
     },
     "skill": null,
@@ -243,8 +239,8 @@
     "name_it": "Impianto Lingua d'Argento",
     "type": "magical",
     "effects": {
-      "3": 4,
-      "7": 8
+      "3": 3,
+      "7": 6
     },
     "skill": null,
     "cost": 120000
@@ -255,8 +251,7 @@
     "name_it": "Ghiandole Velenifere Serpentine",
     "type": "biological",
     "effects": {
-      "2": 6,
-      "6": 2
+      "2": 6
     },
     "skill": null,
     "cost": 80000
@@ -267,8 +262,8 @@
     "name_it": "Dentatura Adamantina",
     "type": "technological",
     "effects": {
-      "2": 5,
-      "5": 4
+      "2": 3,
+      "5": 3
     },
     "cost": 90000,
     "skill": null
@@ -279,8 +274,8 @@
     "name_it": "Zanne di Cristallo Magico",
     "type": "magical",
     "effects": {
-      "1": 8,
-      "4": 7
+      "1": 10,
+      "4": 6
     },
     "cost": 150000,
     "skill": null
@@ -303,7 +298,7 @@
     "name_it": "Caldaia a Vapore",
     "type": "technological",
     "effects": {
-      "2": 8,
+      "2": 6,
       "6": 6
     },
     "cost": 140000,
@@ -315,8 +310,8 @@
     "name_it": "Nucleo di Energia Arcana",
     "type": "magical",
     "effects": {
-      "1": 25,
-      "4": 10
+      "1": 30,
+      "4": 9
     },
     "cost": 350000,
     "skill": null
@@ -328,7 +323,7 @@
     "type": "biological",
     "effects": {
       "0": 40,
-      "5": 15
+      "5": 12
     },
     "cost": 550000,
     "skill": null
@@ -339,7 +334,7 @@
     "name_it": "Cuore di Fuoco di Fenice",
     "type": "magical",
     "effects": {
-      "0": 35,
+      "0": 40,
       "4": 12
     },
     "cost": 470000,
@@ -351,8 +346,8 @@
     "name_it": "Cuore Meccanico a Orologeria",
     "type": "technological",
     "effects": {
-      "2": 5,
-      "6": 8
+      "2": 3,
+      "6": 6
     },
     "cost": 130000,
     "skill": null
@@ -363,8 +358,8 @@
     "name_it": "Cuore di Drago Antico",
     "type": "biological",
     "effects": {
-      "0": 50,
-      "5": 8
+      "0": 40,
+      "5": 6
     },
     "cost": 580000,
     "skill": null
@@ -375,7 +370,7 @@
     "name_it": "Branchie Respiratorie Acquatiche",
     "type": "biological",
     "effects": {
-      "0": 15,
+      "0": 20,
       "6": 6
     },
     "cost": 210000,
@@ -387,7 +382,7 @@
     "name_it": "Sistema di Filtrazione Avanzato",
     "type": "technological",
     "effects": {
-      "5": 8,
+      "5": 6,
       "6": 3
     },
     "cost": 110000,
@@ -400,7 +395,7 @@
     "type": "magical",
     "effects": {
       "1": 20,
-      "4": 8
+      "4": 6
     },
     "cost": 280000,
     "skill": null
@@ -412,7 +407,7 @@
     "type": "magical",
     "effects": {
       "3": 6,
-      "5": 5
+      "5": 3
     },
     "cost": 110000,
     "skill": null
@@ -424,7 +419,7 @@
     "type": "biological",
     "effects": {
       "0": 20,
-      "5": 10
+      "5": 9
     },
     "cost": 300000,
     "skill": null
@@ -435,7 +430,7 @@
     "name_it": "Fornace Draconiche delle Fiamme",
     "type": "magical",
     "effects": {
-      "2": 4,
+      "2": 3,
       "4": 9
     },
     "cost": 130000,
@@ -451,7 +446,7 @@
     "type": "technological",
     "effects": {
       "0": 30,
-      "6": 4
+      "6": 3
     },
     "cost": 340000,
     "skill": null,
@@ -477,8 +472,8 @@
     "name_it": "Arto di Proiezione Astrale",
     "type": "magical",
     "effects": {
-      "4": 10,
-      "6": 5
+      "4": 9,
+      "6": 3
     },
     "cost": 150000,
     "skill": null
@@ -489,8 +484,8 @@
     "name_it": "Braccio di Golem di Pietra",
     "type": "biological",
     "effects": {
-      "2": 8,
-      "5": 8
+      "2": 6,
+      "5": 6
     },
     "cost": 160000,
     "skill": null
@@ -513,8 +508,8 @@
     "name_it": "Arto Rinforzato al Titanio",
     "type": "technological",
     "effects": {
-      "2": 15,
-      "5": 5
+      "2": 12,
+      "5": 3
     },
     "cost": 200000,
     "skill": null
@@ -525,8 +520,8 @@
     "name_it": "Dita Lama Retrattili",
     "type": "technological",
     "effects": {
-      "2": 10,
-      "6": 4
+      "2": 9,
+      "6": 3
     },
     "cost": 140000,
     "skill": null
@@ -537,8 +532,8 @@
     "name_it": "Cristalli di Mana Incorporati",
     "type": "magical",
     "effects": {
-      "1": 15,
-      "4": 8
+      "1": 20,
+      "4": 6
     },
     "cost": 230000,
     "skill": null
@@ -549,8 +544,8 @@
     "name_it": "Rampini Meccanici",
     "type": "technological",
     "effects": {
-      "2": 4,
-      "6": 8
+      "2": 3,
+      "6": 6
     },
     "cost": 120000,
     "skill": null
@@ -585,7 +580,6 @@
     "name_it": "Grimaldelli Integrati",
     "type": "technological",
     "effects": {
-      "3": 2,
       "6": 6
     },
     "cost": 800000,
@@ -597,7 +591,7 @@
     "name_it": "Punte ad Ago Velenose",
     "type": "biological",
     "effects": {
-      "2": 8,
+      "2": 6,
       "6": 3
     },
     "cost": 110000,
@@ -621,8 +615,8 @@
     "name_it": "Pinne Acquatiche Installabili",
     "type": "biological",
     "effects": {
-      "0": 5,
-      "6": 8
+      "0": 10,
+      "6": 6
     },
     "cost": 130000,
     "skill": null
@@ -633,7 +627,7 @@
     "name_it": "Array di Micro-Strumenti",
     "type": "technological",
     "effects": {
-      "3": 5,
+      "3": 3,
       "6": 3
     },
     "cost": 80000,
@@ -657,8 +651,8 @@
     "name_it": "Gamba Tronco d'Albero Vivente",
     "type": "biological",
     "effects": {
-      "0": 25,
-      "5": 10
+      "0": 30,
+      "5": 9
     },
     "cost": 350000,
     "skill": null
@@ -669,8 +663,8 @@
     "name_it": "Arto del Camminatore d'Ombra",
     "type": "magical",
     "effects": {
-      "4": 5,
-      "6": 10
+      "4": 3,
+      "6": 9
     },
     "cost": 150000,
     "skill": null
@@ -681,8 +675,8 @@
     "name_it": "Sistema a Pistoni Idraulici",
     "type": "technological",
     "effects": {
-      "2": 8,
-      "6": 8
+      "2": 6,
+      "6": 6
     },
     "cost": 160000,
     "skill": null
@@ -693,8 +687,8 @@
     "name_it": "Potenziatore del Passo Elementale",
     "type": "magical",
     "effects": {
-      "4": 8,
-      "6": 8
+      "4": 6,
+      "6": 6
     },
     "cost": 160000,
     "skill": null
@@ -705,7 +699,7 @@
     "name_it": "Suole a Presa Magnetica",
     "type": "technological",
     "effects": {
-      "5": 4,
+      "5": 3,
       "6": 6
     },
     "cost": 100000,
@@ -717,8 +711,8 @@
     "name_it": "Artigli Bestiali Retrattili",
     "type": "biological",
     "effects": {
-      "2": 8,
-      "6": 4
+      "2": 6,
+      "6": 3
     },
     "cost": 120000,
     "skill": null
@@ -730,7 +724,7 @@
     "type": "magical",
     "effects": {
       "4": 3,
-      "6": 10
+      "6": 9
     },
     "cost": 130000,
     "skill": null
@@ -741,8 +735,8 @@
     "name_it": "Ammortizzatori Cinetici",
     "type": "technological",
     "effects": {
-      "5": 8,
-      "6": 5
+      "5": 6,
+      "6": 3
     },
     "cost": 130000,
     "skill": null
@@ -753,8 +747,7 @@
     "name_it": "Array di Ramponi",
     "type": "technological",
     "effects": {
-      "2": 2,
-      "6": 4
+      "6": 3
     },
     "cost": 60000,
     "skill": null
@@ -765,8 +758,7 @@
     "name_it": "Giroscopi Micro-Equilibrio",
     "type": "technological",
     "effects": {
-      "5": 2,
-      "6": 5
+      "6": 3
     },
     "cost": 70000,
     "skill": null
@@ -777,7 +769,7 @@
     "name_it": "Sensori Sismici Terrestri",
     "type": "magical",
     "effects": {
-      "3": 4,
+      "3": 3,
       "6": 3
     },
     "cost": 70000,
@@ -789,7 +781,7 @@
     "name_it": "Purificatore Sanguigno Avanzato",
     "type": "technological",
     "effects": {
-      "0": 15,
+      "0": 20,
       "5": 6
     },
     "cost": 210000,
@@ -801,7 +793,7 @@
     "name_it": "Filtro dell'Essenza Magica",
     "type": "magical",
     "effects": {
-      "1": 18,
+      "1": 20,
       "4": 3
     },
     "cost": 210000,
@@ -813,7 +805,7 @@
     "name_it": "Matrice di Estrazione Nutritiva",
     "type": "biological",
     "effects": {
-      "0": 35,
+      "0": 40,
       "5": 6
     },
     "cost": 410000,
@@ -828,8 +820,8 @@
     "name_it": "Bobine di Conversione Magica",
     "type": "magical",
     "effects": {
-      "1": 25,
-      "3": 5
+      "1": 30,
+      "3": 3
     },
     "cost": 300000,
     "skill": null
@@ -841,7 +833,7 @@
     "type": "biological",
     "effects": {
       "0": 40,
-      "5": 10
+      "5": 9
     },
     "skill": 1789,
     "cost": 320000
@@ -864,8 +856,8 @@
     "name_it": "Elmo da Guerra Innestato",
     "type": "technological",
     "effects": {
-      "0": 25,
-      "3": 8
+      "0": 30,
+      "3": 6
     },
     "skill": 1218,
     "cost": 260000
@@ -877,7 +869,7 @@
     "type": "magical",
     "effects": {
       "4": 12,
-      "7": 10
+      "7": 9
     },
     "skill": 934,
     "cost": 420000
@@ -888,8 +880,8 @@
     "name_it": "Volto Tremendo",
     "type": "biological",
     "effects": {
-      "2": 10,
-      "7": 8
+      "2": 9,
+      "7": 6
     },
     "skill": 318,
     "cost": 300000
@@ -901,7 +893,7 @@
     "type": "technological",
     "effects": {
       "1": 20,
-      "4": 18
+      "4": 12
     },
     "skill": 951,
     "cost": 420000
@@ -912,7 +904,7 @@
     "name_it": "Lobo Psionico",
     "type": "biological",
     "effects": {
-      "4": 14,
+      "4": 12,
       "7": 12
     },
     "skill": 957,
@@ -924,8 +916,8 @@
     "name_it": "Corteccia Precognitiva",
     "type": "magical",
     "effects": {
-      "6": 14,
-      "7": 10
+      "6": 12,
+      "7": 9
     },
     "skill": 942,
     "cost": 500000
@@ -936,7 +928,7 @@
     "name_it": "Impianto d'Archivio",
     "type": "technological",
     "effects": {
-      "4": 20
+      "4": 12
     },
     "skill": 1524,
     "cost": 350000
@@ -947,8 +939,8 @@
     "name_it": "Ancora Onirica",
     "type": "magical",
     "effects": {
-      "1": 25,
-      "7": 8
+      "1": 30,
+      "7": 6
     },
     "skill": 1700,
     "cost": 380000
@@ -959,8 +951,8 @@
     "name_it": "Derivazione della Quarta Parete",
     "type": "magical",
     "effects": {
-      "4": 22,
-      "7": 20
+      "4": 12,
+      "7": 12
     },
     "skill": 1655,
     "cost": 1200000
@@ -983,7 +975,7 @@
     "name_it": "Innesto dai Mille Occhi",
     "type": "magical",
     "effects": {
-      "7": 16
+      "7": 12
     },
     "skill": 1298,
     "cost": 520000
@@ -995,7 +987,7 @@
     "type": "technological",
     "effects": {
       "4": 12,
-      "6": 8
+      "6": 6
     },
     "skill": 1646,
     "cost": 300000
@@ -1007,7 +999,7 @@
     "type": "technological",
     "effects": {
       "3": 12,
-      "6": 10
+      "6": 9
     },
     "skill": 1040,
     "cost": 340000
@@ -1018,8 +1010,8 @@
     "name_it": "Iride Miraggio",
     "type": "magical",
     "effects": {
-      "6": 10,
-      "7": 10
+      "6": 9,
+      "7": 9
     },
     "skill": 1593,
     "cost": 360000
@@ -1030,8 +1022,8 @@
     "name_it": "Lente dell'Onniscienza",
     "type": "magical",
     "effects": {
-      "4": 20,
-      "7": 18
+      "4": 12,
+      "7": 12
     },
     "skill": 1411,
     "cost": 1400000
@@ -1042,7 +1034,7 @@
     "name_it": "Timpano d'Eco",
     "type": "technological",
     "effects": {
-      "4": 8,
+      "4": 6,
       "6": 12
     },
     "skill": 1774,
@@ -1054,8 +1046,8 @@
     "name_it": "Bobina di Risonanza",
     "type": "technological",
     "effects": {
-      "1": 15,
-      "4": 10
+      "1": 20,
+      "4": 9
     },
     "skill": 1892,
     "cost": 330000
@@ -1066,8 +1058,8 @@
     "name_it": "Ghiandola dello Stridio",
     "type": "biological",
     "effects": {
-      "2": 8,
-      "6": 10
+      "2": 6,
+      "6": 9
     },
     "skill": 306,
     "cost": 280000
@@ -1078,8 +1070,8 @@
     "name_it": "Antenna del Coro Stellare",
     "type": "magical",
     "effects": {
-      "1": 22,
-      "7": 10
+      "1": 20,
+      "7": 9
     },
     "skill": 1862,
     "cost": 420000
@@ -1090,8 +1082,8 @@
     "name_it": "Ossicino Radio",
     "type": "technological",
     "effects": {
-      "4": 10,
-      "6": 8
+      "4": 9,
+      "6": 6
     },
     "skill": 1653,
     "cost": 260000
@@ -1102,7 +1094,7 @@
     "name_it": "Seno da Segugio",
     "type": "biological",
     "effects": {
-      "3": 8,
+      "3": 6,
       "6": 12
     },
     "skill": 343,
@@ -1114,7 +1106,7 @@
     "name_it": "Analizzatore di Tossine",
     "type": "technological",
     "effects": {
-      "4": 8,
+      "4": 6,
       "5": 12
     },
     "skill": 989,
@@ -1126,7 +1118,7 @@
     "name_it": "Filtro dei Miasmi",
     "type": "technological",
     "effects": {
-      "5": 16
+      "5": 12
     },
     "skill": 991,
     "cost": 310000
@@ -1138,7 +1130,7 @@
     "type": "biological",
     "effects": {
       "2": 12,
-      "4": 10
+      "4": 9
     },
     "skill": 333,
     "cost": 400000
@@ -1150,7 +1142,7 @@
     "type": "biological",
     "effects": {
       "4": 12,
-      "5": 8
+      "5": 6
     },
     "skill": 334,
     "cost": 380000
@@ -1161,8 +1153,8 @@
     "name_it": "Laringe di Sirena",
     "type": "biological",
     "effects": {
-      "1": 15,
-      "7": 14
+      "1": 20,
+      "7": 12
     },
     "skill": 955,
     "cost": 400000
@@ -1173,8 +1165,8 @@
     "name_it": "Sputa-Acido",
     "type": "biological",
     "effects": {
-      "2": 10,
-      "4": 10
+      "2": 9,
+      "4": 9
     },
     "skill": 1768,
     "cost": 340000
@@ -1197,7 +1189,7 @@
     "name_it": "Vox di Comando",
     "type": "technological",
     "effects": {
-      "4": 10,
+      "4": 9,
       "7": 12
     },
     "skill": 1535,
@@ -1209,8 +1201,8 @@
     "name_it": "Palato dell'Inno",
     "type": "magical",
     "effects": {
-      "1": 25,
-      "5": 8
+      "1": 30,
+      "5": 6
     },
     "skill": 1827,
     "cost": 350000
@@ -1221,8 +1213,8 @@
     "name_it": "Zanne di Viverna",
     "type": "biological",
     "effects": {
-      "2": 14,
-      "3": 8
+      "2": 12,
+      "3": 6
     },
     "skill": 322,
     "cost": 380000
@@ -1233,8 +1225,8 @@
     "name_it": "Dentatura Velenosa",
     "type": "biological",
     "effects": {
-      "2": 10,
-      "6": 8
+      "2": 9,
+      "6": 6
     },
     "skill": 320,
     "cost": 320000
@@ -1246,7 +1238,7 @@
     "type": "magical",
     "effects": {
       "2": 12,
-      "7": 8
+      "7": 6
     },
     "skill": 635,
     "cost": 400000
@@ -1257,8 +1249,8 @@
     "name_it": "Zanne da Mulino",
     "type": "biological",
     "effects": {
-      "0": 25,
-      "2": 10
+      "0": 30,
+      "2": 9
     },
     "skill": 1802,
     "cost": 300000
@@ -1269,7 +1261,7 @@
     "name_it": "Incisivi di Vetro",
     "type": "magical",
     "effects": {
-      "3": 10,
+      "3": 9,
       "6": 12
     },
     "skill": 1854,
@@ -1281,8 +1273,8 @@
     "name_it": "Colonna d'Idra",
     "type": "biological",
     "effects": {
-      "0": 35,
-      "5": 10
+      "0": 40,
+      "5": 9
     },
     "skill": 316,
     "cost": 400000
@@ -1294,7 +1286,7 @@
     "type": "biological",
     "effects": {
       "2": 12,
-      "7": 10
+      "7": 9
     },
     "skill": 348,
     "cost": 360000
@@ -1305,8 +1297,8 @@
     "name_it": "Collare della Ghigliottina",
     "type": "technological",
     "effects": {
-      "2": 15,
-      "3": 10
+      "2": 12,
+      "3": 9
     },
     "skill": 336,
     "cost": 420000
@@ -1317,7 +1309,7 @@
     "name_it": "Gola del Coro",
     "type": "magical",
     "effects": {
-      "1": 28
+      "1": 30
     },
     "skill": 1843,
     "cost": 340000
@@ -1329,7 +1321,7 @@
     "type": "biological",
     "effects": {
       "0": 20,
-      "5": 14
+      "5": 12
     },
     "skill": 1564,
     "cost": 300000
@@ -1364,8 +1356,8 @@
     "name_it": "Innesto dell'Albero Mondo",
     "type": "magical",
     "effects": {
-      "0": 35,
-      "5": 14
+      "0": 40,
+      "5": 12
     },
     "skill": 890,
     "cost": 520000
@@ -1376,7 +1368,7 @@
     "name_it": "Cavità dello Sciame",
     "type": "biological",
     "effects": {
-      "2": 10,
+      "2": 9,
       "6": 12
     },
     "skill": 1861,
@@ -1388,8 +1380,8 @@
     "name_it": "Ancora Gravitazionale",
     "type": "technological",
     "effects": {
-      "0": 25,
-      "5": 16
+      "0": 30,
+      "5": 12
     },
     "skill": 1888,
     "cost": 560000
@@ -1400,8 +1392,8 @@
     "name_it": "Ancora Plasmamondo",
     "type": "magical",
     "effects": {
-      "4": 18,
-      "5": 16
+      "4": 12,
+      "5": 12
     },
     "skill": 1550,
     "cost": 1300000
@@ -1412,8 +1404,8 @@
     "name_it": "Trama di Scaglie di Drago",
     "type": "biological",
     "effects": {
-      "0": 25,
-      "5": 18
+      "0": 30,
+      "5": 12
     },
     "skill": 888,
     "cost": 480000
@@ -1424,8 +1416,8 @@
     "name_it": "Placcatura Speculare",
     "type": "technological",
     "effects": {
-      "4": 10,
-      "5": 15
+      "4": 9,
+      "5": 12
     },
     "skill": 1594,
     "cost": 440000
@@ -1436,7 +1428,7 @@
     "name_it": "Telaio a Barriera Cinetica",
     "type": "technological",
     "effects": {
-      "5": 20
+      "5": 12
     },
     "skill": 943,
     "cost": 500000
@@ -1447,8 +1439,8 @@
     "name_it": "Baluardo d'Ossa",
     "type": "biological",
     "effects": {
-      "0": 45,
-      "5": 8
+      "0": 40,
+      "5": 6
     },
     "skill": 1490,
     "cost": 420000
@@ -1460,7 +1452,7 @@
     "type": "magical",
     "effects": {
       "1": 20,
-      "5": 14
+      "5": 12
     },
     "skill": 1296,
     "cost": 460000
@@ -1471,8 +1463,8 @@
     "name_it": "Contratto del Mietitore",
     "type": "magical",
     "effects": {
-      "4": 14,
-      "7": 20
+      "4": 12,
+      "7": 12
     },
     "skill": 1305,
     "cost": 1500000
@@ -1484,7 +1476,7 @@
     "type": "magical",
     "effects": {
       "1": 30,
-      "4": 14
+      "4": 12
     },
     "skill": 1860,
     "cost": 520000
@@ -1495,8 +1487,8 @@
     "name_it": "Ventricolo della Brama",
     "type": "biological",
     "effects": {
-      "2": 16,
-      "6": 10
+      "2": 12,
+      "6": 9
     },
     "skill": 313,
     "cost": 460000
@@ -1507,8 +1499,8 @@
     "name_it": "Pompa di Ferro",
     "type": "technological",
     "effects": {
-      "0": 45,
-      "5": 10
+      "0": 40,
+      "5": 9
     },
     "skill": 1017,
     "cost": 440000
@@ -1519,7 +1511,7 @@
     "name_it": "Valvola dell'Anima",
     "type": "magical",
     "effects": {
-      "1": 26,
+      "1": 30,
       "7": 12
     },
     "skill": 636,
@@ -1544,7 +1536,7 @@
     "type": "magical",
     "effects": {
       "1": 30,
-      "7": 22
+      "7": 12
     },
     "skill": 1613,
     "cost": 1500000
@@ -1555,8 +1547,8 @@
     "name_it": "Mantice di Tempesta",
     "type": "technological",
     "effects": {
-      "4": 14,
-      "6": 10
+      "4": 12,
+      "6": 9
     },
     "skill": 1830,
     "cost": 420000
@@ -1567,7 +1559,7 @@
     "name_it": "Alveoli Tossici",
     "type": "biological",
     "effects": {
-      "2": 10,
+      "2": 9,
       "4": 12
     },
     "skill": 311,
@@ -1579,8 +1571,8 @@
     "name_it": "Sacche a Vuoto",
     "type": "technological",
     "effects": {
-      "1": 18,
-      "5": 14
+      "1": 20,
+      "5": 12
     },
     "skill": 1558,
     "cost": 400000
@@ -1591,8 +1583,8 @@
     "name_it": "Lobo del Respiro Ardente",
     "type": "biological",
     "effects": {
-      "2": 14,
-      "4": 10
+      "2": 12,
+      "4": 9
     },
     "skill": 345,
     "cost": 440000
@@ -1615,8 +1607,8 @@
     "name_it": "Fegato Alchemico",
     "type": "biological",
     "effects": {
-      "1": 15,
-      "5": 16
+      "1": 20,
+      "5": 12
     },
     "skill": 1022,
     "cost": 420000,
@@ -1630,8 +1622,8 @@
     "name_it": "Stomaco del Ghiottone",
     "type": "biological",
     "effects": {
-      "0": 35,
-      "5": 10
+      "0": 40,
+      "5": 9
     },
     "skill": 1566,
     "cost": 380000,
@@ -1646,7 +1638,7 @@
     "type": "biological",
     "effects": {
       "4": 12,
-      "7": 10
+      "7": 9
     },
     "skill": 1000,
     "cost": 440000
@@ -1657,7 +1649,7 @@
     "name_it": "Intestino di Mana",
     "type": "magical",
     "effects": {
-      "1": 32
+      "1": 30
     },
     "skill": 629,
     "cost": 400000
@@ -1680,8 +1672,8 @@
     "name_it": "Presa dell'Organetto",
     "type": "magical",
     "effects": {
-      "2": 16,
-      "7": 16
+      "2": 12,
+      "7": 12
     },
     "skill": 1424,
     "cost": 1100000
@@ -1692,8 +1684,8 @@
     "name_it": "Sacca di Neurotossina",
     "type": "biological",
     "effects": {
-      "2": 10,
-      "6": 10
+      "2": 9,
+      "6": 9
     },
     "skill": 995,
     "cost": 380000
@@ -1704,8 +1696,8 @@
     "name_it": "Vescica di Polvere Fatata",
     "type": "magical",
     "effects": {
-      "1": 24,
-      "7": 10
+      "1": 20,
+      "7": 9
     },
     "skill": 1591,
     "cost": 420000
@@ -1716,8 +1708,8 @@
     "name_it": "Serbatoio d'Inchiostro",
     "type": "biological",
     "effects": {
-      "5": 8,
-      "6": 14
+      "5": 6,
+      "6": 12
     },
     "skill": 1592,
     "cost": 340000
@@ -1729,7 +1721,7 @@
     "type": "biological",
     "effects": {
       "4": 12,
-      "5": 10
+      "5": 9
     },
     "skill": 894,
     "cost": 360000
@@ -1752,7 +1744,7 @@
     "name_it": "Braccio a Pistone d'Assedio",
     "type": "technological",
     "effects": {
-      "2": 20
+      "2": 12
     },
     "skill": 1787,
     "cost": 460000
@@ -1763,8 +1755,8 @@
     "name_it": "Braccio Chiamatempeste",
     "type": "magical",
     "effects": {
-      "1": 15,
-      "4": 16
+      "1": 20,
+      "4": 12
     },
     "skill": 1851,
     "cost": 480000
@@ -1775,8 +1767,8 @@
     "name_it": "Braccio a Verricello",
     "type": "technological",
     "effects": {
-      "3": 10,
-      "6": 14
+      "3": 9,
+      "6": 12
     },
     "skill": 331,
     "cost": 380000
@@ -1799,7 +1791,7 @@
     "name_it": "Braccio di Tentacoli del Vuoto",
     "type": "magical",
     "effects": {
-      "4": 14,
+      "4": 12,
       "7": 12
     },
     "skill": 1302,
@@ -1811,8 +1803,8 @@
     "name_it": "Innesto del Patto Protesico",
     "type": "magical",
     "effects": {
-      "2": 14,
-      "7": 18
+      "2": 12,
+      "7": 12
     },
     "skill": 1606,
     "cost": 1000000
@@ -1823,8 +1815,8 @@
     "name_it": "Artigli a Rasoio",
     "type": "biological",
     "effects": {
-      "2": 14,
-      "6": 10
+      "2": 12,
+      "6": 9
     },
     "skill": 319,
     "cost": 400000
@@ -1835,7 +1827,7 @@
     "name_it": "Nocche Tesla",
     "type": "technological",
     "effects": {
-      "2": 10,
+      "2": 9,
       "4": 12
     },
     "skill": 1869,
@@ -1847,8 +1839,8 @@
     "name_it": "Dita da Chirurgo",
     "type": "technological",
     "effects": {
-      "5": 8,
-      "6": 16
+      "5": 6,
+      "6": 12
     },
     "skill": 1013,
     "cost": 380000
@@ -1859,7 +1851,7 @@
     "name_it": "Palmi Incisi di Rune",
     "type": "magical",
     "effects": {
-      "1": 24,
+      "1": 20,
       "4": 12
     },
     "skill": 1741,
@@ -1871,7 +1863,7 @@
     "name_it": "Meridiani del Ladro",
     "type": "biological",
     "effects": {
-      "6": 18
+      "6": 12
     },
     "skill": 1707,
     "cost": 360000
@@ -1882,8 +1874,8 @@
     "name_it": "Evocatore del Cerusico",
     "type": "magical",
     "effects": {
-      "4": 14,
-      "7": 16
+      "4": 12,
+      "7": 12
     },
     "skill": 1582,
     "cost": 1000000
@@ -1894,8 +1886,8 @@
     "name_it": "Anca a Pistone",
     "type": "technological",
     "effects": {
-      "2": 10,
-      "6": 16
+      "2": 9,
+      "6": 12
     },
     "skill": 1790,
     "cost": 420000
@@ -1906,8 +1898,8 @@
     "name_it": "Falcate Sismiche",
     "type": "technological",
     "effects": {
-      "0": 25,
-      "2": 14
+      "0": 30,
+      "2": 12
     },
     "skill": 342,
     "cost": 460000
@@ -1918,8 +1910,8 @@
     "name_it": "Gamba a Passo di Fase",
     "type": "magical",
     "effects": {
-      "6": 18,
-      "7": 8
+      "6": 12,
+      "7": 6
     },
     "skill": 1589,
     "cost": 480000
@@ -1930,8 +1922,8 @@
     "name_it": "Zampa Digitigrada",
     "type": "biological",
     "effects": {
-      "2": 10,
-      "6": 14
+      "2": 9,
+      "6": 12
     },
     "skill": 339,
     "cost": 380000
@@ -1942,7 +1934,7 @@
     "name_it": "Arto del Viandante",
     "type": "magical",
     "effects": {
-      "5": 10,
+      "5": 9,
       "6": 12
     },
     "skill": 1695,
@@ -1954,8 +1946,8 @@
     "name_it": "Suole Gravitazionali",
     "type": "technological",
     "effects": {
-      "5": 10,
-      "6": 14
+      "5": 9,
+      "6": 12
     },
     "skill": 1777,
     "cost": 400000
@@ -1966,7 +1958,7 @@
     "name_it": "Speroni di Tempesta",
     "type": "magical",
     "effects": {
-      "4": 10,
+      "4": 9,
       "6": 12
     },
     "skill": 1836,
@@ -1979,7 +1971,7 @@
     "type": "biological",
     "effects": {
       "0": 20,
-      "5": 16
+      "5": 12
     },
     "skill": 887,
     "cost": 360000
@@ -1990,8 +1982,8 @@
     "name_it": "Cuscinetti Silenziosi",
     "type": "biological",
     "effects": {
-      "3": 8,
-      "6": 16
+      "3": 6,
+      "6": 12
     },
     "skill": 364,
     "cost": 340000
@@ -2002,8 +1994,8 @@
     "name_it": "Passi Titanici",
     "type": "technological",
     "effects": {
-      "0": 35,
-      "2": 10
+      "0": 40,
+      "2": 9
     },
     "skill": 350,
     "cost": 440000
@@ -2015,7 +2007,7 @@
     "type": "biological",
     "effects": {
       "0": 20,
-      "6": 16
+      "6": 12
     },
     "skill": 9,
     "cost": 520000
@@ -2026,7 +2018,7 @@
     "name_it": "Ali di Serafino",
     "type": "magical",
     "effects": {
-      "1": 26,
+      "1": 30,
       "7": 12
     },
     "skill": 9,
@@ -2038,8 +2030,8 @@
     "name_it": "Ali a Turbina",
     "type": "technological",
     "effects": {
-      "3": 8,
-      "6": 18
+      "3": 6,
+      "6": 12
     },
     "skill": 9,
     "cost": 540000
@@ -2050,7 +2042,7 @@
     "name_it": "Membrana di Raffica",
     "type": "biological",
     "effects": {
-      "4": 10,
+      "4": 9,
       "6": 12
     },
     "skill": 323,
@@ -2062,8 +2054,8 @@
     "name_it": "Vela di Tempesta",
     "type": "technological",
     "effects": {
-      "4": 14,
-      "6": 10
+      "4": 12,
+      "6": 9
     },
     "skill": 1855,
     "cost": 460000
@@ -2087,7 +2079,7 @@
     "type": "biological",
     "effects": {
       "0": 20,
-      "2": 16
+      "2": 12
     },
     "skill": 341,
     "cost": 440000
@@ -2098,8 +2090,8 @@
     "name_it": "Cavo Prensile",
     "type": "technological",
     "effects": {
-      "3": 10,
-      "6": 14
+      "3": 9,
+      "6": 12
     },
     "skill": 1801,
     "cost": 380000
@@ -2110,7 +2102,7 @@
     "name_it": "Filiera di Seta",
     "type": "biological",
     "effects": {
-      "5": 10,
+      "5": 9,
       "6": 12
     },
     "skill": 305,
@@ -2122,8 +2114,8 @@
     "name_it": "Coda di Cometa",
     "type": "magical",
     "effects": {
-      "1": 18,
-      "4": 14
+      "1": 20,
+      "4": 12
     },
     "skill": 1776,
     "cost": 500000
@@ -2134,7 +2126,7 @@
     "name_it": "Tentacolo Abissale",
     "type": "magical",
     "effects": {
-      "4": 16,
+      "4": 12,
       "7": 12
     },
     "skill": 1306,
@@ -2147,7 +2139,7 @@
     "type": "biological",
     "effects": {
       "2": 12,
-      "5": 10
+      "5": 9
     },
     "skill": 896,
     "cost": 380000
@@ -2158,8 +2150,8 @@
     "name_it": "Frusta Uncinata",
     "type": "biological",
     "effects": {
-      "2": 14,
-      "6": 10
+      "2": 12,
+      "6": 9
     },
     "skill": 321,
     "cost": 400000
@@ -2170,8 +2162,8 @@
     "name_it": "Rete Miceliale",
     "type": "biological",
     "effects": {
-      "1": 18,
-      "5": 14
+      "1": 20,
+      "5": 12
     },
     "skill": 903,
     "cost": 420000
@@ -2183,7 +2175,7 @@
     "type": "magical",
     "effects": {
       "4": 12,
-      "7": 16
+      "7": 12
     },
     "skill": 1300,
     "cost": 600000
@@ -2194,8 +2186,8 @@
     "name_it": "Corona da Incornata",
     "type": "biological",
     "effects": {
-      "2": 16,
-      "3": 10
+      "2": 12,
+      "3": 9
     },
     "skill": 327,
     "cost": 420000
@@ -2206,8 +2198,8 @@
     "name_it": "Corno Parafulmine",
     "type": "technological",
     "effects": {
-      "1": 18,
-      "4": 14
+      "1": 20,
+      "4": 12
     },
     "skill": 332,
     "cost": 440000
@@ -2218,8 +2210,8 @@
     "name_it": "Lanciaspine",
     "type": "biological",
     "effects": {
-      "2": 10,
-      "6": 14
+      "2": 9,
+      "6": 12
     },
     "skill": 1795,
     "cost": 400000
@@ -2230,8 +2222,8 @@
     "name_it": "Palchi dell'Oracolo",
     "type": "magical",
     "effects": {
-      "1": 15,
-      "7": 16
+      "1": 20,
+      "7": 12
     },
     "skill": 1403,
     "cost": 480000
@@ -2254,8 +2246,8 @@
     "name_it": "Pinna di Risacca",
     "type": "biological",
     "effects": {
-      "5": 8,
-      "6": 16
+      "5": 6,
+      "6": 12
     },
     "skill": 1825,
     "cost": 400000
@@ -2278,8 +2270,8 @@
     "name_it": "Dorsale Abissale",
     "type": "magical",
     "effects": {
-      "5": 14,
-      "7": 10
+      "5": 12,
+      "7": 9
     },
     "skill": 1835,
     "cost": 460000
@@ -2290,8 +2282,8 @@
     "name_it": "Sifone a Getto",
     "type": "biological",
     "effects": {
-      "2": 10,
-      "6": 14
+      "2": 9,
+      "6": 12
     },
     "skill": 328,
     "cost": 380000
@@ -2302,7 +2294,7 @@
     "name_it": "Pinna Chiamamaree",
     "type": "magical",
     "effects": {
-      "1": 24,
+      "1": 20,
       "4": 12
     },
     "skill": 1838,
@@ -2314,8 +2306,8 @@
     "name_it": "Reattore a Fusione",
     "type": "technological",
     "effects": {
-      "1": 35,
-      "4": 14
+      "1": 40,
+      "4": 12
     },
     "skill": 1831,
     "cost": 620000
@@ -2327,7 +2319,7 @@
     "type": "magical",
     "effects": {
       "1": 30,
-      "7": 14
+      "7": 12
     },
     "skill": 1293,
     "cost": 640000
@@ -2338,7 +2330,7 @@
     "name_it": "Stabilizzatore Giroscopico",
     "type": "technological",
     "effects": {
-      "5": 16,
+      "5": 12,
       "6": 12
     },
     "skill": 966,
@@ -2361,8 +2353,8 @@
     "name_it": "Cella di Singolarità",
     "type": "technological",
     "effects": {
-      "4": 18,
-      "7": 14
+      "4": 12,
+      "7": 12
     },
     "skill": 1889,
     "cost": 700000
@@ -2373,8 +2365,8 @@
     "name_it": "Alone Antigravitazionale",
     "type": "magical",
     "effects": {
-      "5": 10,
-      "6": 14
+      "5": 9,
+      "6": 12
     },
     "skill": 9,
     "cost": 600000
@@ -2385,8 +2377,8 @@
     "name_it": "Seme dell'Apoteosi",
     "type": "magical",
     "effects": {
-      "1": 25,
-      "7": 25
+      "1": 30,
+      "7": 12
     },
     "skill": 1607,
     "cost": 1500000
@@ -2397,8 +2389,8 @@
     "name_it": "Cannone da Braccio",
     "type": "technological",
     "effects": {
-      "2": 18,
-      "3": 10
+      "2": 12,
+      "3": 9
     },
     "skill": 1048,
     "cost": 520000
@@ -2410,7 +2402,7 @@
     "type": "technological",
     "effects": {
       "3": 12,
-      "6": 14
+      "6": 12
     },
     "skill": 1041,
     "cost": 440000
@@ -2421,7 +2413,7 @@
     "name_it": "Spina Railgun",
     "type": "technological",
     "effects": {
-      "2": 16,
+      "2": 12,
       "4": 12
     },
     "skill": 1049,
@@ -2433,8 +2425,8 @@
     "name_it": "Bocca a Dispersione",
     "type": "technological",
     "effects": {
-      "2": 14,
-      "6": 10
+      "2": 12,
+      "6": 9
     },
     "skill": 362,
     "cost": 420000
@@ -2445,7 +2437,7 @@
     "name_it": "Munizioni Stregate",
     "type": "magical",
     "effects": {
-      "4": 14,
+      "4": 12,
       "7": 12
     },
     "skill": 1866,
@@ -2457,8 +2449,8 @@
     "name_it": "Ruota Omnidirezionale",
     "type": "technological",
     "effects": {
-      "3": 8,
-      "6": 18
+      "3": 6,
+      "6": 12
     },
     "skill": 919,
     "cost": 420000
@@ -2481,7 +2473,7 @@
     "name_it": "Regolatore a Volano",
     "type": "technological",
     "effects": {
-      "5": 14,
+      "5": 12,
       "6": 12
     },
     "skill": 1863,
@@ -2493,8 +2485,8 @@
     "name_it": "Gonna a Cuscino d'Aria",
     "type": "technological",
     "effects": {
-      "5": 10,
-      "6": 16
+      "5": 9,
+      "6": 12
     },
     "skill": 9,
     "cost": 560000
@@ -2517,8 +2509,8 @@
     "name_it": "Schiera a Banda Larga",
     "type": "technological",
     "effects": {
-      "3": 10,
-      "4": 14
+      "3": 9,
+      "4": 12
     },
     "skill": 1035,
     "cost": 400000
@@ -2529,8 +2521,8 @@
     "name_it": "Reticolo di Minaccia",
     "type": "technological",
     "effects": {
-      "5": 10,
-      "6": 14
+      "5": 9,
+      "6": 12
     },
     "skill": 1051,
     "cost": 420000
@@ -2541,8 +2533,8 @@
     "name_it": "Antenna dell'Augure",
     "type": "magical",
     "effects": {
-      "4": 10,
-      "7": 16
+      "4": 9,
+      "7": 12
     },
     "skill": 1408,
     "cost": 480000
@@ -2553,8 +2545,8 @@
     "name_it": "Collegamento Hypernet",
     "type": "technological",
     "effects": {
-      "1": 15,
-      "4": 16
+      "1": 20,
+      "4": 12
     },
     "skill": 1649,
     "cost": 460000
@@ -2578,7 +2570,7 @@
     "type": "magical",
     "effects": {
       "4": 12,
-      "7": 14
+      "7": 12
     },
     "skill": 1856,
     "cost": 500000
@@ -2589,8 +2581,8 @@
     "name_it": "Criniera Vivente",
     "type": "biological",
     "effects": {
-      "0": 25,
-      "7": 10
+      "0": 30,
+      "7": 9
     },
     "skill": 349,
     "cost": 360000
@@ -2601,8 +2593,8 @@
     "name_it": "Corona in Fiore",
     "type": "biological",
     "effects": {
-      "1": 22,
-      "5": 10
+      "1": 20,
+      "5": 9
     },
     "skill": 1858,
     "cost": 380000
@@ -2614,7 +2606,7 @@
     "type": "technological",
     "effects": {
       "4": 12,
-      "6": 10
+      "6": 9
     },
     "skill": 329,
     "cost": 360000
@@ -2625,7 +2617,7 @@
     "name_it": "Treccia della Strega",
     "type": "magical",
     "effects": {
-      "1": 24,
+      "1": 20,
       "7": 12
     },
     "skill": 778,
@@ -2649,7 +2641,7 @@
     "name_it": "Corona Feromonica",
     "type": "biological",
     "effects": {
-      "7": 16
+      "7": 12
     },
     "skill": 956,
     "cost": 420000
@@ -2660,8 +2652,8 @@
     "name_it": "Cripta dei Semi Chimerici",
     "type": "magical",
     "effects": {
-      "1": 22,
-      "7": 10
+      "1": 20,
+      "7": 9
     },
     "skill": 1603,
     "cost": 460000
@@ -2673,7 +2665,7 @@
     "type": "biological",
     "effects": {
       "0": 30,
-      "5": 10
+      "5": 9
     },
     "skill": 1604,
     "cost": 400000
@@ -2684,7 +2676,7 @@
     "name_it": "Reticolo Mitotico",
     "type": "magical",
     "effects": {
-      "0": 25,
+      "0": 30,
       "1": 20
     },
     "skill": 1605,
@@ -2697,7 +2689,7 @@
     "type": "technological",
     "effects": {
       "1": 20,
-      "5": 8
+      "5": 6
     },
     "skill": 1480,
     "cost": 1100000,
@@ -2711,8 +2703,8 @@
     "name_it": "Corteccia Senza Sogni",
     "type": "biological",
     "effects": {
-      "4": 10,
-      "5": 8
+      "4": 9,
+      "5": 6
     },
     "skill": 969,
     "cost": 420000,
@@ -2726,8 +2718,8 @@
     "name_it": "Stomaco Ruminante",
     "type": "biological",
     "effects": {
-      "0": 25,
-      "5": 10
+      "0": 30,
+      "5": 9
     },
     "skill": 1565,
     "cost": 380000,
@@ -2742,7 +2734,7 @@
     "type": "magical",
     "effects": {
       "0": 20,
-      "1": 18
+      "1": 20
     },
     "skill": 900,
     "cost": 620000,
@@ -2757,7 +2749,7 @@
     "type": "biological",
     "effects": {
       "5": 12,
-      "7": 8
+      "7": 6
     },
     "skill": 886,
     "cost": 460000,
@@ -2771,8 +2763,8 @@
     "name_it": "Depuratore Olfattivo",
     "type": "technological",
     "effects": {
-      "6": 8,
-      "7": 8
+      "6": 6,
+      "7": 6
     },
     "skill": 988,
     "cost": 300000,
