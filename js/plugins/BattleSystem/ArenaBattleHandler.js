@@ -36,16 +36,20 @@
 * @help
 * ArenaBattleHandler.js  (LOGIC LAYER)
 * ---------------------------------------------------------------------------
-* This plugin owns the arena engine only: the gauntlet / biome-trial state
-* machine, streak rewards, random & rescaled parties, and all BattleManager
-* hooks. Every on-screen menu lives in ArenaBattleHandlerUI.js, which MUST be
-* listed immediately AFTER this plugin in the Plugin Manager.
+* This plugin owns the arena engine only: the gauntlet / biome-trial / boss
+* rush state machine, streak rewards, random & rescaled parties, and all
+* BattleManager hooks. Every on-screen menu lives in ArenaBattleHandlerUI.js,
+* which MUST be listed immediately AFTER this plugin in the Plugin Manager.
 *
 * Title-launched flow (driven by the UI plugin):
 *   Scene_ArenaPartySelect  -> pick party (random roster or a save slot)
-*   Scene_ArenaModeSelect    -> pick Gauntlet or Biome Trial
+*   Scene_ArenaModeSelect    -> pick Gauntlet, Biome Trial or Boss Rush
 *   Scene_GauntletSelect / Scene_BiomeTrialSelect -> configure & launch
 * Every party is rescaled to the chosen bracket / biome level before fighting.
+*
+* Boss Rush fights every solo troop whose enemy note carries <Boss>, in
+* ascending level order, setting the party to each boss's own authored level
+* (re-equipping on every bracket jump) instead of climbing one level per win.
 */
 
 (() => {
@@ -337,6 +341,8 @@
             this.startGauntletBattle();
         } else if (BattleManager.isBiomeTrialMode() && !this._nextTrialTimer) {
             this.startBiomeTrialBattle();
+        } else if (BattleManager.isBossRushMode() && !this._nextBossTimer) {
+            this.startBossRushBattle();
         }
     };
 
@@ -420,6 +426,10 @@
     let _biomeTrialMode = false;
     BattleManager.setBiomeTrialMode = function (v) { _biomeTrialMode = v; };
     BattleManager.isBiomeTrialMode = function () { return _biomeTrialMode; };
+
+    let _bossRushMode = false;
+    BattleManager.setBossRushMode = function (v) { _bossRushMode = v; };
+    BattleManager.isBossRushMode = function () { return _bossRushMode; };
 
     //=========================================================================
     // Ascending streak rewards (money + items)
@@ -600,6 +610,15 @@
             ArenaBattleHandler.processBiomeTrialVictory();
             return;
         }
+        if (this.isBossRushMode()) {
+            this.playVictoryMe();
+            this.replayBgmAndBgs();
+            this.makeRewards();
+            this.gainRewards();
+            this.endBattle(0);
+            ArenaBattleHandler.processBossRushVictory();
+            return;
+        }
         if (this.isGauntletMode()) {
             this.playVictoryMe();
             this.replayBgmAndBgs();
@@ -633,6 +652,13 @@
             ArenaBattleHandler.endBiomeTrial();
             return;
         }
+        if (this.isBossRushMode()) {
+            this.playDefeatMe();
+            this.replayBgmAndBgs();
+            this.endBattle(2);
+            ArenaBattleHandler.endBossRush();
+            return;
+        }
         if (this.isGauntletMode()) {
             this.playDefeatMe();
             this.replayBgmAndBgs();
@@ -654,6 +680,12 @@
             this.replayBgmAndBgs();
             this.endBattle(1);
             ArenaBattleHandler.endBiomeTrial();
+            return;
+        }
+        if (this.isBossRushMode()) {
+            this.replayBgmAndBgs();
+            this.endBattle(1);
+            ArenaBattleHandler.endBossRush();
             return;
         }
         if (this.isGauntletMode()) {
@@ -1044,6 +1076,134 @@
             if (!SceneManager.isSceneChanging()) SceneManager.goto(Scene_Title);
             return;
         }
+        if (SceneManager._scene && !(SceneManager._scene instanceof Scene_Map) && !SceneManager.isSceneChanging()) {
+            SceneManager.goto(Scene_Map);
+        }
+    };
+
+    //=========================================================================
+    // Boss Rush: a gauntlet of every single <Boss>-tagged enemy in the game,
+    // fought in ascending level order. The party is set to each boss's own
+    // authored level (and re-equipped whenever that level changes a bracket)
+    // before every bout, rather than climbing one level per win.
+    //=========================================================================
+    let _bossRush = null;
+
+    // Every solo troop whose enemy carries <Boss>, sorted by authored level.
+    ArenaBattleHandler.getBossTroops = function () {
+        const roster = [];
+        for (let id = 1; id < $dataEnemies.length; id++) {
+            const enemy = $dataEnemies[id];
+            if (!enemy || !/<Boss>/i.test(enemy.note || "")) continue;
+            const troop = $dataTroops[id];
+            if (!troop || troop.members.length !== 1 || troop.members[0].enemyId !== id) continue;
+            const level = this.getEnemyLevelNum(enemy);
+            if (level <= 0) continue;
+            roster.push({ troopId: troop.id, level, name: enemy.name });
+        }
+        roster.sort((a, b) => a.level - b.level);
+        return roster;
+    };
+
+    // Launch entry point for the mode picker: always title-flow (the mode
+    // picker only follows Scene_ArenaPartySelect), same routing rule as
+    // launchGauntlet - a random title party is freshly generated, a saved
+    // title party or the live in-game party is rescaled in place.
+    ArenaBattleHandler.launchBossRush = function () {
+        const roster = this.getBossTroops();
+        if (!roster.length) { SoundManager.playBuzzer(); return false; }
+
+        if (_arenaFromTitle && _titlePartySource === 'random') {
+            this.buildRandomParty(roster[0].level, roster[0].level);
+        } else {
+            this.rescaleCurrentParty(roster[0].level, roster[0].level);
+        }
+
+        _bossRush = { active: true, roster, index: 0, lastLevel: roster[0].level, fromTitle: _arenaFromTitle };
+
+        if (_arenaFromTitle) {
+            this._ensureBattleMapReady();
+            _arenaStageStarter = () => ArenaBattleHandler.startBossRushBattle();
+            SceneManager.goto(window.Scene_ArenaStage);
+        } else {
+            this.startBossRushBattle();
+        }
+        return true;
+    };
+
+    ArenaBattleHandler.startBossRushBattle = function () {
+        const t = _bossRush;
+        if (!t || !t.active) return;
+        if (t.index >= t.roster.length) { this.completeBossRush(); return; }
+
+        const entry = t.roster[t.index];
+
+        // Only re-level/re-equip when the next boss actually sits at a
+        // different level than the last bout, so a run of same-level bosses
+        // doesn't churn equipment for no reason.
+        if (entry.level !== t.lastLevel || t.index === 0) {
+            $gameParty.members().forEach(actor => {
+                actor.changeLevel(Math.max(1, Math.min(99, entry.level)), false);
+                this._equipActorForBracket(actor, entry.level, entry.level);
+            });
+            $gamePlayer.refresh();
+            t.lastLevel = entry.level;
+        }
+
+        $gameParty.members().forEach(actor => { actor.setHp(actor.mhp); actor.setMp(actor.mmp); actor.clearStates(); });
+
+        this._ensureBattleMapReady();
+        BattleManager.setup(entry.troopId, true, false);
+        BattleManager.setBattleTest(false);
+        BattleManager.setArenaMode(false);
+        BattleManager.setGauntletMode(false);
+        BattleManager.setBiomeTrialMode(false);
+        BattleManager.setBossRushMode(true);
+        SceneManager.push(Scene_Battle);
+    };
+
+    ArenaBattleHandler.processBossRushVictory = function () {
+        const t = _bossRush;
+        if (!t || !t.active) return;
+        t.index += 1;
+
+        const reward = this.grantStreakRewards(t.index);
+        const fun = this.payVictoryFun(t.index);
+        this.showStreakToast(t.index, reward, fun);
+
+        if (SceneManager._scene && SceneManager._scene.isActive() && !this._nextBossTimer) {
+            this._nextBossTimer = setTimeout(() => {
+                this._nextBossTimer = null;
+                if (SceneManager._scene && SceneManager._scene.isActive()) {
+                    this.startBossRushBattle();
+                }
+            }, 500);
+        }
+    };
+
+    ArenaBattleHandler.completeBossRush = function () {
+        const t = _bossRush;
+        this.showStreakToast(t ? t.index : 0, null);
+        this.endBossRush();
+    };
+
+    ArenaBattleHandler.endBossRush = function () {
+        const fromTitle = _bossRush ? _bossRush.fromTitle : _arenaFromTitle;
+        if (_randomPartyMode) this.restoreParty();
+        _bossRush = null;
+        BattleManager.setBossRushMode(false);
+
+        if (fromTitle) {
+            this.cancelTitleFlow();
+            SceneManager._stack = [];
+            if (!SceneManager.isSceneChanging()) SceneManager.goto(Scene_Title);
+            return;
+        }
+
+        window.skipLocalization = true;
+        $gameMessage.add(T('Arena.bossRushHasEnded'));
+        window.skipLocalization = false;
+
         if (SceneManager._scene && !(SceneManager._scene instanceof Scene_Map) && !SceneManager.isSceneChanging()) {
             SceneManager.goto(Scene_Map);
         }

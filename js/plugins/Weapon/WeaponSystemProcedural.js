@@ -90,6 +90,22 @@ var WeaponSystemProcedural = {
     return 19002001;
   },
 
+  /**
+   * A forged piece (Crafting/BlacksmithingMenu.js) is materialized as a brand
+   * new database entry, with its own id past FORGE_ID_BASE, so anything keyed
+   * on database id (the bespoke model table, a house finish) would otherwise
+   * lose track of what the piece actually is the moment it leaves the anvil.
+   * The anvil writes the id it was forged from onto the piece as
+   * `<ForgeBaseId:>`; every id-keyed lookup goes through here instead of
+   * reading weapon.id directly, so a forged claw still finds its bespoke claw
+   * model and a forged Varlenia piece still wears its house gold.
+   */
+  dispatchIdFor(weapon) {
+    const raw = weapon && weapon.meta && weapon.meta.ForgeBaseId;
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? n : ((weapon && weapon.id) || 0);
+  },
+
   /** Deterministic per-weapon seed derived from the world seed. */
   seedFor(weapon) {
     // A piece beaten out at the anvil carries the seed it was previewed under,
@@ -750,7 +766,7 @@ var WeaponSystemProcedural = {
       // Bespoke per-weapon models, keyed by database id exactly like the i18n
       // name/description tables are. A weapon that has one never falls back to
       // the generic silhouette for its type.
-      const bespoke = this.UNIQUE_MODELS[weapon.id];
+      const bespoke = this.UNIQUE_MODELS[this.dispatchIdFor(weapon)];
       if (bespoke && typeof this[bespoke] === 'function') return this.finish(this[bespoke](weapon, rand), weapon);
 
       for (const [tag, builder] of this.NOTE_MODELS) {
@@ -1048,7 +1064,7 @@ var WeaponSystemProcedural = {
     // untagged type-9 weapon still gets a synthesised muzzle from its
     // geometry, while an untagged non-gun is left alone.
     if (weapon.wtypeId === 9 || this.declaresGunParts(model)) this.prepareGun(model, weapon);
-    if (this.VARLENIA_IDS.indexOf(weapon.id) !== -1) this.applyGoldFinish(model);
+    if (this.VARLENIA_IDS.indexOf(this.dispatchIdFor(weapon)) !== -1) this.applyGoldFinish(model);
     return model;
   },
 

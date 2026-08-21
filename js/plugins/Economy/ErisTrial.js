@@ -114,6 +114,8 @@
  * Plugin Commands:
  * - Start Trial: Begins the trial sequence
  * - Skip to Jail: Teleports directly to jail and serves sentence, skipping trial
+ * - Auto-Serve Sentence: Instantly settles the bounty as served and teleports
+ *   back to the saved location, skipping both the trial and the wait in a cell
  * - Open Reverse Trial: (Sandbox mode only) Play as Eris and judge a random NPC.
  *   The reverse trial is paced one message at a time (confirm to advance) and
  *   lets you choose Eris's opening remarks, interrogation approach per charge,
@@ -126,6 +128,10 @@
  * @command skipToJail
  * @text Skip to Jail
  * @desc Teleport directly to jail and serve your sentence, skipping the trial
+ *
+ * @command autoServeSentence
+ * @text Auto-Serve Sentence
+ * @desc Instantly serve your sentence and teleport back to where you came from, skipping the wait
  *
  * @command openReverseTrial
  * @text Open Reverse Trial (Sandbox)
@@ -332,12 +338,33 @@
         timeHtml = `<div class="prison-timer-time">${mm}:${ss}</div>`;
       }
 
+      // A fixed term is served by the clock (Variable 114), and sleeping/waiting
+      // already advances that same clock -- the cell just never gave the player a
+      // bed, tent or any other tile to trigger the sleep/wait menu with, so time
+      // in here could only ever pass by standing around waiting on real-world
+      // clock ticks. The button opens the same menu a bed would.
+      const sleepHtml = this._sentenceReleaseTime !== null
+        ? `<button type="button" class="prison-timer-sleep-btn" onclick="window.prisonManager.openSleep()">${T('ErisTrial.line.prisonSleepButton')}</button>`
+        : '';
+
       this._htmlEl.innerHTML =
         `<div class="prison-timer-label">${T('ErisTrial.line.prisonTimeRemaining')}</div>` +
         timeHtml +
-        `<div class="prison-timer-bounty">${T('ErisTrial.line.bounty')} ${euros}</div>`;
+        `<div class="prison-timer-bounty">${T('ErisTrial.line.bounty')} ${euros}</div>` +
+        sleepHtml;
       this._htmlEl.style.display = 'block';
       this._syncPos();
+    }
+
+    // Opens the normal sleep/wait menu from inside the cell -- same entry point
+    // a bed tile calls elsewhere, "main" mode so resting (full recovery) is on
+    // the table, not just a bare wait. Only offered for a fixed-length sentence:
+    // an open-ended bounty grind already ticks down every real second regardless
+    // of standing still, so there is nothing sleeping would speed up there.
+    openSleep() {
+      if (!this._isInPrison || this._sentenceReleaseTime === null) return;
+      const scene = SceneManager._scene;
+      if (scene && typeof scene.openSleepMenu === 'function') scene.openSleepMenu('main');
     }
 
     // Consumed once per real second, not per game-minute: a cell is too
@@ -3957,6 +3984,22 @@
     // Flag to start prison time when the map loads
     $gameTemp._startPrisonOnLoad = true;
     $gameTemp._prisonBounty = currentBounty;
+  });
+
+  PluginManager.registerCommand(pluginName, "autoServeSentence", (args) => {
+    // Save current location for release, same as the other custody commands,
+    // in case this is called without having gone through startTrial/skipToJail.
+    if (!$gameVariables.value(returnMapVariable)) {
+      $gameVariables.setValue(returnMapVariable, $gameMap.mapId());
+      $gameVariables.setValue(returnXVariable, $gamePlayer.x);
+      $gameVariables.setValue(returnYVariable, $gamePlayer.y);
+    }
+
+    // Reuses the real release flow (forgives the bounty, shows Eris's release
+    // line, teleports to the saved return spot) instead of the real-time wait.
+    if (window.prisonManager) {
+      window.prisonManager.releasePrisoner();
+    }
   });
 
   PluginManager.registerCommand(pluginName, "openReverseTrial", (args) => {

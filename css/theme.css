@@ -5076,6 +5076,43 @@
 .forge-swatch.selected { border-color: var(--text-secondary-active); }
 .forge-swatch.focused { border-color: var(--text-success-active); }
 
+/* The name a weapon rolls for itself at the anvil: typed over freely, or
+   rerolled with the die beside it. */
+.forge-name-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.forge-name-input {
+    flex: 1;
+    min-width: 0;
+    font-family: 'Lora', serif;
+    font-size: 1em;
+    padding: 6px 10px;
+    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid var(--border-secondary-hover-translucent-15);
+    border-radius: 4px;
+    color: var(--text-highlight-active);
+}
+.forge-name-input:focus {
+    outline: none;
+    border-color: var(--text-primary-hover);
+}
+.forge-name-reroll {
+    flex: 0 0 auto;
+    width: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15em;
+    border: 1px solid var(--border-secondary-hover-translucent-15);
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    color: var(--text-primary-hover);
+}
+.forge-name-reroll:hover { border-color: var(--text-primary-hover); }
+
 .forge-button-row { display: flex; gap: 8px; }
 .forge-button-row .transmute-btn { flex: 1; }
 .reagent-recover { color: var(--text-success-active); font-size: 0.892em; margin-right: 6px; }
@@ -5117,16 +5154,22 @@
     font-size: 0.914em;
     margin-bottom: 8px;
 }
+/* Bigger than the equip screen's own copy: the anvil page is a single item's
+   dossier, not two hands' worth of slots sharing the pane, so the preview can
+   afford to be the biggest thing on it. */
 #blacksmith-container .weapon-previews-container {
     min-height: 0;
-    height: 300px;
+    height: 440px;
     flex: 0 0 auto;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     padding: 6px;
 }
 #blacksmith-container .weapon-preview-card canvas { cursor: grab; }
 #blacksmith-container .forge-skill { margin: 6px 0; font-size: 0.892em; }
-#blacksmith-container .stats-grid { gap: 2px 12px; margin-bottom: 8px; }
+/* Three columns instead of the equip screen's two: bonuses AND every
+   declared property fit in far less scroll on a page that already stacks a
+   materials bill, a finish tray and a name field above them. */
+#blacksmith-container .stats-grid { grid-template-columns: 1fr 1fr 1fr; gap: 2px 12px; margin-bottom: 8px; }
 #blacksmith-container .forge-meta { margin: 4px 0 10px; }
 .forge-meta .stat-row { gap: 10px; }
 /* A declaration with a long value (a whole weapon type, a nature) is clipped
@@ -14828,23 +14871,6 @@ padding: 2px 10px;
       padding: 3px 9px; margin: 0 0 6px;
       display: inline-block;
     }
-    /* Search over a long picker list (hometowns, nations, specializations).
-       Focusing it hands the keyboard to the browser: the panel's own input
-       loop stands down while a field inside the overlay has focus. */
-    .npc-cc-search {
-      display: block; width: 100%; box-sizing: border-box;
-      margin: 0 0 6px;
-      padding: 5px 9px;
-      background: var(--bg-white-translucent-25);
-      border: 1px solid var(--border-primary-hover-translucent-15);
-      border-radius: 4px;
-      font-family: inherit; font-size: 1.322rem;
-      color: var(--text-primary-hover);
-      outline: none;
-    }
-    .npc-cc-search::placeholder { color: var(--text-text-alt-4); opacity: 0.7; }
-    .npc-cc-search:focus,
-    .npc-cc-search.npc-content-focused { border-color: var(--border-focus-hover); }
     /* A level the character cannot afford yet: still readable, not clickable. */
     .npc-cc-row--spent { opacity: 0.42; }
     .npc-cc-row--spent:hover { background: none; }
@@ -15136,6 +15162,22 @@ padding: 2px 10px;
 .prison-timer-label    { color: var(--text-primary-hover); font-size: 0.892em; text-align: center; }
 .prison-timer-time     { color: var(--text-pure-white); font-size: 1.475em; text-align: center; font-weight: bold; line-height: 1.2; }
 .prison-timer-bounty   { color: var(--text-text-alt-8); font-size: 0.892em; text-align: center; margin-top: 3px; }
+.prison-timer-sleep-btn {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: transparent;
+    color: var(--text-primary-hover);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    font-family: 'Lora', serif;
+    font-size: 0.856em;
+    font-weight: bold;
+    cursor: pointer;
+    pointer-events: auto; /* the overlay itself is pointer-events:none */
+}
+.prison-timer-sleep-btn:hover { background: var(--border-subtle); color: var(--text-danger-hover); }
 
 /* Parchment selection menus */
 #html-border-choice,

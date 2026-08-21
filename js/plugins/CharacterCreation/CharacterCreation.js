@@ -107,44 +107,6 @@
     return false;
   }
 
-  // Full-screen black veil used to hide the brief return to the map while the
-  // wizard steps out to a screen that has to run on the MAP (the hometown
-  // picker, which is the fast-travel city list). Without it the map flashes for
-  // a frame. The veil is removed by the destination scene once it has finished
-  // loading, with a safety timeout. The name/sprite screens no longer need it:
-  // they are pushed straight from the wizard and the map is never visited.
-  window.CCTransitionVeil = window.CCTransitionVeil || {
-    _el: null,
-    _timeout: null,
-    show() {
-      if (this._el) return;
-      const el = document.createElement("div");
-      el.id = "cc-transition-veil";
-      el.style.cssText =
-        "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;" +
-        "z-index:2147483646;pointer-events:none;transition:opacity 0.2s ease;";
-      document.body.appendChild(el);
-      this._el = el;
-      // Safety: never leave the screen black if the destination scene never
-      // calls hide() (e.g. an unexpected flow change).
-      if (this._timeout) clearTimeout(this._timeout);
-      this._timeout = setTimeout(() => this.hide(), 8000);
-    },
-    hide() {
-      if (this._timeout) {
-        clearTimeout(this._timeout);
-        this._timeout = null;
-      }
-      const el = this._el;
-      if (!el) return;
-      this._el = null;
-      el.style.opacity = "0";
-      setTimeout(() => {
-        if (el.parentNode) el.parentNode.removeChild(el);
-      }, 220);
-    },
-  };
-
   // Em's dossier grows restless if it sits unpicked on the preset board: ten
   // seconds in she starts heckling from inside her own card, then again every
   // few seconds until she is picked or the board closes. It borrows
@@ -2556,10 +2518,10 @@
     return _sentientClassCache;
   }
 
-  // Hometown choices for the Full-mode hometown step: every location from
-  // js/db/WorkSystem/Destinations.json (loaded as window.WorkSystem.Destinations),
-  // sorted alphabetically. Falls back to a short Belgian list if the data is not
-  // loaded yet.
+  // Hometown choices for the Full-mode hometown step (asked right after
+  // Origin): every location from js/db/WorkSystem/Destinations.json (loaded
+  // as window.WorkSystem.Destinations), sorted alphabetically. Falls back to
+  // a short Belgian list if the data is not loaded yet.
   function getHometownList() {
     const dest = window.WorkSystem && window.WorkSystem.Destinations;
     if (dest && typeof dest === "object") {
@@ -2790,45 +2752,6 @@
         setCreationMode(mode);
         markStepCompleted(STEP.CREATION_MODE);
         this.nextStep();
-      },
-    },
-    {
-      // Hometown (Full mode only). A party-level question asked once up front
-      // (showOnlyOnce), alongside the other once-per-party steps, so members 2/3
-      // never see it again and Back navigation stays clean. Skipped in the
-      // board modes. Stored on $gameSystem._ccHometown.
-      id: "hometown",
-      showOnlyOnce: true,
-      get title() {
-        return T('CharCreate.chooseYourHometown');
-      },
-      get choices() {
-        return [
-          getLocalizedChoice(T('CharCreate.choice.hometownPick.name'), "hometown_pick", T('CharCreate.choice.hometownPick.desc')),
-          getLocalizedChoice(T('CharCreate.choice.hometownRandom.name'), "hometown_random", T('CharCreate.choice.hometownRandom.desc'), 136),
-        ];
-      },
-      handler: function (symbol) {
-        if (symbol === "hometown_random") {
-          const towns = getHometownList();
-          $gameSystem._ccHometown = towns[Math.floor(Math.random() * towns.length)];
-          markStepCompleted(STEP.HOMETOWN);
-          this.nextStep();
-          return;
-        }
-        // "Pick on map": open the same fast-travel city picker the Mayor/
-        // Camper/Car origins use, but in a non-travelling "hometown pick"
-        // mode (see FastTravelSystem.js's executeTravel). That picker lives on
-        // the map, so this is the one step that still steps out to it; it
-        // resumes through repriseCreation when the pick is made.
-        markStepCompleted(STEP.HOMETOWN);
-        if ($gameTemp) {
-          $gameTemp._openCharacterCreationTrainTravel = true;
-          $gameTemp._characterCreationTravelType = "camper"; // full city list, world-map landing
-          $gameTemp._characterCreationTravelMode = true;     // free, uncancellable
-          $gameTemp._ccHometownPick = true;
-        }
-        this.pauseForMapScreen();
       },
     },
     {
@@ -3345,14 +3268,16 @@
       },
     },
     {
-      // Origin, where the character starts the game. The last step of every
-      // creation run: it is reached once per run (arriving here ends the
-      // wizard), and a run always belongs to a brand new party, so it is NOT
-      // showOnlyOnce. It used to be, which meant the completion flag written by
-      // the first party silenced the step for every later party built in the
-      // same savegame, ending creation with no starting point chosen. Hidden
-      // entirely in tutorial mode (the tutorial flow ends at the add-member
-      // step, on the tutorial map).
+      // Origin, where the character starts the game. The last interactive step
+      // of every creation run for every mode but Full, which still asks one
+      // more thing after this (the hometown step right below): it is reached
+      // once per run (arriving here ends the wizard, or hands off to the
+      // hometown step), and a run always belongs to a brand new party, so it
+      // is NOT showOnlyOnce. It used to be, which meant the completion flag
+      // written by the first party silenced the step for every later party
+      // built in the same savegame, ending creation with no starting point
+      // chosen. Hidden entirely in tutorial mode (the tutorial flow ends at
+      // the add-member step, on the tutorial map).
       id: "origin",
       get title() {
         return T('CharCreate.chooseYourOrigin');
@@ -3393,112 +3318,40 @@
         // another origin (see reopenOriginStep).
         captureOriginSnapshot();
         markStepCompleted(STEP.ORIGIN);
-        // Whatever this origin decides below, the party is about to be set down
-        // somewhere for the first time. Checked once on arrival, so no origin
-        // can begin standing inside the scenery of a square that was generated
-        // for it (see the landing pass in Scene_Map.onMapLoaded).
-        if ($gameTemp) $gameTemp._ccOriginLanding = true;
-        // Finalize the first creation here (end of the flow). This used to live
-        // in the settings step, which now runs first, so it moved to the origin
-        // step. markFirstCreationComplete is idempotent.
-        markFirstCreationComplete();
-        // Supplies and gear are handed out here and only here, from the single
-        // ORIGIN_LOADOUTS table the "Starting Out" dossier reads, so no branch
-        // below can duplicate an item or quietly hand out something unlisted.
-        grantOriginLoadout(symbol);
-        // Nobody starts unable to play cards. The collector's own branch deals
-        // a shelf below; this is the floor everyone else stands on.
-        if (symbol !== "origin_card_collector") grantMinimumCards();
-        if (symbol === "origin_space") {
-          // Begun off Earth: measured from the pad they lifted off from.
-          anchorAtSpaceCenter();
-          $gamePlayer.reserveTransfer(721, 27, 7, 2, 0);
-        } else if (symbol === "origin_camper") {
-          startVehicleOrigin("camper");
-        } else if (symbol === "origin_car") {
-          startVehicleOrigin("car");
-        } else if (symbol === "origin_bike") {
-          startBikeOrigin();
-        } else if (symbol === "origin_lot") {
-          startEmptyLotOrigin();
-        } else if (symbol === "origin_dungeon") {
-          startDungeonOrigin();
-        } else if (symbol === "origin_mayor") {
-          startMayorOrigin();
-        } else if (symbol === "origin_criminal") {
-          startCriminalOrigin();
-        } else if (symbol === "origin_stranded") {
-          startStrandedOrigin();
-        } else if (symbol === "origin_bunker") {
-          startBunkerOrigin();
-        } else if (symbol === "origin_ceo") {
-          startCEOOrigin();
-        } else if (symbol === "origin_artifact") {
-          startArtifactHeirOrigin();
-        } else if (symbol === "origin_crash") {
-          startCrashLandedOrigin();
-        } else if (symbol === "origin_warlord") {
-          startWarlordOrigin();
-        } else if (symbol === "origin_faction_leader") {
-          // Pauses the wizard and opens the faction picker; finishFactionOrigin
-          // (called from its confirm callback) does the granting, and the
-          // picker's own popScene() ends the wizard. Must not fall through to
-          // the unconditional popScene() below, which would end the wizard
-          // (and the freshly-pushed Scene_FactionStatus with it) immediately.
-          startFactionPickerOrigin(true);
+        // Full mode asks for a hometown right after Origin, from the full
+        // Destinations.json list (see the "hometown" step just below this one
+        // in the array); every other mode goes straight into the chosen
+        // origin's own starting-place logic, exactly as before.
+        if (Scene_CharacterCreation.creationMode() === CC_MODE.FULL) {
+          this._pendingOriginSymbol = symbol;
+          this.nextStep();
           return;
-        } else if (symbol === "origin_deserter") {
-          startFactionPickerOrigin(false);
-          return;
-        } else if (symbol === "origin_card_collector") {
-          grantStartingCards();
-          // A collector goes where the games are, and that is any city.
-          startWorldMapPickerOrigin();
-        } else if (symbol === "origin_arcanist") {
-          startArcanistOrigin();
-        } else if (symbol === "origin_mercenary") {
-          startMercenaryOrigin();
-        } else if (symbol === "origin_lost_convoker") {
-          startLostConvokerOrigin();
-        } else if (symbol === "origin_skeleton_key") {
-          // Nothing but the key: every door in the world is as good a starting
-          // point as any other, so the player says which one.
-          startWorldMapPickerOrigin();
-        } else if (symbol === "origin_plague") {
-          // A carrier goes where the people are, and the case travels with them:
-          // the player picks the city the first seal gets broken in.
-          startWorldMapPickerOrigin();
-        } else if (symbol === "origin_diplomat") {
-          startDiplomatOrigin();
-        } else if (symbol === "origin_hypernet_explorer") {
-          startHypernetExplorerOrigin();
-        } else if (symbol === "origin_augmented") {
-          grantStartingAugments();
-          // Nowhere in particular to be: the clinic is behind them and any
-          // city on the map will do.
-          startWorldMapPickerOrigin();
-        } else if (symbol === "origin_train") {
-          // The one origin that really boards the train: the starting service
-          // only runs to the three beginner stations, which is the whitelist
-          // FastTravelSystem applies to the 'train' network in creation mode.
-          if ($gameTemp) {
-            $gameTemp._openCharacterCreationTrainTravel = true;
-            $gameTemp._characterCreationTravelType = "train";
-            $gameTemp._characterCreationTravelMode = true;
-          }
-        } else {
-          // Default: pick any city on the map and land there on foot.
-          startWorldMapPickerOrigin();
         }
-        // The two faction origins returned above and land through
-        // startWorldMapPickerOrigin, which answers this on its own; everything
-        // else has just chosen a spot on a planet that is not there.
-        if (startsAtOmegaTower()) startAtOmegaTower();
-        // This origin put the party down itself instead of ending in the
-        // starting place picker, so there is no picker to walk back out of and
-        // no copy of the old world worth keeping.
-        if (!$gameTemp || !$gameTemp._openCharacterCreationTrainTravel) clearOriginSnapshot();
-        this.popScene();
+        this._finishOriginChoice(symbol);
+      },
+    },
+    {
+      // Hometown (Full mode only), asked right after Origin: every location in
+      // js/db/WorkSystem/Destinations.json, in the same scrollable dropdown
+      // list every other long picker in this wizard uses. Stored on
+      // $gameSystem._ccHometown before the chosen origin's own starting-place
+      // logic runs (see _finishOriginChoice). Every other mode never reaches
+      // this step (see _stepHiddenForMode / _stepAutoAdvances).
+      id: "hometown",
+      get title() {
+        return T('CharCreate.chooseYourHometown');
+      },
+      get choices() {
+        const dest = window.WorkSystem && window.WorkSystem.Destinations;
+        return getHometownList().map((town) => {
+          const country = dest && dest[town] && dest[town].country;
+          return getLocalizedChoice(town, town, country || "");
+        });
+      },
+      handler: function (symbol) {
+        $gameSystem._ccHometown = symbol;
+        markStepCompleted(STEP.HOMETOWN);
+        this._finishOriginChoice(this._pendingOriginSymbol);
       },
     },
   ];
@@ -5859,7 +5712,6 @@
     _buildSettingsRows() {
       const scene = this;
       if (ConfigManager.fogOfWar === undefined) ConfigManager.fogOfWar = false;
-      if (ConfigManager.globalLighting === undefined) ConfigManager.globalLighting = true;
       if (ConfigManager.enemyBattlers === undefined) ConfigManager.enemyBattlers = 1;
       if (!ConfigManager.battleMusicName) {
         const mss = window.MusicSelectionSystem;
@@ -6055,17 +5907,6 @@
           prev() { ConfigManager.fogOfWar = ConfigManager.fogOfWar !== true; },
         },
         {
-          key: 'globalLighting',
-          label: T('CharCreate.globalLighting'),
-          description: T('CharCreate.masterSwitchForTheDynamicLightingSystemStree'),
-          captionOff: T('CharCreate.allDynamicLightsAreDisabledBestPerformance'),
-          captionOn: T('CharCreate.streetlightsAndAmbientLightingReactToTheTime'),
-          get currentIndex() { return ConfigManager.globalLighting === false ? 1 : 0; },
-          get currentLabel() { return this.currentIndex === 0 ? "ON" : "OFF"; },
-          next() { ConfigManager.globalLighting = ConfigManager.globalLighting === false; },
-          prev() { ConfigManager.globalLighting = ConfigManager.globalLighting === false; },
-        },
-        {
           key: 'battleMusic',
           label: T('CharCreate.battleMusic'),
           // A getter, not a fixed line: the Biome entry needs a word of its own
@@ -6217,14 +6058,6 @@
               <p style="text-align:center; font-size:1.585rem; font-weight:bold; margin:8px 0">${currentRow.currentLabel}</p>
             </div>
           </div>
-        `;
-      } else if (currentRow.key === 'globalLighting') {
-        const on = currentRow.currentIndex === 0;
-        // Light (70) / Dark (71) IconSet glyphs, drawn at 64px.
-        const lightIcon = on ? 70 : 71;
-        previewHtml = `
-          <div style="text-align:center; margin:16px 0"><span style="display:inline-block; width:64px; height:64px; background-image:url('img/system/IconSet.png'); background-size:1024px auto; background-position:-${(lightIcon % 16) * 64}px -${Math.floor(lightIcon / 16) * 64}px; image-rendering:pixelated"></span></div>
-          <p class="cc-settings-img-caption">${on ? currentRow.captionOn : currentRow.captionOff}</p>
         `;
       }
 
@@ -6804,11 +6637,125 @@
       const index = this._gridWindow.index();
       const choice = stepData.choices[index];
       if (!choice) {
-        return; 
+        return;
     }
       if (stepData.handler) {
         stepData.handler.call(this, choice.symbol, index);
       }
+    }
+
+    // The chosen origin's own starting-place logic: grants, then puts the
+    // party down somewhere. Shared by the origin step's handler (every mode
+    // but Full, which runs this immediately) and the hometown step's handler
+    // (Full mode, which runs this once a hometown from Destinations.json has
+    // been picked).
+    _finishOriginChoice(symbol) {
+      // Whatever this origin decides below, the party is about to be set down
+      // somewhere for the first time. Checked once on arrival, so no origin
+      // can begin standing inside the scenery of a square that was generated
+      // for it (see the landing pass in Scene_Map.onMapLoaded).
+      if ($gameTemp) $gameTemp._ccOriginLanding = true;
+      // Finalize the first creation here (end of the flow). This used to live
+      // in the settings step, which now runs first, so it moved to the origin
+      // step. markFirstCreationComplete is idempotent.
+      markFirstCreationComplete();
+      // Supplies and gear are handed out here and only here, from the single
+      // ORIGIN_LOADOUTS table the "Starting Out" dossier reads, so no branch
+      // below can duplicate an item or quietly hand out something unlisted.
+      grantOriginLoadout(symbol);
+      // Nobody starts unable to play cards. The collector's own branch deals
+      // a shelf below; this is the floor everyone else stands on.
+      if (symbol !== "origin_card_collector") grantMinimumCards();
+      if (symbol === "origin_space") {
+        // Begun off Earth: measured from the pad they lifted off from.
+        anchorAtSpaceCenter();
+        $gamePlayer.reserveTransfer(721, 27, 7, 2, 0);
+      } else if (symbol === "origin_camper") {
+        startVehicleOrigin("camper");
+      } else if (symbol === "origin_car") {
+        startVehicleOrigin("car");
+      } else if (symbol === "origin_bike") {
+        startBikeOrigin();
+      } else if (symbol === "origin_lot") {
+        startEmptyLotOrigin();
+      } else if (symbol === "origin_dungeon") {
+        startDungeonOrigin();
+      } else if (symbol === "origin_mayor") {
+        startMayorOrigin();
+      } else if (symbol === "origin_criminal") {
+        startCriminalOrigin();
+      } else if (symbol === "origin_stranded") {
+        startStrandedOrigin();
+      } else if (symbol === "origin_bunker") {
+        startBunkerOrigin();
+      } else if (symbol === "origin_ceo") {
+        startCEOOrigin();
+      } else if (symbol === "origin_artifact") {
+        startArtifactHeirOrigin();
+      } else if (symbol === "origin_crash") {
+        startCrashLandedOrigin();
+      } else if (symbol === "origin_warlord") {
+        startWarlordOrigin();
+      } else if (symbol === "origin_faction_leader") {
+        // Pauses the wizard and opens the faction picker; finishFactionOrigin
+        // (called from its confirm callback) does the granting, and the
+        // picker's own popScene() ends the wizard. Must not fall through to
+        // the unconditional popScene() below, which would end the wizard
+        // (and the freshly-pushed Scene_FactionStatus with it) immediately.
+        startFactionPickerOrigin(true);
+        return;
+      } else if (symbol === "origin_deserter") {
+        startFactionPickerOrigin(false);
+        return;
+      } else if (symbol === "origin_card_collector") {
+        grantStartingCards();
+        // A collector goes where the games are, and that is any city.
+        startWorldMapPickerOrigin();
+      } else if (symbol === "origin_arcanist") {
+        startArcanistOrigin();
+      } else if (symbol === "origin_mercenary") {
+        startMercenaryOrigin();
+      } else if (symbol === "origin_lost_convoker") {
+        startLostConvokerOrigin();
+      } else if (symbol === "origin_skeleton_key") {
+        // Nothing but the key: every door in the world is as good a starting
+        // point as any other, so the player says which one.
+        startWorldMapPickerOrigin();
+      } else if (symbol === "origin_plague") {
+        // A carrier goes where the people are, and the case travels with them:
+        // the player picks the city the first seal gets broken in.
+        startWorldMapPickerOrigin();
+      } else if (symbol === "origin_diplomat") {
+        startDiplomatOrigin();
+      } else if (symbol === "origin_hypernet_explorer") {
+        startHypernetExplorerOrigin();
+      } else if (symbol === "origin_augmented") {
+        grantStartingAugments();
+        // Nowhere in particular to be: the clinic is behind them and any
+        // city on the map will do.
+        startWorldMapPickerOrigin();
+      } else if (symbol === "origin_train") {
+        // The one origin that really boards the train: the starting service
+        // only runs to the three beginner stations, which is the whitelist
+        // FastTravelSystem applies to the 'train' network in creation mode.
+        if ($gameTemp) {
+          $gameTemp._openCharacterCreationTrainTravel = true;
+          $gameTemp._characterCreationTravelType = "train";
+          $gameTemp._characterCreationTravelMode = true;
+        }
+      } else {
+        // Default: pick any city on the map and land there on foot.
+        startWorldMapPickerOrigin();
+      }
+      // The two faction origins returned above and land through
+      // startWorldMapPickerOrigin, which answers this on its own; everything
+      // else has just chosen a spot on a planet that is not there.
+      if (startsAtOmegaTower()) startAtOmegaTower();
+      // This origin put the party down itself instead of ending in the
+      // starting place picker, so there is no picker to walk back out of and
+      // no copy of the old world worth keeping.
+      if (!$gameTemp || !$gameTemp._openCharacterCreationTrainTravel) clearOriginSnapshot();
+      this.popScene();
     }
 
     // Re-render the current step's choices in place (same step, new option
@@ -6968,18 +6915,6 @@
       if (this._titleWindow) this._titleWindow.open();
       if (this._gridWindow) this._gridWindow.open();
       this.showUI();
-    }
-
-    // Step out of the wizard to a screen that has to run on the MAP: the
-    // hometown picker is the fast-travel city list, which is a map overlay.
-    // FastTravelSystem calls repriseCreation when it is done, which is what
-    // brings the wizard back. No common event is involved.
-    pauseForMapScreen() {
-      Scene_CharacterCreation._interruptedStep = this._step;
-      Scene_CharacterCreation._resumeOnStep = false;
-      if (window.CCTransitionVeil) window.CCTransitionVeil.show();
-      this.closeStepUI();
-      SceneManager.pop();
     }
 
     // NEW: Creates a completely random character and skips to Add Party Member step
@@ -8078,6 +8013,105 @@
       : levels[mid];
   }
 
+  // True when Actor 1's database name is the battle-test trigger. Checked off
+  // $dataActors directly (not $gameActors) so it can run before createGameObjects,
+  // while the raw test troop data is still safe to rewrite in place.
+  function isBattleTestTriggerActor() {
+    const a1 = typeof $dataActors !== "undefined" && $dataActors[1];
+    return !!(a1 && a1.name && a1.name.trim().toLowerCase() === BATTLE_TEST_TRIGGER_NAME);
+  }
+
+  // <Level: N> off a single enemy's note, or null.
+  function enemyNoteLevel(enemyData) {
+    if (!enemyData || !enemyData.note) return null;
+    const m = enemyData.note.match(/<Level:\s*(\d+)>/i);
+    return m ? parseInt(m[1], 10) : null;
+  }
+
+  function isBossEnemyData(enemyData) {
+    return !!(enemyData && enemyData.note && /<Boss>/i.test(enemyData.note));
+  }
+
+  // A flanking enemy for the test troop: never a boss or a database divider
+  // row, biased toward whatever level is closest to the center enemy's own
+  // (widening the search band until something qualifies).
+  function pickFlankingEnemyId(centerLevel) {
+    const pool = [];
+    for (let id = 1; id < $dataEnemies.length; id++) {
+      const e = $dataEnemies[id];
+      if (!e || !e.name || e.name.trim().startsWith("<--")) continue;
+      if (isBossEnemyData(e)) continue;
+      pool.push(e);
+    }
+    if (pool.length === 0) return null;
+    if (centerLevel == null) return pool[Math.floor(Math.random() * pool.length)].id;
+    let candidates = [];
+    for (let band = 2; candidates.length === 0 && band <= 20; band += 2) {
+      candidates = pool.filter((e) => {
+        const lvl = enemyNoteLevel(e);
+        return lvl != null && Math.abs(lvl - centerLevel) <= band;
+      });
+    }
+    if (candidates.length === 0) candidates = pool;
+    return candidates[Math.floor(Math.random() * candidates.length)].id;
+  }
+
+  // Same even-spread-across-the-screen layout the map battle system's own
+  // troop reinforcement uses (BattleSystemEnhancedEncounters.js's
+  // joinerPosition), so a reinforced test troop looks like any other multi
+  // enemy fight instead of enemies stacked on one spot.
+  function reinforcementPosition(slot, totalMembers) {
+    const w = (typeof Graphics !== "undefined" && Graphics.boxWidth) || 816;
+    const h = (typeof Graphics !== "undefined" && Graphics.boxHeight) || 624;
+    const cy = h * 0.5;
+    const usable = w * 0.8;
+    const pitch = totalMembers > 1 ? usable / (totalMembers - 1) : 0;
+    const startX = (w - usable) / 2;
+    const x = totalMembers > 1 ? startX + slot * pitch : w / 2;
+    const y = cy + (slot % 2 === 0 ? -28 : 28);
+    return {
+      x: Math.max(64, Math.min(w - 64, Math.round(x))),
+      y: Math.max(120, Math.min(h - 80, Math.round(y))),
+    };
+  }
+
+  // Battle Test: turn the editor's single test-troop enemy into a small group.
+  //
+  // Runs before the vanilla setup (which reads $dataTroops[testTroopId] to
+  // build $gameTroop), so the extra members go through the exact same troop
+  // setup pipeline as the original one - no bypassed per-enemy plugin hooks.
+  // The original enemy stays the "center" of the group (the middle slot when
+  // there are 3); the rest are drawn from other <Level: N> enemies close to
+  // its own level. An enemy tagged <Boss> is left fighting alone, same as it
+  // would be encountered for real.
+  function reinforceTestTroopMembers() {
+    const troopId = $dataSystem.testTroopId;
+    const troop = $dataTroops[troopId];
+    // Only a troop set up as a single enemy is a "test this one monster" case;
+    // a tester who already built a multi-enemy test troop by hand is left alone.
+    if (!troop || !Array.isArray(troop.members) || troop.members.length !== 1) return;
+    if (troop._testReinforced) return;
+
+    const center = troop.members[0];
+    const centerData = $dataEnemies[center.enemyId];
+    if (!centerData || isBossEnemyData(centerData)) return;
+
+    const totalCount = Math.random() < 0.5 ? 2 : 3;
+    const centerLevel = enemyNoteLevel(centerData);
+    const centerSlot = totalCount === 3 ? 1 : 0;
+
+    const members = [];
+    for (let slot = 0; slot < totalCount; slot++) {
+      const pos = reinforcementPosition(slot, totalCount);
+      const enemyId =
+        slot === centerSlot ? center.enemyId : pickFlankingEnemyId(centerLevel) || center.enemyId;
+      members.push({ enemyId, x: pos.x, y: pos.y, hidden: false });
+    }
+
+    troop.members = members;
+    troop._testReinforced = true;
+  }
+
   // Generate a name using a sprite's own Markov voice (its NPCs.json markovDB),
   // falling back to generic NPC name pools. Returns null if generation is
   // unavailable.
@@ -8330,6 +8364,11 @@
 
   const _DataManager_setupBattleTest = DataManager.setupBattleTest;
   DataManager.setupBattleTest = function () {
+    try {
+      if (isBattleTestTriggerActor()) reinforceTestTroopMembers();
+    } catch (e) {
+      console.error("[BattleTest] Failed to reinforce test troop:", e);
+    }
     _DataManager_setupBattleTest.call(this);
     try {
       const actor1 = $gameActors.actor(1);

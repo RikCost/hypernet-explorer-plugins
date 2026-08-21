@@ -650,9 +650,18 @@
   "already": "{actor} already has {disease}"
  },
  "diagnose": {
-  "header": "The examination is over.",
-  "line": "{actor}: {diseases}",
-  "clean": "{actor}: nothing",
-  "none": "Nobody in the party is carrying anything."
+  "rowUnknown": "{actor}: unknown illness",
+  "rowKnown": "{actor}: {disease}",
+  "knownTag": "Known",
+  "empty": "Nobody in the party is carrying anything.",
+  "tooExpensive": "Not enough money for the exam.",
+  "revealed": "{actor}'s illness is {disease}."
+ },
+ "cure": {
+  "rowLine": "{actor}: {disease}",
+  "stockedTag": "Stocked",
+  "empty": "Nobody has a diagnosed illness worth medicine right now.",
+  "tooExpensive": "Not enough money for the medicine.",
+  "bought": "Bought {count}x {item} for {actor}."
  }
 }

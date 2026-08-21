@@ -150,6 +150,7 @@
   "susceptibility": "{state} Susceptibility: {pct}%",
   "resistState": "Resist State: {state}",
   "attackElement": "Attack Element: {element}",
+  "attackState": "Attack State: {state} ({pct}%)",
   "attackSpeed": "Attack Speed: {value}",
   "attackTimes": "Attack Times: +{value}",
   "paramRate": "{param} Rate: {pct}%",
@@ -163,8 +164,20 @@
   "allowsArmor": "Allows Armor: {type}",
   "lockSlot": "Lock Equip Slot: {slot}",
   "sealSlot": "Seal Equip Slot: {slot}",
-  "dualWielding": "Dual Wielding"
+  "dualWielding": "Dual Wielding",
+  "allowsSkillType": "Allows Skill Type: {type}",
+  "sealSkillType": "Seal Skill Type: {type}",
+  "grantsSkill": "Grants Skill: {skill}",
+  "sealsSkill": "Seals Skill: {skill}",
+  "actionPlus": "Extra Action Chance: +{pct}%",
+  "specialFlagLine": "{name}"
  },
+ "specialFlag": [
+  "Auto Battle",
+  "Guard",
+  "Substitute",
+  "Preserve AP"
+ ],
  "xparam": [
   "Hit Rate",
   "Evasion Rate",

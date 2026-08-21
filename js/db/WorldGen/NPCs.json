@@ -1353,7 +1353,8 @@
       63
     ],
     "markovDB": "companion",
-    "source": "Animals01Color#1"
+    "source": "Animals01Color#1",
+    "dogShop": true
   },
   "Animals/!$AvianNoble1": {
     "varlenian": false,
@@ -1483,7 +1484,8 @@
       63
     ],
     "markovDB": "companion",
-    "source": "Animals01#1"
+    "source": "Animals01#1",
+    "dogShop": true
   },
   "Creatures/!$ZombieBird": {
     "varlenian": false,
@@ -1613,7 +1615,8 @@
       63
     ],
     "markovDB": "companion",
-    "source": "GrayAnimals01#1"
+    "source": "GrayAnimals01#1",
+    "dogShop": true
   },
   "Animals/!$AvianNoble3": {
     "varlenian": false,
@@ -26004,7 +26007,8 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "dogShop": true
   },
   "Animals/!$MV_Dog_German_Shepherd": {
     "varlenian": false,
@@ -26029,7 +26033,8 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "dogShop": true
   },
   "Animals/!$MV_Dog_Labrador": {
     "varlenian": false,
@@ -26054,7 +26059,8 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "dogShop": true
   },
   "Animals/!$MV_Dog_Shepherd": {
     "varlenian": false,
@@ -26079,7 +26085,8 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "dogShop": true
   },
   "Animals/!$MV_Donkey": {
     "varlenian": false,

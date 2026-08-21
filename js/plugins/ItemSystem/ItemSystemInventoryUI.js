@@ -221,28 +221,7 @@
           });
         }
 
-        const traitsList = [];
-        if (selectedItem.traits) {
-          selectedItem.traits.forEach(tr => {
-            const val = tr.value; const did = tr.dataId; let desc = '';
-            if      (tr.code === 11) { const el = $dataSystem.elements[did]; desc = T('Inventory.trait.resistance', { element: el || T('Inventory.trait.elementFallback'), pct: Math.round(val*100) }); }
-            else if (tr.code === 12) desc = T('Inventory.trait.debuffRate', { param: getParamName(did), pct: Math.round(val*100) });
-            else if (tr.code === 13) { const s = $dataStates[did]; if (s&&s.name) desc = T('Inventory.trait.susceptibility', { state: s.name, pct: Math.round(val*100) }); }
-            else if (tr.code === 14) { const s = $dataStates[did]; if (s&&s.name) desc = T('Inventory.trait.resistState', { state: s.name }); }
-            else if (tr.code === 21) { const el = $dataSystem.elements[did]; desc = T('Inventory.trait.attackElement', { element: el || T('Inventory.trait.physicalFallback') }); }
-            else if (tr.code === 22) desc = T('Inventory.trait.attackSpeed', { value: `${val>0?'+':''}${val}` });
-            else if (tr.code === 23) desc = T('Inventory.trait.attackTimes', { value: val });
-            else if (tr.code === 31) desc = T('Inventory.trait.paramRate', { param: getParamName(did), pct: Math.round(val*100) });
-            else if (tr.code === 32) { const exN = T.list('Inventory.xparam'); desc = T('Inventory.trait.xparamLine', { name: exN[did] || T('Inventory.trait.specialStat'), value: `${val>=0?'+':''}${Math.round(val*100)}` }); }
-            else if (tr.code === 33) { const spN = T.list('Inventory.sparam'); desc = T('Inventory.trait.sparamLine', { name: spN[did] || T('Inventory.trait.specialProperty'), pct: Math.round(val*100) }); }
-            else if (tr.code === 51) { const wt = $dataSystem.weaponTypes[did]; desc = T('Inventory.trait.allowsWeapon', { type: wt || T('Inventory.spec.label.weaponFallback') }); }
-            else if (tr.code === 52) { const at = $dataSystem.armorTypes[did];  desc = T('Inventory.trait.allowsArmor', { type: at || T('Inventory.spec.label.armorFallback') }); }
-            else if (tr.code === 53) { const eq = $dataSystem.equipTypes[did];  desc = T('Inventory.trait.lockSlot', { slot: eq || T('Inventory.spec.label.slotFallback') }); }
-            else if (tr.code === 54) { const eq = $dataSystem.equipTypes[did];  desc = T('Inventory.trait.sealSlot', { slot: eq || T('Inventory.spec.label.slotFallback') }); }
-            else if (tr.code === 55) desc = T('Inventory.trait.dualWielding');
-            if (desc) traitsList.push(desc);
-          });
-        }
+        const traitsList = window.ItemSystemUtils.traitLines(selectedItem);
 
         const noteTags = []; const nutritionSpecs = [];
         if (selectedItem.note) {

@@ -269,7 +269,30 @@
         return isForged(item) ? item.name : tr(item.name);
     }
 
+    // What this world's smiths have beaten out, kept in the world folder
+    // (Dwarf-Fortress style, WorldManager.js) rather than on one save: a piece
+    // forged here is an artifact of THIS world, seen by every save of it, the
+    // same as its history and its NPCs.
+    const FORGE_WORLD_FILE = 'forgedGear';
+
     function forgeStore() {
+        if (window.WorldManager && WorldManager.hasActiveWorld && WorldManager.hasActiveWorld()) {
+            const file = WorldManager.getFile(FORGE_WORLD_FILE);
+            if (!Array.isArray(file.pieces)) file.pieces = [];
+            // A save made before pieces moved into the world folder still
+            // carries its own copy on $gameSystem; folded in once so nothing
+            // forged before this change is lost, then never read again.
+            if ($gameSystem && Array.isArray($gameSystem._forgedPieces) && $gameSystem._forgedPieces.length) {
+                const known = new Set(file.pieces.map(r => r.kind + ':' + r.id));
+                for (const rec of $gameSystem._forgedPieces) {
+                    if (!known.has(rec.kind + ':' + rec.id)) file.pieces.push(rec);
+                }
+                $gameSystem._forgedPieces = [];
+            }
+            return file.pieces;
+        }
+        // No active world yet (title screen previews and the like): fall back
+        // to the save so nothing here has to null-check its caller.
         if (!$gameSystem) return [];
         if (!$gameSystem._forgedPieces) $gameSystem._forgedPieces = [];
         return $gameSystem._forgedPieces;
@@ -313,7 +336,10 @@
 
     function forgedDisplayName(base, rec) {
         const key = rec.mark > 1 ? 'Blacksmith.forgedNameNumbered' : 'Blacksmith.forgedName';
-        return T(key, { name: tr(base.name), smith: rec.smith, mark: rec.mark });
+        // A weapon that was given a name of its own at the anvil wears that
+        // instead of its catalogue name; armor still reads as the piece it is.
+        const name = (rec.customName && rec.customName.trim()) ? rec.customName.trim() : tr(base.name);
+        return T(key, { name, smith: rec.smith, mark: rec.mark });
     }
 
     // Write one record back into the database as a live entry.
@@ -337,6 +363,10 @@
             `\n<Forged: ${rec.smith}>` +
             `\n<ForgeQuality: ${rec.quality}>` +
             `\n<ForgeSeed: ${rec.seed || 0}>` +
+            // Lets WeaponSystemProcedural.dispatchIdFor still find a bespoke
+            // model or a house finish keyed on the entry this piece was
+            // forged from, since materializing gave it a brand new id.
+            `\n<ForgeBaseId: ${rec.baseId}>` +
             (rec.texture ? `\n<ForgeTexture: ${rec.texture}>` : '');
         entry.description = String(base.description || '').trim();
         const line = T('Blacksmith.forgedDesc', { smith: rec.smith, quality: qualityLabel(rec.quality) });
@@ -464,6 +494,21 @@
         return `img/textures/${filename}`;
     }
 
+    // ── Names ────────────────────────────────────────────────────────────────
+    // A weapon coming off the anvil earns its own name, not a found relic's:
+    // separate banks from the artifact generator's (Crafting/ArctifactGenerator.js),
+    // picked by the same class the finish picker uses (finishClass), so a blade
+    // reads like a blade and a gun like a gun.
+    function randomForgedName(item) {
+        const cls = finishClass(item);
+        const prefixes = T.pool('Blacksmith.nameBank.' + cls + '.prefix');
+        const nouns = T.pool('Blacksmith.nameBank.' + cls + '.noun');
+        if (!prefixes.length || !nouns.length) return '';
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const noun = nouns[Math.floor(Math.random() * nouns.length)];
+        return `${prefix} ${noun}`;
+    }
+
     // Records outlive the database entries built from them, so a loaded save has
     // to put its forged pieces back before anything asks the party what it holds.
     const _DataManager_extractSaveContents = DataManager.extractSaveContents;
@@ -553,10 +598,10 @@
         }
 
         update() {
-            // A focused search field owns the keyboard (UI/MenuSearchBar.js).
-            if (!(window.MenuSearchBar && window.MenuSearchBar.isTyping())) {
-                this.updateForgeInput();
-            }
+            // A focused search field or the name box owns the keyboard.
+            const typing = (window.MenuSearchBar && window.MenuSearchBar.isTyping()) ||
+                (document.activeElement && document.activeElement.id === 'forge-name-input');
+            if (!typing) this.updateForgeInput();
             super.update();
         }
 
@@ -717,6 +762,14 @@
                     </div>`;
                 spread = container.querySelector('.book-spread');
                 spread.addEventListener('click', (e) => this.onSpreadClick(e));
+                // The name field is typed into directly, so its value is read
+                // off the DOM as it changes rather than pushed through a
+                // re-render, which would blow away the cursor position mid-word.
+                spread.addEventListener('input', (e) => {
+                    if (e.target && e.target.id === 'forge-name-input' && this._selectedItem) {
+                        this.setName(this._selectedItem, e.target.value);
+                    }
+                });
                 // The wheel turns whichever page the pointer is over: the recipe
                 // list on the left, the dossier on the right. Sending every
                 // wheel event to the list is what left the anvil page stuck.
@@ -961,13 +1014,18 @@
             const smeltClass = `transmute-btn ${smeltable ? 'enabled' : 'disabled'} ${this._activeArea === 'smelt' ? 'focused' : ''}`;
             const smeltLabel = smeltable ? T('Blacksmith.smeltHeld', { n: owned }) : t.smeltNone;
 
+            // What it will look like and what it will be called come first, since
+            // that is what the smith is actually deciding at the anvil; whether
+            // the trade and the sack can back that up comes after, and the full
+            // spec sheet is reference material at the bottom.
             el.innerHTML = `
                 <div class="workbench-active">
                     ${head}
-                    ${matHTML}
                     ${this.previewHTML(item)}
+                    ${this.nameHTML(item)}
                     ${this.finishHTML(item)}
                     ${skillHTML}
+                    ${matHTML}
                     ${statsHTML}
                     <div class="forge-button-row">
                         ${forged ? '' : `<div class="${btnClass}" id="forge-action">${escapeHtml(btnLabel)}</div>`}
@@ -1012,6 +1070,29 @@
             return this._seeds[key];
         }
 
+        // ------------------------------------------------- the name picker
+        // A weapon rolls a name for itself the moment it is looked at, kept
+        // steady while it is on the page, exactly like its finish; typing over
+        // it or hitting the dice replaces only that piece's roll.
+        pendingName(item) {
+            const key = this.finishKey(item);
+            if (!this._names) this._names = {};
+            if (this._names[key] === undefined) {
+                this._names[key] = randomForgedName(item);
+            }
+            return this._names[key];
+        }
+
+        setName(item, name) {
+            if (!this._names) this._names = {};
+            this._names[this.finishKey(item)] = String(name == null ? '' : name).slice(0, 60);
+        }
+
+        rerollName(item) {
+            if (!this._names) this._names = {};
+            this._names[this.finishKey(item)] = randomForgedName(item);
+        }
+
         // What the 3D card is asked to draw: the entry itself once it has been
         // forged, and a stand-in wearing this visit's choices before that.
         previewItem(item) {
@@ -1026,6 +1107,22 @@
                     ForgeTexture: finish || undefined
                 })
             });
+        }
+
+        // A weapon rolls its own name the moment it is looked at (pendingName),
+        // typed over freely and rerolled on demand; armor keeps the plain
+        // "{smith}'s {piece}" naming, since only a weapon was asked for this.
+        nameHTML(item) {
+            if (isForged(item) || !DataManager.isWeapon(item)) return '';
+            const name = this.pendingName(item);
+            return `
+                <h4 class="reagents-header">${escapeHtml(T('Blacksmith.nameHeader'))}</h4>
+                <div class="forge-name-row">
+                    <input type="text" id="forge-name-input" class="forge-name-input"
+                           value="${escapeHtml(name)}" maxlength="60"
+                           placeholder="${escapeHtml(T('Blacksmith.namePlaceholder'))}">
+                    <div class="forge-name-reroll" id="forge-name-reroll" title="${escapeHtml(T('Blacksmith.nameReroll'))}">&#8635;</div>
+                </div>`;
         }
 
         finishHTML(item) {
@@ -1141,7 +1238,7 @@
             const canThree = typeof THREE !== 'undefined' && DataManager.isWeapon(item);
             let html = '<div class="weapon-previews-container">';
             if (canThree) {
-                html += `<div class="weapon-preview-card weapon-preview-card--single"><canvas id="forge-preview-canvas" width="420" height="300"></canvas></div>`;
+                html += `<div class="weapon-preview-card weapon-preview-card--single"><canvas id="forge-preview-canvas" width="640" height="440"></canvas></div>`;
             } else {
                 const rarity = rarityOf(item);
                 // Nothing here is drawn in three dimensions, so the finish the
@@ -1166,8 +1263,8 @@
             if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();
-            const width = rect.width || 140;
-            const height = rect.height || 240;
+            const width = rect.width || 400;
+            const height = rect.height || 440;
             const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
             renderer.setSize(width, height);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1377,6 +1474,7 @@
                 quality,
                 texture: this.chosenFinish(base) || '',
                 seed: this.pendingSeed(base),
+                customName: (this._names && this._names[this.finishKey(base)] || '').trim(),
                 params: rollParams(base, quality),
                 price: Math.max(1, Math.round((base.price || 0) * quality * quality)),
                 mark: 0
@@ -1385,9 +1483,10 @@
             forgeStore().push(rec);
             const entry = materialize(rec);
             if (!entry) { forgeStore().pop(); return null; }
-            // The look the smith previewed went into the record with it, so the
-            // next piece off the same bill rolls a look of its own.
+            // The look and the name the smith previewed went into the record
+            // with the piece, so the next one off the same bill rolls its own.
             if (this._seeds) delete this._seeds[this.finishKey(base)];
+            if (this._names) delete this._names[this.finishKey(base)];
             return entry;
         }
 
@@ -1470,6 +1569,13 @@
                 this._itemIndex = idx;
                 this._selectedItem = this.itemsForTrade()[idx] || null;
                 this._activeArea = 'items';
+                SoundManager.playCursor();
+                this.refreshForge();
+                return;
+            }
+
+            if (e.target.closest('#forge-name-reroll')) {
+                if (this._selectedItem) this.rerollName(this._selectedItem);
                 SoundManager.playCursor();
                 this.refreshForge();
                 return;

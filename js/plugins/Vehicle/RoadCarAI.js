@@ -130,7 +130,7 @@
   // Road/highway cars are fast and lane-disciplined; town cars are slower and
   // yield to actors. MZ move speeds: 4 = normal, higher = faster.
   const CAR_SPEED_ROAD = 5;       // highways: fast, follow lane end-to-end
-  const CAR_SPEED_CITY = 3;       // cities/villages: slower, cautious traffic
+  const CAR_SPEED_CITY = 4;       // cities/villages: cautious but not sluggish
   const STUCK_LIMIT = 100;        // frames a driving car waits before respawning
   const TOTAL_CAR_CAP = 10;       // hard cap on active cars regardless of plan
   const HIT_GRACE_FRAMES = 90;    // frames of immunity after being run over
@@ -310,6 +310,29 @@
     return (h % 1000) / 1000 < EMPTY_WORLD_UNLOCKED_SHARE;
   }
 
+  // In a zombie apocalypse nobody is left driving around a settlement: town and
+  // village traffic is parked where it stood, same as an empty world. The open
+  // road is different - every road cell is somebody's escape route out of a
+  // city - so a small, fixed share of road cells still carry a car somebody is
+  // driving. Which cells those are is decided once, from the world seed and the
+  // cell's own world-map coordinates, so it is settled at world creation and
+  // never reshuffles on a later visit.
+  function isZombieWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isZombieWorld === "function" && WM.isZombieWorld());
+  }
+
+  const ZOMBIE_ROAD_CAR_CHANCE = 0.12; // share of road cells still driven in zombie mode
+  function isZombieRoadCellActive() {
+    const seed = (window.HistoryManager && window.HistoryManager.getSeed)
+      ? window.HistoryManager.getSeed() : 19002001;
+    const wx = $gameVariables.value(VAR_WORLD_X) || 0;
+    const wy = $gameVariables.value(VAR_WORLD_Y) || 0;
+    let h = (wx * 73856093) ^ (wy * 19349663) ^ seed;
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+    return (h % 1000) / 1000 < ZOMBIE_ROAD_CAR_CHANCE;
+  }
+
   // Returns how many driving / parked cars this biome should have right now
   function getCarPlan() {
     const mult = getTrafficDensityMultiplier();
@@ -330,6 +353,17 @@
     if (isEmptyWorld()) {
       parked = Math.max(parked, driving + parked);
       driving = 0;
+    }
+    // A zombie world still has people, just none of them left in a settlement:
+    // town and village traffic sits abandoned like an empty world's does, but
+    // the open road keeps a rare car somebody is still driving on it.
+    if (isZombieWorld()) {
+      if (biomeCategory === "road") {
+        driving = isZombieRoadCellActive() ? 1 : 0;
+      } else {
+        parked = Math.max(parked, driving + parked);
+        driving = 0;
+      }
     }
     // Cars stolen here are gone for good: this world cell parks that many fewer.
     parked = Math.max(0, parked - stolenCarCount());

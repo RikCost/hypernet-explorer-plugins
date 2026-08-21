@@ -871,11 +871,11 @@
         // print; without this the chip reads "Elem: null".
         const rateElement = this.getElementName(dataId);
         if (!rateElement) return null;
-        return "Elem: " + rateElement + " x" + Math.floor(value * 100) + "%";
+        return (T('Shop.elem')) + rateElement + " x" + Math.floor(value * 100) + "%";
       }
       case Game_BattlerBase.TRAIT_DEBUFF_RATE:
         if (value === 1) return null;
-        return "Debuff: " + this.getParameterName(dataId) + " x" + Math.floor(value * 100) + "%";
+        return (T('Shop.debuff')) + this.getParameterName(dataId) + " x" + Math.floor(value * 100) + "%";
       case Game_BattlerBase.TRAIT_STATE_RATE:
         if (value === 1) return null;
         return (T('Shop.state')) + this.getStateName(dataId) + " x" + Math.floor(value * 100) + "%";
@@ -913,15 +913,15 @@
       case Game_BattlerBase.TRAIT_SKILL_SEAL:
         return (T('Shop.seal')) + this.getSkillName(dataId);
       case Game_BattlerBase.TRAIT_EQUIP_WTYPE:
-        return "Equip: " + this.getWeaponTypeName(dataId);
+        return (T('Shop.equip')) + this.getWeaponTypeName(dataId);
       case Game_BattlerBase.TRAIT_EQUIP_ATYPE:
-        return "Equip: " + this.getArmorTypeName(dataId);
+        return (T('Shop.equip')) + this.getArmorTypeName(dataId);
       case Game_BattlerBase.TRAIT_EQUIP_LOCK:
         return (T('Shop.lock')) + this.getEquipTypeName(dataId);
       case Game_BattlerBase.TRAIT_EQUIP_SEAL:
         return (T('Shop.seal')) + this.getEquipTypeName(dataId);
       case Game_BattlerBase.TRAIT_SLOT_TYPE:
-        return "Slot: " + dataId;
+        return dataId === 1 ? T('Shop.dualWielding') : null;
       case Game_BattlerBase.TRAIT_ACTION_PLUS:
         if (value === 0) return null;
         return (T('Shop.extra')) + Math.floor(value * 100) + "%";
@@ -945,6 +945,10 @@
   Window_ItemDetail.prototype.getSParameterName = function (sparamId) {
     const names = T.list('Shop.sparams');
     return names[sparamId] || T('Shop.sparamN', { id: sparamId });
+  };
+  Window_ItemDetail.prototype.getSpecialFlagName = function (flagId) {
+    const names = T.list('Shop.specialFlags');
+    return names[flagId] || T('Shop.specialFlagN', { id: flagId });
   };
   Window_ItemDetail.prototype.getSkillTypeName = function (stypeId) {
     return $dataSystem.skillTypes[stypeId] || T('Shop.skillTypeN', { id: stypeId });

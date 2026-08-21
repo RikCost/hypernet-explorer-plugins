@@ -38,11 +38,40 @@
   "forgedName": "{smith}'s {name}",
   "forgedNameNumbered": "{smith}'s {name} {mark}",
   "forgedDesc": "Forged by {smith}. {quality} work, and one of a kind.",
+  "nameHeader": "Name",
+  "namePlaceholder": "Name this piece…",
+  "nameReroll": "Roll another name",
   "quality": {
     "crude": "Crude",
     "sound": "Sound",
     "fine": "Fine",
     "superb": "Superb",
     "masterwork": "Masterwork"
+  },
+  "nameBank": {
+    "blade": {
+      "prefix": ["Widow", "Grim", "Blood", "Raven", "Ash", "Frost", "Night", "Iron", "Ghost", "Storm", "Pale", "Black"],
+      "noun": ["Fang", "Edge", "Thorn", "Reaver", "Whisper", "Biter", "Cleaver", "Tooth", "Song", "Sever", "Sting", "Bite"]
+    },
+    "heavy": {
+      "prefix": ["Iron", "Stone", "Skull", "Storm", "Grave", "Doom", "Widow", "Ash", "Bone", "Thunder", "Black", "Old"],
+      "noun": ["Breaker", "Crusher", "Maul", "Ruin", "Splitter", "Render", "Wrecker", "Quake", "Hammer", "Fall", "Grinder", "Smasher"]
+    },
+    "gun": {
+      "prefix": ["Red", "Iron", "Night", "Ghost", "Silent", "Dead", "High", "Last", "Cold", "Long", "Black", "Grey"],
+      "noun": ["Line", "Maker", "Whisper", "Caller", "Reckoning", "Rattle", "Echo", "Watch", "Shot", "Mark", "Bark", "Song"]
+    },
+    "wood": {
+      "prefix": ["Willow", "Storm", "Wind", "Silver", "Green", "Moon", "Wild", "Ash", "Deep", "Old", "Grey", "Long"],
+      "noun": ["Bough", "Reach", "Whistle", "Strider", "Branch", "Needle", "Thorn", "Wisp", "Root", "Sting", "Song", "Fletch"]
+    },
+    "magic": {
+      "prefix": ["Astral", "Void", "Arcane", "Ember", "Spectral", "Runic", "Lunar", "Prismatic", "Wyrd", "Hollow", "Umbral", "Gilded"],
+      "noun": ["Weave", "Sigil", "Flare", "Hex", "Whisper", "Bloom", "Veil", "Spark", "Rift", "Chant", "Ward", "Bind"]
+    },
+    "default": {
+      "prefix": ["Iron", "Grey", "Old", "True", "Silent", "Wild", "Far", "Lone", "High", "Last", "Quiet", "Plain"],
+      "noun": ["Hand", "Watch", "Path", "Mark", "Call", "Hold", "Ward", "Reach", "Stand", "Keep", "Grip", "Line"]
+    }
   }
 }

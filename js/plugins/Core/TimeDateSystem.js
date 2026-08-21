@@ -2844,6 +2844,12 @@
       if (data && data.timerActive) return 'travel';
     }
     if (scene._sleepSequenceState || scene._cryoSequenceState || scene._workSequenceActive) return 'clock';
+    // Same reasoning as an active sleep/work sequence: there is no location to
+    // report inside a cell, only the sentence's clock running -- and unlike
+    // those, a jail term can run for real minutes without any sequence active
+    // at all (standing around, or between sleeps), so it needs its own check
+    // rather than piggybacking on _sleepSequenceState.
+    if (window.prisonManager && window.prisonManager.isInPrison()) return 'clock';
     return null;
   };
 

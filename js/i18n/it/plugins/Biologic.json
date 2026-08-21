@@ -650,9 +650,18 @@
   "already": "{actor} ha già {disease}"
  },
  "diagnose": {
-  "header": "La visita è finita.",
-  "line": "{actor}: {diseases}",
-  "clean": "{actor}: niente",
-  "none": "Nessuno nel gruppo si porta dietro niente."
+  "rowUnknown": "{actor}: malattia sconosciuta",
+  "rowKnown": "{actor}: {disease}",
+  "knownTag": "Nota",
+  "empty": "Nessuno nel gruppo si porta dietro niente.",
+  "tooExpensive": "Non abbastanza denaro per la visita.",
+  "revealed": "La malattia di {actor} è {disease}."
+ },
+ "cure": {
+  "rowLine": "{actor}: {disease}",
+  "stockedTag": "Scorta pronta",
+  "empty": "Nessuno ha una malattia diagnosticata che valga una cura, per ora.",
+  "tooExpensive": "Non abbastanza denaro per le medicine.",
+  "bought": "Comprate {count}x {item} per {actor}."
  }
 }

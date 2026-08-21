@@ -25,10 +25,6 @@
  * @desc Asks which party member to infect, then gives them the disease.
  * Works on the map and in battle. Used by the disease vials.
  *
- * @command Diagnose
- * @desc Examines the whole party and names every illness they carry,
- * including ones still inside their window period. Works in battle too.
- *
  * @arg disease
  * @type string
  * @desc Disease id from js/db/Health/Diseases.json (e.g. influenza, rabies).
@@ -37,6 +33,14 @@
  * @type boolean
  * @default false
  * @desc true infects the leader outright, without asking.
+ *
+ * @command Diagnose
+ * @desc Opens a screen listing every illness the party carries, including
+ * ones still inside their window period; each can be paid to be named.
+ *
+ * @command CureDiseases
+ * @desc Opens a screen to buy a course of medicine for every diagnosed
+ * illness the party carries.
  *
  */
 
@@ -2549,13 +2553,18 @@
   );
 
   // ── Being looked over by somebody who knows ───────────────────────────────
-  // What a doctor's visit is worth. Every illness in the party is named at
-  // once, the ones still inside their window period included: those are the
-  // ones the party could not have found on their own, and until somebody says
-  // what they are the morning dose round walks straight past them. Naming
-  // them is therefore not a cosmetic reveal — it is what lets them be treated.
+  // A doctor's visit is not a free reading of the chart: every illness in the
+  // party, the ones still inside their window period included, is named only
+  // once it has been paid for, one at a time. Naming a disease is what lets
+  // the morning dose round start treating it, so the exam screen lists
+  // everything carried, undiagnosed entries shown as a price to pay rather
+  // than a name to read.
+  const DIAGNOSIS_COST = 2500; // 25 euros a disease, per Economy convention (gold/100)
+
   window.BiologicDiagnosis = {
-    // Everyone the examination covers. Away from a fight that is the whole
+    COST: DIAGNOSIS_COST,
+
+    // Everyone the exam covers. Away from a fight that is the whole
     // travelling party; in one, only the line that is actually present.
     targets() {
       if (!window.$gameParty) return [];
@@ -2564,62 +2573,266 @@
       return (list || []).filter(Boolean);
     },
 
-    // One member, named illnesses and all. Returns the diseases found so the
-    // caller can write the line; the marking is the lasting part.
-    examine(actor) {
+    // Every carried illness, named or not, as one row per (member, disease).
+    entries() {
       const api = window.DiseaseSystem;
-      if (!api || !actor) return [];
-      const found = [];
-      for (const entry of api.actorEntries(actor)) {
-        entry.diagnosed = true;          // ends the window period for good
-        const disease = api.resolve(entry);
-        if (disease) found.push(disease);
+      if (!api) return [];
+      const list = [];
+      for (const actor of this.targets()) {
+        for (const entry of api.actorEntries(actor)) {
+          const disease = api.resolve(entry);
+          if (disease) list.push({ actor, entry, disease });
+        }
       }
-      if (found.length && actor.refresh) actor.refresh();
-      return found;
+      return list;
     },
 
-    // The examination itself: one line per member, put through $gameMessage so
-    // it reads the same on the map and in a fight, four lines to a page.
-    run() {
-      const members = this.targets();
-      if (!window.DiseaseSystem || !members.length) return;
-      const lines = [];
-      let anyIll = false;
-      for (const actor of members) {
-        const found = this.examine(actor);
-        if (found.length) anyIll = true;
-        lines.push(
-          found.length
-            ? T("Biologic.diagnose.line", {
-                actor: actor.name(),
-                diseases: found.map((d) => d.name).join(", "),
-              })
-            : T("Biologic.diagnose.clean", { actor: actor.name() })
-        );
-      }
-      if (!window.$gameMessage) {
-        if (window.ParchmentToast) {
-          window.ParchmentToast.show(lines.join("  "), { severity: anyIll ? "warning" : "good", duration: 300 });
-        }
-        return;
-      }
-      // A party where nobody is carrying anything says so in one line rather
-      // than reciting a clean bill of health name by name.
-      if (!anyIll) {
-        $gameMessage.add(T("Biologic.diagnose.none"));
-        return;
-      }
-      $gameMessage.add(T("Biologic.diagnose.header"));
-      for (let i = 0; i < lines.length; i++) {
-        if ((i + 1) % 4 === 0) $gameMessage.newPage();
-        $gameMessage.add(lines[i]);
-      }
+    // Naming one illness for good: ends its window period the same way a
+    // long-enough carry would have.
+    reveal(row) {
+      row.entry.diagnosed = true;
+      if (row.actor.refresh) row.actor.refresh();
     },
   };
 
+  function Window_BiologicDiagnosis() {
+    this.initialize(...arguments);
+  }
+
+  Window_BiologicDiagnosis.prototype = Object.create(Window_Command.prototype);
+  Window_BiologicDiagnosis.prototype.constructor = Window_BiologicDiagnosis;
+
+  Window_BiologicDiagnosis.prototype.makeCommandList = function () {
+    for (const row of window.BiologicDiagnosis.entries()) {
+      const name = row.entry.diagnosed
+        ? T("Biologic.diagnose.rowKnown", { actor: row.actor.name(), disease: row.disease.name })
+        : T("Biologic.diagnose.rowUnknown", { actor: row.actor.name() });
+      this.addCommand(name, "reveal", true, row);
+    }
+  };
+
+  Window_BiologicDiagnosis.prototype.drawItem = function (index) {
+    const cmd = this._list[index];
+    const row = cmd.ext;
+    const rect = this.itemLineRect(index);
+    this.resetTextColor();
+    this.changePaintOpacity(this.isCommandEnabled(index));
+    this.drawText(cmd.name, rect.x, rect.y, rect.width - 140);
+    if (row.entry.diagnosed) {
+      this.changeTextColor(this.textColor(3));
+      this.drawText(T("Biologic.diagnose.knownTag"), rect.x, rect.y, rect.width, "right");
+      this.resetTextColor();
+    } else {
+      this.drawCurrencyValue(window.BiologicDiagnosis.COST, $dataSystem.currencyUnit, rect.x, rect.y, rect.width);
+    }
+  };
+
+  // Every row acts the instant it is chosen rather than through a generic ok
+  // handler, since what happens (pay and reveal, or nothing) depends on the
+  // row itself. The window stays open and active either way.
+  Window_BiologicDiagnosis.prototype.processOk = function () {
+    const cmd = this._list[this.index()];
+    const row = cmd && cmd.ext;
+    if (!row) return;
+    if (row.entry.diagnosed) {
+      SoundManager.playBuzzer();
+      return;
+    }
+    if ($gameParty.gold() < window.BiologicDiagnosis.COST) {
+      SoundManager.playBuzzer();
+      if (window.ParchmentToast) {
+        window.ParchmentToast.show(T("Biologic.diagnose.tooExpensive"), { severity: "warning", duration: 150 });
+      }
+      return;
+    }
+    $gameParty.loseGold(window.BiologicDiagnosis.COST);
+    window.BiologicDiagnosis.reveal(row);
+    SoundManager.playShop();
+    if (window.ParchmentToast) {
+      window.ParchmentToast.show(
+        T("Biologic.diagnose.revealed", { actor: row.actor.name(), disease: row.disease.name }),
+        { severity: "good", duration: 200 }
+      );
+    }
+    this.refresh();
+    this.activate();
+  };
+
+  function Scene_BiologicDiagnosis() {
+    this.initialize(...arguments);
+  }
+
+  Scene_BiologicDiagnosis.prototype = Object.create(Scene_MenuBase.prototype);
+  Scene_BiologicDiagnosis.prototype.constructor = Scene_BiologicDiagnosis;
+
+  Scene_BiologicDiagnosis.prototype.create = function () {
+    Scene_MenuBase.prototype.create.call(this);
+    const rowCount = window.BiologicDiagnosis.entries().length;
+    const ww = 640;
+    const wh = this.calcWindowHeight(Math.min(Math.max(rowCount, 1), 10), true);
+    const wx = (Graphics.boxWidth - ww) / 2;
+    const wy = (Graphics.boxHeight - wh) / 2;
+    this._listWindow = new Window_BiologicDiagnosis(new Rectangle(wx, wy, ww, wh));
+    this._listWindow.setHandler("cancel", this.popScene.bind(this));
+    this.addWindow(this._listWindow);
+  };
+
   PluginManager.registerCommand("Health_BiologicSimulation", "Diagnose", () => {
-    window.BiologicDiagnosis.run();
+    if (!window.BiologicDiagnosis.entries().length) {
+      if (window.ParchmentToast) {
+        window.ParchmentToast.show(T("Biologic.diagnose.empty"), { severity: "info", duration: 180 });
+      }
+      return;
+    }
+    SceneManager.push(Scene_BiologicDiagnosis);
+  });
+
+  // ── Buying a course of medicine ────────────────────────────────────────────
+  // Only a named illness can be shopped for: nobody hands over a course of
+  // drugs for something they have not identified. Each row offers the one
+  // remedy a doctor would actually reach for — neither the cheapest, weakest
+  // dose nor the priciest one, the middle-priced cure on the shelf — priced
+  // for however many doses are still missing from the pack.
+  const CURE_MANAGE_STOCK_DAYS = 14; // a fortnight's stock for an illness only managed, never cured
+
+  window.BiologicCure = {
+    // The remedy a doctor prescribes: a cure over a mere suppressant, and
+    // among same-kind options the one sitting in the middle of the price
+    // range, not the bargain bin or the premium shelf.
+    pickRemedy(diseaseId) {
+      const api = window.Medicines;
+      if (!api) return null;
+      const all = api.forDisease(diseaseId);
+      const cures = all.filter((r) => r.kind === "cure");
+      const pool = cures.length ? cures : all;
+      if (!pool.length) return null;
+      const priced = pool
+        .map((r) => ({ r, price: ($dataItems[r.itemId] && $dataItems[r.itemId].price) || 0 }))
+        .sort((a, b) => a.price - b.price);
+      return priced[Math.floor((priced.length - 1) / 2)].r;
+    },
+
+    // One row per named illness that has a remedy at all, with what is still
+    // missing from the pack to see the course through.
+    rows() {
+      const api = window.DiseaseSystem;
+      if (!api) return [];
+      const list = [];
+      for (const actor of window.BiologicDiagnosis.targets()) {
+        for (const entry of api.actorEntries(actor)) {
+          const disease = api.resolve(entry);
+          if (!disease) continue;
+          const st = api.courseState(actor, entry);
+          if (!st || !st.known) continue;
+          const remedy = this.pickRemedy(entry.id);
+          if (!remedy) continue;
+          const item = $dataItems[remedy.itemId];
+          if (!item) continue;
+          const courseDays = remedy.kind === "cure" ? remedy.days : CURE_MANAGE_STOCK_DAYS;
+          const held = $gameParty.numItems(item);
+          const needed = Math.max(0, courseDays - held);
+          list.push({ actor, entry, disease, remedy, item, needed, cost: needed * (item.price || 0) });
+        }
+      }
+      return list;
+    },
+
+    // Stocking the pack. The caller is expected to have already checked gold
+    // and `needed`; this just moves it.
+    buy(row) {
+      $gameParty.loseGold(row.cost);
+      $gameParty.gainItem(row.item, row.needed);
+    },
+  };
+
+  function Window_BiologicCure() {
+    this.initialize(...arguments);
+  }
+
+  Window_BiologicCure.prototype = Object.create(Window_Command.prototype);
+  Window_BiologicCure.prototype.constructor = Window_BiologicCure;
+
+  Window_BiologicCure.prototype.makeCommandList = function () {
+    for (const row of window.BiologicCure.rows()) {
+      const name = T("Biologic.cure.rowLine", { actor: row.actor.name(), disease: row.disease.name });
+      this.addCommand(name, "buy", true, row);
+    }
+  };
+
+  Window_BiologicCure.prototype.drawItem = function (index) {
+    const cmd = this._list[index];
+    const row = cmd.ext;
+    const rect = this.itemLineRect(index);
+    this.resetTextColor();
+    this.changePaintOpacity(this.isCommandEnabled(index));
+    this.drawText(cmd.name, rect.x, rect.y, rect.width - 140);
+    if (row.needed <= 0) {
+      this.changeTextColor(this.textColor(3));
+      this.drawText(T("Biologic.cure.stockedTag"), rect.x, rect.y, rect.width, "right");
+      this.resetTextColor();
+    } else {
+      this.drawCurrencyValue(row.cost, $dataSystem.currencyUnit, rect.x, rect.y, rect.width);
+    }
+  };
+
+  Window_BiologicCure.prototype.processOk = function () {
+    const cmd = this._list[this.index()];
+    const row = cmd && cmd.ext;
+    if (!row) return;
+    if (row.needed <= 0) {
+      SoundManager.playBuzzer();
+      return;
+    }
+    if ($gameParty.gold() < row.cost) {
+      SoundManager.playBuzzer();
+      if (window.ParchmentToast) {
+        window.ParchmentToast.show(T("Biologic.cure.tooExpensive"), { severity: "warning", duration: 150 });
+      }
+      return;
+    }
+    const actorName = row.actor.name();
+    const itemName = row.item.name;
+    const iconIndex = row.item.iconIndex;
+    const count = row.needed;
+    window.BiologicCure.buy(row);
+    SoundManager.playShop();
+    if (window.ParchmentToast) {
+      window.ParchmentToast.show(
+        T("Biologic.cure.bought", { actor: actorName, item: itemName, count }),
+        { severity: "good", duration: 200, icon: iconIndex }
+      );
+    }
+    this.refresh();
+    this.activate();
+  };
+
+  function Scene_BiologicCure() {
+    this.initialize(...arguments);
+  }
+
+  Scene_BiologicCure.prototype = Object.create(Scene_MenuBase.prototype);
+  Scene_BiologicCure.prototype.constructor = Scene_BiologicCure;
+
+  Scene_BiologicCure.prototype.create = function () {
+    Scene_MenuBase.prototype.create.call(this);
+    const rowCount = window.BiologicCure.rows().length;
+    const ww = 640;
+    const wh = this.calcWindowHeight(Math.min(Math.max(rowCount, 1), 10), true);
+    const wx = (Graphics.boxWidth - ww) / 2;
+    const wy = (Graphics.boxHeight - wh) / 2;
+    this._listWindow = new Window_BiologicCure(new Rectangle(wx, wy, ww, wh));
+    this._listWindow.setHandler("cancel", this.popScene.bind(this));
+    this.addWindow(this._listWindow);
+  };
+
+  PluginManager.registerCommand("Health_BiologicSimulation", "CureDiseases", () => {
+    if (!window.BiologicCure.rows().length) {
+      if (window.ParchmentToast) {
+        window.ParchmentToast.show(T("Biologic.cure.empty"), { severity: "info", duration: 180 });
+      }
+      return;
+    }
+    SceneManager.push(Scene_BiologicCure);
   });
 
   Window_BiologicSimulation.prototype.determinePersonality = function (name) {

@@ -66,6 +66,153 @@
  * @decimals 2
  * @default 0.80
  *
+ * @param invisibleHandChipFloorPercent
+ * @text Invisible Hand: Chip Floor Percent
+ * @desc Minimum HP damage an actor's hit against an enemy always deals, as a fraction of the enemy's max HP, even if the raw formula computes to 0 or less.
+ * @type number
+ * @decimals 4
+ * @default 0.0050
+ *
+ * @param invisibleHandEnabled
+ * @text Invisible Hand Enabled
+ * @desc Master switch for the auto-balancing enemy stat system.
+ * @type boolean
+ * @default true
+ *
+ * @param invisibleHandGraceEdge
+ * @text Invisible Hand: Grace Edge
+ * @desc Levels an enemy may outrank the party's effective level before the stat curve steepens.
+ * @type number
+ * @default 2
+ *
+ * @param invisibleHandGraceMult
+ * @text Invisible Hand: Grace Multiplier
+ * @desc Enemy ATK/DEF/MAT/MDF multiplier at the grace edge (the "hard but winnable" ceiling).
+ * @type number
+ * @decimals 2
+ * @default 1.40
+ *
+ * @param invisibleHandSteepK
+ * @text Invisible Hand: Steep Coefficient
+ * @desc Growth rate of the stat multiplier once an enemy outranks the party by more than the grace edge.
+ * @type number
+ * @decimals 2
+ * @default 0.20
+ *
+ * @param invisibleHandSteepCurve
+ * @text Invisible Hand: Steep Curve
+ * @desc Exponent of the post-edge stat growth. Above 1 it bites harder as the gap widens.
+ * @type number
+ * @decimals 2
+ * @default 1.9
+ *
+ * @param invisibleHandGapDefenseCurve
+ * @text Invisible Hand: Gap Defense Curve
+ * @desc Fraction of the level-gap stat growth also applied to DEF/MDF, kept lower than ATK/MAT so a higher-level enemy still takes some damage.
+ * @type number
+ * @decimals 2
+ * @default 0.50
+ *
+ * @param invisibleHandUnderSpan
+ * @text Invisible Hand: Underlevel Span
+ * @desc Levels an enemy may trail the party before its stat multiplier bottoms out.
+ * @type number
+ * @default 20
+ *
+ * @param invisibleHandUnderFloor
+ * @text Invisible Hand: Underlevel Floor
+ * @desc Lowest stat multiplier a heavily underleveled enemy can be reduced to.
+ * @type number
+ * @decimals 2
+ * @default 0.65
+ *
+ * @param invisibleHandOutnumberFactor
+ * @text Invisible Hand: Outnumber Factor
+ * @desc How much tougher (DEF/MDF) an outnumbered enemy gets per extra party member it faces.
+ * @type number
+ * @decimals 2
+ * @default 0.50
+ *
+ * @param invisibleHandOutnumberOffenseCurve
+ * @text Invisible Hand: Outnumber Offense Curve
+ * @desc Fraction of the outnumber toughness boost also applied to ATK/MAT, kept gentle since an outnumbered enemy already acts more often.
+ * @type number
+ * @decimals 2
+ * @default 0.50
+ *
+ * @param invisibleHandStatFloor
+ * @text Invisible Hand: Stat Floor
+ * @desc Hard safety floor for the combined stat multiplier.
+ * @type number
+ * @decimals 2
+ * @default 0.60
+ *
+ * @param invisibleHandStatCeiling
+ * @text Invisible Hand: Stat Ceiling
+ * @desc Hard safety ceiling for the combined stat multiplier.
+ * @type number
+ * @decimals 2
+ * @default 10.00
+ *
+ * @param invisibleHandGearSpan
+ * @text Invisible Hand: Gear Sample Span
+ * @desc Levels back sampled from an actor's class curve to estimate its stat growth rate, for converting gear power into effective levels.
+ * @type number
+ * @default 5
+ *
+ * @param invisibleHandGearFloor
+ * @text Invisible Hand: Gear Level Floor
+ * @desc Lowest effective-level adjustment an actor's gear can apply toward the party's balancing level.
+ * @type number
+ * @default -2
+ *
+ * @param invisibleHandGearCeiling
+ * @text Invisible Hand: Gear Level Ceiling
+ * @desc Highest effective-level adjustment an actor's gear can apply toward the party's balancing level.
+ * @type number
+ * @default 6
+ *
+*
+ * @param invisibleHandWeaponDefenseEnabled
+ * @text Weapon-Based Defense Scaling
+ * @desc When enabled, enemy DEF/MDF are adjusted by how much weapon damage the party can deal.
+ * @type boolean
+ * @default true
+ *
+ * @param invisibleHandWeaponDefenseScale
+ * @text Weapon Defense: Scale
+ * @desc How much enemy DEF/MDF scales per unit of party weapon damage above the threshold.
+ * @type number
+ * @decimals 2
+ * @default 0.0015
+ *
+ * @param invisibleHandWeaponDefenseThreshold
+ * @text Weapon Defense: Baseline Threshold
+ * @desc Baseline weapon-damage potential below which no defense adjustment is applied.
+ * @type number
+ * @default 200
+ *
+ * @param invisibleHandWeaponDefenseFloor
+ * @text Weapon Defense: Floor
+ * @desc Lowest multiplier the weapon-damage defense adjustment can go.
+ * @type number
+ * @decimals 2
+ * @default 0.80
+ *
+ * @param invisibleHandWeaponDefenseCeiling
+ * @text Weapon Defense: Ceiling
+ * @desc Highest multiplier the weapon-damage defense adjustment can reach.
+ * @type number
+ * @decimals 2
+ * @default 2.50
+ *
+ * @param invisibleHandOneShotMaxPercent
+ * @text One-Shot Protection: Max % per Hit
+ * @desc Maximum fraction of an enemy's max HP that a single hit can deal. Stops one-shot kills. 0.50 = 50%. Set to 0 to disable.
+ * @type number
+ * @decimals 3
+ * @default 0.50
+ *
  * @command startBattle
  * @text Start Event Battle
  * @desc Start a battle with the event's fixed troop and maintain HP state
@@ -169,6 +316,28 @@
     BSE.Params.levelDampCurve       = Number(parameters['levelDampCurve'] || 1.6);
     BSE.Params.levelDampFloor       = Number(parameters['levelDampFloor'] || 0.10);
     BSE.Params.levelDampLeverageCap = Number(parameters['levelDampLeverageCap'] || 0.80);
+    BSE.Params.invisibleHandChipFloorPercent      = Number(parameters['invisibleHandChipFloorPercent'] || 0.0050);
+    BSE.Params.invisibleHandEnabled               = (parameters['invisibleHandEnabled'] !== 'false');
+    BSE.Params.invisibleHandGraceEdge             = Number(parameters['invisibleHandGraceEdge'] || 2);
+    BSE.Params.invisibleHandGraceMult             = Number(parameters['invisibleHandGraceMult'] || 1.40);
+    BSE.Params.invisibleHandSteepK                = Number(parameters['invisibleHandSteepK'] || 0.20);
+    BSE.Params.invisibleHandSteepCurve            = Number(parameters['invisibleHandSteepCurve'] || 1.9);
+    BSE.Params.invisibleHandGapDefenseCurve       = Number(parameters['invisibleHandGapDefenseCurve'] || 0.50);
+    BSE.Params.invisibleHandUnderSpan             = Number(parameters['invisibleHandUnderSpan'] || 20);
+    BSE.Params.invisibleHandUnderFloor            = Number(parameters['invisibleHandUnderFloor'] || 0.65);
+    BSE.Params.invisibleHandOutnumberFactor       = Number(parameters['invisibleHandOutnumberFactor'] || 0.50);
+    BSE.Params.invisibleHandOutnumberOffenseCurve = Number(parameters['invisibleHandOutnumberOffenseCurve'] || 0.50);
+    BSE.Params.invisibleHandStatFloor             = Number(parameters['invisibleHandStatFloor'] || 0.60);
+    BSE.Params.invisibleHandStatCeiling           = Number(parameters['invisibleHandStatCeiling'] || 10.00);
+    BSE.Params.invisibleHandGearSpan              = Number(parameters['invisibleHandGearSpan'] || 5);
+    BSE.Params.invisibleHandGearFloor             = Number(parameters['invisibleHandGearFloor'] || -2);
+    BSE.Params.invisibleHandGearCeiling           = Number(parameters['invisibleHandGearCeiling'] || 6);
+    BSE.Params.invisibleHandWeaponDefenseEnabled   = (parameters['invisibleHandWeaponDefenseEnabled'] !== 'false');
+    BSE.Params.invisibleHandWeaponDefenseScale     = Number(parameters['invisibleHandWeaponDefenseScale'] || 0.0015);
+    BSE.Params.invisibleHandWeaponDefenseThreshold = Number(parameters['invisibleHandWeaponDefenseThreshold'] || 200);
+    BSE.Params.invisibleHandWeaponDefenseFloor     = Number(parameters['invisibleHandWeaponDefenseFloor'] || 0.80);
+    BSE.Params.invisibleHandWeaponDefenseCeiling   = Number(parameters['invisibleHandWeaponDefenseCeiling'] || 2.50);
+    BSE.Params.invisibleHandOneShotMaxPercent     = Number(parameters['invisibleHandOneShotMaxPercent'] || 0.50);
 
     // ------------------------------------------------------------------
     // 3. SHARED STATE (module-level closures, exposed via BSE.Data)
@@ -207,6 +376,11 @@
     // any other battle set up outside startPersistentBattle would otherwise see
     // whatever the previous overworld encounter left behind.
     BSE.State.reinforcement = null;
+
+    // The party's InvisibleHand effective level for the battle in progress,
+    // null between battles so it is recomputed fresh on the next one. See
+    // section 4c below.
+    BSE.State.ihPartyLevel = null;
 
     // ------------------------------------------------------------------
     // 4. SHARED HELPER FUNCTIONS
@@ -457,11 +631,307 @@
         const value = _Game_Action_makeDamageValue_BSE.call(this, target, critical);
         // HP damage and HP drain only: healing, MP damage and every recovery
         // effect keep their full value.
-        if (value <= 0 || !this.checkDamageType([1, 5])) return value;
-        const factor = BSE.Helpers.levelDampingFactor(this.subject(), target, this, critical);
-        if (factor >= 1) return value;
-        // A damped hit still lands: chip damage is the point, zero is not.
-        return Math.max(1, value * factor);
+        if (!this.checkDamageType([1, 5])) return value;
+        let finalValue = value;
+        if (value <= 0) {
+            // InvisibleHand's own DEF/MDF boost (section 4c) can push a raw
+            // formula to 0 or below against a much higher-level enemy, at
+            // which point no tactic could ever land a hit at all - that is
+            // "unwinnable", not "very hard". Guarantee a sliver of chip
+            // damage from an actor's hit, scaled to the target's own max HP
+            // so it stays meaningful against both a rat and a superboss.
+            const subject = this.subject();
+            if (subject && subject.isActor && subject.isActor() &&
+                target && target.isEnemy && target.isEnemy()) {
+                finalValue = Math.max(1, Math.round(target.mhp * BSE.Params.invisibleHandChipFloorPercent));
+            } else {
+                return value;
+            }
+        } else {
+            const factor = BSE.Helpers.levelDampingFactor(this.subject(), target, this, critical);
+            if (factor < 1) {
+                // A damped hit still lands: chip damage is the point, zero is not.
+                finalValue = Math.max(1, value * factor);
+            }
+        }
+        // One-shot protection: no single hit may deal more than a configurable
+        // fraction of an enemy's max HP, so even the strongest attack cannot
+        // kill an enemy outright from full or near-full health. This gives
+        // every fight at least a couple of turns of meaningful interaction.
+        if (BSE.Params.invisibleHandOneShotMaxPercent > 0 &&
+            target && target.isEnemy && target.isEnemy()) {
+            const maxPerHit = Math.max(1, Math.round(target.mhp * BSE.Params.invisibleHandOneShotMaxPercent));
+            if (finalValue > maxPerHit) finalValue = maxPerHit;
+        }
+        return finalValue;
+    };
+
+    // ------------------------------------------------------------------
+    // 4c. INVISIBLE HAND - AUTO-BALANCING ENEMY STATS
+    //
+    //   The world throws an enormous range of party/enemy level and headcount
+    //   combinations at the same static Enemies.json entries, so a fight's
+    //   real difficulty is decided live, at paramBase, instead of trusting
+    //   whatever ATK/DEF/MAT/MDF a monster happened to be authored with. HP
+    //   and MP are never touched: a boosted enemy survives a beating for
+    //   longer because it hits harder and shrugs off more, not because it was
+    //   handed extra health. AGI and LUK are left alone too, so turn order
+    //   (see IndividualBattleTurns.js) and crit luck stay as authored.
+    //
+    //   Two multipliers stack per stat:
+    //
+    //   - Level gap: the enemy's <Level:X> against the party's own effective
+    //     level (median level, nudged by how far its equipped gear runs
+    //     ahead of a bare class curve; see ihGearLevelBonus). Flat at 1x up
+    //     to the party's level, ramps to invisibleHandGraceMult by
+    //     invisibleHandGraceEdge levels above it (the "hard but still
+    //     winnable" edge), then accelerates past that edge so a much
+    //     higher-level enemy hits far harder. ATK/MAT take the full curve;
+    //     DEF/MDF only take invisibleHandGapDefenseCurve of it (plus the
+    //     chip-damage floor in makeDamageValue above), so a high-level enemy
+    //     is genuinely dangerous without turning into a wall no hit can ever
+    //     get through - the fight stays winnable through tactics rather than
+    //     becoming impossible outright. Comfortably below the party it eases
+    //     toward invisibleHandUnderFloor instead of collapsing to nothing,
+    //     so a low-level mob still fights back a little.
+    //
+    //   - Outnumbered enemy: when the party (summon excluded) still standing
+    //     outnumbers the enemies still standing, the survivors get tougher,
+    //     scaled by the ratio (2v1, 3v1, ...). This stacks with the lone
+    //     enemy's extra actions from IndividualBattleTurns.js, so the
+    //     offense side of the boost (invisibleHandOutnumberOffenseCurve) is
+    //     kept gentler than the defense side - a solo enemy already swinging
+    //     twice as often would also hit twice as hard otherwise. Recomputed
+    //     live off current alive counts, so a 3v3 that whittles down to 3v1
+    //     toughens its last survivor mid-fight. <Boss> enemies are exempt
+    //     here (already tuned to be fought outnumbered, the same exemption
+    //     IndividualBattleTurns.js gives them), but not from the level-gap
+    //     multiplier above.
+    //
+    //   The party's own effective level is snapshotted once, when
+    //   BattleManager.setup runs, so a mid-fight buff or a fallen ally never
+    //   feeds back into how tough the enemy already is.
+    // ------------------------------------------------------------------
+
+    const IH_OFFENSE_PARAMS = [2, 4]; // ATK, MAT
+    const IH_DEFENSE_PARAMS = [3, 5]; // DEF, MDF
+
+    function ihIsBossEnemy(enemyData) {
+        return !!(enemyData && enemyData.meta && enemyData.meta.Boss);
+    }
+
+    /**
+     * How many effective levels an actor's equipped gear is worth, above or
+     * below a bare class curve at the actor's current level. Sampled against
+     * the actor's own growth rate over the last invisibleHandGearSpan
+     * levels, so a flat-growth class and a steep one convert gear power to
+     * levels fairly.
+     */
+    BSE.Helpers.ihGearLevelBonus = function(actor) {
+        if (!actor || !actor.currentClass) return 0;
+        const cls = actor.currentClass();
+        if (!cls || !cls.params) return 0;
+        const level = actor.level;
+        const span = Math.max(1, BSE.Params.invisibleHandGearSpan);
+        const lowLevel = Math.max(1, level - span);
+        let gearPower = 0;
+        let growth = 0;
+        for (const id of IH_OFFENSE_PARAMS.concat(IH_DEFENSE_PARAMS)) {
+            const bare = actor.paramBase(id);
+            const full = bare + actor.paramPlus(id);
+            gearPower += Math.max(0, full - bare);
+            const table = cls.params[id];
+            const lowBare = table ? (table[lowLevel] || 0) : bare;
+            growth += Math.max(1, (bare - lowBare) / (level - lowLevel || 1));
+        }
+        if (growth <= 0) return 0;
+        const levels = gearPower / growth;
+        return Math.max(BSE.Params.invisibleHandGearFloor,
+            Math.min(BSE.Params.invisibleHandGearCeiling, levels));
+    };
+
+    /**
+     * The party's effective level for InvisibleHand purposes: median level
+     * plus the average gear bonus, summon excluded.
+     */
+    BSE.Helpers.ihComputeEffectivePartyLevel = function() {
+        const SS = window.SummonSystem;
+        const party = $gameParty.members().filter(a =>
+            a && !(SS && SS.isProxyActor && SS.isProxyActor(a.actorId())));
+        if (!party.length) return 1;
+        const median = BSE.Helpers.getMedianLevel(party);
+        const gearTotal = party.reduce((sum, a) => sum + BSE.Helpers.ihGearLevelBonus(a), 0);
+        return median + gearTotal / party.length;
+    };
+
+    /**
+     * Max potential weapon damage from the party's equipped weapons.
+     * Iterates each non-summon party member and computes the theoretical
+     * maximum raw damage output (physical and magical) based on their
+     * equipped weapon's ATK/MAT params combined with the actor's own
+     * base ATK/MAT. Returns the single highest value found across the
+     * party, used by the weapon-based defense adjustment below.
+     */
+    BSE.Helpers.ihMaxWeaponDamage = function() {
+        const SS = window.SummonSystem;
+        const party = $gameParty.members().filter(a =>
+            a && !(SS && SS.isProxyActor && SS.isProxyActor(a.actorId())));
+        if (!party.length) return 0;
+        let maxDamage = 0;
+        for (const actor of party) {
+            if (!actor.isActor || !actor.isActor()) continue;
+            const weapons = actor.weapons();
+            if (!weapons || !weapons.length) continue;
+            for (const weapon of weapons) {
+                if (!weapon) continue;
+                // weapon params[2] = ATK bonus, params[4] = MAT bonus
+                const weaponAtk = weapon.params[2] || 0;
+                const weaponMat = weapon.params[4] || 0;
+                // Actor's own ATK/MAT contribution without the weapon bonus
+                const actorBaseAtk = actor.paramBase(2);
+                const actorBaseMat = actor.paramBase(4);
+                // Total effective attack power
+                const totalAtk = Math.max(0, actorBaseAtk + weaponAtk);
+                const totalMat = Math.max(0, actorBaseMat + weaponMat);
+                // RPG Maker MZ base attack formula: a.atk * 4 - b.def * 2
+                // The raw offensive contribution is atk * 4
+                const physDmg = totalAtk * 4;
+                const magDmg = totalMat * 4;
+                maxDamage = Math.max(maxDamage, physDmg, magDmg);
+            }
+        }
+        return maxDamage;
+    };
+
+    /**
+     * Defense multiplier derived from the party's max weapon-damage potential.
+     * When the party's weapons are strong enough to exceed the baseline
+     * threshold, enemy DEF/MDF are scaled upward so the fight does not
+     * become trivially easy. When weapon damage is below the threshold,
+     * no adjustment is made (multiplier of 1).
+     */
+    BSE.Helpers.ihWeaponDamageDefenseMultiplier = function() {
+        if (!BSE.Params.invisibleHandWeaponDefenseEnabled) return 1;
+        const maxWeaponDmg = BSE.Helpers.ihMaxWeaponDamage();
+        if (maxWeaponDmg <= 0) return 1;
+        const threshold = Math.max(1, BSE.Params.invisibleHandWeaponDefenseThreshold);
+        if (maxWeaponDmg <= threshold) return 1;
+        const excess = maxWeaponDmg - threshold;
+        const mult = 1 + (excess / threshold) * BSE.Params.invisibleHandWeaponDefenseScale;
+        return Math.max(BSE.Params.invisibleHandWeaponDefenseFloor,
+            Math.min(BSE.Params.invisibleHandWeaponDefenseCeiling, mult));
+    };
+
+    /**
+     * Stat multiplier from the level gap alone. gap > 0 means the enemy
+     * outranks the party. Defense (DEF/MDF) grows slower than offense above
+     * parity: a full-strength DEF/MDF wall can push a formula's damage to 0
+     * or below outright, at which point no tactic can ever land a hit at
+     * all - that reads as "unwinnable", not "very hard". Offense keeps the
+     * full curve, so a much higher-level enemy still hits like a truck.
+     */
+    BSE.Helpers.ihLevelGapMultiplier = function(enemyLevel, partyLevel, offense) {
+        if (!enemyLevel || enemyLevel <= 0) return 1;
+        const gap = enemyLevel - partyLevel;
+        if (gap <= 0) {
+            const span = Math.max(1, BSE.Params.invisibleHandUnderSpan);
+            const t = Math.min(1, -gap / span);
+            return 1 - t * (1 - BSE.Params.invisibleHandUnderFloor);
+        }
+        const edge = Math.max(0.01, BSE.Params.invisibleHandGraceEdge);
+        let mult;
+        if (gap <= edge) {
+            mult = 1 + (gap / edge) * (BSE.Params.invisibleHandGraceMult - 1);
+        } else {
+            const over = gap - edge;
+            mult = BSE.Params.invisibleHandGraceMult +
+                BSE.Params.invisibleHandSteepK * Math.pow(over, BSE.Params.invisibleHandSteepCurve);
+        }
+        if (!offense) {
+            mult = 1 + (mult - 1) * BSE.Params.invisibleHandGapDefenseCurve;
+        }
+        return mult;
+    };
+
+    /**
+     * Stat multiplier from being outnumbered. Alive headcounts only, summon
+     * excluded from the party side. 1 (no change) whenever the party does
+     * not outnumber what is left standing, or against a <Boss>.
+     */
+    BSE.Helpers.ihOutnumberMultiplier = function(enemy, offense) {
+        const SS = window.SummonSystem;
+        const aliveParty = $gameParty.aliveMembers().filter(a =>
+            !(SS && SS.isProxyActor && SS.isProxyActor(a.actorId()))).length;
+        const aliveEnemies = $gameTroop.aliveMembers().length;
+        if (aliveEnemies <= 0 || aliveParty <= aliveEnemies) return 1;
+        if (ihIsBossEnemy(enemy.enemy())) return 1;
+        const ratio = aliveParty / aliveEnemies;
+        const full = 1 + (ratio - 1) * BSE.Params.invisibleHandOutnumberFactor;
+        return offense ? 1 + (full - 1) * BSE.Params.invisibleHandOutnumberOffenseCurve : full;
+    };
+
+    /**
+     * The combined multiplier InvisibleHand applies to one enemy param. 1
+     * (no-op) outside an active battle, for anything but ATK/DEF/MAT/MDF, or
+     * for an enemy no longer in the current troop (a database-only preview,
+     * e.g. the Bestiary or the 3D viewer).
+     */
+    BSE.Helpers.ihEnemyParamMultiplier = function(enemy, paramId) {
+        if (!BSE.Params.invisibleHandEnabled) return 1;
+        if (!$gameParty || !$gameParty.inBattle() || !$gameTroop) return 1;
+        const offense = IH_OFFENSE_PARAMS.includes(paramId);
+        if (!offense && !IH_DEFENSE_PARAMS.includes(paramId)) return 1;
+        if (!$gameTroop.members().includes(enemy)) return 1;
+        if (BSE.State.ihPartyLevel === null || BSE.State.ihPartyLevel === undefined) {
+            BSE.State.ihPartyLevel = BSE.Helpers.ihComputeEffectivePartyLevel();
+        }
+        const enemyLevel = BSE.Helpers.getBattlerLevel(enemy);
+        const gapMult = BSE.Helpers.ihLevelGapMultiplier(enemyLevel, BSE.State.ihPartyLevel, offense);
+        const outMult = BSE.Helpers.ihOutnumberMultiplier(enemy, offense);
+        const mult = gapMult * outMult;
+        // Weapon-based defense adjustment: when the party's weapon damage
+        // potential exceeds the baseline threshold, enemy DEF/MDF are
+        // scaled up so a powerful armament does not trivialise fights.
+        let finalMult;
+        if (!offense && IH_DEFENSE_PARAMS.includes(paramId)) {
+            const weaponMult = BSE.Helpers.ihWeaponDamageDefenseMultiplier();
+            finalMult = mult * weaponMult;
+        } else {
+            finalMult = mult;
+        }
+        // Enemy Difficulty slider integration: the options slider (0..100,
+        // default 50) modulates the invisible hand's output so the player
+        // can tune how severely the auto-balancing system scales enemy
+        // ATK/DEF/MAT/MDF. At the default position the slider contributes
+        // nothing — the invisible hand runs exactly as configured.
+        // Slider 50 → factor 1.00 (no change), 0 → factor 0.50,
+        // 100 → factor 1.50, scaled linearly.
+        if (typeof GameOptions !== 'undefined' && GameOptions.enemyStatMultiplier) {
+            const sliderMult = GameOptions.enemyStatMultiplier();
+            const diffFactor = 1 + (sliderMult - 1) * 0.5;
+            finalMult *= diffFactor;
+        }
+        return Math.max(BSE.Params.invisibleHandStatFloor,
+            Math.min(BSE.Params.invisibleHandStatCeiling, finalMult));
+    };
+
+    // Chains onto whatever paramBase currently is (e.g. GameOptions.js's own
+    // enemy difficulty slider hook), so the two multipliers simply compose
+    // regardless of plugin load order.
+    const _Game_Enemy_paramBase_ih = Game_Enemy.prototype.paramBase;
+    Game_Enemy.prototype.paramBase = function(paramId) {
+        const base = _Game_Enemy_paramBase_ih.call(this, paramId);
+        const mult = BSE.Helpers.ihEnemyParamMultiplier(this, paramId);
+        if (mult === 1) return base;
+        return Math.round(base * mult);
+    };
+
+    // Clear the cached party level at the start of every battle so the next
+    // paramBase call recomputes it fresh instead of reusing the last fight's.
+    const _BattleManager_setup_ih = BattleManager.setup;
+    BattleManager.setup = function(troopId, canEscape, canLose) {
+        BSE.State.ihPartyLevel = null;
+        _BattleManager_setup_ih.call(this, troopId, canEscape, canLose);
     };
 
     // ------------------------------------------------------------------

@@ -774,6 +774,10 @@
                             const delta = afterParams[p] - beforeParams[p];
                             if (delta !== 0) paramDesc.push(`${paramNames[p]} ${delta>0?'+':''}${delta}`);
                         }
+                        // Non-param traits (element resist, attack element/state,
+                        // dual wielding...) don't fit the before/after delta above,
+                        // so they're listed as-is, same wording as the backpack tooltip.
+                        paramDesc.push(...window.ItemSystemUtils.traitLines(item));
                         // Weapons below Intermediate proficiency fight at reduced
                         // stats; flag the tier the character is actually at.
                         const prof = window.WeaponProficiency;

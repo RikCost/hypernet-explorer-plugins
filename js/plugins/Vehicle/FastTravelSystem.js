@@ -1017,22 +1017,6 @@
     function executeTravel(destination, cost) {
         const data = getFastTravelData();
 
-        // Character-creation hometown step: this picker was opened just to let
-        // the player pick a Destinations.json entry as their hometown, not to
-        // actually travel anywhere. Record the pick, close the overlay, and
-        // resume the (already-popped) creation wizard via the same plugin
-        // command an event would use to resume it (repriseCreation), instead
-        // of transferring the player.
-        if ($gameTemp && $gameTemp._ccHometownPick) {
-            $gameTemp._ccHometownPick = false;
-            $gameTemp._characterCreationTravelMode = false;
-            if ($gameSystem) $gameSystem._ccHometown = destination.name;
-            clearFastTravelData();
-            SceneManager._scene.closeTravelUIOverlay(true);
-            PluginManager.callCommand(SceneManager._scene, "CharacterCreation", "repriseCreation", {});
-            return;
-        }
-
         if ($gameTemp && $gameTemp._characterCreationTravelMode) {
             $gameTemp._characterCreationTravelMode = false;
             // The party is on its way: the origin is settled and the copy kept
@@ -1887,11 +1871,8 @@
         // to begin SOMEWHERE - but the choice that opened it can still be taken
         // back: the Back button here hands the player to the origin list again,
         // and CharacterCreation undoes everything the chosen origin granted on
-        // the way (CharacterCreationOrigin.reopen). The hometown step's picker
-        // is a different question with a step of its own to return to, so it
-        // keeps no button.
+        // the way (CharacterCreationOrigin.reopen).
         const ccCanReopenOrigin = isCCTravel
-            && !($gameTemp && $gameTemp._ccHometownPick)
             && !!(window.CharacterCreationOrigin
                 && window.CharacterCreationOrigin.canReopen
                 && window.CharacterCreationOrigin.canReopen());

@@ -1164,6 +1164,47 @@
     return `<div class="craft-block"><div class="craft-block-title">${head}</div>${rows}</div>`;
   }
 
+  //=============================================================================
+  // Trait lines: one compact sentence per non-stat trait (element resist,
+  // attack element/state, extra skill grants, dual wielding...) an item's
+  // RPG Maker trait array carries. Single source of truth for the Inventory
+  // and Equipment screens so their trait-code tables never drift apart again
+  // (see the STR-rate/attack-element mislabel bug this replaced).
+  //=============================================================================
+  function traitLines(item) {
+    if (!item || !Array.isArray(item.traits)) return [];
+    const T = window.T;
+    const getParamName = (id) => (['HP', 'MP', 'STR', 'CON', 'INT', 'WIS', 'DEX', 'PSI'][id] || T('Inventory.spec.stat'));
+    const lines = [];
+    item.traits.forEach((tr) => {
+      const val = tr.value; const did = tr.dataId; let desc = '';
+      if      (tr.code === 11) { const el = $dataSystem.elements[did]; desc = T('Inventory.trait.resistance', { element: el || T('Inventory.trait.elementFallback'), pct: Math.round(val * 100) }); }
+      else if (tr.code === 12) desc = T('Inventory.trait.debuffRate', { param: getParamName(did), pct: Math.round(val * 100) });
+      else if (tr.code === 13) { const s = $dataStates[did]; if (s && s.name) desc = T('Inventory.trait.susceptibility', { state: s.name, pct: Math.round(val * 100) }); }
+      else if (tr.code === 14) { const s = $dataStates[did]; if (s && s.name) desc = T('Inventory.trait.resistState', { state: s.name }); }
+      else if (tr.code === 21) desc = T('Inventory.trait.paramRate', { param: getParamName(did), pct: Math.round(val * 100) });
+      else if (tr.code === 22) { const exN = T.list('Inventory.xparam'); desc = T('Inventory.trait.xparamLine', { name: exN[did] || T('Inventory.trait.specialStat'), value: `${val >= 0 ? '+' : ''}${Math.round(val * 100)}` }); }
+      else if (tr.code === 23) { const spN = T.list('Inventory.sparam'); desc = T('Inventory.trait.sparamLine', { name: spN[did] || T('Inventory.trait.specialProperty'), pct: Math.round(val * 100) }); }
+      else if (tr.code === 31) { const el = $dataSystem.elements[did]; desc = T('Inventory.trait.attackElement', { element: el || T('Inventory.trait.physicalFallback') }); }
+      else if (tr.code === 32) { const s = $dataStates[did]; if (s && s.name) desc = T('Inventory.trait.attackState', { state: s.name, pct: Math.round(val * 100) }); }
+      else if (tr.code === 33) desc = T('Inventory.trait.attackSpeed', { value: `${val > 0 ? '+' : ''}${val}` });
+      else if (tr.code === 34) desc = T('Inventory.trait.attackTimes', { value: val });
+      else if (tr.code === 41) { const st = $dataSystem.skillTypes[did]; if (st) desc = T('Inventory.trait.allowsSkillType', { type: st }); }
+      else if (tr.code === 42) { const st = $dataSystem.skillTypes[did]; if (st) desc = T('Inventory.trait.sealSkillType', { type: st }); }
+      else if (tr.code === 43) { const sk = $dataSkills[did]; if (sk && sk.name) desc = T('Inventory.trait.grantsSkill', { skill: sk.name }); }
+      else if (tr.code === 44) { const sk = $dataSkills[did]; if (sk && sk.name) desc = T('Inventory.trait.sealsSkill', { skill: sk.name }); }
+      else if (tr.code === 51) { const wt = $dataSystem.weaponTypes[did]; desc = T('Inventory.trait.allowsWeapon', { type: wt || T('Inventory.spec.label.weaponFallback') }); }
+      else if (tr.code === 52) { const at = $dataSystem.armorTypes[did]; desc = T('Inventory.trait.allowsArmor', { type: at || T('Inventory.spec.label.armorFallback') }); }
+      else if (tr.code === 53) { const eq = $dataSystem.equipTypes[did]; desc = T('Inventory.trait.lockSlot', { slot: eq || T('Inventory.spec.label.slotFallback') }); }
+      else if (tr.code === 54) { const eq = $dataSystem.equipTypes[did]; desc = T('Inventory.trait.sealSlot', { slot: eq || T('Inventory.spec.label.slotFallback') }); }
+      else if (tr.code === 55) { if (did === 1) desc = T('Inventory.trait.dualWielding'); }
+      else if (tr.code === 61) { if (val !== 0) desc = T('Inventory.trait.actionPlus', { pct: Math.round(val * 100) }); }
+      else if (tr.code === 62) { const flagN = T.list('Inventory.specialFlag'); desc = T('Inventory.trait.specialFlagLine', { name: flagN[did] || T('Inventory.trait.specialProperty') }); }
+      if (desc) lines.push(desc);
+    });
+    return lines;
+  }
+
   window.ItemSystemUtils = window.ItemSystemUtils || {};
   window.ItemSystemUtils.fillLore = fill;
   window.ItemSystemUtils.resolveLoreTokens = resolve;
@@ -1171,6 +1212,7 @@
   window.ItemSystemUtils.loreTemplate = loreTemplate;
   window.ItemSystemUtils.craftInfo = craftInfo;
   window.ItemSystemUtils.craftHTML = craftHTML;
+  window.ItemSystemUtils.traitLines = traitLines;
   window.ArmorLore = { fill: fill, resolve: resolve, loreFor: loreFor };
 })();
 

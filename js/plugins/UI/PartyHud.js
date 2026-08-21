@@ -846,15 +846,14 @@
                 card.root.classList.toggle('phud-targeted', isTargeted);
             }
 
-            // Whoever is holding the wheel is named as holding it: on a long
-            // drive the rota changes hands by itself (VehicleCrew.js), so the
-            // card is the only place the party can see who is driving and who
-            // is asleep in the back. In battle the level stands there instead,
-            // which is what a fight needs to know about them.
+            // The level rides next to the name everywhere, map and battle
+            // alike. Whoever is holding the wheel is named as holding it too:
+            // on a long drive the rota changes hands by itself
+            // (VehicleCrew.js), so the card is the only place the party can
+            // see who is driving and who is asleep in the back.
             let label = actor.name();
-            if (battle) {
-                if (actor.level) label += ' L.' + actor.level;
-            } else if (window.VehicleCrew?.isDriver?.(actor)) {
+            if (actor.level) label += ' L.' + actor.level;
+            if (!battle && window.VehicleCrew?.isDriver?.(actor)) {
                 label += ' ' + T('VehicleCrew.drivingTag');
             }
             if (card.nameKey !== label) {

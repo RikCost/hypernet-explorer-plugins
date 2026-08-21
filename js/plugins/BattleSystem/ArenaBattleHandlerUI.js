@@ -9,9 +9,11 @@
  *
  * Screens (all share one no-redraw book-spread base):
  *   Scene_ArenaPartySelect  - pick a party (random roster or a save slot)
- *   Scene_ArenaModeSelect    - pick Gauntlet or Biome Trial (asked AFTER party)
+ *   Scene_ArenaModeSelect    - pick Gauntlet, Biome Trial or Boss Rush (asked AFTER party)
  *   Scene_GauntletSelect     - pick a level bracket
  *   Scene_BiomeTrialSelect   - pick a biome
+ *   Boss Rush has no extra picker: it fights every <Boss>-tagged enemy in
+ *   ascending level order (see ArenaBattleHandler.launchBossRush).
  *   Scene_ArenaStage         - passive interstitial that hosts a title arena
  *
  * Input: mouse (click a row to select, click again / press a button to confirm),
@@ -431,7 +433,7 @@
     Scene_ArenaModeSelect.prototype.backLabel = function () { return T('Arena.back'); };
 
     Scene_ArenaModeSelect.prototype.buildEntries = function () {
-        return [{ type: 'gauntlet' }, { type: 'biome' }];
+        return [{ type: 'gauntlet' }, { type: 'biome' }, { type: 'bossrush' }];
     };
 
     Scene_ArenaModeSelect.prototype.renderRow = function (entry) {
@@ -442,10 +444,17 @@
                     <div class="arena-row-sub">${T('Arena.consecutiveLevelBrackets')}</div>
                 </div>`;
         }
-        return `<div class="arena-icon">&#127794;</div>
+        if (entry.type === 'biome') {
+            return `<div class="arena-icon">&#127794;</div>
+                <div class="arena-row-text">
+                    <div class="arena-row-label">${T('Arena.biomeTrial')}</div>
+                    <div class="arena-row-sub">${T('Arena.climbABiomeRoster')}</div>
+                </div>`;
+        }
+        return `<div class="arena-icon">&#128128;</div>
             <div class="arena-row-text">
-                <div class="arena-row-label">${T('Arena.biomeTrial')}</div>
-                <div class="arena-row-sub">${T('Arena.climbABiomeRoster')}</div>
+                <div class="arena-row-label">${T('Arena.bossRush')}</div>
+                <div class="arena-row-sub">${T('Arena.faceEveryAuthoredBoss')}</div>
             </div>`;
     };
 
@@ -464,22 +473,40 @@
                 <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${go}</div>
             </div>`;
         }
+        if (entry.type === 'biome') {
+            return `<div class="arena-right center">
+                <div class="arena-big-glyph">&#127794;</div>
+                <h3 class="arena-detail-title">${T('Arena.biomeTrial2')}</h3>
+                <div class="arena-info-card"><ul>
+                    <li>${T('Arena.pickABiomeToClimb')}</li>
+                    <li>${T('Arena.fightTheBiomeRosterIn')}</li>
+                    <li>${T('Arena.eachWinGrantsALevel')}</li>
+                </ul></div>
+                <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${go}</div>
+            </div>`;
+        }
         return `<div class="arena-right center">
-            <div class="arena-big-glyph">&#127794;</div>
-            <h3 class="arena-detail-title">${T('Arena.biomeTrial2')}</h3>
+            <div class="arena-big-glyph">&#128128;</div>
+            <h3 class="arena-detail-title">${T('Arena.bossRush2')}</h3>
             <div class="arena-info-card"><ul>
-                <li>${T('Arena.pickABiomeToClimb')}</li>
-                <li>${T('Arena.fightTheBiomeRosterIn')}</li>
-                <li>${T('Arena.eachWinGrantsALevel')}</li>
+                <li>${T('Arena.faceEveryBossInLevel')}</li>
+                <li>${T('Arena.yourPartyIsSetToEach')}</li>
+                <li>${T('Arena.defeatEndsTheRush')}</li>
             </ul></div>
-            <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${go}</div>
+            <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${T('Arena.beginTheRush')}</div>
         </div>`;
     };
 
     Scene_ArenaModeSelect.prototype.onConfirm = function (entry) {
         SoundManager.playOk();
-        if (entry.type === 'gauntlet') SceneManager.push(Scene_GauntletSelect);
-        else SceneManager.push(Scene_BiomeTrialSelect);
+        if (entry.type === 'gauntlet') {
+            SceneManager.push(Scene_GauntletSelect);
+        } else if (entry.type === 'biome') {
+            SceneManager.push(Scene_BiomeTrialSelect);
+        } else {
+            this._busy = true;
+            if (!ABH.launchBossRush()) this._busy = false;
+        }
     };
 
     //=========================================================================

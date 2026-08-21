@@ -2079,16 +2079,11 @@
 
   Window_ItemTarget.prototype.canUse = function (actor, item) {
     if (!actor || !item) return false;
-    const isFood = utils.hasItemCategory(item, "Food");  // i18n-ignore  item-category id
     if (DataManager.isItem(item) && (item.scope === 9 || item.scope === 10)) {
       return actor.isDead();
     }
-    if (DataManager.isItem(item) && item.damage && item.damage.type === 3 && !isFood) {
-      return actor.hp < actor.mhp;
-    }
-    if (DataManager.isItem(item) && item.damage && item.damage.type === 4) {
-      return actor.mp < actor.mmp;
-    }
+    // HP/MP recovery items stay usable at full HP/MP: a lot of them (like
+    // disease medicine) carry a secondary effect worth taking regardless.
     return actor.canUse(item);
   };
 

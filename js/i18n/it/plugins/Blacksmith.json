@@ -38,11 +38,40 @@
   "forgedName": "{name} di {smith}",
   "forgedNameNumbered": "{name} di {smith} {mark}",
   "forgedDesc": "Forgiato da {smith}. Lavoro {quality}, è unico nel suo genere.",
+  "nameHeader": "Nome",
+  "namePlaceholder": "Dai un nome a questo pezzo…",
+  "nameReroll": "Tira un altro nome",
   "quality": {
     "crude": "grezzo",
     "sound": "solido",
     "fine": "pregiato",
     "superb": "superbo",
     "masterwork": "da maestro"
+  },
+  "nameBank": {
+    "blade": {
+      "prefix": ["Vedova", "Cupo", "Sangue", "Corvo", "Cenere", "Gelo", "Notte", "Ferro", "Spettro", "Tempesta", "Pallido", "Nero"],
+      "noun": ["Zanna", "Lama", "Spina", "Falciata", "Sussurro", "Morso", "Fendente", "Dente", "Canto", "Squarcio", "Puntura", "Taglio"]
+    },
+    "heavy": {
+      "prefix": ["Ferro", "Pietra", "Teschio", "Tempesta", "Tomba", "Rovina", "Vedova", "Cenere", "Osso", "Tuono", "Nero", "Vecchio"],
+      "noun": ["Spaccaossa", "Frantumatore", "Mazza", "Rovina", "Squarciatore", "Schianto", "Devastatore", "Scossa", "Martello", "Caduta", "Macina", "Sfondatore"]
+    },
+    "gun": {
+      "prefix": ["Rosso", "Ferro", "Notte", "Spettro", "Silenzio", "Morto", "Alto", "Ultimo", "Freddo", "Lungo", "Nero", "Grigio"],
+      "noun": ["Linea", "Fabbro", "Sussurro", "Richiamo", "Redenzione", "Raffica", "Eco", "Guardia", "Colpo", "Marchio", "Latrato", "Canto"]
+    },
+    "wood": {
+      "prefix": ["Salice", "Tempesta", "Vento", "Argento", "Verde", "Luna", "Selvaggio", "Cenere", "Profondo", "Vecchio", "Grigio", "Lungo"],
+      "noun": ["Ramo", "Portata", "Fischio", "Vagante", "Fronda", "Ago", "Spina", "Bruma", "Radice", "Puntura", "Canto", "Cocca"]
+    },
+    "magic": {
+      "prefix": ["Astrale", "Vuoto", "Arcano", "Brace", "Spettrale", "Runico", "Lunare", "Prismatico", "Arcaico", "Cavo", "Ombroso", "Dorato"],
+      "noun": ["Trama", "Sigillo", "Bagliore", "Maleficio", "Sussurro", "Fioritura", "Velo", "Scintilla", "Faglia", "Canto", "Custodia", "Vincolo"]
+    },
+    "default": {
+      "prefix": ["Ferro", "Grigio", "Vecchio", "Vero", "Silenzioso", "Selvaggio", "Lontano", "Solitario", "Alto", "Ultimo", "Quieto", "Semplice"],
+      "noun": ["Mano", "Guardia", "Sentiero", "Marchio", "Richiamo", "Presa", "Custodia", "Portata", "Fermezza", "Riparo", "Stretta", "Linea"]
+    }
   }
 }

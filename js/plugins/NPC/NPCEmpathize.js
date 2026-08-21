@@ -2187,8 +2187,12 @@
 
       this._wasdListener = (ev) => {
         if (ev.repeat) return;
-        const inp = document.getElementById('npc-dlg-ask-input');
-        if (inp && document.activeElement === inp) return;
+        // Any focused text field owns w/a/s/d as letters, not movement: the
+        // chat box was the only one checked here, so every other field in the
+        // panel (the character creator's search boxes among them) had its
+        // keystrokes eaten and fed into row navigation instead.
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
         const k = ev.key.toLowerCase();
         if (k === 'w') { this._wasdInput.up    = true; this._wasdHeld.up    = true; ev.preventDefault(); }
         if (k === 's') { this._wasdInput.down  = true; this._wasdHeld.down  = true; ev.preventDefault(); }

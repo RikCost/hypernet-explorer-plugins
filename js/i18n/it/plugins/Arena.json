@@ -52,6 +52,14 @@
   "gauntletHasEnded": "Il gauntlet è finito",
   "streak": "SERIE",
   "noDescription": "Nessuna descrizione disponibile",
+  "bossRush": "Boss Rush",
+  "faceEveryAuthoredBoss": "Affronta ogni boss del gioco, in ordine di livello",
+  "bossRush2": "BOSS RUSH",
+  "faceEveryBossInLevel": "Affronta ogni boss del gioco, in ordine crescente di livello.",
+  "yourPartyIsSetToEach": "La squadra viene impostata al livello di ciascun boss e riequipaggiata.",
+  "defeatEndsTheRush": "Sconfitta = fine del Boss Rush.",
+  "beginTheRush": "INIZIA IL RUSH",
+  "bossRushHasEnded": "Il Boss Rush è finito.",
   "msg": {
     "noEnemiesInBracket": "Nessun nemico adatto trovato in questo girone."
   }

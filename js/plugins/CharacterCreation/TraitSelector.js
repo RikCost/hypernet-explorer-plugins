@@ -1270,7 +1270,7 @@
           api.cureActor(actor, entry.id);
         }
       }
-      for (const id of wanted) api.infectActor(actor, id, null, null, { silent: true });
+      for (const id of wanted) api.infectActor(actor, id, null, null, { silent: true, diagnosed: true });
       actor._ccDiseases = wanted.slice();
     }
 

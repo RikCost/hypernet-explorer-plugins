@@ -48,6 +48,10 @@
   "lock": "Blocca: ",
   "extra": "Extra: ",
   "special2": "Speciale: ",
+  "elem": "Elem.: ",
+  "debuff": "Indebolimento: ",
+  "equip": "Equip: ",
+  "dualWielding": "Doppia impugnatura",
   "weaponType": "Tipo Arma ",
   "armorType": "Tipo Armatura ",
   "equipType": "Tipo Equip ",
@@ -99,6 +103,13 @@
   "skillTypeN": "Tipo ab. {id}",
   "xparamN": "XParam {id}",
   "sparamN": "SParam {id}",
+  "specialFlagN": "Speciale {id}",
+  "specialFlags": [
+    "Auto Battaglia",
+    "Guardia",
+    "Sostituto",
+    "Conserva AP"
+  ],
   "xparams": [
     "Hit",
     "Eva",

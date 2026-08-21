@@ -27,7 +27,6 @@
  * This plugin provides a comprehensive class selection UI system:
  * - Window_ClassSelection (class list with levels)
  * - Window_ClassDetails (class description, stats, weapons, skills)
- * - Window_ClassConfirmation (confirmation dialog)
  * - Window_ClassLevelUpSkills (level-up skill list)
  * - Window_SkillCategories (primary/secondary skill categories from Categories.json)
  * - Window_ClassSelectionTitle (title bar)
@@ -84,61 +83,6 @@
   };
 
   _loadStatsI18n();
-
-  // The level-up skill roadmap is a forty-line read, which is the one thing
-  // Quick mode exists to spare the player: while a paused Quick-mode creation
-  // run is waiting behind this scene (the creature branch is the only one that
-  // opens it) the tab is left out of the confirmation spread entirely, the same
-  // way the inline class dossier drops its roadmap card. Every other caller ,
-  // the other creation modes, and a class change from the menu , keeps it.
-  function roadmapOffered() {
-    const wizard = window.Scene_CharacterCreation;
-    return !(wizard && wizard._interruptedStep >= 0 &&
-      wizard.isQuickMode && wizard.isQuickMode());
-  }
-
-  // The confirmation spread's tabs, in order, minus whatever this flow hides.
-  function convergenceTabs() {
-    const tabs = roadmapOffered() ? ["levelUpList"] : [];
-    return tabs.concat(["stats", "skillCategories"]);
-  }
-
-  //=============================================================================
-  // Class skill categories , single source of truth: js/db/Skills/Categories.json
-  //=============================================================================
-
-  let _classSkillCats = null;
-
-  const _loadClassSkillCats = async () => {
-    // Prefer the DataService-loaded copy; fall back to a direct fetch.
-    const fromDS = window.Skills && window.Skills.Categories && window.Skills.Categories.classSkillCategories;
-    if (fromDS) {
-      _classSkillCats = fromDS;
-      return;
-    }
-    try {
-      const response = await fetch("js/db/Skills/Categories.json");
-      const data = await response.json();
-      _classSkillCats = data.classSkillCategories || {};
-    } catch (e) {
-      console.error("CharacterCreationClassSelector: Failed to load Categories.json", e);
-      _classSkillCats = {};
-    }
-  };
-
-  _loadClassSkillCats();
-
-  // Returns { primary:[], secondary:[] } for a class id, sourced from Categories.json.
-  const getClassSkillCats = (classId) => {
-    const src =
-      _classSkillCats ||
-      (window.Skills && window.Skills.Categories && window.Skills.Categories.classSkillCategories);
-    const e = src && (src[classId] || src[String(classId)]);
-    return {
-      primary: e && Array.isArray(e.primary) ? e.primary : [],
-      secondary: e && Array.isArray(e.secondary) ? e.secondary : [],
-    };
-  };
 
   //=============================================================================
   // Specializations (js/db/Skills/Specialization.json via SpecializationMenu.js)
@@ -332,52 +276,6 @@
 
     currentClassId() {
       return this.itemAt(this.index());
-    }
-  }
-
-  //=============================================================================
-  // Window_ClassConfirmation - Confirmation Dialog
-  //=============================================================================
-
-  class Window_ClassConfirmation extends Window_Command {
-    initialize(rect) {
-      super.initialize(rect);
-      this._message = "";
-      this._classLevel = 1;
-      this.openness = 0;
-    }
-
-    makeCommandList() {
-      if (roadmapOffered()) {
-        this.addCommand(T('ClassSelect.levelUpList'), "levelUpList");
-      }
-      this.addCommand(T('ClassSelect.stats'), "stats");
-      this.addCommand(T('ClassSelect.skillCategories'), "skillCategories");
-      if (this._classLevel > 30) {
-        this.addCommand(T('ClassSelect.prestige'), "prestige", false);
-      }
-      this.addCommand(T('ClassSelect.confirmClass'), "yes");
-      this.addCommand(T('ClassSelect.cancel'), "no");
-    }
-
-    setClassLevel(level) {
-      if (this._classLevel !== level) {
-        this._classLevel = level;
-        this.refresh();
-      }
-    }
-
-    setMessage(message) {
-      this._message = message || "";
-      this.refresh();
-    }
-
-    refresh() {
-      super.refresh();
-      if (this._message) {
-        const y = this.itemHeight() * this.maxItems();
-        this.drawTextEx(this._message, this.itemPadding(), y, this.innerWidth - this.itemPadding() * 2);
-      }
     }
   }
 
@@ -663,8 +561,6 @@
       this._dndContainer.innerHTML = ""; // Wipe clean to prevent stale DOM layout leaking
 
       this._lastIndex = -1;
-      this._lastConfOpen = false;
-      this._lastConfIndex = -1;
       this._lastShowSub = false;
       // Wheel + L2/R2 scrolling for the detail panes. See CCScroll.
       if (window.CCScroll) window.CCScroll.bindWheel(this._dndContainer);
@@ -693,15 +589,10 @@
     refreshUIOverlayDOM() {
       if (!this._dndContainer) return;
 
-      const isConfOpen = this._confirmationWindow && this._confirmationWindow.isOpen();
       const showSub = !!(this._levelUpListWindow || this._skillCategoriesWindow || this._statsWindow);
       const c = this._classWindow.currentClass();
 
       // Mute windows dynamically
-      if (this._confirmationWindow) {
-        this._confirmationWindow.visible = false;
-        this._confirmationWindow.opacity = 0;
-      }
       if (this._levelUpListWindow) {
         this._levelUpListWindow.visible = false;
         this._levelUpListWindow.opacity = 0;
@@ -719,114 +610,8 @@
       let rightHtml = "";
       let overlayHtml = "";
 
-      const tabCategories = convergenceTabs();
-      const defaultCategory = tabCategories[0];
-      const activeCategory = isConfOpen
-        ? (tabCategories.includes(this._lastSoulConvergenceCategory)
-          ? this._lastSoulConvergenceCategory : defaultCategory)
-        : '';
-
-      if (isConfOpen) {
-        // --- COVENANT / SOUL CONVERGENCE SPREAD VIEW (Split between two pages) ---
-        const cmdSymbol = this._confirmationWindow.commandSymbol(this._confirmationWindow.index());
-        let activeCategoryTemp = activeCategory;
-        if (tabCategories.includes(cmdSymbol)) {
-          activeCategoryTemp = cmdSymbol;
-          this._lastSoulConvergenceCategory = activeCategoryTemp;
-        }
-
-        const tabLabels = {
-          levelUpList: T('CharCreate.skillRoadmap2'),
-          stats: T('CharCreate.attributeBreakdown'),
-          skillCategories: T('CharCreate.skillsSpecialties'),
-        };
-        const activeClass = (cat) => activeCategoryTemp === cat ? "selected" : "";
-        const tabsHtml = `
-          <div class="cc-select-grid" style="grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px">
-            ${tabCategories.map((cat) => `
-            <div class="cc-card-option ${activeClass(cat)}" onclick="SceneManager._scene.onSoulConvergenceTabClick('${cat}')">
-              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${tabLabels[cat]}</div>
-            </div>
-            `).join("")}
-          </div>
-        `;
-
-        const isConfirmHighlighted = cmdSymbol === 'yes';
-        const isBackHighlighted = cmdSymbol === 'no';
-        const buttonPanelHtml = window.CCButtons.panel({
-          back: window.CCButtons.button(window.CCButtons.backLabel(), {
-            onclick: "SceneManager._scene.onSoulConvergenceBackClick()",
-            highlighted: isBackHighlighted,
-          }),
-          next: window.CCButtons.button(window.CCButtons.continueLabel(), {
-            onclick: "SceneManager._scene.onSoulConvergenceConfirmClick()",
-            confirm: true,
-            highlighted: isConfirmHighlighted,
-          }),
-          style: "margin-top: auto; padding-top: 16px;",
-        });
-
-        leftHtml = `
-          <div class="cc-page cc-page-left" style="display: flex; justify-content: space-between">
-            ${activeCategoryTemp === 'levelUpList' ? `
-              <h2 class="cc-header-gothic">${T('CharCreate.skillRoadmap3')}</h2>
-              <p class="cc-text-desc">${T('CharCreate.initialSpecialSkillsAndProgressionUnlockedAl')}</p>
-              <div class="cc-dossier-card" style="max-height: 480px; overflow-y: auto; margin-top: 12px; flex-grow: 1">
-                ${(c && c.learnings ? c.learnings.map(l => {
-          const skill = $dataSkills[l.skillId];
-          return skill ? `
-                    <div class="cc-dossier-row">
-                      <span class="cc-dossier-label">Lv. ${l.level}:</span>
-                      <span class="cc-dossier-value">${window.CCDbName(skill)}</span>
-                    </div>
-                  ` : "";
-        }).join("") : "") || `<div class="cc-text-desc">${T('CharCreate.noProgressionSkillsDefined')}</div>`}
-              </div>
-            ` : activeCategoryTemp === 'stats' ? `
-              <h2 class="cc-header-gothic">${T('CharCreate.attributeBreakdown2')}</h2>
-              <div class="cc-dossier-card" style="max-height: 480px; overflow-y: auto; margin-top: 12px; padding: 18px; flex-grow: 1">
-                ${[
-              { name: "STR", desc: T('CharCreate.increasesPhysicalStrikePower') },
-              { name: "CON", desc: T('CharCreate.decreasesPhysicalDamageTaken') },
-              { name: "INT", desc: T('CharCreate.increasesSpellDamageAndAlchemicalPower') },
-              { name: "WIS", desc: T('CharCreate.decreasesMagicalDamageTaken') },
-              { name: "DEX", desc: T('CharCreate.increasesHitRateDodgeAndActionSpeed') },
-              { name: "PSI", desc: T('CharCreate.increasesCriticalHitsAndAlchemicalAnomaliesC') }
-            ].map(s => `
-                  <div class="cc-dossier-row" style="margin-bottom: 12px; border-bottom: 1px dotted rgba(139, 90, 43, 0.2); padding-bottom: 6px">
-                    <span class="cc-dossier-label" style="min-width: 60px; display: inline-block">${s.name}:</span>
-                    <span class="cc-dossier-value" style="font-size: 1.268rem; line-height: 1.35; display: inline-block; vertical-align: top">${s.desc}</span>
-                  </div>
-                `).join("")}
-              </div>
-            ` : `
-              <h2 class="cc-header-gothic">${T('CharCreate.masteries')}</h2>
-              <div class="cc-dossier-card" style="margin-top: 12px; padding: 18px; margin-bottom: 16px">
-                <h4 class="cc-subheader" style="color: var(--text-primary-hover); font-size: 1.585rem; margin-bottom: 8px">${T('CharCreate.primaryMastery')}</h4>
-                <p style="font-size: 1.365rem; color: var(--text-card-dark); line-height: 1.4">${(c && getClassSkillCats(c.id).primary.length ? getClassSkillCats(c.id).primary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
-              </div>
-              <div class="cc-dossier-card" style="padding: 18px; flex-grow: 1">
-                <h4 class="cc-subheader" style="color: var(--text-muted-hover); font-size: 1.585rem; margin-bottom: 8px">${T('CharCreate.secondaryMastery')}</h4>
-                <p style="font-size: 1.365rem; color: var(--text-card-dark); line-height: 1.4">${(c && getClassSkillCats(c.id).secondary.length ? getClassSkillCats(c.id).secondary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
-              </div>
-            `}
-          </div>
-        `;
-
-        rightHtml = `
-          <div class="cc-page cc-page-right" style="display: flex; justify-content: space-between">
-            <div style="position: absolute; top: -15px; left: 25%; transform: rotate(-12deg); font-family: 'Lora', serif; font-size: 2.204rem; color: #822d2d; border: 3px double #822d2d; padding: 2px 10px; border-radius: 4px; background: #faf2dc; font-weight: bold; letter-spacing: 2px; z-index: 20; pointer-events: none">${T('ClassSelect.ui.covenantStamp')}</div>
-            <h2 class="cc-header-gothic" style="margin-top: 10px">${T('CharCreate.details')}</h2>
-            
-            <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center"> 
-              ${tabsHtml}
-            </div>
-            
-            ${buttonPanelHtml}
-          </div>
-        `;
-      } else {
-        // --- NORMAL VOCATION DOSSIER VIEW ---
+      // --- NORMAL VOCATION DOSSIER VIEW ---
+      {
         const classList = this._classWindow._data;
         const activeIndex = this._classWindow.index();
 
@@ -1052,9 +837,7 @@
       }
 
       const activeIndex = this._classWindow ? this._classWindow.index() : 0;
-      const isConfOpenChanged = (this._lastConfOpen !== isConfOpen);
-      const isActiveCategoryChanged = (this._lastActiveCategory !== activeCategory);
-      const isStructureChange = isConfOpenChanged || isActiveCategoryChanged || !spread.querySelector(".cc-page-left") || !spread.querySelector(".cc-page-right");
+      const isStructureChange = !spread.querySelector(".cc-page-left") || !spread.querySelector(".cc-page-right");
 
       if (isStructureChange) {
         spread.innerHTML = `
@@ -1067,62 +850,26 @@
         const leftPage = spread.querySelector(".cc-page-left");
         const rightPage = spread.querySelector(".cc-page-right");
 
-        if (isConfOpen) {
-          // --- SOUL CONVERGENCE VIEW (Optimized Update) ---
-          if (rightPage) {
-            const tabs = rightPage.querySelectorAll(".cc-card-option");
-            tabs.forEach((tab, idx) => {
-              if (tabCategories[idx] === activeCategory) {
-                tab.classList.add("selected");
-              } else {
-                tab.classList.remove("selected");
-              }
-            });
+        if (rightPage && rightHtml) {
+          const rightInnerHtml = rightHtml.replace(/^\s*<div[^>]*>/, '').replace(/<\/div>\s*$/, '');
+          rightPage.innerHTML = rightInnerHtml;
+        }
 
-            const buttons = rightPage.querySelectorAll(".cc-btn-treaty");
-            const cmdSymbol = this._confirmationWindow ? this._confirmationWindow.commandSymbol(this._confirmationWindow.index()) : '';
-            buttons.forEach((btn) => {
-              if (btn.classList.contains("confirm")) {
-                if (cmdSymbol === 'yes') {
-                  btn.classList.add("highlighted");
-                } else {
-                  btn.classList.remove("highlighted");
-                }
-              } else {
-                if (cmdSymbol === 'no') {
-                  btn.classList.add("highlighted");
-                } else {
-                  btn.classList.remove("highlighted");
-                }
-              }
-            });
-          }
-        } else {
-          // --- NORMAL VOCATION VIEW (Optimized Update) ---
-          if (rightPage && rightHtml) {
-            const rightInnerHtml = rightHtml.replace(/^\s*<div[^>]*>/, '').replace(/<\/div>\s*$/, '');
-            rightPage.innerHTML = rightInnerHtml;
-          }
-
-          if (leftPage) {
-            const cards = leftPage.querySelectorAll(".cc-wanted-card");
-            cards.forEach((card, idx) => {
-              if (idx === activeIndex) {
-                card.classList.add("selected");
-              } else {
-                card.classList.remove("selected");
-              }
-            });
-          }
+        if (leftPage) {
+          const cards = leftPage.querySelectorAll(".cc-wanted-card");
+          cards.forEach((card, idx) => {
+            if (idx === activeIndex) {
+              card.classList.add("selected");
+            } else {
+              card.classList.remove("selected");
+            }
+          });
         }
       }
 
       // Record states for the next check
       this._lastIndex = activeIndex;
-      this._lastConfOpen = isConfOpen;
-      this._lastConfIndex = (this._confirmationWindow && this._confirmationWindow.isOpen()) ? this._confirmationWindow.index() : -1;
       this._lastShowSub = showSub;
-      this._lastActiveCategory = activeCategory;
 
       this._scrollToSelectedCard();
     }
@@ -1156,89 +903,8 @@
       }
     }
 
-    onConfCommandClick(index) {
-      if (this._confirmationWindow) {
-        if (this._confirmationWindow.index() === index) {
-          this._confirmationWindow.processOk();
-        } else {
-          this._confirmationWindow.select(index);
-          this.refreshUIOverlayDOM();
-        }
-      }
-    }
-
-    onSoulConvergenceTabClick(symbol) {
-      if (this._confirmationWindow) {
-        const idx = this._confirmationWindow.findSymbol(symbol);
-        if (idx >= 0) {
-          SoundManager.playOk();
-          this._confirmationWindow.select(idx);
-          this.refreshUIOverlayDOM();
-        }
-      }
-    }
-
-    onSoulConvergenceConfirmClick() {
-      if (this._confirmationWindow) {
-        const idx = this._confirmationWindow.findSymbol('yes');
-        if (idx >= 0) {
-          this._confirmationWindow.select(idx);
-          this._confirmationWindow.processOk();
-        }
-      }
-    }
-
-    onSoulConvergenceBackClick() {
-      if (this._confirmationWindow) {
-        const idx = this._confirmationWindow.findSymbol('no');
-        if (idx >= 0) {
-          this._confirmationWindow.select(idx);
-          this._confirmationWindow.processOk();
-        }
-      }
-    }
-
     updateUIInput() {
-      if (this._confirmationWindow && this._confirmationWindow.isOpen()) {
-        const windowObj = this._confirmationWindow;
-        if (!windowObj || !windowObj.active) return;
-
-        const maxItems = windowObj.maxItems();
-        if (maxItems <= 0) return;
-
-        let moved = false;
-        let index = windowObj.index();
-
-        if (Input.isTriggered('down') || Input.isRepeated('down')) {
-          if (index + 1 < maxItems) {
-            index += 1;
-          } else {
-            index = 0;
-          }
-          moved = true;
-        } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
-          if (index - 1 >= 0) {
-            index -= 1;
-          } else {
-            index = maxItems - 1;
-          }
-          moved = true;
-        } else if (Input.isTriggered('ok')) {
-          SoundManager.playOk();
-          this.onSoulConvergenceConfirmClick();
-          return;
-        } else if (Input.isTriggered('cancel')) {
-          SoundManager.playCancel();
-          this.onConfirmationNo();
-          return;
-        }
-
-        if (moved) {
-          SoundManager.playCursor();
-          windowObj.select(index);
-          this.refreshUIOverlayDOM();
-        }
-      } else if (this._classWindow) {
+      if (this._classWindow) {
         const windowObj = this._classWindow;
         if (!windowObj || !windowObj.active) return;
 
@@ -1297,22 +963,10 @@
 
       if (this._dndContainer && this._dndContainer.style.display !== "none") {
         const currentIndex = this._classWindow ? this._classWindow.index() : 0;
-        const isConfOpen = this._confirmationWindow && this._confirmationWindow.isOpen();
-        const confIndex = isConfOpen ? (this._confirmationWindow ? this._confirmationWindow.index() : 0) : -1;
         const showSub = !!(this._levelUpListWindow || this._skillCategoriesWindow || this._statsWindow);
-        // Same resolution refreshUIOverlayDOM uses, so a flow that hides a tab
-        // (see convergenceTabs) does not read as a change on every frame.
-        const tabs = convergenceTabs();
-        const activeCategory = isConfOpen
-          ? (tabs.includes(this._lastSoulConvergenceCategory)
-            ? this._lastSoulConvergenceCategory : tabs[0])
-          : '';
 
         if (this._lastIndex !== currentIndex ||
-          this._lastConfOpen !== isConfOpen ||
-          this._lastConfIndex !== confIndex ||
-          this._lastShowSub !== showSub ||
-          this._lastActiveCategory !== activeCategory) {
+          this._lastShowSub !== showSub) {
           this.refreshUIOverlayDOM();
         }
 
@@ -1437,48 +1091,6 @@
     }
 
     onClassSelect() {
-      if (!this._confirmationWindow) {
-        const rect = this.confirmationWindowRect();
-        this._confirmationWindow = new Window_ClassConfirmation(rect);
-        this._confirmationWindow.setHandler(
-          "yes",
-          this.onConfirmationYes.bind(this)
-        );
-        this._confirmationWindow.setHandler(
-          "no",
-          this.onConfirmationNo.bind(this)
-        );
-        this._confirmationWindow.setHandler(
-          "levelUpList",
-          this.onLevelUpList.bind(this)
-        );
-        this._confirmationWindow.setHandler("stats", this.onStats.bind(this));
-        this._confirmationWindow.setHandler(
-          "skillCategories",
-          this.onSkillCategories.bind(this)
-        );
-        this._confirmationWindow.setHandler(
-          "prestige",
-          this.onPrestige.bind(this)
-        );
-        this.addWindow(this._confirmationWindow);
-      }
-
-      const classId = this._classWindow.currentClassId();
-      const classLevel = this._classWindow.getClassLevel(classId);
-      this._confirmationWindow.setClassLevel(classLevel);
-
-      this._confirmationWindow.setMessage("");
-      this._confirmationWindow.open();
-      this._confirmationWindow.activate();
-
-      const defaultIdx = this._confirmationWindow.findSymbol('levelUpList');
-      this._confirmationWindow.select(defaultIdx >= 0 ? defaultIdx : 0);
-
-      this._classWindow.deactivate();
-    }
-
-    onConfirmationYes() {
       const classId = this._classWindow.itemAt(this._classWindow.index());
       const className = $dataClasses[classId].name;
 
@@ -1560,44 +1172,6 @@
       }
     }
 
-    onConfirmationNo() {
-      this._confirmationWindow.close();
-      this._classWindow.activate();
-    }
-
-    onPrestige() {
-      // Placeholder for future prestige functionality
-    }
-
-    confirmationWindowRect() {
-      const width = 400;
-      const classId = this._classWindow.currentClassId();
-      const classLevel = this._classWindow.getClassLevel(classId);
-      const commandCount = classLevel > 30 ? 6 : 5;
-      const height = this.calcWindowHeight(commandCount, true);
-      const x = (Graphics.boxWidth - width) / 2;
-      const y = (Graphics.boxHeight - height) / 2;
-      return new Rectangle(x, y, width, height);
-    }
-
-    onStats() {
-      if (this._confirmationWindow) {
-        this._confirmationWindow.activate();
-      }
-    }
-
-    onLevelUpList() {
-      if (this._confirmationWindow) {
-        this._confirmationWindow.activate();
-      }
-    }
-
-    onSkillCategories() {
-      if (this._confirmationWindow) {
-        this._confirmationWindow.activate();
-      }
-    }
-
     onSubWindowCancel() {
       if (this._levelUpListWindow) {
         this._levelUpListWindow.close();
@@ -1610,9 +1184,6 @@
       if (this._statsWindow) {
         this._statsWindow.close();
         this._statsWindow = null;
-      }
-      if (this._confirmationWindow) {
-        this._confirmationWindow.activate();
       }
     }
 

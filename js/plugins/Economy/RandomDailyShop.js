@@ -403,6 +403,7 @@
       const validArtifacts = [];
       const checkArtifact = (item) => {
         if (!item || !isArtifact(item)) return false;
+        if (!isSellableEntry(item)) return false;
         if (typeof $gameParty !== 'undefined' && $gameParty.hasItem(item, true)) return false;
         return true;
       };

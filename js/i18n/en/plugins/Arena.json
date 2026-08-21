@@ -52,6 +52,14 @@
   "gauntletHasEnded": "Gauntlet has ended.",
   "streak": "STREAK",
   "noDescription": "No description available",
+  "bossRush": "Boss Rush",
+  "faceEveryAuthoredBoss": "Face every authored boss, in level order",
+  "bossRush2": "BOSS RUSH",
+  "faceEveryBossInLevel": "Face every boss in the game, in ascending level order.",
+  "yourPartyIsSetToEach": "Your party is set to each boss's own level and re-equipped.",
+  "defeatEndsTheRush": "Defeat ends the rush.",
+  "beginTheRush": "BEGIN THE RUSH",
+  "bossRushHasEnded": "Boss Rush has ended.",
   "msg": {
     "noEnemiesInBracket": "No suitable enemies found in this level bracket."
   }

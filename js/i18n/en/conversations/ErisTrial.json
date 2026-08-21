@@ -2024,6 +2024,7 @@
     "bounty": "Bounty:",
     "prisonTimeRemaining": "Time Remaining",
     "prisonDays": "{n}d ",
+    "prisonSleepButton": "Sleep / Wait",
     "eris": "Eris: ",
     "erisName": "Eris",
     "theCourtIsEmpty": "The court is empty...",

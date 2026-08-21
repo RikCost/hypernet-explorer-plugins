@@ -862,6 +862,9 @@
         // which is what makes a window period cost the patient something.
         dosed: 0, need: null, missed: 0, lastDoseDay: null,
         treatedDays: 0, suppressedUntilDay: null,
+        // A disease picked knowingly (character creation) skips the window
+        // period: the patient already knows what they have.
+        diagnosed: !!(opts && opts.diagnosed),
       });
       _grantSkills(actor, d, true);
       if (actor.refresh) actor.refresh();

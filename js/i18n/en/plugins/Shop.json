@@ -55,6 +55,10 @@
   "lock": "Lock: ",
   "extra": "Extra: ",
   "special2": "Special: ",
+  "elem": "Elem: ",
+  "debuff": "Debuff: ",
+  "equip": "Equip: ",
+  "dualWielding": "Dual Wielding",
   "weaponType": "Weapon Type ",
   "armorType": "Armor Type ",
   "equipType": "Equip Type ",
@@ -106,6 +110,13 @@
   "skillTypeN": "S.Type {id}",
   "xparamN": "XParam {id}",
   "sparamN": "SParam {id}",
+  "specialFlagN": "Special {id}",
+  "specialFlags": [
+    "Auto Battle",
+    "Guard",
+    "Substitute",
+    "Preserve AP"
+  ],
   "xparams": [
     "Hit",
     "Eva",

@@ -1573,11 +1573,28 @@
   const _setTab = Scene_NPCEmpathize.prototype._setTab;
   Scene_NPCEmpathize.prototype._setTab = function (tab) {
     this._ccPicker = null;
-    this._ccPickerQuery = "";
-    this._ccSearchFocused = false;
+    if (this._ccBar) this._ccBar.collapseField();
     if (isEditing(this)) Session.tab = tab;
     _setTab.call(this, tab);
   };
+
+  // The picker's search box, shared with every other long list in the game
+  // (UI/MenuSearchBar.js) rather than a box of its own: that field already
+  // handles focus, the caret and keeping its own keystrokes away from the
+  // panel's WASD/arrow navigation, which a hand-rolled input kept getting
+  // wrong. One bar is reused for whichever picker is open; a fresh id would
+  // only orphan the old one in the module's bar registry.
+  function ensureCCBar(scene) {
+    if (!window.MenuSearchBar) return null;
+    if (!scene._ccBar) {
+      scene._ccBar = window.MenuSearchBar.create({
+        id: "cc-picker",
+        placeholder: T("detailed.search"),
+        onChange: () => { scene._contentIndex = 0; scene._render(); },
+      });
+    }
+    return scene._ccBar;
+  }
 
   // The editor page hangs off _buildMoreHTML: the base _render() routes every
   // tab it does not know to it, which is exactly what CC_TAB is.
@@ -1617,7 +1634,9 @@
 
   Scene_NPCEmpathize.prototype._buildCCPickerHTML = function () {
     const picker = this._ccPicker;
-    const data = buildPicker(picker.id, picker.arg, this._ccPickerQuery || "");
+    const bar = ensureCCBar(this);
+    const query = bar ? bar.query : "";
+    const data = buildPicker(picker.id, picker.arg, query);
     if (!data) return this._buildCCEditorHTML();
 
     let html = `<div class="npc-back-btn"
@@ -1634,14 +1653,8 @@
     // nations, the ideologies, the factions and every
     // specialization category are all in the hundreds; the four-option pickers
     // are not, and a box over them would only be in the way.
-    const query = this._ccPickerQuery || "";
     const searchable = data.options.length > PICKER_SEARCH_MIN_OPTIONS;
-    if (searchable) {
-      html += `<input type="text" class="npc-cc-search" id="npc-cc-search"
-           placeholder="${esc(T("detailed.search"))}" value="${esc(query)}"
-           oninput="SceneManager._scene._ccPickerSearch(this.value)"
-           onmousedown="event.stopPropagation()">`;
-    }
+    if (searchable && bar) html += bar.html();
     const matches = searchable && query ? filterOptions(data.options, query) : data.options;
     if (!matches.length) {
       return html + `<p style="opacity:0.6;font-style: normal;">${esc(T("detailed.noMatches"))}</p>`;
@@ -1710,8 +1723,7 @@
       default:
         if (buildPicker(id, null)) {
           this._ccPicker = { id: id, arg: null };
-          this._ccPickerQuery = "";
-          this._ccSearchFocused = false;
+          if (this._ccBar) this._ccBar.resetQuiet();
           this._contentIndex = 0;
         }
     }
@@ -1741,11 +1753,11 @@
     if (result && result.arg !== undefined) {
       this._ccPicker = { id: this._ccPicker.id, arg: result.arg };
       // Drilling into a category is a new list, so the search starts clean.
-      this._ccPickerQuery = "";
+      if (this._ccBar) this._ccBar.resetQuiet();
       this._contentIndex = 0;
     } else if (!result) {
       this._ccPicker = null;
-      this._ccPickerQuery = "";
+      if (this._ccBar) this._ccBar.resetQuiet();
       this._contentIndex = 0;
     }
     // A picker that stays open (specializations) keeps its cursor, and its
@@ -1765,22 +1777,12 @@
     this._render();
   };
 
-  // Typing in a picker's search box. The list is rebuilt around the query and
-  // the caret is put back where it was, since _render() replaces the field.
-  Scene_NPCEmpathize.prototype._ccPickerSearch = function (value) {
-    if (!isEditing(this) || !this._ccPicker) return;
-    this._ccPickerQuery = value || "";
-    this._ccSearchFocused = true;
-    this._render();
-  };
-
   Scene_NPCEmpathize.prototype._ccClosePicker = function () {
     if (!this._ccPicker) return;
     SoundManager.playCancel();
     // Drilled into a specialization category: back up to the category list.
     this._ccPicker = this._ccPicker.arg ? { id: this._ccPicker.id, arg: null } : null;
-    this._ccPickerQuery = "";
-    this._ccSearchFocused = false;
+    if (this._ccBar) this._ccBar.resetQuiet();
     this._contentIndex = 0;
     this._render();
   };
@@ -1799,28 +1801,12 @@
   Scene_NPCEmpathize.prototype._contentItems = function () {
     if (isEditing(this) && this._activeTab === CC_TAB) {
       if (!this._rightEl) return [];
-      // The search box is one of the stops, so a long list can be narrowed
-      // without a mouse.
-      return Array.from(this._rightEl.querySelectorAll(".npc-cc-row, .npc-back-btn, .npc-cc-search"));
+      // The search field (UI/MenuSearchBar.js) is mouse-only by its own
+      // convention, the same as everywhere else it is used: opening it is a
+      // click, so it carries no tabindex and is never one of the nav stops.
+      return Array.from(this._rightEl.querySelectorAll(".npc-cc-row, .npc-back-btn"));
     }
     return _contentItems.call(this);
-  };
-
-  // Confirming a row dispatches a mousedown, which a text field does nothing
-  // with: the search box wants focus instead, and typing takes over from there
-  // (the panel's input loop stands down while a field inside it is focused).
-  const _activateContent = Scene_NPCEmpathize.prototype._activateContent;
-  Scene_NPCEmpathize.prototype._activateContent = function () {
-    if (isEditing(this) && this._activeTab === CC_TAB) {
-      const el = this._contentItems()[this._contentIndex];
-      if (el && el.classList.contains("npc-cc-search")) {
-        SoundManager.playOk();
-        this._ccSearchFocused = true;
-        el.focus();
-        return;
-      }
-    }
-    _activateContent.call(this);
   };
 
   const _contentBack = Scene_NPCEmpathize.prototype._contentBack;
@@ -1841,31 +1827,9 @@
     _render.call(this);
     if (!isEditing(this)) return;
     // Every keystroke in a picker's search box rebuilds the list, and with it
-    // the field: put the focus and the caret back, or the second letter of a
-    // query would be typed into nothing. Escape hands the panel back its keys.
-    const search = this._rightEl && this._rightEl.querySelector(".npc-cc-search");
-    if (search && this._ccSearchFocused) {
-      // Keep the in-panel cursor on the field being typed into, so the
-      // highlight (and the scroll it drags along) does not walk off to the row
-      // at index 0 on every keystroke.
-      const index = this._contentItems().indexOf(search);
-      if (index >= 0) this._contentIndex = index;
-      if (document.activeElement !== search) {
-        search.focus();
-        const end = search.value.length;
-        try { search.setSelectionRange(end, end); } catch (e) { /* not selectable */ }
-      }
-    }
-    if (search) {
-      search.onkeydown = (event) => {
-        if (event.key !== "Escape" && event.key !== "Enter") return;
-        event.preventDefault();
-        event.stopPropagation();
-        this._ccSearchFocused = false;
-        search.blur();
-      };
-      search.onblur = () => { this._ccSearchFocused = false; };
-    }
+    // the field: MenuSearchBar.restoreFocus() puts the focus and caret back
+    // (a no-op when the field is not on screen at all).
+    if (this._ccBar) this._ccBar.restoreFocus();
     if (!this._leftEl) return;
     // Clicking the portrait is the shortest way into the sprite grid, which is
     // also where the bust gallery and the 3D editor are reached from.
