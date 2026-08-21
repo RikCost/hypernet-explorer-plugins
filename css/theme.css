@@ -17016,7 +17016,8 @@ body, canvas {
 .battlelog-line {
     font-family: 'Lora', serif;
     font-weight: bold;
-    line-height: 1.45;
+    font-size: 14px;
+    line-height: 1.3;
     white-space: nowrap;
     color: var(--text-pure-white);
     text-shadow: -2px -2px 0 var(--text-pure-black), 2px -2px 0 var(--text-pure-black), -2px 2px 0 var(--text-pure-black), 2px 2px 0 var(--text-pure-black), 2px 2px 4px var(--shadow-black-translucent-80);

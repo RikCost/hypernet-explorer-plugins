@@ -74,10 +74,29 @@
  * @default 0.0050
  *
  * @param invisibleHandEnabled
- * @text Invisible Hand Enabled
- * @desc Master switch for the auto-balancing enemy stat system.
+ * @text Invisible Hand: Master Switch
+ * @desc Master switch for the auto-balancing enemy stat system. When off, only the one-shot protection and chip floor (below) remain active.
  * @type boolean
- * @default true
+ * @default false
+ *
+ * @param invisibleHandLevelGapEnabled
+ * @text Invisible Hand: Level Gap Scaling
+ * @desc When enabled, enemy ATK/DEF/MAT/MDF are scaled based on how many levels the enemy outranks the party. Disabled by default for bounded-stat systems.
+ * @type boolean
+ * @default false
+ *
+ * @param invisibleHandOutnumberEnabled
+ * @text Invisible Hand: Outnumber Scaling
+ * @desc When enabled, enemy ATK/DEF/MAT/MDF are adjusted based on headcount ratios. The outnumbered side gets a stat boost, the outnumbering side gets a slight reduction.
+ * @type boolean
+ * @default false
+ *
+ * @param invisibleHandOutnumberAtkDefRatio
+ * @text Invisible Hand: Outnumber ATK/DEF Ratio
+ * @desc How much of the outnumber multiplier goes to ATK/MAT vs DEF/MDF. 0 = defense only, 1 = equal split, 0.5 = current default.
+ * @type number
+ * @decimals 2
+ * @default 0.50
  *
  * @param invisibleHandGraceEdge
  * @text Invisible Hand: Grace Edge
@@ -318,6 +337,8 @@
     BSE.Params.levelDampLeverageCap = Number(parameters['levelDampLeverageCap'] || 0.80);
     BSE.Params.invisibleHandChipFloorPercent      = Number(parameters['invisibleHandChipFloorPercent'] || 0.0050);
     BSE.Params.invisibleHandEnabled               = (parameters['invisibleHandEnabled'] !== 'false');
+    BSE.Params.invisibleHandLevelGapEnabled         = (parameters['invisibleHandLevelGapEnabled'] !== 'false');
+    BSE.Params.invisibleHandOutnumberEnabled        = (parameters['invisibleHandOutnumberEnabled'] !== 'false');
     BSE.Params.invisibleHandGraceEdge             = Number(parameters['invisibleHandGraceEdge'] || 2);
     BSE.Params.invisibleHandGraceMult             = Number(parameters['invisibleHandGraceMult'] || 1.40);
     BSE.Params.invisibleHandSteepK                = Number(parameters['invisibleHandSteepK'] || 0.20);
@@ -882,37 +903,40 @@
         const offense = IH_OFFENSE_PARAMS.includes(paramId);
         if (!offense && !IH_DEFENSE_PARAMS.includes(paramId)) return 1;
         if (!$gameTroop.members().includes(enemy)) return 1;
-        if (BSE.State.ihPartyLevel === null || BSE.State.ihPartyLevel === undefined) {
-            BSE.State.ihPartyLevel = BSE.Helpers.ihComputeEffectivePartyLevel();
+        let mult = 1;
+        // Level-gap scaling: only when the sub-switch is on
+        if (BSE.Params.invisibleHandLevelGapEnabled) {
+            if (BSE.State.ihPartyLevel === null || BSE.State.ihPartyLevel === undefined) {
+                BSE.State.ihPartyLevel = BSE.Helpers.ihComputeEffectivePartyLevel();
+            }
+            const enemyLevel = BSE.Helpers.getBattlerLevel(enemy);
+            const gapMult = BSE.Helpers.ihLevelGapMultiplier(enemyLevel, BSE.State.ihPartyLevel, offense);
+            mult *= gapMult;
         }
-        const enemyLevel = BSE.Helpers.getBattlerLevel(enemy);
-        const gapMult = BSE.Helpers.ihLevelGapMultiplier(enemyLevel, BSE.State.ihPartyLevel, offense);
-        const outMult = BSE.Helpers.ihOutnumberMultiplier(enemy, offense);
-        const mult = gapMult * outMult;
+        // Outnumber scaling: only when the sub-switch is on
+        if (BSE.Params.invisibleHandOutnumberEnabled) {
+            const outMult = BSE.Helpers.ihOutnumberMultiplier(enemy, offense);
+            mult *= outMult;
+        }
         // Weapon-based defense adjustment: when the party's weapon damage
         // potential exceeds the baseline threshold, enemy DEF/MDF are
         // scaled up so a powerful armament does not trivialise fights.
-        let finalMult;
         if (!offense && IH_DEFENSE_PARAMS.includes(paramId)) {
             const weaponMult = BSE.Helpers.ihWeaponDamageDefenseMultiplier();
-            finalMult = mult * weaponMult;
-        } else {
-            finalMult = mult;
+            mult *= weaponMult;
         }
         // Enemy Difficulty slider integration: the options slider (0..100,
         // default 50) modulates the invisible hand's output so the player
         // can tune how severely the auto-balancing system scales enemy
         // ATK/DEF/MAT/MDF. At the default position the slider contributes
         // nothing — the invisible hand runs exactly as configured.
-        // Slider 50 → factor 1.00 (no change), 0 → factor 0.50,
-        // 100 → factor 1.50, scaled linearly.
         if (typeof GameOptions !== 'undefined' && GameOptions.enemyStatMultiplier) {
             const sliderMult = GameOptions.enemyStatMultiplier();
             const diffFactor = 1 + (sliderMult - 1) * 0.5;
-            finalMult *= diffFactor;
+            mult *= diffFactor;
         }
         return Math.max(BSE.Params.invisibleHandStatFloor,
-            Math.min(BSE.Params.invisibleHandStatCeiling, finalMult));
+            Math.min(BSE.Params.invisibleHandStatCeiling, mult));
     };
 
     // Chains onto whatever paramBase currently is (e.g. GameOptions.js's own
