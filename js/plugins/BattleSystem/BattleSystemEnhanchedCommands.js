@@ -333,6 +333,12 @@
     switch (symbol) {
       case "move":    return T('Battle.cmd.move');
       case "attack":
+        // A ranged weapon run dry doesn't grey out: it becomes Bash, a plain
+        // melee strike with whatever is in hand, ammo count dropped since
+        // there is none left to show.
+        if (ext && typeof ext === "object" && ext.current === 0) {
+          return T('Battle.cmd.bash');
+        }
         return (ext && typeof ext === "object" && ext.current != null)
           ? `${TextManager.attack} (${ext.current})`
           : TextManager.attack;

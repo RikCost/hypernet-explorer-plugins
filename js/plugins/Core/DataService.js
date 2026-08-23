@@ -538,6 +538,15 @@
                 return !!(e && e.beta === true);
             },
 
+            // A named person's own face: the dossier sprites of the preset
+            // characters and their skins. A VIP sheet is worn by the one
+            // character it was drawn for and by nobody else, so it is in no
+            // automatic pool and on no picker board.
+            isVip(key) {
+                const e = this.entry(key);
+                return !!(e && e.vip === true);
+            },
+
             // An animation/pose sheet rather than a walk sheet.
             isAnimated(key) {
                 const e = this.entry(key);
@@ -683,7 +692,7 @@
                         const e = data[k];
                         if (!e || e.npc !== true || e.aliens === true) return false;
                         if (e.creature === true || e.animal === true) return false;
-                        if (e.beta === true) return false;
+                        if (e.beta === true || e.vip === true) return false;
                         if (e.varlenian === true && !varlenia) return false;
                         // A zombie world deals its dead off zombieKeys, on a
                         // share of the same draw, so the people pool there is
@@ -720,7 +729,7 @@
                         const e = data[k];
                         if (!e || e.npc !== true || e.zombie !== true) return false;
                         if (e.creature === true || e.animal === true) return false;
-                        if (e.beta === true) return false;
+                        if (e.beta === true || e.vip === true) return false;
                         return this.allowedInMagic(k, e);
                     });
                 }
@@ -747,6 +756,7 @@
                     poolCache[slot] = Object.keys(data).filter(k => {
                         const e = data[k];
                         if (!e || e.npc !== true || e.aliens !== true) return false;
+                        if (e.vip === true) return false;
                         // Every alien sheet is mundane by decree, so an unbound
                         // world has none of them and a severed one keeps all six.
                         return this.allowedInMagic(k, e);
@@ -789,7 +799,7 @@
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
                         const e = data[k];
-                        if (!e || e.npc !== true) return false;
+                        if (!e || e.npc !== true || e.vip === true) return false;
                         if (half !== "animal" && e.creature === true) return this.allowedInMagic(k, e);
                         if (half !== "creature" && e.animal === true && exterior) return this.allowedInMagic(k, e);
                         return false;
@@ -919,7 +929,7 @@
             // May the spawn systems deal this sheet in this world?
             isSpawnable(key) {
                 const e = this.entry(key);
-                return !!(e && e.npc === true && e.beta !== true);
+                return !!(e && e.npc === true && e.beta !== true && e.vip !== true);
             }
         };
     })();

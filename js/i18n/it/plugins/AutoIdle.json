@@ -1,13 +1,6 @@
 {
   "optionName": "Esploratore automatico",
   "badge": "AUTO P2",
-  "formation": {
-    "label": "Formazione del gruppo",
-    "states": [
-      "Stretta",
-      "Libera"
-    ]
-  },
   "lead": {
     "toast": "{name} passa in testa"
   },

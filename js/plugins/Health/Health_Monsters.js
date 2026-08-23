@@ -662,6 +662,71 @@
     }
   }
 
+  // ==========================================================================
+  // The register a monster's anatomy is read and cut from, from outside here
+  // ==========================================================================
+  //   A body is built and kept in this file, so anything that wants to take a
+  //   piece off one - the killing blow rolled on a critical hit in
+  //   BattleSystemEnhanced.js, for one - asks through this register instead of
+  //   reaching into _bodyParts and inventing its own idea of what a limb is.
+  //
+  //   severPart is the one thing applyDamageToBodyPart above will not do: it
+  //   takes the part off whatever the monster's remaining HP says, because the
+  //   vital protection there is exactly what stops an ordinary blow from
+  //   beheading everything it lands on. A blow that has already earned the
+  //   right to behead does not ask that protection for permission.
+  function isVitalPart(enemy, partKey) {
+    var archetype = enemy ? getArchetype(enemy._archetypeName) : null;
+    var basePart = archetype && archetype.parts ? archetype.parts[partKey] : null;
+    return !!(basePart && basePart.vital);
+  }
+
+  window.MonsterHealth = {
+    // The parts table, built on demand: a monster nothing has struck yet has
+    // no anatomy until somebody looks at it.
+    parts: function (enemy) {
+      if (!enemy) return null;
+      if (!enemy._bodyParts) initializeEnemyBodyParts(enemy);
+      return enemy._bodyParts;
+    },
+
+    isVitalPart: isVitalPart,
+
+    // Everything still attached, filtered by what losing it would mean:
+    //   { vital: true|false } - only the parts it could not live without, or
+    //                           only the ones it could
+    //   { canCutoff: true }   - only the parts that come away cleanly
+    livingPartKeys: function (enemy, opts) {
+      var o = opts || {};
+      var parts = this.parts(enemy);
+      if (!parts) return [];
+      var archetype = getArchetype(enemy._archetypeName);
+      return Object.keys(parts).filter(function (key) {
+        var part = parts[key];
+        if (!part || part.destroyed) return false;
+        var basePart = archetype && archetype.parts ? archetype.parts[key] : null;
+        var vital = !!(basePart && basePart.vital);
+        if (o.vital === true && !vital) return false;
+        if (o.vital === false && vital) return false;
+        if (o.canCutoff === true && !(basePart && basePart.canCutoff)) return false;
+        return true;
+      });
+    },
+
+    // Take the part off regardless of how much fight the monster has left.
+    // Everything that hangs off it goes too, the log line is written and, for
+    // a vital part, the delayed death is armed - all of it by the same code an
+    // ordinary severing goes through.
+    severPart: function (enemy, partKey) {
+      var parts = this.parts(enemy);
+      if (!parts || !parts[partKey] || parts[partKey].destroyed) return false;
+      parts[partKey].currentHp = 0;
+      parts[partKey].destroyed = true;
+      handleDestroyedBodyPart(enemy, partKey);
+      return true;
+    }
+  };
+
   // Apply special effects based on destroyed parts
   function applySpecialEffect(enemy, effect) {
     switch (effect) {

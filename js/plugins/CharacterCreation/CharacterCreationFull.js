@@ -1416,7 +1416,7 @@
       const actor = editedActor();
       const archetypes = String((actor && actor._currentArchetype) || "").split("/").map((s) => s.trim());
       window.$ccArchetypeClassFilter =
-        window.CreatureClasses.groupsForArchetypes(archetypes[0] || null, archetypes[1] || null);
+        window.CreatureClasses.playableGroupsForArchetypes(archetypes[0] || null, archetypes[1] || null);
     } else {
       window.$ccArchetypeClassFilter = null;
     }

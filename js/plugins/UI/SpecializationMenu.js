@@ -277,14 +277,19 @@
         return spec.classStart[cls.name] || 1;
     };
 
-    // actor._selectedTraits (TraitSelector.js) holds the raw Traits.json
-    // objects, whose "name" field is the i18n key "traits.<slug>.name".
+    // actor._selectedTraits holds the raw Traits.json objects when the traits
+    // were bound in TraitSelector.js, and bare trait ids when they were bound
+    // on the character creation board. Either spelling is read here, and the
+    // trait's "name" field is the i18n key "traits.<slug>.name". When several
+    // traits name the same specialization, the most generous one counts.
     Game_Actor.prototype.specializationTraitBonus = function (id) {
         const spec = window.Specializations.byId.get(id);
         if (!spec || !spec.traitStart || !this._selectedTraits) return 1;
+        const bank = (window.Health && window.Health.Traits) || [];
         let best = 1;
-        this._selectedTraits.forEach(trait => {
-            const slug = trait && trait.name ? trait.name.split('.')[1] : null;
+        this._selectedTraits.forEach(entry => {
+            const trait = (entry && entry.name) ? entry : bank.find(t => String(t.id) === String(entry));
+            const slug = trait && trait.name ? String(trait.name).split('.')[1] : null;
             const lvl = slug ? spec.traitStart[slug] : null;
             if (lvl && lvl > best) best = lvl;
         });

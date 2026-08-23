@@ -12,6 +12,15 @@
     "towards": "Verso {level}",
     "pointsToNext": "{points} punti ancora per {level}",
     "mastered": "Padronanza completa. Non c'è più nulla da imparare.",
-    "governingStat": "Statistica di riferimento: {stat}"
-  }
+    "governingStat": "Statistica di riferimento: {stat}",
+    "category": "Categoria",
+    "tier": "Grado {n}"
+  },
+  "rankNames": [
+    "Non addestrato",
+    "Novizio (+1)",
+    "Esperto (+2)",
+    "Veterano (+3)",
+    "Maestro (+4)"
+  ]
 }

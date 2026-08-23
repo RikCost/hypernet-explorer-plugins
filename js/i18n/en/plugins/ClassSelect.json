@@ -30,5 +30,26 @@
     "nonSentient": "Non Sentient",
     "sentient": "Sentient"
   },
-  "vocation": "Vocation"
+  "vocation": "Vocation",
+  "natureMagical": "Magical",
+  "natureMundane": "Mundane",
+  "natureBoth": "Both",
+  "dualWield": "Dual Wield",
+  "bonuses": "Bonuses",
+  "learnset": "Skills",
+  "levelShort": "Lv",
+  "xparam": {
+    "hit": "Hit Rate",
+    "eva": "Evasion Rate",
+    "cri": "Critical Rate",
+    "cev": "Crit. Evasion",
+    "mev": "Magic Evasion",
+    "mrf": "Magic Reflect",
+    "cnt": "Counter Atk",
+    "hrg": "HP Regen",
+    "mrg": "MP Regen",
+    "trg": "AP Regen",
+    "unknown": "Modifier {n}"
+  },
+  "noDescription": "No description available."
 }

@@ -92,22 +92,35 @@
  * book is opened, so a skill added or rebalanced takes its own place without
  * anybody drawing it a line.
  *
- *   TIER is the skill's rank by POWER inside its school - the same score its
- *   price is built on. The weakest workings a school teaches are its entrance
- *   and the strongest are its summit, so a stronger skill is always further
- *   out, always dearer, and always asks for more before it will be taught.
+ *   STRAND is the stat a working leans on. Every skill in the book names one
+ *   and a floor for it (<StatReq: PSI 6>), and that stat is what a school is
+ *   broken into: Martial Arts is a strand of STR, a strand of CON and a strand
+ *   of DEX standing side by side, and a school that leans on one stat alone is
+ *   split again by what KIND of working it is (its element where it has one,
+ *   the job it does where it has not).
  *
- *   LANE is what KIND of working it is: its element where it has one, the job
- *   it does (offensive, support, healing) where it has not. A lane keeps its
- *   bearing from tier to tier, so a school reads as a set of strands.
+ *   RUNG is the floor itself. A strand is a LADDER of the stat that governs it:
+ *   every skill asking PSI 6 stands on one rung, everything asking PSI 7 on the
+ *   next, and a skill always hangs from one that asks LESS of the same stat.
+ *   Power settles nothing but the order inside a rung.
  *
- * The tiers are a PYRAMID, widest at the foot and narrowing to a summit, and
- * every skill hangs from the two to five nearest skills on the tier below it.
- * The gate TIGHTENS as it climbs: the foot of a school is free, the tiers above
- * it open on ONE known prerequisite, and every third tier out asks for one more,
- * to a ceiling of three. The price climbs with it (KP_TIER_STEP, on top of the
- * power the tier was ranked on). That is the whole progression rule, and it is
- * the same rule in all forty schools.
+ * So a school is climbed the way a body grows into it. The gate has TWO locks
+ * and both must be off:
+ *
+ *   THE NEIGHBOUR. The rung below has to be walked first: one known skill on it
+ *   opens the skill above. The foot of a ladder is free.
+ *
+ *   THE BODY. The pupil's own BASE stat has to reach the floor the skill names.
+ *   What counts is what they permanently are - the class curve, what was spent
+ *   at creation, traits, and any augment fitted in the flesh - never a weapon,
+ *   a buff or a three-turn state. A pupil stops climbing where their own stat
+ *   stops, and the sheet says which stat and by how much they are short.
+ *
+ * The climb TIGHTENS by itself: nothing has to ask for more prerequisites,
+ * because each rung asks for more of the pupil than the rung under it. The
+ * price climbs with the rung (KP_TIER_STEP), so the top of a ladder is both the
+ * dearest thing the school teaches and the last thing a body grows into. That
+ * is the whole progression rule, and it is the same rule in all forty schools.
  *
  * A school's FORBIDDEN workings are on no tier of the climb. They hang beyond
  * its summit, joined to nothing and to each other least of all: the whole
@@ -136,14 +149,15 @@
  * what they know), and charges three times the knowledge.
  *
  * There is no graph file and no graph generator. window.SkillGraph works the
- * whole tree out from data/Skills.json itself (skillPower for the tier, the
- * element or <role:> tag for the lane) and caches it per school; the school's
- * shape then takes that (tier, lane) pair and answers with a place in the sky.
- * A skill in no category at all is on no tree and is never blocked by one.
+ * whole tree out from data/Skills.json itself (the <StatReq:> stat for the
+ * strand and its floor for the rung, skillPower only to order a rung) and
+ * caches it per school; the school's page then takes that (rung, strand) pair
+ * and answers with a place on it. A skill in no category at all is on no
+ * ladder and is never blocked by one, though its floor is still asked for.
  *
- * Rebalancing a skill's MP, its damage or its effects MOVES it on its school's
- * tree, which is the point: the tree is a reading of the book rather than a
- * drawing kept beside it.
+ * Re-cutting a skill's <StatReq:> MOVES it on its school's ladder, and
+ * rebalancing its damage only shuffles it inside its own rung: the tree is a
+ * reading of the book rather than a drawing kept beside it.
  *
  * ============================================================================
  * Knowledge cost

@@ -80,6 +80,10 @@
     }
   },
   "text": {
+    "tuitionFor": "Lezione per",
+    "tuitionRequires": "Questo incantesimo è scritto in {stat} {points}. Un lettore sotto quella soglia non può essere intestatario.",
+    "learnerKnows": "già conosciuto",
+    "learnerStat": "{stat} {value} / {points}",
     "welcomeHeadline": "Benvenuto su Stockbusters",
     "welcomeBlurb": "Tutto ciò di cui qualcuno vuole disfarsi, in vendita a cassa intera. Ordina la quantità che vuoi: più unità prendi, meno costa ognuna, e un corriere ti porta il lotto.",
     "theArchmageSBazaar": "Il bazar dell'arcimago",

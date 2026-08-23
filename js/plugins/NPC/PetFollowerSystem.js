@@ -48,6 +48,8 @@
  * Public API (window.PetSystem):
  *   registerPet(record)  → adds/updates a pet record, does not change active
  *   recruitPet(record)   → registerPet + setActive (used on recruitment)
+ *   previewAttrs(sentient, magical, geneticFreak) → the attrs a record with
+ *     that trait combination would be given, without registering anything
  *   birthChild(actor, o) → register a newborn from a parent actor
  *   getPets()            → array of pet records
  *   getPet(id)           → one record or null
@@ -70,7 +72,14 @@
  *
  * Pet record fields: { id, name, characterName, characterIndex, isFollower,
  *   isChild, parentName, bornOn, enemyId, enemyName, level, archetype, note,
- *   skillIds }
+ *   skillIds, sentient, magical, geneticFreak, attrs }
+ *
+ * sentient, magical and geneticFreak are three independent optional traits
+ * (any, all or none may be true) set when a companion is taken in. Each
+ * leans the flat attrs block registerPet() computes for the record one way:
+ * sentient toward Psi, magical toward Intelligence and Wisdom, geneticFreak
+ * toward Strength and Constitution. sentient also decides isFollower/_speaks
+ * the same way the <Talk> tag always has.
  */
 
 //-----------------------------------------------------------------------------
@@ -332,11 +341,31 @@ window.Game_PetFollower = Game_PetFollower;
         }
     }
 
-    // Sentience is the monster's own <Talk> tag, kept on the record when it was
-    // recruited: something that held a conversation to get here is a person,
-    // and a person is never drilled into a creature class.
+    // Sentience is read straight off the record: an explicit choice (the
+    // character-creation companion picker) or the monster's own <Talk> tag,
+    // kept on the record when it was recruited. Either way it is baked into
+    // pet.sentient once, at registration, and every other check just reads
+    // the one field. Something sentient is a person, and a person is never
+    // drilled into a creature class.
     function _speaks(pet) {
-        return /<Talk>/i.test(String((pet && pet.note) || ""));
+        return !!(pet && pet.sentient);
+    }
+
+    // Three optional traits, chosen when a companion is taken in, each lean
+    // its base attributes one way: sentience toward Psi, the arcane toward
+    // Intelligence and Wisdom, a genetic freak toward Strength and
+    // Constitution. Flat and simple, since a pet never rolls a full attribute
+    // spread the way a party member does.
+    const PET_BASE_ATTR = 10;
+    const PET_TRAIT_BONUS = 4;
+    function _petAttrs(sentient, magical, geneticFreak) {
+        return {
+            STR: PET_BASE_ATTR + (geneticFreak ? PET_TRAIT_BONUS : 0),
+            CON: PET_BASE_ATTR + (geneticFreak ? PET_TRAIT_BONUS : 0),
+            INT: PET_BASE_ATTR + (magical ? PET_TRAIT_BONUS : 0),
+            WIS: PET_BASE_ATTR + (magical ? PET_TRAIT_BONUS : 0),
+            PSI: PET_BASE_ATTR + (sentient ? PET_TRAIT_BONUS : 0),
+        };
     }
 
     function _isCreatureClass(classId) {
@@ -480,6 +509,13 @@ window.Game_PetFollower = Game_PetFollower;
         // renamePet() enforces.
         NAME_MAX_LENGTH: PET_NAME_MAX_LENGTH,
 
+        // The same formula registerPet() bakes into a record's own attrs, bared
+        // for a picker to preview live before the companion is actually taken
+        // in (CharacterCreation.js's companion tab).
+        previewAttrs(sentient, magical, geneticFreak) {
+            return _petAttrs(!!sentient, !!magical, !!geneticFreak);
+        },
+
         getPets() {
             return _store() || [];
         },
@@ -503,6 +539,12 @@ window.Game_PetFollower = Game_PetFollower;
             const list = _store();
             if (!list) return null;
             if (!$gameSystem._petIdCounter) $gameSystem._petIdCounter = 0;
+            // Sentience is an explicit choice or the <Talk> tag riding along on
+            // the note (a monster recruited through EnemyTalkSystem never sets
+            // the flag itself); either is baked into the record from here on.
+            const sentient = !!record.sentient || /<Talk>/i.test(String(record.note || ""));
+            const magical = !!record.magical;
+            const geneticFreak = !!record.geneticFreak;
             const pet = {
                 id: ++$gameSystem._petIdCounter,
                 name: String(record.name || T('PetFollower.defaultName')),
@@ -518,6 +560,10 @@ window.Game_PetFollower = Game_PetFollower;
                 archetype: record.archetype || null,
                 note: record.note || "",
                 skillIds: Array.isArray(record.skillIds) ? record.skillIds.slice() : [],
+                sentient: sentient,
+                magical: magical,
+                geneticFreak: geneticFreak,
+                attrs: _petAttrs(sentient, magical, geneticFreak),
             };
             list.push(pet);
             return pet;

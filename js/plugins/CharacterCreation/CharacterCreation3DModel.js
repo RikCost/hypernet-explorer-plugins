@@ -1610,7 +1610,9 @@
   //
   //   TOP BAR    what the creature IS and what to do to all of it at once --
   //              its body, mirror symmetry, undo, redo, a reroll, and the way
-  //              out (Back / Continue).
+  //              out (Continue). There is no Back: a sculpt is never thrown
+  //              away behind the player's back, so leaving keeps it and hands
+  //              the flow back to whoever opened the sculptor.
   //   DRAWER     along the bottom, the parts. A rail of every GROUP the
   //              creature has (its limbs, the appendages it can grow, its
   //              build, its skin) and, under it, a shelf of the actual parts in
@@ -2076,8 +2078,6 @@
       <span class="cc3d-chip" data-focus="1" data-hnav="top"
             onclick="SceneManager._scene.rerollSeed()">${T('CharCreate.variation')} #${cfg.seed}</span>
       <span class="cc3d-spacer"></span>
-      ${window.CCButtons.button(window.CCButtons.backLabel(), {
-        onclick: "SceneManager._scene.onBack()", attrs: 'data-focus="1" data-hnav="top"' })}
       ${window.CCButtons.button(window.CCButtons.continueLabel(), {
         onclick: "SceneManager._scene.onConfirm()", confirm: true,
         attrs: 'data-focus="1" data-hnav="top"' })}
@@ -2682,18 +2682,13 @@
     // double pop past the sprite board it was opened from, landing on the
     // wizard, which resumes on the step after the one that opened the chain.
     if (this._creatureMode) { Scene_CC3DModel._creatureResult = "confirm"; SceneManager.pop(); return; }
-    const pops = Scene_CC3DModel._confirmPops || 2;
-    for (let i = 0; i < pops; i++) SceneManager.pop();
-  };
-
-  Scene_CC3DModel.prototype.onBack = function () {
-    SoundManager.playCancel();
-    if (this._creatureMode) { Scene_CC3DModel._creatureResult = "cancel"; SceneManager.pop(); return; }
-    // Pushed over the caller: one pop returns to it with its own state intact.
+    // Back to whoever opened the sculptor, never past it: popping blind used to
+    // walk the stack all the way out to the map, ending creation instead of
+    // returning to the sheet the sculpt belongs to.
     if (Scene_CC3DModel._returnByPop) { SceneManager.pop(); return; }
     const ret = Scene_CC3DModel._returnSceneClass;
-    if (ret) SceneManager.goto(ret);
-    else { SceneManager.pop(); SceneManager.pop(); }
+    if (ret) { SceneManager.goto(ret); return; }
+    SceneManager.pop();
   };
 
   // What the character walks away with. The parts the sculpt fitted are
@@ -2884,7 +2879,9 @@
     Scene_MenuBase.prototype.update.call(this);
     if (window.CCScroll) window.CCScroll.update(this._root);
     if (this._modal) { this._updateModalInput(); return; }
-    if (Input.isTriggered("cancel") || TouchInput.isCancelled()) { this.onBack(); return; }
+    // Escape and the pad's B leave the same way Continue does: with the sculpt
+    // kept. There is no discard here, so a stray press cannot cost one.
+    if (Input.isTriggered("cancel") || TouchInput.isCancelled()) { this.onConfirm(); return; }
     if (Input.isRepeated("down")) this._moveFocus(1, true);
     else if (Input.isRepeated("up")) this._moveFocus(-1, true);
     else if (Input.isRepeated("right")) this._adjustFocus(1);

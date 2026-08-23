@@ -6,7 +6,7 @@
  * @target MZ
  * @plugindesc Role-tabbed skill menu with a carried battle loadout of 9 skills per character.
  * @author Omni-Lex
- * @version 3.1.0
+ * @version 3.2.0
  *
  * @help CategorizedBattleSkills.js
  *
@@ -21,6 +21,14 @@
  * and anything a weapon or a state grants are always carried and spend no slot.
  *
  * window.BattleLoadout is the only way to ask what a character carries.
+ *
+ * --- STAT REQUIREMENTS ---
+ * Every skill names a base stat and a floor for it (<StatReq: STAT N>, read by
+ * window.SkillStatReq). Nothing here is gated on it: any known skill can be
+ * carried and cast. A character UNDER the floor simply has a looser grip on the
+ * skill and the action can come apart in their hands, which the battle system
+ * rolls for; the list row wears the floor as a red chip and the inspect card
+ * spells out what they hold against it and how often it will fumble.
  *
  * --- BATTLE ---
  * One flat list per skill type, holding that type's carried skills by name.
@@ -190,7 +198,10 @@
             };
 
             // ── Spec collection ───────────────────────────────────────────────
-            const combatSpecsOf = (skill) => {
+            // `actor` is optional: the requirement reads as a bare floor when
+            // nobody is holding the page, and as "what you have against it"
+            // when somebody is.
+            const combatSpecsOf = (skill, actor) => {
                 const specs = [];
                 if (!skill) return specs;
                 if (skill.stypeId > 0) specs.push({ label: T("Inventory.spec.label.skillType"), val: ($dataSystem.skillTypes || [])[skill.stypeId] || T("Inventory.spec.label.skillFallback") });
@@ -229,6 +240,33 @@
                 if (system) {
                     const key = "SkillsMenu.magicSystem." + String(system).trim();
                     specs.push({ label: T("SkillsMenu.magicSystem.label"), val: T.has(key) ? T(key) : String(system).trim() });
+                }
+
+                // The base stat the skill wants, and what the reader brings to
+                // it (window.SkillStatReq, BattleSystemEnhanced.js). Nothing is
+                // barred by falling short: the skill is still learned, still
+                // carried and still cast, it just comes apart more often, and
+                // the odds of that are worth reading before it is taken into a
+                // fight.
+                const svc = window.SkillStatReq;
+                const req = svc && svc.of(skill);
+                if (req) {
+                    specs.push({
+                        label: T("SkillsMenu.spec.label.statReq"),
+                        val: svc.statName(req.stat) + " " + req.points
+                    });
+                    const stand = actor && svc.check(actor, skill);
+                    if (stand) {
+                        specs.push({
+                            label: T("SkillsMenu.spec.label.statHeld"),
+                            val: stand.met
+                                ? T("SkillsMenu.spec.statMet", { value: stand.have })
+                                : T("SkillsMenu.spec.statShort", {
+                                    value: stand.have,
+                                    percent: Math.round(stand.failChance * 100)
+                                })
+                        });
+                    }
                 }
                 return specs;
             };
@@ -400,7 +438,7 @@
 
             function build(skill, actor) {
                 if (!skill) return "";
-                const combat = combatSpecsOf(skill);
+                const combat = combatSpecsOf(skill, actor);
                 const damage = damageSpecsOf(skill, actor);
                 const effects = effectsOf(skill);
                 const training = specRowsOf(skill, actor);
@@ -1393,6 +1431,17 @@
             text += (text ? '\n' : '') +
                 '\\I[' + iconIndex + ']' + $dataSystem.elements[skill.damage.elementId];
         }
+        // What this battler is short of, spelled out under the description:
+        // the row's red chip says WHICH stat, this says how badly it will tell.
+        const svc = window.SkillStatReq;
+        const stand = svc && actor ? svc.check(actor, skill) : null;
+        if (stand && !stand.met) {
+            text += (text ? '\n' : '') + T('SkillsMenu.spec.label.statReq') + ': ' +
+                svc.statName(stand.stat) + ' ' + stand.points + '. ' +
+                T('SkillsMenu.spec.statShort', {
+                    value: stand.have, percent: Math.round(stand.failChance * 100)
+                });
+        }
         return text;
     }
 
@@ -1470,6 +1519,22 @@
 
             const rightDiv = document.createElement('div');
             rightDiv.style.cssText = 'display:flex;align-items:center;font-size:85%;';
+
+            // The stat floor this battler is UNDER, at the moment it matters
+            // most. Nothing here refuses the pick: the skill is still cast, it
+            // is just this likely to come apart on the way out
+            // (BattleSystemEnhancedMechanics rolls it).
+            const statSvc = window.SkillStatReq;
+            const stand = statSvc && this._actor ? statSvc.check(this._actor, skill) : null;
+            if (stand && !stand.met) {
+                const reqSpan = document.createElement('span');
+                reqSpan.style.cssText = 'color:var(--text-danger-dark);font-weight:bold;margin-left:8px;';
+                reqSpan.textContent = statSvc.statName(stand.stat) + ' ' + stand.points;
+                reqSpan.title = T('SkillsMenu.spec.statShort', {
+                    value: stand.have, percent: Math.round(stand.failChance * 100)
+                });
+                rightDiv.appendChild(reqSpan);
+            }
 
             if (this._actor) {
                 const tpCost = this._actor.skillTpCost(skill);
@@ -2921,6 +2986,17 @@
         const fieldFlag = actor.isOccasionOk(item)
             ? `<span class="skill-field-flag">${costText ? ' · ' : ''}${escapeHtml(T('SkillsMenu.tag.field'))}</span>` : "";
 
+        // The base stat the skill leans on, printed on the row itself. It is
+        // only worth the ink when the character is SHORT of it: a skill they
+        // have the sheet for reads no differently from any other, and one they
+        // do not is a skill that will come apart in their hands often enough
+        // that it should say so before it is carried into a fight.
+        const svc = window.SkillStatReq;
+        const stand = svc && svc.check(actor, item);
+        const reqFlag = (stand && !stand.met)
+            ? `<span class="skill-req-flag" title="${escapeHtml(T('SkillsMenu.spec.statShort', { value: stand.have, percent: Math.round(stand.failChance * 100) }))}">${escapeHtml(svc.statName(stand.stat) + ' ' + stand.points)}</span>`
+            : "";
+
         return `
             <div class="item-slot ${isFocused}"${dimStyle} data-skill-idx="${idx}" onclick="SceneManager._scene.clickUISkill(${idx})" ondblclick="SceneManager._scene.dblClickUISkill(${idx})">
                 <div class="item-rarity-bar" style="background:${skillStripeColor(item)};"></div>
@@ -2930,7 +3006,7 @@
                 <div class="item-slot-info">
                     <div class="item-slot-name">${escapeHtml(item.name)}</div>
                     <div class="item-slot-meta">
-                        <span>${escapeHtml(costText)}${fieldFlag}</span>
+                        <span>${escapeHtml(costText)}${fieldFlag}${reqFlag}</span>
                         ${chipHTML}
                     </div>
                 </div>

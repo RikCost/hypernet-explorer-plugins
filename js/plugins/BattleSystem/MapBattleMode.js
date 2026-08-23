@@ -1231,11 +1231,11 @@
             if (!(character instanceof Game_Event)) MBM._syncSwimState(character);
         }
 
-        // Closing ranks is what a marching column does. A Loose party
-        // (Core/AutoIdleExplorer.js) has no column to close: gathering there
-        // would drag everybody onto the leader's tile the instant the fight
-        // ended, undoing the whole point of the formation, so they are left
-        // standing where they fought and pick their own lives back up.
+        // Closing ranks is what a marching column does. The party
+        // (Core/AutoIdleExplorer.js) has no column to close: gathering would
+        // drag everybody onto the leader's tile the instant the fight ended,
+        // undoing the whole point of it, so they are left standing where they
+        // fought and pick their own lives back up.
         if (!MBM._looseFormation()) $gamePlayer.gatherFollowers();
 
         MBM._enemyEvent = null;
@@ -1412,15 +1412,13 @@
         return spots;
     };
 
-    // Is the party walking itself rather than marching in a column? Loose is
-    // the formation that scatters members over the map (Core/AutoIdleExplorer.js).
-    // Asked of the option rather than of Loose.anyLoose(), which also answers
-    // true for a Close party that merely has a pet trailing it.
-    const FORMATION_LOOSE = 1;
+    // The party always walks itself rather than marching in a column: the
+    // members are scattered over the map living their own lives
+    // (Core/AutoIdleExplorer.js), and there is no column formation left to
+    // fall back to. Kept as a predicate because the fight still has to know,
+    // and it answers false where that plugin is not loaded at all.
     MBM._looseFormation = function () {
-        const loose = window.AutoIdleExplorer && window.AutoIdleExplorer.loose;
-        if (!loose || typeof loose.mode !== "function") return false;
-        return loose.mode() === FORMATION_LOOSE;
+        return !!(window.AutoIdleExplorer && window.AutoIdleExplorer.loose);
     };
 
     // Can this member fight from the tile they are already standing on? Only if

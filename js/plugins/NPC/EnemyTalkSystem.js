@@ -533,6 +533,20 @@
         return RECRUIT_ACTOR_IDS.find(id => !taken.includes(id)) || 0;
     }
 
+    // Recruiting is a persuasion or an insight check, whichever the actor is
+    // better at: PSI (LUK based) for charm, WIS (MDF based) for reading the
+    // creature. Always the higher of the two, regardless of whether the
+    // target can talk back.
+    function bestJoinStat(actor) {
+        if (!actor) return { statName: 'PSI', statMod: 0 };
+        const psiMod = actor.psiMod ?? Math.floor(((actor.luk || 10) - 10) / 2);
+        const wisMod = actor.wisMod ?? Math.floor(((actor.mdf || 10) - 10) / 2);
+        return wisMod > psiMod
+            ? { statName: 'WIS', statMod: wisMod }
+            : { statName: 'PSI', statMod: psiMod };
+    }
+    window.EnemyTalk.bestJoinStat = bestJoinStat;
+
     // Label for the "recruit as pet/follower" option. Cosmetic only: enemies
     // with the <Talk> tag become "followers", the rest become "pets".
     function getRecruitLabel(enemy) {
@@ -1139,8 +1153,7 @@
 
         const hasTalk = enemy.enemy() && enemy.enemy().note && enemy.enemy().note.includes('<Talk>');
         const actor = $gameParty.battleMembers()[0] || $gameParty.leader();
-        const statName = hasTalk ? 'PSI' : 'WIS';
-        const statMod = actor ? (hasTalk ? (actor.psiMod ?? Math.floor(((actor.luk || 10) - 10) / 2)) : (actor.wisMod ?? Math.floor(((actor.mdf || 10) - 10) / 2))) : 0;
+        const { statName, statMod } = bestJoinStat(actor);
         const chance = this.calculateJoinSuccessChance();
         let canJoin = false;
 
@@ -1311,8 +1324,7 @@
 
         const hasTalk = enemy.enemy() && enemy.enemy().note && enemy.enemy().note.includes('<Talk>');
         const actor = $gameParty.battleMembers()[0] || $gameParty.leader();
-        const statName = hasTalk ? 'PSI' : 'WIS';
-        const statMod = actor ? (hasTalk ? (actor.psiMod ?? Math.floor(((actor.luk || 10) - 10) / 2)) : (actor.wisMod ?? Math.floor(((actor.mdf || 10) - 10) / 2))) : 0;
+        const { statName, statMod } = bestJoinStat(actor);
         const chance = this.calculatePetFollowerChance();
         let success = false;
 

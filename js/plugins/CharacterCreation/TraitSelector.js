@@ -162,7 +162,10 @@
   const pickRandomTraits = (options) => {
     const opts = options || {};
     const rng = opts.rng || Math.random;
-    const bag = (opts.pool || getTraits()).slice();
+    // Genetic traits are biology, settled by the body chosen earlier in
+    // creation, so no roll ever draws one: a caller that wants them has to
+    // hand in a pool that holds them.
+    const bag = (opts.pool || getTraits().filter((trait) => (trait.category || "mental") !== "genetic")).slice();
     for (let i = bag.length - 1; i > 0; i--) {
       const j = Math.floor(rng() * (i + 1));
       const swap = bag[i];
@@ -388,6 +391,7 @@
       loadI18nData().then(() => {
         this.resetSwitches();
         this.resetActorTraits();
+        this.loadActorTraits();
         this.createUIOverlay();
       });
     }
@@ -646,6 +650,12 @@
       back.textContent = CCB.backLabel();
       back.addEventListener("click", () => this.onTraitsBack());
       slots.back.appendChild(back);
+
+      const reset = document.createElement("button");
+      reset.className = "cc-btn-treaty";
+      reset.textContent = t("resetTraits");
+      reset.addEventListener("click", () => this.onTraitsReset());
+      slots.mid.appendChild(reset);
 
       const random = document.createElement("button");
       random.className = "cc-btn-treaty";
@@ -1116,6 +1126,21 @@
       this.syncOverlay(false);
     }
 
+    // Put the whole build down: every trait and every illness on the sheet goes
+    // back and the purse reads full again. Nothing has been handed to the
+    // member yet at this point, so this only ever clears the page.
+    onTraitsReset() {
+      if (this._selectedTraits.length === 0 && this._selectedDiseases.length === 0) {
+        SoundManager.playBuzzer();
+        return;
+      }
+      SoundManager.playCancel();
+      this._selectedTraits = [];
+      this._selectedDiseases = [];
+      this._cursor = 0;
+      this.syncOverlay(false);
+    }
+
     // A build is sealable once it carries at least one trait and has not
     // overspent. Leaving points on the table is the player's business.
     openPrompt() {
@@ -1311,15 +1336,21 @@
         return;
       }
 
-      if (!traitIds || traitIds.length === 0) {
-        console.warn('No trait IDs provided');
-        return;
-      }
-
       // Get the Traits array from ProstheticsData
       const TraitsArray = window.Health && window.Health.Traits;
       if (!TraitsArray) {
         console.error('Traits array not found. Is DB.js loaded?');
+        return;
+      }
+
+      // An empty list is a build with nothing in it, not a call to ignore:
+      // bailing here left the grants of the trait just dropped on the actor,
+      // which is how the last trait of a build became impossible to remove.
+      if (!traitIds || traitIds.length === 0) {
+        revertTraitGrants(actor, actor._selectedTraits);
+        actor._paramPlus = [0, 0, 0, 0, 0, 0, 0, 0];
+        actor._selectedTraits = [];
+        actor.refresh();
         return;
       }
 
@@ -1336,11 +1367,14 @@
 
       const selectedTraits = [];
 
-      // Collect trait objects by ID
-      traitIds.forEach((traitId) => {
-        const trait = TraitsArray.find((t) => t.id === traitId);
+      // Collect trait objects by ID. What comes in is an id, but every screen
+      // that has already applied a build hands the whole trait object back, so
+      // both shapes resolve here rather than being dropped as unknown ids.
+      traitIds.forEach((entry) => {
+        const traitId = (entry && typeof entry === "object") ? entry.id : entry;
+        const trait = TraitsArray.find((t) => String(t.id) === String(traitId));
         if (trait) {
-          selectedTraits.push(trait);
+          if (!selectedTraits.includes(trait)) selectedTraits.push(trait);
         } else {
           console.warn(`Trait with ID ${traitId} not found in TraitSelector data`);
         }
@@ -1428,9 +1462,35 @@
         return;
       }
 
-      // Reset all parameter bonuses to 0
-      actor._paramPlus = [0, 0, 0, 0, 0, 0, 0, 0];
+      // The parameter bonuses are NOT wiped on the way in any more. Applying a
+      // build zeroes and rebuilds them anyway, so wiping them here only ever
+      // hurt the player who opened this screen and backed out again: they left
+      // with the traits they came in with and none of the numbers.
       actor.refresh();
+    }
+
+    // The build the member already carries, so reopening this screen resumes
+    // it instead of opening on an empty sheet that silently replaced the whole
+    // thing on the way out. Either shape is read: the picked list is kept as
+    // whole traits here and as bare ids by the creation board.
+    loadActorTraits() {
+      const targetId = Scene_TraitSelector._targetActorId || actorId;
+      const actor = $gameActors.actor(targetId);
+      if (!actor) return;
+
+      const bank = getTraits();
+      this._selectedTraits = ((actor._selectedTraits) || [])
+        .map((entry) => {
+          const id = (entry && typeof entry === "object") ? entry.id : entry;
+          return bank.find((trait) => String(trait.id) === String(id));
+        })
+        .filter(Boolean);
+
+      const cards = getDiseaseCards();
+      this._selectedDiseases = ((actor._ccDiseases) || [])
+        .map((id) => cards.find((card) => card.diseaseId === id))
+        .filter(Boolean);
+      if (this._selectedDiseases.length) this._diseaseCards = cards;
     }
 
     resetSwitches() {
@@ -1445,7 +1505,15 @@
   // bonuses are handled separately by fully resetting _paramPlus.
   function revertTraitGrants(actor, traits) {
     if (!actor || !traits) return;
-    traits.forEach((trait) => {
+    const bank = (window.Health && window.Health.Traits) || [];
+    traits.forEach((entry) => {
+      // A picked list is written as whole traits by this plugin and as bare ids
+      // by the creation board, so a revert reads either shape or it silently
+      // leaves the granted skills and items behind.
+      const trait = (entry && typeof entry === "object")
+        ? entry
+        : bank.find((t) => String(t.id) === String(entry));
+      if (!trait) return;
       (trait.skills || []).forEach((skillId) => {
         if ($dataSkills[skillId]) {
           actor.forgetSkill(skillId);
@@ -1570,6 +1638,9 @@
     // dossier panel in character creation) has to ask for it here or its
     // Diseases tab comes up empty.
     diseaseCards: getDiseaseCards,
+    // Undoing a build (the Reset button on the creation board) has to take the
+    // granted skills, items and equipment back off the actor.
+    revertGrants: revertTraitGrants,
     DISEASE_CATEGORY,
   };
 })();

@@ -197,7 +197,10 @@
   "trainPaused": "Paused while another companion walks with the party.",
   "trainReady": "Trained as {className}, waiting for a place in the party.",
   "trainJoin": "Join the party",
-  "trainStop": "Call it off"
+  "trainStop": "Call it off",
+  "traitSentient": "Sentient",
+  "traitMagical": "Magical",
+  "traitGeneticFreak": "Genetic Freak"
  },
  "vehicles": {
   "spawn": "Spawn",

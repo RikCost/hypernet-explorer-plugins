@@ -197,7 +197,10 @@
   "trainPaused": "In pausa: con il gruppo cammina un altro compagno.",
   "trainReady": "Addestrato da {className}, aspetta un posto nel gruppo.",
   "trainJoin": "Unisciti al gruppo",
-  "trainStop": "Interrompi"
+  "trainStop": "Interrompi",
+  "traitSentient": "Senziente",
+  "traitMagical": "Magico",
+  "traitGeneticFreak": "Mutante Genetico"
  },
  "vehicles": {
   "spawn": "Evoca",

@@ -100,17 +100,12 @@
     "weatherVolume": "Volume dei suoni ambientali esterni: pioggia, temporali, vento e rumori del bioma. Non tocca gli interni.",
     "biomeMusic": "Lascia scegliere la musica al luogo in cui ti trovi: ogni bioma ha i suoi brani, uno per nazione e per metà della giornata, con un elenco più cupo per un mondo spopolato. È ancora in lavorazione, quindi è disattivata e ogni mappa mantiene il proprio tema.",
     "partyHud": "Una scheda per ogni membro del gruppo in alto a sinistra: HP, MP, stati e bisogni urgenti.",
-    "partyFormation": "Come il resto del gruppo cammina dietro al capogruppo sulla mappa.",
     "musicArtistDisplay": "Se mostrare titolo e autore della musica in riproduzione.",
     "battleMusicName": "Quale brano parte quando inizia uno scontro. Bioma, l'opzione predefinita, usa il tema di battaglia del luogo in cui stai combattendo. Casuale ne estrae uno diverso tra quelli sotto all'inizio di ogni battaglia.",
     "markovLlmModel": "Quale modello linguistico GGUF scrive i dialoghi generati. Spento lascia ogni battuta generata alle catene di Markov. Metti un file .gguf nella cartella models del gioco e comparirà qui.",
     "dialogueMode": "Come risponde un NPC senza nulla di scritto quando gli parli. Empatia esegue un'azione Socializza tratta dalla sua personalità, ripiegando su una battuta di contorno. Markoviano genera invece una nuova frase dal suo stesso archivio di parole."
   },
   "descState": {
-    "partyFormation": [
-      "Stretta: il gruppo cammina in fila, un passo dietro il capogruppo.",
-      "Libera: i compagni vagano e vivono di vita propria. Corri per due secondi per farli tornare in fila; si radunano dopo una battaglia o un cambio mappa. Guardali e premi OK per parlargli."
-    ],
     "enemySpawnMode": [
       "Distanza dalla partenza: la difficoltà viene dal luogo, non da te. I livelli salgono più una casella dista da dove hai iniziato. Ogni nazione e bioma ha il proprio elenco, e ogni casella nasconde un boss.",
       "Livello del Gruppo: i nemici si adattano al gruppo. I vaganti restano al tuo livello o sotto; ogni casella nasconde un boss più forte. L'opzione più sicura.",

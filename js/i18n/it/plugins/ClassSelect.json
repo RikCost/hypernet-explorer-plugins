@@ -30,5 +30,26 @@
     "nonSentient": "Non Senziente",
     "sentient": "Senziente"
   },
-  "vocation": "Professione"
+  "vocation": "Professione",
+  "natureMagical": "Magico",
+  "natureMundane": "Mondano",
+  "natureBoth": "Entrambi",
+  "dualWield": "Doppia Arma",
+  "bonuses": "Bonus",
+  "learnset": "Abilità",
+  "levelShort": "Lv",
+  "xparam": {
+    "hit": "Precisione",
+    "eva": "Schivata",
+    "cri": "Tasso Critico",
+    "cev": "Schivata Critici",
+    "mev": "Schivata Magica",
+    "mrf": "Riflesso Magico",
+    "cnt": "Contrattacco",
+    "hrg": "Rigenerazione HP",
+    "mrg": "Rigenerazione MP",
+    "trg": "Rigenerazione AP",
+    "unknown": "Modificatore {n}"
+  },
+  "noDescription": "Nessuna descrizione disponibile."
 }

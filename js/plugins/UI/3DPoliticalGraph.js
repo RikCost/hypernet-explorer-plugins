@@ -213,35 +213,33 @@
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
         pointer-events: none;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #f0e6d2;
+        font-family: 'Lora', serif;
+        color: var(--text-text-alt-13);
         box-sizing: border-box;
         overflow: hidden;
         user-select: none;
         z-index: 10;
       `;
 
-      // Header Bar
+      // Header Bar (matches the Character Creation grid selector's gold/parchment HUD)
       const header = document.createElement('div');
       header.style.cssText = `
         position: absolute; top: 15px; left: 20px; right: 20px;
         height: 56px;
         display: flex; align-items: center; justify-content: space-between;
-        background: rgba(18, 14, 10, 0.94);
-        border: 1px solid rgba(218, 165, 32, 0.4);
-        border-radius: 8px;
+        background: var(--bg-panel);
+        border: 1px solid var(--border-gold-amber-30);
+        border-radius: 4px;
         padding: 0 24px;
         pointer-events: auto;
         box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(12px);
       `;
       header.innerHTML = `
         <div style="display: flex; align-items: center; gap: 14px;">
-          <span style="font-size: 26px;">🌌</span>
-          <span style="font-size: 22px; font-weight: 700; color: #f5d061; letter-spacing: 1.2px; text-transform: uppercase; font-family: Georgia, serif;">
+          <span style="font-size: 22px; font-weight: 700; color: var(--text-primary-hover); letter-spacing: 1.2px; text-transform: uppercase; font-family: 'Lora', serif;">
             3D Political Graph
           </span>
-          <span style="font-size: 13px; font-weight: 600; background: rgba(218, 165, 32, 0.15); color: #f5d061; padding: 4px 12px; border-radius: 14px; border: 1px solid rgba(218, 165, 32, 0.35);">
+          <span style="font-size: 13px; font-weight: 600; background: var(--bg-primary-hover-translucent-35); color: var(--text-primary-hover); padding: 4px 12px; border-radius: 3px; border: 1px solid var(--border-gold-amber-30);">
             ${this._isModal ? 'Select Ideology Mode' : 'Econ / Auth / Esoteric'}
           </span>
         </div>
@@ -256,18 +254,19 @@
       searchInput.type = 'text';
       searchInput.placeholder = 'Search 228 ideologies...';
       searchInput.style.cssText = `
-        background: rgba(0, 0, 0, 0.65);
-        border: 1px solid rgba(218, 165, 32, 0.35);
-        border-radius: 6px;
-        color: #f0e6d2;
+        background: var(--text-pure-black);
+        border: 1px solid var(--border-gold-amber-30);
+        border-radius: 3px;
+        color: var(--text-text-alt-13);
+        font-family: 'Lora', serif;
         padding: 8px 14px;
         font-size: 14px;
         width: 220px;
         outline: none;
         transition: border 0.2s;
       `;
-      searchInput.addEventListener('focus', () => searchInput.style.borderColor = '#f5d061');
-      searchInput.addEventListener('blur', () => searchInput.style.borderColor = 'rgba(218, 165, 32, 0.35)');
+      searchInput.addEventListener('focus', () => searchInput.style.borderColor = 'var(--text-primary-hover)');
+      searchInput.addEventListener('blur', () => searchInput.style.borderColor = 'var(--border-gold-amber-30)');
       searchInput.addEventListener('input', (e) => {
         this._searchQuery = e.target.value;
         this.applyFilters();
@@ -275,30 +274,14 @@
       });
       headerControls.appendChild(searchInput);
 
-      // Confirm Selection Button
+      // Confirm Selection Button - the only way to confirm a pick, so the
+      // per-ideology button in the sidebar (redundant with this one and with
+      // double-clicking a list row) was removed.
       if (this._isModal) {
         const selectBtn = document.createElement('button');
-        selectBtn.innerText = '✔ Select Ideology';
-        selectBtn.style.cssText = `
-          background: rgba(218, 165, 32, 0.3);
-          border: 1px solid #f5d061;
-          color: #ffffff;
-          padding: 8px 20px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-weight: 700;
-          font-size: 14px;
-          transition: all 0.2s;
-          box-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
-        `;
-        selectBtn.addEventListener('mouseenter', () => {
-          selectBtn.style.background = 'rgba(218, 165, 32, 0.5)';
-          selectBtn.style.boxShadow = '0 0 15px rgba(245, 208, 97, 0.6)';
-        });
-        selectBtn.addEventListener('mouseleave', () => {
-          selectBtn.style.background = 'rgba(218, 165, 32, 0.3)';
-          selectBtn.style.boxShadow = '0 0 10px rgba(218, 165, 32, 0.3)';
-        });
+        selectBtn.className = 'cc-btn-treaty confirm';
+        selectBtn.style.cssText = `padding: 7px 20px; font-size: 14px;`;
+        selectBtn.innerText = 'Select Ideology';
         selectBtn.addEventListener('click', () => this.confirmSelection());
         headerControls.appendChild(selectBtn);
       }
@@ -310,8 +293,9 @@
         background: rgba(180, 50, 50, 0.25);
         border: 1px solid rgba(235, 80, 80, 0.5);
         color: #ffaaaa;
+        font-family: 'Lora', serif;
         padding: 8px 18px;
-        border-radius: 6px;
+        border-radius: 3px;
         cursor: pointer;
         font-weight: 700;
         font-size: 14px;
@@ -322,55 +306,39 @@
       closeBtn.addEventListener('click', () => SceneManager.pop());
       headerControls.appendChild(closeBtn);
 
-      // Toolbar Controls Bar (Camera Presets & Filter Pills)
+      // Toolbar Controls Bar (Camera Presets & Filter Pills, styled as the
+      // same tab rail the character sheet's grid selectors use)
       const toolbar = document.createElement('div');
       toolbar.style.cssText = `
         position: absolute; top: 82px; left: 20px; right: 420px;
-        display: flex; gap: 10px; align-items: center;
+        display: flex; gap: 8px; align-items: center;
         pointer-events: auto;
         overflow-x: auto;
         padding-bottom: 5px;
       `;
 
       const cameraPresets = [
-        { label: ' Isometric 3D', action: () => { this._rotX = 0.42; this._rotY = -0.75; this._zoom = 1.0; } },
-        { label: ' Top (2D Compass)', action: () => { this._rotX = 1.57; this._rotY = 0; this._zoom = 1.1; } },
-        { label: ' Front (Econ-Magic)', action: () => { this._rotX = 0; this._rotY = 0; this._zoom = 1.0; } },
-        { label: ' Side (Auth-Magic)', action: () => { this._rotX = 0; this._rotY = 1.57; this._zoom = 1.0; } },
-        { label: ' Auto-Orbit', action: (btn) => {
+        { label: 'Isometric 3D', action: () => { this._rotX = 0.42; this._rotY = -0.75; this._zoom = 1.0; } },
+        { label: 'Top (2D Compass)', action: () => { this._rotX = 1.57; this._rotY = 0; this._zoom = 1.1; } },
+        { label: 'Front (Econ-Magic)', action: () => { this._rotX = 0; this._rotY = 0; this._zoom = 1.0; } },
+        { label: 'Side (Auth-Magic)', action: () => { this._rotX = 0; this._rotY = 1.57; this._zoom = 1.0; } },
+        { label: 'Auto-Orbit', action: (btn) => {
             this._autoRotate = !this._autoRotate;
-            btn.style.borderColor = this._autoRotate ? '#f5d061' : 'rgba(218, 165, 32, 0.25)';
-            btn.style.background = this._autoRotate ? 'rgba(218, 165, 32, 0.3)' : 'rgba(24, 18, 12, 0.85)';
+            btn.classList.toggle('active', this._autoRotate);
           }
         }
       ];
 
       cameraPresets.forEach(preset => {
         const btn = document.createElement('button');
+        btn.className = 'cc-sprite-tab-btn';
         btn.innerText = preset.label;
-        btn.style.cssText = `
-          background: rgba(24, 18, 12, 0.85);
-          border: 1px solid rgba(218, 165, 32, 0.25);
-          color: #e8ded0;
-          padding: 7px 14px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 13px;
-          font-weight: 600;
-          white-space: nowrap;
-          transition: all 0.2s;
-        `;
         btn.addEventListener('click', () => preset.action(btn));
-        btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(50, 38, 25, 0.9)');
-        btn.addEventListener('mouseleave', () => {
-          if (preset.label.includes('Auto-Orbit') && this._autoRotate) return;
-          btn.style.background = 'rgba(24, 18, 12, 0.85)';
-        });
         toolbar.appendChild(btn);
       });
 
       const div = document.createElement('div');
-      div.style.cssText = `width: 1px; height: 24px; background: rgba(218, 165, 32, 0.3); margin: 0 4px;`;
+      div.style.cssText = `width: 1px; height: 24px; background: var(--border-gold-amber-30); margin: 0 4px;`;
       toolbar.appendChild(div);
 
       const filterPills = [
@@ -379,39 +347,19 @@
         { id: 'AUTH_RIGHT', label: 'Auth-Right (Blue)' },
         { id: 'LIB_LEFT', label: 'Lib-Left (Green)' },
         { id: 'LIB_RIGHT', label: 'Lib-Right (Yellow)' },
-        { id: 'MAGIC', label: 'High Magic 🔮' },
-        { id: 'MUNDANE', label: 'High Mundane ⚙️' }
+        { id: 'MAGIC', label: 'High Magic' },
+        { id: 'MUNDANE', label: 'High Mundane' }
       ];
 
       this._pillButtons = [];
       filterPills.forEach(pill => {
         const btn = document.createElement('button');
+        btn.className = 'cc-sprite-tab-btn';
+        btn.classList.toggle('active', this._filterQuadrant === pill.id);
         btn.innerText = pill.label;
-        const isSelected = this._filterQuadrant === pill.id;
-        btn.style.cssText = `
-          background: ${isSelected ? 'rgba(218, 165, 32, 0.35)' : 'rgba(18, 14, 10, 0.7)'};
-          border: 1px solid ${isSelected ? '#f5d061' : 'rgba(218, 165, 32, 0.2)'};
-          color: ${isSelected ? '#fff8e0' : '#a89f91'};
-          padding: 6px 12px;
-          border-radius: 14px;
-          cursor: pointer;
-          font-size: 12px;
-          font-weight: ${isSelected ? '700' : '500'};
-          white-space: nowrap;
-          transition: all 0.2s;
-        `;
         btn.addEventListener('click', () => {
           this._filterQuadrant = pill.id;
-          this._pillButtons.forEach(b => {
-            b.btn.style.background = 'rgba(18, 14, 10, 0.7)';
-            b.btn.style.borderColor = 'rgba(218, 165, 32, 0.2)';
-            b.btn.style.color = '#a89f91';
-            b.btn.style.fontWeight = '500';
-          });
-          btn.style.background = 'rgba(218, 165, 32, 0.35)';
-          btn.style.borderColor = '#f5d061';
-          btn.style.color = '#fff8e0';
-          btn.style.fontWeight = '700';
+          this._pillButtons.forEach(b => b.btn.classList.toggle('active', b.id === pill.id));
           this.applyFilters();
           this.updateIdeologyList();
         });
@@ -427,22 +375,21 @@
       sidebar.style.cssText = `
         position: absolute; top: 82px; right: 20px; bottom: 20px;
         width: 380px;
-        background: rgba(18, 14, 10, 0.94);
-        border: 1px solid rgba(218, 165, 32, 0.35);
-        border-radius: 8px;
+        background: var(--bg-panel);
+        border: 1px solid var(--border-gold-amber-30);
+        border-radius: 4px;
         display: flex; flex-direction: column;
         pointer-events: auto;
         box-shadow: 0 4px 25px rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(12px);
         overflow: hidden;
       `;
       sidebar.innerHTML = `
-        <div style="padding: 18px; border-bottom: 1px solid rgba(218, 165, 32, 0.2); background: rgba(218, 165, 32, 0.05);">
-          <div id="sidebar-title" style="font-size: 20px; font-weight: 700; color: #f5d061; font-family: Georgia, serif; margin-bottom: 4px;">Select an Ideology</div>
-          <div id="sidebar-subtitle" style="font-size: 13px; color: #a89f91;">Click any 3D node or list item</div>
+        <div style="padding: 18px; border-bottom: 1px solid var(--border-gold-amber-30); background: var(--bg-primary-hover-translucent-35);">
+          <div id="sidebar-title" style="font-size: 20px; font-weight: 700; color: var(--text-primary-hover); font-family: 'Lora', serif; margin-bottom: 4px;">Select an Ideology</div>
+          <div id="sidebar-subtitle" style="font-size: 13px; color: var(--text-text-alt-13);">Click any 3D node or list item</div>
         </div>
-        <div id="sidebar-details" style="padding: 18px; flex-shrink: 0; border-bottom: 1px solid rgba(218, 165, 32, 0.2); font-size: 14px;"></div>
-        <div style="padding: 10px 18px; background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 700; color: #cda851; text-transform: uppercase; letter-spacing: 1.2px;">
+        <div id="sidebar-details" style="padding: 18px; flex-shrink: 0; border-bottom: 1px solid var(--border-gold-amber-30); font-size: 14px;"></div>
+        <div style="padding: 10px 18px; background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 700; color: var(--text-primary-hover); text-transform: uppercase; letter-spacing: 1.2px;">
           Ideologies (<span id="filtered-count">0</span>)
         </div>
         <div id="sidebar-list" style="flex: 1; overflow-y: auto; padding: 10px;"></div>
@@ -468,24 +415,24 @@
         const isSelected = this._selectedIdeology && this._selectedIdeology.id === item.id;
 
         const myst = item.axes.myst !== undefined ? item.axes.myst : (item.axes.esoteric || 0);
-        let esotericTag = myst > 25 ? '🔮 Magic' : myst < -25 ? '⚙️ Mundane' : '☯️ Neutral';
+        let esotericTag = myst > 25 ? 'Magic' : myst < -25 ? 'Mundane' : 'Neutral';
 
         row.style.cssText = `
           padding: 10px 14px;
           margin-bottom: 6px;
-          border-radius: 6px;
-          background: ${isSelected ? 'rgba(218, 165, 32, 0.25)' : 'rgba(255, 255, 255, 0.03)'};
-          border: 1px solid ${isSelected ? '#f5d061' : 'rgba(218, 165, 32, 0.1)'};
+          border-radius: 3px;
+          background: ${isSelected ? 'var(--bg-primary-hover-translucent-35)' : 'transparent'};
+          border: 1px solid ${isSelected ? 'var(--text-primary-hover)' : 'var(--border-gold-amber-30)'};
           cursor: pointer;
           display: flex; justify-content: space-between; align-items: center;
           transition: background 0.15s;
         `;
         row.innerHTML = `
           <div>
-            <div style="font-size: 14px; font-weight: 600; color: ${isSelected ? '#ffffff' : '#f0e6d2'}; margin-bottom: 2px;">${name}</div>
-            <div style="font-size: 12px; color: #a89f91;">E: ${item.axes.econ} | A: ${item.axes.auth} | Z: ${myst}</div>
+            <div style="font-size: 14px; font-weight: 600; color: ${isSelected ? 'var(--text-primary-hover)' : 'var(--text-text-alt-13)'}; margin-bottom: 2px;">${name}</div>
+            <div style="font-size: 12px; color: var(--text-text-alt-13); opacity: 0.75;">E: ${item.axes.econ} | A: ${item.axes.auth} | Z: ${myst}</div>
           </div>
-          <span style="font-size: 11px; padding: 3px 8px; border-radius: 6px; background: rgba(0,0,0,0.4); color: #f5d061; border: 1px solid rgba(218, 165, 32, 0.2);">${esotericTag}</span>
+          <span style="font-size: 11px; padding: 3px 8px; border-radius: 3px; background: rgba(0,0,0,0.4); color: var(--text-primary-hover); border: 1px solid var(--border-gold-amber-30);">${esotericTag}</span>
         `;
         row.addEventListener('click', () => {
           this.selectIdeology(item);
@@ -497,11 +444,11 @@
         });
         row.addEventListener('mouseenter', () => {
           this._hoveredIdeology = item;
-          if (!isSelected) row.style.background = 'rgba(218, 165, 32, 0.12)';
+          if (!isSelected) row.style.background = 'var(--bg-primary-hover-translucent-35)';
         });
         row.addEventListener('mouseleave', () => {
           this._hoveredIdeology = null;
-          if (!isSelected) row.style.background = 'rgba(255, 255, 255, 0.03)';
+          if (!isSelected) row.style.background = 'transparent';
         });
         listContainer.appendChild(row);
       });
@@ -550,43 +497,28 @@
 
       let adherentsHTML = adherents.length > 0
         ? adherents.slice(0, 4).map(a => `<li style="margin-bottom: 4px;">${a}</li>`).join('')
-        : `<span style="color: #a89f91; font-style: italic;">No active political parties in present session</span>`;
-
-      const confirmBtnHTML = this._isModal ? `
-        <button id="modal-confirm-btn" style="
-          width: 100%; margin-top: 14px; padding: 10px;
-          background: rgba(218, 165, 32, 0.35); border: 1px solid #f5d061;
-          color: #ffffff; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer;
-          box-shadow: 0 0 10px rgba(218, 165, 32, 0.3); transition: all 0.2s;
-        ">Select ${name}</button>
-      ` : '';
+        : `<span style="color: var(--text-text-alt-13); font-style: italic;">No active political parties in present session</span>`;
 
       details.innerHTML = `
         <div style="margin-bottom: 14px; font-size: 14px;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <span style="color: #a89f91;">Economic Axis (X):</span>
+            <span style="color: var(--text-text-alt-13);">Economic Axis (X):</span>
             <span style="font-weight: 700; color: ${econ < 0 ? '#ff7777' : '#77b5ff'};">${econ} (${econ < 0 ? 'Left' : 'Right'})</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <span style="color: #a89f91;">Authoritarian Axis (Y):</span>
+            <span style="color: var(--text-text-alt-13);">Authoritarian Axis (Y):</span>
             <span style="font-weight: 700; color: ${auth >= 0 ? '#ff9955' : '#55ff99'};">${auth} (${auth >= 0 ? 'Authoritarian' : 'Libertarian'})</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <span style="color: #a89f91;">Esoteric Dimension (Z):</span>
+            <span style="color: var(--text-text-alt-13);">Esoteric Dimension (Z):</span>
             <span style="font-weight: 700; color: ${myst > 0 ? '#d070ff' : '#00e5ff'};">${myst} (${myst > 0 ? 'Magic' : 'Mundane'})</span>
           </div>
         </div>
-        <div style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(218, 165, 32, 0.15);">
-          <div style="font-size: 11px; color: #cda851; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 1px;">Known World Adherents:</div>
-          <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #f0e6d2;">${adherentsHTML}</ul>
+        <div style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 3px; border: 1px solid var(--border-gold-amber-30);">
+          <div style="font-size: 11px; color: var(--text-primary-hover); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 1px;">Known World Adherents:</div>
+          <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-text-alt-13);">${adherentsHTML}</ul>
         </div>
-        ${confirmBtnHTML}
       `;
-
-      if (this._isModal) {
-        const cBtn = document.getElementById('modal-confirm-btn');
-        if (cBtn) cBtn.addEventListener('click', () => this.confirmSelection());
-      }
     }
 
     createCanvas3D() {

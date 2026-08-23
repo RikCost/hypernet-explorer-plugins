@@ -684,9 +684,5 @@
   "summoningRites": "SUMMONIN' RITES",
   "summoningRitesPerMember": "{count} EACH, AN' NO MAP TA GO WIT DEM",
   "supplies": "SUPPLIES",
-  "nothingButTheKey": "NONE. DA KEY IZ EVERYTHIN' YOU CARRY!",
-  "partyFormation": "PARTY FORMATION",
-  "howTheRestOfThePartyWalksBehindTheLeader": "HOW DA REST OF DA PARTY WALKS DA MAP. CLOSE IZ DA MARCHIN' COLUMN. LOOSE CUTS DA ROPE: DEY LIVE DEY OWN LIVES AROUND YOU, WASH, EAT, PLAY AN' TALK TA DA LOCALS, AN' FORM UP BEHIND YOU WHEN YOU SPRINT!",
-  "theyMarchInTheLeaderSFootstepsOneTileApart": "DEY MARCH IN DA LEADER'S FOOTSTEPS, ONE TILE APART, AN' NEVER STOP!",
-  "theyLiveTheirOwnLivesAroundTheLeader": "DEY LIVE DEY OWN LIVES AROUND DA LEADER AN' COME WHEN YOU RUN!"
+  "nothingButTheKey": "NONE. DA KEY IZ EVERYTHIN' YOU CARRY!"
 }

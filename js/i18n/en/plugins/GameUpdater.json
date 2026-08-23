@@ -3,6 +3,7 @@
   "menu": "UPDATES",
   "back": "Back",
   "branch": "Branch",
+  "version": "Version",
   "tabStable": "STABLE",
   "tabUnstable": "UNSTABLE",
   "upToDate": "MATCHES YOURS",

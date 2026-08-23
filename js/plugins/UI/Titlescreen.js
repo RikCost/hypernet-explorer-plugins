@@ -106,14 +106,19 @@
     // explicitly blanked parameter hides the badge, while an absent one (an
     // entry that predates it) still shows the shipped label.
     //
-    // The third field of the version is the build number, i.e. how many commits
-    // the installed build sits past the numbering origin, and the name after it
-    // is that build's commit message, so the badge says which build is running
-    // and what it was. The updater owns both and rewrites the string; a copy
-    // that has never updated, one running with the updater plugin turned off,
-    // or a web build where there is no updater at all, keeps the label exactly
-    // as written. A badge is not worth an exception thrown out of a plugin that
-    // may not even be loaded, so the pass is guarded end to end.
+    // The version itself is read off the first line of CHANGELOG.txt, which is
+    // where it is written down and which travels with the build like every
+    // other tracked file, so an updated copy names its own version with nothing
+    // edited in a plugin. The updater owns that read (GameUpdater.gameVersion)
+    // and hands the badge the version followed by the name of the build this
+    // copy sits on, i.e. its commit message. A build whose changelog names no
+    // version falls back to the label written here, and there the third field
+    // is the build number, i.e. how many commits the installed build sits past
+    // the numbering origin. A copy that has never updated, one running with the
+    // updater plugin turned off, or a web build with no changelog to read,
+    // keeps the label exactly as written. A badge is not worth an exception
+    // thrown out of a plugin that may not even be loaded, so the pass is
+    // guarded end to end.
     const VERSION_TEXT = () => {
         const raw = pathParams.VersionText;
         if (raw !== undefined && String(raw).trim() === '') return '';
@@ -428,6 +433,7 @@
         this._commandWindow.setHandler('sandboxGame', this.commandSandboxGame.bind(this));
         this._commandWindow.setHandler('minigames', this.commandMinigames.bind(this));
         this._commandWindow.setHandler('worlds', this.commandWorlds.bind(this));
+        this._commandWindow.setHandler('wiki', this.commandWiki.bind(this));
         this._commandWindow.setHandler('exitGame', this.commandExitGame.bind(this));
         const ww = Graphics.width * toPct(windowWidthPct);
         const wx = Graphics.width * toPct(windowXOffsetPct) - ww / 2;
@@ -556,6 +562,29 @@
             window.Scene_WorldManage.prepare(hasWorlds ? 'manage' : 'create');
             SceneManager.push(window.Scene_WorldManage);
         }
+    };
+
+    // The wiki of the world the player is on: the same archive the Worlds
+    // screen opens on its wiki tab, read out of the active world's own folder
+    // rather than out of a savegame, so it can be read before a party exists.
+    // A world is the whole of what it reads, so with none selected the entry
+    // stands greyed out instead of opening an empty archive.
+    function wikiAvailable() {
+        return hasActiveWorld() && !!window.Scene_History &&
+            !!(window.WorldManager && window.WorldManager.readWorldFile);
+    }
+
+    Scene_Title.prototype.commandWiki = function () {
+        if (!wikiAvailable()) {
+            this._commandWindow.activate();
+            return;
+        }
+        const history = window.WorldManager.readWorldFile(
+            window.WorldManager.activeWorldName, 'history') || {};
+        if (!$gameSystem) DataManager.setupNewGame();
+        $gameSystem._historicalEvents = history.events || [];
+        $gameSystem._historicalHyperpowers = history.hyperpowers || {};
+        SceneManager.push(window.Scene_History);
     };
 
     Scene_Title.prototype.commandSandboxGame = function () {
@@ -1305,6 +1334,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     }
 
     this.addCommand(T('Titlescreen.menu.worlds'), 'worlds');
+    this.addCommand(T('Titlescreen.menu.wiki'), 'wiki', wikiAvailable());
     this.addCommand(T('Titlescreen.menu.preferences'), 'options');
     this.addCommand(T('Titlescreen.menu.mods'), 'mods');
     this.addCommand(T('Titlescreen.menu.exit'), 'exitGame');
@@ -7101,6 +7131,12 @@ Window_TitleCommand.prototype.makeCommandList = function () {
                     ? ` [${activeWorld.toUpperCase()}]`
                     : ` [${T('Titlescreen.menuOverlay.noWorld')}]`),
             symbol: 'worlds'
+        });
+
+        commands.push({
+            text: T('Titlescreen.menuOverlay.wiki'),
+            symbol: 'wiki',
+            enabled: wikiAvailable()
         });
 
         commands.push({

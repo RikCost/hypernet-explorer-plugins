@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc v2.0.0 Stockbusters: a period online marketplace inside HypernetOS, with lots, bulk pricing, a cart, couriers and daily rarities.
+ * @plugindesc v2.1.0 Stockbusters: a period online marketplace inside HypernetOS, with lots, bulk pricing, a cart, couriers and daily rarities.
  * @author Omni-Lex
  * @url https://nocoldiz.itch.io/hypernet-explorer
  *
@@ -23,6 +23,12 @@
  *   animation playing on a loop.
  * - Order ANY quantity of a lot. There is no cap on the units in a line and no
  *   cap on the lines in a basket.
+ * - Bill a spell to a particular party member. A spell is bought as
+ *   understanding, so only a member who does not already know it and whose BASE
+ *   stat clears the floor written into it (<StatReq: STAT N>,
+ *   window.SkillStatReq) can be its reader; the rest are listed with the reason
+ *   and cannot be picked. A spell nobody in the party could take is not listed
+ *   at all, and the reader travels with the courier's order.
  * - Volume pricing: the more units of one lot, the cheaper each unit gets, and
  *   a basket of several different lots earns a further combined-dispatch cut.
  * - Watch the couriers on the Orders page and collect what has landed, here or
@@ -261,6 +267,37 @@
     function buyerActor() {
         if (typeof $gameParty === "undefined" || !$gameParty) return null;
         return $gameParty.leader() || $gameActors.actor(1);
+    }
+
+    //=========================================================================
+    // Tuition
+    //=========================================================================
+    // A spell is bought for somebody in particular. Two things decide whether a
+    // given member can be that somebody: they must not already know it, and
+    // their BASE stat must clear the floor written into the skill
+    // (<StatReq: STAT N>, window.SkillStatReq in BattleSystemEnhanced.js). The
+    // site sells understanding, not a scroll to be puzzled over later, so a
+    // member short of the floor cannot be the one it is billed to. A skill
+    // nobody in the party could take is not listed at all.
+
+    function canLearnSkill(actor, skill) {
+        if (!actor || !skill) return false;
+        if (actor.hasSkill && actor.hasSkill(skill.id)) return false;
+        return !window.SkillStatReq || window.SkillStatReq.meets(actor, skill);
+    }
+
+    function learnerCandidates(skill) {
+        if (typeof $gameParty === "undefined" || !$gameParty) return [];
+        return $gameParty.allMembers().filter(a => canLearnSkill(a, skill));
+    }
+
+    // The member a skill is billed to: whoever the page has picked, falling
+    // back to the first who could take it, then to the leader. Never null while
+    // a party exists, so no purchase path has to invent a reader of its own.
+    function learnerFor(skill, actorId) {
+        const picked = actorId && $gameActors ? $gameActors.actor(actorId) : null;
+        if (picked && canLearnSkill(picked, skill)) return picked;
+        return learnerCandidates(skill)[0] || buyerActor();
     }
 
     //=========================================================================
@@ -740,8 +777,7 @@
             if (!isShopSellable(entry)) return false;
             if (isSkillEntry(entry)) {
                 if (!entry.mpCost) return false;
-                const actor = buyerActor();
-                return !!actor && !actor.hasSkill(entry.id);
+                return learnerCandidates(entry).length > 0;
             }
             return (entry.price || 0) > 0;
         },
@@ -1020,6 +1056,10 @@
                     orderedAt: now,
                     arriveAt: arriveAt
                 };
+                // A spell is owed to the member it was booked for, and the
+                // courier is carrying it across game days: the id travels with
+                // the order rather than being asked again on delivery.
+                if (kind === "skill" && line.learner) order.learner = line.learner;
                 // A procedural row will not be in the database after a reboot.
                 const snapshot = DailyLots.snapshotFor(entry);
                 if (snapshot) order.snapshot = snapshot;
@@ -1090,7 +1130,7 @@
             const qty = Math.max(1, Math.floor(order.qty || 1));
 
             if (order.kind === "skill") {
-                const actor = buyerActor();
+                const actor = learnerFor(entry, order.learner);
                 if (actor) actor.learnSkill(entry.id);
             } else {
                 $gameParty.gainItem(entry, qty);
@@ -1171,15 +1211,18 @@
         return this.lines.find(line => line.kind === kind && line.id === entry.id) || null;
     };
 
-    Basket.prototype.add = function (entry, qty) {
+    // `learner` is the actor id a spell line is booked for; wares ignore it.
+    Basket.prototype.add = function (entry, qty, learner) {
         if (!entry) return null;
         const wanted = Pricing.clampQty(entry, qty);
         const existing = this.find(entry);
         if (existing) {
             existing.qty = Pricing.clampQty(entry, existing.qty + wanted);
+            if (learner) existing.learner = learner;
             return existing;
         }
         const line = { kind: kindOf(entry), id: entry.id, qty: wanted };
+        if (learner) line.learner = learner;
         this.lines.push(line);
         return line;
     };
@@ -1209,7 +1252,7 @@
     Basket.prototype.resolved = function () {
         return this.lines.map(line => {
             const entry = entryOf(line.kind, line.id);
-            return entry ? { kind: line.kind, id: line.id, qty: line.qty, entry: entry } : null;
+            return entry ? { kind: line.kind, id: line.id, qty: line.qty, entry: entry, learner: line.learner } : null;
         }).filter(Boolean);
     };
 
@@ -1320,6 +1363,7 @@
 #sb-root table.sb-kv td { padding:1px 4px; border-bottom:1px dotted #dddddd; }
 #sb-root table.sb-kv td.k { color:#555555; width:44%; }
 #sb-root table.sb-kv td.v { font-weight:bold; text-align:right; }
+#sb-root table.sb-kv tr.sb-off td { color:#999999; font-weight:normal; }
 #sb-root table.sb-tiers { border-collapse:collapse; font-size:11px; width:100%; }
 #sb-root table.sb-tiers th { background:#dfe8ff; color:#003399; padding:1px 5px; text-align:left; }
 #sb-root table.sb-tiers td { padding:1px 5px; border-bottom:1px dotted #cccccc; }
@@ -1432,6 +1476,7 @@
         this._list = [];
         this._selected = null;        // the entry the listing page is showing
         this._qty = 1;
+        this._learnerId = 0;          // who a spell on the page is billed to
         this._basket = new Basket();
         this._confirm = null;         // pending checkout confirmation
         this._nav = 0;
@@ -1601,6 +1646,9 @@
             case 'qty':
                 this.setQty(arg);
                 break;
+            case 'learner':
+                this.setLearner(arg);
+                break;
             case 'addcart':
                 this.addToBasket();
                 break;
@@ -1694,8 +1742,23 @@
         if (!entry) return;
         this._selected = entry;
         this._qty = 1;
+        // A spell opens billed to the first member who could take it, so the
+        // common case (one caster in the party) needs no click at all.
+        const first = isSkillEntry(entry) ? learnerCandidates(entry)[0] : null;
+        this._learnerId = first ? first.actorId() : 0;
         this._nav = 0;
         this._page = 'item';
+        this.render();
+    };
+
+    // Bill the spell on the page to another member. Only a member who could
+    // actually take it is offered, so this never has to refuse.
+    Scene_SearchableShop.prototype.setLearner = function (actorId) {
+        const id = parseInt(actorId, 10) || 0;
+        if (this._learnerId === id) return;
+        this._learnerId = id;
+        SoundManager.playCursor();
+        this._skeletonKey = "";       // the reading below is that member's now
         this.render();
     };
 
@@ -1775,7 +1838,7 @@
     Scene_SearchableShop.prototype.addToBasket = function () {
         const entry = this._selected;
         if (!entry) return;
-        this._basket.add(entry, this._qty);
+        this._basket.add(entry, this._qty, isSkillEntry(entry) ? this._learnerId : 0);
         SoundManager.playOk();
         if (window.ParchmentToast) {
             window.ParchmentToast.show(T('Stockbusters.text.addedToCart', {
@@ -1789,7 +1852,10 @@
         const entry = this._selected;
         if (!entry) return;
         this._confirm = {
-            lines: [{ kind: kindOf(entry), id: entry.id, qty: this._qty, entry: entry }],
+            lines: [{
+                kind: kindOf(entry), id: entry.id, qty: this._qty, entry: entry,
+                learner: isSkillEntry(entry) ? this._learnerId : 0
+            }],
             fromBasket: false
         };
         this.render();
@@ -1827,6 +1893,7 @@
         const priced = lines.map(line => ({
             entry: line.entry,
             qty: line.qty,
+            learner: line.learner,
             price: Math.floor(Pricing.unit(line.entry, this._isLimited) * line.qty * share)
         }));
 
@@ -1838,7 +1905,7 @@
             // A bazaar hands the goods over across the counter, no courier.
             for (const line of priced) {
                 if (isSkillEntry(line.entry)) {
-                    const actor = buyerActor();
+                    const actor = learnerFor(line.entry, line.learner);
                     if (actor) actor.learnSkill(line.entry.id);
                 } else {
                     $gameParty.gainItem(line.entry, line.qty);
@@ -2202,6 +2269,10 @@
         html += `<div id="sb-nudge" style="font-size:11px;color:#008000;"></div>`;
         html += `</div></div>`;
 
+        // Who the tuition is booked for. Wares go into the pack and belong to
+        // nobody; a spell has to be understood by somebody in particular.
+        if (skill) html += this.learnerPanelHTML(entry);
+
         // Volume ladder for this lot, priced.
         if (Stock.isUnlimited(entry)) {
             html += `<div class="sb-panel"><div class="sb-panel-hd">${T('Stockbusters.text.volumePricing')}</div>` +
@@ -2225,6 +2296,41 @@
         return html;
     };
 
+    // The tuition panel: every party member against the floor the spell is
+    // written in. A member who already knows it, or whose base stat is under
+    // that floor, is listed with the reason and cannot be picked, so the page
+    // says WHY somebody is not an option rather than quietly leaving them out.
+    Scene_SearchableShop.prototype.learnerPanelHTML = function (entry) {
+        const svc = window.SkillStatReq;
+        const req = svc && svc.of(entry);
+        const chosen = learnerFor(entry, this._learnerId);
+        const chosenId = chosen ? chosen.actorId() : 0;
+
+        let rows = '';
+        for (const actor of $gameParty.allMembers()) {
+            const knows = actor.hasSkill && actor.hasSkill(entry.id);
+            const stand = req ? svc.check(actor, entry) : null;
+            const ok = canLearnSkill(actor, entry);
+            const note = knows
+                ? T('Stockbusters.text.learnerKnows')
+                : (stand ? T('Stockbusters.text.learnerStat', {
+                    stat: svc.statName(stand.stat), value: stand.have, points: stand.points
+                }) : '');
+            rows += `<tr class="${ok ? '' : 'sb-off'}">` +
+                `<td class="k">${ok
+                    ? `<button class="sb-btn${actor.actorId() === chosenId ? ' gold' : ''}" data-act="learner:${actor.actorId()}" data-nav>${escapeHtml(actor.name())}</button>`
+                    : escapeHtml(actor.name())}</td>` +
+                `<td class="v">${escapeHtml(note)}</td></tr>`;
+        }
+
+        return `<div class="sb-panel"><div class="sb-panel-hd">${T('Stockbusters.text.tuitionFor')}</div>` +
+            `<div class="sb-panel-bd">` +
+            (req ? `<div style="font-size:11px;color:#666666;margin-bottom:4px;">${T('Stockbusters.text.tuitionRequires', {
+                stat: svc.statName(req.stat), points: req.points
+            })}</div>` : '') +
+            `<table class="sb-kv">${rows}</table></div></div>`;
+    };
+
     Scene_SearchableShop.prototype.tierRowsHTML = function (entry) {
         const limited = this._isLimited;
         const rows = [{ min: 1, off: 0 }].concat(BULK_TIERS.slice().sort((a, b) => a.min - b.min));
@@ -2243,7 +2349,9 @@
     // already know how to say it.
     Scene_SearchableShop.prototype.readingHTML = function (entry) {
         if (isSkillEntry(entry)) {
-            const actor = buyerActor();
+            // Read against whoever the tuition is booked for, so the stat rows
+            // on the card are that member's and not the leader's.
+            const actor = learnerFor(entry, this._learnerId);
             let html = `<div class="inspect-desc">${descriptionOf(entry) || T('Stockbusters.text.noDescription')}</div>`;
             if (window.SkillDetails && actor) html += window.SkillDetails.build(entry, actor);
             return html;

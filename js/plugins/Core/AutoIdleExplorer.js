@@ -1,26 +1,28 @@
 /*:
  * @target MZ
- * @plugindesc v1.4.0 Auto Idle Explorer + Party Formation, the CPU explores for an idle player, and a loose party lives its own life.
+ * @plugindesc v1.5.0 Auto Idle Explorer + Loose Party, the CPU explores for an idle player, and the party lives its own life.
  * @author esoteric-heavy-industries & Assistant
  *
  * @help AutoIdleExplorer.js
  *
- * Two independent features, both on the Gameplay tab of the Options menu.
+ * Two independent features. The autopilot is an option on the Gameplay tab of
+ * the Options menu; the loose party below is simply how the party walks.
  *
  * ============================================================================
- * 1. PARTY FORMATION (Close / Loose), default Loose
+ * 1. THE LOOSE PARTY (always on)
  * ============================================================================
  *
- * Close is the marching column every RPG Maker game ships with: each member
- * walks in the leader's exact footsteps, one tile back, and never stops.
+ * The marching column every RPG Maker game ships with, each member walking in
+ * the leader's exact footsteps one tile back and never stopping, is gone: the
+ * party has no other formation than this one and there is nothing to choose.
  *
  * Loose cuts that rope. The other members keep the leader company rather than
  * following them:
  *
  *   • They live their own lives around the leader and head back only once they
  *     have been carried OFF THE SCREEN, picking their own way with the engine's
- *     A* pathfinding and respecting the terrain (in Close they walk through
- *     everything, as always). The screen is the leash: a member the player can
+ *     A* pathfinding and respecting the terrain. The screen is the leash: a
+ *     member the player can
  *     see has not been left behind, however many tiles of a wide map lie between
  *     them, so walking about near the party never drags anybody back into line.
  *     One left a good way past the edge (`looseSnap` tiles) is simply put back
@@ -94,30 +96,34 @@
  *   • Stand facing one and press OK to talk to them: that opens their
  *     Empathize panel directly, the same sheet the Dynamics roster opens.
  *
- * PETS AND FOLLOWERS ARE ALWAYS LOOSE. The extra trailing slot owned by
+ * PETS AND FOLLOWERS WALK THE SAME WAY. The extra trailing slot owned by
  * NPC/PetFollowerSystem.js (a pet, a child, or a creature that came along of its
- * own accord) is not a party member marching in a column: it keeps to itself on
- * every map whatever the option says, and Close applies only to the party. It
- * wanders, visits and looks like everyone else, but it says none of the party's
- * chatter, and it comes when the leader runs like everyone else.
+ * own accord) keeps to itself on every map: it wanders, visits and looks like
+ * everyone else, but it says none of the party's chatter, and it comes when the
+ * leader runs like everyone else.
  *
  * The loose behaviour stands down wherever the party has to act as one body:
- * in a vehicle, in split-screen, while an event or a message is running, and
- * whenever anything calls Gather Party (the members close ranks the vanilla
- * way, then scatter again once it is over).
+ * in a vehicle, while an event or a message is running, and whenever anything
+ * calls Gather Party (the members close ranks the vanilla way, then scatter
+ * again once it is over).
+ *
+ * IN SPLIT-SCREEN it keeps going (Multiplayer/SplitScreenMultiplayer.js). The
+ * session no longer empties the party down to the two players: Player 1 walks
+ * the leader, Player 2 walks whichever member they have taken over, and every
+ * other member is left to the CPU here, living their own life around the two of
+ * them. The one body the CPU never touches is Player 2's, which is drawn as the
+ * P2 avatar and whose follower slot rides along hidden underneath it.
  *
  * It also stands down for a MAP BATTLE (BattleSystem/MapBattleMode.js), where
  * every member becomes a tactical battler that MapBattleMode walks itself, tile
- * by tile. Close formation stands down there too: its through-walls followers
- * would otherwise walk straight through the wall they are meant to be taking
- * cover behind. A fight opening on a scattered party calls standDown() below,
- * so nobody comes back from the battlefield to an errand they had forgotten.
+ * by tile. A fight opening on a scattered party calls standDown() below, so
+ * nobody comes back from the battlefield to an errand they had forgotten.
  *
  * ============================================================================
  * 1b. TAKING THE LEAD
  * ============================================================================
  *
- * Any member can be sent to walk in front of the party, in either formation:
+ * Any member can be sent to walk in front of the party:
  *
  *   Tab           the next member down the marching order takes the lead
  *   Shift+Tab     the one before takes it
@@ -218,11 +224,11 @@
  * Diagnostics: window.AutoIdleExplorer.why() reports, in one string, why the
  * autopilot is not currently driving (option off, a message up, an event
  * running, still counting idle frames, ...). window.AutoIdleExplorer.loose
- * exposes the formation controller.
+ * exposes the loose party controller.
  *
  * @param looseLeash
  * @text Loose Wander Radius (tiles)
- * @desc How far from the leader a party member strolls while idling in Loose formation. Coming back is decided by the screen.
+ * @desc How far from the leader a party member strolls while idling. Coming back is decided by the screen.
  * @type number
  * @min 2
  * @max 40
@@ -302,9 +308,7 @@
 
     const BOUNTY_VAR = 66; // Crime bounty (euros)
 
-    // ---------------------------------------------------------------- formation
-    const FORM_CLOSE = 0;
-    const FORM_LOOSE = 1;
+    // -------------------------------------------------------------- the party
     const LOOSE_CHATTER = params.looseChatter !== "false";
     // The party keeps to itself unless the leader is really covering ground.
     // A SPRINT calls them in, but not the instant it starts: two seconds of it
@@ -463,17 +467,15 @@
     };
 
     // ========================================================================
-    // ConfigManager persistence. The autopilot is off by default; the party
-    // walks Loose by default, Close being the option a player asks for.
+    // ConfigManager persistence. The autopilot is off by default. The party
+    // has no formation setting: it walks loose, and always did by default.
     // ========================================================================
     ConfigManager.autoIdle = false;
-    ConfigManager.partyFormation = FORM_LOOSE;
 
     const _makeData = ConfigManager.makeData;
     ConfigManager.makeData = function () {
         const config = _makeData.call(this);
         config.autoIdle = this.autoIdle;
-        config.partyFormation = this.partyFormation;
         return config;
     };
 
@@ -481,18 +483,13 @@
     ConfigManager.applyData = function (config) {
         _applyData.call(this, config);
         this.autoIdle = config.autoIdle !== undefined ? config.autoIdle : false;
-        this.partyFormation = config.partyFormation !== undefined
-            ? (Number(config.partyFormation) | 0)
-            : FORM_LOOSE;
     };
 
     // ========================================================================
     // Options menu entry (Gameplay tab).
     // ========================================================================
-    // Both labels are passed as functions so the rows re-read themselves when
-    // the player changes language without leaving the menu.
-    const formationNames = () => T.list('AutoIdle.formation.states');
-
+    // The label is passed as a function so the row re-reads itself when the
+    // player changes language without leaving the menu.
     if (window.GameOptions && typeof GameOptions.registerOption === "function") {
         GameOptions.registerOption(
             "autoIdle",
@@ -502,35 +499,14 @@
             "gameplay",
             "boolean"
         );
-        // Party formation is a two-state select (Close / Loose), so it carries
-        // its own status text and cursor handlers rather than toggling.
-        GameOptions.registerOption(
-            "partyFormation",
-            () => T('AutoIdle.formation.label'),
-            () => ConfigManager.partyFormation | 0,
-            (value) => { ConfigManager.partyFormation = value | 0; Loose.onModeChanged(); },
-            "gameplay",
-            "boolean",
-            (value) => formationNames()[value | 0] || formationNames()[FORM_CLOSE],
-            function () {
-                const v = ((this.getConfigValue('partyFormation') | 0) + 1) % 2;
-                this.setConfigValue('partyFormation', v);
-            },
-            function () {
-                const v = ((this.getConfigValue('partyFormation') | 0) + 1) % 2;
-                this.setConfigValue('partyFormation', v);
-            }
-        );
         const tab = GameOptions.tabs.find((t) => t.id === "gameplay");
         if (tab && !tab.symbols.includes("autoIdle")) tab.symbols.push("autoIdle");
-        if (tab && !tab.symbols.includes("partyFormation")) tab.symbols.push("partyFormation");
     } else {
         // Fallback: append to the vanilla options list.
         const _addGeneral = Window_Options.prototype.addGeneralOptions;
         Window_Options.prototype.addGeneralOptions = function () {
             _addGeneral.call(this);
             this.addCommand(T('AutoIdle.optionName'), "autoIdle");
-            this.addCommand(T('AutoIdle.formation.label'), "partyFormation");
         };
     }
 
@@ -1919,14 +1895,15 @@
     AutoIdle.p2 = P2Auto;
 
     // ========================================================================
-    // Party formation, Close (the marching column) and Loose (their own lives)
+    // The loose party: the members live their own lives around the leader
     // ------------------------------------------------------------------------
-    // Close is what the engine ships: Game_Followers.updateMove walks every
-    // member through the tile the one in front just left, so the party is a rope
-    // the leader drags. Loose cuts that rope. The members are no longer moved by
-    // the leader's steps at all: each one is given the map, a leash around the
-    // leader and an activity, and walks itself with the engine's own A* (the
-    // same findDirectionTo the autopilot above uses).
+    // What the engine ships is a marching column: Game_Followers.updateMove
+    // walks every member through the tile the one in front just left, so the
+    // party is a rope the leader drags. This cuts that rope, and there is no
+    // option to tie it back on. The members are no longer moved by the leader's
+    // steps at all: each one is given the map, a leash around the leader and an
+    // activity, and walks itself with the engine's own A* (the same
+    // findDirectionTo the autopilot above uses).
     //
     // The rope is spliced back on for exactly as long as the party has to act as
     // one body: a dashing leader (they drop everything and come), an event's
@@ -2115,21 +2092,12 @@
         _lastTalkAt: -TALK_COOL,
         _quietUntil: 0,
 
-        mode() {
-            return ConfigManager.partyFormation | 0;
-        },
-
         // A pet, a child or a creature that came along of its own accord
-        // (NPC/PetFollowerSystem.js) is not a party member marching in a column.
-        // It keeps to itself whatever the formation option says, so Loose is
-        // always on for that slot and Close never applies to it.
-        isAlwaysLoose(f) {
+        // (NPC/PetFollowerSystem.js) walks the map like everybody else, but it
+        // is not one of the party: none of the party's chatter is its to say,
+        // and it has no actor behind it to keep a standing with.
+        isPet(f) {
             return !!(window.Game_PetFollower && f instanceof window.Game_PetFollower);
-        },
-
-        // The formation THIS member walks in.
-        modeFor(f) {
-            return this.isAlwaysLoose(f) ? FORM_LOOSE : this.mode();
         },
 
         stateOf(f) {
@@ -2183,8 +2151,8 @@
         },
 
         // A map battle (BattleSystem/MapBattleMode.js) turns every member into a
-        // tactical battler that MapBattleMode walks itself. The whole formation
-        // layer, Close included, stands down for the duration of the fight.
+        // tactical battler that MapBattleMode walks itself. The whole loose
+        // layer stands down for the duration of the fight.
         inMapBattle() {
             return !!(window.MapBattleMode && window.MapBattleMode.isActive());
         },
@@ -2201,17 +2169,18 @@
             Bubbles.clear();
         },
 
-        // True while the loose formation owns the followers. Everything that
-        // needs the party to move as one body switches it back off, and the
-        // vanilla chase takes over again for the duration.
+        // True while the loose layer owns the followers. Everything that needs
+        // the party to move as one body switches it back off, and the vanilla
+        // chase takes over again for the duration.
         active() {
-            return this.mode() === FORM_LOOSE && this.conditionsMet();
+            return this.conditionsMet();
         },
 
-        // The same question for one member, so a pet keeps its own life while
-        // the party around it is still marching in Close.
+        // The same question asked of one member. They all answer together now,
+        // the pet slot included, but the per-member form is what the rest of
+        // the codebase calls.
         activeFor(f) {
-            return this.modeFor(f) === FORM_LOOSE && this.conditionsMet();
+            return !!f && !this.heldByP2(f) && this.conditionsMet();
         },
 
         // Riding, the party is normally stowed inside the hull with the leader and
@@ -2227,8 +2196,7 @@
             return !(vs && vs.isPartyRidingAlong && vs.isPartyRidingAlong());
         },
 
-        // Everything except the formation itself: the states of the game in
-        // which no follower may be walking itself.
+        // The states of the game in which no follower may be walking itself.
         conditionsMet() {
             if (this.inMapBattle()) return false;
             if (!$gamePlayer || !$gameMap || !$gameParty || !$gameMessage) return false;
@@ -2237,9 +2205,16 @@
             if (!$gamePlayer.followers().isVisible()) return false;
             if (this.stowedInVehicle()) return false;
             if ($gamePlayer._vehicleGettingOn || $gamePlayer._vehicleGettingOff) return false;
-            const ss = window.SplitScreenManager;
-            if (ss && ss.active) return false;
             return true;
+        },
+
+        // The body the second player is holding in a split-screen session
+        // (Multiplayer/SplitScreenMultiplayer.js). That member is walked by the
+        // pad, not by the CPU, so the loose layer leaves the slot alone.
+        heldByP2(f) {
+            const ss = window.SplitScreenManager;
+            if (!ss || !ss.active || typeof ss.isP2Follower !== "function") return false;
+            return ss.isP2Follower(f);
         },
 
         // The party is being called in: by a leader who broke into a run, or by
@@ -2348,7 +2323,7 @@
             // The chatter is written for the people in the party. A pet or a
             // child walking with them wanders and stops to look at things like
             // everyone else, but it says none of it.
-            if (this.isAlwaysLoose(char)) return false;
+            if (this.isPet(char)) return false;
             if (!answer && !this._mayTalk(char)) return false;
             // A party of two or more says it in their OWN voice: PartyBanter
             // answers out of this member's personality bank (NPC/PartyBanter.js).
@@ -2371,28 +2346,15 @@
         // A line already chosen elsewhere (a scripted party discussion), said
         // by this character. Same bubble, no bank lookup.
         sayText(char, text) {
-            if (!text || this.isAlwaysLoose(char)) return;
+            if (!text || this.isPet(char)) return;
             this._stampTalk(char);
             Bubbles.show(char, text);
-        },
-
-        // Switching the option mid-game: close ranks (or let go) immediately
-        // rather than at the next map.
-        onModeChanged() {
-            this._recall = false;
-            this._still = 0;
-            this._run = 0;
-            Bubbles.clear();
-            this.resetStates();
-            if (!$gamePlayer) return;
-            for (const f of $gamePlayer.followers().data()) f.setThrough(true);
-            if (this.mode() === FORM_CLOSE) this.gatherNear();
         },
 
         // The leader is running, not walking. Read as "covering ground at dash
         // speed", which is the engine's own notion of a run: it therefore also
         // covers click-to-move (the engine dashes for that too) and behaves
-        // sensibly under Always Dash, where the party keeps formation whenever
+        // sensibly under Always Dash, where the party closes ranks whenever
         // the leader is on the move and scatters the moment they stand still.
         isLeaderRunning() {
             const p = $gamePlayer;
@@ -2407,17 +2369,9 @@
             return !!p && (!!p._isSwimming || !!p._isDiving);
         },
 
-        // Is anybody walking themselves? The whole party in Loose, or just the
-        // pet slot while the party marches in Close.
-        anyLoose() {
-            if (this.mode() === FORM_LOOSE) return true;
-            if (!$gamePlayer || !$gamePlayer.followers()) return false;
-            return $gamePlayer.followers().data().some((f) => f.isVisible() && this.isAlwaysLoose(f));
-        },
-
         // ------------------------------------------------------------ per frame
         update() {
-            if ($gamePlayer && this.anyLoose()) {
+            if ($gamePlayer) {
                 // A sprint is the one thing that puts the rope back on, and it
                 // has to be a real one: the run is timed, and only once it has
                 // lasted RECALL_RUN frames does the party form up. Anything
@@ -2465,11 +2419,11 @@
             // Hands off entirely during a map battle: the through(true) below is
             // exactly what would let a tactical battler walk through a wall.
             if (this.inMapBattle()) return;
-            if (this.modeFor(f) !== FORM_LOOSE || !this.activeFor(f)) {
-                // Back in the engine's chain, be it Close formation or a state
-                // that suspends the loose behaviour (a vehicle, split-screen, a
-                // battle): a chained follower walks through everything, and a
-                // pet left solid would be stranded the moment the party sails.
+            if (!this.activeFor(f)) {
+                // Back in the engine's chain: a state that suspends the loose
+                // behaviour (a vehicle, split-screen, a battle). A chained
+                // follower walks through everything, and a pet left solid would
+                // be stranded the moment the party sails.
                 if (!f.isThrough()) f.setThrough(true);
                 return;
             }
@@ -2511,10 +2465,7 @@
         // A run comes out of their AP, the same meter their skills do (see
         // Map/MovementInteractionSystem.js), and a member with none left drops
         // back to a walk. It is a cosmetic thing only: they still catch up, and
-        // a fight that starts a moment later finds them in it either way. In
-        // Close formation nobody asks - the party marches at the leader's pace
-        // and keeps up whatever it costs, because falling out of the column is
-        // not something a marching party does.
+        // a fight that starts a moment later finds them in it either way.
         gaitFor(f) {
             const s = this.stateOf(f);
             const base = $gamePlayer.realMoveSpeed();
@@ -3530,7 +3481,7 @@
         partyActorOf(c) {
             if (!c) return null;
             if (c === $gamePlayer) return ($gameParty && $gameParty.leader()) || null;
-            if (this.isAlwaysLoose(c)) return null;
+            if (this.isPet(c)) return null;
             return this.actorOf(c);
         },
 
@@ -3678,9 +3629,29 @@
                 const actor = members[i];
                 if (!actor) continue;
                 if (i > 0 && actor.isDead && actor.isDead()) continue;
+                // In a split-screen session the second player is already holding
+                // one of them (Multiplayer/SplitScreenMultiplayer.js): that body
+                // is not Player 1's to take.
+                if (i > 0 && this.heldByP2(actor)) continue;
                 out.push(i);
             }
             return out;
+        },
+
+        // Is this member the one the second pad is walking?
+        heldByP2(actor) {
+            const ss = window.SplitScreenManager;
+            if (!ss || !ss.active || typeof ss.isP2Actor !== "function") return false;
+            return ss.isP2Actor(actor);
+        },
+
+        // True while a split-screen session is running, where the camera is the
+        // manager's business rather than ours: it plants the display on each
+        // player's own viewport every frame, so the walk across would be undone
+        // the moment it started.
+        inSplitScreen() {
+            const ss = window.SplitScreenManager;
+            return !!(ss && ss.active);
         },
 
         // The states of the game in which the lead may change hands at all.
@@ -3695,8 +3666,6 @@
             if ($gamePlayer._vehicleGettingOn || $gamePlayer._vehicleGettingOff) return false;
             if (!$gamePlayer.followers().isVisible()) return false;
             if ($gamePlayer.areFollowersGathering()) return false;
-            const ss = window.SplitScreenManager;
-            if (ss && ss.active) return false;
             // The map modes that keep a cursor of their own and read Tab
             // themselves: laying out furniture (Crafting/FurnitureSystem.js) and
             // aiming a throw (BattleSystem/ThrowItemPlugin.js).
@@ -3771,7 +3740,8 @@
             $gamePlayer.refresh();
             $gamePlayer.followers().refresh();
 
-            if (swap && options.pan !== false && SceneManager._scene instanceof Scene_Map) {
+            if (swap && options.pan !== false && !this.inSplitScreen() &&
+                SceneManager._scene instanceof Scene_Map) {
                 this.startPan();
             } else if (swap) {
                 $gamePlayer.center($gamePlayer.x, $gamePlayer.y);
@@ -3926,11 +3896,11 @@
     window.AutoIdleExplorer = AutoIdle;
 
     // ========================================================================
-    // Party formation hooks
+    // Loose party hooks
     // ========================================================================
-    // 0) Map 315 (the world map) draws the party as a single dot, whatever the
-    //    formation: a marching Close column or a scattered Loose one would both
-    //    show human-scale sprites on a screen where one tile is a whole region.
+    // 0) Map 315 (the world map) draws the party as a single dot: a scattered
+    //    party would otherwise show human-scale sprites on a screen where one
+    //    tile is a whole region.
     //    Followers are hidden by opacity rather than by blanking their image
     //    (Game_Follower.refresh only reruns on specific triggers, so an
     //    isVisible()-driven approach would not react to a plain map transfer),
@@ -3939,21 +3909,27 @@
     Game_Followers.prototype.update = function () {
         const onWorldMap = $gameMap && $gameMap.mapId() === 315;
         const targetOpacity = onWorldMap ? 0 : 255;
+        const ss = window.SplitScreenManager;
+        const session = !!(ss && ss.active && typeof ss.isP2Follower === "function");
         for (const follower of this._data) {
-            if (follower.opacity() !== targetOpacity) follower.setOpacity(targetOpacity);
+            // Player 2's own slot stays hidden whatever the map: it is drawn as
+            // the split-screen avatar instead.
+            const target = (session && ss.isP2Follower(follower)) ? 0 : targetOpacity;
+            if (follower.opacity() !== target) follower.setOpacity(target);
         }
         _Game_Followers_update_worldMap.call(this);
     };
 
-    // 1) The chase itself. In Loose the rope is cut, except while the party is
-    //    being called in (a running leader, or an event's Gather Party).
+    // 1) The chase itself. The rope is cut, except while the party is being
+    //    called in (a running leader, or an event's Gather Party) and while the
+    //    loose layer stands down (a vehicle, split-screen, a battle).
     const _Game_Followers_updateMove_loose = Game_Followers.prototype.updateMove;
     Game_Followers.prototype.updateMove = function () {
         // A map battle (BattleSystem/MapBattleMode.js) walks every member itself,
         // one tile at a time, and each one holds the tile it is fighting from.
         // Neither branch below may run: the loose layer is off for the fight
         // anyway (conditionsMet), which means control would fall through to the
-        // marching column and chaseCharacter would drag the whole train along
+        // vanilla chase and chaseCharacter would drag the whole train along
         // behind every tactical step the leader takes, undoing the positioning
         // the fight is being fought over. Checked before recalling() too, since
         // a Gather Party queued before the fight would do the same.
@@ -3963,14 +3939,10 @@
             return;
         }
         if (Loose.active()) return;
-        // Close ranks, except for the slots that are never in the column at all
-        // (a pet, a child, a creature follower). The chain is walked by hand so
-        // those are left out of it and everyone else keeps the rope.
-        for (let i = this._data.length - 1; i >= 0; i--) {
-            const f = this._data[i];
-            if (Loose.activeFor(f)) continue;
-            f.chaseCharacter(i > 0 ? this._data[i - 1] : $gamePlayer);
-        }
+        // The loose layer has stood down (a vehicle, split-screen, an event
+        // gathering the party): the engine's own chain takes the rope back for
+        // as long as it lasts.
+        _Game_Followers_updateMove_loose.call(this);
     };
 
     // 2) Each member's own turn to act, once per frame.
@@ -4019,7 +3991,7 @@
         try {
             Loose.update();
         } catch (e) {
-            console.error("[AutoIdleExplorer] formation update error:", e);
+            console.error("[AutoIdleExplorer] loose party update error:", e);
         }
         try {
             AutoIdle.ensureP2Hook();
@@ -4056,12 +4028,10 @@
         const arrived = !reentry &&
             (this._transfer || SceneManager.isPreviousScene(Scene_Battle) || Loose.mapId !== mapId);
         if (arrived) {
-            // The pet slot is loose on every map, so its errands are dropped on
-            // arrival whatever the party formation is. Only a loose party has to
-            // be put back at the leader's shoulder: in Close the engine has
-            // already stacked the column, pet included, on the leader's tile.
+            // Every errand is dropped on arrival, and the whole party is put
+            // back at the leader's shoulder rather than left on the old map.
             Loose.resetStates();
-            if (Loose.mode() === FORM_LOOSE) Loose.gatherNear();
+            Loose.gatherNear();
         }
         Loose.mapId = mapId;
         // Arriving anywhere cancels a camera walk left over from the map just
@@ -4622,9 +4592,7 @@
 
     function handleCorpseCommemorate(corpse) {
         if (!corpse) return;
-        if (Loose.mode() === FORM_LOOSE) {
-            Loose.gatherNear();
-        }
+        Loose.gatherNear();
         const leader = $gameParty.leader();
         const livingFollowers = $gamePlayer.followers().data().filter(f => f.isVisible() && f.actor && !f.actor().isDead());
 
@@ -4855,9 +4823,7 @@
                     $gameParty.removeActor(this.actorId());
                     $gamePlayer.refresh();
                     $gamePlayer.followers().refresh();
-                    if (Loose.mode() === FORM_LOOSE) {
-                        Loose.gatherNear();
-                    }
+                    Loose.gatherNear();
                     $gameMessage.add(T ? T('Battle.actorDied', { actor: deceasedName }) : `${deceasedName} has fallen.`);
                     $gameMessage.add(`${livingMembers[0].name()} takes command of the party.`);
                     return;

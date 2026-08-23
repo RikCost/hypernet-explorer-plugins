@@ -1580,6 +1580,111 @@
     };
 
     // ------------------------------------------------------------------
+    // 5b. Stat requirements  ,  window.SkillStatReq
+    //   Every real skill carries `<StatReq: STAT N>`, written by
+    //   tools/skills/gen_stat_requirements.js: the floor a battler's BASE stat
+    //   has to reach for the skill to come out at full strength. N runs 3..20,
+    //   which is the range a base parameter actually moves through (a class
+    //   opens between 8 and 16 and creeps to between 10 and 20 by level 99),
+    //   so the school's own class clears its middle ladder and its ultimates
+    //   are the end of somebody's road.
+    //
+    //   What counts towards it is deliberately narrow: the class curve, the
+    //   points spent at character creation and by traits, and any augment
+    //   fitted in the body. A weapon does not lend the arm that swings it the
+    //   wit to cast, and a buff that lasts three turns is not learning, so
+    //   equipment, states, buffs and disease modifiers are all left out.
+    //
+    //   Nothing is barred by this: a skill can always be learned, carried and
+    //   used. Under the floor it simply starts to slip, and
+    //   BattleSystemEnhancedMechanics rolls the fumble.
+    // ------------------------------------------------------------------
+    const STAT_REQ_PARAM = { STR: 2, CON: 3, INT: 4, WIS: 5, DEX: 6, PSI: 7 };
+    // One point short is a stumble, ten is a spell being read out of a book in
+    // a language the reader does not have. Each missing point multiplies what
+    // is left of the caster's grip on it, and the worst case still leaves a
+    // quarter of the casts standing.
+    const STAT_REQ_SLIP = 0.93;
+    const STAT_REQ_CAP = 0.75;
+    const statReqCache = new Map();
+
+    window.SkillStatReq = {
+        MAX_FAIL: STAT_REQ_CAP,
+
+        // { stat, paramId, points } for a skill, or null when it carries no tag.
+        of(skill) {
+            if (!skill || skill.id === undefined) return null;
+            if (statReqCache.has(skill.id)) return statReqCache.get(skill.id);
+            let out = null;
+            const m = /<StatReq:\s*([A-Za-z]+)\s+(\d+)\s*>/i.exec(skill.note || '');
+            if (m) {
+                const stat = m[1].toUpperCase();
+                if (STAT_REQ_PARAM[stat] !== undefined) {
+                    out = { stat: stat, paramId: STAT_REQ_PARAM[stat], points: Number(m[2]) };
+                }
+            }
+            statReqCache.set(skill.id, out);
+            return out;
+        },
+
+        // The localized three-letter name of a stat, the same one the sheet and
+        // the equip screen print (js/i18n/<lang>/stats.json).
+        statName(stat) {
+            return (window.CCStatLabel ? window.CCStatLabel(stat) : null) || stat;
+        },
+
+        // What the battler brings to the requirement. Game_Actor.paramPlus adds
+        // worn equipment on top, so Game_Battler's is called directly: what is
+        // left is the permanent record (character creation, traits, the event
+        // command "Change Parameter") plus whatever is bolted into the body.
+        baseStat(battler, paramId) {
+            if (!battler) return 0;
+            let value = battler.paramBase ? battler.paramBase(paramId) : 0;
+            if (Game_Battler.prototype.paramPlus) {
+                value += Game_Battler.prototype.paramPlus.call(battler, paramId) || 0;
+            }
+            const augments = battler._prostheticEffects;
+            if (augments && augments[paramId]) value += augments[paramId];
+            return Math.floor(Math.max(0, value));
+        },
+
+        // How the battler stands against one skill, or null when the skill asks
+        // for nothing or the battler is not on this scale (creatures are not:
+        // their parameters are written in the hundreds).
+        check(battler, skill) {
+            const req = this.of(skill);
+            if (!req || !battler || !battler.isActor || !battler.isActor()) return null;
+            const have = this.baseStat(battler, req.paramId);
+            const short = Math.max(0, req.points - have);
+            return {
+                stat: req.stat,
+                paramId: req.paramId,
+                points: req.points,
+                have: have,
+                short: short,
+                met: short === 0,
+                failChance: short ? Math.min(STAT_REQ_CAP, 1 - Math.pow(STAT_REQ_SLIP, short)) : 0
+            };
+        },
+
+        meets(battler, skill) {
+            const c = this.check(battler, skill);
+            return !c || c.met;
+        },
+
+        failChance(battler, skill) {
+            const c = this.check(battler, skill);
+            return c ? c.failChance : 0;
+        },
+
+        // "INT 14", ready to print anywhere.
+        label(skill) {
+            const req = this.of(skill);
+            return req ? this.statName(req.stat) + ' ' + req.points : '';
+        }
+    };
+
+    // ------------------------------------------------------------------
     // 6. DataManager, Load Enemy Char Sprites
     // ------------------------------------------------------------------
     const _DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
@@ -1971,6 +2076,274 @@
         }
         _BattleManager_startAction_pair.call(this);
     };
+
+    // ------------------------------------------------------------------
+    // 15e. THE KILLING BLOW - A CRITICAL HIT ROLLS FOR A LIMB
+    //
+    //   A critical hit is the moment the blow found something soft, so it is
+    //   also the only moment a fight is allowed to end early. When one lands
+    //   on a monster - a swing, an arrow or a spell, it makes no difference -
+    //   a d20 is thrown across the screen (Core/Dice3D.js) and read against
+    //   the monster's own guard:
+    //
+    //     roll + STR modifier   vs   10 + the monster's CON modifier   (physical)
+    //     roll + INT modifier   vs   10 + the monster's WIS modifier   (magical)
+    //
+    //   The guard is the enemy's defence read as an ability score, so armour
+    //   and wards are what stand between a lucky die and a severed head: a
+    //   sack of a monster comes apart under a good roll, and anything properly
+    //   built is only ever taken by the die itself.
+    //
+    //     natural 20      the head (or whatever else the thing cannot live
+    //                     without) comes off and the monster is finished
+    //     total >= DC     a limb goes: an arm, a wing, a leg. It fights on
+    //                     without it, and short of whatever the part was worth
+    //     anything else   the critical hit stands on its own, which is what it
+    //                     was already worth
+    //
+    //   A natural 1 never takes anything, however large the modifier.
+    //
+    //   <Boss> monsters are exempt from the ending: a hand-authored fight is
+    //   not decided by one die. A natural 20 against one costs it a limb
+    //   instead of its life, which is the same blow landing on something that
+    //   is simply too much to fall to it.
+    //
+    //   One die per action, not per hit: a spell that strikes four monsters or
+    //   a flurry that lands six times throws once. The die is a cinematic and
+    //   the fight stands still while it is in the air (see isRolling below), so
+    //   six of them in a row would be six interruptions of the same turn.
+    // ------------------------------------------------------------------
+    const CRIT_SEVER_DC_BASE = 10;    // an even chance against something unarmoured
+    const CRIT_SEVER_DC_MIN = 8;
+    const CRIT_SEVER_DC_MAX = 30;     // above 20 only the natural 20 gets through
+    const CRIT_SEVER_HOLD_MS = 6000;  // no die may hold a battle hostage
+
+    // Where the killing blow looks for something vital, in order. Whatever the
+    // monster is built from, the head is the first thing reached for; a body
+    // with no head has a core, a heart, or in the end simply the one part it
+    // was written as unable to live without.
+    const CRIT_SEVER_VITAL_ORDER = [
+        "HEAD", "SKULL", "BRAIN", "NECK", "HEART", "CORE", "BODY", "TORSO"
+    ];
+
+    const abilityModOf = (value) => Math.floor(((value || 10) - 10) / 2);
+
+    const CritSever = {};
+
+    // -- the check itself ----------------------------------------------
+    CritSever.isMagicalStrike = function(action) {
+        return !!(action && action.isMagical && action.isMagical());
+    };
+
+    CritSever.modifier = function(subject, magical) {
+        if (!subject) return 0;
+        if (magical) {
+            return Number.isFinite(subject.intMod) ? subject.intMod : abilityModOf(subject.mat);
+        }
+        return Number.isFinite(subject.strMod) ? subject.strMod : abilityModOf(subject.atk);
+    };
+
+    CritSever.dc = function(target, magical) {
+        if (!target) return CRIT_SEVER_DC_BASE;
+        const guard = magical
+            ? (Number.isFinite(target.wisMod) ? target.wisMod : abilityModOf(target.mdf))
+            : (Number.isFinite(target.conMod) ? target.conMod : abilityModOf(target.def));
+        // A soft, unarmoured thing is genuinely easier to take apart, so a
+        // negative modifier lowers the bar as readily as a positive one raises
+        // it - down to the floor, which is where the die always has its say.
+        const dc = CRIT_SEVER_DC_BASE + guard;
+        return Math.max(CRIT_SEVER_DC_MIN, Math.min(CRIT_SEVER_DC_MAX, dc));
+    };
+
+    CritSever.verdict = function(roll, modifier, dc, magical) {
+        const total = roll + modifier;
+        const nat20 = roll === 20;
+        const nat1 = roll === 1;
+        let outcome = "none";
+        if (nat20) outcome = "behead";
+        else if (!nat1 && total >= dc) outcome = "maim";
+        return { roll, modifier, dc, total, nat20, nat1, magical: !!magical, outcome };
+    };
+
+    CritSever.roll = function(subject, target, magical, forcedRoll) {
+        const modifier = CritSever.modifier(subject, magical);
+        const dc = CritSever.dc(target, magical);
+        const roll = Number.isFinite(forcedRoll)
+            ? forcedRoll
+            : Math.floor(Math.random() * 20) + 1;
+        return CritSever.verdict(roll, modifier, dc, magical);
+    };
+
+    // -- what the blow takes -------------------------------------------
+    CritSever.isBoss = function(enemy) {
+        const data = enemy && enemy.enemy ? enemy.enemy() : null;
+        if (!data) return false;
+        if (data.meta && data.meta.Boss) return true;
+        return /<Boss>/i.test(data.note || "");
+    };
+
+    CritSever.pickVitalPart = function(enemy) {
+        const MH = window.MonsterHealth;
+        if (!MH) return null;
+        const keys = MH.livingPartKeys(enemy, { vital: true });
+        if (!keys.length) return null;
+        for (const wanted of CRIT_SEVER_VITAL_ORDER) {
+            if (keys.includes(wanted)) return wanted;
+        }
+        return keys[0];
+    };
+
+    CritSever.pickLimb = function(enemy) {
+        const MH = window.MonsterHealth;
+        if (!MH) return null;
+        // What comes away cleanly first; a body of nothing but solid pieces
+        // still gives one of them up.
+        const clean = MH.livingPartKeys(enemy, { vital: false, canCutoff: true });
+        const keys = clean.length ? clean : MH.livingPartKeys(enemy, { vital: false });
+        if (!keys.length) return null;
+        return keys[Math.floor(Math.random() * keys.length)];
+    };
+
+    // The monster falls once the log has finished reading out what happened to
+    // it: the same delayed death Health_Monsters.js arms when a vital part is
+    // destroyed, so the severing, the blood and the collapse arrive in order.
+    CritSever.finish = function(enemy) {
+        if (!enemy) return;
+        if (typeof $gameTemp !== "undefined" && $gameTemp && window.MonsterHealth) {
+            $gameTemp.vitalPartDestroyedEnemy = enemy;
+            $gameTemp.scheduleEnemyDeath = true;
+            return;
+        }
+        // No anatomy plugin to hand the death to: take it directly, and let
+        // section 15c above walk the body off the field.
+        enemy.setHp(0);
+        enemy.addState(enemy.deathStateId());
+    };
+
+    CritSever.applyVerdict = function(verdict, target) {
+        if (!verdict || verdict.outcome === "none") return verdict;
+        const boss = CritSever.isBoss(target);
+        // A boss keeps its life and loses a piece of itself instead.
+        const takesLife = verdict.outcome === "behead" && !boss;
+        let partKey = takesLife ? CritSever.pickVitalPart(target) : null;
+        if (!partKey) partKey = CritSever.pickLimb(target);
+        if (partKey && window.MonsterHealth) window.MonsterHealth.severPart(target, partKey);
+        if (takesLife) {
+            CritSever.finish(target);
+        } else if (verdict.outcome === "behead" && typeof $gameTemp !== "undefined" && $gameTemp) {
+            $gameTemp.critSeverNote = T('Battle.critSever.bossEndures', { enemy: target.name() });
+        }
+        verdict.partKey = partKey;
+        verdict.killed = takesLife;
+        verdict.boss = boss;
+        return verdict;
+    };
+
+    // -- the die on screen ---------------------------------------------
+    //   The fight stands still while the die is in the air: the log has the
+    //   damage and the severing queued up behind it, and reading those out
+    //   under a tumbling d20 would give the answer away before it landed.
+    let critSeverRollingSince = 0;
+
+    CritSever.isRolling = function() {
+        if (!critSeverRollingSince) return false;
+        if (Date.now() - critSeverRollingSince > CRIT_SEVER_HOLD_MS) {
+            critSeverRollingSince = 0;
+            return false;
+        }
+        return true;
+    };
+
+    CritSever.throwDie = function(verdict, target, magical) {
+        const dice = window.Dice3D;
+        if (!dice || typeof dice.rollD20 !== "function") return;
+        const label = window.CCStatLabel
+            ? window.CCStatLabel(magical ? "INT" : "STR")
+            : (magical ? "INT" : "STR");
+        critSeverRollingSince = Date.now();
+        const release = () => { critSeverRollingSince = 0; };
+        try {
+            const thrown = dice.rollD20({
+                actionName: T('Battle.critSever.check', { enemy: target.name() }),
+                statName: label,
+                modifier: verdict.modifier,
+                dc: verdict.dc,
+                forcedRoll: verdict.roll,
+                force3D: true,
+                quick: true
+            });
+            if (thrown && typeof thrown.then === "function") thrown.then(release, release);
+            else release();
+        } catch (e) {
+            release();
+        }
+    };
+
+    const _BattleManager_update_CritSever = BattleManager.update;
+    BattleManager.update = function(timeActive) {
+        if (CritSever.isRolling()) return;
+        _BattleManager_update_CritSever.call(this, timeActive);
+    };
+
+    const _Window_BattleLog_update_CritSever = Window_BattleLog.prototype.update;
+    Window_BattleLog.prototype.update = function() {
+        if (CritSever.isRolling()) return;
+        _Window_BattleLog_update_CritSever.call(this);
+    };
+
+    // The one line the anatomy cannot write for us: why the blow that should
+    // have finished a boss only cost it a limb.
+    const _Window_BattleLog_displayHpDamage_CritSever = Window_BattleLog.prototype.displayHpDamage;
+    Window_BattleLog.prototype.displayHpDamage = function(target) {
+        _Window_BattleLog_displayHpDamage_CritSever.call(this, target);
+        if (typeof $gameTemp === "undefined" || !$gameTemp || !$gameTemp.critSeverNote) return;
+        if (!target || !target.isEnemy || !target.isEnemy()) return;
+        const push = typeof this.appendToActionLine === "function" ? "appendToActionLine" : "addText";
+        this.push(push, $gameTemp.critSeverNote);
+        $gameTemp.critSeverNote = null;
+    };
+
+    // -- the hit that starts it all ------------------------------------
+    CritSever.wantsRoll = function(action, target) {
+        if (!action || !target || !target.isEnemy || !target.isEnemy()) return false;
+        if (action._critSeverRolled) return false;
+        const subject = action.subject ? action.subject() : null;
+        // The party's own luck only: a monster that crits takes a limb off an
+        // actor through Health_Core, not through this.
+        if (!subject || !subject.isActor || !subject.isActor()) return false;
+        const result = target.result ? target.result() : null;
+        if (!result || !result.critical || !result.isHit()) return false;
+        // HP damage and HP drain: nothing is severed by a heal or a debuff.
+        if (!action.checkDamageType || !action.checkDamageType([1, 5])) return false;
+        if (!(result.hpDamage > 0)) return false;
+        // The critical hit already did it; there is nothing left to take.
+        if (target.isDead && target.isDead()) return false;
+        return true;
+    };
+
+    CritSever.onActionApplied = function(action, target) {
+        if (!CritSever.wantsRoll(action, target)) return null;
+        action._critSeverRolled = true;
+        const magical = CritSever.isMagicalStrike(action);
+        const verdict = CritSever.roll(action.subject(), target, magical);
+        CritSever.applyVerdict(verdict, target);
+        CritSever.throwDie(verdict, target, magical);
+        return verdict;
+    };
+
+    const _Game_Action_apply_CritSever = Game_Action.prototype.apply;
+    Game_Action.prototype.apply = function(target) {
+        _Game_Action_apply_CritSever.call(this, target);
+        if (typeof $gameParty === "undefined" || !$gameParty || !$gameParty.inBattle()) return;
+        try {
+            CritSever.onActionApplied(this, target);
+        } catch (e) {
+            console.error("CritSever: " + e.message);   // i18n-ignore: developer diagnostic
+        }
+    };
+
+    BSE.CritSever = CritSever;
+    window.CritSever = CritSever;
 
     // ------------------------------------------------------------------
     // 16. Scene_Gameover – redirect to map

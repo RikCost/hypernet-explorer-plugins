@@ -775,6 +775,25 @@
       return Number(classId) > SENTIENT_CLASS_MAX;
     },
 
+    // Which bodies are PEOPLE. A civilised trade is learned, taught and
+    // practised with hands, in a settlement, by something that talks: the folk
+    // archetypes (Humanoid, Elven, Dwarf, Goblin, Centaur and their like) carry
+    // "sentient": true in Archetypes.json, and every beast, ooze, swarm and
+    // elemental does not. An archetype the data does not know is not one.
+    isSentientArchetype(key) {
+      const data = this._data();
+      const entry = key && data ? data[key] : null;
+      return !!(entry && entry.sentient === true);
+    },
+
+    // Whether a finished body may be offered the civilised roster at all. A
+    // spliced creature is only as civilised as its worse half: half a person
+    // grafted onto a manticore is a monster, and is offered a monster's kinds.
+    sentientAllowedFor(key1, key2) {
+      if (!this.isSentientArchetype(key1)) return false;
+      return !key2 || key2 === key1 || this.isSentientArchetype(key2);
+    },
+
     // Every class a person may be built from or rolled into, the one list the
     // humanoid randomizers draw on.
     sentientRoster() {
@@ -835,6 +854,20 @@
       return { creature, sentient };
     },
 
+    // The two rosters as the CREATION BOARD offers them: the same lists, minus
+    // the civilised half whenever the body is not folk. Only a character being
+    // built is held to this. An NPC beast that already wears a trade (and the
+    // pet roster that reads the same groups) keeps groupsForArchetypes as it
+    // is, so nothing already walking the world is retconned.
+    playableGroupsForArchetypes(key1, key2) {
+      const groups = this.groupsForArchetypes(key1, key2);
+      if (this.sentientAllowedFor(key1, key2)) return groups;
+      return {
+        creature: groups.creature.length ? groups.creature : [this.fallbackId()],
+        sentient: [],
+      };
+    },
+
     // The same two rosters as one flat list, the creature's own kind first.
     // Never empty.
     forArchetypes(key1, key2) {
@@ -853,12 +886,60 @@
   };
 
   //=============================================================================
+  // Attribute names
+  //=============================================================================
+
+  // The six attribute abbreviations the whole game prints (STR/CON/DEX/INT/
+  // WIS/PSI in English, FRZ/COS/DES/INT/SAG/PSI in Italian) live in
+  // js/i18n/<lang>/stats.json, which sits at the i18n root and so is outside
+  // what window.T covers. Every creation panel that labels a stat box reads
+  // them from here: fetched once per language, on the render thread, the same
+  // way NPCEmpathizeUI reads the same bank.
+  let _statsBank = null;
+  let _statsBankLang = null;
+  function statLabels() {
+    const lang = (typeof ConfigManager !== "undefined" && ConfigManager.language) || "en";
+    if (_statsBank === null || _statsBankLang !== lang) {
+      _statsBank = {};
+      _statsBankLang = lang;
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `js/i18n/${lang}/stats.json`, false);
+        xhr.send();
+        if (xhr.status === 200 || xhr.status === 0) _statsBank = JSON.parse(xhr.responseText);
+      } catch (e) { /* the English names below stand in */ }
+    }
+    const s = _statsBank;
+    return {
+      HP: s["HP"] || "HP",
+      MP: s["MP"] || "MP",
+      AP: s["TP"] || "AP",
+      STR: s["ATT"] || "STR",
+      CON: s["DEF"] || "CON",
+      INT: s["M.ATT"] || "INT",
+      WIS: s["M.DEF"] || "WIS",
+      DEX: s["AGILITY"] || "DEX",
+      PSI: s["LUCK"] || "PSI"
+    };
+  }
+
+  // One label by its English abbreviation, which is also the key the
+  // specialization and trait banks store a governing attribute under.
+  function statLabel(abbr) {
+    const labels = statLabels();
+    return labels[String(abbr || "").toUpperCase()] || abbr;
+  }
+
+  //=============================================================================
   // Exports to Global Namespace
   //=============================================================================
 
   window.CCScroll = CCScroll;
   window.CCButtons = CCButtons;
   window.CreatureClasses = CreatureClasses;
+  // The attribute names every creation panel labels its stat boxes with.
+  window.CCStatLabels = statLabels;
+  window.CCStatLabel = statLabel;
   // Global alias: the creation panels are template-literal heavy, and every
   // database name they print goes through this.
   window.CCDbName = dbName;
@@ -877,6 +958,8 @@
     // Localization
     getLocalizedChoice,
     dbName,
+    statLabels,
+    statLabel,
 
     // Gender & Reproduction
     getGenderVariableId,

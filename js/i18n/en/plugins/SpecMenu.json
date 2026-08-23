@@ -12,6 +12,15 @@
     "towards": "Towards {level}",
     "pointsToNext": "{points} more points to {level}",
     "mastered": "Fully mastered. Nothing left to learn.",
-    "governingStat": "Governing stat: {stat}"
-  }
+    "governingStat": "Governing stat: {stat}",
+    "category": "Category",
+    "tier": "Tier {n}"
+  },
+  "rankNames": [
+    "Untrained",
+    "Novice (+1)",
+    "Adept (+2)",
+    "Expert (+3)",
+    "Master (+4)"
+  ]
 }

@@ -1,0 +1,32 @@
+{
+  "check": {
+    "default": "Action Check",
+    "percentage": "Percentage Check"
+  },
+  "outcome": {
+    "success": "SUCCESS",
+    "failure": "FAILURE",
+    "critSuccess": "CRITICAL SUCCESS!",
+    "critFailure": "CRITICAL FAILURE!"
+  },
+  "card": {
+    "target": "DC {dc}",
+    "noTarget": "Standard Check",
+    "sum": "Roll {roll}{mod}{stat} = {total}",
+    "sumTarget": "DC {dc} · {sum}"
+  },
+  "toast": {
+    "line": "[{action}] Roll: {roll}{mod}{stat} = {total}{versus} -> {outcome}",
+    "versus": " vs DC {dc}"
+  },
+  "prompt": {
+    "title": "Trial of {stat}",
+    "titleFlat": "A Turn of Fortune",
+    "who": "{name} steps up",
+    "target": "{dc} or better",
+    "formula": "d20 {mod} {stat}",
+    "formulaFlat": "d20, and nothing else",
+    "try": "Try it",
+    "cancel": "Walk away"
+  }
+}

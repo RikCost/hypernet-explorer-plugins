@@ -1,10 +1,6 @@
 {
   "optionName": "Auto Idle Explorer",
   "badge": "AUTO P2",
-  "formation": {
-    "label": "Party Formation",
-    "states": ["Close", "Loose"]
-  },
   "lead": {
     "toast": "{name} takes the lead"
   },

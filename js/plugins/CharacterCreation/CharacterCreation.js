@@ -92,6 +92,22 @@
     return fallback != null ? fallback : key;
   }
 
+  // The attribute abbreviations every stat box is labelled with. They live in
+  // js/i18n/<lang>/stats.json, which sits outside what window.T covers, so
+  // CharacterCreationShared reads that bank and this is the guarded way in:
+  // English stands in where the shared plugin has not loaded.
+  const CC_STAT_FALLBACK = {
+    HP: "HP", MP: "MP", AP: "AP", STR: "STR", CON: "CON",
+    INT: "INT", WIS: "WIS", DEX: "DEX", PSI: "PSI"
+  };
+  function ccStatLabels() {
+    return (typeof window.CCStatLabels === 'function') ? window.CCStatLabels() : CC_STAT_FALLBACK;
+  }
+  function ccStatLabel(abbr) {
+    if (typeof window.CCStatLabel === 'function') return window.CCStatLabel(abbr);
+    return CC_STAT_FALLBACK[String(abbr || '').toUpperCase()] || abbr;
+  }
+
   // A localized list, with an English one to fall back on where the namespace
   // is not loaded (a harness, a stripped build).
   function ccList(key, fallback) {
@@ -297,7 +313,7 @@
   // The shared Back / extras / Continue bar (CharacterCreationShared.js).
   const CCButtons = window.CCButtons;
   const { equipRandomCompatibleWeapon, GLOBAL_STARTER_SKILLS, applyStartingGear, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
-  const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, getPresetLore, getPresetHometown, getPresetSkins, getPresetSkin, getPresetSkinLabel, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets, getEmRestlessLine } = window.CharacterPresets || {};
+  const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, unmarkPresetUsed, getPresetLore, getPresetHometown, getPresetSkins, getPresetSkin, getPresetSkinLabel, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets, getEmRestlessLine } = window.CharacterPresets || {};
   // Which button leafs through a dossier's looks, named on a chip under the
   // thumbnail row: the shoulder buttons when a pad is plugged in, TAB
   // otherwise. A pad can be plugged in (or its battery die) while the board is
@@ -560,9 +576,29 @@
     return match ? Number(match[1]) : 0;
   }
 
+  // A picked build is written to actor._selectedTraits as whole trait objects
+  // by the trait plugin and as bare trait ids by the boards that pick them, and
+  // reading it raw is how the two halves of creation stopped recognising each
+  // other's picks: the board saw "[object Object]" where an id should be, so a
+  // trait could be bought and never sold back. Nothing reads the field
+  // directly any more, it comes through one of these two.
+  function selectedTraitObjects(actor) {
+    const bank = (window.Health && window.Health.Traits) || [];
+    return ((actor && actor._selectedTraits) || [])
+      .map((entry) => (entry && typeof entry === "object")
+        ? entry
+        : bank.find((t) => String(t.id) === String(entry)))
+      .filter(Boolean);
+  }
+
+  function selectedTraitIds(actor) {
+    return ((actor && actor._selectedTraits) || [])
+      .map((entry) => (entry && typeof entry === "object") ? entry.id : entry)
+      .filter((id) => id !== null && id !== undefined);
+  }
+
   function traitStartingMoney(actor) {
-    const traits = (actor && actor._selectedTraits) || [];
-    return traits.reduce((sum, trait) => sum + (Number(trait && trait.money) || 0), 0);
+    return selectedTraitObjects(actor).reduce((sum, trait) => sum + (Number(trait.money) || 0), 0);
   }
 
   // A member's wealth band, and what it pays in. Only the detailed editor asks
@@ -2631,6 +2667,11 @@
   // budget change cannot leave the three disagreeing.
   const CC_SPEC_BUDGET = 12;
 
+  // The board's own tab, sitting in front of the categories: the ones this
+  // member already stands above Untrained in, bought or granted. It is an id,
+  // not a label, so it never collides with a Specialization.json category.
+  const SPEC_TAB_CURRENT = "Current";
+
   // ── Creature archetypes ─────────────────────────────────────────────────
   // Two namespaces name the same creatures: Health/Archetypes.json spells them
   // in CamelCase ("Crustacean") and is the ONLY vocabulary the body-part merge
@@ -3286,8 +3327,19 @@
             ? window.CreatureClasses.creatureRoster()
             : (window.CreatureClasses.forActor(creatureActor) || []);
           const creatureCards = creatureIds.map((id) => classChoice(id, "creature")).filter(Boolean).sort(byName);
-          const sentientCards = getSentientClassList()
-            .map((c) => classChoice(c.id, "sentient")).filter(Boolean).sort(byName);
+          // The civilised half of the board belongs to the folk archetypes
+          // alone (Humanoid, Elven, Dwarf, Goblin and their like, flagged
+          // "sentient" in Archetypes.json). A beast, an ooze or a swarm is
+          // offered the monstrous kinds and nothing else: a slime has no
+          // profession, and a spliced body is only as civilised as its worse
+          // half.
+          const sentientAllowed = typeof window.CreatureClasses.sentientAllowedFor === "function"
+            ? window.CreatureClasses.sentientAllowedFor(
+                actorArchetypeKey(creatureActor), actorSecondaryArchetypeKey(creatureActor))
+            : true;
+          const sentientCards = sentientAllowed
+            ? getSentientClassList().map((c) => classChoice(c.id, "sentient")).filter(Boolean).sort(byName)
+            : [];
           const creatureRoster = creatureCards.concat(sentientCards);
           if (creatureRoster.length) return creatureRoster;
         }
@@ -3980,6 +4032,22 @@
     static getCurrentActorId() {
       return this._currentPartyMemberIndex + 1;
     }
+
+    // Applied from the 3D Political Graph's onSelect callback, which fires
+    // during confirmSelection() - before SceneManager has swapped _scene back
+    // to the wizard, so SceneManager._scene is still the graph itself there.
+    // Writing straight onto the actor sidesteps that stale reference; the
+    // wizard picks the new value up on its own next render.
+    static applyIdeologySelection(id) {
+      const actor = this.getCurrentActor();
+      if (!actor || !id) return;
+      actor._ideologyId = id;
+      actor._bioSet = true;
+      if (window.NPCSociety && window.NPCSociety.getActorProfile) {
+        const prof = window.NPCSociety.getActorProfile(actor.actorId());
+        if (prof) prof.ideologyId = id;
+      }
+    }
     // Detailed mode: hand this member over to the Empathize editor
     // (CharacterCreationFull.js) instead of walking the wizard's own
     // per-character steps. The editor resumes the wizard at the add-member
@@ -4013,6 +4081,13 @@
 
     showPresetSelection() {
       if (availablePresets().length === 0) {
+        SoundManager.playBuzzer();
+        if (this._gridWindow) this._gridWindow.activate();
+        return;
+      }
+      // A party carries one dossier at most: it is the dossier that decides the
+      // purse, the kit and where the party wakes up.
+      if (this._hasPresetInParty(true)) {
         SoundManager.playBuzzer();
         if (this._gridWindow) this._gridWindow.activate();
         return;
@@ -4069,62 +4144,59 @@
     }
 
     // MODIFIED: Reworked to apply full character preset data (inventory, skills, equips, etc.)
+    // Taking a dossier fills the member's seat and nothing else. It used to
+    // set the party down on the dossier's own map the instant it was picked,
+    // which ended creation before the other two seats could be filled; the
+    // landing is remembered here and only walked when the party is confirmed.
     onPresetSelect() {
-      if (this._presetApplied) return;
-      const preset = this._presetWindow && this._presetWindow.currentPreset();
+      const index = this._presetWindow ? this._presetWindow.index() : 0;
+      this.onApplyPresetToCurrentMember(index);
+    }
+
+    // Where a taken dossier means to put the party down, kept until the party
+    // is confirmed. Cleared on the way out (see onFinishPartyCreation).
+    _recordPresetLanding(preset) {
       if (!preset) return;
-      this._presetApplied = true;
+      $gameSystem._ccPresetLanding = {
+        id: preset.id,
+        name: preset.name,
+        mapId: preset.mapId,
+        x: preset.x,
+        y: preset.y,
+        tutorialOnly: !!preset.tutorialOnly
+      };
+    }
 
-      const skinData = this._presetWindow.currentSkin
-        ? this._presetWindow.currentSkin()
-        : null;
+    // The landing a taken dossier asked for, walked at the end of creation
+    // instead of at the moment the dossier was picked. Returns true when it
+    // took the party somewhere, so the scenario logic knows to stand down.
+    _walkPresetLanding() {
+      const landing = $gameSystem._ccPresetLanding;
+      if (!landing) return false;
+      $gameSystem._ccPresetLanding = null;
 
-      const actor = Scene_CharacterCreation.getCurrentActor();
-      if (actor) {
-        try {
-          this._applyPreset(preset, actor, skinData);
-        } catch (e) {
+      $gameSwitches.setValue(13, true);
+      $gameSwitches.setValue(33, true);
+      markFirstCreationComplete();
+      grantMinimumCards();
+
+      if (landing.tutorialOnly) {
+        Scene_CharacterCreation._tutorialMode = false;
+        beginTutorialControlsLegend();
+      } else {
+        const target = $dataMapInfos && $dataMapInfos[landing.mapId];
+        if ($gameTemp) $gameTemp._ccOriginLanding = true;
+        if (startsAtOmegaTower()) {
+          startAtOmegaTower();
+        } else if (target) {
+          $gamePlayer.reserveTransfer(landing.mapId, landing.x, landing.y, 2, 0);
+        } else {
           console.error(
-            `CharacterCreation: failed to apply preset "${preset.name}"`, e
+            `CharacterCreation: preset "${landing.name}" points at missing map ${landing.mapId}; staying put`
           );
         }
-
-        const isTutorialPreset = !!preset.tutorialOnly;
-        if (!isTutorialPreset && typeof markPresetUsed === "function") {
-          markPresetUsed(preset.id);
-        }
-
-        actor.refresh();
-        actor.recoverAll();
-        $gameSwitches.setValue(13, true);
-        $gameSwitches.setValue(33, true);
-        markFirstCreationComplete();
-        grantMinimumCards();
-
-        $gameSystem._currentPresetId = preset.id;
-
-        if (isTutorialPreset) {
-          Scene_CharacterCreation._tutorialMode = false;
-          beginTutorialControlsLegend();
-        } else {
-          const target = $dataMapInfos && $dataMapInfos[preset.mapId];
-          if ($gameTemp) $gameTemp._ccOriginLanding = true;
-          if (startsAtOmegaTower()) {
-            startAtOmegaTower();
-          } else if (target) {
-            $gamePlayer.reserveTransfer(preset.mapId, preset.x, preset.y, 2, 0);
-          } else {
-            console.error(
-              `CharacterCreation: preset "${preset.name}" points at missing map ${preset.mapId}; staying put`
-            );
-          }
-        }
       }
-
-      if (this._dndContainer) {
-        this._dndContainer.style.display = "none";
-      }
-      this.popScene();
+      return true;
     }
 
     // Applies one preset dossier (class, inventory, skills, traits, gear,
@@ -4137,6 +4209,7 @@
       actor._isPresetActor = true;
       actor._presetKey = (preset.name || preset.id || "").toString().toLowerCase();
       actor._presetName = preset.name;
+      actor._presetId = preset.id;
 
       // Set actor properties
       actor.setName(preset.name);
@@ -4194,18 +4267,29 @@
       // Refresh actor to apply class traits
       actor.refresh();
 
-      if (preset.characterType === "creature" &&
-          Array.isArray(preset.archetypes) && preset.archetypes.length > 0 &&
-          typeof window.applyCreatureSelection === "function") {
-        const mode = preset.archetypes.length >= 2 ? "hybrid" : "baseline";
-        window.applyCreatureSelection(
-          actor.actorId(),
-          mode,
-          preset.archetypes[0],
-          preset.archetypes[1] || null,
-          null,
-          null
-        );
+      if (preset.characterType === "creature") {
+        if (Array.isArray(preset.archetypes) && preset.archetypes.length > 0 &&
+            typeof window.applyCreatureSelection === "function") {
+          const mode = preset.archetypes.length >= 2 ? "hybrid" : "baseline";
+          window.applyCreatureSelection(
+            actor.actorId(),
+            mode,
+            preset.archetypes[0],
+            preset.archetypes[1] || null,
+            null,
+            null
+          );
+        }
+      } else {
+        // A humanoid dossier must not inherit a creature flag left over from
+        // whatever the seat was set to before the preset was applied, or its
+        // bust never shows: _getActorBust treats any creature-flagged actor
+        // as a monster drawn from its 3D model instead of a 2D portrait.
+        actor._isCreatureActor = false;
+        const slot = $gameParty.members().indexOf(actor);
+        if (slot >= 0) $gameSwitches.setValue(77 + slot, false);
+        if (actor.setPortraitMode) actor.setPortraitMode("bust");
+        Scene_CharacterCreation._isCreatureMode = false;
       }
 
       // Apply preset traits if defined
@@ -4286,7 +4370,52 @@
       window.CharacterPresets?.applyPresetIdentity?.(preset, actor);
       window.CharacterPresets?.applyPresetVehicle?.(preset);
 
+      // A dossier is played as it was written, so the Bio page it hands over is
+      // already answered rather than sitting on its own defaults with nobody
+      // allowed to touch them.
+      this._initPresetBio(preset, actor);
+
       actor.refresh();
+    }
+
+    // The bio a dossier implies. Age comes off its birth date, wealth off its
+    // purse, and everything the dossier does not state is settled from its own
+    // id so the same person is always the same person.
+    _initPresetBio(preset, actor) {
+      if (!preset || !actor) return;
+      const memberIdx = Scene_CharacterCreation._currentPartyMemberIndex || 0;
+      actor._bioSet = true;
+
+      const nowYear = (window.TimeDateSystem && window.TimeDateSystem.getCurrentDateObj)
+        ? window.TimeDateSystem.getCurrentDateObj().getFullYear() : 2012;
+      const birthYear = parseInt(String(preset.birthDate || "").slice(0, 4), 10);
+      if (!isNaN(birthYear)) {
+        const age = Math.max(1, nowYear - birthYear);
+        if (!$gameSystem._ccBirthAge) $gameSystem._ccBirthAge = [];
+        $gameSystem._ccBirthAge[memberIdx] = age;
+      }
+
+      // Euros, the way the rest of the game counts money: destitute under 200,
+      // working class under 1000, middle class under 5000, wealthy above it.
+      const euros = (Number(preset.money) || 0) / 100;
+      actor._wealthTier = euros >= 5000 ? 3 : euros >= 1000 ? 2 : euros >= 200 ? 1 : 0;
+
+      if (actor._morality == null) actor._morality = 0;
+      if (!actor._jobId) actor._jobId = 0;
+
+      if (!actor._ccBloodType && !actor._bloodType) {
+        const bloods = (window.BloodTypeService && window.BloodTypeService.list && window.BloodTypeService.list()) || [];
+        const common = bloods.filter((b) => b && b.rarityKey === "common");
+        const pool = common.length ? common : bloods;
+        if (pool.length) {
+          const blood = pool[(Number(preset.id) || 0) % pool.length];
+          actor._ccBloodType = blood.id;
+          actor._bloodType = blood.id;
+          if (window.BloodTypeService && window.BloodTypeService.setForActor) {
+            window.BloodTypeService.setForActor(actor, blood.id);
+          }
+        }
+      }
     }
 
     onPresetCancel() {
@@ -4819,13 +4948,19 @@
         `;
       }).join("");
 
-      return `
-        <div class="cc-dossier-top-bar">
-          <div class="cc-folder-tabs-left">
+      // The scenario page is the party's, not any one member's: the rail of
+      // member tabs would offer pages that cannot be opened from here, so the
+      // scenario tab stands alone.
+      const leftTabsHtml = isScenarioMode ? '' : `
             ${settingsTabHtml}
             ${partyTabsHtml}
             ${addBtnHtml}
-            ${petTabHtml}
+            ${petTabHtml}`;
+
+      return `
+        <div class="cc-dossier-top-bar">
+          <div class="cc-folder-tabs-left">
+            ${leftTabsHtml}
           </div>
           <div class="cc-folder-tabs-right">
             ${stepTabsHtml}
@@ -4911,6 +5046,40 @@
       return true;
     }
 
+    // Drops a taken dossier's lock: the type pills are the one way out of one
+    // (see onSetCharacterType), since every other control refuses to touch a
+    // locked preset actor and there would otherwise be no way back from a
+    // dossier picked by mistake. The dossier itself goes back into the
+    // world's pool, since this playthrough never actually kept it.
+    _clearPresetLock(actor) {
+      if (!actor || !actor._isPresetActor) return;
+      if (actor._presetId && typeof unmarkPresetUsed === "function") {
+        unmarkPresetUsed(actor._presetId);
+      }
+      if ($gameSystem && $gameSystem._currentPresetId === actor._presetId) {
+        $gameSystem._currentPresetId = 0;
+      }
+      actor._isPresetActor = false;
+      actor._presetKey = "";
+      actor._presetName = "";
+      actor._presetId = 0;
+    }
+
+    // True when the seat being edited holds a dossier that is played as it was
+    // written. Every control that would rewrite the character asks this first,
+    // so a taken dossier keeps the class, face, bio and kit it came with.
+    _presetEditBlocked() {
+      if (this._presetWindow) return false;   // the dossier board itself is not a member sheet
+      return this._isActorLockedPreset(Scene_CharacterCreation.getCurrentActor());
+    }
+
+    // The same question, answered out loud: the buzzer is how the board says no.
+    _refusePresetEdit() {
+      if (!this._presetEditBlocked()) return false;
+      SoundManager.playBuzzer();
+      return true;
+    }
+
     // ── Compact Left Sidebar Column ──
     // One loadout line: icon, name, and an optional value on the right. The
     // sidebar, the class dossier and the scenario sheet all print their skills
@@ -4939,15 +5108,17 @@
 
     // A loadout block: the sidebar's gold rule with its tally, then the rows.
     // `open` lets the rows run their full length instead of scrolling inside
-    // the sidebar's short well, which is what a dossier page wants.
-    _ccLoadoutSectionHtml(title, count, rowsHtml, emptyText, open) {
+    // the sidebar's short well, which is what a dossier page wants. `extraClass`
+    // switches the rows from the default single column to another layout, e.g.
+    // the class dossier's weapon proficiencies, which read better as a grid.
+    _ccLoadoutSectionHtml(title, count, rowsHtml, emptyText, open, extraClass) {
       return `
         <div style="margin-top:2px;">
           <div style="font-size:1.05rem; font-weight:bold; color:#ffd700; border-bottom:1px solid rgba(218,165,32,0.3); padding-bottom:3px; display:flex; justify-content:space-between; align-items:center;">
             <span>${title}</span>
             ${count === null || count === undefined ? '' : `<span style="font-size:0.85rem; color:#ffd700; opacity:0.85;">${count}</span>`}
           </div>
-          <div class="cc-compact-loadout-grid ${open ? 'cc-loadout-open' : ''}">
+          <div class="cc-compact-loadout-grid ${open ? 'cc-loadout-open' : ''} ${extraClass || ''}">
             ${rowsHtml || `<span style="font-size:0.88rem; color:rgba(255,255,255,0.45); font-style:italic; padding:6px; text-align:center;">${emptyText || ''}</span>`}
           </div>
         </div>
@@ -4972,13 +5143,18 @@
       const isPetActive = false;
 
       const isLocked = this._isActorLockedPreset(actor);
-      const isPresetActor = !!(actor._isPresetActor);
-      const hasAnotherPreset = this._hasPresetInParty(true);
-      const isPresetDisabled = hasAnotherPreset && !isPresetActor;
 
       const classData = $dataClasses[actor._classId];
       const className = classData ? window.CCDbName(classData) : "Class";
-      const genderName = actor.genderName ? actor.genderName() : ($gameVariables.value(38 + currentMemberIndex) === 0 ? "Male ♂" : "Female ♀");
+      // The identity card reads as an occupation, not a body: "{job} {class}",
+      // e.g. "Jobless Witch". The job is the same one the Bio tab tracks
+      // (actor._jobId, 0 = jobless), so both places always agree.
+      const identityJobs = (window.WorkSystem && window.WorkSystem.Jobs) || [];
+      const identityJobId = actor._jobId != null ? actor._jobId : 0;
+      const identityJob = identityJobId > 0 ? (identityJobs.find((j) => j.id === identityJobId) || null) : null;
+      const jobName = identityJob
+        ? (window.WorkSystem && window.WorkSystem.jobName ? window.WorkSystem.jobName(identityJob) : (identityJob.name || `Job #${identityJob.id}`))
+        : ccT('CharCreate.bio.joblessShort', 'Jobless');
 
       const startingGold = 200000 + (typeof classStartingMoney === 'function' ? classStartingMoney(actor._classId) : 0) + (typeof traitStartingMoney === 'function' ? traitStartingMoney(actor) : 0);
       const startingMoneyFormatted = this._formatGoldToEuros(startingGold);
@@ -4993,22 +5169,21 @@
         <div class="cc-compact-identity-card">
           <div style="display:flex; gap:10px; align-items:center;">
             ${!isPetActive ? `
-              <div class="cc-compact-avatar-wrap" title="${isLocked ? 'Preset Sprite (Locked)' : 'Sprite (Click to open grid selector)'}" onclick="${isLocked ? 'SoundManager.playBuzzer()' : 'SceneManager._scene.onOpenSpriteGallery()'}">
+              <div class="cc-compact-avatar-wrap" title="${isLocked ? ccT('CharCreate.spriteLockedHint', 'Preset sprite (locked)') : ccT('CharCreate.spriteClickHint', 'Sprite: click to open the grid selector')}" onclick="${isLocked ? 'SoundManager.playBuzzer()' : 'SceneManager._scene.onOpenSpriteGallery()'}">
                 <div class="cc-compact-avatar" style="${avatarStyle}"></div>
               </div>
             ` : ''}
             <div style="flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;">
               <div style="display:flex; gap:4px; align-items:center;">
-                <input type="text" class="cc-bio-select cc-name-input" style="font-family:'Lora',serif; font-weight:bold; font-size:1.15rem; color:#ffd700; background:rgba(0,0,0,0.4); border:1px solid rgba(218,165,32,0.35); border-radius:4px; padding:3px 8px; height:32px; width:100%; box-sizing:border-box; ${isLocked ? 'opacity:0.85; cursor:not-allowed;' : ''}" value="${actor.name() || 'Hero'}" oninput="SceneManager._scene.onNameChange(this.value)" placeholder="Hero" ${isLocked ? 'readonly disabled' : ''} />
+                <input type="text" class="cc-bio-select cc-name-input" style="font-family:'Lora',serif; font-weight:bold; font-size:1.15rem; color:#ffd700; background:rgba(0,0,0,0.4); border:1px solid rgba(218,165,32,0.35); border-radius:4px; padding:3px 8px; height:32px; width:100%; box-sizing:border-box; ${isLocked ? 'opacity:0.85; cursor:not-allowed;' : ''}" value="${actor.name() || ccT('CharCreate.defaultName', 'Hero')}" oninput="SceneManager._scene.onNameChange(this.value)" placeholder="${ccT('CharCreate.defaultName', 'Hero')}" ${isLocked ? 'readonly disabled' : ''} />
                 ${!isLocked ? `
                   <button class="cc-profile-open-btn cc-profile-open-btn--icon" onclick="SceneManager._scene.onRandomizeNameClick()" title="${ccT('CharCreate.randomize', 'Randomize Name')}">
                     ${this._ccIconHtml(83, 16)}
                   </button>
                 ` : ''}
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.95rem; color:#ded1c1; padding:0 2px;">
-                <span style="font-weight:700; color:#ffd700;">${className}</span>
-                <span style="opacity:0.9; font-weight:500;">${genderName}</span>
+              <div style="display:flex; align-items:center; font-size:0.95rem; color:#ded1c1; padding:0 2px;">
+                <span style="font-weight:700; color:#ffd700;">${jobName} ${className}</span>
               </div>
             </div>
           </div>
@@ -5025,15 +5200,6 @@
           // which the health side could resolve back to a body.
           const currentArch = actorArchetypeKey(actor) || "Goblin";
           const secondArch = actorSecondaryArchetypeKey(actor) || "";
-          // Neither list offers what the other one holds: the two halves of a
-          // spliced body are always two different archetypes.
-          const archetypeOptions = (selected, taken) => creatureArchetypeKeys()
-            .filter((opt) => opt !== taken)
-            .map((opt) => `<option value="${opt}" ${opt === selected ? 'selected' : ''}>${archetypeDisplayName(opt)}</option>`)
-            .join("");
-          const primaryOptionsHtml = archetypeOptions(currentArch, secondArch);
-          const secondaryOptionsHtml = `<option value="" ${secondArch ? '' : 'selected'}>${ccT('CharCreate.none', 'None')}</option>` +
-            archetypeOptions(secondArch, currentArch);
 
           // A creature is its model, so the card names the model it already has
           // (settled from its archetype the moment it was made) and opens the
@@ -5042,6 +5208,9 @@
             ? `${archetypeDisplayName(currentArch)} / ${archetypeDisplayName(secondArch)}`
             : archetypeDisplayName(currentArch);
 
+          // The primary/secondary archetype pickers live on the Bio tab now,
+          // alongside the rest of who the creature is. The sidebar keeps only
+          // the model preview and the shortcut into the sculptor.
           profileBoxHtml = `
             <div class="cc-compact-portrait-card" style="display:flex; flex-direction:column; gap:6px;">
               <div class="cc-compact-bust-full empty" onclick="SceneManager._scene.onOpenCreature3DStudio()">
@@ -5050,20 +5219,8 @@
                   <span style="font-size:0.9rem; color:#ffd700; font-weight:600;">${ccT('CharCreate.custom3dModel', '3D Model')}: ${modelLabel}</span>
                 </div>
               </div>
-              <div style="display:flex; flex-direction:column; gap:4px; padding:0 2px;">
-                <div style="font-size:0.78rem; color:#ded1c1; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
-                  <span>${ccT('CharCreate.primaryArchetype', 'Primary Archetype')}:</span>
-                </div>
-                <select class="cc-bio-select" style="padding:4px 8px; font-size:0.85rem; height:30px;" onchange="SceneManager._scene.onSelectCreatureArchetype(this.value)">
-                  ${primaryOptionsHtml}
-                </select>
-                <div style="font-size:0.78rem; color:#ded1c1; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
-                  <span>${ccT('CharCreate.secondaryArchetype', 'Secondary Archetype')}:</span>
-                </div>
-                <select class="cc-bio-select" style="padding:4px 8px; font-size:0.85rem; height:30px;" onchange="SceneManager._scene.onSelectCreatureSecondaryArchetype(this.value)">
-                  ${secondaryOptionsHtml}
-                </select>
-                <button class="cc-compact-edit-btn" style="width:100%; height:32px; justify-content:center; margin-top:2px;" onclick="SceneManager._scene.onOpenCreature3DStudio()">
+              <div style="padding:0 2px;">
+                <button class="cc-compact-edit-btn" style="width:100%; height:32px; justify-content:center;" onclick="SceneManager._scene.onOpenCreature3DStudio()">
                   ${this._ccIconHtml(224, 16)} <span>${ccT('CharCreate.custom3dModel', '3D Studio (Custom)')}</span>
                 </button>
               </div>
@@ -5073,99 +5230,78 @@
           const bustName = this._getActorBust(actor);
           const bustUrl = this._getBustUrl(bustName);
 
+          // The portrait is its own button now: the bust is clicked and the
+          // gallery opens on it. The Appearance button underneath said the
+          // same thing twice and ate a row of the sidebar.
+          const bustTitle = isLocked
+            ? ccT('CharCreate.bustLockedHint', 'Preset portrait (locked)')
+            : ccT('CharCreate.bustClickHint', 'Portrait: click to choose a bust');
+          const bustClick = isLocked ? 'SoundManager.playBuzzer()' : 'SceneManager._scene.onOpenBustGallery()';
+
           profileBoxHtml = `
             <div class="cc-compact-portrait-card">
               ${bustUrl ? `
-                <div class="cc-compact-bust-full" title="${isLocked ? 'Preset Bust (Locked)' : 'Connected Bust (Click to change)'}" onclick="${isLocked ? 'SoundManager.playBuzzer()' : 'SceneManager._scene.onOpenSpriteGallery()'}" style="background-image: url('${bustUrl}');"></div>
+                <div class="cc-compact-bust-full ${isLocked ? 'locked' : ''}" title="${bustTitle}" onclick="${bustClick}" style="background-image: url('${bustUrl}');"></div>
               ` : `
-                <div class="cc-compact-bust-full empty" onclick="${isLocked ? 'SoundManager.playBuzzer()' : 'SceneManager._scene.onOpenSpriteGallery()'}">
+                <div class="cc-compact-bust-full empty ${isLocked ? 'locked' : ''}" title="${bustTitle}" onclick="${bustClick}">
                   <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:6px;">
                     ${this._ccIconHtml(224, 28)}
-                    <span style="font-size:0.9rem; color:rgba(218,165,32,0.7); font-weight:600;">No Bust Selected</span>
+                    <span style="font-size:0.9rem; color:rgba(218,165,32,0.7); font-weight:600;">${ccT('CharCreate.noBustSelected', 'No portrait chosen')}</span>
                   </div>
                 </div>
               `}
-              <div class="cc-compact-portrait-controls">
-                ${isLocked ? `
-                  <div style="font-size:0.85rem; color:#ffd700; text-align:center; padding:4px 0; font-weight:bold;">🔒 Preset</div>
-                ` : `
-                  <button class="cc-compact-edit-btn" onclick="SceneManager._scene.onOpenSpriteGallery()">
-                    ${this._ccIconHtml(224, 16)} <span>${ccT('CharCreate.sprites', 'Appearance')}</span>
-                  </button>
-                `}
-              </div>
+              ${isLocked ? `
+                <div class="cc-compact-portrait-controls">
+                  <div style="font-size:0.85rem; color:#ffd700; text-align:center; padding:4px 0; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    ${this._ccIconHtml(195, 14)} <span>${ccT('CharCreate.presetLocked', 'Preset')}</span>
+                  </div>
+                </div>
+              ` : ''}
             </div>
           `;
         }
       }
 
-      // 3. Classification Pills (Humanoid / Creature / Presets)
-      let typePillsHtml = "";
-      if (!isPetActive) {
-        typePillsHtml = `
-          <div class="cc-compact-type-pills">
-            <div class="cc-compact-type-pill ${!isCreature && !isPresetActor && !isPreset ? 'active' : ''}" onclick="SceneManager._scene.onSetCharacterType('humanoid')">
-              Human
-            </div>
-            <div class="cc-compact-type-pill ${isCreature && !isPresetActor && !isPreset ? 'active' : ''}" onclick="SceneManager._scene.onSetCharacterType('creature')">
-              Creature
-            </div>
-            <div class="cc-compact-type-pill ${(isPresetActor || isPreset) ? 'active' : ''} ${isPresetDisabled ? 'disabled' : ''}"
-                 style="${isPresetDisabled ? 'opacity:0.35; cursor:not-allowed;' : ''}"
-                 title="${isPresetDisabled ? 'Only 1 preset character allowed in the party' : 'Preset Dossiers'}"
-                 onclick="${isPresetDisabled ? 'SoundManager.playBuzzer()' : 'SceneManager._scene.onSetCharacterType(\'preset\')'}">
-              Preset
-            </div>
-          </div>
-        `;
-      }
-
-      // 4. Core 8-Stat Grid (Status Screen Styled with Red HP and Modifiers)
+      // 3. Core 8-Stat Grid (Status Screen Styled with Red HP and Modifiers)
+      // Traits push their positive/negative deltas into actor._paramPlus the
+      // moment they are toggled (see onTraitToggle -> _ccApplyTraitIds), so
+      // folding it in here is what makes a stat change show up on the sidebar
+      // as soon as the trait is picked, not only once the sheet is left and
+      // reopened.
       const _baseStatNoEquip = (paramId, fallback) => {
         if (!classData) return fallback;
         const base = classData.params[paramId][1];
+        const plus = (actor && actor._paramPlus) ? (actor._paramPlus[paramId] || 0) : 0;
         const rate = (actor && typeof actor.paramRate === "function") ? actor.paramRate(paramId) : 1;
-        return Math.round(base * rate) || fallback;
+        return Math.round((base + plus) * rate) || fallback;
       };
+      const SL = ccStatLabels();
       const stats = [
-        { label: "HP",  val: _baseStatNoEquip(0, 450), color: "#ef5350" },
-        { label: "MP",  val: _baseStatNoEquip(1, 100), color: "#64b5f6" },
-        { label: "STR", val: _baseStatNoEquip(2, 12),  color: "#e57373" },
-        { label: "CON", val: _baseStatNoEquip(3, 10),  color: "#ffb74d" },
-        { label: "DEX", val: _baseStatNoEquip(6, 10),  color: "#ffd54f" },
-        { label: "INT", val: _baseStatNoEquip(4, 10),  color: "#ba68c8" },
-        { label: "WIS", val: _baseStatNoEquip(5, 10),  color: "#4db6ac" },
-        { label: "PSI", val: _baseStatNoEquip(7, 10),  color: "#f06292" }
+        { label: SL.HP,  val: _baseStatNoEquip(0, 450), color: "#ef5350" },
+        { label: SL.MP,  val: _baseStatNoEquip(1, 100), color: "#64b5f6" },
+        { label: SL.STR, val: _baseStatNoEquip(2, 12),  color: "#e57373" },
+        { label: SL.CON, val: _baseStatNoEquip(3, 10),  color: "#ffb74d" },
+        { label: SL.DEX, val: _baseStatNoEquip(6, 10),  color: "#ffd54f" },
+        { label: SL.INT, val: _baseStatNoEquip(4, 10),  color: "#ba68c8" },
+        { label: SL.WIS, val: _baseStatNoEquip(5, 10),  color: "#4db6ac" },
+        { label: SL.PSI, val: _baseStatNoEquip(7, 10),  color: "#f06292" }
       ];
-      // HP/MP display caps for bar fill (lv99 class max as reference)
-      const _barCap = (paramId) => classData ? Math.max(classData.params[paramId][99] || 1, _baseStatNoEquip(paramId, 1)) : 999;
-      const hpVal = _baseStatNoEquip(0, 450);
-      const mpVal = _baseStatNoEquip(1, 100);
-      const hpPct = Math.max(2, Math.min(100, Math.round((hpVal / _barCap(0)) * 100)));
-      const mpPct = Math.max(2, Math.min(100, Math.round((mpVal / _barCap(1)) * 100)));
-      // HP and MP share one line: two gauges side by side, each filling its own
-      // half of the sheet. They used to be two stacked rows whose tracks were
-      // all but invisible on the black page, which cost four lines of the
-      // sidebar to say two numbers.
-      const _bar = (label, val, pct, kind) => `
-        <div class="cc-vital">
-          <div class="cc-vital-head">
-            <span class="cc-vital-label cc-vital-label--${kind}">${label}</span>
-            <span class="cc-vital-value">${val}</span>
-          </div>
-          <div class="cc-vital-track">
-            <div class="cc-vital-fill cc-vital-fill--${kind}" style="width:${pct}%;"></div>
-          </div>
-        </div>`;
-      const combatStats = stats.slice(2); // STR, CON, DEX, INT, WIS, PSI (Status Screen order)
+      // HP and MP used to be two bar gauges above the stat grid; now they lead
+      // it as plain boxes like every other stat, freeing the two bar rows'
+      // worth of height for the portrait above to grow into.
       const statsHtml = `
         <div class="cc-vitals-block">
-          <div class="cc-vitals-row">
-            ${_bar("HP", hpVal, hpPct, "hp")}
-            ${_bar("MP", mpVal, mpPct, "mp")}
-          </div>
-          <div class="cc-stat-grid cc-stat-grid-3">
-            ${combatStats.map(st => {
+          <div class="cc-stat-grid">
+            ${stats.map((st, idx) => {
+              const isVital = idx < 2; // HP, MP
+              if (isVital) {
+                return `
+                  <div class="cc-stat-box">
+                    <span class="cc-stat-label" style="color:${st.color};">${st.label}</span>
+                    <span class="cc-stat-val">${st.val}</span>
+                  </div>
+                `;
+              }
               const mod = Math.floor((st.val - 10) / 2);
               const modStr = mod >= 0 ? "+" + mod : String(mod);
               return `
@@ -5215,7 +5351,6 @@
         });
       }
 
-      const isIt = (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it');
       const moneyRowHtml = this._ccLoadoutRowHtml(
         208,
         ccT('CharCreate.startingFunds', 'Starting Funds'),
@@ -5235,18 +5370,50 @@
         T('CharCreate.noGear')
       );
 
+      // 7. The traits the member carries, priced the way the trait board prices
+      // them, plus whatever illness they walk in with. It reads down the
+      // sidebar beside the skills and the kit, so what a character IS is on the
+      // same page as what they were given, on every step and not just on the
+      // trait board.
+      const traitRowsHtml = selectedTraitObjects(actor).map((tr) => {
+        const cost = Number.isFinite(Number(tr.cost)) ? Number(tr.cost) : 1;
+        const price = cost < 0
+          ? `+${-cost}`
+          : String(cost);
+        return this._ccLoadoutRowHtml(
+          tr.icon || 87,
+          (tr.name && resolveTraitName(tr.name, tr.id)) || tr.id,
+          price,
+          { valueColor: cost < 0 ? '#a5d6a7' : '#ffd700' }
+        );
+      }).join("");
+
+      const illnessRowsHtml = ((actor._ccDiseases) || []).map((id) => {
+        const card = this._ccDiseaseCards().find((c) => c.diseaseId === id);
+        if (!card) return "";
+        return this._ccLoadoutRowHtml(card.icon || 180, card.name, "", { nameColor: '#f87171' });
+      }).filter(Boolean).join("");
+
+      const traitTotal = selectedTraitObjects(actor).length + ((actor._ccDiseases || []).length);
+      const traitsSectionHtml = this._ccLoadoutSectionHtml(
+        T('CharCreate.traits'),
+        ccTp('CharCreate.traitCount', { n: traitTotal }, traitTotal + ' traits'),
+        traitRowsHtml + illnessRowsHtml,
+        T('CharCreate.noDefiningTraits')
+      );
+
       return `
         <div class="cc-compact-sidebar">
           ${identityHeaderHtml}
           ${profileBoxHtml}
-          ${typePillsHtml}
           ${statsHtml}
           ${skillsSectionHtml}
+          ${traitsSectionHtml}
           ${startingItemsSectionHtml}
           <div class="cc-compact-actions" style="margin-top:auto; display:flex; flex-direction:column; gap:6px;">
             <button class="cc-compact-btn" onclick="SceneManager._scene.onQuickRandomizeMember()">${ccT('CharCreate.randomizeMember', 'Randomize Member')}</button>
             <button class="cc-compact-btn" onclick="SceneManager._scene.createTotalRandomPartyAll()">${ccT('CharCreate.randomizeParty', 'Randomize Party')}</button>
-            <button class="cc-compact-btn primary" onclick="SceneManager._scene.onProceedToScenario()">${this._hasPresetInParty(false) ? ccT('CharCreate.confirmEmbark', 'Confirm & Embark') : ccT('CharCreate.confirmPartyScenario', 'Confirm Party & Scenario')}</button>
+            <button class="cc-compact-btn primary" onclick="SceneManager._scene.onProceedToScenario()">${this._hasPresetInParty(false) ? ccT('CharCreate.startGame', 'Start Game') : ccT('CharCreate.confirmPartyScenario', 'Confirm Party & Scenario')}</button>
           </div>
         </div>
       `;
@@ -5273,15 +5440,16 @@
         const rate = (actor && typeof actor.paramRate === "function") ? actor.paramRate(paramId) : 1;
         return Math.round(base * rate) || fallback;
       };
+      const SL = ccStatLabels();
       const stats = [
-        { label: "HP",  val: _dossierStatNoEquip(0, 450), color: "#81c784" },
-        { label: "MP",  val: _dossierStatNoEquip(1, 100), color: "#64b5f6" },
-        { label: "STR", val: _dossierStatNoEquip(2, 12),  color: "#e57373" },
-        { label: "CON", val: _dossierStatNoEquip(3, 10),  color: "#ffb74d" },
-        { label: "INT", val: _dossierStatNoEquip(4, 10),  color: "#ba68c8" },
-        { label: "WIS", val: _dossierStatNoEquip(5, 10),  color: "#4db6ac" },
-        { label: "DEX", val: _dossierStatNoEquip(6, 10),  color: "#ffd54f" },
-        { label: "PSI", val: _dossierStatNoEquip(7, 10),  color: "#f06292" }
+        { label: SL.HP,  val: _dossierStatNoEquip(0, 450), color: "#81c784" },
+        { label: SL.MP,  val: _dossierStatNoEquip(1, 100), color: "#64b5f6" },
+        { label: SL.STR, val: _dossierStatNoEquip(2, 12),  color: "#e57373" },
+        { label: SL.CON, val: _dossierStatNoEquip(3, 10),  color: "#ffb74d" },
+        { label: SL.INT, val: _dossierStatNoEquip(4, 10),  color: "#ba68c8" },
+        { label: SL.WIS, val: _dossierStatNoEquip(5, 10),  color: "#4db6ac" },
+        { label: SL.DEX, val: _dossierStatNoEquip(6, 10),  color: "#ffd54f" },
+        { label: SL.PSI, val: _dossierStatNoEquip(7, 10),  color: "#f06292" }
       ];
 
       const statBoxes = stats.map(st => `
@@ -5306,10 +5474,8 @@
           if (item) itemsList.push({ name: window.CCDbName(item), iconIndex: item.iconIndex || 176, qty: entry.qty || 1, type: "item", id: item.id });
         });
       }
-      if (actor._selectedTraits && Array.isArray(actor._selectedTraits)) {
-        const traitBank = (window.Health && window.Health.Traits) || [];
-        actor._selectedTraits.forEach(tId => {
-          const tr = traitBank.find(t => t.id === tId);
+      {
+        selectedTraitObjects(actor).forEach(tr => {
           if (tr && tr.items) {
             tr.items.forEach(entry => {
               const itemId = (typeof entry === "object") ? entry.id : entry;
@@ -5329,18 +5495,13 @@
           <span class="cc-loadout-name">${it.name}</span>
           <span class="cc-loadout-qty">x${it.qty}</span>
         </div>
-      `).join("") || `<span style="font-size:0.75rem; color:rgba(255,255,255,0.4); font-style:italic;">No personal equipment</span>`;
+      `).join("") || `<span style="font-size:0.75rem; color:rgba(255,255,255,0.4); font-style:italic;">${ccT('CharCreate.noPersonalEquipment', 'No personal equipment')}</span>`;
 
       // Traits badges
-      let traitsBadges = "";
-      if (actor._selectedTraits && actor._selectedTraits.length > 0) {
-        const traitBank = (window.Health && window.Health.Traits) || [];
-        traitsBadges = actor._selectedTraits.map(tId => {
-          const tr = traitBank.find(t => t.id === tId);
-          const name = (tr && tr.name && resolveTraitName(tr.name)) || tId;
-          return `<span class="cc-element-badge" style="margin:2px; font-size:0.8rem;">${name}</span>`;
-        }).join(" ");
-      }
+      const traitsBadges = selectedTraitObjects(actor).map(tr => {
+        const name = (tr.name && resolveTraitName(tr.name, tr.id)) || tr.id;
+        return `<span class="cc-element-badge" style="margin:2px; font-size:0.8rem;">${name}</span>`;
+      }).join(" ");
 
       return `
         <div class="cc-page cc-page-right" style="display:flex; flex-direction:column;">
@@ -5358,18 +5519,18 @@
           </div>
 
           <div class="cc-dossier-card" style="padding:10px; margin-bottom:10px;">
-            <div class="cc-dossier-row" style="font-size:1.15rem; padding:4px 0;"><span class="cc-dossier-label">Name:</span><span class="cc-dossier-value">${actor.name()}</span></div>
-            <div class="cc-dossier-row" style="font-size:1.15rem; padding:4px 0;"><span class="cc-dossier-label">Vocation:</span><span class="cc-dossier-value">${className}</span></div>
-            <div class="cc-dossier-row" style="font-size:1.15rem; padding:4px 0;"><span class="cc-dossier-label">Gender:</span><span class="cc-dossier-value">${genderName}</span></div>
+            <div class="cc-dossier-row" style="font-size:1.15rem; padding:4px 0;"><span class="cc-dossier-label">${ccT('CharCreate.name', 'Name')}:</span><span class="cc-dossier-value">${actor.name()}</span></div>
+            <div class="cc-dossier-row" style="font-size:1.15rem; padding:4px 0;"><span class="cc-dossier-label">${ccT('ClassSelect.vocation', 'Vocation')}:</span><span class="cc-dossier-value">${className}</span></div>
+            <div class="cc-dossier-row" style="font-size:1.15rem; padding:4px 0;"><span class="cc-dossier-label">${ccT('CharCreate.gender', 'Gender')}:</span><span class="cc-dossier-value">${genderName}</span></div>
           </div>
 
           <div style="margin-bottom:8px;">
-            <span class="cc-dossier-label" style="font-size:0.85rem; display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Core Attributes</span>
+            <span class="cc-dossier-label" style="font-size:0.85rem; display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">${ccT('CharCreate.coreAttributes', 'Core Attributes')}</span>
             <div class="cc-stat-grid">${statBoxes}</div>
           </div>
 
           <div class="cc-dossier-card" style="padding:8px; margin-bottom:8px; flex:1; min-height:0; display:flex; flex-direction:column;">
-            <span class="cc-dossier-label" style="font-size:0.85rem; display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Personal Inventory & Gear</span>
+            <span class="cc-dossier-label" style="font-size:0.85rem; display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">${ccT('CharCreate.personalInventory', 'Personal Inventory & Gear')}</span>
             <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:2px;">
               ${itemsRows}
             </div>
@@ -5377,7 +5538,7 @@
 
           ${traitsBadges ? `
             <div style="margin-top:2px;">
-              <span class="cc-dossier-label" style="font-size:0.8rem; display:block; margin-bottom:3px; text-transform:uppercase;">Traits</span>
+              <span class="cc-dossier-label" style="font-size:0.8rem; display:block; margin-bottom:3px; text-transform:uppercase;">${ccT('CharCreate.traits', 'Traits')}</span>
               <div style="display:flex; flex-wrap:wrap; gap:3px;">${traitsBadges}</div>
             </div>
           ` : ''}
@@ -5428,11 +5589,8 @@
         <div class="cc-scenario-stat"><span>${label}</span><b>${value}</b></div>
       `;
 
-      const traitBank = (window.Health && window.Health.Traits) || [];
-      const traitBadges = ((actor._selectedTraits) || []).map((id) => {
-        const tr = traitBank.find((t) => String(t.id) === String(id));
-        if (!tr) return "";
-        const name = (tr.name && resolveTraitName(tr.name, tr.id)) || id;
+      const traitBadges = selectedTraitObjects(actor).map((tr) => {
+        const name = (tr.name && resolveTraitName(tr.name, tr.id)) || tr.id;
         return `<span class="cc-element-badge">${name}</span>`;
       }).filter(Boolean).join("");
 
@@ -5487,21 +5645,23 @@
             ${stat(T('CharCreate.abbrev.psi'), actor.param(7))}
           </div>
 
-          ${section(T('CharCreate.traits'), traitBadges ? `<div class="cc-badge-wrap">${traitBadges}</div>` : "")}
-          ${section(ccT('Traits.tabDiseases', 'Diseases'), illnessBadges ? `<div class="cc-badge-wrap">${illnessBadges}</div>` : "")}
+          ${section(T('CharCreate.traits'), traitBadges ? `<div class="cc-badge-wrap cc-badge-grid-3">${traitBadges}</div>` : "")}
+          ${section(ccT('Traits.tabDiseases', 'Diseases'), illnessBadges ? `<div class="cc-badge-wrap cc-badge-grid-3">${illnessBadges}</div>` : "")}
           ${this._ccLoadoutSectionHtml(
             T('CharCreate.startingSkills'),
             ccTp('CharCreate.skillCount', { n: actorSkills.length }, actorSkills.length + ' skills'),
             skillRows,
             T('CharCreate.noStartingSkills'),
-            true
+            true,
+            'cc-loadout-grid-cols-3'
           )}
           ${this._ccLoadoutSectionHtml(
             T('CharCreate.startingItems'),
             ccTp('CharCreate.entryCount', { n: carried.length }, carried.length + ' entries'),
             carried.map((e) => this._scenarioItemRowHtml(e)).join(""),
             T('CharCreate.noGear'),
-            true
+            true,
+            'cc-loadout-grid-cols-3'
           )}
         </div>
       `;
@@ -5533,6 +5693,13 @@
         return { name: window.CCDbName(data), iconIndex: data.iconIndex || 176, qty: e.qty || 1, type, id: data.id };
       }).filter(Boolean);
       const goldBonus = this._scenarioGoldBonus(originSymbol);
+
+      // The party's shared bag, apart from the scenario's own exclusive kit:
+      // what the party is already carrying going into the choice above.
+      const partyInventory = $gameParty.allItems().filter((it) => it && it.name).map((it) => {
+        const type = DataManager.isWeapon(it) ? "weapon" : DataManager.isArmor(it) ? "armor" : "item";
+        return { name: window.CCDbName(it), iconIndex: it.iconIndex || 176, qty: $gameParty.numItems(it), type, id: it.id };
+      });
 
       // A scenario card is its name: the line under it is the brief on the
       // right page, and printing it twice only made the list harder to scan.
@@ -5572,8 +5739,18 @@
                   ${goldBonus ? `<span class="cc-scenario-bonus">+${this._formatGoldToEuros(goldBonus)}</span>` : ''}
                 </h3>
                 ${exclusive.length
-                  ? exclusive.map((e) => this._scenarioItemRowHtml(e)).join("")
+                  ? `<div class="cc-compact-loadout-grid cc-loadout-open cc-loadout-grid-cols">${exclusive.map((e) => this._scenarioItemRowHtml(e)).join("")}</div>`
                   : `<span class="cc-class-none">${ccT('CharCreate.scenarioNoExclusiveItems', 'No exclusive kit for this scenario')}</span>`}
+              </div>
+
+              <div class="cc-dossier-card cc-class-section">
+                <h3 class="cc-subheader">
+                  <span>${ccT('CharCreate.scenarioPartyInventory', 'Party inventory')}</span>
+                  ${partyInventory.length ? `<span class="ts-count">${partyInventory.length}</span>` : ''}
+                </h3>
+                ${partyInventory.length
+                  ? `<div class="cc-compact-loadout-grid cc-loadout-open cc-loadout-grid-cols-3">${partyInventory.map((e) => this._scenarioItemRowHtml(e)).join("")}</div>`
+                  : `<span class="cc-class-none">${ccT('CharCreate.scenarioNoPartyInventory', 'The party is not carrying anything yet')}</span>`}
               </div>
 
               <h3 class="cc-subheader cc-scenario-roster-head">
@@ -5585,9 +5762,7 @@
               </div>
             </div>
 
-            <button class="cc-sidebar-btn primary cc-scenario-embark" onclick="SceneManager._scene.onFinishPartyCreation()">
-              ${this._ccIconHtml(78, 20)} <span>${ccT('CharCreate.embark', "Embark & Begin Journey")}</span>
-            </button>
+            <button class="cc-compact-btn primary cc-scenario-embark" onclick="SceneManager._scene.onFinishPartyCreation()">${ccT('CharCreate.embark', "Embark & Begin Journey")}</button>
           </div>
         </div>
       `;
@@ -5805,7 +5980,7 @@
             <div class="cc-top-folder-tabs-slot">${this._renderTopFolderTabsHtml()}</div>
             <div class="cc-dossier-main">
               <div class="cc-sidebar-slot">${this._renderCompactSidebarHtml()}</div>
-              <div class="cc-content-pane">
+              <div class="cc-content-pane${this._presetEditBlocked() ? ' cc-preset-locked' : ''}">
                 <div class="cc-pockets-spread">
                   ${leftHtml}
                   ${rightHtml}
@@ -5816,6 +5991,9 @@
         `;
       } else {
         this._refreshTopFolderTabs();
+
+        const pane = this._dndContainer.querySelector(".cc-content-pane");
+        if (pane) pane.classList.toggle("cc-preset-locked", this._presetEditBlocked());
 
         const sidebarSlot = this._dndContainer.querySelector(".cc-sidebar-slot");
         if (sidebarSlot) {
@@ -5979,8 +6157,7 @@
         return `
           ${head}
           <div class="cc-card-option cc-class-card ${isSelected ? 'selected' : ''} ${isCurrent ? 'current' : ''}"
-               onclick="SceneManager._scene.onOptionCardClick(${index})"
-               onmouseenter="SceneManager._scene.onClassCardHover(${index})">
+               onclick="SceneManager._scene.onOptionCardClick(${index})">
             <div class="cc-option-title">${ch.name || ""}</div>
           </div>
         `;
@@ -6055,8 +6232,9 @@
       const elementValue = elementName
         ? `${this._ccIconHtml(this._classElementIcon(elementId), 18)} <span>${elementName}</span>`
         : "";
+      // The element now has its own badge under the class name, so the
+      // profile card only needs the magic system it casts through.
       const metaRows = [
-        metaRow(T('ClassSelect.elementHeading'), elementValue),
         metaRow(T('ClassSelect.magicSystemHeading'), magicSystem),
       ].join("");
 
@@ -6117,8 +6295,8 @@
         <div class="cc-page cc-page-right cc-class-detail" style="display:flex; flex-direction:column;">
           <div class="cc-class-detail-head">
             <h2 class="cc-header-gothic" style="margin:0;">${window.CCDbName(c)}</h2>
-            ${isCurrent ? `<div class="cc-badge-wrap" style="justify-content:center;">
-              <span class="cc-element-badge good">${ccT('CharCreate.classCurrent', 'Current class')}</span>
+            ${showElement ? `<div class="cc-badge-wrap" style="justify-content:center;">
+              <span class="cc-element-badge${isCurrent ? ' good' : ''}">${elementValue}</span>
             </div>` : ''}
             ${note ? `<p class="cc-class-quote">"${note}"</p>` : ''}
           </div>
@@ -6130,7 +6308,8 @@
               null,
               weaponRows.join(""),
               T('CharCreate.none'),
-              true
+              true,
+              'cc-loadout-grid-cols'
             )}
             ${card(ccT('CharCreate.elementalAffinities', 'Elemental Affinities'), badgeRow(affinityBadges))}
             ${Scene_CharacterCreation.isQuickMode() ? "" : this._ccLoadoutSectionHtml(T('CharCreate.skillRoadmap'), null, roadmapRows, "", true)}
@@ -6152,13 +6331,9 @@
       if (input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
     }
 
-    // Hovering a class reads its dossier without picking it.
-    onClassCardHover(index) {
-      if (Scene_CharacterCreation._classHoverIndex === index) return;
-      Scene_CharacterCreation._classHoverIndex = index;
-      this._ccSwapPage(this._dndContainer && this._dndContainer.querySelector(".cc-page-right"),
-        this._classPickerRightHtml(this.currentStepData(), index));
-    }
+    // The class dossier follows the PICK, never the pointer: the right page
+    // used to be rewritten by every card the mouse crossed on its way to the
+    // one being aimed at, so the sheet being read kept vanishing.
 
     // ── Archetype step (creatures) ──────────────────────────────────────────
     // A creature's identity step asks WHAT IT IS, not what gender it presents
@@ -6332,6 +6507,14 @@
         const rightPage = container.querySelector(".cc-page-right");
         if (rightPage) rightPage.innerHTML = strip(this._archetypeStepRightHtml());
       }
+      // The archetype picks also live on the Bio tab now: repaint it too, so a
+      // primary pick that collapses the secondary back to "None" (picking the
+      // half already held) shows that instead of leaving a stale option
+      // selected in an unrepainted dropdown.
+      if (this._step === STEP.BIO && this._isCurrentMemberCreature()) {
+        const leftPage = container.querySelector(".cc-page-left");
+        if (leftPage) leftPage.outerHTML = this._bioPickerLeftHtml();
+      }
       const sidebar = container.querySelector(".cc-compact-sidebar");
       if (sidebar) sidebar.outerHTML = this._renderCompactSidebarHtml();
       this._refreshTopFolderTabs();
@@ -6477,6 +6660,7 @@
     // hand-drawn bust, a creature wears its sculpted 3D model. So this opens
     // the one editor that belongs to what the member already is.
     onOpenProfileVisualEditor() {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       const memberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
@@ -6491,6 +6675,8 @@
           returnByPop: true,
           confirmPops: 1
         });
+        this.markReturnStep();
+        this.closeStepUI();
         SceneManager.push(window.Scene_CC3DModel);
         return;
       }
@@ -6502,6 +6688,15 @@
       const currentMemberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
       const creatureSwitchId = 77 + currentMemberIndex;
       const actor = Scene_CharacterCreation.getCurrentActor();
+
+      // The type pills are the one way out of a taken dossier: every other
+      // control still refuses a locked preset actor, but clicking a pill here
+      // (Humanoid, Creature, or Preset again to browse a different one) drops
+      // the lock instead of being refused, or the player would be stuck with
+      // whatever dossier they first applied with no way back.
+      if (this._isActorLockedPreset(actor)) {
+        this._clearPresetLock(actor);
+      }
 
       if (type === 'preset') {
         this.showPresetSelection();
@@ -6771,12 +6966,12 @@
       this._pageRailFocused = false;
       Scene_CharacterCreation._isPetMode = false;
       Scene_CharacterCreation._isScenarioMode = false;
-      if (this._step === STEP.SETTINGS || (CharacterCreationData[this._step] && CharacterCreationData[this._step].isSettingsStep)) {
-        this._step = STEP.CLASS;
-      }
       if (memberIndex >= $gameParty.size()) return;
       Scene_CharacterCreation._currentPartyMemberIndex = memberIndex;
       Scene_CharacterCreation.syncCreatureModeToCurrentMember();
+      // Switching members always lands on the Bio tab, the first thing a
+      // player is asked about whoever they just selected.
+      this._step = STEP.BIO;
       if (this._presetWindow) {
         this.onPresetCancel();
       }
@@ -6886,6 +7081,11 @@
       Scene_CharacterCreation._currentPartyMemberIndex = newIdx;
       Scene_CharacterCreation._isCreatureMode = false;
       Scene_CharacterCreation._isScenarioMode = false;
+      Scene_CharacterCreation._isPetMode = false;
+      // A new recruit opens on Bio, the page that names it and gives it a face,
+      // rather than on whatever page the member before it was left on.
+      this._step = STEP.BIO;
+      if (this._titleWindow) this.setupStep();
 
       SoundManager.playOk();
       this._lastStep = -1;
@@ -6894,6 +7094,7 @@
     }
 
     onQuickRandomizeMember() {
+      if (this._refusePresetEdit()) return;
       const memberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
       this._randomizeMemberCharacter(memberIndex);
       Scene_CharacterCreation._lastMemberWasRandom = true;
@@ -6903,10 +7104,31 @@
       this.refreshUIOverlayDOM();
     }
 
+    // The board keeps its allocation as card ranks (0 to 4) on the member, in
+    // its own scratch field, because the class and the traits underneath it can
+    // still change while the wizard is open. Embarking is where it becomes the
+    // member's actual training: level = rank + 1, and never below the head start
+    // the class and the traits already grant, which specializationLevel() takes
+    // care of on its own.
+    _commitSpecPoints() {
+      const members = ($gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
+      members.forEach((actor) => {
+        if (!actor || !actor._specTrained || !actor.setSpecializationTrainedLevel) return;
+        const ctx = this._specGrantContext(actor);
+        const catalog = this._specsCatalog();
+        Object.keys(actor._specTrained).forEach((key) => {
+          const spec = catalog.find((sp) => String(sp.id) === String(key));
+          const rank = Math.max(actor._specTrained[key] || 0, this._specGrantRankIn(ctx, spec));
+          if (rank > 0) actor.setSpecializationTrainedLevel(Number(key), rank + 1);
+        });
+      });
+    }
+
     onFinishPartyCreation() {
+      this._commitSpecPoints();
       const p1 = $gameActors.actor(1);
       if (!p1 || !p1.name() || p1.name() === "Unnamed") {
-        if (p1) p1.setName("Hero");
+        if (p1) p1.setName(ccT('CharCreate.defaultName', 'Hero'));
       }
       if (!p1 || !p1._classId) {
         if (p1) p1.changeClass(1, false);
@@ -6916,16 +7138,20 @@
       }
 
       if ($gameSystem._partyPet && window.PetSystem && window.PetSystem.recruitPet) {
+        const traits = this._petTraits();
         window.PetSystem.recruitPet({
           id: $gameSystem._partyPet.id,
           name: $gameSystem._partyPet.name || "Companion",
           characterName: $gameSystem._partyPet.sprite,
           characterIndex: $gameSystem._partyPet.spriteIndex || 0,
-          isFollower: true,
+          isFollower: traits.sentient, // sentient = free to leave = a follower, not a dependent pet
           enemyName: $gameSystem._partyPet.species,
           level: 1,
           archetype: $gameSystem._partyPet.kind,
           note: $gameSystem._partyPet.desc,
+          sentient: traits.sentient,
+          magical: traits.magical,
+          geneticFreak: traits.geneticFreak,
         });
       }
 
@@ -6934,10 +7160,17 @@
       if (this._dndContainer) {
         this._dndContainer.style.display = "none";
       }
+      // A party holding a dossier lands where the dossier says, not where a
+      // scenario would have put it: the scenario board was never shown.
+      if (this._walkPresetLanding()) {
+        this.popScene();
+        return;
+      }
       this._finishOriginChoice($gameSystem._ccOriginSymbol);
     }
 
     onNameChange(newName) {
+      if (this._presetEditBlocked()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor || !newName || !newName.trim()) return;
       actor.setName(newName.trim());
@@ -6950,6 +7183,7 @@
     }
 
     onRandomizeNameClick() {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (actor) {
         let generated = "";
@@ -6968,7 +7202,18 @@
       }
     }
 
+    // Handing the screen to a gallery is a round trip: SceneManager.pop builds
+    // a BRAND NEW wizard on the way back, and with nothing remembered that
+    // wizard opened on step 0 - the initial settings page - instead of the
+    // character whose portrait or sprite was just clicked. Leaving the step
+    // behind as the resume point is what makes Escape (and the pad's B, and
+    // the right mouse button) land back on the sheet it was called from.
+    markReturnStep() {
+      Scene_CharacterCreation._startStep = this._step;
+    }
+
     onOpenSpriteGallery() {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       const isCreature = !!(actor && actor._isCreatureActor);
 
@@ -6983,6 +7228,7 @@
         if (selectorScene.setup) {
           selectorScene.setup(actor ? actor.actorId() : 1, Scene_CharacterCreation);
         }
+        this.markReturnStep();
         this.closeStepUI();
         SceneManager.push(selectorScene);
         if (SceneManager._nextScene && SceneManager._nextScene.setActor) {
@@ -6991,7 +7237,32 @@
       }
     }
 
+    // Clicking the sidebar portrait asks one question only: which bust. The
+    // sprite keeps its own route in through the avatar beside the name.
+    onOpenBustGallery() {
+      if (this._refusePresetEdit()) return;
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (actor && actor._isCreatureActor) {
+        this.onOpenCreature3DStudio();
+        return;
+      }
+      if (!window.Scene_BustSelector) {
+        this.onOpenSpriteGallery();
+        return;
+      }
+      // Pushed straight over the wizard, so confirming pops once and lands
+      // back here instead of hunting for a sprite grid that was never opened.
+      window.Scene_BustSelector._confirmPops = 1;
+      this.markReturnStep();
+      this.closeStepUI();
+      SceneManager.push(window.Scene_BustSelector);
+      if (SceneManager._nextScene && SceneManager._nextScene.setActor) {
+        SceneManager._nextScene.setActor(actor ? actor.actorId() : 1);
+      }
+    }
+
     onSelectCreatureArchetype(modelKey) {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       // The dropdown offers archetypes, so the key is always one Archetypes.json
@@ -7008,6 +7279,7 @@
     // The sidebar's other half. An empty value is the None entry: the member
     // goes back to being built from its primary alone.
     onSelectCreatureSecondaryArchetype(modelKey) {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       if (!applySecondaryArchetypeToActor(actor, modelKey || null)) {
@@ -7019,6 +7291,7 @@
     }
 
     onOpenCreature3DStudio() {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       if (window.Scene_CC3DModel && window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable()) {
@@ -7031,6 +7304,7 @@
           returnByPop: true,
           confirmPops: 1
         });
+        this.markReturnStep();
         this.closeStepUI();
         SceneManager.push(window.Scene_CC3DModel);
       }
@@ -7038,14 +7312,31 @@
 
     onApplyPresetToCurrentMember(presetIndex) {
       const presets = availablePresets();
-      const preset = presets[presetIndex];
+      const preset = presets[presetIndex] || (this._presetWindow && this._presetWindow.currentPreset());
       if (!preset) return;
+      // One dossier to a party: a second one would overwrite the first one's
+      // purse, kit and landing.
+      if (this._hasPresetInParty(true)) {
+        SoundManager.playBuzzer();
+        return;
+      }
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (actor) {
         const skins = presetSkins(preset);
         const skinIdx = this._presetWindow && this._presetWindow.skinIndex ? this._presetWindow.skinIndex(presetIndex) : 0;
         const skinData = skins[skinIdx] || skins[0] || preset;
-        this._applyPreset(preset, actor, skinData);
+        try {
+          this._applyPreset(preset, actor, skinData);
+        } catch (e) {
+          console.error(`CharacterCreation: failed to apply preset "${preset.name}"`, e);
+        }
+        if (!preset.tutorialOnly && typeof markPresetUsed === "function") {
+          markPresetUsed(preset.id);
+        }
+        actor.refresh();
+        actor.recoverAll();
+        $gameSystem._currentPresetId = preset.id;
+        this._recordPresetLanding(preset);
         SoundManager.playOk();
       }
       this.onPresetCancel();
@@ -7089,8 +7380,8 @@
         const mClassId = mActor._classId;
         const mGenderVal = $gameVariables.value(38 + i);
         const name = mActor.name() || "";
-        const traitNames = (mActor._selectedTraits || [])
-          .map((tr) => resolveTraitName(tr && tr.name))
+        const traitNames = selectedTraitObjects(mActor)
+          .map((tr) => resolveTraitName(tr.name, tr.id))
           .filter(Boolean);
         const equipNames = (mActor.equips() || []).filter((e) => e).map((e) => window.CCDbName(e));
 
@@ -7614,20 +7905,19 @@
     // the illnesses the character already carries (those are kept as bare
     // disease ids on the actor, which is what the illness library wants).
     _ccPickedCardIds(actor) {
-      const traits = ((actor && actor._selectedTraits) || []).map(String);
+      const traits = selectedTraitIds(actor).map(String);
       const diseases = ((actor && actor._ccDiseases) || []).map((id) => "disease:" + id);
       return traits.concat(diseases);
     }
 
     _traitCategories() {
-      const isIt = (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it');
       return [
         { id: "all", label: ccT("CharCreate.filterAll", "All"), icon: 87 },
-        { id: "genetic", label: ccT('Traits.tabGenetic', isIt ? "Genetico" : "Genetic"), icon: 292 },
-        { id: "physical", label: ccT('Traits.tabPhysical', isIt ? "Fisico" : "Physical"), icon: 135 },
-        { id: "mental", label: ccT('Traits.tabMental', isIt ? "Mentale" : "Mental"), icon: 183 },
-        { id: "magical", label: ccT('Traits.tabMagical', isIt ? "Magico" : "Magical"), icon: 165 },
-        { id: "diseases", label: ccT('Traits.tabDiseases', isIt ? "Malattie" : "Diseases"), icon: 177 }
+        { id: "genetic", label: ccT('Traits.tabGenetic', "Genetic"), icon: 292 },
+        { id: "physical", label: ccT('Traits.tabPhysical', "Physical"), icon: 135 },
+        { id: "mental", label: ccT('Traits.tabMental', "Mental"), icon: 183 },
+        { id: "magical", label: ccT('Traits.tabMagical', "Magical"), icon: 165 },
+        { id: "diseases", label: ccT('Traits.tabDiseases', "Diseases"), icon: 177 }
       ];
     }
 
@@ -7636,39 +7926,7 @@
       const traitBank = this._ccTraitBank();
       const selectedTraits = this._ccPickedCardIds(actor);
       const activeCategory = Scene_CharacterCreation._activeTraitCategory || "all";
-      const isIt = (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it');
       const categories = this._traitCategories();
-
-      // Calculate budget. An illness is not bought: it is something the
-      // character walks in already carrying, so it never touches the purse.
-      let spent = 0, refunded = 0;
-      selectedTraits.forEach((id) => {
-        const tr = traitBank.find((t) => String(t.id) === String(id));
-        if (tr && !tr.diseaseId) {
-          const cost = Number.isFinite(Number(tr.cost)) ? Number(tr.cost) : 1;
-          if (cost >= 0) spent += cost;
-          else refunded -= cost;
-        }
-      });
-      const credit = Math.min(refunded, 6);
-      const remaining = 10 + credit - spent;
-
-      const purseHtml = `
-        <div class="ts-purse">
-          <div class="ts-purse-cell spend">
-            <span class="ts-purse-value">${spent}</span>
-            <span class="ts-purse-label">${ccT('Traits.purseSpent', isIt ? 'Spesi' : 'Spent')}</span>
-          </div>
-          <div class="ts-purse-cell refund">
-            <span class="ts-purse-value">+${refunded}</span>
-            <span class="ts-purse-label">${ccT('Traits.purseRefunds', isIt ? 'Rimborsi' : 'Refunds')}</span>
-          </div>
-          <div class="ts-purse-cell ${remaining < 0 ? 'over' : ''}">
-            <span class="ts-purse-value">${remaining}</span>
-            <span class="ts-purse-label">${ccT('Traits.purseLeft', isIt ? 'Rimanenti' : 'Remaining')}</span>
-          </div>
-        </div>
-      `;
 
       const railFocused = !!this._pageRailFocused;
       const tabsHtml = categories.map((cat) => {
@@ -7711,8 +7969,7 @@
       const emptyHtml = `<div class="cc-class-empty">${ccT('Traits.noneInCategory', 'Nothing here')}</div>`;
 
       return `
-        <div class="cc-page cc-page-left ts-page" style="display: flex; flex-direction: column;">
-          ${purseHtml}
+        <div class="cc-page cc-page-left ts-page cc-trait-board" style="display: flex; flex-direction: column;">
           <div class="ts-tab-row">${tabsHtml}</div>
           <div class="cc-select-grid cc-trait-grid">
             ${cardsHtml || emptyHtml}
@@ -7727,7 +7984,39 @@
       const selectedTraits = this._ccPickedCardIds(actor);
       const hoveredId = Scene_CharacterCreation._hoveredTraitId || selectedTraits[0] || (traitBank[0] && traitBank[0].id);
       const hoveredTrait = traitBank.find((t) => String(t.id) === String(hoveredId)) || traitBank[0];
-      const isIt = (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it');
+
+      // The purse used to head the card grid on the left page; it reads as the
+      // sheet's running total, so it heads the sheet page instead. An illness
+      // is not bought: it is something the character walks in already
+      // carrying, so it never touches the purse.
+      let spent = 0, refunded = 0;
+      selectedTraits.forEach((id) => {
+        const tr = traitBank.find((t) => String(t.id) === String(id));
+        if (tr && !tr.diseaseId) {
+          const cost = Number.isFinite(Number(tr.cost)) ? Number(tr.cost) : 1;
+          if (cost >= 0) spent += cost;
+          else refunded -= cost;
+        }
+      });
+      const credit = Math.min(refunded, 6);
+      const remaining = 10 + credit - spent;
+
+      const purseHtml = `
+        <div class="ts-purse ts-purse--sheet">
+          <div class="ts-purse-cell spend">
+            <span class="ts-purse-value">${spent}</span>
+            <span class="ts-purse-label">${ccT('Traits.purseSpent', 'Spent')}</span>
+          </div>
+          <div class="ts-purse-cell refund">
+            <span class="ts-purse-value">+${refunded}</span>
+            <span class="ts-purse-label">${ccT('Traits.purseRefunds', 'Refunds')}</span>
+          </div>
+          <div class="ts-purse-cell ${remaining < 0 ? 'over' : ''}">
+            <span class="ts-purse-value">${remaining}</span>
+            <span class="ts-purse-label">${ccT('Traits.purseLeft', 'Remaining')}</span>
+          </div>
+        </div>
+      `;
 
       // Details of hovered trait
       let detailHtml = "";
@@ -7760,7 +8049,7 @@
         let extraGrants = "";
         if (hoveredTrait.skills && hoveredTrait.skills.length > 0 && typeof $dataSkills !== "undefined") {
           const sNames = hoveredTrait.skills.map((sid) => ($dataSkills[sid] ? $dataSkills[sid].name : `Skill #${sid}`)).join(", ");
-          extraGrants += `<div style="font-size:0.85rem; color:var(--text-text-alt-2); margin-top:4px;"><strong>${ccT('Traits.grantsSkills', isIt ? 'Abilità' : 'Skills')}:</strong> ${sNames}</div>`;
+          extraGrants += `<div style="font-size:0.85rem; color:var(--text-text-alt-2); margin-top:4px;"><strong>${ccT('Traits.grantsSkills', 'Skills')}:</strong> ${sNames}</div>`;
         }
 
         detailHtml = `
@@ -7812,24 +8101,29 @@
       const bonusBadges = Object.entries(totals)
         .filter(([k, v]) => v !== 0)
         .map(([k, v]) => `<span class="cc-element-badge" style="color:${v > 0 ? 'var(--text-forest-green, #4ade80)' : 'var(--accent-red-3, #f87171)'}">${v > 0 ? '+' : ''}${v} ${k.toUpperCase()}</span>`)
-        .join(" ") || `<span style="opacity:0.6; font-size:0.88rem">${ccT('CharCreate.noDefiningTraits', isIt ? 'Nessun tratto distintivo' : 'No trait modifiers')}</span>`;
+        .join(" ") || `<span style="opacity:0.6; font-size:0.88rem">${ccT('CharCreate.noDefiningTraits', 'No trait modifiers')}</span>`;
 
-      const totalBonusesTitle = (ccT('Traits.totalBonuses', isIt ? 'Bonus Totali' : 'Total Modifiers')).replace(/[:\s]+$/, '');
+      const totalBonusesTitle = (ccT('Traits.totalBonuses', 'Total Modifiers')).replace(/[:\s]+$/, '');
 
       return `
-        <div class="cc-page cc-page-right ts-page" style="display: flex; flex-direction: column;">
-          <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:8px">
-            <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizeTraitsForCurrentActor()">${ccT('CharCreate.randomize', isIt ? 'Randomizza' : 'Randomize')}</button>
+        <div class="cc-page cc-page-right ts-page cc-trait-detail" style="display: flex; flex-direction: column;">
+          <div class="ts-sheet-head">
+            ${purseHtml}
+            <div class="ts-sheet-actions">
+              <button class="cc-profile-open-btn" onclick="SceneManager._scene.onTraitResetForCurrentActor()">${ccT('Traits.resetTraits', 'Reset')}</button>
+              <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizeTraitsForCurrentActor()">${ccT('CharCreate.randomize', 'Randomize')}</button>
+            </div>
           </div>
+
           ${detailHtml}
 
           <div class="ts-picked-block">
             <h3 class="cc-subheader ts-section-head">
-              <span>${ccT('Traits.selectedTraitsLabel', isIt ? 'Tratti Selezionati' : 'Selected Traits')}</span>
+              <span>${ccT('Traits.selectedTraitsLabel', 'Selected Traits')}</span>
               <span class="ts-count">${traitOnlyIds.length}/8</span>
             </h3>
             <div class="cc-picked-row">
-              ${pickedChips || `<span class="cc-picked-empty">${ccT('CharCreate.noDefiningTraits', isIt ? 'Nessun tratto distintivo' : 'None selected')}</span>`}
+              ${pickedChips || `<span class="cc-picked-empty">${ccT('CharCreate.noDefiningTraits', 'None selected')}</span>`}
             </div>
           </div>
 
@@ -7877,6 +8171,7 @@
     }
 
     onTraitToggle(traitId) {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       if (!actor._selectedTraits) actor._selectedTraits = [];
@@ -7893,12 +8188,13 @@
         return;
       }
 
-      const idx = actor._selectedTraits.findIndex((id) => String(id) === String(trait.id));
+      const picked = selectedTraitIds(actor);
+      const idx = picked.findIndex((id) => String(id) === String(trait.id));
       if (idx >= 0) {
-        actor._selectedTraits.splice(idx, 1);
+        picked.splice(idx, 1);
         SoundManager.playCancel();
       } else {
-        const selectedObjects = actor._selectedTraits
+        const selectedObjects = picked
           .map((id) => traitBank.find((t) => String(t.id) === String(id)))
           .filter(Boolean);
         const cost = Number.isFinite(Number(trait.cost)) ? Number(trait.cost) : 1;
@@ -7931,16 +8227,54 @@
           SoundManager.playBuzzer();
           return;
         }
-        actor._selectedTraits.push(trait.id);
+        picked.push(trait.id);
         SoundManager.playOk();
       }
 
+      this._ccApplyTraitIds(actor, picked);
+      this._refreshTraitBoard();
+    }
+
+    // Writes a picked list back onto the member and re-applies what it grants.
+    // The appliers all end by storing the whole trait objects, so the list is
+    // never assumed to still be ids after this: every read goes back through
+    // selectedTraitIds / selectedTraitObjects.
+    _ccApplyTraitIds(actor, ids) {
+      actor._selectedTraits = ids.slice();
       if (typeof applyTraitsToActor === 'function') {
-        applyTraitsToActor(actor, actor._selectedTraits);
+        applyTraitsToActor(actor, ids);
       } else if (window.Scene_TraitSelector && typeof window.Scene_TraitSelector.prototype.applyTraitsByIds === 'function') {
-        window.Scene_TraitSelector.prototype.applyTraitsByIds(actor._selectedTraits, actor.actorId());
+        window.Scene_TraitSelector.prototype.applyTraitsByIds(ids, actor.actorId());
       }
-      
+    }
+
+    // Puts the whole build down: every trait and every illness chosen here goes
+    // back, and what they granted goes back with them, so the purse reads full
+    // again and the member starts the step from nothing.
+    onTraitResetForCurrentActor() {
+      if (this._refusePresetEdit()) return;
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (!actor) return;
+      const hadSomething = selectedTraitIds(actor).length > 0 || ((actor._ccDiseases || []).length > 0);
+      if (!hadSomething) {
+        SoundManager.playBuzzer();
+        return;
+      }
+
+      const TP = window.TraitPoints;
+      if (TP && TP.revertGrants) TP.revertGrants(actor, actor._selectedTraits);
+      actor._paramPlus = [0, 0, 0, 0, 0, 0, 0, 0];
+      this._ccApplyTraitIds(actor, []);
+      actor._selectedTraits = [];
+
+      const api = window.DiseaseSystem;
+      ((actor._ccDiseases || []).slice()).forEach((id) => {
+        if (api && api.cureActor) api.cureActor(actor, id);
+      });
+      actor._ccDiseases = [];
+
+      if (actor.refresh) actor.refresh();
+      SoundManager.playCancel();
       this._refreshTraitBoard();
     }
 
@@ -7994,10 +8328,7 @@
           const p = positives[Math.floor(Math.random() * positives.length)];
           if (!picked.includes(p.id)) picked.push(p.id);
         }
-        actor._selectedTraits = picked;
-        if (typeof applyTraitsToActor === 'function') {
-          applyTraitsToActor(actor, picked);
-        }
+        this._ccApplyTraitIds(actor, picked);
       }
       SoundManager.playOk();
       this._lastStep = -1;
@@ -8020,6 +8351,9 @@
       if (window.Specializations && window.Specializations.ready && window.Specializations.list) {
         return window.Specializations.list;
       }
+      // i18n-ignore-start: a mirror of Specialization.json, shown only when
+      // window.Specializations has not loaded. The live path names every entry
+      // through Specializations.displayName / categoryLabel.
       return [
         { id: 1, name: "Accounting", category: "Commerce", stat: "INT", description: "Keeping and interpreting financial ledgers and transaction records." },
         { id: 2, name: "Acrobatics", category: "Athletics", stat: "DEX", description: "Controlled tumbling, vaulting, and balance in motion." },
@@ -8040,9 +8374,73 @@
 
     _specsCategories() {
       if (window.Specializations && window.Specializations.ready && window.Specializations.categories) {
-        return ["All", ...window.Specializations.categories];
+        return [SPEC_TAB_CURRENT, "All", ...window.Specializations.categories];
       }
-      return ["All", "Combat", "Technology", "Crafting", "Social", "Medicine", "Athletics", "Commerce", "Crime", "Arcana", "Survival", "Culinary"];
+      return [SPEC_TAB_CURRENT, "All", "Combat", "Technology", "Crafting", "Social", "Medicine", "Athletics", "Commerce", "Crime", "Arcana", "Survival", "Culinary"];
+      // i18n-ignore-end
+    }
+
+    // The class and the traits a member walks in with already hand them a head
+    // start in some specializations. Both tables live on the specialization
+    // itself (Specialization.json "classStart" / "traitStart"), so the whole
+    // grant is worked out from one context built once per redraw instead of
+    // rummaging through the trait bank for every one of the 800 entries.
+    _specGrantContext(actor) {
+      if (!actor) return { className: null, slugs: [] };
+      let cls = null;
+      if (typeof $dataClasses !== "undefined" && $dataClasses && actor._classId) cls = $dataClasses[actor._classId];
+      if (!cls && actor.currentClass) cls = actor.currentClass();
+      const bank = (window.Health && window.Health.Traits) || [];
+      const slugs = ((actor._selectedTraits) || []).map((entry) => {
+        // The board keeps bound traits as ids, the older selector kept the
+        // whole trait object. Either is read here.
+        const trait = (entry && entry.name) ? entry : bank.find((t) => String(t.id) === String(entry));
+        return (trait && trait.name) ? String(trait.name).split(".")[1] : null;
+      }).filter(Boolean);
+      return { className: cls ? cls.name : null, slugs };
+    }
+
+    // The head start itself, as a card rank (0 to 4). When the class and more
+    // than one trait name the same specialization, the most generous of them
+    // is the one that counts.
+    _specGrantRankIn(ctx, spec) {
+      if (!ctx || !spec) return 0;
+      let best = 1;
+      if (ctx.className && spec.classStart) {
+        const lvl = spec.classStart[ctx.className] || 0;
+        if (lvl > best) best = lvl;
+      }
+      if (spec.traitStart) {
+        ctx.slugs.forEach((slug) => {
+          const lvl = spec.traitStart[slug] || 0;
+          if (lvl > best) best = lvl;
+        });
+      }
+      return Math.max(0, Math.min(5, best) - 1);
+    }
+
+    _specGrantRank(actor, spec) {
+      return this._specGrantRankIn(this._specGrantContext(actor), spec);
+    }
+
+    // What the card shows: the points spent on it, never below the free head
+    // start the class and the traits already gave.
+    _specRankIn(ctx, actor, spec) {
+      if (!actor || !spec) return 0;
+      const trained = (actor._specTrained && actor._specTrained[spec.id]) || 0;
+      return Math.max(trained, this._specGrantRankIn(ctx, spec));
+    }
+
+    _specRank(actor, spec) {
+      return this._specRankIn(this._specGrantContext(actor), actor, spec);
+    }
+
+    // Every specialization the member already stands above Untrained in,
+    // whether it was bought or granted. This is what the "Current" tab lists.
+    _specsWithLevels(actor) {
+      if (!actor) return [];
+      const ctx = this._specGrantContext(actor);
+      return this._specsCatalog().filter((sp) => this._specRankIn(ctx, actor, sp) > 0);
     }
 
     // The specialization catalogue narrowed by the open category tab and the
@@ -8058,9 +8456,14 @@
       const nameOf = (sp) => (S.displayName ? S.displayName(sp) : sp.name) || "";
       const descOf = (sp) => (S.describe ? S.describe(sp) : sp.description) || "";
 
-      const byCat = activeCat === "All" ? catalog : catalog.filter((sp) => sp.category === activeCat);
-      if (!q) return byCat;
-      return byCat.filter((sp) =>
+      const byCat = activeCat === "All"
+        ? catalog
+        : activeCat === SPEC_TAB_CURRENT
+          ? this._specsWithLevels(Scene_CharacterCreation.getCurrentActor())
+          : catalog.filter((sp) => sp.category === activeCat);
+      const sorted = byCat.slice().sort((a, b) => nameOf(a).localeCompare(nameOf(b)));
+      if (!q) return sorted;
+      return sorted.filter((sp) =>
         nameOf(sp).toLowerCase().includes(q) ||
         descOf(sp).toLowerCase().includes(q) ||
         (sp.stat && sp.stat.toLowerCase().includes(q))
@@ -8072,8 +8475,16 @@
     _specsRemaining(actor) {
       if (!actor) return 0;
       if (!actor._specTrained) actor._specTrained = {};
+      // Only the ranks bought above a class or trait head start are paid for:
+      // the head start itself was never taken out of the purse.
+      const ctx = this._specGrantContext(actor);
+      const catalog = this._specsCatalog();
       let spent = 0;
-      Object.keys(actor._specTrained).forEach((k) => { spent += actor._specTrained[k] || 0; });
+      Object.keys(actor._specTrained).forEach((k) => {
+        const spec = catalog.find((sp) => String(sp.id) === String(k));
+        const floor = this._specGrantRankIn(ctx, spec);
+        spent += Math.max(0, (actor._specTrained[k] || 0) - floor);
+      });
       actor._specPointsSpent = spent;
       return Math.max(0, CC_SPEC_BUDGET - spent);
     }
@@ -8082,23 +8493,26 @@
     // in-place redraw of the grid.
     _specCardsHtml(specs, actor, remaining) {
       const S = window.Specializations || {};
+      const ctx = this._specGrantContext(actor);
       return specs.map((spec) => {
         const specName = S.displayName ? S.displayName(spec) : spec.name;
         const specCatLabel = S.categoryLabel ? S.categoryLabel(spec.category) : (spec.category || "General");
-        const currentRank = (actor && actor._specTrained && actor._specTrained[spec.id]) || 0;
+        // A class or trait head start is a floor the card can never fall below.
+        const grantRank = this._specGrantRankIn(ctx, spec);
+        const currentRank = Math.max((actor && actor._specTrained && actor._specTrained[spec.id]) || 0, grantRank);
         const isHovered = Scene_CharacterCreation._hoveredSpecId === spec.id;
-        const pipsHtml = [1, 2, 3, 4].map((tier) => `<div class="cc-spec-pip ${currentRank >= tier ? 'active' : ''}"></div>`).join("");
+        const pipsHtml = [1, 2, 3, 4].map((tier) => `<div class="cc-spec-pip ${currentRank >= tier ? 'active' : ''}${grantRank >= tier ? ' bonus' : ''}"></div>`).join("");
         return `
           <div class="cc-spec-card ${isHovered ? 'selected' : ''}" data-spec-id="${spec.id}" onmouseenter="SceneManager._scene.onSpecCardHover(${spec.id})">
             <div class="cc-spec-info">
               <div class="cc-spec-title">${specName}</div>
               <div class="cc-spec-meta">
-                <span class="cc-spec-stat-badge">${spec.stat || 'INT'}</span>
-                <span>${specCatLabel}</span>
+                <span class="cc-spec-stat-badge">${ccStatLabel(spec.stat || 'INT')}</span>
+                <span class="cc-spec-cat-label">${specCatLabel}</span>
               </div>
             </div>
             <div class="cc-spec-controls">
-              <button class="cc-spec-btn cc-spec-btn-minus" ${currentRank <= 0 ? 'disabled' : ''} onclick="SceneManager._scene.onSpecPointAdjust(${spec.id}, -1)">-</button>
+              <button class="cc-spec-btn cc-spec-btn-minus" ${currentRank <= grantRank ? 'disabled' : ''} onclick="SceneManager._scene.onSpecPointAdjust(${spec.id}, -1)">-</button>
               <div class="cc-spec-pips">${pipsHtml}</div>
               <button class="cc-spec-btn cc-spec-btn-plus" ${(remaining <= 0 || currentRank >= 4) ? 'disabled' : ''} onclick="SceneManager._scene.onSpecPointAdjust(${spec.id}, 1)">+</button>
             </div>
@@ -8143,7 +8557,9 @@
         const isActive = cat === activeCat;
         const catLabel = cat === "All"
           ? T('SpecMenu.ui.all')
-          : ((window.Specializations && window.Specializations.categoryLabel) ? window.Specializations.categoryLabel(cat) : cat);
+          : cat === SPEC_TAB_CURRENT
+            ? ccT('CharCreate.specsCurrent', "Current")
+            : ((window.Specializations && window.Specializations.categoryLabel) ? window.Specializations.categoryLabel(cat) : cat);
         return `
           <button class="cc-spec-tab ${isActive ? 'active' : ''} ${isActive && railFocused ? 'selected' : ''}" data-cat="${cat}" onclick="SceneManager._scene.onSpecCategorySelect('${cat}')">
             ${catLabel}
@@ -8152,7 +8568,7 @@
       }).join("");
 
       return `
-        <div class="cc-page cc-page-left ts-page" style="display: flex; flex-direction: column;">
+        <div class="cc-page cc-page-left cc-spec-board ts-page" style="display: flex; flex-direction: column;">
           <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:8px">
             <div class="ts-purse" style="display:flex; gap:6px; font-size:0.88rem;">
               <span class="ts-purse-chip">${T('CharCreate.budgetPoints', { remaining: remaining, total: budget })}</span>
@@ -8174,62 +8590,73 @@
       const catalog = this._specsCatalog();
       if (!actor) return `<div class="cc-page cc-page-right"></div>`;
       if (!actor._specTrained) actor._specTrained = {};
-      const isIt = (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it');
 
-      const trainedEntries = Object.entries(actor._specTrained).filter(([k, v]) => v > 0);
+      // Everything the member stands above Untrained in, the granted head
+      // starts included, so the roll matches what the "Current" tab lists.
+      const grantCtx = this._specGrantContext(actor);
+      const trainedEntries = this._specsWithLevels(actor)
+        .map((sp) => [sp.id, this._specRankIn(grantCtx, actor, sp), this._specGrantRankIn(grantCtx, sp)]);
       const hoveredId = Scene_CharacterCreation._hoveredSpecId || (trainedEntries[0] ? Number(trainedEntries[0][0]) : catalog[0]?.id);
       const hoveredSpec = catalog.find((s) => s.id === hoveredId) || catalog[0];
+
+      // The rank ladder is the specialization menu's own wording, so a tier
+      // is named the same here as it is there (js/i18n/*/plugins/SpecMenu.json).
+      const rankNames = ccList('SpecMenu.rankNames',
+        ["Untrained", "Novice (+1)", "Adept (+2)", "Expert (+3)", "Master (+4)"]);
+      const rankName = (r) => (window.Specializations && window.Specializations.levelName) ? window.Specializations.levelName(r) : (rankNames[r] || rankNames[0]);
 
       let detailHtml = "";
       if (hoveredSpec) {
         const specName = (window.Specializations && window.Specializations.displayName) ? window.Specializations.displayName(hoveredSpec) : hoveredSpec.name;
         const specDesc = (window.Specializations && window.Specializations.describe) ? window.Specializations.describe(hoveredSpec) : (hoveredSpec.description || "");
         const catLabel = (window.Specializations && window.Specializations.categoryLabel) ? window.Specializations.categoryLabel(hoveredSpec.category) : (hoveredSpec.category || "General");
-        const rank = actor._specTrained[hoveredSpec.id] || 0;
-        const rankNamesIt = ["Non addestrato", "Novizio (+1)", "Esperto (+2)", "Veterano (+3)", "Maestro (+4)"];
-        const rankNamesEn = ["Untrained", "Novice (+1)", "Adept (+2)", "Expert (+3)", "Master (+4)"];
-        const rankLabel = (window.Specializations && window.Specializations.levelName) ? window.Specializations.levelName(rank) : ((isIt ? rankNamesIt : rankNamesEn)[rank] || "Untrained");
+        const rank = this._specRankIn(grantCtx, actor, hoveredSpec);
+        const grantRank = this._specGrantRankIn(grantCtx, hoveredSpec);
+        const rankLabel = rankName(rank);
 
         detailHtml = `
           <div class="cc-dossier-card ts-detail" style="padding: 10px 12px; margin-bottom: 8px;">
             <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:8px; border-bottom:1px solid rgba(218,165,32,0.25); padding-bottom:6px;">
               <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
-                <span class="cc-spec-stat-badge" style="font-size:0.85rem; flex-shrink:0;">${hoveredSpec.stat || 'INT'}</span>
+                <span class="cc-spec-stat-badge" style="font-size:0.85rem; flex-shrink:0;">${ccStatLabel(hoveredSpec.stat || 'INT')}</span>
                 <span style="font-family:'Lora',serif; font-size:1.15rem; font-weight:bold; color:#ffd700; overflow-wrap:break-word; line-height:1.2;">${specName}</span>
               </div>
               <span class="trait-cost" style="font-size:0.82rem; white-space:nowrap; flex-shrink:0;">${rankLabel}</span>
             </div>
-            <div style="font-size:0.88rem; color:#ded1c1; line-height:1.4; margin-bottom:8px">${specDesc || (isIt ? "Competenza acquisita attraverso studio rigoroso e pratica sul campo." : "Proficiency acquired through rigorous study and fieldwork.")}</div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('SpecMenu.ui.category', isIt ? 'Categoria' : 'Category')}:</span><span class="cc-dossier-value">${catLabel}</span></div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('SpecMenu.ui.governingAttribute', isIt ? 'Attributo Guida' : 'Governing Attribute')}:</span><span class="cc-dossier-value">${hoveredSpec.stat || "INT"}</span></div>
+            <div style="font-size:0.88rem; color:#ded1c1; line-height:1.4; margin-bottom:8px">${specDesc || ccT('CharCreate.specGenericDesc', 'Proficiency acquired through rigorous study and fieldwork.')}</div>
+            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('SpecMenu.ui.category', 'Category')}:</span><span class="cc-dossier-value">${catLabel}</span></div>
+            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('SpecMenu.ui.governingStat', 'Governing Attribute')}:</span><span class="cc-dossier-value">${ccStatLabel(hoveredSpec.stat || "INT")}</span></div>
+            ${grantRank > 0 ? `<div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.specGranted', 'Granted by Class and Traits')}:</span><span class="cc-dossier-value">${rankName(grantRank + 1)}</span></div>` : ''}
           </div>
         `;
       }
 
       // Trained Specs Badges using .cc-spec-badge-chip to avoid overlapping cards
-      const trainedBadges = trainedEntries.map(([idStr, rank]) => {
+      const trainedBadges = trainedEntries.map(([idStr, rank, grantRank]) => {
         const spec = catalog.find((s) => s.id === Number(idStr));
         const name = spec ? ((window.Specializations && window.Specializations.displayName) ? window.Specializations.displayName(spec) : spec.name) : `Spec #${idStr}`;
         return `
-          <div class="cc-spec-badge-chip" onmouseenter="SceneManager._scene.onSpecCardHover(${idStr})">
-            <span>${name}</span>
-            <span class="cc-spec-stat-badge" style="padding:0 4px;">Tier ${rank}</span>
+          <div class="cc-spec-badge-chip${grantRank >= rank ? ' granted' : ''}" onmouseenter="SceneManager._scene.onSpecCardHover(${idStr})">
+            <span style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
+            <span class="cc-spec-stat-badge" style="padding:0 4px;">${rankName(rank)}</span>
           </div>
         `;
       }).join("");
 
       return `
-        <div class="cc-page cc-page-right ts-page" style="display: flex; flex-direction: column;">
-          <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:8px">
-            <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizeSpecsForCurrentActor()">${ccT('CharCreate.randomize', isIt ? 'Randomizza' : 'Randomize')}</button>
+        <div class="cc-page cc-page-right cc-spec-detail ts-page" style="display: flex; flex-direction: column;">
+          <div style="display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:6px; margin-bottom:8px">
+            <button class="cc-profile-open-btn" onclick="SceneManager._scene.onSuggestSpecsForCurrentActor()">${ccT('CharCreate.suggestSpecs', 'Suggested')}</button>
+            <button class="cc-profile-open-btn" onclick="SceneManager._scene.onResetSpecsForCurrentActor()">${ccT('CharCreate.resetSpecs', 'Reset')}</button>
+            <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizeSpecsForCurrentActor()">${ccT('CharCreate.randomize', 'Randomize')}</button>
           </div>
           ${detailHtml}
 
           <h3 class="cc-subheader" style="margin-top:10px; margin-bottom:6px">
-            <span>${ccT('CharCreate.allocatedTalents', isIt ? 'Talenti Assegnati' : 'Allocated Talents')} (${trainedEntries.length})</span>
+            <span>${ccT('CharCreate.allocatedTalents', 'Allocated Talents')} (${trainedEntries.length})</span>
           </h3>
-          <div style="display:flex; flex-wrap:wrap; min-height:48px; max-height:160px; overflow-y:auto; margin-bottom:10px; gap:4px;">
-            ${trainedBadges || `<span style="opacity:0.6; font-size:0.88rem; padding:6px;">${ccT('CharCreate.noTalentsSpent', isIt ? 'Nessun punto specializzazione assegnato.' : 'No specialization points allocated yet.')}</span>`}
+          <div style="display:flex; flex-wrap:wrap; align-content:start; min-height:48px; margin-bottom:10px; gap:4px;">
+            ${trainedBadges || `<span style="opacity:0.6; font-size:0.88rem; padding:6px;">${ccT('CharCreate.noTalentsSpent', 'No specialization points allocated yet.')}</span>`}
           </div>
         </div>
       `;
@@ -8271,16 +8698,19 @@
     }
 
     onSpecPointAdjust(specId, delta) {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       if (!actor._specTrained) actor._specTrained = {};
 
-      const current = actor._specTrained[specId] || 0;
       const budget = CC_SPEC_BUDGET;
-      let spent = 0;
-      Object.keys(actor._specTrained).forEach((k) => {
-        spent += actor._specTrained[k] || 0;
-      });
+      const grantCtx = this._specGrantContext(actor);
+      const spec = this._specsCatalog().find((sp) => String(sp.id) === String(specId));
+      // The head start the class and the traits hand out is the floor: it was
+      // never paid for, so it can never be sold back for a point elsewhere.
+      const grantRank = this._specGrantRankIn(grantCtx, spec);
+      const current = Math.max(actor._specTrained[specId] || 0, grantRank);
+      let spent = budget - this._specsRemaining(actor);
 
       if (delta > 0) {
         if (spent >= budget || current >= 4) {
@@ -8291,7 +8721,7 @@
         spent++;
         SoundManager.playOk();
       } else if (delta < 0) {
-        if (current <= 0) {
+        if (current <= grantRank) {
           SoundManager.playBuzzer();
           return;
         }
@@ -8309,31 +8739,30 @@
         // 1. Update budget text
         const budgetChip = container.querySelector(".ts-purse-chip");
         if (budgetChip) {
-          budgetChip.innerHTML = `${T('CharCreate.budget') || "Budget"}: <b>${remaining} / ${budget} pts</b>`;
+          budgetChip.innerHTML = T('CharCreate.budgetPoints', { remaining: remaining, total: budget });
         }
 
         // 2. Update the changed card's pips & minus button
-        const newRank = actor._specTrained[specId] || 0;
+        const newRank = Math.max(actor._specTrained[specId] || 0, grantRank);
         const card = container.querySelector(`.cc-spec-card[data-spec-id="${specId}"]`);
         if (card) {
           const minusBtn = card.querySelector(".cc-spec-btn-minus");
-          if (minusBtn) minusBtn.disabled = (newRank <= 0);
+          if (minusBtn) minusBtn.disabled = (newRank <= grantRank);
 
           const pips = card.querySelectorAll(".cc-spec-pip");
           pips.forEach((pip, idx) => {
-            if (idx < newRank) {
-              pip.classList.add("active");
-            } else {
-              pip.classList.remove("active");
-            }
+            pip.classList.toggle("active", idx < newRank);
+            pip.classList.toggle("bonus", idx < grantRank);
           });
         }
 
         // 3. Update all cards' plus buttons based on remaining points and rank
+        const catalogById = new Map(this._specsCatalog().map((sp) => [String(sp.id), sp]));
         const allCards = container.querySelectorAll(".cc-spec-card[data-spec-id]");
         allCards.forEach((c) => {
-          const cId = Number(c.getAttribute("data-spec-id"));
-          const cRank = actor._specTrained[cId] || 0;
+          const cId = c.getAttribute("data-spec-id");
+          const cGrant = this._specGrantRankIn(grantCtx, catalogById.get(String(cId)));
+          const cRank = Math.max(actor._specTrained[cId] || 0, cGrant);
           const plusBtn = c.querySelector(".cc-spec-btn-plus");
           if (plusBtn) {
             plusBtn.disabled = (remaining <= 0 || cRank >= 4);
@@ -8353,28 +8782,9 @@
       this.refreshUIOverlayDOM();
     }
 
-    onRandomizeSpecsForCurrentActor() {
-      const actor = Scene_CharacterCreation.getCurrentActor();
-      if (!actor) return;
-      const catalog = this._specsCatalog();
-      actor._specTrained = {};
-      if (!Array.isArray(catalog) || catalog.length === 0) return;
-
-      let remaining = 12;
-      let attempts = 0;
-      while (remaining > 0 && attempts < 200) {
-        attempts++;
-        const spec = catalog[Math.floor(Math.random() * catalog.length)];
-        if (!spec) continue;
-        const current = actor._specTrained[spec.id] || 0;
-        if (current < 4) {
-          const add = Math.min(remaining, Math.floor(Math.random() * 2) + 1);
-          actor._specTrained[spec.id] = current + add;
-          remaining -= add;
-        }
-      }
-
-      SoundManager.playOk();
+    // The full spec board redraw every board-wide button (Randomize, Suggested,
+    // Reset) ends on, once it has finished touching actor._specTrained.
+    _redrawSpecBoard() {
       const contentPane = this._dndContainer && this._dndContainer.querySelector(".cc-content-pane");
       if (contentPane) {
         contentPane.innerHTML = `
@@ -8390,13 +8800,101 @@
       this.refreshUIOverlayDOM();
     }
 
+    // Spends `remaining` (a closure-shared counter local to the caller) into
+    // fresh picks, cheapest bias toward small purchases so one big roll does
+    // not empty the purse into a single specialization. Shared by Randomize
+    // and by whatever budget Suggested leaves over.
+    _randomSpendSpecs(actor, grantCtx, catalog, remaining) {
+      let left = remaining;
+      let attempts = 0;
+      while (left > 0 && attempts < 400) {
+        attempts++;
+        const spec = catalog[Math.floor(Math.random() * catalog.length)];
+        if (!spec) continue;
+        const floor = this._specGrantRankIn(grantCtx, spec);
+        const current = Math.max(actor._specTrained[spec.id] || 0, floor);
+        if (current < 4) {
+          const add = Math.min(left, 4 - current, Math.floor(Math.random() * 2) + 1);
+          actor._specTrained[spec.id] = current + add;
+          left -= add;
+        }
+      }
+      return left;
+    }
+
+    onRandomizeSpecsForCurrentActor() {
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (!actor) return;
+      const catalog = this._specsCatalog();
+      actor._specTrained = {};
+      if (!Array.isArray(catalog) || catalog.length === 0) return;
+
+      // Points are rolled on top of whatever the class and the traits already
+      // gave, never underneath it.
+      const grantCtx = this._specGrantContext(actor);
+      this._randomSpendSpecs(actor, grantCtx, catalog, CC_SPEC_BUDGET);
+
+      SoundManager.playOk();
+      this._redrawSpecBoard();
+    }
+
+    // Clears every point the player spent, keeping only the free tiers the
+    // class and traits grant: a clean refund back to a full purse, with
+    // nothing else about the board reset.
+    onResetSpecsForCurrentActor() {
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (!actor) return;
+      actor._specTrained = {};
+      SoundManager.playCancel();
+      this._redrawSpecBoard();
+    }
+
+    // A one-click starting build for the class actually picked: every
+    // specialization the class has a head start in (Specialization.json
+    // classStart) gets maxed out, richest affinity first, before anything
+    // else is touched. A class with fewer affinities than the budget affords
+    // spends what is left over the same way Randomize does, so the purse is
+    // never left holding points back.
+    onSuggestSpecsForCurrentActor() {
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (!actor) return;
+      const catalog = this._specsCatalog();
+      actor._specTrained = {};
+      if (!Array.isArray(catalog) || catalog.length === 0) return;
+
+      const grantCtx = this._specGrantContext(actor);
+      const className = grantCtx.className;
+      let remaining = CC_SPEC_BUDGET;
+
+      const affinityOrder = catalog
+        .filter((sp) => className && sp.classStart && sp.classStart[className])
+        .sort((a, b) => (b.classStart[className] || 0) - (a.classStart[className] || 0));
+
+      affinityOrder.forEach((spec) => {
+        if (remaining <= 0) return;
+        const floor = this._specGrantRankIn(grantCtx, spec);
+        const current = Math.max(actor._specTrained[spec.id] || 0, floor);
+        if (current >= 4) return;
+        const add = Math.min(remaining, 4 - current);
+        actor._specTrained[spec.id] = current + add;
+        remaining -= add;
+      });
+
+      if (remaining > 0) {
+        this._randomSpendSpecs(actor, grantCtx, catalog, remaining);
+      }
+
+      SoundManager.playOk();
+      this._redrawSpecBoard();
+    }
+
     // ── Macro BIO Step Helpers & Handlers ──
     _isBioPickerStep() {
       return this._step === STEP.BIO;
     }
 
     _formatIdeologyName(raw) {
-      if (!raw) return "Pragmatist";
+      if (!raw) return this._formatIdeologyName("pragmatist");
       let key = typeof raw === "object" ? (raw.id || raw.key || raw.name) : raw;
       if (!key.startsWith("ideology.")) key = "ideology." + key;
 
@@ -8454,17 +8952,83 @@
       return `<b>${lean}</b> &middot; ${numbers}`;
     }
 
+    // Humanoid / Creature / Preset used to sit in the sidebar on every step;
+    // it now opens straight into the Bio tab, so it leads that tab the same
+    // way it used to lead the sidebar.
+    _renderTypePillsHtml() {
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (!actor) return "";
+      const isPreset = !!this._presetWindow;
+      const isPresetActor = !!(actor._isPresetActor);
+      const hasAnotherPreset = this._hasPresetInParty(true);
+      const isPresetDisabled = hasAnotherPreset && !isPresetActor;
+      const currentMemberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
+      const isCreature = !isPresetActor && !isPreset && !!(actor._isCreatureActor || $gameSwitches.value(77 + currentMemberIndex));
+      return `
+        <div class="cc-compact-type-pills" style="margin-bottom:10px;">
+          <div class="cc-compact-type-pill ${!isCreature && !isPresetActor && !isPreset ? 'active' : ''}" onclick="SceneManager._scene.onSetCharacterType('humanoid')">
+            ${ccT('CharCreate.humanoid', 'Humanoid')}
+          </div>
+          <div class="cc-compact-type-pill ${isCreature && !isPresetActor && !isPreset ? 'active' : ''}" onclick="SceneManager._scene.onSetCharacterType('creature')">
+            ${ccT('CharCreate.creature', 'Creature')}
+          </div>
+          <div class="cc-compact-type-pill ${(isPresetActor || isPreset) ? 'active' : ''} ${isPresetDisabled ? 'disabled' : ''}"
+               style="${isPresetDisabled ? 'opacity:0.35; cursor:not-allowed;' : ''}"
+               title="${isPresetDisabled ? ccT('CharCreate.onlyOnePreset', 'Only 1 preset character allowed in the party') : ccT('CharCreate.presetDossiers', 'Preset Dossiers')}"
+               onclick="${isPresetDisabled ? 'SoundManager.playBuzzer()' : "SceneManager._scene.onSetCharacterType('preset')"}">
+            ${ccT('CharCreate.preset', 'Preset')}
+          </div>
+        </div>
+      `;
+    }
+
+    // The body a creature is spliced from. Both selects funnel through
+    // applyArchetypesToActor (see onSelectCreatureArchetype /
+    // onSelectCreatureSecondaryArchetype), which settles the 3D config from
+    // the full canonical pair every time: changing the primary rebuilds the
+    // model as the new kind, changing the secondary re-grafts its parts onto
+    // it. Neither call is special-cased here, they already share the one path.
+    _creatureArchetypeBioHtml(actor) {
+      const currentArch = actorArchetypeKey(actor) || "Goblin";
+      const secondArch = actorSecondaryArchetypeKey(actor) || "";
+      // Neither list offers what the other one holds: the two halves of a
+      // spliced body are always two different archetypes.
+      const archetypeOptions = (selected, taken) => creatureArchetypeKeys()
+        .filter((opt) => opt !== taken)
+        .map((opt) => `<option value="${opt}" ${opt === selected ? 'selected' : ''}>${archetypeDisplayName(opt)}</option>`)
+        .join("");
+      const primaryOptionsHtml = archetypeOptions(currentArch, secondArch);
+      const secondaryOptionsHtml = `<option value="" ${secondArch ? '' : 'selected'}>${ccT('CharCreate.none', 'None')}</option>` +
+        archetypeOptions(secondArch, currentArch);
+      return `
+        <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
+          <div class="cc-bio-section-title">${this._ccIconHtml(224, 16)} <span>${ccT('CharCreate.primaryArchetype', 'Primary Archetype')}</span></div>
+          <select class="cc-bio-select" onchange="SceneManager._scene.onSelectCreatureArchetype(this.value)">
+            ${primaryOptionsHtml}
+          </select>
+          <div class="cc-bio-section-title" style="margin-top:10px;">${this._ccIconHtml(224, 16)} <span>${ccT('CharCreate.secondaryArchetype', 'Secondary Archetype')}</span></div>
+          <select class="cc-bio-select" onchange="SceneManager._scene.onSelectCreatureSecondaryArchetype(this.value)">
+            ${secondaryOptionsHtml}
+          </select>
+        </div>
+      `;
+    }
+
     _bioPickerLeftHtml() {
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return `<div class="cc-page cc-page-left"></div>`;
-      const isIt = (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it');
+
+      const typePillsHtml = this._renderTypePillsHtml();
+      const memberIdxForType = Scene_CharacterCreation._currentPartyMemberIndex || 0;
+      const isCreatureActor = !!(actor._isCreatureActor || $gameSwitches.value(77 + memberIdxForType));
+      const archetypeBioHtml = isCreatureActor ? this._creatureArchetypeBioHtml(actor) : "";
 
       // Gender picker
       const genders = [
-        { val: 0, label: isIt ? "Maschio ♂" : "Male ♂" },
-        { val: 1, label: isIt ? "Femmina ♀" : "Female ♀" },
-        { val: 2, label: isIt ? "Non binario ⚦" : "Non binary ⚦" },
-        { val: 3, label: isIt ? "Bozzolo ⯐" : "Cocoon ⯐" }
+        { val: 0, label: ccT('CharCreate.bio.gender.male', "Male ♂") },
+        { val: 1, label: ccT('CharCreate.bio.gender.female', "Female ♀") },
+        { val: 2, label: ccT('CharCreate.bio.gender.nonBinary', "Non binary ⚦") },
+        { val: 3, label: ccT('CharCreate.bio.gender.cocoon', "Cocoon ⯐") }
       ];
       const currentMemberIdx = Scene_CharacterCreation._currentPartyMemberIndex || 0;
       const currentGender = $gameVariables.value(38 + currentMemberIdx);
@@ -8512,11 +9076,11 @@
 
       // Morality Alignments
       const alignments = [
-        { val: 2, label: isIt ? "Santo (+2)" : "Saintly (+2)" },
-        { val: 1, label: isIt ? "Integerrimo (+1)" : "Principled (+1)" },
-        { val: 0, label: isIt ? "Pragmatico (0)" : "Pragmatic (0)" },
-        { val: -1, label: isIt ? "Spietato (-1)" : "Ruthless (-1)" },
-        { val: -2, label: isIt ? "Abietto (-2)" : "Vile (-2)" },
+        { val: 2, label: ccT('CharCreate.bio.morality.saintly', "Saintly (+2)") },
+        { val: 1, label: ccT('CharCreate.bio.morality.principled', "Principled (+1)") },
+        { val: 0, label: ccT('CharCreate.bio.morality.pragmatic', "Pragmatic (0)") },
+        { val: -1, label: ccT('CharCreate.bio.morality.ruthless', "Ruthless (-1)") },
+        { val: -2, label: ccT('CharCreate.bio.morality.vile', "Vile (-2)") },
       ];
       const currentMorality = actor._morality != null ? actor._morality : 0;
       const moralityChips = alignments.map((a) => {
@@ -8533,10 +9097,10 @@
 
       // Age Bands
       const ageBands = [
-        { key: "age_young", label: isIt ? "Giovane (18-25)" : "Young (18-25)", age: 22 },
-        { key: "age_adult", label: isIt ? "Adulto (26-40)" : "Adult (26-40)", age: 32 },
-        { key: "age_middle", label: isIt ? "Mezza età (41-60)" : "Middle-Aged (41-60)", age: 48 },
-        { key: "age_elder", label: isIt ? "Anziano (61+)" : "Elder (61+)", age: 68 },
+        { key: "age_young", label: ccT('CharCreate.bio.age.young', "Young (18-25)"), age: 22 },
+        { key: "age_adult", label: ccT('CharCreate.bio.age.adult', "Adult (26-40)"), age: 32 },
+        { key: "age_middle", label: ccT('CharCreate.bio.age.middle', "Middle-Aged (41-60)"), age: 48 },
+        { key: "age_elder", label: ccT('CharCreate.bio.age.elder', "Elder (61+)"), age: 68 },
       ];
       const memberIdx = Scene_CharacterCreation._currentPartyMemberIndex || 0;
       const currentAge = ($gameSystem._ccBirthAge && $gameSystem._ccBirthAge[memberIdx]) || 28;
@@ -8547,10 +9111,10 @@
 
       // Wealth Tiers
       const wealthTiers = [
-        { tier: 0, label: isIt ? "Indigente" : "Destitute" },
-        { tier: 1, label: isIt ? "Classe operaia" : "Working Class" },
-        { tier: 2, label: isIt ? "Ceto medio" : "Middle Class" },
-        { tier: 3, label: isIt ? "Benestante" : "Wealthy" },
+        { tier: 0, label: ccT('CharCreate.bio.wealth.destitute', "Destitute") },
+        { tier: 1, label: ccT('CharCreate.bio.wealth.working', "Working Class") },
+        { tier: 2, label: ccT('CharCreate.bio.wealth.middle', "Middle Class") },
+        { tier: 3, label: ccT('CharCreate.bio.wealth.wealthy', "Wealthy") },
       ];
       const currentWealth = actor._wealthTier != null ? actor._wealthTier : 2;
       const wealthChips = wealthTiers.map((w) => {
@@ -8598,33 +9162,34 @@
         compatHtml = `
           <div style="margin-top:6px; padding:6px 10px; background:rgba(0,0,0,0.3); border:1px solid rgba(218,165,32,0.22); border-radius:4px; font-size:0.83rem;">
             <div style="font-weight:bold; color:#ffd700; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
-              <span>${isIt ? "Compatibilità Trasfusionale Gruppo" : "Party Transfusion Compatibility"}</span>
-              <span style="font-size:0.78rem; color:#ded1c1; opacity:0.85;">${isIt ? "Selezionato" : "Selected"}: <b>${currentBloodEntry.type}</b></span>
+              <span>${ccT('CharCreate.bio.compatTitle', "Party Transfusion Compatibility")}</span>
+              <span style="font-size:0.78rem; color:#ded1c1; opacity:0.85;">${ccT('CharCreate.bio.compatSelected', "Selected")}: <b>${currentBloodEntry.type}</b></span>
             </div>
             <div style="display:flex; flex-direction:column; gap:3px;">
               <div style="color:#a5d6a7; display:flex; align-items:center; gap:6px;">
-                <span style="color:#81c784; font-weight:bold;">↳ ${isIt ? "Può donare a:" : "Can donate to:"}</span>
-                <span>${compat.canDonateTo.length > 0 ? compat.canDonateTo.map(m => `<b>${m.name}</b> (${m.type})`).join(", ") : `<span style="color:#ef9a9a; font-style:italic;">${isIt ? "Nessuno (Donatore incompatibile)" : "None (Incompatible donor)"}</span>`}</span>
+                <span style="color:#81c784; font-weight:bold;">↳ ${ccT('CharCreate.bio.canDonate', "Can donate to:")}</span>
+                <span>${compat.canDonateTo.length > 0 ? compat.canDonateTo.map(m => `<b>${m.name}</b> (${m.type})`).join(", ") : `<span style="color:#ef9a9a; font-style:italic;">${ccT('CharCreate.bio.noDonor', "None (Incompatible donor)")}</span>`}</span>
               </div>
               <div style="color:#90caf9; display:flex; align-items:center; gap:6px;">
-                <span style="color:#64b5f6; font-weight:bold;">↳ ${isIt ? "Può ricevere da:" : "Can receive from:"}</span>
-                <span>${compat.canReceiveFrom.length > 0 ? compat.canReceiveFrom.map(m => `<b>${m.name}</b> (${m.type})`).join(", ") : `<span style="color:#ef9a9a; font-style:italic;">${isIt ? "Nessuno (Richiede donatore compatibile)" : "None (Requires matched donor)"}</span>`}</span>
+                <span style="color:#64b5f6; font-weight:bold;">↳ ${ccT('CharCreate.bio.canReceive', "Can receive from:")}</span>
+                <span>${compat.canReceiveFrom.length > 0 ? compat.canReceiveFrom.map(m => `<b>${m.name}</b> (${m.type})`).join(", ") : `<span style="color:#ef9a9a; font-style:italic;">${ccT('CharCreate.bio.noRecipient', "None (Requires matched donor)")}</span>`}</span>
               </div>
             </div>
           </div>
         `;
       } else {
-        const specialTrait = currentBloodEntry.id === "O_NEG" ? (isIt ? "🌟 Donatore Universale per tutti i soggetti standard ABO/Rh." : "🌟 Universal Donor for all standard ABO/Rh patients.")
-          : (currentBloodEntry.id === "AB_POS" ? (isIt ? "🧬 Ricevente Universale (riceve in sicurezza tutto il sangue ABO/Rh standard)." : "🧬 Universal Recipient (safely receives all standard ABO/Rh blood).")
-          : (currentBloodEntry.id === "SYNTH_DELTA" ? (isIt ? "⚡ Vettore Artificiale Universale (compatibile con fisiologia umana e sintetica)." : "⚡ Universal Artificial Carrier (compatible with all human & synthetic physiology).")
-          : (currentBloodEntry.id === "AZURE_HEMOCYANIN" ? (isIt ? "🦀 Emocianina al Rame (Gli amebociti conferiscono immunità completa a sepsi batterica)." : "🦀 Copper Hemocyanin (Amebocytes impart complete immunity to bacterial endotoxin sepsis).")
-          : (currentBloodEntry.id === "RH_NULL" ? (isIt ? "⚜ Sangue d'Oro (Donatore Rh universale, privo di 61 antigeni Rh; riceve solo da Rh-null)." : "⚜ Golden Blood (Universal Rh donor, lacks all 61 Rh antigens; receives only Rh-null).")
-          : (currentBloodEntry.id === "BOMBAY_HH" ? (isIt ? "🔬 Fenotipo Bombay (Privo di antigene H; donatore universale d'emergenza, riceve solo da Bombay hh)." : "🔬 Bombay Phenotype (Lacks H antigen; universal emergency red cell donor, receives only Bombay hh).")
-          : (currentBloodEntry.rareAntigen ? (isIt ? "🧬 Profilo Antigene-Nullo Raro (Richiede donatore con antigeni identici per trasfusioni ripetute)." : "🧬 Rare Antigen-Null profile (Requires matched antigen donor for safe repeat transfusion).") : ""))))));
+        // One line per blood id worth remarking on, and one catch-all for any
+        // other antigen-null profile. The wording is i18n's (CharCreate.bio.
+        // bloodTrait), keyed by the same id BloodTypeService hands out.
+        const BLOOD_TRAIT_IDS = ["O_NEG", "AB_POS", "SYNTH_DELTA", "AZURE_HEMOCYANIN", "RH_NULL", "BOMBAY_HH"];
+        const traitKey = BLOOD_TRAIT_IDS.includes(currentBloodEntry.id)
+          ? currentBloodEntry.id
+          : (currentBloodEntry.rareAntigen ? "RARE_ANTIGEN" : null);
+        const specialTrait = traitKey ? ccT('CharCreate.bio.bloodTrait.' + traitKey, "") : "";
         if (specialTrait) {
           compatHtml = `
             <div style="margin-top:6px; padding:5px 8px; background:rgba(0,0,0,0.25); border:1px solid rgba(218,165,32,0.18); border-radius:4px; font-size:0.8rem; color:#e0d5c1;">
-              <span style="color:#ffd700; font-weight:bold;">${isIt ? "Proprietà:" : "Trait:"}</span> ${specialTrait}
+              <span style="color:#ffd700; font-weight:bold;">${ccT('CharCreate.bio.traitLabel', "Trait:")}</span> ${specialTrait}
             </div>
           `;
         }
@@ -8642,9 +9207,9 @@
       const allJobs = (window.WorkSystem && window.WorkSystem.Jobs) || [];
       const currentJobId = actor._jobId != null ? actor._jobId : 0;
       const currentJob = currentJobId > 0 ? (allJobs.find(j => j.id === currentJobId) || null) : null;
-      const currentJobName = currentJob ? (window.WorkSystem && window.WorkSystem.jobName ? window.WorkSystem.jobName(currentJob) : (currentJob.name || `Job #${currentJob.id}`)) : (isIt ? "Disoccupato / Nessuno" : "Jobless / Unemployed");
+      const currentJobName = currentJob ? (window.WorkSystem && window.WorkSystem.jobName ? window.WorkSystem.jobName(currentJob) : (currentJob.name || `Job #${currentJob.id}`)) : ccT('CharCreate.bio.jobless', "Jobless / Unemployed");
 
-      const joblessOptionHtml = `<option value="0" ${currentJobId === 0 ? 'selected' : ''}>-- ${isIt ? "Disoccupato / Nessun impiego" : "Jobless / Unemployed"} --</option>`;
+      const joblessOptionHtml = `<option value="0" ${currentJobId === 0 ? 'selected' : ''}>-- ${ccT('CharCreate.bio.joblessOption', "Jobless / No occupation")} --</option>`;
       const jobOptionsHtml = joblessOptionHtml + allJobs.map((j) => {
         const jName = window.WorkSystem && window.WorkSystem.jobName ? window.WorkSystem.jobName(j) : (j.name || `Job #${j.id}`);
         const isSelected = currentJob && currentJob.id === j.id;
@@ -8668,8 +9233,10 @@
       return `
         <div class="cc-page cc-page-left ts-page" style="display:flex; flex-direction:column;">
           <div class="cc-bio-container" style="flex:1; min-height:0; overflow-y:auto; padding-right:6px; padding-bottom:24px;">
+            ${typePillsHtml}
+            ${archetypeBioHtml}
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(246, 16)} <span>${ccT('CharCreate.identityProfile', isIt ? "Genere e Identità" : "Gender & Presentation")}</span></div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(246, 16)} <span>${ccT('CharCreate.identityProfile', "Gender & Presentation")}</span></div>
               <div class="cc-bio-chips-row">${genderChipsHtml}</div>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
@@ -8686,51 +9253,51 @@
               <div id="cc-hormone-readout" class="cc-bio-slider-readout">${this._hormoneReadoutHtml(hormoneBalance)}</div>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(193, 16)} <span>${ccT('CharCreate.professionJob', isIt ? "Professione / Impiego Iniziale" : "Profession / Starting Occupation")}</span></div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(193, 16)} <span>${ccT('CharCreate.professionJob', "Profession / Starting Occupation")}</span></div>
               <select class="cc-bio-select" onchange="SceneManager._scene.onBioOptionChange('job', this.value)">
                 ${jobOptionsHtml}
               </select>
               ${jobItemsBadges ? `
                 <div style="margin-top:6px; display:flex; flex-direction:column; gap:3px;">
-                  <div style="font-size:0.75rem; color:#a89f91;">${isIt ? "Dotazione oggetti di lavoro iniziale:" : "Starting job gear & tools granted:"}</div>
+                  <div style="font-size:0.75rem; color:#a89f91;">${ccT('CharCreate.bio.jobGear', "Starting job gear & tools granted:")}</div>
                   <div style="display:flex; flex-wrap:wrap; gap:4px;">${jobItemsBadges}</div>
                 </div>
               ` : (currentJobId === 0 ? `
                 <div style="font-size:0.75rem; color:#a89f91; font-style:italic; margin-top:4px;">
-                  ${isIt ? "Nessun equipaggiamento o strumento professionale iniziale in dotazione." : "No initial professional equipment or work tools provided."}
+                  ${ccT('CharCreate.bio.noJobGear', "No initial professional equipment or work tools provided.")}
                 </div>
               ` : '')}
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(183, 16)} <span>${ccT('CharCreate.creedIdeology', isIt ? "Credo e Ideologia Filosofica" : "Creed & Philosophical Ideology")}</span></div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(183, 16)} <span>${ccT('CharCreate.creedIdeology', "Creed & Philosophical Ideology")}</span></div>
               <div style="display:flex; gap:6px; align-items:center;">
                 <select id="cc-ideology-select" class="cc-bio-select" style="flex:1;" onchange="SceneManager._scene.onBioOptionChange('ideology', this.value)">
                   ${ideologyOptionsHtml}
                 </select>
-                <button type="button" class="cc-bio-chip" onclick="if(window.PoliticalGraph3D){ window.PoliticalGraph3D.openModal({ focusId: (document.getElementById('cc-ideology-select') ? document.getElementById('cc-ideology-select').value : ''), onSelect: function(id) { if(SceneManager._scene && SceneManager._scene.onBioOptionChange) SceneManager._scene.onBioOptionChange('ideology', id); const sel = document.getElementById('cc-ideology-select'); if(sel) sel.value = id; } }); }" title="${ccT('CharCreate.openPoliticalGraph', 'Open the political graph')}">${ccT('CharCreate.politicalGraph', 'Graph')}</button>
+                <button type="button" class="cc-bio-chip" onclick="if(window.PoliticalGraph3D && SceneManager._scene){ SceneManager._scene.markReturnStep(); SceneManager._scene.closeStepUI(); window.PoliticalGraph3D.openModal({ focusId: (document.getElementById('cc-ideology-select') ? document.getElementById('cc-ideology-select').value : ''), onSelect: function(id) { Scene_CharacterCreation.applyIdeologySelection(id); } }); }" title="${ccT('CharCreate.openPoliticalGraph', 'Open the political graph')}">${ccT('CharCreate.politicalGraph', 'Graph')}</button>
               </div>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(190, 16)} <span>${ccT('CharCreate.originCity', isIt ? "Città / Insediamento d'origine" : "Hometown / Settlement of Origin")}</span></div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(190, 16)} <span>${ccT('CharCreate.originCity', "Hometown / Settlement of Origin")}</span></div>
               <select class="cc-bio-select" onchange="SceneManager._scene.onBioOptionChange('hometown', this.value)">${hometownOptions}</select>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(246, 16)} <span>${ccT('CharCreate.moralityAlignment', isIt ? "Allineamento Morale" : "Moral Disposition & Alignment")}</span></div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(246, 16)} <span>${ccT('CharCreate.moralityAlignment', "Moral Disposition & Alignment")}</span></div>
               <div class="cc-bio-chips-row">${moralityChips}</div>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(113, 16)} <span>${ccT('CharCreate.ageBand', isIt ? "Fascia d'età" : "Age Generation")}</span></div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(113, 16)} <span>${ccT('CharCreate.ageBand', "Age Generation")}</span></div>
               <div class="cc-bio-chips-row">${ageChips}</div>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(208, 16)} <span>${ccT('CharCreate.socialStanding', isIt ? "Estrazione Sociale" : "Social Standing & Background")}</span></div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(208, 16)} <span>${ccT('CharCreate.socialStanding', "Social Standing & Background")}</span></div>
               <div class="cc-bio-chips-row">${wealthChips}</div>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(176, 16)} <span>${ccT('CharCreate.bloodType', isIt ? "Gruppo Sanguigno" : "Serology / Blood Type")}</span></div>
-              <div style="font-size:0.75rem; color:#a89f91; margin-bottom:4px;">${isIt ? "Standard ABO / Rh" : "Standard ABO / Rh"}</div>
+              <div class="cc-bio-section-title">${this._ccIconHtml(176, 16)} <span>${ccT('CharCreate.bloodType', "Serology / Blood Type")}</span></div>
+              <div style="font-size:0.75rem; color:#a89f91; margin-bottom:4px;">${ccT('CharCreate.bio.bloodStandard', "Standard ABO / Rh")}</div>
               <div class="cc-bio-chips-row" style="margin-bottom:6px;">${renderChips(standardBloods)}</div>
-              <div style="font-size:0.75rem; color:#a89f91; margin-bottom:4px;">${isIt ? "Sintetici, Rari ed Esotici" : "Synthetic, Rare & Exotic"}</div>
+              <div style="font-size:0.75rem; color:#a89f91; margin-bottom:4px;">${ccT('CharCreate.bio.bloodExotic', "Synthetic, Rare & Exotic")}</div>
               <div class="cc-bio-chips-row">${renderChips(specialBloods)}</div>
               ${compatHtml}
             </div>
@@ -8742,7 +9309,6 @@
     _bioPickerRightHtml() {
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return `<div class="cc-page cc-page-right"></div>`;
-      const isIt = (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it');
 
       const memberIdx = Scene_CharacterCreation._currentPartyMemberIndex || 0;
       const hometown = $gameSystem._ccHometown || "Paris";
@@ -8754,41 +9320,43 @@
       const currentBloodEntry = bloodList.find(b => b.id === currentBloodId || b.type === currentBloodId);
       const bloodLabel = currentBloodEntry ? currentBloodEntry.type : (actor._bloodType || "O+");
 
-      const wealthIt = ["indigente", "operaia", "borghese", "benestante"];
-      const wealthEn = ["destitute", "working class", "middle class", "wealthy"];
-      const wealthLabel = (isIt ? wealthIt : wealthEn)[actor._wealthTier != null ? actor._wealthTier : 2] || (isIt ? "borghese" : "middle class");
+      // The prose forms of the two, which are not the chip captions: a chip
+      // reads "Middle Class", the sentence reads "a middle class upbringing".
+      const WEALTH_ADJ = ["destitute", "working", "middle", "wealthy"];
+      const wealthAdjKey = WEALTH_ADJ[actor._wealthTier != null ? actor._wealthTier : 2] || "middle";
+      const wealthLabel = ccT('CharCreate.bio.wealthAdj.' + wealthAdjKey, wealthAdjKey);
 
-      const moralityIt = { 2: "santa", 1: "integerrima", 0: "pragmatica", "-1": "spietata", "-2": "abietta" };
-      const moralityEn = { 2: "saintly", 1: "principled", 0: "pragmatic", "-1": "ruthless", "-2": "vile" };
-      const moralityDesc = (isIt ? moralityIt : moralityEn)[actor._morality != null ? actor._morality : 0] || (isIt ? "pragmatica" : "pragmatic");
+      const MORALITY_ADJ = { 2: "saintly", 1: "principled", 0: "pragmatic", "-1": "ruthless", "-2": "vile" };
+      const moralityAdjKey = MORALITY_ADJ[actor._morality != null ? actor._morality : 0] || "pragmatic";
+      const moralityDesc = ccT('CharCreate.bio.moralityAdj.' + moralityAdjKey, moralityAdjKey);
 
       let avatarStyle = "";
       if (actor.characterName()) {
         avatarStyle = this.getSpriteStyle(actor.characterName(), actor.characterIndex());
       }
       const classData = $dataClasses[actor._classId];
-      const className = classData ? window.CCDbName(classData) : "Operative";
+      const className = classData ? window.CCDbName(classData) : ccT('CharCreate.defaultClassName', 'Operative');
 
-      const storyHtml = isIt ? `
+      // Two paragraphs written from what the picker on the left holds. Each
+      // language phrases them its own way, so the whole sentence is the i18n
+      // entry and the fields are dropped into it as parameters.
+      const storyParams = {
+        hometown, name: actor.name(), ideology: ideologyNameFormatted,
+        morality: moralityDesc, wealth: wealthLabel, age, blood: bloodLabel
+      };
+      const storyHtml = `
         <p class="cc-text-desc" style="text-align:left; font-size:1.05rem; line-height:1.65; color:#f0e6d2; margin-bottom:10px;">
-          Cresciuto nel contesto urbano di <b>${hometown}</b>, <b>${actor.name()}</b> ha affrontato gli anni formativi guidato da principi di matrice <b>${ideologyNameFormatted}</b> e da un'indole <b>${moralityDesc}</b>. Proveniente da un'estrazione sociale <b>${wealthLabel}</b>, l'esperienza maturata sul campo e la resilienza lo contraddistinguono tra i suoi pari.
+          ${ccTp('CharCreate.bio.storyPara1', storyParams, '')}
         </p>
         <p class="cc-text-desc" style="text-align:left; font-size:1.05rem; line-height:1.65; color:#ded1c1; margin-bottom:12px;">
-          Ora operativo all'età di <b>${age} anni</b> con profilo sierologico <b>${bloodLabel}</b>, ha fatto il proprio ingresso nella griglia dell'hypernet, pronto a forgiare la propria rotta attraverso territori contesi e snodi di rete ad alto rischio.
-        </p>
-      ` : `
-        <p class="cc-text-desc" style="text-align:left; font-size:1.05rem; line-height:1.65; color:#f0e6d2; margin-bottom:10px;">
-          Raised amidst the urban sprawl of <b>${hometown}</b>, <b>${actor.name()}</b> navigated formative years guided by <b>${ideologyNameFormatted}</b> principles and a <b>${moralityDesc}</b> disposition. Coming from a <b>${wealthLabel}</b> upbringing, their field experience and resilience distinguish them among peers.
-        </p>
-        <p class="cc-text-desc" style="text-align:left; font-size:1.05rem; line-height:1.65; color:#ded1c1; margin-bottom:12px;">
-          Now operating at age <b>${age}</b> with serological markers <b>${bloodLabel}</b>, they have stepped forward into the hypernet grid, ready to carve their own destiny across hostile network nodes and faction territories.
+          ${ccTp('CharCreate.bio.storyPara2', storyParams, '')}
         </p>
       `;
 
       return `
         <div class="cc-page cc-page-right ts-page" style="display:flex; flex-direction:column;">
           <div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:8px;">
-            <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizeBioForCurrentActor()">${ccT('CharCreate.randomize', isIt ? "Randomizza" : "Randomize")}</button>
+            <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizeBioForCurrentActor()">${ccT('CharCreate.randomize', 'Randomize')}</button>
           </div>
 
           <div class="cc-dossier-card" style="flex:1; min-height:0; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:12px;">
@@ -8799,7 +9367,7 @@
             </div>
 
             <h3 class="cc-subheader" style="font-size:1.35rem; margin-top:2px; margin-bottom:4px; border-bottom:1px solid rgba(218,165,32,0.25); padding-bottom:4px;">
-              ${ccT('CharCreate.narrativeHistory', isIt ? "Biografia e Storia" : "Backstory & Life Record")}
+              ${ccT('CharCreate.narrativeHistory', 'Backstory & Life Record')}
             </h3>
             ${storyHtml}
 
@@ -8848,6 +9416,7 @@
     }
 
     onBioOptionChange(field, value) {
+      if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       const memberIdx = Scene_CharacterCreation._currentPartyMemberIndex || 0;
@@ -9298,6 +9867,17 @@
       }
     }
 
+    // The three optional traits a chosen companion can carry, kept as one
+    // scene-level toggle set: they describe how the eventual companion is
+    // built, not any one catalogue entry, the same way its eventual name is
+    // never tied to the card being previewed either.
+    _petTraits() {
+      if (!Scene_CharacterCreation._petTraits) {
+        Scene_CharacterCreation._petTraits = { sentient: false, magical: false, geneticFreak: false };
+      }
+      return Scene_CharacterCreation._petTraits;
+    }
+
     // The companion sidebar: the beast the board is pointing at, its numbers and
     // its nature. This used to be the right half of the spread, which cost the
     // roster half its width and said nothing the sidebar could not.
@@ -9308,6 +9888,10 @@
       const pet = catalog.find((p) => p.id === hoveredId) || catalog[0];
       if (!pet) return `<div class="cc-compact-sidebar"></div>`;
       const isChosen = selectedPet && selectedPet.id === pet.id;
+      const traits = this._petTraits();
+      const attrs = (window.PetSystem && window.PetSystem.previewAttrs)
+        ? window.PetSystem.previewAttrs(traits.sentient, traits.magical, traits.geneticFreak)
+        : { STR: 10, CON: 10, INT: 10, WIS: 10, PSI: 10 };
 
       return `
         <div class="cc-compact-sidebar cc-pet-sidebar">
@@ -9327,7 +9911,19 @@
             <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petSpecies', 'Species')}</span><span class="cc-dossier-value">${pet.species}</span></div>
             <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petClassification', 'Classification')}</span><span class="cc-dossier-value">${pet.kind}</span></div>
             <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petMaxHp', 'Max HP')}</span><span class="cc-dossier-value">${pet.hp}</span></div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petCombatPower', 'Combat power')}</span><span class="cc-dossier-value">ATK ${pet.atk} / DEF ${pet.def} / AGI ${pet.agi}</span></div>
+            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petCombatPower', 'Combat power')}</span><span class="cc-dossier-value">${ccStatLabel('STR')} ${pet.atk} / ${ccStatLabel('CON')} ${pet.def} / ${ccStatLabel('DEX')} ${pet.agi}</span></div>
+          </div>
+
+          <div class="cc-dossier-card" style="padding:10px; margin-bottom:8px;">
+            <h3 class="cc-subheader" style="font-size:1.05rem; margin-bottom:6px;">${ccT('CharCreate.petTraitsTitle', 'Traits')}</h3>
+            <div style="display:flex; gap:6px; margin-bottom:8px;">
+              <button class="cc-pet-trait-toggle ${traits.sentient ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('sentient')">${ccT('CharCreate.petTraitSentient', 'Sentient')}</button>
+              <button class="cc-pet-trait-toggle ${traits.magical ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('magical')">${ccT('CharCreate.petTraitMagical', 'Magical')}</button>
+              <button class="cc-pet-trait-toggle ${traits.geneticFreak ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('geneticFreak')">${ccT('CharCreate.petTraitGeneticFreak', 'Genetic Freak')}</button>
+            </div>
+            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('STR')} / ${ccStatLabel('CON')}</span><span class="cc-dossier-value">${attrs.STR} / ${attrs.CON}</span></div>
+            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('INT')} / ${ccStatLabel('WIS')}</span><span class="cc-dossier-value">${attrs.INT} / ${attrs.WIS}</span></div>
+            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('PSI')}</span><span class="cc-dossier-value">${attrs.PSI}</span></div>
           </div>
 
           <div class="cc-dossier-card cc-pet-nature" style="padding:10px;">
@@ -9337,7 +9933,7 @@
 
           <div class="cc-compact-actions" style="margin-top:auto; display:flex; flex-direction:column; gap:6px;">
             <button class="cc-compact-btn ${isChosen ? '' : 'primary'}" onclick="SceneManager._scene.onPetCardSelect('${pet.id}')">${isChosen ? ccT('CharCreate.selectedCompanion', 'Companion selected') : ccT('CharCreate.chooseAsCompanion', 'Choose as initial companion')}</button>
-            <button class="cc-compact-btn primary" onclick="SceneManager._scene.onProceedToScenario()">${this._hasPresetInParty(false) ? ccT('CharCreate.confirmEmbark', 'Confirm & Embark') : ccT('CharCreate.confirmPartyScenario', 'Confirm Party & Scenario')}</button>
+            <button class="cc-compact-btn primary" onclick="SceneManager._scene.onProceedToScenario()">${this._hasPresetInParty(false) ? ccT('CharCreate.startGame', 'Start Game') : ccT('CharCreate.confirmPartyScenario', 'Confirm Party & Scenario')}</button>
           </div>
         </div>
       `;
@@ -9392,6 +9988,24 @@
       this._lastStep = -1;
       this._lastIndex = -1;
       this.refreshUIOverlayDOM();
+    }
+
+    // Flips one of the three optional traits and redraws just the sidebar,
+    // the same in-place update onPetCardSelect does for a new hover.
+    onTogglePetTrait(key) {
+      const traits = this._petTraits();
+      traits[key] = !traits[key];
+      SoundManager.playCursor();
+
+      const sidebarSlot = this._dndContainer && this._dndContainer.querySelector(".cc-sidebar-slot");
+      const sidebar = this._dndContainer && this._dndContainer.querySelector(".cc-compact-sidebar");
+      if (sidebarSlot) sidebarSlot.innerHTML = this._petSidebarHtml();
+      else if (sidebar) sidebar.outerHTML = this._petSidebarHtml();
+      else {
+        this._lastStep = -1;
+        this._lastIndex = -1;
+        this.refreshUIOverlayDOM();
+      }
     }
 
     onPetCardSelect(petId) {
@@ -9537,6 +10151,7 @@
     }
 
     onOptionCardClick(index) {
+      if (this._refusePresetEdit()) return;
       if (!this._gridWindow) return;
       const stepData = this.currentStepData();
       if (stepData && stepData.choices && stepData.choices[index]) {
@@ -9696,8 +10311,6 @@
       if (ConfigManager.activeTheme === undefined) ConfigManager.activeTheme = 0;
       if (ConfigManager.partyHud === undefined) ConfigManager.partyHud = true;
       if (ConfigManager.cpuPartyMembers === undefined) ConfigManager.cpuPartyMembers = false;
-      // Loose (1) is the party's own default, and the row below reads it back.
-      if (ConfigManager.partyFormation === undefined) ConfigManager.partyFormation = 1;
       // Party Level (1) is the default the world is written for; ConfigManager
       // seeds the same value, this only covers a config that never had one.
       if (ConfigManager.enemySpawnMode === undefined) ConfigManager.enemySpawnMode = 1;
@@ -9806,28 +10419,6 @@
           get currentLabel() { return this.currentIndex === 0 ? T('CharCreate.yes') : T('CharCreate.no'); },
           next() { ConfigManager.cpuPartyMembers = !ConfigManager.cpuPartyMembers; },
           prev() { ConfigManager.cpuPartyMembers = !ConfigManager.cpuPartyMembers; },
-        },
-        {
-          // How the party walks the map (Core/AutoIdleExplorer.js). It is the
-          // first thing a player sees once the game starts, so it is asked here
-          // as well as in the options menu, which owns the same setting.
-          key: 'partyFormation',
-          label: T('CharCreate.partyFormation'),
-          description: T('CharCreate.howTheRestOfThePartyWalksBehindTheLeader'),
-          captionOff: T('CharCreate.theyMarchInTheLeaderSFootstepsOneTileApart'),
-          captionOn: T('CharCreate.theyLiveTheirOwnLivesAroundTheLeader'),
-          get currentIndex() { return ConfigManager.partyFormation ? 1 : 0; },
-          get currentLabel() {
-            const names = T.list('AutoIdle.formation.states');
-            return names[this.currentIndex] || String(this.currentIndex);
-          },
-          _toggle() {
-            ConfigManager.partyFormation = ConfigManager.partyFormation ? 0 : 1;
-            const loose = window.AutoIdleExplorer && window.AutoIdleExplorer.loose;
-            if (loose && loose.onModeChanged) loose.onModeChanged();
-          },
-          next() { this._toggle(); },
-          prev() { this._toggle(); },
         },
         {
           key: 'partyHud',
@@ -10620,6 +11211,7 @@
       this.setupStep();
     }
     onGridOk() {
+      if (this._refusePresetEdit()) return;
       const stepData = this.currentStepData();
       const index = this._gridWindow.index();
       const choice = stepData.choices[index];
@@ -11109,20 +11701,24 @@
       const specCatalog = this._specsCatalog ? this._specsCatalog() : ((window.Specializations && window.Specializations.list) || []);
       currentActor._specTrained = {};
       if (Array.isArray(specCatalog) && specCatalog.length > 0) {
-        let specRemaining = 12;
+        // The class and the traits were rolled a moment ago, so their head
+        // starts are read now and the budget is spent strictly on top of them.
+        const specGrantCtx = this._specGrantContext ? this._specGrantContext(currentActor) : null;
+        let specRemaining = CC_SPEC_BUDGET;
         let attempts = 0;
-        while (specRemaining > 0 && attempts < 200) {
+        while (specRemaining > 0 && attempts < 400) {
           attempts++;
           const spec = specCatalog[Math.floor(Math.random() * specCatalog.length)];
           if (!spec) continue;
-          const currentRank = currentActor._specTrained[spec.id] || 0;
+          const floor = specGrantCtx ? this._specGrantRankIn(specGrantCtx, spec) : 0;
+          const currentRank = Math.max(currentActor._specTrained[spec.id] || 0, floor);
           if (currentRank < 4) {
-            const add = Math.min(specRemaining, Math.floor(Math.random() * 2) + 1);
+            const add = Math.min(specRemaining, 4 - currentRank, Math.floor(Math.random() * 2) + 1);
             currentActor._specTrained[spec.id] = currentRank + add;
             specRemaining -= add;
           }
         }
-        currentActor._specPointsSpent = 12 - specRemaining;
+        currentActor._specPointsSpent = CC_SPEC_BUDGET - specRemaining;
       }
 
       // Random Bio & Ideology
@@ -12273,7 +12869,7 @@
       ? window.SpriteCatalog.pickNpcKey(Math.random())
       : null;
     if (!charName) {
-      const keys = Object.keys(npcData).filter((k) => npcData[k] && npcData[k].npc === true);
+      const keys = Object.keys(npcData).filter((k) => npcData[k] && npcData[k].npc === true && npcData[k].vip !== true);
       if (keys.length === 0) return null;
       charName = keys[Math.floor(Math.random() * keys.length)];
     }

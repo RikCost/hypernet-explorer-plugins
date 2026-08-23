@@ -1,5 +1,6 @@
 {
   "Humanoid": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -1898,6 +1899,7 @@
     ]
   },
   "Fairy": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -4660,6 +4662,7 @@
     ]
   },
   "DoubleHeadedHumanoid": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -5150,6 +5153,7 @@
     ]
   },
   "Demon": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -6338,6 +6342,7 @@
     ]
   },
   "Minotaur": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -6523,6 +6528,7 @@
     ]
   },
   "Goblin": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
@@ -8420,6 +8426,7 @@
     ]
   },
   "Ogre": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -9128,6 +9135,7 @@
     ]
   },
   "Vampire": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -9655,6 +9663,7 @@
     ]
   },
   "ArmoredKnight": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -9859,6 +9868,7 @@
     ]
   },
   "Centaur": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -10489,6 +10499,7 @@
     ]
   },
   "Gorgon": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
@@ -12214,6 +12225,7 @@
     ]
   },
   "Angel": {
+    "sentient": true,
     "skills": [
       848
     ],
@@ -12433,6 +12445,7 @@
     ]
   },
   "Elven": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -12635,6 +12648,7 @@
     ]
   },
   "Gnome": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -12845,6 +12859,7 @@
     ]
   },
   "Dwarf": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
@@ -13790,6 +13805,7 @@
     ]
   },
   "SpiderHumanHybrid": {
+    "sentient": true,
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
@@ -14754,6 +14770,7 @@
     ]
   },
   "WingedDemon": {
+    "sentient": true,
     "skills": [
       848
     ],

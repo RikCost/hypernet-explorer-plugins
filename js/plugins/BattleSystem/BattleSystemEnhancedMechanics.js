@@ -5,7 +5,7 @@
 
 /*:
  * @target MZ
- * @plugindesc v2.0 Mechanics module: health protection, danger warnings, commands.
+ * @plugindesc v2.1 Mechanics module: health protection, danger warnings, stat requirement fumbles, commands.
  * @author Combined by Claude, modified by OmniLex
  * @pluginName BattleSystemEnhancedMechanics
  *
@@ -17,7 +17,8 @@
  * Requires BattleSystemEnhanced.js (Core) and sub-modules to be loaded first.
  *
  * Provides health protection (death prevention), danger assessment (median level
- * vs enemy level warnings), the top-screen warning toast, and debug commands.
+ * vs enemy level warnings), the top-screen warning toast, the stat requirement
+ * fumble roll (<StatReq: STAT N>, window.SkillStatReq), and debug commands.
  *
  * Loading order:
  *   1. BattleSystemEnhanced.js (Core)
@@ -274,7 +275,73 @@
     };
 
     // ========================================================================
-    // 8. PLUGIN COMMAND FORWARDING
+    // 8. STAT REQUIREMENT FUMBLES
+    // ========================================================================
+    // Every skill names a base stat and a floor for it (`<StatReq: INT 14>`,
+    // read by window.SkillStatReq in the Core module). Nothing bars a character
+    // from carrying or casting a skill they are short on: they simply do not
+    // have the grip on it yet, and the action can come apart in their hands.
+    //
+    // The roll is taken ONCE per action, not once per target, so a spell thrown
+    // at the whole troop either lands on all of them or on none. The cost is
+    // paid either way - Game_Battler.useItem has already run by the time the
+    // action is invoked, and a spell that fizzles halfway out still burns the MP
+    // it was pushed with.
+
+    function statReqFumble(action) {
+        if (!action || action._statReqFumbled !== undefined) return action ? action._statReqFumbled : false;
+        action._statReqFumbled = false;
+        const subject = action.subject && action.subject();
+        const item = action.item && action.item();
+        if (!subject || !item || !action.isSkill || !action.isSkill()) return false;
+        if (!window.SkillStatReq) return false;
+        const chance = window.SkillStatReq.failChance(subject, item);
+        if (chance > 0 && Math.random() < chance) action._statReqFumbled = true;
+        return action._statReqFumbled;
+    }
+    BSE.Helpers.rollStatReqFumble = statReqFumble;
+
+    // Rolled where the action is announced, so the battle log can say what went
+    // wrong before the first target is touched.
+    const _BattleManager_startAction_statReq = BattleManager.startAction;
+    BattleManager.startAction = function() {
+        const subject = this._subject;
+        const action = subject && subject.currentAction && subject.currentAction();
+        if (action) statReqFumble(action);
+        _BattleManager_startAction_statReq.call(this);
+    };
+
+    const _Window_BattleLog_startAction_statReq = Window_BattleLog.prototype.startAction;
+    Window_BattleLog.prototype.startAction = function(subject, action, targets) {
+        _Window_BattleLog_startAction_statReq.call(this, subject, action, targets);
+        if (action && statReqFumble(action)) {
+            const item = action.item();
+            const req = window.SkillStatReq.of(item);
+            this.push('addText', T('Battle.statReq.fumble', {
+                actor: subject.name(),
+                skill: item.name,
+                stat: window.SkillStatReq.statName(req.stat)
+            }));
+        }
+    };
+
+    // A fumbled action reaches its targets and does nothing to them. The result
+    // is left reading as a miss so every HUD, log and animation already written
+    // for a miss says the right thing without being taught a new word.
+    const _Game_Action_apply_statReq = Game_Action.prototype.apply;
+    Game_Action.prototype.apply = function(target) {
+        if (statReqFumble(this)) {
+            const result = target.result();
+            result.clear();
+            result.used = true;
+            result.missed = true;
+            return;
+        }
+        _Game_Action_apply_statReq.call(this, target);
+    };
+
+    // ========================================================================
+    // 9. PLUGIN COMMAND FORWARDING
     // ========================================================================
 
     BSE.Functions.executeDamageActor = function(args) {

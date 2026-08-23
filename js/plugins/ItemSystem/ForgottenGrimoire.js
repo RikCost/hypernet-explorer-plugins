@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Forgotten Grimoire v1.0.0 — learn a spell from 5 random offers (parchment 2-page). [Claude]
+ * @plugindesc Forgotten Grimoire v1.1.0 — learn a spell from 5 random offers (parchment 2-page). [Claude]
  * @author Omni-Lex
  *
  * @help ForgottenGrimoire.js
@@ -8,7 +8,9 @@
  * A parchment two-page reader. Five random offers are rolled ONCE when the book
  * opens, against the whole party, and never change: picking a different reader
  * does not reroll them. A reader can only claim an offer whose MP cost is within
- * their MAX MP and that they do not already know; the rest are greyed out.
+ * their MAX MP, whose <StatReq: STAT N> floor their base stat clears
+ * (window.SkillStatReq), and that they do not already know; the rest are greyed
+ * out. Every card names the stat it is written in.
  *
  * The party's median Luck (PSI) raises the rare chance that a Forbidden spell
  * surfaces among the offers.
@@ -276,11 +278,25 @@
     };
 
     // Why this reader cannot take the spell: null when they can.
+    //
+    // A grimoire is not a battle: what is written here has to be understood
+    // before it can be copied out, so unlike the skill menu (which lets a
+    // character carry anything they know and simply fumble it) the book will
+    // not open for a reader who is short of the stat it is written in.
     Scene_ForgottenGrimoire.prototype.blockedReason = function (actor, s) {
         if (!actor || !s) return "mp";
         if (actor.skills().some(k => k && k.id === s.id)) return "known";
         if ((s.mpCost || 0) > actor.mmp) return "mp";
+        if (window.SkillStatReq && !window.SkillStatReq.meets(actor, s)) return "stat";
         return null;
+    };
+
+    // "Requires INT 14", the floor written into the spell itself.
+    Scene_ForgottenGrimoire.prototype.requirementLabel = function (s) {
+        const svc = window.SkillStatReq;
+        const req = svc && svc.of(s);
+        if (!req) return "";
+        return T('Grimoire.ui.requires', { stat: svc.statName(req.stat), points: req.points });
     };
 
     // The five offers belong to the book, not to the reader: they are rolled
@@ -319,7 +335,13 @@
     Scene_ForgottenGrimoire.prototype.blockedLabel = function (s) {
         const reason = this.blockedReason(this._actor, s);
         if (!reason) return "";
-        return T(reason === "known" ? 'Grimoire.ui.alreadyKnown' : 'Grimoire.ui.beyondReach');
+        if (reason === "known") return T('Grimoire.ui.alreadyKnown');
+        if (reason === "stat") {
+            const svc = window.SkillStatReq;
+            const req = svc.of(s);
+            return T('Grimoire.ui.beyondStat', { stat: svc.statName(req.stat), points: req.points });
+        }
+        return T('Grimoire.ui.beyondReach');
     };
 
     // Changing reader leaves the five offers exactly where they are: only which
@@ -432,9 +454,11 @@
                 const desc = (s.description || "").replace(/\n/g, " ");
                 // The reason line is always in the DOM (empty when the reader
                 // can take the spell) so syncOffers can rewrite it in place.
+                const req = this.requirementLabel(s);
                 cardsHTML += `<div class="grim-card focusable ${sel} ${learned} ${blocked}" onclick="SceneManager._scene.chooseSpell(${idx})">
                     <div class="grim-name"><span>${s.name}</span><span class="grim-mp">${s.mpCost} MP</span></div>
                     ${forb}<span class="grim-blocked">${this.blockedLabel(s)}</span>
+                    ${req ? `<div class="grim-req">${req}</div>` : ""}
                     <div class="grim-desc">${desc}</div>
                 </div>`;
             });

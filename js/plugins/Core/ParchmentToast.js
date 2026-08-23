@@ -44,6 +44,12 @@
  *       Specialization level up. Accepts a spec id, a spec name, or the spec
  *       object; the level name comes from window.Specializations.
  *
+ *   ParchmentToast.skillCast(actor, skill)
+ *       The skill's own Message lines ("%1 lays the whole world bare!"), the
+ *       ones the battle log reads out. Cast from a menu there is no log, so
+ *       the line is shown here instead. Called for you: every menu route into
+ *       a skill goes through useItem, which announces the cast itself.
+ *
  *   ParchmentToast.gold(1200)      money gained, formatted in euros
  *   ParchmentToast.money(1200)     the formatted string on its own
  *   ParchmentToast.icon(176)       one IconSet cell as inline HTML
@@ -668,6 +674,69 @@
     });
   }
 
+  // --------------------------------------------------------------------------
+  // Skills cast outside battle
+  // --------------------------------------------------------------------------
+  // A skill carries its own two Message lines, and in a fight the battle log
+  // reads them out. Cast from a menu there is no log to read them, so the
+  // sentence would be lost and the skill would go off in silence: it is shown
+  // here instead, so a skill sounds the same wherever it was used from.
+
+  // %1 is who cast it, %2 is the skill, the same substitution the log makes.
+  function skillCastLines(subject, skill) {
+    const who = subject && subject.name ? subject.name() : "";
+    const name = localized(skill.name);
+    const lines = [];
+    for (const raw of [skill.message1, skill.message2]) {
+      const text = localized(raw);
+      if (!text) continue;
+      lines.push(typeof text.format === "function" ? text.format(who, name) : text);
+    }
+    return lines;
+  }
+
+  function skillCast(subject, skill, opts = {}) {
+    if (!skill) return;
+    const lines = skillCastLines(subject, skill);
+    if (!lines.length) return;
+    let html = `<div class="toast-row">${skill.iconIndex ? icon(skill.iconIndex) : ""}` +
+      `<span>${escapeHtml(lines[0])}</span></div>`;
+    for (const extra of lines.slice(1)) {
+      html += `<div class="toast-note">${escapeHtml(extra)}</div>`;
+    }
+    const who = subject && subject.name ? subject.name() : "";
+    show(html, {
+      severity: opts.severity || "info",
+      duration: opts.duration || 200,
+      html: true,
+      // Casting the same skill again refreshes the line rather than piling a
+      // second copy of the same sentence on top of it.
+      key: `skillcast:${who}:${skill.id}`  // i18n-ignore  dedupe key
+    });
+  }
+
+  // Every menu route into a skill ends in useItem (the skill scene, the menu
+  // search bar, the hotbar, the idle explorer), so the announcement is made
+  // once here instead of at each of them. Nothing is said in battle, where the
+  // log already reads the line out, and nothing is said for a battler outside
+  // the party: those are being simulated (the tournament), not played.
+  function announcesCast(subject, item) {
+    if (!item || !item.id) return false;
+    if (typeof DataManager === "undefined" || typeof DataManager.isSkill !== "function") return false;
+    if (!DataManager.isSkill(item)) return false;
+    if (typeof $gameParty === "undefined" || !$gameParty || $gameParty.inBattle()) return false;
+    const members = ($gameParty.allMembers ? $gameParty.allMembers() : $gameParty.members()) || [];
+    return members.indexOf(subject) >= 0;
+  }
+
+  if (typeof Game_Battler !== "undefined") {
+    const _Game_Battler_useItem = Game_Battler.prototype.useItem;
+    Game_Battler.prototype.useItem = function (item) {
+      _Game_Battler_useItem.call(this, item);
+      if (announcesCast(this, item)) skillCast(this, item);
+    };
+  }
+
   // ==========================================================================
   // Event gains
   // ==========================================================================
@@ -838,6 +907,7 @@
     need,
     specUp,
     levelUp,
+    skillCast,
     icon,
     money
   };

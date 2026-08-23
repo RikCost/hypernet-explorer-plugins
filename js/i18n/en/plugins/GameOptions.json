@@ -100,17 +100,12 @@
     "weatherVolume": "Volume of outdoor ambience: rain, storms, wind and biome sounds. Interiors are unaffected.",
     "biomeMusic": "Let the place you stand in choose the music: each biome has its own tracks, one picked per country and per half of the day, with a darker set for an emptied world. Still being written, so it is off by default and every map keeps its own theme.",
     "partyHud": "A card per party member in the top-left: HP, MP, states and urgent needs.",
-    "partyFormation": "How the rest of the party walks behind the leader on the map.",
     "musicArtistDisplay": "Whether the game tells you what music is playing and who made it.",
     "battleMusicName": "Which track plays when a fight starts. Biome, the default, uses the battle theme of the place you are fighting in. Random draws a different one of the tracks below at the start of every battle.",
     "markovLlmModel": "Which GGUF language model writes generated dialogue. Off leaves every generated line to the Markov chains. Drop a .gguf file into the game's models folder and it is listed here.",
     "dialogueMode": "How an NPC with nothing scripted to say responds when you talk to them. Empathize plays out a Socialize action from their personality, falling back to a flavour rumour. Markovian generates a fresh line from the NPC's own word bank instead."
   },
   "descState": {
-    "partyFormation": [
-      "Close: everyone marches in the leader's footsteps, one tile apart.",
-      "Loose: they wander and live their own lives around you. Sprint for two seconds to form the column; they regroup after a battle or a map change. Face one and press OK to talk."
-    ],
     "enemySpawnMode": [
       "Distance from spawn: difficulty comes from the place, not from you. Levels rise the further a tile lies from where you started. Each nation and biome has its own roster, and every tile hides a boss.",
       "Party Level: enemies match your party. Roamers stay at or below your level; each tile hides one boss above it. The safest option.",

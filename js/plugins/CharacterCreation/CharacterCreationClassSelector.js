@@ -343,7 +343,7 @@
     }
 
     drawClassNote() {
-      let note = this._class.note || "No description available.";
+      let note = this._class.note || T('ClassSelect.noDescription');
       const rawNote = this._class.note || "";
 
       if (ConfigManager.language === "it") {
@@ -765,7 +765,7 @@
           // ── Nature & Magical System pills ──────────────────────────────────
           const _nature = window.MagicNature ? window.MagicNature.natureOf(c) : null;
           const _natureColors = { magical:"#ba68c8", mundane:"#78909c", both:"#a1887f" };
-          const _natureLabels = { magical: T('ClassSelect.natureMagical')||"Magical", mundane: T('ClassSelect.natureMundane')||"Mundane", both: T('ClassSelect.natureBoth')||"Both" };
+          const _natureLabels = { magical: T('ClassSelect.natureMagical'), mundane: T('ClassSelect.natureMundane'), both: T('ClassSelect.natureBoth') };
           const naturePill = _nature
             ? `<span class="cc-element-badge cc-chip" style="border-color:${_natureColors[_nature]}44; color:${_natureColors[_nature]}; font-size:0.8rem;">✦ ${_natureLabels[_nature]}</span>`
             : "";
@@ -777,28 +777,28 @@
           // ── Dual Wield ─────────────────────────────────────────────────────
           const hasDualWield = c.traits.some(t => t.code === 55 && t.dataId === 1);
           const dualWieldBadge = hasDualWield
-            ? `<span class="cc-element-badge cc-chip" style="border-color:rgba(255,213,79,0.5); color:#ffd54f;">⚔ ${T('ClassSelect.dualWield')||'Dual Wield'}</span>`
+            ? `<span class="cc-element-badge cc-chip" style="border-color:rgba(255,213,79,0.5); color:#ffd54f;">⚔ ${T('ClassSelect.dualWield')}</span>`
             : "";
 
           // ── XParam Bonuses ─────────────────────────────────────────────────
           const _xNames = [
-            T('ClassSelect.xparam.hit')||"Hit Rate",    T('ClassSelect.xparam.eva')||"Evasion Rate",
-            T('ClassSelect.xparam.cri')||"Critical Rate", T('ClassSelect.xparam.cev')||"Crit. Evasion",
-            T('ClassSelect.xparam.mev')||"Magic Evasion", T('ClassSelect.xparam.mrf')||"Magic Reflect",
-            T('ClassSelect.xparam.cnt')||"Counter Atk",  T('ClassSelect.xparam.hrg')||"HP Regen",
-            T('ClassSelect.xparam.mrg')||"MP Regen",     T('ClassSelect.xparam.trg')||"TP Regen"
+            T('ClassSelect.xparam.hit'), T('ClassSelect.xparam.eva'),
+            T('ClassSelect.xparam.cri'), T('ClassSelect.xparam.cev'),
+            T('ClassSelect.xparam.mev'), T('ClassSelect.xparam.mrf'),
+            T('ClassSelect.xparam.cnt'), T('ClassSelect.xparam.hrg'),
+            T('ClassSelect.xparam.mrg'), T('ClassSelect.xparam.trg')
           ];
           const xBonuses = c.traits.filter(t => t.code === 22 && t.value !== 0).map(t => {
             const sign = t.value >= 0 ? "+" : "";
             const col  = t.value >= 0 ? "#a5d6a7" : "#ef9a9a";
             return `<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:0.88rem;">
-              <span style="color:#b0bec5;">${_xNames[t.dataId] || "XParam "+t.dataId}</span>
+              <span style="color:#b0bec5;">${_xNames[t.dataId] || T('ClassSelect.xparam.unknown', { n: t.dataId })}</span>
               <span style="color:${col};font-weight:bold;">${sign}${Math.round(t.value*100)}%</span>
             </div>`;
           });
           const bonusesSectionHtml = xBonuses.length ? `
             <div class="cc-dossier-card cc-card-tight">
-              <h3 class="cc-subheader">${T('ClassSelect.bonuses')||'Bonuses'}</h3>
+              <h3 class="cc-subheader">${T('ClassSelect.bonuses')}</h3>
               ${xBonuses.join("")}
             </div>` : "";
 
@@ -815,7 +815,7 @@
               return `<div style="display:flex;align-items:center;gap:6px;padding:3px 2px;border-bottom:1px solid rgba(218,165,32,0.08);cursor:default;"
                            title="${desc}">
                 <span style="min-width:28px;text-align:right;font-size:0.72rem;color:rgba(218,165,32,${isStart?'0.9':'0.45'});font-weight:bold;">
-                  ${isStart ? '★' : 'Lv'+l.level}
+                  ${isStart ? '★' : T('ClassSelect.levelShort')+l.level}
                 </span>
                 <span style="flex:1;font-size:0.88rem;color:${isStart?'#fff':'#bbb'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${window.CCDbName(sk)}</span>
                 ${mp ? `<span style="font-size:0.75rem;color:#64b5f6;flex-shrink:0;">${mp}MP</span>` : ""}
@@ -824,7 +824,7 @@
             }).join("");
           const learnsetHtml = _learnRows ? `
             <div class="cc-dossier-card cc-card-tight">
-              <h3 class="cc-subheader">${T('ClassSelect.learnset')||'Skills'}</h3>
+              <h3 class="cc-subheader">${T('ClassSelect.learnset')}</h3>
               <div style="max-height:160px;overflow-y:auto;">
                 ${_learnRows}
               </div>
@@ -840,6 +840,12 @@
             </div>
           `;
 
+        // The attribute abbreviations the rest of the game prints, English
+        // where CharacterCreationShared has not loaded (a harness, a stripped
+        // build).
+        const _SL = (typeof window.CCStatLabels === 'function')
+          ? window.CCStatLabels()
+          : { STR: "STR", CON: "CON", INT: "INT", WIS: "WIS", DEX: "DEX", PSI: "PSI" };
         rightHtml = `
           <div class="cc-page cc-page-right">
             <h2 class="cc-header-gothic">${window.CCDbName(c)}</h2>
@@ -851,12 +857,12 @@
 
             <div class="cc-dossier-card cc-card-tight">
               <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px 12px;">
-                <div class="cc-dossier-row"><span class="cc-dossier-label">STR:</span><span class="cc-dossier-value">${str}</span></div>
-                <div class="cc-dossier-row"><span class="cc-dossier-label">CON:</span><span class="cc-dossier-value">${con}</span></div>
-                <div class="cc-dossier-row"><span class="cc-dossier-label">INT:</span><span class="cc-dossier-value">${mat}</span></div>
-                <div class="cc-dossier-row"><span class="cc-dossier-label">WIS:</span><span class="cc-dossier-value">${mdf}</span></div>
-                <div class="cc-dossier-row"><span class="cc-dossier-label">DEX:</span><span class="cc-dossier-value">${agi}</span></div>
-                <div class="cc-dossier-row"><span class="cc-dossier-label">PSI:</span><span class="cc-dossier-value">${luk}</span></div>
+                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.STR}:</span><span class="cc-dossier-value">${str}</span></div>
+                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.CON}:</span><span class="cc-dossier-value">${con}</span></div>
+                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.INT}:</span><span class="cc-dossier-value">${mat}</span></div>
+                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.WIS}:</span><span class="cc-dossier-value">${mdf}</span></div>
+                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.DEX}:</span><span class="cc-dossier-value">${agi}</span></div>
+                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.PSI}:</span><span class="cc-dossier-value">${luk}</span></div>
               </div>
             </div>
 

@@ -81,10 +81,14 @@
   "category": "No skills cataloged in this category."
  },
  "spec": {
+  "statMet": "{value} (met)",
+  "statShort": "{value} ({percent}% to fumble)",
   "trains": "Trains",
   "bonus": "Skill bonus",
   "label": {
    "damage": "Damage",
+   "statReq": "Requires",
+   "statHeld": "Base stat",
    "range": "Range"
   },
   "range": {

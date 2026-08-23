@@ -132,7 +132,8 @@
     border-right: none !important;
 }
 
-.cc-content-pane .cc-pockets-spread:has(.cc-page-full)::after {
+.cc-content-pane .cc-pockets-spread:has(.cc-page-full)::after,
+#character-creation-container .cc-pockets-spread:has(.cc-page-full)::after {
     display: none !important;
 }
 
@@ -431,7 +432,7 @@
 
 .cc-compact-bust-full {
     width: 100%;
-    height: 190px;
+    height: 224px;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center center;
@@ -454,8 +455,11 @@
     background-color: rgba(0, 0, 0, 0.55);
 }
 
-.cc-compact-bust-full:hover {
+/* The portrait is the button: hovering it lights a gold frame around the
+   bust, drawn inside the box so nothing shifts by a pixel. */
+.cc-compact-bust-full:not(.locked):hover {
     filter: brightness(1.08);
+    box-shadow: inset 0 0 0 2px var(--text-primary-hover), 0 0 10px var(--shadow-gold-amber-50);
 }
 
 .cc-compact-bust-full.empty {
@@ -581,6 +585,26 @@
 .cc-compact-loadout-grid.cc-loadout-open {
     max-height: none;
     overflow: visible;
+}
+
+/* Weapon proficiencies read as a short word each, so two columns fit more of
+   them on screen than one long column of single icons. */
+.cc-compact-loadout-grid.cc-loadout-grid-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px 14px;
+}
+
+/* The scenario dossier's per-member skills and gear: short entries, so three
+   columns fit more of a loadout on screen than one long list. */
+.cc-compact-loadout-grid.cc-loadout-grid-cols-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px 10px;
+}
+
+.cc-compact-loadout-grid.cc-loadout-grid-cols-3 .cc-compact-loadout-item .cc-loadout-name {
+    font-size: 0.86rem;
 }
 
 .cc-compact-loadout-grid .cc-compact-loadout-item {
@@ -824,6 +848,22 @@
     overflow: hidden;
     position: relative;
     background: rgba(0, 0, 0, 0.4);
+}
+
+/* A dossier is played as it was written: its pages can be read and scrolled,
+   but every control on them is dead to the mouse. The handlers refuse the pad
+   and the keyboard on their own. */
+.cc-preset-locked .cc-card-option,
+.cc-preset-locked .cc-bio-chip,
+.cc-preset-locked .cc-bio-select,
+.cc-preset-locked .cc-spec-card,
+.cc-preset-locked .cc-spec-btn,
+.cc-preset-locked .cc-spec-tab,
+.cc-preset-locked .cc-trait-card,
+.cc-preset-locked button {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .cc-content-pane .cc-pockets-spread {
@@ -2244,19 +2284,55 @@
     margin-top: 10px;
 }
 
+/* --- Right page: the sheet header ----------------------------------------
+   The purse used to sit above the card grid on the left page; it reads as a
+   running total of the sheet being written, so it heads this page instead,
+   with Reset / Randomize right under it rather than floating in a corner. */
+.ts-sheet-head {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 0 0 auto;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-accent-hover-translucent-5);
+}
+
+.ts-purse--sheet {
+    margin-bottom: 0;
+}
+
+.ts-purse--sheet .ts-purse-value {
+    font-size: 1.35rem;
+}
+
+.ts-sheet-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.ts-sheet-actions .cc-profile-open-btn {
+    width: 100%;
+}
+
 /* --- Right page: the open trait ------------------------------------------ */
 /* Given the room the old fixed-height box on the left page never had: it takes
    what it needs and scrolls only when a trait really is that long. */
 .ts-detail {
     flex: 0 1 auto;
     min-height: 0;
-    max-height: 46%;
+    max-height: 42%;
     overflow-y: auto;
     margin-bottom: 12px;
 }
 
 .ts-detail-card {
     margin-bottom: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--border-accent-hover-translucent-5);
+    border-radius: 6px;
+    background: var(--bg-primary-hover-translucent-35);
 }
 
 .ts-detail-head {
@@ -2363,6 +2439,10 @@
     max-height: 26%;
     overflow-y: auto;
     margin-bottom: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-accent-hover-translucent-5);
+    border-radius: 6px;
+    background: var(--bg-primary-hover-translucent-35);
 }
 
 .ts-summary-row {
@@ -2385,9 +2465,12 @@
 /* Flat compact rows — no translateY lift so there is no hover-flicker loop
    (card moves out from under pointer → mouseleave → drops back → mouseenter
    → lifts again → repeat). */
+/* Four names across at every width: traits and illnesses are short labels and
+   the board is the widest page of the sheet, so a two-across list wasted half
+   the room and still made its own text small to fit. */
 .cc-select-grid.cc-trait-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 6px;
     flex: 1 1 auto;
     min-height: 0;
@@ -2435,7 +2518,7 @@
     margin: 0;
     flex: 1 1 auto;
     min-width: 0;
-    font-size: 0.88rem;
+    font-size: 1.06rem;
     font-family: inherit;
     font-weight: 500;
     line-height: 1.25;
@@ -2766,6 +2849,23 @@
     gap: 4px;
 }
 
+/* The scenario dossier's per-member traits and diseases: a fixed 3-column
+   grid so a sheet's badge rows line up with its skills and gear below. */
+.cc-badge-wrap.cc-badge-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px 6px;
+}
+
+.cc-badge-wrap.cc-badge-grid-3 .cc-element-badge {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .cc-badge-wrap .cc-element-badge {
     padding: 2px 7px;
     font-size: 0.74rem;
@@ -2955,17 +3055,41 @@
     flex: 1 1 42%;
 }
 
+/* The trait and illness roster is four columns of cards; what it stands next
+   to is one hovered card and a row of chips, which reads perfectly well in a
+   third of the spread. */
+.cc-content-pane .cc-pockets-spread > .cc-page-left.cc-trait-board {
+    width: 68%;
+    flex: 1 1 68%;
+}
+
+.cc-content-pane .cc-pockets-spread > .cc-page-right.cc-trait-detail {
+    width: 32%;
+    flex: 1 1 32%;
+}
+
+/* The specialization board is a dense card grid; the right page only ever
+   holds one hovered card's detail plus a chip list, so it needs a fraction
+   of the spread the board does. */
+.cc-content-pane .cc-pockets-spread > .cc-page-left.cc-spec-board {
+    width: 78%;
+    flex: 1 1 78%;
+}
+
+.cc-content-pane .cc-pockets-spread > .cc-page-right.cc-spec-detail {
+    width: 22%;
+    flex: 1 1 22%;
+}
+
 /* Three or four columns of classes once there is width for them. */
 @media (min-width: 1500px) {
-    .cc-select-grid.cc-class-grid,
-    .cc-select-grid.cc-trait-grid {
+    .cc-select-grid.cc-class-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1900px) {
-    .cc-select-grid.cc-class-grid,
-    .cc-select-grid.cc-trait-grid {
+    .cc-select-grid.cc-class-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
@@ -3733,8 +3857,8 @@
 
 .cc-spec-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
     flex: 1 1 auto;
     min-height: 0;
     margin-top: 6px;
@@ -3745,15 +3869,16 @@
 
 .cc-spec-card {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     justify-content: space-between;
     padding: 6px 8px;
     background: transparent;
-    border: 1px solid var(--border-gold-amber-30);
+    border: 1px solid transparent;
     border-radius: 6px;
     transition: all 0.2s ease;
     cursor: pointer;
-    gap: 6px;
+    gap: 8px;
 }
 
 .cc-spec-card:hover {
@@ -3776,7 +3901,7 @@
 }
 
 .cc-spec-title {
-    font-size: 0.88rem;
+    font-size: 1.05rem;
     font-weight: bold;
     color: var(--text-card-dark);
     white-space: nowrap;
@@ -3788,36 +3913,45 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--text-card-medium);
+    min-width: 0;
+}
+
+.cc-spec-cat-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .cc-spec-stat-badge {
-    padding: 1px 5px;
+    padding: 2px 6px;
     border-radius: 3px;
     background: transparent;
     border: 1px solid var(--border-gold-amber-30);
     color: var(--text-primary-hover);
     font-weight: bold;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
 }
 
 .cc-spec-controls {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 6px;
     flex-shrink: 0;
 }
 
 .cc-spec-btn {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     border-radius: 4px;
     background: transparent;
     border: 1px solid var(--border-gold-amber-30);
     color: var(--text-primary-hover);
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3842,8 +3976,8 @@
 }
 
 .cc-spec-pip {
-    width: 8px;
-    height: 12px;
+    width: 9px;
+    height: 14px;
     border-radius: 2px;
     background: transparent;
     border: 1px solid var(--border-gold-amber-30);
@@ -4030,7 +4164,7 @@
     align-items: center;
     padding: 10px 6px;
     background: transparent;
-    border: 1px solid var(--border-gold-amber-30);
+    border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.18s ease;
@@ -4053,12 +4187,12 @@
 }
 
 .cc-pet-avatar {
-    width: 48px;
-    height: 48px;
+    width: 76px;
+    height: 76px;
     margin-bottom: 6px;
     border-radius: 6px;
     background-color: transparent;
-    border: 1px solid var(--border-gold-amber-30);
+    border: 1px solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4083,6 +4217,35 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
+}
+
+/* The three optional companion traits, toggled independently (any, all or
+   none may be active) rather than picked from as tabs. */
+.cc-pet-trait-toggle {
+    font-family: 'Lora', serif;
+    font-size: 0.82rem;
+    color: var(--text-primary-hover);
+    padding: 5px 8px;
+    cursor: pointer;
+    border: 1px solid var(--border-gold-amber-30);
+    border-radius: 4px;
+    background: transparent;
+    font-weight: bold;
+    flex: 1 1 0;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.cc-pet-trait-toggle:hover {
+    background: var(--bg-primary-hover-translucent-35);
+    border-color: var(--text-primary-hover);
+}
+
+.cc-pet-trait-toggle.active {
+    background: var(--text-primary-hover);
+    color: var(--bg-secondary-hover);
+    border-color: var(--text-primary-hover);
+    box-shadow: 0 2px 4px var(--shadow-gold-amber-50);
 }
 
 /* ==========================================================================
@@ -4154,64 +4317,11 @@
 }
 
 /* 8-Stat Matrix in Personal Dossier */
-/* The sheet's two vitals, side by side on one line. The track is inked off the
-   theme's own surface tokens so it is legible on a black page as well as on
-   parchment; the fills are the game-wide HP/MP colours. */
+/* HP and MP now lead the grid as plain boxes like every other stat, so the
+   sidebar spends one row's height on them instead of a separate bar block. */
 .cc-vitals-block {
     padding: 2px 0;
 }
-
-.cc-vitals-row {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-bottom: 6px;
-}
-
-.cc-vital {
-    min-width: 0;
-}
-
-.cc-vital-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 2px;
-    gap: 4px;
-}
-
-.cc-vital-label {
-    font-family: 'Lora', serif;
-    font-size: 0.82rem;
-    font-weight: bold;
-}
-
-.cc-vital-label--hp { color: var(--bg-hp-bar); }
-.cc-vital-label--mp { color: var(--bg-mp-bar); }
-
-.cc-vital-value {
-    font-family: 'Lora', serif;
-    font-size: 0.88rem;
-    font-weight: bold;
-    color: var(--text-primary-hover);
-}
-
-.cc-vital-track {
-    height: 7px;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-gold-amber-30);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.cc-vital-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.2s;
-}
-
-.cc-vital-fill--hp { background: var(--bg-hp-bar); }
-.cc-vital-fill--mp { background: var(--bg-mp-bar); }
 
 .cc-stat-mod {
     font-size: 0.75rem;
@@ -4390,6 +4500,12 @@
     white-space: nowrap;
 }
 
+/* A tier the class or a trait handed over rather than one that was bought. */
+.cc-spec-badge-chip.granted {
+    border-color: var(--border-success-medium-35);
+    color: var(--text-forest-complete);
+}
+
 .ts-detail {
     box-sizing: border-box;
     width: 100%;
@@ -4540,7 +4656,7 @@
     padding: 8px 10px;
     border: 1px solid var(--border-accent-hover-translucent-5);
     border-radius: 6px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
 }
 
 .cc-scenario-sheet-head {
@@ -4590,26 +4706,27 @@
     color: var(--text-forest-green);
 }
 
-/* Eight figures across four columns: a whole stat block in two short rows. */
+/* Eight figures on one compact row: the whole stat block in the least height
+   a full readout can take. */
 .cc-scenario-stat-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 3px 8px;
-    margin-bottom: 6px;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 2px 4px;
+    margin-bottom: 5px;
 }
 
 .cc-scenario-stat {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 4px;
-    font-size: 0.78rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    font-size: 0.68rem;
     color: var(--text-text-alt-2);
 }
 
 .cc-scenario-stat b {
     color: var(--text-primary-hover);
-    font-size: 0.85rem;
+    font-size: 0.76rem;
 }
 
 .cc-scenario-section {
@@ -4631,8 +4748,6 @@
     flex: 0 0 auto;
     width: 100%;
     justify-content: center;
-    height: 42px;
-    font-size: 1.05rem;
     margin-top: 8px;
 }
 
@@ -23922,6 +24037,9 @@ cursor:pointer; font-size:16px; line-height:1.4;
 #menu-container .grim-name { font-weight:bold; font-size:1.019em; display:flex; justify-content:space-between; gap:8px; }
 #menu-container .grim-mp   { color:var(--accent-gold-pure,#b8860b); font-weight:bold; }
 #menu-container .grim-desc { font-size:0.87em; opacity:0.85; line-height:1.35; }
+/* The base stat a spell is written in (<StatReq:>, window.SkillStatReq):
+   the book will not open for a reader short of it. */
+#menu-container .grim-req  { font-size:0.82em; font-weight:bold; color:var(--accent-gold-pure,#b8860b); letter-spacing:0.4px; }
 #menu-container .grim-forbidden { color:#a01818; font-weight:bold; letter-spacing:0.5px; font-size:0.798em; text-transform:uppercase; }
 #menu-container .grim-empty { text-align:center; padding:40px 20px; font-style: normal; opacity:0.7; font-family:'Lora',serif; color:var(--text-primary-hover,#5d483b); }
 #menu-container .grim-psi { padding:10px 12px; border-radius:4px; margin-top:auto;
@@ -24297,6 +24415,20 @@ cursor:pointer; font-size:16px; line-height:1.4;
     color: var(--text-success-active);
     font-weight: bold;
     letter-spacing: 0.5px;
+}
+
+/* The stat floor a row is UNDER (<StatReq:>, window.SkillStatReq). Worn only
+   by the skills this character is short on, so the flag is a warning rather
+   than a label every row carries. */
+.skill-req-flag {
+    color: var(--text-danger-dark, #8b1a1a);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+    border: 1px solid var(--text-danger-dark, #8b1a1a);
+    border-radius: 3px;
+    padding: 0 4px;
+    font-size: 0.85em;
 }
 
 /* The shared strip (UI/MenuSearchBar.js) laid into the backpack's

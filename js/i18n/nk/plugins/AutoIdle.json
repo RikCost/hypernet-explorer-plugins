@@ -1,13 +1,6 @@
 {
   "optionName": "AUTO IDLE EXPLORER",
   "badge": "AUTO P2",
-  "formation": {
-    "label": "PARTY FORMATION",
-    "states": [
-      "CLOSE",
-      "LOOSE"
-    ]
-  },
   "loose": {
     "thought": [
       "A GOOD SPOT TA CATCH ME BREATH!",

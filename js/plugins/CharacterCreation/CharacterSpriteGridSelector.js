@@ -209,6 +209,9 @@
     const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase;
     const entry = db && db[name];
     if (entry && entry.beta === true) return false; // Hide beta sprites completely
+    // A VIP sheet is a named person's face: it belongs to the dossier that
+    // carries it, not to anyone who opens the board.
+    if (entry && entry.vip === true) return false;
     const SC = window.SpriteCatalog;
     if (!SC) return true;
     if (SC.allowedInMagic && !SC.allowedInMagic(name, entry)) return false;
@@ -305,7 +308,6 @@
 
   const SPRITE_GRID_COLS = 6;
   const SPRITE_GRID_SIZE = 96;
-  const SPRITE_PREVIEW_SIZE = 192;
   const SPRITE_MIN_FRAME_HEIGHT = 36;
 
   const spriteFrameGeometry = (spriteName) => {
@@ -412,6 +414,12 @@
   const spriteSheetUrl = (name) => `${SPRITE_DIR}${encodeURI(name)}.png`;
 
   const spriteFrameKey = (name, index) => `${name}#${index}`;
+
+  // Leaving a gallery is the same gesture everywhere: ESC on a keyboard, B on
+  // a pad, and the right mouse button, which the galleries did not read at all
+  // (their pages are DOM, so nothing else was going to answer it for them).
+  const cancelPressed = () =>
+    Input.isTriggered("cancel") || Input.isTriggered("escape") || TouchInput.isCancelled();
 
   // The bust a sheet is drawn with, if it has one. NPCs.json carries one entry
   // per sprite index; a sheet with a single bust lends it to every index.
@@ -608,21 +616,10 @@
 
       container.innerHTML = `
         <div class="cc-pockets-spread">
-          <div class="cc-page cc-page-left" style="padding: 20px 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
-            <h2 class="cc-header-gothic" style="margin-bottom: 6px; width: 100%; text-align: center;">${T("CharCreate.selectSprite")}</h2>
+          <div class="cc-page cc-page-full" style="padding: 20px 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
             <div class="cc-sprite-tab-bar">${tabsHtml}</div>
             <div class="cc-presets-board cc-sprite-vgrid" style="flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px;">
               <div class="cc-sprite-vcanvas"></div>
-            </div>
-          </div>
-          <div class="cc-page cc-page-right" style="padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; overflow: hidden;">
-            <div class="cc-sprite-portrait">
-              <div class="cc-sprite-portrait-bust"></div>
-              <div class="cc-sprite-portrait-sprite"></div>
-            </div>
-            <div class="cc-dossier-card" style="width: 90%; text-align: center;">
-              <div class="cc-option-title"></div>
-              <div class="cc-wanted-class cc-sprite-index"></div>
             </div>
           </div>
         </div>
@@ -630,11 +627,6 @@
 
       this._gridEl = container.querySelector(".cc-sprite-vgrid");
       this._canvasEl = container.querySelector(".cc-sprite-vcanvas");
-      this._portraitEl = container.querySelector(".cc-sprite-portrait");
-      this._bustEl = container.querySelector(".cc-sprite-portrait-bust");
-      this._previewEl = container.querySelector(".cc-sprite-portrait-sprite");
-      this._nameEl = container.querySelector(".cc-page-right .cc-option-title");
-      this._indexEl = container.querySelector(".cc-sprite-index");
 
       // No Back and no Continue: picking a sprite IS the answer, and the
       // gallery closes on it. Cancel still leaves without picking.
@@ -653,6 +645,10 @@
       this._gridEl.addEventListener("click", (event) => {
         const card = event.target.closest(".cc-sprite-card");
         if (card) this.onSpriteCardClick(Number(card.dataset.index));
+      });
+      this._gridEl.addEventListener("mousemove", (event) => {
+        const card = event.target.closest(".cc-sprite-card");
+        if (card) this.onSpriteCardHover(Number(card.dataset.index));
       });
       this._gridEl.addEventListener("scroll", () => {
         this._gridDirty = true;
@@ -795,6 +791,9 @@
     }
 
     scrollCursorIntoView() {
+      // The pointer already put the cursor where it wants it: scrolling now
+      // would drag the board out from under the card being hovered.
+      if (this._skipCursorScroll) return;
       const pane = this._gridEl;
       if (!this._cellW || pane.clientHeight <= 0) {
         this._needsCursorScroll = true;
@@ -831,18 +830,10 @@
         }
       }
       this.scrollCursorIntoView();
-
-      const bust = bustForSprite(entry.name, entry.index);
-      this._portraitEl.classList.toggle("no-bust", !bust);
-      this._bustEl.style.backgroundImage = bust ? `url("${bustArtUrl(bust)}")` : "none";
-      this._nameEl.textContent = decamelCase(
-        entry.name.split("/").pop().replace(/^[$!]+/, ""),
-      );
-      this._indexEl.textContent = `${T("CharCreate.spriteIndex")}: ${entry.index}`;
       this.paintAnimated(true);
     }
 
-    // The selected sprite walks, on the card and on the right page.
+    // The selected sprite walks in place on its card.
     paintAnimated(force) {
       const entry = this.selectedEntry();
       if (!entry) return;
@@ -852,10 +843,6 @@
       if (!force && pattern === this._pattern && direction === this._direction) return;
       this._pattern = pattern;
       this._direction = direction;
-      const previewBox = this._portraitEl && this._portraitEl.classList.contains("no-bust")
-        ? SPRITE_GRID_SIZE
-        : SPRITE_PREVIEW_SIZE;
-      paintSpriteFrame(this._previewEl, entry.name, entry.index, previewBox, pattern, direction);
       const cell = this._cells.get(this._index);
       if (cell) {
         paintSpriteFrame(cell._art, entry.name, entry.index, SPRITE_GRID_SIZE, pattern, direction);
@@ -866,6 +853,17 @@
     // taken, and the gallery closes on it. It used to need a click to move the
     // cursor, a second on the same card to confirm, or a trip to the Continue
     // button that is no longer there.
+    // The right page follows the pointer: the card under the mouse is the one
+    // shown at full size, bust and all, before anything is committed.
+    onSpriteCardHover(index) {
+      const opts = this.activeOptions();
+      if (!(index >= 0) || index >= opts.length || index === this._index) return;
+      this._index = index;
+      this._skipCursorScroll = true;
+      this.refreshSelection();
+      this._skipCursorScroll = false;
+    }
+
     onSpriteCardClick(index) {
       const opts = this.activeOptions();
       if (!(index >= 0) || index >= opts.length) return;
@@ -939,7 +937,7 @@
         SoundManager.playOk();
         this.onSpriteConfirm();
         return;
-      } else if (Input.isTriggered("cancel")) {
+      } else if (cancelPressed()) {
         SoundManager.playCancel();
         this.leaveWithoutPicking();
         return;
@@ -1063,16 +1061,14 @@
   // Placeholder art ships at ~4 KB; a real bust is half a megabyte.
   const BUST_MIN_BYTES = 50000;
 
-  const BUST_GRID_COLS = 3;
+  // Six across fills the full-width page (see cc-page-full) at roughly the
+  // same card size the old three-column half-page board used.
+  const BUST_GRID_COLS = 6;
   const BUST_GRID_GAP = 16;
   const BUST_GRID_OVERSCAN = 1;
   // The busts' own 883x1200. A cell of that shape holds a whole portrait with
   // nothing cut off it and no empty band beside it.
   const BUST_CELL_RATIO = 1200 / 883;
-  const CATEGORY_COLS = 2;
-  // Frames the cursor must rest before the right page loads the portrait, so
-  // holding a direction does not walk a whole category through the decoder.
-  const PREVIEW_SETTLE_FRAMES = 12;
 
   const nodeRequire = (name) => {
     try {
@@ -1202,9 +1198,11 @@
   };
 
   //---------------------------------------------------------------------------
-  // The gallery itself. Left page: the open category's busts, virtualised.
-  // Right page: the selected bust at full size, the species list and the
-  // buttons.
+  // The gallery itself, laid out like the sprite board: a species rail across
+  // the top (with a search field to narrow it) and one full-width virtualised
+  // grid of busts underneath. A click both moves the cursor and, on the
+  // already-selected card, confirms; Continue and Random sit in the shared
+  // nav bar below the board.
   //---------------------------------------------------------------------------
   class Scene_BustSelector extends Scene_MenuBase {
     constructor() {
@@ -1225,22 +1223,17 @@
       super.create();
       this._alive = true;
       this._categories = [];
-      this._filtered = [];
       this._all = {};
-      this._catIndex = 0;
-      this._bustIndex = 0;
-      this._openCategory = null;
+      this._activeCategory = null;
       this._busts = [];
+      this._index = 0;
       this._needsCursorScroll = false;
-      this._mode = "category";
       this._search = "";
       this._cells = new Map();
       this._pool = [];
       this._cellW = 0;
       this._cellH = 0;
       this._gridDirty = false;
-      this._previewWait = 0;
-      this._previewShown = null;
       this._wasd = { up: false, down: false, left: false, right: false };
       this.bindKeys();
       this.buildOverlay();
@@ -1273,7 +1266,6 @@
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
       window.removeEventListener("keydown", this._wasdListener);
       window.removeEventListener("resize", this._resizeListener);
-      if (this._previewEl) this._previewEl.removeAttribute("src");
       this._cells.clear();
       this._pool.length = 0;
       if (this._overlay) {
@@ -1302,35 +1294,24 @@
       container.innerHTML = "";
       if (window.CCScroll) window.CCScroll.bindWheel(container);
 
-      const pageStyle =
-        "padding: 24px; display: flex; flex-direction: column; height: 100%;" +
-        " box-sizing: border-box; overflow: hidden;";
       container.innerHTML = `
         <div class="cc-pockets-spread">
-          <div class="cc-page cc-page-left" style="${pageStyle} padding-right: 48px;">
-            <h2 class="cc-header-gothic cc-bust-title" style="margin-bottom: 8px; width: 100%; text-align: center;"></h2>
+          <div class="cc-page cc-page-full" style="padding: 20px 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
+            <input type="text" class="cc-species-search" style="margin-bottom: 8px;" />
+            <div class="cc-sprite-tab-bar"></div>
             <div class="cc-presets-board cc-bust-vgrid" style="flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px;">
               <div class="cc-bust-vcanvas"></div>
             </div>
-          </div>
-          <div class="cc-page cc-page-right" style="${pageStyle}">
-            <div class="cc-bust-preview"><img alt="" /></div>
-            <h2 class="cc-header-gothic" style="margin-bottom: 8px; width: 100%; text-align: center;"></h2>
-            <input type="text" class="cc-species-search" />
-            <div class="cc-presets-board cc-categories-list" style="display: grid; grid-template-columns: repeat(${CATEGORY_COLS}, minmax(0, 1fr)); gap: 10px; flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px; align-content: start;"></div>
-            <div class="cc-button-panel" style="margin-top: 16px; width: 100%;"></div>
+            <div class="cc-button-panel" style="margin-top: 12px; width: 100%;"></div>
           </div>
         </div>
       `;
 
-      this._titleEl = container.querySelector(".cc-bust-title");
+      this._tabBarEl = container.querySelector(".cc-sprite-tab-bar");
       this._gridEl = container.querySelector(".cc-bust-vgrid");
       this._canvasEl = container.querySelector(".cc-bust-vcanvas");
-      this._previewEl = container.querySelector(".cc-bust-preview img");
-      this._listEl = container.querySelector(".cc-categories-list");
       this._searchEl = container.querySelector(".cc-species-search");
       this._buttonsEl = container.querySelector(".cc-button-panel");
-      container.querySelector(".cc-page-right h2").textContent = T("CharCreate.humanoidSpecies");
       this._searchEl.placeholder = T("CharCreate.searchSpecies");
 
       this.buildButtons();
@@ -1344,9 +1325,12 @@
       this._gridEl.addEventListener("scroll", () => {
         this._gridDirty = true;
       });
-      this._listEl.addEventListener("click", (event) => {
-        const card = event.target.closest(".cc-card-option");
-        if (card) this.onCategoryCardClick(String(card.dataset.category));
+      this._tabBarEl.addEventListener("click", (event) => {
+        const btn = event.target.closest(".cc-sprite-tab-btn");
+        if (btn && btn.dataset.category) {
+          SoundManager.playCursor();
+          this.switchCategory(btn.dataset.category);
+        }
       });
       // The field owns the keyboard while it has focus, so neither RMMZ's
       // Input nor the WASD listener sees what is typed into it. Escape and
@@ -1364,19 +1348,14 @@
     }
 
     buildButtons() {
-      // Back on the left, Random in the middle, Continue on the right: the same
-      // bar, in the same order, as every other creation step (CCButtons).
+      // No Back: cancel (ESC / right click) is how this board is left without
+      // picking, same as the sprite board it now matches. Random in the
+      // middle, Continue on the right.
       const slots = window.CCButtons.slots(this._buttonsEl);
 
-      const back = document.createElement("button");
-      back.className = "cc-btn-treaty";
-      back.textContent = window.CCButtons.backLabel();
-      back.addEventListener("click", () => this.onBustCancel());
-      slots.back.appendChild(back);
-
       // Always present, never gated on the gallery having loaded: if the
-      // img/busts scan comes back empty (or is still running) the species
-      // list and grid stay bare, and Continue has nothing to pick. Random
+      // img/busts scan comes back empty (or is still running) the tab rail
+      // and grid stay bare, and Continue has nothing to pick. Random
       // draws from availableBustNames(), which falls back to its own
       // synchronous folder read rather than waiting on BustCatalogue's scan.
       this._randomEl = document.createElement("button");
@@ -1390,8 +1369,8 @@
       this._confirmEl.textContent = window.CCButtons.continueLabel();
       this._confirmEl.addEventListener("click", () => this.onBustConfirm());
       slots.next.appendChild(this._confirmEl);
-      // Hidden with `visibility`, not `display`: while the species list has the
-      // cursor there is nothing to confirm, but Back and Random must not slide
+      // Hidden with `visibility`, not `display`: while no category has
+      // loaded yet there is nothing to confirm, but Random must not slide
       // sideways when Continue comes and goes.
       window.CCButtons.setShown(this._confirmEl, false);
     }
@@ -1420,98 +1399,64 @@
           (cat) => categories[cat] && categories[cat].length > 0,
         );
         this._all = categories;
-        this._filtered = this._categories.slice();
-        this._openCategory = this._filtered[0] || null;
-        this.renderCategories();
-        if (this._preselectedBust) this.preselect(this._preselectedBust);
-        this.openCategoryBusts(this._openCategory);
-        this.refreshMode();
+        this.renderTabs();
+
+        let initialCategory = this._categories[0] || null;
+        let initialIndex = 0;
+        if (this._preselectedBust) {
+          const found = this._categories.find(
+            (cat) => this._all[cat].indexOf(this._preselectedBust) >= 0,
+          );
+          if (found) {
+            initialCategory = found;
+            initialIndex = Math.max(0, this._all[found].indexOf(this._preselectedBust));
+          }
+        }
+        this.switchCategory(initialCategory, initialIndex);
         if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
       });
     }
 
-    preselect(bustName) {
-      const category = this._categories.find(
-        (cat) => this._all[cat].indexOf(bustName) >= 0,
-      );
-      if (!category) return;
-      this._openCategory = category;
-      this._catIndex = Math.max(0, this._filtered.indexOf(category));
-      this._bustIndex = Math.max(0, this._all[category].indexOf(bustName));
-      this._mode = "bust";
+    //-- the species rail -------------------------------------------------------
+
+    renderTabs() {
+      this._tabBarEl.innerHTML = this._categories.map((category) => {
+        const count = this._all[category].length;
+        return `<button class="cc-sprite-tab-btn" data-category="${category}">${bustCategoryLabel(category)} <span class="cc-sprite-tab-count">(${count})</span></button>`;
+      }).join("");
     }
 
-    openCategoryBusts(category) {
-      this._openCategory = category;
+    refreshTabActive() {
+      const btns = this._tabBarEl.querySelectorAll(".cc-sprite-tab-btn");
+      btns.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.category === this._activeCategory);
+      });
+    }
+
+    onCategorySearch(value) {
+      this._search = String(value || "");
+      const term = this._search.trim().toLowerCase();
+      const btns = this._tabBarEl.querySelectorAll(".cc-sprite-tab-btn");
+      btns.forEach((btn) => {
+        const match = !term || bustCategoryLabel(btn.dataset.category).toLowerCase().includes(term);
+        btn.style.display = match ? "" : "none";
+      });
+    }
+
+    // Switching tabs is switching the whole board under it: a new bust list,
+    // so every cell holds the wrong portrait and is dropped for the next
+    // reconcile to rebuild only what is on screen.
+    switchCategory(category, initialIndex = 0) {
+      this._activeCategory = category;
       this._busts = (category && this._all[category]) || [];
-      if (this._bustIndex >= this._busts.length) this._bustIndex = 0;
-      this._titleEl.textContent = category
-        ? `${bustCategoryLabel(category).toUpperCase()} ${T("CharCreate.presets")}`
-        : T("CharCreate.presets");
-      // A new list means every cell holds the wrong bust: drop them all and
-      // let the next reconcile rebuild only what is on screen. The cells keep
-      // their size (only the count changed), so the board is not re-measured:
-      // walking the species list would otherwise force a layout a keypress.
+      this._index = Math.min(Math.max(0, initialIndex), Math.max(0, this._busts.length - 1));
+      this.refreshTabActive();
       this.releaseCells();
       this._gridEl.scrollTop = 0;
       this.updateCanvasHeight();
       this._gridDirty = true;
-      // The board cannot be measured until it has been laid out, so a cursor
-      // that did not start at the top (a preselected bust) is scrolled to on
-      // the first reconcile that succeeds.
-      this._needsCursorScroll = true;
-      this.schedulePreview();
-    }
-
-    //-- the species list -----------------------------------------------------
-
-    renderCategories() {
-      this._listEl.innerHTML = "";
-      const fragment = document.createDocumentFragment();
-      this._catCards = new Map();
-      for (const category of this._categories) {
-        const card = document.createElement("div");
-        card.className = "cc-card-option";
-        card.dataset.category = category;
-        const title = document.createElement("div");
-        title.className = "cc-option-title";
-        title.textContent = bustCategoryLabel(category);
-        const count = document.createElement("span");
-        count.className = "cc-element-badge";
-        count.textContent = `${this._all[category].length} ${T("CharCreate.presets2")}`;
-        card.appendChild(title);
-        card.appendChild(count);
-        fragment.appendChild(card);
-        this._catCards.set(category, card);
-      }
-      this._listEl.appendChild(fragment);
-      this.refreshCategorySelection();
-    }
-
-    refreshCategorySelection() {
-      if (!this._catCards) return;
-      const current = this._filtered[this._catIndex];
-      for (const [category, card] of this._catCards) {
-        card.classList.toggle("selected", category === current);
-      }
-      const card = this._catCards.get(current);
-      if (card) this.scrollIntoPane(this._listEl, card.offsetTop, card.offsetHeight);
-    }
-
-    onCategorySearch(value) {
-      if (!this._catCards) return;
-      this._search = String(value || "");
-      const term = this._search.trim().toLowerCase();
-      const open = this._filtered[this._catIndex];
-      this._filtered = this._categories.filter(
-        (cat) => !term || bustCategoryLabel(cat).toLowerCase().includes(term),
-      );
-      for (const [category, card] of this._catCards) {
-        card.style.display = this._filtered.indexOf(category) >= 0 ? "flex" : "none";
-      }
-      const kept = this._filtered.indexOf(open);
-      this._catIndex = kept >= 0 ? kept : 0;
-      this.refreshCategorySelection();
+      this._needsCursorScroll = initialIndex > 0;
+      window.CCButtons.setShown(this._confirmEl, this._busts.length > 0);
     }
 
     //-- the virtualised grid -------------------------------------------------
@@ -1570,7 +1515,7 @@
       }
       if (this._needsCursorScroll) {
         this._needsCursorScroll = false;
-        const row = Math.floor(this._bustIndex / BUST_GRID_COLS);
+        const row = Math.floor(this._index / BUST_GRID_COLS);
         this.scrollIntoPane(this._gridEl, row * (this._cellH + BUST_GRID_GAP), this._cellH);
       }
       const rowHeight = this._cellH + BUST_GRID_GAP;
@@ -1608,7 +1553,7 @@
       cell.style.top = `${row * (this._cellH + BUST_GRID_GAP)}px`;
       cell.style.width = `${this._cellW}px`;
       cell.style.height = `${this._cellH}px`;
-      cell.classList.toggle("selected", this._mode === "bust" && index === this._bustIndex);
+      cell.classList.toggle("selected", index === this._index);
     }
 
     fillCell(cell, index) {
@@ -1619,12 +1564,12 @@
       cell._art.style.backgroundImage = `url("${bustArtUrl(name)}")`;
     }
 
-    refreshBustSelection() {
+    refreshSelection() {
       for (const [index, cell] of this._cells) {
-        cell.classList.toggle("selected", this._mode === "bust" && index === this._bustIndex);
+        cell.classList.toggle("selected", index === this._index);
       }
-      if (this._mode !== "bust" || !this._cellH) return;
-      const row = Math.floor(this._bustIndex / BUST_GRID_COLS);
+      if (!this._cellH) return;
+      const row = Math.floor(this._index / BUST_GRID_COLS);
       this.scrollIntoPane(this._gridEl, row * (this._cellH + BUST_GRID_GAP), this._cellH);
     }
 
@@ -1638,87 +1583,30 @@
       }
     }
 
-    //-- the full size preview ------------------------------------------------
-
-    schedulePreview() {
-      this._previewWait = PREVIEW_SETTLE_FRAMES;
-    }
-
-    showPreview() {
-      const name = this.previewBust();
-      if (name === this._previewShown) return;
-      this._previewShown = name;
-      if (!name) {
-        this._previewEl.removeAttribute("src");
-        return;
-      }
-      // Drop the old one before asking for the next, and never hold two.
-      // The card on the left has already loaded this same file, so the page
-      // is a browser cache hit rather than a second decode.
-      this._previewEl.removeAttribute("src");
-      this._previewEl.src = bustArtUrl(name);
-    }
-
     //-- selection ------------------------------------------------------------
 
-    // What Confirm would take: nothing at all while the cursor is on the
-    // species list.
     selectedBust() {
-      if (this._mode !== "bust") return null;
-      return this._busts[this._bustIndex] || null;
+      return this._busts[this._index] || null;
     }
 
-    // What the right page shows. Browsing species previews that species' first
-    // portrait, so the list reads as more than a row of counts.
-    previewBust() {
-      const index = this._mode === "bust" ? this._bustIndex : 0;
-      return this._busts[index] || null;
-    }
-
-    refreshMode() {
-      window.CCButtons.setShown(this._confirmEl, this._mode === "bust");
-      this.refreshBustSelection();
-      this.refreshCategorySelection();
-      this.schedulePreview();
-    }
-
-    enterCategory(category) {
-      if (!category) return;
-      const changed = category !== this._openCategory;
-      this._catIndex = Math.max(0, this._filtered.indexOf(category));
-      this._mode = "bust";
-      this._bustIndex = 0;
-      if (changed) this.openCategoryBusts(category);
-      this.refreshMode();
-    }
-
-    backToCategories() {
-      this._mode = "category";
-      this.refreshMode();
-    }
-
-    onCategoryCardClick(category) {
-      SoundManager.playOk();
-      this.enterCategory(category);
-    }
-
+    // One click both moves the cursor and, on the card already under it,
+    // confirms - the same gesture the sprite board uses.
     onBustCardClick(index) {
       if (!(index >= 0) || index >= this._busts.length) return;
-      if (this._mode === "bust" && index === this._bustIndex) {
+      if (index === this._index) {
         this.onBustConfirm();
         return;
       }
       SoundManager.playCursor();
-      this._mode = "bust";
-      this._bustIndex = index;
-      this.refreshMode();
+      this._index = index;
+      this.refreshSelection();
     }
 
     //-- input ----------------------------------------------------------------
 
     // CCScroll drives L2/R2 at whichever board holds the cursor.
     ccScrollTarget() {
-      return this._mode === "bust" ? this._gridEl : this._listEl;
+      return this._gridEl;
     }
 
     readDirection() {
@@ -1733,32 +1621,32 @@
       return direction;
     }
 
-    // The species list is this board's category rail, so the shoulder buttons
-    // walk it from either page, exactly as they walk the sprite board's tabs.
-    cycleCategory(direction) {
-      const count = this._filtered ? this._filtered.length : 0;
-      if (count < 2) return;
-      this._catIndex = (this._catIndex + direction + count) % count;
+    // L1 / R1 (and TAB) step through the species rail from anywhere on the
+    // board, exactly as they walk the sprite board's tabs.
+    cycleTab(direction) {
+      const cats = this._categories;
+      if (cats.length < 2) return;
+      const cur = Math.max(0, cats.indexOf(this._activeCategory));
+      const next = (cur + direction + cats.length) % cats.length;
       SoundManager.playCursor();
-      this.refreshCategorySelection();
-      this.openCategoryBusts(this._filtered[this._catIndex]);
-      this._bustIndex = 0;
+      this.switchCategory(cats[next]);
+      const active = this._tabBarEl.querySelector(".cc-sprite-tab-btn.active");
+      if (active && active.scrollIntoView) active.scrollIntoView({ block: "nearest" });
     }
 
     updateInput() {
       if (document.activeElement === this._searchEl) return;
-      if (Input.isTriggered("pageup")) { this.cycleCategory(-1); return; }
-      if (Input.isTriggered("pagedown") || Input.isTriggered("tab")) { this.cycleCategory(1); return; }
+      if (Input.isTriggered("pageup")) { this.cycleTab(-1); return; }
+      if (Input.isTriggered("pagedown") || Input.isTriggered("tab")) { this.cycleTab(1); return; }
       const direction = this.readDirection();
-      const inBusts = this._mode === "bust";
-      const count = inBusts ? this._busts.length : this._filtered.length;
+      const count = this._busts.length;
       // Leaving must work before the catalogue has finished loading.
       if (!count) {
-        if (Input.isTriggered("cancel")) this.onBustCancel();
+        if (cancelPressed()) this.onBustCancel();
         return;
       }
-      const cols = inBusts ? BUST_GRID_COLS : CATEGORY_COLS;
-      let index = inBusts ? this._bustIndex : this._catIndex;
+      const cols = BUST_GRID_COLS;
+      let index = this._index;
       let moved = false;
 
       if (direction.down) {
@@ -1785,27 +1673,17 @@
         }
       } else if (Input.isTriggered("ok")) {
         SoundManager.playOk();
-        if (inBusts) this.onBustConfirm();
-        else this.enterCategory(this._filtered[this._catIndex]);
+        this.onBustConfirm();
         return;
-      } else if (Input.isTriggered("cancel")) {
+      } else if (cancelPressed()) {
         this.onBustCancel();
         return;
       }
 
       if (!moved) return;
       SoundManager.playCursor();
-      if (inBusts) {
-        this._bustIndex = index;
-        this.refreshBustSelection();
-        this.schedulePreview();
-      } else {
-        this._catIndex = index;
-        this.refreshCategorySelection();
-        // The board follows the highlighted species, so the player reads the
-        // portraits without having to enter the category first.
-        this.openCategoryBusts(this._filtered[index]);
-      }
+      this._index = index;
+      this.refreshSelection();
     }
 
     update() {
@@ -1817,7 +1695,6 @@
         this._gridDirty = false;
         this.renderGrid();
       }
-      if (this._previewWait > 0 && --this._previewWait === 0) this.showPreview();
     }
 
     //-- leaving --------------------------------------------------------------
@@ -1865,13 +1742,13 @@
     onBustConfirm() {
       const bustName = this.selectedBust();
       if (!bustName) return;
-      this.finishWithBust(bustName, this._openCategory);
+      this.finishWithBust(bustName, this._activeCategory);
     }
 
     // Always clickable, whatever state the gallery's own scan is in.
     // availableBustNames() (module scope, below) prefers BustCatalogue's
     // scan but falls back to its own synchronous folder read, so this works
-    // even when the species list never populated.
+    // even when the species rail never populated.
     onBustRandom() {
       const names = availableBustNames();
       if (!names || !names.length) return;
@@ -1881,12 +1758,8 @@
 
     onBustCancel() {
       SoundManager.playCancel();
-      if (this._mode === "bust") {
-        this.backToCategories();
-      } else {
-        Scene_BustSelector._confirmPops = 0;
-        SceneManager.pop();
-      }
+      Scene_BustSelector._confirmPops = 0;
+      SceneManager.pop();
     }
   }
 

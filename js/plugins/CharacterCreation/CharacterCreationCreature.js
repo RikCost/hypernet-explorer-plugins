@@ -2378,7 +2378,7 @@
     // Two rosters, not one list: the browser heads them "Non Sentient" (the
     // archetypes' own creature classes) and "Sentient" (the classes they can
     // still be played as).
-    window.$ccArchetypeClassFilter = window.CreatureClasses.groupsForArchetypes(
+    window.$ccArchetypeClassFilter = window.CreatureClasses.playableGroupsForArchetypes(
       this._selectedArchetype1,
       this._selectedArchetype2
     );

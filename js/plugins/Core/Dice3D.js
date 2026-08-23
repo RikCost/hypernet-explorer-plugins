@@ -1,7 +1,8 @@
 /*:
  * @target MZ
- * @plugindesc v1.5.0 High-Legibility Compact 3D d20 Dice System with Perfectly Upright Faces & Unified Premium Result Window.
+ * @plugindesc v1.6.0 High-Legibility Compact 3D d20 Dice System with Perfectly Upright Faces, Unified Premium Result Window & an event-driven stat check.
  * @author Omni-Lex
+ * @pluginName Dice3D
  *
  * @help Dice3D.js
  *
@@ -15,10 +16,165 @@
  * - Single unified glassmorphic result window with dynamic calculation summing
  * - Audio-synced CC0 dice rolls and outcome chimes
  * - Exposes window.Dice3D
+ *
+ * ---------------------------------------------------------------------------
+ * Stat Check (plugin command)
+ * ---------------------------------------------------------------------------
+ * Asks the player, in a modal, whether to try a d20 check against a number:
+ * the card names the stat, the modifier it lends and the number to reach, and
+ * offers Try or Walk away. Nothing at all happens if they walk away.
+ *
+ * Try throws the die on screen and then, by the result:
+ *   - success: turns a switch on, turns a self switch of THIS event on, and
+ *     writes a number into a variable - any of the three, or all of them
+ *   - failure: the same three, with their own values
+ *
+ * A natural 20 always succeeds and a natural 1 always fails, whatever the
+ * modifier says. The total rolled can be written into a variable of its own,
+ * so an event can grade the outcome rather than only pass or fail it.
+ *
+ * The event waits on the modal and on the die, so the command that follows
+ * runs after the result is known.
+ *
+ * @command StatCheck
+ * @text Stat Check (d20)
+ * @desc Offer a d20 check against a target number, then set switches and variables by the result.
+ *
+ * @arg stat
+ * @text Stat
+ * @desc The ability the roll leans on. Its modifier is added to the die.
+ * @type select
+ * @option STR
+ * @option CON
+ * @option INT
+ * @option WIS
+ * @option DEX
+ * @option PSI
+ * @option NONE
+ * @default STR
+ *
+ * @arg dc
+ * @text Number to reach
+ * @desc The roll plus the modifier must reach this to succeed.
+ * @type number
+ * @min 1
+ * @max 40
+ * @default 12
+ *
+ * @arg who
+ * @text Who rolls
+ * @desc Whose modifier the die is read with.
+ * @type select
+ * @option Party leader
+ * @value leader
+ * @option Best in the party
+ * @value best
+ * @option A chosen character
+ * @value actor
+ * @default leader
+ *
+ * @arg actorId
+ * @text Chosen character
+ * @desc Only read when "Who rolls" is set to a chosen character.
+ * @type actor
+ * @default 0
+ *
+ * @arg label
+ * @text Title
+ * @desc What the card and the die call this check. Left empty, it names the stat.
+ * @type string
+ * @default
+ *
+ * @arg allowCancel
+ * @text Offer a way out
+ * @desc When off, the card has no Walk away button and the check must be tried.
+ * @type boolean
+ * @default true
+ *
+ * @arg successSwitch
+ * @text On success: switch
+ * @desc Turned ON when the check succeeds. Leave empty for none.
+ * @type switch
+ * @default 0
+ *
+ * @arg successSelfSwitch
+ * @text On success: self switch
+ * @desc Self switch of this event, turned ON when the check succeeds.
+ * @type select
+ * @option (none)
+ * @value
+ * @option A
+ * @option B
+ * @option C
+ * @option D
+ * @default
+ *
+ * @arg successVariable
+ * @text On success: variable
+ * @desc Written when the check succeeds. Leave empty for none.
+ * @type variable
+ * @default 0
+ *
+ * @arg successValue
+ * @text On success: value
+ * @desc The number written into that variable.
+ * @type number
+ * @min -9999999
+ * @default 1
+ *
+ * @arg failSwitch
+ * @text On failure: switch
+ * @desc Turned ON when the check fails. Leave empty for none.
+ * @type switch
+ * @default 0
+ *
+ * @arg failSelfSwitch
+ * @text On failure: self switch
+ * @desc Self switch of this event, turned ON when the check fails.
+ * @type select
+ * @option (none)
+ * @value
+ * @option A
+ * @option B
+ * @option C
+ * @option D
+ * @default
+ *
+ * @arg failVariable
+ * @text On failure: variable
+ * @desc Written when the check fails. Leave empty for none.
+ * @type variable
+ * @default 0
+ *
+ * @arg failValue
+ * @text On failure: value
+ * @desc The number written into that variable.
+ * @type number
+ * @min -9999999
+ * @default 0
+ *
+ * @arg totalVariable
+ * @text Total rolled
+ * @desc Always written with the roll plus the modifier, however it went.
+ * @type variable
+ * @default 0
  */
 
 (() => {
     'use strict';
+
+    const PLUGIN_NAME = 'Dice3D';
+
+    // Every word this plugin puts on screen comes out of
+    // js/i18n/<lang>/plugins/Dice3D.json.
+    const DT = (key, params) => (window.T ? window.T('Dice3D.' + key, params) : key);
+
+    // The six abilities, in the order the engine keeps its parameters. NONE is
+    // a flat die: fortune with nobody's arm behind it.
+    const STAT_PARAM = { STR: 2, CON: 3, INT: 4, WIS: 5, DEX: 6, PSI: 7 };
+
+    const statLabel = (stat) =>
+        (window.CCStatLabel ? window.CCStatLabel(stat) : stat);
 
     class Dice3DManager {
         constructor() {
@@ -218,6 +374,99 @@
                     color: #b0bec5;
                     letter-spacing: 0.5px;
                 }
+                /* ---------------------------------------------------------
+                   The card that offers the check before the die is thrown.
+                   It is the only part of this plugin the player can click, so
+                   it is the only part that takes pointer events.
+                   --------------------------------------------------------- */
+                #dice3d-prompt {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    z-index: 1000000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(0, 0, 0, 0.55);
+                    backdrop-filter: blur(2px);
+                    font-family: 'Cinzel', 'Lora', serif, 'GameFont';
+                    opacity: 0;
+                    transition: opacity 0.18s ease;
+                }
+                #dice3d-prompt.show { opacity: 1; }
+                .dice3d-prompt-card {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 10px;
+                    min-width: 340px;
+                    max-width: 78vw;
+                    padding: 22px 34px 20px;
+                    background: linear-gradient(145deg, rgba(22, 19, 15, 0.97), rgba(10, 9, 8, 0.99));
+                    border: 1.5px solid #d4af37;
+                    border-radius: 10px;
+                    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9), 0 0 26px rgba(212, 175, 55, 0.3);
+                    transform: translateY(14px) scale(0.96);
+                    transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+                #dice3d-prompt.show .dice3d-prompt-card { transform: translateY(0) scale(1); }
+                .dice3d-prompt-title {
+                    font-size: 0.86rem;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
+                    color: #e5c158;
+                    font-weight: bold;
+                    text-align: center;
+                    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+                    padding-bottom: 6px;
+                    width: 100%;
+                }
+                .dice3d-prompt-who {
+                    font-size: 0.82rem;
+                    color: #b0bec5;
+                    letter-spacing: 0.5px;
+                }
+                .dice3d-prompt-target {
+                    font-size: 1.9rem;
+                    font-weight: 900;
+                    color: #ffffff;
+                    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+                }
+                .dice3d-prompt-formula {
+                    font-size: 1rem;
+                    color: #81c784;
+                    letter-spacing: 1px;
+                }
+                .dice3d-prompt-buttons {
+                    display: flex;
+                    gap: 14px;
+                    margin-top: 8px;
+                }
+                .dice3d-prompt-btn {
+                    min-width: 120px;
+                    padding: 8px 18px;
+                    font-family: inherit;
+                    font-size: 0.92rem;
+                    font-weight: bold;
+                    letter-spacing: 1.5px;
+                    text-transform: uppercase;
+                    color: #e0e0e0;
+                    background: rgba(0, 0, 0, 0.55);
+                    border: 1px solid rgba(212, 175, 55, 0.45);
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: all 0.15s ease;
+                }
+                .dice3d-prompt-btn:hover { color: #fff; border-color: #d4af37; }
+                .dice3d-prompt-btn.selected {
+                    color: #ffd700;
+                    border-color: #ffd700;
+                    background: rgba(212, 175, 55, 0.16);
+                    box-shadow: 0 0 14px rgba(255, 215, 0, 0.45);
+                    transform: scale(1.04);
+                }
             `;
             document.head.appendChild(style);
         }
@@ -238,18 +487,18 @@
             banner.id = 'dice3d-banner';
             banner.innerHTML = `
                 <div class="dice3d-header">
-                    <span class="dice3d-title" id="dice3d-title">D20 CHECK</span>
+                    <span class="dice3d-title" id="dice3d-title"></span>
                 </div>
                 <div class="dice3d-main-row">
                     <div class="dice3d-calc" id="dice3d-calc">
-                        <span class="dice3d-raw" id="dice3d-raw">14</span>
-                        <span class="dice3d-mod" id="dice3d-mod">+0 PSI</span>
+                        <span class="dice3d-raw" id="dice3d-raw"></span>
+                        <span class="dice3d-mod" id="dice3d-mod"></span>
                         <span class="dice3d-eq">=</span>
-                        <span class="dice3d-total" id="dice3d-num">14</span>
+                        <span class="dice3d-total" id="dice3d-num"></span>
                     </div>
-                    <div class="dice3d-status" id="dice3d-status">SUCCESS</div>
+                    <div class="dice3d-status" id="dice3d-status"></div>
                 </div>
-                <div class="dice3d-footer" id="dice3d-detail">DC 12 · Roll 14 + 0 = 14</div>
+                <div class="dice3d-footer" id="dice3d-detail"></div>
             `;
             container.appendChild(banner);
             document.body.appendChild(container);
@@ -493,7 +742,7 @@
                 dc = null,
                 modifier = 0,
                 statName = '',
-                actionName = 'Action Check',
+                actionName = DT('check.default'),
                 actor = null,
                 forcedRoll = null
             } = options;
@@ -531,9 +780,14 @@
             if (!shouldShow3D) {
                 const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
                 const statPart = statName ? ` (${statName})` : '';
-                const dcStr = dc !== null ? ` vs DC ${dc}` : '';
-                const outcomeStr = nat20 ? '🌟 CRITICAL SUCCESS!' : nat1 ? '💀 CRITICAL FAILURE!' : success ? '✓ SUCCESS' : '✗ FAILURE';
-                const toastMsg = `🎲 [${actionName}] Roll: ${rawRoll}${modStr}${statPart} = ${total}${dcStr} ➔ ${outcomeStr}`;
+                const dcStr = dc !== null ? DT('toast.versus', { dc }) : '';
+                const outcomeStr = nat20 ? DT('outcome.critSuccess')
+                    : nat1 ? DT('outcome.critFailure')
+                    : success ? DT('outcome.success') : DT('outcome.failure');
+                const toastMsg = DT('toast.line', {
+                    action: actionName, roll: rawRoll, mod: modStr, stat: statPart,
+                    total, versus: dcStr, outcome: outcomeStr
+                });
                 
                 if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
                     window.ParchmentToast.show(toastMsg, {
@@ -581,7 +835,7 @@
                     statusEl.className = 'dice3d-status';
                 }
                 if (detailEl) {
-                    detailEl.textContent = dc !== null ? `DC ${dc}` : `Standard Check`;
+                    detailEl.textContent = dc !== null ? DT('card.target', { dc }) : DT('card.noTarget');
                 }
 
                 const startX = (Math.random() > 0.5 ? 1 : -1) * (4.2 + Math.random() * 1.0);
@@ -594,11 +848,14 @@
                 const startRotZ = Math.random() * Math.PI * 6;
 
                 const startTime = performance.now();
-                // Extended, unhurried cinematic pacing
-                const rollDuration = 1000;    // 1.0s smooth tumble & landing
-                const pauseBeforeSum = 650;   // 0.65s raw roll assessment pause
-                const holdDuration = 2200;    // 2.2s comfortable display of calculated total & outcome
-                const fadeDuration = 450;     // 0.45s smooth dissolve exit
+                const quick = !!options.quick;
+                // Unhurried cinematic pacing by default; quick pacing auto-closes
+                // fast once the total is read, for checks thrown mid-action (a
+                // battle should not stall on a die once the number is known).
+                const rollDuration = 1000;                   // 1.0s smooth tumble & landing
+                const pauseBeforeSum = quick ? 260 : 650;    // raw roll assessment pause
+                const holdDuration = quick ? 700 : 2200;     // display of calculated total & outcome
+                const fadeDuration = quick ? 280 : 450;      // smooth dissolve exit
                 const totalDuration = rollDuration + pauseBeforeSum + holdDuration + fadeDuration;
 
                 if (this._rimLight) {
@@ -635,7 +892,7 @@
                         this._diceMesh.rotation.x = startRotX * (1 - progress);
                         this._diceMesh.rotation.y = startRotY * (1 - progress);
                         this._diceMesh.rotation.z = startRotZ * (1 - progress);
-                        this._diceMesh.scale.setScalar(0.58 + progress * 0.22);
+                        this._diceMesh.scale.setScalar(0.42 + progress * 0.16);
                     } else {
                         const activeHoldTime = elapsed - rollDuration;
 
@@ -648,10 +905,10 @@
                             }
                             const exitProgress = Math.min(1, (activeHoldTime - (pauseBeforeSum + holdDuration)) / fadeDuration);
                             this._diceMesh.position.y = endY + exitProgress * 0.35;
-                            this._diceMesh.scale.setScalar(0.8 * (1 - exitProgress * 0.15));
+                            this._diceMesh.scale.setScalar(0.58 * (1 - exitProgress * 0.15));
                         } else {
                             this._diceMesh.position.set(endX, endY, 0);
-                            this._diceMesh.scale.setScalar(0.8);
+                            this._diceMesh.scale.setScalar(0.58);
                         }
 
                         this._orientFace(rawRoll);
@@ -676,21 +933,22 @@
                                 numEl.classList.add('summed');
                             }
                             if (detailEl) {
-                                if (dc !== null) {
-                                    detailEl.textContent = `DC ${dc} · Roll ${rawRoll}${modStr}${statPart} = ${total}`;
-                                } else {
-                                    detailEl.textContent = `Roll ${rawRoll}${modStr}${statPart} = ${total}`;
-                                }
+                                const sum = DT('card.sum', {
+                                    roll: rawRoll, mod: modStr, stat: statPart, total
+                                });
+                                detailEl.textContent = dc !== null
+                                    ? DT('card.sumTarget', { dc, sum })
+                                    : sum;
                             }
                             if (statusEl) {
                                 if (nat20) {
-                                    statusEl.textContent = 'CRITICAL SUCCESS!';
+                                    statusEl.textContent = DT('outcome.critSuccess');
                                     statusEl.className = 'dice3d-status crit-success visible';
                                 } else if (nat1) {
-                                    statusEl.textContent = 'CRITICAL FAILURE!';
+                                    statusEl.textContent = DT('outcome.critFailure');
                                     statusEl.className = 'dice3d-status crit-fail visible';
                                 } else {
-                                    statusEl.textContent = success ? 'SUCCESS' : 'FAILURE';
+                                    statusEl.textContent = success ? DT('outcome.success') : DT('outcome.failure');
                                     statusEl.className = 'dice3d-status ' + (success ? 'success visible' : 'failure visible');
                                 }
                             }
@@ -726,16 +984,290 @@
             });
         }
 
+        // ==============================================================
+        // THE OFFERED CHECK
+        //
+        //   A die thrown by an event is not a die thrown at somebody: the
+        //   player is told what the roll is worth and what it has to reach,
+        //   and decides whether to try it at all. The card below is that
+        //   offer; rollD20 above is what happens once it is accepted.
+        // ==============================================================
+
+        // True from the moment a check is offered until its die has landed, so
+        // the event that asked for it can stand still and wait (see the wait
+        // mode registered at the bottom of this file).
+        isBusy() {
+            return !!this._checkRunning;
+        }
+
+        // What an ability lends the roll, read the way every other d20 in the
+        // game reads it: the D&D modifier of a bounded score.
+        statModifier(battler, stat) {
+            const paramId = STAT_PARAM[String(stat || '').toUpperCase()];
+            if (!battler || paramId === undefined) return 0;
+            if (typeof battler.abilityMod === 'function') return battler.abilityMod(paramId);
+            const value = typeof battler.param === 'function' ? battler.param(paramId) : 10;
+            return Math.floor(((value || 10) - 10) / 2);
+        }
+
+        // Whoever in the party has the best arm, or head, for this particular
+        // check. A party of nobody rolls flat.
+        bestRoller(stat) {
+            if (typeof $gameParty === 'undefined' || !$gameParty) return null;
+            const members = ($gameParty.members ? $gameParty.members() : []) || [];
+            let best = null;
+            let bestMod = -Infinity;
+            for (const member of members) {
+                const mod = this.statModifier(member, stat);
+                if (mod > bestMod) { bestMod = mod; best = member; }
+            }
+            return best;
+        }
+
+        _escapeHtml(text) {
+            return String(text === undefined || text === null ? '' : text)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // The card itself. Resolves true when the player takes the check on,
+        // false when they walk away from it. Mouse and cursor both work, and
+        // the cursor is what a gamepad drives, so the pad works too.
+        _offerCheck(spec) {
+            return new Promise((resolve) => {
+                if (typeof document === 'undefined') return resolve(true);
+
+                const choices = [{ key: 'try', text: DT('prompt.try') }];
+                if (spec.allowCancel) choices.push({ key: 'cancel', text: DT('prompt.cancel') });
+
+                const overlay = document.createElement('div');
+                overlay.id = 'dice3d-prompt';
+                overlay.innerHTML = `
+                    <div class="dice3d-prompt-card">
+                        <div class="dice3d-prompt-title">${this._escapeHtml(spec.title)}</div>
+                        <div class="dice3d-prompt-who">${this._escapeHtml(spec.who)}</div>
+                        <div class="dice3d-prompt-target">${this._escapeHtml(spec.target)}</div>
+                        <div class="dice3d-prompt-formula">${this._escapeHtml(spec.formula)}</div>
+                        <div class="dice3d-prompt-buttons">
+                            ${choices.map((c, i) =>
+                                `<button type="button" class="dice3d-prompt-btn" data-index="${i}">${this._escapeHtml(c.text)}</button>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                requestAnimationFrame(() => overlay.classList.add('show'));
+
+                const buttons = Array.from(overlay.querySelectorAll('.dice3d-prompt-btn'));
+                let index = 0;
+                let frame = null;
+                let closed = false;
+
+                const paint = () => buttons.forEach((btn, i) =>
+                    btn.classList.toggle('selected', i === index));
+                paint();
+
+                const move = (delta) => {
+                    if (choices.length < 2) return;
+                    index = (index + delta + choices.length) % choices.length;
+                    paint();
+                    this._playSE('Cursor1', 70, 100);
+                };
+
+                const close = (key) => {
+                    if (closed) return;
+                    closed = true;
+                    if (frame) cancelAnimationFrame(frame);
+                    this._playSE(key === 'try' ? 'Ok' : 'Cancel1', 80, 100);
+                    overlay.classList.remove('show');
+                    setTimeout(() => {
+                        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                    }, 180);
+                    // The keypress that answered the card must not also answer
+                    // whatever the event does next.
+                    if (typeof Input !== 'undefined' && Input.clear) Input.clear();
+                    resolve(key === 'try');
+                };
+
+                buttons.forEach((btn, i) => {
+                    btn.addEventListener('mouseenter', () => { index = i; paint(); });
+                    btn.addEventListener('click', () => { index = i; close(choices[i].key); });
+                });
+
+                // The cursor is read from the engine's own input, so a keyboard
+                // and a gamepad reach the card by the same road.
+                const step = () => {
+                    if (closed) return;
+                    if (typeof Input !== 'undefined') {
+                        if (Input.isTriggered('right') || Input.isTriggered('down')) move(1);
+                        else if (Input.isTriggered('left') || Input.isTriggered('up')) move(-1);
+                        else if (Input.isTriggered('ok')) return close(choices[index].key);
+                        else if (Input.isTriggered('cancel') && spec.allowCancel) return close('cancel');
+                    }
+                    frame = requestAnimationFrame(step);
+                };
+                frame = requestAnimationFrame(step);
+            });
+        }
+
+        /**
+         * Offer a d20 check and, if it is taken on, throw it.
+         *
+         *   stat        one of STR/CON/INT/WIS/DEX/PSI, or NONE for a flat die
+         *   dc          the number the roll plus the modifier has to reach
+         *   battler     whose modifier is used; the party leader by default
+         *   title       what the card and the die call it
+         *   allowCancel whether walking away is offered at all
+         *   prompt      false throws the die with no card at all
+         *
+         * Resolves with the roll result, plus `cancelled` when the player
+         * walked away, in which case nothing was rolled and nothing happened.
+         */
+        async statCheck(options = {}) {
+            const stat = String(options.stat || 'NONE').toUpperCase();
+            const flat = !STAT_PARAM.hasOwnProperty(stat);
+            const dc = Math.max(1, Math.round(Number(options.dc) || 10));
+            const battler = options.battler !== undefined
+                ? options.battler
+                : (typeof $gameParty !== 'undefined' && $gameParty && $gameParty.leader
+                    ? $gameParty.leader() : null);
+            const modifier = flat ? 0 : this.statModifier(battler, stat);
+            const label = flat ? '' : statLabel(stat);
+            const title = options.title || (flat ? DT('prompt.titleFlat') : DT('prompt.title', { stat: label }));
+            const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
+
+            this._checkRunning = true;
+            try {
+                if (options.prompt !== false) {
+                    const accepted = await this._offerCheck({
+                        title,
+                        who: battler && battler.name ? DT('prompt.who', { name: battler.name() }) : '',
+                        target: DT('prompt.target', { dc }),
+                        formula: flat ? DT('prompt.formulaFlat') : DT('prompt.formula', { mod: modStr, stat: label }),
+                        allowCancel: options.allowCancel !== false
+                    });
+                    if (!accepted) {
+                        return { cancelled: true, success: false, roll: 0, modifier, total: 0, dc };
+                    }
+                }
+                const result = await this.rollD20({
+                    dc,
+                    modifier,
+                    statName: label,
+                    actionName: title,
+                    force3D: true
+                });
+                return Object.assign({ cancelled: false }, result);
+            } finally {
+                this._checkRunning = false;
+            }
+        }
+
         rollPercentage(chancePercent, options = {}) {
             const clamped = Math.max(5, Math.min(95, Math.round(chancePercent)));
             const dc = Math.max(2, Math.min(20, 21 - Math.round(clamped / 5)));
             return this.rollD20({
                 ...options,
                 dc,
-                actionName: options.actionName || 'Percentage Check'
+                actionName: options.actionName || DT('check.percentage')
             });
         }
     }
 
     window.Dice3D = new Dice3DManager();
+
+    // ==================================================================
+    // THE EVENT-DRIVEN CHECK
+    //
+    //   An event asks for a check, the player takes it on or walks away, and
+    //   the answer comes back as switches and variables the event can branch
+    //   on. Nothing is set when the player walks away: an offer refused is not
+    //   a failure, and an event that wants to treat it as one turns its own
+    //   switch off before asking.
+    // ==================================================================
+    const toId = (value) => {
+        const id = Number(value);
+        return Number.isFinite(id) && id > 0 ? id : 0;
+    };
+
+    // One side of the result: a switch, a self switch of the event that asked,
+    // a variable, or any mixture of the three.
+    function applyBranch(branch, context) {
+        const switchId = toId(branch.switchId);
+        if (switchId && typeof $gameSwitches !== 'undefined') {
+            $gameSwitches.setValue(switchId, true);
+        }
+        // "(none)" is what the editor shows for the empty option, and what it
+        // hands back when the option carries no value of its own.
+        const selfKey = String(branch.selfSwitch || '').trim().toUpperCase();
+        const named = selfKey && selfKey !== '(NONE)';
+        if (named && context.eventId && typeof $gameSelfSwitches !== 'undefined') {
+            $gameSelfSwitches.setValue([context.mapId, context.eventId, selfKey], true);
+        }
+        const variableId = toId(branch.variableId);
+        if (variableId && typeof $gameVariables !== 'undefined') {
+            $gameVariables.setValue(variableId, Math.round(Number(branch.value) || 0));
+        }
+    }
+
+    function resolveRoller(args, stat) {
+        if (typeof $gameParty === 'undefined' || !$gameParty) return null;
+        const who = String(args.who || 'leader');
+        if (who === 'best') return window.Dice3D.bestRoller(stat);
+        if (who === 'actor') {
+            const actorId = toId(args.actorId);
+            const actor = actorId && typeof $gameActors !== 'undefined' ? $gameActors.actor(actorId) : null;
+            if (actor) return actor;
+        }
+        return $gameParty.leader ? $gameParty.leader() : null;
+    }
+
+    PluginManager.registerCommand(PLUGIN_NAME, 'StatCheck', function (args) {
+        const context = {
+            mapId: typeof $gameMap !== 'undefined' && $gameMap ? $gameMap.mapId() : 0,
+            eventId: this.eventId ? this.eventId() : 0
+        };
+        const stat = String(args.stat || 'NONE').toUpperCase();
+
+        window.Dice3D.statCheck({
+            stat,
+            dc: Number(args.dc),
+            battler: resolveRoller(args, stat),
+            title: String(args.label || '').trim() || null,
+            allowCancel: String(args.allowCancel) !== 'false'
+        }).then((result) => {
+            if (!result || result.cancelled) return;
+            const totalVariable = toId(args.totalVariable);
+            if (totalVariable && typeof $gameVariables !== 'undefined') {
+                $gameVariables.setValue(totalVariable, result.total);
+            }
+            applyBranch(result.success ? {
+                switchId: args.successSwitch,
+                selfSwitch: args.successSelfSwitch,
+                variableId: args.successVariable,
+                value: args.successValue
+            } : {
+                switchId: args.failSwitch,
+                selfSwitch: args.failSelfSwitch,
+                variableId: args.failVariable,
+                value: args.failValue
+            }, context);
+        }).catch((e) => {
+            console.error('Dice3D StatCheck: ' + e.message);   // i18n-ignore: developer diagnostic
+        });
+
+        this.setWaitMode('dice3dCheck');
+    });
+
+    // The event stands still while the card is up and the die is in the air.
+    const _Game_Interpreter_updateWaitMode_Dice3D = Game_Interpreter.prototype.updateWaitMode;
+    Game_Interpreter.prototype.updateWaitMode = function () {
+        if (this._waitMode === 'dice3dCheck') {
+            if (window.Dice3D && window.Dice3D.isBusy()) return true;
+            this._waitMode = '';
+            return false;
+        }
+        return _Game_Interpreter_updateWaitMode_Dice3D.call(this);
+    };
+
 })();

@@ -1,0 +1,2783 @@
+{
+  "TESTES": {
+    "name_en": "Testes",
+    "name_int": "prosthetics.testes.name",
+    "name_it": "Testicoli",
+    "cost": 10000,
+    "effects": {}
+  },
+  "UTERUS": {
+    "name_en": "Uterus",
+    "name_int": "prosthetics.uterus.name",
+    "name_it": "Utero",
+    "cost": 10000,
+    "effects": {}
+  },
+  "OVIDUCT": {
+    "name_en": "Oviduct",
+    "name_int": "prosthetics.oviduct.name",
+    "name_it": "Ovidotto",
+    "cost": 10000,
+    "effects": {}
+  },
+  "SPORE_GLAND": {
+    "name_en": "Sporangium",
+    "name_int": "prosthetics.spore_gland.name",
+    "name_it": "Sporangio",
+    "cost": 10000,
+    "effects": {}
+  },
+  "MITOSIS_GLAND": {
+    "name_en": "Mitosis Gland",
+    "name_int": "prosthetics.mitosis_gland.name",
+    "name_it": "Ghiandola Mitotica",
+    "cost": 100000,
+    "effects": {}
+  },
+  "ANDROGEN_GLAND": {
+    "name_en": "Androgen Gland",
+    "name_int": "prosthetics.androgen_gland.name",
+    "name_it": "Ghiandola Androgena",
+    "type": "biological",
+    "effects": {
+      "0": 15,
+      "2": 6
+    },
+    "skill": null,
+    "cost": 60000
+  },
+  "ESTROGEN_AUTOINJECTOR": {
+    "name_en": "Estrogen Autoinjector",
+    "name_int": "prosthetics.estrogen_autoinjector.name",
+    "name_it": "Autoiniettore di Estrogeni",
+    "type": "technological",
+    "effects": {
+      "4": 4,
+      "5": 4
+    },
+    "skill": null,
+    "cost": 60000
+  },
+  "CRYSTAL_CORTEX": {
+    "name_en": "Crystal Mind Cortex",
+    "name_int": "prosthetics.crystal_cortex.name",
+    "name_it": "Corteccia Mentale Cristallina",
+    "type": "magical",
+    "effects": {
+      "3": 8,
+      "4": 5
+    },
+    "skill": null,
+    "cost": 130000
+  },
+  "NEURAL_IMPLANT": {
+    "name_en": "Neural Processing Implant",
+    "name_int": "prosthetics.neural_implant.name",
+    "name_it": "Impianto Processore Neurale",
+    "type": "technological",
+    "effects": {
+      "2": 3,
+      "3": 6
+    },
+    "skill": null,
+    "cost": 90000
+  },
+  "ANCIENT_WISDOM_ORB": {
+    "name_en": "Ancient Wisdom Orb",
+    "name_int": "prosthetics.ancient_wisdom_orb.name",
+    "name_it": "Orbe dell'Antica Saggezza",
+    "type": "magical",
+    "effects": {
+      "1": 15,
+      "3": 12
+    },
+    "skill": null,
+    "cost": 270000
+  },
+  "SKULL_REINFORCEMENT": {
+    "name_en": "Dwarven Skull Plating",
+    "name_int": "prosthetics.skull_reinforcement.name",
+    "name_it": "Corazza Cranica Nanica",
+    "type": "biological",
+    "effects": {
+      "0": 20,
+      "5": 8
+    },
+    "skill": null,
+    "cost": 280000
+  },
+  "HAWKS_EYE": {
+    "name_en": "Hawk's Eye Implant",
+    "name_int": "prosthetics.hawks_eye.name",
+    "name_it": "Impianto Occhio di Falco",
+    "type": "biological",
+    "effects": {
+      "2": 4,
+      "6": 3
+    },
+    "skill": null,
+    "cost": 70000
+  },
+  "CYBER_OPTICS": {
+    "name_en": "Cyber Optics Suite",
+    "name_int": "prosthetics.cyber_optics.name",
+    "name_it": "Suite Ottica Cibernetica",
+    "type": "technological",
+    "effects": {
+      "2": 7,
+      "6": 2
+    },
+    "skill": null,
+    "cost": 90000
+  },
+  "VOID_SIGHT": {
+    "name_en": "Void Sight Lens",
+    "name_int": "prosthetics.void_sight.name",
+    "name_it": "Lente della Vista del Vuoto",
+    "type": "magical",
+    "effects": {
+      "3": 3,
+      "4": 6
+    },
+    "skill": null,
+    "cost": 90000
+  },
+  "DRAGONS_GAZE": {
+    "name_en": "Dragon's Gaze",
+    "name_int": "prosthetics.dragons_gaze.name",
+    "name_it": "Sguardo del Drago",
+    "type": "magical",
+    "effects": {
+      "2": 2,
+      "4": 8
+    },
+    "skill": null,
+    "cost": 100000
+  },
+  "TELESCOPIC_EYE": {
+    "name_en": "Telescopic Eye Mechanism",
+    "name_int": "prosthetics.telescopic_eye.name",
+    "name_it": "Meccanismo Oculare Telescopico",
+    "type": "technological",
+    "skill": null,
+    "effects": {
+      "2": 6,
+      "3": 2
+    },
+    "cost": 80000
+  },
+  "SCENT_TRACKER": {
+    "name_en": "Beast Scent Tracker",
+    "name_int": "prosthetics.scent_tracker.name",
+    "name_it": "Tracciatore di Odori Bestiale",
+    "type": "biological",
+    "skill": null,
+    "effects": {
+      "6": 5,
+      "7": 3
+    },
+    "cost": 80000
+  },
+  "CHEMICAL_SENSOR": {
+    "name_en": "Chemical Analysis Sensor",
+    "name_int": "prosthetics.chemical_sensor.name",
+    "name_it": "Sensore di Analisi Chimica",
+    "type": "technological",
+    "skill": null,
+    "effects": {
+      "3": 4,
+      "5": 3
+    },
+    "cost": 700000
+  },
+  "ELVEN_HEARING": {
+    "name_en": "Elven Hearing Enhancement",
+    "name_int": "prosthetics.elven_hearing.name",
+    "name_it": "Potenziamento Uditivo Elfico",
+    "type": "biological",
+    "skill": null,
+    "effects": {
+      "3": 2,
+      "6": 4
+    },
+    "cost": 600000
+  },
+  "SONIC_DAMPENERS": {
+    "name_en": "Sonic Dampening System",
+    "name_int": "prosthetics.sonic_dampeners.name",
+    "name_it": "Sistema di Attenuazione Sonica",
+    "type": "technological",
+    "effects": {
+      "0": 10,
+      "5": 6
+    },
+    "cost": 160000
+  },
+  "ASTRAL_RECEPTORS": {
+    "name_en": "Astral Sound Receptors",
+    "name_int": "prosthetics.astral_receptors.name",
+    "name_it": "Recettori del Suono Astrale",
+    "type": "magical",
+    "skill": null,
+    "effects": {
+      "1": 12,
+      "4": 5
+    },
+    "cost": 170000
+  },
+  "VAMPIRIC_FANGS": {
+    "name_en": "Vampiric Regeneration Fangs",
+    "name_int": "prosthetics.vampiric_fangs.name",
+    "name_it": "Zanne Rigenerative Vampiriche",
+    "type": "biological",
+    "effects": {
+      "0": 25,
+      "2": 3
+    },
+    "skill": null,
+    "cost": 280000
+  },
+  "SILVER_TONGUE": {
+    "name_en": "Silver Tongue Implant",
+    "name_int": "prosthetics.silver_tongue.name",
+    "name_it": "Impianto Lingua d'Argento",
+    "type": "magical",
+    "effects": {
+      "3": 4,
+      "7": 8
+    },
+    "skill": null,
+    "cost": 120000
+  },
+  "VENOM_GLANDS": {
+    "name_en": "Serpent Venom Glands",
+    "name_int": "prosthetics.venom_glands.name",
+    "name_it": "Ghiandole Velenifere Serpentine",
+    "type": "biological",
+    "effects": {
+      "2": 6,
+      "6": 2
+    },
+    "skill": null,
+    "cost": 80000
+  },
+  "ADAMANTINE_TEETH": {
+    "name_en": "Adamantine Teeth Set",
+    "name_int": "prosthetics.adamantine_teeth.name",
+    "name_it": "Dentatura Adamantina",
+    "type": "technological",
+    "effects": {
+      "2": 5,
+      "5": 4
+    },
+    "cost": 90000,
+    "skill": null
+  },
+  "CRYSTAL_FANGS": {
+    "name_en": "Mana Crystal Fangs",
+    "name_int": "prosthetics.crystal_fangs.name",
+    "name_it": "Zanne di Cristallo Magico",
+    "type": "magical",
+    "effects": {
+      "1": 8,
+      "4": 7
+    },
+    "cost": 150000,
+    "skill": null
+  },
+  "IRON_RIBCAGE": {
+    "name_en": "Dwarven Iron Ribcage",
+    "name_int": "prosthetics.iron_ribcage.name",
+    "name_it": "Gabbia Toracica di Ferro Nanesca",
+    "type": "biological",
+    "effects": {
+      "0": 30,
+      "5": 12
+    },
+    "cost": 420000,
+    "skill": null
+  },
+  "STEAM_BOILER": {
+    "name_en": "Steam Power Boiler",
+    "name_int": "prosthetics.steam_boiler.name",
+    "name_it": "Caldaia a Vapore",
+    "type": "technological",
+    "effects": {
+      "2": 8,
+      "6": 6
+    },
+    "cost": 140000,
+    "skill": null
+  },
+  "ARCANE_SHARD": {
+    "name_en": "Arcane Energy Core",
+    "name_int": "prosthetics.arcane_shard.name",
+    "name_it": "Nucleo di Energia Arcana",
+    "type": "magical",
+    "effects": {
+      "1": 25,
+      "4": 10
+    },
+    "cost": 350000,
+    "skill": null
+  },
+  "LIVING_ARMOR": {
+    "name_en": "Living Symbiotic Armor",
+    "name_int": "prosthetics.living_armor.name",
+    "name_it": "Armatura Simbiotica Vivente",
+    "type": "biological",
+    "effects": {
+      "0": 40,
+      "5": 15
+    },
+    "cost": 550000,
+    "skill": null
+  },
+  "PHOENIX_HEART": {
+    "name_en": "Phoenix Fire Heart",
+    "name_int": "prosthetics.phoenix_heart.name",
+    "name_it": "Cuore di Fuoco di Fenice",
+    "type": "magical",
+    "effects": {
+      "0": 35,
+      "4": 12
+    },
+    "cost": 470000,
+    "skill": null
+  },
+  "MECHANICAL_HEART": {
+    "name_en": "Clockwork Heart Engine",
+    "name_int": "prosthetics.mechanical_heart.name",
+    "name_it": "Cuore Meccanico a Orologeria",
+    "type": "technological",
+    "effects": {
+      "2": 5,
+      "6": 8
+    },
+    "cost": 130000,
+    "skill": null
+  },
+  "DRAGON_HEART": {
+    "name_en": "Ancient Dragon Heart",
+    "name_int": "prosthetics.dragon_heart.name",
+    "name_it": "Cuore di Drago Antico",
+    "type": "biological",
+    "effects": {
+      "0": 50,
+      "5": 8
+    },
+    "cost": 580000,
+    "skill": null
+  },
+  "AQUATIC_GILLS": {
+    "name_en": "Aquatic Breathing Gills",
+    "name_int": "prosthetics.aquatic_gills.name",
+    "name_it": "Branchie Respiratorie Acquatiche",
+    "type": "biological",
+    "effects": {
+      "0": 15,
+      "6": 6
+    },
+    "cost": 210000,
+    "skill": null
+  },
+  "AIR_FILTRATION": {
+    "name_en": "Advanced Air Filtration",
+    "name_int": "prosthetics.air_filtration.name",
+    "name_it": "Sistema di Filtrazione Avanzato",
+    "type": "technological",
+    "effects": {
+      "5": 8,
+      "6": 3
+    },
+    "cost": 110000,
+    "skill": null
+  },
+  "ELEMENTAL_LUNGS": {
+    "name_en": "Elemental Essence Lungs",
+    "name_int": "prosthetics.elemental_lungs.name",
+    "name_it": "Polmoni dell'Essenza Elementale",
+    "type": "magical",
+    "effects": {
+      "1": 20,
+      "4": 8
+    },
+    "cost": 280000,
+    "skill": null
+  },
+  "ALCHEMICAL_PROCESSOR": {
+    "name_en": " Processing Unit",
+    "name_int": "prosthetics.alchemical_processor.name",
+    "name_it": "Unità di Elaborazione Alchemica",
+    "type": "magical",
+    "effects": {
+      "3": 6,
+      "5": 5
+    },
+    "cost": 110000,
+    "skill": null
+  },
+  "TOXIN_FILTER": {
+    "name_en": "Bio-Toxin Filter System",
+    "name_int": "prosthetics.toxin_filter.name",
+    "name_it": "Sistema Filtrante Bio-Tossine",
+    "type": "biological",
+    "effects": {
+      "0": 20,
+      "5": 10
+    },
+    "cost": 300000,
+    "skill": null
+  },
+  "DRACONIC_FURNACE": {
+    "name_en": "Draconic Flame Furnace",
+    "name_int": "prosthetics.draconic_furnace.name",
+    "name_it": "Fornace Draconiche delle Fiamme",
+    "type": "magical",
+    "effects": {
+      "2": 4,
+      "4": 9
+    },
+    "cost": 130000,
+    "skill": null,
+    "needs": {
+      "hunger": 0.85
+    }
+  },
+  "NUTRIENT_SYNTHESIZER": {
+    "name_en": "Nutrient Synthesis Chamber",
+    "name_int": "prosthetics.nutrient_synthesizer.name",
+    "name_it": "Camera di Sintesi Nutritiva",
+    "type": "technological",
+    "effects": {
+      "0": 30,
+      "6": 4
+    },
+    "cost": 340000,
+    "skill": null,
+    "needs": {
+      "hunger": 0.7
+    }
+  },
+  "MECHANICAL_ARM": {
+    "name_en": "Steam-Powered Mechanical Arm",
+    "name_int": "prosthetics.mechanical_arm.name",
+    "name_it": "Braccio Meccanico a Vapore",
+    "type": "technological",
+    "effects": {
+      "2": 12,
+      "5": 3
+    },
+    "cost": 150000,
+    "skill": null
+  },
+  "ASTRAL_LIMB": {
+    "name_en": "Astral Projection Limb",
+    "name_int": "prosthetics.astral_limb.name",
+    "name_it": "Arto di Proiezione Astrale",
+    "type": "magical",
+    "effects": {
+      "4": 10,
+      "6": 5
+    },
+    "cost": 150000,
+    "skill": null
+  },
+  "GOLEM_ARM": {
+    "name_en": "Stone Golem Arm",
+    "name_int": "prosthetics.golem_arm.name",
+    "name_it": "Braccio di Golem di Pietra",
+    "type": "biological",
+    "effects": {
+      "2": 8,
+      "5": 8
+    },
+    "cost": 160000,
+    "skill": null
+  },
+  "LIGHTNING_CONDUCTOR": {
+    "name_en": "Lightning Conductor Arm",
+    "name_int": "prosthetics.lightning_conductor.name",
+    "name_it": "Braccio Conduttore di Fulmini",
+    "type": "magical",
+    "effects": {
+      "2": 3,
+      "4": 12
+    },
+    "cost": 150000,
+    "skill": null
+  },
+  "TITAN_LIMB": {
+    "name_en": "Titanium Reinforced Limb",
+    "name_int": "prosthetics.titan_limb.name",
+    "name_it": "Arto Rinforzato al Titanio",
+    "type": "technological",
+    "effects": {
+      "2": 15,
+      "5": 5
+    },
+    "cost": 200000,
+    "skill": null
+  },
+  "BLADE_FINGERS": {
+    "name_en": "Retractable Blade Fingers",
+    "name_int": "prosthetics.blade_fingers.name",
+    "name_it": "Dita Lama Retrattili",
+    "type": "technological",
+    "effects": {
+      "2": 10,
+      "6": 4
+    },
+    "cost": 140000,
+    "skill": null
+  },
+  "MANA_CRYSTALS": {
+    "name_en": "Embedded Mana Crystals",
+    "name_int": "prosthetics.mana_crystals.name",
+    "name_it": "Cristalli di Mana Incorporati",
+    "type": "magical",
+    "effects": {
+      "1": 15,
+      "4": 8
+    },
+    "cost": 230000,
+    "skill": null
+  },
+  "GRAPPLING_HOOKS": {
+    "name_en": "Mechanical Grappling Hooks",
+    "name_int": "prosthetics.grappling_hooks.name",
+    "name_it": "Rampini Meccanici",
+    "type": "technological",
+    "effects": {
+      "2": 4,
+      "6": 8
+    },
+    "cost": 120000,
+    "skill": null
+  },
+  "LIVING_VINES": {
+    "name_en": "Living Vine Extensions",
+    "name_int": "prosthetics.living_vines.name",
+    "name_it": "Estensioni di Viti Viventi",
+    "type": "biological",
+    "effects": {
+      "2": 6,
+      "6": 6
+    },
+    "cost": 120000,
+    "skill": null
+  },
+  "SPIRIT_CHANNELERS": {
+    "name_en": "Spirit Channeling Palms",
+    "name_int": "prosthetics.spirit_channelers.name",
+    "name_it": "Palmi Incanalatori di Spiriti",
+    "type": "magical",
+    "effects": {
+      "3": 3,
+      "4": 12
+    },
+    "cost": 150000,
+    "skill": null
+  },
+  "LOCK_PICKS": {
+    "name_en": "Integrated Lock Picks",
+    "name_int": "prosthetics.lock_picks.name",
+    "name_it": "Grimaldelli Integrati",
+    "type": "technological",
+    "effects": {
+      "3": 2,
+      "6": 6
+    },
+    "cost": 800000,
+    "skill": null
+  },
+  "POISON_NEEDLES": {
+    "name_en": "Poison Needle Tips",
+    "name_int": "prosthetics.poison_needles.name",
+    "name_it": "Punte ad Ago Velenose",
+    "type": "biological",
+    "effects": {
+      "2": 8,
+      "6": 3
+    },
+    "cost": 110000,
+    "skill": null
+  },
+  "RUNIC_INSCRIPTIONS": {
+    "name_en": "Runic Power Inscriptions",
+    "name_int": "prosthetics.runic_inscriptions.name",
+    "name_it": "Iscrizioni Runiche di Potere",
+    "type": "magical",
+    "effects": {
+      "1": 10,
+      "4": 6
+    },
+    "cost": 160000,
+    "skill": null
+  },
+  "AQUATIC_FINS": {
+    "name_en": "Installable Aquatic Fins",
+    "name_int": "prosthetics.aquatic_fins.name",
+    "name_it": "Pinne Acquatiche Installabili",
+    "type": "biological",
+    "effects": {
+      "0": 5,
+      "6": 8
+    },
+    "cost": 130000,
+    "skill": null
+  },
+  "MICRO_TOOLS": {
+    "name_en": "Micro-Tool Array",
+    "name_int": "prosthetics.micro_tools.name",
+    "name_it": "Array di Micro-Strumenti",
+    "type": "technological",
+    "effects": {
+      "3": 5,
+      "6": 3
+    },
+    "cost": 80000,
+    "skill": null
+  },
+  "SPRING_COILS": {
+    "name_en": "Spring-Loaded Coil Legs",
+    "name_int": "prosthetics.spring_coils.name",
+    "name_it": "Gambe a Molla Caricata",
+    "type": "technological",
+    "effects": {
+      "2": 3,
+      "6": 12
+    },
+    "cost": 150000,
+    "skill": null
+  },
+  "TREE_TRUNK": {
+    "name_en": "Living Tree Trunk Leg",
+    "name_int": "prosthetics.tree_trunk.name",
+    "name_it": "Gamba Tronco d'Albero Vivente",
+    "type": "biological",
+    "effects": {
+      "0": 25,
+      "5": 10
+    },
+    "cost": 350000,
+    "skill": null
+  },
+  "SHADOW_WALKER": {
+    "name_en": "Shadow Walker Limb",
+    "name_int": "prosthetics.shadow_walker.name",
+    "name_it": "Arto del Camminatore d'Ombra",
+    "type": "magical",
+    "effects": {
+      "4": 5,
+      "6": 10
+    },
+    "cost": 150000,
+    "skill": null
+  },
+  "HYDRAULIC_PISTONS": {
+    "name_en": "Hydraulic Piston System",
+    "name_int": "prosthetics.hydraulic_pistons.name",
+    "name_it": "Sistema a Pistoni Idraulici",
+    "type": "technological",
+    "effects": {
+      "2": 8,
+      "6": 8
+    },
+    "cost": 160000,
+    "skill": null
+  },
+  "ELEMENTAL_STRIDE": {
+    "name_en": "Elemental Stride Enhancer",
+    "name_int": "prosthetics.elemental_stride.name",
+    "name_it": "Potenziatore del Passo Elementale",
+    "type": "magical",
+    "effects": {
+      "4": 8,
+      "6": 8
+    },
+    "cost": 160000,
+    "skill": null
+  },
+  "MAGNETIC_SOLES": {
+    "name_en": "Magnetic Grip Soles",
+    "name_int": "prosthetics.magnetic_soles.name",
+    "name_it": "Suole a Presa Magnetica",
+    "type": "technological",
+    "effects": {
+      "5": 4,
+      "6": 6
+    },
+    "cost": 100000,
+    "skill": null
+  },
+  "BEAST_CLAWS": {
+    "name_en": "Retractable Beast Claws",
+    "name_int": "prosthetics.beast_claws.name",
+    "name_it": "Artigli Bestiali Retrattili",
+    "type": "biological",
+    "effects": {
+      "2": 8,
+      "6": 4
+    },
+    "cost": 120000,
+    "skill": null
+  },
+  "HOVER_PADS": {
+    "name_en": "Anti-Gravity Hover Pads",
+    "name_int": "prosthetics.hover_pads.name",
+    "name_it": "Cuscinetti Antigravitazionali",
+    "type": "magical",
+    "effects": {
+      "4": 3,
+      "6": 10
+    },
+    "cost": 130000,
+    "skill": null
+  },
+  "SHOCK_ABSORBERS": {
+    "name_en": "Kinetic Shock Absorbers",
+    "name_int": "prosthetics.shock_absorbers.name",
+    "name_it": "Ammortizzatori Cinetici",
+    "type": "technological",
+    "effects": {
+      "5": 8,
+      "6": 5
+    },
+    "cost": 130000,
+    "skill": null
+  },
+  "CLIMBING_SPIKES": {
+    "name_en": "Climbing Spike Array",
+    "name_int": "prosthetics.climbing_spikes.name",
+    "name_it": "Array di Ramponi",
+    "type": "technological",
+    "effects": {
+      "2": 2,
+      "6": 4
+    },
+    "cost": 60000,
+    "skill": null
+  },
+  "BALANCE_GYROS": {
+    "name_en": "Micro-Balance Gyroscopes",
+    "name_int": "prosthetics.balance_gyros.name",
+    "name_it": "Giroscopi Micro-Equilibrio",
+    "type": "technological",
+    "effects": {
+      "5": 2,
+      "6": 5
+    },
+    "cost": 70000,
+    "skill": null
+  },
+  "EARTH_SENSE": {
+    "name_en": "Earth Tremor Sensors",
+    "name_int": "prosthetics.earth_sense.name",
+    "name_it": "Sensori Sismici Terrestri",
+    "type": "magical",
+    "effects": {
+      "3": 4,
+      "6": 3
+    },
+    "cost": 70000,
+    "skill": null
+  },
+  "BLOOD_PURIFIER": {
+    "name_en": "Advanced Blood Purifier",
+    "name_int": "prosthetics.blood_purifier.name",
+    "name_it": "Purificatore Sanguigno Avanzato",
+    "type": "technological",
+    "effects": {
+      "0": 15,
+      "5": 6
+    },
+    "cost": 210000,
+    "skill": null
+  },
+  "ESSENCE_FILTER": {
+    "name_en": "Magical Essence Filter",
+    "name_int": "prosthetics.essence_filter.name",
+    "name_it": "Filtro dell'Essenza Magica",
+    "type": "magical",
+    "effects": {
+      "1": 18,
+      "4": 3
+    },
+    "cost": 210000,
+    "skill": null
+  },
+  "NUTRIENT_EXTRACTOR": {
+    "name_en": "Nutrient Extraction Matrix",
+    "name_int": "prosthetics.nutrient_extractor.name",
+    "name_it": "Matrice di Estrazione Nutritiva",
+    "type": "biological",
+    "effects": {
+      "0": 35,
+      "5": 6
+    },
+    "cost": 410000,
+    "skill": null,
+    "needs": {
+      "hunger": 0.8
+    }
+  },
+  "MANA_CONVERTER": {
+    "name_en": "Mana Conversion Coils",
+    "name_int": "prosthetics.mana_converter.name",
+    "name_it": "Bobine di Conversione Magica",
+    "type": "magical",
+    "effects": {
+      "1": 25,
+      "3": 5
+    },
+    "cost": 300000,
+    "skill": null
+  },
+  "TITAN_CRANIUM": {
+    "name_en": "Titan Cranium",
+    "name_int": "prosthetics.titan_cranium.name",
+    "name_it": "Cranio Titanico",
+    "type": "biological",
+    "effects": {
+      "0": 40,
+      "5": 10
+    },
+    "skill": 1789,
+    "cost": 320000
+  },
+  "ORACLE_DIADEM": {
+    "name_en": "Oracle Diadem",
+    "name_int": "prosthetics.oracle_diadem.name",
+    "name_it": "Diadema dell'Oracolo",
+    "type": "magical",
+    "effects": {
+      "1": 30,
+      "7": 12
+    },
+    "skill": 1405,
+    "cost": 380000
+  },
+  "GRAFTED_WAR_HELM": {
+    "name_en": "Grafted War Helm",
+    "name_int": "prosthetics.grafted_war_helm.name",
+    "name_it": "Elmo da Guerra Innestato",
+    "type": "technological",
+    "effects": {
+      "0": 25,
+      "3": 8
+    },
+    "skill": 1218,
+    "cost": 260000
+  },
+  "MEDUSA_CIRCLET": {
+    "name_en": "Medusa Circlet",
+    "name_int": "prosthetics.medusa_circlet.name",
+    "name_it": "Cerchietto di Medusa",
+    "type": "magical",
+    "effects": {
+      "4": 12,
+      "7": 10
+    },
+    "skill": 934,
+    "cost": 420000
+  },
+  "DREAD_VISAGE": {
+    "name_en": "Dread Visage",
+    "name_int": "prosthetics.dread_visage.name",
+    "name_it": "Volto Tremendo",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "7": 8
+    },
+    "skill": 318,
+    "cost": 300000
+  },
+  "LOGIC_ENGINE": {
+    "name_en": "Logic Engine",
+    "name_int": "prosthetics.logic_engine.name",
+    "name_it": "Motore Logico",
+    "type": "technological",
+    "effects": {
+      "1": 20,
+      "4": 18
+    },
+    "skill": 951,
+    "cost": 420000
+  },
+  "PSIONIC_LOBE": {
+    "name_en": "Psionic Lobe",
+    "name_int": "prosthetics.psionic_lobe.name",
+    "name_it": "Lobo Psionico",
+    "type": "biological",
+    "effects": {
+      "4": 14,
+      "7": 12
+    },
+    "skill": 957,
+    "cost": 460000
+  },
+  "PRECOGNITION_CORTEX": {
+    "name_en": "Precognition Cortex",
+    "name_int": "prosthetics.precognition_cortex.name",
+    "name_it": "Corteccia Precognitiva",
+    "type": "magical",
+    "effects": {
+      "6": 14,
+      "7": 10
+    },
+    "skill": 942,
+    "cost": 500000
+  },
+  "ARCHIVE_IMPLANT": {
+    "name_en": "Archive Implant",
+    "name_int": "prosthetics.archive_implant.name",
+    "name_it": "Impianto d'Archivio",
+    "type": "technological",
+    "effects": {
+      "4": 20
+    },
+    "skill": 1524,
+    "cost": 350000
+  },
+  "DREAM_ANCHOR": {
+    "name_en": "Dream Anchor",
+    "name_int": "prosthetics.dream_anchor.name",
+    "name_it": "Ancora Onirica",
+    "type": "magical",
+    "effects": {
+      "1": 25,
+      "7": 8
+    },
+    "skill": 1700,
+    "cost": 380000
+  },
+  "FOURTH_WALL_SHUNT": {
+    "name_en": "Fourth Wall Shunt",
+    "name_int": "prosthetics.fourth_wall_shunt.name",
+    "name_it": "Derivazione della Quarta Parete",
+    "type": "magical",
+    "effects": {
+      "4": 22,
+      "7": 20
+    },
+    "skill": 1655,
+    "cost": 1200000
+  },
+  "ABYSSAL_LENS": {
+    "name_en": "Abyssal Lens",
+    "name_int": "prosthetics.abyssal_lens.name",
+    "name_it": "Lente Abissale",
+    "type": "magical",
+    "effects": {
+      "4": 12,
+      "7": 12
+    },
+    "skill": 603,
+    "cost": 440000
+  },
+  "THOUSAND_EYED_GRAFT": {
+    "name_en": "Thousand-Eyed Graft",
+    "name_int": "prosthetics.thousand_eyed_graft.name",
+    "name_it": "Innesto dai Mille Occhi",
+    "type": "magical",
+    "effects": {
+      "7": 16
+    },
+    "skill": 1298,
+    "cost": 520000
+  },
+  "SPECTRAL_ANALYZER": {
+    "name_en": "Spectral Analyzer",
+    "name_int": "prosthetics.spectral_analyzer.name",
+    "name_it": "Analizzatore Spettrale",
+    "type": "technological",
+    "effects": {
+      "4": 12,
+      "6": 8
+    },
+    "skill": 1646,
+    "cost": 300000
+  },
+  "TARGETING_RETICLE": {
+    "name_en": "Targeting Reticle",
+    "name_int": "prosthetics.targeting_reticle.name",
+    "name_it": "Reticolo di Puntamento",
+    "type": "technological",
+    "effects": {
+      "3": 12,
+      "6": 10
+    },
+    "skill": 1040,
+    "cost": 340000
+  },
+  "MIRAGE_IRIS": {
+    "name_en": "Mirage Iris",
+    "name_int": "prosthetics.mirage_iris.name",
+    "name_it": "Iride Miraggio",
+    "type": "magical",
+    "effects": {
+      "6": 10,
+      "7": 10
+    },
+    "skill": 1593,
+    "cost": 360000
+  },
+  "OMNISCIENCE_LENS": {
+    "name_en": "Omniscience Lens",
+    "name_int": "prosthetics.omniscience_lens.name",
+    "name_it": "Lente dell'Onniscienza",
+    "type": "magical",
+    "effects": {
+      "4": 20,
+      "7": 18
+    },
+    "skill": 1411,
+    "cost": 1400000
+  },
+  "ECHO_DRUM": {
+    "name_en": "Echo Drum",
+    "name_int": "prosthetics.echo_drum.name",
+    "name_it": "Timpano d'Eco",
+    "type": "technological",
+    "effects": {
+      "4": 8,
+      "6": 12
+    },
+    "skill": 1774,
+    "cost": 300000
+  },
+  "RESONANCE_COIL": {
+    "name_en": "Resonance Coil",
+    "name_int": "prosthetics.resonance_coil.name",
+    "name_it": "Bobina di Risonanza",
+    "type": "technological",
+    "effects": {
+      "1": 15,
+      "4": 10
+    },
+    "skill": 1892,
+    "cost": 330000
+  },
+  "SCREECH_GLAND": {
+    "name_en": "Screech Gland",
+    "name_int": "prosthetics.screech_gland.name",
+    "name_it": "Ghiandola dello Stridio",
+    "type": "biological",
+    "effects": {
+      "2": 8,
+      "6": 10
+    },
+    "skill": 306,
+    "cost": 280000
+  },
+  "STAR_CHOIR_ANTENNA": {
+    "name_en": "Star Choir Antenna",
+    "name_int": "prosthetics.star_choir_antenna.name",
+    "name_it": "Antenna del Coro Stellare",
+    "type": "magical",
+    "effects": {
+      "1": 22,
+      "7": 10
+    },
+    "skill": 1862,
+    "cost": 420000
+  },
+  "RADIO_OSSICLE": {
+    "name_en": "Radio Ossicle",
+    "name_int": "prosthetics.radio_ossicle.name",
+    "name_it": "Ossicino Radio",
+    "type": "technological",
+    "effects": {
+      "4": 10,
+      "6": 8
+    },
+    "skill": 1653,
+    "cost": 260000
+  },
+  "HOUND_SINUS": {
+    "name_en": "Hound Sinus",
+    "name_int": "prosthetics.hound_sinus.name",
+    "name_it": "Seno da Segugio",
+    "type": "biological",
+    "effects": {
+      "3": 8,
+      "6": 12
+    },
+    "skill": 343,
+    "cost": 260000
+  },
+  "TOXIN_SNIFFER": {
+    "name_en": "Toxin Sniffer",
+    "name_int": "prosthetics.toxin_sniffer.name",
+    "name_it": "Analizzatore di Tossine",
+    "type": "technological",
+    "effects": {
+      "4": 8,
+      "5": 12
+    },
+    "skill": 989,
+    "cost": 290000
+  },
+  "MIASMA_FILTER": {
+    "name_en": "Miasma Filter",
+    "name_int": "prosthetics.miasma_filter.name",
+    "name_it": "Filtro dei Miasmi",
+    "type": "technological",
+    "effects": {
+      "5": 16
+    },
+    "skill": 991,
+    "cost": 310000
+  },
+  "BREATH_FURNACE": {
+    "name_en": "Breath Furnace",
+    "name_int": "prosthetics.breath_furnace.name",
+    "name_it": "Fornace del Respiro",
+    "type": "biological",
+    "effects": {
+      "2": 12,
+      "4": 10
+    },
+    "skill": 333,
+    "cost": 400000
+  },
+  "FROST_NARES": {
+    "name_en": "Frost Nares",
+    "name_int": "prosthetics.frost_nares.name",
+    "name_it": "Narici di Brina",
+    "type": "biological",
+    "effects": {
+      "4": 12,
+      "5": 8
+    },
+    "skill": 334,
+    "cost": 380000
+  },
+  "SIREN_LARYNX": {
+    "name_en": "Siren Larynx",
+    "name_int": "prosthetics.siren_larynx.name",
+    "name_it": "Laringe di Sirena",
+    "type": "biological",
+    "effects": {
+      "1": 15,
+      "7": 14
+    },
+    "skill": 955,
+    "cost": 400000
+  },
+  "ACID_SPITTER": {
+    "name_en": "Acid Spitter",
+    "name_int": "prosthetics.acid_spitter.name",
+    "name_it": "Sputa-Acido",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "4": 10
+    },
+    "skill": 1768,
+    "cost": 340000
+  },
+  "DEVOURING_MAW": {
+    "name_en": "Devouring Maw",
+    "name_int": "prosthetics.devouring_maw.name",
+    "name_it": "Fauci Divoranti",
+    "type": "biological",
+    "effects": {
+      "0": 30,
+      "2": 12
+    },
+    "skill": 354,
+    "cost": 460000
+  },
+  "COMMAND_VOX": {
+    "name_en": "Command Vox",
+    "name_int": "prosthetics.command_vox.name",
+    "name_it": "Vox di Comando",
+    "type": "technological",
+    "effects": {
+      "4": 10,
+      "7": 12
+    },
+    "skill": 1535,
+    "cost": 380000
+  },
+  "HYMN_PALATE": {
+    "name_en": "Hymn Palate",
+    "name_int": "prosthetics.hymn_palate.name",
+    "name_it": "Palato dell'Inno",
+    "type": "magical",
+    "effects": {
+      "1": 25,
+      "5": 8
+    },
+    "skill": 1827,
+    "cost": 350000
+  },
+  "WYRM_FANGS": {
+    "name_en": "Wyrm Fangs",
+    "name_int": "prosthetics.wyrm_fangs.name",
+    "name_it": "Zanne di Viverna",
+    "type": "biological",
+    "effects": {
+      "2": 14,
+      "3": 8
+    },
+    "skill": 322,
+    "cost": 380000
+  },
+  "VENOM_DENTITION": {
+    "name_en": "Venom Dentition",
+    "name_int": "prosthetics.venom_dentition.name",
+    "name_it": "Dentatura Velenosa",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "6": 8
+    },
+    "skill": 320,
+    "cost": 320000
+  },
+  "GRAVEBITE_MOLARS": {
+    "name_en": "Gravebite Molars",
+    "name_int": "prosthetics.gravebite_molars.name",
+    "name_it": "Molari Tombali",
+    "type": "magical",
+    "effects": {
+      "2": 12,
+      "7": 8
+    },
+    "skill": 635,
+    "cost": 400000
+  },
+  "MILL_TUSKS": {
+    "name_en": "Mill Tusks",
+    "name_int": "prosthetics.mill_tusks.name",
+    "name_it": "Zanne da Mulino",
+    "type": "biological",
+    "effects": {
+      "0": 25,
+      "2": 10
+    },
+    "skill": 1802,
+    "cost": 300000
+  },
+  "GLASS_INCISORS": {
+    "name_en": "Glass Incisors",
+    "name_int": "prosthetics.glass_incisors.name",
+    "name_it": "Incisivi di Vetro",
+    "type": "magical",
+    "effects": {
+      "3": 10,
+      "6": 12
+    },
+    "skill": 1854,
+    "cost": 340000
+  },
+  "HYDRA_COLUMN": {
+    "name_en": "Hydra Column",
+    "name_int": "prosthetics.hydra_column.name",
+    "name_it": "Colonna d'Idra",
+    "type": "biological",
+    "effects": {
+      "0": 35,
+      "5": 10
+    },
+    "skill": 316,
+    "cost": 400000
+  },
+  "ROAR_BELLOWS": {
+    "name_en": "Roar Bellows",
+    "name_int": "prosthetics.roar_bellows.name",
+    "name_it": "Mantice del Ruggito",
+    "type": "biological",
+    "effects": {
+      "2": 12,
+      "7": 10
+    },
+    "skill": 348,
+    "cost": 360000
+  },
+  "GUILLOTINE_COLLAR": {
+    "name_en": "Guillotine Collar",
+    "name_int": "prosthetics.guillotine_collar.name",
+    "name_it": "Collare della Ghigliottina",
+    "type": "technological",
+    "effects": {
+      "2": 15,
+      "3": 10
+    },
+    "skill": 336,
+    "cost": 420000
+  },
+  "CHOIR_THROAT": {
+    "name_en": "Choir Throat",
+    "name_int": "prosthetics.choir_throat.name",
+    "name_it": "Gola del Coro",
+    "type": "magical",
+    "effects": {
+      "1": 28
+    },
+    "skill": 1843,
+    "cost": 340000
+  },
+  "SERPENT_SWALLOW": {
+    "name_en": "Serpent Swallow",
+    "name_int": "prosthetics.serpent_swallow.name",
+    "name_it": "Deglutizione Serpentina",
+    "type": "biological",
+    "effects": {
+      "0": 20,
+      "5": 14
+    },
+    "skill": 1564,
+    "cost": 300000
+  },
+  "BODY_FURNACE": {
+    "name_en": "Body Furnace",
+    "name_int": "prosthetics.body_furnace.name",
+    "name_it": "Fornace Corporea",
+    "type": "technological",
+    "effects": {
+      "0": 40,
+      "2": 12
+    },
+    "skill": 1824,
+    "cost": 450000
+  },
+  "STORM_CAGE": {
+    "name_en": "Storm Cage",
+    "name_int": "prosthetics.storm_cage.name",
+    "name_it": "Gabbia Tempestosa",
+    "type": "technological",
+    "effects": {
+      "1": 30,
+      "4": 12
+    },
+    "skill": 1823,
+    "cost": 470000
+  },
+  "WORLD_TREE_GRAFT": {
+    "name_en": "World Tree Graft",
+    "name_int": "prosthetics.world_tree_graft.name",
+    "name_it": "Innesto dell'Albero Mondo",
+    "type": "magical",
+    "effects": {
+      "0": 35,
+      "5": 14
+    },
+    "skill": 890,
+    "cost": 520000
+  },
+  "SWARM_HOLLOW": {
+    "name_en": "Swarm Hollow",
+    "name_int": "prosthetics.swarm_hollow.name",
+    "name_it": "Cavità dello Sciame",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "6": 12
+    },
+    "skill": 1861,
+    "cost": 400000
+  },
+  "GRAVITY_ANCHOR": {
+    "name_en": "Gravity Anchor",
+    "name_int": "prosthetics.gravity_anchor.name",
+    "name_it": "Ancora Gravitazionale",
+    "type": "technological",
+    "effects": {
+      "0": 25,
+      "5": 16
+    },
+    "skill": 1888,
+    "cost": 560000
+  },
+  "WORLDSHAPE_ANCHOR": {
+    "name_en": "Worldshape Anchor",
+    "name_int": "prosthetics.worldshape_anchor.name",
+    "name_it": "Ancora Plasmamondo",
+    "type": "magical",
+    "effects": {
+      "4": 18,
+      "5": 16
+    },
+    "skill": 1550,
+    "cost": 1300000
+  },
+  "DRAGONSCALE_WEAVE": {
+    "name_en": "Dragonscale Weave",
+    "name_int": "prosthetics.dragonscale_weave.name",
+    "name_it": "Trama di Scaglie di Drago",
+    "type": "biological",
+    "effects": {
+      "0": 25,
+      "5": 18
+    },
+    "skill": 888,
+    "cost": 480000
+  },
+  "MIRROR_PLATING": {
+    "name_en": "Mirror Plating",
+    "name_int": "prosthetics.mirror_plating.name",
+    "name_it": "Placcatura Speculare",
+    "type": "technological",
+    "effects": {
+      "4": 10,
+      "5": 15
+    },
+    "skill": 1594,
+    "cost": 440000
+  },
+  "KINETIC_BARRIER_RIG": {
+    "name_en": "Kinetic Barrier Rig",
+    "name_int": "prosthetics.kinetic_barrier_rig.name",
+    "name_it": "Telaio a Barriera Cinetica",
+    "type": "technological",
+    "effects": {
+      "5": 20
+    },
+    "skill": 943,
+    "cost": 500000
+  },
+  "BONE_BULWARK": {
+    "name_en": "Bone Bulwark",
+    "name_int": "prosthetics.bone_bulwark.name",
+    "name_it": "Baluardo d'Ossa",
+    "type": "biological",
+    "effects": {
+      "0": 45,
+      "5": 8
+    },
+    "skill": 1490,
+    "cost": 420000
+  },
+  "AEGIS_SIGIL": {
+    "name_en": "Aegis Sigil",
+    "name_int": "prosthetics.aegis_sigil.name",
+    "name_it": "Sigillo dell'Egida",
+    "type": "magical",
+    "effects": {
+      "1": 20,
+      "5": 14
+    },
+    "skill": 1296,
+    "cost": 460000
+  },
+  "REAPER_CONTRACT": {
+    "name_en": "Reaper's Contract",
+    "name_int": "prosthetics.reaper_contract.name",
+    "name_it": "Contratto del Mietitore",
+    "type": "magical",
+    "effects": {
+      "4": 14,
+      "7": 20
+    },
+    "skill": 1305,
+    "cost": 1500000
+  },
+  "STORM_HEART": {
+    "name_en": "Storm Heart",
+    "name_int": "prosthetics.storm_heart.name",
+    "name_it": "Cuore di Tempesta",
+    "type": "magical",
+    "effects": {
+      "1": 30,
+      "4": 14
+    },
+    "skill": 1860,
+    "cost": 520000
+  },
+  "BLOODLUST_VENTRICLE": {
+    "name_en": "Bloodlust Ventricle",
+    "name_int": "prosthetics.bloodlust_ventricle.name",
+    "name_it": "Ventricolo della Brama",
+    "type": "biological",
+    "effects": {
+      "2": 16,
+      "6": 10
+    },
+    "skill": 313,
+    "cost": 460000
+  },
+  "IRON_PUMP": {
+    "name_en": "Iron Pump",
+    "name_int": "prosthetics.iron_pump.name",
+    "name_it": "Pompa di Ferro",
+    "type": "technological",
+    "effects": {
+      "0": 45,
+      "5": 10
+    },
+    "skill": 1017,
+    "cost": 440000
+  },
+  "SOUL_VALVE": {
+    "name_en": "Soul Valve",
+    "name_int": "prosthetics.soul_valve.name",
+    "name_it": "Valvola dell'Anima",
+    "type": "magical",
+    "effects": {
+      "1": 26,
+      "7": 12
+    },
+    "skill": 636,
+    "cost": 540000
+  },
+  "TRANSFUSION_ATRIUM": {
+    "name_en": "Transfusion Atrium",
+    "name_int": "prosthetics.transfusion_atrium.name",
+    "name_it": "Atrio da Trasfusione",
+    "type": "technological",
+    "effects": {
+      "0": 30,
+      "5": 12
+    },
+    "skill": 1003,
+    "cost": 420000
+  },
+  "LICHDOM_PHYLACTERY": {
+    "name_en": "Lichdom Phylactery",
+    "name_int": "prosthetics.lichdom_phylactery.name",
+    "name_it": "Filatterio della Lichdom",
+    "type": "magical",
+    "effects": {
+      "1": 30,
+      "7": 22
+    },
+    "skill": 1613,
+    "cost": 1500000
+  },
+  "STORM_BELLOWS": {
+    "name_en": "Storm Bellows",
+    "name_int": "prosthetics.storm_bellows.name",
+    "name_it": "Mantice di Tempesta",
+    "type": "technological",
+    "effects": {
+      "4": 14,
+      "6": 10
+    },
+    "skill": 1830,
+    "cost": 420000
+  },
+  "TOXIN_ALVEOLI": {
+    "name_en": "Toxin Alveoli",
+    "name_int": "prosthetics.toxin_alveoli.name",
+    "name_it": "Alveoli Tossici",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "4": 12
+    },
+    "skill": 311,
+    "cost": 380000
+  },
+  "VACUUM_SACS": {
+    "name_en": "Vacuum Sacs",
+    "name_int": "prosthetics.vacuum_sacs.name",
+    "name_it": "Sacche a Vuoto",
+    "type": "technological",
+    "effects": {
+      "1": 18,
+      "5": 14
+    },
+    "skill": 1558,
+    "cost": 400000
+  },
+  "EMBER_BREATH_LOBE": {
+    "name_en": "Ember Breath Lobe",
+    "name_int": "prosthetics.ember_breath_lobe.name",
+    "name_it": "Lobo del Respiro Ardente",
+    "type": "biological",
+    "effects": {
+      "2": 14,
+      "4": 10
+    },
+    "skill": 345,
+    "cost": 440000
+  },
+  "DEEP_DIVER_LUNG": {
+    "name_en": "Deep Diver Lung",
+    "name_int": "prosthetics.deep_diver_lung.name",
+    "name_it": "Polmone da Palombaro",
+    "type": "biological",
+    "effects": {
+      "0": 30,
+      "5": 12
+    },
+    "skill": 1561,
+    "cost": 360000
+  },
+  "ALCHEMIC_LIVER": {
+    "name_en": "Alchemic Liver",
+    "name_int": "prosthetics.alchemic_liver.name",
+    "name_it": "Fegato Alchemico",
+    "type": "biological",
+    "effects": {
+      "1": 15,
+      "5": 16
+    },
+    "skill": 1022,
+    "cost": 420000,
+    "needs": {
+      "hygiene": 0.8
+    }
+  },
+  "GLUTTON_STOMACH": {
+    "name_en": "Glutton Stomach",
+    "name_int": "prosthetics.glutton_stomach.name",
+    "name_it": "Stomaco del Ghiottone",
+    "type": "biological",
+    "effects": {
+      "0": 35,
+      "5": 10
+    },
+    "skill": 1566,
+    "cost": 380000,
+    "needs": {
+      "hunger": 0.75
+    }
+  },
+  "PLAGUE_SPLEEN": {
+    "name_en": "Plague Spleen",
+    "name_int": "prosthetics.plague_spleen.name",
+    "name_it": "Milza della Peste",
+    "type": "biological",
+    "effects": {
+      "4": 12,
+      "7": 10
+    },
+    "skill": 1000,
+    "cost": 440000
+  },
+  "MANA_GUT": {
+    "name_en": "Mana Gut",
+    "name_int": "prosthetics.mana_gut.name",
+    "name_it": "Intestino di Mana",
+    "type": "magical",
+    "effects": {
+      "1": 32
+    },
+    "skill": 629,
+    "cost": 400000
+  },
+  "ADRENAL_KIDNEY": {
+    "name_en": "Adrenal Kidney",
+    "name_int": "prosthetics.adrenal_kidney.name",
+    "name_it": "Rene Surrenale",
+    "type": "biological",
+    "effects": {
+      "2": 12,
+      "6": 12
+    },
+    "skill": 939,
+    "cost": 400000
+  },
+  "ORGAN_GRINDER_PORT": {
+    "name_en": "Organ Grinder Port",
+    "name_int": "prosthetics.organ_grinder_port.name",
+    "name_it": "Presa dell'Organetto",
+    "type": "magical",
+    "effects": {
+      "2": 16,
+      "7": 16
+    },
+    "skill": 1424,
+    "cost": 1100000
+  },
+  "NEUROTOXIN_SAC": {
+    "name_en": "Neurotoxin Sac",
+    "name_int": "prosthetics.neurotoxin_sac.name",
+    "name_it": "Sacca di Neurotossina",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "6": 10
+    },
+    "skill": 995,
+    "cost": 380000
+  },
+  "PIXIE_DUST_BLADDER": {
+    "name_en": "Pixie Dust Bladder",
+    "name_int": "prosthetics.pixie_dust_bladder.name",
+    "name_it": "Vescica di Polvere Fatata",
+    "type": "magical",
+    "effects": {
+      "1": 24,
+      "7": 10
+    },
+    "skill": 1591,
+    "cost": 420000
+  },
+  "INK_RESERVOIR": {
+    "name_en": "Ink Reservoir",
+    "name_int": "prosthetics.ink_reservoir.name",
+    "name_it": "Serbatoio d'Inchiostro",
+    "type": "biological",
+    "effects": {
+      "5": 8,
+      "6": 14
+    },
+    "skill": 1592,
+    "cost": 340000
+  },
+  "SPORE_BLADDER": {
+    "name_en": "Spore Bladder",
+    "name_int": "prosthetics.spore_bladder.name",
+    "name_it": "Vescica di Spore",
+    "type": "biological",
+    "effects": {
+      "4": 12,
+      "5": 10
+    },
+    "skill": 894,
+    "cost": 360000
+  },
+  "AMBROSIA_GLAND": {
+    "name_en": "Ambrosia Gland",
+    "name_int": "prosthetics.ambrosia_gland.name",
+    "name_it": "Ghiandola d'Ambrosia",
+    "type": "magical",
+    "effects": {
+      "0": 20,
+      "1": 20
+    },
+    "skill": 307,
+    "cost": 460000
+  },
+  "SIEGE_PISTON_ARM": {
+    "name_en": "Siege Piston Arm",
+    "name_int": "prosthetics.siege_piston_arm.name",
+    "name_it": "Braccio a Pistone d'Assedio",
+    "type": "technological",
+    "effects": {
+      "2": 20
+    },
+    "skill": 1787,
+    "cost": 460000
+  },
+  "STORMCALLER_ARM": {
+    "name_en": "Stormcaller Arm",
+    "name_int": "prosthetics.stormcaller_arm.name",
+    "name_it": "Braccio Chiamatempeste",
+    "type": "magical",
+    "effects": {
+      "1": 15,
+      "4": 16
+    },
+    "skill": 1851,
+    "cost": 480000
+  },
+  "GRAPPLE_WINCH_ARM": {
+    "name_en": "Grapple Winch Arm",
+    "name_int": "prosthetics.grapple_winch_arm.name",
+    "name_it": "Braccio a Verricello",
+    "type": "technological",
+    "effects": {
+      "3": 10,
+      "6": 14
+    },
+    "skill": 331,
+    "cost": 380000
+  },
+  "SERPENT_COIL_ARM": {
+    "name_en": "Serpent Coil Arm",
+    "name_int": "prosthetics.serpent_coil_arm.name",
+    "name_it": "Braccio a Spira Serpentina",
+    "type": "biological",
+    "effects": {
+      "2": 12,
+      "6": 12
+    },
+    "skill": 899,
+    "cost": 400000
+  },
+  "VOID_TENDRIL_ARM": {
+    "name_en": "Void Tendril Arm",
+    "name_int": "prosthetics.void_tendril_arm.name",
+    "name_it": "Braccio di Tentacoli del Vuoto",
+    "type": "magical",
+    "effects": {
+      "4": 14,
+      "7": 12
+    },
+    "skill": 1302,
+    "cost": 520000
+  },
+  "PROSTHETIC_PACT_SOCKET": {
+    "name_en": "Prosthetic Pact Socket",
+    "name_int": "prosthetics.prosthetic_pact_socket.name",
+    "name_it": "Innesto del Patto Protesico",
+    "type": "magical",
+    "effects": {
+      "2": 14,
+      "7": 18
+    },
+    "skill": 1606,
+    "cost": 1000000
+  },
+  "RAZOR_TALONS": {
+    "name_en": "Razor Talons",
+    "name_int": "prosthetics.razor_talons.name",
+    "name_it": "Artigli a Rasoio",
+    "type": "biological",
+    "effects": {
+      "2": 14,
+      "6": 10
+    },
+    "skill": 319,
+    "cost": 400000
+  },
+  "TESLA_KNUCKLES": {
+    "name_en": "Tesla Knuckles",
+    "name_int": "prosthetics.tesla_knuckles.name",
+    "name_it": "Nocche Tesla",
+    "type": "technological",
+    "effects": {
+      "2": 10,
+      "4": 12
+    },
+    "skill": 1869,
+    "cost": 420000
+  },
+  "SURGEON_DIGITS": {
+    "name_en": "Surgeon Digits",
+    "name_int": "prosthetics.surgeon_digits.name",
+    "name_it": "Dita da Chirurgo",
+    "type": "technological",
+    "effects": {
+      "5": 8,
+      "6": 16
+    },
+    "skill": 1013,
+    "cost": 380000
+  },
+  "RUNE_ETCHED_PALMS": {
+    "name_en": "Rune-Etched Palms",
+    "name_int": "prosthetics.rune_etched_palms.name",
+    "name_it": "Palmi Incisi di Rune",
+    "type": "magical",
+    "effects": {
+      "1": 24,
+      "4": 12
+    },
+    "skill": 1741,
+    "cost": 440000
+  },
+  "THIEF_MERIDIANS": {
+    "name_en": "Thief's Meridians",
+    "name_int": "prosthetics.thief_meridians.name",
+    "name_it": "Meridiani del Ladro",
+    "type": "biological",
+    "effects": {
+      "6": 18
+    },
+    "skill": 1707,
+    "cost": 360000
+  },
+  "SAWBONES_SUMMONER": {
+    "name_en": "Sawbones Summoner",
+    "name_int": "prosthetics.sawbones_summoner.name",
+    "name_it": "Evocatore del Cerusico",
+    "type": "magical",
+    "effects": {
+      "4": 14,
+      "7": 16
+    },
+    "skill": 1582,
+    "cost": 1000000
+  },
+  "PISTON_HAUNCH": {
+    "name_en": "Piston Haunch",
+    "name_int": "prosthetics.piston_haunch.name",
+    "name_it": "Anca a Pistone",
+    "type": "technological",
+    "effects": {
+      "2": 10,
+      "6": 16
+    },
+    "skill": 1790,
+    "cost": 420000
+  },
+  "QUAKE_STRIDERS": {
+    "name_en": "Quake Striders",
+    "name_int": "prosthetics.quake_striders.name",
+    "name_it": "Falcate Sismiche",
+    "type": "technological",
+    "effects": {
+      "0": 25,
+      "2": 14
+    },
+    "skill": 342,
+    "cost": 460000
+  },
+  "PHASE_STEP_LEG": {
+    "name_en": "Phase-Step Leg",
+    "name_int": "prosthetics.phase_step_leg.name",
+    "name_it": "Gamba a Passo di Fase",
+    "type": "magical",
+    "effects": {
+      "6": 18,
+      "7": 8
+    },
+    "skill": 1589,
+    "cost": 480000
+  },
+  "BEAST_DIGITIGRADE": {
+    "name_en": "Beast Digitigrade",
+    "name_int": "prosthetics.beast_digitigrade.name",
+    "name_it": "Zampa Digitigrada",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "6": 14
+    },
+    "skill": 339,
+    "cost": 380000
+  },
+  "WAYFARER_LIMB": {
+    "name_en": "Wayfarer Limb",
+    "name_int": "prosthetics.wayfarer_limb.name",
+    "name_it": "Arto del Viandante",
+    "type": "magical",
+    "effects": {
+      "5": 10,
+      "6": 12
+    },
+    "skill": 1695,
+    "cost": 400000
+  },
+  "GRAVITY_SOLES": {
+    "name_en": "Gravity Soles",
+    "name_int": "prosthetics.gravity_soles.name",
+    "name_it": "Suole Gravitazionali",
+    "type": "technological",
+    "effects": {
+      "5": 10,
+      "6": 14
+    },
+    "skill": 1777,
+    "cost": 400000
+  },
+  "STORM_SPURS": {
+    "name_en": "Storm Spurs",
+    "name_int": "prosthetics.storm_spurs.name",
+    "name_it": "Speroni di Tempesta",
+    "type": "magical",
+    "effects": {
+      "4": 10,
+      "6": 12
+    },
+    "skill": 1836,
+    "cost": 380000
+  },
+  "ROOTED_HOOVES": {
+    "name_en": "Rooted Hooves",
+    "name_int": "prosthetics.rooted_hooves.name",
+    "name_it": "Zoccoli Radicati",
+    "type": "biological",
+    "effects": {
+      "0": 20,
+      "5": 16
+    },
+    "skill": 887,
+    "cost": 360000
+  },
+  "SILENT_PADS": {
+    "name_en": "Silent Pads",
+    "name_int": "prosthetics.silent_pads.name",
+    "name_it": "Cuscinetti Silenziosi",
+    "type": "biological",
+    "effects": {
+      "3": 8,
+      "6": 16
+    },
+    "skill": 364,
+    "cost": 340000
+  },
+  "TITAN_TREADS": {
+    "name_en": "Titan Treads",
+    "name_int": "prosthetics.titan_treads.name",
+    "name_it": "Passi Titanici",
+    "type": "technological",
+    "effects": {
+      "0": 35,
+      "2": 10
+    },
+    "skill": 350,
+    "cost": 440000
+  },
+  "ROC_PINIONS": {
+    "name_en": "Roc Pinions",
+    "name_int": "prosthetics.roc_pinions.name",
+    "name_it": "Remiganti di Roc",
+    "type": "biological",
+    "effects": {
+      "0": 20,
+      "6": 16
+    },
+    "skill": 9,
+    "cost": 520000
+  },
+  "SERAPH_WINGS": {
+    "name_en": "Seraph Wings",
+    "name_int": "prosthetics.seraph_wings.name",
+    "name_it": "Ali di Serafino",
+    "type": "magical",
+    "effects": {
+      "1": 26,
+      "7": 12
+    },
+    "skill": 9,
+    "cost": 620000
+  },
+  "TURBINE_WINGS": {
+    "name_en": "Turbine Wings",
+    "name_int": "prosthetics.turbine_wings.name",
+    "name_it": "Ali a Turbina",
+    "type": "technological",
+    "effects": {
+      "3": 8,
+      "6": 18
+    },
+    "skill": 9,
+    "cost": 540000
+  },
+  "GUST_MEMBRANE": {
+    "name_en": "Gust Membrane",
+    "name_int": "prosthetics.gust_membrane.name",
+    "name_it": "Membrana di Raffica",
+    "type": "biological",
+    "effects": {
+      "4": 10,
+      "6": 12
+    },
+    "skill": 323,
+    "cost": 380000
+  },
+  "STORM_SAIL": {
+    "name_en": "Storm Sail",
+    "name_int": "prosthetics.storm_sail.name",
+    "name_it": "Vela di Tempesta",
+    "type": "technological",
+    "effects": {
+      "4": 14,
+      "6": 10
+    },
+    "skill": 1855,
+    "cost": 460000
+  },
+  "SCORPION_TELSON": {
+    "name_en": "Scorpion Telson",
+    "name_int": "prosthetics.scorpion_telson.name",
+    "name_it": "Telson di Scorpione",
+    "type": "biological",
+    "effects": {
+      "2": 12,
+      "6": 12
+    },
+    "skill": 996,
+    "cost": 420000
+  },
+  "MACE_TAIL": {
+    "name_en": "Mace Tail",
+    "name_int": "prosthetics.mace_tail.name",
+    "name_it": "Coda a Mazza",
+    "type": "biological",
+    "effects": {
+      "0": 20,
+      "2": 16
+    },
+    "skill": 341,
+    "cost": 440000
+  },
+  "PREHENSILE_CABLE": {
+    "name_en": "Prehensile Cable",
+    "name_int": "prosthetics.prehensile_cable.name",
+    "name_it": "Cavo Prensile",
+    "type": "technological",
+    "effects": {
+      "3": 10,
+      "6": 14
+    },
+    "skill": 1801,
+    "cost": 380000
+  },
+  "SILK_SPINNERET": {
+    "name_en": "Silk Spinneret",
+    "name_int": "prosthetics.silk_spinneret.name",
+    "name_it": "Filiera di Seta",
+    "type": "biological",
+    "effects": {
+      "5": 10,
+      "6": 12
+    },
+    "skill": 305,
+    "cost": 360000
+  },
+  "COMET_TAIL": {
+    "name_en": "Comet Tail",
+    "name_int": "prosthetics.comet_tail.name",
+    "name_it": "Coda di Cometa",
+    "type": "magical",
+    "effects": {
+      "1": 18,
+      "4": 14
+    },
+    "skill": 1776,
+    "cost": 500000
+  },
+  "ABYSSAL_TENDRIL": {
+    "name_en": "Abyssal Tendril",
+    "name_int": "prosthetics.abyssal_tendril.name",
+    "name_it": "Tentacolo Abissale",
+    "type": "magical",
+    "effects": {
+      "4": 16,
+      "7": 12
+    },
+    "skill": 1306,
+    "cost": 560000
+  },
+  "THORNED_VINE": {
+    "name_en": "Thorned Vine",
+    "name_int": "prosthetics.thorned_vine.name",
+    "name_it": "Vite Spinosa",
+    "type": "biological",
+    "effects": {
+      "2": 12,
+      "5": 10
+    },
+    "skill": 896,
+    "cost": 380000
+  },
+  "BARBED_LASH": {
+    "name_en": "Barbed Lash",
+    "name_int": "prosthetics.barbed_lash.name",
+    "name_it": "Frusta Uncinata",
+    "type": "biological",
+    "effects": {
+      "2": 14,
+      "6": 10
+    },
+    "skill": 321,
+    "cost": 400000
+  },
+  "MYCELIAL_ROOTNET": {
+    "name_en": "Mycelial Rootnet",
+    "name_int": "prosthetics.mycelial_rootnet.name",
+    "name_it": "Rete Miceliale",
+    "type": "biological",
+    "effects": {
+      "1": 18,
+      "5": 14
+    },
+    "skill": 903,
+    "cost": 420000
+  },
+  "NON_EUCLIDEAN_LIMB": {
+    "name_en": "Non-Euclidean Limb",
+    "name_int": "prosthetics.non_euclidean_limb.name",
+    "name_it": "Arto Non Euclideo",
+    "type": "magical",
+    "effects": {
+      "4": 12,
+      "7": 16
+    },
+    "skill": 1300,
+    "cost": 600000
+  },
+  "GORING_CROWN": {
+    "name_en": "Goring Crown",
+    "name_int": "prosthetics.goring_crown.name",
+    "name_it": "Corona da Incornata",
+    "type": "biological",
+    "effects": {
+      "2": 16,
+      "3": 10
+    },
+    "skill": 327,
+    "cost": 420000
+  },
+  "LIGHTNING_ROD_HORN": {
+    "name_en": "Lightning Rod Horn",
+    "name_int": "prosthetics.lightning_rod_horn.name",
+    "name_it": "Corno Parafulmine",
+    "type": "technological",
+    "effects": {
+      "1": 18,
+      "4": 14
+    },
+    "skill": 332,
+    "cost": 440000
+  },
+  "SPINE_LAUNCHER": {
+    "name_en": "Spine Launcher",
+    "name_int": "prosthetics.spine_launcher.name",
+    "name_it": "Lanciaspine",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "6": 14
+    },
+    "skill": 1795,
+    "cost": 400000
+  },
+  "ORACLE_ANTLERS": {
+    "name_en": "Oracle Antlers",
+    "name_int": "prosthetics.oracle_antlers.name",
+    "name_it": "Palchi dell'Oracolo",
+    "type": "magical",
+    "effects": {
+      "1": 15,
+      "7": 16
+    },
+    "skill": 1403,
+    "cost": 480000
+  },
+  "IRON_CREST": {
+    "name_en": "Iron Crest",
+    "name_int": "prosthetics.iron_crest.name",
+    "name_it": "Cresta di Ferro",
+    "type": "technological",
+    "effects": {
+      "0": 30,
+      "5": 12
+    },
+    "skill": 1792,
+    "cost": 380000
+  },
+  "RIPTIDE_FIN": {
+    "name_en": "Riptide Fin",
+    "name_int": "prosthetics.riptide_fin.name",
+    "name_it": "Pinna di Risacca",
+    "type": "biological",
+    "effects": {
+      "5": 8,
+      "6": 16
+    },
+    "skill": 1825,
+    "cost": 400000
+  },
+  "SONAR_KEEL": {
+    "name_en": "Sonar Keel",
+    "name_int": "prosthetics.sonar_keel.name",
+    "name_it": "Chiglia Sonar",
+    "type": "technological",
+    "effects": {
+      "4": 12,
+      "6": 12
+    },
+    "skill": 301,
+    "cost": 380000
+  },
+  "ABYSSAL_DORSAL": {
+    "name_en": "Abyssal Dorsal",
+    "name_int": "prosthetics.abyssal_dorsal.name",
+    "name_it": "Dorsale Abissale",
+    "type": "magical",
+    "effects": {
+      "5": 14,
+      "7": 10
+    },
+    "skill": 1835,
+    "cost": 460000
+  },
+  "JET_SIPHON": {
+    "name_en": "Jet Siphon",
+    "name_int": "prosthetics.jet_siphon.name",
+    "name_it": "Sifone a Getto",
+    "type": "biological",
+    "effects": {
+      "2": 10,
+      "6": 14
+    },
+    "skill": 328,
+    "cost": 380000
+  },
+  "TIDECALLER_FLUKE": {
+    "name_en": "Tidecaller Fluke",
+    "name_int": "prosthetics.tidecaller_fluke.name",
+    "name_it": "Pinna Chiamamaree",
+    "type": "magical",
+    "effects": {
+      "1": 24,
+      "4": 12
+    },
+    "skill": 1838,
+    "cost": 440000
+  },
+  "FUSION_REACTOR": {
+    "name_en": "Fusion Reactor",
+    "name_int": "prosthetics.fusion_reactor.name",
+    "name_it": "Reattore a Fusione",
+    "type": "technological",
+    "effects": {
+      "1": 35,
+      "4": 14
+    },
+    "skill": 1831,
+    "cost": 620000
+  },
+  "SOULFIRE_KERNEL": {
+    "name_en": "Soulfire Kernel",
+    "name_int": "prosthetics.soulfire_kernel.name",
+    "name_it": "Nucleo di Fuoco d'Anima",
+    "type": "magical",
+    "effects": {
+      "1": 30,
+      "7": 14
+    },
+    "skill": 1293,
+    "cost": 640000
+  },
+  "GYRO_STABILIZER": {
+    "name_en": "Gyro Stabilizer",
+    "name_int": "prosthetics.gyro_stabilizer.name",
+    "name_it": "Stabilizzatore Giroscopico",
+    "type": "technological",
+    "effects": {
+      "5": 16,
+      "6": 12
+    },
+    "skill": 966,
+    "cost": 460000
+  },
+  "LEY_CAPACITOR": {
+    "name_en": "Ley Capacitor",
+    "name_int": "prosthetics.ley_capacitor.name",
+    "name_it": "Condensatore di Ley",
+    "type": "magical",
+    "effects": {
+      "1": 40
+    },
+    "skill": 631,
+    "cost": 520000
+  },
+  "SINGULARITY_CELL": {
+    "name_en": "Singularity Cell",
+    "name_int": "prosthetics.singularity_cell.name",
+    "name_it": "Cella di Singolarità",
+    "type": "technological",
+    "effects": {
+      "4": 18,
+      "7": 14
+    },
+    "skill": 1889,
+    "cost": 700000
+  },
+  "ANTIGRAV_HALO": {
+    "name_en": "Antigrav Halo",
+    "name_int": "prosthetics.antigrav_halo.name",
+    "name_it": "Alone Antigravitazionale",
+    "type": "magical",
+    "effects": {
+      "5": 10,
+      "6": 14
+    },
+    "skill": 9,
+    "cost": 600000
+  },
+  "APOTHEOSIS_SEED": {
+    "name_en": "Apotheosis Seed",
+    "name_int": "prosthetics.apotheosis_seed.name",
+    "name_it": "Seme dell'Apoteosi",
+    "type": "magical",
+    "effects": {
+      "1": 25,
+      "7": 25
+    },
+    "skill": 1607,
+    "cost": 1500000
+  },
+  "ARM_MOUNTED_CANNON": {
+    "name_en": "Arm-Mounted Cannon",
+    "name_int": "prosthetics.arm_mounted_cannon.name",
+    "name_it": "Cannone da Braccio",
+    "type": "technological",
+    "effects": {
+      "2": 18,
+      "3": 10
+    },
+    "skill": 1048,
+    "cost": 520000
+  },
+  "AUTOLOADER_CHAMBER": {
+    "name_en": "Autoloader Chamber",
+    "name_int": "prosthetics.autoloader_chamber.name",
+    "name_it": "Camera Autocaricante",
+    "type": "technological",
+    "effects": {
+      "3": 12,
+      "6": 14
+    },
+    "skill": 1041,
+    "cost": 440000
+  },
+  "RAILGUN_SPINE": {
+    "name_en": "Railgun Spine",
+    "name_int": "prosthetics.railgun_spine.name",
+    "name_it": "Spina Railgun",
+    "type": "technological",
+    "effects": {
+      "2": 16,
+      "4": 12
+    },
+    "skill": 1049,
+    "cost": 580000
+  },
+  "SCATTER_MUZZLE": {
+    "name_en": "Scatter Muzzle",
+    "name_int": "prosthetics.scatter_muzzle.name",
+    "name_it": "Bocca a Dispersione",
+    "type": "technological",
+    "effects": {
+      "2": 14,
+      "6": 10
+    },
+    "skill": 362,
+    "cost": 420000
+  },
+  "HEX_ORDNANCE": {
+    "name_en": "Hex Ordnance",
+    "name_int": "prosthetics.hex_ordnance.name",
+    "name_it": "Munizioni Stregate",
+    "type": "magical",
+    "effects": {
+      "4": 14,
+      "7": 12
+    },
+    "skill": 1866,
+    "cost": 500000
+  },
+  "OMNI_WHEEL": {
+    "name_en": "Omni Wheel",
+    "name_int": "prosthetics.omni_wheel.name",
+    "name_it": "Ruota Omnidirezionale",
+    "type": "technological",
+    "effects": {
+      "3": 8,
+      "6": 18
+    },
+    "skill": 919,
+    "cost": 420000
+  },
+  "SIEGE_TREADS": {
+    "name_en": "Siege Treads",
+    "name_int": "prosthetics.siege_treads.name",
+    "name_it": "Cingoli d'Assedio",
+    "type": "technological",
+    "effects": {
+      "0": 40,
+      "2": 12
+    },
+    "skill": 355,
+    "cost": 480000
+  },
+  "FLYWHEEL_GOVERNOR": {
+    "name_en": "Flywheel Governor",
+    "name_int": "prosthetics.flywheel_governor.name",
+    "name_it": "Regolatore a Volano",
+    "type": "technological",
+    "effects": {
+      "5": 14,
+      "6": 12
+    },
+    "skill": 1863,
+    "cost": 400000
+  },
+  "HOVER_SKIRT": {
+    "name_en": "Hover Skirt",
+    "name_int": "prosthetics.hover_skirt.name",
+    "name_it": "Gonna a Cuscino d'Aria",
+    "type": "technological",
+    "effects": {
+      "5": 10,
+      "6": 16
+    },
+    "skill": 9,
+    "cost": 560000
+  },
+  "GEAR_CLUSTER": {
+    "name_en": "Gear Cluster",
+    "name_int": "prosthetics.gear_cluster.name",
+    "name_it": "Gruppo Ingranaggi",
+    "type": "technological",
+    "effects": {
+      "2": 12,
+      "6": 12
+    },
+    "skill": 1897,
+    "cost": 380000
+  },
+  "WIDEBAND_ARRAY": {
+    "name_en": "Wideband Array",
+    "name_int": "prosthetics.wideband_array.name",
+    "name_it": "Schiera a Banda Larga",
+    "type": "technological",
+    "effects": {
+      "3": 10,
+      "4": 14
+    },
+    "skill": 1035,
+    "cost": 400000
+  },
+  "THREAT_LATTICE": {
+    "name_en": "Threat Lattice",
+    "name_int": "prosthetics.threat_lattice.name",
+    "name_it": "Reticolo di Minaccia",
+    "type": "technological",
+    "effects": {
+      "5": 10,
+      "6": 14
+    },
+    "skill": 1051,
+    "cost": 420000
+  },
+  "AUGUR_ANTENNA": {
+    "name_en": "Augur Antenna",
+    "name_int": "prosthetics.augur_antenna.name",
+    "name_it": "Antenna dell'Augure",
+    "type": "magical",
+    "effects": {
+      "4": 10,
+      "7": 16
+    },
+    "skill": 1408,
+    "cost": 480000
+  },
+  "HYPERNET_UPLINK": {
+    "name_en": "Hypernet Uplink",
+    "name_int": "prosthetics.hypernet_uplink.name",
+    "name_it": "Collegamento Hypernet",
+    "type": "technological",
+    "effects": {
+      "1": 15,
+      "4": 16
+    },
+    "skill": 1649,
+    "cost": 460000
+  },
+  "SEISMIC_WHISKERS": {
+    "name_en": "Seismic Whiskers",
+    "name_int": "prosthetics.seismic_whiskers.name",
+    "name_it": "Vibrisse Sismiche",
+    "type": "biological",
+    "effects": {
+      "3": 12,
+      "6": 12
+    },
+    "skill": 1562,
+    "cost": 360000
+  },
+  "GORGON_LOCKS": {
+    "name_en": "Gorgon Locks",
+    "name_int": "prosthetics.gorgon_locks.name",
+    "name_it": "Chiome della Gorgone",
+    "type": "magical",
+    "effects": {
+      "4": 12,
+      "7": 14
+    },
+    "skill": 1856,
+    "cost": 500000
+  },
+  "LIVING_MANE": {
+    "name_en": "Living Mane",
+    "name_int": "prosthetics.living_mane.name",
+    "name_it": "Criniera Vivente",
+    "type": "biological",
+    "effects": {
+      "0": 25,
+      "7": 10
+    },
+    "skill": 349,
+    "cost": 360000
+  },
+  "BLOOM_CROWN": {
+    "name_en": "Bloom Crown",
+    "name_int": "prosthetics.bloom_crown.name",
+    "name_it": "Corona in Fiore",
+    "type": "biological",
+    "effects": {
+      "1": 22,
+      "5": 10
+    },
+    "skill": 1858,
+    "cost": 380000
+  },
+  "STATIC_FILAMENTS": {
+    "name_en": "Static Filaments",
+    "name_int": "prosthetics.static_filaments.name",
+    "name_it": "Filamenti Statici",
+    "type": "technological",
+    "effects": {
+      "4": 12,
+      "6": 10
+    },
+    "skill": 329,
+    "cost": 360000
+  },
+  "WITCH_BRAID": {
+    "name_en": "Witch's Braid",
+    "name_int": "prosthetics.witch_braid.name",
+    "name_it": "Treccia della Strega",
+    "type": "magical",
+    "effects": {
+      "1": 24,
+      "7": 12
+    },
+    "skill": 778,
+    "cost": 440000
+  },
+  "GAMETE_FORGE": {
+    "name_en": "Gamete Forge",
+    "name_int": "prosthetics.gamete_forge.name",
+    "name_it": "Forgia dei Gameti",
+    "type": "biological",
+    "effects": {
+      "0": 20,
+      "1": 20
+    },
+    "skill": 1602,
+    "cost": 380000
+  },
+  "PHEROMONE_CROWN": {
+    "name_en": "Pheromone Crown",
+    "name_int": "prosthetics.pheromone_crown.name",
+    "name_it": "Corona Feromonica",
+    "type": "biological",
+    "effects": {
+      "7": 16
+    },
+    "skill": 956,
+    "cost": 420000
+  },
+  "CHIMERIC_SEED_VAULT": {
+    "name_en": "Chimeric Seed Vault",
+    "name_int": "prosthetics.chimeric_seed_vault.name",
+    "name_it": "Cripta dei Semi Chimerici",
+    "type": "magical",
+    "effects": {
+      "1": 22,
+      "7": 10
+    },
+    "skill": 1603,
+    "cost": 460000
+  },
+  "BROOD_CHAMBER": {
+    "name_en": "Brood Chamber",
+    "name_int": "prosthetics.brood_chamber.name",
+    "name_it": "Camera della Covata",
+    "type": "biological",
+    "effects": {
+      "0": 30,
+      "5": 10
+    },
+    "skill": 1604,
+    "cost": 400000
+  },
+  "MITOTIC_LATTICE": {
+    "name_en": "Mitotic Lattice",
+    "name_int": "prosthetics.mitotic_lattice.name",
+    "name_it": "Reticolo Mitotico",
+    "type": "magical",
+    "effects": {
+      "0": 25,
+      "1": 20
+    },
+    "skill": 1605,
+    "cost": 520000
+  },
+  "SOMNOLOGIC_REGULATOR": {
+    "name_en": "Somnologic Regulator",
+    "name_int": "prosthetics.somnologic_regulator.name",
+    "name_it": "Regolatore Sonnologico",
+    "type": "technological",
+    "effects": {
+      "1": 20,
+      "5": 8
+    },
+    "skill": 1480,
+    "cost": 1100000,
+    "needs": {
+      "sleep": 0
+    }
+  },
+  "DREAMLESS_CORTEX": {
+    "name_en": "Dreamless Cortex",
+    "name_int": "prosthetics.dreamless_cortex.name",
+    "name_it": "Corteccia Senza Sogni",
+    "type": "biological",
+    "effects": {
+      "4": 10,
+      "5": 8
+    },
+    "skill": 969,
+    "cost": 420000,
+    "needs": {
+      "sleep": 0.45
+    }
+  },
+  "RUMINANT_STOMACH": {
+    "name_en": "Ruminant Stomach",
+    "name_int": "prosthetics.ruminant_stomach.name",
+    "name_it": "Stomaco Ruminante",
+    "type": "biological",
+    "effects": {
+      "0": 25,
+      "5": 10
+    },
+    "skill": 1565,
+    "cost": 380000,
+    "needs": {
+      "hunger": 0.6
+    }
+  },
+  "NUTRIENT_LOOM": {
+    "name_en": "Nutrient Loom",
+    "name_int": "prosthetics.nutrient_loom.name",
+    "name_it": "Telaio dei Nutrienti",
+    "type": "magical",
+    "effects": {
+      "0": 20,
+      "1": 18
+    },
+    "skill": 900,
+    "cost": 620000,
+    "needs": {
+      "hunger": 0.3
+    }
+  },
+  "SELF_CLEANING_DERMIS": {
+    "name_en": "Self-Cleaning Dermis",
+    "name_int": "prosthetics.self_cleaning_dermis.name",
+    "name_it": "Derma Autopulente",
+    "type": "biological",
+    "effects": {
+      "5": 12,
+      "7": 8
+    },
+    "skill": 886,
+    "cost": 460000,
+    "needs": {
+      "hygiene": -0.5
+    }
+  },
+  "SCENT_SCRUBBER": {
+    "name_en": "Scent Scrubber",
+    "name_int": "prosthetics.scent_scrubber.name",
+    "name_it": "Depuratore Olfattivo",
+    "type": "technological",
+    "effects": {
+      "6": 8,
+      "7": 8
+    },
+    "skill": 988,
+    "cost": 300000,
+    "needs": {
+      "hygiene": 0.4
+    }
+  }
+}

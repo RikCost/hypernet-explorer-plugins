@@ -2113,6 +2113,22 @@
                 const drillNote = drillLine
                     ? `<div style="font-size:0.856em; color:#4a5c2a; margin-bottom:4px">${escapeHtml(drillLine)}</div>`
                     : '';
+                // The three optional traits chosen when the companion was taken
+                // in (or carried over from its <Talk> tag) each lean its base
+                // attributes one way; a child inherits none of them and skips
+                // the line entirely.
+                let traitsLine = '';
+                if (!pet.isChild) {
+                    const attrs = pet.attrs || { STR: 10, CON: 10, INT: 10, WIS: 10, PSI: 10 };
+                    const SL = window.CCStatLabel || ((k) => k);
+                    const traitTags = [
+                        pet.sentient ? T('MainMenu.pets.traitSentient') : null,
+                        pet.magical ? T('MainMenu.pets.traitMagical') : null,
+                        pet.geneticFreak ? T('MainMenu.pets.traitGeneticFreak') : null,
+                    ].filter(Boolean).join(' · ');
+                    const statLine = `${SL('STR')} ${attrs.STR} · ${SL('CON')} ${attrs.CON} · ${SL('INT')} ${attrs.INT} · ${SL('WIS')} ${attrs.WIS} · ${SL('PSI')} ${attrs.PSI}`;
+                    traitsLine = `<div style="font-size:0.842em; color:#7a5c3a; margin-bottom:4px">${statLine}${traitTags ? ' · ' + traitTags : ''}</div>`;
+                }
                 return `
                     <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
                         <div class="portrait-frame">
@@ -2124,6 +2140,7 @@
                                 <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${typeLabel}${activeTag}${summonTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
                             </div>
                             ${isSummoned ? `<div style="font-size:0.842em; color:#7a5c3a; margin-bottom:4px">${summonNote(summon)}</div>` : ''}
+                            ${traitsLine}
                             ${drillNote}
                             ${parentLine}
                             ${warning}

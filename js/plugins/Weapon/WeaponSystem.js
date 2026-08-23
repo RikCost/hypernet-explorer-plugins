@@ -187,20 +187,70 @@
     return Math.round(weaponSpriteY * scale.y);
   };
 
-  // Hardcoded shoosh sounds for weapon types
+  // Default sounds per weapon type (System.json weaponTypes), for whichever
+  // weapon carries no <WeaponSound(s):> tag of its own. Blades and blunt
+  // weapons keep the plain swing bank as their common ground and layer a
+  // sharper or heavier set on top of it, so a dagger and a warhammer no
+  // longer share one whoosh.
   const DEFAULT_WEAPON_SOUNDS = {
-    1: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"], // Light
-    2: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"], // Sword
-    3: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"], // Heavy
-    4: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"], //Axe
-    5: ["Whip1", "Whip2", "Whip3", "Whip4"], //Whip
-    6: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"], //Staff
-    7: ["Bow"], //Bow
-    8: ["Bow"], //Projectile
-    9: ["Pistol1", "Pistol2", "Pistol3", "Pistol4", "Pistol5"], //Gun
-    10: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"], //Claw
-    11: ["Punch1", "Punch2", "Punch3"] //Glove
+    1: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
+        "knifeSlice", "knifeSlice2", "blade_01", "blade_02", "blade_03"], // Light: knives, daggers, shivs
+    2: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
+        "Sword1", "Sword2", "Sword3", "sword_sound"], // Sword
+    3: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
+        "Hammer1", "Hammer2"], // Heavy: maces, clubs, hammers, flails
+    4: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
+        "Slash1", "Slash2", "Slash3"], // Axe
+    5: ["Whip1", "Whip2", "Whip3", "Whip4"], // Whip
+    6: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8", "Magic2"], // Staff
+    7: ["Bow"], // Bow
+    8: ["Bow"], // Projectile (name-routed further, see PROJECTILE_NAME_SOUND_RULES)
+    9: ["Pistol1", "Pistol2", "Pistol3", "Pistol4", "Pistol5"], // Gun (name-routed further, see GUN_NAME_SOUND_RULES)
+    10: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
+         "knifeSlice", "knifeSlice2"], // Claw
+    11: ["Punch1", "Punch2", "Punch3"], // Glove
+    12: ["Spear1", "Spear2", "Swing1", "Swing2"] // Spear
   };
+
+  // A firearm database entry is a name, not a caliber: "Shotgun", "Sniper
+  // Rifle" and "Desert Eagle" all share wtypeId 9 (Gun), so an explicit
+  // <WeaponSound:> tag would have to be hand-authored on every one of the
+  // hundreds of procedurally named variants. Routed by name instead, closest
+  // match first; anything left over keeps the generic Pistol bank above.
+  const GUN_NAME_SOUND_RULES = [
+    { test: /shotgun|blunderbuss|riot gun/i,
+      sounds: ["Shotgun1", "Shotgun2", "Shotgun3", "Shotgun4", "Shotgun5", "Shotgun6", "Shotgun7", "Shotgun8"],
+      reload: "Reload3" },
+    { test: /taser|stun|shock|\bemp\b|neural|scrambler/i,
+      sounds: ["Buzzer1"],
+      reload: "Reload" },
+    { test: /sniper|bolt-action|bolt action/i,
+      sounds: ["Sniper1", "Sniper2", "Sniper3"],
+      reload: "Reload4" },
+    { test: /\bsmg\b|uzi|submachine/i,
+      sounds: ["SMG1", "SMG2", "SMG3", "SMG4", "SMG5", "UziAutomatic"],
+      reload: "Reload5" },
+    { test: /desert eagle|hand cannon/i,
+      sounds: ["DesertEagle", "DoubleGunshot"],
+      reload: "Reload6" },
+    { test: /revolver|six-shooter|six shooter|peacemaker|pepperbox|percussion/i,
+      sounds: ["DoubleGunshot", "Pistol1", "Pistol2", "Pistol3", "Pistol4", "Pistol5"],
+      reload: "Reload7" },
+    { test: /rifle|musket|carbine/i,
+      sounds: ["Sniper1", "Sniper2", "Sniper3"],
+      reload: "Reload4" }
+  ];
+
+  // The projectile slot (wtypeId 8) holds slings, blowguns, crossbows and a
+  // handful of sci-fi throwables, none of which move or sound like each
+  // other; routed the same way as guns, by name, on top of the generic Bow
+  // fallback above.
+  const PROJECTILE_NAME_SOUND_RULES = [
+    { test: /bow|crossbow/i, sounds: ["Bow"], reload: "ReloadBow" },
+    { test: /sling|atlatl|bola/i, sounds: ["Whip1", "Whip2"], reload: null },
+    { test: /taser|\bemp\b|neural|scrambler|disruptor/i, sounds: ["Buzzer1"], reload: null },
+    { test: /grenade|explos|launcher/i, sounds: ["Shotgun1", "Shotgun2"], reload: "Reload3" }
+  ];
 
   // Static animation keyframes (no movement, just holds position)
   // Add this near the top of the file where STATIC_ANIMATION is defined (around line 138)
@@ -334,6 +384,26 @@
       debugLog(`Weapon ${weapon.name}: Reload sound "${weapon.reloadSound}"`);
     }
 
+    // Name-based sound routing for guns and projectiles: only when the
+    // weapon carries no explicit tag of its own, so an authored one always
+    // wins.
+    if (weapon.weaponSounds.length === 0) {
+      const rules = weapon.wtypeId === 9 ? GUN_NAME_SOUND_RULES
+        : weapon.wtypeId === 8 ? PROJECTILE_NAME_SOUND_RULES
+        : null;
+      const rule = rules && rules.find((r) => r.test.test(weapon.name || ""));
+      if (rule) {
+        weapon.weaponSounds = [...rule.sounds];
+        if (!weapon.reloadSound && rule.reload) weapon.reloadSound = rule.reload;
+        debugLog(`Weapon ${weapon.name}: name-routed sound bank`, rule.sounds);
+      }
+    }
+
+    // Every bow reloads with its own nock-and-draw, not the generic click.
+    if (weapon.wtypeId === 7 && !weapon.reloadSound) {
+      weapon.reloadSound = "ReloadBow";
+    }
+
     if (weapon.weaponSounds.length > 0) {
       weapon.weaponSounds = [...new Set(weapon.weaponSounds)];
     }
@@ -424,12 +494,11 @@
   };
 
   /**
-   * Plays one of them, pitch-varied.
+   * Plays one entry of a sound list, pitch-varied.
    * @returns {number} the pitch it was played at, so a caller can layer another
-   *   SE over it in tune, or 0 when the weapon has nothing to say.
+   *   SE over it in tune, or 0 when the list has nothing to say.
    */
-  const playWeaponSoundFor = (weapon) => {
-    const sounds = weaponSoundsFor(weapon);
+  const playSoundList = (sounds) => {
     if (!sounds || sounds.length === 0) return 0;
 
     const soundName = sounds[Math.floor(Math.random() * sounds.length)];
@@ -453,12 +522,20 @@
     return pitch;
   };
 
+  const playWeaponSoundFor = (weapon) => playSoundList(weaponSoundsFor(weapon));
+
+  // What a ranged weapon sounds like once it has run dry and Attack becomes
+  // Bash: a plain melee strike with the weapon in hand, not a gunshot or a
+  // bowstring, so it borrows the generic swing bank instead of its own.
+  const BASH_SOUNDS = ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"];
+
   // The one reading of what a weapon sounds like, so anything holding one
   // outside a battle (the dream's first-person weapon, DreamSystem.js) makes
   // the same noise the same weapon makes in the party's hands.
   window.WeaponSounds = { soundsFor: weaponSoundsFor, play: playWeaponSoundFor };
 
   Game_Actor.prototype.getWeaponSounds = function () {
+    if (this.isOutOfBullets()) return BASH_SOUNDS;
     return weaponSoundsFor(this.weapons()[0]);
   };
 
@@ -471,7 +548,7 @@
   };
 
   Game_Actor.prototype.playWeaponSound = function () {
-    const pitch = playWeaponSoundFor(this.weapons()[0]);
+    const pitch = playSoundList(this.getWeaponSounds());
     // Layer the elemental shimmer SE over the weapon sound when applicable.
     if (pitch) this.playWeaponShimmerSE(pitch);
   };
@@ -565,10 +642,11 @@
     const subject = this.subject();
 
     if (this.isAttack() && subject.isActor()) {
-      if (!subject.canAttackWithBullets()) {
-        return;
+      // Out of bullets: Attack is now Bash, an ordinary strike with whatever
+      // is in hand rather than a shot, so it still lands and costs no ammo.
+      if (subject.canAttackWithBullets()) {
+        subject.consumeBullet();
       }
-      subject.consumeBullet();
     }
 
     _Game_Action_apply.call(this, target);
@@ -580,7 +658,9 @@
 
     if (this.isAttack() && subject && subject.isActor()) {
       const current = subject.getCurrentBullets();
-      if (current !== null) {
+      // A full or partial magazine still caps the repeat count at what's
+      // left; an empty one no longer caps it at zero hits, that's the Bash.
+      if (current !== null && current > 0) {
         const normalRepeats = _Game_Action_numRepeats.call(this);
         return Math.min(normalRepeats, current);
       }

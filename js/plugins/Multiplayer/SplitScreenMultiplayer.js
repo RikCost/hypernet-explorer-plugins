@@ -10,6 +10,13 @@
  * - DYNAMIC MERGING: Viewports merge into one when players are close.
  * - SMART INPUT: Automatically detects and assigns gamepads.
  * - P2 AGENCY: Player 2 can interact with events and triggers.
+ * - THE PARTY STAYS WHOLE: a session hands Player 2 one of the party rather
+ *   than recruiting anybody, and nobody is dropped to make room. Whoever
+ *   neither player is holding walks themselves (Core/AutoIdleExplorer.js).
+ * - HANDING OVER A BODY: either player can take over a member the CPU is
+ *   walking, and the member they let go of is handed back to the CPU. Player 1
+ *   does it with Tab (the usual lead switch), Player 2 with the pad's X button
+ *   or the P2 switch key.
  * - UNIFIED MENU: Managed via a dedicated "Split-Screen" menu scene.
  * - MINIGAME HOT-SEAT: Player 2 (2nd gamepad, or the numpad on a shared
  *   keyboard) can drive ANY registered minigame scene even without a
@@ -97,6 +104,11 @@
  * @text P2 Key Dash (Shift)
  * @default q
  *
+ * @param P2KeySwitch
+ * @text P2 Key Switch Body
+ * @desc Hands Player 2 the next party member the CPU is walking, and the CPU the one Player 2 lets go of.
+ * @default r
+ *
  * @param ---Gamepad---
  * @default
  *
@@ -149,7 +161,8 @@
         left: String(params["P2KeyLeft"] || "a").toLowerCase(),
         right: String(params["P2KeyRight"] || "d").toLowerCase(),
         action: String(params["P2KeyAction"] || "e").toLowerCase(),
-        dash: String(params["P2KeyDash"] || "q").toLowerCase()
+        dash: String(params["P2KeyDash"] || "q").toLowerCase(),
+        switch: String(params["P2KeySwitch"] || "r").toLowerCase()
     };
 
     const P2_STICK_DEAD = parseFloat(params["P2StickDeadzone"] || "0.25");
@@ -170,6 +183,7 @@
     Input.keyMapper[getKeyCode(P2_KEYS.right)] = "p2_right";
     Input.keyMapper[getKeyCode(P2_KEYS.action)] = "p2_action";
     Input.keyMapper[getKeyCode(P2_KEYS.dash)] = "p2_dash";
+    Input.keyMapper[getKeyCode(P2_KEYS.switch)] = "p2_switch";
 
     // Numpad
     Input.keyMapper[104] = "p2_up";     // Numpad 8
@@ -179,6 +193,7 @@
     Input.keyMapper[96] = "p2_action";  // Numpad 0
     Input.keyMapper[101] = "p2_action"; // Numpad 5
     Input.keyMapper[110] = "p2_action"; // Numpad .
+    Input.keyMapper[107] = "p2_switch"; // Numpad +
 
     // =========================================================================
     // I18N Helper for Traits
@@ -320,19 +335,23 @@
         return _Game_Actor_isEquipChangeOk.call(this, slotId);
     };
 
-    // Hide Followers when Split-Screen is active
+    // Only ONE follower is hidden while a session runs: the member Player 2 is
+    // holding, who is drawn as the P2 avatar instead and would otherwise stand
+    // beside themselves. Everybody else keeps walking, because the party is no
+    // longer emptied for a session and whoever neither player holds is living
+    // their own life (Core/AutoIdleExplorer.js).
     const _Game_Followers_update = Game_Followers.prototype.update;
     Game_Followers.prototype.update = function () {
-        if (SplitScreenManager.active && SplitScreenManager.p2Event) {
-            // Only write opacity when it isn't already 0. This keeps followers hidden
-            // (re-applying if something externally reset opacity) without redundantly
-            // calling setOpacity on every follower every frame.
-            this._data.forEach(follower => {
-                if (follower.opacity() !== 0) follower.setOpacity(0);
-            });
-            return;
-        }
         _Game_Followers_update.call(this);
+        if (SplitScreenManager.active && SplitScreenManager.p2Event) {
+            // Only write opacity when it isn't already 0, so nothing is set on
+            // every follower every frame.
+            this._data.forEach(follower => {
+                if (SplitScreenManager.isP2Follower(follower) && follower.opacity() !== 0) {
+                    follower.setOpacity(0);
+                }
+            });
+        }
     };
 
     // Disable sprinting in split-screen for Player 1
@@ -344,7 +363,10 @@
 
     const _Game_Follower_isVisible = Game_Follower.prototype.isVisible;
     Game_Follower.prototype.isVisible = function () {
-        if (SplitScreenManager.active && SplitScreenManager.p2Event) return false;
+        // The body Player 2 holds is not a follower: it is walked by the second
+        // pad and drawn as the avatar. The rest of the party is.
+        if (SplitScreenManager.active && SplitScreenManager.p2Event &&
+            SplitScreenManager.isP2Follower(this)) return false;
         return _Game_Follower_isVisible.call(this);
     };
 
@@ -372,8 +394,8 @@
         p2CharIndex: 0,
         p2Event: null,
         isSplit: false,
-        p2Input: { up: false, down: false, left: false, right: false, action: false, dash: false, cancel: false, menu: false },
-        _prevP2Input: { up: false, down: false, left: false, right: false, action: false, dash: false, cancel: false, menu: false },
+        p2Input: { up: false, down: false, left: false, right: false, action: false, dash: false, cancel: false, menu: false, swap: false },
+        _prevP2Input: { up: false, down: false, left: false, right: false, action: false, dash: false, cancel: false, menu: false, swap: false },
         _savedPartyIds: [],
         vehicleDriver: null, // 'p1' or 'p2'
         _p2InteractLatch: false, // blocks P2 action re-firing map events until released
@@ -383,11 +405,13 @@
             this.p2Event = null;
             this.isSplit = false;
             this._savedPartyIds = [];
+            this._p2ActorId = 0;
+            this._p2SpawnAt = null;
         },
 
         resolveP2Character() {
-            if ($gameParty && $gameParty.members().length >= 2) {
-                const actor = $gameParty.members()[1];
+            const actor = this.p2Actor() || (($gameParty && $gameParty.members()[1]) || null);
+            if (actor) {
                 this.p2CharName = actor.characterName();
                 this.p2CharIndex = actor.characterIndex();
                 this._p2ActorId = actor.actorId();
@@ -398,13 +422,196 @@
             }
         },
 
+        // ------------------------------------------------------ who holds whom
+        // A session no longer empties the party down to two: everybody stays,
+        // Player 2 is handed ONE of them, and whoever neither player is holding
+        // walks themselves under the loose layer (Core/AutoIdleExplorer.js).
+        // Player 1 always holds the leader, because $gamePlayer IS the leader.
+        p2ActorId() {
+            return this._p2ActorId || 0;
+        },
+
+        // Where the avatar first appears: on the tile the member Player 2 has
+        // been handed is already standing on, so the party does not visibly
+        // collapse onto the leader the moment a session opens. Read once.
+        takeP2Spawn() {
+            const at = this._p2SpawnAt;
+            this._p2SpawnAt = null;
+            return at;
+        },
+
+        p2Actor() {
+            const id = this._p2ActorId;
+            if (!id || !$gameParty) return null;
+            return $gameParty.members().find(mem => mem && mem.actorId() === id) || null;
+        },
+
+        isP2Actor(actor) {
+            return !!(this.active && actor && actor.actorId() === this._p2ActorId);
+        },
+
+        // The follower slot standing in for Player 2's member. It is kept hidden
+        // and glued to the avatar, so the party is never drawn twice over.
+        isP2Follower(follower) {
+            if (!this.active || !follower || typeof follower.actor !== "function") return false;
+            const actor = follower.actor();
+            return !!actor && actor.actorId() === this._p2ActorId;
+        },
+
+        // The members the CPU walks: everybody but the two the players hold.
+        cpuMembers() {
+            if (!$gameParty) return [];
+            return $gameParty.members().filter((mem, i) => i > 0 && mem && !this.isP2Actor(mem));
+        },
+
+        // The bodies Player 2 may take: any living member except the leader,
+        // who is Player 1's. Listed in marching order so the switch cycles the
+        // way the party is drawn.
+        p2Bodies() {
+            if (!$gameParty) return [];
+            const out = [];
+            const members = $gameParty.members();
+            for (let i = 1; i < members.length; i++) {
+                const mem = members[i];
+                if (!mem) continue;
+                if (mem.isDead && mem.isDead() && mem.actorId() !== this._p2ActorId) continue;
+                out.push(mem.actorId());
+            }
+            return out;
+        },
+
+        // Hand Player 2 the next body along, and the CPU the one they let go of.
+        cycleP2(delta) {
+            const ids = this.p2Bodies();
+            if (ids.length < 2) return false;
+            const at = Math.max(0, ids.indexOf(this._p2ActorId));
+            const size = ids.length;
+            const next = ids[(((at + (delta || 1)) % size) + size) % size];
+            return this.switchP2To(next);
+        },
+
+        // Player 2 steps out of one member and into another. Nobody teleports:
+        // the avatar takes the tile of the member it is taking over, and the
+        // member left behind is standing where the avatar stood (their follower
+        // has been glued to it all along), back in the CPU's hands.
+        switchP2To(actorId) {
+            if (!this.active || !actorId || actorId === this._p2ActorId) return false;
+            if (!$gameParty || !$gamePlayer || !$gameMap) return false;
+            const to = $gameParty.members().findIndex(mem => mem && mem.actorId() === actorId);
+            if (to <= 0) return false; // the leader is Player 1's body, never P2's
+
+            const ev = this.p2Event;
+            const target = $gamePlayer.followers().follower(to - 1);
+            if (ev && target) {
+                ev.locate(target.x, target.y);
+                ev.setDirection(target.direction());
+                // Whatever the tile they are standing on made of them travels
+                // with the body (Map/MovementInteractionSystem.js).
+                for (const flag of ["_isSwimming", "_isClimbing", "_isSitting"]) {
+                    ev[flag] = target[flag];
+                }
+            }
+            this._p2ActorId = actorId;
+            this.resolveP2Character();
+            if (ev) ev.setImage(this.p2CharName, this.p2CharIndex);
+            $gamePlayer.followers().refresh();
+            // The member handed back to the CPU picks their own life up from
+            // scratch rather than walking off to an errand P2 interrupted.
+            const loose = window.AutoIdleExplorer && window.AutoIdleExplorer.loose;
+            if (loose && loose.resetStates) loose.resetStates();
+            const actor = this.p2Actor();
+            if (actor && window.ParchmentToast) {
+                window.ParchmentToast.show(T('SplitScreen.p2TakesOver', { name: actor.name() }), {
+                    severity: "info", duration: 120,
+                });
+            }
+            return true;
+        },
+
+        // Player 2's member is drawn as the avatar, so its follower rides along
+        // on the same tile, hidden. Everything that reads follower positions (a
+        // fight opening, the party closing ranks, a transfer) then finds the
+        // party where it actually stands.
+        syncP2Follower() {
+            if (!this.active || !this.p2Event || !$gamePlayer) return;
+            const members = $gameParty ? $gameParty.members() : [];
+            const at = members.findIndex(mem => mem && mem.actorId() === this._p2ActorId);
+            if (at <= 0) return;
+            const f = $gamePlayer.followers().follower(at - 1);
+            if (!f) return;
+            if (f.x !== this.p2Event.x || f.y !== this.p2Event.y) {
+                f.locate(this.p2Event.x, this.p2Event.y);
+            }
+            f.setDirection(this.p2Event.direction());
+            if (f.opacity() !== 0) f.setOpacity(0);
+        },
+
+        // Once per frame on the map: the avatar's twin follows it, and the
+        // switch button is read.
+        updateControl() {
+            // Anything may promote a member while a session runs (the Dynamics
+            // roster, a death in the party). Player 1 IS the leader, so if the
+            // lead has landed on Player 2's body they are handed the next member
+            // along rather than both pads ending up on one person.
+            const leader = $gameParty ? $gameParty.leader() : null;
+            if (leader && leader.actorId() === this._p2ActorId) {
+                const ids = this.p2Bodies();
+                if (ids.length > 0) {
+                    this._p2ActorId = 0;
+                    this.switchP2To(ids[0]);
+                }
+            }
+            this.syncP2Follower();
+            if (!this.isTriggered("swap")) return;
+            if ($gameMap.isEventRunning() || $gameMessage.isBusy()) return;
+            if (window.MapBattleMode && window.MapBattleMode.isActive()) return;
+            if (this.cycleP2(1)) SoundManager.playOk();
+        },
+
         createSelectionPool() {
-            // Companions are drawn from the NPCs standing on the current map.
+            // A party of two or more already has somebody for Player 2 to be:
+            // control is handed to one of them and nobody is recruited, hidden
+            // or dropped to make room.
+            const party = this.buildPartyCandidates();
+            if (party.length > 0) return party;
+            // Travelling alone, the second player still needs a body: the NPCs
+            // standing on the current map are offered as companions.
             const npcs = this.buildNPCCandidates();
             if (npcs.length > 0) return npcs;
             // Fallback: no NPCs here (e.g. AUTO_START before any map loads), so
             // generate guests instead of leaving 2P with no one to pick.
             return this.generateCandidates().map(c => { c.type = "generated"; return c; });
+        },
+
+        // The party itself, from the second member down: Player 2 takes one of
+        // them over and the rest keep walking themselves. The leader is left out
+        // because that body is Player 1's.
+        buildPartyCandidates() {
+            const out = [];
+            if (!$gameParty) return out;
+            const members = $gameParty.members();
+            for (let i = 1; i < members.length; i++) {
+                const actor = members[i];
+                if (!actor) continue;
+                const cls = actor.currentClass();
+                out.push({
+                    type: "existing",
+                    actor: actor,
+                    name: actor.name(),
+                    classId: cls ? cls.id : 0,
+                    className: cls ? cls.name : "",
+                    characterName: actor.characterName(),
+                    characterIndex: actor.characterIndex(),
+                    traits: [],
+                    weapon: actor.weapons()[0] || null,
+                    stats: {
+                        atk: actor.param(2), def: actor.param(3),
+                        mat: actor.param(4), mdf: actor.param(5),
+                        agi: actor.param(6), luk: actor.param(7)
+                    }
+                });
+            }
+            return out;
         },
 
         // Scan the active map for NPC events and turn each into a selectable
@@ -568,17 +775,24 @@
         },
 
         startSession(candidate) {
-            this._savedPartyIds = $gameParty._actors.slice();
-            const p1Id = $gameParty._actors[0];
-
             if (candidate.type === "existing") {
-                const p2Id = candidate.actor.actorId();
-                $gameParty._actors = [p1Id, p2Id];
-                this._p2ActorId = p2Id;
+                // One of the party takes the second pad. The roster is left
+                // exactly as it was: nobody is dropped to seat Player 2, and the
+                // members neither player holds keep walking themselves.
+                this._savedPartyIds = [];
+                const to = $gameParty.members().findIndex(
+                    mem => mem && mem.actorId() === candidate.actor.actorId());
+                const f = (to > 0 && $gamePlayer) ? $gamePlayer.followers().follower(to - 1) : null;
+                if (f && f.isVisible()) this._p2SpawnAt = { x: f.x, y: f.y };
+                this._p2ActorId = candidate.actor.actorId();
             } else {
+                // Travelling alone (or picking an NPC off the map): the guest
+                // JOINS the party rather than replacing it, and leaves again
+                // when the session ends.
+                this._savedPartyIds = $gameParty._actors.slice();
                 const guestId = 4; // Using Actor 4 for the NPC / generated guest
                 this.applyCandidateToActor(candidate, guestId);
-                $gameParty._actors = [p1Id, guestId];
+                if (!$gameParty._actors.includes(guestId)) $gameParty.addActor(guestId);
                 this._p2ActorId = guestId;
             }
 
@@ -598,6 +812,7 @@
             Input.keyMapper[getKeyCode(P2_KEYS.left)]   = "p2_left";
             Input.keyMapper[getKeyCode(P2_KEYS.right)]  = "p2_right";
             Input.keyMapper[getKeyCode(P2_KEYS.action)] = "p2_action";
+            Input.keyMapper[getKeyCode(P2_KEYS.switch)] = "p2_switch";
             $gameSwitches.setValue(67, true);
             this.resolveP2Character();
             if (typeof findOrCreateP2Event === 'function') findOrCreateP2Event(true);
@@ -626,9 +841,13 @@
                 this._savedPartyIds = [];
             }
             $gameSwitches.setValue(67, false);
+            this._p2ActorId = 0;
             this.p2Event = null;
             this.isSplit = false;
             $gamePlayer.refresh();
+            // The member Player 2 was holding walks with the party again.
+            $gamePlayer.followers().refresh();
+            $gamePlayer.followers().data().forEach(f => { if (f.opacity() !== 255) f.setOpacity(255); });
 
             // Re-enable MousePanZoom
             $gameSystem._mousePanDisabled = false;
@@ -658,6 +877,7 @@
             let dash = Input.isPressed("p2_dash");
             let menu = false; // No default KB key for P2 menu
             let cancel = dash; // Dash acts as cancel for P2
+            let swap = Input.isPressed("p2_switch"); // hand P2 the next free member
 
             // Gamepad
             const gpIndex = GamepadManager.getP2GamepadIndex();
@@ -672,6 +892,7 @@
                     cancel = true;
                 }
                 if (GamepadManager.isButtonPressed(gpIndex, 3)) menu = true;    // Y button
+                if (GamepadManager.isButtonPressed(gpIndex, 2)) swap = true;    // X button
 
                 const stickX = GamepadManager.getAxisValue(gpIndex, 0);
                 const stickY = GamepadManager.getAxisValue(gpIndex, 1);
@@ -681,12 +902,12 @@
                 if (stickX > 0) right = true;
             }
 
-            this.p2Input = { up, down, left, right, action, dash, cancel, menu };
+            this.p2Input = { up, down, left, right, action, dash, cancel, menu, swap };
 
             // Update hold frames for repeat logic
-            if (!this._holdFrames) this._holdFrames = { up: 0, down: 0, left: 0, right: 0, action: 0, dash: 0, cancel: 0, menu: 0 };
+            if (!this._holdFrames) this._holdFrames = { up: 0, down: 0, left: 0, right: 0, action: 0, dash: 0, cancel: 0, menu: 0, swap: 0 };
             
-            const keys = ["up", "down", "left", "right", "action", "dash", "cancel", "menu"];
+            const keys = ["up", "down", "left", "right", "action", "dash", "cancel", "menu", "swap"];
             keys.forEach(key => {
                 if (this.p2Input[key]) {
                     this._holdFrames[key]++;
@@ -1254,6 +1475,13 @@
 
             // Only teleport near P1 if map changed or forced (e.g. starting session)
             if (forceTeleport || mapChanged) {
+                // Taking over a member who is already standing somewhere: the
+                // avatar appears on their tile rather than on the leader's.
+                const spawn = SplitScreenManager.takeP2Spawn();
+                if (spawn) {
+                    event.locate(spawn.x, spawn.y);
+                    return;
+                }
                 event.locate($gamePlayer.x, $gamePlayer.y);
                 // Some maps relocate $gamePlayer AFTER their own onMapLoaded override
                 // (procedural houses, treasure rooms reserveTransfer to 0,0 then
@@ -1627,6 +1855,7 @@
     Scene_Map.prototype.update = function () {
         _Scene_Map_update.call(this);
         if (SplitScreenManager.active && SplitScreenManager.p2Event) {
+            SplitScreenManager.updateControl();
             this.updateSplitScreen();
         } else if (this._splitScreenActive) {
             // Session ended (or P2 event lost) while staying on this map instance,
@@ -1966,9 +2195,10 @@
     // --- Battle System Integration ---
 
     Game_Actor.prototype.multiplayerPlayerId = function () {
-        const index = $gameParty.members().indexOf(this);
-        // Player 2 controls the second actor in the party (index 1)
-        return (index === 1) ? 2 : 1;
+        // Player 2 controls whichever member they have taken over, which is not
+        // necessarily the second in the marching order any more: either player
+        // can hand a body back to the CPU and pick up another.
+        return SplitScreenManager.isP2Actor(this) ? 2 : 1;
     };
 
     const _Window_Selectable_processCursorMove = Window_Selectable.prototype.processCursorMove;
@@ -2083,7 +2313,7 @@
     const _Scene_Map_callMenu = Scene_Map.prototype.callMenu;
     Scene_Map.prototype.callMenu = function() {
         if (SplitScreenManager.active && SplitScreenManager.isTriggered("menu")) {
-            const p2Actor = $gameParty.members()[1];
+            const p2Actor = SplitScreenManager.p2Actor();
             if (p2Actor) $gameParty.setMenuActor(p2Actor);
         }
         _Scene_Map_callMenu.call(this);

@@ -37,5 +37,6 @@
   "keyboardWasd": "Tastiera (WASD)",
   "p2Input": "Comandi P2: {mode}",
   "activeSession": "Sessione multigiocatore attiva",
-  "terminateSession": "Termina la sessione"
+  "terminateSession": "Termina la sessione",
+  "p2TakesOver": "Il giocatore 2 prende il controllo di {name}"
 }

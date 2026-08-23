@@ -467,6 +467,64 @@
         return new Promise((resolve) => setTimeout(resolve, 0));
     }
 
+    // =========================================================================
+    // The version this copy calls itself
+    // =========================================================================
+    // CHANGELOG.txt is the one place the version is written down, and it is a
+    // tracked file like any other, so a copy that has updated already carries
+    // the version of the build it now runs without a plugin parameter, an
+    // i18n entry or a constant having to be edited anywhere.
+    //
+    // The version stands on the very first line of the file. When that line is
+    // blank (a file that opens on a gap, an entry written above the header) the
+    // first line further down that reads as a version is taken instead, so the
+    // newest section still names the build. A copy shipped without the
+    // changelog, or one whose changelog names no version at all, has none, and
+    // whoever asked falls back to the version written in its own parameters.
+    const CHANGELOG_FILE = 'CHANGELOG.txt'; // i18n-ignore: file name
+    // "0.3.6a", "0.04a", "v1.2.0": two fields or three, with or without the
+    // letter a release habit puts at the end. Nothing else on the line.
+    const VERSION_LINE = /^v?(\d+\.\d+(?:\.\d+)?[A-Za-z]*)$/;
+    // How far down the file a version header is still looked for, so a version
+    // written in the prose of an entry is never mistaken for the header.
+    const VERSION_SEARCH_LINES = 40;
+    let _ownVersion; // undefined until read, null when there is none
+
+    // Reads the changelog off the disk under NW.js and over the network on the
+    // web build, where there is no file system to read. Both are guarded: a
+    // missing changelog is an ordinary answer, not a failure.
+    function readChangelogText() {
+        if (fs && nodePath) {
+            try {
+                const file = nodePath.join(BASE_DIR, CHANGELOG_FILE);
+                if (fs.existsSync(file)) return fs.readFileSync(file, 'utf8');
+            } catch (e) { /* fall through to the web read */ }
+        }
+        try {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', CHANGELOG_FILE, false);
+            xhr.send();
+            // A file:// read answers with status 0 even when it worked.
+            const ok = (xhr.status >= 200 && xhr.status < 300) || (xhr.status === 0 && xhr.responseText);
+            if (ok) return xhr.responseText;
+        } catch (e) { /* no changelog to read */ }
+        return null;
+    }
+
+    function changelogVersion() {
+        if (_ownVersion !== undefined) return _ownVersion;
+        _ownVersion = null;
+        const text = readChangelogText();
+        if (text) {
+            const lines = text.split(/\r?\n/, VERSION_SEARCH_LINES);
+            for (let i = 0; i < lines.length; i++) {
+                const found = String(lines[i]).trim().match(VERSION_LINE);
+                if (found) { _ownVersion = found[1]; break; }
+            }
+        }
+        return _ownVersion;
+    }
+
     // A repository path is only accepted when it stays inside the game folder.
     function isSafePath(p) {
         if (!p || typeof p !== 'string') return false;
@@ -850,8 +908,22 @@
             return head[0].trim() + ' - ' + trimmed;
         },
 
+        // The version this copy calls itself, read off the newest section of
+        // CHANGELOG.txt, or null when the build ships no changelog.
+        gameVersion: changelogVersion,
+
         // Both passes at once, which is all the title screen wants.
+        //
+        // A copy that names its own version in the changelog is believed: the
+        // file travels with the build, so its version is already the version
+        // that is running, and the build number is not written over its digits
+        // the way it is over a version written into a plugin parameter years
+        // ago. The build number is still reported in its own right on the
+        // updater screen. Only the build name is added, so the badge keeps
+        // saying which commit this copy sits on.
         versionLabel(text) {
+            const own = this.gameVersion();
+            if (own) return this.applyBuildName(own);
             return this.applyBuildName(this.applyBuildNumber(text));
         },
 
@@ -2198,6 +2270,10 @@
 
             let specs = '';
             specs += row(T.branch, GameUpdater.branchName());
+            // What this copy calls itself, read off the changelog it shipped
+            // with. A build without one simply has no row.
+            const ownVersion = GameUpdater.gameVersion();
+            if (ownVersion) specs += row(T.version, ownVersion);
             specs += row(T.installed, installed
                 ? `${shortSha(installed.sha)}  (${formatDate(installed.at ? new Date(installed.at).toISOString() : null) || T.unknown})`
                 : T.never);

@@ -1,0 +1,32 @@
+{
+  "check": {
+    "default": "Prova d'Azione",
+    "percentage": "Prova di Percentuale"
+  },
+  "outcome": {
+    "success": "SUCCESSO",
+    "failure": "FALLIMENTO",
+    "critSuccess": "SUCCESSO CRITICO!",
+    "critFailure": "FALLIMENTO CRITICO!"
+  },
+  "card": {
+    "target": "CD {dc}",
+    "noTarget": "Prova standard",
+    "sum": "Tiro {roll}{mod}{stat} = {total}",
+    "sumTarget": "CD {dc} · {sum}"
+  },
+  "toast": {
+    "line": "[{action}] Tiro: {roll}{mod}{stat} = {total}{versus} -> {outcome}",
+    "versus": " contro CD {dc}"
+  },
+  "prompt": {
+    "title": "Prova di {stat}",
+    "titleFlat": "Un Giro di Fortuna",
+    "who": "{name} si fa avanti",
+    "target": "{dc} o più",
+    "formula": "d20 {mod} {stat}",
+    "formulaFlat": "d20, e nient'altro",
+    "try": "Tenta",
+    "cancel": "Lascia perdere"
+  }
+}

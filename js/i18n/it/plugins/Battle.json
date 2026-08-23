@@ -98,7 +98,8 @@
     "wrestle": "Lotta",
     "talk": "Parla",
     "reload": "Ricarica",
-    "run": "Fuggi"
+    "run": "Fuggi",
+    "bash": "Colpisci"
   },
   "states": {
     "removalHeader": "Condizioni di rimozione",
@@ -422,5 +423,12 @@
   },
   "hud": {
     "elementChip": "{element} {rate}x"
+  },
+  "statReq": {
+    "fumble": "{actor} perde il filo di {skill}: {stat} insufficiente!"
+  },
+  "critSever": {
+    "check": "Colpo Mortale: {enemy}",
+    "bossEndures": "{enemy} è troppo grande per cadere con un solo colpo."
   }
 }

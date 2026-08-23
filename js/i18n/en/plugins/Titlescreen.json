@@ -6,6 +6,7 @@
     "minigames": "Minigames",
     "sandbox": "Sandbox",
     "worlds": "Worlds",
+    "wiki": "Wiki",
     "preferences": "Preferences",
     "mods": "Mods",
     "exit": "Exit",
@@ -19,6 +20,7 @@
     "minigames": "MINIGAMES",
     "sandbox": "SANDBOX",
     "worlds": "WORLDS",
+    "wiki": "WIKI",
     "preferences": "PREFERENCES",
     "mods": "MODS",
     "exit": "EXIT",
@@ -121,7 +123,7 @@
     "curvature": "SPATIAL CURVATURE DETECTED"
   },
   "version": {
-    "text": "0.3.5a"
+    "text": "0.3.6a"
   },
   "language": {
     "label": "✦ LANG"

@@ -7,6 +7,8 @@
   "schoolTitle": "Grimorio di {school}",
   "noSpells": "Nessuno qui riesce a cogliere una magia da queste pagine.<br>(nessuna alla portata dei PM del gruppo, o le conoscono già tutte)",
   "ui": {
+  "beyondStat": "✧ Richiede {stat} {points}",
+  "requires": "Richiede {stat} {points}",
     "blurb": "Le pagine rivelano a tutti gli stessi cinque incantesimi. Scegli un lettore che possa reggerne uno, poi reclamalo.",
     "alreadyKnown": "✧ Già conosciuto",
     "beyondReach": "✧ Oltre i PM di questo lettore",

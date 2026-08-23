@@ -80,6 +80,10 @@
     }
   },
   "text": {
+    "tuitionFor": "Tuition For",
+    "tuitionRequires": "This spell is written in {stat} {points}. A reader under that floor cannot be billed for it.",
+    "learnerKnows": "already knows it",
+    "learnerStat": "{stat} {value} / {points}",
     "welcomeHeadline": "Welcome to Stockbusters",
     "welcomeBlurb": "Everything anybody is willing to part with, listed by the crate. Order any quantity you like: the more units, the cheaper each one gets, and a courier brings the lot to you.",
     "theArchmageSBazaar": "The Archmage's Bazaar",

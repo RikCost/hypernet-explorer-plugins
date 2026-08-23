@@ -98,7 +98,8 @@
     "wrestle": "Wrestle",
     "talk": "Talk",
     "reload": "Reload",
-    "run": "Run"
+    "run": "Run",
+    "bash": "Bash"
   },
   "states": {
     "removalHeader": "Removal Conditions",
@@ -380,5 +381,12 @@
   },
   "hud": {
     "elementChip": "{element} {rate}x"
+  },
+  "statReq": {
+    "fumble": "{actor} loses the thread of {skill}: not enough {stat}!"
+  },
+  "critSever": {
+    "check": "Killing Blow: {enemy}",
+    "bossEndures": "{enemy} is too great to fall to a single blow."
   }
 }

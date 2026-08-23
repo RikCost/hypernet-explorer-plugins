@@ -1133,10 +1133,6 @@ window.GameOptions = GameOptions;
         // Tactical map battle (BattleSystem/MapBattleMode.js).
         mapBattleMode:   { on: 'MapBattleON',       off: 'MapBattleOFF' },
         cpuPartyMembers: { on: 'CpuPartyON',        off: 'CpuPartyOFF' },
-        // Party formation (Core/AutoIdleExplorer.js): 0 Close, 1 Loose. Both
-        // plates are diagrams rather than screenshots, so they read the same in
-        // every language.
-        partyFormation:  { states: ['PartyFormationClose', 'PartyFormationLoose'] },
         // Video
         // Indexed by the mode value itself, and mode 0 (the dead value that
         // reads as 3D) no longer exists, so index 0 is deliberately empty.

@@ -161,6 +161,14 @@
     return !!(entry && entry.beta === true);
   }
 
+  // A dossier character's own face. It belongs to that one person, so nobody in
+  // the crowd is ever dealt it (see SpriteCatalog.isVip).
+  function isVipSprite(key) {
+    if (window.SpriteCatalog?.isVip) return window.SpriteCatalog.isVip(key);
+    const entry = window.WorldGen?.NPCs?.[key];
+    return !!(entry && entry.vip === true);
+  }
+
   // Character pool built from NPCs.json (npc:true entries), replaces the old hardcoded
   // CHARACTER_GRAPHICS + SKAB_CHARACTER_GRAPHICS arrays.
   // DataService loads window.WorldGen.NPCs synchronously before any plugin IIFE runs.
@@ -169,13 +177,13 @@
   // previous world's pool.
   function buildNPCCharacterPool() {
     if (window.SpriteCatalog?.npcKeys) {
-      return window.SpriteCatalog.npcKeys().filter(k => !isBetaSprite(k));
+      return window.SpriteCatalog.npcKeys().filter(k => !isBetaSprite(k) && !isVipSprite(k));
     }
     const npcData = window.WorldGen?.NPCs;
     if (!npcData) return [];
     return Object.keys(npcData).filter((k) => {
       const e = npcData[k];
-      return !!(e && e.npc === true && e.beta !== true && e.aliens !== true && e.creature !== true && e.animal !== true);
+      return !!(e && e.npc === true && e.beta !== true && e.vip !== true && e.aliens !== true && e.creature !== true && e.animal !== true);
     });
   }
 
@@ -187,9 +195,9 @@
   function pickNPCCharacter(r, pool) {
     if (window.SpriteCatalog?.pickNpcKey) {
       const key = window.SpriteCatalog.pickNpcKey(r);
-      if (key && !isBetaSprite(key)) return key;
+      if (key && !isBetaSprite(key) && !isVipSprite(key)) return key;
     }
-    const list = (pool || buildNPCCharacterPool()).filter(k => !isBetaSprite(k));
+    const list = (pool || buildNPCCharacterPool()).filter(k => !isBetaSprite(k) && !isVipSprite(k));
     return list.length ? list[Math.floor(r * list.length)] : null;
   }
 

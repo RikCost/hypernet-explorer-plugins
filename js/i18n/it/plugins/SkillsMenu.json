@@ -82,9 +82,13 @@
     "category": "Nessuna abilità catalogata in questa categoria."
   },
   "spec": {
+    "statMet": "{value} (soddisfatta)",
+    "statShort": "{value} ({percent}% di fallimento)",
     "trains": "Allena",
     "bonus": "Bonus abilità",
     "label": {
+      "statReq": "Richiede",
+      "statHeld": "Statistica base",
       "damage": "Danno"
     }
   },

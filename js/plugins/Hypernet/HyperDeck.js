@@ -4300,17 +4300,30 @@
   color: ${deco('goldHi', '#fff2c6')}; }
 #${HUD_ID} .hd-btn.on { border-color: ${deco('goldHi', '#fff2c6')};
   background: ${deco('sel', '#2a2010')}; }
-#${HUD_ID} .hd-spec-body { padding: 6px 10px; flex: 0 0 auto; }
-#${HUD_ID} .hd-line { display: flex; justify-content: space-between; gap: 10px;
-  padding: 2px 0; }
-#${HUD_ID} .hd-line span:first-child { color: ${deco('dim', '#c0a468')}; }
+#${HUD_ID} .hd-spec { overflow: hidden; }
+#${HUD_ID} .hd-spec-scroll { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden;
+  min-height: 0; }
+#${HUD_ID} .hd-spec-body { padding: 6px 10px 8px; flex: 0 0 auto; }
+/* Label left, figure right, and when the pair is too wide for the sheet the
+   figure drops to its own line whole instead of breaking across two. */
+#${HUD_ID} .hd-line { display: flex; flex-wrap: wrap; align-items: baseline;
+  column-gap: 10px; padding: 3px 0; border-bottom: 1px solid ${deco('rule', '#241d10')}; }
+#${HUD_ID} .hd-line:last-child { border-bottom: 0; }
+#${HUD_ID} .hd-line span:first-child { color: ${deco('dim', '#c0a468')};
+  flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+#${HUD_ID} .hd-line span:last-child { flex: 0 1 auto; margin-left: auto;
+  white-space: nowrap; text-align: right; color: ${deco('goldHi', '#fff2c6')}; }
+/* Figures never break; names and prose values are allowed to. */
+#${HUD_ID} .hd-line.wrap span:last-child { white-space: normal;
+  overflow-wrap: anywhere; }
 #${HUD_ID} .hd-line.bad span:last-child { color: ${deco('red', '#d9533d')}; }
-#${HUD_ID} .hd-req { display: grid; grid-template-columns: 1fr 1fr; gap: 1px 10px;
+#${HUD_ID} .hd-req { display: flex; flex-wrap: wrap; column-gap: 10px; row-gap: 1px;
   padding: 4px 10px 8px; }
+#${HUD_ID} .hd-req > div { flex: 1 1 42%; min-width: 0; overflow-wrap: anywhere; }
 #${HUD_ID} .hd-yes { color: ${deco('green', '#93d86e')}; }
 #${HUD_ID} .hd-no { color: ${deco('red', '#d9533d')}; }
 #${HUD_ID} .hd-hint { color: ${deco('faint', '#7d6836')}; padding: 6px 10px;
-  border-top: 1px solid ${goldLo}; }
+  border-top: 1px solid ${goldLo}; flex: 0 0 auto; overflow-wrap: anywhere; }
 #${HUD_ID} .hd-picker { position: absolute; pointer-events: auto; display: none;
   background: ${deco('black', '#08070b')}; color: ${deco('ink', '#f6e8c4')};
   border: 2px solid ${gold};
@@ -4382,9 +4395,11 @@
 </div>
 <div class="hd-panel hd-spec">
   <div class="hd-head">${esc(T('HyperDeck.specs.heading'))}</div>
-  <div class="hd-spec-body"></div>
-  <div class="hd-sub">${esc(T('HyperDeck.required.heading'))}</div>
-  <div class="hd-req"></div>
+  <div class="hd-spec-scroll">
+    <div class="hd-spec-body"></div>
+    <div class="hd-sub">${esc(T('HyperDeck.required.heading'))}</div>
+    <div class="hd-req"></div>
+  </div>
   <div class="hd-hint"></div>
 </div>
 <div class="hd-picker"></div>
@@ -4402,24 +4417,27 @@
             this._geom = geom;
 
             const pad = Math.round(r.width * 0.012);
-            const panelW = Math.round(Math.max(190, Math.min(360, r.width * 0.215)));
+            // The rail carries part names, which run long and wrap; the spec
+            // sheet carries short figures, so it stays the narrower of the two.
+            const railW = Math.round(Math.max(210, Math.min(460, r.width * 0.27)));
+            const specW = Math.round(Math.max(200, Math.min(380, r.width * 0.225)));
             this.root.style.fontSize = Math.max(11, Math.round(r.width / 96)) + 'px';
             this.root.style.lineHeight = '1.45';
 
             Object.assign(this.parts.style, {
                 left: (r.left + pad) + 'px', top: (r.top + Math.round(r.height * 0.09)) + 'px',
-                width: panelW + 'px', height: Math.round(r.height * 0.80) + 'px'
+                width: railW + 'px', height: Math.round(r.height * 0.80) + 'px'
             });
             Object.assign(this.spec.style, {
-                left: (r.left + r.width - pad - panelW) + 'px',
+                left: (r.left + r.width - pad - specW) + 'px',
                 top: (r.top + Math.round(r.height * 0.09)) + 'px',
-                width: panelW + 'px', maxHeight: Math.round(r.height * 0.80) + 'px'
+                width: specW + 'px', maxHeight: Math.round(r.height * 0.80) + 'px'
             });
             // Anchored to the foot of the parts panel, beside the tools that
             // open it, rather than floating over the middle of the board.
             const foot = r.top + Math.round(r.height * 0.89);
             Object.assign(this.picker.style, {
-                left: (r.left + pad + panelW + pad) + 'px',
+                left: (r.left + pad + railW + pad) + 'px',
                 top: 'auto',
                 bottom: Math.max(0, Math.round(window.innerHeight - foot)) + 'px',
                 width: Math.round(Math.min(430, r.width * 0.30)) + 'px',
@@ -4492,26 +4510,28 @@
 
         setSpec(hint) {
             const s = specs();
+            // [label, value, bad, wraps]. Only the two prose values wrap; the
+            // figures stay whole on one line so the sheet reads as a column.
             const rows = [
-                [T('HyperDeck.specs.caseLabel'), caseLabel(caseDef()), false],
+                [T('HyperDeck.specs.caseLabel'), caseLabel(caseDef()), false, true],
                 [T('HyperDeck.specs.slots'),
-                    T('HyperDeck.unit.cells', { used: s.used, total: s.cells }), false],
-                [T('HyperDeck.specs.processor'), fmtMhz(s.mhz), false],
-                [T('HyperDeck.specs.memory'), fmtRam(s.ram), false],
-                [T('HyperDeck.specs.storage'), fmtStore(s.mb), false],
+                    T('HyperDeck.unit.cells', { used: s.used, total: s.cells }), false, false],
+                [T('HyperDeck.specs.processor'), fmtMhz(s.mhz), false, false],
+                [T('HyperDeck.specs.memory'), fmtRam(s.ram), false, false],
+                [T('HyperDeck.specs.storage'), fmtStore(s.mb), false, false],
                 [T('HyperDeck.specs.graphics'),
                     s.kinds.gpu ? fmtMb(s.vram)
                         : s.shared ? T('HyperDeck.value.integrated', { n: s.shared })
-                            : T('HyperDeck.value.none'), false],
-                [T('HyperDeck.specs.battery'), fmtMah(s.mah), false],
+                            : T('HyperDeck.value.none'), false, !s.kinds.gpu],
+                [T('HyperDeck.specs.battery'), fmtMah(s.mah), false, false],
                 [T('HyperDeck.specs.draw'),
-                    fmtWatt(s.draw) + ' / ' + fmtWatt(s.supply), s.draw > s.supply],
+                    fmtWatt(s.draw) + ' / ' + fmtWatt(s.supply), s.draw > s.supply, false],
                 [T('HyperDeck.specs.endurance'), enduranceHours(s)
                     ? T('HyperDeck.value.hours', { n: Math.round(enduranceHours(s) * 10) / 10 })
-                    : T('HyperDeck.value.none'), false]
+                    : T('HyperDeck.value.none'), false, false]
             ];
-            this.specBody.innerHTML = rows.map(([k, v, bad]) =>
-                `<div class="hd-line ${bad ? 'bad' : ''}"><span>${esc(k)}</span><span>${esc(v)}</span></div>`
+            this.specBody.innerHTML = rows.map(([k, v, bad, wrap]) =>
+                `<div class="hd-line${bad ? ' bad' : ''}${wrap ? ' wrap' : ''}"><span>${esc(k)}</span><span>${esc(v)}</span></div>`
             ).join('');
             this.req.innerHTML = REQUIRED.map(kind => {
                 const has = !!s.kinds[kind];

@@ -1235,6 +1235,18 @@
   }
 
   /**
+   * Undo markPresetUsed. Only called while character creation is still open,
+   * for a dossier applied to a seat and then abandoned before the party was
+   * confirmed, so backing out of a pick does not spend it for the world.
+   * @param {number} presetId - Preset ID
+   */
+  function unmarkPresetUsed(presetId) {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+    if (!(presetId > 0)) return;
+    $gameSystem._usedCharacterPresets = getUsedPresetIds().filter((id) => id !== presetId);
+  }
+
+  /**
    * Presets that can still be picked in this world
    * @returns {array} Array of preset objects
    */
@@ -2449,6 +2461,7 @@
     isPresetUsed,
     isPresetEndless,
     markPresetUsed,
+    unmarkPresetUsed,
     getPresetSwitchIds,
     getPresetLore,
     getPresetHometown,
