@@ -64,6 +64,28 @@
  * A choice may carry `only` / `not` (lists of archetypes the LEADER must or must
  * not have for it to be offered), `em` (hers alone) or `notEm`.
  *
+ * A choice may also put the answer on a die, or on the party's own pack:
+ *   check: { stat, dc }              a d20 against a difficulty (STR CON INT
+ *                                    WIS DEX PSI), modified by the leader's
+ *                                    ability, thrown by Dice3D across the
+ *                                    screen; { chance: 40 } for flat odds
+ *   pass / fail                      the node each result leads to
+ *   give: { material: true, qty }    hand over the session's own {material};
+ *         { mat: "steel", qty }      or a named one; { gold: "small" } for
+ *                                    coin. Shown greyed when unaffordable.
+ *
+ * Anomaly.procScenarios (and earth.procScenarios) name the rolling quests:
+ * request-and-check adventures written once against the shared word banks, so
+ * every plain biome square (Earth or alien) can roll one in place of its
+ * authored scenario. {material} and {qty} in their prose are pinned by the
+ * engine to a real crafting material and a count, and the hand-over rows
+ * charge exactly that.
+ *
+ * The modal draws the biome's own battleback behind the prose, the away team's
+ * busts standing on it and whoever the story is about facing them: an alien
+ * bust off alien ground (a human sometimes, in the Milky Way), a person on
+ * Earth, and the creature itself when the last node armed a fight.
+ *
  * outcome.kind: artifact | gear | loot | gold | schrodingerite | harm | heal |
  *               augment (`augment` names one or a list out of
  *               ProstheticTypes.json, `who: "member"` fits the companion) |
@@ -137,9 +159,19 @@
   }
   function seededFloat(key, salt) { return seededHash(key, salt) / 4294967296; }
 
-  // Crafting materials, the "loot" ending's currency (GalaxySim owns the table).
+  // Crafting materials, the "loot" ending's currency and the coin a request
+  // quest is paid in. GalaxySim owns the live table; the ids are stable
+  // (items 849-871), so a fallback copy keeps the quests working anywhere the
+  // star map is not loaded.
+  const ANOM_MAT_FALLBACK = {
+    arcane: 849, ethereal: 850, quantum: 851, circuit: 852, microchip: 853,
+    battery: 854, plastic: 855, resin: 856, nanotube: 857, plant: 858,
+    wood: 859, bone: 860, cloth: 861, meat: 862, steel: 863, titanium: 864,
+    varlenia: 865, crystal: 866, glass: 867, leather: 868, herb: 869,
+    oil: 870, acid: 871,
+  };
   function materials() {
-    return (window.GalaxySim && window.GalaxySim.MAT) || {};
+    return (window.GalaxySim && window.GalaxySim.MAT) || ANOM_MAT_FALLBACK;
   }
   function matItem(id) { return typeof $dataItems !== "undefined" ? $dataItems[id] : null; }
   function matName(id) {
@@ -150,6 +182,27 @@
     const it = matItem(id);
     if (it && $gameParty && qty > 0) $gameParty.gainItem(it, qty);
   }
+  function matOwned(id) {
+    const it = matItem(id);
+    return (it && $gameParty && $gameParty.numItems) ? $gameParty.numItems(it) : 0;
+  }
+  function matTake(id, qty) {
+    const it = matItem(id);
+    if (it && $gameParty && $gameParty.loseItem && qty > 0) $gameParty.loseItem(it, qty);
+  }
+  // A material a quest can ask for or pay in: a real, named item, never a slot
+  // the database left empty ("Empty ..." is the free-row sentinel).
+  function matUsable(id) {
+    const it = matItem(id);
+    return !!(it && it.name && String(it.name).indexOf("Empty ") !== 0);
+  }
+  // The materials a request quest draws its ask from, by setting: a farm wants
+  // wood and cloth, a stranded lander wants titanium and circuitry.
+  const ANOM_MAT_EARTH = ["wood", "steel", "cloth", "leather", "plant", "herb",
+    "resin", "glass", "plastic", "oil"];   // i18n-ignore-start: MAT keys
+  const ANOM_MAT_ALIEN = ["steel", "titanium", "circuit", "microchip", "battery",
+    "crystal", "glass", "nanotube", "quantum"];
+  // i18n-ignore-end
 
   const ANOM_FALLBACK_BIOME = "AlienIce";   // i18n-ignore: biome id
 
@@ -426,6 +479,151 @@
     return true;
   }
 
+  // ---- Skill checks --------------------------------------------------------
+  // A choice may put the answer on a die instead of on rails. Content writes:
+  //
+  //   check: { stat: "DEX", dc: 13 }   a d20 against a difficulty, modified by
+  //                                    the leader's own ability
+  //   check: { chance: 40 }            a flat percentage, still thrown as a die
+  //   pass / fail                      the node each result leads to (either
+  //                                    may be omitted; `to` is the default)
+  //
+  // The die is thrown by Dice3D (the same d20 the trials and the stealing use),
+  // across the whole screen, so a gamble reads as a gamble. Headless (the test
+  // harness, a build without the dice plugin) the same roll is taken from the
+  // session's own stream, which keeps it deterministic there.
+  const ANOM_STAT_PARAMS = { STR: 2, CON: 3, INT: 4, WIS: 5, DEX: 6, PSI: 7, LUK: 7 };   // i18n-ignore: stat ids
+
+  function anomCheckOf(choice) {
+    const c = choice && choice.check;
+    if (!c) return null;
+    if (c.chance > 0) {
+      return { chance: Math.max(5, Math.min(95, Math.round(c.chance))), stat: null };
+    }
+    const stat = String(c.stat || "").toUpperCase();
+    if (!ANOM_STAT_PARAMS[stat] && !(c.dc > 0)) return null;
+    return { stat: ANOM_STAT_PARAMS[stat] ? stat : null, dc: c.dc > 0 ? Math.round(c.dc) : 12 };
+  }
+
+  // Who is answering the checks. The leader by default, but the die can be
+  // handed to anybody standing there: L1/R1 (or Tab) cycles the quester, the
+  // same companion-tab gesture the book-spread menus use, and every check
+  // from then on runs on that member's abilities.
+  function anomQuester(session) {
+    const members = ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+    if (!members.length) return null;
+    const i = (session && session.questerIndex) || 0;
+    return members[((i % members.length) + members.length) % members.length] || members[0];
+  }
+
+  // The quester's modifier: the D&D-style ability mod the battle system
+  // already derives from the stat (BattleSystemEnhanced), or the same
+  // arithmetic done here when that plugin is not up.
+  function anomStatMod(session, stat) {
+    const pid = ANOM_STAT_PARAMS[stat];
+    const who = anomQuester(session);
+    if (!pid || !who) return 0;
+    if (typeof who.abilityMod === "function") {
+      try { return who.abilityMod(pid) || 0; } catch (e) { /* fall through */ }
+    }
+    const v = (typeof who.param === "function") ? who.param(pid) : 10;
+    return Math.floor(((v || 10) - 10) / 2);
+  }
+
+  // Throw the die. Resolves to { success, nat20, nat1 }; async because the 3D
+  // die takes its time crossing the screen.
+  function anomRollCheck(session, check) {
+    const statName = check.stat || "";
+    const modifier = check.stat ? anomStatMod(session, check.stat) : 0;
+    const who = anomQuester(session);
+    const D = window.Dice3D;
+    if (D && typeof D.rollD20 === "function") {
+      const opts = {
+        statName,
+        actionName: anomText("ui.checkAction",
+          { stat: statName || "D20", name: who ? who.name() : "" }),
+        force3D: true,
+      };
+      if (check.chance) return D.rollPercentage(check.chance, opts);
+      return D.rollD20(Object.assign(opts, { dc: check.dc, modifier }));
+    }
+    // Headless: the same d20, thrown out of the session's own stream.
+    const rng = anomRng(session);
+    const roll = Math.floor(rng() * 20) + 1;
+    if (check.chance) {
+      const dc = Math.max(2, Math.min(20, 21 - Math.round(check.chance / 5)));
+      return Promise.resolve({ roll, success: roll === 20 || (roll !== 1 && roll >= dc), nat20: roll === 20, nat1: roll === 1 });
+    }
+    const total = roll + modifier;
+    const success = roll === 20 || (roll !== 1 && total >= check.dc);
+    return Promise.resolve({ roll, total, success, nat20: roll === 20, nat1: roll === 1 });
+  }
+
+  // ---- Requests ------------------------------------------------------------
+  // A choice may cost something to take: the hand-over quests. Content writes:
+  //
+  //   give: { material: true, qty: 3 }   qty of the session's own material (the
+  //                                      one {material} named in the prose)
+  //   give: { mat: "steel", qty: 2 }     a named material out of the table
+  //   give: { gold: "small" }            coin, priced like an ending of that
+  //                                      magnitude (small | medium | large)
+  //
+  // A party that cannot cover it sees the row anyway, greyed, with what it
+  // would take: knowing what was asked is half the story.
+  function anomGoldPrice(tier) {
+    const level = anomPartyLevel();
+    return Math.round(600 * (ANOM_MAG[tier] || ANOM_MAG.medium) * (1 + level / 24));
+  }
+
+  // What a give costs, resolved against the session: { matId, qty } or { gold }.
+  // Null when the content asked for something this build cannot price.
+  function anomGiveCost(session, give) {
+    if (!give) return null;
+    if (give.gold) return { gold: anomGoldPrice(give.gold) };
+    let matId = 0;
+    if (give.material) matId = session.matId || 0;
+    else if (give.mat) matId = materials()[String(give.mat)] || 0;
+    if (!matId || !matUsable(matId)) return null;
+    const qty = give.qty > 0 ? Math.round(give.qty) : (session.matQty || 1);
+    return { matId, qty };
+  }
+
+  function anomCanAfford(cost) {
+    if (!cost) return true;
+    if (cost.gold) return !!($gameParty && $gameParty.gold && $gameParty.gold() >= cost.gold);
+    return matOwned(cost.matId) >= cost.qty;
+  }
+
+  function anomPayCost(cost) {
+    if (!cost) return;
+    if (cost.gold) {
+      if ($gameParty && $gameParty.loseGold) $gameParty.loseGold(cost.gold);
+      return;
+    }
+    matTake(cost.matId, cost.qty);
+    if (window.ParchmentToast && window.ParchmentToast.show) {
+      window.ParchmentToast.show(anomText("reward.gave",
+        { qty: cost.qty, name: matName(cost.matId) }), { severity: "info" });
+    }
+  }
+
+  // The material a session's request quest is about: picked once, seeded, from
+  // the setting's own list, and pinned into the context so {material} in the
+  // prose and the cost on the choice row name the same thing.
+  function anomPinMaterial(session) {
+    const MAT = materials();
+    const keys = (session.earth ? ANOM_MAT_EARTH : ANOM_MAT_ALIEN)
+      .filter((k) => MAT[k] && matUsable(MAT[k]));
+    const all = Object.keys(MAT).filter((k) => matUsable(MAT[k]));
+    const pool = keys.length ? keys : all;
+    if (!pool.length) return;
+    const key = pool[seededHash(session.key, 6053) % pool.length];
+    session.matId = MAT[key];
+    session.matQty = 2 + (seededHash(session.key, 6079) % 4);
+    session.ctx.material = matName(session.matId);
+    session.ctx.qty = String(session.matQty);
+  }
+
   // ---- Em -----------------------------------------------------------------
   // The wannabe witch out of the Solomonic Ritual, played from her own dossier
   // (CharacterCreationPresets.js sets switch 48, which is per-savegame, never
@@ -589,6 +787,36 @@
       out.push(matName(id) + " x" + n);
     }
     return out;
+  }
+
+  // ---- Taught skills ------------------------------------------------------
+  // The reward some quests pay in: a skill or a spell, taught on the spot to
+  // whoever is holding the die. The pool is every skill nobody in the party
+  // knows yet - the esoteric book alone (ids 1400 up, the menu-cast spells)
+  // when the ending says `pool: "esoteric"`, the whole book otherwise - and
+  // never one tagged <Forbidden>, which are not handed out in lay-bys.
+  const ANOM_ESOTERIC_FLOOR = 1400;
+
+  function anomPickSkill(session, pool) {
+    if (typeof $dataSkills === "undefined" || !$dataSkills) return null;
+    const members = ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+    const known = new Set();
+    members.forEach((a) => {
+      if (typeof a.skills !== "function") return;
+      try { a.skills().forEach((s) => { if (s) known.add(s.id); }); } catch (e) { /* stubs */ }
+    });
+    // The whole book starts past the basics (attack, guard and their kin).
+    const from = pool === "esoteric" ? ANOM_ESOTERIC_FLOOR : 11;   // i18n-ignore: pool id
+    const candidates = [];
+    for (let i = from; i < $dataSkills.length; i++) {
+      const s = $dataSkills[i];
+      if (!s || !s.name || known.has(s.id)) continue;
+      if (/<Forbidden>/i.test(s.note || "")) continue;   // i18n-ignore: note tag
+      candidates.push(s);
+    }
+    if (!candidates.length) return null;
+    const rng = anomRng(session);
+    return candidates[Math.floor(rng() * candidates.length)];
   }
 
   // ---- Needs --------------------------------------------------------------
@@ -792,6 +1020,22 @@
         a.setHp(a.mhp); a.setMp(a.mmp); a.clearStates();
       });
       lines.push(anomText("reward.heal"));
+    } else if (kind === "skill") {
+      // Somebody out here teaches the quester something. `pool: "esoteric"`
+      // draws from the menu-cast spells (ids 1400 up); anything else draws
+      // from the whole book. Always something nobody in the party knows, never
+      // a <Forbidden> one; a database with nothing left to teach pays in coin.
+      const skill = anomPickSkill(session, out.pool);
+      const who = anomQuester(session);
+      if (skill && who && typeof who.learnSkill === "function") {
+        who.learnSkill(skill.id);
+        lines.push(anomText("reward.skill", { who: who.name(), name: skill.name }));
+      } else {
+        const gold = Math.round(1200 * mag * (1 + level / 24));
+        if ($gameParty) $gameParty.gainGold(gold);
+        lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
+      }
+      spec("Anthropology", 2);       // i18n-ignore: specialization id
     } else if (kind === "needs") {
       // The whole of the ending is what it did for everybody: applied below,
       // with nothing else attached.
@@ -865,7 +1109,10 @@
     target: "Scene_TargetRange",
     fishing: "Scene_FishingMinigame",
     surfing: "Scene_SurfingGame",
-    tetris: "Scene_HexphoneTetris",
+    // Tetris lives inside the phone now (HexphoneSystem), which is not a scene
+    // that can be handed a contest: the falling-block game that can is the
+    // lockpicking one, and it reports through MinigameFun like the rest.
+    tetris: "Scene_LockpickTetris",
     cards: "Scene_Tarot",
     horses: "Scene_HorseRace",
   };   // i18n-ignore-end
@@ -933,6 +1180,9 @@
     if (!pool.length) return 0;
     const rng = anomRng(session);
     const enemyId = pool[Math.floor(rng() * pool.length)];
+    // The stage shows what is about to be fought, over the terminal node.
+    const foe = $dataEnemies[enemyId];
+    session.stageEnemy = { name: foe.name, battlerName: foe.battlerName };
     const n = Math.max(1, Math.min(3, count || 1));
     const members = [];
     for (let m = 0; m < n; m++) {
@@ -1005,11 +1255,28 @@
     return list.filter((id) => db.scenarios && db.scenarios[id]);
   }
 
+  // The rolling quests: request-and-check adventures written once, with the
+  // banks doing the work, so every square can carry one. Each pack names its
+  // own set (`procScenarios`), voiced for its setting. A square with a bespoke
+  // story (a place, a country, a power, Eris) keeps it; a plain biome square
+  // rolls between its biome's adventure and a quest, seeded, so roughly half
+  // the "???" on any world are somebody wanting something.
+  function anomQuestList(session) {
+    const db = anomalyDB();
+    const list = packOf(session).procScenarios || [];
+    return list.filter((id) => db.scenarios && db.scenarios[id]);
+  }
+
   function anomScenarioFor(session) {
     const usable = anomScenarioList(session);
-    if (!usable.length) return null;
-    const idx = Math.floor(seededFloat(session.key, 7717) * usable.length) % usable.length;
-    return usable[idx];
+    const quests = (!session.scope) ? anomQuestList(session) : [];
+    let pool = usable;
+    if (quests.length && (!usable.length || seededFloat(session.key, 9241) < 0.45)) {
+      pool = quests;
+    }
+    if (!pool.length) return null;
+    const idx = Math.floor(seededFloat(session.key, 7717) * pool.length) % pool.length;
+    return pool[idx];
   }
 
   // The line the encounter opens on, ahead of the scenario's own first
@@ -1095,9 +1362,34 @@
       const all = node.choices || [];
       let usable = all.filter((c) => anomChoiceAllowed(c, trait, em));
       if (!usable.length) usable = all;
-      view.choices = usable.map((c) => ({
-        text: anomResolve(session, c.text), to: c.to,
-      }));
+      // Each row carries what taking it involves, out in the open: the die it
+      // would throw (stat and DC, or the flat odds) and what it would cost to
+      // hand over. A row the party cannot cover is shown greyed with the price
+      // on it rather than hidden: what was asked is half the story.
+      view.choices = usable.map((c) => {
+        const row = { text: anomResolve(session, c.text), to: c.to };
+        const check = anomCheckOf(c);
+        if (check) {
+          row.check = check;
+          if (c.pass) row.pass = c.pass;
+          if (c.fail) row.fail = c.fail;
+        }
+        const cost = anomGiveCost(session, c.give);
+        if (c.give && !cost) row.broken = true;   // asked for something unpriceable
+        if (cost) {
+          row.cost = cost;
+          row.costLabel = cost.gold
+            ? anomText("ui.goldChip", { amount: (cost.gold / 100).toFixed(2) })
+            : anomText("ui.needChip", { qty: cost.qty, name: matName(cost.matId) });
+          if (!anomCanAfford(cost)) {
+            row.locked = true;
+            if (!cost.gold) {
+              row.costLabel += " " + anomText("ui.haveChip", { have: matOwned(cost.matId) });
+            }
+          }
+        }
+        return row;
+      }).filter((row) => !row.broken);
     }
     session.view = view;
     return view;
@@ -1114,6 +1406,9 @@
     session.em = anomIsEm();
     session.scenario = anomScenarioFor(session);
     if (!session.scenario) return null;
+    // Pinned before the first node resolves, so a quest's prose and its
+    // hand-over rows agree on what is being asked for.
+    anomPinMaterial(session);
     const sc = db.scenarios[session.scenario];
     session.node = sc.start || Object.keys(sc.nodes || {})[0];
     anomalyStore()[session.key] = { started: true };
@@ -1170,6 +1465,10 @@
         biome: anomalyBiomeKey(planet),
         placeName: planet.name,
         systemName: (system && (system.label || system.name)) || "",
+        // A system in a procedural galaxy carries the galaxy's name; the Milky
+        // Way's own do not. The stage reads this: out there the strangers are
+        // strangers, back home some of them are people.
+        milkyWay: !(system && system.galaxy),
         roll: seededHash(key, 8191) || 1,
         ctx: {},
         rewards: [],
@@ -1189,16 +1488,50 @@
       const s = Anomaly.session();
       return s ? (s.view || anomBuildView(s)) : null;
     },
-    // Take a branch. Returns the new view; a terminal node applies its outcome
-    // first, so the view already carries the reward lines.
-    choose(index) {
+    // The member the die is in the hands of. Cycling never touches the prose
+    // or the cast (the story already happened to whoever it happened to): it
+    // moves the checks, and the chips on the rows say whose odds they are.
+    quester() { return anomQuester(Anomaly.session()); },
+    questerIndex() {
+      const s = Anomaly.session();
+      return s ? ((s.questerIndex || 0)) : 0;
+    },
+    setQuester(index) {
+      const s = Anomaly.session();
+      if (!s) return;
+      const n = ($gameParty && $gameParty.members) ? $gameParty.members().length : 1;
+      if (n < 1) return;
+      s.questerIndex = ((index % n) + n) % n;
+    },
+    cycleQuester(step) {
+      Anomaly.setQuester((Anomaly.questerIndex() || 0) + (step || 1));
+    },
+    // Take a branch. Async: a choice that carries a check throws the d20 first
+    // (the 3D die takes its time crossing the screen). Returns the new view; a
+    // terminal node applies its outcome on the way, so the view already
+    // carries the reward lines. A locked row (a hand-over the party cannot
+    // cover) is refused: the current view comes back unchanged.
+    async choose(index) {
       const s = Anomaly.session();
       if (!s || !s.view || s.view.done) return null;
       const choice = s.view.choices[index];
       if (!choice) return null;
-      s.node = choice.to;
+      if (choice.locked) return s.view;
+
+      // The hand-over is paid the moment the branch is taken: the stranger has
+      // the crate before anything else happens, exactly like the prose says.
+      if (choice.cost) anomPayCost(choice.cost);
+
+      let targetNode = choice.to;
+      if (choice.check) {
+        const res = await anomRollCheck(s, choice.check);
+        if (res && res.success) { if (choice.pass) targetNode = choice.pass; }
+        else if (choice.fail) targetNode = choice.fail;
+      }
+
       const db = anomalyDB();
       const sc = db.scenarios && db.scenarios[s.scenario];
+      s.node = targetNode;
       const node = sc && sc.nodes && sc.nodes[s.node];
       if (node && node.outcome) s.rewards = anomArm(s, node.outcome);
       return anomBuildView(s);
@@ -1809,6 +2142,249 @@
   };
 
   // ==========================================================================
+  // THE STAGE
+  // --------------------------------------------------------------------------
+  // What the encounter looks like: the biome's own battle background behind
+  // the prose, the away team's busts standing on it, and whoever the story is
+  // about facing them. On an alien world the stranger is one of the alien
+  // busts (NPCs.json flags them); in the Milky Way the odd human turns up out
+  // there too, because the Milky Way is where the humans are. A terminal node
+  // that armed a fight shows the thing about to be fought instead.
+  //
+  // Everything here is presentation: it is built fresh per node, never saved,
+  // and a build with no filesystem (a browser deploy, the test harness) simply
+  // has no stage and keeps the parchment.
+  // ==========================================================================
+
+  const STAGE_PARTY_MAX = 3;
+
+  // Battleback folders resolve the same way the battle itself resolves them
+  // (AnimatedBattleBackgrounds): flat folder first, then AlienPlanet/<Biome>,
+  // then the directional stem. Picked seeded by the square, so one encounter
+  // keeps its view from the first node to the last.
+  function stageBackground(session) {
+    try {
+      const fs = require("fs");
+      const path = require("path");
+      const base = path.join(path.dirname(process.mainModule.filename), "img", "battlebacks1");
+      const names = [session.rawBiome, session.biome].filter(Boolean);
+      for (const name of names) {
+        let rel = null;
+        if (fs.existsSync(path.join(base, name))) rel = name;
+        else if (fs.existsSync(path.join(base, "AlienPlanet", name))) rel = "AlienPlanet/" + name;
+        else {
+          const stem = String(name).split(" ")[0];
+          if (stem !== name && fs.existsSync(path.join(base, stem))) rel = stem;
+        }
+        if (!rel) continue;
+        const files = fs.readdirSync(path.join(base, rel)).filter((f) => /\.(png|jpe?g)$/i.test(f));
+        if (!files.length) continue;
+        return "img/battlebacks1/" + rel + "/" + files[seededHash(session.key, 3671) % files.length];
+      }
+    } catch (e) { /* no filesystem: no stage */ }
+    return (typeof window.getBiomeBattlebackPreview === "function")
+      ? window.getBiomeBattlebackPreview(session.rawBiome || session.biome)
+      : null;
+  }
+
+  // The busts the sprite database knows, split into the aliens (flagged) and
+  // everybody else who is a person rather than a creature. Built once.
+  let _stagePools = null;
+  function stageBustPools() {
+    if (_stagePools) return _stagePools;
+    const db = (window.WorldGen && window.WorldGen.NPCs) || {};
+    const alien = [], people = [];
+    Object.keys(db).forEach((sheet) => {
+      const e = db[sheet];
+      if (!e || typeof e !== "object") return;
+      const busts = (Array.isArray(e.busts) ? e.busts : []).filter((b) => b && b !== "7");
+      if (!busts.length) return;
+      if (e.aliens || e.alien) { alien.push.apply(alien, busts); return; }
+      if (e.creature || e.animal || e.zombie) return;
+      people.push.apply(people, busts);
+    });
+    _stagePools = { alien, people };
+    return _stagePools;
+  }
+
+  // The bust an actor is drawn with everywhere else: the Empathize panel owns
+  // the resolution, and the same arithmetic stands in when it is not loaded.
+  function stageActorBust(actor) {
+    try {
+      const h = window.NPCEmpathize && window.NPCEmpathize._helpers;
+      if (h && h._resolveBustForActor) return h._resolveBustForActor(actor);
+    } catch (e) { /* empathize not loaded */ }
+    if (!actor) return null;
+    try {
+      const own = actor.vnBust ? actor.vnBust() : null;
+      if (own && own !== "7" && own !== 0) return "img/busts/" + own + ".png";
+      const sa = window.Sprites && window.Sprites.SpritesAssociation;
+      const name = actor.characterName ? actor.characterName() : "";
+      if (name && sa) {
+        const bust = sa[name.split(".")[0]] && sa[name.split(".")[0]][actor.characterIndex()];
+        if (bust && bust !== "7") return "img/busts/" + bust + ".png";
+      }
+    } catch (e) { /* creature actors and stubs */ }
+    return null;
+  }
+
+  // Whoever the encounter is about, facing the party. Aliens on alien ground;
+  // in the Milky Way the pool widens, and on Earth it was always people.
+  function stageStrangerBust(session) {
+    const pools = stageBustPools();
+    let pool = pools.people;
+    if (!session.earth) {
+      const wander = session.milkyWay && pools.people.length &&
+        seededFloat(session.key, 5527) < 0.4;
+      pool = wander ? pools.people : (pools.alien.length ? pools.alien : pools.people);
+    }
+    if (!pool || !pool.length) return null;
+    return "img/busts/" + pool[seededHash(session.key, 5581) % pool.length] + ".png";
+  }
+
+  function stageEl(tag, styles) {
+    const el = document.createElement(tag);
+    if (styles) Object.keys(styles).forEach((k) => { el.style[k] = styles[k]; });
+    return el;
+  }
+
+  const Stage = {
+    // The scene, as one element, or null when there is nothing to draw it out
+    // of. `view` decides who stands on the right: a fight about to start shows
+    // the enemy, anything else shows the stranger.
+    build(session, view) {
+      if (!session || typeof document === "undefined") return null;
+      const bg = stageBackground(session);
+      if (!bg) return null;
+      const box = stageEl("div", {
+        position: "relative", width: "100%", height: "170px",
+        overflow: "hidden", borderRadius: "4px", marginBottom: "10px",
+        flexShrink: "0",
+        backgroundImage: "url('" + bg.replace(/'/g, "%27") + "')",
+        backgroundSize: "cover", backgroundPosition: "center 35%",
+      });
+      // A floor of shadow, so the busts read against any sky.
+      box.appendChild(stageEl("div", {
+        position: "absolute", left: "0", right: "0", bottom: "0", height: "70px",
+        background: "linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0))",
+        pointerEvents: "none",
+      }));
+      // The away team, shoulder to shoulder on the left.
+      const cast = ($gameParty && $gameParty.members) ? $gameParty.members().slice(0, STAGE_PARTY_MAX) : [];
+      const questerIdx = (session.questerIndex || 0) % Math.max(1, cast.length);
+      cast.forEach((actor, i) => {
+        const src = stageActorBust(actor);
+        if (!src) return;
+        const active = i === questerIdx;
+        const img = stageEl("img", {
+          position: "absolute", bottom: active ? "-16px" : "-24px",
+          left: (6 + i * 62) + "px",
+          height: active ? "158px" : "150px", width: "auto",
+          filter: active
+            ? "drop-shadow(0 0 6px rgba(255,215,0,0.85)) drop-shadow(0 3px 5px rgba(0,0,0,0.6))"
+            : "drop-shadow(0 3px 5px rgba(0,0,0,0.6)) brightness(0.82)",
+          zIndex: active ? "20" : String(10 - i),
+        });
+        img.src = src;
+        img.onerror = function () { this.remove(); };
+        box.appendChild(img);
+      });
+      // Whoever, or whatever, is on the other side of the conversation.
+      const foe = (view && view.done && session.stageEnemy && session.stageEnemy.battlerName)
+        ? "img/enemies/" + session.stageEnemy.battlerName + ".png"
+        : stageStrangerBust(session);
+      if (foe) {
+        const img = stageEl("img", {
+          position: "absolute", bottom: "-24px", right: "8px",
+          height: "150px", width: "auto",
+          transform: "scaleX(-1)",
+          filter: "drop-shadow(0 3px 5px rgba(0,0,0,0.6))",
+        });
+        img.src = foe;
+        img.onerror = function () { this.remove(); };
+        box.appendChild(img);
+      }
+      return box;
+    },
+
+    // The companion tabs, top-right, the same gesture every book-spread menu
+    // uses: whoever's tab is lit is holding the die. `onSwitch(i)` is the
+    // caller's re-render; the tabs only move the index.
+    buildSwitcher(session, onSwitch) {
+      const members = ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+      if (members.length < 2 || typeof document === "undefined") return null;
+      const strip = stageEl("div", {
+        display: "flex", justifyContent: "flex-end", gap: "6px",
+        marginBottom: "6px", flexShrink: "0",
+      });
+      const active = (session.questerIndex || 0) % members.length;
+      members.forEach((m, i) => {
+        const tab = stageEl("span", {
+          padding: "2px 10px", borderRadius: "9px", cursor: "pointer",
+          fontSize: "0.8em", border: "1px solid currentColor",
+          opacity: i === active ? "1" : "0.5",
+          fontWeight: i === active ? "bold" : "normal",
+        });
+        tab.textContent = m.name();
+        tab.addEventListener("mousedown", (e) => {
+          e.stopPropagation(); e.preventDefault();
+          Anomaly.setQuester(i);
+          if (onSwitch) onSwitch(i);
+        });
+        strip.appendChild(tab);
+      });
+      return strip;
+    },
+
+    // For panels that build their DOM elsewhere (the star map's log): drop the
+    // stage in at the top of `container`, replacing the one from the last node.
+    attachTo(container, onSwitch) {
+      if (!container || typeof document === "undefined") return;
+      try {
+        ["pas-adv-stage", "pas-adv-tabs"].forEach((cls) => {   // i18n-ignore: DOM classes
+          const old = container.querySelector ? container.querySelector("." + cls) : null;
+          if (old) old.remove();
+        });
+        const session = Anomaly.session();
+        if (!session) return;
+        const el = Stage.build(session, session.view);
+        if (el) {
+          el.className = "pas-adv-stage";   // i18n-ignore: DOM class
+          container.insertBefore(el, container.firstChild || null);
+        }
+        const tabs = Stage.buildSwitcher(session, onSwitch);
+        if (tabs) {
+          tabs.className = "pas-adv-tabs";   // i18n-ignore: DOM class
+          container.insertBefore(tabs, container.firstChild || null);
+        }
+      } catch (e) { /* a panel with no DOM to speak of */ }
+    },
+
+    // The chip a choice row wears: the die it would throw (with the current
+    // quester's own modifier, so handing the die to somebody else visibly
+    // moves the odds), or what taking it costs. Plain text, for either
+    // presenter to dress.
+    chipText(choice) {
+      if (!choice) return "";
+      const bits = [];
+      if (choice.check) {
+        if (choice.check.chance) {
+          bits.push(anomText("ui.chanceChip", { pct: choice.check.chance }));
+        } else {
+          const mod = choice.check.stat ? anomStatMod(Anomaly.session(), choice.check.stat) : 0;
+          bits.push(anomText("ui.checkChip", {
+            stat: choice.check.stat || "D20",
+            dc: choice.check.dc,
+            mod: (mod >= 0 ? "+" : "") + mod,
+          }));
+        }
+      }
+      if (choice.costLabel) bits.push(choice.costLabel);
+      return bits.join(" · ");
+    },
+  };
+
+  // ==========================================================================
   // MAP PRESENTER
   // --------------------------------------------------------------------------
   // On Earth the encounter is played in a parchment modal drawn over the map,
@@ -1901,6 +2477,16 @@
       const panel = this._panel;
       if (!panel) { this.finish(); return; }
       panel.innerHTML = "";
+      // The scene itself: the ground this is happening on, and who is standing
+      // on it, with the companion tabs above so the die can change hands.
+      // Purely presentation; a build without it keeps the parchment.
+      try {
+        const session = Anomaly.session();
+        const tabs = Stage.buildSwitcher(session, () => this.rerender());
+        if (tabs) panel.appendChild(tabs);
+        const stage = Stage.build(session, view);
+        if (stage) panel.appendChild(stage);
+      } catch (e) { /* presentation only: never let it stop the story */ }
       if (view.title) {
         const title = document.createElement("div");
         title.className = "pas-adv-title";   // i18n-ignore: DOM class
@@ -1931,7 +2517,9 @@
       } else {
         const rows = (view.choices || []).map((c, i) => ({
           label: c.text,
-          run: () => this.present(Anomaly.choose(i)),
+          chip: Stage.chipText(c),
+          locked: !!c.locked,
+          run: async () => this.present(await Anomaly.choose(i)),
         }));
         rows.push({ label: anomText("ui.walkAway"), run: () => this.walkAway(view) });
         this.setRows(rows);
@@ -1953,6 +2541,23 @@
         const el = document.createElement("div");
         el.className = "pas-adv-row";   // i18n-ignore: DOM class
         el.textContent = stripCodes(row.label);
+        // What taking the row involves, worn on the row: the die (stat and
+        // DC), the odds, or the price of the hand-over. A row the party cannot
+        // cover is greyed with the price still showing.
+        if (row.chip) {
+          const chip = document.createElement("span");
+          chip.className = "pas-adv-chip";   // i18n-ignore: DOM class
+          chip.textContent = row.chip;
+          chip.style.marginLeft = "10px";
+          chip.style.padding = "1px 8px";
+          chip.style.border = "1px solid currentColor";
+          chip.style.borderRadius = "9px";
+          chip.style.fontSize = "0.8em";
+          chip.style.opacity = "0.85";
+          chip.style.whiteSpace = "nowrap";
+          el.appendChild(chip);
+        }
+        if (row.locked) el.style.opacity = "0.45";
         el.addEventListener("mouseenter", () => { this.select(i); });
         el.addEventListener("mousedown", (e) => {
           e.stopPropagation();
@@ -1982,12 +2587,33 @@
 
     // ---- answering ---------------------------------------------------------
 
+    // Returns whatever the row's handler returns (a promise, when the row
+    // throws a die), so a caller that wants to wait for the branch can.
     confirm() {
       const row = this._rows[this._index];
-      if (!row || !row.run) return;
+      if (!row || !row.run) return undefined;
+      if (row.locked) {
+        // The ask is on the table and the party cannot cover it. The row
+        // stays; the story does not move.
+        if (SoundManager.playBuzzer) SoundManager.playBuzzer();
+        return undefined;
+      }
       this._rows = [];
       SoundManager.playOk();
-      row.run();
+      return row.run();
+    },
+
+    // Redraw the current node without touching the story: the same cached
+    // view, presented again. What changes is who is holding the die - the lit
+    // tab, the lit bust, and the modifiers on every check chip.
+    rerender() {
+      const s = Anomaly.session();
+      if (!s || !s.view) return;
+      const index = this._index;
+      this.present(s.view);
+      // Keep the cursor where it was: a redraw is not a navigation.
+      if (this._rows.length) this.select(Math.min(index, this._rows.length - 1));
+      this._arm = 0;
     },
 
     // Walking out is one of the ways an encounter is answered: the square is
@@ -2025,6 +2651,14 @@
     update() {
       if (!this._running || !this._rows.length) return;
       if (this._arm > 0) { this._arm--; Input.clear(); return; }
+      // The die changes hands on the shoulder buttons (or Tab), the same
+      // companion-cycling gesture the book-spread menus use.
+      if (Input.isTriggered("pageup")) {
+        Input.clear(); Anomaly.cycleQuester(-1); SoundManager.playCursor(); this.rerender(); return;
+      }
+      if (Input.isTriggered("pagedown") || Input.isTriggered("tab")) {
+        Input.clear(); Anomaly.cycleQuester(1); SoundManager.playCursor(); this.rerender(); return;
+      }
       if (Input.isRepeated("down")) { this.select(this._index + 1); return; }
       if (Input.isRepeated("up")) { this.select(this._index - 1); return; }
       if (Input.isTriggered("ok")) { Input.clear(); this.confirm(); return; }
@@ -2094,6 +2728,7 @@
     Space: Anomaly,
     Earth,
     MapPlay,
+    Stage,
     isPlaying() { return MapPlay.isRunning(); },
   };
 

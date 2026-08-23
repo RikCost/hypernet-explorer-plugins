@@ -1411,6 +1411,10 @@
           isRefueling: !!(ship && ship.isRefueling),
           // Harvest Schrödingerite: parked at a black hole, off cooldown.
           canHarvest: isParkedHere && !!(dm.canHarvestSchrodingerite && dm.canHarvestSchrodingerite()),
+          // Seconds left of an open harvest flyby (see beginSchrodingeriteHarvest).
+          harvestRunSec: (isParkedHere && dm.isHarvestingSchrodingerite &&
+            dm.isHarvestingSchrodingerite() && dm.schrodingeriteHarvestRemaining)
+            ? dm.schrodingeriteHarvestRemaining() : 0,
           harvestCooldownMin: (isParkedHere && ship && ship.parkedBody &&
             ship.parkedBody.kind === "blackhole" && dm.schrodingeriteCooldownRemaining)
             ? dm.schrodingeriteCooldownRemaining(ship.parkedBody.name) : 0,
@@ -1634,10 +1638,20 @@
       const ov = this._overlayUI;
       const A = GS.Anomaly;
       if (!ov || !A) return;
-      const view = A.choose(index);
-      if (!view) return;
-      if (window.SoundManager) SoundManager.playOk();
-      ov.renderAnomaly(view);
+      const current = A.view();
+      const row = current && current.choices && current.choices[index];
+      // A greyed hand-over: the party cannot cover what is being asked.
+      if (row && row.locked) {
+        if (window.SoundManager) SoundManager.playBuzzer();
+        return;
+      }
+      // choose() is async: a choice that carries a check throws the 3D die
+      // before the branch resolves.
+      Promise.resolve(A.choose(index)).then((view) => {
+        if (!view) return;
+        if (window.SoundManager) SoundManager.playOk();
+        ov.renderAnomaly(view);
+      });
     }
 
     // Closing the log ends the encounter. A branch that ended in a fight leaves
@@ -2962,8 +2976,24 @@
       return this._refuelPlanCache;
     }
 
+    // mm:ss for the refuel / harvest countdowns, matching the travel clock.
+    _clockText(seconds) {
+      const s = Math.max(0, Math.ceil(seconds || 0));
+      return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+    }
+
     // Button caption / status line for the fuel panel's Refuel control.
     _refuelHudState(plan) {
+      const dm = this.dataManager;
+      // A harvest flyby owns the panel while it runs: it is the same pumps
+      // drawing on the same hole, just on its own half-minute clock.
+      if (dm.isHarvestingSchrodingerite && dm.isHarvestingSchrodingerite()) {
+        return {
+          label: T('Galaxy.refuel.refuel'), enabled: false, active: true,
+          sub: T('Galaxy.refuel.harvesting'),
+          hint: T('Galaxy.refuel.eta', { time: this._clockText(dm.schrodingeriteHarvestRemaining()) }),
+        };
+      }
       if (!plan) return { label: T('Galaxy.refuel.refuel'), hint: "", enabled: false, active: false };
       // In transit on an auto-refuel course: say so rather than re-advertising
       // the search (pressing the button again simply re-plots).
@@ -2978,12 +3008,16 @@
       const star = plan.starName || plan.systemName || "";
       const ly = plan.distance ? plan.distance.toFixed(1) + " ly" : "";
       switch (plan.status) {
-        case "refuelling":
+        case "refuelling": {
+          // The pumps run on a fixed real-time curve, so the fill has a true
+          // ETA - quoted here exactly as an arrival is (see refuelEtaSeconds).
+          const left = dm.refuelEtaSeconds ? dm.refuelEtaSeconds() : 0;
           return {
             label: T('Galaxy.refuel.stop'), enabled: true, active: true,
-            sub: T('Galaxy.refuel.refuelling'),
+            sub: T('Galaxy.refuel.refuelling') + " · " + this._clockText(left),
             hint: T('Galaxy.refuel.drawingFrom', { star: star }),
           };
+        }
         case "full":
           return { label: T('Galaxy.refuel.refuel'), enabled: false, active: false, sub: T('Galaxy.refuel.tankFull'), hint: "" };
         case "here":
@@ -3011,13 +3045,34 @@
       }
     }
 
-    /** Harvest 3 Schrödingerite from the black hole the ship is parked at. */
+    /**
+     * Open the Schrodingerite flyby: half a minute of skimming the hole's
+     * disk, flown in the system view (see _updateRefuelApproach), after which
+     * the charges are banked by tickSchrodingeriteHarvest.
+     */
     _harvestSchrodingerite() {
       const dm = this.dataManager;
       const buzz = () => { if (window.SoundManager) SoundManager.playBuzzer(); };
-      if (!dm.harvestSchrodingerite || !dm.harvestSchrodingerite()) return buzz();
+      if (!dm.beginSchrodingeriteHarvest || !dm.beginSchrodingeriteHarvest()) return buzz();
+      this._lastShipStatus = null;
       this._refreshSelection();
       if (window.SoundManager) SoundManager.playOk();
+    }
+
+    // Seconds the hull takes to close on the body it is drawing from, and the
+    // same again to fall back out to its parking orbit once the pumps stop.
+    // Eased with a smoothstep so neither end of the move is abrupt.
+    _updateRefuelApproach(delta) {
+      const dm = this.dataManager;
+      const ship = dm && dm.playerShip;
+      const drawing = !!(ship && !ship.isMoving && (ship.isRefueling ||
+        (dm.isHarvestingSchrodingerite && dm.isHarvestingSchrodingerite())));
+      const APPROACH_SECONDS = 8;
+      const step = Math.max(0, delta || 0) / APPROACH_SECONDS;
+      let raw = this._refuelApproachRaw || 0;
+      raw = drawing ? Math.min(1, raw + step) : Math.max(0, raw - step);
+      this._refuelApproachRaw = raw;
+      this._refuelApproach = raw * raw * (3 - 2 * raw);
     }
 
     /** The star the galaxy-scale zoom-in should drop into, if any. */
@@ -3254,6 +3309,19 @@
       // Slowly tops up Hyperflux while parked at a main-sequence star with
       // Refuel engaged; a no-op the rest of the time (see canRefuel).
       if (dm.tickRefuel) dm.tickRefuel(delta);
+      // An open Schrodingerite flyby runs on the same clock; completing it
+      // (or breaking it off) changes what the panel may offer.
+      if (dm.tickSchrodingeriteHarvest && dm.tickSchrodingeriteHarvest(delta)) {
+        this._lastShipStatus = null;
+        const D = GS.DataManager;
+        this._toast(T('Galaxy.refuel.harvested', {
+          amount: (D && D.SCHRODINGERITE_HARVEST_AMOUNT) || 3 }));
+        if (window.SoundManager) SoundManager.playOk();
+      }
+      // How far the hull has drawn in toward the body it is drinking from:
+      // eased 0..1, so the approach and the drift back out both read as a
+      // manoeuvre rather than a snap (see the system view's updateShip).
+      this._updateRefuelApproach(delta);
 
       if (this._systemView) {
         // The system-scale ship is only ever drawn in the star system the ship
@@ -3282,6 +3350,12 @@
             mode: "parkedStar",
             starName: (ship.parkedBody && ship.parkedBody.name !== here)
               ? ship.parkedBody.name : null,
+            // Drawing fuel (or skimming a hole for Schrodingerite) flies the
+            // hull in close and back out again when the run ends.
+            approach: this._refuelApproach || 0,
+            // A harvest is a fast low pass, not the lazy parking drift.
+            approachSpin: (dm.isHarvestingSchrodingerite &&
+              dm.isHarvestingSchrodingerite()) ? 1 : 0,
           };
         } else {
           state = { mode: "hidden" };
@@ -3384,7 +3458,10 @@
       } else this._overlayUI.hideSpeed();
 
       const statusKey = (ship.isMoving ? 1 : 0) + "|" + (ship.currentPlanet || "") + "|" +
-        (ship.currentSystem || "") + "|" + ((ship.parkedBody && ship.parkedBody.name) || "");
+        (ship.currentSystem || "") + "|" + ((ship.parkedBody && ship.parkedBody.name) || "") +
+        // Engaging the pumps or opening a harvest flyby changes which actions
+        // the panel may offer, so both belong in the key that refreshes it.
+        "|" + (ship.isRefueling ? 1 : 0) + "|" + (ship.harvestRun ? 1 : 0);
       if (statusKey !== this._lastShipStatus) {
         this._lastShipStatus = statusKey;
         this._refreshSelection();
@@ -3979,6 +4056,16 @@
       // only closes it once the encounter has actually ended.
       if (ov && ov.isAnomalyOpen && ov.isAnomalyOpen()) {
         const view = GS.Anomaly ? GS.Anomaly.view() : null;
+        // The die changes hands on the shoulder buttons (or Tab), the same
+        // companion-cycling gesture the map presenter honours.
+        if (Input.isTriggered("pageup") || Input.isTriggered("pagedown") || Input.isTriggered("tab")) {
+          if (GS.Anomaly && GS.Anomaly.cycleQuester && view && !view.done) {
+            GS.Anomaly.cycleQuester(Input.isTriggered("pageup") ? -1 : 1);
+            if (window.SoundManager) SoundManager.playCursor();
+            ov.renderAnomaly(GS.Anomaly.view());
+          }
+          return;
+        }
         if (Input.isTriggered("cancel")) {
           if (!view || view.done) this._closeAnomaly();
           return;

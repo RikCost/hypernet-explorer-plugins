@@ -2135,13 +2135,19 @@
                 if (!HD) return [];
                 const s = HD.specs();
                 const f = HD.format;
+                const rig = HD.summary ? HD.summary() : null;
                 return [
                     [T('HypernetOS.biosCase'), f.caseName(HD.caseDef())],
                     [T('HypernetOS.biosProcessor'), f.mhz(s.mhz)],
                     [T('HypernetOS.biosMemory'), f.ram(s.ram)],
+                    // The adapter line reads the same way the desktop's does,
+                    // so a deck running on the processor's own video says so
+                    // here rather than reporting nothing at all.
+                    [T('HypernetOS.biosGraphics'), rig ? rig.graphics : f.mb(s.vram)],
                     [T('HypernetOS.biosStorage'), f.store(s.mb)],
                     [T('HypernetOS.biosCell'), f.mah(s.mah)],
                     [T('HypernetOS.biosDraw'), f.watt(s.draw) + ' / ' + f.watt(s.supply)],
+                    [T('HypernetOS.biosEndurance'), rig ? rig.endurance : ''],
                     [T('HypernetOS.biosBoard'), s.used + ' / ' + s.cells]
                 ];
             };

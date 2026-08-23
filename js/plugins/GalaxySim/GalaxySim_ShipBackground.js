@@ -125,6 +125,51 @@
   }
 
   // ==========================================================================
+  // Which body the windows actually look out on
+  // ==========================================================================
+  // The ship can be parked at any star of an N-ary system, at a black hole or
+  // at an exotic remnant, and each of those has its own 3D model. Resolve the
+  // exact record so the backdrop shows THAT object rather than the system's
+  // nominal primary.
+  function shipStarRecord(dm, ship) {
+    const parked = ship.parkedBody;
+    if (parked && parked.name && dm.getStarInSystem) {
+      const rec = dm.getStarInSystem(parked.system || ship.currentSystem, parked.name);
+      if (rec) return rec;
+    }
+    return dm.getSystem(ship.currentSystem);
+  }
+
+  function isBlackHoleRecord(rec) {
+    if (!rec) return false;
+    return !!rec.blackHoleType || rec.type === "BLACK_HOLE" ||
+      rec.type === "SUPERMASSIVE_BLACK_HOLE";
+  }
+
+  // True for anything whose model animates in its own right (a spinning
+  // accretion disk, a pulsar's beams, a flaring magnetar). Those refresh far
+  // more often than the 2 Hz a plain star's slow drift is happy with.
+  function isLiveModel(rec) {
+    if (isBlackHoleRecord(rec)) return true;
+    const Cosmos = window.GalaxySim && window.GalaxySim.Scene3DCosmos;
+    return !!(Cosmos && Cosmos.isExoticStarType && rec && Cosmos.isExoticStarType(rec.type));
+  }
+
+  // On-screen radius of the BODY itself. An ordinary star is drawn at the
+  // window's usual size; anything whose model reaches far past its own
+  // surface (a hole's accretion disk runs out to four horizon radii, a
+  // Gargantua's to nine) is sized down so the whole object fits the frame -
+  // and so the offscreen render is not blown up past its own resolution.
+  const BODY_R = 0.22;      // plain star, as a fraction of the screen height
+  const BODY_FRAME = 0.82;  // how much of the screen the whole model may fill
+  function bodyScreenRadius(rec, h) {
+    const renderer = window.GalaxySim && window.GalaxySim.Renderer3D;
+    const half = renderer && renderer.systemBodyHalf ? renderer.systemBodyHalf(rec) : null;
+    if (!half) return h * (isBlackHoleRecord(rec) ? 0.09 : BODY_R);
+    return Math.min(h * BODY_R, (h * BODY_FRAME) / (2 * half));
+  }
+
+  // ==========================================================================
   // Spriteset_Map integration
   // ==========================================================================
   const _createParallax = Spriteset_Map.prototype.createParallax;
@@ -169,6 +214,20 @@
     // engaged from inside (the Refuel plugin command) doesn't stall the moment
     // the star map is closed.
     if (ship.isRefueling && typeof dm.tickRefuel === "function") dm.tickRefuel(1 / 60);
+    // The same goes for an open Schrodingerite flyby.
+    if (ship.harvestRun && typeof dm.tickSchrodingeriteHarvest === "function") {
+      dm.tickSchrodingeriteHarvest(1 / 60);
+    }
+
+    // How far the ship has drawn in toward the body it is drinking from: the
+    // star map flies the hull closer, and from inside the ship that reads as
+    // the body swelling in the window. Eased over the same 8 seconds.
+    const drawing = !ship.isMoving && (ship.isRefueling || !!ship.harvestRun);
+    const step = (1 / 60) / 8;
+    this._shipBgApproachRaw = Math.max(0, Math.min(1,
+      (this._shipBgApproachRaw || 0) + (drawing ? step : -step)));
+    const ar = this._shipBgApproachRaw;
+    this._shipBgApproach = ar * ar * (3 - 2 * ar);
 
     const dt = 1 / 60;
     this._shipBgTime += dt;
@@ -183,7 +242,10 @@
     // and the baseTexture GPU upload to a third. Always repaint immediately
     // when the depicted state changes so transitions never lag.
     const stateKey = (moving ? "M" : "P") + "|" +
-      (ship.currentPlanet || "") + "|" + (ship.currentSystem || "");
+      (ship.currentPlanet || "") + "|" + (ship.currentSystem || "") + "|" +
+      // Parking at a companion star, a hole or a remnant changes which model
+      // the window shows, so it belongs in the key that forces a repaint.
+      ((ship.parkedBody && ship.parkedBody.name) || "");
     const stateChanged = stateKey !== this._shipBgStateKey;
     if (stateChanged) {
       this._shipBgStateKey = stateKey;
@@ -272,13 +334,22 @@
     }
     const frame = this._shipBgFrame || 0;
     const last = this._shipBgBodyRenderedFrame == null ? -1e9 : this._shipBgBodyRenderedFrame;
-    if (frame - last >= 30) {
+    // A model that animates in its own right (an accretion disk, a pulsar's
+    // beams) is re-rendered at 10 Hz; a slowly drifting star or planet keeps
+    // the cheap 2 Hz refresh. So does an approach, where the body swells.
+    if (frame - last >= this._shipBgBodyInterval()) {
       this._shipBgBodyRenderedFrame = frame;
       const cctx = cache.getContext("2d");
       cctx.clearRect(0, 0, w, h);
       this.drawShipBody(cctx, w, h, dm, ship, time);
     }
     ctx.drawImage(cache, 0, 0);
+  };
+
+  // How many frames a cached body render stays good for (see above).
+  Spriteset_Map.prototype._shipBgBodyInterval = function () {
+    if ((this._shipBgApproachRaw || 0) > 0 && (this._shipBgApproachRaw || 0) < 1) return 6;
+    return this._shipBgLiveModel ? 6 : 30;
   };
 
   // Renders the current celestial body (planet or star) into the given context
@@ -318,14 +389,22 @@
       }
     }
 
-    // Not orbiting a planet -> show the current system's star.
-    const starR = h * 0.22;
+    // Not orbiting a planet -> show the body the ship is parked at (the
+    // system's own primary when it is parked at nothing in particular). A
+    // black hole, a neutron star or any other exotic object is drawn with its
+    // own model, not as a generic glowing sphere.
+    const rec = shipStarRecord(dm, ship) || system;
+    this._shipBgLiveModel = isLiveModel(rec);
+    // Drawing fuel pulls the ship in, so the body swells in the window.
+    const starR = bodyScreenRadius(rec, h) * (1 + 0.45 * (this._shipBgApproach || 0));
     if (has3D) {
       const starTime = time + (this._shipBgSpinAngle || 0) / STAR_SPIN_RATE;
-      const ok = renderer.renderStar(ctx, bodyX, bodyY, starR, system, starTime);
-      if (!ok) this.drawFallbackBody(ctx, bodyX, bodyY, starR, system.color || "#ffd27f", true);
+      const ok = renderer.renderSystemBody
+        ? renderer.renderSystemBody(ctx, bodyX, bodyY, starR, rec, starTime)
+        : renderer.renderStar(ctx, bodyX, bodyY, starR, rec, starTime);
+      if (!ok) this.drawFallbackBody(ctx, bodyX, bodyY, starR, rec.color || "#ffd27f", true);
     } else {
-      this.drawFallbackBody(ctx, bodyX, bodyY, starR, system.color || "#ffd27f", true);
+      this.drawFallbackBody(ctx, bodyX, bodyY, starR, rec.color || "#ffd27f", true);
     }
   };
 
@@ -401,6 +480,29 @@
     return { total, remaining: Math.max(0, Math.ceil(total - elapsed)) };
   }
 
+  function clockText(seconds) {
+    const s = Math.max(0, Math.ceil(seconds || 0));
+    return String(Math.floor(s / 60)).padStart(2, "0") + ":" +
+      String(s % 60).padStart(2, "0");
+  }
+
+  // The refuel / harvest countdown, written into the very same window that
+  // counts an arrival down. Returns null when nothing is being drawn.
+  function pumpTimerHtml(dm, ship) {
+    const source = (ship.parkedBody && ship.parkedBody.name) || ship.currentSystem || "";
+    if (ship.harvestRun) {
+      const left = dm.schrodingeriteHarvestRemaining ? dm.schrodingeriteHarvestRemaining() : 0;
+      return `<div class="travel-timer-label">${T('Galaxy.travel.harvesting')}` +
+        `${source ? " · " + source : ""}:</div>` +
+        `<div class="travel-timer-time">${clockText(left)}</div>`;
+    }
+    if (!ship.isRefueling) return null;
+    const left = dm.refuelEtaSeconds ? dm.refuelEtaSeconds() : 0;
+    return `<div class="travel-timer-label">${T('Galaxy.travel.refuelling')}` +
+      `${source ? " · " + source : ""}:</div>` +
+      `<div class="travel-timer-time">${clockText(left)}</div>`;
+  }
+
   function updateShipTravelTimer() {
     if (!$gameMap || !isSpaceBiomeMap()) {
       if (_timerHtml !== null) removeShipTimer();
@@ -424,6 +526,15 @@
     if (trip) _timerTrip = trip;
 
     if (!ship.isMoving) {
+      // Parked with the pumps running: the arrival window becomes the refuel
+      // window, counting the fill down exactly the way it counts a trip down.
+      const pump = pumpTimerHtml(dm, ship);
+      if (pump) {
+        _timerTrip = null;
+        _arrivalUntil = 0;
+        setShipTimerHtml(pump);
+        return;
+      }
       // Trip over (arrived, or stopped by the player / out of Hyperflux).
       if (_timerTrip && !_arrivalUntil && !ship.stoppedMidTravel) {
         _arrivalUntil = Graphics.frameCount + ARRIVAL_HOLD;

@@ -640,46 +640,27 @@
     Scene_ArenaStage.prototype.create = function () {
         Scene_Base.prototype.create.call(this);
         const bgColor = themeVar('--bg-panel', '#120a08');
-        const textColor = themeVar('--text-primary-hover', '#d4a64e');
 
         this._backgroundSprite = new Sprite();
         this._backgroundSprite.bitmap = new Bitmap(Graphics.width, Graphics.height);
         this._backgroundSprite.bitmap.fillAll(bgColor);
         this.addChild(this._backgroundSprite);
-
-        const sprite = new Sprite();
-        sprite.bitmap = new Bitmap(Graphics.width, 120);
-        sprite.bitmap.fontFace = 'Lora';
-        sprite.bitmap.fontSize = 44;
-        sprite.bitmap.textColor = textColor;
-        sprite.bitmap.drawText(
-            T('Arena.theArenaAwaitsTheNext'),
-            0, 0, Graphics.width, 120, 'center'
-        );
-        sprite.y = Math.floor((Graphics.height - 120) / 2);
-        this.addChild(sprite);
     };
 
     Scene_ArenaStage.prototype.start = function () {
         Scene_Base.prototype.start.call(this);
-        this.startFadeIn(this.fadeSpeed(), false);
-        this._watchdogFrames = 0;
         const starter = ABH.consumeArenaStageStarter();
-        if (starter) starter();
+        if (starter) {
+            starter();
+        } else if (ABH.resumeStrandedSession) {
+            ABH.resumeStrandedSession();
+        }
     };
 
-    // Safety net: the normal handoff between bouts is a short setTimeout queued
-    // by processGauntletVictory/processBiomeTrialVictory (ArenaBattleHandler.js),
-    // guarded on the scene still being "active" at the moment it fires. A message
-    // popup (e.g. the bracket-advance congratulations) can hold Scene_Battle busy
-    // long enough to desync that guard, which drops the queued bout for good and
-    // strands the player on this screen forever. If nothing has moved this scene
-    // along after a couple of seconds, resume the run directly.
     Scene_ArenaStage.prototype.update = function () {
         Scene_Base.prototype.update.call(this);
         if (SceneManager._scene !== this || SceneManager.isSceneChanging()) return;
-        this._watchdogFrames = (this._watchdogFrames || 0) + 1;
-        if (this._watchdogFrames === 150 && ABH.resumeStrandedSession) {
+        if (ABH.resumeStrandedSession) {
             ABH.resumeStrandedSession();
         }
     };

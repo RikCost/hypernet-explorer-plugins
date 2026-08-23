@@ -251,10 +251,11 @@
     weapon.reloadSound = null;
     weapon.weight = 300;
     weapon.segments = null;
-    // A whip and a flail are the two shapes that hang off the grip rather than
-    // extending it, which changes the model, its rest pose and its swing.
+    // The three shapes that hang or fold off the grip rather than extending
+    // it, which changes the model, its rest pose and the blow it can throw.
     weapon.isWhip = false;
     weapon.isFlail = false;
+    weapon.isNunchaku = false;
     weapon.model3d = null;
     weapon.model3dScale = 800.0;
     weapon.model3dScaleAuthored = false;
@@ -268,6 +269,10 @@
     if (note.match(/<Flail>/i)) {
       weapon.isFlail = true;
       debugLog(`Weapon ${weapon.name}: Flail physics enabled`);
+    }
+    if (note.match(/<Nunchaku>/i)) {
+      weapon.isNunchaku = true;
+      debugLog(`Weapon ${weapon.name}: Nunchaku motion enabled`);
     }
     // Sound system tags
     if (note.match(/<NoMultiAttackSound>/i)) {
@@ -691,10 +696,13 @@
       // Map-battle mode runs the battle log over Spriteset_Map, which has no
       // weapon sprites, so only call it where the method actually exists.
       const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+      // A critical hit is a different blow, not the same one with a bigger
+      // number over it, so the swing is told which one it is.
       if (spriteset && typeof spriteset.playWeaponAnimation === "function") {
         spriteset.playWeaponAnimation(
           this._skillAnimations,
-          weaponIndex
+          weaponIndex,
+          { crit: !!target.result().critical }
         );
       }
 
@@ -759,7 +767,9 @@
 
       const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
       if (spriteset && typeof spriteset.playWeaponAnimation === "function") {
-        spriteset.playWeaponAnimation(this._skillAnimations, weaponIndex);
+        spriteset.playWeaponAnimation(this._skillAnimations, weaponIndex, {
+          crit: !!target.result().critical
+        });
       }
 
       // NEW: Play sound for the correct weapon based on weaponIndex
@@ -1168,12 +1178,17 @@
       return null;
     }
     if (!held || held._weapon !== weapon) {
+      const isLeft = hand === 'left';
+      // The incoming model is built BEFORE the outgoing one is let go. When
+      // this is the only weapon on screen, terminating first drops the last
+      // reference to the shared overlay, and a swap must never leave the
+      // layer holding nothing.
+      const next = new Sprite_3DWeapon(
+        weapon, getScaledWeaponX(isLeft), getScaledWeaponY());
       // terminate() runs disposeWeaponObject3D; a bare scene.remove would leak
       // the model's GPU buffers on every swap.
       if (held) held.terminate();
-      const isLeft = hand === 'left';
-      this._3dWeaponSprites[hand] = new Sprite_3DWeapon(
-        weapon, getScaledWeaponX(isLeft), getScaledWeaponY());
+      this._3dWeaponSprites[hand] = next;
     }
     const sprite = this._3dWeaponSprites[hand];
     if (sprite._model && !sprite._exiting) {
@@ -1239,13 +1254,31 @@
   };
 
   /**
+   * The next entry of a weapon's <Movement:> list. A weapon that authored six
+   * movements meant all six of them, and taking only the first one is what had
+   * every flail in the game playing the same swing for a whole fight. The
+   * cursor lives on the weapon data object, which is rebuilt from the note tags
+   * every time the database loads, so there is nothing to save.
+   */
+  function nextWeaponMovement(weapon) {
+    const anims = weapon && weapon.weaponAnimations;
+    if (!anims || anims.length === 0) return null;
+    if (anims.length === 1) return anims[0];
+    const next = ((weapon._movementCursor || 0) + 1) % anims.length;
+    weapon._movementCursor = next;
+    return anims[next];
+  }
+
+  /**
    * Swing whichever hand is acting. The clip is the skill's own movement if it
-   * declares one, otherwise the weapon's first <Movement:> entry, otherwise the
-   * motion its shape implies (WeaponSystemProcedural.motionFor).
+   * declares one, otherwise the next of the weapon's <Movement:> entries,
+   * otherwise the motion its shape implies (WeaponSystemProcedural.motionFor).
+   * @param {object} [opts] - what kind of blow this is, {crit:boolean}.
    */
   Spriteset_Battle.prototype.playWeaponAnimation = function (
     animationOverride = null,
-    weaponIndex = 0
+    weaponIndex = 0,
+    opts = null
   ) {
     if (!window.Sprite_3DWeapon) return;
     if (this._weaponModelsExiting) return;
@@ -1268,8 +1301,8 @@
     // defaulting to Swing here is what had untagged firearms and slings
     // clubbing the enemy with the stock. WeaponSystemProcedural.motionForWeapon
     // answers it from the weapon's own type and length.
-    const animName = (weapon.weaponAnimations && weapon.weaponAnimations[0]) || null;
-    sprite.playAnimation(animationOverride || animName);
+    const animName = nextWeaponMovement(weapon);
+    sprite.playAnimation(animationOverride || animName, opts);
   };
 
   const _Spriteset_Battle_update = Spriteset_Battle.prototype.update;

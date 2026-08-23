@@ -259,16 +259,17 @@
         const poolCache = { all: null, stable: null, alienAll: null };
 
         // How often a rolled face belongs to somebody who is not from here. An
-        // alien walking a town street is a rare sight; a travel interior is where
-        // they are actually met, so the whole PublicTransport map group (the
-        // trains, the bus, the metro, the starship cabin) deals them far more
-        // freely; and a hand-authored landing site on another world is their
-        // ground, not ours, so there a human face is the rarity. All three are
-        // shares of one draw, never a pool an alien sits in.
+        // alien is a rare sight anywhere the ground is Earth's, in EVERY
+        // population mode: a goblin world and a monster world have their own
+        // off-worlders too, so the pool is never narrowed by the mode, only the
+        // share is. Where the sky IS the place (a <Biome: Space> map: an orbital
+        // station, a ship's deck) one face in five is theirs, and on a
+        // hand-authored landing site on another world the human face is the
+        // rarity. All three are shares of one draw, never a pool an alien sits
+        // in. A travel interior is deliberately NOT one of them: a bus is a bus.
         const ALIEN_SHARE = 0.01;
-        const ALIEN_SHARE_TRANSPORT = 0.25;
+        const ALIEN_SHARE_SPACE = 0.20;
         const ALIEN_SHARE_OFFWORLD = 0.90;
-        const TRANSPORT_GROUP = "PublicTransport"; // i18n-ignore: MapGroups.json key
 
         // The share of a zombie world's crowd that is one of the dead walking
         // (WorldManager.populationMode "zombie"). The `zombie` sheets of
@@ -281,18 +282,20 @@
 
         // Varlenia, and the people who are from there. A sheet flagged
         // `varlenian` in NPCs.json is a Varlenian face, and a Varlenian face is
-        // only dealt on Varlenian ground: an authored map in the <MapGroup:
-        // Varlenia> group, or a procedural square standing in the country
-        // Varlenia (js/db/WorldGen/Countries.json). Everywhere else those
-        // sheets are simply not in the pool, so nobody is ever dealt one by
-        // accident, in a town on the other side of the map or in a dream.
-        //
-        // The country is matched by NAME rather than by id: Varlenia's id in
-        // Countries.json is the region id the world map would paint for it, and
-        // it can be changed there (to put Varlenia on real painted ground)
-        // without touching a line of this.
+        // dealt on ONE ground only: a map whose own map group is Varlenia.
+        // Nothing else counts, and that is the whole rule:
+        //   - a procedural square standing in the country Varlenia does not,
+        //     even though the world map paints Varlenia there. A square is
+        //     generated the same way everywhere and reuses one map id, so
+        //     letting the country answer put Varlenian faces in every dream,
+        //     cave and roadside that square ever generated.
+        //   - the Omega Tower does not, whatever floor it is on.
+        //   - a shared map pool does not: a vehicle interior, a train carriage,
+        //     any template every group borrows. The map is not in the group, so
+        //     the sheets are not in its pool.
+        // Everywhere else those sheets are simply not in the pool, so nobody is
+        // ever dealt one by accident.
         const VARLENIA_GROUP = "Varlenia";   // i18n-ignore: MapGroups.json key
-        const VARLENIA_COUNTRY = "varlenia"; // i18n-ignore: Countries.json name, lowercased
         const PROC_MAP_ID = 636;             // the one map id every procedural square reuses
 
         function db() {
@@ -664,6 +667,11 @@
                 const mode = (options && options.populationMode)
                     ? options.populationMode
                     : this.populationMode();
+                // A monster world has no people in it at all. Nothing that is
+                // neither `creature` nor `animal` is ever dealt there, so the
+                // people pool is empty by definition and the whole crowd comes
+                // off the two creature halves instead (see pickNpcKey).
+                if (mode === "monster") return [];
                 const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
                 const varlenia = (options && options.varlenia !== undefined)
                     ? !!options.varlenia
@@ -726,15 +734,14 @@
             // six alien sheets sit outside the original folder, and gating them
             // on it would leave two of the three Zeta castes unmeetable in
             // almost every world.
-            // The population answer DOES apply here, unlike the beta one: a
-            // goblin world is goblins and a monster world has nothing that
-            // reads as a person in it, and all six alien sheets are Humanoid,
-            // so both modes empty this pool and pickNpcKey deals from the
-            // ordinary one alone.
+            // The population answer does not apply either: an off-worlder is
+            // not one of this world's people, so no narrowing of the people
+            // pool has anything to say about them. A goblin world, a monster
+            // world and a zombie world all still get their rare alien, on the
+            // same share of the same draw as anywhere else.
             alienKeys() {
-                const mode = this.populationMode();
                 const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
-                const slot = "alienAll:" + mode + ":" + magic;
+                const slot = "alienAll:" + magic;
                 if (!poolCache[slot]) {
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
@@ -742,8 +749,7 @@
                         if (!e || e.npc !== true || e.aliens !== true) return false;
                         // Every alien sheet is mundane by decree, so an unbound
                         // world has none of them and a severed one keeps all six.
-                        if (!this.allowedInMagic(k, e)) return false;
-                        return this.allowedInPopulation(k, e, mode);
+                        return this.allowedInMagic(k, e);
                     });
                 }
                 return poolCache[slot];
@@ -770,70 +776,47 @@
             // landing of somebody's staircase. The `creature` half (Mimic,
             // Ghost, Zombie...) is unaffected, those are as much at home
             // behind a door as anywhere else.
+            //
+            // options.half asks for one half alone, "creature" or "animal",
+            // which is how a monster world deals its even split (pickNpcKey).
+            // Left out, the answer is both halves as one pool.
             creatureKeys(options) {
                 const exterior = (options && options.exterior !== undefined) ? !!options.exterior : true;
+                const half = (options && options.half) || "both";
                 const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
-                const slot = "creatureAll:" + magic + ":" + (exterior ? "ext" : "int");
+                const slot = "creatureAll:" + magic + ":" + (exterior ? "ext" : "int") + ":" + half;
                 if (!poolCache[slot]) {
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
                         const e = data[k];
                         if (!e || e.npc !== true) return false;
-                        if (e.creature !== true && !(e.animal === true && exterior)) return false;
-                        return this.allowedInMagic(k, e);
+                        if (half !== "animal" && e.creature === true) return this.allowedInMagic(k, e);
+                        if (half !== "creature" && e.animal === true && exterior) return this.allowedInMagic(k, e);
+                        return false;
                     });
                 }
                 return poolCache[slot];
             },
 
-            // Is this map one of the travel interiors? The PublicTransport map
-            // group is the answer, read from MapGroups.json rather than listed
-            // here, so a wagon added to the group is covered without a change.
-            isTransportMap(mapId) {
-                const id = Number(mapId);
-                if (!Number.isFinite(id)) return false;
-                const groups = (window.WorldGen && window.WorldGen.MapGroups) || null;
-                const maps = groups && groups[TRANSPORT_GROUP] && groups[TRANSPORT_GROUP].maps;
-                if (Array.isArray(maps)) return maps.indexOf(id) >= 0;
-                return !!(window.NPCSystem && window.NPCSystem.findMapGroupByMap &&
-                    window.NPCSystem.findMapGroupByMap(id) === TRANSPORT_GROUP);
-            },
-
-            // The Countries.json entry the party is standing in, or null. The
-            // weather system owns the answer (it sets it off the world map's
-            // painted regions and off a map's own <Country: x> tag), with
-            // Variable 86 as the id it also writes it to.
-            countryHere() {
-                const w = window.$gameWeather;
-                if (w && w.currentCountry) return w.currentCountry;
-                const list = (window.WorldGen && window.WorldGen.Countries) || null;
-                if (!Array.isArray(list)) return null;
-                const id = window.$gameVariables ? $gameVariables.value(86) : 0;
-                return list.find(c => c && c.id === id) || null;
-            },
-
             // Is this Varlenian ground, i.e. may a Varlenian face be dealt here?
-            // Either the map belongs to the Varlenia map group, or it is a
-            // procedural square and the country under it is Varlenia. Read
-            // fresh every time rather than cached on the map: the party can
-            // walk out of the country without the map id changing (every
-            // procedural square is map 636).
+            // One answer only: the map's own group is Varlenia. A procedural
+            // square is never Varlenian ground however the world map is painted
+            // (every square shares map id 636, so the country answer put
+            // Varlenian faces in every cave and dream that id ever generated),
+            // the Omega Tower is not, and neither is any map borrowed by every
+            // group at once, a vehicle interior or a train carriage among them:
+            // a shared template belongs to no group, so it is never this one.
             isVarlenianPlace(mapId) {
                 const id = (mapId !== undefined && mapId !== null)
                     ? Number(mapId)
                     : (window.$gameMap && $gameMap.mapId ? $gameMap.mapId() : NaN);
-                if (!Number.isFinite(id)) return false;
+                if (!Number.isFinite(id) || id === PROC_MAP_ID) return false;
 
                 const groups = (window.WorldGen && window.WorldGen.MapGroups) || null;
                 const maps = groups && groups[VARLENIA_GROUP] && groups[VARLENIA_GROUP].maps;
                 if (Array.isArray(maps) && maps.indexOf(id) >= 0) return true;
-                if (window.NPCSystem && window.NPCSystem.findMapGroupByMap &&
-                    window.NPCSystem.findMapGroupByMap(id) === VARLENIA_GROUP) return true;
-
-                if (id !== PROC_MAP_ID) return false;
-                const country = this.countryHere();
-                return !!country &&
-                    String(country.country || "").toLowerCase() === VARLENIA_COUNTRY;
+                return !!(window.NPCSystem && window.NPCSystem.findMapGroupByMap &&
+                    window.NPCSystem.findMapGroupByMap(id) === VARLENIA_GROUP);
             },
 
             // A hand-authored landing site on a world that is not Earth. Asked
@@ -848,13 +831,25 @@
                 return !Number.isFinite(id) || site.mapId === id;
             },
 
+            // Is the map the party is standing on out in the sky itself? The
+            // <Biome: Space> note tag, the same one the ship background reads
+            // (GalaxySim_ShipBackground.isSpaceBiomeMap). Only the LOADED map
+            // can answer it, since the tag lives in the map file.
+            isSpaceBiomeMap(mapId) {
+                const id = Number(mapId);
+                const here = (window.$gameMap && $gameMap.mapId) ? $gameMap.mapId() : NaN;
+                if (Number.isFinite(id) && Number.isFinite(here) && id !== here) return false;
+                return !!(window.$dataMap && $dataMap.note &&
+                    /<Biome:\s*Space\s*>/i.test($dataMap.note));
+            },
+
             // The share of rolled faces that are alien where this pick is made.
             alienShare(options) {
                 const mapId = (options && options.mapId !== undefined)
                     ? options.mapId
                     : (window.$gameMap && $gameMap.mapId ? $gameMap.mapId() : null);
                 if (this.isOffworldSite(mapId)) return ALIEN_SHARE_OFFWORLD;
-                return this.isTransportMap(mapId) ? ALIEN_SHARE_TRANSPORT : ALIEN_SHARE;
+                return this.isSpaceBiomeMap(mapId) ? ALIEN_SHARE_SPACE : ALIEN_SHARE;
             },
 
             // Deal one sheet from a single draw r in [0,1). The draw is read as
@@ -865,15 +860,32 @@
             // options: { mapId, filter }.
             pickNpcKey(r, options) {
                 const opts = options || {};
+                const mode = opts.populationMode || this.populationMode();
                 let pool = this.npcKeys(opts);
                 let aliens = this.alienKeys();
-                let zombies = (opts.populationMode || this.populationMode()) === "zombie"
-                    ? this.zombieKeys() : [];
+                let zombies = mode === "zombie" ? this.zombieKeys() : [];
+                // A monster world's crowd is the two creature halves and
+                // nothing else, dealt evenly: half of what walks about is a
+                // `creature` sheet and half is an `animal` one, rather than the
+                // flat draw over one pool that would make a world of stray dogs
+                // out of the 106 animal sheets against 32 creature ones.
+                let beasts = null;
+                if (mode === "monster") {
+                    beasts = {
+                        creature: this.creatureKeys({ half: "creature", exterior: opts.exterior }),
+                        animal: this.creatureKeys({ half: "animal", exterior: opts.exterior })
+                    };
+                }
                 if (typeof opts.filter === "function") {
                     pool = pool.filter(opts.filter);
                     aliens = aliens.filter(opts.filter);
                     zombies = zombies.filter(opts.filter);
+                    if (beasts) {
+                        beasts.creature = beasts.creature.filter(opts.filter);
+                        beasts.animal = beasts.animal.filter(opts.filter);
+                    }
                 }
+                if (beasts) pool = beasts.creature.concat(beasts.animal);
                 if (!pool.length && !aliens.length && !zombies.length) return null;
                 let draw = (typeof r === "number" && r >= 0 && r < 1) ? r : Math.random();
                 // The dead come off the head of the draw in a zombie world, the
@@ -893,6 +905,14 @@
                     return aliens[Math.min(aliens.length - 1, Math.floor((draw / share) * aliens.length))];
                 }
                 const rest = (draw - share) / (1 - share);
+                // The even split, read off the same remaining draw: the first
+                // half of it is a creature, the second an animal, and either
+                // half standing empty leaves the whole of it to the other.
+                if (beasts && beasts.creature.length && beasts.animal.length) {
+                    const list = rest < 0.5 ? beasts.creature : beasts.animal;
+                    const inner = rest < 0.5 ? rest * 2 : (rest - 0.5) * 2;
+                    return list[Math.min(list.length - 1, Math.floor(inner * list.length))];
+                }
                 return pool[Math.min(pool.length - 1, Math.floor(rest * pool.length))];
             },
 

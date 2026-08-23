@@ -400,6 +400,38 @@
   };
 
   // ============================================================================
+  // The shift check
+  // ----------------------------------------------------------------------------
+  // A shift is settled by a d20 thrown where the player can watch it. Everything
+  // the offer already weighed - the job's requirements against the worker's
+  // stats, the trade they have trained, how they turned up dressed - is folded
+  // into a single modifier against one fixed shift difficulty, so the odds on
+  // the die are exactly the odds the contract quoted.
+  // ============================================================================
+
+  const WORK_SHIFT_DC = 12;
+
+  // Chosen so that P(d20 + modifier >= DC) equals the quoted success chance.
+  window.WorkSystem.workCheckModifier = function (actor, job) {
+    const chance = this.calculateSuccessChance(actor, job);
+    const raw = Math.round(chance * 20 - (21 - WORK_SHIFT_DC));
+    return Math.max(-9, Math.min(10, raw));
+  };
+
+  // What the worker is being judged on: the job's steepest requirement, which
+  // is the stat the shift really turns on.
+  window.WorkSystem.workCheckStat = function (job) {
+    const reqs = (job && job.requirements) || {};
+    let best = null;
+    let bestValue = -Infinity;
+    for (const [stat, required] of Object.entries(reqs)) {
+      if (required > bestValue) { bestValue = required; best = stat; }
+    }
+    if (!best) return '';
+    return _si18n(statKeyMapping[best] || best);
+  };
+
+  // ============================================================================
   // Shift events
   // ----------------------------------------------------------------------------
   // Something out of the ordinary happens on roughly a third of shifts. A shift
@@ -499,27 +531,57 @@
   // ============================================================================
 
   class WorkManager {
-    static executeWork(actor, job, options) {
-      const successChance = window.WorkSystem.calculateSuccessChance(actor, job);
-      const roll = Math.random();
+    // How a thrown die reads on the shop floor: a natural 1 is the day
+    // something goes badly wrong, anything under the difficulty is a shift
+    // botched, scraping past it is a shift half done, and clearing it by five
+    // or more is a shift done properly.
+    static outcomeFromRoll(roll, modifier) {
+      if (roll === 1) return 'disaster';
+      if (roll === 20) return 'success';
+      const margin = roll + modifier - WORK_SHIFT_DC;
+      if (margin < 0) return 'failure';
+      return margin >= 5 ? 'success' : 'partial';
+    }
 
-      let outcomeType;
-      if (roll < 0.05) {
-        // 5% disaster chance
-        outcomeType = 'disaster';
-      } else if (roll < successChance) {
-        // Success
-        if (roll > successChance * 0.8) {
-          outcomeType = 'success';
-        } else {
-          outcomeType = 'partial';
-        }
-      } else {
-        // Failure
-        outcomeType = 'failure';
+    static executeWork(actor, job, options) {
+      const modifier = window.WorkSystem.workCheckModifier(actor, job);
+      const opts = options || {};
+      const roll = Number.isFinite(opts.forcedRoll)
+        ? opts.forcedRoll : Math.floor(Math.random() * 20) + 1;
+
+      return this.processOutcome(actor, job, this.outcomeFromRoll(roll, modifier), opts);
+    }
+
+    // The same shift, with the die thrown on screen. The result is handed back
+    // through the callback once the throw has played out; with no 3D layer
+    // present (a headless run, three.js missing) the shift settles at once, so
+    // callers get their result the same way either way.
+    static resolveWork(actor, job, options, done) {
+      const opts = options || {};
+      const dice = window.Dice3D;
+      if (!dice || typeof dice.rollD20 !== 'function') {
+        done(this.executeWork(actor, job, opts));
+        return;
       }
 
-      return this.processOutcome(actor, job, outcomeType, options);
+      const modifier = window.WorkSystem.workCheckModifier(actor, job);
+      const throwing = dice.rollD20({
+        dc: WORK_SHIFT_DC,
+        modifier: modifier,
+        statName: window.WorkSystem.workCheckStat(job),
+        actionName: T('WorkSystem.shiftCheck', { job: window.WorkSystem.jobName(job) }),
+        actor: actor,
+        force3D: true
+      });
+
+      const settle = (rolled) => {
+        const roll = (rolled && Number.isFinite(rolled.roll))
+          ? rolled.roll : Math.floor(Math.random() * 20) + 1;
+        done(this.processOutcome(actor, job, this.outcomeFromRoll(roll, modifier), opts));
+      };
+
+      if (throwing && typeof throwing.then === 'function') throwing.then(settle);
+      else settle(throwing);
     }
 
     // Pick the one thing worth telling about this shift, or nothing. A good
@@ -714,6 +776,10 @@
       }
     }
   }
+
+  // The shift check answers to the harness in test/test_workremote.js as well
+  // as to the map.
+  window.WorkSystem.WorkManager = WorkManager;
 
   // ============================================================================
   // Window_WorkJobList - Displays available jobs
@@ -1908,20 +1974,23 @@
 
     const actor = s.actor;
     const job = s.job;
-    const result = WorkManager.executeWork(actor, job, { remote: true });
-    WorkManager.applyWorkEffects(actor, job, result, { timeAlreadyPassed: true });
-
-    // The shift itself is over; the travel window drops with the fade-in.
-    this._workSequenceActive = false;
-
-    $gameScreen.startFadeIn(settings.workFadeDuration);
-    $gamePlayer.setMoveSpeed(4);
-
-    setTimeout(() => {
-      // Guard against a transfer swapping in a fresh Scene_Map mid-fade.
+    // The hours are spent; how they went is thrown for over the dark screen.
+    WorkManager.resolveWork(actor, job, { remote: true }, (result) => {
       if (SceneManager._scene !== this) return;
-      this.displayWorkResult(actor, job, result);
-    }, (settings.workFadeDuration / 60) * 1000);
+      WorkManager.applyWorkEffects(actor, job, result, { timeAlreadyPassed: true });
+
+      // The shift itself is over; the travel window drops with the fade-in.
+      this._workSequenceActive = false;
+
+      $gameScreen.startFadeIn(settings.workFadeDuration);
+      $gamePlayer.setMoveSpeed(4);
+
+      setTimeout(() => {
+        // Guard against a transfer swapping in a fresh Scene_Map mid-fade.
+        if (SceneManager._scene !== this) return;
+        this.displayWorkResult(actor, job, result);
+      }, (settings.workFadeDuration / 60) * 1000);
+    });
   };
 
   // The party is at the terminal for the whole shift: no walking off behind the
@@ -1964,27 +2033,29 @@
   };
 
   Scene_Map.prototype.executeWork = function (actor, job) {
-    // Execute work and get result
-    const result = WorkManager.executeWork(actor, job);
-
-    // Apply effects
-    WorkManager.applyWorkEffects(actor, job, result);
-
-    // The shift itself is over; the travel window drops with the fade-in.
-    this._workSequenceActive = false;
-
-    // Fade back in
-    $gameScreen.startFadeIn(settings.workFadeDuration);
-
-    // Re-enable player movement
-    $gamePlayer.setMoveSpeed(4);
-
-    // Display result messages
-    setTimeout(() => {
-      // Guard against a transfer swapping in a fresh Scene_Map mid-fade.
+    // Throw for the shift over the darkened screen, then settle it.
+    WorkManager.resolveWork(actor, job, {}, (result) => {
       if (SceneManager._scene !== this) return;
-      this.displayWorkResult(actor, job, result);
-    }, (settings.workFadeDuration / 60) * 1000);
+
+      // Apply effects
+      WorkManager.applyWorkEffects(actor, job, result);
+
+      // The shift itself is over; the travel window drops with the fade-in.
+      this._workSequenceActive = false;
+
+      // Fade back in
+      $gameScreen.startFadeIn(settings.workFadeDuration);
+
+      // Re-enable player movement
+      $gamePlayer.setMoveSpeed(4);
+
+      // Display result messages
+      setTimeout(() => {
+        // Guard against a transfer swapping in a fresh Scene_Map mid-fade.
+        if (SceneManager._scene !== this) return;
+        this.displayWorkResult(actor, job, result);
+      }, (settings.workFadeDuration / 60) * 1000);
+    });
   };
 
   Scene_Map.prototype.displayWorkResult = function (actor, job, result) {

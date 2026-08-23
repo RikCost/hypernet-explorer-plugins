@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Omega Tower, CSS Variable Override Theme
    Derived from vars.css with ASCII mode colors applied as defaults.
    Import this instead of vars.css to activate the terminal aesthetic globally
@@ -565,6 +565,303 @@
     background: var(--bg-gold-panel-92) !important;
     border-color: var(--border-focus-hover) !important;
     color: var(--accent-amber-glow) !important;
+}
+
+/* ==========================================================================
+   Character Creation, Unified Tabbed Layout (Omega Tower Terminal / Dark)
+   ========================================================================== */
+.cc-tabs-sidebar {
+    background: linear-gradient(180deg, #0d0d0d 0%, #050505 100%) !important;
+    border-right: 2px solid #5a4a2a !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.9) !important;
+}
+
+.cc-sidebar-header {
+    border-bottom: 1px solid #5a4a2a !important;
+}
+
+.cc-sidebar-title {
+    color: #ffcc66 !important;
+    text-shadow: 0 0 8px rgba(255, 204, 102, 0.4) !important;
+}
+
+.cc-mode-badge {
+    background: rgba(255, 204, 102, 0.12) !important;
+    border: 1px solid rgba(255, 204, 102, 0.45) !important;
+    color: #ffd700 !important;
+}
+
+.cc-type-toggle-group {
+    background: #000000 !important;
+    border: 1px solid #332200 !important;
+}
+
+.cc-type-toggle-btn {
+    color: #aaaaaa !important;
+}
+
+.cc-type-toggle-btn:hover {
+    background: rgba(255, 204, 102, 0.12) !important;
+    color: #ffcc66 !important;
+}
+
+.cc-type-toggle-btn.active {
+    background: linear-gradient(180deg, rgba(140, 98, 32, 0.45), rgba(80, 50, 10, 0.3)) !important;
+    border-color: #ffcc66 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 8px rgba(255, 204, 102, 0.3) !important;
+}
+
+.cc-tab-num {
+    background: rgba(0, 0, 0, 0.7) !important;
+    border: 1px solid #5a4a2a !important;
+    color: #ffcc66 !important;
+}
+
+.cc-step-tab.active .cc-tab-num {
+    background: #ffd700 !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+}
+
+.cc-party-selector {
+    background: #000000 !important;
+    border: 1px solid #332200 !important;
+}
+
+.cc-profile-box {
+    background: #000000 !important;
+    border: 1px solid #5a4a2a !important;
+}
+
+.cc-profile-avatar-wrap {
+    background: #111111 !important;
+    border: 1px solid #332200 !important;
+}
+
+.cc-profile-toggle-group {
+    background: #111111 !important;
+    border: 1px solid #332200 !important;
+}
+
+.cc-profile-toggle-btn {
+    color: #aaaaaa !important;
+}
+
+.cc-profile-toggle-btn:hover {
+    background: rgba(255, 204, 102, 0.12) !important;
+    color: #ffcc66 !important;
+}
+
+.cc-profile-toggle-btn.active {
+    background: linear-gradient(180deg, rgba(140, 98, 32, 0.45), rgba(80, 50, 10, 0.3)) !important;
+    border-color: #ffcc66 !important;
+    color: #ffffff !important;
+}
+
+.cc-profile-open-btn {
+    background: rgba(255, 204, 102, 0.1) !important;
+    border: 1px solid #ffcc66 !important;
+    color: #ffd700 !important;
+}
+
+.cc-profile-open-btn:hover {
+    background: rgba(255, 204, 102, 0.25) !important;
+    color: #ffffff !important;
+}
+
+.cc-party-tab {
+    color: #aaaaaa !important;
+}
+
+.cc-party-tab:hover {
+    background: rgba(255, 204, 102, 0.12) !important;
+    color: #ffcc66 !important;
+}
+
+.cc-party-tab.active {
+    background: linear-gradient(180deg, rgba(140, 98, 32, 0.45), rgba(80, 50, 10, 0.3)) !important;
+    border-color: #ffcc66 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(255, 204, 102, 0.3) !important;
+}
+
+.cc-party-add-btn {
+    background: #000000 !important;
+    border: 1px dashed #ffcc66 !important;
+    color: #ffd700 !important;
+}
+
+.cc-party-add-btn:hover {
+    background: rgba(255, 204, 102, 0.25) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(255, 204, 102, 0.4) !important;
+}
+
+.cc-member-remove-btn {
+    background: #d32f2f !important;
+    color: #ffffff !important;
+}
+
+.cc-member-remove-btn:hover {
+    background: #ff5252 !important;
+}
+
+.cc-step-tab {
+    background: rgba(20, 20, 20, 0.8) !important;
+    border: 1px solid rgba(90, 74, 42, 0.5) !important;
+    color: #dddddd !important;
+}
+
+.cc-step-tab:hover {
+    background: rgba(45, 38, 25, 0.9) !important;
+    border-color: #ffcc66 !important;
+    color: #ffffff !important;
+}
+
+.cc-step-tab.active {
+    background: linear-gradient(90deg, rgba(80, 60, 20, 0.85), rgba(35, 25, 12, 0.9)) !important;
+    border-color: #ffd700 !important;
+    color: #ffffff !important;
+    box-shadow: inset 3px 0 0 #ffd700, 0 0 14px rgba(255, 204, 102, 0.25) !important;
+}
+
+.cc-step-tab .cc-tab-subtitle {
+    color: #888888 !important;
+}
+
+.cc-step-tab.active .cc-tab-subtitle {
+    color: #ffcc66 !important;
+}
+
+.cc-tab-checkmark {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.cc-step-tab.completed .cc-tab-checkmark {
+    background: linear-gradient(135deg, #1b5e20, #0d3813) !important;
+    border-color: #4caf50 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.7) !important;
+}
+
+.cc-sidebar-footer {
+    border-top: 1px solid #332200 !important;
+}
+
+.cc-sidebar-loadout-box {
+    background: rgba(15, 12, 8, 0.85) !important;
+    border-color: rgba(255, 204, 102, 0.3) !important;
+}
+
+.cc-sidebar-loadout-header {
+    color: #ffcc66 !important;
+}
+
+.cc-sidebar-loadout-group.common {
+    background: rgba(255, 204, 102, 0.08) !important;
+    border-color: rgba(255, 204, 102, 0.3) !important;
+}
+
+.cc-spec-card {
+    background: rgba(20, 18, 14, 0.85) !important;
+    border-color: rgba(90, 74, 42, 0.5) !important;
+}
+
+.cc-spec-card:hover {
+    background: rgba(45, 38, 25, 0.95) !important;
+    border-color: #ffcc66 !important;
+}
+
+.cc-spec-card.selected {
+    background: linear-gradient(180deg, rgba(80, 60, 20, 0.9), rgba(40, 30, 15, 0.9)) !important;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 12px rgba(255, 204, 102, 0.35) !important;
+}
+
+.cc-bio-section {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.12) !important;
+}
+
+.cc-bio-section-title {
+    color: #ffcc66 !important;
+}
+
+.cc-bio-chip:hover {
+    border-color: #ffcc66 !important;
+    color: #ffffff !important;
+}
+
+.cc-bio-chip.selected {
+    background: linear-gradient(180deg, rgba(140, 98, 32, 0.5), rgba(80, 50, 10, 0.35)) !important;
+    border-color: #ffd700 !important;
+    color: #ffffff !important;
+}
+
+.cc-pet-card {
+    background: rgba(20, 18, 14, 0.85) !important;
+    border-color: rgba(90, 74, 42, 0.5) !important;
+}
+
+.cc-pet-card:hover {
+    background: rgba(45, 38, 25, 0.95) !important;
+    border-color: #ffcc66 !important;
+}
+
+.cc-pet-card.selected {
+    background: linear-gradient(180deg, rgba(80, 60, 20, 0.9), rgba(40, 30, 15, 0.9)) !important;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 14px rgba(255, 204, 102, 0.4) !important;
+}
+
+.cc-sidebar-btn {
+    background: rgba(255, 204, 102, 0.08) !important;
+    border: 1px solid #5a4a2a !important;
+    color: #ffcc66 !important;
+}
+
+.cc-sidebar-btn:hover {
+    background: rgba(255, 204, 102, 0.2) !important;
+    border-color: #ffd700 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(255, 204, 102, 0.3) !important;
+}
+
+.cc-sidebar-btn.primary {
+    background: linear-gradient(135deg, #8a6a20, #4d360a) !important;
+    border-color: #ffd700 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(255, 204, 102, 0.35) !important;
+}
+
+.cc-sidebar-btn.primary:hover {
+    background: linear-gradient(135deg, #b38b2a, #6e4e10) !important;
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.6) !important;
+}
+
+.cc-trait-budget-container {
+    background: rgba(10, 10, 10, 0.9) !important;
+    border: 1px solid #5a4a2a !important;
+}
+
+.cc-trait-budget-title {
+    color: #ffcc66 !important;
+}
+
+.cc-name-input-group input.cc-name-input {
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid #5a4a2a !important;
+    color: #ffffff !important;
+}
+
+.cc-dice-btn {
+    background: rgba(255, 204, 102, 0.12) !important;
+    border: 1px solid #5a4a2a !important;
+    color: #ffd700 !important;
 }
 
 /* ==========================================================================

@@ -747,6 +747,9 @@
       const cR = clamp(starVisualRadius(c) * 0.85, 0.28, 1.8);
       const holder = new THREE.Group();
       root.add(holder);
+      // The parking (and refuelling) orbit has to clear this star's own
+      // visual radius, so the holder carries it (see updateShip).
+      holder.userData.visR = cR;
       if (c.name) starHolders[c.name] = holder;
 
       let cObj = null;
@@ -832,6 +835,11 @@
     root.add(ship.group);
     const shipTmp = new THREE.Vector3();
     const shipTmpTo = new THREE.Vector3();   // reused travel destination (no per-frame alloc)
+    // The parking orbit's angle is INTEGRATED rather than read off the clock:
+    // a refuel run speeds the drift up, and angle = t * rate would have made
+    // every rate change teleport the hull around the star (see updateShip).
+    let parkPhase = 0;
+    let parkPhaseT = null;
 
     // Reveal every moon of a focused planet, spreading the extras as a 3D
     // swarm of cheap colored moonlets beyond the major moons. Returns framing
@@ -1074,7 +1082,11 @@
     // Position the ship in this view's local frame. Called by Scene3D each
     // frame AFTER animate() (so planet holders are at their current spot).
     //   state = { mode:'parkedStar'|'parkedPlanet'|'traveling',
-    //             planetName, fromName, toName, progress }
+    //             planetName, fromName, toName, progress,
+    //             approach, approachSpin }
+    // `approach` (0..1) is how far the ship has drawn in toward the star it
+    // is drawing fuel from; `approachSpin` speeds the pass up into a flyby
+    // (a Schrodingerite harvest skimming a black hole's disk).
     function updateShip(state, t) {
       state = state || { mode: "parkedStar" };
       const g = ship.group;
@@ -1116,13 +1128,30 @@
       } else {
         // Parked at the primary by default; state.starName redirects the park
         // orbit onto a named companion/donor star of an N-ary system.
-        let cx = 0, cz = 0, r = starR + 1.1;
+        let cx = 0, cz = 0, bodyR = starR, r = starR + 1.1;
         const h = state.starName && starHolders[state.starName];
-        if (h) { cx = h.position.x; cz = h.position.z; r = 1.6; }
-        // Very slow drift around the star when parked at the system centre.
-        const a = t * 0.02;
-        g.position.set(cx + Math.cos(a) * r, 0.4, cz + Math.sin(a) * r);
-        g.lookAt(cx + Math.cos(a + 0.1) * r, 0.4, cz + Math.sin(a + 0.1) * r);
+        if (h) {
+          cx = h.position.x;
+          cz = h.position.z;
+          bodyR = h.userData && h.userData.visR ? h.userData.visR : 0.5;
+          r = bodyR + 1.1;
+        }
+        // Refuelling flies the hull in: the gap to the surface closes to a
+        // quarter of the parking distance while the pumps run, and opens back
+        // out when they stop. It never crosses the body's own radius.
+        const approach = Math.max(0, Math.min(1, state.approach || 0));
+        const gap = (r - bodyR) * (1 - 0.78 * approach);
+        r = bodyR + Math.max(0.12, gap);
+        // Very slow drift around the star when parked at the system centre; a
+        // harvest flyby whips around several times faster.
+        const spin = 0.02 * (1 + 5 * approach * (state.approachSpin ? 1 : 0.35));
+        const stepT = parkPhaseT === null ? 0 : Math.max(0, Math.min(0.5, t - parkPhaseT));
+        parkPhaseT = t;
+        parkPhase += stepT * spin;
+        const a = parkPhase;
+        const y = 0.4 * (1 - 0.6 * approach);
+        g.position.set(cx + Math.cos(a) * r, y, cz + Math.sin(a) * r);
+        g.lookAt(cx + Math.cos(a + 0.1) * r, y, cz + Math.sin(a + 0.1) * r);
       }
       ship.update(t, state.mode === "traveling");
     }

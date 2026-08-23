@@ -89,6 +89,8 @@
     _bufH: 0,
     _rectKey: '',
     _alignCountdown: 0,
+    // Alive but not presenting: no weapon is held, the context is kept anyway.
+    _idle: false,
 
     // The overlay draws at the game's internal resolution and is then
     // CSS-stretched over the game canvas. That keeps the cost fixed no matter
@@ -103,6 +105,7 @@
 
     init() {
       if (this.renderer) return;
+      this._idle = false;
       const { w, h } = this._gameSize();
 
       this.canvas = document.createElement('canvas');
@@ -135,6 +138,39 @@
       this.camera.position.set(0, 0, 2000);
 
       this.scene = new THREE.Scene();
+      this._buildLights();
+
+      this._alignCanvas();
+      this._resizeObserver = new ResizeObserver(() => this._alignCanvas());
+      this._resizeObserver.observe(document.body);
+    },
+
+    // The weapon in your hands is standing in the same weather as everything
+    // else on screen, so it borrows the battle scene's day/night rig rather
+    // than keeping its own fixed white lights: a blade at dusk catches the
+    // orange low sun, and at night reflects a cold sky instead of a studio.
+    // Shadows are off here (nothing for a first person weapon to cast onto)
+    // but the sky reflection is very much on, since a reflection is most of
+    // what makes a metal weapon read as metal.
+    //
+    // The overlay works in game pixels, so the light is parked far enough out
+    // to behave as directional at that scale. Falls back to the old fixed
+    // lights if the day/night rig is switched off or has not loaded.
+    _buildLights() {
+      const B = window.Battler3D;
+      if (B && B.DayNightRig && B.dayNightEnabled && B.dayNightEnabled()) {
+        try {
+          this.lighting = new B.DayNightRig(this.scene, this.renderer, {
+            shadows: false,
+            env: true,
+            dirDistance: 800,
+          });
+          return;
+        } catch (e) {
+          this.lighting = null;
+        }
+      }
+      this.lighting = null;
       this.scene.add(new THREE.AmbientLight(0xffffff, 0.9));
       const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
       dirLight.position.set(1, 2, 2);
@@ -142,10 +178,6 @@
       const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.35);
       dirLight2.position.set(-2, -1, 1);
       this.scene.add(dirLight2);
-
-      this._alignCanvas();
-      this._resizeObserver = new ResizeObserver(() => this._alignCanvas());
-      this._resizeObserver.observe(document.body);
     },
 
     // Keeps the drawing buffer at game resolution and the element parked on top
@@ -189,22 +221,59 @@
 
     ref() {
       if (!this.renderer) this.init();
+      else if (this._idle) this._wake();
       this._refCount++;
     },
 
+    // Letting go of the last weapon puts the overlay to sleep, it does NOT
+    // hand the context back. Swapping the weapon in your hands terminates one
+    // sprite and builds the next, and while the count sits at zero in between
+    // a teardown here meant a whole WebGL context destroyed and rebuilt mid
+    // battle: a fresh context, a fresh compile of every shader and a fresh
+    // environment map for the day/night rig, plus one frame with the layer
+    // gone from the compositor. That is the flicker every weapon switch used
+    // to show. One context for the session, the same as the battler renderer.
     deref() {
       this._refCount--;
-      if (this._refCount <= 0) this.cleanup();
+      if (this._refCount <= 0) {
+        this._refCount = 0;
+        this.idle();
+      }
+    },
+
+    // Nothing is held: stop presenting the layer. The canvas keeps whatever
+    // was last drawn into it, so the frame is cleared before it is hidden or
+    // the last weapon would stay painted over the screen.
+    idle() {
+      if (!this.renderer || this._idle) return;
+      this._idle = true;
+      try {
+        // The PSX pass can leave a render target bound; clear the canvas.
+        this.renderer.setRenderTarget(null);
+        this.renderer.clear();
+      } catch (e) { /* context already gone */ }
+      if (this.canvas) this.canvas.style.display = 'none';
+    },
+
+    _wake() {
+      this._idle = false;
+      if (this.canvas) this.canvas.style.display = 'block';
+      // The element was out of the compositor while idle: re-place it.
+      this._rectKey = '';
+      this._alignCanvas();
     },
 
     render() {
       if (!this.renderer || !this.scene || !this.camera) return;
+      // Asleep: nothing is held, and idle() already cleared the frame.
+      if (this._idle) return;
       // Re-check the placement a few times a second rather than every frame:
       // getBoundingClientRect() forces a synchronous layout.
       if (--this._alignCountdown <= 0) {
         this._alignCountdown = 20;
         this._alignCanvas();
       }
+      if (this.lighting) this.lighting.update();
       if (window.PSXShader) {
         window.PSXShader.render(this.renderer, this.scene, this.camera);
       } else {
@@ -212,8 +281,12 @@
       }
     },
 
+    // A true teardown, kept for a caller that really wants the context gone
+    // (nothing does today: deref() sleeps instead, see above).
     cleanup() {
       if (this._resizeObserver) { this._resizeObserver.disconnect(); this._resizeObserver = null; }
+      // Before the renderer goes: the rig owns a render target on this context.
+      if (this.lighting) { this.lighting.dispose(); this.lighting = null; }
       if (this.canvas && this.canvas.parentNode) {
         this.canvas.parentNode.removeChild(this.canvas);
       }
@@ -239,6 +312,7 @@
       this._bufW = 0;
       this._bufH = 0;
       this._rectKey = '';
+      this._idle = false;
     }
   };
 

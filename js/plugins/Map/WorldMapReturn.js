@@ -369,6 +369,15 @@
 
     const VAR_NATION_ID = 86;
 
+    // Biome music is opt-in (Options > Audio > "Biome Music (WIP)", off by
+    // default): while it is off none of the biome pools -- `bgm`, `bgmNight`
+    // or `emptyWorldBGM` -- is consulted at all, and every map keeps whatever
+    // BGM it was authored with. Only the music: biome ambience (BGS) is
+    // unaffected, since it is the room tone of the place rather than a track.
+    function isBiomeMusicEnabled() {
+        return !!(window.ConfigManager && ConfigManager.biomeMusic);
+    }
+
     function currentNationId() {
         return ($gameVariables ? $gameVariables.value(VAR_NATION_ID) : 0) | 0;
     }
@@ -413,12 +422,14 @@
     }
 
     function emptyWorldPool(biome) {
+        if (!isBiomeMusicEnabled()) return [];
         return ((biome && biome.emptyWorldBGM) || []).filter(n => n && n.trim());
     }
 
     // The night pool is optional: a biome with no `bgmNight` keeps its day pool
     // after dark rather than falling silent.
     function biomeTrackPool(biome, isNight) {
+        if (!isBiomeMusicEnabled()) return [];
         const clean = arr => (arr || []).filter(n => n && n.trim());
         const empty = emptyWorldPool(biome);
         // In an empty world the biome's own two pools are not consulted at all.
@@ -4886,6 +4897,7 @@
         // wants to know what a biome sounds like without playing it.
         pickBiomeTrack,
         biomeTrackPool,
+        isBiomeMusicEnabled,
         currentNationId,
         // The procedural square the party is standing on, saved and put back.
         // Anything that takes them off map 636 into a submap and later returns

@@ -91,7 +91,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.humanoid.head.name",
         "msg": "enemyArchetypes.humanoid.head.msg",
@@ -108,7 +108,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.humanoid.torso.name",
         "msg": "enemyArchetypes.humanoid.torso.msg",
@@ -121,7 +121,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.left_arm.name",
         "msg": "enemyArchetypes.humanoid.left_arm.msg",
@@ -134,7 +134,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.humanoid.right_arm.name",
         "msg": "enemyArchetypes.humanoid.right_arm.msg",
@@ -150,7 +150,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.left_leg.name",
         "msg": "enemyArchetypes.humanoid.left_leg.msg",
@@ -166,7 +166,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.right_leg.name",
         "msg": "enemyArchetypes.humanoid.right_leg.msg",
@@ -182,7 +182,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.brain.name",
         "msg": "enemyArchetypes.humanoid.brain.msg",
@@ -199,7 +199,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.left_eye.name",
         "msg": "enemyArchetypes.humanoid.left_eye.msg",
@@ -216,7 +216,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.right_eye.name",
         "msg": "enemyArchetypes.humanoid.right_eye.msg",
@@ -299,7 +299,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.humanoid.genitals.name",
         "msg": "enemyArchetypes.humanoid.genitals.msg",
@@ -316,7 +316,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.heart.name",
         "msg": "enemyArchetypes.humanoid.heart.msg",
@@ -333,7 +333,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.left_lung.name",
         "msg": "enemyArchetypes.humanoid.left_lung.msg",
@@ -350,7 +350,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.right_lung.name",
         "msg": "enemyArchetypes.humanoid.right_lung.msg",
@@ -367,7 +367,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 1,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.liver.name",
         "msg": "enemyArchetypes.humanoid.liver.msg",
@@ -382,7 +382,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 7,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.stomach.name",
         "msg": "enemyArchetypes.humanoid.stomach.msg",
@@ -412,7 +412,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.intestines.name",
         "msg": "enemyArchetypes.humanoid.intestines.msg",
@@ -426,7 +426,7 @@
         "equipSlot": "leftHand",
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.left_hand.name",
         "msg": "enemyArchetypes.humanoid.left_hand.msg",
@@ -441,7 +441,7 @@
         "multiple": true,
         "statEffect": {
           "param": 2,
-          "amount": -2
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.left_fingers.name",
         "msg": "enemyArchetypes.humanoid.left_fingers.msg",
@@ -455,7 +455,7 @@
         "equipSlot": "rightHand",
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.right_hand.name",
         "msg": "enemyArchetypes.humanoid.right_hand.msg",
@@ -470,7 +470,7 @@
         "multiple": true,
         "statEffect": {
           "param": 2,
-          "amount": -3
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.right_fingers.name",
         "msg": "enemyArchetypes.humanoid.right_fingers.msg",
@@ -487,7 +487,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.left_foot.name",
         "msg": "enemyArchetypes.humanoid.left_foot.msg",
@@ -516,7 +516,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.humanoid.right_foot.name",
         "msg": "enemyArchetypes.humanoid.right_foot.msg",
@@ -757,7 +757,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.beast.head.name",
         "msg": "enemyArchetypes.beast.head.msg",
@@ -774,7 +774,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.beast.body.name",
         "msg": "enemyArchetypes.beast.body.msg",
@@ -790,7 +790,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.beast.left_leg.name",
         "msg": "enemyArchetypes.beast.left_leg.msg",
@@ -807,7 +807,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.beast.right_leg.name",
         "msg": "enemyArchetypes.beast.right_leg.msg",
@@ -824,7 +824,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.beast.rear_left_leg.name",
         "msg": "enemyArchetypes.beast.rear_left_leg.msg",
@@ -841,7 +841,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.beast.rear_right_leg.name",
         "msg": "enemyArchetypes.beast.rear_right_leg.msg",
@@ -857,7 +857,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.beast.tail.name",
         "msg": "enemyArchetypes.beast.tail.msg",
@@ -874,7 +874,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.beast.mouth.name",
         "msg": "enemyArchetypes.beast.mouth.msg",
@@ -1025,7 +1025,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.insectoid.head.name",
         "msg": "enemyArchetypes.insectoid.head.msg",
@@ -1042,7 +1042,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.insectoid.thorax.name",
         "msg": "enemyArchetypes.insectoid.thorax.msg",
@@ -1059,7 +1059,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.insectoid.abdomen.name",
         "msg": "enemyArchetypes.insectoid.abdomen.msg",
@@ -1076,7 +1076,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.insectoid.left_leg.name",
         "msg": "enemyArchetypes.insectoid.left_leg.msg",
@@ -1092,7 +1092,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.insectoid.right_leg.name",
         "msg": "enemyArchetypes.insectoid.right_leg.msg",
@@ -1109,7 +1109,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.insectoid.middle_left_leg.name",
         "msg": "enemyArchetypes.insectoid.middle_left_leg.msg",
@@ -1125,7 +1125,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.insectoid.middle_right_leg.name",
         "msg": "enemyArchetypes.insectoid.middle_right_leg.msg",
@@ -1142,7 +1142,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.insectoid.rear_left_leg.name",
         "msg": "enemyArchetypes.insectoid.rear_left_leg.msg",
@@ -1158,7 +1158,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.insectoid.rear_right_leg.name",
         "msg": "enemyArchetypes.insectoid.rear_right_leg.msg",
@@ -1175,7 +1175,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.insectoid.mandibles.name",
         "msg": "enemyArchetypes.insectoid.mandibles.msg",
@@ -1276,7 +1276,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.frog.head.name",
         "msg": "enemyArchetypes.frog.head.msg",
@@ -1293,7 +1293,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.frog.body.name",
         "msg": "enemyArchetypes.frog.body.msg",
@@ -1308,7 +1308,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "specialEffect": "disableTongueGrab",
         "name": "enemyArchetypes.frog.tongue.name",
@@ -1327,7 +1327,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "specialEffect": "disableCroak",
         "name": "enemyArchetypes.frog.vocal_sac.name",
@@ -1344,7 +1344,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.frog.left_leg.name",
         "msg": "enemyArchetypes.frog.left_leg.msg",
@@ -1361,7 +1361,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.frog.right_leg.name",
         "msg": "enemyArchetypes.frog.right_leg.msg",
@@ -1377,7 +1377,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.frog.hind_left_leg.name",
         "msg": "enemyArchetypes.frog.hind_left_leg.msg",
@@ -1394,7 +1394,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.frog.hind_right_leg.name",
         "msg": "enemyArchetypes.frog.hind_right_leg.msg",
@@ -1472,7 +1472,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.dragon.head.name",
         "msg": "enemyArchetypes.dragon.head.msg",
@@ -1489,7 +1489,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -40
+          "amount": -3
         },
         "specialEffect": "disableFireBreath",
         "name": "enemyArchetypes.dragon.fire_breath_organ.name",
@@ -1507,7 +1507,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.neck.name",
         "msg": "enemyArchetypes.dragon.neck.msg",
@@ -1524,7 +1524,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.dragon.body.name",
         "msg": "enemyArchetypes.dragon.body.msg",
@@ -1541,7 +1541,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.left_wing.name",
         "msg": "enemyArchetypes.dragon.left_wing.msg",
@@ -1558,7 +1558,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.right_wing.name",
         "msg": "enemyArchetypes.dragon.right_wing.msg",
@@ -1575,7 +1575,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.left_leg.name",
         "msg": "enemyArchetypes.dragon.left_leg.msg",
@@ -1592,7 +1592,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.right_leg.name",
         "msg": "enemyArchetypes.dragon.right_leg.msg",
@@ -1608,7 +1608,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.tail.name",
         "msg": "enemyArchetypes.dragon.tail.msg",
@@ -1621,7 +1621,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.left_claw.name",
         "msg": "enemyArchetypes.dragon.left_claw.msg",
@@ -1634,7 +1634,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.right_claw.name",
         "msg": "enemyArchetypes.dragon.right_claw.msg",
@@ -1647,7 +1647,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.dragon.maw.name",
         "msg": "enemyArchetypes.dragon.maw.msg"
@@ -1770,7 +1770,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.skeleton.head.name",
         "msg": "enemyArchetypes.skeleton.head.msg",
@@ -1787,7 +1787,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.skeleton.torso.name",
         "msg": "enemyArchetypes.skeleton.torso.msg",
@@ -1800,7 +1800,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.skeleton.left_arm.name",
         "msg": "enemyArchetypes.skeleton.left_arm.msg",
@@ -1814,7 +1814,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.skeleton.right_arm.name",
         "msg": "enemyArchetypes.skeleton.right_arm.msg",
@@ -1831,7 +1831,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.skeleton.left_leg.name",
         "msg": "enemyArchetypes.skeleton.left_leg.msg",
@@ -1847,7 +1847,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.skeleton.right_leg.name",
         "msg": "enemyArchetypes.skeleton.right_leg.msg",
@@ -1860,7 +1860,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.skeleton.jaws.name",
         "msg": "enemyArchetypes.skeleton.jaws.msg"
@@ -1934,7 +1934,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.fairy.head.name",
         "msg": "enemyArchetypes.fairy.head.msg",
@@ -1951,7 +1951,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.fairy.torso.name",
         "msg": "enemyArchetypes.fairy.torso.msg",
@@ -1964,7 +1964,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -12
+          "amount": -1
         },
         "name": "enemyArchetypes.fairy.left_arm.name",
         "msg": "enemyArchetypes.fairy.left_arm.msg",
@@ -1978,7 +1978,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.fairy.right_arm.name",
         "msg": "enemyArchetypes.fairy.right_arm.msg",
@@ -1995,7 +1995,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "specialEffect": "grounded",
         "name": "enemyArchetypes.fairy.left_wing.name",
@@ -2012,7 +2012,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "specialEffect": "grounded",
         "name": "enemyArchetypes.fairy.right_wing.name",
@@ -2030,7 +2030,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "specialEffect": "disablePixieDust",
         "name": "enemyArchetypes.fairy.pixie_dust_sac.name",
@@ -2044,7 +2044,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.fairy.mouth.name",
         "msg": "enemyArchetypes.fairy.mouth.msg"
@@ -2181,7 +2181,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.slime.core.name",
         "msg": "enemyArchetypes.slime.core.msg",
@@ -2197,7 +2197,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "regenerates": true,
         "name": "enemyArchetypes.slime.upper_body.name",
@@ -2214,7 +2214,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "regenerates": true,
         "name": "enemyArchetypes.slime.lower_body.name",
@@ -2228,7 +2228,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "regenerates": true,
         "name": "enemyArchetypes.slime.pseudopod_1.name",
@@ -2243,7 +2243,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "regenerates": true,
         "name": "enemyArchetypes.slime.pseudopod_2.name",
@@ -2258,7 +2258,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.slime.maw.name",
         "msg": "enemyArchetypes.slime.maw.msg"
@@ -2333,7 +2333,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.undead.skull.name",
         "msg": "enemyArchetypes.undead.skull.msg",
@@ -2350,7 +2350,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.undead.ribcage.name",
         "msg": "enemyArchetypes.undead.ribcage.msg",
@@ -2363,7 +2363,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.undead.left_arm.name",
         "msg": "enemyArchetypes.undead.left_arm.msg",
@@ -2377,7 +2377,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.undead.right_arm.name",
         "msg": "enemyArchetypes.undead.right_arm.msg",
@@ -2395,7 +2395,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.undead.left_leg.name",
         "msg": "enemyArchetypes.undead.left_leg.msg",
@@ -2411,7 +2411,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.undead.right_leg.name",
         "msg": "enemyArchetypes.undead.right_leg.msg",
@@ -2424,7 +2424,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.undead.jaws.name",
         "msg": "enemyArchetypes.undead.jaws.msg"
@@ -2507,7 +2507,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.scorpion.head.name",
         "msg": "enemyArchetypes.scorpion.head.msg",
@@ -2524,7 +2524,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.cephalothorax.name",
         "msg": "enemyArchetypes.scorpion.cephalothorax.msg",
@@ -2541,7 +2541,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.scorpion.abdomen.name",
         "msg": "enemyArchetypes.scorpion.abdomen.msg",
@@ -2557,7 +2557,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.tail.name",
         "msg": "enemyArchetypes.scorpion.tail.msg",
@@ -2574,7 +2574,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "specialEffect": "disableStingerVenom",
         "name": "enemyArchetypes.scorpion.stinger.name",
@@ -2588,7 +2588,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -12
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.pincer_left.name",
         "msg": "enemyArchetypes.scorpion.pincer_left.msg",
@@ -2602,7 +2602,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.pincer_right.name",
         "msg": "enemyArchetypes.scorpion.pincer_right.msg",
@@ -2619,7 +2619,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.left_leg.name",
         "msg": "enemyArchetypes.scorpion.left_leg.msg",
@@ -2635,7 +2635,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.right_leg.name",
         "msg": "enemyArchetypes.scorpion.right_leg.msg",
@@ -2651,7 +2651,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.mid_left_leg.name",
         "msg": "enemyArchetypes.scorpion.mid_left_leg.msg",
@@ -2668,7 +2668,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.mid_right_leg.name",
         "msg": "enemyArchetypes.scorpion.mid_right_leg.msg",
@@ -2684,7 +2684,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.mid_rear_left_leg.name",
         "msg": "enemyArchetypes.scorpion.mid_rear_left_leg.msg",
@@ -2700,7 +2700,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.mid_rear_right_leg.name",
         "msg": "enemyArchetypes.scorpion.mid_rear_right_leg.msg",
@@ -2717,7 +2717,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.rear_left_leg.name",
         "msg": "enemyArchetypes.scorpion.rear_left_leg.msg",
@@ -2734,7 +2734,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.rear_right_leg.name",
         "msg": "enemyArchetypes.scorpion.rear_right_leg.msg",
@@ -2747,7 +2747,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.scorpion.mandibles.name",
         "msg": "enemyArchetypes.scorpion.mandibles.msg"
@@ -2842,7 +2842,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.spider.head.name",
         "msg": "enemyArchetypes.spider.head.msg",
@@ -2859,7 +2859,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.cephalothorax.name",
         "msg": "enemyArchetypes.spider.cephalothorax.msg",
@@ -2876,7 +2876,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.spider.abdomen.name",
         "msg": "enemyArchetypes.spider.abdomen.msg",
@@ -2893,7 +2893,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "specialEffect": "disableVenomBite",
         "name": "enemyArchetypes.spider.fangs.name",
@@ -2911,7 +2911,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "specialEffect": "disableWebbing",
         "name": "enemyArchetypes.spider.spinnerets.name",
@@ -2929,7 +2929,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.left_leg.name",
         "msg": "enemyArchetypes.spider.left_leg.msg",
@@ -2945,7 +2945,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.right_leg.name",
         "msg": "enemyArchetypes.spider.right_leg.msg",
@@ -2961,7 +2961,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.mid_left_leg.name",
         "msg": "enemyArchetypes.spider.mid_left_leg.msg",
@@ -2978,7 +2978,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.mid_right_leg.name",
         "msg": "enemyArchetypes.spider.mid_right_leg.msg",
@@ -2995,7 +2995,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.mid_rear_left_leg.name",
         "msg": "enemyArchetypes.spider.mid_rear_left_leg.msg",
@@ -3012,7 +3012,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.mid_rear_right_leg.name",
         "msg": "enemyArchetypes.spider.mid_rear_right_leg.msg",
@@ -3028,7 +3028,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.rear_left_leg.name",
         "msg": "enemyArchetypes.spider.rear_left_leg.msg",
@@ -3044,7 +3044,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spider.rear_right_leg.name",
         "msg": "enemyArchetypes.spider.rear_right_leg.msg",
@@ -3137,7 +3137,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -40
+          "amount": -3
         },
         "name": "enemyArchetypes.plant.flower.name",
         "msg": "enemyArchetypes.plant.flower.msg",
@@ -3154,7 +3154,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.plant.stem.name",
         "msg": "enemyArchetypes.plant.stem.msg",
@@ -3171,7 +3171,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.plant.roots.name",
         "msg": "enemyArchetypes.plant.roots.msg",
@@ -3184,7 +3184,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.plant.vine_1.name",
         "msg": "enemyArchetypes.plant.vine_1.msg",
@@ -3198,7 +3198,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.plant.vine_2.name",
         "msg": "enemyArchetypes.plant.vine_2.msg",
@@ -3212,7 +3212,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.plant.maw.name",
         "msg": "enemyArchetypes.plant.maw.msg"
@@ -3284,7 +3284,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.elemental.core.name",
         "msg": "enemyArchetypes.elemental.core.msg",
@@ -3301,7 +3301,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "regenerates": true,
         "name": "enemyArchetypes.elemental.upper_form.name",
@@ -3319,7 +3319,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "regenerates": true,
         "name": "enemyArchetypes.elemental.lower_form.name",
@@ -3333,7 +3333,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "regenerates": true,
         "name": "enemyArchetypes.elemental.left_appendage.name",
@@ -3348,7 +3348,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "regenerates": true,
         "name": "enemyArchetypes.elemental.right_appendage.name",
@@ -3363,7 +3363,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.elemental.maw.name",
         "msg": "enemyArchetypes.elemental.maw.msg"
@@ -3434,7 +3434,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.aquaticfish.head.name",
         "msg": "enemyArchetypes.aquaticfish.head.msg",
@@ -3451,7 +3451,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.aquaticfish.body.name",
         "msg": "enemyArchetypes.aquaticfish.body.msg",
@@ -3467,7 +3467,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.aquaticfish.tail_fin.name",
         "msg": "enemyArchetypes.aquaticfish.tail_fin.msg",
@@ -3484,7 +3484,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.aquaticfish.dorsal_fin.name",
         "msg": "enemyArchetypes.aquaticfish.dorsal_fin.msg",
@@ -3501,7 +3501,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.aquaticfish.left_pectoral_fin.name",
         "msg": "enemyArchetypes.aquaticfish.left_pectoral_fin.msg",
@@ -3518,7 +3518,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.aquaticfish.right_pectoral_fin.name",
         "msg": "enemyArchetypes.aquaticfish.right_pectoral_fin.msg",
@@ -3531,7 +3531,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.aquaticfish.mouth.name",
         "msg": "enemyArchetypes.aquaticfish.mouth.msg",
@@ -3622,7 +3622,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.octopus.head.name",
         "msg": "enemyArchetypes.octopus.head.msg",
@@ -3639,7 +3639,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.octopus.mantle.name",
         "msg": "enemyArchetypes.octopus.mantle.msg",
@@ -3652,7 +3652,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.octopus.tentacle_1.name",
         "msg": "enemyArchetypes.octopus.tentacle_1.msg",
@@ -3666,7 +3666,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.octopus.tentacle_2.name",
         "msg": "enemyArchetypes.octopus.tentacle_2.msg",
@@ -3680,7 +3680,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.octopus.tentacle_3.name",
         "msg": "enemyArchetypes.octopus.tentacle_3.msg",
@@ -3694,7 +3694,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.octopus.tentacle_4.name",
         "msg": "enemyArchetypes.octopus.tentacle_4.msg",
@@ -3708,7 +3708,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.octopus.beak.name",
         "msg": "enemyArchetypes.octopus.beak.msg"
@@ -3775,7 +3775,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.robot.head.name",
         "msg": "enemyArchetypes.robot.head.msg",
@@ -3792,7 +3792,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.robot.core.name",
         "msg": "enemyArchetypes.robot.core.msg",
@@ -3805,7 +3805,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.robot.left_arm.name",
         "msg": "enemyArchetypes.robot.left_arm.msg",
@@ -3819,7 +3819,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.robot.right_arm.name",
         "msg": "enemyArchetypes.robot.right_arm.msg",
@@ -3837,7 +3837,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.robot.left_leg.name",
         "msg": "enemyArchetypes.robot.left_leg.msg",
@@ -3854,7 +3854,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.robot.right_leg.name",
         "msg": "enemyArchetypes.robot.right_leg.msg",
@@ -3867,7 +3867,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.robot.jaws.name",
         "msg": "enemyArchetypes.robot.jaws.msg"
@@ -3950,7 +3950,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.bird.head.name",
         "msg": "enemyArchetypes.bird.head.msg",
@@ -3967,7 +3967,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.bird.body.name",
         "msg": "enemyArchetypes.bird.body.msg",
@@ -3983,7 +3983,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.bird.beak.name",
         "msg": "enemyArchetypes.bird.beak.msg",
@@ -3999,7 +3999,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.bird.left_wing.name",
         "msg": "enemyArchetypes.bird.left_wing.msg",
@@ -4015,7 +4015,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.bird.right_wing.name",
         "msg": "enemyArchetypes.bird.right_wing.msg",
@@ -4028,7 +4028,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.bird.talons.name",
         "msg": "enemyArchetypes.bird.talons.msg",
@@ -4121,7 +4121,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.reptilian.head.name",
         "msg": "enemyArchetypes.reptilian.head.msg",
@@ -4138,7 +4138,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.reptilian.torso.name",
         "msg": "enemyArchetypes.reptilian.torso.msg",
@@ -4151,7 +4151,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.reptilian.left_arm.name",
         "msg": "enemyArchetypes.reptilian.left_arm.msg",
@@ -4165,7 +4165,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.reptilian.right_arm.name",
         "msg": "enemyArchetypes.reptilian.right_arm.msg",
@@ -4182,7 +4182,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.reptilian.left_leg.name",
         "msg": "enemyArchetypes.reptilian.left_leg.msg",
@@ -4199,7 +4199,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.reptilian.right_leg.name",
         "msg": "enemyArchetypes.reptilian.right_leg.msg",
@@ -4215,7 +4215,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.reptilian.tail.name",
         "msg": "enemyArchetypes.reptilian.tail.msg",
@@ -4228,7 +4228,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.reptilian.maw.name",
         "msg": "enemyArchetypes.reptilian.maw.msg"
@@ -4312,7 +4312,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.mushroom.cap.name",
         "msg": "enemyArchetypes.mushroom.cap.msg",
@@ -4328,7 +4328,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.mushroom.stalk.name",
         "msg": "enemyArchetypes.mushroom.stalk.msg",
@@ -4345,7 +4345,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.mushroom.roots.name",
         "msg": "enemyArchetypes.mushroom.roots.msg",
@@ -4362,7 +4362,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "specialEffect": "disableSpores",
         "name": "enemyArchetypes.mushroom.spore_sacs.name",
@@ -4376,7 +4376,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.mushroom.maw.name",
         "msg": "enemyArchetypes.mushroom.maw.msg",
@@ -4439,7 +4439,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.tree.crown.name",
         "msg": "enemyArchetypes.tree.crown.msg",
@@ -4456,7 +4456,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.tree.trunk.name",
         "msg": "enemyArchetypes.tree.trunk.msg",
@@ -4472,7 +4472,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.tree.roots.name",
         "msg": "enemyArchetypes.tree.roots.msg",
@@ -4485,7 +4485,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.tree.branch_1.name",
         "msg": "enemyArchetypes.tree.branch_1.msg",
@@ -4499,7 +4499,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.tree.branch_2.name",
         "msg": "enemyArchetypes.tree.branch_2.msg",
@@ -4569,7 +4569,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -40
+          "amount": -3
         },
         "name": "enemyArchetypes.bacterial.nucleus.name",
         "msg": "enemyArchetypes.bacterial.nucleus.msg",
@@ -4586,7 +4586,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.bacterial.membrane.name",
         "msg": "enemyArchetypes.bacterial.membrane.msg",
@@ -4601,7 +4601,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.bacterial.flagellum.name",
         "msg": "enemyArchetypes.bacterial.flagellum.msg",
@@ -4618,7 +4618,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "specialEffect": "disableToxins",
         "name": "enemyArchetypes.bacterial.toxin_sacs.name",
@@ -4632,7 +4632,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.bacterial.mouth.name",
         "msg": "enemyArchetypes.bacterial.mouth.msg",
@@ -4703,7 +4703,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.head_left.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.head_left.msg",
@@ -4720,7 +4720,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.head_right.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.head_right.msg",
@@ -4737,7 +4737,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.torso.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.torso.msg",
@@ -4750,7 +4750,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.left_arm.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.left_arm.msg",
@@ -4764,7 +4764,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.right_arm.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.right_arm.msg",
@@ -4782,7 +4782,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.left_leg.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.left_leg.msg",
@@ -4798,7 +4798,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.right_leg.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.right_leg.msg",
@@ -4811,7 +4811,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.mouth.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.mouth.msg"
@@ -4886,7 +4886,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.serpent.head.name",
         "msg": "enemyArchetypes.serpent.head.msg",
@@ -4903,7 +4903,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.serpent.fangs.name",
         "msg": "enemyArchetypes.serpent.fangs.msg",
@@ -4921,7 +4921,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -10
+          "amount": -2
         },
         "name": "enemyArchetypes.serpent.body_segment_1.name",
         "msg": "enemyArchetypes.serpent.body_segment_1.msg",
@@ -4938,7 +4938,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -10
+          "amount": -2
         },
         "name": "enemyArchetypes.serpent.body_segment_2.name",
         "msg": "enemyArchetypes.serpent.body_segment_2.msg",
@@ -4954,7 +4954,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.serpent.tail.name",
         "msg": "enemyArchetypes.serpent.tail.msg",
@@ -5021,7 +5021,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.golem.core.name",
         "msg": "enemyArchetypes.golem.core.msg",
@@ -5034,7 +5034,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.golem.left_arm.name",
         "msg": "enemyArchetypes.golem.left_arm.msg",
@@ -5048,7 +5048,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.golem.right_arm.name",
         "msg": "enemyArchetypes.golem.right_arm.msg",
@@ -5066,7 +5066,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.golem.left_leg.name",
         "msg": "enemyArchetypes.golem.left_leg.msg",
@@ -5083,7 +5083,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.golem.right_leg.name",
         "msg": "enemyArchetypes.golem.right_leg.msg",
@@ -5096,7 +5096,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.golem.maw.name",
         "msg": "enemyArchetypes.golem.maw.msg"
@@ -5190,7 +5190,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.demon.head.name",
         "msg": "enemyArchetypes.demon.head.msg",
@@ -5207,7 +5207,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.demon.horns.name",
         "msg": "enemyArchetypes.demon.horns.msg",
@@ -5224,7 +5224,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.demon.torso.name",
         "msg": "enemyArchetypes.demon.torso.msg",
@@ -5241,7 +5241,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.demon.left_wing.name",
         "msg": "enemyArchetypes.demon.left_wing.msg",
@@ -5258,7 +5258,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.demon.right_wing.name",
         "msg": "enemyArchetypes.demon.right_wing.msg",
@@ -5274,7 +5274,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.demon.tail.name",
         "msg": "enemyArchetypes.demon.tail.msg",
@@ -5287,7 +5287,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.demon.left_claw.name",
         "msg": "enemyArchetypes.demon.left_claw.msg",
@@ -5300,7 +5300,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.demon.right_claw.name",
         "msg": "enemyArchetypes.demon.right_claw.msg",
@@ -5313,7 +5313,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.demon.maw.name",
         "msg": "enemyArchetypes.demon.maw.msg"
@@ -5406,7 +5406,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.ghost.face.name",
         "msg": "enemyArchetypes.ghost.face.msg",
@@ -5423,7 +5423,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.ghost.core.name",
         "msg": "enemyArchetypes.ghost.core.msg",
@@ -5436,7 +5436,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.ghost.left_wisp.name",
         "msg": "enemyArchetypes.ghost.left_wisp.msg",
@@ -5450,7 +5450,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.ghost.right_wisp.name",
         "msg": "enemyArchetypes.ghost.right_wisp.msg",
@@ -5464,7 +5464,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.ghost.maw.name",
         "msg": "enemyArchetypes.ghost.maw.msg"
@@ -5542,7 +5542,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.drone.sensor_array.name",
         "msg": "enemyArchetypes.drone.sensor_array.msg",
@@ -5559,7 +5559,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.drone.chassis.name",
         "msg": "enemyArchetypes.drone.chassis.msg",
@@ -5575,7 +5575,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.drone.left_prop.name",
         "msg": "enemyArchetypes.drone.left_prop.msg",
@@ -5591,7 +5591,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.drone.right_prop.name",
         "msg": "enemyArchetypes.drone.right_prop.msg",
@@ -5604,7 +5604,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.drone.jaws.name",
         "msg": "enemyArchetypes.drone.jaws.msg",
@@ -5668,7 +5668,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.voidspawn.abyssal_eye.name",
         "msg": "enemyArchetypes.voidspawn.abyssal_eye.msg",
@@ -5685,7 +5685,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.voidspawn.maw.name",
         "msg": "enemyArchetypes.voidspawn.maw.msg",
@@ -5698,7 +5698,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.voidspawn.void_tendril_1.name",
         "msg": "enemyArchetypes.voidspawn.void_tendril_1.msg",
@@ -5712,7 +5712,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.voidspawn.void_tendril_2.name",
         "msg": "enemyArchetypes.voidspawn.void_tendril_2.msg",
@@ -5730,7 +5730,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.voidspawn.core.name",
         "msg": "enemyArchetypes.voidspawn.core.msg",
@@ -5790,7 +5790,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.mutant.head.name",
         "msg": "enemyArchetypes.mutant.head.msg",
@@ -5807,7 +5807,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.mutant.mass.name",
         "msg": "enemyArchetypes.mutant.mass.msg",
@@ -5820,7 +5820,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.mutant.extra_limb_1.name",
         "msg": "enemyArchetypes.mutant.extra_limb_1.msg",
@@ -5834,7 +5834,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.mutant.extra_limb_2.name",
         "msg": "enemyArchetypes.mutant.extra_limb_2.msg",
@@ -5852,7 +5852,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.mutant.eye_cluster.name",
         "msg": "enemyArchetypes.mutant.eye_cluster.msg",
@@ -5869,7 +5869,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.mutant.tail_spike.name",
         "msg": "enemyArchetypes.mutant.tail_spike.msg",
@@ -5882,7 +5882,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.mutant.maw.name",
         "msg": "enemyArchetypes.mutant.maw.msg"
@@ -5951,7 +5951,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.crystalentity.core.name",
         "msg": "enemyArchetypes.crystalentity.core.msg",
@@ -5964,7 +5964,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.crystalentity.left_spire.name",
         "msg": "enemyArchetypes.crystalentity.left_spire.msg",
@@ -5978,7 +5978,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.crystalentity.right_spire.name",
         "msg": "enemyArchetypes.crystalentity.right_spire.msg",
@@ -5996,7 +5996,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.crystalentity.focus_gem.name",
         "msg": "enemyArchetypes.crystalentity.focus_gem.msg",
@@ -6013,7 +6013,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.crystalentity.shield_crystal.name",
         "msg": "enemyArchetypes.crystalentity.shield_crystal.msg",
@@ -6026,7 +6026,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.crystalentity.maw.name",
         "msg": "enemyArchetypes.crystalentity.maw.msg"
@@ -6098,7 +6098,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.amphibian.head.name",
         "msg": "enemyArchetypes.amphibian.head.msg",
@@ -6115,7 +6115,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.amphibian.torso.name",
         "msg": "enemyArchetypes.amphibian.torso.msg",
@@ -6130,7 +6130,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.amphibian.tongue.name",
         "msg": "enemyArchetypes.amphibian.tongue.msg",
@@ -6147,7 +6147,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.amphibian.left_leg.name",
         "msg": "enemyArchetypes.amphibian.left_leg.msg",
@@ -6163,7 +6163,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.amphibian.right_leg.name",
         "msg": "enemyArchetypes.amphibian.right_leg.msg",
@@ -6228,7 +6228,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.constructedundead.head.name",
         "msg": "enemyArchetypes.constructedundead.head.msg",
@@ -6245,7 +6245,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.constructedundead.torso.name",
         "msg": "enemyArchetypes.constructedundead.torso.msg",
@@ -6258,7 +6258,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.constructedundead.left_arm.name",
         "msg": "enemyArchetypes.constructedundead.left_arm.msg",
@@ -6272,7 +6272,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.constructedundead.right_arm.name",
         "msg": "enemyArchetypes.constructedundead.right_arm.msg",
@@ -6290,7 +6290,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.constructedundead.power_stitch.name",
         "msg": "enemyArchetypes.constructedundead.power_stitch.msg",
@@ -6303,7 +6303,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.constructedundead.jaws.name",
         "msg": "enemyArchetypes.constructedundead.jaws.msg"
@@ -6376,7 +6376,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.minotaur.head.name",
         "msg": "enemyArchetypes.minotaur.head.msg",
@@ -6393,7 +6393,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.minotaur.horns.name",
         "msg": "enemyArchetypes.minotaur.horns.msg",
@@ -6410,7 +6410,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.minotaur.torso.name",
         "msg": "enemyArchetypes.minotaur.torso.msg",
@@ -6423,7 +6423,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.minotaur.left_arm.name",
         "msg": "enemyArchetypes.minotaur.left_arm.msg",
@@ -6437,7 +6437,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.minotaur.right_arm.name",
         "msg": "enemyArchetypes.minotaur.right_arm.msg",
@@ -6455,7 +6455,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.minotaur.left_leg.name",
         "msg": "enemyArchetypes.minotaur.left_leg.msg",
@@ -6472,7 +6472,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.minotaur.right_leg.name",
         "msg": "enemyArchetypes.minotaur.right_leg.msg",
@@ -6485,7 +6485,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.minotaur.maw.name",
         "msg": "enemyArchetypes.minotaur.maw.msg"
@@ -6562,7 +6562,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -100
+          "amount": -5
         },
         "name": "enemyArchetypes.goblin.brain.name",
         "msg": "enemyArchetypes.goblin.brain.msg",
@@ -6579,7 +6579,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.goblin.skull.name",
         "msg": "enemyArchetypes.goblin.skull.msg",
@@ -6596,7 +6596,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.goblin.torso.name",
         "msg": "enemyArchetypes.goblin.torso.msg",
@@ -6613,7 +6613,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.ribcage.name",
         "msg": "enemyArchetypes.goblin.ribcage.msg",
@@ -6630,7 +6630,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.pelvis.name",
         "msg": "enemyArchetypes.goblin.pelvis.msg",
@@ -6647,7 +6647,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.goblin.heart.name",
         "msg": "enemyArchetypes.goblin.heart.msg",
@@ -6664,7 +6664,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -45
+          "amount": -9
         },
         "name": "enemyArchetypes.goblin.lungs.name",
         "msg": "enemyArchetypes.goblin.lungs.msg",
@@ -6681,7 +6681,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.goblin.liver.name",
         "msg": "enemyArchetypes.goblin.liver.msg",
@@ -6698,7 +6698,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.goblin.kidneys.name",
         "msg": "enemyArchetypes.goblin.kidneys.msg",
@@ -6713,7 +6713,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.goblin.stomach.name",
         "msg": "enemyArchetypes.goblin.stomach.msg",
@@ -6730,7 +6730,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.goblin.small_intestine.name",
         "msg": "enemyArchetypes.goblin.small_intestine.msg",
@@ -6747,7 +6747,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.goblin.large_intestine.name",
         "msg": "enemyArchetypes.goblin.large_intestine.msg",
@@ -6764,7 +6764,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.goblin.pancreas.name",
         "msg": "enemyArchetypes.goblin.pancreas.msg",
@@ -6781,7 +6781,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.goblin.spleen.name",
         "msg": "enemyArchetypes.goblin.spleen.msg",
@@ -6798,7 +6798,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.nose.name",
         "msg": "enemyArchetypes.goblin.nose.msg",
@@ -6814,7 +6814,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.mouth.name",
         "msg": "enemyArchetypes.goblin.mouth.msg",
@@ -6831,7 +6831,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.eye_left.name",
         "msg": "enemyArchetypes.goblin.eye_left.msg",
@@ -6848,7 +6848,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.eye_right.name",
         "msg": "enemyArchetypes.goblin.eye_right.msg",
@@ -6865,7 +6865,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.ear_left.name",
         "msg": "enemyArchetypes.goblin.ear_left.msg",
@@ -6882,7 +6882,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.ear_right.name",
         "msg": "enemyArchetypes.goblin.ear_right.msg",
@@ -6897,7 +6897,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.tongue.name",
         "msg": "enemyArchetypes.goblin.tongue.msg",
@@ -6910,7 +6910,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.left_upper_arm.name",
         "msg": "enemyArchetypes.goblin.left_upper_arm.msg",
@@ -6923,7 +6923,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.left_forearm.name",
         "msg": "enemyArchetypes.goblin.left_forearm.msg",
@@ -6936,7 +6936,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.left_hand.name",
         "msg": "enemyArchetypes.goblin.left_hand.msg",
@@ -6950,7 +6950,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.right_upper_arm.name",
         "msg": "enemyArchetypes.goblin.right_upper_arm.msg",
@@ -6963,7 +6963,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.right_forearm.name",
         "msg": "enemyArchetypes.goblin.right_forearm.msg",
@@ -6976,7 +6976,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.right_hand.name",
         "msg": "enemyArchetypes.goblin.right_hand.msg",
@@ -6993,7 +6993,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.left_thigh.name",
         "msg": "enemyArchetypes.goblin.left_thigh.msg",
@@ -7009,7 +7009,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.left_shin.name",
         "msg": "enemyArchetypes.goblin.left_shin.msg",
@@ -7025,7 +7025,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.left_foot.name",
         "msg": "enemyArchetypes.goblin.left_foot.msg",
@@ -7041,7 +7041,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.goblin.right_thigh.name",
         "msg": "enemyArchetypes.goblin.right_thigh.msg",
@@ -7057,7 +7057,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.right_shin.name",
         "msg": "enemyArchetypes.goblin.right_shin.msg",
@@ -7073,7 +7073,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.goblin.right_foot.name",
         "msg": "enemyArchetypes.goblin.right_foot.msg",
@@ -7228,7 +7228,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.crustacean.claw_left.name",
         "msg": "enemyArchetypes.crustacean.claw_left.msg",
@@ -7242,7 +7242,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.crustacean.claw_right.name",
         "msg": "enemyArchetypes.crustacean.claw_right.msg",
@@ -7260,7 +7260,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.crustacean.carapace.name",
         "msg": "enemyArchetypes.crustacean.carapace.msg",
@@ -7277,7 +7277,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.crustacean.abdomen.name",
         "msg": "enemyArchetypes.crustacean.abdomen.msg",
@@ -7294,7 +7294,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.crustacean.front_leg.name",
         "msg": "enemyArchetypes.crustacean.front_leg.msg",
@@ -7311,7 +7311,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.crustacean.rear_leg.name",
         "msg": "enemyArchetypes.crustacean.rear_leg.msg",
@@ -7328,7 +7328,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.crustacean.antennae.name",
         "msg": "enemyArchetypes.crustacean.antennae.msg",
@@ -7341,7 +7341,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.crustacean.mandibles.name",
         "msg": "enemyArchetypes.crustacean.mandibles.msg"
@@ -7409,7 +7409,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.spherical.core.name",
         "msg": "enemyArchetypes.spherical.core.msg",
@@ -7426,7 +7426,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.spherical.shell.name",
         "msg": "enemyArchetypes.spherical.shell.msg",
@@ -7443,7 +7443,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.spherical.sensor_array.name",
         "msg": "enemyArchetypes.spherical.sensor_array.msg",
@@ -7460,7 +7460,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.spherical.spin_spines.name",
         "msg": "enemyArchetypes.spherical.spin_spines.msg",
@@ -7477,7 +7477,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.spherical.aux_drives.name",
         "msg": "enemyArchetypes.spherical.aux_drives.msg",
@@ -7490,7 +7490,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.spherical.maw.name",
         "msg": "enemyArchetypes.spherical.maw.msg",
@@ -7559,7 +7559,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -35
+          "amount": -3
         },
         "name": "enemyArchetypes.turtle.shell.name",
         "msg": "enemyArchetypes.turtle.shell.msg",
@@ -7576,7 +7576,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.turtle.head.name",
         "msg": "enemyArchetypes.turtle.head.msg",
@@ -7592,7 +7592,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.turtle.left_leg.name",
         "msg": "enemyArchetypes.turtle.left_leg.msg",
@@ -7608,7 +7608,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.turtle.right_leg.name",
         "msg": "enemyArchetypes.turtle.right_leg.msg",
@@ -7625,7 +7625,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.turtle.rear_left_leg.name",
         "msg": "enemyArchetypes.turtle.rear_left_leg.msg",
@@ -7642,7 +7642,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.turtle.rear_right_leg.name",
         "msg": "enemyArchetypes.turtle.rear_right_leg.msg",
@@ -7658,7 +7658,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.turtle.tail.name",
         "msg": "enemyArchetypes.turtle.tail.msg",
@@ -7671,7 +7671,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.turtle.beak.name",
         "msg": "enemyArchetypes.turtle.beak.msg",
@@ -7743,7 +7743,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -100
+          "amount": -5
         },
         "name": "enemyArchetypes.manticore.brain.name",
         "msg": "enemyArchetypes.manticore.brain.msg",
@@ -7760,7 +7760,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.manticore.skull.name",
         "msg": "enemyArchetypes.manticore.skull.msg",
@@ -7777,7 +7777,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -40
+          "amount": -3
         },
         "name": "enemyArchetypes.manticore.spine.name",
         "msg": "enemyArchetypes.manticore.spine.msg",
@@ -7794,7 +7794,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.manticore.ribcage.name",
         "msg": "enemyArchetypes.manticore.ribcage.msg",
@@ -7811,7 +7811,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.manticore.front_left_paw.name",
         "msg": "enemyArchetypes.manticore.front_left_paw.msg",
@@ -7828,7 +7828,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.manticore.front_right_paw.name",
         "msg": "enemyArchetypes.manticore.front_right_paw.msg",
@@ -7845,7 +7845,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.manticore.rear_left_leg.name",
         "msg": "enemyArchetypes.manticore.rear_left_leg.msg",
@@ -7862,7 +7862,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.manticore.rear_right_leg.name",
         "msg": "enemyArchetypes.manticore.rear_right_leg.msg",
@@ -7879,7 +7879,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.manticore.left_eye.name",
         "msg": "enemyArchetypes.manticore.left_eye.msg",
@@ -7896,7 +7896,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.manticore.right_eye.name",
         "msg": "enemyArchetypes.manticore.right_eye.msg",
@@ -7913,7 +7913,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.manticore.left_wing.name",
         "msg": "enemyArchetypes.manticore.left_wing.msg",
@@ -7930,7 +7930,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.manticore.right_wing.name",
         "msg": "enemyArchetypes.manticore.right_wing.msg",
@@ -7947,7 +7947,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -23
+          "amount": -5
         },
         "name": "enemyArchetypes.manticore.left_lung.name",
         "msg": "enemyArchetypes.manticore.left_lung.msg",
@@ -7964,7 +7964,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -22
+          "amount": -4
         },
         "name": "enemyArchetypes.manticore.right_lung.name",
         "msg": "enemyArchetypes.manticore.right_lung.msg",
@@ -7977,7 +7977,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.manticore.maw.name",
         "msg": "enemyArchetypes.manticore.maw.msg",
@@ -8128,7 +8128,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -80
+          "amount": -16
         },
         "name": "enemyArchetypes.chestmimic.core.name",
         "msg": "enemyArchetypes.chestmimic.core.msg",
@@ -8145,7 +8145,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.chestmimic.lid.name",
         "msg": "enemyArchetypes.chestmimic.lid.msg",
@@ -8162,7 +8162,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.chestmimic.teeth.name",
         "msg": "enemyArchetypes.chestmimic.teeth.msg",
@@ -8178,7 +8178,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.chestmimic.tongue.name",
         "msg": "enemyArchetypes.chestmimic.tongue.msg",
@@ -8196,7 +8196,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.chestmimic.feet.name",
         "msg": "enemyArchetypes.chestmimic.feet.msg",
@@ -8266,7 +8266,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -90
+          "amount": -18
         },
         "name": "enemyArchetypes.phoenix.core.name",
         "msg": "enemyArchetypes.phoenix.core.msg",
@@ -8283,7 +8283,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.phoenix.feathers.name",
         "msg": "enemyArchetypes.phoenix.feathers.msg",
@@ -8300,7 +8300,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.phoenix.beak.name",
         "msg": "enemyArchetypes.phoenix.beak.msg",
@@ -8313,7 +8313,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.phoenix.talons.name",
         "msg": "enemyArchetypes.phoenix.talons.msg",
@@ -8331,7 +8331,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -17.5
+          "amount": -2
         },
         "name": "enemyArchetypes.phoenix.left_wing.name",
         "msg": "enemyArchetypes.phoenix.left_wing.msg",
@@ -8348,7 +8348,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -17.5
+          "amount": -2
         },
         "name": "enemyArchetypes.phoenix.right_wing.name",
         "msg": "enemyArchetypes.phoenix.right_wing.msg",
@@ -8365,7 +8365,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.phoenix.left_eye.name",
         "msg": "enemyArchetypes.phoenix.left_eye.msg",
@@ -8382,7 +8382,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.phoenix.right_eye.name",
         "msg": "enemyArchetypes.phoenix.right_eye.msg",
@@ -8455,7 +8455,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.ogre.head.name",
         "msg": "enemyArchetypes.ogre.head.msg",
@@ -8472,7 +8472,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.ogre.torso.name",
         "msg": "enemyArchetypes.ogre.torso.msg",
@@ -8485,7 +8485,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.ogre.left_arm.name",
         "msg": "enemyArchetypes.ogre.left_arm.msg",
@@ -8499,7 +8499,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.ogre.right_arm.name",
         "msg": "enemyArchetypes.ogre.right_arm.msg",
@@ -8516,7 +8516,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.ogre.left_leg.name",
         "msg": "enemyArchetypes.ogre.left_leg.msg",
@@ -8532,7 +8532,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.ogre.right_leg.name",
         "msg": "enemyArchetypes.ogre.right_leg.msg",
@@ -8545,7 +8545,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.ogre.maw.name",
         "msg": "enemyArchetypes.ogre.maw.msg"
@@ -8614,7 +8614,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.scarecrow.head.name",
         "msg": "enemyArchetypes.scarecrow.head.msg",
@@ -8631,7 +8631,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.scarecrow.torso.name",
         "msg": "enemyArchetypes.scarecrow.torso.msg",
@@ -8644,7 +8644,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.scarecrow.left_arm.name",
         "msg": "enemyArchetypes.scarecrow.left_arm.msg",
@@ -8658,7 +8658,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.scarecrow.right_arm.name",
         "msg": "enemyArchetypes.scarecrow.right_arm.msg",
@@ -8676,7 +8676,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.scarecrow.left_leg.name",
         "msg": "enemyArchetypes.scarecrow.left_leg.msg",
@@ -8692,7 +8692,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.scarecrow.right_leg.name",
         "msg": "enemyArchetypes.scarecrow.right_leg.msg",
@@ -8705,7 +8705,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.scarecrow.mouth.name",
         "msg": "enemyArchetypes.scarecrow.mouth.msg"
@@ -8767,7 +8767,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.segmentworm.head.name",
         "msg": "enemyArchetypes.segmentworm.head.msg",
@@ -8784,7 +8784,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -80
+          "amount": -16
         },
         "name": "enemyArchetypes.segmentworm.heart_segment.name",
         "msg": "enemyArchetypes.segmentworm.heart_segment.msg",
@@ -8801,7 +8801,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.segmentworm.body_segment.name",
         "msg": "enemyArchetypes.segmentworm.body_segment.msg",
@@ -8817,7 +8817,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.segmentworm.tail.name",
         "msg": "enemyArchetypes.segmentworm.tail.msg",
@@ -8830,7 +8830,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.segmentworm.maw.name",
         "msg": "enemyArchetypes.segmentworm.maw.msg",
@@ -8896,7 +8896,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.mineral.core.name",
         "msg": "enemyArchetypes.mineral.core.msg",
@@ -8913,7 +8913,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.mineral.shell.name",
         "msg": "enemyArchetypes.mineral.shell.msg",
@@ -8930,7 +8930,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.mineral.crystals.name",
         "msg": "enemyArchetypes.mineral.crystals.msg",
@@ -8947,7 +8947,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.mineral.veins.name",
         "msg": "enemyArchetypes.mineral.veins.msg",
@@ -8960,7 +8960,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.mineral.maw.name",
         "msg": "enemyArchetypes.mineral.maw.msg",
@@ -9015,7 +9015,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.hydra.head_one.name",
         "msg": "enemyArchetypes.hydra.head_one.msg",
@@ -9032,7 +9032,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.hydra.head_two.name",
         "msg": "enemyArchetypes.hydra.head_two.msg",
@@ -9049,7 +9049,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.hydra.head_three.name",
         "msg": "enemyArchetypes.hydra.head_three.msg",
@@ -9066,7 +9066,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.hydra.body.name",
         "msg": "enemyArchetypes.hydra.body.msg",
@@ -9082,7 +9082,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.hydra.tail.name",
         "msg": "enemyArchetypes.hydra.tail.msg",
@@ -9095,7 +9095,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.hydra.maw.name",
         "msg": "enemyArchetypes.hydra.maw.msg",
@@ -9169,7 +9169,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.vampire.head.name",
         "msg": "enemyArchetypes.vampire.head.msg",
@@ -9186,7 +9186,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -70
+          "amount": -14
         },
         "name": "enemyArchetypes.vampire.heart.name",
         "msg": "enemyArchetypes.vampire.heart.msg",
@@ -9203,7 +9203,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.vampire.fangs.name",
         "msg": "enemyArchetypes.vampire.fangs.msg",
@@ -9216,7 +9216,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.vampire.left_arm.name",
         "msg": "enemyArchetypes.vampire.left_arm.msg",
@@ -9230,7 +9230,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.vampire.right_arm.name",
         "msg": "enemyArchetypes.vampire.right_arm.msg",
@@ -9248,7 +9248,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.vampire.left_leg.name",
         "msg": "enemyArchetypes.vampire.left_leg.msg",
@@ -9265,7 +9265,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.vampire.right_leg.name",
         "msg": "enemyArchetypes.vampire.right_leg.msg",
@@ -9278,7 +9278,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.vampire.torso.name",
         "msg": "enemyArchetypes.vampire.torso.msg"
@@ -9357,7 +9357,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.bat.head.name",
         "msg": "enemyArchetypes.bat.head.msg",
@@ -9374,7 +9374,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -35
+          "amount": -7
         },
         "name": "enemyArchetypes.bat.body.name",
         "msg": "enemyArchetypes.bat.body.msg",
@@ -9390,7 +9390,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.bat.left_wing.name",
         "msg": "enemyArchetypes.bat.left_wing.msg",
@@ -9406,7 +9406,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.bat.right_wing.name",
         "msg": "enemyArchetypes.bat.right_wing.msg",
@@ -9423,7 +9423,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.bat.fangs.name",
         "msg": "enemyArchetypes.bat.fangs.msg",
@@ -9489,7 +9489,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.rabbit.head.name",
         "msg": "enemyArchetypes.rabbit.head.msg",
@@ -9506,7 +9506,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.rabbit.body.name",
         "msg": "enemyArchetypes.rabbit.body.msg",
@@ -9523,7 +9523,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.rabbit.ears.name",
         "msg": "enemyArchetypes.rabbit.ears.msg",
@@ -9539,7 +9539,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.rabbit.left_leg.name",
         "msg": "enemyArchetypes.rabbit.left_leg.msg",
@@ -9555,7 +9555,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.rabbit.right_leg.name",
         "msg": "enemyArchetypes.rabbit.right_leg.msg",
@@ -9572,7 +9572,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.rabbit.rear_left_leg.name",
         "msg": "enemyArchetypes.rabbit.rear_left_leg.msg",
@@ -9588,7 +9588,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.rabbit.rear_right_leg.name",
         "msg": "enemyArchetypes.rabbit.rear_right_leg.msg",
@@ -9604,7 +9604,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.rabbit.tail.name",
         "msg": "enemyArchetypes.rabbit.tail.msg",
@@ -9617,7 +9617,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.rabbit.teeth.name",
         "msg": "enemyArchetypes.rabbit.teeth.msg",
@@ -9690,7 +9690,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.armoredknight.helmet.name",
         "msg": "enemyArchetypes.armoredknight.helmet.msg",
@@ -9707,7 +9707,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.armoredknight.chestplate.name",
         "msg": "enemyArchetypes.armoredknight.chestplate.msg",
@@ -9724,7 +9724,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.armoredknight.pauldron_left.name",
         "msg": "enemyArchetypes.armoredknight.pauldron_left.msg",
@@ -9741,7 +9741,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.armoredknight.pauldron_right.name",
         "msg": "enemyArchetypes.armoredknight.pauldron_right.msg",
@@ -9757,7 +9757,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.armoredknight.greaves_left.name",
         "msg": "enemyArchetypes.armoredknight.greaves_left.msg",
@@ -9774,7 +9774,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.armoredknight.greaves_right.name",
         "msg": "enemyArchetypes.armoredknight.greaves_right.msg",
@@ -9787,7 +9787,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.armoredknight.left_gauntlet.name",
         "msg": "enemyArchetypes.armoredknight.left_gauntlet.msg",
@@ -9800,7 +9800,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.armoredknight.right_gauntlet.name",
         "msg": "enemyArchetypes.armoredknight.right_gauntlet.msg",
@@ -9813,7 +9813,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.armoredknight.mouth.name",
         "msg": "enemyArchetypes.armoredknight.mouth.msg"
@@ -9898,7 +9898,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.centaur.head.name",
         "msg": "enemyArchetypes.centaur.head.msg",
@@ -9915,7 +9915,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.centaur.torso.name",
         "msg": "enemyArchetypes.centaur.torso.msg",
@@ -9928,7 +9928,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -12
+          "amount": -1
         },
         "name": "enemyArchetypes.centaur.left_arm.name",
         "msg": "enemyArchetypes.centaur.left_arm.msg",
@@ -9942,7 +9942,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -18
+          "amount": -2
         },
         "name": "enemyArchetypes.centaur.right_arm.name",
         "msg": "enemyArchetypes.centaur.right_arm.msg",
@@ -9960,7 +9960,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.centaur.body.name",
         "msg": "enemyArchetypes.centaur.body.msg",
@@ -9976,7 +9976,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.centaur.left_leg.name",
         "msg": "enemyArchetypes.centaur.left_leg.msg",
@@ -9993,7 +9993,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.centaur.right_leg.name",
         "msg": "enemyArchetypes.centaur.right_leg.msg",
@@ -10009,7 +10009,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.centaur.rear_left_leg.name",
         "msg": "enemyArchetypes.centaur.rear_left_leg.msg",
@@ -10025,7 +10025,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.centaur.rear_right_leg.name",
         "msg": "enemyArchetypes.centaur.rear_right_leg.msg",
@@ -10038,7 +10038,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.centaur.mouth.name",
         "msg": "enemyArchetypes.centaur.mouth.msg"
@@ -10111,7 +10111,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.insectswarm.mandibles.name",
         "msg": "enemyArchetypes.insectswarm.mandibles.msg",
@@ -10128,7 +10128,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.insectswarm.wings.name",
         "msg": "enemyArchetypes.insectswarm.wings.msg",
@@ -10145,7 +10145,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.insectswarm.legs.name",
         "msg": "enemyArchetypes.insectswarm.legs.msg",
@@ -10162,7 +10162,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 0,
-          "amount": -25
+          "amount": -5
         },
         "name": "enemyArchetypes.insectswarm.abdomen.name",
         "msg": "enemyArchetypes.insectswarm.abdomen.msg",
@@ -10179,7 +10179,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.insectswarm.stingers.name",
         "msg": "enemyArchetypes.insectswarm.stingers.msg",
@@ -10240,7 +10240,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.roboticdefender.head.name",
         "msg": "enemyArchetypes.roboticdefender.head.msg",
@@ -10253,7 +10253,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.roboticdefender.arm_cannon.name",
         "msg": "enemyArchetypes.roboticdefender.arm_cannon.msg",
@@ -10271,7 +10271,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.roboticdefender.torso.name",
         "msg": "enemyArchetypes.roboticdefender.torso.msg",
@@ -10288,7 +10288,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.roboticdefender.leg_joints.name",
         "msg": "enemyArchetypes.roboticdefender.leg_joints.msg",
@@ -10305,7 +10305,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.roboticdefender.sensors.name",
         "msg": "enemyArchetypes.roboticdefender.sensors.msg",
@@ -10318,7 +10318,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.roboticdefender.jaws.name",
         "msg": "enemyArchetypes.roboticdefender.jaws.msg"
@@ -10379,7 +10379,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.turret.core.name",
         "msg": "enemyArchetypes.turret.core.msg",
@@ -10395,7 +10395,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.turret.gun_barrel.name",
         "msg": "enemyArchetypes.turret.gun_barrel.msg",
@@ -10412,7 +10412,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.turret.sensor_array.name",
         "msg": "enemyArchetypes.turret.sensor_array.msg",
@@ -10429,7 +10429,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.turret.rotation_mech.name",
         "msg": "enemyArchetypes.turret.rotation_mech.msg",
@@ -10446,7 +10446,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.turret.ammo_chamber.name",
         "msg": "enemyArchetypes.turret.ammo_chamber.msg",
@@ -10459,7 +10459,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.turret.jaws.name",
         "msg": "enemyArchetypes.turret.jaws.msg",
@@ -10525,7 +10525,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.gorgon.eyes.name",
         "msg": "enemyArchetypes.gorgon.eyes.msg",
@@ -10542,7 +10542,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.gorgon.snake_hair.name",
         "msg": "enemyArchetypes.gorgon.snake_hair.msg",
@@ -10559,7 +10559,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.gorgon.upper_body.name",
         "msg": "enemyArchetypes.gorgon.upper_body.msg",
@@ -10576,7 +10576,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.gorgon.lower_body.name",
         "msg": "enemyArchetypes.gorgon.lower_body.msg",
@@ -10589,7 +10589,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.gorgon.left_hand.name",
         "msg": "enemyArchetypes.gorgon.left_hand.msg",
@@ -10602,7 +10602,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.gorgon.right_hand.name",
         "msg": "enemyArchetypes.gorgon.right_hand.msg",
@@ -10615,7 +10615,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.gorgon.fangs.name",
         "msg": "enemyArchetypes.gorgon.fangs.msg"
@@ -10678,7 +10678,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.abyssalleviathan.eye.name",
         "msg": "enemyArchetypes.abyssalleviathan.eye.msg",
@@ -10695,7 +10695,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -35
+          "amount": -3
         },
         "name": "enemyArchetypes.abyssalleviathan.maw.name",
         "msg": "enemyArchetypes.abyssalleviathan.maw.msg",
@@ -10712,7 +10712,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -40
+          "amount": -3
         },
         "name": "enemyArchetypes.abyssalleviathan.dorsal_plates.name",
         "msg": "enemyArchetypes.abyssalleviathan.dorsal_plates.msg",
@@ -10725,7 +10725,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.abyssalleviathan.tentacles.name",
         "msg": "enemyArchetypes.abyssalleviathan.tentacles.msg",
@@ -10743,7 +10743,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -70
+          "amount": -14
         },
         "name": "enemyArchetypes.abyssalleviathan.heart_chamber.name",
         "msg": "enemyArchetypes.abyssalleviathan.heart_chamber.msg",
@@ -10804,13 +10804,12 @@
         "vital": false,
         "skillId": [
           398,
-          54,
-          34
+          54
         ],
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.snail.shell.name",
         "msg": "enemyArchetypes.snail.shell.msg",
@@ -10820,14 +10819,13 @@
         "hpPercent": 30,
         "vital": true,
         "skillId": [
-          54,
-          34,
-          890
+          890,
+          34
         ],
         "canCutoff": true,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.snail.body.name",
         "msg": "enemyArchetypes.snail.body.msg",
@@ -10840,7 +10838,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.snail.tentacle_1.name",
         "msg": "enemyArchetypes.snail.tentacle_1.msg",
@@ -10854,7 +10852,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.snail.tentacle_2.name",
         "msg": "enemyArchetypes.snail.tentacle_2.msg",
@@ -10872,7 +10870,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.snail.eye.name",
         "msg": "enemyArchetypes.snail.eye.msg",
@@ -10882,13 +10880,13 @@
         "hpPercent": 10,
         "vital": false,
         "skillId": [
-          1786,
-          1793
+          311,
+          307
         ],
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.snail.foot.name",
         "msg": "enemyArchetypes.snail.foot.msg",
@@ -10901,7 +10899,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.snail.mouth.name",
         "msg": "enemyArchetypes.snail.mouth.msg"
@@ -10965,7 +10963,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.waterelemental.core.name",
         "msg": "enemyArchetypes.waterelemental.core.msg",
@@ -10982,7 +10980,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.waterelemental.body.name",
         "msg": "enemyArchetypes.waterelemental.body.msg",
@@ -10995,7 +10993,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.waterelemental.water_arms.name",
         "msg": "enemyArchetypes.waterelemental.water_arms.msg",
@@ -11013,7 +11011,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.waterelemental.left_water_leg.name",
         "msg": "enemyArchetypes.waterelemental.left_water_leg.msg",
@@ -11029,7 +11027,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.waterelemental.right_water_leg.name",
         "msg": "enemyArchetypes.waterelemental.right_water_leg.msg",
@@ -11042,7 +11040,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.waterelemental.maw.name",
         "msg": "enemyArchetypes.waterelemental.maw.msg"
@@ -11103,7 +11101,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -45
+          "amount": -9
         },
         "name": "enemyArchetypes.thunderelemental.core.name",
         "msg": "enemyArchetypes.thunderelemental.core.msg",
@@ -11120,7 +11118,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.thunderelemental.body.name",
         "msg": "enemyArchetypes.thunderelemental.body.msg",
@@ -11133,7 +11131,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.thunderelemental.left_electric_arm.name",
         "msg": "enemyArchetypes.thunderelemental.left_electric_arm.msg",
@@ -11147,7 +11145,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.thunderelemental.right_electric_arm.name",
         "msg": "enemyArchetypes.thunderelemental.right_electric_arm.msg",
@@ -11165,7 +11163,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.thunderelemental.left_electric_leg.name",
         "msg": "enemyArchetypes.thunderelemental.left_electric_leg.msg",
@@ -11182,7 +11180,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.thunderelemental.right_electric_leg.name",
         "msg": "enemyArchetypes.thunderelemental.right_electric_leg.msg",
@@ -11195,7 +11193,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.thunderelemental.maw.name",
         "msg": "enemyArchetypes.thunderelemental.maw.msg"
@@ -11254,7 +11252,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.stormelemental.core.name",
         "msg": "enemyArchetypes.stormelemental.core.msg",
@@ -11271,7 +11269,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.stormelemental.body.name",
         "msg": "enemyArchetypes.stormelemental.body.msg",
@@ -11284,7 +11282,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.stormelemental.left_rain_arm.name",
         "msg": "enemyArchetypes.stormelemental.left_rain_arm.msg",
@@ -11298,7 +11296,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.stormelemental.right_rain_arm.name",
         "msg": "enemyArchetypes.stormelemental.right_rain_arm.msg",
@@ -11316,7 +11314,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.stormelemental.left_thunder_leg.name",
         "msg": "enemyArchetypes.stormelemental.left_thunder_leg.msg",
@@ -11333,7 +11331,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.stormelemental.right_thunder_leg.name",
         "msg": "enemyArchetypes.stormelemental.right_thunder_leg.msg",
@@ -11346,7 +11344,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.stormelemental.maw.name",
         "msg": "enemyArchetypes.stormelemental.maw.msg"
@@ -11411,7 +11409,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -45
+          "amount": -9
         },
         "name": "enemyArchetypes.fireelemental.core.name",
         "msg": "enemyArchetypes.fireelemental.core.msg",
@@ -11428,7 +11426,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.fireelemental.body.name",
         "msg": "enemyArchetypes.fireelemental.body.msg",
@@ -11441,7 +11439,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.fireelemental.ember_arms.name",
         "msg": "enemyArchetypes.fireelemental.ember_arms.msg",
@@ -11458,7 +11456,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.fireelemental.ash_legs.name",
         "msg": "enemyArchetypes.fireelemental.ash_legs.msg",
@@ -11471,7 +11469,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.fireelemental.maw.name",
         "msg": "enemyArchetypes.fireelemental.maw.msg"
@@ -11531,7 +11529,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.metalelemental.core.name",
         "msg": "enemyArchetypes.metalelemental.core.msg",
@@ -11548,7 +11546,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.metalelemental.plate_armor.name",
         "msg": "enemyArchetypes.metalelemental.plate_armor.msg",
@@ -11561,7 +11559,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.metalelemental.spike_arms.name",
         "msg": "enemyArchetypes.metalelemental.spike_arms.msg",
@@ -11578,7 +11576,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.metalelemental.gear_legs.name",
         "msg": "enemyArchetypes.metalelemental.gear_legs.msg",
@@ -11591,7 +11589,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.metalelemental.jaws.name",
         "msg": "enemyArchetypes.metalelemental.jaws.msg"
@@ -11646,7 +11644,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.darkelemental.core.name",
         "msg": "enemyArchetypes.darkelemental.core.msg",
@@ -11663,7 +11661,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.darkelemental.body.name",
         "msg": "enemyArchetypes.darkelemental.body.msg",
@@ -11676,7 +11674,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.darkelemental.left_arm.name",
         "msg": "enemyArchetypes.darkelemental.left_arm.msg",
@@ -11690,7 +11688,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.darkelemental.right_arm.name",
         "msg": "enemyArchetypes.darkelemental.right_arm.msg",
@@ -11708,7 +11706,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.darkelemental.left_leg.name",
         "msg": "enemyArchetypes.darkelemental.left_leg.msg",
@@ -11725,7 +11723,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.darkelemental.right_leg.name",
         "msg": "enemyArchetypes.darkelemental.right_leg.msg",
@@ -11738,7 +11736,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.darkelemental.maw.name",
         "msg": "enemyArchetypes.darkelemental.maw.msg"
@@ -11801,7 +11799,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.sacredelemental.core.name",
         "msg": "enemyArchetypes.sacredelemental.core.msg",
@@ -11818,7 +11816,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.sacredelemental.body.name",
         "msg": "enemyArchetypes.sacredelemental.body.msg",
@@ -11831,7 +11829,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.sacredelemental.left_arm.name",
         "msg": "enemyArchetypes.sacredelemental.left_arm.msg",
@@ -11845,7 +11843,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.sacredelemental.right_arm.name",
         "msg": "enemyArchetypes.sacredelemental.right_arm.msg",
@@ -11863,7 +11861,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.sacredelemental.left_leg.name",
         "msg": "enemyArchetypes.sacredelemental.left_leg.msg",
@@ -11880,7 +11878,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -12.5
+          "amount": -1
         },
         "name": "enemyArchetypes.sacredelemental.right_leg.name",
         "msg": "enemyArchetypes.sacredelemental.right_leg.msg",
@@ -11893,7 +11891,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.sacredelemental.mouth.name",
         "msg": "enemyArchetypes.sacredelemental.mouth.msg"
@@ -11958,7 +11956,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -60
+          "amount": -12
         },
         "name": "enemyArchetypes.totem.core.name",
         "msg": "enemyArchetypes.totem.core.msg",
@@ -11971,7 +11969,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.totem.left_arm.name",
         "msg": "enemyArchetypes.totem.left_arm.msg",
@@ -11985,7 +11983,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.totem.right_arm.name",
         "msg": "enemyArchetypes.totem.right_arm.msg",
@@ -12003,7 +12001,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.totem.eyes.name",
         "msg": "enemyArchetypes.totem.eyes.msg",
@@ -12020,7 +12018,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.totem.base.name",
         "msg": "enemyArchetypes.totem.base.msg",
@@ -12033,7 +12031,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.totem.mouth.name",
         "msg": "enemyArchetypes.totem.mouth.msg"
@@ -12102,7 +12100,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.ophanim.wheel_one.name",
         "msg": "enemyArchetypes.ophanim.wheel_one.msg",
@@ -12119,7 +12117,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.ophanim.wheel_two.name",
         "msg": "enemyArchetypes.ophanim.wheel_two.msg",
@@ -12136,7 +12134,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.ophanim.wheel_three.name",
         "msg": "enemyArchetypes.ophanim.wheel_three.msg",
@@ -12153,7 +12151,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.ophanim.wheel_four.name",
         "msg": "enemyArchetypes.ophanim.wheel_four.msg",
@@ -12170,7 +12168,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.ophanim.eye_ring.name",
         "msg": "enemyArchetypes.ophanim.eye_ring.msg",
@@ -12183,7 +12181,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.ophanim.mouth.name",
         "msg": "enemyArchetypes.ophanim.mouth.msg",
@@ -12253,7 +12251,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.angel.left_wing.name",
         "msg": "enemyArchetypes.angel.left_wing.msg",
@@ -12270,7 +12268,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.angel.right_wing.name",
         "msg": "enemyArchetypes.angel.right_wing.msg",
@@ -12287,7 +12285,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.angel.halo.name",
         "msg": "enemyArchetypes.angel.halo.msg",
@@ -12304,7 +12302,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -60
+          "amount": -12
         },
         "name": "enemyArchetypes.angel.core.name",
         "msg": "enemyArchetypes.angel.core.msg",
@@ -12321,7 +12319,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.angel.robe.name",
         "msg": "enemyArchetypes.angel.robe.msg",
@@ -12338,7 +12336,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.angel.left_foot.name",
         "msg": "enemyArchetypes.angel.left_foot.msg",
@@ -12355,7 +12353,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.angel.right_foot.name",
         "msg": "enemyArchetypes.angel.right_foot.msg",
@@ -12368,7 +12366,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.angel.left_hand.name",
         "msg": "enemyArchetypes.angel.left_hand.msg",
@@ -12381,7 +12379,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.angel.right_hand.name",
         "msg": "enemyArchetypes.angel.right_hand.msg",
@@ -12394,7 +12392,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.angel.mouth.name",
         "msg": "enemyArchetypes.angel.mouth.msg"
@@ -12477,7 +12475,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.elven.head.name",
         "msg": "enemyArchetypes.elven.head.msg",
@@ -12494,7 +12492,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.elven.heart.name",
         "msg": "enemyArchetypes.elven.heart.msg",
@@ -12511,7 +12509,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.elven.bow.name",
         "msg": "enemyArchetypes.elven.bow.msg",
@@ -12528,7 +12526,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.elven.robe.name",
         "msg": "enemyArchetypes.elven.robe.msg",
@@ -12545,7 +12543,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.elven.left_leg.name",
         "msg": "enemyArchetypes.elven.left_leg.msg",
@@ -12561,7 +12559,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.elven.right_leg.name",
         "msg": "enemyArchetypes.elven.right_leg.msg",
@@ -12574,7 +12572,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.elven.left_hand.name",
         "msg": "enemyArchetypes.elven.left_hand.msg",
@@ -12587,7 +12585,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.elven.right_hand.name",
         "msg": "enemyArchetypes.elven.right_hand.msg",
@@ -12600,7 +12598,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.elven.mouth.name",
         "msg": "enemyArchetypes.elven.mouth.msg"
@@ -12675,7 +12673,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.gnome.head.name",
         "msg": "enemyArchetypes.gnome.head.msg",
@@ -12692,7 +12690,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.gnome.beard.name",
         "msg": "enemyArchetypes.gnome.beard.msg",
@@ -12709,7 +12707,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.gnome.hat.name",
         "msg": "enemyArchetypes.gnome.hat.msg",
@@ -12726,7 +12724,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.gnome.heart.name",
         "msg": "enemyArchetypes.gnome.heart.msg",
@@ -12742,7 +12740,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.gnome.left_leg.name",
         "msg": "enemyArchetypes.gnome.left_leg.msg",
@@ -12758,7 +12756,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.gnome.right_leg.name",
         "msg": "enemyArchetypes.gnome.right_leg.msg",
@@ -12771,7 +12769,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.gnome.left_hand.name",
         "msg": "enemyArchetypes.gnome.left_hand.msg",
@@ -12784,7 +12782,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.gnome.right_hand.name",
         "msg": "enemyArchetypes.gnome.right_hand.msg",
@@ -12797,7 +12795,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.gnome.mouth.name",
         "msg": "enemyArchetypes.gnome.mouth.msg"
@@ -12809,7 +12807,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.gnome.torso.name",
         "msg": "enemyArchetypes.gnome.torso.msg"
@@ -12909,7 +12907,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.dwarf.head.name",
         "msg": "enemyArchetypes.dwarf.head.msg",
@@ -12926,7 +12924,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 7,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.dwarf.beard.name",
         "msg": "enemyArchetypes.dwarf.beard.msg",
@@ -12943,7 +12941,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.dwarf.torso.name",
         "msg": "enemyArchetypes.dwarf.torso.msg",
@@ -12956,7 +12954,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.dwarf.left_arm.name",
         "msg": "enemyArchetypes.dwarf.left_arm.msg",
@@ -12969,7 +12967,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.dwarf.right_arm.name",
         "msg": "enemyArchetypes.dwarf.right_arm.msg",
@@ -12985,7 +12983,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.left_leg.name",
         "msg": "enemyArchetypes.dwarf.left_leg.msg",
@@ -13001,7 +12999,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.right_leg.name",
         "msg": "enemyArchetypes.dwarf.right_leg.msg",
@@ -13017,7 +13015,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.brain.name",
         "msg": "enemyArchetypes.dwarf.brain.msg",
@@ -13034,7 +13032,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.left_eye.name",
         "msg": "enemyArchetypes.dwarf.left_eye.msg",
@@ -13051,7 +13049,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.right_eye.name",
         "msg": "enemyArchetypes.dwarf.right_eye.msg",
@@ -13134,7 +13132,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 0,
-          "amount": -15
+          "amount": -3
         },
         "name": "enemyArchetypes.dwarf.genitals.name",
         "msg": "enemyArchetypes.dwarf.genitals.msg",
@@ -13151,7 +13149,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.heart.name",
         "msg": "enemyArchetypes.dwarf.heart.msg",
@@ -13168,7 +13166,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.left_lung.name",
         "msg": "enemyArchetypes.dwarf.left_lung.msg",
@@ -13185,7 +13183,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.right_lung.name",
         "msg": "enemyArchetypes.dwarf.right_lung.msg",
@@ -13202,7 +13200,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 1,
-          "amount": -10
+          "amount": -2
         },
         "name": "enemyArchetypes.dwarf.liver.name",
         "msg": "enemyArchetypes.dwarf.liver.msg",
@@ -13217,7 +13215,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 7,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.stomach.name",
         "msg": "enemyArchetypes.dwarf.stomach.msg",
@@ -13247,7 +13245,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 5,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.intestines.name",
         "msg": "enemyArchetypes.dwarf.intestines.msg",
@@ -13261,7 +13259,7 @@
         "equipSlot": "leftHand",
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.left_hand.name",
         "msg": "enemyArchetypes.dwarf.left_hand.msg",
@@ -13276,7 +13274,7 @@
         "multiple": true,
         "statEffect": {
           "param": 2,
-          "amount": -2
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.left_fingers.name",
         "msg": "enemyArchetypes.dwarf.left_fingers.msg",
@@ -13290,7 +13288,7 @@
         "equipSlot": "rightHand",
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.right_hand.name",
         "msg": "enemyArchetypes.dwarf.right_hand.msg",
@@ -13305,7 +13303,7 @@
         "multiple": true,
         "statEffect": {
           "param": 2,
-          "amount": -3
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.right_fingers.name",
         "msg": "enemyArchetypes.dwarf.right_fingers.msg",
@@ -13322,7 +13320,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.left_foot.name",
         "msg": "enemyArchetypes.dwarf.left_foot.msg",
@@ -13351,7 +13349,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.dwarf.right_foot.name",
         "msg": "enemyArchetypes.dwarf.right_foot.msg",
@@ -13511,7 +13509,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.elephant.head.name",
         "msg": "enemyArchetypes.elephant.head.msg",
@@ -13526,7 +13524,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.elephant.trunk.name",
         "msg": "enemyArchetypes.elephant.trunk.msg",
@@ -13544,7 +13542,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.elephant.tusks.name",
         "msg": "enemyArchetypes.elephant.tusks.msg",
@@ -13561,7 +13559,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.elephant.body.name",
         "msg": "enemyArchetypes.elephant.body.msg",
@@ -13578,7 +13576,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -6.25
+          "amount": -1
         },
         "name": "enemyArchetypes.elephant.left_leg.name",
         "msg": "enemyArchetypes.elephant.left_leg.msg",
@@ -13595,7 +13593,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -6.25
+          "amount": -1
         },
         "name": "enemyArchetypes.elephant.right_leg.name",
         "msg": "enemyArchetypes.elephant.right_leg.msg",
@@ -13611,7 +13609,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -6.25
+          "amount": -1
         },
         "name": "enemyArchetypes.elephant.hind_left_leg.name",
         "msg": "enemyArchetypes.elephant.hind_left_leg.msg",
@@ -13628,7 +13626,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -6.25
+          "amount": -1
         },
         "name": "enemyArchetypes.elephant.hind_right_leg.name",
         "msg": "enemyArchetypes.elephant.hind_right_leg.msg",
@@ -13701,7 +13699,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -50
+          "amount": -4
         },
         "name": "enemyArchetypes.tentacledcreature.eye.name",
         "msg": "enemyArchetypes.tentacledcreature.eye.msg",
@@ -13714,7 +13712,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.tentacledcreature.tentacle_one.name",
         "msg": "enemyArchetypes.tentacledcreature.tentacle_one.msg",
@@ -13728,7 +13726,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.tentacledcreature.tentacle_two.name",
         "msg": "enemyArchetypes.tentacledcreature.tentacle_two.msg",
@@ -13746,7 +13744,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.tentacledcreature.body.name",
         "msg": "enemyArchetypes.tentacledcreature.body.msg",
@@ -13759,7 +13757,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.tentacledcreature.beak.name",
         "msg": "enemyArchetypes.tentacledcreature.beak.msg"
@@ -13830,7 +13828,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.spiderhumanhybrid.body.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.body.msg",
@@ -13847,7 +13845,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -60
+          "amount": -12
         },
         "name": "enemyArchetypes.spiderhumanhybrid.torso.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.torso.msg",
@@ -13864,7 +13862,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -50
+          "amount": -4
         },
         "name": "enemyArchetypes.spiderhumanhybrid.head.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.head.msg",
@@ -13881,7 +13879,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -4
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.left_leg.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.left_leg.msg",
@@ -13898,7 +13896,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -4
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.right_leg.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.right_leg.msg",
@@ -13914,7 +13912,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -4
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.middle_left_leg.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.middle_left_leg.msg",
@@ -13930,7 +13928,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -4
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.middle_right_leg.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.middle_right_leg.msg",
@@ -13947,7 +13945,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -4
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.rear_left_leg.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.rear_left_leg.msg",
@@ -13963,7 +13961,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -4
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.rear_right_leg.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.rear_right_leg.msg",
@@ -13976,7 +13974,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.left_hand.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.left_hand.msg",
@@ -13989,7 +13987,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.right_hand.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.right_hand.msg",
@@ -14002,7 +14000,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.spiderhumanhybrid.fangs.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.fangs.msg"
@@ -14074,7 +14072,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 5,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.spikymonster.spikes.name",
         "msg": "enemyArchetypes.spikymonster.spikes.msg",
@@ -14091,7 +14089,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -35
+          "amount": -7
         },
         "name": "enemyArchetypes.spikymonster.body.name",
         "msg": "enemyArchetypes.spikymonster.body.msg",
@@ -14108,7 +14106,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.spikymonster.eyes.name",
         "msg": "enemyArchetypes.spikymonster.eyes.msg",
@@ -14124,7 +14122,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.spikymonster.left_leg.name",
         "msg": "enemyArchetypes.spikymonster.left_leg.msg",
@@ -14140,7 +14138,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -15
+          "amount": -1
         },
         "name": "enemyArchetypes.spikymonster.right_leg.name",
         "msg": "enemyArchetypes.spikymonster.right_leg.msg",
@@ -14153,7 +14151,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spikymonster.left_claw.name",
         "msg": "enemyArchetypes.spikymonster.left_claw.msg",
@@ -14166,7 +14164,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -5
+          "amount": -1
         },
         "name": "enemyArchetypes.spikymonster.right_claw.name",
         "msg": "enemyArchetypes.spikymonster.right_claw.msg",
@@ -14179,7 +14177,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.spikymonster.maw.name",
         "msg": "enemyArchetypes.spikymonster.maw.msg"
@@ -14242,7 +14240,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.horse.head.name",
         "msg": "enemyArchetypes.horse.head.msg",
@@ -14259,7 +14257,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -30
+          "amount": -6
         },
         "name": "enemyArchetypes.horse.body.name",
         "msg": "enemyArchetypes.horse.body.msg",
@@ -14275,7 +14273,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -8.75
+          "amount": -1
         },
         "name": "enemyArchetypes.horse.left_leg.name",
         "msg": "enemyArchetypes.horse.left_leg.msg",
@@ -14291,7 +14289,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -8.75
+          "amount": -1
         },
         "name": "enemyArchetypes.horse.right_leg.name",
         "msg": "enemyArchetypes.horse.right_leg.msg",
@@ -14307,7 +14305,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -8.75
+          "amount": -1
         },
         "name": "enemyArchetypes.horse.hind_left_leg.name",
         "msg": "enemyArchetypes.horse.hind_left_leg.msg",
@@ -14324,7 +14322,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -8.75
+          "amount": -1
         },
         "name": "enemyArchetypes.horse.hind_right_leg.name",
         "msg": "enemyArchetypes.horse.hind_right_leg.msg",
@@ -14340,7 +14338,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.horse.tail.name",
         "msg": "enemyArchetypes.horse.tail.msg",
@@ -14353,7 +14351,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.horse.mouth.name",
         "msg": "enemyArchetypes.horse.mouth.msg",
@@ -14426,7 +14424,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -60
+          "amount": -12
         },
         "name": "enemyArchetypes.unicorn.horn.name",
         "msg": "enemyArchetypes.unicorn.horn.msg",
@@ -14443,7 +14441,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.unicorn.body.name",
         "msg": "enemyArchetypes.unicorn.body.msg",
@@ -14460,7 +14458,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.unicorn.left_leg.name",
         "msg": "enemyArchetypes.unicorn.left_leg.msg",
@@ -14477,7 +14475,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.unicorn.right_leg.name",
         "msg": "enemyArchetypes.unicorn.right_leg.msg",
@@ -14493,7 +14491,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.unicorn.hind_left_leg.name",
         "msg": "enemyArchetypes.unicorn.hind_left_leg.msg",
@@ -14509,7 +14507,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.unicorn.hind_right_leg.name",
         "msg": "enemyArchetypes.unicorn.hind_right_leg.msg",
@@ -14525,7 +14523,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -20
+          "amount": -2
         },
         "name": "enemyArchetypes.unicorn.tail.name",
         "msg": "enemyArchetypes.unicorn.tail.msg",
@@ -14538,7 +14536,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.unicorn.mouth.name",
         "msg": "enemyArchetypes.unicorn.mouth.msg",
@@ -14608,7 +14606,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.hellhound.head.name",
         "msg": "enemyArchetypes.hellhound.head.msg",
@@ -14625,7 +14623,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -20
+          "amount": -4
         },
         "name": "enemyArchetypes.hellhound.collar.name",
         "msg": "enemyArchetypes.hellhound.collar.msg",
@@ -14641,7 +14639,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -35
+          "amount": -7
         },
         "name": "enemyArchetypes.hellhound.body.name",
         "msg": "enemyArchetypes.hellhound.body.msg",
@@ -14657,7 +14655,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.hellhound.left_leg.name",
         "msg": "enemyArchetypes.hellhound.left_leg.msg",
@@ -14673,7 +14671,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.hellhound.right_leg.name",
         "msg": "enemyArchetypes.hellhound.right_leg.msg",
@@ -14689,7 +14687,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.hellhound.hind_left_leg.name",
         "msg": "enemyArchetypes.hellhound.hind_left_leg.msg",
@@ -14706,7 +14704,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -7.5
+          "amount": -1
         },
         "name": "enemyArchetypes.hellhound.hind_right_leg.name",
         "msg": "enemyArchetypes.hellhound.hind_right_leg.msg",
@@ -14719,7 +14717,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.hellhound.maw.name",
         "msg": "enemyArchetypes.hellhound.maw.msg",
@@ -14796,7 +14794,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.wingeddemon.head.name",
         "msg": "enemyArchetypes.wingeddemon.head.msg",
@@ -14813,7 +14811,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -17.5
+          "amount": -2
         },
         "name": "enemyArchetypes.wingeddemon.left_wing.name",
         "msg": "enemyArchetypes.wingeddemon.left_wing.msg",
@@ -14830,7 +14828,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -17.5
+          "amount": -2
         },
         "name": "enemyArchetypes.wingeddemon.right_wing.name",
         "msg": "enemyArchetypes.wingeddemon.right_wing.msg",
@@ -14846,7 +14844,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.wingeddemon.tail.name",
         "msg": "enemyArchetypes.wingeddemon.tail.msg",
@@ -14863,7 +14861,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -60
+          "amount": -12
         },
         "name": "enemyArchetypes.wingeddemon.core.name",
         "msg": "enemyArchetypes.wingeddemon.core.msg",
@@ -14876,7 +14874,7 @@
         "canCutoff": true,
         "statEffect": {
           "param": 2,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.wingeddemon.claws.name",
         "msg": "enemyArchetypes.wingeddemon.claws.msg",
@@ -14890,7 +14888,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.wingeddemon.maw.name",
         "msg": "enemyArchetypes.wingeddemon.maw.msg"
@@ -14942,14 +14940,14 @@
         "hpPercent": 50,
         "vital": false,
         "skillId": [
-          54,
-          34,
-          890
+          352,
+          311,
+          326
         ],
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -40
+          "amount": -8
         },
         "name": "enemyArchetypes.trashcreature.trash_pile.name",
         "msg": "enemyArchetypes.trashcreature.trash_pile.msg",
@@ -14958,11 +14956,14 @@
       "LIMBS": {
         "hpPercent": 25,
         "vital": false,
-        "skillId": 0,
+        "skillId": [
+          342,
+          350
+        ],
         "canCutoff": true,
         "statEffect": {
           "param": 6,
-          "amount": -30
+          "amount": -3
         },
         "name": "enemyArchetypes.trashcreature.limbs.name",
         "msg": "enemyArchetypes.trashcreature.limbs.msg",
@@ -14973,14 +14974,12 @@
         "hpPercent": 15,
         "vital": false,
         "skillId": [
-          310,
-          265,
-          1266
+          310
         ],
         "canCutoff": true,
         "statEffect": {
           "param": 3,
-          "amount": -25
+          "amount": -2
         },
         "name": "enemyArchetypes.trashcreature.eyes.name",
         "msg": "enemyArchetypes.trashcreature.eyes.msg",
@@ -14990,14 +14989,12 @@
         "hpPercent": 10,
         "vital": true,
         "skillId": [
-          307,
-          1737,
-          561
+          307
         ],
         "canCutoff": false,
         "statEffect": {
           "param": 0,
-          "amount": -50
+          "amount": -10
         },
         "name": "enemyArchetypes.trashcreature.heart.name",
         "msg": "enemyArchetypes.trashcreature.heart.msg",
@@ -15010,7 +15007,7 @@
         "canCutoff": false,
         "statEffect": {
           "param": 2,
-          "amount": -10
+          "amount": -1
         },
         "name": "enemyArchetypes.trashcreature.maw.name",
         "msg": "enemyArchetypes.trashcreature.maw.msg"

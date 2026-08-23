@@ -113,7 +113,7 @@
     const MBM = {};
     window.MapBattleMode = MBM;
 
-    const MOVE_AGI_DIVISOR = 5;
+    const MOVE_AGI_DIVISOR = 2.5;
     // Movement points a single water tile costs. Land is 1, so swimming across
     // even a narrow river eats most of an ordinary turn's allowance.
     const WATER_MOVE_COST = 3;
@@ -2009,7 +2009,7 @@
         const character = MBM.mapCharacterFor(actor);
         if (!character) { SoundManager.playBuzzer(); MBM._cmdWindow.activate(); return; }
 
-        const range = Math.max(1, Math.floor(actor.agi / MOVE_AGI_DIVISOR));
+        const range = Math.max(3, Math.floor(actor.agi / MOVE_AGI_DIVISOR));
         const { dist, prev } = MBM._bfsReachable(character, range);
         const coords = [...dist.keys()]
             .filter(k => dist.get(k) > 0)
@@ -2216,7 +2216,7 @@
             manhattan(x, y, t.x, t.y) <= attackRange &&
             MBM.hasLineOfSight(x, y, t.x, t.y, blockers));
 
-        const moveRange = Math.max(1, Math.floor(subject.agi / MOVE_AGI_DIVISOR));
+        const moveRange = Math.max(3, Math.floor(subject.agi / MOVE_AGI_DIVISOR));
         const { dist, prev } = MBM._bfsReachable(character, moveRange);
 
         let bestKey = null;
@@ -2289,7 +2289,28 @@
         const troop = troopId > 0 ? $dataTroops[troopId] : null;
         if (!troop || !troop.members || troop.members.length === 0) return false;
 
+        const BSE = window.BattleSystemEnhanced;
+        if (BSE && BSE.Helpers && BSE.Helpers.isTroopMuchHigherLevel) {
+            const partyLevel = BSE.Helpers.getPartyReferenceLevel ? BSE.Helpers.getPartyReferenceLevel() : 1;
+            // High-level roaming enemies do not join running battles
+            if (BSE.Helpers.isTroopMuchHigherLevel(troopId, partyLevel)) return false;
+            // Battles against high-level enemies do not drag in other roaming enemies
+            if (MBM._combatEnemyEvents && MBM._combatEnemyEvents.some(entry => BSE.Helpers.isTroopMuchHigherLevel(entry.troopId, partyLevel))) {
+                return false;
+            }
+        }
+
         const persistentId = `${$gameMap.mapId()}_${event.eventId()}`;
+        // The brawl only grows as far as the party can answer it. A character
+        // travelling alone is held to a smaller crowd than a full party, and a
+        // summon does not count as a second traveller, so a monster wandering
+        // past can never turn a lone fight into an execution.
+        if (BSE && BSE.Helpers && BSE.Helpers.maxEnemiesForParty) {
+            const standing = $gameTroop.members().filter(e => e && e.isAlive()).length;
+            const arriving = troop.members.filter(m => $dataEnemies[m.enemyId]).length;
+            if (standing + arriving > BSE.Helpers.maxEnemiesForParty()) return false;
+        }
+
         const stored = MBM._persistentHpFor(persistentId);
         const added = [];
         troop.members.forEach((member, index) => {

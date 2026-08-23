@@ -1,14 +1,25 @@
 {
   "LemonCorp": {
     "name": "LemonCorp",
+    "ticker": "LMON",
     "sector": "Consumer Tech",
     "sharePrice": 45,
     "totalShares": 500000,
     "color": "#e0b000",
     "description": "RealEstate.company.lemoncorp.description"
   },
+  "LimeCorp": {
+    "name": "LimeCorp",
+    "ticker": "LIME",
+    "sector": "Consumer Tech",
+    "sharePrice": 62,
+    "totalShares": 400000,
+    "color": "#8bc34a",
+    "description": "RealEstate.company.limecorp.description"
+  },
   "PetroDyne": {
     "name": "PetroDyne",
+    "ticker": "PTRO",
     "sector": "Energy",
     "sharePrice": 120,
     "totalShares": 800000,
@@ -17,6 +28,7 @@
   },
   "SoulForge": {
     "name": "SoulForge Ltd.",
+    "ticker": "SFRG",
     "sector": "Occult",
     "sharePrice": 88,
     "totalShares": 300000,
@@ -25,6 +37,7 @@
   },
   "HyperNet Systems": {
     "name": "HyperNet Systems",
+    "ticker": "HYPR",
     "sector": "Telecom",
     "sharePrice": 210,
     "totalShares": 650000,
@@ -33,6 +46,7 @@
   },
   "Ferro Steelworks": {
     "name": "Ferro Steelworks",
+    "ticker": "FERO",
     "sector": "Industrial",
     "sharePrice": 34,
     "totalShares": 1200000,
@@ -41,6 +55,7 @@
   },
   "GreenWitch Organics": {
     "name": "GreenWitch Organics",
+    "ticker": "GRWO",
     "sector": "Agriculture",
     "sharePrice": 27,
     "totalShares": 900000,
@@ -49,6 +64,7 @@
   },
   "Vault Bank Holdings": {
     "name": "Vault Bank Holdings",
+    "ticker": "VLTB",
     "sector": "Finance",
     "sharePrice": 305,
     "totalShares": 400000,
@@ -57,6 +73,7 @@
   },
   "Aether Logistics": {
     "name": "Aether Logistics",
+    "ticker": "AETH",
     "sector": "Transport",
     "sharePrice": 62,
     "totalShares": 700000,

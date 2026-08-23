@@ -47,17 +47,14 @@
     };
 
     // Force the escape ratio to 100% and delegate to the vanilla processEscape
-    // so the standard "escaped" message still displays (the previous
-    // reimplementation dropped it by never calling the original). Down in the
-    // dungeon the ratio is left alone: whatever it was rolled at when the fight
-    // started, plus whatever failed attempts have added to it since.
+    // so the standard "escaped" message still displays. Escaping always succeeds
+    // no matter what, and resets any active arena streak.
     var _BattleManager_processEscape = BattleManager.processEscape;
     BattleManager.processEscape = function() {
-        if (troopHasBoss()) {
-            this.displayBossEscapeBlockedMessage();
-            return false;
+        this._escapeRatio = 1.0;
+        if (window.ArenaBattleHandler && typeof window.ArenaBattleHandler.setArenaStreak === "function") {
+            window.ArenaBattleHandler.setArenaStreak(0);
         }
-        if (!escapeIsContested()) this._escapeRatio = 1.0;
         return _BattleManager_processEscape.call(this);
     };
 

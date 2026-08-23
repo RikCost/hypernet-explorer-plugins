@@ -3728,8 +3728,212 @@
     return _Game_Player_canMove.call(this);
   };
 
+  //=============================================================================
+  // Day / night lighting solve
+  //
+  // The clock is the only thing that knows what time it is, so it is also the
+  // thing that answers "what does the light look like right now". The answer is
+  // pure numbers (colours, a direction, intensities) with no renderer in sight:
+  // the 3D battle scene and the first person weapon overlay each build their own
+  // three.js rig from it, so one curve drives both and they can never disagree.
+  //
+  // Everything below the marker comments is lifted verbatim by
+  // test/test_daynight_lighting.js, so it must stay self contained.
+  // --- daynight-solver:begin ---
+  function ddnLerp(a, b, t) { return a + (b - a) * t; }
+
+  function ddnMixColor(a, b, t) {
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    return ((Math.round(ddnLerp(ar, br, t)) << 16) |
+            (Math.round(ddnLerp(ag, bg, t)) << 8) |
+             Math.round(ddnLerp(ab, bb, t))) >>> 0;
+  }
+
+  // Sampled, not bucketed: the light slides through dawn and dusk instead of
+  // stepping, which is what makes a shadow crawl across the field rather than
+  // jump. Daylight and deep night are near flat stretches, so the interesting
+  // keyframes are packed around the two horizons.
+  const DDN_KEYFRAMES = [
+    { h: 0.0,  key: 0x4a5c8c, ki: 0.22, sky: 0x1b2440, gnd: 0x0d1018, ai: 0.30, sh: 0.20 },
+    { h: 4.5,  key: 0x53608f, ki: 0.26, sky: 0x2a3358, gnd: 0x141826, ai: 0.32, sh: 0.22 },
+    { h: 6.0,  key: 0xd98a5a, ki: 0.55, sky: 0x6b6d94, gnd: 0x3b3348, ai: 0.42, sh: 0.34 },
+    { h: 7.5,  key: 0xffb877, ki: 0.95, sky: 0x9fb6d8, gnd: 0x6b5f52, ai: 0.50, sh: 0.56 },
+    { h: 12.0, key: 0xfff6e2, ki: 1.15, sky: 0xbcd6f5, gnd: 0x8d8577, ai: 0.58, sh: 0.72 },
+    { h: 16.5, key: 0xffdca8, ki: 1.00, sky: 0xaec8ea, gnd: 0x87786a, ai: 0.54, sh: 0.64 },
+    { h: 18.5, key: 0xff9247, ki: 0.62, sky: 0x8a7fa4, gnd: 0x4d3f4a, ai: 0.44, sh: 0.38 },
+    { h: 20.0, key: 0x6a6396, ki: 0.30, sky: 0x333a63, gnd: 0x1a1c2c, ai: 0.34, sh: 0.23 },
+    { h: 24.0, key: 0x4a5c8c, ki: 0.22, sky: 0x1b2440, gnd: 0x0d1018, ai: 0.30, sh: 0.20 },
+  ];
+
+  // Indoors the sky is a ceiling: one warm lamp almost overhead, no horizon
+  // colour and a short soft shadow, held steady whatever the clock says.
+  const DDN_INTERIOR = {
+    key: 0xffe9c8, ki: 0.62, sky: 0x5b554b, gnd: 0x2a2622, ai: 0.52, sh: 0.34,
+  };
+
+  function solveDayNightLight(hourFloat, opts) {
+    opts = opts || {};
+    let h = Number(hourFloat);
+    if (!isFinite(h)) h = 12;
+    h = ((h % 24) + 24) % 24;
+
+    // The sun and the moon ride the same arc twelve hours apart, so one sweep
+    // covers both: 0 at 06:00 rising in the east, 1 at 18:00 setting in the
+    // west, then the moon takes the next lap. That is what walks the shadow
+    // across the ground over the course of a day.
+    const arc = ((((h - 6) / 12) % 2) + 2) % 2;
+    const a = arc < 1 ? arc : arc - 1;
+    const elevation = Math.sin(Math.PI * a);
+    const night = arc >= 1 ? 1 : Math.max(0, Math.min(1, 1 - elevation * 2.2));
+
+    let dx = Math.cos(Math.PI * a);
+    // Never let the key light sink below the floor: a light under the ground
+    // plane lights the battlers from beneath and throws the shadow up the
+    // screen. It flattens towards the horizon instead.
+    let dy = 0.18 + 0.82 * Math.max(0, elevation);
+    let dz = 0.45;
+    const len = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1;
+    dx /= len; dy /= len; dz /= len;
+
+    let kf;
+    if (opts.interior) {
+      kf = DDN_INTERIOR;
+    } else {
+      let i = 0;
+      while (i < DDN_KEYFRAMES.length - 2 && DDN_KEYFRAMES[i + 1].h <= h) i++;
+      const A = DDN_KEYFRAMES[i], B = DDN_KEYFRAMES[i + 1];
+      const span = B.h - A.h;
+      const t = span > 0 ? (h - A.h) / span : 0;
+      kf = {
+        key: ddnMixColor(A.key, B.key, t),
+        ki: ddnLerp(A.ki, B.ki, t),
+        sky: ddnMixColor(A.sky, B.sky, t),
+        gnd: ddnMixColor(A.gnd, B.gnd, t),
+        ai: ddnLerp(A.ai, B.ai, t),
+        sh: ddnLerp(A.sh, B.sh, t),
+      };
+    }
+
+    let keyColor = kf.key, keyIntensity = kf.ki, shadowOpacity = kf.sh;
+    let skyColor = kf.sky, groundColor = kf.gnd, ambientIntensity = kf.ai;
+
+    if (opts.interior) {
+      dx = 0.32; dy = 0.90; dz = 0.29;
+    }
+
+    // Cloud pulls the key light apart and hands it to the sky: the direct beam
+    // fades, the shadow softens away and the ambient picks the difference up,
+    // which is why an overcast field reads flat rather than merely darker.
+    const overcast = Math.max(0, Math.min(1, Number(opts.overcast) || 0));
+    if (overcast > 0) {
+      keyColor = ddnMixColor(keyColor, skyColor, overcast * 0.6);
+      keyIntensity *= 1 - 0.6 * overcast;
+      shadowOpacity *= 1 - 0.85 * overcast;
+      ambientIntensity *= 1 + 0.25 * overcast;
+    }
+
+    return {
+      hour: h,
+      night: night,
+      elevation: elevation,
+      dir: { x: dx, y: dy, z: dz },
+      keyColor: keyColor,
+      keyIntensity: keyIntensity,
+      skyColor: skyColor,
+      groundColor: groundColor,
+      ambientIntensity: ambientIntensity,
+      shadowOpacity: shadowOpacity,
+    };
+  }
+  // --- daynight-solver:end ---
+
+  // How many in game minutes share one lighting answer. The solve is cheap but
+  // the rigs downstream are not (a changed light means new uniforms, and a new
+  // environment map means a GPU pass), so both sides key off this bucket and do
+  // nothing at all on the frames in between. Three minutes is far below what
+  // the eye can catch and still collapses a whole battle into a handful of
+  // recomputes.
+  // The runtime layer, extracted by the same test as the solver above. It is
+  // kept free of any direct global reads (the clock and the battle-test flag
+  // both arrive as functions from the enclosing plugin scope) so the harness
+  // can drive it with stubs.
+  // --- daynight-runtime:begin ---
+  const DDN_QUANT_MINUTES = 3;
+  let _ddnCache = null;
+  let _ddnCacheKey = -1;
+
+  function ddnConditions() {
+    let interior = false;
+    let overcast = 0;
+    let forced = '';
+    let battleTest = false;
+    try {
+      // A battle launched straight from the editor has no world around it:
+      // the clock reads zero, which is the small hours, and the fight being
+      // tested comes up in the dark. Test mode is for looking at the battle,
+      // so it gets a clear midday and none of the map's weather.
+      if (typeof DataManager !== 'undefined' && DataManager && DataManager.isBattleTest) {
+        battleTest = !!DataManager.isBattleTest();
+      }
+    } catch (e) { /* not running under RMMZ */ }
+    if (battleTest) return { interior: false, overcast: 0, forced: '', battleTest: true };
+    try {
+      // Battle borrows the map's roof: an interior fight is lit by the same
+      // lamp the room outside the fight was lit by.
+      if (typeof $gameMap !== 'undefined' && $gameMap && $gameMap.isInterior) {
+        interior = !!$gameMap.isInterior();
+      }
+      const w = typeof $gameWeather !== 'undefined' ? $gameWeather : null;
+      if (w) {
+        if (w.forcedLighting === 'dark' || w.forcedLighting === 'light') forced = w.forcedLighting;
+        const type = String(w.currentWeather || w._currentWeather || '').toLowerCase();
+        if (/storm|thunder/.test(type)) overcast = 0.85;
+        else if (/rain|snow|hail/.test(type)) overcast = 0.65;
+        else if (/cloud|fog|mist|overcast/.test(type)) overcast = 0.4;
+      }
+    } catch (e) { /* asked before the map or the weather exists */ }
+    return { interior, overcast, forced, battleTest: false };
+  }
+
+  // The one entry point every 3D rig calls, once a frame. Answers from cache
+  // unless the clock has moved into a new bucket, and stamps each answer with a
+  // `key` so a caller can skip its own work with a single integer compare.
+  function getDayNightLight() {
+    const minutes = getGameTimeMinutes();
+    const c = ddnConditions();
+    const bucket = c.battleTest ? 0 : Math.floor(minutes / DDN_QUANT_MINUTES);
+    const cacheKey = bucket * 8 + (c.interior ? 4 : 0) +
+      (c.forced === 'dark' ? 1 : c.forced === 'light' ? 2 : 0) +
+      Math.round(c.overcast * 3) * 65536 + (c.battleTest ? 1048576 : 0);
+    if (_ddnCache && cacheKey === _ddnCacheKey) return _ddnCache;
+
+    // A forced lighting override pins the clock rather than the colours, so
+    // the direction of the light stays consistent with everything else.
+    let hourFloat;
+    if (c.battleTest || c.forced === 'light') hourFloat = 12;
+    else if (c.forced === 'dark') hourFloat = 0;
+    else {
+      // Asked of the clock itself, never worked out from elapsed minutes: the
+      // epoch is 10:00 on 2001-01-01, not midnight, so minutes-since-start and
+      // hour-of-day are ten hours apart. Deriving it here by hand also drifted
+      // from the clock the HUD prints across a DST boundary.
+      const now = getCurrentDateObj();
+      hourFloat = now.getHours() + now.getMinutes() / 60;
+    }
+
+    const solved = solveDayNightLight(hourFloat, c);
+    solved.key = cacheKey;
+    _ddnCacheKey = cacheKey;
+    _ddnCache = solved;
+    return solved;
+  }
+  // --- daynight-runtime:end ---
+
   // Expose globals for use by other plugins
   window.TimeDateSystem = window.TimeDateSystem || {};
+  window.TimeDateSystem.getDayNightLight = getDayNightLight;
+  window.TimeDateSystem.solveDayNightLight = solveDayNightLight;
   window.TimeDateSystem.maxHunger = maxHunger;
   window.TimeDateSystem.maxSleep = maxSleep;
   // Ceiling shared by the extended needs (Hygiene / Social / Fun).

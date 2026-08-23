@@ -18,9 +18,12 @@
  * it out of the party's inventory; pulling it back out returns it. The deck is
  * shared by the whole party and lives in the savegame.
  *
- * Powering the deck on runs a POST. It fails when a required kind of component
- * is missing, or when the fitted parts draw more power than the cell can give.
- * On success it opens Scene_HypernetOS. Every other route into the OS (events,
+ * Powering the deck on runs a POST. It fails on two things only: a required
+ * kind of component missing (cpu, ram, storage, display, battery), or the
+ * fitted parts drawing more power than the cell can give. Where a part sits on
+ * the board never matters, and a graphics adapter is an upgrade rather than a
+ * requirement: with none fitted the processor drives the panel itself out of a
+ * slice of main memory. On success it opens Scene_HypernetOS. Every other route into the OS (events,
  * the W hotkey, the shop and browser plugin commands) is unchanged and shows
  * no boot at all: the boot belongs to the machine, not to the desktop.
  *
@@ -33,14 +36,18 @@
  *                          mb (storage MB), vram (MB), mah, watt.
  *                          A negative watt is a supply, not a draw.
  *                          ram -1 means unbounded (the paradox part).
+ *   <Refurbished>          pre-Y2K stock, sold on second hand
  *
  * Exposes window.HyperDeck:
  *   deck()            the saved deck record
  *   caseDef()         its case definition, from HyperDeckModels
  *   parts()           the fitted parts, resolved
- *   specs()           { mhz, ram, mb, vram, mah, draw, kinds, cells, used }
+ *   specs()           { mhz, ram, mb, vram, shared, mah, draw, supply,
+ *                     kinds, cells, used }
  *   missingKinds()    required kinds with nothing fitted
  *   canBoot()         true when the POST would pass
+ *   summary()         the machine's statistics, as the desktop prints them
+ *   performanceIndex() / enduranceHours()   one number each, off the pieces
  *   canPlace(itemId, c, r, rot)
  *   place(itemId, c, r, rot, fromInventory)
  *   removeAt(c, r)    pulls the part under that cell back into the inventory
@@ -109,6 +116,9 @@
             id: itemId,
             kind: kind,
             nature: natureMatch ? natureMatch[1] : 'Mundane',
+            // Pre-Y2K stock, refurbished and sold on: the cheap end of every
+            // shelf, and what a second-hand deck is mostly built out of.
+            refurb: /<Refurbished>/i.test(item.note),
             mask: mask,
             w: width,
             h: mask.length,
@@ -170,13 +180,13 @@
             const models = window.HyperDeckModels;
             this._hyperdeck = {
                 caseId: models ? models.CASES[0].id : '',
-                placed: [],
-                traces: {}
+                placed: []
             };
         }
         if (!Array.isArray(this._hyperdeck.placed)) this._hyperdeck.placed = [];
-        // Saves made before the board had wiring on it get an empty net.
-        if (!this._hyperdeck.traces) this._hyperdeck.traces = {};
+        // Saves made while the board still had wiring on it drop it here: the
+        // machine no longer asks anything of where a run was drawn.
+        if (this._hyperdeck.traces) delete this._hyperdeck.traces;
         return this._hyperdeck;
     };
 
@@ -240,7 +250,6 @@
             $gameParty.loseItem(item, 1);
         }
         deck().placed.push({ itemId: itemId, c: c, r: r, rot: ((rot % 4) + 4) % 4 });
-        pruneTraces();
         return true;
     }
 
@@ -261,223 +270,37 @@
     }
 
     //=========================================================================
-    // Pins and traces
+    // Wiring
     //=========================================================================
-    // A board is not just a box parts fit into: they have to reach each other.
-    // Two signals travel on it. POWER, which every part wants, and VIDEO, which
-    // only a panel wants and only a graphics adapter or a home-etched die can
-    // give. Anything else about a part is its own business.
+    // There is none to draw. A board is a box parts sit in: seat a part
+    // anywhere it fits and it is wired, the way a socketed board has always
+    // been. What decides whether the machine runs is what is on it and what
+    // the cell can carry, nothing about where the pieces happen to sit.
     //
-    // Parts whose footprints touch are wired to each other by that alone, which
-    // is how a tightly packed board has always worked and why an old save still
-    // boots. A trace is for the gap between two parts that cannot touch: draw
-    // one across the empty cells and the two ends are on the same net.
-    // i18n-ignore-start  signal ids, labels come from HyperDeck.signal.*
-    const SIGNALS = ['power', 'video'];
-    const SIGNAL_SOURCES = { battery: ['power'], gpu: ['video'] };
-    const SIGNAL_SINKS = {
-        cpu: ['power'], ram: ['power'], storage: ['power'], gpu: ['power'],
-        display: ['power', 'video'], battery: [], modem: ['power'],
-        cooling: ['power'], sound: ['power'], sensor: ['power']
-    };
-    // i18n-ignore-end
+    // Video is part of that: a graphics adapter is an upgrade, never a
+    // requirement. With none fitted the processor drives the panel itself out
+    // of a slice of main memory, which is what an integrated chipset does.
 
-    // What a single fitted record puts on the board and takes off it. A die
-    // etched in the chip lab answers for itself: whatever its design drives out
-    // of an output pin is what it can feed a panel with.
-    function partSignals(rec) {
-        const parsedItem = parseComponent(rec.itemId);
-        if (!parsedItem) return { provides: [], needs: [] };
-        const die = chipDies()[rec.itemId];
-        const provides = (SIGNAL_SOURCES[parsedItem.kind] || []).slice();
-        if (die && die.drivesVideo) provides.push('video');
-        return { provides: provides, needs: (SIGNAL_SINKS[parsedItem.kind] || []).slice() };
+    // How much main memory the processor lends the panel when nothing else is
+    // driving it. A mundane die of the period could spare a few megabytes; an
+    // arcane one is not held to the period at all.
+    function integratedVram(cpuPart) {
+        if (!cpuPart) return 0;
+        const mhz = cpuPart.specs.mhz || 0;
+        const cap = cpuPart.nature === 'Mundane' ? 8 : 32;
+        return Math.max(1, Math.min(cap, Math.round(mhz / 125)));
     }
 
-    function traces() {
-        const d = deck();
-        if (!d) return {};
-        if (!d.traces) d.traces = {};
-        return d.traces;
-    }
-
-    function traceAt(c, r) { return traces()[c + ',' + r] || null; }
-
-    // A trace only goes on an empty, unblocked cell: it is the wiring between
-    // parts, never underneath one.
-    function canTrace(c, r) {
-        const def = caseDef();
-        if (c < 0 || r < 0 || c >= def.cols || r >= def.rows) return false;
-        if (blockedKey(def)[c + ',' + r]) return false;
-        return !occupancy()[c + ',' + r];
-    }
-
-    function setTrace(c, r, signal) {
-        if (!canTrace(c, r)) return false;
-        const t = traces();
-        const key = c + ',' + r;
-        if (!signal) {
-            if (!t[key]) return false;
-            delete t[key];
-            return true;
-        }
-        if (t[key] === signal) return false;
-        t[key] = signal;
-        return true;
-    }
-
-    // Traces left under a part that was just fitted, or hanging off a board
-    // that changed shape, are swept up rather than left invisible and live.
-    function pruneTraces() {
-        const t = traces();
-        Object.keys(t).forEach(key => {
-            const [c, r] = key.split(',').map(Number);
-            if (!canTrace(c, r)) delete t[key];
+    // The fastest processor fitted, which is the one that would be driving
+    // anything the deck does not have a dedicated part for.
+    function mainCpuPart() {
+        let best = null;
+        (deck() ? deck().placed : []).forEach(rec => {
+            const part = parseComponent(rec.itemId);
+            if (!part || part.kind !== 'cpu') return;
+            if (!best || (part.specs.mhz || 0) > (best.specs.mhz || 0)) best = part;
         });
-    }
-
-    // Every cell that carries `signal`, and what sits on it: a part record, or
-    // null for a bare trace. Touching parts share cells with nobody, so the
-    // flood below is what joins them.
-    function signalCells(signal) {
-        const cells = {};
-        const occ = occupancy();
-        Object.keys(occ).forEach(key => {
-            const rec = occ[key];
-            const sig = partSignals(rec);
-            // A part is on a net if it either feeds it or drinks from it. A
-            // part that wants nothing to do with a signal is not a wire for it
-            // either, which is what stops a cooling fin bridging a video line.
-            if (sig.provides.indexOf(signal) >= 0 || sig.needs.indexOf(signal) >= 0) {
-                cells[key] = rec;
-            }
-        });
-        const t = traces();
-        Object.keys(t).forEach(key => { if (t[key] === signal) cells[key] = null; });
-        return cells;
-    }
-
-    // Flood fill over the cells of one signal, four ways. Returns each cell's
-    // group number, so two parts are wired together when they share one.
-    function signalNets(signal) {
-        const cells = signalCells(signal);
-        const group = {};
-        let next = 0;
-        Object.keys(cells).forEach(start => {
-            if (group[start] !== undefined) return;
-            const id = next++;
-            const queue = [start];
-            group[start] = id;
-            for (let head = 0; head < queue.length; head++) {
-                const [c, r] = queue[head].split(',').map(Number);
-                [[0, -1], [1, 0], [0, 1], [-1, 0]].forEach(([dc, dr]) => {
-                    const key = (c + dc) + ',' + (r + dr);
-                    if (!(key in cells) || group[key] !== undefined) return;
-                    group[key] = id;
-                    queue.push(key);
-                });
-            }
-        });
-        return { cells: cells, group: group };
-    }
-
-    // Which groups of this signal have something feeding them.
-    function poweredNets(signal) {
-        const net = signalNets(signal);
-        const live = {};
-        Object.keys(net.cells).forEach(key => {
-            const rec = net.cells[key];
-            if (!rec) return;
-            if (partSignals(rec).provides.indexOf(signal) >= 0) live[net.group[key]] = true;
-        });
-        return { net: net, live: live };
-    }
-
-    // Every fitted part that wants a signal nothing is giving it. One entry per
-    // part and signal, which is exactly what the fault list wants to print.
-    function unfedParts() {
-        const d = deck();
-        if (!d || !d.placed.length) return [];
-        const out = [];
-        const bySignal = {};
-        SIGNALS.forEach(signal => { bySignal[signal] = poweredNets(signal); });
-        d.placed.forEach(rec => {
-            const parsedItem = parseComponent(rec.itemId);
-            if (!parsedItem) return;
-            partSignals(rec).needs.forEach(signal => {
-                const { net, live } = bySignal[signal];
-                const cells = maskCells(rotateMask(parsedItem.mask, rec.rot));
-                const fed = cells.some(([dc, dr]) => {
-                    const key = (rec.c + dc) + ',' + (rec.r + dr);
-                    return live[net.group[key]];
-                });
-                if (!fed) out.push({ rec: rec, kind: parsedItem.kind, signal: signal });
-            });
-        });
-        return out;
-    }
-
-    // A trace path over free, unblocked cells from any cell in `fromCells` to
-    // any cell in `toCells`, shortest first. Used to hand the factory-rolled
-    // deck a video line it never has to be told to draw: a graphics adapter
-    // that ships fitted but pointing the wrong way would fail its own POST
-    // for a reason the player never touched.
-    function traceVideoPath(fromCells, toCells) {
-        const toSet = {};
-        toCells.forEach(key => { toSet[key] = true; });
-        const NEIGHBOURS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
-        const visited = {};
-        const prev = {};
-        const queue = [];
-        fromCells.forEach(key => {
-            const [c, r] = key.split(',').map(Number);
-            NEIGHBOURS.forEach(([dc, dr]) => {
-                const nc = c + dc, nr = r + dr, nk = nc + ',' + nr;
-                if (!visited[nk] && canTrace(nc, nr)) { visited[nk] = true; queue.push(nk); }
-            });
-        });
-        let goal = null;
-        for (let head = 0; head < queue.length && !goal; head++) {
-            const cur = queue[head];
-            const [c, r] = cur.split(',').map(Number);
-            if (NEIGHBOURS.some(([dc, dr]) => toSet[(c + dc) + ',' + (r + dr)])) { goal = cur; break; }
-            NEIGHBOURS.forEach(([dc, dr]) => {
-                const nc = c + dc, nr = r + dr, nk = nc + ',' + nr;
-                if (!visited[nk] && canTrace(nc, nr)) { visited[nk] = true; prev[nk] = cur; queue.push(nk); }
-            });
-        }
-        if (!goal) return false;
-        for (let cur = goal; cur; cur = prev[cur]) {
-            const [c, r] = cur.split(',').map(Number);
-            setTrace(c, r, 'video');
-        }
-        return true;
-    }
-
-    // Wires every fitted gpu to the panel when the board did not happen to
-    // pack them touching. A factory deck always ships with a graphics
-    // adapter now, so this is what makes sure it always actually feeds one:
-    // otherwise a GPU sitting one cell short of the panel would still fail
-    // its first POST for a wiring gap nobody drew on purpose.
-    function autoWireVideo() {
-        const d = deck();
-        if (!d) return;
-        const gpuCells = [];
-        d.placed.forEach(rec => {
-            const parsedItem = parseComponent(rec.itemId);
-            if (parsedItem && parsedItem.kind === 'gpu') {
-                maskCells(rotateMask(parsedItem.mask, rec.rot)).forEach(([dc, dr]) => {
-                    gpuCells.push((rec.c + dc) + ',' + (rec.r + dr));
-                });
-            }
-        });
-        if (!gpuCells.length) return;
-        unfedParts().filter(bad => bad.signal === 'video').forEach(bad => {
-            const parsedItem = parseComponent(bad.rec.itemId);
-            const targetCells = maskCells(rotateMask(parsedItem.mask, bad.rec.rot))
-                .map(([dc, dr]) => (bad.rec.c + dc) + ',' + (bad.rec.r + dr));
-            traceVideoPath(gpuCells, targetCells);
-        });
+        return best;
     }
 
     //=========================================================================
@@ -505,6 +328,18 @@
             if (s.watt > 0) totals.draw += s.watt;
             else if (s.watt < 0) totals.supply += -s.watt;
         });
+        // No adapter on the board: the processor drives the panel out of a
+        // slice of main memory, so the video the machine has is real, it is
+        // just borrowed. The slice comes off the memory total the same way it
+        // would on any integrated chipset.
+        totals.shared = 0;
+        if (!kinds.gpu && kinds.cpu) {
+            totals.shared = integratedVram(mainCpuPart());
+            totals.vram = totals.shared;
+            if (totals.ram !== Infinity) {
+                totals.ram = Math.max(0, totals.ram - totals.shared);
+            }
+        }
         const def = caseDef();
         const blocked = (def.blocked || []).length;
         totals.kinds = kinds;
@@ -512,6 +347,33 @@
         totals.cells = def.cols * def.rows - blocked;
         totals.caseId = def.id;
         return totals;
+    }
+
+    // How long the cell would run the board it is fitted to, in hours. Cells
+    // are quoted in mAh, so the pack voltage is what turns a capacity into a
+    // running time: 10.8 V, the three-cell pack every portable of the period
+    // was built around.
+    const PACK_VOLTS = 10.8;
+
+    function enduranceHours(s) {
+        const spec = s || specs();
+        if (!spec.mah || spec.draw <= 0) return 0;
+        return (spec.mah / 1000) * PACK_VOLTS / spec.draw;
+    }
+
+    // One number for "how good is this machine", so the desktop has something
+    // to print that moves when a part is swapped. Weighted the way a buyer of
+    // the period would have weighted it: clock first, then memory, then the
+    // adapter, then the disk.
+    function performanceIndex(s) {
+        const spec = s || specs();
+        const ram = spec.ram === Infinity ? 4096 : spec.ram;
+        return Math.round(
+            (spec.mhz || 0) / 10
+            + Math.min(1024, ram) / 4
+            + Math.min(1024, spec.vram || 0) * 1.5
+            + Math.min(1000000, spec.mb || 0) / 2000
+        );
     }
 
     function missingKinds() {
@@ -525,7 +387,7 @@
     }
 
     function canBoot() {
-        return missingKinds().length === 0 && !isOverdrawn() && unfedParts().length === 0;
+        return missingKinds().length === 0 && !isOverdrawn();
     }
 
     //=========================================================================
@@ -549,6 +411,10 @@
             const sorted = byKind[kind].slice().sort((a, b) => rankPart(a) - rankPart(b));
             const keep = Math.max(2, Math.ceil(sorted.length / 2));
             out.push.apply(out, sorted.slice(0, keep));
+            // Refurbished stock is in the pool whatever it ranks: a deck
+            // somebody else put together out of what was on the cheap shelf
+            // is mostly pre-Y2K parts, and that is what it should look like.
+            sorted.slice(keep).forEach(part => { if (part.refurb) out.push(part); });
         });
         // Nothing mundane of a kind at all: fall back rather than hand the
         // roller an empty pool it would silently skip.
@@ -598,13 +464,11 @@
         // factory with no processor on it at all.
         const wanted = REQUIRED.filter(kind => kind !== skipped);
         // The cell first, because every other part has to run off whatever it
-        // can give, then the rest. The graphics adapter rides along at the end
-        // unconditionally, never subject to the one-in-five skip: a panel with
-        // nothing to feed it a picture is not a deck someone else could ever
-        // have booted either, so a factory build always ships one fitted.
+        // can give, then the rest. Nothing else is guaranteed: a deck that
+        // ships without an adapter still boots, on the processor's own video,
+        // which is what most machines of the period did.
         const order = ['battery', 'display', 'cpu', 'storage', 'ram']
-            .filter(kind => wanted.indexOf(kind) >= 0)
-            .concat('gpu');
+            .filter(kind => wanted.indexOf(kind) >= 0);
         order.forEach((kind, i) => {
             const rest = order.slice(i + 1).map(k => byKind[k]);
             const reserve = rest.reduce((n, pool) => n + minArea(pool), 0);
@@ -620,17 +484,13 @@
         });
 
         // Extras, only while the board and the cell still have room for them.
-        ['cooling', 'sound', 'modem'].forEach(kind => {
+        ['gpu', 'cooling', 'sound', 'modem'].forEach(kind => {
             if (r() < 0.5) fitWithin(byKind[kind], r, freeCells(), false, true);
         });
         // A second memory module, often, because that is how memory works.
         if (r() < 0.45) fitWithin(byKind.ram, r, freeCells(), 0, true);
         // Nothing leaves the factory overdrawn.
         trimToPower();
-        // The pack rarely lands the adapter touching the panel by chance, so
-        // the video line is drawn by hand here rather than left to luck: a
-        // fitted gpu always reaches the panel on a fresh deck.
-        autoWireVideo();
         return d;
     }
 
@@ -653,10 +513,6 @@
             let worst = null;
             d.placed.forEach(rec => {
                 const part = parseComponent(rec.itemId);
-                // The graphics adapter is guaranteed hardware now, the same as
-                // the cell: trimming it back off the board to balance the
-                // budget would just reopen the panel's own POST failure.
-                if (part && part.kind === 'gpu') return;
                 const w = part ? (part.specs.watt || 0) : 0;
                 if (w > 0 && (!worst || w > worst.w)) worst = { rec: rec, w: w };
             });
@@ -837,11 +693,31 @@
         const s = specs();
         const cpu = partNameFor('cpu', 'mhz');
         const gpu = partNameFor('gpu', 'vram');
+        const modem = partNameFor('modem');
+        const sound = partNameFor('sound');
+        const hours = enduranceHours(s);
         return {
             processor: cpu ? cpu + ' (' + fmtMhz(s.mhz) + ')' : fmtMhz(s.mhz),
             memory: fmtRam(s.ram),
-            graphics: gpu ? gpu + ' (' + fmtMb(s.vram) + ')' : T('HyperDeck.value.none'),
+            // No adapter is not "no graphics": it is the processor doing it,
+            // which is worth saying in the words a spec sheet would use.
+            graphics: gpu ? gpu + ' (' + fmtMb(s.vram) + ')'
+                : s.shared ? T('HyperDeck.value.integrated', { n: s.shared })
+                    : T('HyperDeck.value.none'),
             storage: fmtStore(s.mb),
+            // Everything below is the machine standing in for what the desktop
+            // used to read off the party's own stats.
+            index: performanceIndex(s),
+            performance: T('HyperDeck.value.index', { n: performanceIndex(s) }),
+            thermals: !s.kinds.cooling
+                ? T('HyperDeck.value.passive', { n: s.draw })
+                : T('HyperDeck.value.cooled', { n: s.kinds.cooling, w: s.draw }),
+            endurance: hours
+                ? T('HyperDeck.value.hours', { n: Math.round(hours * 10) / 10 })
+                : T('HyperDeck.value.none'),
+            uplink: modem || T('HyperDeck.value.none'),
+            audio: sound || T('HyperDeck.value.beeper'),
+            board: T('HyperDeck.unit.cells', { used: s.used, total: s.cells }),
             // Draw over supply, the same way round as the deck panel and the
             // firmware screen. It used to read capacity over draw, which put
             // two different quantities on either side of the slash.
@@ -863,7 +739,6 @@
             if (item) $gameParty.gainItem(item, 1);
         });
         d.placed = [];
-        d.traces = {};
         return n;
     }
 
@@ -915,12 +790,7 @@
             if (present[kind]) return;
             if (fitBestCarried(carried[kind], freeCells(), true)) fitted++;
         });
-        const added = fitted + topUpPower();
-        // Same reason the factory roll needs it: auto-fit packs the gpu
-        // wherever it still fits, not necessarily touching the panel, so the
-        // video line has to be drawn by hand or the board fails its own POST.
-        autoWireVideo();
-        return added;
+        return fitted + topUpPower();
     }
 
     // Cells go on last as well as first. Whatever the finished board draws, the
@@ -983,17 +853,12 @@
         if (!s.kinds.cooling && s.draw >= 30) {
             out.push({ key: 'heat', text: T('HyperDeck.fault.heat', { n: s.draw }) });
         }
-        unfedParts().forEach(bad => {
-            out.push({
-                key: 'unfed',
-                text: T('HyperDeck.fault.unfed', {
-                    part: itemName($dataItems[bad.rec.itemId]),
-                    signal: T('HyperDeck.signal.' + bad.signal)
-                })
-            });
-        });
         if (!s.kinds.modem) out.push({ key: 'uplink', text: T('HyperDeck.fault.uplink') });
-        if (!s.kinds.gpu) out.push({ key: 'video', text: T('HyperDeck.fault.video') });
+        // Not a fault, a notice: the machine runs on the processor's own video
+        // and says how much memory that costs it.
+        if (!s.kinds.gpu && s.kinds.cpu) {
+            out.push({ key: 'video', text: T('HyperDeck.fault.integrated', { n: s.shared }) });
+        }
         if (s.ram !== Infinity && s.ram && s.ram < 64) {
             out.push({ key: 'memory', text: T('HyperDeck.fault.memory', { n: s.ram }) });
         }
@@ -2873,13 +2738,8 @@
 
         const serial = (chipDies()[id] ? chipDies()[id].serial : 0)
             || (id - CHIP_DIE_BASE + 1);
-        // A design with an output pin on it is a design that drives something,
-        // so the die comes off the bench able to feed a panel.
-        const drivesVideo = Object.keys(lab.tiles)
-            .some(k => lab.tiles[k].t === CT.OUT);
         const die = {
             serial: serial,
-            drivesVideo: drivesVideo,
             name: T('HyperDeck.chip.dieName', { serial: serial }),
             description: T('HyperDeck.chip.dieDesc', { gates: spec.gates, mhz: spec.mhz }),
             shape: spec.shape,
@@ -3829,15 +3689,9 @@
             });
         },
         missingKinds: missingKinds,
-        SIGNALS: SIGNALS,
-        partSignals: partSignals,
-        traces: traces,
-        traceAt: traceAt,
-        canTrace: canTrace,
-        setTrace: setTrace,
-        signalNets: signalNets,
-        unfedParts: unfedParts,
         isOverdrawn: isOverdrawn,
+        enduranceHours: enduranceHours,
+        performanceIndex: performanceIndex,
         canBoot: canBoot,
         faults: faults,
         inventoryParts: inventoryParts,
@@ -3884,7 +3738,7 @@
         },
         format: {
             mhz: fmtMhz, ram: fmtRam, store: fmtStore, watt: fmtWatt, mah: fmtMah,
-            kind: kindLabel, caseName: caseLabel
+            mb: fmtMb, kind: kindLabel, caseName: caseLabel
         },
         open() {
             if (window.Scene_HyperDeck) SceneManager.push(window.Scene_HyperDeck);
@@ -3987,10 +3841,6 @@
             this.gridGroup = new THREE.Group();
             this.bundle.base.add(this.gridGroup);
             this.gridGroup.visible = false;
-
-            this.traceGroup = new THREE.Group();
-            this.bundle.base.add(this.traceGroup);
-            this._traceModels = [];
 
             const lineMat = this._mat({
                 color: 0x63c9a0, transparent: true, opacity: 0.32, depthWrite: false
@@ -4097,66 +3947,6 @@
                 this.partsGroup.add(model);
                 this._partModels.push(model);
             });
-        }
-
-        // Amber for power, cyan for video, dimmed where a run is dead. Drawn as
-        // flat pads on the board so a trace reads as etched rather than as a
-        // part lying on top of it.
-        syncTraces() {
-            this.clearGroup(this.traceGroup, this._traceModels);
-            const t = traces();
-            const keys = Object.keys(t);
-            if (!keys.length) return;
-            const def = caseDef();
-            const m = this.metrics;
-            const cell = window.HyperDeckModels.CELL;
-            const live = {};
-            SIGNALS.forEach(signal => {
-                const { net, live: hot } = poweredNets(signal);
-                Object.keys(net.group).forEach(key => {
-                    if (hot[net.group[key]]) live[signal + ':' + key] = true;
-                });
-            });
-            const mats = {};
-            keys.forEach(key => {
-                const signal = t[key];
-                const on = !!live[signal + ':' + key];
-                const matKey = signal + (on ? '-on' : '-off');
-                if (!mats[matKey]) {
-                    const base = signal === 'video' ? [0x2f7f96, 0x7fd0ff] : [0x7a5a1e, 0xe8b24a];
-                    mats[matKey] = this._mat({ color: base[on ? 1 : 0] });
-                }
-                const [c, r] = key.split(',').map(Number);
-                if (c >= def.cols || r >= def.rows) return;
-                // The exported helper works out the metrics itself and takes
-                // three arguments; passing four put the metrics object where the
-                // column index goes and every pad came out at NaN.
-                const p = window.HyperDeckModels.cellCentre(def, c, r);
-                const geo = this._geo(new THREE.BoxGeometry(cell * 0.42, 0.008, cell * 0.42));
-                const mesh = new THREE.Mesh(geo, mats[matKey]);
-                mesh.position.set(p.x, p.y - 0.003, p.z);
-                this.traceGroup.add(mesh);
-                this._traceModels.push(mesh);
-                // A stub towards every neighbour that carries the same signal,
-                // so a run looks like a run and not a line of separate pads.
-                [[0, -1], [1, 0], [0, 1], [-1, 0]].forEach(([dc, dr]) => {
-                    const nk = (c + dc) + ',' + (r + dr);
-                    const joins = t[nk] === signal || !!occupancy()[nk];
-                    if (!joins) return;
-                    const link = new THREE.Mesh(this._geo(new THREE.BoxGeometry(
-                        dc ? cell * 0.58 : cell * 0.22, 0.008, dr ? cell * 0.58 : cell * 0.22)),
-                        mats[matKey]);
-                    link.position.set(p.x + dc * cell * 0.3, p.y - 0.003, p.z + dr * cell * 0.3);
-                    this.traceGroup.add(link);
-                    this._traceModels.push(link);
-                });
-            });
-        }
-
-        // Which signal the player is drawing, or nothing. Only used to light
-        // the grid up in the matching colour.
-        setTraceSignal(signal) {
-            this._traceSignal = signal || null;
         }
 
         setHeld(data, rot) {
@@ -4410,7 +4200,6 @@
 
         dispose() {
             this.clearGroup(this.partsGroup, this._partModels);
-            this.clearGroup(this.traceGroup, this._traceModels);
             this.clearGroup(this.heldGroup, this._heldList);
             this.clearGroup(this.faceSled, this._faceList);
             this._disposables.forEach(x => x && x.dispose && x.dispose());
@@ -4511,8 +4300,6 @@
   color: ${deco('goldHi', '#fff2c6')}; }
 #${HUD_ID} .hd-btn.on { border-color: ${deco('goldHi', '#fff2c6')};
   background: ${deco('sel', '#2a2010')}; }
-#${HUD_ID} .hd-btn.live { color: ${deco('green', '#93d86e')};
-  border-color: ${deco('green', '#93d86e')}; }
 #${HUD_ID} .hd-spec-body { padding: 6px 10px; flex: 0 0 auto; }
 #${HUD_ID} .hd-line { display: flex; justify-content: space-between; gap: 10px;
   padding: 2px 0; }
@@ -4585,7 +4372,6 @@
   <div class="hd-list"></div>
   <div class="hd-tools">
     <div class="hd-btn" data-tool="auto">${esc(T('HyperDeck.tool.auto'))}</div>
-    <div class="hd-btn" data-tool="trace">${esc(T('HyperDeck.tool.trace'))}</div>
     <div class="hd-btn" data-tool="clear">${esc(T('HyperDeck.tool.clear'))}</div>
     <div class="hd-btn" data-tool="chip">${esc(T('HyperDeck.tool.chip'))}</div>
     <div class="hd-btn" data-tool="case">${esc(T('HyperDeck.tool.case'))}</div>
@@ -4699,16 +4485,9 @@
             if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest' });
         }
 
-        setTools(focus, index, traceSignal) {
+        setTools(focus, index) {
             this.root.querySelectorAll('[data-tool]').forEach((b, i) =>
                 b.classList.toggle('on', focus === 'tools' && i === index));
-            const trace = this.root.querySelector('[data-tool="trace"]');
-            if (trace) {
-                trace.textContent = traceSignal
-                    ? T('HyperDeck.tool.traceOn', { signal: T('HyperDeck.signal.' + traceSignal) })
-                    : T('HyperDeck.tool.trace');
-                trace.classList.toggle('live', !!traceSignal);
-            }
         }
 
         setSpec(hint) {
@@ -4721,10 +4500,15 @@
                 [T('HyperDeck.specs.memory'), fmtRam(s.ram), false],
                 [T('HyperDeck.specs.storage'), fmtStore(s.mb), false],
                 [T('HyperDeck.specs.graphics'),
-                    s.vram ? fmtMb(s.vram) : T('HyperDeck.value.none'), false],
+                    s.kinds.gpu ? fmtMb(s.vram)
+                        : s.shared ? T('HyperDeck.value.integrated', { n: s.shared })
+                            : T('HyperDeck.value.none'), false],
                 [T('HyperDeck.specs.battery'), fmtMah(s.mah), false],
                 [T('HyperDeck.specs.draw'),
-                    fmtWatt(s.draw) + ' / ' + fmtWatt(s.supply), s.draw > s.supply]
+                    fmtWatt(s.draw) + ' / ' + fmtWatt(s.supply), s.draw > s.supply],
+                [T('HyperDeck.specs.endurance'), enduranceHours(s)
+                    ? T('HyperDeck.value.hours', { n: Math.round(enduranceHours(s) * 10) / 10 })
+                    : T('HyperDeck.value.none'), false]
             ];
             this.specBody.innerHTML = rows.map(([k, v, bad]) =>
                 `<div class="hd-line ${bad ? 'bad' : ''}"><span>${esc(k)}</span><span>${esc(v)}</span></div>`
@@ -4847,7 +4631,7 @@
     // Scene_HyperDeck
     //=========================================================================
     const MODE = { OPENING: 'opening', IDLE: 'idle', EDIT: 'edit', BOOT: 'boot', FAIL: 'fail' };
-    const TOOLS = ['auto', 'trace', 'clear', 'chip', 'case', 'finish', 'bios', 'boot'];
+    const TOOLS = ['auto', 'clear', 'chip', 'case', 'finish', 'bios', 'boot'];
 
     // Boot pacing. A plain line goes up almost at once, a driver bar takes a
     // moment to fill, and the environment line sits there ticking its dots.
@@ -4887,7 +4671,6 @@
             this.createView();
             this._hud = new DeckHud(this);
             this._view.syncParts();
-            this._view.syncTraces();
             this.refreshList();
             this.refreshSpec();
             this._hud.show('');
@@ -4936,7 +4719,6 @@
             this._cursor = { c: 0, r: 0 };
             this._held = null;
             this._view.syncParts();
-            this._view.syncTraces();
             this.applyModeToView();
             this.refreshList();
             this.refreshSpec();
@@ -4955,7 +4737,7 @@
             }
             if (!this._hud) return;
             this._hud.setList(this._list, this._railIndex, this._focus);
-            this._hud.setTools(this._focus, this._toolIndex, this._traceSignal);
+            this._hud.setTools(this._focus, this._toolIndex);
         }
 
         refreshSpec() {
@@ -4969,7 +4751,6 @@
             if (!this._view) return;
             this._view.gridGroup.visible = editing;
             this._view.partsGroup.visible = editing;
-            this._view.traceGroup.visible = editing;
         }
 
         setMode(mode) {
@@ -4989,12 +4770,6 @@
         // A click the HTML has already dealt with must not also be a click into
         // the 3D scene underneath it.
         claimClick() { this._domClaim = 3; }
-
-        stopTracing() {
-            if (!this._traceSignal) return;
-            this._traceSignal = null;
-            if (this._view) this._view.setTraceSignal(null);
-        }
 
         //--- the middle button -----------------------------------------------
         // The middle button handler in TouchInput is empty, and holding it is
@@ -5288,13 +5063,6 @@
         updateEditDrag() {
             if (this._domClaim) return;
             const cell = this.cellFromRay();
-            // With the trace tool live the board is a drawing surface rather
-            // than a place to pick parts up from: press and drag lays wiring.
-            if (this._traceSignal) {
-                if (cell && TouchInput.isPressed()) this.layTrace(cell);
-                if (cell) { this._cursor = cell; this.clampCursor(); }
-                return;
-            }
             if (cell && (TouchInput.isPressed() || this._held)) {
                 this._cursor = cell;
                 this.clampCursor();
@@ -5310,17 +5078,6 @@
                     this.dropHeld();
                 }
             }
-        }
-
-        // One cell of wiring. Drawing over wiring of the same signal rubs it
-        // out, so the one button both draws and erases.
-        layTrace(cell) {
-            const had = traceAt(cell.c, cell.r);
-            const want = had === this._traceSignal ? null : this._traceSignal;
-            if (!setTrace(cell.c, cell.r, want)) return;
-            SoundManager.playCursor();
-            this._view.syncTraces();
-            this.refreshSpec();
         }
 
         clampCursor() {
@@ -5339,10 +5096,6 @@
         confirmEdit() {
             if (this._hud.open) return;
             if (this._focus === 'tools') { this.onTool(TOOLS[this._toolIndex]); return; }
-            if (this._traceSignal && this._focus === 'grid') {
-                this.layTrace(this._cursor);
-                return;
-            }
             if (this._held) { this.dropHeld(); return; }
             if (this._focus === 'rail') { this.takeFromList(); return; }
             this.takeFromBoard();
@@ -5351,7 +5104,6 @@
         takeFromList() {
             const entry = this.listEntries()[this._railIndex];
             if (!entry) { SoundManager.playBuzzer(); return; }
-            this.stopTracing();
             this._held = { itemId: entry.item.id, data: entry.data };
             this._heldRot = 0;
             this._focus = 'grid';
@@ -5427,7 +5179,6 @@
 
         //--- the HTML talking back -------------------------------------------
         onListPress(index) {
-            this.stopTracing();
             this._focus = 'rail';
             this._railIndex = index;
             this.refreshList();
@@ -5442,17 +5193,7 @@
                 const n = autoFit();
                 if (n) SoundManager.playOk(); else SoundManager.playBuzzer();
                 this._view.syncParts();
-                this._view.syncTraces();
                 this.refreshList();
-                this.refreshSpec();
-            } else if (tool === 'trace') {
-                // Off, power, video, off. Pressing it walks the wiring the
-                // board can carry and then puts the tool away again.
-                const at = SIGNALS.indexOf(this._traceSignal);
-                this._traceSignal = at + 1 >= SIGNALS.length ? null : SIGNALS[at + 1];
-                if (this._traceSignal && this._held) this.returnHeld();
-                SoundManager.playCursor();
-                this._view.setTraceSignal(this._traceSignal);
                 this.refreshSpec();
             } else if (tool === 'clear') {
                 // The opposite of auto-fit: everything comes off the board and
@@ -5461,7 +5202,6 @@
                 const n = stripBoard();
                 if (n) SoundManager.playCancel(); else SoundManager.playBuzzer();
                 this._view.syncParts();
-                this._view.syncTraces();
                 this.refreshList();
                 this.refreshSpec();
             } else if (tool === 'chip') {
@@ -5590,7 +5330,7 @@
         powerOn() {
             const missing = missingKinds();
             const overdrawn = isOverdrawn();
-            if (missing.length || overdrawn || unfedParts().length) {
+            if (missing.length || overdrawn) {
                 SoundManager.playBuzzer();
                 this.showPostFailure(missing, overdrawn);
                 return;
@@ -5622,9 +5362,9 @@
                 s.ram === Infinity
                     ? T('HyperDeck.boot.memoryInfinite')
                     : T('HyperDeck.boot.memory', { size: fmtRam(s.ram) }),
-                T('HyperDeck.boot.quantum', {
-                    size: s.kinds.gpu ? fmtMb(s.vram) : T('HyperDeck.value.none')
-                }),
+                s.kinds.gpu
+                    ? T('HyperDeck.boot.quantum', { size: fmtMb(s.vram) })
+                    : T('HyperDeck.boot.quantumShared', { size: fmtMb(s.shared) }),
                 T('HyperDeck.boot.storage', { size: fmtStore(s.mb) }),
                 T('HyperDeck.boot.cell', { size: fmtMah(s.mah) }),
                 '',
@@ -5724,14 +5464,6 @@
                 lines.push(T('HyperDeck.post.failLine', { kind: kindLabel(kind) }));
             });
             if (overdrawn) lines.push(T('HyperDeck.post.overdrawLine', { n: s.draw - s.supply }));
-            // A part nothing reaches is the third way not to POST, and the one
-            // the player is least likely to spot on the board by eye.
-            unfedParts().forEach(bad => {
-                lines.push(T('HyperDeck.post.unfedLine', {
-                    part: itemName($dataItems[bad.rec.itemId]),
-                    signal: T('HyperDeck.signal.' + bad.signal)
-                }));
-            });
             lines.push('');
             lines.push(T('HyperDeck.post.failFooter'));
             paintScreen(this._view.bundle.screenCanvas, lines, '#e2726a');

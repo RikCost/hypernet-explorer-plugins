@@ -16,7 +16,8 @@
       "auth": 15,
       "trad": -10,
       "mil": 0,
-      "myst": -60
+      "myst": -60,
+      "esoteric": -60
     }
   },
   {
@@ -36,7 +37,8 @@
       "auth": -10,
       "trad": -20,
       "mil": -20,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -56,7 +58,8 @@
       "auth": 0,
       "trad": -10,
       "mil": 0,
-      "myst": -50
+      "myst": -50,
+      "esoteric": -50
     }
   },
   {
@@ -76,7 +79,8 @@
       "auth": 30,
       "trad": -40,
       "mil": 20,
-      "myst": -70
+      "myst": -70,
+      "esoteric": -70
     }
   },
   {
@@ -96,7 +100,8 @@
       "auth": 55,
       "trad": 20,
       "mil": 20,
-      "myst": -20
+      "myst": -20,
+      "esoteric": -20
     }
   },
   {
@@ -116,7 +121,8 @@
       "auth": -5,
       "trad": -10,
       "mil": -15,
-      "myst": -25
+      "myst": -25,
+      "esoteric": -25
     }
   },
   {
@@ -136,7 +142,8 @@
       "auth": 5,
       "trad": 0,
       "mil": -5,
-      "myst": -25
+      "myst": -25,
+      "esoteric": -25
     }
   },
   {
@@ -156,7 +163,8 @@
       "auth": 20,
       "trad": 70,
       "mil": -80,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -176,7 +184,8 @@
       "auth": 55,
       "trad": 85,
       "mil": 30,
-      "myst": 25
+      "myst": 25,
+      "esoteric": 25
     }
   },
   {
@@ -196,7 +205,8 @@
       "auth": -5,
       "trad": 15,
       "mil": 10,
-      "myst": -35
+      "myst": -35,
+      "esoteric": -35
     }
   },
   {
@@ -216,7 +226,8 @@
       "auth": 60,
       "trad": -20,
       "mil": 70,
-      "myst": -40
+      "myst": -40,
+      "esoteric": -40
     }
   },
   {
@@ -236,7 +247,8 @@
       "auth": 45,
       "trad": 50,
       "mil": 5,
-      "myst": 70
+      "myst": 70,
+      "esoteric": 70
     }
   },
   {
@@ -256,7 +268,8 @@
       "auth": 5,
       "trad": 0,
       "mil": 0,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -276,7 +289,8 @@
       "auth": -40,
       "trad": -30,
       "mil": 0,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -296,7 +310,8 @@
       "auth": 30,
       "trad": 65,
       "mil": -40,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -316,7 +331,8 @@
       "auth": 60,
       "trad": 85,
       "mil": 20,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -336,7 +352,8 @@
       "auth": -20,
       "trad": -70,
       "mil": -30,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -356,7 +373,8 @@
       "auth": 75,
       "trad": 85,
       "mil": 65,
-      "myst": 30
+      "myst": 30,
+      "esoteric": 30
     }
   },
   {
@@ -376,7 +394,8 @@
       "auth": 50,
       "trad": 75,
       "mil": -10,
-      "myst": 25
+      "myst": 25,
+      "esoteric": 25
     }
   },
   {
@@ -396,7 +415,8 @@
       "auth": 25,
       "trad": 20,
       "mil": 0,
-      "myst": -15
+      "myst": -15,
+      "esoteric": -15
     }
   },
   {
@@ -416,7 +436,8 @@
       "auth": 55,
       "trad": 60,
       "mil": 50,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -436,7 +457,8 @@
       "auth": 70,
       "trad": 10,
       "mil": 40,
-      "myst": -20
+      "myst": -20,
+      "esoteric": -20
     }
   },
   {
@@ -456,7 +478,8 @@
       "auth": 20,
       "trad": 60,
       "mil": 15,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -476,7 +499,8 @@
       "auth": 95,
       "trad": 40,
       "mil": 50,
-      "myst": 0
+      "myst": 0,
+      "esoteric": 0
     }
   },
   {
@@ -496,7 +520,8 @@
       "auth": 45,
       "trad": 70,
       "mil": 25,
-      "myst": 25
+      "myst": 25,
+      "esoteric": 25
     }
   },
   {
@@ -516,7 +541,8 @@
       "auth": 90,
       "trad": 45,
       "mil": 55,
-      "myst": -10
+      "myst": -10,
+      "esoteric": -10
     }
   },
   {
@@ -536,7 +562,8 @@
       "auth": 60,
       "trad": 10,
       "mil": 40,
-      "myst": -85
+      "myst": -85,
+      "esoteric": -85
     }
   },
   {
@@ -556,7 +583,8 @@
       "auth": 25,
       "trad": 45,
       "mil": 55,
-      "myst": -20
+      "myst": -20,
+      "esoteric": -20
     }
   },
   {
@@ -576,7 +604,8 @@
       "auth": -35,
       "trad": -20,
       "mil": -50,
-      "myst": -25
+      "myst": -25,
+      "esoteric": -25
     }
   },
   {
@@ -596,7 +625,8 @@
       "auth": 55,
       "trad": -55,
       "mil": 60,
-      "myst": -85
+      "myst": -85,
+      "esoteric": -85
     }
   },
   {
@@ -616,7 +646,8 @@
       "auth": -90,
       "trad": -60,
       "mil": 30,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -636,7 +667,8 @@
       "auth": 45,
       "trad": -30,
       "mil": 0,
-      "myst": -85
+      "myst": -85,
+      "esoteric": -85
     }
   },
   {
@@ -656,7 +688,8 @@
       "auth": 0,
       "trad": -20,
       "mil": -10,
-      "myst": -35
+      "myst": -35,
+      "esoteric": -35
     }
   },
   {
@@ -676,7 +709,8 @@
       "auth": 65,
       "trad": -40,
       "mil": 80,
-      "myst": -80
+      "myst": -80,
+      "esoteric": -80
     }
   },
   {
@@ -696,7 +730,8 @@
       "auth": 80,
       "trad": 20,
       "mil": 55,
-      "myst": -75
+      "myst": -75,
+      "esoteric": -75
     }
   },
   {
@@ -716,7 +751,8 @@
       "auth": 15,
       "trad": 45,
       "mil": 15,
-      "myst": 5
+      "myst": 5,
+      "esoteric": 5
     }
   },
   {
@@ -736,7 +772,8 @@
       "auth": 40,
       "trad": -30,
       "mil": 70,
-      "myst": -60
+      "myst": -60,
+      "esoteric": -60
     }
   },
   {
@@ -756,7 +793,8 @@
       "auth": 65,
       "trad": 40,
       "mil": 30,
-      "myst": -60
+      "myst": -60,
+      "esoteric": -60
     }
   },
   {
@@ -776,7 +814,8 @@
       "auth": -30,
       "trad": 20,
       "mil": -10,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -796,7 +835,8 @@
       "auth": 5,
       "trad": 45,
       "mil": 10,
-      "myst": 0
+      "myst": 0,
+      "esoteric": 0
     }
   },
   {
@@ -816,7 +856,8 @@
       "auth": 30,
       "trad": 20,
       "mil": 40,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -836,7 +877,8 @@
       "auth": -40,
       "trad": 0,
       "mil": -20,
-      "myst": -25
+      "myst": -25,
+      "esoteric": -25
     }
   },
   {
@@ -856,7 +898,8 @@
       "auth": 55,
       "trad": 45,
       "mil": 55,
-      "myst": 10
+      "myst": 10,
+      "esoteric": 10
     }
   },
   {
@@ -876,7 +919,8 @@
       "auth": 20,
       "trad": 65,
       "mil": 0,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -896,7 +940,8 @@
       "auth": 45,
       "trad": 75,
       "mil": 20,
-      "myst": 30
+      "myst": 30,
+      "esoteric": 30
     }
   },
   {
@@ -916,7 +961,8 @@
       "auth": 70,
       "trad": 55,
       "mil": 90,
-      "myst": -10
+      "myst": -10,
+      "esoteric": -10
     }
   },
   {
@@ -936,7 +982,8 @@
       "auth": 10,
       "trad": 55,
       "mil": -5,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -956,7 +1003,8 @@
       "auth": -20,
       "trad": -30,
       "mil": -30,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -976,7 +1024,8 @@
       "auth": 70,
       "trad": 90,
       "mil": 30,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -996,7 +1045,8 @@
       "auth": 85,
       "trad": 85,
       "mil": 45,
-      "myst": 75
+      "myst": 75,
+      "esoteric": 75
     }
   },
   {
@@ -1016,7 +1066,8 @@
       "auth": -5,
       "trad": -15,
       "mil": -15,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -1036,7 +1087,8 @@
       "auth": -10,
       "trad": -25,
       "mil": 5,
-      "myst": 30
+      "myst": 30,
+      "esoteric": 30
     }
   },
   {
@@ -1056,7 +1108,8 @@
       "auth": 30,
       "trad": 55,
       "mil": 5,
-      "myst": 0
+      "myst": 0,
+      "esoteric": 0
     }
   },
   {
@@ -1076,7 +1129,8 @@
       "auth": 35,
       "trad": -10,
       "mil": 20,
-      "myst": -55
+      "myst": -55,
+      "esoteric": -55
     }
   },
   {
@@ -1096,7 +1150,8 @@
       "auth": 15,
       "trad": -15,
       "mil": 5,
-      "myst": -50
+      "myst": -50,
+      "esoteric": -50
     }
   },
   {
@@ -1116,7 +1171,8 @@
       "auth": 20,
       "trad": 50,
       "mil": 10,
-      "myst": -5
+      "myst": -5,
+      "esoteric": -5
     }
   },
   {
@@ -1136,7 +1192,8 @@
       "auth": 70,
       "trad": 80,
       "mil": 55,
-      "myst": 70
+      "myst": 70,
+      "esoteric": 70
     }
   },
   {
@@ -1156,7 +1213,8 @@
       "auth": 20,
       "trad": 65,
       "mil": 5,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -1176,7 +1234,8 @@
       "auth": -35,
       "trad": -35,
       "mil": -25,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -1196,7 +1255,8 @@
       "auth": -80,
       "trad": -40,
       "mil": -30,
-      "myst": -35
+      "myst": -35,
+      "esoteric": -35
     }
   },
   {
@@ -1216,7 +1276,8 @@
       "auth": 20,
       "trad": 95,
       "mil": 60,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -1236,7 +1297,8 @@
       "auth": 15,
       "trad": 5,
       "mil": 15,
-      "myst": -35
+      "myst": -35,
+      "esoteric": -35
     }
   },
   {
@@ -1256,7 +1318,8 @@
       "auth": -10,
       "trad": -25,
       "mil": -10,
-      "myst": -75
+      "myst": -75,
+      "esoteric": -75
     }
   },
   {
@@ -1276,7 +1339,8 @@
       "auth": 5,
       "trad": 65,
       "mil": 5,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -1296,7 +1360,8 @@
       "auth": 35,
       "trad": 65,
       "mil": 10,
-      "myst": 65
+      "myst": 65,
+      "esoteric": 65
     }
   },
   {
@@ -1316,7 +1381,8 @@
       "auth": 35,
       "trad": 75,
       "mil": 20,
-      "myst": 40
+      "myst": 40,
+      "esoteric": 40
     }
   },
   {
@@ -1336,7 +1402,8 @@
       "auth": -95,
       "trad": -70,
       "mil": 10,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -1356,7 +1423,8 @@
       "auth": -50,
       "trad": 20,
       "mil": -15,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -1376,7 +1444,8 @@
       "auth": 70,
       "trad": 85,
       "mil": 45,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -1396,7 +1465,8 @@
       "auth": 95,
       "trad": 15,
       "mil": 70,
-      "myst": -85
+      "myst": -85,
+      "esoteric": -85
     }
   },
   {
@@ -1416,7 +1486,8 @@
       "auth": 95,
       "trad": 85,
       "mil": 85,
-      "myst": 70
+      "myst": 70,
+      "esoteric": 70
     }
   },
   {
@@ -1436,7 +1507,8 @@
       "auth": 55,
       "trad": 25,
       "mil": 65,
-      "myst": -70
+      "myst": -70,
+      "esoteric": -70
     }
   },
   {
@@ -1456,7 +1528,8 @@
       "auth": 30,
       "trad": 40,
       "mil": 0,
-      "myst": 10
+      "myst": 10,
+      "esoteric": 10
     }
   },
   {
@@ -1476,7 +1549,8 @@
       "auth": 55,
       "trad": 85,
       "mil": 40,
-      "myst": 30
+      "myst": 30,
+      "esoteric": 30
     }
   },
   {
@@ -1496,7 +1570,8 @@
       "auth": 65,
       "trad": 90,
       "mil": 30,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -1516,7 +1591,8 @@
       "auth": 10,
       "trad": 70,
       "mil": -10,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -1536,7 +1612,8 @@
       "auth": 30,
       "trad": 75,
       "mil": 20,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -1556,7 +1633,8 @@
       "auth": -60,
       "trad": -30,
       "mil": 75,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -1576,7 +1654,8 @@
       "auth": 20,
       "trad": 60,
       "mil": 80,
-      "myst": 25
+      "myst": 25,
+      "esoteric": 25
     }
   },
   {
@@ -1596,7 +1675,8 @@
       "auth": 40,
       "trad": 10,
       "mil": 95,
-      "myst": 0
+      "myst": 0,
+      "esoteric": 0
     }
   },
   {
@@ -1616,7 +1696,8 @@
       "auth": -60,
       "trad": 30,
       "mil": 10,
-      "myst": -15
+      "myst": -15,
+      "esoteric": -15
     }
   },
   {
@@ -1636,7 +1717,8 @@
       "auth": 60,
       "trad": 60,
       "mil": 45,
-      "myst": -10
+      "myst": -10,
+      "esoteric": -10
     }
   },
   {
@@ -1656,7 +1738,8 @@
       "auth": 90,
       "trad": 50,
       "mil": 70,
-      "myst": -20
+      "myst": -20,
+      "esoteric": -20
     }
   },
   {
@@ -1676,7 +1759,8 @@
       "auth": 0,
       "trad": -25,
       "mil": -30,
-      "myst": -35
+      "myst": -35,
+      "esoteric": -35
     }
   },
   {
@@ -1696,7 +1780,8 @@
       "auth": 25,
       "trad": -20,
       "mil": 20,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -1716,7 +1801,8 @@
       "auth": 80,
       "trad": 30,
       "mil": 15,
-      "myst": 25
+      "myst": 25,
+      "esoteric": 25
     }
   },
   {
@@ -1737,7 +1823,8 @@
       "auth": -20,
       "trad": -30,
       "mil": -70,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -1758,7 +1845,8 @@
       "auth": 70,
       "trad": -40,
       "mil": 50,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -1779,7 +1867,8 @@
       "auth": 85,
       "trad": 20,
       "mil": 60,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -1800,7 +1889,8 @@
       "auth": -20,
       "trad": 30,
       "mil": -60,
-      "myst": 45
+      "myst": 45,
+      "esoteric": 45
     }
   },
   {
@@ -1821,7 +1911,8 @@
       "auth": -70,
       "trad": -60,
       "mil": 20,
-      "myst": 30
+      "myst": 30,
+      "esoteric": 30
     }
   },
   {
@@ -1842,7 +1933,8 @@
       "auth": 40,
       "trad": -95,
       "mil": 20,
-      "myst": -60
+      "myst": -60,
+      "esoteric": -60
     }
   },
   {
@@ -1863,7 +1955,8 @@
       "auth": 60,
       "trad": -90,
       "mil": 10,
-      "myst": -85
+      "myst": -85,
+      "esoteric": -85
     }
   },
   {
@@ -1884,7 +1977,8 @@
       "auth": 30,
       "trad": -50,
       "mil": -20,
-      "myst": 40
+      "myst": 40,
+      "esoteric": 40
     }
   },
   {
@@ -1905,7 +1999,8 @@
       "auth": 30,
       "trad": -20,
       "mil": 95,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -1926,7 +2021,8 @@
       "auth": 80,
       "trad": 85,
       "mil": 90,
-      "myst": 70
+      "myst": 70,
+      "esoteric": 70
     }
   },
   {
@@ -1946,7 +2042,8 @@
       "auth": -10,
       "trad": -30,
       "mil": -50,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -1966,7 +2063,8 @@
       "auth": -85,
       "trad": 10,
       "mil": -10,
-      "myst": -40
+      "myst": -40,
+      "esoteric": -40
     }
   },
   {
@@ -1986,7 +2084,8 @@
       "auth": 70,
       "trad": 55,
       "mil": 35,
-      "myst": 10
+      "myst": 10,
+      "esoteric": 10
     }
   },
   {
@@ -2006,7 +2105,8 @@
       "auth": -15,
       "trad": 10,
       "mil": -10,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -2026,7 +2126,8 @@
       "auth": -40,
       "trad": -85,
       "mil": -25,
-      "myst": -20
+      "myst": -20,
+      "esoteric": -20
     }
   },
   {
@@ -2046,7 +2147,8 @@
       "auth": 20,
       "trad": 60,
       "mil": 35,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -2066,7 +2168,8 @@
       "auth": -30,
       "trad": 20,
       "mil": 0,
-      "myst": -40
+      "myst": -40,
+      "esoteric": -40
     }
   },
   {
@@ -2086,7 +2189,8 @@
       "auth": 75,
       "trad": 65,
       "mil": 35,
-      "myst": 5
+      "myst": 5,
+      "esoteric": 5
     }
   },
   {
@@ -2106,7 +2210,8 @@
       "auth": 50,
       "trad": 65,
       "mil": 30,
-      "myst": 10
+      "myst": 10,
+      "esoteric": 10
     }
   },
   {
@@ -2126,7 +2231,8 @@
       "auth": 25,
       "trad": 25,
       "mil": 0,
-      "myst": -50
+      "myst": -50,
+      "esoteric": -50
     }
   },
   {
@@ -2146,7 +2252,8 @@
       "auth": -20,
       "trad": 70,
       "mil": -25,
-      "myst": 50
+      "myst": 50,
+      "esoteric": 50
     }
   },
   {
@@ -2166,7 +2273,8 @@
       "auth": -10,
       "trad": -30,
       "mil": -20,
-      "myst": -25
+      "myst": -25,
+      "esoteric": -25
     }
   },
   {
@@ -2186,7 +2294,8 @@
       "auth": 60,
       "trad": 35,
       "mil": 0,
-      "myst": -55
+      "myst": -55,
+      "esoteric": -55
     }
   },
   {
@@ -2206,7 +2315,8 @@
       "auth": -60,
       "trad": -70,
       "mil": 20,
-      "myst": -15
+      "myst": -15,
+      "esoteric": -15
     }
   },
   {
@@ -2226,7 +2336,8 @@
       "auth": 20,
       "trad": 90,
       "mil": 25,
-      "myst": 35
+      "myst": 35,
+      "esoteric": 35
     }
   },
   {
@@ -2246,7 +2357,8 @@
       "auth": -40,
       "trad": -25,
       "mil": -95,
-      "myst": 0
+      "myst": 0,
+      "esoteric": 0
     }
   },
   {
@@ -2266,7 +2378,8 @@
       "auth": -90,
       "trad": -20,
       "mil": 5,
-      "myst": -40
+      "myst": -40,
+      "esoteric": -40
     }
   },
   {
@@ -2286,7 +2399,8 @@
       "auth": -95,
       "trad": -40,
       "mil": 10,
-      "myst": -45
+      "myst": -45,
+      "esoteric": -45
     }
   },
   {
@@ -2306,7 +2420,8 @@
       "auth": -85,
       "trad": 5,
       "mil": 15,
-      "myst": -40
+      "myst": -40,
+      "esoteric": -40
     }
   },
   {
@@ -2326,7 +2441,8 @@
       "auth": -80,
       "trad": 80,
       "mil": 25,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -2346,7 +2462,8 @@
       "auth": -95,
       "trad": -30,
       "mil": 0,
-      "myst": -35
+      "myst": -35,
+      "esoteric": -35
     }
   },
   {
@@ -2366,7 +2483,8 @@
       "auth": -95,
       "trad": -45,
       "mil": 70,
-      "myst": -15
+      "myst": -15,
+      "esoteric": -15
     }
   },
   {
@@ -2386,7 +2504,8 @@
       "auth": -70,
       "trad": 5,
       "mil": -30,
-      "myst": -25
+      "myst": -25,
+      "esoteric": -25
     }
   },
   {
@@ -2406,7 +2525,8 @@
       "auth": -85,
       "trad": 15,
       "mil": 5,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -2426,7 +2546,8 @@
       "auth": -90,
       "trad": -10,
       "mil": -95,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -2446,7 +2567,8 @@
       "auth": -80,
       "trad": -95,
       "mil": -10,
-      "myst": -60
+      "myst": -60,
+      "esoteric": -60
     }
   },
   {
@@ -2466,7 +2588,8 @@
       "auth": -90,
       "trad": -40,
       "mil": -10,
-      "myst": -60
+      "myst": -60,
+      "esoteric": -60
     }
   },
   {
@@ -2486,7 +2609,8 @@
       "auth": 0,
       "trad": -40,
       "mil": -10,
-      "myst": -95
+      "myst": -95,
+      "esoteric": -95
     }
   },
   {
@@ -2506,7 +2630,8 @@
       "auth": 35,
       "trad": 5,
       "mil": -20,
-      "myst": -90
+      "myst": -90,
+      "esoteric": -90
     }
   },
   {
@@ -2526,7 +2651,8 @@
       "auth": -60,
       "trad": -30,
       "mil": -30,
-      "myst": -70
+      "myst": -70,
+      "esoteric": -70
     }
   },
   {
@@ -2546,7 +2672,8 @@
       "auth": -10,
       "trad": -95,
       "mil": 0,
-      "myst": -70
+      "myst": -70,
+      "esoteric": -70
     }
   },
   {
@@ -2566,7 +2693,8 @@
       "auth": 80,
       "trad": 40,
       "mil": 40,
-      "myst": -70
+      "myst": -70,
+      "esoteric": -70
     }
   },
   {
@@ -2586,7 +2714,8 @@
       "auth": 45,
       "trad": -50,
       "mil": -10,
-      "myst": -80
+      "myst": -80,
+      "esoteric": -80
     }
   },
   {
@@ -2606,7 +2735,8 @@
       "auth": 45,
       "trad": -30,
       "mil": 45,
-      "myst": -85
+      "myst": -85,
+      "esoteric": -85
     }
   },
   {
@@ -2626,7 +2756,8 @@
       "auth": 45,
       "trad": -50,
       "mil": -10,
-      "myst": -85
+      "myst": -85,
+      "esoteric": -85
     }
   },
   {
@@ -2646,7 +2777,8 @@
       "auth": 10,
       "trad": -60,
       "mil": 10,
-      "myst": -60
+      "myst": -60,
+      "esoteric": -60
     }
   },
   {
@@ -2666,7 +2798,8 @@
       "auth": 15,
       "trad": -60,
       "mil": -30,
-      "myst": -45
+      "myst": -45,
+      "esoteric": -45
     }
   },
   {
@@ -2686,7 +2819,8 @@
       "auth": -30,
       "trad": -30,
       "mil": -40,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -2706,7 +2840,8 @@
       "auth": 70,
       "trad": -40,
       "mil": 70,
-      "myst": 35
+      "myst": 35,
+      "esoteric": 35
     }
   },
   {
@@ -2726,7 +2861,8 @@
       "auth": -45,
       "trad": -60,
       "mil": 10,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -2746,7 +2882,8 @@
       "auth": 75,
       "trad": 85,
       "mil": 55,
-      "myst": 40
+      "myst": 40,
+      "esoteric": 40
     }
   },
   {
@@ -2766,7 +2903,8 @@
       "auth": 10,
       "trad": 20,
       "mil": -10,
-      "myst": 45
+      "myst": 45,
+      "esoteric": 45
     }
   },
   {
@@ -2786,7 +2924,8 @@
       "auth": -20,
       "trad": -85,
       "mil": 10,
-      "myst": -40
+      "myst": -40,
+      "esoteric": -40
     }
   },
   {
@@ -2806,7 +2945,8 @@
       "auth": 20,
       "trad": -30,
       "mil": 30,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -2826,7 +2966,8 @@
       "auth": -30,
       "trad": -40,
       "mil": 20,
-      "myst": 25
+      "myst": 25,
+      "esoteric": 25
     }
   },
   {
@@ -2846,7 +2987,8 @@
       "auth": -40,
       "trad": -95,
       "mil": 30,
-      "myst": 40
+      "myst": 40,
+      "esoteric": 40
     }
   },
   {
@@ -2866,7 +3008,8 @@
       "auth": -60,
       "trad": -70,
       "mil": -10,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -2886,7 +3029,8 @@
       "auth": 80,
       "trad": 60,
       "mil": 45,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -2906,7 +3050,8 @@
       "auth": 65,
       "trad": 75,
       "mil": 30,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -2926,7 +3071,8 @@
       "auth": 70,
       "trad": 60,
       "mil": -10,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -2946,7 +3092,8 @@
       "auth": 40,
       "trad": 85,
       "mil": -20,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -2966,7 +3113,8 @@
       "auth": 0,
       "trad": -10,
       "mil": 10,
-      "myst": 75
+      "myst": 75,
+      "esoteric": 75
     }
   },
   {
@@ -2986,7 +3134,8 @@
       "auth": -50,
       "trad": -80,
       "mil": -20,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3006,7 +3155,8 @@
       "auth": 65,
       "trad": 20,
       "mil": 60,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -3026,7 +3176,8 @@
       "auth": 20,
       "trad": 45,
       "mil": -40,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3046,7 +3197,8 @@
       "auth": 35,
       "trad": 10,
       "mil": 30,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -3066,7 +3218,8 @@
       "auth": -30,
       "trad": 35,
       "mil": -40,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -3086,7 +3239,8 @@
       "auth": -40,
       "trad": -90,
       "mil": 75,
-      "myst": 70
+      "myst": 70,
+      "esoteric": 70
     }
   },
   {
@@ -3106,7 +3260,8 @@
       "auth": 40,
       "trad": 70,
       "mil": -70,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -3126,7 +3281,8 @@
       "auth": 55,
       "trad": 60,
       "mil": 20,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3146,7 +3302,8 @@
       "auth": 30,
       "trad": 20,
       "mil": 0,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3166,7 +3323,8 @@
       "auth": 45,
       "trad": 25,
       "mil": 0,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -3186,7 +3344,8 @@
       "auth": -20,
       "trad": -20,
       "mil": -90,
-      "myst": 35
+      "myst": 35,
+      "esoteric": 35
     }
   },
   {
@@ -3206,7 +3365,8 @@
       "auth": 35,
       "trad": -60,
       "mil": 55,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -3226,7 +3386,8 @@
       "auth": 45,
       "trad": 30,
       "mil": -20,
-      "myst": 75
+      "myst": 75,
+      "esoteric": 75
     }
   },
   {
@@ -3246,7 +3407,8 @@
       "auth": -60,
       "trad": -95,
       "mil": 60,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -3266,7 +3428,8 @@
       "auth": 15,
       "trad": 75,
       "mil": -70,
-      "myst": 45
+      "myst": 45,
+      "esoteric": 45
     }
   },
   {
@@ -3286,7 +3449,8 @@
       "auth": 35,
       "trad": 80,
       "mil": -50,
-      "myst": 50
+      "myst": 50,
+      "esoteric": 50
     }
   },
   {
@@ -3306,7 +3470,8 @@
       "auth": -30,
       "trad": 45,
       "mil": 15,
-      "myst": 35
+      "myst": 35,
+      "esoteric": 35
     }
   },
   {
@@ -3326,7 +3491,8 @@
       "auth": -40,
       "trad": 40,
       "mil": 0,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3346,7 +3512,8 @@
       "auth": 25,
       "trad": 70,
       "mil": 45,
-      "myst": 40
+      "myst": 40,
+      "esoteric": 40
     }
   },
   {
@@ -3366,7 +3533,8 @@
       "auth": -55,
       "trad": 30,
       "mil": 20,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -3386,7 +3554,8 @@
       "auth": 50,
       "trad": 80,
       "mil": -30,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -3406,7 +3575,8 @@
       "auth": 60,
       "trad": 50,
       "mil": 80,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -3426,7 +3596,8 @@
       "auth": 35,
       "trad": 85,
       "mil": 70,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -3446,7 +3617,8 @@
       "auth": 55,
       "trad": -40,
       "mil": 80,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3466,7 +3638,8 @@
       "auth": 20,
       "trad": 90,
       "mil": -60,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3486,7 +3659,8 @@
       "auth": -20,
       "trad": -75,
       "mil": -20,
-      "myst": 45
+      "myst": 45,
+      "esoteric": 45
     }
   },
   {
@@ -3506,7 +3680,8 @@
       "auth": 70,
       "trad": 75,
       "mil": 60,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -3526,7 +3701,8 @@
       "auth": 55,
       "trad": -45,
       "mil": 20,
-      "myst": -45
+      "myst": -45,
+      "esoteric": -45
     }
   },
   {
@@ -3546,7 +3722,8 @@
       "auth": 40,
       "trad": -40,
       "mil": 30,
-      "myst": 25
+      "myst": 25,
+      "esoteric": 25
     }
   },
   {
@@ -3566,7 +3743,8 @@
       "auth": 50,
       "trad": 10,
       "mil": 45,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -3586,7 +3764,8 @@
       "auth": 55,
       "trad": 35,
       "mil": 50,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -3606,7 +3785,8 @@
       "auth": 10,
       "trad": 0,
       "mil": 0,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -3626,7 +3806,8 @@
       "auth": -70,
       "trad": -55,
       "mil": -20,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -3646,7 +3827,8 @@
       "auth": 75,
       "trad": 80,
       "mil": 55,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -3666,7 +3848,8 @@
       "auth": 90,
       "trad": 95,
       "mil": 60,
-      "myst": 100
+      "myst": 100,
+      "esoteric": 100
     }
   },
   {
@@ -3686,7 +3869,8 @@
       "auth": 75,
       "trad": 95,
       "mil": 45,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -3706,7 +3890,8 @@
       "auth": 80,
       "trad": 90,
       "mil": 70,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -3726,7 +3911,8 @@
       "auth": 75,
       "trad": 80,
       "mil": 95,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -3746,7 +3932,8 @@
       "auth": 55,
       "trad": 70,
       "mil": 20,
-      "myst": 70
+      "myst": 70,
+      "esoteric": 70
     }
   },
   {
@@ -3766,7 +3953,8 @@
       "auth": 60,
       "trad": 95,
       "mil": 45,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -3786,7 +3974,8 @@
       "auth": 10,
       "trad": 55,
       "mil": 20,
-      "myst": 35
+      "myst": 35,
+      "esoteric": 35
     }
   },
   {
@@ -3806,7 +3995,8 @@
       "auth": 95,
       "trad": 45,
       "mil": 85,
-      "myst": -30
+      "myst": 90,
+      "esoteric": 25
     }
   },
   {
@@ -3826,7 +4016,8 @@
       "auth": 95,
       "trad": 50,
       "mil": 100,
-      "myst": -25
+      "myst": -25,
+      "esoteric": -25
     }
   },
   {
@@ -3846,7 +4037,8 @@
       "auth": 45,
       "trad": 30,
       "mil": 40,
-      "myst": -20
+      "myst": -20,
+      "esoteric": -20
     }
   },
   {
@@ -3866,7 +4058,8 @@
       "auth": 70,
       "trad": 95,
       "mil": 40,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -3886,7 +4079,8 @@
       "auth": 40,
       "trad": 80,
       "mil": -20,
-      "myst": 90
+      "myst": 90,
+      "esoteric": 90
     }
   },
   {
@@ -3906,7 +4100,8 @@
       "auth": 65,
       "trad": 75,
       "mil": 45,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -3926,7 +4121,8 @@
       "auth": 90,
       "trad": 90,
       "mil": 65,
-      "myst": 75
+      "myst": 75,
+      "esoteric": 75
     }
   },
   {
@@ -3946,7 +4142,8 @@
       "auth": 85,
       "trad": 90,
       "mil": 55,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   },
   {
@@ -3966,7 +4163,8 @@
       "auth": 10,
       "trad": 45,
       "mil": 5,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -3986,7 +4184,8 @@
       "auth": -10,
       "trad": 40,
       "mil": 0,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -4006,7 +4205,8 @@
       "auth": 45,
       "trad": 60,
       "mil": 30,
-      "myst": 65
+      "myst": 65,
+      "esoteric": 65
     }
   },
   {
@@ -4026,7 +4226,8 @@
       "auth": -35,
       "trad": 55,
       "mil": -20,
-      "myst": 80
+      "myst": 80,
+      "esoteric": 80
     }
   },
   {
@@ -4046,7 +4247,8 @@
       "auth": 15,
       "trad": 35,
       "mil": 60,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -4066,7 +4268,8 @@
       "auth": 45,
       "trad": 65,
       "mil": 85,
-      "myst": 35
+      "myst": 35,
+      "esoteric": 35
     }
   },
   {
@@ -4086,7 +4289,8 @@
       "auth": -20,
       "trad": 30,
       "mil": 40,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -4106,7 +4310,8 @@
       "auth": -15,
       "trad": 20,
       "mil": 35,
-      "myst": 5
+      "myst": 5,
+      "esoteric": 5
     }
   },
   {
@@ -4126,7 +4331,8 @@
       "auth": 85,
       "trad": 40,
       "mil": 85,
-      "myst": -30
+      "myst": -30,
+      "esoteric": -30
     }
   },
   {
@@ -4146,7 +4352,8 @@
       "auth": 65,
       "trad": 50,
       "mil": 75,
-      "myst": -10
+      "myst": -10,
+      "esoteric": -10
     }
   },
   {
@@ -4166,7 +4373,8 @@
       "auth": 60,
       "trad": 35,
       "mil": 55,
-      "myst": -20
+      "myst": -20,
+      "esoteric": -20
     }
   },
   {
@@ -4186,7 +4394,8 @@
       "auth": 60,
       "trad": 80,
       "mil": 45,
-      "myst": 45
+      "myst": 45,
+      "esoteric": 45
     }
   },
   {
@@ -4206,7 +4415,8 @@
       "auth": 85,
       "trad": 95,
       "mil": 55,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -4226,7 +4436,8 @@
       "auth": 40,
       "trad": 45,
       "mil": 70,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -4246,7 +4457,8 @@
       "auth": 45,
       "trad": 80,
       "mil": 55,
-      "myst": 60
+      "myst": 60,
+      "esoteric": 60
     }
   },
   {
@@ -4266,7 +4478,8 @@
       "auth": 10,
       "trad": 30,
       "mil": 10,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -4286,7 +4499,8 @@
       "auth": 55,
       "trad": 75,
       "mil": 25,
-      "myst": 50
+      "myst": 50,
+      "esoteric": 50
     }
   },
   {
@@ -4306,7 +4520,8 @@
       "auth": 45,
       "trad": 40,
       "mil": 40,
-      "myst": 10
+      "myst": 10,
+      "esoteric": 10
     }
   },
   {
@@ -4326,7 +4541,8 @@
       "auth": 55,
       "trad": 25,
       "mil": 50,
-      "myst": 15
+      "myst": 15,
+      "esoteric": 15
     }
   },
   {
@@ -4346,7 +4562,8 @@
       "auth": 25,
       "trad": 60,
       "mil": 15,
-      "myst": 45
+      "myst": 45,
+      "esoteric": 45
     }
   },
   {
@@ -4366,7 +4583,8 @@
       "auth": -20,
       "trad": 45,
       "mil": -10,
-      "myst": 70
+      "myst": 70,
+      "esoteric": 70
     }
   },
   {
@@ -4386,7 +4604,8 @@
       "auth": 50,
       "trad": 30,
       "mil": 45,
-      "myst": -15
+      "myst": -15,
+      "esoteric": -15
     }
   },
   {
@@ -4406,7 +4625,8 @@
       "auth": 65,
       "trad": 90,
       "mil": 65,
-      "myst": 75
+      "myst": 75,
+      "esoteric": 75
     }
   },
   {
@@ -4426,7 +4646,8 @@
       "auth": 55,
       "trad": 85,
       "mil": 45,
-      "myst": 85
+      "myst": 85,
+      "esoteric": 85
     }
   },
   {
@@ -4446,7 +4667,8 @@
       "auth": 70,
       "trad": 60,
       "mil": 60,
-      "myst": 40
+      "myst": 40,
+      "esoteric": 40
     }
   },
   {
@@ -4466,7 +4688,8 @@
       "auth": 45,
       "trad": 45,
       "mil": 35,
-      "myst": 20
+      "myst": 20,
+      "esoteric": 20
     }
   },
   {
@@ -4486,7 +4709,8 @@
       "auth": 20,
       "trad": 90,
       "mil": 55,
-      "myst": 55
+      "myst": 55,
+      "esoteric": 55
     }
   },
   {
@@ -4506,7 +4730,8 @@
       "auth": 60,
       "trad": 70,
       "mil": 75,
-      "myst": 10
+      "myst": 10,
+      "esoteric": 10
     }
   },
   {
@@ -4526,7 +4751,8 @@
       "auth": 90,
       "trad": 80,
       "mil": 50,
-      "myst": 40
+      "myst": 40,
+      "esoteric": 40
     }
   },
   {
@@ -4546,7 +4772,8 @@
       "auth": 65,
       "trad": 55,
       "mil": 90,
-      "myst": 10
+      "myst": 10,
+      "esoteric": 10
     }
   },
   {
@@ -4566,7 +4793,8 @@
       "auth": 55,
       "trad": 85,
       "mil": 45,
-      "myst": 95
+      "myst": 95,
+      "esoteric": 95
     }
   }
 ]

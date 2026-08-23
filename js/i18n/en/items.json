@@ -2941,7 +2941,7 @@
  },
  "1329": {
   "name": "Salvaged EDO Stick 32MB",
-  "description": "Thirty-two megabytes, if it works."
+  "description": "Refurbished pre Y2K memory. Thirty-two megabytes, if it works."
  },
  "1330": {
   "name": "Slimline Floppy Drive",
@@ -2969,7 +2969,7 @@
  },
  "1336": {
   "name": "Salvaged 540MB Drive",
-  "description": "Half a gigabyte, probably."
+  "description": "Refurbished pre Y2K disk. Half a gigabyte, probably."
  },
  "1337": {
   "name": "Vireo Mobility 4MB",
@@ -3013,7 +3013,7 @@
  },
  "1347": {
   "name": "Cracked Panel, Half Lit",
-  "description": "Works. Mostly. On one side."
+  "description": "Pre Y2K panel, cracked. Works. Mostly. On one side."
  },
  "1348": {
   "name": "NiCd Stick Pack",
@@ -3033,7 +3033,7 @@
  },
  "1352": {
   "name": "Field Cell, Leaking",
-  "description": "It holds a charge. Briefly."
+  "description": "Pre Y2K cell, leaking. It holds a charge. Briefly."
  },
  "1353": {
   "name": "Solar Trickle Wing",
@@ -3093,7 +3093,7 @@
  },
  "1367": {
   "name": "Sigil-Etched SDRAM",
-  "description": "Half a gigabyte, under a ward."
+  "description": "A gigabyte, under a ward."
  },
  "1368": {
   "name": "Leyline Modem",
@@ -4542,5 +4542,129 @@
  "1794": {
   "name": "Raman Probe Head",
   "description": "Laser probe head. Fitted to a deck, it reads what a thing is made of."
+ },
+ "1795": {
+  "name": "Hex-9 Celer 333",
+  "description": "Refurbished pre Y2K processor. 333 MHz, and it runs hot."
+ },
+ "1796": {
+  "name": "Hex-9 Quadratus 266",
+  "description": "Refurbished pre Y2K processor. 266 MHz, plenty for a text editor."
+ },
+ "1797": {
+  "name": "Aokin Sylph Mobile 233",
+  "description": "Refurbished pre Y2K mobile processor. Slow, and very light on the cell."
+ },
+ "1798": {
+  "name": "Crusader Crux 300",
+  "description": "Refurbished pre Y2K processor. 300 MHz, ex-lease."
+ },
+ "1799": {
+  "name": "EHI Ordinal 450",
+  "description": "Refurbished pre Y2K processor. The fastest thing of its year, once."
+ },
+ "1800": {
+  "name": "Omni-Lex Meridian 200",
+  "description": "Refurbished pre Y2K processor. Two hundred megahertz of the old century."
+ },
+ "1801": {
+  "name": "Aokin PC66 Sliver 16MB",
+  "description": "Refurbished pre Y2K memory. Sixteen megabytes."
+ },
+ "1802": {
+  "name": "Aokin PC66 Sliver 32MB",
+  "description": "Refurbished pre Y2K memory. Thirty-two megabytes, tested."
+ },
+ "1803": {
+  "name": "EHI SIMM Pair 64MB",
+  "description": "Refurbished pre Y2K memory. A matched pair, sold as one."
+ },
+ "1804": {
+  "name": "Omni-Lex PC100 Sliver 128MB",
+  "description": "Refurbished pre Y2K memory. The biggest stick of its year."
+ },
+ "1805": {
+  "name": "Hex 1.6GB Travel Disk",
+  "description": "Refurbished pre Y2K disk. 1.6 GB, and it ticks."
+ },
+ "1806": {
+  "name": "Hex 3.2GB Travel Disk",
+  "description": "Refurbished pre Y2K disk. 3.2 GB of somebody else s work."
+ },
+ "1807": {
+  "name": "EHI 4.3GB Ruggedised Disk",
+  "description": "Refurbished pre Y2K disk. Heavy, slow, and hard to kill."
+ },
+ "1808": {
+  "name": "Aokin CD-ROM Sled",
+  "description": "Refurbished pre Y2K drive. Reads discs, writes nothing."
+ },
+ "1809": {
+  "name": "Zip 100 Sled",
+  "description": "Refurbished pre Y2K drive. A hundred megabytes on a fat diskette."
+ },
+ "1810": {
+  "name": "SmartMedia Cage 16MB",
+  "description": "Refurbished pre Y2K card slot. Sixteen megabytes, no moving parts."
+ },
+ "1811": {
+  "name": "Vireo Rage LT 2MB",
+  "description": "Refurbished pre Y2K graphics adapter. Two megabytes of it."
+ },
+ "1812": {
+  "name": "Hex Trident Mobile 1MB",
+  "description": "Refurbished pre Y2K graphics adapter. One megabyte, sixteen colours."
+ },
+ "1813": {
+  "name": "Omni-Lex Lynx 4MB",
+  "description": "Refurbished pre Y2K graphics adapter. Four megabytes, ex-workstation."
+ },
+ "1814": {
+  "name": "Monochrome VGA Panel",
+  "description": "Refurbished pre Y2K panel. Grey on grey, and readable in the sun."
+ },
+ "1815": {
+  "name": "Aokin 6.1in DSTN Panel",
+  "description": "Refurbished pre Y2K panel. Colour, if you look at it straight on."
+ },
+ "1816": {
+  "name": "EHI 9.4in Passive Panel",
+  "description": "Refurbished pre Y2K panel. Big, dim, and worth the room."
+ },
+ "1817": {
+  "name": "NiCd Brick 1000",
+  "description": "Refurbished pre Y2K cell. It remembers every charge you gave it."
+ },
+ "1818": {
+  "name": "NiMH Bar 1600",
+  "description": "Refurbished pre Y2K cell. Better than the nickel cadmium it replaced."
+ },
+ "1819": {
+  "name": "Alkaline Cage",
+  "description": "Refurbished pre Y2K cell holder. Takes shop batteries."
+ },
+ "1820": {
+  "name": "33.6k Fax Modem",
+  "description": "Refurbished pre Y2K modem. Slower than the fifty-six, and it always connects."
+ },
+ "1821": {
+  "name": "PCMCIA 10Base-T Card",
+  "description": "Refurbished pre Y2K network card. Ten megabits, down a dongle."
+ },
+ "1822": {
+  "name": "Bent Fin Cooler",
+  "description": "Refurbished pre Y2K heatsink. Straightened by hand."
+ },
+ "1823": {
+  "name": "Salvaged Blower Fan",
+  "description": "Refurbished pre Y2K fan. Loud, and it moves air."
+ },
+ "1824": {
+  "name": "8-bit Sound Chip",
+  "description": "Refurbished pre Y2K audio chip. Eight bits, and proud of it."
+ },
+ "1825": {
+  "name": "OPL2 Synth Chip",
+  "description": "Refurbished pre Y2K synthesiser chip. Nine voices of FM."
  }
 }

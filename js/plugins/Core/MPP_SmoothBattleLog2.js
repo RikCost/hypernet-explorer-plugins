@@ -44,7 +44,7 @@
  * @desc Maximum number of lines displayed in the battle log
  * @type number
  * @min 1
- * @default 4
+ * @default 10
  * 
  * @param Message Speed
  * @desc Battle log display speed
@@ -61,7 +61,7 @@
  * @desc The size of the characters in the battle log
  * @type number
  * @min 6
- * @default 26
+ * @default 18
  * 
  * @param Wait New Line?
  * @desc Whether or not there is a weight when a new log is added.
@@ -103,9 +103,9 @@
     
     const CONFIG = {
         logType: params['Log Type'] || '1-line',
-        maxLines: 6,
+        maxLines: 4,
         messageSpeed: Number(params['Message Speed'] || 8),
-        fontSize: Number(params['Font Size'] || 26),
+        fontSize: Number(params['Font Size'] || 18),
         viewDuration: -1,
         waitNewLine: params['Wait New Line?'] === 'true',
         startMessagesOnLog: params['Start Messages On Log?'] === 'true',
@@ -212,11 +212,16 @@
             if (seg) html += seg;
             if (openSpan) { html += '</span>'; openSpan = false; }
             const token = match[1];
-            const color = token.charAt(0) === '#'
-                ? token
-                : (BATTLELOG_COLOR_MAP[parseInt(token, 10)] || BATTLELOG_COLOR_MAP[0]);
-            html += `<span style="color:${color};">`;
-            openSpan = true;
+            if (token === '0' || token === '#ffffff' || token === '#FFFFFF') {
+                // Color reset: just close span
+                openSpan = false;
+            } else {
+                const color = token.charAt(0) === '#'
+                    ? token
+                    : (BATTLELOG_COLOR_MAP[parseInt(token, 10)] || BATTLELOG_COLOR_MAP[0]);
+                html += `<span style="color:${color};">`;
+                openSpan = true;
+            }
             lastIndex = regex.lastIndex;
         }
         const tail = text.substring(lastIndex);
@@ -225,12 +230,152 @@
         return html;
     }
 
+    // Enemy front-facing walking sprite cache for battle log
+    const EnemySpriteCache = new class {
+        constructor() {
+            this._cache = new Map(); // key -> dataURL
+            this._loading = new Set();
+        }
+
+        getCharInfoFromNote(note) {
+            if (!note) return null;
+            const match = note.match(/<Char:\s*([^>]+)>/i);
+            if (!match) return null;
+            const raw = match[1].trim();
+            const parts = raw.split(',').map(s => s.trim());
+            const charName = parts[0];
+            const charIndex = parts.length > 1 ? parseInt(parts[1], 10) || 0 : 0;
+            return { charName, charIndex };
+        }
+
+        getCharInfo(enemy) {
+            if (!enemy) return null;
+            if (typeof enemy.enemy === 'function') {
+                const data = enemy.enemy();
+                if (data && data.note) return this.getCharInfoFromNote(data.note);
+            }
+            if (enemy.note) {
+                return this.getCharInfoFromNote(enemy.note);
+            }
+            if (enemy._enemyId && typeof $dataEnemies !== 'undefined' && $dataEnemies && $dataEnemies[enemy._enemyId]) {
+                return this.getCharInfoFromNote($dataEnemies[enemy._enemyId].note);
+            }
+            return null;
+        }
+
+        getSpriteHtml(rawCode) {
+            if (!rawCode) return '';
+            const parts = rawCode.split(',').map(s => s.trim());
+            const charName = parts[0];
+            const charIndex = parts.length > 1 ? parseInt(parts[1], 10) || 0 : 0;
+            const cacheKey = charName + (charIndex > 0 ? '_' + charIndex : '');
+            const dataUrl = this._cache.get(cacheKey);
+            if (dataUrl) {
+                return `<img class="battlelog-enemy-sprite" src="${dataUrl}" style="display:inline-block; vertical-align:middle; width:1.25em; height:1.25em; object-fit:contain; image-rendering:pixelated; margin-right:4px;" />`;
+            }
+            this.loadChar(charName, charIndex);
+            return '';
+        }
+
+        loadChar(charName, charIndex = 0) {
+            if (!charName) return;
+            const cacheKey = charName + (charIndex > 0 ? '_' + charIndex : '');
+            if (this._cache.has(cacheKey) || this._loading.has(cacheKey)) return;
+            this._loading.add(cacheKey);
+
+            const filename = charName.includes('/') ? charName : ('Monsters/' + charName);
+            let bitmap = ImageManager.loadCharacter(filename);
+            let isFallback = false;
+
+            const onReady = () => {
+                try {
+                    const img = bitmap.image || bitmap._image || bitmap.canvas;
+                    const bw = bitmap.width || (img ? img.width : 0);
+                    const bh = bitmap.height || (img ? img.height : 0);
+                    if (bw > 0 && bh > 0) {
+                        const baseName = charName.includes('/') ? charName.split('/').pop() : charName;
+                        const isSingle = baseName.startsWith('$');
+                        const pw = isSingle ? bw / 3 : bw / 12;
+                        const ph = isSingle ? bh / 4 : bh / 8;
+
+                        const sx = isSingle ? pw : ((charIndex % 4) * 3 + 1) * pw;
+                        const sy = isSingle ? 0 : (Math.floor(charIndex / 4) * 4) * ph;
+                        const sw = pw;
+                        const sh = ph;
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 32;
+                        canvas.height = 32;
+                        const ctx = canvas.getContext('2d');
+                        ctx.imageSmoothingEnabled = false;
+
+                        const scale = Math.min(32 / sw, 32 / sh);
+                        const dw = Math.round(sw * scale);
+                        const dh = Math.round(sh * scale);
+                        const dx = Math.round((32 - dw) / 2);
+                        const dy = Math.round((32 - dh) / 2);
+
+                        const source = (img && img.complete && img.naturalWidth) ? img : (bitmap.canvas || img);
+                        if (source) {
+                            ctx.drawImage(source, sx, sy, sw, sh, dx, dy, dw, dh);
+                            const dataUrl = canvas.toDataURL();
+                            this._cache.set(cacheKey, dataUrl);
+
+                            if (typeof BattleManager !== 'undefined' && BattleManager._logWindow) {
+                                if (typeof BattleManager._logWindow.refreshHtmlLines === 'function') {
+                                    BattleManager._logWindow.refreshHtmlLines();
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('EnemySpriteCache: failed to render enemy sprite:', charName, e);
+                } finally {
+                    this._loading.delete(cacheKey);
+                }
+            };
+
+            const onError = () => {
+                if (!isFallback && !charName.includes('/')) {
+                    isFallback = true;
+                    bitmap = ImageManager.loadCharacter(charName);
+                    if (bitmap.isReady()) {
+                        onReady();
+                    } else {
+                        bitmap.addLoadListener(onReady);
+                        if (bitmap.addErrorListener) {
+                            bitmap.addErrorListener(() => {
+                                this._loading.delete(cacheKey);
+                            });
+                        }
+                    }
+                } else {
+                    this._loading.delete(cacheKey);
+                }
+            };
+
+            if (bitmap.isError && bitmap.isError()) {
+                onError();
+            } else if (bitmap.isReady()) {
+                onReady();
+            } else {
+                bitmap.addLoadListener(onReady);
+                if (bitmap.addErrorListener) {
+                    bitmap.addErrorListener(onError);
+                }
+            }
+        }
+    }();
+
     function parseBattleLogTextToHtml(text) {
         if (!text) return '';
         // Split multi-line entries (action header + per-reaction lines) into separate divs
         const segments = text.split('\n');
         let result = '';
-        for (let seg of segments) {
+        for (let i = 0; i < segments.length; i++) {
+            let seg = segments[i];
+            if (!seg || !seg.trim()) continue;
+
             // Extract per-segment mx indentation
             let indentPx = 0;
             const mxMatch = seg.match(/\\mx\[(\d+)\]/i);
@@ -238,14 +383,54 @@
                 indentPx = parseInt(mxMatch[1], 10);
                 seg = seg.replace(/\\mx\[\d+\]/gi, '');
             }
+
+            // Determine accent style for the background bar
+            const isCrit = /\\crit\[/i.test(seg);
+            let accentClass = '';
+            if (isCrit) {
+                accentClass = 'accent-crit';
+            } else if (indentPx >= 20 || i >= 2) {
+                accentClass = 'accent-reaction';
+            } else if (indentPx > 0 || i > 0) {
+                accentClass = 'accent-sub';
+            } else if (/\\i\[/i.test(seg)) {
+                accentClass = 'accent-skill';
+            } else if (/\\c\[(1|4|5)\]/i.test(seg)) {
+                accentClass = 'accent-actor';
+            } else if (/\\c\[2\]/i.test(seg)) {
+                accentClass = 'accent-enemy';
+            }
+
+            // Replace critical tags: \crit[...]
+            seg = seg.replace(/\\crit\[([^\]]+)\]/gi, (m, critContent) => {
+                return `<span class="battlelog-crit-text">${critContent}</span>`;
+            });
+
+            // Replace enemy sprite codes: \enemysprite[charName]
+            seg = seg.replace(/\\enemysprite\[([^\]]+)\]/gi, (match, charName) => {
+                return EnemySpriteCache.getSpriteHtml(charName);
+            });
+
+            // Replace icon codes: \i[123] - rendered inline before skill/item name
+            seg = seg.replace(/\\i\[(\d+)\]/gi, (match, iconId) => {
+                const idx = Number(iconId) || 0;
+                const col = idx % 16;
+                const row = Math.floor(idx / 16);
+                const S = 1.25;
+                return `<span class="battlelog-icon" style="display:inline-block; vertical-align:middle; width:${S}em; height:${S}em;` +
+                    ` background-image:url('img/system/IconSet.png'); background-repeat:no-repeat;` +
+                    ` background-size:${S * 16}em auto;` +
+                    ` background-position:-${(S * col).toFixed(2)}em -${(S * row).toFixed(2)}em; image-rendering:pixelated; margin-right:5px; margin-left:2px; flex-shrink:0;"></span>`;
+            });
+
             seg = seg
                 .replace(/\\v\[\d+\]/gi, '')
-                .replace(/\\i\[\d+\]/gi, '')
                 .replace(/\\n\[\d+\]/gi, '')
                 .replace(/\\n/g, '<br/>')
                 .replace(/\n/g, '<br/>');
+
             const styleAttr = indentPx > 0 ? ` style="padding-left:${indentPx}px;"` : '';
-            result += `<div class="battlelog-line"${styleAttr}>${parseColorCodes(seg)}</div>`;
+            result += `<div class="battlelog-bar ${accentClass}"${styleAttr}><div class="battlelog-line">${parseColorCodes(seg)}</div></div>`;
         }
         return result;
     }
@@ -309,10 +494,21 @@
         configurable: true
     });
 
+    Object.defineProperty(ConfigManager, 'battleLogSkillNames', {
+        get: function() {
+            return this._battleLogSkillNames !== undefined ? this._battleLogSkillNames : 0; // 0 = Skill Name, 1 = Skill Action
+        },
+        set: function(value) {
+            this._battleLogSkillNames = value;
+        },
+        configurable: true
+    });
+
     const _ConfigManager_makeData = ConfigManager.makeData;
     ConfigManager.makeData = function() {
         const config = _ConfigManager_makeData.call(this);
         config.battleLogBgOpacity = this.battleLogBgOpacity;
+        config.battleLogSkillNames = this.battleLogSkillNames;
         return config;
     };
 
@@ -320,10 +516,11 @@
     ConfigManager.applyData = function(config) {
         _ConfigManager_applyData.call(this, config);
         this.battleLogBgOpacity = config.battleLogBgOpacity !== undefined ? config.battleLogBgOpacity : CONFIG.battleLogBgOpacity;
+        this.battleLogSkillNames = config.battleLogSkillNames !== undefined ? config.battleLogSkillNames : 0;
     };
 
     //-------------------------------------------------------------------------
-    // Window_Options - Add Battle Log BG Opacity Option
+    // Window_Options - Add Battle Log Options
     //-------------------------------------------------------------------------
 
     if (window.GameOptions) {
@@ -345,11 +542,29 @@
                 ConfigManager.save();
             }
         );
+
+        window.GameOptions.registerOption('battleLogSkillNames', T('BattleLog.skillNamesOption') || 'Skill Names',
+            () => ConfigManager.battleLogSkillNames,
+            (value) => ConfigManager.battleLogSkillNames = value,
+            'gameplay', 'custom',
+            function(value) { 
+                return value === 1 ? (T('BattleLog.skillAction') || 'Skill Action') : (T('BattleLog.skillName') || 'Skill Name'); 
+            },
+            function() { 
+                ConfigManager.battleLogSkillNames = ConfigManager.battleLogSkillNames === 1 ? 0 : 1;
+                ConfigManager.save();
+            },
+            function() { 
+                ConfigManager.battleLogSkillNames = ConfigManager.battleLogSkillNames === 1 ? 0 : 1;
+                ConfigManager.save();
+            }
+        );
     } else {
         const _Window_Options_addGeneralOptions = Window_Options.prototype.addGeneralOptions;
         Window_Options.prototype.addGeneralOptions = function() {
             _Window_Options_addGeneralOptions.call(this);
             this.addCommand(T('BattleLog.bgOpacity'), "battleLogBgOpacity");
+            this.addCommand(T('BattleLog.skillNamesOption') || "Skill Names", "battleLogSkillNames");
         };
 
         const _Window_Options_statusText = Window_Options.prototype.statusText;
@@ -357,6 +572,10 @@
             const symbol = this.commandSymbol(index);
             if (symbol === "battleLogBgOpacity") {
                 return this.getConfigValue(symbol) + "%";
+            }
+            if (symbol === "battleLogSkillNames") {
+                const val = this.getConfigValue(symbol);
+                return val === 1 ? (T('BattleLog.skillAction') || 'Skill Action') : (T('BattleLog.skillName') || 'Skill Name');
             }
             return _Window_Options_statusText.call(this, index);
         };
@@ -368,6 +587,11 @@
             if (symbol === "battleLogBgOpacity") {
                 const value = this.getConfigValue(symbol);
                 this.changeValue(symbol, (value + 10) % 110);
+                return;
+            }
+            if (symbol === "battleLogSkillNames") {
+                const value = this.getConfigValue(symbol);
+                this.changeValue(symbol, value === 1 ? 0 : 1);
                 return;
             }
             _Window_Options_processOk.call(this);
@@ -382,6 +606,11 @@
                 this.changeValue(symbol, Math.min(value + 10, 100));
                 return;
             }
+            if (symbol === "battleLogSkillNames") {
+                const value = this.getConfigValue(symbol);
+                this.changeValue(symbol, value === 1 ? 0 : 1);
+                return;
+            }
             _Window_Options_cursorRight.call(this);
         };
 
@@ -392,6 +621,11 @@
             if (symbol === "battleLogBgOpacity") {
                 const value = this.getConfigValue(symbol);
                 this.changeValue(symbol, Math.max(value - 10, 0));
+                return;
+            }
+            if (symbol === "battleLogSkillNames") {
+                const value = this.getConfigValue(symbol);
+                this.changeValue(symbol, value === 1 ? 0 : 1);
                 return;
             }
             _Window_Options_cursorLeft.call(this);
@@ -425,6 +659,69 @@
     // Name Cache Systems - Optimize color-coding
     //-------------------------------------------------------------------------
     
+    const SKILL_CATEGORY_COLORS = {
+        Basic: '#66bbdd',
+        MartialArts: '#fb923c',      // Warm orange
+        Swordsmanship: '#38bdf8',    // Steel blue
+        Bestial: '#d97706',          // Beast amber
+        StatusMagic: '#c084fc',      // Lavender purple
+        Pyromancy: '#f87171',        // Fire red
+        Cryomancy: '#67e8f9',        // Ice cyan
+        Electromancy: '#facc15',     // Lightning yellow
+        Illusion: '#e879f9',         // Magenta
+        Aeromancy: '#34d399',        // Wind emerald
+        MetaMagic: '#a855f7',        // Arcane violet
+        Geomancy: '#ca8a04',         // Earth ochre
+        ChaosMagic: '#f43f5e',       // Crimson
+        Idromancy: '#0ea5e9',        // Water blue
+        HolyMagic: '#fef08a',        // Sacred gold
+        AstralMagic: '#818cf8',      // Star indigo
+        VoidMagic: '#8b5cf6',        // Deep purple
+        Necromancy: '#a855f7',       // Cursed violet
+        ForbiddenMagic: '#e11d48',   // Blood rose
+        Convokation: '#fb7185',      // Summon coral
+        Arcanism: '#6366f1',         // Arcane blue
+        Pastoral: '#4ade80',         // Nature green
+        PsychicAbilities: '#d946ef', // Psi pink
+        Alchemistry: '#f59e0b',      // Amber
+        Firearms: '#94a3b8',         // Gunmetal
+        Hunting: '#16a34a',          // Forest green
+        Cooking: '#fb923c',          // Warm orange
+        Performance: '#f43f5e',      // Rose
+        Leadership: '#eab308',       // Gold
+        Tactical: '#3b82f6',         // Tactical blue
+        Roguery: '#a78bfa',          // Stealth violet
+        Augury: '#22d3ee',           // Mystical cyan
+        Chronomancy: '#fcd34d',      // Time amber
+        Dominion: '#9333ea',         // Royal purple
+        Economy: '#eab308',          // Gold
+        Healing: '#34d399',          // Soft healing green
+        Mutation: '#a3e635',         // Toxic lime
+        Oneiromancy: '#818cf8',      // Dream indigo
+        Technomagical: '#06b6d4',    // Neon cyan
+        Vocation: '#d97706'          // Bronze
+    };
+
+    function getSkillOrItemColor(item) {
+        if (!item) return CONFIG.colors.item;
+        // Check for category tag: <category:Name> in skill.note
+        if (item.note) {
+            const match = item.note.match(/<category:\s*([^>]+)>/i);
+            if (match) {
+                const cat = match[1].trim();
+                if (SKILL_CATEGORY_COLORS[cat]) {
+                    return SKILL_CATEGORY_COLORS[cat];
+                }
+            }
+        }
+        // Fall back to element color if defined
+        const elementId = item.damage && item.damage.elementId;
+        if (elementId !== undefined && ELEMENT_COLORS[elementId] !== undefined) {
+            return ELEMENT_COLORS[elementId];
+        }
+        return CONFIG.colors.item;
+    }
+
     // Cache for colored names - avoids repeated string replacements
     const NameColorCache = new class {
         constructor() {
@@ -442,30 +739,43 @@
             if (this._initialized) return;
             
             // Cache actor names
-            const actors = $gameParty.battleMembers();
-            actors.forEach(actor => {
-                if (!actor || !actor.name()) return;
-                
-                const name = actor.name();
-                if (actor.actorId() === 2) {
-                    this._actorCache.set(name, `\\c[${CONFIG.colors.actor2}]${name}\\c[0]`);
-                } else if (actor.actorId() === 3) {
-                    this._actorCache.set(name, `\\c[${CONFIG.colors.actor3}]${name}\\c[0]`);
-                } else {
-                    this._actorCache.set(name, `\\c[${CONFIG.colors.actor}]${name}\\c[0]`);
-                }
-            });
+            if (typeof $gameParty !== 'undefined' && $gameParty && $gameParty.battleMembers) {
+                const actors = $gameParty.battleMembers();
+                actors.forEach(actor => {
+                    if (!actor || !actor.name()) return;
+                    
+                    const name = actor.name();
+                    if (actor.actorId() === 2) {
+                        this._actorCache.set(name, `\\c[${CONFIG.colors.actor2}]${name}\\c[0]`);
+                    } else if (actor.actorId() === 3) {
+                        this._actorCache.set(name, `\\c[${CONFIG.colors.actor3}]${name}\\c[0]`);
+                    } else {
+                        this._actorCache.set(name, `\\c[${CONFIG.colors.actor}]${name}\\c[0]`);
+                    }
+                });
+            }
             
-            // Skip enemy name caching - all enemies will be displayed as "Enemy"
+            // Cache troop enemy names
+            if (typeof $gameTroop !== 'undefined' && $gameTroop && $gameTroop.members) {
+                $gameTroop.members().forEach(enemy => {
+                    if (!enemy) return;
+                    const name = enemy.name ? enemy.name() : (enemy.name || '');
+                    if (name) {
+                        const translatedName = typeof window.translateText === 'function' ? window.translateText(name) : name;
+                        this._enemyCache.set(name, `\\c[${CONFIG.colors.enemy}]${translatedName}\\c[0]`);
+                    }
+                });
+            }
             
-            // Cache skill and item names
-            const skills = $dataSkills.filter(skill => skill && skill.name);
-            const items = $dataItems.filter(item => item && item.name);
+            // Cache skill and item names (color codes only, no icons for general replacement)
+            const skills = (typeof $dataSkills !== 'undefined' && $dataSkills) ? $dataSkills.filter(skill => skill && skill.name) : [];
+            const items = (typeof $dataItems !== 'undefined' && $dataItems) ? $dataItems.filter(item => item && item.name) : [];
             
             [...skills, ...items].forEach(item => {
                 if (!item || !item.name || item.name.length <= 1) return;
                 const name = item.name;
-                this._abilityCache.set(name, `\\c[${CONFIG.colors.item}]${name}\\c[0]`);
+                const color = getSkillOrItemColor(item);
+                this._abilityCache.set(name, `\\c[${color}]${name}\\c[0]`);
             });
             
             this._initialized = true;
@@ -494,7 +804,7 @@
         
         getEnemyName(enemy) {
             if (!enemy) return '';
-            const name = enemy.name();
+            const name = enemy.name ? enemy.name() : (enemy.name || '');
             const translatedName = typeof window.translateText === 'function' ? window.translateText(name) : name;
             return `\\c[${CONFIG.colors.enemy}]${translatedName}\\c[0]`;
         }
@@ -503,9 +813,8 @@
             if (!item) return '';
             const name = item.name;
             const translatedName = typeof window.translateText === 'function' ? window.translateText(name) : name;
-            const elementId = item.damage && item.damage.elementId;
-            const colorIdx = ELEMENT_COLORS[elementId] !== undefined ? ELEMENT_COLORS[elementId] : CONFIG.colors.item;
-            return `\\c[${colorIdx}]${translatedName}\\c[0]`;
+            const color = getSkillOrItemColor(item);
+            return `\\c[${color}]${translatedName}\\c[0]`;
         }
         
         refresh() {
@@ -546,7 +855,6 @@
             this._logWindow.push('wait');
             this._logWindow.push('addText', message);
         }
-        this._logWindow.push('clear');
     };
 
     BattleManager.initiativeMessage = function() {
@@ -678,37 +986,32 @@
 
     const _Window_BattleLog_initialize = Window_BattleLog.prototype.initialize;
     Window_BattleLog.prototype.initialize = function(rect) {
-        // Wide panel whose left edge lines up with the party sprite column
-        // (HUD: PCARD_COL_LEFT 90 - bust offset 22 = ~68). Leaves a right margin for the command menu.
+        // Full-width panel anchored to the left edge of the screen.
         const customHeight = this.fittingHeight(this.maxLines());
-        const customX = 68;
-        const customWidth = Math.max(520, Graphics.width - customX - 300);
+        const customX = 4;
+        const customWidth = Math.max(520, Graphics.boxWidth - customX - 20);
 
         // Vertical offset compensation for game centering
         const yOffset = Math.floor((Graphics.height - Graphics.boxHeight) / 2);
         const pad = this.padding || 12;
 
-        // The battle hotbar (BattleSystemEnhancedHUD.js) sits in the same
-        // column, just under the log; room for it is reserved here so the
-        // two never overlap.
-        const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 90;
+        // The battle hotbar (BattleSystemEnhancedHUD.js) sits under the log; room for it
+        // is reserved here so the two never overlap.
+        const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 70;
 
-        // Position at center-bottom of the screen
-        const customY = Graphics.height - customHeight - 20 - hotbarReserve - yOffset - pad;
+        // Position above the hotbar at the bottom of the screen
+        const customY = Graphics.height - customHeight - hotbarReserve - yOffset;
 
         const customRect = new Rectangle(customX, customY, customWidth, customHeight);
     
         _Window_BattleLog_initialize.call(this, customRect);
 
-        // --- MODIFICATIONS START ---
         this.frameVisible = false; // This line hides the window border.
-        // --- MODIFICATIONS END ---
 
-        // Parallel to _lines: which pushed lines are toast-style, i.e. a
-        // notification redirected here instead of a floating ParchmentToast
-        // while in battle. Kept in lockstep with _lines at every
-        // push/shift/clear site below.
+        this._lines = [];
         this._lineToast = [];
+        this._lineTurnBreak = [];
+        this._pendingTurnBreak = false;
 
         this._clearDuration = 0;
         this._logScrollYDuration = 0;
@@ -716,34 +1019,32 @@
         this.opacity = 0; // Completely transparent canvas window
         this.backOpacity = 0; // No background on canvas
         
-        // Animation properties
-        this._animationState = 'hidden'; // New property to track animation state
-        this._animationTimer = 0; // Timer for animation
-        this._originalHeight = customHeight; // Store the original height
-        this._originalY = this.y; // Store the original Y position
-        this._targetHeight = 0; // Target height (start at 0)
-        this.height = 0; // Start with height of 0
-        this.visible = false; // Start hidden
+        this._animationState = 'visible';
+        this._originalHeight = customHeight;
+        this._originalY = this.y;
+        this.height = customHeight;
+        this.visible = false;
     
         this.createLogSprites();
         this.drawBackground();
         
-        // Optimization: Initialize and build the color cache when creating the log window
         NameColorCache.buildCache();
 
         // Remove stale overlay if present
         const old = document.getElementById('html-battlelog-overlay');
         if (old) old.remove();
 
-        // Create the new HTML Battle Log overlay root - styled like DialogueSystem.js
+        // Create the new HTML Battle Log overlay root
         const root = document.createElement('div');
         root.id = 'html-battlelog-overlay';
         root.style.cssText = 
             'position:fixed;display:none;z-index:400;pointer-events:none;' +
-            'box-sizing:border-box;overflow:hidden;' +
+            'box-sizing:border-box;overflow-y:hidden;overflow-x:hidden;' +
+            'flex-direction:column;justify-content:flex-start;align-items:flex-start;' +
             'background:transparent;' +
             'border:none;' +
-            'outline:none;';
+            'outline:none;' +
+            'scroll-behavior:smooth;';
         this._htmlBattleLogRoot = root;
         document.body.appendChild(root);
 
@@ -754,11 +1055,10 @@
             }
         }
     };
-    
 
     // Main methods
     Window_BattleLog.prototype.maxLines = function() {
-        return 6;
+        return 50;
     };
 
     Window_BattleLog.prototype.messageSpeed = function() {
@@ -769,8 +1069,7 @@
         this._logSprites = [];
         const width = this.itemWidth();
         const height = this.itemHeight();
-        // Only create the exact number of sprites needed (+1 for shifting)
-        for (let i = 0; i <= this.maxLines(); i++) {
+        for (let i = 0; i <= 6; i++) {
             const sprite = new Sprite_BattleLog(width, height);
             this._logSprites[i] = sprite;
             this.addInnerChild(sprite);
@@ -800,16 +1099,6 @@
             }
         }
 
-        // Color skill/item names from cache
-        NameColorCache.buildCache();
-        for (const [name, replacement] of NameColorCache._abilityCache) {
-            if (name && name.length > 1) {
-                try {
-                    modifiedText = modifiedText.replace(new RegExp(`\\b${name}\\b`, 'g'), replacement);
-                } catch(e) {}
-            }
-        }
-
         return modifiedText;
     };
 
@@ -819,7 +1108,6 @@
     };
     
     Window_BattleLog.prototype.drawBackground = function() {
-        // Do nothing to prevent drawing any background onto the contentsBack bitmap
     };
 
     Window_BattleLog.prototype.backRect = function() {
@@ -833,180 +1121,162 @@
         return rect;
     };
 
-    // Drawing and text updates
-Window_BattleLog.prototype.drawLineText = function(index) {
-    const sprite = this._logSprites[index + 1];
-    if (sprite) {
-        let text = this._lines[index];
-        sprite._isToast = !!(this._lineToast && this._lineToast[index]);
-        sprite._htmlText = parseBattleLogTextToHtml(text);
-    }
-};
-const _Window_BattleLog_resetFontSettings = Window_BattleLog.prototype.resetFontSettings;
-Window_BattleLog.prototype.resetFontSettings = function() {
-    _Window_BattleLog_resetFontSettings.apply(this, arguments);
-    this.contents.outlineColor = 'rgba(0, 0, 0, 1)'; // Solid black outline
-    this.contents.outlineWidth = 2; // Thicker outline (default is 3)
-};
+    Window_BattleLog.prototype.drawLineText = function(index) {
+    };
+
+    const _Window_BattleLog_resetFontSettings = Window_BattleLog.prototype.resetFontSettings;
+    Window_BattleLog.prototype.resetFontSettings = function() {
+        _Window_BattleLog_resetFontSettings.apply(this, arguments);
+        this.contents.outlineColor = 'rgba(0, 0, 0, 1)';
+        this.contents.outlineWidth = 2;
+    };
+
+    Window_BattleLog.prototype.totalVisualLines = function() {
+        if (!this._lines) return 0;
+        let count = 0;
+        for (const l of this._lines) {
+            if (l) count += l.split('\n').length;
+        }
+        return count;
+    };
+
+    Window_BattleLog.prototype.scrollToBottom = function(smooth = true) {
+        if (!this._htmlBattleLogRoot) return;
+        const root = this._htmlBattleLogRoot;
+        requestAnimationFrame(() => {
+            if (!root) return;
+            const targetScrollTop = Math.max(0, root.scrollHeight - root.clientHeight);
+            if (smooth && typeof root.scrollTo === 'function') {
+                root.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+            } else {
+                root.scrollTop = targetScrollTop;
+            }
+        });
+    };
 
     // Core functionality for log line management
     Window_BattleLog.prototype.addText = function(text, isToast) {
-        // Apply translation here if translateText is available globally
-
         if (typeof translateText === 'function') {
             text = translateText(text);
         }
         const coloredText = this.colorCharacterNames(text);
         const indentText = this.indentText(coloredText);
 
-        this._lines.push(indentText);
+        if (!this._lines) this._lines = [];
         if (!this._lineToast) this._lineToast = [];
+        if (!this._lineTurnBreak) this._lineTurnBreak = [];
+
+        this._lines.push(indentText);
         this._lineToast.push(!!isToast);
-        if (this.numLines() > this.maxLines()) this.shiftLine();
+        const isTurnBreak = !!this._pendingTurnBreak;
+        this._lineTurnBreak.push(isTurnBreak);
+        this._pendingTurnBreak = false;
 
         $gameTemp.addBattleLog(indentText);
-        const index = this.numLines() - 1;
-        this._logSprites[index + 1].popup();
-        this.drawLineText(index);
 
-        // Start scale in if window is hidden
-        if (this._animationState === 'hidden' || this._animationState === 'scaling-out') {
-            this.startScaleIn();
+        if (this._htmlBattleLogRoot) {
+            const sc = _msgGetScale();
+            const baseFontSize = CONFIG.fontSize || 18;
+            const scaledFont = Math.round(baseFontSize * sc.sy * 0.9);
+
+            const el = document.createElement('div');
+            el.className = 'battlelog-line-container';
+            el.style.position = 'relative';
+            el.style.width = '100%';
+            el.style.boxSizing = 'border-box';
+            el.style.lineHeight = '1.35';
+            el.style.fontWeight = 'bold';
+            el.style.fontSize = scaledFont + 'px';
+            el.innerHTML = parseBattleLogTextToHtml(indentText);
+
+            if (isTurnBreak && this._htmlBattleLogRoot.children.length > 0) {
+                el.style.borderTop = '1px solid rgba(255,255,255,0.22)';
+                el.style.paddingTop = Math.round(4 * sc.sy) + 'px';
+                el.style.marginTop = Math.round(8 * sc.sy) + 'px';
+            }
+
+            this._htmlBattleLogRoot.appendChild(el);
+
+            // Prune elements if total buffer exceeds 50 lines
+            while (this._htmlBattleLogRoot.children.length > 50) {
+                const firstChild = this._htmlBattleLogRoot.firstElementChild;
+                if (firstChild) {
+                    this._htmlBattleLogRoot.removeChild(firstChild);
+                }
+                if (this._lines.length > 50) {
+                    this._lines.shift();
+                    if (this._lineToast) this._lineToast.shift();
+                    if (this._lineTurnBreak) this._lineTurnBreak.shift();
+                }
+            }
+
+            this.scrollToBottom();
         }
 
+        this.visible = true;
+        this.openness = 255;
         this.wait();
         this._clearDuration = 0;
     };
 
-    // A transient notification (ParchmentToast and friends, redirected here
-    // while in battle instead of floating over the HUD), drawn as an
-    // ordinary combat line.
     Window_BattleLog.prototype.addToast = function(text) {
         this.addText(text, true);
     };
 
     Window_BattleLog.prototype.appendToActionLine = function(text) {
-        if (this._lines.length === 0) {
+        if (!this._lines || this._lines.length === 0) {
             this.addText(text);
             return;
         }
         if (typeof translateText === 'function') text = translateText(text);
         if (this._currentSubject) text = _replaceStars(text, this._currentSubject);
-        // Reactions to player actions (enemy takes hit): small indent.
-        // Reactions to enemy actions (player takes hit): larger indent.
+        text = colorizeLimbAndEntityNames(text);
+        const indentTag = /\\mx\[/i.test(text) ? '' : '\\mx[28]';
         const lastIndex = this._lines.length - 1;
-        this._lines[lastIndex] += '\n' + text;
-        this.drawLineText(lastIndex);
+        this._lines[lastIndex] += '\n' + indentTag + text;
+
+        if (this._htmlBattleLogRoot && this._htmlBattleLogRoot.lastElementChild) {
+            this._htmlBattleLogRoot.lastElementChild.innerHTML = parseBattleLogTextToHtml(this._lines[lastIndex]);
+        }
+
+        this.scrollToBottom();
         this.wait();
         this._clearDuration = 0;
     };
 
     Window_BattleLog.prototype.shiftLine = function() {
-        this._lines.shift();
-        if (this._lineToast) this._lineToast.shift();
-        const sprite = this._logSprites.shift();
-        sprite.bitmap.clear();
-        sprite._htmlText = '';
-        this._logSprites.push(sprite);
-        // After the shift, _logSprites[0] now holds the removed line's old content.
-        // Clear it immediately so it doesn't overlap with _logSprites[1] during the scroll animation.
-        if (this._logSprites[0]) {
-            this._logSprites[0].bitmap.clear();
-            this._logSprites[0]._htmlText = '';
-        }
-        this._logScrollY -= this.lineHeight();
-        this._logScrollYDuration = 16;
     };
 
-    // Animation control methods - Optimized calculations
     Window_BattleLog.prototype.startScaleIn = function() {
-        this._animationState = 'scaling-in';
-        this._animationTimer = 0;
-        this._targetHeight = this._originalHeight;
-        this.visible = true;
     };
     
     Window_BattleLog.prototype.startScaleOut = function() {
-        if (this._animationState === 'visible') {
-            this._animationState = 'scaling-out';
-            this._animationTimer = 0;
-            this._targetHeight = 0;
-        }
     };
     
-    // Precompute easing values for common animation progress points
-    const EASING_CACHE_SIZE = 100;
-    const easedInValues = Array(EASING_CACHE_SIZE).fill(0).map((_, i) => {
-        const progress = i / (EASING_CACHE_SIZE - 1);
-        return progress * progress; // Quadratic ease-in
-    });
-    
-    const easedOutValues = Array(EASING_CACHE_SIZE).fill(0).map((_, i) => {
-        const progress = i / (EASING_CACHE_SIZE - 1);
-        return 1 - Math.pow(1 - progress, 3); // Cubic ease-out
-    });
-    
     Window_BattleLog.prototype.updateScaleAnimation = function() {
-        const animSpeed = CONFIG.animationSpeed;
-        
-        if (this._animationState === 'scaling-in') {
-            this._animationTimer += animSpeed;
-            
-            // Calculate progress (0 to 1)
-            const fullDuration = 45;
-            const progress = Math.min(1, this._animationTimer / fullDuration);
-            
-            // Get eased progress from cache or calculate it
-            let easedProgress;
-            if (progress >= 1) {
-                easedProgress = 1;
-            } else {
-                const index = Math.floor(progress * (EASING_CACHE_SIZE - 1));
-                easedProgress = easedOutValues[index];
-            }
-            
-            // Set the new height and adjust y position to grow from the middle
-            const newHeight = Math.floor(this._targetHeight * easedProgress);
-            const heightDiff = this._originalHeight - newHeight;
-            
-            this.height = newHeight;
-            this.y = this._originalY + (heightDiff / 2);
-            
-            if (progress >= 1) {
-                this.height = this._originalHeight;
-                this.y = this._originalY;
-                this._animationState = 'visible';
-            }
-        } else if (this._animationState === 'scaling-out') {
-            this._animationTimer += animSpeed;
-            
-            // Calculate progress (0 to 1)
-            const fullDuration = 45;
-            const progress = Math.min(1, this._animationTimer / fullDuration);
-            
-            // Get eased progress from cache or calculate it
-            let easedProgress;
-            if (progress >= 1) {
-                easedProgress = 1;
-            } else {
-                const index = Math.floor(progress * (EASING_CACHE_SIZE - 1));
-                easedProgress = easedInValues[index];
-            }
-            
-            // Set the new height and adjust y position to shrink to the middle
-            const newHeight = Math.floor(this._originalHeight * (1 - easedProgress));
-            const heightDiff = this._originalHeight - newHeight;
-            
-            this.height = newHeight;
-            this.y = this._originalY + (heightDiff / 2);
-            
-            if (progress >= 1) {
-                this.height = 0;
-                this.y = this._originalY + (this._originalHeight / 2);
-                this._animationState = 'hidden';
-                this.visible = false;
-            }
-        }
+    };
+
+    Window_BattleLog.prototype._calculateFixedLogY = function() {
+        if (!window.PartyHud) return null;
+        const overlay = window.PartyHud.overlay();
+        if (!overlay || !overlay._el || !overlay._visible) return null;
+
+        const yOffset = Math.floor((Graphics.height - Graphics.boxHeight) / 2);
+        const canvas = document.getElementById('gameCanvas');
+        if (!canvas) return null;
+        const view = canvas.getBoundingClientRect();
+        if (!(view.width > 0) || !(view.height > 0)) return null;
+        const sy = view.height / Graphics.height;
+
+        const cards = Array.from(overlay._cards.values());
+        if (cards.length === 0) return null;
+
+        const lastCard = cards[cards.length - 1];
+        if (!lastCard || !lastCard.row) return null;
+        const rect = lastCard.row.getBoundingClientRect();
+        const bottom = (rect.bottom - view.top) / sy;
+
+        return Math.max(0, bottom - yOffset + 6);
     };
 
     // Update methods
@@ -1015,29 +1285,29 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         const yOffset = Math.floor((Graphics.height - Graphics.boxHeight) / 2);
         const pad = this.padding || 12;
 
-        // Bottom, left edge aligned with the party sprite column, pinned every frame.
-        // The same hotbar reserve initialize() uses has to be applied here too,
-        // or this per-frame pin drops the log straight back onto the bar.
-        const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 90;
-        const logH = this._originalHeight || this.fittingHeight(this.maxLines());
-        this._originalY = Graphics.height - logH - 20 - hotbarReserve - yOffset - pad;
-        if (this.y !== this._originalY) {
-            this.y = this._originalY;
+        const fixedY = this._calculateFixedLogY();
+        if (fixedY !== null) {
+            this._originalY = fixedY;
+        } else {
+            this._originalY = Math.max(0, 100 - yOffset);
         }
-        // Left-aligned with the party sprite column, except in split-screen
-        // battles where the log is centred between the two players' HUDs.
-        let targetX = 68;
+        this.y = this._originalY;
+
+        let targetX = 4;
+        try {
+            const hudParams = PluginManager.parameters('UI/PartyHud');
+            if (hudParams && hudParams['hudX']) {
+                targetX = Number(hudParams['hudX']) || 4;
+            }
+        } catch (e) {
+            targetX = 4;
+        }
         if (window.$gameSplitScreen && window.$gameSplitScreen.active) {
             targetX = Math.floor((Graphics.width - this.width) / 2);
         }
-        if (this.x !== targetX) {
-            this.x = targetX;
-        }
+        this.x = targetX;
         
         _Window_BattleLog_update.apply(this, arguments);
-        this.updateLogScroll();
-        this.updateLogSprites();
-        this.updateScaleAnimation();
 
         // Keep canvas elements invisible
         this.opacity = 0;
@@ -1055,110 +1325,37 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         // Update HTML Battle Log Overlay
         if (this._htmlBattleLogRoot) {
             const sc = _msgGetScale();
-            const pad = this.padding || 12;
-            
-            // Position root container - aligned physically to the enemy bar (no playfield xOffset)
-            // Only write each property when its value actually changed.
             const root = this._htmlBattleLogRoot;
             _setStyleIfChanged(root, 'left', (sc.ox + this.x * sc.sx) + 'px');
-            _setStyleIfChanged(root, 'top', (sc.oy + (this.y + yOffset) * sc.sy) + 'px');
-            _setStyleIfChanged(root, 'width', (this.width * sc.sx) + 'px');
-            _setStyleIfChanged(root, 'height', (this.height * sc.sy) + 'px');
-            _setStyleIfChanged(root, 'padding', Math.round(pad * sc.sy) + 'px ' + Math.round(pad * sc.sx) + 'px');
+            const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 75;
+            const topPx = sc.oy + (this.y + yOffset) * sc.sy;
+            const maxH = Math.max(60, (Graphics.height - hotbarReserve) * sc.sy - topPx - 6);
 
-            // Panel background on the root container (not per-line) - no borders or shadows
-            const bgOpacityRoot = (ConfigManager.battleLogBgOpacity !== undefined ? ConfigManager.battleLogBgOpacity : CONFIG.battleLogBgOpacity) / 100;
+            _setStyleIfChanged(root, 'top', topPx + 'px');
+            _setStyleIfChanged(root, 'width', (this.width * sc.sx) + 'px');
+            _setStyleIfChanged(root, 'maxWidth', Math.round(Graphics.width * 0.52 * sc.sx) + 'px');
+            _setStyleIfChanged(root, 'maxHeight', maxH + 'px');
+            _setStyleIfChanged(root, 'height', 'auto');
+            _setStyleIfChanged(root, 'padding', Math.round(pad * sc.sy) + 'px ' + Math.round(pad * sc.sx) + 'px');
+            _setStyleIfChanged(root, 'display',
+                (this.visible && this._lines && this._lines.length > 0) ? 'flex' : 'none');
+            _setStyleIfChanged(root, 'flexDirection', 'column');
+            _setStyleIfChanged(root, 'justifyContent', 'flex-start');
+            _setStyleIfChanged(root, 'alignItems', 'flex-start');
+            _setStyleIfChanged(root, 'overflowY', 'hidden');
+            _setStyleIfChanged(root, 'overflowX', 'hidden');
+
+            const bgOpacity = (ConfigManager.battleLogBgOpacity !== undefined ? ConfigManager.battleLogBgOpacity : CONFIG.battleLogBgOpacity) / 100;
+            root.style.setProperty('--battlelog-bar-alpha', bgOpacity.toString());
+            _setStyleIfChanged(root, 'background', 'transparent');
             _setStyleIfChanged(root, 'border', 'none', true);
             _setStyleIfChanged(root, 'box-shadow', 'none', true);
             _setStyleIfChanged(root, 'outline', 'none', true);
-            if (bgOpacityRoot > 0) {
-                _setStyleIfChanged(root, 'background', `rgba(0, 0, 0, ${bgOpacityRoot * 0.85})`);
-                _setStyleIfChanged(root, 'borderRadius', '4px');
-            } else {
-                _setStyleIfChanged(root, 'background', 'transparent');
-                _setStyleIfChanged(root, 'borderRadius', '0');
-            }
 
-            // Visibility - ensure it stays completely hidden at the start of battle (before scaling in)
-            _setStyleIfChanged(root, 'display',
-                (this.visible && this.openness > 0 && this._animationState !== 'hidden') ? 'block' : 'none');
-            
-            // Sync and update HTML line elements
-            const container = this._htmlBattleLogRoot;
-            if (!this._htmlLineEls) {
-                this._htmlLineEls = [];
-            }
-            
-            const baseFontSize = CONFIG.fontSize || 26;
-            const scaledFont = Math.round(baseFontSize * sc.sy * 0.85);
-            
-            let currentTop = -Math.round(this._logScrollY * sc.sy);
-            const defaultLineHeight = Math.round(this.lineHeight() * sc.sy);
-            
-            for (let i = 0; i < this._logSprites.length; i++) {
-                const sprite = this._logSprites[i];
-                let el = this._htmlLineEls[i];
-                
-                if (!el) {
-                    el = document.createElement('div');
-                    el.className = 'battlelog-line-container';
-                    el.style.position = 'absolute';
-                    el.style.width = '100%';
-                    el.style.boxSizing = 'border-box';
-                    // Force wrapping so long lines never get clipped on the right edge
-                    el.style.whiteSpace = 'normal';
-                    el.style.wordBreak = 'normal';
-                    el.style.overflowWrap = 'break-word';
-                    container.appendChild(el);
-                    this._htmlLineEls[i] = el;
-                }
-                
-                // Update text content (also invalidates the cached measured height)
-                const htmlContent = sprite._htmlText || '';
-                if (el.innerHTML !== htmlContent) {
-                    el.innerHTML = htmlContent;
-                    el._sblCachedHeight = null;
-                }
-
-                // A notification redirected here from ParchmentToast reads as
-                // an ordinary combat line, no highlight box behind it.
-                const isToast = !!sprite._isToast;
-                if (el._sblIsToast !== isToast) {
-                    el._sblIsToast = isToast;
-                    el._sblCachedHeight = null;
-                }
-                _setStyleIfChanged(el, 'background', 'transparent');
-                _setStyleIfChanged(el, 'borderRadius', '0');
-                _setStyleIfChanged(el, 'padding', '0');
-
-                // Update position and opacity matching the sprite (only on change)
-                _setStyleIfChanged(el, 'left', (sprite.x * sc.sx) + 'px');
-                _setStyleIfChanged(el, 'top', currentTop + 'px');
-                _setStyleIfChanged(el, 'opacity', (sprite.opacity / 255).toString());
-                // A font-size change (e.g. after a resize) alters the measured
-                // height, so invalidate the cached height when it changes.
-                if (el._sblFontSize !== scaledFont) {
-                    el._sblFontSize = scaledFont;
-                    el._sblCachedHeight = null;
-                }
-                _setStyleIfChanged(el, 'fontSize', scaledFont + 'px');
-
-                // Only show if there is active text
-                _setStyleIfChanged(el, 'display', htmlContent ? 'block' : 'none');
-
-                // Dynamically accumulate position based on actual height. The
-                // measured rect only changes when the HTML changes, so cache it
-                // per line and avoid the per-frame getBoundingClientRect reflow.
-                if (htmlContent) {
-                    let h = el._sblCachedHeight;
-                    if (h == null) {
-                        const rect = el.getBoundingClientRect();
-                        h = rect.height > 0 ? rect.height : defaultLineHeight;
-                        el._sblCachedHeight = h;
-                    }
-                    currentTop += h;
-                } else {
-                    currentTop += defaultLineHeight;
+            if (root.scrollHeight > root.clientHeight) {
+                const targetScrollTop = root.scrollHeight - root.clientHeight;
+                if (Math.abs(root.scrollTop - targetScrollTop) > 50) {
+                    root.scrollTop = targetScrollTop;
                 }
             }
         }
@@ -1170,78 +1367,37 @@ Window_BattleLog.prototype.resetFontSettings = function() {
             this._htmlBattleLogRoot.parentNode.removeChild(this._htmlBattleLogRoot);
         }
         this._htmlBattleLogRoot = null;
-        this._htmlLineEls = null;
         if (typeof _Window_BattleLog_destroy === 'function') {
             _Window_BattleLog_destroy.call(this, options);
         }
     };
-    Window_BattleLog.prototype.updateLogScroll = function() {
-        if (this._logScrollYDuration > 0) {
-            const d = this._logScrollYDuration;
-            const sy = this.lineHeight() - this._logScrollY;
-            this._logScrollY += sy * d / formulaTri(d);
-            this._logScrollYDuration--;
-        }
-    };
-    
-    Window_BattleLog.prototype.updateLogSprites = function() {
-        const lineHeight = this.lineHeight();
-        const maxLine = this.maxLines() - 1;
-        
-        // Only update visible sprites for better performance
-        for (let i = 0; i < this._logSprites.length; i++) {
-            const sprite = this._logSprites[i];
-            sprite.update(lineHeight * i - this._logScrollY, maxLine);
-        }
-        
-    };
-    
-    Window_BattleLog.prototype._updateContentsBack = function() {
-        const bitmap = this._contentsBackSprite.bitmap;
-        if (bitmap) {
-            const lineHeight = this.lineHeight();
-            let height = (this.numLines() + 1) * lineHeight - this._logScrollY;
-            height = Math.min(height, bitmap.height);
-            this._contentsBackSprite.setFrame(0, 0, bitmap.width, height);
-        }
-    };
+
+    Window_BattleLog.prototype.updateLogScroll = function() {};
+    Window_BattleLog.prototype.updateLogSprites = function() {};
+    Window_BattleLog.prototype._updateContentsBack = function() {};
 
     // Clear and reset methods
     const _Window_BattleLog_clear = Window_BattleLog.prototype.clear;
     Window_BattleLog.prototype.clear = function() {
         this._baseLineStack = [];
-        if (CONFIG.logType === 'all') this._clearDuration = CONFIG.viewDuration;
+        this._pendingTurnBreak = false;
     };
     
     Window_BattleLog.prototype.clearSmoothBattleLog = function() {
-        _Window_BattleLog_clear.call(this);
-        this._lineToast = [];
-        for (const sprite of this._logSprites) {
-            sprite.bitmap.clear();
-            sprite._htmlText = '';
-        }
-        this._logScrollYDuration = 0;
-        this._logScrollY = this.lineHeight();
-    };
-
-    // Called at the start of each battler's action to replace the previous turn's log
-    Window_BattleLog.prototype.clearForNewAction = function() {
         this._lines = [];
         this._lineToast = [];
-        if (this._baseLineStack) this._baseLineStack = [];
-        for (const sprite of this._logSprites) {
-            sprite.bitmap.clear();
-            sprite._htmlText = '';
+        this._lineTurnBreak = [];
+        this._pendingTurnBreak = false;
+        if (this._htmlBattleLogRoot) {
+            this._htmlBattleLogRoot.innerHTML = '';
+            this._htmlBattleLogRoot.scrollTop = 0;
+            this._htmlBattleLogRoot.style.display = 'none';
         }
-        this._logScrollYDuration = 0;
-        this._logScrollY = this.lineHeight();
-        // Snap out of scale-out so the next addText triggers a fresh scale-in
-        if (this._animationState === 'scaling-out') {
-            this._animationState = 'hidden';
-            this.visible = false;
-            this.height = 0;
-            this.y = this._originalY + (this._originalHeight / 2);
-        }
+    };
+
+    // Called at the start of each battler's action
+    Window_BattleLog.prototype.clearForNewAction = function() {
+        this._pendingTurnBreak = true;
     };
 
     // Overrides for battle log behavior
@@ -1258,6 +1414,14 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         }
     };
 
+    // Track action targets and mark new turn at the start of every action
+    const _Window_BattleLog_startAction = Window_BattleLog.prototype.startAction;
+    Window_BattleLog.prototype.startAction = function(subject, action, targets) {
+        this._pendingTurnBreak = true;
+        this._actionTargets = (targets && targets.length > 0) ? targets.slice() : [];
+        _Window_BattleLog_startAction.apply(this, arguments);
+    };
+
     // Battle action display with color coding - optimized
     const _Window_BattleLog_displayAction = Window_BattleLog.prototype.displayAction;
     Window_BattleLog.prototype.displayAction = function(subject, item) {
@@ -1272,35 +1436,65 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         } else {
             subjectName = NameColorCache.getEnemyName(subject);
         }
-        
-        if (DataManager.isSkill(item) || DataManager.isItem(item)) {
+
+        const isBasicAttack = (DataManager.isSkill(item) && (item.id === (subject.attackSkillId ? subject.attackSkillId() : 1) || item.id === 1)) || (!DataManager.isSkill(item) && !DataManager.isItem(item));
+
+        if (isBasicAttack) {
+            this._pendingTurnBreak = true;
+            let targetStr = '';
+            if (this._actionTargets && this._actionTargets.length > 0) {
+                const targetNames = this._actionTargets.map(t => {
+                    return t.isActor() ? NameColorCache.getActorName(t) : NameColorCache.getEnemyName(t);
+                });
+                targetStr = ' ' + targetNames.join(', ');
+            }
+            let verb = typeof T === 'function' ? T('BattleLog.attacks') : '';
+            if (!verb || verb === 'BattleLog.attacks') {
+                verb = typeof T === 'function' ? T('BattleLog.hitsFor') : '';
+            }
+            if (!verb || verb === 'BattleLog.hitsFor') {
+                verb = ConfigManager.language === 'it' ? ' attacca ' : ' attacks ';
+            }
+            if (!verb.startsWith(' ')) verb = ' ' + verb;
+            if (!verb.endsWith(' ') && targetStr) verb = verb + ' ';
+            const line = subjectName + verb + targetStr.trimStart() + '!';
+            this.push("addText", line);
+        } else if (DataManager.isSkill(item) || DataManager.isItem(item)) {
             // Get colored item name from cache
             const itemName = NameColorCache.getItemName(item);
-            
-            if (item.message1) {
-                this.push("addText", item.message1.format(subjectName, itemName));
-            }
-            if (item.message2) {
-                this.push("addText", item.message2.format(subjectName, itemName));
-            }
-        } else {
-            // For basic attacks - show the weapon name (or "Bare fists" if unarmed)
-            let weaponName = null;
-            if (subject.isActor() && typeof subject.weapons === 'function') {
-                const weapon = subject.weapons()[0];
-                if (weapon) {
-                    weaponName = weapon.name;
+            const startIcon = item.iconIndex ? `\\i[${item.iconIndex}] ` : '';
+            this._pendingTurnBreak = true;
+
+            // Check Skill Names option: 0 = Skill Name (default), 1 = Skill Action
+            let line;
+            if (ConfigManager.battleLogSkillNames === 1 && item.message1 && item.message1.trim()) {
+                line = item.message1.format(subjectName, startIcon + itemName);
+            } else {
+                let verb = typeof T === 'function' ? T('BattleLog.uses') : '';
+                if (!verb || verb === 'BattleLog.uses') {
+                    verb = ConfigManager.language === 'it' ? ' usa ' : ' uses ';
                 }
+                if (!verb.startsWith(' ')) verb = ' ' + verb;
+                if (!verb.endsWith(' ')) verb = verb + ' ';
+                line = subjectName + verb + startIcon + itemName + '!';
             }
-            if (!weaponName) {
-                weaponName = T('BattleLog.bareFists');
-            }
-            const attacksWith = T('BattleLog.attacksWith');
-            this.push("addText", attacksWith.format(subjectName, weaponName));
+            this.push("addText", line);
         }
         
         if (this._methods.length === numMethods) {
             _Window_BattleLog_displayAction.apply(this, arguments);
+        }
+    };
+
+    Window_BattleLog.prototype.refreshHtmlLines = function() {
+        if (!this._lines || !this._htmlBattleLogRoot) return;
+        const children = this._htmlBattleLogRoot.children;
+        const sc = _msgGetScale();
+        const baseFontSize = CONFIG.fontSize || 18;
+        const scaledFont = Math.round(baseFontSize * sc.sy * 0.9);
+        for (let i = 0; i < this._lines.length && i < children.length; i++) {
+            children[i].style.fontSize = scaledFont + 'px';
+            children[i].innerHTML = parseBattleLogTextToHtml(this._lines[i]);
         }
     };
     // Resolve an embedded archetype i18n key (e.g. "enemyArchetypes.humanoid.head.msg").
@@ -1327,6 +1521,38 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         return seg.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     }
 
+    function colorizeLimbAndEntityNames(text) {
+        if (!text) return '';
+        
+        // 1. Colorize Enemy Names in text if not already color-coded
+        if (typeof $gameTroop !== 'undefined' && $gameTroop && $gameTroop.members) {
+            const enemies = $gameTroop.members();
+            const sortedNames = [];
+            enemies.forEach(e => {
+                if (!e) return;
+                const n1 = e.name ? e.name() : '';
+                const n2 = e.originalName ? e.originalName() : '';
+                if (n1 && !sortedNames.includes(n1)) sortedNames.push(n1);
+                if (n2 && !sortedNames.includes(n2)) sortedNames.push(n2);
+            });
+            sortedNames.sort((a, b) => b.length - a.length);
+            for (const name of sortedNames) {
+                if (!name) continue;
+                const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(?<!\\\\c\\[\\d+\\])${escaped}(?!\\\\c\\[0\\])`, 'g');
+                text = text.replace(regex, `\\c[${CONFIG.colors.enemy}]${name}\\c[0]`);
+            }
+        }
+
+        // 2. Colorize severance / destruction verbs in purple (\c[25])
+        const SEVER_VERB_REGEX = /\b(ripped off|crumbled|has been severed|severed|has been destroyed|destroyed|shattered|sliced off|blown off|torn off|broken off|strappat[oaie]|sbriciolat[oaie]|recis[oaie]|distrutt[oaie]|spezzat[oaie])(!?)/gi;
+        text = text.replace(SEVER_VERB_REGEX, (match) => {
+            return `\\c[25]${match}\\c[0]`;
+        });
+
+        return text;
+    }
+
     const _Window_BattleLog_addText = Window_BattleLog.prototype.addText;
     Window_BattleLog.prototype.addText = function(text, isToast) {
       // Resolve embedded i18n dot-key paths before translating the full string
@@ -1336,6 +1562,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         text = translateText(text);
       }
       text = _replaceStars(text, this._currentSubject);
+      text = colorizeLimbAndEntityNames(text);
       return _Window_BattleLog_addText.call(this, text, isToast);
     };
     
@@ -1349,13 +1576,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         }
         
         // Get colored target name from cache
-        let targetName;
-        if (target.isActor()) {
-            targetName = NameColorCache.getActorName(target);
-        } else {
-            targetName = NameColorCache.getEnemyName(target);
-        }
-        
+        let targetName = target.isActor() ? NameColorCache.getActorName(target) : NameColorCache.getEnemyName(target);
         this.push("appendToActionLine", fmt.format(targetName));
     };
 
@@ -1367,13 +1588,20 @@ Window_BattleLog.prototype.resetFontSettings = function() {
             fmt = TextManager.actionFailure;
         }
         if (!fmt) fmt = T('BattleLog.dodged');
-        let targetName;
-        if (target.isActor()) {
-            targetName = NameColorCache.getActorName(target);
-        } else {
-            targetName = NameColorCache.getEnemyName(target);
-        }
+        let targetName = target.isActor() ? NameColorCache.getActorName(target) : NameColorCache.getEnemyName(target);
+
         this.push("appendToActionLine", fmt.format(targetName));
+    };
+
+    Window_BattleLog.prototype.displayFailure = function(target) {
+        if (target.result().isHit() && !target.result().success) {
+            let targetName = target.isActor() ? NameColorCache.getActorName(target) : NameColorCache.getEnemyName(target);
+            this.push("appendToActionLine", TextManager.actionFailure.format(targetName));
+        }
+    };
+
+    Window_BattleLog.prototype.displayCritical = function(target) {
+        // Critical message is rendered inline on the damage line with dynamic shake and crimson glow
     };
 
     Window_BattleLog.prototype.displayHpDamage = function(target) {
@@ -1384,22 +1612,25 @@ Window_BattleLog.prototype.resetFontSettings = function() {
             if (target.result().hpDamage < 0) {
                 this.push("performRecovery", target);
             }
-            let targetName;
-            if (target.isActor()) {
-                targetName = NameColorCache.getActorName(target);
-            } else {
-                targetName = NameColorCache.getEnemyName(target);
-            }
+            let targetName = target.isActor() ? NameColorCache.getActorName(target) : NameColorCache.getEnemyName(target);
             const result = target.result();
             const damage = result.hpDamage;
             const isActor = target.isActor();
+
             let text;
             if (damage > 0 && result.drain) {
                 text = TextManager.actorDrain.format(targetName, TextManager.hp, damage);
             } else if (damage > 0) {
-                text = isActor
-                    ? TextManager.actorDamage.format(targetName, damage)
-                    : TextManager.enemyDamage.format(targetName, damage);
+                if (result.critical) {
+                    const dmgStr = isActor
+                        ? TextManager.actorDamage.format(targetName, damage)
+                        : TextManager.enemyDamage.format(targetName, damage);
+                    text = `\\crit[${dmgStr} (CRITICAL!)]`;
+                } else {
+                    text = isActor
+                        ? TextManager.actorDamage.format(targetName, damage)
+                        : TextManager.enemyDamage.format(targetName, damage);
+                }
             } else if (damage < 0) {
                 text = isActor
                     ? TextManager.actorRecovery.format(targetName, TextManager.hp, -damage)
@@ -1425,12 +1656,12 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         const result = target.result();
         const isIt = ConfigManager.language === 'it';
         if (result.addedBuffs.length > 0) {
-            const paramStr = this._formatParamList(result.addedBuffs.map(id => TextManager.param(id)));
-            this.push('appendToActionLine', `\\c[23]${isIt ? paramStr + ' aumentati!' : paramStr + ' increased!'}\\c[0]`);
+            const paramStr = this._formatParamList(result.addedBuffs.map(id => `\\c[23]${TextManager.param(id)}\\c[0]`));
+            this.push('appendToActionLine', isIt ? paramStr + ' aumentati!' : paramStr + ' increased!');
         }
         if (result.addedDebuffs.length > 0) {
-            const paramStr = this._formatParamList(result.addedDebuffs.map(id => TextManager.param(id)));
-            this.push('appendToActionLine', `\\c[24]${isIt ? paramStr + ' diminuiti!' : paramStr + ' decreased!'}\\c[0]`);
+            const paramStr = this._formatParamList(result.addedDebuffs.map(id => `\\c[24]${TextManager.param(id)}\\c[0]`));
+            this.push('appendToActionLine', isIt ? paramStr + ' diminuiti!' : paramStr + ' decreased!');
         }
         if (result.removedBuffs.length > 0) {
             const paramStr = this._formatParamList(result.removedBuffs.map(id => TextManager.param(id)));
@@ -1475,10 +1706,6 @@ Window_BattleLog.prototype.resetFontSettings = function() {
     const _Window_BattleLog_displayDeath = Window_BattleLog.prototype.displayDeath;
     Window_BattleLog.prototype.displayDeath = function(target) {
         _Window_BattleLog_displayDeath.apply(this, arguments);
-        if (!target.isActor()) {
-            this.push('wait');
-            this.push('startScaleOut');
-        }
     };
 
     Window_BattleLog.prototype.displayRegeneration = function(subject) {

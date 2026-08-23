@@ -2073,10 +2073,12 @@ var WeaponSystemProcedural = {
       case 5: return { x: 0, y: 0, z: -15 };   // Whip
       case 6: return { x: 0, y: 0, z: -10 };   // Staff
       // Thrown weapons point along +Z (kunai, dart) or lie in the X-Y plane
-      // (shuriken); a partial tilt reads for both. A launcher in the same slot
-      // (sling, blowgun, crossbow) is aimed instead, like every other weapon
-      // that shoots something rather than being thrown itself.
-      case 8: return this.isLauncher(weapon)
+      // (shuriken); a partial tilt reads for both. A device in the same slot
+      // (sling, blowgun, spray, launcher, crossbow) is aimed instead, like
+      // every other weapon that puts something out rather than being thrown
+      // itself. Which of the two a projectile is comes from its throw style,
+      // so the rest pose and the motion can never disagree.
+      case 8: return this.THROW_AIMS[this.throwStyleFor(weapon)]
         ? this.aimRotationFor(-0.86, -0.5)
         : { x: 55, y: 0, z: -20 };
       // Bows and firearms alike are modelled shooting down +Z, so both rest
@@ -2150,7 +2152,11 @@ var WeaponSystemProcedural = {
     // crossbow and sling does: barrel/arrow/pouch all point +Z.
     if (!weapon || weapon.model3d) return false;
     if (weapon.wtypeId === 9 || weapon.wtypeId === 7) return true;
-    return weapon.wtypeId === 8 && this.isLauncher(weapon);
+    // A projectile is aimed only if the thing it does is POINT at somebody: a
+    // fork, a mouthpiece, a nozzle or a tube. Every projectile that leaves the
+    // hand swings instead, and is turned onto the enemy by its strike rather
+    // than by its rest pose, or the throw would be aimed twice over.
+    return weapon.wtypeId === 8 && !!this.THROW_AIMS[this.throwStyleFor(weapon)];
   },
 
   /**
@@ -2453,7 +2459,17 @@ var WeaponSystemProcedural = {
     Shoot: { kind: 'recoil' },
     Reload: { kind: 'reload' },
     BowDrawAndRelease: { kind: 'draw' },
-    CrossbowShot: { kind: 'crossbow' }
+    CrossbowShot: { kind: 'crossbow' },
+    // The shapes the sub-categories brought with them. Nothing in the database
+    // carries a scythe or a glaive tag yet, so until something does these are
+    // how a skill or a <Movement:> tag asks for the hauled cut and the levelled
+    // sweep by name.
+    Reap: { kind: 'reap' },
+    Harvest: { kind: 'reap', power: 1.15 },
+    Sweep: { kind: 'sweep' },
+    LegSweep: { kind: 'sweep', tilt: -0.4 },
+    Flurry: { kind: 'flurry' },
+    RapidStab: { kind: 'flurry', hits: 4 }
   },
 
   // The motion a weapon falls back to when the caller asks for a name nothing
@@ -2463,11 +2479,90 @@ var WeaponSystemProcedural = {
     7: 'draw', 8: 'hurl', 9: 'recoil', 10: 'arc', 11: 'thrust', 12: 'thrust'
   },
 
-  motionForWeapon(weapon, model) {
+  // Note tag -> motion, in priority order, for the sub-categories whose blow is
+  // not the one their weapon type implies. A halberd and a trident are filed as
+  // spears and would otherwise poke with the point, when what a shafted weapon
+  // that long actually does is take the legs out from under someone. Tags no
+  // weapon in the database carries are deliberately not listed, and neither is
+  // anything that shoots: rangedMotionFor settles those and runs first.
+  NOTE_MOTIONS: [
+    [/<Halberd>/i, 'sweep'],
+    [/<Trident>/i, 'sweep']
+  ],
+
+  /**
+   * The motion a sub-category is REQUIRED to use, or null for a weapon that is
+   * simply swung. These three hang or fold off the grip instead of extending
+   * it, and none of them can be carried through a blow the way a rigid blade
+   * is: the whip lays out and cracks, the flail is slung and then drags the
+   * hand after it, the nunchaku is twirled and snapped.
+   */
+  subtypeMotionFor(weapon) {
+    if (!weapon) return null;
     if (weapon.isWhip) return 'lash';
-    if (weapon.isFlail) return 'arc';
+    if (weapon.isFlail) return 'flail';
+    if (weapon.isNunchaku) return 'nunchaku';
+    return null;
+  },
+
+  // What a hanging weapon is still allowed to do instead of its own motion:
+  // stand behind it, and work on it.
+  SUBTYPE_KEEP: { guard: true, reload: true },
+
+  // ============================================================
+  // The weapons that move like nothing else
+  // ============================================================
+  // A handful of weapons are not a type with a name on them. Mjölnir is thrown
+  // and comes back; a war fan is opened before it is any use and shut again
+  // afterwards; a foam finger has the whole wind-up of a real blow and none of
+  // the mass to land it; a hammer of time runs backwards through its own swing.
+  // Every one of those was playing the generic swing for its weapon type, which
+  // is the one thing that makes a legendary weapon feel like a reskin.
+  //
+  // Keyed by database id, as the 3D model families are, because there is no tag
+  // that could describe any of these and no second weapon that would want it.
+  // Two pairs deliberately share a motion: the two war fans are the same weapon
+  // twice, and so are the two crowns.
+  UNIQUE_MOTIONS: {
+    28: 'levitate',      // Psychic Crown
+    111: 'present',      // Excalibur
+    113: 'serpentine',   // Dragon Blade
+    149: 'flip',         // Master Flipper
+    151: 'fansnap',      // Tessen
+    154: 'flop',         // Number One Fan
+    178: 'zenith',       // Celestial Hammer
+    180: 'stutter',      // Chronos Hammer
+    183: 'fansnap',      // Varlenia War Fan
+    185: 'recall',       // Mjölnir
+    238: 'swat',         // Fly Swatter
+    312: 'orbit',        // Arcane Sphere
+    317: 'levitate'      // Psychic Amplifier Crown
+  },
+
+  /** The one motion this exact weapon owns, or null for everything else. */
+  uniqueMotionFor(weapon) {
+    if (!weapon) return null;
+    return this.UNIQUE_MOTIONS[weapon.id] || null;
+  },
+
+  // What even a one-of-a-kind weapon does the ordinary way: stand behind it,
+  // and work on it. A bespoke motion is a blow, and neither of these is.
+  UNIQUE_KEEP: { guard: true, reload: true },
+
+  motionForWeapon(weapon, model) {
+    const sub = this.subtypeMotionFor(weapon);
+    if (sub) return sub;
     const ranged = this.rangedMotionFor(weapon, model);
     if (ranged) return ranged;
+    // After the rules that exist for a reason (a weapon that shoots shoots, a
+    // weapon that hangs off its grip is slung) and before the type fallbacks,
+    // which is where a legendary weapon used to lose its identity.
+    const unique = this.uniqueMotionFor(weapon);
+    if (unique) return unique;
+    const note = weapon.note || '';
+    for (let i = 0; i < this.NOTE_MOTIONS.length; i++) {
+      if (this.NOTE_MOTIONS[i][0].test(note)) return this.NOTE_MOTIONS[i][1];
+    }
     return this.TYPE_MOTIONS[weapon.wtypeId] || 'arc';
   },
 
@@ -2484,8 +2579,101 @@ var WeaponSystemProcedural = {
     // finger, so it takes the trigger motion rather than the archer's one.
     if (this.isCrossbow(weapon, model)) return 'crossbow';
     if (weapon.wtypeId === 7) return 'draw';
-    if (weapon.wtypeId === 8) return this.isLauncher(weapon) ? 'draw' : 'hurl';
+    // The projectile slot is not one weapon repeated: it holds slingshots,
+    // blowpipes, grenades, discs, bolas and gas cannisters, and none of them
+    // moves like any of the others. throwStyleFor answers which.
+    if (weapon.wtypeId === 8) return this.throwStyleFor(weapon);
     return null;
+  },
+
+  // ============================================================
+  // The projectile slot
+  // ============================================================
+  // Thirty-six weapons are filed as wtypeId 8 and they have almost nothing in
+  // common: the slot is where anything that is not swung ended up. A slingshot
+  // is drawn against rubber and never leaves the hand; a grenade is lobbed and
+  // does; a bola is flung to the end of a cord and hauled back; a pepper spray
+  // cannon is not thrown at all, it is held down. Sharing two clips between all
+  // of them was what made half the slot read as the same shrug.
+  //
+  // The style is resolved per weapon id, the same way the 3D models are (see
+  // the `unique:` map in Weapon3D_Projectiles), because the slot is small,
+  // finite and hand-authored, and because the note tags alone cannot tell a
+  // slingshot from a blowpipe. Tags settle the families that are tagged, and
+  // anything unlisted still gets something sensible rather than nothing.
+  THROW_STYLES: {
+    380: 'sling',        // Uneven Slingshot
+    381: 'sling',        // Stretchy Sling
+    382: 'blowgun',      // Leaky Blowgun
+    383: 'sling',        // Hanger Slingshot
+    384: 'sling',        // Junk Slingshot
+    385: 'sling',        // Pipe Slingshot
+    386: 'blowgun',      // Skewer Dart Gun
+    387: 'emitter',      // Hairspray Torch
+    388: 'blowgun',      // Staple Shooter
+    389: 'hurl',         // Stone Darts
+    390: 'sling',        // Fiber Sling
+    391: 'hurl',         // Atlatl Dart
+    392: 'cast',         // Seed Grimorie
+    393: 'tether',       // Bola
+    394: 'whirl',        // Sling
+    395: 'boomerang',    // Boomerang
+    396: 'tether',       // Rope Dart
+    397: 'discus',       // Chakram
+    398: 'emitter',      // Pepper Spray Cannon
+    399: 'hurl',         // Shongo
+    400: 'boomerang',    // Returning Discus
+    401: 'blowgun',      // Poison Blowpipe
+    402: 'lob',          // Iron Grenade
+    403: 'crossbow',     // Crossbow
+    404: 'draw',         // Mithril Bow
+    405: 'discus',       // Disc Launcher
+    406: 'crossbow',     // Explosive Crossbow
+    407: 'emitter',      // EMP Disruptor
+    408: 'crossbow',     // Tactical Crossbow
+    409: 'emitter',      // Neural Scrambler
+    410: 'launcher',     // Timed Explosive Launcher
+    411: 'emitter',      // Cyber Warfare Device
+    412: 'sling',        // Stellar Sling
+    413: 'launcher',     // Drone Swarm Launcher
+    414: 'crossbow',     // EHI Knowledge Injector
+    415: 'portal'        // Portal Disc
+  },
+
+  // The families that carry a tag of their own, for a projectile the map above
+  // has not been told about (a mod's weapon, or a new database entry).
+  THROW_STYLE_TAGS: [
+    [/<Crossbow>/i, 'crossbow'],
+    [/<Boomerang>/i, 'boomerang'],
+    [/<Chakram>/i, 'discus'],
+    [/<DroneLauncher>/i, 'launcher'],
+    [/<Cast>/i, 'cast']
+  ],
+
+  // Which throw styles POINT the weapon at the enemy rather than swinging it
+  // there. Everything here stays in the hand and puts something out of a fork,
+  // a mouthpiece, a nozzle, a prod or a tube; everything absent leaves the hand
+  // or is whirled on a cord, and is turned onto the target by its strike.
+  THROW_AIMS: {
+    sling: true, blowgun: true, emitter: true, launcher: true,
+    crossbow: true, draw: true
+  },
+
+  /**
+   * How a projectile is used, or null for a weapon that is not one. Always
+   * answers something for wtypeId 8: an unlisted projectile that carries
+   * ammunition is a device that is loaded and let off, and one that carries
+   * none is the ammunition, so it is thrown.
+   */
+  throwStyleFor(weapon) {
+    if (!weapon || weapon.wtypeId !== 8) return null;
+    const byId = this.THROW_STYLES[weapon.id];
+    if (byId) return byId;
+    const note = weapon.note || '';
+    for (let i = 0; i < this.THROW_STYLE_TAGS.length; i++) {
+      if (this.THROW_STYLE_TAGS[i][0].test(note)) return this.THROW_STYLE_TAGS[i][1];
+    }
+    return this.isLauncher(weapon) ? 'sling' : 'hurl';
   },
 
   // Motions a ranged weapon is still allowed to play: reloading it, and
@@ -2510,17 +2698,371 @@ var WeaponSystemProcedural = {
   // way. Everything else it does, it does by hitting something.
   FIST_KEEP: { guard: true },
 
+  // ============================================================
+  // Variety: the same weapon, a different blow
+  // ============================================================
+  // One clip per weapon is what makes a long fight read as a loop: the eye
+  // learns the swing after two rounds and stops watching it. Nobody swings the
+  // same way twice either, so a motion chosen by the weapon rather than named
+  // by a skill picks one of these SHAPES and merges it over the descriptor.
+  // They are overlays, not descriptors: whatever a variant leaves unsaid stays
+  // as the motion had it.
+  //
+  // `pace` is how long the blow takes against its own motion's clock, above 1
+  // for something committed and below 1 for a flick.
+  VARIANTS: {
+    arc: [
+      { dir: 1, tilt: 0 },                                  // level, right to left
+      { dir: -1, tilt: 0.12, pace: 1.05 },                  // level backhand
+      { dir: 1, tilt: -0.7, power: 1.08, pace: 0.98 },      // diagonal, downward
+      { dir: -1, tilt: 0.78, power: 0.96 },                 // rising backhand
+      { dir: 1, tilt: -0.28, power: 0.6, pace: 0.8 }        // short chop, close in
+    ],
+    overhead: [
+      { dir: 0 },                                           // straight down the middle
+      { dir: 1, tilt: 0.6, pace: 0.98 },                    // off the shoulder
+      { dir: -1, tilt: 0.4, power: 1.12, pace: 1.1 }        // stepped through
+    ],
+    rising: [
+      { dir: 1 },
+      { dir: -1, power: 1.1, pace: 1.04 },
+      { dir: 1, power: 0.85, pace: 0.86 }
+    ],
+    thrust: [
+      { aim: 0 },                                           // straight lunge
+      { aim: -1, power: 0.9, pace: 0.9 },                   // low stab
+      { aim: 1, power: 1.08, pace: 1.02 }                   // high stab
+    ],
+    punch: [
+      { from: null, power: 0.85, pace: 0.82 },              // jab
+      { from: null, power: 1.12 },                          // cross
+      { from: 'arc', dir: 1 },                              // hook
+      { from: 'arc', dir: -1, pace: 0.94 }                  // the other hook
+    ],
+    lash: [
+      { dir: 1, tilt: -0.6 },                               // laid down across
+      { dir: -1, tilt: 0.7, pace: 0.94 },                   // flicked up backhand
+      { dir: 1, tilt: 0.1, power: 1.1, pace: 1.08 }         // straight out, full length
+    ],
+    spin: [
+      { dir: 1, turns: 1 },
+      { dir: -1, turns: 1, tilt: 0.4 },
+      { dir: 1, turns: 2, pace: 1.08 }
+    ],
+    flail: [
+      { dir: 1, orbits: 1 },                                // level orbit
+      { dir: -1, orbits: 1, pace: 1.04 },
+      { dir: 1, orbits: 1, from: 'overhead', power: 1.1 },  // over the top
+      { dir: -1, orbits: 1, from: 'rising', power: 0.95 }   // slung underhand
+    ],
+    nunchaku: [
+      { dir: 1, passes: 2 },
+      { dir: -1, passes: 2, pace: 0.94 },
+      { dir: 1, passes: 1, power: 1.1, pace: 0.92 }         // no showing off, just the snap
+    ],
+    sweep: [
+      { dir: 1 },
+      { dir: -1, pace: 1.04 },
+      { dir: 1, tilt: -0.5, power: 1.08 }                   // right at the ankles
+    ],
+    reap: [
+      { dir: 1 },
+      { dir: -1, power: 1.06, pace: 1.05 },
+      { dir: 1, power: 0.9, pace: 0.88 }                    // a short hook, close in
+    ],
+    flurry: [
+      { hits: 3 },
+      { dir: -1, hits: 3, pace: 0.92 },
+      { hits: 2, power: 1.12, pace: 0.94 }
+    ],
+    cast: [
+      { tilt: 0 },
+      { tilt: 0.6, pace: 1.06 },
+      { tilt: -0.5, power: 1.1, pace: 0.94 }
+    ],
+    // An overhand throw is one shoulder doing one thing, so the shapes are in
+    // where it is thrown FROM: over the top, off the ear, or sidearm and flat.
+    // Three darts and a throwing iron share this motion and would otherwise be
+    // the same clip three times over.
+    hurl: [
+      { dir: 1, tilt: 0 },                                  // over the shoulder
+      { dir: -1, tilt: 0.2, pace: 0.95 },                   // off the other side
+      { dir: 1, tilt: 0.85, power: 1.12, pace: 1.06 },      // straight over the top
+      { dir: 1, tilt: -0.8, power: 0.94, pace: 0.9 },       // sidearm and flat
+      { dir: -1, tilt: -0.5, power: 1.04, pace: 1.02 }      // low backhand flick
+    ],
+    // A slingshot is drawn, not thrown: what varies is how hard the rubber is
+    // loaded and how long it is held on the mark.
+    sling: [
+      { dir: 1 },
+      { dir: -1, pace: 1.04 },
+      { dir: 1, power: 1.06, pace: 0.96 }                   // a snap shot
+    ],
+    whirl: [
+      { dir: 1, orbits: 2 },
+      { dir: -1, orbits: 2, pace: 1.05 },
+      { dir: 1, orbits: 3, pace: 1.1 },                     // wound right up
+      { dir: 1, orbits: 1, power: 0.96, pace: 0.9 }         // one turn and away
+    ],
+    blowgun: [
+      { pace: 1 },
+      { pace: 1.06 },                                       // held longer on the mark
+      { power: 1.05, pace: 0.94 }                           // barely aimed at all
+    ],
+    lob: [
+      { dir: 1, tilt: 0.5 },                                // over the shoulder
+      { dir: -1, tilt: -0.6, pace: 1.05 },                  // underarm
+      { dir: 1, tilt: -0.5, power: 1.06 }                   // rolled out low and long
+    ],
+    discus: [
+      { dir: 1 },
+      { dir: -1, pace: 0.96 },
+      { dir: 1, power: 1.1, pace: 1.04 }                    // put right through it
+    ],
+    boomerang: [
+      { dir: 1 },
+      { dir: -1, pace: 1.05 },
+      { dir: 1, power: 1.08, pace: 1.02 }                   // thrown out further
+    ],
+    tether: [
+      { dir: 1, orbits: 1 },
+      { dir: -1, orbits: 1, pace: 1.04 },
+      { dir: 1, orbits: 2, pace: 1.1 }                      // wound up first
+    ],
+    emitter: [
+      { pace: 1 },
+      { pace: 1.1 },                                        // a long burst
+      { power: 1.08, pace: 0.94 }                           // a short hard one
+    ],
+    launcher: [
+      { pace: 1 },
+      { pace: 1.05 },
+      { power: 1.08, pace: 0.96 }
+    ],
+    portal: [
+      { dir: 1 },
+      { dir: -1, pace: 1.04 },
+      { dir: 1, power: 1.08, pace: 0.98 }
+    ]
+  },
+
+  // A critical hit is not the ordinary blow with the numbers turned up: it is
+  // the one the character committed to, so it gets its own shapes. The wind-up
+  // goes further out of frame, contact lands later and harder, the follow
+  // through carries past the target and the recovery is slower, because that is
+  // what putting everything into a swing costs. A kind with nothing here falls
+  // back to its ordinary variants and takes only the weight the builders add
+  // from `crit`.
+  CRIT_VARIANTS: {
+    arc: [
+      { dir: 1, tilt: -0.35, power: 1.34, pace: 1.12 },     // the whole body turns
+      { dir: -1, tilt: 0.3, power: 1.28, pace: 1.1 }
+    ],
+    overhead: [
+      { dir: 0, power: 1.38, pace: 1.12 },                  // from as high as it goes
+      { dir: 1, tilt: 0.35, power: 1.32, pace: 1.1 }
+    ],
+    thrust: [
+      { aim: 0, power: 1.38, pace: 1.06 },                  // a full lunge, held there
+      { aim: 1, power: 1.3, pace: 1.04 }
+    ],
+    punch: [
+      { from: null, power: 1.38, pace: 1.08 },
+      { from: 'arc', power: 1.32, pace: 1.1 }
+    ],
+    flail: [
+      { dir: 1, orbits: 2, power: 1.28, pace: 1.1 },        // one more orbit first
+      { dir: -1, orbits: 2, from: 'overhead', power: 1.24, pace: 1.12 }
+    ],
+    nunchaku: [
+      { dir: 1, passes: 3, power: 1.22, pace: 1.0 },        // one more pass before the snap
+      { dir: -1, passes: 3, power: 1.26, pace: 1.02 }
+    ],
+    sweep: [
+      { dir: 1, power: 1.32, pace: 1.12 },
+      { dir: -1, tilt: -0.4, power: 1.28, pace: 1.1 }
+    ],
+    reap: [
+      { dir: 1, power: 1.32, pace: 1.12 },
+      { dir: -1, power: 1.28, pace: 1.1 }
+    ],
+    flurry: [
+      { hits: 3, power: 1.2, pace: 1.02 },                  // the builder adds the extra hit
+      { dir: -1, hits: 3, power: 1.16, pace: 1.04 }
+    ],
+    // A thrown weapon's best is a BETTER THROW, not a bigger club: further
+    // back, held longer on the mark, and let go harder. Nothing here reaches
+    // any further into the enemy, because none of these ever touches them.
+    hurl: [
+      { dir: 1, tilt: 0.6, power: 1.26, pace: 1.08 },       // the whole body behind it
+      { dir: -1, tilt: -0.4, power: 1.2, pace: 1.05 }
+    ],
+    sling: [
+      { dir: 1, power: 1.18, pace: 1.08 },                  // drawn to the ear
+      { dir: -1, power: 1.14, pace: 1.06 }
+    ],
+    whirl: [
+      { dir: 1, orbits: 3, power: 1.2, pace: 1.08 },
+      { dir: -1, orbits: 3, power: 1.16, pace: 1.06 }
+    ],
+    blowgun: [
+      { power: 1.12, pace: 1.14 }                           // the long, patient one
+    ],
+    lob: [
+      { dir: 1, tilt: 0.6, power: 1.2, pace: 1.08 },
+      { dir: -1, tilt: -0.6, power: 1.16, pace: 1.06 }
+    ],
+    discus: [
+      { dir: 1, power: 1.22, pace: 1.04 },
+      { dir: -1, power: 1.18, pace: 1.02 }
+    ],
+    boomerang: [
+      { dir: 1, power: 1.2, pace: 1.06 },
+      { dir: -1, power: 1.16, pace: 1.08 }
+    ],
+    tether: [
+      { dir: 1, orbits: 2, power: 1.2, pace: 1.06 },
+      { dir: -1, orbits: 2, power: 1.16, pace: 1.08 }
+    ],
+    emitter: [
+      { power: 1.15, pace: 1.14 }                           // everything in the cannister
+    ],
+    launcher: [
+      { power: 1.22, pace: 1.06 }
+    ],
+    portal: [
+      { dir: 1, power: 1.2, pace: 1.06 },
+      { dir: -1, power: 1.16, pace: 1.04 }
+    ]
+  },
+
+  // Motions that are not allowed a shape variant. Four of them are wound round
+  // an external clock (the string of a bow, the prod of a crossbow, the blade
+  // of a cane, the parts of a gun cycling) and the fifth is a block, which is
+  // one movement or it is not a block at all. They still get the shake below.
+  VARIANT_LOCKED: {
+    recoil: true, reload: true, draw: true, crossbow: true,
+    swordcane: true, guard: true
+  },
+
+  // Of those, the ones whose LENGTH is also spoken for: their moving parts are
+  // driven in milliseconds off the clip they belong to, so the duration is left
+  // exactly as authored and only the pose is shaken.
+  TIMED_MOTIONS: {
+    recoil: true, reload: true, draw: true, crossbow: true, swordcane: true
+  },
+
+  /**
+   * One variant overlay for a kind, never the same one twice running for the
+   * same weapon. A plain random pick stalls on two clips often enough to be
+   * noticed, so the choice walks the list by a random step instead: it cannot
+   * land where it just was, and it does not march through the list in order
+   * either.
+   */
+  pickVariant(kind, weapon, crit) {
+    const list = this.variantsFor(kind, weapon, crit);
+    if (!list || list.length === 0) return null;
+    if (list.length === 1) return list[0];
+    if (!this._lastVariant) this._lastVariant = {};
+    const key = ((weapon && weapon.id) || 0) + ':' + kind + (crit ? ':c' : '');
+    const last = this._lastVariant[key];
+    const step = 1 + Math.floor(Math.random() * (list.length - 1));
+    const idx = (last === undefined)
+      ? Math.floor(Math.random() * list.length)
+      : (last + step) % list.length;
+    this._lastVariant[key] = idx;
+    return list[idx];
+  },
+
+  /**
+   * The variants a weapon may choose between for a kind, including the ones
+   * that belong to a different kind entirely: a knife given a thrust may make
+   * three stabs instead of one, and a shafted weapon told to level a sweep may
+   * hook with the head and haul instead. Both are the same weapon choosing a
+   * different blow rather than a second default, so they are offered here.
+   */
+  variantsFor(kind, weapon, crit) {
+    let list = (crit && this.CRIT_VARIANTS[kind]) || this.VARIANTS[kind];
+    if (!list) return null;
+    if (kind === 'thrust' && weapon && weapon.wtypeId === 1) {
+      list = list.concat(this.variantsAsKind('flurry', crit));
+    } else if (kind === 'sweep') {
+      list = list.concat(this.variantsAsKind('reap', crit));
+    }
+    return list;
+  },
+
+  /** Another kind's variants, each carrying that kind with it. */
+  variantsAsKind(kind, crit) {
+    const list = (crit && this.CRIT_VARIANTS[kind]) || this.VARIANTS[kind] || [{}];
+    return list.map(v => Object.assign({ kind: kind }, v));
+  },
+
+  /**
+   * The last shake. Two blows thrown the same way are still never identical:
+   * the wrist rolls a little further one time, the whole thing comes round a
+   * fraction quicker the next. A heavy weapon varies less than a light one,
+   * because a mass that far out of the hand mostly keeps its own path.
+   *
+   * The first and last keyframes are left exactly alone: they are the resting
+   * pose the weapon leaves from and returns to, and a weapon that does not end
+   * where it started pops on the next blow. No `t` is touched either, since
+   * several motions are read against fixed windows elsewhere that live on
+   * those times.
+   */
+  jitterClip(clip, weapon, keepTime) {
+    if (!clip || !clip.frames || clip.frames.length < 3) return clip;
+    const grams = weapon ? this.weightOf(weapon) : 1000;
+    const heavy = Math.max(0, Math.min(1, (Math.log(grams) - Math.log(40)) / (Math.log(8000) - Math.log(40))));
+    const amount = 0.045 - heavy * 0.02;
+    const wob = () => 1 + (Math.random() * 2 - 1) * amount;
+    if (!keepTime) clip.duration *= 1 + (Math.random() * 2 - 1) * 0.08;
+    for (let i = 1; i < clip.frames.length - 1; i++) {
+      const f = clip.frames[i];
+      f.x = (f.x || 0) * wob();
+      f.y = (f.y || 0) * wob();
+      f.rx = (f.rx || 0) * wob();
+      f.ry = (f.ry || 0) * wob();
+      f.rz = (f.rz || 0) * wob();
+      if (f.scale !== undefined) f.scale = 1 + (f.scale - 1) * wob();
+    }
+    // The reach a strike is aimed by is measured off these frames, so any
+    // answer cached before the shake is now wrong.
+    clip._peak = undefined;
+    return clip;
+  },
+
   /**
    * Generates the attack clip for a weapon and an animation name.
+   * @param {object} [opts] - {crit:boolean}, the blow this clip is being built
+   *   for. Absent means an ordinary hit, which is what every older caller means.
    * @returns {{duration:number, frames:Array}} in the same shape the fixed
    *   MovementKeyFrame3d clips use, so nothing downstream changes.
    */
-  buildAttack(weapon, name, model) {
-    let motion = this.ATTACK_MOTIONS[name] || { kind: this.motionForWeapon(weapon, model) };
+  buildAttack(weapon, name, model, opts) {
+    const req = opts || {};
+    const crit = !!req.crit;
+    const named = !!this.ATTACK_MOTIONS[name];
+    let motion = named
+      ? Object.assign({}, this.ATTACK_MOTIONS[name])
+      : { kind: this.motionForWeapon(weapon, model) };
+    // A weapon that hangs off the grip swings the way its own shape allows,
+    // whatever the tag says: every flail in the database carries a <Movement:>
+    // list written for a rigid blade, and was being swung like a mace with a
+    // chain drawn on it. The motion that was asked for is kept as `from`, so
+    // the flail that replaces a Swing still goes round level and the one that
+    // replaces an Overhead still comes over the top.
+    const sub = this.subtypeMotionFor(weapon);
+    if (sub && motion.kind !== sub && !this.SUBTYPE_KEEP[motion.kind]) {
+      motion = Object.assign({}, motion, { kind: sub, from: motion.kind });
+    }
     // What a weapon that shoots does is decided by the weapon, never by the
     // name the skill asked for: most firearms and every sling in the database
     // carry a <Movement:> tag written for a blade, or none at all (which used
-    // to mean 'Swing'), and were bashing the enemy with the stock.
+    // to mean 'Swing'), and were bashing the enemy with the stock. This runs
+    // after the sub-categories on purpose, so the one length of hose filed as
+    // a firearm still fires rather than being cracked like the whip it is
+    // tagged as.
     const ranged = this.rangedMotionFor(weapon, model);
     if (ranged && motion.kind !== ranged && !this.RANGED_KEEP[motion.kind]) {
       motion = Object.assign({}, motion, { kind: ranged });
@@ -2532,6 +3074,26 @@ var WeaponSystemProcedural = {
     if (fist && motion.kind !== fist && !this.FIST_KEEP[motion.kind]) {
       motion = Object.assign({}, motion, { kind: fist, from: motion.kind });
     }
+    // And last, the weapons that are only themselves. Every one of them carries
+    // a <Movement:> list written for its type (Excalibur is tagged with twelve
+    // ordinary sword swings), so the tag has to be overridden here the way the
+    // sub-categories are, or the bespoke motion would only ever be reached by a
+    // skill that asked for no animation at all. The three rules above still
+    // win: something that shoots shoots, something slung is slung, and an empty
+    // hand punches, whatever is in the map.
+    const unique = this.uniqueMotionFor(weapon);
+    if (unique && !sub && !ranged && !fist &&
+      motion.kind !== unique && !this.UNIQUE_KEEP[motion.kind]) {
+      motion = Object.assign({}, motion, { kind: unique, from: motion.kind });
+    }
+    if (crit) motion.crit = true;
+    // A named motion was shaped by whoever authored it and is left as it was,
+    // unless this is a critical hit, which is a different blow rather than the
+    // same one repeated harder and so takes its own shape either way.
+    if ((!named || crit) && !this.VARIANT_LOCKED[motion.kind]) {
+      const variant = this.pickVariant(motion.kind, weapon, crit);
+      if (variant) motion = Object.assign({}, motion, variant);
+    }
     const build = this.MOTIONS[motion.kind] || this.MOTIONS.arc;
     const m = this.weaponMetrics(weapon, model);
     const H = (typeof Graphics !== 'undefined' && Graphics.height) ? Graphics.height : 624;
@@ -2542,6 +3104,12 @@ var WeaponSystemProcedural = {
       if (model) this.beginGunFire(model, weapon);
     }
     const clip = build.call(this, m, motion, H);
+    if (motion.pace && Number.isFinite(motion.pace) && !this.TIMED_MOTIONS[motion.kind]) {
+      clip.duration *= motion.pace;
+    }
+    // Shaken before anything is driven off the finished length, so the parts
+    // that run on this clip's own clock run on the length it actually got.
+    this.jitterClip(clip, weapon, !!this.TIMED_MOTIONS[motion.kind]);
     // The blade has to leave the shaft on the same clock the shaft is moving
     // on, so the draw is started from the finished clip's own duration.
     if (motion.kind === 'swordcane' && model) this.beginCaneDraw(model, clip.duration);
@@ -2558,28 +3126,57 @@ var WeaponSystemProcedural = {
 
   MOTIONS: {
     // A blow travelling across the view. Wind up against the direction of
-    // travel, cross the whole frame, overshoot the contact point by a little,
-    // stop dead, then drift back.
+    // travel, hang there a moment, accelerate the whole way across, overshoot
+    // the contact point, then give the ground back slowly.
+    //
+    // The two things that make a swing read as a blow rather than as a weapon
+    // being slid around the screen are the hold at the top of the wind-up and
+    // the acceleration out of it. Both are here: the gather runs out under
+    // `out` and arrives early, the pose barely moves through the hold, and the
+    // segment into contact runs under `in` so the fastest part of the swing is
+    // the last part before it lands.
+    //
+    // Heft and reach do more than scale it. A heavy weapon is wound further
+    // back, holds there longer because it takes that long to reverse, carries
+    // further past the target and is slower to come back on guard; a light one
+    // hardly gathers at all and is already settled while the heavy one is
+    // still following through.
     arc(m, o, H) {
       const dir = o.dir === undefined ? 1 : o.dir;
       const tilt = o.tilt || 0;
-      const power = o.power || 1;
-      const wind = (0.15 + m.heft * 0.13) * H;
+      const power = (o.power || 1) * (o.crit ? 1.14 : 1);
       const travel = (0.40 + m.reach * 0.46) * H * power;
+      // The gather is never allowed to be the longest thing in the clip: the
+      // blow is aimed by whichever frame reaches furthest, and a wind-up that
+      // out-travels the strike would have the weapon aimed backwards.
+      const wind = Math.min((0.15 + m.heft * 0.16) * H * (o.crit ? 1.35 : 1), travel * 0.5);
       const lift = (0.10 + m.reach * 0.16) * H;
       const turn = (95 + m.reach * 75 + m.heft * 34) * power;
-      const punch = 1.13 + m.heft * 0.30 * power;
+      const punch = 1.13 + m.heft * 0.30 * power + (o.crit ? 0.09 : 0);
       // Heavy weapons spend the time in the wind-up, light ones in the strike.
-      const windEnd = 0.22 + m.heft * 0.14;
-      const hit = windEnd + 0.20;
+      const windEnd = 0.20 + m.heft * 0.15 + (o.crit ? 0.05 : 0);
+      const hold = 0.02 + m.heft * 0.06;
+      const hit = windEnd + 0.19;
+      const over = hit + 0.07;
+      // A committed swing is a long way from being back on guard.
+      const settle = 0.78 + m.heft * 0.07 + (o.crit ? 0.05 : 0);
+      const windY = -wind * (0.62 - tilt * 0.5);
       return {
-        duration: 290 + m.heft * 440 + m.reach * 180,
+        duration: (290 + m.heft * 440 + m.reach * 180) * (o.crit ? 1.12 : 1),
         frames: [
-          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Gathered, and held there for as long as the weight demands.
           {
-            t: windEnd, x: dir * wind, y: -wind * (0.62 - tilt * 0.5), z: -0.06 * H,
+            t: windEnd - hold, x: dir * wind, y: windY, z: -0.06 * H,
             rx: -8 - m.heft * 16, ry: dir * 24, rz: dir * (32 + m.heft * 20),
-            scale: 0.90, ease: 'expoOut'
+            scale: 0.90, ease: 'linear'
+          },
+          // Creeping the last of the way back, which is what reads as the
+          // pause before something lets go.
+          {
+            t: windEnd, x: dir * wind * 1.04, y: windY * 1.04, z: -0.07 * H,
+            rx: -9 - m.heft * 18, ry: dir * 26, rz: dir * (34 + m.heft * 22),
+            scale: 0.89, ease: 'in'
           },
           {
             t: hit, x: -dir * travel, y: lift * (tilt >= 0 ? 1 : -1) + tilt * lift * 0.6, z: 0.16 * H,
@@ -2587,70 +3184,104 @@ var WeaponSystemProcedural = {
             scale: punch, ease: 'out'
           },
           {
-            t: hit + 0.07, x: -dir * travel * 1.1, y: lift * (tilt >= 0 ? 1.15 : -1.15), z: 0.1 * H,
-            rx: 6, ry: -dir * 24, rz: -dir * turn * 1.08,
+            t: over, x: -dir * travel * (o.crit ? 1.24 : 1.16), y: lift * (tilt >= 0 ? 1.2 : -1.2), z: 0.1 * H,
+            rx: 6, ry: -dir * 24, rz: -dir * turn * 1.12,
             scale: punch * 0.94, ease: 'inOut'
           },
           {
-            t: 0.82, x: -dir * travel * 0.55, y: lift * 0.5 * (tilt >= 0 ? 1 : -1), z: 0.03 * H,
-            rx: 2, ry: -dir * 10, rz: -dir * turn * 0.5,
+            t: settle, x: -dir * travel * 0.5, y: lift * 0.45 * (tilt >= 0 ? 1 : -1), z: 0.03 * H,
+            rx: 2, ry: -dir * 10, rz: -dir * turn * 0.46,
             scale: 1.02, ease: 'out'
           },
+          // The last of the momentum going out of it on the way back.
+          {
+            t: settle + (1 - settle) * 0.55, x: dir * travel * 0.06, y: -lift * 0.08, z: 0,
+            rx: -2, ry: dir * 3, rz: dir * turn * 0.05, scale: 0.99, ease: 'inOut'
+          },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
     },
 
-    // Raised over the head and brought straight down through the middle. The
-    // heaviest-feeling motion in the set: the wind-up leaves the frame.
+    // Raised over the head and brought down. The heaviest-feeling motion in the
+    // set: the wind-up leaves the frame, hangs at the top for as long as the
+    // weight of the thing demands, and then falls under acceleration rather
+    // than being lowered.
+    //
+    // `dir` decides whether it comes down through the middle or off one
+    // shoulder, and `tilt` how far across the body it lands, which is the
+    // difference between splitting something and cutting through it. The raise
+    // is held below the drop so the blow is never aimed at the sky by the
+    // re-aim, which measures whichever frame reaches furthest.
     overhead(m, o, H) {
-      const power = o.power || 1;
-      const raise = (0.26 + m.heft * 0.22) * H;
-      const drop = (0.34 + m.reach * 0.30) * H * power;
-      const punch = 1.20 + m.heft * 0.38 * power;
-      const windEnd = 0.26 + m.heft * 0.14;
-      const hit = windEnd + 0.19;
+      const dir = o.dir === undefined ? 0 : o.dir;
+      const tilt = o.tilt || 0;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const drop = (0.40 + m.reach * 0.30) * H * power;
+      const raise = Math.min((0.20 + m.heft * 0.16) * H * (o.crit ? 1.4 : 1), drop * 0.68);
+      const cross = dir * tilt * drop * 0.45;
+      const punch = 1.20 + m.heft * 0.38 * power + (o.crit ? 0.10 : 0);
+      const windEnd = 0.24 + m.heft * 0.15 + (o.crit ? 0.05 : 0);
+      const hold = 0.03 + m.heft * 0.07;
+      const hit = windEnd + 0.18;
+      const over = hit + 0.06;
+      const settle = 0.82 + (o.crit ? 0.05 : 0);
       return {
-        duration: 380 + m.heft * 520 + m.reach * 150,
+        duration: (380 + m.heft * 520 + m.reach * 150) * (o.crit ? 1.12 : 1),
         frames: [
-          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
           {
-            t: windEnd, x: 0, y: -raise, z: -0.14 * H,
-            rx: -(48 + m.heft * 34), ry: 0, rz: 0, scale: 0.86, ease: 'expoOut'
+            t: windEnd - hold, x: dir * raise * 0.35, y: -raise, z: -0.14 * H,
+            rx: -(48 + m.heft * 34), ry: dir * 12, rz: dir * 14, scale: 0.86, ease: 'linear'
+          },
+          // The top of the lift, where nothing much happens and everything is
+          // about to.
+          {
+            t: windEnd, x: dir * raise * 0.4, y: -raise * 1.05, z: -0.15 * H,
+            rx: -(52 + m.heft * 36), ry: dir * 13, rz: dir * 15, scale: 0.85, ease: 'in'
           },
           {
-            t: hit, x: 0, y: drop, z: 0.24 * H,
-            rx: 62 + m.reach * 26, ry: 0, rz: 0, scale: punch, ease: 'out'
+            t: hit, x: cross, y: drop, z: 0.24 * H,
+            rx: 62 + m.reach * 26, ry: -dir * 10, rz: -dir * (18 + tilt * 20),
+            scale: punch, ease: 'out'
           },
           {
-            t: hit + 0.06, x: 0, y: drop * 1.08, z: 0.16 * H,
-            rx: 70 + m.reach * 26, ry: 0, rz: 0, scale: punch * 0.9, ease: 'inOut'
+            t: over, x: cross * 1.18, y: drop * (o.crit ? 1.2 : 1.14), z: 0.16 * H,
+            rx: 70 + m.reach * 26, ry: -dir * 8, rz: -dir * (20 + tilt * 22),
+            scale: punch * 0.9, ease: 'inOut'
           },
           {
-            t: 0.84, x: 0, y: drop * 0.42, z: 0.05 * H,
-            rx: 26, ry: 0, rz: 0, scale: 1.03, ease: 'out'
+            t: settle, x: cross * 0.4, y: drop * 0.4, z: 0.05 * H,
+            rx: 26, ry: 0, rz: -dir * 6, scale: 1.03, ease: 'out'
           },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
     },
 
-    // The mirror of overhead: dropped low, then torn upward.
+    // The mirror of overhead: dropped low, then torn upward. The dip is a real
+    // gather rather than a pose change, so it lands before the hold and the
+    // blow accelerates out of the bottom of it.
     rising(m, o, H) {
-      const power = o.power || 1;
-      const dip = (0.20 + m.heft * 0.16) * H;
-      const rise = (0.36 + m.reach * 0.32) * H * power;
-      const punch = 1.16 + m.heft * 0.32 * power;
-      const windEnd = 0.22 + m.heft * 0.12;
-      const hit = windEnd + 0.20;
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const rise = (0.40 + m.reach * 0.32) * H * power;
+      const dip = Math.min((0.20 + m.heft * 0.16) * H * (o.crit ? 1.3 : 1), rise * 0.6);
+      const punch = 1.16 + m.heft * 0.32 * power + (o.crit ? 0.09 : 0);
+      const windEnd = 0.21 + m.heft * 0.13 + (o.crit ? 0.04 : 0);
+      const hold = 0.02 + m.heft * 0.05;
+      const hit = windEnd + 0.19;
+      const over = hit + 0.07;
+      const settle = 0.82 + (o.crit ? 0.04 : 0);
       return {
-        duration: 340 + m.heft * 460 + m.reach * 140,
+        duration: (340 + m.heft * 460 + m.reach * 140) * (o.crit ? 1.12 : 1),
         frames: [
-          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
-          { t: windEnd, x: 0.04 * H, y: dip, z: -0.1 * H, rx: 40 + m.heft * 22, ry: 10, rz: 12, scale: 0.88, ease: 'expoOut' },
-          { t: hit, x: -0.05 * H, y: -rise, z: 0.22 * H, rx: -(52 + m.reach * 24), ry: -14, rz: -18, scale: punch, ease: 'out' },
-          { t: hit + 0.07, x: -0.06 * H, y: -rise * 1.1, z: 0.14 * H, rx: -(60 + m.reach * 24), ry: -10, rz: -14, scale: punch * 0.92, ease: 'inOut' },
-          { t: 0.84, x: -0.02 * H, y: -rise * 0.4, z: 0.04 * H, rx: -22, ry: -4, rz: -6, scale: 1.02, ease: 'out' },
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          { t: windEnd - hold, x: dir * 0.04 * H, y: dip, z: -0.1 * H, rx: 40 + m.heft * 22, ry: dir * 10, rz: dir * 12, scale: 0.88, ease: 'linear' },
+          { t: windEnd, x: dir * 0.045 * H, y: dip * 1.05, z: -0.11 * H, rx: 43 + m.heft * 24, ry: dir * 11, rz: dir * 13, scale: 0.87, ease: 'in' },
+          { t: hit, x: -dir * 0.05 * H, y: -rise, z: 0.22 * H, rx: -(52 + m.reach * 24), ry: -dir * 14, rz: -dir * 18, scale: punch, ease: 'out' },
+          { t: over, x: -dir * 0.06 * H, y: -rise * (o.crit ? 1.2 : 1.15), z: 0.14 * H, rx: -(60 + m.reach * 24), ry: -dir * 10, rz: -dir * 14, scale: punch * 0.92, ease: 'inOut' },
+          { t: settle, x: -dir * 0.02 * H, y: -rise * 0.38, z: 0.04 * H, rx: -22, ry: -dir * 4, rz: -dir * 6, scale: 1.02, ease: 'out' },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
@@ -2662,22 +3293,37 @@ var WeaponSystemProcedural = {
     // on screen: depth has to be spoken as scale. The lunge is therefore a
     // zoom, with reach deciding how far the point gets and heft deciding how
     // long it takes to get there. (Z still moves, only for draw order.)
+    // `aim` picks the line: 0 straight at the middle of them, -1 up under the
+    // ribs from low, +1 down at the throat. A crit is the same line thrown as
+    // a full lunge, held at extension for a beat before the weapon is
+    // recovered, which is the one thing a stab can do that reads as committed.
     thrust(m, o, H) {
       const dir = o.dir === undefined ? 1 : o.dir;
-      const power = o.power || 1;
-      const pull = (0.10 + m.heft * 0.10) * H;
+      const aim = o.aim || 0;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
       const zoom = 1 + (0.34 + m.reach * 0.38) * power;
-      const drift = (0.05 + m.reach * 0.06) * H;
-      const windEnd = 0.20 + m.heft * 0.14;
-      const hit = windEnd + 0.16;
+      // A stab spends its distance on scale, but it still has to travel far
+      // enough across the view for the re-aim to have a direction to work
+      // with, and further than the chamber does: the blow is aimed by whatever
+      // frame reaches furthest, and that has to be the point, not the elbow.
+      const drift = (0.09 + m.reach * 0.09) * H;
+      const pull = Math.min((0.10 + m.heft * 0.10) * H, drift * 0.55);
+      const windEnd = 0.19 + m.heft * 0.14 + (o.crit ? 0.04 : 0);
+      const hold = 0.02 + m.heft * 0.04;
+      const hit = windEnd + 0.15;
+      // The hold at full extension: a moment on an ordinary stab, long enough
+      // to see on a committed one.
+      const stay = hit + (o.crit ? 0.14 : 0.06);
       return {
-        duration: 250 + m.heft * 380 + m.reach * 130,
+        duration: (250 + m.heft * 380 + m.reach * 130) * (o.crit ? 1.14 : 1),
         frames: [
-          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
-          { t: windEnd, x: dir * pull, y: -pull * 0.4, z: -60, rx: -10, ry: dir * 16, rz: dir * 10, scale: 0.86, ease: 'expoOut' },
-          { t: hit, x: -dir * drift, y: drift * 0.5, z: 220, rx: 14, ry: -dir * 6, rz: -dir * 4, scale: zoom, ease: 'snap' },
-          { t: hit + 0.06, x: -dir * drift * 1.2, y: drift * 0.7, z: 240, rx: 16, ry: -dir * 4, rz: -dir * 2, scale: zoom * 1.03, ease: 'inOut' },
-          { t: 0.8, x: -dir * drift * 0.4, y: drift * 0.2, z: 90, rx: 6, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.3, ease: 'out' },
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Chambered along the line it is going out on, and still.
+          { t: windEnd - hold, x: dir * pull, y: -pull * 0.4 - aim * pull * 0.5, z: -60, rx: -10 - aim * 12, ry: dir * 16, rz: dir * 10, scale: 0.86, ease: 'linear' },
+          { t: windEnd, x: dir * pull * 1.05, y: (-pull * 0.4 - aim * pull * 0.5) * 1.05, z: -66, rx: -11 - aim * 13, ry: dir * 17, rz: dir * 11, scale: 0.85, ease: 'in' },
+          { t: hit, x: -dir * drift, y: drift * 0.5 + aim * drift * 1.2, z: 220, rx: 14 + aim * 10, ry: -dir * 6, rz: -dir * 4, scale: zoom, ease: 'snap' },
+          { t: stay, x: -dir * drift * 1.22, y: (drift * 0.7 + aim * drift * 1.3), z: 240, rx: 16 + aim * 11, ry: -dir * 4, rz: -dir * 2, scale: zoom * 1.03, ease: 'inOut' },
+          { t: 0.82, x: -dir * drift * 0.4, y: drift * 0.2 + aim * drift * 0.4, z: 90, rx: 6, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.3, ease: 'out' },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
@@ -2706,25 +3352,31 @@ var WeaponSystemProcedural = {
     punch(m, o, H) {
       const from = o.from;
       const dir = o.dir === undefined ? 1 : o.dir;
-      const power = o.power || 1;
-      const hook = from === 'arc' || from === 'spin' || from === 'lash';
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const hook = from === 'arc' || from === 'spin' || from === 'lash' || from === 'flail';
       const rise = from === 'rising';
       const drop = from === 'overhead';
       // The chamber is small: it is the furthest from the camera the hand
       // ever gets, and a fist pulled back too far reads as a wind-up rather
       // than as a guard being left.
-      const pull = (0.07 + m.heft * 0.05) * H;
       // A hook travels across the frame and lands short; a straight punch
-      // spends everything it has going away from the camera instead.
+      // spends everything it has going away from the camera instead, though it
+      // still has to cover enough ground for the blow to be aimed by it.
       const zoom = 1 + (hook ? 0.32 : 0.54) * power;
-      const cross = hook ? (0.28 + m.reach * 0.16) * H * power : (0.05 + m.reach * 0.04) * H;
+      const cross = hook ? (0.28 + m.reach * 0.16) * H * power : (0.10 + m.reach * 0.06) * H;
+      // The chamber stays behind the reach, or the fist would be aimed by the
+      // elbow it was pulled back to rather than by where it lands.
+      const pull = Math.min((0.07 + m.heft * 0.05) * H * (o.crit ? 1.3 : 1), cross * 0.5);
       const lift = rise ? -(0.24 + m.reach * 0.12) * H
         : (drop ? (0.28 + m.reach * 0.12) * H : 0.025 * H);
       // Fast: the wind-up is a snap of the elbow, not a haul of the shoulder.
-      const windEnd = 0.20 + m.heft * 0.09;
+      // A committed punch is the exception: the shoulder does come into it, so
+      // the chamber goes back further and the hand stays out a beat longer.
+      const windEnd = 0.20 + m.heft * 0.09 + (o.crit ? 0.05 : 0);
       const hit = windEnd + 0.14;
+      const stay = hit + (o.crit ? 0.11 : 0.05);
       return {
-        duration: 250 + m.heft * 180,
+        duration: (250 + m.heft * 180) * (o.crit ? 1.16 : 1),
         frames: [
           { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
           // Chambered: back, turned over, and at its smallest.
@@ -2748,8 +3400,8 @@ var WeaponSystemProcedural = {
           },
           // The give of the thing that was hit.
           {
-            t: hit + 0.05,
-            x: -dir * cross * 1.08, y: lift * 1.08, z: 0.22 * H,
+            t: stay,
+            x: -dir * cross * 1.18, y: lift * 1.18, z: 0.22 * H,
             rx: rise ? -36 : (drop ? 48 : 14),
             ry: -dir * (hook ? 22 : 6), rz: -dir * (hook ? 30 : 8),
             scale: zoom * 1.03, ease: 'inOut'
@@ -2776,9 +3428,11 @@ var WeaponSystemProcedural = {
     // in CANE_DRAW and the keyframe times below are one timeline.
     swordcane(m, o, H) {
       const power = o.power || 1;
-      const pull = (0.09 + m.heft * 0.08) * H;
       const zoom = 1 + (0.30 + m.reach * 0.34) * power;
       const drift = (0.04 + m.reach * 0.05) * H;
+      // Held behind the reach, so a light cane is not aimed by the hand that
+      // turned it point-forward instead of by the point going out.
+      const pull = Math.min((0.09 + m.heft * 0.08) * H, drift * 0.5);
       return {
         duration: 620 + m.heft * 300 + m.reach * 150,
         frames: [
@@ -2801,13 +3455,13 @@ var WeaponSystemProcedural = {
     // in the same beat, so the turn count is cut by heft rather than fixed.
     spin(m, o, H) {
       const dir = o.dir === undefined ? 1 : o.dir;
-      const turns = Math.max(1, Math.round((o.turns || 1) + (1 - m.heft) * 0.9));
-      const sweep = (0.20 + m.reach * 0.26) * H;
+      const turns = Math.max(1, Math.min(3, Math.round((o.turns || 1) + (1 - m.heft) * 0.9)));
+      const sweep = (0.20 + m.reach * 0.26) * H * (o.power || 1);
       const tilt = o.tilt || 0;
       const total = 360 * turns * dir;
-      const punch = 1.14 + m.heft * 0.26;
+      const punch = 1.14 + m.heft * 0.26 + (o.crit ? 0.09 : 0);
       return {
-        duration: 420 + m.heft * 520 + turns * 140,
+        duration: (420 + m.heft * 520 + turns * 140) * (o.crit ? 1.1 : 1),
         frames: [
           { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
           { t: 0.18, x: dir * sweep * 0.5, y: -sweep * 0.35, z: -0.05 * H, rx: -12, ry: dir * 40, rz: dir * 40, scale: 0.92, ease: 'out' },
@@ -2853,8 +3507,13 @@ var WeaponSystemProcedural = {
     recoil(m, o, H) {
       const power = o.power || 1;
       const p = o.profile || { rise: 1, push: 1, shots: 1, rate: 0, dur: 1 };
-      const kick = (0.045 + m.heft * 0.105) * H * power * p.push;
-      const rise = (20 + m.heft * 28) * power * p.rise;
+      // A round that goes exactly where it was meant to is the same round: what
+      // a critical shot gets is a harder kick, and nothing else. The length of
+      // this clip is what the gun's own parts are cycled against, so it is left
+      // alone.
+      const bite = o.crit ? 1.3 : 1;
+      const kick = (0.045 + m.heft * 0.105) * H * power * p.push * bite;
+      const rise = (20 + m.heft * 28) * power * p.rise * bite;
       const shots = Math.max(1, p.shots);
       const dur = (230 + m.heft * 240 * power) * p.dur * (shots > 1 ? 1 + shots * 0.18 : 1);
 
@@ -2965,53 +3624,1179 @@ var WeaponSystemProcedural = {
       };
     },
 
-    // A whip has no mass at the far end to speak of: the hand movement is
-    // small and sharp, and the rope simulation does the rest.
+    // A whip has almost no mass at the far end: the hand cannot push the thing
+    // anywhere, it can only send a wave down it and then get out of the way.
+    // That is what a crack is, and it takes four separate moments to read as
+    // one. The coil is gathered back over the shoulder; the arm is thrown
+    // forward while the tail is still behind it, which is where the whip is at
+    // its longest and the tip is still doing nothing; the hand STOPS dead,
+    // which is the moment that hands the arm's speed to the tip; and only then
+    // does the far end come round. Recovery takes two beats, because a rope
+    // that has been snapped does not stop where the hand did.
+    //
+    // The rope simulation supplies the shape of the line. What is written here
+    // is only the hand driving it, which is why the numbers are small next to
+    // a sword's. Heft is the difference between a plaited leather whip and two
+    // kilos of steel cable: the heavy one lays out wider and takes longer to
+    // come back, and cracks later in the clip because it takes that long for
+    // the wave to reach the end of it.
     lash(m, o, H) {
-      const crack = (0.14 + m.reach * 0.12) * H;
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const tilt = o.tilt || 0;
+      const power = (o.power || 1) * (o.crit ? 1.18 : 1);
+      const crack = (0.14 + m.reach * 0.12) * H * (1 + m.heft * 0.18) * power;
+      const gather = 0.18 + m.heft * 0.06;
+      const stop = 0.44 + m.heft * 0.05;
+      const hit = stop + 0.07;
       return {
-        duration: 380 + m.heft * 180,
+        duration: (380 + m.heft * 260) * (o.crit ? 1.14 : 1),
         frames: [
-          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
-          { t: 0.26, x: crack, y: -crack * 1.2, z: -50, rx: -30, ry: 12, rz: 26, scale: 0.92, ease: 'expoOut' },
-          { t: 0.42, x: -crack * 1.6, y: crack * 0.5, z: 210, rx: 22, ry: -14, rz: -34, scale: 1.3, ease: 'out' },
-          { t: 0.6, x: -crack * 0.6, y: crack * 0.2, z: 80, rx: 8, ry: -6, rz: -14, scale: 1.08, ease: 'out' },
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Coiled back over the shoulder, and left there a moment.
+          { t: gather, x: dir * crack * 0.75, y: -crack * (0.95 - tilt * 0.35), z: -50, rx: -30, ry: dir * 12, rz: dir * 26, scale: 0.92, ease: 'linear' },
+          { t: gather + 0.08, x: dir * crack * 0.8, y: -crack * (1.0 - tilt * 0.35), z: -56, rx: -33, ry: dir * 13, rz: dir * 28, scale: 0.91, ease: 'in' },
+          // Thrown forward with the tail still behind: nothing has happened at
+          // the far end yet.
+          { t: stop - 0.08, x: -dir * crack * 0.7, y: crack * 0.1 * (1 + tilt), z: 120, rx: 10, ry: -dir * 8, rz: -dir * 18, scale: 1.06, ease: 'expoOut' },
+          // The hand stops. This is the frame the whip is actually driven by.
+          { t: stop, x: -dir * crack * 1.15, y: crack * 0.3 * (1 + tilt), z: 180, rx: 18, ry: -dir * 12, rz: -dir * 28, scale: 1.14, ease: 'snap' },
+          // And the end of it comes round.
+          { t: hit, x: -dir * crack * 1.9, y: crack * (0.5 + tilt * 0.6), z: 210, rx: 24, ry: -dir * 16, rz: -dir * 38, scale: 1.32 + (o.crit ? 0.08 : 0), ease: 'out' },
+          { t: hit + 0.14, x: -dir * crack * 0.85, y: crack * 0.24 * (1 + tilt), z: 80, rx: 9, ry: -dir * 6, rz: -dir * 15, scale: 1.08, ease: 'inOut' },
+          // The tail coming back through, past where the hand is.
+          { t: 0.82, x: dir * crack * 0.28, y: -crack * 0.12, z: 20, rx: -5, ry: dir * 4, rz: dir * 8, scale: 0.98, ease: 'out' },
+          { t: 0.93, x: -dir * crack * 0.08, y: crack * 0.04, z: 0, rx: 2, ry: 0, rz: -dir * 3, scale: 1.01, ease: 'inOut' },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
     },
 
+    // A head on a chain, which is a different weapon from a mace with a chain
+    // drawn on it. The mass is not in the hand and never was: it lags behind
+    // everything the arm does, so the hand cannot drive the blow, only start it
+    // and then be dragged after it.
+    //
+    // The wind-up is therefore a small circle traced by the fist while the head
+    // goes round overhead on its own, gathering speed the arm does not have to
+    // supply. The head is then slung out, and the hand ARRIVES LATE and further
+    // through than it meant to, because it is being towed. Once the head has
+    // stopped there is still a chain full of momentum attached to it, so the
+    // hand is yanked back the other way and wobbles a second time before it
+    // settles: no clean recovery, which is the whole reason a flail is
+    // dangerous to the person holding it. A heavier head lags longer and
+    // rebounds harder, which is the difference between a wooden flail and six
+    // kilos of bike chain.
+    //
+    // `from` is the motion asked for before the flail took it over: a swing
+    // orbits level, an overhead comes over the top, a rising blow is slung
+    // underhand. The orbit accumulates a whole turn in rz, so as with `spin`
+    // the last keyframe carries that multiple of 360 rather than zero, which is
+    // the same pose and saves unwinding the turn in the final beat.
+    flail(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const from = o.from;
+      const over = from === 'overhead';
+      const under = from === 'rising';
+      const power = (o.power || 1) * (o.crit ? 1.14 : 1);
+      const orbits = Math.max(1, Math.min(3, Math.round(o.orbits || 1)));
+      // How far behind the hand the head runs, and how hard it comes back.
+      const lag = 0.30 + m.heft * 0.55;
+      const circle = (0.09 + m.heft * 0.05) * H;
+      const travel = (0.42 + m.reach * 0.40) * H * power;
+      const lift = (0.09 + m.reach * 0.13) * H;
+      const spin = 360 * orbits * dir;
+      const punch = 1.16 + m.heft * 0.26 * power;
+      const kick = travel * (0.26 + lag * 0.20);
+      // Height of the orbit, which is what the shape of the blow comes down to.
+      const high = over ? 1.5 : (under ? -0.7 : 1);
+      const hit = 0.50 + m.heft * 0.04 + (o.crit ? 0.06 : 0);
+      return {
+        duration: (520 + m.heft * 500 + m.reach * 180) * (o.crit ? 1.16 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'in' },
+          // Round it goes, the fist tracing its little circle underneath.
+          {
+            t: hit * 0.28, x: dir * circle, y: -circle * 0.55 * high, z: -0.05 * H,
+            rx: -10, ry: dir * 30, rz: spin * 0.18, scale: 0.95, ease: 'linear'
+          },
+          {
+            t: hit * 0.52, x: -dir * circle * 0.7, y: -circle * 1.1 * high, z: -0.07 * H,
+            rx: -16 - m.heft * 10, ry: dir * 58, rz: spin * 0.42, scale: 0.90, ease: 'linear'
+          },
+          {
+            t: hit * 0.76, x: -dir * circle * 0.2, y: -circle * 0.2 * high, z: -0.02 * H,
+            rx: -6, ry: dir * 30, rz: spin * 0.72, scale: 0.93, ease: 'in'
+          },
+          // Slung. The head is out there and the hand is not with it yet.
+          {
+            t: hit, x: -dir * travel, y: lift * (over ? 1.5 : (under ? -1.3 : 0.5)), z: 0.18 * H,
+            rx: 14 + (over ? 20 : 0), ry: -dir * 20, rz: spin * 0.95, scale: punch, ease: 'out'
+          },
+          // Dragged through after it, which is where the chain actually pulls
+          // the arm out of shape.
+          {
+            t: hit + 0.09, x: -dir * travel * (1.18 + lag * 0.12), y: lift * (over ? 1.7 : (under ? -1.5 : 0.6)), z: 0.12 * H,
+            rx: 8, ry: -dir * 14, rz: spin * 1.06, scale: punch * 0.93, ease: 'inOut'
+          },
+          // And yanked back the other way by what is left in the chain.
+          {
+            t: hit + 0.24, x: dir * kick, y: -lift * 0.4 * high, z: 0.02 * H,
+            rx: -8 - lag * 6, ry: dir * 10, rz: spin * 1.02, scale: 1.04, ease: 'out'
+          },
+          // A second, smaller swing of it before the thing hangs still.
+          {
+            t: hit + 0.36, x: -dir * kick * 0.38, y: lift * 0.16 * high, z: 0,
+            rx: 4, ry: -dir * 4, rz: spin * 0.99, scale: 0.99, ease: 'inOut'
+          },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: spin, scale: 1 }
+        ]
+      };
+    },
+
+    // Two sticks and a short chain, swung by somebody who wants to be watched
+    // doing it. Nothing about a nunchaku is heavy and nothing about it reaches:
+    // the whole weapon is speed, so reach and heft barely enter into it and the
+    // clip is the shortest in the set.
+    //
+    // A figure of eight is two loops in opposite senses, not one circle gone
+    // round twice, so the roll reverses at every crossing and comes back to
+    // where it started on its own. Then the stick is tucked under the arm,
+    // which is the only still moment in it, and from that stillness comes the
+    // snap: a short, tight travel with a hard scale punch on it, because what
+    // makes the blow is the tip changing direction, not the hand going
+    // anywhere. Then it is caught, which a flail can never do.
+    nunchaku(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const passes = Math.max(1, Math.min(3, Math.round(o.passes || 2)));
+      const swing = (0.09 + m.reach * 0.04) * H;
+      const travel = (0.26 + m.reach * 0.10) * H * power;
+      const lift = (0.05 + m.reach * 0.05) * H;
+      const punch = 1.34 + (o.crit ? 0.12 : 0);
+      const tuck = 0.30 + passes * 0.08;
+      const span = tuck / passes;
+      const frames = [{ t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' }];
+      for (let i = 0; i < passes; i++) {
+        const s = (i % 2) ? -dir : dir;
+        // Out through the crossing, roll leading.
+        frames.push({
+          t: i * span + span * 0.35, x: s * swing, y: -swing * 0.5, z: -20,
+          rx: -6, ry: s * 26, rz: s * 165, scale: 0.97, ease: 'inOut'
+        });
+        // And back through it the other way, which is what makes it an eight.
+        frames.push({
+          t: i * span + span * 0.85, x: -s * swing * 0.7, y: swing * 0.3, z: 10,
+          rx: 4, ry: -s * 20, rz: -s * 150, scale: 0.99, ease: 'inOut'
+        });
+      }
+      // Tucked under the arm: the one still frame in the whole thing.
+      frames.push({
+        t: tuck + 0.06, x: -dir * swing * 0.4, y: swing * 0.7, z: -30,
+        rx: 10, ry: dir * 8, rz: dir * 40, scale: 0.86, ease: 'in'
+      });
+      // The snap.
+      frames.push({
+        t: tuck + 0.19, x: -dir * travel, y: -lift, z: 0.2 * H,
+        rx: 12, ry: -dir * 18, rz: -dir * 120, scale: punch, ease: 'out'
+      });
+      frames.push({
+        t: tuck + 0.26, x: -dir * travel * 1.18, y: -lift * 1.2, z: 0.14 * H,
+        rx: 14, ry: -dir * 14, rz: -dir * 138, scale: punch * 0.92, ease: 'inOut'
+      });
+      // Caught back under the arm.
+      frames.push({
+        t: tuck + 0.4, x: dir * travel * 0.16, y: swing * 0.3, z: 0,
+        rx: -4, ry: dir * 6, rz: dir * 26, scale: 1.02, ease: 'out'
+      });
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 });
+      return {
+        duration: (250 + m.heft * 90 + passes * 40) * (o.crit ? 1.06 : 1),
+        frames: frames
+      };
+    },
+
+    // A scythe, a sickle, a hooked polearm: anything whose edge faces the
+    // wielder rather than the world. None of them can be swung at something,
+    // because the edge is on the wrong side of the shaft for that. What they do
+    // is go out PAST the target, low and long, and then get hauled back through
+    // it, and the blow lands on the way home. That is the whole difference, and
+    // it is why the impact frame here is late in the clip and travelling the
+    // opposite way to the frame before it.
+    //
+    // The extension is deliberately kept well under the return, since the blow
+    // is aimed by whichever frame reaches furthest and the reach out is not the
+    // blow. A long haft opens the whole movement wider without changing where
+    // the contact happens.
+    reap(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const travel = (0.44 + m.reach * 0.40) * H * power;
+      const out = Math.min((0.22 + m.reach * 0.24) * H, travel * 0.55);
+      const lift = (0.06 + m.reach * 0.10) * H;
+      const turn = 80 + m.reach * 70 + m.heft * 30;
+      const punch = 1.15 + m.heft * 0.26 * power;
+      const set = 0.30 + (o.crit ? 0.04 : 0);
+      const hit = 0.58 + m.heft * 0.03 + (o.crit ? 0.05 : 0);
+      return {
+        duration: (420 + m.heft * 380 + m.reach * 260) * (o.crit ? 1.14 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // A short cock of the wrist to bring the edge round.
+          { t: 0.13, x: -dir * out * 0.2, y: -lift * 0.8, z: -30, rx: -12, ry: -dir * 14, rz: -dir * 18, scale: 0.95, ease: 'inOut' },
+          // Laid out low and away, which is the furthest the weapon gets from
+          // the person holding it and the smallest it ever looks.
+          { t: set, x: dir * out, y: lift * 1.4, z: -0.08 * H, rx: 26, ry: dir * 34, rz: dir * (30 + m.reach * 20), scale: 0.82, ease: 'linear' },
+          // Set, and hooked behind whatever it is about to be pulled through.
+          { t: set + 0.1, x: dir * out * 1.04, y: lift * 1.5, z: -0.07 * H, rx: 28, ry: dir * 36, rz: dir * (32 + m.reach * 22), scale: 0.83, ease: 'in' },
+          // Hauled back through it. The pull is toward the wielder, so the
+          // weapon grows as it comes.
+          { t: hit, x: -dir * travel, y: -lift * 0.3, z: 0.18 * H, rx: -6, ry: -dir * 26, rz: -dir * turn, scale: punch, ease: 'out' },
+          { t: hit + 0.09, x: -dir * travel * (o.crit ? 1.26 : 1.18), y: -lift * 0.5, z: 0.1 * H, rx: -10, ry: -dir * 20, rz: -dir * turn * 1.12, scale: punch * 0.93, ease: 'inOut' },
+          { t: 0.9, x: -dir * travel * 0.3, y: -lift * 0.1, z: 0.02 * H, rx: -3, ry: -dir * 6, rz: -dir * turn * 0.28, scale: 1.02, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A halberd, a glaive, a trident: two metres of shaft with the weight at
+    // the far end of it. Nobody fences with one of those, they level it and
+    // take the legs out from under somebody, and the reason it works is that
+    // the head is moving several times faster than the hands are.
+    //
+    // So the shaft stays level, the travel is the widest in the set, the lift
+    // is almost nothing, and the butt goes the other way first: that is the
+    // gather, and it is the only anticipation a weapon this long gets, because
+    // there is no time for another. Once it is round it stays round. A polearm
+    // that has been swept does not stop, it is walked to a halt over two beats,
+    // which is why the recovery here is longer than the strike.
+    sweep(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const tilt = o.tilt || 0;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const travel = (0.50 + m.reach * 0.52) * H * power;
+      const wind = Math.min((0.14 + m.heft * 0.10) * H, travel * 0.32);
+      // How far below the guard the shaft rides. Negative tilt takes it lower.
+      const low = (0.05 + m.reach * 0.07) * H * (1 - tilt * 0.8);
+      const turn = 70 + m.reach * 80 + m.heft * 30;
+      const punch = 1.10 + m.heft * 0.22 * power;
+      const windEnd = 0.22 + m.heft * 0.12 + (o.crit ? 0.05 : 0);
+      const hold = 0.02 + m.heft * 0.05;
+      const hit = windEnd + 0.21;
+      return {
+        duration: (420 + m.heft * 470 + m.reach * 230) * (o.crit ? 1.14 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Butt forward, head back: the shaft turning about the middle of it.
+          { t: windEnd - hold, x: dir * wind, y: low * 0.5, z: -0.05 * H, rx: 6, ry: -dir * 30, rz: dir * (16 + m.reach * 12), scale: 0.94, ease: 'linear' },
+          { t: windEnd, x: dir * wind * 1.05, y: low * 0.55, z: -0.06 * H, rx: 7, ry: -dir * 32, rz: dir * (18 + m.reach * 13), scale: 0.93, ease: 'in' },
+          // Through, level, and at ankle height.
+          { t: hit, x: -dir * travel, y: low, z: 0.14 * H, rx: 4 - tilt * 12, ry: dir * 24, rz: -dir * turn, scale: punch, ease: 'out' },
+          { t: hit + 0.08, x: -dir * travel * (o.crit ? 1.26 : 1.18), y: low * 1.1, z: 0.1 * H, rx: 3 - tilt * 12, ry: dir * 18, rz: -dir * turn * 1.14, scale: punch * 0.95, ease: 'linear' },
+          // Walked to a halt. Something this long does not stop where it hit.
+          { t: 0.84, x: -dir * travel * 0.62, y: low * 0.7, z: 0.05 * H, rx: 2, ry: dir * 8, rz: -dir * turn * 0.6, scale: 1.03, ease: 'out' },
+          { t: 0.94, x: -dir * travel * 0.18, y: low * 0.2, z: 0, rx: 1, ry: dir * 2, rz: -dir * turn * 0.16, scale: 1.01, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // What somebody with a knife actually does, which is not one stab. Three
+    // of them, or however many `hits` asks for, thrown from the elbow into
+    // roughly the same place before the person being stabbed can do anything
+    // about the first one. Each is smaller and faster than a full thrust, the
+    // line alternates a little in side and in height so they are not one
+    // movement repeated, and the last one is the biggest, both because that is
+    // how it goes and because the blow is aimed by whichever frame reaches
+    // furthest and the last stab is the one that ought to land on them.
+    //
+    // Depth is scale under the orthographic overlay camera, as with `thrust`.
+    flurry(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.1 : 1);
+      const hits = Math.max(2, Math.min(5, Math.round(o.hits || 3) + (o.crit ? 1 : 0)));
+      const drift = (0.07 + m.reach * 0.06) * H;
+      const pull = drift * 0.5;
+      const zoom = 1 + (0.22 + m.reach * 0.24) * power;
+      const span = 0.86 / hits;
+      const frames = [{ t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'in' }];
+      for (let i = 0; i < hits; i++) {
+        const s = (i % 2) ? -dir : dir;
+        const high = (i % 2) ? -1 : 1;
+        const last = (i === hits - 1);
+        // Each one commits a little further than the one before it.
+        const grow = 0.8 + 0.2 * (i + 1) / hits;
+        const out = drift * grow * (last ? 1.7 : 1);
+        frames.push({
+          t: i * span + span * 0.34, x: s * pull, y: -pull * 0.35 * high, z: -40,
+          rx: -8, ry: s * 14, rz: s * 9, scale: 0.9, ease: 'in'
+        });
+        frames.push({
+          t: i * span + span * 0.78, x: -s * out, y: out * 0.4 * high, z: 200,
+          rx: 10 * high, ry: -s * 6, rz: -s * 4,
+          scale: 1 + (zoom - 1) * grow * (last ? 1.12 : 1), ease: last ? 'out' : 'in'
+        });
+      }
+      // And out of there.
+      frames.push({ t: 0.92, x: 0, y: 0, z: 60, rx: 4, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.2, ease: 'out' });
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 });
+      return {
+        duration: (210 + hits * 70 + m.heft * 150 + m.reach * 60) * (o.crit ? 1.02 : 1),
+        frames: frames
+      };
+    },
+
     // Raise, gather, punch the working end forward. Reach matters (a long
     // staff sweeps), heft barely does.
+    //
+    // `tilt` decides where the gather happens: above the head, out to the side
+    // or down low before it comes up, which is the only thing that keeps a
+    // caster who has stood in the same place all fight from looking like a
+    // loop. The pause at the top is the point of the whole motion, so it is
+    // held under `linear` rather than eased through.
     cast(m, o, H) {
-      const lift = (0.14 + m.reach * 0.16) * H;
-      const zoom = 1 + 0.28 + m.reach * 0.26;
+      const tilt = o.tilt || 0;
+      const power = (o.power || 1) * (o.crit ? 1.14 : 1);
+      const lift = (0.14 + m.reach * 0.16) * H * power;
+      const zoom = 1 + (0.28 + m.reach * 0.26) * power;
       return {
-        duration: 480 + m.heft * 260 + m.reach * 160,
+        duration: (480 + m.heft * 260 + m.reach * 160) * (o.crit ? 1.12 : 1),
         frames: [
-          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'inOut' },
-          { t: 0.3, x: -lift * 0.6, y: -lift, z: -50, rx: -16, ry: -22, rz: -18, scale: 0.9, ease: 'expoOut' },
-          { t: 0.48, x: lift * 0.3, y: lift * 0.5, z: 200, rx: 20, ry: 14, rz: 12, scale: zoom, ease: 'out' },
-          { t: 0.58, x: lift * 0.35, y: lift * 0.55, z: 210, rx: 22, ry: 16, rz: 14, scale: zoom * 1.04, ease: 'inOut' },
-          { t: 0.82, x: lift * 0.12, y: lift * 0.2, z: 70, rx: 8, ry: 6, rz: 5, scale: 1 + (zoom - 1) * 0.25, ease: 'out' },
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          { t: 0.26, x: -lift * (0.6 + tilt * 0.5), y: -lift * (1 - tilt * 0.4), z: -50, rx: -16 + tilt * 20, ry: -22, rz: -18 - tilt * 14, scale: 0.9, ease: 'linear' },
+          // Gathered, and nothing moving for a beat.
+          { t: 0.36, x: -lift * (0.63 + tilt * 0.5), y: -lift * (1.05 - tilt * 0.4), z: -54, rx: -18 + tilt * 21, ry: -24, rz: -19 - tilt * 15, scale: 0.89, ease: 'in' },
+          // Driven forward past where it gathered, so the blow is aimed by the
+          // working end going out and not by the wrist coming back.
+          { t: 0.52, x: lift * 1.1, y: lift * 0.85, z: 200, rx: 20, ry: 14, rz: 12, scale: zoom, ease: 'out' },
+          { t: 0.62, x: lift * 1.25, y: lift * 0.95, z: 210, rx: 22, ry: 16, rz: 14, scale: zoom * 1.04, ease: 'inOut' },
+          { t: 0.84, x: lift * 0.4, y: lift * 0.3, z: 70, rx: 8, ry: 6, rz: 5, scale: 1 + (zoom - 1) * 0.25, ease: 'out' },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
     },
 
     // Thrown: it leaves the hand, so it shrinks away into the distance rather
-    // than coming back.
+    // than coming back. The gather is held for a beat, since the whole of a
+    // throw happens in the shoulder before anything leaves.
+    //
+    // `tilt` is the line the arm takes: +1 comes straight over the top and
+    // drops onto the target, 0 is thrown off the shoulder, -1 is sidearm and
+    // flat. It is the only thing separating the three darts in the projectile
+    // slot that are simply thrown, so it does real work rather than decorating
+    // the clip: a high throw gathers most of a shoulder's height behind it and
+    // pitches the weapon nose-down, a flat one barely gathers and rolls instead.
     hurl(m, o, H) {
-      const wind = (0.12 + m.heft * 0.12) * H;
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const tilt = o.tilt || 0;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const wind = (0.12 + m.heft * 0.12) * H * power;
+      // How much of the throw is spent going up rather than across.
+      const line = 1 + tilt * 0.55;
+      const gather = 1.2 + tilt * 0.8;
+      const pitch = 24 + tilt * 22;
+      const roll = 24 - tilt * 16;
       return {
-        duration: 340 + m.heft * 200,
+        duration: (340 + m.heft * 200) * (o.crit ? 1.1 : 1),
         frames: [
-          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
-          { t: 0.2, x: wind * 1.4, y: -wind * 1.8, z: -wind * 1.2, rx: -28, ry: 20, rz: 24, scale: 0.95, ease: 'expoOut' },
-          { t: 0.44, x: -wind * 2.2, y: wind, z: 0.5 * H, rx: 16, ry: -26, rz: -40, scale: 0.6, ease: 'linear' },
-          { t: 0.68, x: -wind * 3.0, y: wind * 0.6, z: 1.1 * H, rx: 8, ry: -34, rz: -56, scale: 0.22, ease: 'linear' },
-          { t: 0.8, x: -wind * 3.2, y: wind * 0.4, z: 1.4 * H, rx: 4, ry: -38, rz: -62, scale: 0.05, ease: 'out' },
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          { t: 0.18, x: dir * wind * 1.4, y: -wind * gather, z: -wind * 1.2, rx: -pitch, ry: dir * 20, rz: dir * roll, scale: 0.95, ease: 'linear' },
+          { t: 0.26, x: dir * wind * 1.5, y: -wind * gather * 1.06, z: -wind * 1.3, rx: -pitch * 1.1, ry: dir * 22, rz: dir * roll * 1.08, scale: 0.94, ease: 'in' },
+          { t: 0.46, x: -dir * wind * 2.2, y: wind * line, z: 0.5 * H, rx: 16, ry: -dir * 26, rz: -dir * 40, scale: 0.6, ease: 'linear' },
+          { t: 0.68, x: -dir * wind * 3.0, y: wind * 0.6 * line, z: 1.1 * H, rx: 8, ry: -dir * 34, rz: -dir * 56, scale: 0.22, ease: 'linear' },
+          { t: 0.8, x: -dir * wind * 3.2, y: wind * 0.4 * line, z: 1.4 * H, rx: 4, ry: -dir * 38, rz: -dir * 62, scale: 0.05, ease: 'out' },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A slingshot. Nothing about this is a throw: the hand hardly goes
+    // anywhere, and everything that happens is done by two feet of rubber.
+    //
+    // So the clip is written around the elastic rather than around the arm. The
+    // pouch is taken back under `out`, which is what a band fighting harder the
+    // further it is drawn feels like: the first half of the draw is easy and
+    // the last of it barely moves. Then the longest still frame of any hand-held
+    // weapon in the set, because a loaded slingshot is held on the mark while
+    // the shooter decides. The release is the only travel in the whole thing:
+    // the FORK jumps forward off the tension it was holding, and the pouch that
+    // was the furthest thing back is simply gone.
+    sling(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      // Drawn against the chest, so this is small however heavy the frame is.
+      const pull = (0.030 + m.heft * 0.022) * H * (o.crit ? 1.25 : 1);
+      const jump = (0.090 + m.reach * 0.050) * H * power;
+      const draw = 0.18;
+      const set = 0.34 + (o.crit ? 0.06 : 0);
+      const aim = set + (o.crit ? 0.20 : 0.13);
+      const go = aim + 0.07;
+      return {
+        duration: (520 + m.heft * 200 + m.reach * 80) * (o.crit ? 1.12 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Half drawn, and already slowing.
+          { t: draw, x: dir * pull * 0.6, y: -pull * 0.4, z: -0.03 * H, rx: -5, ry: dir * 4, rz: dir * 6, scale: 0.98, ease: 'out' },
+          // Full stretch: the band has nothing left to give.
+          { t: set, x: dir * pull, y: -pull * 0.62, z: -0.05 * H, rx: -8, ry: dir * 6, rz: dir * 9, scale: 0.965, ease: 'linear' },
+          // Held on the mark. Nothing moves here at all.
+          { t: aim, x: dir * pull * 1.02, y: -pull * 0.64, z: -0.05 * H, rx: -8.4, ry: dir * 6, rz: dir * 9.4, scale: 0.963, ease: 'snap' },
+          // Loosed. The fork is thrown forward and the pouch is empty.
+          { t: go, x: -dir * jump, y: jump * 0.22, z: 0.12 * H, rx: 6, ry: -dir * 5, rz: -dir * 8, scale: 1.055, ease: 'out' },
+          { t: go + 0.08, x: -dir * jump * 0.55, y: jump * 0.1, z: 0.06 * H, rx: 3, ry: -dir * 2, rz: -dir * 4, scale: 1.01, ease: 'inOut' },
+          { t: 0.9, x: dir * jump * 0.06, y: -jump * 0.03, z: 0, rx: -1, ry: 0, rz: dir * 2, scale: 0.995, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A whirled sling, which is the other half of the slot's confusion: the
+    // weapon named Sling is not a slingshot at all but a cord with a cradle in
+    // it, and it works the way a flail's head works. The stone is sent round and
+    // round overhead until it is going faster than any arm could throw it, and
+    // then one end of the cord is simply let go.
+    //
+    // The turn is therefore ACCUMULATED in rz across the orbits rather than
+    // swung back and forth, as `spin` and `flail` do, so the last keyframe
+    // carries a whole number of turns instead of unwinding them. What leaves is
+    // flat and fast: almost no rise on the release, because a slung stone goes
+    // out level and the height comes from the cord, not from the shoulder.
+    whirl(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.14 : 1);
+      const orbits = Math.max(1, Math.min(3, Math.round(o.orbits || 2)));
+      const spin = 360 * orbits * dir;
+      // The little circle the fist traces while the stone does the work.
+      const circle = (0.045 + m.heft * 0.030) * H;
+      const travel = (0.34 + m.reach * 0.30) * H * power;
+      const hit = 0.58 + (o.crit ? 0.06 : 0);
+      const span = hit / orbits;
+      const frames = [{ t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'in' }];
+      for (let i = 0; i < orbits; i++) {
+        // Over the top of the circle, the cord at full stretch.
+        frames.push({
+          t: i * span + span * 0.34, x: dir * circle, y: circle * 0.85, z: -0.04 * H,
+          rx: -8, ry: dir * 20, rz: spin * (i + 0.34) / orbits, scale: 0.96, ease: 'linear'
+        });
+        // And round under it, which is where the speed is put in.
+        frames.push({
+          t: i * span + span * 0.72, x: -dir * circle * 0.8, y: -circle * 0.5, z: -0.02 * H,
+          rx: 6, ry: -dir * 14, rz: spin * (i + 0.72) / orbits, scale: 0.99, ease: 'linear'
+        });
+      }
+      // Let go. Flat, and gone before the arm has finished the turn.
+      frames.push({
+        t: hit, x: -dir * travel, y: travel * 0.06, z: 0.2 * H,
+        rx: 6, ry: -dir * 20, rz: spin * 0.97, scale: 1.10, ease: 'out'
+      });
+      frames.push({
+        t: hit + 0.09, x: -dir * travel * 1.14, y: travel * 0.02, z: 0.12 * H,
+        rx: 3, ry: -dir * 14, rz: spin * 1.05, scale: 1.0, ease: 'inOut'
+      });
+      // The empty cord coming round the last time with nothing in it.
+      frames.push({
+        t: 0.86, x: -dir * travel * 0.3, y: 0, z: 0.02 * H,
+        rx: 0, ry: -dir * 4, rz: spin * 1.01, scale: 0.99, ease: 'out'
+      });
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: spin, scale: 1 });
+      return {
+        duration: (560 + m.heft * 260 + orbits * 130) * (o.crit ? 1.1 : 1),
+        frames: frames
+      };
+    },
+
+    // A blowpipe. This is the stillest motion in the set, and it is meant to
+    // be: an archer at full draw was the previous quietest thing in a fight and
+    // a blowpipe is quieter, because there is no tension in it to fight and
+    // nothing to hold up but the tube.
+    //
+    // Everything is therefore spoken in scale and in a few pixels. It comes up
+    // to the mouth, it STOPS, and it stays stopped for a third of the clip
+    // under `linear` so the pose does not creep. The shot is a puff: a scale
+    // pulse with barely any travel behind it, because a dart leaving a tube
+    // moves nothing except the shooter's cheeks, and then a tiny settle.
+    blowgun(m, o, H) {
+      const power = (o.power || 1) * (o.crit ? 1.1 : 1);
+      const lift = (0.008 + m.reach * 0.006) * H;
+      const nudge = (0.024 + m.reach * 0.010) * H * power;
+      const hold = 0.54 + (o.crit ? 0.08 : 0);
+      const puff = hold + 0.08;
+      return {
+        duration: 640 + m.heft * 220 + (o.crit ? 120 : 0),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'inOut' },
+          // Up to the mouth.
+          { t: 0.22, x: -lift * 0.5, y: lift * 0.6, z: 0, rx: 1.2, ry: 1, rz: -2, scale: 1.02, ease: 'out' },
+          // On the line, and holding.
+          { t: 0.38, x: -lift, y: lift, z: 0, rx: 2, ry: 1.6, rz: -3, scale: 1.03, ease: 'linear' },
+          { t: hold, x: -lift * 1.01, y: lift * 1.01, z: 0, rx: 2.02, ry: 1.62, rz: -3.02, scale: 1.03, ease: 'linear' },
+          // The puff. Almost nothing moves and the whole shot is in the scale.
+          { t: puff, x: -nudge, y: lift * 1.1, z: 0.06 * H, rx: 2.6, ry: 1.4, rz: -3.2, scale: 1.075, ease: 'out' },
+          { t: puff + 0.08, x: -nudge * 0.5, y: lift, z: 0.02 * H, rx: 2, ry: 1.2, rz: -2.6, scale: 1.02, ease: 'inOut' },
+          { t: 0.9, x: -lift * 0.3, y: lift * 0.3, z: 0, rx: 0.6, ry: 0.4, rz: -0.8, scale: 1.005, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A grenade. High, slow, and it LEAVES: the model shrinks away up the arc
+    // the way `hurl` does, and the hand carries on through empty, which is the
+    // whole difference between throwing something away and hitting with it.
+    //
+    // `tilt` picks the shoulder: positive comes back over it, negative is the
+    // underarm lob that anybody actually uses for something with a fuse in it.
+    // The arc is the point, so the release is nowhere near the fastest part of
+    // the clip: the thing coasts up, slows near the top and is still climbing
+    // when it goes out of sight.
+    lob(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const tilt = o.tilt === undefined ? 0.5 : o.tilt;
+      const under = tilt < 0;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const wind = (0.10 + m.heft * 0.10) * H;
+      const out = (0.30 + m.reach * 0.16) * H * power;
+      const high = (0.34 + m.reach * 0.14) * H * power;
+      return {
+        duration: (520 + m.heft * 220) * (o.crit ? 1.08 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Gathered: down behind the hip, or back over the shoulder.
+          {
+            t: 0.20, x: dir * wind * (under ? 0.9 : 1.2), y: under ? wind * 0.5 : -wind * 1.6,
+            z: -wind, rx: under ? 16 : -30, ry: dir * 16, rz: dir * (under ? -14 : 22),
+            scale: 0.96, ease: 'linear'
+          },
+          { t: 0.30, x: dir * wind * (under ? 0.95 : 1.28), y: under ? wind * 0.55 : -wind * 1.7, z: -wind * 1.06, rx: under ? 17 : -32, ry: dir * 17, rz: dir * (under ? -15 : 24), scale: 0.955, ease: 'in' },
+          // Out of the hand and climbing.
+          { t: 0.52, x: -dir * out, y: high, z: 0.5 * H, rx: 10, ry: -dir * 22, rz: -dir * 30, scale: 0.58, ease: 'linear' },
+          { t: 0.70, x: -dir * out * 1.35, y: high * 1.35, z: 1.0 * H, rx: 6, ry: -dir * 28, rz: -dir * 44, scale: 0.20, ease: 'linear' },
+          // Over the top of the arc, and too far away to see.
+          { t: 0.82, x: -dir * out * 1.5, y: high * 1.2, z: 1.3 * H, rx: 3, ry: -dir * 32, rz: -dir * 52, scale: 0.05, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A chakram or a throwing disc: sidearm, flat, and spinning in its own
+    // plane the whole way out. The spin is what makes it a disc rather than a
+    // rock, so it is accumulated in rz across the flight (the last keyframe
+    // therefore carries a whole number of turns, as `spin` does) and it does
+    // not stop when the disc leaves: it goes on turning as it shrinks.
+    //
+    // Nothing comes back. The throw is flat and short-armed, thrown across the
+    // body rather than over the shoulder, which is why the gather here is a
+    // sideways wind and not a lift.
+    discus(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const spins = 3 + (o.crit ? 1 : 0);
+      const total = 360 * spins * dir;
+      const gather = (0.10 + m.heft * 0.06) * H;
+      const travel = (0.26 + m.reach * 0.14) * H * power;
+      return {
+        duration: (380 + m.heft * 180) * (o.crit ? 1.1 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Wound flat across the body, edge leading.
+          { t: 0.20, x: dir * gather, y: -gather * 0.25, z: -0.05 * H, rx: 8, ry: dir * 10, rz: total * 0.06, scale: 0.95, ease: 'linear' },
+          { t: 0.30, x: dir * gather * 1.05, y: -gather * 0.28, z: -0.06 * H, rx: 9, ry: dir * 11, rz: total * 0.1, scale: 0.945, ease: 'in' },
+          // Away, turning in its own plane.
+          { t: 0.50, x: -dir * travel, y: travel * 0.10, z: 0.4 * H, rx: 4, ry: -dir * 8, rz: total * 0.45, scale: 0.55, ease: 'linear' },
+          { t: 0.70, x: -dir * travel * 1.5, y: travel * 0.16, z: 0.9 * H, rx: 2, ry: -dir * 5, rz: total * 0.75, scale: 0.20, ease: 'linear' },
+          { t: 0.84, x: -dir * travel * 1.7, y: travel * 0.18, z: 1.2 * H, rx: 1, ry: -dir * 3, rz: total * 0.92, scale: 0.04, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: total, scale: 1 }
+        ]
+      };
+    },
+
+    // The only motion in the set with a second half.
+    //
+    // A boomerang is thrown sidearm and then there is nothing at all: the hand
+    // is empty, the frame is empty, and the clip has to hold that emptiness
+    // long enough for the player to notice it, which is the one thing that
+    // makes the return read as a return rather than as a stutter. It comes back
+    // in from the other side of the frame, growing out of nothing, and the
+    // CATCH is the beat the whole motion is built around, so it lands with a
+    // small absorb: the hand gives with it instead of stopping it dead.
+    //
+    // The turn accumulates across both halves and is a whole number of turns at
+    // the end, so the thing is still spinning when it arrives.
+    boomerang(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const spins = 5 + (o.crit ? 2 : 0);
+      const total = 360 * spins * dir;
+      const gather = (0.09 + m.heft * 0.06) * H;
+      const travel = (0.34 + m.reach * 0.16) * H * power;
+      return {
+        duration: (760 + m.heft * 260) * (o.crit ? 1.1 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // A short wind across the body: there is no room for more.
+          { t: 0.14, x: dir * gather, y: -gather * 0.4, z: -0.04 * H, rx: 6, ry: dir * 12, rz: total * 0.03, scale: 0.95, ease: 'in' },
+          // Thrown, out to the left of everything.
+          { t: 0.38, x: -dir * travel, y: travel * 0.12, z: 0.35 * H, rx: 4, ry: -dir * 10, rz: total * 0.25, scale: 0.55, ease: 'linear' },
+          { t: 0.48, x: -dir * travel * 0.8, y: travel * 0.2, z: 0.9 * H, rx: 2, ry: -dir * 6, rz: total * 0.42, scale: 0.03, ease: 'linear' },
+          // Gone. Nothing in the hand and nothing on the screen.
+          { t: 0.62, x: -dir * travel * 0.35, y: travel * 0.5, z: 0.9 * H, rx: 0, ry: 0, rz: total * 0.55, scale: 0.02, ease: 'in' },
+          // Coming back in from the other side, out of nothing.
+          { t: 0.72, x: dir * travel * 0.75, y: travel * 0.45, z: 0.7 * H, rx: -4, ry: dir * 8, rz: total * 0.72, scale: 0.10, ease: 'in' },
+          { t: 0.86, x: dir * travel * 0.30, y: travel * 0.16, z: 0.25 * H, rx: -6, ry: dir * 6, rz: total * 0.9, scale: 0.75, ease: 'out' },
+          // Caught, and the hand gives with it.
+          { t: 0.93, x: -dir * travel * 0.06, y: -travel * 0.05, z: 0, rx: 5, ry: -dir * 2, rz: total * 1.01, scale: 1.06, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: total, scale: 1 }
+        ]
+      };
+    },
+
+    // A bola or a rope dart: thrown, but on a line, so it never leaves for
+    // good. The cord is what makes this its own motion. It is whirled to get
+    // the weight moving, flung out until the line runs out, and at that instant
+    // it is SNUBBED: the far end stops because the rope says so, not because
+    // anything absorbed it, which is a harder and uglier stop than a blow
+    // landing. Then it is hauled back in hand over hand and gathered, and the
+    // weapon comes back past the wielder before it settles.
+    tether(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.14 : 1);
+      const orbits = Math.max(1, Math.min(3, Math.round(o.orbits || 1)));
+      const spin = 360 * orbits * dir;
+      const circle = (0.06 + m.heft * 0.04) * H;
+      // The full length of the line, which is what the flight is measured by.
+      const cord = (0.42 + m.reach * 0.30) * H * power;
+      const hit = 0.46 + (o.crit ? 0.05 : 0);
+      const span = hit / orbits;
+      const frames = [{ t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'in' }];
+      for (let i = 0; i < orbits; i++) {
+        frames.push({
+          t: i * span + span * 0.36, x: dir * circle, y: circle * 0.8, z: -0.04 * H,
+          rx: -6, ry: dir * 18, rz: spin * (i + 0.36) / orbits, scale: 0.96, ease: 'linear'
+        });
+        frames.push({
+          t: i * span + span * 0.74, x: -dir * circle * 0.75, y: -circle * 0.45, z: -0.02 * H,
+          rx: 5, ry: -dir * 12, rz: spin * (i + 0.74) / orbits, scale: 0.99, ease: 'linear'
+        });
+      }
+      // Out to the end of the cord.
+      frames.push({
+        t: hit, x: -dir * cord, y: cord * 0.10, z: 0.24 * H,
+        rx: 8, ry: -dir * 20, rz: spin * 0.9, scale: 1.06, ease: 'snap'
+      });
+      // And snubbed, because there is no more line.
+      frames.push({
+        t: hit + 0.06, x: -dir * cord * 1.06, y: cord * 0.12, z: 0.2 * H,
+        rx: 12, ry: -dir * 16, rz: spin * 0.96, scale: 1.1, ease: 'expoOut'
+      });
+      // Hauled back in.
+      frames.push({
+        t: hit + 0.16, x: -dir * cord * 0.45, y: cord * 0.02, z: 0.06 * H,
+        rx: -6, ry: -dir * 6, rz: spin * 1.03, scale: 0.95, ease: 'in'
+      });
+      // Past the hand, and gathered.
+      frames.push({
+        t: 0.86, x: dir * cord * 0.12, y: -cord * 0.05, z: 0,
+        rx: 2, ry: dir * 3, rz: spin * 0.99, scale: 1.03, ease: 'out'
+      });
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: spin, scale: 1 });
+      return {
+        duration: (620 + m.heft * 300 + orbits * 120) * (o.crit ? 1.12 : 1),
+        frames: frames
+      };
+    },
+
+    // A spray, a gas cannister or a field projector: five weapons in the
+    // projectile slot that are not thrown, do not fire and have no impact at
+    // all. What they do happens over TIME, so this is the one motion in the set
+    // with no strike in it.
+    //
+    // It is braced with both hands, pushed steadily forward against what it is
+    // putting out (a cannister under pressure shoves back), and then held there
+    // with a low tremble running through it rather than a single hit: each beat
+    // is a small alternation about the same pose, and the push creeps a little
+    // further out as the emission goes on rather than peaking and recovering.
+    // Then it is eased off, not snatched back.
+    emitter(m, o, H) {
+      const power = (o.power || 1) * (o.crit ? 1.15 : 1);
+      const push = (0.05 + m.reach * 0.03) * H * power;
+      const beats = 5 + (o.crit ? 2 : 0);
+      const start = 0.30;
+      const end = 0.76;
+      const step = (end - start) / (beats - 1);
+      const frames = [
+        { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'inOut' },
+        // Braced, both hands on it.
+        { t: 0.18, x: -push * 0.55, y: push * 0.3, z: 0.06 * H, rx: 2, ry: -2, rz: -3, scale: 1.03, ease: 'out' }
+      ];
+      for (let i = 0; i < beats; i++) {
+        const s = (i % 2) ? -1 : 1;
+        // The push creeps out across the emission instead of peaking early.
+        const grow = 0.90 + 0.14 * (i / (beats - 1));
+        frames.push({
+          t: start + step * i,
+          x: -push * grow, y: push * (0.5 + 0.05 * s) * grow, z: 0.1 * H,
+          rx: 2.4 + 0.7 * s, ry: -2.2 + 0.6 * s, rz: -4 + 1.4 * s,
+          scale: 1.06 + 0.014 * s, ease: 'linear'
+        });
+      }
+      // Let off.
+      frames.push({ t: 0.86, x: -push * 0.3, y: push * 0.15, z: 0.02 * H, rx: 1, ry: -1, rz: -1.4, scale: 1.01, ease: 'out' });
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 });
+      return {
+        duration: (820 + m.heft * 260) * (o.crit ? 1.2 : 1),
+        frames: frames
+      };
+    },
+
+    // A shouldered tube: a mine launcher, a drone rack. Mechanical rather than
+    // athletic, and it sits between `recoil` and `lob`. There is no throw in it
+    // and no muzzle blast either: what goes out leaves under its own power, so
+    // what the shoulder feels is a THUNK, one dull shove with a spring or a
+    // charge behind it, and then a modest climb as the tube comes up off the
+    // shoulder and settles.
+    //
+    // The weapon is aimed, so as with `recoil` it is turned through a negative
+    // cosine and positive rx is what lifts the mouth of the tube.
+    launcher(m, o, H) {
+      const power = (o.power || 1) * (o.crit ? 1.2 : 1);
+      const kick = (0.05 + m.heft * 0.07) * H * power;
+      const rise = (14 + m.heft * 18) * power;
+      return {
+        duration: (620 + m.heft * 280) * (o.crit ? 1.1 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'inOut' },
+          // Into the shoulder.
+          { t: 0.22, x: -kick * 0.25, y: kick * 0.2, z: 0, rx: 1.5, ry: 1, rz: -2, scale: 1.04, ease: 'linear' },
+          { t: 0.40, x: -kick * 0.26, y: kick * 0.21, z: 0, rx: 1.6, ry: 1, rz: -2, scale: 1.04, ease: 'snap' },
+          // Thunk.
+          { t: 0.48, x: kick * 0.5, y: kick, z: -kick * 1.4, rx: rise, ry: -2, rz: 4, scale: 1.07, ease: 'out' },
+          { t: 0.60, x: kick * 0.2, y: kick * 0.45, z: -kick * 0.6, rx: rise * 0.45, ry: -1, rz: 2, scale: 1.02, ease: 'inOut' },
+          // And the tube comes back down to level.
+          { t: 0.80, x: 0, y: kick * 0.12, z: 0, rx: rise * 0.14, ry: 0, rz: 0.5, scale: 1.005, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // The Portal Disc, which is a chakram that does not bother travelling. It
+    // is flicked into a hole in the air a foot from the hand, and for a moment
+    // there is nothing anywhere; then it arrives out of a second hole already
+    // at full size and going, cuts through what is in front of it, and is
+    // caught. The disappearance is close and small, the arrival is far and
+    // large, and the beat of nothing between them is what makes the two read as
+    // the same object rather than as two throws.
+    portal(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.14 : 1);
+      const spins = 3 + (o.crit ? 1 : 0);
+      const total = 360 * spins * dir;
+      const step = (0.16 + m.reach * 0.08) * H;
+      const out = (0.40 + m.reach * 0.22) * H * power;
+      return {
+        duration: (760 + m.heft * 240) * (o.crit ? 1.12 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Wound flat, edge on.
+          { t: 0.16, x: dir * step * 0.5, y: -step * 0.2, z: -0.03 * H, rx: 6, ry: dir * 8, rz: total * 0.05, scale: 0.95, ease: 'in' },
+          // Into the near hole, which is an arm's length away.
+          { t: 0.30, x: -dir * step, y: step * 0.15, z: 0.2 * H, rx: 3, ry: -dir * 6, rz: total * 0.2, scale: 0.28, ease: 'expoOut' },
+          { t: 0.40, x: -dir * step * 1.05, y: step * 0.16, z: 0.3 * H, rx: 2, ry: -dir * 4, rz: total * 0.3, scale: 0.02, ease: 'linear' },
+          // Nowhere at all.
+          { t: 0.50, x: -dir * step * 1.05, y: step * 0.16, z: 0.3 * H, rx: 2, ry: -dir * 4, rz: total * 0.34, scale: 0.02, ease: 'expoIn' },
+          // Out of the far one, already at speed.
+          { t: 0.62, x: -dir * out, y: out * 0.35, z: 0.3 * H, rx: 6, ry: -dir * 14, rz: total * 0.6, scale: 1.25, ease: 'snap' },
+          { t: 0.72, x: -dir * out * 1.12, y: out * 0.2, z: 0.2 * H, rx: 8, ry: -dir * 10, rz: total * 0.78, scale: 1.12, ease: 'out' },
+          // Back to the hand.
+          { t: 0.86, x: dir * out * 0.12, y: -out * 0.05, z: 0, rx: -3, ry: dir * 4, rz: total * 0.96, scale: 0.96, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: total, scale: 1 }
+        ]
+      };
+    },
+
+    // ============================================================
+    // The weapons that move like nothing else
+    // ============================================================
+    // One motion each, for one weapon each (see UNIQUE_MOTIONS). None of them
+    // is a parameter change on a swing: each is written for what that object
+    // actually does, and none of them is reachable by any other weapon.
+
+    // Mjölnir. It is thrown, and it comes back, and it is nothing like a
+    // boomerang doing it: four kilos of hammer leaves under a haul that takes
+    // most of a second, and the beat of the whole motion is the ARRIVAL, not
+    // the throw. It is caught with a real absorb, the hand driven down by it
+    // and pushed back up, because that much iron arriving in a palm has to cost
+    // something. The hand is empty and still in the middle of the clip, which
+    // is the only time in the set a weapon is simply absent.
+    recall(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.18 : 1);
+      const wind = (0.16 + m.heft * 0.10) * H;
+      const out = (0.46 + m.reach * 0.24) * H * power;
+      const back = out * 0.55;
+      const land = (0.06 + m.heft * 0.05) * H;
+      return {
+        duration: (900 + m.heft * 400) * (o.crit ? 1.12 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Hauled back. Nothing quick about it.
+          { t: 0.16, x: dir * wind, y: -wind * 0.9, z: -0.08 * H, rx: -26, ry: dir * 18, rz: dir * 26, scale: 0.92, ease: 'linear' },
+          { t: 0.26, x: dir * wind * 1.06, y: -wind * 0.95, z: -0.09 * H, rx: -28, ry: dir * 19, rz: dir * 28, scale: 0.91, ease: 'in' },
+          // Thrown.
+          { t: 0.42, x: -dir * out * 0.9, y: out * 0.25, z: 0.5 * H, rx: 12, ry: -dir * 24, rz: -dir * 50, scale: 0.45, ease: 'linear' },
+          { t: 0.54, x: -dir * out, y: out * 0.3, z: 1.1 * H, rx: 6, ry: -dir * 30, rz: -dir * 74, scale: 0.05, ease: 'linear' },
+          // The empty hand, held out.
+          { t: 0.66, x: -dir * out * 0.9, y: out * 0.28, z: 1.1 * H, rx: 4, ry: -dir * 34, rz: -dir * 88, scale: 0.03, ease: 'expoIn' },
+          // And it comes back, from the wrong side and fast.
+          { t: 0.80, x: dir * back, y: -back * 0.15, z: 0.3 * H, rx: -8, ry: dir * 10, rz: dir * 120, scale: 0.8, ease: 'expoOut' },
+          // Caught. The arm is driven down by it.
+          { t: 0.88, x: -dir * land * 0.5, y: land, z: 0, rx: 14, ry: -dir * 4, rz: -dir * 10, scale: 1.22, ease: 'out' },
+          { t: 0.94, x: -dir * land * 0.2, y: land * 0.35, z: 0, rx: 5, ry: 0, rz: -dir * 3, scale: 1.04, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // Excalibur, which is presented before it is used. The sword is raised in
+    // front of the wielder and held there while nothing at all happens, long
+    // enough that the pause is the first thing the player reads; only then does
+    // it go back over the shoulder and come down in ONE cut with the whole
+    // clip's patience behind it. The presentation is spoken in scale (the
+    // overlay camera is orthographic, so a blade brought toward the viewer
+    // grows rather than moving) and it is held under `linear` so it does not
+    // drift while it is being looked at.
+    present(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const show = (0.10 + m.reach * 0.06) * H;
+      const raise = (0.20 + m.heft * 0.10) * H;
+      const drop = (0.42 + m.reach * 0.28) * H * power;
+      const cross = dir * drop * 0.16;
+      const punch = 1.26 + m.heft * 0.24 * power + (o.crit ? 0.1 : 0);
+      return {
+        duration: (900 + m.heft * 300) * (o.crit ? 1.14 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'inOut' },
+          // Brought up in front, point to the sky.
+          { t: 0.14, x: -show * 0.3, y: -show * 0.6, z: 0.05 * H, rx: -6, ry: 8, rz: -4, scale: 1.08, ease: 'out' },
+          // Presented, and nothing moves.
+          { t: 0.30, x: -show * 0.4, y: -show, z: 0.06 * H, rx: -8, ry: 10, rz: -5, scale: 1.12, ease: 'linear' },
+          { t: 0.42, x: -show * 0.41, y: -show * 1.01, z: 0.06 * H, rx: -8.1, ry: 10, rz: -5, scale: 1.12, ease: 'in' },
+          // Over the shoulder, on the way to the only cut in the clip.
+          { t: 0.52, x: dir * raise * 0.4, y: -raise * 1.2, z: -0.12 * H, rx: -50, ry: dir * 12, rz: dir * 18, scale: 0.9, ease: 'in' },
+          { t: 0.64, x: cross, y: drop, z: 0.24 * H, rx: 64, ry: -dir * 10, rz: -dir * 20, scale: punch, ease: 'out' },
+          { t: 0.72, x: cross * 1.16, y: drop * (o.crit ? 1.2 : 1.14), z: 0.16 * H, rx: 70, ry: -dir * 8, rz: -dir * 22, scale: punch * 0.9, ease: 'inOut' },
+          { t: 0.88, x: cross * 0.35, y: drop * 0.34, z: 0.04 * H, rx: 22, ry: 0, rz: -dir * 6, scale: 1.03, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // The Dragon Blade does not cut in an arc: it writhes. The path is an S
+    // laid across the view rather than a segment of a circle, so the blade
+    // crosses the middle of the frame twice on its way to the target and the
+    // roll reverses at each crossing, which is what makes a line of steel read
+    // as something alive rather than as something swung. Every waypoint is
+    // eased `inOut` so the whole thing is continuous, with the single exception
+    // of the strike, which comes out of the last curve under `out` so there is
+    // still a blow at the end of the writhing.
+    serpentine(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const travel = (0.42 + m.reach * 0.42) * H * power;
+      const lift = (0.08 + m.reach * 0.10) * H;
+      const wind = Math.min((0.12 + m.heft * 0.10) * H, travel * 0.4);
+      const turn = 100 + m.reach * 60 + m.heft * 30;
+      const punch = 1.20 + m.heft * 0.24 * power + (o.crit ? 0.08 : 0);
+      return {
+        duration: (620 + m.heft * 380 + m.reach * 220) * (o.crit ? 1.14 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Coiled low and back.
+          { t: 0.18, x: dir * wind, y: lift * 0.5, z: -0.06 * H, rx: -10, ry: dir * 16, rz: dir * 30, scale: 0.93, ease: 'in' },
+          // Up over the first crest.
+          { t: 0.30, x: dir * wind * 0.3, y: -lift * 0.9, z: -0.02 * H, rx: -4, ry: dir * 8, rz: dir * 10, scale: 0.95, ease: 'inOut' },
+          // Down through the middle.
+          { t: 0.42, x: -dir * travel * 0.35, y: lift * 0.7, z: 0.08 * H, rx: 6, ry: -dir * 10, rz: -dir * turn * 0.3, scale: 1.08, ease: 'inOut' },
+          // And up over the second.
+          { t: 0.54, x: -dir * travel * 0.72, y: -lift * 0.8, z: 0.14 * H, rx: -4, ry: -dir * 18, rz: -dir * turn * 0.64, scale: 1.16, ease: 'inOut' },
+          // Out of the last curve and into whatever is standing there.
+          { t: 0.66, x: -dir * travel, y: lift * 1.2, z: 0.2 * H, rx: 14, ry: -dir * 24, rz: -dir * turn, scale: punch, ease: 'out' },
+          { t: 0.74, x: -dir * travel * 1.14, y: lift * 1.5, z: 0.14 * H, rx: 16, ry: -dir * 18, rz: -dir * turn * 1.16, scale: punch * 0.93, ease: 'inOut' },
+          // The tail of it, still moving after the head has stopped.
+          { t: 0.88, x: -dir * travel * 0.3, y: lift * 0.3, z: 0.03 * H, rx: 4, ry: -dir * 6, rz: -dir * turn * 0.36, scale: 1.02, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A fly swatter, which is a sheet of plastic on a wire and behaves like
+    // one. It is the fastest motion in the set and the least dignified: a snap
+    // of the wrist, a flat slap that arrives well before anything else in this
+    // file would have finished winding up, and then it FLEXES, because the head
+    // has no stiffness of its own and cannot stop when the wire does. The three
+    // beats after contact are the sheet oscillating about the landed pose with
+    // the amplitude coming out of it, which is the only place in the set where
+    // the weapon carries on moving because of what it is made of.
+    swat(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const drop = (0.26 + m.reach * 0.16) * H * power;
+      const cock = Math.min((0.14 + m.heft * 0.06) * H, drop * 0.5);
+      const frames = [
+        { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+        // Cocked, and gone again immediately.
+        { t: 0.20, x: dir * cock * 0.4, y: -cock, z: -0.06 * H, rx: -42, ry: dir * 14, rz: dir * 16, scale: 0.92, ease: 'expoOut' },
+        // Splat.
+        { t: 0.38, x: -dir * drop * 0.18, y: drop, z: 0.2 * H, rx: 58, ry: -dir * 6, rz: -dir * 10, scale: 1.3 + (o.crit ? 0.08 : 0), ease: 'out' }
+      ];
+      const flex = [0.5, 0.62, 0.74];
+      for (let i = 0; i < flex.length; i++) {
+        const s = (i % 2) ? -1 : 1;
+        const decay = 1 - i * 0.28;
+        frames.push({
+          t: flex[i],
+          x: -dir * drop * (0.18 + 0.1 * s * decay), y: drop * (1 + 0.14 * s * decay), z: 0.16 * H,
+          rx: 58 + 14 * s * decay, ry: -dir * 6, rz: -dir * (10 - 22 * s * decay),
+          scale: 1.26 - 0.06 * s * decay, ease: 'inOut'
+        });
+      }
+      // Peeled off whatever it landed on.
+      frames.push({ t: 0.88, x: -dir * drop * 0.1, y: drop * 0.34, z: 0.04 * H, rx: 18, ry: 0, rz: -dir * 3, scale: 1.05, ease: 'out' });
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 });
+      return { duration: (330 + m.heft * 130) * (o.crit ? 1.06 : 1), frames: frames };
+    },
+
+    // A war fan, which is three separate beats and not one blow: it is useless
+    // shut, so it is SNAPPED OPEN first, swept while open, and snapped shut
+    // again afterwards because carrying an open fan around is not a guard. Both
+    // snaps are single frames of pure scale against the frame beside them (the
+    // overlay camera is orthographic and a fan opening is a change of area, not
+    // of position), and the sweep between them is the only part of the motion
+    // that travels anywhere.
+    fansnap(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const travel = (0.34 + m.reach * 0.30) * H * power;
+      const lift = (0.05 + m.reach * 0.06) * H;
+      const turn = 80 + m.reach * 60 + m.heft * 24;
+      const punch = 1.24 + m.heft * 0.18 * power + (o.crit ? 0.08 : 0);
+      return {
+        duration: (760 + m.heft * 280) * (o.crit ? 1.12 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'snap' },
+          // Up, shut, and turned edge-on: the smallest the weapon ever looks.
+          { t: 0.14, x: dir * travel * 0.14, y: -lift, z: -0.04 * H, rx: -8, ry: dir * 30, rz: dir * 20, scale: 0.9, ease: 'linear' },
+          // Open. One frame, and the whole thing is suddenly there.
+          { t: 0.22, x: dir * travel * 0.16, y: -lift * 1.2, z: -0.03 * H, rx: -6, ry: dir * 6, rz: dir * 24, scale: 1.18, ease: 'linear' },
+          { t: 0.32, x: dir * travel * 0.17, y: -lift * 1.22, z: -0.03 * H, rx: -6, ry: dir * 6, rz: dir * 25, scale: 1.18, ease: 'in' },
+          // Swept, flat and wide.
+          { t: 0.52, x: -dir * travel, y: lift, z: 0.18 * H, rx: 6, ry: -dir * 20, rz: -dir * turn, scale: punch, ease: 'out' },
+          { t: 0.6, x: -dir * travel * 1.14, y: lift * 1.16, z: 0.12 * H, rx: 5, ry: -dir * 16, rz: -dir * turn * 1.12, scale: punch * 0.94, ease: 'inOut' },
+          // Brought back, still open.
+          { t: 0.76, x: -dir * travel * 0.25, y: lift * 0.2, z: 0.03 * H, rx: 2, ry: -dir * 4, rz: -dir * turn * 0.2, scale: 1.1, ease: 'in' },
+          // Shut. One frame again, the other way.
+          { t: 0.86, x: -dir * travel * 0.06, y: 0, z: 0, rx: -2, ry: dir * 4, rz: dir * 8, scale: 0.86, ease: 'out' },
+          { t: 0.94, x: -dir * travel * 0.02, y: -lift * 0.06, z: 0, rx: -1, ry: dir * 1, rz: dir * 3, scale: 1.02, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // The Arcane Sphere is not swung, held or aimed: it is let go of. The orb
+    // lifts off the palm, moves out in front of the caster on its own, turns
+    // about its own axis the whole time (a full two turns across the clip, so
+    // the last keyframe carries them rather than unwinding), and does its work
+    // by PULSING: swelling hard and shrinking back, twice, with the second
+    // pulse further out and weaker than the first. Then it comes back to the
+    // hand. Nothing here is a blow and nothing accelerates into anything.
+    orbit(m, o, H) {
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const out = (0.12 + m.reach * 0.10) * H * power;
+      const up = (0.08 + m.reach * 0.05) * H;
+      const swell = 1.55 + (o.crit ? 0.14 : 0);
+      const total = 720;
+      return {
+        duration: (860 + m.heft * 260) * (o.crit ? 1.14 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Off the palm.
+          { t: 0.16, x: -out * 0.25, y: -up * 0.5, z: 0.05 * H, rx: 0, ry: total * 0.06, rz: 8, scale: 1.05, ease: 'inOut' },
+          // Out in front, turning.
+          { t: 0.3, x: -out * 0.7, y: -up, z: 0.2 * H, rx: 0, ry: total * 0.22, rz: 20, scale: 1.16, ease: 'linear' },
+          { t: 0.44, x: -out * 0.9, y: -up * 1.15, z: 0.24 * H, rx: 0, ry: total * 0.39, rz: 32, scale: 1.2, ease: 'in' },
+          // The pulse.
+          { t: 0.56, x: -out * 1.3, y: -up * 1.05, z: 0.4 * H, rx: 0, ry: total * 0.53, rz: 44, scale: swell, ease: 'out' },
+          { t: 0.66, x: -out * 1.5, y: -up * 0.95, z: 0.34 * H, rx: 0, ry: total * 0.61, rz: 52, scale: 1.3, ease: 'in' },
+          // And a second one, further out and with less in it.
+          { t: 0.78, x: -out * 1.7, y: -up * 0.9, z: 0.3 * H, rx: 0, ry: total * 0.72, rz: 60, scale: swell * 0.9, ease: 'out' },
+          // Drawn back to the hand.
+          { t: 0.9, x: -out * 0.4, y: -up * 0.2, z: 0.06 * H, rx: 0, ry: total * 0.9, rz: 20, scale: 1.06, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: total, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A foam finger. Every part of a real blow is here except the part where
+    // something is hit: the wind-up is the biggest in the set and takes the
+    // longest, the arm comes round with everything behind it, and then the
+    // weapon arrives and simply FOLDS, because there is nothing in it. What
+    // follows is not a follow-through, it is a wobble: three beats of foam
+    // flopping about with no direction of its own, and a scale that never rises
+    // much above resting because nothing here ever hits anything hard enough to
+    // be driven at the camera.
+    flop(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.12 : 1);
+      const travel = (0.36 + m.reach * 0.30) * H * power;
+      const wind = Math.min((0.16 + m.heft * 0.12) * H, travel * 0.55);
+      const lift = (0.05 + m.reach * 0.04) * H;
+      return {
+        duration: (780 + m.heft * 260) * (o.crit ? 1.1 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // An enormous gather, for nothing.
+          { t: 0.24, x: dir * wind, y: -wind * 1.2, z: -0.1 * H, rx: -44, ry: dir * 26, rz: dir * 40, scale: 0.86, ease: 'linear' },
+          { t: 0.34, x: dir * wind * 1.06, y: -wind * 1.26, z: -0.11 * H, rx: -46, ry: dir * 27, rz: dir * 42, scale: 0.855, ease: 'in' },
+          // Round it comes, and lands like a cushion.
+          { t: 0.5, x: -dir * travel, y: lift, z: 0.1 * H, rx: 20, ry: -dir * 16, rz: -dir * 60, scale: 1.1, ease: 'out' },
+          // And folds.
+          { t: 0.58, x: -dir * travel * 0.86, y: lift * 1.5, z: 0.06 * H, rx: 34, ry: -dir * 10, rz: -dir * 40, scale: 1.02, ease: 'inOut' },
+          { t: 0.68, x: -dir * travel * 0.5, y: lift * 1.9, z: 0.02 * H, rx: 40, ry: -dir * 4, rz: -dir * 10, scale: 0.98, ease: 'inOut' },
+          { t: 0.78, x: -dir * travel * 0.62, y: lift * 1.6, z: 0.02 * H, rx: 30, ry: -dir * 8, rz: -dir * 26, scale: 1.0, ease: 'inOut' },
+          { t: 0.88, x: -dir * travel * 0.3, y: lift * 1.0, z: 0, rx: 16, ry: -dir * 3, rz: -dir * 12, scale: 0.99, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A cook's spatula, used the way a cook uses one. It goes UNDER first,
+    // edge-on and low, which no other motion in the set does; then everything
+    // is thrown upward at once, which is the flip; and then, while whatever was
+    // flipped is still in the air, the blade comes back DOWN to meet it and
+    // catches it with a small absorb. Three phases, and the last of them is the
+    // reason the motion exists: nothing else here ends by receiving something.
+    flip(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.14 : 1);
+      const rise = (0.34 + m.reach * 0.26) * H * power;
+      const dip = (0.10 + m.heft * 0.07) * H;
+      return {
+        duration: (700 + m.heft * 260) * (o.crit ? 1.1 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Down, and slid underneath it.
+          { t: 0.16, x: dir * dip * 0.4, y: dip, z: -0.05 * H, rx: 26, ry: dir * 12, rz: dir * 18, scale: 0.94, ease: 'in' },
+          { t: 0.3, x: dir * dip * 0.5, y: dip * 1.2, z: -0.06 * H, rx: 30, ry: dir * 14, rz: dir * 22, scale: 0.92, ease: 'in' },
+          // Up it all goes.
+          { t: 0.46, x: -dir * dip * 0.5, y: -rise, z: 0.16 * H, rx: -52, ry: -dir * 12, rz: -dir * 30, scale: 1.22, ease: 'out' },
+          { t: 0.56, x: -dir * dip * 0.6, y: -rise * 1.12, z: 0.12 * H, rx: -60, ry: -dir * 8, rz: -dir * 40, scale: 1.14, ease: 'inOut' },
+          // Coming back down to meet it.
+          { t: 0.7, x: -dir * dip * 0.2, y: -rise * 0.35, z: 0.04 * H, rx: -16, ry: -dir * 3, rz: -dir * 10, scale: 1.02, ease: 'in' },
+          // Caught.
+          { t: 0.8, x: -dir * dip * 0.1, y: -rise * 0.18, z: 0.02 * H, rx: -6, ry: 0, rz: dir * 4, scale: 1.08, ease: 'out' },
+          { t: 0.9, x: 0, y: -rise * 0.06, z: 0, rx: -2, ry: 0, rz: dir * 1.5, scale: 0.99, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // The Celestial Hammer, which is an overhead blow with the top of it opened
+    // out. An ordinary raise hangs at the zenith for a fraction of the clip
+    // because that is how long reversing the weight takes; this one stays up
+    // there for a THIRD of it, under `linear` across three frames so the pose
+    // does not drift while it hangs, and the drop that follows is the whole
+    // rest of the motion. Nothing else about it is decorated: the point is the
+    // wait, and a wait only reads if nothing else is happening during it.
+    zenith(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.18 : 1);
+      const raise = (0.22 + m.heft * 0.12) * H;
+      const drop = (0.44 + m.reach * 0.30) * H * power;
+      const cross = dir * drop * 0.14;
+      const punch = 1.24 + m.heft * 0.34 * power + (o.crit ? 0.1 : 0);
+      return {
+        duration: (1000 + m.heft * 380) * (o.crit ? 1.12 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          { t: 0.16, x: dir * raise * 0.3, y: -raise * 0.8, z: -0.12 * H, rx: -40, ry: dir * 10, rz: dir * 10, scale: 0.9, ease: 'out' },
+          // At the top, and staying there.
+          { t: 0.28, x: dir * raise * 0.35, y: -raise, z: -0.14 * H, rx: -54, ry: dir * 12, rz: dir * 12, scale: 0.86, ease: 'linear' },
+          { t: 0.42, x: dir * raise * 0.36, y: -raise * 1.02, z: -0.14 * H, rx: -55, ry: dir * 12, rz: dir * 12, scale: 0.858, ease: 'linear' },
+          { t: 0.56, x: dir * raise * 0.37, y: -raise * 1.03, z: -0.15 * H, rx: -56, ry: dir * 12, rz: dir * 13, scale: 0.856, ease: 'in' },
+          // Down.
+          { t: 0.68, x: cross, y: drop, z: 0.26 * H, rx: 66, ry: -dir * 10, rz: -dir * 18, scale: punch, ease: 'out' },
+          { t: 0.76, x: cross * 1.16, y: drop * (o.crit ? 1.2 : 1.14), z: 0.18 * H, rx: 72, ry: -dir * 8, rz: -dir * 20, scale: punch * 0.9, ease: 'inOut' },
+          { t: 0.9, x: cross * 0.34, y: drop * 0.34, z: 0.05 * H, rx: 24, ry: 0, rz: -dir * 6, scale: 1.03, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // The Chronos Hammer, which does not get through its own swing in order.
+    // The blow starts across the view, hesitates, RUNS BACK over ground it has
+    // already covered as far as the wind-up it came out of, and then goes
+    // forward again over exactly the same path before finally completing. The
+    // stutter is written into the keyframe TIMES and positions rather than into
+    // the easing, because the easing system interpolates between poses and
+    // cannot be made to reverse: the way to run time backwards here is to
+    // author the earlier pose again, later.
+    stutter(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const travel = (0.44 + m.reach * 0.38) * H * power;
+      const wind = Math.min((0.14 + m.heft * 0.12) * H, travel * 0.4);
+      const lift = (0.08 + m.reach * 0.10) * H;
+      const turn = 90 + m.reach * 60 + m.heft * 30;
+      const punch = 1.20 + m.heft * 0.30 * power + (o.crit ? 0.09 : 0);
+      return {
+        duration: (760 + m.heft * 420 + m.reach * 180) * (o.crit ? 1.12 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          { t: 0.16, x: dir * wind, y: -wind * 0.6, z: -0.07 * H, rx: -14, ry: dir * 20, rz: dir * 30, scale: 0.9, ease: 'in' },
+          // Away it goes.
+          { t: 0.3, x: -dir * travel * 0.35, y: lift * 0.3, z: 0.06 * H, rx: 4, ry: -dir * 10, rz: -dir * turn * 0.3, scale: 1.06, ease: 'linear' },
+          { t: 0.36, x: -dir * travel * 0.4, y: lift * 0.34, z: 0.07 * H, rx: 5, ry: -dir * 11, rz: -dir * turn * 0.34, scale: 1.07, ease: 'linear' },
+          // And back, over ground it has already been over.
+          { t: 0.42, x: -dir * travel * 0.12, y: lift * 0.1, z: 0.02 * H, rx: 1, ry: -dir * 4, rz: -dir * turn * 0.1, scale: 0.98, ease: 'linear' },
+          { t: 0.46, x: dir * wind * 0.5, y: -wind * 0.3, z: -0.03 * H, rx: -7, ry: dir * 10, rz: dir * 14, scale: 0.94, ease: 'linear' },
+          // The same ground a second time.
+          { t: 0.52, x: -dir * travel * 0.45, y: lift * 0.35, z: 0.08 * H, rx: 6, ry: -dir * 12, rz: -dir * turn * 0.4, scale: 1.08, ease: 'in' },
+          { t: 0.58, x: -dir * travel * 0.34, y: lift * 0.28, z: 0.06 * H, rx: 4, ry: -dir * 9, rz: -dir * turn * 0.3, scale: 1.04, ease: 'linear' },
+          // Completed at last.
+          { t: 0.7, x: -dir * travel, y: lift, z: 0.2 * H, rx: 12, ry: -dir * 22, rz: -dir * turn, scale: punch, ease: 'out' },
+          { t: 0.78, x: -dir * travel * (o.crit ? 1.24 : 1.16), y: lift * 1.2, z: 0.14 * H, rx: 10, ry: -dir * 18, rz: -dir * turn * 1.12, scale: punch * 0.92, ease: 'inOut' },
+          { t: 0.9, x: -dir * travel * 0.35, y: lift * 0.3, z: 0.04 * H, rx: 3, ry: -dir * 6, rz: -dir * turn * 0.34, scale: 1.02, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A psychic crown, which is a weapon in the database and a hat everywhere
+    // else. It is not swung, thrown or pointed: it lifts off the head, hangs
+    // there turning, and PULSES, and every bit of that is spoken in scale and
+    // rotation rather than in travel, because the crown never goes anywhere.
+    // The only movement across the view is the small rise, which is what keeps
+    // the strike re-aim from turning a hat into a mace.
+    levitate(m, o, H) {
+      const power = (o.power || 1) * (o.crit ? 1.16 : 1);
+      const lift = (0.10 + m.reach * 0.06) * H * power;
+      const swell = 1.5 + (o.crit ? 0.16 : 0);
+      const total = 720;
+      return {
+        duration: (900 + m.heft * 240) * (o.crit ? 1.16 : 1),
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          // Off the head.
+          { t: 0.18, x: 0, y: -lift * 0.6, z: 0.06 * H, rx: 0, ry: total * 0.06, rz: 6, scale: 1.08, ease: 'inOut' },
+          // At height, turning slowly, and going nowhere.
+          { t: 0.32, x: 0, y: -lift, z: 0.1 * H, rx: 0, ry: total * 0.17, rz: 10, scale: 1.14, ease: 'linear' },
+          { t: 0.44, x: 0, y: -lift * 1.02, z: 0.1 * H, rx: 0, ry: total * 0.28, rz: 11, scale: 1.15, ease: 'in' },
+          // The pulse.
+          { t: 0.56, x: 0, y: -lift * 1.06, z: 0.2 * H, rx: 0, ry: total * 0.4, rz: 14, scale: swell, ease: 'out' },
+          { t: 0.66, x: 0, y: -lift * 1.04, z: 0.16 * H, rx: 0, ry: total * 0.5, rz: 16, scale: 1.24, ease: 'in' },
+          // And again, weaker.
+          { t: 0.76, x: 0, y: -lift * 1.08, z: 0.18 * H, rx: 0, ry: total * 0.61, rz: 18, scale: swell * 0.94, ease: 'out' },
+          // Settling back down.
+          { t: 0.9, x: 0, y: -lift * 0.3, z: 0.04 * H, rx: 0, ry: total * 0.86, rz: 6, scale: 1.05, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: total, rz: 0, scale: 1 }
         ]
       };
     }
@@ -4020,7 +5805,20 @@ var WeaponSystemProcedural = {
         this._animData, this._weapon, this._screenX, this._screenY, this._aimPoint);
     };
 
-    Sprite_3DWeapon.prototype.playAnimation = function(name) {
+    /**
+     * @param {string} name - the clip asked for, or null for whatever this
+     *   weapon does of its own accord.
+     * @param {object} [opts] - what kind of blow this is, {crit:boolean}.
+     *   Absent means an ordinary hit, which is what every older caller means.
+     */
+    Sprite_3DWeapon.prototype.playAnimation = function(name, opts) {
+      // A blow that arrived while the model was still loading is still the
+      // same blow when the wait is over: whoever replays the pending name has
+      // no idea it was a critical hit, so the request kept with it is picked
+      // up here instead of being asked for again.
+      if (opts === undefined && this._pendingAnimationOpts) opts = this._pendingAnimationOpts;
+      this._pendingAnimationOpts = null;
+
       this._animElapsed = 0;
       this._animData = null;
       this._strikeXf = null;
@@ -4030,6 +5828,7 @@ var WeaponSystemProcedural = {
         // '' rather than null: no name means "this weapon's own motion",
         // which is a real request and must survive the wait for the model.
         this._pendingAnimation = name || '';
+        this._pendingAnimationOpts = opts || null;
         return;
       }
 
@@ -4048,7 +5847,7 @@ var WeaponSystemProcedural = {
 
       // Procedural motion for procedural models.
       if (!this._weapon.model3d) {
-        this._animData = WeaponSystemProcedural.buildAttack(this._weapon, name, this._model);
+        this._animData = WeaponSystemProcedural.buildAttack(this._weapon, name, this._model, opts);
         if (this._animData) { this._prepareStrike(); return; }
       }
 
@@ -4061,6 +5860,7 @@ var WeaponSystemProcedural = {
         // '' rather than null: no name means "this weapon's own motion",
         // which is a real request and must survive the wait for the model.
         this._pendingAnimation = name || '';
+        this._pendingAnimationOpts = opts || null;
       }
     };
 

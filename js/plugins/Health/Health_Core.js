@@ -258,7 +258,19 @@
     const { Archetypes } = window.Health || {};
     const merged = {};
     if (!Archetypes) return merged;
-    (keys || []).forEach((key, index) => {
+    if (typeof keys === "string") {
+      keys = [keys];
+    } else if (keys && typeof keys === "object" && !Array.isArray(keys)) {
+      if (keys._currentArchetype || (typeof keys.isActor === "function" && keys.isActor()) || (typeof keys.actorId === "function")) {
+        keys = getActorArchetypeKeys(keys);
+      } else if (Array.isArray(keys._creatureArchetypes)) {
+        keys = keys._creatureArchetypes;
+      } else {
+        keys = Object.keys(keys);
+      }
+    }
+    if (!Array.isArray(keys)) keys = [];
+    keys.forEach((key, index) => {
       const entry = Archetypes[key];
       if (!entry || !entry.parts) return;
       for (const partKey in entry.parts) {
@@ -587,6 +599,14 @@
         Object.assign(sourceParts, (humanoid && humanoid.parts) || {});
         source = humanoid;
       }
+      // A part sculpted onto the body in the 3D creature editor
+      // (CharacterCreation3DModel.js) REPLACES the archetype's own part in that
+      // place: a dragon head dragged onto a goblin is a dragon head here too,
+      // with the dragon's HP share and the dragon's vital flag. The record
+      // lives on the actor, so rebuilding the body from its archetypes never
+      // forgets what was grafted onto it.
+      (actor._ccReplacedParts || []).forEach((key) => { delete sourceParts[key]; });
+      Object.assign(sourceParts, actor._ccGraftedParts || {});
 
       for (const partKey in sourceParts) {
         const archetypePart = sourceParts[partKey];
@@ -2374,19 +2394,20 @@
         log.partName,
         "\\c[25]" + log.partName + "\\c[0]"
       );
+      var pushMethod = typeof this.appendToActionLine === "function" ? "appendToActionLine" : "addText";
       if (log.paramName && log.amount !== null && log.amount !== undefined) {
         var amountColor = log.amount < 0 ? 24 : 23;
         var amountStr = "\\c[" + amountColor + "]" + log.amount + "\\c[0]";
         if (ConfigManager.language === "it") {
-          this.push("addText", log.name + " " + coloredMsg + ", " + log.paramName + " " + amountStr + "!");
+          this.push(pushMethod, log.name + " " + coloredMsg + ", " + log.paramName + " " + amountStr + "!");
         } else {
-          this.push("addText", log.name + "'s " + coloredMsg + ", " + log.paramName + " " + amountStr + "!");
+          this.push(pushMethod, log.name + "'s " + coloredMsg + ", " + log.paramName + " " + amountStr + "!");
         }
       } else {
         if (ConfigManager.language === "it") {
-          this.push("addText", log.name + " " + coloredMsg + "!");
+          this.push(pushMethod, log.name + " " + coloredMsg + "!");
         } else {
-          this.push("addText", log.name + "'s " + coloredMsg + "!");
+          this.push(pushMethod, log.name + "'s " + coloredMsg + "!");
         }
       }
 

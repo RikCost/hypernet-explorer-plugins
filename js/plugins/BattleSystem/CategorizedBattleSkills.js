@@ -1498,150 +1498,6 @@
         });
     };
 
-    // -------------------------------------------------------------------------
-    // Ally target buttons: an ally-scoped skill (a heal, a buff, ...) leaves
-    // this very panel standing while Window_BattleActor asks which party
-    // member it lands on (the engine's default startActorSelection never hides
-    // it), so the list of skills the player just picked from is repurposed
-    // into a list of party members instead of sitting there doing nothing. The
-    // party card highlight BattleSystemEnhancedHUD.js already offers still
-    // works alongside it; this only gives the panel itself something to do.
-    // Reverts to the ordinary skill list the moment _buildSkillItems runs
-    // again (Window_BattleSkill.show(), on cancelling back to it).
-    // -------------------------------------------------------------------------
-    Window_BattleSkill.prototype._buildActorTargetItems = function (actorWindow) {
-        const root = this._htmlSkillRoot;
-        if (!root) return;
-        this._actorTargetWindow = actorWindow;
-        this._lastSkillIdx = null;
-        this._prevSkillHiIdx = null;
-        this._lastSkillSy = null;
-        root.innerHTML = '';
-
-        root.style.display = 'grid';
-        root.style.gridTemplateColumns = '1fr';
-        root.style.gridGap = '6px 12px';
-        root.style.alignContent = 'start';
-
-        const sc = _msgGetScale();
-        const baseFontSize = (typeof this.standardFontSize === 'function')
-            ? this.standardFontSize() : 24;
-        const scaledFont = Math.round(baseFontSize * sc.sy * 0.85);
-
-        const members = $gameParty.battleMembers();
-        const sel = actorWindow.index();
-
-        this._htmlSkillEls = members.map((actor, i) => {
-            const el = document.createElement('div');
-            el.dataset.idx = i;
-            const isSel = i === sel;
-            el.style.cssText =
-                'font-family:\'Lora\',serif;font-weight:bold;color:var(--text-primary-hover);' +
-                'padding:6px 12px;border-radius:4px;cursor:pointer;' +
-                'border:2px solid ' + (isSel ? 'var(--text-primary-hover)' : 'transparent') + ';' +
-                'background:' + (isSel ? 'rgba(255,255,255,0.14)' : 'transparent') + ';' +
-                'transition:background 0.1s, border-color 0.1s;' +
-                'display:flex;align-items:center;justify-content:space-between;' +
-                'user-select:none;box-sizing:border-box;min-height:40px;';
-            el.style.fontSize = scaledFont + 'px';
-
-            const nameSpan = document.createElement('span');
-            const rawName = actor.name();
-            nameSpan.textContent = window.translateText ? window.translateText(rawName) : rawName;
-            el.appendChild(nameSpan);
-
-            const hpSpan = document.createElement('span');
-            hpSpan.style.cssText = 'color:var(--text-primary-hover);font-weight:bold;' +
-                'margin-left:8px;font-size:85%;';
-            hpSpan.textContent = `${actor.hp}/${actor.mhp} HP`;
-            el.appendChild(hpSpan);
-
-            if (!actor.isAlive()) {
-                el.style.opacity = '0.4';
-            }
-
-            // Pointer handling is delegated on the persistent root (see
-            // Window_BattleSkill.initialize), which reads _actorTargetWindow
-            // while it is set.
-            root.appendChild(el);
-            return el;
-        });
-    };
-
-    // While an ally-scoped skill hands this panel over to
-    // _buildActorTargetItems, a keyboard/gamepad move of the actor cursor has
-    // to redraw it too, the same way picking a row with the mouse does.
-    const _Window_BattleActor_show_CBS = Window_BattleActor.prototype.show;
-    Window_BattleActor.prototype.show = function () {
-        _Window_BattleActor_show_CBS.call(this);
-        const scene = SceneManager._scene;
-        const skillWindow = scene && scene._skillWindow;
-        if (skillWindow && skillWindow._htmlSkillRoot && skillWindow.visible &&
-            typeof skillWindow._buildActorTargetItems === 'function') {
-            skillWindow._buildActorTargetItems(this);
-        }
-    };
-
-    const _Window_BattleActor_select_CBS = Window_BattleActor.prototype.select;
-    Window_BattleActor.prototype.select = function (index) {
-        _Window_BattleActor_select_CBS.call(this, index);
-        const scene = SceneManager._scene;
-        const skillWindow = scene && scene._skillWindow;
-        if (skillWindow && skillWindow._actorTargetWindow === this) {
-            skillWindow._buildActorTargetItems(this);
-        }
-    };
-
-    // -------------------------------------------------------------------------
-    // Picking a target closes the list the skill was picked from
-    // -------------------------------------------------------------------------
-    // An enemy-scoped skill hands over to Window_BattleEnemy, which the engine's
-    // startEnemySelection opens without hiding the skill list first (it hides
-    // only the status window). This panel was therefore left standing over the
-    // field the target is being pointed at, still showing the choice the player
-    // had already made. It is closed on the way in and reopened on the way back,
-    // on the row it was left on.
-    //
-    // The ally-scoped case is deliberately the opposite: there the panel is
-    // repurposed into the party list by _buildActorTargetItems, so it stays.
-    const _Scene_Battle_startEnemySelection_CBS = Scene_Battle.prototype.startEnemySelection;
-    Scene_Battle.prototype.startEnemySelection = function () {
-        if (this._skillWindow && this._skillWindow.visible) {
-            this._skillWindowReturnIndex = this._skillWindow.index();
-            this._skillWindow.deactivate();
-            this._skillWindow.hide();
-        } else {
-            this._skillWindowReturnIndex = -1;
-        }
-        _Scene_Battle_startEnemySelection_CBS.call(this);
-    };
-
-    // Backing out of the target picker reopens the list. The engine's own
-    // onEnemyCancel does this for the "skill" command, but the command window
-    // here opens this same list under "basic" too
-    // (BattleSystemEnhanchedCommands.js), a symbol the engine knows nothing
-    // about - which, now that the list is genuinely hidden, would leave no
-    // window active at all.
-    const _Scene_Battle_onEnemyCancel_CBS = Scene_Battle.prototype.onEnemyCancel;
-    Scene_Battle.prototype.onEnemyCancel = function () {
-        const symbol = this._actorCommandWindow ? this._actorCommandWindow.currentSymbol() : "";
-        if (symbol === "basic") {
-            this._enemyWindow.hide();
-            this._skillWindow.show();
-            this._skillWindow.activate();
-        } else {
-            _Scene_Battle_onEnemyCancel_CBS.call(this);
-        }
-        // Window_BattleSkill.show() selects the first row; the player left the
-        // list on the skill they were aiming, so put the cursor back on it.
-        const idx = this._skillWindowReturnIndex;
-        if (idx >= 0 && this._skillWindow && this._skillWindow.visible &&
-            idx < this._skillWindow.maxItems()) {
-            this._skillWindow.select(idx);
-        }
-        this._skillWindowReturnIndex = -1;
-    };
-
     const _Window_BattleSkill_update = Window_BattleSkill.prototype.update;
     Window_BattleSkill.prototype.update = function () {
         _Window_BattleSkill_update.call(this);
@@ -1814,26 +1670,13 @@
             return !!(win && win._skillSession);
         },
 
-        // Stands in for Window_ActorCommand.makeCommandList while a skill (or
-        // the ally it lands on) is being chosen.
+        // Stands in for Window_ActorCommand.makeCommandList while a skill is being chosen.
         makeCommandList(win) {
             const session = win._skillSession;
-            const ally = session.mode === 'ally';
+            if (!session) return;
             const push = (name, ext, enabled, icon, colors, cost, dim) =>
-                win.addCommandWithIcon(name, ally ? "allyRow" : "skillRow",
+                win.addCommandWithIcon(name, "skillRow",
                     enabled !== false, ext, icon, enabled === false || !!dim, colors, cost);
-
-            // Pointing at an ally: the party is the list. The rows mirror
-            // Window_BattleActor, which keeps the cursor (see openAlly), so a
-            // fallen member is greyed rather than locked, since a revive is
-            // aimed at one on purpose.
-            if (ally) {
-                $gameParty.battleMembers().forEach((member, i) => {
-                    push(member.name(), { kind: 'ally', index: i }, true, ALLY_ROW_ICON, null,
-                         member.hp + '/' + member.mhp + ' ' + TextManager.hpA, !member.isAlive());
-                });
-                return;
-            }
 
             const actor = session.actor;
             const list = session.list;
@@ -1880,7 +1723,7 @@
         },
 
         close(win) {
-            if (!win || !win._skillSession || win._skillSession.mode === 'ally') return null;
+            if (!win || !win._skillSession) return null;
             const session = win._skillSession;
             win._skillSession = null;
             if (win._skillSavedHandlers) win._handlers = win._skillSavedHandlers;
@@ -1894,28 +1737,9 @@
             return session;
         },
 
-        // The party list, mirroring Window_BattleActor rather than replacing
-        // it: that window keeps the cursor (the party HUD cards read it to know
-        // when they are clickable), and these rows follow its index.
-        openAlly(win, actorWindow) {
-            if (!win || !actorWindow) return;
-            this.close(win);
-            win._skillSession = { mode: 'ally', actorWindow: actorWindow, wasVisible: win.visible };
-            win.show();
-            win.refresh();
-            win.select(Math.max(0, actorWindow.index()));
-            win.deactivate();
-            // The party window keeps its old cursor between choices; without a
-            // row under it there would be nothing for these to mirror.
-            if (actorWindow.index() < 0) actorWindow.select(0);
-        },
-
-        closeAlly(win) {
-            if (!win || !win._skillSession || win._skillSession.mode !== 'ally') return;
-            const wasVisible = win._skillSession.wasVisible;
-            win._skillSession = null;
-            if (!wasVisible) win.hide();
-        },
+        // Compatibility stubs (target selection is handled by BattleSystemEnhanchedCommands.js)
+        openAlly(win, actorWindow) {},
+        closeAlly(win) {},
     };
     window.BattleSkillMenu = BattleSkillMenu;
 
@@ -1952,7 +1776,7 @@
         const session = win && win._skillSession;
         const help = this._helpWindow;
         if (!help) return;
-        if (!session || session.mode === 'ally') {
+        if (!session) {
             help.setText('');
             help.hide();
             return;
@@ -2036,82 +1860,6 @@
         win.select(ret.index != null ? ret.index : 0);
         win.activate();
         return true;
-    };
-
-    // -------------------------------------------------------------------------
-    // Target selection
-    // -------------------------------------------------------------------------
-    const _SB_startActorSelection_BSM = Scene_Battle.prototype.startActorSelection;
-    Scene_Battle.prototype.startActorSelection = function () {
-        _SB_startActorSelection_BSM.call(this);
-        // Only for a skill picked out of this menu. An item is chosen on a page
-        // of its own (BattleSystemEnhancedHUD.js) which stays open over the
-        // same corner of the screen, and would sit on top of these rows.
-        if (this._battleSkillReturn) {
-            BattleSkillMenu.openAlly(this._actorCommandWindow, this._actorWindow);
-        }
-    };
-
-    // The party rows follow the window that owns the cursor.
-    const _WBA_select_BSM = Window_BattleActor.prototype.select;
-    Window_BattleActor.prototype.select = function (index) {
-        _WBA_select_BSM.call(this, index);
-        const scene = SceneManager._scene;
-        const win = scene && scene._actorCommandWindow;
-        if (win && win._skillSession && win._skillSession.mode === 'ally' && index >= 0 &&
-            win.index() !== index) {
-            win.select(index);
-        }
-    };
-
-    const _SB_onActorOk_BSM = Scene_Battle.prototype.onActorOk;
-    Scene_Battle.prototype.onActorOk = function () {
-        this._battleSkillReturn = null;
-        BattleSkillMenu.closeAlly(this._actorCommandWindow);
-        _SB_onActorOk_BSM.call(this);
-    };
-
-    const _SB_onActorCancel_BSM = Scene_Battle.prototype.onActorCancel;
-    Scene_Battle.prototype.onActorCancel = function () {
-        BattleSkillMenu.closeAlly(this._actorCommandWindow);
-        if (this._battleSkillReturn) {
-            if (this._actorWindow) this._actorWindow.hide();
-            if (this.reopenBattleSkillMenu()) return;
-        }
-        _SB_onActorCancel_BSM.call(this);
-    };
-
-    const _SB_onEnemyOk_BSM = Scene_Battle.prototype.onEnemyOk;
-    Scene_Battle.prototype.onEnemyOk = function () {
-        this._battleSkillReturn = null;
-        _SB_onEnemyOk_BSM.call(this);
-    };
-
-    const _SB_onEnemyCancel_BSM = Scene_Battle.prototype.onEnemyCancel;
-    Scene_Battle.prototype.onEnemyCancel = function () {
-        if (this._battleSkillReturn) {
-            if (this._enemyWindow) this._enemyWindow.hide();
-            if (this.reopenBattleSkillMenu()) return;
-        }
-        _SB_onEnemyCancel_BSM.call(this);
-    };
-
-    // A list left standing when input moves on (the next actor, the end of the
-    // round, a battle finishing under the player) would leave the command menu
-    // holding rows that are no longer about anything.
-    const _SB_startActorCommandSelection_BSM = Scene_Battle.prototype.startActorCommandSelection;
-    Scene_Battle.prototype.startActorCommandSelection = function () {
-        this._battleSkillReturn = null;
-        BattleSkillMenu.closeAlly(this._actorCommandWindow);
-        BattleSkillMenu.close(this._actorCommandWindow);
-        _SB_startActorCommandSelection_BSM.call(this);
-    };
-
-    const _SB_endCommandSelection_BSM = Scene_Battle.prototype.endCommandSelection;
-    Scene_Battle.prototype.endCommandSelection = function () {
-        BattleSkillMenu.closeAlly(this._actorCommandWindow);
-        BattleSkillMenu.close(this._actorCommandWindow);
-        _SB_endCommandSelection_BSM.call(this);
     };
 
 

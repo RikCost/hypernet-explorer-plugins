@@ -31,5 +31,12 @@
   "wpBliss": "Archways XP Bliss (Luna)",
   "wpTeal": "Classic Teal (Retro)",
   "wpSpace": "Deep Space (Dark Mode)",
-  "wpGold": " Gold (Mystic)"
+  "wpGold": " Gold (Mystic)",
+  "machineStats": "MACHINE STATISTICS",
+  "performance": "Performance:",
+  "thermals": "Thermals:",
+  "endurance": "Endurance:",
+  "uplink": "Uplink:",
+  "audio": "Audio:",
+  "board": "Board:"
 }

@@ -839,7 +839,8 @@
 
     // Show hit location if enabled
     if (showHitLocation && $gameTemp.hitLocationMessage && target.isEnemy()) {
-      this.push("addText", $gameTemp.hitLocationMessage);
+      var pushHit = typeof this.appendToActionLine === "function" ? "appendToActionLine" : "addText";
+      this.push(pushHit, $gameTemp.hitLocationMessage);
       $gameTemp.hitLocationMessage = null;
     }
 
@@ -848,7 +849,8 @@
       var log = $gameTemp.limbDamageBattleLog;
 
       // Show the appropriate message
-      this.push("addText", log.text);
+      var pushLimb = typeof this.appendToActionLine === "function" ? "appendToActionLine" : "addText";
+      this.push(pushLimb, log.text);
 
       // Show stat effect if applicable
       /*

@@ -50,12 +50,30 @@
             const hddSize = rig ? rig.storage
                 : T('ControlPanel.hddSize', { gb: Math.max(10, Math.floor(totalGold / 10)) });
 
-            // Class stats
-            const strStat = leader ? leader.atk : 10;
-            const defStat = leader ? leader.def : 10;
-            const intStat = leader ? leader.mat : 10;
-            const wisStat = leader ? leader.mdf : 10;
-            const lukStat = leader ? leader.luk : 10;
+            // The second column used to be the leader's own stats dressed up
+            // as hardware. It is the machine's now: every row is read off the
+            // pieces fitted to the deck, so swapping a part moves it. Party
+            // stats still stand in for a deck with nothing in it.
+            const rows = rig
+                ? [
+                    [T('ControlPanel.performance'), rig.performance],
+                    [T('ControlPanel.thermals'), rig.thermals],
+                    [T('ControlPanel.endurance'), rig.endurance],
+                    [T('ControlPanel.uplink'), rig.uplink],
+                    [T('ControlPanel.audio'), rig.audio],
+                    [T('ControlPanel.board'), rig.board]
+                ]
+                : [
+                    [T('ControlPanel.strCore'), (leader ? leader.atk : 10) + ' (' + (leader ? leader.def : 10) + ')'],
+                    [T('ControlPanel.intCore'), (leader ? leader.mat : 10) + ' (' + (leader ? leader.mdf : 10) + ')'],
+                    [T('ControlPanel.psiCore'), String(leader ? leader.luk : 10)],
+                    [T('ControlPanel.factionsRep'), T('ControlPanel.tendencyVar')]
+                ];
+            const statRowsHTML = rows.map(([label, value]) => `
+                                        <tr>
+                                            <td  class="hn-style-0066">${label}</td>
+                                            <td  class="hn-style-0065">${value}</td>
+                                        </tr>`).join('');
 
             const contentHTML = `
                 <div class="control-panel-container hn-style-0051" >
@@ -108,26 +126,10 @@
                                     </table>
                                 </div>
 
-                                <!-- Column 2:  Cores -->
+                                <!-- Column 2: what the fitted pieces add up to -->
                                 <div  class="hn-style-0061">
-                                    <h4  class="hn-style-0062">${T('ControlPanel.coresIntegrity')}</h4>
-                                    <table  class="hn-style-0063">
-                                        <tr>
-                                            <td  class="hn-style-0067">${T('ControlPanel.strCore')}</td>
-                                            <td  class="hn-style-0068">${strStat} (${defStat})</td>
-                                        </tr>
-                                        <tr>
-                                            <td  class="hn-style-0066">${T('ControlPanel.intCore')}</td>
-                                            <td  class="hn-style-0068">${intStat} (${wisStat})</td>
-                                        </tr>
-                                        <tr>
-                                            <td  class="hn-style-0066">${T('ControlPanel.psiCore')}</td>
-                                            <td  class="hn-style-0068">${lukStat}</td>
-                                        </tr>
-                                        <tr>
-                                            <td  class="hn-style-0066">${T('ControlPanel.factionsRep')}</td>
-                                            <td  class="hn-style-0065">${T('ControlPanel.tendencyVar')}</td>
-                                        </tr>
+                                    <h4  class="hn-style-0062">${rig ? T('ControlPanel.machineStats') : T('ControlPanel.coresIntegrity')}</h4>
+                                    <table  class="hn-style-0063">${statRowsHTML}
                                     </table>
                                 </div>
                             </div>

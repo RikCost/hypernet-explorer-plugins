@@ -42,6 +42,116 @@
   },
   "ui": {
     "oilTether": "Oil Tether:",
-    "soulCrystal": "Soul Crystal:"
+    "soulCrystal": "Soul Crystal:",
+    "assetCount": "{n} ASSETS",
+    "category": "Sector:",
+    "volatility": "Volatility Rating:",
+    "float": "Shares Issued:",
+    "ownership": "Your Stake:"
+  },
+  "assets": {
+    "oil": {
+      "name": "OIL",
+      "description": "The barrel the whole continent runs on. Every refinery, every tank of fuel and every shop mark-up is quoted off this line."
+    },
+    "souls": {
+      "name": "SOUL",
+      "description": "Crystallised essence, traded by weight. It drifts back to the resonance median no matter what the floor thinks it is worth."
+    }
+  },
+  "sectors": {
+    "commodities": "Commodities",
+    "arcane": "Arcane Commodities"
+  },
+  "news": {
+    "justNow": "Just now",
+    "minutesAgo": "{n}m ago"
+  },
+  "errors": {
+    "noFloat": "No unissued shares left"
+  },
+  "headlines": {
+    "oil": [
+      "Refining margins widen after a week of pipeline maintenance.",
+      "The energy cartel hints at quietly adjusted extraction quotas.",
+      "Bio-diesel synthesis plants report a record export month.",
+      "A tanker queue outside Rotterdam pushes the spot barrel around."
+    ],
+    "souls": [
+      "Rift detectors register a brief anomalous harmonic fluctuation.",
+      "The cathedral guild certifies another batch of purified canisters.",
+      "The arcane council convenes over reserve benchmarks and says little.",
+      "A thin veil week has assayers working double shifts."
+    ],
+    "company": {
+      "limecorp": [
+        "{company} ships a whole product line a season early, unfinished and sold out.",
+        "Another executive walks out of LemonCorp and into a {company} corner office.",
+        "{company} announces three devices nobody asked for and two of them sell.",
+        "Retailers report queues around the block for the new {company} handheld."
+      ],
+      "lemoncorp": [
+        "{company} recalls a battery pack and calls it a design refresh.",
+        "Analysts call {company} overvalued again, then buy it again.",
+        "{company} opens another flagship store in a town with no signal."
+      ],
+      "petrodyne": [
+        "{company} brings a new pump line online under the Petrocave.",
+        "{company} posts a sooty but dependable quarterly dividend.",
+        "A {company} tanker contract is renewed for another five years."
+      ],
+      "soulforge": [
+        "{company} assayers report a purer yield from the last consignment.",
+        "An ethics committee asks {company} questions it will not answer.",
+        "{company} corners the market on canister glass, briefly."
+      ]
+    },
+    "sector": {
+      "consumertech": [
+        "{company} unveils a gadget that does one thing beautifully.",
+        "Shelves clear as {company} discounts last season's range.",
+        "A firmware fault has {company} support lines busy all week."
+      ],
+      "energy": [
+        "{company} secures drilling rights nobody else wanted.",
+        "Maintenance season trims {company} output for a fortnight.",
+        "{company} signs a long haul supply contract with three cities."
+      ],
+      "occult": [
+        "{company} reports a strong week wherever the veil went thin.",
+        "Inspectors visit a {company} vault and leave without comment.",
+        "{company} raises its assay fees and nobody trades elsewhere."
+      ],
+      "telecom": [
+        "{company} lights up another relay tower and the maps redraw.",
+        "Bandwidth on the {company} backbone hits an all-time peak.",
+        "{company} buys the pipes under a city it already served."
+      ],
+      "industrial": [
+        "{company} rolls the girders for a bridge three countries want.",
+        "A furnace at {company} goes cold for scheduled relining.",
+        "Rail orders keep {company} mills booked out to spring."
+      ],
+      "agriculture": [
+        "{company} brings in a harvest the almanacs said was impossible.",
+        "A wet month has {company} moving stock out of the low fields.",
+        "{company} tinctures clear certification in two more markets."
+      ],
+      "finance": [
+        "{company} leaves its lending rate exactly where it was.",
+        "{company} reports liquidity reserves at a record.",
+        "A routine bond tranche is redeemed by {company} without drama."
+      ],
+      "transport": [
+        "{company} adds a night service and fills it in a week.",
+        "Fuel costs squeeze the {company} timetable on the long routes.",
+        "{company} takes over a depot and keeps every driver on."
+      ],
+      "misc": [
+        "{company} says the quarter went broadly as expected.",
+        "Trading in {company} is steady with no news to speak of.",
+        "{company} restates last year's figures by a rounding error."
+      ]
+    }
   }
 }

@@ -405,6 +405,7 @@
             const first = (win._list || []).findIndex(cmd => cmd.enabled !== false);
             win.select(first < 0 ? 0 : first);
             win.activate();
+            TouchInput.clear();
             return true;
         },
 
@@ -500,6 +501,20 @@
     const PARTY_CAP = 3;
     const RECRUIT_ACTOR_IDS = [2, 3];
 
+    function isArenaModeActive() {
+        if (typeof BattleManager !== 'undefined') {
+            if (typeof BattleManager.isArenaMode === 'function' && BattleManager.isArenaMode()) return true;
+            if (typeof BattleManager.isGauntletMode === 'function' && BattleManager.isGauntletMode()) return true;
+            if (typeof BattleManager.isBiomeTrialMode === 'function' && BattleManager.isBiomeTrialMode()) return true;
+            if (typeof BattleManager.isBossRushMode === 'function' && BattleManager.isBossRushMode()) return true;
+        }
+        if (typeof ArenaBattleHandler !== 'undefined') {
+            if (typeof ArenaBattleHandler.isTitleFlow === 'function' && ArenaBattleHandler.isTitleFlow()) return true;
+            if (typeof ArenaBattleHandler.isArenaFromTitle === 'function' && ArenaBattleHandler.isArenaFromTitle()) return true;
+        }
+        return false;
+    }
+
     function partyCompanions() {
         const summon = window.SummonSystem;
         return $gameParty.members().filter(m =>
@@ -592,7 +607,7 @@
 
     Scene_Battle.prototype.calculatePetFollowerChance = function () {
         const enemy = this._talkEnemy();
-        if (!enemy || enemy.isUnrecruitable()) return 0;
+        if (!enemy || enemy.isUnrecruitable() || isArenaModeActive()) return 0;
         // Pets/followers are easier to win over than a full party recruit:
         // disposition-based, with a flat bonus and a friendly floor.
         const base = this.calculateTalkSuccessChance();
@@ -618,8 +633,8 @@
         const enemyLuck = enemy.luk;
         const disposition = enemy.disposition();
 
-        // Scale luck difference to reduce impact (divide by 5 instead of 2)
-        const luckModifier = (actorLuck - enemyLuck) / 5;
+        // Scale luck difference (2.5% per point of PSI difference in D&D scale)
+        const luckModifier = (actorLuck - enemyLuck) * 2.5;
         const baseChance = disposition + luckModifier;
         const successChance = Math.max(10, Math.min(95, baseChance));
 
@@ -633,7 +648,7 @@
 
     Scene_Battle.prototype.calculateJoinSuccessChance = function () {
         const enemy = this._talkEnemy();
-        if (!enemy || enemy.isUnrecruitable()) return 0;
+        if (!enemy || enemy.isUnrecruitable() || isArenaModeActive()) return 0;
 
         // Small percentage to recruit even under the disposition threshold
         const disposition = enemy.disposition();
@@ -1103,7 +1118,7 @@
         actor.refresh();
     };
 
-    Scene_Battle.prototype.onTalkJoinParty = function () {
+    Scene_Battle.prototype.onTalkJoinParty = async function () {
         const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
 
@@ -1122,15 +1137,33 @@
             return;
         }
 
-        const success = this.calculateTalkSuccess();
+        const hasTalk = enemy.enemy() && enemy.enemy().note && enemy.enemy().note.includes('<Talk>');
+        const actor = $gameParty.battleMembers()[0] || $gameParty.leader();
+        const statName = hasTalk ? 'PSI' : 'WIS';
+        const statMod = actor ? (hasTalk ? (actor.psiMod ?? Math.floor(((actor.luk || 10) - 10) / 2)) : (actor.wisMod ?? Math.floor(((actor.mdf || 10) - 10) / 2))) : 0;
+        const chance = this.calculateJoinSuccessChance();
+        let canJoin = false;
+
+        if (chance <= 0) {
+            canJoin = false;
+        } else if (window.Dice3D) {
+            const rollRes = await window.Dice3D.rollPercentage(chance, {
+                actionName: `${hasTalk ? 'Recruit' : 'Tame'}: ${enemy.name()}`,
+                statName: statName,
+                modifier: statMod,
+                force3D: true
+            });
+            canJoin = rollRes.success;
+        } else {
+            const success = this.calculateTalkSuccess();
+            const disposition = enemy.disposition();
+            canJoin = (disposition >= 80 && success) || (disposition < 80 && Math.random() * 100 < 5);
+        }
+
         const archetype = enemy.getArchetype();
         const archetypeMessages = getArchetypeMessages();
         const defaultMessages = getDefaultMessages();
         let messages;
-
-        // Small chance to succeed even with low disposition
-        const disposition = enemy.disposition();
-        const canJoin = (disposition >= 80 && success) || (disposition < 80 && Math.random() * 100 < 5);
 
         if (canJoin) {
             if (archetype && archetypeMessages[archetype]) {
@@ -1260,7 +1293,7 @@
     // Recruit the enemy as a pet/follower: a trailing map companion that is NOT
     // a party member (so it never battles, never dies, and can't be targeted).
     // <Talk> enemies become "followers", the rest "pets", cosmetic only.
-    Scene_Battle.prototype.onTalkJoinPet = function () {
+    Scene_Battle.prototype.onTalkJoinPet = async function () {
         const enemy = this._talkEnemy();
 
         if (!enemy) {
@@ -1276,8 +1309,27 @@
             return;
         }
 
-        const hasTalk   = enemy.enemy().note.includes('<Talk>');
-        const success   = Math.random() * 100 < this.calculatePetFollowerChance();
+        const hasTalk = enemy.enemy() && enemy.enemy().note && enemy.enemy().note.includes('<Talk>');
+        const actor = $gameParty.battleMembers()[0] || $gameParty.leader();
+        const statName = hasTalk ? 'PSI' : 'WIS';
+        const statMod = actor ? (hasTalk ? (actor.psiMod ?? Math.floor(((actor.luk || 10) - 10) / 2)) : (actor.wisMod ?? Math.floor(((actor.mdf || 10) - 10) / 2))) : 0;
+        const chance = this.calculatePetFollowerChance();
+        let success = false;
+
+        if (chance <= 0) {
+            success = false;
+        } else if (window.Dice3D) {
+            const rollRes = await window.Dice3D.rollPercentage(chance, {
+                actionName: `${hasTalk ? 'Follower' : 'Tame'}: ${enemy.name()}`,
+                statName: statName,
+                modifier: statMod,
+                force3D: true
+            });
+            success = rollRes.success;
+        } else {
+            success = Math.random() * 100 < chance;
+        }
+
         const archetype = enemy.getArchetype();
 
         if (!success) {
@@ -1356,7 +1408,11 @@
 
         this._actorCommandWindow.refresh();
         this._actorCommandWindow.show();
+        if (this._actorCommandWindow.findSymbol && this._actorCommandWindow.findSymbol("talk") >= 0) {
+            this._actorCommandWindow.selectSymbol("talk");
+        }
         this._actorCommandWindow.activate();
+        TouchInput.clear();
     };
 
     Scene_Battle.prototype.copyEnemySkillsToActor = function (enemy, actor) {

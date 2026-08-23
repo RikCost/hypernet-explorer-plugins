@@ -900,6 +900,7 @@
     PartyHudOverlay.prototype.isWanted = function () {
         if (!ConfigManager.partyHud) return false;
         if (!$gameParty || $gameParty.members().length === 0) return false;
+        if ($gameMap && $gameMap.mapId() === 557) return false;
         const scene = SceneManager._scene;
         return scene instanceof Scene_Battle || scene instanceof Scene_Map;
     };

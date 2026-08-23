@@ -1213,8 +1213,16 @@
     };
 
     Scene_Menu.prototype.promoteUIPartyLeader = function (actorId) {
-        const result = window.PartyRoster?.setLeader?.(actorId);
-        if (!result || !result.ok) {
+        // Handing over the lead is the same act here as it is with Tab out on
+        // the map (Core/AutoIdleExplorer.js): the two of them exchange tiles, so
+        // the party is standing where it was once the menu closes again. That
+        // path reorders through PartyRoster.setLeader itself; the plain call is
+        // the fallback for when the map layer is not loaded.
+        const lead = window.AutoIdleExplorer?.lead;
+        const ok = lead?.switchTo
+            ? lead.switchTo(actorId, { pan: false })
+            : !!window.PartyRoster?.setLeader?.(actorId)?.ok;
+        if (!ok) {
             SoundManager.playBuzzer();
             return;
         }

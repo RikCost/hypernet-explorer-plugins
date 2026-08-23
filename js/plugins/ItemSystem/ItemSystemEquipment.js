@@ -29,10 +29,12 @@
  * - Claw (Type 10): Intimidation 100%
  *
  * Hands:
- * - There is no dual-wield flag. Every body part that declares canHoldWeapon in
- *   js/db/Health/Archetypes.json is a weapon slot, and a hand takes a
- *   weapon or a shield without distinction, so two shields are as legal as two
- *   swords.
+ * - A class tagged <DualWield> may fill every hand with a weapon. Without it
+ *   at most half the hands (rounded up) can hold weapons; the rest are shield
+ *   slots.
+ * - Every body part that declares canHoldWeapon in js/db/Health/Archetypes.json
+ *   is a weapon slot, and a hand takes a weapon or a shield without distinction,
+ *   so two shields are as legal as two swords.
  * - A <TwoHanded> weapon needs two free hands. One hand means one <OneHanded>
  *   weapon (or one shield) and no other weapon slot at all.
  * - A body with no hands holds its weapon in its mouth instead: one slot, and
@@ -130,6 +132,7 @@
     const ETYPE_BODY    = 4;
     const MAX_WEAPON_SLOTS = 8;
     const MOUTH_SLOT_TAG = 'MouthSlot';
+    const DUAL_WIELD_TAG = 'DualWield';
 
     // Part keys are matched a token at a time, so LEFT_HAND, CLAW_RIGHT,
     // WATER_ARMS and VOID_TENDRIL_1 all read as hands while PLATE_ARMOR (which
@@ -227,6 +230,34 @@
         classHasMouthSlot(actor) {
             const cls = actor && actor.currentClass && actor.currentClass();
             return !!(cls && cls.meta && cls.meta[MOUTH_SLOT_TAG]);
+        },
+
+        // Whether the class may fill every hand with a weapon. Without this tag
+        // at most half the hands (rounded up) can be weapons; the rest are
+        // shield slots.
+        hasDualWield(actor) {
+            const cls = actor && actor.currentClass && actor.currentClass();
+            return !!(cls && cls.meta && cls.meta[DUAL_WIELD_TAG]);
+        },
+
+        // Count weapons already in hand slots, optionally ignoring one slot
+        // (the one being changed) so a swap is measured against what fits.
+        weaponCountInHands(actor, exceptSlot) {
+            const layout = this.layout(actor);
+            const equips = actor.equips();
+            let count = 0;
+            for (let i = 0; i < layout.hands; i++) {
+                if (i === exceptSlot) continue;
+                if (equips[i] && equips[i].wtypeId) count++;
+            }
+            return count;
+        },
+
+        // How many weapons this character's hands may carry at once.
+        // DualWield: all hands. Otherwise: ceil(hands / 2).
+        maxWeapons(actor) {
+            const h = this.layout(actor).hands;
+            return this.hasDualWield(actor) ? h : Math.ceil(h / 2);
         },
 
         // What the body can hold with. Anything without an anatomy on file (a
@@ -442,6 +473,12 @@
             if (!isHeldItem(item)) return false;
             // One hand is one weapon, and a small one at that.
             if (kind === 'hand' && isTwoHandedWeapon(item) && this.layout(actor).hands < 2) return false;
+            // Weapon cap: without DualWield at most ceil(hands/2) hand slots
+            // may carry weapons. Shields (armor with etypeId === ETYPE_OFFHAND)
+            // are unaffected.
+            if (kind === 'hand' && item.wtypeId) {
+                if (this.weaponCountInHands(actor, slotId) >= this.maxWeapons(actor)) return false;
+            }
             return true;
         },
 
@@ -504,7 +541,8 @@
     /**
      * Hand back whatever no longer fits: the shield the two-handed sword just
      * displaced, or everything the arm that came off in Blood and Oil was
-     * holding. Empties from the last slot forward, so the piece just equipped
+     * holding. Also enforces the weapon cap (DualWield / non-DualWield).
+     * Empties from the last slot forward, so the piece just equipped
      * (`_handKeepSlot`) is never the one taken away.
      */
     Game_Actor.prototype.reconcileHandSlots = function (forcing) {
@@ -512,16 +550,34 @@
         let guard = MAX_WEAPON_SLOTS + 1;
         while (guard-- > 0) {
             const equips = this.equips();
+            // Two-handed budget
             let used = 0;
             for (let i = 0; i < layout.hands; i++) used += HandSlots.handCost('hand', equips[i]);
-            if (used <= layout.hands) break;
-            let dropped = -1;
-            for (let i = layout.hands - 1; i >= 0; i--) {
-                if (equips[i] && i !== this._handKeepSlot) { dropped = i; break; }
+            if (used > layout.hands) {
+                let dropped = -1;
+                for (let i = layout.hands - 1; i >= 0; i--) {
+                    if (equips[i] && i !== this._handKeepSlot) { dropped = i; break; }
+                }
+                if (dropped >= 0) {
+                    if (forcing) this.forceChangeEquip(dropped, null);
+                    else this.changeEquip(dropped, null);
+                    continue;
+                }
             }
-            if (dropped < 0) break;
-            if (forcing) this.forceChangeEquip(dropped, null);
-            else this.changeEquip(dropped, null);
+            // Weapon cap: if holding more weapons than maxWeapons, drop from
+            // the last hand slot forward.
+            const maxWpn = HandSlots.maxWeapons(this);
+            let weaponDropped = -1;
+            for (let i = layout.hands - 1; i >= 0; i--) {
+                if (equips[i] && equips[i].wtypeId && i !== this._handKeepSlot) {
+                    weaponDropped = i; break;
+                }
+            }
+            if (weaponDropped < 0) break;
+            const wpnCount = HandSlots.weaponCountInHands(this, weaponDropped);
+            if (wpnCount < maxWpn) break;
+            if (forcing) this.forceChangeEquip(weaponDropped, null);
+            else this.changeEquip(weaponDropped, null);
         }
     };
 

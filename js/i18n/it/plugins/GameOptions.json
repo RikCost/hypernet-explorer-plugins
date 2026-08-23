@@ -31,6 +31,7 @@
     "voiceVolume": "Volume Voci",
     "masterVolume": "Volume Generale",
     "language": "Lingua",
+    "biomeMusic": "Musica del Bioma (in lavorazione)",
     "muteBgm": "Silenzia BGM",
     "footstepsVolume": "Volume Passi",
     "weatherVolume": "Volume Meteo",
@@ -97,6 +98,7 @@
   "desc": {
     "enemySpawnMode": "Quanto sono forti i nemici vaganti. L'anno alza comunque i livelli: +10 all'anno fino al 2010, fino a 110 nel 2010-2011, niente sotto l'80 dal 2012.",
     "weatherVolume": "Volume dei suoni ambientali esterni: pioggia, temporali, vento e rumori del bioma. Non tocca gli interni.",
+    "biomeMusic": "Lascia scegliere la musica al luogo in cui ti trovi: ogni bioma ha i suoi brani, uno per nazione e per metà della giornata, con un elenco più cupo per un mondo spopolato. È ancora in lavorazione, quindi è disattivata e ogni mappa mantiene il proprio tema.",
     "partyHud": "Una scheda per ogni membro del gruppo in alto a sinistra: HP, MP, stati e bisogni urgenti.",
     "partyFormation": "Come il resto del gruppo cammina dietro al capogruppo sulla mappa.",
     "musicArtistDisplay": "Se mostrare titolo e autore della musica in riproduzione.",

@@ -26,5 +26,11 @@
  "tabDiseases": "Malattie",
  "selectedDiseasesLabel": "Malattie portate",
  "incompatibleNote": "In conflitto con un tratto già scelto.",
- "unaffordableNote": "Non hai abbastanza punti tratto per questo."
+ "unaffordableNote": "Non hai abbastanza punti tratto per questo.",
+  "noneInCategory": "Niente qui",
+  "purseSpent": "Spesi",
+  "purseRefunds": "Rimborsi",
+  "purseLeft": "Rimanenti",
+  "pts": "pt",
+  "refundWord": "rimborso"
 }

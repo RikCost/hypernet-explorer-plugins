@@ -272,28 +272,70 @@ Imported.DialogueSystem = true;
             const spritesheetName = characterName.split('.')[0];
 
             try {
-                const commentBust = this.getBustNameFromEventComment();
+                const commentBust = window.BustPath.resolve(this.getBustNameFromEventComment());
                 if (commentBust) return `busts/${commentBust}`;
             } catch (err) {
                 console.warn("Error checking event comment for bust name:", err);
             }
+
+            // A pre-made character's own portrait, before anything derived from
+            // the walk sheet: a dossier can be played in an alternate look and
+            // each look has its own bust, so only the dossier itself (or the
+            // party member taken from it) knows which face belongs here.
+            const presetBust = this.getPresetBustForSprite(spritesheetName, characterIndex);
+            if (presetBust) return `busts/${presetBust}`;
 
             if (window.NPCSim?.getBustForNPC) {
                 try {
                     const evId    = $gameMap?._interpreter?._eventId;
                     const npcName = evId ? $gameMap.event(evId)?.event()?.name : null;
                     if (npcName) {
-                        const b = window.NPCSim.getBustForNPC(npcName);
-                        if (b && b !== "7") return `busts/${b}`;
+                        const b = window.BustPath.resolve(window.NPCSim.getBustForNPC(npcName));
+                        if (b) return `busts/${b}`;
                     }
                 } catch (_) {}
             }
 
             if (SpritesAssociation[spritesheetName]?.[characterIndex]) {
-                return `busts/${SpritesAssociation[spritesheetName][characterIndex]}`;
+                const b = window.BustPath.resolve(SpritesAssociation[spritesheetName][characterIndex]);
+                if (b) return `busts/${b}`;
             }
 
             return `busts/7`;
+        }
+
+        // The bust of a pre-made character standing on this sprite sheet, or
+        // null when the sheet belongs to nobody in particular. A party member
+        // wearing the sheet answers first (their own bust follows them however
+        // they have been dressed since), then the dossiers and their alternate
+        // looks. Mirrors VisualNovelBustSystem's method of the same name, which
+        // is where the two bust front ends have to agree.
+        getPresetBustForSprite(spritesheetName, characterIndex) {
+            if (!spritesheetName) return null;
+            const idx = characterIndex || 0;
+            try {
+                const members = ($gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
+                for (const actor of members) {
+                    if (!actor || actor.characterName() !== spritesheetName) continue;
+                    if ((actor.characterIndex() || 0) !== idx) continue;
+                    const bust = window.BustPath.resolve(actor.vnBust ? actor.vnBust() : null);
+                    if (bust) return bust;
+                }
+            } catch (err) { /* no party yet */ }
+
+            const CP = window.CharacterPresets;
+            if (!CP || !CP.getCharacterPresets) return null;
+            try {
+                for (const preset of CP.getCharacterPresets()) {
+                    const looks = CP.getPresetSkins ? CP.getPresetSkins(preset) : [preset];
+                    for (const look of looks) {
+                        if (!look || look.sprite !== spritesheetName) continue;
+                        if ((look.spriteIndex || 0) !== idx) continue;
+                        if (look.busts) return look.busts;
+                    }
+                }
+            } catch (err) { /* dossiers not loaded */ }
+            return null;
         }
 
         getBustNameFromEventComment() {
@@ -399,7 +441,8 @@ Imported.DialogueSystem = true;
 
         showCustomBust(imageName, characterName) {
             if (!imageName) return;
-            let path = `busts/${imageName}`;
+            const resolvedName = window.BustPath.resolve(imageName);
+            let path = resolvedName ? `busts/${resolvedName}` : `busts/7`;
             if (!this.checkImageExists(path)) path = `busts/7`;
             const key          = `custom_${imageName}`;
             const fallback     = this._loadFallback();

@@ -1560,12 +1560,25 @@
       const chosen = await chamber.choose(labels, {
         speaker: sg ? T("ONUMenu.role.secretaryGeneral") : delegation.name,
       });
-      const option = optionKeys[chosen];
-
       chamber.add(say("ONUAssembly.reactions." + (option === "wild" ? "wild" : "normal"), {
         power: sg ? T("ONUMenu.role.secretaryGeneral") : delegation.name,
       }), "narrator");
       await chamber.advance();
+
+      // Roll 3D D20 for debate persuasion impact on the chamber
+      if (window.Dice3D && option !== "abstain") {
+        const psiMod = Math.floor(((actor.luk || 10) - 10) / 2);
+        const res = await window.Dice3D.rollD20({
+          dc: option === "wild" ? 14 : 11,
+          modifier: psiMod + Math.round((persuade - 1) * 3),
+          statName: "PSI (Diplomacy)",
+          actionName: "ONU Assembly Debate"
+        });
+        if (res.nat20) persuade *= 1.4;
+        else if (res.nat1) persuade *= 0.6;
+        else if (res.success) persuade *= 1.15;
+        else persuade *= 0.85;
+      }
 
       // The division. Every seat votes, whether it spoke or not.
       const ctx = { option, persuasion: persuade, delegation, sg, secretaryPresent };

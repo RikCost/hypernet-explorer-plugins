@@ -2550,101 +2550,73 @@
 })();
 
 //=============================================================================
-// Enemy-attack animations shown over the party cards
+// Enemy-attack animations aimed at the party: sound only
 //
 // This is a front-view battle: the party stands on the shared HUD cards in the
 // top-left (UI/PartyHud.js), so there are no Sprite_Actor targets for the
-// engine to play animations over. When an enemy uses an action that has a real
-// animation aimed at the party, redirect it here:
-//   - single target  -> a miniature animation over that member's card
-//   - all/multi party -> one larger animation centered over the card column
+// engine to play animations over. Drawing the effect over the cards buried
+// them, so an enemy action aimed at the party is now heard and not seen: the
+// animation's sound timings play on schedule and nothing is rendered.
 //=============================================================================
 (() => {
   "use strict";
 
-  // Effekseer draws into a square viewport sized 4096 at full scale; shrinking
-  // that viewport shrinks the whole effect proportionally.
-  const MINI_SCALE = 0.08;  // single-target: sits over one card
-  const GROUP_SCALE = 0.15; // whole-party: larger, spans the card column
+  // SEs waiting for their frame, drained once per battle-scene update.
+  let _pendingSounds = [];
 
-  function activeBattleScene() {
-    const scene = SceneManager._scene;
-    return (scene && scene instanceof Scene_Battle) ? scene : null;
+  // MV animations carry a frames table; MZ (Effekseer) ones do not.
+  function isMVAnimation(animation) {
+    return !!animation.frames;
   }
 
-  // Screen-space centre of an actor's HUD card. The cards are HTML laid over
-  // the canvas (UI/PartyHud.js), so the reading comes back through the canvas'
-  // own scale; null when the HUD is not up, and the caller then leaves the
-  // animation to the engine.
-  function portraitCenter(actor) {
-    if (!activeBattleScene()) return null;
-    return window.PartyHud?.canvasPointFor?.(actor) || null;
-  }
-
-  // Play one animation over the given screen point(s) at a reduced viewport size.
-  function playAnimationAt(animationId, points, viewportScale, targetBattlers) {
-    if (!(animationId > 0) || !points || !points.length) return;
-    const scene = activeBattleScene();
-    const spriteset = scene && scene._spriteset;
-    const animation = $dataAnimations[animationId];
-    if (!spriteset || !animation || !spriteset._effectsContainer) return;
-
-    // Invisible target sprites anchored at the requested screen points. They are
-    // parented to the scene (identity transform), so world == local == point.
-    const dummies = points.map(pt => {
-      const d = new Sprite();
-      d.x = pt.x;
-      d.y = pt.y;
-      scene.addChild(d);
-      // The dummy is a direct child of the battle scene, but it is also torn
-      // down together with the animation sprite below. When the battle scene is
-      // destroyed both the animation-sprite cleanup and Stage.destroy's own child
-      // sweep race to destroy the same dummy (Stage snapshots its children before
-      // iterating, so it still holds the already-destroyed dummy). Make destroy
-      // idempotent so the second call is a no-op instead of crashing with
-      // "Cannot read property 'off' of null" on the freed texture.
-      const _dDestroy = d.destroy;
-      d.destroy = function (options) {
-        if (this._destroyed) return;
-        _dDestroy.call(this, options);
-      };
-      return d;
-    });
-
-    const mv = spriteset.isMVAnimation(animation);
-    const sprite = new (mv ? Sprite_AnimationMV : Sprite_Animation)();
-    sprite.targetObjects = targetBattlers || [];
-    if (!mv) {
-      sprite._viewportSize = 4096 * viewportScale;
+  // Queue every SE of an animation at its own frame offset. MV animations step
+  // once every 4 game frames (Sprite_AnimationMV's rate), so their timings are
+  // scaled; MZ sound timings are already in game frames.
+  function queueAnimationSounds(animationId) {
+    const animation = $dataAnimations && $dataAnimations[animationId];
+    if (!animation) return;
+    const mv = isMVAnimation(animation);
+    const timings = (mv ? animation.timings : animation.soundTimings) || [];
+    const rate = mv ? 4 : 1;
+    for (const timing of timings) {
+      if (!timing || !timing.se) continue;
+      const delay = Math.max(0, Math.round((timing.frame || 0) * rate));
+      if (delay <= 0) AudioManager.playSe(timing.se);
+      else _pendingSounds.push({ delay, se: timing.se });
     }
-    sprite.setup(dummies, animation, false, 0, null);
-    if (mv) {
-      sprite.scale.x = viewportScale;
-      sprite.scale.y = viewportScale;
-    }
-    spriteset._effectsContainer.addChild(sprite);
-    spriteset._animationSprites.push(sprite);
-
-    // Tear the dummy sprites down together with the animation.
-    sprite._bseMiniDummies = dummies;
-    const _destroy = sprite.destroy;
-    sprite.destroy = function (options) {
-      if (this._bseMiniDummies) {
-        for (const d of this._bseMiniDummies) {
-          if (d.parent) d.parent.removeChild(d);
-          if (d.destroy) d.destroy();
-        }
-        this._bseMiniDummies = null;
-      }
-      _destroy.call(this, options);
-    };
   }
+
+  function updatePendingSounds() {
+    if (!_pendingSounds.length) return;
+    const still = [];
+    for (const entry of _pendingSounds) {
+      if (--entry.delay <= 0) AudioManager.playSe(entry.se);
+      else still.push(entry);
+    }
+    _pendingSounds = still;
+  }
+
+  function clearPendingSounds() {
+    _pendingSounds = [];
+  }
+
+  const _Scene_Battle_update_animSounds = Scene_Battle.prototype.update;
+  Scene_Battle.prototype.update = function () {
+    _Scene_Battle_update_animSounds.call(this);
+    updatePendingSounds();
+  };
+
+  const _Scene_Battle_terminate_animSounds = Scene_Battle.prototype.terminate;
+  Scene_Battle.prototype.terminate = function () {
+    clearPendingSounds();
+    _Scene_Battle_terminate_animSounds.call(this);
+  };
 
   const _WBL_showAnimation = Window_BattleLog.prototype.showAnimation;
   Window_BattleLog.prototype.showAnimation = function (subject, targets, animationId) {
     // Map Battle Mode (MapBattleMode.js): combatants are real map characters,
     // not portrait cards, so let the default engine targeting reach their
-    // actual on-map sprite instead of redirecting onto a portrait.
+    // actual on-map sprite instead of silencing the effect.
     if (window.MapBattleMode && window.MapBattleMode.isActive()) {
       _WBL_showAnimation.call(this, subject, targets, animationId);
       return;
@@ -2652,18 +2624,7 @@
     if (animationId > 0 && subject && subject.isEnemy && subject.isEnemy() && Array.isArray(targets)) {
       const actorTargets = targets.filter(t => t && t.isActor && t.isActor());
       if (actorTargets.length > 0) {
-        if (actorTargets.length === 1) {
-          const c = portraitCenter(actorTargets[0]);
-          if (c) playAnimationAt(animationId, [c], MINI_SCALE, actorTargets);
-        } else {
-          // Multi/all-party hit: one larger animation over the column centroid.
-          const pts = actorTargets.map(portraitCenter).filter(Boolean);
-          if (pts.length) {
-            const cx = pts.reduce((s, p) => s + p.x, 0) / pts.length;
-            const cy = pts.reduce((s, p) => s + p.y, 0) / pts.length;
-            playAnimationAt(animationId, [new Point(cx, cy)], GROUP_SCALE, actorTargets);
-          }
-        }
+        queueAnimationSounds(animationId);
         // Let any non-actor targets keep the default handling.
         const otherTargets = targets.filter(t => !(t && t.isActor && t.isActor()));
         if (otherTargets.length > 0) {
@@ -2673,5 +2634,13 @@
       }
     }
     _WBL_showAnimation.call(this, subject, targets, animationId);
+  };
+
+  window.BattleSystemEnhanced = window.BattleSystemEnhanced || {};
+  window.BattleSystemEnhanced.EnemyAnimationSound = {
+    queue: queueAnimationSounds,
+    update: updatePendingSounds,
+    clear: clearPendingSounds,
+    pending: () => _pendingSounds.slice()
   };
 })();

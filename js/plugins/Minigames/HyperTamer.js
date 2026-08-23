@@ -20,7 +20,7 @@
  * - Dynamic growth system
  * - Monochrome LCD display effect
  * - Offline time calculation
- * - Custom device frame overlay
+ * - Drawn device shell around the screen
  * 
  * ============================================================================
  * Plugin Commands
@@ -28,13 +28,6 @@
  * 
  * Open HyperTamer - Opens the virtual pet interface
  * Reset Pet - Resets the current pet (warning: pet will die!)
- * 
- * @param deviceFrameImage
- * @text Device Frame Image
- * @desc PNG image for the device frame (must have transparent center)
- * @type file
- * @dir img/system/
- * @default HyperTamerFrame
  * 
  * @param lcdColorTint
  * @text LCD Color Tint
@@ -129,7 +122,6 @@
     const pluginName = 'HyperTamer';
     const parameters = PluginManager.parameters(pluginName);
     
-    const deviceFrameImage = parameters['deviceFrameImage'] || 'HyperTamerFrame';
     const lcdColorTint = parseInt(String(parameters['lcdColorTint'] || '#9BBC0F').replace('#', '0x')) || 0x9BBC0F;
     const updateInterval = Number(parameters['updateInterval']) || 60;
     const maxOfflineHours = Number(parameters['maxOfflineHours']) || 24;
@@ -157,13 +149,16 @@
     };
     
     
-    // Register plugin commands
-    PluginManager.registerCommand(pluginName, 'openHyperTamer', args => {
-        SceneManager.push(Scene_HyperTamer);
-    });
-    
-    PluginManager.registerCommand(pluginName, 'resetPet', args => {
-        $gameSystem.hyperTamerReset();
+    // Register the plugin commands under both the bare name and the folder
+    // qualified one: PluginManager.callCommand keys on whatever string the
+    // event stored, and the calls saved in CommonEvents say 'Minigames/...'.
+    [pluginName, 'Minigames/' + pluginName].forEach(key => {
+        PluginManager.registerCommand(key, 'openHyperTamer', args => {
+            SceneManager.push(Scene_HyperTamer);
+        });
+        PluginManager.registerCommand(key, 'resetPet', args => {
+            $gameSystem.hyperTamerReset();
+        });
     });
     
     //=============================================================================
@@ -247,7 +242,6 @@
     };
     
     Game_System.prototype.initializeHyperTamer = function() {
-        this._hyperTamerData = this._hyperTamerData || this.createNewPet();
         this._hyperTamerItems = this._hyperTamerItems || {
             food: startingFood,
             toys: 3,
@@ -256,9 +250,12 @@
     };
     
     Game_System.prototype.createNewPet = function() {
-        // Get valid enemies (exclude bosses and special enemies)
-        const enemies = $dataEnemies.filter(e => 
-            e && e.name && e.battlerName && !e.meta.boss
+        // Get valid enemies. The database dividers ("<-- 1-10 -->") carry a
+        // battler image but are not creatures, and a boss is nobody's pet:
+        // the <Boss> note tag reads back as meta.Boss.
+        const enemies = $dataEnemies.filter(e =>
+            e && e.name && e.battlerName && !e.name.startsWith('<--') &&
+            !(e.meta && (e.meta.Boss || e.meta.boss))
         );
         
         if (enemies.length === 0) {
@@ -307,7 +304,10 @@
     
     Game_System.prototype.hyperTamerData = function() {
         if (!this._hyperTamerData) {
+            // The pet hatches the first time the device is opened, not at new
+            // game: a device nobody ever looked at keeps no starving creature.
             this.initializeHyperTamer();
+            this._hyperTamerData = this.createNewPet();
         }
         return this._hyperTamerData;
     };
@@ -450,6 +450,15 @@
             this.setHotFrame(0, 0, w, h);
             this.updateFrame();
         }
+
+        // The core check measures the bitmap against the ButtonSet sheet and
+        // throws for anything narrower, which a 58px label always is.
+        checkBitmap() {
+        }
+
+        // Opacity belongs to the selection highlight, not to the press state.
+        updateOpacity() {
+        }
     }
 
     //=============================================================================
@@ -476,8 +485,7 @@
         _redraw() {
             this.bitmap.clear();
             this.bitmap.fontSize = 16;
-            const prompt = T('HyperTamer.train') + '! (' + this._type + ')';
-            this.bitmap.drawText(prompt, 0, 0, 220, 30, 'center');
+            this.bitmap.drawText(T('HyperTamer.' + this._type + 'Training'), 0, 0, 220, 30, 'center');
             this.bitmap.drawText(T('HyperTamer.scoreLine', { score: this._score }), 0, 30, 220, 30, 'center');
         }
 
@@ -518,6 +526,7 @@
             this.createUI();
             this.createDeviceFrame();
             this.refreshDisplay();
+            if (window.MinigameFun) window.MinigameFun.played('Animal Training'); // i18n-ignore: specialization id
         }
         
         createBackground() {
@@ -531,6 +540,9 @@
             // Create LCD container
             this._lcdContainer = new Sprite();
             this._lcdContainer.bitmap = new Bitmap(320, 240);
+            // The filter maps luminance onto the tint, so the panel's own
+            // ground has to be dark: it is the unlit state of the display.
+            this._lcdContainer.bitmap.fillRect(0, 0, 320, 240, '#1c1c1c');
             this._lcdContainer.x = (Graphics.width - 320) / 2;
             this._lcdContainer.y = (Graphics.height - 240) / 2 - 50;
             
@@ -557,6 +569,9 @@
                 this._petSprite.setFrame(0, 0, 0, 0);
                 
                 this._petSprite.bitmap.addLoadListener(() => {
+                    // The frame is opened up only now: it was collapsed while
+                    // the battler loaded so no stray corner of the sheet showed.
+                    this._petSprite.setFrame(0, 0, this._petSprite.bitmap.width, this._petSprite.bitmap.height);
                     // Scale to fit LCD screen with growth
                     const maxWidth = 200;
                     const maxHeight = 150;
@@ -613,6 +628,8 @@
             this._deathText.bitmap = new Bitmap(320, 240);
             this._deathText.bitmap.fontSize = 24;
             this._deathText.bitmap.drawText(T('HyperTamer.petDied'), 0, 100, 320, 32, 'center');
+            this._deathText.bitmap.fontSize = 16;
+            this._deathText.bitmap.drawText(T('HyperTamer.hatchNew'), 0, 136, 320, 24, 'center');
             this._lcdContainer.addChild(this._deathText);
         }
         
@@ -689,12 +706,26 @@
         }
         
         createDeviceFrame() {
-            this._deviceFrame = new Sprite();
-            this._deviceFrame.bitmap = ImageManager.loadSystem(deviceFrameImage);
-            this._deviceFrame.bitmap.addLoadListener(() => {
-                this._deviceFrame.x = (Graphics.width - this._deviceFrame.width) / 2;
-                this._deviceFrame.y = (Graphics.height - this._deviceFrame.height) / 2;
-            });
+            const w = Graphics.width;
+            const h = Graphics.height;
+            const lx = this._lcdContainer.x;
+            const ly = this._lcdContainer.y;
+            const lw = 320;
+            const lh = 240;
+            const bitmap = new Bitmap(w, h);
+            // Shell, then the bezel ring, then the window punched back out so
+            // the LCD underneath shows through the middle of the case.
+            bitmap.gradientFillRect(0, 0, w, h, '#d8d4c0', '#a29e8c', true);
+            bitmap.fillRect(lx - 16, ly - 16, lw + 32, lh + 32, '#3a3a32');
+            bitmap.clearRect(lx, ly, lw, lh);
+            // Speaker grille to the right of the window and a plate to its left.
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 5; col++) {
+                    bitmap.fillRect(lx + lw - 66 + col * 12, ly + lh + 34 + row * 10, 6, 6, '#8e8b7a');
+                }
+            }
+            bitmap.fillRect(lx + 10, ly + lh + 40, 80, 8, '#8e8b7a');
+            this._deviceFrame = new Sprite(bitmap);
             this.addChild(this._deviceFrame);
         }
         
@@ -809,6 +840,8 @@
             const games = ['strength', 'intelligence', 'agility'];
             const randomGame = games[Math.floor(Math.random() * games.length)];
             this._currentMinigame = new MiniGame_Training(randomGame);
+            this._currentMinigame.x = 50;
+            this._currentMinigame.y = 90;
             this._currentMinigame.setFinishHandler(this.onMinigameFinish.bind(this));
             this._lcdContainer.addChild(this._currentMinigame);
         }
@@ -816,6 +849,7 @@
         onMinigameFinish(type, score) {
             const data = $gameSystem.hyperTamerData();
 
+            // i18n-ignore: 'Animal Training' is the specialization id
             if (window.MinigameFun) (score > 0) ? window.MinigameFun.won('Animal Training') : window.MinigameFun.lost('Animal Training');
 
             // Award stats based on performance
@@ -854,7 +888,9 @@
                     const bitmap = this._uiContainer.bitmap;
                     bitmap.fontSize = 12;
                     const personalityText = T('HyperTamer.' + data.personality);
-                    bitmap.drawText(`${data.petName} (${personalityText}) ${T('HyperTamer.level')}${data.stats.level}`, 10, 220, 300, 20, 'left');
+                    const enemy = $dataEnemies[data.petId];
+                    const petName = (enemy && enemy.name) || data.petName;
+                    bitmap.drawText(`${petName} (${personalityText}) ${T('HyperTamer.level')}${data.stats.level}`, 10, 220, 300, 20, 'left');
                     
                     // Draw stats
                     bitmap.fontSize = 10;
@@ -877,8 +913,20 @@
             // action buttons, OK activates, B/Esc exits
             if (Input.isTriggered('cancel')) {
                 this.popScene();
+                return;
             }
-            if (this._buttons && this._buttons.length > 0) {
+
+            const petData = $gameSystem.hyperTamerData();
+            if (!petData || !petData.isAlive) {
+                // The only thing left to do at a grave is start again.
+                if (Input.isTriggered('ok') || TouchInput.isTriggered()) {
+                    $gameSystem.hyperTamerReset();
+                    SceneManager.goto(Scene_HyperTamer);
+                }
+                return;
+            }
+
+            if (!this._currentMinigame && this._buttons && this._buttons.length > 0) {
                 const total = this._buttons.length;
                 if (Input.isRepeated('left')) {
                     this._selectedButtonIndex = (this._selectedButtonIndex - 1 + total) % total;

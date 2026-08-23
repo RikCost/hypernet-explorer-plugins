@@ -464,7 +464,9 @@
       }
     }
 
-    if (Input.isTriggered('pageup') || Input.isTriggered('pagedown') || Input.isTriggered('tab')) {
+    // Tab is the party cycle on the map (Core/AutoIdleExplorer.js), so the bar
+    // is stepped with the page keys and fired with the number keys.
+    if (Input.isTriggered('pageup') || Input.isTriggered('pagedown')) {
       const dir = Input.isTriggered('pageup') ? -1 : 1;
       const next = _mapArmed
         ? ItemHotbar.stepSlot(_mapIndex, dir)

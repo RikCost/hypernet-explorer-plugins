@@ -839,6 +839,51 @@
             return true;
         }
 
+        // A company's price, in whole euros, as quoted by whoever is trading it.
+        // The stock terminal prices the same listings live and writes its quote
+        // back here so the Assets pockets and this screen value a share alike.
+        setCompanyPrice(key, priceEuros) {
+            if (!this.getCompanyDefs()[key]) return false;
+            this.companyPrices[key] = Math.max(1, Math.round(Number(priceEuros) || 1));
+            return true;
+        }
+
+        // A compact read of one holding, for systems that poll it often (the
+        // stock terminal ticks a few times a second): no list build, no sort.
+        getPosition(key) {
+            const def = this.getCompanyDefs()[key];
+            if (!def) return null;
+            const total = Number(def.totalShares) || 0;
+            const shares = this.getShares(key);
+            return {
+                key,
+                price: this.getCompanyPrice(key),          // euros per share
+                shares,
+                costBasis: this.companyCostBasis[key] || 0, // gold
+                totalShares: total,
+                available: Math.max(0, total - shares)
+            };
+        }
+
+        // State a holding outright: what the party owns and what it paid. Used by
+        // the stock terminal, which settles its own cash and then reports the
+        // resulting position here.
+        setPosition(key, shares, costBasisGold) {
+            const def = this.getCompanyDefs()[key];
+            if (!def) return false;
+            const total = Number(def.totalShares) || 0;
+            const count = Math.max(0, Math.min(Math.floor(Number(shares) || 0), total || Infinity));
+            if (count > 0) {
+                this.companyShares[key] = count;
+                this.companyCostBasis[key] = Math.max(0, Math.round(Number(costBasisGold) || 0));
+            } else {
+                delete this.companyShares[key];
+                delete this.companyCostBasis[key];
+            }
+            this.save();
+            return true;
+        }
+
         // Register a new company at runtime (persisted in the save). Accepts a key
         // and an options object; sensible defaults fill any gaps.
         registerCompany(key, opts) {
@@ -2069,6 +2114,10 @@
     // Public API for other systems (character creation, Assets pockets, events).
     // Every entry ensures the manager exists, then delegates to it.
     window.AssetRegistry = {
+        // Whether the register is already standing. Systems that poll it on a
+        // timer (the stock terminal prices every couple of seconds) ask first,
+        // so a background tick never builds the whole property market for them.
+        isReady() { return !!$realEstateManager; },
         registerCompany(key, opts) { ensureRealEstateManager(); return $realEstateManager.registerCompany(key, opts || {}); },
         registerDestination(key, valueEuros) { ensureRealEstateManager(); return $realEstateManager.registerDestination(key, valueEuros); },
         giveShares(key, count) { ensureRealEstateManager(); return $realEstateManager.giveShares(key, count); },
@@ -2076,6 +2125,9 @@
         sellShares(key, count) { ensureRealEstateManager(); return $realEstateManager.sellShares(key, count); },
         getCompanies() { ensureRealEstateManager(); return $realEstateManager.getCompanies(); },
         getCompany(key) { ensureRealEstateManager(); return $realEstateManager.getCompany(key); },
+        getPosition(key) { ensureRealEstateManager(); return $realEstateManager.getPosition(key); },
+        setPosition(key, shares, costBasisGold) { ensureRealEstateManager(); return $realEstateManager.setPosition(key, shares, costBasisGold); },
+        setCompanyPrice(key, priceEuros) { ensureRealEstateManager(); return $realEstateManager.setCompanyPrice(key, priceEuros); },
         // Companies with a non-zero position, for the Assets pockets.
         getHoldings() { ensureRealEstateManager(); return $realEstateManager.getCompanies().filter(c => c.sharesOwned > 0); },
         getOwnedPlaces() { ensureRealEstateManager(); return $realEstateManager.getOwnedDestinations(); }

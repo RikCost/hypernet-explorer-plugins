@@ -346,6 +346,107 @@
     this.members().forEach(runEstrogenAutoinjector);
   };
 
+  // ── The endocrine balance ────────────────────────────────────────────────
+  // A body's sex hormones used to be read off its gender alone: male bodies
+  // ran one range, female bodies another, and anybody else took a middle one.
+  // A character is now BUILT at a point on the scale between the two (the Bio
+  // tab's slider, stored by ActorCharacterFields as `hormoneBalance`), so the
+  // range is interpolated from that point instead: 0 is a wholly oestrogenic
+  // body, 100 a wholly androgenic one, 50 an even one. The two endpoints are
+  // exactly the ranges the gender switch used, so a body built at its gender's
+  // own default reads precisely as it always did.
+  //
+  // A character nobody ever asked (an NPC, anybody made before the slider)
+  // answers null and falls back to their gender's default, which is why this
+  // takes an actor rather than a number.
+  // Each bound below is written at FOUR points on the scale: the two ends, and
+  // the two default builds at 15 and 85. Anchoring the middle two that way is
+  // what keeps an ordinary character exactly as they were, since 15 and 85 are
+  // the female and male ranges the old gender switch used, and 50 lands almost
+  // exactly on the old non-binary bracket. The two ends then reach a little
+  // past either ordinary body, which is what the last fifteen points of the
+  // slider are for. Written out rather than extrapolated so every bound stays
+  // positive and stays the right side of the other one at both ends.
+  const HORMONE_DEFAULTS = { 0: 85, 1: 15, 2: 50, 3: 50 }; // male / female / non-binary / cocoon
+  const HORMONE_SCALE = [0, 0.15, 0.85, 1];
+  const HORMONE_ENDPOINTS = {
+    testosterone: { //                     ng/dL
+      min:   [5, 10, 250, 320],
+      max:   [40, 80, 1000, 1200],
+      start: [8, 15, 300, 380],
+      span:  [30, 55, 700, 820]
+    },
+    estrogen: { //                         pg/mL
+      min:   [30, 20, 10, 7],
+      max:   [500, 400, 50, 35],
+      start: [45, 30, 10, 7],
+      span:  [455, 370, 30, 20]
+    },
+    progesterone: { //                     ng/mL
+      min:   [0.8, 0.5, 0.1, 0.05],
+      max:   [26, 20, 0.5, 0.3],
+      start: [0.8, 0.5, 0.1, 0.05],
+      span:  [25, 19.5, 0.4, 0.25]
+    }
+  };
+
+  // Read one of those four-point curves at a point on the scale.
+  function lerp(points, t) {
+    var x = Math.max(0, Math.min(1, t));
+    for (var i = 1; i < HORMONE_SCALE.length; i++) {
+      if (x > HORMONE_SCALE[i]) continue;
+      var a = HORMONE_SCALE[i - 1];
+      var b = HORMONE_SCALE[i];
+      var k = b > a ? (x - a) / (b - a) : 0;
+      return points[i - 1] + (points[i] - points[i - 1]) * k;
+    }
+    return points[points.length - 1];
+  }
+
+  // Where this actor's body sits, 0-100. Never null: an unasked body answers
+  // with the default for the gender it carries.
+  function hormoneBalanceOf(actor) {
+    var own = (actor && typeof actor.hormoneBalance === "function") ? actor.hormoneBalance() : null;
+    if (own !== null && own !== undefined) return Math.max(0, Math.min(100, own));
+    var gender = readGender(actor);
+    return HORMONE_DEFAULTS[gender] === undefined ? 50 : HORMONE_DEFAULTS[gender];
+  }
+
+  // Was this body deliberately tuned? A body that was keeps the identity it
+  // was given: updateGenderFromHormones does not re-label it from its own
+  // blood, or a character built androgynous on purpose would be renamed by the
+  // first panel they opened.
+  function hormoneBalanceIsSet(actor) {
+    return !!(actor && typeof actor.hormoneBalance === "function" && actor.hormoneBalance() !== null);
+  }
+
+  // The range one hormone is held between at this point on the scale.
+  function hormoneRange(name, balance) {
+    var ends = HORMONE_ENDPOINTS[name];
+    if (!ends) return null;
+    var t = Math.max(0, Math.min(100, balance)) / 100;
+    return { min: lerp(ends.min, t), max: lerp(ends.max, t) };
+  }
+
+  // And the value a body of this build is born with, rolled inside that range.
+  function initialHormone(name, balance) {
+    var ends = HORMONE_ENDPOINTS[name];
+    if (!ends) return 0;
+    var t = Math.max(0, Math.min(100, balance)) / 100;
+    return lerp(ends.start, t) + Math.random() * lerp(ends.span, t);
+  }
+
+  // Read by the character creation Bio tab, which prints what the slider is
+  // actually doing to the blood rather than an abstract number.
+  window.HormoneBalance = {
+    of: hormoneBalanceOf,
+    isSet: hormoneBalanceIsSet,
+    rangeFor(name, balance) { return hormoneRange(name, balance); },
+    defaultFor(gender) {
+      return HORMONE_DEFAULTS[gender] === undefined ? 50 : HORMONE_DEFAULTS[gender];
+    }
+  };
+
   // What an endocrine implant does is written in the blood rather than in a
   // parameter table, so the augment register (PartyAugmentsMenu) asks the
   // system that implements it for the line to print.
@@ -481,23 +582,93 @@
       const recipient = this.get(recipientId);
       if (!donor || !recipient) return false;
 
+      // Synthetic-Δ is a universal artificial fluorocarbon carrier
+      if (donor.id === 'SYNTH_DELTA') return true;
+
+      // Synthetic recipients
+      if (recipient.id === 'SYNTH_DELTA') {
+        return donor.id === 'SYNTH_DELTA' || donor.id === 'SYNTH_PSI' || donor.id === 'O_NEG';
+      }
+      if (recipient.id === 'SYNTH_PSI') {
+        return donor.id === 'SYNTH_PSI' || donor.id === 'SYNTH_DELTA';
+      }
+      if (donor.id === 'SYNTH_PSI') {
+        return recipient.id === 'SYNTH_PSI' || recipient.id === 'SYNTH_DELTA';
+      }
+
+      // Exotic Invertebrate / Hemocyanin / Chlorocruorin
+      if (recipient.id === 'AZURE_HEMOCYANIN') {
+        return donor.id === 'AZURE_HEMOCYANIN' || donor.id === 'SYNTH_DELTA';
+      }
+      if (donor.id === 'AZURE_HEMOCYANIN') {
+        return recipient.id === 'AZURE_HEMOCYANIN' || recipient.id === 'SYNTH_DELTA';
+      }
+      if (recipient.id === 'CHLOROCRUORIN') {
+        return donor.id === 'CHLOROCRUORIN' || donor.id === 'SYNTH_DELTA';
+      }
+      if (donor.id === 'CHLOROCRUORIN') {
+        return recipient.id === 'CHLOROCRUORIN' || recipient.id === 'SYNTH_DELTA';
+      }
+
+      // Golden Blood / Rh-null
+      if (recipient.id === 'RH_NULL') {
+        return donor.id === 'RH_NULL' || donor.id === 'SYNTH_DELTA';
+      }
+      if (donor.id === 'RH_NULL') {
+        return !recipient.rareAntigen || recipient.rareAntigen === 'rhNull';
+      }
+
+      // Bombay phenotype (hh)
+      if (recipient.id === 'BOMBAY_HH') {
+        return donor.id === 'BOMBAY_HH' || donor.id === 'SYNTH_DELTA';
+      }
+      if (donor.id === 'BOMBAY_HH') {
+        return true;
+      }
+
+      // Rare antigen-null types (Duffy, Diego, Kidd, Colton, Lutheran)
       if (recipient.rareAntigen) {
-        return donor.rareAntigen === recipient.rareAntigen;
+        return donor.rareAntigen === recipient.rareAntigen || donor.id === 'SYNTH_DELTA';
       }
-      if (donor.rareAntigen === 'rhNull') {
-        return this._aboCompatible(donor.abo, recipient.abo);
-      }
+
+      // Standard ABO/Rh rules
       return this._aboCompatible(donor.abo, recipient.abo) && this._rhCompatible(donor.rh, recipient.rh);
     },
 
     isUniversalDonor(id) {
       const entry = this.get(id);
-      return !!entry && entry.abo === 'O' && entry.rh === '-' && !entry.rareAntigen;
+      return !!entry && ((entry.abo === 'O' && entry.rh === '-' && !entry.rareAntigen) || entry.id === 'SYNTH_DELTA' || entry.id === 'RH_NULL');
     },
 
     isUniversalRecipient(id) {
       const entry = this.get(id);
-      return !!entry && entry.abo === 'AB' && entry.rh === '+' && !entry.rareAntigen;
+      return !!entry && (entry.abo === 'AB' && entry.rh === '+' && !entry.rareAntigen);
+    },
+
+    checkPartyCompatibility(actor, testBloodId) {
+      const bloodId = testBloodId || (actor && (actor._ccBloodType || actor._bloodType));
+      const results = { canDonateTo: [], canReceiveFrom: [] };
+      if (!bloodId || typeof $gameParty === 'undefined' || !$gameParty.members) return results;
+
+      const currentActorId = actor ? (typeof actor.actorId === 'function' ? actor.actorId() : actor._actorId) : null;
+      $gameParty.members().forEach((member) => {
+        if (!member) return;
+        const memberId = typeof member.actorId === 'function' ? member.actorId() : member._actorId;
+        if (memberId === currentActorId) return;
+
+        const memberBloodId = member._ccBloodType || member._bloodType || (window.BloodTypeService && window.BloodTypeService.forActor(member)?.id) || "O_POS";
+        const memberName = member.name ? member.name() : `Member ${memberId}`;
+        const memberBloodEntry = this.get(memberBloodId);
+        const memberTypeLabel = memberBloodEntry ? memberBloodEntry.type : memberBloodId;
+
+        if (this.canDonate(bloodId, memberBloodId)) {
+          results.canDonateTo.push({ name: memberName, type: memberTypeLabel, id: memberBloodId });
+        }
+        if (this.canDonate(memberBloodId, bloodId)) {
+          results.canReceiveFrom.push({ name: memberName, type: memberTypeLabel, id: memberBloodId });
+        }
+      });
+      return results;
     },
   };
 
@@ -1536,17 +1707,17 @@
     }
 
     if (repType === 0) {
-      // Field names must match what initializeUterusData / updateTestesData
-      // actually write (spermMotility, spermMorphology, testosteroneProduction,
-      // dailySpermProduction); the old short names rendered "undefined%".
+      // Field names must match what initializeUterusData actually writes
+      // (spermMotility, spermMorphology, testosteroneProduction); the old
+      // short names rendered "undefined%".
       const testes = actor.testesData || {};
       const spermCount = num(testes.spermCount, 350000000);
       const motility = num(testes.spermMotility, 65);
       const morphology = num(testes.spermMorphology, 8);
       const testosterone = num(testes.testosteroneProduction,
         num(actor._biologicData && actor._biologicData.hormones && actor._biologicData.hormones.testosterone, 650));
-      // fertilityRate / dailySpermProduction are stored zeroed and were only
-      // ever filled by drawTestes, which is dead code, so derive them here.
+      // fertilityRate / dailySpermProduction are stored zeroed and nothing
+      // ever fills them, so derive them here.
       const dailyProduction = Math.floor((testosterone / 500) * 100);
       const fertility = (
         (motility / 80) * 100 +
@@ -2382,44 +2553,6 @@
     SceneManager.push(Scene_BiologicSimulation);
   };
 
-  function Scene_BiologicActorSelect() {
-    this.initialize(...arguments);
-  }
-
-  Scene_BiologicActorSelect.prototype = Object.create(Scene_MenuBase.prototype);
-  Scene_BiologicActorSelect.prototype.constructor = Scene_BiologicActorSelect;
-
-  Scene_BiologicActorSelect.prototype.create = function () {
-    Scene_MenuBase.prototype.create.call(this);
-    const members = $gameParty.members();
-    const ww = 300;
-    const wh = this.calcWindowHeight(members.length, true);
-    const wx = (Graphics.boxWidth - ww) / 2;
-    const wy = (Graphics.boxHeight - wh) / 2;
-    this._selectWindow = new Window_BiologicActorList(new Rectangle(wx, wy, ww, wh));
-    this._selectWindow.setHandler("ok", this.onActorOk.bind(this));
-    this._selectWindow.setHandler("cancel", this.popScene.bind(this));
-    this.addWindow(this._selectWindow);
-  };
-
-  Scene_BiologicActorSelect.prototype.onActorOk = function () {
-    Scene_BiologicSimulation._targetActorIndex = this._selectWindow.index();
-    SceneManager.push(Scene_BiologicSimulation);
-  };
-
-  function Window_BiologicActorList() {
-    this.initialize(...arguments);
-  }
-
-  Window_BiologicActorList.prototype = Object.create(Window_Command.prototype);
-  Window_BiologicActorList.prototype.constructor = Window_BiologicActorList;
-
-  Window_BiologicActorList.prototype.makeCommandList = function () {
-    const members = $gameParty.members();
-    for (let i = 0; i < members.length; i++) {
-      this.addCommand(members[i].name(), "ok");
-    }
-  };
   var _Game_Interpreter_pluginCommand_pregnancy =
     Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function (command, args) {
@@ -3099,8 +3232,6 @@
     var hormoneMods = bio.personality.modifiers?.hormones || {};
 
     // Hormones fluctuate based on circadian rhythm, hunger, and sleep
-    var currentGender = readGender(this._actor);
-
     // Growth hormone increases during sleep deprivation (body trying to compensate)
     if (sleep < 40) {
       bio.hormones.growth += Math.random() * 0.5;
@@ -3136,27 +3267,21 @@
     var testMod = hormoneMods.testosterone || 1.0;
     var estMod = hormoneMods.estrogen || 1.0;
 
-    if (currentGender === 0) {
-      // Male
-      bio.hormones.testosterone = Math.max(
-        250 * testMod,
-        Math.min(1000 * testMod, bio.hormones.testosterone)
-      );
-      bio.hormones.estrogen = Math.max(
-        10 * estMod,
-        Math.min(50 * estMod, bio.hormones.estrogen)
-      );
-    } else if (currentGender === 1) {
-      // Female
-      bio.hormones.testosterone = Math.max(
-        10 * testMod,
-        Math.min(80 * testMod, bio.hormones.testosterone)
-      );
-      bio.hormones.estrogen = Math.max(
-        20 * estMod,
-        Math.min(400 * estMod, bio.hormones.estrogen)
-      );
-    }
+    // Held inside the range this BODY runs at rather than the one its gender
+    // would imply: a character built androgynous stays androgynous, and one
+    // built at their gender's own default is clamped exactly as before (the
+    // endpoints of the scale are the two ranges this used to switch between).
+    var balance = hormoneBalanceOf(this._actor);
+    var testRange = hormoneRange("testosterone", balance);
+    var estRange = hormoneRange("estrogen", balance);
+    bio.hormones.testosterone = Math.max(
+      testRange.min * testMod,
+      Math.min(testRange.max * testMod, bio.hormones.testosterone)
+    );
+    bio.hormones.estrogen = Math.max(
+      estRange.min * estMod,
+      Math.min(estRange.max * estMod, bio.hormones.estrogen)
+    );
 
     // An implanted gland is the body's actual endocrine output, so it is
     // written after the gender-appropriate ranges above rather than inside
@@ -3524,12 +3649,13 @@
         cortisol: 10 + Math.floor(Math.random() * 15), // 10-25 μg/dL
       };
 
-      // Initialize hormones with gender consideration
-      var currentGender = readGender(this._actor);
+      // Initialize hormones from the balance this body was built at (which
+      // falls back to its gender's own default when nobody ever said).
+      var balance = hormoneBalanceOf(this._actor);
       this._actor._biologicData.hormones = {
-        testosterone: this.getInitialTestosterone(currentGender),
-        estrogen: this.getInitialEstrogen(currentGender),
-        progesterone: this.getInitialProgesterone(currentGender),
+        testosterone: this.getInitialTestosterone(balance),
+        estrogen: this.getInitialEstrogen(balance),
+        progesterone: this.getInitialProgesterone(balance),
         cortisol: 10 + Math.floor(Math.random() * 15),
         adrenaline: 20 + Math.floor(Math.random() * 30),
         insulin: 5 + Math.floor(Math.random() * 10),
@@ -3971,694 +4097,37 @@
     window.skipLocalization = false;
     return split;
   }
-  // 4. ADD the drawing method for the uterus tab
-  // i18n-ignore-start: unreachable canvas fallback (opens with `return;`, no caller); the DOM panel renders this section.
-  Window_BiologicSimulation.prototype.drawUterus = function (startY) {
-    return;
-    var uterus = this._actor._uterusData;
-    var pregnancyType = $gameVariables.value(87) || 0;
-    var y = startY;
-    var lineHeight = this.lineHeight();
-
-    if (pregnancyType === -1) {
-      this.changeTextColor(this.textColor(18));
-      this.drawText(T('Biologic.noReproductiveSystemPresent'), 6, y, 400);
-      this.resetTextColor();
-      return;
-    }
-
-    if (pregnancyType === 0) {
-      // Display Testes information
-      this.drawTestes(y, lineHeight);
-      return;
-    }
-
-    // Ensure uterus data is initialized
-    if (!uterus) {
-      this.initializeUterusData();
-      uterus = this._actor._uterusData;
-    }
-
-    // Check if birth/completion just happened (only trigger event for uterus type)
-    if (uterus && uterus.birthReady) {
-      uterus.birthReady = false;
-      this.stopBiologicSimulation();
-      SceneManager.pop();
-      if (pregnancyType === 1) { // Only for uterus type
-        $gameTemp.reserveCommonEvent(139);
-      }
-      return;
-    }
-
-    var typeNames = T.list('Biologic.pregnancyType');
-
-    this.changeTextColor(this.systemColor());
-    this.drawText(
-      T('Biologic.type'),
-      6,
-      y,
-      200
-    );
-    this.resetTextColor();
-    this.changeTextColor(this.textColor(3));
-    if (pregnancyType < 0 || pregnancyType > 4) {
-      pregnancyType = 0;
-    }
-    var typeName = typeNames[pregnancyType];
-    this.drawText(typeName, 250, y, 400);
-    this.resetTextColor();
-    y += lineHeight * 2;
-
-    if (uterus.isPregnant) {
-      // === PREGNANCY MODE ===
-      this.changeTextColor(this.textColor(3));
-      var statusText = "";
-
-      switch (pregnancyType) {
-        case 1:
-          statusText = T('Biologic.pregnancyInProgress');
-          break;
-        case 2:
-          statusText = T('Biologic.eggDevelopmentInProgress');
-          break;
-        case 3:
-          statusText = T('Biologic.seedGenerationInProgress');
-          break;
-        case 4:
-          statusText = T('Biologic.mitosisInProgress');
-          break;
-      }
-
-      this.drawText(statusText, 6, y, 400);
-      this.resetTextColor();
-      y += lineHeight * 2;
-
-      // Display based on type
-      switch (pregnancyType) {
-        case 1: // Uterus - existing code
-          var daysRemaining = getPregnancyDuration(this._actor) - uterus.gestationalAge;
-          var totalSeconds = daysRemaining * 24 * 60 * 60;
-          var days = Math.floor(totalSeconds / 86400);
-          var hours = Math.floor((totalSeconds % 86400) / 3600);
-          var minutes = Math.floor((totalSeconds % 3600) / 60);
-          var seconds = totalSeconds % 60;
-
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.timeUntilBirth'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          this.changeTextColor(this.textColor(2));
-          this.drawText(
-            days + "d " + hours + "h " + minutes + "m " + seconds + "s",
-            300,
-            y,
-            380
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          var ageText = T('Biologic.gestationalAgeLine', {
-            days: uterus.gestationalAge,
-            weeks: Math.floor(uterus.gestationalAge / 7),
-          });
-          this.drawText(ageText, 6, y, 500);
-          y += lineHeight;
-
-          var trimester =
-            uterus.gestationalAge < 84
-              ? T('Biologic.firstTrimester')
-              : uterus.gestationalAge < 196
-                ? T('Biologic.secondTrimester')
-                : T('Biologic.thirdTrimester');
-          this.changeTextColor(this.textColor(6));
-          this.drawText(trimester, 6, y, 300);
-          this.resetTextColor();
-          y += lineHeight * 2;
-
-          // Fetus information
-          if (uterus.fetus) {
-            this.changeTextColor(this.systemColor());
-            this.drawText(
-              T('Biologic.fetalDevelopment'),
-              6,
-              y,
-              200
-            );
-            this.resetTextColor();
-            y += lineHeight;
-
-            this.changeTextColor(this.textColor(3));
-            this.drawText("Stage: " + uterus.fetus.stage, 20, y, 500);
-            this.resetTextColor();
-            y += lineHeight;
-
-            this.drawText("Week: " + uterus.fetus.week, 20, y, 300);
-            y += lineHeight;
-
-            this.drawText("Size: " + uterus.fetus.size, 20, y, 300);
-            this.drawText("Weight: " + uterus.fetus.weight, 300, y, 200);
-            y += lineHeight * 2;
-
-            this.changeTextColor(this.textColor(6));
-            this.drawText(uterus.fetus.description, 20, y, 550);
-            this.resetTextColor();
-            y += lineHeight * 2;
-
-            this.changeTextColor(this.systemColor());
-            this.drawText(
-              T('Biologic.currentDevelopments'),
-              6,
-              y,
-              200
-            );
-            this.resetTextColor();
-            y += lineHeight;
-
-            for (var i = 0; i < uterus.fetus.developments.length; i++) {
-              this.drawText("• " + uterus.fetus.developments[i], 20, y, 550);
-              y += lineHeight;
-            }
-          }
-          break;
-
-        case 2: // Oviparous
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.eggDevelopment'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.changeTextColor(this.textColor(3));
-          this.drawText(
-            T('Biologic.progress') + uterus.eggDevelopment.toFixed(1) + "%",
-            20,
-            y,
-            300
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          var eggsCount = Math.floor((uterus.eggDevelopment / 25)) + 1;
-          eggsCount = Math.min(4, eggsCount);
-          this.drawText(
-            T('Biologic.eggsForming') + eggsCount,
-            20,
-            y,
-            300
-          );
-          y += lineHeight * 2;
-
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.developmentStage'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          var eggStage = "";
-          var eggDesc = "";
-          if (uterus.eggDevelopment < 25) {
-            eggStage = T('Biologic.fertilization');
-            eggDesc = T('Biologic.initialCellDivisionBeginning');
-          } else if (uterus.eggDevelopment < 50) {
-            eggStage = T('Biologic.shellFormation');
-            eggDesc = T('Biologic.calciumDepositsFormingProtectiveShell');
-          } else if (uterus.eggDevelopment < 75) {
-            eggStage = T('Biologic.embryoDevelopment');
-            eggDesc = T('Biologic.embryoGrowingInsideProtectiveShell');
-          } else {
-            eggStage = T('Biologic.readyToLay');
-            eggDesc = T('Biologic.eggsFullyFormedAndReadyForLaying');
-          }
-
-          this.changeTextColor(this.textColor(6));
-          this.drawText(eggStage, 20, y, 300);
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.drawText(eggDesc, 20, y, 550);
-          y += lineHeight;
-          break;
-
-        case 3: // Plant seeds
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.seedStorage'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.changeTextColor(this.textColor(3));
-          this.drawText(
-            T('Biologic.seedsAvailable') + uterus.seedsReady,
-            20,
-            y,
-            400
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.drawText(
-            T('Biologic.readyToGenerateNewSeed'),
-            20,
-            y,
-            400
-          );
-          break;
-
-        case 4: // Mitosis
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.mitosisProgress'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.changeTextColor(this.textColor(3));
-          this.drawText(
-            T('Biologic.progress') + uterus.mitosisDevelopment.toFixed(1) + "%",
-            20,
-            y,
-            300
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          var minutesRemaining = Math.ceil(((100 - uterus.mitosisDevelopment) / 100) * 60);
-          this.drawText(
-            T('Biologic.timeRemaining') + minutesRemaining + T('Biologic.minutes'),
-            20,
-            y,
-            300
-          );
-          y += lineHeight * 2;
-
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.divisionPhase'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          var mitosisStage = "";
-          var mitosisDesc = "";
-          if (uterus.mitosisDevelopment < 20) {
-            mitosisStage = T('Biologic.interphase');
-            mitosisDesc = T('Biologic.dnaReplicationInProgress');
-          } else if (uterus.mitosisDevelopment < 40) {
-            mitosisStage = T('Biologic.prophase');
-            mitosisDesc = T('Biologic.chromosomesCondensing');
-          } else if (uterus.mitosisDevelopment < 60) {
-            mitosisStage = T('Biologic.metaphase');
-            mitosisDesc = T('Biologic.chromosomesAligning');
-          } else if (uterus.mitosisDevelopment < 80) {
-            mitosisStage = T('Biologic.anaphase');
-            mitosisDesc = T('Biologic.chromosomesSeparating');
-          } else {
-            mitosisStage = T('Biologic.telophaseCytokinesis');
-            mitosisDesc = T('Biologic.cellsDividingIntoTwoIdenticalCopies');
-          }
-
-          this.changeTextColor(this.textColor(6));
-          this.drawText(mitosisStage, 20, y, 300);
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.drawText(mitosisDesc, 20, y, 550);
-          y += lineHeight;
-          break;
-      }
-    } else {
-      // === NOT PREGNANT MODE ===
-      this.changeTextColor(this.systemColor());
-      this.drawText(
-        T('Biologic.reproductiveStatus'),
-        6,
-        y,
-        200
-      );
-      this.resetTextColor();
-      y += lineHeight;
-
-      this.drawText(
-        T('Biologic.statusNotPregnant'),
-        20,
-        y,
-        300
-      );
-      y += lineHeight * 2;
-
-      // Type-specific idle information
-      switch (pregnancyType) {
-        case 1: // Uterus
-          var ovulation = uterus.ovulationCycle;
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.ovulationCycle'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          var cycleText = T('Biologic.cycleDayLine', {
-            day: ovulation.dayInCycle,
-            length: ovulation.cycleLength,
-          });
-          this.drawText(cycleText, 20, y, 300);
-          y += lineHeight;
-
-          var fertileStatus = ovulation.fertile
-            ? T('Biologic.fertileWindow')
-            : T('Biologic.notFertile');
-          var fertileColor = ovulation.fertile ? this.textColor(3) : this.normalColor();
-          this.changeTextColor(fertileColor);
-          this.drawText(T('Biologic.statusLine', { status: fertileStatus }), 20, y, 300);
-          this.resetTextColor();
-          y += lineHeight;
-
-          var nextOvText = T('Biologic.nextOvulationLine', { day: ovulation.ovulationDay });
-          this.drawText(nextOvText, 20, y, 300);
-          y += lineHeight * 2;
-
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.eggReserve'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          var eggText = T('Biologic.remainingEggsLine', { count: uterus.eggCount.toLocaleString() });
-          this.drawText(eggText, 20, y, 400);
-          break;
-
-        case 2: // Oviparous
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.eggProduction'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          if (uterus.eggsToLay > 0) {
-            this.changeTextColor(this.textColor(3));
-            this.drawText(
-              T('Biologic.eggsReadyToLay') + uterus.eggsToLay,
-              20,
-              y,
-              400
-            );
-            this.resetTextColor();
-          } else {
-            this.drawText(
-              T('Biologic.readyForNewClutch'),
-              20,
-              y,
-              400
-            );
-          }
-          break;
-
-        case 3: // Plant
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.seedStorage'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.changeTextColor(this.textColor(3));
-          this.drawText(
-            T('Biologic.seedsAvailable') + uterus.seedsReady,
-            20,
-            y,
-            400
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.drawText(
-            T('Biologic.readyToGenerateNewSeed'),
-            20,
-            y,
-            400
-          );
-          break;
-
-        case 4: // Mitosis
-          this.changeTextColor(this.systemColor());
-          this.drawText(
-            T('Biologic.cellularStatus'),
-            6,
-            y,
-            200
-          );
-          this.resetTextColor();
-          y += lineHeight;
-
-          this.drawText(
-            T('Biologic.readyForCellularDivision'),
-            20,
-            y,
-            400
-          );
-          y += lineHeight;
-
-          this.drawText(
-            T('Biologic.processTakesApproximately1Hour'),
-            20,
-            y,
-            400
-          );
-          break;
-      }
-    }
-  };
-  // i18n-ignore-end
-  Window_BiologicSimulation.prototype.getInitialTestosterone = function (
-    gender
-  ) {
-    if (gender === 0) {
-      // Male
-      return 300 + Math.floor(Math.random() * 700); // 300-1000 ng/dL
-    } else if (gender === 1) {
-      // Female
-      return 15 + Math.floor(Math.random() * 55); // 15-70 ng/dL
-    } else {
-      // Non-binary
-      return 150 + Math.floor(Math.random() * 400); // 150-550 ng/dL
-    }
-  };
-  // i18n-ignore-start: unreachable canvas fallback (opens with `return;`, no caller); the DOM panel renders this section.
-  Window_BiologicSimulation.prototype.drawTestes = function (startY, lineHeight) {
-    return;
-    var y = startY;
-    var bio = this._actor._biologicData;
-
-    // Initialize testes data if it doesn't exist
-    if (!this._actor.testesData) {
-      this._actor.testesData = {
-        spermCount: 200000000 + Math.floor(Math.random() * 300000000), // 200-500 million per mL
-        spermMotility: 50 + Math.random() * 30, // 50-80% (WHO normal: >40%)
-        spermMorphology: 4 + Math.random() * 10, // 4-14% normal forms (WHO: >4%)
-        testosteroneProduction: bio.hormones.testosterone,
-        fertilityRate: 0,
-        dailySpermProduction: 0,
-        lastUpdate: Date.now()
-      };
-    }
-
-    var testes = this._actor.testesData;
-
-    // Update testes data based on hormones and health
-    var now = Date.now();
-    if (now - testes.lastUpdate > 3600000) { // Update every hour
-      testes.testosteroneProduction = bio.hormones.testosterone;
-      testes.lastUpdate = now;
-    }
-
-    // Calculate fertility rate based on sperm parameters
-    var motilityScore = (testes.spermMotility / 80) * 100;
-    var morphologyScore = (testes.spermMorphology / 14) * 100;
-    var countScore = Math.min(100, (testes.spermCount / 500000000) * 100);
-    testes.fertilityRate = ((motilityScore + morphologyScore + countScore) / 3).toFixed(1);
-
-    // Daily sperm production (millions)
-    testes.dailySpermProduction = Math.floor((testes.testosteroneProduction / 500) * 100); // Based on testosterone
-
-    // Display section title
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('Biologic.type2'), 6, y, 200);
-    this.resetTextColor();
-    this.changeTextColor(this.textColor(3));
-    this.drawText(T('Biologic.testes'), 250, y, 400);
-    this.resetTextColor();
-    y += lineHeight * 2;
-
-    // Sperm Production Section
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('Biologic.spermProduction'), 6, y, 200);
-    this.resetTextColor();
-    y += lineHeight;
-
-    // Sperm Count
-    this.drawText(T('Biologic.spermCount') + testes.spermCount.toLocaleString() + " /mL", 20, y, 450);
-    y += lineHeight;
-
-    var countStatus = testes.spermCount >= 15000000 ?
-      T('Biologic.normal') :
-      T('Biologic.lowOligospermia');
-    var countColor = testes.spermCount >= 15000000 ? this.textColor(3) : this.textColor(2);
-    this.changeTextColor(countColor);
-    this.drawText(T('Biologic.status') + countStatus, 20, y, 450);
-    this.resetTextColor();
-    y += lineHeight * 2;
-
-    // Sperm Motility
-    this.drawText(T('Biologic.spermMotility') + testes.spermMotility.toFixed(1) + "%", 20, y, 450);
-    y += lineHeight;
-
-    var motilityStatus = testes.spermMotility >= 40 ?
-      T('Biologic.normal') :
-      T('Biologic.lowAsthenospermia');
-    var motilityColor = testes.spermMotility >= 40 ? this.textColor(3) : this.textColor(18);
-    this.changeTextColor(motilityColor);
-    this.drawText(T('Biologic.status') + motilityStatus, 20, y, 450);
-    this.resetTextColor();
-    y += lineHeight * 2;
-
-    // Sperm Morphology
-    this.drawText(T('Biologic.normalMorphology') + testes.spermMorphology.toFixed(1) + "%", 20, y, 450);
-    y += lineHeight;
-
-    var morphologyStatus = testes.spermMorphology >= 4 ?
-      T('Biologic.normal') :
-      T('Biologic.lowTeratospermia');
-    var morphologyColor = testes.spermMorphology >= 4 ? this.textColor(3) : this.textColor(18);
-    this.changeTextColor(morphologyColor);
-    this.drawText(T('Biologic.status') + morphologyStatus, 20, y, 450);
-    this.resetTextColor();
-    y += lineHeight * 2;
-
-    // Daily Production
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('Biologic.dailySpermProduction'), 6, y, 300);
-    this.resetTextColor();
-    y += lineHeight;
-
-    this.drawText(testes.dailySpermProduction.toLocaleString() + T('Biologic.millionSpermCells'), 20, y, 450);
-    y += lineHeight * 2;
-
-    // Fertility Rate
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('Biologic.overallFertilityRate'), 6, y, 300);
-    this.resetTextColor();
-    y += lineHeight;
-
-    var fertilityColor = testes.fertilityRate >= 70 ? this.textColor(3) :
-      testes.fertilityRate >= 50 ? this.textColor(18) : this.textColor(2);
-    this.changeTextColor(fertilityColor);
-    this.drawText(testes.fertilityRate + "%", 20, y, 200);
-    this.resetTextColor();
-    y += lineHeight;
-
-    var fertilityStatus = testes.fertilityRate >= 70 ?
-      T('Biologic.highFertility') :
-      testes.fertilityRate >= 50 ?
-        T('Biologic.moderateFertility') :
-        T('Biologic.lowFertility');
-    this.changeTextColor(this.textColor(6));
-    this.drawText(fertilityStatus, 20, y, 450);
-    this.resetTextColor();
-    y += lineHeight * 2;
-
-    // Testosterone Production
-    this.changeTextColor(this.systemColor());
-    this.drawText(T('Biologic.testosteroneProduction'), 6, y, 300);
-    this.resetTextColor();
-    y += lineHeight;
-
-    this.drawText(Math.floor(testes.testosteroneProduction) + " ng/dL", 20, y, 300);
-    y += lineHeight;
-
-    var testStatus = testes.testosteroneProduction >= 300 ?
-      T('Biologic.normalRange') :
-      T('Biologic.belowNormalHypogonadism');
-    var testColor = testes.testosteroneProduction >= 300 ? this.textColor(3) : this.textColor(2);
-    this.changeTextColor(testColor);
-    this.drawText(testStatus, 20, y, 450);
-    this.resetTextColor();
-  };
-  // i18n-ignore-end
-
-  Window_BiologicSimulation.prototype.getInitialEstrogen = function (gender) {
-    if (gender === 0) {
-      // Male
-      return 10 + Math.floor(Math.random() * 30); // 10-40 pg/mL
-    } else if (gender === 1) {
-      // Female
-      return 30 + Math.floor(Math.random() * 370); // 30-400 pg/mL
-    } else {
-      // Non-binary
-      return 50 + Math.floor(Math.random() * 200); // 50-250 pg/mL
-    }
+  // The three sex hormones a body is born with, rolled at the point on the
+  // androgenic/oestrogenic scale it was BUILT at rather than switched on its
+  // gender label. Balance 85 rolls exactly what "male" used to roll, 15 what
+  // "female" did and 50 what "non-binary" did, so nothing about an ordinary
+  // character changed.
+  Window_BiologicSimulation.prototype.getInitialTestosterone = function (balance) {
+    return Math.floor(initialHormone("testosterone", balance)); // ng/dL
   };
 
-  Window_BiologicSimulation.prototype.getInitialProgesterone = function (
-    gender
-  ) {
-    if (gender === 0) {
-      // Male
-      return 0.1 + Math.random() * 0.4; // 0.1-0.5 ng/mL
-    } else if (gender === 1) {
-      // Female
-      return 0.5 + Math.random() * 19.5; // 0.5-20 ng/mL
-    } else {
-      // Non-binary
-      return 0.3 + Math.random() * 10; // 0.3-10.3 ng/mL
-    }
+  Window_BiologicSimulation.prototype.getInitialEstrogen = function (balance) {
+    return Math.floor(initialHormone("estrogen", balance)); // pg/mL
+  };
+
+  Window_BiologicSimulation.prototype.getInitialProgesterone = function (balance) {
+    return initialHormone("progesterone", balance); // ng/mL
   };
 
   Window_BiologicSimulation.prototype.checkForInfections = function () {
     var infections = [];
 
     // Check damaged body parts for potential infections
-    if (this._actor._bodyParts) {
+    if (this._actor && this._actor._bodyParts) {
+      var conMod = this._actor.conMod ?? Math.floor(((this._actor.def || 10) - 10) / 2);
       for (var partKey in this._actor._bodyParts) {
         var part = this._actor._bodyParts[partKey];
         if (part.damaged) {
-          // 30% chance of infection in damaged parts
-          if (Math.random() < 0.3) {
+          // CON Fortitude save against wound infection (DC 13)
+          var d20 = Math.floor(Math.random() * 20) + 1;
+          var fortitudeSave = (d20 === 20) || (d20 !== 1 && (d20 + conMod >= 13));
+
+          if (!fortitudeSave) {
             infections.push({
               location: part.name,
               type: Math.random() < 0.7 ? T('Biologic.bacterial') : T('Biologic.viral'),
@@ -4732,6 +4201,11 @@
 
   Window_BiologicSimulation.prototype.updateGenderFromHormones = function () {
     if (!this._actor._biologicData) return;
+    // A body somebody deliberately built keeps the identity they gave it. The
+    // blood of a character made androgynous on purpose says nothing this has
+    // any business acting on, and re-labelling them on the first panel they
+    // opened would undo the answer the creation slider was there to ask for.
+    if (hormoneBalanceIsSet(this._actor)) return;
 
     var hormones = this._actor._biologicData.hormones;
     var testosterone = hormones.testosterone;

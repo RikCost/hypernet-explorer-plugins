@@ -1,8 +1,15 @@
 {
   "bgOpacity": "전투 로그 배경 불투명도",
   "bareFists": "맨주먹",
+  "attacks": " 공격 ",
   "attacksWith": "%1이(가) %2(으)로 공격한다!",
   "dodged": "%1이(가) 회피했다.",
   "listPair": " 그리고 ",
-  "listLast": ", 그리고 "
+  "listLast": ", 그리고 ",
+  "hitsFor": "이(가) ",
+  "damageSuffix": "을 공격해 %1의 피해를 입혔다!",
+  "recoverySuffix": "이(가) %1 HP를 회복했다!",
+  "noDamageSuffix": "을 공격했지만 피해를 입히지 못했다.",
+  "uses": " 사용",
+  "and": "그리고"
 }

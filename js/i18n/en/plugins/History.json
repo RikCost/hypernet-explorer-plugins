@@ -280,7 +280,11 @@
  },
  "leader": {
   "unknown": "Unknown Leader",
-  "unknownIdeology": "Unknown"
+  "unknownIdeology": "Unknown",
+  "bio": "{name} stands for {ideology}, and answers for {nation}.",
+  "bioReign": "{name} held office in {nation} from {from} to {to}, standing for {ideology}.",
+  "bioNoNation": "{name} stands for {ideology}.",
+  "bioNoNationReign": "{name} held office from {from} to {to}, standing for {ideology}."
  },
  "government": {
   "Theocracy": "Theocracy",

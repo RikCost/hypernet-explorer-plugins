@@ -574,6 +574,7 @@
 
     const STATUS_TABS = [
         { id: "attributes", labelKey: "SceneStatus.ui.tabAttributes" },
+        { id: "bio", labelKey: "SceneStatus.ui.tabBio" },
         { id: "traits", labelKey: "SceneStatus.ui.tabTraits" },
         { id: "passives", labelKey: "SceneStatus.ui.tabPassives" },
         { id: "anatomy", labelKey: "SceneStatus.ui.tabAnatomy" },
@@ -596,6 +597,365 @@
 
     // How far one press of up / down moves the traits page, in pixels.
     const TRAIT_SCROLL_STEP = 48;
+
+    // Build the stat bonuses and modifier breakdown table for the Attributes tab
+    function buildStatBreakdownHTML(actor) {
+        if (!actor) return "";
+        const params = [
+            { name: _si18n("ATT", "STR"), id: 2, icon: 76 },
+            { name: _si18n("DEF", "CON"), id: 3, icon: 77 },
+            { name: _si18n("AGILITY", "DEX"), id: 6, icon: 81 },
+            { name: _si18n("M.ATT", "INT"), id: 4, icon: 79 },
+            { name: _si18n("M.DEF", "WIS"), id: 5, icon: 80 },
+            { name: _si18n("LUCK", "PSI"), id: 7, icon: 82 }
+        ];
+
+        const rows = params.map(p => {
+            const baseVal = actor.paramBase(p.id);
+            const equipVal = actor.equips().reduce((acc, eq) => acc + (eq && eq.params ? (eq.params[p.id] || 0) : 0), 0);
+            const traitVal = (actor._paramPlus && actor._paramPlus[p.id]) || 0;
+            const limbMod = (actor._statModifiers && actor._statModifiers[p.id]) || 0;
+            const totalVal = actor.param(p.id);
+            const dndModNum = Math.floor((totalVal - 10) / 2);
+            const dndModText = dndModNum >= 0 ? "+" + dndModNum : String(dndModNum);
+
+            const equipClass = equipVal > 0 ? "status-stat-bonus-positive" : (equipVal < 0 ? "status-stat-bonus-negative" : "status-stat-bonus-zero");
+            const traitClass = traitVal > 0 ? "status-stat-bonus-positive" : (traitVal < 0 ? "status-stat-bonus-negative" : "status-stat-bonus-zero");
+            const limbClass = limbMod > 0 ? "status-stat-bonus-positive" : (limbMod < 0 ? "status-stat-bonus-negative" : "status-stat-bonus-zero");
+
+            const equipStr = equipVal > 0 ? `+${equipVal}` : String(equipVal);
+            const traitStr = traitVal > 0 ? `+${traitVal}` : String(traitVal);
+            const limbStr = limbMod !== 0 ? `${limbMod > 0 ? '+' : ''}${limbMod}%` : "0%";
+
+            return `
+                <tr>
+                    <td><span style="${iconStyle(p.icon, 16)} vertical-align:middle; margin-right:4px"></span>${escapeAttr(p.name)}</td>
+                    <td style="font-weight:bold">${baseVal}</td>
+                    <td class="${equipClass}">${equipStr}</td>
+                    <td class="${traitClass}">${traitStr}</td>
+                    <td class="${limbClass}">${limbStr}</td>
+                    <td style="font-weight:bold; color:var(--text-primary-hover)">${totalVal}</td>
+                    <td><span class="status-stat-mod-badge">${dndModText}</span></td>
+                </tr>
+            `;
+        }).join("");
+
+        return `
+            <div class="status-stat-breakdown-card">
+                <div class="card-label" style="font-size:0.92em; margin-bottom:6px">${T('SceneStatus.ui.statBreakdown') || "Stat Bonuses & Modifiers"}</div>
+                <table class="status-stat-table">
+                    <thead>
+                        <tr>
+                            <th>${T('SceneStatus.parameters') || "Stat"}</th>
+                            <th>${T('SceneStatus.ui.statBase') || "Base"}</th>
+                            <th>${T('SceneStatus.ui.statGear') || "Gear"}</th>
+                            <th>${T('SceneStatus.ui.statTraits') || "Traits"}</th>
+                            <th>${T('SceneStatus.ui.statInjuries') || "Injuries"}</th>
+                            <th>${T('SceneStatus.total') || "Total"}</th>
+                            <th>${T('SceneStatus.ui.statMod') || "Mod"}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    function getActorProfile(actor) {
+        if (!actor) return null;
+        const name = actor.name();
+        if (window.NPCEmpathize && window.NPCEmpathize._helpers && window.NPCEmpathize._helpers._getProfile) {
+            const p = window.NPCEmpathize._helpers._getProfile(name);
+            if (p) return p;
+        }
+        if ($gameSystem && $gameSystem._npcSociety && $gameSystem._npcSociety[name]) {
+            return $gameSystem._npcSociety[name];
+        }
+        if (window.NPCSocietyRegistry && window.NPCSocietyRegistry.ensureProfile) {
+            try {
+                window.NPCSocietyRegistry.ensureProfile(name, actor.currentClass() ? actor.currentClass().id : null);
+                if ($gameSystem && $gameSystem._npcSociety && $gameSystem._npcSociety[name]) {
+                    return $gameSystem._npcSociety[name];
+                }
+            } catch (e) {}
+        }
+        return null;
+    }
+
+    function buildBioPageHTML(actor) {
+        if (!actor) return "";
+        const profile = getActorProfile(actor);
+        const memberIndex = $gameParty.allMembers().indexOf(actor);
+
+        // 1. Demographics & Identity
+        const genderVal = actor.gender ? actor.gender() : (profile?.gender ?? 0);
+        let genderLabel = "";
+        switch (genderVal) {
+            case 0: genderLabel = `${T("MainMenu.gender.male") || "Male"} (He/Him)`; break;
+            case 1: genderLabel = `${T("MainMenu.gender.female") || "Female"} (She/Her)`; break;
+            case 2: genderLabel = `${T("MainMenu.gender.nonBinary") || "Non-Binary"} (They/Them)`; break;
+            case 3: genderLabel = `${T("MainMenu.gender.cocoon") || "Cocoon"} (It/Its)`; break;
+            default: genderLabel = T("MainMenu.gender.fluid") || "Fluid"; break;
+        }
+
+        const ccUtils = window.CharacterCreationUtils;
+        const repVar = (ccUtils && ccUtils.getReproductiveVariableId)
+            ? ccUtils.getReproductiveVariableId(Math.max(0, memberIndex)) : 87;
+        const repType = $gameVariables ? $gameVariables.value(repVar) : 0;
+        let repName = "";
+        switch (repType) {
+            case -1: repName = T("MainMenu.reproduction.none") || "None"; break;
+            case 0: repName = T("MainMenu.reproduction.testicles") || "Testicles"; break;
+            case 1: repName = T("MainMenu.reproduction.uterus") || "Uterus"; break;
+            case 2: repName = T("MainMenu.reproduction.oviparous") || "Oviparous"; break;
+            case 3: repName = T("MainMenu.reproduction.plant") || "Plant"; break;
+            case 4: repName = T("MainMenu.reproduction.mitosis") || "Mitosis"; break;
+            default: repName = T("MainMenu.reproduction.unknown") || "Unknown"; break;
+        }
+        const health = window.HealthCore;
+        const gestationDays = health && health.getPregnancyDuration ? health.getPregnancyDuration(actor, repType) : (repType === 4 ? 1 : 280);
+
+        const archKeys = (health && health.getActorArchetypeKeys) ? health.getActorArchetypeKeys(actor) : [];
+        const archNames = archKeys.map(k => health.getArchetypeDisplayName(k)).filter(Boolean);
+        const archetypeText = archNames.length ? archNames.join(" / ") : (profile?.isCreature ? "Creature" : "Humanoid");
+
+        const nowYear = (window.NPCLifeSim && window.NPCLifeSim.currentYear) ? window.NPCLifeSim.currentYear() : 2001;
+        let ageVal = ($gameSystem._ccBirthAge && $gameSystem._ccBirthAge[memberIndex]) ||
+                     (window.NPCLifeSim && window.NPCLifeSim.ageOf && window.NPCLifeSim.ageOf(actor.name())) || null;
+        let birthYearVal = profile?._birthYearOverride || null;
+        if (birthYearVal && !ageVal) ageVal = Math.max(18, nowYear - birthYearVal);
+        if (ageVal && !birthYearVal) birthYearVal = nowYear - ageVal;
+        if (!ageVal) {
+            const minAge = (window.NPCLifeSim && window.NPCLifeSim.MIN_NPC_AGE) || 18;
+            ageVal = minAge + Math.max(0, actor.level || 1) * 2;
+            birthYearVal = nowYear - ageVal;
+        }
+
+        let bloodType = "O+";
+        if (window.BloodTypeService && window.BloodTypeService.getForActor) {
+            const bt = window.BloodTypeService.getForActor(actor);
+            if (bt) bloodType = bt;
+        } else if (profile?.bloodType) {
+            bloodType = profile.bloodType;
+        }
+
+        const homeGroup = profile?._homeGroupName;
+        let homeTown = "-";
+        if (homeGroup) {
+            homeTown = (window.WorkSystem && window.WorkSystem.destinationName) ? window.WorkSystem.destinationName(homeGroup) : homeGroup;
+        } else if (profile?.birthplace) {
+            homeTown = (window.WorkSystem && window.WorkSystem.destinationName) ? window.WorkSystem.destinationName(profile.birthplace) : profile.birthplace;
+        }
+        const nationId = profile?.birthplace || profile?._birthplaceOverride || null;
+        const nationName = nationId && window.WorldNames ? window.WorldNames.nation(nationId) : (nationId || "-");
+
+        let sexualOrientation = "-";
+        let romanticOrientation = "-";
+        if (window.NPCEmpathize && window.NPCEmpathize._helpers && window.NPCEmpathize._helpers._npcRomance) {
+            const rom = window.NPCEmpathize._helpers._npcRomance(actor.name(), profile);
+            if (rom) {
+                if (rom.sexual) {
+                    const k = rom.sexual.name;
+                    sexualOrientation = (window.T && window.T.has && window.T.has(k)) ? window.T(k) : (rom.sexual.key || "-");
+                }
+                if (rom.romantic) {
+                    const k = rom.romantic.name;
+                    romanticOrientation = (window.T && window.T.has && window.T.has(k)) ? window.T(k) : (rom.romantic.key || "-");
+                }
+            }
+        }
+
+        // 2. Society, Creed & Morality
+        const dl = window._NPCSocietyDataLoader;
+        let persName = "-";
+        let persIcon = 4;
+        let persDesc = "";
+        if (profile && profile.personalityIndex >= 0 && dl?.personalities) {
+            const pObj = dl.personalities[profile.personalityIndex];
+            if (pObj) {
+                persName = (window.NPCEmpathize && window.NPCEmpathize._helpers && window.NPCEmpathize._helpers._personalityLabel)
+                    ? window.NPCEmpathize._helpers._personalityLabel(pObj.name)
+                    : (pObj.name || "-");
+                persIcon = pObj.iconIndex || 4;
+                persDesc = pObj.description || "";
+            }
+        }
+
+        const ideology = window.NPCShared ? window.NPCShared.ideologyFor(profile) : null;
+        const ideologyName = ideology
+            ? ((window.DataService?.t?.(ideology.name)) || (ideology.name || "").split('.').pop().split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))
+            : "-";
+
+        let factionName = "-";
+        let factionIcon = 187;
+        if (profile && profile.factionIndex >= 0 && dl?.factions) {
+            const fObj = dl.factions[profile.factionIndex];
+            if (fObj) {
+                factionName = (window.NPCEmpathize && window.NPCEmpathize._helpers && window.NPCEmpathize._helpers._factionDisplayName)
+                    ? window.NPCEmpathize._helpers._factionDisplayName(fObj)
+                    : (fObj.name || "-");
+                factionIcon = fObj.iconIndex || 187;
+            }
+        }
+
+        const wealthTier = profile?.wealthTierChosen != null ? profile.wealthTierChosen : (profile?.wealthTierBase ?? 2);
+        const wealthLabels = [T("Empathize.destitute") || "Destitute", T("Empathize.poor") || "Poor", T("Empathize.workingClass") || "Working Class", T("Empathize.middleClass") || "Middle Class", T("Empathize.wealthy") || "Wealthy"];
+        const wealthText = wealthLabels[wealthTier] || wealthLabels[2];
+
+        const morality = profile?.moralityScore ?? 0;
+        const moralMap = [
+            { threshold: -60, label: T("Empathize.evil") || "Evil", color: '#c02020' },
+            { threshold: -20, label: T("Empathize.dishonest") || "Dishonest", color: '#c02020' },
+            { threshold: 20, label: T("Empathize.neutral") || "Neutral", color: '#8a6a30' },
+            { threshold: 60, label: T("Empathize.honest") || "Honest", color: '#2a6e4a' },
+            { threshold: Infinity, label: T("Empathize.virtuous") || "Virtuous", color: '#2a6e4a' }
+        ];
+        const moralEntry = moralMap.find(e => morality < e.threshold) || moralMap[2];
+
+        // 3. Specializations
+        const specs = [];
+        if (window.Specializations?.ready && actor.specializationLevel) {
+            window.Specializations.list.forEach(spec => {
+                const lvl = actor.specializationLevel(spec.id);
+                if (lvl > 1) {
+                    specs.push({
+                        name: window.Specializations.displayName(spec),
+                        levelName: window.Specializations.levelName(lvl),
+                        icon: spec.iconIndex || 0
+                    });
+                }
+            });
+            specs.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        let specsHTML = "";
+        if (specs.length) {
+            specsHTML = `<div class="status-trait-badges" style="justify-content:flex-start; gap:6px">` +
+                specs.map(s => `<span class="status-trait-badge"><span style="${iconStyle(s.icon, 16)}"></span>${escapeAttr(s.name)} <b>(${escapeAttr(s.levelName)})</b></span>`).join("") +
+                `</div>`;
+        } else {
+            specsHTML = `<div style="font-size:0.86em; color:var(--text-card-medium); font-style:italic">${T('SceneStatus.ui.noSpecializations') || "No trained specializations..."}</div>`;
+        }
+
+        // 4. Backstory Narrative & Formative Events
+        if (profile && !profile.backstory && window.NPCHistSim?.generateBackstoryNow) {
+            try { window.NPCHistSim.generateBackstoryNow(actor.name()); } catch (e) {}
+        }
+        const backstory = profile?.backstory;
+        const emStory = (actor.name() === "Em" && window.CharacterPresets?.getEmBackstory)
+            ? window.CharacterPresets.getEmBackstory(ConfigManager.language)
+            : null;
+        let narrative = "";
+        if (emStory && emStory.paragraphs) {
+            narrative = emStory.paragraphs.join("\n\n");
+        } else if (backstory) {
+            narrative = window.NPCHistSim?.narrativeOf?.(backstory) ?? backstory.narrative ?? "";
+        } else if ($gameSystem?._characterDescriptions?.[actor.actorId()]) {
+            narrative = $gameSystem._characterDescriptions[actor.actorId()];
+        }
+
+        const events = backstory?.formativeEvents || [];
+        const ICONS = window.HistorySimulator_ICONS || {};
+        let eventsHTML = "";
+        if (events.length) {
+            eventsHTML = `<div class="status-bio-events-list">` +
+                events.map(ev => {
+                    const iconId = ICONS[ev.category] || 245;
+                    return `
+                        <div class="status-bio-event-row">
+                            <span style="${iconStyle(iconId, 16)}"></span>
+                            <span class="status-bio-event-date">${escapeAttr(ev.date)}</span>
+                            <span>${escapeAttr(ev.description)}</span>
+                        </div>
+                    `;
+                }).join("") +
+                `</div>`;
+        }
+
+        return `
+            <div class="status-bio-section">
+                <div class="card-label">${T('SceneStatus.ui.identityTitle') || "Identity & Demographics"}</div>
+                <div class="status-bio-grid">
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.gender') || "Gender"}:</span>
+                        <span class="status-bio-item-val">${escapeAttr(genderLabel)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.reproduction') || "Reproduction"}:</span>
+                        <span class="status-bio-item-val">${escapeAttr(repName)} <span style="opacity:0.8; font-size:0.9em">(${gestationDays}d)</span></span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.archetype') || "Archetype"}:</span>
+                        <span class="status-bio-item-val" style="font-weight:600; color:var(--text-primary-hover)">${escapeAttr(archetypeText)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.age') || "Age"}:</span>
+                        <span class="status-bio-item-val">${escapeAttr(ageVal)} <span style="opacity:0.8; font-size:0.9em">(${birthYearVal})</span></span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.bloodType') || "Blood Type"}:</span>
+                        <span class="status-bio-item-val" style="font-weight:bold">${escapeAttr(bloodType)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.hometown') || "Hometown"}:</span>
+                        <span class="status-bio-item-val">${escapeAttr(homeTown)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.nation') || "Nation"}:</span>
+                        <span class="status-bio-item-val">${escapeAttr(nationName)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.sexualOrientation') || "Sexual"}:</span>
+                        <span class="status-bio-item-val">${escapeAttr(sexualOrientation)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.romanticOrientation') || "Romantic"}:</span>
+                        <span class="status-bio-item-val">${escapeAttr(romanticOrientation)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-bio-section">
+                <div class="card-label">${T('SceneStatus.ui.societyTitle') || "Society & Creed"}</div>
+                <div class="status-bio-grid">
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.personality') || "Personality"}:</span>
+                        <span class="status-bio-item-val"><span style="${iconStyle(persIcon, 16)} vertical-align:middle"></span> ${escapeAttr(persName)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.ideology') || "Ideology"}:</span>
+                        <span class="status-bio-item-val"><span style="${iconStyle(186, 16)} vertical-align:middle"></span> ${escapeAttr(ideologyName)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.faction') || "Faction"}:</span>
+                        <span class="status-bio-item-val"><span style="${iconStyle(factionIcon, 16)} vertical-align:middle"></span> ${escapeAttr(factionName)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.wealth') || "Wealth"}:</span>
+                        <span class="status-bio-item-val"><span style="${iconStyle(314, 16)} vertical-align:middle"></span> ${escapeAttr(wealthText)}</span>
+                    </div>
+                    <div class="status-bio-item">
+                        <span class="status-bio-item-lbl">${T('SceneStatus.ui.morality') || "Morality"}:</span>
+                        <span class="status-bio-item-val badge" style="color:${moralEntry.color}">${escapeAttr(moralEntry.label)} (${morality >= 0 ? '+' : ''}${morality})</span>
+                    </div>
+                </div>
+                ${persDesc ? `<div style="font-size:0.84em; color:var(--text-card-medium); font-style:italic; padding:4px 2px">${escapeAttr(persDesc)}</div>` : ''}
+            </div>
+
+            <div class="status-bio-section">
+                <div class="card-label">${T('SceneStatus.ui.specializationsTitle') || "Specializations & Skills"}</div>
+                ${specsHTML}
+            </div>
+
+            <div class="status-bio-section">
+                <div class="card-label">${T('SceneStatus.ui.backstoryTitle') || "Backstory & Formative Events"}</div>
+                ${narrative ? `<div class="status-bio-narrative">${escapeAttr(narrative)}</div>` : `<div style="font-size:0.86em; color:var(--text-card-medium); font-style:italic">${T('SceneStatus.ui.noBackstory') || "No backstory recorded..."}</div>`}
+                ${eventsHTML}
+            </div>
+        `;
+    }
 
     // The element a class declares (<elem: n> in its notebox) doubles as the
     // emblem of its signature passive. 0 when the class declares none, which
@@ -985,11 +1345,18 @@
                             <div class="status-tab-panel" data-status-tab="attributes">
                                 <div id="status-attr-cards">
                                     <div class="stats-medallions-grid" id="status-medallions"></div>
+                                    <div id="status-stat-breakdown"></div>
                                 </div>
 
                                 <div class="status-alignment-row">
                                     <div id="status-alignment-container" style="display:contents"></div>
                                     <div id="status-magicsystem-container" style="display:contents"></div>
+                                </div>
+                            </div>
+
+                            <div class="status-tab-panel" data-status-tab="bio">
+                                <div class="bodyparts-card" style="padding-top:0">
+                                    <div class="status-bio-scroll" id="status-bio-scroll"></div>
                                 </div>
                             </div>
 
@@ -1214,11 +1581,18 @@
                 <div class="stat-medallion">
                     <div class="stat-medallion-lbl">${p.name}</div>
                     <div class="stat-medallion-val">${displayValHTML}</div>
+                    <div class="stat-medallion-mod">${mod}</div>
                 </div>
             `;
         });
         const medallionsEl = spread.querySelector("#status-medallions");
         if (medallionsEl) medallionsEl.innerHTML = paramsGridHTML;
+
+        const breakdownEl = spread.querySelector("#status-stat-breakdown");
+        if (breakdownEl) breakdownEl.innerHTML = buildStatBreakdownHTML(actor);
+
+        const bioEl = spread.querySelector("#status-bio-scroll");
+        if (bioEl) bioEl.innerHTML = buildBioPageHTML(actor);
 
         // Alignment Element
         let elementHTML = "";
@@ -1988,10 +2362,18 @@
             return;
         }
 
-        // The traits page is a stack of dossiers rather than a list of rows, so
-        // there is nothing to move a cursor over: the keys scroll it.
+        // The traits and bio pages are scrollable dossiers
         if (this._dndActiveTab === "traits") {
             const list = this._dndContainer && this._dndContainer.querySelector("#status-traits");
+            if (list) {
+                if (Input.isRepeated('down')) list.scrollTop += TRAIT_SCROLL_STEP;
+                else if (Input.isRepeated('up')) list.scrollTop -= TRAIT_SCROLL_STEP;
+            }
+            return;
+        }
+
+        if (this._dndActiveTab === "bio") {
+            const list = this._dndContainer && this._dndContainer.querySelector("#status-bio-scroll");
             if (list) {
                 if (Input.isRepeated('down')) list.scrollTop += TRAIT_SCROLL_STEP;
                 else if (Input.isRepeated('up')) list.scrollTop -= TRAIT_SCROLL_STEP;

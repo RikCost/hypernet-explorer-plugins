@@ -1534,7 +1534,7 @@ window.Game_SummonFollower = Game_SummonFollower;
         return true;
     }
 
-    function beginSummon(spec) {
+    async function beginSummon(spec) {
         if (!spec || !canSummonNow()) return false;
         // No fight to stand in: the thing walks with the party instead.
         if (!$gameParty.inBattle()) return beginMapSummon(spec);
@@ -1552,16 +1552,53 @@ window.Game_SummonFollower = Game_SummonFollower;
             return false;
         }
 
+        const intMod = summoner ? (summoner.intMod ?? Math.floor(((summoner.mat || 10) - 10) / 2)) : 0;
+        let rollRes = null;
+
+        if (window.Dice3D) {
+            rollRes = await window.Dice3D.rollD20({
+                actionName: `Summoning: ${spec.name || 'Creature'}`,
+                statName: 'INT',
+                modifier: intMod,
+                dc: 10,
+                force3D: true
+            });
+        } else {
+            const rawRoll = Math.floor(Math.random() * 20) + 1;
+            rollRes = {
+                roll: rawRoll,
+                modifier: intMod,
+                total: rawRoll + intMod,
+                nat1: rawRoll === 1,
+                nat20: rawRoll === 20,
+                success: rawRoll === 20 || (rawRoll !== 1 && rawRoll + intMod >= 10)
+            };
+        }
+
+        const hyperMax = hyperThreshold();
+        let initialHyper = 0;
+        let pendingUlt = false;
+
+        if (rollRes.nat20) {
+            // Natural 20 fills hyper bar at 100% immediately!
+            initialHyper = hyperMax;
+            pendingUlt = true;
+        } else if (rollRes.success) {
+            // Scale starting hyper charge with INT modifier
+            const intBonus = Math.max(0, intMod * 0.05 + 0.1);
+            initialHyper = Math.min(Math.round(hyperMax * 0.5), Math.round(hyperMax * intBonus));
+        }
+
         active = Object.assign({}, spec, {
             summonerId: summoner ? summoner.actorId() : 0,
             upkeep,
             turnsLeft: spec.mapBound ? 0 : ((spec.kind && spec.kind.turns) || 0),
             turnsServed: 0,
-            hyper: 0,
-            hyperMax: hyperThreshold()
+            hyper: initialHyper,
+            hyperMax: hyperMax
         });
         pendingLeave = null;
-        pendingUltimate = false;
+        pendingUltimate = pendingUlt;
         lastUpkeepFrame = -1;
 
         configureProxy(active);
@@ -1577,6 +1614,36 @@ window.Game_SummonFollower = Game_SummonFollower;
         if (proxy) {
             proxy.onBattleStart();
             proxy.clearActions();
+
+            // Apply INT-based parameter buffs to the summoned creature
+            const buffTurns = rollRes.nat20 ? 8 : Math.max(3, 4 + Math.max(0, intMod));
+            if (rollRes.nat20) {
+                // Critical bind: max double buffs
+                proxy.addBuff(2, buffTurns); // ATK
+                proxy.addBuff(2, buffTurns);
+                proxy.addBuff(4, buffTurns); // MAT
+                proxy.addBuff(4, buffTurns);
+                proxy.addBuff(3, buffTurns); // DEF
+                proxy.addBuff(5, buffTurns); // MDF
+                proxy.addBuff(6, buffTurns); // AGI
+            } else if (rollRes.success) {
+                if (intMod >= 1 || rollRes.total >= 13) {
+                    proxy.addBuff(2, buffTurns); // ATK
+                    proxy.addBuff(4, buffTurns); // MAT
+                }
+                if (intMod >= 3 || rollRes.total >= 17) {
+                    proxy.addBuff(3, buffTurns); // DEF
+                    proxy.addBuff(5, buffTurns); // MDF
+                }
+                if (intMod >= 5) {
+                    proxy.addBuff(6, buffTurns); // AGI
+                }
+            } else if (rollRes.nat1) {
+                // Nat 1: Disrupted bind
+                proxy.addDebuff(2, 3);
+                proxy.addDebuff(4, 3);
+            }
+
             if (proxy.canMove()) proxy.makeActions();
         }
 
@@ -1586,6 +1653,11 @@ window.Game_SummonFollower = Game_SummonFollower;
         refreshBattle();
 
         toast(T('Battle.summon.summoned', { name: active.name }), 'info');
+        if (rollRes.nat20) {
+            toast(`🌟 [NAT 20] Perfect Ritual! ${active.name} gains 100% HYPER & Master Buffs!`, 'good');
+        } else if (rollRes.success && intMod > 0) {
+            toast(`✨ [INT +${intMod}] Summon ritual empowered ${active.name} with combat buffs!`, 'info');
+        }
         if (spec.kind && spec.kind.announce) {
             toast(T('Battle.summon.' + spec.kind.announce, { name: active.name }), 'warning');
         }

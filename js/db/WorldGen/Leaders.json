@@ -10,7 +10,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/WarSniper.png"
   },
   "magister_lyra": {
     "name": "Magister Lyra",
@@ -23,7 +24,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/SunCultist.png"
   },
   "councilor_theron": {
     "name": "Councilor Theron",
@@ -36,7 +38,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "spellweaver_mira": {
     "name": "Spellweaver Mira",
@@ -49,7 +52,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "enchanter_kael": {
     "name": "Enchanter Kael",
@@ -62,7 +66,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/PirateHacker.png"
   },
   "wizard_lord_varen": {
     "name": "Wizard Lord Varen",
@@ -75,7 +80,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/CyberWitch.png"
   },
   "sage_celeste": {
     "name": "Sage Celeste",
@@ -88,7 +94,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ElvenArcher.png"
   },
   "grand_magus_dorian": {
     "name": "Grand Magus Dorian",
@@ -101,7 +108,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ValiantKnight.png"
   },
   "curator_magnus": {
     "name": "Curator Magnus",
@@ -114,7 +122,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/WarSniper.png"
   },
   "archivist_vera": {
     "name": "Archivist Vera",
@@ -127,7 +136,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/SunCultist.png"
   },
   "keeper_silas": {
     "name": "Keeper Silas",
@@ -140,7 +150,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "librarian_octavia": {
     "name": "Librarian Octavia",
@@ -153,7 +164,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "scribe_matthias": {
     "name": "Scribe Matthias",
@@ -166,7 +178,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/PirateHacker.png"
   },
   "record_master_elena": {
     "name": "Record Master Elena",
@@ -179,7 +192,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/CyberWitch.png"
   },
   "chronicle_guard_dorian": {
     "name": "Chronicle Guard Dorian",
@@ -192,7 +206,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ElvenArcher.png"
   },
   "vault_warden_iris": {
     "name": "Vault Warden Iris",
@@ -205,7 +220,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ValiantKnight.png"
   },
   "ceo_marcellus": {
     "name": "CEO Marcellus",
@@ -218,7 +234,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/WarSniper.png"
   },
   "tycoon_victoria": {
     "name": "Tycoon Victoria",
@@ -231,7 +248,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/SunCultist.png"
   },
   "mogul_cassius": {
     "name": "Mogul Cassius",
@@ -244,7 +262,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "trader_supreme_ada": {
     "name": "Trader Supreme Ada",
@@ -257,7 +276,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "market_lord_felix": {
     "name": "Market Lord Felix",
@@ -270,7 +290,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/PirateHacker.png"
   },
   "commerce_king_sophia": {
     "name": "Commerce King Sophia",
@@ -283,7 +304,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/CyberWitch.png"
   },
   "merchant_prince_julian": {
     "name": "Merchant Prince Julian",
@@ -296,7 +318,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ElvenArcher.png"
   },
   "corp_director_lydia": {
     "name": "Corp Director Lydia",
@@ -309,7 +332,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/ValiantKnight.png"
   },
   "loyalist_magus_tiberius": {
     "name": "Loyalist Magus Tiberius",
@@ -317,7 +341,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "devoted_enchanter_aria": {
     "name": "Devoted Enchanter Aria",
@@ -325,7 +350,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "true_mage_cornelius": {
     "name": "True Mage Cornelius",
@@ -333,7 +359,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "faithful_sage_meredith": {
     "name": "Faithful Sage Meredith",
@@ -341,7 +368,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "orthodox_wizard_quinn": {
     "name": "Orthodox Wizard Quinn",
@@ -349,7 +377,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "decree_keeper_thalia": {
     "name": "Decree Keeper Thalia",
@@ -357,7 +386,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "guild_champion_marcus": {
     "name": "Guild Champion Marcus",
@@ -365,7 +395,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "sacred_spellcaster_nora": {
     "name": "Sacred Spellcaster Nora",
@@ -373,7 +404,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "traditional_mage_lucius": {
     "name": "Traditional Mage Lucius",
@@ -381,7 +413,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "pure_magic_scholar_elara": {
     "name": "Pure Magic Scholar Elara",
@@ -389,7 +422,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "purist_elder_cassius": {
     "name": "Purist Elder Cassius",
@@ -397,7 +431,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "hermetic_master_isolde": {
     "name": "Hermetic Master Isolde",
@@ -405,7 +440,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "ancient_scholar_regulus": {
     "name": "Ancient Scholar Regulus",
@@ -413,7 +449,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "traditionalist_sage_vivian": {
     "name": "Traditionalist Sage Vivian",
@@ -421,7 +458,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "orthodox_keeper_gaius": {
     "name": "Orthodox Keeper Gaius",
@@ -429,7 +467,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "pure_magus_helena": {
     "name": "Pure Magus Helena",
@@ -437,7 +476,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "esoteric_lord_flavius": {
     "name": "Esoteric Lord Flavius",
@@ -445,7 +485,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "sacred_scholar_portia": {
     "name": "Sacred Scholar Portia",
@@ -453,7 +494,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "classical_wizard_maximus": {
     "name": "Classical Wizard Maximus",
@@ -461,7 +503,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "original_doctrine_keeper_diana": {
     "name": "Original Doctrine Keeper Diana",
@@ -469,7 +512,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "tech_mage_orion": {
     "name": "Tech-Mage Orion",
@@ -477,7 +521,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "inventor_sage_lyanna": {
     "name": "Inventor Sage Lyanna",
@@ -485,7 +530,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "gear_scholar_tobias": {
     "name": "Gear Scholar Tobias",
@@ -493,7 +539,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "steam_wizard_isadora": {
     "name": "Steam Wizard Isadora",
@@ -501,7 +548,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "arcane_engineer_cyrus": {
     "name": "Arcane Engineer Cyrus",
@@ -509,7 +557,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "magitek_master_freya": {
     "name": "Magitek Master Freya",
@@ -517,7 +566,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "innovation_lord_kane": {
     "name": "Innovation Lord Kane",
@@ -525,7 +575,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "progress_mage_selene": {
     "name": "Progress Mage Selene",
@@ -533,7 +584,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "mechanical_sage_viktor": {
     "name": "Mechanical Sage Viktor",
@@ -541,7 +593,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "future_spellcrafter_zara": {
     "name": "Future Spellcrafter Zara",
@@ -549,7 +602,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "headmaster_aurelius": {
     "name": "Headmaster Aurelius",
@@ -557,7 +611,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "school_dean_ophelia": {
     "name": "School Dean Ophelia",
@@ -565,7 +620,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "master_teacher_lucan": {
     "name": "Master Teacher Lucan",
@@ -573,7 +629,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "polymath_sage_rowena": {
     "name": "Polymath Sage Rowena",
@@ -581,7 +638,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "academy_lord_cedric": {
     "name": "Academy Lord Cedric",
@@ -589,7 +647,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "pedagogue_mage_astrid": {
     "name": "Pedagogue Mage Astrid",
@@ -597,7 +656,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "professor_supreme_hadrian": {
     "name": "Professor Supreme Hadrian",
@@ -605,7 +665,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "scholar_leader_beatrice": {
     "name": "Scholar Leader Beatrice",
@@ -613,7 +674,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "educational_master_darius": {
     "name": "Educational Master Darius",
@@ -621,7 +683,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "mentor_archmage_evangeline": {
     "name": "Mentor Archmage Evangeline",
@@ -629,7 +692,8 @@
     "country": "Ireland",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "high_priest_nihilus": {
     "name": "High Priest Nihilus",
@@ -637,7 +701,8 @@
     "country": null,
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "chaos_oracle_morgana": {
     "name": "Chaos Oracle Morgana",
@@ -645,7 +710,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "entropy_lord_xander": {
     "name": "Entropy Lord Xander",
@@ -653,7 +719,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "discord_sage_lilith": {
     "name": "Discord Sage Lilith",
@@ -661,7 +728,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "void_master_balthazar": {
     "name": "Void Master Balthazar",
@@ -669,7 +737,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "anarchy_champion_raven": {
     "name": "Anarchy Champion Raven",
@@ -677,7 +746,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "disorder_keeper_malachi": {
     "name": "Disorder Keeper Malachi",
@@ -685,7 +755,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "chaos_weaver_seraphina": {
     "name": "Chaos Weaver Seraphina",
@@ -693,7 +764,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "swamp_chief_gorrok": {
     "name": "Swamp Chief Gorrok",
@@ -701,7 +773,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "poison_shaman_zzara": {
     "name": "Poison Shaman Zzara",
@@ -709,7 +782,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "bog_warrior_thrax": {
     "name": "Bog Warrior Thrax",
@@ -717,7 +791,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "venom_elder_nyx": {
     "name": "Venom Elder Nyx",
@@ -725,7 +800,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "marsh_lord_kreth": {
     "name": "Marsh Lord Kreth",
@@ -733,7 +809,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "toxic_oracle_sssara": {
     "name": "Toxic Oracle Sssara",
@@ -741,7 +818,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "wetland_guardian_brognak": {
     "name": "Wetland Guardian Brognak",
@@ -749,7 +827,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "plague_keeper_vyx": {
     "name": "Plague Keeper Vyx",
@@ -757,7 +836,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "mire_champion_grax": {
     "name": "Mire Champion Grax",
@@ -765,7 +845,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "fungal_sage_mycellia": {
     "name": "Fungal Sage Mycellia",
@@ -773,7 +854,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "forest_elder_sylvara": {
     "name": "Forest Elder Sylvara",
@@ -781,7 +863,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "grove_guardian_thorne": {
     "name": "Grove Guardian Thorne",
@@ -789,7 +872,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "leaf_sage_verdant": {
     "name": "Leaf Sage Verdant",
@@ -797,7 +881,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "tree_keeper_fauna": {
     "name": "Tree Keeper Fauna",
@@ -805,7 +890,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "woodland_champion_ash": {
     "name": "Woodland Champion Ash",
@@ -813,7 +899,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "nature_oracle_moss": {
     "name": "Nature Oracle Moss",
@@ -821,7 +908,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "branch_warrior_rowan": {
     "name": "Branch Warrior Rowan",
@@ -829,7 +917,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "vine_master_flora": {
     "name": "Vine Master Flora",
@@ -837,7 +926,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "root_defender_oakley": {
     "name": "Root Defender Oakley",
@@ -845,7 +935,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "wildwood_sage_ivy": {
     "name": "Wildwood Sage Ivy",
@@ -853,7 +944,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "road_king_diesel": {
     "name": "Road King Diesel",
@@ -861,7 +953,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "highway_boss_cassie": {
     "name": "Highway Boss Cassie",
@@ -869,7 +962,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "convoy_master_hank": {
     "name": "Convoy Master Hank",
@@ -877,7 +971,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "trucker_chief_rita": {
     "name": "Trucker Chief Rita",
@@ -885,7 +980,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "route_lord_duke": {
     "name": "Route Lord Duke",
@@ -893,7 +989,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "wheeler_commander_sarah": {
     "name": "Wheeler Commander Sarah",
@@ -901,7 +998,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "freight_captain_buck": {
     "name": "Freight Captain Buck",
@@ -909,7 +1007,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "road_warrior_maxine": {
     "name": "Road Warrior Maxine",
@@ -917,7 +1016,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "factory_baron_forge": {
     "name": "Factory Baron Forge",
@@ -925,7 +1025,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "steel_mistress_clara": {
     "name": "Steel Mistress Clara",
@@ -933,7 +1034,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "industry_lord_marcus": {
     "name": "Industry Lord Marcus",
@@ -941,7 +1043,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "production_chief_ingrid": {
     "name": "Production Chief Ingrid",
@@ -949,7 +1052,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "machine_master_viktor": {
     "name": "Machine Master Viktor",
@@ -957,7 +1061,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "foundry_king_brutus": {
     "name": "Foundry King Brutus",
@@ -965,7 +1070,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "assembly_boss_natasha": {
     "name": "Assembly Boss Natasha",
@@ -973,7 +1079,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "metal_warlord_rex": {
     "name": "Metal Warlord Rex",
@@ -981,7 +1088,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "king_harald": {
     "name": "King Harald",
@@ -989,7 +1097,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "queen_astrid": {
     "name": "Queen Astrid",
@@ -997,7 +1106,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "jarl_magnus": {
     "name": "Jarl Magnus",
@@ -1005,7 +1115,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "shield_maiden_sigrid": {
     "name": "Shield-Maiden Sigrid",
@@ -1013,7 +1124,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "frost_lord_erik": {
     "name": "Frost Lord Erik",
@@ -1021,7 +1133,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "ice_queen_freya": {
     "name": "Ice Queen Freya",
@@ -1029,7 +1142,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "snow_king_olaf": {
     "name": "Snow King Olaf",
@@ -1037,7 +1151,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "winter_matriarch_brunhilde": {
     "name": "Winter Matriarch Brunhilde",
@@ -1045,7 +1160,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "crime_boss_vito": {
     "name": "Crime Boss Vito",
@@ -1053,7 +1169,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "shadow_matriarch_carmilla": {
     "name": "Shadow Matriarch Carmilla",
@@ -1061,7 +1178,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "syndicate_don_marco": {
     "name": "Syndicate Don Marco",
@@ -1069,7 +1187,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "night_queen_selena": {
     "name": "Night Queen Selena",
@@ -1077,7 +1196,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "dark_lord_vincent": {
     "name": "Dark Lord Vincent",
@@ -1085,7 +1205,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "underground_empress_rosa": {
     "name": "Underground Empress Rosa",
@@ -1093,7 +1214,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "twilight_king_luca": {
     "name": "Twilight King Luca",
@@ -1101,7 +1223,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "noir_mistress_angelica": {
     "name": "Noir Mistress Angelica",
@@ -1109,7 +1232,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "hive_mind_alpha": {
     "name": "Hive Mind Alpha",
@@ -1117,7 +1241,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "unity_leader_sigma": {
     "name": "Unity Leader Sigma",
@@ -1125,7 +1250,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "collective_prime_delta": {
     "name": "Collective Prime Delta",
@@ -1133,7 +1259,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "harmony_master_omega": {
     "name": "Harmony Master Omega",
@@ -1141,7 +1268,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "synergy_lord_epsilon": {
     "name": "Synergy Lord Epsilon",
@@ -1149,7 +1277,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "group_consciousness_theta": {
     "name": "Group Consciousness Theta",
@@ -1157,7 +1286,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "network_queen_phi": {
     "name": "Network Queen Phi",
@@ -1165,7 +1295,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "shared_mind_king_psi": {
     "name": "Shared Mind King Psi",
@@ -1173,7 +1304,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "demon_lord_azaroth": {
     "name": "Demon Lord Azaroth",
@@ -1181,7 +1313,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "infernal_queen_lilith": {
     "name": "Infernal Queen Lilith",
@@ -1189,7 +1322,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "hell_king_baal": {
     "name": "Hell King Baal",
@@ -1197,7 +1331,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "abyss_mistress_morrigan": {
     "name": "Abyss Mistress Morrigan",
@@ -1205,7 +1340,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "chaos_demon_xalvador": {
     "name": "Chaos Demon Xalvador",
@@ -1213,7 +1349,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "shadow_lord_beleth": {
     "name": "Shadow Lord Beleth",
@@ -1221,7 +1358,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "nether_queen_astarte": {
     "name": "Nether Queen Astarte",
@@ -1229,7 +1367,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "void_king_mammon": {
     "name": "Void King Mammon",
@@ -1237,7 +1376,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "high_seraph_gabriel": {
     "name": "High Seraph Gabriel",
@@ -1245,7 +1385,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "divine_empress_aurora": {
     "name": "Divine Empress Aurora",
@@ -1253,7 +1394,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "celestial_king_raphael": {
     "name": "Celestial King Raphael",
@@ -1261,7 +1403,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "holy_matriarch_seraphina": {
     "name": "Holy Matriarch Seraphina",
@@ -1269,7 +1412,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "light_lord_michael": {
     "name": "Light Lord Michael",
@@ -1277,7 +1421,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "sacred_queen_uriel": {
     "name": "Sacred Queen Uriel",
@@ -1285,7 +1430,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "heaven_s_champion_azrael": {
     "name": "Heaven's Champion Azrael",
@@ -1293,7 +1439,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "radiant_mistress_cassiel": {
     "name": "Radiant Mistress Cassiel",
@@ -1301,7 +1448,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "void_emperor_nihil": {
     "name": "Void Emperor Nihil",
@@ -1309,7 +1457,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "entropy_empress_umbra": {
     "name": "Entropy Empress Umbra",
@@ -1317,7 +1466,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "null_king_vacuus": {
     "name": "Null King Vacuus",
@@ -1325,7 +1475,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "oblivion_queen_tenebris": {
     "name": "Oblivion Queen Tenebris",
@@ -1333,7 +1484,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "emptiness_lord_khaos": {
     "name": "Emptiness Lord Khaos",
@@ -1341,7 +1493,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "nothingness_sovereign_erebus": {
     "name": "Nothingness Sovereign Erebus",
@@ -1349,7 +1502,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "abyss_ruler_nyx": {
     "name": "Abyss Ruler Nyx",
@@ -1357,7 +1511,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "dark_matter_monarch_styx": {
     "name": "Dark Matter Monarch Styx",
@@ -1365,7 +1520,8 @@
     "country": "Netherlands",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "zeus_the_thunderer": {
     "name": "Zeus the Thunderer",
@@ -1373,7 +1529,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "athena_the_wise": {
     "name": "Athena the Wise",
@@ -1381,7 +1538,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "ares_the_warmonger": {
     "name": "Ares the Warmonger",
@@ -1389,7 +1547,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "hades_the_indifferent": {
     "name": "Hades the Indifferent",
@@ -1397,7 +1556,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "artemis_the_hunter": {
     "name": "Artemis the Hunter",
@@ -1405,7 +1565,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "dionysus_the_reveler": {
     "name": "Dionysus the Reveler",
@@ -1413,7 +1574,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "apollo_the_radiant": {
     "name": "Apollo the Radiant",
@@ -1421,7 +1583,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "hera_the_jealous": {
     "name": "Hera the Jealous",
@@ -1429,7 +1592,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "high_archivist_mnemosyne": {
     "name": "High Archivist Mnemosyne",
@@ -1437,7 +1601,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "elder_erasmus": {
     "name": "Elder Erasmus",
@@ -1445,7 +1610,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "truth_keeper_alexandria": {
     "name": "Truth-Keeper Alexandria",
@@ -1453,7 +1619,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "curator_oblivion": {
     "name": "Curator Oblivion",
@@ -1461,7 +1628,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "spymaster_cipher": {
     "name": "Spymaster Cipher",
@@ -1469,7 +1637,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "agent_codex": {
     "name": "Agent Codex",
@@ -1477,7 +1646,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "director_shadow": {
     "name": "Director Shadow",
@@ -1485,7 +1655,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "operative_raven": {
     "name": "Operative Raven",
@@ -1493,7 +1664,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "chief_librarian_silence": {
     "name": "Chief Librarian Silence",
@@ -1501,7 +1673,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "conservator_grimoire": {
     "name": "Conservator Grimoire",
@@ -1509,7 +1682,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "keeper_codex": {
     "name": "Keeper Codex",
@@ -1517,7 +1691,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "archivist_quietus": {
     "name": "Archivist Quietus",
@@ -1525,7 +1700,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "director_doubletalk": {
     "name": "Director Doubletalk",
@@ -1533,7 +1709,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "minister_redact": {
     "name": "Minister Redact",
@@ -1541,7 +1718,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "chief_spin_doctor_orwell": {
     "name": "Chief Spin Doctor Orwell",
@@ -1549,7 +1727,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "propagandist_in_chief_pravda": {
     "name": "Propagandist-in-Chief Pravda",
@@ -1557,7 +1736,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "grand_inquisitor_loyalty": {
     "name": "Grand Inquisitor Loyalty",
@@ -1565,7 +1745,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "director_compliance": {
     "name": "Director Compliance",
@@ -1573,7 +1754,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "chief_enforcer_ironhand": {
     "name": "Chief Enforcer Ironhand",
@@ -1581,7 +1763,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "watchmaster_vigilance": {
     "name": "Watchmaster Vigilance",
@@ -1589,7 +1772,8 @@
     "country": "OmegaTower",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "ayn_rand_the_divine": {
     "name": "Ayn Rand the Divine",
@@ -1597,7 +1781,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "adam_smith_ascended": {
     "name": "Adam Smith Ascended",
@@ -1605,7 +1790,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "invisible_hand": {
     "name": "Invisible Hand",
@@ -1613,7 +1799,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "sovereign_of_self": {
     "name": "Sovereign of Self",
@@ -1621,7 +1808,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "hive_alpha_griknak": {
     "name": "Hive Alpha Griknak",
@@ -1629,7 +1817,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "psychic_prime_skizzik": {
     "name": "Psychic Prime Skizzik",
@@ -1637,7 +1826,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "collective_one_gribblik": {
     "name": "Collective One Gribblik",
@@ -1645,7 +1835,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "mind_unity_zogwort": {
     "name": "Mind-Unity Zogwort",
@@ -1653,7 +1844,8 @@
     "country": null,
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "ambassador_zyx_7": {
     "name": "Ambassador Zyx-7",
@@ -1666,7 +1858,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienGrey.png"
   },
   "overseer_qel_9": {
     "name": "Overseer Qel-9",
@@ -1679,7 +1872,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienXori.png"
   },
   "tourist_director_vrax_3": {
     "name": "Tourist Director Vrax-3",
@@ -1692,7 +1886,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienTrucker.png"
   },
   "observer_prime_klix_5": {
     "name": "Observer Prime Klix-5",
@@ -1705,7 +1900,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienMindmaster.png"
   },
   "pope_petrus_ii": {
     "name": "Pope Petrus II",
@@ -1718,7 +1914,9 @@
     "years": [
       1981,
       2100
-    ]
+    ],
+    "preset": "Pope Petrus II",
+    "bust": "img/busts/presets/Ratzinger.png"
   },
   "cardinal_secretary_lorenzo": {
     "name": "Cardinal Secretary Lorenzo",
@@ -1731,7 +1929,8 @@
     "years": [
       1990,
       2012
-    ]
+    ],
+    "bust": "img/busts/SunCultist.png"
   },
   "archbishop_militaris": {
     "name": "Archbishop Militaris",
@@ -1744,7 +1943,8 @@
     "years": [
       1980,
       2010
-    ]
+    ],
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "mother_superior_magdalena": {
     "name": "Mother Superior Magdalena",
@@ -1757,7 +1957,8 @@
     "years": [
       1970,
       2012
-    ]
+    ],
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "papal_chamberlain_dante": {
     "name": "Papal Chamberlain Dante",
@@ -1770,7 +1971,8 @@
     "years": [
       1995,
       2012
-    ]
+    ],
+    "bust": "img/busts/PirateHacker.png"
   },
   "cardinal_defender_maximus": {
     "name": "Cardinal Defender Maximus",
@@ -1783,7 +1985,8 @@
     "years": [
       2000,
       2012
-    ]
+    ],
+    "bust": "img/busts/CyberWitch.png"
   },
   "pope_leo_xiii": {
     "name": "Pope Leo XIII",
@@ -1794,6 +1997,19 @@
     "years": [
       1900,
       1903
+    ],
+    "bust": "img/busts/presets/PopeLeoXIII.png",
+    "real": true,
+    "birthDate": "1810-03-02",
+    "hometown": "Carpineto Romano",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      132,
+      171,
+      173
     ]
   },
   "pope_pius_x": {
@@ -1805,6 +2021,19 @@
     "years": [
       1903,
       1914
+    ],
+    "bust": "img/busts/presets/PopePiusX.png",
+    "real": true,
+    "birthDate": "1835-06-02",
+    "hometown": "Riese",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      50,
+      132,
+      171
     ]
   },
   "pope_benedict_xv": {
@@ -1816,6 +2045,19 @@
     "years": [
       1914,
       1922
+    ],
+    "bust": "img/busts/presets/PopeBenedictXV.png",
+    "real": true,
+    "birthDate": "1854-11-21",
+    "hometown": "Genoa",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      25,
+      132,
+      164
     ]
   },
   "benito_mussolini": {
@@ -1827,6 +2069,19 @@
     "years": [
       1922,
       1945
+    ],
+    "bust": "img/busts/presets/BenitoMussolini.png",
+    "real": true,
+    "birthDate": "1883-07-29",
+    "hometown": "Predappio",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      60,
+      197,
+      174,
+      85
     ]
   },
   "antonio_gramsci": {
@@ -1838,6 +2093,19 @@
     "years": [
       1922,
       1937
+    ],
+    "bust": "img/busts/presets/AntonioGramsci.png",
+    "real": true,
+    "birthDate": "1891-01-22",
+    "hometown": "Ales",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      7,
+      132,
+      163,
+      84
     ]
   },
   "pope_pius_xii": {
@@ -1849,6 +2117,19 @@
     "years": [
       1939,
       1958
+    ],
+    "bust": "img/busts/presets/PopePiusXII.png",
+    "real": true,
+    "birthDate": "1876-03-02",
+    "hometown": "Rome",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      50,
+      164,
+      132
     ]
   },
   "aldo_moro": {
@@ -1860,6 +2141,19 @@
     "years": [
       1960,
       1978
+    ],
+    "bust": "img/busts/presets/AldoMoro.png",
+    "real": true,
+    "birthDate": "1916-09-23",
+    "hometown": "Maglie",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      132,
+      164,
+      171
     ]
   },
   "giulio_andreotti": {
@@ -1871,6 +2165,20 @@
     "years": [
       1972,
       2013
+    ],
+    "preset": "Giulio Andreotti",
+    "bust": "img/busts/presets/Andreotti.png",
+    "real": true,
+    "birthDate": "1919-01-14",
+    "hometown": "Rome",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      7,
+      98,
+      116,
+      174
     ]
   },
   "pope_john_paul_ii": {
@@ -1882,6 +2190,19 @@
     "years": [
       1978,
       1981
+    ],
+    "bust": "img/busts/presets/PopeJohnPaulII.png",
+    "real": true,
+    "birthDate": "1920-05-18",
+    "hometown": "Wadowice",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      81,
+      119,
+      173
     ]
   },
   "silvio_berlusconi": {
@@ -1893,6 +2214,19 @@
     "years": [
       1994,
       2023
+    ],
+    "bust": "img/busts/presets/Berlusconi.png",
+    "real": true,
+    "birthDate": "1936-09-29",
+    "hometown": "Milan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      131,
+      94,
+      173
     ]
   },
   "cardinal_prefect_giovanni": {
@@ -1901,7 +2235,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "prince_cardinal_alessandro": {
     "name": "Prince-Cardinal Alessandro",
@@ -1909,7 +2244,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "cardinal_secretary_bernardo": {
     "name": "Cardinal Secretary Bernardo",
@@ -1917,7 +2253,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "dean_of_cardinals_francesco": {
     "name": "Dean of Cardinals Francesco",
@@ -1925,7 +2262,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "president_calvi_ii": {
     "name": "President Calvi II",
@@ -1933,7 +2271,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "director_marcinkus_iii": {
     "name": "Director Marcinkus III",
@@ -1941,7 +2280,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "treasurer_monsignor_luciano": {
     "name": "Treasurer Monsignor Luciano",
@@ -1949,7 +2289,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "auditor_bishop_santoro": {
     "name": "Auditor Bishop Santoro",
@@ -1957,7 +2298,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "abbess_militant_catherine": {
     "name": "Abbess Militant Catherine",
@@ -1965,7 +2307,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "sister_commander_maria": {
     "name": "Sister Commander Maria",
@@ -1973,7 +2316,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "mother_warrior_theresa": {
     "name": "Mother Warrior Theresa",
@@ -1981,7 +2325,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "prioress_joanna": {
     "name": "Prioress Joanna",
@@ -1989,7 +2334,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "chief_hexorcist_raphael": {
     "name": "Chief Hexorcist Raphael",
@@ -1997,7 +2343,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "tech_bishop_alan_turing": {
     "name": "Tech-Bishop Alan Turing",
@@ -2005,7 +2352,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "cyber_cardinal_neo": {
     "name": "Cyber-Cardinal Neo",
@@ -2013,7 +2361,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "digital_prelate_morpheus": {
     "name": "Digital Prelate Morpheus",
@@ -2021,7 +2370,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "father_sebastian": {
     "name": "Father Sebastian",
@@ -2029,7 +2379,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "monsignor_gabriel": {
     "name": "Monsignor Gabriel",
@@ -2037,7 +2388,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "cardinal_advocate_antonio": {
     "name": "Cardinal Advocate Antonio",
@@ -2045,7 +2397,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "bishop_reformer_matteo": {
     "name": "Bishop Reformer Matteo",
@@ -2053,7 +2406,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "prelate_josemar_a_ii": {
     "name": "Prelate Josemaría II",
@@ -2061,7 +2415,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "director_escriv_iii": {
     "name": "Director Escrivá III",
@@ -2069,7 +2424,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "numerary_superior_ricardo": {
     "name": "Numerary Superior Ricardo",
@@ -2077,7 +2433,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "vicar_general_felipe": {
     "name": "Vicar General Felipe",
@@ -2085,7 +2442,8 @@
     "country": "Italy",
     "moralGuide": true,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "commandant_wilhelm_tell_iii": {
     "name": "Commandant Wilhelm Tell III",
@@ -2093,7 +2451,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "colonel_hans_pfyffer": {
     "name": "Colonel Hans Pfyffer",
@@ -2101,7 +2460,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "captain_kaspar_von_silenen": {
     "name": "Captain Kaspar von Silenen",
@@ -2109,7 +2469,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "lieutenant_urs_graf": {
     "name": "Lieutenant Urs Graf",
@@ -2117,7 +2478,8 @@
     "country": "Italy",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "marshal_zhukov": {
     "name": "Marshal Zhukov",
@@ -2125,7 +2487,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "general_rokossovsky": {
     "name": "General Rokossovsky",
@@ -2133,7 +2496,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "marshal_konev": {
     "name": "Marshal Konev",
@@ -2141,7 +2505,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "general_chuikov": {
     "name": "General Chuikov",
@@ -2149,7 +2514,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "admiral_kuznetsov": {
     "name": "Admiral Kuznetsov",
@@ -2157,7 +2523,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "general_vasilevsky": {
     "name": "General Vasilevsky",
@@ -2165,7 +2532,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "marshal_timoshenko": {
     "name": "Marshal Timoshenko",
@@ -2173,7 +2541,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "general_malinovsky": {
     "name": "General Malinovsky",
@@ -2181,7 +2550,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "colonel_petrov": {
     "name": "Colonel Petrov",
@@ -2189,7 +2559,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "major_ivanov": {
     "name": "Major Ivanov",
@@ -2197,7 +2568,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "captain_sokolov": {
     "name": "Captain Sokolov",
@@ -2205,7 +2577,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "lieutenant_kozlov": {
     "name": "Lieutenant Kozlov",
@@ -2213,7 +2586,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "sergeant_volkov": {
     "name": "Sergeant Volkov",
@@ -2221,7 +2595,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "hero_popov": {
     "name": "Hero Popov",
@@ -2229,7 +2604,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "general_lebedev": {
     "name": "General Lebedev",
@@ -2237,7 +2613,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "marshal_fedorov": {
     "name": "Marshal Fedorov",
@@ -2245,7 +2622,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "commander_smirnov": {
     "name": "Commander Smirnov",
@@ -2253,7 +2631,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "hero_morozov": {
     "name": "Hero Morozov",
@@ -2261,7 +2640,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "tank_general_katukov": {
     "name": "Tank General Katukov",
@@ -2269,7 +2649,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "colonel_rotmistrov": {
     "name": "Colonel Rotmistrov",
@@ -2277,7 +2658,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "ace_commander_lavrinenko": {
     "name": "Ace Commander Lavrinenko",
@@ -2285,7 +2667,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "major_burda": {
     "name": "Major Burda",
@@ -2293,7 +2676,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "hero_kolobanov": {
     "name": "Hero Kolobanov",
@@ -2301,7 +2685,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "brigade_leader_getman": {
     "name": "Brigade Leader Getman",
@@ -2309,7 +2694,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "general_rybalko": {
     "name": "General Rybalko",
@@ -2317,7 +2703,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "tank_marshal_bogdanov": {
     "name": "Tank Marshal Bogdanov",
@@ -2325,7 +2712,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "commander_baryatinsky": {
     "name": "Commander Baryatinsky",
@@ -2333,7 +2721,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "ace_oskin": {
     "name": "Ace Oskin",
@@ -2341,7 +2730,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "colonel_gorbatov": {
     "name": "Colonel Gorbatov",
@@ -2349,7 +2739,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "major_shumilov": {
     "name": "Major Shumilov",
@@ -2357,7 +2748,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "captain_rodimtsev": {
     "name": "Captain Rodimtsev",
@@ -2365,7 +2757,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "sniper_zaitsev": {
     "name": "Sniper Zaitsev",
@@ -2373,7 +2766,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "hero_pavlichenko": {
     "name": "Hero Pavlichenko",
@@ -2381,7 +2775,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "general_govorov": {
     "name": "General Govorov",
@@ -2389,7 +2784,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "commander_batov": {
     "name": "Commander Batov",
@@ -2397,7 +2793,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "marshal_meretskov": {
     "name": "Marshal Meretskov",
@@ -2405,7 +2802,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "hero_gromov": {
     "name": "Hero Gromov",
@@ -2413,7 +2811,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "sergeant_pavlov": {
     "name": "Sergeant Pavlov",
@@ -2421,7 +2820,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "general_glagolev": {
     "name": "General Glagolev",
@@ -2429,7 +2829,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "colonel_margelov": {
     "name": "Colonel Margelov",
@@ -2437,7 +2838,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "major_levashov": {
     "name": "Major Levashov",
@@ -2445,7 +2847,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "captain_denisov": {
     "name": "Captain Denisov",
@@ -2453,7 +2856,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "jump_hero_yegorov": {
     "name": "Jump Hero Yegorov",
@@ -2461,7 +2865,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "airborne_ace_kantaria": {
     "name": "Airborne Ace Kantaria",
@@ -2469,7 +2874,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "commander_belov": {
     "name": "Commander Belov",
@@ -2477,7 +2883,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "marshal_shaposhnikov": {
     "name": "Marshal Shaposhnikov",
@@ -2485,7 +2892,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "hero_krylov": {
     "name": "Hero Krylov",
@@ -2493,7 +2901,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "elite_trooper_nesterov": {
     "name": "Elite Trooper Nesterov",
@@ -2501,7 +2910,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "artillery_marshal_voronov": {
     "name": "Artillery Marshal Voronov",
@@ -2509,7 +2919,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "general_kazakov": {
     "name": "General Kazakov",
@@ -2517,7 +2928,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "colonel_nedelin": {
     "name": "Colonel Nedelin",
@@ -2525,7 +2937,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "major_kurchevsky": {
     "name": "Major Kurchevsky",
@@ -2533,7 +2946,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "rocket_hero_tukhachevsky": {
     "name": "Rocket Hero Tukhachevsky",
@@ -2541,7 +2955,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$PirateHacker1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/PirateHacker.png"
   },
   "katyusha_ace_kostikov": {
     "name": "Katyusha Ace Kostikov",
@@ -2549,7 +2964,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$CyberWitch1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/CyberWitch.png"
   },
   "commander_yakovlev": {
     "name": "Commander Yakovlev",
@@ -2557,7 +2973,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ElvenArcher1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ElvenArcher.png"
   },
   "marshal_kulik": {
     "name": "Marshal Kulik",
@@ -2565,7 +2982,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$ValiantKnight1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ValiantKnight.png"
   },
   "general_petrov": {
     "name": "General Petrov",
@@ -2573,7 +2991,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$Botanist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Botanist.png"
   },
   "hero_grabin": {
     "name": "Hero Grabin",
@@ -2581,7 +3000,8 @@
     "country": "Russia",
     "moralGuide": false,
     "spritename": "NPCs/!$UniversityStudent1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/UniversityStudent.png"
   },
   "sultan_osman_vi": {
     "name": "Sultan Osman VI",
@@ -2589,7 +3009,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "grand_vizier_ahmet": {
     "name": "Grand Vizier Ahmet",
@@ -2597,7 +3018,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "marshal_fevzi_pasha": {
     "name": "Marshal Fevzi Pasha",
@@ -2605,7 +3027,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "admiral_barbaros_iii": {
     "name": "Admiral Barbaros III",
@@ -2613,7 +3036,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "grand_bureaucrat_midhat_pasha": {
     "name": "Grand Bureaucrat Midhat Pasha",
@@ -2621,7 +3045,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "reform_minister_ali_pasha": {
     "name": "Reform Minister Ali Pasha",
@@ -2629,7 +3054,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "chief_administrator_fuad_effendi": {
     "name": "Chief Administrator Fuad Effendi",
@@ -2637,7 +3063,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "inspector_general_reshid_bey": {
     "name": "Inspector General Reshid Bey",
@@ -2645,7 +3072,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "captain_reis_murat": {
     "name": "Captain Reis Murat",
@@ -2653,7 +3081,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$Jogger1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/Jogger.png"
   },
   "admiral_salih": {
     "name": "Admiral Salih",
@@ -2661,7 +3090,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$TechnoBarbarian1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/TechnoBarbarian.png"
   },
   "spymaster_hakan_the_silent": {
     "name": "Spymaster Hakan the Silent",
@@ -2669,7 +3099,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "intelligence_chief_mehmed_bey": {
     "name": "Intelligence Chief Mehmed Bey",
@@ -2677,7 +3108,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "assassin_master_selim_the_shadow": {
     "name": "Assassin Master Selim the Shadow",
@@ -2685,7 +3117,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "director_of_secrets_kemal_pasha": {
     "name": "Director of Secrets Kemal Pasha",
@@ -2693,7 +3126,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "grand_a_a_suleiman": {
     "name": "Grand Ağa Suleiman",
@@ -2701,7 +3135,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "koruma_commander_mustafa": {
     "name": "Koruma Commander Mustafa",
@@ -2709,7 +3144,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "elite_captain_ibrahim": {
     "name": "Elite Captain Ibrahim",
@@ -2717,7 +3153,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "first_guard_osman": {
     "name": "First Guard Osman",
@@ -2725,7 +3162,8 @@
     "country": "Turkey",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "king_george_ix": {
     "name": "King George IX",
@@ -2733,7 +3171,8 @@
     "country": "UK",
     "moralGuide": true,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "field_marshal_montgomery_ii": {
     "name": "Field Marshal Montgomery II",
@@ -2741,7 +3180,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "admiral_nelson_iv": {
     "name": "Admiral Nelson IV",
@@ -2749,7 +3189,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "commander_victoria": {
     "name": "Commander Victoria",
@@ -2757,7 +3198,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "admiral_drake_iv": {
     "name": "Admiral Drake IV",
@@ -2765,7 +3207,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "commodore_hawkins": {
     "name": "Commodore Hawkins",
@@ -2773,7 +3216,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "captain_beatty": {
     "name": "Captain Beatty",
@@ -2781,7 +3225,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "fleet_admiral_hood": {
     "name": "Fleet Admiral Hood",
@@ -2789,7 +3234,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "regiment_commander_stirling": {
     "name": "Regiment Commander Stirling",
@@ -2797,7 +3243,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "sbs_director_laycock": {
     "name": "SBS Director Laycock",
@@ -2805,7 +3252,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "sas_captain_price": {
     "name": "SAS Captain Price",
@@ -2813,7 +3261,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "squadron_leader_macleod": {
     "name": "Squadron Leader MacLeod",
@@ -2821,7 +3270,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "m_director_general": {
     "name": "M (Director General)",
@@ -2829,7 +3279,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "q_technical_director": {
     "name": "Q (Technical Director)",
@@ -2837,7 +3288,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "c_chief_of_station": {
     "name": "C (Chief of Station)",
@@ -2845,7 +3297,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "agent_007_field_director": {
     "name": "Agent 007 (Field Director)",
@@ -2853,7 +3306,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "director_hawking_iii": {
     "name": "Director Hawking III",
@@ -2861,7 +3315,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$WarSniper1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/WarSniper.png"
   },
   "chief_engineer_tesla_iv": {
     "name": "Chief Engineer Tesla IV",
@@ -2869,7 +3324,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$SunCultist1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/SunCultist.png"
   },
   "general_turing": {
     "name": "General Turing",
@@ -2877,7 +3333,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$GeniusGeneral1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "professor_faraday_v": {
     "name": "Professor Faraday V",
@@ -2885,7 +3342,8 @@
     "country": "UK",
     "moralGuide": false,
     "spritename": "NPCs/!$ArchivistArmorer1",
-    "spriteindex": 0
+    "spriteindex": 0,
+    "bust": "img/busts/ArchivistArmorer.png"
   },
   "victor_emmanuel_iii": {
     "name": "Victor Emmanuel III",
@@ -2896,6 +3354,19 @@
     "years": [
       1900,
       1947
+    ],
+    "bust": "img/busts/presets/VictorEmmanuelIII.png",
+    "real": true,
+    "birthDate": "1869-11-11",
+    "hometown": "Naples",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      147,
+      161,
+      127
     ]
   },
   "giovanni_giolitti": {
@@ -2907,6 +3378,19 @@
     "years": [
       1900,
       1928
+    ],
+    "bust": "img/busts/presets/GiovanniGiolitti.png",
+    "real": true,
+    "birthDate": "1842-10-27",
+    "hometown": "Mondovi",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      98,
+      132,
+      16
     ]
   },
   "alcide_de_gasperi": {
@@ -2918,6 +3402,19 @@
     "years": [
       1945,
       1954
+    ],
+    "bust": "img/busts/presets/AlcideDeGasperi.png",
+    "real": true,
+    "birthDate": "1881-04-03",
+    "hometown": "Pieve Tesino",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      171,
+      132,
+      164
     ]
   },
   "enrico_mattei": {
@@ -2929,6 +3426,19 @@
     "years": [
       1945,
       1962
+    ],
+    "bust": "img/busts/presets/EnricoMattei.png",
+    "real": true,
+    "birthDate": "1906-04-29",
+    "hometown": "Acqualagna",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      85,
+      136,
+      164,
+      173
     ]
   },
   "romano_prodi": {
@@ -2940,6 +3450,19 @@
     "years": [
       1996,
       2012
+    ],
+    "bust": "img/busts/presets/RomanoProdi.png",
+    "real": true,
+    "birthDate": "1939-08-09",
+    "hometown": "Scandiano",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      164,
+      92,
+      171
     ]
   },
   "mario_monti": {
@@ -2951,6 +3474,19 @@
     "years": [
       2011,
       2012
+    ],
+    "bust": "img/busts/presets/MarioMonti.png",
+    "real": true,
+    "birthDate": "1943-03-19",
+    "hometown": "Varese",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      95,
+      164,
+      40
     ]
   },
   "mario_draghi": {
@@ -2962,6 +3498,19 @@
     "years": [
       2021,
       2012
+    ],
+    "bust": "img/busts/presets/MarioDraghi.png",
+    "real": true,
+    "birthDate": "1947-09-03",
+    "hometown": "Rome",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      7,
+      132,
+      95,
+      164
     ]
   },
   "queen_victoria": {
@@ -2973,6 +3522,19 @@
     "years": [
       1837,
       1901
+    ],
+    "bust": "img/busts/presets/QueenVictoria.png",
+    "real": true,
+    "birthDate": "1819-05-24",
+    "hometown": "London",
+    "gender": 1,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      173,
+      91,
+      127
     ]
   },
   "edward_vii": {
@@ -2984,6 +3546,19 @@
     "years": [
       1901,
       1910
+    ],
+    "bust": "img/busts/presets/EdwardVII.png",
+    "real": true,
+    "birthDate": "1841-11-09",
+    "hometown": "London",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      94,
+      81,
+      173
     ]
   },
   "george_v": {
@@ -2995,6 +3570,19 @@
     "years": [
       1910,
       1936
+    ],
+    "bust": "img/busts/presets/GeorgeV.png",
+    "real": true,
+    "birthDate": "1865-06-03",
+    "hometown": "London",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      89,
+      95,
+      127
     ]
   },
   "edward_viii": {
@@ -3006,6 +3594,19 @@
     "years": [
       1936,
       1972
+    ],
+    "bust": "img/busts/King.png",
+    "real": true,
+    "birthDate": "1894-06-23",
+    "hometown": "Richmond",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      178,
+      94,
+      173
     ]
   },
   "george_vi": {
@@ -3017,6 +3618,19 @@
     "years": [
       1936,
       1952
+    ],
+    "bust": "img/busts/presets/GeorgeVI.png",
+    "real": true,
+    "birthDate": "1895-12-14",
+    "hometown": "Sandringham",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      198,
+      89,
+      95
     ]
   },
   "winston_churchill": {
@@ -3028,6 +3642,19 @@
     "years": [
       1940,
       1965
+    ],
+    "bust": "img/busts/presets/WinstonChurchill.png",
+    "real": true,
+    "birthDate": "1874-11-30",
+    "hometown": "Woodstock",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      197,
+      22,
+      98,
+      173
     ]
   },
   "clement_attlee": {
@@ -3039,6 +3666,19 @@
     "years": [
       1945,
       1967
+    ],
+    "bust": "img/busts/presets/ClementAttlee.png",
+    "real": true,
+    "birthDate": "1883-01-03",
+    "hometown": "London",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      92,
+      171,
+      164,
+      83
     ]
   },
   "elizabeth_ii": {
@@ -3050,6 +3690,19 @@
     "years": [
       1952,
       2022
+    ],
+    "bust": "img/busts/presets/ElizabethII.png",
+    "real": true,
+    "birthDate": "1926-04-21",
+    "hometown": "London",
+    "gender": 1,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      89,
+      95,
+      173
     ]
   },
   "margaret_thatcher": {
@@ -3061,6 +3714,19 @@
     "years": [
       1979,
       2013
+    ],
+    "bust": "img/busts/presets/MargaretThatcher.png",
+    "real": true,
+    "birthDate": "1925-10-13",
+    "hometown": "Grantham",
+    "gender": 1,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      40,
+      95,
+      172,
+      173
     ]
   },
   "tony_blair": {
@@ -3072,6 +3738,19 @@
     "years": [
       1997,
       2012
+    ],
+    "bust": "img/busts/presets/TonyBlair.png",
+    "real": true,
+    "birthDate": "1953-05-06",
+    "hometown": "Edinburgh",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      16,
+      85,
+      173
     ]
   },
   "harold_macmillan": {
@@ -3083,6 +3762,19 @@
     "years": [
       1957,
       1986
+    ],
+    "bust": "img/busts/presets/HaroldMacmillan.png",
+    "real": true,
+    "birthDate": "1894-02-10",
+    "hometown": "London",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      164,
+      132,
+      136
     ]
   },
   "harold_wilson": {
@@ -3094,6 +3786,19 @@
     "years": [
       1964,
       1995
+    ],
+    "bust": "img/busts/presets/HaroldWilson.png",
+    "real": true,
+    "birthDate": "1916-03-11",
+    "hometown": "Huddersfield",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      7,
+      164,
+      102,
+      132
     ]
   },
   "david_cameron": {
@@ -3105,6 +3810,19 @@
     "years": [
       2010,
       2012
+    ],
+    "bust": "img/busts/Operator.png",
+    "real": true,
+    "birthDate": "1966-10-09",
+    "hometown": "London",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      81,
+      164,
+      173
     ]
   },
   "boris_johnson": {
@@ -3116,6 +3834,19 @@
     "years": [
       2019,
       2012
+    ],
+    "bust": "img/busts/SchoolTeacher.png",
+    "real": true,
+    "birthDate": "1964-06-19",
+    "hometown": "New York",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      143,
+      174,
+      173
     ]
   },
   "rishi_sunak": {
@@ -3127,6 +3858,19 @@
     "years": [
       2022,
       2012
+    ],
+    "bust": "img/busts/Lawyer.png",
+    "real": true,
+    "birthDate": "1980-05-12",
+    "hometown": "Southampton",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      131,
+      132,
+      40,
+      164
     ]
   },
   "keir_starmer": {
@@ -3138,6 +3882,19 @@
     "years": [
       2012,
       2012
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1962-09-02",
+    "hometown": "London",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      171,
+      132,
+      164,
+      83
     ]
   },
   "nicholas_ii": {
@@ -3149,6 +3906,19 @@
     "years": [
       1894,
       1918
+    ],
+    "bust": "img/busts/presets/NicholasII.png",
+    "real": true,
+    "birthDate": "1868-05-18",
+    "hometown": "Tsarskoye Selo",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      116,
+      89,
+      127
     ]
   },
   "vladimir_lenin": {
@@ -3160,6 +3930,19 @@
     "years": [
       1917,
       1924
+    ],
+    "bust": "img/busts/presets/VladimirLenin.png",
+    "real": true,
+    "birthDate": "1870-04-22",
+    "hometown": "Simbirsk",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      197,
+      85,
+      132
     ]
   },
   "leon_trotsky": {
@@ -3171,6 +3954,19 @@
     "years": [
       1917,
       1940
+    ],
+    "bust": "img/busts/presets/LeonTrotsky.png",
+    "real": true,
+    "birthDate": "1879-11-07",
+    "hometown": "Yanovka",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      7,
+      143,
+      163,
+      129
     ]
   },
   "joseph_stalin": {
@@ -3182,6 +3978,19 @@
     "years": [
       1924,
       1953
+    ],
+    "bust": "img/busts/presets/JosephStalin.png",
+    "real": true,
+    "birthDate": "1878-12-18",
+    "hometown": "Gori",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      5,
+      60,
+      98,
+      174
     ]
   },
   "nikita_khrushchev": {
@@ -3193,6 +4002,19 @@
     "years": [
       1953,
       1971
+    ],
+    "bust": "img/busts/presets/NikitaKhrushchev.png",
+    "real": true,
+    "birthDate": "1894-04-15",
+    "hometown": "Kalinovka",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      10,
+      82,
+      172,
+      164
     ]
   },
   "leonid_brezhnev": {
@@ -3204,6 +4026,19 @@
     "years": [
       1964,
       1982
+    ],
+    "bust": "img/busts/presets/LeonidBrezhnev.png",
+    "real": true,
+    "birthDate": "1906-12-19",
+    "hometown": "Kamenskoye",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      86,
+      91,
+      93,
+      102
     ]
   },
   "mikhail_gorbachev": {
@@ -3215,6 +4050,19 @@
     "years": [
       1985,
       2022
+    ],
+    "bust": "img/busts/presets/MikhailGorbachev.png",
+    "real": true,
+    "birthDate": "1931-03-02",
+    "hometown": "Privolnoye",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      81,
+      171,
+      173
     ]
   },
   "boris_yeltsin": {
@@ -3226,6 +4074,19 @@
     "years": [
       1991,
       2007
+    ],
+    "bust": "img/busts/presets/BorisYeltsin.png",
+    "real": true,
+    "birthDate": "1931-02-01",
+    "hometown": "Butka",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      22,
+      10,
+      82,
+      173
     ]
   },
   "vladimir_putin": {
@@ -3237,6 +4098,19 @@
     "years": [
       1999,
       2012
+    ],
+    "bust": "img/busts/presets/VladimirPutin.png",
+    "real": true,
+    "birthDate": "1952-10-07",
+    "hometown": "Saint Petersburg",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      95,
+      98,
+      5,
+      173
     ]
   },
   "alexander_kerensky": {
@@ -3248,6 +4122,19 @@
     "years": [
       1917,
       1970
+    ],
+    "bust": "img/busts/Announcer.png",
+    "real": true,
+    "birthDate": "1881-05-04",
+    "hometown": "Simbirsk",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      143,
+      163,
+      129,
+      16
     ]
   },
   "georgy_malenkov": {
@@ -3259,6 +4146,19 @@
     "years": [
       1953,
       1988
+    ],
+    "bust": "img/busts/Employee.png",
+    "real": true,
+    "birthDate": "1902-01-13",
+    "hometown": "Orenburg",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      83,
+      89,
+      132
     ]
   },
   "yuri_andropov": {
@@ -3270,6 +4170,19 @@
     "years": [
       1982,
       1984
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1914-06-15",
+    "hometown": "Nagutskaya",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      5,
+      95,
+      98,
+      132
     ]
   },
   "konstantin_chernenko": {
@@ -3281,6 +4194,19 @@
     "years": [
       1984,
       1985
+    ],
+    "bust": "img/busts/Trainer.png",
+    "real": true,
+    "birthDate": "1911-09-24",
+    "hometown": "Bolshaya Tes",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      89,
+      86,
+      95,
+      161
     ]
   },
   "dmitry_medvedev": {
@@ -3292,6 +4218,19 @@
     "years": [
       2008,
       2012
+    ],
+    "bust": "img/busts/DataAnalyst.png",
+    "real": true,
+    "birthDate": "1965-09-14",
+    "hometown": "Saint Petersburg",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      35,
+      132,
+      89,
+      164
     ]
   },
   "abdul_hamid_ii": {
@@ -3303,6 +4242,19 @@
     "years": [
       1876,
       1918
+    ],
+    "bust": "img/busts/presets/AbdulHamidII.png",
+    "real": true,
+    "birthDate": "1842-09-21",
+    "hometown": "Istanbul",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      5,
+      116,
+      98,
+      123
     ]
   },
   "mehmed_v": {
@@ -3314,6 +4266,19 @@
     "years": [
       1909,
       1918
+    ],
+    "bust": "img/busts/Queen.png",
+    "real": true,
+    "birthDate": "1844-11-02",
+    "hometown": "Istanbul",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      116,
+      92,
+      198
     ]
   },
   "enver_pasha": {
@@ -3325,6 +4290,19 @@
     "years": [
       1913,
       1922
+    ],
+    "bust": "img/busts/Operator.png",
+    "real": true,
+    "birthDate": "1881-11-22",
+    "hometown": "Istanbul",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      85,
+      136,
+      174,
+      91
     ]
   },
   "mustafa_kemal_atat_rk": {
@@ -3336,6 +4314,19 @@
     "years": [
       1923,
       1938
+    ],
+    "bust": "img/busts/presets/MustafaKemalAtaturk.png",
+    "real": true,
+    "birthDate": "1881-05-19",
+    "hometown": "Thessaloniki",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      98,
+      37,
+      85,
+      173
     ]
   },
   "i_smet_i_n_n": {
@@ -3347,6 +4338,19 @@
     "years": [
       1938,
       1973
+    ],
+    "bust": "img/busts/presets/IsmetInonu.png",
+    "real": true,
+    "birthDate": "1884-09-24",
+    "hometown": "Izmir",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      98,
+      95,
+      164,
+      132
     ]
   },
   "adnan_menderes": {
@@ -3358,6 +4362,19 @@
     "years": [
       1950,
       1961
+    ],
+    "bust": "img/busts/Instructor.png",
+    "real": true,
+    "birthYear": 1899,
+    "hometown": "Aydin",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      85,
+      178,
+      173
     ]
   },
   "s_leyman_demirel": {
@@ -3369,6 +4386,19 @@
     "years": [
       1965,
       2015
+    ],
+    "bust": "img/busts/KingsHand.png",
+    "real": true,
+    "birthDate": "1924-11-01",
+    "hometown": "Isparta",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      40,
+      132,
+      173
     ]
   },
   "turgut_zal": {
@@ -3380,6 +4410,19 @@
     "years": [
       1983,
       1993
+    ],
+    "bust": "img/busts/Secretary.png",
+    "real": true,
+    "birthDate": "1927-10-13",
+    "hometown": "Malatya",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      131,
+      164,
+      35,
+      93
     ]
   },
   "tansu_iller": {
@@ -3391,6 +4434,19 @@
     "years": [
       1993,
       2012
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1946-05-24",
+    "hometown": "Istanbul",
+    "gender": 1,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      85,
+      131,
+      81
     ]
   },
   "necmettin_erbakan": {
@@ -3402,6 +4458,19 @@
     "years": [
       1996,
       2011
+    ],
+    "bust": "img/busts/Lawyer.png",
+    "real": true,
+    "birthDate": "1926-10-29",
+    "hometown": "Sinop",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      132,
+      85,
+      197
     ]
   },
   "b_lent_ecevit": {
@@ -3413,6 +4482,19 @@
     "years": [
       1999,
       2006
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthDate": "1925-05-28",
+    "hometown": "Istanbul",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      143,
+      132,
+      171,
+      163
     ]
   },
   "cel_l_bayar": {
@@ -3424,6 +4506,19 @@
     "years": [
       1950,
       1986
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthDate": "1883-05-16",
+    "hometown": "Bursa",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      133,
+      164,
+      85,
+      132
     ]
   },
   "cemal_g_rsel": {
@@ -3435,6 +4530,19 @@
     "years": [
       1960,
       1966
+    ],
+    "bust": "img/busts/WarGeneral.png",
+    "real": true,
+    "birthYear": 1895,
+    "hometown": "Erzurum",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      98,
+      92,
+      164
     ]
   },
   "cevdet_sunay": {
@@ -3446,6 +4554,19 @@
     "years": [
       1966,
       1982
+    ],
+    "bust": "img/busts/Admiral.png",
+    "real": true,
+    "birthDate": "1899-02-10",
+    "hometown": "Trabzon",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      95,
+      89,
+      164
     ]
   },
   "kenan_evren": {
@@ -3457,6 +4578,19 @@
     "years": [
       1980,
       2015
+    ],
+    "bust": "img/busts/OldCommander.png",
+    "real": true,
+    "birthYear": 1917,
+    "hometown": "Alasehir",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      172,
+      174,
+      98
     ]
   },
   "ahmet_necdet_sezer": {
@@ -3468,6 +4602,19 @@
     "years": [
       2000,
       2012
+    ],
+    "bust": "img/busts/Banker.png",
+    "real": true,
+    "birthDate": "1941-09-13",
+    "hometown": "Afyonkarahisar",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      171,
+      132,
+      95,
+      164
     ]
   },
   "abdullah_g_l": {
@@ -3479,6 +4626,19 @@
     "years": [
       2007,
       2012
+    ],
+    "bust": "img/busts/Manager.png",
+    "real": true,
+    "birthDate": "1950-10-29",
+    "hometown": "Kayseri",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      132,
+      164,
+      198
     ]
   },
   "recep_tayyip_erdo_an": {
@@ -3490,6 +4650,19 @@
     "years": [
       2003,
       2012
+    ],
+    "bust": "img/busts/presets/RecepTayyipErdogan.png",
+    "real": true,
+    "birthDate": "1954-02-26",
+    "hometown": "Istanbul",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      197,
+      85,
+      173
     ]
   },
   "the_great_goblin": {
@@ -3501,7 +4674,8 @@
     "years": [
       1970,
       2012
-    ]
+    ],
+    "bust": "img/busts/GoblinWitch.png"
   },
   "griznak": {
     "name": "Griznak",
@@ -3512,7 +4686,8 @@
     "years": [
       1905,
       1925
-    ]
+    ],
+    "bust": "img/busts/GoblinCleric.png"
   },
   "krazz": {
     "name": "Krazz",
@@ -3523,7 +4698,8 @@
     "years": [
       1908,
       1928
-    ]
+    ],
+    "bust": "img/busts/GoblinIllusionist.png"
   },
   "zog": {
     "name": "Zog",
@@ -3534,7 +4710,8 @@
     "years": [
       1924,
       1943
-    ]
+    ],
+    "bust": "img/busts/GoblinArchmage.png"
   },
   "droop": {
     "name": "Droop",
@@ -3545,7 +4722,8 @@
     "years": [
       1945,
       1987
-    ]
+    ],
+    "bust": "img/busts/GoblinDiplomat.png"
   },
   "skab": {
     "name": "Skab",
@@ -3556,7 +4734,8 @@
     "years": [
       1965,
       2005
-    ]
+    ],
+    "bust": "img/busts/GoblinDiplomat.png"
   },
   "blight": {
     "name": "Blight",
@@ -3567,7 +4746,8 @@
     "years": [
       1971,
       1983
-    ]
+    ],
+    "bust": "img/busts/GoblinEccentric.png"
   },
   "snarl": {
     "name": "Snarl",
@@ -3578,7 +4758,8 @@
     "years": [
       1976,
       2018
-    ]
+    ],
+    "bust": "img/busts/GoblinEccentric.png"
   },
   "grub": {
     "name": "Grub",
@@ -3589,7 +4770,8 @@
     "years": [
       1981,
       2021
-    ]
+    ],
+    "bust": "img/busts/GoblinMerchant.png"
   },
   "grizelda": {
     "name": "Grizelda",
@@ -3600,7 +4782,8 @@
     "years": [
       1981,
       2012
-    ]
+    ],
+    "bust": "img/busts/GoblinRaider.png"
   },
   "krix": {
     "name": "Krix",
@@ -3611,7 +4794,8 @@
     "years": [
       1997,
       2012
-    ]
+    ],
+    "bust": "img/busts/GoblinEccentric.png"
   },
   "grum": {
     "name": "Grum",
@@ -3622,7 +4806,8 @@
     "years": [
       2000,
       2012
-    ]
+    ],
+    "bust": "img/busts/GoblinShogun.png"
   },
   "snot": {
     "name": "Snot",
@@ -3633,7 +4818,8 @@
     "years": [
       2013,
       2012
-    ]
+    ],
+    "bust": "img/busts/GoblinEccentric.png"
   },
   "vile": {
     "name": "Vile",
@@ -3644,7 +4830,8 @@
     "years": [
       2021,
       2012
-    ]
+    ],
+    "bust": "img/busts/GoblinNoblewoman.png"
   },
   "aleister_crowley": {
     "name": "Aleister Crowley",
@@ -3655,6 +4842,20 @@
     "years": [
       1900,
       1947
+    ],
+    "preset": "Aleister Crowley",
+    "bust": "img/busts/presets/AleisterCrowley.png",
+    "real": true,
+    "birthDate": "1875-10-12",
+    "hometown": "Leamington Spa",
+    "gender": 0,
+    "sexualOrientation": "bisexual",
+    "romanticOrientation": "biromantic",
+    "traits": [
+      118,
+      190,
+      174,
+      94
     ]
   },
   "dion_fortune": {
@@ -3666,6 +4867,19 @@
     "years": [
       1920,
       1946
+    ],
+    "bust": "img/busts/presets/DionFortune.png",
+    "real": true,
+    "birthDate": "1890-12-06",
+    "hometown": "Llandudno",
+    "gender": 1,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      190,
+      132,
+      196,
+      116
     ]
   },
   "em": {
@@ -3677,7 +4891,9 @@
     "years": [
       2001,
       2012
-    ]
+    ],
+    "preset": "Em",
+    "bust": "img/busts/presets/Em.png"
   },
   "brewster_kahle": {
     "name": "Brewster Kahle",
@@ -3688,6 +4904,19 @@
     "years": [
       1996,
       2012
+    ],
+    "bust": "img/busts/presets/BrewsterKahle.png",
+    "real": true,
+    "birthYear": 1960,
+    "hometown": "New York",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      35,
+      132,
+      88,
+      163
     ]
   },
   "julian_assange": {
@@ -3699,6 +4928,19 @@
     "years": [
       2001,
       2012
+    ],
+    "bust": "img/busts/presets/JulianAssange.png",
+    "real": true,
+    "birthDate": "1971-07-03",
+    "hometown": "Townsville",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      35,
+      7,
+      174,
+      176
     ]
   },
   "the_pyramid_overlord": {
@@ -3710,7 +4952,8 @@
     "years": [
       1990,
       2012
-    ]
+    ],
+    "bust": "img/busts/Billionaire.png"
   },
   "the_shadow_ceo": {
     "name": "The Shadow CEO",
@@ -3721,7 +4964,8 @@
     "years": [
       1990,
       2012
-    ]
+    ],
+    "bust": "img/busts/Manager.png"
   },
   "yhwh": {
     "name": "YHWH",
@@ -3732,7 +4976,8 @@
     "years": [
       0,
       1999
-    ]
+    ],
+    "bust": "img/busts/VoidPerson.png"
   },
   "eris": {
     "name": "Eris",
@@ -3743,7 +4988,8 @@
     "years": [
       1999,
       2012
-    ]
+    ],
+    "bust": "img/busts/VoidPerson.png"
   },
   "malal": {
     "name": "Malal",
@@ -3754,7 +5000,8 @@
     "years": [
       1990,
       2012
-    ]
+    ],
+    "bust": "img/busts/Goddess.png"
   },
   "president_lincoln_xiii": {
     "name": "President Lincoln XIII",
@@ -3765,7 +5012,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/Chief.png"
   },
   "speaker_grant": {
     "name": "Speaker Grant",
@@ -3776,7 +5024,8 @@
     "years": [
       1900,
       1955
-    ]
+    ],
+    "bust": "img/busts/Secretary.png"
   },
   "senator_sherman": {
     "name": "Senator Sherman",
@@ -3787,7 +5036,8 @@
     "years": [
       1945,
       2012
-    ]
+    ],
+    "bust": "img/busts/Chief.png"
   },
   "chairman_faraday": {
     "name": "Chairman Faraday",
@@ -3798,7 +5048,8 @@
     "years": [
       1970,
       2012
-    ]
+    ],
+    "bust": "img/busts/Butler.png"
   },
   "governor_general_victoria_vi": {
     "name": "Governor-General Victoria VI",
@@ -3809,7 +5060,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/WarGeneral.png"
   },
   "thaumo_director_tesla": {
     "name": "Thaumo-Director Tesla",
@@ -3820,7 +5072,8 @@
     "years": [
       1900,
       1943
-    ]
+    ],
+    "bust": "img/busts/Mage.png"
   },
   "commissioner_douglas": {
     "name": "Commissioner Douglas",
@@ -3831,7 +5084,8 @@
     "years": [
       1950,
       2012
-    ]
+    ],
+    "bust": "img/busts/NobleHeir.png"
   },
   "colonial_admin_cornwallis_ix": {
     "name": "Colonial Admin Cornwallis IX",
@@ -3842,7 +5096,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/Manager.png"
   },
   "director_paine": {
     "name": "Director Paine",
@@ -3853,7 +5108,8 @@
     "years": [
       1900,
       1950
-    ]
+    ],
+    "bust": "img/busts/Manager.png"
   },
   "warden_arnold": {
     "name": "Warden Arnold",
@@ -3864,7 +5120,8 @@
     "years": [
       1975,
       2012
-    ]
+    ],
+    "bust": "img/busts/Admiral.png"
   },
   "secretary_adams": {
     "name": "Secretary Adams",
@@ -3875,7 +5132,8 @@
     "years": [
       1900,
       2012
-    ]
+    ],
+    "bust": "img/busts/Secretary.png"
   },
   "unionist_chair_jefferson": {
     "name": "Unionist Chair Jefferson",
@@ -3886,7 +5144,8 @@
     "years": [
       1920,
       2012
-    ]
+    ],
+    "bust": "img/busts/Secretary.png"
   },
   "mehmet_ali_agca": {
     "name": "Mehmet Ali Ağca",
@@ -3900,6 +5159,19 @@
     "years": [
       1958,
       2100
+    ],
+    "bust": "img/busts/presets/MehmetAliAgca.png",
+    "real": true,
+    "birthDate": "1958-01-09",
+    "hometown": "Hekimhan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      174,
+      5,
+      134,
+      176
     ]
   },
   "shutter_warden_hlee_2": {
@@ -3914,7 +5186,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienGrey.png"
   },
   "itinerary_grey_omm_4": {
     "name": "Itinerary-Grey Omm-4",
@@ -3928,7 +5201,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienTrucker.png"
   },
   "chief_analyzer_vess_1": {
     "name": "Chief Analyzer Vess-1",
@@ -3942,7 +5216,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienXori.png"
   },
   "scalpel_primarch_thruun": {
     "name": "Scalpel-Primarch Thruun",
@@ -3956,7 +5231,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienXori.png"
   },
   "warp_choir_mother_iisha": {
     "name": "Warp-Choir Mother Iisha",
@@ -3970,7 +5246,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienMystic.png"
   },
   "pale_archon_nuu_6": {
     "name": "Pale Archon Nuu-6",
@@ -3984,7 +5261,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienMindmaster.png"
   },
   "dargos_the_first": {
     "name": "Dargos the First",
@@ -3998,7 +5276,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienDargos.png"
   },
   "punchline_regent_obb": {
     "name": "Punchline-Regent Obb",
@@ -4012,7 +5291,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienDargos.png"
   },
   "embassy_clerk_wodwod": {
     "name": "Embassy Clerk Wodwod",
@@ -4026,7 +5306,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienDargos.png"
   },
   "prank_marshal_ssein": {
     "name": "Prank-Marshal Ssein",
@@ -4040,7 +5321,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/AlienDargos.png"
   },
   "god_emperor_kukulkan": {
     "name": "K'uk'ulkan, the Feathered God-Emperor",
@@ -4051,7 +5333,8 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/ExoticAbstracter.png"
   },
   "divine_ajaw_pakal_iii": {
     "name": "Divine Ajaw Pakal III",
@@ -4062,7 +5345,8 @@
     "years": [
       1922,
       1979
-    ]
+    ],
+    "bust": "img/busts/Cardinal.png"
   },
   "high_priestess_ix_chel": {
     "name": "High Priestess Ix Chel",
@@ -4073,7 +5357,8 @@
     "years": [
       1958,
       2012
-    ]
+    ],
+    "bust": "img/busts/Priestess.png"
   },
   "jaguar_general_balam": {
     "name": "Jaguar General Balam",
@@ -4084,7 +5369,8 @@
     "years": [
       1935,
       1994
-    ]
+    ],
+    "bust": "img/busts/TecnoGeneral.png"
   },
   "calendar_keeper_ah_kin": {
     "name": "Calendar Keeper Ah Kin",
@@ -4095,7 +5381,8 @@
     "years": [
       1901,
       2012
-    ]
+    ],
+    "bust": "img/busts/Employee.png"
   },
   "restorer_tecpatl": {
     "name": "Restorer Tecpatl",
@@ -4106,7 +5393,8 @@
     "years": [
       1900,
       1968
-    ]
+    ],
+    "bust": "img/busts/Lawyer.png"
   },
   "porfirio_diaz": {
     "name": "Porfirio Díaz",
@@ -4117,6 +5405,19 @@
     "years": [
       1876,
       1911
+    ],
+    "bust": "img/busts/presets/PorfirioDiaz.png",
+    "real": true,
+    "birthDate": "1830-09-15",
+    "hometown": "Oaxaca",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      98,
+      174,
+      123
     ]
   },
   "francisco_madero": {
@@ -4128,6 +5429,19 @@
     "years": [
       1911,
       1913
+    ],
+    "bust": "img/busts/Detective.png",
+    "real": true,
+    "birthDate": "1873-10-30",
+    "hometown": "Parras",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      36,
+      131,
+      171
     ]
   },
   "emiliano_zapata": {
@@ -4139,6 +5453,19 @@
     "years": [
       1911,
       1919
+    ],
+    "bust": "img/busts/presets/EmilianoZapata.png",
+    "real": true,
+    "birthDate": "1879-08-08",
+    "hometown": "Anenecuilco",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      89,
+      158,
+      177
     ]
   },
   "pancho_villa": {
@@ -4150,6 +5477,19 @@
     "years": [
       1913,
       1920
+    ],
+    "bust": "img/busts/presets/PanchoVilla.png",
+    "real": true,
+    "birthDate": "1878-06-05",
+    "hometown": "Durango",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      53,
+      158,
+      174,
+      134
     ]
   },
   "venustiano_carranza": {
@@ -4161,6 +5501,19 @@
     "years": [
       1917,
       1920
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthDate": "1859-12-29",
+    "hometown": "Cuatro Cienegas",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      91,
+      164,
+      98,
+      123
     ]
   },
   "alvaro_obregon": {
@@ -4172,6 +5525,19 @@
     "years": [
       1920,
       1928
+    ],
+    "bust": "img/busts/DrillSergeant.png",
+    "real": true,
+    "birthDate": "1880-02-19",
+    "hometown": "Navojoa",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      98,
+      136,
+      145,
+      164
     ]
   },
   "plutarco_elias_calles": {
@@ -4183,6 +5549,19 @@
     "years": [
       1924,
       1935
+    ],
+    "bust": "img/busts/OldCommander.png",
+    "real": true,
+    "birthDate": "1877-09-25",
+    "hometown": "Guaymas",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      117,
+      98,
+      172,
+      174
     ]
   },
   "lazaro_cardenas": {
@@ -4194,6 +5573,19 @@
     "years": [
       1934,
       1940
+    ],
+    "bust": "img/busts/presets/LazaroCardenas.png",
+    "real": true,
+    "birthDate": "1895-05-21",
+    "hometown": "Jiquilpan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      88,
+      163,
+      92,
+      171
     ]
   },
   "manuel_avila_camacho": {
@@ -4205,6 +5597,19 @@
     "years": [
       1940,
       1946
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1897-04-24",
+    "hometown": "Teziutlan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      164,
+      92,
+      136
     ]
   },
   "miguel_aleman_valdes": {
@@ -4216,6 +5621,19 @@
     "years": [
       1946,
       1952
+    ],
+    "bust": "img/busts/Detective.png",
+    "real": true,
+    "birthDate": "1900-09-29",
+    "hometown": "Sayula de Aleman",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      131,
+      87,
+      81,
+      133
     ]
   },
   "adolfo_ruiz_cortines": {
@@ -4227,6 +5645,19 @@
     "years": [
       1952,
       1958
+    ],
+    "bust": "img/busts/SchoolTeacher.png",
+    "real": true,
+    "birthDate": "1889-12-30",
+    "hometown": "Veracruz",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      171,
+      95,
+      92,
+      164
     ]
   },
   "adolfo_lopez_mateos": {
@@ -4238,6 +5669,19 @@
     "years": [
       1958,
       1964
+    ],
+    "bust": "img/busts/SchoolTeacher.png",
+    "real": true,
+    "birthDate": "1909-05-26",
+    "hometown": "Atizapan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      143,
+      163,
+      200
     ]
   },
   "gustavo_diaz_ordaz": {
@@ -4249,6 +5693,19 @@
     "years": [
       1964,
       1970
+    ],
+    "bust": "img/busts/Chief.png",
+    "real": true,
+    "birthDate": "1911-03-12",
+    "hometown": "Ciudad Serdan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      172,
+      5,
+      174,
+      95
     ]
   },
   "luis_echeverria": {
@@ -4260,6 +5717,19 @@
     "years": [
       1970,
       1976
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1922-01-17",
+    "hometown": "Mexico City",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      85,
+      90,
+      174,
+      164
     ]
   },
   "jose_lopez_portillo": {
@@ -4271,6 +5741,19 @@
     "years": [
       1976,
       1982
+    ],
+    "bust": "img/busts/DesertTrader.png",
+    "real": true,
+    "birthDate": "1920-06-16",
+    "hometown": "Mexico City",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      143,
+      91,
+      131,
+      94
     ]
   },
   "miguel_de_la_madrid": {
@@ -4282,6 +5765,19 @@
     "years": [
       1982,
       1988
+    ],
+    "bust": "img/busts/Banker.png",
+    "real": true,
+    "birthDate": "1934-12-12",
+    "hometown": "Colima",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      164,
+      95,
+      40
     ]
   },
   "carlos_salinas_de_gortari": {
@@ -4293,6 +5789,19 @@
     "years": [
       1988,
       1994
+    ],
+    "bust": "img/busts/Secretary.png",
+    "real": true,
+    "birthDate": "1948-04-03",
+    "hometown": "Mexico City",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      7,
+      132,
+      90,
+      174
     ]
   },
   "ernesto_zedillo": {
@@ -4304,6 +5813,19 @@
     "years": [
       1994,
       2000
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1951-12-27",
+    "hometown": "Mexico City",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      164,
+      171,
+      40
     ]
   },
   "vicente_fox": {
@@ -4315,6 +5837,19 @@
     "years": [
       2000,
       2006
+    ],
+    "bust": "img/busts/presets/VicenteFox.png",
+    "real": true,
+    "birthDate": "1942-07-02",
+    "hometown": "Mexico City",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      82,
+      197,
+      133,
+      116
     ]
   },
   "felipe_calderon": {
@@ -4326,6 +5861,19 @@
     "years": [
       2006,
       2012
+    ],
+    "bust": "img/busts/SchoolTeacher.png",
+    "real": true,
+    "birthDate": "1962-08-18",
+    "hometown": "Morelia",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      164,
+      172,
+      132
     ]
   },
   "kim_il_sung": {
@@ -4337,6 +5885,19 @@
     "years": [
       1948,
       1994
+    ],
+    "bust": "img/busts/presets/KimIlSung.png",
+    "real": true,
+    "birthDate": "1912-04-15",
+    "hometown": "Pyongyang",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      60,
+      173,
+      197,
+      136
     ]
   },
   "kim_jong_il": {
@@ -4348,6 +5909,19 @@
     "years": [
       1994,
       2011
+    ],
+    "bust": "img/busts/presets/KimJongIl.png",
+    "real": true,
+    "birthDate": "1941-02-16",
+    "hometown": "Vyatskoye",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      60,
+      94,
+      174,
+      5
     ]
   },
   "kim_jong_un": {
@@ -4359,6 +5933,19 @@
     "years": [
       2011,
       2012
+    ],
+    "bust": "img/busts/Detective.png",
+    "real": true,
+    "birthYear": 1984,
+    "hometown": "Pyongyang",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      60,
+      93,
+      174,
+      85
     ]
   },
   "kim_pyong_il": {
@@ -4370,6 +5957,19 @@
     "years": [
       1979,
       2012
+    ],
+    "bust": "img/busts/Operator.png",
+    "real": true,
+    "birthDate": "1954-08-10",
+    "hometown": "Pyongyang",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      129,
+      123,
+      95,
+      89
     ]
   },
   "kim_yong_nam": {
@@ -4381,6 +5981,19 @@
     "years": [
       1998,
       2012
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthDate": "1928-02-04",
+    "hometown": "Pyongyang",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      89,
+      164,
+      95,
+      132
     ]
   },
   "o_jin_u": {
@@ -4392,6 +6005,19 @@
     "years": [
       1976,
       1995
+    ],
+    "bust": "img/busts/Colonel.png",
+    "real": true,
+    "birthYear": 1917,
+    "hometown": "Kilju",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      89,
+      98,
+      95
     ]
   },
   "choe_yong_rim": {
@@ -4403,6 +6029,18 @@
     "years": [
       2010,
       2012
+    ],
+    "bust": "img/busts/Trainer.png",
+    "real": true,
+    "birthYear": 1930,
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      89,
+      95,
+      164,
+      132
     ]
   },
   "pak_song_chol": {
@@ -4414,6 +6052,18 @@
     "years": [
       1976,
       1977
+    ],
+    "bust": "img/busts/Announcer.png",
+    "real": true,
+    "birthYear": 1913,
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      89,
+      95,
+      164
     ]
   },
   "ri_jong_ok": {
@@ -4425,6 +6075,18 @@
     "years": [
       1977,
       1984
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthYear": 1916,
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      89,
+      164,
+      95
     ]
   },
   "kang_song_san": {
@@ -4436,6 +6098,18 @@
     "years": [
       1984,
       1992
+    ],
+    "bust": "img/busts/SchoolTeacher.png",
+    "real": true,
+    "birthYear": 1931,
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      89,
+      132,
+      95
     ]
   },
   "yon_hyong_muk": {
@@ -4447,6 +6121,18 @@
     "years": [
       1988,
       1992
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthYear": 1931,
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      164,
+      89,
+      95
     ]
   },
   "hong_song_nam": {
@@ -4458,6 +6144,18 @@
     "years": [
       1997,
       2003
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthYear": 1929,
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      132,
+      89,
+      86
     ]
   },
   "pak_pong_ju": {
@@ -4469,6 +6167,18 @@
     "years": [
       2003,
       2007
+    ],
+    "bust": "img/busts/Employee.png",
+    "real": true,
+    "birthYear": 1939,
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      40,
+      132,
+      89
     ]
   },
   "sun_yat_sen": {
@@ -4480,6 +6190,19 @@
     "years": [
       1912,
       1925
+    ],
+    "bust": "img/busts/presets/SunYatSen.png",
+    "real": true,
+    "birthDate": "1866-11-12",
+    "hometown": "Zhongshan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      132,
+      200,
+      173
     ]
   },
   "chiang_kai_shek": {
@@ -4491,6 +6214,19 @@
     "years": [
       1928,
       1949
+    ],
+    "bust": "img/busts/presets/ChiangKaiShek.png",
+    "real": true,
+    "birthDate": "1887-10-31",
+    "hometown": "Fenghua",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      98,
+      116,
+      5,
+      91
     ]
   },
   "mao_zedong": {
@@ -4502,6 +6238,19 @@
     "years": [
       1949,
       1976
+    ],
+    "bust": "img/busts/presets/MaoZedong.png",
+    "real": true,
+    "birthDate": "1893-12-26",
+    "hometown": "Shaoshan",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      60,
+      143,
+      98,
+      173
     ]
   },
   "zhou_enlai": {
@@ -4513,6 +6262,19 @@
     "years": [
       1949,
       1976
+    ],
+    "bust": "img/busts/presets/ZhouEnlai.png",
+    "real": true,
+    "birthDate": "1898-03-05",
+    "hometown": "Huai'an",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      16,
+      164,
+      89,
+      200
     ]
   },
   "hua_guofeng": {
@@ -4524,6 +6286,19 @@
     "years": [
       1976,
       1981
+    ],
+    "bust": "img/busts/Journalist.png",
+    "real": true,
+    "birthDate": "1921-02-16",
+    "hometown": "Jiaocheng",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      89,
+      92,
+      164,
+      86
     ]
   },
   "deng_xiaoping": {
@@ -4535,6 +6310,19 @@
     "years": [
       1978,
       1992
+    ],
+    "bust": "img/busts/presets/DengXiaoping.png",
+    "real": true,
+    "birthDate": "1904-08-22",
+    "hometown": "Guang'an",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      98,
+      102,
+      95
     ]
   },
   "hu_yaobang": {
@@ -4546,6 +6334,19 @@
     "years": [
       1981,
       1987
+    ],
+    "bust": "img/busts/Monk.png",
+    "real": true,
+    "birthDate": "1915-11-20",
+    "hometown": "Liuyang",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      171,
+      88,
+      81
     ]
   },
   "zhao_ziyang": {
@@ -4557,6 +6358,19 @@
     "years": [
       1987,
       1989
+    ],
+    "bust": "img/busts/Journalist.png",
+    "real": true,
+    "birthDate": "1919-10-17",
+    "hometown": "Huaxian",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      164,
+      171,
+      132
     ]
   },
   "jiang_zemin": {
@@ -4568,6 +6382,19 @@
     "years": [
       1989,
       2002
+    ],
+    "bust": "img/busts/presets/JiangZemin.png",
+    "real": true,
+    "birthDate": "1926-08-17",
+    "hometown": "Yangzhou",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      82,
+      200,
+      143,
+      132
     ]
   },
   "zhu_rongji": {
@@ -4579,6 +6406,19 @@
     "years": [
       1998,
       2003
+    ],
+    "bust": "img/busts/DataAnalyst.png",
+    "real": true,
+    "birthDate": "1928-10-01",
+    "hometown": "Changsha",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      172,
+      40,
+      171,
+      7
     ]
   },
   "hu_jintao": {
@@ -4590,6 +6430,19 @@
     "years": [
       2002,
       2012
+    ],
+    "bust": "img/busts/presets/HuJintao.png",
+    "real": true,
+    "birthDate": "1942-12-21",
+    "hometown": "Taizhou",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      83,
+      95,
+      164,
+      132
     ]
   },
   "wen_jiabao": {
@@ -4601,6 +6454,19 @@
     "years": [
       2003,
       2012
+    ],
+    "bust": "img/busts/ElephantMonk.png",
+    "real": true,
+    "birthDate": "1942-09-15",
+    "hometown": "Tianjin",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      33,
+      92,
+      164,
+      132
     ]
   },
   "xi_jinping": {
@@ -4612,6 +6478,19 @@
     "years": [
       2012,
       2012
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1953-06-15",
+    "hometown": "Beijing",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      85,
+      95,
+      98,
+      127
     ]
   },
   "grand_preceptor_kong_wei": {
@@ -4623,7 +6502,8 @@
     "years": [
       1949,
       2012
-    ]
+    ],
+    "bust": "img/busts/Wiseman.png"
   },
   "abbot_chancellor_fa_zheng": {
     "name": "Abbot-Chancellor Fa Zheng",
@@ -4634,7 +6514,8 @@
     "years": [
       1958,
       2012
-    ]
+    ],
+    "bust": "img/busts/Inquisitor.png"
   },
   "harmony_regent_li_shun": {
     "name": "Harmony Regent Li Shun",
@@ -4645,7 +6526,8 @@
     "years": [
       1976,
       2012
-    ]
+    ],
+    "bust": "img/busts/ElephantMonk.png"
   },
   "mohammad_reza_pahlavi": {
     "name": "Mohammad Reza Pahlavi",
@@ -4656,6 +6538,19 @@
     "years": [
       1941,
       1979
+    ],
+    "bust": "img/busts/presets/MohammadRezaPahlavi.png",
+    "real": true,
+    "birthDate": "1919-10-26",
+    "hometown": "Tehran",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      131,
+      5,
+      127
     ]
   },
   "mohammad_mossadegh": {
@@ -4667,6 +6562,19 @@
     "years": [
       1951,
       1953
+    ],
+    "bust": "img/busts/presets/MohammadMossadegh.png",
+    "real": true,
+    "birthDate": "1882-06-16",
+    "hometown": "Tehran",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      171,
+      132,
+      123
     ]
   },
   "duke_agares": {
@@ -4678,7 +6586,8 @@
     "years": [
       1949,
       1952
-    ]
+    ],
+    "bust": "img/busts/HornedKnight.png"
   },
   "king_paimon": {
     "name": "King Paimon",
@@ -4689,7 +6598,8 @@
     "years": [
       1948,
       1963
-    ]
+    ],
+    "bust": "img/busts/Lich.png"
   },
   "marquis_naberius": {
     "name": "Marquis Naberius",
@@ -4700,7 +6610,8 @@
     "years": [
       1954,
       1955
-    ]
+    ],
+    "bust": "img/busts/DevilWarrior.png"
   },
   "duke_berith": {
     "name": "Duke Berith",
@@ -4711,7 +6622,8 @@
     "years": [
       1963,
       1969
-    ]
+    ],
+    "bust": "img/busts/Lich.png"
   },
   "duke_astaroth": {
     "name": "Duke Astaroth",
@@ -4722,7 +6634,8 @@
     "years": [
       1969,
       1974
-    ]
+    ],
+    "bust": "img/busts/Mastermind.png"
   },
   "president_marax": {
     "name": "President Marax",
@@ -4733,7 +6646,8 @@
     "years": [
       1974,
       1995
-    ]
+    ],
+    "bust": "img/busts/Journalist.png"
   },
   "earl_furfur": {
     "name": "Earl Furfur",
@@ -4744,7 +6658,8 @@
     "years": [
       1977,
       1983
-    ]
+    ],
+    "bust": "img/busts/Inquisitor.png"
   },
   "duke_vepar": {
     "name": "Duke Vepar",
@@ -4755,7 +6670,8 @@
     "years": [
       1983,
       1992
-    ]
+    ],
+    "bust": "img/busts/HornedKnight.png"
   },
   "marquis_orias": {
     "name": "Marquis Orias",
@@ -4766,7 +6682,8 @@
     "years": [
       1984,
       2007
-    ]
+    ],
+    "bust": "img/busts/Lich.png"
   },
   "king_balam": {
     "name": "King Balam",
@@ -4777,7 +6694,8 @@
     "years": [
       1996,
       2012
-    ]
+    ],
+    "bust": "img/busts/DevilVIllager.png"
   },
   "duke_gremory": {
     "name": "Duke Gremory",
@@ -4788,7 +6706,8 @@
     "years": [
       1999,
       2001
-    ]
+    ],
+    "bust": "img/busts/Mastermind.png"
   },
   "marquis_andras": {
     "name": "Marquis Andras",
@@ -4799,7 +6718,8 @@
     "years": [
       2001,
       2006
-    ]
+    ],
+    "bust": "img/busts/DevilHero.png"
   },
   "gamal_abdel_nasser": {
     "name": "Gamal Abdel Nasser",
@@ -4810,6 +6730,19 @@
     "years": [
       1954,
       1970
+    ],
+    "bust": "img/busts/presets/GamalAbdelNasser.png",
+    "real": true,
+    "birthDate": "1918-01-15",
+    "hometown": "Alexandria",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      197,
+      81,
+      85,
+      173
     ]
   },
   "anwar_sadat": {
@@ -4821,6 +6754,19 @@
     "years": [
       1970,
       1981
+    ],
+    "bust": "img/busts/presets/AnwarSadat.png",
+    "real": true,
+    "birthDate": "1918-12-25",
+    "hometown": "Mit Abu al-Kum",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      98,
+      177,
+      173
     ]
   },
   "hosni_mubarak": {
@@ -4832,6 +6778,19 @@
     "years": [
       1981,
       2011
+    ],
+    "bust": "img/busts/presets/HosniMubarak.png",
+    "real": true,
+    "birthDate": "1928-05-04",
+    "hometown": "Kafr El-Meselha",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      95,
+      174,
+      164
     ]
   },
   "faisal_ii_of_iraq": {
@@ -4843,6 +6802,19 @@
     "years": [
       1939,
       1958
+    ],
+    "bust": "img/busts/Princess.png",
+    "real": true,
+    "birthDate": "1935-05-02",
+    "hometown": "Baghdad",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      127,
+      144,
+      89
     ]
   },
   "abd_al_karim_qasim": {
@@ -4854,6 +6826,19 @@
     "years": [
       1958,
       1963
+    ],
+    "bust": "img/busts/Announcer.png",
+    "real": true,
+    "birthDate": "1914-11-21",
+    "hometown": "Baghdad",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      92,
+      163,
+      98
     ]
   },
   "ahmed_hassan_al_bakr": {
@@ -4865,6 +6850,19 @@
     "years": [
       1968,
       1979
+    ],
+    "bust": "img/busts/SchoolTeacher.png",
+    "real": true,
+    "birthDate": "1914-07-01",
+    "hometown": "Tikrit",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      98,
+      89,
+      164
     ]
   },
   "saddam_hussein": {
@@ -4876,6 +6874,19 @@
     "years": [
       1979,
       2003
+    ],
+    "bust": "img/busts/presets/SaddamHussein.png",
+    "real": true,
+    "birthDate": "1937-04-28",
+    "hometown": "Tikrit",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      60,
+      5,
+      174,
+      47
     ]
   },
   "hafez_al_assad": {
@@ -4887,6 +6898,19 @@
     "years": [
       1971,
       2000
+    ],
+    "bust": "img/busts/presets/HafezAlAssad.png",
+    "real": true,
+    "birthDate": "1930-10-06",
+    "hometown": "Qardaha",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      5,
+      98,
+      95,
+      174
     ]
   },
   "bashar_al_assad": {
@@ -4898,6 +6922,19 @@
     "years": [
       2000,
       2012
+    ],
+    "bust": "img/busts/Detective.png",
+    "real": true,
+    "birthDate": "1965-09-11",
+    "hometown": "Damascus",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      83,
+      174,
+      164,
+      127
     ]
   },
   "king_hussein_of_jordan": {
@@ -4909,6 +6946,19 @@
     "years": [
       1952,
       1999
+    ],
+    "bust": "img/busts/presets/KingHusseinOfJordan.png",
+    "real": true,
+    "birthDate": "1935-11-14",
+    "hometown": "Amman",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      177,
+      81,
+      24
     ]
   },
   "abdullah_ii_of_jordan": {
@@ -4920,6 +6970,19 @@
     "years": [
       1999,
       2012
+    ],
+    "bust": "img/busts/King.png",
+    "real": true,
+    "birthDate": "1962-01-30",
+    "hometown": "Amman",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      136,
+      127,
+      164
     ]
   },
   "camille_chamoun": {
@@ -4931,6 +6994,19 @@
     "years": [
       1952,
       1958
+    ],
+    "bust": "img/busts/Cardinal.png",
+    "real": true,
+    "birthDate": "1900-04-03",
+    "hometown": "Deir el Qamar",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      116,
+      85,
+      164
     ]
   },
   "bachir_gemayel": {
@@ -4942,6 +7018,19 @@
     "years": [
       1982,
       1982
+    ],
+    "bust": "img/busts/Priest.png",
+    "real": true,
+    "birthDate": "1947-11-10",
+    "hometown": "Beirut",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      53,
+      136,
+      173
     ]
   },
   "rafic_hariri": {
@@ -4953,6 +7042,19 @@
     "years": [
       1992,
       2004
+    ],
+    "bust": "img/busts/Detective.png",
+    "real": true,
+    "birthDate": "1944-11-01",
+    "hometown": "Sidon",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      131,
+      133,
+      88,
+      164
     ]
   },
   "yasser_arafat": {
@@ -4964,6 +7066,19 @@
     "years": [
       1969,
       2004
+    ],
+    "bust": "img/busts/presets/YasserArafat.png",
+    "real": true,
+    "birthDate": "1929-08-24",
+    "hometown": "Cairo",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      85,
+      173,
+      98,
+      89
     ]
   },
   "mahmoud_abbas": {
@@ -4975,6 +7090,19 @@
     "years": [
       2005,
       2012
+    ],
+    "bust": "img/busts/Employee.png",
+    "real": true,
+    "birthDate": "1935-11-15",
+    "hometown": "Safed",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      164,
+      132,
+      95,
+      83
     ]
   },
   "king_faisal_of_saudi_arabia": {
@@ -4986,6 +7114,19 @@
     "years": [
       1964,
       1975
+    ],
+    "bust": "img/busts/presets/KingFaisalOfSaudiArabia.png",
+    "real": true,
+    "birthYear": 1906,
+    "hometown": "Riyadh",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      50,
+      164,
+      132
     ]
   },
   "king_fahd": {
@@ -4997,6 +7138,19 @@
     "years": [
       1982,
       2005
+    ],
+    "bust": "img/busts/DevilHero.png",
+    "real": true,
+    "birthYear": 1921,
+    "hometown": "Riyadh",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      131,
+      94,
+      164
     ]
   },
   "zayed_bin_sultan_al_nahyan": {
@@ -5008,6 +7162,19 @@
     "years": [
       1971,
       2004
+    ],
+    "bust": "img/busts/Prince.png",
+    "real": true,
+    "birthYear": 1918,
+    "hometown": "Al Ain",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      88,
+      116,
+      185,
+      164
     ]
   },
   "sultan_qaboos": {
@@ -5019,6 +7186,17 @@
     "years": [
       1970,
       2012
+    ],
+    "bust": "img/busts/presets/SultanQaboos.png",
+    "real": true,
+    "birthDate": "1940-11-18",
+    "hometown": "Salalah",
+    "gender": 0,
+    "traits": [
+      123,
+      143,
+      50,
+      164
     ]
   },
   "bogd_khan_viii": {
@@ -5030,6 +7208,19 @@
     "years": [
       1911,
       1924
+    ],
+    "bust": "img/busts/MonkMystic.png",
+    "real": true,
+    "birthYear": 1869,
+    "hometown": "Lhasa",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      190,
+      94,
+      44
     ]
   },
   "damdin_sukhbaatar": {
@@ -5041,6 +7232,19 @@
     "years": [
       1921,
       1923
+    ],
+    "bust": "img/busts/presets/DamdinSukhbaatar.png",
+    "real": true,
+    "birthDate": "1893-02-02",
+    "hometown": "Ulaanbaatar",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      177,
+      163,
+      158
     ]
   },
   "khorloogiin_choibalsan": {
@@ -5052,6 +7256,19 @@
     "years": [
       1939,
       1952
+    ],
+    "bust": "img/busts/presets/KhorloogiinChoibalsan.png",
+    "real": true,
+    "birthDate": "1895-02-08",
+    "hometown": "Dornod",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      174,
+      98,
+      22,
+      47
     ]
   },
   "yumjaagiin_tsedenbal": {
@@ -5063,6 +7280,19 @@
     "years": [
       1952,
       1984
+    ],
+    "bust": "img/busts/Manager.png",
+    "real": true,
+    "birthDate": "1916-09-17",
+    "hometown": "Davst",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      89,
+      86,
+      95,
+      164
     ]
   },
   "jambyn_batmunkh": {
@@ -5074,6 +7304,19 @@
     "years": [
       1984,
       1990
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1926-03-10",
+    "hometown": "Khyargas",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      92,
+      164,
+      171
     ]
   },
   "punsalmaagiin_ochirbat": {
@@ -5085,6 +7328,19 @@
     "years": [
       1990,
       1997
+    ],
+    "bust": "img/busts/Instructor.png",
+    "real": true,
+    "birthDate": "1942-01-23",
+    "hometown": "Tosontsengel",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      164,
+      171,
+      35
     ]
   },
   "nambaryn_enkhbayar": {
@@ -5096,6 +7352,19 @@
     "years": [
       1997,
       2009
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthDate": "1958-06-01",
+    "hometown": "Ulaanbaatar",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      132,
+      143,
+      164
     ]
   },
   "illuminated_khan_temur": {
@@ -5107,7 +7376,8 @@
     "years": [
       1924,
       2012
-    ]
+    ],
+    "bust": "img/busts/General.png"
   },
   "lama_regent_zanabazar_iv": {
     "name": "Lama-Regent Zanabazar IV",
@@ -5118,7 +7388,8 @@
     "years": [
       1930,
       1998
-    ]
+    ],
+    "bust": "img/busts/ElephantMonk.png"
   },
   "erdene_abbot_gombojav": {
     "name": "Erdene Abbot Gombojav",
@@ -5129,7 +7400,8 @@
     "years": [
       1955,
       2012
-    ]
+    ],
+    "bust": "img/busts/Priest.png"
   },
   "nasi_prince_sitri": {
     "name": "Prince Sitri, Nasi of the Restored Sanhedrin",
@@ -5140,7 +7412,8 @@
     "years": [
       1948,
       2012
-    ]
+    ],
+    "bust": "img/busts/HornedKnight.png"
   },
   "temple_scribe_duke_bathin": {
     "name": "Duke Bathin, Temple Scribe",
@@ -5151,7 +7424,8 @@
     "years": [
       1960,
       2012
-    ]
+    ],
+    "bust": "img/busts/DevilVIllager.png"
   },
   "keeper_of_the_seal_earl_bifrons": {
     "name": "Earl Bifrons, Keeper of the Seal",
@@ -5162,7 +7436,8 @@
     "years": [
       1972,
       2012
-    ]
+    ],
+    "bust": "img/busts/Mastermind.png"
   },
   "king_abdulaziz_ibn_saud": {
     "name": "King Abdulaziz Ibn Saud",
@@ -5173,6 +7448,19 @@
     "years": [
       1932,
       1953
+    ],
+    "bust": "img/busts/presets/KingAbdulazizIbnSaud.png",
+    "real": true,
+    "birthYear": 1875,
+    "hometown": "Riyadh",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      116,
+      98,
+      123
     ]
   },
   "king_saud": {
@@ -5184,6 +7472,19 @@
     "years": [
       1953,
       1964
+    ],
+    "bust": "img/busts/DevilHero.png",
+    "real": true,
+    "birthDate": "1902-01-12",
+    "hometown": "Kuwait City",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      87,
+      94,
+      86
     ]
   },
   "king_khalid": {
@@ -5195,6 +7496,19 @@
     "years": [
       1975,
       1982
+    ],
+    "bust": "img/busts/DarkPriestess.png",
+    "real": true,
+    "birthYear": 1913,
+    "hometown": "Riyadh",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      92,
+      89,
+      84
     ]
   },
   "king_abdullah_of_saudi_arabia": {
@@ -5206,6 +7520,19 @@
     "years": [
       2005,
       2012
+    ],
+    "bust": "img/busts/DevilWarrior.png",
+    "real": true,
+    "birthDate": "1924-08-01",
+    "hometown": "Riyadh",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      88,
+      95,
+      185
     ]
   },
   "oil_emir_abdulaziz_iii": {
@@ -5217,7 +7544,8 @@
     "years": [
       1938,
       2012
-    ]
+    ],
+    "bust": "img/busts/Regent.png"
   },
   "well_sheikh_muhannad": {
     "name": "Well-Sheikh Muhannad",
@@ -5228,7 +7556,8 @@
     "years": [
       1961,
       2012
-    ]
+    ],
+    "bust": "img/busts/Businessman.png"
   },
   "concession_regent_sultan": {
     "name": "Concession-Regent Sultan",
@@ -5239,7 +7568,8 @@
     "years": [
       1974,
       2011
-    ]
+    ],
+    "bust": "img/busts/DevilTrainer.png"
   },
   "mohandas_gandhi": {
     "name": "Mohandas Gandhi",
@@ -5250,6 +7580,19 @@
     "years": [
       1915,
       1948
+    ],
+    "bust": "img/busts/presets/MohandasGandhi.png",
+    "real": true,
+    "birthDate": "1869-10-02",
+    "hometown": "Porbandar",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      25,
+      50,
+      18,
+      173
     ]
   },
   "jawaharlal_nehru": {
@@ -5261,6 +7604,19 @@
     "years": [
       1947,
       1964
+    ],
+    "bust": "img/busts/presets/JawaharlalNehru.png",
+    "real": true,
+    "birthDate": "1889-11-14",
+    "hometown": "Allahabad",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      163,
+      123,
+      200
     ]
   },
   "vallabhbhai_patel": {
@@ -5272,6 +7628,19 @@
     "years": [
       1947,
       1950
+    ],
+    "bust": "img/busts/Judge.png",
+    "real": true,
+    "birthDate": "1875-10-31",
+    "hometown": "Nadiad",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      98,
+      172,
+      95,
+      164
     ]
   },
   "bhimrao_ambedkar": {
@@ -5283,6 +7652,19 @@
     "years": [
       1947,
       1956
+    ],
+    "bust": "img/busts/presets/BhimraoAmbedkar.png",
+    "real": true,
+    "birthDate": "1891-04-14",
+    "hometown": "Mhow",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      7,
+      132,
+      163,
+      171
     ]
   },
   "indira_gandhi": {
@@ -5294,6 +7676,19 @@
     "years": [
       1966,
       1984
+    ],
+    "bust": "img/busts/presets/IndiraGandhi.png",
+    "real": true,
+    "birthDate": "1917-11-19",
+    "hometown": "Allahabad",
+    "gender": 1,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      85,
+      95,
+      174,
+      127
     ]
   },
   "rajiv_gandhi": {
@@ -5305,6 +7700,19 @@
     "years": [
       1984,
       1991
+    ],
+    "bust": "img/busts/presets/RajivGandhi.png",
+    "real": true,
+    "birthDate": "1944-08-20",
+    "hometown": "Mumbai",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      35,
+      92,
+      127,
+      164
     ]
   },
   "pv_narasimha_rao": {
@@ -5316,6 +7724,19 @@
     "years": [
       1991,
       1996
+    ],
+    "bust": "img/busts/Operator.png",
+    "real": true,
+    "birthDate": "1921-06-28",
+    "hometown": "Karimnagar",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      200,
+      132,
+      164,
+      83
     ]
   },
   "atal_bihari_vajpayee": {
@@ -5327,6 +7748,19 @@
     "years": [
       1996,
       2004
+    ],
+    "bust": "img/busts/presets/AtalBihariVajpayee.png",
+    "real": true,
+    "birthDate": "1924-12-25",
+    "hometown": "Gwalior",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      143,
+      81,
+      116,
+      164
     ]
   },
   "manmohan_singh": {
@@ -5338,6 +7772,19 @@
     "years": [
       2004,
       2012
+    ],
+    "bust": "img/busts/presets/ManmohanSingh.png",
+    "real": true,
+    "birthDate": "1932-09-26",
+    "hometown": "Gah",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      7,
+      92,
+      198
     ]
   },
   "dharma_regent_vishvamitra": {
@@ -5349,7 +7796,8 @@
     "years": [
       1948,
       2012
-    ]
+    ],
+    "bust": "img/busts/MonkMystic.png"
   },
   "acharya_of_the_rashtra_bhargava": {
     "name": "Acharya Bhargava of the Rashtra",
@@ -5360,7 +7808,8 @@
     "years": [
       1962,
       2012
-    ]
+    ],
+    "bust": "img/busts/DesertMonk.png"
   },
   "arturo_alessandri": {
     "name": "Arturo Alessandri",
@@ -5371,6 +7820,19 @@
     "years": [
       1920,
       1938
+    ],
+    "bust": "img/busts/Operator.png",
+    "real": true,
+    "birthDate": "1868-12-20",
+    "hometown": "Longavi",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      197,
+      85,
+      164
     ]
   },
   "carlos_ibanez_del_campo": {
@@ -5382,6 +7844,19 @@
     "years": [
       1927,
       1958
+    ],
+    "bust": "img/busts/General.png",
+    "real": true,
+    "birthDate": "1877-11-03",
+    "hometown": "Linares",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      98,
+      172,
+      85
     ]
   },
   "eduardo_frei_montalva": {
@@ -5393,6 +7868,19 @@
     "years": [
       1964,
       1970
+    ],
+    "bust": "img/busts/Businessman.png",
+    "real": true,
+    "birthDate": "1911-01-16",
+    "hometown": "Santiago",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      132,
+      163,
+      164
     ]
   },
   "salvador_allende": {
@@ -5404,6 +7892,19 @@
     "years": [
       1970,
       1973
+    ],
+    "bust": "img/busts/presets/SalvadorAllende.png",
+    "real": true,
+    "birthDate": "1908-06-26",
+    "hometown": "Santiago",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      163,
+      171,
+      132,
+      173
     ]
   },
   "augusto_pinochet": {
@@ -5415,6 +7916,19 @@
     "years": [
       1973,
       1990
+    ],
+    "bust": "img/busts/presets/AugustoPinochet.png",
+    "real": true,
+    "birthDate": "1915-11-25",
+    "hometown": "Valparaiso",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      174,
+      98,
+      47,
+      5
     ]
   },
   "patricio_aylwin": {
@@ -5426,6 +7940,19 @@
     "years": [
       1990,
       1994
+    ],
+    "bust": "img/busts/Announcer.png",
+    "real": true,
+    "birthDate": "1918-11-26",
+    "hometown": "Vina del Mar",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      116,
+      171,
+      164,
+      132
     ]
   },
   "ricardo_lagos": {
@@ -5437,6 +7964,19 @@
     "years": [
       2000,
       2006
+    ],
+    "bust": "img/busts/Manager.png",
+    "real": true,
+    "birthDate": "1938-03-02",
+    "hometown": "Santiago",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      81,
+      164,
+      171
     ]
   },
   "marshal_of_the_long_south_valdivia": {
@@ -5448,7 +7988,8 @@
     "years": [
       1930,
       2012
-    ]
+    ],
+    "bust": "img/busts/GeniusGeneral.png"
   },
   "cordillera_general_prat": {
     "name": "Cordillera-General Prat",
@@ -5459,7 +8000,8 @@
     "years": [
       1955,
       2004
-    ]
+    ],
+    "bust": "img/busts/General.png"
   },
   "nasser_al_din_shah": {
     "name": "Nasser al-Din Shah Qajar",
@@ -5470,6 +8012,19 @@
     "years": [
       1848,
       1896
+    ],
+    "bust": "img/busts/NobleKnight.png",
+    "real": true,
+    "birthDate": "1831-07-17",
+    "hometown": "Tabriz",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      94,
+      91,
+      131
     ]
   },
   "mozaffar_ad_din_shah": {
@@ -5481,6 +8036,19 @@
     "years": [
       1896,
       1907
+    ],
+    "bust": "img/busts/NobleKnight.png",
+    "real": true,
+    "birthDate": "1853-03-23",
+    "hometown": "Tehran",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      84,
+      92,
+      161
     ]
   },
   "ahmad_shah_qajar": {
@@ -5492,6 +8060,19 @@
     "years": [
       1909,
       1925
+    ],
+    "bust": "img/busts/NobleKnight.png",
+    "real": true,
+    "birthDate": "1898-01-21",
+    "hometown": "Tabriz",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      86,
+      94,
+      127
     ]
   },
   "reza_shah_pahlavi": {
@@ -5503,6 +8084,19 @@
     "years": [
       1925,
       1941
+    ],
+    "bust": "img/busts/presets/RezaShahPahlavi.png",
+    "real": true,
+    "birthDate": "1878-03-15",
+    "hometown": "Alasht",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      136,
+      172,
+      85,
+      98
     ]
   },
   "shahbanu_farah": {
@@ -5514,6 +8108,19 @@
     "years": [
       1961,
       2012
+    ],
+    "bust": "img/busts/Regent.png",
+    "real": true,
+    "birthDate": "1938-10-14",
+    "hometown": "Tehran",
+    "gender": 1,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      144,
+      88,
+      132,
+      123
     ]
   },
   "reza_pahlavi_ii": {
@@ -5525,6 +8132,19 @@
     "years": [
       1980,
       2012
+    ],
+    "bust": "img/busts/NobleKnight.png",
+    "real": true,
+    "birthDate": "1960-10-31",
+    "hometown": "Tehran",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      129,
+      123,
+      132,
+      163
     ]
   },
   "amir_abbas_hoveyda": {
@@ -5536,6 +8156,19 @@
     "years": [
       1965,
       1977
+    ],
+    "bust": "img/busts/Manager.png",
+    "real": true,
+    "birthDate": "1919-02-18",
+    "hometown": "Tehran",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      200,
+      164,
+      178
     ]
   },
   "jamshid_amouzegar": {
@@ -5547,6 +8180,19 @@
     "years": [
       1977,
       1978
+    ],
+    "bust": "img/busts/Lawyer.png",
+    "real": true,
+    "birthDate": "1923-06-25",
+    "hometown": "Tehran",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      132,
+      7,
+      164,
+      95
     ]
   },
   "ali_amini": {
@@ -5558,6 +8204,19 @@
     "years": [
       1961,
       1962
+    ],
+    "bust": "img/busts/Employee.png",
+    "real": true,
+    "birthYear": 1905,
+    "hometown": "Tehran",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      164,
+      132,
+      171
     ]
   },
   "asadollah_alam": {
@@ -5569,6 +8228,19 @@
     "years": [
       1962,
       1964
+    ],
+    "bust": "img/busts/NobleKnight.png",
+    "real": true,
+    "birthYear": 1919,
+    "hometown": "Birjand",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      123,
+      89,
+      131,
+      164
     ]
   },
   "bill_clinton": {
@@ -5580,6 +8252,20 @@
     "years": [
       1993,
       2012
+    ],
+    "preset": "Bill Clinton",
+    "bust": "img/busts/presets/BillClinton.png",
+    "real": true,
+    "birthDate": "1946-08-19",
+    "hometown": "Hope",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      81,
+      16,
+      94,
+      173
     ]
   },
   "george_w_bush": {
@@ -5591,6 +8277,20 @@
     "years": [
       2001,
       2012
+    ],
+    "preset": "George W. Bush",
+    "bust": "img/busts/presets/GeorgeWBush.png",
+    "real": true,
+    "birthDate": "1946-07-06",
+    "hometown": "New Haven",
+    "gender": 0,
+    "sexualOrientation": "heterosexual",
+    "romanticOrientation": "heteroromantic",
+    "traits": [
+      82,
+      116,
+      127,
+      173
     ]
   },
   "king_solomon": {
@@ -5602,6 +8302,7 @@
     "years": [
       1900,
       2100
-    ]
+    ],
+    "bust": "img/busts/DevilWarrior.png"
   }
 }

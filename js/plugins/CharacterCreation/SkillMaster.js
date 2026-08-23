@@ -79,47 +79,71 @@
  * A class with no entry in classSkillCategories falls back to every category.
  *
  * ============================================================================
- * The atlas of circles
+ * The sky of schools
  * ============================================================================
  *
- * A category is not a list, it is a SPHERE GRID in the manner of Final
- * Fantasy X's: concentric rings of skills joined by short radial spokes, run
- * from the school's weakest working outward to its strongest, with upgrade
- * spurs hanging off the rim that dead-end in its esoteric ones. A pupil may
- * only buy a skill they are standing next to. ONE known neighbour is enough -
- * links are alternative ways in, never joint requirements - and the skills on
- * the innermost ring of the school are always open, so a pupil who knows
- * nothing still has a way in.
+ * A category is not a list, it is a SPHERE GRID in the manner of Final Fantasy
+ * X's, hung in the dark as a constellation of coloured spheres. Every skill is
+ * a lit sphere and every line between two of them is a skill and the skill it
+ * asks for.
  *
- * A school's FORBIDDEN workings are not on the grid at all. They sit alone in
- * the heart of the figure, joined to nothing and to each other least of all:
- * the whole school must be known before any of them opens, and then any one of
- * them may be taken first.
+ * NOTHING ABOUT THE TREE IS AUTHORED. There is no <Node:> and no <Link:> in any
+ * notebox: a school organises ITSELF out of what its skills are, every time the
+ * book is opened, so a skill added or rebalanced takes its own place without
+ * anybody drawing it a line.
  *
- * The plate is drawn as an ALCHEMICAL CIRCLE: a double rule, a thin ring per
- * tier, a faint guide down every lane, and the squared circle at the heart.
- * ONE school is drawn at a time, alone on the page: a curriculum of six schools
- * is six views, not one crowded field, so a circle is read whole instead of
- * hunted for. The school is changed with the pager on the header bar, or by
- * walking off the rim left or right. The wheel and Shift zoom; dragging pans;
- * choosing a skill opens its sheet as a popup over the circle.
+ *   TIER is the skill's rank by POWER inside its school - the same score its
+ *   price is built on. The weakest workings a school teaches are its entrance
+ *   and the strongest are its summit, so a stronger skill is always further
+ *   out, always dearer, and always asks for more before it will be taught.
+ *
+ *   LANE is what KIND of working it is: its element where it has one, the job
+ *   it does (offensive, support, healing) where it has not. A lane keeps its
+ *   bearing from tier to tier, so a school reads as a set of strands.
+ *
+ * The tiers are a PYRAMID, widest at the foot and narrowing to a summit, and
+ * every skill hangs from the two to five nearest skills on the tier below it.
+ * The gate TIGHTENS as it climbs: the foot of a school is free, the tiers above
+ * it open on ONE known prerequisite, and every third tier out asks for one more,
+ * to a ceiling of three. The price climbs with it (KP_TIER_STEP, on top of the
+ * power the tier was ranked on). That is the whole progression rule, and it is
+ * the same rule in all forty schools.
+ *
+ * A school's FORBIDDEN workings are on no tier of the climb. They hang beyond
+ * its summit, joined to nothing and to each other least of all: the whole
+ * school must be known before any of them opens, and then any one of them may
+ * be taken first.
+ *
+ * NO TWO SCHOOLS ARE THE SAME FIGURE. Each one is authored a shape of its own
+ * in SKY_SCHOOLS: Pyromancy is a solar flare, Cryomancy a snowflake, Astral
+ * Magic a barred spiral, Necromancy a stair winding down, Chronomancy a great
+ * dial, Economy a pair of scales. A sphere burns the colour of its element
+ * where it has one and of its school where it does not, so one school reads as
+ * one family of colours. A skill the pupil knows burns bright, one they could
+ * buy glows cooler and breathes, one they cannot reach yet is a cinder that
+ * still shows where the figure goes.
+ *
+ * ONE school hangs at a time: a curriculum of six schools is six skies, not one
+ * crowded field. The school is changed with the pager on the header bar, or by
+ * walking off the edge of the figure left or right. Dragging turns the figure,
+ * the wheel and Shift bring the camera in and out, and choosing a sphere opens
+ * its sheet as a bar down the right of the sky. The arrow keys walk the figure
+ * by WHERE IT IS ON THE SCREEN, so one set of keys walks forty different
+ * figures and keeps working as the figure is turned.
  *
  * A school OUTSIDE the pupil's curriculum is browsable only once they already
  * know a skill in it, has no free entrance (they may only walk outward from
  * what they know), and charges three times the knowledge.
  *
- * The graph is data, authored into each skill's notebox by
- * tools/skills/gen_skill_graph.py (re-runnable; it strips and rewrites its own
- * tags, so hand-tuning survives until the next run):
+ * There is no graph file and no graph generator. window.SkillGraph works the
+ * whole tree out from data/Skills.json itself (skillPower for the tier, the
+ * element or <role:> tag for the lane) and caches it per school; the school's
+ * shape then takes that (tier, lane) pair and answers with a place in the sky.
+ * A skill in no category at all is on no tree and is never blocked by one.
  *
- *   <Node: ring,lane>     ring is its distance out, lane its bearing
- *   <Link: 12,45,78>      the skills it borders, inside the same category
- *
- * The generator draws the figure exactly as this plugin does and deletes any
- * link that would cross another, so no two links ever overlap on the page.
- * Links are read as symmetric, so a hand-written notebox naming only one side
- * still works. A skill with no <Node:> at all is never on a circle, and is never
- * blocked by one either.
+ * Rebalancing a skill's MP, its damage or its effects MOVES it on its school's
+ * tree, which is the point: the tree is a reading of the book rather than a
+ * drawing kept beside it.
  *
  * ============================================================================
  * Knowledge cost
@@ -684,6 +708,13 @@
         return 1;
     }
 
+    // How much dearer a skill is for standing one tier further up its school.
+    // Power already climbs with the tier (the tier is RANKED on power), so this
+    // is the interest on the climb itself rather than the whole of it: the
+    // summit of a deep school runs about three and a half times its foot before
+    // power is counted at all.
+    const KP_TIER_STEP = 0.19;
+
     function kpTeachCost(skill) {
         const raw = KP_TEACH_BASE * Math.pow(skillPower(skill), KP_TEACH_EXP)
             * kpOccultMultiplier(skill);
@@ -702,6 +733,14 @@
         // the manager happens to be holding.
         if (actorId) actorCategoryManager.setActor(actorId);
         let cost = kpTeachCost(skill);
+        // Where it stands on its school's tree, which is what makes the summit
+        // of a school a campaign and its foot an afternoon.
+        const placed = SkillGraph.node(skillId);
+        if (placed && placed.tier > 0) {
+            // Re-clamped, so the climb cannot carry a Forbidden working past the
+            // ceiling kpTeachCost already pinned it to.
+            cost = Math.min(KP_TEACH_MAX, Math.round(cost * (1 + placed.tier * KP_TIER_STEP)));
+        }
         const category = getSkillCategory(skillId);
         if (category && actorId) {
             if (actorCategoryManager.isPrimary(category)) cost = Math.floor(cost * 0.5);
@@ -1119,6 +1158,13 @@
         }
     };
 
+    // The isolated Effekseer viewport is the only one in the game, so anything
+    // else that wants to show a spell before it is cast mounts THIS rather than
+    // opening a second GL context of its own (the marketplace listing page in
+    // Economy/SearchableItemShop.js does). One canvas at a time: init() retires
+    // whatever was playing before.
+    window.SkillAnimPreview = AnimPreview;
+
     //=============================================================================
     // Utility Functions
     //=============================================================================
@@ -1224,79 +1270,256 @@
 
         return skills;
     }
-
     //=============================================================================
-    // Skill graph - what a school is made of
+    // Skill graph - a school organises ITSELF
     //
-    // A category is not a list, it is a map. Where each skill sits and what it
-    // borders is authored into the noteboxes by tools/skills/gen_skill_graph.py:
+    // Nothing about the shape of a school is authored. There is no <Node:> and
+    // no <Link:> in any notebox: the tree is worked out from what the skills
+    // ARE, every time the book is opened, so a skill added or rebalanced takes
+    // its own place without anybody drawing it a line.
     //
-    //     <Node: tier,branch>    tier is its ring, branch its ray; 0 is the heart
-    //     <Link: 12,45,78>       the skills it is adjacent to (same category)
+    //   GROVE  is the little tree a skill grows on. A school is never one great
+    //          thicket: it is broken into groves that share nothing at all, one
+    //          per strand of the school, split again where a strand is too big
+    //          to read. Two groves are never joined, so nothing a grove does can
+    //          tangle with the grove beside it.
     //
-    // A pupil may only buy what they are standing next to. ONE known neighbour
-    // is enough: links are alternative ways in, never joint requirements, which
-    // is the whole rule of the circle. Tier 0 is always open, so a pupil who knows
-    // nothing at all still has a way in, and a skill on no circle at all
-    // (a fused spell, an uncategorised leftover) is never blocked by one.
+    //   LANE   is what decides which grove: its element where it has one, the
+    //          job it does (offensive, support, healing) where it has not.
     //
-    // Links are stored on both endpoints and read as symmetric anyway, so a
-    // hand-edited notebox that names only one side still works.
+    //   TIER   is how far up its grove a skill stands. The weakest working of a
+    //          grove is its root and every step up is dearer than the step
+    //          below, so a skill that hits harder is always further up.
+    //
+    //   PARENT is the ONE skill directly below it in its own grove. Not two, not
+    //          the nearest few: exactly one, which is what makes every grove a
+    //          true tree and lets the page be drawn with no line ever crossing
+    //          another. Learn the parent and the skill opens; that is the whole
+    //          progression rule, and it is the same rule in all forty schools.
+    //
+    // A school's FORBIDDEN workings grow on no grove. They stand apart, joined
+    // to nothing: the whole school must be known before any of them opens, and
+    // then any one of them may be taken first.
     //=============================================================================
 
-    const NODE_RE = /<Node:\s*(\d+)\s*,\s*(\d+)\s*>/i;
-    const LINK_RE = /<Link:\s*([\d,\s]*)>/i;
+    // The shape of a grove. Everything a school does follows from these three.
+    const GROVE_MAX = 20;          // most skills one little tree will carry
+    const GROVE_MIN = 4;           // a strand thinner than this is swept in with the rest
+    const GROVE_FANOUT = 3;        // branches off one skill
+
     // The maker's own school: every spell a pupil has forged, and nothing
     // else. Drawn per pupil, so two characters never see each other's work.
     const FUSION_CATEGORY = 'Fusion';   // i18n-ignore: category id
 
-    const SkillGraph = {
-        _nodes: null,        // skillId -> { tier, branch, category }
-        _links: null,        // skillId -> [skillId, ...] (symmetric)
-        _graphs: null,       // category -> laid-out graph, built on demand
+    const ROLE_RE = /<role:\s*([^>]+)>/i;
 
-        // One pass over $dataSkills; the tags never change at runtime.
-        _build: function () {
-            if (this._nodes) return;
-            this._nodes = {};
-            this._links = {};
-            this._graphs = {};
-            for (const skill of $dataSkills) {
-                if (!skill || !skill.note) continue;
-                const node = skill.note.match(NODE_RE);
-                if (!node) continue;
-                this._nodes[skill.id] = {
-                    tier: parseInt(node[1], 10),
-                    branch: parseInt(node[2], 10),
-                    category: getSkillCategory(skill.id)
+    const SkillGraph = {
+        _trees: null,        // category key -> the organised school
+        _index: null,        // skillId -> its node, whichever school built it
+
+        _reset: function () {
+            if (!this._trees) { this._trees = {}; this._index = {}; }
+        },
+
+        // A school's cache key. The magic level is part of it because a severed
+        // world holds FEWER skills in the same school, which is a different tree
+        // and not just a dimmer one; the Fusion plate is per pupil for the same
+        // reason.
+        _key: function (category) {
+            const MN = window.MagicNature;
+            const level = (MN && MN.level && MN.level()) || 'normal';
+            if (category === FUSION_CATEGORY) {
+                const scene = SceneManager._scene;
+                return `${category}|${level}|${(scene && scene._teachActorId) || 0}`;
+            }
+            return `${category}|${level}`;
+        },
+
+        // What KIND of working this is, which is the strand it hangs on. An
+        // element is the plainest answer; where there is none, what the skill is
+        // FOR says it instead.
+        _lane: function (skill) {
+            const el = (skill.damage && skill.damage.elementId) || 0;
+            if (el > 1) return 'E' + el;              // i18n-ignore: lane key
+            const role = (skill.note || '').match(ROLE_RE);
+            if (role) return 'R' + role[1].trim();    // i18n-ignore: lane key
+            if (el === 1) return 'R@physical';        // i18n-ignore: lane key
+            return 'R@other';                         // i18n-ignore: lane key
+        },
+
+        // Organise one school. Called once per school per session (per pupil for
+        // Fusion, per magic level everywhere), and cached: the tree only changes
+        // when the book itself does.
+        _organise: function (category) {
+            this._reset();
+            const key = this._key(category);
+            if (this._trees[key]) return this._trees[key];
+
+            const skills = getSkillsByCategory(category)
+                .filter(s => s && s.name && !s.name.startsWith('<--'));
+            const tree = { category: category, nodes: {}, order: [], tiers: [], groves: [] };
+            this._trees[key] = tree;
+            if (!skills.length) return tree;
+
+            // The school's forbidden workings are not part of any grove. They
+            // stand apart from all of them and are opened by finishing the rest.
+            const forbidden = [];
+            const climb = [];
+            for (const skill of skills) {
+                (this.isForbidden(skill.id) ? forbidden : climb).push(skill);
+            }
+
+            // Scored once each: skillPower reads a damage formula with regexes,
+            // and a sort comparator would ask it hundreds of times over.
+            const power = {};
+            for (const skill of skills) power[skill.id] = skillPower(skill);
+            const rank = (a, b) => (power[a.id] - power[b.id]) || (a.id - b.id);
+
+            const laneNames = Array.from(new Set(skills.map(s => this._lane(s)))).sort();
+            const laneOf = {};
+            laneNames.forEach((name, i) => { laneOf[name] = i; });
+            tree.lanes = laneNames;
+
+            for (const members of this._groves(climb, rank)) {
+                this._grow(tree, category, members, laneOf, false);
+            }
+            if (forbidden.length) {
+                this._grow(tree, category, forbidden.slice().sort(rank), laneOf, true);
+            }
+
+            this._rank(tree);
+            return tree;
+        },
+
+        // Break a school into GROVES: separate little trees that share nothing,
+        // so the page is a row of readable saplings rather than one thicket.
+        //
+        // A grove is one strand of the school (its element, or the job it does)
+        // and never more than GROVE_MAX skills. A strand too big for one grove is
+        // dealt round robin into as many as it needs, so every grove still climbs
+        // from the weakest working of that strand to the strongest rather than
+        // one grove holding all the cheap ones. Strands too small to stand alone
+        // are swept together into groves of their own.
+        _groves: function (climb, rank) {
+            if (!climb.length) return [];
+            const byLane = {};
+            for (const skill of climb) {
+                const lane = this._lane(skill);
+                (byLane[lane] = byLane[lane] || []).push(skill);
+            }
+            const groves = [];
+            const spill = [];
+            const deal = (list) => {
+                const parts = Math.max(1, Math.ceil(list.length / GROVE_MAX));
+                const bins = [];
+                for (let i = 0; i < parts; i++) bins.push([]);
+                list.slice().sort(rank).forEach((skill, i) => bins[i % parts].push(skill));
+                for (const bin of bins) if (bin.length) groves.push(bin);
+            };
+            for (const lane of Object.keys(byLane).sort()) {
+                const list = byLane[lane];
+                if (list.length < GROVE_MIN) spill.push(...list);
+                else deal(list);
+            }
+            if (spill.length) deal(spill);
+            if (!groves.length) deal(climb);
+            return groves;
+        },
+
+        // Grow one grove into a TREE: every skill after the first hangs from
+        // exactly ONE skill below it, so the grove can be drawn with no line
+        // ever crossing another. The weakest working is the root and the rest
+        // are hung on it breadth first in order of power, GROVE_FANOUT to a
+        // branch, so a skill is always dearer than the one it was learned from.
+        //
+        // A forbidden grove is not grown at all: every one of its workings
+        // stands alone, gated by the whole school rather than by a neighbour.
+        _grow: function (tree, category, members, laneOf, forbidden) {
+            if (!members.length) return;
+            const grove = { index: tree.groves.length, nodes: [], forbidden: !!forbidden };
+            members.forEach((skill, seat) => {
+                const node = {
+                    id: skill.id, skill: skill, category: category,
+                    tier: 0, grove: grove.index, seat: seat,
+                    lane: laneOf[this._lane(skill)] || 0,
+                    forbidden: !!forbidden,
+                    parents: [], children: [], need: 0
                 };
-                const link = skill.note.match(LINK_RE);
-                if (!link) continue;
-                for (const part of link[1].split(',')) {
-                    const other = parseInt(part.trim(), 10);
-                    if (!other || other === skill.id) continue;
-                    (this._links[skill.id] = this._links[skill.id] || []).push(other);
-                    (this._links[other] = this._links[other] || []).push(skill.id);
+                grove.nodes.push(node);
+                tree.nodes[skill.id] = node;
+                tree.order.push(node);
+                this._index[skill.id] = node;
+            });
+            if (!forbidden) {
+                for (let i = 1; i < grove.nodes.length; i++) {
+                    const parent = grove.nodes[Math.floor((i - 1) / GROVE_FANOUT)];
+                    const node = grove.nodes[i];
+                    node.parents = [parent.id];
+                    node.tier = parent.tier + 1;
+                    node.need = 1;
+                    parent.children.push(node.id);
                 }
             }
-            for (const id of Object.keys(this._links)) {
-                this._links[id] = Array.from(new Set(this._links[id]));
+            grove.depth = grove.nodes.reduce((d, n) => Math.max(d, n.tier), 0);
+            tree.groves.push(grove);
+        },
+
+        // Sort the whole school into tiers by DEPTH, counted the same way in
+        // every grove: tier 0 is every grove's root, tier 1 everything hanging
+        // straight off one, and so on. The forbidden workings are pushed past
+        // the deepest of them, since nothing in the school stands above them.
+        _rank: function (tree) {
+            let deepest = 0;
+            for (const node of tree.order) if (!node.forbidden) deepest = Math.max(deepest, node.tier);
+            for (const node of tree.order) if (node.forbidden) node.tier = deepest + 1;
+            const tiers = [];
+            for (const node of tree.order) {
+                (tiers[node.tier] = tiers[node.tier] || []).push(node);
             }
+            for (let t = 0; t < tiers.length; t++) if (!tiers[t]) tiers[t] = [];
+            tree.tiers = tiers;
+        },
+
+        // Make sure the school this skill belongs to has been organised, then
+        // answer with its node. A skill in no category at all has no tree and is
+        // never gated by one.
+        _nodeFor: function (skillId) {
+            this._reset();
+            const known = this._index[skillId];
+            if (known) return known;
+            const category = getSkillCategory(skillId);
+            if (!category) return null;
+            this._organise(category);
+            return this._index[skillId] || null;
         },
 
         node: function (skillId) {
-            this._build();
-            return this._nodes[skillId] || null;
+            return this._nodeFor(skillId);
         },
 
+        // What this skill borders, read both ways: the skills it hangs from and
+        // the ones that hang from it. This is what the figure draws.
         links: function (skillId) {
-            this._build();
-            return this._links[skillId] || [];
+            const node = this._nodeFor(skillId);
+            if (!node) return [];
+            return node.parents.concat(node.children);
         },
 
-        // A forbidden working sits in the heart of the figure joined to nothing:
-        // no path reaches it, and it opens only once the whole school around it
-        // is known. Then any one of them may be taken first.
+        // What it actually ASKS for, which is only ever the tier below it.
+        requires: function (skillId) {
+            const node = this._nodeFor(skillId);
+            return node ? node.parents : [];
+        },
+
+        // How many of those it needs before it will be taught.
+        needed: function (skillId) {
+            const node = this._nodeFor(skillId);
+            return node ? node.need : 0;
+        },
+
+        // A forbidden working sits beyond the summit joined to nothing: no path
+        // reaches it, and it opens only once the whole school around it is known.
+        // Then any one of them may be taken first.
         isForbidden: function (skillId) {
             const skill = $dataSkills[skillId];
             return !!(skill && /<Forbidden>/i.test(skill.note || ''));
@@ -1326,57 +1549,44 @@
             return school.length > 0 && school.every(id => actor.isLearnedSkill(id));
         },
 
-        // A skill nobody has to walk to: the grid's entrance, or a skill that was
-        // never put on a grid in the first place. The entrance is the innermost
-        // ring the SCHOOL occupies, which is ring 1 wherever a forbidden core
-        // holds ring 0.
+        // A skill nobody has to walk to: the foot of the tree, or a skill that
+        // was never on a tree in the first place (a fused spell, an
+        // uncategorised leftover).
         isEntry: function (skillId) {
-            const node = this.node(skillId);
+            const node = this._nodeFor(skillId);
             if (!node) return true;
-            if (this.isForbidden(skillId)) return false;
-            const category = getSkillCategory(skillId);
-            if (!category) return node.tier === 0;
-            const floor = this._entryTier(category);
-            return node.tier === floor;
-        },
-
-        _entryTiers: {},
-        _entryTier: function (category) {
-            if (this._entryTiers[category] !== undefined) return this._entryTiers[category];
-            let floor = Infinity;
-            for (const id of this.core(category).school) {
-                const node = this.node(id);
-                if (node && node.tier < floor) floor = node.tier;
-            }
-            if (!isFinite(floor)) floor = 0;
-            this._entryTiers[category] = floor;
-            return floor;
+            return !node.forbidden && node.tier === 0;
         },
 
         // Can this pupil buy it right now? Known skills are not "open" (there is
         // nothing left to buy), which is what the UI colours them by.
         //
         // A school outside the pupil's curriculum has no entrance: they got in
-        // through the one skill they already know and may only walk outward
-        // from it, so the free tier-0 entry does not apply there.
+        // through the one skill they already know and may only climb from it, so
+        // the free foot of the tree does not apply there.
         isOpen: function (actor, skillId) {
             if (!actor || actor.isLearnedSkill(skillId)) return false;
             // Sandbox play (and a party led by "test") is a workshop: the whole
-            // book is open in any order, so the grid never blocks anything.
+            // book is open in any order, so the tree never blocks anything.
             if (isWorkshopMode()) return true;
             // the price badge and this gate have to be reading the same pupil
             if (actor.actorId) actorCategoryManager.setActor(actor.actorId());
-            const category = getSkillCategory(skillId);
+            const node = this._nodeFor(skillId);
+            if (!node) return true;
+            const category = node.category;
             // The core is walled off: finish the school and every one of them
             // opens at once, in any order.
-            if (this.isForbidden(skillId)) return this.schoolMastered(actor, category);
+            if (node.forbidden) return this.schoolMastered(actor, category);
             const foreign = actorCategoryManager.isForeign(category);
-            if (!foreign && this.isEntry(skillId)) return true;
-            return this.links(skillId).some(id => actor.isLearnedSkill(id));
+            if (!foreign && node.tier === 0) return true;
+            if (!node.parents.length) return !foreign;
+            let held = 0;
+            for (const id of node.parents) if (actor.isLearnedSkill(id)) held++;
+            return held >= Math.max(1, node.need);
         },
 
-        // The skills that would open this one, for the "you are not next to it
-        // yet" line on the right page. A forbidden working is opened by the
+        // What is still missing before this one will be taught, for the "you are
+        // not there yet" line on the sheet. A forbidden working is opened by the
         // school itself, so it answers with what is still missing from it.
         openers: function (skillId, actor) {
             if (this.isForbidden(skillId)) {
@@ -1387,144 +1597,235 @@
                     .filter(s => s && s.name)
                     .slice(0, 8);
             }
-            return this.links(skillId)
+            // Only what is still MISSING: a pupil who already holds two of the
+            // three should read "needs 1 more of: X", not be shown the two they
+            // bought last week.
+            return this.requires(skillId)
+                .filter(id => !(actor && actor.isLearnedSkill(id)))
                 .map(id => $dataSkills[id])
                 .filter(s => s && s.name);
         },
 
-        // Nodes and edges of one category, laid out on the (tier, branch) grid.
-        // Cached: the shape is static, only the pupil's colours change.
-        invalidate: function () {
-            this._nodes = null;
-            this._links = null;
-            this._graphs = null;
-            this._core = {};
-            this._entryTiers = {};
+        // How many of the openers are still wanted: the gate, less what the pupil
+        // already holds. Zero means the skill is standing open.
+        stillWanted: function (skillId, actor) {
+            const node = this._nodeFor(skillId);
+            if (!node || node.forbidden || !node.parents.length) return 0;
+            let held = 0;
+            for (const id of node.parents) if (actor && actor.isLearnedSkill(id)) held++;
+            return Math.max(0, Math.max(1, node.need) - held);
         },
 
+        invalidate: function () {
+            this._trees = null;
+            this._index = null;
+            this._core = {};
+        },
+
+        // The school, ready to be laid out on the page. Cached with the tree
+        // itself: organising is the expensive half and it is done once.
         graph: function (category) {
-            this._build();
-            // The Fusion plate belongs to one pupil, so it is cached per pupil.
-            const key = category === FUSION_CATEGORY
-                ? `${category}:${$gameParty && SceneManager._scene && SceneManager._scene._teachActorId || 0}`
-                : category;
-            if (this._graphs[key]) return this._graphs[key];
+            const tree = this._organise(category);
+            if (tree.graph) return tree.graph;
 
-            const nodes = [];
-            for (const skill of getSkillsByCategory(category)) {
-                const node = this._nodes[skill.id];
-                if (!node) continue;
-                nodes.push({ id: skill.id, skill: skill, tier: node.tier, branch: node.branch });
-            }
-            nodes.sort((a, b) => (a.tier - b.tier) || (a.branch - b.branch) || (a.id - b.id));
-
+            const nodes = tree.order.map(n => ({
+                id: n.id, skill: n.skill, tier: n.tier,
+                grove: n.grove, seat: n.seat, forbidden: n.forbidden,
+                parent: n.parents.length ? n.parents[0] : 0, children: n.children.slice()
+            }));
             const placed = {};
             for (const n of nodes) placed[n.id] = n;
 
-            // Every edge once, and only between two nodes actually on this grid.
-            const seen = {};
+            // Every edge once, drawn from the hanging: a line on the page is
+            // always a skill and the one skill it asks for.
             const edges = [];
-            for (const n of nodes) {
-                for (const other of this.links(n.id)) {
-                    if (!placed[other]) continue;
-                    const key = n.id < other ? `${n.id}:${other}` : `${other}:${n.id}`;
-                    if (seen[key]) continue;
-                    seen[key] = true;
-                    edges.push([n, placed[other]]);
+            for (const n of tree.order) {
+                for (const parent of n.parents) {
+                    if (placed[parent] && placed[n.id]) edges.push([placed[parent], placed[n.id]]);
                 }
             }
 
-            let tiers = 0, branches = 0;
-            for (const n of nodes) {
-                tiers = Math.max(tiers, n.tier + 1);
-                branches = Math.max(branches, n.branch + 1);
-            }
-            this._graphs[key] = { nodes: nodes, edges: edges, tiers: tiers, branches: branches };
-            return this._graphs[key];
+            tree.graph = {
+                nodes: nodes, edges: edges,
+                tiers: tree.tiers.length, groves: tree.groves.length
+            };
+            return tree.graph;
         }
     };
 
     window.SkillGraph = SkillGraph;
-
     //=============================================================================
-    // The atlas of circles
+    // The page of groves
     //
-    // A school is not a lattice of columns, it is an ALCHEMICAL CIRCLE laid out
-    // as a sphere grid: ring inside ring around a heart. Every ring is a tier of
-    // the grid and every lane a bearing, so a skill keeps the same bearing on
-    // every ring it appears on and a spoke always runs outward along a lane. The
-    // heart is the school's forbidden core where it has one, and its innermost
-    // ordinary ring where it does not.
+    // A school is not a shelf of names and it is not a ball of spheres either.
+    // It is a PAGE: a handful of small trees standing side by side in the dark,
+    // each one a strand of the school, each drawn flat so that every line on it
+    // can be followed with a finger. A skill is a little lit orb, coloured by
+    // what it is (its school's own colour, taken over by its element where it
+    // has one), and the one line under it runs to the single skill it asks for.
     //
-    // ONE school is drawn at a time, alone on the page: a circle is a figure to be
-    // read whole, and six of them crowded into one field is a field, not a
-    // figure. The school being read is changed with the pager on the header bar
-    // or by walking off the rim of the circle, and every school keeps its own zoom
-    // and its own cursor, so leaving one and coming back is not starting over.
-    // The line-work around each circle (the rules, the tier rings, the lane
-    // guides and the squared circle at its heart) is the same alchemical figure
-    // for every school; what tells two schools apart is the shape of their grid.
+    // Nothing crosses. A grove is a true tree and a tree laid out this way, with
+    // every branch given a strip of the page to itself, cannot tangle; and two
+    // groves never touch at all, because the groves are packed as separate
+    // boxes with clear sky between them.
+    //
+    // The page is read by dragging it about and coming in and out with the
+    // wheel. The school on the page is changed with the pager on the header bar
+    // or by walking off the edge of the page left or right, and every school
+    // keeps the cursor and the framing it was left at.
     //=============================================================================
 
     const TAU = Math.PI * 2;
 
-    // CIRCLE_NODE and CIRCLE_LABEL_W are also stated in css/theme.css (.sg-ring
-    // and .sg-node / .sg-name, under SKILL ATLAS): the sheet has to size the node
-    // the layout below places. Change one, change the other.
-    const CIRCLE_NODE = 42;        // node diameter
-    const CIRCLE_MIN_ARC = 118;    // closest two skills may come on one ring
-    const CIRCLE_RING_STEP = 116;  // distance between two rings, on a shallow school
-    const CIRCLE_RING_STEP_MIN = 86;  // ... and on a deep one, which packs tighter
-    const CIRCLE_RING_EASY = 12;   // tiers a school may have before it starts packing
-    const CIRCLE_R0 = 132;         // the first ring, when the heart holds one skill
-    const CIRCLE_MARGIN = 104;     // ink and name banner outside the outermost ring
-    const CIRCLE_LABEL_W = 106;    // width a skill's name is allowed
-    const CIRCLE_BANNER_ROOM = 70; // room under the figure for the school's banner
-    const ATLAS_PAD = 90;        // clear air around the circle on its own page
-    const ATLAS_LEGEND_H = 156;  // header bar + school pager + legend row above it
-    const ATLAS_ZOOM_MIN = 0.08;   // far enough back to hold the deepest circle whole
-    const ATLAS_ZOOM_MAX = 1.6;
-    const ATLAS_WHEEL_STEP = 1.05;  // one notch of the wheel
-    const ATLAS_ZOOM_STEP = 1.07;  // one notch, as a factor: small, so the wheel is a nudge
-    const ATLAS_READ_ZOOM = 0.66;  // the smallest a name is still worth reading at
-    const ATLAS_LABEL_MAX = 2.6;   // most a name may be grown back by
-    const ATLAS_ICON_SHARE = 0.55; // an icon takes this share of the name's growth
-    const ATLAS_FAR_ZOOM = 0.42;   // below this the names come off and the circles stand alone
+    // The page is laid out in CELLS, and a cell is a good deal wider than an
+    // orb: the orbs are meant to be small marks on a legible drawing, not the
+    // drawing itself.
+    const SKY_NODE_R = 0.26;      // orb radius, in cells
+    const SKY_COL = 1.9;          // sideways step between two neighbouring orbs
+    const SKY_ROW = 2.5;          // step from a skill to the one it hangs from
+    const SKY_GROVE_GAP = 3.4;    // clear sky between one grove and the next
+    const SKY_PAD = 2.6;          // empty page kept outside the outermost orb
 
-    const SkillAtlas = {
-        _atlas: null,
-        _key: null,
+    // What an orb is allowed to measure on screen, whatever the zoom: small
+    // enough that the page reads as a diagram at every distance.
+    const SKY_ORB_MIN_PX = 2.2;
+    const SKY_ORB_MAX_PX = 9;
 
-        // One stable number per school name: the circle's figure, its phase and its
-        // terminals are all drawn from it.
-        _hash: function (str) {
+    // Framing. Zoom is a factor on the framing that would hold the whole page:
+    // 1 is the school seen whole, more is closer in.
+    const ATLAS_ZOOM_MIN = 0.5;
+    const ATLAS_ZOOM_MAX = 6;
+    const ATLAS_ZOOM_STEP = 1.12;   // one press of the + rule
+    const ATLAS_WHEEL_STEP = 1.08;  // one notch of the wheel
+    const ATLAS_ZOOM_DEFAULT = 2.2; // what a school opens at: close enough to read
+    const ATLAS_ZOOM_WHOLE = 1;     // what Shift steps back to
+    const ATLAS_LABEL_ZOOM = 0.9;   // below this only the cursor is named
+    const ATLAS_LABEL_MAX = 40;     // most names written at once
+
+    //-------------------------------------------------------------------------
+    // What colour a school burns.
+    //
+    // hue is the school's own colour on the 0..360 wheel; a skill with an
+    // element of its own takes that element's colour instead, so one school is
+    // read as one family of colours with its elemental workings standing out
+    // of it. A school with no entry here takes a colour off its own name, which
+    // is what a hand-made school gets.
+    //-------------------------------------------------------------------------
+    const SKY_SCHOOLS = {
+        MartialArts:       { hue:  18 },
+        Convokation:       { hue: 285 },
+        HolyMagic:         { hue:  47 },
+        ForbiddenMagic:    { hue: 332 },
+        Bestial:           { hue:  28 },
+        MetaMagic:         { hue: 196 },
+        Leadership:        { hue:  42 },
+        Geomancy:          { hue:  78 },
+        Swordsmanship:     { hue: 208 },
+        Pyromancy:         { hue:  12 },
+        ChaosMagic:        { hue: 312 },
+        PsychicAbilities:  { hue: 272 },
+        Tactical:          { hue: 186 },
+        AstralMagic:       { hue: 254 },
+        Electromancy:      { hue:  54 },
+        Roguery:           { hue: 148 },
+        Aeromancy:         { hue: 172 },
+        Arcanism:          { hue: 232 },
+        Pastoral:          { hue: 104 },
+        Alchemistry:       { hue: 132 },
+        Cryomancy:         { hue: 192 },
+        Performance:       { hue: 322 },
+        Necromancy:        { hue: 266 },
+        StatusMagic:       { hue: 164 },
+        VoidMagic:         { hue: 248 },
+        Cooking:           { hue:  26 },
+        Firearms:          { hue: 204 },
+        Basic:             { hue: 212 },
+        Idromancy:         { hue: 200 },
+        Healing:           { hue: 140 },
+        Dominion:          { hue:  38 },
+        Illusion:          { hue: 292 },
+        Augury:            { hue: 222 },
+        Chronomancy:       { hue:  50 },
+        Technomagical:     { hue: 158 },
+        Mutation:          { hue:  96 },
+        Vocation:          { hue:  34 },
+        Economy:           { hue:  60 },
+        Oneiromancy:       { hue: 300 },
+        Hunting:           { hue:  88 },
+        Fusion:            { hue: 190 }
+    };
+    // The colour an element burns, when a skill has one. Physical is not a
+    // colour of its own: a punch is the colour of the school that taught it.
+    const SKY_ELEMENT_HUE = { 2: 14, 3: 194, 4: 52, 5: 210, 6: 32, 7: 158, 8: 46, 9: 292 };
+
+    const SkillShapes = {
+        // One stable number per name: the starfield behind a school and the
+        // colour of a school with no entry of its own are both drawn from it.
+        hash: function (str) {
+            const s = String(str);
             let h = 2166136261;
-            for (let i = 0; i < str.length; i++) {
-                h ^= str.charCodeAt(i);
+            for (let i = 0; i < s.length; i++) {
+                h ^= s.charCodeAt(i);
                 h = Math.imul(h, 16777619);
             }
             return h >>> 0;
         },
 
-        // One school, on a page of its own. Cached on that school: the geometry
-        // is static, only the pupil's colours change and those are painted on
-        // top of it. An array is still accepted, since a caller holding a whole
-        // curriculum means "draw the first of these".
+        // The school's colour. Anything not authored above takes one off its
+        // own name, so a hand-made school is still told apart at a glance.
+        school: function (category) {
+            return SKY_SCHOOLS[category] || { hue: this.hash(category || '') % 360 };
+        },
+
+        schoolNames: function () { return Object.keys(SKY_SCHOOLS); },
+
+        // The colour of one skill: its element where it has one, its school
+        // otherwise, nudged a few degrees by its own id so a tier of fire
+        // spells is a spread of reds rather than one flat red.
+        hueFor: function (skillId, category) {
+            const base = this.school(category).hue;
+            const skill = $dataSkills[skillId];
+            const el = (skill && skill.damage) ? skill.damage.elementId : 0;
+            const hue = (SKY_ELEMENT_HUE[el] !== undefined) ? SKY_ELEMENT_HUE[el] : base;
+            return (hue + ((skillId * 37) % 13) - 6 + 360) % 360;
+        }
+    };
+
+    window.SkillShapes = SkillShapes;
+
+    const SkillAtlas = {
+        _atlas: null,
+        _key: null,
+        // Laid-out figures, kept ACROSS an invalidate and reused whole whenever
+        // the school still holds the same skills in the same places. Teaching a
+        // skill invalidates the atlas (a fused spell could have changed what is
+        // in the book), but it cannot have moved anything: reusing the figure
+        // object is what lets the renderer leave two hundred spheres standing
+        // where they are instead of building them again on every purchase.
+        _figures: {},
+
+        // One school, hung in its own sky. Cached on that school: the figure is
+        // static and only the pupil's colours change, and those are painted on
+        // top of it rather than laid out again.
         build: function (category) {
             const name = Array.isArray(category) ? category[0] : category;
-            // The magic level is part of the key: a severed and an unbound
-            // world draw DIFFERENT seals for the same school (the skills of
-            // the wrong nature are not on it), and this cache outlives a world
+            // The magic level is part of the key: a severed and an unbound world
+            // hang DIFFERENT figures for the same school (the skills of the
+            // wrong nature are not in it), and this cache outlives a world
             // switch inside one session.
             const MN = window.MagicNature;
             const key = String(name || '') + '|' + ((MN && MN.level && MN.level()) || 'normal');
             if (this._atlas && this._key === key) return this._atlas;
-            const circle = name ? this._circle(name) : null;
-            const atlas = this._frame(circle && circle.nodes.length ? circle : null);
-            atlas.index = {};
-            for (const s of atlas.circles) {
-                for (const node of s.nodes) atlas.index[node.id] = node;
-            }
+            const figure = name ? this._figureFor(name, key) : null;
+            const atlas = {
+                circles: figure ? [figure] : [],
+                radius: figure ? figure.radius : 1,
+                width: figure ? figure.width : 1,
+                height: figure ? figure.height : 1,
+                hue: figure ? figure.hue : 210,
+                index: {}
+            };
+            if (figure) for (const node of figure.nodes) atlas.index[node.id] = node;
             // Consumers compare atlas.category to a plain school name, so the
             // cache suffix stays out of it.
             atlas.category = String(name || '');
@@ -1539,120 +1840,175 @@
             this._key = null;
         },
 
-        // One school, laid out as concentric rings around its heart. A ring is
-        // pushed out until no two skills on it come closer than CIRCLE_MIN_ARC, so
-        // a crowded tier makes a wider ring rather than a tangle.
-        _circle: function (category) {
+        // The page of a school, laid out only if it is not the one already
+        // standing. What the school is made of is the signature: the same skills
+        // on the same groves in the same seats is the same page, whatever else
+        // changed.
+        _figureFor: function (category, key) {
+            const graph = SkillGraph.graph(category);
+            if (!graph || !graph.nodes.length) { delete this._figures[key]; return null; }
+            const sig = graph.nodes.map(n => `${n.id}:${n.grove}:${n.tier}:${n.seat}`).join('|');
+            const kept = this._figures[key];
+            if (kept && kept.sig === sig) return kept.figure;
+            const figure = this._figure(category);
+            if (figure) this._figures[key] = { sig: sig, figure: figure };
+            else delete this._figures[key];
+            return figure;
+        },
+
+        // The school's own page: every grove laid out as a tidy little tree,
+        // then the groves packed side by side with clear sky between them.
+        _figure: function (category) {
             const graph = SkillGraph.graph(category);
             if (!graph || !graph.nodes.length) return null;
-            const seed = this._hash(category);
 
-            const branchValues = Array.from(new Set(graph.nodes.map(n => n.branch))).sort((a, b) => a - b);
-            const rayOf = {};
-            branchValues.forEach((b, i) => { rayOf[b] = i; });
-            const rays = Math.max(1, branchValues.length);
-            const rayStep = TAU / rays;
-            // North, turned a little off true by the school's own name, so two
-            // circles side by side are never the same figure twice.
-            const phase = -Math.PI / 2 + (seed % 17) / 17 * rayStep;
-
-            const tiers = Array.from(new Set(graph.nodes.map(n => n.tier))).sort((a, b) => a - b);
-            // A school of twenty tiers drawn at a shallow school's spacing would
-            // be a circle nobody could hold on the page, so a deep one packs its
-            // rings tighter, down to a floor that still clears a name.
-            const ringStep = Math.max(CIRCLE_RING_STEP_MIN,
-                CIRCLE_RING_STEP * Math.min(1, CIRCLE_RING_EASY / Math.max(1, tiers.length)));
-            const nodes = [];
-            const rings = [];
-            let prev = -1;
-            let outermost = 0;
-
-            tiers.forEach((tier, rank) => {
-                const ring = graph.nodes.filter(n => n.tier === tier)
-                    .sort((a, b) => rayOf[a.branch] - rayOf[b.branch] || a.id - b.id);
-                const angles = ring.map(n => phase + rayStep * rayOf[n.branch]);
-                // Two skills authored onto the same ray of the same ring would sit
-                // one on top of the other; step the later one part of a ray over.
-                for (let i = 1; i < angles.length; i++) {
-                    if (Math.abs(angles[i] - angles[i - 1]) < 1e-6) angles[i] += rayStep * 0.44;
-                }
-
-                let r;
-                if (rank === 0 && ring.length === 1) {
-                    r = 0;                                  // the heart itself
-                } else {
-                    let tightest = TAU;
-                    if (angles.length > 1) {
-                        const sorted = angles.slice().sort((a, b) => a - b);
-                        for (let i = 0; i < sorted.length; i++) {
-                            const d = (i === sorted.length - 1)
-                                ? sorted[0] + TAU - sorted[i]
-                                : sorted[i + 1] - sorted[i];
-                            if (d > 1e-6) tightest = Math.min(tightest, d);
-                        }
-                    }
-                    const spread = angles.length > 1 ? CIRCLE_MIN_ARC / tightest : CIRCLE_R0;
-                    r = Math.max(spread, prev > 0 ? prev + ringStep : CIRCLE_R0);
-                }
-
-                ring.forEach((n, i) => {
-                    const a = angles[i];
-                    nodes.push({
-                        id: n.id, skill: n.skill, category: category,
-                        tier: n.tier, branch: n.branch, ring: rank,
-                        angle: a, radius: r,
-                        x: Math.cos(a) * r, y: Math.sin(a) * r,
-                        ax: 0, ay: 0
-                    });
-                });
-                if (r > 0) rings.push(r);
-                prev = r;
-                outermost = Math.max(outermost, r);
-            });
+            const cfg = SkillShapes.school(category);
+            const seed = SkillShapes.hash(category);
 
             const byId = {};
-            for (const n of nodes) byId[n.id] = n;
+            const groves = [];
+            for (const n of graph.nodes) {
+                const g = (groves[n.grove] = groves[n.grove] || { index: n.grove, nodes: [] });
+                const node = {
+                    id: n.id, skill: n.skill, category: category,
+                    tier: n.tier, grove: n.grove, seat: n.seat,
+                    forbidden: !!n.forbidden, parent: n.parent, children: n.children,
+                    x: 0, y: 0, z: 0,
+                    hue: SkillShapes.hueFor(n.id, category),
+                    // filled in each frame by the renderer: the cursor walks the
+                    // page by what is on the screen, not by what is in the data
+                    sx: 0, sy: 0, sd: 0, vis: false
+                };
+                g.nodes.push(node);
+                byId[n.id] = node;
+            }
+
+            const boxes = [];
+            for (const grove of groves) {
+                if (!grove) continue;
+                boxes.push(this._layGrove(grove, byId));
+            }
+            this._packGroves(boxes);
+
+            const nodes = [];
+            for (const grove of groves) if (grove) nodes.push(...grove.nodes);
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (const n of nodes) {
+                if (n.x < minX) minX = n.x;
+                if (n.x > maxX) maxX = n.x;
+                if (n.y < minY) minY = n.y;
+                if (n.y > maxY) maxY = n.y;
+            }
+            const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+            for (const n of nodes) { n.x -= cx; n.y -= cy; }
+
             const edges = [];
             for (const [a, b] of graph.edges) {
                 if (byId[a.id] && byId[b.id]) edges.push([byId[a.id], byId[b.id]]);
             }
 
-            const outer = outermost + 46;
+            const width = (maxX - minX) + SKY_PAD * 2;
+            const height = (maxY - minY) + SKY_PAD * 2;
             return {
-                category: category,
+                category: category, hue: cfg.hue,
                 nodes: nodes, edges: edges,
-                rings: rings, rays: rays, rayStep: rayStep, phase: phase, seed: seed,
-                inner: Math.min(outer * 0.5, rings.length ? rings[0] * 0.46 : CIRCLE_R0 * 0.46),
-                outer: outer,
-                radius: outermost + CIRCLE_MARGIN,
-                cx: 0, cy: 0
+                groves: boxes.length, seed: seed,
+                width: width, height: height,
+                radius: Math.hypot(width, height) / 2
             };
         },
 
-        // The circle, centred on a page cut to fit it and nothing else. The room
-        // below is a little deeper than the room above: the school's banner is
-        // written under the figure and must not be cropped off the page.
-        _frame: function (circle) {
-            if (!circle) return { circles: [], width: 0, height: 0 };
-            const size = circle.radius * 2;
-            const width = Math.round(size + ATLAS_PAD * 2);
-            const height = Math.round(size + ATLAS_PAD * 2 + CIRCLE_BANNER_ROOM);
-            circle.cx = width / 2;
-            circle.cy = ATLAS_PAD + circle.radius;
-            for (const n of circle.nodes) {
-                n.ax = circle.cx + n.x;
-                n.ay = circle.cy + n.y;
+        // One grove, laid out as a tidy tree. Every leaf takes the next strip of
+        // the page to itself and every skill above sits over the middle of the
+        // strips its own branches took, which is the whole trick: a branch never
+        // reaches into another branch's strip, so no line can cross another.
+        //
+        // The root stands at the foot and the grove grows upwards, so the page
+        // reads the way the climb does.
+        _layGrove: function (grove, byId) {
+            const roots = grove.nodes.filter(n => !n.parent);
+            let cursor = 0;
+            // Walked without recursion: a grove is small, but a school can hold
+            // a great many of them and the stack is not the place to keep them.
+            const place = (root) => {
+                const stack = [{ node: root, opened: false }];
+                while (stack.length) {
+                    const frame = stack[stack.length - 1];
+                    const node = frame.node;
+                    const kids = (node.children || [])
+                        .map(id => byId[id])
+                        .filter(k => k && k.grove === node.grove);
+                    if (!frame.opened) {
+                        frame.opened = true;
+                        node.y = node.tier * SKY_ROW;
+                        if (kids.length) {
+                            for (let i = kids.length - 1; i >= 0; i--) stack.push({ node: kids[i], opened: false });
+                            continue;
+                        }
+                        node.x = cursor * SKY_COL;
+                        cursor++;
+                    } else {
+                        let lo = Infinity, hi = -Infinity;
+                        for (const kid of kids) { lo = Math.min(lo, kid.x); hi = Math.max(hi, kid.x); }
+                        node.x = (lo + hi) / 2;
+                    }
+                    stack.pop();
+                }
+            };
+            for (const root of roots) {
+                if (cursor) cursor += 1;   // a hand's breadth between two trunks
+                place(root);
             }
-            return { circles: [circle], width: width, height: height };
+            // A forbidden grove is joined to nothing at all: its workings are
+            // simply dealt out in a row of their own.
+            for (const node of grove.nodes) {
+                if (node.parent || roots.includes(node)) continue;
+                node.y = node.tier * SKY_ROW;
+                node.x = cursor * SKY_COL;
+                cursor++;
+            }
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (const n of grove.nodes) {
+                if (n.x < minX) minX = n.x;
+                if (n.x > maxX) maxX = n.x;
+                if (n.y < minY) minY = n.y;
+                if (n.y > maxY) maxY = n.y;
+            }
+            for (const n of grove.nodes) { n.x -= minX; n.y -= minY; }
+            return {
+                grove: grove,
+                w: (maxX - minX) + SKY_GROVE_GAP,
+                h: (maxY - minY) + SKY_GROVE_GAP
+            };
         },
 
-        // Nothing is drawn here any more but the links themselves: a plate
-        // border used to be framed in with two rings, and a ring that happens
-        // to pass close by a whole tier of nodes reads, at a glance, as one
-        // more connection between them, which it never was. Every line on the
-        // page is now an actual <Link:> between two skills, and nothing else.
-        glyph: function (circle) {
-            return "";
+        // Stand the groves in rows across the page, wrapping onto the next row
+        // once a row is as wide as the page wants to be. Every grove keeps its
+        // own box and no box ever overlaps another, so a school of a dozen
+        // groves is a dozen drawings and not one tangle.
+        _packGroves: function (boxes) {
+            if (!boxes.length) return;
+            let area = 0;
+            for (const box of boxes) area += box.w * box.h;
+            // A page a little wider than it is tall, which is the shape of the
+            // window it is read in.
+            const want = Math.max(boxes[0].w, Math.sqrt(area * 16 / 9));
+            let rowX = 0, rowTop = 0, rowH = 0;
+            for (const box of boxes) {
+                if (rowX > 0 && rowX + box.w > want) {
+                    rowTop -= rowH;
+                    rowX = 0;
+                    rowH = 0;
+                }
+                for (const n of box.grove.nodes) {
+                    n.x += rowX;
+                    n.y += rowTop - box.h;
+                }
+                rowX += box.w;
+                rowH = Math.max(rowH, box.h);
+            }
         }
     };
 
@@ -2440,6 +2796,9 @@
         Scene_MenuBase.prototype.terminate.call(this);
         window.CharSwitcher.removeTabKey(this);
         AnimPreview.dispose();
+        // The sky owns a WebGL context of its own; it has to go back before the
+        // scene does, or the browser force-loses the game's own canvas instead.
+        AtlasSky.dispose();
         if (this._dndContainer) {
             const container = this._dndContainer;
             container.style.transition = "opacity 0.2s ease-out";
@@ -2510,25 +2869,23 @@
 
         document.body.appendChild(this._dndContainer);
 
-        // Wheel scroll on category/skills list regardless of focus. On the atlas
-        // the wheel zooms instead, about the point it is pointing at.
+        // Wheel scroll on category/skills list regardless of focus. On the sky
+        // the wheel brings the camera in and out instead.
         this._dndContainer.addEventListener("wheel", (e) => {
             e.preventDefault();
             let box = e.target.closest && e.target.closest('.skill-scroll-box');
             if (!box) {
                 box = document.getElementById('category-scroll-box-left') ||
                       document.getElementById('category-scroll-box-right') ||
-                      document.getElementById('skills-scroll-box') ||
-                      document.getElementById('skill-atlas-box');
+                      document.getElementById('skills-scroll-box');
             }
-            if (!box) return;
-            if (box.id === 'skill-atlas-box') {
-                const rect = box.getBoundingClientRect();
-                this.setAtlasZoom(
-                    this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP),
-                    box.scrollLeft + (e.clientX - rect.left),
-                    box.scrollTop + (e.clientY - rect.top)
-                );
+            if (!box) {
+                // The sky takes its own wheel on the canvas (it comes in and out
+                // rather than scrolling); anywhere else on that page, the wheel
+                // does the same thing rather than nothing at all.
+                if (document.getElementById('skill-atlas-canvas')) {
+                    this.setAtlasZoom(this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP));
+                }
                 return;
             }
             box.scrollTop += e.deltaY;
@@ -2631,10 +2988,11 @@
         return true;
     };
 
-    // The atlas is the browsing view whenever there is anything to draw; the old
-    // flat list survives only for a curriculum with no graph data at all.
+    // The sky is the browsing view whenever there is a figure to hang in it AND
+    // a context to hang it in; the old flat list survives for a curriculum with
+    // no graph data at all, and for a machine that will not give the scene one.
     Scene_SkillEncyclopedia.prototype.usesGraphView = function () {
-        return this.currentAtlas().circles.length > 0;
+        return AtlasSky.available() && this.currentAtlas().circles.length > 0;
     };
 
     Scene_SkillEncyclopedia.prototype.focusedSkill = function () {
@@ -2719,81 +3077,597 @@
         return T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total });
     };
 
-    //---------------------------------------------------------------- zoom / pan
+    //=========================================================================
+    // AtlasSky - the three.js sky the figure hangs in
+    //
+    // One renderer, one context, for as long as the atlas is on screen. Turning
+    // the page to another school swaps the figure INSIDE it rather than throwing
+    // the context away: the browser caps how many live WebGL contexts it will
+    // hold and force-loses the oldest one past the cap, which is the game's own
+    // canvas, so a scene that churned contexts would freeze the picture behind
+    // it. It is released once, on the way out.
+    //=========================================================================
 
-    // A deep circle is wider than the page, so the page is a window onto it: the
-    // wheel and the two rules on the legend bar zoom, dragging pans, and the
-    // cursor keeps itself inside a comfortable margin of the window.
+    const AtlasSky = {
+        state: null,
+
+        available: function () {
+            return typeof THREE !== 'undefined' && !!THREE.WebGLRenderer;
+        },
+
+        // A soft round light, drawn once and tinted per sphere. Sprites of it
+        // are what give the figure its glow.
+        _halo: function () {
+            if (this._haloTex) return this._haloTex;
+            const c = document.createElement('canvas');
+            c.width = c.height = 128;
+            const g = c.getContext('2d');
+            const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+            grd.addColorStop(0, 'rgba(255,255,255,1)');
+            grd.addColorStop(0.22, 'rgba(255,255,255,0.62)');
+            grd.addColorStop(0.55, 'rgba(255,255,255,0.16)');
+            grd.addColorStop(1, 'rgba(255,255,255,0)');
+            g.fillStyle = grd;
+            g.fillRect(0, 0, 128, 128);
+            this._haloTex = new THREE.CanvasTexture(c);
+            return this._haloTex;
+        },
+
+        // The cursor's own mark: a thin ring that sits around whatever is chosen.
+        _ring: function () {
+            if (this._ringTex) return this._ringTex;
+            const c = document.createElement('canvas');
+            c.width = c.height = 128;
+            const g = c.getContext('2d');
+            g.strokeStyle = 'rgba(255,255,255,0.95)';
+            g.lineWidth = 6;
+            g.beginPath(); g.arc(64, 64, 50, 0, Math.PI * 2); g.stroke();
+            g.strokeStyle = 'rgba(255,255,255,0.35)';
+            g.lineWidth = 2;
+            g.beginPath(); g.arc(64, 64, 60, 0, Math.PI * 2); g.stroke();
+            this._ringTex = new THREE.CanvasTexture(c);
+            return this._ringTex;
+        },
+
+        mount: function (canvas, labelLayer, scene) {
+            this.dispose();
+            if (!this.available() || !canvas) return null;
+            const rect = canvas.getBoundingClientRect();
+            const width = Math.max(1, Math.round(rect.width) || 900);
+            const height = Math.max(1, Math.round(rect.height) || 560);
+
+            let renderer;
+            try {
+                renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            } catch (e) {
+                return null;   // no context to be had; the flat list takes over
+            }
+            renderer.setSize(width, height, false);
+            renderer.setPixelRatio(1);
+
+            const world = new THREE.Scene();
+            world.add(new THREE.AmbientLight(0xffffff, 0.55));
+            const key = new THREE.PointLight(0xffffff, 1.1, 0, 2);
+            key.position.set(0, 0, 0);
+            world.add(key);
+
+            const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 4000);
+            camera.position.set(0, 0, 40);
+
+            const root = new THREE.Group();       // the figure, which turns
+            const deep = new THREE.Group();       // the sky behind it, which does not
+            world.add(deep);
+            world.add(root);
+
+            const st = {
+                renderer: renderer, canvas: canvas, world: world, camera: camera,
+                root: root, deep: deep, keyLight: key, labels: labelLayer, scene: scene,
+                atlas: null, atlasKey: null, figure: null,
+                nodes: [], meshes: [], halos: [], labelEls: [],
+                edges: null, edgeColors: null, focusSprite: null, stars: null, clouds: [],
+                yaw: 0.62, pitch: 0.42, spin: 0, zoom: ATLAS_ZOOM_DEFAULT, fit: 40,
+                // aim is where the cursor stands INSIDE the figure; the figure
+                // turns under it, so where to point the camera is worked out
+                // from it every frame rather than stored.
+                target: new THREE.Vector3(), aim: new THREE.Vector3(),
+                want: new THREE.Vector3(), snap: false, frameNo: 0,
+                focusId: 0, hoverId: 0, clock: new THREE.Clock(), acc: 0, time: 0,
+                idle: 0, rafId: 0, disposed: false, listeners: {}, ray: new THREE.Raycaster(),
+                pointer: new THREE.Vector2(), sized: { w: width, h: height }
+            };
+            this.state = st;
+            this._buildSky(st);
+
+            const FRAME = 1 / 30;
+            const loop = () => {
+                if (st.disposed) return;
+                st.rafId = requestAnimationFrame(loop);
+                st.acc += Math.min(st.clock.getDelta(), 0.1);
+                if (st.acc < FRAME) return;
+                const dt = st.acc; st.acc = 0;
+                this._frame(st, dt);
+            };
+            loop();
+            return st;
+        },
+
+        // The dark the figure hangs in: a field of stars, and a few clouds of
+        // the school's own colour lit from behind it.
+        _buildSky: function (st) {
+            const COUNT = 900;
+            const pos = new Float32Array(COUNT * 3);
+            const col = new Float32Array(COUNT * 3);
+            let h = 22222;
+            const rnd = () => {
+                h = Math.imul(h ^ (h >>> 15), 2246822507);
+                h = Math.imul(h ^ (h >>> 13), 3266489909);
+                return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+            };
+            const tint = new THREE.Color();
+            for (let i = 0; i < COUNT; i++) {
+                const r = 500 + rnd() * 900;
+                const a = rnd() * Math.PI * 2;
+                const e = Math.asin(rnd() * 2 - 1);
+                pos[i * 3] = Math.cos(a) * Math.cos(e) * r;
+                pos[i * 3 + 1] = Math.sin(e) * r;
+                pos[i * 3 + 2] = Math.sin(a) * Math.cos(e) * r;
+                tint.setHSL(0.55 + rnd() * 0.2, 0.35, 0.55 + rnd() * 0.45);
+                col[i * 3] = tint.r; col[i * 3 + 1] = tint.g; col[i * 3 + 2] = tint.b;
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+            const mat = new THREE.PointsMaterial({
+                size: 7, map: this._halo(), vertexColors: true, transparent: true,
+                depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
+            });
+            st.stars = new THREE.Points(geo, mat);
+            st.deep.add(st.stars);
+
+            for (let i = 0; i < 5; i++) {
+                const s = new THREE.Sprite(new THREE.SpriteMaterial({
+                    map: this._halo(), transparent: true, depthWrite: false,
+                    blending: THREE.AdditiveBlending, opacity: 0.16
+                }));
+                const r = 260 + rnd() * 320;
+                const a = rnd() * Math.PI * 2, e = (rnd() - 0.5) * 1.4;
+                s.position.set(Math.cos(a) * Math.cos(e) * r, Math.sin(e) * r, Math.sin(a) * Math.cos(e) * r);
+                s.scale.setScalar(320 + rnd() * 420);
+                st.deep.add(s);
+                st.clouds.push(s);
+            }
+        },
+
+        // Hang a school's figure in the sky already built. Everything the last
+        // school put there is taken down first; the context stays.
+        setAtlas: function (atlas) {
+            const st = this.state;
+            if (!st || !atlas) return;
+            this._clearFigure(st);
+            st.atlas = atlas;
+            st.atlasKey = atlas.key;
+            const figure = atlas.circles[0] || null;
+            st.figure = figure;
+            if (!figure) return;
+            st.nodes = figure.nodes;
+
+            // The school's colour washes the clouds behind its figure, so two
+            // schools are told apart by the light before a word is read.
+            const sky = new THREE.Color();
+            st.clouds.forEach((cloud, i) => {
+                sky.setHSL(((atlas.hue + i * 26) % 360) / 360, 0.65, 0.42);
+                cloud.material.color.copy(sky);
+            });
+
+            const geo = new THREE.SphereGeometry(SKY_NODE_R, 18, 14);
+            const halo = this._halo();
+            for (const node of figure.nodes) {
+                const mat = new THREE.MeshPhongMaterial({
+                    color: 0xffffff, emissive: 0x000000, shininess: 70,
+                    specular: 0x666666
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(node.x, node.y, node.z);
+                mesh.userData.skillId = node.id;
+                st.root.add(mesh);
+                st.meshes.push(mesh);
+
+                const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+                    map: halo, transparent: true, depthWrite: false,
+                    blending: THREE.AdditiveBlending, opacity: 0.5
+                }));
+                glow.position.copy(mesh.position);
+                glow.scale.setScalar(SKY_NODE_R * 3.9);
+                st.root.add(glow);
+                st.halos.push(glow);
+            }
+            st.nodeGeo = geo;
+
+            if (figure.edges.length) {
+                const pos = new Float32Array(figure.edges.length * 6);
+                const col = new Float32Array(figure.edges.length * 6);
+                figure.edges.forEach(([a, b], i) => {
+                    pos.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
+                });
+                const eg = new THREE.BufferGeometry();
+                eg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                eg.setAttribute('color', new THREE.BufferAttribute(col, 3));
+                st.edgeColors = col;
+                st.edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({
+                    vertexColors: true, transparent: true, opacity: 0.85,
+                    depthWrite: false, blending: THREE.AdditiveBlending
+                }));
+                st.root.add(st.edges);
+            }
+
+            st.focusSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+                map: this._ring(), transparent: true, depthWrite: false,
+                blending: THREE.AdditiveBlending, opacity: 0.9, color: 0xffffff
+            }));
+            st.focusSprite.scale.setScalar(SKY_NODE_R * 4.4);
+            st.focusSprite.visible = false;
+            st.root.add(st.focusSprite);
+
+            st.fit = Math.max(8, figure.radius / Math.tan(st.camera.fov * Math.PI / 360) * 1.12);
+            // The canvas was measured at mount, which can be a moment before the
+            // page it sits on has settled; the school being hung is the right
+            // time to take that measurement again.
+            this.resize(true);
+            this._buildLabels(st, figure);
+        },
+
+        // One label per skill, made once and then only moved. Two hundred divs
+        // that are pushed about is far cheaper than two hundred rebuilt.
+        _buildLabels: function (st, figure) {
+            const layer = st.labels;
+            if (!layer) return;
+            layer.innerHTML = '';
+            st.labelEls = [];
+            const frag = document.createDocumentFragment();
+            for (const node of figure.nodes) {
+                const el = document.createElement('div');
+                el.className = 'sg3-label';
+                el.dataset.id = String(node.id);
+                el.innerHTML =
+                    `<span class="sg3-label-icon" style="${getSkillIconStyle(node.skill.iconIndex)}"></span>` +
+                    `<span class="sg3-label-name">${node.skill.name}</span>` +
+                    `<span class="sg3-label-cost"></span>`;
+                el.addEventListener('click', () => {
+                    if (st.scene && !st.dragged) st.scene.selectGraphNode(node.id);
+                });
+                frag.appendChild(el);
+                st.labelEls.push(el);
+            }
+            layer.appendChild(frag);
+        },
+
+        _clearFigure: function (st) {
+            for (const m of st.meshes) { st.root.remove(m); m.material.dispose(); }
+            for (const h of st.halos) { st.root.remove(h); h.material.dispose(); }
+            if (st.nodeGeo) { st.nodeGeo.dispose(); st.nodeGeo = null; }
+            if (st.edges) {
+                st.root.remove(st.edges);
+                st.edges.geometry.dispose();
+                st.edges.material.dispose();
+                st.edges = null;
+            }
+            if (st.focusSprite) {
+                st.root.remove(st.focusSprite);
+                st.focusSprite.material.dispose();
+                st.focusSprite = null;
+            }
+            st.meshes = []; st.halos = []; st.nodes = []; st.edgeColors = null; st.figure = null;
+            if (st.labels) st.labels.innerHTML = '';
+            st.labelEls = [];
+        },
+
+        // What the pupil knows, painted onto the figure. A learned skill burns
+        // its own colour; one they could buy glows cooler and breathes; one they
+        // cannot reach yet is a cinder that still shows where the figure goes.
+        repaint: function (actor, focusId) {
+            const st = this.state;
+            if (!st || !st.atlas) return;
+            st.focusId = focusId;
+            const c = new THREE.Color();
+            const e = new THREE.Color();
+            st.nodes.forEach((node, i) => {
+                const learned = actor ? actor.isLearnedSkill(node.id) : false;
+                const open = !learned && SkillGraph.isOpen(actor, node.id);
+                node.state = learned ? 2 : (open ? 1 : 0);
+                const h = node.hue / 360;
+                const mesh = st.meshes[i], halo = st.halos[i];
+                if (!mesh) return;
+                // The glows are ADDITIVE, so a crowded tier of them stacks: they
+                // are kept a good deal smaller than the gap between two spheres,
+                // or a dense school washes out into one white fog.
+                if (learned) {
+                    c.setHSL(h, 0.72, 0.62); e.setHSL(h, 0.85, 0.34);
+                    halo.material.opacity = 0.6;
+                    halo.scale.setScalar(SKY_NODE_R * 4.6);
+                    mesh.scale.setScalar(1.16);
+                } else if (open) {
+                    c.setHSL(h, 0.55, 0.45); e.setHSL(h, 0.7, 0.16);
+                    halo.material.opacity = 0.38;
+                    halo.scale.setScalar(SKY_NODE_R * 3.9);
+                    mesh.scale.setScalar(1);
+                } else {
+                    c.setHSL(h, 0.2, 0.19); e.setHSL(h, 0.3, 0.04);
+                    halo.material.opacity = 0.1;
+                    halo.scale.setScalar(SKY_NODE_R * 2.8);
+                    mesh.scale.setScalar(0.82);
+                }
+                mesh.material.color.copy(c);
+                mesh.material.emissive.copy(e);
+                halo.material.color.copy(c);
+
+                const el = st.labelEls[i];
+                if (el) {
+                    el.classList.toggle('sg3-learned', learned);
+                    el.classList.toggle('sg3-open', open);
+                    el.classList.toggle('sg3-locked', !learned && !open);
+                    const cost = el.querySelector('.sg3-label-cost');
+                    if (cost) {
+                        const kp = (actor && open) ? $gameSystem.getSkillKnowledgeCost(node.id, actor.actorId()) : 0;
+                        cost.textContent = kp ? T('SkillMaster.atlas.kp', { kp: kp }) : '';
+                    }
+                }
+            });
+
+            const figure = st.atlas.circles[0];
+            if (st.edgeColors && figure) {
+                const ca = new THREE.Color(), cb = new THREE.Color();
+                figure.edges.forEach(([a, b], i) => {
+                    const both = a.state === 2 && b.state === 2;
+                    const one = a.state === 2 || b.state === 2;
+                    ca.setHSL(a.hue / 360, both ? 0.7 : (one ? 0.55 : 0.3), both ? 0.6 : (one ? 0.4 : 0.16));
+                    cb.setHSL(b.hue / 360, both ? 0.7 : (one ? 0.55 : 0.3), both ? 0.6 : (one ? 0.4 : 0.16));
+                    st.edgeColors.set([ca.r, ca.g, ca.b, cb.r, cb.g, cb.b], i * 6);
+                });
+                st.edges.geometry.attributes.color.needsUpdate = true;
+            }
+        },
+
+        setFocus: function (skillId) {
+            if (this.state) this.state.focusId = skillId;
+        },
+
+        nodeIndex: function (skillId) {
+            const st = this.state;
+            if (!st) return -1;
+            return st.nodes.findIndex(n => n.id === skillId);
+        },
+
+        // Swing the camera onto a skill. A step of the cursor eases across; a
+        // school opened from the shelf snaps, since there is nowhere to ease from.
+        lookAt: function (skillId, snap) {
+            const st = this.state;
+            if (!st) return;
+            const node = st.nodes.find(n => n.id === skillId);
+            if (!node) return;
+            st.aim.set(node.x, node.y, node.z);
+            st.idle = 0;   // a figure being walked is a figure being handled
+            if (snap) st.snap = true;
+        },
+
+        zoom: function () { return this.state ? this.state.zoom : ATLAS_ZOOM_DEFAULT; },
+
+        setZoom: function (z) {
+            if (!this.state) return;
+            this.state.zoom = Math.max(ATLAS_ZOOM_MIN, Math.min(ATLAS_ZOOM_MAX, z));
+        },
+
+        orbit: function (dx, dy) {
+            const st = this.state;
+            if (!st) return;
+            st.yaw -= dx * 0.008;
+            st.pitch = Math.max(-1.45, Math.min(1.45, st.pitch - dy * 0.007));
+            st.idle = 0;
+        },
+
+        // Which sphere is under the pointer, in the canvas' own coordinates.
+        pick: function (px, py) {
+            const st = this.state;
+            if (!st || !st.meshes.length) return 0;
+            st.pointer.x = (px / st.sized.w) * 2 - 1;
+            st.pointer.y = -(py / st.sized.h) * 2 + 1;
+            st.ray.setFromCamera(st.pointer, st.camera);
+            const hits = st.ray.intersectObjects(st.meshes, false);
+            return hits.length ? (hits[0].object.userData.skillId || 0) : 0;
+        },
+
+        // Measuring the canvas forces a layout, so it is measured every half
+        // second rather than every frame: nothing here resizes mid-orbit except
+        // a window drag, and half a second of a stretched picture is the price.
+        resize: function (force) {
+            const st = this.state;
+            if (!st) return;
+            if (!force && (st.sizeAt = (st.sizeAt || 0) + 1) % 15 !== 0) return;
+            const rect = st.canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            if (w === st.sized.w && h === st.sized.h) return;
+            st.sized = { w: w, h: h };
+            st.camera.aspect = w / h;
+            st.camera.updateProjectionMatrix();
+            st.renderer.setSize(w, h, false);
+        },
+
+        _frame: function (st, dt) {
+            st.time += dt;
+            st.idle += dt;
+            st.frameNo++;
+            this.resize();
+
+            // The figure turns on its own once the reader has stopped handling
+            // it, which is what makes a still page look like a sky.
+            if (st.idle > 2.5) st.spin = (st.spin + dt * 0.06) % TAU;
+            st.root.rotation.y = st.spin;
+
+            // The cursor's sphere is carried round by the figure's own turn, so
+            // the point the camera holds is its place turned by the same amount.
+            const cs = Math.cos(st.spin), sn = Math.sin(st.spin);
+            st.want.set(st.aim.x * cs + st.aim.z * sn, st.aim.y, -st.aim.x * sn + st.aim.z * cs);
+            if (st.snap) { st.target.copy(st.want); st.snap = false; }
+            else st.target.lerp(st.want, Math.min(1, dt * 6));
+            const dist = st.fit / st.zoom;
+            const cp = st.camera.position;
+            const cy = Math.cos(st.pitch);
+            cp.set(
+                st.target.x + Math.sin(st.yaw) * cy * dist,
+                st.target.y + Math.sin(st.pitch) * dist,
+                st.target.z + Math.cos(st.yaw) * cy * dist
+            );
+            st.camera.lookAt(st.target);
+            // Not quite a headlamp: the light stands off the camera's shoulder,
+            // so a sphere is read as a ball rather than as a flat disc.
+            st.keyLight.position.set(
+                cp.x + Math.cos(st.yaw) * dist * 0.35,
+                cp.y + dist * 0.35,
+                cp.z - Math.sin(st.yaw) * dist * 0.35
+            );
+
+            const pulse = 0.5 + 0.5 * Math.sin(st.time * 2.6);
+            for (let i = 0; i < st.nodes.length; i++) {
+                const node = st.nodes[i];
+                if (node.state === 1 && st.halos[i]) {
+                    st.halos[i].material.opacity = 0.24 + pulse * 0.28;
+                }
+            }
+
+            if (st.focusSprite) {
+                const idx = st.nodes.findIndex(n => n.id === st.focusId);
+                if (idx >= 0) {
+                    st.focusSprite.visible = true;
+                    st.focusSprite.position.copy(st.meshes[idx].position);
+                    st.focusSprite.scale.setScalar(SKY_NODE_R * (4.2 + pulse * 0.8));
+                } else {
+                    st.focusSprite.visible = false;
+                }
+            }
+
+            this._labelPass(st);
+            st.renderer.render(st.world, st.camera);
+        },
+
+        // Project every sphere, hand the cursor its screen place (the arrow keys
+        // walk the figure by what is on the screen) and write out the names of
+        // the nearest few. Every name at once on a school of two hundred is a
+        // wall of text, so only what is close enough to matter is written.
+        _labelPass: function (st) {
+            const v = new THREE.Vector3();
+            const w = st.sized.w, h = st.sized.h;
+            const shown = [];
+            for (let i = 0; i < st.nodes.length; i++) {
+                const node = st.nodes[i];
+                const mesh = st.meshes[i];
+                if (!mesh) continue;
+                mesh.getWorldPosition(v);
+                const d = v.distanceTo(st.camera.position);
+                v.project(st.camera);
+                node.sx = (v.x * 0.5 + 0.5) * w;
+                node.sy = (-v.y * 0.5 + 0.5) * h;
+                node.sd = d;
+                node.vis = v.z < 1 && node.sx > -40 && node.sx < w + 40 && node.sy > -40 && node.sy < h + 40;
+                if (node.vis) shown.push(i);
+            }
+            if (!st.labelEls.length) return;
+            shown.sort((a, b) => st.nodes[a].sd - st.nodes[b].sd);
+            const named = new Set();
+            const wide = st.zoom < ATLAS_LABEL_ZOOM;
+            const room = wide ? 0 : ATLAS_LABEL_MAX;
+            // Nearest first, and a name is dropped where another already stands:
+            // two names written over each other are worse than one name and a
+            // sphere the reader can turn towards.
+            const taken = [];
+            for (let k = 0; k < shown.length && named.size < room; k++) {
+                const node = st.nodes[shown[k]];
+                let clear = true;
+                for (const t of taken) {
+                    if (Math.abs(t.x - node.sx) < 96 && Math.abs(t.y - node.sy) < 20) { clear = false; break; }
+                }
+                if (!clear) continue;
+                taken.push({ x: node.sx, y: node.sy });
+                named.add(shown[k]);
+            }
+            const focusIdx = st.nodes.findIndex(n => n.id === st.focusId);
+            if (focusIdx >= 0 && st.nodes[focusIdx].vis) named.add(focusIdx);
+            if (st.hoverId) {
+                const hi = st.nodes.findIndex(n => n.id === st.hoverId);
+                if (hi >= 0 && st.nodes[hi].vis) named.add(hi);
+            }
+            for (let i = 0; i < st.labelEls.length; i++) {
+                const el = st.labelEls[i];
+                if (!named.has(i)) {
+                    if (el.style.display !== 'none') el.style.display = 'none';
+                    continue;
+                }
+                const node = st.nodes[i];
+                el.style.display = 'block';
+                el.style.transform = `translate(-50%, 0) translate(${node.sx.toFixed(1)}px, ${(node.sy + 16).toFixed(1)}px)`;
+                const near = Math.max(0.25, Math.min(1, 34 / Math.max(1, node.sd)));
+                el.style.opacity = (node.id === st.focusId ? 1 : near).toFixed(2);
+                el.classList.toggle('sg3-focus', node.id === st.focusId);
+            }
+        },
+
+        dispose: function () {
+            const st = this.state;
+            this.state = null;
+            if (!st) return;
+            st.disposed = true;
+            cancelAnimationFrame(st.rafId);
+            const L = st.listeners || {}, c0 = st.canvas;
+            if (c0) {
+                if (L.down) c0.removeEventListener('pointerdown', L.down);
+                if (L.move) c0.removeEventListener('pointermove', L.move);
+                if (L.click) c0.removeEventListener('click', L.click);
+                if (L.wheel) c0.removeEventListener('wheel', L.wheel);
+                if (L.ctx) c0.removeEventListener('contextmenu', L.ctx);
+            }
+            if (L.up) window.removeEventListener('pointerup', L.up);
+            this._clearFigure(st);
+            if (st.stars) { st.stars.geometry.dispose(); st.stars.material.dispose(); }
+            for (const cloud of st.clouds) cloud.material.dispose();
+            // dispose() leaves the WebGL context alive. The browser caps live
+            // contexts and force-loses the OLDEST past the cap, which is the
+            // game's own canvas: PIXI then silently stops drawing and the
+            // picture freezes. Release it, then swap in a clean canvas node,
+            // since the element a context was lost on can never host a new one.
+            try { st.renderer.dispose(); } catch (e) { /* already lost */ }
+            try { if (st.renderer.forceContextLoss) st.renderer.forceContextLoss(); } catch (e) { /* already lost */ }
+            const c = st.canvas;
+            if (c && c.parentNode) c.parentNode.replaceChild(c.cloneNode(false), c);
+        }
+    };
+
+    window.AtlasSky = AtlasSky;
+
+    //---------------------------------------------------------------- framing
+
+    // Zoom is a factor on the distance that would hold the whole figure: 1 is
+    // the school seen whole, more is closer in. Nothing here is a scroll offset
+    // any more, so the two ends of the old pan (the sizer and the scroll box)
+    // are gone with it.
     Scene_SkillEncyclopedia.prototype.atlasZoom = function () {
-        if (!this._atlasZoom) this._atlasZoom = this.defaultAtlasZoom();
+        if (!this._atlasZoom) this._atlasZoom = ATLAS_ZOOM_DEFAULT;
         return this._atlasZoom;
     };
 
-    // Open at a size the school can be READ at. A deep school will not fit
-    // whole and is not shrunk until it does; it is held here and panned, and
-    // Shift is what steps back far enough to see the whole figure.
     Scene_SkillEncyclopedia.prototype.defaultAtlasZoom = function () {
-        const atlas = this.currentAtlas();
-        if (!atlas.circles.length) return 1;
-        const circle = atlas.circles[0];
-        const box = document.getElementById('left-page-content');
-        const w = Math.max(420, (box ? box.clientWidth : 1100) - 24);
-        const h = Math.max(300, (box ? box.clientHeight : 660) - ATLAS_LEGEND_H);
-        const fit = Math.min(w, h) / (circle.radius * 2 + 40);
-        return Math.max(ATLAS_READ_ZOOM, Math.min(1, fit));
+        return ATLAS_ZOOM_DEFAULT;
     };
 
-    // Far enough back that the whole circle is on the page at once: what one
-    // press of Shift steps out to.
+    // Far enough back that the whole figure is on screen at once: what one press
+    // of Shift steps out to.
     Scene_SkillEncyclopedia.prototype.wholeAtlasZoom = function () {
-        const atlas = this.currentAtlas();
-        if (!atlas.width || !atlas.height) return this.defaultAtlasZoom();
-        const box = document.getElementById('left-page-content');
-        const w = Math.max(420, (box ? box.clientWidth : 1100) - 24);
-        const h = Math.max(300, (box ? box.clientHeight : 660) - ATLAS_LEGEND_H);
-        return Math.max(ATLAS_ZOOM_MIN, Math.min(1, Math.min(w / atlas.width, h / atlas.height)));
+        return ATLAS_ZOOM_WHOLE;
     };
 
-    // Anchor coordinates are in the scroll box's own content space; the point
-    // under them is held still while the atlas grows or shrinks beneath it.
-    Scene_SkillEncyclopedia.prototype.setAtlasZoom = function (zoom, anchorX, anchorY) {
-        const atlas = this.currentAtlas();
-        const box = document.getElementById('skill-atlas-box');
-        const sizer = document.getElementById('skill-atlas-sizer');
-        const canvas = document.getElementById('skill-atlas-canvas');
-        if (!box || !sizer || !canvas) return;
+    Scene_SkillEncyclopedia.prototype.setAtlasZoom = function (zoom) {
         const next = Math.max(ATLAS_ZOOM_MIN, Math.min(ATLAS_ZOOM_MAX, zoom));
-        const prev = this.atlasZoom();
-        if (Math.abs(next - prev) < 0.001) return;
-
-        const ax = (anchorX === undefined) ? box.scrollLeft + box.clientWidth / 2 : anchorX;
-        const ay = (anchorY === undefined) ? box.scrollTop + box.clientHeight / 2 : anchorY;
-        const worldX = ax / prev;
-        const worldY = ay / prev;
-
+        if (Math.abs(next - this.atlasZoom()) < 0.001) return;
         this._atlasZoom = next;
-        sizer.style.width = Math.round(atlas.width * next) + 'px';
-        sizer.style.height = Math.round(atlas.height * next) + 'px';
-        canvas.style.transform = `scale(${next})`;
-        this.applyAtlasFarView(canvas, next);
-        box.scrollLeft += worldX * next - ax;
-        box.scrollTop += worldY * next - ay;
-    };
-
-    // Stepped far enough back, a skill's name is a smudge and the atlas reads
-    // better as pure figures: the names come off and the school names are held
-    // at the size they had when they came off, so the circles stay identifiable.
-    Scene_SkillEncyclopedia.prototype.applyAtlasFarView = function (canvas, zoom) {
-        if (!canvas) return;
-        const far = zoom < ATLAS_FAR_ZOOM;
-        canvas.classList.toggle('sg-far', far);
-        // Below 1:1 the plate is drawn smaller than it was written, so the
-        // writing and the icons are scaled back UP by the same factor, capped
-        // so they never grow into each other on a school stepped fully back.
-        const back = zoom < 1 ? Math.min(ATLAS_LABEL_MAX, 1 / zoom) : 1;
-        canvas.style.setProperty('--sg-label-scale', back.toFixed(2));
-        canvas.style.setProperty('--sg-icon-scale', (1 + (back - 1) * ATLAS_ICON_SHARE).toFixed(2));
-        canvas.style.setProperty('--sg-banner-scale', back.toFixed(2));
+        AtlasSky.setZoom(next);
     };
 
     Scene_SkillEncyclopedia.prototype.zoomAtlas = function (dir) {
@@ -2801,52 +3675,101 @@
             : this.atlasZoom() / ATLAS_ZOOM_STEP);
     };
 
-    // Drag anywhere on the field to pan. A press that never travelled is a
-    // click, so the nodes keep their own onclick; one that did swallows it, so
-    // panning across a circle never teaches anything by accident. Every listener
-    // is on the box itself, so a rebuilt atlas leaves none of them behind.
+    //---------------------------------------------------------------- the sky
+
+    // Put the renderer on the canvas the left page has just been given, or take
+    // it down when the atlas is not what is on the page. Called from every
+    // refresh: mounting is what is expensive, and it only happens on the first
+    // one after the page was rebuilt.
+    Scene_SkillEncyclopedia.prototype.syncAtlasSky = function () {
+        const canvas = document.getElementById('skill-atlas-canvas');
+        if (!canvas) { AtlasSky.dispose(); return; }
+        if (!AtlasSky.state || AtlasSky.state.canvas !== canvas) {
+            AtlasSky.mount(canvas, document.getElementById('skill-atlas-labels'), this);
+            if (!AtlasSky.state) return;
+            AtlasSky.setZoom(this.atlasZoom());
+            this.bindAtlasPointer();
+            this._lastGraphKey = null;
+        }
+        const atlas = this.currentAtlas();
+        // Compared by the FIGURE, not by its name: an atlas rebuilt after a
+        // fusion answers with the same figure object when nothing about the
+        // school moved, and the spheres are then left standing.
+        const figure = atlas.circles[0] || null;
+        if (AtlasSky.state.figure !== figure) {
+            AtlasSky.setAtlas(atlas);
+            this._lastGraphKey = null;
+            AtlasSky.setZoom(this.atlasZoom());
+            AtlasSky.lookAt(this._focusSkillId, true);
+        }
+        const graphKey = this.graphStateKey();
+        if (graphKey !== this._lastGraphKey) {
+            this._lastGraphKey = graphKey;
+            AtlasSky.repaint(this.getTeachActor(), this._focusSkillId);
+        }
+    };
+
+    // Drag to turn the figure, wheel to come in and out, click a sphere to open
+    // its sheet. A press that never travelled is a click, so turning the figure
+    // over a crowded school never teaches anything by accident. Every listener
+    // is on the canvas itself, which is thrown away with the context.
     Scene_SkillEncyclopedia.prototype.bindAtlasPointer = function () {
-        const box = document.getElementById('skill-atlas-box');
-        if (!box || box._atlasBound) return;
-        box._atlasBound = true;
-        const DEAD = 6;
-        let dragging = false, travelled = false;
-        let fromX = 0, fromY = 0, scrollX = 0, scrollY = 0;
-        box.addEventListener('pointerdown', (e) => {
-            if (e.button !== 0) return;
+        const st = AtlasSky.state;
+        if (!st || st.bound) return;
+        const canvas = st.canvas;
+        st.bound = true;
+        const DEAD = 5;
+        let dragging = false, fromX = 0, fromY = 0;
+        st.dragged = false;
+
+        const L = st.listeners;
+        L.down = (e) => {
+            if (e.button !== 0 && e.button !== 2) return;
             dragging = true;
-            travelled = false;
+            st.dragged = false;
             fromX = e.clientX; fromY = e.clientY;
-            scrollX = box.scrollLeft; scrollY = box.scrollTop;
-            // Capture is NOT taken here: capturing on a plain press retargets the
-            // click event that follows to the box itself (Chromium redirects the
-            // whole pointer's event sequence, click included, to the capturing
-            // element), so a click on a node would never reach the node's own
-            // onclick. It is taken only once the press has actually become a
-            // drag, below.
-        });
-        box.addEventListener('pointermove', (e) => {
-            if (!dragging) return;
-            const dx = e.clientX - fromX;
-            const dy = e.clientY - fromY;
-            if (!travelled && Math.abs(dx) + Math.abs(dy) < DEAD) return;
-            if (!travelled) box.setPointerCapture(e.pointerId);
-            travelled = true;
-            box.scrollLeft = scrollX - dx;
-            box.scrollTop = scrollY - dy;
-        });
-        const release = (e) => {
-            dragging = false;
-            if (box.hasPointerCapture && box.hasPointerCapture(e.pointerId)) box.releasePointerCapture(e.pointerId);
+            canvas.style.cursor = 'grabbing';
         };
-        box.addEventListener('pointerup', release);
-        box.addEventListener('pointercancel', release);
-        box.addEventListener('click', (e) => {
-            if (!travelled) return;
-            travelled = false;
-            e.stopPropagation();
+        L.move = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            if (!dragging) {
+                // At most one raycast a frame: a mouse crossing the sky reports
+                // a hundred moves a second and each one would walk every sphere.
+                if (st.pickedAt === st.frameNo) return;
+                st.pickedAt = st.frameNo;
+                st.hoverId = AtlasSky.pick(e.clientX - rect.left, e.clientY - rect.top);
+                canvas.style.cursor = st.hoverId ? 'pointer' : 'grab';
+                return;
+            }
+            const dx = e.clientX - fromX, dy = e.clientY - fromY;
+            if (!st.dragged && Math.abs(dx) + Math.abs(dy) < DEAD) return;
+            st.dragged = true;
+            AtlasSky.orbit(dx, dy);
+            fromX = e.clientX; fromY = e.clientY;
+        };
+        L.up = () => {
+            dragging = false;
+            canvas.style.cursor = 'grab';
+        };
+        L.click = (e) => {
+            if (st.dragged) { st.dragged = false; return; }
+            const rect = canvas.getBoundingClientRect();
+            const id = AtlasSky.pick(e.clientX - rect.left, e.clientY - rect.top);
+            if (id) this.selectGraphNode(id);
+        };
+        L.wheel = (e) => {
             e.preventDefault();
-        }, true);
+            e.stopPropagation();
+            this.setAtlasZoom(this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP));
+        };
+        L.ctx = (e) => e.preventDefault();
+
+        canvas.addEventListener('pointerdown', L.down);
+        canvas.addEventListener('pointermove', L.move);
+        window.addEventListener('pointerup', L.up);
+        canvas.addEventListener('click', L.click);
+        canvas.addEventListener('wheel', L.wheel, { passive: false });
+        canvas.addEventListener('contextmenu', L.ctx);
     };
 
     // The pager: which school of the curriculum is on the page, and the way to
@@ -2867,64 +3790,13 @@
             </div>`;
     };
 
-    Scene_SkillEncyclopedia.prototype.renderSkillAtlasHTML = function () {
-        const atlas = this.currentAtlas();
-        const actor = this.getTeachActor();
-        const focusedId = this._focusSkillId;
-        const zoom = this.atlasZoom();
-        const labelScale = (zoom < 1 ? Math.min(ATLAS_LABEL_MAX, 1 / zoom) : 1).toFixed(2);
-
-        let glyphsHTML = "";
-        let edgesHTML = "";
-        let nodesHTML = "";
-        let bannersHTML = "";
-
-        for (const circle of atlas.circles) {
-            glyphsHTML += SkillAtlas.glyph(circle);
-
-            let sealEdges = "";
-            for (const [a, b] of circle.edges) {
-                const knownA = actor ? actor.isLearnedSkill(a.id) : false;
-                const knownB = actor ? actor.isLearnedSkill(b.id) : false;
-                // A link between two skills the pupil does not have is still a
-                // link and still shows the shape of the school: drawn solid and
-                // plainly visible, only cooler and thinner than a walked one.
-                let stroke = 'var(--border-secondary-hover-translucent-15)';
-                let opacity = 0.7;
-                let dash = '';
-                if (knownA && knownB) { stroke = 'var(--text-forest-complete)'; opacity = 0.95; dash = ''; }
-                else if (knownA || knownB) { stroke = 'var(--text-secondary-active)'; opacity = 0.9; dash = ''; }
-                // A gentle arc rather than a straight chord: the control point
-                // bows out from the circle's own centre, so the whole seal
-                // reads as a set of curved rays rather than a ruled diagram.
-                const mx = (a.ax + b.ax) / 2, my = (a.ay + b.ay) / 2;
-                let ux = mx - circle.cx, uy = my - circle.cy;
-                const ulen = Math.hypot(ux, uy) || 1;
-                ux /= ulen; uy /= ulen;
-                const edgeLen = Math.hypot(b.ax - a.ax, b.ay - a.ay);
-                const bow = Math.max(5, Math.min(34, edgeLen * 0.16));
-                const qx = mx + ux * bow, qy = my + uy * bow;
-                sealEdges += `<path d="M ${a.ax.toFixed(1)} ${a.ay.toFixed(1)} Q ${qx.toFixed(1)} ${qy.toFixed(1)} ${b.ax.toFixed(1)} ${b.ay.toFixed(1)}" fill="none" stroke="${stroke}" stroke-width="${knownA && knownB ? 3 : (knownA || knownB ? 2.4 : 1.6)}" stroke-opacity="${opacity}"${dash ? ` stroke-dasharray="${dash}"` : ''} stroke-linecap="round" />`;
-            }
-            edgesHTML += `<g class="sg-edges" data-circle="${circle.category}">${sealEdges}</g>`;
-
-            for (const node of circle.nodes) {
-                const learned = actor ? actor.isLearnedSkill(node.id) : false;
-                const open = !learned && SkillGraph.isOpen(actor, node.id);
-                const state = learned ? 'sg-learned' : (open ? 'sg-open' : 'sg-locked');   // i18n-ignore: CSS class
-                const focus = node.id === focusedId ? ' sg-focus' : '';   // i18n-ignore: CSS class
-                // Only a skill you could actually buy prices itself on the circle.
-                const cost = (actor && open) ? $gameSystem.getSkillKnowledgeCost(node.id, actor.actorId()) : 0;
-                nodesHTML += `<div class="sg-node ${state}${focus}" data-id="${node.id}" data-circle="${circle.category}" onclick="SceneManager._scene.selectGraphNode(${node.id})" style="left:${(node.ax - CIRCLE_LABEL_W / 2).toFixed(1)}px; top:${(node.ay - CIRCLE_NODE / 2).toFixed(1)}px"><div class="sg-in"><div class="sg-ring"><div style="${getSkillIconStyle(node.skill.iconIndex)} transform:scale(0.9)"></div></div><div class="sg-name">${node.skill.name}</div>${cost ? `<div class="sg-cost">${cost} KP</div>` : ''}</div></div>`;
-            }
-
-            const count = this.atlasLearnedCount(circle.category);
-            bannersHTML += `<div class="sg-banner" data-circle="${circle.category}" style="left:${(circle.cx - circle.radius).toFixed(1)}px; top:${(circle.cy + circle.outer + 18).toFixed(1)}px; width:${(circle.radius * 2).toFixed(1)}px">${getCategoryDisplayName(circle.category)}<span class="sg-banner-sub">${T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total })}</span></div>`;
-        }
-
+    // The header bar over the sky: the pager, the key to the three colours a
+    // sphere can burn, and the two rules that pull the camera in and out. It is
+    // rewritten on its own, without touching the canvas under it, so turning to
+    // another school never costs a WebGL context.
+    Scene_SkillEncyclopedia.prototype.renderAtlasChromeHTML = function () {
         const legendKey = (color, label) =>
             `<span class="sg-legend-key"><span class="sg-legend-dot" style="border:2px solid ${color}"></span>${label}</span>`;
-
         return `
             ${this.renderAtlasPagerHTML()}
             <div class="sg-legend">
@@ -2936,21 +3808,30 @@
                     <span class="sg-zoom" onclick="SceneManager._scene.zoomAtlas(1)">+</span>
                 </span>
                 <span class="sg-hint">${T('SkillMaster.atlas.hint')}</span>
-            </div>
-            <div id="skill-atlas-box" class="skill-scroll-box" style="flex:1">
-                <div id="skill-atlas-sizer" style="position:relative; width:${Math.round(atlas.width * zoom)}px; height:${Math.round(atlas.height * zoom)}px">
-                    <div id="skill-atlas-canvas" class="${zoom < ATLAS_FAR_ZOOM ? 'sg-far' : ''}" style="width:${atlas.width}px; height:${atlas.height}px; transform:scale(${zoom}); --sg-label-scale:${labelScale}; --sg-icon-scale:${(1 + (labelScale - 1) * ATLAS_ICON_SHARE).toFixed(2)}; --sg-banner-scale:${labelScale};">
-                        <svg width="${atlas.width}" height="${atlas.height}">${glyphsHTML}${edgesHTML}</svg>
-                        ${bannersHTML}
-                        ${nodesHTML}
-                    </div>
-                </div>
+            </div>`;
+    };
+
+    // The school's name and how much of it is known, written under the figure.
+    Scene_SkillEncyclopedia.prototype.renderAtlasBannerHTML = function () {
+        const category = this.viewedCategory();
+        const count = this.atlasLearnedCount(category);
+        return `${getCategoryDisplayName(category)}<span class="sg-banner-sub">${T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total })}</span>`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderSkillAtlasHTML = function () {
+        return `
+            <div id="sg3-chrome">${this.renderAtlasChromeHTML()}</div>
+            <div id="skill-atlas-box" class="sg3-sky" style="flex:1">
+                <canvas id="skill-atlas-canvas"></canvas>
+                <div id="skill-atlas-labels" class="sg3-labels"></div>
+                <div id="sg3-banner" class="sg-banner">${this.renderAtlasBannerHTML()}</div>
             </div>
         `;
     };
 
-    // The flat list, the fallback for a curriculum with no circle on it at all
-    // (nothing in any of the pupil's schools carries a <Node:> tag).
+    // The flat list, the fallback for a curriculum with no figure on it at all
+    // (nothing in any of the pupil's schools carries a <Node:> tag, or this
+    // machine will not give the scene a WebGL context).
     Scene_SkillEncyclopedia.prototype.renderSkillListHTML = function () {
         const skills = getSkillsByCategory(this._selectedCategory);
         const teachActor = this.getTeachActor();
@@ -2982,9 +3863,9 @@
         `;
     };
 
-    // Choosing a node on the circle opens its sheet, there and then: one click,
-    // one popup, with everything the skill is and the button that teaches it.
-    // A node is never selected without being read.
+    // Choosing a sphere opens its sheet, there and then: one click, one popup,
+    // with everything the skill is and the button that teaches it. A sphere is
+    // never selected without being read.
     Scene_SkillEncyclopedia.prototype.selectGraphNode = function (skillId) {
         if (this._focusSkillId !== skillId && !this.focusSkillId(skillId)) return;
         this.scrollGraphToFocus();
@@ -3002,11 +3883,12 @@
         this.refreshUISkillDOM();
     };
 
-    // Directional movement over the circle, measured where the skills actually
-    // are rather than on a lattice of rows: take the nearest node that lies
-    // inside a cone the way the stick was pushed. That walks a ring and steps
-    // out to the next one; running out of circle to the left or the right is what
-    // turns the page to the school before or after this one.
+    // Directional movement over the figure, measured WHERE IT IS ON THE SCREEN
+    // rather than where it is in the sky: take the nearest sphere lying inside a
+    // cone the way the stick was pushed. That is what lets one set of arrow keys
+    // walk forty different figures, and it follows the figure as it is turned.
+    // Running out of figure to the left or the right is what turns the page to
+    // the school before or after this one.
     Scene_SkillEncyclopedia.prototype.moveGraphFocus = function (dx, dy) {
         this.ensureAtlasFocus();
         const atlas = this.currentAtlas();
@@ -3015,65 +3897,63 @@
 
         let best = null;
         let bestScore = Infinity;
+        let projected = 0;
         for (const circle of atlas.circles) {
             for (const node of circle.nodes) {
-                if (node.id === from.id) continue;
-                const vx = node.ax - from.ax;
-                const vy = node.ay - from.ay;
+                if (node.vis) projected++;
+                if (node.id === from.id || !node.vis) continue;
+                const vx = node.sx - from.sx;
+                const vy = node.sy - from.sy;
                 const along = vx * dx + vy * dy;
                 if (along <= 1) continue;                   // not the way asked for
                 const across = Math.abs(vx * dy - vy * dx);
                 if (across > along * 1.9) continue;         // outside the cone
-                const score = along + across * 2.2;
+                // A sphere behind the one the cursor is on is a longer walk than
+                // one beside it, so depth counts for something but not for much.
+                const depth = Math.abs(node.sd - from.sd) * 1.4;
+                const score = along + across * 2.2 + depth;
                 if (score < bestScore) { bestScore = score; best = node; }
             }
         }
-        if (!best) return false;
+        // Nothing has been drawn yet (the very first step after the page was
+        // built): swallow it rather than reading an empty screen as "off the
+        // edge of the figure" and turning to another school.
+        if (!best) return projected < 2;
         this.focusSkillId(best.id);
         return true;
     };
 
-    // Keep the cursor inside a comfortable margin of the window rather than
-    // snapping the atlas on every step: walking one ring should not swing the
-    // whole page about.
+    // Swing the camera onto the cursor. The figure is orbited, not scrolled, so
+    // "scrolling to the focus" is the camera easing across to it.
     Scene_SkillEncyclopedia.prototype.scrollGraphToFocus = function () {
-        const box = document.getElementById('skill-atlas-box');
-        const node = this.currentAtlas().index[this._focusSkillId];
-        if (!box || !node) return;
-        const zoom = this.atlasZoom();
-        const x = node.ax * zoom;
-        const y = node.ay * zoom;
-        const padX = Math.min(box.clientWidth * 0.34, 260);
-        const padY = Math.min(box.clientHeight * 0.34, 220);
-        if (x < box.scrollLeft + padX) box.scrollLeft = x - padX;
-        else if (x > box.scrollLeft + box.clientWidth - padX) box.scrollLeft = x - box.clientWidth + padX;
-        if (y < box.scrollTop + padY) box.scrollTop = y - padY;
-        else if (y > box.scrollTop + box.clientHeight - padY) box.scrollTop = y - box.clientHeight + padY;
+        AtlasSky.setFocus(this._focusSkillId);
+        AtlasSky.lookAt(this._focusSkillId, false);
     };
 
-    // Put a whole circle on the page: the step taken when a school is opened from
-    // the shelf, where the cursor could be anywhere on the atlas.
+    // Put the whole figure on screen around the cursor: the step taken when a
+    // school is opened from the shelf, where there is nothing to ease from.
     Scene_SkillEncyclopedia.prototype.centreAtlasOnFocus = function () {
-        const box = document.getElementById('skill-atlas-box');
-        const node = this.currentAtlas().index[this._focusSkillId];
-        if (!box || !node) return;
-        const zoom = this.atlasZoom();
-        box.scrollLeft = node.ax * zoom - box.clientWidth / 2;
-        box.scrollTop = node.ay * zoom - box.clientHeight / 2;
+        AtlasSky.setFocus(this._focusSkillId);
+        AtlasSky.lookAt(this._focusSkillId, true);
     };
 
-    // Only the cursor has changed: repaint the ring in place instead of
-    // rebuilding a school's worth of nodes for one step.
+    // Only the cursor has changed: move the ring and the camera rather than
+    // rebuilding a school's worth of spheres for one step.
     Scene_SkillEncyclopedia.prototype.repaintAtlasFocus = function () {
-        const canvas = document.getElementById('skill-atlas-canvas');
-        if (!canvas) return;
-        const focusedId = this._focusSkillId;
-        canvas.querySelectorAll('.sg-node').forEach((el) => {
-            el.classList.toggle('sg-focus', parseInt(el.dataset.id, 10) === focusedId);
-        });
+        AtlasSky.setFocus(this._focusSkillId);
         const title = document.getElementById('atlas-school-name');
         const activeCat = this.focusedCategory();
         if (title && activeCat) title.textContent = getCategoryDisplayName(activeCat);
+        const chrome = document.getElementById('sg3-chrome');
+        if (chrome) {
+            const html = this.renderAtlasChromeHTML();
+            if (chrome.innerHTML !== html) chrome.innerHTML = html;
+        }
+        const banner = document.getElementById('sg3-banner');
+        if (banner) {
+            const html = this.renderAtlasBannerHTML();
+            if (banner.innerHTML !== html) banner.innerHTML = html;
+        }
     };
 
     //=========================================================================
@@ -3118,9 +3998,15 @@
                 actionsListHTML += this.fusionActionsHTML(actor, skill);
             } else if (!isOpen) {
                 const openers = SkillGraph.openers(skill.id, actor).map(s => s.name);
+                // The gate tightens as the tree climbs, so the sheet has to say
+                // how MANY of the skills below are wanted, not just which.
+                const wanted = SkillGraph.stillWanted(skill.id, actor);
                 const lockLine = SkillGraph.isForbidden(skill.id)
                     ? T('SkillMaster.graph.lockedBySchool', { skills: openers.join(', ') })
-                    : (openers.length ? T('SkillMaster.graph.lockedBy', { skills: openers.join(', ') })
+                    : (openers.length
+                        ? (wanted > 1
+                            ? T('SkillMaster.graph.lockedByCount', { need: wanted, skills: openers.join(', ') })
+                            : T('SkillMaster.graph.lockedBy', { skills: openers.join(', ') }))
                         : T('SkillMaster.graph.lockedHint'));
                 actionsListHTML += `
                     <div style="padding:10px 14px; background:var(--bg-card-translucent-5); border:1px dashed var(--border-secondary-hover-translucent-15); border-radius:6px; font-family:'Lora', serif">
@@ -3307,6 +4193,12 @@
         const graphSpread = (this._viewMode === 'list' || this._viewMode === 'detail' ||
             this._viewMode === 'preview') && this.usesGraphView();
         if (graphSpread) this.ensureAtlasFocus();
+        // The sky holds a WebGL context of its own and a frame loop with it. The
+        // moment the page stops being a sky - the shelf, the Forge, the wheel,
+        // a school with no figure - it goes back, rather than drawing on into a
+        // canvas nobody can see any more. Idempotent, so this costs nothing on
+        // the refreshes that change nothing.
+        if (!graphSpread) AtlasSky.dispose();
         const fullPageList = graphSpread;
         const spreadEl = this._dndContainer.querySelector('.book-spread');
         const leftPageEl = this._dndContainer.querySelector('.left-page');
@@ -3389,26 +4281,17 @@
         const leftPageBox = document.getElementById('left-page-content');
         if (!leftPageBox) return;
 
-        // The atlas is redrawn when its colours could have changed (a skill was
-        // learned, the pupil changed); moving the cursor over it only repaints
-        // the focus ring, so walking a whole school stays cheap. Opening or
-        // closing the sheet over it is not a rebuild either; turning the page to
-        // another school is, since that is a different circle entirely.
-        const graphKey = this.usesGraphView() ? this.graphStateKey() : null;
+        // The page under the sky is built ONCE and then left alone. Everything
+        // that used to force it to be written again (a skill learned, the pupil
+        // switched, the page turned to another school) is now painted onto the
+        // figure in place by syncAtlasSky, because writing the page again would
+        // take the canvas with it and a new canvas is a new WebGL context.
         const leftMode = graphSpread ? 'atlas' : this._viewMode;   // i18n-ignore: cache key
         const needsLeftRebuild = (this._lastLeftMode !== leftMode) ||
             (leftMode !== 'atlas' && this._viewMode !== 'category' &&   // i18n-ignore: cache key
-                this._lastLeftCategory !== this._selectedCategory) ||
-            (graphKey !== null && graphKey !== this._lastGraphKey);
-
-        // A rebuilt atlas comes back scrolled to its corner; the reader was
-        // somewhere else entirely, so remember where and put them back.
-        const oldAtlasBox = needsLeftRebuild ? document.getElementById('skill-atlas-box') : null;
-        const keptScroll = oldAtlasBox
-            ? { left: oldAtlasBox.scrollLeft, top: oldAtlasBox.scrollTop } : null;
+                this._lastLeftCategory !== this._selectedCategory);
 
         if (needsLeftRebuild) {
-            this._lastGraphKey = graphKey;
             let leftPageHTML = "";
             if (this._viewMode === 'category') {
                 const split = getSplitSkillCategories();
@@ -3476,19 +4359,12 @@
                 if (on && fuseEl.scrollIntoView) fuseEl.scrollIntoView({ block: 'nearest' });
             }
         } else if (this.usesGraphView()) {
+            // The renderer is put on the canvas the page has just been given (or
+            // handed the school it has just been turned to), then told what the
+            // pupil knows. A refresh that changed neither costs a key compare.
+            this.syncAtlasSky();
             this.repaintAtlasFocus();
-            if (needsLeftRebuild) {
-                this.bindAtlasPointer();
-                // A rebuilt atlas starts in its corner, so put the reader back
-                // where they were standing (after teaching, after a redraw).
-                if (keptScroll) {
-                    const box = document.getElementById('skill-atlas-box');
-                    if (box) { box.scrollLeft = keptScroll.left; box.scrollTop = keptScroll.top; }
-                    this.scrollGraphToFocus();
-                } else {
-                    this.centreAtlasOnFocus();
-                }
-            }
+            if (needsLeftRebuild) this.centreAtlasOnFocus();
         } else {
             const cards = leftPageBox.querySelectorAll('.skill-card');
             cards.forEach((card, idx) => {
@@ -4379,7 +5255,7 @@
         return kpFusionCost(this._editorSlots, actor ? actor.actorId() : 0);
     };
 
-    Scene_SkillEncyclopedia.prototype.editorCreate = function () {
+    Scene_SkillEncyclopedia.prototype.editorCreate = async function () {
         if (!this._editorSlots.every(x => x != null)) { SoundManager.playBuzzer(); return; }
         const actor = this.getTeachActor();
         const components = this._editorSlots.map(id => $dataSkills[id]);
@@ -4389,24 +5265,77 @@
         if ($gameSystem.getKnowledge() < cost) { SoundManager.playBuzzer(); return; }
         $gameSystem.spendKnowledge(cost);
 
-        const animId = (this._editorAnimId && this._editorAnimId > 0) ? this._editorAnimId : this.getDefaultAnimId();
-        const fused = buildFusedSkill(components, actor.actorId(), animId);
-        $gameSystem.addCustomSpell(fused);
-        // Component spells/skills are consumed by the fusion.
-        for (const id of this._editorSlots) actor.forgetSkill(id);
-        actor.learnSkill(fused.id);
-        this.invalidateLearnedSkillCaches();
+        // INT-based Arcane Fusion D20 Roll
+        const intMod = actor ? (actor.intMod ?? Math.floor(((actor.mat || 10) - 10) / 2)) : 0;
+        const dc = Math.min(18, Math.max(10, 11 + Math.floor(cost / 30)));
+        let rollRes = null;
 
+        if (window.Dice3D) {
+            rollRes = await window.Dice3D.rollD20({
+                actionName: `Arcane Fusion: ${components.map(c => c.name).join(' + ')}`,
+                statName: 'INT',
+                modifier: intMod,
+                dc: dc,
+                force3D: true
+            });
+        } else {
+            const rawRoll = Math.floor(Math.random() * 20) + 1;
+            rollRes = {
+                roll: rawRoll,
+                modifier: intMod,
+                total: rawRoll + intMod,
+                nat1: rawRoll === 1,
+                nat20: rawRoll === 20,
+                success: rawRoll === 20 || (rawRoll !== 1 && rawRoll + intMod >= dc)
+            };
+        }
+
+        const consumedSlots = this._editorSlots.slice();
+        const animId = (this._editorAnimId && this._editorAnimId > 0) ? this._editorAnimId : this.getDefaultAnimId();
         this._editorSlots = [null, null];
         this._editorAnimId = 0;
         this._editorFocus = FORGE_CREATE_IDX;
-        SoundManager.playRecovery();
 
-        window.skipLocalization = true;
-        $gameMessage.add(T('SkillMaster.fusedResult', {
-            name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
-        }));
-        window.skipLocalization = false;
+        if (rollRes.success) {
+            const fused = buildFusedSkill(components, actor.actorId(), animId);
+
+            if (rollRes.nat20) {
+                // Natural 20 Masterwork Spell: -20% MP cost discount and bonus power
+                fused.mpCost = Math.max(1, Math.round((fused.mpCost || 1) * 0.8));
+                fused.name = '★ ' + fused.name;
+                if (fused.damage && fused.damage.formula) {
+                    fused.damage.formula = `(${fused.damage.formula}) * 1.25`;
+                }
+            }
+
+            $gameSystem.addCustomSpell(fused);
+            // Component spells/skills are consumed by the successful fusion.
+            for (const id of consumedSlots) actor.forgetSkill(id);
+            actor.learnSkill(fused.id);
+            this.invalidateLearnedSkillCaches();
+            SoundManager.playRecovery();
+
+            window.skipLocalization = true;
+            if (rollRes.nat20) {
+                $gameMessage.add(`★ NAT 20 CRITICAL SUCCESS! ★\n${T('SkillMaster.fusedResult', {
+                    name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
+                })}\nEmpowered with -20% MP cost and +25% potency!`);
+            } else {
+                $gameMessage.add(T('SkillMaster.fusedResult', {
+                    name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
+                }));
+            }
+            window.skipLocalization = false;
+        } else {
+            // Arcane Fusion Failed! Lose the component spells to magical backlash.
+            for (const id of consumedSlots) actor.forgetSkill(id);
+            this.invalidateLearnedSkillCaches();
+            SoundManager.playBuzzer();
+
+            window.skipLocalization = true;
+            $gameMessage.add(`☠ ARCANE FUSION FAILED (DC ${dc}) ☠\nThe spell fusion destabilized in a violent magical backlash!\nThe component spells (${components.map(c => c.name).join(' & ')}) were destroyed!`);
+            window.skipLocalization = false;
+        }
 
         this.refreshUISkillDOM();
     };

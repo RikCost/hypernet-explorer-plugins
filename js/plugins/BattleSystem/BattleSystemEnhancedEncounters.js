@@ -658,6 +658,24 @@
         return troopFacts(troop).level;
     };
 
+    // Checks if a troop's level is much higher than the party level
+    BSE.Helpers.isTroopMuchHigherLevel = function(troopId, partyLevel) {
+        if (!troopId || troopId <= 0) return false;
+        const troop = $dataTroops[troopId];
+        if (!troop || !troop.members || !troop.members.length) return false;
+        const pLevel = partyLevel || (BSE.Helpers.getPartyReferenceLevel ? BSE.Helpers.getPartyReferenceLevel() : 1);
+        const troopLevel = BSE.Helpers.getTroopMaxLevel(troopId);
+        if (troopLevel <= 0) return false;
+        const bandMax = (BSE.Helpers.getBalancedLevelBand && BSE.Helpers.getBalancedLevelBand(pLevel).max) || (pLevel + 10);
+        return troopLevel > Math.max(pLevel + 10, bandMax);
+    };
+
+    // Checks if a map enemy event's troop is much higher level than the party level
+    BSE.Helpers.isEventMuchHigherLevel = function(event, partyLevel) {
+        if (!event || !event._fixedTroopId || event._fixedTroopId <= 0) return false;
+        return BSE.Helpers.isTroopMuchHigherLevel(event._fixedTroopId, partyLevel);
+    };
+
     // Is a troop spawnable under the current level cap?
     BSE.Helpers.troopWithinLevelCap = function(troopId) {
         return BSE.Helpers.getTroopMaxLevel(troopId) <= BSE.Helpers.getSpawnLevelCap();
@@ -2826,11 +2844,14 @@
     // and a battle is a brawl between whoever happens to be standing there
     // rather than a duel against copies of one monster. Joiners are capped so
     // the total troop-member count (base + all joiners) never exceeds
-    // BATTLE_MAX_MEMBERS. Nearest first.
+    // the cap the party earns: BATTLE_MAX_MEMBERS normally, and the smaller
+    // lone-traveller cap when there is only one of them. Nearest first.
     BSE.Functions.getJoiningEnemyEvents = function(triggerEventId) {
         if (!$gameMap || !$gamePlayer) return [];
         const range = BSE.Data.JOIN_RANGE;
-        const maxMembers = BSE.Data.BATTLE_MAX_MEMBERS || 3;
+        // Not the flat cap: a character travelling alone is held to a smaller
+        // one, so a lone traveller is never surrounded (BSE.Helpers.maxEnemiesForParty).
+        const maxMembers = BSE.Helpers.maxEnemiesForParty();
 
         // Get the base troop so we can count the slots it already occupies.
         const triggerEvent = $gameMap.event(triggerEventId);
@@ -2838,11 +2859,22 @@
         const baseTroop    = baseTroopId ? $dataTroops[baseTroopId] : null;
         if (!baseTroop || !baseTroop.members.length) return [];
 
+        const partyLevel = BSE.Helpers.getPartyReferenceLevel ? BSE.Helpers.getPartyReferenceLevel() : 1;
+        // If the triggering enemy is much higher level than the party, it will
+        // not drag other roaming enemies into the battle (it fights alone).
+        if (BSE.Helpers.isTroopMuchHigherLevel && BSE.Helpers.isTroopMuchHigherLevel(baseTroopId, partyLevel)) {
+            return [];
+        }
+
         let usedSlots = baseTroop.members.length; // slots already occupied by base
         const near = [];
         for (const ev of $gameMap.events()) {
             if (!ev || ev.eventId() === triggerEventId) continue;
             if (!isLiveEnemyEvent(ev)) continue;
+            // Roaming enemies much higher level than the party do not join multi encounters
+            if (BSE.Helpers.isEventMuchHigherLevel && BSE.Helpers.isEventMuchHigherLevel(ev, partyLevel)) {
+                continue;
+            }
             const troop = $dataTroops[ev._fixedTroopId];
             if (!troop || !troop.members.length) continue;
             const dx = ev.x - $gamePlayer.x, dy = ev.y - $gamePlayer.y;
@@ -4045,11 +4077,25 @@
     };
 
     // ========================================================================
-    // 11. Game_Player - checkEventTriggerTouch (vehicle hit)
+    // 11. Game_Player & Game_Event - checkEventTriggerTouch
     // ========================================================================
+
+    // Only a monster is held back while a menu or a conversation is open: this
+    // is the one hook every touch-triggered event on the map goes through
+    // (a door, a transfer, a shop counter), so blocking it wholesale would
+    // close the map down rather than just hold off the fight.
+    const _tileHoldsEnemyEvent = function(x, y) {
+        return $gameMap.eventsXy(x, y).some(ev =>
+            ev && !ev._erased &&
+            (ev._fixedTroopId > 0 || (ev.event() && ev.event().name === "Enemy")));
+    };
 
     const _Game_Player_checkTriggerTouch = Game_Player.prototype.checkEventTriggerTouch;
     Game_Player.prototype.checkEventTriggerTouch = function(x, y) {
+        if (_tileHoldsEnemyEvent(x, y) &&
+            BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) {
+            return false;
+        }
         if (this.isInVehicle()) {
             const events = $gameMap.eventsXy(x, y);
             for (const event of events) {
@@ -4059,6 +4105,16 @@
             }
         }
         return _Game_Player_checkTriggerTouch.call(this, x, y);
+    };
+
+    const _Game_Event_checkTriggerTouch = Game_Event.prototype.checkEventTriggerTouch;
+    Game_Event.prototype.checkEventTriggerTouch = function(x, y) {
+        if (this._fixedTroopId > 0 || (this.event() && this.event().name === "Enemy")) {
+            if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) {
+                return;
+            }
+        }
+        _Game_Event_checkTriggerTouch.call(this, x, y);
     };
 
     Game_Event.prototype.performVehicleHit = function() {
@@ -4198,6 +4254,7 @@
 
     Game_Event.prototype.updateP2EncounterCheck = function() {
         if ($gameSystem.getBattleCooldown() > 0) return;
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) return;
         if ($gameMap.isEventRunning() || SceneManager.isSceneChanging()) return;
         const x = this.x, y = this.y, d = this.direction();
         const x2 = $gameMap.roundXWithDirection(x, d);
@@ -4215,6 +4272,7 @@
 
     Game_Event.prototype.updateEnemyTouchP2Check = function() {
         if ($gameSystem.getBattleCooldown() > 0) return;
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) return;
         if ($gameMap.isEventRunning() || SceneManager.isSceneChanging()) return;
         const p2 = window.$gameSplitScreen.p2Event;
         if (!p2) return;
@@ -4922,6 +4980,7 @@
      */
     BSE.Functions.startPetrodemonBattle = function(difficultyKey) {
         if ($gameParty.inBattle() || $gameParty.isAllDead()) return false;
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) return false;
         const record = BSE.Functions.generatePetrodemon(difficultyKey);
         if (!record) return false;
 

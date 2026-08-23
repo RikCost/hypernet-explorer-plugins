@@ -111,13 +111,15 @@
     "legendLocked": "Locked",
     "locked": "LOCKED",
     "lockedBy": "Unlocked by: {skills}",
+    "lockedByCount": "Needs {need} more of: {skills}",
     "lockedHint": "Nothing you know borders this skill yet.",
     "lockedBySchool": "Sealed in the heart of the circle. The whole school must be known first; still missing: {skills}",
     "lockedToast": "{skill} does not border anything this pupil knows."
   },
   "atlas": {
     "progress": "{learned} of {total} learned",
-    "hint": "Drag to pan · Wheel to zoom · Shift for the whole circle",
+    "hint": "Drag to turn · Wheel to zoom · Shift for the whole school",
+    "kp": "{kp} KP",
     "schoolOf": "{index} / {total}",
     "held": "You hold {knowledge} KP"
   },

@@ -284,16 +284,13 @@
                 }
             }
 
-            // Queue the next bout without fighting the scene manager. Guard
-            // against a second schedule (endBattle/scene-change race) that would
-            // double-push the next battle.
-            if (SceneManager._scene && SceneManager._scene.isActive() && !this._nextBoutTimer) {
-                this._nextBoutTimer = setTimeout(() => {
-                    this._nextBoutTimer = null;
-                    if (SceneManager._scene && SceneManager._scene.isActive()) {
-                        this.startGauntletBattle();
-                    }
-                }, 500);
+            // Advance to the next bout immediately without waiting
+            if (this._nextBoutTimer) {
+                clearTimeout(this._nextBoutTimer);
+                this._nextBoutTimer = null;
+            }
+            if (!_arenaFromTitle) {
+                this.startGauntletBattle();
             }
         }
     };
@@ -337,11 +334,11 @@
     // race the ordinary setTimeout-driven continuation.
     ArenaBattleHandler.resumeStrandedSession = function () {
         if (!_arenaFromTitle) return;
-        if (BattleManager.isGauntletMode() && !this._nextBoutTimer) {
+        if (BattleManager.isGauntletMode()) {
             this.startGauntletBattle();
-        } else if (BattleManager.isBiomeTrialMode() && !this._nextTrialTimer) {
+        } else if (BattleManager.isBiomeTrialMode()) {
             this.startBiomeTrialBattle();
-        } else if (BattleManager.isBossRushMode() && !this._nextBossTimer) {
+        } else if (BattleManager.isBossRushMode()) {
             this.startBossRushBattle();
         }
     };
@@ -645,6 +642,7 @@
 
     const _BattleManager_processDefeat = BattleManager.processDefeat;
     BattleManager.processDefeat = function () {
+        ArenaBattleHandler.setArenaStreak(0);
         if (this.isBiomeTrialMode()) {
             this.playDefeatMe();
             this.replayBgmAndBgs();
@@ -667,7 +665,6 @@
             ArenaBattleHandler.endGauntlet();
         } else {
             if (this.isArenaMode()) {
-                ArenaBattleHandler.setArenaStreak(0);
                 this.setArenaMode(false);
             }
             return _BattleManager_processDefeat.call(this);
@@ -676,6 +673,7 @@
 
     const _BattleManager_processAbort = BattleManager.processAbort;
     BattleManager.processAbort = function () {
+        ArenaBattleHandler.setArenaStreak(0);
         if (this.isBiomeTrialMode()) {
             this.replayBgmAndBgs();
             this.endBattle(1);
@@ -695,7 +693,6 @@
             ArenaBattleHandler.endGauntlet();
         } else {
             if (this.isArenaMode()) {
-                ArenaBattleHandler.setArenaStreak(0);
                 this.setArenaMode(false);
             }
             return _BattleManager_processAbort.call(this);
@@ -1047,13 +1044,12 @@
         const fun = this.payVictoryFun(t.wins);
         this.showStreakToast(t.wins, reward, fun);
 
-        if (SceneManager._scene && SceneManager._scene.isActive() && !this._nextTrialTimer) {
-            this._nextTrialTimer = setTimeout(() => {
-                this._nextTrialTimer = null;
-                if (SceneManager._scene && SceneManager._scene.isActive()) {
-                    this.startBiomeTrialBattle();
-                }
-            }, 500);
+        if (this._nextTrialTimer) {
+            clearTimeout(this._nextTrialTimer);
+            this._nextTrialTimer = null;
+        }
+        if (!_arenaFromTitle) {
+            this.startBiomeTrialBattle();
         }
     };
 
@@ -1171,13 +1167,12 @@
         const fun = this.payVictoryFun(t.index);
         this.showStreakToast(t.index, reward, fun);
 
-        if (SceneManager._scene && SceneManager._scene.isActive() && !this._nextBossTimer) {
-            this._nextBossTimer = setTimeout(() => {
-                this._nextBossTimer = null;
-                if (SceneManager._scene && SceneManager._scene.isActive()) {
-                    this.startBossRushBattle();
-                }
-            }, 500);
+        if (this._nextBossTimer) {
+            clearTimeout(this._nextBossTimer);
+            this._nextBossTimer = null;
+        }
+        if (!_arenaFromTitle) {
+            this.startBossRushBattle();
         }
     };
 

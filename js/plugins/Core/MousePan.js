@@ -1,4 +1,4 @@
-﻿/*:
+/*:
  * @target MZ
  * @plugindesc Overrides mouse controls: wheel to zoom, click & drag to pan.
  * @author Gemini
@@ -138,7 +138,7 @@
         // The wheel listener fires on its own clock, so it can land in the gap
         // where the next map's Scene_Map has already nulled $dataMap but the old
         // one is still the current scene: everything below reads the map's size.
-        if (!$dataMap) return false;
+        if (typeof $dataMap === 'undefined' || !$dataMap) return false;
         // The world map is the only map that zooms.
         if ($gameMap.mapId() !== WORLD_MAP_ID) return false;
         // ASCII mode has its own font-size zoom, handled by the wheel branch above.
@@ -248,8 +248,13 @@
             if (keyStep) stepCameraZoom(keyStep, false);
         }
 
+        // A short pull of L2/R2 hands the party to the next member
+        // (Core/AutoIdleExplorer.js), so the zoom waits out that tap window and
+        // takes the trigger only once it is clear the player is holding it.
+        const lead = window.AutoIdleExplorer && window.AutoIdleExplorer.lead;
+        const tapPending = !!(lead && lead.padClaimsTriggers && lead.padClaimsTriggers());
         let pull = 0;
-        if (window.AnalogStickInput) {
+        if (window.AnalogStickInput && !tapPending) {
             const rt = window.AnalogStickInput.rightTrigger ? window.AnalogStickInput.rightTrigger() : 0;
             const lt = window.AnalogStickInput.leftTrigger ? window.AnalogStickInput.leftTrigger() : 0;
             pull = (rt > ZOOM_TRIGGER_DEADZONE ? rt : 0) - (lt > ZOOM_TRIGGER_DEADZONE ? lt : 0);

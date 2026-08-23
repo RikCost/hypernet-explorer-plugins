@@ -180,6 +180,9 @@
         return MAGICAL_LEVELS.includes(level) ? level : DEFAULT_MAGICAL_LEVEL;
     }
 
+    // Beta sprites are strictly disabled across all worlds and cannot be selected.
+    const DEFAULT_BETA_SPRITES = false;
+
     // 21 December 2012, 00:00, in world-clock minutes (the TimeDateSystem epoch
     // is 1 January 2001, 10:00). A world whose clock starts at or after this
     // begins with the impact already behind it, so switch 199 is raised before
@@ -804,7 +807,9 @@
                 // See clampPopulationMode above. Written once, at creation.
                 populationMode: clampPopulationMode(options.populationMode),
                 // See clampMagicalLevel above. Its own axis, also permanent.
-                magicalLevel: clampMagicalLevel(options.magicalLevel)
+                magicalLevel: clampMagicalLevel(options.magicalLevel),
+                // Beta sprites are strictly disabled and cannot be selected.
+                betaSprites: false
             };
             Backend.writeFile(name, "world", JSON.stringify(info, null, 2));
             return info;
@@ -987,6 +992,13 @@
         isUnboundMagic() { return this.magicalLevel() === "unbound"; },
 
         MAGICAL_LEVELS: MAGICAL_LEVELS,
+
+        // Beta sprites are strictly disabled across all worlds and cannot be selected.
+        allowBetaSprites() { return false; },
+        isBetaSpritesAllowed() { return false; },
+        isBetaAllowed() { return false; },
+        isBetaEnabled() { return false; },
+        betaSprites() { return false; },
 
         // Latest date reached anywhere in this world (max of the stored world
         // clock and the in-session time variable).

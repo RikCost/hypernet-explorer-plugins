@@ -51,6 +51,7 @@
   "mapNumbered": "Map {id}",
   "locationInGroup": "{group} - {location}",
   "finishedWorking": "\\C[6]{actor}\\C[0] finished working as \\C[4]{job}\\C[0].",
+  "shiftCheck": "{job} Shift",
   "earned": "\\C[14]Earned: €{amount}\\C[0]",
   "lost": "\\C[18]Lost: €{amount} (damages)\\C[0]",
   "noPay": "\\C[7]No payment received.\\C[0]",

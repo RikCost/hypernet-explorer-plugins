@@ -508,12 +508,12 @@
 
   // Compute the effective stat bonus from a statEffect object.
   // HP (param 0) and MP (param 1) are multiplied by 10.
-  // All other stats are divided by 3, rounded up.
+  // All other stats grant their raw D&D bonus (+1 to +3).
   function computeStatBonus(statEffect) {
     if (!statEffect) return 0;
     const raw = Math.abs(statEffect.amount);
     if (statEffect.param === 0 || statEffect.param === 1) return raw * 10;
-    return Math.ceil(raw / 3);
+    return raw;
   }
 
   // --- END UTILITY ---
@@ -3004,15 +3004,38 @@
 
   // One operation, rolled. Returns true when the hands were steady; a failure
   // wounds the patient somewhere else and reports what it cost.
-  Scene_ProstheticShop.prototype.rollSurgery = function () {
-    if (!this._fieldMode) return true;
+  Scene_ProstheticShop.prototype.rollSurgery = async function () {
     const odds = this.currentOdds();
-    const roll = Math.floor(Math.random() * 100) + 1;
+    const isSelfSurgery = !!odds.self;
+    if (!this._fieldMode && !isSelfSurgery) return true;
+
     const surgeon = this._surgeon || this._selectedActor;
-    if (window.SpecializationXP) {
-      window.SpecializationXP.awardCapped(SURGERY_SPEC, roll <= odds.chance ? 3 : 1, { actor: surgeon, soloist: true });
+    const medMod = Math.floor(((((surgeon.mat || 10) + (surgeon.agi || 10)) / 2) - 10) / 2);
+
+    let success = false;
+    let nat1 = false;
+    let nat20 = false;
+    let roll = Math.floor(Math.random() * 100) + 1;
+
+    if (window.Dice3D) {
+      const res = await window.Dice3D.rollPercentage(odds.chance, {
+        actionName: isSelfSurgery ? 'Self Surgery' : 'Field Surgery',
+        statName: 'DEX/INT',
+        modifier: medMod
+      });
+      success = res.success;
+      nat1 = res.nat1;
+      nat20 = res.nat20;
+      roll = success ? 1 : 100;
+    } else {
+      success = (roll <= odds.chance);
     }
-    if (roll <= odds.chance) return true;
+
+    if (window.SpecializationXP) {
+      window.SpecializationXP.awardCapped(SURGERY_SPEC, success ? 3 : 1, { actor: surgeon, soloist: true });
+    }
+    if (success) return true;
+
     const slip = applySurgicalSlip(this._selectedActor, roll - odds.chance);
     SoundManager.playBuzzer();
     if (slip && slip.lost) {
@@ -3138,7 +3161,7 @@
     }
   };
 
-  Scene_ProstheticShop.prototype.executeSurgeryAction = function (action, itemOverride) {
+  Scene_ProstheticShop.prototype.executeSurgeryAction = async function (action, itemOverride) {
     const focusIndex = UIShopInputManager.focusIndex;
     const item = itemOverride || this._activeListItems[focusIndex];
     if (!item) return;
@@ -3157,9 +3180,9 @@
 
     this._forceRightPageRedraw = true;
 
-    // A field operation is rolled first: a failure costs the patient a wound
+    // A field operation or self-surgery is rolled: a failure costs the patient a wound
     // and nothing changes hands, not even the part that was going to go in.
-    if (this._fieldMode && !this.rollSurgery()) return;
+    if (!(await this.rollSurgery())) return;
 
     if (action === "install") {
       if (item.isInventoryPart) {

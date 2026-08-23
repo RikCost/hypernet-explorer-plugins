@@ -1,8 +1,18 @@
 {
   "bgOpacity": "Opacità sfondo registro",
   "bareFists": "Pugni nudi",
+  "attacks": " attacca ",
   "attacksWith": "%1 attacca con %2!",
   "dodged": "%1 ha schivato.",
   "listPair": " e ",
-  "listLast": " e "
+  "listLast": " e ",
+  "hitsFor": " attacca ",
+  "damageSuffix": ", ha subito %1 danni!",
+  "recoverySuffix": ", ha recuperato %1 PS!",
+  "noDamageSuffix": ", non ha subito danni.",
+  "uses": " usa ",
+  "and": "e",
+  "skillNamesOption": "Nomi Abilità",
+  "skillName": "Nome Abilità",
+  "skillAction": "Azione Abilità"
 }

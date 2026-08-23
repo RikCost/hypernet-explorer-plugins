@@ -238,6 +238,245 @@
         return group;
       },
 
+      // ============================================================
+      // Skin
+      // ============================================================
+
+      /**
+       * A skin sheet, drawn once per tone and shared by every hand wearing it.
+       * A bare hand fills a good part of the screen and none of it is far
+       * away, so a flat colour reads as painted plastic at that size. The
+       * sheet carries what skin actually has: uneven pigment underneath,
+       * pores, and the fine crease net the surface is divided into. It is fed
+       * back in as a bump map as well, which is what makes those pores catch
+       * the light instead of sitting there as printed dots.
+       */
+      _uSkinTexture(hex, variant) {
+        if (typeof THREE === 'undefined' || typeof document === 'undefined') return null;
+        if (!this._uSkinSheets) this._uSkinSheets = {};
+        const key = hex + ':' + (variant || 'skin');
+        if (this._uSkinSheets[key] !== undefined) return this._uSkinSheets[key];
+
+        let canvas = null;
+        try { canvas = document.createElement('canvas'); } catch (e) { canvas = null; }
+        const ctx = canvas && typeof canvas.getContext === 'function' ? canvas.getContext('2d') : null;
+        if (!ctx) { this._uSkinSheets[key] = null; return null; }
+
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+
+        // Seeded off the tone, so a given skin always draws the same sheet and
+        // the cache can hand the same texture to every hand asking for it.
+        let s = 0x9E3779B9;
+        for (let i = 0; i < key.length; i++) s = (Math.imul(s, 31) + key.charCodeAt(i)) | 0;
+        const rand = () => {
+          s = Math.imul(s ^ (s >>> 15), 0x2545F491) | 0;
+          return ((s >>> 8) & 0xFFFF) / 0xFFFF;
+        };
+
+        const base = new THREE.Color(hex);
+        const css = (c) => 'rgb(' + Math.round(c.r * 255) + ',' + Math.round(c.g * 255) + ',' + Math.round(c.b * 255) + ')';
+        const taut = variant === 'taut';
+        ctx.fillStyle = css(base);
+        ctx.fillRect(0, 0, size, size);
+
+        // Blood and pigment under the surface, never evenly spread.
+        const blotches = this.isLowDetail() ? 26 : 84;
+        for (let i = 0; i < blotches; i++) {
+          const c = base.clone().offsetHSL((rand() - 0.5) * 0.03, (rand() - 0.5) * 0.10, (rand() - 0.45) * (taut ? 0.05 : 0.09));
+          ctx.fillStyle = css(c);
+          ctx.globalAlpha = 0.10 + rand() * 0.15;
+          ctx.beginPath();
+          ctx.ellipse(rand() * size, rand() * size, 10 + rand() * 42, 8 + rand() * 30, rand() * Math.PI, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        const pores = this.isLowDetail() ? 620 : 2400;
+        for (let i = 0; i < pores; i++) {
+          const sunken = rand() < 0.62;
+          const c = base.clone().offsetHSL(0, sunken ? 0.05 : -0.04, sunken ? -0.10 : 0.08);
+          ctx.fillStyle = css(c);
+          ctx.globalAlpha = 0.16 + rand() * 0.28;
+          ctx.beginPath();
+          ctx.arc(rand() * size, rand() * size, 0.6 + rand() * 1.1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        const creaseLines = this.isLowDetail() ? 54 : (taut ? 110 : 250);
+        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = css(base.clone().offsetHSL(0, 0.05, -0.17));
+        for (let i = 0; i < creaseLines; i++) {
+          ctx.globalAlpha = 0.09 + rand() * 0.17;
+          const x = rand() * size;
+          const y = rand() * size;
+          const a = rand() * Math.PI;
+          const len = 4 + rand() * 15;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        if (tex.repeat && tex.repeat.set) tex.repeat.set(3, 3);
+        // Shared by every hand of this tone: per-model disposal must not free it.
+        tex._weaponSharedCache = true;
+        this._uSkinSheets[key] = tex;
+        return tex;
+      },
+
+      /**
+       * A skin material. The tone lives in the sheet rather than in the
+       * material colour, so the colour is left white and the map is what is
+       * seen; without a canvas to draw on (a headless build), the flat tone is
+       * used instead and nothing else changes.
+       */
+      _uSkinMat(hex, opts) {
+        const o = opts || {};
+        const tex = this._uSkinTexture(hex, o.variant);
+        const mat = this._mat(tex ? 0xFFFFFF : hex, {
+          roughness: o.roughness === undefined ? 0.60 : o.roughness,
+          metalness: 0.0
+        });
+        if (tex) {
+          mat.map = tex;
+          if (!this.isLowDetail()) {
+            mat.bumpMap = tex;
+            mat.bumpScale = o.bump === undefined ? 0.014 : o.bump;
+          }
+        }
+        return mat;
+      },
+
+      // ============================================================
+      // Shaped flesh
+      // ============================================================
+
+      /**
+       * Reshapes a geometry vertex by vertex, then fixes its lighting.
+       *
+       * The normals have to be recomputed - the ones a sphere or a cylinder
+       * was born with describe the shape it no longer is - and they then have
+       * to be welded, because every primitive THREE hands out is cut open
+       * along a seam and carries two copies of the vertices there. Left alone,
+       * each copy averages only the faces on its own side and the seam lights
+       * as a hard crease running the length of the part, which on a forearm
+       * looks like a join in a prosthetic.
+       */
+      _uShape(geo, fn) {
+        const pos = geo && geo.attributes && geo.attributes.position;
+        if (!pos) return geo;
+        const v = new THREE.Vector3();
+        for (let i = 0; i < pos.count; i++) {
+          v.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+          fn(v);
+          pos.setXYZ(i, v.x, v.y, v.z);
+        }
+        pos.needsUpdate = true;
+        geo.computeVertexNormals();
+
+        const nrm = geo.attributes.normal;
+        if (!nrm) return geo;
+        const shared = new Map();
+        for (let i = 0; i < pos.count; i++) {
+          const key = Math.round(pos.getX(i) * 1e5) + ',' + Math.round(pos.getY(i) * 1e5) + ',' + Math.round(pos.getZ(i) * 1e5);
+          const acc = shared.get(key);
+          if (acc) {
+            acc[0] += nrm.getX(i); acc[1] += nrm.getY(i); acc[2] += nrm.getZ(i); acc[3].push(i);
+          } else {
+            shared.set(key, [nrm.getX(i), nrm.getY(i), nrm.getZ(i), [i]]);
+          }
+        }
+        for (const acc of shared.values()) {
+          if (acc[3].length < 2) continue;
+          const l = Math.hypot(acc[0], acc[1], acc[2]) || 1;
+          for (const i of acc[3]) nrm.setXYZ(i, acc[0] / l, acc[1] / l, acc[2] / l);
+        }
+        nrm.needsUpdate = true;
+        return geo;
+      },
+
+      /**
+       * A mass of flesh: a unit sphere pulled into an ellipsoid and then
+       * swollen wherever a muscle sits under it. Each bulge is asked for as a
+       * DIRECTION on the unit sphere ("the palm side of the thumb corner"),
+       * which is what lets a hand be one continuous piece of anatomy instead
+       * of a capsule with extra balls stuck onto its sides - and a seam
+       * between two primitives is exactly what gives a hand away at this
+       * range.
+       */
+      _uMass(mat, o) {
+        // Ridges are millimetres wide, so a mass carrying any needs vertices
+        // closer together than the ridge itself or the cord it should raise
+        // spreads into a plateau instead.
+        const d = o.detail || 1;
+        const geo = new THREE.SphereGeometry(1, this.seg(Math.round(24 * d), 13), this.seg(Math.round(18 * d), 10));
+        const bulges = o.bulges || [];
+        const ridges = o.ridges || [];
+        const n = new THREE.Vector3();
+        this._uShape(geo, (v) => {
+          n.copy(v).normalize();
+          let swell = 1;
+          for (let i = 0; i < bulges.length; i++) {
+            const b = bulges[i];
+            const dx = n.x - b.x, dy = n.y - b.y, dz = n.z - b.z;
+            swell += b.amp * Math.exp(-(dx * dx + dy * dy + dz * dz) / (b.r * b.r));
+          }
+          const taper = o.taper ? o.taper(n.y) : 1;
+          v.set(n.x * o.sx * swell * taper, n.y * o.sy * swell, n.z * o.sz * swell * taper);
+          // The side the fingers close onto is flatter than the side the
+          // knuckles stand on: a palm is not a barrel. Eased in rather than
+          // switched on at the halfway line, which would leave a crease all
+          // the way round the mass exactly where the light grazes it.
+          if (o.flatten && n.z < 0) {
+            const t = Math.min(1, -n.z);
+            v.z *= 1 - o.flatten * t * t * (3 - 2 * t);
+          }
+          if (!ridges.length || n.z <= 0.05) return;
+          // Cords lying under the skin, raised out of the surface itself
+          // rather than laid on top of it as tubes: a tendon or a vein modelled
+          // as its own cylinder always reads as a wire glued to a hand, since
+          // it has an edge where skin has none. Each is drawn as a path across
+          // the back of the mass, and the vertices near it are pushed out along
+          // the surface normal, so what appears is a ridge with no seam.
+          const face = Math.pow(n.z, 1.4);
+          let push = 0;
+          for (let i = 0; i < ridges.length; i++) {
+            const r = ridges[i];
+            const d = this._uPathDistance(v.x, v.y, r.pts);
+            push += r.amp * face * Math.exp(-(d * d) / (r.r * r.r));
+          }
+          if (!push) return;
+          const gx = v.x / (o.sx * o.sx), gy = v.y / (o.sy * o.sy), gz = v.z / (o.sz * o.sz);
+          const gl = Math.hypot(gx, gy, gz) || 1;
+          v.x += (gx / gl) * push;
+          v.y += (gy / gl) * push;
+          v.z += (gz / gl) * push;
+        });
+        return new THREE.Mesh(geo, mat);
+      },
+
+      /** Distance from a point to a path, both flattened onto the X/Y plane. */
+      _uPathDistance(x, y, pts) {
+        let best = Infinity;
+        for (let i = 0; i < pts.length - 1; i++) {
+          const ax = pts[i][0], ay = pts[i][1];
+          const bx = pts[i + 1][0], by = pts[i + 1][1];
+          const ex = bx - ax, ey = by - ay;
+          const len2 = ex * ex + ey * ey;
+          let t = len2 ? ((x - ax) * ex + (y - ay) * ey) / len2 : 0;
+          t = t < 0 ? 0 : (t > 1 ? 1 : t);
+          const dx = x - (ax + ex * t), dy = y - (ay + ey * t);
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < best) best = d;
+        }
+        return best;
+      },
+
       /**
        * The forearm an unarmed strike is attached to. This is what separates
        * the unarmed fist from every held Glove weapon sharing its wtypeId
@@ -248,6 +487,10 @@
        * frame (WeaponSystemProcedural's unarmedArchetype fit/anchor is sized
        * for exactly this), and ends in a rolled sleeve cuff rather than a bare
        * cut stump.
+       *
+       * It is not a cone: a forearm is flattened front to back where it meets
+       * the wrist and swells into the muscle belly a third of the way down,
+       * and that changing oval is most of what says arm rather than pipe.
        */
       _uArm(group, skinMat, sleeveMat, opts) {
         const o = opts || {};
@@ -260,7 +503,18 @@
         const topR = o.topR || 0.028;
         const botR = o.botR || 0.038;
         const forearm = new THREE.Mesh(
-          new THREE.CylinderGeometry(topR, botR, len, this.seg(12, 7)), skinMat);
+          new THREE.CylinderGeometry(topR, topR, len, this.seg(20, 10), this.seg(12, 3)), skinMat);
+        this._uShape(forearm.geometry, (v) => {
+          const t = Math.max(0, 0.5 - v.y / len);    // 0 at the wrist, 1 at the far end
+          // Widening fastest just past the wrist and then easing off, with the
+          // flexor belly standing out of it around the top third, and an oval
+          // section that is flattest where the two bones lie side by side.
+          const spread = 1 + (botR / topR - 1) * Math.pow(t, 0.62);
+          const belly = 1 + 0.10 * Math.exp(-Math.pow((t - 0.40) / 0.26, 2));
+          const flat = 0.80 + 0.16 * Math.min(1, t * 1.6);
+          v.x *= spread * belly;
+          v.z *= spread * belly * flat;
+        });
         forearm.position.y = -len / 2;
         arm.add(forearm);
 
@@ -280,40 +534,49 @@
       },
 
       /**
-       * One finger (or thumb) as a chain of tapered, elongated segments, each
-       * pivoted at the tip of the last rather than positioned by hand with
-       * absolute coordinates. That is what makes it read as an actual digit at
-       * this close range instead of a stack of spheres: every segment is a
-       * real visible LENGTH of cylinder, and because each one is a child of
-       * the last, a gentle curl at every joint compounds into one continuous,
-       * natural droop with no risk of the segments drifting apart or folding
-       * back through each other the way hand-placed coordinates could.
-       * `leanX`/`leanZ` aim the whole digit before the chain is laid down (a
-       * finger points mostly up with a slight forward curl; a thumb is aimed
-       * out to the side instead), and `curl` is the extra bend added at each
-       * joint on top of that aim, so the digit visibly bends more toward its
-       * tip rather than staying a straight rod. `curls` gives that bend per
-       * joint instead of one value for all of them, which is what a folded
-       * finger needs: the knuckle and the middle joint of a clenched fist
-       * shut almost square while the last one barely bends at all.
+       * One finger (or thumb) as a chain of tapered segments, each pivoted at
+       * the tip of the last rather than positioned by hand with absolute
+       * coordinates. That is what makes it read as an actual digit at this
+       * close range instead of a stack of spheres: every segment is a real
+       * visible LENGTH of bone, and because each one is a child of the last, a
+       * bend at every joint compounds into one continuous curl with no risk of
+       * the segments drifting apart or folding back through each other.
+       *
+       * Every part of it is an oval rather than a circle (`wide`/`flat`): a
+       * finger is about a fifth wider across than it is deep, and a round one
+       * reads as a sausage. `leanX`/`leanZ` aim the whole digit before the
+       * chain is laid down (a finger points mostly up with a forward curl; a
+       * thumb is aimed out and across instead), and `curls` gives the bend per
+       * joint, which is what a folded finger needs: the knuckle and the middle
+       * joint of a clenched fist shut almost square while the last one barely
+       * bends at all.
        */
-      _uFinger(parent, x, opts) {
-        const o = opts || {};
+      _uFinger(parent, o) {
         const skin = o.skin;
         const knuckleMat = o.knuckleMat || skin;
-        const lens = o.lens || [0.036, 0.026, 0.018];
-        const radii = o.radii || [0.0078, 0.0062, 0.0050, 0.0042];
+        const lens = o.lens;
+        const radii = o.radii;
+        const wide = o.wide === undefined ? 1.12 : o.wide;
+        const flat = o.flat === undefined ? 0.90 : o.flat;
 
-        // The base knuckle, standing proud where the digit leaves the palm.
-        const knuckle = new THREE.Mesh(
-          new THREE.SphereGeometry(radii[0] * 1.25, this.seg(9, 6), this.seg(7, 5)), knuckleMat);
-        knuckle.position.set(x, o.baseY || 0, o.baseZ || 0);
-        knuckle.scale.z = 0.85;
-        parent.add(knuckle);
+        // The metacarpal head: the knuckle itself, squared off on top the way
+        // a knuckle is when the joint under it is shut. It is also what closes
+        // the root of the digit off - a bare cylinder end left sitting near
+        // the surface of the hand shows its flat cut edge-on, and a disc
+        // hanging off the side of a fist is unmistakable.
+        const head = new THREE.Mesh(
+          new THREE.SphereGeometry(radii[0] * 1.14, this.seg(12, 7), this.seg(9, 5)), knuckleMat);
+        this._uShape(head.geometry, (v) => {
+          if (v.y > 0) v.y *= 0.86;
+          if (v.z > 0) v.z *= 1.06;
+        });
+        head.position.set(o.x, o.baseY || 0, o.baseZ || 0);
+        head.scale.set(wide, 0.96, flat);
+        parent.add(head);
 
         let cursor = new THREE.Group();
-        cursor.position.set(x, o.baseY || 0, o.baseZ || 0);
-        cursor.rotation.set(o.leanX === undefined ? 0.16 : o.leanX, 0, o.leanZ || 0);
+        cursor.position.set(o.x, o.baseY || 0, o.baseZ || 0);
+        cursor.rotation.set(o.leanX === undefined ? 0.16 : o.leanX, o.leanY || 0, o.leanZ || 0);
         if (o.sway) cursor.userData.sway = o.sway;
         // A digit a strike drives has to survive the static merge as its own
         // node: `dynamic` is what keeps WeaponSystemProcedural.mergeStaticParts
@@ -325,205 +588,260 @@
         }
         parent.add(cursor);
 
-        const curl = o.curl === undefined ? 0.3 : o.curl;
-        const curls = o.curls || null;
+        const curls = o.curls || [];
+        const fallback = o.curl === undefined ? 0.3 : o.curl;
         for (let i = 0; i < lens.length; i++) {
           const len = lens[i];
           const seg = new THREE.Mesh(
-            new THREE.CylinderGeometry(radii[i + 1], radii[i], len, this.seg(9, 6)), skin);
+            new THREE.CylinderGeometry(radii[i + 1], radii[i], len, this.seg(12, 7)), skin);
           seg.position.y = len / 2;
+          seg.scale.set(wide, 1, flat);
           cursor.add(seg);
 
           const next = new THREE.Group();
           next.position.y = len;
-          next.rotation.x = (curls && curls[i] !== undefined) ? curls[i] : curl;
+          next.rotation.x = curls[i] === undefined ? fallback : curls[i];
+          // A finger only ever folds, but a thumb also travels sideways across
+          // the fist as it closes, and that is a bend the joint takes about a
+          // different axis: without it the thumb can only be aimed by leaning
+          // the whole digit, which drives its tip through the fingers instead
+          // of laying it over them.
+          if (o.curlsZ && o.curlsZ[i] !== undefined) next.rotation.z = o.curlsZ[i];
           cursor.add(next);
 
           if (i < lens.length - 1) {
             const joint = new THREE.Mesh(
-              new THREE.SphereGeometry(radii[i + 1], this.seg(8, 5), this.seg(6, 4)), knuckleMat);
+              new THREE.SphereGeometry(radii[i + 1] * 1.08, this.seg(10, 6), this.seg(8, 5)), knuckleMat);
+            joint.scale.set(wide, 1.0, flat);
             next.add(joint);
           } else {
             const tip = new THREE.Mesh(
-              new THREE.SphereGeometry(radii[i + 1], this.seg(8, 5), this.seg(6, 4)), skin);
+              new THREE.SphereGeometry(radii[i + 1], this.seg(10, 6), this.seg(8, 5)), skin);
+            tip.scale.set(wide, 1.05, flat);
             next.add(tip);
-            if (o.nailMat) {
-              const nail = new THREE.Mesh(
-                new THREE.SphereGeometry(radii[i + 1] * 0.86, this.seg(7, 5), this.seg(5, 4)), o.nailMat);
-              nail.scale.set(1.0, 0.55, 0.4);
-              nail.position.set(0, radii[i + 1] * 0.25, radii[i + 1] * 0.78);
-              next.add(nail);
-            }
+            if (o.nailMat) this._uNail(next, o, radii[i + 1], wide, flat);
           }
           cursor = next;
         }
         return cursor;
       },
 
+      /**
+       * The one nail a closed fist still shows. It is a low dome sunk into the
+       * back of the fingertip and standing barely proud of it, which is all a
+       * nail is: an open shell wrapped round the finger instead reads as a
+       * paper cuff, because it has edges where a nail has none until its very
+       * tip. The half-moon at its root is a second, flatter dome buried a
+       * little deeper, so what shows of it is a pale crescent.
+       */
+      _uNail(parent, o, tipR, wide, flat) {
+        const plate = new THREE.Mesh(
+          new THREE.SphereGeometry(tipR, this.seg(14, 8), this.seg(10, 6)), o.nailMat);
+        plate.scale.set(0.80 * wide, 1.45, 0.44 * flat);
+        plate.position.set(0, tipR * 0.16, tipR * flat * 0.62);
+        parent.add(plate);
+
+        if (this.wantsTrim() && o.nailPaleMat) {
+          const lunula = new THREE.Mesh(
+            new THREE.SphereGeometry(tipR * 0.74, this.seg(11, 6), this.seg(8, 5)), o.nailPaleMat);
+          lunula.scale.set(0.9 * wide, 0.62, 0.62 * flat);
+          lunula.position.set(0, -tipR * 0.42, tipR * flat * 0.52);
+          parent.add(lunula);
+        }
+        return plate;
+      },
+
       // ---- Humanoid ------------------------------------------------------
       // The fist an ordinary character throws, and the baseline every other
-      // archetype is a departure from. It is a CLOSED fist rather than the
-      // open reaching hand this used to be: an empty hand held out flat reads
-      // as a prop being shown to the enemy, while what a character without a
-      // weapon actually does is make a fist and hit with it.
+      // archetype is a departure from. It is a CLOSED fist rather than an open
+      // reaching hand: an empty hand held out flat reads as a prop being shown
+      // to the enemy, while what a character without a weapon actually does is
+      // make a fist and hit with it.
       //
-      // What has to read at this close a first-person range is the knuckle
-      // row and the mass sitting behind it, so the hand is built from the
-      // knuckles outward: a wide, shallow metacarpal block with the heel and
-      // thenar pads that give a real fist its lopsided bulk, four knuckles
-      // arched over its top edge in descending size, and every finger folded
-      // back into the palm as a real chain of segments (see _uFinger) so the
-      // proximal phalanges read as the flat top of the fist instead of a row
-      // of beads. The thumb lies ACROSS the front of the index and middle
-      // fingers, never tucked inside them, which is the single detail that
-      // separates a fist from a lump of knuckles.
+      // It is built as anatomy rather than as something that reads as a fist
+      // from far away, because at first-person range nothing about it is far
+      // away. The hand is ONE swollen mass (see _uMass) with the thenar and
+      // hypothenar pads and the dorsal arch pulled out of that single surface,
+      // rather than a capsule with balls stuck to its sides, since a seam
+      // between two primitives is exactly what gives a hand away. Over it sit
+      // the things a real fist shows and a modelled one usually forgets: the
+      // extensor tendons standing off the back, the dorsal veins running
+      // between them, the skin blanched white where it is stretched over each
+      // knuckle, the valleys between the knuckles, and the fine crease and
+      // pore grain of the skin itself (_uSkinTexture). The thumb lies ACROSS
+      // the front of the index and middle fingers, never tucked inside them,
+      // which is the single detail that separates a fist from a lump of
+      // knuckles - and its nail is the only nail still in view.
       createUnarmedHumanoidModel(weapon, rand) {
         const group = new THREE.Group();
         const skinColor = this.getRandomColor(rand, [0xC9A08A, 0x8A6248, 0xE0B89A, 0x6B4630]);
-        // Skin reads with a bit of sheen rather than flat matte, or it photographs
-        // like sanded wood; a clearly darker, ruddier tone at the knuckles and
-        // joints (skin pulled tight over bone) keeps the hand from reading as
-        // one uniformly painted lump, and a near-black crease tone gives the
-        // gaps between the folded fingers a real line even under flat lighting.
-        const skin = this._mat(skinColor, { roughness: 0.58, metalness: 0.02 });
-        const knuckleTone = new THREE.Color(skinColor).offsetHSL(0, 0.04, -0.06).getHex();
-        const knuckleSkin = this._mat(knuckleTone, { roughness: 0.52, metalness: 0.02 });
-        const creaseTone = new THREE.Color(skinColor).offsetHSL(0, 0.04, -0.32).getHex();
-        const crease = this._mat(creaseTone, { roughness: 0.8, metalness: 0.0 });
-        const nail = this._mat(0xE3C6BA, { roughness: 0.3, metalness: 0.06 });
+        const base = new THREE.Color(skinColor);
+        // Skin pulled tight over bone goes paler and slightly bloodless, and
+        // skin folded on itself goes darker and ruddier. Both are a step away
+        // from the tone rather than a different colour: a hand shaded in two
+        // clearly separate colours stops being a hand.
+        const skin = this._uSkinMat(skinColor, { roughness: 0.60, bump: 0.014 });
+        const taut = this._uSkinMat(base.clone().offsetHSL(0.004, -0.04, 0.022).getHex(),
+          { variant: 'taut', roughness: 0.50, bump: 0.006 });
+        const nail = this._mat(0xE6C3B6, { roughness: 0.22, metalness: 0.06 });
+        const nailPale = this._mat(0xF4E4DC, { roughness: 0.28, metalness: 0.04 });
+        const hairMat = this._mat(base.clone().offsetHSL(0.01, 0.10, -0.36).getHex(), { roughness: 1.0, metalness: 0.0 });
         const sleeveColor = this.getRandomColor(rand, [0x3A3A3E, 0x5A4A38, 0x2E3A2A, 0x4A2A2A, 0x27333E]);
         const sleeve = this._mat(sleeveColor, { roughness: 0.92, metalness: 0.0 });
 
         // The hand hangs off the wrist as its own node, tilted so the knuckle
-        // row turns up toward the camera and the fingers fold away from it:
-        // that angle is what puts the flat tops of the proximal phalanges in
-        // view behind the knuckles instead of hiding them inside the fist.
-        // The node is also what the punch drives (tickPunch reads `punch`,
-        // and `sway` gives the fist its idle breathing), and declaring it as
-        // a moving part is what keeps the static merge from baking the whole
-        // hand into the arm it would then be unable to turn against.
+        // row turns up toward the camera and the fingers fold away from it,
+        // and turned on the wrist so the thumb side comes round into frame: a
+        // fist looked at dead on hides its thumb behind itself, and the thumb
+        // lying across the fingers is most of what says fist. The node is also
+        // what the punch drives (tickPunch reads `punch`, and `sway` gives the
+        // fist its idle breathing), and declaring it as a moving part is what
+        // keeps the static merge from baking the whole hand into the arm it
+        // would then be unable to turn against.
         const hand = new THREE.Group();
         hand.position.set(0, 0.008, 0.004);
-        // Turned on the wrist so the thumb side comes round into frame: a
-        // fist looked at dead on hides its thumb behind itself, and the thumb
-        // lying across the fingers is most of what says fist.
-        hand.rotation.set(0.14, 0.42, 0);
+        hand.rotation.set(0.14, 0.60, 0);
         hand.userData.sway = { axis: 'y', amp: 0.022, freq: 0.55 };
         hand.userData.punch = { pitch: 0.26, roll: -0.34 };
         group.add(hand);
 
-        // The metacarpal block: wide across the knuckles, shallow front to
-        // back, and only as tall as the palm itself, since everything above
-        // its top edge is knuckle and everything in front of it is folded
-        // finger.
-        const palm = new THREE.Mesh(
-          new THREE.CapsuleGeometry(0.030, 0.028, this.seg(8, 5), this.seg(18, 10)), skin);
-        palm.scale.set(1.40, 1.0, 0.82);
-        palm.position.set(0, 0.014, 0.002);
-        hand.add(palm);
-        // The heel of the hand on the little-finger side (the surface a
-        // hammer fist actually lands on) and the thumb muscle on the other:
-        // a fist is not symmetrical, and these two lumps are why.
-        const heel = new THREE.Mesh(new THREE.SphereGeometry(0.020, this.seg(10, 7), this.seg(8, 5)), skin);
-        heel.scale.set(0.92, 1.18, 0.78);
-        heel.position.set(0.030, -0.008, -0.002);
-        hand.add(heel);
-        const thenar = new THREE.Mesh(new THREE.SphereGeometry(0.018, this.seg(10, 7), this.seg(8, 5)), skin);
-        thenar.scale.set(0.88, 1.22, 1.0);
-        thenar.position.set(-0.030, 0.000, -0.008);
-        hand.add(thenar);
-
         // The four fingers. Each one leaves its knuckle pointing up and away
         // from the camera and then folds twice, so what stays in view is the
         // proximal phalanx lying flat along the top of the fist while the tip
-        // ends up pressed into the palm out of sight. The row is arched (the
-        // middle knuckle stands highest and furthest forward) and falls away
-        // toward the little finger, which is what stops the front of a fist
-        // from reading as a brick.
-        // The lean is close to a right angle on purpose: the knuckle joint of
-        // a clenched hand shuts square, which lays the proximal phalanx flat
-        // along the top of the fist instead of leaving it standing up like a
-        // half-open hand.
+        // ends up pressed into the palm out of sight. The lean is close to a
+        // right angle on purpose: the knuckle joint of a clenched hand shuts
+        // square. The row is arched - the middle knuckle stands highest and
+        // furthest forward - and falls away toward the little finger, which is
+        // what stops the front of a fist from reading as a brick. Segment
+        // lengths are the real phalanx ratios, roughly 1 : 0.62 : 0.46.
+        // `converge` is the sideways lean each one folds with. Fingers do not
+        // shut in parallel: they all aim at the same point at the base of the
+        // palm, so a closed hand gathers rather than stacking four bars. Left
+        // parallel, the index and little fingers swing out past the edge of
+        // the fist instead of disappearing behind it.
         const digits = [
-          { x: -0.030, y: 0.048, z: 0.015, r: 0.0115, lean: -1.54, lens: [0.040, 0.027, 0.019] },
-          { x: -0.010, y: 0.052, z: 0.017, r: 0.0120, lean: -1.58, lens: [0.043, 0.029, 0.020] },
-          { x:  0.010, y: 0.049, z: 0.013, r: 0.0107, lean: -1.62, lens: [0.040, 0.027, 0.019] },
-          { x:  0.030, y: 0.041, z: 0.006, r: 0.0092, lean: -1.66, lens: [0.033, 0.022, 0.016] }
+          { x: -0.0285, y: 0.0500, z: 0.0145, r: 0.0097, lean: -1.54, converge: -0.17, lens: [0.0400, 0.0250, 0.0190] },
+          { x: -0.0090, y: 0.0540, z: 0.0165, r: 0.0101, lean: -1.58, converge: -0.06, lens: [0.0450, 0.0288, 0.0205] },
+          { x: 0.0100, y: 0.0505, z: 0.0125, r: 0.0092, lean: -1.62, converge: 0.06, lens: [0.0410, 0.0268, 0.0195] },
+          { x: 0.0290, y: 0.0425, z: 0.0055, r: 0.0079, lean: -1.66, converge: 0.18, lens: [0.0320, 0.0205, 0.0165] }
         ];
+
+        // The hand itself: wide across the knuckles, shallow front to back,
+        // narrowing into the wrist, hollowed on the palm side and carrying the
+        // four lumps that make a fist lopsided - the thumb muscle, the heel a
+        // hammer fist lands on, the arch of the knuckles, and the muscle that
+        // stands up in the web when the thumb is locked down. Everything that
+        // shows through the back of a hand - the four extensor tendons pulled
+        // taut by the clench, and the veins winding between them - is raised
+        // out of that same surface as a ridge (see _uMass), which is the only
+        // way either reads as being UNDER skin rather than laid on top of it.
+        const PALM_Y = 0.013;
+        const tendons = digits.map((d) => ({
+          amp: 0.0026, r: 0.0042,
+          pts: [[d.x * 0.36, -0.0330], [d.x * 0.62, -0.0125], [d.x * 0.88, 0.0130], [d.x, d.y - PALM_Y - 0.0080]]
+        }));
+        const veins = this.wantsTrim() ? [
+          { amp: 0.0020, r: 0.0032, pts: [[0.0235, -0.0370], [0.0180, -0.0185], [0.0065, -0.0005], [-0.0080, 0.0140], [-0.0180, 0.0250]] },
+          { amp: 0.0016, r: 0.0028, pts: [[0.0075, -0.0020], [0.0135, 0.0115], [0.0195, 0.0210]] },
+          { amp: 0.0014, r: 0.0026, pts: [[-0.0065, 0.0125], [-0.0030, 0.0200], [0.0020, 0.0265]] }
+        ] : [];
+        const palm = this._uMass(skin, {
+          sx: 0.0432, sy: 0.0482, sz: 0.0206, detail: this.isLowDetail() ? 1.4 : 2.6,
+          taper: (ny) => { const t = (ny + 1) / 2; return 0.66 + 0.29 * t + 0.09 * t * t; },
+          flatten: 0.28,
+          bulges: [
+            { x: -0.72, y: -0.28, z: -0.56, r: 0.80, amp: 0.20 },
+            { x: 0.78, y: -0.34, z: -0.42, r: 0.78, amp: 0.13 },
+            { x: 0.00, y: 0.42, z: 0.80, r: 0.72, amp: 0.06 },
+            { x: -0.62, y: 0.26, z: 0.34, r: 0.58, amp: 0.15 }
+          ],
+          ridges: tendons.concat(veins)
+        });
+        palm.position.set(0, PALM_Y, 0.002);
+        hand.add(palm);
+
         for (let i = 0; i < digits.length; i++) {
           const d = digits[i];
-          this._uFinger(hand, d.x, {
-            skin, knuckleMat: knuckleSkin,
+          this._uFinger(hand, {
+            // The knuckle and the joints beyond it wear the paler skin: on a
+            // clenched hand those are where the skin is stretched over bone
+            // and goes bloodless, and it is the one thing that says the fist
+            // is being SQUEEZED rather than merely shaped like one.
+            x: d.x, skin: skin, knuckleMat: taut,
             baseY: d.y, baseZ: d.z,
-            leanX: d.lean, curls: [-1.45, -1.20, -0.95],
+            leanX: d.lean, leanZ: d.converge, curls: [-1.45, -1.20, -0.95],
             lens: d.lens,
-            radii: [d.r, d.r * 0.90, d.r * 0.78, d.r * 0.66],
+            radii: [d.r, d.r * 0.91, d.r * 0.80, d.r * 0.70],
             // Tightened on the frame the blow lands (tickPunch), a little
-            // harder at the little finger than at the index, the way a fist
-            // is actually clenched from the outside in.
+            // harder at the little finger than at the index, the way a fist is
+            // actually clenched from the outside in.
             punch: { curl: -0.14 - i * 0.015 }
           });
 
-          // The valley between this finger and the next, a thin dark sliver
-          // laid along the proximal phalanges so the gaps read as separate
-          // fingers even when their own rounding almost closes them.
-          if (i < digits.length - 1) {
-            const n = digits[i + 1];
-            const lean = (d.lean + n.lean) / 2;
-            const groove = new THREE.Mesh(new THREE.BoxGeometry(0.0035, 0.036, 0.011), crease);
-            groove.position.set(
-              (d.x + n.x) / 2,
-              (d.y + n.y) / 2 + Math.cos(lean) * 0.020,
-              (d.z + n.z) / 2 + Math.sin(lean) * 0.020);
-            groove.rotation.x = lean;
-            hand.add(groove);
+        }
+
+        // The thumb, laid across the front of the index and middle fingers and
+        // locked down over them rather than folded in with the others: aimed up
+        // and diagonally across the fist, which is where a thumb travels when a
+        // hand closes and where it stops.
+        this._uFinger(hand, {
+          // Its root starts INSIDE the thenar muscle rather than on the edge
+          // of the hand: a thumb grows out of that mass, and one rooted at the
+          // silhouette leaves a cut cylinder end hanging off the side.
+          x: -0.0260, skin: skin, knuckleMat: skin,
+          nailMat: nail, nailPaleMat: nailPale,
+          baseY: -0.0080, baseZ: -0.0040,
+          leanX: -0.673, leanZ: -0.161,
+          curls: [-0.065, -0.26], curlsZ: [-0.457, 0],
+          lens: [0.0400, 0.0260],
+          radii: [0.0128, 0.0102, 0.0088],
+          wide: 1.18, flat: 0.86,
+          punch: { curl: -0.10 }
+        });
+
+        // The hair on the back of a hand: too fine to see one of, and the
+        // difference between skin and rubber when there are a dozen.
+        if (this.wantsTrim()) {
+          for (let i = 0; i < 14; i++) {
+            const h = new THREE.Mesh(new THREE.ConeGeometry(0.00045, 0.006 + rand() * 0.004, 3), hairMat);
+            h.position.set((rand() - 0.5) * 0.062, -0.012 + rand() * 0.05, 0.0175 + rand() * 0.004);
+            h.rotation.set(1.15 + (rand() - 0.5) * 0.5, 0, (rand() - 0.5) * 1.1);
+            hand.add(h);
           }
         }
 
-        // The thumb, laid across the front of the index and middle fingers
-        // and locked down over them rather than folded in with the others.
-        // Its nail is the one nail a closed fist still shows, so it is the
-        // only digit built with one.
-        // Aimed up and across the front of the fist rather than out to the
-        // side: the thumb of a closed hand travels diagonally over the middle
-        // joints of the index and middle fingers and locks there.
-        this._uFinger(hand, -0.036, {
-          skin, knuckleMat: knuckleSkin, nailMat: nail,
-          baseY: -0.004, baseZ: -0.012,
-          leanX: -0.70, leanZ: -0.72, curls: [-0.34, -0.30],
-          lens: [0.034, 0.026],
-          radii: [0.0110, 0.0096, 0.0082],
-          punch: { curl: -0.10 }
+        // The wrist: an oval rather than a tube, wider across than deep, with
+        // the head of the ulna standing out of the little-finger side of it the
+        // way it does on everyone.
+        const wrist = this._uMass(skin, {
+          sx: 0.0300, sy: 0.0270, sz: 0.0228,
+          flatten: 0.10,
+          bulges: [{ x: 0.85, y: 0.15, z: 0.35, r: 0.55, amp: 0.14 }]
         });
-        // The web of skin the thumb pulls tight over the side of the index
-        // knuckle when the hand closes.
-        const web = new THREE.Mesh(new THREE.SphereGeometry(0.012, this.seg(8, 5), this.seg(6, 4)), skin);
-        web.scale.set(0.7, 1.05, 1.3);
-        web.position.set(-0.032, 0.022, -0.014);
-        hand.add(web);
-
-        // The tendons standing out on the back of the hand, each running from
-        // the wrist to the knuckle it pulls on. They are the same skin as the
-        // hand and stand only just proud of it: what should read is the ridge
-        // the light catches, not a stripe painted across the back.
-        for (let i = 0; i < digits.length; i++) {
-          const tendon = new THREE.Mesh(
-            new THREE.CapsuleGeometry(0.0018, 0.024, this.seg(4, 3), this.seg(6, 4)), skin);
-          tendon.position.set(digits[i].x * 0.70, 0.018, 0.021 + digits[i].z * 0.30);
-          tendon.rotation.x = 0.16;
-          hand.add(tendon);
-        }
-
-        // The wrist, and the forearm behind it: this is what makes an empty
-        // hand read as a first-person arm coming up into frame rather than a
-        // weapon floating on its own (see WeaponSystemProcedural's
-        // unarmedArchetype handling, which fits and anchors the whole
-        // assembly around it).
-        const wrist = new THREE.Mesh(new THREE.CapsuleGeometry(0.028, 0.020, this.seg(8, 5), this.seg(14, 8)), skin);
-        wrist.position.set(0, -0.022, 0.004);
-        wrist.scale.z = 0.76;
+        wrist.position.set(0, -0.0250, 0.0035);
         group.add(wrist);
-        this._uArm(group, skin, sleeve, { length: 0.34, topY: -0.05, topR: 0.028, botR: 0.038, tilt: 0.15 });
+
+        // The forearm behind it: this is what makes an empty hand read as a
+        // first-person arm coming up into frame rather than a weapon floating
+        // on its own (see WeaponSystemProcedural's unarmedArchetype handling,
+        // which fits and anchors the whole assembly around it).
+        // Its top is buried inside the wrist rather than butted against it: a
+        // cylinder cap meeting an ellipsoid leaves a visible disc, and a seam
+        // across the wrist is the first thing that says "model".
+        const arm = this._uArm(group, skin, sleeve, {
+          length: 0.34, topY: -0.020, topR: 0.0245, botR: 0.038, tilt: 0.15, z: 0.004
+        });
+        if (this.wantsTrim()) {
+          for (let i = 0; i < 16; i++) {
+            const t = rand();
+            const h = new THREE.Mesh(new THREE.ConeGeometry(0.0005, 0.008 + rand() * 0.006, 3), hairMat);
+            const a = (rand() - 0.5) * 1.9;
+            const r = 0.028 + t * 0.010;
+            h.position.set(Math.sin(a) * r, -0.02 - t * 0.26, Math.cos(a) * r * 0.82);
+            h.rotation.set(1.0 + (rand() - 0.5) * 0.6, a, (rand() - 0.5) * 1.2);
+            arm.add(h);
+          }
+        }
         return group;
       },
 

@@ -6825,8 +6825,27 @@
                     }
                 }
 
+                // Silent DEX reflex save by vehicle driver
+                const driver = (typeof $gameParty !== 'undefined' && $gameParty.leader) ? $gameParty.leader() : null;
+                const dexMod = driver ? Math.floor(((driver.agi || 10) - 10) / 2) : 0;
+                const d20 = Math.floor(Math.random() * 20) + 1;
+                const reflexSave = (d20 === 20) || (d20 !== 1 && (d20 + dexMod >= 13));
+
                 // Impact severity = closing speed (vn was the pre-bounce approach).
-                const impact = vn > 0 ? vn : Math.max(this._speedKmh, 12);
+                let impact = vn > 0 ? vn : Math.max(this._speedKmh, 12);
+                if (reflexSave) {
+                    impact = Math.max(4, impact * 0.25);
+                    if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
+                        const modStr = dexMod >= 0 ? `+${dexMod}` : `${dexMod}`;
+                        window.ParchmentToast.show(`🚗 [Driver DEX Save: ${d20}${modStr}=${d20 + dexMod}] Expertly countersteered! Crash avoided!`, { severity: 'good', duration: 200 });
+                    }
+                } else {
+                    if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
+                        const modStr = dexMod >= 0 ? `+${dexMod}` : `${dexMod}`;
+                        window.ParchmentToast.show(`💥 [Driver DEX Save: ${d20}${modStr}=${d20 + dexMod} vs DC 13] Failed reflex save! Vehicle collision!`, { severity: 'danger', duration: 200 });
+                    }
+                }
+
                 // Spark burst at the contact point, thrown up and outward.
                 if (this._wheelFx) {
                     const cxp = this._vanX + nx * R * 0.5;
@@ -6844,7 +6863,7 @@
                 }
                 // Real mechanical damage on a solid hit (feature-detected, and
                 // rate-limited by _crashCooldown so one bump = one damage roll).
-                if (!this._titleMode && impact > 20 && window.VehicleUpgrades &&
+                if (!reflexSave && !this._titleMode && impact > 20 && window.VehicleUpgrades &&
                     typeof window.VehicleUpgrades.applyDamage === 'function') {
                     window.VehicleUpgrades.applyDamage('camper', Math.min(16, impact * 0.22));
                     // ...and a hit that hard throws anybody sleeping in the back

@@ -600,13 +600,31 @@
             const labelCls  = isScaling ? 'stat-label stat-label--scaling' : 'stat-label';
             const valCls    = isScaling ? 'stat-val stat-val--scaling' : 'stat-val';
             const labelHtml = grade ? `${stat.label} <span class="stat-scaling-grade">(${grade})</span>` : stat.label;
+
+            let valBeforeFormatted = `${stat.valBefore}${unit}`;
+            let valAfterFormatted = `${stat.valAfter}${unit}`;
+            let modBonusHtml = '';
+
+            if (stat.code) {
+                const modBefore = Math.floor((stat.valBefore - 10) / 2);
+                const modBeforeStr = modBefore >= 0 ? '+' + modBefore : String(modBefore);
+                const modAfter = Math.floor((stat.valAfter - 10) / 2);
+                const modAfterStr = modAfter >= 0 ? '+' + modAfter : String(modAfter);
+                valBeforeFormatted = `${stat.valBefore} <span style="font-size:0.78em; opacity:0.88; color:#a5d6a7;">(${modBeforeStr})</span>`;
+                valAfterFormatted = `${stat.valAfter} <span style="font-size:0.78em; opacity:0.88; color:#a5d6a7;">(${modAfterStr})</span>`;
+                const modDiff = modAfter - modBefore;
+                if (tempActor && modDiff !== 0) {
+                    modBonusHtml = `<span class="stat-diff ${modDiff > 0 ? 'positive' : 'negative'}" style="font-size:0.72rem; margin-left:3px;">[${modDiff > 0 ? '+' + modDiff : modDiff} Mod]</span>`;
+                }
+            }
+
             statsGridHTML += `
                 <div class="stat-row${isScaling ? ' stat-row--scaling' : ''}">
                     <span class="${labelCls}">${labelHtml}</span>
                     <span class="stat-val-container">
-                        <span class="${valCls}">${stat.valBefore}${unit}</span>
-                        ${tempActor && diff !== 0 ? `➔ <span class="stat-val-new">${stat.valAfter}${unit}</span>` : ''}
-                        ${diffHtml}
+                        <span class="${valCls}">${valBeforeFormatted}</span>
+                        ${tempActor && diff !== 0 ? `➔ <span class="stat-val-new">${valAfterFormatted}</span>` : ''}
+                        ${diffHtml}${modBonusHtml}
                     </span>
                 </div>`;
         }

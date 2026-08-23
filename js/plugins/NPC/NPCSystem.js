@@ -150,6 +150,17 @@
     NAME_DATABASES: ["entomologist", "perifery", "temporal_drift", "petro_vessel", "wannabe_wizard", "inmate", "girlboss", "fortune_teller", "rapper", "cleaner", "priest", "guide", "farmer", "taxi", "blacksmith", "steelworker", "artist", "hypernet_worker", "politician", "elven_ambassador", "dungeon_explorer", "mailman", "communist_preacher", "shy_vampire", "decadent_noble", "goth", "thug", "scribe", "zombie_alien", "commuter", "fae_queen", "caveman", "fisherman", "semiwild_goblin", "botique", "icecream"]
   };
 
+  // Checks if a sprite sheet is marked as beta. Beta sprites are strictly disabled
+  // for NPCs (kept out of all NPC character pools, random generation, templates, etc.).
+  function isBetaSprite(key) {
+    if (!key) return false;
+    if (window.SpriteCatalog?.isBeta) {
+      return window.SpriteCatalog.isBeta(key);
+    }
+    const entry = window.WorldGen?.NPCs?.[key];
+    return !!(entry && entry.beta === true);
+  }
+
   // Character pool built from NPCs.json (npc:true entries), replaces the old hardcoded
   // CHARACTER_GRAPHICS + SKAB_CHARACTER_GRAPHICS arrays.
   // DataService loads window.WorldGen.NPCs synchronously before any plugin IIFE runs.
@@ -157,7 +168,15 @@
   // rather than here: activating a different world must not hand it the
   // previous world's pool.
   function buildNPCCharacterPool() {
-    return window.SpriteCatalog?.npcKeys() || [];
+    if (window.SpriteCatalog?.npcKeys) {
+      return window.SpriteCatalog.npcKeys().filter(k => !isBetaSprite(k));
+    }
+    const npcData = window.WorldGen?.NPCs;
+    if (!npcData) return [];
+    return Object.keys(npcData).filter((k) => {
+      const e = npcData[k];
+      return !!(e && e.npc === true && e.beta !== true && e.aliens !== true && e.creature !== true && e.animal !== true);
+    });
   }
 
   // One face off a single seeded float. The alien sheets are never in the pool
@@ -168,9 +187,9 @@
   function pickNPCCharacter(r, pool) {
     if (window.SpriteCatalog?.pickNpcKey) {
       const key = window.SpriteCatalog.pickNpcKey(r);
-      if (key) return key;
+      if (key && !isBetaSprite(key)) return key;
     }
-    const list = pool || buildNPCCharacterPool();
+    const list = (pool || buildNPCCharacterPool()).filter(k => !isBetaSprite(k));
     return list.length ? list[Math.floor(r * list.length)] : null;
   }
 
@@ -259,6 +278,8 @@
     // but never show a sprite on the map, see SpawnManager.transplantData and
     // ShopShiftManager._candidates (NPCSimulationCore.js).
     hasHiddenTag: (note) => /\bhidden\b/i.test(note || ""),
+    // True if a sprite sheet is marked as a beta sheet.
+    isBetaSprite: (key) => isBetaSprite(key),
     // <ShopName: Ticketman> can live in the event's note or in any comment
     // command (codes 108/408) on any page, used to label the persona's
     // schedule entry ("working as Ticketman") instead of the generic
@@ -944,11 +965,13 @@
     // person tied to the map they stand on, so their template must never be
     // dealt onto another map's roster (see Utils.hasStoryTag).
     buildNPCPool: (mapData, mapId) => {
-      return (mapData?.events || []).filter(ev =>
-        ev && (Utils.hasAITag(ev.note) || Utils.hasLocalTag(ev.note)) &&
-        !Utils.hasStoryTag(ev.note) &&
-        ev.pages?.length > 0 && ev.pages.some(p => p?.list?.length > 1)
-      ).map(ev => ({ eventData: ev, eventId: ev.id, mapId }));
+      return (mapData?.events || []).filter(ev => {
+        if (!ev || (!Utils.hasAITag(ev.note) && !Utils.hasLocalTag(ev.note)) || Utils.hasStoryTag(ev.note)) return false;
+        if (!ev.pages?.length || !ev.pages.some(p => p?.list?.length > 1)) return false;
+        const imgName = (ev.pages || []).map(p => p?.image?.characterName).find(Boolean);
+        if (imgName && isBetaSprite(imgName)) return false;
+        return true;
+      }).map(ev => ({ eventData: ev, eventId: ev.id, mapId }));
     },
 
     // Indexes every "shop-like" event on a map: <Shop>-tagged counters, events
@@ -1007,7 +1030,7 @@
           const ev = tpl?.eventData;
           if (!ev || ev.name !== npcName) continue;
           const img = (ev.pages || []).map(p => p?.image).find(im => im?.characterName);
-          if (img) return { characterName: img.characterName, characterIndex: img.characterIndex || 0 };
+          if (img && !isBetaSprite(img.characterName)) return { characterName: img.characterName, characterIndex: img.characterIndex || 0 };
         }
         return null;
       };
@@ -1036,6 +1059,29 @@
       SpawnManager._shopIndexSession[mapId] = entries;
       return entries;
     },
+    // A Varlenian face is only ever seen on Varlenian ground, and that is one
+    // place only: a map whose own group is Varlenia (SpriteCatalog.isVarlenianPlace).
+    // A procedural square is not it however the world map is painted, the Omega
+    // Tower is not, and neither is a map every group borrows, a vehicle
+    // interior or a train carriage among them.
+    //
+    // The sheet pool already answers this for a procedural citizen. This is the
+    // same rule for the AUTHORED templates, which travel between groups through
+    // the global pool and would otherwise carry a Varlenian out of Varlenia and
+    // deal them into a town on the other side of the map. Applied as a view on
+    // the way out rather than while harvesting: the pool is cached per group,
+    // in a manifest shared by every map, while the answer here changes with
+    // where the party is standing.
+    keepVarlenianHome: (pool) => {
+      const SC = window.SpriteCatalog;
+      if (!Array.isArray(pool) || !SC || SC.isVarlenianPlace()) return pool || [];
+      const db = window.WorldGen?.NPCs || {};
+      return pool.filter(tpl => {
+        const img = (tpl?.eventData?.pages || []).map(pg => pg?.image).find(im => im?.characterName);
+        return !(img && db[img.characterName]?.varlenian === true);
+      });
+    },
+
     getNPCPool: (groupName) => {
       // Templates are harvested directly from the AI/Local/Shop-tagged events
       // living on the group's own gameplay maps, no separate template-only
@@ -1051,7 +1097,9 @@
       // is safe: it only goes stale if AI/Local/Shop event templates themselves
       // are edited, in which case deleting NPCPools.json forces a rebuild.
       $gameSystem._npcPoolCache = $gameSystem._npcPoolCache || {};
-      if ($gameSystem._npcPoolCache[groupName]) return $gameSystem._npcPoolCache[groupName];
+      if ($gameSystem._npcPoolCache[groupName]) {
+        return SpawnManager.keepVarlenianHome($gameSystem._npcPoolCache[groupName]);
+      }
 
       const fromManifest = NPCPoolStore.load();
       if (fromManifest && fromManifest[groupName]) {
@@ -1061,7 +1109,7 @@
         const pool = fromManifest[groupName].filter(t => !Utils.hasStoryTag(t?.eventData?.note));
         $gameSystem._npcPoolCache[groupName] = pool;
         Utils.debug(`NPC pool for "${groupName}" loaded from js/db/WorldGen/NPCPools.json: ${pool.length} templates.`);
-        return pool;
+        return SpawnManager.keepVarlenianHome(pool);
       }
 
       const npcPool = [];
@@ -1102,7 +1150,7 @@
       manifest.__shops = Object.assign(manifest.__shops || {}, shopIndex);
       NPCPoolStore.save(manifest);
       Utils.debug(`NPC pool for "${groupName}" built: ${npcPool.length} templates from ${seenMapIds.size} maps.`);
-      return npcPool;
+      return SpawnManager.keepVarlenianHome(npcPool);
     },
     getPlaceholders: (includePlayers = false) => {
       const p2Active = window.$gameSplitScreen && window.$gameSplitScreen.active;
@@ -1169,6 +1217,29 @@
       return pool;
     },
 
+    // ── Who may stand a counter at all ───────────────────────────────────────
+    // Asked of the SHEET rather than of the class. A creature or an animal (the
+    // Creatures/ and Animals/ halves of NPCs.json) keeps no till in an ordinary
+    // world whatever class it happened to be dealt: a talking dog is still a
+    // dog, and a shop minded by the stray on the corner reads as a bug rather
+    // than as a joke. Two exceptions, and they are the whole of the rule:
+    //
+    //   `dogShop`   written on the entry itself, the shop dog that IS the
+    //               shopkeeper. It stands in the rota like anybody else.
+    //   monster     a monster world is made of exactly these and has nobody
+    //               else to mind a till, so there every one of them may.
+    //
+    // A sheet nobody has an entry for is allowed: an authored NPC's own
+    // graphic is not part of this wardrobe and is never what this is about.
+    isShopEligibleSprite: (spriteKey) => {
+      if (!spriteKey) return true;
+      if (window.WorldManager?.isMonsterWorld?.()) return true;
+      const entry = window.WorldGen?.NPCs?.[spriteKey];
+      if (!entry) return true;
+      if (entry.dogShop === true) return true;
+      return entry.animal !== true && entry.creature !== true;
+    },
+
     // ── Interior <Shop> staffing (ShopShiftManager, NPCSimulationCore.js) ─────
     // The town's own citizens that can stand a shop counter reached through a
     // door (a procedural settlement has no authored templates, so these come
@@ -1186,6 +1257,7 @@
       const out = [];
       for (const [name, profile] of Object.entries(society)) {
         if (!profile || profile._homeGroupName !== groupName || !profile.spriteKey) continue;
+        if (!SpawnManager.isShopEligibleSprite(profile.spriteKey)) continue;
         if (!monsterWorld && NC?.isNonSentientProfile?.(profile)) continue;
         out.push({ name, spriteName: profile.spriteKey, charIdx: profile.bustIndex ?? 0, local: true });
       }
@@ -1199,9 +1271,18 @@
     // when the character pool (NPCs.json) is unavailable.
     generateSeededPersona: (seed) => {
       const pool = buildNPCCharacterPool();
-      if (!pool.length) return null;
       const s = (seed >>> 0) || 1;
-      const spriteName = pickNPCCharacter(Utils.seededRandom(s), pool);
+      // The people pool stands empty in a monster world (there are no people in
+      // one), so the face is asked of the catalogue rather than of the pool,
+      // which is what pickNPCCharacter does first anyway. A face that may not
+      // mind a till is re-rolled a few times before the counter is given up on,
+      // rather than left unstaffed on the first stray dog.
+      let spriteName = null;
+      for (let tries = 0; tries < 4 && !spriteName; tries++) {
+        const draw = Utils.seededRandom(((s * 2654435761) ^ (tries * 40503)) >>> 0);
+        const pick = pickNPCCharacter(draw, pool);
+        if (pick && SpawnManager.isShopEligibleSprite(pick)) spriteName = pick;
+      }
       if (!spriteName) return null;
       const isBig = spriteName.includes('!$');
       const charIdx = isBig ? 0 : Math.floor(Utils.seededRandom((s * 2) >>> 0) * 8);
@@ -1955,8 +2036,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // mirroring how a procedural settlement seeds its people
     // (setupProceduralMapNPCs).
     makeCityCitizen: (citySeed, index, groupName, donor, taken, nativePlace) => {
+      // The pool is a hint, not a requirement: it stands empty in a monster
+      // world (which has no people in it), and there the face comes off the
+      // catalogue's own draw instead, exactly as pickNPCCharacter prefers.
       const charPool = buildNPCCharacterPool();
-      if (!charPool.length || !donor || !window.generateSeededMarkovName) return null;
+      if (!donor || !window.generateSeededMarkovName) return null;
 
       // The society table is keyed by name, so a collision would hand this slot
       // somebody who already exists (another town's person, or the citizen in
@@ -1980,6 +2064,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       taken?.add(name);
 
       const charName = pickNPCCharacter(Utils.seededRandom(seed), charPool);
+      if (!charName) return null;
       // Big-character sprites (!$) have one slot; normal sheets use 0-7.
       const isBigSprite = charName.includes('!$');
       const charIdx = isBigSprite ? 0 : Math.floor(Utils.seededRandom((seed * 2) >>> 0) * 8);
@@ -2451,6 +2536,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         const graphicSeed = baseSeed ^ (ev.eventId() * 83492791);
         const charPool    = buildNPCCharacterPool();
         const charName    = pickNPCCharacter(Utils.seededRandom(graphicSeed), charPool);
+        // A wardrobe with nothing in it at all (no NPCs.json, a magic level that
+        // filtered everything out) leaves the event in whatever face it was
+        // authored with rather than throwing on the way past.
+        if (!charName) return;
         // Big-character sprites (!$) have one slot; normal multi-character sheets use 0-7
         const isBigSprite = charName.includes('!$');
         const charIdx     = isBigSprite ? 0 : Math.floor(Utils.seededRandom(graphicSeed * 2) * 8);
@@ -3777,6 +3866,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
       if (!this.event || this.event._erased) return;
 
+      // The dead keep no routine. A corpse does not go to work, wash, eat or
+      // meet a friend, so a slot that rose stands its controller down for good
+      // and is driven by its gait alone (see the zombie apocalypse section).
+      if (isZombieWalker(this.event)) return;
+
       const isTalking = $gameMap.isEventRunning() && $gameMap._interpreter.eventId() === this.eventId;
       // Talked to mid-yield: close the yield properly so _through and the walk
       // speed are put back, rather than leaving the NPC phased for good.
@@ -4446,7 +4540,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // own, so this hangs a new one off it, and a plugin loaded after this one may
   // still patch the Game_Character implementation it delegates to.
   Game_Event.prototype.setImage = function (characterName, characterIndex) {
-    if (this.isNPCHidden()) {
+    if (this.isNPCHidden() || isBetaSprite(characterName)) {
       if (this._tileId) return;
       characterName = "";
       characterIndex = 0;
@@ -4460,7 +4554,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // setImage above already covers the ordinary path; this catches a page
     // whose graphic was applied by some other plugin's setupPageSettings
     // override running after ours.
-    if (!this._tileId && this._characterName && this.isNPCHidden()) {
+    if (!this._tileId && this._characterName && (this.isNPCHidden() || isBetaSprite(this._characterName))) {
       this._characterName = "";
       this._characterIndex = 0;
     }
@@ -4779,7 +4873,8 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
   function zombieSheetPool() {
     const SC = window.SpriteCatalog;
-    return (SC && SC.zombieKeys) ? SC.zombieKeys() : [];
+    const list = (SC && SC.zombieKeys) ? SC.zombieKeys() : [];
+    return list.filter(k => !isBetaSprite(k));
   }
 
   // Is this sheet one of the dead? Asked of whatever graphic an event is
@@ -4828,6 +4923,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     ev.setImage(sheet, 0);
     ev.setOpacity(255);
     ev.setThrough(false);
+    applyZombieGait(ev);
     // $dataMap is re-read from disk on every Scene_Map rebuild, so the face is
     // snapshotted onto the event itself the way a roster spawn is (see
     // SpawnManager.snapshotSpawn / restoreSpawnedEventData).
@@ -4862,6 +4958,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     for (const ev of $gameMap.events()) {
       if (!ev || ev._erased || !ev._npcZombieSheet) continue;
       if (ev.characterName() !== ev._npcZombieSheet) applyZombieSheet(ev, ev._npcZombieSheet);
+      else applyZombieGait(ev);
     }
   }
 
@@ -4920,6 +5017,202 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       return;
     }
     _Game_Event_checkEventTriggerTouch_zombie.call(this, x, y);
+  };
+
+  // Talking to one is the same bump by another route. A zombie never runs a
+  // page: not the Empathize command on it, not a dialogue, not a shop, so the
+  // panel with its talk and leave options is never built for one of the dead
+  // (see also the guard in NPCEmpathize.open, for a panel opened by name from
+  // somewhere off the map). The action button and either touch trigger all
+  // resolve to the one thing there is to do with a corpse.
+  const _Game_Event_start_zombie = Game_Event.prototype.start;
+  Game_Event.prototype.start = function () {
+    if (isZombieWalker(this) && this.isTriggerIn([0, 1, 2]) &&
+        !$gameParty.inBattle() && !$gameTemp?._npcZombieBattle) {
+      requestZombieBattle(this);
+      return;
+    }
+    _Game_Event_start_zombie.call(this);
+  };
+
+  // ---- how the dead move -------------------------------------------------
+  // Not everybody got up the same way. A gait is drawn from the same seed the
+  // face is (map, event, world seed), so the thing shuffling at the end of the
+  // street is the same thing every time that street is walked into, and two
+  // savegames of one world agree about it.
+  //
+  //   speed / freq   how fast it walks and how often it decides to
+  //   sight / cone   how far it notices the party, and the arc it notices them
+  //                  in, in degrees, around whichever way it happens to be
+  //                  facing (360 = it has no front left to speak of)
+  //   los            whether a wall between them hides the party
+  //   chase          the speed it moves at once it has hold of you
+  //   memory         frames it keeps coming after losing sight of you
+  //   rouses         tiles its cry carries, waking every corpse inside it
+  //
+  // The party walks at 4 and dashes at 5, so nothing here outruns a run: a
+  // runner at 4.5 is the one that has to be dashed away from and every other
+  // gait can be walked away from, which is what makes the runner frightening.
+  const ZOMBIE_GAITS = [
+    { key: "shambler", weight: 46, speed: 2.5, freq: 3, sight: 5, cone: 240, los: true,  chase: 3,   memory: 240 },
+    { key: "crawler",  weight: 18, speed: 1,   freq: 2, sight: 2, cone: 360, los: false, chase: 2,   memory: 180 },
+    { key: "runner",   weight: 14, speed: 3.5, freq: 5, sight: 8, cone: 120, los: true,  chase: 4.5, memory: 480 },
+    { key: "lurker",   weight: 12, speed: 2,   freq: 2, sight: 3, cone: 360, los: false, chase: 4,   memory: 300 },
+    { key: "screamer", weight: 10, speed: 2.5, freq: 3, sight: 9, cone: 180, los: true,  chase: 3,   memory: 360, rouses: 10 },
+  ];
+  const ZOMBIE_SCAN_INTERVAL = 8;   // frames between one corpse's sweeps
+
+  // The gait this slot rose with. Pure in (map, event, world seed), the same
+  // way zombieSheetFor is, and salted apart from it so the face and the walk
+  // are two independent draws rather than one.
+  function zombieGaitFor(ev) {
+    if (!ev || !ev.eventId) return ZOMBIE_GAITS[0];
+    const seedBase = (window.HistoryManager && window.HistoryManager.getSeed)
+      ? window.HistoryManager.getSeed() : 19002001;
+    let h = ($gameMap.mapId() * 73856093) ^ (ev.eventId() * 83492791) ^ (seedBase + 0x9e37);
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+    let roll = h % ZOMBIE_GAITS.reduce((sum, g) => sum + g.weight, 0);
+    for (const gait of ZOMBIE_GAITS) {
+      roll -= gait.weight;
+      if (roll < 0) return gait;
+    }
+    return ZOMBIE_GAITS[0];
+  }
+
+  // Bound once per map load, after the face is on: the walk belongs to the
+  // body, so a corpse that was never re-skinned is left alone entirely.
+  function applyZombieGait(ev) {
+    if (!ev || ev._npcZombieGait) return;
+    const gait = zombieGaitFor(ev);
+    ev._npcZombieGait = gait;
+    ev._npcZombieBaseSpeed = gait.speed;
+    ev.setMoveSpeed(gait.speed);
+    ev.setMoveFrequency(gait.freq);
+    ev._moveType = 1;   // wander, until something is seen
+    ev._npcZombieHunt = 0;
+    ev._npcZombieLast = null;
+    ev._npcZombieScan = 0;
+  }
+
+  // Is the party inside the arc this one is facing? The same question the
+  // police and the roaming creatures ask of their own cones
+  // (CrimeSystem.inSightCone, BattleSystemEnhancedEncounters), asked as the
+  // angle between the way it is facing and the way the party lies rather than
+  // as the tangent of half the arc. The two agree for every arc narrower than a
+  // half-plane, and only this one can answer a WIDER one: tan(120 degrees) is
+  // negative, so the tangent form reads a 240 degree cone as seeing nothing at
+  // all, and a shambler that notices most of what is around it is exactly the
+  // sort of thing this table is made of.
+  function inZombieCone(ev, tx, ty, cone) {
+    if (!cone || cone >= 360) return true;
+    const dx = tx - ev.x;
+    const dy = ty - ev.y;
+    if (!dx && !dy) return true;
+    let fx = 0, fy = 0;
+    switch (ev.direction()) {
+      case 2: fy = 1; break;
+      case 8: fy = -1; break;
+      case 6: fx = 1; break;
+      case 4: fx = -1; break;
+      default: return true;
+    }
+    const cos = (dx * fx + dy * fy) / Math.sqrt(dx * dx + dy * dy);
+    return cos >= Math.cos((cone / 2) * Math.PI / 180);
+  }
+
+  // A wall between them hides the party. Borrowed from the encounter system so
+  // a wolf, a constable and a corpse all read the same corner the same way;
+  // without that plugin the check falls back to plain distance.
+  function zombieSightLine(x0, y0, x1, y1) {
+    const helpers = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+    if (!helpers || typeof helpers.hasLineOfSight !== "function") return true;
+    return helpers.hasLineOfSight(x0, y0, x1, y1);
+  }
+
+  // A cry carries: every corpse within earshot starts for the same tile,
+  // whether or not it saw anything itself. This is the whole of what a
+  // screamer is for, and it is why one of them in a street is worse than five
+  // shamblers.
+  function rouseZombies(caller, x, y, radius) {
+    for (const ev of $gameMap.events()) {
+      if (ev === caller || !isZombieWalker(ev) || !ev._npcZombieGait) continue;
+      if (Math.abs(ev.x - x) + Math.abs(ev.y - y) > radius) continue;
+      ev._npcZombieHunt = Math.max(ev._npcZombieHunt || 0, ev._npcZombieGait.memory);
+      ev._npcZombieLast = { x: x, y: y };
+    }
+  }
+
+  // One corpse's sweep, throttled. Sets the hunt going, keeps it going while
+  // the party is in sight, and lets it run down into a walk toward wherever
+  // the party was last seen once it is not.
+  function scanZombie(ev) {
+    const gait = ev._npcZombieGait;
+    if (!gait) return;
+    const dx = $gamePlayer.x - ev.x;
+    const dy = $gamePlayer.y - ev.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    let seen = false;
+    if (dist <= gait.sight && inZombieCone(ev, $gamePlayer.x, $gamePlayer.y, gait.cone)) {
+      seen = !gait.los || zombieSightLine(ev.x, ev.y, $gamePlayer.x, $gamePlayer.y);
+    }
+    // Walking into something is noticed whatever it was looking at: a facing
+    // cone and a wall are no defence at arm's length.
+    if (!seen && dist <= 1.5) seen = true;
+
+    if (seen) {
+      const wasHunting = ev._npcZombieHunt > 0;
+      ev._npcZombieHunt = gait.memory;
+      ev._npcZombieLast = { x: $gamePlayer.x, y: $gamePlayer.y };
+      if (!wasHunting) {
+        if (ev.isNearTheScreen() && $gameTemp) $gameTemp.requestBalloon(ev, 1);
+        if (gait.rouses) rouseZombies(ev, $gamePlayer.x, $gamePlayer.y, gait.rouses);
+      }
+    }
+
+    const hunting = ev._npcZombieHunt > 0;
+    const speed = hunting ? gait.chase : ev._npcZombieBaseSpeed;
+    if (ev._moveSpeed !== speed) ev.setMoveSpeed(speed);
+    // Standing still between decisions is what a wander is; a hunt never
+    // pauses, so the frequency goes up with the speed and comes back down
+    // with it when whatever it was following is gone.
+    ev.setMoveFrequency(hunting ? 5 : gait.freq);
+  }
+
+  // Per-frame half. Lives on update() rather than on updateSelfMovement(),
+  // which the engine only calls while a character stands still: a hunt would
+  // otherwise stop counting down the moment it started moving.
+  const _Game_Event_update_zombie = Game_Event.prototype.update;
+  Game_Event.prototype.update = function () {
+    _Game_Event_update_zombie.call(this);
+    if (!this._npcZombieGait || !isZombieWalker(this)) return;
+    if (this._npcZombieHunt > 0) this._npcZombieHunt--;
+    this._npcZombieScan = (this._npcZombieScan || 0) + 1;
+    if (this._npcZombieScan < ZOMBIE_SCAN_INTERVAL) return;
+    this._npcZombieScan = 0;
+    if (!this.isNearTheScreen() || $gameParty.inBattle() || $gameMap.isEventRunning()) return;
+    scanZombie(this);
+  };
+
+  // And the step itself. A hunting corpse walks at whoever it is following, or
+  // at the tile it last saw them on; anything else falls through to the engine
+  // and wanders the way the gait was set up to.
+  const _Game_Event_updateSelfMovement_zombie = Game_Event.prototype.updateSelfMovement;
+  Game_Event.prototype.updateSelfMovement = function () {
+    if (this._npcZombieGait && this._npcZombieHunt > 0 && isZombieWalker(this) &&
+        !this._locked && !this.isMoving() && !this.isMoveRouteForcing() &&
+        !$gameMap.isEventRunning() && this._stopCount > 0) {
+      const last = this._npcZombieLast;
+      if (last && (last.x !== this.x || last.y !== this.y)) {
+        // moveTowardCharacter reads nothing but .x/.y off what it is given, so
+        // the remembered tile stands in for the party it was last seen on.
+        this.moveTowardCharacter({ x: last.x, y: last.y });
+        return;
+      }
+      // Standing on the last tile it saw them from with nothing there: the
+      // trail is cold, so it goes back to wandering rather than to the spot.
+      this._npcZombieHunt = 0;
+    }
+    _Game_Event_updateSelfMovement_zombie.call(this);
   };
 
   // Started from the scene rather than from inside the map update that noticed
@@ -5577,6 +5870,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     makeSocietyTemplate: SpawnManager.makeSocietyTemplate,
     // Interior <Shop> staffing helpers, see ShopShiftManager.assignInteriorPersonas.
     getShopSocietyCandidates: SpawnManager.getShopSocietyCandidates,
+    isShopEligibleSprite: SpawnManager.isShopEligibleSprite,
+    // One of the dead walking (a zombie world only). Asked by NPCEmpathize, so
+    // the panel is never opened on one: the interaction IS the fight.
+    isZombieWalker: (ev) => isZombieWalker(ev),
+    requestZombieBattle: (ev) => requestZombieBattle(ev),
     generateSeededPersona: SpawnManager.generateSeededPersona,
     hasShopTag: Utils.hasShopTag,
     // Tells a rota counter (no graphic) apart from a Shop event whose

@@ -4,6 +4,8 @@
     "specializations": "Specializzazioni",
     "trained": "Addestrate",
     "all": "Tutte",
+    "searchPlaceholder": "Cerca specializzazioni…",
+    "noMatches": "Niente sotto quel nome.",
     "noneTrained": "Nessuna specializzazione ancora addestrata.",
     "untrained": "Non addestrate",
     "noneSelected": "Nessuna specializzazione selezionata.",

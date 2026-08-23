@@ -70,5 +70,7 @@
   "biosNoDeck": "Nessun deck collegato a questo terminale.",
   "biosNoFaults": "Nessun guasto rilevato. Ogni pezzo montato ha risposto.",
   "biosWillBoot": "L'avvio riuscirebbe.",
-  "biosWillNotBoot": "L'avvio fallirebbe."
+  "biosWillNotBoot": "L'avvio fallirebbe.",
+  "biosGraphics": "Grafica",
+  "biosEndurance": "Autonomia"
 }

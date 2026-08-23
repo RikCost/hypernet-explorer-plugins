@@ -124,7 +124,87 @@
     const fadeOutDuration = 12;
     const SpritesAssociation = (window.Sprites && window.Sprites.SpritesAssociation) || {};
 
+    // ── window.BustPath ─────────────────────────────────────────────────────
+    // Where a bust actually lives, given the loose name something asked for.
+    //
+    // img/busts used to be one flat folder, so every reader in the game builds
+    // its path as img/busts/<name>.png and every name written into an event
+    // comment, a database note or a saved profile is a bare file name. The
+    // portraits of the pre-made characters have since moved into
+    // img/busts/presets/ (so the bust gallery, which scans the flat folder and
+    // never recurses, cannot hand somebody else a dossier's face), which would
+    // have left every one of those old bare names pointing at nothing.
+    //
+    // This answers with the name to use under img/busts/: the bare one when the
+    // file is still there, the "presets/<name>" one when it has moved, and null
+    // when neither exists. Defined here because this is the first bust plugin
+    // to load; DialogueSystem, CustomBustFaceSystem and the Empathize panel all
+    // ask through it, so the four never disagree about a face.
+    (function () {
+        const cache = Object.create(null);
+        const SUBFOLDERS = ["presets/"];
 
+        function fileExists(name) {
+            if (typeof Utils === "undefined" || !Utils.isNwjs || !Utils.isNwjs()) return null;
+            try {
+                const fs = require("fs");
+                const nodePath = require("path");
+                return fs.existsSync(nodePath.join(process.cwd(), "img", "busts", name + ".png"));
+            } catch (e) {
+                return null; // cannot tell: treat as present, the <img> fallback covers it
+            }
+        }
+
+        window.BustPath = {
+            // The portrait everything falls back on. It ships with the game and
+            // is the one face a reader is never left without.
+            FALLBACK: "img/busts/7.png",
+
+            // "Selene" -> "presets/Selene"; "WarSniper" -> "WarSniper";
+            // "img/busts/presets/Em.png" -> "presets/Em"; unknown -> null.
+            //
+            // A name that already carries its folder is checked like any other:
+            // a dossier, a leader's record or a saved profile can name a
+            // portrait that was never drawn, and answering with it would leave
+            // the reader holding a path to nothing. Where the folder is wrong
+            // but the file is in the flat folder, that is the answer instead.
+            resolve(name) {
+                const raw = String(name == null ? "" : name).trim()
+                    .replace(/^\.?\/+/, "")
+                    .replace(/^img\/busts\//i, "")
+                    .replace(/\.png$/i, "");
+                if (!raw || raw === "7" || raw === "0") return null;
+                if (raw.startsWith("img/")) return null; // not a bust at all
+                if (raw in cache) return cache[raw];
+                let out;
+                if (raw.includes("/")) {
+                    const bare = raw.slice(raw.lastIndexOf("/") + 1);
+                    if (fileExists(raw) !== false) out = raw;
+                    else out = fileExists(bare) ? bare : null;
+                } else {
+                    out = raw;
+                    if (fileExists(raw) === false) {
+                        out = null;
+                        for (const dir of SUBFOLDERS) {
+                            if (fileExists(dir + raw)) { out = dir + raw; break; }
+                        }
+                    }
+                }
+                cache[raw] = out;
+                return out;
+            },
+            // The same answer as a path something can load, fallback included.
+            // Every caller that draws a portrait asks through this, so a name
+            // that resolves to nothing shows the house bust rather than a
+            // broken image and a load error.
+            url(name, fallback = "img/busts/7.png") {
+                const resolved = this.resolve(name);
+                return resolved ? `img/busts/${resolved}.png` : fallback;
+            },
+            // Whether a loose name names a bust at all, in either folder.
+            exists(name) { return this.resolve(name) != null; },
+        };
+    })();
 
     function getBustWidth() {
         return bustWidth_16_9;
@@ -383,11 +463,23 @@
             try {
                 const commentBustName = this.getBustNameFromEventComment();
                 if (commentBustName) {
-                    return `busts/${commentBustName}`;
+                    const resolved = window.BustPath.resolve(commentBustName);
+                    if (resolved) return `busts/${resolved}`;
                 }
             } catch (err) {
                 console.warn("Error checking event comments for bust name:", err);
             }
+            // A pre-made character (CharacterCreationPresets) carries their own
+            // portrait, and it is the one the rest of the game already shows for
+            // them: the status sheet, the equip menu and the Empathize panel all
+            // read the actor's vnBust. A dossier can be played in an alternate
+            // look, and every look has its own bust, so a portrait derived from
+            // the walk sheet alone would show the wrong outfit (or, once the
+            // dossier busts moved into img/busts/presets, nothing at all).
+            // Asked before the sprite catalogue for exactly that reason.
+            const presetBust = this.getPresetBustForSprite(spritesheetName, characterIndex);
+            if (presetBust) return `busts/${presetBust}`;
+
             // NPCSim priority: use seed-randomized bust stored in profile._bustName
             if (window.NPCSim?.getBustForNPC) {
                 try {
@@ -395,15 +487,15 @@
                     const evId   = interp?._eventId;
                     const npcName = evId ? $gameMap.event(evId)?.event()?.name : null;
                     if (npcName) {
-                        const npcBust = window.NPCSim.getBustForNPC(npcName);
-                        if (npcBust && npcBust !== "7") return `busts/${npcBust}`;
+                        const npcBust = window.BustPath.resolve(window.NPCSim.getBustForNPC(npcName));
+                        if (npcBust) return `busts/${npcBust}`;
                     }
                 } catch (_) {}
             }
 
             if (SpritesAssociation[spritesheetName] && SpritesAssociation[spritesheetName][characterIndex]) {
-                const bustName = SpritesAssociation[spritesheetName][characterIndex];
-                return `busts/${bustName}`;
+                const bustName = window.BustPath.resolve(SpritesAssociation[spritesheetName][characterIndex]);
+                if (bustName) return `busts/${bustName}`;
             }
             return `busts/7`;
 
@@ -472,6 +564,43 @@
                 console.error("Error extracting bust name from event comment:", err);
                 return null;
             }
+        }
+
+        // The bust of a pre-made character standing on this sprite sheet, or
+        // null when the sheet belongs to nobody in particular.
+        //
+        // Two questions, in order. Is somebody in the party wearing this sheet
+        // right now? Then their own bust wins, whichever look they were taken
+        // in and whatever they have been dressed as since. Otherwise, is the
+        // sheet one a dossier ships (its own or one of its alternate looks)?
+        // Then that dossier's bust for that look is the answer, so a scripted
+        // scene showing Andreotti in his pontiff sheet gets the pontiff bust.
+        getPresetBustForSprite(spritesheetName, characterIndex) {
+            if (!spritesheetName) return null;
+            const idx = characterIndex || 0;
+            try {
+                const members = ($gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
+                for (const actor of members) {
+                    if (!actor || actor.characterName() !== spritesheetName) continue;
+                    if ((actor.characterIndex() || 0) !== idx) continue;
+                    const bust = actor.vnBust ? actor.vnBust() : null;
+                    if (bust && bust !== "7" && bust !== 0) return bust;
+                }
+            } catch (err) { /* no party yet (title screen, creation) */ }
+
+            const CP = window.CharacterPresets;
+            if (!CP || !CP.getCharacterPresets) return null;
+            try {
+                for (const preset of CP.getCharacterPresets()) {
+                    const looks = CP.getPresetSkins ? CP.getPresetSkins(preset) : [preset];
+                    for (const look of looks) {
+                        if (!look || look.sprite !== spritesheetName) continue;
+                        if ((look.spriteIndex || 0) !== idx) continue;
+                        if (look.busts) return look.busts;
+                    }
+                }
+            } catch (err) { /* dossiers not loaded */ }
+            return null;
         }
 
         getCurrentActorIdFromEvent() {
@@ -627,7 +756,8 @@
                 return;
             }
 
-            let path = `busts/${imageName}`;
+            const resolvedName = window.BustPath.resolve(imageName);
+            let path = resolvedName ? `busts/${resolvedName}` : `busts/7`;
             if (!this.checkImageExists(path)) {
                 console.warn(`Custom bust image not found: ${path}. Using fallback busts/7.`);
                 path = `busts/7`;

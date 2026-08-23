@@ -2937,7 +2937,7 @@
  },
  "1329": {
   "name": "Barretta EDO Recuperata 32MB",
-  "description": "Trentadue megabyte, se funziona."
+  "description": "Memoria rigenerata pre Y2K. Trentadue megabyte, se funziona."
  },
  "1330": {
   "name": "Unita Floppy Slim",
@@ -2965,7 +2965,7 @@
  },
  "1336": {
   "name": "Disco Recuperato 540MB",
-  "description": "Mezzo gigabyte, probabilmente."
+  "description": "Disco rigenerato pre Y2K. Mezzo gigabyte, probabilmente."
  },
  "1337": {
   "name": "Vireo Mobility 4MB",
@@ -3009,7 +3009,7 @@
  },
  "1347": {
   "name": "Pannello Crepato, Mezzo Acceso",
-  "description": "Funziona. Quasi. Da un lato."
+  "description": "Pannello pre Y2K, crepato. Funziona. Quasi. Da un lato."
  },
  "1348": {
   "name": "Pacco a Stilo NiCd",
@@ -3029,7 +3029,7 @@
  },
  "1352": {
   "name": "Cella da Campo, Perde",
-  "description": "Tiene la carica. Brevemente."
+  "description": "Cella pre Y2K, perde. Tiene la carica. Brevemente."
  },
  "1353": {
   "name": "Ala Solare a Filo",
@@ -3089,7 +3089,7 @@
  },
  "1367": {
   "name": "SDRAM con Sigilli",
-  "description": "Mezzo gigabyte, sotto un sigillo."
+  "description": "Un gigabyte, sotto un sigillo."
  },
  "1368": {
   "name": "Modem di Linea Tellurica",
@@ -4266,5 +4266,129 @@
  "1794": {
   "name": "Testina Sonda Raman",
   "description": "Testina laser. Montata su un deck, legge di cosa e fatta una cosa."
+ },
+ "1795": {
+  "name": "Hex-9 Celer 333",
+  "description": "Processore rigenerato pre Y2K. 333 MHz, e scalda."
+ },
+ "1796": {
+  "name": "Hex-9 Quadratus 266",
+  "description": "Processore rigenerato pre Y2K. 266 MHz, abbastanza per un editor di testo."
+ },
+ "1797": {
+  "name": "Aokin Sylph Mobile 233",
+  "description": "Processore mobile rigenerato pre Y2K. Lento, e leggerissimo sulla cella."
+ },
+ "1798": {
+  "name": "Crusader Crux 300",
+  "description": "Processore rigenerato pre Y2K. 300 MHz, ex noleggio."
+ },
+ "1799": {
+  "name": "EHI Ordinal 450",
+  "description": "Processore rigenerato pre Y2K. La cosa piu veloce del suo anno, un tempo."
+ },
+ "1800": {
+  "name": "Omni-Lex Meridian 200",
+  "description": "Processore rigenerato pre Y2K. Duecento megahertz del vecchio secolo."
+ },
+ "1801": {
+  "name": "Barretta PC66 Aokin 16MB",
+  "description": "Memoria rigenerata pre Y2K. Sedici megabyte."
+ },
+ "1802": {
+  "name": "Barretta PC66 Aokin 32MB",
+  "description": "Memoria rigenerata pre Y2K. Trentadue megabyte, testata."
+ },
+ "1803": {
+  "name": "Coppia SIMM EHI 64MB",
+  "description": "Memoria rigenerata pre Y2K. Una coppia abbinata, venduta come una."
+ },
+ "1804": {
+  "name": "Barretta PC100 Omni-Lex 128MB",
+  "description": "Memoria rigenerata pre Y2K. La barretta piu capiente del suo anno."
+ },
+ "1805": {
+  "name": "Disco da Viaggio Hex 1.6GB",
+  "description": "Disco rigenerato pre Y2K. 1,6 GB, e ticchetta."
+ },
+ "1806": {
+  "name": "Disco da Viaggio Hex 3.2GB",
+  "description": "Disco rigenerato pre Y2K. 3,2 GB del lavoro di qualcun altro."
+ },
+ "1807": {
+  "name": "Disco Rinforzato EHI 4.3GB",
+  "description": "Disco rigenerato pre Y2K. Pesante, lento e duro a morire."
+ },
+ "1808": {
+  "name": "Slitta CD-ROM Aokin",
+  "description": "Unita rigenerata pre Y2K. Legge i dischi, non scrive nulla."
+ },
+ "1809": {
+  "name": "Slitta Zip 100",
+  "description": "Unita rigenerata pre Y2K. Cento megabyte su un dischetto grasso."
+ },
+ "1810": {
+  "name": "Alloggiamento SmartMedia 16MB",
+  "description": "Slot per schede rigenerato pre Y2K. Sedici megabyte, nessuna parte in movimento."
+ },
+ "1811": {
+  "name": "Vireo Rage LT 2MB",
+  "description": "Adattatore grafico rigenerato pre Y2K. Due megabyte in tutto."
+ },
+ "1812": {
+  "name": "Hex Trident Mobile 1MB",
+  "description": "Adattatore grafico rigenerato pre Y2K. Un megabyte, sedici colori."
+ },
+ "1813": {
+  "name": "Omni-Lex Lynx 4MB",
+  "description": "Adattatore grafico rigenerato pre Y2K. Quattro megabyte, ex workstation."
+ },
+ "1814": {
+  "name": "Pannello VGA Monocromatico",
+  "description": "Pannello rigenerato pre Y2K. Grigio su grigio, e leggibile al sole."
+ },
+ "1815": {
+  "name": "Pannello DSTN Aokin 6.1in",
+  "description": "Pannello rigenerato pre Y2K. A colori, se lo guardi dritto."
+ },
+ "1816": {
+  "name": "Pannello Passivo EHI 9.4in",
+  "description": "Pannello rigenerato pre Y2K. Grande, fioco e vale lo spazio."
+ },
+ "1817": {
+  "name": "Mattone NiCd 1000",
+  "description": "Cella rigenerata pre Y2K. Si ricorda ogni ricarica che le hai dato."
+ },
+ "1818": {
+  "name": "Barra NiMH 1600",
+  "description": "Cella rigenerata pre Y2K. Meglio del nichel cadmio che ha sostituito."
+ },
+ "1819": {
+  "name": "Gabbia per Pile Alcaline",
+  "description": "Portabatterie rigenerato pre Y2K. Prende pile da negozio."
+ },
+ "1820": {
+  "name": "Modem Fax 33.6k",
+  "description": "Modem rigenerato pre Y2K. Piu lento del cinquantasei, e si connette sempre."
+ },
+ "1821": {
+  "name": "Scheda 10Base-T PCMCIA",
+  "description": "Scheda di rete rigenerata pre Y2K. Dieci megabit, su un adattatore."
+ },
+ "1822": {
+  "name": "Dissipatore ad Alette Storte",
+  "description": "Dissipatore rigenerato pre Y2K. Raddrizzato a mano."
+ },
+ "1823": {
+  "name": "Ventola Recuperata",
+  "description": "Ventola rigenerata pre Y2K. Rumorosa, e muove aria."
+ },
+ "1824": {
+  "name": "Chip Audio a 8 bit",
+  "description": "Chip audio rigenerato pre Y2K. Otto bit, e ne va fiero."
+ },
+ "1825": {
+  "name": "Chip Sintetizzatore OPL2",
+  "description": "Chip sintetizzatore rigenerato pre Y2K. Nove voci in FM."
  }
 }

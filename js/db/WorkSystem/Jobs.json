@@ -17,9 +17,9 @@
       706
     ],
     "requirements": {
-      "ATK": 20,
-      "DEF": 15,
-      "AGI": 10
+      "ATK": 12,
+      "DEF": 10,
+      "AGI": 8
     },
     "outcomes": {
       "success": {
@@ -54,7 +54,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      156,
+      120,
+      814
+    ]
   },
   {
     "id": 2,
@@ -69,8 +74,8 @@
       1037
     ],
     "requirements": {
-      "ATK": 15,
-      "DEF": 20,
+      "ATK": 10,
+      "DEF": 12,
       "HP": 100
     },
     "outcomes": {
@@ -110,7 +115,12 @@
           "Nausea"
         ]
       }
-    }
+    },
+    "items": [
+      240,
+      660,
+      1733
+    ]
   },
   {
     "id": 3,
@@ -131,8 +141,8 @@
       1416
     ],
     "requirements": {
-      "AGI": 20,
-      "LUK": 15,
+      "AGI": 12,
+      "LUK": 10,
       "Intimidation": 10
     },
     "outcomes": {
@@ -168,7 +178,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      498,
+      535,
+      459
+    ]
   },
   {
     "id": 4,
@@ -184,9 +199,9 @@
       820
     ],
     "requirements": {
-      "LUK": 25,
-      "AGI": 15,
-      "MAT": 10
+      "LUK": 14,
+      "AGI": 10,
+      "MAT": 8
     },
     "outcomes": {
       "success": {
@@ -211,7 +226,12 @@
           "Nausea"
         ]
       }
-    }
+    },
+    "items": [
+      236,
+      213,
+      124
+    ]
   },
   {
     "id": 5,
@@ -227,8 +247,8 @@
       "Industrial Zone"
     ],
     "requirements": {
-      "ATK": 25,
-      "DEF": 20,
+      "ATK": 14,
+      "DEF": 12,
       "Substance": 15
     },
     "outcomes": {
@@ -268,7 +288,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      250,
+      816,
+      864
+    ]
   },
   {
     "id": 6,
@@ -283,9 +308,9 @@
       1039
     ],
     "requirements": {
-      "MAT": 20,
+      "MAT": 12,
       "Arcane": 25,
-      "LUK": 15
+      "LUK": 10
     },
     "outcomes": {
       "success": {
@@ -323,7 +348,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      42,
+      670,
+      1785
+    ]
   },
   {
     "id": 7,
@@ -338,7 +368,7 @@
       531
     ],
     "requirements": {
-      "MAT": 25,
+      "MAT": 14,
       "Arcane": 20,
       "Substance": 20
     },
@@ -383,7 +413,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      2,
+      648,
+      884
+    ]
   },
   {
     "id": 8,
@@ -395,9 +430,9 @@
     "basePay": 18600,
     "locations": [],
     "requirements": {
-      "MAT": 30,
+      "MAT": 16,
       "Arcane": 35,
-      "MDF": 20
+      "MDF": 12
     },
     "outcomes": {
       "success": {
@@ -439,7 +474,12 @@
           "Static"
         ]
       }
-    }
+    },
+    "items": [
+      350,
+      670,
+      814
+    ]
   },
   {
     "id": 9,
@@ -451,9 +491,9 @@
     "basePay": 31200,
     "locations": [],
     "requirements": {
-      "ATK": 30,
-      "DEF": 25,
-      "AGI": 20,
+      "ATK": 16,
+      "DEF": 14,
+      "AGI": 12,
       "Intimidation": 15
     },
     "outcomes": {
@@ -494,7 +534,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      121,
+      429,
+      712
+    ]
   },
   {
     "id": 10,
@@ -509,10 +554,10 @@
       525
     ],
     "requirements": {
-      "ATK": 35,
-      "DEF": 30,
-      "AGI": 25,
-      "hp": 150
+      "ATK": 18,
+      "DEF": 16,
+      "AGI": 14,
+      "HP": 150
     },
     "outcomes": {
       "success": {
@@ -549,7 +594,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      18,
+      19,
+      28
+    ]
   },
   {
     "id": 11,
@@ -561,10 +611,10 @@
     "basePay": 25600,
     "locations": [],
     "requirements": {
-      "ATK": 30,
-      "DEF": 25,
-      "MAT": 20,
-      "LUK": 15
+      "ATK": 16,
+      "DEF": 14,
+      "MAT": 12,
+      "LUK": 10
     },
     "outcomes": {
       "success": {
@@ -604,7 +654,12 @@
           "Infected"
         ]
       }
-    }
+    },
+    "items": [
+      703,
+      712,
+      121
+    ]
   },
   {
     "id": 12,
@@ -620,9 +675,9 @@
       820
     ],
     "requirements": {
-      "AGI": 30,
+      "AGI": 16,
       "Stealth": 35,
-      "LUK": 25
+      "LUK": 14
     },
     "outcomes": {
       "success": {
@@ -654,7 +709,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      374,
+      324,
+      201
+    ]
   },
   {
     "id": 13,
@@ -667,8 +727,8 @@
     "locations": [],
     "requirements": {
       "Stealth": 30,
-      "LUK": 25,
-      "AGI": 20,
+      "LUK": 14,
+      "AGI": 12,
       "Intimidation": 15
     },
     "outcomes": {
@@ -704,7 +764,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      374,
+      535,
+      127
+    ]
   },
   {
     "id": 14,
@@ -719,8 +784,8 @@
     ],
     "requirements": {
       "Stealth": 40,
-      "AGI": 30,
-      "LUK": 30,
+      "AGI": 16,
+      "LUK": 16,
       "Substance": 15
     },
     "outcomes": {
@@ -757,7 +822,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      374,
+      580,
+      121
+    ]
   },
   {
     "id": 15,
@@ -775,8 +845,8 @@
     ],
     "requirements": {
       "Substance": 30,
-      "AGI": 20,
-      "LUK": 15
+      "AGI": 12,
+      "LUK": 10
     },
     "outcomes": {
       "success": {
@@ -811,7 +881,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      156,
+      814,
+      210
+    ]
   },
   {
     "id": 16,
@@ -824,8 +899,8 @@
     "locations": [],
     "requirements": {
       "Substance": 25,
-      "AGI": 25,
-      "LUK": 20
+      "AGI": 14,
+      "LUK": 12
     },
     "outcomes": {
       "success": {
@@ -854,7 +929,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      374,
+      156,
+      814
+    ]
   },
   {
     "id": 17,
@@ -870,8 +950,8 @@
     ],
     "requirements": {
       "Substance": 35,
-      "AGI": 30,
-      "LUK": 20
+      "AGI": 16,
+      "LUK": 12
     },
     "outcomes": {
       "success": {
@@ -900,7 +980,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      241,
+      130,
+      814
+    ]
   },
   {
     "id": 18,
@@ -916,8 +1001,8 @@
     ],
     "requirements": {
       "Intimidation": 25,
-      "LUK": 30,
-      "MAT": 20
+      "LUK": 16,
+      "MAT": 12
     },
     "outcomes": {
       "success": {
@@ -949,7 +1034,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      535,
+      201
+    ]
   },
   {
     "id": 19,
@@ -964,8 +1054,8 @@
       450
     ],
     "requirements": {
-      "LUK": 30,
-      "MAT": 25,
+      "LUK": 16,
+      "MAT": 14,
       "Arcane": 20
     },
     "outcomes": {
@@ -991,7 +1081,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      352,
+      434,
+      1785
+    ]
   },
   {
     "id": 20,
@@ -1003,9 +1098,9 @@
     "basePay": 11900,
     "locations": [],
     "requirements": {
-      "AGI": 30,
-      "DEF": 15,
-      "LUK": 15
+      "AGI": 16,
+      "DEF": 10,
+      "LUK": 10
     },
     "outcomes": {
       "success": {
@@ -1040,7 +1135,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      125,
+      126,
+      120
+    ]
   },
   {
     "id": 100,
@@ -1055,7 +1155,7 @@
       1050
     ],
     "requirements": {
-      "MAT": 20,
+      "MAT": 12,
       "Arcane": 25,
       "Intimidation": 20
     },
@@ -1090,7 +1190,12 @@
           "Silence"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      394,
+      262
+    ]
   },
   {
     "id": 101,
@@ -1103,9 +1208,9 @@
     "basePay": 16200,
     "locations": [],
     "requirements": {
-      "MAT": 25,
+      "MAT": 14,
       "Arcane": 30,
-      "MDF": 20
+      "MDF": 12
     },
     "outcomes": {
       "success": {
@@ -1142,7 +1247,12 @@
           "Paralysis"
         ]
       }
-    }
+    },
+    "items": [
+      262,
+      1486,
+      670
+    ]
   },
   {
     "id": 102,
@@ -1155,10 +1265,10 @@
     "basePay": 24800,
     "locations": [],
     "requirements": {
-      "MAT": 30,
+      "MAT": 16,
       "Arcane": 35,
       "Intimidation": 25,
-      "ATK": 20
+      "ATK": 12
     },
     "outcomes": {
       "success": {
@@ -1201,7 +1311,12 @@
           "Paralysis"
         ]
       }
-    }
+    },
+    "items": [
+      768,
+      814,
+      394
+    ]
   },
   {
     "id": 103,
@@ -1217,10 +1332,10 @@
       531
     ],
     "requirements": {
-      "MAT": 35,
+      "MAT": 18,
       "Arcane": 35,
       "Substance": 35,
-      "LUK": 20
+      "LUK": 12
     },
     "outcomes": {
       "success": {
@@ -1265,7 +1380,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      156,
+      768,
+      394
+    ]
   },
   {
     "id": 104,
@@ -1279,9 +1399,9 @@
     "remote": true,
     "locations": [],
     "requirements": {
-      "MAT": 30,
+      "MAT": 16,
       "Arcane": 40,
-      "LUK": 10
+      "LUK": 8
     },
     "outcomes": {
       "success": {
@@ -1316,7 +1436,12 @@
           "Nausea"
         ]
       }
-    }
+    },
+    "items": [
+      262,
+      127,
+      394
+    ]
   },
   {
     "id": 105,
@@ -1365,7 +1490,12 @@
           "Paralysis"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      262,
+      1641
+    ]
   },
   {
     "id": 106,
@@ -1379,9 +1509,9 @@
     "locations": [],
     "requirements": {
       "Stealth": 40,
-      "AGI": 35,
+      "AGI": 18,
       "Arcane": 25,
-      "LUK": 25
+      "LUK": 14
     },
     "outcomes": {
       "success": {
@@ -1421,7 +1551,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      374,
+      332,
+      394
+    ]
   },
   {
     "id": 107,
@@ -1440,7 +1575,7 @@
     "requirements": {
       "Stealth": 30,
       "Intimidation": 35,
-      "ATK": 25
+      "ATK": 14
     },
     "outcomes": {
       "success": {
@@ -1479,7 +1614,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      1486,
+      262
+    ]
   },
   {
     "id": 108,
@@ -1493,8 +1633,8 @@
     "remote": true,
     "locations": [],
     "requirements": {
-      "MAT": 30,
-      "LUK": 25,
+      "MAT": 16,
+      "LUK": 14,
       "Intimidation": 20
     },
     "outcomes": {
@@ -1520,7 +1660,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      1641,
+      394
+    ]
   },
   {
     "id": 109,
@@ -1538,8 +1683,8 @@
     "requirements": {
       "Stealth": 35,
       "Intimidation": 35,
-      "LUK": 25,
-      "MAT": 20
+      "LUK": 14,
+      "MAT": 12
     },
     "outcomes": {
       "success": {
@@ -1572,7 +1717,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      394,
+      127,
+      1
+    ]
   },
   {
     "id": 110,
@@ -1586,10 +1736,10 @@
     "remote": true,
     "locations": [],
     "requirements": {
-      "LUK": 30,
+      "LUK": 16,
       "Intimidation": 25,
       "Substance": 20,
-      "MAT": 25
+      "MAT": 14
     },
     "outcomes": {
       "success": {
@@ -1618,7 +1768,12 @@
           "Nausea"
         ]
       }
-    }
+    },
+    "items": [
+      201,
+      127,
+      394
+    ]
   },
   {
     "id": 111,
@@ -1634,8 +1789,8 @@
     "requirements": {
       "Intimidation": 35,
       "Substance": 30,
-      "ATK": 25,
-      "MAT": 25
+      "ATK": 14,
+      "MAT": 14
     },
     "outcomes": {
       "success": {
@@ -1675,7 +1830,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      210,
+      156,
+      120
+    ]
   },
   {
     "id": 112,
@@ -1688,9 +1848,9 @@
     "basePay": 16500,
     "locations": [],
     "requirements": {
-      "AGI": 40,
-      "LUK": 30,
-      "DEF": 20
+      "AGI": 20,
+      "LUK": 16,
+      "DEF": 12
     },
     "outcomes": {
       "success": {
@@ -1727,7 +1887,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      28,
+      120,
+      210
+    ]
   },
   {
     "id": 113,
@@ -1740,10 +1905,10 @@
     "basePay": 27200,
     "locations": [],
     "requirements": {
-      "ATK": 30,
+      "ATK": 16,
       "Intimidation": 40,
       "Stealth": 25,
-      "LUK": 20
+      "LUK": 12
     },
     "outcomes": {
       "success": {
@@ -1783,7 +1948,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      210,
+      19,
+      814
+    ]
   },
   {
     "id": 114,
@@ -1797,7 +1967,7 @@
     "remote": true,
     "locations": [],
     "requirements": {
-      "LUK": 35,
+      "LUK": 18,
       "Stealth": 30,
       "Intimidation": 25
     },
@@ -1825,7 +1995,12 @@
           "Rage"
         ]
       }
-    }
+    },
+    "items": [
+      353,
+      580,
+      374
+    ]
   },
   {
     "id": 124,
@@ -1844,9 +2019,9 @@
       1071
     ],
     "requirements": {
-      "MAT": 30,
+      "MAT": 16,
       "Arcane": 25,
-      "LUK": 15
+      "LUK": 10
     },
     "outcomes": {
       "success": {
@@ -1871,7 +2046,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      265,
+      278
+    ]
   },
   {
     "id": 127,
@@ -1886,9 +2066,9 @@
       727
     ],
     "requirements": {
-      "ATK": 35,
-      "DEF": 30,
-      "MAT": 25,
+      "ATK": 18,
+      "DEF": 16,
+      "MAT": 14,
       "Arcane": 25
     },
     "outcomes": {
@@ -1925,7 +2105,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      498,
+      1486,
+      28
+    ]
   },
   {
     "id": 128,
@@ -1937,8 +2122,8 @@
     "basePay": 15000,
     "locations": [],
     "requirements": {
-      "DEF": 20,
-      "AGI": 15,
+      "DEF": 12,
+      "AGI": 10,
       "Intimidation": 20
     },
     "outcomes": {
@@ -1974,7 +2159,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      121,
+      120,
+      703
+    ]
   },
   {
     "id": 129,
@@ -1988,9 +2178,9 @@
       570
     ],
     "requirements": {
-      "AGI": 20,
-      "LUK": 30,
-      "DEF": 15
+      "AGI": 12,
+      "LUK": 16,
+      "DEF": 10
     },
     "outcomes": {
       "success": {
@@ -2016,7 +2206,12 @@
           "Cold"
         ]
       }
-    }
+    },
+    "items": [
+      123,
+      425,
+      523
+    ]
   },
   {
     "id": 130,
@@ -2033,8 +2228,8 @@
       397
     ],
     "requirements": {
-      "ATK": 15,
-      "DEF": 20
+      "ATK": 10,
+      "DEF": 12
     },
     "outcomes": {
       "success": {
@@ -2070,7 +2265,12 @@
           "Nausea"
         ]
       }
-    }
+    },
+    "items": [
+      1,
+      19,
+      120
+    ]
   },
   {
     "id": 131,
@@ -2087,8 +2287,8 @@
     ],
     "requirements": {
       "Intimidation": 15,
-      "LUK": 15,
-      "MAT": 10
+      "LUK": 10,
+      "MAT": 8
     },
     "outcomes": {
       "success": {
@@ -2124,7 +2324,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      459,
+      130
+    ]
   },
   {
     "id": 132,
@@ -2145,9 +2350,9 @@
       563
     ],
     "requirements": {
-      "AGI": 15,
-      "LUK": 10,
-      "DEF": 10
+      "AGI": 10,
+      "LUK": 8,
+      "DEF": 8
     },
     "outcomes": {
       "success": {
@@ -2182,7 +2387,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      459,
+      498,
+      418
+    ]
   },
   {
     "id": 133,
@@ -2199,9 +2409,9 @@
       563
     ],
     "requirements": {
-      "ATK": 10,
-      "DEF": 15,
-      "AGI": 15
+      "ATK": 8,
+      "DEF": 10,
+      "AGI": 10
     },
     "outcomes": {
       "success": {
@@ -2240,7 +2450,12 @@
           "Poison"
         ]
       }
-    }
+    },
+    "items": [
+      447,
+      493,
+      545
+    ]
   },
   {
     "id": 134,
@@ -2255,8 +2470,8 @@
       714
     ],
     "requirements": {
-      "MAT": 25,
-      "LUK": 15,
+      "MAT": 14,
+      "LUK": 10,
       "Substance": 10
     },
     "outcomes": {
@@ -2288,7 +2503,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      394,
+      241
+    ]
   },
   {
     "id": 135,
@@ -2304,9 +2524,9 @@
       721
     ],
     "requirements": {
-      "ATK": 20,
-      "DEF": 15,
-      "AGI": 15
+      "ATK": 12,
+      "DEF": 10,
+      "AGI": 10
     },
     "outcomes": {
       "success": {
@@ -2337,7 +2557,12 @@
           "Bleeding"
         ]
       }
-    }
+    },
+    "items": [
+      18,
+      28,
+      120
+    ]
   },
   {
     "id": 136,
@@ -2351,9 +2576,9 @@
       725
     ],
     "requirements": {
-      "DEF": 15,
+      "DEF": 10,
       "Intimidation": 20,
-      "LUK": 10
+      "LUK": 8
     },
     "outcomes": {
       "success": {
@@ -2388,7 +2613,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      120,
+      130,
+      459
+    ]
   },
   {
     "id": 137,
@@ -2402,8 +2632,8 @@
       726
     ],
     "requirements": {
-      "ATK": 25,
-      "DEF": 20,
+      "ATK": 14,
+      "DEF": 12,
       "Intimidation": 25
     },
     "outcomes": {
@@ -2444,7 +2674,12 @@
           "Confusion"
         ]
       }
-    }
+    },
+    "items": [
+      19,
+      18,
+      121
+    ]
   },
   {
     "id": 138,
@@ -2459,8 +2694,8 @@
       1160
     ],
     "requirements": {
-      "AGI": 25,
-      "DEF": 15,
+      "AGI": 14,
+      "DEF": 10,
       "HP": 100
     },
     "outcomes": {
@@ -2496,7 +2731,12 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      141,
+      120,
+      1
+    ]
   },
   {
     "id": 139,
@@ -2510,9 +2750,9 @@
       1102
     ],
     "requirements": {
-      "MAT": 30,
-      "MDF": 30,
-      "LUK": 10
+      "MAT": 16,
+      "MDF": 16,
+      "LUK": 8
     },
     "outcomes": {
       "success": {
@@ -2537,6 +2777,11 @@
           "Stun"
         ]
       }
-    }
+    },
+    "items": [
+      127,
+      394,
+      201
+    ]
   }
 ]

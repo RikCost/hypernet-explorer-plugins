@@ -11,7 +11,13 @@
   "walkAway": "Leave it.",
   "walkedAway": "The party walks away from it, and it stays walked away from.",
   "mapClose": "Close the page",
-  "mapHint": "Arrows to choose, Enter to answer"
+  "mapHint": "Arrows to choose, Enter to answer",
+  "checkAction": "{stat} check, {name}",
+  "checkChip": "{stat} DC {dc} {mod}",
+  "chanceChip": "{pct}% odds",
+  "needChip": "{qty}× {name}",
+  "haveChip": "(carrying {have})",
+  "goldChip": "€{amount}"
  },
  "reward": {
   "artifact": "Recovered: {name}.",
@@ -31,7 +37,9 @@
   "date": "She is not asking, exactly.",
   "crime": "Filed against you: {crime}.",
   "augment": "Fitted to {who}: {name}.",
-  "needs": "Everyone comes back the better for it: {list}."
+  "needs": "Everyone comes back the better for it: {list}.",
+  "gave": "Handed over {qty}× {name}",
+  "skill": "{who} has been taught {name}"
  },
  "relic": {
   "nameTemplate": "{prefix} {noun} of {of}",
@@ -111,6 +119,49 @@
    "fifty",
    "sixty",
    "thirty-five"
+  ],
+  "asker": [
+   "a figure in a pressure suit patched with three kinds of tape",
+   "somebody wearing a survey team's spare boots and nothing else that matches",
+   "a tall shape that keeps the fire between itself and the party",
+   "an old hand with a rebreather that whistles on the exhale",
+   "something person-shaped that learned its manners from a manual",
+   "a prospector with claim markers sewn into the coat",
+   "a courier a long way off any route a courier would take"
+  ],
+  "brokenthing": [
+   "the relay mast",
+   "the condensate pump",
+   "the beacon",
+   "the water cracker",
+   "the ground radar"
+  ],
+  "payment": [
+   "ore, weighed twice and the heavier reading kept",
+   "a working part off something that no longer needs it",
+   "coordinates, written from memory without hesitating",
+   "a favour, redeemable at any fire on this rock",
+   "the good half of a ration store"
+  ],
+  "stakegame": [
+   "a game played with {few} magnetic stones and a lid",
+   "a counting game that punishes the first player to hurry",
+   "flat bones with marks on five of the six sides",
+   "a board scratched into the rock older than the fire"
+  ],
+  "vessel": [
+   "a hopper with the armour plating peeled back to the ribs",
+   "a survey tender older than anybody aboard it",
+   "a lander that has been rebuilt out of three other landers",
+   "an ore barge riding empty and high",
+   "a courier hull with the registry ground off"
+  ],
+  "cargo": [
+   "sealed crates with somebody else's stencils on them",
+   "a pallet of shielding foil, unopened",
+   "coffins, which are being called something else",
+   "seed stock in cold boxes, ticking over",
+   "drums of something that has to stay upright"
   ]
  },
  "biomes": {
@@ -15630,6 +15681,3848 @@
      }
     }
    }
+  },
+  "q_beacon": {
+   "title": "{The Keeper's List|What The Mast Needs|Dead Air}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{brokenthing} stands over {place}, dead, panels open to {ground}. {asker} is halfway up it with {instrument} and comes down without hurrying, because hurrying stopped helping {a while ago|on day two|before the party landed}.\nThe list of what it needs is short. It needs {qty} {material}. {sound}, and the mast does nothing about it, which is the point being made.",
+     "asides": {
+      "cynical": "{member} asks what was being listened FOR, and does not get an answer, and files that.",
+      "disciplined": "{member} is already reading the fault log from the bottom up, which is the correct direction.",
+      "any": "{member} looks over the open panel and winces on the mast's behalf."
+     },
+     "choices": [
+      {
+       "text": "Hand over the {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "g"
+      },
+      {
+       "text": "Fix it out of the ship's own spares.",
+       "check": {
+        "stat": "INT",
+        "dc": 13
+       },
+       "pass": "f",
+       "fail": "x",
+       "to": "f"
+      },
+      {
+       "text": "Ask what a working mast is worth first.",
+       "to": "b"
+      }
+     ]
+    },
+    "b": {
+     "text": "The keeper thinks about it {for nine seconds|a while|without blinking}. Payment is named: {payment}.\nThe mast, it is mentioned on the way back up, was listening for what moves out here before it went dark. It has not been listening for {few} days now, and the keeper has been sleeping in shifts of one.",
+     "choices": [
+      {
+       "text": "That will do. Hand over the {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "g"
+      },
+      {
+       "text": "Not at that price.",
+       "to": "e"
+      }
+     ]
+    },
+    "g": {
+     "text": "The panels close over the new {material} and the mast comes back with a sound like a struck shelf.\nThe first thing it hears gets written out longhand and handed over, along with what was promised, and the keeper {stops sleeping in shifts|sleeps a whole night for once|puts the kettle on and sits down}.",
+     "outcome": {
+      "kind": "schrodingerite",
+      "mag": "medium",
+      "stars": 2,
+      "rep": {
+       "greywanderers": 8
+      }
+     }
+    },
+    "f": {
+     "text": "It takes {an afternoon|four hours|the rest of the light} and it is not pretty, but a governor off the ship's own stores will hold the load if nobody tells it what it used to be.\nThe mast comes up. The keeper pays over the odds, on the grounds that a fix that costs the fixer is a different {class of fix|kind of fix altogether|order of favour}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 3
+     }
+    },
+    "x": {
+     "text": "The spare that fit was not a spare. Something back at the ship will miss it at the worst possible moment, and the flywheel had one more turn in it, which {leader} finds out at close range.\nThe mast stays dark. The keeper says nothing, which is {worse than saying something|worse than anything they could say|the worst of the available responses}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1
+     }
+    },
+    "e": {
+     "text": "The mast stays dark and the keeper goes back up it, alone, with the whistle in the rebreather keeping its own time.\n{member} takes a bearing on the site {in case|for the log|without being asked}, and nobody talks for the first kilometre back.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "q_stranded": {
+   "title": "{Two Hundred Days|The Lander At The Wrong Angle|Parts And Sky}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A lander sits at {place} at the wrong angle, and {asker} has been living in it {long enough to have a system|long enough to have opinions about the view|since before the last storm season}.\nThe ask is exact, rehearsed, word-perfect: {qty} {material}, for the {stabiliser|fuel governor|coil housing}, and then the sky again. {wrongness}.",
+     "asides": {
+      "cautious": "{member} counts the landing legs twice and gets a different number each time.",
+      "empathetic": "{member} says two hundred days alone would do things to anybody's manners, and wants it to be true.",
+      "any": "{member} keeps looking at the hull seam that does not line up with any other seam."
+     },
+     "choices": [
+      {
+       "text": "Hand it over and help with the fitting.",
+       "give": {
+        "material": true
+       },
+       "to": "h"
+      },
+      {
+       "text": "Something here is off. Look the lander over first.",
+       "check": {
+        "stat": "WIS",
+        "dc": 12
+       },
+       "pass": "w",
+       "fail": "t",
+       "to": "w"
+      },
+      {
+       "text": "Offer a lift instead of parts.",
+       "to": "l"
+      }
+     ]
+    },
+    "h": {
+     "text": "The fitting takes an hour and the castaway's hands know the work better than the manual does.\nPayment is the only coin left aboard: something learned in two hundred days of listening to {tone}, taught on the walk back to the pad, once, properly, with {the wind for a blackboard|the wind taking most of it|nothing to write on but the air}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "medium",
+      "stars": 3
+     }
+    },
+    "w": {
+     "text": "The lander has never flown. The undercarriage grows straight out of {ground}, and under the hull there are {many} small heaps of the kind of kit a courier carries and a courier is never parted from.\nWhatever is doing the asking has been fed by the asking for a long time.",
+     "choices": [
+      {
+       "text": "Back away without changing pace.",
+       "to": "e2"
+      },
+      {
+       "text": "Put it down, here, where it sleeps.",
+       "to": "k"
+      }
+     ]
+    },
+    "t": {
+     "text": "It looks like a lander right up until {the hold closes|it opens along a seam no lander has|the ramp comes down the wrong way}.\nIt is not {a hold|anything of the kind|a hold and never was}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 2,
+      "reward": "loot",
+      "mag": "medium",
+      "stars": 2,
+      "fail": {
+       "kind": "harm",
+       "mag": "medium"
+      }
+     }
+    },
+    "k": {
+     "text": "It stops pretending the moment {the first shot goes in|anybody raises anything|it is looked at properly}, and the lander shape comes off it {like weather|the way a coat comes off|in one long motion}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "loot",
+      "mag": "large",
+      "stars": 3,
+      "fail": {
+       "kind": "harm",
+       "mag": "medium"
+      }
+     }
+    },
+    "l": {
+     "text": "The lift is refused {fast|flatly|before it is fully offered}, with both hands, before the sentence is even finished.\nParts, it says. Parts and nothing else. It does not look at the party when it says it; it looks at {the pack|the straps|what is in the pack} the party is carrying.",
+     "choices": [
+      {
+       "text": "Hand over the {material} then.",
+       "give": {
+        "material": true
+       },
+       "to": "h"
+      },
+      {
+       "text": "Leave, and keep the pack on the far side of the group.",
+       "to": "e2"
+      }
+     ]
+    },
+    "e2": {
+     "text": "The lander is still in the mirrors a long way past where {the horizon|the curve of the ground|distance itself} should have taken it.\nNobody suggests going back for a second look, and nobody {has to say why|says why|asks why}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "q_cache": {
+   "title": "{Sealed On Purpose|The Case Under The Ice|What The Seal Is For}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A case of {maker}'s make sits under {remnant}, sealed, with {a dial that turns too smoothly|a latch that has been forced once already and reset|writing worn down to dents}.\n{instrument} reads something inside worth the walk. {hazard}, so the walk was not free either.",
+     "asides": {
+      "cautious": "{member} points out that {maker} sealed it facing outward, and lets that sit.",
+      "impulsive": "{member} has already tried the latch once, gently, as a scientific matter.",
+      "any": "{member} clears {ground} off the lid a handful at a time, like it might mind."
+     },
+     "choices": [
+      {
+       "text": "Work the seal properly.",
+       "check": {
+        "stat": "DEX",
+        "dc": 14
+       },
+       "pass": "a",
+       "fail": "b",
+       "to": "a"
+      },
+      {
+       "text": "Break it.",
+       "check": {
+        "stat": "STR",
+        "dc": 13
+       },
+       "pass": "c",
+       "fail": "b",
+       "to": "c",
+       "not": [
+        "cautious"
+       ]
+      },
+      {
+       "text": "Leave it sealed.",
+       "to": "e"
+      }
+     ]
+    },
+    "a": {
+     "text": "The seal gives the way a good seal gives: {all at once, undamaged, almost gratefully|cleanly, without argument, as if it had been waiting|in one movement, and stays whole}.\nInside, packed the way things are packed by somebody who expected to come back: everything in order, nothing spoiled, and room left at the top for {one more thing that never arrived|something that was never brought|a last item nobody carried in}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "stars": 3
+     }
+    },
+    "c": {
+     "text": "The case opens {the hard way|badly|with a noise the whole site hears}. About half of what was shelved inside survives the opening, which everybody agrees, afterwards, is {still half|better than none|half more than nothing}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "medium",
+      "stars": 2
+     }
+    },
+    "b": {
+     "text": "Whatever the seal was holding shut, it was not holding it shut against thieves.\nIt was holding it {IN|SHUT FROM THE INSIDE}. The case is empty now, and the air around it costs the party {something|a good deal|more than anybody says out loud} on the way back.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 1
+     }
+    },
+    "e": {
+     "text": "Sealed by {maker}, left sealed. {member} takes a rubbing of the lid for the diary and puts {ground} back over it the way it was found.\nSome walks are for knowing where a thing is, not for having it.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "q_tollgate": {
+   "title": "{The Narrows|One At A Time|The Toll}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "The one way through {place} is a gap wide enough for one, and something is sitting in it. Not hiding. Sitting.\nIt has {a bowl|a set of scales|an open crate} in front of it and patience behind it. The toll is {qty} {material}. The alternative is not discussed, because it does not need to be.",
+     "asides": {
+      "aggressive": "{member} measures the gap, then the thing in it, and does not share the result.",
+      "calm": "{member} notes that a toll implies traffic, and that traffic implies the toll gets paid.",
+      "any": "{member} works out how long the thing has been sitting there from the shape of the ground under it, and stops saying numbers after the second guess."
+     },
+     "choices": [
+      {
+       "text": "Pay the toll.",
+       "give": {
+        "material": true
+       },
+       "to": "p"
+      },
+      {
+       "text": "Stare it down.",
+       "check": {
+        "stat": "PSI",
+        "dc": 13
+       },
+       "pass": "s",
+       "fail": "f2",
+       "to": "s"
+      },
+      {
+       "text": "Go through it.",
+       "to": "fgt",
+       "not": [
+        "cautious",
+        "calm"
+       ]
+      }
+     ]
+    },
+    "p": {
+     "text": "It counts without touching, {nods once|inclines whatever that is|makes a small formal movement}, and leans back a whole hand's width, which is apparently the open position.\nAs the last of the party passes, it puts something of its own in the bowl and pushes it after them: change, or a tip, or a receipt. {The categories may not apply|None of those three words quite fits|Nobody decides which}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "small",
+      "stars": 1,
+      "exp": 12
+     }
+    },
+    "s": {
+     "text": "{It blinks first|It looks away first|Something in it gives first}.\nIt stands, which takes longer than it should and involves more of it than seemed to be there, and steps out of the gap, and leaves the bowl where it sits, full, as a matter the party is invited to {interpret|make of what they will|settle among themselves}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "medium",
+      "stars": 3
+     }
+    },
+    "f2": {
+     "text": "The stare goes wrong {somewhere in the middle|about four seconds in|at the point where it should have ended}. What is at the bottom of it looks back up the whole length of it, and the gap stops being {a toll booth|an arrangement|anything with rules in it}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "loot",
+      "mag": "medium",
+      "stars": 2,
+      "fail": {
+       "kind": "harm",
+       "mag": "medium"
+      }
+     }
+    },
+    "fgt": {
+     "text": "It stands up before the {second|third} step. There is {more of it than the gap explained|a great deal more of it than the gap suggested|more of it than there was room for}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 2,
+      "reward": "loot",
+      "mag": "large",
+      "stars": 3,
+      "fail": {
+       "kind": "harm",
+       "mag": "large"
+      }
+     }
+    }
+   }
+  },
+  "q_wager": {
+   "title": "{Stones|The Game At The Fire|Fair, Which Is Worse}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{asker} has a fire going at {place} and a game laid out on a flat rock: {stakegame}.\nThe rules take a minute to learn and a life to like. The stake is coin. The pot on the other side of the rock is {visible|real|already sitting there, which is either confidence or bait}.",
+     "asides": {
+      "hedonistic": "{member} is sitting down before the rules are finished.",
+      "cynical": "{member} watches the dealer's hands and not the stones, which is the right place to watch.",
+      "any": "{member} asks who won last, and gets a list, and notices it is all one name."
+     },
+     "choices": [
+      {
+       "text": "Sit down and play.",
+       "give": {
+        "gold": "small"
+       },
+       "check": {
+        "chance": 45
+       },
+       "pass": "w2",
+       "fail": "l2",
+       "to": "w2"
+      },
+      {
+       "text": "Play for information instead of coin.",
+       "check": {
+        "stat": "INT",
+        "dc": 12
+       },
+       "pass": "i",
+       "fail": "l3",
+       "to": "i"
+      },
+      {
+       "text": "Watch a few rounds from the warm side of the fire.",
+       "to": "v"
+      }
+     ]
+    },
+    "w2": {
+     "text": "The pot crosses the rock. {asker} pays without a word and re-racks the stones for the next traveller, because there is always a next traveller.\nThe fire is shared for an hour on the strength of it, and the directions given at parting are, as far as anyone can later tell, {honest|entirely honest|correct in every particular}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 2
+     }
+    },
+    "l2": {
+     "text": "The stake is gone in {few} moves.\nThe game was fair. Everybody at the fire is quite sure the game was fair, which is {somehow worse|the part that stings|worse than being cheated would have been}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    },
+    "i": {
+     "text": "The winnings are not coin. They are {a lesson|the teaching itself|a thing that has to be shown}: the game itself, taught across the fire, once, properly, with the mistakes named as they happen.\nIt travels. Everything else on this rock stays where it is, but the game {travels|goes with them|packs}.",
+     "outcome": {
+      "kind": "skill",
+      "mag": "medium",
+      "stars": 3
+     }
+    },
+    "l3": {
+     "text": "Somewhere in the third round it becomes clear the information has been flowing the other way.\n{asker} now knows where the party landed, what the ship carries, and which of the party sleeps lightest, and paid for {none of it|not a coin of it|precisely nothing}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    },
+    "v": {
+     "text": "An hour goes by at the fire watching other people lose {interestingly|in ways worth studying|slowly and then all at once}.\nNo money changes hands in either direction, which by the local arithmetic makes the party the evening's {big winner|only winner|clear winner}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "leisure": 30,
+       "social": 20
+      },
+      "mag": "small",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "q_specimen": {
+   "title": "{The One That Keeps Coming Back|A Fixed Hour|What Took Theirs}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{asker} wants one animal out of {ground} dead or carried off: the one that has taken {few} of theirs and will be back for more.\nIt comes at {a fixed hour|the same hour every day|whatever hour the wind drops}, which is the only polite thing about it. There is payment: {payment}.",
+     "asides": {
+      "brave": "{member} asks what it looks like, and the answer takes long enough to be its own warning.",
+      "nurturing": "{member} asks after the ones already taken, and the silence answers before anybody does.",
+      "any": "{member} checks the light and does the arithmetic on the hour out loud."
+     },
+     "choices": [
+      {
+       "text": "Track it to where it sleeps first.",
+       "check": {
+        "stat": "WIS",
+        "dc": 12
+       },
+       "pass": "tr",
+       "fail": "amb",
+       "to": "tr"
+      },
+      {
+       "text": "Wait for the hour and take it head on.",
+       "to": "head"
+      },
+      {
+       "text": "Not this one. Not today.",
+       "to": "e3"
+      }
+     ]
+    },
+    "tr": {
+     "text": "The trail reads like a sentence with the grammar wrong, but it reads.\nIt sleeps below {remnant}, downwind of its own front door, alone, which changes {the whole arithmetic of the afternoon|everything about the afternoon|the shape of the afternoon}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "loot",
+      "mag": "large",
+      "stars": 3,
+      "rep": {
+       "greywanderers": 6
+      },
+      "fail": {
+       "kind": "harm",
+       "mag": "medium"
+      }
+     }
+    },
+    "amb": {
+     "text": "{Half an hour|An hour|Twenty minutes} into the tracking it becomes clear from the freshness of the ground that the roles have been reversed for at least {twenty minutes|half an hour|some time now}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 2,
+      "reward": "loot",
+      "mag": "medium",
+      "stars": 2,
+      "fail": {
+       "kind": "harm",
+       "mag": "large"
+      }
+     }
+    },
+    "head": {
+     "text": "{It is punctual|It arrives on the hour|It comes when they said it would}. That is the last thing about the next ten minutes that goes to {anybody's plan|the plan|plan at all}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 2,
+      "reward": "loot",
+      "mag": "large",
+      "stars": 3,
+      "fail": {
+       "kind": "harm",
+       "mag": "medium"
+      }
+     }
+    },
+    "e3": {
+     "text": "{asker} nods like somebody filing an answer with all the other answers.\nThe fire gets built up a little higher for the coming hour, and the party is a long way off before it {burns down|goes out|is out}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_pump": {
+   "title": "{The Pump|Dead Iron At The Worst Hour|What The Yard Needs}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "The pump at {place} has died at the worst possible point of the week, {weather}, and {stranger} is standing over it holding {tool} in a way that says {tool} has already been tried.\nWhat it needs is {qty} {material}. The merchant that stocks it is {distance}, and shut on account of {misfortune}, and the trough line goes dry by dark.",
+     "asides": {
+      "nurturing": "{member} has the side panel off before anybody has agreed to anything.",
+      "cynical": "{member} observes that the pump chose its moment, the way pumps do.",
+      "any": "{member} taps the housing twice and pronounces it dead in a professional voice."
+     },
+     "choices": [
+      {
+       "text": "Hand over the {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "g"
+      },
+      {
+       "text": "Strip it down and machine the part from scrap.",
+       "check": {
+        "stat": "INT",
+        "dc": 13
+       },
+       "pass": "f",
+       "fail": "x",
+       "to": "f"
+      },
+      {
+       "text": "Man the hand pump until the job is done, however long that is.",
+       "check": {
+        "stat": "STR",
+        "dc": 11
+       },
+       "pass": "m",
+       "fail": "x",
+       "to": "m"
+      }
+     ]
+    },
+    "g": {
+     "text": "The part goes in, the pump picks up mid-stroke like it never stopped, and the yard comes back to life around it.\nPayment is {payment}, pressed on the party over two refusals, and dinner is not optional {either|and is not up for discussion|at all}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "small",
+      "needs": {
+       "hunger": 50,
+       "social": 30
+      },
+      "stars": 2
+     }
+    },
+    "f": {
+     "text": "There is a part in the scrap pile that has never heard of the pump but can be talked into the job with a file and an hour.\nIt runs rough and it runs. {stranger} watches the whole operation like a sermon and pays over the asking, {on principle|out of principle|because it was done properly}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3
+     }
+    },
+    "x": {
+     "text": "The flywheel had one more turn in it, which {leader} finds out with the smallest bone in one hand.\nThe pump stays dead. The dinner happens anyway, out of guilt, and is very good, which does not entirely settle {the ledger|matters|it}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "needs": {
+       "hunger": 40,
+       "social": 20
+      },
+      "stars": 1
+     }
+    },
+    "m": {
+     "text": "Two hours on the hand pump in shifts, {weather}, with the light going.\nThe trough line holds. By the end half the district has come past to watch, and the party leaves with more invitations than it can eat through in a month.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 50,
+       "leisure": 20,
+       "hunger": 30
+      },
+      "mag": "small",
+      "stars": 2
+     }
+    }
+   }
+  },
+  "qe_debt": {
+   "title": "{Forty Minutes Ahead Of The Bailiff|The Boxes On The Step|Small Arithmetic}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{stranger} is on the step of a house at {place} with the door open behind and everything they own in {few} boxes.\nThe bailiff is forty minutes away by {vehicle}. The debt is real and the arithmetic is small, and the house is not small, and that is the whole story in one sentence.",
+     "asides": {
+      "empathetic": "{member} has picked up a box before deciding anything, because the boxes at least are simple.",
+      "cynical": "{member} asks what was borrowed against, and nods at the answer, and stops asking things.",
+      "any": "{member} reads the notice on the door twice, the second time slower."
+     },
+     "choices": [
+      {
+       "text": "Pay it.",
+       "give": {
+        "gold": "medium"
+       },
+       "to": "p2"
+      },
+      {
+       "text": "Read the paperwork. Paperwork always has a flaw.",
+       "check": {
+        "stat": "INT",
+        "dc": 13
+       },
+       "pass": "t2",
+       "fail": "t3",
+       "to": "t2"
+      },
+      {
+       "text": "Say nothing about money and carry boxes.",
+       "to": "c2"
+      }
+     ]
+    },
+    "p2": {
+     "text": "The bailiff arrives to a settled ledger and hates it, quietly, {in a van|from the gate|with the engine running}, for some time.\nNobody inside the house says thank you more than once, because more than once would mean starting to cry, and there is {a kettle on instead|tea instead|a kettle going instead}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 40
+      },
+      "mag": "medium",
+      "stars": 3
+     }
+    },
+    "t2": {
+     "text": "The flaw is in the dates, where the flaws live. The debt is real; this WEEK'S seizure is not, and {leader} explains why in the doorway with the paper held at reading distance.\nThe bailiff, to his credit, checks, swears once with feeling, and leaves. Everyone understands this is a postponement. A postponement is {a currency|worth having|not nothing}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 30
+      },
+      "mag": "medium",
+      "stars": 3,
+      "exp": 14
+     }
+    },
+    "t3": {
+     "text": "The arithmetic holds all the way down. Whoever drew this up has been to the same school as the flaw and got there first.\nThe party stays for the loading anyway. There is a right way to {carry a box out of a house|empty a house|do this} and it involves not being alone {while it happens|for it|when it happens}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 20
+      },
+      "stars": 1
+     }
+    },
+    "c2": {
+     "text": "{few} boxes, one van borrowed off a neighbour, one dog that rides in the front or nowhere.\nAt the end {stranger} shakes every hand twice and gives the party {payment}, and will not hear a word about it.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "small",
+      "needs": {
+       "social": 40
+      },
+      "stars": 2
+     }
+    }
+   }
+  },
+  "qe_ford": {
+   "title": "{The Ford|To The Axle|Strong Views}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A cart is in the ford at {place} to the axle, and {animal} that pulled it in has developed strong views about pulling it out.\n{stranger} is up to the knees in it, holding the bridle, the load, and their temper, in descending order of success. {weather}, which is not helping.",
+     "asides": {
+      "calm": "{member} rolls up both sleeves in a way that has ended arguments before.",
+      "hedonistic": "{member} points out, from the bank, that the water looks cold, which is confirmed from the water.",
+      "any": "{member} walks the ford line first to find where the bottom actually is."
+     },
+     "choices": [
+      {
+       "text": "Get behind it and heave.",
+       "check": {
+        "stat": "STR",
+        "dc": 12
+       },
+       "pass": "h2",
+       "fail": "hx",
+       "to": "h2"
+      },
+      {
+       "text": "Take {animal}'s head and talk it round.",
+       "check": {
+        "stat": "WIS",
+        "dc": 11
+       },
+       "pass": "w3",
+       "fail": "hx",
+       "to": "w3"
+      },
+      {
+       "text": "Walk on.",
+       "to": "e4"
+      }
+     ]
+    },
+    "h2": {
+     "text": "The cart comes out on the third heave with a sound like a boot leaving deep mud, scaled up.\n{stranger} insists on payment with the stubbornness of somebody who has decided the story needs a proper ending: {payment}, and names to go with it, and the promise of a dry seat by the fire at the next farm along.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "small",
+      "needs": {
+       "social": 30
+      },
+      "stars": 2
+     }
+    },
+    "w3": {
+     "text": "{animal} listens the way they listen: sideways, one ear, ready to disagree.\nThen it leans into the collar like the whole argument never happened and walks the cart out at its own pace, and {stranger} looks at {leader} as if witchcraft has been performed, which is left uncorrected.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "small",
+      "needs": {
+       "social": 40
+      },
+      "stars": 2
+     }
+    },
+    "hx": {
+     "text": "The cart comes out. One boot does not, for a while, and the water gets its full say in the matter before everything is back on dry ground.\nThe thanks are real and so is {the cold|the cold, for hours afterwards}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "needs": {
+       "social": 20
+      },
+      "stars": 1
+     }
+    },
+    "e4": {
+     "text": "The view back from the next rise: the cart still in the ford, {smaller now|further off|no smaller than it looked}, and the sound of the argument continuing without any need of the party's opinion.\nSome afternoons belong to {other people|somebody else|other people entirely}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_poacher": {
+   "title": "{Snares|Posted Ground|Set Badly}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "Snares on posted ground at {place}: {few} of them, set {this morning|recently|badly, which is its own kind of cruelty}, and one of them holding something still alive.\nThe land belongs to {stranger}, by {sign} on the gate. Whoever set the wire will be back before dark.",
+     "asides": {
+      "empathetic": "{member} is already kneeling at the live one, coat off, talking to it in the voice for frightened things.",
+      "aggressive": "{member} has picked out a waiting spot with a view of the gate and is standing in it.",
+      "any": "{member} counts the snares twice and marks each one with a stick."
+     },
+     "choices": [
+      {
+       "text": "Spring the snares and free what is in them.",
+       "check": {
+        "stat": "DEX",
+        "dc": 12
+       },
+       "pass": "s2",
+       "fail": "sx",
+       "to": "s2"
+      },
+      {
+       "text": "Wait for the one who set them.",
+       "to": "fight"
+      },
+      {
+       "text": "Take the catch and the wire both.",
+       "to": "theft",
+       "only": [
+        "cynical",
+        "apathetic",
+        "impulsive"
+       ]
+      }
+     ]
+    },
+    "s2": {
+     "text": "The wire comes off {few} pegs without a single one snapping back, and the live one is gone into the hedge before the coat is back on.\nGood wire, this. It goes in the pack, on the reasoning that it has resigned from its {previous employment|last job|former line of work}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "small",
+      "needs": {
+       "social": 20
+      },
+      "stars": 2
+     }
+    },
+    "sx": {
+     "text": "The {last|third} snare has a temper. The wire whips, and takes its fee out of the back of a hand on its way past.\nThe animal gets away clean, which everybody involved, including the hand, rules {a fair trade|a fair exchange|about right}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1
+     }
+    },
+    "fight": {
+     "text": "Whoever comes over the stile at dusk comes armed for {wire and rabbits|rabbits|an empty field} and finds the afternoon has other plans.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "loot",
+      "mag": "medium",
+      "stars": 2,
+      "fail": {
+       "kind": "harm",
+       "mag": "small"
+      }
+     }
+    },
+    "theft": {
+     "text": "The catch, the wire, and the pegs, all of it, gone inside {ten|fifteen} minutes.\nSomewhere behind, a poacher is going to stand in an empty field working out that somebody has poached the poaching, and there is a small ugly satisfaction in that which does not entirely survive {the walk|the walk back|the first mile of it}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "medium",
+      "crime": "pettyTheft",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_stall": {
+   "title": "{Short A Roof|Open To The Sky|The Missing Course}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A roof at {place} stands open to the sky with {stranger} on top of it, and the yard below says the job stopped mid-course: trestles out, ladder up, nothing moving.\nThe job is short {qty} {material}. The supplier is {distance}, and between here and there is {misfortune}, and the sky is not going to wait on any of it.",
+     "asides": {
+      "disciplined": "{member} looks at the half-done course and physically cannot leave it like that.",
+      "cynical": "{member} asks what the quote was, hears it, and whistles at the wrong part.",
+      "any": "{member} holds the ladder without being asked, which up a ladder is worth more than advice."
+     },
+     "choices": [
+      {
+       "text": "Hand over the {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "g2"
+      },
+      {
+       "text": "Go up and make what is there stretch.",
+       "check": {
+        "stat": "STR",
+        "dc": 11
+       },
+       "pass": "hh",
+       "fail": "hf",
+       "to": "hh"
+      },
+      {
+       "text": "Take the supplier's name and move on.",
+       "to": "e5"
+      }
+     ]
+    },
+    "g2": {
+     "text": "The course goes on before the light goes, and the roof is a roof by dark.\n{stranger} pays over the odds and will not be argued down: {payment}, counted into {leader}'s hand on the tailgate, and the first rain that night lands on finished work.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "needs": {
+       "social": 20
+      },
+      "stars": 2
+     }
+    },
+    "hh": {
+     "text": "An afternoon of passing, holding, and not looking down, and what is there stretches further than the arithmetic said it could.\nThe gap that is left is small enough to tarpaulin with dignity. Payment in {payment}, and a standing welcome under the roof the party {helped close|closed|got a course onto}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "small",
+      "needs": {
+       "social": 40,
+       "leisure": 10
+      },
+      "stars": 2
+     }
+    },
+    "hf": {
+     "text": "A batten gives, and for one long second the yard is a good deal closer than planned.\nCaught, mostly, by the trestle and partly by {stranger}, at the cost of a bruise shaped like carpentry. The tarpaulin goes on in silence.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "needs": {
+       "social": 10
+      },
+      "stars": 1
+     }
+    },
+    "e5": {
+     "text": "The supplier's name goes in {the diary|the book|the back of the diary} under things that can be fixed by somebody with a full pack and a free morning.\nBehind, on the roof, the hammering starts again anyway, slower, {weather}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_bet": {
+   "title": "{The Fair|The Stall That Does The Arithmetic|Small Stake, Big Pot}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A fair at {place}: {many} stalls, one band, and one stall taking money on {a strength machine|a ring toss that is not as easy as it looks|a card the whole crowd is sure it can follow}.\n{stranger} runs it with the face of somebody who has done the arithmetic and sleeps well on it. The stake is small. The pot is not.",
+     "asides": {
+      "hedonistic": "{member} has already lost twice and is having a wonderful time.",
+      "cynical": "{member} counts the winners over half an hour and reaches a number that is not zero, which is the clever part.",
+      "any": "{member} gets the {drink} in and settles down to watch the party's dignity attempt it."
+     },
+     "choices": [
+      {
+       "text": "Put the stake down and play.",
+       "give": {
+        "gold": "small"
+       },
+       "check": {
+        "chance": 40
+       },
+       "pass": "wb",
+       "fail": "lb",
+       "to": "wb"
+      },
+      {
+       "text": "Read the trick before spending a coin.",
+       "check": {
+        "stat": "INT",
+        "dc": 13
+       },
+       "pass": "rb",
+       "fail": "lb2",
+       "to": "rb"
+      },
+      {
+       "text": "Just enjoy the fair.",
+       "to": "v2"
+      }
+     ]
+    },
+    "wb": {
+     "text": "The pot pays out to a stall-holder's round of applause, which is how a professional buries a bad quarter of an hour.\nThe crowd carries {leader} to {bar} on the strength of it and the story is already growing on the way.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "needs": {
+       "leisure": 30,
+       "social": 30
+      },
+      "stars": 2
+     }
+    },
+    "lb": {
+     "text": "The arithmetic was theirs all along, the way it always was.\nThe stake is gone, the crowd is kind about it, and the {drink} afterwards tastes of being one more person the stall has put through the same {short education|brief education|short lesson}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "leisure": 20
+      },
+      "stars": 1
+     }
+    },
+    "rb": {
+     "text": "The trick is {in the thumb|in the felt|in the count}, and once seen it cannot be unseen.\nOne play, placed properly, and a quiet exit at the pace of somebody who knows exactly how long a stall-holder takes to {work out what just happened|catch up|do that arithmetic}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3
+     }
+    },
+    "lb2": {
+     "text": "After {forty minutes|an hour|half an evening} of watching, the only firm discovery is that the stall has been watching back, with professional interest, since minute five.\nNo coin has changed hands. Both sides understand it is a draw, and there is a strange courtesy in {the nod exchanged at parting|the nod at the end of it|how the nod is given}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "leisure": 10
+      },
+      "stars": 1
+     }
+    },
+    "v2": {
+     "text": "The band is {loud|too loud|loud and not good}, {food} is exactly what it should be and no better, and for one whole evening the party's line of work does not come up once.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "leisure": 40,
+       "social": 30,
+       "hunger": 30
+      },
+      "mag": "small",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_pilgrim": {
+   "title": "{The Pilgrim|Short Of The Shrine|A Vow With A Deadline}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{stranger} is sitting against {sign} at {place}, sweating, {weather}, a good way short of where a vow says they must stand by dark.\nSomething is wrong in the chest and they will not name it, on the reasoning, common among the devout and the frightened, that naming a thing invites it in.",
+     "asides": {
+      "empathetic": "{member} has the water out and is taking the pulse before the introductions finish.",
+      "cynical": "{member} mutters about vows with deadlines, and stays anyway, and finds a place for the pack under the pilgrim's head.",
+      "any": "{member} reads {sign} and works out the distance twice, hoping for a different answer."
+     },
+     "choices": [
+      {
+       "text": "Give what medicine the pack holds.",
+       "give": {
+        "mat": "herb",
+        "qty": 2
+       },
+       "to": "gm"
+      },
+      {
+       "text": "Treat it in the field, bare-handed.",
+       "check": {
+        "stat": "WIS",
+        "dc": 12
+       },
+       "pass": "wt",
+       "fail": "wf",
+       "to": "wt"
+      },
+      {
+       "text": "Carry them the rest of the way.",
+       "check": {
+        "stat": "STR",
+        "dc": 11
+       },
+       "pass": "ct",
+       "fail": "cf",
+       "to": "ct"
+      }
+     ]
+    },
+    "gm": {
+     "text": "The herbs do what herbs do, slowly, and the colour comes back in the wrong order but it comes back.\nThe pilgrim pays in the only coin the order deals in: a prayer that works, taught word-perfect on the walk that is left, with strict instructions about {when never to use it|the one hour it must never be used|who it must never be used on}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "holyvaticanempire": 6
+      }
+     }
+    },
+    "wt": {
+     "text": "Breathing settles under {leader}'s hands the old way: posture, pressure, and a voice kept deliberately boring.\nThe last stretch is walked slow, together, and at the shrine the pilgrim stands there before dark, and does not look back, and does not need to.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 30
+      },
+      "mag": "medium",
+      "stars": 2,
+      "rep": {
+       "holyvaticanempire": 8
+      }
+     }
+    },
+    "wf": {
+     "text": "Whatever is wrong in that chest is above field repair and everybody kneeling on the verge knows it.\nWhat can be done is done: shade, water, and company, which is not nothing. The vow is missed. The pilgrim says the deadline mattered less than the walking, and almost sounds {convinced|as if they mean it|like somebody who believes it}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 20
+      },
+      "stars": 1
+     }
+    },
+    "ct": {
+     "text": "{distance}, most of it uphill, all of it in the open, {weather}, in relays.\nThe shrine appears around the last bend with ten minutes of the light left, and the pilgrim arrives carried, which their order, consulted afterwards, rules is arriving all the same.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 50
+      },
+      "mag": "medium",
+      "stars": 2,
+      "rep": {
+       "holyvaticanempire": 8
+      }
+     }
+    },
+    "cf": {
+     "text": "Four kilometres of it, and then the party's legs file a formal objection on a wet slope.\nEverybody sits on the wet slope for a while, wrecked together, and the pilgrim laughs for the first time all day, which is worth something even if nothing else was {reached|arrived at|got to}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "needs": {
+       "social": 30
+      },
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_lockup": {
+   "title": "{Lot 41|The Lockup Nobody Claimed|Keys That Do Not Fit}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A lockup at {place}, sold at auction {timeAgo} to a bidder who never came for it.\n{stranger} has a ring of keys that do not fit, a paper that says the contents are theirs if the door is open by dark, and an offer: the party opens it, the party gets a share of whatever is shelved inside.",
+     "asides": {
+      "cautious": "{member} asks why the bidder never came, which is the right question, and gets a shrug, which is the honest answer.",
+      "impulsive": "{member} has tried three keys already, on the grounds that somebody had to.",
+      "any": "{member} squints through the vent slot with a match and reports shapes, plural."
+     },
+     "choices": [
+      {
+       "text": "Pick it.",
+       "check": {
+        "stat": "DEX",
+        "dc": 13
+       },
+       "pass": "pl",
+       "fail": "pf",
+       "to": "pl"
+      },
+      {
+       "text": "Force the door.",
+       "check": {
+        "stat": "STR",
+        "dc": 12
+       },
+       "pass": "fl",
+       "fail": "pf",
+       "to": "fl"
+      },
+      {
+       "text": "Read the auction paper properly first.",
+       "check": {
+        "stat": "INT",
+        "dc": 12
+       },
+       "pass": "ip",
+       "fail": "e6",
+       "to": "ip"
+      }
+     ]
+    },
+    "pl": {
+     "text": "The lock is old and proud and gives up its dignity one pin at a time.\nInside: shelves, packed by somebody methodical, and the party's share of it fills the packs to the straps. {stranger} keeps the paper and the story, and considers it {a bargain|a good trade|well bought}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "stars": 3
+     }
+    },
+    "fl": {
+     "text": "The door loses{, eventually| in the end| on the fourth go}, but takes its toll on the way down: half of what was shelved behind it does not survive the argument.\nThe half that does is still a good afternoon's work by {weight|weight alone|any measure}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "medium",
+      "stars": 2
+     }
+    },
+    "pf": {
+     "text": "The door wins the first two rounds and part of the third, and by dark it is still shut and the paper is so much kindling.\n{stranger} is decent about it, which stings worse than the knuckles.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1
+     }
+    },
+    "ip": {
+     "text": "The paper is genuine, and better than genuine: down in the schedule, in the small type, is an inventory the seller never read.\n{leader} names a fairer split before a single key turns, with the inventory as the argument, and it is agreed to at speed. The door, tried once more with feeling, opens after all on {the plainest key on the ring|a key nobody had bet on|the one key that looked wrong for it}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3
+     }
+    },
+    "e6": {
+     "text": "The small type defeats {the light|the eyes|everybody in turn} and the light is going.\nSome doors keep their afternoons. The keys go back in a pocket, the paper back in its envelope, and the lockup keeps its shapes, plural, for {another owner|the next owner|somebody else entirely}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "q_leyline": {
+   "title": "{The Broken Line|Where The Magic Stopped|Dry Ground}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "Nothing casts at {place}. Not badly: at all. {member} tries the smallest cantrip anybody knows and {ground} takes it like a stone taking rain.\nSomebody broke the line here, and did it on purpose, from the look of the burn pattern. {asker} is camped a hundred metres off the dead spot with {instrument} and a face that says this is week three.",
+     "asides": {
+      "cynical": "{member} asks who profits from a place nobody can cast in, and stops talking, because the answer arrived by itself.",
+      "disciplined": "{member} paces the dead zone edge to edge and writes the diameter down.",
+      "any": "{member} keeps trying the cantrip, in the way of somebody checking a light switch that is definitely broken."
+     },
+     "choices": [
+      {
+       "text": "Splice the line with {qty} {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "sp"
+      },
+      {
+       "text": "Read the burn and work out who broke it.",
+       "check": {
+        "stat": "INT",
+        "dc": 14
+       },
+       "pass": "rd",
+       "fail": "rf",
+       "to": "rd"
+      },
+      {
+       "text": "Whatever wanted this ground dry is still here. Find it.",
+       "check": {
+        "stat": "WIS",
+        "dc": 12
+       },
+       "pass": "oil",
+       "fail": "amb",
+       "to": "oil"
+      }
+     ]
+    },
+    "sp": {
+     "text": "The splice is ugly work with the party's own stock and it holds on the second attempt.\nThe line comes back the way a tap comes back: air first, then everything at once. Every hair on the away team stands up, and for one second {leader} can feel where every other line on this {rock|world|whole rock} runs.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "magesguild": 8
+      }
+     }
+    },
+    "rd": {
+     "text": "The break was cut from underneath and cut clean, which takes a contract and a specialist, not an accident.\n{asker} looks at the diagram for a long time and then names a price for the party never having drawn it: {payment}, and the diagram goes in the fire.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 3,
+      "rep": {
+       "deepcontractors": -6
+      }
+     }
+    },
+    "rf": {
+     "text": "The burn reads as an accident right up until the party is a day gone and {member} sits up in the dark having worked out what was wrong with the third measurement.\nBy then it is somebody else's {dead ground|problem|dead ground entirely}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    },
+    "oil": {
+     "text": "Down under {remnant}, in a cut nobody made with tools, something is sitting in its own weight and waiting for the line to come back.\nWithout the leyline it cannot regenerate. That is the entire reason the line was cut, and whoever cut it never came back to {finish the job|finish it|do the second half}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "petrodemons": -10,
+       "magesguild": 6
+      },
+      "fail": {
+       "kind": "harm",
+       "mag": "large"
+      }
+     }
+    },
+    "amb": {
+     "text": "{It finds the party first|It is already moving when they turn|It comes up out of the cut first}, which on dry ground means finding them without {a single spell|one spell|anything at all} between them and it.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "loot",
+      "mag": "medium",
+      "stars": 3,
+      "fail": {
+       "kind": "harm",
+       "mag": "large"
+      }
+     }
+    }
+   }
+  },
+  "q_grimoire": {
+   "title": "{The Book That Is Eating Itself|Bad CamelCase|Burn It Or Do Not}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A book at {place}, out of the weather under {remnant}, open, with something wrong on the left-hand page.\nOne formula in it has the words apart. It has been copying itself into its neighbours for a while now, and the neighbours have started agreeing with it. {sound}, and the pages are warm.",
+     "asides": {
+      "cautious": "{member} will not touch it and says so once, clearly, for the record.",
+      "brave": "{member} has read three lines aloud before anybody can stop them, and stops on their own, hard.",
+      "any": "{member} counts how many entries have already gone over and gets a bigger number the second time."
+     },
+     "choices": [
+      {
+       "text": "Burn it. That is the procedure.",
+       "to": "burn"
+      },
+      {
+       "text": "Cut out the clean pages first.",
+       "check": {
+        "stat": "DEX",
+        "dc": 14
+       },
+       "pass": "cut",
+       "fail": "spread",
+       "to": "cut"
+      },
+      {
+       "text": "Copy the infected formula down properly before it goes.",
+       "check": {
+        "stat": "INT",
+        "dc": 15
+       },
+       "pass": "cop",
+       "fail": "spread",
+       "to": "cop"
+      }
+     ]
+    },
+    "burn": {
+     "text": "It goes up fast and it argues on the way, which books do not usually do.\nWhat is left is a clean patch of {ground} and the flat certainty of having done the correct thing, which is worth {less on the walk home than it should be|surprisingly little on the walk home|almost nothing by the time the ship is in sight}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 2,
+      "exp": 16,
+      "rep": {
+       "magesguild": 6
+      }
+     }
+    },
+    "cut": {
+     "text": "{few} pages come out clean with the knife, taken from the outside in, ahead of the spread.\nThe rest burns. What is saved is worth carrying: workings from before whoever wrote this got careless, in a hand that never once {separated a word|let a word come apart|got one wrong}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "magesguild": 8
+      }
+     }
+    },
+    "cop": {
+     "text": "Writing it out correctly is the hardest {hour|two hours} anybody has spent sitting down. The formula does not want to be joined up and says so in the wrist.\nJoined up, it is a real thing, and a considerable one. The book goes on the fire immediately afterwards and nobody {argues|says a word|objects}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "spread": {
+     "text": "It gets into the party's own notes before anybody notices the handwriting changing.\nEverything written down in the last {few} days has to be burned in a heap on {ground}, and it takes a piece out of everyone to do it.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1,
+      "exp": 6
+     }
+    }
+   }
+  },
+  "q_kessler": {
+   "title": "{Above The Cage|The Armoured Rocket|What Came Down Instead}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "Something came down at {place} that was built to be destroyed on the way up: layered plate, sacrificial, a hull that is nine tenths armour and one tenth room.\nOne of the armoured launches, then, and this one did not dock. {instrument} says there is still power in it. {wrongness}.",
+     "asides": {
+      "cautious": "{member} points out that a hull built to be shredded and this hull is not shredded, and lets that hang.",
+      "empathetic": "{member} is thinking about the volunteer list and how those are free to sign.",
+      "any": "{member} walks the plate seams and finds the door before anybody finds a window."
+     },
+     "choices": [
+      {
+       "text": "Cut in.",
+       "check": {
+        "stat": "STR",
+        "dc": 13
+       },
+       "pass": "inn",
+       "fail": "cx",
+       "to": "inn"
+      },
+      {
+       "text": "Power the beacon up with {qty} {material} and let somebody else come for it.",
+       "give": {
+        "material": true
+       },
+       "to": "bea"
+      },
+      {
+       "text": "Strip the plate and go.",
+       "to": "str"
+      }
+     ]
+    },
+    "inn": {
+     "text": "Inside: {three couches, two of them used|four couches, three of them used|three couches and two sets of boots}, and a log kept by hand right up until it was not.\nThey got through the debris. They got through it and the docking never happened and they came down here instead, and somebody wrote all of it down for whoever {opened the door|got here|came}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "sciencecommand": 8
+      }
+     }
+    },
+    "cx": {
+     "text": "Sacrificial plate is sacrificial in every direction. The layer that gives gives all at once, and takes {the back of a hand|a length of forearm|two fingers' worth of glove} with it on the way past.\nThe door stays shut. Whatever is behind it {stays behind it|stays there|is left there}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1
+     }
+    },
+    "bea": {
+     "text": "The beacon takes the {material} and lights, and starts saying the same four words to an orbit nobody can currently cross.\nSomebody will hear it eventually. The party's registry is in the header, and that is a name in a file at a space centre, which is a thing that pays out later and pays out {well|very well|better than the job did}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "sciencecommand": 10
+      }
+     }
+    },
+    "str": {
+     "text": "The plate comes off in {sheets|slabs|long curved pieces} and it is good plate: rated for the grinder, which means rated for anything the party is likely to walk into.\nThe couches stay where they are. Nobody says anything about the two that are used, and nobody {has to|needs to|does}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "stars": 2
+     }
+    }
+   }
+  },
+  "q_convoy": {
+   "title": "{Somebody Else's Stencils|The Barge At Anchor|Freight}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{vessel} sits at {place} with the ramp down and {cargo} half unloaded onto {ground}.\nNobody is aboard. The manifest is on a clip by the ramp, filled in properly all the way to the third page, and then not at all.",
+     "asides": {
+      "cynical": "{member} reads the manifest and observes that the interesting column is the one nobody filled in.",
+      "loyal": "{member} says out loud that somebody is coming back for this, and stands where they can watch the horizon.",
+      "any": "{member} checks the ramp hydraulics and finds them powered, holding, and recently serviced."
+     },
+     "choices": [
+      {
+       "text": "Finish the unload and leave the manifest signed.",
+       "check": {
+        "stat": "STR",
+        "dc": 11
+       },
+       "pass": "fin",
+       "fail": "hurt",
+       "to": "fin"
+      },
+      {
+       "text": "Take a share and go.",
+       "to": "take"
+      },
+      {
+       "text": "Wait for whoever is coming back.",
+       "to": "wait"
+      }
+     ]
+    },
+    "fin": {
+     "text": "It is {four|five|three} hours of honest work and the ramp is clear by the end of it, everything squared, the clip signed with the party's own registry.\nThe crew, when they come back, come back at a run, and the arithmetic of what they were expecting to find against what is actually standing there does something to their faces. The Society pays its debts {the same day|before dark|inside the week}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 3,
+      "rep": {
+       "truckerssociety": 12
+      }
+     }
+    },
+    "hurt": {
+     "text": "A drum that had to stay upright does not, and the corner of it finds {a shin|an ankle|the outside of a knee} on the way over.\nThe rest gets unloaded slower and worse. It is still unloaded, and the clip {still gets signed|gets signed|is signed at the end of it}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1,
+      "rep": {
+       "truckerssociety": 5
+      }
+     }
+    },
+    "take": {
+     "text": "What comes away fits in the packs and is worth having, and the manifest never had a fourth page to disagree with.\nSomewhere {ahead|down the route|at the far end of this} there is a hauler who is going to stand at the bottom of a ramp doing arithmetic. The Society keeps a very long memory and {a very dense network|a network to match|no gaps anywhere in its network}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "crime": "grandTheft",
+      "stars": 2,
+      "rep": {
+       "truckerssociety": -14
+      }
+     }
+    },
+    "wait": {
+     "text": "Two hours on the ramp with {sound} for company, and then they come over the rise carrying the fourth page and a story about why.\nNobody is robbed, everybody eats, and the party leaves with a name to use at any fire on this route and the number of an old handset that {always answers|answers at any hour|has never once not answered}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 50,
+       "hunger": 40
+      },
+      "mag": "medium",
+      "stars": 2,
+      "rep": {
+       "truckerssociety": 10
+      }
+     }
+    }
+   }
+  },
+  "q_verden": {
+   "title": "{The Planted Limb|What Grows Back|Two Of Them Now}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a garden at {place}, laid out in rows on ground that grows nothing, and a blue-skinned figure working it who greets the party in flawless MarkovSpeak and keeps working.\nOne of the rows is an arm. It is planted at the wrist, it is not dead, and it is further along than it was {last week|a week ago|when the rows were last counted}.",
+     "asides": {
+      "cautious": "{member} decides not to ask whose arm and then asks whose arm.",
+      "empathetic": "{member} asks whether it hurt, and gets a long, considered, entirely cheerful answer.",
+      "any": "{member} looks at the row and then at the gardener's two intact arms and gives up on the arithmetic."
+     },
+     "choices": [
+      {
+       "text": "Give {qty} {material} for the beds.",
+       "give": {
+        "material": true
+       },
+       "to": "gv"
+      },
+      {
+       "text": "Work the rows for a day.",
+       "check": {
+        "stat": "CON",
+        "dc": 11
+       },
+       "pass": "wk",
+       "fail": "wf",
+       "to": "wk"
+      },
+      {
+       "text": "Ask what they threw into a star, and why.",
+       "to": "ask"
+      }
+     ]
+    },
+    "gv": {
+     "text": "The beds take it and the gardener's hands go straight to work with it, no thanks offered, because thanks are for strangers.\nWhat comes back at the end of the row is a cutting of something that should not root in {ground} and does, and instructions for it that take an hour and are given twice {to be sure|over|to make certain}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "stars": 3,
+      "rep": {
+       "verden": 10
+      }
+     }
+    },
+    "wk": {
+     "text": "A day in the rows: heavy, repetitive, done properly, in company that talks the whole time and says something worth keeping about {one hour in six|twice an afternoon|more often than that}.\nBy dark the party has been fed twice and given a name that works in any Verden household on {any world|any world at all|whichever world they are on}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 60,
+       "hunger": 50,
+       "leisure": 20
+      },
+      "mag": "medium",
+      "stars": 2,
+      "rep": {
+       "verden": 12
+      }
+     }
+    },
+    "wf": {
+     "text": "The rows win. Nobody warned the party that a Verden day is measured against a Verden back.\nThe gardener finds this funnier than anybody has found anything in weeks and packs the party off with food and a genuinely sympathetic pat that nearly puts {leader} in {the bed|the row|the soil}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "hunger": 40,
+       "social": 30
+      },
+      "mag": "small",
+      "stars": 1,
+      "rep": {
+       "verden": 6
+      }
+     }
+    },
+    "ask": {
+     "text": "The answer takes the walk to the end of the row and back and is not a lament.\nThey put the whole of it into the sun on purpose, all of it, and there is nothing in the telling that regrets it, and by the end {leader} is no longer certain the party's own pockets represent the winning side of {the argument|it|that particular argument}.",
+     "outcome": {
+      "kind": "skill",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "verden": 8
+      }
+     }
+    }
+   }
+  },
+  "q_magamui": {
+   "title": "{One At A Time|The Quiet One In The Camp|Whose Idea Was It}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A survey camp at {place}, {few} of them, and every one of them can tell you exactly whose idea it was to dig here except the one whose idea it was.\nThey are all agreed it was a good idea. They are agreed in the same words. {wrongness}, and one of them has not blinked since the party walked in.",
+     "asides": {
+      "cynical": "{member} asks each of them separately and gets the sentence back with the commas in the same places.",
+      "cautious": "{member} has stopped standing between anybody and the door.",
+      "any": "{member} watches the quiet one watch the party and does not care for the arithmetic of it."
+     },
+     "choices": [
+      {
+       "text": "Work out which one is being ridden.",
+       "check": {
+        "stat": "WIS",
+        "dc": 14
+       },
+       "pass": "id",
+       "fail": "wrong",
+       "to": "id"
+      },
+      {
+       "text": "Get the camp away from the dig, all of them, now.",
+       "check": {
+        "stat": "PSI",
+        "dc": 13
+       },
+       "pass": "ev",
+       "fail": "wrong",
+       "to": "ev"
+      },
+      {
+       "text": "Not the party's dig, not the party's camp.",
+       "to": "left"
+      }
+     ]
+    },
+    "id": {
+     "text": "It is not the quiet one. The quiet one is {exhausted|running on nothing|three days past sleeping}, and has been carrying the whole camp's shifts because everybody else keeps forgetting they agreed to take them.\nIt is the one who has been most reasonable all afternoon. The Guild has standing orders about this and they are one line long, and it needs doing before the thing gets time to {move house|change tenant|find somebody else}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "magesguild": 14
+      },
+      "fail": {
+       "kind": "harm",
+       "mag": "large"
+      }
+     }
+    },
+    "ev": {
+     "text": "It takes the whole of {leader}'s voice and every hour of daylight, and the camp comes off the dig in one piece and stays off it.\nUp on the ridge, with distance under them, {few} of them start crying and one of them starts remembering things about the last month that had not previously happened to anybody.",
+     "outcome": {
+      "kind": "none",
+      "mag": "large",
+      "stars": 4,
+      "exp": 22,
+      "rep": {
+       "magesguild": 10
+      }
+     }
+    },
+    "wrong": {
+     "text": "The party picks the wrong one, and the camp closes round the mistake the way a hand closes.\nIt is a bad {half hour|twenty minutes|hour} and only some of it is remembered afterwards, in the wrong order, by {different people|three different people|everybody differently}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 1
+     }
+    },
+    "left": {
+     "text": "Behind, the camp goes back to agreeing with itself, in the same words, on the same ground.\n{member} writes the coordinates down and underlines them, which is what you do when you {cannot do anything|can do nothing else|have nothing else to give}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "q_pigeon": {
+   "title": "{Ninety Kilometres An Hour|The Bird With The Stick|Post}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a loft at {place}, built out of {remnant} and considerable stubbornness, and {asker} keeping {many} birds in it against {hazard}.\nNothing electronic gets in or out of here. The birds do, at ninety with a tailwind, with a stick tied to the leg, and one of them has not come back.",
+     "asides": {
+      "loyal": "{member} asks how long overdue and does the arithmetic out loud and then stops doing it out loud.",
+      "cynical": "{member} observes that a whole civilisation of instant everything ends up here, with a bird.",
+      "any": "{member} is being sized up by {many} birds at once and finding it worse than expected."
+     },
+     "choices": [
+      {
+       "text": "Go and find the bird.",
+       "check": {
+        "stat": "WIS",
+        "dc": 12
+       },
+       "pass": "fnd",
+       "fail": "nof",
+       "to": "fnd"
+      },
+      {
+       "text": "Give {qty} {material} for the loft and carry the post yourselves.",
+       "give": {
+        "material": true
+       },
+       "to": "car"
+      },
+      {
+       "text": "Ask what is on the sticks.",
+       "to": "asked"
+      }
+     ]
+    },
+    "fnd": {
+     "text": "It is down under {remnant} with a wing that will mend and a stick still on the leg, and it puts up a fight about being picked up, which is a good sign in a bird.\nWhat is on the stick is somebody's whole year. The loft pays in the only currency that means anything out here, which is being owed something by {a keeper of birds|the keeper of a loft|somebody who keeps birds}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "truckerssociety": 8
+      }
+     }
+    },
+    "nof": {
+     "text": "Two days of {ground} and {hazard} and nothing with feathers on it anywhere.\nThe keeper takes the news the way keepers do, which is by going to feed the others.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    },
+    "car": {
+     "text": "The loft gets its {material}, and the party gets a satchel of sticks and a route, and does the round on foot because a hull would never make the last leg.\nEvery stop on it is somebody who has not heard from anybody in a season. Nobody lets the party leave without feeding them {first|first, properly|before anything else}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 60,
+       "hunger": 40
+      },
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "truckerssociety": 12
+      }
+     }
+    },
+    "asked": {
+     "text": "Births, mostly. Prices. Two deaths that people needed to know about in an order that mattered.\nOne stick is not read out. It goes in a box with {lots} others, and the keeper says the box is for after, and does not say {after what|what after means|any more than that}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 2,
+      "exp": 14
+     }
+    }
+   }
+  },
+  "q_father": {
+   "title": "{What Fell|The Piece Of Him|Nothing Grows Around It}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "Something came down at {place} that is not debris, and {ground} for {few} metres around it has stopped doing anything at all: no dust settling, no {sound}, nothing rotting.\n{instrument} will not read it. Reading it is not the sort of thing it is for. {asker} is kneeling at the edge of the circle, and has been for some time.",
+     "asides": {
+      "cautious": "{member} counts the metres to the edge and stands at that number plus two.",
+      "brave": "{member} has a hand out over the line and is holding it there, testing.",
+      "any": "{member} says the word out loud, and then looks embarrassed, and is right."
+     },
+     "choices": [
+      {
+       "text": "Touch it.",
+       "to": "touch"
+      },
+      {
+       "text": "Get it covered and get word out.",
+       "give": {
+        "material": true
+       },
+       "to": "cov"
+      },
+      {
+       "text": "Leave it where it fell.",
+       "to": "lv"
+      }
+     ]
+    },
+    "touch": {
+     "text": "It is cold and it is not stone and something goes up the arm and keeps going.\nWhen it lets go, the world is arranged slightly differently and {leader} has something they did not walk in with, and no training anywhere accounts for it, which is {exactly the point of it|the whole point of it|the point}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "large",
+      "stars": 5,
+      "rep": {
+       "holyvaticanempire": 8,
+       "magesguild": -6
+      }
+     }
+    },
+    "cov": {
+     "text": "The {material} goes over it and the circle goes under a cairn, and the position is written down twice in two different hands.\nThe kneeling one thanks the party in a language that ran out of speakers a while ago, and pays in the way of people with nothing: {everything they have|all of it|what little there is}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "holyvaticanempire": 12
+      }
+     }
+    },
+    "lv": {
+     "text": "It stays where it fell with somebody kneeling at the edge of it, and the party walks out through ground that starts behaving normally again about {forty|thirty|fifty} paces on.\nIt is a relief. Nobody expected it to be {a relief|that|one}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 2,
+      "exp": 14
+     }
+    }
+   }
+  },
+  "q_prospect": {
+   "title": "{The Claim|Markers In The Ground|Two Names On One Patch}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "Two sets of claim markers at {place}, driven into the same {ground}, {few} paces apart, both of them legal on paper somewhere.\n{asker} has one set. The other set's owner is due back at any hour, and there is exactly one seam under all of it. {sound}, which does not help anybody's nerves.",
+     "asides": {
+      "calm": "{member} suggests that a seam under two claims is a bigger seam than either of them costed for.",
+      "aggressive": "{member} has already worked out which set of markers comes out easier.",
+      "any": "{member} reads both papers and finds them both genuine, which is the whole problem."
+     },
+     "choices": [
+      {
+       "text": "Broker it before the other one gets back.",
+       "check": {
+        "stat": "PSI",
+        "dc": 13
+       },
+       "pass": "bro",
+       "fail": "brf",
+       "to": "bro"
+      },
+      {
+       "text": "Survey the seam properly and let the ground decide.",
+       "check": {
+        "stat": "INT",
+        "dc": 12
+       },
+       "pass": "sur",
+       "fail": "brf",
+       "to": "sur"
+      },
+      {
+       "text": "Pull the other set of markers.",
+       "to": "pull"
+      }
+     ]
+    },
+    "bro": {
+     "text": "A split, in writing, witnessed by {three|four} people who do not like each other, which is the strongest kind of witnessing there is.\nThe other one arrives to a signed page instead of an argument and takes twenty minutes to stop looking for the catch. The party's cut is written in as brokerage, which nobody {objects to|argues with|queries}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "sur": {
+     "text": "The seam runs {the other way entirely|nothing like where either paper says|at right angles to both of them}. Both claims clip the shoulder of it and neither of them sits on it.\nThe real body is out under open ground nobody has papered at all, which the party knows first and by {some distance|a clear margin|a day at the least}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "brf": {
+     "text": "The other one gets back mid-sentence and has been rehearsing {on the walk|the whole way up|since the last ridge}.\nIt goes the way these go, at speed, in the wrong order, on ground neither of them will {get to keep|keep|hold by the end of it}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 2,
+      "reward": "loot",
+      "mag": "medium",
+      "stars": 2,
+      "fail": {
+       "kind": "harm",
+       "mag": "medium"
+      }
+     }
+    },
+    "pull": {
+     "text": "The markers come out {easily|without much argument|one-handed}. That is the trouble with markers.\nSomebody is going to walk back onto this patch and find their year gone, and the party is paid in ore for having made it happen {quickly and quietly|quickly|without a word said}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "medium",
+      "crime": "propertyDestruction",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "q_shrinecall": {
+   "title": "{The Handset|Tuned Right|Whoever Answers}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a handset at {place}, an old indestructible brick of a thing, wired into {remnant} by somebody who knew what they were doing.\nIt is tuned. That is the point of it being here. {asker} has been keeping the site since before the party landed and will not touch it, and is very clear that the not touching is a decision and not a fear.",
+     "asides": {
+      "cynical": "{member} asks who the last caller was and gets a look and no name.",
+      "empathetic": "{member} asks who the keeper wants to call, and the answer takes a while to arrive.",
+      "any": "{member} runs a thumb over the casing and finds it warm in a room that is not."
+     },
+     "choices": [
+      {
+       "text": "Call.",
+       "check": {
+        "stat": "PSI",
+        "dc": 14
+       },
+       "pass": "ans",
+       "fail": "wrongno",
+       "to": "ans"
+      },
+      {
+       "text": "Retune it with {qty} {material} and hand it back to the keeper.",
+       "give": {
+        "material": true
+       },
+       "to": "ret"
+      },
+      {
+       "text": "Cut the line.",
+       "to": "cut2"
+      }
+     ]
+    },
+    "ans": {
+     "text": "Something picks up on the fourth ring and does not say hello.\nWhat it says instead takes eleven seconds and is answering a question nobody in the party has asked out loud, and afterwards {leader} sits down on {ground} for a while.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "wrongno": {
+     "text": "Something picks up. It is not what the tuning was for. It stays on the line after the handset goes down and it is still there, faintly, under {sound}, for the whole walk out.\n{member} does not sleep properly for a while after.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 2,
+      "exp": 16
+     }
+    },
+    "ret": {
+     "text": "The {material} does it. The tuning comes back true and the keeper takes the handset in both hands and looks at it, and then at the party, and asks them to go outside for a minute.\nWhatever gets said in there takes longer than a minute. Afterwards the keeper is different in the face and pays {over the odds|far over the odds|more than was asked}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "technomancers": 8
+      }
+     }
+    },
+    "cut2": {
+     "text": "The wire parts and the warmth goes out of the casing in about {a second and a half|two seconds|the time it takes to put it down}.\nThe keeper says thank you, and means it, and is crying, and means that {too|as well|just as much}.",
+     "outcome": {
+      "kind": "none",
+      "mag": "medium",
+      "stars": 3,
+      "exp": 18
+     }
+    }
+   }
+  },
+  "q_lavabath": {
+   "title": "{Harmless Now|The Pool That Drains You|In Up To The Knee}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a working at {place} where {ground} opens onto a pool that ought to be lethal and is not, since the Squishing took the heat out of the argument.\nIt does not burn. It drains. {asker} has {few} people going in to the knee in shifts to pull something out of the bottom, and they are coming out empty and grey.",
+     "asides": {
+      "brave": "{member} has a boot off before the sentence is finished.",
+      "cautious": "{member} asks what conjured lava does instead, and gets told, and puts the boot back on.",
+      "any": "{member} watches one of the shift come out and decides the grey is the interesting part."
+     },
+     "choices": [
+      {
+       "text": "Take a shift.",
+       "check": {
+        "stat": "CON",
+        "dc": 13
+       },
+       "pass": "gotit",
+       "fail": "drain",
+       "to": "gotit"
+      },
+      {
+       "text": "Rig a way to do it without anybody going in.",
+       "give": {
+        "material": true
+       },
+       "to": "rig"
+      },
+      {
+       "text": "Ask what is down there first.",
+       "to": "what"
+      }
+     ]
+    },
+    "gotit": {
+     "text": "Two minutes in the pool costs about what an hour of hard casting costs, and the second minute costs more than the first.\nWhat comes up on the third shift is worth every unit of it, and {asker} says so, and pays like somebody who has been waiting {a long time|weeks|the whole season} to pay somebody.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "drain": {
+     "text": "It takes more than it was supposed to, all at once, near the end of the shift.\n{leader} comes out on somebody else's shoulder, empty to the floor of the tank, and it takes until the next day to be worth {talking to|much|anything at all}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 1
+     }
+    },
+    "rig": {
+     "text": "The {material} makes a grab and a line and a frame to hang the whole thing off, and it takes three attempts and works on the fourth.\nNobody goes in the pool again. That is the part of it the shift crew care about, and they are the ones who decide {what the party is paid|the rate|what it was worth}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 3
+     }
+    },
+    "what": {
+     "text": "{Somebody's brother|Somebody's daughter|Somebody's mate off the same shift}, is what is down there, from before anybody knew the pool did not burn.\nThe shifts are not mining. They have been going in to the knee in turns for {a fortnight|three weeks|eleven days} to bring somebody home, and did not think the party would help if they said so first.",
+     "choices": [
+      {
+       "text": "Then take a shift.",
+       "check": {
+        "stat": "CON",
+        "dc": 12
+       },
+       "pass": "home",
+       "fail": "drain",
+       "to": "home"
+      },
+      {
+       "text": "Rig the grab instead.",
+       "give": {
+        "material": true
+       },
+       "to": "home"
+      }
+     ]
+    },
+    "home": {
+     "text": "It takes {the rest of the day|until dark|another six hours} and most of what everybody has, and it is done, and he comes up.\nThe camp does what camps do, which is to feed everyone at once and put the party in the middle of it and not let them pay for {anything ever again|a single thing|anything, ever}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 60,
+       "hunger": 50,
+       "sleep": 30
+      },
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "greywanderers": 10
+      }
+     }
+    }
+   }
+  },
+  "q_scrap": {
+   "title": "{A Scrap Of Creation|The Door In The Air|Test Ground}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a seam in the air over {place} about the size of a door, and behind it the light is the wrong colour and {ground} keeps going into somewhere that is not this rock.\nIt is one of the old test spaces. Something practised here, a long time ago, and did not clear up. {tone}.",
+     "asides": {
+      "cautious": "{member} throws a stone through and counts, and gets a number nobody likes.",
+      "impulsive": "{member} has an arm through to the elbow, waving.",
+      "any": "{member} keeps walking round to the back of it, where there is nothing at all."
+     },
+     "choices": [
+      {
+       "text": "Go through.",
+       "check": {
+        "stat": "WIS",
+        "dc": 13
+       },
+       "pass": "thr",
+       "fail": "lost",
+       "to": "thr"
+      },
+      {
+       "text": "Peg it open with {qty} {material} and map the edge.",
+       "give": {
+        "material": true
+       },
+       "to": "peg"
+      },
+      {
+       "text": "Mark it and walk away from it.",
+       "to": "mk"
+      }
+     ]
+    },
+    "thr": {
+     "text": "On the far side: a room the size of {a country|a weather system|somewhere that has a name} with one idea in it, worked out over and over on every surface until whoever it was got it right.\nThe last version of it is still there, finished, sitting on nothing, and it is not guarded because it never occurred to anybody that the room would be {found|found at all|walked into}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 5
+     }
+    },
+    "lost": {
+     "text": "The far side does not keep the same layout twice, and the door is not where the door was.\nIt takes {many} hours to get back out and everybody arrives on {ground} lighter than they went in, in ways that take inventory to establish.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 2,
+      "exp": 18
+     }
+    },
+    "peg": {
+     "text": "The {material} holds the seam at the width it was found at, which is the whole trick: a scrap that is not measured is a scrap that closes.\nThe measurements are worth money to four separate parties and the party sells them once, to the one that will {publish|publish it|put it in print}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "archivefoundation": 10
+      }
+     }
+    },
+    "mk": {
+     "text": "A cairn, a bearing, {a page in the book|two lines in the log|a sketch nobody will believe}, and the light going on being the wrong colour behind them all the way to the horizon.\nSome doors are for {telling somebody about|reporting|leaving to people better equipped}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 2,
+      "exp": 14
+     }
+    }
+   }
+  },
+  "q_shells": {
+   "title": "{Empty Shells|Still Walking|Nobody Home}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There are {few} people at {place} going about a working day with nothing behind the eyes at all.\nThey eat. They walk the same route. One of them is still doing a job that stopped mattering some time ago, in order, correctly, with nobody in there to do it. {wrongness}.",
+     "asides": {
+      "empathetic": "{member} says good morning to one of them and gets a good morning back, in the right voice, and has to sit down.",
+      "cynical": "{member} asks what took them and does not much like any of the available answers.",
+      "any": "{member} follows one for a hundred metres and comes back very quiet."
+     },
+     "choices": [
+      {
+       "text": "Find what took them.",
+       "check": {
+        "stat": "INT",
+        "dc": 14
+       },
+       "pass": "found",
+       "fail": "nofound",
+       "to": "found"
+      },
+      {
+       "text": "Feed them and keep the routes clear.",
+       "give": {
+        "material": true
+       },
+       "to": "feed"
+      },
+      {
+       "text": "Put them down.",
+       "to": "down",
+       "only": [
+        "cynical",
+        "apathetic",
+        "disciplined"
+       ]
+      }
+     ]
+    },
+    "found": {
+     "text": "The residue is on {ground} in a ring, and it is not the sort of thing that goes off by itself, and there is a serial on the fragment.\nThat serial is a matter of very considerable interest to people who will pay for it and to people who will kill for it, and the party gets to choose which conversation to {have|have first|be in}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 5,
+      "rep": {
+       "magesguild": -8,
+       "archivefoundation": 12
+      }
+     }
+    },
+    "nofound": {
+     "text": "Whatever it was cleaned up after itself {thoroughly|to a standard|the way a professional does}, and the only evidence left walks around eating breakfast at the correct hour.\nThe party writes down what they saw. Writing it down is {what there is|all there is|the whole of what can be done}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 2,
+      "exp": 16
+     }
+    },
+    "feed": {
+     "text": "The stores go into the hoppers along the route and the route gets swept and the doors get propped where the doors were sticking.\nThey will go on until {the bodies stop|the last of them wears out|something else stops them}. There is no argument in which this was the useful thing to do, and everybody does it {anyway|anyway, all day|regardless}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": -10
+      },
+      "mag": "medium",
+      "stars": 3,
+      "exp": 20,
+      "rep": {
+       "holyvaticanempire": 8
+      }
+     }
+    },
+    "down": {
+     "text": "It is quick, and quiet, and correct by every standard anybody has written down.\nNobody talks on the way back to the pad. {member} is sick behind a rock at the halfway mark and nobody mentions it {then or afterwards|then|at any point afterwards}.",
+     "outcome": {
+      "kind": "none",
+      "mag": "medium",
+      "stars": 3,
+      "exp": 18,
+      "rep": {
+       "holyvaticanempire": -10
+      }
+     }
+    }
+   }
+  },
+  "q_road": {
+   "title": "{The Turn-Off|Road Where No Road Is|The Encompassing}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a road at {place}. Not a track: a road, made, cambered, with a white line down it, running out of {ground} at both ends into nothing.\n{asker} is parked on the hard shoulder of it with the engine running and has been for a while, working up to something.",
+     "asides": {
+      "cynical": "{member} points out that every road is the same road and that this is exactly the problem with roads.",
+      "brave": "{member} is already standing on the white line looking at both horizons.",
+      "any": "{member} kneels and reads the surface and says somebody laid this properly, with a crew."
+     },
+     "choices": [
+      {
+       "text": "Get the engine calibrated with {qty} {material} and take the turn-off.",
+       "give": {
+        "material": true
+       },
+       "to": "turn"
+      },
+      {
+       "text": "Walk it to the end.",
+       "check": {
+        "stat": "CON",
+        "dc": 12
+       },
+       "pass": "walk",
+       "fail": "loop",
+       "to": "walk"
+      },
+      {
+       "text": "Note the bearing and stay off it.",
+       "to": "off"
+      }
+     ]
+    },
+    "turn": {
+     "text": "Calibrated right, the road ahead folds up {like a map being put away|the way a concertina goes|into itself}, and the turn-off is somewhere else entirely by the time the wheels reach it.\nWherever that was, the party was there for about four minutes and came back with things that are not sold anywhere {on this rock|in this system|anybody can name}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 5,
+      "rep": {
+       "truckerssociety": 8
+      }
+     }
+    },
+    "walk": {
+     "text": "It takes {all day|until the light goes|the better part of a day} and the road ends the way it began, cleanly, mid-camber, with the white line stopping at a right angle.\nAt the end of it there is a shrine of sorts, made by drivers, and everything on it was left by somebody who got somewhere. The party leaves something and takes nothing, and the walk back is shorter than the walk out by a margin nobody {wants to discuss|is willing to name|does the arithmetic on}.",
+     "outcome": {
+      "kind": "skill",
+      "mag": "medium",
+      "stars": 4
+     }
+    },
+    "loop": {
+     "text": "Somewhere past the fourth hour the road starts arriving at itself. The same white line, the same {remnant} on the same side.\nIt takes {member} spotting their own bootprint going the other way to break it, and everybody comes off the surface onto honest {ground} feeling several hours poorer than the clock says.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 2,
+      "exp": 16
+     }
+    },
+    "off": {
+     "text": "The bearing goes in the book and the road goes on lying there being a road.\n{asker} is still parked on the shoulder when the party is a kilometre out, still working up to {it|whatever it is|the turn}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_bubble": {
+   "title": "{The Edge Of It|Eighty Or Nothing|Tuesday Again}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{hour}, on the road out of {place}, the air ahead goes wrong in the way air does about {few} metres from the edge of one of them.\nThe map marks it. The map has not been redrawn since {timeAgo}, and the edge has moved. {stranger} is standing just on the safe side of the line with a bicycle and a face that says today is not the first time.",
+     "asides": {
+      "cynical": "{member} works out how much of the road is inside now and stops sharing the number.",
+      "cautious": "{member} is reading the speedo like scripture and asking everyone to please stop accelerating.",
+      "any": "{member} throws a stone across the line and it lands, and lands again, in the same place."
+     },
+     "choices": [
+      {
+       "text": "Go in and bring whoever is in there out.",
+       "check": {
+        "stat": "CON",
+        "dc": 13
+       },
+       "pass": "outt",
+       "fail": "stuck",
+       "to": "outt"
+      },
+      {
+       "text": "Re-mark the edge properly, all the way round.",
+       "give": {
+        "material": true
+       },
+       "to": "mark"
+      },
+      {
+       "text": "Take the long way and say nothing to anybody.",
+       "to": "away"
+      }
+     ]
+    },
+    "outt": {
+     "text": "Inside it is the same Tuesday it has been for a while and everybody in it knows, which is the part nobody prepares you for.\nGetting out means going outward over eighty, and {vehicle} is not built for it, and it is done anyway with three people in the back holding on to each other and one of them {counting|counting out loud|watching the needle}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 60,
+       "leisure": 20
+      },
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "truckerssociety": 12
+      }
+     }
+    },
+    "stuck": {
+     "text": "The run at the edge comes up short, and short means the whole thing again from the top, on the same Tuesday, with everybody's confidence a good deal thinner.\nThey get out on the {fourth|third|fifth} go. Some of the fourth go is not remembered, and the party comes out with a day of their own {missing|gone|unaccounted for}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 2,
+      "exp": 20
+     }
+    },
+    "mark": {
+     "text": "Posts and paint the whole way round, at the real edge, which takes until dark and a good deal more {material} than anybody estimated.\nEverything that comes down that road for the next twenty years will slow for those posts. Nobody will ever know the party did it. The Society hears about it within a week.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "truckerssociety": 14
+      }
+     }
+    },
+    "away": {
+     "text": "The long way is {an hour and a half|two hours} of bad surface and it is {an hour and a half|time|a detour} nobody complains about.\nBehind, the map goes on saying what it has said since {timeAgo}, and the edge goes on being where it actually is.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_note": {
+   "title": "{The Security Strip|Notes With The Thread Picked Out|Small Denominations}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "In a back room off {street} there is a table, a lamp, and {stranger} taking the security thread out of euro notes with a needle, one note at a time, into a saucer.\nThere is a lot in the saucer. The notes go back into circulation afterwards and nobody has ever noticed, because nobody has ever had a reason to look.",
+     "asides": {
+      "cynical": "{member} does the arithmetic on how many notes make a saucer and puts a hand over their own pocket.",
+      "cautious": "{member} asks whether a note with the thread out is still a note, and gets a shrug that is not reassuring.",
+      "any": "{member} looks at the saucer, which is very black, and finds it hard to look away from."
+     },
+     "choices": [
+      {
+       "text": "Buy the saucer.",
+       "give": {
+        "gold": "large"
+       },
+       "to": "buy"
+      },
+      {
+       "text": "Work out what it is for.",
+       "check": {
+        "stat": "INT",
+        "dc": 14
+       },
+       "pass": "for",
+       "fail": "forf",
+       "to": "for"
+      },
+      {
+       "text": "This is a currency offence and a considerably worse one underneath.",
+       "to": "rep"
+      }
+     ]
+    },
+    "buy": {
+     "text": "It changes hands into a tin and the tin goes into the pack wrapped in {cloth|a shirt|two layers of the same cloth}, because the pigment does not care for light.\nWhat it is worth is not really a price. A round of it will kill somebody standing in a loop, and there is enough here for a round or two, and now that is the party's {problem to carry|problem|to carry}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "for": {
+     "text": "Not counterfeiting. Coating.\nThere is a workbench under the table with {few} rounds on it, half done, and a list of names, and every name on the list is somebody who has been sitting inside a bubble being untouchable for years while people on the outside {had opinions about it|argued about it|wrote letters}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "hypercapitalistcollective": -8
+      }
+     }
+    },
+    "forf": {
+     "text": "The story holds all evening: {a hobby, a pigment, a private eccentricity|an old habit, a pigment, nothing in it|a collection, a pigment, a way to pass an evening}, and the saucer is just a saucer.\nIt is a good story and it is told by somebody who has had a long time to practise it, and the party leaves with nothing but a slight itch about the {third|second|fourth} answer.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    },
+    "rep": {
+     "text": "It goes on paper and the paper goes in at the desk with {paper} attached, and the room is cleared within a day.\nThe party never learns which of the two possible reasons it was cleared for, which is its own {kind of answer|sort of answer|answer}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "hypercapitalistcollective": 10,
+       "truckerssociety": -6
+      }
+     }
+    }
+   }
+  },
+  "qe_naguka": {
+   "title": "{Corpse Paint At The Crossroads|The One With The Wrong Face|Kin}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a Naguka sitting at the crossroads outside {place} with the paint half off, holding a broken instrument and no idea which direction is which.\nThe horde went that way {timeAgo}. This one did not, and cannot explain why in more than about {six|five|seven} words at a time, and keeps saying one of them.",
+     "asides": {
+      "empathetic": "{member} is already down on one knee at eye level doing the thing you do with a frightened child.",
+      "aggressive": "{member} has counted the crossroads' sightlines and does not like any of them.",
+      "any": "{member} recognises the six words as a chorus and hums the rest, which gets a reaction."
+     },
+     "choices": [
+      {
+       "text": "Feed it and take it as far as the next town.",
+       "to": "take2"
+      },
+      {
+       "text": "Fix the instrument with {qty} {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "fix"
+      },
+      {
+       "text": "Hand it in at the barracks.",
+       "to": "hand"
+      }
+     ]
+    },
+    "take2": {
+     "text": "It eats like something that has not, and walks in the middle of the group without being asked to, and by the second hour is telling a story with about {eleven|nine|a dozen} words in it and using all of them twice.\nAt the town it is taken in by somebody who has done this before. The collective knows, within the day, that the party did not leave one of theirs {at a crossroads|in a ditch|standing at a crossroads}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 40,
+       "hunger": 20
+      },
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "goblincollectiveunconsciuous": 14
+      }
+     }
+    },
+    "fix": {
+     "text": "The {material} does it, roughly, and the first note out of it stops the conversation dead.\nWhat it plays at the crossroads is not for the party and is not for anybody. Halfway through, {member} realises they are hearing something the horde is also hearing, {distance}, and gets very quiet.",
+     "outcome": {
+      "kind": "skill",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "goblincollectiveunconsciuous": 12
+      }
+     }
+    },
+    "hand": {
+     "text": "The barracks take it and sign for it and are correct throughout, and the sergeant does not meet {anybody's eye|the party's eye|anybody's eye at all} while doing the signing.\nThe collective unconscious does not have a subtle way of registering an opinion, and it {registers one|registers this one|makes it known}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "small",
+      "stars": 1,
+      "rep": {
+       "goblincollectiveunconsciuous": -18,
+       "holyvaticanempire": 6
+      }
+     }
+    }
+   }
+  },
+  "qe_ttd": {
+   "title": "{Tinfoil|The Idea Going Round|Everybody Had It At Once}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "Half of {place} is wearing hats and the other half is laughing at them, and the half wearing hats have a point.\nThere is a thought going round: the same {rumour}, arriving in the same words, in people who have not spoken to each other. {stranger} keeps a list of who has had it and the list is the wrong shape for gossip.",
+     "asides": {
+      "cynical": "{member} makes a joke about the hats and then hears themselves make it and stops.",
+      "disciplined": "{member} takes the list, sorts it by hour, and goes quiet at the sorting.",
+      "any": "{member} asks three people to write the thought down separately and the three pages match."
+     },
+     "choices": [
+      {
+       "text": "Dam it. Foil for everybody, {qty} {material} worth.",
+       "give": {
+        "material": true
+       },
+       "to": "dam"
+      },
+      {
+       "text": "Find patient zero on the list.",
+       "check": {
+        "stat": "INT",
+        "dc": 13
+       },
+       "pass": "zero",
+       "fail": "caught",
+       "to": "zero"
+      },
+      {
+       "text": "Sit with it and see what it wants.",
+       "check": {
+        "stat": "PSI",
+        "dc": 14
+       },
+       "pass": "want",
+       "fail": "caught",
+       "to": "want"
+      }
+     ]
+    },
+    "dam": {
+     "text": "It looks ridiculous and it works, which is the whole history of the countermeasure in one sentence.\nInside two days the list stops growing. Nobody in {place} will ever be able to say whether it would have stopped anyway, and everybody {keeps the hat|keeps wearing the hat|hangs on to the hat}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "needs": {
+       "social": 20
+      }
+     }
+    },
+    "zero": {
+     "text": "The list sorted by hour comes to a point, and the point is a man who has not left his house in {timeAgo} and did not think the thought either.\nHe received it. There is a difference and he is the only person in {place} who understands it, and he has been waiting for somebody to {come and ask|ask|turn up and ask}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "technomancers": 8
+      }
+     }
+    },
+    "want": {
+     "text": "Sat with properly, it is not a message. It is a shape, and the shape is trying to be held by enough people at once to become a thing.\n{leader} does not let it, which is harder than it sounds and takes until the small hours, and the shape goes {looking elsewhere|somewhere else|off to be held by somebody else}.",
+     "outcome": {
+      "kind": "none",
+      "mag": "large",
+      "stars": 4,
+      "exp": 24,
+      "rep": {
+       "magesguild": 8
+      }
+     }
+    },
+    "caught": {
+     "text": "Everybody in the party has it by the evening, in the same words, arriving at the same time.\nIt takes {few} days and a great deal of foil to get it back out, and for a while afterwards nobody trusts an idea they {had on their own|arrived at alone|came up with}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 2,
+      "exp": 16
+     }
+    }
+   }
+  },
+  "qe_wellhead": {
+   "title": "{The Wellhead|Where The Line Comes Up|Oil And Blood}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a capped wellhead in the field beyond {place} with {sign} rusted off it, and everything green for {few} metres around it is growing the wrong way round.\nThe line comes up here. {stranger} has been paid by somebody to sit and watch it and has never been told what for, and has worked most of it out anyway.",
+     "asides": {
+      "cautious": "{member} will not stand downwind and gives a reason that is mostly correct.",
+      "cynical": "{member} asks who signs the cheques and gets a company name with nothing behind it.",
+      "any": "{member} puts a palm flat on the cap and takes it off again quickly."
+     },
+     "choices": [
+      {
+       "text": "Reseal it properly with {qty} {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "seal"
+      },
+      {
+       "text": "Open it.",
+       "to": "open",
+       "only": [
+        "impulsive",
+        "brave",
+        "cynical"
+       ]
+      },
+      {
+       "text": "Read the ground and find where the line actually runs.",
+       "check": {
+        "stat": "WIS",
+        "dc": 13
+       },
+       "pass": "line",
+       "fail": "linef",
+       "to": "line"
+      }
+     ]
+    },
+    "seal": {
+     "text": "The cap goes back on right this time, gasketed, with the {material} doing the work the original contractor was paid for and did not do.\nThe grass round it will take a season to remember which way up it goes. The cheques keep coming to the watcher, who is now watching a wellhead that is actually sealed, and says so, and pays {a share|a share of it|the party a share}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "petromanagers": 8
+      }
+     }
+    },
+    "open": {
+     "text": "What comes up is not {oil|oil at all|what the cap was for}, or is oil {in the way that a person is meat|the way a body is chemistry|only in the sense that it came out of the ground}.",
+     "outcome": {
+      "kind": "battle",
+      "count": 1,
+      "reward": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "petrodemons": -12
+      },
+      "fail": {
+       "kind": "harm",
+       "mag": "large"
+      }
+     }
+    },
+    "line": {
+     "text": "It does not run where the survey says. It runs under {place} itself, under the school and the market and the road, which is why everything in that town has always felt like it is about to happen.\nWhat that map is worth depends entirely on who is shown it, and the party is holding the only {copy|copy there is|copy anybody has}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "magesguild": 8,
+       "petromanagers": -6
+      }
+     }
+    },
+    "linef": {
+     "text": "The ground says four different things in four different places and none of them agree, which is what leylines do to anybody without the training.\n{leader} comes away with a headache that lasts into the next day and a very clear sense of having been {read back|read in return|looked at by the ground}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_grimoire": {
+   "title": "{The Shelf It Was Left On|Bad Spelling|Do Not Leave It Beside Anything}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A house clearance at {place}, and {stranger} standing in the doorway not going back in, holding the door with a boot.\nOn the shelf inside there is a book with a formula in it written with the words apart, and it has been on that shelf beside other books for {timeAgo}.",
+     "asides": {
+      "cautious": "{member} asks how many books are on the shelf and the answer makes everybody take a step back.",
+      "disciplined": "{member} is already sorting the clearance into what goes on the fire and what might not have to.",
+      "any": "{member} reads one word of it through the doorway and does not read the second."
+     },
+     "choices": [
+      {
+       "text": "Burn the shelf, the lot of it.",
+       "to": "burn2"
+      },
+      {
+       "text": "Sort the clean ones out of it.",
+       "check": {
+        "stat": "DEX",
+        "dc": 13
+       },
+       "pass": "sort",
+       "fail": "sp2",
+       "to": "sort"
+      },
+      {
+       "text": "Take the whole shelf to somebody who wants it.",
+       "to": "sell"
+      }
+     ]
+    },
+    "burn2": {
+     "text": "The whole shelf goes into the yard and goes up, and it takes longer than paper should and makes a noise about it.\n{stranger} watches the entire burn from the gate and does not go back into the house until the ash is cold, and then pays the party in cash out of {a tin|a biscuit tin|the tin on the mantelpiece}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "magesguild": 8
+      }
+     }
+    },
+    "sort": {
+     "text": "Working from the far end inward, ahead of the spread, {few} volumes come off clean and one of them is not a grimoire at all: it is somebody's working notebook, and it is better than the grimoire ever was.\nThe rest goes on the fire and it is {a considerable fire|a fire the whole street comes out for|a bigger fire than the shelf accounts for}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "magesguild": 6
+      }
+     }
+    },
+    "sp2": {
+     "text": "It has been on that shelf {a long time|years|longer than anybody said} and it has been busy.\nThe formula is in the party's own pack before anybody checks, and everything written down in there has to come out and go on the fire, including {the map|the map, which hurts|two months of the map}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 1,
+      "exp": 12
+     }
+    },
+    "sell": {
+     "text": "There is always somebody who wants a shelf like that and never any difficulty finding them, which is the thing about people who want shelves like that.\nThe money is {good|better than good|more than the job was worth}. The buyer is delighted. Nobody involved has done anything that will look {well written down later|well in writing afterwards|good in anybody's account of it}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 2,
+      "rep": {
+       "magesguild": -12
+      }
+     }
+    }
+   }
+  },
+  "qe_handset": {
+   "title": "{The Brick|An Old Handset|It Rings Anyway}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{stranger} at {bar} in {place} has an old handset on the table, the indestructible kind, and it has rung twice this evening with no network anywhere near it.\nNobody has answered it. That is a house rule now, arrived at democratically, and the second ring emptied the far corner of the room.",
+     "asides": {
+      "brave": "{member} has a hand halfway to it before anybody explains the house rule.",
+      "cynical": "{member} asks whether anybody has tried taking the battery out, and is told, at length, that they have.",
+      "any": "{member} watches the screen light up with no number on it and puts their {drink} down."
+     },
+     "choices": [
+      {
+       "text": "Answer it.",
+       "check": {
+        "stat": "PSI",
+        "dc": 13
+       },
+       "pass": "ansr",
+       "fail": "bad",
+       "to": "ansr"
+      },
+      {
+       "text": "Buy it off them.",
+       "give": {
+        "gold": "medium"
+       },
+       "to": "buy2"
+      },
+      {
+       "text": "Get it retuned properly, {qty} {material} of parts.",
+       "give": {
+        "material": true
+       },
+       "to": "tune"
+      }
+     ]
+    },
+    "ansr": {
+     "text": "It is somebody's grandmother, and she died in {timeAgo}, and she is not confused about that at all and would like the party to pass something on.\nWhat she passes on takes ninety seconds, is entirely practical, and settles an argument in a family in {place} that has been running since before {anybody in the room was born|the war|any of them were born}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "medium",
+      "stars": 4,
+      "needs": {
+       "social": 30
+      }
+     }
+    },
+    "bad": {
+     "text": "Something answers that is enjoying being answered.\nIt asks {leader} a question by name, waits, and hangs up first, which is the part that {stays with everybody|nobody gets over|is still there in the morning}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 2,
+      "exp": 18
+     }
+    },
+    "buy2": {
+     "text": "The whole {bar} watches the money change hands and the whole {bar} is visibly relieved, and somebody stands the party a round on the strength of it.\nIt is a talisman as much as a phone: near it, a loop sits still and a fracture stays shut, and it rings when it wants to.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 3
+     }
+    },
+    "tune": {
+     "text": "Retuned it stops ringing at random and starts ringing on purpose, which is either better or worse depending on the week.\n{bar} keeps it on a hook behind the taps and treats it like a fire extinguisher, and the party drinks there free for as long as {the place stands|the doors are open|there is a bar there}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 50,
+       "leisure": 30
+      },
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "technomancers": 8
+      }
+     }
+    }
+   }
+  },
+  "qe_flood": {
+   "title": "{Sandbags|The Water Is Coming Up Through The Floor|By Morning}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "The water is coming up through the floors on {street} in {place}, not down from the rain but up, and it has been rising since first light.\nThere are {many} houses on that row and about a third as many people to do anything about it. {stranger} is filling bags off the pile with the wrong shovel and will not stop long enough to be given a better one.",
+     "asides": {
+      "nurturing": "{member} has taken one end of a bag before anybody agrees anything.",
+      "calm": "{member} sends the first four people they can find to the top of the row instead of the bottom, and is right.",
+      "any": "{member} works out where the water is actually getting in and it is not the river."
+     },
+     "choices": [
+      {
+       "text": "Bags, all night.",
+       "check": {
+        "stat": "CON",
+        "dc": 12
+       },
+       "pass": "held",
+       "fail": "lost2",
+       "to": "held"
+      },
+      {
+       "text": "Give {qty} {material} to plug it at the source.",
+       "give": {
+        "material": true
+       },
+       "to": "src"
+      },
+      {
+       "text": "Get the people out and let the houses go.",
+       "to": "evac"
+      }
+     ]
+    },
+    "held": {
+     "text": "The row holds. It holds at about {four|half three|five} in the morning, and the last bag goes on at a point where nobody has anything left, and then it holds.\nIn the light everybody sits down in the mud at the same time. Somebody's mother goes down the row with tea and does not accept {any refusals|a single refusal|no for an answer}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 70,
+       "hunger": 30,
+       "sleep": -10
+      },
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "lost2": {
+     "text": "It goes at the low end at about three and takes {few} houses with it, and the rest of the night is carrying furniture upstairs in the dark.\nNobody blames anybody. Everybody looks like they might, for a while, which is {worse|the harder part|worse than being blamed}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "needs": {
+       "social": 20
+      },
+      "stars": 2
+     }
+    },
+    "src": {
+     "text": "It is not the river. It is a culvert somebody built over {timeAgo} and nobody has looked at since, and the {material} plugs the mouth of it in an hour and a half by lamplight.\nThe water stops rising while people are still filling bags, and it takes the row {twenty minutes|the best part of an hour|a while} to believe it.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "needs": {
+       "social": 50
+      },
+      "stars": 4
+     }
+    },
+    "evac": {
+     "text": "Everybody out, {up the hill|onto the high road|to the church, which is the high ground}, with what they can carry and the animals loose behind them.\nThe row goes. Nobody drowns, which was the actual question all along, and there is a difference between those two facts that takes people {a few weeks|the winter|months} to feel.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 40
+      },
+      "mag": "medium",
+      "stars": 3,
+      "exp": 18
+     }
+    }
+   }
+  },
+  "qe_kola": {
+   "title": "{The Shaft|Something Came Up|Capped Four Times}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a borehole in the ground near {place}, capped, and the cap has been redone {few} times by different hands over the years, each one heavier than the last.\n{stranger} is minding it out of a hut with a flask and no particular authority, and is not facing outward.",
+     "asides": {
+      "cautious": "{member} notes the chair is turned toward the cap and that this is a choice somebody made.",
+      "cynical": "{member} asks what the going rate is for minding a hole and finds it is nothing at all.",
+      "any": "{member} puts a hand on the plate and finds it warm, and it should be freezing."
+     },
+     "choices": [
+      {
+       "text": "Reweld it, {qty} {material} of rod.",
+       "give": {
+        "material": true
+       },
+       "to": "weld"
+      },
+      {
+       "text": "Listen at it.",
+       "check": {
+        "stat": "WIS",
+        "dc": 12
+       },
+       "pass": "lis",
+       "fail": "lisf",
+       "to": "lis"
+      },
+      {
+       "text": "Take the watch for a night so somebody can sleep.",
+       "to": "watch"
+      }
+     ]
+    },
+    "weld": {
+     "text": "The fifth cap goes on over the fourth and it is {the best of them|better than the four under it|the first one done by somebody who wanted it to hold}, done properly, with the rod the party carried in.\nThe minder watches every pass of it and afterwards sits down for the first time in the conversation. Whatever is down there is a good deal further away than it was {this morning|at breakfast|when the party walked up}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "sovietunion": 8
+      }
+     }
+    },
+    "lis": {
+     "text": "There is a sound at the cap and it is not {water|rock} and it is not settling. It is a long way down and it is regular, and it is getting to the top of the shaft slightly faster than it did on the previous measurement.\nSomebody at a desk somewhere has that measurement in a file and has decided not to be the person who says it {out loud|first|at all}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "sovietunion": -6,
+       "archivefoundation": 10
+      }
+     }
+    },
+    "lisf": {
+     "text": "Whatever is down there hears the listening.\nIt stops, all at once, for as long as the ear is on the plate, and starts again the moment it comes off, and {leader} does not sleep well for {a while|some nights|the rest of the season}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 2,
+      "exp": 16
+     }
+    },
+    "watch": {
+     "text": "A night in a hut with a flask and a chair facing the wrong way, listening to nothing for {eleven|nine|ten} hours.\nThe minder sleeps for the first time in a fortnight, in a bed, in a house, and comes back at dawn with breakfast for everybody and an old story that is not in {any archive|any file anywhere|the record}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 40,
+       "hunger": 30
+      },
+      "mag": "medium",
+      "stars": 3,
+      "exp": 16
+     }
+    }
+   }
+  },
+  "qe_hauler": {
+   "title": "{Under Eighty All The Way|The Load That Cannot Stop|Relief Driver}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A hauler is stopped on the hard shoulder outside {place} with the hazards going and {stranger} asleep against the wheel in the way of somebody who has fought it and lost.\nThe load has to be somewhere by first light and the route has {few} marked bubbles on it, and neither of those facts is going to negotiate.",
+     "asides": {
+      "loyal": "{member} is looking at the tacho and doing arithmetic that comes out badly for everyone.",
+      "cynical": "{member} asks what is in the back and gets an answer with no nouns in it.",
+      "any": "{member} knocks on the glass twice, softly, and gets nothing at all."
+     },
+     "choices": [
+      {
+       "text": "Drive it. Relief for the last leg.",
+       "check": {
+        "stat": "DEX",
+        "dc": 13
+       },
+       "pass": "drv",
+       "fail": "drf",
+       "to": "drv"
+      },
+      {
+       "text": "Sit in the cab and keep them talking to the depot.",
+       "to": "talk"
+      },
+      {
+       "text": "Not the party's load and not the party's licence.",
+       "to": "no"
+      }
+     ]
+    },
+    "drv": {
+     "text": "It is {distance}, holding a heavy thing under eighty past marked ground with somebody asleep in the bunk behind, and it is the most concentrated three hours anybody has spent this month.\nThe depot signs for it on the hour, exactly. The Society pays relief rates, and relief rates are not what anybody expects.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "truckerssociety": 14
+      }
+     }
+    },
+    "drf": {
+     "text": "The speedo gets away on a downgrade for about {four|three|five} seconds and four seconds is plenty.\nCorrecting it costs the load a pallet and the party's nerves the rest of the day, and the depot is late, and the sign-off happens anyway with everybody being {very polite about it|extremely polite|careful about it}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "small",
+      "stars": 2,
+      "rep": {
+       "truckerssociety": 4
+      }
+     }
+    },
+    "talk": {
+     "text": "{Four|Five|Three} hours in a cab with a flask, keeping somebody awake by making them describe every depot between here and the coast.\nBy the end there is a name for every stop on that route, which of them will let you sleep in the yard, and which of them owes the Society a favour that can be {signed over|called in|passed on}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 50,
+       "leisure": 20
+      },
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "truckerssociety": 10
+      }
+     }
+    },
+    "no": {
+     "text": "The hazards are still going in the mirror {a long way down the road|most of the way to the next junction|for longer than anybody watches}.\nWhether they made it is a thing the party never finds out, which is the ordinary condition of most of the good one might have done.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1
+     }
+    }
+   }
+  },
+  "qe_saint": {
+   "title": "{The Reliquary|{saint} Is Missing A Hand|Feast Day Is Thursday}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "The reliquary at {place} is open and light and the wrong weight, and the feast is on Thursday.\n{stranger} has told nobody yet and is standing in the sacristy working out whether telling nobody is a sin on its own. The lock was not forced. That is the part that has taken the colour out of their face.",
+     "asides": {
+      "empathetic": "{member} points out, correctly, that the crying is not about the hand.",
+      "cynical": "{member} asks who else has a key and watches the answer arrive slowly.",
+      "any": "{member} looks at the empty velvet, which has kept the shape of it."
+     },
+     "choices": [
+      {
+       "text": "Find it before Thursday.",
+       "check": {
+        "stat": "WIS",
+        "dc": 13
+       },
+       "pass": "fnd2",
+       "fail": "nof2",
+       "to": "fnd2"
+      },
+      {
+       "text": "Make a replacement nobody will question.",
+       "give": {
+        "material": true
+       },
+       "to": "fake"
+      },
+      {
+       "text": "Tell them to announce it from the altar.",
+       "to": "tell"
+      }
+     ]
+    },
+    "fnd2": {
+     "text": "It has not left {the building|the sacristy|the parish}. It is in a drawer in a room that is used by one person, wrapped in a cloth, with a note that is halfway to being a confession and does not get finished.\nIt goes back on the velvet before Thursday. Nobody is named. The party is asked for nothing and given {a great deal|more than they came with|everything the parish can spare}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "holyvaticanempire": 12
+      }
+     }
+    },
+    "nof2": {
+     "text": "Thursday comes and the reliquary is carried round the square at the correct pace by {six|eight} men who do not know what they are carrying.\nIt is a good feast. Everybody says so. The sacristan does not {eat|eat a thing|touch anything}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 2,
+      "exp": 14
+     }
+    },
+    "fake": {
+     "text": "It takes an evening and {qty} {material} and a great deal of care about the colour, and on the velvet under glass at three paces it is beyond question.\nThe procession goes round the square and the town gets its Thursday. What the party is left holding is the knowledge, which is heavier than the relic was.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "holyvaticanempire": 6,
+       "opusdei": -8
+      }
+     }
+    },
+    "tell": {
+     "text": "It is announced from the altar on the Sunday, plainly, without an excuse attached, and the square goes very quiet and then does not fall apart.\nBy Thursday somebody has left it in the porch overnight in {a shoebox|a biscuit tin|a bag with a shop's name on it}, which is how these things have {always actually been resolved|generally been resolved|been settled since anybody can remember}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 30
+      },
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "holyvaticanempire": 10
+      }
+     }
+    }
+   }
+  },
+  "qe_fence": {
+   "title": "{The Back Room|No Questions On Either Side|What Is In The Crate}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{fence} works out of a back room off {street} and has a crate that came in {timeAgo} that nobody has come to collect.\nThe arrangement on offer is the usual: the party moves it as far as {distance} and asks nothing, and is paid in {payment}. The crate is heavier at one end.",
+     "asides": {
+      "cynical": "{member} asks what happened to the last courier and watches the subject change professionally.",
+      "cautious": "{member} suggests, quietly, that a crate nobody collects is a crate somebody is waiting on.",
+      "any": "{member} tips it a degree and hears the weight move, which crates should not do."
+     },
+     "choices": [
+      {
+       "text": "Take the job and do not open it.",
+       "to": "job"
+      },
+      {
+       "text": "Open it first.",
+       "check": {
+        "stat": "DEX",
+        "dc": 12
+       },
+       "pass": "opn",
+       "fail": "opf",
+       "to": "opn"
+      },
+      {
+       "text": "Buy it outright and it is nobody's business but the party's.",
+       "give": {
+        "gold": "medium"
+       },
+       "to": "own"
+      }
+     ]
+    },
+    "job": {
+     "text": "{distance}, delivered, signed for by somebody who does not give a name and does not need to.\nThe money is good and the walk back is the first time all week nobody has had to think about anything, and neither of those facts survives contact with what is in {rumour} a fortnight later.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "crime": "smuggling",
+      "stars": 2
+     }
+    },
+    "opn": {
+     "text": "Opened and re-nailed so that nobody could tell, which is a skill, and what is in it is worse than the money and better than the party feared.\nKnowing changes the price. {fence} pays the new price without arguing, which says everything about what {fence} already knew.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "stars": 3
+     }
+    },
+    "opf": {
+     "text": "The lid splinters at the corner and there is no putting that right with the tools to hand.\n{fence} looks at the corner for a long moment and then says the job is off and the party should go, in a voice that has {nothing behind it at all|nothing in it|no weather in it whatsoever}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1,
+      "rep": {
+       "hypercapitalistcollective": -6
+      }
+     }
+    },
+    "own": {
+     "text": "Bought, carried out through the front {for once|in daylight|without anybody ducking}, and opened on the party's own ground in the party's own time with nobody standing over it.\nWhat is inside was worth considerably more than the asking price, which is what happens when a thing is priced by how badly somebody {wants it gone|needs it out of the room|wants rid}.",
+     "outcome": {
+      "kind": "artifact",
+      "mag": "large",
+      "stars": 3
+     }
+    }
+   }
+  },
+  "qe_dig": {
+   "title": "{The Contractor's Deadline|Bones Under The Foundation|Pour It Monday}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "A site at {place} with the foundation dug and the pour booked for Monday, and something in the trench that stopped the machine on Friday.\n{stranger} is the one who has to decide, and has been standing at the edge of the trench since. There is a carving on what is down there and it is older than the town.",
+     "asides": {
+      "disciplined": "{member} is down in the trench with a brush before anybody has authorised anything.",
+      "cynical": "{member} works out what a week's delay costs and understands the standing-at-the-edge entirely.",
+      "any": "{member} reads the carving and says it is not a burial, it is a boundary."
+     },
+     "choices": [
+      {
+       "text": "Work it out properly. Two days, unpaid.",
+       "check": {
+        "stat": "INT",
+        "dc": 13
+       },
+       "pass": "arch",
+       "fail": "archf",
+       "to": "arch"
+      },
+      {
+       "text": "Shore it and pour around it, {qty} {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "shore"
+      },
+      {
+       "text": "Nothing was ever found here.",
+       "to": "pour"
+      }
+     ]
+    },
+    "arch": {
+     "text": "Two days on hands and knees and it is a boundary stone, in place, still doing its job, marking a line that every wall in {place} has quietly respected for eight hundred years without anybody knowing why.\nThat is a paper, and the paper has the party's names on it, and the Foundation pays for {papers|papers like that|a paper}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "archivefoundation": 12
+      }
+     }
+    },
+    "archf": {
+     "text": "Two days, and at the end of it the honest answer is that nobody in this trench is qualified to say what it is.\nMonday arrives regardless. The pour happens. Whatever it was is under {a hundred|ninety|a hundred and twenty} cubic metres of concrete and will be somebody's problem in {the next century|a hundred years|whichever century digs it up}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1,
+      "exp": 12
+     }
+    },
+    "shore": {
+     "text": "Shuttering, a void former, and the {material} to hold it: the pour goes ahead on Monday and the thing in the trench keeps a room to itself under the new floor.\nIt costs the contractor a weekend and it costs nobody the deadline, and there is a hatch, and the hatch is on {the drawings|the drawings, in ink|every set of the drawings}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "archivefoundation": 8
+      }
+     }
+    },
+    "pour": {
+     "text": "The machine goes back in on the Saturday and by Sunday night there is nothing in that trench but trench.\nThe pour goes ahead. {stranger} pays cash and does not shake anybody's hand, and the building goes up straight and stays up, which is not {the point|the point at all|what anybody was asking}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "crime": "propertyDestruction",
+      "stars": 1,
+      "rep": {
+       "archivefoundation": -10
+      }
+     }
+    }
+   }
+  },
+  "qe_race": {
+   "title": "{Saturday On The Long Straight|Under Eighty Or Not At All|The Bet}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is a straight outside {place} where they run on a Saturday, and the whole game is that the ones who win are the ones who do not go over.\nEverybody knows where the bubble sits. {stranger} takes the money on the gate. {many} people are here for it and about half of them have opinions about {vehicle} the party arrived in.",
+     "asides": {
+      "hedonistic": "{member} has put money on somebody they have never met on the strength of a jacket.",
+      "cautious": "{member} has found the edge of the bubble and stands well back from it all evening.",
+      "any": "{member} watches one go over and not come back and notices that nobody is surprised."
+     },
+     "choices": [
+      {
+       "text": "Put money on it.",
+       "give": {
+        "gold": "small"
+       },
+       "check": {
+        "chance": 45
+       },
+       "pass": "won2",
+       "fail": "lost3",
+       "to": "won2"
+      },
+      {
+       "text": "Run it.",
+       "check": {
+        "stat": "DEX",
+        "dc": 14
+       },
+       "pass": "ran",
+       "fail": "ranf",
+       "to": "ran"
+      },
+      {
+       "text": "Flag the edge for them before somebody else goes over.",
+       "give": {
+        "material": true
+       },
+       "to": "flag"
+      }
+     ]
+    },
+    "won2": {
+     "text": "The one in the jacket holds it at {seventy-nine|seventy-eight|a shade under} the whole way down and takes it by a length and a half without ever once being interesting to look at, which is the entire art.\nThe gate pays out in cash and the party is bought drinks by strangers for {the rest of the evening|the rest of the night|hours}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "needs": {
+       "leisure": 30,
+       "social": 20
+      },
+      "stars": 2
+     }
+    },
+    "lost3": {
+     "text": "The one in the jacket goes over at the {three-quarter mark|last marker|top of the straight}, which everybody in the crowd sees coming about a second before it happens.\nThe stake is gone and the jacket is gone, and the gate keeps taking money, because there is another one in {twenty minutes|half an hour|a quarter of an hour}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "leisure": 20
+      },
+      "stars": 1
+     }
+    },
+    "ran": {
+     "text": "Holding a thing at seventy-nine the whole length of the straight with a crowd screaming at you to do the one thing that will end you is not a driving problem, it is a nerve problem.\n{leader} takes it at a walking pace by comparison to everybody else and wins, and the straight gives them the sort of silence that turns into a roar.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "needs": {
+       "social": 40,
+       "leisure": 30
+      },
+      "stars": 4
+     }
+    },
+    "ranf": {
+     "text": "It gets away at the top end for a moment and the moment is enough to be pulled at, and the pull is felt in the chest and the teeth before the brakes answer.\nThe party comes off the straight at a crawl with everybody very white. The crowd {applauds anyway|cheers anyway|makes a noise about it anyway}, which is {somehow worse|worse|the worst part of it}.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 2
+     }
+    },
+    "flag": {
+     "text": "Posts and tape at the real edge, laid out in the afternoon before the crowd arrives, with the {material} the party carried in.\nSaturday goes off with nobody lost for the first time in a season. The gate is furious for about an hour and then buys the party a drink, {twice|twice over|and then another}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 60,
+       "leisure": 20
+      },
+      "mag": "medium",
+      "stars": 3
+     }
+    }
+   }
+  },
+  "qe_orchard": {
+   "title": "{The Orchard Nobody Owns|A Season Of It|Windfalls}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is an orchard behind {place} that has been unowned since {timeAgo}, and this year it has come in heavy enough to break its own branches.\n{stranger} has been picking it alone for a week. Nobody else has come. The whole crop goes over in about four days if it is not taken.",
+     "asides": {
+      "nurturing": "{member} is up a ladder within about ninety seconds.",
+      "cynical": "{member} calculates the value of the crop and then the value of a week of anybody's life and finds them very close.",
+      "any": "{member} eats one straight off the tree and stops talking for a moment."
+     },
+     "choices": [
+      {
+       "text": "Pick it. All of it.",
+       "check": {
+        "stat": "CON",
+        "dc": 12
+       },
+       "pass": "pick",
+       "fail": "pickf",
+       "to": "pick"
+      },
+      {
+       "text": "Give {qty} {material} for crates and get the town up here.",
+       "give": {
+        "material": true
+       },
+       "to": "town"
+      },
+      {
+       "text": "Prune it properly for next year instead.",
+       "check": {
+        "stat": "WIS",
+        "dc": 12
+       },
+       "pass": "prune",
+       "fail": "pickf",
+       "to": "prune"
+      }
+     ]
+    },
+    "pick": {
+     "text": "{Four|Five|Three} days of ladders and aching hands and more fruit than anybody has containers for, and it is all in before the weather turns.\nThe party leaves with as much as they can carry and the standing right to come back next year, which in a place like this is {a document|as good as a deed|worth more than paper}.",
+     "outcome": {
+      "kind": "loot",
+      "mag": "large",
+      "needs": {
+       "hunger": 60,
+       "leisure": 20
+      },
+      "stars": 3
+     }
+    },
+    "pickf": {
+     "text": "The weather comes in on the second day and the rest goes over on the branch in a night.\nWhat was got is worth having. What is left drops into the grass and feeds {animal} instead, which somebody older points out is {not nothing|not a waste|the older arrangement}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "hunger": 40
+      },
+      "mag": "small",
+      "stars": 1
+     }
+    },
+    "town": {
+     "text": "Crates, a cart, and word put about, and by the second morning there are {many} people in an orchard that nobody owns taking what they need and stacking the rest.\nIt goes to the school, the two houses on the corner, and a woman on {street} who has not asked anybody for anything in {timeAgo}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 70,
+       "hunger": 50
+      },
+      "mag": "large",
+      "stars": 4
+     }
+    },
+    "prune": {
+     "text": "The crop goes over and everybody agrees, out loud, that it was going to.\nWhat gets done instead is the saw work nobody has done since {timeAgo}, and in {three|four} years that orchard will carry twice this and not break itself doing it, and none of that is visible {today|from here|this afternoon}.",
+     "outcome": {
+      "kind": "none",
+      "mag": "medium",
+      "stars": 3,
+      "exp": 18
+     }
+    }
+   }
+  },
+  "qe_court": {
+   "title": "{The Summons|Somebody Else's Bounty|A Clerical Matter}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "{stranger} in {place} has a summons with somebody else's crime on it and their own name, spelled correctly, in a hand that never makes mistakes.\nHer court does not do appeals in the usual sense. It does arbitrary, and it does it fast, and the hour named on the paper is tomorrow's.",
+     "asides": {
+      "cynical": "{member} points out that the paperwork being wrong is not usually the interesting part with her court.",
+      "empathetic": "{member} sits down opposite and gets the whole thing out of them in the right order for the first time.",
+      "any": "{member} reads the summons twice and finds the crime is dated a day this person was demonstrably elsewhere."
+     },
+     "choices": [
+      {
+       "text": "Build the alibi and get it filed.",
+       "check": {
+        "stat": "INT",
+        "dc": 14
+       },
+       "pass": "ali",
+       "fail": "alif",
+       "to": "ali"
+      },
+      {
+       "text": "Pay the fine and make it go away.",
+       "give": {
+        "gold": "large"
+       },
+       "to": "pay"
+      },
+      {
+       "text": "Go and stand with them.",
+       "to": "stand"
+      }
+     ]
+    },
+    "ali": {
+     "text": "It takes an afternoon of {paper} and {few} people willing to sign something, and the filing is done with an hour in hand.\nIt works, in the sense that the summons is withdrawn. Nobody will say by whom, or whether anybody read it, and the party is careful not to celebrate anywhere it might be overheard.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "eriscourt": 6
+      }
+     }
+    },
+    "alif": {
+     "text": "The filing is accepted, stamped, and has no effect whatsoever on anything that happens the following day.\nIt was never going to. Somewhere in the arithmetic of the thing there is a joke, and the party is not {the audience for it|the audience|who it is for}.",
+     "outcome": {
+      "kind": "none",
+      "stars": 1,
+      "rep": {
+       "eriscourt": -4
+      }
+     }
+    },
+    "pay": {
+     "text": "The fine is paid at a window by somebody who does not look up, and the summons is marked settled in the same hand that wrote it.\nIt cost what {a year|most of a year|a very good year} costs. The person on the paper will be paying the party back in instalments for the rest of their life and will {insist on it|insist|not be talked out of it}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 50
+      },
+      "mag": "medium",
+      "stars": 3,
+      "rep": {
+       "eriscourt": 8
+      }
+     }
+    },
+    "stand": {
+     "text": "Standing in that room with somebody is not a legal strategy and it is not nothing.\nIt goes {how it goes|the way it was always going to|badly, and quickly}. Afterwards, out in the light, the party is thanked by somebody who has just lost a great deal and is thanking them {properly anyway|properly|carefully, anyway}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 40
+      },
+      "mag": "medium",
+      "stars": 2,
+      "exp": 16,
+      "rep": {
+       "eriscourt": 4
+      }
+     }
+    }
+   }
+  },
+  "qe_smith": {
+   "title": "{The Forge Is Out|Cold Since Wednesday|One More Firing}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "The forge at {place} has been cold since Wednesday and {stranger} is standing in the doorway of it with an order book that is still full.\nWhat it takes is fuel and {qty} {material} for the tuyere, and the merchant is {distance} and has stopped extending credit to anybody in this trade.",
+     "asides": {
+      "disciplined": "{member} has the order book open and is reading the dates and getting quieter.",
+      "cynical": "{member} asks who stopped the credit and gets a company name that has come up before.",
+      "any": "{member} puts a hand on the anvil, which is the only warm thing in the building, from the sun."
+     },
+     "choices": [
+      {
+       "text": "Give the {material}.",
+       "give": {
+        "material": true
+       },
+       "to": "give2"
+      },
+      {
+       "text": "Work the bellows and get one firing out of what is here.",
+       "check": {
+        "stat": "STR",
+        "dc": 12
+       },
+       "pass": "one",
+       "fail": "onef",
+       "to": "one"
+      },
+      {
+       "text": "Buy the whole order book off them.",
+       "give": {
+        "gold": "large"
+       },
+       "to": "buy3"
+      }
+     ]
+    },
+    "give2": {
+     "text": "The tuyere goes in and the forge takes about forty minutes to remember what it is for and then remembers hard.\nThe first thing off the anvil is not on the order book. It is for the party, made properly, in the hour the fire came back, and it is not offered so much as put in {leader}'s {hands|hands without a word|hands and closed over}.",
+     "outcome": {
+      "kind": "gear",
+      "mag": "large",
+      "stars": 3,
+      "rep": {
+       "esotericheavyindustries": 8
+      }
+     }
+    },
+    "one": {
+     "text": "{Two|Three} hours on the bellows with what is in the bunker gets one firing, and one firing clears the top three lines of the book.\nThose three lines are the ones with people's names on them rather than companies. That is not an accident and the smith does not {pretend it is|pretend otherwise|claim otherwise}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "medium",
+      "needs": {
+       "social": 30
+      },
+      "stars": 3
+     }
+    },
+    "onef": {
+     "text": "The fire will not come up past a sulk and the bellows leather goes at the seam about {ninety minutes|an hour|two hours} in.\nEverybody is filthy and nothing is made. The smith puts the kettle on the dead forge out of habit and then {laughs at having done it|laughs|sits down on the anvil laughing}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 20
+      },
+      "stars": 1
+     }
+    },
+    "buy3": {
+     "text": "The whole book, at face value, in cash on {the anvil|the quench trough|the only clean surface in the building}, which is not how anybody in the trade does anything.\nIt clears the debt and it clears the credit and by the following week the forge is lit and the book is filling again, and the party holds paper on {every line in it|the whole book|each line of it}.",
+     "outcome": {
+      "kind": "gold",
+      "mag": "large",
+      "stars": 4,
+      "rep": {
+       "esotericheavyindustries": 10
+      }
+     }
+    }
+   }
+  },
+  "qe_sleeper": {
+   "title": "{The One Who Will Not Wake|Breathing Fine|Since The Loop}",
+   "start": "n0",
+   "nodes": {
+    "n0": {
+     "text": "There is somebody in an upstairs room in {place} who has not woken since {timeAgo} and is in no other way unwell.\nEverything works. Everything is warm. The eyes move. {stranger} has been turning them and feeding them and talking to them the whole time and has nearly run out of things to say.",
+     "asides": {
+      "empathetic": "{member} takes over the talking without being asked and does it better.",
+      "cynical": "{member} asks who has been paying for this and finds the answer is nobody, for {timeAgo}.",
+      "any": "{member} watches the eyes move and finds they are tracking something, in order, repeatedly."
+     },
+     "choices": [
+      {
+       "text": "Go in after them.",
+       "check": {
+        "stat": "PSI",
+        "dc": 14
+       },
+       "pass": "in2",
+       "fail": "in2f",
+       "to": "in2"
+      },
+      {
+       "text": "Bring what medicine {qty} {material} buys and keep them alive properly.",
+       "give": {
+        "material": true
+       },
+       "to": "keep"
+      },
+      {
+       "text": "Sit the night so somebody else can sleep.",
+       "to": "sit"
+      }
+     ]
+    },
+    "in2": {
+     "text": "Wherever they are, it is a room like this one and a day like the day they went under, and they have been having it for {timeAgo} and are perfectly content.\nConvincing somebody to leave that is the hardest hour of the year. It is done, in the end, by {leader} being extremely boring about a very small practical detail, which is {what works|the thing that works|what does it in the end}.",
+     "outcome": {
+      "kind": "skill",
+      "pool": "esoteric",
+      "mag": "large",
+      "stars": 5,
+      "needs": {
+       "social": 40
+      }
+     }
+    },
+    "in2f": {
+     "text": "It is a room like this one and a day like that day and it is very easy to sit down in.\n{leader} comes back out because {member} is shouting from the ordinary side of it, and does not talk about how close the sitting down got.",
+     "outcome": {
+      "kind": "harm",
+      "mag": "medium",
+      "stars": 2,
+      "exp": 20
+     }
+    },
+    "keep": {
+     "text": "Proper feeding, proper turning, and enough of it laid in that the next {few} months are not a daily crisis.\nNothing about the sleeping changes. Everything about the sitting up with it does, and the difference is {the whole of somebody's life|somebody's entire life|the whole of two lives}.",
+     "outcome": {
+      "kind": "none",
+      "needs": {
+       "social": 40
+      },
+      "mag": "medium",
+      "stars": 3,
+      "exp": 18
+     }
+    },
+    "sit": {
+     "text": "A night in a chair by a bed, doing the turning at the right hours and talking about nothing to somebody who does not answer.\n{stranger} sleeps eleven hours and comes up the stairs in the morning looking like a different person and {apologising for it|apologising|embarrassed about it}.",
+     "outcome": {
+      "kind": "needs",
+      "needs": {
+       "social": 50,
+       "sleep": -10
+      },
+      "mag": "small",
+      "stars": 2
+     }
+    }
+   }
   }
  },
  "fallbackScenarios": [
@@ -16600,6 +20493,56 @@
      ]
     }
    }
-  }
- }
+  },
+  "procScenarios": [
+   "qe_pump",
+   "qe_debt",
+   "qe_ford",
+   "qe_poacher",
+   "qe_stall",
+   "qe_bet",
+   "qe_pilgrim",
+   "qe_lockup",
+   "qe_bubble",
+   "qe_court",
+   "qe_dig",
+   "qe_fence",
+   "qe_flood",
+   "qe_grimoire",
+   "qe_handset",
+   "qe_hauler",
+   "qe_kola",
+   "qe_naguka",
+   "qe_note",
+   "qe_orchard",
+   "qe_race",
+   "qe_saint",
+   "qe_sleeper",
+   "qe_smith",
+   "qe_ttd",
+   "qe_wellhead"
+  ]
+ },
+ "procScenarios": [
+  "q_beacon",
+  "q_stranded",
+  "q_cache",
+  "q_tollgate",
+  "q_wager",
+  "q_specimen",
+  "q_convoy",
+  "q_father",
+  "q_grimoire",
+  "q_kessler",
+  "q_lavabath",
+  "q_leyline",
+  "q_magamui",
+  "q_pigeon",
+  "q_prospect",
+  "q_road",
+  "q_scrap",
+  "q_shells",
+  "q_shrinecall",
+  "q_verden"
+ ]
 }

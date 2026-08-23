@@ -42,6 +42,116 @@
   },
   "ui": {
     "oilTether": "Petrolio:",
-    "soulCrystal": "Anime:"
+    "soulCrystal": "Anime:",
+    "assetCount": "{n} TITOLI",
+    "category": "Settore:",
+    "volatility": "Indice di volatilità:",
+    "float": "Azioni emesse:",
+    "ownership": "La tua quota:"
+  },
+  "assets": {
+    "oil": {
+      "name": "OIL",
+      "description": "Il barile su cui gira tutto il continente. Ogni raffineria, ogni pieno di carburante e ogni ricarico dei negozi si quota su questa linea."
+    },
+    "souls": {
+      "name": "SOUL",
+      "description": "Essenza cristallizzata, scambiata a peso. Torna sempre alla mediana di risonanza, qualunque cosa ne pensi il mercato."
+    }
+  },
+  "sectors": {
+    "commodities": "Materie prime",
+    "arcane": "Materie prime arcane"
+  },
+  "news": {
+    "justNow": "Adesso",
+    "minutesAgo": "{n}m fa"
+  },
+  "errors": {
+    "noFloat": "Non restano azioni da emettere"
+  },
+  "headlines": {
+    "oil": [
+      "I margini di raffinazione si allargano dopo una settimana di manutenzione agli oleodotti.",
+      "Il cartello energetico lascia intendere quote di estrazione ritoccate in sordina.",
+      "Gli impianti di biodiesel di sintesi segnano un mese record di esportazioni.",
+      "La coda di petroliere davanti a Rotterdam fa ballare il prezzo a pronti."
+    ],
+    "souls": [
+      "I rilevatori di faglia registrano una breve fluttuazione armonica anomala.",
+      "La gilda della cattedrale certifica un altro lotto di contenitori purificati.",
+      "Il concilio arcano si riunisce sui parametri di riserva e dice poco.",
+      "Una settimana di velo sottile tiene i saggiatori a doppio turno."
+    ],
+    "company": {
+      "limecorp": [
+        "{company} lancia un'intera linea con una stagione di anticipo: incompleta e già esaurita.",
+        "Un altro dirigente esce dalla LemonCorp ed entra in un ufficio d'angolo {company}.",
+        "{company} annuncia tre dispositivi che nessuno aveva chiesto e due vanno a ruba.",
+        "I negozianti segnalano code lungo l'isolato per la nuova console portatile {company}."
+      ],
+      "lemoncorp": [
+        "{company} ritira una batteria dal mercato e la chiama restyling di design.",
+        "Gli analisti definiscono {company} sopravvalutata e la comprano di nuovo.",
+        "{company} apre un altro negozio di bandiera in un paese senza campo."
+      ],
+      "petrodyne": [
+        "{company} avvia una nuova linea di pompe sotto la Petrocave.",
+        "{company} annuncia un dividendo trimestrale fuligginoso ma affidabile.",
+        "Un contratto di trasporto {company} viene rinnovato per altri cinque anni."
+      ],
+      "soulforge": [
+        "I saggiatori {company} segnalano una resa più pura sull'ultima partita.",
+        "Un comitato etico pone a {company} domande a cui non risponderà.",
+        "{company} si accaparra per un attimo tutto il vetro da contenitori."
+      ]
+    },
+    "sector": {
+      "consumertech": [
+        "{company} presenta un aggeggio che fa una cosa sola, benissimo.",
+        "Gli scaffali si svuotano: {company} sconta la gamma della scorsa stagione.",
+        "Un difetto del firmware tiene occupata l'assistenza {company} tutta la settimana."
+      ],
+      "energy": [
+        "{company} ottiene diritti di trivellazione che nessun altro voleva.",
+        "La stagione di manutenzione taglia la produzione {company} per due settimane.",
+        "{company} firma una fornitura di lungo periodo con tre città."
+      ],
+      "occult": [
+        "{company} chiude bene la settimana ovunque il velo si sia assottigliato.",
+        "Gli ispettori visitano un caveau {company} e se ne vanno senza commenti.",
+        "{company} alza le tariffe di saggio e nessuno cambia fornitore."
+      ],
+      "telecom": [
+        "{company} accende un altro ripetitore e le mappe vanno riscritte.",
+        "La banda sulla dorsale {company} tocca il massimo storico.",
+        "{company} compra i cavi sotto una città che già serviva."
+      ],
+      "industrial": [
+        "{company} lamina le travi per un ponte che vogliono in tre paesi.",
+        "Un forno {company} si spegne per il rifacimento del rivestimento.",
+        "Gli ordini ferroviari tengono i laminatoi {company} pieni fino a primavera."
+      ],
+      "agriculture": [
+        "{company} porta a casa un raccolto che gli almanacchi davano per impossibile.",
+        "Un mese di pioggia costringe {company} a spostare le scorte dai campi bassi.",
+        "Le tinture {company} superano la certificazione in altri due mercati."
+      ],
+      "finance": [
+        "{company} lascia il tasso di prestito esattamente dov'era.",
+        "{company} dichiara riserve di liquidità ai massimi.",
+        "Una tranche di obbligazioni viene rimborsata da {company} senza scossoni."
+      ],
+      "transport": [
+        "{company} aggiunge una corsa notturna e la riempie in una settimana.",
+        "Il costo del carburante stringe gli orari {company} sulle tratte lunghe.",
+        "{company} rileva un deposito e tiene tutti gli autisti."
+      ],
+      "misc": [
+        "{company} dichiara un trimestre andato più o meno come previsto.",
+        "Gli scambi su {company} restano regolari, senza notizie di rilievo.",
+        "{company} corregge i conti dell'anno scorso di un arrotondamento."
+      ]
+    }
   }
 }

@@ -289,7 +289,7 @@ const GameOptions = {
             id: 'audio',
             nameKey: 'audio',
             categories: ['audio'],
-            symbols: ['musicArtistDisplay', 'battleMusicName', 'bgmMute', 'bgmVolume', 'bgsVolume', 'weatherVolume', 'meVolume', 'seVolume', 'footstepsVolume', 'uisVolume', 'vscVolume', 'masterVolume']
+            symbols: ['musicArtistDisplay', 'battleMusicName', 'biomeMusic', 'bgmMute', 'bgmVolume', 'bgsVolume', 'weatherVolume', 'meVolume', 'seVolume', 'footstepsVolume', 'uisVolume', 'vscVolume', 'masterVolume']
         },
         {
             id: 'shader',
@@ -578,6 +578,12 @@ window.GameOptions = GameOptions;
         // the rain without silencing a map's own background sound.
         this.weatherVolume = volume(config.weatherVolume, defaultWeatherVolume);
 
+        // Biome music (Map/WorldMapReturn.js): when off, a biome's `bgm`,
+        // `bgmNight` and `emptyWorldBGM` pools are never consulted and every
+        // map keeps the BGM it was authored with. Off by default while the
+        // pools are still being filled in; biome ambience (BGS) is unaffected.
+        this.biomeMusic = config.biomeMusic !== undefined ? config.biomeMusic : false;
+
         // Volume the BGM mute toggle restores when it is switched back off.
         // Kept separate from bgmVolume so muting can survive a save/load.
         this.bgmVolumeBeforeMute = config.bgmVolumeBeforeMute !== undefined
@@ -707,6 +713,7 @@ window.GameOptions = GameOptions;
         config.footstepsVolume = this.footstepsVolume;
         config.weatherVolume = this.weatherVolume;
         config.bgmVolumeBeforeMute = this.bgmVolumeBeforeMute;
+        config.biomeMusic = this.biomeMusic;
         config.enemyBattlers = this.enemyBattlers;
         config.charBasedSprites = this.charBasedSprites;
         config.activeTheme = this.activeTheme;
@@ -1735,6 +1742,24 @@ window.GameOptions = GameOptions;
         if (fonts) fonts.remove();
         Scene_MenuBase.prototype.terminate.call(this);
     };
+
+    //=========================================================================
+    // Biome Music (sits right above the Mute BGM toggle in the Audio tab)
+    //=========================================================================
+    // Off by default: the per-biome track pools are still being written, so
+    // until a player asks for them every map plays the music it was authored
+    // with. Switching it on re-picks the current map's biome track at once,
+    // and switching it off leaves whatever is already playing alone rather
+    // than cutting to silence.
+    GameOptions.registerOption('biomeMusic', T('GameOptions.label.biomeMusic'),
+        () => !!ConfigManager.biomeMusic,
+        (value) => {
+            ConfigManager.biomeMusic = value;
+            if (value && window.WorldMapTransfer && window.WorldMapTransfer.updateBiomeAudio) {
+                window.WorldMapTransfer.updateBiomeAudio();
+            }
+        },
+        'audio', 'boolean');
 
     //=========================================================================
     // Mute BGM (sits right above the BGM Volume slider in the Audio tab)

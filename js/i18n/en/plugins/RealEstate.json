@@ -54,6 +54,9 @@
     "lemoncorp": {
       "description": "The zesty consumer-tech conglomerate behind half the gadgets in Europe. Famously overvalued, famously beloved."
     },
+    "limecorp": {
+      "description": "The upstart that walked out of LemonCorp and took the good engineers with it. Ships every gadget a year early, half of them working, all of them sold out."
+    },
     "petrodyne": {
       "description": "Oil, gas and everything that burns. Pumps crude from the Petrocave and pays steady, sooty dividends."
     },

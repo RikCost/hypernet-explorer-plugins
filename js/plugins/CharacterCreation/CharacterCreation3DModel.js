@@ -4,35 +4,131 @@
 
 /*:
  * @target MZ
- * @plugindesc [v2.2] Deep 3D model editor for character creation: mix any body part from any creature (humanoid + custom creatures), fast text grid pickers.
+ * @plugindesc [v4.1] Spore-style creature sculptor: the body it is made of and the parts to put on it down the left, the creature filling the rest, and what you build is the anatomy you fight with.
  * @author Omni-Lex
  * @url https://nocoldiz.itch.io/hypernet-explorer
  *
  * @help CharacterCreation3DModel.js
  *
- * Adds a 3D model customization step to humanoid character creation, shown
- * right after the bust has been selected. The player sculpts a procedural
- * humanoid (3DBattler_Humanoid rig) per party member.
+ * The editor a creature character is built in. A person is always portrayed by
+ * a hand-drawn bust and a creature always by its sculpted model, so this scene
+ * is the creature's half of that rule and is never asked about.
  *
- * v2.0 - Part mixing
- * ------------------
- * Six anatomical slots (Head, Torso, Left/Right Arm, Left/Right Leg) can each
- * be filled with the matching part extracted from ANY of the ~600 registered
- * 3D battler archetypes: a dragon head on a human torso with spider legs, etc.
- * Every picker opens a grid dropdown where each option is a live 3D thumbnail
- * (rendered once by a shared offscreen renderer, cached, and generated lazily
- * as cells scroll into view). A search box filters the roster.
+ * The screen
+ * ----------
+ * A bar across the top, two sidebars down the left, and the creature filling
+ * everything that is left:
  *
- * Continuous knobs (height, build, head size, ears, nose, skin colour) are
- * drag sliders; extras (fangs / horns / tail / wings / halo) are segmented
- * toggles. No arrow steppers.
+ *   TOP BAR   what the creature IS and what to do to all of it at once: its
+ *             body, mirror symmetry, undo, redo, a reroll, the variation seed,
+ *             and the way out.
+ *   BODY      the first column: the anatomy the sculpt adds up to, every part
+ *             with the share of HP it carries, where it came from and whether
+ *             losing it is fatal. Every row that names a part of the MODEL is a
+ *             way into it -- pointing at one selects it on the creature and
+ *             stocks the shelf beside it -- so the list of what the creature is
+ *             made of doubles as the way to change it. "+ Add part" at its head
+ *             opens the chooser of every group, including the ones the creature
+ *             is not wearing anything in and the two that are not parts at all
+ *             (how the body is Built, how its Skin is coloured).
+ *   PARTS     the second column: the open group. For a limb, a search box over
+ *             a shelf of the real parts three across, each a small static
+ *             render of itself; for an appendage, its states; for Build or
+ *             Skin, their knobs.
+ *   STAGE     the creature, with the sizer for whatever is selected in its
+ *             bottom-right corner.
  *
- * The chosen configuration is persisted per actor in
- * $gameSystem._cc3DModelByActor and rendered live in the custom status
- * screen (CustomSceneStatus.js) in place of the flat 2D bust.
+ * Sculpting
+ * ---------
+ * Click a card and its part goes on. Nothing is carried across the screen, and
+ * merely POINTING at a card changes nothing: the creature only ever shows what
+ * has actually been sculpted, and a card's own picture is what a part is judged
+ * by before it is chosen.
  *
- * Creature party members instead persist the random generation seed rolled
- * during creature selection in $gameSystem._cc3DSeedByActor.
+ * ANY part of ANY creature can be worn ANYWHERE. A donor with no exact match
+ * for the slot gives its nearest part instead -- a wing, a claw or a tentacle
+ * all answer for an arm -- and a creature with no limb of its own there hangs
+ * the part off its body (hostBodyCarrier) to be dragged into place. So the
+ * shelf offers the whole roster for every slot, with the anatomically obvious
+ * answers listed first, and every slot is offered on every creature.
+ *
+ * Any part of the creature can then be grabbed and dragged -- a fitted part or
+ * one of the body's own limbs alike -- and dragging does whichever of Move,
+ * Turn or Size is armed. The same three handles are drawn on the creature
+ * (arrows, rings, a box) and mirrored by the sliders in the panel over it, so
+ * turning a part never depends on catching a thin ring.
+ *
+ * A part can never come loose: every placement goes through snapXf(), which
+ * shortens the offset until the part still overlaps the limb it hangs from.
+ * The offset sliders are drawn against exactly that reach.
+ *
+ * Mirror symmetry, on by default, echoes every left-side edit onto the right,
+ * flipped, and a mirrored pair wearing one donor shares a single donor seed so
+ * both sides come out the same size, shape and colour.
+ *
+ * The TORSO is not sculptable: it is what the creature IS and everything hangs
+ * off it. It is listed in the anatomy; it just cannot be picked, worn over or
+ * dragged.
+ *
+ * Nothing is a one-way door: every gesture stows the creature it changed, so
+ * Undo (or Ctrl+Z) puts it back. Snapshots are taken at the START of a gesture,
+ * so a drag is one step back rather than a hundred.
+ *
+ * The creature NEVER animates here. It is posed exactly once, when it is built,
+ * and then stands still -- a rig that breathes drags every part out from under
+ * the cursor. A graft rides that pose as a child of its anchor; a bare limb IS
+ * the anchor, so poseBareSlots seats those on top of the pose.
+ *
+ * Where a creature comes from
+ * ---------------------------
+ * Picking an archetype on the creature board opens the editor on an EXISTING
+ * MONSTER of that kind (modelForArchetype, dealt deterministically from
+ * $dataEnemies' <Archetype:> tags), which is then free to be re-sculpted. A
+ * SECOND archetype is spliced on as extra parts: its limbs, always in matched
+ * pairs, over every arm and leg the body can wear them on. Changing the board's
+ * pick later goes through applyArchetypesToConfig, which only rebuilds the body
+ * when the PRIMARY changed and otherwise swaps just the limbs the previous
+ * splice put there, so hand-fitted parts survive.
+ *
+ * The editor only opens on a body it can WORK on: isSculptable rejects a model
+ * with no part map behind it. Randomize rerolls everything ABOUT the creature
+ * but never the creature itself.
+ *
+ * The body behind the model
+ * -------------------------
+ * A part fitted here joins the character's BIOLOGY: the donor archetype's own
+ * part for that slot (its HP share, its vital flag, its skills) replaces the
+ * one it was fitted over. anatomyFor() is what the right-hand column lists;
+ * graftedParts() is the record written onto the actor as _ccGraftedParts /
+ * _ccReplacedParts, which Health_Core's initializeBodyParts folds over the
+ * archetypes' own anatomy. So a dragon head worn here is a dragon head in the
+ * health menu, in the equip screen and in a fight.
+ *
+ * Part pictures
+ * -------------
+ * A shelf card carries a small STATIC render of the real part, built once and
+ * kept as a data URL keyed by (slot, donor). They are taken on a renderer of
+ * their own, on a 72px offscreen canvas with `preserveDrawingBuffer`: sharing
+ * the creature's renderer and lifting the pixels out of its drawing buffer is a
+ * trick that depends on nothing having composited the frame yet, and when it
+ * misses there is no picture at all -- a shelf of empty black squares. That is
+ * ONE extra WebGL context, opened once and released on the way out; the cap the
+ * browser force-loses the oldest context at is far above three. Pictures are
+ * asked for as their card scrolls into view and dealt one per frame, because
+ * each costs a whole donor model to build.
+ *
+ * One mesh belongs to ONE slot, and the model root belongs to none. The
+ * compatibility table dedupes by part KEY, which is not enough: two keys can
+ * name the same mesh at runtime, and some families alias the body to the model
+ * root -- tagging that made every click select the torso. indexSlotMeshes
+ * claims each mesh once and skips the root, and the rail is drawn from the
+ * anchors that really resolved rather than from what the table promised.
+ *
+ * Which archetypes a slot may wear is precomputed in
+ * js/db/Battler3D/PartCompatibility.json by
+ * tools/battler3d/scripts/gen_part_compatibility.py; re-run that script after
+ * editing any 3DBattler_*.js family file's part map/registration, or PART_SLOTS
+ * / BODY_KEYS below.
  *
  * Public API (all guarded, safe when the 3D system is absent):
  *   window.CC3DModel.isAvailable()
@@ -40,19 +136,14 @@
  *   window.CC3DModel.getCreatureSeed(actorId) / setCreatureSeed(actorId, s)
  *   window.CC3DModel.buildModel(cfg, actorId) -> Promise<battler|null>
  *   window.CC3DModel.withGenSeed(seed, fn)
- *   window.Scene_CC3DModel.setup(actorId, returnSceneClass)
+ *   window.CC3DModel.partGroups(baseKey) / editableSlots(baseKey) / groupLabel(id)
+ *   window.CC3DModel.snapXf(anchor, slot, xf) / slotReach(anchor, slot, xf)
+ *   window.CC3DModel.modelForArchetype(healthKey, seed)
+ *   window.CC3DModel.configFromArchetypes(keys) / applyArchetypesToConfig(cfg, keys)
+ *   window.CC3DModel.anatomyFor(cfg, keys) / graftedParts(cfg, keys)
+ *   window.Scene_CC3DModel.setup(actorId, returnSceneClass, options)
  *
  * Load AFTER Battler3D/3DBattlerSystem and Battler3D/3DBattler_Humanoid.
- *
- * v2.2 - Slot compatibility filtering
- * ------------------------------------
- * Every per-slot picker (and the creature chimera builder, configFromArchetypes)
- * now only offers archetypes with a REAL matching part for that slot, instead of
- * every registered archetype regardless of anatomy. Compatibility is precomputed
- * in js/db/Battler3D/PartCompatibility.json by
- * tools/battler3d/scripts/gen_part_compatibility.py; re-run that script after
- * editing any 3DBattler_*.js family file's part map/registration, or PART_SLOTS/
- * BODY_KEYS below.
  */
 
 (() => {
@@ -118,12 +209,14 @@
       order: 0, label: () => T('CharCreate.head'),
       anchor: (b) => b.head, hideMats: (b) => [b.head], hideMeshes: () => [],
       donorKeys: ["HEAD", "SKULL", "HEAD_ONE", "HEAD_LEFT", "BEAK", "CEPHALOTHORAX", "CORE", "BRAIN"],
+      family: ["HEAD", "SKULL", "BEAK", "MAW", "FACE", "CEPHALO", "BRAIN", "EYE", "CORE"],
       fit: 0.9, seed: 7919
     },
     torso: {
       order: 1, label: () => T('CharCreate.torso'),
       anchor: (b) => b.torso, hideMats: (b) => [b.torso], hideMeshes: () => [],
       donorKeys: ["TORSO", "BODY", "MASS", "ABDOMEN", "RIBCAGE", "CORE", "CHESTPLATE"],
+      family: ["TORSO", "BODY", "ABDOMEN", "MASS", "RIBCAGE", "SHELL", "CHEST"],
       fit: 1.0, seed: 104729
     },
     armL: {
@@ -131,28 +224,32 @@
       anchor: (b) => b.leftUpperArm, hideMats: (b) => [b.leftUpperArm],
       hideMeshes: (b) => [b.leftForearm, b.leftHand],
       donorKeys: ["LEFT_ARM", "LEFT_UPPER_ARM", "ARM", "LEFT_WING", "LEFT_LEG"],
-      fit: 0.6, seed: 1299709
+      family: ["ARM", "WING", "CLAW", "PINCER", "TENTACLE", "HAND", "LIMB", "LEG"],
+      side: "LEFT", fit: 0.6, seed: 1299709
     },
     armR: {
       order: 3, label: () => T('CharCreate.rightArm'),
       anchor: (b) => b.rightUpperArm, hideMats: (b) => [b.rightUpperArm],
       hideMeshes: (b) => [b.rightForearm, b.rightHand],
       donorKeys: ["RIGHT_ARM", "RIGHT_UPPER_ARM", "ARM", "RIGHT_WING", "RIGHT_LEG"],
-      fit: 0.6, seed: 15485863
+      family: ["ARM", "WING", "CLAW", "PINCER", "TENTACLE", "HAND", "LIMB", "LEG"],
+      side: "RIGHT", fit: 0.6, seed: 15485863
     },
     legL: {
       order: 4, label: () => T('CharCreate.leftLeg'),
       anchor: (b) => b.leftThigh, hideMats: (b) => [b.leftThigh],
       hideMeshes: (b) => [b.leftShin, b.leftFoot],
       donorKeys: ["LEFT_LEG", "LEFT_THIGH", "LEG", "TALONS", "TAIL"],
-      fit: 0.62, seed: 179424673
+      family: ["LEG", "THIGH", "TALON", "FOOT", "HOOF", "TAIL", "LIMB", "ARM", "TENTACLE"],
+      side: "LEFT", fit: 0.62, seed: 179424673
     },
     legR: {
       order: 5, label: () => T('CharCreate.rightLeg'),
       anchor: (b) => b.rightThigh, hideMats: (b) => [b.rightThigh],
       hideMeshes: (b) => [b.rightShin, b.rightFoot],
       donorKeys: ["RIGHT_LEG", "RIGHT_THIGH", "LEG", "TALONS", "TAIL"],
-      fit: 0.62, seed: 32452843
+      family: ["LEG", "THIGH", "TALON", "FOOT", "HOOF", "TAIL", "LIMB", "ARM", "TENTACLE"],
+      side: "RIGHT", fit: 0.62, seed: 32452843
     }
   };
   const SLOT_NAMES = Object.keys(PART_SLOTS).sort((a, b) => PART_SLOTS[a].order - PART_SLOTS[b].order);
@@ -246,10 +343,30 @@
     return p;
   }
 
+  // Where a grafted part sits on its anchor, relative to the neat default fit:
+  // an offset in anchor-local units, a rotation in radians and a size multiplier
+  // over the fitted scale. This is what the sculptor's drag writes to, so a
+  // wing can be pulled up onto a shoulder or a head pushed forward on its neck
+  // instead of every donor snapping to the same spot.
+  function defaultXf() {
+    return { x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, s: 1 };
+  }
+  function defaultPartXf() {
+    const p = {};
+    SLOT_NAMES.forEach((k) => { p[k] = defaultXf(); });
+    return p;
+  }
+
   function defaultConfig() {
     return {
       base: "humanoid",
       parts: defaultParts(),
+      partXf: defaultPartXf(),
+      // Which model the second archetype put on the limbs, so a later change of
+      // second half knows what it is replacing and leaves the player's own
+      // hand-fitted parts alone.
+      secondary: null,
+      symmetry: "mirror",
       seed: 1,
       height: 1.0, bulk: 1.0, headSize: 1.0, ears: 0.8, nose: 0.9,
       hue: 0.07, sat: 0.45, lit: 0.5, texturePool: "flesh",
@@ -259,15 +376,42 @@
   }
 
   // Fill in any missing keys and migrate the legacy flat `head` field into the
-  // parts object, so configs saved by v1.0 keep working.
+  // parts object, so configs saved by v1.0 keep working. A config saved before
+  // the sculptor existed simply has every graft sitting at its default fit.
   function normalizeConfig(cfg) {
     const out = Object.assign(defaultConfig(), cfg || {});
     out.parts = Object.assign(defaultParts(), (cfg && cfg.parts) || {});
+    const xf = defaultPartXf();
+    SLOT_NAMES.forEach((k) => {
+      const src = cfg && cfg.partXf && cfg.partXf[k];
+      if (src) xf[k] = Object.assign(defaultXf(), src);
+    });
+    out.partXf = xf;
+    if (out.symmetry !== "off") out.symmetry = "mirror";
+    // Whatever a save, a preset or an older build put there, the torso is the
+    // body's own: there is no such thing as a grafted one.
+    Object.keys(FIXED_SLOTS).forEach((slot) => {
+      out.parts[slot] = "default";
+      out.partXf[slot] = defaultXf();
+    });
     if (cfg && cfg.head && cfg.head !== "default" && (!cfg.parts || !cfg.parts.head)) {
       out.parts.head = cfg.head;
     }
     delete out.head;
     return out;
+  }
+
+  // The slot a left/right edit is echoed onto while mirror symmetry is on. The
+  // rig's two sides share one local orientation, so an outward offset mirrors
+  // by negating X (and the yaw/roll that go with it).
+  const MIRROR_PAIR = { armL: "armR", armR: "armL", legL: "legR", legR: "legL" };
+  function mirrorTargets(cfg, slot) {
+    if (!cfg || cfg.symmetry !== "mirror") return [slot];
+    const pair = MIRROR_PAIR[slot];
+    return pair ? [slot, pair] : [slot];
+  }
+  function mirrorXf(xf) {
+    return { x: -xf.x, y: xf.y, z: xf.z, rx: xf.rx, ry: -xf.ry, rz: -xf.rz, s: xf.s };
   }
 
   //===========================================================================
@@ -296,7 +440,10 @@
   function structureOptions() {
     const hum = bodyOptions();
     const humSet = new Set(hum);
-    const rest = allArchetypes().filter((k) => !humSet.has(k));
+    // A structure with no part map behind it cannot be sculpted at all, so it
+    // is not offered: picking one used to leave the editor answering every
+    // click with a buzzer.
+    const rest = allArchetypes().filter((k) => !humSet.has(k) && isSculptable(k));
     return hum.concat(rest);
   }
 
@@ -308,6 +455,24 @@
     if (window.Battler3D && window.Battler3D.list) keys = window.Battler3D.list().slice();
     _archCache = keys.sort();
     return _archCache;
+  }
+
+  // Battler3D registers its structures under lowercase keys ("gorgon"), while
+  // Health/Archetypes.json names the very same creatures in CamelCase
+  // ("Gorgon"). Character creation carries the Health spelling around, so every
+  // key that reaches the 3D side goes through here first: without it a creature
+  // built from an Archetypes.json key matched nothing and silently fell back to
+  // the default humanoid config, which is why a picked archetype never showed
+  // up on the model. Returns null for anything with no registered structure.
+  let _lowerIndex = null;
+  function canonicalArchetypeKey(key) {
+    if (!key) return null;
+    const raw = String(key);
+    if (!_lowerIndex) {
+      _lowerIndex = {};
+      allArchetypes().forEach((k) => { _lowerIndex[k.toLowerCase()] = k; });
+    }
+    return _lowerIndex[raw.toLowerCase()] || null;
   }
 
   // Precomputed archetype -> slot -> matched donorKey (or null), generated by
@@ -376,8 +541,77 @@
     return ordered;
   }
 
+  // The torso is what the creature IS, and everything else hangs off it: swapping
+  // it or reshaping it deforms the whole body rather than editing a part of it.
+  // So it is the one slot the sculptor never touches -- it is still listed in
+  // the body's anatomy, it just cannot be picked, dropped on, or dragged.
+  const FIXED_SLOTS = { torso: true };
+
+  // The slots the sculptor offers on a body: ALL of them, minus the ones it is
+  // not allowed to change. A creature is not held to the anatomy it was born
+  // with -- a serpent can be given arms, a spider a head -- because a slot the
+  // body has no limb of its own for hangs the part off its trunk instead
+  // (hostBodyCarrier) and it is then dragged into place like any other. A body
+  // with nothing to hang anything off at all offers nothing.
+  function editableSlots(baseKey) {
+    if (!hostBodyKeys(baseKey).length) return [];
+    return SLOT_NAMES.filter((slot) => !FIXED_SLOTS[slot]);
+  }
+
+  // The part keys a body actually has on file, which is what says whether there
+  // is anything to build on at all.
+  function hostBodyKeys(baseKey) {
+    if (isHumanoidBase(baseKey)) return SLOT_NAMES.slice();
+    const entry = partCompatibility()[baseKey];
+    if (!entry) return [];
+    return Object.keys(entry).filter((slot) => entry[slot]);
+  }
+
+  // The APPENDAGES a body can grow: not slots on the rig but features of the
+  // profile it is built from, which is why only the biped rig has them. They
+  // are browsed alongside the slots as groups of their own, so "give it wings"
+  // is found where a player looks for it rather than buried among the sliders.
+  const APPENDAGE_GROUPS = [
+    { key: "ears", label: () => T('CharCreate.ears'), kind: "slider" },
+    { key: "horns", label: () => T('CharCreate.horns'), kind: "segment", states: [0, 1, 2],
+      labels: () => [T('CharCreate.none3'), T('CharCreate.small'), T('CharCreate.large')] },
+    { key: "fangs", label: () => T('CharCreate.fangs'), kind: "segment", states: [0, 1, 2],
+      labels: () => [T('CharCreate.none3'), T('CharCreate.small'), T('CharCreate.large')] },
+    { key: "wings", label: () => T('CharCreate.wings'), kind: "segment", states: [0, 1],
+      labels: () => [T('CharCreate.no'), T('CharCreate.yes')] },
+    { key: "tail", label: () => T('CharCreate.tail'), kind: "segment", states: [0, 1],
+      labels: () => [T('CharCreate.no'), T('CharCreate.yes')] },
+    { key: "halo", label: () => T('CharCreate.halo'), kind: "segment", states: [0, 1],
+      labels: () => [T('CharCreate.no'), T('CharCreate.yes')] }
+  ];
+  const APPENDAGE_MAP = {};
+  APPENDAGE_GROUPS.forEach((g) => { APPENDAGE_MAP[g.key] = g; });
+
+  // Every group of body parts a body offers, in the order they are browsed: the
+  // slots it really has, then -- on a biped rig -- the appendages it can grow.
+  function partGroups(baseKey) {
+    const groups = editableSlots(baseKey).map((slot) => ({ id: slot, kind: "slot" }));
+    if (isHumanoidBase(baseKey)) {
+      APPENDAGE_GROUPS.forEach((g) => groups.push({ id: g.key, kind: g.kind, appendage: g }));
+    }
+    return groups;
+  }
+
+  function groupLabel(id) {
+    return APPENDAGE_MAP[id] ? APPENDAGE_MAP[id].label() : slotLabel(id);
+  }
+
+  // Any creature can lend any slot a part. The ones with a REAL matching mesh
+  // are listed first, so the anatomically obvious answers are at the top of the
+  // shelf and the rest of the roster follows -- offered, not hidden.
+  let _slotRosterCache = {};
   function partOptions(slot) {
-    return ["default"].concat(compatibleArchetypesForSlot(slot));
+    if (_slotRosterCache[slot]) return _slotRosterCache[slot];
+    const matching = compatibleArchetypesForSlot(slot);
+    const known = new Set(matching);
+    const rest = allArchetypes().filter((key) => !known.has(key));
+    _slotRosterCache[slot] = ["default"].concat(matching, rest);
+    return _slotRosterCache[slot];
   }
 
   // The head slot lists the curated humanoid heads first, then every
@@ -386,7 +620,7 @@
     if (slot === "head") {
       return ["default"]
         .concat(HUMANOID_HEADS.map((h) => HHEAD_PREFIX + h.key))
-        .concat(compatibleArchetypesForSlot("head"));
+        .concat(partOptions("head").slice(1));
     }
     return partOptions(slot);
   }
@@ -427,48 +661,296 @@
     return null;
   }
 
-  // Build a starting config for a CUSTOM CREATURE from the Battler3D archetype
-  // keys the player picked. The primary archetype becomes the base STRUCTURE:
-  // a non-humanoid primary opens as that whole creature (spider/dragon/...), a
-  // humanoid-family primary opens as the biped rig with the archetype(s) grafted
-  // onto the head/torso/arms/legs as a chimera.
+  // Build a starting config for a CUSTOM CREATURE from the archetype(s) the
+  // player picked on the archetype board.
+  //
+  // The PRIMARY archetype opens the editor on a real monster of that kind --
+  // an existing enemy's own 3D model, dealt deterministically from the
+  // archetype -- so "Dragon" starts as a dragon that already looks like
+  // something, and every slot on it is then free to be re-sculpted.
+  //
+  // A SECONDARY archetype is spliced on as EXTRA PARTS: its limbs are grafted
+  // onto every arm and leg the body supports and can wear them, leaving the
+  // primary's own head and torso alone, so the hybrid reads as "this monster,
+  // with those limbs" -- and each grafted limb stays editable like any other.
   function configFromArchetypes(keys) {
     const cfg = defaultConfig();
-    const arch = allArchetypes();
-    const valid = (keys || []).filter((k) => arch.indexOf(k) !== -1);
-    if (!valid.length) return cfg;
-    const primary = valid[0];
-    const secondary = valid[1] || null;
-    const tertiary = valid[2] || null;
-    cfg.base = primary;
-    cfg.parts.head = primary;
-    cfg.parts.torso = primary;
-    // Assign the first candidate (in preference order) that has a REAL matching
-    // part for BOTH sides of the pair; a donor with no matching mesh at all
-    // would otherwise silently graft its whole model, shrunk down, onto the
-    // anchor. If nothing gathered is compatible, leave the pair at "default"
-    // rather than grafting a broken-looking donor.
-    const assignPair = (slotL, slotR, candidates) => {
-      for (const cand of candidates) {
-        if (cand && isSlotCompatible(cand, slotL) && isSlotCompatible(cand, slotR)) {
-          cfg.parts[slotL] = cand;
-          cfg.parts[slotR] = cand;
-          return;
-        }
-      }
-    };
-    assignPair("armL", "armR", [secondary, tertiary, primary]);
-    assignPair("legL", "legR", [tertiary, secondary, primary]);
-    // If the primary is a humanoid-family profile, borrow its skin tone so the
-    // base body under the grafts matches (ignored for whole non-humanoid bases).
+    const list = (keys || []).filter(Boolean);
+    if (!list.length) return cfg;
+    const primary = list[0];
+    const base = modelForArchetype(primary, cfg.seed) || canonicalArchetypeKey(primary);
+    if (!base) return cfg;
+    cfg.base = base;
+
+    const secondary = list[1] ? (modelForArchetype(list[1], cfg.seed) || canonicalArchetypeKey(list[1])) : null;
+    cfg.secondary = secondary;
+    if (secondary) spliceLimbs(cfg, secondary);
+
+    // A humanoid-family base is the one case where the biped knobs still apply,
+    // so it borrows its profile's own skin tone and the body underneath the
+    // grafts matches. Ignored for a whole non-humanoid structure.
     const P = (window.Battler3D && window.Battler3D.CREATURE_PROFILES) || {};
-    const prof = P[primary];
+    const prof = P[base];
     if (prof) {
       if (prof.hue) cfg.hue = prof.hue[0];
       if (prof.sat) cfg.sat = prof.sat[0];
       if (prof.lit) cfg.lit = Math.min(0.7, prof.lit[0]);
     }
     return cfg;
+  }
+
+  // Hang a donor's limbs off a body, ALWAYS in matched pairs: an arm or a leg
+  // the donor can only fill on one side is left off entirely, so a spliced body
+  // is never accidentally lopsided. Both sides of a pair start at the same
+  // placement and share one donor seed (donorSeedFor), so they come out mirror
+  // images of each other rather than two unrelated limbs.
+  function spliceLimbs(cfg, donor, onlyOver) {
+    const supported = editableSlots(cfg.base);
+    const has = (slot) => supported.indexOf(slot) >= 0;
+    const free = (slot) => !onlyOver || onlyOver(slot);
+    [["armL", "armR"], ["legL", "legR"]].forEach((pair) => {
+      const [l, r] = pair;
+      if (!has(l) || !has(r)) return;
+      if (!isSlotCompatible(donor, l) || !isSlotCompatible(donor, r)) return;
+      if (!free(l) || !free(r)) return;
+      pair.forEach((slot) => { cfg.parts[slot] = donor; cfg.partXf[slot] = defaultXf(); });
+    });
+    // A body with a single limb where others have a pair still gets one.
+    supported.forEach((slot) => {
+      if (slot === "head" || slot === "torso") return;
+      const pair = MIRROR_PAIR[slot];
+      if (pair && has(pair)) return;             // settled above, as a pair
+      if (!isSlotCompatible(donor, slot) || !free(slot)) return;
+      cfg.parts[slot] = donor;
+      cfg.partXf[slot] = defaultXf();
+    });
+  }
+
+  // Put the archetype board's pick onto a model that may already have been
+  // sculpted. A different PRIMARY is a different creature, so the body starts
+  // again from that monster; a changed SECOND half only swaps the limbs the
+  // previous splice put there, leaving every part the player fitted by hand
+  // exactly where they left it.
+  function applyArchetypesToConfig(existing, keys) {
+    const list = (keys || []).filter(Boolean);
+    if (!list.length) return existing ? normalizeConfig(existing) : defaultConfig();
+    const fresh = configFromArchetypes(list);
+    if (!existing) return fresh;
+    const cfg = normalizeConfig(existing);
+    if (cfg.base !== fresh.base) return fresh;
+    const was = cfg.secondary || null;
+    const now = fresh.secondary || null;
+    if (was === now) return cfg;
+    // Only the limbs the previous splice put there are up for grabs; anything
+    // the player fitted by hand keeps its place.
+    const spliceable = (slot) => cfg.parts[slot] === "default" || cfg.parts[slot] === was;
+    if (was) {
+      editableSlots(cfg.base).forEach((slot) => {
+        if (cfg.parts[slot] !== was) return;
+        cfg.parts[slot] = "default";
+        cfg.partXf[slot] = defaultXf();
+      });
+    }
+    if (now) spliceLimbs(cfg, now, spliceable);
+    cfg.secondary = now;
+    return cfg;
+  }
+
+  //===========================================================================
+  // The biology behind the model
+  //===========================================================================
+  //
+  // js/db/Health/Archetypes.json spells creatures in CamelCase ("Dragon") and
+  // lists the body parts they are made of; Battler3D registers its structures
+  // in lowercase, one per enemy ("dragon", "fk_terragolem"). Bridging the two
+  // is what lets a part dragged onto the body carry its anatomy with it, and
+  // what lets an archetype open on a real monster instead of a bare rig.
+
+  function healthArchetypeTable() {
+    return (window.Health && window.Health.Archetypes) || {};
+  }
+
+  // Health's own spelling of an archetype, from any spelling. Only cached once
+  // the table has actually loaded, so an early call cannot poison the index.
+  let _healthLower = null;
+  function healthArchetypeName(key) {
+    if (!key) return null;
+    if (!_healthLower) {
+      const table = healthArchetypeTable();
+      const names = Object.keys(table);
+      if (!names.length) return null;
+      _healthLower = {};
+      names.forEach((k) => { _healthLower[k.toLowerCase()] = k; });
+    }
+    return _healthLower[String(key).toLowerCase()] || null;
+  }
+
+  // Every enemy that has a 3D model, indexed both ways: which models can stand
+  // for an archetype, and which archetype a model belongs to. Built once off
+  // $dataEnemies' own <Archetype:> tags, and only cached once the database is
+  // there to build it from.
+  let _enemyModelIndex = null;
+  function enemyModelIndex() {
+    if (_enemyModelIndex) return _enemyModelIndex;
+    const empty = { byArchetype: {}, archetypeOf: {} };
+    const B = window.Battler3D;
+    const enemies = (typeof $dataEnemies !== "undefined" && $dataEnemies) || null;
+    if (!B || !B.resolveKey || !enemies || !enemies.length) return empty;
+    const byArchetype = {};
+    const archetypeOf = {};
+    enemies.forEach((enemy) => {
+      if (!enemy || !enemy.meta) return;
+      const health = healthArchetypeName(String(enemy.meta.Archetype || "").trim());
+      if (!health) return;
+      let key = null;
+      try { key = B.resolveKey(enemy); } catch (e) { key = null; }
+      key = canonicalArchetypeKey(key);
+      if (!key) return;
+      if (!byArchetype[health]) byArchetype[health] = [];
+      if (byArchetype[health].indexOf(key) < 0) byArchetype[health].push(key);
+      if (!archetypeOf[key]) archetypeOf[key] = health;
+    });
+    Object.keys(byArchetype).forEach((k) => byArchetype[k].sort());
+    _enemyModelIndex = { byArchetype, archetypeOf };
+    return _enemyModelIndex;
+  }
+
+  function hashString(str) {
+    let h = 2166136261;
+    const text = String(str);
+    for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+
+  // The Health archetype a donor's anatomy comes from: a model that IS an
+  // archetype ("dragon") answers for itself, an enemy's own model
+  // ("fk_terragolem") answers with the archetype that enemy is tagged with, and
+  // a curated humanoid head is, of course, humanoid.
+  function healthArchetypeOfModel(modelKey) {
+    if (!modelKey || modelKey === "default") return null;
+    if (isHeadPreset(modelKey)) return healthArchetypeName("Humanoid");
+    return healthArchetypeName(modelKey) || enemyModelIndex().archetypeOf[modelKey] || null;
+  }
+
+  // An existing monster's model to open an archetype on, so picking "Dragon"
+  // starts from a real dragon that can then be edited freely, rather than from
+  // a bare rig. Deterministic: the same archetype and seed always deal the same
+  // monster, and the pick is written into the config, so reopening the editor
+  // never swaps the body out from under the player. Falls back to the
+  // archetype's own registered structure when no enemy resolves.
+  // A body the sculptor can actually work on: one with at least one slot that
+  // has a real mesh behind it. A model with no compatibility entry can be worn
+  // but nothing can be fitted to it and none of its own limbs can be found, so
+  // opening on one would answer every click with a buzzer.
+  function isSculptable(modelKey) {
+    return !!modelKey && editableSlots(modelKey).length > 0;
+  }
+
+
+  function modelForArchetype(healthKey, seed) {
+    const health = healthArchetypeName(healthKey);
+    const fallback = canonicalArchetypeKey(health || healthKey);
+    if (!health) return fallback;
+    const list = (enemyModelIndex().byArchetype[health] || []).filter(isSculptable);
+    if (list.length) return list[hashString(health + "|" + (seed || 1)) % list.length];
+    // No enemy of this kind has a sculptable model: the archetype's own
+    // structure stands in, and if that cannot be sculpted either the biped rig
+    // does, so the editor always opens on something that works.
+    if (isSculptable(fallback)) return fallback;
+    return bodyOptions()[0] || "humanoid";
+  }
+
+  // The one anatomical part a graft brings with it, or null when the donor has
+  // no anatomy on file. The part key is the first of the slot's own donorKeys
+  // the donor archetype actually has -- the same rule the mesh graft follows --
+  // so the body and the model always agree on what was replaced.
+  function graftAnatomy(modelKey, slot) {
+    if (!modelKey || modelKey === "default") return null;
+    const health = healthArchetypeOfModel(modelKey);
+    const entry = health && healthArchetypeTable()[health];
+    if (!entry || !entry.parts) return null;
+    const def = PART_SLOTS[slot] || {};
+    const key = (def.donorKeys || []).find((k) => entry.parts[k]);
+    if (!key) return null;
+    return {
+      key: key,
+      part: Object.assign({}, entry.parts[key], {
+        fromArchetype: 0, fromGraft: slot, graftFrom: health
+      })
+    };
+  }
+
+  // Which anatomical part each sculpted slot owns on a given body: the first of
+  // the slot's own donorKeys the body actually has, claimed in the order
+  // hostSupportedSlots claims meshes, so two slots never fight over one part
+  // (an ooze's CORE is its head, not its torso as well).
+  const CLAIM_ORDER = ["head", "torso", "legL", "legR", "armL", "armR"];
+  function claimSlotParts(parts) {
+    const claim = {};
+    const taken = {};
+    CLAIM_ORDER.forEach((slot) => {
+      const def = PART_SLOTS[slot] || {};
+      const key = (def.donorKeys || []).find((k) => parts[k] && !taken[k]);
+      if (!key) return;
+      claim[slot] = key;
+      taken[key] = slot;
+    });
+    return claim;
+  }
+
+  // The whole picture of a sculpted body: the anatomy it comes to, the parts
+  // the grafts brought with them, and the parts of the base body they
+  // displaced. A graft stands IN PLACE OF what it was fitted over, so a spider
+  // head worn by a dragon is not a dragon head as well.
+  function resolveAnatomy(cfg, archetypeKeys) {
+    const config = normalizeConfig(cfg);
+    const HC = window.HealthCore;
+    const parts = {};
+    const base = (HC && HC.mergeArchetypeParts) ? HC.mergeArchetypeParts(archetypeKeys || []) : {};
+    for (const key in base) parts[key] = base[key];
+    const claim = claimSlotParts(parts);
+    const grafts = {};
+    const replaced = [];
+    SLOT_NAMES.forEach((slot) => {
+      const graft = graftAnatomy(config.parts[slot], slot);
+      if (!graft) return;
+      const covered = claim[slot];
+      if (covered && covered !== graft.key) {
+        delete parts[covered];
+        if (replaced.indexOf(covered) < 0) replaced.push(covered);
+      }
+      parts[graft.key] = graft.part;
+      grafts[graft.key] = graft.part;
+      claim[slot] = graft.key;
+    });
+    return { parts: parts, grafts: grafts, replaced: replaced, claim: claim };
+  }
+
+  // Which sculptable slot each anatomical part belongs to, so a row in the body
+  // list can point back at the part of the model it describes. Parts the
+  // sculptor has no hold on (a tail, a stinger, an organ) answer with nothing.
+  function slotsByPart(cfg, archetypeKeys) {
+    const claim = resolveAnatomy(cfg, archetypeKeys).claim;
+    const out = {};
+    Object.keys(claim).forEach((slot) => {
+      if (!FIXED_SLOTS[slot]) out[claim[slot]] = slot;
+    });
+    return out;
+  }
+
+  // Every part a sculpted body has. This is what the editor lists down its
+  // right-hand column and what the character walks away wearing.
+  function anatomyFor(cfg, archetypeKeys) {
+    return resolveAnatomy(cfg, archetypeKeys).parts;
+  }
+
+  // Just what the grafts changed, keyed the way the body stores its parts: the
+  // parts they brought and the ones they displaced. This is the record the
+  // actor keeps, so Health_Core can fold it over the anatomy its archetypes
+  // would otherwise give it.
+  function graftedParts(cfg, archetypeKeys) {
+    const resolved = resolveAnatomy(cfg, archetypeKeys);
+    return { parts: resolved.grafts, replaced: resolved.replaced };
   }
 
   //===========================================================================
@@ -525,16 +1007,38 @@
   // Resolve the donor mesh for a slot from its part map, avoiding the
   // whole-body mesh unless the slot genuinely wants it (it is used as the
   // fallback instead). Returns { part, isWhole }.
+  // Any part of any creature can be worn anywhere, so a donor is never turned
+  // away: what changes is HOW CLOSE a match it can give. In order --
+  //   1. the exact part the slot asks for,
+  //   2. anything of the right KIND (a wing, a claw or a tentacle all answer
+  //      for an arm), preferring the matching side,
+  //   3. any part it has at all, taken in a stable order,
+  //   4. the whole creature, shrunk to fit, which is a fine thing to hang off a
+  //      shoulder and the only honest answer for a donor made of one mesh.
+  // Without step 2 and 3 a donor with no exact match went straight to 4, which
+  // is why "any part" used to mean "a tiny whole monster".
   function resolveDonorPart(donor, slotDef) {
     const map = donor._partMeshMap || {};
-    let mesh = null;
-    for (const k of slotDef.donorKeys) {
-      if (map[k]) { mesh = map[k]; break; }
+    const usable = (mesh) => mesh && mesh !== donor.model;
+    for (const key of slotDef.donorKeys) {
+      if (usable(map[key])) return { part: map[key], isWhole: false };
     }
-    // A part that IS the entire model (some families alias BODY to model) is
-    // treated as the whole-model fallback so framing/centering still works.
-    if (mesh && mesh === donor.model) mesh = null;
-    return { part: mesh || donor.model, isWhole: !mesh };
+    const keys = Object.keys(map).filter((k) => usable(map[k])).sort();
+    const family = slotDef.family || [];
+    const kindOf = (key) => family.findIndex((token) => key.indexOf(token) >= 0);
+    const sided = slotDef.side
+      ? keys.filter((k) => k.indexOf(slotDef.side) >= 0)
+      : [];
+    for (const pool of [sided, keys]) {
+      let best = null, bestRank = Infinity;
+      for (const key of pool) {
+        const rank = kindOf(key);
+        if (rank >= 0 && rank < bestRank) { best = key; bestRank = rank; }
+      }
+      if (best) return { part: map[best], isWhole: false };
+    }
+    if (keys.length) return { part: map[keys[0]], isWhole: false };
+    return { part: donor.model, isWhole: true };
   }
 
   // Center an Object3D at the origin and scale it to a target size.
@@ -649,11 +1153,12 @@
 
   // Build a self-contained, centered, fitted Object3D for one archetype's part.
   // Resolves to null when the 3D system is unavailable or the donor fails.
-  function buildDonorGraft(archetypeKey, slotDef, cfg) {
+  function buildDonorGraft(archetypeKey, slotDef, cfg, seedOffset) {
     const B = window.Battler3D;
     if (!B || !B.create) return Promise.resolve(null);
+    const seed = seedOffset == null ? slotDef.seed : seedOffset;
     let src = null;
-    try { src = B.create(archetypeKey, 0, 0, fakeIdentity(cfg, slotDef.seed)); } catch (e) { src = null; }
+    try { src = B.create(archetypeKey, 0, 0, fakeIdentity(cfg, seed)); } catch (e) { src = null; }
     if (!src) return Promise.resolve(null);
     return Promise.resolve(src.load(null, 0, 0, 0)).then(() => {
       if (!src.model) return null;
@@ -670,6 +1175,20 @@
     }).catch(() => null);
   }
 
+  // Each slot offsets the donor's RNG so two slots of the SAME archetype vary --
+  // except a mirrored pair wearing the same donor, which shares ONE seed so the
+  // two sides come out the same size, the same shape and the same colour. The
+  // donor's own LEFT_/RIGHT_ meshes supply the handedness.
+  function donorSeedFor(slotName, cfg) {
+    const def = PART_SLOTS[slotName];
+    const pair = MIRROR_PAIR[slotName];
+    if (cfg.symmetry === "mirror" && pair && cfg.parts[pair] === cfg.parts[slotName]) {
+      const lead = (slotName === "armR" || slotName === "legR") ? pair : slotName;
+      return PART_SLOTS[lead].seed;
+    }
+    return def.seed;
+  }
+
   // Resolve a graft Object3D for a slot value (head preset or donor archetype).
   function buildSlotGraft(slotName, value, cfg) {
     const def = PART_SLOTS[slotName];
@@ -677,7 +1196,7 @@
       const head = buildHumanoidHead(value.slice(HHEAD_PREFIX.length), cfg);
       return Promise.resolve(head ? wrapAndFit(head, def.fit) : null);
     }
-    return buildDonorGraft(value, def, cfg);
+    return buildDonorGraft(value, def, cfg, donorSeedFor(slotName, cfg));
   }
 
   // Resolve the host mesh a slot should graft onto, plus any extra distal
@@ -690,6 +1209,19 @@
   // whose `gone` list includes our matched key already encodes "what
   // disappears alongside this part" per-family, which is exactly what a graft
   // should visually replace. Returns null when the host has no real part here.
+  // The mesh a creature with no limb of its own hangs an EXTRA part off: its
+  // body. A serpent has no arms, but an arm can still be stuck on its trunk and
+  // then dragged into place, which is the whole point of being able to add any
+  // part to any monster.
+  function hostBodyCarrier(hostBattler) {
+    const map = hostBattler._partMeshMap || {};
+    const usable = (key) => map[key] && map[key] !== hostBattler.model;
+    for (const key of PART_SLOTS.torso.donorKeys) if (usable(key)) return map[key];
+    for (const key of PART_SLOTS.head.donorKeys) if (usable(key)) return map[key];
+    const rest = Object.keys(map).filter(usable).sort();
+    return rest.length ? map[rest[0]] : null;
+  }
+
   function resolveHostAnchor(hostBattler, baseKey, slotName) {
     const def = PART_SLOTS[slotName];
     if (isHumanoidBase(baseKey)) {
@@ -697,16 +1229,106 @@
       if (!anchor) return null;
       return { anchor: anchor, hideMeshes: def.hideMeshes(hostBattler) };
     }
-    const key = matchedDonorKeyForSlot(baseKey, slotName);
-    if (!key) return null;
     const map = hostBattler._partMeshMap || {};
-    const anchor = map[key];
-    if (!anchor) return null;
+    const key = matchedDonorKeyForSlot(baseKey, slotName);
+    const anchor = key ? map[key] : null;
+    if (!anchor) {
+      // No limb of its own here: the part is EXTRA, so it hangs off the body
+      // and nothing of the creature is hidden to make room for it.
+      const carrier = hostBodyCarrier(hostBattler);
+      return carrier ? { anchor: carrier, hideMeshes: [], extra: true } : null;
+    }
     const rules = hostBattler._cascadeRules || [];
     const rule = rules.find((r) => r.gone && r.gone.indexOf(key) !== -1);
     const hideMeshes = rule ? (rule.hide || []).filter((m) => m && m !== anchor) : [];
     return { anchor: anchor, hideMeshes: hideMeshes };
   }
+
+  // How much of the contact between a graft and its anchor must survive being
+  // shoved around. Below 1 the two are still overlapping, not merely touching,
+  // so a part can never be left hanging by a hair.
+  const CONTACT_KEEP = 0.75;
+
+  // How far a graft may be pushed away from its anchor before it would come
+  // loose, in the anchor's OWN local frame -- which is the frame the graft's
+  // offset is written in, so no conversion is needed. The anchor's radius is
+  // read off its real geometry where it has any; a bare Group falls back to the
+  // slot's nominal fit. The graft's radius is half the size the slot fits it to,
+  // scaled by the size knob.
+  function slotReach(anchor, slotName, xf) {
+    const def = PART_SLOTS[slotName] || {};
+    const fit = def.fit || 0.85;
+    const graftR = fit * ((xf && xf.s) || 1) * 0.5;
+    let anchorR = fit * 0.5;
+    const geo = anchor && anchor.geometry;
+    if (geo) {
+      if (!geo.boundingSphere && typeof geo.computeBoundingSphere === "function") {
+        try { geo.computeBoundingSphere(); } catch (e) { /* a stripped geometry keeps the fallback */ }
+      }
+      if (geo.boundingSphere && geo.boundingSphere.radius > 0) anchorR = geo.boundingSphere.radius;
+    }
+    return (anchorR + graftR) * CONTACT_KEEP;
+  }
+
+  // Pull a placement back onto its anchor. A part may be slid anywhere around
+  // the joint it hangs from, but never off it: past the contact limit the offset
+  // is shortened along its own direction, so the part slides to the edge of what
+  // still counts as attached and stays there instead of floating free. Every
+  // path that writes a placement goes through this, so a body part is always
+  // connected -- there is no way to build a creature with a head in mid-air.
+  function snapXf(anchor, slotName, xf) {
+    const out = Object.assign(defaultXf(), xf || {});
+    const reach = slotReach(anchor, slotName, out);
+    const d = Math.sqrt(out.x * out.x + out.y * out.y + out.z * out.z);
+    if (d > reach && d > 1e-6) {
+      const k = reach / d;
+      out.x *= k; out.y *= k; out.z *= k;
+    }
+    return out;
+  }
+
+  // Where a part sat before the sculptor touched it. A graft starts centred on
+  // its anchor at the size the slot fitted it to; the body's OWN limb starts
+  // whereever its rig put it -- so every placement is read as a nudge away from
+  // that remembered pose rather than an absolute, and nothing compounds on a
+  // rebuild.
+  function rememberBasePose(obj) {
+    if (!obj || !obj.position || !obj.rotation || !obj.scale) return null;
+    if (!obj.userData) obj.userData = {};
+    if (!obj.userData.ccBasePose) {
+      obj.userData.ccBasePose = {
+        px: obj.position.x, py: obj.position.y, pz: obj.position.z,
+        rx: obj.rotation.x, ry: obj.rotation.y, rz: obj.rotation.z,
+        sx: obj.scale.x || 1, sy: obj.scale.y || 1, sz: obj.scale.z || 1
+      };
+    }
+    return obj.userData.ccBasePose;
+  }
+
+  // Seat a part at the offset / turn / size the sculptor left it at. Works on a
+  // graft and on a bare limb alike, which is what lets every part of a creature
+  // be moved and not only the ones that were dropped onto it. `kin` are the
+  // distal segments that travel with a limb (a forearm and a hand are siblings
+  // of the upper arm in the biped rig, not its children), so a limb always
+  // moves as one piece.
+  function applyPartPlacement(obj, xf, kin) {
+    if (!obj) return;
+    const t = Object.assign(defaultXf(), xf || {});
+    const b = rememberBasePose(obj);
+    if (!b) return;
+    obj.position.set(b.px + t.x, b.py + t.y, b.pz + t.z);
+    obj.rotation.set(b.rx + t.rx, b.ry + t.ry, b.rz + t.rz);
+    obj.scale.set(b.sx * t.s, b.sy * t.s, b.sz * t.s);
+    (kin || obj.userData.ccKin || []).forEach((m) => {
+      const kb = rememberBasePose(m);
+      if (!kb) return;
+      m.position.set(kb.px + t.x, kb.py + t.y, kb.pz + t.z);
+      m.scale.set(kb.sx * t.s, kb.sy * t.s, kb.sz * t.s);
+    });
+  }
+
+  // Kept under its old name for callers outside this file.
+  const applyGraftTransform = applyPartPlacement;
 
   // Graft a donor part onto a slot of a loaded host battler (humanoid rig or
   // non-humanoid creature structure).
@@ -721,14 +1343,67 @@
       // Mute the anchor's own visual (keeps it as the FK/parent carrier) and
       // hide any pre-existing child meshes (eyes / gear) before the graft is
       // parented.
-      if (anchor.material) { anchor.material.visible = false; }
-      anchor.children.slice().forEach((c) =>
-        c.traverse((o) => { if (o.isMesh) o.visible = false; }));
-      resolved.hideMeshes.forEach((m) => { if (m) m.visible = false; });
+      // ...but ONLY when the graft stands in place of a limb the creature has.
+      // An extra part hung off the body must not blank the body.
+      if (!resolved.extra) {
+        if (anchor.material) { anchor.material.visible = false; }
+        anchor.children.slice().forEach((c) =>
+          c.traverse((o) => { if (o.isMesh) o.visible = false; }));
+        resolved.hideMeshes.forEach((m) => { if (m) m.visible = false; });
+      }
+      // A placement can also arrive from a save, a preset or a hand-edited
+      // config, so it is snapped here too rather than only where it is edited.
+      applyGraftTransform(wrap, snapXf(anchor, slotName, cfg.partXf && cfg.partXf[slotName]));
+      wrap.userData.ccSlot = slotName;
       anchor.add(wrap);
       hostBattler._ccGrafts = hostBattler._ccGrafts || {};
       hostBattler._ccGrafts[slotName] = wrap;
     });
+  }
+
+  // Label every mesh a slot owns so a click or a drop anywhere on the body
+  // answers "which slot is this?". Anchors are tagged whether or not they
+  // carry a graft, because an empty slot is exactly where a new part is
+  // dropped. The tag is written on the anchor itself (not its subtree), so a
+  // walk up from the hit mesh finds the DEEPEST slot first: a head grafted
+  // inside a torso still reads as the head.
+  function indexSlotMeshes(battler, cfg) {
+    if (!battler) return {};
+    const anchors = {};
+    const taken = [];
+    const grafts = battler._ccGrafts || {};
+    editableSlots(cfg.base).forEach((slot) => {
+      const resolved = resolveHostAnchor(battler, cfg.base, slot);
+      if (!resolved || !resolved.anchor) return;
+      const anchor = resolved.anchor;
+      if (resolved.extra) {
+        // A slot the creature has no limb of its own for only exists while
+        // something is hung on it, and it SHARES the body it hangs from with
+        // every other extra part -- so it never claims that mesh, and the graft
+        // itself (tagged in graftSlot, and deeper in the tree) is what a click
+        // lands on.
+        if (grafts[slot]) anchors[slot] = anchor;
+        return;
+      }
+      // The compatibility table dedupes by part KEY, which is not enough: two
+      // keys can name the same mesh at runtime, and some families alias the
+      // body to the model ROOT. Tagging the root would make every click
+      // anywhere on the creature answer with that one slot, which is exactly
+      // what made the whole model select as its torso. So a mesh belongs to the
+      // first slot that claims it, and the root belongs to no slot at all.
+      if (anchor === battler.model || taken.indexOf(anchor) >= 0) return;
+      taken.push(anchor);
+      anchor.userData.ccSlot = slot;
+      // Only the segments that are still VISIBLE travel with the limb: the ones
+      // a graft hid are gone from the picture and must not be dragged around
+      // behind it.
+      const kin = (resolved.hideMeshes || []).filter(Boolean);
+      kin.forEach((m) => { m.userData.ccSlot = slot; });
+      anchor.userData.ccKin = kin.filter((m) => m.visible !== false);
+      anchors[slot] = anchor;
+    });
+    battler._ccAnchors = anchors;
+    return anchors;
   }
 
   // Build a non-humanoid "skeleton structure" whole from its archetype, with a
@@ -743,6 +1418,25 @@
     try { battler = withGenSeed(seedStr, make); } catch (e) { battler = null; }
     if (!battler) return Promise.resolve(null);
     return Promise.resolve(battler.load(null, 0, 0, 0)).then(() => battler).catch(() => null);
+  }
+
+  // Seat every BARE limb at the placement the sculptor left it on. A graft is a
+  // child of its anchor, so posing the rig carries it along untouched; a bare
+  // limb IS the anchor, and posing writes the very position this nudges. So the
+  // rest pose is captured and the nudge applied only after the rig has been
+  // posed -- which is why buildModel poses it exactly once and never again.
+  // (A consumer that keeps animating the model, like the status screen, poses
+  // over these nudges; the sculptor itself holds the model perfectly still.)
+  function poseBareSlots(battler, cfg) {
+    const anchors = battler._ccAnchors || {};
+    const grafts = battler._ccGrafts || {};
+    Object.keys(anchors).forEach((slot) => {
+      if (grafts[slot]) return;
+      const anchor = anchors[slot];
+      rememberBasePose(anchor);
+      (anchor.userData.ccKin || []).forEach(rememberBasePose);
+      applyPartPlacement(anchor, cfg.partXf && cfg.partXf[slot]);
+    });
   }
 
   // Graft every non-default slot onto a loaded host battler, in order.
@@ -766,16 +1460,26 @@
   function buildModel(cfg, actorId) {
     if (!isAvailable()) return Promise.resolve(null);
     cfg = normalizeConfig(cfg);
+    const finish = (battler) => {
+      indexSlotMeshes(battler, cfg);
+      // The one and only pose: after it the rest positions are settled, so the
+      // bare limbs can be nudged off them and stay there.
+      try { battler.update(1 / 60); } catch (e) { /* pose is cosmetic */ }
+      poseBareSlots(battler, cfg);
+      return battler;
+    };
     if (!isHumanoidBase(cfg.base)) {
       return buildCreatureStructure(cfg).then((battler) => {
         if (!battler) return null;
-        return graftAllSlots(battler, cfg).then(() => battler);
+        return graftAllSlots(battler, cfg).then(() => finish(battler));
       });
     }
     const prof = assembleProfile(cfg);
     const battler = window.Battler3D.createCustomHumanoid(prof, prof.scale, 0, fakeIdentity(cfg, 0), 0);
     if (!battler) return Promise.resolve(null);
-    return Promise.resolve(battler.load(null, 0, 0, 0)).then(() => graftAllSlots(battler, cfg).then(() => battler));
+    return Promise.resolve(battler.load(null, 0, 0, 0))
+      .then(() => graftAllSlots(battler, cfg))
+      .then(() => finish(battler));
   }
 
   function withGenSeed(seed, fn) {
@@ -787,11 +1491,19 @@
   }
 
   window.CC3DModel = {
-    isAvailable, defaultConfig, normalizeConfig, getConfig, setConfig,
+    isAvailable, defaultConfig, defaultXf, normalizeConfig, getConfig, setConfig,
     getCreatureSeed, setCreatureSeed, bodyOptions, partOptions, optionsForSlot,
     allArchetypes, displayName, buildModel, withGenSeed, suggestBaseFromName,
-    configFromArchetypes, isHumanoidBase, structureOptions, SLOT_NAMES,
-    isSlotCompatible, compatibleArchetypesForSlot
+    configFromArchetypes, applyArchetypesToConfig, canonicalArchetypeKey, isHumanoidBase,
+    structureOptions, SLOT_NAMES,
+    isSlotCompatible, compatibleArchetypesForSlot, hostSupportedSlots, editableSlots, hostBodyKeys,
+    partKeyName,
+    isSculptable, rollParts, indexSlotMeshes, partGroups, groupLabel,
+    mirrorTargets, mirrorXf, applyGraftTransform, applyPartPlacement, donorSeedFor,
+    snapXf, slotReach,
+    healthArchetypeName, healthArchetypeOfModel, modelForArchetype,
+    graftAnatomy, anatomyFor, graftedParts, resolveAnatomy, slotsByPart,
+    slotLabel: (s) => (PART_SLOTS[s] ? PART_SLOTS[s].label() : s)
   };
 
   //===========================================================================
@@ -859,8 +1571,149 @@
     };
   }
 
+  // Deal a fresh set of parts for whatever body a config is already built on,
+  // in place. Only slots this body has, only donors those slots can wear, and a
+  // mirrored pair is always rolled once for both sides so a random creature is
+  // never lopsided.
+  function rollParts(cfg) {
+    const slots = editableSlots(cfg.base);
+    const parts = defaultParts();
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const settled = {};
+    slots.forEach((slot) => {
+      if (settled[slot]) return;
+      const targets = mirrorTargets(cfg, slot).filter((s) => slots.indexOf(s) >= 0);
+      let roll = "default";
+      if (slot === "head" && Math.random() < 0.45) {
+        roll = HHEAD_PREFIX + pick(HUMANOID_HEADS).key;
+      } else if (Math.random() < 0.35) {
+        // Only a donor every side of the pair can wear, so the roll is never
+        // dropped halfway through and left on one limb.
+        const pool = compatibleArchetypesForSlot(slot)
+          .filter((k) => targets.every((s) => isSlotCompatible(k, s)));
+        if (pool.length) roll = pick(pool);
+      }
+      targets.forEach((s) => { parts[s] = roll; settled[s] = true; });
+      settled[slot] = true;
+    });
+    cfg.parts = parts;
+    cfg.partXf = defaultPartXf();
+    return cfg;
+  }
+
   //===========================================================================
-  // Scene_CC3DModel
+  // Scene_CC3DModel -- the creature sculptor
+  //===========================================================================
+  //
+  // The screen is the creature. It fills everything, with three thin frames
+  // around it:
+  //
+  //   TOP BAR    what the creature IS and what to do to all of it at once --
+  //              its body, mirror symmetry, undo, redo, a reroll, and the way
+  //              out (Back / Continue).
+  //   DRAWER     along the bottom, the parts. A rail of every GROUP the
+  //              creature has (its limbs, the appendages it can grow, its
+  //              build, its skin) and, under it, a shelf of the actual parts in
+  //              the open group, each drawn as a small model of itself. Point
+  //              at one to try it on, click it to keep it.
+  //   BODY LIST  down the right, the anatomy the sculpt adds up to: every part
+  //              with the share of HP it carries and whether losing it is
+  //              fatal.
+  //
+  // A part already on the creature is grabbed and dragged: Move, Turn or Size,
+  // whichever handle is armed. It can never come loose (snapXf) and the rig
+  // never animates, so nothing ever moves out from under the cursor.
+
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const RAD = Math.PI / 180;
+  const CSS_ID = (id) => String(id).replace(/[:|]/g, "-");
+
+  function slotLabel(slot) {
+    const def = PART_SLOTS[slot];
+    return def ? def.label() : slot;
+  }
+
+  // A body-part key read out loud: LEFT_ARM -> Left Arm, FIRE_BREATH_ORGAN ->
+  // Fire Breath Organ. The last-resort name for a part whose own label is
+  // missing, so a row is never a bare percentage with nothing against it.
+  function partKeyName(key) {
+    return String(key || "").split(/[_\s]+/).filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ") || String(key || "");
+  }
+
+  // The three things a grabbed part can be doing.
+  const HANDLES = ["move", "turn", "size"];
+
+  // How far a part may be shoved, and how big or small it may be made, before
+  // the numbers stop meaning anything. The real limit is contact (snapXf); this
+  // is only the backstop.
+  const XF_LIMIT = 3;
+  const XF_SIZE_MIN = 0.2;
+  const XF_SIZE_MAX = 3;
+
+  // Real-world baselines the height / weight knobs are shown against.
+  const HEIGHT_BASE_M = 1.7;
+  const WEIGHT_BASE_KG = 70;
+
+  // Sculpts to step back to.
+  const HISTORY_MAX = 40;
+
+  // A part is shown as a small STATIC render of the real thing. Each is built
+  // once, drawn into a corner of the LIVE renderer and copied straight out of
+  // its drawing buffer in the same tick -- no second WebGL context, because the
+  // browser force-loses the OLDEST one past its cap and that would be the
+  // game's own canvas. Keyed by slot: the same donor gives a different part to
+  // a head than to a leg.
+  const THUMB_SIZE = 72;
+  const THUMB_CACHE_MAX = 400;
+  const THUMB_CACHE = new Map();
+  function thumbKey(slot, value, cfg) {
+    // A curated humanoid head is skin-matched to the body, so its picture is
+    // only good for the colour it was drawn in.
+    if (isHeadPreset(value)) {
+      return slot + "|" + value + "|" + [cfg.hue, cfg.sat, cfg.lit]
+        .map((v) => Math.round((v || 0) * 20)).join(",");
+    }
+    return slot + "|" + value;
+  }
+  function cacheThumb(key, url) {
+    if (THUMB_CACHE.size >= THUMB_CACHE_MAX) THUMB_CACHE.delete(THUMB_CACHE.keys().next().value);
+    THUMB_CACHE.set(key, url);
+  }
+
+  // How many parts the shelf holds before it grows as it is scrolled.
+  const SHELF_PAGE = 40;
+
+  // The knobs that shape the body itself, and the ones that colour it. Neither
+  // is a part, so they get a group each on the rail rather than a pane of their
+  // own hidden behind a tab.
+  const BUILD_SLIDERS = ["height", "bulk", "headSize", "nose"];
+  const SKIN_SLIDERS = ["hue", "sat", "lit"];
+
+  const CFG_SLIDERS = {
+    height:   { min: 0.7, max: 1.4, step: 0.05, label: () => T('CharCreate.height'), unit: "height" },
+    bulk:     { min: 0.7, max: 1.4, step: 0.05, label: () => T('CharCreate.weight'), unit: "weight" },
+    headSize: { min: 0.7, max: 1.5, step: 0.05, label: () => T('CharCreate.headSize') },
+    nose:     { min: 0, max: 2, step: 0.1, label: () => T('CharCreate.nose') },
+    ears:     { min: 0, max: 2, step: 0.1, label: () => T('CharCreate.ears') },
+    hue:      { min: 0, max: 0.96, step: 0.02, label: () => T('CharCreate.skinHue'), swatch: true },
+    sat:      { min: 0, max: 1, step: 0.05, label: () => T('CharCreate.saturation') },
+    lit:      { min: 0.15, max: 0.85, step: 0.05, label: () => T('CharCreate.lightness') }
+  };
+
+  const XF_SLIDERS = {
+    x:  { min: -XF_LIMIT, max: XF_LIMIT, step: 0.02, label: () => T('CharCreate.cc3d.axisX'), unit: "offset" },
+    y:  { min: -XF_LIMIT, max: XF_LIMIT, step: 0.02, label: () => T('CharCreate.cc3d.axisY'), unit: "offset" },
+    z:  { min: -XF_LIMIT, max: XF_LIMIT, step: 0.02, label: () => T('CharCreate.cc3d.axisZ'), unit: "offset" },
+    ry: { min: -Math.PI, max: Math.PI, step: 5 * RAD, label: () => T('CharCreate.cc3d.turn'), unit: "angle" },
+    rx: { min: -Math.PI, max: Math.PI, step: 5 * RAD, label: () => T('CharCreate.cc3d.tilt'), unit: "angle" },
+    rz: { min: -Math.PI, max: Math.PI, step: 5 * RAD, label: () => T('CharCreate.cc3d.roll'), unit: "angle" },
+    s:  { min: XF_SIZE_MIN, max: XF_SIZE_MAX, step: 0.05, label: () => T('CharCreate.cc3d.size'), unit: "pct" }
+  };
+
+  //===========================================================================
+  // The scene
   //===========================================================================
 
   function Scene_CC3DModel() {
@@ -871,7 +1724,7 @@
   Scene_CC3DModel.prototype.constructor = Scene_CC3DModel;
 
   // options: { suggestedBase, initArchetypes:[key,...], creature:true,
-  //            returnByPop:true }.
+  //            returnByPop:true, confirmPops:n }.
   // returnByPop is for callers that PUSHED this scene over their own (the
   // sprite grid does): Back pops once, landing on the caller again, instead of
   // gotoing a fresh instance of a return scene.
@@ -897,11 +1750,12 @@
     Scene_MenuBase.prototype.initialize.call(this);
     this._actorId = Scene_CC3DModel._actorId || 1;
     this._creatureMode = !!Scene_CC3DModel._creatureMode;
+
     const saved = getConfig(this._actorId);
     this._config = normalizeConfig(saved || {});
     // First visit for this actor: seed the starting config from context. A
-    // custom creature initialises from the chosen creature archetype(s); a
-    // humanoid from the bust/sprite archetype detected in the previous step.
+    // custom creature opens on a real monster of its archetype; a humanoid on
+    // the body detected from the bust or sprite chosen in the previous step.
     if (!saved) {
       if (Scene_CC3DModel._initArchetypes && Scene_CC3DModel._initArchetypes.length) {
         this._config = normalizeConfig(configFromArchetypes(Scene_CC3DModel._initArchetypes));
@@ -909,372 +1763,923 @@
         this._config.base = Scene_CC3DModel._suggestedBase;
       }
     }
-    this._rows = this._buildRows();
-    this._focusIndex = 0;
-    this._view3D = null;
-    this._buildCounter = 0;
-    this._rebuildTimer = null;
-    this._modal = null;            // open grid picker state
-    this._sliderDrag = null;       // active slider drag state
-  };
+    this._archetypeKeys = this._actorArchetypes();
 
-  // Row descriptors.
-  //   picker  -> opens a grid dropdown (kind body/part/surface/hairstyle/haircolor)
-  //   slider  -> drag control over [min,max] step
-  //   segment -> discrete chips (fangs/horns/tail/wings/halo)
-  //   seed    -> reroll button + number
-  //   button  -> action row
-  Scene_CC3DModel.prototype._buildRows = function () {
-    const rows = [];
-    // Randomize is kept at the very top so it is immediately reachable
-    // without scrolling past the body/part pickers and sliders.
-    rows.push({ type: "button", action: "randomize", label: T('CharCreate.randomizeAll') });
-    // Creature mode offers the full non-humanoid structure roster; humanoid
-    // party members are restricted to the biped body presets.
-    if (this._creatureMode) {
-      rows.push({ type: "picker", kind: "structure", key: "base", label: T('CharCreate.structure') });
-    } else {
-      rows.push({ type: "picker", kind: "body", key: "base", label: T('CharCreate.body') });
-    }
-    // A non-humanoid structure is built whole from its archetype: the biped-only
-    // sliders/segments (height/build/ears/fangs/...) don't apply to it, but it
-    // can still be grafted onto -- show a part-picker row for each slot the
-    // CHOSEN STRUCTURE itself has a real matching mesh for (a legless serpent
-    // offers no Arm rows at all, a spider's front legs cover both its Arm and
-    // Leg donorKeys so only the Leg rows are shown, etc -- hostSupportedSlots
-    // dedupes collisions onto the same physical mesh).
-    if (this._creatureMode && !isHumanoidBase(this._config.base)) {
-      hostSupportedSlots(this._config.base).forEach((slot) => {
-        rows.push({ type: "picker", kind: "part", slot: slot, label: PART_SLOTS[slot].label() });
-      });
-      rows.push({ type: "seed", key: "seed", label: T('CharCreate.variation') });
-      rows.push({ type: "button", action: "confirm", label: T('CharCreate.continue') });
-      return rows;
-    }
-    SLOT_NAMES.forEach((slot) => {
-      rows.push({ type: "picker", kind: "part", slot: slot, label: PART_SLOTS[slot].label() });
-    });
-    rows.push({ type: "picker", kind: "surface", key: "texturePool", label: T('CharCreate.surface') });
-    rows.push({ type: "slider", key: "height", label: T('CharCreate.height'), min: 0.7, max: 1.4, step: 0.05, unit: "height" });
-    rows.push({ type: "slider", key: "bulk", label: T('CharCreate.weight'), min: 0.7, max: 1.4, step: 0.05, unit: "weight" });
-    rows.push({ type: "slider", key: "headSize", label: T('CharCreate.headSize'), min: 0.7, max: 1.5, step: 0.05 });
-    rows.push({ type: "slider", key: "ears", label: T('CharCreate.ears'), min: 0, max: 2, step: 0.1 });
-    rows.push({ type: "slider", key: "nose", label: T('CharCreate.nose'), min: 0, max: 2, step: 0.1 });
-    rows.push({ type: "slider", key: "hue", label: T('CharCreate.skinHue'), min: 0, max: 0.96, step: 0.02, swatch: true });
-    rows.push({ type: "slider", key: "sat", label: T('CharCreate.saturation'), min: 0, max: 1, step: 0.05 });
-    rows.push({ type: "slider", key: "lit", label: T('CharCreate.lightness'), min: 0.15, max: 0.85, step: 0.05 });
-    if (hairApplies(this._config)) {
-      rows.push({ type: "picker", kind: "hairstyle", key: "hairStyle", label: T('CharCreate.hair') });
-      rows.push({ type: "picker", kind: "haircolor", key: "hairColor", label: T('CharCreate.hairColour') });
-    }
-    rows.push({ type: "segment", key: "fangs", label: T('CharCreate.fangs'), states: [0, 1, 2], stateLabels: [T('CharCreate.none3'), T('CharCreate.small'), T('CharCreate.large')] });
-    rows.push({ type: "segment", key: "horns", label: T('CharCreate.horns'), states: [0, 1, 2], stateLabels: [T('CharCreate.none3'), T('CharCreate.small'), T('CharCreate.large')] });
-    rows.push({ type: "segment", key: "tail", label: T('CharCreate.tail'), states: [0, 1], stateLabels: [T('CharCreate.no'), T('CharCreate.yes')] });
-    rows.push({ type: "segment", key: "wings", label: T('CharCreate.wings'), states: [0, 1], stateLabels: [T('CharCreate.no'), T('CharCreate.yes')] });
-    rows.push({ type: "segment", key: "halo", label: T('CharCreate.halo'), states: [0, 1], stateLabels: [T('CharCreate.no'), T('CharCreate.yes')] });
-    rows.push({ type: "seed", key: "seed", label: T('CharCreate.variation') });
-    rows.push({ type: "button", action: "confirm", label: T('CharCreate.continue') });
-    return rows;
+    this._group = null;            // the group open on the rail
+    this._slot = null;             // the slot that group works on, if it is one
+    this._selected = null;         // the part under the handles
+    this._handle = "move";
+    this._filter = "";
+    this._shown = SHELF_PAGE;
+    this._focus = 0;
+    this._modal = null;
+    this._sliderDrag = null;
+    this._history = [];
+    this._future = [];
+    this._hoverSlot = null;
+    this._rebuildTimer = null;
+    this._buildCounter = 0;
+    this._view3D = null;
+    this._grafts = {};
+    this._anchors = {};
+    this._thumbQueue = [];
+    this._thumbAsked = {};
+    this._thumbBusy = false;
+    this._thumbReady = null;
+
+    this._openGroup(this._groups()[0]);
   };
 
   Scene_CC3DModel.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
-    this.createUIOverlay();
-    this.init3DView();
+    this._buildDom();
+    this._initStage();
     this.rebuildModel();
   };
 
   Scene_CC3DModel.prototype.terminate = function () {
     Scene_MenuBase.prototype.terminate.call(this);
     if (this._rebuildTimer) { clearTimeout(this._rebuildTimer); this._rebuildTimer = null; }
-    this._endSliderDrag();
+    if (this._thumbWatcher) { this._thumbWatcher.disconnect(); this._thumbWatcher = null; }
+    if (this._thumbReady && this._thumbReady.object) disposeObject3D(this._thumbReady.object);
+    this._thumbReady = null;
+    this._thumbQueue = [];
+    this._sliderDrag = null;
     this.closeModal();
-    this.cleanup3DView();
-    if (this._dndContainer) this._dndContainer.style.display = "none";
-    const st = document.getElementById("cc3d-styles");
-    if (st) st.remove();
+    this._teardownStage();
+    if (this._root) this._root.style.display = "none";
+    const styles = document.getElementById("cc3d-styles");
+    if (styles) styles.remove();
   };
 
   //---------------------------------------------------------------------------
-  // Value get/set (supports the part slots as first-class values)
+  // What the creature is built from
   //---------------------------------------------------------------------------
 
-  Scene_CC3DModel.prototype._rowValue = function (row) {
-    if (row.type === "picker" && row.kind === "part") return this._config.parts[row.slot];
-    return this._config[row.key];
+  // The archetypes this character is built from, in Health's own spelling. The
+  // actor is the authority (the archetype board writes it there); the ones the
+  // editor was opened with only stand in on a member with no body yet.
+  Scene_CC3DModel.prototype._actorArchetypes = function () {
+    const actor = (typeof $gameActors !== "undefined" && $gameActors)
+      ? $gameActors.actor(this._actorId) : null;
+    let raw;
+    if (actor && actor._creatureArchetypes && actor._creatureArchetypes.length) raw = actor._creatureArchetypes;
+    else if (actor && actor._currentArchetype) raw = [actor._currentArchetype];
+    else raw = Scene_CC3DModel._initArchetypes || [];
+    const out = [];
+    raw.forEach((key) => {
+      const health = healthArchetypeName(key);
+      if (health && out.indexOf(health) < 0) out.push(health);
+    });
+    return out.slice(0, 2);
   };
-  Scene_CC3DModel.prototype._setRowValue = function (row, val) {
-    if (row.type === "picker" && row.kind === "part") this._config.parts[row.slot] = val;
-    else this._config[row.key] = val;
+
+  // Which slots this creature really has. Once a model has been built its
+  // ANCHORS are the authority -- they are the parts that actually resolved on
+  // the rig, which is not always what the compatibility table promised.
+  // What can be taken hold of right now: the parts the built model really has,
+  // which for a slot the creature was not born with means "once something is on
+  // it". Everything that can be GIVEN a part is _addableGroups().
+  Scene_CC3DModel.prototype._slots = function () {
+    const found = Object.keys(this._anchors || {});
+    if (found.length) return SLOT_NAMES.filter((s) => found.indexOf(s) >= 0);
+    return editableSlots(this._config.base);
   };
 
-  //---------------------------------------------------------------------------
-  // DOM overlay
-  //---------------------------------------------------------------------------
-
-  Scene_CC3DModel.prototype.createUIOverlay = function () {
-    let container = document.getElementById("character-creation-container");
-    if (!container) {
-      container = document.createElement("div");
-      container.id = "character-creation-container";
-      document.body.appendChild(container);
+  // Every group on the rail, in the order it is browsed: how the body is built,
+  // how it is coloured, then each part of it and each appendage it can grow.
+  Scene_CC3DModel.prototype._groups = function () {
+    const groups = [];
+    if (isHumanoidBase(this._config.base)) {
+      groups.push({ id: "build", kind: "build", label: () => T('CharCreate.cc3d.build') });
+      groups.push({ id: "skin", kind: "skin", label: () => T('CharCreate.cc3d.skin') });
     }
-    this._dndContainer = container;
-    container.style.transition = "none";
-    container.style.display = "flex";
-    container.style.opacity = "1";
-    container.style.pointerEvents = "auto";
+    // Every slot the creature can be given something in, whether or not it was
+    // born with one there.
+    partGroups(this._config.base).forEach((group) => {
+      groups.push(Object.assign({ label: () => groupLabel(group.id) }, group));
+    });
+    return groups;
+  };
 
-    const rowsHtml = this._rows.map((row, i) => this._rowHtml(row, i)).join("");
-    container.innerHTML = `
-      <div class="cc-pockets-spread">
-        <div class="cc-page cc-page-left" style="display:flex">
-          <h2 class="cc-header-gothic">${T('CharCreate.3dModel')}</h2>
-          <p class="cc-text-desc">${T('CharCreate.mixPartsFromAnyCreatureDragToRotateWheelToZo')}</p>
-          <canvas id="cc3d-canvas" style="flex:1; width:100%; min-height:420px; display:block; cursor:grab; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4))"></canvas>
-        </div>
-        <div class="cc-page cc-page-right" style="display:flex">
-          <h2 class="cc-header-gothic">${T('CharCreate.customize')}</h2>
-          <div id="cc3d-rows" class="pockets-scroll" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:8px">
-            ${rowsHtml}
+  Scene_CC3DModel.prototype._group3 = function () {
+    return this._groups().find((g) => g.id === this._group) || null;
+  };
+
+  Scene_CC3DModel.prototype._openGroup = function (group) {
+    if (!group) { this._group = null; this._slot = null; return; }
+    this._group = group.id;
+    this._filter = "";
+    this._shown = SHELF_PAGE;
+    if (group.kind === "slot") {
+      this._slot = group.id;
+      this._selected = group.id;
+    } else {
+      this._slot = null;
+    }
+  };
+
+  //---------------------------------------------------------------------------
+  // Styles
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype._injectStyles = function () {
+    if (document.getElementById("cc3d-styles")) return;
+    const style = document.createElement("style");
+    style.id = "cc3d-styles";
+    style.textContent = `
+      .cc3d { display:flex; flex-direction:column; width:100%; height:100%;
+        box-sizing:border-box; overflow:hidden;
+        font-family:'Lora',serif; color:var(--text-muted-hover); user-select:none; }
+
+      /* --- top bar ------------------------------------------------------- */
+      /* The bar must never be wider than the screen: a chip that will not shrink
+         pushes the whole layout out and takes Continue off the right edge with
+         it, along with everything the columns below are measured against. */
+      .cc3d-top { display:flex; align-items:center; gap:6px; padding:6px 10px; min-width:0;
+        overflow:hidden; border-bottom:1px solid var(--border-accent-hover-translucent-5);
+        background:var(--gradient-1); flex:0 0 auto; }
+      .cc3d-top > * { min-width:0; }
+      .cc3d-top .cc3d-chip { overflow:hidden; text-overflow:ellipsis; }
+      .cc3d-top .cc-btn-treaty { flex:0 0 auto; }
+      .cc3d-title { font-family:'Cinzel','Lora',serif; font-size:1.05rem; letter-spacing:0.06em;
+        color:var(--text-primary-hover); text-transform:uppercase; white-space:nowrap;
+        overflow:hidden; text-overflow:ellipsis; }
+      .cc3d-spacer { flex:1 1 auto; min-width:4px; }
+
+      /* --- the two sidebars, then the creature ---------------------------- */
+      .cc3d-mid { flex:1; min-height:0; min-width:0; display:flex; overflow:hidden; }
+      .cc3d-side { flex:0 0 auto; display:flex; flex-direction:column; gap:4px;
+        padding:8px; box-sizing:border-box; background:var(--gradient-1);
+        border-right:1px solid var(--border-accent-hover-translucent-5); }
+      .cc3d-anat { width:236px; min-width:200px; }
+      .cc3d-parts { width:352px; min-width:280px; }
+      .cc3d-scroll { flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; padding-right:5px; }
+
+      /* --- what the creature is made of ----------------------------------- */
+      .cc3d-part { display:flex; align-items:baseline; justify-content:space-between; gap:6px;
+        padding:3px 5px; border-radius:4px; font-size:0.95rem; }
+      .cc3d-part.pick { cursor:pointer; }
+      .cc3d-part.pick:hover { background:var(--bg-card-translucent-5); }
+      .cc3d-part.on { border:1px solid var(--text-primary-hover);
+        background:var(--border-primary-hover-translucent-15); }
+      .cc3d-part-hp { color:var(--text-primary-hover); white-space:nowrap; }
+
+      /* --- the shelf of parts, three across -------------------------------- */
+      .cc3d-shelf { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:4px;
+        align-content:start; }
+      .cc3d-card { min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px;
+        padding:3px 2px; text-align:center; cursor:pointer; border-radius:5px;
+        border:1px solid var(--border-primary-hover-translucent-15);
+        font-size:0.78rem; line-height:1.1; color:var(--text-muted-hover); }
+      .cc3d-card.on { border-color:var(--text-primary-hover); color:var(--text-primary-hover);
+        background:var(--border-primary-hover-translucent-15); }
+      .cc3d-card-name { width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .cc3d-shot { width:100%; height:50px; display:flex; align-items:center; justify-content:center;
+        border-radius:4px; background:var(--bg-card-translucent-5); overflow:hidden; }
+      .cc3d-shot img { max-width:100%; max-height:100%; opacity:0; transition:opacity 0.15s; }
+      .cc3d-shot.bare { border:1px dashed var(--border-primary-hover-translucent-15); font-size:1.4rem; }
+      .cc3d-knobs { display:flex; flex-direction:column; gap:4px; }
+      .cc3d-knobs .cc3d-chip { align-self:flex-start; }
+
+      /* --- the creature, and the sizer in its corner ----------------------- */
+      .cc3d-stage { flex:1; position:relative; min-width:0; }
+      .cc3d-stage canvas { position:absolute; left:0; top:0; width:100%; height:100%;
+        display:block; cursor:grab; }
+      .cc3d-hint { position:absolute; left:12px; right:12px; top:8px; text-align:center;
+        font-size:0.92rem; color:var(--text-muted-hover); opacity:0.5; pointer-events:none; }
+      .cc3d-handles { position:absolute; right:12px; bottom:12px; width:222px; max-width:calc(100% - 24px);
+        box-sizing:border-box; padding:7px 8px;
+        border-radius:7px; display:flex; flex-direction:column; gap:4px;
+        background:var(--bg-primary-hover-translucent-35);
+        border:1px solid var(--border-primary-hover-translucent-15); }
+      .cc3d-handles-name { font-size:1rem; font-weight:bold; color:var(--text-primary-hover);
+        overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+      /* --- small parts shared by everything -------------------------------- */
+      .cc3d-add { padding:5px 10px; border-radius:5px; cursor:pointer; text-align:center;
+        font-size:0.98rem; color:var(--text-primary-hover); font-weight:bold;
+        border:1px solid var(--text-primary-hover); background:var(--border-primary-hover-translucent-15); }
+      .cc3d-chip { flex:0 0 auto; padding:3px 10px; border-radius:4px; cursor:pointer;
+        font-size:0.98rem; white-space:nowrap; color:var(--text-muted-hover);
+        border:1px solid var(--border-primary-hover-translucent-15); }
+      .cc3d-chip.on { border-color:var(--text-primary-hover); color:var(--text-primary-hover);
+        background:var(--border-primary-hover-translucent-15); font-weight:bold; }
+      .cc3d-chip.spent { opacity:0.3; }
+      .cc3d-chip.grow { flex:1; text-align:center; }
+      .cc3d-chip .cc3d-dot { display:inline-block; width:5px; height:5px; border-radius:50%;
+        margin-left:5px; vertical-align:middle; background:var(--text-primary-hover); }
+      .cc3d-lbl { font-size:0.93rem; opacity:0.75; white-space:nowrap; }
+      .cc3d-search { flex:0 0 170px; padding:3px 8px; border-radius:5px; font-size:0.96rem;
+        border:1px solid var(--border-primary-hover-translucent-15);
+        background:var(--bg-primary-hover-translucent-35); color:var(--text-primary-hover);
+        font-family:'Lora',serif; }
+      .cc3d-sl { padding:2px 4px 4px 4px; cursor:pointer; border-radius:4px; }
+      .cc3d-sl-head { display:flex; justify-content:space-between; gap:8px; font-size:0.93rem;
+        margin-bottom:2px; }
+      .cc3d-sl-val { color:var(--text-primary-hover); }
+      .cc3d-sl-bar { height:6px; border-radius:3px; background:var(--bg-card-translucent-5);
+        border:1px solid var(--border-primary-hover-translucent-15); overflow:hidden; }
+      .cc3d-sl-fill { height:100%; background:var(--text-primary-hover); opacity:0.7; }
+      .cc3d-tag { font-size:0.8rem; padding:0 5px; margin-left:5px; border-radius:3px;
+        border:1px solid var(--border-primary-hover-translucent-15); }
+      .cc3d-tag.vital { border-color:#d9534f; color:#e8837f; }
+      .cc3d-tag.graft { border-color:var(--text-primary-hover); color:var(--text-primary-hover); }
+      .cc3d-focus { outline:1px solid var(--text-primary-hover); outline-offset:1px; }
+      .cc3d-tip { position:fixed; left:0; top:0; padding:2px 8px; border-radius:4px;
+        font-size:0.96rem; pointer-events:none; display:none; z-index:1400;
+        background:var(--bg-primary-hover-translucent-35); color:var(--text-primary-hover);
+        border:1px solid var(--text-primary-hover); }
+    `;
+    document.head.appendChild(style);
+  };
+
+  //---------------------------------------------------------------------------
+  // Layout
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype._buildDom = function () {
+    this._injectStyles();
+    let root = document.getElementById("character-creation-container");
+    if (!root) {
+      root = document.createElement("div");
+      root.id = "character-creation-container";
+      document.body.appendChild(root);
+    }
+    this._root = root;
+    root.style.transition = "none";
+    root.style.display = "flex";
+    root.style.opacity = "1";
+    root.style.pointerEvents = "auto";
+    root.innerHTML = `
+      <div class="cc3d">
+        <div class="cc3d-top" id="cc3d-top"></div>
+        <div class="cc3d-mid">
+          <div class="cc3d-side cc3d-anat">
+            <div class="cc3d-title">${T('CharCreate.anatomy')}</div>
+            <div class="cc3d-note" id="cc3d-body-count"></div>
+            <div class="cc3d-add" data-focus="1" data-hnav="anat"
+                 onclick="SceneManager._scene.openPicker('group')">+ ${T('CharCreate.cc3d.addPart')}</div>
+            <div class="cc3d-scroll pockets-scroll" id="cc3d-body-list"></div>
           </div>
-          ${window.CCButtons.panel({
-            back: window.CCButtons.button(window.CCButtons.backLabel(), {
-              onclick: "SceneManager._scene.onBack()",
-            }),
-            // No Random in the middle slot here: the row list already opens with
-            // a keyboard-reachable "Randomize all" entry (see _buildRows).
-            next: window.CCButtons.button(window.CCButtons.continueLabel(), {
-              onclick: "SceneManager._scene.onConfirm()",
-              confirm: true,
-            }),
-            style: "margin-top:12px;",
-          })}
+          <div class="cc3d-side cc3d-parts">
+            <div class="cc3d-title" id="cc3d-parts-title"></div>
+            <div id="cc3d-parts-bar"></div>
+            <div class="cc3d-scroll pockets-scroll" id="cc3d-parts-body"></div>
+          </div>
+          <div class="cc3d-stage" id="cc3d-stage">
+            <canvas id="cc3d-canvas"></canvas>
+            <div class="cc3d-hint">${T('CharCreate.cc3d.hint')}</div>
+            <div id="cc3d-handles"></div>
+          </div>
         </div>
       </div>
       <div id="cc3d-modal" style="display:none"></div>
+      <div class="cc3d-tip" id="cc3d-tip"></div>
     `;
-    // Wheel + L2/R2 scrolling for the row list (and the picker modal's grid,
-    // which claims its own wheel events). See CCScroll.
-    if (window.CCScroll) window.CCScroll.bindWheel(container);
-
-    this._bindSliderPointer();
-    this._refreshRowFocus();
+    if (window.CCScroll) window.CCScroll.bindWheel(root);
+    this._bindPointer();
+    this.refreshAll();
   };
 
-  Scene_CC3DModel.prototype._rowHtml = function (row, i) {
-    if (row.type === "button") {
-      return `<div class="option-row" id="cc3d-row-${i}" onclick="SceneManager._scene.onRowActivate(${i})" style="justify-content:center">
-          <span class="option-name">${row.label}</span></div>`;
-    }
-    if (row.type === "seed") {
-      return `<div class="option-row" id="cc3d-row-${i}" onclick="SceneManager._scene.focusRow(${i})">
-          <span class="option-name">${row.label}</span>
-          <span class="option-select">
-            <span class="option-select-val" id="cc3d-val-${i}">#${this._config.seed}</span>
-            <span class="cc3d-reroll" onclick="event.stopPropagation(); SceneManager._scene.rerollSeed()" style="cursor:pointer; padding:2px 10px; border:1px solid var(--text-primary-hover); font-weight:bold">&#x21bb;</span>
-          </span></div>`;
-    }
-    if (row.type === "segment") {
-      return `<div class="option-row" id="cc3d-row-${i}" onclick="SceneManager._scene.focusRow(${i})">
-          <span class="option-name">${row.label}</span>
-          <span class="option-select" id="cc3d-seg-${i}">${this._segmentHtml(row, i)}</span></div>`;
-    }
-    if (row.type === "slider") {
-      return `<div class="option-row option-row--slider" id="cc3d-row-${i}" onclick="SceneManager._scene.focusRow(${i})">
-          <div class="option-row-head">
-            <span class="option-name">${row.label}</span>
-            <span class="option-value" id="cc3d-val-${i}">${this._sliderLabel(row)}</span>
-          </div>
-          <div class="option-slider-bar" data-row="${i}" id="cc3d-slider-${i}">
-            <div class="option-slider-fill" id="cc3d-fill-${i}" style="width:${this._sliderPct(row)}%"></div>
-          </div></div>`;
-    }
-    // picker
-    return `<div class="option-row" id="cc3d-row-${i}" onclick="SceneManager._scene.openPicker(${i})">
-        <span class="option-name">${row.label}</span>
-        <span class="option-select">
-          <span id="cc3d-thumb-${i}">${this._pickerPreviewHtml(row)}</span>
-          <span class="option-select-val" id="cc3d-val-${i}" style="min-width:96px">${this._pickerValueLabel(row)}</span>
-        </span></div>`;
+  Scene_CC3DModel.prototype.refreshAll = function () {
+    this._renderTop();
+    this._renderParts();
+    this._renderHandles();
+    this._renderBody();
+    this._afterRender();
   };
 
-  Scene_CC3DModel.prototype._segmentHtml = function (row, i) {
-    const cur = this._config[row.key];
-    return row.states.map((st, k) => {
-      const on = st === cur;
-      return `<span onclick="event.stopPropagation(); SceneManager._scene.setSegment(${i}, ${st})" style="cursor:pointer; padding:2px 9px; margin-left:4px; font-size:1.234rem; border:1px solid ${on ?"var(--text-primary-hover)" : "var(--border-primary-hover-translucent-15)"}; color:${on ? "var(--text-primary-hover)" : "var(--text-muted-hover)"}; background:${on ? "var(--border-primary-hover-translucent-15)" : "transparent"};">${row.stateLabels[k]}</span>`;
+  //---------------------------------------------------------------------------
+  // Top bar
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype._renderTop = function () {
+    const host = document.getElementById("cc3d-top");
+    if (!host) return;
+    const cfg = this._config;
+    const mirror = cfg.symmetry === "mirror";
+    host.innerHTML = `
+      <span class="cc3d-title">${T('CharCreate.3dModel')}</span>
+      <span class="cc3d-chip" data-focus="1" data-hnav="top"
+            onclick="SceneManager._scene.openPicker('structure')">${displayName(cfg.base)}</span>
+      <span class="cc3d-chip ${mirror ? "on" : ""}" data-focus="1" data-hnav="top"
+            title="${T('CharCreate.cc3d.symmetry')}"
+            onclick="SceneManager._scene.toggleSymmetry()">&#8646; ${mirror
+              ? T('CharCreate.cc3d.symMirror') : T('CharCreate.cc3d.symOff')}</span>
+      <span class="cc3d-chip ${this._history.length ? "" : "spent"}" data-focus="1" data-hnav="top"
+            onclick="SceneManager._scene.undo()">&#8630; ${T('CharCreate.cc3d.undo')}</span>
+      <span class="cc3d-chip ${this._future.length ? "" : "spent"}" data-focus="1" data-hnav="top"
+            onclick="SceneManager._scene.redo()">&#8631; ${T('CharCreate.cc3d.redo')}</span>
+      <span class="cc3d-chip" data-focus="1" data-hnav="top"
+            onclick="SceneManager._scene.onRandomize()">${T('CharCreate.randomizeAll')}</span>
+      <span class="cc3d-chip" data-focus="1" data-hnav="top"
+            onclick="SceneManager._scene.rerollSeed()">${T('CharCreate.variation')} #${cfg.seed}</span>
+      <span class="cc3d-spacer"></span>
+      ${window.CCButtons.button(window.CCButtons.backLabel(), {
+        onclick: "SceneManager._scene.onBack()", attrs: 'data-focus="1" data-hnav="top"' })}
+      ${window.CCButtons.button(window.CCButtons.continueLabel(), {
+        onclick: "SceneManager._scene.onConfirm()", confirm: true,
+        attrs: 'data-focus="1" data-hnav="top"' })}
+    `;
+  };
+
+  //---------------------------------------------------------------------------
+  // The parts sidebar: whatever group is open
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype._renderParts = function () {
+    const group = this._group3();
+    const title = document.getElementById("cc3d-parts-title");
+    if (title) title.textContent = group ? group.label() : T('CharCreate.cc3d.parts');
+    const bar = document.getElementById("cc3d-parts-bar");
+    if (bar) bar.innerHTML = this._partsBarHtml();
+    const body = document.getElementById("cc3d-parts-body");
+    if (body) body.innerHTML = this._drawerHtml();
+  };
+
+  // Only a shelf of parts needs a search box; a group of knobs or states does
+  // not, so the bar is empty for those rather than promising a filter.
+  Scene_CC3DModel.prototype._partsBarHtml = function () {
+    const group = this._group3();
+    if (!group) return "";
+    if (group.kind !== "slot") {
+      return `<div style="display:flex; gap:5px"><span class="cc3d-chip grow" data-focus="1"
+        data-hnav="partsbar" onclick="SceneManager._scene.surpriseGroup()"
+        >${T('CharCreate.cc3d.surprise')}</span></div>`;
+    }
+    return `<div style="display:flex; gap:5px; align-items:center">
+        <input id="cc3d-search" class="cc3d-search" type="text" autocomplete="off"
+               placeholder="${T('CharCreate.search')}" value="${this._filter}" />
+        <span class="cc3d-chip" data-focus="1" data-hnav="partsbar"
+              onclick="SceneManager._scene.surpriseGroup()">${T('CharCreate.cc3d.surprise')}</span>
+      </div>
+      <div class="cc3d-note" id="cc3d-shelf-count"></div>`;
+  };
+
+  // Every group the creature could be given something in, whether or not it is
+  // wearing anything there yet. This is what "Add part" opens.
+  Scene_CC3DModel.prototype._addableGroups = function () {
+    return this._groups();
+  };
+
+  // What the open group holds: a shelf of parts, a set of states, or the knobs
+  // that shape or colour the body.
+  Scene_CC3DModel.prototype._drawerHtml = function () {
+    const group = this._group3();
+    if (!group) return `<p class="cc3d-note">${T('CharCreate.cc3d.pickAGroup')}</p>`;
+    if (group.kind === "build") return this._knobsHtml(BUILD_SLIDERS.map((k) => "cfg:" + k));
+    if (group.kind === "skin") return this._skinHtml();
+    if (group.kind === "slot") return this._shelfHtml();
+    return this._appendageHtml(group);
+  };
+
+  // A shelf of the real parts, each drawn as a small model of itself.
+  Scene_CC3DModel.prototype._shelfHtml = function () {
+    return `<div class="cc3d-shelf" id="cc3d-shelf">${this._cardsHtml()}</div>`;
+  };
+
+  Scene_CC3DModel.prototype._shelfOptions = function () {
+    const all = optionsForSlot(this._slot);
+    const filter = (this._filter || "").toLowerCase();
+    if (!filter) return all;
+    return all.filter((option) => option === "default"
+      ? T('CharCreate.cc3d.bare').toLowerCase().includes(filter)
+      : (displayName(option).toLowerCase().includes(filter) ||
+         String(option).toLowerCase().includes(filter)));
+  };
+
+  Scene_CC3DModel.prototype._cardsHtml = function () {
+    const options = this._shelfOptions();
+    if (!options.length) return `<p class="cc3d-note">${T('CharCreate.noMatches')}</p>`;
+    const worn = this._config.parts[this._slot];
+    const end = Math.min(options.length, Math.max(SHELF_PAGE, this._shown));
+    let html = "";
+    for (let i = 0; i < end; i++) {
+      const option = options[i];
+      const bare = option === "default";
+      const name = bare ? T('CharCreate.cc3d.bare') : displayName(option);
+      let shot;
+      if (bare) {
+        shot = `<span class="cc3d-shot bare">&#9642;</span>`;
+      } else {
+        // A picture already taken is written straight into the card. Rebuilding
+        // the shelf used to hand back blank images that only filled in again
+        // when the watcher next fired, so every rebuild of the creature made
+        // the whole shelf flash and redraw itself.
+        const key = thumbKey(this._slot, option, this._config);
+        const url = THUMB_CACHE.get(key);
+        shot = `<span class="cc3d-shot"><img data-thumb="${key}" alt=""` +
+          (url ? ` src="${url}" style="opacity:1"` : ``) + ` /></span>`;
+      }
+      html += `<div class="cc3d-card ${option === worn ? "on" : ""}" data-focus="1" data-hnav="shelf"
+        data-part="${option}" title="${name}"
+        onclick="SceneManager._scene.pickPart('${option}')"
+        >${shot}<span class="cc3d-card-name">${name}</span></div>`;
+    }
+    return html;
+  };
+
+  Scene_CC3DModel.prototype._renderShelf = function () {
+    const shelf = document.getElementById("cc3d-shelf");
+    if (!shelf) { this._renderParts(); this._afterRender(); return; }
+    shelf.innerHTML = this._cardsHtml();
+    this._afterRender();
+  };
+
+  // An appendage is a feature of the body, not a mesh: it has states, not a
+  // roster, so there is nothing to draw a picture of.
+  Scene_CC3DModel.prototype._appendageHtml = function (group) {
+    const appendage = group.appendage;
+    if (appendage.kind === "slider") {
+      return `<div class="cc3d-knobs">${this._sliderHtml("cfg:" + group.id)}</div>`;
+    }
+    const current = this._config[group.id];
+    const labels = appendage.labels();
+    const chips = appendage.states.map((state, i) =>
+      `<span class="cc3d-chip ${state === current ? "on" : ""}" data-focus="1" data-hnav="knobs"
+             onclick="SceneManager._scene.setAppendage('${group.id}', ${state})">${labels[i]}</span>`).join("");
+    return `<div class="cc3d-knobs">${chips}</div>`;
+  };
+
+  Scene_CC3DModel.prototype._knobsHtml = function (ids) {
+    const knobs = ids.map((id) => this._sliderHtml(id)).join("");
+    return `<div class="cc3d-knobs">${knobs}</div>`;
+  };
+
+  Scene_CC3DModel.prototype._skinHtml = function () {
+    const cfg = this._config;
+    const colors = { flesh: "#c78b6a", green: "#5a7a3a", bone: "#e6e0cf", metal: "#8a8f98", stone: "#7a726a" };
+    let html = `<span class="cc3d-chip" data-focus="1" data-hnav="knobs"
+        onclick="SceneManager._scene.openPicker('surface')"><span style="display:inline-block;
+        width:11px; height:11px; border-radius:2px; vertical-align:middle; margin-right:5px;
+        background:${colors[cfg.texturePool] || "#888"}"></span>${displayName(cfg.texturePool)}</span>`;
+    if (hairApplies(cfg)) {
+      html += `<span class="cc3d-chip" data-focus="1" data-hnav="knobs"
+          onclick="SceneManager._scene.openPicker('hairstyle')">${hairLabel("hairstyle", cfg.hairStyle)}</span>
+        <span class="cc3d-chip" data-focus="1" data-hnav="knobs"
+          onclick="SceneManager._scene.openPicker('haircolor')"><span style="display:inline-block;
+          width:11px; height:11px; border-radius:50%; vertical-align:middle; margin-right:5px;
+          background:${hairSwatchCss(cfg.hairColor)}"></span>${hairLabel("haircolor", cfg.hairColor)}</span>`;
+    }
+    html += SKIN_SLIDERS.map((key) => this._sliderHtml("cfg:" + key)).join("");
+    return `<div class="cc3d-knobs">${html}</div>`;
+  };
+
+  //---------------------------------------------------------------------------
+  // The handles for whatever is selected
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype._renderHandles = function () {
+    const host = document.getElementById("cc3d-handles");
+    if (host) host.innerHTML = this._handlesHtml();
+  };
+
+  Scene_CC3DModel.prototype._handlesHtml = function () {
+    const slot = this._selected;
+    if (!slot || this._slots().indexOf(slot) < 0) return "";
+    const worn = this._config.parts[slot];
+    const fitted = worn !== "default";
+    const chips = HANDLES.map((handle) =>
+      `<span class="cc3d-chip grow ${handle === this._handle ? "on" : ""}" data-focus="1" data-hnav="handles"
+             onclick="SceneManager._scene.setHandle('${handle}')">${T('CharCreate.cc3d.' + handle)}</span>`).join("");
+    const sliders = this._xfSliderIds().map((id) => this._sliderHtml(id)).join("");
+    return `
+      <div class="cc3d-handles">
+        <div class="cc3d-handles-name">${slotLabel(slot)} &middot; ${fitted
+          ? displayName(worn) : T('CharCreate.cc3d.bare')}</div>
+        <div style="display:flex; gap:4px">${chips}</div>
+        ${sliders}
+        <div style="display:flex; gap:4px">
+          <span class="cc3d-chip grow" data-focus="1" data-hnav="handles"
+                onclick="SceneManager._scene.resetPart()">${T('CharCreate.cc3d.reset')}</span>
+          ${fitted ? `<span class="cc3d-chip grow" data-focus="1" data-hnav="handles"
+                onclick="SceneManager._scene.detachPart()">${T('CharCreate.cc3d.detach')}</span>` : ``}
+        </div>
+      </div>`;
+  };
+
+  Scene_CC3DModel.prototype._xfSliderIds = function () {
+    if (this._handle === "turn") return ["xf:ry", "xf:rx", "xf:rz"];
+    if (this._handle === "size") return ["xf:s"];
+    return ["xf:x", "xf:y", "xf:z"];
+  };
+
+  //---------------------------------------------------------------------------
+  // The body the sculpt adds up to
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype._renderBody = function () {
+    const host = document.getElementById("cc3d-body-list");
+    const count = document.getElementById("cc3d-body-count");
+    if (count) {
+      count.textContent = Object.keys(anatomyFor(this._config, this._archetypeKeys)).length +
+        " " + T('CharCreate.bodyParts');
+    }
+    if (host) host.innerHTML = this._bodyHtml();
+  };
+
+  Scene_CC3DModel.prototype._bodyHtml = function () {
+    const parts = anatomyFor(this._config, this._archetypeKeys);
+    const keys = Object.keys(parts);
+    if (!keys.length) return `<p class="cc3d-note">${T('CharCreate.noAnatomicalOrgansDefined')}</p>`;
+    // Which row belongs to which part of the model, so pointing at one reaches
+    // straight through to the thing it describes.
+    const slots = slotsByPart(this._config, this._archetypeKeys);
+    const HC = window.HealthCore;
+    const spliced = (this._archetypeKeys || []).length > 1;
+    return keys.map((key) => {
+      const part = parts[key];
+      // An archetype whose part carries an i18n key nothing answers for used to
+      // leave a nameless row with a bare percentage against it. The key itself
+      // is a perfectly good name once it is read out loud: LEFT_ARM -> Left Arm.
+      const name = (HC && HC.archetypePartName && HC.archetypePartName(part)) ||
+        (window.getArchetypeText && part.name ? window.getArchetypeText(part.name) : "") ||
+        partKeyName(key);
+      let tag = "";
+      if (part.fromGraft) {
+        tag = `<span class="cc3d-tag graft">${slotLabel(part.fromGraft)}</span>`;
+      } else if (spliced) {
+        tag = `<span class="cc3d-tag">${part.fromArchetype === 1
+          ? T('CharCreate.secondary') : T('CharCreate.primary')}</span>`;
+      }
+      const vital = part.vital ? `<span class="cc3d-tag vital">${T('CharCreate.vital')}</span>` : "";
+      // A row that names a part of the model is a way INTO it: pointing at one
+      // selects it on the creature and stocks the shelf beside it, so the list
+      // of what the creature is made of doubles as the way to change it.
+      const slot = part.fromGraft || slots[key] || null;
+      const reach = slot
+        ? ` pick${slot === this._selected ? " on" : ""}" data-focus="1" data-hnav="body"
+            onmouseenter="SceneManager._scene.selectSlot('${slot}')"
+            onclick="SceneManager._scene.selectSlot('${slot}')`
+        : `"`;
+      return `<div class="cc3d-part${reach}>
+          <span>${name}${tag}</span>
+          <span class="cc3d-part-hp">${part.hpPercent}%${vital}</span>
+        </div>`;
     }).join("");
   };
 
-  // Real-world baselines the height/weight multipliers are displayed against.
-  const HEIGHT_BASE_M = 1.7;
-  const WEIGHT_BASE_KG = 70;
+  //---------------------------------------------------------------------------
+  // Sliders
+  //---------------------------------------------------------------------------
 
-  Scene_CC3DModel.prototype._sliderLabel = function (row) {
-    const v = this._config[row.key];
-    if (row.swatch) {
-      const c = `hsl(${Math.round(v * 360)}, ${Math.round((this._config.sat || 0.45) * 100)}%, ${Math.round((this._config.lit || 0.6) * 100)}%)`;
-      return `<span style="display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:middle; margin-right:6px; border:1px solid rgba(0,0,0,0.35); background:${c}"></span>${Math.round(v * 360)}°`;
+  // id is "cfg:<key>" (a knob on the body, which needs the model rebuilt) or
+  // "xf:<key>" (where the selected part sits, which is applied to the live
+  // object with no rebuild at all).
+  Scene_CC3DModel.prototype._sliderDef = function (id) {
+    const parts = String(id).split(":");
+    const kind = parts[0], key = parts[1];
+    if (kind === "xf") {
+      const def = XF_SLIDERS[key];
+      if (!def || !this._selected) return null;
+      const out = Object.assign({ kind, key }, def);
+      if (def.unit === "offset") {
+        // The bar spans exactly what the part can do, so dragging it never runs
+        // into a dead stretch where the snap has already taken over.
+        const reach = this._reachFor(this._selected);
+        out.min = -reach; out.max = reach;
+        out.step = Math.max(0.01, Math.round((reach / 30) * 100) / 100);
+      }
+      return out;
     }
-    if (row.unit === "height") {
-      const totalCm = Math.round(HEIGHT_BASE_M * v * 100);
-      return T('CharCreate.heightMetres', { m: Math.floor(totalCm / 100), cm: totalCm % 100 });
-    }
-    if (row.unit === "weight") {
-      return Math.round(WEIGHT_BASE_KG * v) + "kg";
-    }
-    return Math.round(v * 100) + "%";
-  };
-  Scene_CC3DModel.prototype._sliderPct = function (row) {
-    const v = this._config[row.key];
-    return Math.max(0, Math.min(100, ((v - row.min) / (row.max - row.min)) * 100));
-  };
-
-  Scene_CC3DModel.prototype._pickerValueLabel = function (row) {
-    if (row.kind === "surface") return displayName(this._config.texturePool);
-    if (row.kind === "hairstyle" || row.kind === "haircolor") return hairLabel(row.kind, this._rowValue(row));
-    return displayName(this._rowValue(row));
-  };
-  Scene_CC3DModel.prototype._pickerPreviewHtml = function (row) {
-    if (row.kind === "haircolor") {
-      return `<span style="display:inline-block; width:20px; height:20px; border-radius:50%; vertical-align:middle; background:${hairSwatchCss(this._config.hairColor)}; border:1px solid rgba(0,0,0,0.35)"></span>`;
-    }
-    if (row.kind === "surface") {
-      const colors = { flesh: "#c78b6a", green: "#5a7a3a", bone: "#e6e0cf", metal: "#8a8f98", stone: "#7a726a" };
-      const c = colors[this._config.texturePool] || "#888";
-      return `<span style="display:inline-block; width:20px; height:20px; border-radius:4px; vertical-align:middle; background:${c}; border:1px solid rgba(0,0,0,0.35)"></span>`;
-    }
-    const val = this._rowValue(row);
-    if (val === "default") {
-      return `<span style="display:inline-flex; width:20px; height:20px; border-radius:4px; vertical-align:middle; align-items:center; justify-content:center; background:var(--bg-card-translucent-5); border:1px dashed var(--border-primary-hover-translucent-15); font-size:1.081rem">&#9642;</span>`;
-    }
-    // Text-only picker: the value label carries the selection, no thumbnail.
-    return "";
+    const def = CFG_SLIDERS[key];
+    return def ? Object.assign({ kind, key }, def) : null;
   };
 
-  Scene_CC3DModel.prototype._refreshRow = function (i) {
-    const row = this._rows[i];
-    if (!row) return;
-    if (row.type === "slider") {
-      const val = document.getElementById("cc3d-val-" + i);
-      const fill = document.getElementById("cc3d-fill-" + i);
-      if (val) val.innerHTML = this._sliderLabel(row);
-      if (fill) fill.style.width = this._sliderPct(row) + "%";
-    } else if (row.type === "segment") {
-      const seg = document.getElementById("cc3d-seg-" + i);
-      if (seg) seg.innerHTML = this._segmentHtml(row, i);
-    } else if (row.type === "seed") {
-      const val = document.getElementById("cc3d-val-" + i);
-      if (val) val.textContent = "#" + this._config.seed;
-    } else if (row.type === "picker") {
-      const val = document.getElementById("cc3d-val-" + i);
-      const thumb = document.getElementById("cc3d-thumb-" + i);
-      if (val) val.textContent = this._pickerValueLabel(row);
-      if (thumb) thumb.innerHTML = this._pickerPreviewHtml(row);
-    }
+  Scene_CC3DModel.prototype._sliderValue = function (def) {
+    if (def.kind === "xf") return (this._config.partXf[this._selected] || defaultXf())[def.key];
+    return this._config[def.key];
   };
 
-  Scene_CC3DModel.prototype._refreshRowFocus = function () {
-    this._rows.forEach((_, i) => {
-      const el = document.getElementById("cc3d-row-" + i);
-      if (el) el.classList.toggle("active", i === this._focusIndex && !this._modal);
+  Scene_CC3DModel.prototype._sliderText = function (def) {
+    const value = this._sliderValue(def);
+    if (def.swatch) {
+      const css = `hsl(${Math.round(value * 360)}, ${Math.round((this._config.sat || 0.45) * 100)}%,` +
+                  ` ${Math.round((this._config.lit || 0.6) * 100)}%)`;
+      return `<span style="display:inline-block; width:11px; height:11px; border-radius:2px;
+        vertical-align:middle; margin-right:4px; background:${css}"></span>${Math.round(value * 360)}&deg;`;
+    }
+    if (def.unit === "height") {
+      const cm = Math.round(HEIGHT_BASE_M * value * 100);
+      return T('CharCreate.heightMetres', { m: Math.floor(cm / 100), cm: cm % 100 });
+    }
+    if (def.unit === "weight") return Math.round(WEIGHT_BASE_KG * value) + "kg";
+    if (def.unit === "angle") return Math.round(value / RAD) + "&deg;";
+    if (def.unit === "offset") return (value >= 0 ? "+" : "") + value.toFixed(2);
+    return Math.round(value * 100) + "%";
+  };
+
+  Scene_CC3DModel.prototype._sliderHtml = function (id) {
+    const def = this._sliderDef(id);
+    if (!def) return "";
+    const pct = clamp(((this._sliderValue(def) - def.min) / (def.max - def.min)) * 100, 0, 100);
+    return `<div class="cc3d-sl" data-focus="1" data-slider="${id}">
+        <div class="cc3d-sl-head"><span>${def.label()}</span>
+          <span class="cc3d-sl-val" id="cc3d-v-${CSS_ID(id)}">${this._sliderText(def)}</span></div>
+        <div class="cc3d-sl-bar" data-sliderbar="${id}">
+          <div class="cc3d-sl-fill" id="cc3d-f-${CSS_ID(id)}" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  };
+
+  Scene_CC3DModel.prototype._refreshSlider = function (id) {
+    const def = this._sliderDef(id);
+    if (!def) return;
+    const value = document.getElementById("cc3d-v-" + CSS_ID(id));
+    const fill = document.getElementById("cc3d-f-" + CSS_ID(id));
+    if (value) value.innerHTML = this._sliderText(def);
+    if (fill) fill.style.width = clamp(((this._sliderValue(def) - def.min) / (def.max - def.min)) * 100, 0, 100) + "%";
+  };
+
+  Scene_CC3DModel.prototype._refreshXfSliders = function () {
+    this._xfSliderIds().forEach((id) => this._refreshSlider(id));
+  };
+
+  Scene_CC3DModel.prototype._setSlider = function (id, raw) {
+    const def = this._sliderDef(id);
+    if (!def) return;
+    let value = clamp(raw, def.min, def.max);
+    value = Math.round(value / def.step) * def.step;
+    value = Math.round(value * 10000) / 10000;
+    if (def.kind === "xf") {
+      const xf = Object.assign(defaultXf(), this._config.partXf[this._selected]);
+      if (xf[def.key] === value) return;
+      xf[def.key] = value;
+      this.applyPartTransform(this._selected, xf);
+      // The snap may have shortened the whole offset, not only the axis that
+      // moved, so every placement slider is re-read from what was kept.
+      this._refreshXfSliders();
+      return;
+    }
+    if (this._config[def.key] === value) return;
+    this._config[def.key] = value;
+    this._refreshSlider(id);
+    if (def.key === "sat" || def.key === "lit") this._refreshSlider("cfg:hue");
+    this.scheduleRebuild();
+  };
+
+  //---------------------------------------------------------------------------
+  // Undo
+  //---------------------------------------------------------------------------
+
+  // Nothing in a sculptor should be a one-way door: every gesture that changes
+  // the creature stows the one before it, so a wrong part, a mis-aimed drag or
+  // an unlucky reroll is one press away from being put back. Snapshots are
+  // taken at the START of a gesture, so a drag is one step back, not a hundred.
+  Scene_CC3DModel.prototype.pushHistory = function () {
+    this._history.push(JSON.stringify(this._config));
+    if (this._history.length > HISTORY_MAX) this._history.shift();
+    this._future.length = 0;
+  };
+
+  Scene_CC3DModel.prototype.undo = function () {
+    if (!this._history.length) { SoundManager.playBuzzer(); return; }
+    this._future.push(JSON.stringify(this._config));
+    this._loadSculpt(this._history.pop());
+  };
+
+  Scene_CC3DModel.prototype.redo = function () {
+    if (!this._future.length) { SoundManager.playBuzzer(); return; }
+    this._history.push(JSON.stringify(this._config));
+    this._loadSculpt(this._future.pop());
+  };
+
+  Scene_CC3DModel.prototype._loadSculpt = function (json) {
+    let restored;
+    try { restored = normalizeConfig(JSON.parse(json)); } catch (e) { return; }
+    this._config = restored;
+    SoundManager.playOk();
+    const groups = this._groups();
+    if (!groups.some((g) => g.id === this._group)) this._openGroup(groups[0]);
+    if (this._selected && this._slots().indexOf(this._selected) < 0) this._selected = null;
+    this.refreshAll();
+    this.rebuildModel();
+  };
+
+  //---------------------------------------------------------------------------
+  // Doing things to the creature
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype.openGroup = function (id) {
+    const group = this._groups().find((g) => g.id === id);
+    if (!group) return;
+    this._openGroup(group);
+    SoundManager.playCursor();
+    this._renderParts();
+    this._renderHandles();
+    this._renderBody();
+    this._afterRender();
+    this._refreshSelection();
+  };
+
+  Scene_CC3DModel.prototype.toggleSymmetry = function () {
+    this._config.symmetry = this._config.symmetry === "mirror" ? "off" : "mirror";
+    SoundManager.playCursor();
+    this._renderTop();
+    this._afterRender();
+  };
+
+  Scene_CC3DModel.prototype.setHandle = function (handle) {
+    if (HANDLES.indexOf(handle) < 0 || this._handle === handle) return;
+    this._handle = handle;
+    if (this._view3D && this._view3D.mode === "part") this._view3D.partHandle = handle;
+    SoundManager.playCursor();
+    this._renderHandles();
+    this._afterRender();
+    this._updateGizmo();
+  };
+
+  // Can this part be worn here? "Bare" always can (it takes a graft off), a
+  // curated humanoid head only on the head, every other donor only where the
+  // compatibility table says it has a real mesh -- and never on a fixed slot.
+  // Anything can be worn anywhere. The only rules left are the ones that are
+  // about the BODY rather than about anatomy: a slot this creature can be given
+  // something in at all, the torso being the creature itself, and a curated
+  // humanoid head being a head.
+  Scene_CC3DModel.prototype._canFit = function (value, slot) {
+    if (!slot || FIXED_SLOTS[slot]) return false;
+    if (editableSlots(this._config.base).indexOf(slot) < 0) return false;
+    if (value === "default") return true;
+    if (isHeadPreset(value)) return slot === "head";
+    return true;
+  };
+
+  Scene_CC3DModel.prototype.pickPart = function (value) {
+    this.fitPart(this._slot, value);
+  };
+
+  Scene_CC3DModel.prototype.fitPart = function (slot, value) {
+    if (!this._canFit(value, slot)) { SoundManager.playBuzzer(); return; }
+    this.pushHistory();
+    mirrorTargets(this._config, slot).forEach((target) => {
+      if (!this._canFit(value, target)) return;
+      this._config.parts[target] = value;
+      // A fresh part starts at its own clean fit: swapping donors never
+      // inherits the last one's shove.
+      this._config.partXf[target] = defaultXf();
     });
-    if (!this._modal) {
-      const focused = document.getElementById("cc3d-row-" + this._focusIndex);
-      if (focused && focused.scrollIntoView) focused.scrollIntoView({ block: "nearest" });
-    }
-  };
-
-  //---------------------------------------------------------------------------
-  // Row interaction
-  //---------------------------------------------------------------------------
-
-  Scene_CC3DModel.prototype.focusRow = function (i) {
-    if (i === this._focusIndex) return;
-    this._focusIndex = i;
-    SoundManager.playCursor();
-    this._refreshRowFocus();
-  };
-
-  Scene_CC3DModel.prototype.onRowActivate = function (i) {
-    const row = this._rows[i];
-    if (!row) return;
-    this._focusIndex = i;
-    this._refreshRowFocus();
-    if (row.type === "button") {
-      if (row.action === "confirm") this.onConfirm();
-      else if (row.action === "randomize") this.onRandomize();
-    } else if (row.type === "picker") {
-      this.openPicker(i);
-    } else if (row.type === "seed") {
-      this.rerollSeed();
-    } else if (row.type === "segment") {
-      this.cycleSegment(i, 1);
-    }
-  };
-
-  Scene_CC3DModel.prototype.cycleSegment = function (i, dir) {
-    const row = this._rows[i];
-    if (!row || row.type !== "segment") return;
-    let idx = row.states.indexOf(this._config[row.key]);
-    if (idx < 0) idx = 0;
-    idx = (idx + dir + row.states.length) % row.states.length;
-    this._config[row.key] = row.states[idx];
-    SoundManager.playCursor();
-    this._refreshRow(i);
+    this._selected = slot;
+    SoundManager.playOk();
+    this._renderParts();
+    this._renderHandles();
+    this._renderBody();
+    this._afterRender();
     this.scheduleRebuild();
   };
-  Scene_CC3DModel.prototype.setSegment = function (i, state) {
-    const row = this._rows[i];
-    if (!row || row.type !== "segment") return;
-    this._focusIndex = i;
-    this._config[row.key] = state;
-    SoundManager.playCursor();
-    this._refreshRow(i);
-    this._refreshRowFocus();
+
+  Scene_CC3DModel.prototype.detachPart = function () {
+    if (!this._selected || this._config.parts[this._selected] === "default") return;
+    this.fitPart(this._selected, "default");
+  };
+
+  Scene_CC3DModel.prototype.resetPart = function () {
+    if (!this._selected) return;
+    this.pushHistory();
+    this.applyPartTransform(this._selected, defaultXf());
+    SoundManager.playOk();
+    this._renderHandles();
+    this._afterRender();
+  };
+
+  Scene_CC3DModel.prototype.setAppendage = function (key, state) {
+    if (this._config[key] === state) return;
+    this.pushHistory();
+    this._config[key] = state;
+    SoundManager.playOk();
+    this._renderParts();
+    this._renderBody();
+    this._afterRender();
     this.scheduleRebuild();
+  };
+
+  // One group at a time is the fun way to build a creature: try a wild leg
+  // without throwing away the head you like.
+  Scene_CC3DModel.prototype.surpriseGroup = function () {
+    const group = this._group3();
+    if (!group) return;
+    const pick = (list) => list[Math.floor(Math.random() * list.length)];
+    if (group.kind === "slot") {
+      const targets = mirrorTargets(this._config, group.id);
+      const pool = this._shelfOptions()
+        .filter((o) => o !== "default" && targets.every((t) => this._canFit(o, t)));
+      if (!pool.length) { SoundManager.playBuzzer(); return; }
+      this.fitPart(group.id, pick(pool));
+      return;
+    }
+    if (group.appendage && group.appendage.kind === "slider") {
+      this.pushHistory();
+      this._config[group.id] = Math.round(Math.random() * 20) / 10;
+      SoundManager.playOk();
+      this._renderParts();
+      this._afterRender();
+      this.scheduleRebuild();
+      return;
+    }
+    if (group.appendage) this.setAppendage(group.id, pick(group.appendage.states));
   };
 
   Scene_CC3DModel.prototype.rerollSeed = function () {
+    this.pushHistory();
     this._config.seed = 1 + Math.floor(Math.random() * 99998);
     SoundManager.playOk();
-    this._rows.forEach((r, i) => { if (r.type === "seed") this._refreshRow(i); });
+    this._renderTop();
+    this._afterRender();
     this.scheduleRebuild();
   };
 
+  // Reroll everything ABOUT the creature, never the creature itself: the body
+  // is what the player or their archetype chose, and throwing it away on a
+  // reroll would mean losing it to change its details.
   Scene_CC3DModel.prototype.onRandomize = function () {
-    const wasHumanoid = isHumanoidBase(this._config.base);
-    const wasHair = hairApplies(this._config);
-    // On a non-humanoid creature structure, randomize just rerolls a fresh
-    // structure + variation rather than jumping back to a biped body.
-    if (this._creatureMode && !wasHumanoid) {
-      const opts = structureOptions();
-      this._config.base = opts[Math.floor(Math.random() * opts.length)];
-      this._config.seed = 1 + Math.floor(Math.random() * 99998);
-    } else {
-      this._config = normalizeConfig(randomConfig());
-    }
+    this.pushHistory();
+    const kept = {
+      base: this._config.base,
+      symmetry: this._config.symmetry,
+      secondary: this._config.secondary
+    };
+    const next = normalizeConfig(randomConfig());
+    Object.assign(next, kept);
+    rollParts(next);
+    this._config = next;
     SoundManager.playOk();
-    const nowHumanoid = isHumanoidBase(this._config.base);
-    // A freshly-rolled non-humanoid structure can support a different set of
-    // slots than the previous one (hostSupportedSlots), so always rebuild rows
-    // for that case too, not just when humanoid-ness itself toggles.
-    if (nowHumanoid !== wasHumanoid || (this._creatureMode && !nowHumanoid)
-        || hairApplies(this._config) !== wasHair) {
-      this._rebuildRows();
-    } else {
-      this._rows.forEach((_, i) => this._refreshRow(i));
-    }
+    const groups = this._groups();
+    if (!groups.some((g) => g.id === this._group)) this._openGroup(groups[0]);
+    this.refreshAll();
     this.scheduleRebuild();
   };
+
+  // Write a part's placement into the sculpt and straight onto the live object:
+  // moving a part never rebuilds the model, so the drag stays smooth.
+  Scene_CC3DModel.prototype.applyPartTransform = function (slot, xf) {
+    if (!slot) return;
+    const wanted = {
+      x: clamp(xf.x, -XF_LIMIT, XF_LIMIT),
+      y: clamp(xf.y, -XF_LIMIT, XF_LIMIT),
+      z: clamp(xf.z, -XF_LIMIT, XF_LIMIT),
+      rx: xf.rx, ry: xf.ry, rz: xf.rz,
+      s: clamp(xf.s, XF_SIZE_MIN, XF_SIZE_MAX)
+    };
+    mirrorTargets(this._config, slot).forEach((target, i) => {
+      // Each side is snapped against ITS OWN part: a mirrored pair is not
+      // always the same size, and both halves have to stay attached.
+      const want = i === 0 ? wanted : mirrorXf(wanted);
+      const reach = this._reachFor(target);
+      const distance = Math.sqrt(want.x * want.x + want.y * want.y + want.z * want.z);
+      const value = Object.assign(defaultXf(), want);
+      if (distance > reach && distance > 1e-6) {
+        const k = reach / distance;
+        value.x *= k; value.y *= k; value.z *= k;
+      }
+      this._config.partXf[target] = value;
+      applyPartPlacement(this._movable(target), value);
+    });
+  };
+
+  // How far this slot's part may be pushed and still count as attached. A bare
+  // limb is moved in its PARENT's frame, so its own radius is read through its
+  // own scale to stay comparable with the offset.
+  Scene_CC3DModel.prototype._reachFor = function (slot) {
+    if (!slot) return XF_LIMIT;
+    const xf = this._config.partXf[slot] || defaultXf();
+    const anchor = this._anchors[slot];
+    const bare = !this._grafts[slot];
+    const frame = (bare && anchor && anchor.scale) ? (anchor.scale.x || 1) : 1;
+    return Math.min(XF_LIMIT, slotReach(anchor, slot, xf) * frame);
+  };
+
+  // What a slot's placement actually moves: the graft it wears, or -- on a bare
+  // slot -- the creature's OWN limb. Every part can be sculpted, not only the
+  // ones that were chosen off a shelf.
+  Scene_CC3DModel.prototype._movable = function (slot) {
+    if (!slot) return null;
+    return this._grafts[slot] || this._anchors[slot] || null;
+  };
+
+  //---------------------------------------------------------------------------
+  // What is on the creature
+  //---------------------------------------------------------------------------
+
+  // The creature only ever shows what has actually been sculpted. Pointing at a
+  // card used to put its part on straight away and take it off again on the way
+  // past, which made the creature flicker through a hundred bodies while the
+  // shelf was merely being read: a part changes when it is CHOSEN, never when
+  // it is looked at. The card's own picture is what a part is judged by.
+  Scene_CC3DModel.prototype._shownConfig = function () {
+    return this._config;
+  };
+
+  //---------------------------------------------------------------------------
+  // Leaving
+  //---------------------------------------------------------------------------
 
   Scene_CC3DModel.prototype.onConfirm = function () {
     setConfig(this._actorId, this._config);
+    this._applyAnatomyToActor();
     SoundManager.playOk();
     // Creature mode was PUSHED over the creature scene: pop once back to it and
-    // let it resume the flow. Humanoid mode mirrors the bust selector's exit:
-    // a double pop past the sprite board it was opened from, landing on the
+    // let it resume the flow. Humanoid mode mirrors the bust selector's exit: a
+    // double pop past the sprite board it was opened from, landing on the
     // wizard, which resumes on the step after the one that opened the chain.
     if (this._creatureMode) { Scene_CC3DModel._creatureResult = "confirm"; SceneManager.pop(); return; }
     const pops = Scene_CC3DModel._confirmPops || 2;
@@ -1291,93 +2696,231 @@
     else { SceneManager.pop(); SceneManager.pop(); }
   };
 
+  // What the character walks away with. The parts the sculpt fitted are
+  // recorded on the actor and its body rebuilt from its archetypes with those
+  // folded over the top, so a dragon head worn here is a dragon head in the
+  // health menu, in the equip screen and in a fight.
+  Scene_CC3DModel.prototype._applyAnatomyToActor = function () {
+    const actor = (typeof $gameActors !== "undefined" && $gameActors)
+      ? $gameActors.actor(this._actorId) : null;
+    if (!actor) return;
+    const grafts = graftedParts(this._config, this._archetypeKeys);
+    actor._ccGraftedParts = Object.keys(grafts.parts).length ? grafts.parts : null;
+    actor._ccReplacedParts = grafts.replaced.length ? grafts.replaced : null;
+    actor._bodyParts = null;
+    if (typeof window.initializeBodyParts === "function") window.initializeBodyParts(actor);
+  };
+
   //---------------------------------------------------------------------------
-  // Slider drag
+  // Focus ring (keyboard / controller)
   //---------------------------------------------------------------------------
 
-  Scene_CC3DModel.prototype._bindSliderPointer = function () {
-    const container = this._dndContainer;
-    if (!container) return;
-    this._onSliderDown = (e) => {
-      const bar = e.target.closest && e.target.closest(".option-slider-bar");
-      if (!bar || !container.contains(bar)) return;
-      const i = parseInt(bar.getAttribute("data-row"), 10);
-      if (isNaN(i)) return;
-      this._sliderDrag = { i: i, bar: bar };
-      this._focusIndex = i;
-      this._refreshRowFocus();
-      this._applySliderFromEvent(e);
-      e.preventDefault();
-    };
-    this._onSliderMove = (e) => { if (this._sliderDrag) this._applySliderFromEvent(e); };
-    this._onSliderUp = () => this._endSliderDrag();
-    container.addEventListener("mousedown", this._onSliderDown);
-    window.addEventListener("mousemove", this._onSliderMove);
-    window.addEventListener("mouseup", this._onSliderUp);
+  // Every control carries data-focus, so the ring is the screen read in
+  // document order. Controls that sit in a row carry the same data-hnav: left
+  // and right walk that row, up and down step out of it. Nothing is registered
+  // twice and a re-render cannot desynchronise the ring from what is on screen.
+  Scene_CC3DModel.prototype._focusEls = function () {
+    return this._root
+      ? Array.prototype.slice.call(this._root.querySelectorAll("[data-focus]"))
+      : [];
   };
-  Scene_CC3DModel.prototype._applySliderFromEvent = function (e) {
-    const d = this._sliderDrag;
-    if (!d) return;
-    const row = this._rows[d.i];
-    const rect = d.bar.getBoundingClientRect();
-    let t = (e.clientX - rect.left) / (rect.width || 1);
-    t = Math.max(0, Math.min(1, t));
-    let v = row.min + t * (row.max - row.min);
-    v = Math.round(v / row.step) * row.step;
-    v = Math.round(v * 1000) / 1000;
-    if (v !== this._config[row.key]) {
-      this._config[row.key] = v;
-      this._refreshRow(d.i);
-      // Hue/sat/lit share the swatch preview on the hue row.
-      if (["sat", "lit"].includes(row.key)) {
-        const hueIdx = this._rows.findIndex((r) => r.key === "hue");
-        if (hueIdx >= 0) this._refreshRow(hueIdx);
-      }
-      this.scheduleRebuild();
+
+  const rowOf = (el) => (el ? el.getAttribute("data-hnav") : null);
+
+  Scene_CC3DModel.prototype._afterRender = function () {
+    const els = this._focusEls();
+    if (this._focus >= els.length) this._focus = Math.max(0, els.length - 1);
+    this._paintFocus(els, false);
+    this._bindSearch();
+    this._watchThumbs();
+    const scroll = document.getElementById("cc3d-parts-body");
+    if (scroll && !scroll._ccGrow) {
+      scroll._ccGrow = true;
+      scroll.addEventListener("scroll", () => this._growShelf());
+    }
+    const count = document.getElementById("cc3d-shelf-count");
+    if (count) count.textContent = this._shelfOptions().length + " " + T('CharCreate.cc3d.parts');
+  };
+
+  Scene_CC3DModel.prototype._bindSearch = function () {
+    const search = document.getElementById("cc3d-search");
+    if (!search || search._ccBound) return;
+    search._ccBound = true;
+    search.addEventListener("input", () => {
+      this._filter = search.value.toLowerCase();
+      this._shown = SHELF_PAGE;
+      this._renderShelf();
+    });
+    search.addEventListener("keydown", (e) => {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) search.blur();
+    });
+  };
+
+  Scene_CC3DModel.prototype._growShelf = function () {
+    const scroll = document.getElementById("cc3d-parts-body");
+    if (!scroll || this._shown >= this._shelfOptions().length) return;
+    if (scroll.scrollTop + scroll.clientHeight < scroll.scrollHeight - 260) return;
+    this._shown += SHELF_PAGE;
+    this._renderShelf();
+  };
+
+  Scene_CC3DModel.prototype._paintFocus = function (els, reveal) {
+    els = els || this._focusEls();
+    els.forEach((el, i) => el.classList.toggle("cc3d-focus", i === this._focus && !this._modal));
+    const current = els[this._focus];
+    if (reveal && current && current.scrollIntoView && !this._modal) {
+      current.scrollIntoView({ block: "nearest", inline: "nearest" });
     }
   };
-  Scene_CC3DModel.prototype._endSliderDrag = function () {
-    // Listeners stay bound for the scene's lifetime (removed in cleanup3DView);
-    // they no-op while no drag is active.
-    this._sliderDrag = null;
+
+  Scene_CC3DModel.prototype._focusOn = function (el) {
+    const els = this._focusEls();
+    const i = els.indexOf(el);
+    if (i >= 0 && i !== this._focus) { this._focus = i; this._paintFocus(els, false); }
   };
-  Scene_CC3DModel.prototype._stepSlider = function (i, dir) {
-    const row = this._rows[i];
-    if (!row || row.type !== "slider") return;
-    let v = this._config[row.key] + dir * row.step;
-    v = Math.max(row.min, Math.min(row.max, v));
-    v = Math.round(v * 1000) / 1000;
-    this._config[row.key] = v;
+
+  Scene_CC3DModel.prototype._moveFocus = function (dir, vertical) {
+    const els = this._focusEls();
+    if (!els.length) return;
+    const row = rowOf(els[this._focus]);
+    let index = this._focus + dir;
+    if (vertical && row) {
+      // Stepping out of a row lands on the first control past the end of it,
+      // so up and down move between the bar, the handles and the drawer rather
+      // than crawling along one of them.
+      while (index >= 0 && index < els.length && rowOf(els[index]) === row) index += dir;
+    }
+    if (!vertical && row) {
+      // ...and left and right stay inside it.
+      if (index < 0 || index >= els.length || rowOf(els[index]) !== row) return;
+    }
+    index = Math.max(0, Math.min(els.length - 1, index));
+    if (index === this._focus) return;
+    this._focus = index;
     SoundManager.playCursor();
-    this._refreshRow(i);
-    if (["sat", "lit"].includes(row.key)) {
-      const hueIdx = this._rows.findIndex((r) => r.key === "hue");
-      if (hueIdx >= 0) this._refreshRow(hueIdx);
+    this._paintFocus(els, true);
+    this._growShelf();
+  };
+
+  Scene_CC3DModel.prototype._activateFocus = function () {
+    const el = this._focusEls()[this._focus];
+    if (!el) return;
+    if (el.hasAttribute("data-slider")) return;      // sliders answer to left / right
+    if (el.id === "cc3d-search") { el.focus(); return; }
+    const part = el.getAttribute("data-part");
+    if (part !== null) { this.pickPart(part); return; }
+    el.click();
+  };
+
+  Scene_CC3DModel.prototype._adjustFocus = function (dir) {
+    const el = this._focusEls()[this._focus];
+    if (!el) return;
+    const id = el.getAttribute("data-slider");
+    if (id) {
+      const def = this._sliderDef(id);
+      if (def) { this.pushHistory(); this._setSlider(id, this._sliderValue(def) + dir * def.step); }
+      return;
     }
-    this.scheduleRebuild();
+    this._moveFocus(dir, false);
   };
 
   //---------------------------------------------------------------------------
-  // Grid picker modal
+  // Pointer on the panels
   //---------------------------------------------------------------------------
 
-  Scene_CC3DModel.prototype.openPicker = function (i) {
-    const row = this._rows[i];
-    if (!row || row.type !== "picker") return;
-    this._focusIndex = i;
-    let options;
-    if (row.kind === "body") options = bodyOptions();
-    else if (row.kind === "structure") options = structureOptions();
-    else if (row.kind === "surface") options = TEXTURE_POOL_KEYS;
-    else if (row.kind === "hairstyle") options = hairStyleKeys();
-    else if (row.kind === "haircolor") options = hairColorKeys();
-    else options = optionsForSlot(row.slot);
-    const current = row.kind === "surface" ? this._config.texturePool : this._rowValue(row);
-    const cur = Math.max(0, options.indexOf(current));
-    this._modal = { rowIndex: i, kind: row.kind, slot: row.slot || null, options, filtered: options, index: cur, filter: "", page: 48, shown: 0 };
+  Scene_CC3DModel.prototype._bindPointer = function () {
+    const root = this._root;
+    if (!root) return;
+    this._onDown = (e) => {
+      if (this._modal) return;
+      const bar = e.target.closest && e.target.closest("[data-sliderbar]");
+      if (bar) {
+        this.pushHistory();
+        this._sliderDrag = { id: bar.getAttribute("data-sliderbar"), bar: bar };
+        this._focusOn(bar.parentElement);
+        this._applySliderFromEvent(e);
+        e.preventDefault();
+        return;
+      }
+      // A card is not carried anywhere: choosing it is the whole gesture.
+      const card = e.target.closest && e.target.closest("[data-focus]");
+      if (card) this._focusOn(card);
+    };
+    this._onMove = (e) => { if (this._sliderDrag) this._applySliderFromEvent(e); };
+    this._onUp = () => { this._sliderDrag = null; };
+    // Ctrl+Z / Ctrl+Y, because that is where a hand already reaches for it.
+    this._onKey = (e) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      const key = String(e.key || "").toLowerCase();
+      if (key === "z" && !e.shiftKey) { this.undo(); e.preventDefault(); }
+      else if (key === "y" || (key === "z" && e.shiftKey)) { this.redo(); e.preventDefault(); }
+    };
+    root.addEventListener("mousedown", this._onDown);
+    window.addEventListener("mousemove", this._onMove);
+    window.addEventListener("mouseup", this._onUp);
+    window.addEventListener("keydown", this._onKey);
+  };
+
+  Scene_CC3DModel.prototype._applySliderFromEvent = function (e) {
+    const drag = this._sliderDrag;
+    if (!drag) return;
+    const def = this._sliderDef(drag.id);
+    if (!def) return;
+    const rect = drag.bar.getBoundingClientRect();
+    const t = clamp((e.clientX - rect.left) / (rect.width || 1), 0, 1);
+    this._setSlider(drag.id, def.min + t * (def.max - def.min));
+  };
+
+  //---------------------------------------------------------------------------
+  // Input
+  //---------------------------------------------------------------------------
+
+  // CCScroll hook: the shelf, or the picker grid while it is open.
+  Scene_CC3DModel.prototype.ccScrollTarget = function () {
+    return document.getElementById(this._modal ? "cc3d-modal-grid" : "cc3d-parts-body");
+  };
+
+  Scene_CC3DModel.prototype.update = function () {
+    Scene_MenuBase.prototype.update.call(this);
+    if (window.CCScroll) window.CCScroll.update(this._root);
+    if (this._modal) { this._updateModalInput(); return; }
+    if (Input.isTriggered("cancel") || TouchInput.isCancelled()) { this.onBack(); return; }
+    if (Input.isRepeated("down")) this._moveFocus(1, true);
+    else if (Input.isRepeated("up")) this._moveFocus(-1, true);
+    else if (Input.isRepeated("right")) this._adjustFocus(1);
+    else if (Input.isRepeated("left")) this._adjustFocus(-1);
+    else if (Input.isTriggered("ok")) this._activateFocus();
+    // Nothing else is bound. A stray key must never throw away a sculpt:
+    // rerolling is a deliberate press of the chip that says so.
+  };
+
+  //---------------------------------------------------------------------------
+  // The picker for the things that are not parts (body, surface, hair)
+  //---------------------------------------------------------------------------
+
+  const MODAL_COLS = 4;
+
+  Scene_CC3DModel.prototype.openPicker = function (kind) {
+    let options, current;
+    if (kind === "group") {
+      // Not a list of things to BE, a list of places to put something: every
+      // group this creature has, whether or not it is wearing anything there.
+      options = this._addableGroups().map((g) => g.id);
+      current = this._group;
+      if (!options.length) { SoundManager.playBuzzer(); return; }
+    }
+    else if (kind === "structure") { options = structureOptions(); current = this._config.base; }
+    else if (kind === "surface") { options = TEXTURE_POOL_KEYS; current = this._config.texturePool; }
+    else if (kind === "hairstyle") { options = hairStyleKeys(); current = this._config.hairStyle; }
+    else if (kind === "haircolor") { options = hairColorKeys(); current = this._config.hairColor; }
+    else return;
+    this._modal = {
+      kind: kind, options: options, filtered: options, filter: "",
+      index: Math.max(0, options.indexOf(current)), page: 48, shown: 0
+    };
     SoundManager.playOk();
     this._renderModal();
-    this._refreshRowFocus();
+    this._paintFocus(null, false);
   };
 
   Scene_CC3DModel.prototype.closeModal = function () {
@@ -1385,44 +2928,58 @@
     this._modal = null;
     const el = document.getElementById("cc3d-modal");
     if (el) { el.style.display = "none"; el.innerHTML = ""; }
-    this._refreshRowFocus();
+    this._paintFocus(null, false);
   };
 
   Scene_CC3DModel.prototype._modalTitle = function () {
-    const row = this._rows[this._modal.rowIndex];
-    return row ? row.label : "";
+    const kind = this._modal.kind;
+    if (kind === "group") return T('CharCreate.cc3d.addPart');
+    if (kind === "structure") return T('CharCreate.structure');
+    if (kind === "surface") return T('CharCreate.surface');
+    if (kind === "hairstyle") return T('CharCreate.hair');
+    return T('CharCreate.hairColour');
   };
 
   Scene_CC3DModel.prototype._renderModal = function () {
     const el = document.getElementById("cc3d-modal");
     if (!el) return;
-    const m = this._modal;
-    const searchable = m.kind === "part" || m.kind === "body" || m.kind === "structure";
+    const modal = this._modal;
     // "inset" is not honoured by the runtime (the overlay collapses onto the
     // top-left corner), so the longhands and an explicit size are used.
-    el.style.cssText = "position:absolute; left:0; top:0; right:0; bottom:0; width:100%; height:100%; z-index:1200; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.55);";
+    el.style.cssText = "position:absolute; left:0; top:0; right:0; bottom:0; width:100%; height:100%;" +
+      " z-index:1200; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.55);";
     el.innerHTML = `
-      <div style="width:78%; max-width:900px; height:82%; display:flex; flex-direction:column; background:var(--gradient-1); border:2px solid var(--border-primary-hover-translucent-15); border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.5); padding:16px 18px; box-sizing:border-box">
+      <div style="width:74%; max-width:880px; height:78%; display:flex; flex-direction:column;
+                  background:var(--gradient-1); border:2px solid var(--border-primary-hover-translucent-15);
+                  border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.5); padding:14px 16px;
+                  box-sizing:border-box">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:12px">
-          <h2 class="cc-header-gothic" style="margin:0; border:none; padding:0; font-size:2.064rem">${this._modalTitle()}</h2>
-          ${searchable ? `<input id="cc3d-modal-search" type="text" placeholder="${T('CharCreate.search')}" value="${m.filter}" style="flex:0 0 220px; padding:6px 10px; border-radius:6px; border:1px solid var(--border-primary-hover-translucent-15); background:var(--bg-primary-hover-translucent-35); color:var(--text-primary-hover); font-family:'Lora',serif" />` : ``}
-          <button class="cc-btn-treaty" onclick="SceneManager._scene.closeModal()">${T('CharCreate.close')}</button>
+          <h2 class="cc-header-gothic" style="margin:0; border:none; padding:0; font-size:1.9rem"
+            >${this._modalTitle()}</h2>
+          ${modal.kind === "structure" ? `<input id="cc3d-modal-search" type="text"
+            placeholder="${T('CharCreate.search')}" value="${modal.filter}"
+            style="flex:0 0 220px; padding:6px 10px; border-radius:6px;
+            border:1px solid var(--border-primary-hover-translucent-15);
+            background:var(--bg-primary-hover-translucent-35); color:var(--text-primary-hover);
+            font-family:'Lora',serif" />` : ``}
+          <button class="cc-btn-treaty" onclick="SceneManager._scene.closeModal()"
+            >${T('CharCreate.close')}</button>
         </div>
-        <div id="cc3d-grid" class="pockets-scroll" style="flex:1; overflow-y:auto; display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; padding-right:8px; align-content:start"></div>
+        <div id="cc3d-modal-grid" class="pockets-scroll" style="flex:1; overflow-y:auto; display:grid;
+             grid-template-columns:repeat(${MODAL_COLS}, 1fr); gap:10px; padding-right:8px;
+             align-content:start"></div>
       </div>`;
     el.style.display = "flex";
     const search = document.getElementById("cc3d-modal-search");
     if (search) {
       search.addEventListener("input", () => {
-        m.filter = search.value.toLowerCase();
-        const isHair = (m.kind === "hairstyle" || m.kind === "haircolor");
-        m.filtered = m.options.filter((o) =>
-          o === "default" ? "default".includes(m.filter)
-            : ((isHair ? hairLabel(m.kind, o) : displayName(o)).toLowerCase().includes(m.filter) || o.includes(m.filter)));
-        m.index = 0;
+        modal.filter = search.value.toLowerCase();
+        modal.filtered = modal.options.filter((o) =>
+          displayName(o).toLowerCase().includes(modal.filter) ||
+          String(o).toLowerCase().includes(modal.filter));
+        modal.index = 0;
         this._renderModalGrid();
       });
-      // Keep the search box from stealing arrow keys used for grid nav.
       search.addEventListener("keydown", (e) => {
         if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) search.blur();
       });
@@ -1430,189 +2987,135 @@
     this._renderModalGrid();
   };
 
-  // Grid columns must match the CSS grid-template so keyboard/controller row
-  // moves land on the cell directly above/below.
-  const MODAL_COLS = 4;
-
-  // Render the grid as a growing WINDOW of cells (dynamic loading): only the
-  // first page is built up front, more are appended on scroll or when the
-  // selection moves past the rendered edge. This keeps the DOM light even for
-  // the ~600-entry part rosters, so opening the picker never stalls the game.
   Scene_CC3DModel.prototype._renderModalGrid = function () {
-    const grid = document.getElementById("cc3d-grid");
+    const grid = document.getElementById("cc3d-modal-grid");
     if (!grid || !this._modal) return;
-    const m = this._modal;
-    m.page = m.page || 48;
-    m.shown = 0;
-    if (!m.filtered.length) {
-      grid.innerHTML = `<div class="cc-text-desc" style="grid-column:1/-1">${T('CharCreate.noMatches')}</div>`;
+    const modal = this._modal;
+    modal.shown = 0;
+    if (!modal.filtered.length) {
+      grid.innerHTML = `<div class="cc3d-note" style="grid-column:1/-1">${T('CharCreate.noMatches')}</div>`;
       return;
     }
     grid.innerHTML = "";
-    // Bind mousewheel + scroll infinite-load once per grid element. An explicit
-    // wheel handler guarantees the list scrolls even though the overlay sits
-    // above the 3D canvas.
     if (!grid._ccBound) {
       grid._ccBound = true;
-      grid.addEventListener("scroll", () => this._onGridScroll());
+      grid.addEventListener("scroll", () => this._growModalGrid(true));
       grid.addEventListener("wheel", (e) => {
         grid.scrollTop += e.deltaY;
-        e.preventDefault();
-        e.stopPropagation();
-        this._onGridScroll();
+        e.preventDefault(); e.stopPropagation();
+        this._growModalGrid(true);
       }, { passive: false });
     }
-    this._growModalGrid();          // first page
-    this._ensureShown(m.index);     // make sure the current selection is built
+    this._growModalGrid();
+    this._ensureModalShown(modal.index);
     this._highlightModalCell();
   };
 
-  Scene_CC3DModel.prototype._growModalGrid = function () {
-    const m = this._modal;
-    const grid = document.getElementById("cc3d-grid");
-    if (!m || !grid || m.shown >= m.filtered.length) return;
-    const end = Math.min(m.filtered.length, m.shown + m.page);
+  Scene_CC3DModel.prototype._growModalGrid = function (onlyNearEnd) {
+    const modal = this._modal;
+    const grid = document.getElementById("cc3d-modal-grid");
+    if (!modal || !grid || modal.shown >= modal.filtered.length) return;
+    if (onlyNearEnd && grid.scrollTop + grid.clientHeight < grid.scrollHeight - 260) return;
+    const end = Math.min(modal.filtered.length, modal.shown + modal.page);
     let html = "";
-    for (let i = m.shown; i < end; i++) html += this._modalCellHtml(m.filtered[i], i);
+    for (let i = modal.shown; i < end; i++) html += this._modalCellHtml(modal.filtered[i], i);
     grid.insertAdjacentHTML("beforeend", html);
-    m.shown = end;
+    modal.shown = end;
   };
 
-  Scene_CC3DModel.prototype._ensureShown = function (index) {
-    const m = this._modal;
-    if (!m) return;
-    while (m.shown <= index && m.shown < m.filtered.length) this._growModalGrid();
+  Scene_CC3DModel.prototype._ensureModalShown = function (index) {
+    const modal = this._modal;
+    if (!modal) return;
+    while (modal.shown <= index && modal.shown < modal.filtered.length) this._growModalGrid();
   };
 
-  Scene_CC3DModel.prototype._onGridScroll = function () {
-    const m = this._modal;
-    const grid = document.getElementById("cc3d-grid");
-    if (!m || !grid) return;
-    if (m.shown < m.filtered.length &&
-        grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 260) {
-      this._growModalGrid();
-    }
-  };
-
-  Scene_CC3DModel.prototype._modalCellHtml = function (opt, idx) {
-    const m = this._modal;
-    const isHair = (m.kind === "hairstyle" || m.kind === "haircolor");
-    const label = isHair ? hairLabel(m.kind, opt) : displayName(opt);
+  Scene_CC3DModel.prototype._modalCellHtml = function (option, index) {
+    const kind = this._modal.kind;
+    const isHair = (kind === "hairstyle" || kind === "haircolor");
+    let label = isHair ? hairLabel(kind, option) : displayName(option);
     let lead = "";
-    if (m.kind === "surface") {
+    if (kind === "group") {
+      const group = this._groups().find((g) => g.id === option);
+      label = group ? group.label() : option;
+      const worn = group && group.kind === "slot" && this._config.parts[group.id] !== "default";
+      const grown = group && group.appendage && !!this._config[group.id];
+      if (worn || grown) lead = `<span class="cc3d-dot" style="margin-right:6px"></span>`;
+    } else if (kind === "surface") {
       const colors = { flesh: "#c78b6a", green: "#5a7a3a", bone: "#e6e0cf", metal: "#8a8f98", stone: "#7a726a" };
-      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:middle; margin-right:6px; background:${colors[opt] ||"#888"}; border:1px solid rgba(0,0,0,0.35);"></span>`;
-    } else if (m.kind === "haircolor") {
-      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:50%; vertical-align:middle; margin-right:6px; background:${hairSwatchCss(opt)}; border:1px solid rgba(0,0,0,0.35)"></span>`;
-    } else if (opt === "default") {
-      lead = `<span style="margin-right:6px; color:var(--text-muted-hover)">&#9642;</span>`;
+      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:3px;
+        vertical-align:middle; margin-right:6px; background:${colors[option] || "#888"}"></span>`;
+    } else if (kind === "haircolor") {
+      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:50%;
+        vertical-align:middle; margin-right:6px; background:${hairSwatchCss(option)}"></span>`;
     }
-    return `<div class="cc-wanted-card cc3d-cell" data-idx="${idx}" data-val="${opt}"
-        onclick="SceneManager._scene.pickModalOption(${idx})"
-        style="display:flex; align-items:center; justify-content:center; text-align:center; min-height:42px; padding:8px 6px">
-        <span style="font-size:1.17rem; line-height:1.15; word-break:break-word; color:var(--text-muted-hover)">${lead}${label}</span>
+    return `<div class="cc-wanted-card cc3d-cell" data-idx="${index}"
+        onclick="SceneManager._scene.pickModalOption(${index})"
+        style="display:flex; align-items:center; justify-content:center; text-align:center;
+               min-height:42px; padding:8px 6px">
+        <span style="font-size:1.1rem; line-height:1.15; word-break:break-word;
+                     color:var(--text-muted-hover)">${lead}${label}</span>
       </div>`;
   };
 
   Scene_CC3DModel.prototype._highlightModalCell = function () {
-    const grid = document.getElementById("cc3d-grid");
+    const grid = document.getElementById("cc3d-modal-grid");
     if (!grid || !this._modal) return;
-    grid.querySelectorAll(".cc3d-cell").forEach((c) => {
-      const idx = parseInt(c.getAttribute("data-idx"), 10);
-      c.classList.toggle("selected", idx === this._modal.index);
+    grid.querySelectorAll(".cc3d-cell").forEach((cell) => {
+      cell.classList.toggle("selected", parseInt(cell.getAttribute("data-idx"), 10) === this._modal.index);
     });
-    const sel = grid.querySelector(".cc3d-cell.selected");
-    if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: "nearest" });
-  };
-
-  Scene_CC3DModel.prototype.pickModalOption = function (idx) {
-    const m = this._modal;
-    if (!m) return;
-    const opt = m.filtered[idx];
-    if (opt == null) return;
-    const row = this._rows[m.rowIndex];
-    if (m.kind === "surface") this._config.texturePool = opt;
-    else this._setRowValue(row, opt);
-    SoundManager.playOk();
-    this.closeModal();
-    // Switching the creature structure changes which controls apply (biped vs
-    // whole non-humanoid rig) AND, for a non-humanoid structure, which slots it
-    // has a real part for (hostSupportedSlots) -- always rebuild the row list.
-    // The surface does the same on a smaller scale: a bone/metal/stone body has
-    // no scalp, so the hair rows come and go with it.
-    if (m.kind === "structure" || m.kind === "surface") {
-      this._rebuildRows();
-    } else {
-      this._refreshRow(m.rowIndex);
-    }
-    this.scheduleRebuild();
-  };
-
-  // Regenerate the row descriptors + their DOM in place (used when the
-  // structure toggles the humanoid/creature control set).
-  Scene_CC3DModel.prototype._rebuildRows = function () {
-    this._rows = this._buildRows();
-    if (this._focusIndex >= this._rows.length) this._focusIndex = 0;
-    const host = document.getElementById("cc3d-rows");
-    if (host) host.innerHTML = this._rows.map((r, i) => this._rowHtml(r, i)).join("");
-    this._refreshRowFocus();
+    const selected = grid.querySelector(".cc3d-cell.selected");
+    if (selected && selected.scrollIntoView) selected.scrollIntoView({ block: "nearest" });
   };
 
   Scene_CC3DModel.prototype._moveModal = function (dCol, dRow) {
-    const m = this._modal;
-    if (!m) return;
-    let idx = m.index;
-    if (dCol) idx += dCol;
-    if (dRow) idx += dRow * MODAL_COLS;
-    idx = Math.max(0, Math.min(m.filtered.length - 1, idx));
-    if (idx !== m.index) {
-      m.index = idx;
-      this._ensureShown(idx);   // grow the window so the target cell exists
-      SoundManager.playCursor();
-      this._highlightModalCell();
+    const modal = this._modal;
+    if (!modal) return;
+    const index = clamp(modal.index + (dCol || 0) + (dRow || 0) * MODAL_COLS, 0, modal.filtered.length - 1);
+    if (index === modal.index) return;
+    modal.index = index;
+    this._ensureModalShown(index);
+    SoundManager.playCursor();
+    this._highlightModalCell();
+  };
+
+  Scene_CC3DModel.prototype.pickModalOption = function (index) {
+    const modal = this._modal;
+    if (!modal) return;
+    const option = modal.filtered[index];
+    if (option == null) return;
+    const kind = modal.kind;
+    if (kind === "group") {
+      SoundManager.playOk();
+      this.closeModal();
+      this.openGroup(option);
+      return;
     }
-  };
-
-  //---------------------------------------------------------------------------
-  // Input (keyboard / gamepad)
-  //---------------------------------------------------------------------------
-
-  // CCScroll hook: the row list, or the picker grid while the modal is open.
-  Scene_CC3DModel.prototype.ccScrollTarget = function () {
-    return document.getElementById(this._modal ? "cc3d-grid" : "cc3d-rows");
-  };
-
-  Scene_CC3DModel.prototype.update = function () {
-    Scene_MenuBase.prototype.update.call(this);
-    if (window.CCScroll) window.CCScroll.update(this._dndContainer);
-    if (this._modal) { this._updateModalInput(); return; }
-    const n = this._rows.length;
-    if (Input.isTriggered("cancel") || TouchInput.isCancelled()) { this.onBack(); return; }
-    if (Input.isRepeated("down")) {
-      this._focusIndex = (this._focusIndex + 1) % n; SoundManager.playCursor(); this._refreshRowFocus();
-    } else if (Input.isRepeated("up")) {
-      this._focusIndex = (this._focusIndex - 1 + n) % n; SoundManager.playCursor(); this._refreshRowFocus();
-    } else if (Input.isRepeated("right")) {
-      this._adjustFocused(1);
-    } else if (Input.isRepeated("left")) {
-      this._adjustFocused(-1);
-    } else if (Input.isTriggered("ok")) {
-      this.onRowActivate(this._focusIndex);
-    } else if (Input.isTriggered("shift")) {
-      this.onRandomize();
-    }
-  };
-
-  Scene_CC3DModel.prototype._adjustFocused = function (dir) {
-    const row = this._rows[this._focusIndex];
-    if (!row) return;
-    if (row.type === "slider") this._stepSlider(this._focusIndex, dir);
-    else if (row.type === "segment") this.cycleSegment(this._focusIndex, dir);
-    else if (row.type === "picker") this.openPicker(this._focusIndex);
+    this.pushHistory();
+    SoundManager.playOk();
+    this.closeModal();
+    if (kind === "structure") {
+      if (this._config.base !== option) {
+        this._config.base = option;
+        // A different skeleton owns a different set of parts, and whatever was
+        // hanging off the old one has nowhere to sit.
+        this._config.parts = defaultParts();
+        this._config.partXf = defaultPartXf();
+        this._config.secondary = null;
+        this._selected = null;
+        this._anchors = {};
+        this._openGroup(this._groups()[0]);
+      }
+    } else if (kind === "surface") this._config.texturePool = option;
+    else if (kind === "hairstyle") this._config.hairStyle = option;
+    else this._config.hairColor = option;
+    this.refreshAll();
+    this.scheduleRebuild();
   };
 
   Scene_CC3DModel.prototype._updateModalInput = function () {
-    if (Input.isTriggered("cancel") || TouchInput.isCancelled()) { SoundManager.playCancel(); this.closeModal(); return; }
+    if (Input.isTriggered("cancel") || TouchInput.isCancelled()) {
+      SoundManager.playCancel(); this.closeModal(); return;
+    }
     if (Input.isRepeated("down")) this._moveModal(0, 1);
     else if (Input.isRepeated("up")) this._moveModal(0, -1);
     else if (Input.isRepeated("right")) this._moveModal(1, 0);
@@ -1621,18 +3124,18 @@
   };
 
   //---------------------------------------------------------------------------
-  // 3D preview (main, live)
+  // The stage: the creature itself
   //---------------------------------------------------------------------------
 
-  Scene_CC3DModel.prototype.init3DView = function () {
+  Scene_CC3DModel.prototype._initStage = function () {
     if (!isAvailable()) return;
     const canvas = document.getElementById("cc3d-canvas");
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const width = Math.max(1, Math.round(rect.width) || 420);
-    const height = Math.max(1, Math.round(rect.height) || 480);
+    const width = Math.max(1, Math.round(rect.width) || 800);
+    const height = Math.max(1, Math.round(rect.height) || 500);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setSize(width, height, false);
     renderer.setPixelRatio(1);
 
@@ -1640,8 +3143,8 @@
     // Muted studio lighting: MeshStandardMaterial with a light skin map blows
     // out to white under strong light, so keep the sum well under saturation.
     scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-    const keyLight = new THREE.DirectionalLight(0xfff2d0, 0.75); keyLight.position.set(3, 5, 4); scene.add(keyLight);
-    const fillLight = new THREE.DirectionalLight(0xbcd4ff, 0.3); fillLight.position.set(-3, -2, 2); scene.add(fillLight);
+    const key = new THREE.DirectionalLight(0xfff2d0, 0.75); key.position.set(3, 5, 4); scene.add(key);
+    const fill = new THREE.DirectionalLight(0xbcd4ff, 0.3); fill.position.set(-3, -2, 2); scene.add(fill);
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.05, 300);
     camera.position.set(0, 0, 8);
@@ -1649,49 +3152,50 @@
     scene.add(pivot);
 
     const state = {
-      renderer, canvas, scene, camera, pivot,
-      holder: null, model: null, rafId: 0, disposed: false, attackTimer: 1.2, frameAcc: 0,
-      activeButton: -1, prev: { x: 0, y: 0 }, clock: new THREE.Clock(), listeners: {}
+      renderer: renderer, canvas: canvas, scene: scene, camera: camera, pivot: pivot,
+      holder: null, model: null, rafId: 0, disposed: false, frameAcc: 0,
+      mode: "none", partHandle: null, prev: { x: 0, y: 0 },
+      clock: new THREE.Clock(), listeners: {},
+      ray: new THREE.Raycaster(), pointer: new THREE.Vector2(),
+      plane: new THREE.Plane(), grabLocal: new THREE.Vector3(),
+      selHelper: null, selTarget: null, hoverHelper: null,
+      gizmo: null, gizmoAxis: null, dragStart: null,
+      size: { w: width, h: height }
     };
     this._view3D = state;
+    this._createGizmo(state);
+    this._createThumbStage();
 
     const L = state.listeners;
-    L.onDown = (e) => {
-      if (this._modal) return;
-      if (e.button === 0 || e.button === 1) {
-        state.activeButton = e.button;
-        state.prev = { x: e.clientX, y: e.clientY };
-        if (e.button === 1) e.preventDefault();
-        canvas.style.cursor = "grabbing";
-      }
-    };
-    L.onMove = (e) => {
-      if (state.activeButton === -1) return;
-      const dx = e.clientX - state.prev.x, dy = e.clientY - state.prev.y;
-      if (state.activeButton === 0) { pivot.rotation.y += dx * 0.012; pivot.rotation.x += dy * 0.012; }
-      else if (state.activeButton === 1) { const ps = 0.0035 * camera.position.z; camera.position.x -= dx * ps; camera.position.y += dy * ps; }
-      state.prev = { x: e.clientX, y: e.clientY };
-    };
-    L.onUp = () => { state.activeButton = -1; canvas.style.cursor = "grab"; };
+    L.onDown = (e) => this._onStageDown(e);
+    L.onMove = (e) => this._onStageMove(e);
+    L.onUp = () => this._onStageUp();
+    L.onLeave = () => { this._hideTip(); this._setHoverSlot(null); this._hoverSlot = null; };
     L.onWheel = (e) => {
       if (this._modal) return;
       e.preventDefault(); e.stopPropagation();
-      camera.position.z = Math.max(1.5, Math.min(60, camera.position.z + e.deltaY * 0.012));
+      camera.position.z = clamp(camera.position.z + e.deltaY * 0.012, 1.5, 60);
     };
     L.onAux = (e) => { if (e.button === 1) e.preventDefault(); };
     L.onCtx = (e) => e.preventDefault();
-    L.onTStart = (e) => { if (!this._modal && e.touches.length === 1) { state.activeButton = 0; state.prev = { x: e.touches[0].clientX, y: e.touches[0].clientY }; } };
+    L.onTStart = (e) => {
+      if (!this._modal && e.touches.length === 1) {
+        state.mode = "orbit";
+        state.prev = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
     L.onTMove = (e) => {
-      if (state.activeButton !== -1 && e.touches.length === 1) {
+      if (state.mode === "orbit" && e.touches.length === 1) {
         const dx = e.touches[0].clientX - state.prev.x, dy = e.touches[0].clientY - state.prev.y;
         pivot.rotation.y += dx * 0.012; pivot.rotation.x += dy * 0.012;
         state.prev = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       }
     };
-    L.onTEnd = () => { state.activeButton = -1; };
+    L.onTEnd = () => { state.mode = "none"; };
 
     canvas.addEventListener("mousedown", L.onDown);
-    canvas.addEventListener("mousemove", L.onMove);
+    canvas.addEventListener("mouseleave", L.onLeave);
+    window.addEventListener("mousemove", L.onMove);
     window.addEventListener("mouseup", L.onUp);
     canvas.addEventListener("wheel", L.onWheel, { passive: false });
     canvas.addEventListener("auxclick", L.onAux);
@@ -1706,21 +3210,524 @@
       state.rafId = requestAnimationFrame(animate);
       state.frameAcc += Math.min(state.clock.getDelta(), 0.05);
       if (state.frameAcc < FRAME) return;
-      const dt = state.frameAcc; state.frameAcc = 0;
-      if (state.model) {
-        state.attackTimer -= dt;
-        if (state.attackTimer <= 0 && state.model.currentAnimation === "idle") {
-          const anim = (state.model.hasAnimation("specialattack") && Math.random() < 0.4) ? "specialattack" : "attack";
-          try { state.model.playAnimation(anim, false); } catch (e) { /* preview only */ }
-          state.attackTimer = 2.4 + Math.random() * 1.6;
-        }
-        try { state.model.update(dt); } catch (e) { /* preview only */ }
-      }
+      state.frameAcc = 0;
+      this._resizeStage(state);
+      this._pumpThumbs(state);
+      // The creature NEVER animates here. It is posed once when it is built and
+      // then stands perfectly still: a sculptor aims at limbs, and a rig that
+      // breathes or swings an attack drags every part out from under the cursor
+      // mid-drag and makes the whole thing a guess.
+      if (state.selHelper) state.selHelper.update();
+      if (state.hoverHelper) state.hoverHelper.update();
+      this._updateGizmoTransform(state);
       if (window.PSXShader) window.PSXShader.render(renderer, scene, camera);
       else renderer.render(scene, camera);
     };
     animate();
   };
+
+  Scene_CC3DModel.prototype._resizeStage = function (state) {
+    const canvas = state.canvas;
+    const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
+    if (w === state.size.w && h === state.size.h) return;
+    state.size = { w: w, h: h };
+    state.renderer.setSize(w, h, false);
+    state.camera.aspect = w / h;
+    state.camera.updateProjectionMatrix();
+  };
+
+  //---------------------------------------------------------------------------
+  // The handles drawn on the creature
+  //---------------------------------------------------------------------------
+
+  // Three sets sharing one group: arrows to slide the part along an axis, rings
+  // to turn it, a box to resize it. Drawn on top of everything (depthTest off)
+  // and rescaled every frame so they keep a constant size on screen however far
+  // the camera has been pulled back.
+  Scene_CC3DModel.prototype._createGizmo = function (state) {
+    const flat = (color) => new THREE.MeshBasicMaterial({
+      color: color, depthTest: false, depthWrite: false, transparent: true
+    });
+    const matX = flat(0xf87171), matY = flat(0x4ade80), matZ = flat(0x60a5fa), matC = flat(0xfacc15);
+    const group = new THREE.Group();
+    group.visible = false;
+    group.renderOrder = 999;
+
+    const shaft = new THREE.CylinderGeometry(0.014, 0.014, 1, 8);
+    const tip = new THREE.ConeGeometry(0.07, 0.22, 10);
+    const move = new THREE.Group(); move.name = "move";
+    const arrow = (material, axis, rotation) => {
+      const arm = new THREE.Group();
+      const stick = new THREE.Mesh(shaft, material); stick.position.y = 0.5;
+      const point = new THREE.Mesh(tip, material); point.position.y = 1.05;
+      arm.add(stick, point);
+      if (rotation) arm.rotation.set(rotation[0], rotation[1], rotation[2]);
+      arm.userData.axis = axis;
+      return arm;
+    };
+    move.add(arrow(matX, "x", [0, 0, -Math.PI / 2]));
+    move.add(arrow(matY, "y", null));
+    move.add(arrow(matZ, "z", [Math.PI / 2, 0, 0]));
+    group.add(move);
+
+    const ring = new THREE.TorusGeometry(0.85, 0.02, 8, 40);
+    const turn = new THREE.Group(); turn.name = "turn"; turn.visible = false;
+    const rx = new THREE.Mesh(ring, matX); rx.rotation.y = Math.PI / 2; rx.userData.axis = "rx";
+    const ry = new THREE.Mesh(ring, matY); ry.rotation.x = Math.PI / 2; ry.userData.axis = "ry";
+    const rz = new THREE.Mesh(ring, matZ); rz.userData.axis = "rz";
+    turn.add(rx, ry, rz);
+    group.add(turn);
+
+    const size = new THREE.Group(); size.name = "size"; size.visible = false;
+    const box = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.16), matC);
+    box.userData.axis = "s";
+    size.add(box);
+    group.add(size);
+
+    state.gizmo = group;
+    state.scene.add(group);
+  };
+
+  Scene_CC3DModel.prototype._updateGizmo = function () {
+    const state = this._view3D;
+    if (!state || !state.gizmo) return;
+    state.gizmo.visible = !!this._movable(this._selected);
+    HANDLES.forEach((name) => {
+      const set = state.gizmo.getObjectByName(name);
+      if (set) set.visible = (name === this._handle);
+    });
+  };
+
+  Scene_CC3DModel.prototype._updateGizmoTransform = function (state) {
+    if (!state.gizmo || !state.gizmo.visible) return;
+    const part = this._movable(this._selected);
+    if (!part) { state.gizmo.visible = false; return; }
+    const position = new THREE.Vector3();
+    part.getWorldPosition(position);
+    state.gizmo.position.copy(position);
+    const rotation = new THREE.Quaternion();
+    part.getWorldQuaternion(rotation);
+    state.gizmo.quaternion.copy(rotation);
+    state.gizmo.scale.setScalar(Math.max(0.15, state.camera.position.distanceTo(position) * 0.13));
+  };
+
+  //---------------------------------------------------------------------------
+  // Pointing at the creature
+  //---------------------------------------------------------------------------
+
+  Scene_CC3DModel.prototype._setPointer = function (e) {
+    const state = this._view3D;
+    const rect = state.canvas.getBoundingClientRect();
+    state.pointer.set(
+      ((e.clientX - rect.left) / (rect.width || 1)) * 2 - 1,
+      -((e.clientY - rect.top) / (rect.height || 1)) * 2 + 1
+    );
+    state.ray.setFromCamera(state.pointer, state.camera);
+  };
+
+  // Which slot is under the cursor: the deepest tagged ancestor of whatever
+  // mesh the ray hit, so a head grafted inside a torso reads as the head. A
+  // fixed slot answers as background, because it is not a part to be worked on.
+  Scene_CC3DModel.prototype._slotAtPointer = function (e) {
+    const state = this._view3D;
+    if (!state || !state.holder) return null;
+    const rect = state.canvas.getBoundingClientRect();
+    if (e.clientX < rect.left || e.clientX > rect.right ||
+        e.clientY < rect.top || e.clientY > rect.bottom) return null;
+    this._setPointer(e);
+    const hits = state.ray.intersectObject(state.holder, true);
+    for (const hit of hits) {
+      let node = hit.object;
+      while (node) {
+        const slot = node.userData && node.userData.ccSlot;
+        if (slot) return FIXED_SLOTS[slot] ? null : slot;
+        if (node === state.holder) break;
+        node = node.parent;
+      }
+    }
+    return null;
+  };
+
+  Scene_CC3DModel.prototype._onStageDown = function (e) {
+    const state = this._view3D;
+    if (!state || this._modal) return;
+    if (e.button === 1) {
+      state.mode = "pan"; state.prev = { x: e.clientX, y: e.clientY };
+      e.preventDefault(); return;
+    }
+    if (e.button === 2) {
+      state.mode = "orbit"; state.prev = { x: e.clientX, y: e.clientY };
+      e.preventDefault(); return;
+    }
+    if (e.button !== 0) return;
+    state.prev = { x: e.clientX, y: e.clientY };
+    this._sculptTouched = false;
+    this._setPointer(e);
+
+    // 1. A handle drawn on the creature wins over anything behind it.
+    if (state.gizmo && state.gizmo.visible) {
+      const hits = state.ray.intersectObject(state.gizmo, true);
+      if (hits.length) {
+        let node = hits[0].object;
+        while (node && !(node.userData && node.userData.axis) && node !== state.gizmo) node = node.parent;
+        if (node && node.userData && node.userData.axis) {
+          state.mode = "gizmo";
+          state.gizmoAxis = node.userData.axis;
+          state.dragStart = {
+            xf: Object.assign(defaultXf(), this._config.partXf[this._selected]),
+            point: this._planePointAt(state, e, true)
+          };
+          return;
+        }
+      }
+    }
+
+    // 2. A part of the creature: take hold of it.
+    const slot = this._slotAtPointer(e);
+    if (slot) {
+      this.selectSlot(slot);
+      const part = this._movable(slot);
+      if (part) {
+        state.mode = "part";
+        // The armed handle decides what dragging the part does, so turning and
+        // resizing are had by grabbing it, exactly like moving it, rather than
+        // by catching a thin ring.
+        state.partHandle = this._handle;
+        if (state.partHandle === "move" && part.parent) {
+          const world = new THREE.Vector3();
+          part.getWorldPosition(world);
+          state.plane.setFromNormalAndCoplanarPoint(
+            state.camera.getWorldDirection(new THREE.Vector3()).negate(), world);
+          const hit = new THREE.Vector3();
+          state.ray.ray.intersectPlane(state.plane, hit);
+          state.grabLocal.copy(part.parent.worldToLocal(hit.clone())).sub(part.position);
+        }
+        state.canvas.style.cursor = "grabbing";
+        return;
+      }
+      state.mode = "none";
+      return;
+    }
+
+    // 3. Empty space: turn the creature round.
+    state.mode = "orbit";
+    state.canvas.style.cursor = "grabbing";
+  };
+
+  // A point on the plane facing the camera through the selected part.
+  Scene_CC3DModel.prototype._planePointAt = function (state, e, reset) {
+    const part = this._movable(this._selected);
+    if (!part) return new THREE.Vector3();
+    if (reset) {
+      const world = new THREE.Vector3();
+      part.getWorldPosition(world);
+      state.plane.setFromNormalAndCoplanarPoint(
+        state.camera.getWorldDirection(new THREE.Vector3()).negate(), world);
+    }
+    this._setPointer(e);
+    const point = new THREE.Vector3();
+    state.ray.ray.intersectPlane(state.plane, point);
+    return point;
+  };
+
+  Scene_CC3DModel.prototype._onStageMove = function (e) {
+    const state = this._view3D;
+    if (!state) return;
+    if (state.mode === "none") { this._hoverModel(e); return; }
+    this._hideTip();
+    const dx = e.clientX - state.prev.x, dy = e.clientY - state.prev.y;
+    if (state.mode === "orbit") {
+      state.pivot.rotation.y += dx * 0.012;
+      state.pivot.rotation.x += dy * 0.012;
+    } else if (state.mode === "pan") {
+      const speed = 0.0035 * state.camera.position.z;
+      state.camera.position.x -= dx * speed;
+      state.camera.position.y += dy * speed;
+    } else if (state.mode === "part") {
+      this._dragPart(state, e, dx, dy);
+    } else if (state.mode === "gizmo" && state.dragStart) {
+      this._dragGizmo(state, e);
+    }
+    state.prev = { x: e.clientX, y: e.clientY };
+  };
+
+  // Dragging the part itself, under whichever handle is armed: slide it along
+  // the plane facing the camera, turn it (sideways yaws, up and down pitches),
+  // or resize it (up grows, down shrinks).
+  Scene_CC3DModel.prototype._dragPart = function (state, e, dx, dy) {
+    const slot = this._selected;
+    const part = this._movable(slot);
+    if (!part) return;
+    if (!this._sculptTouched) { this._sculptTouched = true; this.pushHistory(); }
+    const xf = Object.assign(defaultXf(), this._config.partXf[slot]);
+    const handle = state.partHandle || "move";
+    if (handle === "move") {
+      if (!part.parent) return;
+      this._setPointer(e);
+      const hit = new THREE.Vector3();
+      if (!state.ray.ray.intersectPlane(state.plane, hit)) return;
+      const local = part.parent.worldToLocal(hit).sub(state.grabLocal);
+      xf.x = local.x; xf.y = local.y; xf.z = local.z;
+    } else if (handle === "turn") {
+      xf.ry += dx * 0.012;
+      xf.rx += dy * 0.012;
+    } else {
+      xf.s = xf.s * (1 - dy * 0.01);
+    }
+    this.applyPartTransform(slot, xf);
+    this._refreshXfSliders();
+  };
+
+  Scene_CC3DModel.prototype._dragGizmo = function (state, e) {
+    if (!this._sculptTouched) { this._sculptTouched = true; this.pushHistory(); }
+    const axis = state.gizmoAxis;
+    const start = state.dragStart;
+    const xf = Object.assign(defaultXf(), start.xf);
+    if (axis === "x" || axis === "y" || axis === "z") {
+      const part = this._movable(this._selected);
+      if (!part || !part.parent) return;
+      const now = this._planePointAt(state, e, false);
+      const from = part.parent.worldToLocal(start.point.clone());
+      const to = part.parent.worldToLocal(now.clone());
+      xf[axis] = start.xf[axis] + (to[axis] - from[axis]);
+    } else if (axis === "rx" || axis === "ry" || axis === "rz") {
+      const delta = (axis === "ry" ? (e.clientX - state.prev.x) : (e.clientY - state.prev.y)) * 0.012;
+      xf[axis] = (this._config.partXf[this._selected] || defaultXf())[axis] + delta;
+      start.xf = Object.assign(defaultXf(), xf);   // a turn accumulates
+    } else if (axis === "s") {
+      xf.s = (this._config.partXf[this._selected] || defaultXf()).s *
+        (1 + (state.prev.y - e.clientY) * 0.01);
+      start.xf = Object.assign(defaultXf(), xf);
+    }
+    this.applyPartTransform(this._selected, xf);
+    this._refreshXfSliders();
+  };
+
+  Scene_CC3DModel.prototype._onStageUp = function () {
+    const state = this._view3D;
+    if (!state) return;
+    state.mode = "none";
+    state.partHandle = null;
+    state.gizmoAxis = null;
+    state.dragStart = null;
+    state.canvas.style.cursor = "grab";
+  };
+
+  // Nothing on the creature looks clickable until it lights up under the
+  // pointer, so a part names itself and outlines itself on the way past.
+  // Throttled: a raycast through a whole creature on every mouse move is more
+  // work than the answer is worth.
+  Scene_CC3DModel.prototype._hoverModel = function (e) {
+    if (this._hoverAt === Graphics.frameCount) return;
+    this._hoverAt = Graphics.frameCount;
+    const slot = this._slotAtPointer(e);
+    if (slot !== this._hoverSlot) {
+      this._hoverSlot = slot;
+      this._setHoverSlot(slot);
+    }
+    if (!slot) { this._hideTip(); return; }
+    const worn = this._config.parts[slot];
+    this._showTip(e, slotLabel(slot) + (worn === "default" ? "" : " · " + displayName(worn)));
+  };
+
+  Scene_CC3DModel.prototype._showTip = function (e, text) {
+    const tip = document.getElementById("cc3d-tip");
+    if (!tip) return;
+    tip.textContent = text;
+    tip.style.display = "block";
+    tip.style.left = (e.clientX + 14) + "px";
+    tip.style.top = (e.clientY + 16) + "px";
+  };
+
+  Scene_CC3DModel.prototype._hideTip = function () {
+    const tip = document.getElementById("cc3d-tip");
+    if (tip) tip.style.display = "none";
+  };
+
+  //---------------------------------------------------------------------------
+  // What is selected, and what is merely under the pointer
+  //---------------------------------------------------------------------------
+
+  // Clicking a part on the creature opens its group in the drawer, so the two
+  // always show the same thing.
+  Scene_CC3DModel.prototype.selectSlot = function (slot) {
+    if (!slot || this._slots().indexOf(slot) < 0) return;
+    this._selected = slot;
+    if (this._group !== slot) {
+      const group = this._groups().find((g) => g.id === slot);
+      if (group) { this._openGroup(group); this._renderParts(); }
+    }
+    this._renderHandles();
+    this._afterRender();
+    this._refreshSelection();
+  };
+
+  Scene_CC3DModel.prototype._refreshSelection = function () {
+    const state = this._view3D;
+    if (!state) return;
+    const target = this._movable(this._selected);
+    if (state.selHelper && state.selTarget === target) { this._updateGizmo(); return; }
+    if (state.selHelper) { state.scene.remove(state.selHelper); state.selHelper = null; }
+    state.selTarget = target;
+    if (target) {
+      const helper = new THREE.BoxHelper(target, 0xffd700);
+      helper.renderOrder = 998;
+      if (helper.material) { helper.material.depthTest = false; helper.material.transparent = true; }
+      state.scene.add(helper);
+      state.selHelper = helper;
+    }
+    this._updateGizmo();
+  };
+
+  Scene_CC3DModel.prototype._setHoverSlot = function (slot) {
+    const state = this._view3D;
+    if (!state) return;
+    if (state.hoverHelper) { state.scene.remove(state.hoverHelper); state.hoverHelper = null; }
+    const target = (slot && slot !== this._selected) ? this._movable(slot) : null;
+    if (!target) return;
+    const helper = new THREE.BoxHelper(target, 0x7fd4ff);
+    helper.renderOrder = 997;
+    if (helper.material) { helper.material.depthTest = false; helper.material.transparent = true; }
+    state.scene.add(helper);
+    state.hoverHelper = helper;
+  };
+
+  //---------------------------------------------------------------------------
+  // Part pictures
+  //---------------------------------------------------------------------------
+
+  // A little studio of its own for the part pictures, with its own renderer on
+  // its own tiny offscreen canvas.
+  //
+  // Sharing the creature's renderer and lifting the pixels out of its drawing
+  // buffer is a trick that depends on nothing having composited the frame yet,
+  // and when it misses there is no picture at all -- which is exactly what a
+  // shelf of empty black squares looks like. `preserveDrawingBuffer` makes the
+  // grab unconditional, so a picture either exists or the build failed, with no
+  // third state. It is ONE extra context, opened once and released on the way
+  // out; the cap the browser force-loses the oldest context at is far above
+  // three.
+  Scene_CC3DModel.prototype._createThumbStage = function () {
+    this._thumbScene = new THREE.Scene();
+    this._thumbScene.add(new THREE.AmbientLight(0xffffff, 0.75));
+    const key = new THREE.DirectionalLight(0xfff2d0, 0.85);
+    key.position.set(2, 3, 4);
+    this._thumbScene.add(key);
+    // A rim from behind, so a dark part still reads against a dark card.
+    const rim = new THREE.DirectionalLight(0xbcd4ff, 0.45);
+    rim.position.set(-2, 1, -3);
+    this._thumbScene.add(rim);
+    this._thumbStage = new THREE.Group();
+    this._thumbScene.add(this._thumbStage);
+    this._thumbCam = new THREE.PerspectiveCamera(40, 1, 0.05, 100);
+    this._thumbCanvas = document.createElement("canvas");
+    this._thumbCanvas.width = THUMB_SIZE;
+    this._thumbCanvas.height = THUMB_SIZE;
+    try {
+      this._thumbRenderer = new THREE.WebGLRenderer({
+        canvas: this._thumbCanvas, alpha: true, antialias: true, preserveDrawingBuffer: true
+      });
+      this._thumbRenderer.setSize(THUMB_SIZE, THUMB_SIZE, false);
+      this._thumbRenderer.setPixelRatio(1);
+    } catch (e) {
+      // No context to spare: the shelf still reads as names.
+      this._thumbRenderer = null;
+    }
+  };
+
+  // Only what is on screen is ever built: the roster runs to hundreds of parts
+  // and each picture costs a whole donor model, so they are asked for as their
+  // card scrolls into view and dealt one per frame.
+  Scene_CC3DModel.prototype._watchThumbs = function () {
+    const shelf = document.getElementById("cc3d-shelf");
+    if (!shelf || typeof IntersectionObserver === "undefined") return;
+    if (this._thumbWatcher) this._thumbWatcher.disconnect();
+    else {
+      this._thumbWatcher = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          this._thumbWatcher.unobserve(entry.target);
+          const value = entry.target.getAttribute("data-part");
+          if (value && value !== "default") this.requestThumb(value);
+        });
+      }, { root: document.getElementById("cc3d-parts-body"), rootMargin: "200px" });
+    }
+    shelf.querySelectorAll(".cc3d-card[data-part]").forEach((el) => {
+      const img = el.querySelector("img[data-thumb]");
+      if (img && !img.getAttribute("src")) this._thumbWatcher.observe(el);
+    });
+  };
+
+  Scene_CC3DModel.prototype.requestThumb = function (value) {
+    const key = thumbKey(this._slot, value, this._config);
+    if (THUMB_CACHE.has(key)) { this._paintThumb(key); return; }
+    if (this._thumbAsked[key]) return;
+    this._thumbAsked[key] = true;
+    this._thumbQueue.push({ key: key, slot: this._slot, value: value });
+  };
+
+  Scene_CC3DModel.prototype._paintThumb = function (key) {
+    const url = THUMB_CACHE.get(key);
+    if (!url || !this._root) return;
+    this._root.querySelectorAll('img[data-thumb="' + key + '"]').forEach((img) => {
+      img.src = url;
+      img.style.opacity = "1";
+    });
+  };
+
+  // One picture per frame: build it, then draw and grab it on the NEXT frame,
+  // so a single frame never carries both a model build and a render.
+  Scene_CC3DModel.prototype._pumpThumbs = function (state) {
+    if (this._thumbReady) {
+      const job = this._thumbReady;
+      this._thumbReady = null;
+      this._drawThumb(job);
+      return;
+    }
+    if (this._thumbBusy || !this._thumbQueue.length || !this._thumbRenderer) return;
+    const job = this._thumbQueue.shift();
+    this._thumbBusy = true;
+    buildSlotGraft(job.slot, job.value, this._config).then((object) => {
+      this._thumbBusy = false;
+      if (!object) return;
+      if (!this._view3D || this._view3D.disposed) { disposeObject3D(object); return; }
+      job.object = object;
+      this._thumbReady = job;
+    }).catch(() => { this._thumbBusy = false; });
+  };
+
+  Scene_CC3DModel.prototype._drawThumb = function (job) {
+    const object = job.object;
+    if (!object) return;
+    if (!this._thumbRenderer) { disposeObject3D(object); return; }
+    try {
+      this._thumbStage.add(object);
+      const box = new THREE.Box3().setFromObject(object);
+      const size = new THREE.Vector3(); box.getSize(size);
+      const center = new THREE.Vector3(); box.getCenter(center);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      // A part with no extent at all would frame to nothing and photograph as
+      // an empty square, which is worse than no picture.
+      if (!(maxDim > 0)) throw new Error("empty part");
+      object.position.sub(center);
+      // Three-quarter view, the way a part reads best: enough of the front to
+      // recognise it, enough of the side to see its shape.
+      const dist = (maxDim / (2 * Math.tan((40 * Math.PI / 180) / 2))) * 1.45;
+      this._thumbCam.position.set(dist * 0.5, dist * 0.3, dist * 0.85);
+      this._thumbCam.lookAt(0, 0, 0);
+      this._thumbRenderer.render(this._thumbScene, this._thumbCam);
+      cacheThumb(job.key, this._thumbCanvas.toDataURL("image/png"));
+      this._paintThumb(job.key);
+    } catch (e) {
+      // A picture is a convenience; the shelf still reads as names without it.
+    }
+    this._thumbStage.remove(object);
+    disposeObject3D(object);
+  };
+
+  //---------------------------------------------------------------------------
+  // Building the creature
+  //---------------------------------------------------------------------------
 
   Scene_CC3DModel.prototype.scheduleRebuild = function () {
     if (this._rebuildTimer) clearTimeout(this._rebuildTimer);
@@ -1731,18 +3738,23 @@
     const state = this._view3D;
     if (!state) return;
     const buildId = ++this._buildCounter;
-    buildModel(this._config, this._actorId).then((battler) => {
+    buildModel(this._shownConfig(), this._actorId).then((battler) => {
       if (!battler || !battler.model) return;
       if (state.disposed || buildId !== this._buildCounter) {
         if (battler.model) disposeObject3D(battler.model);
         return;
       }
+      if (state.selHelper) { state.scene.remove(state.selHelper); state.selHelper = null; }
+      if (state.hoverHelper) { state.scene.remove(state.hoverHelper); state.hoverHelper = null; }
+      state.selTarget = null;
+      this._hoverSlot = null;
       if (state.holder) {
         disposeObject3D(state.holder);
         state.pivot.remove(state.holder);
         state.holder = null; state.model = null;
       }
-      try { battler.update(1 / 60); } catch (e) { /* preview only */ }
+      // buildModel has already posed it exactly once and seated the bare limbs
+      // on top of that pose; posing again here would shove them back.
       const box = new THREE.Box3().setFromObject(battler.model);
       const size = new THREE.Vector3(); box.getSize(size);
       const center = new THREE.Vector3(); box.getCenter(center);
@@ -1752,44 +3764,62 @@
       if (window.PSXShader) window.PSXShader.applyToObject(battler.model);
       state.pivot.add(holder);
       state.holder = holder; state.model = battler;
+      this._grafts = battler._ccGrafts || {};
+      this._anchors = battler._ccAnchors || {};
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      const fitDist = maxDim / (2 * Math.tan((40 * Math.PI / 180) / 2));
-      state.camera.position.set(0, 0, fitDist * 1.35);
+      const fit = maxDim / (2 * Math.tan((40 * Math.PI / 180) / 2));
+      state.camera.position.set(0, 0, fit * 1.35);
       state.camera.lookAt(0, 0, 0);
-      state.attackTimer = 1.2;
+      if (this._selected && !this._movable(this._selected)) this._selected = null;
+      this._refreshSelection();
+      // The body list and the sizer follow the model; the SHELF does not. What
+      // a slot may be given is the same before and after a rebuild, so redrawing
+      // it here only threw away every picture on it.
+      this._renderBody();
+      this._renderHandles();
+      this._afterRender();
     }).catch(() => {});
   };
 
-  Scene_CC3DModel.prototype.cleanup3DView = function () {
-    this._terminated = true;
-    const s = this._view3D;
-    if (this._onSliderDown && this._dndContainer) this._dndContainer.removeEventListener("mousedown", this._onSliderDown);
-    if (this._onSliderMove) window.removeEventListener("mousemove", this._onSliderMove);
-    if (this._onSliderUp) window.removeEventListener("mouseup", this._onSliderUp);
-    if (!s) return;
-    s.disposed = true;
-    cancelAnimationFrame(s.rafId);
-    const L = s.listeners || {}, c = s.canvas;
-    if (c) {
-      c.removeEventListener("mousedown", L.onDown);
-      c.removeEventListener("mousemove", L.onMove);
-      c.removeEventListener("wheel", L.onWheel);
-      c.removeEventListener("auxclick", L.onAux);
-      c.removeEventListener("contextmenu", L.onCtx);
-      c.removeEventListener("touchstart", L.onTStart);
-      c.removeEventListener("touchmove", L.onTMove);
+  Scene_CC3DModel.prototype._teardownStage = function () {
+    if (this._root && this._onDown) this._root.removeEventListener("mousedown", this._onDown);
+    if (this._onMove) window.removeEventListener("mousemove", this._onMove);
+    if (this._onUp) window.removeEventListener("mouseup", this._onUp);
+    if (this._onKey) window.removeEventListener("keydown", this._onKey);
+    const state = this._view3D;
+    if (!state) return;
+    state.disposed = true;
+    cancelAnimationFrame(state.rafId);
+    const L = state.listeners || {}, canvas = state.canvas;
+    if (canvas) {
+      canvas.removeEventListener("mousedown", L.onDown);
+      canvas.removeEventListener("mouseleave", L.onLeave);
+      canvas.removeEventListener("wheel", L.onWheel);
+      canvas.removeEventListener("auxclick", L.onAux);
+      canvas.removeEventListener("contextmenu", L.onCtx);
+      canvas.removeEventListener("touchstart", L.onTStart);
+      canvas.removeEventListener("touchmove", L.onTMove);
     }
+    window.removeEventListener("mousemove", L.onMove);
     window.removeEventListener("mouseup", L.onUp);
     window.removeEventListener("touchend", L.onTEnd);
-    if (s.holder) disposeObject3D(s.holder);
+    if (state.holder) disposeObject3D(state.holder);
+    if (state.gizmo) disposeObject3D(state.gizmo);
+    if (this._thumbRenderer) {
+      try { this._thumbRenderer.dispose(); } catch (e) { /* already lost */ }
+      try {
+        if (this._thumbRenderer.forceContextLoss) this._thumbRenderer.forceContextLoss();
+      } catch (e) {}
+      this._thumbRenderer = null;
+    }
     // dispose() leaves the WebGL context alive. The browser caps live contexts
     // and force-loses the OLDEST past the cap, which is the game's own canvas:
     // PIXI then silently stops rendering and the picture freezes until the game
     // is restarted. Release it, then swap in a clean canvas node, since the
     // element a context was lost on can never host a new one.
-    try { s.renderer.dispose(); } catch (e) { /* already lost */ }
-    try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
-    if (c && c.parentNode) c.parentNode.replaceChild(c.cloneNode(false), c);
+    try { state.renderer.dispose(); } catch (e) { /* already lost */ }
+    try { if (state.renderer.forceContextLoss) state.renderer.forceContextLoss(); } catch (e) {}
+    if (canvas && canvas.parentNode) canvas.parentNode.replaceChild(canvas.cloneNode(false), canvas);
     this._view3D = null;
   };
 

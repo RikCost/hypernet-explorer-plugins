@@ -31,6 +31,7 @@
     "voiceVolume": "Voice Volume",
     "masterVolume": "Master Volume",
     "language": "Language",
+    "biomeMusic": "Biome Music (WIP)",
     "muteBgm": "Mute BGM",
     "footstepsVolume": "Footsteps Volume",
     "weatherVolume": "Weather Volume",
@@ -97,6 +98,7 @@
   "desc": {
     "enemySpawnMode": "How strong wandering enemies are. The year raises levels regardless: +10 a year to 2010, up to 110 in 2010-2011, nothing under 80 from 2012.",
     "weatherVolume": "Volume of outdoor ambience: rain, storms, wind and biome sounds. Interiors are unaffected.",
+    "biomeMusic": "Let the place you stand in choose the music: each biome has its own tracks, one picked per country and per half of the day, with a darker set for an emptied world. Still being written, so it is off by default and every map keeps its own theme.",
     "partyHud": "A card per party member in the top-left: HP, MP, states and urgent needs.",
     "partyFormation": "How the rest of the party walks behind the leader on the map.",
     "musicArtistDisplay": "Whether the game tells you what music is playing and who made it.",

@@ -137,13 +137,27 @@
   }
 
   /**
-   * Apply gender selection and set reproductive type
+   * Which organs a character starts with, and the hormone balance a body of
+   * that build runs at. Both are ANSWERS TO A QUESTION THE PLAYER MAY ALSO
+   * ANSWER THEMSELVES on the Bio tab, so both are written here as defaults
+   * rather than as facts: gender picks the body it usually comes with, and the
+   * panel is free to leave it alone (see `options.keepOrgans`).
+   *
+   * Male is testes and female a uterus, which is what "default to" means: the
+   * organ selector jumps to it the moment the gender is picked, and the player
+   * may move it straight off again. Non-binary and cocoon name no body at all,
+   * so with `keepOrgans` they change NOTHING: whatever the character already
+   * had, or was built with, stands.
+   *
    * @param {number} memberIndex - Party member index (0, 1, 2)
    * @param {number} genderValue - Gender value (0=Male, 1=Female, 2=Non-binary, 3=Cocoon)
+   * @param {object} [options] - { keepOrgans } to leave a body the gender does
+   *                             not name exactly as it is
    */
-  function applyGenderAndReproduction(memberIndex, genderValue) {
+  function applyGenderAndReproduction(memberIndex, genderValue, options) {
     const genderVar = getGenderVariableId(memberIndex);
     const reproductiveVar = getReproductiveVariableId(memberIndex);
+    const keepOrgans = !!(options && options.keepOrgans);
 
     // Set gender variable
     $gameVariables.setValue(genderVar, genderValue);
@@ -157,16 +171,76 @@
         $gameVariables.setValue(reproductiveVar, REPRODUCTION_TYPES.UTERUS);
         break;
       case GENDER_TYPES.NON_BINARY:
-        // Random (0-4: Testicles, Uterus, Oviparous, Plant, Mitosis)
-        $gameVariables.setValue(reproductiveVar, Math.floor(Math.random() * 5));
+        // Random (0-4: Testicles, Uterus, Oviparous, Plant, Mitosis), unless
+        // the caller is asking on behalf of somebody who already has a body.
+        if (!keepOrgans) $gameVariables.setValue(reproductiveVar, Math.floor(Math.random() * 5));
         break;
       case GENDER_TYPES.COCOON:
-        $gameVariables.setValue(reproductiveVar, REPRODUCTION_TYPES.MITOSIS);
+        if (!keepOrgans) $gameVariables.setValue(reproductiveVar, REPRODUCTION_TYPES.MITOSIS);
         break;
       default:
         console.warn(`Unknown gender value: ${genderValue}`);
-        $gameVariables.setValue(reproductiveVar, REPRODUCTION_TYPES.NONE);
+        if (!keepOrgans) $gameVariables.setValue(reproductiveVar, REPRODUCTION_TYPES.NONE);
     }
+  }
+
+  /**
+   * The reproductive organs a party member is carrying, as a REPRODUCTION_TYPES
+   * value. NONE (-1) is a real answer: a body with no reproductive system at all.
+   * @param {number} memberIndex - Party member index (0, 1, 2)
+   * @returns {number} Reproduction type
+   */
+  function getReproductionType(memberIndex) {
+    const value = $gameVariables.value(getReproductiveVariableId(memberIndex));
+    return (value === undefined || value === null) ? REPRODUCTION_TYPES.NONE : value;
+  }
+
+  /**
+   * Give a party member a set of reproductive organs outright, whatever their
+   * gender says. This is the Bio tab's own answer, and it outranks the default
+   * the gender pick wrote.
+   * @param {number} memberIndex - Party member index (0, 1, 2)
+   * @param {number} type - REPRODUCTION_TYPES value
+   */
+  function setReproductionType(memberIndex, type) {
+    $gameVariables.setValue(getReproductiveVariableId(memberIndex), Number(type));
+  }
+
+  // Where a body of each build sits on the androgenic/oestrogenic scale the
+  // creation slider runs on: 0 is wholly oestrogenic, 100 wholly androgenic.
+  // These are the DEFAULTS the slider starts at, never a clamp: a character may
+  // be built anywhere on the scale whatever gender they were given, which is
+  // the whole point of asking the two questions separately.
+  const HORMONE_BALANCE_DEFAULTS = {
+    [GENDER_TYPES.MALE]: 85,
+    [GENDER_TYPES.FEMALE]: 15,
+    [GENDER_TYPES.NON_BINARY]: 50,
+    [GENDER_TYPES.COCOON]: 50
+  };
+
+  /**
+   * The balance a body of this gender is usually built at.
+   * @param {number} genderValue - Gender value
+   * @returns {number} 0-100
+   */
+  function defaultHormoneBalance(genderValue) {
+    const value = HORMONE_BALANCE_DEFAULTS[genderValue];
+    return value === undefined ? 50 : value;
+  }
+
+  /**
+   * The balance an actor actually runs at: their own if they were built with
+   * one, otherwise the default for the gender they carry. Never null, so a
+   * caller reading hormones off it needs no answer of its own.
+   * @param {object} actor - Game_Actor
+   * @returns {number} 0-100
+   */
+  function hormoneBalanceOf(actor) {
+    const own = (actor && typeof actor.hormoneBalance === "function")
+      ? actor.hormoneBalance() : null;
+    if (own !== null && own !== undefined) return own;
+    const gender = (actor && typeof actor.gender === "function") ? actor.gender() : 0;
+    return defaultHormoneBalance(gender);
   }
 
   /**
@@ -207,10 +281,20 @@
       return null;
     }
 
-    const archetype = entry.Archetype;
-    if (archetype && archetype !== DEFAULT_ARCHETYPE && window.changeArchetypeForActor) {
-      const actor = $gameActors.actor(memberIndex + 1);
-      if (actor) window.changeArchetypeForActor(actor, archetype);
+    // The sheet's own archetype is the whole answer: it becomes the primary,
+    // any spliced second half the slot used to carry is dropped (this sheet is
+    // one creature, not a hybrid), and the 3D model is regenerated from it so
+    // the character's body, its anatomy and its model all say the same thing.
+    // Humanoid is applied like any other rather than skipped, so a person's
+    // sheet also clears whatever the slot held before.
+    const archetype = entry.Archetype || DEFAULT_ARCHETYPE;
+    const actor = $gameActors.actor(memberIndex + 1);
+    if (actor) {
+      if (window.applyArchetypesToActor) {
+        window.applyArchetypesToActor(actor, [archetype]);
+      } else if (window.changeArchetypeForActor && archetype !== DEFAULT_ARCHETYPE) {
+        window.changeArchetypeForActor(actor, archetype);
+      }
     }
 
     if (entry.Gender != null) {
@@ -700,6 +784,15 @@
       return this._magicAllowed(ids);
     },
 
+    // Every monstrous class in the database: what a creature may be built as
+    // when the board offers the whole roster rather than one archetype's.
+    creatureRoster() {
+      const ids = ($dataClasses || [])
+        .filter((c) => c && c.id > SENTIENT_CLASS_MAX && c.name)
+        .map((c) => c.id);
+      return this._magicAllowed(ids);
+    },
+
     // The civilised roster of a single archetype key, [] when the archetype is
     // unknown.
     civilisedFor(key) {
@@ -792,6 +885,12 @@
     applyRandomGender,
     applyIdentityFromSprite,
     getGenderChoices,
+    getReproductionType,
+    setReproductionType,
+
+    // Endocrine balance (the Bio tab's slider, see ActorCharacterFields)
+    defaultHormoneBalance,
+    hormoneBalanceOf,
 
     // Traits
     applyTraitsToActor,

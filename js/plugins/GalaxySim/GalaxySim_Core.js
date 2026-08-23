@@ -38,6 +38,11 @@
  *   - a fusing star in this very system: it plots the short hop to it
  *   - otherwise: it plots the course to the nearest system that has one
  * Either way the pumps engage by themselves the moment the ship arrives.
+ * A full tank is a two-minute stop: the ship eases in toward the star while
+ * the pumps run and drifts back out once they stop, and the ETA is counted
+ * down in the same window that counts down an arrival.
+ * A black hole fills the Schrodingerite magazine instead, in half a minute,
+ * and its once-a-week harvest is a thirty-second flyby of the disk.
  *
  * ============================================================================
  * Variables Used

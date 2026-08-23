@@ -1506,9 +1506,33 @@
 
   // Bashing the door always counts as breaking and entering, except in an
   // empty world: there is no owner to break in on and nobody to file it.
-  // (CrimeSystem.addCrime refuses it there anyway; this keeps the "Nobody left
-  // to judge you" toast from firing every time a door is shouldered open.)
-  function bashDoor(useFacing, doEntry) {
+  async function bashDoor(useFacing, doEntry) {
+    const leader = (typeof $gameParty !== 'undefined' && $gameParty.leader) ? $gameParty.leader() : null;
+    const strMod = leader ? (leader.strMod ?? Math.floor(((leader.atk || 10) - 10) / 2)) : 0;
+    let success = false;
+
+    if (window.Dice3D) {
+      const rollRes = await window.Dice3D.rollD20({
+        actionName: "Door Bash",
+        statName: "STR (Athletics)",
+        modifier: strMod,
+        dc: 12,
+        force3D: true
+      });
+      success = rollRes.success;
+    } else {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      success = (roll === 20) || (roll !== 1 && roll + strMod >= 12);
+    }
+
+    if (!success) {
+      SoundManager.playBuzzer();
+      if (window.ParchmentToast) {
+        window.ParchmentToast.show("🚪 The reinforced door held firm against your shoulder!", { severity: "warn" });
+      }
+      return;
+    }
+
     if (typeof CrimeSystem !== 'undefined' && !isEmptyWorld()) {
       CrimeSystem.addPresetCrime("breakingAndEntering");
     }

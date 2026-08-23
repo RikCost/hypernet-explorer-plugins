@@ -405,7 +405,7 @@
   // knowing the dose is INT and getting it into them is DEX, and nothing else
   // moves it. A failure is a bioterrorism charge and the end of the friendship.
   const INFECT_BASE     = 10;   // the chance with no stats behind it at all
-  const INFECT_STAT_DIV = 6;    // (INT + DEX) over this, in percentage points
+  const INFECT_STAT_DIV = 0.6;  // (INT + DEX) over this, in percentage points (D&D scale)
   const INFECT_MIN      = 5;
   const INFECT_MAX      = 95;
   function _infectChance(actor) {
@@ -480,19 +480,33 @@
     return page.list.some(cmd => cmd.code === 357 && cmd.parameters?.[1] === 'JoinParty');
   }
 
+  // Where a loose bust name's file actually is. window.BustPath (defined in
+  // VisualNovelBustSystem.js, the first bust plugin to load) knows that the
+  // pre-made characters' portraits live in img/busts/presets/ while everybody
+  // else's sit in the flat folder; asking through it is what keeps the panel's
+  // portrait and the message box's the same picture. The fallback is the old
+  // flat-folder rule, for a build where that plugin is switched off.
+  function _bustUrl(name, fallback = 'img/busts/7.png') {
+    if (window.BustPath) return window.BustPath.url(name, fallback);
+    const raw = String(name ?? '').trim()
+      .replace(/^img\/busts\//i, '').replace(/\.png$/i, '');
+    if (!raw || raw === '7' || raw === '0') return fallback;
+    return `img/busts/${raw}.png`;
+  }
+
   function _resolveBustForActor(actor) {
     if (!actor) return 'img/busts/7.png';
     // The bust the rest of the game shows for this actor (set by character
     // creation, the sprite selector, or a preset dossier) wins over anything
     // derived from the walking sprite. ActorCharacterFields stores 0 when unset.
     const own = actor.vnBust ? actor.vnBust() : null;
-    if (own && own !== '7' && own !== 0) return `img/busts/${own}.png`;
+    if (own && own !== '7' && own !== 0) return _bustUrl(own);
     const charName  = actor.characterName();
     const charIndex = actor.characterIndex();
     if (charName && window.Sprites?.SpritesAssociation) {
       const sa   = window.Sprites.SpritesAssociation;
       const bust = sa[charName.split('.')[0]]?.[charIndex];
-      if (bust && bust !== '7') return `img/busts/${bust}.png`;
+      if (bust && bust !== '7') return _bustUrl(bust);
     }
     return 'img/busts/7.png';
   }
@@ -528,6 +542,7 @@
   // comment tokens would otherwise be stat()ed again each time.
   const _bustExistsCache = {};
   function _bustFileExists(name) {
+    if (window.BustPath) return window.BustPath.exists(name);
     if (typeof Utils === 'undefined' || !Utils.isNwjs?.()) return true;
     if (name in _bustExistsCache) return _bustExistsCache[name];
     let exists = true;
@@ -566,12 +581,19 @@
   function _resolveBustPath(npcName, event) {
     // A bust named in the event's comments wins, exactly as in the message box.
     const commentBust = _bustNameFromEvent(event);
-    if (commentBust && commentBust !== '7') return `img/busts/${commentBust}.png`;
+    if (commentBust && commentBust !== '7') return _bustUrl(commentBust);
     const presetBust = _presetFromEvent(event)?.busts;
-    if (presetBust && presetBust !== '7') return `img/busts/${presetBust}.png`;
+    if (presetBust && presetBust !== '7') return _bustUrl(presetBust);
+    // A world leader carries their own portrait in Leaders.json, and this is
+    // the only face they have: most of them never stand on a map at all, so
+    // there is no event and no sprite to derive one from. Asked before the
+    // society sim's random pick so the wiki article and the panel it opens
+    // show the same person.
+    const leaderBust = window.HistoryManager?.leaderBust?.(npcName);
+    if (leaderBust) return leaderBust;
     if (window.NPCSim?.getBustForNPC) {
       const b = window.NPCSim.getBustForNPC(npcName);
-      if (b && b !== '7') return `img/busts/${b}.png`;
+      if (b && b !== '7') return _bustUrl(b);
     }
     let charName  = event?.event()?.characterName  ?? event?.event()?.pages?.[0]?.image?.characterName;
     let charIndex = event?.event()?.characterIndex ?? event?.event()?.pages?.[0]?.image?.characterIndex ?? 0;
@@ -584,7 +606,7 @@
     if (charName && window.Sprites?.SpritesAssociation) {
       const sa   = window.Sprites.SpritesAssociation;
       const bust = sa[charName.split('.')[0]]?.[charIndex];
-      if (bust && bust !== '7') return `img/busts/${bust}.png`;
+      if (bust && bust !== '7') return _bustUrl(bust);
     }
     return 'img/busts/7.png';
   }
@@ -3591,7 +3613,7 @@
     // and report the attempt instead of rolling the usual accept/fail chance.
     static get LAW_CLASSES() { return [44]; }
 
-    _attemptBribe(tierIndex) {
+    async _attemptBribe(tierIndex) {
       const BASE_TIERS = [
         { gold: 200,  op: 10, chance: 70 },
         { gold: 500,  op: 22, chance: 80 },
@@ -3645,7 +3667,22 @@
       }
 
       $gameParty.loseGold(tier.gold);
-      const success = Math.random() * 100 < tier.chance;
+      const actor = this._focusActor() || $gameParty.leader();
+      const psiMod = actor ? (actor.psiMod ?? Math.floor(((actor.luk || 10) - 10) / 2)) : 0;
+      let success = false;
+
+      if (window.Dice3D) {
+        const rollRes = await window.Dice3D.rollPercentage(tier.chance, {
+          actionName: `Bribe: ${npcName}`,
+          statName: 'PSI (Charisma)',
+          modifier: psiMod,
+          force3D: true
+        });
+        success = rollRes.success;
+      } else {
+        success = Math.random() * 100 < tier.chance;
+      }
+
       if (profile) (profile.eventLog ??= []).push({ tag: 'bribe', desc: success ? 'bribe accepted' : 'bribe failed', timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0 }); // i18n-ignore: event-log record ids
 
       if (success) {
@@ -4703,13 +4740,26 @@
       return { date: format === 'iso' ? '2000-01-01' : '01 JAN 2000', cause: null };
     },
 
+    // The sheet behind a leader: who they are as a character rather than as an
+    // office. window.LeaderPersona (HistorySimulator.js) builds it, reading the
+    // pre-made dossier where the leader is also one and the world's own record
+    // of that character where somebody has already played them. Every leader
+    // article carries one, which is what makes the Empathize button on it lead
+    // to a person rather than to an empty profile.
+    _leaderDossier(name) {
+      try { return window.LeaderPersona?.dossierFor?.(name) ?? null; }
+      catch (e) { return null; }
+    },
+
     getLeader(name) {
       const hm = this._hm();
+      const dossier = this._leaderDossier(name);
       const found = window.NPCPolitics?.findPolitician?.(name);
       if (found) {
         return {
           type: 'leader', kind: 'politician', name: found.pol.name,
-          pol: found.pol, power: found.power,
+          pol: found.pol, power: found.power, dossier,
+          record: hm?.getLeaderRecord?.(found.pol.name) ?? null,
           death: found.pol.alive ? this._emptyWorldDeath() : {
             date: found.pol.deathDate ?? null,
             cause: window.NPCPolitics?.textOf?.(found.pol.deathCause) || null,
@@ -4719,6 +4769,7 @@
       }
       const deaths   = hm?.getLeaderDeaths?.() || {};
       const deadList = hm?.getDeadLeaders?.() || [];
+      const isDead   = deadList.includes(name) || !!deaths[name];
       const sources = [
         ['power',   hm?.getHyperpowers?.() || {}],
         ['faction', hm?.getHistoricalFactions?.() || {}],
@@ -4727,16 +4778,31 @@
         for (const [groupName, data] of Object.entries(group)) {
           const leader = (data?.leaders || []).find(l => l && l.name === name);
           if (leader) {
-            const isDead = deadList.includes(name) || !!deaths[name];
             return {
               type: 'leader', kind: 'historical', name,
-              leader, of: groupName, ofType,
+              leader, of: groupName, ofType, dossier,
+              record: hm?.getLeaderRecord?.(name) ?? null,
               death: isDead ? (deaths[name] || { date: null, cause: null })
                             : this._emptyWorldDeath('iso'),
               events: hm?.getEventsAbout?.(name, 12) ?? [],
             };
           }
         }
+      }
+      // Not seated anywhere, and never was: most of the book is like this at
+      // any one moment, and until now those names opened nothing at all. The
+      // record itself is the article, with the nation they belong to standing
+      // in for the body they served.
+      const record = hm?.getLeaderRecord?.(name) ?? null;
+      if (record) {
+        return {
+          type: 'leader', kind: 'historical', name,
+          leader: record, of: record.country || null, ofType: 'nation',
+          dossier, record,
+          death: isDead ? (deaths[name] || { date: null, cause: null })
+                        : this._emptyWorldDeath('iso'),
+          events: hm?.getEventsAbout?.(name, 12) ?? [],
+        };
       }
       return null;
     },
@@ -4905,6 +4971,15 @@
       };
       addFrom(hm?.getHyperpowers?.(), 'power');
       addFrom(hm?.getHistoricalFactions?.(), 'faction');
+      // Everyone else in the book. A leader is in Leaders.json whether or not
+      // any power has seated them yet, and a name that never took an office
+      // still has a life, a face and an article: leaving them out of the index
+      // was the only reason most of the cast could not be looked up at all.
+      for (const rec of (hm?.listLeaderRecords?.() || [])) {
+        if (!rec?.name || out.has(rec.name)) continue;
+        out.set(rec.name, { name: rec.name, of: rec.country || null, ofType: 'nation',
+                            dead: deadList.has(rec.name) || !!deaths[rec.name] });
+      }
       const powers = (typeof $gameSystem !== 'undefined' && $gameSystem?._npcPolitics?.powers) || {};
       for (const p of Object.values(powers)) {
         for (const pol of Object.values(p?.politicians || {})) {
@@ -5076,6 +5151,20 @@
   // SECTION 9, GLOBALS
   // ============================================================================
 
+  // There is nothing to say to a corpse. In a zombie world the panel never
+  // opens on one of the dead walking, so none of it is ever built for one: no
+  // talk, no gift, no leave. The interaction IS the fight, and NPCSystem is
+  // handed it exactly as a bump in the street would be. Every other route in
+  // (the action button, either touch trigger) is refused at the event itself,
+  // see the Game_Event.start guard there; this covers a panel asked for by id
+  // or by name from somewhere off the map.
+  function _refusedAsZombie(ev) {
+    const NS = window.NPCSystem;
+    if (!ev || !NS || !NS.isZombieWalker?.(ev)) return false;
+    NS.requestZombieBattle(ev);
+    return true;
+  }
+
   window.NPCEmpathize = {
     open(evNameOrId) {
       if ($gameTemp._NPCEmpathizeBypass) {
@@ -5083,6 +5172,7 @@
         return;
       }
       if (typeof evNameOrId === 'number') {
+        if (_refusedAsZombie($gameMap?.event(evNameOrId))) return;
         Scene_NPCEmpathize._eventId = evNameOrId;
         Scene_NPCEmpathize._actorId = null;
         Scene_NPCEmpathize._entity  = null;
@@ -5090,6 +5180,7 @@
       } else {
         const ev = _findEventByName(evNameOrId);
         if (ev) {
+          if (_refusedAsZombie(ev)) return;
           Scene_NPCEmpathize._eventId = ev.eventId();
           Scene_NPCEmpathize._actorId = null;
           Scene_NPCEmpathize._entity  = null;
@@ -5106,6 +5197,7 @@
         return;
       }
       const ev = _findEventByName(npcName);
+      if (_refusedAsZombie(ev)) return;
 
       _pushReturnContext();
       const ctx = ev
@@ -5124,6 +5216,15 @@
     openForActor(actorId) {
       if ($gameTemp._NPCEmpathizeBypass) {
         $gameTemp._NPCEmpathizeBypass = false;
+        return;
+      }
+      // Asked from inside the panel itself (a world leader's wiki article, when
+      // that leader turns out to be travelling with the player) this is a hop
+      // like any other: navigate in place and leave a way back, rather than
+      // stacking a second copy of the panel on top of the first.
+      if (SceneManager._scene instanceof Scene_NPCEmpathize) {
+        _pushReturnContext();
+        _navigateInPlace({ eventId: null, actorId, npcName: null, entity: null });
         return;
       }
       Scene_NPCEmpathize._eventId = null;
@@ -5189,6 +5290,9 @@
       // Written characters: never fought, never infected (see _isStoryNpc).
       _isStoryNpc, STORY_PROTECTED_ACTIONS,
       _resolveBustForActor, _resolveBustPath, _resolveMarkovDb,
+      // Every portrait the UI layer draws is built here, so a name that names
+      // no file on disk shows the house bust instead of a broken frame.
+      _bustUrl,
       _eventCommentLines, _bustNameFromEvent, _presetFromEvent,
       _computePartyPredisposition, _medianScore, _generatePartyThoughts,
       _extractContacts, _countRecentInteractions, _lastInteractionDay,

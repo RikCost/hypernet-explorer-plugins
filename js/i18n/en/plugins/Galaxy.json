@@ -36,7 +36,9 @@
   "yourDestination": "your destination",
   "arrivedAt": "You have arrived at {place}",
   "timeToArrival": "Time to Arrival",
-  "lyRemaining": "{ly} ly remaining"
+  "lyRemaining": "{ly} ly remaining",
+  "refuelling": "Refuelling",
+  "harvesting": "Harvesting Schrödingerite"
  },
  "bodyType": {
   "Dark + emission nebula": "Dark + emission nebula",
@@ -186,7 +188,8 @@
   "bookmarkAdd": "Bookmark this",
   "bookmarkRemove": "Remove bookmark",
   "bookmarked": "Bookmarked",
-  "bookmark": "Bookmark"
+  "bookmark": "Bookmark",
+  "harvestRunning": "Harvest flyby under way"
  },
  "hubblePart": {
   "DF-224 Computer": {
@@ -399,7 +402,10 @@
   "inSystem": "Fuel star in this system",
   "nearest": "Nearest fuel star",
   "mayBeOutOfRange": "Nearest fuel star may be out of range",
-  "noneInRange": "No fusing star in range"
+  "noneInRange": "No fusing star in range",
+  "harvesting": "Harvesting the disk",
+  "eta": "{time} remaining",
+  "harvested": "{amount} Schrödingerite charges drawn from the disk"
  },
  "bio": {
   "weak": "Weak",

@@ -27,5 +27,11 @@
  "selectedDiseasesLabel": "Illnesses carried",
  "searchPlaceholder": "Search traits…",
  "incompatibleNote": "Clashes with a trait you have already taken.",
- "unaffordableNote": "Not enough trait points left for this one."
+ "unaffordableNote": "Not enough trait points left for this one.",
+  "noneInCategory": "Nothing here",
+  "purseSpent": "Spent",
+  "purseRefunds": "Refunds",
+  "purseLeft": "Remaining",
+  "pts": "pts",
+  "refundWord": "refund"
 }

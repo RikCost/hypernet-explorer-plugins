@@ -3160,9 +3160,25 @@
         // defence is worth only as much as her mood is willing to hear.
         guiltyChance -= bondRelief(this.playerBond, this.mood);
         guiltyChance -= lawyerRelief(this.lawyer, this.mood);
+
+        // PSI (Charisma / Soul presence) provides advocacy relief
+        const leader = (typeof $gameParty !== 'undefined' && $gameParty.leader) ? $gameParty.leader() : null;
+        const psiMod = leader ? Math.floor(((leader.luk || 10) - 10) / 2) : 0;
+        guiltyChance -= (psiMod * 0.035);
+
         guiltyChance = Math.max(0.02, Math.min(0.98, guiltyChance));
 
-        this.verdict = Math.random() < guiltyChance ? "guilty" : "innocent";
+        const innocentChance = Math.round((1 - guiltyChance) * 100);
+        if (window.Dice3D) {
+          const res = await window.Dice3D.rollPercentage(innocentChance, {
+            actionName: "Eris Court Verdict",
+            statName: "PSI (Charisma)",
+            modifier: psiMod
+          });
+          this.verdict = res.success ? "innocent" : "guilty";
+        } else {
+          this.verdict = Math.random() < guiltyChance ? "guilty" : "innocent";
+        }
       }
 
       // Fickle in the other direction: an evening bought a lean, not a promise,

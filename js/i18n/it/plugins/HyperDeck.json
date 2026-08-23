@@ -28,7 +28,8 @@
     "battery": "Cella",
     "draw": "Assorbimento",
     "slots": "Scheda",
-    "caseLabel": "Telaio"
+    "caseLabel": "Telaio",
+    "endurance": "Autonomia"
   },
   "unit": {
     "mhz": "{n} MHz",
@@ -41,7 +42,13 @@
   },
   "value": {
     "none": "non montato",
-    "infinite": "illimitata"
+    "infinite": "illimitata",
+    "integrated": "integrata, {n} MB condivisi",
+    "index": "{n} punti",
+    "passive": "nessun raffreddamento, scheda da {n} W",
+    "cooled": "{n} montati, scheda da {w} W",
+    "hours": "{n} h",
+    "beeper": "cicalino di sistema"
   },
   "required": {
     "heading": "NECESSARIO"
@@ -80,15 +87,15 @@
     "manaFlow": "Calibrazione Flusso di Mana... OK",
     "ethereal": "Sincronia Rete Eterea... OK",
     "loading": "Caricamento Ambiente di Gioco... ",
-    "ready": "✓ Sistema Pronto - Avvio di Archways XP..."
+    "ready": "✓ Sistema Pronto - Avvio di Archways XP...",
+    "quantumShared": "Quantum Buffer    : {size} CONDIVISI"
   },
   "post": {
     "failHeading": "ERRORE DI AVVIO",
     "failLine": "nessun componente: {kind}",
     "failFooter": "Monta i pezzi mancanti e riprova.",
     "overdrawHeading": "GUASTO DI ALIMENTAZIONE",
-    "overdrawLine": "la cella non regge {n} W",
-    "unfedLine": "nessuna {signal} raggiunge {part}"
+    "overdrawLine": "la cella non regge {n} W"
   },
   "tool": {
     "auto": "MONTA",
@@ -98,9 +105,7 @@
     "face": "META INFERIORE",
     "clear": "SVUOTA",
     "chip": "CHIP",
-    "boot": "AVVIA",
-    "trace": "PISTA",
-    "traceOn": "PISTA {signal}"
+    "boot": "AVVIA"
   },
   "face": {
     "keyboard": "Tastiera",
@@ -113,9 +118,8 @@
     "power": "Alla cella mancano {n} W rispetto a quanto assorbono i pezzi montati.",
     "heat": "Nulla raffredda una scheda da {n} W. Aspettati che rallenti.",
     "uplink": "Nessun collegamento montato. L Hypernet non rispondera.",
-    "video": "Nessun adattatore grafico. Il pannello e pilotato dal processore.",
     "memory": "Solo {n} MB di memoria. Archways XP arranchera.",
-    "unfed": "{part} non riceve {signal}."
+    "integrated": "Nessun adattatore grafico. Il processore pilota da se il pannello, con {n} MB presi in prestito dalla memoria principale."
   },
   "chip": {
     "heading": "LABORATORIO CHIP",
@@ -211,9 +215,5 @@
     "willNotBoot": "Questa macchina non superera il POST.",
     "boot": "ACCENDI",
     "exit": "ESCI"
-  },
-  "signal": {
-    "power": "corrente",
-    "video": "video"
   }
 }

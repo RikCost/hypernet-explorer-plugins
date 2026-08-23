@@ -54,6 +54,9 @@
     "lemoncorp": {
       "description": "Il frizzante conglomerato di tecnologia di consumo dietro metà dei gadget d'Europa. Notoriamente sopravvalutato, notoriamente amato."
     },
+    "limecorp": {
+      "description": "L'azienda nata dalla fuga di cervelli dalla LemonCorp, che si è portata via i tecnici migliori. Lancia ogni aggeggio con un anno di anticipo: metà funzionano, tutti vanno esauriti."
+    },
     "petrodyne": {
       "description": "Petrolio, gas e tutto ciò che brucia. Estrae greggio dalla Petrocave e paga dividendi costanti e fuligginosi."
     },

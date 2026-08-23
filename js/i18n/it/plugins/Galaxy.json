@@ -36,7 +36,9 @@
   "yourDestination": "la tua destinazione",
   "arrivedAt": "Sei arrivato a {place}",
   "timeToArrival": "Tempo all'arrivo",
-  "lyRemaining": "restano {ly} al"
+  "lyRemaining": "restano {ly} al",
+  "refuelling": "Rifornimento",
+  "harvesting": "Raccolta di Schrödingerite"
  },
  "bodyType": {
   "Dark + emission nebula": "Nebulosa oscura e a emissione",
@@ -185,7 +187,8 @@
   "bookmarkAdd": "Aggiungi ai segnalibri",
   "bookmarkRemove": "Rimuovi dai segnalibri",
   "bookmarked": "Nei segnalibri",
-  "bookmark": "Segnalibro"
+  "bookmark": "Segnalibro",
+  "harvestRunning": "Sorvolo di raccolta in corso"
  },
  "hubblePart": {
   "DF-224 Computer": {
@@ -398,7 +401,10 @@
   "inSystem": "Stella di rifornimento in questo sistema",
   "nearest": "Stella di rifornimento più vicina",
   "mayBeOutOfRange": "La stella più vicina potrebbe essere fuori portata",
-  "noneInRange": "Nessuna stella in fusione a portata"
+  "noneInRange": "Nessuna stella in fusione a portata",
+  "harvesting": "Raccolta dal disco",
+  "eta": "{time} rimanenti",
+  "harvested": "{amount} cariche di Schrödingerite estratte dal disco"
  },
  "bodyNote": {
   "2060chiron": "Cometa o asteroide, dipende da che anno lo si chiede. Sviluppò una chioma nel 1988, dopo un decennio classificato come pianeta minore, e da allora la disputa non si è chiusa.",

@@ -213,7 +213,15 @@
   }
 
   /**
-   * Equip random compatible weapon for a class
+   * Arm an actor with the starter weapons of their class.
+   *
+   * A class used to be handed ONE weapon rolled out of everything it could
+   * hold, so two Gladiators started the same game with different arms and the
+   * loadout the board promised was not the loadout that arrived. Every weapon
+   * type the class is proficient with now contributes its cheapest starter,
+   * the whole set goes to the party, and the first of them is equipped. The
+   * name is kept for the callers that already say it.
+   *
    * @param {Game_Actor} actor - Actor to equip
    * @param {number} classId - Class ID
    * @returns {boolean} Success status
@@ -224,31 +232,36 @@
       return false;
     }
 
-    // Get compatible weapon types from the class
+    const pool = getStarterWeaponPool();
     const compatibleTypes = getStarterWeaponTypes(classId);
+    const types = compatibleTypes && compatibleTypes.length > 0
+      ? compatibleTypes
+      : Object.keys(pool).map(Number);
 
-    // Get weapons from the limited pool that match compatible types
-    const compatibleWeapons = getCompatibleWeapons(compatibleTypes);
-    if (compatibleWeapons.length === 0) {
-      console.warn(`No weapons found in pool for compatible types [${compatibleTypes.join(', ')}] for class ${classId}`);
+    // The cheapest starter of each type the class can hold. The pool is already
+    // sorted by price, so the first entry of a type is that type's cheapest.
+    const starters = [];
+    types.forEach((typeId) => {
+      const ids = pool[typeId];
+      if (!ids || !ids.length) return;
+      for (const id of ids) {
+        const weapon = $dataWeapons[id];
+        if (isRealWeapon(weapon)) { starters.push(weapon); return; }
+      }
+    });
+
+    if (starters.length === 0) {
+      console.warn(`No weapons found in pool for compatible types [${types.join(', ')}] for class ${classId}`);
       return false;
     }
 
-    // Select a random weapon from the compatible list
-    const randomWeapon = compatibleWeapons[Math.floor(Math.random() * compatibleWeapons.length)];
+    starters.forEach((weapon) => $gameParty.gainItem(weapon, 1));
 
-    if (!randomWeapon) {
-      console.warn(`Failed to select random weapon for class ${classId}`);
-      return false;
-    }
-
-    // Add weapon to party inventory
-    $gameParty.gainItem(randomWeapon, 1);
-
-    // Equip weapon to actor (slot 0 is weapon slot)
+    // The one actually held is the cheapest of the set: a starting character
+    // walks out carrying their whole kit but wearing the humblest of it.
+    const held = starters.slice().sort((a, b) => (a.price || 0) - (b.price || 0))[0];
     try {
-      actor.changeEquip(0, randomWeapon);
-      console.log(`Equipped ${randomWeapon.name} (Type: ${randomWeapon.wtypeId}) to ${actor.name()} (Class: ${classId})`);
+      actor.changeEquip(0, held);
       return true;
     } catch (e) {
       console.error(`Failed to equip weapon: ${e}`);

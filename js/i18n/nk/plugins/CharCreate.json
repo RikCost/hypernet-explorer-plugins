@@ -231,7 +231,7 @@
     },
     "originCeo": {
       "name": "CEO",
-      "desc": "START RICH: €1,000,000 IN CASH AN' AN 80% CONTROLLIN' STAKE IN LEMONCORP, AT ITS HEADQUARTERS!"
+      "desc": "START RICH: €1,000,000 IN CASH AN' AN 80% CONTROLLIN' STAKE IN LIMECORP, AT ITS HEADQUARTERS!"
     },
     "originBunker": {
       "name": "BUNKER",
@@ -535,9 +535,9 @@
   "hoards": "HOARDS",
   "wayBack": "WAY BACK",
   "aPermanentHatchOnTheSurface": "A PERMANENT HATCH ON DA SURFACE",
-  "lemoncorpHeadquarters": "LEMONCORP HEADQUARTERS",
+  "limecorpHeadquarters": "LIMECORP HEADQUARTERS",
   "assets": "ASSETS",
-  "80OfLemoncorpShares": "80% OF LEMONCORP SHARES",
+  "80OfLimecorpShares": "80% OF LIMECORP SHARES",
   "inheritance": "INHERITANCE",
   "1AncientArtifactDrawnAtRandom": "1 ANCIENT ARTIFACT, DRAWN AT RANDOM",
   "aRandomPlanetInAnUnchartedGalaxy": "A RANDOM PLANET IN AN UNCHARTED GALAXY",

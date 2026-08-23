@@ -5,6 +5,9 @@
     "label": "Party Formation",
     "states": ["Close", "Loose"]
   },
+  "lead": {
+    "toast": "{name} takes the lead"
+  },
   "loose": {
     "thought": [
       "A good spot to catch my breath.",

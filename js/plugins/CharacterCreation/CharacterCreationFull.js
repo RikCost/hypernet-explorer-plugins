@@ -289,6 +289,12 @@
     } else if (actor.currentClass() && actor.currentClass().id === CREATURE_CLASS_ID) {
       actor.changeClass(DEFAULT_CLASS_ID, false);
     }
+    // The art style follows the kind: a person is drawn as a bust, a creature
+    // is sculpted in 3D. Nothing asks the player which of the two they want.
+    if (actor.setPortraitMode) {
+      if (creature) { if (actor.portraitMode() !== "sprite") actor.setPortraitMode("model"); }
+      else actor.setPortraitMode("bust");
+    }
     const profile = editedProfile();
     if (profile) profile.isCreature = creature;
   }
@@ -895,15 +901,10 @@
       },
       { id: "level", label: T("detailed.row.level"), value: String(actor.level), kind: "pick" }
     );
-    if (model3DAvailable() && !creature) {
-      identity.push({
-        id: "portraitStyle", label: T("detailed.row.portraitStyle"),
-        value: actor.portraitMode() === "model" ? T("detailed.portrait.model") : T("detailed.portrait.bust"),
-        kind: "pick",
-      });
-    }
     identity.push({ id: "appearance", label: T("detailed.row.appearance"), value: "", kind: "open" });
-    if (model3DAvailable() && actor.portraitMode() === "model") {
+    // Art style is not a row: a person wears a hand-drawn bust, a creature
+    // wears its sculpted 3D model, so only a creature is offered the sculptor.
+    if (model3DAvailable() && creature) {
       identity.push({ id: "model3d", label: T("detailed.row.model3d"), value: "", kind: "open" });
     }
     sections.push({ title: T("detailed.section.identity"), rows: identity });
@@ -1144,14 +1145,6 @@
           title: T("detailed.row.level"),
           options: LEVEL_CHOICES.map((v) => ({ key: String(v), label: `${TE("levelAbbr")}${v}` })),
         };
-      case "portraitStyle":
-        return {
-          title: T("detailed.row.portraitStyle"),
-          options: [
-            { key: "bust", label: T("detailed.portrait.bust") },
-            { key: "model", label: T("detailed.portrait.model") },
-          ],
-        };
       case "bloodType": {
         const BTS = window.BloodTypeService;
         const table = BTS ? BTS.list() : [];
@@ -1300,9 +1293,6 @@
         return false;
       case "level":
         applyLevel(Number(key));
-        return false;
-      case "portraitStyle":
-        if (actor && actor.setPortraitMode) actor.setPortraitMode(key);
         return false;
       case "bloodType":
         applyBloodType(key);

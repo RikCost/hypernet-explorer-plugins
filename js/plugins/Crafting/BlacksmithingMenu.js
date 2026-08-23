@@ -426,13 +426,44 @@
         return Math.max(0, Math.min(1, (worth / units) / 500));
     }
 
-    // The sheet a piece comes off the anvil with. Three things decide it and one
-    // of them is luck: how far past the tier the trade is trained, what went into
-    // the crucible, and the heat on the day.
-    function rollQuality(actor, item) {
+    // The sheet a piece comes off the anvil with. Factors: crafting specialization,
+    // weapon proficiency, material richness, and the D20 forge strike roll.
+    async function rollQuality(actor, item) {
         const mastery = Math.max(0, Math.min(4, levelInFor(actor, item) - craftTier(item)));
         const richness = materialRichness(parseRecipe(item));
-        const q = 0.85 + 0.10 * mastery + 0.20 * richness + 0.35 * Math.random();
+        const wpnProf = (window.WeaponProficiency && DataManager.isWeapon(item) && actor)
+            ? window.WeaponProficiency.levelFor(actor, item) : 1;
+        const statMod = actor ? Math.floor(((actor.atk || 10) - 10) / 2) : 0;
+
+        let rollVal = 10;
+        let nat1 = false;
+        let nat20 = false;
+
+        if (window.Dice3D) {
+            const res = await window.Dice3D.rollD20({
+                actionName: 'Anvil Forging',
+                statName: 'STR/CRAFT',
+                modifier: mastery + statMod
+            });
+            rollVal = res.roll;
+            nat1 = res.nat1;
+            nat20 = res.nat20;
+        } else {
+            rollVal = Math.floor(Math.random() * 20) + 1;
+            nat1 = (rollVal === 1);
+            nat20 = (rollVal === 20);
+        }
+
+        if (nat1) {
+            // Automatic Critical Failure: flawed/cracked forge
+            return 0.68;
+        }
+        if (nat20) {
+            // Automatic Critical Success: Masterwork piece
+            return Math.round((1.40 + 0.08 * mastery + 0.15 * richness) * 100) / 100;
+        }
+
+        const q = 0.80 + 0.07 * mastery + 0.04 * (wpnProf - 1) + 0.15 * richness + (rollVal / 20) * 0.28;
         return Math.round(q * 100) / 100;
     }
 
@@ -1411,7 +1442,7 @@
         }
 
         // ------------------------------------------------------------- action
-        forgeSelected() {
+        async forgeSelected() {
             const item = this._selectedItem;
             if (!item) return;
             const recipe = parseRecipe(item);
@@ -1427,7 +1458,7 @@
             // Nothing leaves this anvil as a copy of a catalogue entry. The
             // piece is registered as its own database entry with its own id, so
             // it stacks with nothing and keeps the sheet it was beaten out with.
-            const made = this.registerForged(item);
+            const made = await this.registerForged(item);
             if (!made) { SoundManager.playBuzzer(); return; }
             $gameParty.gainItem(made, 1);
             // What came off the anvil, in the party's diary (Diary.js).
@@ -1461,11 +1492,11 @@
 
         // One piece, one entry, one id. The record is what the save keeps; the
         // entry is rebuilt from it every time the game is loaded.
-        registerForged(base) {
+        async registerForged(base) {
             const kind = DataManager.isWeapon(base) ? 'w' : 'a';
             const smith = String((this.smith() && this.smith().name()) || '')
                 .replace(/[<>\r\n]/g, '').trim();
-            const quality = rollQuality(this.smith(), base);
+            const quality = await rollQuality(this.smith(), base);
             const rec = {
                 id: nextForgeId(kind),
                 kind,

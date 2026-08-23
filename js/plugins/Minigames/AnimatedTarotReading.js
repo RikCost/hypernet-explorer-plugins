@@ -1500,7 +1500,7 @@
                 title: 'PSI', titleRight: String(psi), headerH: 11, hairline: false, step: 1
             });
             const H = HUD();
-            if (H) H.decoBar(bmp, x + 4, y + 15, w - 8, 9, clamp(psi / 120, 0, 1), { color: VIOLET });
+            if (H) H.decoBar(bmp, x + 4, y + 15, w - 8, 9, clamp(psi / 20, 0, 1), { color: VIOLET });
         }
 
         medianPartyPsi() {

@@ -1772,6 +1772,29 @@
       );
       if (!hit) continue;
       car._carCrashFrame = now;
+
+      // Silent DEX roll for driver reflex save
+      const driver = (typeof $gameParty !== 'undefined' && $gameParty.leader) ? $gameParty.leader() : null;
+      const dexMod = driver ? Math.floor(((driver.agi || 10) - 10) / 2) : 0;
+      const d20 = Math.floor(Math.random() * 20) + 1;
+      const reflexSave = (d20 === 20) || (d20 !== 1 && (d20 + dexMod >= 14));
+
+      if (reflexSave) {
+        // Driver swerves/glances off in the nick of time!
+        AudioManager.playSe({ name: "Evasion1", volume: 80, pitch: 110, pan: 0 });
+        if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
+          const modStr = dexMod >= 0 ? `+${dexMod}` : `${dexMod}`;
+          window.ParchmentToast.show(`🚗 [Driver DEX Save: ${d20}${modStr}=${d20 + dexMod}] Near miss! Swerved in time!`, { severity: 'good', duration: 200 });
+        }
+        if (car._carMode === "driving") car._carStuck = STUCK_LIMIT + 1;
+        return;
+      }
+
+      if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
+        const modStr = dexMod >= 0 ? `+${dexMod}` : `${dexMod}`;
+        window.ParchmentToast.show(`💥 [Driver DEX Save: ${d20}${modStr}=${d20 + dexMod} vs DC 14] Failed reflex save! Vehicle collision!`, { severity: 'danger', duration: 200 });
+      }
+
       AudioManager.playSe({ name: "Crash", volume: 90, pitch: 80, pan: 0 });  // i18n-ignore  SE file
       damageOwnVehicle(CRASH_VEHICLE_DAMAGE, null, "RoadCar.vehicleCrashed");
       // Nobody sleeps through a wreck: the passengers VehicleCrew.js has under

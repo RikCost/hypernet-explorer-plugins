@@ -116,50 +116,89 @@
   // board is always the curated set. The grid lazy-loads a page at a time, so
   // the longer list costs nothing to enter.
   const npcDatabase = window.WorldGen && window.WorldGen.NPCs;
-  // This scene dresses a PERSON, so the two folders that hold no person are off
-  // the board: a horse and a slime are bodies to be built, not clothes to be
-  // worn, and they are offered by the creature creator's own grid instead (see
-  // Window_CharacterSelect in CharacterCreationCreature.js, which reads the
-  // same two flags from the other side). The Zombies folder is NOT one of them:
-  // a zombie is still a person, only a dead one, so those sheets stay exactly
-  // where they were and a zombie world can dress the party in them.
-  const isBeastSheet = (entry) => !!entry && (entry.animal === true || entry.creature === true);
-  // The blocks the board is dealt in, in this order. The first holds everything
-  // no flag speaks for and carries no header; each of the others is the sheets
-  // one NPCs.json flag marks, under a band that names it:
-  //
-  //   varlenian , from Varlenia, only ever dealt on Varlenian ground
-  //   aliens    , not a person of this world at all
-  //   beta      , outside the original folder, never dealt automatically
-  //
-  // A sheet answering two flags belongs to the LAST block it answers, so beta
-  // stays the bottom of the board exactly as before (three of the six alien
-  // sheets are beta sheets and have always been dealt with the beta block).
-  // i18n-ignore-start: block ids, the labels are the i18n keys beside them
-  const SPRITE_BLOCKS = [
-    { id: "ordinary", label: null, holds: null },
-    { id: "varlenian", label: "CharCreate.varlenianSprites", holds: (e) => e.varlenian === true },
-    { id: "aliens", label: "CharCreate.alienSprites", holds: (e) => e.aliens === true },
-    { id: "beta", label: "CharCreate.betaSprites", holds: (e) => e.beta === true },
-  ];
-  // i18n-ignore-end
-  const blockOfSheet = (name) => {
-    const entry = npcDatabase && npcDatabase[name];
-    if (!entry) return 0;
-    for (let i = SPRITE_BLOCKS.length - 1; i > 0; i--) {
-      if (SPRITE_BLOCKS[i].holds(entry)) return i;
-    }
-    return 0;
+
+  // The rail's captions. One word apiece, so the row reads as a row of tabs
+  // rather than a paragraph, and localised rather than written here: the id is
+  // what NPCs.json is tagged with, the caption is what the tab shows.
+  const spriteTabLabel = (id, fallback) => {
+    const key = 'CharCreate.spriteTab.' + id;
+    return T.has(key) ? T(key) : fallback;
   };
-  // A goblin world offers goblin faces and a monster world offers nothing that
-  // reads as a person: the board is the world's own wardrobe, so it answers to
-  // the same rule the procedural inhabitants are dealt from
-  // (SpriteCatalog.allowedInPopulation). The board is built at load, before any
-  // world is active, so it is rebuilt whenever the mode it was built for is no
-  // longer the one in force (see rebuildSpriteBoard).
-  // The board is keyed on BOTH world answers, since either can narrow it: the
-  // alternate timeline (goblin / monster) and the magic level (severed bans
-  // every magical face, unbound bans every ordinary one).
+
+  const SPRITE_TABS = [
+    { id: "all", label: spriteTabLabel("all", "All"), match: (e) => true },
+
+    // Special Entity Types (from NPCs.json flags)
+    { id: "aliens", label: spriteTabLabel("aliens", "Aliens"), match: (e) => !!(e.aliens || e.alien) },
+    { id: "animals", label: spriteTabLabel("animals", "Animals"), match: (e) => !!(e.animals || e.animal || ["Beast", "Bird", "Rabbit", "Horse"].includes(e.Archetype)) },
+    { id: "creatures", label: spriteTabLabel("creatures", "Creatures"), match: (e) => !!(e.creatures || e.creature || ["Slime", "ChestMimic", "Mushroom", "Spherical", "Mutant", "Frog"].includes(e.Archetype)) },
+    { id: "varlenian", label: spriteTabLabel("varlenian", "Varlenian"), match: (e) => !!e.varlenian },
+    { id: "undead", label: spriteTabLabel("undead", "Undead"), match: (e) => !!(e.zombie || ["Undead", "Ghost", "ConstructedUndead"].includes(e.Archetype)) },
+
+    // Archetypes (from NPCs.json Archetype)
+    { id: "humanoid", label: spriteTabLabel("humanoid", "Humanoid"), match: (e) => !e.Archetype || e.Archetype === "Humanoid" },
+    { id: "elven", label: spriteTabLabel("elven", "Elven"), match: (e) => e.Archetype === "Elven" },
+    { id: "goblin", label: spriteTabLabel("goblin", "Goblin"), match: (e) => e.Archetype === "Goblin" },
+    { id: "dwarves", label: spriteTabLabel("dwarves", "Dwarves"), match: (e) => ["Dwarf", "Gnome"].includes(e.Archetype) },
+    { id: "insectoid", label: spriteTabLabel("insectoid", "Insectoid"), match: (e) => ["Insectoid", "Crustacean", "Frog"].includes(e.Archetype) },
+    { id: "demons", label: spriteTabLabel("demons", "Demons"), match: (e) => ["Demon", "Ogre"].includes(e.Archetype) },
+
+    // Humanoid themes (from the NPCs.json "theme" tag, one word apiece)
+    { id: "space", label: spriteTabLabel("space", "Space"), match: (e) => e.theme === "Space" },
+    { id: "arcane", label: spriteTabLabel("arcane", "Arcane"), match: (e) => e.theme === "Arcane" || e.magical === true },
+    { id: "military", label: spriteTabLabel("military", "Military"), match: (e) => e.theme === "Military" },
+    { id: "underworld", label: spriteTabLabel("underworld", "Underworld"), match: (e) => e.theme === "Underworld" },
+    { id: "urban", label: spriteTabLabel("urban", "Urban"), match: (e) => e.theme === "Urban" },
+    { id: "nobility", label: spriteTabLabel("nobility", "Nobility"), match: (e) => e.theme === "Nobility" },
+    { id: "wilderness", label: spriteTabLabel("wilderness", "Wilderness"), match: (e) => e.theme === "Wilderness" },
+    { id: "bards", label: spriteTabLabel("bards", "Bards"), match: (e) => e.theme === "Bards" }
+  ];
+
+  function getTabIdForSheet(sheetName) {
+    const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase || {};
+    const entry = db[sheetName] || {};
+    for (const tab of SPRITE_TABS) {
+      if (tab.id !== "all" && tab.match && tab.match(entry)) {
+        return tab.id;
+      }
+    }
+    return "all";
+  }
+
+  // A beast sheet is a beast: only the creature branch of the wizard may wear
+  // one. the animal flag in NPCs.json is the whole test, so an anthropomorphic sheet
+  // (an avian commando, a goat bard) stays on the board for humanoids.
+  const isAnimalSheet = (name) => {
+    const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase || {};
+    const entry = db[name] || {};
+    return entry.animal === true || entry.animals === true;
+  };
+
+  // Whether the character the board is being opened for is a creature. The
+  // wizard marks its member three ways over its life: the actor flag, the mode
+  // of the running scene, and the per member switch it sets first.
+  const audienceIsCreature = (actorId) => {
+    const actor = (typeof $gameActors !== "undefined" && $gameActors)
+      ? $gameActors.actor(actorId) : null;
+    if (actor && actor._isCreatureActor) return true;
+    const CC = window.Scene_CharacterCreation;
+    if (CC && CC._isCreatureMode) return true;
+    const memberIndex = (actorId || 1) - 1;
+    if (memberIndex >= 0 && memberIndex < 3 &&
+        typeof $gameSwitches !== "undefined" && $gameSwitches &&
+        $gameSwitches.value(77 + memberIndex)) {
+      return true;
+    }
+    return false;
+  };
+
+  // The board as one character may see it: a humanoid is never offered an
+  // animal sheet.
+  const optionsForAudience = (options, allowAnimals) => {
+    if (allowAnimals) return options;
+    return (options || []).filter((o) => !isAnimalSheet(o.name));
+  };
+
   const populationMode = () => {
     const pop = (window.SpriteCatalog && window.SpriteCatalog.populationMode)
       ? window.SpriteCatalog.populationMode() : "normal";
@@ -167,44 +206,33 @@
     return pop + ":" + magic;
   };
   const allowedSheet = (name) => {
+    const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase;
+    const entry = db && db[name];
+    if (entry && entry.beta === true) return false; // Hide beta sprites completely
     const SC = window.SpriteCatalog;
     if (!SC) return true;
-    const entry = npcDatabase && npcDatabase[name];
     if (SC.allowedInMagic && !SC.allowedInMagic(name, entry)) return false;
     if (SC.allowedInPopulation && !SC.allowedInPopulation(name, entry)) return false;
     return true;
   };
-  // Inside each of those blocks the Skab folder is dealt first: it holds the
-  // faces this world was drawn for, so it leads whichever block it lands in.
-  const isSkabSheet = (name) => name.startsWith("Skab/");
+
   const spriteSheets = [];
   function rebuildSpriteSheets() {
     spriteSheets.length = 0;
-    const offered = (npcDatabase
-      ? Object.keys(npcDatabase).filter(
-          (k) => npcDatabase[k] && npcDatabase[k].npc === true &&
-                 !isBeastSheet(npcDatabase[k]),
-        )
+    const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase;
+    const offered = (db
+      ? Object.keys(db)
       : Object.keys(SPRITE_SHEET_CONFIG)
     ).filter(allowedSheet);
-    const deal = (block) => {
-      for (const name of offered) {
-        if (blockOfSheet(name) === block && isSkabSheet(name)) spriteSheets.push(name);
-      }
-      for (const name of offered) {
-        if (blockOfSheet(name) === block && !isSkabSheet(name)) spriteSheets.push(name);
-      }
-    };
-    for (let i = 0; i < SPRITE_BLOCKS.length; i++) deal(i);
+    for (const name of offered) {
+      spriteSheets.push(name);
+    }
   }
   rebuildSpriteSheets();
 
-  // Build a comprehensive list of all sprite options (file + index) considering cutoffs
   const spriteOptions = [];
-  // Where each block of SPRITE_BLOCKS begins in that list, -1 for a block this
-  // world has no sheet in (a severed world has no Varlenian faces, a goblin
-  // world no aliens): an empty block is on the board nowhere, header included.
-  const blockStart = [];
+  const tabSpriteOptionsMap = {};
+  SPRITE_TABS.forEach(t => { tabSpriteOptionsMap[t.id] = []; });
 
   const decamelCase = (str) => {
     if (!str) return "";
@@ -218,29 +246,33 @@
 
   function rebuildSpriteOptions() {
     spriteOptions.length = 0;
-    blockStart.length = 0;
-    for (let i = 0; i < SPRITE_BLOCKS.length; i++) blockStart.push(-1);
+    SPRITE_TABS.forEach(t => { tabSpriteOptionsMap[t.id] = []; });
+    const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase || {};
+
     for (const name of spriteSheets) {
       const config = SPRITE_SHEET_CONFIG[name];
-      // Determine cutoff index for this sheet (use config or default based on sheet type)
       let cutoffIndex = config && config.cutoff !== null ? config.cutoff : null;
       if (cutoffIndex === null) {
-        // No cutoff given: default to 0 for single ($) sheets, or 7 for standard sheets (8 sprites)
         cutoffIndex = name.includes("$") ? 0 : 7;
       } else {
-        // If cutoff provided, clamp it within valid range
         if (name.includes("$")) {
-          cutoffIndex = 0; // single-character sheet can only have index 0
+          cutoffIndex = 0;
         } else if (cutoffIndex > 7) {
-          cutoffIndex = 7; // multi-character sheets have at most indices 0-7
+          cutoffIndex = 7;
         }
       }
 
-      // Add each sprite (up to cutoff index) as a separate option
-      const block = blockOfSheet(name);
-      if (blockStart[block] < 0) blockStart[block] = spriteOptions.length;
+      const entry = db[name] || {};
+      if (entry.beta === true) continue; // Extra safety: skip any beta sprite
+
       for (let index = 0; index <= cutoffIndex; index++) {
-        spriteOptions.push({ name: name, index: index });
+        const item = { name: name, index: index, tabId: "all" };
+        spriteOptions.push(item);
+        for (const tab of SPRITE_TABS) {
+          if (tab.id === "all" || (tab.match && tab.match(entry))) {
+            tabSpriteOptionsMap[tab.id].push(item);
+          }
+        }
       }
     }
   }
@@ -248,58 +280,32 @@
 
   // Function to select a random sprite from available options
   function selectRandomSprite(actorId) {
-    // A random face is drawn from the world's own wardrobe, so the board is
-    // re-dealt first if this is the first ask inside a narrowed world.
     rebuildSpriteBoard();
-    // Guard against empty sprite options
     if (!spriteOptions || spriteOptions.length === 0) {
       return undefined;
     }
 
-    // Get random index from available sprites
-    const randomIndex = Math.floor(Math.random() * spriteOptions.length);
-    const randomSprite = spriteOptions[randomIndex];
-
-    // Apply the randomly selected sprite to the specified actor
     const actor = $gameActors.actor(actorId);
-    if (!actor) {
-      return undefined;
-    }
-    actor.setCharacterImage(randomSprite.name, randomSprite.index);
+    let pool = optionsForAudience(spriteOptions, audienceIsCreature(actorId));
+    if (pool.length === 0) pool = spriteOptions;
 
-    // Refresh player if this is the party leader. The party is genuinely empty
-    // for part of character creation (it is rebuilt member by member), so the
-    // leader is asked for rather than assumed.
-    const leader = $gameParty && $gameParty.leader();
-    if (leader && actorId === leader.actorId()) {
-      $gamePlayer.refresh();
+    const randomIndex = Math.floor(Math.random() * pool.length);
+    const randomSprite = pool[randomIndex];
+
+    if (actor) {
+      actor.setCharacterImage(randomSprite.name, randomSprite.index);
+      const leader = $gameParty && $gameParty.leader();
+      if (leader && actorId === leader.actorId()) {
+        $gamePlayer.refresh();
+      }
     }
 
     return randomSprite;
   }
 
-  // Columns in the sprite board and the box each sprite is fitted into. Six
-  // columns across the left page leaves room for double-size sprites. The
-  // cursor and the board read this same number, so they can never disagree
-  // about what sits above and below a cell.
   const SPRITE_GRID_COLS = 6;
   const SPRITE_GRID_SIZE = 96;
-  // The right page's own portrait used to paint at SPRITE_GRID_SIZE and let a
-  // CSS transform blow it up 2x afterward. A transform repaints outside the
-  // element's box without the flex column ever reserving room for it, so the
-  // walking sprite was drawn straight over the bust above it. Painting it at
-  // its real final size instead means the layout actually holds space for
-  // what is on screen. The no-bust plate has nothing above it to overlap, so
-  // it keeps painting at SPRITE_GRID_SIZE and growing via CSS transform.
   const SPRITE_PREVIEW_SIZE = 192;
-
-  // A dozen of the curated sheets are not the 3x4 grid RPG Maker assumes for a
-  // "$" character: they hold a single facing row (DrivingInstructor, Jester,
-  // Spacer, BotStellar...). Slicing them as four rows yields an 18px tall
-  // letterbox of the sprite, and the frame aspect that comes out of it (96x18)
-  // was blowing the board's columns open, since a "1fr" track never shrinks
-  // below its content. Read the row count off the bitmap instead: a frame this
-  // short cannot be a character.
   const SPRITE_MIN_FRAME_HEIGHT = 36;
 
   const spriteFrameGeometry = (spriteName) => {
@@ -317,14 +323,12 @@
       bitmap,
       cols,
       rows,
-      // Facings the sheet carries: a full sheet has 4, a single-row one has 1.
       dirRows: isBig ? rows : 4,
       frameW: ready ? bitmap.width / cols : 0,
       frameH: ready ? bitmap.height / rows : 0,
     };
   };
 
-  // Frame drawn as a CSS background: which slice, and how the sheet is scaled.
   const spriteFrameBackground = (geo, spriteIndex, pattern, directionRow) => {
     const dir = geo.dirRows > 0 ? directionRow % geo.dirRows : 0;
     let fx;
@@ -344,8 +348,6 @@
     };
   };
 
-  // Fit one frame inside a square cell without distorting it, so no sheet can
-  // ever push a grid column wider than the others.
   const spriteFrameBox = (geo, box) => {
     if (!geo.ready) return { width: box, height: box };
     const scale = Math.min(box / geo.frameW, box / geo.frameH);
@@ -355,97 +357,34 @@
     };
   };
 
-  //===========================================================================
-  // Sprite board
-  //
-  // The catalogue is 706 sheets. The old board built a card for every one of
-  // them up front, and painted each card BEFORE its sheet had loaded: with no
-  // bitmap there is no frame size, so the cell was written out as a 96x96
-  // square with the whole sheet stretched into it, and a load listener resized
-  // it the moment the file arrived. That is the squash-and-snap every sprite
-  // did on the way in. Two rules replace it:
-  //
-  //   1. The grid is virtualised, the same way the bust gallery is: only the
-  //      rows on screen exist as elements, three dozen cards rather than 706,
-  //      and scrolling recycles them rather than building more.
-  //   2. Nothing is ever painted at a guessed size. A cell is laid out at a
-  //      fixed size and its art stays blank until the sheet reports its real
-  //      frame, so a sprite appears at the right proportions and never resizes
-  //      under the player.
-  //
-  // Nothing is drawn through Window_Base any more: the old Window_SpriteGrid
-  // was held at opacity 0 behind the overlay and still blitted the visible
-  // rows, and redrew the selected one every twelve frames.
-  //===========================================================================
-
   const SPRITE_DIR = "img/characters/";
   const SPRITE_GRID_GAP = 10;
   const SPRITE_GRID_OVERSCAN = 1;
-  // The card: the art box plus its padding.
   const SPRITE_CELL_H = SPRITE_GRID_SIZE + 16;
-  // Frames between walk frames, and between the facings the selected sprite
-  // turns through. Both were read off Graphics.frameCount before.
   const SPRITE_WALK_FRAMES = 12;
   const SPRITE_TURN_FRAMES = 48;
-  // The band a block's header sits in, between one block and the next.
   const SPRITE_HEADER_H = 36;
 
-  // The rows of the board, laid out once. A row belongs to one block and
-  // carries its own top, so the header bands are folded in here and nowhere
-  // else: every other reader (the cursor, the virtualiser, the cell placer)
-  // asks this table where a row stands rather than multiplying an index by a
-  // row height. Columns stay plain arithmetic within a row, since a block
-  // always starts a fresh one.
   const spriteRows = [];
   const spriteRowOfIndex = [];
-  // Where each block's header band stands, -1 for a block that is not on the
-  // board or is the first thing on it (nothing to divide it from).
-  const blockHeaderTop = [];
   let spriteCanvasH = 0;
-  function rebuildSpriteRows() {
+
+  function rebuildTabRows(options) {
     spriteRows.length = 0;
     spriteRowOfIndex.length = 0;
-    for (let i = 0; i < spriteOptions.length; i++) spriteRowOfIndex.push(0);
-    blockHeaderTop.length = 0;
-    for (let i = 0; i < SPRITE_BLOCKS.length; i++) blockHeaderTop.push(-1);
+    const count = options ? options.length : 0;
+    for (let i = 0; i < count; i++) spriteRowOfIndex.push(0);
+
     let top = 0;
-    const pushBlock = (from, to, block) => {
-      for (let i = from; i <= to; i += SPRITE_GRID_COLS) {
-        const last = Math.min(to, i + SPRITE_GRID_COLS - 1);
-        for (let k = i; k <= last; k++) spriteRowOfIndex[k] = spriteRows.length;
-        spriteRows.push({ from: i, to: last, top, block });
-        top += SPRITE_CELL_H + SPRITE_GRID_GAP;
-      }
-    };
-    const end = spriteOptions.length - 1;
-    for (let block = 0; block < SPRITE_BLOCKS.length; block++) {
-      const from = blockStart[block];
-      if (from < 0 || from > end) continue;
-      // The block runs to the start of the next one that is on the board.
-      let to = end;
-      for (let next = block + 1; next < SPRITE_BLOCKS.length; next++) {
-        if (blockStart[next] >= 0) { to = blockStart[next] - 1; break; }
-      }
-      if (to < from) continue;
-      // A block that is the whole top of the board needs no divider above it,
-      // which is the ordinary block and, in a world down to one flagged kind,
-      // whichever block came first.
-      if (SPRITE_BLOCKS[block].label && top > 0) {
-        blockHeaderTop[block] = top;
-        top += SPRITE_HEADER_H + SPRITE_GRID_GAP;
-      }
-      pushBlock(from, to, block);
+    for (let i = 0; i < count; i += SPRITE_GRID_COLS) {
+      const last = Math.min(count - 1, i + SPRITE_GRID_COLS - 1);
+      for (let k = i; k <= last; k++) spriteRowOfIndex[k] = spriteRows.length;
+      spriteRows.push({ from: i, to: last, top });
+      top += SPRITE_CELL_H + SPRITE_GRID_GAP;
     }
     spriteCanvasH = Math.max(0, top - SPRITE_GRID_GAP);
   }
-  rebuildSpriteRows();
 
-  // The whole board, re-dealt for the world in force. Cheap (a few thousand
-  // array pushes) and only ever done when the answer has actually changed, so
-  // opening the grid twice in one world costs nothing.
-  // The bust gallery's half of the same rule. Categories the world has nothing
-  // left in are dropped by the caller; a mode that filters everything away
-  // keeps the gallery as it was, so a data gap is never a locked door.
   function filterBustCategories(categories) {
     const SC = window.SpriteCatalog;
     if (!SC || typeof SC.bustAllowedInPopulation !== "function") return categories;
@@ -466,7 +405,6 @@
     boardPopulationMode = mode;
     rebuildSpriteSheets();
     rebuildSpriteOptions();
-    rebuildSpriteRows();
   }
 
   // Sheet names carry a folder and characters like "!$", which a path keeps
@@ -524,30 +462,31 @@
   class Scene_SpriteGridSelector extends Scene_MenuBase {
     constructor() {
       super();
-      this._actorId = 1;
+      this._actorId = Scene_SpriteGridSelector._actorId || 1;
+    }
+
+    static setup(actorId, returnSceneClass) {
+      Scene_SpriteGridSelector._actorId = actorId || 1;
+      Scene_SpriteGridSelector._returnSceneClass = returnSceneClass || null;
     }
 
     setActor(actorId) {
       this._actorId = actorId || 1;
+      Scene_SpriteGridSelector._actorId = this._actorId;
     }
 
     create() {
-      // The creation common event opens this selector with a fixed actor id, so
-      // retarget it at the party member actually being created; otherwise the
-      // second and third characters would paint their sprite, bust and portrait
-      // style onto the first one.
-      if (window.Scene_CharacterCreation &&
+      if (Scene_SpriteGridSelector._actorId) {
+        this._actorId = Scene_SpriteGridSelector._actorId;
+      } else if (window.Scene_CharacterCreation &&
           window.Scene_CharacterCreation._interruptedStep >= 0) {
         this._actorId = (window.Scene_CharacterCreation._currentPartyMemberIndex || 0) + 1;
       }
 
-      // The board is the wardrobe of the world being played in, and this
-      // plugin's lists are built at load, before a world is active.
       rebuildSpriteBoard();
 
       super.create();
       this._alive = true;
-      this._index = 0;
       this._cells = new Map();
       this._pool = [];
       this._headerEls = [];
@@ -557,9 +496,53 @@
       this._pattern = 1;
       this._direction = 0;
       this._wasd = { up: false, down: false, left: false, right: false };
+
+      const actor = $gameActors.actor(this._actorId);
+      this.scopeBoardToActor();
+      const currentSheet = actor ? actor.characterName() : "";
+      const currentTab = currentSheet ? getTabIdForSheet(currentSheet) : null;
+      const validTabs = this.validTabs();
+      this._activeTabId = (currentTab && this.tabOptions(currentTab).length > 0)
+        ? currentTab
+        : (validTabs[0] ? validTabs[0].id : "all");
+
+      const activeOpts = this.activeOptions();
+      let foundIdx = 0;
+      if (actor) {
+        const matchIdx = activeOpts.findIndex(o => o.name === actor.characterName() && o.index === actor.characterIndex());
+        if (matchIdx >= 0) foundIdx = matchIdx;
+      }
+      this._index = foundIdx;
+      rebuildTabRows(activeOpts);
+
       this.bindKeys();
       this.buildOverlay();
       this.refreshSelection();
+    }
+
+    // The board this character is allowed to see, cut once on the way in: a
+    // humanoid never gets the animal sheets, tab counts included.
+    scopeBoardToActor() {
+      const allowAnimals = audienceIsCreature(this._actorId);
+      this._allOptions = optionsForAudience(spriteOptions, allowAnimals);
+      this._tabOptions = {};
+      for (const tab of SPRITE_TABS) {
+        this._tabOptions[tab.id] = tab.id === "all"
+          ? this._allOptions
+          : optionsForAudience(tabSpriteOptionsMap[tab.id] || [], allowAnimals);
+      }
+    }
+
+    tabOptions(tabId) {
+      return (this._tabOptions && this._tabOptions[tabId]) || [];
+    }
+
+    validTabs() {
+      return SPRITE_TABS.filter(t => this.tabOptions(t.id).length > 0);
+    }
+
+    activeOptions() {
+      return this.tabOptions(this._activeTabId);
     }
 
     //-- lifecycle ------------------------------------------------------------
@@ -568,7 +551,6 @@
       this._wasdListener = (event) => {
         if (!this._alive) return;
         const key = String(event.key || "").toLowerCase();
-        // WASD only. Arrows and the pad are read through Input in update().
         const dir = { w: "up", s: "down", a: "left", d: "right" }[key];
         if (!dir) return;
         this._wasd[dir] = true;
@@ -617,10 +599,18 @@
       container.innerHTML = "";
       if (window.CCScroll) window.CCScroll.bindWheel(container);
 
+      const validTabs = this.validTabs();
+      const tabsHtml = validTabs.map(t => {
+        const count = this.tabOptions(t.id).length;
+        const isActive = t.id === this._activeTabId;
+        return `<button class="cc-sprite-tab-btn ${isActive ? 'active' : ''}" data-tab="${t.id}">${t.label} <span class="cc-sprite-tab-count">(${count})</span></button>`;
+      }).join("");
+
       container.innerHTML = `
         <div class="cc-pockets-spread">
-          <div class="cc-page cc-page-left" style="padding: 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
-            <h2 class="cc-header-gothic" style="margin-bottom: 8px; width: 100%; text-align: center;"></h2>
+          <div class="cc-page cc-page-left" style="padding: 20px 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
+            <h2 class="cc-header-gothic" style="margin-bottom: 6px; width: 100%; text-align: center;">${T("CharCreate.selectSprite")}</h2>
+            <div class="cc-sprite-tab-bar">${tabsHtml}</div>
             <div class="cc-presets-board cc-sprite-vgrid" style="flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px;">
               <div class="cc-sprite-vcanvas"></div>
             </div>
@@ -634,7 +624,6 @@
               <div class="cc-option-title"></div>
               <div class="cc-wanted-class cc-sprite-index"></div>
             </div>
-            <div class="cc-button-panel" style="margin-top: 24px; width: 100%;"></div>
           </div>
         </div>
       `;
@@ -646,22 +635,21 @@
       this._previewEl = container.querySelector(".cc-sprite-portrait-sprite");
       this._nameEl = container.querySelector(".cc-page-right .cc-option-title");
       this._indexEl = container.querySelector(".cc-sprite-index");
-      container.querySelector(".cc-page-left h2").textContent = T("CharCreate.selectSprite");
 
-      const slots = window.CCButtons.slots(container.querySelector(".cc-button-panel"));
-      const back = document.createElement("button");
-      back.className = "cc-btn-treaty";
-      back.textContent = window.CCButtons.backLabel();
-      back.addEventListener("click", () => this.leaveWithoutPicking());
-      slots.back.appendChild(back);
-      const confirm = document.createElement("button");
-      confirm.className = "cc-btn-treaty confirm";
-      confirm.textContent = window.CCButtons.continueLabel();
-      confirm.addEventListener("click", () => this.onSpriteConfirm());
-      slots.next.appendChild(confirm);
+      // No Back and no Continue: picking a sprite IS the answer, and the
+      // gallery closes on it. Cancel still leaves without picking.
 
-      // One listener on the board rather than an inline handler a card: the
-      // grid rebuilds its cells constantly and must not re-bind on every pass.
+      const tabBar = container.querySelector(".cc-sprite-tab-bar");
+      if (tabBar) {
+        tabBar.addEventListener("click", (event) => {
+          const btn = event.target.closest(".cc-sprite-tab-btn");
+          if (btn && btn.dataset.tab) {
+            SoundManager.playCursor();
+            this.switchTab(btn.dataset.tab);
+          }
+        });
+      }
+
       this._gridEl.addEventListener("click", (event) => {
         const card = event.target.closest(".cc-sprite-card");
         if (card) this.onSpriteCardClick(Number(card.dataset.index));
@@ -670,8 +658,29 @@
         this._gridDirty = true;
       });
 
-      // The board is up: the veil can come off without waiting for the sheets.
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
+    }
+
+    switchTab(tabId) {
+      if (this._activeTabId === tabId) return;
+      this._activeTabId = tabId;
+      if (this._overlay) {
+        const btns = this._overlay.querySelectorAll(".cc-sprite-tab-btn");
+        btns.forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.tab === tabId);
+        });
+      }
+      this._index = 0;
+      if (this._gridEl) this._gridEl.scrollTop = 0;
+      rebuildTabRows(this.activeOptions());
+      this._cells.forEach((cell) => {
+        cell.remove();
+        this._pool.push(cell);
+      });
+      this._cells.clear();
+      this._cellW = 0;
+      this._gridDirty = true;
+      this.refreshSelection();
     }
 
     //-- the virtualised grid -------------------------------------------------
@@ -683,33 +692,7 @@
         (width - SPRITE_GRID_GAP * (SPRITE_GRID_COLS - 1)) / SPRITE_GRID_COLS,
       );
       this._canvasEl.style.height = `${spriteCanvasH}px`;
-      this.placeSectionHeaders();
       return true;
-    }
-
-    // The band that names each block, between it and the block above. They
-    // scroll with the board, so they live in the canvas beside the cards rather
-    // than over the pane, and they are built once per block: the virtualiser
-    // never recycles them. A block the board dropped keeps no band behind it.
-    placeSectionHeaders() {
-      for (let block = 0; block < SPRITE_BLOCKS.length; block++) {
-        const top = blockHeaderTop[block];
-        let el = this._headerEls[block];
-        if (top < 0) {
-          if (el) el.style.display = "none";
-          continue;
-        }
-        if (!el) {
-          el = document.createElement("div");
-          el.className = "cc-sprite-section";
-          el.textContent = T(SPRITE_BLOCKS[block].label);
-          this._canvasEl.appendChild(el);
-          this._headerEls[block] = el;
-        }
-        el.style.display = "";
-        el.style.top = `${top}px`;
-        el.style.height = `${SPRITE_HEADER_H}px`;
-      }
     }
 
     takeCell() {
@@ -726,19 +709,23 @@
 
     renderGrid() {
       if (!this._cellW && !this.measureGrid()) {
-        // The page has not been laid out yet: try again next frame.
         this._gridDirty = true;
         return;
       }
-      const total = spriteOptions.length;
-      if (!total) return;
+      const opts = this.activeOptions();
+      const total = opts.length;
+      if (!total) {
+        for (const [index, cell] of this._cells) {
+          cell.remove();
+          this._pool.push(cell);
+          this._cells.delete(index);
+        }
+        return;
+      }
       if (this._needsCursorScroll) {
         this._needsCursorScroll = false;
         this.scrollCursorIntoView();
       }
-      // Which rows are on screen, read off the row table rather than divided
-      // out of a uniform row height: the header band makes the rows below it
-      // stand lower than their index alone would say.
       const rowHeight = SPRITE_CELL_H + SPRITE_GRID_GAP;
       const top = this._gridEl.scrollTop - SPRITE_GRID_OVERSCAN * rowHeight;
       const bottom =
@@ -784,20 +771,18 @@
 
     placeCell(cell, index) {
       const row = spriteRows[spriteRowOfIndex[index]];
-      const col = index - row.from;
+      const col = row ? index - row.from : 0;
       cell.style.left = `${col * (this._cellW + SPRITE_GRID_GAP)}px`;
-      cell.style.top = `${row.top}px`;
+      cell.style.top = `${row ? row.top : 0}px`;
       cell.style.width = `${this._cellW}px`;
       cell.style.height = `${SPRITE_CELL_H}px`;
       cell.classList.toggle("selected", index === this._index);
     }
 
     fillCell(cell, index) {
-      const entry = spriteOptions[index];
+      const entry = this.activeOptions()[index];
+      if (!entry) return;
       cell.dataset.index = String(index);
-      // An unselected card stands still facing the player; the selected one
-      // joins the walk already in progress rather than standing there until
-      // the next frame comes round.
       const walking = index === this._index;
       paintSpriteFrame(
         cell._art,
@@ -811,20 +796,13 @@
 
     scrollCursorIntoView() {
       const pane = this._gridEl;
-      // Before the page has been laid out the pane has no height, and every
-      // row reads as below the fold: scrolling to one then would jump the
-      // board off the top row. Leave it to the first reconcile instead.
       if (!this._cellW || pane.clientHeight <= 0) {
         this._needsCursorScroll = true;
         return;
       }
       const row = spriteRows[spriteRowOfIndex[this._index]];
       if (!row) return;
-      // Stepping onto the first row of a block shows the header that names it.
-      const band = blockHeaderTop[row.block];
-      const top = band >= 0 && row.top === band + SPRITE_HEADER_H + SPRITE_GRID_GAP
-        ? band
-        : row.top;
+      const top = row.top;
       if (top < pane.scrollTop) pane.scrollTop = top;
       else if (top + SPRITE_CELL_H > pane.scrollTop + pane.clientHeight) {
         pane.scrollTop = top + SPRITE_CELL_H - pane.clientHeight;
@@ -834,7 +812,8 @@
     //-- selection ------------------------------------------------------------
 
     selectedEntry() {
-      return spriteOptions[this._index] || null;
+      const opts = this.activeOptions();
+      return opts[this._index] || null;
     }
 
     refreshSelection() {
@@ -844,21 +823,18 @@
         const wasSelected = cell.classList.contains("selected");
         const isSelected = index === this._index;
         cell.classList.toggle("selected", isSelected);
-        // A card that has just been let go goes back to standing still.
         if (wasSelected && !isSelected) {
-          const other = spriteOptions[index];
-          paintSpriteFrame(cell._art, other.name, other.index, SPRITE_GRID_SIZE, 1, 0);
+          const other = this.activeOptions()[index];
+          if (other) {
+            paintSpriteFrame(cell._art, other.name, other.index, SPRITE_GRID_SIZE, 1, 0);
+          }
         }
       }
       this.scrollCursorIntoView();
 
-      // The right page: the sheet's own bust, with the sprite standing beside
-      // it rather than over it, so neither hides the other.
       const bust = bustForSprite(entry.name, entry.index);
       this._portraitEl.classList.toggle("no-bust", !bust);
       this._bustEl.style.backgroundImage = bust ? `url("${bustArtUrl(bust)}")` : "none";
-      // The sheet file name is CamelCase (GoblinIllusionist); the dossier reads
-      // it back as words.
       this._nameEl.textContent = decamelCase(
         entry.name.split("/").pop().replace(/^[$!]+/, ""),
       );
@@ -886,15 +862,16 @@
       }
     }
 
+    // One click is the whole interaction: the sprite clicked is the sprite
+    // taken, and the gallery closes on it. It used to need a click to move the
+    // cursor, a second on the same card to confirm, or a trip to the Continue
+    // button that is no longer there.
     onSpriteCardClick(index) {
-      if (!(index >= 0) || index >= spriteOptions.length) return;
-      if (index === this._index) {
-        this.onSpriteConfirm();
-        return;
-      }
-      SoundManager.playCursor();
+      const opts = this.activeOptions();
+      if (!(index >= 0) || index >= opts.length) return;
       this._index = index;
       this.refreshSelection();
+      this.onSpriteConfirm();
     }
 
     onSpriteConfirm() {
@@ -907,7 +884,24 @@
       return this._gridEl;
     }
 
+    // L1 / R1 step through the category rail from anywhere on the board, the
+    // same shoulder buttons that step through the backpack's pockets. TAB does
+    // it too, for a keyboard.
+    cycleTab(direction) {
+      const tabs = this.validTabs();
+      if (tabs.length < 2) return;
+      const cur = Math.max(0, tabs.findIndex((t) => t.id === this._activeTabId));
+      const next = (cur + direction + tabs.length) % tabs.length;
+      SoundManager.playCursor();
+      this.switchTab(tabs[next].id);
+      const bar = this._overlay && this._overlay.querySelector(".cc-sprite-tab-bar");
+      const active = bar && bar.querySelector(".cc-sprite-tab-btn.active");
+      if (active && active.scrollIntoView) active.scrollIntoView({ block: "nearest" });
+    }
+
     updateInput() {
+      if (Input.isTriggered("pageup")) { this.cycleTab(-1); return; }
+      if (Input.isTriggered("pagedown") || Input.isTriggered("tab")) { this.cycleTab(1); return; }
       const held = (name) => Input.isTriggered(name) || Input.isRepeated(name);
       const down = held("down") || this._wasd.down;
       const up = held("up") || this._wasd.up;
@@ -915,14 +909,11 @@
       const left = held("left") || this._wasd.left;
       this._wasd.up = this._wasd.down = this._wasd.left = this._wasd.right = false;
 
-      const count = spriteOptions.length;
+      const opts = this.activeOptions();
+      const count = opts.length;
       if (!count) return;
       let index = this._index;
       let moved = false;
-      // The cursor walks the row table, not an index divided by the column
-      // count: the two blocks each start a fresh row, so the last ordinary row
-      // may be a short one and stepping down off it must land under the column
-      // it was standing in.
       const rowIndex = spriteRowOfIndex[index] || 0;
       const row = spriteRows[rowIndex];
       const col = row ? index - row.from : 0;
@@ -980,11 +971,8 @@
       const actor = $gameActors.actor(this._actorId);
       if (!actor) return;
 
-      // Apply the selected sprite to the specified actor
       actor.setCharacterImage(entry.name, entry.index);
 
-      // Refresh player if this is the party leader. Same rule as
-      // selectRandomSprite: the board is reachable while the party is empty.
       const leader = $gameParty && $gameParty.leader();
       if (leader && this._actorId === leader.actorId()) {
         $gamePlayer.refresh();
@@ -992,55 +980,43 @@
 
       SoundManager.playOk();
 
-      // Quick mode: this pick is the whole of the character's appearance and
-      // half of who they are. The bust is the one the sheet comes with rather
-      // than one browsed for, and the sheet's own NPCs.json record settles
-      // gender and body archetype, so the wizard never has to ask. Leaving
-      // here pops straight back to the map, where the creation common event
-      // resumes at the class step.
-      if (this._isQuickCreation()) {
+      // Picking a sprite ends here, whichever way the gallery was opened. The
+      // sheet's own portrait comes with it (NPCs.json pairs one per index), so
+      // there is nothing left to ask: the bust gallery used to open next and
+      // made choosing a look a two-screen errand for a one-click decision. It
+      // is still reachable on its own from the dossier.
+      const standalone = this._standaloneSpriteMode || Scene_SpriteGridSelector._standaloneSpriteMode;
+      this._standaloneSpriteMode = false;
+      Scene_SpriteGridSelector._standaloneSpriteMode = false;
+
+      // Standalone means the sprite alone was asked for (the dossier avatar),
+      // so the bust already on the character is left exactly as it is.
+      if (!standalone) {
         const bust = bustForSprite(entry.name, entry.index);
         if (bust) {
           actor.setVnBust(bust);
           if (actor.setPortraitMode) actor.setPortraitMode("bust");
         } else if (window.selectRandomBustForActor) {
-          // A sheet with no portrait of its own still needs a face to be read
-          // by, and the gallery is not on offer here.
           window.selectRandomBustForActor(this._actorId);
         }
-        const utils = window.CharacterCreationUtils;
-        if (utils && utils.applyIdentityFromSprite) {
-          utils.applyIdentityFromSprite(this._actorId - 1, entry.name);
+        if (this._isQuickCreation()) {
+          const utils = window.CharacterCreationUtils;
+          if (utils && utils.applyIdentityFromSprite) {
+            utils.applyIdentityFromSprite(this._actorId - 1, entry.name);
+          }
         }
+      }
+
+      this.popScene();
+    }
+
+    leaveWithoutPicking() {
+      if (this._standaloneSpriteMode || Scene_SpriteGridSelector._standaloneSpriteMode) {
+        this._standaloneSpriteMode = false;
+        Scene_SpriteGridSelector._standaloneSpriteMode = false;
         this.popScene();
         return;
       }
-
-      // Portrait style is exclusive (chosen on the wizard's portrait step): a
-      // "model" character skips the bust gallery entirely and goes straight to
-      // the 3D editor, a "bust" character never sees the editor.
-      if (actor.portraitMode && actor.portraitMode() === "model" &&
-          window.Scene_CC3DModel && window.CC3DModel && window.CC3DModel.isAvailable()) {
-        let suggestedBase = null;
-        if (window.CC3DModel.suggestBaseFromName) {
-          suggestedBase = window.CC3DModel.suggestBaseFromName(entry.name || "");
-        }
-        window.Scene_CC3DModel.setup(this._actorId, null, {
-          suggestedBase: suggestedBase,
-          returnByPop: true,
-        });
-        SceneManager.push(window.Scene_CC3DModel);
-        return;
-      }
-
-      this.createBustSelectionScene(bustForSprite(entry.name, entry.index));
-    }
-
-    // Backing out of the board. The character keeps the sheet they already
-    // had, which in Quick mode still has to answer for gender and body: this
-    // board is the only place that question is ever put, so leaving it unasked
-    // would strand the member with whatever the one before them settled on.
-    leaveWithoutPicking() {
       if (this._isQuickCreation()) {
         const actor = $gameActors.actor(this._actorId);
         const utils = window.CharacterCreationUtils;
@@ -1048,33 +1024,17 @@
           utils.applyIdentityFromSprite(this._actorId - 1, actor.characterName());
         }
       }
-      // Opened by a paused creation run: Back means back. Drop the rest of the
-      // chain (the name prompt) and tell the wizard to reopen the step that
-      // sent the player here rather than move on to the next one.
       const wizard = window.Scene_CharacterCreation;
       if (wizard && wizard.cancelSubScreens) wizard.cancelSubScreens();
       this.popScene();
     }
 
-    // True when this board was opened by a paused Quick-mode creation run, the
-    // one flow that takes the sprite as the answer to more than one question.
-    // The board is also reachable from menus and from the other creation
-    // modes, which all still browse busts afterwards.
     _isQuickCreation() {
       const wizard = window.Scene_CharacterCreation;
       return !!(wizard && wizard._interruptedStep >= 0 &&
         wizard.isQuickMode && wizard.isQuickMode());
     }
 
-    createBustSelectionScene(preselectedBust) {
-      SceneManager.push(Scene_BustSelector);
-      if (SceneManager._nextScene) {
-        SceneManager._nextScene.setActor(this._actorId);
-        if (preselectedBust) {
-          SceneManager._nextScene.setPreselectedBust(preselectedBust);
-        }
-      }
-    }
   }
 
   //===========================================================================
@@ -1209,6 +1169,11 @@
       return this._data;
     },
 
+    // A bust naming a folder ("presets/Andreotti") is the face of a pre-made
+    // character and belongs to that dossier alone, so it is never offered here
+    // however the list was built. The file-system scan drops them by itself
+    // (readdir returns the folder, which fails the extension test); this is the
+    // browser fallback, which reads names rather than files.
     _fromSpriteCatalogue() {
       const assoc = window.Sprites && window.Sprites.SpritesAssociation;
       if (!assoc) return [];
@@ -1216,7 +1181,9 @@
       for (const sheet of Object.keys(assoc)) {
         const busts = assoc[sheet];
         if (!Array.isArray(busts)) continue;
-        for (const bust of busts) if (bust) found.add(String(bust));
+        for (const bust of busts) {
+          if (bust && !String(bust).includes("/")) found.add(String(bust));
+        }
       }
       return Array.from(found);
     },
@@ -1766,8 +1733,22 @@
       return direction;
     }
 
+    // The species list is this board's category rail, so the shoulder buttons
+    // walk it from either page, exactly as they walk the sprite board's tabs.
+    cycleCategory(direction) {
+      const count = this._filtered ? this._filtered.length : 0;
+      if (count < 2) return;
+      this._catIndex = (this._catIndex + direction + count) % count;
+      SoundManager.playCursor();
+      this.refreshCategorySelection();
+      this.openCategoryBusts(this._filtered[this._catIndex]);
+      this._bustIndex = 0;
+    }
+
     updateInput() {
       if (document.activeElement === this._searchEl) return;
+      if (Input.isTriggered("pageup")) { this.cycleCategory(-1); return; }
+      if (Input.isTriggered("pagedown") || Input.isTriggered("tab")) { this.cycleCategory(1); return; }
       const direction = this.readDirection();
       const inBusts = this._mode === "bust";
       const count = inBusts ? this._busts.length : this._filtered.length;
@@ -1940,6 +1921,7 @@
   // Exported so a scene that wants the grid over its own (the Detailed
   // creation editor) can push it and be returned to by the usual pop.
   window.Scene_SpriteGridSelector = Scene_SpriteGridSelector;
+  window.Scene_CharacterSpriteGridSelector = Scene_SpriteGridSelector;
   window.Scene_BustSelector = Scene_BustSelector;
 
   // The sprite board's services. paintFrame is the one way to draw a frame of

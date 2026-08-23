@@ -188,6 +188,70 @@
   // every other NPC already known to $gameSystem._npcSocialRegistry. Each pair
   // is decided exactly once (when the second NPC of the pair is generated),
   // using a sorted-name pair seed so the outcome doesn't depend on discovery order.
+  // A world leader (js/db/WorldGen/Leaders.json) is a person before they are an
+  // office, and most of them never stand on a map: the wiki opens their panel by
+  // name alone, and this is where the person behind that name is minted.
+  // window.LeaderPersona owns what a leader is, so the simulated character and
+  // the article about them can never disagree. For the historical half of the
+  // book that answer is written down rather than rolled: the day they were
+  // born, the town, their gender, the orientation the public record gives them.
+  //
+  // Bumped whenever the identity a leader is minted with changes, so a world
+  // whose profiles were minted under an older answer is brought up to date on
+  // the next read rather than keeping a rolled birthday for ever.
+  const LEADER_IDENTITY_REV = 2;
+
+  function _applyLeaderIdentity(eventName, profile) {
+    if (!profile) return;
+    profile._leaderIdentityRev = LEADER_IDENTITY_REV;
+    const leader = window.LeaderPersona?.identityFor?.(eventName);
+    if (!leader) return;
+    if (leader.assignedClassId) profile.assignedClassId = leader.assignedClassId;
+    if (leader.gender !== undefined) profile.gender = leader.gender;
+    if (leader.birthYear !== undefined) profile._birthYearOverride = leader.birthYear;
+    if (leader.birthplace) profile._birthplaceOverride = leader.birthplace;
+    // A real person's orientation is a matter of record rather than of the
+    // roll, the same way a pre-made character's is. A leader the record says
+    // nothing about keeps the rolled one.
+    if (leader.sexualKey || leader.romanticKey) {
+      profile._orientOverride = {
+        sexualKey: leader.sexualKey || null,
+        romanticKey: leader.romanticKey || null,
+      };
+    }
+    profile._isWorldLeader = true;
+    // The same person is sometimes also a dossier the player can take into the
+    // party, which the panel says out loud wherever they are read.
+    if (leader.isPresetCharacter) profile._isPresetCharacter = true;
+  }
+
+  // Whether a name belongs to the political class. A profile that has already
+  // been minted says so itself; a leader nobody has opened yet is still in the
+  // book, so the book is asked as well.
+  function _isWorldLeaderName(name, profile) {
+    if (profile && profile._isWorldLeader) return true;
+    try { return !!window.LeaderPersona?.isLeader?.(name); } catch (e) { return false; }
+  }
+
+  // How likely two world leaders are to already know each other. They never
+  // share a map group (most of them are never drawn on a map at all), so the
+  // ordinary neighbour test says nothing about them: what puts two of them in
+  // the same room is holding office in the same country, or at the same time.
+  function _leaderPairProbability(nameA, nameB) {
+    const hm = window.HistoryManager;
+    const a = hm?.getLeaderRecord?.(nameA);
+    const b = hm?.getLeaderRecord?.(nameB);
+    if (!a || !b) return 0.10;
+    const sameCountry = !!(a.country && b.country && a.country === b.country);
+    const ay = a.years || [], by = b.years || [];
+    const overlap = ay.length >= 2 && by.length >= 2 &&
+      Number(ay[0]) <= Number(by[1]) && Number(by[0]) <= Number(ay[1]);
+    if (sameCountry && overlap) return 0.80;   // cabinet colleagues, rivals, a succession
+    if (sameCountry) return 0.40;              // the same office, a generation apart
+    if (overlap) return 0.22;                  // two heads of state at one table
+    return 0.05;                               // a name in a history book
+  }
+
   function _generatePreexistingRelationships(eventName, profile) {
     if (!$gameSystem) return;
     if (!$gameSystem._npcSocialRegistry) $gameSystem._npcSocialRegistry = {};
@@ -196,15 +260,26 @@
     const worldSeed  = window.NPCShared.worldSeed();
     const group      = _mapGroupForMapId(profile.homeMapId);
 
+    const isLeader = _isWorldLeaderName(eventName, profile);
+
     for (const [otherName, otherInfo] of Object.entries(registry)) {
       if (otherName === eventName) continue;
       const otherProfile = $gameSystem._npcSociety?.[otherName];
       if (!otherProfile) continue;
 
+      // A world leader's circle is the political class and nothing else: they
+      // know other heads of state, ministers, popes and generals, and they do
+      // not know the baker two towns over. The test runs from both sides, so a
+      // leader minted before a townsperson and one minted after are the same.
+      const otherIsLeader = _isWorldLeaderName(otherName, otherProfile);
+      if (isLeader !== otherIsLeader) continue;
+
       const pairKey  = [eventName, otherName].sort().join('|');
       const rng      = new SeededRng(nameToSeed(pairKey + '_social') ^ worldSeed);
       const sameGroup = group != null && group === otherInfo.group;
-      const prob     = sameGroup ? 0.35 : 0.06;
+      const prob     = isLeader
+        ? _leaderPairProbability(eventName, otherName)
+        : (sameGroup ? 0.35 : 0.06);
 
       if (rng.next() < prob) {
         const meetCount = rng.nextInt(1, 40);
@@ -951,8 +1026,27 @@
           if (pending.birthplace) profile._birthplaceOverride = pending.birthplace;
           delete $gameSystem._pendingPartyIdentity[eventName];
         }
+        // A world leader (js/db/WorldGen/Leaders.json) is a person before they
+        // are an office, and most of them never stand on a map: the wiki opens
+        // their panel by name alone, and this is where the person behind that
+        // name is minted. window.LeaderPersona owns what a leader is (their
+        // vocation, their nation, when they were born), so the simulated
+        // character and the article about them can never disagree. Applied
+        // after the party-identity override because a leader who is also a
+        // pre-made character being taken into the party is that character
+        // first: the dossier is the more specific answer.
+        // A dossier being taken into the party claims the sheet outright and
+        // is marked done, so the pass below never overwrites it later.
+        if (pending) profile._leaderIdentityRev = LEADER_IDENTITY_REV;
+        else _applyLeaderIdentity(eventName, profile);
         $gameSystem._npcSociety[eventName] = profile;
         _pruneSociety();
+      }
+      // A profile minted before the book knew who these people really were
+      // still holds a rolled birthday and a rolled gender: the pass is cheap,
+      // it is versioned, and it runs on the profiles a world already has.
+      else if (profile._leaderIdentityRev !== LEADER_IDENTITY_REV) {
+        _applyLeaderIdentity(eventName, profile);
       }
       // ProfileGenerator only seeds hunger/sleep/money; the other simulation
       // needs (hygiene/social/leisure) plus work/level fields are filled by

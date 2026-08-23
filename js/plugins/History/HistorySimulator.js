@@ -103,6 +103,17 @@
     // this is read whenever a nation changes hands (leaderPoolFor).
     let LEADERS_BY_COUNTRY = {};
 
+    // The book itself, both ways round: by its Leaders.json id and by the name
+    // that id carries. Everything outside the simulation addresses a leader by
+    // name (the wiki, the Empathize panel, an event sentence), and everything
+    // inside Leaders.json addresses them by id, so both indices are kept.
+    // A leader's record is what says who they are beyond the office: the
+    // portrait to draw them with, the nation they belong to, the years they
+    // count for and, where the same person is also a pre-made character, the
+    // dossier they are playable from.
+    let LEADERS_BY_ID = {};
+    let LEADERS_BY_NAME = {};
+
     // Module-level JSON reader. Everything the simulator needs is normally
     // already on window (DataService loads the db folder); this is the fallback
     // for a run that happens before that, and is NW.js-only by nature.
@@ -158,6 +169,35 @@
                          // Whether this one may hold a power's MORAL office
                          // (Leaders.json `moralGuide`); everyone else governs.
                          moralGuide: raw.moralGuide === true,
+                         // The id this entry reads by, so anything holding only
+                         // a seated leader can still reach the whole record.
+                         id: id,
+                         // The face and the walk sheet the world draws them
+                         // with. `bust` is a path relative to the game root
+                         // ("img/busts/presets/Andreotti.png"); a leader with
+                         // none falls back to their sprite's own bust.
+                         bust: raw.bust || null,
+                         sprite: raw.spritename || null,
+                         spriteIndex: raw.spriteindex || 0,
+                         // The pre-made character dossier this person is also
+                         // playable as (CharacterCreationPresets), by dossier
+                         // name. Only a handful of leaders carry one.
+                         preset: raw.preset || null,
+                         // Everything a real person's record says about them
+                         // beyond the office. A historical leader (`real`) is
+                         // written down in Leaders.json rather than derived:
+                         // the day they were born, the town they were born in,
+                         // who they were drawn to, and the traits they are read
+                         // by. A fictional leader carries none of these and is
+                         // derived exactly as before.
+                         real: raw.real === true,
+                         birthDate: raw.birthDate || null,
+                         birthYear: Number.isFinite(raw.birthYear) ? raw.birthYear : null,
+                         hometown: raw.hometown || null,
+                         gender: raw.gender !== undefined ? raw.gender : null,
+                         sexualOrientation: raw.sexualOrientation || null,
+                         romanticOrientation: raw.romanticOrientation || null,
+                         traits: Array.isArray(raw.traits) ? raw.traits.slice() : null,
                          years: raw.years || [1900, 2012], protected: raw.protected === true };
             }
 
@@ -166,10 +206,15 @@
             // is available to you (HistoryManager.leaderPoolFor).
             if (leadersData) {
                 for (const id of Object.keys(leadersData)) {
-                    const nation = leadersData[id] && leadersData[id].country;
-                    if (!nation) continue;
                     const leader = resolveLeader(id);
                     if (!leader) continue;
+                    // Everyone in the book is indexed, nation or no nation: a
+                    // leader with no country still holds an office somewhere
+                    // (the gods, the alien envoys) and still has an article.
+                    LEADERS_BY_ID[id] = leader;
+                    if (leader.name && !LEADERS_BY_NAME[leader.name]) LEADERS_BY_NAME[leader.name] = leader;
+                    const nation = leadersData[id].country;
+                    if (!nation) continue;
                     (LEADERS_BY_COUNTRY[nation] = LEADERS_BY_COUNTRY[nation] || []).push(leader);
                 }
                 for (const list of Object.values(LEADERS_BY_COUNTRY)) {
@@ -2067,6 +2112,51 @@
             return renderRecord(rec);
         }
 
+        // --- The book of leaders -----------------------------------------
+        // Leaders.json is the world's cast list, and it outlives any one run of
+        // the simulation: a name that never took an office still has a record,
+        // a nation, a face and a span of years. The wiki reads these to write a
+        // leader's article, and the Empathize panel reads them to give that
+        // article a person behind it, so both answer from the same book.
+
+        // The whole record behind a name, or null for a name the book has never
+        // heard of (a procedural politician, minted by NPCPolitics).
+        getLeaderRecord(name) {
+            return LEADERS_BY_NAME[String(name ?? '')] || null;
+        }
+
+        getLeaderRecordById(id) {
+            return LEADERS_BY_ID[String(id ?? '')] || null;
+        }
+
+        // Every leader the book holds, in the order it lists them.
+        listLeaderRecords() {
+            return Object.values(LEADERS_BY_ID);
+        }
+
+        // The portrait to draw a leader with, as a path something can load, or
+        // null when nothing in the book or in the sprite catalogue has a face
+        // for them. Leaders.json says outright where the picture is; a leader
+        // with no `bust` of their own borrows the one their walk sheet already
+        // carries, which is how the fictional half of the cast is drawn.
+        leaderBust(name) {
+            const rec = this.getLeaderRecord(name);
+            if (!rec) return null;
+            // A record can name a portrait that is not on disk. Asking through
+            // BustPath rather than trusting the string means such a leader
+            // falls through to the face their walk sheet carries instead of
+            // handing the reader a path to nothing.
+            if (rec.bust) {
+                const own = window.BustPath ? window.BustPath.url(rec.bust, null) : rec.bust;
+                if (own) return own;
+            }
+            const sa = window.Sprites && window.Sprites.SpritesAssociation;
+            const sheet = rec.sprite && sa && sa[String(rec.sprite).split('.')[0]];
+            const bust = sheet && sheet[rec.spriteIndex || 0];
+            if (!bust || bust === '7') return null;
+            return window.BustPath ? window.BustPath.url(bust, null) : `img/busts/${bust}.png`;
+        }
+
         // A leader's ideology, in the language being played. The roster loads
         // before ConfigManager does, so the `ideology` field on the record is
         // always English; `ideologyKey` is the id it came from and is what the
@@ -2643,6 +2733,490 @@
     // Initialize global manager
     const manager = new HistoryManager();
     window.HistoryManager = manager;
+
+    //=========================================================================
+    // window.LeaderPersona, the person behind the office
+    //=========================================================================
+    //
+    // Leaders.json names 580 people, and until now the wiki could say almost
+    // nothing about any of them: an ideology and a span of years. They govern,
+    // they die, they are named in half the century's sentences, and none of
+    // them was ever anybody. This turns each of them into a character with the
+    // same kind of sheet a pre-made one has, so a leader can be read, and
+    // empathized with, whether or not they ever stand on a map.
+    //
+    // The answer is shaped exactly like a CharacterCreationPresets dossier
+    // (classId, birthDate, nationId, gender, money, traits, specializations,
+    // skills, lore), because the Empathize panel already knows how to draw one
+    // of those. Where the leader IS a dossier, that dossier is the answer.
+    //
+    // The people who actually lived are not derived at all. Every historical
+    // leader in Leaders.json carries `real: true` and the record of a person:
+    // the day they were born (`birthDate`, or `birthYear` alone where the day
+    // is disputed), the town they were born in (`hometown`), their gender, the
+    // orientation the public record gives them (`sexualOrientation` /
+    // `romanticOrientation`, left out where the record says nothing, which
+    // rolls it like anybody else's) and the traits they are read by (`traits`,
+    // Health.Traits ids). Those beat every rule below. The fictional half of
+    // the book, which is most of it, is still derived exactly as before.
+    //
+    // Where the sheet comes from, best first:
+    //   party     someone of that name is travelling with the player right now
+    //   retired   a dossier of theirs was benched in this world, in ANY of its
+    //             savegames (the retired list is world-shared)
+    //   past      they rode with a party of this world once and left
+    //   preset    they are a pre-made character nobody has taken yet: the
+    //             dossier as it ships, which is the level 1 version of them
+    //   synthetic nobody has ever played them: a sheet derived from the record
+    //
+    // Everything synthetic is seeded from the world seed and the person's own
+    // name, so a leader reads the same in every savegame of a world and
+    // differently between worlds, like the rest of the simulation.
+    (function leaderPersona() {
+
+        // Vocations a leader is read as, by what the record says they are. The
+        // first key whose test matches the ideology id, the office in the name,
+        // or the nation decides; CEO is the fallback because a leader without
+        // any other calling is a career politician.
+        // i18n-ignore-start: ideology ids and office words matched against the
+        // English record, not prose. The class the player reads is $dataClasses.
+        const VOCATIONS = [
+            { classId: 59, test: /pope|pontif|cardinal|bishop|abbot|priest|clerical|theocra|holy|lama|imam|ayatollah|vatican/i },
+            { classId: 8,  test: /cult|thelem|occult|magus|discordian|esoteric|hermetic/i },
+            { classId: 2,  test: /witch|coven|hex/i },
+            { classId: 27, test: /archmage|magister|spellweaver|enchanter|arcane|sorcer/i },
+            { classId: 61, test: /god|divin|deity|abramic|feathered_serpent|ascend/i },
+            { classId: 32, test: /marshal|general|admiral|commander|junta|militar|warlord|colonel|khan|jaguar/i },
+            { classId: 31, test: /necroman|undead|lich|dread/i },
+            { classId: 23, test: /demon|duke|marquis|earl|prince|goet|infernal/i },
+            { classId: 39, test: /sage|philosoph|elder|regent|preceptor|scribe|keeper/i },
+            { classId: 42, test: /scien|technocra|analyz|research|archive/i },
+            { classId: 46, test: /journal|press|media|broadcast|informat/i },
+            { classId: 6,  test: /capital|corporat|petro|merchant|banker|econom|tycoon|ceo|director|shadow/i },
+            { classId: 40, test: /goblin|orc|warband|horde|barbar/i },
+            { classId: 21, test: /assassin|smuggl|thief|criminal|bandit/i },
+            { classId: 24, test: /steward|warden|ranger|colon|governor/i },
+            { classId: 35, test: /populist|orator|entertain|showman/i },
+        ];
+        const DEFAULT_VOCATION = 6; // CEO: the statesman's sheet
+        // i18n-ignore-end
+
+        // Traits every leader of a kind carries, by the same test. A leader
+        // takes the first four that match, so a pope reads as devout and
+        // ascetic while a marshal reads as tactical and blunt. Ids are
+        // Health.Traits entries, the bank character creation spends points in.
+        // i18n-ignore-start: ideology ids, see above
+        const TRAIT_RULES = [
+            { id: 116, test: /pope|pontif|priest|clerical|theocra|holy|devout|faith/i },   // Devout
+            { id: 50,  test: /monk|ascet|lama|abbot|hermit/i },                            // Ascetic
+            { id: 118, test: /cult|thelem|occult|heret|discordian|magus/i },               // Heretic
+            { id: 98,  test: /marshal|general|admiral|commander|militar|tactic|khan/i },   // Tactician
+            { id: 85,  test: /expansion|imperial|conquer|absolut|ambition|restorat/i },    // Ambitious
+            { id: 81,  test: /populist|orator|charism|media|showman|democrat/i },          // Charismatic
+            { id: 7,   test: /scien|technocra|archmage|philosoph|sage|academ|analyz/i },   // Genius
+            { id: 132, test: /scholar|archive|preceptor|scribe|academ|doctrin/i },         // Scholar
+            { id: 131, test: /capital|corporat|petro|tycoon|oil|banker|merchant/i },       // Wealthy
+            { id: 95,  test: /stoic|juche|discipline|order|single_party/i },               // Stoic
+            { id: 172, test: /blunt|nationalist|hardline|punitive/i },                     // Blunt
+            { id: 171, test: /honest|pacifist|humanit|reform/i },                          // Honest
+            { id: 174, test: /machiavell|infam|junta|dictator|absolut|purge/i },           // Infamous
+            { id: 173, test: /famous|crown|king|queen|emperor|monarch|royal/i },           // Famous
+        ];
+        // i18n-ignore-end
+
+        // The trades an office actually asks for. A leader is credited with
+        // these at the level their span of years earns: the longer they held
+        // an office, the further along their own trade they are.
+        // i18n-ignore-start: ideology ids, see above
+        const SPEC_RULES = [
+            { id: 706, level: 4, test: /./ },                                              // Political Science, everyone
+            { id: 218, level: 3, test: /populist|orator|charism|democrat|media|showman/i }, // Public Speaking
+            { id: 277, level: 4, test: /pope|pontif|priest|clerical|theocra|holy|lama/i },  // Theology
+            { id: 165, level: 4, test: /magus|arcane|archmage|occult|thelem|spellweaver/i },// Magic Theory
+            { id: 156, level: 3, test: /marshal|general|admiral|commander|militar|khan/i }, // Leadership
+            { id: 88,  level: 3, test: /diploma|envoy|ambassador|accord|peace|onu/i },      // Diplomacy
+            { id: 350, level: 3, test: /machiavell|espionage|intelligence|shadow|secret/i },// Espionage
+            { id: 259, level: 3, test: /capital|corporat|banker|econom|petro|tycoon/i },    // Stock Trading
+            { id: 199, level: 3, test: /philosoph|sage|doctrin|dharma|juche/i },            // Philosophy
+            { id: 135, level: 2, test: /./ },                                              // History, everyone
+        ];
+        // i18n-ignore-end
+
+        // Which of the party's slots a leader would be, if they were one, is
+        // decided by the same seed everything else about them is: name, world.
+        function seedOf(name) {
+            let h = 2166136261;
+            const s = String(name || '') + '|' + String(manager._seed || 0);
+            for (let i = 0; i < s.length; i++) {
+                h ^= s.charCodeAt(i);
+                h = Math.imul(h, 16777619) >>> 0;
+            }
+            return h >>> 0;
+        }
+
+        function rollFrom(seed, step) {
+            let h = (seed + Math.imul(step + 1, 2654435761)) >>> 0;
+            h ^= h >>> 15;
+            h = Math.imul(h, 2246822507) >>> 0;
+            h ^= h >>> 13;
+            return (h >>> 0) / 4294967296;
+        }
+
+        // Everything about a leader a rule can be tested against, as one lower
+        // case string: their name (which is where an office usually is), the
+        // ideology id behind the label, the nation, and the body they serve.
+        function haystackOf(record) {
+            return [record.name, record.ideologyKey, record.ideology,
+                    record.country].filter(Boolean).join(' ').toLowerCase();
+        }
+
+        function vocationOf(record) {
+            const hay = haystackOf(record);
+            const hit = VOCATIONS.find(v => v.test.test(hay));
+            return hit ? hit.classId : DEFAULT_VOCATION;
+        }
+
+        function traitsOf(record) {
+            // A real person's traits are written down rather than guessed at:
+            // Churchill is not read as devout because his ideology label holds
+            // the word "imperial". Only the fictional half of the book goes
+            // through the rules below.
+            if (record.traits && record.traits.length) return record.traits.slice();
+            const hay = haystackOf(record);
+            const out = [];
+            for (const rule of TRAIT_RULES) {
+                if (out.length >= 4) break;
+                if (rule.test.test(hay)) out.push(rule.id);
+            }
+            // Nobody reads as nothing: a leader the rules missed gets the two
+            // any officeholder has, rolled apart so they are not all identical.
+            if (out.length < 2) {
+                const seed = seedOf(record.name);
+                const fill = [81, 132, 95, 85, 98, 171];
+                while (out.length < 2) {
+                    const pick = fill[Math.floor(rollFrom(seed, out.length) * fill.length)];
+                    if (!out.includes(pick)) out.push(pick);
+                }
+            }
+            return out;
+        }
+
+        // Years in office, which is what a leader's trades are measured in.
+        function reignLength(record) {
+            const y = record.years || [];
+            if (y.length < 2) return 0;
+            const span = Number(y[1]) - Number(y[0]);
+            return Number.isFinite(span) && span > 0 ? span : 0;
+        }
+
+        function specsOf(record) {
+            const hay  = haystackOf(record);
+            const span = reignLength(record);
+            // A long tenure is worth one more grade on everything, capped at 5.
+            const bonus = span >= 30 ? 1 : 0;
+            const out = [];
+            for (const rule of SPEC_RULES) {
+                if (out.length >= 4) break;
+                if (!rule.test.test(hay)) continue;
+                out.push({ id: rule.id, level: Math.min(5, rule.level + bonus) });
+            }
+            return out;
+        }
+
+        // What a leader is worth. An office pays, and some offices pay very
+        // differently: the amounts are in cents, as everywhere else.
+        function wealthOf(record) {
+            const hay = haystackOf(record);
+            let base = 1500000;
+            if (/capital|corporat|petro|tycoon|oil|banker|merchant|king|emir|sultan/i.test(hay)) base = 9000000;
+            else if (/pope|pontif|holy|monarch|king|queen|emperor|khan/i.test(hay)) base = 4000000;
+            else if (/ascet|monk|pacifist|anarch|revolution/i.test(hay)) base = 200000;
+            const seed = seedOf(record.name);
+            return Math.round(base * (0.7 + rollFrom(seed, 11) * 0.8));
+        }
+
+        // A leader's year of birth is not in the book, so it is read off the
+        // year they first count for: an officeholder is a grown person, and
+        // roughly how grown is rolled rather than fixed so a cabinet is not all
+        // the same age. Returns an ISO date, the shape a dossier's birthDate
+        // has, or null where the record has no years at all.
+        function birthDateOf(record) {
+            // A real person was born on a day, and the book says which one.
+            // Where only the year of birth is on record (a leader whose exact
+            // day nobody agrees on) the day is rolled inside that year, so the
+            // year stays true and the article still has a date to print.
+            if (record.birthDate) return record.birthDate;
+            const pad = (n) => String(n).padStart(2, '0');
+            if (Number.isFinite(record.birthYear) && record.birthYear > 0) {
+                const s = seedOf(record.name);
+                const m = 1 + Math.floor(rollFrom(s, 4) * 12);
+                const d = 1 + Math.floor(rollFrom(s, 5) * 28);
+                return `${record.birthYear}-${pad(m)}-${pad(d)}`;
+            }
+            const start = record.years && Number(record.years[0]);
+            if (!Number.isFinite(start) || start <= 0) return null;
+            const seed = seedOf(record.name);
+            const age   = 38 + Math.floor(rollFrom(seed, 3) * 22);   // 38..59
+            const month = 1 + Math.floor(rollFrom(seed, 4) * 12);
+            const day   = 1 + Math.floor(rollFrom(seed, 5) * 28);
+            const year  = start - age;
+            return `${year}-${pad(month)}-${pad(day)}`;
+        }
+
+        // The one sentence a leader's article opens with when nobody wrote them
+        // a dossier: what they stand for, where, and for how long. A dossier
+        // reads its lore from CharPresets.lore.<id>; this is the same field,
+        // filled from the record instead, so the panel draws it the same way.
+        function loreOf(record) {
+            const years = record.years || [];
+            const hasReign = years.length >= 2 && Number(years[0]) > 0 &&
+                             Number(years[1]) !== Number(years[0]);
+            const nation = record.country
+                ? (window.WorldNames ? window.WorldNames.nation(record.country) : record.country)
+                : null;
+            const key = nation
+                ? (hasReign ? 'History.leader.bioReign' : 'History.leader.bio')
+                : (hasReign ? 'History.leader.bioNoNationReign' : 'History.leader.bioNoNation');
+            return T(key, {
+                name: record.name,
+                nation: nation || '',
+                ideology: manager.ideologyLabel(record),
+                from: years[0] ?? '?',
+                to: years[1] ?? '?',
+            });
+        }
+
+        // Male, female or neither. The book does not say, so the few leaders
+        // whose names announce it are read from the name and the rest are
+        // rolled: the answer is stable per world, which is all the panel needs.
+        // i18n-ignore-start: title words in the English record
+        const FEMALE_TITLES = /\b(queen|empress|princess|duchess|shahbanu|high priestess|madame|mother|lady|dame|magister lyra|spellweaver mira)\b/i;
+        const MALE_TITLES   = /\b(king|emperor|prince|duke|shah|sultan|emir|khan|pope|father|lord|sir|marshal|tsar)\b/i;
+        // i18n-ignore-end
+
+        function genderOf(record) {
+            if (record.gender !== null && record.gender !== undefined) return record.gender;
+            const name = String(record.name || '');
+            if (FEMALE_TITLES.test(name)) return 1;
+            if (MALE_TITLES.test(name)) return 0;
+            const seed = seedOf(record.name);
+            return rollFrom(seed, 7) < 0.22 ? 1 : 0;
+        }
+
+        // ── The dossier a leader is played from, if there is one ────────────
+
+        function presetsList() {
+            const CP = window.CharacterPresets;
+            if (!CP || !CP.getCharacterPresets) return [];
+            try { return CP.getCharacterPresets() || []; } catch (e) { return []; }
+        }
+
+        // The dossier this leader IS. Named outright in Leaders.json (`preset`)
+        // where the two spell the person differently ("Giulio Andreotti" is the
+        // dossier "Andreotti"), matched on the name otherwise.
+        function presetFor(record) {
+            if (!record) return null;
+            const list = presetsList();
+            if (!list.length) return null;
+            const want = String(record.preset || record.name).trim().toLowerCase();
+            return list.find(p => String(p.name || '').trim().toLowerCase() === want) || null;
+        }
+
+        // ── What this world already knows about them ────────────────────────
+
+        function worldList(field) {
+            if (typeof $gameSystem === 'undefined' || !$gameSystem) return [];
+            const v = $gameSystem[field];
+            return Array.isArray(v) ? v : [];
+        }
+
+        function livingActor(name) {
+            if (typeof $gameParty === 'undefined' || !$gameParty || !$gameParty.allMembers) return null;
+            try {
+                return $gameParty.allMembers().find(a => a && a.name() === name) || null;
+            } catch (e) { return null; }
+        }
+
+        // The trades a party member has actually trained (level above the
+        // untrained 1), highest first and capped: a leader's article lists a
+        // handful, not the whole register.
+        function actorSpecs(actor) {
+            const S = window.Specializations;
+            if (!S || !S.list || !actor.specializationLevel) return [];
+            const out = [];
+            for (const spec of S.list) {
+                const level = actor.specializationLevel(spec.id);
+                if (level > 1) out.push({ id: spec.id, level });
+            }
+            return out.sort((a, b) => b.level - a.level).slice(0, 6);
+        }
+
+        // A party member's own sheet, read off the actor rather than off any
+        // dossier: this is who they have BECOME, which is the whole point of
+        // asking the live party first.
+        function fromActor(actor) {
+            return {
+                classId: actor._classId,
+                level: actor.level,
+                traits: (actor._selectedTraits || []).map(t => t && t.id).filter(id => id > 0),
+                specializations: actorSpecs(actor),
+                skills: actor.skills ? actor.skills().map(s => s.id) : [],
+                money: 0,
+                gender: actor.gender ? actor.gender() : undefined,
+                busts: actor.vnBust ? actor.vnBust() : '',
+            };
+        }
+
+        // ── The public answer ───────────────────────────────────────────────
+
+        const CACHE = {};
+
+        window.LeaderPersona = {
+            // Whether this name is somebody the book knows, which is what the
+            // wiki tests before offering to open a person's panel on them.
+            isLeader(name) { return !!manager.getLeaderRecord(name); },
+
+            // Nothing here survives a save: it is all derived, and the pieces
+            // it derives from (the party, the retired list) change under it.
+            invalidate() { for (const k of Object.keys(CACHE)) delete CACHE[k]; },
+
+            // The dossier for a leader, shaped like a CharacterCreationPresets
+            // entry so the Empathize panel can draw it with no special case,
+            // plus `source` (where the sheet came from) and `level`.
+            // Returns null for a name the book does not hold.
+            dossierFor(name) {
+                const record = manager.getLeaderRecord(name);
+                if (!record) return null;
+                const key = String(name);
+
+                // Only the derived half is cached: it is a fair amount of
+                // regex work per leader and it never changes for a world. What
+                // this world has since made of the person is read fresh every
+                // time, because they can join the party (or leave it) between
+                // two openings of the same article.
+                if (!CACHE[key]) {
+                    const preset = presetFor(record);
+                    CACHE[key] = preset
+                        ? Object.assign({}, preset, { source: 'preset' })
+                        : {
+                            name: record.name,
+                            characterType: 'humanoid',
+                            classId: vocationOf(record),
+                            sprite: record.sprite || null,
+                            spriteIndex: record.spriteIndex || 0,
+                            nationId: record.country || null,
+                            hometown: record.hometown || null,
+                            birthDate: birthDateOf(record),
+                            gender: genderOf(record),
+                            sexualOrientation: record.sexualOrientation || null,
+                            romanticOrientation: record.romanticOrientation || null,
+                            money: wealthOf(record),
+                            items: [], weapons: [], armors: [],
+                            skills: [],
+                            traits: traitsOf(record),
+                            specializations: specsOf(record),
+                            busts: null,
+                            lore: loreOf(record),
+                            source: 'synthetic',
+                          };
+                }
+
+                const base = Object.assign({}, CACHE[key]);
+                base.leaderId = record.id;
+                base.level = 1;
+                base.record = record;
+                // Whether this is a person who actually lived. Everything the
+                // book writes down about a real one (the town, the day, who
+                // they were drawn to) is theirs; a fictional leader's sheet is
+                // still rolled out of the world seed.
+                base.real = record.real === true;
+                // The same person is sometimes also a dossier the player can
+                // take into the party. That is worth saying wherever they are
+                // read, not only while nobody has taken them: the flag stands
+                // whether the dossier is sitting unplayed, travelling with the
+                // player or benched.
+                base.isPresetCharacter = !!(record.preset || presetFor(record));
+                // A dossier is the more curated answer and wins on every field
+                // it fills in, but the book still knows things it does not.
+                if (!base.hometown && record.hometown) base.hometown = record.hometown;
+                if (!base.sexualOrientation && record.sexualOrientation) {
+                    base.sexualOrientation = record.sexualOrientation;
+                }
+                if (!base.romanticOrientation && record.romanticOrientation) {
+                    base.romanticOrientation = record.romanticOrientation;
+                }
+
+                // What this world has already made of them, newest state first.
+                const actor = livingActor(record.name);
+                if (actor) {
+                    Object.assign(base, fromActor(actor));
+                    base.source = 'party';
+                    base.actorId = actor.actorId();
+                } else {
+                    const retired = worldList('_retiredCharacterPresets')
+                        .find(p => p && p.name === record.name);
+                    if (retired) {
+                        Object.assign(base, retired);
+                        base.source = 'retired';
+                        base.level = retired.level || 1;
+                    } else {
+                        const past = worldList('_npcPastPartyMembers')
+                            .find(p => p && p.name === record.name);
+                        if (past) {
+                            base.source = 'past';
+                            base.level = past.level || 1;
+                            if (past.classId) base.classId = past.classId;
+                            base.departure = past;
+                        }
+                    }
+                }
+
+                // The face. Where this world has made something of them, the
+                // portrait they are actually wearing wins: a dossier can be
+                // played in an alternate look, and the article must show the
+                // face the panel it opens will show. Otherwise it is the book's
+                // own portrait, which is the only one such a leader has.
+                const own = (base.source === 'party' || base.source === 'retired') ? base.busts : null;
+                const bust = own || manager.leaderBust(record.name) || base.busts;
+                if (bust) {
+                    // Whatever the dossier names, the article gets a picture it
+                    // can actually load: an unresolvable portrait becomes the
+                    // house bust rather than a broken frame.
+                    base.bustPath = window.BustPath
+                        ? window.BustPath.url(bust, 'img/busts/7.png')
+                        : (/^img\//.test(String(bust)) ? bust : `img/busts/${bust}.png`);
+                }
+
+                return base;
+            },
+
+            // The identity overrides a society profile takes on when the person
+            // it is being minted for turns out to be a world leader, so the
+            // simulated character agrees with the article about them.
+            // NPCSociety asks this for every profile it generates.
+            identityFor(name) {
+                const d = this.dossierFor(name);
+                if (!d) return null;
+                const out = { assignedClassId: d.classId };
+                if (d.gender !== undefined && d.gender !== null) out.gender = d.gender;
+                if (d.birthDate) {
+                    const year = Number(String(d.birthDate).slice(0, 4));
+                    if (Number.isFinite(year)) out.birthYear = year;
+                }
+                // Who they were drawn to, where the record says so at all. The
+                // Romance tab rolls it for everybody else, and for a leader the
+                // record is silent about it goes on rolling.
+                if (d.sexualOrientation) out.sexualKey = d.sexualOrientation;
+                if (d.romanticOrientation) out.romanticKey = d.romanticOrientation;
+                // The town is the more precise birthplace, so it wins over the
+                // nation: Mussolini was born in Predappio, not in "Italy".
+                if (d.hometown) out.birthplace = d.hometown;
+                else if (d.nationId) out.birthplace = d.nationId;
+                if (d.isPresetCharacter) out.isPresetCharacter = true;
+                return out;
+            },
+        };
+    })();
 
     //=========================================================================
     // What drives the living chronicle

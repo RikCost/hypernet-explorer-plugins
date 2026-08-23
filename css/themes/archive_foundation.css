@@ -540,6 +540,302 @@
 }
 
 /* ==========================================================================
+   Character Creation, Unified Tabbed Layout (Archive Foundation Parchment / Leather Spine)
+   ========================================================================== */
+.cc-tabs-sidebar {
+    background: linear-gradient(180deg, #2b1d14 0%, #1c120c 100%) !important;
+    border-right: 2px solid #5c4128 !important;
+    box-shadow: 4px 0 16px rgba(44, 29, 20, 0.4) !important;
+}
+
+.cc-sidebar-header {
+    border-bottom: 1px double #5c4128 !important;
+}
+
+.cc-sidebar-title {
+    color: #e8d5bc !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+.cc-mode-badge {
+    background: rgba(139, 90, 43, 0.35) !important;
+    border: 1px solid #8b5a2b !important;
+    color: #f7e6cd !important;
+}
+
+.cc-type-toggle-group {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid #4a3424 !important;
+}
+
+.cc-type-toggle-btn {
+    color: #bda893 !important;
+}
+
+.cc-type-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff6e8 !important;
+}
+
+.cc-type-toggle-btn.active {
+    background: linear-gradient(180deg, rgba(139, 90, 43, 0.6), rgba(92, 65, 40, 0.4)) !important;
+    border-color: #c9ad6a !important;
+    color: #fff8eb !important;
+}
+
+.cc-tab-num {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid #5c4128 !important;
+    color: #ebd9c3 !important;
+}
+
+.cc-step-tab.active .cc-tab-num {
+    background: #c9ad6a !important;
+    color: #2b1d14 !important;
+    border-color: #f7e6cd !important;
+}
+
+.cc-party-selector {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid #4a3424 !important;
+}
+
+.cc-profile-box {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid #5c4128 !important;
+}
+
+.cc-profile-avatar-wrap {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid #4a3424 !important;
+}
+
+.cc-profile-toggle-group {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid #4a3424 !important;
+}
+
+.cc-profile-toggle-btn {
+    color: #bda893 !important;
+}
+
+.cc-profile-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff6e8 !important;
+}
+
+.cc-profile-toggle-btn.active {
+    background: linear-gradient(180deg, rgba(139, 90, 43, 0.6), rgba(92, 65, 40, 0.4)) !important;
+    border-color: #c9ad6a !important;
+    color: #fff8eb !important;
+}
+
+.cc-profile-open-btn {
+    background: rgba(139, 90, 43, 0.3) !important;
+    border: 1px solid #8b5a2b !important;
+    color: #f7e6cd !important;
+}
+
+.cc-profile-open-btn:hover {
+    background: rgba(139, 90, 43, 0.5) !important;
+    border-color: #c9ad6a !important;
+    color: #ffffff !important;
+}
+
+.cc-party-tab {
+    color: #bda893 !important;
+}
+
+.cc-party-tab:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff6e8 !important;
+}
+
+.cc-party-tab.active {
+    background: linear-gradient(180deg, rgba(139, 90, 43, 0.6), rgba(92, 65, 40, 0.4)) !important;
+    border-color: #c9ad6a !important;
+    color: #fff8eb !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+.cc-party-add-btn {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px dashed #c9ad6a !important;
+    color: #ffd700 !important;
+}
+
+.cc-party-add-btn:hover {
+    background: rgba(139, 90, 43, 0.4) !important;
+    border-color: #f7e6cd !important;
+    color: #ffffff !important;
+}
+
+.cc-member-remove-btn {
+    background: #a93226 !important;
+    color: #ffffff !important;
+}
+
+.cc-member-remove-btn:hover {
+    background: #c0392b !important;
+}
+
+.cc-step-tab {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid #4a3424 !important;
+    color: #ded1c1 !important;
+}
+
+.cc-step-tab:hover {
+    background: rgba(139, 90, 43, 0.35) !important;
+    border-color: #8b5a2b !important;
+    color: #ffffff !important;
+}
+
+.cc-step-tab.active {
+    background: linear-gradient(90deg, #4d3320, #362214) !important;
+    border-color: #c9ad6a !important;
+    color: #ffffff !important;
+    box-shadow: inset 3px 0 0 #c9ad6a, 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.cc-step-tab .cc-tab-subtitle {
+    color: #a89684 !important;
+}
+
+.cc-step-tab.active .cc-tab-subtitle {
+    color: #ebd9c3 !important;
+}
+
+.cc-tab-checkmark {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(0, 0, 0, 0.35) !important;
+}
+
+.cc-step-tab.completed .cc-tab-checkmark {
+    background: linear-gradient(135deg, #2e5e3b, #193822) !important;
+    border-color: #6bba80 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 6px rgba(46, 94, 59, 0.6) !important;
+}
+
+.cc-sidebar-footer {
+    border-top: 1px solid #4a3424 !important;
+}
+
+.cc-sidebar-loadout-box {
+    background: rgba(26, 18, 11, 0.9) !important;
+    border-color: rgba(201, 173, 106, 0.3) !important;
+}
+
+.cc-sidebar-loadout-header {
+    color: #ebd9c3 !important;
+}
+
+.cc-sidebar-loadout-group.common {
+    background: rgba(139, 90, 43, 0.15) !important;
+    border-color: rgba(201, 173, 106, 0.3) !important;
+}
+
+.cc-spec-card {
+    background: rgba(30, 22, 14, 0.85) !important;
+    border-color: rgba(201, 173, 106, 0.25) !important;
+}
+
+.cc-spec-card:hover {
+    background: rgba(139, 90, 43, 0.35) !important;
+    border-color: #c9ad6a !important;
+}
+
+.cc-spec-card.selected {
+    background: linear-gradient(180deg, rgba(139, 90, 43, 0.6), rgba(92, 65, 40, 0.4)) !important;
+    border-color: #f7e6cd !important;
+    box-shadow: 0 0 10px rgba(201, 173, 106, 0.3) !important;
+}
+
+.cc-bio-section {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.12) !important;
+}
+
+.cc-bio-section-title {
+    color: #ebd9c3 !important;
+}
+
+.cc-bio-chip:hover {
+    border-color: #c9ad6a !important;
+    color: #ffffff !important;
+}
+
+.cc-bio-chip.selected {
+    background: linear-gradient(180deg, rgba(139, 90, 43, 0.6), rgba(92, 65, 40, 0.4)) !important;
+    border-color: #c9ad6a !important;
+    color: #fff8eb !important;
+}
+
+.cc-pet-card {
+    background: rgba(30, 22, 14, 0.85) !important;
+    border-color: rgba(201, 173, 106, 0.25) !important;
+}
+
+.cc-pet-card:hover {
+    background: rgba(139, 90, 43, 0.35) !important;
+    border-color: #c9ad6a !important;
+}
+
+.cc-pet-card.selected {
+    background: linear-gradient(180deg, rgba(139, 90, 43, 0.6), rgba(92, 65, 40, 0.4)) !important;
+    border-color: #f7e6cd !important;
+    box-shadow: 0 0 12px rgba(201, 173, 106, 0.35) !important;
+}
+
+.cc-sidebar-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid #5c4128 !important;
+    color: #ebd9c3 !important;
+}
+
+.cc-sidebar-btn:hover {
+    background: rgba(139, 90, 43, 0.4) !important;
+    border-color: #8b5a2b !important;
+    color: #ffffff !important;
+}
+
+.cc-sidebar-btn.primary {
+    background: linear-gradient(135deg, #58180D, #3d0d05) !important;
+    border-color: #8b2b1b !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(88, 24, 13, 0.4) !important;
+}
+
+.cc-sidebar-btn.primary:hover {
+    background: linear-gradient(135deg, #782314, #521207) !important;
+    box-shadow: 0 0 10px rgba(139, 35, 20, 0.6) !important;
+}
+
+.cc-trait-budget-container {
+    background: rgba(239, 228, 200, 0.8) !important;
+    border: 1px solid #8b5a2b !important;
+}
+
+.cc-trait-budget-title {
+    color: #58180D !important;
+}
+
+.cc-name-input-group input.cc-name-input {
+    background: #efe4c8 !important;
+    border: 1px solid #8b5a2b !important;
+    color: #2c2418 !important;
+}
+
+.cc-dice-btn {
+    background: #58180D !important;
+    border: 1px solid #8b5a2b !important;
+    color: #ffffff !important;
+}
+
+/* ==========================================================================
    Thinker (Crafting) + Blacksmithing (Anvil) menus, parchment-theme readability
    Item names are inked inline with the rarity.colorCode palette baked into
    ThinkerMenu.js / BlacksmithingMenu.js, a set of bright neon hues (white /
@@ -1606,18 +1902,13 @@ body .name-edit-bracket-box .name-display-text {
 .cash-highlight { color: #1f5c2a; }
 .bounty-highlight { color: var(--text-primary-hover); }
 
-/* --- Skill atlas. The circle is drawn straight onto the parchment spread
-       (.book-spread.skill-fullpage), with no plate of its own, so its white
-       labels and legend had nothing to sit on. The text-shadow the shared sheet
-       gives .sg-name was a dark halo for white ink; it is dropped with it. */
-.sg-name,
-.sg-legend,
-.sg-banner-sub {
+/* --- Skill atlas. The figure now hangs in a dark sky of its own inside the
+       spread (#skill-atlas-box), so the names and the banner written over that
+       canvas keep the shared sheet's white ink and its halo. Only the legend
+       strip is still drawn straight onto the parchment above the sky, and that
+       is the one line that has to be inked down here. */
+.sg-legend {
     color: var(--text-muted-hover);
-}
-
-.sg-name {
-    text-shadow: none;
 }
 
 /* --- Party HUD alert chip and the tournament banner: both keep a dark plate

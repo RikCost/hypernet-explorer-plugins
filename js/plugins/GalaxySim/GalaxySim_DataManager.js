@@ -86,20 +86,25 @@
   // ============================================================================
   const HYPERFLUX_MAX = 92000;
   const SCHRODINGERITE_MAX = 92;
+  // Real-time seconds a completely empty tank takes to fill while the pumps
+  // run. Refuelling is a deliberate two-minute stop the ship visibly flies in
+  // for (the star map eases the hull toward the star and back out again, see
+  // Scene3D's refuel approach), with an ETA counted down in the same window
+  // the travel countdown uses.
+  const REFUEL_FULL_SECONDS = 120;
   // Hyperflux/second gained while parked in orbit of a main-sequence star and
-  // actively refuelling - about 5 minutes real time for a full empty tank.
-  const REFUEL_RATE_PER_SEC = 300;
-  // Schrodingerite/second gained while parked at a black hole and actively
-  // refuelling, on the same ~5-minute-for-an-empty-tank curve as Hyperflux
-  // (SCHRODINGERITE_MAX over the same real-time window REFUEL_RATE_PER_SEC
-  // implies for HYPERFLUX_MAX). See canRefuel/tickRefuel.
-  const SCHRODINGERITE_REFUEL_RATE_PER_SEC = SCHRODINGERITE_MAX / (HYPERFLUX_MAX / REFUEL_RATE_PER_SEC);
+  // actively refuelling.
+  const REFUEL_RATE_PER_SEC = HYPERFLUX_MAX / REFUEL_FULL_SECONDS;
+  // Drawing Schrodingerite off a black hole is a far shorter stop than a
+  // stellar refuel: half a minute for an empty magazine of charges.
+  const SCHRODINGERITE_FULL_SECONDS = 30;
+  const SCHRODINGERITE_REFUEL_RATE_PER_SEC = SCHRODINGERITE_MAX / SCHRODINGERITE_FULL_SECONDS;
   // Variable 95 ("fuel") is the classic RPG-world-map tank (see the header
   // note above); a Hyperflux refuel tops it up too, on the same real-time
   // curve as Hyperflux itself, so parking at a star fills both tanks at once
   // instead of leaving the party stranded on the world map with a full ship.
   const MAP_FUEL_MAX = 10000;
-  const MAP_FUEL_REFUEL_RATE_PER_SEC = MAP_FUEL_MAX / (HYPERFLUX_MAX / REFUEL_RATE_PER_SEC);
+  const MAP_FUEL_REFUEL_RATE_PER_SEC = MAP_FUEL_MAX / REFUEL_FULL_SECONDS;
   // The warp-speed slider (Variable 94) is calibrated for crossing light-years
   // between stars; applied unmodified to a hop between two planets a handful
   // of AU apart it made every intra-system trip read as instantaneous
@@ -143,6 +148,11 @@
   // harvested again.
   const SCHRODINGERITE_HARVEST_AMOUNT = 3;
   const SCHRODINGERITE_HARVEST_COOLDOWN_MIN = 7 * 24 * 60; // one game week
+  // A harvest is not a button press but a run: half a minute of flying the
+  // hull low over the hole, skimming the disk, before the charges are aboard.
+  // See beginSchrodingeriteHarvest / tickSchrodingeriteHarvest; the star map
+  // dives the ship in for exactly as long as the run lasts.
+  const SCHRODINGERITE_HARVEST_SECONDS = 30;
 
   // ============================================================================
   // Procedural Name Generators
@@ -437,6 +447,9 @@
         // True while parked at a main-sequence star and actively refuelling
         // (see startRefuel/stopRefuel/tickRefuel).
         isRefueling: false,
+        // Open Schrodingerite flyby, if any: { name, elapsed } (see
+        // beginSchrodingeriteHarvest / tickSchrodingeriteHarvest).
+        harvestRun: null,
         // Set by beginAutoRefuel: the pumps engage by themselves once the
         // plotted course reaches the fusing star it was aimed at.
         autoRefuelOnArrival: false,
@@ -866,6 +879,23 @@
       }
     }
 
+    // Real-time seconds left before the pumps top out, for the countdown the
+    // travel window shows (see ShipBackground's timer and the HUD's refuel
+    // hint). Returns 0 when nothing is left to fill. Independent of whether
+    // the pumps are actually running, so the ETA can be quoted before the
+    // player commits to the stop.
+    refuelEtaSeconds() {
+      const ship = this.playerShip;
+      if (!ship || !ship.parkedBody) return 0;
+      if (ship.parkedBody.kind === "blackhole") {
+        const missing = SCHRODINGERITE_MAX - this.getSchrodingerite();
+        return Math.max(0, Math.ceil(missing / SCHRODINGERITE_REFUEL_RATE_PER_SEC));
+      }
+      const flux = Math.max(0, HYPERFLUX_MAX - this.getHyperflux()) / REFUEL_RATE_PER_SEC;
+      const map = Math.max(0, MAP_FUEL_MAX - this.getMapFuel()) / MAP_FUEL_REFUEL_RATE_PER_SEC;
+      return Math.max(0, Math.ceil(Math.max(flux, map)));
+    }
+
     // ------------------------------------------------------------------------
     // Auto-refuel routing: find the nearest star the ship can actually drink
     // from and plot the course there (see planRefuel / beginAutoRefuel). Used by
@@ -1079,16 +1109,71 @@
     canHarvestSchrodingerite() {
       const ship = this.playerShip;
       if (!ship || ship.isMoving || !ship.parkedBody || ship.parkedBody.kind !== "blackhole") return false;
+      if (ship.harvestRun) return false; // a run is already under way
       return this.schrodingeriteCooldownRemaining(ship.parkedBody.name) <= 0;
     }
 
-    harvestSchrodingerite() {
+    // A harvest is a timed flyby, not an instant grab: this only opens the
+    // run (SCHRODINGERITE_HARVEST_SECONDS of skimming the disk), and
+    // tickSchrodingeriteHarvest is what finally banks the charges.
+    beginSchrodingeriteHarvest() {
       if (!this.canHarvestSchrodingerite()) return false;
-      const name = this.playerShip.parkedBody.name;
+      this.playerShip.harvestRun = {
+        name: this.playerShip.parkedBody.name,
+        elapsed: 0,
+      };
+      return true;
+    }
+
+    isHarvestingSchrodingerite() {
+      return !!(this.playerShip && this.playerShip.harvestRun);
+    }
+
+    // 0..1 across the flyby, or 0 when no run is under way.
+    schrodingeriteHarvestProgress() {
+      const run = this.playerShip && this.playerShip.harvestRun;
+      if (!run) return 0;
+      return Math.max(0, Math.min(1, run.elapsed / SCHRODINGERITE_HARVEST_SECONDS));
+    }
+
+    schrodingeriteHarvestRemaining() {
+      const run = this.playerShip && this.playerShip.harvestRun;
+      if (!run) return 0;
+      return Math.max(0, Math.ceil(SCHRODINGERITE_HARVEST_SECONDS - run.elapsed));
+    }
+
+    cancelSchrodingeriteHarvest() {
+      if (this.playerShip) this.playerShip.harvestRun = null;
+    }
+
+    /**
+     * Advance an open harvest run by the real-time delta (seconds). Breaking
+     * the flyby - leaving the hole's orbit or getting under way - aborts the
+     * run with nothing gained. Returns true on the tick that completes it.
+     */
+    tickSchrodingeriteHarvest(deltaSeconds) {
+      const ship = this.playerShip;
+      const run = ship && ship.harvestRun;
+      if (!run) return false;
+      if (ship.isMoving || !ship.parkedBody || ship.parkedBody.kind !== "blackhole" ||
+        ship.parkedBody.name !== run.name) {
+        ship.harvestRun = null;
+        return false;
+      }
+      run.elapsed += Math.max(0, deltaSeconds || 0);
+      if (run.elapsed < SCHRODINGERITE_HARVEST_SECONDS) return false;
+      ship.harvestRun = null;
       const now = ($gameVariables && $gameVariables.value(114)) || 0;
-      this._schrodingeriteHarvestStore()[name] = now;
+      this._schrodingeriteHarvestStore()[run.name] = now;
       this.setSchrodingerite(this.getSchrodingerite() + SCHRODINGERITE_HARVEST_AMOUNT);
       return true;
+    }
+
+    // Kept for anything that wants the whole run resolved in one call (the
+    // flyby is skipped): begins and immediately completes a harvest.
+    harvestSchrodingerite() {
+      if (!this.beginSchrodingeriteHarvest()) return false;
+      return this.tickSchrodingeriteHarvest(SCHRODINGERITE_HARVEST_SECONDS);
     }
 
     // A warp change restarts the clock from where the ship is now, so the new
@@ -2194,6 +2279,13 @@
   // Fuel caps, exposed so the HUD can draw gauges against them.
   StarMapDataManager.HYPERFLUX_MAX = HYPERFLUX_MAX;
   StarMapDataManager.SCHRODINGERITE_MAX = SCHRODINGERITE_MAX;
+  // Refuel/harvest timings, exposed so the HUD and the ship-interior travel
+  // window can quote the same ETAs the pumps actually run on.
+  StarMapDataManager.REFUEL_FULL_SECONDS = REFUEL_FULL_SECONDS;
+  StarMapDataManager.REFUEL_RATE_PER_SEC = REFUEL_RATE_PER_SEC;
+  StarMapDataManager.SCHRODINGERITE_FULL_SECONDS = SCHRODINGERITE_FULL_SECONDS;
+  StarMapDataManager.SCHRODINGERITE_HARVEST_SECONDS = SCHRODINGERITE_HARVEST_SECONDS;
+  StarMapDataManager.SCHRODINGERITE_HARVEST_AMOUNT = SCHRODINGERITE_HARVEST_AMOUNT;
   window.GalaxySim.NameGenerators = {
     generateProceduralGalaxyName,
     generateProceduralSuperclusterName,

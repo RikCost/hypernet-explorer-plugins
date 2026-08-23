@@ -21,7 +21,7 @@
   const { Scene_NPCEmpathize, Wiki } = window.NPCEmpathize;
   const {
     _getNPCName, _getProfile, _extractClassId,
-    _resolveBustForActor, _resolveBustPath, _presetFromEvent,
+    _resolveBustForActor, _resolveBustPath, _bustUrl, _presetFromEvent,
     _computePartyPredisposition, _medianScore, _generatePartyThoughts,
     _extractContacts, _countRecentInteractions, _lastInteractionDay,
     _joinChance, _joinLevelOk, _travellingPartyCount, _hasSelfSwitchAPage,
@@ -488,6 +488,11 @@
   // played: the link still opens the same article, it just reads.
   const _WIKI_NAMED = { nation: 'nation', power: 'power', faction: 'faction', leader: 'leader' };
 
+  // What a leader's `of` names, by the `ofType` the roster filed them under: a
+  // hyperpower, a faction, or (for the greater part of the book, who never took
+  // an office anywhere) the nation they simply belong to.
+  const _LEADER_OF_KIND = { power: 'power', faction: 'faction', nation: 'nation' };
+
   // The heading of a wiki article. `view.name` is the id the article was opened
   // with; a party, an ideology or an artifact carries its own composed name and
   // passes straight through.
@@ -525,6 +530,9 @@
     if (text == null) {
       const kind = _WIKI_NAMED[type];
       text = (kind && window.WorldNames) ? window.WorldNames[kind](id) : id;
+    }
+    if (type === 'ideology') {
+      return `<span class="npc-wiki-link" style="color:#70d0ff;" onmousedown="event.stopPropagation();if(window.PoliticalGraph3D){window.PoliticalGraph3D.open({focusId:'${safeId}'});}else{window.NPCEmpathize.openEntity('${type}','${safeId}');}">${_escapeHtml(text)} 🌌</span>`;
     }
     return `<span class="npc-wiki-link" onmousedown="event.stopPropagation();window.NPCEmpathize.openEntity('${type}','${safeId}')">${_escapeHtml(text)}</span>`;
   }
@@ -1089,13 +1097,22 @@
       : remoteMode
         ? _resolveBustPath(npcName, null)
         : (shiftInfo && shiftInfo.bust && shiftInfo.bust !== '7'
-            ? `img/busts/${shiftInfo.bust}.png`
+            ? _bustUrl(shiftInfo.bust)
             : _resolveBustPath(npcName, ev));
 
     // Character dossier this event is tied to via a "Preset: <name>" comment
     // (CharacterCreationPresets.js). Skipped while a shop shift is covered,
     // because then the person standing there is somebody else entirely.
-    const preset = (!actorMode && !remoteMode && !shiftInfo) ? _presetFromEvent(ev) : null;
+    //
+    // A world leader read remotely (opened by name from their wiki article,
+    // with no event anywhere on the map) carries the same kind of dossier,
+    // built by window.LeaderPersona: the pre-made one where they are also a
+    // playable character, and one derived from the book where they are not.
+    // That is what makes the panel show the same person the article does,
+    // rather than a stranger the society sim happened to roll for the name.
+    const preset = (!actorMode && !remoteMode && !shiftInfo)
+      ? _presetFromEvent(ev)
+      : (remoteMode ? (window.LeaderPersona?.dossierFor?.(npcName) ?? null) : null);
 
     const pers     = dl?.personalities?.[profile?.personalityIndex];
     const persName = pers ? _personalityLabel(pers.name) : '';
@@ -2336,6 +2353,7 @@
       <div class="npc-badge-row">
         ${wealthLabel ? `<span class="npc-badge">${_escapeHtml(wealthLabel)}</span>` : ''}
         <span class="npc-badge" style="color:${moralColor}">Mor. ${morality} (${_escapeHtml(moralEntry.label)})</span>
+        ${profile?._isPresetCharacter ? `<span class="npc-badge">${_iconSpan(82, 15)}${_escapeHtml(T.presetCharacterBadge)}</span>` : ''}
       </div>`;
 
     const pers         = dl?.personalities?.[profile?.personalityIndex];
@@ -2370,7 +2388,7 @@
       const genderLabel = _presetGenderLabel(genderVal, T);
       if (genderLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span style="opacity:0.85">${_escapeHtml(T.genderLbl)}:</span>&nbsp;<span>${_escapeHtml(genderLabel)}</span></div>`;
       if (wealthLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(314, 17)}<span>${_escapeHtml(wealthLabel)}</span></div>`;
-      if (ideologyName) identHTML += `<div class="npc-ident-row">${_iconSpan(186, 17)}<span>${_escapeHtml(ideologyName)}</span></div>`;
+      if (ideologyName) identHTML += `<div class="npc-ident-row">${_iconSpan(186, 17)}${_wikiLink('ideology', ideology ? ideology.id : '', ideologyName)}</div>`;
       if (faction)      identHTML += `<div class="npc-ident-row">${_iconSpan(faction.iconIndex || 187, 17)}${_wikiLink('faction', _factionDisplayName(faction))}</div>`;
       identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.75">&nbsp;— ${morality}</span></div>`;
       // Em (Switch 48): where this person stands on the witch who fed the
@@ -2638,7 +2656,13 @@
   // Everyone this person is connected to: the "met X" entries in their life log
   // merged with their standing relationships, so an acquaintance nobody has been
   // seen meeting yet still gets a (faint, dashed) thread of their own.
-  function _webContacts(profile) {
+  // Whether this sheet belongs to somebody the history book seats in office.
+  function _isWorldLeaderProfile(profile, npcName) {
+    if (profile?._isWorldLeader) return true;
+    try { return !!window.LeaderPersona?.isLeader?.(npcName); } catch (e) { return false; }
+  }
+
+  function _webContacts(profile, npcName) {
     const byName = new Map();
     for (const c of _extractContacts(profile, Infinity)) {
       if (c.name) byName.set(c.name, { name: c.name, meetings: c.count, opinion: 0, known: false });
@@ -2655,7 +2679,18 @@
       e.known    = true;
       byName.set(name, e);
     }
-    return [...byName.values()].sort((a, b) =>
+    // A world leader's web is the political class and nothing else. They deal
+    // with other heads of state, ministers and popes; whoever else a passing
+    // sentence has them meeting is not a connection worth drawing on the same
+    // chart as a succession.
+    let entries = [...byName.values()];
+    if (_isWorldLeaderProfile(profile, npcName)) {
+      const isLeader = (n) => {
+        try { return !!window.LeaderPersona?.isLeader?.(n); } catch (e) { return false; }
+      };
+      entries = entries.filter(e => isLeader(e.name));
+    }
+    return entries.sort((a, b) =>
       (b.meetings - a.meetings) || String(a.name).localeCompare(String(b.name)));
   }
 
@@ -2691,7 +2726,7 @@
   }
 
   Scene_NPCEmpathize.prototype._buildWebHTML = function (T, profile, npcName, bustPath) {
-    const all = _webContacts(profile);
+    const all = _webContacts(profile, npcName);
     // Rows and nodes share one list, so a click handler can address either by
     // the same index; the graph simply stops at the first _WEB_MAX_NODES.
     this._webList = all;
@@ -4050,7 +4085,7 @@
   // orientation) and updates NPCLifeSim's sentimental-status record, the one
   // the Romance tab already reads live, so the panel tells the truth about it
   // from the very next render.
-  Scene_NPCEmpathize.prototype._proposeInteract = function (styleKey) {
+  Scene_NPCEmpathize.prototype._proposeInteract = async function (styleKey) {
     const nm      = v => _dbText(v?.name);
     const style   = (_relationshipData().styles || []).find(s => s.key === styleKey);
     if (!style) return;
@@ -4075,7 +4110,16 @@
       delta   = Number(pool.delta) || -4;
     } else {
       const chance = _proposeChance(profile, npcName, actor, styleKey, priorAttraction, priorOpinion);
-      landed  = Math.random() * 100 < chance;
+      if (window.Dice3D) {
+        const res = await window.Dice3D.rollPercentage(chance, {
+          actionName: `Proposal: ${nm(style)}`,
+          statName: 'PSI',
+          modifier: actor?.psiMod || 0
+        });
+        landed = res.success;
+      } else {
+        landed = Math.random() * 100 < chance;
+      }
       npcLine = fill(_rand(landed ? bank.accept : bank.reject));
       delta   = landed ? 20 : -14;
     }
@@ -4134,7 +4178,7 @@
     }, 350);
   };
 
-  Scene_NPCEmpathize.prototype._romanceInteract = function (id) {
+  Scene_NPCEmpathize.prototype._romanceInteract = async function (id) {
     if (id === 'propose') return this._openPropose();
     const def = _romanceActions().find(a => a.id === id);
     if (!def) return;
@@ -4158,12 +4202,25 @@
     let npcLine, delta, landed = false;
 
     if (reason) {
+      // Incompatible / 0% chance: a Nat 20 will NOT guarantee result and still yields 0 / failure
       const pool = _romanceRejection(reason) || {};
       npcLine = fill(_rand(pool.lines));
       delta   = Number(pool.delta) || 0;
+      landed  = false;
     } else {
       const chance = guaranteed ? 100 : _romanceChance(profile, npcName, actor, def, priorOpinion, priorAttraction);
-      landed  = Math.random() * 100 < chance;
+      if (guaranteed) {
+        landed = true;
+      } else if (window.Dice3D) {
+        const res = await window.Dice3D.rollPercentage(chance, {
+          actionName: `Romance: ${def.label || id}`,
+          statName: 'PSI',
+          modifier: actor?.psiMod || 0
+        });
+        landed = res.success;
+      } else {
+        landed = Math.random() * 100 < chance;
+      }
       npcLine = fill(_rand(landed ? def.responseGood : def.responseBad));
       delta   = landed
         ? Math.max(1,  Math.round(def.successDelta * _personalitySocialMult(profile, 'positive')))
@@ -4709,12 +4766,79 @@
       deadHTML = `<div class="npc-dead-badge">✝ ${_escapeHtml(T.deceased)}${when}</div>`;
     }
 
+    // A leader has a face. Every other article is an emblem of initials, but a
+    // leader is a person, and the portrait here is the same picture the panel
+    // that opens on them shows (both ask HistoryManager.leaderBust), so
+    // stepping from the article into the person never changes who you are
+    // looking at. Where the book has no picture for them, the initials stand.
+    const headHTML = (view.type === 'leader' && _leaderBustPath(view))
+      ? `<div class="npc-portrait-wrap">
+           <img src="${_escapeHtml(_leaderBustPath(view))}" alt="" onerror="this.src='img/busts/7.png'">
+         </div>`
+      : `<div class="npc-entity-emblem npc-emblem-${view.type}" title="${_escapeHtml(_viewName(view))}">${initials ? _escapeHtml(initials) : emblem.glyph}</div>`;
+
     return `
-      <div class="npc-entity-emblem npc-emblem-${view.type}" title="${_escapeHtml(_viewName(view))}">${initials ? _escapeHtml(initials) : emblem.glyph}</div>
+      ${headHTML}
       <div class="npc-entity-kicker">${_escapeHtml(kicker)}</div>
       <div class="npc-entity-title">${_escapeHtml(_viewName(view))}</div>
       ${deadHTML}
+      ${view.type === 'leader' ? _leaderEmpathizeButtonHTML(view, T) : ''}
       <div class="npc-vitals-footer">${sideHTML}</div>`;
+  };
+
+  // The portrait a leader's article is headed with. The dossier carries it
+  // (LeaderPersona resolves the book's own `bust` first, then the bust their
+  // walk sheet already has); a procedural politician the book never named has
+  // none and keeps the emblem.
+  function _leaderBustPath(view) {
+    const stored = view?.dossier?.bustPath;
+    if (!stored) return null;
+    // The book can name a portrait that was never drawn (a dossier edited by
+    // hand, a look that never got its art). The article still wants a face
+    // there rather than a broken frame, so an unresolvable name becomes the
+    // house bust; only a leader with no portrait at all keeps the emblem.
+    return _bustUrl(stored);
+  }
+
+  // Every leader is a living character, whether or not they were ever drawn on
+  // a map: the world's politics moves them, the century's events are written
+  // about them, and the society sim mints a person for the name the moment
+  // anybody asks for one. This is the way in. It opens the ordinary Empathize
+  // panel by name, which is the same panel a person standing in the street
+  // gets, so a leader can be read, talked to and remembered like anyone else.
+  function _leaderEmpathizeButtonHTML(view, T) {
+    const name = String(view?.name ?? '');
+    if (!name) return '';
+    const safe = encodeURIComponent(name);
+    const d = view.dossier;
+    // Which version of them the panel will open on, said plainly before it is
+    // opened: the one this world made of them, or the one they start as.
+    const noteKey = d && SOURCE_NOTE_KEYS[d.source];
+    const note = noteKey ? T[noteKey] : '';
+    // A leader who is travelling with the player is not read remotely: their
+    // own actor is opened, so the panel shows the character sheet the player
+    // has been building rather than a profile of somebody by that name.
+    const open = (d && d.source === 'party' && d.actorId)
+      ? `window.NPCEmpathize.openForActor(${d.actorId})`
+      : `window.NPCEmpathize.openByName(decodeURIComponent('${safe}'))`;
+    return `
+      <div class="npc-entity-empathize">
+        <div class="npc-chat-action-btn" onmousedown="event.stopPropagation();${open}">
+          ${_iconSpan(82, 16)} ${_escapeHtml(T.empathizeBtn)}
+        </div>
+        ${note ? `<div class="npc-entity-empathize-note">${_escapeHtml(note)}</div>` : ''}
+      </div>`;
+  }
+
+  // Where a leader's sheet came from, in the reader's words. `preset` and
+  // `synthetic` are both "as they begin"; the other three say this world has
+  // already made something of them.
+  const SOURCE_NOTE_KEYS = {
+    party:     'leaderSourceParty',
+    retired:   'leaderSourceRetired',
+    past:      'leaderSourcePast',
+    preset:    'leaderSourcePreset',
+    synthetic: '',
   };
 
   // ── Nation ──────────────────────────────────────────────────────────────────
@@ -4993,16 +5117,60 @@
       html += _statBarRow(T.divinityLbl,  Math.round(p.divinity),  100, '#d4af37');
     } else if (view.kind === 'historical' && view.leader) {
       const l = view.leader;
-      html += `<div class="npc-profile-sub">${_escapeHtml(view.of)}</div>`;
+      const ofKind = _LEADER_OF_KIND[view.ofType] || 'power';
+      html += `<div class="npc-profile-sub">${_escapeHtml(view.of ? _worldName(ofKind, view.of) : '')}</div>`;
       if (view.death) {
         html += `<div class="npc-dead-badge" style="margin:4px 0 8px">✝ ${_escapeHtml(T.deceased)}${view.death.date ? `, ${_escapeHtml(view.death.date)}` : ''}${view.death.cause ? ` (${_escapeHtml(view.death.cause)})` : ''}</div>`;
       }
       html += `<hr class="npc-r-sep">`;
-      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(view.ofType === 'power' ? (T.wikiHyperpower) : (T.wikiFaction))}:</span>&nbsp;${_wikiLink(view.ofType, view.of)}</div>`;
+      if (view.of) {
+        const ofLabel = ofKind === 'power' ? T.wikiHyperpower
+          : ofKind === 'faction' ? T.wikiFaction : T.wikiNation;
+        // A leader whose only tie is the nation in the book may name a place
+        // the archive has no page for ("United States (Free States of
+        // Midwest)"), so the link is only drawn where it would open something.
+        let linked = true;
+        if (ofKind === 'nation') {
+          try { linked = !!Wiki.get('nation', view.of); } catch (e) { linked = false; }
+        }
+        const target = linked ? _wikiLink(ofKind, view.of) : _escapeHtml(_worldName(ofKind, view.of));
+        html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.85">${_escapeHtml(ofLabel)}:</span>&nbsp;${target}</div>`;
+      }
       html += _kvRow(186, T.ideologyLbl, _escapeHtml(_leaderIdeology(l)));
       html += _kvRow(220, T.reignLbl, _escapeHtml(`${l.years?.[0] ?? '?'} – ${l.years?.[1] ?? '?'}`));
     }
+    // The person behind the office, on every leader's article whichever kind
+    // they are: the vocation they read as, when and where they were born, the
+    // traits they carry and the trades they are credited with. Drawn by the
+    // same builder a pre-made character's dossier uses, because for the leaders
+    // who ARE pre-made characters this is literally that dossier.
+    html += this._buildLeaderDossierHTML(view, T);
     return html;
+  };
+
+  // A leader's character sheet. `view.dossier` is preset-shaped by design (see
+  // window.LeaderPersona), so _buildPresetHTML draws it unchanged; the rows
+  // above it say which version of them is being read.
+  Scene_NPCEmpathize.prototype._buildLeaderDossierHTML = function (view, T) {
+    const d = view.dossier;
+    if (!d) return '';
+    const lang = ConfigManager.language === 'it' ? 'it' : 'en';
+    let html = '';
+    // Some of the people in the book are also dossiers the player can be: the
+    // article says so outright, whether that dossier is still sitting unplayed
+    // or is currently walking around wearing the player's boots.
+    if (d.isPresetCharacter) {
+      html += `<div class="npc-badge-row" style="margin-top:6px"><span class="npc-badge">${_iconSpan(82, 15)}${_escapeHtml(T.presetCharacterBadge)}</span></div>`;
+    }
+    const noteKey = SOURCE_NOTE_KEYS[d.source];
+    if (noteKey || d.level > 1) {
+      const bits = [];
+      if (noteKey) bits.push(T[noteKey]);
+      if (d.level > 1) bits.push(`${T.levelAbbr} ${d.level}`);
+      if (d.departure?.leftDate) bits.push(`${T.leftPartyLbl} ${d.departure.leftDate}`);
+      html += `<hr class="npc-r-sep"><div class="npc-profile-sub" style="text-align:left">${_escapeHtml(bits.join(' · '))}</div>`;
+    }
+    return html + this._buildPresetHTML(d, T, lang);
   };
 
   // ── Artifact ────────────────────────────────────────────────────────────────
@@ -5324,7 +5492,7 @@
         tiles = Wiki.listLeaders().map(l =>
           _wikiEntryTile('leader', l.name,
             `${_escapeHtml(_worldName('leader', l.name))}${l.dead ? ' <span style="color:#8b1010">✝</span>' : ''}`,
-            l.of ? _escapeHtml(_worldName(l.ofType === 'faction' ? 'faction' : 'power', l.of)) : '')
+            l.of ? _escapeHtml(_worldName(_LEADER_OF_KIND[l.ofType] || 'power', l.of)) : '')
         ).join('');
         break;
       case 'powers':

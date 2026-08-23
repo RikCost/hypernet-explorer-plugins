@@ -70,5 +70,7 @@
   "biosNoDeck": "No deck is attached to this terminal.",
   "biosNoFaults": "No faults found. Every fitted part answered.",
   "biosWillBoot": "POST would pass.",
-  "biosWillNotBoot": "POST would fail."
+  "biosWillNotBoot": "POST would fail.",
+  "biosGraphics": "Graphics",
+  "biosEndurance": "Endurance"
 }

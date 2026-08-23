@@ -655,5 +655,12 @@
     "possessive": "Stringe un po' di più quello che è suo e scuote la testa.",
     "chaotic": "Accetta, poi rifiuta, poi se ne va a metà frase.",
     "greedy": "Fa un prezzo che non raggiungerai mai, ed è proprio quello il punto."
-  }
+  },
+  "empathizeBtn": "Empatizza",
+  "leaderSourceParty": "In viaggio con te",
+  "leaderSourceRetired": "In panchina in questo mondo",
+  "leaderSourcePast": "Ha viaggiato con una compagnia di questo mondo",
+  "leaderSourcePreset": "Giocabile, come inizia",
+  "presetCharacterBadge": "Dossier giocabile",
+  "leftPartyLbl": "Andato via"
 }

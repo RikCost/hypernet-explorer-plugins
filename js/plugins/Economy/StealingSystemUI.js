@@ -96,12 +96,13 @@
 
     // ── Steal action ──────────────────────────────────────────
 
-    _doSteal() {
+    async _doSteal() {
       const entry  = this._items[this._idx];
       if (!entry) return;
       const item   = entry.data;
       const chance  = SS().calcChance(item, this._agi);
-      const success = SS().performSteal(chance);
+      const dexMod  = Math.floor(((this._agi || 10) - 10) / 2);
+      const success = await SS().performSteal(chance, { actionName: 'Shop Shoplift', modifier: dexMod });
 
       $gameVariables.setValue(79, item.price || 0);
 

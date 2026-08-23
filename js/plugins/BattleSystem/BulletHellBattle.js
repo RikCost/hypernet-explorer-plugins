@@ -499,28 +499,24 @@ initialize(params, enemySprite) {
         levelFactor = 0.75 + ((this._enemyLevel - 50) * 0.0051);
     }
     
-    // Luck component with soft cap at 200
-    // Designed so 30-50 luck = medium difficulty
-    // 0-20 luck: very easy (0.0 - 0.3)
-    // 20-30 luck: easy (0.3 - 0.4)
-    // 30-50 luck: medium (0.4 - 0.6) <- most common enemies
-    // 50-80 luck: hard (0.6 - 0.75)
-    // 80-120 luck: very hard (0.75 - 0.9)
-    // 120-200 luck: extreme (0.9 - 1.0)
+    // Luck component with soft cap at 20 (D&D stat scale)
+    // Designed so 12-15 luck = medium difficulty
+    // < 10 luck: very easy (0.0 - 0.3)
+    // 10-12 luck: easy (0.3 - 0.45)
+    // 12-15 luck: medium (0.45 - 0.65) <- most common enemies
+    // 15-18 luck: hard (0.65 - 0.85)
+    // 18-20+ luck: extreme (0.85 - 1.0)
     let luckFactor;
-    if (this._enemyLuck < 20) {
-        luckFactor = this._enemyLuck * 0.015; // 0.0 to 0.3
-    } else if (this._enemyLuck < 30) {
-        luckFactor = 0.3 + ((this._enemyLuck - 20) * 0.01); // 0.3 to 0.4
-    } else if (this._enemyLuck < 50) {
-        luckFactor = 0.4 + ((this._enemyLuck - 30) * 0.01); // 0.4 to 0.6
-    } else if (this._enemyLuck < 80) {
-        luckFactor = 0.6 + ((this._enemyLuck - 50) * 0.005); // 0.6 to 0.75
-    } else if (this._enemyLuck < 120) {
-        luckFactor = 0.75 + ((this._enemyLuck - 80) * 0.00375); // 0.75 to 0.9
+    if (this._enemyLuck < 10) {
+        luckFactor = Math.max(0, this._enemyLuck) * 0.03; // 0.0 to 0.3
+    } else if (this._enemyLuck < 12) {
+        luckFactor = 0.3 + ((this._enemyLuck - 10) * 0.075); // 0.3 to 0.45
+    } else if (this._enemyLuck < 15) {
+        luckFactor = 0.45 + ((this._enemyLuck - 12) * 0.0667); // 0.45 to 0.65
+    } else if (this._enemyLuck < 18) {
+        luckFactor = 0.65 + ((this._enemyLuck - 15) * 0.0667); // 0.65 to 0.85
     } else {
-        // Soft cap: diminishing returns above 120
-        luckFactor = 0.9 + ((Math.min(200, this._enemyLuck) - 120) * 0.00125); // 0.9 to 1.0
+        luckFactor = 0.85 + ((Math.min(25, this._enemyLuck) - 18) * 0.0214); // 0.85 to 1.0
     }
     
     // Weighted combination: 70% luck, 30% level
@@ -552,13 +548,13 @@ initialize(params, enemySprite) {
     this._bulletQuantityMultiplier = 3.0;
     
     // Set up for multiple patterns
-    this._useMultiplePatterns = this._enemyLuck > 10;
+    this._useMultiplePatterns = this._enemyLuck >= 12;
     this._activePatterns = [];
     this._patternTimers = {};
     
     // Initialize secondary pattern timer
     this._secondaryPatternTimer = 0;
-    this._secondaryPatternInterval = Math.max(30, 120 - this._enemyLuck);
+    this._secondaryPatternInterval = Math.max(30, 90 - Math.max(0, this._enemyLuck - 10) * 5);
 
     // Create background. Opaque on purpose: the battlefield behind it holds the
     // enemy's real sprite or its 3D model, standing where it always stood, and
@@ -1003,9 +999,9 @@ spawnEnemyBullets() {
         let pattern = basePattern;
         
         // Higher luck enemies can use more advanced patterns earlier
-        if (useLuckForDifficulty && this._enemyLuck > 40) {
+        if (useLuckForDifficulty && this._enemyLuck >= 14) {
             // Add possibility of using more advanced patterns
-            if (Math.random() < (this._enemyLuck - 40) / 60) {
+            if (Math.random() < (this._enemyLuck - 14) / 6) {
                 pattern = Math.floor(Math.random() * 6);
             }
         }
@@ -1451,8 +1447,8 @@ playerHit() {
     
     if (useLuckForDamage) {
         // Enemy psychic attack vs player psychic defense
-        const attackPower = 50 + this._enemyLuck;
-        const defensePower = 50 + this._playerLuck;
+        const attackPower = 10 + this._enemyLuck;
+        const defensePower = 10 + this._playerLuck;
         
         // Ratio with soft caps
         const psiRatio = Math.pow(attackPower / defensePower, 0.8);
@@ -1506,8 +1502,8 @@ enemyHit() {
         const levelPower = 1 + (Math.sqrt(this._player.level) * 0.4);
         
         // PSI attack vs defense (diminishing returns on both ends)
-        const attackPower = 50 + this._playerLuck;
-        const defensePower = 50 + this._enemyLuck;
+        const attackPower = 10 + this._playerLuck;
+        const defensePower = 10 + this._enemyLuck;
         
         // Ratio with soft caps: ranges from ~0.4x to ~2.0x
         const psiRatio = Math.pow(attackPower / defensePower, 0.8);

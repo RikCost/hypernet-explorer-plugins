@@ -6,10 +6,10 @@
  * ============================================================================
  * NPCCreature, who in this world is an animal rather than a person
  * ============================================================================
- * A share of every settlement is not people. In a monster world it is most of
+ * A share of every settlement is not people. In a monster world it is ALL of
  * them; in an ordinary one it is the stray dog on the corner and the thing in
- * the cellar. This plugin is the single place that decides who, and what they
- * are once decided:
+ * the cellar, one face in twelve. This plugin is the single place that decides
+ * who, and what they are once decided:
  *
  * The sprite is dealt FIRST and everything else follows from it, so what is
  * minted is always a body the wardrobe actually has art for:
@@ -21,13 +21,19 @@
  *     sheet on a town street reads as a monster the party failed to notice.
  *     Those sheets come back only in a monster world, where the confusion
  *     costs nothing because everything walking about IS a monster.
+ *     A monster world deals the two halves of that wardrobe EVENLY, the half
+ *     first and the sheet inside it second: half of its crowd is a `creature`
+ *     sheet (the Monsters/ ones with them) and half is an `animal` one.
  *   , the archetype that sprite carries in its own NPCs.json entry, plus a
  *     second one crossed into it on a 5% roll (25% in a monster world)
- *   , a class from those archetypes' rosters (see window.CreatureClasses),
- *     which is either one of the creature classes (Feral, Mimic, Monster,
- *     Mana Cyborg, Ghost, Zombie, Mutant, Drone , ids 63-70) on 95% of rolls
- *     (50% in a monster world) or one of the civilised 1-62 the archetype
- *     supports on the rest
+ *   , a class out of that SHEET's own `classes` array, never out of the
+ *     archetype's roster: the sheet is the authority and the archetype (a
+ *     crossed-in second one included) never changes the answer. It is one of
+ *     the creature classes the sheet lists (Feral, Mimic, Monster, Mana
+ *     Cyborg, Ghost, Zombie, Mutant, Drone , ids 63-70) on 95% of rolls (50%
+ *     in a monster world) and one of the civilised 1-62 it lists on the rest.
+ *     Only a sheet with no entry to read (a Monsters/ one) falls back to the
+ *     archetype rosters, since it has nothing else to be.
  *   , a 3D model resolved from a $dataEnemies entry tagged with one of those
  *     same archetypes, so the model is always one the archetype supports
  *
@@ -52,7 +58,8 @@
  *   isNonSentientProfile(profile)
  *   isNonSentientActor(actor)
  *   isNonSentientByName(name)    party actor first, society profile second
- *   creatureWardrobe()            [{ spriteKey, archetype, busts }] to deal from
+ *   creatureWardrobe()            [{ spriteKey, archetype, busts, half }] to
+ *                                 deal from, `half` being "creature"/"animal"
  *   spritesForArchetypes(keys)    walking sprites both archetypes support
  *   enemyForArchetypes(keys, seed) a $dataEnemies entry of that archetype
  *   modelForArchetypes(keys, seed) { key, enemyData } for Battler3D.create
@@ -65,10 +72,15 @@
 (() => {
   "use strict";
 
-  // How much of a population is not people. A monster world is mostly them;
-  // everywhere else they are the exception that makes a street feel alive.
-  const CREATURE_CHANCE_MONSTER = 0.70;
-  const CREATURE_CHANCE_NORMAL  = 0.05;
+  // How much of a population is not people. A monster world is ALL of them,
+  // and there the two halves of the wardrobe are dealt evenly: half of what
+  // walks about is a `creature` sheet and half is an `animal` one (see
+  // rollIdentity). Everywhere else they are the exception that makes a street
+  // feel alive, one face in twelve, and the halves are dealt flat.
+  const CREATURE_CHANCE_MONSTER = 1.0;
+  const CREATURE_CHANCE_NORMAL  = 0.08;
+  // The monster world's even split between the two halves of the wardrobe.
+  const MONSTER_CREATURE_HALF = 0.5;
   // Of those, how many are a second archetype crossed into the first. A hybrid
   // is a curiosity in an ordinary world and an everyday sight in a monster one.
   const HYBRID_CHANCE_MONSTER = 0.25;
@@ -237,7 +249,15 @@
       // An entry naming an archetype the health tables never heard of has no
       // class roster and no anatomy to be built from, so it is not dealt.
       if (!archetype || !known[archetype]) continue;
-      out.push({ spriteKey: key, archetype, busts: (entry.busts || []).length });
+      // Which half of the wardrobe the sheet came out of, the `creature` or
+      // the `animal` one. A monster world deals the two evenly and needs to be
+      // able to tell them apart after the fact.
+      out.push({
+        spriteKey: key,
+        archetype,
+        busts: (entry.busts || []).length,
+        half: entry.animal === true ? "animal" : "creature"
+      });
     }
 
     if (isMonsterWorld()) {
@@ -247,8 +267,10 @@
           if (seen.has(spriteKey)) continue;
           seen.add(spriteKey);
           // A Monsters/ sheet is one character wide and carries no bust of
-          // its own; the panel draws its 3D model instead.
-          out.push({ spriteKey, archetype, busts: 0 });
+          // its own; the panel draws its 3D model instead. It counts as the
+          // creature half: a bestiary sheet is a monster by construction, and
+          // the 32 `creature` entries alone would repeat themselves all day.
+          out.push({ spriteKey, archetype, busts: 0, half: "creature" });
         }
       }
     }
@@ -351,8 +373,18 @@
     const wardrobe = creatureWardrobe(exterior);
     if (!wardrobe.length) return null;
 
-    // 1. The body.
-    const worn = wardrobe[rng.nextInt(0, wardrobe.length)];
+    // 1. The body. A monster world picks the HALF first and the sheet inside
+    //    it second, so its crowd is half creatures and half animals however
+    //    lopsided the two halves are in the file. Everywhere else a creature
+    //    is rare enough that a flat draw over the whole wardrobe is what makes
+    //    a stray dog the commonest one, which is the point.
+    let pool = wardrobe;
+    if (isMonsterWorld()) {
+      const half = rng.next() < MONSTER_CREATURE_HALF ? "creature" : "animal";
+      const side = wardrobe.filter((e) => e.half === half);
+      if (side.length) pool = side;
+    }
+    const worn = pool[rng.nextInt(0, pool.length)];
     const first = worn.archetype;
 
     // 2. The second half, on the world's hybrid share. Drawn from the
@@ -377,22 +409,39 @@
       // A catalogue sheet carries its own faces; a Monsters/ sheet is one
       // character wide and has none.
       bustIndex: worn.busts > 1 ? rng.nextInt(0, worn.busts) : 0,
-      classId: rollClassId(keys, rng),
+      classId: rollClassId(worn.spriteKey, keys, rng),
     };
   }
 
-  // A class out of the archetypes' own rosters, weighted so a creature is
-  // usually the thing it looks like. Falls through to the fallback (Monster)
-  // when CreatureClasses has not loaded.
-  function rollClassId(keys, rng) {
+  // A class off the SHEET's own roster, the `classes` array of its NPCs.json
+  // entry, weighted so a creature is usually the thing it looks like. The
+  // sheet is the authority and the archetype never overrides it: a body is a
+  // body, and crossing a second archetype into it (the hybrid roll above) is
+  // not allowed to turn a stray dog into somebody else's profession. Every
+  // `creature` entry carries both halves for exactly this: its own creature
+  // classes (Feral, Mimic, Ghost...) and the civilised ones a talking one of
+  // its kind may hold. An `animal` entry carries the creature half alone.
+  //
+  // Only a sheet with no entry of its own to read (a Monsters/ bestiary sheet,
+  // dealt in a monster world) falls back to the archetype rosters, since there
+  // is nothing else for it to be, and to the flat Monster class after that.
+  function rollClassId(spriteKey, keys, rng) {
+    const entry = npcData()[spriteKey];
+    const own = Array.isArray(entry && entry.classes) ? entry.classes : [];
+    let creature = own.filter((id) => isNonSentientClassId(id));
+    let sentient = own.filter((id) => !isNonSentientClassId(id));
     const CC = window.CreatureClasses;
-    if (!CC) return NONSENTIENT_CLASS_MIN + 2;
-    const groups = CC.groupsForArchetypes(keys[0], keys[1]);
+    if (!own.length) {
+      if (!CC) return NONSENTIENT_CLASS_MIN + 2;
+      const groups = CC.groupsForArchetypes(keys[0], keys[1]);
+      creature = groups.creature || [];
+      sentient = groups.sentient || [];
+    }
     const wantCreature = rng.next() < nonSentientChance();
-    const first = wantCreature ? groups.creature : groups.sentient;
-    const second = wantCreature ? groups.sentient : groups.creature;
-    const list = (first && first.length) ? first : second;
-    if (!list || !list.length) return CC.fallbackId();
+    const first = wantCreature ? creature : sentient;
+    const second = wantCreature ? sentient : creature;
+    const list = first.length ? first : second;
+    if (!list.length) return CC ? CC.fallbackId() : NONSENTIENT_CLASS_MIN + 2;
     return list[rng.nextInt(0, list.length)];
   }
 

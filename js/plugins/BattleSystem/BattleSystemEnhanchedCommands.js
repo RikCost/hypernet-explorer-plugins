@@ -77,6 +77,7 @@
     // the skill is FOR, a party row the colour of the ally being pointed at.
     skillRow:     { accent: "#9944ee", rgb: [90,  35,  170] },
     allyRow:      { accent: "#44cc88", rgb: [25,  140, 80 ] },
+    enemyRow:     { accent: "#e63232", rgb: [180, 25,  25 ] },
   };
 
   const getCommandColors = (symbol) =>
@@ -106,6 +107,7 @@
     talkRow:      246,
     skillRow:     76,
     allyRow:      73,
+    enemyRow:     97,
   };
 
   // Mirrors CategorizedBattleSkills' category resolution: skills without an explicit
@@ -155,6 +157,30 @@
   //=============================================================================
 
   Window_ActorCommand.prototype.makeCommandList = function () {
+    // Target selection mode (Enemy / Ally) takes over the whole menu
+    if (this._targetSession) {
+      if (this._targetSession.mode === 'enemy') {
+        const enemies = this._targetSession.enemies || ($gameTroop ? $gameTroop.aliveMembers() : []);
+        enemies.forEach((enemy, i) => {
+          const rawName = enemy.name();
+          const name = (typeof translateText === 'function') ? translateText(rawName) : rawName;
+          const hpText = `${Math.floor(enemy.hp)}/${Math.floor(enemy.mhp)} ${TextManager.hpA}`;
+          this.addCommandWithIcon(name, "enemyRow", enemy.isAlive(), { kind: 'enemy', index: i, enemy }, 97, false, COMMAND_COLORS.enemyRow, hpText);
+        });
+        return;
+      }
+      if (this._targetSession.mode === 'ally') {
+        const members = this._targetSession.members || ($gameParty ? $gameParty.battleMembers() : []);
+        members.forEach((member, i) => {
+          const rawName = member.name();
+          const name = (typeof translateText === 'function') ? translateText(rawName) : rawName;
+          const hpText = `${Math.floor(member.hp)}/${Math.floor(member.mhp)} ${TextManager.hpA}`;
+          this.addCommandWithIcon(name, "allyRow", true, { kind: 'ally', index: i, member }, 73, !member.isAlive(), COMMAND_COLORS.allyRow, hpText);
+        });
+        return;
+      }
+    }
+
     if (!this._actor) return;
 
     // Wrestling (Health_Monsters.js) takes this menu over whole while a grapple
@@ -476,6 +502,42 @@
       item.className = 'actorcmd-item' + (isSel ? '' : ' unsel');
       item.style.width  = rowW + 'px';
       item.style.height = ROW_HEIGHT + 'px';
+      item.style.pointerEvents = 'auto';
+      item.style.cursor = 'pointer';
+
+      // Mouse hover: update selection on the active targeting window or command window
+      item.addEventListener('mouseenter', () => {
+        if (this._targetSession && this._targetSession.activeWindow && this._targetSession.activeWindow.active) {
+          if (this._targetSession.activeWindow.index() !== i) {
+            this._targetSession.activeWindow.select(i);
+          }
+        } else if (this.active && this.index() !== i) {
+          this.select(i);
+        }
+      });
+
+      item.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+      });
+
+      // Mouse click: select and confirm (processOk) on active targeting window or command window
+      item.addEventListener('pointerup', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.button !== undefined && e.button !== 0) return;
+        TouchInput.clear();
+        if (this._targetSession && this._targetSession.activeWindow && this._targetSession.activeWindow.active) {
+          this._targetSession.activeWindow.select(i);
+          this._targetSession.activeWindow.processOk();
+        } else if (this.active) {
+          if (this.index() !== i) this.select(i);
+          this.processOk();
+        }
+      });
+
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
 
       // Dark base layer
       const darkBase = document.createElement('div');
@@ -686,6 +748,9 @@
   // re-selecting the Wrestle command and the target.
   const _BSEC_startActorCommandSelection = Scene_Battle.prototype.startActorCommandSelection;
   Scene_Battle.prototype.startActorCommandSelection = function () {
+    const cmdWin = this._actorCommandWindow;
+    if (cmdWin) cmdWin._targetSession = null;
+    this._battleSkillReturn = null;
     _BSEC_startActorCommandSelection.call(this);
 
     // Auto-continue wrestling: if the actor has an ongoing grapple target
@@ -870,6 +935,199 @@
   Window_ActorCommand.prototype.processOk = function () {
     _Window_ActorCommand_processOk.call(this);
     TouchInput.clear();
+  };
+
+  Window_ActorCommand.prototype.processTouch = function () {
+    // Disable standard canvas touch inputs to prevent conflict with custom HTML overlay events
+  };
+
+  //=============================================================================
+  // WASD, Arrow & Controller Navigation for Target & Command Windows
+  //=============================================================================
+
+  // Ensure WASD keys are mapped to directional inputs
+  if (typeof Input !== "undefined" && Input.keyMapper) {
+    Input.keyMapper[87] = "up";     // W
+    Input.keyMapper[83] = "down";   // S
+    Input.keyMapper[65] = "left";   // A
+    Input.keyMapper[68] = "right";  // D
+  }
+
+  // Window_ActorCommand: smooth directional navigation with WASD, arrows, controller
+  const _Window_ActorCommand_processCursorMove = Window_ActorCommand.prototype.processCursorMove;
+  Window_ActorCommand.prototype.processCursorMove = function () {
+    if (this.isCursorMovable()) {
+      const max = this.maxItems();
+      if (max > 0) {
+        const lastIndex = this.index();
+        if (Input.isRepeated("up") || Input.isRepeated("left")) {
+          this.cursorUp(Input.isTriggered("up") || Input.isTriggered("left"));
+        } else if (Input.isRepeated("down") || Input.isRepeated("right")) {
+          this.cursorDown(Input.isTriggered("down") || Input.isTriggered("right"));
+        }
+        if (this.index() !== lastIndex) {
+          this.playCursorSound();
+        }
+        return;
+      }
+    }
+    _Window_ActorCommand_processCursorMove.call(this);
+  };
+
+  // Window_BattleEnemy: keyboard (WASD / arrows), mouse hover & controller navigation
+  Window_BattleEnemy.prototype.processCursorMove = function () {
+    if (this.isCursorMovable()) {
+      const max = this.maxItems();
+      if (max > 0) {
+        const lastIndex = this.index();
+        if (Input.isRepeated("up") || Input.isRepeated("left")) {
+          this.select((this.index() - 1 + max) % max);
+        } else if (Input.isRepeated("down") || Input.isRepeated("right")) {
+          this.select((this.index() + 1) % max);
+        }
+        if (this.index() !== lastIndex) {
+          this.playCursorSound();
+        }
+      }
+    }
+  };
+
+  const _Window_BattleEnemy_select = Window_BattleEnemy.prototype.select;
+  Window_BattleEnemy.prototype.select = function (index) {
+    _Window_BattleEnemy_select.call(this, index);
+    const scene = SceneManager._scene;
+    const cmdWin = scene && scene._actorCommandWindow;
+    if (cmdWin && cmdWin._targetSession && cmdWin._targetSession.mode === 'enemy') {
+      if (cmdWin.index() !== index && index >= 0) {
+        cmdWin.select(index);
+      }
+    }
+  };
+
+  // Window_BattleActor: keyboard (WASD / arrows), mouse hover & controller navigation
+  Window_BattleActor.prototype.processCursorMove = function () {
+    if (this.isCursorMovable()) {
+      const max = this.maxItems();
+      if (max > 0) {
+        const lastIndex = this.index();
+        if (Input.isRepeated("up") || Input.isRepeated("left")) {
+          this.select((this.index() - 1 + max) % max);
+        } else if (Input.isRepeated("down") || Input.isRepeated("right")) {
+          this.select((this.index() + 1) % max);
+        }
+        if (this.index() !== lastIndex) {
+          this.playCursorSound();
+        }
+      }
+    }
+  };
+
+  const _Window_BattleActor_select = Window_BattleActor.prototype.select;
+  Window_BattleActor.prototype.select = function (index) {
+    _Window_BattleActor_select.call(this, index);
+    const scene = SceneManager._scene;
+    const cmdWin = scene && scene._actorCommandWindow;
+    if (cmdWin && cmdWin._targetSession && cmdWin._targetSession.mode === 'ally') {
+      if (cmdWin.index() !== index && index >= 0) {
+        cmdWin.select(index);
+      }
+    }
+  };
+
+  //=============================================================================
+  // Scene_Battle - Target Selection in Command Menu (Enemy & Ally Selector)
+  //=============================================================================
+
+  const _Scene_Battle_startEnemySelection_BSEC = Scene_Battle.prototype.startEnemySelection;
+  Scene_Battle.prototype.startEnemySelection = function () {
+    const cmdWin = this._actorCommandWindow;
+    if (this._enemyWindow) {
+      this._enemyWindow.refresh();
+      const enemies = this._enemyWindow._enemies || ($gameTroop ? $gameTroop.aliveMembers() : []);
+      if (cmdWin) {
+        cmdWin._targetSession = { mode: 'enemy', enemies: enemies, activeWindow: this._enemyWindow };
+        cmdWin.show();
+        cmdWin.refresh();
+        cmdWin.select(0);
+        cmdWin.deactivate();
+      }
+    }
+    _Scene_Battle_startEnemySelection_BSEC.call(this);
+  };
+
+  const _Scene_Battle_startActorSelection_BSEC = Scene_Battle.prototype.startActorSelection;
+  Scene_Battle.prototype.startActorSelection = function () {
+    const cmdWin = this._actorCommandWindow;
+    if (this._actorWindow) {
+      this._actorWindow.refresh();
+      const members = $gameParty ? $gameParty.battleMembers() : [];
+      if (cmdWin) {
+        cmdWin._targetSession = { mode: 'ally', members: members, activeWindow: this._actorWindow };
+        cmdWin.show();
+        cmdWin.refresh();
+        cmdWin.select(0);
+        cmdWin.deactivate();
+      }
+    }
+    _Scene_Battle_startActorSelection_BSEC.call(this);
+  };
+
+  const _Scene_Battle_onEnemyOk_BSEC = Scene_Battle.prototype.onEnemyOk;
+  Scene_Battle.prototype.onEnemyOk = function () {
+    const cmdWin = this._actorCommandWindow;
+    if (cmdWin) cmdWin._targetSession = null;
+    this._battleSkillReturn = null;
+    _Scene_Battle_onEnemyOk_BSEC.call(this);
+  };
+
+  const _Scene_Battle_onActorOk_BSEC = Scene_Battle.prototype.onActorOk;
+  Scene_Battle.prototype.onActorOk = function () {
+    const cmdWin = this._actorCommandWindow;
+    if (cmdWin) cmdWin._targetSession = null;
+    this._battleSkillReturn = null;
+    _Scene_Battle_onActorOk_BSEC.call(this);
+  };
+
+  const _Scene_Battle_onEnemyCancel_BSEC = Scene_Battle.prototype.onEnemyCancel;
+  Scene_Battle.prototype.onEnemyCancel = function () {
+    const cmdWin = this._actorCommandWindow;
+    if (cmdWin) cmdWin._targetSession = null;
+    if (this._enemyWindow) this._enemyWindow.hide();
+    if (this._battleSkillReturn) {
+      if (typeof this.reopenBattleSkillMenu === 'function' && this.reopenBattleSkillMenu()) {
+        return;
+      }
+    }
+    _Scene_Battle_onEnemyCancel_BSEC.call(this);
+    if (cmdWin) {
+      cmdWin.show();
+      cmdWin.refresh();
+      cmdWin.activate();
+    }
+  };
+
+  const _Scene_Battle_onActorCancel_BSEC = Scene_Battle.prototype.onActorCancel;
+  Scene_Battle.prototype.onActorCancel = function () {
+    const cmdWin = this._actorCommandWindow;
+    if (cmdWin) cmdWin._targetSession = null;
+    if (this._actorWindow) this._actorWindow.hide();
+    if (this._battleSkillReturn) {
+      if (typeof this.reopenBattleSkillMenu === 'function' && this.reopenBattleSkillMenu()) {
+        return;
+      }
+    }
+    _Scene_Battle_onActorCancel_BSEC.call(this);
+    if (cmdWin) {
+      cmdWin.show();
+      cmdWin.refresh();
+      cmdWin.activate();
+    }
+  };
+
+  // Suppress legacy HUD enemy overlay so only the crispy unified command menu is shown
+  Scene_Battle.prototype.updateEnemyTargetButtons = function () {
+    const root = document.getElementById('html-enemytarget-overlay');
+    if (root) root.style.display = 'none';
   };
 
   //=============================================================================

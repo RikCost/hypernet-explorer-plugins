@@ -2727,10 +2727,15 @@
     // FIRST and are marked { local: true }. World-wide NPCs (every other group's
     // templates, via the GLOBAL pool) follow as { local: false } fallback, used
     // by assignPersonas only once the local free pool is exhausted.
-    // A non-sentient creature (Feral, Mimic, Monster...) cannot stand a
-    // counter and mind a till, only a monster world's population is made of
-    // exactly that, so there it is the only kind of shopkeeper there is.
-    _shopEligible(name) {
+    // Two questions, and a candidate has to pass both. The SHEET first (see
+    // NPCSystem.isShopEligibleSprite): a creature or an animal keeps no till in
+    // an ordinary world whatever class it was dealt, unless its entry says
+    // `dogShop`, the shop dog that is the shopkeeper. Then the CLASS: a
+    // non-sentient one (Feral, Mimic, Monster...) cannot mind a counter either.
+    // Only a monster world's population is made of exactly these, so there they
+    // are the only kind of shopkeeper there is and both questions answer yes.
+    _shopEligible(name, spriteName) {
+      if (!window.NPCSystem?.isShopEligibleSprite?.(spriteName)) return false;
       if (!!window.WorldManager?.isMonsterWorld?.()) return true;
       const NC = window.NPCCreature;
       return !NC?.isNonSentientByName?.(name);
@@ -2760,9 +2765,9 @@
           }
         }
         for (const name of ($gameSystem?._npcShopkeeperPool?.[groupName] || [])) {
-          if (seen.has(name) || !this._shopEligible(name)) continue;
+          if (seen.has(name)) continue;
           const sprite = spriteOf(byName.get(name));
-          if (!sprite) continue;
+          if (!sprite || !this._shopEligible(name, sprite.spriteName)) continue;
           seen.add(name);
           out.push({ name, ...sprite, local: true });
         }
@@ -2777,9 +2782,9 @@
       for (const tpl of globalTemplates) {
         const ev = tpl?.eventData;
         if (!ev?.name || seen.has(ev.name) || localNames.has(ev.name) || /local/i.test(ev.note || "")
-          || window.NPCSystem?.hasHiddenTag?.(ev.note) || !this._shopEligible(ev.name)) continue;
+          || window.NPCSystem?.hasHiddenTag?.(ev.note)) continue;
         const sprite = spriteOf(ev);
-        if (!sprite) continue;
+        if (!sprite || !this._shopEligible(ev.name, sprite.spriteName)) continue;
         seen.add(ev.name);
         out.push({ name: ev.name, ...sprite, local: false });
       }

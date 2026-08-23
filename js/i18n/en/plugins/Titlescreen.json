@@ -1,7 +1,7 @@
 {
   "menu": {
-    "explore": "Explore",
-    "reconnect": "Reconnect",
+    "explore": "New Party",
+    "reconnect": "Select Party",
     "tutorial": "Tutorial",
     "minigames": "Minigames",
     "sandbox": "Sandbox",
@@ -13,8 +13,8 @@
     "quickContinue": "Continue"
   },
   "menuOverlay": {
-    "explore": "EXPLORE",
-    "reconnect": "RECONNECT",
+    "explore": "NEW PARTY",
+    "reconnect": "SELECT PARTY",
     "tutorial": "TUTORIAL",
     "minigames": "MINIGAMES",
     "sandbox": "SANDBOX",
@@ -121,7 +121,7 @@
     "curvature": "SPATIAL CURVATURE DETECTED"
   },
   "version": {
-    "text": "0.3.2a"
+    "text": "0.3.5a"
   },
   "language": {
     "label": "✦ LANG"

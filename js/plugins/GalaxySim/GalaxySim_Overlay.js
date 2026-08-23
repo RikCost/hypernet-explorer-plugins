@@ -875,7 +875,13 @@
       }
       // Harvest Schrödingerite: only at a black hole's orbit, gated by a
       // once-per-game-week-per-hole cooldown (see DataManager.canHarvestSchrodingerite).
-      if (opts.canHarvest) {
+      if (opts.harvestRunSec > 0) {
+        // A flyby is under way: the hull is skimming the disk, and the panel
+        // counts the run down instead of offering it again.
+        // The live countdown belongs to the fuel panel, which redraws every
+        // frame; this line only says the run is on.
+        actions += `<span class="gx-muted">${T('Galaxy.hud.harvestRunning')}</span>`;
+      } else if (opts.canHarvest) {
         actions += `<span class="gx-btn gx-land focusable" tabindex="0" data-action="harvest-schrodingerite">` +
           `${T('Galaxy.hud.harvestSchrDingerite')}</span>`;
       } else if (opts.harvestCooldownMin > 0) {
@@ -1270,10 +1276,31 @@
           `<span class="gx-btn gx-land focusable" tabindex="0" data-action="anom-close">` +
           `${T('Anomaly.ui.close')}</span>`;
       } else {
+        // A row wears what taking it involves: the die (stat and DC, or flat
+        // odds) or the price of the hand-over. A row the party cannot cover is
+        // greyed, price still showing (ProceduralAdventure.Stage owns the text).
+        const chipOf = (c) => {
+          const PA = window.ProceduralAdventure;
+          const t = (PA && PA.Stage && PA.Stage.chipText) ? PA.Stage.chipText(c) : "";
+          return t ? ` <span style="border:1px solid currentColor;border-radius:9px;` +
+            `padding:0 7px;font-size:0.8em;opacity:0.85;white-space:nowrap;">${esc(t)}</span>` : "";
+        };
         this.els.anomChoices.innerHTML = (view.choices || []).map((c, i) =>
           `<span class="gx-anom-choice focusable" tabindex="0" data-action="anom-choice" ` +
-          `data-index="${i}"><span class="gx-anom-num">${i + 1}</span>${esc(c.text)}</span>`
+          `data-index="${i}"${c.locked ? ' style="opacity:0.45;"' : ""}>` +
+          `<span class="gx-anom-num">${i + 1}</span>${esc(c.text)}${chipOf(c)}</span>`
         ).join("");
+      }
+      // The scene the encounter is happening in: biome battleback, the away
+      // team's busts, and whoever is on the other side of it. The companion
+      // tabs above it hand the die to another member; a switch re-renders so
+      // every check chip shows the new hands' odds.
+      const PA = window.ProceduralAdventure;
+      if (PA && PA.Stage && PA.Stage.attachTo) {
+        PA.Stage.attachTo(this.els.anomBody, () => {
+          const A = window.GalaxySim && window.GalaxySim.Anomaly;
+          if (A) this.renderAnomaly(A.view());
+        });
       }
       this._wire(this.els.anomaly);
       this._focusEl = null;

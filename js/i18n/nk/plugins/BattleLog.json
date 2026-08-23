@@ -1,8 +1,15 @@
 {
   "bgOpacity": "BATTLE LOG BG OPACITY",
   "bareFists": "BARE FISTS",
+  "attacks": " ATTACKS ",
   "attacksWith": "%1 ATTACKS WIT %2!",
   "dodged": "%1 DODGED.",
   "listPair": " AN' ",
-  "listLast": "AN' "
+  "listLast": "AN' ",
+  "hitsFor": " ATTACKS ",
+  "damageSuffix": ", IT TOOK %1 DAMAGE!",
+  "recoverySuffix": ", IT RECOVERED %1 HP!",
+  "noDamageSuffix": ", IT TOOK NO DAMAGE.",
+  "uses": " USES ",
+  "and": "AN'"
 }

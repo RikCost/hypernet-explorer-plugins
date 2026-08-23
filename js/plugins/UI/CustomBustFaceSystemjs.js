@@ -138,8 +138,9 @@
         if (imageExists('img/enemies/', name)) {
             return `img/enemies/${name}`;
         }
-        if (imageExists('img/busts/', name)) {
-            return `img/busts/${name}`;
+        const bustName = window.BustPath.resolve(name);
+        if (bustName) {
+            return `img/busts/${bustName}`;
         }
         return null; // Caller falls through to SpritesAssociation / default bust.
     }
@@ -159,7 +160,8 @@
             // Priority 1: Check Variable 109 (Player 1 bust name)
             const player1BustName = $gameActors.actor(1).vnBust();
             if (player1BustName && player1BustName !== "") {
-                return `img/busts/${player1BustName}`;
+                const resolved = window.BustPath.resolve(player1BustName);
+                if (resolved) return `img/busts/${resolved}`;
             }
 
             // Priority 2: If Switch 77 is ON, use Variable 106 for monster form
@@ -177,8 +179,8 @@
 
                 if (SpritesAssociation[spritesheetName] &&
                     SpritesAssociation[spritesheetName][spriteIndex]) {
-                    const bustName = SpritesAssociation[spritesheetName][spriteIndex];
-                    return `img/busts/${bustName}`;
+                    const bustName = window.BustPath.resolve(SpritesAssociation[spritesheetName][spriteIndex]);
+                    if (bustName) return `img/busts/${bustName}`;
                 }
             }
 
@@ -190,7 +192,8 @@
             // Priority 1: Check Variable 117 (Player 2 bust name)
             const player2BustName = $gameActors.actor(2).vnBust();
             if (player2BustName && player2BustName !== "") {
-                return `img/busts/${player2BustName}`;
+                const resolved = window.BustPath.resolve(player2BustName);
+                if (resolved) return `img/busts/${resolved}`;
             }
 
             // Priority 2: If Switch 78 is ON, use Variable 107 for monster form
@@ -208,8 +211,8 @@
 
                 if (SpritesAssociation[spritesheetName] &&
                     SpritesAssociation[spritesheetName][spriteIndex]) {
-                    const bustName = SpritesAssociation[spritesheetName][spriteIndex];
-                    return `img/busts/${bustName}`;
+                    const bustName = window.BustPath.resolve(SpritesAssociation[spritesheetName][spriteIndex]);
+                    if (bustName) return `img/busts/${bustName}`;
                 }
             }
 
@@ -221,7 +224,8 @@
             // Priority 1: Check Variable 118 (Player 3 bust name)
             const player3BustName = $gameActors.actor(3).vnBust();
             if (player3BustName && player3BustName !== "") {
-                return `img/busts/${player3BustName}`;
+                const resolved = window.BustPath.resolve(player3BustName);
+                if (resolved) return `img/busts/${resolved}`;
             }
 
             // Priority 2: If Switch 79 is ON, use Variable 108 for monster form
@@ -239,8 +243,8 @@
 
                 if (SpritesAssociation[spritesheetName] &&
                     SpritesAssociation[spritesheetName][spriteIndex]) {
-                    const bustName = SpritesAssociation[spritesheetName][spriteIndex];
-                    return `img/busts/${bustName}`;
+                    const bustName = window.BustPath.resolve(SpritesAssociation[spritesheetName][spriteIndex]);
+                    if (bustName) return `img/busts/${bustName}`;
                 }
             }
 
@@ -253,8 +257,8 @@
 
             if (SpritesAssociation[spritesheetName] &&
                 SpritesAssociation[spritesheetName][spriteIndex]) {
-                const bustName = SpritesAssociation[spritesheetName][spriteIndex];
-                return `img/busts/${bustName}`;
+                const bustName = window.BustPath.resolve(SpritesAssociation[spritesheetName][spriteIndex]);
+                if (bustName) return `img/busts/${bustName}`;
             }
         }
 
@@ -452,7 +456,14 @@
                     try {
                         const bustIndices = SpritesAssociation[spritesheetName];
                         Object.keys(bustIndices).forEach(index => {
-                            const bustName = bustIndices[index];
+                            // Through BustPath, so a catalogue entry whose file
+                            // is not there (or has moved into presets/) is never
+                            // asked for: an errored bitmap sitting in the cache
+                            // is what turns the next scene into a load error.
+                            const bustName = window.BustPath
+                                ? window.BustPath.resolve(bustIndices[index])
+                                : bustIndices[index];
+                            if (!bustName) return;
                             const path = `img/busts/${bustName}`;
                             // Silently attempt to preload, don't log errors
                             const bitmap = ImageManager.loadBitmap('', path);

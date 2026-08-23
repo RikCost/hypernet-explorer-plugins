@@ -8,6 +8,9 @@
       "Libera"
     ]
   },
+  "lead": {
+    "toast": "{name} passa in testa"
+  },
   "loose": {
     "thought": [
       "Un buon posto per riprendere fiato.",

@@ -28,7 +28,8 @@
     "battery": "Cell",
     "draw": "Draw",
     "slots": "Board",
-    "caseLabel": "Case"
+    "caseLabel": "Case",
+    "endurance": "Endurance"
   },
   "unit": {
     "mhz": "{n} MHz",
@@ -41,7 +42,13 @@
   },
   "value": {
     "none": "not fitted",
-    "infinite": "unbounded"
+    "infinite": "unbounded",
+    "integrated": "integrated, {n} MB shared",
+    "index": "{n} points",
+    "passive": "no cooling, {n} W board",
+    "cooled": "{n} fitted, {w} W board",
+    "hours": "{n} h",
+    "beeper": "system beeper"
   },
   "required": {
     "heading": "REQUIRED"
@@ -80,15 +87,15 @@
     "manaFlow": "Calibrating Mana Flow... OK",
     "ethereal": "Syncing Ethereal Network... OK",
     "loading": "Loading Game Environment... ",
-    "ready": "✓ System Ready - Launching Archways XP..."
+    "ready": "✓ System Ready - Launching Archways XP...",
+    "quantumShared": "Quantum Buffer    : {size} SHARED"
   },
   "post": {
     "failHeading": "POST FAILURE",
     "failLine": "no {kind} detected",
     "failFooter": "Fit the missing parts and try again.",
     "overdrawHeading": "POWER FAULT",
-    "overdrawLine": "the cell cannot carry {n} W",
-    "unfedLine": "no {signal} reaches the {part}"
+    "overdrawLine": "the cell cannot carry {n} W"
   },
   "tool": {
     "auto": "AUTO-FIT",
@@ -98,9 +105,7 @@
     "face": "LOWER HALF",
     "clear": "CLEAR",
     "chip": "CHIP",
-    "boot": "BOOT",
-    "trace": "TRACE",
-    "traceOn": "TRACE {signal}"
+    "boot": "BOOT"
   },
   "face": {
     "keyboard": "Keyboard",
@@ -113,9 +118,8 @@
     "power": "The cell is {n} W short of what the fitted parts draw.",
     "heat": "Nothing is cooling a {n} W board. Expect it to throttle.",
     "uplink": "No uplink fitted. The Hypernet will not answer.",
-    "video": "No graphics adapter. The panel is being driven by the processor.",
     "memory": "Only {n} MB of memory. Archways XP will crawl.",
-    "unfed": "{part} has no {signal} reaching it."
+    "integrated": "No graphics adapter. The processor drives the panel itself, on {n} MB borrowed from main memory."
   },
   "chip": {
     "heading": "CHIP LAB",
@@ -211,9 +215,5 @@
     "willNotBoot": "This machine will not POST.",
     "boot": "POWER ON",
     "exit": "EXIT"
-  },
-  "signal": {
-    "power": "power",
-    "video": "video"
   }
 }

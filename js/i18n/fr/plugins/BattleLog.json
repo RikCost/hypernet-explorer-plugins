@@ -1,8 +1,15 @@
 {
   "bgOpacity": "Opacité du fond du journal de combat",
   "bareFists": "Poings nus",
+  "attacks": " attaque ",
   "attacksWith": "%1 attaque avec %2 !",
   "dodged": "%1 a esquivé.",
   "listPair": " et ",
-  "listLast": ", et "
+  "listLast": ", et ",
+  "hitsFor": " attaque ",
+  "damageSuffix": ", il subit %1 dégâts !",
+  "recoverySuffix": ", il récupère %1 PV !",
+  "noDamageSuffix": ", il ne subit aucun dégât.",
+  "uses": " utilise ",
+  "and": "et"
 }

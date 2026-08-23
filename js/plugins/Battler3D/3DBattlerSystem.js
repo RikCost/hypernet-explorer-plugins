@@ -158,6 +158,40 @@
  * @max 2
  * @default 0.8
  *
+ * @param dayNightLighting
+ * @text Day/Night Lighting
+ * @desc Light the 3D battle from the in-game clock: colour, direction and sun height all follow the time of day.
+ * @type boolean
+ * @default true
+ *
+ * @param dayNightShadows
+ * @text Cast Shadows
+ * @desc Battlers cast a shadow on the ground, angled and coloured by the time of day. Costs one extra small pass.
+ * @type boolean
+ * @default true
+ *
+ * @param shadowMapSize
+ * @text Shadow Resolution
+ * @desc Shadow map size in pixels. 0 = auto (256 on a software/no-GPU renderer, 512 otherwise). Lower = faster, blockier.
+ * @type number
+ * @min 0
+ * @max 2048
+ * @default 0
+ *
+ * @param shadowUpdateEvery
+ * @text Shadow Refresh Interval
+ * @desc Redraw the shadow map every N drawn frames. Higher = cheaper. 1 = every frame.
+ * @type number
+ * @min 1
+ * @max 10
+ * @default 3
+ *
+ * @param envReflections
+ * @text Sky Reflections
+ * @desc Metal on battlers and weapons reflects the sky, tinted by the time of day. Rebuilt only when the light moves.
+ * @type boolean
+ * @default true
+ *
  * @param renderScale
  * @text Render Scale
  * @desc Internal 3D resolution multiplier, multiplied by the retro downsample. 0 = auto (0.5 on a software/no-GPU renderer, 1 on a real GPU). Lower = faster, blockier.
@@ -229,6 +263,13 @@
         ambientLightIntensity: Number(parameters.ambientLightIntensity || 0.6),
         directionalLightColor: parameters.directionalLightColor || '#ffffff',
         directionalLightIntensity: Number(parameters.directionalLightIntensity || 0.8),
+        // Day/night rig. Every one of these is a perf knob as much as a look
+        // knob, so they default to the cheap end of what still reads as lit.
+        dayNightLighting: parameters.dayNightLighting !== 'false',
+        dayNightShadows: parameters.dayNightShadows !== 'false',
+        shadowMapSize: Number(parameters.shadowMapSize || 0),
+        shadowUpdateEvery: Math.max(1, Number(parameters.shadowUpdateEvery || 3)),
+        envReflections: parameters.envReflections !== 'false',
         // Perf knobs for GPU-less / weak machines. renderScale 0 = auto-detect.
         renderScale: Number(parameters.renderScale || 0),
         maxFps: Number(parameters.maxFps !== undefined ? parameters.maxFps : 30),
@@ -1936,6 +1977,320 @@
         return Math.max(0.1, Math.min(1, scale));
     }
 
+    //=========================================================================
+    // Day / night lighting rig
+    //
+    // TimeDateSystem answers what the light looks like (colours, a direction,
+    // a shadow strength); this turns that answer into three.js. It is written
+    // once here and used twice: by the battle scene below, and by the first
+    // person weapon overlay, which reaches for window.Battler3D.Lighting. That
+    // is deliberate. If the two built their own rigs the sword in your hands
+    // would catch a different sun than the one throwing the monster's shadow.
+    //
+    // The whole thing is built to cost nothing on a normal frame:
+    //  - the solve is cached by TimeDateSystem and stamped with a `key`, so a
+    //    frame where the clock has not moved is one integer compare and out;
+    //  - the shadow map is taken off three's automatic path and redrawn every
+    //    Nth drawn frame instead of every frame, which is where most of the
+    //    saving is (the shadow pass draws every caster a second time);
+    //  - the sky reflection is a 32x16 texture, and it is rebuilt only when the
+    //    light itself moves, not per frame.
+    //=========================================================================
+
+    // A 32x16 equirectangular sky: a vertical sky-to-ground ramp with the sun
+    // burned into it at its real bearing. Tiny on purpose. PMREM blurs it into
+    // a reflection probe, and at the roughness the game's metals use nothing
+    // finer would survive the blur anyway.
+    const ENV_TEX_W = 32;
+    const ENV_TEX_H = 16;
+    // cos of the sun disc's half angle (~26 degrees), which at this texture
+    // size is two or three texels across.
+    const SUN_DISC_COS = 0.9;
+
+    // Where the shadow catcher sits until the field has been measured. Matches
+    // the y a procedural battler is first placed at, so the very first frame of
+    // a fight already has the shadows roughly under the feet rather than
+    // sliding into place.
+    const DEFAULT_GROUND_Y = -1.5;
+
+    function buildSkyEquirect(light) {
+        const w = ENV_TEX_W, h = ENV_TEX_H;
+        const data = new Uint8Array(w * h * 4);
+        const sky = new THREE.Color(light.skyColor);
+        const gnd = new THREE.Color(light.groundColor);
+        const key = new THREE.Color(light.keyColor);
+        const horizon = sky.clone().lerp(gnd, 0.5);
+        const c = new THREE.Color();
+        const d = light.dir;
+
+        // three samples an equirect map as u = atan2(z, x)/2pi + 0.5 and
+        // v = asin(y)/pi + 0.5, and a DataTexture's first row is v = 0. So row
+        // zero is straight DOWN, not up, and the azimuth is measured from the
+        // middle of the row. Getting either wrong puts the ground in the sky
+        // and the sun's highlight on the wrong side of the blade, which is the
+        // one thing this texture exists to get right.
+        for (let y = 0; y < h; y++) {
+            const phi = (y + 0.5) / h * Math.PI;
+            const vy = -Math.cos(phi);  // -1 straight down .. +1 straight up
+            const rh = Math.sin(phi);   // length of the horizontal component
+            // Two ramps meeting at the horizon rather than one sky-to-ground
+            // fade: a real horizon is a bright band, and it is the band that
+            // shows up in a curved blade.
+            if (vy >= 0) c.copy(horizon).lerp(sky, Math.pow(vy, 0.6));
+            else c.copy(horizon).lerp(gnd, Math.pow(-vy, 0.5));
+
+            for (let x = 0; x < w; x++) {
+                const theta = ((x + 0.5) / w - 0.5) * Math.PI * 2;
+                const vx = Math.cos(theta) * rh;
+                const vz = Math.sin(theta) * rh;
+                const dot = vx * d.x + vy * d.y + vz * d.z;
+                const i = (y * w + x) * 4;
+                let r = c.r, g = c.g, b = c.b;
+                // A tight disc, not a wide glow. PMREM blurs this into a broad
+                // highlight anyway, and a wide one here would clip the whole
+                // upper sky to white and take the day's colour with it, which
+                // is precisely the tint the reflection is supposed to carry.
+                if (dot > SUN_DISC_COS) {
+                    // Soft-edged, so the blur does not smear a hard square.
+                    const s = Math.pow((dot - SUN_DISC_COS) / (1 - SUN_DISC_COS), 2) *
+                        light.keyIntensity * 1.6;
+                    r += key.r * s; g += key.g * s; b += key.b * s;
+                }
+                data[i] = Math.min(255, r * 255);
+                data[i + 1] = Math.min(255, g * 255);
+                data[i + 2] = Math.min(255, b * 255);
+                data[i + 3] = 255;
+            }
+        }
+
+        const tex = new THREE.DataTexture(data, w, h, THREE.RGBAFormat);
+        tex.mapping = THREE.EquirectangularReflectionMapping;
+        tex.needsUpdate = true;
+        return tex;
+    }
+
+    class DayNightRig {
+        // opts.shadows      cast shadows onto a ground catcher (battle only)
+        // opts.groundY      height of that catcher, in scene units
+        // opts.radius       half-width of the lit area, sizes the shadow frustum
+        // opts.env          build the sky reflection probe
+        // opts.dirDistance  how far out to park the light (scene units)
+        constructor(scene, renderer, opts) {
+            opts = opts || {};
+            this.scene = scene;
+            this.renderer = renderer;
+            this._radius = opts.radius || 8;
+            this._dirDistance = opts.dirDistance || this._radius * 1.6;
+            this._env = config.envReflections && opts.env !== false;
+            this._shadows = config.dayNightShadows && !!opts.shadows;
+            this._lightKey = -1;
+            this._envKey = -1;
+            this._envRT = null;
+            this._frame = 0;
+            this._envFailed = false;
+            this._envActive = false;
+
+            // A hemisphere light, not a flat ambient: sky colour from above and
+            // bounced ground colour from below is what stops a night battler
+            // from reading as a grey cut-out. Costs the same as an ambient.
+            this.hemi = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+            scene.add(this.hemi);
+
+            this.key = new THREE.DirectionalLight(0xffffff, 1);
+            this.key.position.set(0, this._dirDistance, 0);
+            scene.add(this.key);
+            scene.add(this.key.target);
+
+            // A dim opposite light so the unlit side keeps its silhouette
+            // instead of going to black. Never casts.
+            this.fill = new THREE.DirectionalLight(0xffffff, 0.18);
+            scene.add(this.fill);
+
+            if (this._shadows) this._initShadows(opts);
+            this.update(true);
+        }
+
+        _initShadows(opts) {
+            const renderer = this.renderer;
+            renderer.shadowMap.enabled = true;
+            // PCF, not PCFSoft: the soft variant takes many more taps for a
+            // blur the retro downsample throws away again.
+            renderer.shadowMap.type = THREE.PCFShadowMap;
+            // Off three's automatic path so the shadow map is redrawn on our
+            // schedule (see update) rather than on every single frame.
+            renderer.shadowMap.autoUpdate = false;
+            renderer.shadowMap.needsUpdate = true;
+
+            let size = config.shadowMapSize;
+            if (!size || size <= 0) size = detectSoftwareRenderer(renderer) ? 256 : 512;
+
+            this.key.castShadow = true;
+            this.key.shadow.mapSize.set(size, size);
+            this.key.shadow.bias = -0.0012;
+            this.key.shadow.normalBias = 0.02;
+            const cam = this.key.shadow.camera;
+            const r = this._radius;
+            cam.left = -r; cam.right = r;
+            cam.top = r; cam.bottom = -r;
+            cam.near = 0.5;
+            cam.far = this._dirDistance * 2.5;
+            cam.updateProjectionMatrix();
+
+            // The catcher exists only to be darkened: ShadowMaterial draws
+            // nothing where nothing is shadowed, so the 2D battle background
+            // shows straight through it. depthWrite off so a full-field plane
+            // cannot occlude the battlers standing on it.
+            this._groundMat = new THREE.ShadowMaterial({ opacity: 0.5 });
+            this._groundMat.depthWrite = false;
+            this._ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(this._radius * 3, this._radius * 3),
+                this._groundMat
+            );
+            this._ground.rotation.x = -Math.PI / 2;
+            this._ground.position.y = opts.groundY !== undefined ? opts.groundY : -1.5;
+            this._ground.receiveShadow = true;
+            this.scene.add(this._ground);
+        }
+
+        // Called when the field settles: the models know where their feet are,
+        // the catcher does not, so it is dropped onto the lowest one.
+        setGroundY(y) {
+            if (!this._ground || !isFinite(y)) return;
+            if (Math.abs(this._ground.position.y - y) < 0.01) return;
+            this._ground.position.y = y;
+            if (this.renderer.shadowMap) this.renderer.shadowMap.needsUpdate = true;
+        }
+
+        // Flag a model's meshes as shadow casters. Only casters are drawn into
+        // the shadow map, so a model that never gets marked costs nothing.
+        // Receiving is left off: the ground catches the shadows, and making
+        // every battler a receiver would recompile its materials for a result
+        // the retro downsample mostly eats.
+        markCaster(root) {
+            if (!this._shadows || !root) return;
+            root.traverse(o => { if (o.isMesh) o.castShadow = true; });
+            this.renderer.shadowMap.needsUpdate = true;
+        }
+
+        update(force) {
+            const tds = window.TimeDateSystem;
+            if (!tds || !tds.getDayNightLight) return;
+            let light;
+            try { light = tds.getDayNightLight(); } catch (e) { return; }
+            if (!light) return;
+
+            if (force || light.key !== this._lightKey) {
+                this._lightKey = light.key;
+                this._apply(light);
+            }
+
+            // Shadow map on its own clock. Everything that can invalidate it
+            // out of band (a moved light, a new caster, a moved catcher) sets
+            // needsUpdate directly, so this only has to cover the steady state
+            // of battlers animating in place.
+            if (this._shadows && (++this._frame % config.shadowUpdateEvery) === 0) {
+                this.renderer.shadowMap.needsUpdate = true;
+            }
+        }
+
+        _apply(light) {
+            const d = light.dir;
+            const dist = this._dirDistance;
+
+            this.hemi.color.setHex(light.skyColor);
+            this.hemi.groundColor.setHex(light.groundColor);
+            // Once the sky probe is up it is itself lighting everything, so the
+            // hemisphere light stands down to make room. Without this the two
+            // ambients stack and a noon battler washes out to a flat silhouette
+            // brighter than it ever was before any of this.
+            this.hemi.intensity = light.ambientIntensity * (this._envActive ? 0.45 : 1);
+
+            this.key.color.setHex(light.keyColor);
+            this.key.intensity = light.keyIntensity;
+            this.key.position.set(d.x * dist, d.y * dist, d.z * dist);
+            this.key.target.position.set(0, 0, 0);
+            this.key.target.updateMatrixWorld();
+
+            // The fill stands opposite and low, and is the sky's colour rather
+            // than the sun's: it is standing in for light off the ground.
+            this.fill.color.setHex(light.skyColor);
+            this.fill.intensity = 0.12 + 0.14 * light.night;
+            this.fill.position.set(-d.x * dist, dist * 0.35, -d.z * dist);
+
+            if (this._groundMat) {
+                this._groundMat.opacity = light.shadowOpacity;
+                // Under heavy cloud there is no shadow left to draw, so the
+                // whole extra pass is switched off rather than spent rendering
+                // something that composites to nothing.
+                const worth = light.shadowOpacity > 0.05;
+                this.key.castShadow = worth;
+                this._ground.visible = worth;
+                // A shadow is a hole in the sky's light, so it takes the sky's
+                // colour: blue at night, warm at noon, never flat black.
+                this._groundMat.color.setHex(light.skyColor).multiplyScalar(0.35);
+                this.renderer.shadowMap.needsUpdate = true;
+            }
+
+            if (this._env) this._refreshEnv(light);
+        }
+
+        // The reflection probe. Rebuilding runs a PMREM pass, so it is held to
+        // the coarser of the two clocks: a handful of times an in-game hour,
+        // never per frame.
+        _refreshEnv(light) {
+            if (this._envFailed) return;
+            const envKey = Math.round(light.hour * 4) * 8 + Math.round(light.night * 3);
+            if (envKey === this._envKey) return;
+            this._envKey = envKey;
+            try {
+                let pmrem = this.renderer._b3dPmrem;
+                if (!pmrem) {
+                    pmrem = this.renderer._b3dPmrem = new THREE.PMREMGenerator(this.renderer);
+                    pmrem.compileEquirectangularShader();
+                }
+                const src = buildSkyEquirect(light);
+                const rt = pmrem.fromEquirectangular(src);
+                src.dispose();
+                if (this._envRT) this._envRT.dispose();
+                this._envRT = rt;
+                // Read back by _apply to stand the hemisphere light down. Set
+                // here rather than at construction because the probe can fail.
+                if (!this._envActive) { this._envActive = true; this.hemi.intensity *= 0.45; }
+                // Applied scene-wide rather than per material: three hands
+                // scene.environment to every MeshStandardMaterial by itself, so
+                // every battler body and every weapon part picks the sky up
+                // with no traversal and nothing to keep in sync.
+                this.scene.environment = rt.texture;
+            } catch (e) {
+                // No probe is a survivable loss (metals fall back to direct
+                // light); a probe that throws every few minutes is not.
+                this._envFailed = true;
+                this.scene.environment = null;
+                debugLog('Day/night reflection probe unavailable: ' + e);
+            }
+        }
+
+        dispose() {
+            const s = this.scene;
+            if (this.hemi) s.remove(this.hemi);
+            if (this.key) { s.remove(this.key); s.remove(this.key.target); }
+            if (this.fill) s.remove(this.fill);
+            if (this._ground) {
+                s.remove(this._ground);
+                this._ground.geometry.dispose();
+                this._groundMat.dispose();
+            }
+            if (this._envRT) { this._envRT.dispose(); this._envRT = null; }
+            s.environment = null;
+            // The PMREM generator stays on the renderer: it belongs to the
+            // context, which outlives the battle, and its compiled shader is
+            // the expensive half.
+            if (this.renderer && this.renderer.shadowMap) {
+                this.renderer.shadowMap.autoUpdate = true;
+            }
+        }
+    }
+
     class Battle3DScene {
         constructor() {
             this.scene = null;
@@ -1978,19 +2333,32 @@
             this._lastRenderMs = 0;
             this._lastDrew = false;
 
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(
-                config.ambientLightColor,
-                config.ambientLightIntensity
-            );
-            this.scene.add(ambientLight);
+            // Lighting. The day/night rig replaces the old pair of fixed white
+            // lights outright rather than sitting on top of them: two suns
+            // would wash the tint straight back out.
+            if (config.dayNightLighting) {
+                this.lighting = new DayNightRig(this.scene, this.renderer, {
+                    shadows: true,
+                    env: true,
+                    // Wide enough to hold the spread row of battlers.
+                    radius: ENEMY_SPREAD_HALF_SPAN + 2,
+                    groundY: DEFAULT_GROUND_Y,
+                });
+            } else {
+                this.lighting = null;
+                const ambientLight = new THREE.AmbientLight(
+                    config.ambientLightColor,
+                    config.ambientLightIntensity
+                );
+                this.scene.add(ambientLight);
 
-            const directionalLight = new THREE.DirectionalLight(
-                config.directionalLightColor,
-                config.directionalLightIntensity
-            );
-            directionalLight.position.set(5, 10, 5);
-            this.scene.add(directionalLight);
+                const directionalLight = new THREE.DirectionalLight(
+                    config.directionalLightColor,
+                    config.directionalLightIntensity
+                );
+                directionalLight.position.set(5, 10, 5);
+                this.scene.add(directionalLight);
+            }
 
             debugLog('3D scene initialized successfully');
 
@@ -2054,6 +2422,7 @@
                 armModelFades(battlerModel.model);
                 this.scene.add(battlerModel.model);
                 this.models.set(key, battlerModel);
+                if (this.lighting) this.lighting.markCaster(battlerModel.model);
 
                 debugLog(`Model added successfully: ${key}`);
 
@@ -2118,6 +2487,10 @@
             }
             this._syncRenderScale();
             this.update();
+            // After update(), so a light that moved this frame is already in
+            // place when the shadow map is told to redraw. Costs one integer
+            // compare on the frames the clock has not moved.
+            if (this.lighting) this.lighting.update();
             // Straight to the canvas: the retro downsample is already in the canvas
             // size (see battleRenderScale), so PSXShader.render's render-target pass
             // would only re-do the same reduction and blit it back at a cost.
@@ -2135,6 +2508,7 @@
                 }
             });
             this.models.clear();
+            if (this.lighting) { this.lighting.dispose(); this.lighting = null; }
             // The renderer is deliberately NOT disposed: it is the session's one
             // battle context (see acquireBattleRenderer), and handing it back would
             // throw away the shader programs and texture uploads the next battle is
@@ -2168,6 +2542,10 @@
     window.Battler3D.registerArchetype = registerArchetype;
     window.Battler3D.registerNamed = registerNamed;
     window.Battler3D.debugLog = debugLog;
+    // Shared with the first person weapon overlay, which runs its own scene in
+    // its own context but must be lit by the same sun. See DayNightRig.
+    window.Battler3D.DayNightRig = DayNightRig;
+    window.Battler3D.dayNightEnabled = () => config.dayNightLighting;
     window.Battler3D.CREATURE_PROFILES = window.Battler3D.CREATURE_PROFILES || {};
 
     // Themed texture pools (img/textures) used for per-monster-id texture
@@ -2994,6 +3372,23 @@
         } else if (row.length === 1) {
             // Single enemy: reset z depth to 0 and centre on screen.
             row[0].root.position.z = 0;
+        }
+
+        // Drop the shadow catcher onto the lowest pair of feet on the field and
+        // re-flag casters. Both have to wait for this pass rather than run at
+        // addModel time: a GLB's geometry is only measurable once it is in the
+        // scene, and families that build sub-meshes on the first tick would
+        // otherwise cast nothing. It runs twice per battle, not per frame.
+        if (scene3d.lighting) {
+            let minY = Infinity;
+            scene3d.models.forEach(model => {
+                const root = model && model.model;
+                if (!root) return;
+                scene3d.lighting.markCaster(root);
+                box.setFromObject(root);
+                if (!box.isEmpty() && isFinite(box.min.y)) minY = Math.min(minY, box.min.y);
+            });
+            if (isFinite(minY)) scene3d.lighting.setGroundY(minY);
         }
 
         // The HUD reads this to know the field has stopped moving and its

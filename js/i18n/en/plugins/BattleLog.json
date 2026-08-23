@@ -1,8 +1,18 @@
 {
   "bgOpacity": "Battle Log BG Opacity",
   "bareFists": "Bare fists",
+  "attacks": " attacks ",
   "attacksWith": "%1 attacks with %2!",
   "dodged": "%1 dodged.",
   "listPair": " and ",
-  "listLast": ", and "
+  "listLast": ", and ",
+  "hitsFor": " attacks ",
+  "damageSuffix": ", it took %1 damage!",
+  "recoverySuffix": ", it recovered %1 HP!",
+  "noDamageSuffix": ", it took no damage!",
+  "uses": " uses ",
+  "and": "and",
+  "skillNamesOption": "Skill Names",
+  "skillName": "Skill Name",
+  "skillAction": "Skill Action"
 }

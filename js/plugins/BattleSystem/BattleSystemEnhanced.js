@@ -194,7 +194,7 @@
 *
  * @param invisibleHandWeaponDefenseEnabled
  * @text Weapon-Based Defense Scaling
- * @desc When enabled, enemy DEF/MDF are adjusted by how much weapon damage the party can deal.
+ * @desc When enabled, enemy DEF/MDF are adjusted by party weapon damage potential only when the enemy is outnumbered.
  * @type boolean
  * @default true
  *
@@ -209,7 +209,7 @@
  * @text Weapon Defense: Baseline Threshold
  * @desc Baseline weapon-damage potential below which no defense adjustment is applied.
  * @type number
- * @default 200
+ * @default 60
  *
  * @param invisibleHandWeaponDefenseFloor
  * @text Weapon Defense: Floor
@@ -224,6 +224,120 @@
  * @type number
  * @decimals 2
  * @default 2.50
+ *
+ * @param loneMemberMaxEnemies
+ * @text Lone Traveller: Max Monsters at Once
+ * @desc Most monsters a character travelling alone may face at one time. A summon does not count as a second traveller.
+ * @type number
+ * @min 1
+ * @default 2
+ *
+ * @param dndResolutionEnabled
+ * @text D&D Resolution: Master Switch
+ * @desc Reads the bounded 8-20 class and enemy stats as D&D ability scores when resolving damage, instead of as raw damage numbers.
+ * @type boolean
+ * @default true
+ *
+ * @param dndPaceWeight
+ * @text D&D Resolution: Pace Weight
+ * @desc How far a hit is pulled from its raw formula value toward the designed hit size. 0 = raw only, 1 = designed pace only.
+ * @type number
+ * @decimals 2
+ * @default 0.70
+ *
+ * @param dndActorHits
+ * @text D&D Resolution: Hits to Fell an Actor
+ * @desc Plain hits an even-level foe needs to fell a party member at full HP. Higher = the party survives longer.
+ * @type number
+ * @default 9
+ *
+ * @param dndEnemyHits
+ * @text D&D Resolution: Hits to Fell an Enemy
+ * @desc Plain hits a party member needs to fell an even-level enemy at full HP.
+ * @type number
+ * @default 5
+ *
+ * @param dndGapPerLevel
+ * @text D&D Resolution: Gap Toughness per Level
+ * @desc Extra fraction of the designed hit count a defender gains per level it outranks its attacker.
+ * @type number
+ * @decimals 3
+ * @default 0.045
+ *
+ * @param dndGapCap
+ * @text D&D Resolution: Gap Toughness Cap
+ * @desc Ceiling on the level-gap toughness bonus. 2.5 = at most 3.5x the designed hit count.
+ * @type number
+ * @decimals 2
+ * @default 2.50
+ *
+ * @param dndContestPerPoint
+ * @text D&D Resolution: Damage per Modifier Point
+ * @desc Damage swing per point the attacker's ability modifier beats the defender's. 0.06 = 6% per point.
+ * @type number
+ * @decimals 3
+ * @default 0.060
+ *
+ * @param dndContestFloor
+ * @text D&D Resolution: Contest Floor
+ * @desc Lowest multiplier a losing ability contest can impose, so armour never zeroes a hit outright.
+ * @type number
+ * @decimals 2
+ * @default 0.60
+ *
+ * @param dndContestCeiling
+ * @text D&D Resolution: Contest Ceiling
+ * @desc Highest multiplier a winning ability contest can reach.
+ * @type number
+ * @decimals 2
+ * @default 1.50
+ *
+ * @param dndModCap
+ * @text D&D Resolution: Ability Modifier Cap
+ * @desc Ceiling on an ability modifier inside the contest. The stat system tops out at 20, so a score above that is an authoring outlier, not a real +8.
+ * @type number
+ * @default 5
+ *
+ * @param dndOutnumberContest
+ * @text D&D Resolution: Outnumbered Defence Bonus
+ * @desc Defensive ability modifier points the outnumbered side gains per extra foe it faces. Applies to a lone enemy and to a lone party member alike.
+ * @type number
+ * @decimals 2
+ * @default 1.80
+ *
+ * @param dndSkillWeightFloor
+ * @text D&D Resolution: Skill Weight Floor
+ * @desc Lowest weight a skill may carry against the attacker's own plain attack, so a feeble skill still lands something.
+ * @type number
+ * @decimals 2
+ * @default 0.10
+ *
+ * @param dndSkillWeightCeiling
+ * @text D&D Resolution: Skill Weight Ceiling
+ * @desc Highest weight a skill may carry against the attacker's own plain attack, so no single formula runs away with the fight.
+ * @type number
+ * @decimals 2
+ * @default 6.00
+ *
+ * @param dndSoftCurve
+ * @text D&D Resolution: Cap Softness
+ * @desc Sharpness of the per-hit ceiling. Higher keeps ordinary hits untouched and only bends the huge ones.
+ * @type number
+ * @default 3
+ *
+ * @param dndActorHitMaxPercent
+ * @text D&D Resolution: Max % of an Actor per Hit
+ * @desc Most of a party member's max HP a single hit may ever remove, so nobody is deleted without warning turns.
+ * @type number
+ * @decimals 3
+ * @default 0.300
+ *
+ * @param dndActorHitMaxPercentLethal
+ * @text D&D Resolution: Max % per Hit (Permadeath)
+ * @desc The same ceiling under Hardcore and Blood and Oil, where death is terminal and the 1 HP save may be gone. Tighter than the normal one.
+ * @type number
+ * @decimals 3
+ * @default 0.240
  *
  * @param invisibleHandOneShotMaxPercent
  * @text One-Shot Protection: Max % per Hit
@@ -355,10 +469,27 @@
     BSE.Params.invisibleHandGearCeiling           = Number(parameters['invisibleHandGearCeiling'] || 6);
     BSE.Params.invisibleHandWeaponDefenseEnabled   = (parameters['invisibleHandWeaponDefenseEnabled'] !== 'false');
     BSE.Params.invisibleHandWeaponDefenseScale     = Number(parameters['invisibleHandWeaponDefenseScale'] || 0.0015);
-    BSE.Params.invisibleHandWeaponDefenseThreshold = Number(parameters['invisibleHandWeaponDefenseThreshold'] || 200);
+    BSE.Params.invisibleHandWeaponDefenseThreshold = Number(parameters['invisibleHandWeaponDefenseThreshold'] || 60);
     BSE.Params.invisibleHandWeaponDefenseFloor     = Number(parameters['invisibleHandWeaponDefenseFloor'] || 0.80);
     BSE.Params.invisibleHandWeaponDefenseCeiling   = Number(parameters['invisibleHandWeaponDefenseCeiling'] || 2.50);
     BSE.Params.invisibleHandOneShotMaxPercent     = Number(parameters['invisibleHandOneShotMaxPercent'] || 0.50);
+    BSE.Params.loneMemberMaxEnemies    = Number(parameters['loneMemberMaxEnemies'] || 2);
+    BSE.Params.dndResolutionEnabled   = (parameters['dndResolutionEnabled'] !== 'false');
+    BSE.Params.dndPaceWeight          = Number(parameters['dndPaceWeight'] || 0.70);
+    BSE.Params.dndActorHits           = Number(parameters['dndActorHits'] || 9);
+    BSE.Params.dndEnemyHits           = Number(parameters['dndEnemyHits'] || 5);
+    BSE.Params.dndGapPerLevel         = Number(parameters['dndGapPerLevel'] || 0.045);
+    BSE.Params.dndGapCap              = Number(parameters['dndGapCap'] || 2.50);
+    BSE.Params.dndContestPerPoint     = Number(parameters['dndContestPerPoint'] || 0.060);
+    BSE.Params.dndContestFloor        = Number(parameters['dndContestFloor'] || 0.60);
+    BSE.Params.dndContestCeiling      = Number(parameters['dndContestCeiling'] || 1.50);
+    BSE.Params.dndOutnumberContest    = Number(parameters['dndOutnumberContest'] || 1.80);
+    BSE.Params.dndModCap              = Number(parameters['dndModCap'] || 5);
+    BSE.Params.dndSkillWeightFloor    = Number(parameters['dndSkillWeightFloor'] || 0.10);
+    BSE.Params.dndSkillWeightCeiling  = Number(parameters['dndSkillWeightCeiling'] || 6.00);
+    BSE.Params.dndSoftCurve           = Number(parameters['dndSoftCurve'] || 3);
+    BSE.Params.dndActorHitMaxPercent  = Number(parameters['dndActorHitMaxPercent'] || 0.300);
+    BSE.Params.dndActorHitMaxPercentLethal = Number(parameters['dndActorHitMaxPercentLethal'] || 0.240);
 
     // ------------------------------------------------------------------
     // 3. SHARED STATE (module-level closures, exposed via BSE.Data)
@@ -577,6 +708,47 @@
     };
 
     /**
+     * The party as the battle rules count it: the people actually travelling,
+     * the summon excluded.
+     *
+     * A summon holds the fourth slot for the length of one fight and leaves
+     * with it. It is not another traveller the world can throw monsters at, so
+     * it never turns a lone character into a group, neither for the outnumbered
+     * rules below nor for how big an encounter the map is allowed to build.
+     *
+     * Pass true for the ones still standing, false (or nothing) for the roster.
+     */
+    BSE.Helpers.realPartyMembers = function(aliveOnly) {
+        if (!$gameParty) return [];
+        const SS = window.SummonSystem;
+        const list = aliveOnly ? $gameParty.aliveMembers() : $gameParty.members();
+        return list.filter(a =>
+            a && !(SS && SS.isProxyActor && SS.isProxyActor(a.actorId())));
+    };
+
+    /**
+     * How many monsters may stand against the party at once.
+     *
+     * Every troop in the database is a single monster, so the size of a fight
+     * is decided entirely by how many roaming monsters pile in on top of the
+     * one the party walked into (section 5b of the encounters module, and the
+     * live join in MapBattleMode). Left to the general cap, a character
+     * travelling alone could be surrounded by three or more at once, which
+     * with one action against three is not a hard fight but an execution.
+     *
+     * A lone traveller is therefore never faced with more than
+     * loneMemberMaxEnemies at a time. A summon does not count toward the party
+     * here on purpose: it is spent per battle and cannot be relied on to be
+     * there when the encounter is built.
+     */
+    BSE.Helpers.maxEnemiesForParty = function() {
+        const general = BSE.Data.BATTLE_MAX_MEMBERS || 6;
+        const size = BSE.Helpers.realPartyMembers(false).length;
+        if (size <= 1) return Math.max(1, Math.min(general, BSE.Params.loneMemberMaxEnemies));
+        return general;
+    };
+
+    /**
      * A state counts as detrimental when it restricts the target, weakens one
      * of its params or drains its HP. Nothing in the database flags a state as
      * good or bad, so its traits are what we read.
@@ -647,6 +819,259 @@
         return damp + (1 - damp) * leverage;
     };
 
+    // ------------------------------------------------------------------
+    // 4b-bis. D&D STAT RESOLUTION
+    //
+    //   Every class curve and every monster entry now runs on bounded D&D
+    //   ability scores: a class opens around 8-16 and tops out at 20, a
+    //   monster reads 8-17 across the whole level range, a weapon is worth
+    //   +0 to +10 and a piece of armour +0 to +3. The damage formulas in the
+    //   database were written for the linear stat system that came before,
+    //   where ATK ran into the hundreds, and they read those bounded scores
+    //   as if they were still raw damage numbers. Two things break as a
+    //   result:
+    //
+    //   - `(1 + a.level * 0.05)` swings damage by 5.95x from level 1 to 99
+    //     while ATK only swings 1.5x, so the ability score barely decides
+    //     anything and the level number decides everything.
+    //   - `- b.def * 1.5` subtracts about 24 from a hit of 230, so armour,
+    //     the whole defensive half of the sheet, does effectively nothing.
+    //
+    //   Rather than rewrite 776 formulas and every monster entry, this layer
+    //   re-reads what they produce. The formula keeps deciding how heavy one
+    //   skill is against another, which is the one thing it is still good
+    //   at; this layer decides how much of a battler that weight removes,
+    //   the way an ability contest would.
+    //
+    //   A hit is resolved in three steps:
+    //
+    //   1. Skill weight. The raw value is measured against what the same
+    //      attacker's plain attack would do to the same target right now, so
+    //      a working worth three plain swings stays worth three plain swings
+    //      whatever the absolute numbers look like.
+    //   2. Pace. The plain swing itself is pulled, in log space, toward the
+    //      designed hit size, a share of the defender's max HP set by
+    //      dndActorHits / dndEnemyHits and widened by the level gap. This is
+    //      what stops a monster with an outlier HP pool from being either a
+    //      pushover or a wall purely by how it was authored.
+    //   3. Contest. STR against CON for a physical hit, INT against WIS for
+    //      a magical one, at dndContestPerPoint per point of difference and
+    //      bounded both ways. This is where the ability scores finally
+    //      matter: every point of a score, and every point a weapon or a
+    //      piece of armour adds to one, moves real damage.
+    //
+    //   The outnumbered side, whichever side that is, adds
+    //   dndOutnumberContest defensive modifier points per extra foe it
+    //   faces, which is the InvisibleHand's job (section 4c) carried into
+    //   the contest: its DEF/MDF boost feeds the raw formula, and a raw
+    //   formula is exactly what no longer decides much on its own. A lone
+    //   monster holding off three party members is harder to cut down for
+    //   the same reason a cornered one is, and a party member left alone
+    //   against three monsters is given the same courtesy.
+    //
+    //   Finally no single hit may take more than dndActorHitMaxPercent of a
+    //   party member, so nobody is ever deleted from full HP without turns
+    //   to answer for it. Under Hardcore and Blood and Oil, where death is
+    //   terminal and the once-per-battle 1 HP save is gone, that ceiling is
+    //   tightened rather than loosened: those modes are meant to punish a
+    //   run of bad decisions, not a single unlucky roll.
+    // ------------------------------------------------------------------
+
+    /**
+     * A monster's level as a number the damage formulas can read.
+     *
+     * Game_Enemy has no level of its own in MZ, so `a.level` in a formula
+     * evaluated for a monster is undefined, the whole expression is NaN and
+     * evalDamageFormula quietly returns 0. Nearly every damaging skill in
+     * the database carries the `(1 + a.level * 0.05)` term, so without this
+     * accessor the overwhelming majority of monster attacks land for
+     * nothing at all.
+     *
+     * `<Level:X>` answers it when the entry carries one. When it does not,
+     * the monster reads at the party's own level, so an untagged entry
+     * fights as an even match instead of as a level 0 no-op.
+     */
+    Object.defineProperty(Game_Enemy.prototype, "level", {
+        get: function() {
+            if (this._bseLevelOverride != null) return this._bseLevelOverride;
+            const tagged = BSE.Helpers.getBattlerLevel(this);
+            if (tagged > 0) return tagged;
+            return Math.max(1, Math.round(BSE.Helpers.dndReferenceLevel()));
+        },
+        set: function(value) { this._bseLevelOverride = value; },
+        configurable: true
+    });
+
+    /**
+     * The level an untagged monster reads at: the party's own effective
+     * level, or 1 outside a battle.
+     */
+    BSE.Helpers.dndReferenceLevel = function() {
+        if (!$gameParty) return 1;
+        if ($gameParty.inBattle()) {
+            if (BSE.State.ihPartyLevel === null || BSE.State.ihPartyLevel === undefined) {
+                BSE.State.ihPartyLevel = BSE.Helpers.ihComputeEffectivePartyLevel();
+            }
+            return BSE.State.ihPartyLevel;
+        }
+        const members = $gameParty.members();
+        return members.length ? BSE.Helpers.getMedianLevel(members) : 1;
+    };
+
+    /**
+     * Defensive ability modifier points the outnumbered side of the field
+     * gains, for either side. 0 when the headcount is even or better, and
+     * always 0 for a <Boss>, which is already tuned around being fought
+     * outnumbered.
+     */
+    BSE.Helpers.dndOutnumberedBonus = function(battler) {
+        if (!battler || !$gameParty || !$gameParty.inBattle() || !$gameTroop) return 0;
+        const isActor = !!(battler.isActor && battler.isActor());
+        if (!isActor && battler.enemy && ihIsBossEnemy(battler.enemy())) return 0;
+        const partyCount = BSE.Helpers.realPartyMembers(true).length;
+        const troopCount = $gameTroop.aliveMembers().length;
+        const own   = isActor ? partyCount : troopCount;
+        const other = isActor ? troopCount : partyCount;
+        if (own <= 0 || other <= own) return 0;
+        return BSE.Params.dndOutnumberContest * (other / own - 1);
+    };
+
+    /**
+     * A raw ability modifier read back into the band the stat system actually
+     * spans. Classes cap at 20 and monsters are authored to match, so a
+     * modifier past dndModCap comes from an outlier entry rather than from a
+     * battler that is genuinely that much stronger, and letting it into the
+     * contest would hand a stray level 1 monster a veteran's arm.
+     */
+    function dndClampMod(value) {
+        const cap = BSE.Params.dndModCap;
+        return Math.max(-cap, Math.min(cap, value || 0));
+    }
+
+    /**
+     * The attacker's offensive ability modifier for this action: STR for a
+     * physical hit, INT for a magical one. A two-handed grip is worth a
+     * point of it, which is what the old flat "+1.5 per modifier point"
+     * bonus was reaching for before the pace layer made a flat addition to a
+     * paced number meaningless.
+     */
+    BSE.Helpers.dndOffenseMod = function(subject, action) {
+        if (!subject) return 0;
+        let mod = dndClampMod(action && action.isMagical && action.isMagical()
+            ? subject.intMod
+            : subject.strMod);
+        if (subject.weapons && subject.weapons().some(w => w && w.note && /<TwoHanded>/i.test(w.note))) {
+            mod += 1;
+        }
+        return mod;
+    };
+
+    /**
+     * The defender's mitigating ability modifier for this action: CON
+     * against a physical hit, WIS against a magical one, plus whatever being
+     * outnumbered is worth.
+     */
+    BSE.Helpers.dndDefenseMod = function(target, action) {
+        if (!target) return 0;
+        const base = dndClampMod(action && action.isMagical && action.isMagical()
+            ? target.wisMod
+            : target.conMod);
+        return base + BSE.Helpers.dndOutnumberedBonus(target);
+    };
+
+    /**
+     * The ability contest as a damage multiplier, bounded both ways so no
+     * armour ever zeroes a hit and no attacker ever runs away with one.
+     */
+    BSE.Helpers.dndContestMultiplier = function(subject, target, action) {
+        const contest = BSE.Helpers.dndOffenseMod(subject, action) -
+                        BSE.Helpers.dndDefenseMod(target, action);
+        return Math.max(BSE.Params.dndContestFloor,
+            Math.min(BSE.Params.dndContestCeiling,
+                1 + contest * BSE.Params.dndContestPerPoint));
+    };
+
+    /**
+     * What the attacker's own plain attack would do to this target right
+     * now, read straight off the database formula. The yardstick a skill's
+     * weight is measured against; never itself displayed.
+     */
+    BSE.Helpers.dndReferenceDamage = function(subject, target) {
+        if (!subject || !target) return 0;
+        const skillId = subject.attackSkillId ? subject.attackSkillId() : 1;
+        const skill = $dataSkills[skillId] || $dataSkills[1];
+        if (!skill || !skill.damage || !skill.damage.formula) return 0;
+        try {
+            const a = subject;                  // eslint-disable-line no-unused-vars
+            const b = target;                   // eslint-disable-line no-unused-vars
+            const v = $gameVariables._data;     // eslint-disable-line no-unused-vars
+            const value = eval(skill.damage.formula);
+            return isNaN(value) ? 0 : Math.max(0, value);
+        } catch (e) {
+            return 0;
+        }
+    };
+
+    /**
+     * A saturating ceiling: ordinary hits pass through all but untouched and
+     * only the outliers bend, asymptotically, toward the cap. Preferred to a
+     * hard clamp because it never flattens two different hits onto the same
+     * number, so a better weapon or a better score always still shows.
+     */
+    function dndSoftCap(ratio, cap) {
+        if (!(cap > 0) || ratio <= 0) return ratio;
+        const n = Math.max(1, BSE.Params.dndSoftCurve);
+        return ratio / Math.pow(1 + Math.pow(ratio / cap, n), 1 / n);
+    }
+
+    /**
+     * The whole layer, applied to one already rolled HP damage value.
+     * Returns the value untouched whenever it has nothing to say: the master
+     * switch is off, the sandbox is open, the target has no HP pool, or
+     * there is no readable plain attack to measure the hit against.
+     */
+    BSE.Helpers.dndResolveDamage = function(subject, target, action, value) {
+        if (!BSE.Params.dndResolutionEnabled) return value;
+        if (!subject || !target || !(value > 0)) return value;
+        if ($gameSystem && $gameSystem._isSandboxMode) return value;
+        if (!(target.mhp > 0)) return value;
+
+        const reference = BSE.Helpers.dndReferenceDamage(subject, target);
+        // With no readable plain attack to measure against there is no scale
+        // to speak of, so the raw value is left to stand on its own.
+        if (!(reference > 0)) return value;
+
+        // 1. How heavy this skill is against the attacker's own plain swing.
+        const weight = Math.max(BSE.Params.dndSkillWeightFloor,
+            Math.min(BSE.Params.dndSkillWeightCeiling, value / reference));
+
+        // 2. The designed size of that plain swing against this defender,
+        //    widened by however far the defender outranks the attacker.
+        const gap = Math.min(BSE.Params.dndGapCap,
+            Math.max(0, (target.level || 0) - (subject.level || 0)) * BSE.Params.dndGapPerLevel);
+        const isActorTarget = !!(target.isActor && target.isActor());
+        const hits = Math.max(1,
+            (isActorTarget ? BSE.Params.dndActorHits : BSE.Params.dndEnemyHits) * (1 + gap));
+        const designed = target.mhp / hits;
+
+        // Pulled toward the designed size in log space, so the raw formula
+        // still tilts the result without being able to run away with it.
+        const w = Math.max(0, Math.min(1, BSE.Params.dndPaceWeight));
+        const paced = Math.pow(Math.max(1, reference), 1 - w) * Math.pow(designed, w);
+
+        // 3. The ability contest.
+        let resolved = paced * weight * BSE.Helpers.dndContestMultiplier(subject, target, action);
+
+        // Nobody is deleted from full HP without turns to answer for it.
+        if (isActorTarget) {
+            const cap = BSE.Helpers.isForgivingDeathMode()
+                ? BSE.Params.dndActorHitMaxPercent
+                : BSE.Params.dndActorHitMaxPercentLethal;
+            resolved = dndSoftCap(resolved / target.mhp, cap) * target.mhp;
+        }
+        return Math.max(1, resolved);
+    };
+
     const _Game_Action_makeDamageValue_BSE = Game_Action.prototype.makeDamageValue;
     Game_Action.prototype.makeDamageValue = function(target, critical) {
         const value = _Game_Action_makeDamageValue_BSE.call(this, target, critical);
@@ -669,10 +1094,13 @@
                 return value;
             }
         } else {
+            // The bounded ability scores are read as ability scores here,
+            // before anything that scales the result further (section 4b-bis).
+            finalValue = BSE.Helpers.dndResolveDamage(this.subject(), target, this, finalValue);
             const factor = BSE.Helpers.levelDampingFactor(this.subject(), target, this, critical);
             if (factor < 1) {
                 // A damped hit still lands: chip damage is the point, zero is not.
-                finalValue = Math.max(1, value * factor);
+                finalValue = Math.max(1, finalValue * factor);
             }
         }
         // One-shot protection: no single hit may deal more than a configurable
@@ -684,7 +1112,64 @@
             const maxPerHit = Math.max(1, Math.round(target.mhp * BSE.Params.invisibleHandOneShotMaxPercent));
             if (finalValue > maxPerHit) finalValue = maxPerHit;
         }
-        return finalValue;
+
+        // The two-handed grip is worth a point of the attacker's offensive
+        // ability modifier, spent inside the contest in dndOffenseMod. It used
+        // to be added here as a flat handful of damage, which a paced hit no
+        // longer notices.
+
+        return Math.round(finalValue);
+    };
+
+    // ==================================================================
+    // D&D / PATHFINDER ABILITY MODIFIERS & BACKGROUND COMBAT SCALING
+    // ==================================================================
+    Game_BattlerBase.prototype.abilityMod = function(paramId) {
+        return Math.floor((this.param(paramId) - 10) / 2);
+    };
+
+    Object.defineProperties(Game_BattlerBase.prototype, {
+        strMod: { get() { return this.abilityMod(2); }, configurable: true }, // ATK -> STR
+        conMod: { get() { return this.abilityMod(3); }, configurable: true }, // DEF -> CON
+        intMod: { get() { return this.abilityMod(4); }, configurable: true }, // MAT -> INT
+        wisMod: { get() { return this.abilityMod(5); }, configurable: true }, // MDF -> WIS
+        dexMod: { get() { return this.abilityMod(6); }, configurable: true }, // AGI -> DEX
+        psiMod: { get() { return this.abilityMod(7); }, configurable: true }  // LUK -> PSI
+    });
+
+    // Precision & Fortune: DEX and PSI increase Critical Rate (cri)
+    const _criDesc = Object.getOwnPropertyDescriptor(Game_BattlerBase.prototype, "cri");
+    const _origCri = _criDesc ? _criDesc.get : null;
+    Object.defineProperty(Game_BattlerBase.prototype, "cri", {
+        get: function() {
+            const base = _origCri ? _origCri.call(this) : this.xparam(2);
+            const dexBonus = Math.max(0, this.dexMod) * 0.01;   // +1% per DEX mod
+            const psiBonus = Math.max(0, this.psiMod) * 0.015;  // +1.5% per PSI mod
+            return Math.max(0, base + dexBonus + psiBonus);
+        },
+        configurable: true
+    });
+
+    // Fortitude: CON increases Critical Evasion (cev)
+    const _cevDesc = Object.getOwnPropertyDescriptor(Game_BattlerBase.prototype, "cev");
+    const _origCev = _cevDesc ? _cevDesc.get : null;
+    Object.defineProperty(Game_BattlerBase.prototype, "cev", {
+        get: function() {
+            const base = _origCev ? _origCev.call(this) : this.xparam(3);
+            const conBonus = Math.max(0, this.conMod) * 0.015;  // +1.5% crit evasion per CON mod
+            return Math.max(0, base + conBonus);
+        },
+        configurable: true
+    });
+
+    // Critical Multiplier scaling: Base 2.0x + (Primary Mod * 0.05x)
+    const _Game_Action_applyCritical_BSE = Game_Action.prototype.applyCritical;
+    Game_Action.prototype.applyCritical = function(damage) {
+        const subject = this.subject();
+        if (!subject) return _Game_Action_applyCritical_BSE ? _Game_Action_applyCritical_BSE.call(this, damage) : damage * 2;
+        const primeMod = Math.max(0, Math.max(subject.strMod || 0, subject.dexMod || 0, subject.intMod || 0));
+        const multiplier = 2.0 + (primeMod * 0.05);
+        return Math.round(damage * multiplier);
     };
 
     // ------------------------------------------------------------------
@@ -776,9 +1261,7 @@
      * plus the average gear bonus, summon excluded.
      */
     BSE.Helpers.ihComputeEffectivePartyLevel = function() {
-        const SS = window.SummonSystem;
-        const party = $gameParty.members().filter(a =>
-            a && !(SS && SS.isProxyActor && SS.isProxyActor(a.actorId())));
+        const party = BSE.Helpers.realPartyMembers(false);
         if (!party.length) return 1;
         const median = BSE.Helpers.getMedianLevel(party);
         const gearTotal = party.reduce((sum, a) => sum + BSE.Helpers.ihGearLevelBonus(a), 0);
@@ -794,9 +1277,7 @@
      * party, used by the weapon-based defense adjustment below.
      */
     BSE.Helpers.ihMaxWeaponDamage = function() {
-        const SS = window.SummonSystem;
-        const party = $gameParty.members().filter(a =>
-            a && !(SS && SS.isProxyActor && SS.isProxyActor(a.actorId())));
+        const party = BSE.Helpers.realPartyMembers(false);
         if (!party.length) return 0;
         let maxDamage = 0;
         for (const actor of party) {
@@ -831,8 +1312,16 @@
      * become trivially easy. When weapon damage is below the threshold,
      * no adjustment is made (multiplier of 1).
      */
-    BSE.Helpers.ihWeaponDamageDefenseMultiplier = function() {
+    BSE.Helpers.ihWeaponDamageDefenseMultiplier = function(enemy) {
         if (!BSE.Params.invisibleHandWeaponDefenseEnabled) return 1;
+        if (!$gameParty || !$gameParty.inBattle() || !$gameTroop) return 1;
+
+        // Dynamic Defense is active ONLY when the enemy is outnumbered (e.g. 3v1, 2v1, 3v2)
+        const aliveParty = BSE.Helpers.realPartyMembers(true).length;
+        const aliveEnemies = $gameTroop.aliveMembers().length;
+        if (aliveEnemies <= 0 || aliveParty <= aliveEnemies) return 1;
+        if (enemy && enemy.enemy && ihIsBossEnemy(enemy.enemy())) return 1;
+
         const maxWeaponDmg = BSE.Helpers.ihMaxWeaponDamage();
         if (maxWeaponDmg <= 0) return 1;
         const threshold = Math.max(1, BSE.Params.invisibleHandWeaponDefenseThreshold);
@@ -851,92 +1340,87 @@
      * all - that reads as "unwinnable", not "very hard". Offense keeps the
      * full curve, so a much higher-level enemy still hits like a truck.
      */
-    BSE.Helpers.ihLevelGapMultiplier = function(enemyLevel, partyLevel, offense) {
-        if (!enemyLevel || enemyLevel <= 0) return 1;
+    /**
+     * Stat multiplier from the level gap alone.
+     * 1v1 at same level is balanced (mult = 1).
+     * Gap of 1-4 levels provides gentle challenge.
+     * Gap of 5-6+ levels rapidly scales up health so fighting high-level enemies is much harder.
+     */
+    BSE.Helpers.ihLevelGapMultiplier = function(enemyLevel, partyLevel) {
+        if (!enemyLevel || enemyLevel <= 0 || !partyLevel || partyLevel <= 0) return 1;
         const gap = enemyLevel - partyLevel;
         if (gap <= 0) {
-            const span = Math.max(1, BSE.Params.invisibleHandUnderSpan);
-            const t = Math.min(1, -gap / span);
-            return 1 - t * (1 - BSE.Params.invisibleHandUnderFloor);
+            return Math.max(0.75, 1 + gap * 0.02);
         }
-        const edge = Math.max(0.01, BSE.Params.invisibleHandGraceEdge);
-        let mult;
-        if (gap <= edge) {
-            mult = 1 + (gap / edge) * (BSE.Params.invisibleHandGraceMult - 1);
-        } else {
-            const over = gap - edge;
-            mult = BSE.Params.invisibleHandGraceMult +
-                BSE.Params.invisibleHandSteepK * Math.pow(over, BSE.Params.invisibleHandSteepCurve);
+        if (gap <= 4) {
+            return 1 + gap * 0.05;
         }
-        if (!offense) {
-            mult = 1 + (mult - 1) * BSE.Params.invisibleHandGapDefenseCurve;
-        }
-        return mult;
+        // At gap >= 5, enemy becomes substantially tougher
+        const over = gap - 4;
+        return 1.20 + 0.15 * Math.pow(over, 1.4);
     };
 
     /**
-     * Stat multiplier from being outnumbered. Alive headcounts only, summon
-     * excluded from the party side. 1 (no change) whenever the party does
-     * not outnumber what is left standing, or against a <Boss>.
+     * Stat multiplier from being outnumbered.
+     * ONLY applies to enemy Defense (DEF/MDF) when the party outnumbers what is left standing.
+     * For 1v1, 2v2, 3v3 (equal or party outnumbered), returns 1.
+     * For 3v1 (party outnumbers single foe), scales defense so the lone foe can sustain attacks and take actions.
      */
-    BSE.Helpers.ihOutnumberMultiplier = function(enemy, offense) {
-        const SS = window.SummonSystem;
-        const aliveParty = $gameParty.aliveMembers().filter(a =>
-            !(SS && SS.isProxyActor && SS.isProxyActor(a.actorId()))).length;
+    BSE.Helpers.ihOutnumberMultiplier = function(enemy) {
+        if (!enemy) return 1;
+        const aliveParty = BSE.Helpers.realPartyMembers(true).length;
         const aliveEnemies = $gameTroop.aliveMembers().length;
         if (aliveEnemies <= 0 || aliveParty <= aliveEnemies) return 1;
-        if (ihIsBossEnemy(enemy.enemy())) return 1;
+        if (enemy.enemy && ihIsBossEnemy(enemy.enemy())) return 1;
         const ratio = aliveParty / aliveEnemies;
-        const full = 1 + (ratio - 1) * BSE.Params.invisibleHandOutnumberFactor;
-        return offense ? 1 + (full - 1) * BSE.Params.invisibleHandOutnumberOffenseCurve : full;
+        const factor = BSE.Params.invisibleHandOutnumberFactor || 0.50;
+        return 1 + (ratio - 1) * factor;
     };
 
     /**
-     * The combined multiplier InvisibleHand applies to one enemy param. 1
-     * (no-op) outside an active battle, for anything but ATK/DEF/MAT/MDF, or
-     * for an enemy no longer in the current troop (a database-only preview,
-     * e.g. the Bestiary or the 3D viewer).
+     * Invisible Hand: Modulates ONLY enemy physical and magical defense (DEF: paramId 3, MDF: paramId 5)
+     * when the enemy is outnumbered, giving solo/outnumbered enemies the durability to take actions before dying.
+     * HP (param 0), MP (param 1), ATK (param 2), MAT (param 4), AGI (param 6), and LUK (param 7) remain untouched.
      */
     BSE.Helpers.ihEnemyParamMultiplier = function(enemy, paramId) {
         if (!BSE.Params.invisibleHandEnabled) return 1;
+        // Strictly only modulates physical defense (3) and magical defense (5)
+        if (paramId !== 3 && paramId !== 5) return 1;
         if (!$gameParty || !$gameParty.inBattle() || !$gameTroop) return 1;
-        const offense = IH_OFFENSE_PARAMS.includes(paramId);
-        if (!offense && !IH_DEFENSE_PARAMS.includes(paramId)) return 1;
         if (!$gameTroop.members().includes(enemy)) return 1;
+
+        // Dynamic Defense is active ONLY when the enemy is outnumbered
+        const aliveParty = BSE.Helpers.realPartyMembers(true).length;
+        const aliveEnemies = $gameTroop.aliveMembers().length;
+        if (aliveEnemies <= 0 || aliveParty <= aliveEnemies) return 1;
+        if (enemy && enemy.enemy && ihIsBossEnemy(enemy.enemy())) return 1;
+
         let mult = 1;
-        // Level-gap scaling: only when the sub-switch is on
+
+        // 1. Dynamic Defense based on party weapon damage when outnumbered
+        if (BSE.Params.invisibleHandWeaponDefenseEnabled) {
+            mult *= BSE.Helpers.ihWeaponDamageDefenseMultiplier(enemy);
+        }
+
+        // 2. Outnumber defense scaling
+        if (BSE.Params.invisibleHandOutnumberEnabled) {
+            mult *= BSE.Helpers.ihOutnumberMultiplier(enemy);
+        }
+
+        // 3. Level-gap defense scaling (gentle curve so high-level outnumbered enemies hold up against high-level parties)
         if (BSE.Params.invisibleHandLevelGapEnabled) {
             if (BSE.State.ihPartyLevel === null || BSE.State.ihPartyLevel === undefined) {
                 BSE.State.ihPartyLevel = BSE.Helpers.ihComputeEffectivePartyLevel();
             }
             const enemyLevel = BSE.Helpers.getBattlerLevel(enemy);
-            const gapMult = BSE.Helpers.ihLevelGapMultiplier(enemyLevel, BSE.State.ihPartyLevel, offense);
-            mult *= gapMult;
+            const levelMult = BSE.Helpers.ihLevelGapMultiplier(enemyLevel, BSE.State.ihPartyLevel);
+            if (levelMult > 1) {
+                const gapCurve = BSE.Params.invisibleHandGapDefenseCurve || 0.50;
+                mult *= 1 + (levelMult - 1) * gapCurve;
+            }
         }
-        // Outnumber scaling: only when the sub-switch is on
-        if (BSE.Params.invisibleHandOutnumberEnabled) {
-            const outMult = BSE.Helpers.ihOutnumberMultiplier(enemy, offense);
-            mult *= outMult;
-        }
-        // Weapon-based defense adjustment: when the party's weapon damage
-        // potential exceeds the baseline threshold, enemy DEF/MDF are
-        // scaled up so a powerful armament does not trivialise fights.
-        if (!offense && IH_DEFENSE_PARAMS.includes(paramId)) {
-            const weaponMult = BSE.Helpers.ihWeaponDamageDefenseMultiplier();
-            mult *= weaponMult;
-        }
-        // Enemy Difficulty slider integration: the options slider (0..100,
-        // default 50) modulates the invisible hand's output so the player
-        // can tune how severely the auto-balancing system scales enemy
-        // ATK/DEF/MAT/MDF. At the default position the slider contributes
-        // nothing — the invisible hand runs exactly as configured.
-        if (typeof GameOptions !== 'undefined' && GameOptions.enemyStatMultiplier) {
-            const sliderMult = GameOptions.enemyStatMultiplier();
-            const diffFactor = 1 + (sliderMult - 1) * 0.5;
-            mult *= diffFactor;
-        }
-        return Math.max(BSE.Params.invisibleHandStatFloor,
-            Math.min(BSE.Params.invisibleHandStatCeiling, mult));
+
+        return Math.max(BSE.Params.invisibleHandStatFloor, Math.min(BSE.Params.invisibleHandStatCeiling, mult));
     };
 
     // Chains onto whatever paramBase currently is (e.g. GameOptions.js's own
@@ -950,12 +1434,139 @@
         return Math.round(base * mult);
     };
 
+    /**
+     * Is this overlay actually on screen?
+     *
+     * Most of the panels below are not built on demand and thrown away: the
+     * HTML message box and its choice list are created with the map's windows
+     * (DialogueSystem) and then stay in the DOM for the whole scene, merely
+     * hidden between lines. Asking whether the ELEMENT EXISTS therefore
+     * answers yes the entire time the party is walking around, which is what
+     * silently killed every fight: walking into a monster, the startBattle
+     * plugin command and BattleManager.setup itself all read the answer as
+     * "a menu is open". Only an overlay that is actually displayed blocks a
+     * battle.
+     */
+    BSE.Helpers.isOverlayShown = function(id) {
+        if (typeof document === "undefined") return false;
+        const el = document.getElementById(id);
+        if (!el) return false;
+        const style = (typeof window !== "undefined" && window.getComputedStyle)
+            ? window.getComputedStyle(el) : el.style;
+        if (!style) return true;
+        return style.display !== "none" && style.visibility !== "hidden";
+    };
+
+    /**
+     * Returns true if any game state prohibits initiating a battle:
+     * - Player is sleeping or waiting (sleep/wait menu open, active sleep/wait sequence, cryo sequence)
+     * - World map is open (fullscreen map overlay)
+     * - Fast travel map is open
+     * - Talking to NPCs (active message window, NPC empathize / dialogue overlays)
+     */
+    const _computeBattleInitiationBlocked = function() {
+        if ($gameParty && typeof $gameParty.inBattle === "function" && $gameParty.inBattle()) return false;
+        const scene = SceneManager._scene;
+
+        // 1. Sleeping or waiting
+        if (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._sleepMenuOpen) return true;
+        if (scene) {
+            if (scene._sleepSequenceState && scene._sleepSequenceState > 0) return true;
+            if (scene._sleepAdvance != null) return true;
+            if (scene._cryoSequenceState && scene._cryoSequenceState > 0) return true;
+            if (scene._workSequenceActive === true) return true;
+            if (scene._sleepMenuEl != null) return true;
+            if (scene._cryoOverlayEl != null) return true;
+        }
+        if (typeof document !== "undefined") {
+            if (BSE.Helpers.isOverlayShown("sleep-menu-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("cryo-overlay")) return true;
+        }
+
+        // 2. Map is opened (fullscreen map)
+        if (typeof window.isWorldMapFullscreen === "function" && window.isWorldMapFullscreen()) return true;
+        if (typeof document !== "undefined") {
+            if (BSE.Helpers.isOverlayShown("world-map-ui-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("map-viewer-overlay")) return true;
+        }
+
+        // 3. Fast travel map is opened
+        if (typeof $gameSystem !== "undefined" && $gameSystem && typeof $gameSystem.getFastTravelData === "function") {
+            const ftData = $gameSystem.getFastTravelData();
+            if (ftData && ftData.isActive) return true;
+        }
+        if (typeof document !== "undefined") {
+            if (BSE.Helpers.isOverlayShown("fast-travel-ui-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("travel-ui-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("travel-screen")) return true;
+        }
+
+        // 4. Talking to other NPCs
+        if (typeof $gameMessage !== "undefined" && $gameMessage && typeof $gameMessage.isBusy === "function" && $gameMessage.isBusy()) {
+            return true;
+        }
+        if (scene && typeof scene.isMessageWindowActive === "function" && scene.isMessageWindowActive()) {
+            return true;
+        }
+        if (scene && scene._messageWindow && typeof scene._messageWindow.isOpen === "function" && (scene._messageWindow.isOpen() || scene._messageWindow.isOpening())) {
+            return true;
+        }
+        if (window.NPCEmpathize && window.NPCEmpathize.Scene_NPCEmpathize && scene instanceof window.NPCEmpathize.Scene_NPCEmpathize) {
+            return true;
+        }
+        if (typeof document !== "undefined") {
+            if (BSE.Helpers.isOverlayShown("html-msg-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("html-choice-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("npc-dialogue-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("npc-empathize-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("npc-conversation-overlay")) return true;
+            if (BSE.Helpers.isOverlayShown("empathize-dialog-overlay")) return true;
+        }
+
+        return false;
+    };
+
+    // The answer is asked for every frame the party walks (Scene_Map's own
+    // encounter tick) and reading a computed style is a layout question, so it
+    // is worked out once per frame and handed back to everyone else who asks
+    // in that frame.
+    let _blockedFrame = -1;
+    let _blockedValue = false;
+    BSE.Functions.isBattleInitiationBlocked = function() {
+        const frame = (typeof Graphics !== "undefined" && Graphics.frameCount) || 0;
+        if (frame !== _blockedFrame) {
+            _blockedFrame = frame;
+            _blockedValue = _computeBattleInitiationBlocked();
+        }
+        return _blockedValue;
+    };
+    window.isBattleInitiationBlocked = BSE.Functions.isBattleInitiationBlocked;
+
     // Clear the cached party level at the start of every battle so the next
     // paramBase call recomputes it fresh instead of reusing the last fight's.
     const _BattleManager_setup_ih = BattleManager.setup;
     BattleManager.setup = function(troopId, canEscape, canLose) {
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) {
+            return;
+        }
         BSE.State.ihPartyLevel = null;
         _BattleManager_setup_ih.call(this, troopId, canEscape, canLose);
+    };
+
+    const _Scene_Map_updateEncounter_BSE = Scene_Map.prototype.updateEncounter;
+    Scene_Map.prototype.updateEncounter = function() {
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) {
+            return;
+        }
+        _Scene_Map_updateEncounter_BSE.call(this);
+    };
+
+    const _Game_Player_executeEncounter_BSE = Game_Player.prototype.executeEncounter;
+    Game_Player.prototype.executeEncounter = function() {
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) {
+            return false;
+        }
+        return _Game_Player_executeEncounter_BSE.call(this);
     };
 
     // ------------------------------------------------------------------
@@ -998,6 +1609,7 @@
     // 7. startPersistentBattle (shared core function)
     // ------------------------------------------------------------------
     BSE.Functions.startPersistentBattle = function(troopId, persistentId, eventId, mapId) {
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) return;
         const pData = BSE.State.persistentEnemyData;
         if (!pData[persistentId]) {
             pData[persistentId] = { troopId: troopId, enemyHp: {} };
@@ -1069,6 +1681,7 @@
     PluginManager.registerCommand(pluginName, "startBattle", function(args) {
         if ($gamePlayer.isInVehicle()) return;
         if ($gameSystem.getBattleCooldown() > 0) return;
+        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) return;
         $gameSwitches.setValue(115, true);
 
         const eventId = Number(args.eventId) || this._eventId;

@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Stealing System Plugin
 // Version: 1.0.1
 //=============================================================================
@@ -106,7 +106,8 @@
         static calculateStealChance(item, agility) {
             if (this.isEmptyWorld()) return 100;
             const baseChance = 50;
-            const agilityBonus = agility * 0.5; // 0.5% per point of agility
+            const dexMod = Math.floor(((agility || 10) - 10) / 2);
+            const agilityBonus = dexMod * 5; // 5% per point of DEX modifier
             const value = item.price || 0;
             const weight = DataManager.getItemWeight(item);
             
@@ -125,13 +126,20 @@
             return Math.max(5, Math.min(95, Math.floor(chance)));
         }
 
-        static performSteal(chance) {
+        static performSteal(chance, options = {}) {
             // Every attempt teaches, caught or not. Losing the item is already
             // punishment enough without also learning nothing from it.
             if (window.SpecializationXP) {
                 window.SpecializationXP.awardCapped('Pickpocketing', 1, { soloist: true });
             }
-            return Math.random() * 100 < chance;
+            if (window.Dice3D && typeof window.Dice3D.rollPercentage === 'function') {
+                return window.Dice3D.rollPercentage(chance, {
+                    actionName: options.actionName || 'Steal Attempt',
+                    statName: 'DEX',
+                    modifier: options.modifier || 0
+                }).then(res => res.success);
+            }
+            return Promise.resolve(Math.random() * 100 < chance);
         }
     }
 

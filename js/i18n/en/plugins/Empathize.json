@@ -655,5 +655,12 @@
     "possessive": "They hold what is theirs a little tighter and shake their head.",
     "chaotic": "They agree, then disagree, then wander off mid-sentence.",
     "greedy": "They name a price you will never meet, which is rather the point."
-  }
+  },
+  "empathizeBtn": "Empathize",
+  "leaderSourceParty": "Travelling with you",
+  "leaderSourceRetired": "Benched in this world",
+  "leaderSourcePast": "Once travelled with a party of this world",
+  "leaderSourcePreset": "Playable, as they begin",
+  "presetCharacterBadge": "Playable dossier",
+  "leftPartyLbl": "Left"
 }

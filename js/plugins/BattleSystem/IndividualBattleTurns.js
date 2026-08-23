@@ -145,20 +145,9 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
   // the slots the party won are held and the members are dealt into them in
   // their marching order, or in the order pinned from Dynamics -> Turn Order.
   // Rebuilding this each round keeps the ordering stable even if the queue was
-  // disturbed during the previous one.
-  //
-  // Exception: a single remaining enemy is outnumbered on action economy by
-  // however many party members are still standing, so instead of the one
-  // action everyone else gets, it acts again after every party member's turn.
-  // That keeps a solo fight from being decided in a single exchange. A
-  // <Boss> tagged enemy is exempt: bosses are already tuned around getting
-  // one action per round, so a lone boss keeps the default pacing.
-  const isBossEnemy = battler => {
-    if (!battler || !battler.enemy) return false;
-    const data = battler.enemy();
-    return !!(data && data.meta && data.meta.Boss);
-  };
-
+  // disturbed during the previous one. However lopsided the head count, nobody
+  // gets a second slot: an outnumbered enemy is never handed an extra action to
+  // compensate.
   BattleManager.makeITBSRound = function() {
     const aliveParty = $gameParty.aliveMembers();
     const aliveTroop = $gameTroop.aliveMembers();
@@ -174,14 +163,6 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
     const order = window.BattleTurnOrder
       ? window.BattleTurnOrder.members().filter(mem => aliveParty.includes(mem))
       : null;
-
-    if (aliveTroop.length === 1 && !isBossEnemy(aliveTroop[0])) {
-      const lone = aliveTroop[0];
-      const party = (order && order.length) ? order : aliveParty;
-      const round = [];
-      party.forEach(actor => { round.push(actor); round.push(lone); });
-      return round.length ? round : aliveTroop;
-    }
 
     const all = aliveParty.concat(aliveTroop);
     all.sort((a, b) => (b._battleAgi || 0) - (a._battleAgi || 0));

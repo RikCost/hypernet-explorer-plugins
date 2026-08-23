@@ -111,13 +111,15 @@
     "legendLocked": "Bloccata",
     "locked": "BLOCCATA",
     "lockedBy": "Si sblocca da: {skills}",
+    "lockedByCount": "Ne servono ancora {need} fra: {skills}",
     "lockedHint": "Nulla di ciò che conosci confina con questa abilità.",
     "lockedBySchool": "Sigillata nel cuore del cerchio. Occorre conoscere tutta la scuola; mancano ancora: {skills}",
     "lockedToast": "{skill} non confina con nulla che questo allievo conosca."
   },
   "atlas": {
     "progress": "{learned} di {total} apprese",
-    "hint": "Trascina per spostarti · Rotella per lo zoom · Shift per il cerchio intero",
+    "hint": "Trascina per ruotare · Rotella per lo zoom · Shift per tutta la scuola",
+    "kp": "{kp} KC",
     "schoolOf": "{index} / {total}",
     "held": "Hai {knowledge} KC"
   },

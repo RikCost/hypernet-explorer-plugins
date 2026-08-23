@@ -1966,6 +1966,10 @@
 
     _dispose(group) {
       if (!group) return;
+      // Exotic bodies (black holes, remnants, theoretical objects) are built
+      // by Scene3D_Cosmos and own their whole subtree, so they release
+      // themselves rather than through the _mats/_geos bookkeeping.
+      if (group._disposeCustom) { group._disposeCustom(); return; }
       if (group._textures) group._textures.forEach((t) => t && t.dispose && t.dispose());
       if (group._mats) group._mats.forEach((m) => m && m.dispose && m.dispose());
       if (group._geos) group._geos.forEach((g) => g && g.dispose && g.dispose());
@@ -2071,6 +2075,135 @@
         return true;
       } catch (e) {
         console.error("[GalaxySim Renderer3D] renderPlanet failed:", e);
+        return false;
+      }
+    },
+
+    // ------------------------------------------------------------------
+    // A system's central body as its OWN model, not as a generic sphere: the
+    // black hole builder for a hole, the exotic roster (remnants, brown
+    // dwarfs, protostars, theoretical objects...) for anything Scene3D_Cosmos
+    // knows how to build, a dark world for a rogue planet, and the ordinary
+    // star otherwise. Returns a cached group carrying _half (the orthographic
+    // half-frustum that frames it) and an optional _animate(t).
+    // ------------------------------------------------------------------
+    _buildSystemBody(system) {
+      const Cosmos = window.GalaxySim && window.GalaxySim.Scene3DCosmos;
+      const type = (system && system.type) || "";
+      const isHole = !!(system && system.blackHoleType) ||
+        type === "BLACK_HOLE" || type === "SUPERMASSIVE_BLACK_HOLE";
+      const grand = (system && system.blackHoleType === "hypermassive") ||
+        (system && system.blackHoleType === "supermassive") ||
+        type === "SUPERMASSIVE_BLACK_HOLE";
+      const seedOf = (salt) => {
+        const name = (system && system.name) || "?";
+        let h = salt;
+        for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+        return h;
+      };
+      if (isHole && Cosmos && Cosmos.buildBlackHole) {
+        const hole = Cosmos.buildBlackHole({
+          radius: 1, seed: seedOf(991),
+          jets: system.feeding ? true : (system.blackHoleType === "regular" ? false : undefined),
+          jetChance: grand ? 0.8 : 0.45,
+          style: grand ? "interstellar" : undefined,
+        });
+        if (hole) {
+          const g = hole.group;
+          // Framed on the disk, not on the jets: a beam runs out to eight
+          // radii and would shrink the hole itself to a speck.
+          g._half = grand ? 9.5 : 4.6;
+          g._animate = hole.animate;
+          g._disposeCustom = hole.dispose;
+          return g;
+        }
+      }
+      if (!isHole && type === "ROGUE_PLANET") {
+        const rogue = this._buildPlanet({
+          name: (system && system.name) || "rogue",
+          type: (system && system.planetType) || "rocky",
+          color: "#3a3f4a", radius: 1,
+        }, this._seedFor(system, null));
+        if (rogue) return rogue;
+      }
+      if (!isHole && Cosmos && Cosmos.isExoticStarType && Cosmos.isExoticStarType(type) &&
+        Cosmos.buildExoticStar) {
+        const exotic = Cosmos.buildExoticStar(system, { radius: 1, seed: seedOf(557) });
+        if (exotic) {
+          const g = exotic.group;
+          const box = new THREE.Box3().setFromObject(g);
+          const size = box.getSize(new THREE.Vector3());
+          const reach = Math.max(size.x, size.y, size.z) / 2;
+          g._half = Math.max(1.25, Math.min(6, reach * 1.12));
+          g._animate = exotic.animate;
+          g._disposeCustom = exotic.dispose;
+          return g;
+        }
+      }
+      return this._buildStar(system, this._seedFor(system, null));
+    },
+
+    _systemBodyKey(system) {
+      return "B:" + ((system && system.name) || "?") + ":" + ((system && system.type) || "") +
+        ":" + ((system && system.blackHoleType) || "");
+    },
+
+    /**
+     * The orthographic half-frustum this body needs, in units of the body's
+     * own radius: 1.22 for an ordinary star, but nearly ten for a Gargantua
+     * whose disk dwarfs its horizon. A caller that wants the WHOLE object on
+     * screen sizes the body down by this (see the ship background). Null when
+     * there is no WebGL to build it with.
+     */
+    systemBodyHalf(system) {
+      if (!this.init()) return null;
+      try {
+        const obj = this._get(this._systemBodyKey(system), () => this._buildSystemBody(system));
+        return obj ? obj._half : null;
+      } catch (e) {
+        return null;
+      }
+    },
+
+    /**
+     * Draw a system's central body onto a 2D context, whatever kind of object
+     * it is (see _buildSystemBody). Same contract as renderStar, which stays
+     * as the plain-star fast path.
+     */
+    renderSystemBody(ctx, x, y, radius, system, time) {
+      if (!this.init()) return false;
+      try {
+        const obj = this._get(this._systemBodyKey(system), () => this._buildSystemBody(system));
+        if (!obj) return false;
+        const t = time || 0;
+        if (obj._animate) obj._animate(t);
+        else if (obj._isStar) {
+          obj._body.rotation.y = t * 0.05;
+          if (obj._mats[0].map) {
+            obj._mats[0].map.offset.x = (t * 0.01) % 1;
+            obj._mats[0].map.offset.y = Math.sin(t * 0.05) * 0.02;
+          }
+          obj._mats[1].opacity = 0.38 + Math.sin(t * 2.5) * 0.06;
+        } else if (obj._body) {
+          // A rogue world just turns.
+          obj._body.rotation.y = t * 0.12 + (obj._phase || 0);
+        }
+
+        this._setFrustum(obj._half);
+        this.scene.add(obj);
+        if (window.PSXShader) {
+          window.PSXShader.render(this.renderer, this.scene, this.camera);
+        } else {
+          this.renderer.render(this.scene, this.camera);
+        }
+        this.scene.remove(obj);
+
+        const drawSize = radius * 2 * obj._half;
+        ctx.drawImage(this.renderer.domElement,
+          x - drawSize / 2, y - drawSize / 2, drawSize, drawSize);
+        return true;
+      } catch (e) {
+        console.error("[GalaxySim Renderer3D] renderSystemBody failed:", e);
         return false;
       }
     },

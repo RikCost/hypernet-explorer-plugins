@@ -92,13 +92,19 @@
   // CharPresets.skin.<key>; only the walk-cycle sheets qualify, since a skin is
   // what the player then walks around as.
   // `folder` names the sprite's own folder for the few sheets that do not sit
-  // in Skab: the pose sheets live in img/characters/Animations. The bust is
-  // unaffected either way, since a bust is one flat folder.
+  // in Skab: the pose sheets live in img/characters/Animations.
+  //
+  // A dossier's portraits live in img/busts/presets/ rather than in the flat
+  // img/busts/ the rest of the cast draws from, so the bust gallery (which
+  // scans that one folder and never recurses) cannot offer somebody else the
+  // face of a pre-made character. The prefix travels with the name because
+  // every bust reader in the game builds its path as img/busts/<name>.png.
+  const PRESET_BUSTS = "presets/";
   const skin = (key, asset, folder) => ({
     key,
     sprite: (folder || "Skab") + "/!$" + asset,
     spriteIndex: 0,
-    busts: asset,
+    busts: PRESET_BUSTS + asset,
   });
 
   // i18n-ignore-start: proper names, nation keys into HistorySimulator_COUNTRIES
@@ -136,7 +142,7 @@
         { id: 285, level: 3 }, // Truck Driving
         { id: 96, level: 2 },  // Electrical Wiring
       ],
-      busts: "Bubba",
+      busts: "presets/Bubba",
     },
     {
       id: 2,
@@ -179,7 +185,7 @@
         { id: 73, level: 3 },  // Spell Concentration
         { id: 164, level: 2 }, // Lucid Dreaming
       ],
-      busts: "Em",
+      busts: "presets/Em",
       // The one dossier whose owner was modelled in 3D. Every screen that would
       // draw her flat bust as a portrait draws this model instead (the status
       // sheet and the Empathize panel), so her face is the same rig the rest of
@@ -222,7 +228,7 @@
         { id: 259, level: 3 }, // Stock Trading
         { id: 186, level: 2 }, // Negotiation
       ],
-      busts: "Selene",
+      busts: "presets/Selene",
     },
     {
       id: 4,
@@ -256,7 +262,7 @@
         { id: 277, level: 2 }, // Theology
         { id: 218, level: 2 }, // Public Speaking
       ],
-      busts: "Andreotti",
+      busts: "presets/Andreotti",
       skins: [
         skin("statesman", "Andreotti"),
         skin("arcane", "AndreottiArcane"),
@@ -292,7 +298,7 @@
         { id: 202, level: 4 }, // Physics
         { id: 429, level: 3 }, // Radio Astronomy
       ],
-      busts: "MargheritaHack",
+      busts: "presets/MargheritaHack",
       skins: [
         skin("astronomer", "MargheritaHack"),
         skin("eva", "MargheritaHackEVA"),
@@ -328,7 +334,7 @@
         { id: 186, level: 3 }, // Negotiation
         { id: 155, level: 2 }, // Law - Yale Law, Arkansas AG
       ],
-      busts: "BillClinton",
+      busts: "presets/BillClinton",
     },
     {
       id: 7,
@@ -361,7 +367,7 @@
         { id: 240, level: 2 }, // Singing
         { id: 82, level: 2 },  // Dancing
       ],
-      busts: "RichardBenson",
+      busts: "presets/RichardBenson",
     }, /*
     {
       id: 8,
@@ -391,7 +397,7 @@
         { id: 231, level: 3 }, // Seduction
         { id: 259, level: 2 }, // Stock Trading
       ],
-      busts: "Berlusconi",
+      busts: "presets/Berlusconi",
     },
     {
       id: 9,
@@ -421,7 +427,7 @@
         { id: 258, level: 3 }, // Statistics
         { id: 135, level: 2 }, // History
       ],
-      busts: "Ciampi",
+      busts: "presets/Ciampi",
     },
     {
       id: 10,
@@ -451,7 +457,7 @@
         { id: 156, level: 3 }, // Leadership
         { id: 258, level: 3 }, // Statistics
       ],
-      busts: "MarioDraghi",
+      busts: "presets/MarioDraghi",
       skins: [
         skin("banker", "MarioDraghi"),
         skin("ascended", "MarioDraghiAscended"),
@@ -486,7 +492,7 @@
         { id: 174, level: 3 }, // Meditation
         { id: 159, level: 3 }, // Linguistics
       ],
-      busts: "Ratzinger",
+      busts: "presets/Ratzinger",
     },
     {
       id: 9,
@@ -517,7 +523,7 @@
         { id: 511, level: 3 }, // Biochemical Engineering
         { id: 634, level: 2 }, // Immunology
       ],
-      busts: "RitaLeviMontalcini",
+      busts: "presets/RitaLeviMontalcini",
       skins: [
         skin("senator", "RitaLeviMontalcini"),
         skin("labCoat", "RitaLeviMontalciniScientist"),
@@ -552,7 +558,7 @@
         { id: 22, level: 3 },  // Astrology
         { id: 137, level: 3 }, // Hypnosis
       ],
-      busts: "AleisterCrowley",
+      busts: "presets/AleisterCrowley",
       skins: [
         skin("magus", "AleisterCrowley"),
         // Asset name keeps the misspelling both files were shipped with.
@@ -588,7 +594,7 @@
         { id: 159, level: 3 }, // Linguistics
         { id: 706, level: 3 }, // Political Science
       ],
-      busts: "KofiAnnan",
+      busts: "presets/KofiAnnan",
     },
     {
       id: 12,
@@ -619,7 +625,7 @@
         { id: 277, level: 2 }, // Theology
         { id: 218, level: 2 }, // Public Speaking
       ],
-      busts: "GeorgeWBush",
+      busts: "presets/GeorgeWBush",
     }
   ];
   // i18n-ignore-end
@@ -676,7 +682,7 @@
       classId: 66, // Mana Cyborg
       sprite: "Skab/!$CyborgActivist",
       spriteIndex: 0,
-      busts: "CyborgActivist",
+      busts: "presets/CyborgActivist",
       mapId: 1414,
       x: 8,
       y: 8,

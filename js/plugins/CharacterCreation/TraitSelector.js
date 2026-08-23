@@ -677,9 +677,10 @@
         </div>`;
     }
 
-    // Draws (or redraws) the window onto the card grid: with every nature,
-    // affliction and illness in the game on offer, only the cards the page can
-    // show are ever built (UI/MenuVirtualList.js).
+    // Draws (or redraws) the window onto the card grid. Only called when the
+    // list contents actually change (category switch, filter change, or a trait
+    // being toggled). Cursor and hover changes use patchCardClasses instead so
+    // the DOM nodes are never destroyed mid-hover or mid-click.
     mountGrid() {
       const traits = this.currentTraits();
       this._gridCount = traits.length;
@@ -697,7 +698,7 @@
       });
     }
 
-    // Rebuilds the card grid. Only ever called on a category switch.
+    // Rebuilds the card grid. Only ever called on a category switch or filter change.
     renderGrid() {
       this.mountGrid();
       this._el.grid.scrollTop = 0;
@@ -718,11 +719,37 @@
       this._sig.cursor = -1;
     }
 
-    // Repaints the cards on screen with their current state. Only the window's
-    // worth of markup is rebuilt, so this stays as cheap as toggling classes
-    // was when the whole grid lived in the DOM.
-    syncCards(scrollToCursor) {
-      this.mountGrid();
+    // Patches CSS classes on the already-rendered card nodes for cursor and
+    // selection state changes. Unlike mountGrid, this never touches innerHTML or
+    // removes/re-adds event listeners, so hover and click events are never lost.
+    patchCardClasses() {
+      const traits = this.currentTraits();
+      const win = this._el.grid && this._el.grid.querySelector(".mvl-window");
+      if (!win) return;
+      win.querySelectorAll(".cc-card-option").forEach((el) => {
+        const idx = parseInt(el.dataset.idx, 10);
+        if (isNaN(idx)) return;
+        const trait = traits[idx];
+        if (!trait) return;
+        const state = this.traitState(trait);
+        el.classList.toggle("selected", state.selected);
+        el.classList.toggle("disabled", state.blocked);
+        el.classList.toggle("highlighted", idx === this._cursor);
+      });
+    }
+
+    // Keeps card visual state in sync. For cursor-only moves, patches classes
+    // on existing nodes (no innerHTML wipe). For selection changes (a trait was
+    // picked or dropped), does a full mountGrid so the cost badges and states
+    // are accurate, then scrolls to the cursor if needed.
+    syncCards(scrollToCursor, selectionChanged) {
+      if (selectionChanged) {
+        // Selection changed: re-render so cost badges and blocked states update.
+        this.mountGrid();
+      } else {
+        // Cursor moved: patch classes only — no DOM rebuild, no listener loss.
+        this.patchCardClasses();
+      }
       if (scrollToCursor && this._keyboardCursor) {
         window.MenuVirtualList.scrollToIndex(this._el.grid, this._cursor);
       }
@@ -973,7 +1000,7 @@
       const cursorChanged = sig.cursor !== this._cursor;
       if (cursorChanged || selectionChanged) {
         sig.cursor = this._cursor;
-        this.syncCards(cursorChanged);
+        this.syncCards(cursorChanged, selectionChanged);
       }
 
       // window.Specializations loads asynchronously; fold its readiness into
@@ -1538,5 +1565,11 @@
     fits: traitFits,
     pick: pickRandomTraits,
     costBadgeHTML,
+    // The illness library dressed as trait cards. It is not part of
+    // window.Health.Traits, so any other board that draws the five tabs (the
+    // dossier panel in character creation) has to ask for it here or its
+    // Diseases tab comes up empty.
+    diseaseCards: getDiseaseCards,
+    DISEASE_CATEGORY,
   };
 })();

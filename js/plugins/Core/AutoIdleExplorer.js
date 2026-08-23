@@ -114,6 +114,30 @@
  * so nobody comes back from the battlefield to an errand they had forgotten.
  *
  * ============================================================================
+ * 1b. TAKING THE LEAD
+ * ============================================================================
+ *
+ * Any member can be sent to walk in front of the party, in either formation:
+ *
+ *   Tab           the next member down the marching order takes the lead
+ *   Shift+Tab     the one before takes it
+ *   L2 / R2 tap   the same from a pad. A trigger HELD is still the camera
+ *                 zoom (Core/MousePan.js); only a tap changes the lead.
+ *
+ * The two of them SWAP BODIES rather than teleporting: they exchange tiles and
+ * headings, so the party stands exactly where it stood and the player simply
+ * finds themselves walking the other one. The camera then walks across from the
+ * old leader to the new one instead of cutting.
+ *
+ * The order goes through PartyRoster.setLeader, the same call the Dynamics
+ * roster makes, so the menu, the acting order and the diary all follow. It
+ * works the other way too: promoting somebody from Dynamics -> Roster swaps the
+ * bodies on the map exactly as Tab does.
+ *
+ * A fallen member is skipped, and the lead never changes hands in a vehicle, in
+ * a map battle, in split-screen, or while an event or a message is running.
+ *
+ * ============================================================================
  * 2. AUTO IDLE EXPLORER, default OFF
  * ============================================================================
  *
@@ -3607,6 +3631,287 @@
     };
 
     AutoIdle.loose = Loose;
+
+    // ========================================================================
+    // Taking the lead
+    // ========================================================================
+    // The party walks as one body and any of them can walk in front of it. Tab
+    // hands the lead to the next member, Shift+Tab to the one before, and a TAP
+    // of L2 or R2 does the same from a pad (a trigger HELD is the map camera's
+    // zoom, which belongs to Core/MousePan.js, so only a tap counts here).
+    //
+    // Handing over the lead is a swap of bodies, not a teleport: the two of them
+    // exchange tiles and headings, so nobody moves an inch on the ground and the
+    // party stands exactly where it stood. The camera then WALKS from the old
+    // leader's tile to the new one rather than cutting, so it stays plain who
+    // has just been handed the party.
+    //
+    // The order itself always goes through PartyRoster.setLeader, the one call
+    // the Dynamics roster's "Make Leader" makes, so the menu, the acting order,
+    // the diary and every other reader of $gameParty.leader() follow along
+    // whichever end the switch came from. Dynamics calls back the other way too
+    // (UI/CustomMainMenuLayout.js), so promoting somebody from the roster swaps
+    // the bodies on the map exactly as Tab does.
+    const Lead = {
+        PAN_FRAMES: 24,
+        // Frames a trigger may be pulled and still read as a tap rather than as
+        // the beginning of a zoom.
+        PAD_TAP: 18,
+        PAD_DEADZONE: 0.35,
+
+        _pan: 0,
+        _fromX: 0,
+        _fromY: 0,
+        _dx: 0,
+        _dy: 0,
+        _padDir: 0,
+        _padHold: 0,
+
+        // The party indices the lead may be handed to, in marching order. A
+        // fallen member is skipped: nobody follows a corpse. The leader is
+        // always in the list, dead or not, so cycling starts from where the
+        // party actually is.
+        order() {
+            const members = ($gameParty && $gameParty.members()) || [];
+            const out = [];
+            for (let i = 0; i < members.length; i++) {
+                const actor = members[i];
+                if (!actor) continue;
+                if (i > 0 && actor.isDead && actor.isDead()) continue;
+                out.push(i);
+            }
+            return out;
+        },
+
+        // The states of the game in which the lead may change hands at all.
+        available() {
+            if (!$gameParty || !$gamePlayer || !$gameMap || !$gameMessage) return false;
+            if (!(SceneManager._scene instanceof Scene_Map)) return false;
+            if (SceneManager.isSceneChanging()) return false;
+            if ($gameParty.inBattle() || Loose.inMapBattle()) return false;
+            if ($gameMessage.isBusy() || $gameMap.isEventRunning()) return false;
+            if ($gamePlayer.isMoving() || $gamePlayer.isJumping()) return false;
+            if ($gamePlayer.isInVehicle()) return false;
+            if ($gamePlayer._vehicleGettingOn || $gamePlayer._vehicleGettingOff) return false;
+            if (!$gamePlayer.followers().isVisible()) return false;
+            if ($gamePlayer.areFollowersGathering()) return false;
+            const ss = window.SplitScreenManager;
+            if (ss && ss.active) return false;
+            // The map modes that keep a cursor of their own and read Tab
+            // themselves: laying out furniture (Crafting/FurnitureSystem.js) and
+            // aiming a throw (BattleSystem/ThrowItemPlugin.js).
+            if (SceneManager._scene._fbActive) return false;
+            if ($gamePlayer._throwTargetingMode) return false;
+            if (this.panning()) return false;
+            return this.order().length > 1;
+        },
+
+        // One step down the marching order (+1) or up it (-1).
+        cycle(delta) {
+            const idx = this.order();
+            if (idx.length < 2) return false;
+            const at = Math.max(0, idx.indexOf(0));
+            const size = idx.length;
+            const target = idx[(((at + delta) % size) + size) % size];
+            if (!target) return false;
+            const actor = $gameParty.members()[target];
+            return actor ? this.switchTo(actor.actorId(), { pan: true }) : false;
+        },
+
+        // Hand the party to one named member. `pan` false cuts the camera
+        // instead of walking it, which is what the menu wants: nobody is looking
+        // at the map while the roster is open.
+        switchTo(actorId, opts) {
+            const options = opts || {};
+            if (!$gameParty || !$gamePlayer) return false;
+            const members = $gameParty.members();
+            const to = members.findIndex((mem) => mem && mem.actorId() === actorId);
+            if (to <= 0) return false;
+
+            // Riding, the party is stowed in the hull and there are no two
+            // bodies to exchange: the order changes and nothing moves.
+            const onMap = !!$gameMap && !$gamePlayer.isInVehicle() && !Loose.stowedInVehicle();
+            const f = $gamePlayer.followers().follower(to - 1);
+            const swap = onMap && !!f && f.isVisible() && !f.isTransparent();
+            const px = $gamePlayer.x;
+            const py = $gamePlayer.y;
+            const pd = $gamePlayer.direction();
+            const fx = swap ? f.x : px;
+            const fy = swap ? f.y : py;
+            const fd = swap ? f.direction() : pd;
+
+            if (window.PartyRoster && window.PartyRoster.setLeader) {
+                const result = window.PartyRoster.setLeader(actorId);
+                if (!result || !result.ok) return false;
+            } else {
+                $gameParty.swapOrder(0, to);
+            }
+
+            if (swap) {
+                $gamePlayer.setPosition(fx, fy);
+                $gamePlayer.setDirection(fd);
+                $gamePlayer.straighten();
+                f.setPosition(px, py);
+                f.setDirection(pd);
+                f.straighten();
+                // Being in the water, up a wall or sat on a chair belongs to the
+                // TILE rather than to the person (Map/MovementInteractionSystem.js),
+                // so those travel with the bodies: whoever ends up in the river is
+                // the one who swims out of it.
+                for (const flag of ["_isSwimming", "_isClimbing", "_isSitting"]) {
+                    const mine = $gamePlayer[flag];
+                    $gamePlayer[flag] = f[flag];
+                    f[flag] = mine;
+                }
+                // The errand belonged to whoever used to walk that slot.
+                Loose.clearGoal(Loose.stateOf(f));
+                Bubbles.clearFor(f);
+                Bubbles.clearFor($gamePlayer);
+            }
+            $gamePlayer.refresh();
+            $gamePlayer.followers().refresh();
+
+            if (swap && options.pan !== false && SceneManager._scene instanceof Scene_Map) {
+                this.startPan();
+            } else if (swap) {
+                $gamePlayer.center($gamePlayer.x, $gamePlayer.y);
+            }
+            const leader = $gameParty.leader();
+            if (leader) Loose.toast(T('AutoIdle.lead.toast', { name: leader.name() }), "info");
+            return true;
+        },
+
+        // ------------------------------------------------------------- camera
+        panning() {
+            return this._pan > 0;
+        },
+
+        clampX(x) {
+            if ($gameMap.isLoopHorizontal()) return x.mod($gameMap.width());
+            const end = $gameMap.width() - $gameMap.screenTileX();
+            return end < 0 ? end / 2 : x.clamp(0, end);
+        },
+
+        clampY(y) {
+            if ($gameMap.isLoopVertical()) return y.mod($gameMap.height());
+            const end = $gameMap.height() - $gameMap.screenTileY();
+            return end < 0 ? end / 2 : y.clamp(0, end);
+        },
+
+        // Where the map would sit with the new leader centred, clamped exactly
+        // as setDisplayPos clamps it, so the walk lands on the very position the
+        // engine would have snapped to.
+        centerTarget() {
+            return {
+                x: this.clampX($gamePlayer.x - $gamePlayer.centerX()),
+                y: this.clampY($gamePlayer.y - $gamePlayer.centerY()),
+            };
+        },
+
+        startPan() {
+            const fromX = $gameMap.displayX();
+            const fromY = $gameMap.displayY();
+            const target = this.centerTarget();
+            let dx = target.x - fromX;
+            let dy = target.y - fromY;
+            // On a looping map the short way round is the one the eye expects.
+            if ($gameMap.isLoopHorizontal()) {
+                const w = $gameMap.width();
+                if (dx > w / 2) dx -= w; else if (dx < -w / 2) dx += w;
+            }
+            if ($gameMap.isLoopVertical()) {
+                const h = $gameMap.height();
+                if (dy > h / 2) dy -= h; else if (dy < -h / 2) dy += h;
+            }
+            if (!dx && !dy) {
+                this._pan = 0;
+                return;
+            }
+            this._fromX = fromX;
+            this._fromY = fromY;
+            this._dx = dx;
+            this._dy = dy;
+            this._pan = this.PAN_FRAMES;
+        },
+
+        // Eased in and out, so the camera leans off one member and settles onto
+        // the other instead of sliding at a flat speed.
+        ease(t) {
+            return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        },
+
+        updatePan() {
+            if (this._pan <= 0) return;
+            if (!(SceneManager._scene instanceof Scene_Map) || !$gameMap || !$gamePlayer) {
+                this._pan = 0;
+                return;
+            }
+            this._pan--;
+            const t = 1 - this._pan / this.PAN_FRAMES;
+            const e = this.ease(t);
+            $gameMap.setDisplayPos(this._fromX + this._dx * e, this._fromY + this._dy * e);
+            if (this._pan <= 0) $gamePlayer.center($gamePlayer.x, $gamePlayer.y);
+        },
+
+        // ------------------------------------------------------------- input
+        // Tab is a key HTML fields want for themselves, and the map carries a
+        // few of those (a phone, a terminal, a name field).
+        typing() {
+            const el = typeof document !== "undefined" ? document.activeElement : null;
+            if (!el) return false;
+            const tag = (el.tagName || "").toLowerCase();
+            return tag === "input" || tag === "textarea" || tag === "select" || !!el.isContentEditable;
+        },
+
+        // The pad's triggers, read as a tap: a pull is only answered once it has
+        // been RELEASED, and only if it was let go inside the tap window.
+        // Anything longer is a zoom and is left to MousePan.
+        padStep() {
+            const pads = window.AnalogStickInput;
+            if (!pads || !pads.leftTrigger || !pads.rightTrigger) {
+                this._padDir = 0;
+                this._padHold = 0;
+                return 0;
+            }
+            const lt = pads.leftTrigger();
+            const rt = pads.rightTrigger();
+            const dir = rt > this.PAD_DEADZONE ? 1 : (lt > this.PAD_DEADZONE ? -1 : 0);
+            if (dir) {
+                if (dir !== this._padDir) {
+                    this._padDir = dir;
+                    this._padHold = 1;
+                } else {
+                    this._padHold++;
+                }
+                return 0;
+            }
+            const was = this._padDir;
+            const held = this._padHold;
+            this._padDir = 0;
+            this._padHold = 0;
+            return was && held <= this.PAD_TAP ? was : 0;
+        },
+
+        // True while a trigger pull is still short enough to turn out to be a
+        // party cycle. MousePan asks before zooming, so one tap never does both.
+        padClaimsTriggers() {
+            return this._padDir !== 0 && this._padHold <= this.PAD_TAP && this.available();
+        },
+
+        update() {
+            this.updatePan();
+            let dir = 0;
+            if (!this.typing() && Input.isTriggered("tab")) {
+                dir = Input.isPressed("shift") ? -1 : 1;
+            } else {
+                dir = this.padStep();
+            }
+            if (!dir || !this.available()) return;
+            if (this.cycle(dir)) SoundManager.playOk();
+        },
+    };
+
+    AutoIdle.lead = Lead;
     // The chatter bubble on its own, for the talk that happens where the loose
     // walkers are not: over a vehicle the whole party is sitting in (the
     // travelling half of NPC/PartyBanter.js). Same element, same stylesheet, same
@@ -3679,6 +3984,15 @@
         }
     };
 
+    // 2b) The camera walking from one member to the other owns the display for
+    //     those few frames: the engine would otherwise drag it back the moment
+    //     the new leader took a step.
+    const _Game_Player_updateScroll_lead = Game_Player.prototype.updateScroll;
+    Game_Player.prototype.updateScroll = function (lastScrolledX, lastScrolledY) {
+        if (Lead.panning()) return;
+        _Game_Player_updateScroll_lead.call(this, lastScrolledX, lastScrolledY);
+    };
+
     // 3) OK on a member standing in front of the leader opens their Empathize
     //    sheet, the same page the Dynamics roster opens. Checked before the
     //    engine's own action button so the member is not walked through.
@@ -3697,6 +4011,11 @@
     const _SceneMap_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function () {
         _SceneMap_update.call(this);
+        try {
+            Lead.update();
+        } catch (e) {
+            console.error("[AutoIdleExplorer] lead update error:", e);
+        }
         try {
             Loose.update();
         } catch (e) {
@@ -3745,6 +4064,9 @@
             if (Loose.mode() === FORM_LOOSE) Loose.gatherNear();
         }
         Loose.mapId = mapId;
+        // Arriving anywhere cancels a camera walk left over from the map just
+        // left, which would otherwise drag the display off the new one.
+        Lead._pan = 0;
         if (AutoIdle.engaged && ConfigManager.autoIdle) AutoIdle.showBadge();
         if (AutoIdle.p2.engaged && ConfigManager.autoIdle) AutoIdle.p2.showBadge();
     };
@@ -3929,4 +4251,624 @@
             try { if (this.popScene) this.popScene(); } catch (e) {}
         }
     };
+
+    // ========================================================================
+    // Party Member Downed, Defeated Corpse, Burial & Grave System
+    // ========================================================================
+
+    const PROC_MAP_ID = (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
+    const WORLD_MAP_ID = (window.WorldMapReturn && window.WorldMapReturn.worldMapId) || 315;
+
+    function _isHardcoreOrBloodAndOil() {
+        return !!($gameSwitches && $gameSwitches.value(9));
+    }
+
+    function _procRegionKeyStr() {
+        const p = $gameSystem && $gameSystem._procGenData;
+        if (!p) return "0,0";
+        return `${p.currentWorldX || 0},${p.currentWorldY || 0}_${p.currentFloor || 0}`;
+    }
+
+    // --- Helpers for actor metadata (Birthdate, Ideology/Religion, Disposition) ---
+
+    function getActorBirthDate(actor) {
+        if (!actor) return "Unknown";
+        let preset = null;
+        const actorData = actor.actor ? actor.actor() : (actor._actorId ? $dataActors[actor._actorId] : null);
+        const m = actorData && actorData.note && actorData.note.match(/<Preset:\s*([^>]+)>/i);
+        const presetName = actor._presetKey || (m ? m[1].trim() : null);
+        if (presetName && window.CharacterCreationPresets && window.CharacterCreationPresets.presets) {
+            preset = window.CharacterCreationPresets.presets[presetName];
+        }
+        if (preset && preset.birthDate) {
+            const parts = String(preset.birthDate).split("-");
+            if (parts.length === 3) {
+                return `${parts[2].padStart(2, "0")}/${parts[1].padStart(2, "0")}/${parts[0]}`;
+            }
+            return String(preset.birthDate);
+        }
+        if (actor._birthDate) return String(actor._birthDate);
+        if (actor._birthYear) return `Year ${actor._birthYear}`;
+
+        const actorId = actor.actorId ? actor.actorId() : actor._actorId;
+        if (window.NPCSocietyRegistry && window.NPCSocietyRegistry.getProfile) {
+            const prof = window.NPCSocietyRegistry.getProfile(actorId);
+            if (prof && prof.birthDate) return String(prof.birthDate);
+            if (prof && prof.birthYear) return `Year ${prof.birthYear}`;
+        }
+        if (actor._backstory) {
+            if (actor._backstory.birthDate) return String(actor._backstory.birthDate);
+            if (actor._backstory.birthYear) return `Year ${actor._backstory.birthYear}`;
+        }
+
+        const tds = window.TimeDateSystem;
+        const currentYear = (tds && tds.getDateTimeFromMinutes && tds.getGameTimeMinutes)
+            ? tds.getDateTimeFromMinutes(tds.getGameTimeMinutes()).year : 2026;
+        return `Year ${currentYear - 25}`;
+    }
+
+    function getLeaderFuneralPrayer(leader, deceasedName) {
+        if (!leader) return `\"Rest in peace, ${deceasedName}. Your journey is remembered.\"`;
+        const actor = leader;
+        const prof = (window.NPCSocietyRegistry && window.NPCSocietyRegistry.getProfile)
+            ? window.NPCSocietyRegistry.getProfile(actor.actorId ? actor.actorId() : 1) : null;
+        const ideology = actor._ideologyId || (prof && prof.ideologyId) || actor._religion || "";
+        const idLower = String(ideology).toLowerCase();
+
+        if (idLower.includes("sacred") || idLower.includes("orthodox") || idLower.includes("church") || idLower.includes("temple")) {
+            return `\"May the Eternal Light receive your soul, ${deceasedName}, and grant you everlasting peace. Amen.\"`;
+        } else if (idLower.includes("nature") || idLower.includes("pagan") || idLower.includes("animist") || idLower.includes("shaman")) {
+            return `\"Return to the earth and the deep roots of the ancient forest, ${deceasedName}. Walk free among the spirits.\"`;
+        } else if (idLower.includes("arcanist") || idLower.includes("void") || idLower.includes("cosmic") || idLower.includes("eldritch")) {
+            return `\"To the astral tides and the starry deep, may the great expanse shelter your essence, ${deceasedName}.\"`;
+        } else if (idLower.includes("martyr") || idLower.includes("zealot") || idLower.includes("warrior")) {
+            return `\"Blood was paid and duty fulfilled, ${deceasedName}. Rise in honor beyond the veil.\"`;
+        } else {
+            return `\"Rest well, ${deceasedName}. Your battle is done, and your name will not be forgotten.\"`;
+        }
+    }
+
+    function getMemberCommemorateLine(speaker, deceasedName) {
+        const actor = speaker;
+        const prof = (window.NPCSocietyRegistry && window.NPCSocietyRegistry.getProfile)
+            ? window.NPCSocietyRegistry.getProfile(actor.actorId ? actor.actorId() : 1) : null;
+        const disp = (actor.disposition ? actor.disposition() : (prof && prof.disposition != null ? prof.disposition : 50));
+
+        if (disp >= 70) {
+            const pool = [
+                `I'll never forget what you did for us, ${deceasedName}... Rest in peace.`,
+                `You didn't deserve this, ${deceasedName}. We'll carry your memory with us.`,
+                `May you find the peace you were looking for, my friend.`
+            ];
+            return pool[Math.floor(Math.random() * pool.length)];
+        } else if (disp <= 35) {
+            const pool = [
+                `Told you recklessness would catch up to you, ${deceasedName}... damn it.`,
+                `The road takes what it wants. Farewell, ${deceasedName}.`,
+                `Quiet now, ${deceasedName}... sleep well.`
+            ];
+            return pool[Math.floor(Math.random() * pool.length)];
+        } else {
+            const pool = [
+                `Another one claimed by the road. We have to keep moving, for ${deceasedName}'s sake.`,
+                `They fought bravely until the end. We honor their memory.`,
+                `Keep your guard up, everyone. ${deceasedName} wouldn't want us falling next.`
+            ];
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+    }
+
+    // --- 1. Battle & Map Sprite Sideways Rendering (Downed State) ---
+
+    const _Sprite_Actor_update_downed = Sprite_Actor.prototype.update;
+    Sprite_Actor.prototype.update = function () {
+        _Sprite_Actor_update_downed.call(this);
+        if (this._actor && this._actor.isDead()) {
+            this.rotation = Math.PI / 2;
+            this.anchor.x = 0.5;
+            this.anchor.y = 0.5;
+        } else if (this.rotation === Math.PI / 2) {
+            this.rotation = 0;
+            this.anchor.x = 0.5;
+            this.anchor.y = 1.0;
+        }
+    };
+
+    const _Sprite_Character_update_downed = Sprite_Character.prototype.update;
+    Sprite_Character.prototype.update = function () {
+        _Sprite_Character_update_downed.call(this);
+        if (this._character instanceof Game_Follower) {
+            const actor = this._character.actor && this._character.actor();
+            if (actor && actor.isDead()) {
+                this.rotation = Math.PI / 2;
+                this.anchor.x = 0.5;
+                this.anchor.y = 0.5;
+            } else if (this.rotation === Math.PI / 2) {
+                this.rotation = 0;
+                this.anchor.x = 0.5;
+                this.anchor.y = 1.0;
+            }
+        }
+    };
+
+    // --- 2. Follower Carrying for Downed Members ---
+
+    const _Loose_updateFollower_downed = Loose.updateFollower;
+    Loose.updateFollower = function (f) {
+        const actor = f && f.actor && f.actor();
+        if (actor && actor.isDead()) {
+            // Find a living party member to carry this downed member
+            const followers = $gamePlayer.followers().data();
+            let carrier = null;
+            if (!$gamePlayer.isTransparent() && $gameParty.leader() && !$gameParty.leader().isDead()) {
+                carrier = $gamePlayer;
+            } else {
+                for (const other of followers) {
+                    const otherActor = other.actor && other.actor();
+                    if (otherActor && !otherActor.isDead()) {
+                        carrier = other;
+                        break;
+                    }
+                }
+            }
+            if (carrier) {
+                f.locate(carrier.x, carrier.y);
+                f.setDirection(carrier.direction());
+                f.setThrough(true);
+            }
+            return;
+        }
+        _Loose_updateFollower_downed.call(this, f);
+    };
+
+    // --- 3. Party Member Corpses (Blood & Oil / Hardcore) ---
+
+    function getPartyCorpses() {
+        if (!$gameSystem) return [];
+        if (!$gameSystem._partyCorpses) $gameSystem._partyCorpses = [];
+        return $gameSystem._partyCorpses;
+    }
+
+    function createPartyCorpseFromActor(actor) {
+        if (!actor) return;
+        const corpses = getPartyCorpses();
+        const mapId = $gameMap.mapId();
+        const px = $gamePlayer.x;
+        const py = $gamePlayer.y;
+        const regionKey = (mapId === PROC_MAP_ID) ? _procRegionKeyStr() : null;
+
+        const equips = [];
+        if (actor.equips) {
+            for (const eq of actor.equips()) {
+                if (eq) equips.push(eq);
+            }
+        }
+
+        const corpse = {
+            actorId: actor.actorId ? actor.actorId() : actor._actorId,
+            name: actor.name(),
+            characterName: actor.characterName(),
+            characterIndex: actor.characterIndex(),
+            mapId: mapId,
+            x: px,
+            y: py,
+            procRegionKey: regionKey,
+            equipped: equips,
+            birthDate: getActorBirthDate(actor),
+            buried: false,
+            desecrated: false,
+            createdAt: Date.now(),
+        };
+        corpses.push(corpse);
+        return corpse;
+    }
+
+    // Hook death in Blood & Oil / Hardcore mode
+    const _Scene_Map_handlePartyMemberDeath_downed = Scene_Map.prototype.handlePartyMemberDeath;
+    Scene_Map.prototype.handlePartyMemberDeath = function (actor, actorName) {
+        if (_isHardcoreOrBloodAndOil() && actor && actor.isDead()) {
+            createPartyCorpseFromActor(actor);
+        }
+        _Scene_Map_handlePartyMemberDeath_downed.call(this, actor, actorName);
+    };
+
+    // Sprite representation for party member corpses
+    function Sprite_PartyMemberCorpse(data) {
+        this.initialize(data);
+    }
+    Sprite_PartyMemberCorpse.prototype = Object.create(Sprite.prototype);
+    Sprite_PartyMemberCorpse.prototype.constructor = Sprite_PartyMemberCorpse;
+
+    Sprite_PartyMemberCorpse.prototype.initialize = function (data) {
+        Sprite.prototype.initialize.call(this);
+        this._data = data;
+        this._isBigCharacter = ImageManager.isBigCharacter(data.characterName);
+        this.anchor.x = 0.5;
+        this.anchor.y = 0.5;
+        this.rotation = Math.PI / 2;
+        this.z = 1;
+        this.bitmap = ImageManager.loadCharacter(data.characterName);
+        this.bitmap.addLoadListener(this._onBitmapReady.bind(this));
+    };
+
+    Sprite_PartyMemberCorpse.prototype._onBitmapReady = function () {
+        const bm = this.bitmap;
+        const big = this._isBigCharacter;
+        const pw = bm.width / (big ? 3 : 12);
+        const ph = bm.height / (big ? 4 : 8);
+        const idx = this._data.characterIndex || 0;
+        const bx = big ? 0 : (idx % 4) * 3 * pw;
+        const by = big ? 0 : Math.floor(idx / 4) * 4 * ph;
+        this.setFrame(bx + pw, by, pw, ph);
+        this.setBlendColor([180, 20, 20, 140]);
+    };
+
+    Sprite_PartyMemberCorpse.prototype.update = function () {
+        Sprite.prototype.update.call(this);
+        if (this._data.buried) {
+            this.visible = false;
+            return;
+        }
+        this.visible = true;
+        const tw = $gameMap.tileWidth();
+        const th = $gameMap.tileHeight();
+        this.x = Math.round($gameMap.adjustX(this._data.x) * tw + tw / 2);
+        this.y = Math.round($gameMap.adjustY(this._data.y) * th + th / 2);
+    };
+
+    // Hook Spriteset_Map to add party corpse sprites
+    const _Spriteset_Map_createCharacters_partyCorpse = Spriteset_Map.prototype.createCharacters;
+    Spriteset_Map.prototype.createCharacters = function () {
+        _Spriteset_Map_createCharacters_partyCorpse.call(this);
+        this._partyCorpseSprites = [];
+        const currentMap = $gameMap ? $gameMap.mapId() : 0;
+        const currentRegion = (currentMap === PROC_MAP_ID) ? _procRegionKeyStr() : null;
+
+        const corpses = getPartyCorpses().filter(c => {
+            if (c.buried) return false;
+            if (c.mapId !== currentMap) return false;
+            if (currentRegion && c.procRegionKey && c.procRegionKey !== currentRegion) return false;
+            return true;
+        });
+
+        for (const data of corpses) {
+            const sprite = new Sprite_PartyMemberCorpse(data);
+            this._tilemap.addChild(sprite);
+            this._partyCorpseSprites.push(sprite);
+        }
+    };
+
+    // --- 4. Interacting with Party Corpse & Grave ---
+
+    function getPartyCorpseAt(x, y) {
+        const currentMap = $gameMap ? $gameMap.mapId() : 0;
+        const currentRegion = (currentMap === PROC_MAP_ID) ? _procRegionKeyStr() : null;
+        return getPartyCorpses().find(c => {
+            if (c.buried) return false;
+            if (c.mapId !== currentMap) return false;
+            if (currentRegion && c.procRegionKey && c.procRegionKey !== currentRegion) return false;
+            return c.x === x && c.y === y;
+        });
+    }
+
+    function getWorldGraves() {
+        if (!window.WorldManager) return [];
+        const list = window.WorldManager.getField("world_graves", "graves");
+        return Array.isArray(list) ? list : [];
+    }
+
+    function getPartyGraveAt(mapId, x, y) {
+        const regionKey = (mapId === PROC_MAP_ID) ? _procRegionKeyStr() : null;
+        return getWorldGraves().find(g => {
+            if (g.mapId !== mapId) return false;
+            if (regionKey && g.procRegionKey && g.procRegionKey !== regionKey) return false;
+            return g.x === x && g.y === y;
+        });
+    }
+
+    function showCorpseMenu(corpse) {
+        if (!corpse) return;
+        const choices = ["Loot", "Commemorate", "Pray", "Dissect", "Bury", "Cancel"];
+        $gameMessage.setChoices(choices, 0, 5);
+        $gameMessage.onChoice(function (n) {
+            if (n === 0) {
+                // Loot
+                handleCorpseLoot(corpse);
+            } else if (n === 1) {
+                // Commemorate
+                handleCorpseCommemorate(corpse);
+            } else if (n === 2) {
+                // Pray
+                handleCorpsePray(corpse);
+            } else if (n === 3) {
+                // Dissect
+                handleCorpseDissect(corpse);
+            } else if (n === 4) {
+                // Bury
+                handleCorpseBury(corpse);
+            }
+        });
+        $gameMessage.add(`Fallen comrade: ${corpse.name}. What will you do?`);
+    }
+
+    function handleCorpseLoot(corpse) {
+        if (!corpse) return;
+        if (window.ContainerManager && typeof Scene_Container !== "undefined") {
+            const containerId = `party_corpse_${corpse.actorId}_${corpse.x}_${corpse.y}`;
+            const container = window.ContainerManager.getContainer(containerId);
+            if (corpse.equipped && corpse.equipped.length) {
+                for (const item of corpse.equipped) {
+                    if (item && window.ItemUtils) {
+                        const key = window.ItemUtils.encodeKey(item);
+                        if (!container[key]) container[key] = 1;
+                    }
+                }
+            }
+            SceneManager.push(Scene_Container);
+            SceneManager.prepareNextScene(containerId, false);
+        } else {
+            // Fallback loot directly into party inventory
+            if (corpse.equipped && corpse.equipped.length) {
+                for (const item of corpse.equipped) {
+                    if (item) $gameParty.gainItem(item, 1, false);
+                }
+                $gameMessage.add(`Recovered equipment from ${corpse.name}.`);
+                corpse.equipped = [];
+            } else {
+                $gameMessage.add(`There is nothing left to loot on ${corpse.name}.`);
+            }
+        }
+    }
+
+    function handleCorpseCommemorate(corpse) {
+        if (!corpse) return;
+        if (Loose.mode() === FORM_LOOSE) {
+            Loose.gatherNear();
+        }
+        const leader = $gameParty.leader();
+        const livingFollowers = $gamePlayer.followers().data().filter(f => f.isVisible() && f.actor && !f.actor().isDead());
+
+        if (leader) {
+            const leaderLine = getMemberCommemorateLine(leader, corpse.name);
+            $gameMessage.add(`\\C[1]${leader.name()}:\\C[0] \"${leaderLine}\"`);
+        }
+
+        for (const f of livingFollowers) {
+            const act = f.actor();
+            const line = getMemberCommemorateLine(act, corpse.name);
+            $gameMessage.add(`\\C[2]${act.name()}:\\C[0] \"${line}\"`);
+        }
+    }
+
+    function handleCorpsePray(corpse) {
+        if (!corpse) return;
+        const leader = $gameParty.leader();
+        const prayer = getLeaderFuneralPrayer(leader, corpse.name);
+        $gameMessage.add(`\\C[1]${leader ? leader.name() : "Leader"}:\\C[0] ${prayer}`);
+    }
+
+    function handleCorpseDissect(corpse) {
+        if (!corpse) return;
+        if (typeof Scene_BodyPartHarvest !== "undefined") {
+            const harvestCorpse = {
+                enemyId: null,
+                actorId: corpse.actorId,
+                name: corpse.name,
+                x: corpse.x,
+                y: corpse.y,
+                mapId: corpse.mapId,
+                _harvestedParts: {},
+            };
+            SceneManager.push(Scene_BodyPartHarvest);
+            SceneManager.prepareNextScene(harvestCorpse);
+        } else if (typeof Scene_HealthStatus !== "undefined") {
+            SceneManager.push(Scene_HealthStatus);
+        } else {
+            $gameMessage.add("You examine the anatomy and body condition of the fallen comrade.");
+        }
+    }
+
+    function handleCorpseBury(corpse) {
+        if (!corpse) return;
+        // Play digging sound
+        try {
+            AudioManager.playSe({ name: "Earth1", volume: 90, pitch: 100, pan: 0 });
+        } catch (e) {}
+
+        $gameScreen.startFadeOut(24);
+        setTimeout(() => {
+            corpse.buried = true;
+
+            const mapId = $gameMap.mapId();
+            const isProc = (mapId === PROC_MAP_ID);
+            const isWorld315 = (mapId === WORLD_MAP_ID || mapId === 315);
+
+            if (!isWorld315) {
+                const graveData = {
+                    name: corpse.name,
+                    actorId: corpse.actorId,
+                    birthDate: corpse.birthDate,
+                    mapId: mapId,
+                    x: corpse.x,
+                    y: corpse.y,
+                    procRegionKey: corpse.procRegionKey,
+                    loot: (corpse.equipped && corpse.equipped.length) ? [...corpse.equipped] : [],
+                    feature: "Grave",
+                    desecrated: false,
+                    buriedAt: Date.now()
+                };
+
+                if (isProc) {
+                    // Save to WorldManager world data
+                    if (window.WorldManager) {
+                        const graves = getWorldGraves();
+                        graves.push(graveData);
+                        window.WorldManager.setField("world_graves", "graves", graves);
+                        if (window.WorldManager.activeWorldName) {
+                            window.WorldManager.writeWorldFile(window.WorldManager.activeWorldName, "world_graves", { graves });
+                        }
+                    }
+                    // Place terrain feature if ProcGen data exists
+                    if ($gameSystem && $gameSystem._procGenData && $gameSystem._procGenData.terrainFeatures) {
+                        $gameSystem._procGenData.terrainFeatures.push({
+                            name: "Grave",
+                            x: corpse.x,
+                            y: corpse.y,
+                            specialPartyGrave: graveData
+                        });
+                    }
+                } else {
+                    // Non-procedural map: find event called 'gravestone'
+                    const gravestoneEvent = $gameMap.events().find(e => e && e.event() && String(e.event().name).toLowerCase() === "gravestone");
+                    if (gravestoneEvent) {
+                        gravestoneEvent.locate(corpse.x, corpse.y);
+                        gravestoneEvent.setOpacity(255);
+                        gravestoneEvent.setThrough(false);
+                        gravestoneEvent._partyGraveData = graveData;
+                    }
+                }
+            }
+
+            $gameScreen.startFadeIn(24);
+            $gameMessage.add(`Buried ${corpse.name} with dignity.`);
+        }, 500);
+    }
+
+    function showSpecialGraveMenu(grave, onDismantle) {
+        if (!grave) return;
+        const choices = ["Read", "Desecrate", "Dismantle", "Cancel"];
+        $gameMessage.setChoices(choices, 0, 3);
+        $gameMessage.onChoice(function (n) {
+            if (n === 0) {
+                // Read
+                $gameMessage.add(`\"Here lies ${grave.name}. Born: ${grave.birthDate || "Unknown"}\"`);
+            } else if (n === 1) {
+                // Desecrate
+                handleGraveDesecrate(grave);
+            } else if (n === 2) {
+                // Dismantle
+                handleGraveDismantle(grave, onDismantle);
+            }
+        });
+        $gameMessage.add(`Grave of ${grave.name}. What will you do?`);
+    }
+
+    function handleGraveDesecrate(grave) {
+        if (!grave) return;
+        // Grant bones in any case
+        const boneItem = $dataItems.find(i => i && i.name && i.name.toLowerCase().includes("bone")) || $dataItems[1];
+        if (boneItem) {
+            $gameParty.gainItem(boneItem, 2, false);
+        }
+
+        // Grant remaining equipped loot if buried with gear
+        if (grave.loot && grave.loot.length) {
+            for (const item of grave.loot) {
+                if (item) $gameParty.gainItem(item, 1, false);
+            }
+            grave.loot = [];
+        }
+
+        // Record graverobbing crime if CrimeSystem exists
+        if (window.CrimeSystem && typeof window.CrimeSystem.commitCrime === "function") {
+            window.CrimeSystem.commitCrime("graverobbing");
+        } else if (window.CrimeSystem && typeof window.CrimeSystem.recordCrime === "function") {
+            window.CrimeSystem.recordCrime("graverobbing");
+        }
+
+        grave.desecrated = true;
+        $gameMessage.add(`You desecrated the grave of ${grave.name}. Recovered bones and remaining personal belongings.`);
+    }
+
+    function handleGraveDismantle(grave, onDismantle) {
+        if (!grave) return;
+        // Yield materials
+        const stoneItem = $dataItems.find(i => i && i.name && i.name.toLowerCase().includes("stone")) || $dataItems[1];
+        if (stoneItem) $gameParty.gainItem(stoneItem, 1, false);
+
+        // Remove from world graves
+        if (window.WorldManager) {
+            let graves = getWorldGraves();
+            graves = graves.filter(g => !(g.mapId === grave.mapId && g.x === grave.x && g.y === grave.y));
+            window.WorldManager.setField("world_graves", "graves", graves);
+            if (window.WorldManager.activeWorldName) {
+                window.WorldManager.writeWorldFile(window.WorldManager.activeWorldName, "world_graves", { graves });
+            }
+        }
+        if (typeof onDismantle === "function") {
+            onDismantle();
+        }
+        $gameMessage.add(`Dismantled the grave of ${grave.name}.`);
+    }
+
+    // Intercept button trigger for party corpses and gravestones
+    const _Game_Player_triggerButtonAction_partyCorpse = Game_Player.prototype.triggerButtonAction;
+    Game_Player.prototype.triggerButtonAction = function () {
+        if (Input.isTriggered("ok") && !this.isInVehicle()) {
+            const d = this.direction();
+            const fx = $gameMap.roundXWithDirection(this.x, d);
+            const fy = $gameMap.roundYWithDirection(this.y, d);
+
+            // Check party corpse
+            const corpseFacing = getPartyCorpseAt(fx, fy) || getPartyCorpseAt(this.x, this.y);
+            if (corpseFacing) {
+                showCorpseMenu(corpseFacing);
+                return true;
+            }
+
+            // Check special party grave on map
+            const grave = getPartyGraveAt($gameMap.mapId(), fx, fy) || getPartyGraveAt($gameMap.mapId(), this.x, this.y);
+            if (grave) {
+                showSpecialGraveMenu(grave);
+                return true;
+            }
+
+            // Check Gravestone event on non-procedural map
+            const gravestoneEvent = $gameMap.eventsXy(fx, fy).concat($gameMap.eventsXy(this.x, this.y))
+                .find(e => e && e._partyGraveData);
+            if (gravestoneEvent) {
+                showSpecialGraveMenu(gravestoneEvent._partyGraveData, () => {
+                    gravestoneEvent.locate(0, 0);
+                    gravestoneEvent.setOpacity(0);
+                    gravestoneEvent.setThrough(true);
+                    gravestoneEvent._partyGraveData = null;
+                });
+                return true;
+            }
+        }
+        return _Game_Player_triggerButtonAction_partyCorpse.call(this);
+    };
+
+    // --- 5. Leader Succession on Death in Permadeath / Blood & Oil ---
+
+    const _Game_Actor_processMapDeath_succession = Game_Actor.prototype.processMapDeath;
+    Game_Actor.prototype.processMapDeath = function () {
+        if (this === $gameParty.members()[0]) {
+            if (_isHardcoreOrBloodAndOil()) {
+                const livingMembers = $gameParty.members().filter(m => m && !m.isDead() && m !== this);
+                if (livingMembers.length > 0) {
+                    const deceasedName = this.name();
+                    createPartyCorpseFromActor(this);
+                    if (window.BattleMood) {
+                        try { window.BattleMood.onMemberLost(this); } catch (e) {}
+                    }
+                    $gameParty.removeActor(this.actorId());
+                    $gamePlayer.refresh();
+                    $gamePlayer.followers().refresh();
+                    if (Loose.mode() === FORM_LOOSE) {
+                        Loose.gatherNear();
+                    }
+                    $gameMessage.add(T ? T('Battle.actorDied', { actor: deceasedName }) : `${deceasedName} has fallen.`);
+                    $gameMessage.add(`${livingMembers[0].name()} takes command of the party.`);
+                    return;
+                }
+            }
+        }
+        if (typeof _Game_Actor_processMapDeath_succession === "function") {
+            _Game_Actor_processMapDeath_succession.call(this);
+        }
+    };
+
 })();
+
+

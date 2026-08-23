@@ -16,6 +16,8 @@
  * party-private, travel with the character, and no longer occupy variable ids:
  *
  *   gender() / setGender(v) .................  0=Male 1=Female 2=Non-binary 3=Cocoon
+ *   hormoneBalance() / setHormoneBalance(v) .  0=oestrogenic .. 100=androgenic,
+ *                                              null where nobody has said
  *   vnBattler() / setVnBattler(v) ...........  monster/battler portrait image name (or 0)
  *   vnBust() / setVnBust(v) .................  bust portrait image name (or 0)
  *   portraitMode() / setPortraitMode(v) .....  "bust" | "sprite" | "model" (or 0)
@@ -61,6 +63,26 @@
     }
 
     defNumField("gender", "setGender", "_pvGender");
+
+    // The sex-hormone balance the character was BUILT with: 0 is a wholly
+    // oestrogenic body, 100 a wholly androgenic one, 50 an even one. It is not
+    // a plain numeric field because there are three answers and not a hundred
+    // and one: a number, and `null` for "nobody ever said". Null is what an
+    // NPC answers, and what a character made before the creation slider existed
+    // answers, and both of those have to keep reading their hormones off the
+    // gender the way they always did (Health_BiologicSimulation). A default of
+    // 0 would have read as "wholly oestrogenic" and rewritten every one of them.
+    Game_Actor.prototype.hormoneBalance = function () {
+        const v = this._pvHormoneBalance;
+        return (v === undefined || v === null) ? null : v;
+    };
+    Game_Actor.prototype.setHormoneBalance = function (value) {
+        if (value === null || value === undefined) {
+            this._pvHormoneBalance = null;
+            return;
+        }
+        this._pvHormoneBalance = Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+    };
 
     defRawField("vnBattler", "setVnBattler", "_pvBattler");
     defRawField("vnBust", "setVnBust", "_pvBust");

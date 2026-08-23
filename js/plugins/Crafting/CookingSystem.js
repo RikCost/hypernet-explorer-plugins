@@ -253,7 +253,7 @@
             return ($gameParty && $gameParty.leader) ? $gameParty.leader() : null;
         },
 
-        cookItems: function (item1, item2) {
+        cookItems: async function (item1, item2) {
 
             if (!this.canPairItems(item1, item2)) {
                 SoundManager.playBuzzer();
@@ -309,35 +309,85 @@
                 multiplier = this.getMultiplierForSameItem();
             }
 
+            // Roll 3D d20 culinary check based on cook's WIS (Wisdom)
+            const cook = this.activeCook();
+            const wisMod = cook ? (cook.wisMod ?? Math.floor(((cook.mdf || 10) - 10) / 2)) : 0;
+            let rollRes = null;
+
+            if (window.Dice3D) {
+                rollRes = await window.Dice3D.rollD20({
+                    actionName: `Cooking: ${cookedName}`,
+                    statName: 'WIS',
+                    modifier: wisMod,
+                    dc: 12,
+                    force3D: true
+                });
+            } else {
+                const cookRoll = Math.floor(Math.random() * 20) + 1;
+                rollRes = {
+                    roll: cookRoll,
+                    modifier: wisMod,
+                    total: cookRoll + wisMod,
+                    nat1: cookRoll === 1,
+                    nat20: cookRoll === 20,
+                    success: cookRoll === 20 || (cookRoll !== 1 && cookRoll + wisMod >= 12)
+                };
+            }
+
+            const isNat20 = rollRes.nat20;
+            const isNat1 = rollRes.nat1;
+            const cookTotal = rollRes.total;
+
+            let culinaryMult = 1.0;
+            if (isNat20) {
+                culinaryMult = 1.5; // Gourmet Masterpiece!
+                if (window.ParchmentToast) {
+                    window.ParchmentToast.show(`👨‍🍳 [NAT 20 Culinary Roll] Gourmet Masterpiece! ${cookedName} gained +50% nutrition!`, { severity: 'good', duration: 220 });
+                }
+            } else if (isNat1) {
+                culinaryMult = 0.6; // Burnt / Scorched
+                if (window.ParchmentToast) {
+                    window.ParchmentToast.show(`🍳 [NAT 1 Culinary Roll] Scorched dish! ${cookedName} lost nutrition!`, { severity: 'danger', duration: 220 });
+                }
+            } else if (rollRes.success) {
+                culinaryMult = 1.15; // Well prepared
+                if (window.ParchmentToast) {
+                    window.ParchmentToast.show(`🍲 [Culinary Roll: ${rollRes.roll}${cookMod >= 0 ? '+' : ''}${cookMod}=${cookTotal}] Deliciously prepared ${cookedName}!`, { severity: 'good', duration: 180 });
+                }
+            }
+
             let totalCalories, totalProtein, totalFat;
             if (fixedRecipe) {
                 // The finished item's own nutrition, not the doubled raw total.
                 const recipeNutrition = this.getRecoveryValues(fixedRecipe);
-                totalCalories = recipeNutrition.hunger;
-                totalProtein = recipeNutrition.tp;
-                totalFat = recipeNutrition.mp;
+                totalCalories = Math.round(recipeNutrition.hunger * culinaryMult);
+                totalProtein = Math.round(recipeNutrition.tp * culinaryMult);
+                totalFat = Math.round(recipeNutrition.mp * culinaryMult);
             } else {
                 // Double first item's nutrition and add second item's nutrition (with potential modifier)
-                totalCalories = item1Nutrition.hunger * 2;
-                totalProtein = item1Nutrition.tp * 2;
-                totalFat = item1Nutrition.mp * 2;
+                let baseCal = item1Nutrition.hunger * 2;
+                let baseProt = item1Nutrition.tp * 2;
+                let baseFat = item1Nutrition.mp * 2;
 
                 if (isSameItem) {
-                    totalCalories += item2Nutrition.hunger * multiplier;
-                    totalProtein += item2Nutrition.tp * multiplier;
-                    totalFat += item2Nutrition.mp * multiplier;
+                    baseCal += item2Nutrition.hunger * multiplier;
+                    baseProt += item2Nutrition.tp * multiplier;
+                    baseFat += item2Nutrition.mp * multiplier;
                 } else {
-                    totalCalories += item2Nutrition.hunger;
-                    totalProtein += item2Nutrition.tp;
-                    totalFat += item2Nutrition.mp;
+                    baseCal += item2Nutrition.hunger;
+                    baseProt += item2Nutrition.tp;
+                    baseFat += item2Nutrition.mp;
                 }
+
+                totalCalories = Math.round(baseCal * culinaryMult);
+                totalProtein = Math.round(baseProt * culinaryMult);
+                totalFat = Math.round(baseFat * culinaryMult);
             }
 
             // Calculate hunger recovery using the same formula as TimeDateSystem.
             // A cook who knows what they are doing wastes less of the same two
             // ingredients (Cooking, specialization 75). It is the member the
             // switcher has at the stove who is judged, not the party's best.
-            const cook = this.activeCook();
             const cookSkill = window.SpecializationXP
                 ? window.SpecializationXP.multiplierFor(cook, 'Cooking', 0.10) : 1;
             const totalHungerRecovery =

@@ -31,5 +31,12 @@
   "wpBliss": "Archways XP Bliss (Luna)",
   "wpTeal": "Verde acqua classico (retro)",
   "wpSpace": "Spazio profondo (tema scuro)",
-  "wpGold": " Oro (mistico)"
+  "wpGold": " Oro (mistico)",
+  "machineStats": "STATISTICHE DELLA MACCHINA",
+  "performance": "Prestazioni:",
+  "thermals": "Termica:",
+  "endurance": "Autonomia:",
+  "uplink": "Collegamento:",
+  "audio": "Audio:",
+  "board": "Scheda:"
 }

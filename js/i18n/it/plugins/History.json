@@ -280,7 +280,11 @@
  },
  "leader": {
   "unknown": "Condottiero ignoto",
-  "unknownIdeology": "Ignota"
+  "unknownIdeology": "Ignota",
+  "bio": "{name} sostiene {ideology} e risponde per {nation}.",
+  "bioReign": "{name} ha governato {nation} dal {from} al {to}, sostenendo {ideology}.",
+  "bioNoNation": "{name} sostiene {ideology}.",
+  "bioNoNationReign": "{name} ha governato dal {from} al {to}, sostenendo {ideology}."
  },
  "government": {
   "Theocracy": "Teocrazia",

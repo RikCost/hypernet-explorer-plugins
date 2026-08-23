@@ -1019,6 +1019,13 @@
 
         if ($gameTemp && $gameTemp._characterCreationTravelMode) {
             $gameTemp._characterCreationTravelMode = false;
+            // One journey per confirmation. The button can be clicked and the OK
+            // key read in the same handful of frames the overlay takes to fade
+            // out, and a second pass through here no longer reads as creation
+            // (the flag above is already down), so it would fall through to the
+            // paying traveller's path and start a timed trip the party is not on.
+            if (data.ccLandingPending) return;
+            data.ccLandingPending = true;
             // The party is on its way: the origin is settled and the copy kept
             // to undo it is not needed any more.
             if (window.CharacterCreationOrigin && window.CharacterCreationOrigin.clearSnapshot) {
@@ -1028,6 +1035,7 @@
             $gameScreen.startFadeOut(24);
             const actualDest = getActualDestination(destination, data.selectedTransport);
             setTimeout(() => {
+              try {
                 // A character being created is never put down ON the world map:
                 // it is what a journey is looked at on, not a place to begin
                 // standing in. A picked place that has a door of its own is
@@ -1056,8 +1064,20 @@
                 // origin anchors itself in CharacterCreation's own origin step.
                 ccAnchorStart(actualDest);
                 clearFastTravelData();
-                $gameScreen.startFadeIn(24);
-                $gamePlayer.setMovementLock(false);
+              } catch (e) {
+                // Whatever went wrong, the one thing that must not happen is the
+                // party being left standing on the creation map, which is an
+                // empty black room with no way out of it. The plain arrival is
+                // always somewhere, so it is what a failure falls back to.
+                console.error("FastTravel: the character-creation landing failed; the party was put down at the plain arrival instead.", e);
+                try {
+                    $gamePlayer.reserveTransfer(actualDest.mapId, actualDest.x, actualDest.y, actualDest.direction || 2, 0);
+                } catch (e2) {
+                    console.error("FastTravel: and the plain arrival could not be reserved either.", e2);
+                }
+              }
+              $gameScreen.startFadeIn(24);
+              $gamePlayer.setMovementLock(false);
             }, 500);
             SceneManager._scene.closeTravelUIOverlay(true);
             return;
@@ -1683,6 +1703,9 @@
         const data = getFastTravelData();
         $gamePlayer.setMovementLock(true);
         data.selectedTransport = transportType;
+        // A journey that never landed must not lock the next one out: opening
+        // the picker is a fresh confirmation, whatever became of the last.
+        data.ccLandingPending = false;
 
         // Only update player coordinates if on map 315
         if ($gameMap.mapId() === 315) {
