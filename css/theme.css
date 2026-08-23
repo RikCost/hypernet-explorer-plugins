@@ -332,11 +332,11 @@
     overflow: hidden;
 }
 
-/* Wider Left Column Sidebar (340px) */
+/* Wider Left Column Sidebar (440px), room for a larger, fixed-size bust */
 .cc-compact-sidebar {
-    width: 340px;
-    min-width: 320px;
-    max-width: 360px;
+    width: 440px;
+    min-width: 420px;
+    max-width: 460px;
     height: 100%;
     background: linear-gradient(180deg, var(--bg-panel), var(--bg-surface)) !important;
     border-right: 1px solid var(--border-gold-amber-30);
@@ -348,7 +348,19 @@
     backdrop-filter: blur(10px);
     z-index: 20;
     gap: 8px;
+    overflow-y: hidden;
+}
+
+/* Everything above the randomize/confirm buttons scrolls in its own well;
+   the buttons themselves sit outside it so a long dossier (many traits,
+   skills, items) never pushes them below the fold. */
+.cc-compact-sidebar-body {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 /* 1. Identity Box (Sprite Left of Name + Stats) */
@@ -421,6 +433,7 @@
 .cc-compact-portrait-card {
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
     width: 100%;
     background: var(--bg-panel);
     border: 1px solid var(--border-gold-amber-30);
@@ -430,9 +443,12 @@
     box-sizing: border-box;
 }
 
+/* Fixed size regardless of content around it: never stretches or shrinks to
+   fill leftover sidebar space, so the portrait reads the same on every step. */
 .cc-compact-bust-full {
     width: 100%;
-    height: 224px;
+    height: 320px;
+    flex-shrink: 0;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center center;
@@ -577,7 +593,7 @@
     flex-direction: column;
     gap: 3px;
     overflow-y: auto;
-    max-height: 150px;
+    max-height: 180px;
     padding: 2px 0;
 }
 
@@ -605,6 +621,23 @@
 
 .cc-compact-loadout-grid.cc-loadout-grid-cols-3 .cc-compact-loadout-item .cc-loadout-name {
     font-size: 0.86rem;
+}
+
+/* The class dossier's growth plan: level 1-50 on the left, 51-99 on the
+   right, so the back half of a long plan reads as its own column instead
+   of interleaving with the front half in a plain CSS grid. */
+.cc-loadout-two-col {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.cc-loadout-two-col .cc-loadout-col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 .cc-compact-loadout-grid .cc-compact-loadout-item {
@@ -644,6 +677,7 @@
 .cc-compact-actions {
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
     gap: 6px;
     padding-top: 6px;
     border-top: 1px solid var(--border-secondary-hover-translucent-15);
@@ -3857,7 +3891,7 @@
 
 .cc-spec-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 6px;
     flex: 1 1 auto;
     min-height: 0;
@@ -3900,6 +3934,14 @@
     flex: 1;
 }
 
+.cc-spec-title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+}
+
 .cc-spec-title {
     font-size: 1.05rem;
     font-weight: bold;
@@ -3907,6 +3949,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .cc-spec-meta {
@@ -3919,6 +3962,17 @@
 }
 
 .cc-spec-cat-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    font-size: 0.78rem;
+    color: var(--text-card-medium);
+    opacity: 0.75;
+    flex-shrink: 0;
+}
+
+.cc-spec-level-name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3938,8 +3992,8 @@
 .cc-spec-controls {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 6px;
+    justify-content: center;
+    gap: 4px;
     flex-shrink: 0;
 }
 
@@ -4486,24 +4540,58 @@
 }
 
 /* Talent Details & Allocated Talents Fix */
-.cc-spec-badge-chip {
-    display: inline-flex;
+.cc-spec-badge-row {
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 8px;
-    margin: 2px;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px 6px 4px 10px;
     border-radius: 4px;
     background: transparent;
     border: 1px solid var(--border-gold-amber-30);
     color: var(--text-card-dark);
-    font-size: 0.8rem;
-    white-space: nowrap;
+    font-size: 0.85rem;
 }
 
 /* A tier the class or a trait handed over rather than one that was bought. */
-.cc-spec-badge-chip.granted {
+.cc-spec-badge-row.granted {
     border-color: var(--border-success-medium-35);
     color: var(--text-forest-complete);
+}
+
+.cc-spec-badge-row-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cc-spec-badge-delete {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    background: transparent;
+    border: 1px solid var(--border-gold-amber-30);
+    color: var(--text-primary-hover);
+    font-size: 0.85rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.cc-spec-badge-delete:hover:not(:disabled) {
+    background: var(--text-primary-hover);
+    color: var(--bg-secondary-hover);
+}
+
+.cc-spec-badge-delete:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
 }
 
 .ts-detail {
@@ -4523,6 +4611,10 @@
    on the right (the answer): the exclusive kit it hands out, then one full
    dossier per member. Both pages pin their head and footer and scroll only
    their body, so the choice and the Embark button never leave the screen. */
+/* Three fixed-role columns: a narrow single-column scenario list, the brief
+   (the choice's own text, kit and inventory) taking whatever is left, and a
+   dedicated column for the party's dossiers so they no longer share scroll
+   space with the brief. */
 .cc-scenario-dossier {
     display: flex;
     width: 100%;
@@ -4531,9 +4623,27 @@
 }
 
 .cc-page.cc-scenario-list,
-.cc-page.cc-scenario-brief {
+.cc-page.cc-scenario-brief,
+.cc-page.cc-scenario-roster-col {
     padding: 14px 18px;
     gap: 8px;
+}
+
+.cc-scenario-dossier .cc-scenario-list {
+    flex: 0 0 23%;
+    width: 23%;
+    border-right: 1px solid var(--border-accent-hover-translucent-5);
+}
+
+.cc-scenario-dossier .cc-scenario-brief {
+    flex: 1 1 42%;
+    min-width: 0;
+    border-right: 1px solid var(--border-accent-hover-translucent-5);
+}
+
+.cc-scenario-dossier .cc-scenario-roster-col {
+    flex: 0 0 35%;
+    width: 35%;
 }
 
 .cc-scenario-list-head {
@@ -4548,10 +4658,13 @@
     margin: 0;
 }
 
+/* A single column of compact rows, like the hometown dropdown list, rather
+   than a grid of wide cards: the scenario names are short enough to read at
+   this width and twice as many fit on the page without scrolling. */
 .cc-select-grid.cc-scenario-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
+    grid-template-columns: 1fr;
+    gap: 4px;
     flex: 1 1 auto;
     min-height: 0;
     margin-top: 2px;
@@ -4561,10 +4674,10 @@
 }
 
 .cc-scenario-grid .cc-card-option.cc-scenario-card {
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     text-align: left;
-    gap: 2px;
-    padding: 7px 9px;
+    padding: 7px 12px;
     border-width: 1px;
     border-radius: 5px;
     box-shadow: none;
@@ -4590,18 +4703,27 @@
 .cc-scenario-grid .cc-scenario-card .cc-option-title {
     margin: 0;
     width: 100%;
-    font-size: 1.14rem;
+    font-size: 1.15rem;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
+}
+
+/* Action rows sit right-aligned and auto-width, the same plate the rest of
+   character creation's buttons use, instead of stretching edge to edge. */
+.cc-scenario-list-actions,
+.cc-scenario-brief-actions {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
 }
 
 .cc-scenario-back {
-    flex: 0 0 auto;
-    height: 34px;
-    font-size: 0.9rem;
+    height: 38px;
+    font-size: 1rem;
 }
 
-/* --- Right page: the brief ----------------------------------------------- */
+/* --- Middle page: the brief ----------------------------------------------- */
 .cc-scenario-brief-head {
     flex: 0 0 auto;
     display: flex;
@@ -4612,13 +4734,22 @@
 
 .cc-scenario-brief-head .cc-header-gothic {
     margin: 0;
-    font-size: 1.6rem;
-    line-height: 1.1;
+    font-size: 1.85rem;
+    line-height: 1.15;
+}
+
+/* The scenario screen's own money pill reads at a size that matches the
+   bigger text around it, rather than the small badge other screens use. */
+.cc-scenario-brief-head .cc-money-badge {
+    font-size: 1.15rem;
+    padding: 6px 14px;
 }
 
 .cc-scenario-brief .cc-class-quote {
     flex: 0 0 auto;
     text-align: left;
+    font-size: 1.08rem;
+    line-height: 1.4;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-accent-hover-translucent-5);
 }
@@ -4631,25 +4762,31 @@
 }
 
 .cc-scenario-bonus {
-    font-size: 0.8rem;
+    font-size: 0.92rem;
     font-weight: bold;
     color: var(--text-forest-green);
     text-transform: none;
     letter-spacing: 0;
 }
 
+/* --- Right page: party dossiers -------------------------------------------- */
 .cc-scenario-roster-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 8px;
-    margin: 12px 0 6px 0;
+    margin: 0 0 6px 0;
+    flex: 0 0 auto;
 }
 
 .cc-scenario-sheets {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
 .cc-scenario-sheet {
@@ -4669,8 +4806,8 @@
 }
 
 .cc-scenario-sheet-bust {
-    width: 34px;
-    height: 46px;
+    width: 42px;
+    height: 56px;
     flex: 0 0 auto;
     border-radius: 4px;
     background-size: cover;
@@ -4691,28 +4828,29 @@
 
 .cc-scenario-sheet-name {
     font-weight: bold;
-    font-size: 0.98rem;
+    font-size: 1.18rem;
     color: var(--text-primary-hover);
 }
 
 .cc-scenario-sheet-class {
-    font-size: 0.78rem;
+    font-size: 0.98rem;
     color: var(--text-text-alt-2);
 }
 
 .cc-scenario-sheet-money {
-    font-size: 0.78rem;
+    font-size: 0.98rem;
     font-weight: bold;
     color: var(--text-forest-green);
 }
 
-/* Eight figures on one compact row: the whole stat block in the least height
-   a full readout can take. */
+/* Four figures per row, two rows deep, rather than eight crammed onto one:
+   the trade for a readable label on a column already narrower than the
+   sidebar this stat block was first drawn for. */
 .cc-scenario-stat-grid {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: 2px 4px;
-    margin-bottom: 5px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px 6px;
+    margin-bottom: 6px;
 }
 
 .cc-scenario-stat {
@@ -4720,23 +4858,23 @@
     flex-direction: column;
     align-items: center;
     gap: 0;
-    font-size: 0.68rem;
+    font-size: 0.88rem;
     color: var(--text-text-alt-2);
 }
 
 .cc-scenario-stat b {
     color: var(--text-primary-hover);
-    font-size: 0.76rem;
+    font-size: 1.02rem;
 }
 
 .cc-scenario-section {
-    margin-top: 5px;
+    margin-top: 6px;
 }
 
 .cc-scenario-section h4 {
-    margin: 0 0 3px 0;
+    margin: 0 0 4px 0;
     font-family: 'Lora', serif;
-    font-size: 0.78rem;
+    font-size: 0.98rem;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -4744,11 +4882,26 @@
     opacity: 0.85;
 }
 
-.cc-scenario-embark {
-    flex: 0 0 auto;
-    width: 100%;
-    justify-content: center;
-    margin-top: 8px;
+/* The skill/item rows and their loadout-section titles are drawn by a
+   shared helper (_ccLoadoutRowHtml / _ccLoadoutSectionHtml) with their own
+   inline sizing, sized for the narrower sidebar they were first built for.
+   Overridden here, scoped to the scenario screen only, to match the bigger
+   text the rest of this screen now reads at. */
+.cc-scenario-dossier .cc-dossier-label,
+.cc-scenario-dossier .cc-dossier-value {
+    font-size: 1.12rem !important;
+}
+
+.cc-scenario-dossier .cc-loadout-section-title {
+    font-size: 1.18rem !important;
+}
+
+.cc-scenario-dossier .cc-loadout-section-count {
+    font-size: 0.98rem !important;
+}
+
+.cc-scenario-dossier .cc-loadout-empty {
+    font-size: 1rem !important;
 }
 
 .cc-dossier-photo-frame {

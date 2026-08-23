@@ -141,7 +141,7 @@
   //=============================================================================
 
   const { weaponTypeIcons } = window.StartingEquipment || {};
-  const { equipRandomCompatibleWeapon, GLOBAL_STARTER_SKILLS, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
+  const { equipRandomCompatibleWeapon, equipClassStartingArmor, GLOBAL_STARTER_SKILLS, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
 
   // IconSet glyph via CSS background-position (same convention as
   // TraitSelector.getIconStyle / Scene_CharacterCreation._ccIconStyle), used to
@@ -731,8 +731,8 @@
             lv1SkillsHtml = `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.noStartingSkills')}</span>`;
           }
 
-          // Thematic class starting items (Items.json only). See
-          // CharacterCreationEquipment.js CLASS_STARTING_ITEMS.
+          // Thematic class starting items (Items.json only), off the class's
+          // own <StartItems:> note tag. See CharacterCreationEquipment.js.
           const classItems = typeof getClassStartingItems === "function" ? getClassStartingItems(c.id) : [];
           const classItemsHtml = classItems
             .map((e) => {
@@ -1207,9 +1207,12 @@
           }
         });
 
-        // Equip random compatible weapon for the selected class
+        // Equip the class's fixed starting weapon(s) and armor
         if (equipRandomCompatibleWeapon) {
           equipRandomCompatibleWeapon(currentActor, classId);
+        }
+        if (equipClassStartingArmor) {
+          equipClassStartingArmor(currentActor, classId);
         }
       }
 

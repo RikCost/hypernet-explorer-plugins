@@ -177,7 +177,7 @@
       if (!toast.fading && now >= toast.hideAt) {
         toast.fading = true;
         toast.el.style.opacity = "0";
-        setTimeout(() => {
+        toast.fadeTimer = setTimeout(() => {
           if (toast.el.parentNode) toast.el.parentNode.removeChild(toast.el);
           _live.delete(key);
         }, FADE_MS);
@@ -336,12 +336,21 @@
     const hideAt = persist ? Infinity : Date.now() + durationMs;
 
     const existing = _live.get(key);
-    if (existing && !existing.fading) {
+    if (existing) {
       // Refresh, don't stack dupes. A standing notification is redrawn where it
-      // already is, so its readout can move without it losing its slot.
+      // already is, so its readout can move without it losing its slot. This
+      // also revives a toast that was mid fade-out (dismissed, then the same
+      // key fires again within FADE_MS) instead of layering a second element
+      // on top of the one still disappearing.
+      if (existing.fadeTimer != null) {
+        clearTimeout(existing.fadeTimer);
+        existing.fadeTimer = null;
+      }
+      existing.fading = false;
       existing.hideAt = hideAt;
       existing.persist = persist;
       existing.el.className = classNameFor(severity, persist);
+      existing.el.style.opacity = "1";
       renderInto(existing.el, text, opts);
       return;
     }
@@ -391,7 +400,7 @@
     if (!toast || toast.fading) return;
     toast.fading = true;
     toast.el.style.opacity = "0";
-    setTimeout(() => {
+    toast.fadeTimer = setTimeout(() => {
       if (toast.el.parentNode) toast.el.parentNode.removeChild(toast.el);
       _live.delete(k);
     }, FADE_MS);

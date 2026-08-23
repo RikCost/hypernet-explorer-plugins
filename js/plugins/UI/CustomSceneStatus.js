@@ -1927,6 +1927,17 @@
         // previous occupant) never stands in for it. The 2D battler art is only
         // the fallback for a species no archetype resolves for.
         if (battlerField && typeof battlerField === 'string' && isMonsterPortraitActor(actor)) {
+            // A creature the wizard built always carries its own sculpted body
+            // (ensureCreatureModel stamps one the moment it becomes a creature),
+            // parts, colours and proportions the player may have hand-edited in
+            // the 3D Studio. That sculpture is what portrays it here, never the
+            // bare species template — the stock archetype rebuild below is only
+            // for a monster with no such record (a battle-recruited enemy that
+            // never went through the wizard).
+            if (window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable()) {
+                const creatureCfg = window.CC3DModel.getConfig(actor.actorId());
+                if (creatureCfg) return { kind: 'custom', cfg: creatureCfg, actorId: actor.actorId() };
+            }
             for (const enemy of $dataEnemies) {
                 if (!enemy || enemy.battlerName !== battlerField) continue;
                 const key = window.Battler3D.resolveKey(enemy);

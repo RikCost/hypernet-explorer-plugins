@@ -937,6 +937,21 @@
     }
   };
 
+  // Keep the command list (and, via BattleHotbar's own actor check, the
+  // hotbar) standing while the actor's just-picked action plays out, instead
+  // of popping out the instant input ends and back in for whoever's turn
+  // comes next. Runs the earlier chain (wrestle/talk menu cleanup from
+  // Health_Monsters.js / EnemyTalkSystem.js) first, then only deactivates
+  // the command windows instead of closing them: left open and visible, the
+  // same visible-but-frozen footprint Attack's enemy-target picker already
+  // relies on (section 15b/7 in BattleSystemEnhancedHUD.js).
+  const _SB_endCommandSelection_BSEC = Scene_Battle.prototype.endCommandSelection;
+  Scene_Battle.prototype.endCommandSelection = function () {
+    _SB_endCommandSelection_BSEC.call(this);
+    this._partyCommandWindow.open();
+    this._actorCommandWindow.open();
+  };
+
   const _Window_ActorCommand_processOk = Window_ActorCommand.prototype.processOk;
   Window_ActorCommand.prototype.processOk = function () {
     _Window_ActorCommand_processOk.call(this);
@@ -1143,5 +1158,29 @@
   Window_ActorCommand.prototype.addSkillCommand  = function (stypeId) { this.addCommand("", "skill", true, stypeId, 76); };
   Window_ActorCommand.prototype.addItemCommand   = function ()         { this.addCommand("", "item",  true, 176); };
   Window_ActorCommand.prototype.addGuardCommand  = function ()         { this.addCommand("", "guard", this._actor.canGuard(), 52); };
+
+  //=============================================================================
+  // Window_PartyCommand - never shown with the default RPG Maker skin
+  //
+  // Fight/Escape are already covered by the HTML actor command list ("Base"
+  // and "Fuggi"), so whenever this window still gets created and opened by
+  // the base engine it must stay invisible instead of flashing the old
+  // attack/escape selector over the HTML overlay.
+  //=============================================================================
+
+  const _Window_PartyCommand_initialize = Window_PartyCommand.prototype.initialize;
+  Window_PartyCommand.prototype.initialize = function (rect) {
+    _Window_PartyCommand_initialize.call(this, rect);
+    this.opacity      = 0;
+    this.backOpacity  = 0;
+    this.frameVisible = false;
+    this.hideBackgroundDimmer();
+  };
+
+  Window_PartyCommand.prototype.drawItem     = function () {};
+  Window_PartyCommand.prototype.drawAllItems = function () {};
+  Window_PartyCommand.prototype.refreshCursor = function () {
+    this.setCursorRect(0, 0, 0, 0);
+  };
 
 })();

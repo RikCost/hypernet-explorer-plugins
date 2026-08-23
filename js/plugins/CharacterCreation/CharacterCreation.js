@@ -312,7 +312,7 @@
   } = window.CharacterCreationUtils || {};
   // The shared Back / extras / Continue bar (CharacterCreationShared.js).
   const CCButtons = window.CCButtons;
-  const { equipRandomCompatibleWeapon, GLOBAL_STARTER_SKILLS, applyStartingGear, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
+  const { equipRandomCompatibleWeapon, equipClassStartingArmor, GLOBAL_STARTER_SKILLS, applyStartingGear, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
   const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, unmarkPresetUsed, getPresetLore, getPresetHometown, getPresetSkins, getPresetSkin, getPresetSkinLabel, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets, getEmRestlessLine } = window.CharacterPresets || {};
   // Which button leafs through a dossier's looks, named on a chip under the
   // thumbnail row: the shoulder buttons when a pad is plugged in, TAB
@@ -616,11 +616,29 @@
     return CC_WEALTH_START_GOLD[Math.max(0, Math.min(4, tier))] || 0;
   }
 
+  // What the chosen scenario adds to the party purse on top of what the
+  // characters themselves bring. Read by giveStartingMoney (the actual grant)
+  // and by the scenario dossier (the display), from the same table, so the
+  // number promised on the dossier is always the number paid.
+  function scenarioGoldBonus(originSymbol) {
+    const additions = {
+      "origin_train": 0,
+      "origin_cargo": 50000,
+      "origin_castaway": 10000,
+      "origin_camper": 150000,
+      "origin_ceo": CEO_START_GOLD,
+      "origin_augmented": 25000,
+      "origin_underground": 100000,
+      "origin_random": 100000
+    };
+    return additions[originSymbol] || 0;
+  }
+
   function giveStartingMoney() {
     if ($gameSystem._ccStartingMoneyGiven) return;
     $gameSystem._ccStartingMoneyGiven = true;
 
-    let gold = CC_BASE_START_GOLD;
+    let gold = CC_BASE_START_GOLD + scenarioGoldBonus($gameSystem._ccOriginSymbol);
     $gameParty.members().forEach((actor) => {
       // A non-sentient creature (one of the creature classes, see NPCCreature)
       // brings nothing into the purse. It was never asked its wealth band , the
@@ -1014,7 +1032,9 @@
   const CEO_PLACE = "Ghent";                  // HQ's town: the anchor's world square
 
   function startCEOOrigin() {
-    $gameParty.gainGold(CEO_START_GOLD);
+    // The €1,000,000 purse itself is handed out by giveStartingMoney, via
+    // scenarioGoldBonus("origin_ceo") = CEO_START_GOLD, along with everyone
+    // else's class and trait money , so it lands in one place instead of two.
 
     // Grant an 80% stake in LimeCorp. giveShares needs a share count, so read
     // the company's total shares from the exchange and take 80% of it.
@@ -2214,12 +2234,13 @@
   function plannedStartingEuros(symbol) {
     let gold = $gameParty ? $gameParty.gold() : 0;
     if (!$gameSystem._ccStartingMoneyGiven) {
-      gold += CC_BASE_START_GOLD;
+      gold += CC_BASE_START_GOLD + scenarioGoldBonus(symbol);
       $gameParty.members().forEach((actor) => {
-        gold += classStartingMoney(actor._classId) + traitStartingMoney(actor);
+        const NC = window.NPCCreature;
+        if (NC && NC.isNonSentientActor(actor)) return;
+        gold += classStartingMoney(actor._classId) + traitStartingMoney(actor) + wealthStartingMoney(actor);
       });
     }
-    if (symbol === "origin_ceo") gold += CEO_START_GOLD;
     return Math.floor(gold / 100); // 100 gold = €1
   }
 
@@ -3386,6 +3407,9 @@
             if (typeof equipRandomCompatibleWeapon === "function") {
               equipRandomCompatibleWeapon(currentActor, classId);
             }
+            if (typeof equipClassStartingArmor === "function") {
+              equipClassStartingArmor(currentActor, classId);
+            }
             if (typeof giveClassStartingItems === "function") {
               giveClassStartingItems(currentActor, classId);
             }
@@ -3405,6 +3429,9 @@
             if (typeof equipRandomCompatibleWeapon === 'function') {
               equipRandomCompatibleWeapon(currentActor, 66);
             }
+            if (typeof equipClassStartingArmor === "function") {
+              equipClassStartingArmor(currentActor, 66);
+            }
             if (typeof giveClassStartingItems === "function") {
               giveClassStartingItems(currentActor, 66);
             }
@@ -3423,9 +3450,12 @@
             const currentActor = Scene_CharacterCreation.getCurrentActor();
             if (currentActor) {
               currentActor.changeClass(randomClass.id, true);
-              // Equip random compatible weapon for the random class
+              // Equip the class's fixed starting weapon(s) for the random class
               if (typeof equipRandomCompatibleWeapon === "function") {
                 equipRandomCompatibleWeapon(currentActor, randomClass.id);
+              }
+              if (typeof equipClassStartingArmor === "function") {
+                equipClassStartingArmor(currentActor, randomClass.id);
               }
               if (typeof giveClassStartingItems === "function") {
                 giveClassStartingItems(currentActor, randomClass.id);
@@ -4033,6 +4063,39 @@
       return this._currentPartyMemberIndex + 1;
     }
 
+    // Shared Markov-based random name, used by every randomize-name entry
+    // point (per-member randomize, randomize-all-party, and the finish-step
+    // fallback for an unnamed first member) so a "random name" always means
+    // the same thing everywhere instead of some paths using a hardcoded pool.
+    static generateRandomMarkovName(memberIndex = 0) {
+      if (window.generateSeededMarkovName) {
+        // Timestamp plus member index as seed, so re-rolling the same slot
+        // twice in a row still yields a different name.
+        const seed = Date.now() + memberIndex * 1000;
+        const name = window.generateSeededMarkovName(
+          Math.floor(seed / 1000),  // worldX equivalent
+          Math.floor(seed % 1000),  // worldY equivalent
+          memberIndex + 1,          // eventId equivalent
+          "names",                  // database ID
+          2,                        // chain order
+          4,                        // min characters
+          12                        // max characters
+        );
+        if (name) return name;
+      }
+      if (window.generateMarkovString) {
+        const name = window.generateMarkovString("names", { minLength: 4, maxLength: 12 });
+        if (name) return name;
+      }
+      if (window.TextGen && window.TextGen.names && window.TextGen.names.en) {
+        const namesList = window.TextGen.names.en.trim().split(/\s+/);
+        if (namesList.length > 0) {
+          return namesList[Math.floor(Math.random() * namesList.length)];
+        }
+      }
+      return "Random";
+    }
+
     // Applied from the 3D Political Graph's onSelect callback, which fires
     // during confirmSelection() - before SceneManager has swapped _scene back
     // to the wizard, so SceneManager._scene is still the graph itself there.
@@ -4570,6 +4633,7 @@
     // being slow. A scene change is already its own transition.
     terminate() {
       super.terminate();
+      this._destroyCC3DPortrait();
       if (window.EmRestlessBubble) window.EmRestlessBubble.release();
       const container = this._dndContainer;
       if (!container) return;
@@ -4782,15 +4846,11 @@
       `;
     }
 
-    // ── Item Hover Tooltip Handlers ──
-    onItemHover(event, type, id, qty) {
-      let item = null;
-      if (type === "weapon") item = $dataWeapons[id];
-      else if (type === "armor") item = $dataArmors[id];
-      else if (type === "skill") item = $dataSkills[id];
-      else item = $dataItems[id];
-      if (!item) return;
-
+    // The floating card every hover handler below raises, fetched (or made)
+    // once and reused: a stat, a trait and an item all land in the same
+    // corner of the screen, so they share the one element rather than each
+    // standing up their own.
+    _ccTooltipEl() {
       let tooltip = document.getElementById("cc-item-tooltip");
       if (!tooltip) {
         tooltip = document.createElement("div");
@@ -4798,6 +4858,76 @@
         tooltip.className = "cc-item-tooltip";
         document.body.appendChild(tooltip);
       }
+      return tooltip;
+    }
+
+    _ccPositionTooltip(event, tooltip) {
+      tooltip.style.display = "block";
+      const mouseX = (event && event.clientX) || 100;
+      const mouseY = (event && event.clientY) || 100;
+      tooltip.style.left = `${Math.min(window.innerWidth - 330, mouseX + 16)}px`;
+      tooltip.style.top = `${Math.min(window.innerHeight - 180, mouseY + 16)}px`;
+    }
+
+    // A stat box's own card: what the stat actually governs, read off the
+    // i18n bank (CharCreate.statInfo.<key>) so it translates with the rest of
+    // the sheet instead of carrying its own hardcoded prose.
+    onStatHover(event, statKey) {
+      const tooltip = this._ccTooltipEl();
+      const SL = ccStatLabels();
+      const label = SL[statKey] || statKey;
+      const desc = ccT('CharCreate.statInfo.' + statKey, '');
+      tooltip.innerHTML = `
+        <div class="cc-item-tooltip-header">
+          <span class="cc-item-tooltip-title">${label}</span>
+        </div>
+        ${desc ? `<div class="cc-item-tooltip-desc">${desc}</div>` : ""}
+      `;
+      this._ccPositionTooltip(event, tooltip);
+    }
+
+    // ── Item Hover Tooltip Handlers ──
+    onItemHover(event, type, id, qty) {
+      // A trait is not a $data* record, so it is resolved off the trait bank
+      // (window.Health.Traits) the same way the trait board's own detail
+      // panel resolves the one it has highlighted.
+      if (type === "trait") {
+        const bank = (window.Health && window.Health.Traits) || [];
+        const trait = bank.find((t) => String(t.id) === String(id));
+        if (!trait) return;
+        const tooltip = this._ccTooltipEl();
+        const name = (trait.name && resolveTraitName(trait.name, trait.id)) || trait.id;
+        const desc = (trait.description && resolveTraitDesc(trait.description, trait.id)) || "";
+        let traitStatsHtml = "";
+        if (trait.positive) {
+          traitStatsHtml += Object.entries(trait.positive)
+            .map(([k, v]) => `<span class="ts-badge pos">+${v} ${k.toUpperCase()}</span>`).join(" ");
+        }
+        if (trait.negative) {
+          traitStatsHtml += Object.entries(trait.negative)
+            .map(([k, v]) => `<span class="ts-badge neg">${v} ${k.toUpperCase()}</span>`).join(" ");
+        }
+        tooltip.innerHTML = `
+          <div class="cc-item-tooltip-header">
+            ${this._ccIconHtml(trait.icon || 87, 20)}
+            <span class="cc-item-tooltip-title">${name}</span>
+            <span class="cc-item-tooltip-type">${ccT('CharCreate.traitTypeLabel', 'TRAIT')}</span>
+          </div>
+          ${desc ? `<div class="cc-item-tooltip-desc">${desc}</div>` : ""}
+          ${traitStatsHtml ? `<div class="cc-item-tooltip-stats">${traitStatsHtml}</div>` : ""}
+        `;
+        this._ccPositionTooltip(event, tooltip);
+        return;
+      }
+
+      let item = null;
+      if (type === "weapon") item = $dataWeapons[id];
+      else if (type === "armor") item = $dataArmors[id];
+      else if (type === "skill") item = $dataSkills[id];
+      else item = $dataItems[id];
+      if (!item) return;
+
+      const tooltip = this._ccTooltipEl();
 
       const name = window.CCDbName(item);
       const desc = item.description || ccT('CharCreate.standardIssueGear', "Standard issue item or gear.");
@@ -4806,7 +4936,7 @@
       // A skill has no shop price, so the card that describes one says what it
       // costs to cast instead of pretending it is for sale.
       const isSkill = type === "skill";
-      const price = !isSkill && item.price ? `${item.price}€` : "";
+      const price = !isSkill && item.price ? this._formatGoldToEuros(item.price) : "";
 
       let statsHtml = "";
       if (isSkill) {
@@ -4843,11 +4973,7 @@
         ${price ? `<div class="cc-item-tooltip-price">${ccT('CharCreate.estimatedValue', 'Estimated Value')}: ${price}</div>` : ""}
       `;
 
-      tooltip.style.display = "block";
-      const mouseX = (event && event.clientX) || 100;
-      const mouseY = (event && event.clientY) || 100;
-      tooltip.style.left = `${Math.min(window.innerWidth - 330, mouseX + 16)}px`;
-      tooltip.style.top = `${Math.min(window.innerHeight - 180, mouseY + 16)}px`;
+      this._ccPositionTooltip(event, tooltip);
     }
 
     onItemLeave() {
@@ -5106,6 +5232,22 @@
       return `onmouseenter="SceneManager._scene.onItemHover(event, '${type}', ${id}, ${qty == null ? 1 : qty})" onmouseleave="SceneManager._scene.onItemLeave()"`;
     }
 
+    // The gear the Bio tab's job selector hands out (actor._grantedJobItemIds,
+    // kept in sync by onBioOptionChange) so it shows up next to the class kit
+    // everywhere the starting loadout is listed: the sidebar and the scenario
+    // resume sheet.
+    _ccPushJobItems(actor, list) {
+      if (!actor || !Array.isArray(actor._grantedJobItemIds)) return;
+      const counts = {};
+      actor._grantedJobItemIds.forEach((id) => {
+        counts[id] = (counts[id] || 0) + 1;
+      });
+      Object.keys(counts).forEach((idStr) => {
+        const item = $dataItems[Number(idStr)];
+        if (item) list.push({ name: window.CCDbName(item), iconIndex: item.iconIndex || 176, qty: counts[idStr], type: "item", id: item.id });
+      });
+    }
+
     // A loadout block: the sidebar's gold rule with its tally, then the rows.
     // `open` lets the rows run their full length instead of scrolling inside
     // the sidebar's short well, which is what a dossier page wants. `extraClass`
@@ -5115,17 +5257,24 @@
       return `
         <div style="margin-top:2px;">
           <div style="font-size:1.05rem; font-weight:bold; color:#ffd700; border-bottom:1px solid rgba(218,165,32,0.3); padding-bottom:3px; display:flex; justify-content:space-between; align-items:center;">
-            <span>${title}</span>
-            ${count === null || count === undefined ? '' : `<span style="font-size:0.85rem; color:#ffd700; opacity:0.85;">${count}</span>`}
+            <span class="cc-loadout-section-title">${title}</span>
+            ${count === null || count === undefined ? '' : `<span class="cc-loadout-section-count" style="font-size:0.85rem; color:#ffd700; opacity:0.85;">${count}</span>`}
           </div>
           <div class="cc-compact-loadout-grid ${open ? 'cc-loadout-open' : ''} ${extraClass || ''}">
-            ${rowsHtml || `<span style="font-size:0.88rem; color:rgba(255,255,255,0.45); font-style:italic; padding:6px; text-align:center;">${emptyText || ''}</span>`}
+            ${rowsHtml || `<span class="cc-loadout-empty" style="font-size:0.88rem; color:rgba(255,255,255,0.45); font-style:italic; padding:6px; text-align:center;">${emptyText || ''}</span>`}
           </div>
         </div>
       `;
     }
 
     _renderCompactSidebarHtml() {
+      // The preset board reads its own dossier down the sidebar too: browsing
+      // wanted posters used to leave this panel showing the (still blank) seat
+      // being filled, unrelated to whichever dossier was highlighted, so taking
+      // one was a guess until it was actually applied. See
+      // _renderPresetPreviewSidebarHtml.
+      if (this._presetWindow) return this._renderPresetPreviewSidebarHtml();
+
       const actor = Scene_CharacterCreation.getCurrentActor();
       // Guarded before the actor is read, not after: with no current member the
       // three reads below threw and took the whole overlay refresh with them,
@@ -5156,7 +5305,7 @@
         ? (window.WorkSystem && window.WorkSystem.jobName ? window.WorkSystem.jobName(identityJob) : (identityJob.name || `Job #${identityJob.id}`))
         : ccT('CharCreate.bio.joblessShort', 'Jobless');
 
-      const startingGold = 200000 + (typeof classStartingMoney === 'function' ? classStartingMoney(actor._classId) : 0) + (typeof traitStartingMoney === 'function' ? traitStartingMoney(actor) : 0);
+      const startingGold = CC_BASE_START_GOLD + (typeof classStartingMoney === 'function' ? classStartingMoney(actor._classId) : 0) + (typeof traitStartingMoney === 'function' ? traitStartingMoney(actor) : 0) + (typeof wealthStartingMoney === 'function' ? wealthStartingMoney(actor) : 0);
       const startingMoneyFormatted = this._formatGoldToEuros(startingGold);
 
       let avatarStyle = "";
@@ -5213,8 +5362,8 @@
           // the model preview and the shortcut into the sculptor.
           profileBoxHtml = `
             <div class="cc-compact-portrait-card" style="display:flex; flex-direction:column; gap:6px;">
-              <div class="cc-compact-bust-full empty" onclick="SceneManager._scene.onOpenCreature3DStudio()">
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:6px;">
+              <div class="cc-compact-bust-full empty cc3d-live-portrait" style="position:relative; overflow:hidden;" onclick="SceneManager._scene.onOpenCreature3DStudio()">
+                <div class="cc3d-live-portrait-fallback" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:6px;">
                   ${this._ccIconHtml(224, 28)}
                   <span style="font-size:0.9rem; color:#ffd700; font-weight:600;">${ccT('CharCreate.custom3dModel', '3D Model')}: ${modelLabel}</span>
                 </div>
@@ -5277,14 +5426,14 @@
       };
       const SL = ccStatLabels();
       const stats = [
-        { label: SL.HP,  val: _baseStatNoEquip(0, 450), color: "#ef5350" },
-        { label: SL.MP,  val: _baseStatNoEquip(1, 100), color: "#64b5f6" },
-        { label: SL.STR, val: _baseStatNoEquip(2, 12),  color: "#e57373" },
-        { label: SL.CON, val: _baseStatNoEquip(3, 10),  color: "#ffb74d" },
-        { label: SL.DEX, val: _baseStatNoEquip(6, 10),  color: "#ffd54f" },
-        { label: SL.INT, val: _baseStatNoEquip(4, 10),  color: "#ba68c8" },
-        { label: SL.WIS, val: _baseStatNoEquip(5, 10),  color: "#4db6ac" },
-        { label: SL.PSI, val: _baseStatNoEquip(7, 10),  color: "#f06292" }
+        { key: "HP",  label: SL.HP,  val: _baseStatNoEquip(0, 450), color: "#ef5350" },
+        { key: "MP",  label: SL.MP,  val: _baseStatNoEquip(1, 100), color: "#64b5f6" },
+        { key: "STR", label: SL.STR, val: _baseStatNoEquip(2, 12),  color: "#e57373" },
+        { key: "CON", label: SL.CON, val: _baseStatNoEquip(3, 10),  color: "#ffb74d" },
+        { key: "DEX", label: SL.DEX, val: _baseStatNoEquip(6, 10),  color: "#ffd54f" },
+        { key: "INT", label: SL.INT, val: _baseStatNoEquip(4, 10),  color: "#ba68c8" },
+        { key: "WIS", label: SL.WIS, val: _baseStatNoEquip(5, 10),  color: "#4db6ac" },
+        { key: "PSI", label: SL.PSI, val: _baseStatNoEquip(7, 10),  color: "#f06292" }
       ];
       // HP and MP used to be two bar gauges above the stat grid; now they lead
       // it as plain boxes like every other stat, freeing the two bar rows'
@@ -5293,10 +5442,11 @@
         <div class="cc-vitals-block">
           <div class="cc-stat-grid">
             ${stats.map((st, idx) => {
+              const statHover = `onmouseenter="SceneManager._scene.onStatHover(event, '${st.key}')" onmouseleave="SceneManager._scene.onItemLeave()"`;
               const isVital = idx < 2; // HP, MP
               if (isVital) {
                 return `
-                  <div class="cc-stat-box">
+                  <div class="cc-stat-box" ${statHover}>
                     <span class="cc-stat-label" style="color:${st.color};">${st.label}</span>
                     <span class="cc-stat-val">${st.val}</span>
                   </div>
@@ -5305,7 +5455,7 @@
               const mod = Math.floor((st.val - 10) / 2);
               const modStr = mod >= 0 ? "+" + mod : String(mod);
               return `
-                <div class="cc-stat-box">
+                <div class="cc-stat-box" ${statHover}>
                   <span class="cc-stat-label">${st.label}</span>
                   <span class="cc-stat-val">${st.val} <span class="cc-stat-mod">(${modStr})</span></span>
                 </div>
@@ -5332,7 +5482,9 @@
         T('CharCreate.startingSkills'),
         ccTp('CharCreate.skillCount', { n: lv1SkillsList.length }, lv1SkillsList.length + ' skills'),
         skillsLoadoutHtml,
-        T('CharCreate.noStartingSkills')
+        T('CharCreate.noStartingSkills'),
+        false,
+        'cc-loadout-grid-cols'
       );
 
       // 6. Starting Items & Money in Inventory
@@ -5350,6 +5502,7 @@
           if (item) itemsList.push({ name: window.CCDbName(item), iconIndex: item.iconIndex || 176, qty: entry.qty || 1, type: "item", id: item.id });
         });
       }
+      this._ccPushJobItems(actor, itemsList);
 
       const moneyRowHtml = this._ccLoadoutRowHtml(
         208,
@@ -5367,7 +5520,9 @@
         T('CharCreate.startingItems'),
         ccTp('CharCreate.entryCount', { n: itemsList.length + 1 }, (itemsList.length + 1) + ' entries'),
         moneyRowHtml + loadoutItemsHtml,
-        T('CharCreate.noGear')
+        T('CharCreate.noGear'),
+        false,
+        'cc-loadout-grid-cols'
       );
 
       // 7. The traits the member carries, priced the way the trait board prices
@@ -5384,7 +5539,7 @@
           tr.icon || 87,
           (tr.name && resolveTraitName(tr.name, tr.id)) || tr.id,
           price,
-          { valueColor: cost < 0 ? '#a5d6a7' : '#ffd700' }
+          { valueColor: cost < 0 ? '#a5d6a7' : '#ffd700', hover: this._ccHoverAttrs("trait", tr.id) }
         );
       }).join("");
 
@@ -5399,21 +5554,182 @@
         T('CharCreate.traits'),
         ccTp('CharCreate.traitCount', { n: traitTotal }, traitTotal + ' traits'),
         traitRowsHtml + illnessRowsHtml,
-        T('CharCreate.noDefiningTraits')
+        T('CharCreate.noDefiningTraits'),
+        false,
+        'cc-loadout-grid-cols'
       );
 
       return `
         <div class="cc-compact-sidebar">
-          ${identityHeaderHtml}
-          ${profileBoxHtml}
-          ${statsHtml}
-          ${skillsSectionHtml}
-          ${traitsSectionHtml}
-          ${startingItemsSectionHtml}
-          <div class="cc-compact-actions" style="margin-top:auto; display:flex; flex-direction:column; gap:6px;">
+          <div class="cc-compact-sidebar-body">
+            ${identityHeaderHtml}
+            ${profileBoxHtml}
+            ${statsHtml}
+            ${traitsSectionHtml}
+            ${skillsSectionHtml}
+            ${startingItemsSectionHtml}
+          </div>
+          <div class="cc-compact-actions" style="display:flex; flex-direction:column; gap:6px;">
             <button class="cc-compact-btn" onclick="SceneManager._scene.onQuickRandomizeMember()">${ccT('CharCreate.randomizeMember', 'Randomize Member')}</button>
             <button class="cc-compact-btn" onclick="SceneManager._scene.createTotalRandomPartyAll()">${ccT('CharCreate.randomizeParty', 'Randomize Party')}</button>
             <button class="cc-compact-btn primary" onclick="SceneManager._scene.onProceedToScenario()">${this._hasPresetInParty(false) ? ccT('CharCreate.startGame', 'Start Game') : ccT('CharCreate.confirmPartyScenario', 'Confirm Party & Scenario')}</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // The preset board's own sidebar: the same sections a real member's carries
+    // (identity, stats, traits, starting skills, starting kit), read straight
+    // off the highlighted dossier's own record rather than off the actor,
+    // which is not touched until "Apply" is actually pressed. Stats are the
+    // class's own table at the dossier's level, with no trait deltas folded
+    // in -- those only exist once applyTraitsToActor has run on a real actor,
+    // which this preview deliberately never touches.
+    _renderPresetPreviewSidebarHtml() {
+      const preset = this._presetWindow ? this._presetWindow.currentPreset() : null;
+      if (!preset) return `<div class="cc-compact-sidebar"></div>`;
+
+      const activeIndex = this._presetWindow.index ? this._presetWindow.index() : 0;
+      const skins = presetSkins(preset);
+      const skinIdx = this._presetWindow.skinIndex ? this._presetWindow.skinIndex(activeIndex) : 0;
+      const skin = skins[skinIdx] || skins[0] || preset;
+      const avatarStyle = skin.sprite ? this.getSpriteStyle(skin.sprite, skin.spriteIndex || 0) : "";
+
+      const classData = $dataClasses[preset.classId];
+      const className = classData ? window.CCDbName(classData) : ccT('CharCreate.class', 'Class');
+
+      const identityHeaderHtml = `
+        <div class="cc-compact-identity-card">
+          <div style="display:flex; gap:10px; align-items:center;">
+            <div class="cc-compact-avatar-wrap">
+              <div class="cc-compact-avatar" style="${avatarStyle}"></div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;">
+              <div style="font-family:'Lora',serif; font-weight:bold; font-size:1.15rem; color:#ffd700;">${preset.name || ""}</div>
+              <div style="font-weight:700; color:#ffd700;">${className}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const level = Math.max(1, Math.min(99, preset.level || 1));
+      const paramAt = (paramId, fallback) => {
+        const table = classData && classData.params && classData.params[paramId];
+        return (table && table[level] != null) ? table[level] : fallback;
+      };
+      const SL = ccStatLabels();
+      const stats = [
+        { key: "HP",  label: SL.HP,  val: paramAt(0, 450), color: "#ef5350" },
+        { key: "MP",  label: SL.MP,  val: paramAt(1, 100), color: "#64b5f6" },
+        { key: "STR", label: SL.STR, val: paramAt(2, 12),  color: "#e57373" },
+        { key: "CON", label: SL.CON, val: paramAt(3, 10),  color: "#ffb74d" },
+        { key: "DEX", label: SL.DEX, val: paramAt(6, 10),  color: "#ffd54f" },
+        { key: "INT", label: SL.INT, val: paramAt(4, 10),  color: "#ba68c8" },
+        { key: "WIS", label: SL.WIS, val: paramAt(5, 10),  color: "#4db6ac" },
+        { key: "PSI", label: SL.PSI, val: paramAt(7, 10),  color: "#f06292" }
+      ];
+      const statsHtml = `
+        <div class="cc-vitals-block">
+          <div class="cc-stat-grid">
+            ${stats.map((st, idx) => {
+              const statHover = `onmouseenter="SceneManager._scene.onStatHover(event, '${st.key}')" onmouseleave="SceneManager._scene.onItemLeave()"`;
+              const isVital = idx < 2;
+              if (isVital) {
+                return `
+                  <div class="cc-stat-box" ${statHover}>
+                    <span class="cc-stat-label" style="color:${st.color};">${st.label}</span>
+                    <span class="cc-stat-val">${st.val}</span>
+                  </div>
+                `;
+              }
+              const mod = Math.floor((st.val - 10) / 2);
+              const modStr = mod >= 0 ? "+" + mod : String(mod);
+              return `
+                <div class="cc-stat-box" ${statHover}>
+                  <span class="cc-stat-label">${st.label}</span>
+                  <span class="cc-stat-val">${st.val} <span class="cc-stat-mod">(${modStr})</span></span>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+
+      const traitObjs = selectedTraitObjects({ _selectedTraits: preset.traits });
+      const traitRowsHtml = traitObjs.map((tr) => {
+        const cost = Number.isFinite(Number(tr.cost)) ? Number(tr.cost) : 1;
+        const price = cost < 0 ? `+${-cost}` : String(cost);
+        return this._ccLoadoutRowHtml(
+          tr.icon || 87,
+          (tr.name && resolveTraitName(tr.name, tr.id)) || tr.id,
+          price,
+          { valueColor: cost < 0 ? '#a5d6a7' : '#ffd700', hover: this._ccHoverAttrs("trait", tr.id) }
+        );
+      }).join("");
+      const traitsSectionHtml = this._ccLoadoutSectionHtml(
+        T('CharCreate.traits'),
+        ccTp('CharCreate.traitCount', { n: traitObjs.length }, traitObjs.length + ' traits'),
+        traitRowsHtml,
+        T('CharCreate.noDefiningTraits'),
+        false,
+        'cc-loadout-grid-cols'
+      );
+
+      const skillsList = (preset.skills || []).map((id) => $dataSkills[id]).filter(Boolean)
+        .map((sk) => ({ name: window.CCDbName(sk), iconIndex: sk.iconIndex || 79, id: sk.id }));
+      const skillsLoadoutHtml = skillsList.map((sk) => this._ccLoadoutRowHtml(sk.iconIndex, sk.name, "",
+        { hover: this._ccHoverAttrs("skill", sk.id) })).join("");
+      const skillsSectionHtml = this._ccLoadoutSectionHtml(
+        T('CharCreate.startingSkills'),
+        ccTp('CharCreate.skillCount', { n: skillsList.length }, skillsList.length + ' skills'),
+        skillsLoadoutHtml,
+        T('CharCreate.noStartingSkills'),
+        false,
+        'cc-loadout-grid-cols'
+      );
+
+      const itemsList = [];
+      (preset.weapons || []).forEach((entry) => {
+        const w = entry && $dataWeapons[entry.id];
+        if (w) itemsList.push({ name: window.CCDbName(w), iconIndex: w.iconIndex || 116, qty: entry.amount || 1, type: "weapon", id: w.id });
+      });
+      (preset.armors || []).forEach((entry) => {
+        const a = entry && $dataArmors[entry.id];
+        if (a) itemsList.push({ name: window.CCDbName(a), iconIndex: a.iconIndex || 144, qty: entry.amount || 1, type: "armor", id: a.id });
+      });
+      (preset.items || []).forEach((entry) => {
+        const it = entry && $dataItems[entry.id];
+        if (it) itemsList.push({ name: window.CCDbName(it), iconIndex: it.iconIndex || 176, qty: entry.amount || 1, type: "item", id: it.id });
+      });
+      const moneyRowHtml = this._ccLoadoutRowHtml(
+        208,
+        ccT('CharCreate.startingFunds', 'Starting Funds'),
+        this._formatGoldToEuros(preset.money || 0),
+        { nameColor: '#ffd700', valueColor: '#a5d6a7' }
+      );
+      const loadoutItemsHtml = itemsList.map((it) => this._ccLoadoutRowHtml(
+        it.iconIndex, it.name, `x${it.qty}`, { hover: this._ccHoverAttrs(it.type, it.id, it.qty) }
+      )).join("");
+      const startingItemsSectionHtml = this._ccLoadoutSectionHtml(
+        T('CharCreate.startingItems'),
+        ccTp('CharCreate.entryCount', { n: itemsList.length + 1 }, (itemsList.length + 1) + ' entries'),
+        moneyRowHtml + loadoutItemsHtml,
+        T('CharCreate.noGear'),
+        false,
+        'cc-loadout-grid-cols'
+      );
+
+      return `
+        <div class="cc-compact-sidebar">
+          <div class="cc-compact-sidebar-body">
+            ${identityHeaderHtml}
+            ${statsHtml}
+            ${traitsSectionHtml}
+            ${skillsSectionHtml}
+            ${startingItemsSectionHtml}
+          </div>
+          <div class="cc-compact-actions" style="display:flex; flex-direction:column; gap:6px;">
+            <button class="cc-compact-btn primary" onclick="SceneManager._scene.onApplyPresetToCurrentMember(${activeIndex})">${T('CharCreate.applyToMember')}</button>
           </div>
         </div>
       `;
@@ -5427,7 +5743,7 @@
       const classData = $dataClasses[actor._classId];
       const className = classData ? window.CCDbName(classData) : "Class";
       const genderName = actor.genderName ? actor.genderName() : ($gameVariables.value(38 + (Scene_CharacterCreation._currentPartyMemberIndex || 0)) === 0 ? "Male ♂" : "Female ♀");
-      const startingGold = 200000 + (typeof classStartingMoney === 'function' ? classStartingMoney(actor._classId) : 0) + (typeof traitStartingMoney === 'function' ? traitStartingMoney(actor) : 0);
+      const startingGold = CC_BASE_START_GOLD + (typeof classStartingMoney === 'function' ? classStartingMoney(actor._classId) : 0) + (typeof traitStartingMoney === 'function' ? traitStartingMoney(actor) : 0) + (typeof wealthStartingMoney === 'function' ? wealthStartingMoney(actor) : 0);
       const startingMoneyFormatted = this._formatGoldToEuros(startingGold);
       const bustName = this._getActorBust(actor);
       const bustUrl = this._getBustUrl(bustName);
@@ -5442,18 +5758,18 @@
       };
       const SL = ccStatLabels();
       const stats = [
-        { label: SL.HP,  val: _dossierStatNoEquip(0, 450), color: "#81c784" },
-        { label: SL.MP,  val: _dossierStatNoEquip(1, 100), color: "#64b5f6" },
-        { label: SL.STR, val: _dossierStatNoEquip(2, 12),  color: "#e57373" },
-        { label: SL.CON, val: _dossierStatNoEquip(3, 10),  color: "#ffb74d" },
-        { label: SL.INT, val: _dossierStatNoEquip(4, 10),  color: "#ba68c8" },
-        { label: SL.WIS, val: _dossierStatNoEquip(5, 10),  color: "#4db6ac" },
-        { label: SL.DEX, val: _dossierStatNoEquip(6, 10),  color: "#ffd54f" },
-        { label: SL.PSI, val: _dossierStatNoEquip(7, 10),  color: "#f06292" }
+        { key: "HP",  label: SL.HP,  val: _dossierStatNoEquip(0, 450), color: "#81c784" },
+        { key: "MP",  label: SL.MP,  val: _dossierStatNoEquip(1, 100), color: "#64b5f6" },
+        { key: "STR", label: SL.STR, val: _dossierStatNoEquip(2, 12),  color: "#e57373" },
+        { key: "CON", label: SL.CON, val: _dossierStatNoEquip(3, 10),  color: "#ffb74d" },
+        { key: "INT", label: SL.INT, val: _dossierStatNoEquip(4, 10),  color: "#ba68c8" },
+        { key: "WIS", label: SL.WIS, val: _dossierStatNoEquip(5, 10),  color: "#4db6ac" },
+        { key: "DEX", label: SL.DEX, val: _dossierStatNoEquip(6, 10),  color: "#ffd54f" },
+        { key: "PSI", label: SL.PSI, val: _dossierStatNoEquip(7, 10),  color: "#f06292" }
       ];
 
       const statBoxes = stats.map(st => `
-        <div class="cc-stat-box">
+        <div class="cc-stat-box" onmouseenter="SceneManager._scene.onStatHover(event, '${st.key}')" onmouseleave="SceneManager._scene.onItemLeave()">
           <span class="cc-stat-label">${st.label}</span>
           <span class="cc-stat-val">${st.val}</span>
         </div>
@@ -5500,7 +5816,7 @@
       // Traits badges
       const traitsBadges = selectedTraitObjects(actor).map(tr => {
         const name = (tr.name && resolveTraitName(tr.name, tr.id)) || tr.id;
-        return `<span class="cc-element-badge" style="margin:2px; font-size:0.8rem;">${name}</span>`;
+        return `<span class="cc-element-badge" style="margin:2px; font-size:0.8rem;" ${this._ccHoverAttrs("trait", tr.id)}>${name}</span>`;
       }).join(" ");
 
       return `
@@ -5554,19 +5870,9 @@
     // per member, headed by the kit this scenario alone hands out.
 
     // What the scenario adds to the party purse on top of what the characters
-    // themselves bring.
+    // themselves bring, from the same table giveStartingMoney pays out of.
     _scenarioGoldBonus(originSymbol) {
-      const additions = {
-        "origin_train": 0,
-        "origin_cargo": 50000,
-        "origin_castaway": 10000,
-        "origin_camper": 150000,
-        "origin_ceo": 10000000,
-        "origin_augmented": 25000,
-        "origin_underground": 100000,
-        "origin_random": 100000
-      };
-      return additions[originSymbol] || 0;
+      return scenarioGoldBonus(originSymbol);
     }
 
     _scenarioItemRowHtml(entry) {
@@ -5581,17 +5887,18 @@
       const classData = $dataClasses[actor._classId];
       const className = classData ? window.CCDbName(classData) : T('CharCreate.class');
       const bustUrl = this._getBustUrl(this._getActorBust(actor));
-      const money = 200000
+      const money = CC_BASE_START_GOLD
         + (typeof classStartingMoney === 'function' ? classStartingMoney(actor._classId) : 0)
-        + (typeof traitStartingMoney === 'function' ? traitStartingMoney(actor) : 0);
+        + (typeof traitStartingMoney === 'function' ? traitStartingMoney(actor) : 0)
+        + (typeof wealthStartingMoney === 'function' ? wealthStartingMoney(actor) : 0);
 
-      const stat = (label, value) => `
-        <div class="cc-scenario-stat"><span>${label}</span><b>${value}</b></div>
+      const stat = (label, value, key) => `
+        <div class="cc-scenario-stat" onmouseenter="SceneManager._scene.onStatHover(event, '${key}')" onmouseleave="SceneManager._scene.onItemLeave()"><span>${label}</span><b>${value}</b></div>
       `;
 
       const traitBadges = selectedTraitObjects(actor).map((tr) => {
         const name = (tr.name && resolveTraitName(tr.name, tr.id)) || tr.id;
-        return `<span class="cc-element-badge">${name}</span>`;
+        return `<span class="cc-element-badge" ${this._ccHoverAttrs("trait", tr.id)}>${name}</span>`;
       }).filter(Boolean).join("");
 
       const illnessBadges = ((actor._ccDiseases) || []).map((id) => {
@@ -5618,6 +5925,7 @@
           if (item) carried.push({ name: window.CCDbName(item), iconIndex: item.iconIndex || 176, qty: e.qty || 1, type: "item", id: item.id });
         });
       }
+      this._ccPushJobItems(actor, carried);
 
       const section = (title, body) => body
         ? `<div class="cc-scenario-section"><h4>${title}</h4>${body}</div>` : "";
@@ -5635,14 +5943,14 @@
           </div>
 
           <div class="cc-scenario-stat-grid">
-            ${stat(T('CharCreate.abbrev.hp'), actor.mhp)}
-            ${stat(T('CharCreate.abbrev.mp'), actor.mmp)}
-            ${stat(T('CharCreate.abbrev.str'), actor.param(2))}
-            ${stat(T('CharCreate.abbrev.con'), actor.param(3))}
-            ${stat(T('CharCreate.abbrev.int'), actor.param(4))}
-            ${stat(T('CharCreate.abbrev.wis'), actor.param(5))}
-            ${stat(T('CharCreate.abbrev.dex'), actor.param(6))}
-            ${stat(T('CharCreate.abbrev.psi'), actor.param(7))}
+            ${stat(T('CharCreate.abbrev.hp'), actor.mhp, 'HP')}
+            ${stat(T('CharCreate.abbrev.mp'), actor.mmp, 'MP')}
+            ${stat(T('CharCreate.abbrev.str'), actor.param(2), 'STR')}
+            ${stat(T('CharCreate.abbrev.con'), actor.param(3), 'CON')}
+            ${stat(T('CharCreate.abbrev.int'), actor.param(4), 'INT')}
+            ${stat(T('CharCreate.abbrev.wis'), actor.param(5), 'WIS')}
+            ${stat(T('CharCreate.abbrev.dex'), actor.param(6), 'DEX')}
+            ${stat(T('CharCreate.abbrev.psi'), actor.param(7), 'PSI')}
           </div>
 
           ${section(T('CharCreate.traits'), traitBadges ? `<div class="cc-badge-wrap cc-badge-grid-3">${traitBadges}</div>` : "")}
@@ -5673,14 +5981,17 @@
       const originChoice = (stepData.choices && stepData.choices[activeIndex]) || {};
       const originSymbol = originChoice.symbol || $gameSystem._ccOriginSymbol || "origin_train";
 
+      // The flat purse is paid once to the whole party, not once per member
+      // (giveStartingMoney does the same), so it sits outside the loop below.
       const partyMembers = $gameParty ? $gameParty.members() : [];
-      let totalGold = 0;
+      let totalGold = CC_BASE_START_GOLD + this._scenarioGoldBonus(originSymbol);
       partyMembers.forEach((a) => {
-        totalGold += 200000
-          + (typeof classStartingMoney === 'function' ? classStartingMoney(a._classId) : 0)
-          + (typeof traitStartingMoney === 'function' ? traitStartingMoney(a) : 0);
+        const NC = window.NPCCreature;
+        if (NC && NC.isNonSentientActor(a)) return;
+        totalGold += (typeof classStartingMoney === 'function' ? classStartingMoney(a._classId) : 0)
+          + (typeof traitStartingMoney === 'function' ? traitStartingMoney(a) : 0)
+          + (typeof wealthStartingMoney === 'function' ? wealthStartingMoney(a) : 0);
       });
-      totalGold += this._scenarioGoldBonus(originSymbol);
 
       // The kit this scenario alone hands out, on top of what the characters
       // already carry: the one thing the choice on the left actually changes
@@ -5712,7 +6023,7 @@
 
       return `
         <div class="cc-scenario-dossier">
-          <div class="cc-page cc-page-left cc-scenario-list">
+          <div class="cc-page cc-scenario-list">
             <div class="cc-scenario-list-head">
               <h2 class="cc-subheader">${ccT('CharCreate.scenarioPickPrompt', 'Pick the scenario this party starts in')}</h2>
               <span class="ts-count">${(stepData.choices || []).length}</span>
@@ -5720,12 +6031,14 @@
             <div class="cc-select-grid cc-scenario-grid">
               ${scenarioCards}
             </div>
-            <button class="cc-compact-btn cc-scenario-back" onclick="SceneManager._scene.onReturnToPartyDossier()">
-              ${this._ccIconHtml(82, 16)} <span>${ccT('CharCreate.returnToParty', 'Return to Party Configuration')}</span>
-            </button>
+            <div class="cc-scenario-list-actions">
+              <button class="cc-compact-btn cc-scenario-back" onclick="SceneManager._scene.onReturnToPartyDossier()">
+                ${this._ccIconHtml(82, 16)} <span>${ccT('CharCreate.returnToParty', 'Return to Party Configuration')}</span>
+              </button>
+            </div>
           </div>
 
-          <div class="cc-page cc-page-right cc-scenario-brief">
+          <div class="cc-page cc-scenario-brief">
             <div class="cc-scenario-brief-head">
               <h2 class="cc-header-gothic">${originChoice.name || ""}</h2>
               <div class="cc-money-badge">${this._ccIconHtml(208, 16)} <span>${this._formatGoldToEuros(totalGold)}</span></div>
@@ -5752,17 +6065,21 @@
                   ? `<div class="cc-compact-loadout-grid cc-loadout-open cc-loadout-grid-cols-3">${partyInventory.map((e) => this._scenarioItemRowHtml(e)).join("")}</div>`
                   : `<span class="cc-class-none">${ccT('CharCreate.scenarioNoPartyInventory', 'The party is not carrying anything yet')}</span>`}
               </div>
-
-              <h3 class="cc-subheader cc-scenario-roster-head">
-                <span>${ccT('CharCreate.scenarioRoster', 'Party dossiers')}</span>
-                <span class="ts-count">${partyMembers.length}</span>
-              </h3>
-              <div class="cc-scenario-sheets">
-                ${partyMembers.map((a) => this._scenarioMemberSheetHtml(a)).join("")}
-              </div>
             </div>
 
-            <button class="cc-compact-btn primary cc-scenario-embark" onclick="SceneManager._scene.onFinishPartyCreation()">${ccT('CharCreate.embark', "Embark & Begin Journey")}</button>
+            <div class="cc-scenario-brief-actions">
+              <button class="cc-compact-btn primary cc-scenario-embark" onclick="SceneManager._scene.onFinishPartyCreation()">${ccT('CharCreate.embark', "Embark & Begin Journey")}</button>
+            </div>
+          </div>
+
+          <div class="cc-page cc-scenario-roster-col">
+            <h3 class="cc-subheader cc-scenario-roster-head">
+              <span>${ccT('CharCreate.scenarioRoster', 'Party dossiers')}</span>
+              <span class="ts-count">${partyMembers.length}</span>
+            </h3>
+            <div class="cc-scenario-sheets">
+              ${partyMembers.map((a) => this._scenarioMemberSheetHtml(a)).join("")}
+            </div>
           </div>
         </div>
       `;
@@ -6273,17 +6590,28 @@
           return `<span class="cc-element-badge ${resistant ? 'good' : 'bad'}">${this._classElementName(t.dataId)} ${pct}%</span>`;
         });
 
-      const learnings = c.learnings || [];
-      const roadmapRows = learnings
+      // Split at the class cap's midpoint, not just alternated into a CSS
+      // grid: a reader scanning for "what do I get at level 70" should find
+      // the whole back half of the plan in one column, not zigzagging
+      // between two lists that interleave low and high levels.
+      const sortedLearnings = (c.learnings || [])
         .filter((l) => l.level > 1)
-        .sort((a, b) => a.level - b.level)
-        .map((l) => {
-          const sk = $dataSkills[l.skillId];
-          if (!sk) return "";
-          return this._ccLoadoutRowHtml(sk.iconIndex || 79, window.CCDbName(sk),
-            `${ccT('CharCreate.abbrev.level', 'Lv')} ${l.level}`,
-            { valueColor: '#ffd700', hover: this._ccHoverAttrs("skill", sk.id) });
-        }).join("");
+        .sort((a, b) => a.level - b.level);
+      const roadmapRowHtml = (l) => {
+        const sk = $dataSkills[l.skillId];
+        if (!sk) return "";
+        return this._ccLoadoutRowHtml(sk.iconIndex || 79, window.CCDbName(sk),
+          `${ccT('CharCreate.abbrev.level', 'Lv')} ${l.level}`,
+          { valueColor: '#ffd700', hover: this._ccHoverAttrs("skill", sk.id) });
+      };
+      const roadmapLow = sortedLearnings.filter((l) => l.level <= 50).map(roadmapRowHtml).join("");
+      const roadmapHigh = sortedLearnings.filter((l) => l.level > 50).map(roadmapRowHtml).join("");
+      const roadmapRows = (roadmapLow || roadmapHigh)
+        ? `<div class="cc-loadout-two-col">
+            <div class="cc-loadout-col">${roadmapLow}</div>
+            <div class="cc-loadout-col">${roadmapHigh}</div>
+          </div>`
+        : "";
 
       const card = (title, body) => body
         ? `<div class="cc-dossier-card cc-class-section"><h3 class="cc-subheader">${title}</h3>${body}</div>`
@@ -7128,7 +7456,7 @@
       this._commitSpecPoints();
       const p1 = $gameActors.actor(1);
       if (!p1 || !p1.name() || p1.name() === "Unnamed") {
-        if (p1) p1.setName(ccT('CharCreate.defaultName', 'Hero'));
+        if (p1) p1.setName(Scene_CharacterCreation.generateRandomMarkovName(0));
       }
       if (!p1 || !p1._classId) {
         if (p1) p1.changeClass(1, false);
@@ -7186,14 +7514,7 @@
       if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (actor) {
-        let generated = "";
-        if (window.NPCSociety && window.NPCSociety.generateActorName) {
-          generated = window.NPCSociety.generateActorName(actor);
-        }
-        if (!generated) {
-          const pool = ["Aiden", "Lyra", "Kael", "Vesper", "Soren", "Ember", "Rowan", "Zephyr", "Dante", "Selene", "Marcus", "Elena", "Valerius", "Iris", "Nox"];
-          generated = pool[Math.floor(Math.random() * pool.length)];
-        }
+        const generated = Scene_CharacterCreation.generateRandomMarkovName(Scene_CharacterCreation._currentPartyMemberIndex || 0);
         actor.setName(generated);
         SoundManager.playOk();
         this._lastStep = -1;
@@ -7212,17 +7533,16 @@
       Scene_CharacterCreation._startStep = this._step;
     }
 
+    // The sprite is the character's map body, not its portrait: a creature
+    // keeps its own route in here exactly like a humanoid does, just scoped
+    // to the animal/monster sheets the grid already carries flagged in
+    // NPCs.json (CharacterSpriteGridSelector.optionsForAudience). Its 3D
+    // battle model has its own editor (onOpenCreature3DStudio / the sidebar's
+    // "3D Studio" button); this is only ever the walking sheet.
     onOpenSpriteGallery() {
       if (this._refusePresetEdit()) return;
       const actor = Scene_CharacterCreation.getCurrentActor();
-      const isCreature = !!(actor && actor._isCreatureActor);
 
-      if (isCreature) {
-        this.onOpenCreature3DStudio();
-        return;
-      }
-
-      // Humanoid: strictly open 2D Sprite Grid Selector & Connected Bust
       const selectorScene = window.Scene_CharacterSpriteGridSelector || window.Scene_SpriteGridSelector;
       if (selectorScene) {
         if (selectorScene.setup) {
@@ -8489,11 +8809,32 @@
       return Math.max(0, CC_SPEC_BUDGET - spent);
     }
 
+    // The rank ladder is the specialization menu's own wording, so a tier is
+    // named the same here as it is on the specialization menu proper
+    // (js/i18n/*/plugins/SpecMenu.json). `rank` is this card's own 0-4 scale
+    // (0 = nothing bought); window.Specializations.levelName is 1-based with
+    // 1 itself meaning Untrained, so it wants rank+1 or a rank-1 trained pick
+    // reads back as Untrained.
+    _specRankName(rank) {
+      const rankNames = ccList('SpecMenu.rankNames',
+        ["Untrained", "Novice (+1)", "Adept (+2)", "Expert (+3)", "Master (+4)"]);
+      return (window.Specializations && window.Specializations.levelName) ? window.Specializations.levelName(rank + 1) : (rankNames[rank] || rankNames[0]);
+    }
+
     // One card per specialization. Shared by the first draw and by every
-    // in-place redraw of the grid.
+    // in-place redraw of the grid. The category sits top-right, out of the
+    // way of the name; the rank name takes the category's old spot next to
+    // the stat badge, so a card reads its own trained level without the
+    // player having to hover it into the detail panel.
     _specCardsHtml(specs, actor, remaining) {
       const S = window.Specializations || {};
       const ctx = this._specGrantContext(actor);
+      // A single-category tab already tells the player what they are looking
+      // at, so repeating that category on every card is only useful on the
+      // mixed-category tabs (All, and Current which spans whatever the
+      // member trained).
+      const activeCat = Scene_CharacterCreation._activeSpecCategory || "All";
+      const showCatLabel = activeCat === "All" || activeCat === SPEC_TAB_CURRENT;
       return specs.map((spec) => {
         const specName = S.displayName ? S.displayName(spec) : spec.name;
         const specCatLabel = S.categoryLabel ? S.categoryLabel(spec.category) : (spec.category || "General");
@@ -8505,10 +8846,13 @@
         return `
           <div class="cc-spec-card ${isHovered ? 'selected' : ''}" data-spec-id="${spec.id}" onmouseenter="SceneManager._scene.onSpecCardHover(${spec.id})">
             <div class="cc-spec-info">
-              <div class="cc-spec-title">${specName}</div>
+              <div class="cc-spec-title-row">
+                <div class="cc-spec-title">${specName}</div>
+                ${showCatLabel ? `<span class="cc-spec-cat-label">${specCatLabel}</span>` : ''}
+              </div>
               <div class="cc-spec-meta">
                 <span class="cc-spec-stat-badge">${ccStatLabel(spec.stat || 'INT')}</span>
-                <span class="cc-spec-cat-label">${specCatLabel}</span>
+                <span class="cc-spec-level-name">${this._specRankName(currentRank)}</span>
               </div>
             </div>
             <div class="cc-spec-controls">
@@ -8599,12 +8943,6 @@
       const hoveredId = Scene_CharacterCreation._hoveredSpecId || (trainedEntries[0] ? Number(trainedEntries[0][0]) : catalog[0]?.id);
       const hoveredSpec = catalog.find((s) => s.id === hoveredId) || catalog[0];
 
-      // The rank ladder is the specialization menu's own wording, so a tier
-      // is named the same here as it is there (js/i18n/*/plugins/SpecMenu.json).
-      const rankNames = ccList('SpecMenu.rankNames',
-        ["Untrained", "Novice (+1)", "Adept (+2)", "Expert (+3)", "Master (+4)"]);
-      const rankName = (r) => (window.Specializations && window.Specializations.levelName) ? window.Specializations.levelName(r) : (rankNames[r] || rankNames[0]);
-
       let detailHtml = "";
       if (hoveredSpec) {
         const specName = (window.Specializations && window.Specializations.displayName) ? window.Specializations.displayName(hoveredSpec) : hoveredSpec.name;
@@ -8612,7 +8950,7 @@
         const catLabel = (window.Specializations && window.Specializations.categoryLabel) ? window.Specializations.categoryLabel(hoveredSpec.category) : (hoveredSpec.category || "General");
         const rank = this._specRankIn(grantCtx, actor, hoveredSpec);
         const grantRank = this._specGrantRankIn(grantCtx, hoveredSpec);
-        const rankLabel = rankName(rank);
+        const rankLabel = this._specRankName(rank);
 
         detailHtml = `
           <div class="cc-dossier-card ts-detail" style="padding: 10px 12px; margin-bottom: 8px;">
@@ -8626,19 +8964,24 @@
             <div style="font-size:0.88rem; color:#ded1c1; line-height:1.4; margin-bottom:8px">${specDesc || ccT('CharCreate.specGenericDesc', 'Proficiency acquired through rigorous study and fieldwork.')}</div>
             <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('SpecMenu.ui.category', 'Category')}:</span><span class="cc-dossier-value">${catLabel}</span></div>
             <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('SpecMenu.ui.governingStat', 'Governing Attribute')}:</span><span class="cc-dossier-value">${ccStatLabel(hoveredSpec.stat || "INT")}</span></div>
-            ${grantRank > 0 ? `<div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.specGranted', 'Granted by Class and Traits')}:</span><span class="cc-dossier-value">${rankName(grantRank + 1)}</span></div>` : ''}
+            ${grantRank > 0 ? `<div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.specGranted', 'Granted by Class and Traits')}:</span><span class="cc-dossier-value">${this._specRankName(grantRank)}</span></div>` : ''}
           </div>
         `;
       }
 
-      // Trained Specs Badges using .cc-spec-badge-chip to avoid overlapping cards
+      // Trained Specs listed as full-width rows (.cc-spec-badge-row) so a long
+      // roster reads top to bottom instead of wrapping into a chip cloud. Each
+      // row carries its own delete button; a granted rank has no such button
+      // since selling back what nobody paid for isn't possible.
       const trainedBadges = trainedEntries.map(([idStr, rank, grantRank]) => {
         const spec = catalog.find((s) => s.id === Number(idStr));
         const name = spec ? ((window.Specializations && window.Specializations.displayName) ? window.Specializations.displayName(spec) : spec.name) : `Spec #${idStr}`;
+        const isGranted = grantRank >= rank;
         return `
-          <div class="cc-spec-badge-chip${grantRank >= rank ? ' granted' : ''}" onmouseenter="SceneManager._scene.onSpecCardHover(${idStr})">
-            <span style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
-            <span class="cc-spec-stat-badge" style="padding:0 4px;">${rankName(rank)}</span>
+          <div class="cc-spec-badge-row${isGranted ? ' granted' : ''}" onmouseenter="SceneManager._scene.onSpecCardHover(${idStr})">
+            <span class="cc-spec-badge-row-name">${name}</span>
+            <span class="cc-spec-stat-badge" style="padding:0 4px; flex-shrink:0;">${this._specRankName(rank)}</span>
+            <button class="cc-spec-badge-delete" title="${ccT('CharCreate.removeAllocated', 'Remove')}" ${isGranted ? 'disabled' : ''} onclick="event.stopPropagation(); SceneManager._scene.onSpecDeleteAllocated(${idStr})">&times;</button>
           </div>
         `;
       }).join("");
@@ -8655,7 +8998,7 @@
           <h3 class="cc-subheader" style="margin-top:10px; margin-bottom:6px">
             <span>${ccT('CharCreate.allocatedTalents', 'Allocated Talents')} (${trainedEntries.length})</span>
           </h3>
-          <div style="display:flex; flex-wrap:wrap; align-content:start; min-height:48px; margin-bottom:10px; gap:4px;">
+          <div style="display:flex; flex-direction:column; min-height:48px; margin-bottom:10px; gap:4px;">
             ${trainedBadges || `<span style="opacity:0.6; font-size:0.88rem; padding:6px;">${ccT('CharCreate.noTalentsSpent', 'No specialization points allocated yet.')}</span>`}
           </div>
         </div>
@@ -8710,7 +9053,7 @@
       // never paid for, so it can never be sold back for a point elsewhere.
       const grantRank = this._specGrantRankIn(grantCtx, spec);
       const current = Math.max(actor._specTrained[specId] || 0, grantRank);
-      let spent = budget - this._specsRemaining(actor);
+      const spent = budget - this._specsRemaining(actor);
 
       if (delta > 0) {
         if (spent >= budget || current >= 4) {
@@ -8718,7 +9061,6 @@
           return;
         }
         actor._specTrained[specId] = current + 1;
-        spent++;
         SoundManager.playOk();
       } else if (delta < 0) {
         if (current <= grantRank) {
@@ -8726,64 +9068,94 @@
           return;
         }
         actor._specTrained[specId] = current - 1;
-        spent--;
         SoundManager.playCancel();
       }
 
-      actor._specPointsSpent = spent;
-      const remaining = Math.max(0, budget - spent);
+      this._patchSpecBoard();
+    }
 
-      // Fast in-place DOM update without blowing away the entire UI or resetting scroll
-      const container = this._dndContainer;
-      if (container) {
-        // 1. Update budget text
-        const budgetChip = container.querySelector(".ts-purse-chip");
-        if (budgetChip) {
-          budgetChip.innerHTML = T('CharCreate.budgetPoints', { remaining: remaining, total: budget });
-        }
+    // The delete button on an allocated talent row: hands back every point
+    // spent on it in one go. A granted rank is still the floor here, exactly
+    // as it is for the minus button, so a head start from the class or a
+    // trait can never be sold away.
+    onSpecDeleteAllocated(specId) {
+      if (this._refusePresetEdit()) return;
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (!actor) return;
+      if (!actor._specTrained) actor._specTrained = {};
 
-        // 2. Update the changed card's pips & minus button
-        const newRank = Math.max(actor._specTrained[specId] || 0, grantRank);
-        const card = container.querySelector(`.cc-spec-card[data-spec-id="${specId}"]`);
-        if (card) {
-          const minusBtn = card.querySelector(".cc-spec-btn-minus");
-          if (minusBtn) minusBtn.disabled = (newRank <= grantRank);
-
-          const pips = card.querySelectorAll(".cc-spec-pip");
-          pips.forEach((pip, idx) => {
-            pip.classList.toggle("active", idx < newRank);
-            pip.classList.toggle("bonus", idx < grantRank);
-          });
-        }
-
-        // 3. Update all cards' plus buttons based on remaining points and rank
-        const catalogById = new Map(this._specsCatalog().map((sp) => [String(sp.id), sp]));
-        const allCards = container.querySelectorAll(".cc-spec-card[data-spec-id]");
-        allCards.forEach((c) => {
-          const cId = c.getAttribute("data-spec-id");
-          const cGrant = this._specGrantRankIn(grantCtx, catalogById.get(String(cId)));
-          const cRank = Math.max(actor._specTrained[cId] || 0, cGrant);
-          const plusBtn = c.querySelector(".cc-spec-btn-plus");
-          if (plusBtn) {
-            plusBtn.disabled = (remaining <= 0 || cRank >= 4);
-          }
-        });
-
-        // 4. Update right page details and allocated talents list
-        const rightPage = container.querySelector(".cc-page-right");
-        if (rightPage) {
-          this._ccSwapPage(rightPage, this._specsPickerRightHtml());
-        }
+      const grantCtx = this._specGrantContext(actor);
+      const spec = this._specsCatalog().find((sp) => String(sp.id) === String(specId));
+      const grantRank = this._specGrantRankIn(grantCtx, spec);
+      const current = Math.max(actor._specTrained[specId] || 0, grantRank);
+      if (current <= grantRank) {
+        SoundManager.playBuzzer();
         return;
       }
 
-      this._lastStep = -1;
-      this._lastIndex = -1;
-      this.refreshUIOverlayDOM();
+      actor._specTrained[specId] = grantRank;
+      SoundManager.playCancel();
+      this._patchSpecBoard();
     }
 
-    // The full spec board redraw every board-wide button (Randomize, Suggested,
-    // Reset) ends on, once it has finished touching actor._specTrained.
+    // Patches every card's pips/level-name/button state, the budget chip and
+    // the right page in place, without touching the grid markup, the tabs or
+    // the search field. Shared by the single-card +/- above and by the
+    // board-wide buttons below (Suggested, Reset, Randomize): those touch
+    // many specializations at once, and a full _redrawSpecBoard() would
+    // rebuild the whole grid for it, losing the player's scroll position and
+    // (mid-typing) the caret in the search field.
+    _patchSpecBoard() {
+      const container = this._dndContainer;
+      const actor = Scene_CharacterCreation.getCurrentActor();
+      if (!container || !actor) { this._redrawSpecBoard(); return; }
+      if (!actor._specTrained) actor._specTrained = {};
+
+      // The "Current" tab lists only what is actually trained, so a
+      // wholesale change to actor._specTrained (Reset, Randomize, Suggested)
+      // can add or drop cards from it; patching cards already in the DOM
+      // would leave it stale. Every other tab's membership never depends on
+      // rank, so patching in place is enough there.
+      if (Scene_CharacterCreation._activeSpecCategory === SPEC_TAB_CURRENT) {
+        this._refreshSpecGrid();
+      }
+
+      const budget = CC_SPEC_BUDGET;
+      const remaining = this._specsRemaining(actor);
+      const grantCtx = this._specGrantContext(actor);
+
+      const budgetChip = container.querySelector(".ts-purse-chip");
+      if (budgetChip) {
+        budgetChip.innerHTML = T('CharCreate.budgetPoints', { remaining: remaining, total: budget });
+      }
+
+      const catalogById = new Map(this._specsCatalog().map((sp) => [String(sp.id), sp]));
+      container.querySelectorAll(".cc-spec-card[data-spec-id]").forEach((card) => {
+        const cId = card.getAttribute("data-spec-id");
+        const cGrant = this._specGrantRankIn(grantCtx, catalogById.get(String(cId)));
+        const cRank = Math.max((actor._specTrained[cId]) || 0, cGrant);
+
+        const minusBtn = card.querySelector(".cc-spec-btn-minus");
+        if (minusBtn) minusBtn.disabled = (cRank <= cGrant);
+        const plusBtn = card.querySelector(".cc-spec-btn-plus");
+        if (plusBtn) plusBtn.disabled = (remaining <= 0 || cRank >= 4);
+
+        const pips = card.querySelectorAll(".cc-spec-pip");
+        pips.forEach((pip, idx) => {
+          pip.classList.toggle("active", idx < cRank);
+          pip.classList.toggle("bonus", idx < cGrant);
+        });
+
+        const levelNameEl = card.querySelector(".cc-spec-level-name");
+        if (levelNameEl) levelNameEl.textContent = this._specRankName(cRank);
+      });
+
+      const rightPage = container.querySelector(".cc-page-right");
+      if (rightPage) this._ccSwapPage(rightPage, this._specsPickerRightHtml());
+    }
+
+    // Full spec board rebuild, used only when there is no DOM to patch in
+    // place yet (_patchSpecBoard's fallback).
     _redrawSpecBoard() {
       const contentPane = this._dndContainer && this._dndContainer.querySelector(".cc-content-pane");
       if (contentPane) {
@@ -8835,7 +9207,7 @@
       this._randomSpendSpecs(actor, grantCtx, catalog, CC_SPEC_BUDGET);
 
       SoundManager.playOk();
-      this._redrawSpecBoard();
+      this._patchSpecBoard();
     }
 
     // Clears every point the player spent, keeping only the free tiers the
@@ -8846,7 +9218,7 @@
       if (!actor) return;
       actor._specTrained = {};
       SoundManager.playCancel();
-      this._redrawSpecBoard();
+      this._patchSpecBoard();
     }
 
     // A one-click starting build for the class actually picked: every
@@ -8885,7 +9257,7 @@
       }
 
       SoundManager.playOk();
-      this._redrawSpecBoard();
+      this._patchSpecBoard();
     }
 
     // ── Macro BIO Step Helpers & Handlers ──
@@ -9269,17 +9641,21 @@
               ` : '')}
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(183, 16)} <span>${ccT('CharCreate.creedIdeology', "Creed & Philosophical Ideology")}</span></div>
-              <div style="display:flex; gap:6px; align-items:center;">
-                <select id="cc-ideology-select" class="cc-bio-select" style="flex:1;" onchange="SceneManager._scene.onBioOptionChange('ideology', this.value)">
-                  ${ideologyOptionsHtml}
-                </select>
-                <button type="button" class="cc-bio-chip" onclick="if(window.PoliticalGraph3D && SceneManager._scene){ SceneManager._scene.markReturnStep(); SceneManager._scene.closeStepUI(); window.PoliticalGraph3D.openModal({ focusId: (document.getElementById('cc-ideology-select') ? document.getElementById('cc-ideology-select').value : ''), onSelect: function(id) { Scene_CharacterCreation.applyIdeologySelection(id); } }); }" title="${ccT('CharCreate.openPoliticalGraph', 'Open the political graph')}">${ccT('CharCreate.politicalGraph', 'Graph')}</button>
+              <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:180px;">
+                  <div class="cc-bio-section-title">${this._ccIconHtml(183, 16)} <span>${ccT('CharCreate.creedIdeology', "Creed & Philosophical Ideology")}</span></div>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <select id="cc-ideology-select" class="cc-bio-select" style="flex:1;" onchange="SceneManager._scene.onBioOptionChange('ideology', this.value)">
+                      ${ideologyOptionsHtml}
+                    </select>
+                    <button type="button" class="cc-bio-chip" onclick="if(window.PoliticalGraph3D && SceneManager._scene){ SceneManager._scene.markReturnStep(); SceneManager._scene.closeStepUI(); window.PoliticalGraph3D.openModal({ focusId: (document.getElementById('cc-ideology-select') ? document.getElementById('cc-ideology-select').value : ''), onSelect: function(id) { Scene_CharacterCreation.applyIdeologySelection(id); } }); }" title="${ccT('CharCreate.openPoliticalGraph', 'Open the political graph')}">${ccT('CharCreate.politicalGraph', 'Graph')}</button>
+                  </div>
+                </div>
+                <div style="flex:1; min-width:180px;">
+                  <div class="cc-bio-section-title">${this._ccIconHtml(190, 16)} <span>${ccT('CharCreate.originCity', "Hometown / Settlement of Origin")}</span></div>
+                  <select class="cc-bio-select" onchange="SceneManager._scene.onBioOptionChange('hometown', this.value)">${hometownOptions}</select>
+                </div>
               </div>
-            </div>
-            <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
-              <div class="cc-bio-section-title">${this._ccIconHtml(190, 16)} <span>${ccT('CharCreate.originCity', "Hometown / Settlement of Origin")}</span></div>
-              <select class="cc-bio-select" onchange="SceneManager._scene.onBioOptionChange('hometown', this.value)">${hometownOptions}</select>
             </div>
             <div class="cc-bio-section" style="background:transparent !important; border:none !important; box-shadow:none !important; border-bottom:1px solid rgba(218,165,32,0.12) !important; padding:6px 0 10px 0;">
               <div class="cc-bio-section-title">${this._ccIconHtml(246, 16)} <span>${ccT('CharCreate.moralityAlignment', "Moral Disposition & Alignment")}</span></div>
@@ -9895,43 +10271,45 @@
 
       return `
         <div class="cc-compact-sidebar cc-pet-sidebar">
-          <div class="cc-compact-identity-card">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-              <span class="cc-pet-sidebar-name">${pet.name}</span>
-              <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizePet()">${ccT('CharCreate.randomize', 'Randomize')}</button>
+          <div class="cc-compact-sidebar-body">
+            <div class="cc-compact-identity-card">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                <span class="cc-pet-sidebar-name">${pet.name}</span>
+                <button class="cc-profile-open-btn" onclick="SceneManager._scene.onRandomizePet()">${ccT('CharCreate.randomize', 'Randomize')}</button>
+              </div>
+            </div>
+
+            <div class="cc-pet-portrait">
+              <div class="cc-wanted-sprite" style="${this.getSpriteStyle(pet.sprite, pet.spriteIndex || 0)}; transform: scale(2);"></div>
+            </div>
+
+            <div class="cc-dossier-card" style="padding:10px; margin-bottom:8px;">
+              <h3 class="cc-subheader" style="font-size:1.05rem; margin-bottom:6px;">${T('CharCreate.companionStats') || "Companion Vitals"}</h3>
+              <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petSpecies', 'Species')}</span><span class="cc-dossier-value">${pet.species}</span></div>
+              <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petClassification', 'Classification')}</span><span class="cc-dossier-value">${pet.kind}</span></div>
+              <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petMaxHp', 'Max HP')}</span><span class="cc-dossier-value">${pet.hp}</span></div>
+              <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petCombatPower', 'Combat power')}</span><span class="cc-dossier-value">${ccStatLabel('STR')} ${pet.atk} / ${ccStatLabel('CON')} ${pet.def} / ${ccStatLabel('DEX')} ${pet.agi}</span></div>
+            </div>
+
+            <div class="cc-dossier-card" style="padding:10px; margin-bottom:8px;">
+              <h3 class="cc-subheader" style="font-size:1.05rem; margin-bottom:6px;">${ccT('CharCreate.petTraitsTitle', 'Traits')}</h3>
+              <div style="display:flex; gap:6px; margin-bottom:8px;">
+                <button class="cc-pet-trait-toggle ${traits.sentient ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('sentient')">${ccT('CharCreate.petTraitSentient', 'Sentient')}</button>
+                <button class="cc-pet-trait-toggle ${traits.magical ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('magical')">${ccT('CharCreate.petTraitMagical', 'Magical')}</button>
+                <button class="cc-pet-trait-toggle ${traits.geneticFreak ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('geneticFreak')">${ccT('CharCreate.petTraitGeneticFreak', 'Genetic Freak')}</button>
+              </div>
+              <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('STR')} / ${ccStatLabel('CON')}</span><span class="cc-dossier-value">${attrs.STR} / ${attrs.CON}</span></div>
+              <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('INT')} / ${ccStatLabel('WIS')}</span><span class="cc-dossier-value">${attrs.INT} / ${attrs.WIS}</span></div>
+              <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('PSI')}</span><span class="cc-dossier-value">${attrs.PSI}</span></div>
+            </div>
+
+            <div class="cc-dossier-card cc-pet-nature" style="padding:10px;">
+              <h3 class="cc-subheader" style="font-size:1.05rem; margin-bottom:6px;">${T('CharCreate.behavioralTraits') || "Behavior & Nature"}</h3>
+              <p class="cc-text-desc cc-text-desc--body">${pet.desc}</p>
             </div>
           </div>
 
-          <div class="cc-pet-portrait">
-            <div class="cc-wanted-sprite" style="${this.getSpriteStyle(pet.sprite, pet.spriteIndex || 0)}; transform: scale(2);"></div>
-          </div>
-
-          <div class="cc-dossier-card" style="padding:10px; margin-bottom:8px;">
-            <h3 class="cc-subheader" style="font-size:1.05rem; margin-bottom:6px;">${T('CharCreate.companionStats') || "Companion Vitals"}</h3>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petSpecies', 'Species')}</span><span class="cc-dossier-value">${pet.species}</span></div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petClassification', 'Classification')}</span><span class="cc-dossier-value">${pet.kind}</span></div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petMaxHp', 'Max HP')}</span><span class="cc-dossier-value">${pet.hp}</span></div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccT('CharCreate.petCombatPower', 'Combat power')}</span><span class="cc-dossier-value">${ccStatLabel('STR')} ${pet.atk} / ${ccStatLabel('CON')} ${pet.def} / ${ccStatLabel('DEX')} ${pet.agi}</span></div>
-          </div>
-
-          <div class="cc-dossier-card" style="padding:10px; margin-bottom:8px;">
-            <h3 class="cc-subheader" style="font-size:1.05rem; margin-bottom:6px;">${ccT('CharCreate.petTraitsTitle', 'Traits')}</h3>
-            <div style="display:flex; gap:6px; margin-bottom:8px;">
-              <button class="cc-pet-trait-toggle ${traits.sentient ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('sentient')">${ccT('CharCreate.petTraitSentient', 'Sentient')}</button>
-              <button class="cc-pet-trait-toggle ${traits.magical ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('magical')">${ccT('CharCreate.petTraitMagical', 'Magical')}</button>
-              <button class="cc-pet-trait-toggle ${traits.geneticFreak ? 'active' : ''}" onclick="SceneManager._scene.onTogglePetTrait('geneticFreak')">${ccT('CharCreate.petTraitGeneticFreak', 'Genetic Freak')}</button>
-            </div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('STR')} / ${ccStatLabel('CON')}</span><span class="cc-dossier-value">${attrs.STR} / ${attrs.CON}</span></div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('INT')} / ${ccStatLabel('WIS')}</span><span class="cc-dossier-value">${attrs.INT} / ${attrs.WIS}</span></div>
-            <div class="cc-dossier-row"><span class="cc-dossier-label">${ccStatLabel('PSI')}</span><span class="cc-dossier-value">${attrs.PSI}</span></div>
-          </div>
-
-          <div class="cc-dossier-card cc-pet-nature" style="padding:10px;">
-            <h3 class="cc-subheader" style="font-size:1.05rem; margin-bottom:6px;">${T('CharCreate.behavioralTraits') || "Behavior & Nature"}</h3>
-            <p class="cc-text-desc cc-text-desc--body">${pet.desc}</p>
-          </div>
-
-          <div class="cc-compact-actions" style="margin-top:auto; display:flex; flex-direction:column; gap:6px;">
+          <div class="cc-compact-actions" style="display:flex; flex-direction:column; gap:6px;">
             <button class="cc-compact-btn ${isChosen ? '' : 'primary'}" onclick="SceneManager._scene.onPetCardSelect('${pet.id}')">${isChosen ? ccT('CharCreate.selectedCompanion', 'Companion selected') : ccT('CharCreate.chooseAsCompanion', 'Choose as initial companion')}</button>
             <button class="cc-compact-btn primary" onclick="SceneManager._scene.onProceedToScenario()">${this._hasPresetInParty(false) ? ccT('CharCreate.startGame', 'Start Game') : ccT('CharCreate.confirmPartyScenario', 'Confirm Party & Scenario')}</button>
           </div>
@@ -10165,6 +10543,7 @@
             if (actor) {
               actor.changeClass(classId, true);
               if (typeof equipRandomCompatibleWeapon === "function") equipRandomCompatibleWeapon(actor, classId);
+              if (typeof equipClassStartingArmor === "function") equipClassStartingArmor(actor, classId);
               if (typeof giveClassStartingItems === "function") giveClassStartingItems(actor, classId);
             }
           } else if (choice.symbol === "select_class") {
@@ -10177,6 +10556,7 @@
             if (actor) {
               actor.changeClass(66, false);
               if (typeof equipRandomCompatibleWeapon === 'function') equipRandomCompatibleWeapon(actor, 66);
+              if (typeof equipClassStartingArmor === "function") equipClassStartingArmor(actor, 66);
               if (typeof giveClassStartingItems === "function") giveClassStartingItems(actor, 66);
             }
           } else if (choice.symbol === "random_class") {
@@ -10185,6 +10565,7 @@
               const rId = validClassIds[Math.floor(Math.random() * validClassIds.length)];
               actor.changeClass(rId, true);
               if (typeof equipRandomCompatibleWeapon === "function") equipRandomCompatibleWeapon(actor, rId);
+              if (typeof equipClassStartingArmor === "function") equipClassStartingArmor(actor, rId);
               if (typeof giveClassStartingItems === "function") giveClassStartingItems(actor, rId);
             }
           }
@@ -10954,6 +11335,9 @@
               if (typeof equipRandomCompatibleWeapon === 'function') {
                 equipRandomCompatibleWeapon(currentActor, 66);
               }
+              if (typeof equipClassStartingArmor === "function") {
+                equipClassStartingArmor(currentActor, 66);
+              }
               if (typeof giveClassStartingItems === "function") {
                 giveClassStartingItems(currentActor, 66);
               }
@@ -11557,29 +11941,7 @@
       }
 
       // Generate random name using Markov chain from "names" database
-      let randomName = "Random";
-      if (window.generateSeededMarkovName) {
-        // Use current timestamp and actor index as seed for variety
-        const seed = Date.now() + currentMemberIndex * 1000;
-        randomName = window.generateSeededMarkovName(
-          Math.floor(seed / 1000),  // worldX equivalent
-          Math.floor(seed % 1000),  // worldY equivalent
-          currentMemberIndex + 1,   // eventId equivalent (use actor index)
-          "names",                  // database ID
-          2,                        // chain order
-          4,                        // min characters
-          12                        // max characters
-        );
-      } else if (window.TextGen) {
-        // Fallback: pick a random name from the names database
-        const namesDB = window.TextGen.names;
-        if (namesDB && namesDB.en) {
-          const namesList = namesDB.en.trim().split(/\s+/);
-          if (namesList.length > 0) {
-            randomName = namesList[Math.floor(Math.random() * namesList.length)];
-          }
-        }
-      }
+      const randomName = Scene_CharacterCreation.generateRandomMarkovName(currentMemberIndex);
 
       // Set the actor's name
       currentActor.setName(randomName);
@@ -11611,9 +11973,12 @@
           const randomClass = { id: validClasses[Math.floor(Math.random() * validClasses.length)] };
           currentActor.changeClass(randomClass.id, true);
 
-          // Equip random weapon for the class
+          // Equip the class's fixed starting weapon(s) and armor
           if (typeof equipRandomCompatibleWeapon === "function") {
             equipRandomCompatibleWeapon(currentActor, randomClass.id);
+          }
+          if (typeof equipClassStartingArmor === "function") {
+            equipClassStartingArmor(currentActor, randomClass.id);
           }
           if (typeof giveClassStartingItems === "function") {
             giveClassStartingItems(currentActor, randomClass.id);
@@ -12011,7 +12376,118 @@
         if (window.CCScroll) window.CCScroll.update(this._dndContainer);
         this.refreshUIOverlayDOM();
         this.updateEmRestlessBubble();
+        this._syncCC3DPortrait();
+      } else {
+        this._destroyCC3DPortrait();
       }
+    }
+
+    // ── Live 3D preview of the creature's own sculpted body, sidebar review
+    //    card ──
+    // The sidebar is rebuilt with innerHTML/outerHTML on every trait toggle,
+    // archetype swap and page turn, far too often to stand a fresh WebGL
+    // context up inside the render itself. So the markup only ever leaves a
+    // named, empty frame (.cc3d-live-portrait) behind, and this is polled once
+    // a frame from update(): cheap when nothing changed, and the one place
+    // that actually owns the canvas across those rebuilds. Same shape as
+    // NPCEmpathizeUI's portrait viewer, which the model itself is shared with
+    // (window.ActorModel3D) so the two screens can never disagree about which
+    // body a creature has.
+    _syncCC3DPortrait() {
+      const wrap = this._dndContainer && this._dndContainer.querySelector(".cc3d-live-portrait");
+      const actor = wrap ? Scene_CharacterCreation.getCurrentActor() : null;
+      const cfg = (actor && window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable())
+        ? window.CC3DModel.getConfig(actor.actorId()) : null;
+      if (!wrap || !actor || !cfg) { this._destroyCC3DPortrait(); return; }
+      const info = { kind: "custom", cfg: cfg, actorId: actor.actorId() };
+      const key = window.ActorModel3D ? window.ActorModel3D.keyFor(info) : JSON.stringify(cfg);
+      if (this._ccPortrait3D && this._ccPortrait3D.key === key && !this._ccPortrait3D.disposed) {
+        if (this._ccPortrait3D.canvas.parentNode !== wrap) wrap.appendChild(this._ccPortrait3D.canvas);
+        return;
+      }
+      this._destroyCC3DPortrait();
+      this._buildCC3DPortrait(wrap, info, key);
+    }
+
+    _buildCC3DPortrait(wrap, info, key) {
+      if (typeof THREE === "undefined" || !window.ActorModel3D) return;
+      const canvas = document.createElement("canvas");
+      canvas.className = "cc3d-live-canvas";
+      canvas.style.cssText = "position:absolute; top:0; left:0; width:100%; height:100%;";
+      wrap.appendChild(canvas);
+
+      const rect = wrap.getBoundingClientRect();
+      const width = Math.max(1, Math.round(rect.width) || 220);
+      const height = Math.max(1, Math.round(rect.height) || 220);
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      } catch (e) {
+        return; // no context to be had; the fallback icon/label stays up
+      }
+      renderer.setSize(width, height, false);
+      renderer.setPixelRatio(1);
+
+      const scene = new THREE.Scene();
+      scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+      const keyLight = new THREE.DirectionalLight(0xfff2d0, 1.4); keyLight.position.set(3, 5, 4); scene.add(keyLight);
+      const fillLight = new THREE.DirectionalLight(0xbcd4ff, 0.7); fillLight.position.set(-3, -2, 2); scene.add(fillLight);
+
+      const camera = new THREE.PerspectiveCamera(40, width / height, 0.05, 300);
+      camera.position.set(0, 0, 8);
+      const pivot = new THREE.Group();
+      scene.add(pivot);
+
+      const state = {
+        key: key, canvas: canvas, renderer: renderer, scene: scene, camera: camera, pivot: pivot,
+        model: null, rafId: 0, disposed: false, frameAcc: 0, clock: new THREE.Clock()
+      };
+      this._ccPortrait3D = state;
+
+      window.ActorModel3D.build(info).then((battler) => {
+        if (state.disposed || !battler || !battler.model) return;
+        try { battler.update(1 / 60); } catch (e) {}
+        const fit = window.ActorModel3D.framing(battler, camera, 1.25);
+        if (!fit) return;
+        const holder = new THREE.Group();
+        holder.position.copy(fit.center).multiplyScalar(-1);
+        holder.add(battler.model);
+        if (window.PSXShader) window.PSXShader.applyToObject(battler.model);
+        pivot.add(holder);
+        camera.position.set(0, 0, fit.distance);
+        camera.lookAt(0, 0, 0);
+        state.model = battler;
+      }).catch(() => {});
+
+      const FRAME = 1 / 30;
+      const animate = () => {
+        if (state.disposed) return;
+        state.rafId = requestAnimationFrame(animate);
+        state.frameAcc += Math.min(state.clock.getDelta(), 0.05);
+        if (state.frameAcc < FRAME) return;
+        state.frameAcc = 0;
+        // A slow turntable, not a held pose: this is a preview card the player
+        // is choosing a body from, not a portrait framed once and left alone.
+        pivot.rotation.y += 0.01;
+        if (window.PSXShader) window.PSXShader.render(renderer, scene, camera);
+        else renderer.render(scene, camera);
+      };
+      animate();
+    }
+
+    _destroyCC3DPortrait() {
+      const s = this._ccPortrait3D;
+      if (!s) return;
+      this._ccPortrait3D = null;
+      s.disposed = true;
+      cancelAnimationFrame(s.rafId);
+      // dispose() alone leaves the WebGL context alive, and the browser force-
+      // loses the OLDEST context past its cap, which could be the game's own
+      // canvas rather than this one.
+      try { s.renderer.dispose(); } catch (e) {}
+      try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
+      if (s.canvas && s.canvas.parentNode) s.canvas.parentNode.removeChild(s.canvas);
     }
 
     // Em's card starts heckling the player once her dossier has sat unpicked

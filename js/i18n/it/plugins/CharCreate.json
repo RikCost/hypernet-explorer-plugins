@@ -605,6 +605,17 @@
     "psi": "PSI:",
     "level": "Lv"
   },
+  "statInfo": {
+    "HP": "Punti Vita. Se scendono a 0 il personaggio viene messo fuori combattimento.",
+    "MP": "Punti Mana. Spesi per lanciare abilita e incantesimi; a zero restano solo le azioni gratuite.",
+    "STR": "Forza. Determina la potenza d'attacco fisico, sia in mischia che con armi da lancio.",
+    "CON": "Costituzione. Difesa fisica: quanto viene ridotto il danno di un colpo prima che arrivi.",
+    "DEX": "Destrezza. Ordine di turno e probabilita di schivare un attacco.",
+    "INT": "Intelligenza. Determina la potenza d'attacco magico, il danno effettivo di un incantesimo.",
+    "WIS": "Saggezza. Difesa magica: resistenza a incantesimi e altri danni magici.",
+    "PSI": "Psiche. Fortuna: colpi critici, bottini rari e altre probabilita a favore del personaggio."
+  },
+  "traitTypeLabel": "TRATTO",
   "previewOff": "SPENTO",
   "previewOn": "ACCESO",
   "unknownVocation": "Sconosciuta",
@@ -735,6 +746,7 @@
   "specializationSummary": "Dossier Talenti",
   "allocatedTalents": "Talenti Assegnati",
   "noTalentsSpent": "Nessun punto specializzazione assegnato.",
+  "removeAllocated": "Rimuovi",
   "specsCurrent": "Attuali",
   "specGranted": "Concesso da Classe e Tratti",
   "creedIdeology": "Credo e Ideologia Filosofica",

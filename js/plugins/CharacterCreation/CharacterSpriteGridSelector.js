@@ -174,6 +174,18 @@
     return entry.animal === true || entry.animals === true;
   };
 
+  // A creature party member's map sprite is a body, not a face: only the
+  // sheets NPCs.json flags as an animal or a monster (the "Creatures" and
+  // "Animals" folders) are ever a creature's own walk. The rest of the
+  // catalogue is every humanoid NPC sheet in the game, which a sculpted
+  // monster has no business wearing.
+  const isCreatureOrAnimalSheet = (name) => {
+    const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase || {};
+    const entry = db[name] || {};
+    return entry.animal === true || entry.animals === true ||
+      entry.creature === true || entry.creatures === true;
+  };
+
   // Whether the character the board is being opened for is a creature. The
   // wizard marks its member three ways over its life: the actor flag, the mode
   // of the running scene, and the per member switch it sets first.
@@ -193,9 +205,10 @@
   };
 
   // The board as one character may see it: a humanoid is never offered an
-  // animal sheet.
+  // animal sheet, and a creature is only ever offered the animal/monster
+  // sheets, never one of the game's humanoid NPCs.
   const optionsForAudience = (options, allowAnimals) => {
-    if (allowAnimals) return options;
+    if (allowAnimals) return (options || []).filter((o) => isCreatureOrAnimalSheet(o.name));
     return (options || []).filter((o) => !isAnimalSheet(o.name));
   };
 

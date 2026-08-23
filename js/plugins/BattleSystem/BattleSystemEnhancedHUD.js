@@ -2464,8 +2464,24 @@
     const actor = BattleManager.actor();
     const inputting = !!actor && BattleManager.isInputting() && !$gameMessage.isBusy();
     if (!inputting) {
-      if (_hotbarActor) { _hotbarActive = false; _hotbarActor = null; }
-      _hideHotbar();
+      // Freeze on the last actor's bar instead of hiding it: it should stay
+      // on screen through that actor's own action, not pop out the instant
+      // input ends and back in for whoever's turn comes next.
+      if ($gameMessage.isBusy() || !_hotbarActor) {
+        _hotbarActive = false;
+        _hotbarActor = null;
+        _hideHotbar();
+        return;
+      }
+      const frozenSkills = _hotbarSkills(_hotbarActor);
+      if (frozenSkills.length === 0) {
+        _hotbarActive = false;
+        _hotbarActor = null;
+        _hideHotbar();
+        return;
+      }
+      _hotbarActive = false;
+      _updateHotbarPosition(_hotbarActor, frozenSkills);
       return;
     }
     if (actor !== _hotbarActor) {

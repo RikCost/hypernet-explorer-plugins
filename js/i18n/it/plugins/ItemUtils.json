@@ -21,7 +21,7 @@
   },
   "encumbrance": {
     "title": "Sovraccarico",
-    "load": "{load} trasportati, movimento rallentato"
+    "load": "+{load}"
   },
   "addiction": {
     "all": "Ogni voglia",

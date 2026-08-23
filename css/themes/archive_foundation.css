@@ -737,7 +737,7 @@
 }
 
 .cc-spec-card {
-    background: rgba(30, 22, 14, 0.85) !important;
+    background: transparent !important;
     border-color: rgba(201, 173, 106, 0.25) !important;
 }
 

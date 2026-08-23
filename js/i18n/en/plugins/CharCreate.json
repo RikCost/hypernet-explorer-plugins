@@ -605,6 +605,17 @@
     "psi": "PSI:",
     "level": "Lv"
   },
+  "statInfo": {
+    "HP": "Health Points. Falls to 0 and the character is knocked out of the fight.",
+    "MP": "Mana Points. Spent to cast skills and spells; empty and only free actions are left.",
+    "STR": "Strength. Drives physical attack power, melee and thrown weapons alike.",
+    "CON": "Constitution. Physical defense: how much a hit's damage is shaved down before it lands.",
+    "DEX": "Dexterity. Turn order and the odds of dodging an attack outright.",
+    "INT": "Intelligence. Drives magic attack power, the damage a spell actually lands for.",
+    "WIS": "Wisdom. Magic defense: resistance to spells and other magical harm.",
+    "PSI": "Psyche. Luck: critical hits, rare drops and other odds tipped in the character's favor."
+  },
+  "traitTypeLabel": "TRAIT",
   "previewOff": "OFF",
   "previewOn": "ON",
   "unknownVocation": "Unknown",
@@ -735,6 +746,7 @@
   "specializationSummary": "Talent Dossier",
   "allocatedTalents": "Allocated Talents",
   "noTalentsSpent": "No specialization points allocated yet.",
+  "removeAllocated": "Remove",
   "specsCurrent": "Current",
   "specGranted": "Granted by Class and Traits",
   "creedIdeology": "Creed & Philosophical Ideology",

@@ -21,7 +21,7 @@
   },
   "encumbrance": {
     "title": "Overencumbered",
-    "load": "{load} carried, movement slowed"
+    "load": "+{load}"
   },
   "addiction": {
     "all": "Every craving",

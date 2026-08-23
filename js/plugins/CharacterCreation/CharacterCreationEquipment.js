@@ -8,23 +8,31 @@
  *
  * @help
  * This plugin manages starting equipment for characters:
- * - Starter weapon pool per weapon type, derived from shop price
+ * - Starter weapon pool per weapon type, derived from shop price (used to
+ *   fill spare slots and for the battle-test randomizer, not the class's own
+ *   starting loadout)
  * - Weapon type icon mapping
  * - Compatible weapon detection for classes
- * - Random weapon selection and equipment
- * - Thematic starting items per class, held to a price budget
+ * - Fixed thematic weapon(s), armor and items per class, read off that
+ *   class's own Classes.json note tags
  * - Global starter skills
  *
- * Starting gear is chosen by PRICE, never by stats: the weapon pool is the
- * cheapest weapons of each type in the database, and a class item loadout must
- * fit CLASS_ITEM_BUDGET. Items granted by traits are not covered by either and
- * stay exactly as the trait defines them.
+ * A class's starting weapon(s), armor and items are hardcoded per class in
+ * its Classes.json note (<StartWeapon:>, <StartArmor:>, <StartItems:>), not
+ * rolled at creation time: every character of the same class walks out with
+ * the same peculiar, low-power kit. <StartWeapon:> lists one id, or two for a
+ * class with the DualWield trait (both get equipped, one per hand). A class
+ * with no tags falls back to the old random-from-cheap-pool behaviour, which
+ * is why that pool is still built and kept around below.
  *
  * Dependencies:
  * - CharacterCreationShared.js
  *
  * Functions exported to global namespace:
  * - window.StartingEquipment.equipRandomCompatibleWeapon(actor, classId)
+ * - window.StartingEquipment.equipClassStartingArmor(actor, classId)
+ * - window.StartingEquipment.getClassStartWeapons(classId)
+ * - window.StartingEquipment.getClassStartArmors(classId)
  * - window.StartingEquipment.getCompatibleWeapons(compatibleTypes)
  * - window.StartingEquipment.getCompatibleWeaponTypes(classId)
  * - window.StartingEquipment.getStarterWeaponPool()
@@ -84,14 +92,16 @@
   let starterPoolCache = null;
 
   /**
-   * Real weapon entry test: skips the blank padding rows and the
-   * "<-- Category -->" dividers that separate the weapon type blocks.
-   * @param {object} weapon - $dataWeapons entry
+   * Real database entry test: skips the blank padding rows and the
+   * "<-- Category -->" dividers that separate weapon/armor type blocks.
+   * Works on both $dataWeapons and $dataArmors entries; only the name field
+   * is checked.
+   * @param {object} entry - $dataWeapons or $dataArmors entry
    * @returns {boolean}
    */
-  function isRealWeapon(weapon) {
-    if (!weapon || !weapon.name) return false;
-    const name = weapon.name.trim();
+  function isRealEntry(entry) {
+    if (!entry || !entry.name) return false;
+    const name = entry.name.trim();
     return name.length > 0 && !name.startsWith("<--");
   }
 
@@ -107,7 +117,7 @@
 
     const byType = {};
     $dataWeapons.forEach((weapon) => {
-      if (!isRealWeapon(weapon) || !weapon.wtypeId || !(weapon.price > 0)) return;
+      if (!isRealEntry(weapon) || !weapon.wtypeId || !(weapon.price > 0)) return;
       (byType[weapon.wtypeId] = byType[weapon.wtypeId] || []).push(weapon);
     });
 
@@ -202,7 +212,7 @@
         // Add valid weapons from this type's pool to the compatible list
         weaponsOfType.forEach((weaponId) => {
           const weapon = $dataWeapons[weaponId];
-          if (isRealWeapon(weapon)) {
+          if (isRealEntry(weapon)) {
             compatibleWeapons.push(weapon);
           }
         });
@@ -213,14 +223,78 @@
   }
 
   /**
-   * Arm an actor with the starter weapons of their class.
+   * Read a comma/space separated list of ids out of a `<Tag: 1, 2>` note tag.
+   * @param {string} note - Note field to search
+   * @param {string} tag - Tag name (without angle brackets or colon)
+   * @returns {array} Array of numbers, empty if the tag is absent
+   */
+  function parseNoteIdList(note, tag) {
+    if (!note) return [];
+    const match = note.match(new RegExp(`<${tag}:\\s*([^>]+)>`, 'i'));
+    if (!match) return [];
+    return match[1]
+      .split(',')
+      .map((s) => parseInt(s.trim(), 10))
+      .filter((n) => !isNaN(n));
+  }
+
+  /**
+   * A class's hardcoded starting weapon(s), from its Classes.json
+   * `<StartWeapon: id[, id2]>` note tag. Two ids means the class equips both
+   * at once (its DualWield trait gives it the second hand to hold them).
+   * @param {number} classId - Class ID
+   * @returns {array} Array of $dataWeapons ids (empty if the class has no tag)
+   */
+  function getClassStartWeapons(classId) {
+    const classData = $dataClasses[classId];
+    return classData ? parseNoteIdList(classData.note, 'StartWeapon') : [];
+  }
+
+  /**
+   * A class's hardcoded starting armor pieces, from its Classes.json
+   * `<StartArmor: id[, id2, ...]>` note tag.
+   * @param {number} classId - Class ID
+   * @returns {array} Array of $dataArmors ids (empty if the class has no tag)
+   */
+  function getClassStartArmors(classId) {
+    const classData = $dataClasses[classId];
+    return classData ? parseNoteIdList(classData.note, 'StartArmor') : [];
+  }
+
+  /**
+   * Place an item into whatever equip slot will take it (weapon, off-hand,
+   * head, body or gear), the way initEquips does, so a dual-wielder's second
+   * weapon and a shield-in-hand both land correctly without hand-coding slot
+   * indices here.
+   * @param {Game_Actor} actor - Actor to equip
+   * @param {object} item - $dataWeapons or $dataArmors entry
+   * @returns {boolean} True if it was equipped
+   */
+  function equipIntoOpenSlot(actor, item) {
+    if (!item) return false;
+    const slot = window.HandSlots && window.HandSlots.emptySlotFor
+      ? window.HandSlots.emptySlotFor(actor, item)
+      : actor.emptySlotFor(item);
+    if (slot < 0) return false;
+    try {
+      actor.changeEquip(slot, item);
+      return true;
+    } catch (e) {
+      console.error(`Failed to equip ${item.name}: ${e}`);
+      return false;
+    }
+  }
+
+  /**
+   * Arm an actor with the starter weapon(s) of their class.
    *
-   * A class used to be handed ONE weapon rolled out of everything it could
-   * hold, so two Gladiators started the same game with different arms and the
-   * loadout the board promised was not the loadout that arrived. Every weapon
-   * type the class is proficient with now contributes its cheapest starter,
-   * the whole set goes to the party, and the first of them is equipped. The
-   * name is kept for the callers that already say it.
+   * A class's weapon(s) are hardcoded on its own Classes.json entry
+   * (`<StartWeapon:>`), so every character of that class starts with the
+   * same peculiar, low-power loadout instead of one rolled out of a shared
+   * cheap-weapon pool. A class without the tag (the natural-weapon creature
+   * classes, or anything not yet authored) falls back to the old pool roll so
+   * it still walks out armed. The name is kept for the many callers that
+   * already say it.
    *
    * @param {Game_Actor} actor - Actor to equip
    * @param {number} classId - Class ID
@@ -232,6 +306,23 @@
       return false;
     }
 
+    const fixedIds = getClassStartWeapons(classId);
+    if (fixedIds.length > 0) {
+      const weapons = fixedIds.map((id) => $dataWeapons[id]).filter(isRealEntry);
+      if (weapons.length === 0) {
+        console.warn(`StartWeapon tag for class ${classId} points at no real weapon.`);
+        return false;
+      }
+      weapons.forEach((weapon) => $gameParty.gainItem(weapon, 1));
+      let equippedAny = false;
+      weapons.forEach((weapon) => {
+        if (equipIntoOpenSlot(actor, weapon)) equippedAny = true;
+      });
+      return equippedAny;
+    }
+
+    // Fallback: no fixed loadout authored for this class, roll one from the
+    // shared cheap-weapon pool the way every class used to.
     const pool = getStarterWeaponPool();
     const compatibleTypes = getStarterWeaponTypes(classId);
     const types = compatibleTypes && compatibleTypes.length > 0
@@ -246,7 +337,7 @@
       if (!ids || !ids.length) return;
       for (const id of ids) {
         const weapon = $dataWeapons[id];
-        if (isRealWeapon(weapon)) { starters.push(weapon); return; }
+        if (isRealEntry(weapon)) { starters.push(weapon); return; }
       }
     });
 
@@ -270,6 +361,27 @@
   }
 
   /**
+   * Arm an actor with the starter armor pieces of their class, from its
+   * `<StartArmor:>` note tag. Classes without the tag get nothing here: the
+   * end-of-creation gap-filler (CharacterCreation.js) covers any slot still
+   * empty afterwards with a random low-stat piece.
+   * @param {Game_Actor} actor - Actor to equip
+   * @param {number} classId - Class ID
+   * @returns {boolean} True if at least one piece was equipped
+   */
+  function equipClassStartingArmor(actor, classId) {
+    if (!actor || !classId) return false;
+    const armors = getClassStartArmors(classId).map((id) => $dataArmors[id]).filter(isRealEntry);
+    if (armors.length === 0) return false;
+    armors.forEach((armor) => $gameParty.gainItem(armor, 1));
+    let equippedAny = false;
+    armors.forEach((armor) => {
+      if (equipIntoOpenSlot(actor, armor)) equippedAny = true;
+    });
+    return equippedAny;
+  }
+
+  /**
    * Learn global starter skills for an actor
    * @param {Game_Actor} actor - Actor to teach skills to
    */
@@ -289,91 +401,20 @@
   }
 
   //=============================================================================
-  // Constants - Class Starting Items (Items.json only, no weapons/armors)
+  // Class Starting Items (Items.json only, no weapons/armors)
   //=============================================================================
 
-  // Thematic starting-item loadout per class, keyed by class name (matched
-  // against $dataClasses).
-  // Every entry is { id, qty } into $dataItems.
+  // The thematic starting-item loadout, like the starting weapon(s) and
+  // armor, is hardcoded per class on its own Classes.json entry, as a
+  // `<StartItems: id:qty, id:qty>` note tag, rather than a name-keyed JS
+  // table: it cannot go stale if a class is ever renamed, and everything the
+  // wizard hands out at class selection now lives in one place.
   //
   // A loadout is judged by PRICE, not by what its items do: the whole kit must
   // stay under CLASS_ITEM_BUDGET (checked by auditClassStartingItems below),
   // which keeps a new character in cheap, mundane gear. Traits are the other
   // half of the starting kit and are deliberately not bound by this: whatever a
   // trait hands out is the trait's business.
-  // i18n-ignore-start: keys are $dataClasses names, matched not shown
-  const CLASS_STARTING_ITEMS = {
-    "Freelancer": [{ id: 814, qty: 1 }, { id: 1441, qty: 1 }],          // Multi-tool, Vocation Skill Book
-    "Witch": [{ id: 262, qty: 1 }, { id: 1402, qty: 1 }, { id: 168, qty: 1 }], // Empty Spellbook, Void Magic Grimoire, Flying broom
-    "Nun": [{ id: 1401, qty: 1 }, { id: 604, qty: 2 }],                 // Holy Magic Grimoire, Minimum Vitality Tincture
-    "Knight": [{ id: 1422, qty: 1 }, { id: 811, qty: 1 }],              // Swordsmanship Skill Book, Whetstone
-    "Convoker": [{ id: 1411, qty: 1 }, { id: 680, qty: 1 }],            // Convokation Grimoire, Fae Bell of Summoning
-    "CEO": [{ id: 191, qty: 1 }, { id: 379, qty: 1 }],                  // Career Package, Negotiator's Manual
-    "Vampire": [{ id: 652, qty: 1 }, { id: 751, qty: 1 }],              // Vial of Miasma, Zombie Hand
-    "Cultist": [{ id: 1404, qty: 1 }, { id: 359, qty: 1 }],             // Forbidden Magic Grimoire, Empty Demon Container
-    "Combat Medic": [{ id: 19, qty: 2 }, { id: 33, qty: 1 }],           // Medical Spray, Endurance Injection
-    "Elementalist": [{ id: 1435, qty: 1 }, { id: 649, qty: 1 }],        // Electromancy Grimoire, Thunder Crystal
-    "Martial Artist": [{ id: 1421, qty: 1 }, { id: 81, qty: 1 }],       // Martial Arts Skill Book, Karate Combo EP:
-    "Enchanter": [{ id: 1406, qty: 1 }, { id: 647, qty: 1 }],           // Arcanism Grimoire, Enchanted Quill
-    "Berserker": [{ id: 87, qty: 1 }, { id: 88, qty: 1 }],              // Berserker Amulet, Guard Breaker
-    "Acrobat": [{ id: 654, qty: 1 }, { id: 810, qty: 1 }],              // Swift Wind Elixir, Elven Rope
-    "Monk": [{ id: 90, qty: 1 }, { id: 722, qty: 1 }],                  // Perfect Block EP:, Mental Focus Training
-    "Brawler": [{ id: 723, qty: 1 }, { id: 832, qty: 1 }],              // Fighter's Focus, Used Hand Wraps
-    "Boxer": [{ id: 833, qty: 1 }, { id: 834, qty: 1 }],                // Cracked Mouthguard, Torn Gloves
-    "Pro Wrestler": [{ id: 320, qty: 1 }, { id: 313, qty: 1 }],         // Wooden Chair, Vintage Fight Poster
-    "Fire Mage": [{ id: 1400, qty: 1 }, { id: 658, qty: 1 }],           // Pyromancy Grimoire, Fireball Scroll
-    "Ice Mage": [{ id: 1418, qty: 1 }, { id: 655, qty: 1 }],            // Cryomancy Grimoire, Frost Bomb
-    "Rogue": [{ id: 1431, qty: 1 }, { id: 374, qty: 1 }],               // Roguery Skill Book, Lockpick
-    "Paladin": [{ id: 1401, qty: 1 }, { id: 662, qty: 1 }],             // Holy Magic Grimoire, Shield Scroll
-    "Warlock": [{ id: 1404, qty: 1 }, { id: 666, qty: 1 }],             // Forbidden Magic Grimoire, Scroll of Destruction
-    "Ranger": [{ id: 1433, qty: 1 }, { id: 810, qty: 1 }],              // Pastoral Skill Book, Elven Rope
-    "Cleric": [{ id: 1419, qty: 1 }, { id: 648, qty: 2 }],              // Healing Grimoire, Health Potion
-    "Samurai": [{ id: 1422, qty: 1 }, { id: 277, qty: 1 }],             // Swordsmanship Skill Book, Etiquette
-    "Archmage": [{ id: 1406, qty: 1 }, { id: 657, qty: 1 }],            // Arcanism Grimoire, Archmage's Elixir
-    "Scout": [{ id: 1430, qty: 1 }, { id: 137, qty: 1 }],               // Tactical Skill Book, Portable GPS Navigator
-    "Oracle": [{ id: 1412, qty: 1 }, { id: 650, qty: 1 }],              // Augury Grimoire, Dream Dust
-    "Gladiator": [{ id: 314, qty: 1 }, { id: 324, qty: 1 }],            // Champion's Tooth, Ancient Fighting Coin
-    "Necromancer": [{ id: 1403, qty: 1 }, { id: 724, qty: 1 }],         // Necromancy Grimoire, Floating skull
-    "Commander": [{ id: 1429, qty: 1 }, { id: 234, qty: 1 }],           // Leadership Skill Book, Navigator's Compass
-    "Guardian": [{ id: 662, qty: 1 }, { id: 656, qty: 1 }],             // Shield Scroll, Dragon Scale Barrier
-    "Spellblade": [{ id: 1435, qty: 1 }, { id: 1422, qty: 1 }],         // Electromancy Grimoire, Swordsmanship Skill Book
-    "Bard": [{ id: 1428, qty: 1 }, { id: 236, qty: 1 }],                // Performance Skill Book, Magician's Flute
-    "Illusionist": [{ id: 1415, qty: 1 }, { id: 663, qty: 1 }],         // Illusion Grimoire, Invisibility Scroll
-    "Battlemage": [{ id: 1400, qty: 1 }, { id: 661, qty: 1 }],          // Pyromancy Grimoire, Lightning Bolt Scroll
-    "Mercenary": [{ id: 385, qty: 1 }, { id: 73, qty: 1 }],             // Secure Transport Case, Molotov Cocktail
-    "Sage": [{ id: 1407, qty: 1 }, { id: 34, qty: 1 }],                 // Meta Magic Grimoire, Wisdom Elixir
-    "Barbarian": [{ id: 79, qty: 1 }, { id: 653, qty: 1 }],             // Throwing Axe, Giant's Potion
-    // The lab classes all carry the portable Alchemistry Kit (390): it is what
-    // opens the Alchemistry bench from the main menu, so a character whose
-    // trade is a laboratory starts able to use one.
-    "Doctor": [{ id: 244, qty: 1 }, { id: 19, qty: 1 }, { id: 390, qty: 1 }],   // Surgical Tools, Medical Spray, Alchemistry Kit
-    "Scientist": [{ id: 1425, qty: 1 }, { id: 944, qty: 1 }, { id: 390, qty: 1 }], // Alchemistry Skill Book, Silver Nitrate, Alchemistry Kit
-    "Firefighter": [{ id: 1438, qty: 1 }, { id: 813, qty: 1 }],         // Idromancy Grimoire, Climbing Rope
-    "Police Officer": [{ id: 143, qty: 1 }, { id: 76, qty: 1 }],        // Pocket Video Recorder, Caltrops
-    "Chef": [{ id: 1427, qty: 1 }, { id: 232, qty: 1 }],                // Cooking Skill Book, Chef's Spice Blend
-    "Journalist": [{ id: 144, qty: 1 }, { id: 711, qty: 1 }],           // Digital Camera, Newspaper
-    "Construction Worker": [{ id: 138, qty: 1 }, { id: 863, qty: 2 }],  // Shovel, Salvaged steel
-    "Academic": [{ id: 299, qty: 1 }, { id: 127, qty: 1 }],             // Scholar's Legal Tome, Pocket Notebook
-    "Psychologist": [{ id: 722, qty: 1 }, { id: 378, qty: 1 }],         // Mental Focus Training, Truth-Revealing Solution
-    "Archaeologist": [{ id: 354, qty: 1 }, { id: 121, qty: 1 }],        // Fake Treasure Map, Lantern
-    "Nurse": [{ id: 19, qty: 1 }, { id: 17, qty: 2 }, { id: 390, qty: 1 }], // Medical Spray, Electrolyte Powder, Alchemistry Kit
-    "Hunter-Gatherer": [{ id: 1423, qty: 1 }, { id: 806, qty: 1 }],     // Bestial Skill Book, Walking Stick
-    "Physicist": [{ id: 139, qty: 1 }, { id: 140, qty: 1 }, { id: 390, qty: 1 }], // Resonance Scanner, Raman probe, Alchemistry Kit
-    "Mechanic": [{ id: 146, qty: 1 }, { id: 814, qty: 1 }],             // Fuel tank, Multi-tool
-    "Shopkeeper": [{ id: 1437, qty: 1 }, { id: 721, qty: 1 }],          // Economy Skill Book, Massive Storage Drive
-    "Farmer": [{ id: 1433, qty: 1 }, { id: 240, qty: 1 }],              // Pastoral Skill Book, Botanist's Seed Collection
-    "Lumberjack": [{ id: 151, qty: 1 }, { id: 814, qty: 1 }],           // Craftsman's Backpack, Multi-tool
-    "Meteorologist": [{ id: 1439, qty: 1 }, { id: 117, qty: 1 }],       // Aeromancy Grimoire, Umbrella
-    "Priest": [{ id: 1401, qty: 1 }, { id: 264, qty: 1 }],              // Holy Magic Grimoire, 92 Days of Solomon
-    "Entertainer": [{ id: 1428, qty: 1 }, { id: 186, qty: 1 }],         // Performance Skill Book, Pocket Sound System
-    "Demigod": [{ id: 1405, qty: 1 }, { id: 646, qty: 1 }],             // Astral Magic Grimoire, Elven Waybread
-    "Wretch": [{ id: 836, qty: 1 }, { id: 828, qty: 1 }],               // Rubbish, Expired Cheese
-    "Beast": [{ id: 27, qty: 1 }, { id: 627, qty: 1 }],                 // Beast Tongue Elixir, Jaguar Musk Gland
-    "Mimic": [{ id: 709, qty: 2 }, { id: 347, qty: 1 }],                // Unidentified Item, Not-So-Magic Bean
-    "Monster": [{ id: 725, qty: 1 }, { id: 89, qty: 1 }],               // Spirit Parasite, Broken Cryocell
-    "Mana Cyborg": [{ id: 1420, qty: 1 }, { id: 122, qty: 1 }],         // Technomagical Grimoire, Portable Charger
-  };
-  // i18n-ignore-end
 
   /**
    * Get the thematic starting-item loadout for a class (display + grant use).
@@ -383,7 +424,15 @@
   function getClassStartingItems(classId) {
     const classData = $dataClasses[classId];
     if (!classData) return [];
-    return CLASS_STARTING_ITEMS[classData.name] || [];
+    const match = classData.note && classData.note.match(/<StartItems:\s*([^>]+)>/i);
+    if (!match) return [];
+    return match[1]
+      .split(',')
+      .map((pair) => {
+        const [id, qty] = pair.split(':').map((s) => parseInt(s.trim(), 10));
+        return isNaN(id) ? null : { id, qty: isNaN(qty) ? 1 : qty };
+      })
+      .filter(Boolean);
   }
 
   /**
@@ -422,15 +471,17 @@
   const CLASS_ITEM_BUDGET = 10000;
 
   /**
-   * Check every class loadout against CLASS_ITEM_BUDGET and report the ones
-   * that break it, together with any entry pointing at a missing or blank item.
-   * Run from the console after editing the table.
+   * Check every class's <StartItems:> loadout against CLASS_ITEM_BUDGET and
+   * report the ones that break it, together with any entry pointing at a
+   * missing or blank item. Run from the console after editing a class note.
    * @returns {array} Offending { class, total, items } rows
    */
   function auditClassStartingItems() {
     const offenders = [];
-    Object.keys(CLASS_STARTING_ITEMS).forEach((className) => {
-      const entries = CLASS_STARTING_ITEMS[className];
+    $dataClasses.forEach((classData) => {
+      if (!classData) return;
+      const entries = getClassStartingItems(classData.id);
+      if (entries.length === 0) return;
       const broken = entries.filter((entry) => {
         const item = $dataItems[entry.id];
         return !item || !item.name || !item.name.trim();
@@ -440,9 +491,9 @@
         return sum + (item ? (item.price || 0) * (entry.qty || 1) : 0);
       }, 0);
       if (total > CLASS_ITEM_BUDGET || broken.length > 0) {
-        offenders.push({ class: className, total, items: entries });
+        offenders.push({ class: classData.name, total, items: entries });
         console.warn(
-          `StartingEquipment: ${className} loadout is ${total}g` +
+          `StartingEquipment: ${classData.name} loadout is ${total}g` +
             (broken.length ? ` and has ${broken.length} missing item(s)` : "") +
             ` (budget ${CLASS_ITEM_BUDGET}g).`
         );
@@ -452,7 +503,10 @@
   }
 
   /**
-   * Apply starting gear to an actor (weapon + skills)
+   * Apply the full starting kit to an actor: weapon(s), armor, thematic
+   * items and starter skills. Used by callers outside the main wizard flow
+   * (e.g. split-screen multiplayer) that need the same loadout class
+   * selection itself grants.
    * @param {Game_Actor} actor - Actor to equip
    * @param {number} classId - Class ID
    */
@@ -462,10 +516,9 @@
       return;
     }
 
-    // Equip random weapon
     equipRandomCompatibleWeapon(actor, classId);
-
-    // Learn starter skills
+    equipClassStartingArmor(actor, classId);
+    giveClassStartingItems(actor, classId);
     learnStarterSkills(actor);
 
     console.log(`Applied starting gear to ${actor.name()} (Class: ${classId})`);
@@ -492,7 +545,10 @@
     getStarterWeaponTypes,
     getCompatibleWeaponTypes,
     getCompatibleWeapons,
+    getClassStartWeapons,
+    getClassStartArmors,
     equipRandomCompatibleWeapon,
+    equipClassStartingArmor,
     learnStarterSkills,
     applyStartingGear,
     getClassStartingItems,

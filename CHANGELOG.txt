@@ -1,3 +1,19 @@
+0.3.7a
+- every class now has fixed thematic starting weapons, armor and items in its own data instead of a shared random weapon roll, and dual-wielding classes start with two weapons equipped
+- creature party members now show a live 3d preview of their sculpted body in character creation, the status screen and empathize, the sprite avatar opens the animal/monster sprite grid instead of the 3d studio, the preset board previews stats on the sidebar as you browse, stats and traits raise an explanatory tooltip on hover, and item tooltip prices show euros instead of raw cents
+- the old default rpg maker attack/escape selector no longer flashes over the battle command list
+- character name randomization now uses the markov name generator everywhere, including the first party member's default name
+- fixed a crash when triggering a map event whose page no longer matches its stale index
+- the overencumbered notice no longer doubles up and now shows only the excess weight
+- character creation's bio tab now shows the ideology and hometown dropdowns two per line
+- reworked the scenario selection window into three columns with bigger text, and starting money now matches what the scenario promises
+- the bio tab's job selector now updates the starting gear shown in the sidebar and on the scenario resume sheet
+- allocated talents now list as full-width rows with a delete button, the point gauge sits tighter, category names hide outside all/current tabs, and skill cards lost their background
+- specialization cards now show their trained tier and put the category on the right, four per row, and suggested/reset/randomize no longer redraw the whole board
+- the class dossier's growth plan now splits into level 1-50 and 51-99 columns, and the sidebar's randomize/confirm buttons always stay visible without scrolling
+- the battle hotbar and command list no longer disappear when you attack
+- character creation's sidebar is widerm traits, skills and gear now list two per row
+
 0.3.6a
 
 - the critical hit die is smaller and rolls faster, so it no longer stalls a fight for long

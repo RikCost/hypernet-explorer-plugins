@@ -816,8 +816,8 @@
       return;
     }
 
-    const load = utils.formatWeight(utils.calculateTotalWeight()) + " / " +
-      utils.formatWeight(utils.calculateMaxCarryWeight());
+    const excess = utils.calculateTotalWeight() - utils.calculateMaxCarryWeight();
+    const load = utils.formatWeight(Math.max(0, excess));
     if (load === _encumbranceShown && toast.isLive(ENCUMBRANCE_KEY)) return;
     _encumbranceShown = load;
     toast.sticky(T('ItemUtils.encumbrance.load', { load: load }), {
