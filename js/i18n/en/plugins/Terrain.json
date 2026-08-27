@@ -31,5 +31,10 @@
   "poster": "The poster reads: \"{text}\"",
   "signStop": "STOP",
   "signDanger": "Danger. Works in progress.",
-  "signHelipad": "Helipad. Keep clear."
+  "signHelipad": "Helipad. Keep clear.",
+  "feature": {
+    "statue": "Statue",
+    "library": "Bookcase",
+    "book": "Book"
+  }
 }

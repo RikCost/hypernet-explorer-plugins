@@ -89,6 +89,7 @@
    "damage": "Damage",
    "statReq": "Requires",
    "statHeld": "Base stat",
+   "grantedBy": "Granted by",
    "range": "Range"
   },
   "range": {

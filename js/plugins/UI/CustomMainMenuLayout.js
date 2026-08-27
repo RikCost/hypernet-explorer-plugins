@@ -216,11 +216,27 @@
         dynamicsHistory: 230
     };
 
-    // One 32x32 cell of the sheet, as an inline background. Every icon in the
-    // menu goes through here: the offsets used to be written out by hand at a
-    // dozen call sites, which is how half of them drifted off their cell.
-    const iconStyle = index => "background:url('img/system/IconSet.png') -" +
-        ((index % 16) * 32) + "px -" + (Math.floor(index / 16) * 32) + "px no-repeat";
+    // One cell of the sheet, as an inline background. Every icon in the menu
+    // goes through here: the offsets used to be written out by hand at a dozen
+    // call sites, which is how half of them drifted off their cell.
+    //
+    // The sheet is drawn at 32px to the cell but the menu draws its icons in a
+    // smaller box, so the whole sheet is scaled to that box instead of being
+    // sampled on the native grid: sampling it natively is what cut every icon
+    // down to its top left corner (the magnifier lost its handle). The box
+    // size comes from --icon-size on the element, so one stylesheet rule
+    // decides it and the offsets follow; the fallback keeps the icons whole
+    // even if the rule is missing.
+    const ICON_CELL = "var(--icon-size, 24px)";
+    const iconStyle = index => {
+        const col = index % 16;
+        const row = Math.floor(index / 16);
+        return "width:" + ICON_CELL + "; height:" + ICON_CELL + ";" +
+            "background-image:url('img/system/IconSet.png');" +
+            "background-repeat:no-repeat;" +
+            "background-size:calc(" + ICON_CELL + " * 16) auto;" +
+            "background-position:calc(" + ICON_CELL + " * -" + col + ") calc(" + ICON_CELL + " * -" + row + ")";
+    };
 
     // =========================================================================
     // Resources Loader
@@ -3271,6 +3287,18 @@
     Scene_Map.prototype.updateMenuHotkeys = function () {
         if ($gameMap.isEventRunning()) return;
         if ($gameTemp._sleepMenuOpen) return; // the wait/rest popup owns the keyboard
+
+        // The pad's half of R. Clicking the left stick has no Input.gamepadMapper
+        // action on it, so it is polled raw through AnalogStickInput the same way
+        // Map/WorldMap.js polls Start for the map sheet; binding it in the mapper
+        // would make every key sharing that action fire twice. Map/MapLegend.js
+        // draws it as the wait row's pad chip.
+        const padWait = window.AnalogStickInput &&
+            window.AnalogStickInput.isButtonTriggered(window.AnalogStickInput.BUTTON.L3);
+        if (padWait && MAP_HOTKEY_ACTIONS.sleep_menu) {
+            MAP_HOTKEY_ACTIONS.sleep_menu(this);
+            return;
+        }
 
         // One key opens one screen. Two hotkeys read as triggered on the same
         // frame (a chord, a stuck gamepad mapping) used to push both scenes, so

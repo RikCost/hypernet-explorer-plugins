@@ -188,7 +188,18 @@
             this._faceUpVectors = [];
             this._faceRightVectors = [];
             this._animFrameId = null;
+            // How many dice are in the air or waiting their turn. The scene,
+            // the card and the frame loop are all single: two throws at once
+            // would land on top of each other, so a second one waits.
+            this._pendingRolls = 0;
+            this._rollChain = null;
             this._initStyles();
+        }
+
+        // True from the moment a die is asked for until the last one has
+        // landed. A caller that must not fire twice asks this before rolling.
+        isRolling() {
+            return this._pendingRolls > 0;
         }
 
         _shouldShow3D(options = {}) {
@@ -804,6 +815,34 @@
                 return Promise.resolve(resultData);
             }
 
+            // One die on screen at a time: a throw asked for while another is
+            // still tumbling is queued behind it rather than stealing its
+            // scene, its card and its frame loop half way through.
+            const throwIt = () => this._throwD20(resultData, options);
+            this._pendingRolls++;
+            // Nothing in the air: the die leaves the hand now. Something in the
+            // air: this one waits behind it, however that one ends.
+            let roll;
+            if (this._rollChain) {
+                roll = this._rollChain.then(throwIt, throwIt);
+            } else {
+                try { roll = Promise.resolve(throwIt()); }
+                catch (e) { roll = Promise.reject(e); }
+            }
+            const settle = () => {
+                this._pendingRolls--;
+                if (this._pendingRolls <= 0) this._rollChain = null;
+            };
+            roll.then(settle, settle);
+            this._rollChain = roll.then(() => {}, () => {});
+            return roll;
+        }
+
+        // The throw itself: the scene, the card and the frame loop. Only ever
+        // entered through rollD20, which keeps the throws one behind another.
+        _throwD20(resultData, options) {
+            const { dc, modifier, statName, actionName, roll: rawRoll, total, nat1, nat20, success } = resultData;
+
             return new Promise((resolve) => {
                 this._setupThree();
                 if (!this._container) {
@@ -997,7 +1036,7 @@
         // the event that asked for it can stand still and wait (see the wait
         // mode registered at the bottom of this file).
         isBusy() {
-            return !!this._checkRunning;
+            return !!this._checkRunning || this.isRolling();
         }
 
         // What an ability lends the roll, read the way every other d20 in the

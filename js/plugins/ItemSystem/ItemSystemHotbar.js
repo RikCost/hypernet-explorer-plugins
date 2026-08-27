@@ -419,28 +419,50 @@
     _mapIdle = 0;
   }
 
-  function mapBarAllowed(scene) {
+  // Whether the bar is on screen at all. A message, a choice window or a
+  // running event does not take it away: talking to somebody is exactly when
+  // you want to see what you are carrying, and a row that blinks out every
+  // time a line of dialogue opens reads as a bug. Those cases only make it
+  // inert (see mapBarLive below); what takes it off screen is leaving the map
+  // altogether, a fade, the encounter zoom, or another bar in the same place.
+  function mapBarVisible(scene) {
     if (!(scene instanceof Scene_Map)) return false;
     if (!$gameSystem || !$dataItems || !$gameParty) return false;
     if (SceneManager.isSceneChanging()) return false;
-    if (scene.isBusy()) return false; // fading in or out
-    if ($gameMessage.isBusy() || $gameMap.isEventRunning()) return false;
+    if (scene.isFading()) return false;
+    // Read rather than asked through Scene_Map.isBusy(): that call ticks its
+    // own stuck-encounter counter, and it is the core update's to make.
+    if (scene._encounterEffectDuration > 0) return false;
     // ThrowItemPlugin takes over the map with its own cursor and its own
     // reading of every button while a throw is being aimed.
     if ($gamePlayer._throwTargetingMode) return false;
+    // The 3D world is played over a live Scene_Map, and it has a quick bar of
+    // its own along the bottom of the screen: the weapon in the leader's hands
+    // and every kind of block they have dug up (VoxelWorld/VoxelWorldDigging).
+    // Two bars in the same place, both answering the number keys, is one bar
+    // too many - and what is on this one is no use out there anyway, since
+    // nothing in the 3D world is an item you eat or drink.
+    if (window.VoxelWorldSystem && window.VoxelWorldSystem.isActive()) return false;
     return !ItemHotbar.isEmpty();
   }
 
+  // Whether a slot can actually be fired. While a message is up, a choice is
+  // waiting or an event is running, the keys and the OK press belong to them:
+  // the bar stays drawn but answers nothing.
+  function mapBarLive() {
+    return !$gameMessage.isBusy() && !$gameMap.isEventRunning();
+  }
+
   // Input runs before the base update so the OK that fires a slot never also
-  // reaches Game_Player.triggerAction further down the same frame. The
-  // verdict is taken once and reused: Scene_Map.isBusy() ticks its own
-  // stuck-encounter counter, so asking it twice a frame would halve that
-  // timeout.
+  // reaches Game_Player.triggerAction further down the same frame. The verdict
+  // is taken once at the top of the frame and reused by both halves.
+  let _mapVisible = false;
   let _mapAllowed = false;
 
   const _Scene_Map_update_hotbar = Scene_Map.prototype.update;
   Scene_Map.prototype.update = function () {
-    _mapAllowed = mapBarAllowed(this);
+    _mapVisible = mapBarVisible(this);
+    _mapAllowed = _mapVisible && mapBarLive();
     this.updateItemHotbarInput();
     _Scene_Map_update_hotbar.call(this);
     this.updateItemHotbarDisplay();
@@ -496,13 +518,26 @@
     if (++_mapIdle > IDLE_DISARM_FRAMES) disarmMapBar();
   };
 
+  // What the bar is covering along the bottom edge of the map, in canvas
+  // pixels, so anything else that wants that edge , the dialogue box, the
+  // choice list , can sit above it instead of on top of it. 0 when the bar is
+  // not up.
+  ItemHotbar.mapBarReservedHeight = function () {
+    if (!_mapVisible) return 0;
+    return _mapBar.height() + _mapBar.marginBottom;
+  };
+
   Scene_Map.prototype.updateItemHotbarDisplay = function () {
-    if (!_mapAllowed) {
+    if (!_mapVisible) {
       _mapBar.hide();
       return;
     }
     if (_mapArmed && !ItemHotbar.itemAt(_mapIndex)) disarmMapBar();
-    _mapBar.render(ItemHotbar.entries(), { selected: _mapIndex, active: _mapArmed });
+    _mapBar.render(ItemHotbar.entries(), {
+      selected: _mapIndex,
+      active: _mapArmed,
+      inert: !_mapAllowed
+    });
   };
 
   const _Scene_Map_terminate_hotbar = Scene_Map.prototype.terminate;
@@ -511,6 +546,7 @@
     // The card belongs to this map scene: leaving takes it, and the standing
     // still that came with it, away.
     closeTargetPicker();
+    _mapVisible = false;
     _mapAllowed = false;
     _mapBar.hide();
     _Scene_Map_terminate_hotbar.call(this);

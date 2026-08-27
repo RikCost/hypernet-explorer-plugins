@@ -84,10 +84,13 @@
     // authored to be read at 1x, and pulling out there only showed the seams.
     // This is also not the fullscreen "M" map sheet (WorldMap.js), which zooms
     // its own independent zoomScale and is excluded here.
-    // 0.25 shows 4x the world map's usual span in each direction (about 68x52
-    // tiles of the 256x256 sheet), which is still well inside its edges, so the
-    // size-derived floor in minCameraZoom() never has to step in there.
-    const ZOOM_MIN = 0.25;
+    // 0.3 shows a bit over 3x the world map's usual span in each direction
+    // (about 57x43 tiles of the 256x256 sheet), which is still well inside its
+    // edges, so the size-derived floor in minCameraZoom() never has to step in
+    // there. It is also the last notch of the 0.1 ladder the wheel walks: the
+    // step below it, 0.25, pulled out further than the sheet reads well at and
+    // is gone.
+    const ZOOM_MIN = 0.3;
     const ZOOM_MAX = 2.5;
     const ZOOM_WHEEL_STEP = 0.1;
     const ZOOM_TRIGGER_RATE = 0.03; // zoom change per frame at full trigger pull

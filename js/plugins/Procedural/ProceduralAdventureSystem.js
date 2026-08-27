@@ -92,8 +92,9 @@
  *               needs (the whole ending is the good it did: see `needs`) |
  *               battle (with `reward` naming what winning pays, `fail` what
  *               losing or running costs) | minigame (`game` names it, `reward`
- *               pays for a win, `fail` for a loss) | date (an evening with Eris,
- *               handed to ErisDateSystem) | reputation | none
+ *               pays for a win, `fail` for a loss) | date (she takes an
+ *               interest: the ending pays `reward` and moves her own ledger on
+ *               the quester, and no evening is played out) | reputation | none
  *
  * Any outcome may also carry:
  *   rep: { <factionSlug>: delta }    standing moved with one or more factions
@@ -102,6 +103,8 @@
  *   augment: <key> | [<key>]        fitted through the prosthetic shop
  *   needs: { hunger, sleep, hygiene, social, leisure }
  *                                    percentage points put back into everybody
+ *   eris: <delta>                   points onto Eris's ledger for whoever is
+ *                                    holding the die (window.ErisRelations)
  *   kp / stars                       what the ending is worth in Knowledge
  *                                    (SkillMaster's KP, on the quest curve)
  *
@@ -697,6 +700,58 @@
   const ANOM_MAG = { small: 1, medium: 2.4, large: 5 };
   function anomMag(out) { return ANOM_MAG[out && out.mag] || ANOM_MAG.medium; }
 
+  // ---- Reward lines -------------------------------------------------------
+  // A payout is a list of things, not a paragraph, so every line it pays out
+  // carries the IconSet cell it is drawn with and reads the way a pocket reads
+  // in the backpack (ItemSystem/ItemSystemInventoryUI.js): the icon, the
+  // label, and the count on the right where there is one. Anything that only
+  // wants the words - the diary, the toasts, a panel with no icons to draw -
+  // unwraps a line with anomLineText, and a bare string is still a valid line.
+  const REWARD_ICON = {
+    artifact: 245, gear: 96, materials: 209, gold: 191, schrodingerite: 158,
+    exp: 87, harm: 6, heal: 176, battle: 322, knowledge: 189,
+    reputation: 145, reputationLost: 282, failed: 282, minigame: 196,
+    crime: 111, augment: 339, needs: 219, skill: 186, eris: 84,
+  };
+
+  function anomLine(key, text, opts) {
+    const o = opts || {};
+    return {
+      icon: Number(o.icon != null ? o.icon : REWARD_ICON[key]) || 0,
+      text: String(text || ""),
+      count: o.count != null ? String(o.count) : "",
+    };
+  }
+
+  // One reward line, built out of the pack's own wording: `key` names both the
+  // i18n entry (reward.<key>) and the icon it wears.
+  function anomReward(lines, key, params, opts) {
+    lines.push(anomLine(key, anomText("reward." + key, params || {}), opts));
+    return lines;
+  }
+
+  function anomLineText(line) {
+    if (!line) return "";
+    return (typeof line === "object") ? String(line.text || "") : String(line);
+  }
+
+  function anomLineIcon(line) {
+    return (line && typeof line === "object" && line.icon != null) ? Number(line.icon) || 0 : 0;
+  }
+
+  function anomLineCount(line) {
+    return (line && typeof line === "object" && line.count) ? String(line.count) : "";
+  }
+
+  // Coin is paid out often enough, and always the same way, to be worth its
+  // own line: the pack's wording, and the amount on the right in the same
+  // euro chip a hand-over row wears.
+  function anomGoldLine(lines, gold) {
+    const amount = (gold / 100).toFixed(2);
+    return anomReward(lines, "gold", { amount: amount },
+      { count: anomText("ui.goldChip", { amount: amount }) });
+  }
+
   // The free row in the artifact band (items 1501-1600). "Empty ..." is the
   // sentinel ArctifactGenerator writes into an unused slot; a row the history
   // simulator or the generator has already claimed is never overwritten.
@@ -852,7 +907,7 @@
         window.PartyNeeds.LABELS[key]) || key;
       filled.push(label);
     });
-    if (filled.length) lines.push(anomText("reward.needs", { list: filled.join(", ") }));
+    if (filled.length) anomReward(lines, "needs", { list: filled.join(", ") });
   }
 
   // ---- Crime --------------------------------------------------------------
@@ -871,7 +926,7 @@
       if (!CS || !preset) return;
       CS.addPresetCrime(key);
       const name = CS.presetCrimeName ? CS.presetCrimeName(key) : preset.name;
-      lines.push(anomText("reward.crime", { crime: name }));
+      anomReward(lines, "crime", { crime: name });
     });
   }
 
@@ -928,7 +983,7 @@
       console.error("[ProceduralAdventure] augment failed", e);
       return false;
     }
-    lines.push(anomText("reward.augment", { name: anomAugmentName(key), who: actor.name() }));
+    anomReward(lines, "augment", { name: anomAugmentName(key), who: actor.name() });
     return true;
   }
 
@@ -944,9 +999,36 @@
       if (index < 0) return;
       $gameFactions.changeReputation(index, delta);
       const name = factionDisplayName(index) || slug;
-      lines.push(anomText(delta > 0 ? "reward.reputation" : "reward.reputationLost",
-        { faction: name, amount: Math.abs(delta) }));
+      anomReward(lines, delta > 0 ? "reputation" : "reputationLost",
+        { faction: name, amount: Math.abs(delta) });
     });
+  }
+
+  // ---- Eris -----------------------------------------------------------------
+  // An ending she took an interest in. The evening it used to open is not
+  // played any more; what is left of it is the only durable part, her own
+  // ledger on whoever was holding the die (window.ErisRelations, kept per
+  // companion by name in Economy/ErisDateSystem.js). `eris` on the outcome
+  // says how many points by hand; a date ending with nothing said moves it by
+  // what the ending was worth.
+  function anomErisPoints(out) {
+    if (out && out.eris != null) return Math.round(Number(out.eris) || 0);
+    return Math.max(1, Math.round(anomStars(out) * anomMag(out) / 2));
+  }
+
+  function anomApplyEris(session, out, lines) {
+    // She was beaten in this world: there is nobody left to think better of
+    // anybody, and no heart is moved.
+    if (erisGone()) return false;
+    const R = window.ErisRelations;
+    const who = anomQuester(session);
+    if (!R || !R.change || !who) return false;
+    const delta = anomErisPoints(out);
+    if (!delta) return false;
+    R.change(who.name(), delta);
+    anomReward(lines, "eris", { who: who.name(), amount: Math.abs(delta) },
+      { count: (delta > 0 ? "+" : "") + delta });
+    return true;
   }
 
   // Knowledge, on the quest curve. Anything the ending had the party fight is
@@ -962,7 +1044,7 @@
       : window.KnowledgePoints.forQuest(anomStars(out), levels, anomPartyLevel());
     if (!(kp > 0)) return;
     $gameSystem.addKnowledge(kp);
-    lines.push(anomText("reward.knowledge", { kp: kp }));
+    anomReward(lines, "knowledge", { kp: kp }, { count: "+" + kp });
   }
 
   // Everything a terminal node can hand over. Returns the lines the panel and
@@ -979,47 +1061,47 @@
     if (kind === "artifact") {
       const item = anomMakeArtifact(session);
       if (item) {
-        lines.push(anomText("reward.artifact", { name: item.name }));
+        anomReward(lines, "artifact", { name: item.name }, { icon: item.iconIndex });
       } else {
         // The artifact band (items 1501-1600) is full: pay the ending out in
         // kit and coin rather than leaving the party with a story and nothing.
         const gear = anomRandomGear(session, "weapon");
-        if (gear) lines.push(anomText("reward.gear", { name: gear.name }));
+        if (gear) anomReward(lines, "gear", { name: gear.name }, { icon: gear.iconIndex });
         const gold = Math.round(1800 * mag * (1 + level / 24));
         if ($gameParty) $gameParty.gainGold(gold);
-        lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
+        anomGoldLine(lines, gold);
       }
       spec(session.earth ? "Archaeology" : "UFOlogy", 3);   // i18n-ignore: specialization id
       spec("Anthropology", 2);       // i18n-ignore: specialization id
     } else if (kind === "gear") {
       const gear = anomRandomGear(session, out.slot === "armor" ? "armor" : "weapon");
-      if (gear) lines.push(anomText("reward.gear", { name: gear.name }));
+      if (gear) anomReward(lines, "gear", { name: gear.name }, { icon: gear.iconIndex });
       spec("Survival", 2);           // i18n-ignore: specialization id
     } else if (kind === "schrodingerite") {
       const dm = $gameSystem && $gameSystem.starMapData;
       const units = Math.max(1, Math.round(mag / 2));
       if (dm && dm.getSchrodingerite) dm.setSchrodingerite(dm.getSchrodingerite() + units);
-      lines.push(anomText("reward.schrodingerite", { units: units }));
+      anomReward(lines, "schrodingerite", { units: units }, { count: "×" + units });
       spec("Quantum Cryptography", 2);   // i18n-ignore: specialization id
     } else if (kind === "loot") {
       const mats = anomGiveMaterials(session, Math.max(1, Math.round(mag / 1.6)), Math.round(2 * mag));
-      if (mats.length) lines.push(anomText("reward.materials", { list: mats.join(", ") }));
+      if (mats.length) anomReward(lines, "materials", { list: mats.join(", ") });
       spec("Survival", 2);           // i18n-ignore: specialization id
     } else if (kind === "gold") {
       const gold = Math.round(900 * mag * (1 + level / 24));
       if ($gameParty) $gameParty.gainGold(gold);
-      lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
+      anomGoldLine(lines, gold);
     } else if (kind === "harm") {
       const pct = Math.min(0.6, 0.08 * mag);
       ($gameParty ? $gameParty.members() : []).forEach((a) => {
         a.setHp(Math.max(1, Math.floor(a.hp - a.mhp * pct)));
       });
-      lines.push(anomText("reward.harm", { pct: Math.round(pct * 100) }));
+      anomReward(lines, "harm", { pct: Math.round(pct * 100) });
     } else if (kind === "heal") {
       ($gameParty ? $gameParty.members() : []).forEach((a) => {
         a.setHp(a.mhp); a.setMp(a.mmp); a.clearStates();
       });
-      lines.push(anomText("reward.heal"));
+      anomReward(lines, "heal");
     } else if (kind === "skill") {
       // Somebody out here teaches the quester something. `pool: "esoteric"`
       // draws from the menu-cast spells (ids 1400 up); anything else draws
@@ -1029,11 +1111,12 @@
       const who = anomQuester(session);
       if (skill && who && typeof who.learnSkill === "function") {
         who.learnSkill(skill.id);
-        lines.push(anomText("reward.skill", { who: who.name(), name: skill.name }));
+        anomReward(lines, "skill", { who: who.name(), name: skill.name },
+          { icon: skill.iconIndex });
       } else {
         const gold = Math.round(1200 * mag * (1 + level / 24));
         if ($gameParty) $gameParty.gainGold(gold);
-        lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
+        anomGoldLine(lines, gold);
       }
       spec("Anthropology", 2);       // i18n-ignore: specialization id
     } else if (kind === "needs") {
@@ -1046,7 +1129,7 @@
       if (!anomApplyAugment(session, out, lines)) {
         const gold = Math.round(1200 * mag * (1 + level / 24));
         if ($gameParty) $gameParty.gainGold(gold);
-        lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
+        anomGoldLine(lines, gold);
       }
       spec("Cybernetics", 3);        // i18n-ignore: specialization id
     }
@@ -1061,25 +1144,28 @@
     const exp = Math.round((out && out.exp != null ? out.exp : 10) * mag * level);
     if (exp > 0 && $gameParty) {
       $gameParty.allMembers().forEach((a) => a.gainExp(exp));
-      lines.push(anomText("reward.exp", { exp: exp }));
+      anomReward(lines, "exp", { exp: exp }, { count: "+" + exp });
     }
     // What was worked out down there is worth Knowledge as well as levels: the
     // skill masters charge KP for everything they teach, and an afternoon spent
     // on something nobody has written up is exactly how it is earned.
     anomAwardKnowledge(out, lines);
     anomApplyReputation(out, lines);
+    // Any ending at all may be one she heard about, the same way any ending
+    // may move a faction's standing. The date endings go through anomArm.
+    if (kind !== "date" && out && out.eris != null) anomApplyEris(session, out, lines);
     if (kind === "none") spec(session.earth ? "Survival" : "Astrobiology", 1);   // i18n-ignore: specialization id
     return lines;
   }
 
   // ---- Handovers ----------------------------------------------------------
-  // Three endings finish somewhere this engine cannot reach from where it is
-  // standing: a fight (which cannot start inside the star map), a minigame, and
-  // an evening with Eris. Each arms a pending handover, and the presenter runs
-  // it once the last message has closed.
+  // Two endings finish somewhere this engine cannot reach from where it is
+  // standing: a fight (which cannot start inside the star map) and a minigame.
+  // Each arms a pending handover, and the presenter runs it once the last
+  // message has closed. An ending that interests Eris is not one of them any
+  // more: it is settled here, on her ledger (anomApplyEris).
   let _anomPendingBattle = null;
   let _anomPendingMinigame = null;
-  let _anomPendingDate = null;
   let _anomMinigameSettle = null;   // a contest being played right now
 
   // An ending that was not reached: the party ran, or the party lost. It pays
@@ -1087,7 +1173,7 @@
   // standing lost) and never pays what winning promised.
   function anomApplyFailure(session, out) {
     const fail = out && out.fail;
-    const lines = [anomText("reward.failed")];
+    const lines = [anomLine("failed", anomText("reward.failed"))];
     if (fail && typeof fail === "object") {
       // The failure branch is an outcome in its own right, minus its own
       // experience: nothing was learned that the walk back did not teach.
@@ -1202,7 +1288,7 @@
       const troopId = anomBuildTroop(session, outcome.count);
       if (troopId) {
         _anomPendingBattle = { troopId, outcome, key: session.key };
-        return [anomText("reward.battle")];
+        return [anomLine("battle", anomText("reward.battle"))];
       }
       // No enemy could be built (a database this thin should not happen, but an
       // ending has to pay out something).
@@ -1212,7 +1298,7 @@
     if (outcome.kind === "minigame") {
       if (minigameScene(outcome.game)) {
         _anomPendingMinigame = { outcome, key: session.key };
-        return [anomText("reward.minigame")];
+        return [anomLine("minigame", anomText("reward.minigame"))];
       }
       // The minigame is not installed: the contest is taken as won, since the
       // party was never given the chance to lose it.
@@ -1220,19 +1306,12 @@
         { kind: outcome.reward || "gold" }));
     }
     if (outcome.kind === "date") {
-      // What the evening itself is worth is Eris's business. The ending still
-      // pays its own way first, so a date that never opens is not a dead end.
+      // The evening itself is no longer played out here: an encounter that
+      // ends with her interested pays what it was going to pay and leaves the
+      // rest on her ledger, which is the only part of it that lasts anyway.
       const lines = anomApplyOutcome(session, Object.assign({}, outcome,
         { kind: outcome.reward || "none" }));
-      // She was beaten in this world: whoever the party spent the afternoon
-      // with, it was not her, and no evening follows.
-      if (!erisGone() && window.ErisDateSystem && window.ErisDateSystem.start) {
-        _anomPendingDate = {
-          mood: outcome.mood || null,
-          biome: outcome.dateBiome || session.rawBiome || session.biome || null,
-        };
-        lines.push(anomText("reward.date"));
-      }
+      anomApplyEris(session, outcome, lines);
       return lines;
     }
     if (outcome.kind === "reputation") {
@@ -1625,21 +1704,6 @@
       Anomaly.end();
       return true;
     },
-    // An evening was the answer. Handed to ErisDateSystem, which owns
-    // everything about it from here.
-    hasPendingDate() { return !!_anomPendingDate; },
-    startDate() {
-      const pend = _anomPendingDate;
-      _anomPendingDate = null;
-      if (!pend) return false;
-      Anomaly.end();
-      const EDS = window.ErisDateSystem;
-      if (!EDS || !EDS.start || EDS.isActive()) return false;
-      try { return !!EDS.start(pend.biome, pend.mood); } catch (e) {
-        console.error("[ProceduralAdventure] date failed", e);
-        return false;
-      }
-    },
   };
 
   // Every answered adventure goes in the party's own book (Core/Diary.js): the
@@ -1651,7 +1715,7 @@
     const title = session && (session.title || session.placeName);
     if (!title) return;
     const lines = (finalLines && finalLines.length ? finalLines : (session.rewards || []))
-      .filter((l) => l);
+      .map(anomLineText).filter((l) => l);
     try {
       window.Diary.onAdventure(String(title), lines.join(" "), session.placeName || "");
     } catch (e) { console.error("[ProceduralAdventure] diary", e); }
@@ -1662,8 +1726,11 @@
   // it is known, the encounter has closed.
   function anomToast(lines, good) {
     if (!window.ParchmentToast || !lines || !lines.length) return;
+    // The toast wears the same cell the payout panel does, so a reward read on
+    // the map after a fight looks like the one read inside the encounter.
     window.ParchmentToast.group(lines.map((l) => ({
-      text: l, severity: good ? "good" : "bad",
+      text: anomLineText(l), icon: anomLineIcon(l) || undefined,
+      severity: good ? "good" : "bad",
     })));
   }
 
@@ -2259,12 +2326,14 @@
       left: (i) => (6 + i * 62) + "px",
       foeBottom: "-24px", foeSide: "8px", foeHeight: "150px",
     },
+    // Played as the whole screen the card is read at the TOP, so the cast is
+    // drawn short enough that every face still stands clear underneath it.
     full: {
-      shade: "46vh",
+      shade: "34vh", topShade: "52vh",
       bottomActive: "0", bottomIdle: "-2vh",
-      heightActive: "74vh", heightIdle: "66vh",
+      heightActive: "48vh", heightIdle: "44vh",
       left: (i) => (1 + i * 13) + "vw",
-      foeBottom: "0", foeSide: "2vw", foeHeight: "70vh",
+      foeBottom: "0", foeSide: "2vw", foeHeight: "46vh",
     },
   };
 
@@ -2294,15 +2363,24 @@
         backgroundImage: "url('" + bg.replace(/'/g, "%27") + "')",
         backgroundSize: "cover", backgroundPosition: "center 35%",
       });
-      // A floor of shadow, so the busts read against any sky - and, played as
-      // the whole screen, so the prose has something to sit on.
+      // A floor of shadow, so the busts read against any sky.
       box.appendChild(stageEl("div", {
         position: "absolute", left: "0", right: "0", bottom: "0", height: m.shade,
         background: full
-          ? "linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.35) 55%, rgba(0,0,0,0))"
+          ? "linear-gradient(to top, rgba(0,0,0,0.80), rgba(0,0,0,0.30) 55%, rgba(0,0,0,0))"
           : "linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0))",
         pointerEvents: "none",
       }));
+      // ...and a ceiling of it, played as the whole screen: the card is read at
+      // the top of the picture, and a bright sky behind a page of prose is the
+      // one thing that makes it unreadable.
+      if (full) {
+        box.appendChild(stageEl("div", {
+          position: "absolute", left: "0", right: "0", top: "0", height: m.topShade,
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.45) 60%, rgba(0,0,0,0))",
+          pointerEvents: "none",
+        }));
+      }
       // The away team, shoulder to shoulder on the left.
       const cast = ($gameParty && $gameParty.members) ? $gameParty.members().slice(0, STAGE_PARTY_MAX) : [];
       const questerIdx = (session.questerIndex || 0) % Math.max(1, cast.length);
@@ -2552,15 +2630,8 @@
       });
       panel.appendChild(body);
       if (view.done) {
-        const lines = (view.rewards || []).filter((l) => l);
-        if (lines.length) {
-          const box = document.createElement("div");
-          box.className = "pas-adv-rewards";   // i18n-ignore: DOM class
-          lines.forEach((l) => {
-            const p = document.createElement("p");
-            p.textContent = stripCodes(l);
-            box.appendChild(p);
-          });
+        const box = this.buildRewards(view.rewards);
+        if (box) {
           panel.appendChild(box);
           veiled.push(box);
         }
@@ -2585,6 +2656,67 @@
       if (this._rowsEl) veiled.push(this._rowsEl);
       veiled.push(hint);
       this.typeOut(typed, veiled, body);
+    },
+
+    // What the ending paid, as a list of things rather than a paragraph: one
+    // row per line, each wearing the IconSet cell the reward carries, drawn in
+    // the backpack's own hand (the .item-slot row of ItemSystemInventoryUI.js)
+    // so a payout looks like a pocket being filled.
+    buildRewards(rewards) {
+      const lines = (rewards || []).filter((l) => anomLineText(l));
+      if (!lines.length) return null;
+      const box = document.createElement("div");
+      box.className = "pas-adv-rewards";   // i18n-ignore: DOM class
+      lines.forEach((line, i) => {
+        const row = document.createElement("div");
+        row.className = "item-slot item-slot--compact pas-adv-reward";   // i18n-ignore: DOM classes
+        const iconIndex = anomLineIcon(line);
+        const cell = document.createElement("div");
+        cell.className = "item-slot-icon";   // i18n-ignore: DOM class
+        if (iconIndex > 0) {
+          const canvas = document.createElement("canvas");
+          canvas.width = 32; canvas.height = 32;
+          canvas.style.width = "24px"; canvas.style.height = "24px";
+          cell.appendChild(canvas);
+          this.drawRewardIcon(canvas, iconIndex);
+        }
+        row.appendChild(cell);
+        const info = document.createElement("div");
+        info.className = "item-slot-info";   // i18n-ignore: DOM class
+        const name = document.createElement("div");
+        name.className = "item-slot-name";   // i18n-ignore: DOM class
+        name.textContent = stripCodes(anomLineText(line));
+        info.appendChild(name);
+        row.appendChild(info);
+        const count = anomLineCount(line);
+        if (count) {
+          const chip = document.createElement("span");
+          chip.className = "item-slot-count";   // i18n-ignore: DOM class
+          chip.textContent = count;
+          row.appendChild(chip);
+        }
+        box.appendChild(row);
+      });
+      return box;
+    },
+
+    // One IconSet cell, drawn the way the backpack draws its slots: off the
+    // System bitmap, unsmoothed, once it has loaded.
+    drawRewardIcon(canvas, iconIndex) {
+      if (!canvas || typeof ImageManager === "undefined") return;
+      const bitmap = ImageManager.loadSystem("IconSet");   // i18n-ignore: asset name
+      const draw = () => {
+        const ctx = canvas.getContext ? canvas.getContext("2d") : null;
+        if (!ctx || !bitmap.canvas) return;
+        ctx.clearRect(0, 0, 32, 32);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(bitmap.canvas, (iconIndex % 16) * 32,
+          Math.floor(iconIndex / 16) * 32, 32, 32, 0, 0, 32, 32);
+      };
+      try {
+        if (bitmap.isReady()) draw();
+        else bitmap.addLoadListener(draw);
+      } catch (e) { /* presentation only */ }
     },
 
     // The scene is the size of the screen, so it hangs off the overlay rather
@@ -2763,9 +2895,6 @@
       if (Anomaly.hasPendingMinigame()) {
         try { Anomaly.startMinigame(); return; } catch (e) { console.error(e); }
       }
-      if (Anomaly.hasPendingDate()) {
-        try { Anomaly.startDate(); return; } catch (e) { console.error(e); }
-      }
       Anomaly.end();
     },
 
@@ -2867,6 +2996,11 @@
     MapPlay,
     Stage,
     isPlaying() { return MapPlay.isRunning(); },
+    // A reward line, unwrapped: the words, and the IconSet cell it is drawn
+    // with. Any presenter that shows a payout reads it through these.
+    lineText: anomLineText,
+    lineIcon: anomLineIcon,
+    lineCount: anomLineCount,
   };
 
   // GalaxySim_Scene3D / _Overlay / _Bodies still ask for the star-map encounter

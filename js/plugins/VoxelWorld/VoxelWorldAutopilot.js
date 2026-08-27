@@ -27,7 +27,7 @@
     if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldAutopilot.js'); return; }
 
     const {
-        RECOIL_KICK, ROAD_LANE_OFF, ROAD_OPPOSITE, ROAD_STEP, WORLD_TILE_SIZE,
+        RECOIL_KICK, ROAD_HALF_LANE, ROAD_LANE_OFF, ROAD_OPPOSITE, ROAD_STEP, WORLD_TILE_SIZE,
         isRoadTile, pickRandomRoadTile, roadExitsFrom, WEAPON_Z
     } = VW;
 
@@ -39,7 +39,9 @@
     // whenever a crossroad or T-junction offers one (never doubling back unless
     // the road dead-ends), and feeds the ordinary vehicle physics a steering /
     // throttle / brake input as if a driver were at the wheel. Waypoints sit in
-    // the right-hand lane, so the camper keeps to its own side of the road.
+    // the KERB-SIDE lane of the right-hand carriageway, so the camper keeps to
+    // its own side of the road and leaves the paint down the middle of that
+    // carriageway, and the lane past it, to the traffic overtaking.
     // =========================================================================
     const AUTO_CRUISE_KMH   = 78;    // open road
     const AUTO_BEND_KMH     = 50;    // gentle bend ahead
@@ -86,7 +88,9 @@
         // camper follows the curve instead of cutting across the verge.
         _pushLeg(tileX, tileY, from, side) {
             const ts   = WORLD_TILE_SIZE;
-            const lane = ROAD_LANE_OFF;
+            // Right of the carriageway's own broken line, which is where the
+            // traffic drives too (see TrafficManager): never on the paint.
+            const lane = ROAD_LANE_OFF + ROAD_HALF_LANE;
             const step = ROAD_STEP[side];
             const ax = step[0], az = step[1];
             const cx = tileX * ts + ts * 0.5, cz = tileY * ts + ts * 0.5;
@@ -270,6 +274,8 @@
         _left: null,
         _held: false,
         _visible: false,
+        // The layer has been handed to a battle being fought over the world.
+        _battle: false,
 
         available() {
             return !!(window.THREE && window.Sprite_3DWeapon && window.WeaponThreeScene &&
@@ -308,6 +314,49 @@
 
         /** Only on foot: the one mode where the driver is walking about. */
         showsIn(viewMode) { return viewMode === 'foot'; },
+
+        /**
+         * A fight has opened over the world (VoxelWorldScene#beginBattleView),
+         * and the fight draws a first-person weapon of its own - through this
+         * very layer, since Spriteset_Battle and the drive share the one
+         * overlay. So the drive hands it over for the length of the fight:
+         *
+         *  - its own two models come down, or the driver's blade would hang in
+         *    frame beside the one the battle puts there;
+         *  - the layer drops back to the height a battle draws it at, the world
+         *    being drawn into the game's own canvas underneath by then;
+         *  - and it is LEFT SHOWING. The battle's overlay code only ever
+         *    renders into this canvas, never reveals it, so a canvas the drive
+         *    had hidden stays hidden and the party fights bare-handed on
+         *    screen while holding a sword.
+         */
+        suspendForBattle() {
+            if (!this._held || this._battle) return;
+            this._battle = true;
+            for (const slot of ['_right', '_left']) {
+                if (this[slot]) this[slot].terminate();
+                this[slot] = null;
+            }
+            this._visible = false;
+            const canvas = window.WeaponThreeScene.canvas;
+            if (canvas) {
+                canvas.style.zIndex  = '10';
+                canvas.style.display = 'block';
+            }
+        },
+
+        /** The fight is over: the layer comes back to the drive, put away. */
+        resumeFromBattle() {
+            if (!this._battle) return;
+            this._battle = false;
+            const canvas = window.WeaponThreeScene.canvas;
+            if (canvas) {
+                canvas.style.zIndex = String(WEAPON_Z);
+                // update() is what puts it back in frame, and only once the
+                // driver is out of the van again.
+                canvas.style.display = 'none';
+            }
+        },
 
         /**
          * Puts the leader's own weapons in frame, rebuilding only what changed.
@@ -420,6 +469,9 @@
         /** Called once a frame by the drive's own loop. */
         update(viewMode, menuOpen) {
             if (!this._held) return;
+            // The fight has the layer: it holds the models and it does the
+            // drawing (see suspendForBattle).
+            if (this._battle) return;
             const show = !menuOpen && this.showsIn(viewMode);
             if (show !== this._visible) {
                 this._visible = show;
@@ -468,6 +520,7 @@
 
         end() {
             if (!this._held) return;
+            this._battle = false;
             if (this._onMouseDown) document.removeEventListener('mousedown', this._onMouseDown);
             const canvas = window.WeaponThreeScene.canvas;
             if (canvas) { canvas.style.display = 'block'; canvas.style.zIndex = '10'; }

@@ -11,6 +11,11 @@
   "msgHeader": "\\C[8][ RAMAN SCANNER ]\\C[0]",
   "msgNoMaterial": "No spectrally active material detected in scan area.",
   "msgHint": "Target must be a statue, painting, or library object within 1m.",
+  "choices": [
+    "Look",
+    "Analyze",
+    "Cancel"
+  ],
   "objectType": {
     "tagged": "tagged",
     "fossil": "fossil",

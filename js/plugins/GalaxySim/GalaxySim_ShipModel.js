@@ -36,6 +36,8 @@
  *   build(cfg)             { group, update(t), dispose() } - live scene model
  *   createPreview(cv,cfg)  live rotating WebGL preview bound to a canvas
  *   renderPortrait(cfg,px) one-off render, returns a data URL (cached)
+ *   renderSheet(cfg,w,h)   3x4 directional character sheet, a canvas (cached)
+ *   renderTopShadow(cfg,px) top-down black silhouette, a canvas (cached)
  *   revision               increments whenever the appearance changes
  *
  * window.GalaxySim.ShipAppearance.open({ onClose })  - the editor modal
@@ -2083,6 +2085,202 @@
     return url;
   }
 
+
+  // ==========================================================================
+  // Map presentation: the hull as a character sheet, and the shadow under it
+  // ==========================================================================
+  // The 2D maps have to draw the same ship the star map flies, and there are two
+  // ways they need it:
+  //
+  //   renderSheet()      an RPG Maker `!$` character sheet - three animation
+  //                      columns by four facing rows - with the hull yawed to
+  //                      point the way each row faces. This is the Starship as
+  //                      the world map draws it, small enough to sit on a tile.
+  //   renderTopShadow()  the hull seen from straight overhead and flattened to
+  //                      black: the shape it throws on the ground it is moored
+  //                      over, which is all a map that cannot hold the whole
+  //                      ship ever shows of it.
+  //
+  // Both are rendered once per appearance and cached on the spec key: the ship
+  // only ever changes when the player changes it (`revision`).
+
+  // Row order is the engine's own: down, left, right, up. The hull is built with
+  // its nose along +Z and the camera sits on +Z looking back, so a yaw of zero
+  // points the nose at the viewer, which is the "facing down" row.
+  const SHEET_YAW = [0, -Math.PI / 2, Math.PI / 2, Math.PI];
+  // How high the camera is lifted above the ship, in radians. A map is drawn
+  // from a high three-quarter angle rather than straight down, so the sprite is
+  // rendered from one too.
+  const SHEET_ELEVATION = 0.95;
+  // The idle hover, as a fraction of the hull's own size: the middle column
+  // rides high, the outer two low, so the engine's 0-1-2-1 walk cycle reads as
+  // a bob instead of a footfall.
+  const SHEET_BOB = [-0.02, 0.03, -0.02];
+  const SHEET_COLS = 3;
+  const SHEET_ROWS = 4;
+
+  const sheetCache = new Map();
+  const shadowCache = new Map();
+
+  // Puts the built model inside a pivot centred on its own bounding box, so
+  // yawing the pivot turns the hull about itself rather than about whatever
+  // point the builder happened to leave it around. Answers the pivot and the
+  // hull's longest dimension, which is what every camera here is framed on.
+  function centredPivot(model) {
+    const pivot = new THREE.Group();
+    const box = new THREE.Box3().setFromObject(model.group);
+    const centre = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    // Shifted by the offset between where the hull sits and where its box is
+    // centred, so this works whatever position the builder left the group at.
+    model.group.position.sub(centre);
+    pivot.add(model.group);
+    return { pivot, reach: Math.max(size.x, size.y, size.z) || 1 };
+  }
+
+  // A WebGL canvas stops holding its pixels the moment the context is disposed,
+  // so everything rendered here is copied onto a plain 2D canvas first.
+  function flatten(canvas) {
+    const out = newCanvas(canvas.width, canvas.height);
+    out.getContext("2d").drawImage(canvas, 0, 0);
+    return out;
+  }
+
+  // A directional character sheet of the ship, as a canvas, or null when there
+  // is no WebGL to render it with (the caller falls back to a drawn sprite).
+  function renderSheet(cfg, frameW, frameH) {
+    cfg = cfg || getConfig();
+    const spec = resolve(cfg);
+    const fw = Math.max(8, Math.round(frameW || 48));
+    const fh = Math.max(8, Math.round(frameH || fw));
+    const cacheKey = spec.key + "@sheet" + fw + "x" + fh;
+    if (sheetCache.has(cacheKey)) return sheetCache.get(cacheKey);
+    if (typeof THREE === "undefined") return null;
+
+    let renderer = null;
+    let model = null;
+    let out = null;
+    try {
+      const canvas = newCanvas(fw * SHEET_COLS, fh * SHEET_ROWS);
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+      renderer.setSize(canvas.width, canvas.height, false);
+      if (renderer.outputEncoding !== undefined && THREE.sRGBEncoding !== undefined) {
+        renderer.outputEncoding = THREE.sRGBEncoding;
+      }
+      // Twelve little pictures on one sheet: each is a scissored viewport of the
+      // same canvas, which never gets cleared, so the frames accumulate on a
+      // background that started transparent.
+      renderer.autoClear = false;
+      renderer.setScissorTest(true);
+
+      const scene = makePreviewScene(spec);
+      model = build(cfg);
+      const framing = centredPivot(model);
+      const pivot = framing.pivot;
+      const reach = framing.reach;
+      scene.add(pivot);
+      model.update(1.2);
+
+      // Orthographic, so a hull seen end-on and the same hull seen broadside are
+      // drawn at one scale and the ship does not appear to grow when it turns.
+      const half = reach * 0.55;
+      const camera = new THREE.OrthographicCamera(
+        -half, half, half * (fh / fw), -half * (fh / fw), 0.01, reach * 12);
+      const dist = reach * 4;
+      camera.position.set(0, Math.sin(SHEET_ELEVATION) * dist, Math.cos(SHEET_ELEVATION) * dist);
+      camera.lookAt(0, 0, 0);
+
+      for (let row = 0; row < SHEET_ROWS; row++) {
+        pivot.rotation.y = SHEET_YAW[row];
+        for (let col = 0; col < SHEET_COLS; col++) {
+          pivot.position.y = SHEET_BOB[col] * reach;
+          const vx = col * fw;
+          // WebGL counts its rows from the bottom of the canvas, a character
+          // sheet from the top.
+          const vy = canvas.height - (row + 1) * fh;
+          renderer.setViewport(vx, vy, fw, fh);
+          renderer.setScissor(vx, vy, fw, fh);
+          renderer.clearDepth();
+          renderer.render(scene, camera);
+        }
+      }
+      out = flatten(canvas);
+    } catch (e) {
+      out = null;
+    } finally {
+      if (model) model.dispose();
+      if (renderer) {
+        renderer.dispose();
+        try { if (renderer.forceContextLoss) renderer.forceContextLoss(); } catch (e) { /* ignore */ }
+      }
+    }
+    sheetCache.set(cacheKey, out);
+    if (sheetCache.size > 4) sheetCache.delete(sheetCache.keys().next().value);
+    return out;
+  }
+
+  // The ship from directly overhead, every surface painted flat black: the
+  // silhouette a map draws on the ground beneath a moored starship. The nose
+  // points at the BOTTOM of the image, so the picture matches the "facing down"
+  // row of the sheet above and a caller can turn it with the ship.
+  function renderTopShadow(cfg, px) {
+    cfg = cfg || getConfig();
+    const spec = resolve(cfg);
+    const size = Math.max(32, Math.round(px || 256));
+    const cacheKey = spec.key + "@shadow" + size;
+    if (shadowCache.has(cacheKey)) return shadowCache.get(cacheKey);
+    if (typeof THREE === "undefined") return null;
+
+    let renderer = null;
+    let model = null;
+    let black = null;
+    let out = null;
+    try {
+      const canvas = newCanvas(size, size);
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+      renderer.setSize(size, size, false);
+      renderer.setClearColor(0x000000, 0);
+
+      const scene = new THREE.Scene();
+      model = build(cfg);
+      const framing = centredPivot(model);
+      const pivot = framing.pivot;
+      const reach = framing.reach;
+      scene.add(pivot);
+      model.update(1.2);
+
+      // A shadow has no lighting, no glass and no running lights: every mesh is
+      // one unlit black shape, and anything that is not a mesh (an engine glow
+      // billboard, a light sprite) casts nothing at all.
+      black = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      pivot.traverse((o) => {
+        if (o.isMesh) o.material = black;
+        else if (o.isSprite || o.isPoints || o.isLine) o.visible = false;
+      });
+
+      const half = reach * 0.55;
+      const camera = new THREE.OrthographicCamera(-half, half, half, -half, 0.01, reach * 12);
+      camera.position.set(0, reach * 4, 0);
+      // Straight down, with the picture's top towards the ship's stern.
+      camera.up.set(0, 0, -1);
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+      out = flatten(canvas);
+    } catch (e) {
+      out = null;
+    } finally {
+      if (black) black.dispose();
+      if (model) model.dispose();
+      if (renderer) {
+        renderer.dispose();
+        try { if (renderer.forceContextLoss) renderer.forceContextLoss(); } catch (e) { /* ignore */ }
+      }
+    }
+    shadowCache.set(cacheKey, out);
+    if (shadowCache.size > 4) shadowCache.delete(shadowCache.keys().next().value);
+    return out;
+  }
+
   // ==========================================================================
   // Public module
   // ==========================================================================
@@ -2105,6 +2303,8 @@
     buildLive,
     createPreview,
     renderPortrait,
+    renderSheet,
+    renderTopShadow,
     optionOf,
   };
   GS.ShipModel = ShipModel;

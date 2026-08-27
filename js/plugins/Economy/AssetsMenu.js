@@ -33,6 +33,7 @@
   // vanilla cap tops out at ~€1M, which the CEO start and share fortunes blow
   // straight through. Lift it to €10 billion so large portfolios cash out cleanly.
   const MAX_GOLD = 1000000000000; // 1e12 gold = €10,000,000,000
+  const MAX_EXTEND_DAYS = 30;    // nights a stay can be paid on for in one go
   Game_Party.prototype.maxGold = function () { return MAX_GOLD; };
 
   // 100 gold = 1.00 EUR everywhere in the project.
@@ -153,6 +154,38 @@
             { label: T('Assets.ui.rating'), val: `${'★'.repeat(prop.stars)}${'☆'.repeat(5 - prop.stars)}` },
             { label: T('Assets.ui.monthlyRent2'), val: euro(monthlyCost) },
             { label: T('Assets.ui.status'), val: T('Assets.ui.rentedNotOwnedChargedEvery') },
+          ],
+        });
+      });
+    }
+
+    // --- Rented rooms (RentSystem.js: a room taken in an inn is held by the
+    //     day, and is listed here with the world square its building stands on
+    //     and the tile of its own door, so the stay can be paid on from
+    //     anywhere rather than from the doorway) ---
+    if (window.RentSystem && typeof window.RentSystem.listRentals === 'function') {
+      const stays = window.RentSystem.listRentals() || [];
+      stays.forEach(r => {
+        const room = r.roomName || T('Assets.ui.room');
+        const name = r.placeName ? T('Assets.ui.roomAt', { room: room, place: r.placeName }) : room;
+        const entrance = (r.x != null) ? `X:${r.x} Y:${r.y}` : '—';  // i18n-ignore  coordinate pair
+        const world = (r.worldX != null) ? `${r.worldX},${r.worldY}` : '—';  // i18n-ignore  coordinate pair
+        assets.push({
+          cat: T('Assets.ui.stays'),
+          name: name,
+          sub: `${r.timeLeft} • ${euro(r.price)}/${T('Assets.ui.perDay')}`,
+          value: 0,
+          bought: null,
+          color: 'var(--text-caption-brown)',
+          rental: r,
+          details: [
+            { label: T('Assets.ui.location'), val: r.placeName || '—' },
+            { label: T('Assets.ui.worldCoordinates'), val: world },
+            { label: T('Assets.ui.entrance'), val: entrance },
+            { label: T('Assets.ui.mapId'), val: String(r.mapId) },
+            { label: T('Assets.ui.timeLeft'), val: r.timeLeft },
+            { label: T('Assets.ui.daysPaid'), val: String(r.days) },
+            { label: T('Assets.ui.dailyRate'), val: euro(r.price) },
           ],
         });
       });
@@ -369,6 +402,7 @@
       this._selIndex = 0;
       this._btnIndex = -1;   // cursor over the selected asset's action buttons
       this._confirmResign = null; // actorId whose seat is one press from being given up
+      this._extendDays = 1;  // nights the selected stay would be paid on for
       this._assets = [];
       this._lastOil = 0;
       this._lastSouls = 0;
@@ -550,6 +584,23 @@
           { key: 'pet', cls: ' ag-action-pet', label: T('Assets.ui.makePet'), enabled: true },
         ];
       }
+      if (asset.rental) {
+        const rs = window.RentSystem;
+        const days = this._extendDays;
+        const cost = rs && typeof rs.extensionCost === 'function'
+          ? rs.extensionCost(asset.rental.key, days) : asset.rental.price * days;
+        const gold = $gameParty ? $gameParty.gold() : 0;
+        return [
+          { key: 'days-', cls: '', label: T('Assets.ui.fewerDays'), enabled: days > 1 },
+          { key: 'days+', cls: '', label: T('Assets.ui.moreDays'), enabled: days < MAX_EXTEND_DAYS },
+          {
+            key: 'extend',
+            cls: '',
+            label: T('Assets.ui.extendStay', { days: days, cost: euro(cost) }),
+            enabled: gold >= cost,
+          },
+        ];
+      }
       if (asset.diplomat) {
         // Resigning is destructive and costly, so it asks once first.
         const armed = this._confirmResign === asset.diplomat.actorId;
@@ -620,7 +671,43 @@
         else if (key === 'pet') this.makeAnimalPet(uid);
         return;
       }
+      if (a.rental) {
+        if (key === 'days-') this.changeExtendDays(-1);
+        else if (key === 'days+') this.changeExtendDays(1);
+        else if (key === 'extend') this.extendStay(a.rental);
+        return;
+      }
       if (a.diplomat && key === 'resign') this.resignPost(a.diplomat);
+    }
+
+    // ---- Rented rooms ----
+
+    // The stepper over the nights to pay for. Redrawn through the whole card,
+    // since the price on the extend button moves with it.
+    changeExtendDays(delta) {
+      const next = Math.min(MAX_EXTEND_DAYS, Math.max(1, this._extendDays + delta));
+      if (next === this._extendDays) { SoundManager.playBuzzer(); return; }
+      this._extendDays = next;
+      SoundManager.playCursor();
+      const held = this._btnIndex;
+      this.refreshDOM();
+      this._btnIndex = held;
+      this.refreshAssetButtons();
+    }
+
+    extendStay(rental) {
+      const rs = window.RentSystem;
+      const result = rs && typeof rs.extendRental === 'function'
+        ? rs.extendRental(rental.key, this._extendDays) : null;
+      if (!result) {
+        SoundManager.playBuzzer();
+        this.notify(T('Assets.ui.stayNotAfforded'));
+        return;
+      }
+      SoundManager.playShop();
+      this.notify(T('Assets.ui.stayExtended', { days: result.days, time: result.timeLeft }));
+      this._extendDays = 1;
+      this.refreshDOM();
     }
 
     // Giving up a seat costs a great deal of standing, so the first press only

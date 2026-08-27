@@ -86,6 +86,19 @@
     "annualValue": "Valore annuo",
     "weeksServed": "Settimane di servizio",
     "resignPost": "Dimettiti dall'incarico",
-    "resignConfirm": "Premi di nuovo per dimetterti"
+    "resignConfirm": "Premi di nuovo per dimetterti",
+    "room": "Stanza",
+    "roomAt": "{room} a {place}",
+    "stays": "Soggiorni",
+    "perDay": "giorno",
+    "worldCoordinates": "Coordinate del mondo",
+    "timeLeft": "Tempo rimasto",
+    "daysPaid": "Giorni pagati",
+    "dailyRate": "Tariffa giornaliera",
+    "fewerDays": "-1 giorno",
+    "moreDays": "+1 giorno",
+    "extendStay": "Proroga {days}g ({cost})",
+    "stayNotAfforded": "Euro insufficienti per prorogare il soggiorno",
+    "stayExtended": "Soggiorno prorogato di {days}g, {time} rimasti"
   }
 }

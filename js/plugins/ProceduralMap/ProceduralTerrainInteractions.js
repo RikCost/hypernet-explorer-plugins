@@ -90,6 +90,10 @@
   "use strict";
 
   const PROC_MAP_ID = 636;
+  // One world square, which is what everything stored in the world folder is
+  // measured in (see storedSpot).
+  const PROC_MAP_WIDTH = 64;
+  const PROC_MAP_HEIGHT = 64;
 
 
   // Crafting material database item ids (data/Items.json 849-871). These are the
@@ -738,17 +742,76 @@
     return keys.length ? new Set(keys) : null;
   }
 
-  function recordDismantled(tiles, name) {
+  // ---- map coordinates vs square-local ones ------------------------------
+  //
+  // The key above names ONE world square, and everything filed under it is
+  // filed in that square's own 64x64 coordinates: the prefab pass reads these
+  // removals while stamping a square's own array, long before it is a map.
+  //
+  // What the party interacts with is a map coordinate, and map 636 holds a
+  // WINDOW of up to nine squares laid side by side, so the two are not the same
+  // number. Storing the map one was how a tree felled at map x=100 came back as
+  // "x=100 of this square" - a column that square does not have - and how
+  // replaying it into a differently shaped window blanked whatever happened to
+  // sit at that index instead, which on a square carrying a prefab is the
+  // prefab.
+  function storedSpot(mapX, mapY) {
+    if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return { x: mapX, y: mapY };
+    const S = window.ProcStitch;
+    const local = (S && typeof S.localToParty === "function")
+      ? S.localToParty(mapX, mapY) : { x: mapX, y: mapY };
+    // A tile just over a seam belongs to the neighbouring square, which is a
+    // different key: not this square's business, and not recorded here.
+    if (local.x < 0 || local.y < 0 ||
+        local.x >= PROC_MAP_WIDTH || local.y >= PROC_MAP_HEIGHT) return null;
+    return local;
+  }
+
+  // The way back: where a stored spot of the party's square sits on the map as
+  // it is laid out right now. Answers null for a spot that is not a square
+  // coordinate at all, which is what a store written before this was fixed is
+  // full of - healed by being ignored rather than by blanking a random tile.
+  function spotOnMap(x, y) {
+    if (x < 0 || y < 0 || x >= PROC_MAP_WIDTH || y >= PROC_MAP_HEIGHT) return null;
+    const S = window.ProcStitch;
+    if (!S || typeof S.toMap !== "function") return { x, y };
+    const wx = $gameVariables ? $gameVariables.value(43) : 0;
+    const wy = $gameVariables ? $gameVariables.value(44) : 0;
+    return S.toMap(wx, wy, x, y);
+  }
+
+  // `flushNow` is what a deliberate removal does: one felled tree, written out
+  // at once. It is false only for removals that arrive in a stream (a vehicle
+  // driven through a hedgerow clears a tile per step), because a flush writes
+  // EVERY world file and doing that six times a second while driving would
+  // stall the map. Those are written on the throttle below instead, and by the
+  // next savegame whatever happens.
+  function recordDismantled(tiles, name, flushNow = true) {
     const store = terrainStore();
     if (!store) return;
     const key = currentMapKey();
     if (!store.dismantled[key]) store.dismantled[key] = {};
     for (const t of tiles) {
-      store.dismantled[key][`${t.x},${t.y}`] = name;
+      const spot = storedSpot(t.x, t.y);
+      if (!spot) continue;
+      store.dismantled[key][`${spot.x},${spot.y}`] = name;
     }
     // Flush immediately so other savegames in the same world see the removal
     // even before the next in-game save.
-    if (typeof window.WorldManager.flush === "function") {
+    if (flushNow && typeof window.WorldManager.flush === "function") {
+      try { window.WorldManager.flush(); } catch (e) { /* non-fatal */ }
+    }
+  }
+
+  // Frames between two world-folder writes made by a streamed removal.
+  const STREAMED_FLUSH_FRAMES = 600;
+  let _lastStreamedFlush = -STREAMED_FLUSH_FRAMES;
+
+  function flushStreamedRemovals() {
+    const now = (typeof Graphics !== "undefined" && Graphics) ? Graphics.frameCount : 0;
+    if (now - _lastStreamedFlush < STREAMED_FLUSH_FRAMES) return;
+    _lastStreamedFlush = now;
+    if (window.WorldManager && typeof window.WorldManager.flush === "function") {
       try { window.WorldManager.flush(); } catch (e) { /* non-fatal */ }
     }
   }
@@ -791,9 +854,13 @@
     const keep = undeletableTileIds();
     for (const coord of Object.keys(tiles)) {
       const [xs, ys] = coord.split(",");
-      const x = parseInt(xs, 10);
-      const y = parseInt(ys, 10);
-      if (isNaN(x) || isNaN(y)) continue;
+      const sx = parseInt(xs, 10);
+      const sy = parseInt(ys, 10);
+      if (isNaN(sx) || isNaN(sy)) continue;
+      const on = spotOnMap(sx, sy);
+      if (!on) continue;
+      const x = on.x, y = on.y;
+      if (x < 0 || y < 0 || x >= w || y >= h) continue;
       if (keep && keep.has($dataMap.data[2 * w * h + y * w + x])) continue;
       for (const z of [1, 2, 3]) {
         $dataMap.data[z * w * h + y * w + x] = 0;
@@ -1051,6 +1118,18 @@
       for (const line of [].concat(lines)) $gameMessage.add(line);
       window.skipLocalization = false;
     }, 0);
+  }
+
+  // A readable feature - a statue, a bookcase, a book on a table - is offered
+  // to the Raman probe before it shows its text: Look reads it, Analyze runs
+  // the spectrum on the tile. Without a probe the prompt never appears and the
+  // feature behaves exactly as it always did.
+  function offerFeatureScan(tile, objectType, label, onLook) {
+    const scanner = window.RamanScanner;
+    if (!scanner || typeof scanner.offer !== "function") { onLook(); return; }
+    scanner.offer(onLook, () => {
+      setTimeout(() => scanner.scanTile(tile.x, tile.y, objectType, label), 0);
+    });
   }
 
   // ==========================================================================
@@ -1398,13 +1477,15 @@
     if (!RBG) return;
     const rng = seededRngForTile(t.x, t.y, 0x1157A2);
     if (typeof RBG.generateTitle !== "function") return;
-    const title = RBG.generateTitle(rng);
-    const author = typeof RBG.generateAuthor === "function" ? RBG.generateAuthor(rng) : "";
-    const description = typeof RBG.generateDescription === "function" ? RBG.generateDescription(rng) : "";
-    const heading = author ? `"${title}" — ${author}` : `"${title}"`;
-    showLoreMessage(description ? [heading, description] : [heading]);
-    // Reading it is worth the same one-off Fun as a book read off an event.
-    if (typeof RBG.payReadingFun === "function") RBG.payReadingFun("book", `${t.x},${t.y}`);  // i18n-ignore  reading-log id
+    offerFeatureScan(t, "library", T('Terrain.feature.library'), () => {  // i18n-ignore  scanner object type
+      const title = RBG.generateTitle(rng);
+      const author = typeof RBG.generateAuthor === "function" ? RBG.generateAuthor(rng) : "";
+      const description = typeof RBG.generateDescription === "function" ? RBG.generateDescription(rng) : "";
+      const heading = author ? `"${title}" — ${author}` : `"${title}"`;
+      showLoreMessage(description ? [heading, description] : [heading]);
+      // Reading it is worth the same one-off Fun as a book read off an event.
+      if (typeof RBG.payReadingFun === "function") RBG.payReadingFun("book", `${t.x},${t.y}`);  // i18n-ignore  reading-log id
+    });
   };
 
   // --- Chair / Throne / Stool: sit, exactly like a region-102 seat tile ---
@@ -1422,9 +1503,11 @@
     const RBG = window.RandomBookGenerator;
     if (!RBG) return;
     const rng = seededRngForTile(t.x, t.y, 0x57A700E);
-    const subject = RBG.randomSubject(rng);
-    showLoreMessage(T('Terrain.statue', { subject: subject }));
-    if (typeof RBG.payReadingFun === "function") RBG.payReadingFun("statue", `${t.x},${t.y}`);  // i18n-ignore  reading-log id
+    offerFeatureScan(t, "statue", T('Terrain.feature.statue'), () => {  // i18n-ignore  scanner object type
+      const subject = RBG.randomSubject(rng);
+      showLoreMessage(T('Terrain.statue', { subject: subject }));
+      if (typeof RBG.payReadingFun === "function") RBG.payReadingFun("statue", `${t.x},${t.y}`);  // i18n-ignore  reading-log id
+    });
   };
 
   // --- Vase (+ ice/plant variants): Break -> random food item ---
@@ -1581,8 +1664,19 @@
 
   // --- Book: a random category:Books item, then disappears ---
   CUSTOM_HANDLERS.Book = (name, tiles) => {
-    showChoiceMenu([verbLabel(VERB.PICK)], () => {
-      for (const t of tiles) clearFeatureTileData(t.x, t.y);
+    const t = tiles[0];
+    const scanner = window.RamanScanner;
+    const canScan = !!(scanner && typeof scanner.available === "function" && scanner.available());
+    // Taking it is still the first thing on offer; the probe only adds a
+    // second verb next to it.
+    const choices = [verbLabel(VERB.PICK)];
+    if (canScan) choices.push(scanner.analyzeLabel());
+    showChoiceMenu(choices, (index) => {
+      if (index === 1) {
+        scanner.scanTile(t.x, t.y, "library", T('Terrain.feature.book'));  // i18n-ignore  scanner object type
+        return;
+      }
+      for (const t2 of tiles) clearFeatureTileData(t2.x, t2.y);
       if ($gameMap) $gameMap.requestRefresh();
       recordDismantled(tiles, name);
       const book = randomFrom(itemsWithCategory("Books"));  // i18n-ignore  item category
@@ -2145,16 +2239,92 @@
     }
   };
 
+  // ==========================================================================
+  // Driving through it
+  // ==========================================================================
+  // A hedge, a boulder or a garden wall stops somebody on foot. It does not stop
+  // a camper doing thirty. Anything the party could have taken apart by hand is
+  // simply flattened when a vehicle with a hull and a weight behind it is driven
+  // into it: the tile goes the way a dismantled one goes - cleared off the map
+  // and recorded in the world folder, so it stays gone for every savegame of
+  // that world - but nothing is salvaged out of the wreckage. A wall driven
+  // through is rubble, not building material; the party has to get out and take
+  // it apart properly to get anything for it.
+  //
+  // Three vehicles are excluded, each for the same reason: THE STARSHIP flies
+  // over the map and never touches a tile in the first place, and THE BROOM and
+  // THE BIKE are one rider's own weight on something no bigger than they are.
+  // Somebody who cycles into a wall stops.
+  const RAM_EXEMPT_BOAT_TYPES = new Set(["bike", "broom"]);  // i18n-ignore  boat sub-type ids
+
+  /** Is the party at the wheel of something heavy enough to drive through scenery? */
+  function ridingRammingVehicle() {
+    if (typeof $gamePlayer === "undefined" || !$gamePlayer) return false;
+    if (!$gamePlayer.isInVehicle || !$gamePlayer.isInVehicle()) return false;
+    // The Starship: it is an airship, it is above all of this.
+    if ($gamePlayer.isInAirship && $gamePlayer.isInAirship()) return false;
+    // The engine's single 'boat' slot carries the Car, the Boat, the Bike and
+    // the Broom; which one it is right now is $gameSystem._boatType.
+    if ($gamePlayer.isInBoat && $gamePlayer.isInBoat()) {
+      const sub = (typeof $gameSystem !== "undefined" && $gameSystem && $gameSystem._boatType) || "car";
+      return !RAM_EXEMPT_BOAT_TYPES.has(sub);
+    }
+    // The 'ship' slot is the Camper, and anything else with a hull.
+    return true;
+  }
+
+  // Flatten whatever stands on (x, y), if it is something a vehicle may flatten.
+  // Answers whether the tile was actually cleared.
+  function ramFeatureAt(x, y) {
+    if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return false;
+    // A real event on the tile owns it; the tilemap underneath is not ours to edit.
+    if ($gameMap.events().some(e => e && e.x === x && e.y === y)) return false;
+
+    const info = featureAt(x, y);
+    if (!info || !info.name) return false;
+    // A way in is a way in, not an obstacle. Driving at a cave mouth or a
+    // stairwell must never quietly delete it (they are WALKED into, see above).
+    if (WALK_ENTRANCES[info.name]) return false;
+    // Anything with a bespoke interaction of its own - a seam of gold, a
+    // fountain, a lit torch, a statue with an inscription on it - is left
+    // standing. Those are places, not scenery in the way.
+    if (CUSTOM_HANDLERS[info.name]) return false;
+
+    const cfg = classify(info.name);
+    if (!cfg) return false;
+
+    const tiles = computeFootprint(x, y, info.layer, info.tileId);
+    for (const t of tiles) clearFeatureTileData(t.x, t.y);
+    $gameMap.requestRefresh();
+    // Streamed, not deliberate: written on the throttle (see recordDismantled).
+    recordDismantled(tiles, info.name, false);
+    flushStreamedRemovals();
+    playActionSe(cfg.verb);
+    return true;
+  }
+
   // Movement-driven terrain: what the party walks onto, or walks into.
   //   - a successful step lands them ON the tile: a Puddle wets the whole party
   //     (State 28), a passable entrance (a grate in the floor) swallows them.
   //   - a failed step means they walked INTO the tile ahead and were stopped by
   //     it, which is how an impassable entrance (a cave mouth, stairs set
-  //     against a wall) is entered.
+  //     against a wall) is entered - or, at the wheel of something heavy, how
+  //     the thing in the way stops being in the way.
   const _Game_Player_moveStraight_terrain = Game_Player.prototype.moveStraight;
   Game_Player.prototype.moveStraight = function (d) {
     _Game_Player_moveStraight_terrain.call(this, d);
     if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return;
+    // Blocked, and driving something that does not stop for scenery: flatten
+    // what is in the way and take the same step again, so ramming reads as one
+    // movement rather than a bump followed by a step into the gap. The retry
+    // calls the engine's own moveStraight, so nothing here runs twice.
+    if (!this.isMovementSucceeded() && ridingRammingVehicle()) {
+      const bx = $gameMap.roundXWithDirection(this.x, d);
+      const by = $gameMap.roundYWithDirection(this.y, d);
+      if (ramFeatureAt(bx, by)) {
+        _Game_Player_moveStraight_terrain.call(this, d);
+      }
+    }
     if (this.isMovementSucceeded()) {
       const info = featureAt(this.x, this.y);
       if (info && info.name === "Puddle") {  // i18n-ignore  feature id
@@ -2190,6 +2360,11 @@
     // already took apart on that square. Other squares running the same prefab
     // are untouched: the key is the world coordinate, not the prefab.
     removedTilesFor,
+    // Driving through scenery (see "Driving through it"): whether the party is
+    // at the wheel of something that flattens what it hits, and the flattening
+    // itself. Exposed so anything else that shoves a vehicle across the map
+    // (the road AI, a scripted chase) can use the one implementation.
+    ridingRammingVehicle, ramFeatureAt,
     // Exposed so FurnitureSystem's Features tab can price a placeable feature
     // off the SAME reward table dismantling it would actually pay out (no
     // duplicated classification data). Returns null for un-dismantlable /

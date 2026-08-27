@@ -96,6 +96,11 @@
  *   - in a VILLAGE / CITY / BURG it can stop anywhere there is room to open a
  *     door, but far more rarely: a town car is usually going somewhere
  *
+ * A car is never LEFT standing in the carriageway. Before it stops it steers off
+ * the road onto the nearest verge or bay whose ground its whole bodywork fits
+ * on, and when the driver comes back it drives out to the very tile it pulled
+ * off from. A car with no verge within reach simply carries on driving.
+ *
  * The driver is a real person, minted through NPCSystem.spawnRoadsideNPC on one
  * of the map's own spare NPC slots: a citizen of this square, or (more often out
  * on the road) an authored face from the world-wide pool, passing through. They
@@ -226,6 +231,10 @@
   const PARK_VISITOR_CHANCE_TOWN = 0.35;
   const PARK_BOARD_RANGE = 2;     // how close the driver has to be to get back in
   const PARK_PATIENCE = 40;       // game minutes a car waits for a lost driver
+  // How far off the lane a driver will look for somewhere to leave the car, and
+  // how long they lean on a blocked way onto it before giving up and driving on.
+  const PULL_OVER_RANGE = 5;
+  const PULL_OVER_LIMIT = 12;
 
   let lastHitFrame = -HIT_GRACE_FRAMES - 1;
 
@@ -700,6 +709,7 @@
     ev._carLane = li;
     ev._carWaypoint = pt.wp;
     ev._carStuck = 0;
+    ev._carPullTo = null;
     ev.setPosition(pt.x, pt.y);
     ev._carDir = dirToward(pt.x, pt.y, tgt.x, tgt.y);
     ev.setDirection(ev._carDir);
@@ -921,6 +931,15 @@
     return carBodyFits(ev, x, y, dir, true);
   }
 
+  // Somewhere a car may be LEFT: every tile of the bodywork off the carriageway,
+  // on ground open from every side, and nothing already standing there. A lane
+  // is for driving on, so nothing this plugin parks ever ends up on one.
+  function isParkableSpot(ev, x, y, dir) {
+    if (!inBounds(x, y)) return false;
+    if (anyBodyTile(ev, x, y, dir, (tx, ty) => !isOpenGround(tx, ty))) return false;
+    return carCanBePlaced(ev, x, y, dir);
+  }
+
   // The parked car whose bodywork the player is facing, so a car is stolen by
   // walking up to its flank instead of hunting for the one tile it is pinned to.
   function parkedCarFacing() {
@@ -1063,6 +1082,7 @@
       ev.setDirection(dir);
       ev._carStuck = 0;
       ev._carTurnCooldown = 0;
+      ev._carPullTo = null;
       return;
     }
   }
@@ -1082,6 +1102,11 @@
   //   road biome  -> beside a lay-by, i.e. within a few tiles of a SignPark
   //                  the biome generator put on the verge
   //   settlement  -> anywhere there is room, but far more rarely
+  //
+  // Wherever it stops, it stops OFF the carriageway. The lay-by and the bay say
+  // roughly where a driver wants to be; the verge beside them is where the car
+  // actually ends up, because a car left in a lane blocks the road for everyone
+  // behind it and reads as a crash rather than as a parked car.
 
   // [{x,y}] SignPark / ParkingDrawing tiles on the map currently loaded. The
   // bays are on the marking layer and the signs on the prop layer, so both come
@@ -1142,16 +1167,111 @@
     return 0;
   }
 
+  // The verge this car would pull onto: the nearest tile off the carriageway,
+  // across the road and a little way on, that the whole bodywork fits on. Both
+  // sides of the road are looked at, nearest first, so a car crosses no more of
+  // it than it has to.
+  function pullOverSpot(ev) {
+    const dir = ev._carDir || ev.direction();
+    const fx = dxOf(dir);
+    const fy = dyOf(dir);
+    const px = fy;  // one step across the carriageway
+    const py = fx;
+    const sides = Math.random() < 0.5 ? [1, -1] : [-1, 1];
+    for (let across = 1; across <= PULL_OVER_RANGE; across++) {
+      for (const side of sides) {
+        for (let ahead = 0; ahead <= PULL_OVER_RANGE; ahead++) {
+          const x = ev.x + px * across * side + fx * ahead;
+          const y = ev.y + py * across * side + fy * ahead;
+          if (!isParkableSpot(ev, x, y, dir)) continue;
+          return { x, y };
+        }
+      }
+    }
+    return null;
+  }
+
+  // One step of the short trip off the lane and back onto it. Greedy, longer
+  // axis first, and it takes the other axis when the first one is blocked.
+  function stepTowardSpot(ev, tx, ty) {
+    const dirs = [];
+    if (tx !== ev.x) dirs.push(tx > ev.x ? 6 : 4);
+    if (ty !== ev.y) dirs.push(ty > ev.y ? 2 : 8);
+    if (dirs.length === 2 && Math.abs(ty - ev.y) > Math.abs(tx - ev.x)) dirs.reverse();
+    for (const d of dirs) {
+      if (!carCanEnter(ev, ev.x + dxOf(d), ev.y + dyOf(d), d)) continue;
+      ev._carDir = d;
+      ev.setDirection(d);
+      ev.moveStraight(d);
+      return true;
+    }
+    return false;
+  }
+
+  // A car on its way to the verge, or back out of it. Arriving either parks it
+  // or, coming back, simply hands it over to the ordinary road following again.
+  // One that cannot get through gives up and drives on rather than grinding
+  // against whatever is in the way.
+  function updatePullingOverCar(ev) {
+    const plan = ev._carPullTo;
+    if (ev.x === plan.x && ev.y === plan.y) {
+      ev._carPullTo = null;
+      ev._carStuck = 0;
+      if (plan.park) beginStop(ev, plan);
+      return;
+    }
+    if (stepTowardSpot(ev, plan.x, plan.y)) {
+      ev._carPullStuck = 0;
+      return;
+    }
+    ev._carPullStuck = (ev._carPullStuck || 0) + 1;
+    if (ev._carPullStuck > PULL_OVER_LIMIT) {
+      ev._carPullTo = null;
+      ev._carPullStuck = 0;
+    }
+  }
+
   function maybeStopCar(ev) {
     if (Math.random() >= stopChanceFor(ev)) return false;
-    const doorstep = doorstepTile(ev);
-    if (!doorstep) return false;
+    // Nowhere off the road to leave it means no stop at all: the journey carries
+    // on rather than the car being abandoned in a live lane.
+    const spot = pullOverSpot(ev);
+    if (!spot) return false;
 
-    // Everything needed to pick the journey up again exactly where it left off.
-    ev._carStop = {
+    ev._carPullTo = {
+      x: spot.x,
+      y: spot.y,
+      park: true,
+      // Everything needed to pick the journey up again exactly where it left off.
       dir: ev._carDir || ev.direction(),
       lane: ev._carLane,
       waypoint: ev._carWaypoint,
+      rejoin: { x: ev.x, y: ev.y },
+    };
+    ev._carPullStuck = 0;
+    return true;
+  }
+
+  // On the verge at last: the car is put back on its travelling heading (the
+  // bodywork was measured that way when the spot was picked) and the driver
+  // steps out. No room for a door on any side and the errand is off - the car
+  // pulls back out and drives on.
+  function beginStop(ev, plan) {
+    if (plan.dir && isParkableSpot(ev, ev.x, ev.y, plan.dir)) {
+      ev._carDir = plan.dir;
+      ev.setDirection(plan.dir);
+    }
+    const doorstep = doorstepTile(ev);
+    if (!doorstep) {
+      ev._carPullTo = { x: plan.rejoin.x, y: plan.rejoin.y, park: false };
+      return;
+    }
+
+    ev._carStop = {
+      dir: plan.dir,
+      lane: plan.lane,
+      waypoint: plan.waypoint,
+      rejoin: plan.rejoin,
       untilMin: nowMinutes() + PARK_MINUTES_MIN
         + Math.floor(Math.random() * (PARK_MINUTES_MAX - PARK_MINUTES_MIN)),
       driverId: null,
@@ -1169,7 +1289,6 @@
       ev._carStop.driverId = driver.eventId();
       driver._carDriverOf = ev.eventId();
     }
-    return true;
   }
 
   // A car standing at the kerb with its driver away. Nothing to steer; it only
@@ -1216,6 +1335,13 @@
       ev._carDir = stop.dir;
       ev.setDirection(stop.dir);
     }
+    // Back out to the carriageway the way it came in: the tile it pulled off
+    // from is on its lane, so the journey picks up exactly where it stopped.
+    ev._carPullStuck = 0;
+    ev._carPullTo =
+      stop.rejoin && (stop.rejoin.x !== ev.x || stop.rejoin.y !== ev.y)
+        ? { x: stop.rejoin.x, y: stop.rejoin.y, park: false }
+        : null;
     applyCarModeSettings(ev);
   }
 
@@ -1265,6 +1391,7 @@
     ev._carMode = "driving";
     ev._carStuck = 0;
     ev._carTurnCooldown = 0;
+    ev._carPullTo = null;
     clearParkedSelfSwitch(ev);
     applyCarModeSettings(ev);
     ev._carLane = null;
@@ -1323,12 +1450,12 @@
       const key = x + "," + y;
       const dir = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
       if (occupied.has(key)) continue;
-      if (anyBodyTile(ev, x, y, dir, (tx, ty) => !isOpenGround(tx, ty))) continue;
-      if (!carCanBePlaced(ev, x, y, dir)) continue;
+      if (!isParkableSpot(ev, x, y, dir)) continue;
       occupied.add(key);
       ev._carActive = true;
       ev._carMode = "parked";
       ev._carLane = null;
+      ev._carPullTo = null;
       clearParkedSelfSwitch(ev);
       applyCarModeSettings(ev);
       ev.setPosition(x, y);
@@ -1342,6 +1469,7 @@
     ev._carActive = false;
     ev._carMode = "hidden";
     ev._carLane = null;
+    ev._carPullTo = null;
     clearParkedSelfSwitch(ev);
     applyCarModeSettings(ev);
   }
@@ -2014,6 +2142,13 @@
     updateCarImpacts(this);
 
     if (this.isMoving()) return; // wait for the current tile step to finish
+
+    // On its way to the verge, or back out of it: that short trip answers for
+    // the car until it gets there.
+    if (this._carPullTo) {
+      updatePullingOverCar(this);
+      return;
+    }
 
     // Between one tile and the next is where a driver decides they have arrived.
     if (maybeStopCar(this)) return;

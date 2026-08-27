@@ -13,10 +13,17 @@
     "run": "Corri",
     "menu": "Menu",
     "leftClick": "Click sinistro",
+    "scrollWheel": "Rotellina del mouse",
     "holdShift": "Tieni premuto Shift",
     "openMap": "Apri la mappa",
     "hotbarCycle": "Cambia oggetto della barra",
-    "zoom": "Ingrandisci e rimpicciolisci"
+    "hotbarUse": "Usa oggetto della barra",
+    "build": "Costruisci",
+    "inventory": "Inventario",
+    "quests": "Missioni",
+    "zoom": "Ingrandisci e rimpicciolisci",
+    "interact": "Interagisci con un oggetto o smontalo",
+    "returnToWorld": "Torna alla mappa del mondo"
   },
   "areas": {
     "tutorialVillage": {

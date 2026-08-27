@@ -33,7 +33,8 @@
         PAD_LOOK_X, PAD_LOOK_Y,
         FOOT_VAN_RADIUS, FOOT_WALK, JUMP_DEBOUNCE_MS, JUMP_DOUBLE_MS,
         SWIM_BUOYANCY, SWIM_DEPTH, SWIM_DRAG, SWIM_ENTRY_SPLASH, SWIM_FLOAT,
-        SWIM_RISE, SWIM_SINK, SWIM_SPEED, SWIM_SPRINT_MULT, WALL_JUMP_MAX
+        SWIM_RISE, SWIM_SINK, SWIM_SPEED, SWIM_SPRINT_MULT,
+        WALL_RUN_CLIMB, WALL_RUN_TIME, WALL_STICK_R
     } = VW;
 
     // Wall-clock, for the double tap on jump. performance.now where it exists
@@ -89,7 +90,9 @@
             this.crouching = false;            // Ctrl: lower, slower, quieter
             this.eyeH      = FOOT_EYE;
             this.wallContact = 0;              // seconds left of "a wall is right there"
-            this.wallJumps = 0;                // kicks used since last touching ground
+            this.wallJumps = 0;                // kicks taken since last touching ground (uncapped)
+            this.wallRunning = false;          // sprinting up / along a wall right now
+            this.wallRunLeft = WALL_RUN_TIME;  // seconds of wall run left in this stretch
             this.bobT      = 0;                // stride phase, drives head bob + footsteps
             this.landDip   = 0;                // knees bending on a landing, decays
             this.solidAt   = null;             // (x,z,r) => {x,z} pushed out of any building
@@ -384,6 +387,26 @@
                     this.yaw.position.x = fix.x;
                     this.yaw.position.z = fix.z;
                 }
+                // Being pushed is the surest sign of a wall, but not the only
+                // one: running along a face rather than into it never pushes,
+                // and neither does hugging one you are already flush with. A
+                // slim reach past the body counts as being on the wall too,
+                // which is what keeps a wall run - and a chain of kicks - alive
+                // once you stop shoving yourself into the bricks.
+                if (this.wallContact <= 0) {
+                    const near = this.solidAt(this.yaw.position.x, this.yaw.position.z,
+                        FOOT_BODY_R + WALL_STICK_R);
+                    if (near) {
+                        const ndx = near.x - this.yaw.position.x;
+                        const ndz = near.z - this.yaw.position.z;
+                        const nd = Math.hypot(ndx, ndz);
+                        if (nd > 0.0001) {
+                            this.wallNormalX = ndx / nd;
+                            this.wallNormalZ = ndz / nd;
+                            this.wallContact = 0.12;
+                        }
+                    }
+                }
             }
         }
 
@@ -409,6 +432,8 @@
             this.flying   = false;
             this.onGround = false;
             this.wallJumps = 0;
+            this.wallRunning = false;
+            this.wallRunLeft = WALL_RUN_TIME;
             this._jumpQueued = false;
             const fall = Math.max(0, -this.vy);
             this.vy = 0;
@@ -514,6 +539,7 @@
                 this.vy = 0;
                 this.onGround = true;
                 this.wallJumps = 0;
+                this.wallRunLeft = WALL_RUN_TIME;
                 this.flying = false;
                 if (this.onFly) this.onFly(false);
             } else {
@@ -540,8 +566,10 @@
 
             // Gravity, jumping and wall running. On the ground a jump is a jump;
             // in the air, with a wall against you, another press kicks off that
-            // wall - so you can keep going up and along a face by jumping at it
-            // - and a slide down a wall is slowed by dragging along it.
+            // wall - as often as you like, so any face can be climbed a kick at
+            // a time - and a slide down a wall is slowed by dragging along it.
+            // Sprint held on a wall runs it outright: no jump needed, no falling
+            // while the run lasts.
             // The eye sinks into a crouch and rises out of it rather than
             // snapping between the two heights (a snap fights the ground check:
             // the moment the eye drops, the walker is "in the air" and stands
@@ -552,29 +580,52 @@
             const feet = this.yaw.position.y - this.eyeH;
             const groundY = (this.getGroundY
                 ? this.getGroundY(this.yaw.position.x, this.yaw.position.z, feet) : 0) + this.eyeH;
+            // Sprint against a wall is a wall run, and it starts from a standing
+            // sprint into the face as readily as from the air: it lifts the feet
+            // off the ground itself. Only the run running out (or letting go of
+            // sprint, or leaving the wall) hands you back to gravity.
+            const wallRun = sprint && this.wallContact > 0 && (this.wallRunLeft || 0) > 0;
+            if (wallRun && this.onGround && this.direction.lengthSq() > 0) {
+                this.onGround = false;
+                this.vy = Math.max(this.vy, FOOT_JUMP_VEL * 0.35);
+            }
+            this.wallRunning = wallRun && !this.onGround;
             if (this._jumpQueued) {
                 this._jumpQueued = false;
                 if (this.onGround) {
                     this.vy = FOOT_JUMP_VEL;
                     this.onGround = false;
                     this.wallJumps = 0;
+                    this.wallRunLeft = WALL_RUN_TIME;
                     if (this.onJump) this.onJump(false);
-                } else if (this.wallContact > 0 && (this.wallJumps || 0) < WALL_JUMP_MAX) {
+                } else if (this.wallContact > 0) {
+                    // No cap: a wall you can still touch is a wall you can still
+                    // kick off, so a face is climbed one press at a time.
                     this.wallJumps = (this.wallJumps || 0) + 1;
                     this.vy = FOOT_JUMP_VEL * 0.95;
                     // Off the wall and onward: a shove out along its face, kept in
                     // the walker's own frame the way the rest of the movement is.
                     this.velocity.z += FOOT_WALK * 0.55;
                     this.wallContact = 0;
+                    this.wallRunning = false;
+                    this.wallRunLeft = WALL_RUN_TIME;   // a kick gives the run back
                     if (this.onJump) this.onJump(true);
                 }
             }
-            const sliding = this.wallContact > 0 && this.vy < 0;
-            // The pull, and only the pull, is this world's rather than Earth's:
-            // the jump above pushes off just as hard wherever you are, so a low
-            // gravity world sends the same leap far higher and brings it down
-            // far slower.
-            this.vy -= FOOT_GRAVITY * gravityScale() * (sliding ? 0.42 : 1) * delta;
+            if (this.wallRunning) {
+                // Up the face while you are driving into it, held where you are
+                // when you are not: a hang is a run with nowhere to go.
+                this.wallRunLeft = Math.max(0, (this.wallRunLeft || 0) - delta);
+                const target = this.direction.lengthSq() > 0 ? WALL_RUN_CLIMB : 0;
+                this.vy += (target - this.vy) * Math.min(1, delta * 9);
+            } else {
+                const sliding = this.wallContact > 0 && this.vy < 0;
+                // The pull, and only the pull, is this world's rather than Earth's:
+                // the jump above pushes off just as hard wherever you are, so a low
+                // gravity world sends the same leap far higher and brings it down
+                // far slower.
+                this.vy -= FOOT_GRAVITY * gravityScale() * (sliding ? 0.42 : 1) * delta;
+            }
             this.yaw.position.y += this.vy * delta;
             // Indoors there is a floor over your head as well as under your feet.
             if (this.getCeilY) {
@@ -591,6 +642,8 @@
                 this.vy = 0;
                 this.onGround = true;
                 this.wallJumps = 0;
+                this.wallRunning = false;
+                this.wallRunLeft = WALL_RUN_TIME;
             } else {
                 this.onGround = false;
             }
@@ -642,6 +695,7 @@
             this.vy = Math.max(this.vy, 0) + up * force * 1.5 + back * force * 0.34;
             this.onGround = false;
             this.wallJumps = 0;
+            this.wallRunLeft = WALL_RUN_TIME;
         }
 
         getRig() { return this.yaw; }

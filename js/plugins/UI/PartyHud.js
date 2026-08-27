@@ -448,9 +448,6 @@
                 line-height: 13px;
                 padding-left: 10px;
             }
-            #party-hud .phud-card.phud-vehicle .phud-bar-lbl {
-                padding-left: 6px;
-            }
             #party-hud .phud-mid {
                 position: absolute;
                 left: 10px;
@@ -620,7 +617,10 @@
         card.root.classList.add('phud-vehicle');
         card.mp.bar.classList.add('phud-fuel');
         card.mid.style.display = 'none';
-        card.caret.style.display = 'none';
+        // The caret keeps its place (hidden, never removed): dropping it out of
+        // the layout would pull the vehicle's name left of the crew's, and the
+        // row above the party has to line up with the party.
+        card.caret.style.visibility = 'hidden';
         card.alerts.classList.add('phud-alerts-empty');
         card.stats.classList.add('phud-alerts-empty');
         card.states.classList.add('phud-alerts-empty');

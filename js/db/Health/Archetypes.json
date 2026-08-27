@@ -84,11 +84,7 @@
       "HEAD": {
         "hpPercent": 20,
         "vital": true,
-        "skillId": [
-          1789,
-          318,
-          325
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -101,11 +97,7 @@
       "TORSO": {
         "hpPercent": 40,
         "vital": false,
-        "skillId": [
-          34,
-          412,
-          890
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -144,10 +136,7 @@
       "LEFT_LEG": {
         "hpPercent": 15,
         "vital": false,
-        "skillId": [
-          1790,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -160,10 +149,7 @@
       "RIGHT_LEG": {
         "hpPercent": 15,
         "vital": false,
-        "skillId": [
-          1786,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -176,10 +162,7 @@
       "BRAIN": {
         "hpPercent": 20,
         "vital": true,
-        "skillId": [
-          1772,
-          1773
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 3,
@@ -192,11 +175,7 @@
       "LEFT_EYE": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          310,
-          265,
-          935
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 2,
@@ -209,11 +188,7 @@
       "RIGHT_EYE": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          310,
-          1266,
-          935
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 2,
@@ -226,11 +201,7 @@
       "NOSE": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          343,
-          315,
-          45
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "name": "enemyArchetypes.humanoid.nose.name",
         "msg": "enemyArchetypes.humanoid.nose.msg",
@@ -239,11 +210,7 @@
       "LEFT_EAR": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          301,
-          306,
-          304
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "name": "enemyArchetypes.humanoid.left_ear.name",
         "msg": "enemyArchetypes.humanoid.left_ear.msg",
@@ -252,11 +219,7 @@
       "RIGHT_EAR": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          301,
-          306,
-          304
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "name": "enemyArchetypes.humanoid.right_ear.name",
         "msg": "enemyArchetypes.humanoid.right_ear.msg",
@@ -265,11 +228,7 @@
       "MOUTH": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          1799,
-          325,
-          328
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "name": "enemyArchetypes.humanoid.mouth.name",
         "msg": "enemyArchetypes.humanoid.mouth.msg",
@@ -278,11 +237,7 @@
       "TEETH": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          1799,
-          322,
-          325
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "multiple": true,
         "name": "enemyArchetypes.humanoid.teeth.name",
@@ -292,11 +247,7 @@
       "GENITALS": {
         "hpPercent": 40,
         "vital": false,
-        "skillId": [
-          54,
-          412,
-          890
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 0,
@@ -309,11 +260,7 @@
       "HEART": {
         "hpPercent": 25,
         "vital": true,
-        "skillId": [
-          307,
-          1737,
-          561
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 6,
@@ -326,11 +273,7 @@
       "LEFT_LUNG": {
         "hpPercent": 20,
         "vital": true,
-        "skillId": [
-          348,
-          33,
-          313
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 6,
@@ -343,11 +286,7 @@
       "RIGHT_LUNG": {
         "hpPercent": 20,
         "vital": true,
-        "skillId": [
-          348,
-          33,
-          313
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 6,
@@ -360,11 +299,7 @@
       "LIVER": {
         "hpPercent": 15,
         "vital": true,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 1,
@@ -377,9 +312,7 @@
       "STOMACH": {
         "hpPercent": 15,
         "vital": true,
-        "skillId": [
-          328
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 7,
@@ -392,11 +325,7 @@
       "SPLEEN": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "name": "enemyArchetypes.humanoid.spleen.name",
         "msg": "enemyArchetypes.humanoid.spleen.msg",
@@ -405,11 +334,7 @@
       "INTESTINES": {
         "hpPercent": 20,
         "vital": true,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 5,
@@ -480,11 +405,7 @@
       "LEFT_FOOT": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          1786,
-          1790,
-          1793
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -497,10 +418,7 @@
       "LEFT_TOES": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          1786,
-          1790
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "multiple": true,
         "name": "enemyArchetypes.humanoid.left_toes.name",
@@ -510,10 +428,7 @@
       "RIGHT_FOOT": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          1790,
-          1793
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -526,11 +441,7 @@
       "RIGHT_TOES": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          1786,
-          1793,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "multiple": true,
         "name": "enemyArchetypes.humanoid.right_toes.name",
@@ -6561,10 +6472,7 @@
       "BRAIN": {
         "hpPercent": 5,
         "vital": true,
-        "skillId": [
-          1772,
-          1773
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 3,
@@ -6577,11 +6485,7 @@
       "SKULL": {
         "hpPercent": 8,
         "vital": true,
-        "skillId": [
-          318,
-          1799,
-          322
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 5,
@@ -6594,11 +6498,7 @@
       "TORSO": {
         "hpPercent": 30,
         "vital": false,
-        "skillId": [
-          398,
-          34,
-          890
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6611,11 +6511,7 @@
       "RIBCAGE": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          34,
-          412,
-          890
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 5,
@@ -6628,11 +6524,7 @@
       "PELVIS": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          398,
-          34,
-          412
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 6,
@@ -6645,11 +6537,7 @@
       "HEART": {
         "hpPercent": 10,
         "vital": true,
-        "skillId": [
-          307,
-          1737,
-          561
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6662,11 +6550,7 @@
       "LUNGS": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          348,
-          33,
-          313
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6679,11 +6563,7 @@
       "LIVER": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6696,11 +6576,7 @@
       "KIDNEYS": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6713,9 +6589,7 @@
       "STOMACH": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          328
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6728,11 +6602,7 @@
       "SMALL_INTESTINE": {
         "hpPercent": 6,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6745,11 +6615,7 @@
       "LARGE_INTESTINE": {
         "hpPercent": 6,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6762,11 +6628,7 @@
       "PANCREAS": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6779,11 +6641,7 @@
       "SPLEEN": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -6796,11 +6654,7 @@
       "NOSE": {
         "hpPercent": 3,
         "vital": false,
-        "skillId": [
-          343,
-          315,
-          45
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -6813,10 +6667,7 @@
       "MOUTH": {
         "hpPercent": 3,
         "vital": false,
-        "skillId": [
-          322,
-          328
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 3,
@@ -6829,11 +6680,7 @@
       "EYE_LEFT": {
         "hpPercent": 4,
         "vital": false,
-        "skillId": [
-          310,
-          265,
-          935
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -6846,11 +6693,7 @@
       "EYE_RIGHT": {
         "hpPercent": 4,
         "vital": false,
-        "skillId": [
-          310,
-          1266,
-          935
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -6863,11 +6706,7 @@
       "EAR_LEFT": {
         "hpPercent": 3,
         "vital": false,
-        "skillId": [
-          301,
-          306,
-          304
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -6880,11 +6719,7 @@
       "EAR_RIGHT": {
         "hpPercent": 3,
         "vital": false,
-        "skillId": [
-          301,
-          306,
-          304
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -6897,9 +6732,7 @@
       "TONGUE": {
         "hpPercent": 2,
         "vital": false,
-        "skillId": [
-          899
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -6992,10 +6825,7 @@
       "LEFT_THIGH": {
         "hpPercent": 7,
         "vital": false,
-        "skillId": [
-          1793,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -7008,10 +6838,7 @@
       "LEFT_SHIN": {
         "hpPercent": 6,
         "vital": false,
-        "skillId": [
-          1786,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -7024,10 +6851,7 @@
       "LEFT_FOOT": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          1793,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -7040,10 +6864,7 @@
       "RIGHT_THIGH": {
         "hpPercent": 7,
         "vital": false,
-        "skillId": [
-          1786,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -7056,10 +6877,7 @@
       "RIGHT_SHIN": {
         "hpPercent": 6,
         "vital": false,
-        "skillId": [
-          1786,
-          1790
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -7072,10 +6890,7 @@
       "RIGHT_FOOT": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          1790,
-          1793
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -12481,10 +12296,7 @@
       "HEAD": {
         "hpPercent": 15,
         "vital": false,
-        "skillId": [
-          1789,
-          897
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -12497,11 +12309,7 @@
       "HEART": {
         "hpPercent": 25,
         "vital": true,
-        "skillId": [
-          307,
-          1737,
-          561
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -12514,11 +12322,7 @@
       "BOW": {
         "hpPercent": 20,
         "vital": false,
-        "skillId": [
-          1796,
-          1047,
-          326
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 2,
@@ -12531,11 +12335,7 @@
       "ROBE": {
         "hpPercent": 20,
         "vital": false,
-        "skillId": [
-          398,
-          412,
-          890
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 5,
@@ -12548,11 +12348,7 @@
       "LEFT_LEG": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          1786,
-          1790,
-          1793
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -12565,10 +12361,7 @@
       "RIGHT_LEG": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          1786,
-          1793
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -12914,11 +12707,7 @@
       "HEAD": {
         "hpPercent": 22,
         "vital": true,
-        "skillId": [
-          1789,
-          318,
-          325
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 3,
@@ -12931,11 +12720,7 @@
       "BEARD": {
         "hpPercent": 15,
         "vital": false,
-        "skillId": [
-          1149,
-          1174,
-          1134
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 7,
@@ -12948,11 +12733,7 @@
       "TORSO": {
         "hpPercent": 55,
         "vital": false,
-        "skillId": [
-          34,
-          412,
-          890
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 0,
@@ -12991,10 +12772,7 @@
       "LEFT_LEG": {
         "hpPercent": 18,
         "vital": false,
-        "skillId": [
-          1790,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -13007,10 +12785,7 @@
       "RIGHT_LEG": {
         "hpPercent": 18,
         "vital": false,
-        "skillId": [
-          1786,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -13023,10 +12798,7 @@
       "BRAIN": {
         "hpPercent": 18,
         "vital": true,
-        "skillId": [
-          1772,
-          1773
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 3,
@@ -13039,11 +12811,7 @@
       "LEFT_EYE": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          310,
-          265,
-          935
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 2,
@@ -13056,11 +12824,7 @@
       "RIGHT_EYE": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          310,
-          1266,
-          935
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 2,
@@ -13073,11 +12837,7 @@
       "NOSE": {
         "hpPercent": 6,
         "vital": false,
-        "skillId": [
-          343,
-          315,
-          45
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "name": "enemyArchetypes.dwarf.nose.name",
         "msg": "enemyArchetypes.dwarf.nose.msg",
@@ -13086,11 +12846,7 @@
       "LEFT_EAR": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          301,
-          306,
-          304
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "name": "enemyArchetypes.dwarf.left_ear.name",
         "msg": "enemyArchetypes.dwarf.left_ear.msg",
@@ -13099,11 +12855,7 @@
       "RIGHT_EAR": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          301,
-          306,
-          304
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "name": "enemyArchetypes.dwarf.right_ear.name",
         "msg": "enemyArchetypes.dwarf.right_ear.msg",
@@ -13112,11 +12864,7 @@
       "MOUTH": {
         "hpPercent": 8,
         "vital": false,
-        "skillId": [
-          1799,
-          325,
-          328
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "name": "enemyArchetypes.dwarf.mouth.name",
         "msg": "enemyArchetypes.dwarf.mouth.msg",
@@ -13125,11 +12873,7 @@
       "TEETH": {
         "hpPercent": 6,
         "vital": false,
-        "skillId": [
-          1799,
-          322,
-          325
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "multiple": true,
         "name": "enemyArchetypes.dwarf.teeth.name",
@@ -13139,11 +12883,7 @@
       "GENITALS": {
         "hpPercent": 35,
         "vital": false,
-        "skillId": [
-          54,
-          412,
-          890
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 0,
@@ -13156,11 +12896,7 @@
       "HEART": {
         "hpPercent": 30,
         "vital": true,
-        "skillId": [
-          307,
-          1737,
-          561
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 6,
@@ -13173,11 +12909,7 @@
       "LEFT_LUNG": {
         "hpPercent": 24,
         "vital": true,
-        "skillId": [
-          348,
-          33,
-          313
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 6,
@@ -13190,11 +12922,7 @@
       "RIGHT_LUNG": {
         "hpPercent": 24,
         "vital": true,
-        "skillId": [
-          348,
-          33,
-          313
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 6,
@@ -13207,11 +12935,7 @@
       "LIVER": {
         "hpPercent": 25,
         "vital": true,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 1,
@@ -13224,9 +12948,7 @@
       "STOMACH": {
         "hpPercent": 18,
         "vital": true,
-        "skillId": [
-          328
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 7,
@@ -13239,11 +12961,7 @@
       "SPLEEN": {
         "hpPercent": 10,
         "vital": false,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "name": "enemyArchetypes.dwarf.spleen.name",
         "msg": "enemyArchetypes.dwarf.spleen.msg",
@@ -13252,11 +12970,7 @@
       "INTESTINES": {
         "hpPercent": 22,
         "vital": true,
-        "skillId": [
-          300,
-          320,
-          1326
-        ],
+        "skillId": 0,
         "canCutoff": false,
         "statEffect": {
           "param": 5,
@@ -13327,11 +13041,7 @@
       "LEFT_FOOT": {
         "hpPercent": 12,
         "vital": false,
-        "skillId": [
-          1786,
-          1790,
-          1793
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -13344,10 +13054,7 @@
       "LEFT_TOES": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          1786,
-          1790
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "multiple": true,
         "name": "enemyArchetypes.dwarf.left_toes.name",
@@ -13357,10 +13064,7 @@
       "RIGHT_FOOT": {
         "hpPercent": 12,
         "vital": false,
-        "skillId": [
-          1790,
-          1793
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "statEffect": {
           "param": 6,
@@ -13373,11 +13077,7 @@
       "RIGHT_TOES": {
         "hpPercent": 5,
         "vital": false,
-        "skillId": [
-          1786,
-          1793,
-          98
-        ],
+        "skillId": 0,
         "canCutoff": true,
         "multiple": true,
         "name": "enemyArchetypes.dwarf.right_toes.name",

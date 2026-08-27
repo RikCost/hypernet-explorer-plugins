@@ -47,13 +47,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Mysterious/Tempting Secrets"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -205,13 +198,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Horror/Anguish",
       "KevinMacLeod/Dramatic/The Pyre"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Battle8"
@@ -366,13 +352,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "BattleMusic/Exotic Battle"
@@ -708,13 +687,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Atmospheric/Night Cave"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Boss Battle"
     ],
@@ -881,13 +853,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Battle5"
@@ -1104,13 +1069,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
@@ -1331,13 +1289,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -1523,13 +1474,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Horror/Unseen Horrors"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
@@ -1730,13 +1674,6 @@
       "KevinMacLeod/Horror/Anguish",
       "KevinMacLeod/Dramatic/The Pyre"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle8"
     ],
@@ -1919,13 +1856,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Mysterious/Tempting Secrets"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -2092,13 +2022,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Atmospheric/Night Cave"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle6"
     ],
@@ -2261,13 +2184,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Moogify/MelodicTechno"
@@ -2459,13 +2375,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Horror/Nightmare Machine",
       "KevinMacLeod/Horror/Unseen Horrors"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
@@ -2668,13 +2577,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle Metal"
     ],
@@ -2856,13 +2758,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Horror/Anguish",
       "KevinMacLeod/Dramatic/The Pyre"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Moogify/MelodicTechno"
@@ -3075,13 +2970,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle7"
     ],
@@ -3291,13 +3179,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "ZaneMusic/shortcuts"
@@ -3513,13 +3394,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle Metal"
     ],
@@ -3733,13 +3607,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle1"
     ],
@@ -3949,13 +3816,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -4134,13 +3994,6 @@
       "KevinMacLeod/Horror/Anguish",
       "KevinMacLeod/Dramatic/The Pyre"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle1"
     ],
@@ -4312,13 +4165,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle6"
     ],
@@ -4484,13 +4330,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "RandomMind/Battle"
     ],
@@ -4644,13 +4483,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Battle1"
@@ -4821,13 +4653,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Horror/Anguish",
       "KevinMacLeod/Dramatic/The Pyre"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Battle3"
@@ -5002,13 +4827,6 @@
       "KevinMacLeod/Horror/Nightmare Machine",
       "KevinMacLeod/Horror/Unseen Horrors"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -5173,13 +4991,6 @@
       "KevinMacLeod/Horror/Nightmare Machine",
       "KevinMacLeod/Horror/Unseen Horrors"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -5339,13 +5150,6 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Horror/Nightmare Machine",
       "KevinMacLeod/Horror/Unseen Horrors"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Battle4"
@@ -5510,13 +5314,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/The Great Battle"
     ],
@@ -5680,13 +5477,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Atmospheric/Night Cave"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "BattleMusic/Boss Battle"
@@ -5909,13 +5699,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle Metal"
     ],
@@ -6131,13 +5914,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle7"
     ],
@@ -6347,13 +6123,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -6518,13 +6287,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle6"
     ],
@@ -6676,13 +6438,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "ZaneMusic/shortcuts"
@@ -6840,13 +6595,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "Battle4"
@@ -7008,13 +6756,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
@@ -7213,13 +6954,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "BattleMusic/Fast Fight"
@@ -7431,13 +7165,6 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
     ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "Battle7"
     ],
@@ -7647,13 +7374,6 @@
       "KevinMacLeod/Dark/Mystic Force",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dark/Unholy Knight"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [
       "ZaneMusic/shortcuts"

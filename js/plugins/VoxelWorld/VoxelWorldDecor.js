@@ -27,9 +27,9 @@
     if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldDecor.js'); return; }
 
     const {
-        DOOR_H, PLANT_CROPS, PLANT_POOL, ROCK_ASH, ROCK_POOL, SETTLE,
-        SettlementBatch, TREE_POOLS, WALL_T, _doorSpan, getRenderType, loadTex, loadVoxelTex,
-        planAbandoned, planBaseY, planForTile, planSettlement, sampleBiomeAt,
+        House, PLANT_CROPS, PLANT_POOL, ROCK_ASH, ROCK_POOL, SETTLE,
+        SettlementBatch, TREE_POOLS, blockMaterial, getRenderType, loadTex, loadVoxelTex,
+        planBaseY, planForTile, planSettlement, sampleBiomeAt,
         PROP_RADIUS, PROP_MIN_R, VoxelWorldState, WORLD_TILE_SIZE
     } = VW;
 
@@ -111,12 +111,9 @@
                 uBox: new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0),
                 uPyr: new THREE.CylinderGeometry(0, 0.707, 1, 4).rotateY(Math.PI / 4).translate(0, 0.5, 0),
                 uCyl: new THREE.CylinderGeometry(0.5, 0.5, 1, 10).translate(0, 0.5, 0),
-                uSph: new THREE.SphereGeometry(0.5, 8, 6).translate(0, 0.5, 0),
-                // A pitched roof. One unit across, one deep, one tall, pivoted
-                // on its base with the ridge running along Z, so scaling it by
-                // (width, rise, depth) and turning it on Y gives a real gable
-                // instead of the four-sided pyramid every house used to wear.
-                uWedge: ProceduralDecorator._wedgeGeometry()
+                uSph: new THREE.SphereGeometry(0.5, 8, 6).translate(0, 0.5, 0)
+                // (A pitched roof is not one of these: it is welded with the
+                // building it belongs to, see House.Mesher.prism.)
             };
 
             // Adjust origins so they sit flat on the ground
@@ -158,139 +155,25 @@
             };
             this._spriteTex = new Map();   // 'Folder/name.png' -> THREE.Texture
 
-            // Windowed facades. A canvas grid of lit/unlit panes is mapped onto the
-            // box faces; the matching emissive map makes the lit panes glow at night.
-            const sky   = ProceduralDecorator._makeFacade(4, 11, '#6b7686', '#243240', '#ffe9a8');
-            const house = ProceduralDecorator._makeFacade(3, 2,  '#8a8f99', '#33414f', '#ffe6a0');
-            this.skyscraperMat = new THREE.MeshLambertMaterial({
-                map: sky.map, emissiveMap: sky.emissiveMap, emissive: 0xffffff, emissiveIntensity: 0.85
-            });
-            this.houseMat = new THREE.MeshLambertMaterial({
-                map: house.map, emissiveMap: house.emissiveMap, emissive: 0xffffff, emissiveIntensity: 0.6
-            });
-        }
-
-        // The unit pitched-roof prism: a square base with a ridge along Z over
-        // the middle of it. Wound so the two slopes and the two gable ends all
-        // face outwards; there is no underside, because there is always a
-        // ceiling under it (see planInterior's own top slab).
-        static _wedgeGeometry() {
-            const A = [-0.5, 0, -0.5], B = [-0.5, 0, 0.5], C = [0, 1, 0.5], D = [0, 1, -0.5];
-            const E = [0.5, 0, 0.5],  F = [0.5, 0, -0.5];
-            const tris = [
-                A, B, C,  A, C, D,          // the slope that faces -X
-                E, F, D,  E, D, C,          // the slope that faces +X
-                A, D, F,                    // the gable end at -Z
-                B, E, C                     // the gable end at +Z
-            ];
-            const pos = new Float32Array(tris.length * 3);
-            const uv  = new Float32Array(tris.length * 2);
-            for (let i = 0; i < tris.length; i++) {
-                pos[i * 3] = tris[i][0]; pos[i * 3 + 1] = tris[i][1]; pos[i * 3 + 2] = tris[i][2];
-                uv[i * 2] = tris[i][0] + 0.5; uv[i * 2 + 1] = tris[i][2] + 0.5;
-            }
-            const g = new THREE.BufferGeometry();
-            g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-            g.computeVertexNormals();
-            return g;
+            // Windowed facades, off the block palette: a concrete-and-glass
+            // sheet for a tower and a brick one for anything smaller, both with
+            // the lit panes of an emissive sheet behind them so a town has
+            // lights on after dark. They were canvases painted here in the
+            // constructor - two of them, four texture uploads, every time a
+            // decorator was made - and they are files now.
+            this.skyscraperMat = blockMaterial('facade_concrete');
+            this.houseMat = blockMaterial('facade_brick');
         }
 
         // -------------------------------------------------------------------
-        // Roofs
+        // Roofs, shells, facades
         // -------------------------------------------------------------------
-        // Every roof in the world, built in one place, because there used to be
-        // four of them and they disagreed: a town house wore a pyramid, a
-        // village house wore the same pyramid, a steading wore a different one
-        // and none of them had eaves, a ridge or anything over the inside of
-        // the top floor.
-        //
-        //   lot    the building (x, z, w, d, rot, gable, shop)
-        //   y      the top of its walls
-        //   mats   { tile, flat, metal, roof } from the caller's own palette
-        //
-        // A gable gets a real pitched roof with the ridge across the SHORT axis
-        // (which is what a builder does: rafters span the narrow way), eaves
-        // that overhang the walls, a capping along the ridge and a chimney. A
-        // flat roof gets a parapet all the way round it rather than a lid
-        // hovering over it, plus the clutter every real roof has.
-        _buildRoof(B, lot, y, mats) {
-            const w = lot.w, d = lot.d, rot = lot.rot || 0;
-            const tile = mats.tile, flat = mats.flat;
-            if (lot.gable) {
-                // Ridge along the longer side, so the slopes run down the short
-                // way. The wedge's ridge runs along Z, so a building that is
-                // wider than it is deep is turned a quarter turn.
-                const alongZ = d >= w;
-                const span = Math.min(w, d);            // what the rafters cross
-                const rise = Math.max(5, span * 0.46);
-                const EAVE = 3.2;                        // overhang past the wall
-                const sw = (alongZ ? w : d) + EAVE * 2;
-                const sd = (alongZ ? d : w) + EAVE * 2;
-                B.add('uWedge', tile, lot.x, y, lot.z, sw, rise, sd,
-                      rot + (alongZ ? 0 : Math.PI / 2));
-                // The capping along the ridge, and a chimney off one end of it.
-                const rl = (alongZ ? sd : sw) * 0.98;
-                B.add('uBox', mats.metal || flat, lot.x, y + rise - 0.9, lot.z,
-                      alongZ ? 1.8 : rl, 1.4, alongZ ? rl : 1.8, rot);
-                const cx = (alongZ ? 0 : 1) * (w * 0.22), cz = (alongZ ? 1 : 0) * (d * 0.22);
-                B.add('uBox', mats.roof || flat,
-                      lot.x + cx * Math.cos(rot) - cz * Math.sin(rot),
-                      y + rise * 0.45,
-                      lot.z + cx * Math.sin(rot) + cz * Math.cos(rot),
-                      3.4, rise * 0.75 + 4, 3.4, rot);
-                return;
-            }
-            // Flat: the deck, then a parapet wall round all four sides of it, so
-            // it reads as a roof somebody could stand on rather than a lid.
-            B.add('uBox', flat, lot.x, y, lot.z, w * 1.02, 1.4, d * 1.02, rot);
-            const PT = 1.6, PH = 3.4;
-            const cos = Math.cos(rot), sin = Math.sin(rot);
-            const put = (lx, lz, sw, sd) => B.add('uBox', flat,
-                lot.x + lx * cos - lz * sin, y + 1.4, lot.z + lx * sin + lz * cos,
-                sw, PH, sd, rot);
-            put(0, -d / 2, w * 1.02, PT);
-            put(0,  d / 2, w * 1.02, PT);
-            put(-w / 2, 0, PT, d * 1.02);
-            put( w / 2, 0, PT, d * 1.02);
-            // The clutter: a stair head and a tank.
-            B.add('uBox', mats.roof || flat, lot.x + w * 0.2, y + 1.4, lot.z + d * 0.2,
-                  w * 0.2, 5.2, d * 0.2, rot);
-            B.add('uCyl', mats.metal || flat, lot.x - w * 0.22, y + 1.4, lot.z - d * 0.18,
-                  4.5, 5, 4.5, 0);
-        }
-
-        // Builds a {map, emissiveMap} pair: a cols×rows grid of window panes on a
-        // wall-coloured background, with a deterministic subset rendered "lit".
-        static _makeFacade(cols, rows, bgHex, winHex, litHex) {
-            const W = 64, H = 128;
-            const mk = () => {
-                const c = document.createElement('canvas');
-                c.width = W; c.height = H;
-                return c;
-            };
-            const base = mk(), emis = mk();
-            const bc = base.getContext('2d'), ec = emis.getContext('2d');
-            bc.fillStyle = bgHex; bc.fillRect(0, 0, W, H);
-            ec.fillStyle = '#000000'; ec.fillRect(0, 0, W, H);
-
-            const mx = W / cols, my = H / rows;
-            const ww = mx * 0.55, wh = my * 0.6;
-            for (let r = 0; r < rows; r++) {
-                for (let col = 0; col < cols; col++) {
-                    const seed = Math.sin(col * 12.9898 + r * 78.233) * 43758.5453;
-                    const lit  = (seed - Math.floor(seed)) > 0.6;
-                    const x = col * mx + (mx - ww) / 2;
-                    const y = r * my + (my - wh) / 2;
-                    bc.fillStyle = lit ? litHex : winHex;
-                    bc.fillRect(x, y, ww, wh);
-                    if (lit) { ec.fillStyle = litHex; ec.fillRect(x, y, ww, wh); }
-                }
-            }
-            const map = new THREE.CanvasTexture(base);
-            const emissiveMap = new THREE.CanvasTexture(emis);
-            return { map, emissiveMap };
-        }
+        // A building is not built here any more. Every wall, every roof and
+        // every facade in the world comes out of VoxelWorldHouse.js, which is
+        // the one place that knows where a wall goes - because when three
+        // modules each had their own idea of that, the corners of every house
+        // flickered and the windows came out whatever size the wall was.
+        // See House.build.
 
         _seededRandom(x, y, i) {
             const h = Math.sin(x * 12.9898 + y * 78.233 + i * 13.54) * 43758.5453;
@@ -370,53 +253,65 @@
             if (!m) { m = make(); this.matCache.set(key, m); }
             return m;
         }
-        _matAsphalt()  { return this._cached('__st_asphalt',  () => new THREE.MeshLambertMaterial({ color: 0x45454a, map: loadVoxelTex('asphalt.png', 6) })); }
-        _matPavement() { return this._cached('__st_pavement', () => new THREE.MeshLambertMaterial({ color: 0x9c9a94, map: loadVoxelTex('pavement.png', 8) })); }
-        _matRoof()     { return this._cached('__st_roof',     () => new THREE.MeshLambertMaterial({ color: 0x4a4a52, map: loadVoxelTex('roof_slate.png', 2) })); }
-        _matRoofTile() { return this._cached('__st_rooftile', () => new THREE.MeshLambertMaterial({ color: 0x9c4f33, map: loadVoxelTex('roof_tile.png', 2) })); }
-        // A shop wears a blue roof. It is the one thing about a building that
-        // can be read from the other end of the street, which is the point: you
-        // can see where the shops are before you walk up to them.
-        _matRoofShop() { return this._cached('__st_roofshop', () => new THREE.MeshLambertMaterial({ color: 0x2f6fb2, map: loadVoxelTex('roof_slate.png', 2) })); }
-        _matStone()    { return this._cached('__st_stone',    () => new THREE.MeshLambertMaterial({ color: 0xbdb7a6, map: loadVoxelTex('stone.png', 2) })); }
-        _matLawn()     { return this._cached('__st_lawn',     () => new THREE.MeshLambertMaterial({ color: 0x5d8f4a })); }
-        _matGlass()    { return this._cached('__st_glass',    () => new THREE.MeshLambertMaterial({ color: 0x9fc6db, transparent: true, opacity: 0.6 })); }
-        _matWater()    { return this._cached('__st_water',    () => new THREE.MeshLambertMaterial({ color: 0x3b7fa8, transparent: true, opacity: 0.85 })); }
-        _matDirt()     { return this._cached('__st_dirt',     () => new THREE.MeshLambertMaterial({ color: 0x8a7550, map: loadVoxelTex('dirt.png', 5) })); }
-        _matSoil()     { return this._cached('__st_soil',     () => new THREE.MeshLambertMaterial({ color: 0x6b563c })); }
-        _matHay()      { return this._mat('#c9a94f'); }
-        _matCrop(i)    { return this._mat(['#7f9e3a', '#a8b23f', '#5f8c46'][(i || 0) % 3]); }
-        _matFloor()    { return this._cached('__st_floor',    () => new THREE.MeshLambertMaterial({ color: 0x8a6a48, map: loadVoxelTex('floor.png', 3) })); }
-        _matPlaster()  { return this._cached('__st_plaster',  () => new THREE.MeshLambertMaterial({ color: 0xd8cfbb })); }
-        _matRuinPlaster() { return this._cached('__st_ruinplaster', () => new THREE.MeshLambertMaterial({ color: 0x7e7668, map: loadVoxelTex('plaster.png', 3) })); }
-        _matRuinRoof() { return this._cached('__st_ruinroof', () => new THREE.MeshLambertMaterial({ color: 0x6b5a48, map: loadVoxelTex('roof_slate.png', 3) })); }
-        _matDeadWood() { return this._mat('#5a4a3c'); }
-        _matPaint()    { return this._mat('#e6e6dc'); }
-        _matMetal()    { return this._mat('#7d828c'); }
-        _matWood()     { return this._mat('#6b4a2f'); }
-        _matLeaf()     { return this._mat('#3f7d3a'); }
-        _matAwning()   { return this._mat('#a33b3b'); }
+        // -------------------------------------------------------------------
+        // Surfaces
+        // -------------------------------------------------------------------
+        // Everything a settled square is drawn with is a BLOCK now: one entry
+        // in the world's own palette (VoxelWorld.Blocks), one PNG built by
+        // tools/build_voxel_blocks.js, one material shared by every square in
+        // the world rather than one per decorator. That is most of what a town
+        // used to cost: a bench, a fence, a haystack and a parked car were four
+        // untextured boxes in four ad-hoc shades, each of them its own material
+        // and therefore its own bucket in the batch and its own draw call.
+        //
+        // The names are kept because the whole suite calls them, but every one
+        // of them is now a lookup into the one palette.
+        // The repeat every one of these carries is how many times its picture
+        // tiles across the SHAPE it lands on. Everything a settled square draws
+        // through the batch is a scaled unit box - a road five hundred units
+        // long, a pavement, a ploughed field - and a box has no UVs worth the
+        // name, so a repeat of one would stretch a single copy of the tile over
+        // the whole of it. (Walls and roofs are welded with real UVs and take
+        // none of this; see House.Mesher.)
+        _block(key, tint, rep) {
+            const m = blockMaterial(key, tint, rep);
+            return m || this._mat('#8f9298');
+        }
+        _matAsphalt()  { return this._block('asphalt', null, 6); }
+        _matPavement() { return this._block('pavement', null, 8); }
+        _matRoof()     { return this._block('roof_slate', null, 2); }
+        _matRoofTile() { return this._block('roof_tile', null, 2); }
+        _matRoofShop() { return this._block('roof_shop', null, 2); }
+        _matStone()    { return this._block('stone', null, 2); }
+        _matLawn()     { return this._block('grass', null, 8); }
+        _matGlass()    { return this._block('glass'); }
+        _matWater()    { return this._block('water', null, 4); }
+        _matDirt()     { return this._block('dirt', null, 5); }
+        _matSoil()     { return this._block('soil', null, 5); }
+        _matHay()      { return this._block('hay'); }
+        _matCrop(i)    { return this._block('crop', ['#7f9e3a', '#a8b23f', '#5f8c46'][(i || 0) % 3]); }
+        _matFloor()    { return this._block('floor', null, 3); }
+        _matPlaster()  { return this._block('plaster', null, 3); }
+        _matRuinPlaster() { return this._block('plaster', '#7e7668', 3); }
+        _matRuinRoof() { return this._block('roof_slate', '#6b5a48', 2); }
+        _matDeadWood() { return this._block('deadwood'); }
+        _matPaint()    { return this._block('paint'); }
+        _matMetal()    { return this._block('metal'); }
+        _matWood()     { return this._block('plank'); }
+        _matBrick()    { return this._block('brick', null, 2); }
+        _matCobble()   { return this._block('cobble', null, 2); }
+        _matLeaf()     { return this._block('leaf'); }
+        _matAwning()   { return this._block('awning'); }
         _getLampHeadMat() {
             return this._cached('__st_lamphead', () => new THREE.MeshLambertMaterial({
                 color: 0xfff2c0, emissive: 0xffd27a, emissiveIntensity: 1.0
             }));
         }
 
-        // A facade whose window grid suits the height it is stretched over: a
-        // tower gets eleven floors of small panes, a town house gets three big
-        // ones, so no building wears windows the wrong size.
-        _facadeMat(storeys) {
-            const cls = storeys >= 6 ? 'tall' : storeys >= 3 ? 'mid' : 'low';
-            return this._cached('__st_facade_' + cls, () => {
-                const g = cls === 'tall' ? ProceduralDecorator._makeFacade(4, 11, '#7c8390', '#243240', '#ffe9a8')
-                        : cls === 'mid'  ? ProceduralDecorator._makeFacade(3, 6,  '#8b8375', '#2b3742', '#ffe6a0')
-                        :                  ProceduralDecorator._makeFacade(3, 3,  '#a3968a', '#33414f', '#ffe6a0');
-                return new THREE.MeshLambertMaterial({
-                    map: g.map, emissiveMap: g.emissiveMap,
-                    emissive: 0xffffff, emissiveIntensity: 0.8
-                });
-            });
-        }
+        // A building's own facade is House.facadeFor: measured in window bays,
+        // so a window is the same window whatever wall it lands on. The one
+        // above is the dock shed's, which is a single stretched box and wants
+        // to stay one.
 
         // A built harbour: a piled timber pier reaching out over the water, stacked
         // cargo, a gantry crane, a windowed warehouse, a lighthouse and moored boats.
@@ -538,81 +433,29 @@
             grp.add(st);
         }
 
-        // A building as a SHELL: four walls, a doorway in the side that faces
-        // its street and a lintel over it. Hollow, because anything here can be
-        // walked into once somebody is close enough for its inside to be built
-        // (see BuildingInteriors). A ruin loses whole runs of wall and has the
-        // rest of them broken off at odd heights.
-        _buildShell(B, lot, y, mat, h) {
-            const t = WALL_T;
-            const span = _doorSpan(lot);
-            const ruin = lot.ruined ? (lot.ruin || 0.3) : 0;
-            const rnd = (i) => this._seededRandom(lot.x, lot.z, i);
-            for (let side = 0; side < 4; side++) {
-                const horizontal = side < 2;
-                const along = horizontal ? lot.w : lot.d;
-                const off   = (horizontal ? lot.d : lot.w) / 2 - t / 2;
-                const sgn   = (side % 2 === 0) ? -1 : 1;
-                if (ruin && rnd(side * 17 + 3) < ruin * 0.45) continue;   // that wall is gone
-                const segs = (side === lot.side)
-                    ? [[-along / 2, span[0]], [span[1], along / 2]]
-                    : [[-along / 2, along / 2]];
-                for (let si = 0; si < segs.length; si++) {
-                    const [a, b] = segs[si];
-                    if (b - a < 0.5) continue;
-                    const c = (a + b) / 2, len = b - a;
-                    // A standing ruin is broken off part-way up.
-                    const wh = ruin ? h * (0.45 + rnd(side * 31 + si * 7 + 11) * 0.55) : h;
-                    if (horizontal) B.add('uBox', mat, lot.x + c, y, lot.z + sgn * off, len, wh, t, 0);
-                    else            B.add('uBox', mat, lot.x + sgn * off, y, lot.z + c, t, wh, len, 0);
-                }
-                // The wall carries on over the doorway.
-                if (side === lot.side && (!ruin || rnd(side * 41 + 5) > ruin)) {
-                    const c = (span[0] + span[1]) / 2, len = span[1] - span[0];
-                    const lh = Math.max(0.5, (ruin ? h * 0.6 : h) - DOOR_H);
-                    if (horizontal) B.add('uBox', mat, lot.x + c, y + DOOR_H, lot.z + sgn * off, len, lh, t, 0);
-                    else            B.add('uBox', mat, lot.x + sgn * off, y + DOOR_H, lot.z + c, t, lh, len, 0);
-                }
-            }
-        }
-
         // An abandoned structure on an empty square: a farmhouse with its roof
         // in, a barn, a chapel, a watchtower, a factory with its chimney still
-        // standing. Planned the way a town is (see planAbandoned), so its walls
-        // are solid, its inside is walkable and its door is a door.
+        // standing. Planned the way a town is (see planAbandoned) and built the
+        // way a house is (see House.build), so its walls are solid, its inside
+        // is walkable and its door is a door - it has just lost its roof and
+        // half its wall runs.
         _decorateAbandoned(grp, wx, wy, heightFn) {
             const plan = planForTile(wx, wy);
             if (!plan || !plan.abandoned) return false;
             const lot = plan.lots[0];
-            const ts = this._ts;
             const baseY = planBaseY(plan, wx, wy, heightFn || (() => 0));
             const B = new SettlementBatch(this);
+            const M = new House.Mesher();
             const stone = this._matStone();
-            const wood  = this._matWood();
 
             // A levelled patch of ground under it, deep enough to bridge the
             // fall of the land on the downhill side.
             B.add('uBox', this._matSoil(), lot.x, baseY - 7, lot.z, lot.w + 10, 7, lot.d + 10, 0);
 
-            const shellMat = lot.subkind === 'barn' || lot.subkind === 'motel' ? wood : stone;
-            this._buildShell(B, lot, baseY, shellMat, lot.h);
-
-            // What is left of the roof: a stub of the gable, or a slab with a
-            // hole through it.
-            const r = this._seededRandom(wx, wy, 8100);
-            if (lot.gable) {
-                if (r > 0.35) {
-                    B.add('uPyr', this._matRuinRoof(), lot.x, baseY + lot.h, lot.z,
-                        lot.w * (0.5 + r * 0.6), Math.min(lot.w, lot.d) * 0.4, lot.d * (0.5 + r * 0.6), 0);
-                }
-            } else if (r > 0.45) {
-                B.add('uBox', this._matRuinRoof(), lot.x - lot.w * 0.15, baseY + lot.h, lot.z,
-                    lot.w * 0.6, 1.4, lot.d * 0.85, 0);
-            }
-            if (lot.spire) {
-                B.add('uPyr', this._matRuinRoof(), lot.x, baseY + lot.h,
-                    lot.z + lot.d * 0.34, lot.w * 0.34, SETTLE.storeyH * 3, lot.w * 0.34, 0);
-            }
+            // What it was built out of is the PLAN's answer (see RUIN_SCHEMES):
+            // a barn was boards, a factory dark brick and iron, a chapel
+            // ashlar. It used to be one of two materials for the whole world.
+            House.build(M, this, lot, baseY, { height: lot.h, ruinedRoof: true });
 
             for (const p of plan.props) {
                 switch (p.kind) {
@@ -634,7 +477,122 @@
                 }
             }
             B.flush(grp);
+            M.flush(grp);
             return true;
+        }
+
+        // The farm or the cottage on an empty square, which used to be planned,
+        // furnished and given collision without anybody ever building the
+        // outside of it. House.buildSteading is that missing half; the yard
+        // round it goes down through this decorator's own prop builder.
+        _decorateSteading(grp, wx, wy, heightFn) {
+            return House.buildSteading(this, grp, wx, wy, heightFn);
+        }
+
+        // One piece of the furniture a settled place is dressed with: a lamp,
+        // a bench, a haystack, a field of crops, a run of fence. Every plan
+        // that has props uses the same list, which is why it is one method and
+        // not one copy per builder - a steading's well and a town square's well
+        // are the same well.
+        //
+        //   baseY  the ground the square stands on
+        //   PAVE   how far the pavement is raised above it (0 where there is
+        //          no pavement: a village lane, a farmyard)
+        //   big    a city, which paves its yards where a village turfs them
+        _buildProp(B, p, baseY, PAVE, big) {
+            const ROAD = SETTLE.roadH;
+            switch (p.kind) {
+                case 'lamp':
+                    B.add('uCyl', this._block('pole'), p.x, baseY + PAVE, p.z, 1.1, 26, 1.1, 0);
+                    B.add('uBox', this._getLampHeadMat(), p.x, baseY + PAVE + 25, p.z, 3.2, 1.4, 2, p.rot);
+                    break;
+                case 'tree':
+                    B.add('uCyl', this._matWood(), p.x, baseY + PAVE, p.z, 2.2, 11, 2.2, 0);
+                    B.add('uSph', this._matLeaf(), p.x, baseY + PAVE + 10, p.z, 13, 13, 13, 0);
+                    break;
+                case 'bench':
+                    B.add('uBox', this._matWood(), p.x, baseY + PAVE + 2.2, p.z, 9, 0.8, 2.6, p.rot);
+                    B.add('uBox', this._matWood(), p.x, baseY + PAVE, p.z, 8, 2.2, 0.8, p.rot);
+                    break;
+                case 'bin':
+                    B.add('uCyl', this._block('iron'), p.x, baseY + PAVE, p.z, 2.4, 3.6, 2.4, 0);
+                    break;
+                case 'zebra':
+                    for (let k = -2; k <= 2; k++) {
+                        const ox = p.rot ? 0 : k * 3.4, oz = p.rot ? k * 3.4 : 0;
+                        B.add('uBox', this._matPaint(), p.x + ox, baseY + ROAD, p.z + oz,
+                            p.rot ? 7 : 2, 0.06, p.rot ? 2 : 7, 0);
+                    }
+                    break;
+                case 'signal':
+                    B.add('uCyl', this._block('pole'), p.x, baseY + PAVE, p.z, 1, 18, 1, 0);
+                    B.add('uBox', this._emissiveMat('__signal', '#ff5a3c'), p.x,
+                        baseY + PAVE + 17, p.z, 1.6, 4, 1.6, p.rot);
+                    break;
+                case 'car': {
+                    const tint = ['#b23b3b', '#2f6fb0', '#e8e8ee', '#2d2d33', '#4a7d4a', '#c9a227'][p.tint % 6];
+                    B.add('uBox', this._block('metal', tint), p.x, baseY + ROAD + 1.4, p.z, 7, 3, 15, p.rot);
+                    B.add('uBox', this._matGlass(), p.x, baseY + ROAD + 4.2, p.z, 6, 2.6, 7.5, p.rot);
+                    break;
+                }
+                case 'lawn':
+                    B.add('uBox', this._matLawn(), p.x, baseY, p.z, p.w, PAVE + 0.1, p.d, 0);
+                    break;
+                case 'tarmac':
+                    B.add('uBox', this._matAsphalt(), p.x, baseY, p.z, p.w, PAVE + 0.05, p.d, 0);
+                    break;
+                case 'yard':
+                    B.add('uBox', big ? this._matPavement() : this._matLawn(),
+                        p.x, baseY, p.z, p.w, PAVE + 0.12, p.d, 0);
+                    break;
+                case 'green':
+                case 'garden':
+                    B.add('uBox', this._matLawn(), p.x, baseY, p.z, p.w, 0.35, p.d, 0);
+                    break;
+                case 'fence':
+                    B.add('uBox', this._matWood(), p.x, baseY + 1.4, p.z,
+                        p.rot ? 0.5 : p.len, 0.6, p.rot ? p.len : 0.5, 0);
+                    B.add('uBox', this._matWood(), p.x, baseY + 2.6, p.z,
+                        p.rot ? 0.5 : p.len, 0.6, p.rot ? p.len : 0.5, 0);
+                    break;
+                case 'shed':
+                    B.add('uBox', this._matCobble(), p.x, baseY - 0.6, p.z, 12, 1.2, 10, p.rot);
+                    B.add('uBox', this._block('plank'), p.x, baseY, p.z, 11, 7, 9, p.rot);
+                    B.add('uPyr', this._matRoofTile(), p.x, baseY + 7, p.z, 12, 4, 10, p.rot);
+                    break;
+                case 'well':
+                    B.add('uCyl', this._matCobble(), p.x, baseY, p.z, 8, 4.5, 8, 0);
+                    B.add('uCyl', this._matWood(), p.x - 3, baseY + 4.5, p.z, 0.8, 8, 0.8, 0);
+                    B.add('uCyl', this._matWood(), p.x + 3, baseY + 4.5, p.z, 0.8, 8, 0.8, 0);
+                    B.add('uPyr', this._matRoofTile(), p.x, baseY + 12, p.z, 11, 4, 11, 0);
+                    break;
+                case 'haystack':
+                    B.add('uCyl', this._matHay(), p.x, baseY, p.z, 11, 9, 11, 0);
+                    B.add('uPyr', this._matHay(), p.x, baseY + 9, p.z, 11, 5, 11, 0);
+                    break;
+                case 'field': {
+                    B.add('uBox', this._matSoil(), p.x, baseY, p.z, p.w, 0.3, p.d, 0);
+                    // Crop rows, drilled the way the field was ploughed.
+                    const rows = 9;
+                    const step = (p.rot ? p.w : p.d) / rows;
+                    for (let k = 0; k < rows; k++) {
+                        const o = -((p.rot ? p.w : p.d) / 2) + step * (k + 0.5);
+                        B.add('uBox', this._matCrop(p.crop),
+                            p.x + (p.rot ? o : 0), baseY + 0.3, p.z + (p.rot ? 0 : o),
+                            p.rot ? 2.2 : p.w * 0.94, 3.2, p.rot ? p.d * 0.94 : 2.2, 0);
+                    }
+                    break;
+                }
+                case 'pond':
+                    B.add('uCyl', this._matWater(), p.x, baseY - 0.4, p.z, p.w, 0.8, p.d, 0);
+                    B.add('uBox', this._matSoil(), p.x, baseY - 0.6, p.z, p.w + 8, 0.6, p.d + 8, 0);
+                    break;
+                case 'fountain':
+                    B.add('uCyl', this._block('marble'), p.x, baseY + PAVE, p.z, 16, 2.4, 16, 0);
+                    B.add('uCyl', this._matWater(), p.x, baseY + PAVE + 2.4, p.z, 14, 0.4, 14, 0);
+                    B.add('uCyl', this._block('marble'), p.x, baseY + PAVE + 2.4, p.z, 2.4, 7, 2.4, 0);
+                    break;
+            }
         }
 
         // A whole town, built from the plan (see planSettlement): a street grid
@@ -644,8 +602,19 @@
         // material, so a dense town costs a dozen draw calls rather than a
         // thousand.
         _decorateSettlement(grp, wx, wy, big, heightFn) {
-            const ts = this._ts;
-            const plan = planSettlement(wx, wy, big, ts);
+            // The world square, in world units. It used to read `this._ts`,
+            // which NOTHING has ever set: every road, every pavement and every
+            // street line of every town in the world was laid out against
+            // undefined, and the whole plan came out NaN.
+            const ts = WORLD_TILE_SIZE;
+            // The plan the whole suite already agreed on, not a fresh one. This
+            // used to re-plan the entire town - every street line, every block,
+            // every lot on every block edge, every lamp and bench and parked
+            // car along every pavement - from scratch, in the frame the square
+            // streamed in, while planForTile was sitting on exactly that plan
+            // for the walker, the crowd and the interiors. It is the single
+            // biggest thing a town cost to arrive.
+            const plan = planForTile(wx, wy) || planSettlement(wx, wy, big, ts);
             // A town stands on its own level ground: the square's own height,
             // read once at the middle, rather than the blended corner heights
             // (which dip toward any bordering water and would drown half a
@@ -656,7 +625,12 @@
             const ROAD = S.roadH;       // carriageway top above the ground
             const roadMat = plan.roadMat === 'dirt' ? this._matDirt() : this._matAsphalt();
 
+            // Two emitters: the street and its furniture are the same handful
+            // of scaled unit shapes over and over, which is what an instanced
+            // batch is for; the buildings are welded (see House.Mesher) because
+            // their walls have to carry their own UVs.
             const B = new SettlementBatch(this);
+            const M = new House.Mesher();
 
             // --- the roads, whichever way they run ---------------------------
             for (const r of plan.roads) {
@@ -682,142 +656,21 @@
             }
 
             // --- buildings ---------------------------------------------------
-            const FRONT = [[0, -1], [0, 1], [-1, 0], [1, 0]];   // north, south, west, east
-            for (const lot of plan.lots) {
-                const facadeMat = lot.kind === 'church' ? this._matStone()
-                    : this._facadeMat(lot.storeys);
-                const h = lot.kind === 'church' ? lot.h + S.storeyH * 2 : lot.h;
-                this._buildShell(B, lot, baseY + PAVE, facadeMat, h);
-
-                // Blue over a shop, whatever shape the roof is.
-                this._buildRoof(B, lot, baseY + PAVE + h, {
-                    tile:  lot.shop ? this._matRoofShop() : this._matRoofTile(),
-                    flat:  lot.shop ? this._matRoofShop() : this._matRoof(),
-                    roof:  this._matRoof(),
-                    metal: this._matMetal(),
-                });
-
-                if (lot.kind === 'church') {
-                    B.add('uPyr', this._matRoofTile(), lot.x, baseY + PAVE + h,
-                        lot.z, lot.w * 0.5, S.storeyH * 2.4, lot.d * 0.5, 0);
-                }
-
-                if (lot.shop) {
-                    // The awning and the sign hang over the pavement the shop
-                    // front actually faces.
-                    const f = FRONT[lot.side];
-                    const outX = f[0] * (lot.w * 0.5 + 2.2);
-                    const outZ = f[1] * (lot.d * 0.5 + 2.2);
-                    const awW = f[0] ? 4.5 : lot.w * 0.7;
-                    const awD = f[0] ? lot.d * 0.7 : 4.5;
-                    B.add('uBox', this._matAwning(), lot.x + outX, baseY + PAVE + 8.2,
-                        lot.z + outZ, awW, 0.5, awD, 0);
-                    B.add('uBox', this._emissiveMat('__shopsign', '#ffd98a'),
-                        lot.x + outX * 1.1, baseY + PAVE + 9.4, lot.z + outZ * 1.1,
-                        f[0] ? 0.6 : lot.w * 0.4, 2.2, f[0] ? lot.d * 0.4 : 0.6, 0);
-                }
-            }
+            // One job in one place: House.build knows where a wall goes, what
+            // roof sits on it and what facade it wears (see VoxelWorldHouse).
+            // It welds its own geometry rather than instancing a unit cube,
+            // because a wall's windows have to be measured in bays.
+            for (const lot of plan.lots) House.build(M, this, lot, baseY + PAVE, null);
 
             // --- street furniture --------------------------------------------
-            for (const p of plan.props) {
-                switch (p.kind) {
-                    case 'lamp':
-                        B.add('uCyl', this._matMetal(), p.x, baseY + PAVE, p.z, 1.1, 26, 1.1, 0);
-                        B.add('uBox', this._getLampHeadMat(), p.x, baseY + PAVE + 25, p.z, 3.2, 1.4, 2, p.rot);
-                        break;
-                    case 'tree':
-                        B.add('uCyl', this._matWood(), p.x, baseY + PAVE, p.z, 2.2, 11, 2.2, 0);
-                        B.add('uSph', this._matLeaf(), p.x, baseY + PAVE + 10, p.z, 13, 13, 13, 0);
-                        break;
-                    case 'bench':
-                        B.add('uBox', this._matWood(), p.x, baseY + PAVE + 2.2, p.z, 9, 0.8, 2.6, p.rot);
-                        B.add('uBox', this._matWood(), p.x, baseY + PAVE, p.z, 8, 2.2, 0.8, p.rot);
-                        break;
-                    case 'bin':
-                        B.add('uCyl', this._matMetal(), p.x, baseY + PAVE, p.z, 2.4, 3.6, 2.4, 0);
-                        break;
-                    case 'zebra':
-                        for (let k = -2; k <= 2; k++) {
-                            const ox = p.rot ? 0 : k * 3.4, oz = p.rot ? k * 3.4 : 0;
-                            B.add('uBox', this._matPaint(), p.x + ox, baseY + ROAD, p.z + oz,
-                                p.rot ? 7 : 2, 0.06, p.rot ? 2 : 7, 0);
-                        }
-                        break;
-                    case 'signal':
-                        B.add('uCyl', this._matMetal(), p.x, baseY + PAVE, p.z, 1, 18, 1, 0);
-                        B.add('uBox', this._emissiveMat('__signal', '#ff5a3c'), p.x,
-                            baseY + PAVE + 17, p.z, 1.6, 4, 1.6, p.rot);
-                        break;
-                    case 'car': {
-                        const tint = ['#b23b3b', '#2f6fb0', '#e8e8ee', '#2d2d33', '#4a7d4a', '#c9a227'][p.tint % 6];
-                        B.add('uBox', this._mat(tint), p.x, baseY + ROAD + 1.4, p.z, 7, 3, 15, p.rot);
-                        B.add('uBox', this._matGlass(), p.x, baseY + ROAD + 4.2, p.z, 6, 2.6, 7.5, p.rot);
-                        break;
-                    }
-                    case 'lawn':
-                        B.add('uBox', this._matLawn(), p.x, baseY, p.z, p.w, PAVE + 0.1, p.d, 0);
-                        break;
-                    case 'tarmac':
-                        B.add('uBox', this._matAsphalt(), p.x, baseY, p.z, p.w, PAVE + 0.05, p.d, 0);
-                        break;
-                    case 'yard':
-                        B.add('uBox', big ? this._matPavement() : this._matLawn(),
-                            p.x, baseY, p.z, p.w, PAVE + 0.12, p.d, 0);
-                        break;
-                    case 'green':
-                    case 'garden':
-                        B.add('uBox', this._matLawn(), p.x, baseY, p.z, p.w, 0.35, p.d, 0);
-                        break;
-                    case 'fence':
-                        B.add('uBox', this._matWood(), p.x, baseY + 1.4, p.z,
-                            p.rot ? 0.5 : p.len, 0.6, p.rot ? p.len : 0.5, 0);
-                        B.add('uBox', this._matWood(), p.x, baseY + 2.6, p.z,
-                            p.rot ? 0.5 : p.len, 0.6, p.rot ? p.len : 0.5, 0);
-                        break;
-                    case 'shed':
-                        B.add('uBox', this._matWood(), p.x, baseY, p.z, 11, 7, 9, p.rot);
-                        B.add('uPyr', this._matRoofTile(), p.x, baseY + 7, p.z, 12, 4, 10, p.rot);
-                        break;
-                    case 'well':
-                        B.add('uCyl', this._matStone(), p.x, baseY, p.z, 8, 4.5, 8, 0);
-                        B.add('uCyl', this._matWood(), p.x - 3, baseY + 4.5, p.z, 0.8, 8, 0.8, 0);
-                        B.add('uCyl', this._matWood(), p.x + 3, baseY + 4.5, p.z, 0.8, 8, 0.8, 0);
-                        B.add('uPyr', this._matRoofTile(), p.x, baseY + 12, p.z, 11, 4, 11, 0);
-                        break;
-                    case 'haystack':
-                        B.add('uCyl', this._matHay(), p.x, baseY, p.z, 11, 9, 11, 0);
-                        B.add('uPyr', this._matHay(), p.x, baseY + 9, p.z, 11, 5, 11, 0);
-                        break;
-                    case 'field': {
-                        B.add('uBox', this._matSoil(), p.x, baseY, p.z, p.w, 0.3, p.d, 0);
-                        // Crop rows, drilled the way the field was ploughed.
-                        const rows = 9;
-                        const step = (p.rot ? p.w : p.d) / rows;
-                        for (let k = 0; k < rows; k++) {
-                            const o = -((p.rot ? p.w : p.d) / 2) + step * (k + 0.5);
-                            B.add('uBox', this._matCrop(p.crop),
-                                p.x + (p.rot ? o : 0), baseY + 0.3, p.z + (p.rot ? 0 : o),
-                                p.rot ? 2.2 : p.w * 0.94, 3.2, p.rot ? p.d * 0.94 : 2.2, 0);
-                        }
-                        break;
-                    }
-                    case 'pond':
-                        B.add('uCyl', this._matWater(), p.x, baseY - 0.4, p.z, p.w, 0.8, p.d, 0);
-                        B.add('uBox', this._matSoil(), p.x, baseY - 0.6, p.z, p.w + 8, 0.6, p.d + 8, 0);
-                        break;
-                    case 'fountain':
-                        B.add('uCyl', this._matStone(), p.x, baseY + PAVE, p.z, 16, 2.4, 16, 0);
-                        B.add('uCyl', this._matWater(), p.x, baseY + PAVE + 2.4, p.z, 14, 0.4, 14, 0);
-                        B.add('uCyl', this._matStone(), p.x, baseY + PAVE + 2.4, p.z, 2.4, 7, 2.4, 0);
-                        break;
-                }
-            }
+            for (const p of plan.props) this._buildProp(B, p, baseY, PAVE, big);
 
             // The filling station on its own forecourt (a town square is where
             // the camper refuels, see _atGasStation).
             this._decorateGasStation(grp, wx, wy, plan.station, baseY + PAVE);
 
             B.flush(grp);
+            M.flush(grp);
         }
 
         _emissiveMat(key, colorHex) {
@@ -834,6 +687,14 @@
         // --- 2D billboard sprites (trees / plants / rocks) ---------------------
         // Cached texture for one pool sprite, path resolved through the furniture
         // index (see furnitureSpritePath).
+        //
+        // These are the game's own pixel art, and they are drawn as pixel art:
+        // NEAREST both ways and no mipmap chain, the same way the ground tiles
+        // (loadVoxelTex) and the character sheets (characterSheetTexture) are
+        // sampled. Left on the default LINEAR, a bush walked up to was smeared
+        // into a blur the moment it filled more of the screen than the sprite
+        // has pixels, and the mipmap chain had three resample a non-power-of-two
+        // sheet on top of that.
         _loadFurnitureTex(folder, name) {
             const key = folder + '/' + name;
             let t = this._spriteTex.get(key);
@@ -841,6 +702,10 @@
             t = new THREE.TextureLoader().load(furnitureSpritePath(folder, name));
             if (THREE.SRGBColorSpace !== undefined) t.colorSpace = THREE.SRGBColorSpace;
             else if (THREE.sRGBEncoding !== undefined) t.encoding = THREE.sRGBEncoding;
+            t.magFilter = THREE.NearestFilter;
+            t.minFilter = THREE.NearestFilter;
+            t.generateMipmaps = false;
+            t.anisotropy = 1;
             this._spriteTex.set(key, t);
             return t;
         }
@@ -1115,13 +980,25 @@
                 return;   // the town fills the tile; skip the wilderness scatter
             }
 
-            // A ruin out in the country, before the wilderness scatter goes
-            // round it (a tree growing through a roofless barn is the point).
-            this._decorateAbandoned(grp, wx, wy, heightFn);
+            // What somebody built on this square, if anything. A steading (a
+            // farm, a cottage) is a place people live in and is put up whole;
+            // a ruin gets what is left of it. They are the same roll and only
+            // one of them is ever on a square, so at most one of these does
+            // anything.
+            const lived = this._decorateSteading(grp, wx, wy, heightFn);
+            if (!lived) {
+                // A ruin, before the wilderness scatter goes round it (a tree
+                // growing through a roofless barn is the point).
+                this._decorateAbandoned(grp, wx, wy, heightFn);
+            }
 
             // Base scatter count from the biome's feature density.
             const baseDensity = biome.features ? biome.features.reduce((sum, f) => sum + (f.density || 0), 0) : 2;
             const baseCount = Math.floor(this._seededRandom(wx, wy, 0) * 10 * baseDensity) + 5;
+
+            // Somebody's yard is swept: a farmhouse does not get a forest
+            // scattered through its kitchen the way a ruin happily does.
+            const keepOut = lived ? (planForTile(wx, wy) || {}).solids || [] : [];
 
             // Deterministic placement generator. Spreads `count` points across the
             // tile, keeping a central corridor clear so the camper has a lane, and
@@ -1133,6 +1010,8 @@
                     const lx = (this._seededRandom(wx, wy, i * 4 + seed)     - 0.5) * (tileSize * 0.9);
                     const lz = (this._seededRandom(wx, wy, i * 4 + seed + 1) - 0.5) * (tileSize * 0.9);
                     if (Math.abs(lx) < corridor && Math.abs(lz) < corridor) continue;
+                    if (keepOut.some(s => Math.abs(lx - s.x) < s.w / 2 + 6 &&
+                                          Math.abs(lz - s.z) < s.d / 2 + 6)) continue;
                     const yPos = heightFn ? heightFn(wx + 0.5 + lx / tileSize, wy + 0.5 + lz / tileSize) : 0;
                     if (yPos < -0.5) continue;
                     const scale = 0.6 + this._seededRandom(wx, wy, i * 4 + seed + 2) * 0.75;
@@ -1235,12 +1114,9 @@
             }
             if (this.spriteQuads) for (const k in this.spriteQuads) this.spriteQuads[k].dispose();
             if (this._spriteTex) { for (const t of this._spriteTex.values()) t.dispose(); this._spriteTex.clear(); }
-            [this.skyscraperMat, this.houseMat].forEach(m => {
-                if (!m) return;
-                if (m.map) m.map.dispose();
-                if (m.emissiveMap) m.emissiveMap.dispose();
-                m.dispose();
-            });
+            // The facades are BLOCKS: shared by every decorator and every
+            // square in the world, so they are not this one's to throw away.
+            // They go when the world does (VoxelWorld.Blocks.dispose).
         }
     }
 

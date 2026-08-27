@@ -770,7 +770,7 @@
       const step = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? box.clientHeight : 1;
       box.scrollTop += e.deltaY * step;
       // Reading the backlog by hand ends any pin still holding the log down.
-      if (box.id === 'npc-dlg-chat') this._chatPinUntil = 0;
+      if (box.id === 'npc-dlg-chat') this._noteChatScrolled(box);
     };
     window.addEventListener('wheel', this._wheelGuard, { capture: true, passive: false });
     div.addEventListener('wheel', this._wheelGuard, { capture: true, passive: false });
@@ -939,6 +939,7 @@
 
   Scene_NPCEmpathize.prototype._removeOverlay = function () {
     this._destroyPortrait3D();
+    this._unbindChatPin();
     if (this._wheelGuard) {
       window.removeEventListener('wheel', this._wheelGuard, { capture: true });
       this._wheelGuard = null;
@@ -1005,7 +1006,7 @@
     const before = pane.scrollTop;
     pane.scrollTop = before + px;
     // Reading the backlog by hand ends any pin still holding the log down.
-    if (pane.id === 'npc-dlg-chat') this._chatPinUntil = 0;
+    if (pane.id === 'npc-dlg-chat') this._noteChatScrolled(pane);
     return pane.scrollTop !== before;
   };
 
@@ -1848,6 +1849,7 @@
     const panel = chat?.parentElement;
     const right = panel?.parentElement;
     if (!chat || !panel || !right) return;
+    this._bindChatPin(chat);
     const avail = right.clientHeight;
     if (!(avail > 0)) return;
     // The inline lists (directions / gift / steal / bribe) can run to dozens of
@@ -1898,6 +1900,7 @@
   // every frame of that window is also what makes a stale callback from an
   // earlier render harmless, it simply gets overwritten on the next frame.
   Scene_NPCEmpathize.prototype._scrollChatToBottom = function () {
+    this._chatStick    = true;
     this._chatPinUntil = (window.performance?.now?.() ?? Date.now()) + 400;
     const pin = () => {
       const chat = this._overlay?.querySelector('#npc-dlg-chat');
@@ -1912,6 +1915,75 @@
       if (now < this._chatPinUntil) requestAnimationFrame(step);
     };
     step();
+  };
+
+  // How close to the foot of the log still counts as "at the bottom". One
+  // bubble's worth of slack, so a reflow that lands a pixel or two short does
+  // not read as the player having scrolled up.
+  const CHAT_BOTTOM_SLACK = 28;
+
+  Scene_NPCEmpathize.prototype._chatAtBottom = function (chat) {
+    if (!chat) return true;
+    return chat.scrollHeight - chat.scrollTop - chat.clientHeight <= CHAT_BOTTOM_SLACK;
+  };
+
+  // Called from every hand-driven scroll (wheel, L2/R2, arrows falling through
+  // the bottom of the action list). Reading the backlog stops the log being
+  // pulled back down; scrolling back to the foot of it starts it up again.
+  Scene_NPCEmpathize.prototype._noteChatScrolled = function (chat) {
+    this._chatPinUntil = 0;
+    this._chatStick    = this._chatAtBottom(chat);
+  };
+
+  // Keep the log pinned to its newest message for as long as it is meant to be
+  // pinned, rather than for one 400ms window after a render.
+  //
+  // The window was the whole of the pin, and anything that changed the log's
+  // layout after it closed left the newest message stranded off the bottom
+  // edge: a bust or an inline icon decoding late, the 3D portrait standing up
+  // and re-flowing the panel, an action row growing a second line, a delayed
+  // reply arriving on its own timer. Observing the log instead means every one
+  // of those re-pins it, however long after the render it happens.
+  //
+  // Bound per element: `_render` rebuilds the log with innerHTML, so the node
+  // observed here is thrown away on the next render and the flag comes back
+  // with the new one.
+  Scene_NPCEmpathize.prototype._bindChatPin = function (chat) {
+    if (!chat || chat.__npcPinBound) return;
+    this._unbindChatPin();
+    chat.__npcPinBound = true;
+    const repin = () => {
+      if (!chat.isConnected || !this._chatStick) return;
+      chat.scrollTop = chat.scrollHeight;
+    };
+    // The player's own scrolling is what decides whether the log still follows
+    // its newest message. Programmatic pins land at the bottom and so leave it
+    // following, which is what makes this safe to listen to unconditionally.
+    chat.addEventListener('scroll', () => {
+      if (this._chatPinUntil > (window.performance?.now?.() ?? Date.now())) return;
+      this._chatStick = this._chatAtBottom(chat);
+    }, { passive: true });
+    // A bubble reaching its final height without the DOM changing (a web font
+    // or an inline icon finishing) only shows up as a resize.
+    if (typeof ResizeObserver === 'function') {
+      this._chatRO = new ResizeObserver(repin);
+      this._chatRO.observe(chat);
+      for (const el of chat.children) this._chatRO.observe(el);
+    }
+    if (typeof MutationObserver === 'function') {
+      this._chatMO = new MutationObserver(() => {
+        if (this._chatRO) for (const el of chat.children) this._chatRO.observe(el);
+        repin();
+      });
+      this._chatMO.observe(chat, { childList: true, subtree: true, characterData: true });
+    }
+  };
+
+  Scene_NPCEmpathize.prototype._unbindChatPin = function () {
+    this._chatRO?.disconnect();
+    this._chatMO?.disconnect();
+    this._chatRO = null;
+    this._chatMO = null;
   };
 
   // Every offered line wears one colour — the theme's option gold (crimson ink

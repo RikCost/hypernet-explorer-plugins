@@ -437,7 +437,7 @@
     window.StealingSystem = {
         scanItems:    () => ShopScanner.scanMapForShops(),
         calcChance:   (item, agi) => StealCalculator.calculateStealChance(item, agi),
-        performSteal: (chance) => StealCalculator.performSteal(chance),
+        performSteal: (chance, options) => StealCalculator.performSteal(chance, options),
         fmt:          goldToEuros,
         translate,
         reduceStock: (entry) => {

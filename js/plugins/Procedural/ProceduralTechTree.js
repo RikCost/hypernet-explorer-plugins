@@ -302,7 +302,7 @@
             const nBuffs = 1 + Math.floor(rng() * 2);
             for (let b = 0; b < nBuffs; b++) {
                 const stat = pick(rng, theme.stats);
-                const base = (stat === 'mhp' || stat === 'mmp') ? 10 + Math.floor(rng() * 15) : 1 + Math.floor(rng() * 3);
+                const base = (stat === 'mhp') ? (5 + Math.floor(rng() * 8)) : (stat === 'mmp') ? (3 + Math.floor(rng() * 6)) : 1;
                 buffs[stat] = (buffs[stat] || 0) + base;
             }
             out.push({
@@ -498,17 +498,19 @@
     function nodeRewards(node) {
         const depth = (node._depth || 0) + 1;
         let scale = node.fringe ? 0.5 : 1;
-        if (node.nobelWorthy) scale *= 1.4; // Nobel-worthy work pays out a bit more.
+        if (node.nobelWorthy) scale *= 1.8; // Nobel-worthy work pays out substantial research grants
         const invest = materialValue(node);
-        // Floors keep a materialless or dirt-cheap node from paying nothing.
+        // Generous research grants, venture capital, and commercial patents.
+        // Baseline floor: €250 - €1,500+ (25,000 - 150,000 gold).
+        // Investment yield: 70% to 120%+ of total reagent investment value.
         return {
             exp: Math.max(
-                Math.round(25 * depth * scale),
-                Math.round((invest / 1000) * (0.8 + 0.12 * depth) * scale)
+                Math.round(50 * depth * scale),
+                Math.round((invest / 500) * (1.0 + 0.15 * depth) * scale)
             ),
             gold: Math.max(
-                Math.round(750 * depth * scale),
-                Math.round(invest * 0.10 * (0.85 + 0.05 * depth) * scale)
+                Math.round(25000 * depth * scale),
+                Math.round(invest * (0.70 + 0.10 * depth) * scale)
             )
         };
     }

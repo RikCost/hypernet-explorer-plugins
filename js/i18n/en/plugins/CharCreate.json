@@ -963,8 +963,7 @@
     "joblessShort": "Jobless",
     "jobGear": "Starting job gear & tools granted:",
     "noJobGear": "No initial professional equipment or work tools provided.",
-    "storyPara1": "Raised amidst the urban sprawl of <b>{hometown}</b>, <b>{name}</b> navigated formative years guided by <b>{ideology}</b> principles and a <b>{morality}</b> disposition. Coming from a <b>{wealth}</b> upbringing, their field experience and resilience distinguish them among peers.",
-    "storyPara2": "Now operating at age <b>{age}</b> with serological markers <b>{blood}</b>, they have stepped forward into the hypernet grid, ready to carve their own destiny across hostile network nodes and faction territories."
+    "noBackstory": "No backstory recorded yet."
   },
   "specGenericDesc": "Proficiency acquired through rigorous study and fieldwork.",
   "name": "Name",

@@ -26,6 +26,11 @@
  *
  * Close the display with OK, Cancel, or click.
  *
+ * Carrying the Raman probe (or a probe head fitted to the hyperdeck) turns any
+ * readable object - a statue, a fossil, a painting, a bookcase - into a
+ * Look / Analyze / Cancel choice: Look is whatever the object always did,
+ * Analyze runs the spectrum on it.
+ *
  * @command ScanFront
  * @text Scan Object in Front
  * @desc Performs Raman spectroscopy scan on the object the player is facing.
@@ -562,6 +567,18 @@
     // Fallback pool for any unrecognised event (surface/environmental scan)
     const SURFACE_MATERIALS  = ['marble', 'granite', 'limestone', 'onyx', 'sandstone', 'clay', 'wood'];
 
+    // One pool per object type, so anything that knows what it is looking at -
+    // an event, a procedural terrain feature - can ask for a material without
+    // going through the event sniffing below.
+    const TYPE_MATERIALS = {
+        statue:   STATUE_MATERIALS,
+        painting: PAINTING_MATERIALS,
+        library:  LIBRARY_MATERIALS,
+        mask:     MASK_MATERIALS,
+        fossil:   FOSSIL_MATERIALS,
+        surface:  SURFACE_MATERIALS,
+    };
+
     // =========================================================
     // UTILITIES
     // =========================================================
@@ -579,19 +596,19 @@
     // by mapId + local tile; the shared procedural map (636) reuses the same
     // mapId and local layout everywhere, so its objects are addressed by the
     // world square they were generated on instead.
-    function scanKeyForEvent(ev) {
+    function scanKeyForTile(x, y) {
         const mapId = $gameMap.mapId();
         const wmt = window.WorldMapTransfer;
         if (wmt && mapId === wmt.procMapId) {
             const wc = wmt.currentWorldCoords();
-            return `${mapId}:${wc.x},${wc.y}:${ev.x},${ev.y}`;
+            return `${mapId}:${wc.x},${wc.y}:${x},${y}`;
         }
-        return `${mapId}:${ev.x},${ev.y}`;
+        return `${mapId}:${x},${y}`;
     }
 
-    function grantScanKnowledge(ev) {
-        if (!ev || !$gameSystem || !$gameSystem.addKnowledge) return;
-        const key = scanKeyForEvent(ev);
+    function grantScanKnowledgeAt(x, y) {
+        if (!$gameSystem || !$gameSystem.addKnowledge) return;
+        const key = scanKeyForTile(x, y);
         if (!$gameSystem._ramanScanLog) $gameSystem._ramanScanLog = {};
         if ($gameSystem._ramanScanLog[key]) return;
         $gameSystem._ramanScanLog[key] = true;
@@ -619,32 +636,37 @@
         return false;
     }
 
-    function getMaterialForEvent(ev) {
+    // What an event reads as, without picking a material yet. `offersItself`
+    // marks the events that run their own Look / Analyze prompt, so the generic
+    // one below does not ask a second time over the top of it.
+    function objectTypeForEvent(ev) {
         if (!ev) return null;
         const data = ev.event();
+        if (!data) return null;
         const name = (data.name || '').toLowerCase();
         const note = (data.note || '');
 
         // Explicit tag takes priority
         const tagged = note.match(/<RamanMaterial:([^>]+)>/i);
         if (tagged && MATERIAL_DB[tagged[1].toLowerCase()]) {
-            return { materialKey: tagged[1].toLowerCase(), objectType: 'tagged' };
+            return { objectType: 'tagged', materialKey: tagged[1].toLowerCase(), offersItself: false };
         }
 
-        const rng = seededRNG(($gameMap.mapId() * 73856093) ^ (ev.x * 19349663) ^ (ev.y * 83492791));
-
-        // Command-based detection: check what plugin commands the event calls
-        const callsFossil   = eventCallsCommand(data, 'ShowFossilDescription');
-        const callsStatue   = eventCallsCommand(data, 'ShowStatueDescription');
-        const callsPainting = eventCallsCommand(data, 'ShowPaintingDescription');
-        const callsBook     = eventCallsCommand(data, 'ShowRandomBook');
-        const callsMask     = eventCallsCommand(data, 'ShowMaskDescription');
-
-        if (callsFossil)   return { materialKey: FOSSIL_MATERIALS[  Math.floor(rng() * FOSSIL_MATERIALS.length)],   objectType: 'fossil'   };
-        if (callsStatue)   return { materialKey: STATUE_MATERIALS[  Math.floor(rng() * STATUE_MATERIALS.length)],   objectType: 'statue'   };
-        if (callsPainting) return { materialKey: PAINTING_MATERIALS[Math.floor(rng() * PAINTING_MATERIALS.length)], objectType: 'painting' };
-        if (callsBook)     return { materialKey: LIBRARY_MATERIALS[  Math.floor(rng() * LIBRARY_MATERIALS.length)],  objectType: 'library'  };
-        if (callsMask)     return { materialKey: MASK_MATERIALS[     Math.floor(rng() * MASK_MATERIALS.length)],     objectType: 'mask'     };
+        // Command-based detection: check what plugin commands the event calls.
+        // These events run the choice themselves (RandomBookGenerator), so they
+        // are flagged as such and the generic offer below leaves them alone.
+        const byCommand = [
+            ['ShowFossilDescription',   'fossil'],
+            ['ShowStatueDescription',   'statue'],
+            ['ShowPaintingDescription', 'painting'],
+            ['ShowRandomBook',          'library'],
+            ['ShowMaskDescription',     'mask'],
+        ];
+        for (const [command, objectType] of byCommand) {
+            if (eventCallsCommand(data, command)) {
+                return { objectType, offersItself: true };
+            }
+        }
 
         // Name/note keyword fallback
         const isFossil   = /fossil|amber|dinosaur|dino|bone|trilobit|ammonit|mammoth|specimen|paleo|cretaceous|jurassic|prehistoric/i.test(name) ||
@@ -654,14 +676,29 @@
         const isLibrary  = /book|shelf|librar|tome|scroll/i.test(name)          || /book|librar/i.test(note);
         const isMask     = /mask/i.test(name) || /mask/i.test(note);
 
-        if (isFossil)   return { materialKey: FOSSIL_MATERIALS[  Math.floor(rng() * FOSSIL_MATERIALS.length)],   objectType: 'fossil'   };
-        if (isStatue)   return { materialKey: STATUE_MATERIALS[  Math.floor(rng() * STATUE_MATERIALS.length)],   objectType: 'statue'   };
-        if (isPainting) return { materialKey: PAINTING_MATERIALS[Math.floor(rng() * PAINTING_MATERIALS.length)], objectType: 'painting' };
-        if (isLibrary)  return { materialKey: LIBRARY_MATERIALS[ Math.floor(rng() * LIBRARY_MATERIALS.length)],  objectType: 'library'  };
-        if (isMask)     return { materialKey: MASK_MATERIALS[    Math.floor(rng() * MASK_MATERIALS.length)],     objectType: 'mask'     };
+        if (isFossil)   return { objectType: 'fossil', offersItself: false };
+        if (isStatue)   return { objectType: 'statue', offersItself: false };
+        if (isPainting) return { objectType: 'painting', offersItself: false };
+        if (isLibrary)  return { objectType: 'library', offersItself: false };
+        if (isMask)     return { objectType: 'mask', offersItself: false };
 
-        // console.log('[Raman] No keyword match ,  falling back to surface scan for event:', name);
-        return { materialKey: SURFACE_MATERIALS[Math.floor(rng() * SURFACE_MATERIALS.length)], objectType: 'surface' };
+        return null;
+    }
+
+    function materialForType(objectType, x, y) {
+        const pool = TYPE_MATERIALS[objectType] || SURFACE_MATERIALS;
+        const rng = seededRNG(($gameMap.mapId() * 73856093) ^ (x * 19349663) ^ (y * 83492791));
+        return pool[Math.floor(rng() * pool.length)];
+    }
+
+    function getMaterialForEvent(ev) {
+        if (!ev) return null;
+        const read = objectTypeForEvent(ev);
+        if (read && read.materialKey) {
+            return { materialKey: read.materialKey, objectType: read.objectType };
+        }
+        const objectType = read ? read.objectType : 'surface';
+        return { materialKey: materialForType(objectType, ev.x, ev.y), objectType };
     }
 
     function gaussian(x, center, height, fwhm) {
@@ -1085,7 +1122,7 @@
     }
 
     function openScan(ev, result) {
-        grantScanKnowledge(ev);
+        if (ev) grantScanKnowledgeAt(ev.x, ev.y);
         window._ramanDisplay = new RamanDisplay(
             result.materialKey, result.objectType,
             ev ? ev.event().name : T('Raman.unknown'));
@@ -1097,6 +1134,9 @@
     const _Game_Player_triggerButtonAction = Game_Player.prototype.triggerButtonAction;
     Game_Player.prototype.triggerButtonAction = function () {
         if (_Game_Player_triggerButtonAction.call(this)) return true;
+        // An object may have answered the press with its own Look / Analyze
+        // prompt: that choice is the scan, do not open a second one over it.
+        if ($gameMessage.isBusy()) return false;
         if (!Input.isTriggered('ok') || !hasProbeFitted()) return false;
         const ev = getEventInFront();
         const result = getMaterialForEvent(ev);
@@ -1106,15 +1146,118 @@
         return true;
     };
 
+    // The carried probe. Either the item in the backpack or a probe head fitted
+    // to the hyperdeck lets the party analyse what it is looking at, so both
+    // count as owning a scanner.
+    const RAMAN_PROBE_ITEM_ID = 141;
+
+    function hasProbeItem() {
+        return !!($gameParty && typeof $dataItems !== 'undefined'
+            && $dataItems[RAMAN_PROBE_ITEM_ID]
+            && $gameParty.hasItem($dataItems[RAMAN_PROBE_ITEM_ID]));
+    }
+
+    function hasScanner() {
+        return hasProbeItem() || hasProbeFitted();
+    }
+
+    // Look / Analyze / Cancel. The one prompt every readable object goes
+    // through: a statue, a fossil, a painting, a bookcase, whether it is an
+    // event or a procedural terrain feature. Without a probe there is nothing
+    // to choose, so the object is simply looked at.
+    function offerScan(onLook, onAnalyze) {
+        if (!hasScanner() || typeof onAnalyze !== 'function') {
+            if (typeof onLook === 'function') onLook();
+            return false;
+        }
+        const choices = T.list('Raman.choices');
+        const cancelIndex = choices.length - 1;
+        window.skipLocalization = true;
+        $gameMessage.setChoices(choices, 0, cancelIndex);
+        window.skipLocalization = false;
+        $gameMessage.setChoiceBackground(0);
+        $gameMessage.setChoicePositionType(2);
+        $gameMessage.setChoiceCallback(n => {
+            if (n === 0 && typeof onLook === 'function') onLook();
+            else if (n === 1) onAnalyze();
+            // cancelIndex, or -1 on a cancel input: nothing happens.
+        });
+        return true;
+    }
+
     window.RamanScanner = {
         hasProbe: hasProbeFitted,
+        available: hasScanner,
+        offer: offerScan,
+        // For menus that already have their own verbs and only want the extra
+        // Analyze entry alongside them.
+        analyzeLabel() { return T.list('Raman.choices')[1]; },
         scanFront() {
             const ev = getEventInFront();
             const result = getMaterialForEvent(ev);
             if (!result) return false;
             openScan(ev, result);
             return true;
+        },
+        // For things that are not events: the procedural map's terrain features
+        // are tiles, and they know what they are without being sniffed for it.
+        scanTile(x, y, objectType, label) {
+            const type = TYPE_MATERIALS[objectType] ? objectType : 'surface';
+            grantScanKnowledgeAt(x, y);
+            window._ramanDisplay = new RamanDisplay(
+                materialForType(type, x, y), type, label || T('Raman.unknown'));
+            SceneManager.push(Scene_RamanScan);
+            return true;
+        },
+        scanEvent(ev) {
+            const result = getMaterialForEvent(ev);
+            if (!result) return false;
+            openScan(ev, result);
+            return true;
+        },
+    };
+
+    // =========================================================
+    // GENERIC OBJECT OFFER
+    // Any event that reads as a scannable object gets the Look / Analyze /
+    // Cancel prompt in front of whatever it was going to do. Events that call
+    // the description plugin commands ask for themselves (RandomBookGenerator),
+    // and everything the player is not deliberately talking to is left alone.
+    // =========================================================
+
+    // Chests, doors and the people standing behind a counter pick up "figure",
+    // "paint" and "book" by accident. A bookseller is not a bookcase.
+    const NOT_AN_OBJECT = /treasure|door|chest|shop|stall|counter|vendor|merchant|seller|trader|keeper|clerk|guard|npc/i;
+
+    function eventOffersScan(ev) {
+        if (!ev || !hasScanner() || ev._ramanLooking) return false;
+        if ($gameMap.isEventRunning() || $gameMessage.isBusy()) return false;
+        const page = ev.page && ev.page();
+        // Only something the player walked up to and pressed on.
+        if (!page || ev._trigger !== 0) return false;
+        const data = ev.event();
+        if (!data || NOT_AN_OBJECT.test(data.name || '')) return false;
+        const read = objectTypeForEvent(ev);
+        return !!read && !read.offersItself;
+    }
+
+    const _Game_Event_start = Game_Event.prototype.start;
+    Game_Event.prototype.start = function () {
+        if (eventOffersScan(this)) {
+            const ev = this;
+            offerScan(
+                () => {
+                    // Looking is the event as it was written: run it, but do
+                    // not ask again on the way through.
+                    ev._ramanLooking = true;
+                    _Game_Event_start.call(ev);
+                    ev._ramanLooking = false;
+                },
+                () => { window.RamanScanner.scanEvent(ev); }
+            );
+            return;
         }
+        _Game_Event_start.call(this);
     };
 
     PluginManager.registerCommand(pluginName, 'ScanFront', function () {
@@ -1141,7 +1284,7 @@
         // console.log('[Raman] SceneManager._scene:', SceneManager._scene);
         // console.log('[Raman] Graphics.width/height:', Graphics.width, Graphics.height);
 
-        grantScanKnowledge(ev);
+        if (ev) grantScanKnowledgeAt(ev.x, ev.y);
 
         const display = new RamanDisplay(
             result.materialKey,

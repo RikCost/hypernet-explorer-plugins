@@ -1559,29 +1559,35 @@
       `;
     }
 
+    // The character's real backstory, drawn the same way the status screen and
+    // the Empathize panel draw it. The age control on the facing page is the
+    // one field the generator itself reads, so a re-aged character is dealt
+    // the events of the lifetime the player just gave them.
+    _bioBackstoryHtml(actor, age) {
+      const profile = window.NPCSocietyRegistry?.getProfile?.(actor.name()) || null;
+      if (profile && age) {
+        const nowYear = window.NPCLifeSim?.currentYear?.() ?? 2001;
+        const birthYear = nowYear - age;
+        if (profile._birthYearOverride !== birthYear) {
+          profile._birthYearOverride = birthYear;
+          profile.backstory = null;
+        }
+      }
+      const lore = this._ensureActorLore(actor, actor._gender) || profile;
+      const backstory = lore && lore.backstory;
+      const html = backstory && window.NPCHistSim?.buildBackstoryHTML
+        ? window.NPCHistSim.buildBackstoryHTML(backstory)
+        : "";
+      if (html) return html;
+      return `<div class="npc-backstory-text">${ccT('CharCreate.bio.noBackstory', 'No backstory recorded yet.')}</div>`;
+    }
+
     _bioPickerRightHtml() {
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return `<div class="cc-page cc-page-right"></div>`;
 
       const memberIdx = Scene_CharacterCreation._currentPartyMemberIndex || 0;
-      const hometown = $gameSystem._ccHometown || "Paris";
       const age = ($gameSystem._ccBirthAge && $gameSystem._ccBirthAge[memberIdx]) || 28;
-      const ideologyNameFormatted = this._formatIdeologyName(actor._ideologyId || "pragmatist");
-      
-      const bloodList = (window.BloodTypeService && window.BloodTypeService.list && window.BloodTypeService.list()) || [];
-      const currentBloodId = actor._ccBloodType || actor._bloodType || "O_POS";
-      const currentBloodEntry = bloodList.find(b => b.id === currentBloodId || b.type === currentBloodId);
-      const bloodLabel = currentBloodEntry ? currentBloodEntry.type : (actor._bloodType || "O+");
-
-      // The prose forms of the two, which are not the chip captions: a chip
-      // reads "Middle Class", the sentence reads "a middle class upbringing".
-      const WEALTH_ADJ = ["destitute", "working", "middle", "wealthy"];
-      const wealthAdjKey = WEALTH_ADJ[actor._wealthTier != null ? actor._wealthTier : 2] || "middle";
-      const wealthLabel = ccT('CharCreate.bio.wealthAdj.' + wealthAdjKey, wealthAdjKey);
-
-      const MORALITY_ADJ = { 2: "saintly", 1: "principled", 0: "pragmatic", "-1": "ruthless", "-2": "vile" };
-      const moralityAdjKey = MORALITY_ADJ[actor._morality != null ? actor._morality : 0] || "pragmatic";
-      const moralityDesc = ccT('CharCreate.bio.moralityAdj.' + moralityAdjKey, moralityAdjKey);
 
       let avatarStyle = "";
       if (actor.characterName()) {
@@ -1590,21 +1596,11 @@
       const classData = $dataClasses[actor._classId];
       const className = classData ? window.CCDbName(classData) : ccT('CharCreate.defaultClassName', 'Operative');
 
-      // Two paragraphs written from what the picker on the left holds. Each
-      // language phrases them its own way, so the whole sentence is the i18n
-      // entry and the fields are dropped into it as parameters.
-      const storyParams = {
-        hometown, name: actor.name(), ideology: ideologyNameFormatted,
-        morality: moralityDesc, wealth: wealthLabel, age, blood: bloodLabel
-      };
-      const storyHtml = `
-        <p class="cc-text-desc" style="text-align:left; font-size:1.18rem; line-height:1.65; color:#f0e6d2; margin-bottom:10px;">
-          ${ccTp('CharCreate.bio.storyPara1', storyParams, '')}
-        </p>
-        <p class="cc-text-desc" style="text-align:left; font-size:1.18rem; line-height:1.65; color:#ded1c1; margin-bottom:12px;">
-          ${ccTp('CharCreate.bio.storyPara2', storyParams, '')}
-        </p>
-      `;
+      // The biography every other screen shows for this character, not a
+      // sentence assembled out of the picker's own fields: the backstory the
+      // NPC society writes against the world's timeline, formative events and
+      // birth line included.
+      const storyHtml = this._bioBackstoryHtml(actor, age);
 
       return `
         <div class="cc-page cc-page-right ts-page" style="display:flex; flex-direction:column;">

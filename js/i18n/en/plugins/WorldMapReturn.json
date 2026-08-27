@@ -10,6 +10,7 @@
   "openWorldMap": "Open world map",
   "cancel": "Cancel",
   "visit": "Visit {place}",
+  "explorePlace": "Explore {place}",
   "investigatePlace": "Investigate {place}",
   "freeWalk": "Free walk",
   "makeCamp": "Make a camp",

@@ -41,6 +41,9 @@
       this.targetDistance = 60;
       this.minDistance = 0.2;
       this.maxDistance = 1e6;
+      // How far a PANNED focus may drift from the centre of the current view
+      // (0 = no limit). Only panning is bounded; see clampPan.
+      this.panLimit = 0;
 
       this.yaw = 0;          // azimuth around world Y
       this.pitch = 0.45;     // elevation above the galactic (XZ) plane
@@ -74,6 +77,22 @@
     }
 
     setTargetFocus(vec3) { this.targetFocus.copy(vec3); }
+
+    /**
+     * Keep a panned focus inside the view it belongs to. Panning is the one
+     * gesture that moves the pivot with no destination in mind, and its step
+     * scales with the orbit distance, so a couple of seconds of it at a wide
+     * zoom used to leave the whole scale behind - nothing on screen, nothing
+     * pickable, and no way back. Flights, ship-follow and framing set the
+     * focus deliberately and are left alone.
+     */
+    clampPan() {
+      const lim = this.panLimit;
+      if (!lim) return;
+      const d = this.targetFocus.length();
+      if (d > lim) this.targetFocus.multiplyScalar(lim / d);
+    }
+
     setTargetDistance(d) {
       this.targetDistance = clamp(d, this.minDistance, this.maxDistance);
     }
@@ -257,6 +276,7 @@
       const delta = right.multiplyScalar(mx * step)
         .add(upVec.multiplyScalar(-my * step));
       this.rig.targetFocus.add(delta);
+      this.rig.clampPan();
     }
   }
 

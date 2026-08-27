@@ -2146,12 +2146,16 @@
       this._isTyping       = false;
       // Timestamp until which the chat log is held pinned to its newest message.
       this._chatPinUntil   = 0;
+      // True while the log still follows its newest message. Cleared only by the
+      // player scrolling back up through the backlog by hand.
+      this._chatStick      = true;
       this._chatModalOpen  = false; // chat text-entry modal visibility
       this._chatModalEl    = null;
       this._joinMessage    = null;
       this._stealMode          = false;
       this._stealItems         = [];
       this._stealAttempted     = {};
+      this._stealRolling       = false;
       this._giftMode           = false;
       this._giftItems          = [];
       this._feedMode           = false;
@@ -3804,7 +3808,14 @@
       this._render();
     }
 
-    _attemptSteal(index) {
+    // One pocket at a time. The die is thrown on screen and takes seconds to
+    // land, so the row is spent the moment it is picked (which greys it out for
+    // the mouse and for the pad alike) and no other row answers until the
+    // throw is over. Awaiting it also matters for the outcome itself: the
+    // roller hands back a promise, and a promise read as a result is always
+    // a success.
+    async _attemptSteal(index) {
+      if (this._stealRolling) return;
       const item = this._stealItems[index];
       if (!item) return;
       const key = `${item.type}_${item.id}`;
@@ -3812,7 +3823,20 @@
 
       const agility = $gameParty.leader()?.agi ?? 10;
       const chance  = window.StealCalculator?.calculateStealChance(item.data, agility) ?? 50;
-      const success = window.StealCalculator?.performSteal(chance) ?? false;
+      const dexMod  = Math.floor(((agility || 10) - 10) / 2);
+      this._stealRolling      = true;
+      this._stealAttempted[key] = 'rolling';
+      this._render();
+      let success = false;
+      try {
+        success = await Promise.resolve(
+          window.StealCalculator?.performSteal(chance, { actionName: 'Pickpocket', statName: 'DEX', modifier: dexMod }) ?? false); // i18n-ignore: Dice3D check id
+      } finally {
+        this._stealRolling = false;
+      }
+      // The panel can be gone by the time the die lands (the scene was left, or
+      // the picker was cancelled): the theft still counts, only the row does not.
+      const stillOpen = !!this._overlay;
 
       $gameVariables.setValue(79, item.data.price ?? 0);
 
@@ -3832,7 +3856,7 @@
         this._stealAttempted[key] = 'fail';
         SoundManager.playBuzzer();
       }
-      this._render();
+      if (stillOpen) this._render();
     }
 
     _trade() {

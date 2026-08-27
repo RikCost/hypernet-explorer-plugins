@@ -217,6 +217,15 @@
                 const specs = [];
                 if (!skill) return specs;
                 if (skill.stypeId > 0) specs.push({ label: T("Inventory.spec.label.skillType"), val: ($dataSystem.skillTypes || [])[skill.stypeId] || T("Inventory.spec.label.skillFallback") });
+
+                // A move the body teaches rather than the character: it is said
+                // here whose claw, mouth or grafted augment it came with, since
+                // that is also what takes it away when the part comes off.
+                const anatomy = window.HealthCore && window.HealthCore.skillSourcePartNames
+                    ? window.HealthCore.skillSourcePartNames(actor, skill.id) : [];
+                if (anatomy.length) {
+                    specs.push({ label: T("SkillsMenu.spec.label.grantedBy"), val: anatomy.join(", ") });
+                }
                 if (skill.occasion !== undefined) specs.push({ label: T("Inventory.spec.label.occasion"), val: occasionName(skill.occasion) });
                 if (skill.scope !== undefined && skill.scope !== 0) specs.push({ label: T("Inventory.spec.label.target"), val: scopeName(skill.scope) });
 

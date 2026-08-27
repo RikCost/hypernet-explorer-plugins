@@ -139,16 +139,40 @@
     exitTreasureRoom();
   });
 
+  // Where the party is standing, as an address that outlives the visit. On map
+  // 636 that is the world square plus the tile inside it: the map coordinate
+  // alone moves with the shape of the stitched window, so the same doorway
+  // answered to a different key from one visit to the next.
+  function procSpot() {
+    if (!$gameMap || $gameMap.mapId() !== 636) {
+      return { x: $gamePlayer.x, y: $gamePlayer.y };
+    }
+    const S = window.ProcStitch;
+    const local = (S && typeof S.localToParty === "function")
+      ? S.localToParty($gamePlayer.x, $gamePlayer.y)
+      : { x: $gamePlayer.x, y: $gamePlayer.y };
+    return { x: local.x, y: local.y };
+  }
+
   function createLocationKey() {
-    return `${$gameMap.mapId()}_${$gamePlayer.x}_${$gamePlayer.y}`;
+    const spot = procSpot();
+    if ($gameMap && $gameMap.mapId() === 636) {
+      const wx = $gameVariables.value(43), wy = $gameVariables.value(44);
+      return `${$gameMap.mapId()}_${wx},${wy}_${spot.x}_${spot.y}`;
+    }
+    return `${$gameMap.mapId()}_${spot.x}_${spot.y}`;
   }
 
   function saveReturnPoint(treasureRoomId) {
+    // Square-local on the procedural map (see procSpot): every transfer back
+    // onto map 636 speaks square-local coordinates, and ProcStitch's
+    // performTransfer hook puts them back on whatever map the window is by then.
+    const spot = procSpot();
     const returnPoint = {
       treasureRoomId: treasureRoomId,
       mapId: $gameMap.mapId(),
-      x: $gamePlayer.x,
-      y: $gamePlayer.y,
+      x: spot.x,
+      y: spot.y,
       direction: $gamePlayer.direction(),
     };
     // On the procedural map (636), also remember the world coordinates (vars

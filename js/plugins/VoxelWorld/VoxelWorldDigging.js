@@ -57,19 +57,14 @@
     // Digging with a weapon
     // -------------------------------------------------------------------------
     // There is no pick in this game. The thing in the leader's hands is the
-    // thing they dig with, and it digs the way it fights: a cube has HITS to it
-    // and every blow takes a bite out of that, so a mattock of a two-hander
-    // opens a tunnel in three swings and a dagger takes a dozen. The number that
-    // decides it is the weapon's own attack (params[2]), which is the same
-    // number that decides what it does to anything else.
-    //
-    //   hits = ceil(BLOCK_HP * hardness / attack)
-    //
-    // ...clamped, so nothing is one-shot and nothing takes all afternoon.
-    const BLOCK_HP     = 46;    // what a hardness-1 cube is worth in damage
-    const HITS_MIN     = 1;
-    const HITS_MAX     = 14;
-    const ATK_FLOOR    = 4;     // bare hands still get through turf
+    // thing they dig with, and a weapon goes through a cube in ONE blow: a
+    // tunnel is opened at the speed the party walks, not at the speed a
+    // hardness table allows. Bare hands are the only thing the world resists,
+    // and it resists them by exactly one extra blow, which is enough for the
+    // difference between armed and unarmed to be felt without a wall ever
+    // becoming a chore.
+    const HITS_ARMED   = 1;
+    const HITS_UNARMED = 2;
     // How fast the swings come while the button is held: a blow, then the time
     // it takes to draw back for the next one.
     const SWING_TIME   = 0.42;
@@ -220,8 +215,11 @@
         }
 
         // What the HUD draws: every slot, in order, with the weapon at the head.
-        readout() {
-            const out = [{ weapon: true, on: this._sel === 0 }];
+        // The weapon's own name comes in from the tool, which is what knows what
+        // is in the leader's hands (see VoxelTool.weaponName), so the bar can
+        // say what a cell holds the way every other quick bar in the game does.
+        readout(weaponName) {
+            const out = [{ weapon: true, on: this._sel === 0, name: weaponName || '' }];
             const slots = this.slots;
             for (let i = 0; i < BAR_SLOTS; i++) {
                 const s = slots[i];
@@ -382,6 +380,13 @@
         get bar()              { return this._bar; }
         get selectedMaterial() { return this._bar.heldMaterial || PLACEABLE[0]; }
         get selectedName()     { return this._bar.holdingWeapon ? '' : matName(this.selectedMaterial); }
+        // What the quick bar's first cell is holding: whatever the leader is
+        // armed with, down to the fists of their own archetype, and a plain
+        // "bare hands" for anybody the weapon plugins have nothing to say about.
+        get weaponName() {
+            const w = this._weaponNow();
+            return (w && w.name) ? w.name : T('VoxelWorld.tool.bareHands');
+        }
         get targetName()       { return this.target ? matName(this.target.mat) : ''; }
         get progress()         { return this._progress; }
 
@@ -406,9 +411,13 @@
             }
             return null;
         }
-        _weaponAttack(w) {
-            const atk = (w && w.params) ? (w.params[2] | 0) : 0;
-            return Math.max(ATK_FLOOR, atk);
+        // Whether the leader is actually holding something. The fist that
+        // stands in for an empty hand (_weaponNow) is a weapon everywhere else
+        // in the game, so it cannot be the thing that answers this.
+        _armed() {
+            const actor = (typeof $gameParty !== 'undefined' && $gameParty)
+                ? $gameParty.leader() : null;
+            return !!(actor && actor.weapons && actor.weapons()[0]);
         }
         // Steps of <Range:> on the weapon; 0 for anything you have to be next to.
         _weaponRange(w) {
@@ -421,13 +430,14 @@
             if (steps <= 1) return VOX.REACH;
             return Math.min(RANGE_MAX, steps * RANGE_STEP);
         }
-        // How many blows this cube takes, with what is in hand.
+        // How many blows this cube takes, with what is in hand. A weapon takes
+        // it out on the blow that lands; a bare fist wants a second one. What
+        // the cube is made of does not enter into it - bedrock is not diggable
+        // at all, and everything that is, gives.
         hitsFor(mat) {
             const def = MATERIALS[mat];
             if (!def || !def.diggable) return Infinity;
-            const atk = this._weaponAttack(this._weaponNow());
-            const n = Math.ceil(BLOCK_HP * (def.hard || 1) / atk);
-            return Math.max(HITS_MIN, Math.min(HITS_MAX, n));
+            return this._armed() ? HITS_ARMED : HITS_UNARMED;
         }
 
         // ---------------------------------------------------------------------
@@ -555,9 +565,13 @@
             const mat = this._terrain.field.breakAt(hit.vx, hit.vy, hit.vz);
             if (!mat) return;
             this._spray(hit.vx, hit.vy, hit.vz, mat);
-            // Onto the bar it goes. Ore is the exception: a seam is worth
-            // something in the bags rather than a cube to build a wall out of.
-            if (mat === MAT.ORE) this._reward(mat);
+            // Onto the bar it goes. A SEAM is the exception: what comes out of
+            // one is worth something in the bags (its own material, see the
+            // MATERIALS table) rather than a cube to build a wall out of.
+            // Everything else - brick, glass, marble, plank - goes on the bar
+            // to be built with, which is the whole point of a block.
+            const def = MATERIALS[mat];
+            if (def && def.drop && def.seam) this._reward(mat);
             else if (!this._bar.add(mat)) this._notifyOnce('barFull', T('VoxelWorld.tool.barFull'));
             // It comes apart in its own voice, over the crack of it giving.
             this._playSe('Break', 60, 92 + Math.floor(Math.random() * 20));
@@ -599,11 +613,18 @@
             this._chips.burst((vx + 0.5) * S, (vy + 0.5) * S, (vz + 0.5) * S, r, g, b, n);
         }
 
-        // A seam of ore is the reason to dig deep in the first place.
+        // A seam is the reason to dig deep in the first place. WHAT it pays is
+        // the block's own business: every ore, and every worked block worth
+        // salvaging, carries the id of the item in data/Items.json one cube of
+        // it is worth (see the MATERIALS table). The old generic seam is the
+        // one exception - it predates the split and still pays out of the hat.
         _reward(mat) {
-            if (mat !== MAT.ORE) return;
+            const def = MATERIALS[mat];
+            if (!def || !def.drop) return;
             if (typeof $gameParty === 'undefined' || !$gameParty || typeof $dataItems === 'undefined') return;
-            const id = ORE_ITEMS[Math.floor(Math.random() * ORE_ITEMS.length)];
+            const id = mat === MAT.ORE
+                ? ORE_ITEMS[Math.floor(Math.random() * ORE_ITEMS.length)]
+                : def.drop;
             const item = $dataItems[id];
             if (!item) return;
             if ($gameParty.numItems(item) >= $gameParty.maxItems(item)) {

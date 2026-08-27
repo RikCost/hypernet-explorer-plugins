@@ -38,7 +38,8 @@
         MAT, PLACEABLE, ProceduralDecorator, ROAD_SINK, ROAD_TOTAL_W, SEA_LEVEL,
         VOX, VoxelField, VoxelMesher, WORLD_TILE_SIZE, getRenderType, profileFor,
         getRoadDirectionAt, loadTex, loadVoxelTex, sampleBiomeAt, voxelMaterial, VoxelWorldState,
-        voxelGrassMaterial, voxelWaterMaterial, disposeVoxelMaterial
+        voxelGrassMaterial, voxelWaterMaterial, disposeVoxelMaterial,
+        voxelBlockMaterial
     } = VW;
 
     const WORLD_TILES_ACROSS = 256;
@@ -415,8 +416,10 @@
             this._addMesh(ch, si + ':' + sj, geo);
         }
 
-        // A patch is up to two meshes: the ground, and the sheet of standing
-        // water over it where a river or a lake runs above sea level.
+        // A patch is the ground, the turf on top of it, one mesh for each kind
+        // of block it shows (brick, marble, a seam of ore - each with its own
+        // picture), and the sheet of standing water where a river or a lake
+        // runs above sea level.
         _addMesh(ch, key, res) {
             const old = ch.subs.get(key);
             if (old) {
@@ -439,6 +442,18 @@
                 mesh.receiveShadow = true;
                 ch.grp.add(mesh);
                 made.push(mesh);
+            }
+            // One mesh per KIND of block the patch actually shows, each drawn
+            // with that block's own picture. Ordinary ground carries none at
+            // all; a cave wall carries the country rock, whatever lens is in it
+            // and the seams, and nothing else.
+            if (res.blocks) {
+                for (const b of res.blocks) {
+                    const mesh = new THREE.Mesh(b.geo, voxelBlockMaterial(b.mat));
+                    mesh.receiveShadow = true;
+                    ch.grp.add(mesh);
+                    made.push(mesh);
+                }
             }
             if (res.water) {
                 const mesh = new THREE.Mesh(res.water, voxelWaterMaterial());
@@ -625,6 +640,10 @@
             if (this._lampMat) this._lampMat.dispose();
             this._poleMat = this._lampMat = null;
             disposeVoxelMaterial();
+            // The block palette goes with the world, not with a scene: one
+            // material per block is shared by every square in it, and rebuilding
+            // them for the next drive would throw away the whole point of them.
+            if (VW.Blocks) VW.Blocks.dispose();
             this._decorator.dispose();
             this.field.onEdit = null;
             this._dirty.clear();

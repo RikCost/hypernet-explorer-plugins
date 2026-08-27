@@ -73,6 +73,76 @@
         return h - Math.floor(h);
     }
 
+    // =========================================================================
+    // What a building is made of
+    // =========================================================================
+    // A scheme is the set of BLOCKS one building is put up out of: the skin of
+    // its walls, the trim round its openings, the tiles on its roof, the course
+    // it stands on and what it is glazed with. Every name is a key in the
+    // world's own block palette (VoxelWorld.Blocks, see VoxelWorldCore), and
+    // every one of them is a real picture rather than a colour.
+    //
+    // It is decided HERE, in the plan, rather than in the builder, because it
+    // is a fact about the place: a village in the hills is timber and thatch,
+    // the middle of a city is concrete and glass, a church is ashlar with
+    // stained windows, and a ruin is whatever is left of somebody's brickwork.
+    // The builder then only has to put up what the plan says.
+    //
+    //   facade   the wall skin, measured in window bays (see HOUSE.bayW)
+    //   wall     the same wall with no windows in it: a barn, a ruin, a gable
+    //   trim     quoins, lintels, the ridge
+    //   roof     a pitched roof's covering
+    //   flat     a flat roof's deck and parapet
+    //   plinth   the course the whole thing stands on
+    //   glass    a shopfront, a church window
+    const BUILD_SCHEMES = {
+        brick:     { facade: 'facade_brick',     wall: 'brick',     trim: 'stone',
+                     roof: 'roof_tile',  flat: 'roof_slate', plinth: 'stone',    glass: 'glass' },
+        render:    { facade: 'facade_plaster',   wall: 'plaster',   trim: 'stone',
+                     roof: 'roof_tile',  flat: 'roof_slate', plinth: 'cobble',   glass: 'glass' },
+        concrete:  { facade: 'facade_concrete',  wall: 'concrete',  trim: 'concrete',
+                     roof: 'roof_slate', flat: 'roof_slate', plinth: 'concrete', glass: 'glass_dark' },
+        sandstone: { facade: 'facade_sandstone', wall: 'sandstone', trim: 'sandstone',
+                     roof: 'roof_tile',  flat: 'roof_slate', plinth: 'sandstone', glass: 'glass' },
+        ashlar:    { facade: 'facade_stone',     wall: 'stone',     trim: 'marble',
+                     roof: 'roof_slate', flat: 'roof_slate', plinth: 'granite',  glass: 'glass' },
+        timber:    { facade: 'facade_timber',    wall: 'stucco',    trim: 'timber',
+                     roof: 'thatch',     flat: 'roof_tile',  plinth: 'cobble',   glass: 'glass' },
+        // The ones nobody puts a window in.
+        barn:      { facade: null, wall: 'plank',     trim: 'timber',
+                     roof: 'roof_metal', flat: 'roof_metal', plinth: 'cobble',   glass: 'glass' },
+        shed:      { facade: null, wall: 'plank',     trim: 'timber',
+                     roof: 'roof_tile',  flat: 'roof_tile',  plinth: 'cobble',   glass: 'glass' },
+        church:    { facade: null, wall: 'stone',     trim: 'marble',
+                     roof: 'roof_slate', flat: 'roof_slate', plinth: 'granite',  glass: 'glass_stain' },
+        granary:   { facade: null, wall: 'cobble',    trim: 'stone',
+                     roof: 'roof_metal', flat: 'roof_metal', plinth: 'granite',  glass: 'glass' },
+        works:     { facade: 'facade_concrete',  wall: 'brick_dark', trim: 'iron',
+                     roof: 'roof_metal', flat: 'roof_metal', plinth: 'concrete', glass: 'glass_dark' },
+        ruin:      { facade: null, wall: 'brick_dark', trim: 'cobble',
+                     roof: 'roof_slate', flat: 'roof_slate', plinth: 'cobble',   glass: 'glass' }
+    };
+
+    // Which of them a town of this size, at this height, builds in. The heart
+    // of a city goes up in concrete and glass; its edges and every village are
+    // brick, render and timber, which is what makes a skyline read as a
+    // skyline rather than as one material stacked to different heights.
+    const CITY_SCHEMES    = ['concrete', 'concrete', 'ashlar', 'brick', 'sandstone'];
+    const OUTSKIRT_SCHEMES = ['brick', 'render', 'sandstone', 'timber'];
+    const VILLAGE_SCHEMES = ['timber', 'timber', 'render', 'brick'];
+
+    // The scheme one lot is built to. Deterministic on the square and the lot,
+    // so a house is the same house made of the same blocks every time anybody
+    // comes back to it.
+    function schemeFor(wx, wy, idx, kind, core, storeys) {
+        if (kind && BUILD_SCHEMES[kind]) return BUILD_SCHEMES[kind];
+        const r = settleRnd(wx, wy, 8600 + idx * 13);
+        let pool;
+        if (kind === 'city') pool = (core > 0.5 || (storeys || 1) >= 8) ? CITY_SCHEMES : OUTSKIRT_SCHEMES;
+        else pool = VILLAGE_SCHEMES;
+        return BUILD_SCHEMES[pool[Math.floor(r * pool.length) % pool.length]];
+    }
+
     // The whole plan of one settlement square, in tile-local coordinates
     // (-ts/2 .. ts/2 on both axes).
     //
@@ -250,7 +320,8 @@
             plan.lots.push({
                 x: green.x - 12, z: green.z - 14, w: 34, d: 26, rot: 0,
                 storeys: 2, h: 2 * S.storeyH, side: dir === 'h' ? 0 : 2,
-                gable: false, shop: false, kind: 'church'
+                gable: false, shop: false, kind: 'church',
+                blocks: BUILD_SCHEMES.church
             });
         }
 
@@ -298,6 +369,7 @@
                         h: st * S.storeyH,
                         side: r.axis === 'h' ? (sgn < 0 ? 1 : 0) : (sgn < 0 ? 3 : 2),
                         gable: true, shop: isShop, kind: 'house',
+                        blocks: schemeFor(wx, wy, plan.lots.length, 'village', 0, st),
                         shopType: isShop ? _shopTypeFor(wx, wy, plan.lots.length, false) : null,
                         shopFloors: isShop ? [0] : null
                     });
@@ -476,6 +548,11 @@
                 }
                 lot.gable = !big || st <= 2;
                 lot.facade = Math.floor(settleRnd(wx, wy, ++seed) * 3);
+                // What it is built out of. A works or a warehouse where the
+                // block is a car park's neighbour, ordinary brick and concrete
+                // everywhere else (see BUILD_SCHEMES).
+                lot.blocks = schemeFor(wx, wy, plan.lots.length,
+                    big ? 'city' : 'village', core, st);
                 plan.lots.push(lot);
                 t += w;
             }
@@ -604,7 +681,14 @@
         }
 
         add(geoKey, mat, x, y, z, sx, sy, sz, rotY) {
-            const key = geoKey + '|' + (mat.uuid || mat.id || geoKey);
+            if (!mat) return;
+            // Keyed on a short integer per material rather than on its UUID: a
+            // town puts several thousand pieces through here and every one of
+            // them was building a forty-character string to look its bucket up
+            // with. Blocks carry that number already (VoxelWorld.Blocks);
+            // anything else is given one the first time it is seen.
+            if (mat.__vwId === undefined) mat.__vwId = ++SettlementBatch._matId;
+            const key = geoKey + '#' + mat.__vwId;
             let b = this._buckets.get(key);
             if (!b) { b = { geo: this._d.geos[geoKey], mat, items: [] }; this._buckets.set(key, b); }
             b.items.push({ x, y, z, sx, sy, sz, r: rotY || 0 });
@@ -621,6 +705,12 @@
                 const im = new THREE.InstancedMesh(b.geo, b.mat, b.items.length);
                 im.castShadow = false;
                 im.receiveShadow = true;
+                // Nothing in a town ever moves: telling the driver so lets it
+                // upload the matrices once and leave them on the card.
+                if (im.instanceMatrix && im.instanceMatrix.setUsage &&
+                    THREE.StaticDrawUsage !== undefined) {
+                    im.instanceMatrix.setUsage(THREE.StaticDrawUsage);
+                }
                 for (let i = 0; i < b.items.length; i++) {
                     const it = b.items[i];
                     q.setFromAxisAngle(up, it.r);
@@ -629,11 +719,22 @@
                     m.compose(p, q, s);
                     im.setMatrixAt(i, m);
                 }
+                // Culled as a whole or not at all. An InstancedMesh has no
+                // bound of its own in this build of three, so it is tested
+                // against the UNIT CUBE its geometry is, sitting at the middle
+                // of the square: a town winks out of existence the moment the
+                // camera looks away from that one point, however much of it is
+                // still in front of you. The square itself is only streamed in
+                // when it is near, so there is nothing to save by culling the
+                // handful of meshes inside it.
+                im.frustumCulled = false;
                 grp.add(im);
             }
             this._buckets.clear();
         }
     }
+    // The counter behind the bucket keys above.
+    SettlementBatch._matId = 0;
 
 
     // Is this world square a town, and which sort of one? The one answer every
@@ -713,6 +814,11 @@
                 gable: true, shop: false, kind: 'house', ruined: false
             }, o || {});
             lot.h = lot.storeys * S.storeyH;
+            // A farmyard is boards and cobble; the house on it is rendered.
+            if (!lot.blocks) {
+                lot.blocks = BUILD_SCHEMES[lot.subkind] ||
+                    schemeFor(wx, wy, plan.lots.length, 'village', 0, lot.storeys);
+            }
             plan.lots.push(lot);
             return lot;
         };
@@ -1111,32 +1217,17 @@
         };
 
         // The lining: the rooms are plastered inside, so a wall never shows the
-        // street's own brickwork from the parlour. The door side is split around
-        // the doorway, exactly the way the shell outside it is.
-        const doorSpan = _doorSpan(lot);
+        // street's own brickwork from the parlour.
+        //
+        // Where the lining GOES is the house builder's answer, not this one's
+        // (VoxelWorldHouse.linerRuns). It used to be worked out here, flat
+        // against the inside face of the shell - and a face of plaster sitting
+        // exactly on a face of brick is two surfaces at one depth, which is why
+        // the walls of every room in the world flickered. The builder straddles
+        // it into the shell instead, and it is the builder's business because it
+        // is the builder that knows where the shell is.
         const lineH = floors * H;
-        for (let side = 0; side < 4; side++) {
-            const along = (side < 2) ? iw : id;
-            const off   = (side < 2) ? id / 2 - WALL_T / 2 : iw / 2 - WALL_T / 2;
-            const sgn   = (side % 2 === 0) ? -1 : 1;
-            const segs = (side === lot.side)
-                ? [[-along / 2, doorSpan[0]], [doorSpan[1], along / 2]]
-                : [[-along / 2, along / 2]];
-            for (const [a, b] of segs) {
-                if (b - a < 0.5) continue;
-                const c = (a + b) / 2, len = b - a;
-                plan.walls.push(side < 2
-                    ? { x: c, z: sgn * off, w: len, d: WALL_T, y: 0, h: lineH, liner: true }
-                    : { x: sgn * off, z: c, w: WALL_T, d: len, y: 0, h: lineH, liner: true });
-            }
-            // Over the doorway: the wall carries on above the lintel.
-            if (side === lot.side) {
-                const c = (doorSpan[0] + doorSpan[1]) / 2, len = doorSpan[1] - doorSpan[0];
-                plan.walls.push(side < 2
-                    ? { x: c, z: sgn * off, w: len, d: WALL_T, y: DOOR_H, h: lineH - DOOR_H, liner: true, over: true }
-                    : { x: sgn * off, z: c, w: WALL_T, d: len, y: DOOR_H, h: lineH - DOOR_H, liner: true, over: true });
-            }
-        }
+        for (const w of VW.House.linerRuns(lot, iw, id, lineH)) plan.walls.push(w);
 
         // Where the front door is, so the room it opens into can be the hall.
         const entry = {
@@ -1282,6 +1373,14 @@
     // solids - so the same builder puts them up and the same machinery lets you
     // walk inside them.
 
+    // What each of them was built out of before it was left. A ruin is not one
+    // material: a barn was boards, a factory was dark brick and iron, a chapel
+    // was ashlar, and a bunker was poured concrete.
+    const RUIN_SCHEMES = {
+        farmhouse: 'ruin', barn: 'barn', chapel: 'church', watchtower: 'granary',
+        factory: 'works', motel: 'ruin', granary: 'granary', bunker: 'concrete'
+    };
+
     const ABANDONED_KINDS = [
         { key: 'farmhouse',  w: 54, d: 42, floors: 2, roof: 'gable', ruin: 0.30 },
         { key: 'barn',       w: 66, d: 46, floors: 1, roof: 'gable', ruin: 0.45 },
@@ -1328,6 +1427,7 @@
             storeys: kind.floors, h: kind.floors * S.storeyH,
             side: Math.floor(rnd() * 4),
             gable: kind.roof === 'gable', shop: false,
+            blocks: BUILD_SCHEMES[RUIN_SCHEMES[kind.key]] || BUILD_SCHEMES.ruin,
             kind: 'abandoned', subkind: kind.key,
             ruined: true, ruin: kind.ruin, spire: !!kind.spire, chimney: !!kind.chimney
         });
@@ -1362,7 +1462,8 @@
 
     // Handed to the rest of the suite.
     Object.assign(VW, {
-        ABANDONED_CHANCE, ABANDONED_KINDS, DOOR_H, DOOR_W, FURN_SIZE,
+        ABANDONED_CHANCE, ABANDONED_KINDS, BUILD_SCHEMES, RUIN_SCHEMES, schemeFor,
+        DOOR_H, DOOR_W, FURN_SIZE,
         ROOM_KIT, ROOM_PLANS, STEADING_ODDS, planSteading, steadingKindAt,
         INTERIOR_FAR,
         INTERIOR_MAX_FLOORS, INTERIOR_NEAR, SETTLE, SIDE_NORMALS, STAIR_REACH,

@@ -27,7 +27,7 @@
     if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldHUD.js'); return; }
 
     const {
-        WORLD_TILE_SIZE, camperFuelGet, camperMaxFuel
+        WORLD_TILE_SIZE, WORLD_UI_Z, camperFuelGet, camperMaxFuel
     } = VW;
 
     // =========================================================================
@@ -37,6 +37,13 @@
     // hands, drawn off the game's own icon sheet (js/db Icons.json - 96 is the
     // plain sword).
     const BAR_WEAPON_ICON = 96;
+    // The quick bar is the game's own quick bar (Core/HotbarUI.js), the same
+    // widget the battle skill bar and the item favourites bar are built out of,
+    // so the one bar the 3D world has looks and reads exactly like the bars
+    // everywhere else does. Nine cells: the weapon, then the eight kinds of
+    // block that can be carried (VoxelWorldDigging's BAR_SLOTS), which is what
+    // makes the number keys 1..9 mean what they look like they mean.
+    const BAR_SLOTS_TOTAL = 9;
 
     class CamperHUD {
         // `silent` builds no HUD at all (title-screen background drive): every
@@ -318,18 +325,22 @@
             // The quick bar. Along the bottom of the screen, out of the way of
             // the crosshair: the weapon in the leader's hands in the first cell
             // and every kind of block they have dug up in the rest of them. The
-            // wheel (or L1/R1) runs along it, and the cell in hand is the lit
-            // one. Empty until the first swing lands, and gone with the walk.
-            this._barPanel = document.createElement('div');
-            this._barPanel.id = 'vw-blockbar';
-            this._barPanel.style.cssText = `
-                position:absolute; left:0px; right:0px; bottom:18px;
-                display:none; justify-content:center; gap:6px;
-                pointer-events:none; z-index:4;
-            `;
-            hud.appendChild(this._barPanel);
-            this._barCells = null;
-            this._barKey = '';
+            // wheel (or L1/R1) runs along it, the number keys go straight to a
+            // cell, and the cell in hand is the lit one.
+            //
+            // It is the game's own quick bar widget, pinned to the canvas and
+            // lifted over the world, rather than a second bar of its own drawn
+            // inside this overlay: the item favourites bar stands down while
+            // the 3D world is up (see ItemSystemHotbar's mapBarAllowed), and
+            // this takes its place looking exactly like it.
+            this._bar = window.HotbarUI ? new window.HotbarUI({
+                id: 'html-voxel-blockbar',
+                slots: BAR_SLOTS_TOTAL,
+                zIndex: WORLD_UI_Z,
+                showLabel: true,
+                onSlotClick: (i) => { if (this._onBarPick) this._onBarPick(i); }
+            }) : null;
+            this._onBarPick = null;
 
             // The big map. It lives over everything, takes the mouse while it
             // is up, and is empty until [M] cycles onto it.
@@ -900,51 +911,39 @@
         // ---------------------------------------------------------------------
         // The quick bar
         // ---------------------------------------------------------------------
+        // Who to tell when a cell of the bar is clicked. Set once, when the
+        // scene has a digging tool to hand the answer to.
+        onBlockPick(fn) { this._onBarPick = fn; }
+
         // Handed the whole bar every frame (the tool's own readout: the weapon,
-        // then a cell per block slot). Rebuilt only when something about it has
-        // actually changed - which cell is lit, what is in one, how many - so a
-        // bar that is not being used costs one string comparison a frame.
+        // then a cell per block slot), and turned into the entries the shared
+        // quick bar draws. Rebuilding is the widget's own business - it keys off
+        // what is in the row and only redraws when that changes - so a bar
+        // nobody is touching costs one string comparison a frame.
         setBlockBar(rows) {
-            if (!this._barPanel) return;
-            if (!rows || !rows.length) {
-                if (this._barPanel.style.display !== 'none') this._barPanel.style.display = 'none';
-                this._barKey = '';
-                return;
-            }
-            const key = rows.map(r => (r.weapon ? 'W' : (r.mat || 0)) + ':' + (r.count || 0) +
-                                      (r.on ? '*' : '')).join('|');
-            if (key === this._barKey) return;
-            this._barKey = key;
-            this._barPanel.style.display = 'flex';
-            this._barPanel.innerHTML = rows.map(r => {
-                const lit = r.on
-                    ? 'border-color:#ffe8b0; box-shadow:0 0 10px rgba(255,232,176,0.55);'
-                    : 'border-color:rgba(139,90,43,0.55);';
+            if (!this._bar) return;
+            if (!rows || !rows.length) { this._bar.hide(); return; }
+            let selected = -1;
+            const entries = rows.map((r, i) => {
+                if (r.on) selected = i;
                 if (r.weapon) {
                     // The sword off the game's own icon sheet rather than a
-                    // glyph: everything else in this menu is drawn from it.
-                    const ic = BAR_WEAPON_ICON;
-                    return `<div style="width:46px;height:46px;border:2px solid;border-radius:5px;
-                        background:rgba(10,6,3,0.72);${lit}
-                        display:flex;align-items:center;justify-content:center">
-                        <span style="width:32px;height:32px;display:block;
-                            background:url('img/system/IconSet.png') -${(ic % 16) * 32}px -${Math.floor(ic / 16) * 32}px no-repeat"></span>
-                    </div>`;
+                    // glyph: every other bar in the game is drawn from it.
+                    return { iconIndex: BAR_WEAPON_ICON, enabled: true, label: r.name || '' };
                 }
-                if (!r.mat) {
-                    return `<div style="width:46px;height:46px;border:2px dashed;border-radius:5px;
-                        background:rgba(10,6,3,0.45);${lit}"></div>`;
-                }
-                return `<div title="${r.name}" style="width:46px;height:46px;border:2px solid;
-                    border-radius:5px;background:rgba(10,6,3,0.72);${lit}
-                    position:relative;display:flex;align-items:center;justify-content:center">
-                    <div style="width:26px;height:26px;border-radius:3px;background:${r.colour || '#7a6a4a'};
-                        box-shadow:inset 0 -6px 8px rgba(0,0,0,0.45)"></div>
-                    <div style="position:absolute;right:3px;bottom:1px;color:#ecdcb9;
-                        font-family:'Lora',serif;font-size:13px;
-                        text-shadow:0 0 3px #000">${r.count}</div>
-                </div>`;
-            }).join('');
+                // An empty slot is an empty slot: nothing has been dug that
+                // would go in it yet.
+                if (!r.mat) return null;
+                return {
+                    iconIndex: 0, enabled: true, count: r.count,
+                    swatch: r.colour || '#7a6a4a', label: r.name || ''
+                };
+            });
+            // `active` is what lights the cell in hand. The 3D world always has
+            // something in hand - the weapon, if nothing else - so the bar is
+            // always showing which, where the item bar only lights a cell while
+            // the keys have armed one.
+            this._bar.render(entries, { selected, active: selected >= 0 });
         }
 
         // Fed by the scene's digging update: the cube under the crosshair, the
@@ -1011,11 +1010,17 @@
         // panels over one picture is one set too many.
         setHidden(on) {
             if (this._el) this._el.style.display = on ? 'none' : '';
+            // The quick bar is pinned to the canvas rather than mounted inside
+            // this overlay, so hiding the overlay does not take it with it.
+            if (on && this._bar) this._bar.hide();
         }
 
         dispose() {
             this._unbindFullMap();
             if (this._el && this._el.parentNode) this._el.parentNode.removeChild(this._el);
+            // The quick bar lives on the page, not in the overlay: it has to be
+            // taken down with the world or it is left hanging over the map.
+            if (this._bar) { this._bar.destroy(); this._bar = null; }
         }
     }
 

@@ -1600,7 +1600,13 @@
       }
     }
 
-    skillIdList(prosthetic.skill).forEach((sid) => actor.forgetSkill(sid));
+    // What the augment taught goes with it, unless the limb it sat on (or
+    // another augment) still owes that skill.
+    if (window.HealthCore && window.HealthCore.forgetProstheticSkills) {
+      window.HealthCore.forgetProstheticSkills(actor, partKey);
+    } else {
+      skillIdList(prosthetic.skill).forEach((sid) => actor.forgetSkill(sid));
+    }
 
     const reproVarId = getReproductionVariableId(actor);
     if (["UTERUS", "OVIDUCT", "SPORE_GLAND", "MITOSIS_GLAND"].includes(currentProstheticKey)) {
@@ -1924,7 +1930,13 @@
       }
     }
 
-    skillIdList(prosthetic.skill).forEach((sid) => actor.forgetSkill(sid));
+    // What the augment taught goes with it, unless the limb it sat on (or
+    // another augment) still owes that skill.
+    if (window.HealthCore && window.HealthCore.forgetProstheticSkills) {
+      window.HealthCore.forgetProstheticSkills(actor, partKey);
+    } else {
+      skillIdList(prosthetic.skill).forEach((sid) => actor.forgetSkill(sid));
+    }
 
     const reproVarId = getReproductionVariableId(actor);
     if (["UTERUS", "OVIDUCT", "SPORE_GLAND", "MITOSIS_GLAND"].includes(currentProstheticKey)) {
@@ -3219,9 +3231,16 @@
         }
       }
 
+      // Amputated, so what the limb taught leaves with it: its own moves and
+      // the ones it granted for being a hand, a mouth, an eye or a foot, kept
+      // only where another part of that kind is still attached.
       const removedPart = actor._bodyParts[item.partKey];
       if (removedPart) {
-        skillIdList(removedPart.skillId).forEach((sid) => actor.forgetSkill(sid));
+        if (window.HealthCore && window.HealthCore.forgetPartSkills) {
+          window.HealthCore.forgetPartSkills(actor, removedPart, item.partKey);
+        } else {
+          skillIdList(removedPart.skillId).forEach((sid) => actor.forgetSkill(sid));
+        }
       }
       if (removedPart && removedPart.itemId && $dataItems[removedPart.itemId]) {
         $gameParty.gainItem($dataItems[removedPart.itemId], 1);
@@ -3260,7 +3279,11 @@
         if (actor._prosthetics && actor._prosthetics[partKey]) {
           removeProstheticImmediate(actor, partKey);
         }
-        skillIdList(oldPart.skillId).forEach((sid) => actor.forgetSkill(sid));
+        if (window.HealthCore && window.HealthCore.forgetPartSkills) {
+          window.HealthCore.forgetPartSkills(actor, oldPart, partKey);
+        } else {
+          skillIdList(oldPart.skillId).forEach((sid) => actor.forgetSkill(sid));
+        }
         if (oldPart.itemId && $dataItems[oldPart.itemId]) {
           $gameParty.gainItem($dataItems[oldPart.itemId], 1);
         }

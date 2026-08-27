@@ -43,7 +43,7 @@
         LIMINAL_FUEL_PER_SEC, LIMINAL_TERRAIN_RADIUS, LIMINAL_TOP_KMH, LOOT_RANGE,
         LiminalFx, MAX_KMH, MAX_STEER_LOCK, NATURAL_TOP, OVERDRIVE_DECAY,
         OVERDRIVE_KMHPS, ProceduralDecorator, REVERSE_ACCEL, REVERSE_MAX_KMH,
-        ROAD_TOTAL_W, RoadAutopilot, SETTLE, SHIFT_TIME, SLOPE_ACCEL,
+        ROAD_GAP, ROAD_TOTAL_W, RoadAutopilot, SETTLE, SHIFT_TIME, SLOPE_ACCEL,
         SOLID_PROPS, FLY_SKILL_ID, OVERLAY_Z, WORLD_UI_Z, WORLD_UI_IDS, MENU_Z,
         faceBillboards, PERSON_H,
         setBiomeOverride, getBiomeOverride, setAlienTerrain, buildOmegaTower,
@@ -126,8 +126,9 @@
     class DomMenuGuard {
         constructor(own) {
             this._own = own;
-            this._held = new Map();   // element -> the z-index it had before
+            this._held = new Map();   // element -> { z: the z-index it had before, seq }
             this._obs  = null;
+            this._seq  = 0;
             this.open  = false;
         }
 
@@ -166,14 +167,32 @@
         _hold(node) {
             if (node === this._own || this._held.has(node)) return;
             if (!DomMenuGuard._isMenu(node)) return;
-            this._held.set(node, node.style.zIndex);
+            this._held.set(node, { z: node.style.zIndex, seq: ++this._seq });
             node.style.zIndex = String(MENU_Z);
         }
 
         _release(node) {
-            if (!this._held.has(node)) return;
-            node.style.zIndex = this._held.get(node) || '';
+            const rec = this._held.get(node);
+            if (!rec) return;
+            node.style.zIndex = rec.z || '';
             this._held.delete(node);
+        }
+
+        // A bookmark in the order things arrived on the page. Taken when a fight
+        // opens, spent when it ends (releaseSince): anything the fight put on the
+        // page belongs to the fight, and the fight is over.
+        mark() { return this._seq; }
+
+        // Let go of everything held since `mark`. A scene that has terminated can
+        // leave its own DOM standing - built once, hidden and shown rather than
+        // removed, so the observer never sees it go - and a leftover like that
+        // would otherwise read as a menu open over the world for ever, which
+        // freezes the walk and the mouse with nothing on screen to explain it.
+        releaseSince(mark) {
+            for (const [el, rec] of [...this._held]) {
+                if (rec.seq > mark) this._release(el);
+            }
+            return this.update();
         }
 
         // Is one actually being SHOWN? Menus are routinely built hidden and
@@ -641,6 +660,12 @@
             // Which world the map is a map of, before it is ever drawn: Earth's
             // continents are no use to somebody standing on another planet.
             if (this._hud.setPlanet) this._hud.setPlanet(this._sky);
+            // A cell of the quick bar clicked is the same as its number key.
+            // (It only ever reaches the bar when the mouse is not grabbed - a
+            // pointer-locked click is a swing at what the crosshair is on.)
+            if (this._hud.onBlockPick && this._tool) {
+                this._hud.onBlockPick((i) => this._tool.bar.select(i));
+            }
             this._fpc = new FirstPersonController(this._camera, CAMPER_BOUNDS);
             // The title background never grabs the mouse: the player is clicking
             // the title menu, not driving.
@@ -2335,7 +2360,8 @@
             // Underground it is taken down outright: the sheet runs at one level
             // across the whole world, and every passage down there is below it.
             this._water.setVisible(this._terrain.seaNear && !this._underground);
-            this._traffic.update(this._vanX, this._vanZ, delta, this._dayFactor == null ? 1 : this._dayFactor);
+            this._traffic.update(this._vanX, this._vanZ, delta,
+                this._dayFactor == null ? 1 : this._dayFactor, this._cameraYaw());
             if (this._parked) {
                 // The camper is under the party while they are driving it, and
                 // parked wherever they left it the moment they are not.
@@ -3207,11 +3233,16 @@
                 const lx = x - (tx * ts + ts * 0.5);
                 const lz = z - (tz * ts + ts * 0.5);
                 const half = ROAD_TOTAL_W / 2;   // matches the built road slab width
-                const dir = getRoadDirectionAt(tx, tz);
+                const gap  = ROAD_GAP / 2;       // ...minus the unpaved median down the middle
+                const dir  = getRoadDirectionAt(tx, tz);
+                // A carriageway, not the strip of country between the two of
+                // them: the median is grass to look at (VoxelField.roadAt) and
+                // has to be grass to drive on as well.
+                const paved = across => Math.abs(across) <= half && Math.abs(across) > gap;
                 let on;
-                if (dir === 'vertical')        on = Math.abs(lx) <= half;
-                else if (dir === 'horizontal') on = Math.abs(lz) <= half;
-                else                           on = Math.abs(lx) <= half || Math.abs(lz) <= half;
+                if (dir === 'vertical')        on = paved(lx);
+                else if (dir === 'horizontal') on = paved(lz);
+                else on = (Math.abs(lx) <= half && Math.abs(lz) <= half) || paved(lx) || paved(lz);
                 return on ? SURFACES.asphalt : SURFACES.dirt;
             }
             if (type === 'mountain') return SURFACES.rock;
@@ -4261,8 +4292,13 @@
             releasePointerLock();
         }
 
-        _unlockControls() {
-            if (!this._locked) return;
+        // `force` hands the keys back even where they were never taken here: a
+        // fight can be opened from a conversation, from a CYOA card or straight
+        // off the 2D map underneath, and the walker has to be given its legs
+        // back at the end of every one of those, not only the ones this scene
+        // locked itself.
+        _unlockControls(force) {
+            if (!this._locked && !force) return;
             this._locked = false;
             if (this._fpc) {
                 if (this._fpc.clearMove) this._fpc.clearMove();
@@ -4347,10 +4383,18 @@
             // A fight opened out of a conversation inherits the swap rather
             // than doing it twice; the flag goes, the canvas stays.
             this._mirrorWatch = false;
+            // Where the page stood when the fight opened. Everything the fight
+            // then puts on it - its command list, its skill panels, its target
+            // rows - is the fight's, and is let go of again when it ends.
+            this._battleDomMark = this._domMenus ? this._domMenus.mark() : 0;
             if (this._hud && this._hud.setHidden) this._hud.setHidden(true);
             if (this._overlay) this._overlay.style.display = 'none';
             if (this._fpc && this._fpc.clearMove) this._fpc.clearMove();
             if (this._tool) this._tool.setActive(false);
+            // The weapon overlay is one layer, shared with the fight: the drive
+            // lets go of it so the battle can put the party's own weapon in
+            // frame there instead (CamperWeapon.suspendForBattle).
+            CamperWeapon.suspendForBattle();
             releasePointerLock();
 
             this._drawForGameCanvas();
@@ -4408,17 +4452,39 @@
         // and whatever is left of the creature is settled (dead on the ground,
         // or alive and giving the party a wide berth).
         endBattleView() {
-            if (!this._battleWatch) return;
+            // A fight that never swapped the canvas (it was opened and settled
+            // before the battle scene was ever built) still took the controls on
+            // its way in, so they are handed back here too.
+            if (!this._battleWatch) { this._unlockControls(); return; }
             this._battleWatch = false;
             this._battleSeen  = false;
             this._drawForWindow();
             const ent = this._pendingFought;
             if (ent && ent.root) ent.root.visible = true;
             if (ent && ent.plate) ent.plate.visible = true;
-            this._unlockControls();
+            // The keys come back whatever the fight ended as. A win pops the
+            // scene, a flee pops it just the same, and a run that was taken on
+            // the very first round pops it before the party ever acted: the walk
+            // has to be handed back on every one of those, so this is not asked
+            // to remember whether it was the fight that took it away.
+            this._unlockControls(true);
+            // ...and nothing the fight left standing may go on reading as
+            // something up over the world, or the walk is frozen and the mouse
+            // stays out of reach with an empty screen to explain it. Every latch
+            // a fight can be opened through is dropped, and the fight's own DOM
+            // is let go of (see DomMenuGuard.releaseSince).
+            this._menuOpen  = false;
+            this._msgWatch  = false;
+            this._msgGrace  = 0;
+            this._stationRefuelWatch = false;
+            if (this._domMenus) {
+                this._domMenuOpen = this._domMenus.releaseSince(this._battleDomMark || 0);
+            }
+            this._battleDomMark = 0;
             if (this._hud && this._hud.setHidden) this._hud.setHidden(false);
             if (this._overlay) this._overlay.style.display = '';
             if (this._fpc && this._fpc.clearMove) this._fpc.clearMove();
+            CamperWeapon.resumeFromBattle();
             CamperWeapon.refresh();
             if (this._followers) this._followers.refresh();
             if (this._pendingFought) this._settleFoughtEnemy();
@@ -4461,7 +4527,8 @@
             this._weatherFx.update(at.x, at.z, delta);
             this._water.update(at.x, at.z, tsec);
             this._water.setVisible(this._terrain.seaNear && !this._underground);
-            this._traffic.update(at.x, at.z, delta, this._dayFactor == null ? 1 : this._dayFactor);
+            this._traffic.update(at.x, at.z, delta,
+                this._dayFactor == null ? 1 : this._dayFactor, this._cameraYaw());
             if (this._parked) this._parked.update(delta, at.x, at.z);
             this._updateOmegaTower();
             if (this._crowd || this._followers) {
@@ -5164,7 +5231,7 @@
             // The quick bar along the bottom: the weapon, then every kind of
             // block dug up and not yet built with.
             if (this._hud && this._hud.setBlockBar) {
-                this._hud.setBlockBar(this._tool.bar.readout());
+                this._hud.setBlockBar(this._tool.bar.readout(this._tool.weaponName));
             }
         }
 

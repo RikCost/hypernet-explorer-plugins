@@ -3857,8 +3857,9 @@
 }
 
 .command-item .icon {
-    width: 24px;
-    height: 24px;
+    --icon-size: 24px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     margin-right: 7px;
     flex-shrink: 0;
     display: flex;
@@ -9780,7 +9781,8 @@
     background: transparent;
     border: none;
     border-radius: 50%;
-    width: 80px;
+    width: 100%;
+    max-width: 120px;
     height: 80px;
     margin: 0 auto;
     display: flex;
@@ -9788,6 +9790,15 @@
     justify-content: center;
     align-items: center;
     position: relative;
+}
+
+/* The value and its modifier badge sit on one line, the badge to the right of
+   the number, so nothing hangs off the bottom of the medallion. */
+.stat-medallion-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 .stat-medallion-lbl {
@@ -9806,10 +9817,9 @@
 }
 
 .stat-medallion-mod {
-    position: absolute;
-    bottom: -5px;
+    position: static;
     background: var(--text-primary-hover);
-    color: var(--text-warning-hover);
+    color: var(--bg-secondary-hover);
     font-family: 'Lora', serif;
     font-size: 0.82em;
     font-weight: bold;
@@ -9887,7 +9897,7 @@
 .status-stat-mod-badge {
     display: inline-block;
     background: var(--text-primary-hover);
-    color: var(--text-warning-hover);
+    color: var(--bg-secondary-hover);
     font-weight: bold;
     font-size: 0.88em;
     padding: 0 5px;
@@ -11276,9 +11286,10 @@
     position: relative;
     width: 100%;
     max-width: 440px;
+    /* The portrait keeps its aspect ratio and shrinks with the page, filling the
        wrapper instead of spilling over the gauges. */
-    flex: 0 1 500px;
-    min-height: 90px;
+    flex: 1 1 500px;
+    min-height: 260px;
     margin: 0 auto 12px auto;
     background: transparent;
     border: none;
@@ -20055,6 +20066,12 @@ body, canvas {
 .hotbar-row {
     align-items: center;
 }
+/* The bar while a message, a choice or an event owns the input: still there,
+   just plainly not listening. */
+.hotbar-row.hotbar-inert {
+    opacity: 0.55;
+    filter: saturate(0.75);
+}
 .hotbar-slots {
     display: flex;
     flex-direction: row;
@@ -20127,6 +20144,14 @@ body, canvas {
     background-image: url('../img/system/IconSet.png');
     background-repeat: no-repeat;
     image-rendering: pixelated;
+}
+/* A slot whose contents are a colour rather than an icon: the cubes of turf,
+   sand and rock on the 3D world's block bar (#html-voxel-blockbar). Drawn as a
+   little cube face, lit from above, so it reads as a block and not as a chip
+   of paint. */
+.hotbar-swatch {
+    border-radius: 3px;
+    box-shadow: inset 0 -6px 8px var(--shadow-black-translucent-45);
 }
 .hotbar-num {
     position: absolute;
@@ -20215,11 +20240,12 @@ body, canvas {
     height: 4px;
     margin-top: 0;
 }
-/* All three read against a busy backdrop (parchment, the map, or a 3D
-   battle scene), so every slot gets the same dark backing to keep its icon
+/* All four read against a busy backdrop (parchment, the map, a 3D battle scene
+   or the 3D world), so every slot gets the same dark backing to keep its icon
    legible. */
 .backpack-hotbar .hotbar-slot,
 #html-item-hotbar-overlay .hotbar-slot,
+#html-voxel-blockbar .hotbar-slot,
 #html-hotbar-overlay .hotbar-slot {
     background: var(--shadow-black-translucent-80);
 }
@@ -21779,7 +21805,8 @@ body.ascii-ui-active .mp-type-spread {
 #gx-anomaly .gx-anom-rewards { margin-top:8px; padding-top:8px;
   border-top:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.2));
   font-size:15px; color:var(--accent-amber-light,#e9c46a); }
-#gx-anomaly .gx-anom-rewards div { margin:2px 0; }
+#gx-anomaly .gx-anom-rewards div { margin:2px 0; display:flex; align-items:center; gap:6px; }
+#gx-anomaly .gx-anom-rewards .toast-icon { vertical-align:0; }
 #gx-anomaly .gx-anom-choices { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
 #gx-anomaly .gx-anom-choice { display:block; text-align:left; padding:8px 12px;
   border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.28));
@@ -24496,8 +24523,7 @@ cursor:pointer; font-size:16px; line-height:1.4;
     }
 
     .command-item .icon {
-        width: 21px;
-        height: 21px;
+        --icon-size: 21px;
         margin-right: 5px;
     }
 
@@ -24597,7 +24623,11 @@ cursor:pointer; font-size:16px; line-height:1.4;
     height: 100vh;
     background: var(--bg-bg-alt-1-translucent-70);
     display: flex;
-    align-items: flex-end;
+    /* The card is read at the top of the picture, above the cast rather than
+       across their feet: a page of prose over a lit background was the thing
+       that made it hard to read, and the stage is drawn short enough now that
+       every face still stands clear underneath it. */
+    align-items: flex-start;
     justify-content: center;
     z-index: 1000;
     box-sizing: border-box;
@@ -24616,13 +24646,17 @@ cursor:pointer; font-size:16px; line-height:1.4;
     background: var(--bg-secondary-hover);
     border: 3px double var(--text-primary-hover);
     border-radius: 6px;
-    box-shadow: 0 10px 25px var(--shadow-primary-hover-translucent-5),
+    box-shadow: 0 10px 30px var(--shadow-primary-hover-translucent-5),
         inset 0 0 40px var(--shadow-shadow-alt-2-hover-translucent-8);
-    padding: 16px 26px 14px;
-    width: 1100px;
+    padding: 18px 30px 16px;
+    /* Narrower than it was: a thousand pixels of one-em prose ran to a line
+       nobody could track back from. */
+    width: 940px;
     max-width: 92vw;
-    max-height: 46vh;
-    margin-bottom: 2.5vh;
+    /* Down to where the cast starts: the card is read above their heads, not
+       across their faces (STAGE_METRICS.full sizes the busts to match). */
+    max-height: 48vh;
+    margin-top: 2vh;
     display: flex;
     flex-direction: column;
     font-family: 'Lora', serif;
@@ -24642,7 +24676,8 @@ cursor:pointer; font-size:16px; line-height:1.4;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-primary-hover-translucent-15);
     color: var(--text-primary-hover);
-    font-size: 1.285em;
+    font-size: 1.4em;
+    letter-spacing: 0.02em;
     text-align: center;
 }
 
@@ -24651,25 +24686,53 @@ cursor:pointer; font-size:16px; line-height:1.4;
 .pas-adv-text {
     flex: 1 1 auto;
     overflow-y: auto;
-    color: var(--text-success-active);
-    font-size: 1em;
-    line-height: 1.5;
+    color: var(--text-text-alt-7);
+    font-size: 1.15em;
+    line-height: 1.62;
+    text-shadow: 0 1px 2px var(--shadow-shadow-alt-2-hover-translucent-8);
 }
 
 .pas-adv-text p {
-    margin: 0 0 10px 0;
+    margin: 0 0 12px 0;
+    /* Long enough to read, short enough to find the next line on. */
+    max-width: 78ch;
 }
 
+/* What the ending paid, in the backpack's own hand: one .item-slot row per
+   line, its IconSet cell on the left and its count on the right. */
 .pas-adv-rewards {
-    margin-top: 4px;
-    padding-top: 8px;
+    margin-top: 8px;
+    padding-top: 10px;
     border-top: 1px solid var(--border-primary-hover-translucent-15);
-    color: var(--text-primary-hover);
-    font-size: 0.964em;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 26vh;
+    overflow-y: auto;
+    flex-shrink: 0;
 }
 
-.pas-adv-rewards p {
-    margin: 0 0 4px 0;
+.pas-adv-rewards .pas-adv-reward {
+    cursor: default;
+    padding: 4px 10px;
+}
+
+.pas-adv-rewards .pas-adv-reward:hover {
+    background: transparent;
+    border-color: var(--border-primary-hover-translucent-15);
+    box-shadow: none;
+}
+
+.pas-adv-rewards .item-slot-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.pas-adv-rewards .item-slot-name {
+    font-size: 1.05em;
+    white-space: normal;
+    color: var(--text-primary-hover);
 }
 
 .pas-adv-rows {
@@ -24680,12 +24743,12 @@ cursor:pointer; font-size:16px; line-height:1.4;
 }
 
 .pas-adv-row {
-    padding: 7px 14px;
+    padding: 8px 16px;
     border: 1px solid var(--text-primary-hover);
     border-radius: 4px;
     background: var(--bg-primary-hover-translucent-35);
-    color: var(--text-success-active);
-    font-size: 1em;
+    color: var(--text-text-alt-7);
+    font-size: 1.08em;
     cursor: pointer;
     transition: all 0.15s;
 }
@@ -24700,8 +24763,8 @@ cursor:pointer; font-size:16px; line-height:1.4;
 .pas-adv-hint {
     margin-top: 10px;
     color: var(--text-success-active);
-    opacity: 0.55;
-    font-size: 0.785em;
+    opacity: 0.6;
+    font-size: 0.85em;
     text-align: center;
 }
 
@@ -29070,10 +29133,7 @@ cursor:pointer; font-size:16px; line-height:1.4;
 }
 
 .mainmenu-02 {
-    width: 32px;
-    height: 32px;
     display: inline-block;
-    transform: scale(0.85);
 }
 
 .mainmenu-03 {

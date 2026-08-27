@@ -39,8 +39,8 @@
  * @desc Name of the image in busts/ (without extension).
  *
  * @command Rumors
- * @text Rumors
- * @desc Speaks one rumour in the calling NPC's personality. Elsewhere, a line from the generic bank.
+ * @text Talk To NPC
+ * @desc One random bust exchange with the calling NPC: they open, the party opens, or they pass on a rumour.
  *
  * @help
  * DialogueSystem.js
@@ -74,10 +74,12 @@ Imported.DialogueSystem = true;
     // Bust display constants
     // -------------------------------------------------------------------------
     const bustOpacity      = 255;
-    const bustWidth_16_9   = 440;
-    const bustHeight_16_9  = 615;
-    const bustYOffset_16_9 = 185;
-    const bustXOffset_16_9 = 245;
+    const bustAspect       = 0.74;  // every portrait in img/busts is about 3:4
+    const bustMaxHeight    = 615;   // the tallest a portrait is ever drawn
+    const bustMinHeight    = 240;   // and the shortest, however low the box sits
+    const bustBoxGap       = 4;     // air between the portrait's feet and the box
+    const bustTopMargin    = 6;     // air above its head
+    const bustXOffset_16_9 = 245;   // side margin used when there is no box to align to
     const fadeInDuration   = 12;
     const fadeOutDuration  = 12;
 
@@ -86,8 +88,40 @@ Imported.DialogueSystem = true;
     // -------------------------------------------------------------------------
     // Bust size helpers
     // -------------------------------------------------------------------------
-    function getBustWidth()  { return bustWidth_16_9;  }
-    function getBustHeight() { return bustHeight_16_9; }
+    // The portrait is measured against the dialogue box it belongs to: it stands
+    // on the box's top edge and shares the box's outer side, so the two read as
+    // one block. Both limits are hard. The box is a DOM overlay drawn over the
+    // canvas, so anything the portrait puts below its top edge is swallowed; and
+    // the photographic busts are drawn all the way to the top of their own file,
+    // so anything spent above the screen's top edge is a decapitated head. What
+    // is left is the strip between them, and the portrait is sized to fit it.
+    function messageBoxTop() {
+        const win   = SceneManager._scene && SceneManager._scene._messageWindow;
+        const floor = Graphics.height - bottomBarReserve();
+        if (!win || !(win.width > 0) || !(win.height > 0)) return floor;
+        // A box pinned to the top of the screen is not something to stand on.
+        if (win.y < Graphics.height * 0.45) return floor;
+        return win.y;
+    }
+
+    // The box is drawn centred on the screen whatever the window's own x says
+    // (see Window_Message.update below), so one half-width answers both sides.
+    function messageBoxHalfWidth() {
+        const win = SceneManager._scene && SceneManager._scene._messageWindow;
+        if (!win || !(win.width > 0)) {
+            return Math.max(0, Graphics.width / 2 - bustXOffset_16_9);
+        }
+        return Math.min(Graphics.width, win.width) / 2;
+    }
+
+    function messageBoxRight() { return Graphics.width / 2 + messageBoxHalfWidth(); }
+    function messageBoxLeft()  { return Graphics.width / 2 - messageBoxHalfWidth(); }
+
+    function getBustHeight() {
+        const room = messageBoxTop() - bustBoxGap - bustTopMargin;
+        return Math.round(Math.max(bustMinHeight, Math.min(bustMaxHeight, room)));
+    }
+    function getBustWidth()  { return Math.round(getBustHeight() * bustAspect); }
 
     function addBustToScene(bust, scene) {
         if (!scene || bust.parent) return;
@@ -244,9 +278,10 @@ Imported.DialogueSystem = true;
             if (window.$gameSplitScreen && window.$gameSplitScreen.active) {
                 this.characterBust._targetX = (Graphics.width - width) / 2;
             } else {
+                // Flush with the outer edge of the message box on its own side.
                 this.characterBust._targetX = left
-                    ? bustXOffset_16_9
-                    : Graphics.width - width - bustXOffset_16_9;
+                    ? messageBoxLeft()
+                    : messageBoxRight() - width;
             }
         }
 
@@ -279,9 +314,41 @@ Imported.DialogueSystem = true;
             return 'right';
         }
 
-        getBustY() { return Graphics.height - bustYOffset_16_9; }
+        // The floor the portrait stands on: the top edge of the message box, or,
+        // when there is no box below it, the real bottom of the screen less
+        // whatever the item quick bar is holding down there (see
+        // bottomBarReserve and Window_Message.updatePlacement below).
+        getBustY() { return messageBoxTop() - bustBoxGap; }
 
         setupBustPosition(sprite) { sprite.y = this.getBustY(); }
+
+        // The box moves and resizes under the portrait (a top-positioned
+        // message, the quick bar appearing, a resolution change), so the fit is
+        // redone whenever the geometry it was measured against has actually
+        // changed, and never otherwise.
+        layoutSignature() {
+            const win = SceneManager._scene && SceneManager._scene._messageWindow;
+            return Graphics.width + 'x' + Graphics.height + '|' +
+                   (win ? win.y + ',' + win.width + ',' + win.height : '-') + '|' +
+                   bottomBarReserve() + '|' + this.bustSide + '|' +
+                   (window.$gameSplitScreen && window.$gameSplitScreen.active ? '1' : '0');
+        }
+
+        refreshLayout(force) {
+            const sig = this.layoutSignature();
+            if (!force && sig === this._layoutSig) return;
+            this._layoutSig = sig;
+            const s = this.characterBust;
+            if (!s) return;
+            this.updateBustHiddenPosition();
+            s.y = this.getBustY();
+            if (s.bitmap) this.scaleBustToFit(s);
+            if (s._slideDuration > 0) {
+                s._slideTarget = s._slideType === 'out' ? s._hiddenX : s._targetX;
+            } else if (this.bustIsVisible) {
+                s.x = s._targetX;
+            }
+        }
 
         scaleBustToFit(sprite) {
             if (!sprite.bitmap || !sprite.bitmap.width || !sprite.bitmap.height) {
@@ -637,16 +704,11 @@ Imported.DialogueSystem = true;
         }
 
         onResolutionChange() {
-            this.updateBustHiddenPosition();
-            this.characterBust.y = this.getBustY();
-            if (this.characterBust.parent) {
-                if (this.characterBust._slideDuration > 0) this.characterBust._slideTarget = this.characterBust._targetX;
-                else if (this.bustIsVisible)               this.characterBust.x = this.characterBust._targetX;
-            }
+            this.refreshLayout(true);
         }
 
         slideIn() {
-            this.updateBustHiddenPosition();
+            this.refreshLayout(true);
             this.characterBust._slideTarget  = this.characterBust._targetX;
             this.characterBust._slideDuration = fadeInDuration;
             this.characterBust._slideType     = 'in';
@@ -659,6 +721,7 @@ Imported.DialogueSystem = true;
         }
 
         update() {
+            this.refreshLayout(false);
             const s = this.characterBust;
             if (s._slideDuration > 0) {
                 s.x += (s._slideTarget - s.x) / s._slideDuration;
@@ -842,10 +905,28 @@ Imported.DialogueSystem = true;
         }
     };
 
+    // The item quick bar holds the bottom edge of the map screen and stays up
+    // while you talk (ItemSystem/ItemSystemHotbar.js), so a box placed at the
+    // bottom is lifted clear of it rather than dropped over it.
+    function bottomBarReserve() {
+        const bar = window.ItemHotbar;
+        if (!bar || typeof bar.mapBarReservedHeight !== 'function') return 0;
+        const px = bar.mapBarReservedHeight();
+        return px > 0 ? px + 6 : 0; // a hair of air between box and bar
+    }
+
+    // The screen is taller than the UI frame the engine measures against:
+    // ResolutionSwitcher runs the game at 1280x720 while Graphics.boxHeight
+    // stays at the 624 written in System.json, so the engine's own placement
+    // leaves a bottom box floating almost a hundred pixels short of the bottom,
+    // in the middle of the portrait instead of under its feet. Every position
+    // type is re-measured against the real screen, and the bottom one then sits
+    // on the same floor the portrait stands on.
     const _WM_updatePlacement = Window_Message.prototype.updatePlacement;
     Window_Message.prototype.updatePlacement = function () {
         _WM_updatePlacement.call(this);
-        if (this._positionType === 2) this.y += 35;
+        const floor = Graphics.height - bottomBarReserve();
+        this.y = Math.max(0, (this._positionType * (floor - this.height)) / 2);
     };
 
     const _WM_update = Window_Message.prototype.update;
@@ -1048,11 +1129,16 @@ Imported.DialogueSystem = true;
         const scene  = SceneManager._scene;
         const msgWin = scene ? scene._messageWindow : null;
         if (msgWin) {
-            let tx = msgWin.x + msgWin.width - this.width;
+            const floor = Graphics.height - this.height - 10 - bottomBarReserve();
+            // The box is drawn centred on the screen rather than at the window's
+            // own x (see the DOM geometry in Window_Message.update), so the
+            // choices are hung off that centred right edge, not off msgWin.x.
+            const boxLeft = (Graphics.width - msgWin.width) / 2;
+            let tx = boxLeft + msgWin.width - this.width;
             let ty = msgWin.y - this.height - 10;
             if (ty < 10) ty = msgWin.y + msgWin.height + 10;
-            this.x = Math.max(10, Math.min(tx, Graphics.boxWidth  - this.width  - 10));
-            this.y = Math.max(10, Math.min(ty, Graphics.boxHeight - this.height - 10));
+            this.x = Math.max(10, Math.min(tx, Graphics.width - this.width - 10));
+            this.y = Math.max(10, Math.min(ty, floor));
         }
     };
 
@@ -1310,6 +1396,30 @@ Imported.DialogueSystem = true;
         return path ? path.replace(/^busts\//, '') : '7';
     }
 
+    // One step of an exchange. The party always speaks from the left of the
+    // screen and the NPC always answers from the right, whichever of them
+    // opened the conversation, so a beat reads as two people facing each other.
+    function playerStep(actor, text) {
+        const H    = window.NPCEmpathize?._helpers;
+        const full = H?._resolveBustForActor ? H._resolveBustForActor(actor) : 'img/busts/7.png';
+        return {
+            imageName: String(full).replace(/^img\/busts\//, '').replace(/\.png$/, ''),
+            displayName: actor ? actor.name() : '',
+            text,
+            side: 'left',
+        };
+    }
+
+    function npcStep(ev, npcName, text) {
+        const bm = SceneManager._scene?._bustManager;
+        return {
+            imageName: _npcExchangeBust(ev),
+            displayName: bm ? bm.getCharacterDisplayName(ev.eventId()) : npcName,
+            text,
+            side: 'right',
+        };
+    }
+
     // A short, personality-flavoured beat between the party leader and an NPC,
     // picking one random action out of the same catalogue the Empathize panel's
     // Socialize submenu offers (praise, small talk, comment on weather, insult,
@@ -1389,18 +1499,110 @@ Imported.DialogueSystem = true;
         EM.recordNPCLine?.(npcName, playerLine, 'player');
         EM.recordNPCLine?.(npcName, npcLine, 'npc');
 
-        const scene           = SceneManager._scene;
-        const bm              = scene && scene._bustManager;
-        const playerBustFull  = H._resolveBustForActor ? H._resolveBustForActor(actor) : 'img/busts/7.png';
-        const playerImageName = String(playerBustFull).replace(/^img\/busts\//, '').replace(/\.png$/, '');
-        const npcDisplayName  = bm ? bm.getCharacterDisplayName(ev.eventId()) : npcName;
+        return [playerStep(actor, playerLine), npcStep(ev, npcName, npcLine)];
+    }
 
-        // The party speaks from the left of the screen, the NPC answers from
-        // the right, so a two-line beat reads as two people facing each other.
-        return [
-            { imageName: playerImageName,      displayName: actor ? actor.name() : '', text: playerLine, side: 'left'  },
-            { imageName: _npcExchangeBust(ev), displayName: npcDisplayName,            text: npcLine,    side: 'right' },
-        ];
+    // The other half of the same beat: the NPC speaks first and the party
+    // answers. It reads out of the same Socialize catalogue, with the roles
+    // swapped - the NPC says the line the player would have said (addressed to
+    // the party leader by name) and the leader answers with the reply pool -
+    // so nothing new has to be written for an NPC to open a conversation.
+    //
+    // Which move they open with is not random: somebody who thinks well of the
+    // leader greets them warmly, somebody who cannot stand them opens with an
+    // insult, and everybody in between makes small talk.
+    function buildNpcOpeningExchange(ev, npcName, profile) {
+        const EM = window.NPCEmpathize;
+        const H  = EM && EM._helpers;
+        if (!H || !H._socialLines || !H._rand) return null;
+
+        const actor   = $gameParty.leader();
+        const actorId = actor && actor.actorId();
+        // Nobody opens a conversation with a beast: it has no answer to give.
+        if (H._isNonSentientActor && H._isNonSentientActor(actor)) return null;
+
+        const interactions = H._socialLines().interactions || [];
+        if (!interactions.length) return null;
+
+        const opinion = H._npcEffectiveOpinion ? H._npcEffectiveOpinion(profile, actor) : 0;
+        const tones   = opinion >= 25 ? ['positive', 'neutral']
+                      : opinion <= -25 ? ['negative', 'neutral']
+                      : ['neutral', 'positive'];
+        const pool    = interactions.filter(i => tones.includes(i.tone));
+        const choices = pool.length ? pool : interactions;
+        const def     = choices[Math.floor(Math.random() * choices.length)];
+
+        // The NPC's opener names the person they are talking to; the party's
+        // answer names the person who just spoke to them.
+        const fillNpc    = s => String(s || '').replace(/\{name\}/g, actor ? actor.name() : '');
+        const fillPlayer = s => String(s || '').replace(/\{name\}/g, npcName);
+
+        let npcLine;
+        if (ConfigManager.dialogueMode === 'markovian') {
+            npcLine = window.MarkovNPCDialogue?.generateLine?.(npcName) || '';
+        }
+        // Gossip reversed is the NPC fishing for news, and the party is the one
+        // with something to tell: the rumour bank stays out of it here, since
+        // an NPC passing one on is its own outcome of this command.
+        if (!npcLine) npcLine = fillNpc(H._rand(def.player));
+        if (!npcLine) return null;
+
+        const warm       = def.tone !== 'negative';
+        const playerLine = fillPlayer(H._rand(warm ? def.responseGood : def.responseBad))
+                        || fillPlayer(H._rand(def.responseGood));
+        if (!playerLine) return null;
+
+        // Being spoken to first moves the ledger less than being courted: the
+        // NPC already knows how they feel, the answer only nudges it.
+        const mult = tone => H._personalitySocialMult ? H._personalitySocialMult(profile, tone) : 1;
+        let delta  = Math.round(Math.sign(def.baseDelta) * Math.ceil(Math.abs(def.baseDelta) / 3) * mult(def.tone));
+        if (def.tone === 'neutral') delta = Math.max(0, delta);
+
+        if (profile && actorId != null && H._addNpcOpinion) {
+            H._addNpcOpinion(profile, actorId, delta);
+            (profile.eventLog ??= []).push({
+                tag: 'npc_social_' + def.id, desc: `${def.id} (${delta >= 0 ? '+' : ''}${delta})`, // i18n-ignore: event-log record id
+                timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+            });
+        }
+
+        EM.recordNPCLine?.(npcName, npcLine, 'npc');
+        EM.recordNPCLine?.(npcName, playerLine, 'player');
+
+        return [npcStep(ev, npcName, npcLine), playerStep(actor, playerLine)];
+    }
+
+    // Who this event is, as far as the simulation is concerned. An NPC the
+    // player has already met has a profile; one they have not is minted here,
+    // exactly as opening the Empathize panel on them would (NPCEmpathizeUI
+    // does the same thing on its first render), because without one there is
+    // no personality to talk in and the command could only ever fall through
+    // to the flat rumour. Only somebody wearing a walking sprite is minted: a
+    // signpost or a tile-image prop is not a person and never gets a sheet.
+    function ensureNpcProfile(ev, npcName) {
+        const reg = window.NPCSocietyRegistry;
+        if (!ev || !npcName || !reg) return null;
+        const existing = reg.getProfile?.(npcName);
+        if (existing || !reg.ensureProfile) return existing || null;
+        const data = ev.event?.();
+        const page = data?.pages?.find(p => ev.meetsConditions(p));
+        if (!page?.image?.characterName) return null;
+        const H = window.NPCEmpathize?._helpers;
+        return reg.ensureProfile(npcName, H?._extractClassId ? H._extractClassId(ev) : null) || null;
+    }
+
+    // The third thing that can happen: no social move at all, just the rumour
+    // bank, spoken over the NPC's own bust like anything else they say. This is
+    // also the whole of what a beast or an unregistered event has to offer.
+    function buildRumorExchange(ev, npcName) {
+        let line = pickRumor(rumorPersonalityKey(ev.eventId()));
+        if (!line) return null;
+        const EM = window.NPCEmpathize;
+        // A non-sentient creature has no words, only a noise as long as the line
+        // it would have spoken.
+        if (npcName && EM?.isNonSentientNPC?.(npcName)) line = EM.growlFor(line) || line;
+        if (npcName) EM?.recordNPCLine?.(npcName, line, 'npc');
+        return [npcStep(ev, npcName, line)];
     }
 
     // -------------------------------------------------------------------------
@@ -1425,6 +1627,13 @@ Imported.DialogueSystem = true;
         // Reserved for player-specific bust display
     });
 
+    // Talking to an NPC. Three things can happen, one of them at random, and
+    // all three are played out as a bust exchange through the same right/left
+    // slots a scripted conversation uses: the NPC opens and the party answers,
+    // the party opens and the NPC answers, or the NPC passes on a rumour. The
+    // flat, faceless message box the command used to draw is gone; it survives
+    // only where there is no bust manager to draw into (a scene that is not the
+    // map), which is the one case none of the three can be staged.
     PluginManager.registerCommand(PLUGIN_NAME, "Rumors", function () {
         const evId = this._eventId;
         const ev   = evId ? $gameMap.event(evId) : null;
@@ -1432,31 +1641,38 @@ Imported.DialogueSystem = true;
 
         const npcName = ev?.event()?.name || null;
         const EM      = window.NPCEmpathize;
-
-        // For now, talking to any sentient NPC with a society profile plays out
-        // a random Socialize action (the same catalogue the Empathize panel
-        // offers: praise, small talk, comment on weather, insult, ...) instead
-        // of the flat environmental rumour, using the same personality-driven
-        // line banks and opinion math the panel's Socialize actions use, even
-        // though the panel itself was never opened.
-        const profile  = npcName ? window.NPCSocietyRegistry?.getProfile?.(npcName) : null;
+        const profile = ensureNpcProfile(ev, npcName);
         const sentient = !!(profile && profile.personalityIndex != null && !EM?.isNonSentientNPC?.(npcName));
-        if (sentient && EM && ev) {
-            const steps = buildSocialExchange(ev, npcName, profile);
-            if (steps && startNPCExchange(steps)) {
-                this.setWaitMode('message');
-                return;
+        const bm      = SceneManager._scene?._bustManager;
+
+        if (ev && bm) {
+            // A beast or an unregistered event (a cat, a signpost, a body
+            // double) has no Socialize catalogue behind it and only ever has
+            // the rumour to give.
+            const builders = [() => buildRumorExchange(ev, npcName)];
+            if (sentient && EM) {
+                builders.push(() => buildNpcOpeningExchange(ev, npcName, profile));
+                builders.push(() => buildSocialExchange(ev, npcName, profile));
+            }
+            // A builder that has nothing written to work with returns null
+            // before it moves anything, so falling through to the next one
+            // costs nothing.
+            for (let i = builders.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [builders[i], builders[j]] = [builders[j], builders[i]];
+            }
+            for (const build of builders) {
+                const steps = build();
+                if (steps && startNPCExchange(steps)) {
+                    this.setWaitMode('message');
+                    return;
+                }
             }
         }
 
-        // No society profile to draw a Socialize action from (a beast, a
-        // signpost, an unregistered body double): the old flavour-line rumour.
+        // Nowhere to stage a bust: the bare line, so the NPC is never mute.
         let line = pickRumor(rumorPersonalityKey(evId));
         if (!line) return;
-
-        // A non-sentient creature has no words, only a noise as long as the line
-        // it would have spoken, and whatever it says is kept on its profile so
-        // the Empathize panel shows the same history the message box did.
         if (npcName && EM?.isNonSentientNPC?.(npcName)) line = EM.growlFor(line) || line;
         if (npcName) EM?.recordNPCLine?.(npcName, line);
 

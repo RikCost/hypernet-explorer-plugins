@@ -2228,8 +2228,41 @@
         BSE.Helpers.captureStartAnchor();
     };
 
+    // Give every roaming monster back to a map that is being re-stocked.
+    //
+    // A pass that cannot place an enemy erases its event - the biome caps the
+    // population, the tile it drew is water and it cannot swim, the roster holds
+    // nothing that may stand there - and an erased event is erased for the life
+    // of the map. That was always fine, because a square used to BE the map: the
+    // next square was a transfer, Game_Map#setup built the events again from
+    // scratch, and the erasures went with them.
+    //
+    // The stitched window (WorldMapReturn's ProcStitch) put an end to that. The
+    // party walks from one world square into the next without a transfer, the
+    // map is never set up again, and the fifteen "Enemy" events map 636 carries
+    // are re-dealt in place for each square they arrive in. So the first square
+    // that erased any of them - a city with its cap of two, a coast with its cap
+    // of ten - left them erased for every square after it, and walking on into
+    // open country found it empty.
+    //
+    // Erasure is therefore undone before each re-stock, and the passes below
+    // erase again whatever they still cannot place. Nothing is lost: the
+    // defeated are re-erased from $gameSystem._procGenDefeatedEnemies a few
+    // lines down, and on a map that is set up in the ordinary way there is
+    // nothing erased here to give back.
+    BSE.Functions.restoreErasedEnemyEvents = function() {
+        for (const ev of $gameMap.events()) {
+            if (!ev || !ev._erased) continue;
+            const data = ev.event();
+            if (!data || data.name !== "Enemy") continue;
+            ev._erased = false;
+            ev.refresh();
+        }
+    };
+
     Scene_Map.prototype.spawnEnemiesFromEncounters = function() {
         BSE.Helpers.syncProcGenEnemyCache();
+        BSE.Functions.restoreErasedEnemyEvents();
 
         // Whose rules apply here.
         //

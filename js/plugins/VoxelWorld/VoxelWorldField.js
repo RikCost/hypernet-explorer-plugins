@@ -43,7 +43,7 @@
     if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldField.js'); return; }
 
     const {
-        MOUNTAIN_MAX_H, ROAD_LANE_OFF, ROAD_TOTAL_W, SNOW_LINE, WATER_LEVEL_Y,
+        MOUNTAIN_MAX_H, ROAD_GAP, ROAD_LANE_OFF, ROAD_TOTAL_W, SNOW_LINE, WATER_LEVEL_Y,
         OMEGA_SPAN, OMEGA_TILE, getAlienTerrain,
         WORLD_SCALE, WORLD_TILE_SIZE, _fbm, _perlin, getRenderType, loadTex, loadVoxelTex,
         getRoadDirectionAt, isRiverTile, noiseHeight, riverLinksAt, sampleBiomeAt
@@ -85,11 +85,29 @@
     // biome colour at that column, which is what keeps a voxel world looking
     // like the map it was generated from instead of a uniform block palette.
     // =========================================================================
+    // Ids 0-15 are the ground the world was first made of and may never move:
+    // a dig log saved before the block table grew stores them by number.
+    // Everything from 16 up is a BLOCK - a surface with a picture of its own
+    // (one PNG per block under img/textures/voxels, built by
+    // tools/build_voxel_blocks.js) rather than a tinted cube of the world's
+    // one grain.
     const MAT = {
         AIR: 0, GRASS: 1, DIRT: 2, ROCK: 3, SAND: 4, SNOW: 5, ASPHALT: 6,
         MARK: 7, GRAVEL: 8, ORE: 9, CLAY: 10, ICE: 11, ASH: 12, BEDROCK: 13,
-        MUD: 14, SALT: 15
+        MUD: 14, SALT: 15,
+        // --- the deep rock ---------------------------------------------------
+        GRANITE: 16, BASALT: 17, MARBLE: 18, SANDSTONE: 19, LIMESTONE: 20,
+        OBSIDIAN: 21, LAVA: 22, MAGMA: 23, CRYSTAL: 24, GLOWSTONE: 25,
+        // --- what people build with -------------------------------------------
+        BRICK: 26, COBBLE: 27, CONCRETE: 28, PLASTER: 29, PLANK: 30,
+        TIMBER: 31, THATCH: 32, GLASS: 33, IRON: 34, COPPER: 35,
+        // --- the seams ---------------------------------------------------------
+        ORE_IRON: 36, ORE_COAL: 37, ORE_SILICA: 38, ORE_BONE: 39,
+        ORE_TITANIUM: 40, ORE_SULPHUR: 41, ORE_CRYSTAL: 42, ORE_VARLENIA: 43,
+        ORE_ARCANE: 44, ORE_ETHEREAL: 45, ORE_QUANTUM: 46, ORE_METEOR: 47
     };
+
+
 
     // Hex to the RGB the renderer wants. three.js converts an sRGB hex to
     // linear when colour management is on, and a value fed straight in without
@@ -106,12 +124,23 @@
 
     const MATERIALS = [];
     function defMat(id, key, color, opts) {
-        MATERIALS[id] = Object.assign({
+        const m = Object.assign({
             id, key, color, biome: false, hard: 1, diggable: true, drop: null,
+            // A block with a picture of its own: `tex` names its 48x48 tile
+            // under img/textures/voxels. One repeat per cube, which is what the
+            // mesher's UVs already are, so it needs no atlas and no cell
+            // arithmetic - just its own surface.
+            tex: null, glow: false,
+            // A seam pays out: breaking one cube of it puts `drop` (an item id
+            // in data/Items.json) in the bags instead of a cube on the build
+            // bar. Anything that is not a seam is a block you keep and build
+            // with, which is what a block is for.
+            seam: false,
             // Unpacked once here: the mesher wants this per wall run and per
             // cube, and it must not be parsing a hex string to get it.
             rgb: srgbRGB(color)
         }, opts || {});
+        MATERIALS[id] = m;
     }
     defMat(MAT.AIR,     'air',     0x000000, { diggable: false });
     defMat(MAT.GRASS,   'grass',   0x74a352, { biome: true, hard: 1 });
@@ -122,7 +151,9 @@
     defMat(MAT.ASPHALT, 'asphalt', 0x4c4c51, { hard: 4 });
     defMat(MAT.MARK,    'mark',    0xd8d6c6, { hard: 4 });
     defMat(MAT.GRAVEL,  'gravel',  0x7a756c, { hard: 2 });
-    defMat(MAT.ORE,     'ore',     0x8fc7dd, { hard: 5, drop: 'ore' });
+    // The seam the world had before it had twelve of them. Nothing generates it
+    // any more (see ORES), but a dig log saved back then still stores it.
+    defMat(MAT.ORE,     'ore',     0x8fc7dd, { hard: 5, tex: 'ore', seam: true, drop: 864 });
     defMat(MAT.CLAY,    'clay',    0x8d6b52, { hard: 2 });
     defMat(MAT.ICE,     'ice',     0xbfe4f2, { hard: 2 });
     defMat(MAT.ASH,     'ash',     0x4a4650, { hard: 1 });
@@ -130,12 +161,88 @@
     defMat(MAT.MUD,     'mud',     0x4f4330, { hard: 1 });
     defMat(MAT.SALT,    'salt',    0xeceae0, { hard: 1 });
 
-    // The blocks the pick offers to put back, in the order the tool cycles them.
-    const PLACEABLE = [MAT.DIRT, MAT.ROCK, MAT.SAND, MAT.SNOW, MAT.GRAVEL, MAT.CLAY, MAT.MUD];
+    // --- the deep rock -------------------------------------------------------
+    // Everything below wears its own tile out of the block atlas, so a cliff of
+    // granite is granite and a wall of brick is brick rather than a cube of the
+    // world's one grain multiplied by a colour.
+    defMat(MAT.GRANITE,  'granite',  0x8b8078, { hard: 4, tex: 'granite' });
+    defMat(MAT.BASALT,   'basalt',   0x3f4046, { hard: 5, tex: 'basalt' });
+    defMat(MAT.MARBLE,   'marble',   0xe0ddd4, { hard: 4, tex: 'marble' });
+    defMat(MAT.SANDSTONE,'sandstone',0xc9b183, { hard: 3, tex: 'sandstone' });
+    defMat(MAT.LIMESTONE,'limestone',0xd0cbb8, { hard: 3, tex: 'limestone' });
+    defMat(MAT.OBSIDIAN, 'obsidian', 0x241f2e, { hard: 8, tex: 'obsidian' });
+    // The melt. It glows, it is drawn with the world's one emissive block
+    // surface, and it is far too hot to take a pick to.
+    defMat(MAT.LAVA,     'lava',     0xff8a2a, { hard: 99, diggable: false,
+                                                 tex: 'lava', glow: true });
+    defMat(MAT.MAGMA,    'magma',    0xd44a18, { hard: 7, tex: 'magma', glow: true });
+    defMat(MAT.CRYSTAL,  'crystal',  0x8fc7dd, { hard: 5, tex: 'crystal' });
+    defMat(MAT.GLOWSTONE,'glowstone',0xffd98a, { hard: 3, tex: 'glowstone', glow: true });
 
-    // Ore veins: what a dug ore cube is worth. Items 864/865/866 are the world's
-    // own ores and crystal (js/db - data/Items.json, the Crafting block).
+    // --- what people build with ----------------------------------------------
+    defMat(MAT.BRICK,    'brick',    0x9c6a56, { hard: 3, tex: 'brick' });
+    defMat(MAT.COBBLE,   'cobble',   0x7d7a72, { hard: 3, tex: 'cobble' });
+    defMat(MAT.CONCRETE, 'concrete', 0x8f9298, { hard: 4, tex: 'concrete' });
+    defMat(MAT.PLASTER,  'plaster',  0xd8cfbb, { hard: 2, tex: 'plaster' });
+    defMat(MAT.PLANK,    'plank',    0x8a6a48, { hard: 2, tex: 'plank' });
+    defMat(MAT.TIMBER,   'timber',   0x5e4126, { hard: 2, tex: 'timber' });
+    defMat(MAT.THATCH,   'thatch',   0xc9a94f, { hard: 1, tex: 'thatch' });
+    defMat(MAT.GLASS,    'glass',    0x9fc6db, { hard: 1, tex: 'glass' });
+    defMat(MAT.IRON,     'iron',     0x585d66, { hard: 6, tex: 'iron' });
+    defMat(MAT.COPPER,   'copper',   0x9c6b3f, { hard: 5, tex: 'copper' });
+
+    // --- the seams ------------------------------------------------------------
+    // `drop` is the id of the item in data/Items.json a broken cube is worth.
+    defMat(MAT.ORE_IRON,     'ore_iron',     0xb08258, { hard: 5, seam: true, tex: 'ore_iron',     drop: 863 });
+    defMat(MAT.ORE_COAL,     'ore_coal',     0x24242a, { hard: 4, seam: true, tex: 'ore_coal',     drop: 870 });
+    defMat(MAT.ORE_SILICA,   'ore_silica',   0xdfe8ee, { hard: 4, seam: true, tex: 'ore_silica',   drop: 867 });
+    defMat(MAT.ORE_BONE,     'ore_bone',     0xe0d8bd, { hard: 3, seam: true, tex: 'ore_bone',     drop: 860 });
+    defMat(MAT.ORE_TITANIUM, 'ore_titanium', 0x9fb0bd, { hard: 6, seam: true, tex: 'ore_titanium', drop: 864 });
+    defMat(MAT.ORE_SULPHUR,  'ore_sulphur',  0xe3d24a, { hard: 4, seam: true, tex: 'ore_sulphur',  drop: 871 });
+    defMat(MAT.ORE_CRYSTAL,  'ore_crystal',  0x8fe3dd, { hard: 6, seam: true, tex: 'ore_crystal',  drop: 866 });
+    defMat(MAT.ORE_VARLENIA, 'ore_varlenia', 0xb46fe0, { hard: 6, seam: true, tex: 'ore_varlenia', drop: 865 });
+    defMat(MAT.ORE_ARCANE,   'ore_arcane',   0x6f8cff, { hard: 7, seam: true, tex: 'ore_arcane',   drop: 849, glow: true });
+    defMat(MAT.ORE_ETHEREAL, 'ore_ethereal', 0xd8f0ff, { hard: 7, seam: true, tex: 'ore_ethereal', drop: 850, glow: true });
+    defMat(MAT.ORE_QUANTUM,  'ore_quantum',  0x4affc9, { hard: 8, seam: true, tex: 'ore_quantum',  drop: 851, glow: true });
+    defMat(MAT.ORE_METEOR,   'ore_meteor',   0x7a6f66, { hard: 8, seam: true, tex: 'ore_meteor',   drop: 775 });
+
+    // The blocks the pick offers to put back, in the order the tool cycles them:
+    // the ground first, then everything a wall is made of.
+    const PLACEABLE = [
+        MAT.DIRT, MAT.ROCK, MAT.SAND, MAT.SNOW, MAT.GRAVEL, MAT.CLAY, MAT.MUD,
+        MAT.BRICK, MAT.COBBLE, MAT.CONCRETE, MAT.PLASTER, MAT.PLANK, MAT.TIMBER,
+        MAT.THATCH, MAT.GLASS, MAT.IRON, MAT.COPPER, MAT.MARBLE, MAT.SANDSTONE,
+        MAT.LIMESTONE, MAT.GRANITE, MAT.BASALT, MAT.OBSIDIAN, MAT.GLOWSTONE
+    ];
+
+    // The old generic seam's payout, kept because a dig log saved before the
+    // seams were split still stores MAT.ORE cubes and they have to be worth
+    // something when somebody finally breaks one.
     const ORE_ITEMS = [864, 865, 866];
+
+    // =========================================================================
+    // Seams
+    //
+    // What is worth digging for, how deep it lies and what one cube of it is
+    // worth. `min`/`max` are voxels below the surface of the column, `w` is how
+    // much of the seam budget at that depth this mineral takes. The item ids are
+    // data/Items.json's own crafting block, so a seam pays in the same materials
+    // the forge and the alchemy bench ask for.
+    // =========================================================================
+    const ORES = [
+        { mat: MAT.ORE_SILICA,   min: 3,  max: 18, w: 1.4 },   // Glass
+        { mat: MAT.ORE_BONE,     min: 4,  max: 20, w: 1.1 },   // Bone
+        { mat: MAT.ORE_COAL,     min: 5,  max: 26, w: 1.6 },   // Oil Flask
+        { mat: MAT.ORE_IRON,     min: 6,  max: 46, w: 2.2 },   // Salvaged steel
+        { mat: MAT.ORE_TITANIUM, min: 16, max: 60, w: 1.4 },   // Titanium ore
+        { mat: MAT.ORE_SULPHUR,  min: 14, max: 60, w: 0.9 },   // Acidic Solution
+        { mat: MAT.ORE_CRYSTAL,  min: 22, max: 99, w: 1.0 },   // Crystal
+        { mat: MAT.ORE_VARLENIA, min: 30, max: 99, w: 0.8 },   // Varlenia ore
+        { mat: MAT.ORE_ARCANE,   min: 36, max: 99, w: 0.55 },  // Arcane Essence
+        { mat: MAT.ORE_ETHEREAL, min: 44, max: 99, w: 0.35 },  // Ethereal Shard
+        { mat: MAT.ORE_QUANTUM,  min: 52, max: 99, w: 0.18 },  // Quantum Core
+        { mat: MAT.ORE_METEOR,   min: 2,  max: 99, w: 0.12 }   // Meteorite Core Fragment
+    ];
 
     // =========================================================================
     // Small helpers
@@ -149,6 +256,79 @@
     }
 
     const _clamp = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
+
+    // =========================================================================
+    // What is in the rock
+    // =========================================================================
+    // These three answer, for one cube of ground that is deep enough to be out
+    // of the subsoil, what it is actually made of. They are hot: genMaterial
+    // calls them for every cube of every cave passage and every dug shaft, so
+    // each of them is gated on ONE cheap hash and does no work at all in the
+    // ninety-odd per cent of the world that is plain rock.
+
+    // Melt. It pools on the floor of the world, in lakes rather than in an
+    // unbroken sheet, and it stands much higher than that inside a volcano.
+    const LAVA_FLOOR = 3;    // voxels of lake above the bedrock
+    function hotAt(vx, vy, vz, p) {
+        const floor = VOX.MIN_Y + LAVA_FLOOR;
+        if (vy <= floor) {
+            // The lakes: a coarse cell decides which stretches of the floor
+            // hold melt, so a shaft sunk to the bottom finds a lake or does not
+            // rather than finding one cube of lava in ten.
+            if (hash3(vx >> 4, 0, vz >> 4) < 0.38) return MAT.LAVA;
+            return MAT.BASALT;
+        }
+        const hot = p.hot || 0;
+        if (!hot) return 0;
+        // A volcano's own throat: magma the deeper you go under it, crusting
+        // over into basalt at the edges.
+        const above = vy - floor;
+        const q = hot * Math.max(0, 0.55 - above * 0.02);
+        if (q <= 0) return 0;
+        const h = hash3(vx >> 2, vy >> 1, vz >> 2);
+        if (h < q * 0.35) return MAT.LAVA;
+        if (h < q) return MAT.MAGMA;
+        return 0;
+    }
+
+    // A seam. The coarse cell is the seam itself - four voxels across and two
+    // tall - and the fine hash is how much of that cell the mineral actually
+    // fills, so ore comes out of the rock in blobs a pick can follow.
+    function oreAt(vx, vy, vz, depth) {
+        const cell = hash3(vx >> 2, vy >> 1, vz >> 2);
+        const q = Math.min(0.10, 0.012 + depth * 0.0016);
+        if (cell >= q) return 0;
+        if (hash3(vx, vy, vz) > 0.62) return 0;
+        // Which mineral: the ones this depth can carry, weighted.
+        let total = 0;
+        for (let i = 0; i < ORES.length; i++) {
+            const o = ORES[i];
+            if (depth >= o.min && depth <= o.max) total += o.w;
+        }
+        if (total <= 0) return 0;
+        let r = hash3(vx >> 2, (vy >> 1) + 977, vz >> 2) * total;
+        for (let i = 0; i < ORES.length; i++) {
+            const o = ORES[i];
+            if (depth < o.min || depth > o.max) continue;
+            r -= o.w;
+            if (r <= 0) return o.mat;
+        }
+        return ORES[0].mat;
+    }
+
+    // The rock everything else is set in. A cave wall is limestone under a
+    // meadow, granite under a mountain and sandstone under a canyon, with the
+    // odd pocket of marble or a crystal geode in it: a shaft driven down
+    // through the world should read as going somewhere.
+    function bedMat(vx, vy, vz, p, depth) {
+        const bed = p.bed || MAT.ROCK;
+        if (depth < 8) return MAT.ROCK;
+        const h = hash3(vx >> 3, vy >> 2, vz >> 3);
+        if (h < 0.014 && depth > 24) return MAT.CRYSTAL;      // a geode
+        if (h < 0.05) return MAT.MARBLE;                      // a lens of marble
+        if (h < 0.10) return MAT.ROCK;                        // plain country rock
+        return bed;
+    }
 
     // =========================================================================
     // Terrain profiles
@@ -327,30 +507,40 @@
                               // typical grade, above which bare rock shows
             strata: false,    // banded rock under the surface
             flat: false,      // never given relief of its own (towns, roads)
+            // What the rock UNDER the soil actually is, once you are deep
+            // enough to be out of the subsoil: granite under a mountain,
+            // basalt under a volcano, limestone under a green field. It is
+            // what a cave wall and the side of a dug shaft are made of.
+            bed: MAT.ROCK,
+            hot: 0,           // how readily melt shows: 0 nowhere, 1 a volcano
         }, o || {});
         return TERRAIN[key];
     }
 
-    defTerrain('plain',    { land: 8,  hill: 16, fine: 4 });
-    defTerrain('meadow',   { land: 6,  hill: 11, fine: 3 });
-    defTerrain('field',    { land: 4,  hill: 7,  fine: 2 });
-    defTerrain('forest',   { land: 12, hill: 24, fine: 6 });
+    defTerrain('plain',    { land: 8,  hill: 16, fine: 4, bed: MAT.LIMESTONE });
+    defTerrain('meadow',   { land: 6,  hill: 11, fine: 3, bed: MAT.LIMESTONE });
+    defTerrain('field',    { land: 4,  hill: 7,  fine: 2, bed: MAT.LIMESTONE });
+    defTerrain('forest',   { land: 12, hill: 24, fine: 6, bed: MAT.LIMESTONE });
     defTerrain('jungle',   { land: 16, hill: 34, fine: 9 });
     defTerrain('taiga',    { land: 14, hill: 30, fine: 7 });
     defTerrain('steppe',   { land: 10, hill: 18, fine: 4 });
     defTerrain('savannah', { land: 10, hill: 20, fine: 5 });
-    defTerrain('hills',    { land: 34, hill: 64, ridge: 34, fine: 8, cliffAt: 1.3 });
+    defTerrain('hills',    { land: 34, hill: 64, ridge: 34, fine: 8, cliffAt: 1.3,
+                             bed: MAT.GRANITE });
     defTerrain('mountain', { massif: 1, hill: 46, ridge: 120, ridgePow: 2.2, fine: 15,
-                             cliffAt: 1.05, surface: null, sub: MAT.ROCK });
+                             cliffAt: 1.05, surface: null, sub: MAT.ROCK, bed: MAT.GRANITE });
     defTerrain('volcano',  { cone: 300, crater: 70, hill: 30, ridge: 40, fine: 12,
-                             surface: MAT.ASH, sub: MAT.ASH, cliffAt: 1.1 });
+                             surface: MAT.ASH, sub: MAT.ASH, cliffAt: 1.1,
+                             bed: MAT.BASALT, hot: 1 });
     defTerrain('canyon',   { land: 26, hill: 58, terrace: 15, terraceMix: 0.9, fine: 5,
                              strata: true, surface: MAT.SAND, sub: MAT.CLAY,
-                             cliff: MAT.CLAY, cliffAt: 0.95 });
+                             cliff: MAT.CLAY, cliffAt: 0.95, bed: MAT.SANDSTONE });
     defTerrain('badlands', { land: 20, hill: 44, terrace: 11, terraceMix: 0.92, fine: 4,
-                             strata: true, surface: MAT.CLAY, sub: MAT.CLAY, cliffAt: 0.95 });
+                             strata: true, surface: MAT.CLAY, sub: MAT.CLAY, cliffAt: 0.95,
+                             bed: MAT.SANDSTONE });
     defTerrain('desert',   { land: 14, hill: 16, dune: 30, fine: 3,
-                             surface: MAT.SAND, sub: MAT.SAND, cliff: MAT.SAND, cliffAt: 99 });
+                             surface: MAT.SAND, sub: MAT.SAND, cliff: MAT.SAND, cliffAt: 99,
+                             bed: MAT.SANDSTONE });
     defTerrain('saltflat', { land: 2,  hill: 2,  fine: 1, surface: MAT.SALT, sub: MAT.CLAY });
     defTerrain('beach',    { base: 6, land: 3, hill: 5, dune: 9, fine: 2,
                              surface: MAT.SAND, sub: MAT.SAND, cliff: MAT.SAND, cliffAt: 99 });
@@ -362,7 +552,7 @@
     defTerrain('ice',      { land: 12, hill: 26, fine: 6, surface: MAT.SNOW, sub: MAT.ICE,
                              cliff: MAT.ICE });
     defTerrain('ash',      { land: 12, hill: 26, ridge: 20, fine: 7,
-                             surface: MAT.ASH, sub: MAT.ASH });
+                             surface: MAT.ASH, sub: MAT.ASH, bed: MAT.BASALT, hot: 0.5 });
     defTerrain('rocky',    { land: 18, hill: 40, ridge: 26, fine: 9,
                              surface: MAT.ROCK, sub: MAT.ROCK, cliffAt: 1.1 });
     defTerrain('weird',    { land: 16, hill: 34, ridge: 26, fine: 8 });
@@ -1009,8 +1199,14 @@
             if (pOwn.key === 'road') {
                 const rd = VoxelField.roadAt(x, z, wx, wy);
                 if (rd) {
-                    road = true;
-                    mat  = rd === 2 ? MAT.MARK : MAT.ASPHALT;
+                    // The median (3) is levelled with the carriageways either
+                    // side of it but is not paved: it is left to the surface
+                    // rules below, so a median through a desert is sand and one
+                    // through a meadow is grass.
+                    if (rd !== 3) {
+                        road = true;
+                        mat  = rd === 2 ? MAT.MARK : MAT.ASPHALT;
+                    }
                     // A carriageway climbs a hill but never ripples: the
                     // metre-scale roughness comes back out from under it.
                     h -= n.c * fineAmp;
@@ -1079,7 +1275,13 @@
         //
         // The flat world laid asphalt slabs and dashed lane meshes over the
         // ground. A voxel world does not need any of that: the ribbon is a
-        // predicate. 0 = off the road, 1 = asphalt, 2 = lane marking.
+        // predicate. 0 = off the road, 1 = asphalt, 2 = lane marking,
+        // 3 = the median between the two carriageways.
+        //
+        // The shape it answers with is the one ProceduralMapRoadGenerator lays
+        // down on the flat map: TWO roads with a gap between them, each of them
+        // two lanes wide with a broken line down its own middle, joined at
+        // crossings, tees and bends by a solid box of tarmac.
         // ---------------------------------------------------------------------
         static roadAt(x, z, wx, wy) {
             const ts   = WORLD_TILE_SIZE;
@@ -1089,8 +1291,13 @@
             const dir  = getRoadDirectionAt(wx, wy) || 'horizontal';
 
             const dash = (along, lateral) => {
-                // Two dashed lines, one per carriageway edge of the centre gap.
-                const d = Math.abs(Math.abs(lateral) - ROAD_LANE_OFF);
+                const off = Math.abs(lateral);
+                // The median: the gap between the two carriageways is not road
+                // at all, and keeps whatever the country there is made of.
+                if (off < ROAD_GAP * 0.5) return 3;
+                // ...and each carriageway carries a broken line down its own
+                // middle, with one lane either side of it.
+                const d = Math.abs(off - ROAD_LANE_OFF);
                 if (d > VOX.SIZE * 0.6) return 1;
                 const cyc = ((along % 35) + 35) % 35;
                 return cyc < 20 ? 2 : 1;
@@ -1417,10 +1624,17 @@
                 return p.sub || MAT.DIRT;
             }
             if (depth <= 6 && (col.mat === MAT.SAND || col.mat === MAT.MUD)) return MAT.CLAY;
-            // Ore gets likelier with depth and never breaks the surface.
-            const q = Math.min(0.035, 0.004 + depth * 0.0004);
-            if (hash3(vx, vy, vz) < q) return MAT.ORE;
-            return MAT.ROCK;
+            // The melt at the bottom of the world, and the magma that stands in
+            // the throat of a volcano. Checked before the seams: nothing is
+            // mined out of a lava lake.
+            const hot = hotAt(vx, vy, vz, p);
+            if (hot) return hot;
+            // A seam. It never breaks the surface, it comes in blobs rather than
+            // in lucky single cubes, and what it is worth depends on how deep it
+            // is (see ORES).
+            const ore = oreAt(vx, vy, vz, depth);
+            if (ore) return ore;
+            return bedMat(vx, vy, vz, p, depth);
         }
 
         // Level of the first air voxel above the highest solid cube, edits and
@@ -1687,6 +1901,18 @@
             // over cracked mud. Everything else stays in B - the sides of that
             // same column included, since those are the soil under the turf.
             const G = new MeshBuffer();
+            // The blocks: every cube that has a picture of its own - brick,
+            // glass, marble, a seam of ore, the melt at the bottom of the
+            // world. One buffer per KIND of block, made the first time a face
+            // of it is written, so a patch of ordinary ground carries none at
+            // all and a cave wall carries exactly as many as it really shows
+            // (the country rock, whatever lens is in it, and the seams).
+            //
+            // No atlas. One block, one PNG, one surface: there is nothing to
+            // keep a cell layout in step with, nothing to bleed across a cell
+            // edge, and a tile dropped into img/textures/voxels IS that block
+            // from then on.
+            const blocks = new Map();
 
             // --- which columns need the cube-by-cube treatment ----------------
             // Only at full detail, and only where somebody has actually dug.
@@ -1718,20 +1944,32 @@
 
             const bias = { x: bx || 0, z: bz || 0 };
             VoxelMesher._bulk(B, G, field, top, mat, col, detail, w, n, ox, oz, step, bs, bias);
-            if (detail) VoxelMesher._detail(B, G, field, top, mat, col, detail, w, n, ox, oz, bs, bias);
+            if (detail) VoxelMesher._detail(B, G, blocks, field, top, mat, col, detail, w, n, ox, oz, bs, bias);
             // The caves. Only at full detail, and only for somebody who is
             // actually down there to see them: a passage keeps five voxels of
             // rock over its head, so from up in the daylight there is nothing of
             // it to look at and nothing worth drawing.
             if (step === 1 && caves) {
-                VoxelMesher._caves(B, field, top, col, w, n, ox, oz, bs, bias);
+                VoxelMesher._caves(B, blocks, field, top, col, w, n, ox, oz, bs, bias);
             }
 
             let water = null;
             for (let k = 0; k < wat.length; k++) {
                 if (wat[k] !== NO_WATER) { water = VoxelMesher._water(field, top, wat, w, n, ox, oz, step, bs, bias); break; }
             }
-            return { solid: B.finish(), grass: G.empty ? null : G.finish(), water };
+            // Each block buffer that got anything written into it becomes one
+            // mesh, drawn with that block's own surface.
+            let blockGeo = null;
+            for (const [m, buf] of blocks) {
+                if (buf.empty) continue;
+                (blockGeo || (blockGeo = [])).push({ mat: m, geo: buf.finish() });
+            }
+            return {
+                solid: B.finish(),
+                grass: G.empty ? null : G.finish(),
+                blocks: blockGeo,
+                water
+            };
         }
 
         // --- greedy height field pass -------------------------------------
@@ -1844,7 +2082,7 @@
         // ground is therefore already a face, and drawing it again would put two
         // surfaces in the same place. Below it, the rock was solid and unseen
         // until the caves opened it up, and this is the only pass that draws it.
-        static _caves(B, field, top, col, w, n, ox, oz, bs, bias) {
+        static _caves(B, blocks, field, top, col, w, n, ox, oz, bs, bias) {
             const S = VOX.SIZE;
             const at = (i, j) => (j + 1) * w + (i + 1);
             const bands = [];
@@ -1879,25 +2117,30 @@
                             else m = field.genMaterial(c, vx, vy, vz);
                             if (m === MAT.AIR) continue;
                             const def = MATERIALS[m] || MATERIALS[MAT.ROCK];
+                            // A block with a tile of its own goes to the atlas
+                            // buffer and carries no colour but its own shading;
+                            // everything else is still a tinted cube of ground.
+                            const Q = VoxelMesher.bufFor(B, blocks, def);
                             let r, g, b;
-                            if (def.biome) { r = cr; g = cg; b = cb; }
+                            if (def.tex) { r = g = b = 1; }
+                            else if (def.biome) { r = cr; g = cg; b = cb; }
                             else { r = def.rgb.r; g = def.rgb.g; b = def.rgb.b; }
                             const jit = 0.92 + hash3(vx, vy, vz) * 0.16;
                             r *= jit; g *= jit; b *= jit;
 
                             const x = vx * S - bias.x, y = vy * S, z = vz * S - bias.z;
                             if (!field.isSolid(vx, vy + 1, vz))
-                                B.quadY(x, y + S, z, S, S, r * FACE_SHADE.top, g * FACE_SHADE.top, b * FACE_SHADE.top, 1, 1, 1);
+                                Q.quadY(x, y + S, z, S, S, r * FACE_SHADE.top, g * FACE_SHADE.top, b * FACE_SHADE.top, 1, 1, 1);
                             if (!field.isSolid(vx, vy - 1, vz))
-                                B.quadY(x, y, z, S, S, r * FACE_SHADE.bottom, g * FACE_SHADE.bottom, b * FACE_SHADE.bottom, 1, 1, -1);
+                                Q.quadY(x, y, z, S, S, r * FACE_SHADE.bottom, g * FACE_SHADE.bottom, b * FACE_SHADE.bottom, 1, 1, -1);
                             if (vy < nb[0] && !field.isSolid(vx - 1, vy, vz))
-                                B.quadSide(0, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
+                                Q.quadSide(0, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
                             if (vy < nb[1] && !field.isSolid(vx + 1, vy, vz))
-                                B.quadSide(1, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
+                                Q.quadSide(1, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
                             if (vy < nb[2] && !field.isSolid(vx, vy, vz - 1))
-                                B.quadSide(2, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
+                                Q.quadSide(2, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
                             if (vy < nb[3] && !field.isSolid(vx, vy, vz + 1))
-                                B.quadSide(3, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
+                                Q.quadSide(3, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
                         }
                     }
                 }
@@ -1967,6 +2210,19 @@
             return B.finish();
         }
 
+        // Which buffer one cube's faces belong in. A block with a picture of
+        // its own gets a buffer of its own - and therefore a mesh of its own,
+        // drawn with its own texture - and everything else stays on the ground
+        // surface it always was. The buffer is made the first time that block
+        // is actually seen, so a patch pays for the kinds of block it shows and
+        // for no others.
+        static bufFor(B, blocks, def) {
+            if (!blocks || !def.tex) return B;
+            let Q = blocks.get(def.id);
+            if (!Q) { Q = new MeshBuffer(); blocks.set(def.id, Q); }
+            return Q;
+        }
+
         static subMat(m) {
             if (m === MAT.SAND) return MAT.SAND;
             if (m === MAT.ASPHALT || m === MAT.MARK) return MAT.GRAVEL;
@@ -1976,7 +2232,7 @@
         }
 
         // --- cube by cube pass, only where the world has been changed -------
-        static _detail(B, G, field, top, mat, col, detail, w, n, ox, oz, bs, bias) {
+        static _detail(B, G, blocks, field, top, mat, col, detail, w, n, ox, oz, bs, bias) {
             const S = VOX.SIZE;
             const at = (i, j) => (j + 1) * w + (i + 1);
 
@@ -2008,8 +2264,12 @@
                         const m = field.materialAt(vx, vy, vz, scratch);
                         if (m === MAT.AIR) continue;
                         const def = MATERIALS[m] || MATERIALS[MAT.ROCK];
+                        const Q = VoxelMesher.bufFor(B, blocks, def);
                         let r, g, b;
-                        if (def.biome) {
+                        if (def.tex) {
+                            // The block's own picture carries its colour.
+                            r = g = b = 1;
+                        } else if (def.biome) {
                             const k = at(i, j);
                             r = col[k * 3]; g = col[k * 3 + 1]; b = col[k * 3 + 2];
                         } else {
@@ -2026,19 +2286,19 @@
                                 const t = grassTint(r, g, b);
                                 G.quadY(x, y + S, z, S, S, t.r, t.g, t.b, 1, 1, 1);
                             } else {
-                                B.quadY(x, y + S, z, S, S, r * FACE_SHADE.top, g * FACE_SHADE.top, b * FACE_SHADE.top, 1, 1, 1);
+                                Q.quadY(x, y + S, z, S, S, r * FACE_SHADE.top, g * FACE_SHADE.top, b * FACE_SHADE.top, 1, 1, 1);
                             }
                         }
                         if (!field.isSolid(vx, vy - 1, vz))
-                            B.quadY(x, y, z, S, S, r * FACE_SHADE.bottom, g * FACE_SHADE.bottom, b * FACE_SHADE.bottom, 1, 1, -1);
+                            Q.quadY(x, y, z, S, S, r * FACE_SHADE.bottom, g * FACE_SHADE.bottom, b * FACE_SHADE.bottom, 1, 1, -1);
                         if (!field.isSolid(vx - 1, vy, vz))
-                            B.quadSide(0, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
+                            Q.quadSide(0, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
                         if (!field.isSolid(vx + 1, vy, vz))
-                            B.quadSide(1, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
+                            Q.quadSide(1, x, z, y, S, S, S, r * FACE_SHADE.side, g * FACE_SHADE.side, b * FACE_SHADE.side, 1, 1);
                         if (!field.isSolid(vx, vy, vz - 1))
-                            B.quadSide(2, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
+                            Q.quadSide(2, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
                         if (!field.isSolid(vx, vy, vz + 1))
-                            B.quadSide(3, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
+                            Q.quadSide(3, x, z, y, S, S, S, r * FACE_SHADE.end, g * FACE_SHADE.end, b * FACE_SHADE.end, 1, 1);
                     }
                 }
             }
@@ -2062,11 +2322,18 @@
             this.idx.push(i, i + 1, i + 2, i, i + 2, i + 3);
         }
         // Horizontal face at height y over a w by d footprint. `up` is +1 for a
-        // top face, -1 for the underside of an overhang.
+        // top face, -1 for the underside of an overhang. `uw` is how many
+        // repeats belong along w and `uh` how many along d.
+        //
+        // A top face winds the other way round from the underside - its first
+        // edge runs along d, not along w - so its two repeat counts have to be
+        // handed over swapped. Without that swap every merged rectangle of
+        // ground got one repeat where it wanted eight and eight where it wanted
+        // one, which is what smeared the whole world's turf into long streaks.
         quadY(x, y, z, w, d, r, g, b, uw, uh, up) {
             if (up > 0) {
                 this._quad(x, y, z, x, y, z + d, x + w, y, z + d, x + w, y, z,
-                           0, 1, 0, r, g, b, uw, uh);
+                           0, 1, 0, r, g, b, uh, uw);
             } else {
                 this._quad(x, y, z, x + w, y, z, x + w, y, z + d, x, y, z + d,
                            0, -1, 0, r, g, b, uw, uh);
@@ -2148,12 +2415,49 @@
         _grain(_grassMat, 'grass.png');
         return _grassMat;
     }
+    // The blocks. Every cube in the world that has a picture of its own -
+    // brick, glass, marble, a seam of titanium, the melt at the bottom of the
+    // world - is drawn with its own surface, off its own 48x48 tile under
+    // img/textures/voxels. One block, one PNG: there is no atlas to keep a cell
+    // layout in step with, nothing that can bleed across a cell edge, and a
+    // tile dropped into that folder IS that block from then on.
+    //
+    // One material per block, made the first time the world actually shows one
+    // and shared by every chunk after that, so the cost of the whole palette is
+    // the handful of kinds a patch really exposes. A block that gives off light
+    // wears its own picture as its emissive map as well, which is what makes a
+    // cube of lava light its own face and leave the rock beside it dark.
+    const _blockMats = new Map();
+    function voxelBlockMaterial(mat) {
+        const def = MATERIALS[mat];
+        if (!def || !def.tex) return voxelMaterial();
+        let m = _blockMats.get(mat);
+        if (m) return m;
+        const o = { vertexColors: true };
+        if (def.glow) { o.emissive = 0xffffff; o.emissiveIntensity = 0.85; }
+        m = new THREE.MeshLambertMaterial(o);
+        // The picture lands when it lands (see loadTex): a surface built around
+        // a texture whose image has not arrived samples an empty one and draws
+        // black, and a texture that is not there at all stands the turf in for
+        // itself rather than taking the world down.
+        if (typeof loadVoxelTex === 'function') {
+            loadVoxelTex(def.tex + '.png', 1, (tex) => {
+                m.map = tex;
+                if (def.glow) m.emissiveMap = tex;
+                m.needsUpdate = true;
+            });
+        }
+        _blockMats.set(mat, m);
+        return m;
+    }
     function disposeVoxelMaterial() {
         // The textures themselves belong to the shared cache and are left in
         // it; only the surfaces built on them go.
         if (_voxMat) { _voxMat.dispose(); _voxMat = null; }
         if (_grassMat) { _grassMat.dispose(); _grassMat = null; }
         if (_waterMat) { _waterMat.dispose(); _waterMat = null; }
+        for (const m of _blockMats.values()) m.dispose();
+        _blockMats.clear();
     }
 
     // Inland water: rivers, lakes and swamp pools. The sea keeps its own plane.
@@ -2168,11 +2472,12 @@
 
     // Handed to the rest of the suite.
     Object.assign(VW, {
-        VOX, MAT, MATERIALS, PLACEABLE, ORE_ITEMS,
+        VOX, MAT, MATERIALS, PLACEABLE, ORE_ITEMS, ORES,
         VoxelEdits, VoxelField, VoxelMesher, MeshBuffer,
         TERRAIN, profileFor, islandRiseAt, riverPathAt, riverAt, shapeAt,
         clearTerrainCaches, SEA_LEVEL, GROUND_BASE,
         voxelMaterial, voxelGrassMaterial, voxelWaterMaterial, disposeVoxelMaterial,
+        voxelBlockMaterial, hotAt, oreAt, bedMat,
         voxelHash3: hash3
     });
 })();

@@ -58,6 +58,11 @@
   // stepping around a ring of thousands of identical stars helps nobody.
   const CYCLE_LIMIT = 48;
 
+  // The Starship's own interior: the map it is walked around on and the tile at
+  // its helm, facing up. The ship cannot leave orbit with the party wandering a
+  // planet, so plotting a course boards them first (see _boardStarship).
+  const SHIP_INTERIOR = { mapId: 721, x: 28, y: 10, dir: 8 };
+
   /** Straight-line distance in light years between two {x,y,z} points. */
   function distanceBetween(a, b) {
     if (!a || !b) return Infinity;
@@ -392,6 +397,10 @@
       const r = this._cosmicView.radius || 1500;
       this._rig.minDistance = r * 0.12;
       this._rig.maxDistance = r * 6;
+      // Panning may drift a view's width off centre and no further: past that
+      // the scale is empty space with nothing to look at or click (see
+      // CameraRig.clampPan).
+      this._rig.panLimit = r * 1.5;
       // Zooming OUT of the galaxy scale into the Local Group used to snap
       // straight to a framing of the WHOLE group (r*1.4, ~1400 units), which
       // yanked the camera far away from the Milky Way marker the player was
@@ -442,6 +451,7 @@
       const r = this._cosmicView.radius || 1100;
       this._rig.minDistance = r * 0.06;
       this._rig.maxDistance = r * 5;
+      this._rig.panLimit = r * 1.5;
       this._rig.snapTo(new THREE.Vector3(0, 0, 0), r * 1.5);
       this._inDist = 0;          // nothing deeper than a cluster member
       this._outDist = r * 3.0;   // zoom out -> back to the cosmic web
@@ -494,6 +504,7 @@
       const r = this._cosmicView.radius || 2000;
       this._rig.minDistance = r * 0.05;
       this._rig.maxDistance = r * 4;
+      this._rig.panLimit = r * 1.5;
       this._rig.snapTo(new THREE.Vector3(0, 0, 0), r * 1.4);
       this._inDist = 0;
       this._outDist = r * 2.6; // zoom out -> back where we came from
@@ -572,6 +583,7 @@
       const dist = Math.max(8, outer * 1.9 + 3);
       this._rig.maxDistance = outer * 5;
       this._rig.minDistance = 0.3;
+      this._rig.panLimit = outer * 2.5;
       this._rig.snapTo(new THREE.Vector3(0, 0, 0), dist);
       this._inDist = 0;                 // bottom of the ladder
       this._outDist = outer * 3.2;      // zoom out -> galaxy
@@ -610,6 +622,9 @@
       const focus = this._galaxyView.focusWorld || new THREE.Vector3();
       this._rig.minDistance = 4;
       this._rig.maxDistance = 9000;
+      // The disk is ~2600 units across from the core, so this keeps a pan
+      // inside the Milky Way with room to spare around its edge.
+      this._rig.panLimit = 5000;
       this._rig.snapTo(focus.clone(), 70);
       // Zooming in past this band enters the *selected* system (see
       // _systemToEnter); with nothing selected the zoom simply clamps here.
@@ -3144,12 +3159,31 @@
       // means orbiting the planet it belongs to - startTravelToPlanet only
       // knows planet names.
       const targetName = (sel.kind === "moon" && sel.planet) ? sel.planet.name : sel.data.name;
+      let departed = false;
       if (this.dataManager.startTravelToPlanet) {
-        this.dataManager.startTravelToPlanet(sysName, targetName);
+        departed = this.dataManager.startTravelToPlanet(sysName, targetName) !== false;
       }
+      if (departed) this._boardStarship();
       if (window.SoundManager) SoundManager.playOk();
       this._awardSpec("Spacecraft Piloting", 1);   // i18n-ignore: specialization id
       if (this._overlayUI) this._overlayUI.deselect();
+    }
+
+    /** Put the party back aboard before the ship departs. The star map is
+     * reachable planetside as well as from the bridge, so "Fly Here" given from
+     * anywhere but the Starship interior reserves a transfer to its helm - the
+     * transfer runs the moment the map scene comes back. MergedVehicleSystem
+     * does the disembarking (a ridden or parked vehicle), then the destination
+     * is reserved again so the party always lands on the helm tile facing up. */
+    _boardStarship() {
+      if (typeof $gameMap === "undefined" || !$gameMap || !$gamePlayer) return;
+      if ($gameMap.mapId() === SHIP_INTERIOR.mapId) return;
+      const vehicles = window.MergedVehicleSystem;
+      if (vehicles && typeof vehicles.enterAirshipInterior === "function") {
+        vehicles.enterAirshipInterior({ silent: true });
+      }
+      $gamePlayer.reserveTransfer(SHIP_INTERIOR.mapId, SHIP_INTERIOR.x,
+        SHIP_INTERIOR.y, SHIP_INTERIOR.dir, 0);
     }
 
     // Hand an activity to the specialization listener (SpecializationMenu.js).
@@ -3696,14 +3730,24 @@
         this._ladderHold = 0;
         return;
       }
-      const past = (this._scale < MAX_SCALE && this._outDist && td > this._outDist) ||
-        (this._scale > SCALE_SYSTEM && this._inDist && td < this._inDist);
-      this._ladderHold = past ? this._ladderHold + dt : 0;
+      const outPast = !!(this._scale < MAX_SCALE && this._outDist && td > this._outDist);
+      const inPast = !!(this._scale > SCALE_SYSTEM && this._inDist && td < this._inDist);
+      // Zooming in where this level has nowhere to go: hold the camera at the
+      // band edge from the moment it crosses, rather than letting the zoom run
+      // on and snapping it back out once the dwell lapsed - that late snap was
+      // the camera being shoved backwards in the middle of the gesture.
+      const descend = inPast ? this._ladderDescent() : null;
+      if (inPast && !descend) {
+        this._rig.setTargetDistance(this._inDist);
+        this._ladderHold = 0;
+        return;
+      }
+      this._ladderHold = (outPast || inPast) ? this._ladderHold + dt : 0;
       if (this._ladderHold < LADDER_DWELL) return;
       this._ladderHold = 0;
       this._ladderCooldown = LADDER_COOLDOWN;
 
-      if (this._scale < MAX_SCALE && this._outDist && td > this._outDist) {
+      if (outPast) {
         // Zooming out of a system that belongs to a procedural (non-Milky-Way)
         // galaxy returns to THAT galaxy's own cosmic view, not the hardcoded
         // Milky Way the generic SYSTEM -> scale+1 step would otherwise build
@@ -3717,23 +3761,63 @@
         } else {
           this._enterScale(this._scale + 1, this._focusSystem);
         }
-      } else if (this._scale > SCALE_SYSTEM && this._inDist && td < this._inDist) {
-        // Only the Galaxy -> System step is a meaningful zoom-in. The far cosmic
-        // scales are decorative billboards with no distinct interior, so stepping
-        // down from them would always dump the player into the hardcoded Milky
-        // Way (issue #154). Clamp the zoom instead of transitioning.
-        if (this._scale === SCALE_GALAXY) {
-          // Zooming right in on a targeted star enters it; with nothing
-          // targeted there is no system to drop into, so clamp instead.
-          const sys = this._systemToEnter();
-          if (sys) this._enterScale(SCALE_SYSTEM, sys);
-          else this._rig.setTargetDistance(this._inDist);
-        } else if (this._scale < SCALE_GALAXY) {
-          this._enterScale(this._scale - 1, this._focusSystem);
-        } else {
-          this._rig.setTargetDistance(this._inDist);
-        }
+      } else if (descend) {
+        descend();
       }
+    }
+
+    /**
+     * What zooming right in past `_inDist` should do at the current scale, as
+     * a closure, or null when this level has no way down at all (then the band
+     * edge is simply a wall the camera stops at).
+     *
+     * The galaxy scale drops into the star the camera has drawn in on. The far
+     * cosmic scales are nested views of the same cosmos, so zooming in steps
+     * down one of them - which is how the player gets back after zooming all
+     * the way out; they used to be dead ends that only ever pushed the camera
+     * back out. The local group is the exception: its only interior is the
+     * hardcoded Milky Way (issue #154), so there the focus has to actually be
+     * drawn in on a galaxy for anything to happen.
+     */
+    _ladderDescent() {
+      if (this._scale <= SCALE_SYSTEM) return null;
+      if (this._scale === SCALE_GALAXY) {
+        const sys = this._systemToEnter();
+        return sys ? () => this._enterScale(SCALE_SYSTEM, sys) : null;
+      }
+      if (this._scale === SCALE_LOCAL_GROUP) return this._nearestCosmicEntry();
+      const next = this._scale - 1;
+      return () => this._enterScale(next, this._focusSystem);
+    }
+
+    /**
+     * The galaxy the orbit focus has been drawn in on at the local-group scale,
+     * as an entry closure: the cosmic counterpart of _systemToEnter, where
+     * zooming in on where the camera already sits goes there. The home marker
+     * hands off to the real Milky Way interior, any other named galaxy to its
+     * own procedural one. Nothing near the focus returns null, so zooming into
+     * empty space still just clamps.
+     */
+    _nearestCosmicEntry() {
+      if (!this._cosmicView || this._galaxyFocus || this._webCluster) return null;
+      const reach = this._inDist || 0;
+      if (!reach) return null;
+      if (!this._scratchCosmicEntry) this._scratchCosmicEntry = new THREE.Vector3();
+      const wp = this._scratchCosmicEntry;
+      let best = null, bestD = reach;
+      for (const p of (this._pickTargets || [])) {
+        if (!p || !p.object || !p.data || !p.data.name) continue;
+        if (p.kind !== "galaxy" && !p.data.home) continue;
+        p.object.getWorldPosition(wp);
+        const d = this._rig.focus.distanceTo(wp);
+        if (d < bestD) { bestD = d; best = p; }
+      }
+      if (!best) return null;
+      const name = best.data.name;
+      if (best.data.home || name === "Milky Way") {   // i18n-ignore: galaxy id
+        return () => this._enterScale(SCALE_GALAXY, this._focusSystem);
+      }
+      return () => this._enterGalaxyFocus(name);
     }
 
     // ----------------------------------------------------------------------

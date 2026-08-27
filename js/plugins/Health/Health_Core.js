@@ -1174,30 +1174,86 @@
    * rather than the first. A prosthetic counts as a part for this, and a limb
    * ruined in Blood and Oil counts for nothing.
    */
-  function forgetPartSkills(actor, part, partKey) {
-    const losing = getPartSkillIds(part, partKey);
-    if (!losing.length) return;
-
+  function anatomyKeptSkills(actor, skipPartKey, skipProstheticKey) {
     const kept = new Set();
-    const parts = actor._bodyParts || {};
+    const parts = (actor && actor._bodyParts) || {};
     for (const key in parts) {
-      if (key === partKey) continue;
+      if (key === skipPartKey) continue;
       const other = parts[key];
       if (!other || other.ruined) continue;
       for (const id of getPartSkillIds(other, key)) kept.add(id);
     }
     const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
-    if (ProstheticTypes && actor._prosthetics) {
+    if (ProstheticTypes && actor && actor._prosthetics) {
       for (const key in actor._prosthetics) {
-        if (key === partKey) continue;
+        if (key === skipProstheticKey) continue;
         const prosthetic = ProstheticTypes[actor._prosthetics[key]];
         if (prosthetic) for (const id of normalizeSkillIds(prosthetic.skill)) kept.add(id);
       }
     }
+    return kept;
+  }
 
+  function forgetPartSkills(actor, part, partKey) {
+    const losing = getPartSkillIds(part, partKey);
+    if (!losing.length || !actor) return;
+    const kept = anatomyKeptSkills(actor, partKey, partKey);
     for (const id of losing) {
       if (!kept.has(id)) actor.forgetSkill(id);
     }
+  }
+
+  /**
+   * The same rule for an augment pulled on its own: what it taught goes with
+   * it, unless the body still owes that skill to a part it kept. The limb it
+   * was fitted to stays on, so it counts among what is kept.
+   */
+  function forgetProstheticSkills(actor, partKey) {
+    const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
+    const key = actor && actor._prosthetics ? actor._prosthetics[partKey] : null;
+    const prosthetic = ProstheticTypes && key ? ProstheticTypes[key] : null;
+    if (!prosthetic) return;
+    const losing = normalizeSkillIds(prosthetic.skill);
+    if (!losing.length) return;
+    const kept = anatomyKeptSkills(actor, null, partKey);
+    for (const id of losing) {
+      if (!kept.has(id)) actor.forgetSkill(id);
+    }
+  }
+
+  /**
+   * Which pieces of the body a skill is owed to, by name: what the skills menu
+   * prints so a move that came with a claw, a mouth or a grafted augment says
+   * where it came from. A damaged part still counts, because it is still on the
+   * body and still teaching; a ruined one does not.
+   */
+  function skillSourcePartNames(actor, skillId) {
+    const names = [];
+    const id = Number(skillId);
+    if (!actor || !id) return names;
+    const push = (name) => {
+      if (name && !names.includes(name)) names.push(name);
+    };
+    const parts = actor._bodyParts || {};
+    for (const partKey in parts) {
+      const part = parts[partKey];
+      if (!part || part.ruined) continue;
+      if (getPartSkillIds(part, partKey).includes(id)) {
+        push(part.name || archetypePartName({ name: partKey }));
+      }
+    }
+    const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
+    if (ProstheticTypes && actor._prosthetics) {
+      for (const partKey in actor._prosthetics) {
+        const prosthetic = ProstheticTypes[actor._prosthetics[partKey]];
+        if (!prosthetic) continue;
+        if (!normalizeSkillIds(prosthetic.skill).includes(id)) continue;
+        const pName = ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en;
+        push(pName || getArchetypeText(prosthetic.name_int)
+             || (parts[partKey] && parts[partKey].name) || "");
+      }
+    }
+    return names;
   }
 
   /**
@@ -2567,6 +2623,13 @@
   // Every skill the anatomy owes: read by CategorizedBattleSkills, which never
   // benches one (a body does not put its own claws in storage).
   window.HealthCore.anatomySkillIds = anatomySkillIds;
+  // Losing what the anatomy taught: a part coming off (severed, amputated or
+  // replaced in surgery) and an augment pulled on its own. Both keep whatever
+  // the rest of the body still grants, so a one-handed character can still
+  // push. The named sources are what the skills menu prints.
+  window.HealthCore.forgetPartSkills = forgetPartSkills;
+  window.HealthCore.forgetProstheticSkills = forgetProstheticSkills;
+  window.HealthCore.skillSourcePartNames = skillSourcePartNames;
   // What the anatomy is worth outside a fight: read by the movement system
   // (walking speed, sprinting) and by anything that wants to know whether a
   // character can still hold or steer something.

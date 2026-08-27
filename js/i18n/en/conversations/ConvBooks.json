@@ -2174,10 +2174,5 @@
     "Doc",
     "Shadow",
     "Hawk"
-  ],
-  "ramanChoices": [
-    "Check",
-    "Analyze",
-    "Cancel"
   ]
 }

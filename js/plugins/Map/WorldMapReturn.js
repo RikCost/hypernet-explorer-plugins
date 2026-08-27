@@ -350,15 +350,21 @@
     // ============================================================================
     // BIOME MUSIC SELECTION
     // ----------------------------------------------------------------------------
-    // Every biome carries a wide pool of candidate tracks (`bgm` for day,
-    // `bgmNight` for night) but only ONE of them is ever heard while the party
-    // stays put: the track is picked deterministically from the world seed, the
-    // biome name, the day/night half and above all the NATION the player is
-    // currently standing in (Variable 86, set by WeatherSystem.setCurrentCountry).
+    // Only a place with a musical identity of its own carries a track pool:
+    // settlements (cities, burgs, villages), the built dungeons of the structure
+    // catalogue (crypt, sewer, catacombs, oubliette, bunker, ...) and every alien
+    // biome. Open country, interiors and CAVES deliberately carry none, so the
+    // map keeps whatever BGM it was authored with rather than being overridden.
     //
-    // So a forest keeps one identity for as long as the party walks around one
+    // Where a pool exists it is a wide one (`bgm` for day, `bgmNight` for night)
+    // but only ONE of them is ever heard while the party stays put: the track is
+    // picked deterministically from the world seed, the biome name, the day/night
+    // half and above all the NATION the player is currently standing in
+    // (Variable 86, set by WeatherSystem.setCurrentCountry).
+    //
+    // So a city keeps one identity for as long as the party walks around one
     // country, and the whole musical palette rotates the moment they cross a
-    // border: the same forest biome sounds different on the French side. No
+    // border: the same city biome sounds different on the French side. No
     // per-visit shuffling, no restart when stepping between two maps of the same
     // biome, and no state to persist -- the same inputs always give the same pick.
     //
@@ -368,15 +374,6 @@
     // ============================================================================
 
     const VAR_NATION_ID = 86;
-
-    // Biome music is opt-in (Options > Audio > "Biome Music (WIP)", off by
-    // default): while it is off none of the biome pools -- `bgm`, `bgmNight`
-    // or `emptyWorldBGM` -- is consulted at all, and every map keeps whatever
-    // BGM it was authored with. Only the music: biome ambience (BGS) is
-    // unaffected, since it is the room tone of the place rather than a track.
-    function isBiomeMusicEnabled() {
-        return !!(window.ConfigManager && ConfigManager.biomeMusic);
-    }
 
     function currentNationId() {
         return ($gameVariables ? $gameVariables.value(VAR_NATION_ID) : 0) | 0;
@@ -422,14 +419,12 @@
     }
 
     function emptyWorldPool(biome) {
-        if (!isBiomeMusicEnabled()) return [];
         return ((biome && biome.emptyWorldBGM) || []).filter(n => n && n.trim());
     }
 
     // The night pool is optional: a biome with no `bgmNight` keeps its day pool
     // after dark rather than falling silent.
     function biomeTrackPool(biome, isNight) {
-        if (!isBiomeMusicEnabled()) return [];
         const clean = arr => (arr || []).filter(n => n && n.trim());
         const empty = emptyWorldPool(biome);
         // In an empty world the biome's own two pools are not consulted at all.
@@ -446,9 +441,10 @@
     // own, it is a line drawn across whatever country it crosses, so it carries
     // no bgm in Biomes.json and takes the music of the terrain it was painted
     // over (recorded as currentUnderBiome) or, failing that, of a neighbouring
-    // world square. Anything itself silent - another road, a biome the
-    // generator has no tracks for - is skipped, and null means "there is
-    // nothing to borrow", which leaves whatever is playing alone.
+    // world square. Now that only settlements and built dungeons carry pools at
+    // all this fires just on their doorstep - a road running into a city takes
+    // the city's theme - and everywhere else there is nothing to borrow, which
+    // is the null case: it leaves whatever is playing alone.
     function borrowedMusicBiome(biomeName, procGenData, isNight) {
         if (!procGenData) return null;
         const candidates = [procGenData.currentUnderBiome];
@@ -468,6 +464,31 @@
             return { name, biome: candidate };
         }
         return null;
+    }
+
+    // What the music should do here, as one answer: 'play' this pool, 'keep'
+    // whatever is already playing, or 'stop'. A biome with no pool of its own
+    // borrows first (see above); with nothing to borrow either the place is
+    // silent, and a procedural map IS its biome, so silent means silent - the
+    // track the party walked in with is faded out instead of following them out
+    // into open country. A hand-made map is authored, not generated, so there it
+    // still means "carry on with whatever is playing".
+    function biomeMusicDecision(biome, biomeName, procGenData, isNight, isProcGenMap) {
+        let musicBiome = biome, musicBiomeName = biomeName;
+        if (biomeTrackPool(biome, isNight).length === 0) {
+            const borrowed = borrowedMusicBiome(biomeName, procGenData, isNight);
+            if (borrowed) {
+                musicBiome     = borrowed.biome;
+                musicBiomeName = borrowed.name;
+            }
+        }
+        const tracks = biomeTrackPool(musicBiome, isNight);
+        return {
+            tracks,
+            name: musicBiomeName,
+            borrowed: musicBiomeName !== biomeName,
+            action: tracks.length > 0 ? 'play' : (isProcGenMap ? 'stop' : 'keep')
+        };
     }
 
     function isNightTimeNow() {
@@ -519,6 +540,7 @@
     // ============================================================================
 
     const BGS_FADE_SECONDS = 1.5;
+    const BGM_FADE_SECONDS = 1.5;
 
     // Hand the playing ambience over to a fade and give it back to nobody: it is
     // off AudioManager from here on, so the playBgs that starts the next bed
@@ -531,6 +553,24 @@
         const fade = seconds === undefined ? BGS_FADE_SECONDS : seconds;
         AudioManager._bgsBuffer = null;
         AudioManager._currentBgs = null;
+        const free = () => { try { buffer.destroy(); } catch (e) { /* already gone */ } };
+        if (fade <= 0 || !buffer.fadeOut) { free(); return true; }
+        buffer.fadeOut(fade);
+        setTimeout(free, fade * 1000 + 250);
+        return true;
+    }
+
+    // The same hand-over for the music. A procedural map with no biome music of
+    // its own used to keep whatever the party walked in with, which dragged a
+    // settlement theme out across the open country around it. Detached, ramped
+    // down and freed exactly like the ambience, since WebAudio.fadeOut only
+    // ramps the gain and never stops the source.
+    function fadeOutBiomeBgm(seconds) {
+        const buffer = AudioManager._bgmBuffer;
+        AudioManager._currentBgm = null;
+        if (!buffer) return false;
+        const fade = seconds === undefined ? BGM_FADE_SECONDS : seconds;
+        AudioManager._bgmBuffer = null;
         const free = () => { try { buffer.destroy(); } catch (e) { /* already gone */ } };
         if (fade <= 0 || !buffer.fadeOut) { free(); return true; }
         buffer.fadeOut(fade);
@@ -577,8 +617,9 @@
         }
 
         // No biome, or one that is not in the database: kill the ambience but
-        // leave the BGM alone. Silence is never an improvement over whatever was
-        // already playing, so an absent track list always means "carry on".
+        // leave the BGM alone. That is missing data rather than a quiet place, so
+        // whatever is playing carries on; a biome that IS in the database and
+        // simply has no tracks falls silent on a procedural map (see below).
         if (!biomeName) { fadeOutBiomeBgs(); return; }
 
         let biome = getBiomeByName(biomeName);
@@ -614,30 +655,35 @@
             // A biome with no music of its own borrows it from the ground it
             // sits on or from next door. Only the music: the ambience below
             // stays the biome's own, so a road still sounds like a road.
-            let musicBiome = biome, musicBiomeName = biomeName;
-            if (biomeTrackPool(biome, isNightTime).length === 0) {
-                const borrowed = borrowedMusicBiome(biomeName, procGenData, isNightTime);
-                if (borrowed) {
-                    musicBiome     = borrowed.biome;
-                    musicBiomeName = borrowed.name;
-                    console.log(`[updateBiomeAudio] ${biomeName} has no music of its own, borrowing ${musicBiomeName}`);  // i18n-ignore  console diagnostic
-                }
+            const decision = biomeMusicDecision(biome, biomeName, procGenData, isNightTime, isProcGenMap);
+            if (decision.borrowed) {
+                console.log(`[updateBiomeAudio] ${biomeName} has no music of its own, borrowing ${decision.name}`);  // i18n-ignore  console diagnostic
             }
-            const tracks = biomeTrackPool(musicBiome, isNightTime);
-            const target = pickBiomeTrack(musicBiomeName, tracks, seedNight);
+            const tracks  = decision.tracks;
+            const target  = decision.action === 'play'
+                ? pickBiomeTrack(decision.name, tracks, seedNight)
+                : null;
             const playing = AudioManager._currentBgm && AudioManager._currentBgm.name;
             if (!target) {
-                // A biome with no track list (house interiors, generic homes, ...)
-                // deliberately inherits the BGM of the map it was entered from
-                // instead of cutting to silence.
-                console.log(`[updateBiomeAudio] No BGM list for biome: ${biomeName}, keeping current BGM`);
+                // A procedural map IS its biome, so a biome with nothing to play
+                // and nothing next door to borrow is a silent place: fade out
+                // whatever the party walked in with rather than dragging a
+                // settlement theme across the open country around it. Hand-made
+                // maps (house interiors, generic homes, ...) keep the old rule and
+                // inherit the BGM of the map they were entered from.
+                if (decision.action === 'stop') {
+                    fadeOutBiomeBgm();
+                    console.log(`[updateBiomeAudio] No BGM list for biome: ${biomeName}, stopping BGM`);  // i18n-ignore  console diagnostic
+                } else {
+                    console.log(`[updateBiomeAudio] No BGM list for biome: ${biomeName}, keeping current BGM`);  // i18n-ignore  console diagnostic
+                }
             } else if (playing === target) {
                 // The pick is stable for this (biome, nation, half of day), so
                 // walking between two maps of the same biome never restarts it.
                 console.log(`[updateBiomeAudio] Keeping BGM: ${playing} for biome: ${biomeName}`);
             } else {
                 AudioManager.playBgm({ name: target, volume: 90, pitch: 100, pan: 0 });
-                console.log(`[updateBiomeAudio] Playing BGM: ${target} for biome: ${musicBiomeName} ` +
+                console.log(`[updateBiomeAudio] Playing BGM: ${target} for biome: ${decision.name} ` +
                             `(nation ${currentNationId()}, ${tracks.length} candidates)`);  // i18n-ignore  console diagnostic
             }
         }
@@ -2254,6 +2300,19 @@
         return nearbyBorders;
     };
 
+    const BORDER_NAME_DIR = { south: 2, west: 4, east: 6, north: 8 };
+
+    // Is the ground past this edge, in this direction, joinable onto the map the
+    // party is standing on? True means no crossing happens there and no marker
+    // is drawn; false means the fade, and the marker that announces it.
+    function canStitchOffEdge(dirName, x, y) {
+        const S = window.ProcStitch;
+        if (!S || !S.active || !S.active() || !S.canGrow) return false;
+        const d = BORDER_NAME_DIR[dirName];
+        if (!d) return false;
+        return S.canGrow(d, x, y);
+    }
+
     Game_Map.prototype.getProcGenBorderTiles = function(playerX, playerY) {
         const nearbyBorders = [];
         const width  = this.width();
@@ -2277,11 +2336,21 @@
                 if (!this.isPassable(x, y, 2) && !this.isPassable(x, y, 4) &&
                     !this.isPassable(x, y, 6) && !this.isPassable(x, y, 8)) continue;
 
-                const directions = [];
+                let directions = [];
                 if (x === 0)          directions.push('west');
                 if (x === width - 1)  directions.push('east');
                 if (y === 0)          directions.push('north');
                 if (y === height - 1) directions.push('south');
+                if (directions.length === 0) continue;
+
+                // A marker means "this is a way OUT of here": a fade, a load and
+                // another place on the other side. A neighbour on this square's
+                // own tileset is none of those - it is simply more ground, laid
+                // down under the party as they walk onto it (growTowards) - so
+                // the edge it lies beyond is not drawn as an edge at all. What
+                // keeps its marker is a real crossing: a square on a different
+                // tileset, or one the hand-made maps own.
+                directions = directions.filter(name => !canStitchOffEdge(name, x, y));
                 if (directions.length === 0) continue;
 
                 let ax = x, ay = y;
@@ -2814,7 +2883,12 @@
     // <Borders mapId x y> still transfers outright wherever it names: that tag
     // exists to say where it wants to go, and the world map named that way is
     // still meant literally.
-    Game_Player.prototype.performBorderReturn = function(direction) {
+    //
+    // `mode` is the answer to the border choice, when one was asked (see
+    // offerBorderCrossing): 'worldmap' takes the tag literally whatever else it
+    // could have meant, 'explore' carries on into the square past this one.
+    // Without it the crossing resolves itself exactly as it always did.
+    Game_Player.prototype.performBorderReturn = function(direction, mode) {
         let dest = null;
         let generated = false;
         if ($gameMap._coordsDest) {
@@ -2824,10 +2898,22 @@
             dest = $gameMap._borderDestination;
         }
         if (!dest) return false;
+        const d = direction || this.direction();
+        // Walking on rather than stopping: the neighbouring square is built and
+        // entered from the side that was crossed, the same way the map's own
+        // square is below, so a gate leads into the country outside the wall.
+        if (mode === 'explore') {
+            const onward = borderExploreSquare(d);
+            if (onward) {
+                surfaceProcGenLayers($gameSystem && $gameSystem._procGenData);
+                $gameVariables.setValue(VAR_DEST_MAP, procMapId);
+                if (enterProceduralSquare(onward.x, onward.y, d)) return true;
+            }
+        }
         // An alien planet's landing grid is planet-local, and a <Coords> pair is
         // an Earth world-map square: generating one against the other would build
         // an alien biome at an Earth coordinate. Off-world the old transfer stands.
-        if (generated && !isAlienSurfaceNow()) {
+        if (generated && mode !== 'worldmap' && !isAlienSurfaceNow()) {
             const square = proceduralBorderSquare(dest);
             if (square) {
                 // Out of a building and into the open air. Map 315 used to drop a
@@ -2836,7 +2922,6 @@
                 // outside the door could come out as a cave.
                 surfaceProcGenLayers($gameSystem && $gameSystem._procGenData);
                 $gameVariables.setValue(VAR_DEST_MAP, procMapId);
-                const d = direction || this.direction();
                 if (enterProceduralSquare(square.x, square.y, d)) return true;
             }
         }
@@ -2852,9 +2937,109 @@
         return true;
     };
 
+    // ------------------------------------------------------------------------
+    // THE BORDER CHOICE
+    // ------------------------------------------------------------------------
+    // Leaving a hand-made map used to be one fixed act: the border tag decided,
+    // and the party found themselves wherever it said. A town gate is two
+    // different journeys though - the road on the world map, and the country
+    // right outside the wall - so the crossing asks which one was meant instead
+    // of guessing, and takes no for an answer as well.
+    // ------------------------------------------------------------------------
+
+    // The world square the map itself stands on: <Coords> names one outright
+    // (the editor's template pair meaning "wherever the party is"), and a
+    // <Borders> tag aimed at map 315 names the tile it transfers to. Any other
+    // <Borders> destination is another map, not a world square, and has no
+    // neighbours to offer.
+    function borderWorldSquare() {
+        if ($gameMap._coordsDest) {
+            return proceduralBorderSquare({ x: $gameMap._coordsDest.x, y: $gameMap._coordsDest.y });
+        }
+        const dest = $gameMap._borderDestination;
+        if (dest && dest.mapId === worldMapId) {
+            return proceduralBorderSquare({ x: dest.x, y: dest.y });
+        }
+        return null;
+    }
+
+    // One square on from that, in the direction crossed. Null when the map is
+    // not anchored to a world coordinate, or when the step would fall off the
+    // world map's own edge.
+    function borderExploreSquare(direction) {
+        const step = BORDER_STEP[direction];
+        if (!step) return null;
+        const base = borderWorldSquare();
+        if (!base) return null;
+        const x = base.x + step[0], y = base.y + step[1];
+        if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) return null;
+        return { x, y };
+    }
+
+    // Ask the party where they are going. Returns true when the menu opened, in
+    // which case the crossing is now the menu's business and the caller must not
+    // also perform it. Returns false whenever there is nothing to ask about, and
+    // the old unconditional crossing stands: off-world, on a map that is not
+    // anchored to a world square, or with a message already on screen.
+    Game_Player.prototype.offerBorderCrossing = function(direction) {
+        if ($gameMap.mapId() === worldMapId || $gameMap.mapId() === procMapId) return false;
+        if (!$gameMap._coordsDest && !$gameMap._borderDestination) return false;
+        if (isAlienSurfaceNow()) return false;
+        if ($gameMessage.isBusy()) return false;
+
+        let d = direction || this.direction();
+        // Stepping ALONG an edge can trip the crossing sideways, which would name
+        // the square beside the map rather than the one beyond it. The tile knows
+        // which way off the map it lies, and that is the way out.
+        if ($gameMap.isBorderTile(this.x, this.y)) {
+            const dirs = $gameMap.getBorderDirection(this.x, this.y);
+            if (!dirs.includes(BORDER_DIR_NAME[d])) d = this.getExitDirection(dirs) || d;
+        }
+
+        const onward = borderExploreSquare(d);
+        if (!onward) return false;
+
+        // Cancelling at a fenced edge leaves the party pressed against it, and
+        // the held key would reopen the menu on the very next frame. The refusal
+        // is remembered per tile and per direction: turning away and pushing back
+        // asks again, holding the key down does not.
+        const cancelKey = `${$gameMap.mapId()},${this.x},${this.y},${d}`;
+        if (this._borderChoiceCancelKey === cancelKey) return false;
+
+        const place = worldSquareName(onward.x, onward.y) || T('WorldMapReturn.wilderness');
+        const rows = [
+            {
+                label: T('WorldMapReturn.returnToWorldMap'),
+                run: () => { this.performBorderReturn(d, 'worldmap'); },
+            },
+            {
+                label: T('WorldMapReturn.explorePlace', { place }),
+                run: () => { this.performBorderReturn(d, 'explore'); },
+            },
+            {
+                label: T('WorldMapReturn.cancel'),
+                run: () => { this._borderChoiceCancelKey = cancelKey; },
+            },
+        ];
+        const cancelIndex = rows.length - 1;
+        $gameMessage.setChoices(rows.map(r => r.label), 0, cancelIndex);
+        $gameMessage.setChoiceCallback((choice) => {
+            const row = rows[choice] || rows[cancelIndex];
+            if (row && row.run) row.run();
+        });
+        Input.clear();
+        // A click destination still pointing at the border tile would walk the
+        // party straight back into it the moment the menu closes.
+        $gameTemp.clearDestination();
+        return true;
+    };
+
     // Auto-transfer when player steps on a border tile that has a Coords/Borders destination
     Game_Player.prototype.checkBorderTeleport = function() {
         if (this._justWrapped) { this._justWrapped = false; return; }
+        // Only reached on a tile or map change, which is exactly when a refused
+        // border choice stops applying.
+        this._borderChoiceCancelKey = null;
 
         const x = this.x, y = this.y;
         if ($gameMap.isBorderTile(x, y) && $gameMap.isBorderTilePassable(x, y)) {
@@ -2872,7 +3057,7 @@
 
             if (hasBorderDest && this._borderChoiceShown !== tileKey && isDirectionAllowed) {
                 this._borderChoiceShown = tileKey;
-                this.performBorderReturn();
+                if (!this.offerBorderCrossing()) this.performBorderReturn();
                 return;
             }
         } else {
@@ -2889,7 +3074,8 @@
         if (this.hasTransferEventAt(this.x, this.y)) return false;
         if (!$gameMap.isBorderCrossing(this.x, this.y, d)) return false;
         this.setDirection(d);
-        return this.performBorderReturn();
+        if (this.offerBorderCrossing(d)) return true;
+        return this.performBorderReturn(d);
     };
 
     Game_Player.prototype.getExitDirection = function(directions) {
@@ -3203,6 +3389,9 @@
     function adoptCell(win, cell) {
         const pg = procGen();
         if (!pg || !cell || !cell.built) return;
+        // A plan is guarded on the biome the party's square reports, and that is
+        // what this is about to change.
+        forgetGrowthAnswers();
         const r = cell.built.resolved;
         win.partyCell = cell;
         pg.currentBiome = r.biomeName;
@@ -3303,6 +3492,8 @@
         prefetchQueue.length = 0;
         prefetchUrgent = false;
         lastApproachKey = null;
+        lastRoadKey = null;
+        forgetGrowthAnswers();
         const pg = procGen();
         if (pg) pg.stitchCentre = null;
     }
@@ -3351,6 +3542,24 @@
     function localCoord(mapX, mapY) {
         if (!stitchWindow) return { x: mapX, y: mapY };
         return { x: ((mapX % CELL_W) + CELL_W) % CELL_W, y: ((mapY % CELL_H) + CELL_H) % CELL_H };
+    }
+
+    // The same map coordinate expressed inside the square the PARTY is standing
+    // in, rather than inside the square it happens to fall in. The two differ
+    // only for a tile just over a seam, and there this is the one to keep:
+    // everything that outlives a trip off the map - the door to come back out
+    // of, a tree felled, a torch lit - is filed BESIDE a square, and the square
+    // it is filed beside is the party's. The answer may then fall outside 0..63,
+    // which is exactly right: toMap adds the cell's offset straight back and
+    // lands on the tile again.
+    //
+    // localCoord is the wrong tool for that job: it takes the coordinate modulo
+    // the cell, so a tile one step over a seam comes back as 63 of the party's
+    // own square - a different tile entirely, half a map away.
+    function localToPartySquare(mapX, mapY) {
+        const cell = stitchWindow && stitchWindow.partyCell;
+        if (!cell) return { x: mapX, y: mapY };
+        return { x: mapX - cell.ox, y: mapY - cell.oy };
     }
 
     // The world square a map coordinate stands on.
@@ -3423,12 +3632,22 @@
     // Hand the engine the new array. The tilemap was built around the old size, so
     // it has to be told the new one and redrawn; Game_Map itself reads width,
     // height and tiles straight off $dataMap every time, so it needs nothing.
+    //
+    // The scroll origin does have to be said again, and this is the one place
+    // that has to say it. Spriteset_Map.updateTilemap copies $gameMap.displayX
+    // into the tilemap's origin at the TOP of the frame, before $gamePlayer
+    // updates - which is where a window slide is decided. So the frame a slide
+    // happens on was rendering the new tiles, whose map coordinates had just
+    // moved by a whole square, against an origin still describing the old ones:
+    // the whole world jumped 64 tiles for exactly one frame and jumped back on
+    // the next. That is the flicker of travelling across stitched squares.
     function refreshTilemap() {
         const scene = SceneManager._scene;
         const spriteset = scene && scene._spriteset;
         if (!spriteset || !spriteset._tilemap) return;
         spriteset._tilemap.setData($gameMap.width(), $gameMap.height(), $gameMap.data());
         spriteset._tilemap.refresh();
+        if (typeof spriteset.updateTilemap === 'function') spriteset.updateTilemap();
     }
 
     // ---- building the ground ahead of the party ----------------------------
@@ -3464,6 +3683,13 @@
 
     const PREFETCH_MARGIN = 12;      // tiles from a seam that start the build
 
+    // The eight squares around one, sides first: a side is walked into far more
+    // often than a corner, and the queue is drained in order.
+    const RING_STEPS = [
+        [0, -1], [0, 1], [-1, 0], [1, 0],
+        [-1, -1], [1, -1], [-1, 1], [1, 1],
+    ];
+
     // Milliseconds of generation a frame may be asked for. A pass never stops in
     // the middle of a tile, so a slice overruns its budget by up to about a
     // millisecond and a half; both figures are chosen against that. The urgent
@@ -3478,12 +3704,17 @@
     // The square being built right now, a slice at a time.
     let prefetchJob = null;
 
-    function enqueueSquare(worldX, worldY, depth) {
+    // `front` jumps the queue. The queue is FIFO because everything in it used
+    // to be wanted at about the same moment; the road look-ahead is not, it is
+    // ground for a seam several squares away, and a slide that is waiting on its
+    // own three squares must not be made to wait behind it.
+    function enqueueSquare(worldX, worldY, depth, front) {
         const api = ProcGenSquareApi();
         if (!api || !api.has || api.has(worldX, worldY, depth)) return;
         const key = depth + ':' + worldX + ',' + worldY;
         for (const job of prefetchQueue) if (job.key === key) return;
-        prefetchQueue.push({ key, worldX, worldY, depth });
+        const job = { key, worldX, worldY, depth };
+        if (front) prefetchQueue.unshift(job); else prefetchQueue.push(job);
     }
 
     // Everything a window centred on this square would need that is not built.
@@ -3491,12 +3722,44 @@
     // planned around: the "is this a square the resolver can account for" gate
     // asks about where the party is standing, and here that is deliberately
     // somewhere else - a square they have not reached yet.
-    function prefetchWindowAt(cx, cy, depth) {
+    function prefetchWindowAt(cx, cy, depth, front) {
         const here = stitchWindow && stitchWindow.partyCell;
         const guard = here ? { x: here.worldX, y: here.worldY } : null;
         const plan = planWindow(cx, cy, depth, guard);
         if (!plan) return;
-        for (const cell of plan.cells) enqueueSquare(cell.worldX, cell.worldY, depth);
+        for (const cell of plan.cells) enqueueSquare(cell.worldX, cell.worldY, depth, front);
+    }
+
+    // Every square around this one that shares its tileset, whether or not the
+    // window's rectangle happens to reach it.
+    //
+    // The rectangle is the map, but it is not the whole of what the party may
+    // walk onto: a window is the LARGEST rectangle it can lay, and the largest
+    // is not always the one that reaches the way they go. A neighbour left out
+    // of it is still ground on this tileset, still joinable the moment they
+    // touch the edge (growTowards asks for a direction by name), and if it has
+    // not been built by then that step costs a whole square built on one frame.
+    //
+    // So the ring is paid for in instalments from the moment the party sets foot
+    // in a square, sides before corners. Everything that can be walked onto
+    // without a fade is on the queue long before it is wanted, and the fade is
+    // left to the crossings that really are crossings: a different tileset, or a
+    // square the old system owns.
+    function prefetchStitchableRing(cell) {
+        if (!stitchWindow || !cell || !stitchingAllowed()) return;
+        const api = ProcGenSquareApi();
+        if (!api || !api.resolve) return;
+        const depth = stitchWindow.depth;
+        const centre = api.resolve(cell.worldX, cell.worldY, { depth });
+        if (!centre || !centre.biome) return;
+        const alienGrid = procGen() && procGen().alienGrid;
+        for (const [dx, dy] of RING_STEPS) {
+            const coord = neighbourCoord(cell.worldX, cell.worldY, dx, dy, alienGrid);
+            if (!coord) continue;
+            if (coord.x === cell.worldX && coord.y === cell.worldY) continue;
+            if (!canStitch(centre, coord.x, coord.y, depth)) continue;
+            enqueueSquare(coord.x, coord.y, depth);
+        }
     }
 
     // Spend this frame's share on the square at the head of the queue. One
@@ -3568,6 +3831,82 @@
         }
     }
 
+    // ---- the road ahead ----------------------------------------------------
+    //
+    // Twelve tiles from a seam is the right moment to start on the ground beside
+    // an ordinary square, because until then there is no telling which way the
+    // party will wander. A road is not like that. A road square joins onto road
+    // squares and nothing else - that is what makes the carriageway continuous
+    // across a seam in the first place - so the ground a party DRIVING is going
+    // to want is knowable a long way out: it is the road itself, and the
+    // branches it opens on the way.
+    //
+    // A road is also where the party is fastest, so it is exactly where the
+    // twelve-tile margin is worth the least: a car crosses it in a couple of
+    // seconds and arrives at the seam before the instalments have finished
+    // paying for the square on the far side of it, which is what makes growTowards
+    // build one outright and drop a frame.
+    //
+    // So a road is walked instead: from the square the party is standing in,
+    // outward along every road square that is not behind them, a few squares
+    // deep. Whatever that reaches is queued the same way everything else is, a
+    // slice of a frame at a time, and the slide that eventually wants it finds
+    // it already built.
+    const ROAD_LOOKAHEAD = 3;        // road squares deep
+    const ROAD_PREFETCH_LIMIT = 6;   // and no more than this many in one walk
+    const ROAD_STEPS = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+
+    // The square (and facing) the last road walk was made from: the walk is a
+    // dozen resolutions and there is no sense repeating it for every tile of a
+    // square the party is driving straight across.
+    let lastRoadKey = null;
+
+    function prefetchRoadAhead(cell) {
+        if (!stitchWindow || typeof isRoadBiome !== 'function') return;
+        // Never crowd the queue: the road is the least urgent thing in it.
+        if (prefetchQueue.length >= ROAD_PREFETCH_LIMIT) return;
+        const api = ProcGenSquareApi();
+        if (!api || !api.resolve) return;
+        const depth = stitchWindow.depth;
+        const here = api.resolve(cell.worldX, cell.worldY, { depth });
+        if (!here || !here.biome || !isRoadBiome(here.biomeName)) return;
+
+        const alienGrid = procGen() && procGen().alienGrid;
+        // The way the party came is ground they have already crossed. Everything
+        // else the road offers - straight on, and both sides of a junction or a
+        // corner - is ground they may be about to.
+        const facing = EXIT_DELTA[$gamePlayer.direction()] || null;
+
+        const seen = new Set([cell.worldX + ',' + cell.worldY]);
+        let frontier = [{ x: cell.worldX, y: cell.worldY, from: facing }];
+        let laid = 0;
+
+        for (let step = 0; step < ROAD_LOOKAHEAD && frontier.length && laid < ROAD_PREFETCH_LIMIT; step++) {
+            const next = [];
+            for (const node of frontier) {
+                for (const [dx, dy] of ROAD_STEPS) {
+                    if (node.from && dx === -node.from.dx && dy === -node.from.dy) continue;
+                    const coord = neighbourCoord(node.x, node.y, dx, dy, alienGrid);
+                    if (!coord) continue;
+                    const key = coord.x + ',' + coord.y;
+                    if (seen.has(key)) continue;
+                    seen.add(key);
+                    const r = api.resolve(coord.x, coord.y, { depth });
+                    // One map, one tileset: a road square whose tileset differs
+                    // could never be laid alongside this one anyway, so building
+                    // it ahead would buy nothing.
+                    if (!r || !r.biome || r.tilesetId !== here.tilesetId) continue;
+                    if (!isRoadBiome(r.biomeName)) continue;
+                    next.push({ x: coord.x, y: coord.y, from: { dx, dy } });
+                    enqueueSquare(coord.x, coord.y, depth);
+                    if (++laid >= ROAD_PREFETCH_LIMIT) break;
+                }
+                if (laid >= ROAD_PREFETCH_LIMIT) break;
+            }
+            frontier = next;
+        }
+    }
+
     // Every square a window centred here would need, already built?
     function readyWindowAt(cx, cy, depth) {
         const plan = planWindow(cx, cy, depth);
@@ -3594,7 +3933,7 @@
         // off-centre, which it is perfectly entitled to be.
         const win = readyWindowAt(cell.worldX, cell.worldY, old.depth);
         if (!win) {
-            prefetchWindowAt(cell.worldX, cell.worldY, old.depth);
+            prefetchWindowAt(cell.worldX, cell.worldY, old.depth, true);
             prefetchUrgent = true;
             return false;
         }
@@ -3633,6 +3972,9 @@
         // map id alone (NPCSystem's passable-tile scan) is now describing a map
         // that no longer exists.
         $gameMap._passableTerrainCache = null;
+        // The map is a different shape now, so which of its edges are borders is
+        // a different question than it was a moment ago.
+        forgetGrowthAnswers();
         shiftEverything(shiftX, shiftY, win.width, win.height);
         $gameMap.setDisplayPos($gameMap._displayX, $gameMap._displayY);
         refreshTilemap();
@@ -3662,25 +4004,61 @@
      * @returns {boolean} true when the map now reaches past the edge, so the
      *          caller should simply let the move happen.
      */
-    function growTowards(exitDirection, atX, atY) {
-        if (!stitchWindow || !stitchingAllowed()) return false;
+    // The window a step out of the map this way would need, and the cell it
+    // would be taken from, or null when the crossing is a real one. Split out of
+    // growTowards because the very same question is asked WITHOUT taking the
+    // step: an edge that can be grown over is not a border, so it is drawn with
+    // no crossing marker on it at all (see getProcGenBorderTiles).
+    function planGrowth(exitDirection, atX, atY) {
+        if (!stitchWindow || !stitchingAllowed()) return null;
         const delta = EXIT_DELTA[exitDirection];
-        if (!delta) return false;
+        if (!delta) return null;
+        const px = atX != null ? atX : $gamePlayer.x;
+        const py = atY != null ? atY : $gamePlayer.y;
+        const cell = cellAt(px, py) || stitchWindow.partyCell;
+        if (!cell) return null;
+
+        const depth = stitchWindow.depth;
+        const guard = { x: cell.worldX, y: cell.worldY };
+        const win = planWindow(cell.worldX, cell.worldY, depth, guard, delta);
+        if (!win) return null;
+        // The neighbour is already on the map and the party still reached an
+        // edge: this is the window's own outer boundary and there is nothing
+        // beyond it to lay down. The old crossing takes over.
+        if (win.originX === stitchWindow.originX && win.originY === stitchWindow.originY &&
+            win.cols === stitchWindow.cols && win.rows === stitchWindow.rows) return null;
+        return { win, cell, depth };
+    }
+
+    // Would walking off the map this way simply be another step? Every edge tile
+    // within sight of the party asks this every time they move, and a whole side
+    // of the map is a dozen tiles of one square asking the same question, so the
+    // answer is kept per square and direction. It is thrown away whenever the
+    // window changes shape under it, which is the only thing that can change it.
+    const growthAnswers = new Map();
+
+    function forgetGrowthAnswers() {
+        growthAnswers.clear();
+    }
+
+    function canGrowTowards(exitDirection, atX, atY) {
+        if (!stitchWindow) return false;
         const px = atX != null ? atX : $gamePlayer.x;
         const py = atY != null ? atY : $gamePlayer.y;
         const cell = cellAt(px, py) || stitchWindow.partyCell;
         if (!cell) return false;
+        const key = cell.worldX + ',' + cell.worldY + ':' + exitDirection;
+        const held = growthAnswers.get(key);
+        if (held !== undefined) return held;
+        const answer = !!planGrowth(exitDirection, px, py);
+        growthAnswers.set(key, answer);
+        return answer;
+    }
 
-        const old = stitchWindow;
-        const depth = old.depth;
-        const guard = { x: cell.worldX, y: cell.worldY };
-        const win = planWindow(cell.worldX, cell.worldY, depth, guard, delta);
-        if (!win) return false;
-        // The neighbour is already on the map and the party still reached an
-        // edge: this is the window's own outer boundary and there is nothing
-        // beyond it to lay down. The old crossing takes over.
-        if (win.originX === old.originX && win.originY === old.originY &&
-            win.cols === old.cols && win.rows === old.rows) return false;
+    function growTowards(exitDirection, atX, atY) {
+        const growth = planGrowth(exitDirection, atX, atY);
+        if (!growth) return false;
+        const win = growth.win, cell = growth.cell, depth = growth.depth;
 
         // The queue is building for a window that is about to be replaced, and
         // its half-finished square would be paid for twice.
@@ -3722,11 +4100,14 @@
         const cell = stitchWindow && stitchWindow.partyCell;
         lastSquareKey = cell ? cell.worldX + ',' + cell.worldY : null;
         lastApproachKey = null;
+        lastRoadKey = null;
+        forgetGrowthAnswers();
         dropPrefetch();
         // Start on the ring around the arrival straight away, so the first seam
         // the party reaches is already paid for.
         if (stitchWindow && cell) {
             prefetchWindowAt(cell.worldX, cell.worldY, stitchWindow.depth);
+            prefetchStitchableRing(cell);
         }
     }
 
@@ -3760,6 +4141,9 @@
             // The window this square will want is three squares' work away, and
             // the party is eight tiles from asking for it.
             prefetchWindowAt(cell.worldX, cell.worldY, stitchWindow.depth);
+            // ...and every neighbour of it that shares its tileset, whether the
+            // window reaches that far or not.
+            prefetchStitchableRing(cell);
         }
 
         // Walking towards a seam starts the ground on the far side of it, once
@@ -3769,6 +4153,15 @@
         if (tileKey !== lastApproachKey) {
             lastApproachKey = tileKey;
             prefetchAhead(cell);
+        }
+
+        // A road reaches further than the margin does (see the road ahead,
+        // above), and it is re-walked when the party turns rather than when they
+        // step.
+        const roadKey = cell.worldX + ',' + cell.worldY + ':' + $gamePlayer.direction();
+        if (roadKey !== lastRoadKey) {
+            lastRoadKey = roadKey;
+            prefetchRoadAhead(cell);
         }
 
         // Far enough in to be worth sliding the window?
@@ -3930,6 +4323,10 @@
         // crossing to it. Answers false when it may not be joined on, which is
         // when the fading crossing is the right answer.
         growTowards,
+        // The same question, asked without doing it: would a step off the map
+        // this way be an ordinary step? What decides whether an edge is drawn as
+        // a border at all.
+        canGrow: canGrowTowards,
         // The landing-grid cell the party now stands in, on an alien surface.
         adoptAlienCell: adoptAlienGridCell,
         cellAt,
@@ -3938,6 +4335,9 @@
         // A map coordinate expressed inside its own world square. THE call for
         // anything that indexes _procGenData.generatedMapData by map position.
         local: localCoord,
+        // The same, anchored to the party's own square: what anything that
+        // stores a tile for later has to keep (see localToPartySquare).
+        localToParty: localToPartySquare,
         // The world square a map coordinate stands on.
         squareAt: worldSquareAt,
         // Where a square-local tile sits on the loaded map.
@@ -4125,7 +4525,7 @@
                 if (built && rec.entranceX !== null && rec.entranceY !== null) {
                     $gameVariables.setValue(110, 1);
                     $gameVariables.setValue(111, 1);
-                    $gamePlayer.reserveTransfer(procMapId, rec.entranceX, rec.entranceY + 1, 2, 0);
+                    $gamePlayer.reserveTransfer(procMapId, rec.entranceX, rec.entranceY + 1, 2, 2);
                 } else {
                     logWarn('Bunker exit: surface map unavailable, falling back to the world map.');
                     $gameSystem.clearProcGenData();
@@ -4142,7 +4542,7 @@
                 // structure's own 64x64 map, not the world map -- so the party
                 // surfaced onto a square built from tiles read out of the dungeon.
                 if (sess.mapId === procMapId && restoreProcSurface(sess.surface)) {
-                    $gamePlayer.reserveTransfer(procMapId, sess.x, sess.y, sess.dir || d, 0);
+                    $gamePlayer.reserveTransfer(procMapId, sess.x, sess.y, sess.dir || d, 2);
                 } else {
                     // Sandbox Mode invoked from an authored map: a plain trip back.
                     $gameSystem.clearProcGenData();
@@ -4386,9 +4786,21 @@
             spawnX = spot.x; spawnY = spot.y;
         }
         console.log(`[WorldMapReturn-Edge] Transferring to square-local (${spawnX},${spawnY})`);
-        $gamePlayer.reserveTransfer(procMapId, spawnX, spawnY, storedExitDir, 0);
+        $gamePlayer.reserveTransfer(procMapId, spawnX, spawnY, storedExitDir, 2);
     }
 
+    // Every crossing above hands reserveTransfer FADE TYPE 2, "no fade", and it
+    // is not an optimisation: the screen is already black, held there by
+    // $gameScreen.startFadeOut, and the engine's own transfer fade is a SECOND,
+    // independent one drawn by Scene_Map. Left on, Scene_Map.stop kept the old
+    // scene alive for the 24 frames of its fade-out, and the fade back in
+    // (scheduled off the wall clock, a ninth of a second later) landed in the
+    // middle of them: the square being left brightened back into view under a
+    // half-opaque black sheet, went dark again, and only then did the new one
+    // fade in. One crossing, two fades - what walking down a flight of stairs
+    // looked like. With the scene fade off the old scene stops on the spot and
+    // the brightness ramp is the whole transition.
+    //
     // Trigger edge transition callback once the screen is fully black
     const _Game_Screen_update = Game_Screen.prototype.update;
     Game_Screen.prototype.update = function() {
@@ -4602,7 +5014,7 @@
             // map has to raise them itself: clearProcGenData zeroed them on the way out.
             $gameVariables.setValue(110, 1);
             $gameVariables.setValue(111, 1);
-            $gamePlayer.reserveTransfer(procMapId, Math.floor(PROC_MAP_WIDTH / 2), Math.floor(PROC_MAP_HEIGHT / 2), $gamePlayer.direction(), 0);
+            $gamePlayer.reserveTransfer(procMapId, Math.floor(PROC_MAP_WIDTH / 2), Math.floor(PROC_MAP_HEIGHT / 2), $gamePlayer.direction(), 2);
 
             setTimeout(() => updateEventVisibility(), 100);
             setTimeout(() => refreshEnemiesForBiome(), 100);
@@ -4702,7 +5114,7 @@
             procGenData._edgeTransitionScheduled = false;
 
             if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-            $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 0);
+            $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 2);
 
             setTimeout(() => updateEventVisibility(), 100);
             setTimeout(() => refreshEnemiesForBiome(), 100);
@@ -4830,7 +5242,7 @@
             pg._edgeTransitionScheduled = false;
 
             if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-            $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 0);
+            $gamePlayer.reserveTransfer(procMapId, sx, sy, sdir, 2);
 
             setTimeout(() => updateEventVisibility(), 100);
             setTimeout(() => refreshEnemiesForBiome(), 100);
@@ -4885,7 +5297,7 @@
             procGenData._edgeTransitionScheduled = false;
 
             if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-            $gamePlayer.reserveTransfer(procMapId, goDownX, goDownY, $gamePlayer.direction(), 0);
+            $gamePlayer.reserveTransfer(procMapId, goDownX, goDownY, $gamePlayer.direction(), 2);
 
             setTimeout(() => updateEventVisibility(), 100);
             setTimeout(() => refreshEnemiesForBiome(), 100);
@@ -4928,7 +5340,7 @@
                 procGenData._edgeTransitionScheduled = false;
 
                 if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-                $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 0);
+                $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 2);
                 setTimeout(() => updateEventVisibility(), 100);
                 setTimeout(() => refreshEnemiesForBiome(), 100);
                 setTimeout(() => updateBiomeAudio(), 100);
@@ -4983,7 +5395,7 @@
                 procGenData._edgeTransitionScheduled = false;
 
                 if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-                $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 0);
+                $gamePlayer.reserveTransfer(procMapId, playerX, playerY, playerDir, 2);
                 setTimeout(() => updateEventVisibility(), 100);
                 setTimeout(() => refreshEnemiesForBiome(), 100);
                 setTimeout(() => updateBiomeAudio(), 100);
@@ -6194,7 +6606,6 @@
         // wants to know what a biome sounds like without playing it.
         pickBiomeTrack,
         biomeTrackPool,
-        isBiomeMusicEnabled,
         currentNationId,
         // The procedural square the party is standing on, saved and put back.
         // Anything that takes them off map 636 into a submap and later returns

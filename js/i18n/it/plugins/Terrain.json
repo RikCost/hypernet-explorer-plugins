@@ -31,5 +31,10 @@
   "poster": "Il manifesto dice: \"{text}\"",
   "signStop": "STOP",
   "signDanger": "Pericolo. Lavori in corso.",
-  "signHelipad": "Eliporto. Non sostare."
+  "signHelipad": "Eliporto. Non sostare.",
+  "feature": {
+    "statue": "Statua",
+    "library": "Libreria",
+    "book": "Libro"
+  }
 }

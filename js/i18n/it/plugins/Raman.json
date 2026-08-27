@@ -11,6 +11,11 @@
   "msgHeader": "\\C[8][ SCANNER RAMAN ]\\C[0]",
   "msgNoMaterial": "Nessun materiale spettralmente attivo rilevato nell'area di scansione.",
   "msgHint": "Il bersaglio deve essere una statua, un dipinto o un oggetto di biblioteca entro 1 m.",
+  "choices": [
+    "Guarda",
+    "Analizza",
+    "Annulla"
+  ],
   "objectType": {
     "tagged": "marcato",
     "fossil": "fossile",

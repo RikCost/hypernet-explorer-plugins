@@ -354,7 +354,25 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
   };
 
   Scene_Battle.prototype.commandEscape = function() {
-    BattleManager.processEscape();
+    const escaped = BattleManager.processEscape();
+    // A run that got away has ALREADY ended the fight (processEscape ->
+    // processAbort -> endBattle), leaving BattleManager in its "battleEnd"
+    // phase with nothing to do but pop the scene. Handing the turn on from
+    // here walks straight back into the input machinery instead:
+    // finishActorInput re-arms _subject with the actor who just fled and
+    // selectNextActor goes hunting for another one to ask, so the escape is
+    // buried under a fresh turn and the party is left standing in a battle it
+    // already left. Tear the input state down explicitly and let the phase run
+    // its course - the same fix MapBattleMode._commandEscape carries for the
+    // tactical layer.
+    if (escaped || BattleManager.isBattleEnd()) {
+      BattleManager._currentActor = null;
+      BattleManager._subject = null;
+      BattleManager._inputting = false;
+      this.endCommandSelection();
+      return;
+    }
+    // A failed run costs the runner their turn and nothing more.
     this.selectNextCommand();
   };
 

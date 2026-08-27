@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc v1.1.0 The parchment legend pinned to the corner of the map: the control rows, per-map notices, per-area notices and the variable tooltip. Exposes window.MapLegend.
+ * @plugindesc v1.2.0 The parchment legend pinned to the corner of the map: the control rows, per-map notices, per-area notices and the variable tooltip. Exposes window.MapLegend.
  * @author Hypernet
  *
  * @help MapLegend.js
@@ -26,11 +26,43 @@
  *    notice must keep the brackets around the same name.
  * 2. The control rows, while the tutorial legend is still being learnt. Each
  *    row lights the first time the player exercises that control, on any
- *    device, and the block retires itself once every row has lit. They are
- *    only ever pinned up on the tutorial's own map (1414), and only while the
- *    party stands outside every zone: a notice takes the whole sheet, and the
- *    rows come back the moment the party walks out of the zone again. The
- *    world map (315) carries three rows of its own on the same terms.
+ *    device, and the block retires itself once every row has lit. Every block
+ *    of rows is the tutorial's teaching and nothing else: none of them is ever
+ *    pinned up unless the tutorial switch (100) is on. The core rows want the
+ *    tutorial's own map (1414) besides, and every block wants the party to be
+ *    standing outside every zone: a notice takes the whole sheet, and the rows
+ *    come back the moment the party walks out of the zone again.
+ *
+ *    Two other grounds teach a block of their own on the same terms. The world
+ *    map (315) carries three rows; the generated ground (636) carries two, and
+ *    two only: what the action button does to whatever the party is facing,
+ *    and the way back out to the world map. Outside the tutorial both grounds
+ *    show their notices alone.
+ *
+ * ---------------------------------------------------------------------------
+ * The pamphlet
+ * ---------------------------------------------------------------------------
+ * A hundred steps into any game the party is handed the Omega Tower errand
+ * without having to be walked into it: common event 145 is reserved. Once per
+ * save, whether or not the tutorial was ever played, and never twice.
+ *
+ * ---------------------------------------------------------------------------
+ * Keyboard and pad
+ * ---------------------------------------------------------------------------
+ * Every row carries both faces of its control. The keys are always written
+ * out; the pad buttons are drawn beside them as ink chips, in the same paper
+ * and the same ink as the rest of the sheet rather than in the colours of the
+ * buttons, and only while a pad is actually plugged in.
+ *
+ * One row is not the same control on the two devices. The item bar is FIRED
+ * from the keyboard, one number key per slot, and STEPPED on a pad with the
+ * shoulders; so that row shows whichever face belongs to the device the player
+ * last touched, and it lights whichever of the two they use.
+ *
+ * Three rows have no pad face at all - Build, Inventory and Quests are menu
+ * hotkeys, and a pad reaches all three through the pause menu. They are taught
+ * to the keys alone: drawn only while the keyboard is in hand, and not counted
+ * against a player on a pad when the block asks whether it may retire.
  *
  * ---------------------------------------------------------------------------
  * Folding it away
@@ -168,33 +200,166 @@
   // the sheet is its notices alone, whether or not the block has been learnt.
   const TUTORIAL_LEGEND_MAP_ID = 1414;
 
+  // Pad buttons are physical labels rather than words: they read the same in
+  // every language, so they are written here instead of in the i18n bank. The
+  // sheet draws them as ink chips, never in the colours of the buttons, since
+  // a coloured glyph would be the only coloured thing on the paper.
+  // i18n-ignore-start  physical gamepad button labels
+  const PAD = {
+    up: "D-Pad ↑",
+    down: "D-Pad ↓",
+    left: "D-Pad ←",
+    right: "D-Pad →",
+    ok: "A",
+    run: "X",
+    menu: "Y",
+    openMap: "Start",
+    hotbarStep: "L1 / R1",
+    visitPlace: "Select",
+    wait: "L3",
+    zoom: "L2 / R2",
+  };
+  // i18n-ignore-end
+
+  // A row with a padLabelKey is not the same control on the two devices, so it
+  // shows one face or the other rather than both: see rowFace() below.
   const TUTORIAL_CONTROLS = [
-    { id: "up", labelKey: "MapLegend.controls.up", key: "↑" },
-    { id: "down", labelKey: "MapLegend.controls.down", key: "↓" },
-    { id: "left", labelKey: "MapLegend.controls.left", key: "←" },
-    { id: "right", labelKey: "MapLegend.controls.right", key: "→" },
-    { id: "ok", labelKey: "MapLegend.controls.action", key: "Z / Enter", mouseKey: "MapLegend.controls.leftClick", pad: "A" },
-    { id: "shift", labelKey: "MapLegend.controls.run", keyKey: "MapLegend.controls.holdShift", pad: "X" },
-    { id: "menu", labelKey: "MapLegend.controls.menu", key: "Esc", pad: "Y" },
-    { id: "mapSheet", labelKey: "MapLegend.controls.openMap", key: "M" },
-    { id: "hotbar", labelKey: "MapLegend.controls.hotbarCycle", key: "Tab", pad: "L1 / R1" },
+    { id: "up", labelKey: "MapLegend.controls.up", key: "↑", pad: PAD.up },
+    { id: "down", labelKey: "MapLegend.controls.down", key: "↓", pad: PAD.down },
+    { id: "left", labelKey: "MapLegend.controls.left", key: "←", pad: PAD.left },
+    { id: "right", labelKey: "MapLegend.controls.right", key: "→", pad: PAD.right },
+    { id: "ok", labelKey: "MapLegend.controls.action", key: "Z / Enter", mouseKey: "MapLegend.controls.leftClick", pad: PAD.ok },
+    { id: "shift", labelKey: "MapLegend.controls.run", keyKey: "MapLegend.controls.holdShift", pad: PAD.run },
+    { id: "menu", labelKey: "MapLegend.controls.menu", key: "Esc", pad: PAD.menu },
+    { id: "mapSheet", labelKey: "MapLegend.controls.openMap", key: "M", pad: PAD.openMap },
+    {
+      id: "hotbar",
+      labelKey: "MapLegend.controls.hotbarUse", key: "1 / 2 / 3",
+      padLabelKey: "MapLegend.controls.hotbarCycle", pad: PAD.hotbarStep,
+    },
+    // The three menu hotkeys (UI/CustomMainMenuLayout.js) have no button of
+    // their own: on a pad every one of them is reached through the pause menu
+    // instead. So they are taught to the keys alone - drawn only while the
+    // keyboard is the thing in hand, and not asked of a player on a pad
+    // before the block may retire.
+    { id: "build", labelKey: "MapLegend.controls.build", key: "B", keyboardOnly: true },
+    { id: "inventory", labelKey: "MapLegend.controls.inventory", key: "I", keyboardOnly: true },
+    { id: "quests", labelKey: "MapLegend.controls.quests", key: "J", keyboardOnly: true },
   ];
 
   // The world map (315) answers to three controls the tutorial ground never
   // teaches: T / Select stops the journey and walks the party into whatever
   // stands on the square they are on (WorldMapReturn's wmrToggle), R opens the
-  // wait sheet (CustomMainMenuLayout's sleep_menu), and the triggers pull the
-  // camera in and out (MousePan's zoom, which is confined to that one sheet).
+  // wait sheet (CustomMainMenuLayout's sleep_menu), and the wheel, the +/- keys
+  // and the triggers all pull the camera in and out (MousePan's zoom, which is
+  // confined to that one sheet).
   // They keep their own "already used once" record, so the legend can finish on
   // the world map long after the walking rows were learnt indoors, and once all
   // three have been used they are gone for good.
   const WORLD_MAP_LEGEND_MAP_ID = 315;
 
   const WORLD_MAP_CONTROLS = [
-    { id: "visitPlace", labelKey: "MapLegend.controls.stopTravel", key: "T", pad: "Select" },
-    { id: "wait", labelKey: "MapLegend.controls.wait", key: "R" },
-    { id: "worldZoom", labelKey: "MapLegend.controls.zoom", key: "+ / -", pad: "L2 / R2" },
+    { id: "visitPlace", labelKey: "MapLegend.controls.stopTravel", key: "T", pad: PAD.visitPlace },
+    { id: "wait", labelKey: "MapLegend.controls.wait", key: "R", pad: PAD.wait },
+    {
+      id: "worldZoom", labelKey: "MapLegend.controls.zoom",
+      key: "+ / -", mouseKey: "MapLegend.controls.scrollWheel", pad: PAD.zoom,
+    },
   ];
+
+  // The generated ground teaches two things and no more: what the action
+  // button does to whatever the party is facing (Procedural/
+  // ProceduralTerrainInteractions.js: felling, mining, foraging, dismantling),
+  // and the way back out to the world map. There is no map id to name a
+  // generated map by, so they are all the one map the stitcher stands them on.
+  const PROCEDURAL_MAP_ID = 636;
+
+  const PROCEDURAL_CONTROLS = [
+    {
+      id: "procInteract", labelKey: "MapLegend.controls.interact",
+      key: "Z / Enter", mouseKey: "MapLegend.controls.leftClick", pad: PAD.ok,
+    },
+    { id: "procReturn", labelKey: "MapLegend.controls.returnToWorld", key: "T", pad: PAD.visitPlace },
+  ];
+
+  //===========================================================================
+  // Which device is in the player's hands
+  //===========================================================================
+  // Two separate questions, and the sheet asks both. Is a pad plugged in at
+  // all, which is what decides whether the pad chips are drawn beside the
+  // keys; and what was touched last, which is what decides the face of a row
+  // that is a different control on the two devices. Neither question gates
+  // what the player may press: every route to a control lights its row.
+
+  const deviceWatch = { last: "keyboard" };
+
+  function analogStick() {
+    return (typeof window !== "undefined" && window.AnalogStickInput) || null;
+  }
+
+  function rawPads() {
+    if (typeof navigator === "undefined" || !navigator.getGamepads) return [];
+    const pads = navigator.getGamepads() || [];
+    const out = [];
+    for (const pad of pads) if (pad && pad.connected) out.push(pad);
+    return out;
+  }
+
+  // AnalogStickInput polls the pad once a frame for the whole game, so its
+  // answer is preferred; the raw list is the fallback for a runtime loaded
+  // without it, and for the harness, which has no navigator at all.
+  function padConnected() {
+    const stick = analogStick();
+    if (stick && stick.hasPad) return !!stick.hasPad();
+    return rawPads().length > 0;
+  }
+
+  // Anything at all being done with the pad: a button, a stick, a trigger. The
+  // triggers are read as buttons 6 and 7 rather than through AnalogStickInput's
+  // analog readings of them, because reading those CLAIMS the triggers for the
+  // frame and would take the game-wide scroll poll off them on the map (see
+  // Core/MouseControls.js).
+  function padTouched() {
+    const stick = analogStick();
+    if (stick && stick.hasPad) {
+      if (!stick.hasPad()) return false;
+      if (stick.isActive && stick.isActive()) return true;
+      if (stick.isButtonPressed) {
+        for (let i = 0; i < 16; i++) if (stick.isButtonPressed(i)) return true;
+      }
+      return false;
+    }
+    for (const pad of rawPads()) {
+      for (const button of pad.buttons || []) if (button && button.pressed) return true;
+      for (const axis of pad.axes || []) if (Math.abs(axis) > 0.5) return true;
+    }
+    return false;
+  }
+
+  // Input says which action was taken, never which device took it, and both
+  // devices share every symbol. So the pad is asked first: a fresh press with
+  // the pad sitting still is a press on the keys, which is the same reading
+  // Core/AnalogStickInput.js takes for pointer steering. A click on the map
+  // counts as the keys too, since the sheet's other face is the one with the
+  // mouse written on it.
+  function keysTouched() {
+    if (typeof TouchInput !== "undefined" && TouchInput.isTriggered && TouchInput.isTriggered()) {
+      return true;
+    }
+    return !!(Input._latestButton && Input._pressedTime === 0);
+  }
+
+  function updateDeviceWatch() {
+    if (padTouched()) deviceWatch.last = "pad";
+    else if (keysTouched()) deviceWatch.last = "keyboard";
+  }
+
+  // The pad only speaks for the sheet while it is still plugged in: unplugging
+  // one hands the rows back to the keys rather than leaving them on buttons
+  // that are no longer there.
+  function padMode() {
+    return deviceWatch.last === "pad" && padConnected();
+  }
 
   //===========================================================================
   // Small shared helpers
@@ -334,25 +499,43 @@
 
   function coreRowsVisible() {
     if (!$gameSystem || !$gameMap) return false;
+    if (!tutorialMode()) return false;
     if (!$gameSystem._tutorialControlsLegendActive) return false;
     if ($gameSystem._tutorialControlsLegendSeen) return false;
     return $gameMap.mapId() === TUTORIAL_LEGEND_MAP_ID;
   }
 
-  // The world map rows stand on their own: standing on map 315 is enough to
-  // show them, whether or not the party ever went through the tutorial, and
-  // they are gone for good once both have been used once.
+  // The world map rows have a map of their own, but they are still teaching:
+  // standing on map 315 while the tutorial is being played is enough to show
+  // them, and they are gone for good once all three have been used once.
   function worldRowsVisible() {
     if (!$gameSystem || !$gameMap) return false;
+    if (!tutorialMode()) return false;
     if ($gameSystem._worldMapControlsSeen) return false;
     return $gameMap.mapId() === WORLD_MAP_LEGEND_MAP_ID;
+  }
+
+  // The generated ground stands on the same terms as the world map: walking
+  // onto it during the tutorial is enough, and the pair is gone for good once
+  // both have been used once.
+  function proceduralRowsVisible() {
+    if (!$gameSystem || !$gameMap) return false;
+    if (!tutorialMode()) return false;
+    if ($gameSystem._proceduralControlsSeen) return false;
+    return $gameMap.mapId() === proceduralMapId();
+  }
+
+  function proceduralMapId() {
+    const wmt = window.WorldMapTransfer;
+    return (wmt && wmt.procMapId) || PROCEDURAL_MAP_ID;
   }
 
   function litRecord() {
     return Object.assign(
       {},
       ($gameSystem && $gameSystem._tutorialControlsLit) || {},
-      ($gameSystem && $gameSystem._worldMapControlsLit) || {}
+      ($gameSystem && $gameSystem._worldMapControlsLit) || {},
+      ($gameSystem && $gameSystem._proceduralControlsLit) || {}
     );
   }
 
@@ -363,27 +546,60 @@
     lit[id] = true;
     $gameSystem._tutorialControlsLit = litSubset(lit, TUTORIAL_CONTROLS);
     $gameSystem._worldMapControlsLit = litSubset(lit, WORLD_MAP_CONTROLS);
+    $gameSystem._proceduralControlsLit = litSubset(lit, PROCEDURAL_CONTROLS);
     SoundManager.playCursor();
     return true;
   }
 
+  // A row taught to the keys alone is not asked of a player on a pad: it is
+  // neither drawn for them nor counted against them, so the block still
+  // retires on a pad once everything a pad can do has been done.
+  function rowsFor(entries) {
+    return padMode() ? entries.filter((entry) => !entry.keyboardOnly) : entries;
+  }
+
   function listComplete(entries) {
     const lit = litRecord();
-    return entries.every((entry) => lit[entry.id]);
+    return rowsFor(entries).every((entry) => lit[entry.id]);
   }
 
   function visibleRows() {
     const rows = [];
-    if (coreRowsVisible()) rows.push(...TUTORIAL_CONTROLS);
+    if (coreRowsVisible()) rows.push(...rowsFor(TUTORIAL_CONTROLS));
+    if (proceduralRowsVisible()) rows.push(...PROCEDURAL_CONTROLS);
     if (worldRowsVisible()) rows.push(...WORLD_MAP_CONTROLS);
     return rows;
   }
 
+  // What the row says on a keyboard: the key, plus the mouse where one reaches
+  // the same control.
   function rowKeys(entry) {
     const key = entry.key || (entry.keyKey ? T(entry.keyKey) : "");
     const mouse = entry.mouseKey ? T(entry.mouseKey) : "";
-    const pad = entry.pad || "";
-    return [key, mouse, pad].filter(Boolean).join(" / ");
+    return [key, mouse].filter(Boolean).join(" / ");
+  }
+
+  function padTokens(entry) {
+    if (!entry.pad) return [];
+    return String(entry.pad).split("/").map((s) => s.trim()).filter(Boolean);
+  }
+
+  // The label and the two key columns for one row. A row that is a different
+  // control on the two devices (the item bar: fired by number key, stepped by
+  // shoulder) shows one face or the other; every other row writes its keys out
+  // and hangs the pad chips off the end of them, while a pad is plugged in.
+  function rowFace(entry) {
+    const pad = padMode();
+    if (entry.padLabelKey) {
+      return pad
+        ? { label: T(entry.padLabelKey), keys: "", pads: padTokens(entry) }
+        : { label: T(entry.labelKey), keys: rowKeys(entry), pads: [] };
+    }
+    return {
+      label: T(entry.labelKey),
+      keys: rowKeys(entry),
+      pads: padConnected() ? padTokens(entry) : [],
+    };
   }
 
   //===========================================================================
@@ -432,6 +648,7 @@
         toggleFold();
         return;
       }
+      readMenuHotkeyUse();
       base.call(this);
     };
     foldHotkeySpliced = true;
@@ -533,6 +750,13 @@
     color: ${INK};
 }
 #${SHEET_ID} .mlg-row .mlg-label { font-weight: normal; }
+#${SHEET_ID} .mlg-row .mlg-binds {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 5px;
+    white-space: nowrap;
+}
 #${SHEET_ID} .mlg-row .mlg-keys {
     font-weight: bold;
     white-space: nowrap;
@@ -541,6 +765,11 @@
 #${SHEET_ID} .mlg-row.mlg-lit .mlg-label,
 #${SHEET_ID} .mlg-row.mlg-lit .mlg-keys {
     color: ${GOLD};
+    opacity: 0.72;
+}
+#${SHEET_ID} .mlg-row.mlg-lit .mlg-chip {
+    color: ${GOLD};
+    border-color: rgba(107, 76, 8, 0.45);
     opacity: 0.72;
 }
 #${SHEET_ID} .mlg-row.mlg-lit .mlg-label::before {
@@ -628,10 +857,12 @@
       const el = this.element();
       const lit = litRecord();
       const folded = !!state.folded;
+      // The device is part of the signature: plugging a pad in, or reaching
+      // for the keys again, changes what the rows say and has to redraw them.
       const signature = JSON.stringify([
         notice ? [notice.key, notice.title, notice.text] : null,
         rows.map((entry) => [entry.id, !!lit[entry.id]]),
-        folded, !!state.foldable,
+        folded, !!state.foldable, !!state.pad, !!state.padMode,
       ]);
       if (signature !== this._signature) {
         this._signature = signature;
@@ -662,10 +893,16 @@
           parts.push(`<div class="mlg-heading">${escapeHtml(T("MapLegend.controlsHeading"))}</div>`);
           for (const entry of rows) {
             const cls = lit[entry.id] ? "mlg-row mlg-lit" : "mlg-row";
+            const face = rowFace(entry);
+            const binds = [];
+            if (face.keys) binds.push(`<span class="mlg-keys">${escapeHtml(face.keys)}</span>`);
+            for (const token of face.pads) {
+              binds.push(`<span class="mlg-chip">${escapeHtml(token)}</span>`);
+            }
             parts.push(
               `<div class="${cls}">` +
-              `<span class="mlg-label">${escapeHtml(T(entry.labelKey))}</span>` +
-              `<span class="mlg-keys">${escapeHtml(rowKeys(entry))}</span>` +
+              `<span class="mlg-label">${escapeHtml(face.label)}</span>` +
+              `<span class="mlg-binds">${binds.join("")}</span>` +
               `</div>`
             );
           }
@@ -715,6 +952,24 @@
       Input.isRepeated("zoomIn") || Input.isRepeated("zoomOut"));
   }
 
+  // The number row fires an item bar slot outright (ItemSystemHotbar.js maps
+  // 1-9 onto the symbols "1".."9"), so any of them counts as the bar being
+  // used.
+  function hotbarSlotKeyTriggered() {
+    for (let i = 1; i <= 9; i++) if (Input.isTriggered(String(i))) return true;
+    return false;
+  }
+
+  // A pad button with no Input.gamepadMapper action on it, read raw the way
+  // WorldMap.js reads Start. Named rather than numbered so the row and the
+  // chip it draws cannot drift apart.
+  function padButtonTriggered(name) {
+    const stick = analogStick();
+    if (!stick || !stick.isButtonTriggered || !stick.BUTTON) return false;
+    const index = stick.BUTTON[name];
+    return index === undefined ? false : !!stick.isButtonTriggered(index);
+  }
+
   function readControlUse() {
     if (coreRowsVisible()) {
       if (Input.isTriggered("up")) markLit("up");
@@ -733,15 +988,29 @@
       // The map sheet (WorldMap.js, M) and the item bar's L1/R1 step
       // (ItemSystemHotbar.js, pageup/pagedown) are read under their own
       // symbols, so a rebind still lights the row.
-      if (Input.isTriggered("world_map_toggle")) markLit("mapSheet");
-      if (Input.isTriggered("pageup") || Input.isTriggered("pagedown") || Input.isTriggered("tab")) markLit("hotbar");
+      if (Input.isTriggered("world_map_toggle") || padButtonTriggered("START")) markLit("mapSheet");
+      // The item bar row is satisfied by either face of it: a number key
+      // firing a slot, or a shoulder stepping the bar. Whichever the player
+      // reached for, they have used the bar.
+      if (Input.isTriggered("pageup") || Input.isTriggered("pagedown") ||
+        Input.isTriggered("tab") || hotbarSlotKeyTriggered()) markLit("hotbar");
+      // The three menu hotkeys are read before the screen they open takes the
+      // map away (see readMenuHotkeyUse), so nothing is asked of them here.
+    }
+
+    if (proceduralRowsVisible()) {
+      // The action button is what works whatever the party is facing, and it
+      // is the same press whether that ends in a choice window or in nothing
+      // being there at all.
+      if (Input.isTriggered("ok") || TouchInput.isTriggered()) markLit("procInteract");
+      if (Input.isTriggered("wmrToggle")) markLit("procReturn");
     }
 
     if (worldRowsVisible()) {
       if (Input.isTriggered("wmrToggle")) markLit("visitPlace");
       // R is CustomMainMenuLayout's sleep_menu hotkey; the wait sheet it opens
       // is a popup rather than a scene, so the press is still readable here.
-      if (Input.isTriggered("letter_r") ||
+      if (Input.isTriggered("letter_r") || padButtonTriggered("L3") ||
         (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._sleepMenuOpen)) {
         markLit("wait");
       }
@@ -750,12 +1019,74 @@
       lastLegendZoom = null;
     }
 
+    retireCompletedLists();
+  }
+
+  // Build, Inventory and Quests are hotkeys that open something: Inventory and
+  // Quests each push a scene on the very frame the key is read, so by the time
+  // the sheet is next updated the map is already changing and the press is
+  // gone - the same reason the Menu row is lit from callMenu rather than from
+  // Esc. So the three are read where the press is still there: inside the
+  // hotkey table itself, one step before whatever it opens.
+  const MENU_HOTKEY_ROWS = [
+    { id: "build", input: "letter_b" },
+    { id: "inventory", input: "letter_i" },
+    { id: "quests", input: "letter_j" },
+  ];
+
+  function readMenuHotkeyUse() {
+    if (!coreRowsVisible()) return;
+    let lit = false;
+    // On the symbols CustomMainMenuLayout's table gives them, so a rebind
+    // still lights the row.
+    for (const row of MENU_HOTKEY_ROWS) {
+      if (Input.isTriggered(row.input) && markLit(row.id)) lit = true;
+    }
+    if (lit) retireCompletedLists();
+  }
+
+  function retireCompletedLists() {
     if (coreRowsVisible() && listComplete(TUTORIAL_CONTROLS) && $gameSystem) {
       $gameSystem._tutorialControlsLegendSeen = true;
       $gameSystem._tutorialControlsLegendActive = false;
     }
     if (worldRowsVisible() && listComplete(WORLD_MAP_CONTROLS) && $gameSystem) {
       $gameSystem._worldMapControlsSeen = true;
+    }
+    if (proceduralRowsVisible() && listComplete(PROCEDURAL_CONTROLS) && $gameSystem) {
+      $gameSystem._proceduralControlsSeen = true;
+    }
+  }
+
+  //===========================================================================
+  // The pamphlet, a hundred steps in
+  //===========================================================================
+  // Every game hands the party the Omega Tower errand itself rather than
+  // waiting to be walked into: a hundred steps in, common event 145 (the
+  // pamphlet) is reserved. Once per save, whether or not the tutorial was ever
+  // played, so a party that skipped it is still sent to the tower.
+
+  const ERRAND_COMMON_EVENT_ID = 145;
+  const ERRAND_STEPS = 100;
+
+  function updateTutorialErrand() {
+    // The flag is the whole of "only once": it is written before the event is
+    // reserved and it lives on $gameSystem, so it is remembered by the save.
+    if (!$gameSystem || $gameSystem._mapLegendErrandGiven) return;
+    if (!$gameParty || !$gameMap) return;
+    if ($gameParty.steps() < ERRAND_STEPS) return;
+    // Never on top of something already playing: the pamphlet waits for the
+    // step after whatever is running has finished.
+    if ($gameMap.isEventRunning && $gameMap.isEventRunning()) return;
+    if (typeof $gameMessage !== "undefined" && $gameMessage && $gameMessage.isBusy()) return;
+    if ($gamePlayer && $gamePlayer.isTransferring && $gamePlayer.isTransferring()) return;
+    // The 3D world runs over a live map scene and owns the screen while it is
+    // up; the pamphlet waits until the party is back on the map itself.
+    if (window.VoxelWorldSystem && window.VoxelWorldSystem.isActive &&
+      window.VoxelWorldSystem.isActive()) return;
+    $gameSystem._mapLegendErrandGiven = true;
+    if ($gameTemp && $gameTemp.reserveCommonEvent) {
+      $gameTemp.reserveCommonEvent(ERRAND_COMMON_EVENT_ID);
     }
   }
 
@@ -776,6 +1107,7 @@
       return;
     }
     updateTooltipWatch();
+    updateDeviceWatch();
     readControlUse();
     readFoldKey();
     const notice = resolveNotice();
@@ -791,7 +1123,10 @@
       sheet.hide();
       return;
     }
-    sheet.draw(notice, rows, { folded, foldable: tutorialMode() });
+    sheet.draw(notice, rows, {
+      folded, foldable: tutorialMode(),
+      pad: padConnected(), padMode: padMode(),
+    });
   }
 
   // The fold is spliced into the hotkey table as the map starts, which is
@@ -815,6 +1150,7 @@
   const _Scene_Map_update = Scene_Map.prototype.update;
   Scene_Map.prototype.update = function () {
     _Scene_Map_update.call(this);
+    updateTutorialErrand();
     updateLegend();
   };
 
@@ -859,10 +1195,26 @@
     TUTORIAL_LEGEND_MAP_ID,
     TUTORIAL_CONTROLS,
     WORLD_MAP_CONTROLS,
+    PROCEDURAL_CONTROLS,
+    PROCEDURAL_MAP_ID,
+    ERRAND_COMMON_EVENT_ID,
+    ERRAND_STEPS,
+    updateTutorialErrand,
+    PAD,
     AREAS,
     TOOLTIPS,
 
+    // Which device the rows are speaking to, and the face one row wears
+    // because of it, exposed so a test can ask without a pad in its hands.
+    deviceWatch,
+    padConnected,
+    padMode,
+    updateDeviceWatch,
+    rowKeys,
+    rowFace,
+
     beginTutorialLegend,
+    readMenuHotkeyUse,
     registerArea(mapId, rect) {
       if (!AREAS[mapId]) AREAS[mapId] = [];
       AREAS[mapId].push(rect);

@@ -77,10 +77,14 @@
    * A row of numbered slots.
    *
    * Entries passed to render() are either null (empty slot) or:
-   *   { iconIndex, enabled, count, tooltip, label }
+   *   { iconIndex, enabled, count, tooltip, label, swatch }
    *
    * `label` is what the name line under the row says for that slot; it falls
    * back to `tooltip` when a caller has only the one string.
+   *
+   * `swatch` is a CSS colour drawn in place of the icon, for a bar whose
+   * contents are not things out of the icon sheet: the 3D world's block bar
+   * holds cubes of turf, sand and rock, which have a colour and no icon.
    *
    * Options:
    *   id            DOM id of the root element (required, unique per bar)
@@ -194,7 +198,7 @@
       const parts = [];
       for (let i = 0; i < this.slots; i++) {
         const e = entries[i];
-        parts.push(e ? `${e.iconIndex}${e.enabled ? 'u' : 'd'}${e.count != null ? 'x' + e.count : ''}` : '-');
+        parts.push(e ? `${e.swatch || e.iconIndex}${e.enabled ? 'u' : 'd'}${e.count != null ? 'x' + e.count : ''}` : '-');
       }
       return parts.join(',') + '|' + (state.selected != null ? state.selected : -1) + '|' + (state.active ? 1 : 0);
     }
@@ -250,13 +254,25 @@
         slot.appendChild(num);
 
         if (entry) {
-          const icon = document.createElement('div');
-          icon.className = 'hotbar-icon';
-          icon.style.width = this.iconPx + 'px';
-          icon.style.height = this.iconPx + 'px';
-          const col = entry.iconIndex % 16;
-          const row = Math.floor(entry.iconIndex / 16);
-          icon.style.backgroundPosition = `${-col * this.iconPx}px ${-row * this.iconPx}px`;
+          // Most bars carry things out of the icon sheet. A slot can carry a
+          // flat colour instead (`swatch`): the 3D world's quick bar holds
+          // cubes of dug ground, which have a colour and no icon.
+          let icon;
+          if (entry.swatch) {
+            icon = document.createElement('div');
+            icon.className = 'hotbar-swatch';
+            icon.style.width = this.iconPx + 'px';
+            icon.style.height = this.iconPx + 'px';
+            icon.style.background = entry.swatch;
+          } else {
+            icon = document.createElement('div');
+            icon.className = 'hotbar-icon';
+            icon.style.width = this.iconPx + 'px';
+            icon.style.height = this.iconPx + 'px';
+            const col = entry.iconIndex % 16;
+            const row = Math.floor(entry.iconIndex / 16);
+            icon.style.backgroundPosition = `${-col * this.iconPx}px ${-row * this.iconPx}px`;
+          }
           slot.appendChild(icon);
 
           if (entry.count != null) {
@@ -359,7 +375,14 @@
       root.style.transform = `scale(${sc.sx}, ${sc.sy})`;
     }
 
-    /** Draw the bar. `state` is { selected, active }. */
+    /**
+     * Draw the bar. `state` is { selected, active, inert }.
+     *
+     * `inert` keeps the bar on screen while something else owns the input , a
+     * message, a choice, a running event , so the row never blinks away
+     * mid-conversation. It is greyed and takes no clicks until the map has
+     * the keys back.
+     */
     render(entries, state) {
       const st = state || {};
       const list = entries || [];
@@ -372,6 +395,15 @@
         this._build(list, st);
       }
       this._syncLabel();
+      // Set outside the cached rebuild: the same row of slots is shown live
+      // one frame and inert the next, and nothing about it needs redrawing.
+      const inert = !!st.inert;
+      root.classList.toggle('hotbar-inert', inert);
+      root.style.pointerEvents = inert ? 'none' : 'auto';
+      if (inert) {
+        this._hoverIndex = -1;
+        hideTooltip();
+      }
       root.style.display = 'flex';
       if (!this.inline) this._position();
     }

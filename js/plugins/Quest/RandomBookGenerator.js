@@ -981,21 +981,13 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
         payReadingFun("fossil", eventId);  // i18n-ignore  reading-log id
     }
 
-    const RAMAN_PROBE_ID = 141;
-
+    // Look / Analyze / Cancel. The prompt itself belongs to the scanner
+    // (RamanSpectroscopy), which knows whether the party is carrying a probe
+    // at all; without one the object is simply looked at.
     function handleRamanChoice(onCheck, onAnalyze) {
-        if ($gameParty.hasItem($dataItems[RAMAN_PROBE_ID])) {
-            const choices = T.list('ConvBooks.ramanChoices');
-            const cancelIndex = choices.length - 1;
-
-            $gameMessage.setChoices(choices, 0, cancelIndex);
-            $gameMessage.setChoiceBackground(0);
-            $gameMessage.setChoicePositionType(2);
-            $gameMessage.setChoiceCallback(n => {
-                if (n === 0) onCheck();
-                if (n === 1) onAnalyze();
-                // n === cancelIndex (or -1 on cancel input): do nothing.
-            });
+        const scanner = window.RamanScanner;
+        if (scanner && typeof scanner.offer === "function") {
+            scanner.offer(onCheck, onAnalyze);
         } else {
             onCheck();
         }

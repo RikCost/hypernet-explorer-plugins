@@ -27,16 +27,30 @@
     if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldTraffic.js'); return; }
 
     const {
-        HEADLIGHT_NIGHT, KMH_TO_UNITS, ROAD_LANE_OFF, TRAFFIC_COLORS, TRAFFIC_MAX,
-        TRAFFIC_RING_MAX, TRAFFIC_RING_MIN, UNITS_PER_M, WORLD_TILE_SIZE,
-        getRenderType, getRoadDirectionAt, loadTex, loadVoxelTex, sampleBiomeAt
+        HEADLIGHT_NIGHT, KMH_TO_UNITS, ROAD_HALF_LANE, ROAD_LANE_OFF, TRAFFIC_MAX,
+        TRAFFIC_RING_MAX, TRAFFIC_RING_MIN, TRAFFIC_VEHICLES, UNITS_PER_M,
+        VehicleBillboard, WORLD_TILE_SIZE,
+        getRenderType, getRoadDirectionAt, sampleBiomeAt
     } = VW;
 
     // =========================================================================
-    // TrafficManager, pooled low-poly cars that drive the road grid around the
-    // camper. Cars follow their tile's road direction, keep to the right lane,
-    // recycle when far, and glow head/tail lights at night. Bounded pool keeps
-    // the draw-call cost flat regardless of how much road is on the map.
+    // TrafficManager, pooled traffic driving the road grid around the camper.
+    //
+    // Every vehicle out here is a DIRECTIONAL SPRITE, not a model: the same
+    // walk sheet under img/characters/Vehicles that the 2D map drives
+    // (Vehicle/RoadCarAI.js), stood up as a card that turns to the lens with
+    // the row picked from where the eye stands relative to the way the vehicle
+    // is pointing. Nine hand-built low-poly shells used to do this job; one
+    // sheet each does it for a fraction of the geometry AND makes the traffic
+    // met out here visibly the same traffic met on the flat map.
+    //
+    // The road they drive is the dual carriageway the 2D generator lays down
+    // (ProceduralMapRoadGenerator): two carriageways with a median between
+    // them, each carriageway two lanes wide with a broken line down its own
+    // middle. A car takes the carriageway its direction of travel calls for and
+    // then ONE of that carriageway's two lanes - never the paint itself. Cars
+    // follow their tile's road direction, turn at junctions, keep a gap to the
+    // car ahead, recycle when far, and light up at night.
     // =========================================================================
     class TrafficManager {
         // `silent` mutes the near-miss horn (title-screen background drive).
@@ -47,30 +61,26 @@
             this._silent = !!silent;
             this._hornCd = 0;   // near-miss honk cooldown (s)
 
-            // Shared materials (disposed once, in dispose()). Paint colours are
-            // assigned per pool slot from TRAFFIC_COLORS at construction; every
-            // other surface (glazing, black trim, rubber, rims) is shared by all.
-            const bodyTex   = loadVoxelTex('metal.png', 1);   // subtle paint/metal detail
-            this._bodyMats  = TRAFFIC_COLORS.map(c => new THREE.MeshLambertMaterial({ color: c, map: bodyTex }));
-            this._fixedMats = new Map();   // per-type fixed liveries (taxi, bus, ...)
-            // See-through glazing, matching the camper's own window treatment:
-            // tinted, low opacity, no depth write so the cabin reads through it.
-            this._glassMat  = new THREE.MeshLambertMaterial({
-                color: 0x9fc6db, transparent: true, opacity: 0.32,
-                depthWrite: false, side: THREE.DoubleSide
-            });
-            this._trimMat   = new THREE.MeshLambertMaterial({ color: 0x23252a });  // bumpers, pillars, skirts
-            this._tyreMat   = new THREE.MeshLambertMaterial({ color: 0x121215 });
-            this._rimMat    = new THREE.MeshLambertMaterial({ color: 0xb9bcc2 });
-            this._headMat   = new THREE.MeshBasicMaterial({ color: 0xfff3c0, transparent: true, opacity: 0 });
-            this._tailMat   = new THREE.MeshBasicMaterial({ color: 0xff3322, transparent: true, opacity: 0.5 });
+            // Lamps are the one thing a flat card cannot draw for itself: a
+            // sprite has its headlights painted on and they do not light up at
+            // dusk. Two shared unlit materials and one shared quad, hung off a
+            // little group that carries the vehicle's heading, do that much.
+            this._headMat = new THREE.MeshBasicMaterial({
+                color: 0xfff3c0, transparent: true, opacity: 0, depthWrite: false });
+            this._tailMat = new THREE.MeshBasicMaterial({
+                color: 0xff3322, transparent: true, opacity: 0.5, depthWrite: false });
+            this._lampGeo = new THREE.PlaneGeometry(0.42 * UNITS_PER_M, 0.18 * UNITS_PER_M);
 
-            // Nine low-poly silhouettes (hatch / sedan / coupe / SUV / pickup /
-            // taxi / van / box truck / bus) with per-type geometry shared across
-            // the pool, so the road carries a real mix of vehicles instead of
-            // twelve identical boxes. Pool slots are dealt the types round-robin
-            // from a shuffled list, so every type shows up on a busy road.
-            this._types = this._buildTypes();
+            this._types = TRAFFIC_VEHICLES.map(v => ({
+                key: v.key, sheet: v.sheet, heavy: !!v.heavy,
+                length:    v.lengthM * UNITS_PER_M,
+                halfLen:   v.lengthM * UNITS_PER_M * 0.5,
+                halfWidth: v.widthM  * UNITS_PER_M * 0.5,
+                radius:   (v.lengthM + v.widthM) * UNITS_PER_M * 0.25
+            }));
+
+            // Pool slots are dealt the types round-robin from a shuffled list,
+            // so a busy road carries a real mix rather than twelve of one car.
             const bag = this._types.slice();
             for (let i = bag.length - 1; i > 0; i--) {
                 const j = (Math.random() * (i + 1)) | 0;
@@ -79,253 +89,43 @@
             for (let i = 0; i < TRAFFIC_MAX; i++) this._cars.push(this._makeCar(bag[i % bag.length]));
         }
 
-        // ---------------------------------------------------------------------
-        // Vehicle silhouettes, authored in METRES with the origin on the road
-        // surface at the centre of the vehicle and +Z pointing forward. Every
-        // dimension is a real-world one, so UNITS_PER_M alone decides how the
-        // traffic sits next to the camper.
-        //
-        //   parts  : [kind, [w,h,d], [x,y,z]] boxes stacked into the silhouette.
-        //            'body'  takes the car's paint colour
-        //            'glass' is see-through glazing (windscreen / side windows)
-        //            'trim'  is black plastic: bumpers, pillars, skirts, racks
-        //   wheel  : { r, w } tyre radius and width; track = half the wheel track
-        //   axles  : wheel centre Z positions; steer:true axles turn into corners
-        //   lights : lamp cluster half-offset x, height y and front/rear z
-        // ---------------------------------------------------------------------
-        _buildTypes() {
-            const M = UNITS_PER_M;
-            const profiles = [
-                // Small hatchback: stubby nose, big glasshouse, tiny wheels.
-                // 3.90 x 1.72 x 1.51 m, sill at 0.41 m so the tyres read clearly.
-                { key: 'hatch', color: null,
-                  parts: [
-                      ['body',  [1.72, 0.58, 3.90], [0, 0.70,  0.00]],
-                      ['trim',  [1.50, 0.26, 3.72], [0, 0.40,  0.00]],
-                      ['glass', [1.62, 0.42, 1.90], [0, 1.20, -0.10]],
-                      ['body',  [1.58, 0.10, 1.72], [0, 1.46, -0.22]]
-                  ],
-                  wheel: { r: 0.31, w: 0.21 }, track: 0.80,
-                  axles: [{ z:  1.28, steer: true }, { z: -1.28 }],
-                  lights: { x: 0.62, y: 0.72, w: 0.40, h: 0.16, zF: 1.96, zR: -1.96 } },
-
-                // Three-box saloon: long bonnet, notchback roof over a boot deck.
-                { key: 'sedan', color: null,
-                  parts: [
-                      ['body',  [1.80, 0.60, 4.70], [0, 0.72,  0.00]],
-                      ['trim',  [1.58, 0.26, 4.50], [0, 0.41,  0.00]],
-                      ['glass', [1.70, 0.42, 2.15], [0, 1.23, -0.05]],
-                      ['body',  [1.66, 0.10, 1.85], [0, 1.49, -0.18]]
-                  ],
-                  wheel: { r: 0.32, w: 0.22 }, track: 0.82,
-                  axles: [{ z:  1.55, steer: true }, { z: -1.50 }],
-                  lights: { x: 0.66, y: 0.74, w: 0.44, h: 0.16, zF: 2.36, zR: -2.36 } },
-
-                // Coupe: slammed, wide track, ducktail spoiler.
-                { key: 'coupe', color: null,
-                  parts: [
-                      ['body',  [1.86, 0.52, 4.35], [0, 0.66,  0.00]],
-                      ['trim',  [1.62, 0.22, 4.20], [0, 0.38,  0.00]],
-                      ['glass', [1.74, 0.34, 1.80], [0, 1.09, -0.15]],
-                      ['body',  [1.66, 0.09, 1.35], [0, 1.31, -0.40]],
-                      ['body',  [1.52, 0.08, 0.32], [0, 1.00, -2.02]]
-                  ],
-                  wheel: { r: 0.33, w: 0.27 }, track: 0.84,
-                  axles: [{ z:  1.45, steer: true }, { z: -1.40 }],
-                  lights: { x: 0.68, y: 0.62, w: 0.46, h: 0.14, zF: 2.18, zR: -2.18 } },
-
-                // SUV: tall body, upright glass, roof rails, chunky tyres.
-                { key: 'suv', color: null,
-                  parts: [
-                      ['body',  [1.92, 0.78, 4.75], [0, 0.87,  0.00]],
-                      ['trim',  [1.70, 0.30, 4.60], [0, 0.46,  0.00]],
-                      ['glass', [1.84, 0.50, 2.55], [0, 1.51, -0.10]],
-                      ['body',  [1.82, 0.13, 2.60], [0, 1.83, -0.15]],
-                      ['trim',  [0.10, 0.09, 2.20], [ 0.74, 1.94, -0.15]],
-                      ['trim',  [0.10, 0.09, 2.20], [-0.74, 1.94, -0.15]]
-                  ],
-                  wheel: { r: 0.37, w: 0.26 }, track: 0.86,
-                  axles: [{ z:  1.50, steer: true }, { z: -1.45 }],
-                  lights: { x: 0.70, y: 0.95, w: 0.44, h: 0.18, zF: 2.38, zR: -2.38 } },
-
-                // Pickup: single cab up front, open load bed behind.
-                { key: 'pickup', color: null,
-                  parts: [
-                      ['body',  [1.95, 0.62, 5.40], [0, 0.81,  0.00]],
-                      ['trim',  [1.72, 0.28, 5.20], [0, 0.48,  0.00]],
-                      ['glass', [1.84, 0.48, 1.35], [0, 1.36,  0.60]],
-                      ['body',  [1.82, 0.12, 1.42], [0, 1.66,  0.58]],
-                      ['body',  [0.13, 0.44, 2.35], [ 0.91, 1.34, -1.55]],
-                      ['body',  [0.13, 0.44, 2.35], [-0.91, 1.34, -1.55]],
-                      ['body',  [1.95, 0.44, 0.13], [0, 1.34, -2.70]]
-                  ],
-                  wheel: { r: 0.38, w: 0.27 }, track: 0.88,
-                  axles: [{ z:  1.70, steer: true }, { z: -1.60 }],
-                  lights: { x: 0.72, y: 0.84, w: 0.40, h: 0.20, zF: 2.70, zR: -2.70 } },
-
-                // Taxi: saloon shell in a fixed livery with a roof sign.
-                { key: 'taxi', color: 0xe8b820,
-                  parts: [
-                      ['body',  [1.80, 0.60, 4.70], [0, 0.72,  0.00]],
-                      ['trim',  [1.58, 0.26, 4.50], [0, 0.41,  0.00]],
-                      ['glass', [1.70, 0.42, 2.15], [0, 1.23, -0.05]],
-                      ['body',  [1.66, 0.10, 1.85], [0, 1.49, -0.18]],
-                      ['trim',  [0.58, 0.18, 0.24], [0, 1.63,  0.20]]
-                  ],
-                  wheel: { r: 0.32, w: 0.22 }, track: 0.82,
-                  axles: [{ z:  1.55, steer: true }, { z: -1.50 }],
-                  lights: { x: 0.66, y: 0.74, w: 0.44, h: 0.16, zF: 2.36, zR: -2.36 } },
-
-                // Panel van: glazed cab up front, blank cargo box behind, one roof.
-                { key: 'van', color: null,
-                  parts: [
-                      ['body',  [2.00, 1.05, 5.30], [0, 1.03,  0.00]],
-                      ['trim',  [1.78, 0.30, 5.10], [0, 0.48,  0.00]],
-                      ['glass', [1.92, 0.85, 1.20], [0, 1.98,  2.05]],
-                      ['body',  [1.96, 0.85, 4.10], [0, 1.98, -0.60]],
-                      ['body',  [1.98, 0.10, 5.26], [0, 2.45,  0.00]]
-                  ],
-                  wheel: { r: 0.36, w: 0.24 }, track: 0.90,
-                  axles: [{ z:  1.75, steer: true }, { z: -1.60 }],
-                  lights: { x: 0.74, y: 0.80, w: 0.40, h: 0.20, zF: 2.66, zR: -2.66 } },
-
-                // Box truck: short glazed cab, tall cargo box, twin rear axle.
-                { key: 'truck', color: null,
-                  parts: [
-                      ['body',  [2.35, 1.20, 2.20], [0, 1.25,  2.55]],
-                      ['glass', [2.22, 0.62, 0.95], [0, 2.16,  2.90]],
-                      ['body',  [2.28, 0.14, 2.10], [0, 2.54,  2.60]],
-                      ['body',  [2.45, 2.20, 5.30], [0, 2.40, -1.25]],
-                      ['trim',  [2.10, 0.30, 6.60], [0, 1.15, -0.60]],
-                      ['trim',  [2.40, 0.30, 0.22], [0, 0.75,  3.66]]
-                  ],
-                  wheel: { r: 0.50, w: 0.32 }, track: 1.10,
-                  axles: [{ z:  2.55, steer: true }, { z: -1.45 }, { z: -2.35 }],
-                  lights: { x: 0.92, y: 0.90, w: 0.42, h: 0.22, zF: 3.68, zR: -3.92 } },
-
-                // City bus: full-length window band under a flat roof, 3 axles.
-                { key: 'bus', color: 0x2f6fb0,
-                  parts: [
-                      ['body',  [2.55, 1.05, 11.40], [0, 1.15,  0.00]],
-                      ['trim',  [2.30, 0.30, 11.20], [0, 0.60,  0.00]],
-                      ['glass', [2.52, 0.90, 10.60], [0, 2.12,  0.10]],
-                      ['body',  [2.56, 0.30, 11.40], [0, 2.72,  0.00]],
-                      ['trim',  [0.10, 0.90,  0.14], [ 1.27, 2.12,  2.20]],
-                      ['trim',  [0.10, 0.90,  0.14], [-1.27, 2.12,  2.20]],
-                      ['trim',  [0.10, 0.90,  0.14], [ 1.27, 2.12, -2.20]],
-                      ['trim',  [0.10, 0.90,  0.14], [-1.27, 2.12, -2.20]]
-                  ],
-                  wheel: { r: 0.50, w: 0.30 }, track: 1.16,
-                  axles: [{ z:  4.30, steer: true }, { z: -3.10 }, { z: -4.20 }],
-                  lights: { x: 0.98, y: 0.92, w: 0.44, h: 0.22, zF: 5.72, zR: -5.72 } }
-            ];
-
-            return profiles.map(p => {
-                const geos  = [];
-                const parts = p.parts.map(([kind, d, pos]) => {
-                    const geo = new THREE.BoxGeometry(d[0] * M, d[1] * M, d[2] * M);
-                    geos.push(geo);
-                    return { kind, geo, pos: [pos[0] * M, pos[1] * M, pos[2] * M] };
-                });
-
-                // One shared wheel: faceted tyre, proud hub cap and a spoke bar
-                // across the face. The hub and bar are what make the rotation
-                // actually visible - a smooth dark cylinder spins invisibly.
-                const r  = p.wheel.r * M;
-                const ww = p.wheel.w * M;
-                const wheelGeo = {
-                    tyre:  new THREE.CylinderGeometry(r, r, ww, 10).rotateZ(Math.PI / 2),
-                    hub:   new THREE.CylinderGeometry(r * 0.52, r * 0.52, ww * 1.14, 8).rotateZ(Math.PI / 2),
-                    spoke: new THREE.BoxGeometry(ww * 1.18, r * 1.62, r * 0.22)
-                };
-                for (const k in wheelGeo) geos.push(wheelGeo[k]);
-
-                const lightGeo = new THREE.BoxGeometry(p.lights.w * M, p.lights.h * M, 0.12 * M);
-                geos.push(lightGeo);
-
-                // Real footprint (offsets included) for the car-following gap and
-                // the camper collision bubble: a bus must reserve far more room
-                // than a hatchback.
-                let halfLen = 0, halfWidth = 0;
-                for (const [, d, pos] of p.parts) {
-                    halfLen   = Math.max(halfLen,   (Math.abs(pos[2]) + d[2] * 0.5) * M);
-                    halfWidth = Math.max(halfWidth, (Math.abs(pos[0]) + d[0] * 0.5) * M);
-                }
-
-                return {
-                    key: p.key, color: p.color, parts, geos, wheelGeo, lightGeo,
-                    lights: { x: p.lights.x * M, y: p.lights.y * M,
-                              zF: p.lights.zF * M, zR: p.lights.zR * M },
-                    axles: p.axles, track: p.track * M, wheelR: r,
-                    halfLen, halfWidth, radius: (halfLen + halfWidth) * 0.5
-                };
-            });
-        }
-
-        // Cached material for a type that ships in a fixed livery (taxi, bus).
-        _fixedMat(color) {
-            let m = this._fixedMats.get(color);
-            if (!m) {
-                m = new THREE.MeshLambertMaterial({ color, map: loadVoxelTex('metal.png', 1) });
-                this._fixedMats.set(color, m);
-            }
-            return m;
-        }
-
-        _matFor(kind, bodyMat) {
-            if (kind === 'glass') return this._glassMat;
-            if (kind === 'trim')  return this._trimMat;
-            return bodyMat;
-        }
-
+        // One pooled vehicle: its card, and the pair of lamps that sit at the
+        // ends of it. The card is added to the scene directly rather than to a
+        // group of its own - a billboard is placed in world space and turns
+        // itself to the camera, so there is nothing for a parent to rotate.
         _makeCar(type) {
-            const g = new THREE.Group();
-            const bodyMat = type.color
-                ? this._fixedMat(type.color)
-                : this._bodyMats[(Math.random() * this._bodyMats.length) | 0];
+            const board = new VehicleBillboard(type.sheet, type.length);
+            board.setVisible(false);
+            this._scene.add(board.mesh);
 
-            for (const part of type.parts) {
-                const mesh = new THREE.Mesh(part.geo, this._matFor(part.kind, bodyMat));
-                mesh.position.set(part.pos[0], part.pos[1], part.pos[2]);
-                if (part.kind === 'glass') mesh.renderOrder = 2;   // drawn after the shell
-                else mesh.receiveShadow = true;                    // traffic skips the shadow pass
-                g.add(mesh);
-            }
-
-            // Lamp clusters at the outer corners rather than one bar across the nose.
-            const L = type.lights;
+            // The lamps DO carry the heading: they are points on the vehicle,
+            // not a picture of it.
+            const lamps = new THREE.Group();
+            const y = 0.75 * UNITS_PER_M;
             for (const sx of [-1, 1]) {
-                const head = new THREE.Mesh(type.lightGeo, this._headMat);
-                head.position.set(sx * L.x, L.y, L.zF); g.add(head);
-                const tail = new THREE.Mesh(type.lightGeo, this._tailMat);
-                tail.position.set(sx * L.x, L.y, L.zR); g.add(tail);
+                const head = new THREE.Mesh(this._lampGeo, this._headMat);
+                head.position.set(sx * type.halfWidth * 0.62, y, type.halfLen);
+                lamps.add(head);
+                const tail = new THREE.Mesh(this._lampGeo, this._tailMat);
+                tail.position.set(sx * type.halfWidth * 0.62, y, -type.halfLen);
+                tail.rotation.y = Math.PI;
+                lamps.add(tail);
             }
+            lamps.visible = false;
+            this._scene.add(lamps);
 
-            // Each wheel is a steering pivot holding a spinning group, so the
-            // front axle can turn into a corner while every wheel rolls.
-            const wheels = [], steerPivots = [];
-            for (const axle of type.axles) {
-                for (const sx of [-1, 1]) {
-                    const pivot = new THREE.Group();
-                    pivot.position.set(sx * type.track, type.wheelR, axle.z * UNITS_PER_M);
-                    const spin = new THREE.Group();
-                    spin.add(new THREE.Mesh(type.wheelGeo.tyre,  this._tyreMat));
-                    spin.add(new THREE.Mesh(type.wheelGeo.hub,   this._rimMat));
-                    spin.add(new THREE.Mesh(type.wheelGeo.spoke, this._rimMat));
-                    pivot.add(spin);
-                    g.add(pivot);
-                    wheels.push(spin);
-                    if (axle.steer) steerPivots.push(pivot);
-                }
-            }
-
-            g.visible = false;
-            this._scene.add(g);
-            return { group: g, wheels, steerPivots, x: 0, z: 0, ax: 0, az: 1, yaw: 0,
+            return { board, lamps, x: 0, z: 0, ax: 0, az: 1, yaw: 0,
                      offX: 0, offZ: 0, speed: 0, active: false, type,
-                     halfLen: type.halfLen, halfWidth: type.halfWidth, radius: type.radius,
-                     wheelR: type.wheelR, tileX: 0, tileZ: 0,
-                     turnDir: 0, turnCx: 0, turnCz: 0 };
+                     lane: ROAD_LANE_OFF, halfLen: type.halfLen,
+                     halfWidth: type.halfWidth, radius: type.radius,
+                     tileX: 0, tileZ: 0, turnDir: 0, turnCx: 0, turnCz: 0 };
+        }
+
+        // Put one out of frame, freeing its pool slot for the next spawn.
+        _park(car) {
+            car.active = false;
+            car.board.setVisible(false);
+            car.lamps.visible = false;
         }
 
         _axisAllowed(dir, ax) {
@@ -354,31 +154,38 @@
                 const ax    = horiz ? sign : 0;
                 const az    = horiz ? 0 : sign;
 
-                // Right-hand lane offset: right vector of travel = (az, -ax).
-                const lane = ROAD_LANE_OFF;
-                const cx = tx * WORLD_TILE_SIZE + WORLD_TILE_SIZE * 0.5 + az * lane;
-                const cz = tz * WORLD_TILE_SIZE + WORLD_TILE_SIZE * 0.5 - ax * lane;
-
                 const car = this._cars.find(c => !c.active);
                 if (!car) return;
+
+                // The carriageway on the right of the median (right vector of
+                // travel = (az, -ax)), and then one of ITS two lanes: the paint
+                // runs down the middle of the carriageway, so a vehicle sits
+                // half a lane either side of it and never on it.
+                car.lane = ROAD_LANE_OFF + (Math.random() < 0.5 ? -1 : 1) * ROAD_HALF_LANE;
+                const cx = tx * WORLD_TILE_SIZE + WORLD_TILE_SIZE * 0.5 + az * car.lane;
+                const cz = tz * WORLD_TILE_SIZE + WORLD_TILE_SIZE * 0.5 - ax * car.lane;
+
                 car.x = cx; car.z = cz; car.ax = ax; car.az = az;
                 car.tileX = tx; car.tileZ = tz;
                 car.offX = 0; car.offZ = 0; car.turnDir = 0;
                 // Heavier vehicles cruise slower than the light stuff.
-                const heavy = car.type.key === 'bus' || car.type.key === 'truck';
-                car.speed = (heavy ? 42 + Math.random() * 26 : 55 + Math.random() * 50) * KMH_TO_UNITS;
+                car.speed = (car.type.heavy ? 42 + Math.random() * 26
+                                            : 55 + Math.random() * 50) * KMH_TO_UNITS;
                 car.baseSpeed = car.speed;
                 car.active = true;
-                car.group.visible = true;
-                car.group.position.set(cx, 0, cz);
                 car.yaw = Math.atan2(ax, az);
-                car.group.rotation.y = car.yaw;
-                for (const p of car.steerPivots) p.rotation.y = 0;
+                car.board.yaw = car.yaw;
+                car.board.setPosition(cx, 0, cz);
+                car.board.setVisible(true);
+                car.lamps.position.set(cx, 0, cz);
+                car.lamps.rotation.y = car.yaw;
+                car.lamps.visible = true;
                 return;
             }
         }
 
-        update(camX, camZ, delta, nightFactor) {
+        update(camX, camZ, delta, dayFactor, camYaw) {
+            const day = dayFactor == null ? 1 : dayFactor;
             this._t += delta;
             if (this._hornCd > 0) this._hornCd -= delta;
             const ts = WORLD_TILE_SIZE;
@@ -464,25 +271,21 @@
                         // it is already at the junction centre. The leftover step
                         // is carried as a render offset and eased out below.
                         const px = car.x, pz = car.z;
-                        if (Math.abs(nax) > 0.5) car.z = car.turnCz - nax * ROAD_LANE_OFF;
-                        else                     car.x = car.turnCx + naz * ROAD_LANE_OFF;
+                        if (Math.abs(nax) > 0.5) car.z = car.turnCz - nax * car.lane;
+                        else                     car.x = car.turnCx + naz * car.lane;
                         car.offX += px - car.x;
                         car.offZ += pz - car.z;
                     }
                 }
 
                 const dx = car.x - camX, dz = car.z - camZ;
-                if (Math.abs(dx) > recycleDist || Math.abs(dz) > recycleDist) {
-                    car.active = false; car.group.visible = false; continue;
-                }
+                if (Math.abs(dx) > recycleDist || Math.abs(dz) > recycleDist) { this._park(car); continue; }
                 const tx = Math.floor(car.x / ts);
                 const tz = Math.floor(car.z / ts);
-                if (tx < 0 || tz < 0 || tx >= 256 || tz >= 256) {
-                    car.active = false; car.group.visible = false; continue;
-                }
+                if (tx < 0 || tz < 0 || tx >= 256 || tz >= 256) { this._park(car); continue; }
                 const dir = getRoadDirectionAt(tx, tz);
                 if (getRenderType(sampleBiomeAt(tx, tz).name) !== 'road' || !this._axisAllowed(dir, car.ax)) {
-                    car.active = false; car.group.visible = false; continue;
+                    this._park(car); continue;
                 }
 
                 // Ease the leftover lane-change step out of the render position so
@@ -493,46 +296,41 @@
                     if (Math.abs(car.offX) < 0.05) car.offX = 0;
                     if (Math.abs(car.offZ) < 0.05) car.offZ = 0;
                 }
-                car.group.position.set(car.x + car.offX, 0, car.z + car.offZ);
+                const rx = car.x + car.offX, rz = car.z + car.offZ;
 
-                // Swing the visual heading toward the logical one and steer the
-                // front wheels by however much yaw is still owed, so a corner is
-                // a turn of the wheel rather than an instant 90 degree flip.
+                // Swing the heading the card is READ at toward the logical one,
+                // so a corner is a vehicle turning rather than an instant flip
+                // of which side of it you are looking at.
                 const targetYaw = Math.atan2(car.ax, car.az);
                 let dYaw = targetYaw - car.yaw;
                 while (dYaw >  Math.PI) dYaw -= Math.PI * 2;
                 while (dYaw < -Math.PI) dYaw += Math.PI * 2;
                 const swing = Math.min(Math.abs(dYaw), 3.2 * delta);
                 car.yaw += dYaw < 0 ? -swing : swing;
-                car.group.rotation.y = car.yaw;
-                const steer = Math.max(-0.55, Math.min(0.55, dYaw * 1.2));
-                for (const p of car.steerPivots) p.rotation.y = steer;
 
-                // Roll the wheels at the true rate for their radius.
-                const spin = (car.speed * delta) / Math.max(0.001, car.wheelR);
-                for (const w of car.wheels) w.rotation.x += spin;
+                car.board.yaw = car.yaw;
+                car.board.setPosition(rx, 0, rz);
+                car.board.setDaylight(day);
+                car.board.update(camX, camZ, camYaw || 0);
+                car.lamps.position.set(rx, 0, rz);
+                car.lamps.rotation.y = car.yaw;
+                car.lamps.visible = car.board.mesh.visible;
             }
 
             // Global head/tail light brightness by time of day.
-            const night = 1 - Math.min(1, nightFactor / HEADLIGHT_NIGHT);
+            const night = 1 - Math.min(1, day / HEADLIGHT_NIGHT);
             this._headMat.opacity = night;
             this._tailMat.opacity = 0.4 + night * 0.6;
         }
 
         dispose() {
-            for (const car of this._cars) this._scene.remove(car.group);
-            for (const t of this._types) {
-                for (const geo of t.geos) { if (geo) geo.dispose(); }
+            for (const car of this._cars) {
+                car.board.dispose();
+                this._scene.remove(car.lamps);
             }
-            this._glassMat.dispose();
-            this._trimMat.dispose();
-            this._tyreMat.dispose();
-            this._rimMat.dispose();
+            this._lampGeo.dispose();
             this._headMat.dispose();
             this._tailMat.dispose();
-            for (const m of this._bodyMats) m.dispose();
-            for (const m of this._fixedMats.values()) m.dispose();
-            this._fixedMats.clear();
             this._cars.length = 0;
         }
     }

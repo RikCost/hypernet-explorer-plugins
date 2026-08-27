@@ -5874,11 +5874,77 @@
 
   /**
    * Everything that decides what a world square looks like, without building it.
-   * Cheap enough to call for a whole neighbourhood every time the party steps
-   * over a seam, which is what the stitching window does to know whether a
-   * neighbour may be joined on at all (its tileset has to match).
+   * Called for a whole neighbourhood every time the party steps over a seam,
+   * which is what the stitching window does to know whether a neighbour may be
+   * joined on at all (its tileset has to match).
+   *
+   * Memoized, because "cheap enough" stopped being true the moment the window
+   * started asking about the ring around the party on every step: one plan is
+   * nine of these and a plan is made several times per tile walked, and each one
+   * scans the biome cache for the square, its four sides and its four corners.
+   * The answer is a pure function of the square, the depth and the world seed
+   * for as long as those stand still, and the key it is filed under is the very
+   * one the built squares use, so a new world drops both together.
    */
+  const RESOLVE_CACHE_LIMIT = 512;
+  const resolveCache = new Map();
+  // The biome cache the memo was filled from. It is always REPLACED rather than
+  // filled in place (buildBiomeCoordinateCache, the BiomesMap.json load), so a
+  // world that has just learnt where its biomes are - or a different world
+  // altogether - shows up here as a different object and the memo goes with it.
+  let resolveCacheSource = null;
+
+  function forgetResolved() {
+    resolveCache.clear();
+    resolveCacheSource = null;
+  }
+
+  // The memo may only answer for the plain form. A caller that hands in its own
+  // biome cache, landing grid or world-map flag is asking about a different
+  // world than the key names, so it is resolved outright every time.
   function resolveSquare(worldX, worldY, opts) {
+    opts = opts || {};
+    if (opts.cache !== undefined || opts.alienGrid !== undefined ||
+        opts.onWorldMap != null) {
+      return resolveSquareUncached(worldX, worldY, opts);
+    }
+    const pg = ($gameSystem && $gameSystem._procGenData) || {};
+    if (resolveCacheSource !== pg.biomeCoordinateCache) {
+      resolveCache.clear();
+      resolveCacheSource = pg.biomeCoordinateCache;
+    }
+    const depth = opts.depth != null ? opts.depth : (pg.biomeLayerStack || []).length;
+    // A planet's landing grid is planet-local and its (gx, gy) can coincide with
+    // a real Earth square, so which world is underfoot is part of the key.
+    const key = squareCacheKey(worldX, worldY, depth) +
+      (pg.alienGrid ? ":a:" + pg.alienGrid.biome : "") +
+      (($gameMap && $gameMap.mapId() === WORLD_MAP_ID) ? ":w" : "");
+    const hit = resolveCache.get(key);
+    if (hit) return copyResolved(hit);
+    const resolved = resolveSquareUncached(worldX, worldY, opts);
+    if (resolved) {
+      resolveCache.set(key, resolved);
+      while (resolveCache.size > RESOLVE_CACHE_LIMIT) {
+        resolveCache.delete(resolveCache.keys().next().value);
+      }
+      return copyResolved(resolved);
+    }
+    return resolved;
+  }
+
+  // Every caller has always been handed an object of its own - the build pass
+  // writes structureHints onto the one it was given - so the memo hands out
+  // copies rather than the entry itself. The three nested members are the only
+  // ones anything downstream reads a field out of.
+  function copyResolved(r) {
+    const copy = Object.assign({}, r);
+    if (r.adjacentBiomes) copy.adjacentBiomes = Object.assign({}, r.adjacentBiomes);
+    if (r.cacheInfo) copy.cacheInfo = Object.assign({}, r.cacheInfo);
+    if (r.diagonalBiomes) copy.diagonalBiomes = Object.assign({}, r.diagonalBiomes);
+    return copy;
+  }
+
+  function resolveSquareUncached(worldX, worldY, opts) {
     opts = opts || {};
     const pg = ($gameSystem && $gameSystem._procGenData) || {};
     const depth = opts.depth != null ? opts.depth : (pg.biomeLayerStack || []).length;
@@ -6226,6 +6292,7 @@
 
   function forgetSquares() {
     squareCache.clear();
+    forgetResolved();
   }
 
   // Is this square already built? The answer is what lets the stitching window

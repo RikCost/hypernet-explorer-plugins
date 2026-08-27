@@ -30,6 +30,9 @@
       this._agi    = agi;
       this._idx    = 0;
       this._el     = null;
+      // One hand in one pocket: the die takes seconds to land, and until it
+      // has, no key, pad or click may pick a second thing off the shelf.
+      this._busy   = false;
       this._refreshDOM();
     }
 
@@ -80,6 +83,7 @@
           if (i !== this._idx) { this._idx = i; this._updateHighlight(); }
         });
         el.addEventListener('click', () => {
+          if (this._busy) return;
           this._idx = i;
           SoundManager.playOk();
           this._doSteal();
@@ -97,8 +101,13 @@
     // ── Steal action ──────────────────────────────────────────
 
     async _doSteal() {
+      if (this._busy) return;
       const entry  = this._items[this._idx];
       if (!entry) return;
+      this._busy = true;
+      // The choice is spent the moment it is made: the list comes off the page
+      // before the die is thrown, so nothing is left on screen to pick again.
+      this._closeDOM();
       const item   = entry.data;
       const chance  = SS().calcChance(item, this._agi);
       const dexMod  = Math.floor(((this._agi || 10) - 10) / 2);
@@ -123,6 +132,9 @@
 
     update() {
       super.update();
+      // While the die is in the air the scene answers to nothing: the attempt
+      // has already been made, and the scene closes itself once it lands.
+      if (this._busy) return;
       const len = this._items.length;
 
       if (len === 0) {
@@ -149,8 +161,12 @@
     // ── Teardown ──────────────────────────────────────────────
 
     terminate() {
-      if (this._wrap) { this._wrap.remove(); this._wrap = null; this._el = null; }
+      this._closeDOM();
       super.terminate();
+    }
+
+    _closeDOM() {
+      if (this._wrap) { this._wrap.remove(); this._wrap = null; this._el = null; }
     }
   }
 

@@ -963,8 +963,7 @@
     "joblessShort": "Disoccupato",
     "jobGear": "Dotazione oggetti di lavoro iniziale:",
     "noJobGear": "Nessun equipaggiamento o strumento professionale iniziale in dotazione.",
-    "storyPara1": "Cresciuto nel contesto urbano di <b>{hometown}</b>, <b>{name}</b> ha affrontato gli anni formativi guidato da principi di matrice <b>{ideology}</b> e da un'indole <b>{morality}</b>. Proveniente da un'estrazione sociale <b>{wealth}</b>, l'esperienza maturata sul campo e la resilienza lo contraddistinguono tra i suoi pari.",
-    "storyPara2": "Ora operativo all'età di <b>{age} anni</b> con profilo sierologico <b>{blood}</b>, ha fatto il proprio ingresso nella griglia dell'hypernet, pronto a forgiare la propria rotta attraverso territori contesi e snodi di rete ad alto rischio."
+    "noBackstory": "Nessuna biografia registrata."
   },
   "specGenericDesc": "Competenza acquisita attraverso studio rigoroso e pratica sul campo.",
   "name": "Nome",

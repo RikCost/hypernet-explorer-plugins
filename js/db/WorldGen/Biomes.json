@@ -83,34 +83,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Dungeon",
-    "bgm": [
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Dark/Dark Times",
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Dark/Dark Walk",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Horror/The Other Side of the Door",
-      "KevinMacLeod/Dark/Darkling"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Dark/Dark Times",
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Horror/Land of Phantoms"
-    ],
     "bgmBattle": [
       "BattleMusic/The Great Battle"
     ],
@@ -229,31 +201,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Dungeon",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Horror/Darkest Child",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Horror/Darkest Child",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Horror/The Other Side of the Door",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Unseen Horrors"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Horror/Darkest Child",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
     "bgmBattle": [
       "BattleMusic/The Great Battle"
     ],
@@ -397,34 +344,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Techno/Brain Dance",
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Techno/Volatile Reaction",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Mysterious/Vanishing",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Mysterious/Circus of Freaks",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Techno/Vibing Over Venus"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Mysterious/Vanishing",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Horror/Nightmare Machine"
-    ],
     "bgmBattle": [
       "ZaneMusic/shortcuts"
     ],
@@ -576,33 +495,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Floating Cities",
-      "KevinMacLeod/Mysterious/Phantom from Space",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Techno/Space Fighter Loop",
-      "KevinMacLeod/Atmospheric/Deep Haze"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Phantom from Space"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Floating Cities",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
     "bgmBattle": [
       "Moogify/MelodicTechno"
     ],
@@ -762,31 +654,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Action/Rocket Power",
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Dramatic/Despair and Triumph",
-      "KevinMacLeod/Dramatic/Magistar",
-      "KevinMacLeod/Dramatic/Past the Edge",
-      "KevinMacLeod/Bright/Happy Happy Game Show",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Techno/Bass Walker"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Action/Rocket Power",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Techno/Volatile Reaction",
-      "KevinMacLeod/Dramatic/Despair and Triumph"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Atmospheric/Floating Cities",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Atmospheric/Frozen Star"
-    ],
     "bgmBattle": [
       "Battle8"
     ],
@@ -926,31 +793,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Del Rio Bravo",
-      "KevinMacLeod/Mysterious/Lost Frontier",
-      "KevinMacLeod/Mysterious/Spy Glass",
-      "KevinMacLeod/Mysterious/Tabuk",
-      "KevinMacLeod/Jazz/Cuban Sandwich",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Atmospheric/Aftermath"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Mysterious/Vanishing"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -1094,32 +936,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Eastern Thought",
-      "KevinMacLeod/Calm/Meditation Impromptu 01",
-      "KevinMacLeod/Calm/Meditation Impromptu 02",
-      "KevinMacLeod/Calm/Meditation Impromptu 03",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Healing",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Morning"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Meditation Impromptu 02",
-      "KevinMacLeod/Calm/Eastern Thought",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 3",
-      "KevinMacLeod/Sad/Hush"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Dark/Dark Walk",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -1279,31 +1095,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "CaveFlooded",
-    "bgm": [
-      "KevinMacLeod/Bright/Bassa Island Game Loop",
-      "KevinMacLeod/Bright/Sardana",
-      "KevinMacLeod/Bright/Island Meet and Greet",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Jazz/Arroz Con Pollo",
-      "KevinMacLeod/Mysterious/Secret of Tiki Island",
-      "KevinMacLeod/Jazz/Cuban Sandwich",
-      "KevinMacLeod/Calm/Living Voyage"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Mysterious/Secret of Tiki Island",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -1467,31 +1258,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Del Rio Bravo",
-      "KevinMacLeod/Mysterious/Lost Frontier",
-      "KevinMacLeod/Mysterious/Spy Glass",
-      "KevinMacLeod/Mysterious/Tabuk",
-      "KevinMacLeod/Jazz/Cuban Sandwich",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Atmospheric/Aftermath"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Mysterious/Vanishing"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -1657,31 +1423,6 @@
       238
     ],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Magistar",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Dramatic/Sovereign",
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Dramatic/Past the Edge",
-      "KevinMacLeod/Dramatic/Echoes of Time v2",
-      "KevinMacLeod/Action/Rocket Power"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dramatic/Magistar",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dark/Ancient Rite"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dark/Ancient Rite"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -1803,30 +1544,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Joey's Formal Waltz - Unscented",
-      "KevinMacLeod/Dramatic/Magistar",
-      "KevinMacLeod/Calm/Constance",
-      "KevinMacLeod/Dreamy/Fairytale Waltz",
-      "KevinMacLeod/Calm/Ashton Manor",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Dramatic/Sovereign"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Constance",
-      "KevinMacLeod/Dreamy/Joey's Formal Waltz - Unscented",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Calm/Ashton Manor",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Atmospheric/Aftermath"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -1947,33 +1664,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Crypto",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 3",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Mysterious/Investigations",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Deep Haze"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "KevinMacLeod/Horror/The Descent"
     ],
@@ -2075,30 +1765,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
     "bgmBattle": [
       "KevinMacLeod/Horror/The Descent"
     ],
@@ -2184,30 +1850,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "CaveIce",
-    "bgm": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Long Note Three"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Horror/Unseen Horrors"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
     "bgmBattle": [
       "KevinMacLeod/Horror/The Descent"
     ],
@@ -2305,32 +1947,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Calm/Healing",
-      "KevinMacLeod/Sad/Mourning Song",
-      "KevinMacLeod/Sad/Sad Trio",
-      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Calm/Eternal Hope",
-      "KevinMacLeod/Dramatic/Echoes of Time",
-      "KevinMacLeod/Calm/Meditation Impromptu 01"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Sad/Mourning Song",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Sad/Sad Trio",
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Sad/Mourning Song",
-      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Horror/Ghost Story"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -2560,10 +2176,10 @@
     ],
     "emptyWorldBGM": [
       "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
       "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Dark/Bent and Broken"
+      "KevinMacLeod/Atmospheric/Lost Time"
     ],
     "bgmBattle": [
       "RandomMind/Battle"
@@ -3728,31 +3344,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Mesmerize",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Crypto"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -3916,33 +3507,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Desert City",
-      "KevinMacLeod/Mysterious/Mystery Bazaar",
-      "KevinMacLeod/Mysterious/Ibn Al-Noor",
-      "KevinMacLeod/Mysterious/Tabuk",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Mysterious/Curse of the Scarab",
-      "KevinMacLeod/Mysterious/Lost Frontier",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Mysterious/Del Rio Bravo"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Mysterious/Curse of the Scarab",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Ibn Al-Noor",
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Dark/Gathering Darkness"
-    ],
     "bgmBattle": [
       "BattleMusic/Exotic Battle"
     ],
@@ -4114,31 +3678,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Del Rio Bravo",
-      "KevinMacLeod/Mysterious/Lost Frontier",
-      "KevinMacLeod/Mysterious/Tabuk",
-      "KevinMacLeod/Dramatic/Mountain Emperor",
-      "KevinMacLeod/Dramatic/Ascending the Vale",
-      "KevinMacLeod/Mysterious/Ibn Al-Noor",
-      "KevinMacLeod/Dramatic/Past the Edge",
-      "KevinMacLeod/Mysterious/Spy Glass"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dark/Darkling"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -4280,33 +3819,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Techno/Funk Game Loop",
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Techno/Volatile Reaction",
-      "KevinMacLeod/Techno/Bass Walker",
-      "KevinMacLeod/Techno/Brain Dance",
-      "KevinMacLeod/Techno/District Four",
-      "KevinMacLeod/Techno/Loopster",
-      "KevinMacLeod/Techno/Screen Saver",
-      "KevinMacLeod/Techno/Vibing Over Venus",
-      "KevinMacLeod/Techno/Space Fighter Loop"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Techno/Brain Dance",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Techno/Space Fighter Loop",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Horror/Nightmare Machine"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Floating Cities"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -4445,31 +3957,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Bright/Sardana",
-      "KevinMacLeod/Jazz/George Street Shuffle",
-      "KevinMacLeod/Jazz/Cool Vibes",
-      "KevinMacLeod/Jazz/Poppers and Prosecco",
-      "KevinMacLeod/Bright/Island Meet and Greet",
-      "KevinMacLeod/Jazz/Airport Lounge",
-      "KevinMacLeod/Mysterious/Spy Glass"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Mysterious/Hidden Agenda",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Mysterious/Spy Glass"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Atmospheric/Deep Haze"
-    ],
     "bgmBattle": [
       "Moogify/MelodicTechno"
     ],
@@ -4637,34 +4124,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Fairytale Waltz",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Dreamy/Mesmerize",
-      "KevinMacLeod/Dreamy/Dance Of The Sugar Plum Fairies",
-      "KevinMacLeod/Atmospheric/Spacial Harvest"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Mysterious/Vanishing",
-      "KevinMacLeod/Dreamy/Winter Chimes"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -5369,33 +4828,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Crypto",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 3",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Mysterious/Investigations",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Deep Haze"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -5543,34 +4975,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dark/Mystic Force",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Horror/Anxiety",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Mysterious/Unnatural Situation",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Horror/The Other Side of the Door",
-      "KevinMacLeod/Dark/Mystic Force",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Horror/Anguish"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Mystic Force",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Horror/Anxiety"
-    ],
     "bgmBattle": [
       "BattleMusic/Exotic Battle"
     ],
@@ -5714,31 +5118,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Industrial Cinematic",
-      "KevinMacLeod/Mysterious/Hidden Agenda",
-      "KevinMacLeod/Jazz/Fast Talkin",
-      "KevinMacLeod/Techno/District Four",
-      "KevinMacLeod/Techno/Bass Walker",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Techno/Funk Game Loop",
-      "KevinMacLeod/Dramatic/Impact Prelude"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dramatic/Industrial Cinematic",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Techno/District Four",
-      "KevinMacLeod/Mysterious/Hidden Agenda",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Nightmare Machine"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Atmospheric/Frozen Star"
-    ],
     "bgmBattle": [
       "BattleMusic/Boss Battle"
     ],
@@ -5832,30 +5211,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Jazz/Fast Talkin",
-      "KevinMacLeod/Dramatic/Industrial Cinematic",
-      "KevinMacLeod/Techno/Funk Game Loop",
-      "KevinMacLeod/Techno/Loopster",
-      "KevinMacLeod/Jazz/George Street Shuffle",
-      "KevinMacLeod/Techno/Bass Walker",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dramatic/Industrial Cinematic",
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Techno/District Four"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -5999,31 +5354,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Dance Of The Sugar Plum Fairies",
-      "KevinMacLeod/Dreamy/Fairytale Waltz",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Dreamy/Mesmerize",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Calm/Eternal Hope",
-      "KevinMacLeod/Bright/Happy Happy Game Show"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -6183,39 +5513,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Your Call",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Jazz/Porch Swing Days - faster",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Bright/Midsummer Sky",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Dreamy/Light Awash"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Calm/Meditation Impromptu 01",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Dreamy/Dreamer"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush"
-    ],
     "bgmBattle": [
       "Moogify/MelodicTechno"
     ],
@@ -6456,39 +5753,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Your Call",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Jazz/Porch Swing Days - faster",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Bright/Midsummer Sky",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Dreamy/Light Awash"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Calm/Meditation Impromptu 01",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Dreamy/Dreamer"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush"
-    ],
     "bgmBattle": [
       "RandomMind/Battle"
     ],
@@ -6644,39 +5908,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Your Call",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Jazz/Porch Swing Days - faster",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Bright/Midsummer Sky",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Dreamy/Light Awash"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Calm/Meditation Impromptu 01",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Dreamy/Dreamer"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush"
-    ],
     "bgmBattle": [
       "Scene7"
     ],
@@ -6829,36 +6060,6 @@
       "SpiritWoods"
     ],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Sovereign",
-      "KevinMacLeod/Dramatic/Reawakening",
-      "KevinMacLeod/Dreamy/Magic Forest",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Calm/Eternal Hope",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 4",
-      "KevinMacLeod/Atmospheric/Spacial Harvest"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 3",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Calm/Meditation Impromptu 03",
-      "KevinMacLeod/Dreamy/Dreamer"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls"
-    ],
     "bgmBattle": [
       "Battle4"
     ],
@@ -7048,32 +6249,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Jazz/Arroz Con Pollo",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Jazz/Boogie Party",
-      "KevinMacLeod/Jazz/Modern Jazz Samba",
-      "KevinMacLeod/Bright/Bassa Island Game Loop",
-      "KevinMacLeod/Bright/Sardana",
-      "KevinMacLeod/Mysterious/Secret of Tiki Island",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Bright/Island Meet and Greet"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Mysterious/Secret of Tiki Island",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 4",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Night Cave"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -7253,33 +6428,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dramatic/Ascending the Vale",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Calm/Eternal Hope"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Long Note Two"
-    ],
     "bgmBattle": [
       "Battle4"
     ],
@@ -7436,33 +6584,6 @@
       500
     ],
     "lowerLayer": "Crypt",
-    "bgm": [
-      "KevinMacLeod/Horror/Classic Horror 1",
-      "KevinMacLeod/Sad/Heartbreaking",
-      "KevinMacLeod/Dark/Dark Times",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Sad/Cryptic Sorrow",
-      "KevinMacLeod/Sad/Mourning Song",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Horror/Darkest Child",
-      "KevinMacLeod/Sad/Mourning Song",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Horror/Classic Horror 1",
-      "KevinMacLeod/Sad/Heartbreaking",
-      "KevinMacLeod/Dark/Dark Times",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Horror/Land of Phantoms"
-    ],
     "bgmBattle": [
       "BattleMusic/Cartoon Battle"
     ],
@@ -7622,33 +6743,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Eternal Hope",
-      "KevinMacLeod/Dramatic/Echoes of Time v2",
-      "KevinMacLeod/Calm/Healing",
-      "KevinMacLeod/Dramatic/Echoes of Time",
-      "KevinMacLeod/Sad/Sad Trio",
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Calm/Tranquility"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Eternal Hope",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Sad/Sad Trio",
-      "KevinMacLeod/Calm/Healing",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
     "bgmBattle": [
       "BattleMusic/Fast Fight"
     ],
@@ -7808,33 +6902,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dark/Mystic Force",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Dramatic/Despair and Triumph",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Dark/Mystic Force"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Mystic Force",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Dark/Crossing the Chasm"
-    ],
     "bgmBattle": [
       "Battle1"
     ],
@@ -8011,32 +7078,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Despair and Triumph",
-      "KevinMacLeod/Dramatic/Past the Edge",
-      "KevinMacLeod/Dramatic/Ascending the Vale",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Dramatic/Sovereign",
-      "KevinMacLeod/Dramatic/Mountain Emperor",
-      "KevinMacLeod/Action/Rocket Power",
-      "KevinMacLeod/Dramatic/Magistar",
-      "KevinMacLeod/Dramatic/Pamgaea"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Dramatic/Impact Prelude"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dark/The Ice Giants"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -8159,15 +7200,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Atmospheric/Frozen Star"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -8327,15 +7359,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Dungeon",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Sad/Decline"
-    ],
     "bgmBattle": [
       "BattleMusic/Cartoon Battle"
     ],
@@ -8443,15 +7466,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Dungeon",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Wounded"
-    ],
     "bgmBattle": [
       "BattleMusic/Cartoon Battle"
     ],
@@ -8665,31 +7679,6 @@
       "Crystals"
     ],
     "lowerLayer": "CaveIce",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Dreamy/Light Awash"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Long Note Two"
-    ],
     "bgmBattle": [
       "BattleMusic/Cartoon Battle"
     ],
@@ -8876,31 +7865,6 @@
       "Crystals"
     ],
     "lowerLayer": "CaveIce",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dreamy/Fairytale Waltz",
-      "KevinMacLeod/Atmospheric/Frozen Star"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One"
-    ],
     "bgmBattle": [
       "BattleMusic/Cartoon Battle"
     ],
@@ -9048,31 +8012,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Jazz/Boogie Party",
-      "KevinMacLeod/Jazz/Arroz Con Pollo",
-      "KevinMacLeod/Jazz/Cuban Sandwich",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Mysterious/Secret of Tiki Island",
-      "KevinMacLeod/Bright/Bassa Island Game Loop",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Atmospheric/Spacial Harvest"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Mysterious/Curse of the Scarab",
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Night Cave"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Fast Fight"
     ],
@@ -9227,32 +8166,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Techno/Screen Saver",
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Techno/Volatile Reaction",
-      "KevinMacLeod/Jazz/Thinking Music",
-      "KevinMacLeod/Calm/Concentration",
-      "KevinMacLeod/Techno/Brain Dance",
-      "KevinMacLeod/Techno/Bass Walker",
-      "KevinMacLeod/Mysterious/Investigations",
-      "KevinMacLeod/Techno/Loopster"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Techno/Volatile Reaction",
-      "KevinMacLeod/Horror/Anxiety",
-      "KevinMacLeod/Mysterious/Unnatural Situation"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Anxiety",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
     "bgmBattle": [
       "Battle4"
     ],
@@ -9396,32 +8309,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Deadly Roulette",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Techno/Volatile Reaction",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master",
-      "KevinMacLeod/Dark/Unholy Knight",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
     "bgmBattle": [
       "BattleMusic/Exotic Battle"
     ],
@@ -9561,33 +8448,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Calm/Daybreak"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -9751,30 +8611,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Bright/Sergio's Magic Dustbin",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Mysterious/Circus of Freaks",
-      "KevinMacLeod/Techno/Funk Game Loop",
-      "KevinMacLeod/Jazz/Fast Talkin",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Mysterious/Goblin_Tinker_Soldier_Spy"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Mysterious/Circus of Freaks",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Horror/Unseen Horrors"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Horror/The House of Leaves",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Horror/Unseen Horrors"
-    ],
     "bgmBattle": [
       "BattleMusic/Exotic Battle"
     ],
@@ -9934,34 +8770,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Mysterious/Vanishing",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Horror/The Other Side of the Door",
-      "KevinMacLeod/Mysterious/Vanishing"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
     "bgmBattle": [
       "Battle2"
     ],
@@ -10097,32 +8905,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Dramatic/Reawakening",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Mysterious/Unnatural Situation",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Horror/The Other Side of the Door",
-      "KevinMacLeod/Dark/Mystic Force",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Dark/Gathering Darkness"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "Battle7"
     ],
@@ -10286,31 +9068,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Techno/District Four",
-      "KevinMacLeod/Dramatic/Industrial Cinematic",
-      "KevinMacLeod/Mysterious/Hidden Agenda",
-      "KevinMacLeod/Techno/Bass Walker",
-      "KevinMacLeod/Mysterious/Spy Glass",
-      "KevinMacLeod/Techno/Loopster",
-      "KevinMacLeod/Jazz/Fast Talkin",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Techno/District Four",
-      "KevinMacLeod/Mysterious/Hidden Agenda",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Mysterious/Deadly Roulette"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Dark/Crossing the Chasm"
-    ],
     "bgmBattle": [
       "BattleMusic/The Great Battle"
     ],
@@ -10450,31 +9207,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Lord of the Rangs",
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Mysterious/Investigations",
-      "KevinMacLeod/Dramatic/Industrial Cinematic",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Mysterious/Crypto",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dramatic/Impact Prelude"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Dark/Bent and Broken",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/Unseen Horrors"
-    ],
     "bgmBattle": [
       "RandomMind/Battle"
     ],
@@ -10623,31 +9355,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "CaveIce",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Mountain Emperor",
-      "KevinMacLeod/Dramatic/Ascending the Vale",
-      "KevinMacLeod/Dramatic/Past the Edge",
-      "KevinMacLeod/Dramatic/Magistar",
-      "KevinMacLeod/Dramatic/Sovereign",
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Dramatic/Pamgaea"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Heavy Heart"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
     "bgmBattle": [
       "Battle4"
     ],
@@ -10830,30 +9537,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "CaveIce",
-    "bgm": [
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dramatic/Ascending the Vale",
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Dramatic/Mountain Emperor",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dreamy/Winter Chimes"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
     "bgmBattle": [
       "Battle2"
     ],
@@ -11024,31 +9707,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Magic Forest",
-      "KevinMacLeod/Dreamy/Mesmerize",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Mysterious/Circus of Freaks",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Mysterious/Goblin_Tinker_Soldier_Spy",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 4",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Horror/Nightmare Machine"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Boss Battle"
     ],
@@ -11189,31 +9847,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "SeaBed",
-    "bgm": [
-      "KevinMacLeod/Bright/Bassa Island Game Loop",
-      "KevinMacLeod/Bright/Sardana",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Mysterious/Secret of Tiki Island",
-      "KevinMacLeod/Bright/Island Meet and Greet",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Calm/Tranquility"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Mysterious/Secret of Tiki Island",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -11384,35 +10017,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Jazz/Local Forecast - Elevator",
-      "KevinMacLeod/Bright/Awkward Meeting",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Horror/Anxiety",
-      "KevinMacLeod/Calm/Concentration",
-      "KevinMacLeod/Jazz/Thinking Music",
-      "KevinMacLeod/Jazz/Airport Lounge",
-      "KevinMacLeod/Jazz/Local Forecast",
-      "KevinMacLeod/Jazz/Local Forecast - Slower",
-      "KevinMacLeod/Techno/Screen Saver",
-      "KevinMacLeod/Jazz/Fast Talkin"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Jazz/Local Forecast - Elevator",
-      "KevinMacLeod/Horror/Anxiety",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Techno/Screen Saver",
-      "KevinMacLeod/Calm/Concentration",
-      "KevinMacLeod/Mysterious/Hidden Agenda",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Horror/Anxiety",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -11556,31 +10160,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Action/Rocket Power",
-      "KevinMacLeod/Techno/Bass Walker",
-      "KevinMacLeod/Dramatic/Industrial Cinematic",
-      "KevinMacLeod/Techno/District Four",
-      "KevinMacLeod/Techno/Volatile Reaction",
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Techno/Space Fighter Loop",
-      "KevinMacLeod/Techno/Static Motion"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Techno/District Four",
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Mysterious/Hidden Agenda",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Techno/Screen Saver"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -11712,32 +10291,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Jazz/Porch Swing Days - faster",
-      "KevinMacLeod/Bright/Midsummer Sky",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Bright/Happy Happy Game Show",
-      "KevinMacLeod/Jazz/Jazz Brunch"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Calm/Tranquility Base"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
     "bgmBattle": [
       "BattleMusic/The Great Battle"
     ],
@@ -11905,31 +10458,6 @@
       "Crystals"
     ],
     "lowerLayer": "CaveIce",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Dreamy/Light Awash"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Long Note Two"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -12065,33 +10593,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "RiverBank",
-    "bgm": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Calm/Daybreak"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -12224,33 +10725,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "RiverBank",
-    "bgm": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Calm/Daybreak"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Long Note Three"
-    ],
     "bgmBattle": [
       "Battle6"
     ],
@@ -12386,33 +10860,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "RiverBank",
-    "bgm": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Calm/Daybreak"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
     "bgmBattle": [
       "Battle1"
     ],
@@ -12551,33 +10998,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "RiverBank",
-    "bgm": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Calm/Daybreak"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dreamy/Dreamer",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls"
-    ],
     "bgmBattle": [
       "BattleMusic/Fast Fight"
     ],
@@ -12665,39 +11085,6 @@
     "color": "#20b2aa",
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Calm/Morning",
-      "KevinMacLeod/Calm/Brittle Rille",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Your Call",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Jazz/Porch Swing Days - faster",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Bright/Midsummer Sky",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Dreamy/Light Awash"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Night in Venice",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Calm/Meditation Impromptu 01",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Dreamy/Dreamer"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush"
-    ],
     "bgmBattle": [
       "Battle6"
     ],
@@ -12846,15 +11233,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -12937,15 +11315,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "RiverBank",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
     "bgmBattle": [
       "RandomMind/Battle"
     ],
@@ -13095,34 +11464,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Dungeon",
-    "bgm": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Dramatic/Echoes of Time v2",
-      "KevinMacLeod/Mysterious/Mystery Bazaar",
-      "KevinMacLeod/Mysterious/Curse of the Scarab",
-      "KevinMacLeod/Sad/Cryptic Sorrow",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dramatic/Echoes of Time",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Dramatic/Reawakening"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Sad/Cryptic Sorrow",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Sad/Wounded",
-      "KevinMacLeod/Sad/Cryptic Sorrow",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Atmospheric/Aftermath"
-    ],
     "bgmBattle": [
       "Battle5"
     ],
@@ -13282,31 +11623,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Del Rio Bravo",
-      "KevinMacLeod/Mysterious/Lost Frontier",
-      "KevinMacLeod/Mysterious/Spy Glass",
-      "KevinMacLeod/Mysterious/Tabuk",
-      "KevinMacLeod/Jazz/Cuban Sandwich",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Atmospheric/Aftermath"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Mysterious/Vanishing"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -13430,31 +11746,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Mysterious/Tabuk",
-      "KevinMacLeod/Mysterious/Lost Frontier",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Mysterious/Ibn Al-Noor",
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Jazz/Samba Isobel",
-      "KevinMacLeod/Dramatic/Reawakening"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Tempting Secrets",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 3"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
     "bgmBattle": [
       "Battle7"
     ],
@@ -13577,30 +11868,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Atmospheric/Spacial Harvest"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Dark/Darkling"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -14080,31 +12347,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "",
-    "bgm": [
-      "KevinMacLeod/Techno/Space Fighter Loop",
-      "KevinMacLeod/Atmospheric/Floating Cities",
-      "KevinMacLeod/Mysterious/Phantom from Space",
-      "KevinMacLeod/Techno/Screen Saver",
-      "KevinMacLeod/Techno/Bass Walker",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Techno/Vibing Over Venus",
-      "KevinMacLeod/Action/Rocket Power"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Floating Cities",
-      "KevinMacLeod/Techno/Static Motion",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Mysterious/Phantom from Space",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Techno/Space Fighter Loop"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Floating Cities",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
     "bgmBattle": [
       "RandomMind/Battle"
     ],
@@ -14244,31 +12486,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Magic Forest",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 4",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Dreamy/Mesmerize",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Calm/Eternal Hope",
-      "KevinMacLeod/Dramatic/Echoes of Time",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Horror/Land of Phantoms"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Exotic Battle"
     ],
@@ -14412,31 +12629,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Bright/Achaidh Cheide",
-      "KevinMacLeod/Dramatic/Pamgaea",
-      "KevinMacLeod/Mysterious/Tabuk",
-      "KevinMacLeod/Calm/Living Voyage",
-      "KevinMacLeod/Bright/Midsummer Sky",
-      "KevinMacLeod/Dramatic/Past the Edge",
-      "KevinMacLeod/Mysterious/Lost Frontier",
-      "KevinMacLeod/Calm/Brittle Rille"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Mysterious/Comfortable Mystery"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Gloom Horizon"
-    ],
     "bgmBattle": [
       "BattleMusic/Boss Battle"
     ],
@@ -14628,32 +12820,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "FloodedCave",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Dramatic/Reawakening",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Mysterious/Unnatural Situation",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Horror/Land of Phantoms",
-      "KevinMacLeod/Horror/The Other Side of the Door",
-      "KevinMacLeod/Dark/Mystic Force",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Dark/Gathering Darkness"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Gloom Horizon",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "Battle7"
     ],
@@ -14802,33 +12968,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dramatic/Ascending the Vale",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Calm/Eternal Hope"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Two",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Long Note Two"
-    ],
     "bgmBattle": [
       "BattleMusic/Cartoon Battle"
     ],
@@ -14982,31 +13121,6 @@
       167
     ],
     "lowerLayer": "Dungeon",
-    "bgm": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Dramatic/Echoes of Time v2",
-      "KevinMacLeod/Mysterious/Curse of the Scarab",
-      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
-      "KevinMacLeod/Dramatic/Echoes of Time",
-      "KevinMacLeod/Mysterious/Ibn Al-Noor",
-      "KevinMacLeod/Calm/Healing",
-      "KevinMacLeod/Dramatic/Magistar"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Mysterious/Curse of the Scarab",
-      "KevinMacLeod/Sad/Mourning Song",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Ancient Rite",
-      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Sad/Mourning Song",
-      "KevinMacLeod/Dark/Gathering Darkness"
-    ],
     "bgmBattle": [
       "Battle8"
     ],
@@ -15173,32 +13287,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Dungeon",
-    "bgm": [
-      "KevinMacLeod/Calm/Eastern Thought",
-      "KevinMacLeod/Calm/Meditation Impromptu 01",
-      "KevinMacLeod/Calm/Meditation Impromptu 02",
-      "KevinMacLeod/Calm/Meditation Impromptu 03",
-      "KevinMacLeod/Mysterious/Comfortable Mystery",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Calm/Healing",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Calm/Morning"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Meditation Impromptu 02",
-      "KevinMacLeod/Calm/Eastern Thought",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Calm/Tranquility Base",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 3",
-      "KevinMacLeod/Sad/Hush"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Dark/Ancient Rite"
-    ],
     "bgmBattle": [
       "Battle2"
     ],
@@ -15362,31 +13450,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Jazz/Modern Jazz Samba",
-      "KevinMacLeod/Jazz/George Street Shuffle",
-      "KevinMacLeod/Jazz/Airport Lounge",
-      "KevinMacLeod/Jazz/Local Forecast",
-      "KevinMacLeod/Jazz/Cool Vibes",
-      "KevinMacLeod/Jazz/I Knew a Guy",
-      "KevinMacLeod/Jazz/Porch Swing Days - faster",
-      "KevinMacLeod/Mysterious/Spy Glass"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Jazz/Local Forecast - Slower",
-      "KevinMacLeod/Jazz/Sweeter Vermouth",
-      "KevinMacLeod/Mysterious/Spy Glass",
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Jazz/Airport Lounge",
-      "KevinMacLeod/Mysterious/Hidden Agenda"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Atmospheric/Interloper",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Horror/Nightmare Machine",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -15528,31 +13591,6 @@
       "Crystals"
     ],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Calm/Tranquility",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dreamy/Fairytale Waltz",
-      "KevinMacLeod/Atmospheric/Frozen Star"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One"
-    ],
     "bgmBattle": [
       "Battle6"
     ],
@@ -15702,33 +13740,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Mysterious/Investigations",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Darkling"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Nightmare Machine"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/The Descent",
-      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
-      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master"
-    ],
     "bgmBattle": [
       "BattleMusic/Boss Battle"
     ],
@@ -15868,31 +13879,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Crypt",
-    "bgm": [
-      "KevinMacLeod/Calm/Ashton Manor",
-      "KevinMacLeod/Calm/Constance",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Dreamy/Joey's Formal Waltz - Unscented",
-      "KevinMacLeod/Calm/Healing",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Jazz/Airport Lounge",
-      "KevinMacLeod/Calm/Morning"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Calm/Ashton Manor",
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 2",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Penumbra"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Heavy Heart",
-      "KevinMacLeod/Horror/Ghost Story",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Atmospheric/Lost Time"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -17336,30 +15322,6 @@
     ],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Mountain Emperor",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Action/Rocket Power",
-      "KevinMacLeod/Dramatic/Despair and Triumph",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Dramatic/Industrial Cinematic"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle Metal"
     ],
@@ -17466,15 +15428,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Gloom Horizon"
-    ],
     "bgmBattle": [
       "BattleMusic/Battle of the Creek"
     ],
@@ -17559,15 +15512,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Sad/Unanswered Questions"
-    ],
     "bgmBattle": [
       "Battle7"
     ],
@@ -17652,15 +15596,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Gloom Horizon"
-    ],
     "bgmBattle": [
       "Battle4"
     ],
@@ -17745,15 +15680,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
     "bgmBattle": [
       "Battle2"
     ],
@@ -17838,15 +15764,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Sad/Unanswered Questions",
-      "KevinMacLeod/Atmospheric/Dark Fog"
-    ],
     "bgmBattle": [
       "Battle5"
     ],
@@ -17931,15 +15848,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -18024,15 +15932,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Dark/Gathering Darkness"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -18117,15 +16016,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Dark/Dark Walk"
-    ],
     "bgmBattle": [
       "Battle3"
     ],
@@ -18210,15 +16100,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Dark/Gathering Darkness"
-    ],
     "bgmBattle": [
       "BattleMusic/Exotic Battle"
     ],
@@ -18303,15 +16184,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Dark/Gathering Darkness"
-    ],
     "bgmBattle": [
       "Battle5"
     ],
@@ -18396,15 +16268,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [],
-    "bgmNight": [],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Sad/Decline",
-      "KevinMacLeod/Sad/Hush",
-      "KevinMacLeod/Atmospheric/Long Note One",
-      "KevinMacLeod/Atmospheric/Lost Time",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -18760,30 +16623,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "CaveIce",
-    "bgm": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dreamy/Frost Waltz",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Long Note Three"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Horror/Unseen Horrors"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Ice Demon",
-      "KevinMacLeod/Dark/The Ice Giants",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -19018,31 +16857,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Magic Forest",
-      "KevinMacLeod/Dreamy/Mesmerize",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Mysterious/Circus of Freaks",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Mysterious/Goblin_Tinker_Soldier_Spy",
-      "KevinMacLeod/Atmospheric/Lithium"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Mysterious/Comfortable Mystery 4",
-      "KevinMacLeod/Dark/Darkling",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Horror/Nightmare Machine"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Lithium",
-      "KevinMacLeod/Atmospheric/Wisps of Whorls",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Darkling"
-    ],
     "bgmBattle": [
       "BattleMusic/Fast Fight"
     ],
@@ -19146,31 +16960,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Underdark",
-    "bgm": [
-      "KevinMacLeod/Dreamy/Mesmerize",
-      "KevinMacLeod/Dreamy/Hidden Wonders",
-      "KevinMacLeod/Dreamy/Light Awash",
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Calm/Daybreak",
-      "KevinMacLeod/Dreamy/Crinoline Dreams",
-      "KevinMacLeod/Atmospheric/Long Note Four"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Dreamy/Winter Chimes",
-      "KevinMacLeod/Atmospheric/Penumbra",
-      "KevinMacLeod/Mysterious/Crypto"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Spacial Harvest",
-      "KevinMacLeod/Atmospheric/Frozen Star",
-      "KevinMacLeod/Atmospheric/Long Note Four",
-      "KevinMacLeod/Atmospheric/Long Note Three",
-      "KevinMacLeod/Dark/Lightless Dawn"
-    ],
     "bgmBattle": [
       "BattleMusic/Hitman"
     ],
@@ -20188,30 +17977,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "CaveFlooded",
-    "bgm": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Calm/Aquarium",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Distant Tension",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Horror/Unseen Horrors",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Atmospheric/Deep Haze",
-      "KevinMacLeod/Atmospheric/Dark Fog",
-      "KevinMacLeod/Atmospheric/Night Cave",
-      "KevinMacLeod/Dark/Lightless Dawn",
-      "KevinMacLeod/Atmospheric/Distant Tension"
-    ],
     "bgmBattle": [
       "BattleMusic/Random Battle"
     ],
@@ -20315,30 +18080,6 @@
     "prefabs": [],
     "specialBiomes": [],
     "lowerLayer": "Cave",
-    "bgm": [
-      "KevinMacLeod/Dramatic/Mountain Emperor",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Dramatic/Impact Prelude",
-      "KevinMacLeod/Action/Rocket Power",
-      "KevinMacLeod/Dramatic/Despair and Triumph",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Dramatic/Industrial Cinematic"
-    ],
-    "bgmNight": [
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Dramatic/The Pyre",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
-    "emptyWorldBGM": [
-      "KevinMacLeod/Dark/Crossing the Chasm",
-      "KevinMacLeod/Dark/Gathering Darkness",
-      "KevinMacLeod/Horror/Anguish",
-      "KevinMacLeod/Atmospheric/Aftermath",
-      "KevinMacLeod/Dark/Bent and Broken"
-    ],
     "bgmBattle": [
       "BattleMusic/Boss Battle"
     ],

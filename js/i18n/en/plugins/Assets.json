@@ -86,6 +86,19 @@
   "annualValue": "Annual value",
   "weeksServed": "Weeks served",
   "resignPost": "Resign the post",
-  "resignConfirm": "Press again to resign"
+  "resignConfirm": "Press again to resign",
+  "room": "Room",
+  "roomAt": "{room} at {place}",
+  "stays": "Stays",
+  "perDay": "day",
+  "worldCoordinates": "World coordinates",
+  "timeLeft": "Time left",
+  "daysPaid": "Days paid",
+  "dailyRate": "Daily rate",
+  "fewerDays": "-1 day",
+  "moreDays": "+1 day",
+  "extendStay": "Extend {days}d ({cost})",
+  "stayNotAfforded": "Not enough euro to extend the stay",
+  "stayExtended": "Stay extended by {days}d, {time} left"
  }
 }

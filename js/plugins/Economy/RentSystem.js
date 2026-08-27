@@ -85,6 +85,23 @@
     // Load on boot
     _loadRentI18n();
 
+    // Transient rent feedback: a toast rather than a message box, so paying for
+    // a room does not interrupt the map.
+    function rentToast(key, params, opts) {
+        if (!window.ParchmentToast) return;
+        window.ParchmentToast.show(T(key, params || {}), opts || {});
+    }
+
+    function toastRented(roomName) {
+        rentToast('Rent.toast.rented', { name: roomName || T('Rent.toast.room') }, { severity: 'info', duration: 150 });
+    }
+
+    function toastNoFunds() {
+        SoundManager.playBuzzer();
+        rentToast('Rent.toast.notEnough', null, { severity: 'warning', duration: 150 });
+    }
+
+
     // Initialize rental system
     function initializeRentals() {
         if (!$dataSystem.rentals) {
@@ -174,7 +191,10 @@
         const rec = rooms[key];
         if (!rec) return null;
         const now = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
-        if (rec.until == null || now >= rec.until || now < rec.until - BOOKING_MINUTES) {
+        // A stay paid for by the day runs longer than one night, so the
+        // clock-rollback guard is measured against the length that was booked.
+        const held = rec.minutes || BOOKING_MINUTES;
+        if (rec.until == null || now >= rec.until || now < rec.until - held) {
             delete rooms[key]; // the night is over (or the clock rolled back)
             return null;
         }
@@ -200,17 +220,32 @@
         window.skipLocalization = false;
     }
 
-    function recordBooking(mapId, eventId) {
+    function recordBooking(mapId, eventId, minutes) {
         const rooms = bookingRooms(true);
         if (!rooms) return;
         const now = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
+        const held = minutes || BOOKING_MINUTES;
         rooms[bookingKey(mapId, eventId)] = {
             party: partyBookingId(),
             leader: partyLeaderName(),
-            until: now + BOOKING_MINUTES
+            minutes: held,
+            until: now + held
         };
         // Written through immediately so another savegame of the world sees the
         // room taken without waiting for this one to be saved.
+        flushBookings();
+    }
+
+    // Pushes this party's own booking further out when the stay is paid on for
+    // more days. Another party's booking is never touched.
+    function extendBooking(mapId, eventId, storedKey, extraMinutes) {
+        const rooms = bookingRooms(false);
+        if (!rooms) return;
+        const key = storedKey || bookingKey(mapId, eventId);
+        const rec = rooms[key];
+        if (!rec || rec.party !== partyBookingId()) return;
+        rec.minutes = (rec.minutes || BOOKING_MINUTES) + extraMinutes;
+        rec.until = (rec.until || 0) + extraMinutes;
         flushBookings();
     }
 
@@ -483,16 +518,10 @@
             $gameParty.loseGold(room.price);
             processRental(`${room.mapId}_${room.eventId}`, room.mapId, room.eventId);
             SoundManager.playShop();
-            window.skipLocalization = true;
-            $gameSystem._rentHideBust = true;
-            $gameMessage.add(_ri18n('rented_for_24h'));
-            window.skipLocalization = false;
+            toastRented(room.name);
             this.closeRoomListOverlay();
         } else {
-            window.skipLocalization = true;
-            $gameSystem._rentHideBust = true;
-            $gameMessage.add(_ri18n('not_enough_gold'));
-            window.skipLocalization = false;
+            toastNoFunds();
         }
     };
 
@@ -719,11 +748,9 @@
                     $gameParty.loseGold(price);
                     processRental(eventKey, mapId, eventId);
                     SoundManager.playShop();
+                    toastRented(eventName);
                 } else {
-                    window.skipLocalization = true;
-                    $gameSystem._rentHideBust = true;
-                    $gameMessage.add(_ri18n('not_enough_gold'));
-                    window.skipLocalization = false;
+                    toastNoFunds();
                 }
             } else if (action === 'bash') {
                 bashRoomDoor(mapId, eventId);
@@ -732,6 +759,61 @@
             window.skipLocalization = false;
         });
 
+    }
+
+    //=============================================================================
+    // Where a rented room is
+    //=============================================================================
+    // A room is remembered by its full address, taken the moment it is paid for:
+    // the world square its building stands on (its <Coords> tag, or the square
+    // the party last stood on) and the local tile of the room's own door, so the
+    // rental can be read, and paid on, from anywhere in the world.
+    function roomAddress(mapId, eventId) {
+        const ev = ($gameMap && $gameMap.event) ? $gameMap.event(eventId) : null;
+        const data = ($dataMap && $dataMap.events) ? $dataMap.events[eventId] : null;
+        const x = ev ? ev.x : (data ? data.x : 0);
+        const y = ev ? ev.y : (data ? data.y : 0);
+        const WMT = window.WorldMapTransfer;
+        let loc = { mapId: mapId, x: x, y: y, worldX: 0, worldY: 0 };
+        if (WMT && typeof WMT.locate === 'function') {
+            try { loc = WMT.locate(x, y); } catch (e) { /* keep the plain address */ }
+        }
+        // The settlement the square is called by, which is what a room inside a
+        // procedural inn is named after ("Room at Alba Adriatica"). Asked of the
+        // world square rather than of the interior map, since the house the room
+        // is in has a map name of its own that says nothing about where it is.
+        let place = '';
+        if (WMT && typeof WMT.locationName === 'function') {
+            try {
+                place = WMT.locationName({
+                    mapId: WMT.procMapId, worldX: loc.worldX, worldY: loc.worldY, interior: ''
+                });
+            } catch (e) { place = ''; }
+        }
+        if (!place && WMT && typeof WMT.placeName === 'function') {
+            try { place = WMT.placeName(mapId, { x: loc.worldX, y: loc.worldY }); } catch (e) { place = ''; }
+        }
+        return {
+            mapId: mapId,
+            x: x,
+            y: y,
+            worldX: loc.worldX,
+            worldY: loc.worldY,
+            layer: loc.layer || 0,
+            interior: loc.interior || '',
+            place: place || ''
+        };
+    }
+
+    function roomEventName(eventId) {
+        const data = ($dataMap && $dataMap.events) ? $dataMap.events[eventId] : null;
+        return (data && data.name) ? String(data.name) : '';  // i18n-ignore  event-name read
+    }
+
+    function roomEventPrice(eventId) {
+        const data = ($dataMap && $dataMap.events) ? $dataMap.events[eventId] : null;
+        const m = (data && data.note) ? data.note.match(/<price[:\s]*(\d+)>/i) : null;
+        return m ? parseInt(m[1], 10) : 1000;
     }
 
     // Function to process the rental
@@ -758,6 +840,12 @@
             // is STANDING on, and the rental is given back from wherever they
             // happen to be when it runs out.
             bookingKey: bookingKey(mapId, eventId),
+            // Kept so the stay can be read, and paid on, from the assets menu
+            // with the party nowhere near the room.
+            roomName: roomEventName(eventId),
+            price: roomEventPrice(eventId),
+            place: roomAddress(mapId, eventId),
+            days: 1,
             active: true
         };
 
@@ -918,29 +1006,46 @@
         }
     }
 
+    // How long a stay has left, on the game clock (variable 114). A stay paid on
+    // for further days runs past the one night the room was first taken for, so
+    // the record's own expiry is the answer whenever it has one.
+    function rentalMinutesLeft(rental) {
+        if (!rental) return 0;
+        const currentGameMinutes = $gameVariables.value(114) || 0;
+        if (rental.expirationGameMinutes != null) {
+            return rental.expirationGameMinutes - currentGameMinutes;
+        }
+        const startGameMinutes = getGameStartMinutesForRental(rental.expirationTime);
+        return (24 * 60) - (currentGameMinutes - startGameMinutes);
+    }
+
+    function rentalByExpiration(expirationTime) {
+        initializeRentals();
+        for (const key in $dataSystem.rentals) {
+            const rental = $dataSystem.rentals[key];
+            if (rental && rental.expirationTime === expirationTime) return rental;
+        }
+        return null;
+    }
+
+    function formatMinutesLeft(remainingMinutes) {
+        if (remainingMinutes <= 0) return _ri18n('expired');
+        const days = Math.floor(remainingMinutes / (24 * 60));
+        const hours = Math.floor((remainingMinutes % (24 * 60)) / 60);
+        const mins = remainingMinutes % 60;
+        if (days > 0) return `${days}d ${hours}h`;  // i18n-ignore  duration
+        if (hours > 0) return `${hours}h ${mins}m`;  // i18n-ignore  duration
+        return `${mins}m`;  // i18n-ignore  duration
+    }
+
     // Function to get time remaining for a rental in human-readable format
     // Uses TimeDateSystem's game time variable (114) for consistency
     function getTimeRemaining(expirationTime) {
-        const gameTimeVariableId = 114; // Variable 114 = game time in TimeDateSystem
-        const currentGameMinutes = $gameVariables.value(gameTimeVariableId) || 0;
-        const startGameMinutes = getGameStartMinutesForRental(expirationTime);
-
-        // Calculate remaining rental minutes (24 hours = 1440 minutes)
-        const rentalDurationMinutes = 24 * 60;
-        const elapsedMinutes = currentGameMinutes - startGameMinutes;
-        const remainingMinutes = rentalDurationMinutes - elapsedMinutes;
-
-        if (remainingMinutes <= 0) {
-            return _ri18n('expired');
-        }
-
-        const remainingHours = Math.floor(remainingMinutes / 60);
-        const mins = remainingMinutes % 60;
-
-        if (remainingHours > 0) {
-            return `${remainingHours}h ${mins}m`;
-        }
-        return `${mins}m`;
+        const rental = rentalByExpiration(expirationTime);
+        const remainingMinutes = rental
+            ? rentalMinutesLeft(rental)
+            : (24 * 60) - (($gameVariables.value(114) || 0) - getGameStartMinutesForRental(expirationTime));
+        return formatMinutesLeft(remainingMinutes);
     }
 
     // Store rental start times in real-time to calculate game time elapsed
@@ -1090,6 +1195,73 @@
         bookedBy(mapId, eventId) {
             const rec = foreignBooking(mapId != null ? mapId : ($gameMap ? $gameMap.mapId() : 0), eventId);
             return rec ? rec.leader : null;
+        },
+
+        // --- Stays the party is paying for, wherever they are ---------------
+        // The assets menu lists these and pays on them, so nothing here may ask
+        // the loaded map anything: everything is read off the record written
+        // when the room was taken.
+        listRentals() {
+            initializeRentals();
+            // Read from a menu that may have been left open while the clock ran
+            // on, so a stay that is over is never listed as one that is not.
+            updateRentalStatus();
+            const out = [];
+            for (const key in $dataSystem.rentals) {
+                const rental = $dataSystem.rentals[key];
+                if (!rental || !rental.active) continue;
+                const place = rental.place || {};
+                out.push({
+                    key: key,
+                    roomName: rental.roomName || '',
+                    placeName: place.place || '',
+                    mapId: rental.mapId,
+                    eventId: rental.eventId,
+                    x: place.x != null ? place.x : null,
+                    y: place.y != null ? place.y : null,
+                    worldX: place.worldX != null ? place.worldX : null,
+                    worldY: place.worldY != null ? place.worldY : null,
+                    price: rental.price || 1000,
+                    days: rental.days || 1,
+                    minutesLeft: Math.max(0, rentalMinutesLeft(rental)),
+                    timeLeft: formatMinutesLeft(rentalMinutesLeft(rental)),
+                });
+            }
+            return out;
+        },
+
+        // What another `days` nights on a stay would cost.
+        extensionCost(key, days) {
+            initializeRentals();
+            const rental = $dataSystem.rentals[key];
+            const n = Math.max(1, Math.floor(Number(days) || 0));
+            if (!rental || !rental.active) return 0;
+            return (rental.price || 1000) * n;
+        },
+
+        // Paying a stay on. Done from the ledger, so the party never has to be
+        // anywhere near the room: the door is already open to them, and only the
+        // day it shuts moves.
+        extendRental(key, days) {
+            initializeRentals();
+            const rental = $dataSystem.rentals[key];
+            const n = Math.max(1, Math.floor(Number(days) || 0));
+            if (!rental || !rental.active) return null;
+            const cost = (rental.price || 1000) * n;
+            if (!$gameParty || $gameParty.gold() < cost) return null;
+            $gameParty.loseGold(cost);
+            const minutes = n * 24 * 60;
+            const now = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
+            const from = (rental.expirationGameMinutes != null) ? rental.expirationGameMinutes : now;
+            rental.expirationGameMinutes = from + minutes;
+            rental.expirationTime = (rental.expirationTime || Date.now()) + n * 24 * 60 * 60 * 1000;
+            rental.days = (rental.days || 1) + n;
+            extendBooking(rental.mapId, rental.eventId, rental.bookingKey, minutes);
+            return {
+                cost: cost,
+                days: n,
+                timeLeft: formatMinutesLeft(rentalMinutesLeft(rental)),
+            };
         },
 
         rentForNPC(name, mapId, eventId, purse) {

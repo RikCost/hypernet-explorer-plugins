@@ -81,15 +81,81 @@
     window.WorldGen;
 
   // ===== PERFORMANCE CACHE =====
+  //
+  // The noise cache is the hottest thing in the generator: one 64x64 square asks
+  // for a quarter of a million samples and hits the cache 997 times out of a
+  // thousand, so what the LOOKUP costs is what a square costs to build. It used
+  // to be a Map of Maps of Maps keyed seed -> floorX -> floorY, three hash walks
+  // per sample, and that alone was more than half the time a square took.
+  //
+  // It is one Map per seed now, keyed by the cell packed into a single integer,
+  // with the seed's own table held in a variable between calls (a pass keeps one
+  // seed for thousands of samples in a row). The packing is deliberately kept
+  // inside the range V8 stores as a small integer: a key of 2^31 or more is a
+  // heap number, hashing it costs an allocation, and that one detail is the
+  // whole difference - the same code with a wider stride is no faster than the
+  // three Maps it replaced.
+  //
+  // What may not change is WHICH sample a cell keeps. The value is keyed by the
+  // FLOORED coordinate and computed from the unfloored one, and every caller
+  // scales its coordinates (x * 0.22, x * frequency), so a cell is asked for at
+  // a dozen fractional positions and the first one to arrive is the one the
+  // world is made of. This cache is not an optimisation over noise2D, it IS the
+  // noise function: drop it and every square in the world comes out different.
+  const NOISE_CACHE_LIMIT = 20000;
+  // The widest |fx| or |fy| a packed key may hold. Real coordinates reach a few
+  // thousand; anything past this falls back to a string key, because a collision
+  // here would silently change the shape of the world.
+  const NOISE_SPAN = 16384;
+  const NOISE_STRIDE = NOISE_SPAN * 2;
+
+  let noiseBySeedCache = new Map();  // seed -> Map<packed cell, value>
+  let noiseCacheCount = 0;
+  let noiseSeedHeld = null;          // the seed noiseTableHeld belongs to
+  let noiseTableHeld = null;
+
+  function clearNoiseCache() {
+    noiseBySeedCache = new Map();
+    noiseCacheCount = 0;
+    noiseSeedHeld = null;
+    noiseTableHeld = null;
+  }
+
+  function getCachedNoise(x, y, seed) {
+    let table = noiseSeedHeld === seed ? noiseTableHeld : null;
+    if (!table) {
+      table = noiseBySeedCache.get(seed);
+      if (!table) { table = new Map(); noiseBySeedCache.set(seed, table); }
+      noiseSeedHeld = seed;
+      noiseTableHeld = table;
+    }
+    const fx = Math.floor(x);
+    const fy = Math.floor(y);
+    const key = (fx >= -NOISE_SPAN && fx < NOISE_SPAN && fy >= -NOISE_SPAN && fy < NOISE_SPAN)
+      ? (fx + NOISE_SPAN) * NOISE_STRIDE + (fy + NOISE_SPAN)
+      : fx + "," + fy;
+    let v = table.get(key);
+    if (v === undefined) {
+      if (noiseCacheCount >= NOISE_CACHE_LIMIT) {
+        // Wholesale clear on overflow (cheaper than per-key LRU eviction).
+        noiseBySeedCache = new Map();
+        noiseCacheCount = 0;
+        table = new Map();
+        noiseBySeedCache.set(seed, table);
+        noiseSeedHeld = seed;
+        noiseTableHeld = table;
+      }
+      // The unfloored x/y decide the value, the floored ones decide the cell.
+      v = noise2D(x, y, seed);
+      table.set(key, v);
+      noiseCacheCount++;
+    }
+    return v;
+  }
+
   const Cache = {
     tilesetFeatures: {},
     biomeNameCache: {},
-    // Nested Map keyed seed -> floorX -> floorY -> value. Avoids building a
-    // template-string key per lookup and the collision risk of a packed numeric
-    // key. noise2D is pure, so reordering/eviction never changes results.
-    noiseCache: new Map(),
-    noiseCacheCount: 0,
-    maxNoiseCacheSize: 20000,
 
     getTilesetFeatures(tilesetId) {
       if (!this.tilesetFeatures[tilesetId]) {
@@ -98,36 +164,12 @@
       return this.tilesetFeatures[tilesetId];
     },
 
-    getNoise(x, y, seed) {
-      const fx = Math.floor(x);
-      const fy = Math.floor(y);
-      let bySeed = this.noiseCache.get(seed);
-      if (!bySeed) { bySeed = new Map(); this.noiseCache.set(seed, bySeed); }
-      let byX = bySeed.get(fx);
-      if (!byX) { byX = new Map(); bySeed.set(fx, byX); }
-      let v = byX.get(fy);
-      if (v === undefined) {
-        if (this.noiseCacheCount >= this.maxNoiseCacheSize) {
-          // Wholesale clear on overflow (cheaper than per-key LRU eviction).
-          this.noiseCache.clear();
-          this.noiseCacheCount = 0;
-          bySeed = new Map(); this.noiseCache.set(seed, bySeed);
-          byX = new Map(); bySeed.set(fx, byX);
-        }
-        // Preserve the original behaviour: compute from the unfloored x/y but
-        // key by the floored coordinates.
-        v = noise2D(x, y, seed);
-        byX.set(fy, v);
-        this.noiseCacheCount++;
-      }
-      return v;
-    },
+    getNoise: getCachedNoise,
 
     clear() {
       this.tilesetFeatures = {};
       this.biomeNameCache = {};
-      this.noiseCache.clear();
-      this.noiseCacheCount = 0;
+      clearNoiseCache();
     },
   };
 
@@ -793,12 +835,31 @@
 
   /**
    * Check if a world coordinate has a non-procedural destination.
+   *
    * A WorkSystem/Destinations.json entry can name two different doors onto a
-   * hand-authored map: `coords` (direction/id/x/y/mapCoord, one door per
-   * side of the town's footprint) and a single fixed `entrance`
-   * {id,x,y,direction}. `coords` takes priority when it names this exact
-   * square; any other square inside the town's `reservedTiles` footprint
-   * falls back to `entrance` regardless of the direction crossed.
+   * hand-authored map: `coords` (direction/id/x/y/mapCoord, one door per side
+   * of the town's footprint) and a single fixed `entrance` {id,x,y,direction}.
+   *
+   * WHICH SQUARES BELONG TO THE TOWN is `reservedTiles` plus the squares the
+   * entry names outright: every `coords` mapCoord, and `base`. Those two are
+   * reserved whether or not anyone remembered to list them. Leaving `base` out
+   * is how a town whose reservedTiles were never written - Frozen Station names
+   * an entrance and nothing else - had its own square generated as a procedural
+   * village of the same name, standing right next to the authored map it is
+   * supposed to be.
+   *
+   * A base is only claimed when the entry really has a door: a procedural town
+   * names a base like any other entry, and its base is where its map is
+   * GENERATED, not a way in. A `reservedTiles` footprint keeps the older rule
+   * and is a square the window may not stitch whether there is a door on it or
+   * not, which is what keeps a procedural town whole.
+   *
+   * WHICH DOOR, in order: the `coords` entry for this very square on the side
+   * being crossed, then the entry for that side wherever it stands (a town is
+   * entered by the door on the side you walk in from, whichever of its squares
+   * you walked into), then the fixed `entrance`, then any door at all. Coords
+   * therefore take precedence over the base entrance, which is the whole point
+   * of writing one door per side.
    */
   function getNonProceduralDestination(worldX, worldY, exitDirection) {
     const destinations = window.WorkSystem && window.WorkSystem.Destinations;
@@ -807,34 +868,40 @@
     const directionNames = { 2: "south", 4: "west", 6: "east", 8: "north" };
     const direction = directionNames[exitDirection] || null;
     const mapCoord = worldX + "," + worldY;
+    const doorOf = (c) => ({ mapId: c.id, x: c.x, y: c.y });
 
     for (const location of Object.values(destinations)) {
-      const coords = Array.isArray(location.coords) ? location.coords : null;
-      const onCoords = coords && coords.some((c) => c.mapCoord === mapCoord);
+      const coords = Array.isArray(location.coords)
+        ? location.coords.filter((c) => c && c.id)
+        : [];
+      const entrance = (location.entrance && location.entrance.id) ? location.entrance : null;
+      const hasDoor = coords.length > 0 || !!entrance;
+
+      const onCoords = coords.some((c) => c.mapCoord === mapCoord);
       const onReserved =
         Array.isArray(location.reservedTiles) &&
         location.reservedTiles.includes(mapCoord);
-      if (!onCoords && !onReserved) continue;
+      const onBase = hasDoor && !!location.base &&
+        (location.base.x + "," + location.base.y) === mapCoord;
+      if (!onCoords && !onReserved && !onBase) continue;
 
-      if (onCoords) {
-        const dest = direction && coords.find((c) => c.direction === direction);
-        if (dest) {
-          return {
-            exists: true,
-            destination: { mapId: dest.id, x: dest.x, y: dest.y },
-          };
-        }
-        return { exists: true, destination: null };
-      }
-
-      const entrance = location.entrance;
-      if (entrance && entrance.id) {
+      const here = coords.filter((c) => c.mapCoord === mapCoord);
+      const door =
+        (direction && here.find((c) => c.direction === direction)) ||
+        (direction && coords.find((c) => c.direction === direction)) ||
+        null;
+      if (door) return { exists: true, destination: doorOf(door) };
+      if (entrance) {
         return {
           exists: true,
           destination: { mapId: entrance.id, x: entrance.x, y: entrance.y },
         };
       }
-
+      if (here.length || coords.length) {
+        return { exists: true, destination: doorOf(here[0] || coords[0]) };
+      }
+      // A footprint with no door at all: the square is still the town's, so the
+      // window leaves it alone, but there is nowhere to be sent.
       return { exists: true, destination: null };
     }
 
@@ -1203,6 +1270,20 @@
     return mapData[idx] !== 0;
   }
 
+  // How wide a band at the edge of a square stays clear of scattered
+  // decoration. Only TERRAIN (the `terrain: true` features the ground itself is
+  // made of) is drawn right up to a border. A tree, a rock or a prop on the last
+  // row is an object the neighbouring square knows nothing about, so it reads as
+  // half a thing at the seam of a stitched window and as a lonely stump the
+  // moment the party crosses by the old fade. One tile is enough to hide both,
+  // and a 5%-density scatter passes over it without leaving a visible lane.
+  const FEATURE_EDGE_MARGIN = 1;
+
+  function isFeatureEdge(x, y, width, height) {
+    return x < FEATURE_EDGE_MARGIN || y < FEATURE_EDGE_MARGIN ||
+      x >= width - FEATURE_EDGE_MARGIN || y >= height - FEATURE_EDGE_MARGIN;
+  }
+
   /**
    * Place a multi-tile feature on the map
    * Checks water collision, beach placement, path tiles, occupied tiles, and bounds
@@ -1230,8 +1311,9 @@
         const mapX = startX + gx;
         const mapY = startY + gy;
 
-        // Check bounds
-        if (mapX < 0 || mapX >= width || mapY < 0 || mapY >= height) {
+        // Check bounds, edge band included: no part of a decorative footprint
+        // may touch the border of the square (see FEATURE_EDGE_MARGIN).
+        if (isFeatureEdge(mapX, mapY, width, height)) {
           return false;
         }
 
@@ -1325,6 +1407,7 @@
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (blockedMask && blockedMask[y * width + x]) continue;
+        if (isFeatureEdge(x, y, width, height)) continue;
         const noiseValue = smoothNoise(x * scale, y * scale, seed);
         if (noiseValue > threshold) {
           const baseIdx = calculateIndex(x, y, 0, width, height);
@@ -1410,6 +1493,9 @@
       for (let x = 0; x < width; x++) {
         if (blockedMask && blockedMask[y * width + x]) continue;
         if (rng() < density) {
+          // The border band takes no decoration. Tested AFTER the draw so the
+          // seeded stream stays the one every square was ever built with.
+          if (isFeatureEdge(x, y, width, height)) continue;
           const baseIdx = calculateIndex(x, y, 0, width, height);
           const baseTile = mapData[baseIdx];
 

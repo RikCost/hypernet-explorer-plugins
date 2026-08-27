@@ -495,10 +495,13 @@
   /**
    * Selects the appropriate sprite info for a vehicle config based on the current map.
    * On map 315, uses normal sprites; on other maps, prefers large sprites with fallback.
+   * `driving` says whether the party is at the wheel of it right now, which only
+   * the Starship cares about (see starshipSprite below).
    */
-  function selectVehicleSprite(config) {
+  function selectVehicleSprite(config, driving) {
     if (!config || !config.sprites) return null;
     const isMap315 = $gameMap.mapId() === 315;
+    if (config.type === 'airship') return starshipSprite(isMap315, !!driving);
     return isMap315 ? config.sprites.normal : (config.sprites.large || config.sprites.normal);
   }
 
@@ -527,6 +530,170 @@
     }
     return /<Nature:\s*Magical\s*>/i.test(klass.note || '');
   }
+
+  // ============================================================================
+  // The Starship, as a 2D map draws it
+  // ============================================================================
+  //
+  // The Starship is the one vehicle in the game that is not the size of a
+  // vehicle. It is a hull the party lives inside, generated per world by
+  // GalaxySim_ShipModel, and no 48-pixel tile was ever going to hold it. So the
+  // two kinds of map show two different things:
+  //
+  //   THE WORLD MAP (315) shows the ship itself, shrunk. A tile up there is a
+  //   whole region, so a starship really does fit on one, and it is drawn from
+  //   the actual 3D hull - rendered out to a directional character sheet, one
+  //   row per facing, so it banks the way it is heading instead of wearing a
+  //   stock airship sprite that looks nothing like the ship the player built.
+  //
+  //   EVERY OTHER MAP never draws the ship at all, because there is no drawing
+  //   it: what is on the ground is its SHADOW, and the shadow is the ship. It
+  //   lies across the map wherever the hull is overhead, moored or under way,
+  //   turning with it as it flies (see Sprite_StarshipShadow). Moored, one more
+  //   thing is added: the drawn airship sheet, standing where the party goes up
+  //   and where the vehicle menu is opened from. Take off and it goes - it marks
+  //   a place on the ground, and the ship is no longer standing on it - leaving
+  //   nothing under way but the dark sliding over the fields. Land, and it is
+  //   put back.
+  //
+  //   AND NOT INDOORS AT ALL. A starship is not brought into a house, a cave or
+  //   a dungeon: it cannot be summoned onto an interior map and it cannot be
+  //   flown onto one (see starshipBarredHere).
+
+  // "Draw nothing." A blank sheet name is the engine's own way of saying it, and
+  // it has to be said out loud rather than by declining to answer: the vehicle
+  // keeps the last name it was given until something overwrites it, so a ship
+  // taking off would otherwise fly away still wearing its own mooring mark.
+  const STARSHIP_NO_SPRITE = { name: '', index: 0 };
+
+  // The name the world-map sheet is registered under. NOTHING of that name
+  // exists in img/characters: the sheet is rendered out of the procedural hull
+  // the first time it is asked for and handed to ImageManager under this name,
+  // so every ordinary sprite path (Sprite_Character, the menu portrait) reads it
+  // exactly like a file on disk. The `!$` prefix is what marks it as a
+  // single-character 3x4 sheet.
+  const STARSHIP_SHEET = 'Vehicles/!$Starship3D';  // i18n-ignore  virtual sprite name
+  // One frame of that sheet, in pixels. Two world-map tiles and a bit: a region
+  // up there is a country, and a starship standing over one reads as a starship
+  // rather than as a speck.
+  const STARSHIP_SHEET_FRAME = 112;
+
+  // How far the ship's shadow reaches, in tiles, and how dark it lies. Tuned by
+  // eye against the map it falls on: big enough that the thing overhead reads as
+  // a starship, not so big that the screen simply goes dark. Change the number
+  // and the shadow changes with it; nothing else is measured off it.
+  const STARSHIP_SHADOW_TILES = 30;
+  const STARSHIP_SHADOW_OPACITY = 96;
+  // The silhouette is rendered once at this size and scaled from there.
+  const STARSHIP_SHADOW_PX = 256;
+  // The silhouette is drawn nose-down, so turning it to face the other three
+  // ways is a plain 2D rotation of the same picture (PIXI turns clockwise).
+  const STARSHIP_SHADOW_ROTATION = { 2: 0, 4: Math.PI / 2, 6: -Math.PI / 2, 8: Math.PI };
+
+  function shipModel() {
+    const GS = window.GalaxySim;
+    return (GS && GS.ShipModel) || null;
+  }
+
+  /** Wraps a finished 2D canvas as an engine Bitmap, or null if there is none. */
+  function bitmapFromCanvas(canvas) {
+    if (!canvas || !canvas.width || !canvas.height) return null;
+    const bitmap = new Bitmap(canvas.width, canvas.height);
+    bitmap.context.drawImage(canvas, 0, 0);
+    if (bitmap._baseTexture && bitmap._baseTexture.update) bitmap._baseTexture.update();
+    return bitmap;
+  }
+
+  // Both renders are kept until the player changes the ship's appearance, which
+  // is exactly what ShipModel.revision counts. A failed render caches its own
+  // failure too, so a machine that cannot render one is not asked every frame.
+  let starshipSheetBmp = null;
+  let starshipSheetRev = -1;
+  let starshipShadowBmp = null;
+  let starshipShadowRev = -1;
+
+  function starshipSheetBitmap() {
+    const model = shipModel();
+    if (!model || typeof model.renderSheet !== 'function') return null;
+    if (starshipSheetRev === model.revision) return starshipSheetBmp;
+    starshipSheetRev = model.revision;
+    let canvas = null;
+    try {
+      canvas = model.renderSheet(null, STARSHIP_SHEET_FRAME, STARSHIP_SHEET_FRAME);
+    } catch (e) {
+      canvas = null;
+    }
+    if (canvas && starshipSheetBmp &&
+        starshipSheetBmp.width === canvas.width && starshipSheetBmp.height === canvas.height) {
+      // Re-roll the hull from the appearance editor and the sheet's NAME does
+      // not change, so a sprite already holding this bitmap would never think to
+      // ask for it again. Repaint the one it is holding instead of handing out a
+      // second one, and the ship on the map changes under the player's eyes.
+      starshipSheetBmp.clear();
+      starshipSheetBmp.context.drawImage(canvas, 0, 0);
+      if (starshipSheetBmp._baseTexture && starshipSheetBmp._baseTexture.update) {
+        starshipSheetBmp._baseTexture.update();
+      }
+    } else {
+      starshipSheetBmp = bitmapFromCanvas(canvas);
+    }
+    // A new hull is a new outline, and the collision footprint is measured off
+    // the pixels of the sheet under this name (see forgetFootprintSheet).
+    forgetFootprintSheet(STARSHIP_SHEET);
+    return starshipSheetBmp;
+  }
+
+  function starshipShadowBitmap() {
+    const model = shipModel();
+    if (!model || typeof model.renderTopShadow !== 'function') return null;
+    if (starshipShadowRev === model.revision) return starshipShadowBmp;
+    starshipShadowRev = model.revision;
+    starshipShadowBmp = null;
+    try {
+      starshipShadowBmp = bitmapFromCanvas(model.renderTopShadow(null, STARSHIP_SHADOW_PX));
+    } catch (e) {
+      starshipShadowBmp = null;
+    }
+    return starshipShadowBmp;
+  }
+
+  /**
+   * Which sheet the Starship wears here, or the blank one, which is what a ship
+   * under way off the world map wears: only its shadow is on the ground. See the
+   * section comment above; the one fallback is a machine with no working 3D,
+   * which gets the drawn airship sprite on the world map rather than nothing.
+   */
+  function starshipSprite(isMap315, driving) {
+    const sprites = VehicleConfig.AIRSHIP.sprites;
+    if (isMap315) {
+      return starshipSheetBitmap() ? { name: STARSHIP_SHEET, index: 0 } : sprites.normal;
+    }
+    return driving ? STARSHIP_NO_SPRITE : sprites.normal;
+  }
+
+  /**
+   * True where a starship has no business being: indoors. A house, a shop, a
+   * cave, a dungeon, a sewer, another vehicle's cabin - mapCache.isInterior is
+   * the game's one answer to that question, and it covers the procedural
+   * interiors that share map 636's id as well as `<Interior>`-noted maps.
+   */
+  function starshipBarredHere() {
+    if (typeof $gameMap === 'undefined' || !$gameMap) return false;
+    return mapCache.isInterior($gameMap.mapId());
+  }
+
+  // The generated sheet is served from memory. Falling back to the drawn airship
+  // sheet keeps the shape of the answer right (both are `!$` 3x4 sheets) on a
+  // machine where the render did not come off.
+  const _ImageManager_loadCharacter_VS = ImageManager.loadCharacter;
+  ImageManager.loadCharacter = function (filename) {
+    if (filename === STARSHIP_SHEET) {
+      const bitmap = starshipSheetBitmap();
+      if (bitmap) return bitmap;
+      return _ImageManager_loadCharacter_VS.call(this, VehicleConfig.AIRSHIP.sprites.normal.name);
+    }
+    return _ImageManager_loadCharacter_VS.call(this, filename);
+  };
 
   /**
    * Shows a localized (or skip-localized) message via the game message system.
@@ -1648,6 +1815,12 @@
     }
 
     summon(vehicleType, subType) {
+      // A starship is not called down into a house, a cave or a dungeon. Checked
+      // here rather than at each caller so a plugin command cannot go round it.
+      if (vehicleType === 'airship' && starshipBarredHere()) {
+        showLocalizedMessage(T('VehicleSystem.noStarshipIndoors'));
+        return;
+      }
       if (vehicleType === 'boat') {
         $gameSystem._boatType = subType || 'car';
       }
@@ -2005,8 +2178,12 @@
 
       // Indoors (a house, a dungeon, a cave) every vehicle simply goes wherever
       // the player could walk: the outdoor terrain-tag whitelist below describes
-      // open country and would refuse every corridor tile.
+      // open country and would refuse every corridor tile. Every vehicle but
+      // the Starship, which is not brought indoors at all - it answers false to
+      // every interior tile, so one somehow left standing in a cave cannot be
+      // flown a step further into it.
       if (mapCache.isInterior($gameMap.mapId())) {
+        if (this.isAirship()) return false;
         if (isVehicleBlockedTile(x2, y2, $gameMap.mapId())) return false;
         return $gameMap.isPassable(x2, y2, this.reverseDir(d));
       }
@@ -2309,6 +2486,18 @@
       }
     }
     return { fw, fh, cols, cells };
+  }
+
+  /**
+   * Drops everything measured off one sheet. A sheet on disk never changes under
+   * the cache, but a GENERATED one does: the Starship's world-map sheet is
+   * re-rendered whenever the player re-rolls the hull, under the same name.
+   */
+  function forgetFootprintSheet(name) {
+    footprintSheets.delete(name);
+    for (const key of Array.from(footprintRects.keys())) {
+      if (key.startsWith(name + '|')) footprintRects.delete(key);
+    }
   }
 
   /**
@@ -2737,6 +2926,12 @@
    * its tile before mounting.
    */
   function startDrivingVehicle(vehicle) {
+    // Indoors the Starship is not flown, whatever left it standing there: no
+    // house, cave or dungeon has the headroom (see starshipBarredHere).
+    if (vehicle.isAirship() && starshipBarredHere()) {
+      showLocalizedMessage(T('VehicleSystem.noStarshipIndoors'));
+      return;
+    }
     rememberVehicleUsed(vehicleManager.getConfig(vehicle));
     if (vehicle.isAirship()) {
       const airship = $gameMap.airship();
@@ -4218,10 +4413,13 @@
       return ownsVehicleConfig(configByVehicleKey(key));
     },
 
-    // False only when there is no map loaded to summon onto. Every vehicle may
-    // be summoned indoors and out.
+    // False when there is no map loaded to summon onto, and - for the Starship
+    // alone - when that map is an interior. Every other vehicle may be summoned
+    // indoors and out.
     canSpawnHere(key) {
-      return typeof $gameMap !== 'undefined' && !!$gameMap;
+      if (typeof $gameMap === 'undefined' || !$gameMap) return false;
+      if (key === 'airship' && starshipBarredHere()) return false;
+      return true;
     },
 
     // Summons the vehicle the party last drove to a tile beside them: what a
@@ -4356,7 +4554,7 @@
         if (ridden) {
           return ridden.name;
         }
-        const spriteInfo = selectVehicleSprite(config);
+        const spriteInfo = selectVehicleSprite(config, true);
         if (spriteInfo) {
           return spriteInfo.name;
         }
@@ -4374,7 +4572,7 @@
         if (ridden) {
           return ridden.index || 0;
         }
-        const spriteInfo = selectVehicleSprite(config);
+        const spriteInfo = selectVehicleSprite(config, true);
         if (spriteInfo) {
           return spriteInfo.index;
         }
@@ -4638,6 +4836,101 @@
     return !!character && !character.isMoving() && character.pos(vehicle.x, vehicle.y);
   }
 
+  // ---------------------------------------------------------------------------
+  // The shadow of the moored Starship
+  // ---------------------------------------------------------------------------
+  //
+  // On any map that is not the world map, the only honest way to draw a ship
+  // that would cover half the region is not to draw it: what the party sees on
+  // the ground is the dark it stands in. The silhouette is the hull itself seen
+  // from overhead (GalaxySim_ShipModel.renderTopShadow), turned to whichever way
+  // the ship is pointing and blown up to STARSHIP_SHADOW_TILES tiles across,
+  // which is the whole point - it is meant to dwarf everything around it.
+  //
+  // It is drawn UNDER WAY as well as moored, and under way it is the only thing
+  // drawn: flying the ship over a wood is a shadow crossing the wood. The ground
+  // position comes from the engine's own shadowX/shadowY, which take the hull's
+  // altitude back off, so what darkens is the field the ship is over rather than
+  // the point in the air it is at.
+
+  /**
+   * The Starship, when its hull is over this map - moored on it or being flown
+   * across it - and this map is one that shows a shadow at all: not the world
+   * map, where the ship itself is drawn, and never indoors, where it cannot be.
+   */
+  function starshipShadowSource() {
+    if (typeof $gameMap === 'undefined' || !$gameMap) return null;
+    if ($gameMap.mapId() === 315) return null;
+    if (starshipBarredHere()) return null;
+    const vehicle = vehicleManager.getVehicle('airship');
+    if (!vehicle) return null;
+    if (vehicle._mapId !== $gameMap.mapId()) return null;
+    // Parked underneath another vehicle: the plugin hides it, shadow and all.
+    if (!vehicle._driving && vehicle._vsStacked) return null;
+    return vehicle;
+  }
+
+  function Sprite_StarshipShadow() {
+    this.initialize.apply(this, arguments);
+  }
+  Sprite_StarshipShadow.prototype = Object.create(Sprite.prototype);
+  Sprite_StarshipShadow.prototype.constructor = Sprite_StarshipShadow;
+
+  Sprite_StarshipShadow.prototype.initialize = function () {
+    Sprite.prototype.initialize.call(this);
+    this.anchor.x = 0.5;
+    this.anchor.y = 0.5;
+    this.opacity = STARSHIP_SHADOW_OPACITY;
+    this.visible = false;
+    // Over the ground and under everything standing on it: a shadow is cast on
+    // the floor, and the party walks through it rather than behind it.
+    this.z = 1;
+  };
+
+  Sprite_StarshipShadow.prototype.update = function () {
+    Sprite.prototype.update.call(this);
+    const vehicle = starshipShadowSource();
+    if (!vehicle) {
+      this.visible = false;
+      return;
+    }
+    const bitmap = starshipShadowBitmap();
+    if (!bitmap) {
+      this.visible = false;
+      return;
+    }
+    if (this.bitmap !== bitmap) this.bitmap = bitmap;
+    const tw = $gameMap.tileWidth();
+    const th = $gameMap.tileHeight();
+    const scale = (STARSHIP_SHADOW_TILES * tw) / bitmap.width;
+    this.scale.x = scale;
+    this.scale.y = scale;
+    this.rotation = STARSHIP_SHADOW_ROTATION[vehicle.direction()] || 0;
+    // Centred on the tile the hull is over, not on its bottom edge: what is
+    // overhead is overhead, it does not stand on the floor. shadowX/shadowY are
+    // the engine's own "where the ground under this airship is", so a ship
+    // climbing away does not drag its shadow up the screen with it.
+    this.x = vehicle.shadowX ? vehicle.shadowX() : vehicle.screenX();
+    this.y = (vehicle.shadowY ? vehicle.shadowY() : vehicle.screenY()) - th / 2;
+    this.visible = true;
+  };
+
+  // The engine keeps a shadow of its own for the airship: the stock Shadow1
+  // blob, one dark ellipse the size of a barrel, drawn under the hull and faded
+  // in with altitude. The ship no longer has anything to do with that picture -
+  // off the world map its shadow IS its hull seen from overhead, and on the
+  // world map it is drawn as itself - so the blob is put out. The original is
+  // still called first, so anything else that leans on the sprite's position
+  // keeps getting it; only the pixels are taken away.
+  const _Spriteset_Map_updateShadow_VS = Spriteset_Map.prototype.updateShadow;
+  Spriteset_Map.prototype.updateShadow = function () {
+    _Spriteset_Map_updateShadow_VS.call(this);
+    if (this._shadowSprite) {
+      this._shadowSprite.opacity = 0;
+      this._shadowSprite.visible = false;
+    }
+  };
+
   const _Spriteset_Map_createCharacters_VS = Spriteset_Map.prototype.createCharacters;
   Spriteset_Map.prototype.createCharacters = function () {
     _Spriteset_Map_createCharacters_VS.call(this);
@@ -4656,6 +4949,10 @@
       this._vehicleRiderSprites.push(sprite);
       this._tilemap.addChild(sprite);
     }
+    // The shadow of the moored Starship. One sprite, made whether or not there
+    // is a ship on this map: it asks that question again every frame.
+    this._starshipShadowSprite = new Sprite_StarshipShadow();
+    this._tilemap.addChild(this._starshipShadowSprite);
   };
 
   const _Spriteset_Map_update_VS = Spriteset_Map.prototype.update;

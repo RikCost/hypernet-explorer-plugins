@@ -438,6 +438,27 @@
     // than in the individual entry paths so every kind of entrance gets one --
     // single houses, tower blocks and everything that reaches this function.
     if ($gameMap.mapId() === PROC_MAP_ID) {
+      // Map 636 holds a WINDOW of up to nine world squares laid side by side, so
+      // the door's map coordinate says nothing on its own: the window built for
+      // the walk back may be a different shape and lay the very same square
+      // somewhere else on the map. Every coordinate that outlives the trip is
+      // square-local, which is also the only thing a transfer onto 636
+      // understands (see THE STITCHED WINDOW in WorldMapReturn).
+      //
+      // Without this, leaving a shop put the party down in a neighbouring
+      // square, which on an ocean is the same water with the prefab that held
+      // the shop nowhere in it: the building looked deleted, and the party had
+      // simply been dropped a square away from it.
+      const S = window.ProcStitch;
+      if (S && typeof S.localToParty === "function") {
+        const local = S.localToParty(returnPoint.eventX, returnPoint.eventY);
+        returnPoint.eventX = local.x;
+        returnPoint.eventY = local.y;
+      }
+      // The square those coordinates belong to. savedBiomeData describes the
+      // same one; this is what answers when there is no snapshot to restore.
+      returnPoint.worldX = $gameVariables.value(43);
+      returnPoint.worldY = $gameVariables.value(44);
       const wmr = window.WorldMapReturn;
       if (wmr && typeof wmr.snapshotProcSurface === "function") {
         returnPoint.savedBiomeData = wmr.snapshotProcSurface();
@@ -618,7 +639,18 @@
       return `${currentMultiBuilding.entranceKey}_f${currentMultiBuilding.currentFloorIndex}`;
     }
     const rp = houseReturnPoints[currentHouseSessionId];
-    if (rp) return `${rp.mapId}_${rp.eventX}_${rp.eventY}_f0`;
+    // On map 636 the door's coordinates are square-local (see
+    // saveHouseReturnPoint), so the square is part of its address: local (30,40)
+    // is a different door on every square of the world. It also makes the deed
+    // hold still, which it never did while the address was a map coordinate:
+    // that moved with the shape of the stitched window, so a floor bought on one
+    // visit could be somebody else's on the next.
+    if (rp) {
+      const where = (rp.worldX != null)
+        ? `${rp.mapId}:${rp.worldX},${rp.worldY}`
+        : `${rp.mapId}`;
+      return `${where}_${rp.eventX}_${rp.eventY}_f0`;
+    }
     return null;
   }
 
@@ -831,6 +863,17 @@
 
   // Pending house-entry context while the night lockpick minigame is running.
   let _pendingNightHouse = null;
+
+  // A shoulder is put to the door once. The bash is a d20 that takes seconds to
+  // land on screen, and the player keeps their legs while it does, so without
+  // this the same door can be asked again (and rolled again, and broken into
+  // twice) before the first throw has answered.
+  let _doorAttemptBusy = false;
+
+  function isDoorAttemptBusy() {
+    return _doorAttemptBusy ||
+      !!(window.Dice3D && typeof window.Dice3D.isRolling === 'function' && window.Dice3D.isRolling());
+  }
 
   // ── Forced-door memory (world-shared) ───────────────────────────────────────
   // However a locked door was got through (bashed in, lockpicked or opened with
@@ -1391,6 +1434,9 @@
   //                            shut with no animation. Any of the three that
   //                            works marks the door open for a day, world-wide.
   function attemptDoorEntry(useFacing, doEntry, poolName, forceOpen) {
+    // A door already being worked on answers to nothing else until the die it
+    // asked for has landed.
+    if (isDoorAttemptBusy()) return;
     // Everything below this point is deferred (the door swing, and the lockpick
     // choice on top of it), so a tile-feature entrance has to carry its pinned
     // tile into the continuation: by the time the transfer runs the party has
@@ -1507,22 +1553,28 @@
   // Bashing the door always counts as breaking and entering, except in an
   // empty world: there is no owner to break in on and nobody to file it.
   async function bashDoor(useFacing, doEntry) {
+    if (_doorAttemptBusy) return;
     const leader = (typeof $gameParty !== 'undefined' && $gameParty.leader) ? $gameParty.leader() : null;
     const strMod = leader ? (leader.strMod ?? Math.floor(((leader.atk || 10) - 10) / 2)) : 0;
     let success = false;
 
-    if (window.Dice3D) {
-      const rollRes = await window.Dice3D.rollD20({
-        actionName: "Door Bash",
-        statName: "STR (Athletics)",
-        modifier: strMod,
-        dc: 12,
-        force3D: true
-      });
-      success = rollRes.success;
-    } else {
-      const roll = Math.floor(Math.random() * 20) + 1;
-      success = (roll === 20) || (roll !== 1 && roll + strMod >= 12);
+    _doorAttemptBusy = true;
+    try {
+      if (window.Dice3D) {
+        const rollRes = await window.Dice3D.rollD20({
+          actionName: "Door Bash",
+          statName: "STR (Athletics)",
+          modifier: strMod,
+          dc: 12,
+          force3D: true
+        });
+        success = rollRes.success;
+      } else {
+        const roll = Math.floor(Math.random() * 20) + 1;
+        success = (roll === 20) || (roll !== 1 && roll + strMod >= 12);
+      }
+    } finally {
+      _doorAttemptBusy = false;
     }
 
     if (!success) {
@@ -1796,14 +1848,19 @@
           // Nothing left describing the square. Re-assert the world coordinates
           // at least, so whatever rebuilds it does so where the party actually
           // stands and a later border crossing cannot fling them across the map.
-          const originX = (savedBiome && savedBiome.originX) || $gameVariables.value(43);
-          const originY = (savedBiome && savedBiome.originY) || $gameVariables.value(44);
+          const originX = returnPoint.worldX != null ? returnPoint.worldX
+            : ((savedBiome && savedBiome.originX) || $gameVariables.value(43));
+          const originY = returnPoint.worldY != null ? returnPoint.worldY
+            : ((savedBiome && savedBiome.originY) || $gameVariables.value(44));
           $gameVariables.setValue(43, originX);
           $gameVariables.setValue(44, originY);
           $gameSystem._procGenData.originX = originX;
           $gameSystem._procGenData.originY = originY;
         }
       }
+      // Square-local on the procedural map, plain map coordinates anywhere else:
+      // ProcStitch's performTransfer hook is the one place that knows which is
+      // which, and it converts on the way in.
       $gamePlayer.reserveTransfer(returnPoint.mapId, returnPoint.eventX, returnPoint.eventY + 1, 2, 0);
       delete houseReturnPoints[currentHouseSessionId];
       currentHouseSessionId = null;
@@ -1952,6 +2009,7 @@
     _elevatorTransit = null;
     _callerEventId = 0;
     _pendingNightHouse = null;
+    _doorAttemptBusy = false;
     _lastDoorNightState = null;
     setCurrentBuilding(null);
   };

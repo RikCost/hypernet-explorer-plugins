@@ -688,9 +688,6 @@ body {
 #party-hud .phud-fuel .phud-fill {
     background: linear-gradient(to right, #3d1466, #a05ce0);
 }
-#party-hud .phud-card.phud-vehicle .phud-bar-lbl {
-    color: #d8b4ff;
-}
 #party-hud .phud-bar-low .phud-fill {
     background: linear-gradient(to right, #7a4a10, #e0a63a);
 }

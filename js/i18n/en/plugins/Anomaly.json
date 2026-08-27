@@ -34,7 +34,7 @@
   "reputationLost": "{faction} hears about it too: -{amount} standing.",
   "failed": "It does not come off. The party walks back with what they came with.",
   "minigame": "It comes down to the game itself.",
-  "date": "She is not asking, exactly.",
+  "eris": "{who} stays on her mind: +{amount} with Eris.",
   "crime": "Filed against you: {crime}.",
   "augment": "Fitted to {who}: {name}.",
   "needs": "Everyone comes back the better for it: {list}.",

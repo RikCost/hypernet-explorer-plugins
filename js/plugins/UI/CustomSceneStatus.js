@@ -1578,8 +1578,10 @@
             paramsGridHTML += `
                 <div class="stat-medallion">
                     <div class="stat-medallion-lbl">${p.name}</div>
-                    <div class="stat-medallion-val">${displayValHTML}</div>
-                    <div class="stat-medallion-mod">${mod}</div>
+                    <div class="stat-medallion-row">
+                        <div class="stat-medallion-val">${displayValHTML}</div>
+                        <div class="stat-medallion-mod">${mod}</div>
+                    </div>
                 </div>
             `;
         });

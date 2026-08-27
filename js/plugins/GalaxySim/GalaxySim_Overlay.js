@@ -1347,7 +1347,17 @@
       this.els.anomWhere.textContent = where;
       this.els.anomTitle.textContent = view.title || "";
       const paras = String(view.text || "").split(/\n+/).filter((p) => p.trim());
-      const rewards = (view.rewards || []).map((r) => `<div>${esc(r)}</div>`).join("");
+      // A payout line carries the IconSet cell it is drawn with (see
+      // ProceduralAdventureSystem.js): the star map prints the icon inline the
+      // way the toasts do, and falls back to the words alone for a bare line.
+      const PA = window.ProceduralAdventure;
+      const lineText = (r) => (PA && PA.lineText) ? PA.lineText(r) : String(r || "");
+      const lineIcon = (r) => (PA && PA.lineIcon) ? PA.lineIcon(r) : 0;
+      const cell = (n) => (n > 0 && window.ParchmentToast && window.ParchmentToast.icon)
+        ? window.ParchmentToast.icon(n) : "";
+      const rewards = (view.rewards || [])
+        .filter((r) => lineText(r))
+        .map((r) => `<div>${cell(lineIcon(r))}${esc(lineText(r))}</div>`).join("");
       this.els.anomBody.innerHTML =
         paras.map((p) => `<p>${esc(p)}</p>`).join("") +
         (rewards ? `<div class="gx-anom-rewards">${rewards}</div>` : "");
@@ -1376,7 +1386,6 @@
       // team's busts, and whoever is on the other side of it. The companion
       // tabs above it hand the die to another member; a switch re-renders so
       // every check chip shows the new hands' odds.
-      const PA = window.ProceduralAdventure;
       if (PA && PA.Stage && PA.Stage.attachTo) {
         PA.Stage.attachTo(this.els.anomBody, () => {
           const A = window.GalaxySim && window.GalaxySim.Anomaly;

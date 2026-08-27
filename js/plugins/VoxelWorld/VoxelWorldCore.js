@@ -92,6 +92,26 @@
         return t;
     }
 
+    // What stands in for a texture that is not there. The turf: it is the one
+    // surface the world can be certain of, it is the right sort of thing (a
+    // ground tile rather than a sign or a face), and a block wearing grass
+    // reads as an unfinished block rather than as a hole in the world.
+    //
+    // A MISSING FILE MUST NEVER TAKE THE WORLD DOWN. There are getting on for a
+    // hundred block tiles now and they are built by a tool, so one of them
+    // being absent - a half-run build, a mod that ships its own palette, a
+    // deploy that dropped a file - has to be survivable. It is: the loader
+    // notices, says so once, and hands the waiters the turf instead.
+    const TEX_FALLBACK = VOXEL_TEX_DIR + 'grass.png';
+    const _texMissing = new Set();
+
+    function _flushWaiters(t) {
+        const q = t && t._vwWaiting;
+        if (!q) return;
+        t._vwWaiting = null;
+        for (const fn of q) { try { fn(t); } catch (e) { /* one waiter's problem */ } }
+    }
+
     function loadTex(name, repeat, onReady) {
         if (typeof THREE.TextureLoader === 'undefined') return null;
         // The waiting list hangs off the texture itself: this build of three has
@@ -103,12 +123,24 @@
         };
         let t = _texCache.get(name);
         if (t) { waitFor(t); return t; }
-        t = new THREE.TextureLoader().load('img/textures/' + name, (tex) => {
-            const q = tex && tex._vwWaiting;
-            if (!q) return;
-            tex._vwWaiting = null;
-            for (const fn of q) { try { fn(tex); } catch (e) { /* one waiter's problem */ } }
-        });
+        const stand_in = () => {
+            if (!_texMissing.has(name)) {
+                _texMissing.add(name);
+                console.warn('[VoxelWorld] no texture at img/textures/' + name +
+                             ' - standing the turf in for it');
+            }
+            // The fallback itself missing is the end of the line: leave the
+            // material on its own base colour rather than looping.
+            if (name === TEX_FALLBACK) { if (t) t._vwWaiting = null; return; }
+            loadTex(TEX_FALLBACK, null, (ftex) => {
+                if (!t || !ftex || !ftex.image) return;
+                t.image = ftex.image;
+                t.needsUpdate = true;
+                _flushWaiters(t);
+            });
+        };
+        t = new THREE.TextureLoader().load('img/textures/' + name,
+            (tex) => _flushWaiters(tex), undefined, stand_in);
         t.wrapS = t.wrapT = THREE.RepeatWrapping;
         t.anisotropy = _maxAniso;
         if (repeat) t.repeat.set(repeat, repeat);
@@ -118,6 +150,207 @@
         waitFor(t);
         return t;
     }
+
+    // =========================================================================
+    // Blocks
+    // =========================================================================
+    // The one palette everything built in this world is made of. A block is a
+    // name, a picture and a SPAN - how many world units one repeat of that
+    // picture covers - and nothing else: no geometry, no rules, no behaviour.
+    // Four world units are a metre, so a span of 48 is a twelve metre repeat.
+    //
+    // It exists because a settlement used to be built out of flat colours and
+    // canvases painted at runtime. Every facade in the world was a 2D context
+    // filled pixel by pixel the first time anybody drove into a town - six
+    // tones, two canvases each, twelve texture uploads in the frame the town
+    // streamed in - and a bench, a fence, a haystack and a parked car were four
+    // untextured boxes in four different shades. Now they are blocks: the
+    // pictures are built once by tools/build_voxel_blocks.js and shipped, the
+    // materials are made once per session and shared by every square in the
+    // world, and a town costs the loader a handful of PNGs it probably already
+    // has.
+    //
+    // SHARED, and deliberately so. The material for `brick` is the same object
+    // for every building on every square, which is what lets the house mesher
+    // weld a whole town into one mesh per block instead of one per building.
+    // They outlive a scene and are only let go when the world itself comes
+    // down (disposeBlockMaterials).
+    const BLOCKS = {};
+    function defBlock(key, span, opts) {
+        BLOCKS[key] = Object.assign({
+            key, span,
+            tex: key + '.png',
+            color: 0xffffff,
+            // A facade wears its lit windows as an emissive sheet of the same
+            // name with _lit on the end.
+            lit: false,
+            transparent: false,
+            opacity: 1
+        }, opts || {});
+        return BLOCKS[key];
+    }
+
+    // --- what a wall is made of ---------------------------------------------
+    // A facade is measured in BAYS rather than in metres: one window bay across
+    // and one storey up, four of each to a sheet. 24 units to a bay and 11 to a
+    // storey (see SETTLE.storeyH), so the sheet spans 96 by 44.
+    const FACADE_SPAN_U = 96;
+    const FACADE_SPAN_V = 44;
+    for (const k of ['brick', 'plaster', 'concrete', 'sandstone', 'stone', 'timber']) {
+        defBlock('facade_' + k, FACADE_SPAN_U, { spanV: FACADE_SPAN_V, lit: true });
+    }
+    // --- masonry -------------------------------------------------------------
+    defBlock('brick', 48);
+    defBlock('brick_dark', 48);
+    defBlock('brick_pale', 48);
+    defBlock('cobble', 40);
+    defBlock('stone', 64);
+    defBlock('granite', 56);
+    defBlock('basalt', 56);
+    defBlock('marble', 72);
+    defBlock('sandstone', 64);
+    defBlock('limestone', 56);
+    defBlock('concrete', 64);
+    defBlock('plaster', 56);
+    defBlock('stucco', 56);
+    defBlock('adobe', 48);
+    defBlock('obsidian', 40);
+    // --- timber --------------------------------------------------------------
+    defBlock('plank', 40);
+    defBlock('timber', 40);
+    defBlock('log', 32);
+    defBlock('deadwood', 40);
+    defBlock('floor', 44);
+    // --- roofing -------------------------------------------------------------
+    defBlock('roof_tile', 26);
+    defBlock('roof_slate', 26);
+    defBlock('roof_shop', 26);
+    defBlock('roof_metal', 34);
+    defBlock('thatch', 30);
+    // --- glazing and metal ---------------------------------------------------
+    defBlock('glass', 22, { transparent: true, opacity: 0.62 });
+    defBlock('glass_dark', 22, { transparent: true, opacity: 0.72 });
+    defBlock('glass_stain', 22, { transparent: true, opacity: 0.78 });
+    defBlock('metal', 36);
+    defBlock('iron', 36);
+    defBlock('copper', 36);
+    defBlock('rust', 40);
+    // --- ground and cover -----------------------------------------------------
+    defBlock('asphalt', 96);
+    defBlock('pavement', 40);
+    defBlock('dirt', 72);
+    defBlock('soil', 64);
+    defBlock('gravel', 44);
+    defBlock('sand', 64);
+    defBlock('snow', 64);
+    defBlock('clay', 56);
+    defBlock('mud', 56);
+    defBlock('salt', 48);
+    defBlock('ash', 48);
+    defBlock('rock', 56);
+    defBlock('grass', 56);
+    defBlock('leaf', 26);
+    defBlock('crop', 20);
+    defBlock('hay', 24);
+    defBlock('carpet', 24);
+    defBlock('water', 64, { transparent: true, opacity: 0.85 });
+    defBlock('ice', 48, { transparent: true, opacity: 0.9 });
+    defBlock('mark', 24);
+    defBlock('pole', 12);
+    defBlock('awning', 20);
+    defBlock('paint', 24);
+    // --- hot ------------------------------------------------------------------
+    defBlock('lava', 40, { lit: false, glow: 0.9 });
+    defBlock('magma', 40, { glow: 0.6 });
+    defBlock('glowstone', 40, { glow: 1 });
+    defBlock('crystal', 36, { glow: 0.35 });
+
+    // One material per block, made on first use and then shared by the whole
+    // world. `tint` leans a block toward a colour without needing a texture of
+    // its own - a red awning and a blue one are the same picture.
+    const _blockMats = new Map();
+    // `tint` leans a block toward a colour without needing a picture of its own
+    // (a red awning and a blue one are one tile). `rep` is how many times that
+    // picture repeats across the SHAPE it is drawn on, for the things that are
+    // scaled unit boxes with no UVs worth the name - a road five hundred units
+    // long, a pavement, a field. Anything welded with real UVs (a wall, a roof:
+    // see House.Mesher) leaves it alone and measures the repeat itself.
+    function blockMaterial(key, tint, rep) {
+        const def = BLOCKS[key];
+        // A block nobody declared is the turf, the same as a block whose
+        // picture is missing (see TEX_FALLBACK). Never a second lookup that
+        // could miss as well.
+        if (!def) return BLOCKS.grass ? blockMaterial('grass', tint, rep) : null;
+        const ck = key + (tint ? '|' + tint : '') + (rep && rep !== 1 ? '#' + rep : '');
+        let m = _blockMats.get(ck);
+        if (m) return m;
+        if (typeof THREE === 'undefined' || !THREE.MeshLambertMaterial) return null;
+        const o = { color: tint || def.color };
+        if (def.transparent) { o.transparent = true; o.opacity = def.opacity; }
+        if (def.glow) { o.emissive = new THREE.Color(0xffffff); o.emissiveIntensity = def.glow; }
+        m = new THREE.MeshLambertMaterial(o);
+        // A repeat of its own means a texture of its own: the loader's are
+        // SHARED, and winding one of them up to eight would tile the ground of
+        // the whole world eight times over as well. A clone shares the image
+        // and nothing else, so it costs no memory worth the name.
+        const skin = (tex) => {
+            if (!rep || rep === 1 || !tex.clone) return tex;
+            const t = tex.clone();
+            t.repeat.set(rep, rep);
+            t.needsUpdate = true;
+            t.__vwClone = true;
+            return t;
+        };
+        // The picture lands when it lands: a material built around a texture
+        // whose image has not arrived samples an empty one and draws black.
+        loadVoxelTex(def.tex, 1, (tex) => {
+            m.map = skin(tex);
+            if (def.glow) m.emissiveMap = m.map;
+            m.needsUpdate = true;
+        });
+        if (def.lit) {
+            loadVoxelTex(def.key + '_lit.png', 1, (tex) => {
+                m.emissiveMap = skin(tex);
+                m.emissive = new THREE.Color(0xffffff);
+                m.emissiveIntensity = 0.8;
+                m.needsUpdate = true;
+            });
+        }
+        // A short integer of its own, so a batch can key its buckets on a
+        // number rather than concatenating a UUID per instance.
+        m.__vwBlock = key;      // which block it is, tint and all set aside
+        m.__vwId = _blockMats.size + 1;
+        _blockMats.set(ck, m);
+        return m;
+    }
+
+    // How far one repeat of a block's picture reaches, across and up. Handed to
+    // the house mesher, which writes real UVs and therefore has to be told.
+    function blockSpan(key) {
+        const def = BLOCKS[key] || BLOCKS.concrete;
+        return { su: def.span, sv: def.spanV || def.span };
+    }
+
+    function disposeBlockMaterials() {
+        for (const m of _blockMats.values()) {
+            if (!m) continue;
+            // A cloned texture belongs to this material alone; the shared ones
+            // stay on the loader's cache for the next world.
+            for (const slot of ['map', 'emissiveMap']) {
+                const t = m[slot];
+                if (t && t.__vwClone && t.dispose) t.dispose();
+            }
+            if (m.dispose) m.dispose();
+        }
+        _blockMats.clear();
+    }
+
+    const Blocks = {
+        table: BLOCKS, def: defBlock, material: blockMaterial, span: blockSpan,
+        dispose: disposeBlockMaterials,
+        has: (k) => !!BLOCKS[k],
+        keys: () => Object.keys(BLOCKS)
+    };
 
     // =========================================================================
     // Perlin Noise (self-contained, seeded)
@@ -260,10 +493,18 @@
     // Road dimensions (world units, FIXED - not tile-scaled). Sized to the 1x
     // vehicles (the camper is ~42 wide), so the road stays a believable ribbon
     // across the vast tiles instead of a runway as wide as a city block.
-    const ROAD_LANE_W      = 60;                       // one carriageway lane
-    const ROAD_GAP         = 30;                        // centre gap between directions
+    // A road out here is the DUAL CARRIAGEWAY the 2D generator lays down
+    // (ProceduralMapRoadGenerator: two 7-tile roads with a 3-tile median, each
+    // with a broken line down its own middle). So: two carriageways, a median
+    // between them, and each carriageway is TWO LANES with the paint down the
+    // middle of it. Traffic keeps to one of those lanes rather than straddling
+    // the line, and the carriageway a car takes is decided by which way it is
+    // going.
+    const ROAD_LANE_W      = 60;                        // one carriageway (both its lanes)
+    const ROAD_GAP         = 30;                        // median between the two carriageways
     const ROAD_TOTAL_W     = ROAD_LANE_W * 2 + ROAD_GAP; // full road width (~150)
-    const ROAD_LANE_OFF    = ROAD_GAP * 0.5 + ROAD_LANE_W * 0.5; // lane-marking / traffic lane offset
+    const ROAD_LANE_OFF    = ROAD_GAP * 0.5 + ROAD_LANE_W * 0.5; // centre of a carriageway: its own broken line
+    const ROAD_HALF_LANE   = ROAD_LANE_W * 0.25;        // from that line to the middle of either lane
     // The asphalt is laid on the same blended height the camper drives at, so a
     // road tile's own ground is dropped by this much: a flat slab used to be cut
     // through by its terrain wherever the tile blended toward a mountain or a
@@ -378,7 +619,12 @@
     const FOOT_CROUCH_MULT  = 0.45;   // and crouch to move this much slower
     const FOOT_EYE_CROUCH   = 4;      // eye height crouched (1 m)
     const FOOT_BODY_R       = 4;      // how wide the walker is, for walls (1 m)
-    const WALL_JUMP_MAX     = 3;      // wall kicks allowed before touching ground again
+    // Walls, on foot. There is no cap on the kicks: as long as a wall is
+    // there to push off, another press pushes off it, so a tall face can be
+    // climbed a kick at a time. Sprint held on a wall runs it instead.
+    const WALL_STICK_R      = 3;      // reach past the body that still counts as on a wall
+    const WALL_RUN_CLIMB    = 30;     // how fast a wall run carries you up the face
+    const WALL_RUN_TIME     = 2.2;    // seconds of run in a wall, given back by a kick or the ground
     const RECOIL_KICK       = 78;     // shove a <RecoilJump> weapon gives its firer
     const FOOT_GRAVITY      = 230;    // downward accel (snappier arc than the old floaty jump)
     const FOOT_JUMP_VEL     = 62;     // initial jump velocity
@@ -432,7 +678,19 @@
         grass: 'grass', dirt: 'dirt', rock: 'stone', sand: 'sand', snow: 'snow',
         asphalt: 'concrete', mark: 'concrete', gravel: 'gravel', ore: 'stone',
         clay: 'dirt', ice: 'ice', ash: 'gravel', bedrock: 'stone', mud: 'mud',
-        salt: 'gravel'
+        salt: 'gravel',
+        // The blocks. Everything that is worked stone sounds like stone,
+        // everything sawn sounds like wood, and a seam sounds like the rock it
+        // is set in.
+        granite: 'stone', basalt: 'stone', marble: 'stone', sandstone: 'stone',
+        limestone: 'stone', obsidian: 'stone', lava: 'stone', magma: 'stone',
+        crystal: 'stone', glowstone: 'stone', brick: 'concrete', cobble: 'stone',
+        concrete: 'concrete', plaster: 'concrete', plank: 'wood', timber: 'wood',
+        thatch: 'grass', glass: 'concrete', iron: 'metal', copper: 'metal',
+        ore_iron: 'stone', ore_coal: 'stone', ore_silica: 'stone',
+        ore_bone: 'stone', ore_titanium: 'stone', ore_sulphur: 'stone',
+        ore_crystal: 'stone', ore_varlenia: 'stone', ore_arcane: 'stone',
+        ore_ethereal: 'stone', ore_quantum: 'stone', ore_meteor: 'stone'
     };
 
     // The fallback banks, for a world where the material table never loaded.
@@ -462,10 +720,13 @@
     // notification about what just happened has to be readable over the menu it
     // happened in.
     const MENU_Z            = 10020;
+    // (The item favourites bar and the "use it on whom?" card it opens are NOT
+    // on this list: they stand down entirely while this world is up, because
+    // the world has a quick bar of its own in the same place along the bottom
+    // of the screen. That bar is built at WORLD_UI_Z to begin with and needs no
+    // lifting - see VoxelWorldHUD and ItemSystemHotbar's mapBarAllowed.)
     const WORLD_UI_IDS = [
-        'html-toast-stack',            // Core/ParchmentToast.js
-        'html-item-hotbar-overlay',    // ItemSystem/ItemSystemHotbar.js
-        'hotbar-target-picker'         // the same bar's "use it on whom?" card
+        'html-toast-stack'             // Core/ParchmentToast.js
     ];
     // Water. A walker wades until the bottom drops away from under them, and
     // swims from there: on the surface with their head out, or under it, where
@@ -829,8 +1090,22 @@
     const TRAFFIC_MAX       = 12;
     const TRAFFIC_RING_MIN  = 3;      // tiles: nearest spawn ring around the camper
     const TRAFFIC_RING_MAX  = 9;      // tiles: farthest spawn / recycle ring
-    const TRAFFIC_COLORS    = [0xb23b3b, 0x2f6fb0, 0xe0c24a, 0xdedede, 0x2f2f33, 0x3a8f5a, 0xc98a3a,
-                               0x1d1f24, 0x8f9aa6, 0x6d3f8c, 0x1f7f86, 0xf0f2f5];
+    // The vehicles that drive it, one walk sheet each - the same art the 2D map
+    // drives (RoadCarAI.js), so a car met on a country road out here and a car
+    // met on the 2D map are the same car. Lengths and widths are the real ones,
+    // in metres: the card is scaled until the drawn art measures the length, and
+    // the width is what the camper's bumper is answered by.
+    const TRAFFIC_VEHICLES  = [
+        { key: 'car1',    sheet: 'Vehicles/!$Car_large',  lengthM: 4.4, widthM: 1.8 },   // i18n-ignore  sprite asset path
+        { key: 'car2',    sheet: 'Vehicles/!$Car2_large', lengthM: 4.5, widthM: 1.8 },   // i18n-ignore  sprite asset path
+        { key: 'car3',    sheet: 'Vehicles/!$Car3_large', lengthM: 4.2, widthM: 1.8 },   // i18n-ignore  sprite asset path
+        { key: 'car4',    sheet: 'Vehicles/!$Car4_large', lengthM: 4.7, widthM: 1.9 },   // i18n-ignore  sprite asset path
+        { key: 'car5',    sheet: 'Vehicles/!$Car5_large', lengthM: 4.3, widthM: 1.8 },   // i18n-ignore  sprite asset path
+        { key: 'car6',    sheet: 'Vehicles/!$Car6_large', lengthM: 4.6, widthM: 1.9 },   // i18n-ignore  sprite asset path
+        { key: 'car7',    sheet: 'Vehicles/!$Car7_large', lengthM: 4.4, widthM: 1.8 },   // i18n-ignore  sprite asset path
+        { key: 'camper',  sheet: 'Vehicles/!$RV_large',   lengthM: 6.4, widthM: 2.2, heavy: true },  // i18n-ignore  sprite asset path
+        { key: 'tractor', sheet: 'Vehicles/!$Tractor',    lengthM: 4.6, widthM: 2.1, heavy: true }   // i18n-ignore  sprite asset path
+    ];
     // World units per metre, derived from the camper - the scene's 1x reference
     // vehicle. CamperModel scales Camper.glb to 26 units long over a 9-unit wheel
     // track, i.e. a 6.4 m x 2.2 m van, which puts one metre at ~4 world units.
@@ -1427,23 +1702,29 @@
                 ctx.drawImage(img, lay.colBase * fw, lay.rowBase * fh, fw * 3, fh * 4,
                               0, 0, fw * 3, fh * 4);
                 const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
-                let top = -1, bot = -1;
+                let top = -1, bot = -1, lft = -1, rgt = -1;
                 for (let y = 0; y < cv.height; y++) {
                     const row = y % fh;                    // the cell's own row
-                    let any = false;
                     for (let x = 0; x < cv.width; x += 1) {
-                        if (d[(y * cv.width + x) * 4 + 3] > 8) { any = true; break; }
+                        if (d[(y * cv.width + x) * 4 + 3] <= 8) continue;
+                        if (top < 0 || row < top) top = row;
+                        if (row > bot) bot = row;
+                        // ...and the same across, per cell: a vehicle is cut to
+                        // its LENGTH rather than its height (see
+                        // VehicleBillboard), so the width of the drawn art
+                        // inside its cell has to be measured as well.
+                        const col = x % fw;
+                        if (lft < 0 || col < lft) lft = col;
+                        if (col > rgt) rgt = col;
                     }
-                    if (!any) continue;
-                    if (top < 0 || row < top) top = row;
-                    if (row > bot) bot = row;
                 }
                 if (top >= 0 && bot > top) {
                     const fill = (bot - top + 1) / fh;
                     // Half a pixel past the last opaque row: the foot is the
                     // bottom of that pixel, not the middle of it.
                     const foot = (bot + 1) / fh;
-                    if (fill > 0.15) out = { fill, foot };
+                    const wide = rgt > lft ? (rgt - lft + 1) / fw : 1;
+                    if (fill > 0.15) out = { fill, foot, wide };
                 }
             }
         } catch (e) { out = null; }   // a sheet we are not allowed to read back
@@ -1497,6 +1778,7 @@
             this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(this.h * 0.66, this.h), this.mat);
             this.mesh.frustumCulled = false;
             this.mesh.visible = false;      // nothing shows a blank card
+            this._wantVisible = true;       // ...and nothing shows one put away
             // The card, and where the feet are on it. Both are re-worked from
             // the art itself the moment it lands (see update); until then the
             // card IS the figure, which is what it always used to be.
@@ -1504,8 +1786,22 @@
             this.foot  = 1;
         }
 
+        // `y` is the GROUND under the figure, not the middle of the card. It is
+        // kept, because the card is re-cut the moment the art lands and the
+        // same ground then has to answer for a card of a different height.
         setPosition(x, y, z) {
+            this._gx = x; this._gy = y; this._gz = z;
             this.mesh.position.set(x, y + this.cardH * (this.foot - 0.5), z);
+        }
+
+        // Put the card away, or bring it back. A card is never shown before its
+        // art has landed, so this is remembered rather than obeyed on the spot:
+        // a pooled figure taken out of frame and dealt out again (the traffic
+        // does exactly that) would otherwise stay invisible for ever, its one
+        // sizing pass long since spent.
+        setVisible(v) {
+            this._wantVisible = !!v;
+            this.mesh.visible = !!v && this._sized;
         }
 
         setDaylight(df) {
@@ -1524,23 +1820,29 @@
                 const fw = this.base.image.width / this.cols;
                 const fh = this.base.image.height / this.rows;
                 if (fh > 0) {
-                    // Cut the card so the FIGURE is this.h tall, not the frame
-                    // it is drawn in: the art fills about two thirds of its cell
-                    // and cutting to the cell is what left everybody in this
-                    // world knee-high to the party and hovering off the ground.
                     const fig = characterFigureBox(this.sheet, this.index);
-                    this.cardH = fig ? this.h / fig.fill : this.h;
-                    this.foot  = fig ? fig.foot : 1;
-                    const w = this.cardH * (fw / fh);
+                    this.foot = fig ? fig.foot : 1;
+                    const cut = this._cut(fw, fh, fig);
+                    this.cardH = cut.h;
                     this.mesh.geometry.dispose();
-                    this.mesh.geometry = new THREE.PlaneGeometry(w, this.cardH);
-                    // Whoever placed it did so against the old card.
-                    const p = this.mesh.position;
-                    this.mesh.position.y = (p.y - this.h * 0.5) + this.cardH * (this.foot - 0.5);
+                    this.mesh.geometry = new THREE.PlaneGeometry(cut.w, cut.h);
+                    // Whoever placed it did so against the old card, so it is
+                    // put back on the same ground rather than nudged from where
+                    // the old one happened to sit.
+                    if (this._gy !== undefined) this.setPosition(this._gx, this._gy, this._gz);
                 }
-                this.mesh.visible = true;
+                this.mesh.visible = this._wantVisible;
             }
             this.faceCamera(camX, camZ, camYaw);
+        }
+
+        // How big the card is, given the frame it is cut from and the measured
+        // art inside it. A FIGURE is cut by height: the art fills about two
+        // thirds of its cell, and cutting to the cell is what left everybody in
+        // this world knee-high to the party and hovering off the ground.
+        _cut(fw, fh, fig) {
+            const h = fig ? this.h / fig.fill : this.h;
+            return { w: h * (fw / fh), h };
         }
 
         // Turn to an eye, and show the side of the figure that eye can see.
@@ -1567,15 +1869,43 @@
             if (this.tex) this.tex.dispose();
         }
     }
+
+    // =========================================================================
+    // Vehicle sprite billboards
+    // =========================================================================
+    // A vehicle on the road out here is the SAME art the 2D map drives: one of
+    // the walk sheets under img/characters/Vehicles, stood up as a card that
+    // turns to the lens, with the row picked from where the eye stands relative
+    // to the way the vehicle is POINTING - exactly as a person is drawn. So the
+    // car met on a country road and the car met on the 2D map are one car.
+    //
+    // Cut by LENGTH, not by height. A vehicle sheet's cell is as wide as the
+    // vehicle is long, so scaling the cell until the drawn art measures the
+    // vehicle's real length puts every frame at its right size at once: the
+    // head-on frame reads narrow because it is DRAWN narrow inside that same
+    // cell, not because the card was cut differently for it.
+    class VehicleBillboard extends CharacterBillboard {
+        // `length` is the vehicle's real length in world units.
+        constructor(sheet, length) {
+            super(sheet, 0, length);
+            this.moving = false;   // nothing in a vehicle sheet is a walk cycle
+        }
+
+        _cut(fw, fh, fig) {
+            const w = fig && fig.wide ? this.h / fig.wide : this.h;
+            return { w, h: w * (fh / fw) };
+        }
+    }
     // Handed to the rest of the suite.
     Object.assign(VW, {
         AIR_GRAVITY, BODY_BOUNCE_MAX, BODY_PITCH_MAX, BODY_ROLL_MAX,
         BOOST_ACCEL_MULT, BOOST_FUEL_MULT, BOOST_RELEASE_DECAY, BRAKE_DECEL,
         CAMPER_BOUNDS, CAMPER_MAX_FUEL, CRITICAL_PARTS, CRUISE_KMH,
-        ALONGSIDE_MAX, CharacterBillboard, DOOR_AUTO_OPEN_RANGE, DRAG_K, DRIVER_SEAT,
+        ALONGSIDE_MAX, CharacterBillboard, VehicleBillboard, DOOR_AUTO_OPEN_RANGE, DRAG_K, DRIVER_SEAT,
         RIDER_SEATS, RIDE_ALONGSIDE,
         CAVE_SKY, ENGINE_ACCEL, FOG_CAVE, FOG_DAY, FOG_FREE, FOG_UNDERWATER, FOOT_BODY_R,
         loadVoxelTex, VOXEL_TEX_SIZE,
+        Blocks, blockMaterial, blockSpan, disposeBlockMaterials,
         VEHICLE_STEP_UP,
         FOOT_CABIN_WALK, FOOT_CROUCH_MULT, FOOT_EYE, FOOT_EYE_CROUCH, FOOT_GRAVITY,
         FOOT_JUMP_VEL, FOOT_SPRINT_MULT, FOOT_VAN_HALF_LEN, FOOT_VAN_RADIUS,
@@ -1591,20 +1921,21 @@
         LAUNCH_GRADE, LAUNCH_KMH, LIMINAL_ACCEL_SEC, LIMINAL_BOOST_FUEL_MULT,
         LIMINAL_BUILD_BUDGET, LIMINAL_FUEL_PER_SEC, LIMINAL_TERRAIN_RADIUS,
         LIMINAL_TOP_KMH, LOOT_RANGE, MAX_KMH, MAX_STEER_LOCK, MOUNTAIN_MAX_H,
-        NATURAL_TOP, OVERDRIVE_DECAY, OVERDRIVE_KMHPS, PERSON_H, PLANT_CROPS,
+        NATURAL_TOP, OVERDRIVE_DECAY, OVERDRIVE_KMHPS, PERSON_H, PLANT_CROPS, TRAFFIC_VEHICLES,
         PLANT_POOL, RECOIL_KICK, REVERSE_ACCEL, REVERSE_MAX_KMH, ROAD_GAP,
-        ROAD_LANE_OFF, ROAD_LANE_W, ROAD_LINKS, ROAD_MARK_LIFT, ROAD_OPPOSITE,
+        ROAD_HALF_LANE, ROAD_LANE_OFF, ROAD_LANE_W, ROAD_LINKS, ROAD_MARK_LIFT, ROAD_OPPOSITE,
         ROAD_SINK, ROAD_STEP, ROAD_TOTAL_W, ROCK_ASH, ROCK_POOL, SECONDARY_PARTS,
         SHIFT_TIME, SKY_KEYFRAMES, SLOPE_ACCEL, SNOW_LINE, SOLID_PROPS,
         PROP_RADIUS, PROP_MIN_R, PROP_SMASH_KMH,
-        STEER_FALLOFF, STEP_SOUNDS, SURFACES, TALK_RANGE, TRAFFIC_COLORS,
+        STEER_FALLOFF, STEP_SOUNDS, SURFACES, TALK_RANGE,
         TRAFFIC_CRASH_KMH,
         VOXEL_STEP_MATERIAL,
         TRAFFIC_MAX, TRAFFIC_RING_MAX, TRAFFIC_RING_MIN, TREE_POOLS, UNITS_PER_M,
         GRAVITY_MAX, GRAVITY_MIN, gravityScale, setGravityScale, VoxelWorldState,
         OMEGA_HEIGHT, OMEGA_PROXY_D, OMEGA_SIGHT, OMEGA_SPAN, OMEGA_TILE,
         SHIP_ATMOSPHERE_Y, VEHICLE_DRIVE, VIEW_FAR,
-        WALK_LANTERN_INTENSITY, WALL_JUMP_MAX, WARP_START_KMH, WATER_LEVEL_Y,
+        WALK_LANTERN_INTENSITY, WALL_RUN_CLIMB, WALL_RUN_TIME, WALL_STICK_R,
+        WARP_START_KMH, WATER_LEVEL_Y,
         isRiverTile, riverCoordTable, riverFlowsTo, riverLinksAt,
         WHEELBASE, WORLD_MAP_ID, WORLD_SCALE, WORLD_TILES, WORLD_TILE_SIZE, skyFogColor,
         ZOOM_MAX, _Biomes, _BiomesMap, _BiomesMapIndex, _ROCK_COLOR, _SNOW_COLOR,

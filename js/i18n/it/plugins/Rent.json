@@ -4,5 +4,10 @@
   "someoneElse": "un altro gruppo",
   "ui": {
     "rooms": "Stanze"
+  },
+  "toast": {
+    "rented": "{name} affittata per 24h!",
+    "notEnough": "Euro insufficienti!",
+    "room": "Stanza"
   }
 }
