@@ -1,5 +1,7 @@
 0.4.0a
 
+- the control legend shows only on map 1414 outside every zone, loses the back row, lights menu on opening it, adds r to wait and t to stop travelling on the world map, and the broom card drops the starship sprite
+- the preset class dossiers drop the turn maths and the mp costs: plain prose that says what each skill does and what every state it inflicts means
 - the battle log no longer prints the raw \c[ on a critical line, every line of an action shares one indent, the left rule is gone, the killing blow reads its total over the dc and puts what it took on a new line
 - an aim command before wrestle: pick a monster and a body part off a paged list with a hit chance moved by enemy def, part health and how vital it is, the row reads aim: bodypart, a failed roll hits nothing, each party member aims on their own, the aim slides to the weakest part when the named one is destroyed and is dropped when the monster dies, and the aimed or wrestled part glows yellow on the 3d model
 - the minimap cursor no longer snaps between world squares: on the stitched procedural maps it moves gradually toward the coordinate the party is walking into

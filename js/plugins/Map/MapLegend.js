@@ -26,7 +26,11 @@
  *    notice must keep the brackets around the same name.
  * 2. The control rows, while the tutorial legend is still being learnt. Each
  *    row lights the first time the player exercises that control, on any
- *    device, and the block retires itself once every row has lit.
+ *    device, and the block retires itself once every row has lit. They are
+ *    only ever pinned up on the tutorial's own map (1414), and only while the
+ *    party stands outside every zone: a notice takes the whole sheet, and the
+ *    rows come back the moment the party walks out of the zone again. The
+ *    world map (315) carries three rows of its own on the same terms.
  *
  * ---------------------------------------------------------------------------
  * Folding it away
@@ -159,30 +163,36 @@
   // keyboard and gamepad presses onto the same symbol); once every row has
   // lit, the block closes itself and is never shown again for this save.
 
+  // The rows are the tutorial ground's own teaching, so they are only ever
+  // pinned up on the map the tutorial hands the party (1414). Anywhere else
+  // the sheet is its notices alone, whether or not the block has been learnt.
+  const TUTORIAL_LEGEND_MAP_ID = 1414;
+
   const TUTORIAL_CONTROLS = [
     { id: "up", labelKey: "MapLegend.controls.up", key: "↑" },
     { id: "down", labelKey: "MapLegend.controls.down", key: "↓" },
     { id: "left", labelKey: "MapLegend.controls.left", key: "←" },
     { id: "right", labelKey: "MapLegend.controls.right", key: "→" },
     { id: "ok", labelKey: "MapLegend.controls.action", key: "Z / Enter", mouseKey: "MapLegend.controls.leftClick", pad: "A" },
-    { id: "cancel", labelKey: "MapLegend.controls.back", key: "X / Esc", mouseKey: "MapLegend.controls.rightClick", pad: "B" },
     { id: "shift", labelKey: "MapLegend.controls.run", keyKey: "MapLegend.controls.holdShift", pad: "X" },
     { id: "menu", labelKey: "MapLegend.controls.menu", key: "Esc", pad: "Y" },
     { id: "mapSheet", labelKey: "MapLegend.controls.openMap", key: "M" },
     { id: "hotbar", labelKey: "MapLegend.controls.hotbarCycle", key: "Tab", pad: "L1 / R1" },
   ];
 
-  // The world map (315) answers to two controls no other map has: T / Select
-  // stops the journey and walks the party into whatever stands on the square
-  // they are on (WorldMapReturn's wmrToggle), and the triggers pull the camera
-  // in and out (MousePan's zoom, which is confined to that one sheet). They are
-  // listed under the core rows while the party is out there, and they keep
-  // their own "already used once" record, so the legend can finish on the world
-  // map long after the walking rows were learnt indoors.
+  // The world map (315) answers to three controls the tutorial ground never
+  // teaches: T / Select stops the journey and walks the party into whatever
+  // stands on the square they are on (WorldMapReturn's wmrToggle), R opens the
+  // wait sheet (CustomMainMenuLayout's sleep_menu), and the triggers pull the
+  // camera in and out (MousePan's zoom, which is confined to that one sheet).
+  // They keep their own "already used once" record, so the legend can finish on
+  // the world map long after the walking rows were learnt indoors, and once all
+  // three have been used they are gone for good.
   const WORLD_MAP_LEGEND_MAP_ID = 315;
 
   const WORLD_MAP_CONTROLS = [
-    { id: "visitPlace", labelKey: "MapLegend.controls.visitPlace", key: "T", pad: "Select" },
+    { id: "visitPlace", labelKey: "MapLegend.controls.stopTravel", key: "T", pad: "Select" },
+    { id: "wait", labelKey: "MapLegend.controls.wait", key: "R" },
     { id: "worldZoom", labelKey: "MapLegend.controls.zoom", key: "+ / -", pad: "L2 / R2" },
   ];
 
@@ -323,8 +333,10 @@
   }
 
   function coreRowsVisible() {
-    return !!($gameSystem && $gameSystem._tutorialControlsLegendActive &&
-      !$gameSystem._tutorialControlsLegendSeen);
+    if (!$gameSystem || !$gameMap) return false;
+    if (!$gameSystem._tutorialControlsLegendActive) return false;
+    if ($gameSystem._tutorialControlsLegendSeen) return false;
+    return $gameMap.mapId() === TUTORIAL_LEGEND_MAP_ID;
   }
 
   // The world map rows stand on their own: standing on map 315 is enough to
@@ -710,11 +722,13 @@
       if (Input.isTriggered("left")) markLit("left");
       if (Input.isTriggered("right")) markLit("right");
       if (Input.isTriggered("ok") || TouchInput.isTriggered()) markLit("ok");
-      if (Input.isTriggered("escape") || TouchInput.isCancelled()) {
-        markLit("cancel");
-        markLit("menu");
-      }
-      if (Input.isTriggered("menu")) markLit("menu");
+      // Esc reaches the pause menu through Scene_Map.callMenu, which pushes the
+      // menu scene on the very frame it is pressed: by the time the sheet is
+      // updated the scene is already changing and the press is gone. So the row
+      // is lit from the call itself (see below) rather than from the key, and
+      // these two only cover a pad or a rebind that opened nothing.
+      if (Input.isTriggered("escape") || Input.isTriggered("menu") ||
+        TouchInput.isCancelled()) markLit("menu");
       if (Input.isPressed("shift")) markLit("shift");
       // The map sheet (WorldMap.js, M) and the item bar's L1/R1 step
       // (ItemSystemHotbar.js, pageup/pagedown) are read under their own
@@ -725,6 +739,12 @@
 
     if (worldRowsVisible()) {
       if (Input.isTriggered("wmrToggle")) markLit("visitPlace");
+      // R is CustomMainMenuLayout's sleep_menu hotkey; the wait sheet it opens
+      // is a popup rather than a scene, so the press is still readable here.
+      if (Input.isTriggered("letter_r") ||
+        (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._sleepMenuOpen)) {
+        markLit("wait");
+      }
       if (zoomControlUsed()) markLit("worldZoom");
     } else {
       lastLegendZoom = null;
@@ -760,10 +780,13 @@
     readFoldKey();
     const notice = resolveNotice();
     const folded = isFolded();
+    // The rows are what the sheet says when it has nothing else to say: a zone
+    // notice takes the paper for as long as the party stands in it, and the
+    // rows come back the moment they step outside it again.
     // Folded there is nothing to show but the title, so a fold with no notice
     // under it takes the sheet off the screen rather than leaving an empty
     // strip with a chip on it.
-    const rows = folded ? [] : visibleRows();
+    const rows = (folded || notice) ? [] : visibleRows();
     if (!notice && !rows.length) {
       sheet.hide();
       return;
@@ -777,6 +800,16 @@
   Scene_Map.prototype.start = function () {
     patchFoldHotkey();
     _Scene_Map_start.call(this);
+  };
+
+  // The Menu row is lit by the menu actually opening rather than by the key
+  // that opened it: Esc, the pad's Y, a right click and CustomMainMenuLayout's
+  // own hotkey table all end up here, and none of them are still readable on
+  // the frame the sheet is next updated.
+  const _Scene_Map_callMenu = Scene_Map.prototype.callMenu;
+  Scene_Map.prototype.callMenu = function () {
+    if (coreRowsVisible()) markLit("menu");
+    _Scene_Map_callMenu.call(this);
   };
 
   const _Scene_Map_update = Scene_Map.prototype.update;
@@ -823,6 +856,7 @@
     NOTICE_VARIABLE_ID,
     TOOLTIP_PRIORITY_FRAMES,
     WORLD_MAP_LEGEND_MAP_ID,
+    TUTORIAL_LEGEND_MAP_ID,
     TUTORIAL_CONTROLS,
     WORLD_MAP_CONTROLS,
     AREAS,

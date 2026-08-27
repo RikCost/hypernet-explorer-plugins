@@ -1819,14 +1819,17 @@
   // the Car have one; the rest are owned by holding their item). `itemId` is
   // VehicleSystem's summonItemId: the item that proves the party owns it.
   // `sprite` is the walking sheet the vehicle is drawn from on the map, so the
-  // card on the board shows the thing itself (VehicleSystem's own sprites).
+  // card on the board shows the thing itself. It must be the very sheet
+  // VehicleSystem parks (its config's sprites.normal): the broom used to name
+  // !$Broom, which is a byte copy of the airship sheet, so the card for it
+  // showed the starship.
   const TUTORIAL_VEHICLES = {
     vehicle_car: { key: "car", type: "boat", boatType: "car", switchId: 64, itemId: 164, sprite: "Vehicles/!$Car" },
     vehicle_camper: { key: "camper", type: "ship", switchId: 51, itemId: 111, sprite: "Vehicles/!$RV" },
     vehicle_boat: { key: "boat", type: "boat", boatType: "boat", switchId: 0, itemId: 167, park: TUTORIAL_BOAT_PARK, sprite: "Vehicles/!$Boat" },
     vehicle_bike: { key: "bike", type: "boat", boatType: "bike", switchId: 0, itemId: 131, sprite: "Vehicles/!$Bike" },
     vehicle_starship: { key: "airship", type: "airship", switchId: 0, itemId: 166, sprite: "Vehicles/!$Airship" },
-    vehicle_broom: { key: "broom", type: "boat", boatType: "broom", switchId: 0, itemId: 168, sprite: "Vehicles/!$Broom" },
+    vehicle_broom: { key: "broom", type: "boat", boatType: "broom", switchId: 0, itemId: 168, sprite: "Vehicles/!$BroomStick" },
   };
 
   /**

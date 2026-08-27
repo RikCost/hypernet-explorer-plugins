@@ -8,15 +8,14 @@
     "left": "Muovi a sinistra",
     "right": "Muovi a destra",
     "action": "Azione",
-    "back": "Indietro",
+    "stopTravel": "Ferma il viaggio",
+    "wait": "Aspetta",
     "run": "Corri",
     "menu": "Menu",
     "leftClick": "Click sinistro",
-    "rightClick": "Click destro",
     "holdShift": "Tieni premuto Shift",
     "openMap": "Apri la mappa",
     "hotbarCycle": "Cambia oggetto della barra",
-    "visitPlace": "Visita questo luogo",
     "zoom": "Ingrandisci e rimpicciolisci"
   },
   "areas": {

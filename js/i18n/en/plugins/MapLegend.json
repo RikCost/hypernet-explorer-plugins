@@ -8,15 +8,14 @@
     "left": "Move Left",
     "right": "Move Right",
     "action": "Action",
-    "back": "Back",
+    "stopTravel": "Stop travelling",
+    "wait": "Wait",
     "run": "Run",
     "menu": "Menu",
     "leftClick": "Left Click",
-    "rightClick": "Right Click",
     "holdShift": "Hold Shift",
     "openMap": "Open the map",
     "hotbarCycle": "Change hotbar item",
-    "visitPlace": "Visit this place",
     "zoom": "Zoom in and out"
   },
   "areas": {
