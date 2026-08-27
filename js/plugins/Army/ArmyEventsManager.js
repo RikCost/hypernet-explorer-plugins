@@ -191,13 +191,18 @@ Game_AIArmy.prototype._generateFactionArmy = function () {
   const faction = mainFactions[Math.floor(Math.random() * mainFactions.length)];
   this._factionId = faction.id;
 
-  // Get region IDs for countries belonging to this faction
-  if (window.WorldGen && window.WorldGen.Countries) {
-    const factionName = faction.name;
-    this._validRegions = window.WorldGen.Countries
-      .filter(country => country.faction === factionName && country.id > 0)
-      .map(country => country.id);
-  }
+  // Where this army patrols: what its power HOLDS TODAY.
+  //
+  // This used to read `country.faction` straight off the static WorldGen table,
+  // which is the map as it stood before the century ran. HistorySimulator then
+  // spent 1900-2001 moving nations between powers - coups, wars, occupations,
+  // the Americas becoming Canadafrica across 1992-94, Northpoint declaring
+  // itself in Greenland in December 2001 - and no army ever heard about any of
+  // it, so a hyperpower that lost a territory in 1994 still had troops walking
+  // it. The faction table's own lookup already prefers the simulation's map
+  // (countriesOfHyperpower reads HistoryManager.getNationsState first), so the
+  // armies now stand where the archive says they stand.
+  this._validRegions = regionsHeldBy(faction);
 
   // Select a random leader from the faction's leader pool
   // A faction has no roster of its own: it fields the political class of the
@@ -243,6 +248,28 @@ Game_AIArmy.prototype._generateFactionArmy = function () {
     });
   }
 };
+
+// The world-map region ids a faction's power currently holds. Falls back to the
+// static table's own `faction` column for an orphan faction, a world whose
+// history was never run, or a power that holds nothing under any name the map
+// knows: an army with nowhere to be would never spawn at all.
+function regionsHeldBy(faction) {
+  const countries = (window.WorldGen && window.WorldGen.Countries) || [];
+  if (!countries.length) return [];
+  const byName = {};
+  for (const c of countries) if (c && c.id > 0) byName[c.country] = c.id;
+
+  const power = $gameFactions.hyperpowerOfFaction(faction);
+  if (power) {
+    const held = $gameFactions.countriesOfHyperpower(power.name)
+      .map(name => byName[name])
+      .filter(id => id > 0);
+    if (held.length) return held;
+  }
+  return countries
+    .filter(c => c && c.faction === faction.name && c.id > 0)
+    .map(c => c.id);
+}
 
 Game_AIArmy.prototype._generateFactionArmyForCountry = function (faction, countryId) {
   this._isIndependent = false;
@@ -396,6 +423,11 @@ Game_AIArmy.prototype.getFactionColor = function () {
 //=============================================================================
 // Game_AIArmies - Manages all AI armies
 //=============================================================================
+
+// Declared up front the way the engine declares its own $game globals, so that a
+// reference reaching this before DataManager.createGameObjects sees null rather
+// than throwing a ReferenceError.
+$gameAIArmies = null;
 
 function Game_AIArmies() {
   this.initialize(...arguments);

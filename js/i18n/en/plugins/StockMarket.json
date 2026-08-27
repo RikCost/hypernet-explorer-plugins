@@ -65,7 +65,8 @@
   },
   "news": {
     "justNow": "Just now",
-    "minutesAgo": "{n}m ago"
+    "minutesAgo": "{n}m ago",
+    "moveNote": "[{sign}{pct}%]"
   },
   "errors": {
     "noFloat": "No unissued shares left"

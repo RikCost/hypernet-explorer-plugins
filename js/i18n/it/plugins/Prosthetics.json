@@ -5,6 +5,7 @@
   "installImplant": "Installa impianto",
   "cancel": "Annulla",
   "owned": "POSSEDUTA",
+  "vitalBadge": "VITALE",
   "vital": {
     "hp": "PV",
     "mp": "PM"

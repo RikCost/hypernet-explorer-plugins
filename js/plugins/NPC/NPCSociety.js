@@ -594,7 +594,7 @@
     ],
     // i18n-ignore-end
 
-    generate(eventName, classId, mapId) {
+    generate(eventName, classId, mapId, options) {
       const personalities = DataLoader.personalities;
       const traits        = DataLoader.traits;
       const ideologies    = DataLoader.ideologies;
@@ -625,7 +625,38 @@
       let npcGender = 0;
       let npcArchetype = "Humanoid"; // i18n-ignore: Archetypes.json id
       let assignedClassId = classId;   // default: keep the class from the event note
-      if (worldSeed !== 19002001 && DataLoader.npcData) {
+      // A caller that has ALREADY dealt this NPC its face pins it here. A
+      // procedural citizen's sprite is rolled together with its name, before
+      // the profile exists, and was bound onto the profile afterwards; the
+      // creature roll below knew nothing about it and could leave a beast's
+      // identity, non-sentient class and all, on somebody wearing an
+      // announcer's suit. Pinned, the catalogue draw and the creature roll both
+      // stand down and what this NPC IS is read off the sheet it wears.
+      const pinnedSprite = (options && options.spriteKey &&
+        DataLoader.npcData?.[options.spriteKey]) ? options.spriteKey : null;
+      const NC = window.NPCCreature;
+      if (pinnedSprite) {
+        const rngP = new SeededRng(nameToSeed(eventName + "_vis" + worldSeed));
+        const entry = DataLoader.npcData[pinnedSprite];
+        spriteKey = pinnedSprite;
+        bustIndex = (options.bustIndex != null)
+          ? options.bustIndex
+          : rngP.nextInt(0, (entry.busts || ["7"]).length);
+        npcGender = entry.Gender || 0;
+        npcArchetype = entry.Archetype || "Humanoid"; // i18n-ignore: Archetypes.json id
+        // The sheet's own roster, weighted the way a creature's is when the
+        // sheet is a creature's (NPCCreature.rollClassId) and stripped of the
+        // creature classes when it is a person's: an entry with `creature` and
+        // `animal` both false is a person and is never dealt a beast's class.
+        if (NC && NC.isCreatureSheet(pinnedSprite)) {
+          const rolled = NC.rollClassId(pinnedSprite, [npcArchetype], rngP);
+          if (rolled) assignedClassId = rolled;
+        } else {
+          const classPool = (Array.isArray(entry.classes) ? entry.classes : [])
+            .filter(id => !NC || !NC.isNonSentientClassId(id));
+          if (classPool.length > 0) assignedClassId = classPool[rngP.nextInt(0, classPool.length)];
+        }
+      } else if (worldSeed !== 19002001 && DataLoader.npcData) {
         // The face is dealt through the catalogue rather than out of a flat
         // list: an alien sheet is never in the ordinary pool and is drawn on a
         // share of the same seeded float, so who is walking about depends on
@@ -639,9 +670,17 @@
           // everybody who is not standing in Varlenia, the one rule that would
           // otherwise be lost with the catalogue (see SpriteCatalog.npcKeys).
           const varlenia = !!window.SpriteCatalog?.isVarlenianPlace?.();
-          const fallback = Object.keys(DataLoader.npcData).filter(k =>
-            DataLoader.npcData[k].npc === true &&
-            (varlenia || DataLoader.npcData[k].varlenian !== true));
+          const fallback = Object.keys(DataLoader.npcData).filter(k => {
+            const e = DataLoader.npcData[k];
+            if (!e || e.npc !== true) return false;
+            // The other rule the catalogue enforces and this path must not
+            // lose: a person is never dealt a beast's sheet here. The creature
+            // roll below is the only way into the Creatures/ and Animals/
+            // halves, so a face drawn from them without it would be a dog with
+            // a creed, a faction and a job.
+            if (e.creature === true || e.animal === true) return false;
+            return varlenia || e.varlenian !== true;
+          });
           spriteKey = fallback.length ? fallback[rngV.nextInt(0, fallback.length)] : null;
         }
         if (spriteKey) {
@@ -669,8 +708,12 @@
       //     being added, and after the catalogue step so it replaces the face
       //     rather than competing with it.
       let creature = null;
-      const NC = window.NPCCreature;
-      if (NC) {
+      if (pinnedSprite) {
+        // Pinned: the sheet decides, not a roll. Wearing one of the Creatures/
+        // or Animals/ halves makes this a creature (the class dealt above says
+        // whether it is a talking one); anything else is a person.
+        if (NC && NC.isCreatureSheet(pinnedSprite)) creature = { spriteKey, bustIndex };
+      } else if (NC) {
         const rngC = new SeededRng(nameToSeed(eventName + "_creature" + worldSeed));
         if (rngC.next() < NC.creatureChance()) {
           // A stray dog belongs on the street, not the landing of somebody's
@@ -993,7 +1036,82 @@
     }
   }
 
+  // A beast holds no creed and owns nothing: ProfileGenerator strips both when
+  // it mints one. Something repaired back into a person needs them back, and
+  // they are dealt off the name the way every other facet of a profile is, so
+  // the same person is the same person in every savegame of this world. A
+  // faction is NOT restored: plenty of people stand under no banner at all
+  // (SocConfig.FACTION_CHANCE), so -1 is a perfectly ordinary answer there.
+  function _restorePersonhood(name, profile) {
+    let changed = false;
+    const rng = new SeededRng(nameToSeed(name + "_repair") ^ (window.NPCShared?.worldSeed?.() || 0));
+    const ideologies = DataLoader.ideologies || [];
+    if (profile.ideologyId == null || !(profile.ideologyIndex >= 0)) {
+      const pool = ideologies
+        .map((ideo, index) => ({ ideo, index }))
+        .filter(({ ideo }) => !ideo.alien);
+      if (pool.length) {
+        const pick = pool[rng.nextInt(0, pool.length)];
+        profile.ideologyIndex = pick.index;
+        profile.ideologyId = pick.ideo?.id ?? null;
+        changed = true;
+      }
+    }
+    if (!(profile.money > 0)) {
+      const wealthGoldBase = [5000, 50000, 500000, 5000000, 50000000];
+      const tier = Math.min(Math.max(profile.wealthTierBase | 0, 0), 4);
+      profile.money = Math.floor(wealthGoldBase[tier] * (0.5 + rng.next()));
+      changed = true;
+    }
+    return changed;
+  }
+
   const SocietyRegistry = {
+    // The sheet an NPC wears is the one authority on what it IS, and this is
+    // where a profile is made to agree with it. A creature always wears a sheet
+    // whose NPCs.json entry says `creature: true`, an animal one that says
+    // `animal: true`, and anything wearing neither is a person, so a profile
+    // carrying a beast's identity over an announcer's face (the creature roll
+    // ran before the sprite was bound, or a <Story> event kept the face its
+    // author drew) is repaired here rather than left for every reader of the
+    // profile to trip over.
+    //
+    // A sheet in no catalogue at all, an authored character's own graphic, says
+    // nothing either way and is left exactly as it is.
+    reconcileToSprite(eventName, profile) {
+      const NC = window.NPCCreature;
+      if (!NC || !profile || !profile.spriteKey) return false;
+      const entry = DataLoader.npcData?.[profile.spriteKey];
+      if (!entry) return false;
+      let changed = false;
+      if (NC.isCreatureSheet(profile.spriteKey)) {
+        // Wearing a beast's sheet IS being a creature, whichever class it
+        // holds: a talking dog is still a dog.
+        if (!profile.isCreature) { profile.isCreature = true; changed = true; }
+        if (entry.Archetype && profile.archetype !== entry.Archetype) {
+          profile.archetype = entry.Archetype;
+          changed = true;
+        }
+      } else {
+        if (profile.isCreature) { profile.isCreature = false; changed = true; }
+        if (NC.isNonSentientClassId(profile.assignedClassId)) {
+          // A person's sheet can never carry a creature class, so the one this
+          // profile holds came from the roll and is replaced by a civilised
+          // class off the sheet's own roster.
+          profile.assignedClassId = NC.sentientClassFor(profile.spriteKey, eventName);
+          profile.archetype = entry.Archetype || "Humanoid"; // i18n-ignore: Archetypes.json id
+          changed = true;
+        }
+      }
+      const nonSentient = NC.isNonSentientClassId(profile.assignedClassId);
+      if (!!profile.nonSentient !== nonSentient) {
+        profile.nonSentient = nonSentient;
+        changed = true;
+      }
+      if (!nonSentient && _restorePersonhood(eventName, profile)) changed = true;
+      return changed;
+    },
+
     // `homeGroupName` anchors a brand new person to the town they belong to
     // before any of the derived data is filled in. On-map callers leave it out
     // and the address is resolved from the map the NPC is standing on; the
@@ -1002,12 +1120,16 @@
     // ensureSimFields resolves the address (and through it the home map) from
     // it, and _generatePreexistingRelationships then reads that home map to
     // decide who this person already knows.
-    ensureProfile(eventName, classId, homeGroupName, mapId) {
+    // `options.spriteKey` (with an optional `options.bustIndex`) pins the face
+    // this NPC is already known to wear, for a caller that dealt the sprite
+    // before the profile existed. See ProfileGenerator.generate: it is what
+    // keeps the creature roll from minting a beast inside somebody's clothes.
+    ensureProfile(eventName, classId, homeGroupName, mapId, options) {
       if (!DataLoader.isReady || !eventName || !$gameSystem) return null;
       if (!$gameSystem._npcSociety) $gameSystem._npcSociety = {};
       let profile = $gameSystem._npcSociety[eventName];
       if (!profile) {
-        profile = ProfileGenerator.generate(eventName, classId, mapId);
+        profile = ProfileGenerator.generate(eventName, classId, mapId, options);
         if (!profile) return null; // DataLoader not populated yet
         if (homeGroupName && !profile._homeGroupName) profile._homeGroupName = homeGroupName;
         // A curated identity waiting for this name (CharacterCreationPresets:
@@ -1115,6 +1237,15 @@
       return $gameSystem?._npcSociety?.[eventName] ?? null;
     },
 
+    // The same lookup for a party member. Profiles are keyed by name, so an actor is resolved
+    // to its name first; character creation asks for this to show a made character's standing.
+    getActorProfile(actorId) {
+      const actor = (typeof $gameActors !== 'undefined' && $gameActors)
+        ? $gameActors.actor(actorId) : null;
+      const name = actor && actor.name ? actor.name() : null;
+      return name ? this.getProfile(name) : null;
+    },
+
     tickNeeds(name, elapsedMinutes) {
       const p = this.getProfile(name);
       if (!p) return;
@@ -1167,6 +1298,12 @@
     const profile = $gameSystem._npcSociety?.[eventName];
     if (!profile || !ev) return;
 
+    // Whatever face this NPC ends up with, what it IS follows from that face
+    // and nothing else. Run before anything below reads profile.isCreature, and
+    // again after a map-designed sprite is pinned, since only then is the sheet
+    // it actually wears known.
+    SocietyRegistry.reconcileToSprite(eventName, profile);
+
     const evData      = ev.event();
     // A <Story> event keeps the face the author drew on it, always. In a world
     // whose seed is not the canon one every citizen is dealt a seeded visual
@@ -1207,6 +1344,10 @@
     if (isMapDesigned && spriteKey) {
       profile.spriteKey = spriteKey;
       profile.bustIndex = charIdx;
+      // The written character's own sheet is now the profile's, so the identity
+      // is re-read off it: an author who drew an announcer gets an announcer,
+      // never the beast the creature roll had dealt behind that face.
+      SocietyRegistry.reconcileToSprite(eventName, profile);
     }
 
     const entry = spriteKey ? DataLoader.npcData?.[spriteKey] : null;

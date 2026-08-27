@@ -930,8 +930,10 @@
       this._actorSelectMode = false;
       this.deactivate();
       this.select(-1);
-      this.clearHandler('ok');
-      this.clearHandler('cancel');
+      // MZ has setHandler but no clearHandler, so calling one threw and left the panel stuck
+      // in actor-selection mode. The handlers live in _handlers, keyed by symbol.
+      delete this._handlers['ok'];
+      delete this._handlers['cancel'];
       this.refresh();
     }
 
@@ -1145,9 +1147,14 @@
     }
 
     getFactionName(factionId) {
-      // Try to get faction name from FactionDataManager if it exists
-      if (typeof $dataFactions !== 'undefined' && $dataFactions && $dataFactions[factionId]) {
-        return $dataFactions[factionId].name || T('WorkSystem.factionNumbered', { id: factionId });
+      // FactionDataManager owns the faction table and reaches it through $gameFactions;
+      // there has never been a $dataFactions, so this used to fall through every time.
+      if (typeof $gameFactions !== 'undefined' && $gameFactions && $gameFactions.getFaction) {
+        const faction = $gameFactions.getFaction(factionId);
+        if (faction && faction.name) {
+          const FDM = typeof FactionDataManager !== 'undefined' ? FactionDataManager : null;
+          return (FDM && FDM.instance) ? FDM.instance.t(faction.name) : faction.name;
+        }
       }
 
       // Fallback names, used only while FactionDataManager has not loaded.
@@ -1304,7 +1311,6 @@
       this._dndContainer.style.justifyContent = 'center';
       this._dndContainer.style.alignItems = 'center';
       this._dndContainer.style.fontFamily = "'Lora', serif";
-      this._dndContainer.style.color = '#2b1c11';
       this._dndContainer.style.boxSizing = 'border-box';
 
       document.body.appendChild(this._dndContainer);
@@ -1350,15 +1356,15 @@
       this._dndContainer.innerHTML = `
         <div class="cc-pockets-spread">
           <!-- Spine Shading -->
-          <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10"></div>
+          <div class="work-01"></div>
 
           <!-- Left Page -->
-          <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
+          <div class="cc-page cc-page-left work-02">
             ${leftPageHTML}
           </div>
 
           <!-- Right Page -->
-          <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
+          <div class="cc-page cc-page-right work-02">
             ${rightPageHTML}
           </div>
         </div>
@@ -1377,7 +1383,7 @@
 
           const rosterEl = this._dndContainer.querySelector('#roster-list');
           if (rosterEl) {
-            const selectedEl = rosterEl.querySelector('[style*="border: 2px solid #4a1d0f"]');
+            const selectedEl = rosterEl.querySelector('.roster-item.focused');
             if (selectedEl) {
               selectedEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
@@ -1396,7 +1402,7 @@
       let listHTML = "";
       if (jobs.length === 0) {
         listHTML = `
-          <div style="text-align:center; padding: 40px; color:#6b5242; font-family:'Lora', serif">
+          <div class="work-03">
             ${T('WorkSystem.noGuildLaborRequisitionsCurrently')}
           </div>
         `;
@@ -1405,32 +1411,20 @@
           const isSelected = idx === selectedIndex && this._dndFocusSection === 'list';
           const jobName = window.WorkSystem.jobName(job);
 
-          const itemStyle = `
-            cursor: pointer;
-            padding: 10px 14px;
-            border-bottom: 1px dotted rgba(139, 90, 43, 0.25);
-            background: ${isSelected ? 'rgba(74, 29, 15, 0.08)' : 'transparent'};
-            border-left: 3px solid ${isSelected ? '#8b5a2b' : 'transparent'};
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
-            width: 100%;
-          `;
+
 
           listHTML += `
-            <div class="job-item" style="${itemStyle}" onclick="SceneManager._scene.selectJobItem(${idx})">
-              <div style="display:flex; flex-direction:column; gap:2px">
-                <span style="font-family:'Lora', serif; font-size:1.14rem; font-weight:${isSelected ? 'bold' : 'normal'}; color:#1a1a1a">
+            <div class="job-item ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.selectJobItem(${idx})">
+              <div class="work-04">
+                <span class="work-05" style="font-weight:${isSelected ? 'bold' : 'normal'}">
                   ${jobName}
                 </span>
-                <span style="font-size:0.915rem; color:#6b5242; font-family:'Lora', serif">
+                <span class="work-06">
                   ${window.WorkSystem.jobCategoryLabel(job)} • ${job.duration}h
                 </span>
               </div>
-              <div style="display:flex; flex-direction:column; align-items:flex-end">
-                <span style="font-family:'Lora', serif; font-size:1.15rem; font-weight:bold; color:#4a1d0f">
+              <div class="work-07">
+                <span class="work-08">
                   €${(job.basePay / 100).toFixed(2)}
                 </span>
               </div>
@@ -1440,14 +1434,14 @@
       }
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
+        <h2 class="cc-header-gothic work-09">
           ${title}
         </h2>
-        <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px">
+        <div class="work-10" id="jobs-list">
           ${listHTML}
         </div>
-        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.984rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%">
-          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; transition:all 0.2s ease; border:1px solid #4a2711; font-family:'Lora', serif; font-size:1.08rem">
+        <div class="work-11">
+          <div class="back-button focusable work-12" onclick="SceneManager._scene.popScene()">
             ${T('WorkSystem.dismiss')}
           </div>
         </div>
@@ -1457,7 +1451,7 @@
     getJobContractHTML(job, actor) {
       if (!job) {
         return `
-          <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#5c4b3d; font-family:'Lora', serif; font-size:1.265rem; border:2px dashed #bda881; border-radius:6px; padding:40px">
+          <div class="work-13">
             ${T('WorkSystem.selectALaborContractTo')}
           </div>
         `;
@@ -1470,12 +1464,8 @@
       const successChance = window.WorkSystem.calculateSuccessChance(actor, job);
       const chancePercent = Math.floor(successChance * 100);
 
-      let chanceColor = "#822d2d";
-      if (chancePercent >= 70) {
-        chanceColor = "#3d5e4b";
-      } else if (chancePercent >= 40) {
-        chanceColor = "#8b5a2b";
-      }
+      const chanceClass = chancePercent >= 70 ? "chance--good"
+        : chancePercent >= 40 ? "chance--fair" : "chance--poor";
 
       let requirementsHTML = "";
       for (const [stat, required] of Object.entries(job.requirements)) {
@@ -1485,7 +1475,7 @@
         const statLabel = _si18n(mappedName);
 
         requirementsHTML += `
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; color:${meetsReq ? '#3d5e4b' : '#822d2d'}; font-weight:${meetsReq ? 'normal' : 'bold'}">
+          <div class="work-14" style="color:${meetsReq ? 'var(--text-text-alt-18)' : 'var(--text-settings-active)'}; font-weight:${meetsReq ? 'normal' : 'bold'}">
             <span>${statLabel}</span>
             <span>${actorValue} / ${required}</span>
           </div>
@@ -1495,10 +1485,10 @@
       let locationsHTML = "";
       if (job.locations && job.locations.length > 0) {
         locationsHTML = `
-          <div style="margin-top: 10px">
-            <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.deploymentLocations')}:</strong>
-            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px">
-              ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.915rem; color:#4a1d0f">${window.WorkSystem.locationLabel ? window.WorkSystem.locationLabel(loc) : loc}</span>`).join('')}
+          <div class="work-15">
+            <strong class="work-16">${T('WorkSystem.deploymentLocations')}:</strong>
+            <div class="work-17">
+              ${job.locations.map(loc => `<span class="work-18">${window.WorkSystem.locationLabel ? window.WorkSystem.locationLabel(loc) : loc}</span>`).join('')}
             </div>
           </div>
         `;
@@ -1508,38 +1498,38 @@
       if (job.factionId !== undefined && job.factionId !== null) {
         const factionName = this._detailsPanel.getFactionName(job.factionId);
         factionHTML = `
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-            <strong style="color:#5c3516">${T('WorkSystem.faction')}:</strong>
-            <span style="color:#8b5a2b; font-weight:bold">${factionName}</span>
+          <div class="work-14">
+            <strong class="work-19">${T('WorkSystem.faction')}:</strong>
+            <span class="work-20">${factionName}</span>
           </div>
         `;
       }
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px; text-align:center">
+        <h2 class="cc-header-gothic work-21">
           ${T('WorkSystem.laborContract')}
         </h2>
 
-        <div style="flex:1; display:flex; flex-direction:column; gap:12px; box-sizing: border-box; width:100%">
-          <div style="border: 4px double #4a2711; background: #ecdcb9; padding: 22px; border-radius: 6px; box-shadow: inset 0 0 40px rgba(78,38,12,0.15); font-family:'Lora', serif; display:flex; flex-direction:column; gap:10px; box-sizing: border-box; width:100%">
-            <div style="font-family:'Lora', serif; font-size:1.725rem; color:#4a1d0f; font-weight:bold; border-bottom:2px double rgba(74,29,15,0.3); padding-bottom:6px; text-align:center; text-transform:uppercase">
+        <div class="work-22">
+          <div class="work-23">
+            <div class="work-24">
               ${jobName}
             </div>
 
-            <div style="font-size:1.08rem; line-height:1.45; color:#2b1c11; border-bottom:1px dashed rgba(139,90,43,0.25); padding-bottom:10px; margin-bottom:6px; text-align:justify">
+            <div class="work-25">
               "${description}"
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:6px; font-size:1.08rem">
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-                <strong style="color:#5c3516">${T('WorkSystem.categoryLabel')}:</strong>
+            <div class="work-26">
+              <div class="work-14">
+                <strong class="work-19">${T('WorkSystem.categoryLabel')}:</strong>
                 <span>${window.WorkSystem.jobCategoryLabel(job)}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-                <strong style="color:#5c3516">${T('WorkSystem.duration')}:</strong>
+              <div class="work-14">
+                <strong class="work-19">${T('WorkSystem.duration')}:</strong>
                 <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b">
+              <div class="work-27">
                 <span>${T('WorkSystem.baseReward')}:</span>
                 <span>€${(job.basePay / 100).toFixed(2)}</span>
               </div>
@@ -1548,22 +1538,22 @@
 
             ${locationsHTML}
 
-            <div style="margin-top: 10px; border-top: 1px dashed rgba(139,90,43,0.25); padding-top: 10px; display:flex; flex-direction:column; gap:6px">
-              <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.statRequirements')} (${actor.name()}):</strong>
-              <div style="display:flex; flex-direction:column; gap:4px; margin-top:2px">
+            <div class="work-28">
+              <strong class="work-16">${T('WorkSystem.statRequirements')} (${actor.name()}):</strong>
+              <div class="work-29">
                 ${requirementsHTML}
               </div>
             </div>
 
             ${settings.showSuccessChance ? `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed rgba(139,90,43,0.25); padding-top:10px; font-weight:bold; font-size:1.15rem">
-              <span style="color:#5c3516">${T('WorkSystem.estimatedSuccessRate')}:</span>
-              <span style="color:${chanceColor}; font-family:'Lora', serif; font-size:1.322rem">${chancePercent}%</span>
+            <div class="work-30">
+              <span class="work-19">${T('WorkSystem.estimatedSuccessRate')}:</span>
+              <span class="work-31 ${chanceClass}">${chancePercent}%</span>
             </div>
             ` : ''}
 
             ${!reqCheck.meets ? `
-            <div style="margin-top:8px; padding:8px 12px; background:rgba(130,45,45,0.06); border-left:3px solid #822d2d; border-radius:3px; font-size:0.952rem; color:#822d2d; line-height:1.35">
+            <div class="work-32">
               Warning: Deficits detected! Undertaking this contract will carry higher hazards of failure and injury.
             </div>
             ` : ''}
@@ -1571,8 +1561,8 @@
         </div>
 
         ${this._singleJobMode ? `
-        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-start; align-items:center; font-size:0.984rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%">
-          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; transition:all 0.2s ease; border:1px solid #4a2711; font-family:'Lora', serif; font-size:1.08rem">
+        <div class="work-33">
+          <div class="back-button focusable work-12" onclick="SceneManager._scene.popScene()">
             ${T('WorkSystem.dismiss')}
           </div>
         </div>
@@ -1583,11 +1573,11 @@
     getActorFaceHTML(actor, size = 64) {
       const faceName = actor.faceName();
       if (!faceName) {
-        return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:#8b5a2b; color:#ecdcb9; display:flex; align-items:center; justify-content:center; font-family:'Lora', serif; font-size:1.38rem; font-weight:bold">${actor.name().charAt(0)}</div>`;
+        return `<div class="work-34" style="width:${size}px; height:${size}px">${actor.name().charAt(0)}</div>`;
       }
 
       return `
-        <div style="width: ${size}px; height: ${size}px; border-radius: 50%; border: 2px solid #8b5a2b; box-sizing: border-box; background-image: url('img/busts/${faceName}.png'); background-position: 50% 12%; background-size: 220%; background-repeat: no-repeat; box-shadow: 0 2px 4px rgba(0,0,0,0.15); flex-shrink: 0"></div>
+        <div class="work-35" style="width:${size}px; height:${size}px; background-image:url('img/busts/${faceName}.png')"></div>
       `;
     }
 
@@ -1600,7 +1590,7 @@
         const statLabel = _si18n(mappedName);
 
         html += `
-          <div style="display:flex; justify-content:space-between; font-size:0.915rem; color:${isMet ? '#3d5e4b' : '#822d2d'}; font-weight:${isMet ? 'normal' : 'bold'}; border-bottom:1px dotted rgba(0,0,0,0.05); padding:1px 0">
+          <div class="work-36" style="color:${isMet ? 'var(--text-text-alt-18)' : 'var(--text-settings-active)'}; font-weight:${isMet ? 'normal' : 'bold'}">
             <span>${statLabel}</span>
             <span>${actorValue} / ${required}</span>
           </div>
@@ -1618,42 +1608,24 @@
 
         const successChance = window.WorkSystem.calculateSuccessChance(actor, selectedJob);
         const chancePercent = Math.floor(successChance * 100);
-        let chanceColor = "#822d2d";
-        if (chancePercent >= 70) {
-          chanceColor = "#3d5e4b";
-        } else if (chancePercent >= 40) {
-          chanceColor = "#8b5a2b";
-        }
+        const chanceClass = chancePercent >= 70 ? "chance--good"
+          : chancePercent >= 40 ? "chance--fair" : "chance--poor";
 
-        const cardStyle = `
-          cursor: pointer;
-          padding: 10px 14px;
-          border: 2px solid ${isFocused ? '#4a1d0f' : (isSelected ? '#8b5a2b' : 'rgba(139,90,43,0.15)')};
-          background: ${isSelected ? '#fff8e8' : '#fcf8f0'};
-          border-radius: 6px;
-          transition: all 0.2s ease;
-          display: flex;
-          gap: 12px;
-          align-items: center;
-          box-sizing: border-box;
-          width: 100%;
-          margin-bottom: 8px;
-          box-shadow: ${isFocused ? '0 4px 8px rgba(74,29,15,0.15)' : '0 1px 3px rgba(0,0,0,0.05)'};
-        `;
+
 
         listHTML += `
-          <div class="roster-item focusable" style="${cardStyle}" onclick="SceneManager._scene.selectActorItem(${idx})">
+          <div class="roster-item focusable ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}" onclick="SceneManager._scene.selectActorItem(${idx})">
             ${this.getActorFaceHTML(actor, 54)}
-            <div style="flex:1; display:flex; flex-direction:column; gap:2px">
-              <div style="display:flex; justify-content:space-between; align-items:center">
-                <strong style="font-family:'Lora', serif; font-size:1.14rem; color:#1a1a1a">
+            <div class="work-37">
+              <div class="work-38">
+                <strong class="work-05">
                   ${actor.name()}
                 </strong>
-                <span style="font-family:'Lora', serif; font-size:0.915rem; font-weight:bold; color:${chanceColor}">
+                <span class="work-39 ${chanceClass}">
                   ${chancePercent}% SUCCESS
                 </span>
               </div>
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-top:2px">
+              <div class="work-40">
                 ${this.getActorRequirementDetailHTML(actor, selectedJob)}
               </div>
             </div>
@@ -1662,21 +1634,21 @@
       });
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
+        <h2 class="cc-header-gothic work-09">
           ${T('WorkSystem.workerRoster')}
         </h2>
 
-        <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px">
+        <div class="work-41" id="roster-list">
           ${listHTML}
         </div>
 
-        <div style="margin-top:12px; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%">
-          <div class="action-button focusable" onclick="SceneManager._scene.confirmActorSelection()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.208rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
+        <div class="work-42">
+          <div class="action-button focusable work-43" onclick="SceneManager._scene.confirmActorSelection()">
             ${T('WorkSystem.signContract')}
           </div>
           
           ${!this._singleJobMode ? `
-          <div class="action-button focusable" onclick="SceneManager._scene.retractActorSelection()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:1.08rem; transition: all 0.2s ease">
+          <div class="action-button focusable work-44" onclick="SceneManager._scene.retractActorSelection()">
             ${T('WorkSystem.retractContract')}
           </div>
           ` : ''}
@@ -2197,6 +2169,10 @@
   // ============================================================================
   // Add Work option to main menu (optional - can be enabled via menu command)
   // ============================================================================
+
+  // Published so callers outside this file can reach the scene; AutoIdleExplorer gates
+  // its "take a job" entry on it being present.
+  window.Scene_Work = Scene_Work;
 
   // Uncomment below to add "Work" to main menu
   /*

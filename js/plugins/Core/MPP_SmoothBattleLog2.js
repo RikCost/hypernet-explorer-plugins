@@ -367,6 +367,33 @@
         }
     }();
 
+    // One indent step, shared by every line an action produces after its header.
+    const REACTION_INDENT_PX = 26;
+
+    // \crit[...] wraps a whole damage line, and that line already carries its own
+    // bracketed escapes (\c[1], \i[64]), so the closing bracket has to be found by
+    // counting depth. Stopping at the first ] left the raw "\c[1" on screen.
+    function replaceCritTags(text) {
+        const TAG = '\\crit[';
+        const lower = text.toLowerCase();
+        let out = '';
+        let i = 0;
+        for (;;) {
+            const start = lower.indexOf(TAG, i);
+            if (start < 0) return out + text.substring(i);
+            out += text.substring(i, start);
+            let depth = 1;
+            let j = start + TAG.length;
+            while (j < text.length) {
+                if (text[j] === '[') depth++;
+                else if (text[j] === ']' && --depth === 0) break;
+                j++;
+            }
+            out += '<span class="battlelog-crit-text">' + text.substring(start + TAG.length, j) + '</span>';
+            i = Math.min(j + 1, text.length);
+        }
+    }
+
     function parseBattleLogTextToHtml(text) {
         if (!text) return '';
         // Split multi-line entries (action header + per-reaction lines) into separate divs
@@ -376,23 +403,17 @@
             let seg = segments[i];
             if (!seg || !seg.trim()) continue;
 
-            // Extract per-segment mx indentation
-            let indentPx = 0;
-            const mxMatch = seg.match(/\\mx\[(\d+)\]/i);
-            if (mxMatch) {
-                indentPx = parseInt(mxMatch[1], 10);
-                seg = seg.replace(/\\mx\[\d+\]/gi, '');
-            }
+            // The mx value is legacy: every line of an action shares one indent step.
+            seg = seg.replace(/\\mx\[\d+\]/gi, '');
+            const indentPx = i > 0 ? REACTION_INDENT_PX : 0;
 
             // Determine accent style for the background bar
             const isCrit = /\\crit\[/i.test(seg);
             let accentClass = '';
             if (isCrit) {
                 accentClass = 'accent-crit';
-            } else if (indentPx >= 20 || i >= 2) {
+            } else if (indentPx > 0) {
                 accentClass = 'accent-reaction';
-            } else if (indentPx > 0 || i > 0) {
-                accentClass = 'accent-sub';
             } else if (/\\i\[/i.test(seg)) {
                 accentClass = 'accent-skill';
             } else if (/\\c\[(1|4|5)\]/i.test(seg)) {
@@ -401,10 +422,7 @@
                 accentClass = 'accent-enemy';
             }
 
-            // Replace critical tags: \crit[...]
-            seg = seg.replace(/\\crit\[([^\]]+)\]/gi, (m, critContent) => {
-                return `<span class="battlelog-crit-text">${critContent}</span>`;
-            });
+            seg = replaceCritTags(seg);
 
             // Replace enemy sprite codes: \enemysprite[charName]
             seg = seg.replace(/\\enemysprite\[([^\]]+)\]/gi, (match, charName) => {
@@ -429,7 +447,7 @@
                 .replace(/\\n/g, '<br/>')
                 .replace(/\n/g, '<br/>');
 
-            const styleAttr = indentPx > 0 ? ` style="padding-left:${indentPx}px;"` : '';
+            const styleAttr = indentPx > 0 ? ` style="margin-left:${indentPx}px;"` : '';
             result += `<div class="battlelog-bar ${accentClass}"${styleAttr}><div class="battlelog-line">${parseColorCodes(seg)}</div></div>`;
         }
         return result;
@@ -1700,6 +1718,21 @@
             }
             this.push("appendToActionLine", line);
             this.push("waitForEffect");
+        }
+    };
+
+    // A state falling off is a reaction to the blow that removed it, so it joins
+    // the action's block instead of starting a flush-left entry of its own.
+    Window_BattleLog.prototype.displayRemovedStates = function(target) {
+        const states = target.result().removedStateObjects();
+        const targetName = target.isActor()
+            ? NameColorCache.getActorName(target)
+            : NameColorCache.getEnemyName(target);
+        for (const state of states) {
+            let text = state.message4;
+            if (!text) continue;
+            if (typeof translateText === 'function') text = translateText(text);
+            this.push("appendToActionLine", text.format(targetName));
         }
     };
 

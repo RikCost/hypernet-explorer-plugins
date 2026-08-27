@@ -435,9 +435,14 @@
         return match ? match[1].trim().toLowerCase() : null;
     };
     
+    // colorMap is keyed by the lowercased archetype token. getArchetype is shared
+    // with EnemyTalkSystem, which loads later and returns the tag verbatim, so the
+    // key is normalised here rather than trusting whichever plugin defined it last.
     Game_Enemy.prototype.getBloodColor = function() {
         const archetype = this.getArchetype();
-        return archetype && colorMap[archetype] ? colorMap[archetype] : defaultBloodColor;
+        if (!archetype) return defaultBloodColor;
+        const key = String(archetype).trim().toLowerCase();
+        return colorMap[key] || defaultBloodColor;
     };
     
     // Resolve the screen position to bleed from: the struck body part when we are

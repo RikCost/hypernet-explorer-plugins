@@ -425,9 +425,9 @@
 
         const leftHTML = `
           <div class="left-page">
-            <div style="position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px dashed var(--border-primary-hover-translucent-15,#bba16d); padding-bottom:8px; margin-bottom:14px; min-height:40px;">
-              <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position:absolute; left:0;">${back}</div>
-              <h2 class="title" style="margin:0; border:none; font-size:1.665em;">${this.headerTitle()}</h2>
+            <div class="page-header-bar">
+              <div class="back-button focusable" onclick="SceneManager._scene.popScene()">${back}</div>
+              <h2 class="title" style="font-size:1.665em;">${this.headerTitle()}</h2>
             </div>
             <div style="font-family:'Lora',serif; font-style: normal; opacity:0.8; font-size:0.892em; margin-bottom:12px; color:var(--text-primary-hover,#58180D);">
               ${T('Grimoire.ui.blurb')}

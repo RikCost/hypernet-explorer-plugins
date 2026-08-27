@@ -56,6 +56,11 @@
   "chooseYourBirthDate": "Scegli la tua data di nascita",
   "addAnotherPartyMember": "Aggiungere un altro membro del gruppo?",
   "chooseYourOrigin": "Scegli la tua origine",
+  "chooseYourVehicle": "Scegli il tuo veicolo",
+  "confirmParty": "Conferma il gruppo",
+  "noCompanion": "Nessun compagno",
+  "petKindNone": "Da solo",
+  "noCompanionDesc": "Parti senza nessuno alle calcagna. Il posto resta libero per chi incontrerai.",
   "noDefiningTraits": "Nessun tratto distintivo",
   "noSkillsLearned": "Nessuna abilità appresa",
   "noSpecializations": "Nessuna specializzazione",
@@ -220,6 +225,30 @@
   "humanoidSpecies": "SPECIE UMANOIDI",
   "searchSpecies": "Cerca specie...",
   "choice": {
+    "vehicleBroom": {
+      "name": "Scopa volante",
+      "desc": "Una scopa che non risponde a nessuna strada. Ignora muri, acqua e dirupi, e atterra dove le pare."
+    },
+    "vehicleCar": {
+      "name": "Auto",
+      "desc": "Un'utilitaria, parcheggiata ai margini del villaggio. Veloce in campo aperto, e beve carburante."
+    },
+    "vehicleCamper": {
+      "name": "Camper",
+      "desc": "Un furgone in cui si può vivere: un letto, un fornello e tutto ciò che possiedi, ovunque tu decida di fermarti."
+    },
+    "vehicleBoat": {
+      "name": "Barca",
+      "desc": "Un gommone, ormeggiato giù all'acqua. Non costa nulla mantenerlo, e va solo dove c'è acqua."
+    },
+    "vehicleBike": {
+      "name": "Bicicletta",
+      "desc": "Una bicicletta, appoggiata dove l'hai lasciata. Niente carburante, niente manutenzione, e segue ogni strada che c'è."
+    },
+    "vehicleStarship": {
+      "name": "Astronave",
+      "desc": "Una nave che lascia il suolo del tutto. Nessuna pompa di benzina la riempirà mai."
+    },
     "originDeserter": {
       "name": "Disertore",
       "desc": "Scegli una fazione da cui hai disertato: inizia con 40 delle sue truppe."
@@ -709,23 +738,6 @@
   "supplies": "Provviste",
   "nothingButTheKey": "Nessuna. La chiave è tutto ciò che porti.",
   "primaryLocked": "Primario (fisso)",
-  "controls": {
-    "up": "Muovi in alto",
-    "down": "Muovi in basso",
-    "left": "Muovi a sinistra",
-    "right": "Muovi a destra",
-    "action": "Azione",
-    "back": "Indietro",
-    "run": "Corri",
-    "menu": "Menu",
-    "leftClick": "Click sinistro",
-    "rightClick": "Click destro",
-    "holdShift": "Tieni premuto Shift",
-    "openMap": "Apri la mappa",
-    "hotbarCycle": "Cambia oggetto della barra",
-    "visitPlace": "Visita questo luogo",
-    "zoom": "Ingrandisci e rimpicciolisci"
-  },
   "theHypernetPoint": "L'Hypernet Point, la sala terminali della Torre Omega",
   "components": "Componenti",
   "componentsCarried": "{count} pezzi sfusi per Hyperdeck",
@@ -761,6 +773,7 @@
   "suggestSpecs": "Suggerito",
   "resetSpecs": "Azzera",
   "applyToMember": "Applica al membro corrente",
+  "beginAdventure": "Inizia l'Avventura",
   "embarkWithPreset": "Inizia con questo Preset",
   "budgetPoints": "Budget: {remaining} / {total} pt",
   "bodyParts": "Parti del corpo",
@@ -961,5 +974,22 @@
   "noPersonalEquipment": "Nessun equipaggiamento personale",
   "preset": "Preimpostato",
   "presetDossiers": "Dossier Preimpostati",
-  "onlyOnePreset": "È ammesso un solo personaggio preimpostato nel gruppo"
+  "onlyOnePreset": "È ammesso un solo personaggio preimpostato nel gruppo",
+  "romanceTab": "Amori e Legami",
+  "romance": {
+    "romanticOrientation": "Orientamento romantico",
+    "sexualOrientation": "Orientamento sessuale",
+    "kinseyScale": "Posizione sulla scala Kinsey",
+    "kinseyLabel": "Kinsey",
+    "style": "Stile di relazione preferito",
+    "bonds": "Rapporti con il resto del gruppo",
+    "bondsTitle": "Legami gia stretti",
+    "noBonds": "Questo personaggio non parte legato a nessuno del gruppo.",
+    "noOthers": "Non e ancora stato creato nessun altro. Aggiungi un secondo membro e qui potrai stabilire il suo rapporto con questo personaggio.",
+    "ofPopulation": "della popolazione",
+    "esoteric": "esoterico",
+    "summaryTitle": "Registro degli affetti",
+    "summaryPara1": "<b>{name}</b> si innamora come <b>{romantic}</b> e desidera come <b>{sexual}</b>, e tiene a un modo di legarsi <b>{style}</b>.",
+    "summaryPara2": "Sulla scala Kinsey e registrato al grado <b>{kinsey}</b>:"
+  }
 }

@@ -84,7 +84,7 @@
 
     // --- Helper Function to Parse Game Date from Variable 113 ---
     function getGameDateFromVariable() {
-        const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
+        const dateStr = (typeof $gameVariables !== 'undefined' && $gameVariables ? $gameVariables.value(113) : null) || '01 JAN 2001 12:00';
         // Format: "01 JAN 2001 12:00"
         const parts = dateStr.split(' ').filter(Boolean);
         if (parts.length < 4) {
@@ -972,7 +972,7 @@
                     icon: 189,
                     width: 950,
                     height: 600,
-                    contentHTML: '<div id="news-history-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8"></div>'
+                    contentHTML: '<div id="news-history-content"></div>'
                 });
 
                 this.appInstance = new Scene_NewsHistory();
@@ -1152,15 +1152,10 @@
         createUINewspaperDOM() {
             this._dndContainer = document.createElement('div');
             // In app mode use a distinct id so the fullscreen 'menu-container' parchment
-            // CSS does not leak into the OS app window.
+            // CSS does not leak into the OS app window. Everything else, the
+            // backdrop included, is .news-root in theme.css.
             this._dndContainer.id = this._isAppMode ? 'news-app-container' : 'menu-container';
-            this._dndContainer.style.width = '100%';
-            this._dndContainer.style.height = '100%';
-            this._dndContainer.style.display = 'flex';
-            this._dndContainer.style.flexDirection = 'column';
-            this._dndContainer.style.fontFamily = "'Tahoma', sans-serif";
-            this._dndContainer.style.color = '#000';
-            this._dndContainer.style.boxSizing = 'border-box';
+            this._dndContainer.classList.add('news-root');
 
             if (this._isAppMode) {
                 const parent = document.getElementById('news-history-content');
@@ -1170,15 +1165,7 @@
                 }
             }
 
-            // Fallback for non-app mode
-            this._dndContainer.style.position = 'absolute';
-            this._dndContainer.style.top = '0';
-            this._dndContainer.style.left = '0';
-            this._dndContainer.style.zIndex = '1000';
-            this._dndContainer.style.background = 'radial-gradient(circle, rgba(18, 10, 5, 0.93) 0%, rgba(5, 3, 1, 0.98) 100%)';
-            this._dndContainer.style.display = 'flex';
-            this._dndContainer.style.justifyContent = 'center';
-            this._dndContainer.style.alignItems = 'center';
+            this._dndContainer.classList.add('news-root--fullscreen');
             document.body.appendChild(this._dndContainer);
         }
 
@@ -1212,7 +1199,7 @@
             let headlinesHTML = "";
             if (newsList.length === 0) {
                 headlinesHTML = `
-                    <div style="text-align:center; padding:40px; color:#555; font-family:'Tahoma', sans-serif; font-size:14px">
+                    <div class="news-empty">
                         ${T('NewsSystem.ui.noChroniclesRegisteredIn')}
                     </div>
                 `;
@@ -1223,51 +1210,29 @@
                     const day = String(newsDate.getDate()).padStart(2, '0');
                     const timeStr = news.scheduledTime || newsDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                    let categoryColor = "#4a1d0f";
-                    let categoryLabel = "";
-                    if (news.isRealNews) {
-                        categoryColor = "#822d2d";
-                        categoryLabel = T('NewsSystem.ui.global');
-                    } else if (news.category === 'positive') {
-                        categoryColor = "#3d5e4b";
-                        categoryLabel = T('NewsSystem.ui.bullish');
-                    } else if (news.category === 'negative') {
-                        categoryColor = "#822d2d";
-                        categoryLabel = T('NewsSystem.ui.bearish');
-                    } else if (news.category === 'surreal') {
-                        categoryColor = "#5a3d75";
-                        categoryLabel = T('NewsSystem.ui.surreal');
-                    } else {
-                        categoryColor = "#5c3516";
-                        categoryLabel = T('NewsSystem.ui.chronicle');
-                    }
+                    // The category is a class, not a colour: .news-cat--* below
+                    // sets --news-cat, which inks the label and the selected
+                    // item's left rule from the theme's own palette.
+                    let categoryKind = 'chronicle';
+                    if (news.isRealNews) categoryKind = 'global';
+                    else if (news.category === 'positive') categoryKind = 'bullish';
+                    else if (news.category === 'negative') categoryKind = 'bearish';
+                    else if (news.category === 'surreal') categoryKind = 'surreal';
+                    const categoryLabel = T('NewsSystem.ui.' + categoryKind);
 
                     const selectedClass = isSelected ? 'selected' : '';
 
-                    let hoverStyle = "";
-                    if (!this._isAppMode) {
-                        hoverStyle = `
-                            cursor: pointer;
-                            padding: 12px 16px;
-                            border-bottom: 1px dotted rgba(139, 90, 43, 0.25);
-                            background: ${isSelected ? 'rgba(74, 29, 15, 0.08)' : 'transparent'};
-                            border-left: 3px solid ${isSelected ? categoryColor : 'transparent'};
-                            transition: all 0.2s ease;
-                            box-sizing: border-box;
-                        `;
-                    }
-
                     headlinesHTML += `
-                        <div class="newspaper-headline-item focusable ${selectedClass}" data-focus-key="news-item-${idx}" style="${hoverStyle}" onclick="${sref}.selectNewspaperItem(${idx})">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px; color:#555; font-family:'Tahoma', sans-serif; font-weight:bold">
+                        <div class="newspaper-headline-item news-cat--${categoryKind} focusable ${selectedClass}" data-focus-key="news-item-${idx}" onclick="${sref}.selectNewspaperItem(${idx})">
+                            <div class="news-headline-meta">
                                 <span>${day} ${monthName.substring(0, 3).toUpperCase()} • ${timeStr}</span>
-                                <span style="color:${categoryColor}; font-size:13px; font-family:'Tahoma', sans-serif; font-weight:bold; letter-spacing:0.5px">${categoryLabel}</span>
+                                <span class="news-headline-cat">${categoryLabel}</span>
                             </div>
-                            <div style="font-family:'Tahoma', sans-serif; font-size:14px; font-weight:${isSelected ? 'bold' : 'normal'}; color:#000; line-height:1.3">
+                            <div class="news-headline-text">
                                 ${news.text}
                             </div>
                             ${news.location ? `
-                            <div style="font-size:13px; color:#555; margin-top:2px">
+                            <div class="news-headline-loc">
                                 ,  ${news.location.toUpperCase()}
                             </div>
                             ` : ''}
@@ -1294,11 +1259,11 @@
                     const soulMod = selectedNews.soulTendencyModifier || 0;
 
                     effectsBox = `
-                        <div style="margin-top: 14px; padding: 10px; border: 1px dashed #7f9db9; background: rgba(0,0,0,0.03); border-radius: 3px; font-family:'Tahoma', sans-serif; font-size:14px; color:#000; box-sizing: border-box; width: 100%">
-                            <h4 style="margin:0 0 6px 0; font-family:'Tahoma', sans-serif; font-size:14px; border-bottom:1px solid #7f9db9; padding-bottom:3px; font-weight:bold; color:#0b2f70">
+                        <div class="news-effects">
+                            <h4 class="news-effects-title">
                                 ${T('NewsSystem.ui.marketSoulInfluence')}
                             </h4>
-                            <div style="display:flex; flex-direction:column; gap:4px">
+                            <div class="news-effects-list">
                                 ${selectedNews.priceEffect !== 1 ? `<div><strong>${T('NewsSystem.ui.propertyValues')}</strong> ${pricePct >= 0 ? '+' : ''}${pricePct}%</div>` : ''}
                                 ${selectedNews.occupancyEffect !== 1 ? `<div><strong>${T('NewsSystem.ui.occupancyRates')}</strong> ${occupancyPct >= 0 ? '+' : ''}${occupancyPct}%</div>` : ''}
                                 ${soulMod !== 0 ? `<div><strong>${T('NewsSystem.ui.soulAlignment')}</strong> ${soulMod >= 0 ? '+' : ''}${soulMod.toFixed(1)}%</div>` : ''}
@@ -1309,93 +1274,78 @@
 
                 const detailedText = selectedNews.fullText || selectedNews.text;
 
-                if (this._isAppMode) {
-                    articleHTML = `
-                        <div style="display:flex; flex-direction:column; flex:1; overflow-y:auto; padding-right:6px; margin-bottom:6px; box-sizing: border-box">
-                            <div style="font-family:'Tahoma', sans-serif; font-size:24px; color:#0b2f70; line-height:1.25; font-weight:bold; margin-bottom:8px; border-bottom:1px solid #7f9db9; padding-bottom:8px">
-                                ${selectedNews.text}
-                            </div>
-
-                            <div style="font-family:'Tahoma', sans-serif; font-size:17px; color:#555; margin-bottom:12px; display:flex; justify-content:space-between; font-weight:bold">
-                                <span>${fullDateText.toUpperCase()}</span>
-                                ${selectedNews.location ? `<span>${selectedNews.location.toUpperCase()}</span>` : ''}
-                            </div>
-
-                            <div style="font-family:'Tahoma', sans-serif; font-size:20px; line-height:1.6; color:#000; text-align:justify; margin-bottom:10px">
-                                ${selectedNews.location ? `<span style="font-family:'Tahoma', sans-serif; font-weight:bold; color:#0b2f70; font-size:20px; margin-right:4px">[${selectedNews.location.toUpperCase()}]</span>` : ''}
-                                ${detailedText}
-                            </div>
-
-                            ${effectsBox}
+                articleHTML = `
+                    <div class="news-article">
+                        <div class="news-article-title">
+                            ${selectedNews.text}
                         </div>
-                    `;
-                } else {
-                    articleHTML = `
-                        <div style="display:flex; flex-direction:column; flex:1; overflow-y:auto; padding-right:12px; margin-bottom:12px; box-sizing: border-box">
-                            <div style="font-family:'Lora', serif; font-size:1.815rem; color:#4a1d0f; line-height:1.2; font-weight:bold; margin-bottom:8px; border-bottom:1px solid rgba(74, 29, 15, 0.2); padding-bottom:8px">
-                                ${selectedNews.text}
-                            </div>
-                            
-                            <div style="font-family:'Lora', serif; font-size:0.96rem; color:#5c4b3d; margin-bottom:16px; display:flex; justify-content:space-between">
-                                <span>${fullDateText.toUpperCase()}</span>
-                                ${selectedNews.location ? `<span>${selectedNews.location.toUpperCase()}</span>` : ''}
-                            </div>
-                            
-                            <div style="font-family:'Lora', serif; font-size:1.14rem; line-height:1.6; color:#1a1a1a; text-align:justify; column-count:2; column-gap:24px; column-rule:1px dotted rgba(139, 90, 43, 0.25)">
-                                ${selectedNews.location ? `<span style="font-family:'Lora', serif; font-weight:bold; color:#4a1d0f; font-size:1.265rem; margin-right:4px">[${selectedNews.location.toUpperCase()}]</span>` : ''}
-                                ${detailedText}
-                            </div>
-                            
-                            ${effectsBox}
+
+                        <div class="news-article-meta">
+                            <span>${fullDateText.toUpperCase()}</span>
+                            ${selectedNews.location ? `<span>${selectedNews.location.toUpperCase()}</span>` : ''}
                         </div>
-                    `;
-                }
+
+                        <div class="news-article-body">
+                            ${selectedNews.location ? `<span class="news-article-place">[${selectedNews.location.toUpperCase()}]</span>` : ''}
+                            ${detailedText}
+                        </div>
+
+                        ${effectsBox}
+                    </div>
+                `;
             } else {
                 articleHTML = `
-                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#555; font-family:'Tahoma', sans-serif; font-size:14px">
+                    <div class="news-empty">
                         ${T('NewsSystem.ui.selectAnEntryTo')}
                     </div>
                 `;
             }
 
-            // App mode embeds the spread in a Hypernet OS window, so it fills
-            // that window. Standalone it IS the screen, and takes its size from
-            // the shared full-bleed .cc-pockets-spread rule in theme.css, so it
-            // must not pin itself to the old 1400x900 design box here.
-            const spreadSize = this._isAppMode ? "width: 100%; height: 100%; " : "";
+            // One markup for both modes. The parchment look lives on the
+            // classes below (theme.css, "The Hypernet Chronicle"); the OS
+            // window restyles the same classes to XP chrome in hypernet.css,
+            // so nothing here has to know which shell it is standing in.
+            this._dndContainer.innerHTML = `
+                <div class="cc-pockets-spread news-spread">
+                    <!-- Vintage masthead banner, hidden in the OS window -->
+                    <div class="newspaper-header">
+                        <div class="news-masthead-title">${T('NewsSystem.ui.mastheadTitle')}</div>
+                        <div class="news-masthead-rule">
+                            <span>${T('News.ui.volumeNo', { no: monthIndex + 1 })}</span>
+                            <span class="news-masthead-strap">${T('News.ui.masthead')}</span>
+                            <span>${displayDate}</span>
+                        </div>
+                    </div>
 
-            if (this._isAppMode) {
-                this._dndContainer.innerHTML = `
-                    <div class="cc-pockets-spread" style="width: 100%; height: 100%">
-                        <!-- Left Page: The Headlines Column -->
-                        <div class="cc-page cc-page-left">
-                            <div class="cc-subheader">
+                    <div class="news-body">
+                        <!-- Left page: the headlines column -->
+                        <div class="cc-page cc-page-left news-page">
+                            <div class="cc-subheader news-subheader">
                                 ${T('NewsSystem.ui.latestChronicles')}
                             </div>
-                            
-                            <!-- Month Selection Navigator -->
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-family: 'Tahoma', sans-serif; font-size: 14px; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 3px; border: 1px solid #7f9db9; width:100%; box-sizing: border-box; user-select:none">
+
+                            <!-- Month navigator -->
+                            <div class="news-month-nav">
                                 <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(-1)">${T('News.ui.prev')}</div>
-                                <span style="font-weight: bold; color: #0b2f70; letter-spacing:0.5px">${monthName.toUpperCase()} 2001</span>
+                                <span class="news-month-label">${monthName.toUpperCase()} 2001</span>
                                 <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(1)">${T('News.ui.next')}</div>
                             </div>
 
-                            <!-- Scrollable Headlines List -->
-                            <div id="newspaper-headlines-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 4px">
+                            <!-- Scrollable headlines list -->
+                            <div id="newspaper-headlines-list" class="news-headline-list">
                                 ${headlinesHTML}
                             </div>
                         </div>
 
-                        <!-- Right Page: The Detailed Article -->
-                        <div class="cc-page cc-page-right">
-                            <div class="cc-subheader">
+                        <!-- Right page: the article -->
+                        <div class="cc-page cc-page-right news-page">
+                            <div class="cc-subheader news-subheader">
                                 ${T('NewsSystem.ui.chronicleInDepth')}
                             </div>
-                            
+
                             ${articleHTML}
-                            
-                            <!-- Return / Navigation Help at the bottom -->
-                            <div style="margin-top: auto; border-top: 1px dashed #7f9db9; padding-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #555; font-family: 'Tahoma', sans-serif; width:100%; box-sizing: border-box">
+
+                            <div class="news-footer">
                                 <span>${T('NewsSystem.ui.aDMonthW')}</span>
                                 <div class="back-button focusable" onclick="${sref}.popScene()">
                                     ${T('NewsSystem.ui.dismiss')}
@@ -1403,78 +1353,14 @@
                             </div>
                         </div>
                     </div>
-                `;
-            } else {
-                this._dndContainer.innerHTML = `
-                    <div class="cc-pockets-spread" style="${spreadSize}flex-direction: column">
-                        <!-- Beautiful Vintage Newspaper Header Banner -->
-                        <div class="newspaper-header" style="padding: 24px 48px 12px 48px; border-bottom: 6px double #4a2711; display: flex; flex-direction: column; align-items: center; background: #ecdcb9; position:relative; box-sizing: border-box; width:100%">
-                            <div style="font-family: 'Lora', serif; font-size: 3.52rem; color: #4a1d0f; text-align: center; letter-spacing: 3px; font-weight:bold; margin-bottom:4px">
-                                THE HYPERNET CHRONICLE
-                            </div>
-                            <div style="font-family: 'Lora', serif; font-size: 1.322rem; font-weight: bold; color: #5c3516; width: 100%; border-top: 2px solid #4a2711; border-bottom: 2px solid #4a2711; padding: 6px 0; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box">
-                                <span>${T('News.ui.volumeNo', { no: monthIndex + 1 })}</span>
-                                <span style="letter-spacing: 1px">${T('News.ui.masthead')}</span>
-                                <span>${displayDate}</span>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; flex: 1; overflow: hidden; position: relative; width:100%; box-sizing: border-box">
-                            <!-- Left Page: The Headlines Column -->
-                            <div class="cc-page cc-page-left" style="padding: 24px 32px; display: flex; border-right: 1px solid rgba(139, 90, 43, 0.2); width:50%; box-sizing: border-box">
-                                <div class="cc-subheader" style="text-align: center; font-size: 1.552rem; letter-spacing: 1px; margin-bottom: 16px; font-family:'Lora', serif">
-                                    LATEST CHRONICLES
-                                </div>
-                                
-                                <!-- Month Selection Navigator -->
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-family: 'Lora', serif; font-size: 1.208rem; background: rgba(0,0,0,0.04); padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(139,90,43,0.15); width:100%; box-sizing: border-box">
-                                    <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(-1)" style="cursor: pointer; color: #4a1d0f; font-weight:bold; user-select:none">${T('News.ui.prev')}</div>
-                                    <span style="font-weight: bold; color: #4a1d0f; letter-spacing:1px">${monthName.toUpperCase()} 2001</span>
-                                    <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(1)" style="cursor: pointer; color: #4a1d0f; font-weight:bold; user-select:none">${T('News.ui.next')}</div>
-                                </div>
-
-                                <!-- Scrollable Headlines List -->
-                                <div id="newspaper-headlines-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 8px">
-                                    ${headlinesHTML}
-                                </div>
-                            </div>
-
-                            <!-- Right Page: The Detailed Article -->
-                            <div class="cc-page cc-page-right" style="padding: 24px 32px; display: flex; width:50%; box-sizing: border-box">
-                                <div class="cc-subheader" style="text-align: center; font-size: 1.552rem; letter-spacing: 1px; margin-bottom: 16px; font-family:'Lora', serif">
-                                    GAZETTE MAGNIFIER
-                                </div>
-                                
-                                ${articleHTML}
-                                
-                                <!-- Return / Navigation Help at the bottom -->
-                                <div style="margin-top: auto; border-top: 1px dashed rgba(139, 90, 43, 0.4); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.984rem; color: #5c4b3d; font-family: 'Lora', serif; width:100%; box-sizing: border-box">
-                                    <span>${T('NewsSystem.ui.aDMonthW')}</span>
-                                    <div class="back-button focusable" onclick="${sref}.popScene()" style="background: #8b5a2b; color: #ecdcb9; padding: 6px 16px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1px solid #4a2711; font-family: 'Lora', serif; font-size: 1.08rem">
-                                        ${T('NewsSystem.ui.dismiss')}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             `;
-            }
-
-            if (!this._wheelListenerBound) {
-                this._wheelListenerBound = true;
-                this._dndContainer.addEventListener("wheel", (e) => {
-                    e.preventDefault();
-                    const list = document.getElementById('newspaper-headlines-list');
-                    if (list) list.scrollTop += e.deltaY;
-                }, { passive: false });
-            }
 
             setTimeout(() => {
                 if (this._dndContainer) {
                     const listEl = this._dndContainer.querySelector('#newspaper-headlines-list');
                     if (listEl) {
-                        const selectedEl = listEl.querySelector(this._isAppMode ? '.selected' : '[style*="background: rgba(74, 29, 15, 0.08)"]');
+                        const selectedEl = listEl.querySelector('.selected');
                         if (selectedEl) {
                             selectedEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                         }
@@ -1511,7 +1397,7 @@
             if (this._dndContainer) {
                 let moved = false;
 
-                if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
+                if (Input.isTriggered('down') || Input.isRepeated('down')) {
                     const currentIndex = this._newsWindow.index();
                     const maxItems = this._newsWindow.maxItems();
                     if (maxItems > 0) {
@@ -1519,7 +1405,7 @@
                         this._newsWindow.select(nextIndex);
                         moved = true;
                     }
-                } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
+                } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                     const currentIndex = this._newsWindow.index();
                     const maxItems = this._newsWindow.maxItems();
                     if (maxItems > 0) {
@@ -1529,10 +1415,10 @@
                     }
                 }
 
-                if (Input.isTriggered('left') || this.isKeyPressed('KeyA')) {
+                if (Input.isTriggered('left')) {
                     this._newsWindow.changeMonth(-1);
                     moved = true;
-                } else if (Input.isTriggered('right') || this.isKeyPressed('KeyD')) {
+                } else if (Input.isTriggered('right')) {
                     this._newsWindow.changeMonth(1);
                     moved = true;
                 }
@@ -1548,9 +1434,6 @@
             }
         }
 
-        isKeyPressed(key) {
-            return Input._currentState[key] && !Input._previousState[key];
-        }
     }
     // Window_MonthHeader
     class Window_MonthHeader extends Window_Base {
@@ -1631,11 +1514,11 @@
         processHandling() {
             if (this.isOpenAndActive()) {
                 // Handle month navigation first - don't process other inputs during these
-                if (Input.isTriggered('left') || this.isKeyPressed('KeyA')) {
+                if (Input.isTriggered('left')) {
                     this.changeMonth(-1);
                     SoundManager.playCursor();
                     return;
-                } else if (Input.isTriggered('right') || this.isKeyPressed('KeyD')) {
+                } else if (Input.isTriggered('right')) {
                     this.changeMonth(1);
                     SoundManager.playCursor();
                     return;
@@ -1688,25 +1571,11 @@
             }
         }
 
-        isKeyPressed(key) {
-            return Input._currentState && Input._currentState[key] &&
-                (!Input._previousState || !Input._previousState[key]);
-        }
-
-        update() {
-            super.update();
-
-            // Custom handling for W/S keys for news navigation - but don't interfere with normal scrolling
-            if (this.isOpenAndActive()) {
-                if (this.isKeyPressed('KeyS') && !Input.isRepeated('down')) {
-                    this.cursorDown(false);
-                    SoundManager.playCursor();
-                } else if (this.isKeyPressed('KeyW') && !Input.isRepeated('up')) {
-                    this.cursorUp(false);
-                    SoundManager.playCursor();
-                }
-            }
-        }
+        // W and S used to be read here by browser key code, out of
+        // Input._currentState - a table RMMZ keys by input NAME ("ok", "down"),
+        // never by "KeyW", so the branch never once fired. The letters reach
+        // this list the way every other screen gets them: the key mapper turns
+        // them into up and down before a window ever sees them.
 
         changeMonth(direction) {
             const newMonth = this._currentMonth + direction;

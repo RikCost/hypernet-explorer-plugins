@@ -1385,6 +1385,28 @@
       return [Math.round(r), Math.round(g), Math.round(b)];
     }
 
+    // What o'clock it is in the sky, which is only the same thing as what
+    // o'clock it is on the clock while the party is on Earth. Returns Earth's
+    // own hour whenever there is no alien world under their feet, so nothing
+    // about the ordinary game changes.
+    _skyHourFloat(gameDate) {
+      const earthHour = gameDate.hours + gameDate.minutes / 60;
+      const GS = window.GalaxySim;
+      if (!GS || !GS.getSurfacePlanet || !GS.localHourFor) return earthHour;
+      const lp = GS.getSurfacePlanet();
+      if (!lp || !lp.day) return earthHour;
+      // Elapsed Earth minutes, not the hour of the day: a world whose day is not
+      // a whole number of Earth hours has to be counted from the start of time,
+      // or its dawn would jump every midnight.
+      // Variable 114 counts game minutes from an epoch of 10:00, and the 3D
+      // world reads it the same way with the same 600 added: the two skies have
+      // to agree about what time it is over the same planet.
+      const total = ((typeof $gameVariables !== "undefined" && $gameVariables)
+        ? $gameVariables.value(114) : 0) + 600;
+      const local = GS.localHourFor(lp, total);
+      return (local == null) ? earthHour : local;
+    }
+
     // --- MODIFICATION START ---
     // Modified function to handle interior and exterior tinting rules
     updateTimeOfDayTint(force = false) {
@@ -1407,7 +1429,16 @@
         // Apply time-of-day tint ONLY for exteriors (always using full cycle mode)
         // Smooth tint transition based on current hour and minutes
         const gameDate = getGameDateFromVariable();
-        const currentHourFloat = gameDate.hours + gameDate.minutes / 60;
+        // The hour the SKY is at. On Earth that is simply the hour on the clock.
+        // On another world it is that world's own rotation instead: a planet
+        // with a six hour day runs through four dawns while an Earth day passes,
+        // and one that is tidally locked to its star never moves off the single
+        // hour its landing longitude put it at - permanent noon on the near
+        // side, permanent midnight on the far side, an unfinishing sunset on the
+        // terminator between them. The CLOCK itself is not touched by any of
+        // this: TimeDateSystem stays on Earth hours everywhere, for hunger,
+        // sleep, the calendar and every schedule in the game. This reads it.
+        const currentHourFloat = this._skyHourFloat(gameDate);
 
         // Get tint for current hour (with smooth interpolation within the hour)
         const [timeTintR, timeTintG, timeTintB] =
@@ -2830,5 +2861,122 @@
       const key = 'Weather.name.' + String(id || 'Unknown');  // i18n-ignore  weather id fallback
       return T.has(key) ? T(key) : String(id || '');
     }
+  };
+
+  //===========================================================================
+  // Exposure: the temperature, felt
+  //===========================================================================
+  // This plugin has always simulated temperature properly - per country, per
+  // season, day and night curves, per weather type, with <BaseTemp:> overrides -
+  // and written it to variable 61, where exactly one thing read it: the hunger
+  // drain in TimeDateSystem. A number on the HUD and nothing else.
+  //
+  // What it costs now is stated here, so that the body, the status screen and
+  // anything else that wants to know all ask the same question.
+  //
+  //   - The comfortable band is the same 12-26 C the hunger multiplier uses,
+  //     because it is the same physiology.
+  //   - Outside it, severity climbs to 1 at 20 degrees past either edge.
+  //   - WHAT THE PARTY IS WEARING is the other half. Weight is the honest proxy
+  //     the database already carries: a heavy kit is warm, which is what you
+  //     want at -15 and exactly what you do not want at 40. So the same armour
+  //     that saves a character in the tundra is what fells them in the desert.
+  //   - Indoors nobody is exposed. `<Interior>` maps only take the tint.
+  //
+  // Cold takes the hands and the feet first, so it is dexterity and then the
+  // swing. Heat takes the head and the wind, so it is concentration and then
+  // stamina. Both are on the 1-20 ability scale and both are small, because
+  // this is meant to be a reason to dress for the trip and buy a room for the
+  // night, not a second health bar.
+  const COMFORT_MIN = 12;
+  const COMFORT_MAX = 26;
+  // Degrees past the comfortable band at which exposure is as bad as it gets.
+  const EXPOSURE_RANGE = 20;
+  // Kit weight in grams at which a character is dressed for anything.
+  const FULL_INSULATION_GRAMS = 12000;
+  // The most insulation can do either way: warm kit halves the cold and adds
+  // half again to the heat.
+  const INSULATION_RELIEF = 0.5;
+  const INSULATION_PENALTY = 0.5;
+  const EXPOSURE_DEBUFFS = {
+    cold: { agi: -3, atk: -2, mat: -1 },
+    heat: { mat: -3, agi: -2, def: -1 },
+  };
+  const EXPOSURE_PARAM_KEYS = ['mhp', 'mmp', 'atk', 'def', 'mat', 'mdf', 'agi', 'luk'];
+  // The same variable updateTemperature() writes (see the header, and :1309).
+  const TEMPERATURE_VARIABLE = 61;
+
+  window.WeatherExposure = {
+    // Degrees celsius where the party is standing, or null if nobody is keeping
+    // a thermometer (the plugin's own variable, so this is always answered).
+    temperature() {
+      if (typeof $gameVariables === 'undefined' || !$gameVariables) return null;
+      const t = Number($gameVariables.value(TEMPERATURE_VARIABLE));
+      return Number.isFinite(t) ? t : null;
+    },
+
+    // Inside is inside. A roofed map is tinted by temperature but nobody
+    // standing in it is out in the weather.
+    isSheltered() {
+      if (typeof $gameMap === 'undefined' || !$gameMap) return true;
+      try {
+        const meta = ($dataMap && $dataMap.meta) || {};
+        if (meta.Interior) return true;
+        if (typeof window.isProceduralInteriorMap === 'function' &&
+            window.isProceduralInteriorMap($gameMap.mapId())) return true;
+      } catch (e) { /* an unreadable map is treated as open sky */ }
+      return false;
+    },
+
+    // How much of the kit a character has on, 0..1.
+    insulationOf(actor) {
+      const utils = window.ItemSystemUtils;
+      if (!actor || !utils || typeof utils.getItemWeight !== 'function') return 0;
+      let grams = 0;
+      try {
+        for (const piece of actor.equips() || []) {
+          if (piece && !DataManager.isWeapon(piece)) grams += utils.getItemWeight(piece);
+        }
+      } catch (e) { return 0; }
+      return Math.max(0, Math.min(1, grams / FULL_INSULATION_GRAMS));
+    },
+
+    // { kind: 'cold'|'heat'|null, severity: 0..1 } for one character, with what
+    // they are wearing already taken into account.
+    exposureOf(actor) {
+      const none = { kind: null, severity: 0 };
+      if (this.isSheltered()) return none;
+      const t = this.temperature();
+      if (t === null) return none;
+      const kind = t < COMFORT_MIN ? 'cold' : (t > COMFORT_MAX ? 'heat' : null);
+      if (!kind) return none;
+      const past = kind === 'cold' ? COMFORT_MIN - t : t - COMFORT_MAX;
+      let severity = Math.max(0, Math.min(1, past / EXPOSURE_RANGE));
+      const insulation = this.insulationOf(actor);
+      severity *= kind === 'cold'
+        ? (1 - INSULATION_RELIEF * insulation)
+        : (1 + INSULATION_PENALTY * insulation);
+      return { kind, severity: Math.max(0, Math.min(1, severity)) };
+    },
+
+    // What exposure costs one param. Rounded away from zero so the first bite of
+    // a cold snap is felt rather than rounded off.
+    paramDelta(actor, paramId) {
+      const key = EXPOSURE_PARAM_KEYS[paramId];
+      if (!key) return 0;
+      const { kind, severity } = this.exposureOf(actor);
+      if (!kind || severity <= 0) return 0;
+      const table = EXPOSURE_DEBUFFS[kind];
+      if (!table || !table[key]) return 0;
+      const raw = table[key] * severity;
+      return raw < 0 ? -Math.max(1, Math.round(-raw)) : Math.max(1, Math.round(raw));
+    },
+  };
+
+  const _Game_Actor_paramPlus_Weather = Game_Actor.prototype.paramPlus;
+  Game_Actor.prototype.paramPlus = function (paramId) {
+    let v = _Game_Actor_paramPlus_Weather.call(this, paramId);
+    try { v += window.WeatherExposure.paramDelta(this, paramId); } catch (e) { /* a stat is not worth a crash */ }
+    return v;
   };
 })();

@@ -214,9 +214,6 @@
     return el || 0;
   };
 
-  const isUnarmed = (actor) =>
-    actor.weapons && actor.weapons().filter((w) => w).length === 0;
-
   const equippedWeaponTypes = (actor) =>
     actor.weapons
       ? actor
@@ -345,13 +342,18 @@
     needs: { hungerMult: 0.7, sleepMult: 0.7 },
   });
   reg(16, {
-    // Brawler
+    // Gunmancer: the spell is loaded into the chamber, so the bonus belongs to
+    // the firearm rather than to the fist, and firing one feeds the caster back.
     outgoing(actor, target, action, value) {
-      return isUnarmed(actor) ? value * 1.25 : value;
+      return equippedWeaponTypes(actor).indexOf(WTYPE_GUN) >= 0 ? value * 1.25 : value;
     },
-    xparam(actor, xparamId, base) {
-      // counterAttack (6) while unarmed
-      return xparamId === 6 && isUnarmed(actor) ? base + 0.15 : base;
+    afterAction(actor) {
+      if (equippedWeaponTypes(actor).indexOf(WTYPE_GUN) < 0) return;
+      const before = actor.mp;
+      actor.gainMp(Math.max(2, Math.floor(actor.mmp * 0.03)));
+      if (actor.mp > before) {
+        battleLog(T("BattlePassives.log.chamberedMana", { actor: actor.name() }));
+      }
     },
   });
   reg(17, {

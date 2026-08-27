@@ -14,6 +14,7 @@
   "weapon": "Arma",
   "spirit": "Spirito",
   "type": "Tipo",
+  "elementLabel": "Elemento",
   "element": {
     "1": "Fisico",
     "2": "Fuoco",

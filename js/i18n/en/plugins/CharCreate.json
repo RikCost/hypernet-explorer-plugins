@@ -56,6 +56,11 @@
   "chooseYourBirthDate": "Choose your birth date",
   "addAnotherPartyMember": "Add another party member?",
   "chooseYourOrigin": "Choose your origin",
+  "chooseYourVehicle": "Choose your vehicle",
+  "confirmParty": "Confirm party",
+  "noCompanion": "No companion",
+  "petKindNone": "Alone",
+  "noCompanionDesc": "Set out with nobody at your heel. The seat stays open for whoever you meet.",
   "noDefiningTraits": "No defining traits",
   "noSkillsLearned": "No skills learned",
   "noSpecializations": "No specializations",
@@ -220,6 +225,30 @@
   "humanoidSpecies": "HUMANOID SPECIES",
   "searchSpecies": "Search species...",
   "choice": {
+    "vehicleBroom": {
+      "name": "Flying broom",
+      "desc": "A broom that answers to nobody's road. It ignores walls, water and cliffs alike, and lands wherever it likes."
+    },
+    "vehicleCar": {
+      "name": "Car",
+      "desc": "A utilitarian car, parked at the edge of the village. Fast over open ground, and it drinks fuel."
+    },
+    "vehicleCamper": {
+      "name": "Camper",
+      "desc": "A van you can live in: a bed, a stove and everything you own, wherever you decide to stop."
+    },
+    "vehicleBoat": {
+      "name": "Boat",
+      "desc": "An inflatable dinghy, moored down at the water. Costs nothing to run, and it goes only where there is water."
+    },
+    "vehicleBike": {
+      "name": "Bike",
+      "desc": "A bicycle, leaning where you left it. No fuel, no upkeep, and it follows every road there is."
+    },
+    "vehicleStarship": {
+      "name": "Starship",
+      "desc": "A ship that leaves the ground altogether. No roadside pump will ever fill it."
+    },
     "originDeserter": {
       "name": "Deserter",
       "desc": "Choose a faction you deserted from: begin with 40 of its troops, but hated by it (and its parent faction)."
@@ -709,23 +738,6 @@
   "supplies": "Supplies",
   "nothingButTheKey": "None. The key is everything you carry.",
   "primaryLocked": "Primary (fixed)",
-  "controls": {
-    "up": "Move Up",
-    "down": "Move Down",
-    "left": "Move Left",
-    "right": "Move Right",
-    "action": "Action",
-    "back": "Back",
-    "run": "Run",
-    "menu": "Menu",
-    "leftClick": "Left Click",
-    "rightClick": "Right Click",
-    "holdShift": "Hold Shift",
-    "openMap": "Open the map",
-    "hotbarCycle": "Change hotbar item",
-    "visitPlace": "Visit this place",
-    "zoom": "Zoom in and out"
-  },
   "theHypernetPoint": "The Hypernet Point, the terminal room of the Omega Tower",
   "components": "Components",
   "componentsCarried": "{count} loose Hyperdeck parts",
@@ -761,6 +773,7 @@
   "suggestSpecs": "Suggested",
   "resetSpecs": "Reset",
   "applyToMember": "Apply to Current Member",
+  "beginAdventure": "Begin Adventure",
   "embarkWithPreset": "Embark with Preset",
   "budgetPoints": "Budget: {remaining} / {total} pts",
   "bodyParts": "Body parts",
@@ -961,5 +974,22 @@
   "noPersonalEquipment": "No personal equipment",
   "preset": "Preset",
   "presetDossiers": "Preset Dossiers",
-  "onlyOnePreset": "Only 1 preset character allowed in the party"
+  "onlyOnePreset": "Only 1 preset character allowed in the party",
+  "romanceTab": "Romance & Bonds",
+  "romance": {
+    "romanticOrientation": "Romantic Orientation",
+    "sexualOrientation": "Sexual Orientation",
+    "kinseyScale": "Kinsey Scale Placement",
+    "kinseyLabel": "Kinsey",
+    "style": "Preferred Relationship Style",
+    "bonds": "Standing With The Rest Of The Party",
+    "bondsTitle": "Ties Already Held",
+    "noBonds": "This one starts out tied to nobody in the party.",
+    "noOthers": "Nobody else has been created yet. Add a second member and their standing with this one can be set here.",
+    "ofPopulation": "of the population",
+    "esoteric": "esoteric",
+    "summaryTitle": "Attachment Record",
+    "summaryPara1": "<b>{name}</b> falls in love as a <b>{romantic}</b> and desires as a <b>{sexual}</b>, and holds to a <b>{style}</b> way of being tied to somebody.",
+    "summaryPara2": "On the Kinsey scale they are recorded at step <b>{kinsey}</b>:"
+  }
 }

@@ -717,26 +717,6 @@
           this._multiAttackHitCount = 0;
           this._skillAnimations = null;
         }
-      } else if (action.isSkill()) {
-        // Check if skill has Movement animations
-        const skill = action.item();
-        if (
-          skill &&
-          skill.weaponAnimations &&
-          skill.weaponAnimations.length > 0
-        ) {
-          this._lastAttacker = subject;
-          this._multiAttackHitCount = 0;
-          this._skillAnimations = skill.weaponAnimations;
-          debugLog(
-            `Skill ${skill.name} has animations:`,
-            this._skillAnimations
-          );
-        } else {
-          this._lastAttacker = null;
-          this._multiAttackHitCount = 0;
-          this._skillAnimations = null;
-        }
       } else {
         this._lastAttacker = null;
         this._multiAttackHitCount = 0;

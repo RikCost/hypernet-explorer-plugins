@@ -490,7 +490,7 @@
         : CGx.isMonster(key) ? T("CardGame.type.monster")
           : CGx.isWeapon(key) ? T("CardGame.type.weapon") : T("CardGame.type.armor");
       host.innerHTML = `
-        <h3 style="margin:0 0 2px; color:#58180D">${escapeHtml(CGx.nameOf(key))}</h3>
+        <h3 style="margin:0 0 2px; color:var(--text-primary-hover)">${escapeHtml(CGx.nameOf(key))}</h3>
         <div class="cc-sub" style="margin-bottom:6px">${escapeHtml(type)} &middot; ${escapeHtml(CGx.rarityName(CGx.rarityOf(key)))}${
           effect ? "" : ` &middot; ${escapeHtml(T("CardGame.col.power", { n: CGx.statTotal(stats) }))}`}</div>
         <div class="cc-art" id="cc-art"></div>

@@ -382,8 +382,13 @@
         y: 0
       },
       sprites: {
-        normal: { name: 'Vehicles/!$Broom', index: 0 },  // i18n-ignore  sprite asset path
-        riding: { name: 'Vehicles/!$Broom', index: 0 }  // i18n-ignore  sprite asset path
+        normal: { name: 'Vehicles/!$BroomStick', index: 0 },  // i18n-ignore  sprite asset path
+        riding: { name: 'Vehicles/!$BroomStickRiding', index: 0 },  // i18n-ignore  sprite asset path
+        // A broom flown by someone whose class is `<Nature: Magical>` (a Witch,
+        // a Nun, a Convoker) is drawn in the pointed hat and robes instead of
+        // the hard hat: the leader's class dresses the whole party (see
+        // ridingSprite()).
+        ridingArcane: { name: 'Vehicles/!$BroomStickRidingArcane', index: 0 }  // i18n-ignore  sprite asset path
       },
       refuelEvent: 0,
       storageEvent: 0,
@@ -495,6 +500,32 @@
     if (!config || !config.sprites) return null;
     const isMap315 = $gameMap.mapId() === 315;
     return isMap315 ? config.sprites.normal : (config.sprites.large || config.sprites.normal);
+  }
+
+  /**
+   * The sheet a vehicle that is RIDDEN rather than sat in wears, or null when it
+   * has none (a car is not ridden). A vehicle may declare a second riding sheet
+   * for a magical rider, `ridingArcane`: the broom is flown in a witch's hat by
+   * anyone whose class carries `<Nature: Magical>` and in a workman's hard hat
+   * by everyone else. The PARTY LEADER decides it, not each rider, so a flight
+   * reads as one party under one broom-master rather than a costume per body.
+   */
+  function ridingSprite(config) {
+    if (!config || !config.sprites || !config.sprites.riding) return null;
+    const arcane = config.sprites.ridingArcane;
+    if (arcane && isMagicalLeader()) return arcane;
+    return config.sprites.riding;
+  }
+
+  /** True when the party leader's class is tagged `<Nature: Magical>`. */
+  function isMagicalLeader() {
+    const leader = $gameParty && $gameParty.leader();
+    const klass = (leader && typeof leader.currentClass === 'function') ? leader.currentClass() : null;
+    if (!klass) return false;
+    if (window.MagicNature && typeof window.MagicNature.isMagicalData === 'function') {
+      return window.MagicNature.isMagicalData(klass);
+    }
+    return /<Nature:\s*Magical\s*>/i.test(klass.note || '');
   }
 
   /**
@@ -1085,13 +1116,12 @@
   }
 
   /**
-   * True when the tile is navigable by the Boat (inflatable dinghy).
-   * The boat is water-only: it may sit on open-water terrain (tag 3) but ONLY on
-   * the world map (315) and the procedural map (636), on region 99 water on
-   * ANY map, or on a world-map river tile. Every other tile (dry land, blocked
-   * water region 10, etc.) is off-limits.
+   * True when the tile is open water in its own right: open-water terrain (tag 3)
+   * but ONLY on the world map (315) and the procedural map (636), region 99 water
+   * on ANY map, or a world-map river tile. Every other tile (dry land, blocked
+   * water region 10, etc.) is not water.
    */
-  function isBoatPassableTile(x, y) {
+  function isBoatWaterTile(x, y) {
     if (!$gameMap.isValid(x, y)) return false;
     if ($gameMap.regionId(x, y) === 10) return false;
     if ($gameMap.regionId(x, y) === 99) return true;
@@ -1099,6 +1129,50 @@
     const mapId = $gameMap.mapId();
     if ((mapId === 315 || mapId === proceduralMapId()) && $gameMap.terrainTag(x, y) === 3) return true;
     return false;
+  }
+
+  // How far a bridge deck may run before the search for the water on the far
+  // side of it gives up. No bridge in the project is anywhere near this wide.
+  const BRIDGE_SPAN_LIMIT = 16;
+
+  /**
+   * True when the tile is a bridge deck (region 12) thrown ACROSS a waterway, so
+   * the boat passes underneath it exactly as a swimmer does (the on/under layer
+   * itself belongs to Map/MovementInteractionSystem.js). The water is painted
+   * over with the deck's region, so the tile no longer reads as water at all,
+   * which is what would otherwise dam a river at every bridge.
+   *
+   * The run of deck tiles the tile belongs to must come out on open water at
+   * BOTH ends of one axis, so a dry overpass, a deck that merely touches a bank
+   * and a bridge approached along its length are all still refused: only the
+   * span actually laid over the water is navigable.
+   */
+  function isUnderBridgeCrossing(x, y) {
+    if (!$gameMap.isValid(x, y) || $gameMap.regionId(x, y) !== 12) return false;
+    const endsOnWater = (dx, dy) => {
+      let cx = x;
+      let cy = y;
+      for (let i = 0; i < BRIDGE_SPAN_LIMIT; i++) {
+        cx += dx;
+        cy += dy;
+        if (!$gameMap.isValid(cx, cy)) return false;
+        if ($gameMap.regionId(cx, cy) !== 12) return isBoatWaterTile(cx, cy);
+      }
+      return false;
+    };
+    return (endsOnWater(-1, 0) && endsOnWater(1, 0)) ||
+           (endsOnWater(0, -1) && endsOnWater(0, 1));
+  }
+
+  /**
+   * True when the tile is navigable by the Boat (inflatable dinghy): open water,
+   * or the underside of a bridge deck laid across it.
+   */
+  function isBoatPassableTile(x, y) {
+    if (!$gameMap.isValid(x, y)) return false;
+    if ($gameMap.regionId(x, y) === 10) return false;
+    if (isBoatWaterTile(x, y)) return true;
+    return isUnderBridgeCrossing(x, y);
   }
 
   /**
@@ -1614,17 +1688,32 @@
 
   class PositionFinder {
     static findNearPlayer(character) {
-      return this.findValidPosition($gamePlayer.x, $gamePlayer.y, character);
+      // Summoned IN FRONT of whoever asked for it. The search used to try south,
+      // west, east and north in that fixed order whatever way the player was
+      // facing, so a vehicle called up while walking north appeared behind them
+      // and had to be walked round.
+      return this.findValidPosition($gamePlayer.x, $gamePlayer.y, character,
+        $gamePlayer.direction());
     }
 
-    static findValidPosition(targetX, targetY, character) {
-      const adjacent = this._checkAdjacent(targetX, targetY, character);
+    static findValidPosition(targetX, targetY, character, facing) {
+      const adjacent = this._checkAdjacent(targetX, targetY, character, facing);
       if (adjacent) return adjacent;
       return this._spiralSearch(targetX, targetY, character);
     }
 
-    static _checkAdjacent(x, y, character) {
-      const directions = [2, 4, 6, 8];
+    // The tile in front comes first, then the two beside, then the one behind:
+    // a vehicle should appear where you are looking, and only end up behind you
+    // when there is nowhere else for it to stand.
+    static _facingOrder(facing) {
+      const BEHIND = { 2: 8, 4: 6, 6: 4, 8: 2 };
+      const BESIDE = { 2: [4, 6], 4: [2, 8], 6: [2, 8], 8: [4, 6] };
+      if (!BEHIND[facing]) return [2, 4, 6, 8];
+      return [facing, ...BESIDE[facing], BEHIND[facing]];
+    }
+
+    static _checkAdjacent(x, y, character, facing) {
+      const directions = this._facingOrder(facing);
       for (const d of directions) {
         const nx = $gameMap.roundXWithDirection(x, d);
         const ny = $gameMap.roundYWithDirection(y, d);
@@ -1671,6 +1760,11 @@
       if (isFlyingVehicle(character)) {
         return isFlyingLandingTile(x, y);
       }
+      // A bridge deck is drivable by everything that rolls or floats (see
+      // Game_Vehicle.isMapPassable), so it is a park and return spot for them
+      // too: a vehicle left on a bridge is still on it when the party comes
+      // back, instead of being evicted the next time the map loads.
+      if ($gameMap.isValid(x, y) && $gameMap.regionId(x, y) === 12) return true;
       // The Boat can only ever park/spawn on navigable water (see isBoatPassableTile).
       if (isBoatSubType(character)) {
         return isBoatPassableTile(x, y);
@@ -1899,6 +1993,15 @@
       // above the interior rule below because a corridor wall is exactly the
       // sort of thing it is meant to go straight over.
       if (isFlyingVehicle(this)) return $gameMap.isValid(x2, y2);
+
+      // A bridge deck (region 12) is always drivable. Everything that rolls or
+      // floats crosses a bridge, indoors or out, whatever the tile's own
+      // passability, its terrain tag or the water rules below would otherwise
+      // say about it: a bridge exists to be crossed, and a deck that turned a
+      // vehicle back would cut the road it carries in half. The two that fly
+      // are the exceptions that never needed the rule, the Broom answered just
+      // above and the Starship a few lines down.
+      if (!this.isAirship() && $gameMap.regionId(x2, y2) === 12) return true;
 
       // Indoors (a house, a dungeon, a cave) every vehicle simply goes wherever
       // the player could walk: the outdoor terrain-tag whitelist below describes
@@ -2739,28 +2842,38 @@
 
   /**
    * Launches the 3D camper road-driving scene ("liminal drive") from
-   * CamperDrivingSystem.js and initializes it with the player actively driving
+   * VoxelWorldSystem.js and initializes it with the player actively driving
    * the camper (car view mode) rather than the default first-person interior view.
-   * Camper-only; safely no-ops if CamperDrivingSystem is not loaded.
+   * Camper-only; safely no-ops if VoxelWorldSystem is not loaded.
    */
-  function engageLiminalDrive() {
-    if (!window.CamperDrivingSystem || typeof window.CamperDrivingSystem.start !== 'function') {
+  function engageLiminalDrive(config) {
+    if (!window.VoxelWorldSystem || typeof window.VoxelWorldSystem.start !== 'function') {
       showLocalizedMessage(T('VehicleSystem.liminalUnavailable'));
       return;
     }
-    window.CamperDrivingSystem.start(60, T('VehicleSystem.liminalDrive'), 100);
-    const scene = window.CamperDrivingSystem._scene;
+    // Whichever vehicle asked for it goes out there: the 3D world drives it as
+    // itself (VoxelWorldCore's VEHICLE_DRIVE says how fast, whether it has a
+    // boost, and whether that boost bends space), and draws it as itself.
+    window.VoxelWorldSystem.start(60, T('VehicleSystem.liminalDrive'), 100,
+      upgradeTypeForConfig(config));
+    const scene = window.VoxelWorldSystem._scene;
     if (scene && typeof scene._setMode === 'function') {
       scene._setMode('car');
     }
   }
 
   /**
-   * True only for the Camper config when the CamperDrivingSystem is available.
+   * True only for the Camper config when the VoxelWorldSystem is available.
    * Gates the "Engage liminal drive" menu option.
    */
+  // Every vehicle the party owns can be taken into the 3D world, not only the
+  // camper: the world knows how to drive each of them (VEHICLE_DRIVE) and how to
+  // draw each of them (window.VehicleModels).
   function canEngageLiminalDrive(config) {
-    return !!(config && config.name === 'Camper' && window.CamperDrivingSystem);  // i18n-ignore  vehicle id
+    if (!config || !window.VoxelWorldSystem) return false;
+    const key = upgradeTypeForConfig(config);
+    const drive = window.VoxelWorld && window.VoxelWorld.VEHICLE_DRIVE;
+    return !!(key && (!drive || drive[key]));
   }
 
   // ============================================================================
@@ -2957,10 +3070,10 @@
       handlers.push(() => window.GalaxySim.openShipAppearance());
     }
 
-    // Camper only: launch the 3D road scene with the player driving the camper.
+    // Take this vehicle out into the 3D world and drive it there.
     if (canEngageLiminalDrive(config)) {
       choices.push(T('VehicleSystem.engageLiminal'));
-      handlers.push(() => engageLiminalDrive());
+      handlers.push(() => engageLiminalDrive(config));
     }
 
     // Bike and Broom only: stow the parked vehicle back into the pack as an item.
@@ -3081,10 +3194,10 @@
       handlers.push(() => window.GalaxySim.openShipAppearance());
     }
 
-    // Camper only: launch the 3D road scene with the player driving the camper.
+    // Take this vehicle out into the 3D world and drive it there.
     if (canEngageLiminalDrive(config)) {
       choices.push(T('VehicleSystem.engageLiminal'));
-      handlers.push(() => engageLiminalDrive());
+      handlers.push(() => engageLiminalDrive(config));
     }
 
     // Every motorized vehicle has a radio (the human-powered bike does not).
@@ -3976,6 +4089,15 @@
       PluginCommands._saveAndTravel(VehicleConfig.AIRSHIP, opts);
     },
 
+    // The maintenance key ('camper' | 'car' | 'bike' | 'boat' | 'broom' |
+    // 'airship') of the vehicle the party is at the wheel of, or null on foot.
+    // Whatever just ran into something wants to know what it is, so it can be
+    // billed for it (BattleSystemEnhancedEncounters' vehicle hit).
+    riddenVehicleKey() {
+      if (!isPlayerRidingCustomVehicle()) return null;
+      return upgradeTypeForConfig(vehicleManager.getConfig($gamePlayer.vehicle()));
+    },
+
     // Live fuel of the vehicle the player is currently riding, or null when on
     // foot / in a fuel-free vehicle. Consumed by the travel HUD (TimeDateSystem.js)
     // to render the fuel as an HTML bar instead of the old top-left gauge.
@@ -4068,6 +4190,16 @@
     },
 
     // Every vehicle the party owns (holds the summoning item for), in menu order.
+    // Where a vehicle's own inside is, for anything that has to put the party
+    // aboard it without walking them through a door: the 3D world does exactly
+    // that when a starship is flown out of the atmosphere.
+    interiorFor(key) {
+      const c = configByVehicleKey(key);
+      const i = c && c.interior;
+      if (!i || !i.mapId) return null;
+      return { mapId: i.mapId, x: i.x, y: i.y, direction: i.direction || 0 };
+    },
+
     getOwnedVehicles() {
       return VEHICLE_MENU_CONFIGS.filter(ownsVehicleConfig).map(vehicleMenuInfo);
     },
@@ -4220,8 +4352,9 @@
       if (this._driving) {
         // A vehicle that is ridden rather than sat in (the Bike, the Broom) has
         // a second sheet showing it with its rider aboard.
-        if (config.sprites.riding) {
-          return config.sprites.riding.name;
+        const ridden = ridingSprite(config);
+        if (ridden) {
+          return ridden.name;
         }
         const spriteInfo = selectVehicleSprite(config);
         if (spriteInfo) {
@@ -4237,8 +4370,9 @@
     const config = vehicleManager.getConfig(this);
     if (config) {
       if (this._driving) {
-        if (config.sprites.riding) {
-          return config.sprites.riding.index || 0;
+        const ridden = ridingSprite(config);
+        if (ridden) {
+          return ridden.index || 0;
         }
         const spriteInfo = selectVehicleSprite(config);
         if (spriteInfo) {
@@ -4276,8 +4410,7 @@
     // accord (Map/MovementInteractionSystem.js) is swimming or climbing, not
     // cycling: a bicycle drawn in the middle of a lake is worse than no bicycle.
     if (follower && (follower._isSwimming || follower._isClimbing)) return null;
-    const config = riddenPortableConfig();
-    return (config && config.sprites.riding) || null;
+    return ridingSprite(riddenPortableConfig());
   }
 
   const _Game_Follower_characterName = Game_Follower.prototype.characterName;

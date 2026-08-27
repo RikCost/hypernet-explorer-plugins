@@ -49,7 +49,7 @@
   "extra": "Extra: ",
   "special2": "Speciale: ",
   "elem": "Elem.: ",
-  "debuff": "Indebolimento: ",
+  "debuffRate": "Indebolimento: ",
   "equip": "Equip: ",
   "dualWielding": "Doppia impugnatura",
   "weaponType": "Tipo Arma ",
@@ -181,5 +181,17 @@
   "medicineMore": "e altre {count}",
   "nature": "Natura",
   "natureMagical": "Magica",
-  "natureMundane": "Mondana"
+  "natureMundane": "Mondana",
+  "unitPrice": "Prezzo unitario",
+  "unitSellValue": "Valore di vendita",
+  "basePrice": "Prima del mercato",
+  "oilIndex": "Indice PETROLIO",
+  "soulIndex": "Indice ANIMA",
+  "marketUp": "+{percent}% oggi",
+  "marketOff": "{percent}% di sconto oggi",
+  "refused": {
+    "title": "Non serviti",
+    "notorious": "Il negoziante guarda la tua faccia, poi la porta. Quanto valga il tuo nome, non vale la seccatura di farsi vedere a venderti qualcosa.",
+    "standing": "Il negoziante incrocia le braccia. Qui la voce su di voi ha girato, e il banco resta chiuso."
+  }
 }

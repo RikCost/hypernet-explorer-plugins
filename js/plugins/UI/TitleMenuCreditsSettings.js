@@ -156,7 +156,13 @@
                 { name: '42 Snow and Gravel Footsteps', by: 'Corsica_S, extracted by qubodup', urls: ['opengameart.org/content/42-snow-and-gravel-footsteps'] },
                 { name: 'concrete footsteps 1.wav', by: 'patchytherat', urls: ['freesound.org/people/patchytherat/sounds/535052/'] },
                 { name: 'footsteps concrete', by: 'Yuval', urls: ['freesound.org/people/Yuval/sounds/205748/'] },
-                { name: 'Footsteps - Stone, Rock, Concrete, Cement', by: 'SecureSubset', urls: ['freesound.org/people/SecureSubset/sounds/813622/'] }
+                { name: 'Footsteps - Stone, Rock, Concrete, Cement', by: 'SecureSubset', urls: ['freesound.org/people/SecureSubset/sounds/813622/'] },
+                // The 3D world speaks with the same voice as the 2D one: every
+                // blow, every cube coming apart, every block set down and every
+                // landing is played out of the footstep material library above
+                // (js/db/WorldGen/FootstepMaterials.json), so the CC0 and CC-BY
+                // packs credited here carry the voxel world as well.
+                { name: '3D world material sounds (digging, building, landing)', by: 'the CC0 / CC-BY footstep packs above', urls: ['opengameart.org/'] }
             ]
         },
         {

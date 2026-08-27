@@ -85,6 +85,7 @@
         results: [],
         resultsKey: '',      // signature the cached results were built from
         pending: null,       // { action: 'use' | 'equip', row } while picking a target
+        pendingIndex: 0,     // which party member the picker's cursor is on
         focusInput: false
     };
 
@@ -419,7 +420,8 @@
     // The party members a thing can be used on or worn by.
     function targetPickerHTML(title) {
         const rows = $gameParty.members().map((actor, idx) => `
-            <div class="target-option focusable" onclick="window.MenuSearch.applyTarget(${idx})">
+            <div class="target-option focusable${idx === state.pendingIndex ? ' selected' : ''}"
+                 onclick="window.MenuSearch.applyTarget(${idx})">
                 ${escapeHtml(actor.name())} (HP: ${actor.hp}/${actor.mhp})
             </div>`).join('');
         return `
@@ -964,8 +966,32 @@
         // menu's own navigator finds nothing focusable on this page, so the two
         // never fight over a keypress; cancel stays its business, and closes the
         // search through backOutOneLevel.
+        // Choosing WHO a thing lands on. The picker used to be the one part of
+        // this page with no keyboard at all: browsing bailed out the moment a
+        // pick was pending, so the party chips could only be clicked.
+        updatePendingInput() {
+            if (!state.opened || !state.pending) return;
+            const members = $gameParty.members();
+            if (!members.length) return;
+            if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+                this.cancelPending();
+                return;
+            }
+            let step = 0;
+            if (Input.isTriggered('down') || Input.isRepeated('down')) step = 1;
+            else if (Input.isTriggered('up') || Input.isRepeated('up')) step = -1;
+            if (step) {
+                state.pendingIndex = (state.pendingIndex + step + members.length) % members.length;
+                SoundManager.playCursor();
+                fullRefresh();
+                return;
+            }
+            if (Input.isTriggered('ok')) this.applyTarget(state.pendingIndex);
+        },
+
         updateBrowseInput() {
-            if (!state.opened || state.pending || !this.isBrowsing()) return;
+            if (state.pending) { this.updatePendingInput(); return; }
+            if (!state.opened || !this.isBrowsing()) return;
             if (state.justOpened) { state.justOpened = false; return; }
             const rows = state.results;
             if (!rows.length) return;
@@ -1006,6 +1032,7 @@
                 if (asksForOneAlly(obj)) {
                     SoundManager.playOk();
                     state.pending = { action: 'use', row: row };
+                    state.pendingIndex = 0;
                     fullRefresh();
                     return;
                 }
@@ -1017,6 +1044,7 @@
             if (action === 'equip') {
                 SoundManager.playOk();
                 state.pending = { action: 'equip', row: row };
+                    state.pendingIndex = 0;
                 fullRefresh();
                 return;
             }

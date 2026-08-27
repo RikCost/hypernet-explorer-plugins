@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc v1.1.0 Daggerfall-style procedural quest engine (multi-step, factions, deadlines). Exposes window.ProceduralQuests. [Claude]
+ * @plugindesc v1.2.0 Daggerfall-style procedural quest engine (multi-step, factions, deadlines) and the board the party posts their own contracts on. Exposes window.ProceduralQuests. [Claude]
  * @author Hypernet
  *
  * @help ProceduralQuestSystem.js
@@ -37,6 +37,29 @@
  * Every contract's terms (advance, deadline, penalty, breach bounty,
  * faction effects) are generated with the offer and disclosed before
  * acceptance. Scams lie.
+ *
+ * -----------------------------------------------------------------------
+ * Player-posted contracts
+ * -----------------------------------------------------------------------
+ * The party can pin their own notice up at any board (the Posted tab of
+ * QuestBoardUI). They choose the errand out of the same archetype list the
+ * generator draws from, or ask outright for goods; they choose the
+ * stationery of a hyperpower to have it written on; they name the purse,
+ * the smallest crew that may take it and the day it comes down.
+ *
+ * The whole reward is paid into escrow before the pin goes in, goods
+ * included, so a board notice is never a promise nobody has covered. A
+ * request's stars are not chosen: they are read off the price of what is
+ * being asked for, on the same ladder every other contract is graded on.
+ *
+ * The notice lives in the WORLD (save/worlds/<name>/playerquests.json), so
+ * every other savegame of that world reads it, and every kanban log in the
+ * world shows it. Anybody may take it: another playthrough's party (if it
+ * can field the crew), or the locals, who read the board once an in-game
+ * hour and are more likely to answer a generous purse than a mean one. A
+ * crew that takes it works for a while and either hands the job in or gives
+ * up and pins the notice back. The poster is told either way, through
+ * ParchmentToast, and collects what was brought in at any board.
  *
  * @command openQuestBoard
  * @text Open Quest Board
@@ -816,6 +839,38 @@
   // anonymous banks. Keys are Factions.json ids.
   const FACTION_VOICES = () => questBank('QuestNotices.factionVoices');
 
+  // Per hyperpower: the stationery a party can write their OWN notice on. Keys
+  // are the keys of js/db/WorldGen/Hyperpowers.json. A power is not a faction ,
+  // it is the thing factions answer to , so it keeps its own bank rather than
+  // borrowing one of its branches': the Holy Vatican Empire and the Inquisition
+  // that answers to it do not write the same poster. Each entry names the
+  // register it belongs to (VOICE_FAMILIES) and adds the two or three lines
+  // nobody else could have written.
+  const HYPERPOWER_VOICES = () => questBank('QuestNotices.hyperpowerVoices');
+
+  // Every power the party can write in the voice of, in Hyperpowers.json order,
+  // with the emblem and the localized name the picker draws them under.
+  function hyperpowerStyles() {
+    const banks = HYPERPOWER_VOICES();
+    const powers = (typeof $gameFactions !== "undefined" && $gameFactions?.getHyperpowers)
+      ? $gameFactions.getHyperpowers() : [];
+    const out = [];
+    for (const hp of powers) {
+      if (!banks[hp.name]) continue;      // no stationery authored for it yet
+      out.push({
+        key: hp.name,
+        label: $gameFactions.hyperpowerLabel ? $gameFactions.hyperpowerLabel(hp) : hp.name,
+        icon: $gameFactions.hyperpowerIcon ? $gameFactions.hyperpowerIcon(hp.id) : 0,
+      });
+    }
+    // A world whose factions never loaded still lets the party write: the banks
+    // themselves are the list, under their English keys.
+    if (!out.length) {
+      for (const key of Object.keys(banks)) out.push({ key, label: key, icon: 0 });
+    }
+    return out;
+  }
+
   // ==========================================================================
   // Elite contracts (four and five stars)
   //
@@ -1003,6 +1058,20 @@
   // thirty generic ones. pickVoiceLine weights the specific tier heavily so an
   // Archive notice reliably sounds like the Archive.
   function resolveVoice(o) {
+    // Stationery the party chose themselves outranks everything: the notice is
+    // written in that power's register whatever else the record says.
+    if (o.hyperpower) {
+      const hv = HYPERPOWER_VOICES()[o.hyperpower];
+      if (hv) {
+        const fam = VOICE_FAMILIES()[hv.family] || null;
+        return {
+          own: hv,
+          family: fam,
+          titlePrefix: hv.titlePrefix || (fam && fam.titlePrefix) || null,
+          transform: hv.transform || (fam && fam.transform) || null,
+        };
+      }
+    }
     if (o.giverPersonality && PERSONALITY_VOICES()[o.giverPersonality]) {
       const v = PERSONALITY_VOICES()[o.giverPersonality];
       return { own: v, family: null, titlePrefix: null, transform: null };
@@ -1139,7 +1208,17 @@
   function stepClearing(site, count) { return { kind: "clearing", site, count, cleared: 0, done: false }; }
   function stepDeliver(dest) { return { kind: "deliver_board", dest, done: false }; }
   function stepInterview(dest) { return { kind: "interview", dest, done: false }; }
-  function stepSupply(itemId, qty) { return { kind: "supply_items", itemId, qty, done: false }; }
+  // `goods` is "i" (an item, the generator's own only case), "w" or "a": a
+  // player-written request may ask for a weapon or a piece of armour, so the
+  // hand-over step has to say which shelf the thing is on. supplyObject() is the
+  // only place that is read.
+  function stepSupply(itemId, qty, goods) {
+    return { kind: "supply_items", itemId, qty, goods: goods || "i", done: false };
+  }
+
+  function supplyObject(s) {
+    return gearObject({ kind: s.goods || "i", id: s.itemId });
+  }
   function stepWait(hours) { return { kind: "wait_delivery", hours, done: false }; }
   function stepArena(count) { return { kind: "arena_wins", count, baseline: -1, done: false }; }
   function stepCull(count) { return { kind: "cull_kills", count, kills: 0, done: false }; }
@@ -1169,7 +1248,7 @@
       case "deliver_board": return T('Quests.deliverToTheQuestBoardOf') + s.dest;
       case "interview": return T('Quests.empathizeWithAnyCitizenOf') + s.dest;
       case "supply_items": {
-        const it = $dataItems[s.itemId];
+        const it = supplyObject(s);
         return T('Quests.handOver') + s.qty + "x " + (it ? it.name : "?") + T('Quests.atAnyQuestBoard');
       }
       case "wait_delivery": return T('Quests.waitForTheGoodsThenCollectAtAnyQuestBoard');
@@ -1187,13 +1266,20 @@
   // ==========================================================================
   // `forceDiff` of 4 or 5 produces the board's elite hunt: pure combat against
   // something far above the party (70-100 at four stars, 100-300 at five).
-  function buildOffer(boardKey, day, slot, forceDiff) {
+  //
+  // `draft` is the other way a notice comes into being: the party wrote it
+  // themselves at a board (see the player-posted contracts section). A draft
+  // names its own archetype, stars, objectives, purse and stationery, so the
+  // generator is used for the one thing it is still needed for , writing the
+  // notice , and every clause it would otherwise price is skipped.
+  function buildOffer(boardKey, day, slot, forceDiff, draft) {
     const rng = mulberry32(hashStr(worldSeed() + "|" + boardKey + "|" + day + "|" + slot));
     const L = medianLevel();
     const hasGalaxy = !!($gameSystem?.starMapData?.getAllSystems);
-    const elite = forceDiff >= 4;
-    let type = elite ? "elite_hunt" : pickType(rng, hasGalaxy);
-    const diff = elite ? forceDiff : irange(rng, 1, 3);
+    const forcedType = (draft && draft.type) ? draft.type : null;
+    const elite = forceDiff >= 4 && !forcedType;
+    let type = forcedType || (elite ? "elite_hunt" : pickType(rng, hasGalaxy));
+    const diff = forceDiff > 0 ? forceDiff : irange(rng, 1, 3);
     const diffMult = 1 + 0.5 * (diff - 1);
 
     const o = {
@@ -1203,6 +1289,9 @@
       scam: false,
       giverFaction: null, targetFaction: null, giverLabel: null, factionPlain: null,
       giverNpc: null, giverPersonality: null,
+      // The register the notice is written in when the party chose it
+      // themselves: a Hyperpowers.json key (see HYPERPOWER_VOICES).
+      hyperpower: draft ? (draft.hyperpower || null) : null,
       steps: [], stepMode: "seq",
       payGold: 0,
       reward: { gold: 0, materials: [], gear: null, artifactLevel: 0, secret: false },
@@ -1213,14 +1302,18 @@
     };
 
     // ---- scams masquerade as procurement posts ----
-    if ((type === "procure" || type === "supply") && chance(rng, 0.16)) {
+    if (!draft && (type === "procure" || type === "supply") && chance(rng, 0.16)) {
       o.scam = true;
       type = o.type = "procure";
     }
 
     // ---- who is hiring: a scam front, a faction, a named local, or nobody ----
     // This choice drives the whole tone of the notice (see resolveVoice).
-    if (o.scam) {
+    if (draft) {
+      // Nobody is hired to post it: the party signs their own paper, and
+      // postQuest stamps the name on afterwards.
+      o.giverLabel = draft.giverLabel || null;
+    } else if (o.scam) {
       o.giverLabel = pick(rng, SCAM_GIVERS());
     } else if (type === "donation" || elite || chance(rng, 0.5)) {
       // An elite hunt always has an institution behind it: nobody anonymous has
@@ -1249,7 +1342,7 @@
         });
       }
     }
-    if (!o.giverLabel) o.giverLabel = pick(rng, NEUTRAL_GIVERS());
+    if (!o.giverLabel && !draft) o.giverLabel = pick(rng, NEUTRAL_GIVERS());
 
     // ---- base gold reward from party median level ----
     let gold = (500 + rng() * 900) * (1 + 0.30 * L) * diffMult;
@@ -1507,6 +1600,55 @@
       }
     }
 
+    // A notice the party pinned up themselves brings its own objectives, its own
+    // purse and no terms to negotiate: the archetype above only decided how the
+    // paper reads. Everything else on a board is priced by the engine.
+    if (draft) applyDraft(o, draft, ctx);
+    else contractTerms(o, ctx, rng, L, gold);
+    ctx.HERE = boardKey;
+    ctx.COLOR = pick(rng, LORE_COLOR());
+    ctx.COLOR2 = pick(rng, LORE_COLOR());
+    if (ctx.FACTION == null) ctx.FACTION = o.factionPlain || o.giverLabel;
+    o.title = composeTitle(rng, o, ctx);
+    o.body = annotateSite(composeBody(rng, o, ctx), ctx);
+    // The notice reads exactly as its poster wrote it, and then says plainly
+    // what the party will find out anyway: nobody is coming to collect it.
+    // Appended rather than substituted, so the errand, the target and the
+    // promised pay are all still legible on the page.
+    // A notice the party wrote themselves has a living poster, whatever has
+    // happened to everybody else in the world.
+    if (!draft && isEmptyWorld()) o.body += "\n\n" + T('Quests.giverIsDead');
+    return o;
+  }
+
+  // A player-written notice, poured into the offer record the rest of the engine
+  // already understands. The party's own objectives, purse and clock replace
+  // everything contractTerms would have decided: there is no advance to front,
+  // no penalty to threaten and no breach warrant to file, because the party
+  // posting it has already paid the whole reward into escrow.
+  function applyDraft(o, draft, ctx) {
+    // A request for goods brings its own objectives. Every other archetype had
+    // the generator work out what the job actually is, up in the switch, and
+    // that work must not be thrown away here.
+    if (draft.steps) {
+      o.steps = JSON.parse(JSON.stringify(draft.steps));
+      o.stepMode = draft.stepMode || "seq";
+    }
+    o.reward.gold = Math.max(0, Math.round(draft.reward?.gold || 0));
+    o.reward.goods = (draft.reward?.goods || []).map(g => ({ kind: g.kind, id: g.id, qty: g.qty }));
+    o.payGold = 0;
+    o.advanceGold = 0;
+    o.penaltyGold = 0;
+    o.bountyOnFail = 0;
+    o.deadlineHours = Math.max(0, Math.round(draft.deadlineHours || 0));
+    o.minParty = Math.max(1, Math.min(4, Math.round(draft.minParty || 1)));
+    Object.assign(ctx, draft.ctx || {});
+  }
+
+  // Everything a board contract is priced and bound by: the pay grade its stars
+  // buy, the advance, the penalty, the breach warrant and the clock. Split out
+  // of buildOffer because a player-written notice skips all of it (applyDraft).
+  function contractTerms(o, ctx, rng, L, gold) {
     // The star rating is the pay grade: whatever the archetype multipliers added
     // up to only decides where inside the band the figure lands.
     o.reward.gold = (o.type === "procure" || o.type === "donation") && gold === 0
@@ -1557,19 +1699,6 @@
           : irange(rng, 48, 96) + (o.steps.length - 1) * 24;
       }
     }
-
-    ctx.HERE = boardKey;
-    ctx.COLOR = pick(rng, LORE_COLOR());
-    ctx.COLOR2 = pick(rng, LORE_COLOR());
-    if (ctx.FACTION == null) ctx.FACTION = o.factionPlain || o.giverLabel;
-    o.title = composeTitle(rng, o, ctx);
-    o.body = annotateSite(composeBody(rng, o, ctx), ctx);
-    // The notice reads exactly as its poster wrote it, and then says plainly
-    // what the party will find out anyway: nobody is coming to collect it.
-    // Appended rather than substituted, so the errand, the target and the
-    // promised pay are all still legible on the page.
-    if (isEmptyWorld()) o.body += "\n\n" + T('Quests.giverIsDead');
-    return o;
   }
 
   // A body is an opener + one archetype template + a caveat + a lore line + a
@@ -1673,6 +1802,12 @@
     }
     const gear = gearObject(o.reward.gear);
     if (gear) parts.push(gear.name);
+    // Goods a party put up themselves: anything out of their own pack, weapons
+    // and armour included, rather than the generator's material packs.
+    for (const g of (o.reward.goods || [])) {
+      const obj = gearObject(g);
+      if (obj) parts.push((g.qty > 1 ? g.qty + "x " : "") + obj.name);
+    }
     if (o.reward.artifactLevel > 0) parts.push(T('Quests.anUnearthedArtifact'));
     if (!parts.length) parts.push(euros(o.reward.gold || 0));
     return parts.join(" + ");
@@ -1767,7 +1902,7 @@
       case "market_shares":
         return Math.min($gameVariables.value(OIL_SHARES_VAR) || 0, s.count) + "/" + s.count;
       case "supply_items": {
-        const it = $dataItems[s.itemId];
+        const it = supplyObject(s);
         return Math.min(it ? $gameParty.numItems(it) : 0, s.qty) + "/" + s.qty;
       }
       default: return null;
@@ -2191,6 +2326,13 @@
     }
     const gear = gearObject(q.reward.gear);
     if (gear) { $gameParty.gainItem(gear, 1); lines.push(gear.name); }
+    for (const g of (q.reward.goods || [])) {
+      const obj = gearObject(g);
+      if (obj) {
+        $gameParty.gainItem(obj, g.qty);
+        lines.push((g.qty > 1 ? g.qty + "x " : "") + obj.name);
+      }
+    }
     if (q.reward.artifactLevel > 0 && typeof $gameSystem.generateArtifact === "function") {
       const id = $gameSystem.generateArtifact(q.reward.artifactLevel);
       if (id > 0) {
@@ -2213,13 +2355,15 @@
     // dead, and there is nobody at the board to collect from. The quest stays
     // active and claimable for ever rather than failing, so the party keeps
     // whatever they went and fetched.
-    if (isEmptyWorld()) {
+    // A contract another PARTY posted is the exception: they are as alive as
+    // this one, and the escrow behind it is already paid.
+    if (isEmptyWorld() && !q.posted) {
       return { ok: false, reason: T('Quests.giverIsDead') };
     }
 
     for (const s of q.steps) {
       if (s.kind === "supply_items") {
-        const it = $dataItems[s.itemId];
+        const it = supplyObject(s);
         if (!it || $gameParty.numItems(it) < s.qty) {
           return { ok: false, reason: T('Quests.youDoNotHaveTheGoods') };
         }
@@ -2237,8 +2381,15 @@
       }
     }
 
+    // What is handed over on a player-posted contract is not consumed: it goes
+    // to the party who asked for it, and waits on their own board.
+    const handedGoods = [];
     for (const s of q.steps) {
-      if (s.kind === "supply_items") $gameParty.loseItem($dataItems[s.itemId], s.qty);
+      if (s.kind !== "supply_items") continue;
+      const it = supplyObject(s);
+      if (!it) continue;
+      $gameParty.loseItem(it, s.qty);
+      handedGoods.push({ kind: s.goods || "i", id: s.itemId, qty: s.qty });
     }
 
     // Hand the animal over: it leaves the party's registry and goes to the client.
@@ -2254,8 +2405,14 @@
     }
 
     const lines = grantRewards(q);
-    applyFactionOutcome(q, true);
-    applyNpcOutcome(q, true);
+    // A posted contract has no faction behind it and nobody's disposition to
+    // move: the escrow paid out above is the whole of the settlement.
+    const postedRec = q.posted ? postedById(q.qid) : null;
+    if (postedRec) settlePostedClaim(postedRec, handedGoods);
+    else {
+      applyFactionOutcome(q, true);
+      applyNpcOutcome(q, true);
+    }
     st.claimedCount = (st.claimedCount || 0) + 1;
     delete st.active[qid];
 
@@ -2277,6 +2434,18 @@
     const q = st.active[qid];
     if (!q || q.status === "failed") return;
     q.status = "failed";
+
+    // A notice another party pinned up carries no penalty and no warrant: the
+    // party that took it simply stops holding it, and it goes back on the board
+    // for somebody else while it is still in date.
+    if (q.posted) {
+      releasePostedQuest(qid, 'Quests.post.logHandedBack');
+      kanbanFail(qid, T('Quests.failed') + (reason || T('Quests.post.noticeLapsed')));
+      toast(T('Quests.questFailed') + q.title, "warning", 200);
+      delete st.active[qid];
+      syncPostedToKanban();
+      return;
+    }
 
     let penaltyNote = "";
     if (q.penaltyGold > 0) {
@@ -2311,10 +2480,815 @@
   }
 
   // ==========================================================================
+  // Player-posted contracts
+  //
+  // The board reads both ways. A party with money and nobody to spend it on can
+  // pin their OWN notice up: pick what they want done (any archetype the engine
+  // knows, or a straight request for goods), write it on the stationery of a
+  // hyperpower, name a purse, a minimum crew and a date it comes down, and pay
+  // the whole reward into escrow before the pin goes in. Nothing is promised
+  // that is not already paid for.
+  //
+  // The notice then lives in the WORLD, not in the savegame that wrote it
+  // (playerquests.json, next to the mail and the deeds), so:
+  //   - every other playthrough of the world finds it on their board and can
+  //     take it on, exactly like a generated contract;
+  //   - the locals can take it too. Every in-game hour each open notice is
+  //     offered to whoever reads boards for a living, and a good purse is read
+  //     by more people than a mean one. A crew that takes it works for a while
+  //     and either hands the job in or gives up and pins the notice back;
+  //   - every kanban log in the world shows them, whoever posted them.
+  //
+  // The poster is told what happened to their notice through ParchmentToast the
+  // moment they are back in a position to hear it (notifyPostedChanges).
+  // ==========================================================================
+  const POSTED_FILE = "playerquests";      // i18n-ignore: world data file key
+  const MAX_POSTED_PER_PARTY = 8;
+  // A party that slept for a month does not come back to a month of rolls: the
+  // notice was up the whole time, but the board is caught up in one sitting.
+  const MAX_POSTED_CATCHUP_HOURS = 72;
+  const POSTED_ID_PREFIX = "cq_";          // i18n-ignore: record id prefix
+  const MIN_POST_DAYS = 1;
+  const MAX_POST_DAYS = 60;
+  const MAX_PARTY_REQUIRED = 4;
+  const REQUEST_TYPE = "item_request";     // i18n-ignore: draft kind key
+
+  function WM() { return window.WorldManager || null; }
+
+  function activeWorldName() {
+    const wm = WM();
+    return (wm && wm.activeWorldName) ? wm.activeWorldName : null;
+  }
+
+  function normalizePostedFile(data) {
+    const out = (data && typeof data === "object") ? data : {};
+    if (!out.posted || typeof out.posted !== "object") out.posted = {};
+    if (!Number.isFinite(out.nextId)) out.nextId = 1;
+    return out;
+  }
+
+  // A world with no folder behind it (the very first minutes of a session, a
+  // browser build with no world chosen) still lets a notice be written; it just
+  // has nowhere to share it, so it lives in memory for the session.
+  let _postedScratch = null;
+
+  function postedFile() {
+    const wm = WM();
+    if (wm && wm.activeWorldName) return normalizePostedFile(wm.getFile(POSTED_FILE));
+    if (!_postedScratch) _postedScratch = normalizePostedFile(null);
+    return _postedScratch;
+  }
+
+  function savePostedFile() {
+    const wm = WM();
+    const world = activeWorldName();
+    if (!wm || !world || !wm.writeWorldFile) return false;
+    return wm.writeWorldFile(world, POSTED_FILE, postedFile());
+  }
+
+  function postedList() {
+    return Object.values(postedFile().posted).filter(Boolean);
+  }
+
+  function postedById(id) {
+    return postedFile().posted[id] || null;
+  }
+
+  // Notices anybody can still act on, newest first.
+  function livePostedQuests() {
+    return postedList()
+      .filter(r => r.status === "open" || r.status === "taken")
+      .sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
+  }
+
+  // What this party sees on the board: every live notice in the world, plus
+  // their own finished ones, which are still there because there is something
+  // on them to collect.
+  function postedForBoard() {
+    const mine = postedList()
+      .filter(r => isOwnPost(r) && r.status !== "open" && r.status !== "taken")
+      .sort((a, b) => (b.finishedAt || 0) - (a.finishedAt || 0));
+    return livePostedQuests().concat(mine);
+  }
+
+  // --------------------------------------------------------------------------
+  // Who is posting
+  // --------------------------------------------------------------------------
+  // The same identity the post office addresses (MailSystem's _mailPartyId):
+  // one savegame's party, stable for as long as that savegame lives. Sharing it
+  // means a letter and a notice agree about who "you" are.
+  function partyKey() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return null;
+    if (!$gameSystem._mailPartyId) {
+      $gameSystem._mailPartyId = "P" + Date.now().toString(36) +
+        Math.floor(Math.random() * 1679616).toString(36);
+    }
+    return $gameSystem._mailPartyId;
+  }
+
+  function posterCard() {
+    const leader = $gameParty.leader();
+    return {
+      id: partyKey(),
+      leader: leader ? leader.name() : "?",
+      members: $gameParty.members().map(a => a.name()),
+      world: activeWorldName(),
+    };
+  }
+
+  function isOwnPost(rec) {
+    return !!(rec && rec.poster && rec.poster.id && rec.poster.id === partyKey());
+  }
+
+  // --------------------------------------------------------------------------
+  // What a job is worth
+  // --------------------------------------------------------------------------
+  // Every price in the engine is graded on the same ladder (REWARD_BANDS), so
+  // the two questions a posted notice asks , how hard is this, and is the purse
+  // enough , are both answered by asking which band a figure falls in.
+
+  function goodsValue(list) {
+    let total = 0;
+    for (const g of (list || [])) {
+      const obj = gearObject(g);
+      if (obj) total += Math.max(0, obj.price || 0) * Math.max(1, g.qty || 1);
+    }
+    return total;
+  }
+
+  // The difficulty of "bring me this" is not chosen by the party: it is read off
+  // the price of what they are asking for. Goods worth what a three-star
+  // contract pays ARE a three-star contract, and a Skeleton Key is five stars
+  // however casually it was asked for.
+  function priceDifficulty(totalGold) {
+    for (let d = 5; d >= 1; d--) {
+      if (totalGold >= REWARD_BANDS[d][0] * 100) return d;
+    }
+    return 1;
+  }
+
+  // What a contract of this grade pays on the boards at the party's level: the
+  // same centre of the band the generator itself aims at.
+  function goingRate(diff, L) {
+    const band = REWARD_BANDS[diff] || REWARD_BANDS[1];
+    const loG = band[0] * 100, hiG = band[1] * 100;
+    const t = Math.max(0, Math.min(1, ((L || 1) - 1) / 60));
+    return Math.round(loG + (hiG - loG) * (0.2 + 0.55 * t));
+  }
+
+  // A crew of three wants paying like three.
+  function askingRate(rec) {
+    const base = goingRate(rec.diff || 1, rec.level || medianLevel());
+    return Math.round(base * (1 + 0.5 * ((rec.minParty || 1) - 1)));
+  }
+
+  function offeredValue(rec) {
+    const r = rec && rec.reward;
+    return (r ? Math.max(0, r.gold || 0) : 0) + goodsValue(r ? r.goods : null);
+  }
+
+  // 1 is the going rate. Below it the notice is read and left where it is.
+  function generosity(rec) {
+    return offeredValue(rec) / Math.max(1, askingRate(rec));
+  }
+
+  // --------------------------------------------------------------------------
+  // Writing the notice
+  // --------------------------------------------------------------------------
+  // Everything a party may commission. The generated board writes all of these
+  // itself; the only two it keeps to itself are the ones that are paid the wrong
+  // way round (a donation and a procurement are both "hand money over first"),
+  // which is exactly what escrow already does.
+  const UNPOSTABLE_TYPES = ["donation", "procure"];
+
+  function postableTypes() {
+    const hasGalaxy = !!($gameSystem?.starMapData?.getAllSystems);
+    const out = [{ key: REQUEST_TYPE, label: T('Quests.post.typeRequest') }];
+    for (const [type] of TYPE_WEIGHTS) {
+      if (UNPOSTABLE_TYPES.includes(type)) continue;
+      if (type === "offworld" && !hasGalaxy) continue;
+      out.push({ key: type, label: T('Quests.post.type.' + type) });
+    }
+    return out;
+  }
+
+  function gearName(g) {
+    const obj = gearObject(g);
+    return obj ? obj.name : "?";
+  }
+
+  function normalizeGoods(list) {
+    const out = [];
+    for (const g of (list || [])) {
+      if (!g) continue;
+      const kind = (g.kind === "w" || g.kind === "a") ? g.kind : "i";
+      const id = Number(g.id) || 0;
+      const qty = Math.max(1, Math.min(99, Math.round(Number(g.qty) || 1)));
+      if (!id || !gearObject({ kind, id })) continue;
+      const hit = out.find(x => x.kind === kind && x.id === id);
+      if (hit) hit.qty = Math.min(99, hit.qty + qty);
+      else out.push({ kind, id, qty });
+    }
+    return out;
+  }
+
+  // Goods asked for, as objectives. Each is its own hand-over, and they may be
+  // brought in any order.
+  function requestSteps(wanted) {
+    return (wanted || []).map(g => stepSupply(g.id, g.qty, g.kind));
+  }
+
+  // How the party signs their own paper: as the office of the power whose
+  // stationery they borrowed, with the leader's name under it.
+  function posterLabel(hyperpower) {
+    const leader = ($gameParty && $gameParty.leader()) ? $gameParty.leader().name() : "?";
+    if (!hyperpower) return T('Quests.post.signedPlain', { leader });
+    const style = hyperpowerStyles().find(s => s.key === hyperpower);
+    return T('Quests.post.signedPower', { leader, power: style ? style.label : hyperpower });
+  }
+
+  // The notice as it will read once it is pinned up. Called by the composer
+  // every time something that changes the wording moves, so it is pure: nothing
+  // is written down, nothing is paid, nothing is spent.
+  function previewPost(draft) {
+    const boardKey = draft.boardKey || currentBoardKey();
+    const isRequest = draft.type === REQUEST_TYPE;
+    // A shopping list belongs to a request and to nothing else: an errand the
+    // party switched to must not still be carrying one.
+    const wanted = isRequest ? normalizeGoods(draft.wanted) : [];
+    const diff = isRequest
+      ? priceDifficulty(goodsValue(wanted))
+      : Math.max(1, Math.min(5, Math.round(draft.diff || 1)));
+    const days = Math.max(MIN_POST_DAYS, Math.min(MAX_POST_DAYS, Math.round(draft.days || 7)));
+    const minParty = Math.max(1, Math.min(MAX_PARTY_REQUIRED, Math.round(draft.minParty || 1)));
+    const inner = {
+      // A request is written on the supply bank: it is the same errand, and the
+      // notice should read like one.
+      type: isRequest ? "supply" : draft.type,
+      hyperpower: draft.hyperpower || null,
+      steps: isRequest ? requestSteps(wanted) : null,
+      stepMode: isRequest ? "par" : null,
+      minParty,
+      deadlineHours: days * 24,
+      reward: {
+        gold: Math.max(0, Math.round(draft.gold || 0)),
+        goods: normalizeGoods(draft.goods),
+      },
+      ctx: isRequest && wanted.length
+        ? { ITEM: gearName(wanted[0]), QTY: wanted[0].qty, N: wanted.length }
+        : {},
+      giverLabel: posterLabel(draft.hyperpower),
+    };
+    // A request brings its own objectives; every other archetype has the
+    // generator work out what the job actually is, and writes its own context.
+    const o = buildOffer(boardKey, dayIndex(), draft.seed || 0, diff, inner);
+    o.postDiff = diff;
+    o.postDays = days;
+    o.wanted = wanted;
+    return o;
+  }
+
+  // --------------------------------------------------------------------------
+  // Pinning it up
+  // --------------------------------------------------------------------------
+  function postQuest(draft) {
+    if (typeof $gameParty === "undefined" || !$gameParty || !$gameSystem) {
+      return { ok: false, reason: T('Quests.post.notNow') };
+    }
+    const wanted = draft.type === REQUEST_TYPE ? normalizeGoods(draft.wanted) : [];
+    const goods = normalizeGoods(draft.goods);
+    const gold = Math.max(0, Math.round(draft.gold || 0));
+
+    if (draft.type === REQUEST_TYPE && !wanted.length) {
+      return { ok: false, reason: T('Quests.post.nothingAsked') };
+    }
+    if (!gold && !goods.length) return { ok: false, reason: T('Quests.post.noReward') };
+
+    const mine = postedList().filter(r => isOwnPost(r) && (r.status === "open" || r.status === "taken"));
+    if (mine.length >= MAX_POSTED_PER_PARTY) {
+      return { ok: false, reason: T('Quests.post.tooMany', { max: MAX_POSTED_PER_PARTY }) };
+    }
+    // The whole reward is paid before the pin goes in: the board never carries a
+    // promise nobody has covered.
+    if ($gameParty.gold() < gold) {
+      return { ok: false, reason: T('Quests.post.cannotAfford', { sum: euros(gold) }) };
+    }
+    for (const g of goods) {
+      const obj = gearObject(g);
+      if (!obj || $gameParty.numItems(obj) < g.qty) {
+        return { ok: false, reason: T('Quests.post.goodsMissing', { item: gearName(g) }) };
+      }
+    }
+
+    const file = postedFile();
+    const seed = file.nextId;
+    const o = previewPost(Object.assign({}, draft, { seed, wanted, goods, gold }));
+    if (!o.steps.length) return { ok: false, reason: T('Quests.post.noObjective') };
+
+    const now = nowMinutes();
+    const id = POSTED_ID_PREFIX +
+      hashStr((activeWorldName() || "-") + "|" + partyKey() + "|" + seed + "|" + now).toString(16) +
+      seed.toString(36);
+
+    const rec = {
+      id,
+      world: activeWorldName(),
+      boardKey: o.boardKey,
+      poster: posterCard(),
+      postedAt: now,
+      expiresAt: now + o.postDays * 24 * 60,
+      hyperpower: draft.hyperpower || null,
+      type: draft.type,
+      diff: o.postDiff,
+      level: medianLevel(),
+      minParty: Math.max(1, Math.min(MAX_PARTY_REQUIRED, Math.round(draft.minParty || 1))),
+      title: o.title,
+      body: o.body,
+      giverLabel: o.giverLabel,
+      steps: o.steps,
+      stepMode: o.stepMode,
+      ctx: o.ctx,
+      reward: { gold, goods, materials: [], gear: null, artifactLevel: 0, secret: false },
+      wanted,
+      status: "open",
+      taker: null,
+      takenAt: 0,
+      resolveAt: 0,
+      delivered: null,
+      rev: 0,
+      log: [],
+    };
+    logPosted(rec, T('Quests.post.logPinned'));
+
+    if (gold > 0) $gameParty.loseGold(gold);
+    for (const g of goods) $gameParty.loseItem(gearObject(g), g.qty);
+
+    file.posted[id] = rec;
+    file.nextId = seed + 1;
+    savePostedFile();
+    // Its own notice is never announced back at the party who wrote it.
+    seenPosted()[id] = postedStamp(rec);
+    syncPostedToKanban();
+    toast(T('Quests.post.pinnedUp', { title: rec.title }), "good", 220);
+    return { ok: true, rec };
+  }
+
+  // Taking one's own notice back down. Only while nobody is working on it, and
+  // the escrow comes home whole.
+  function withdrawPost(id) {
+    const rec = postedById(id);
+    if (!rec) return { ok: false };
+    if (!isOwnPost(rec)) return { ok: false, reason: T('Quests.post.notYours') };
+    if (rec.status !== "open") return { ok: false, reason: T('Quests.post.cannotWithdraw') };
+    refundEscrow(rec);
+    delete postedFile().posted[id];
+    delete seenPosted()[id];
+    savePostedFile();
+    dropKanbanNotice(rec);
+    toast(T('Quests.post.withdrawn', { title: rec.title }), "warning");
+    return { ok: true };
+  }
+
+  // The escrow coming home: money straight into the purse, goods back into the
+  // pack. Used by a withdrawal, where the party is standing right there.
+  function refundEscrow(rec) {
+    const gold = Math.max(0, rec.reward?.gold || 0);
+    if (gold > 0) $gameParty.gainGold(gold);
+    for (const g of (rec.reward?.goods || [])) {
+      const obj = gearObject(g);
+      if (obj) $gameParty.gainItem(obj, g.qty);
+    }
+  }
+
+  function logPosted(rec, text) {
+    if (!rec.log) rec.log = [];
+    rec.log.unshift({ at: nowMinutes(), text });
+    if (rec.log.length > 12) rec.log.length = 12;
+  }
+
+  // --------------------------------------------------------------------------
+  // Another party taking it on
+  // --------------------------------------------------------------------------
+  function acceptPostedQuest(id) {
+    const rec = postedById(id);
+    if (!rec) return { ok: false };
+    if (rec.status !== "open") return { ok: false, reason: T('Quests.post.alreadyTaken') };
+    if (isOwnPost(rec)) return { ok: false, reason: T('Quests.post.cannotTakeOwn') };
+    const size = $gameParty.members().length;
+    if (size < (rec.minParty || 1)) {
+      return { ok: false, reason: T('Quests.post.needCrew', { n: rec.minParty }) };
+    }
+    const st = state();
+    if (st.active[rec.id]) return { ok: false, reason: T('Quests.alreadyTaken') };
+
+    const now = nowMinutes();
+    const q = JSON.parse(JSON.stringify(rec));
+    q.qid = rec.id;
+    q.posted = true;                 // settled against the world record on claim
+    q.status = "active";
+    q.acceptedAt = now;
+    // The notice's own expiry is the deadline: it comes down when it comes down.
+    q.deadlineAt = rec.expiresAt || 0;
+    q.deadlineHours = Math.max(0, Math.round((q.deadlineAt - now) / 60));
+    q.payGold = 0; q.advanceGold = 0; q.penaltyGold = 0; q.bountyOnFail = 0;
+    q.giverFaction = null; q.targetFaction = null; q.giverNpc = null;
+    q.scam = false;
+
+    st.active[q.qid] = q;
+    st.taken[q.qid] = true;
+    if (q.steps.length) {
+      if (q.stepMode === "par") q.steps.forEach(s => onStepActivated(q, s));
+      else onStepActivated(q, q.steps[0]);
+    }
+
+    rec.status = "taken";
+    rec.taker = { kind: "party", id: partyKey(), name: posterCard().leader, size };
+    rec.takenAt = now;
+    rec.resolveAt = 0;
+    rec.rev = (rec.rev || 0) + 1;
+    logPosted(rec, T('Quests.post.logTakenByParty', { name: rec.taker.name }));
+    savePostedFile();
+
+    dropKanbanNotice(rec);
+    kanbanAdd(q);
+    kanbanProgress(q);
+    if (!q.steps.length) questBecomesClaimable(q, T('Quests.post.readyToCollect'));
+    return { ok: true, quest: q };
+  }
+
+  // Handing a posted contract in. Called from claimQuest once the party has been
+  // paid out of escrow: what they carried in is put aside for the poster, and
+  // the notice comes down.
+  function settlePostedClaim(rec, handed) {
+    rec.status = "done";
+    rec.finishedAt = nowMinutes();
+    rec.rev = (rec.rev || 0) + 1;
+    const by = rec.taker?.name || T('Quests.post.someone');
+    if (handed.length) rec.delivered = { goods: handed, by, at: rec.finishedAt, refund: false };
+    logPosted(rec, T('Quests.post.logDelivered', { name: by }));
+    savePostedFile();
+  }
+
+  // A posted contract the taker walked away from. It is not failed: it goes back
+  // on the board for somebody else, escrow untouched.
+  function releasePostedQuest(qid, reasonKey) {
+    const rec = postedById(qid);
+    if (!rec || rec.status !== "taken") return;
+    rec.status = "open";
+    rec.taker = null;
+    rec.takenAt = 0;
+    rec.resolveAt = 0;
+    rec.rev = (rec.rev || 0) + 1;
+    logPosted(rec, T(reasonKey));
+    savePostedFile();
+    syncPostedToKanban();
+  }
+
+  // Collecting what a finished notice left behind: the goods somebody brought
+  // in, or the escrow of one that came down unanswered.
+  function collectPostedDelivery(id) {
+    const rec = postedById(id);
+    if (!rec || !isOwnPost(rec)) return { ok: false };
+    const entries = [];
+    const lines = [];
+    if (rec.delivered) {
+      const gold = Math.max(0, rec.delivered.gold || 0);
+      if (gold > 0) { $gameParty.gainGold(gold); lines.push(euros(gold)); }
+      for (const g of (rec.delivered.goods || [])) {
+        const obj = gearObject(g);
+        if (!obj) continue;
+        $gameParty.gainItem(obj, g.qty);
+        lines.push((g.qty > 1 ? g.qty + "x " : "") + obj.name);
+        entries.push({ obj, qty: g.qty });
+      }
+    }
+    delete postedFile().posted[id];
+    delete seenPosted()[id];
+    savePostedFile();
+    dropKanbanNotice(rec);
+    if ((entries.length || lines.length) && window.ParchmentToast) {
+      window.ParchmentToast.reward({
+        entries,
+        gold: Math.max(0, rec.delivered?.gold || 0),
+        title: rec.delivered?.refund ? T('Quests.post.escrowReturned') : T('Quests.post.deliveryTitle'),
+      });
+    }
+    return { ok: true, lines };
+  }
+
+  // --------------------------------------------------------------------------
+  // The locals reading the board
+  // --------------------------------------------------------------------------
+  // A notice is not answered by "an NPC": it is answered by whoever is free and
+  // can field the crew it asks for. The names are real people out of the map
+  // pools, so a band that takes a job is a band the party could go and meet.
+  function formNpcBand(rec, rng) {
+    const pool = npcPool();
+    if (!pool.length) return null;
+    const here = norm(rec.boardKey);
+    const locals = pool.filter(n => norm(n.group) === here);
+    const fromHere = locals.length >= (rec.minParty || 1);
+    const draw = fromHere ? locals : pool;
+    // A hard job draws a bigger crew than the minimum asked for.
+    const want = Math.max(rec.minParty || 1,
+      Math.min(MAX_PARTY_REQUIRED, 1 + Math.floor(rng() * Math.max(1, rec.diff || 1))));
+    const members = [];
+    const seen = new Set();
+    for (let tries = 0; tries < 40 && members.length < want; tries++) {
+      const npc = pick(rng, draw);
+      if (!npc || seen.has(npc.name)) continue;
+      seen.add(npc.name);
+      members.push(npc.name);
+    }
+    if (members.length < (rec.minParty || 1)) return null;
+    // How good they turn out to be is fixed by who they are, so the same crew is
+    // the same crew whenever the roll is replayed.
+    return {
+      kind: "npc",
+      name: members[0],
+      members,
+      size: members.length,
+      skill: (hashStr(members.join("|")) % 1000) / 1000,
+      home: fromHere ? rec.boardKey : null,
+    };
+  }
+
+  // How likely the notice is to be taken in any one hour. A purse at the going
+  // rate is read by somebody about every twenty hours; a mean one is left where
+  // it is, and a crew of three is that much harder to muster.
+  function postedAcceptChance(rec) {
+    let p = 0.05 + 0.14 * (generosity(rec) - 1);
+    p /= (1 + 0.30 * ((rec.diff || 1) - 1));
+    p /= (1 + 0.45 * ((rec.minParty || 1) - 1));
+    return Math.max(0.004, Math.min(0.45, p));
+  }
+
+  // Whether the crew that took it actually manages it.
+  function postedSuccessChance(rec) {
+    const band = rec.taker || {};
+    const p = 0.86
+      - 0.12 * ((rec.diff || 1) - 1)
+      + 0.06 * ((band.size || 1) - 1)
+      + 0.20 * (band.skill != null ? band.skill - 0.5 : 0)
+      + 0.10 * Math.max(0, Math.min(1, generosity(rec) - 1));
+    return Math.max(0.15, Math.min(0.97, p));
+  }
+
+  function postedWorkHours(rec, rng) {
+    return irange(rng, 6, 18) + 8 * ((rec.diff || 1) - 1) + 6 * ((rec.steps || []).length || 1);
+  }
+
+  // One hour of the board being read. `hour` is the absolute game hour the roll
+  // belongs to, so replaying it after a reload rolls the same way.
+  function postedHour(hour) {
+    if (isEmptyWorld()) return false;    // nobody left in the world to read it
+    let dirty = false;
+    for (const rec of postedList()) {
+      if (rec.status !== "open") continue;
+      if (rec.expiresAt && hour * 60 >= rec.expiresAt) continue;
+      const rng = mulberry32(hashStr(worldSeed() + "|" + rec.id + "|" + hour));
+      if (!chance(rng, postedAcceptChance(rec))) continue;
+      const band = formNpcBand(rec, rng);
+      if (!band) continue;
+      rec.status = "taken";
+      rec.taker = band;
+      rec.takenAt = hour * 60;
+      rec.resolveAt = rec.takenAt + postedWorkHours(rec, rng) * 60;
+      rec.rev = (rec.rev || 0) + 1;
+      logPosted(rec, band.size > 1
+        ? T('Quests.post.logTakenByBand', { name: band.name, n: band.size })
+        : T('Quests.post.logTakenByNpc', { name: band.name }));
+      dirty = true;
+    }
+    return dirty;
+  }
+
+  // Crews finishing (or giving up on) what they took, and notices running out.
+  function settlePostedTimers(now) {
+    let dirty = false;
+    for (const rec of postedList()) {
+      if (rec.status === "taken" && rec.taker?.kind === "npc" && rec.resolveAt && now >= rec.resolveAt) {
+        const rng = mulberry32(hashStr(worldSeed() + "|" + rec.id + "|resolve|" + rec.takenAt));
+        rec.rev = (rec.rev || 0) + 1;
+        if (chance(rng, postedSuccessChance(rec))) {
+          rec.status = "done";
+          rec.finishedAt = now;
+          // What was asked for is what comes back; an errand leaves nothing to
+          // collect but the news that it was run.
+          if ((rec.wanted || []).length) {
+            rec.delivered = {
+              goods: rec.wanted.map(g => Object.assign({}, g)),
+              by: rec.taker.name, at: now, refund: false,
+            };
+          }
+          logPosted(rec, T('Quests.post.logDelivered', { name: rec.taker.name }));
+        } else {
+          logPosted(rec, T('Quests.post.logGaveUp', { name: rec.taker.name }));
+          rec.status = "open";
+          rec.taker = null;
+          rec.resolveAt = 0;
+          rec.giveUps = (rec.giveUps || 0) + 1;
+        }
+        dirty = true;
+        continue;
+      }
+      // A notice comes down on the date it said it would. Anybody still holding
+      // it has run out of time, and the escrow goes back to whoever paid it.
+      if (rec.expiresAt && now >= rec.expiresAt &&
+        (rec.status === "open" || (rec.status === "taken" && rec.taker?.kind === "npc"))) {
+        rec.status = "expired";
+        rec.finishedAt = now;
+        rec.taker = null;
+        rec.rev = (rec.rev || 0) + 1;
+        rec.delivered = {
+          gold: Math.max(0, rec.reward?.gold || 0),
+          goods: (rec.reward?.goods || []).map(g => Object.assign({}, g)),
+          at: now, refund: true,
+        };
+        logPosted(rec, T('Quests.post.logExpired'));
+        // Whoever was carrying it in their own log is told it lapsed.
+        if (state().active[rec.id]) failQuest(rec.id, T('Quests.post.noticeLapsed'));
+        dirty = true;
+      }
+    }
+    return dirty;
+  }
+
+  // Ticked from the same place the deadlines are. Hours are caught up one at a
+  // time so a night's sleep is a night of the board being read, not one roll.
+  function tickPostedQuests() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+    const now = nowMinutes();
+    const hour = Math.floor(now / 60);
+    const last = $gameSystem._pqPostedHour;
+    let dirty = false;
+    if (last === undefined || hour < last) {
+      $gameSystem._pqPostedHour = hour;
+    } else if (hour > last) {
+      const from = Math.max(last + 1, hour - MAX_POSTED_CATCHUP_HOURS + 1);
+      for (let h = from; h <= hour; h++) dirty = postedHour(h) || dirty;
+      $gameSystem._pqPostedHour = hour;
+    }
+    dirty = settlePostedTimers(now) || dirty;
+    if (dirty) savePostedFile();
+    notifyPostedChanges();
+    syncPostedToKanban();
+  }
+
+  // --------------------------------------------------------------------------
+  // Telling the poster
+  // --------------------------------------------------------------------------
+  // What this savegame has already been told about each of its own notices. A
+  // change made by somebody else's playthrough is news the first time this one
+  // sees it, which is exactly what a stamp comparison gives.
+  function seenPosted() {
+    if (!$gameSystem._pqPostedSeen) $gameSystem._pqPostedSeen = {};
+    return $gameSystem._pqPostedSeen;
+  }
+
+  function postedStamp(rec) {
+    return rec.status + ":" + (rec.rev || 0);
+  }
+
+  function notifyPostedChanges() {
+    const seen = seenPosted();
+    const news = [];
+    for (const rec of postedList()) {
+      if (!isOwnPost(rec)) continue;
+      const stamp = postedStamp(rec);
+      if (seen[rec.id] === stamp) continue;
+      const known = seen[rec.id] !== undefined;
+      seen[rec.id] = stamp;
+      if (known) news.push(rec);
+    }
+    for (const id of Object.keys(seen)) {
+      if (!postedById(id)) delete seen[id];
+    }
+    if (!news.length || !window.ParchmentToast) return;
+    window.ParchmentToast.group(news.slice(0, 4).map(rec => () => announcePosted(rec)));
+  }
+
+  function takerLabel(rec) {
+    const t = rec.taker;
+    if (!t) return T('Quests.post.someone');
+    if (t.kind === "party") return T('Quests.post.takerParty', { name: t.name });
+    return t.size > 1 ? T('Quests.post.takerBand', { name: t.name, n: t.size }) : t.name;
+  }
+
+  function announcePosted(rec) {
+    const title = rec.title;
+    if (rec.status === "taken") {
+      window.ParchmentToast.show(T('Quests.post.toastTaken', { who: takerLabel(rec), title }),
+        { severity: "good", duration: 260, title: T('Quests.post.toastTakenTitle') });
+      return;
+    }
+    if (rec.status === "done") {
+      window.ParchmentToast.show(
+        rec.delivered
+          ? T('Quests.post.toastDelivered', { who: takerLabel(rec), title })
+          : T('Quests.post.toastDone', { title }),
+        { severity: "good", duration: 300, title: T('Quests.post.toastDoneTitle') });
+      return;
+    }
+    if (rec.status === "expired") {
+      window.ParchmentToast.show(T('Quests.post.toastExpired', { title }),
+        { severity: "warning", duration: 280, title: T('Quests.post.toastExpiredTitle') });
+      return;
+    }
+    // Back on the board: somebody took it and could not finish it.
+    window.ParchmentToast.show(T('Quests.post.toastReturned', { title }),
+      { severity: "warning", duration: 260, title: T('Quests.post.toastReturnedTitle') });
+  }
+
+  // --------------------------------------------------------------------------
+  // The journal
+  // --------------------------------------------------------------------------
+  // Every live notice in the world is on every kanban board in it, whoever
+  // pinned it up, so a party always knows what is going unanswered around them.
+  // A notice this party actually took is not mirrored: it is a contract of
+  // theirs by then, and kanbanAdd has already written it up as one.
+  function kanbanNoticeId(rec) {
+    return "cqnote_" + rec.id;             // i18n-ignore: journal note id
+  }
+
+  function postedStatusLine(rec) {
+    if (rec.status === "taken") return T('Quests.post.statusTaken', { who: takerLabel(rec) });
+    if (rec.status === "done") return T('Quests.post.statusDone');
+    if (rec.status === "expired") return T('Quests.post.statusExpired');
+    const left = rec.expiresAt ? hoursLeftText(rec.expiresAt) : "";
+    return left ? T('Quests.post.statusOpenFor', { time: left }) : T('Quests.post.statusOpen');
+  }
+
+  // What a posted notice says on its parchment, in place of the terms a board
+  // contract negotiates. There is nothing to negotiate: it is all paid.
+  function postedTerms(rec) {
+    const t = [];
+    t.push(T('Quests.reward') + rewardText(rec, true));
+    t.push(T('Quests.post.termEscrow'));
+    if ((rec.minParty || 1) > 1) t.push(T('Quests.post.termCrew', { n: rec.minParty }));
+    if (rec.expiresAt) t.push(T('Quests.post.termExpires', { date: deadlineStamp(rec.expiresAt) }));
+    t.push(T('Quests.post.termPoster', { name: rec.poster?.leader || "?" }));
+    if (rec.status === "taken") t.push(T('Quests.post.statusTaken', { who: takerLabel(rec) }));
+    for (const entry of (rec.log || []).slice(0, 3)) t.push(entry.text);
+    return t;
+  }
+
+  function syncPostedToKanban() {
+    if (!window.KanbanQuest || typeof $gameSystem === "undefined" || !$gameSystem) return;
+    const st = state();
+    for (const rec of postedList()) {
+      const noteId = kanbanNoticeId(rec);
+      const live = rec.status === "open" || rec.status === "taken";
+      if (st.active[rec.id] || (!live && !isOwnPost(rec))) { dropKanbanNotice(rec); continue; }
+      const desc = objectiveText(rec);
+      const meta = {
+        giver: rec.giverLabel || null,
+        body: rec.body || null,
+        objectives: desc,
+        terms: postedTerms(rec),
+        reward: rewardText(rec, true),
+        diff: rec.diff || 0,
+        // The note's own countdown is the day the notice comes down.
+        deadlineHours: rec.expiresAt
+          ? Math.max(0, Math.round((rec.expiresAt - nowMinutes()) / 60)) : 0,
+        location: questLocation(rec),
+        procedural: true,
+        posted: true,
+      };
+      if (!window.KanbanQuest.getQuest(noteId)) {
+        window.KanbanQuest.addQuest(noteId, rec.title, desc, meta);
+      } else if (window.KanbanQuest.setMeta) {
+        window.KanbanQuest.setMeta(noteId, meta);
+      }
+      if (window.KanbanQuest.setProgress) {
+        window.KanbanQuest.setProgress(noteId, {
+          done: 0,
+          total: rec.steps.length,
+          mode: rec.stepMode,
+          status: rec.status,
+          steps: rec.steps.map(s => ({ text: stepText(s), done: false, current: false, detail: null })),
+        });
+      }
+    }
+  }
+
+  // A notice that is no longer on any board leaves the journal too: it is
+  // filed, not deleted, so the party can still read what happened to it.
+  function dropKanbanNotice(rec) {
+    if (!window.KanbanQuest) return;
+    const noteId = kanbanNoticeId(rec);
+    if (!window.KanbanQuest.getQuest(noteId)) return;
+    if (rec.status === "done") window.KanbanQuest.completeQuest(noteId);
+    else if (window.KanbanQuest.failQuest) window.KanbanQuest.failQuest(noteId, postedStatusLine(rec));
+  }
+
+  // ==========================================================================
   // Deadline ticking + polled steps (arena, market, procurement timers)
   // ==========================================================================
   function tickDeadlines() {
     const now = nowMinutes();
+    // The board is read by the world as well as by the party.
+    try { tickPostedQuests(); } catch (e) { console.error("[ProceduralQuests] posted tick failed", e); }
     // Taming happens on the way back from a battle, which is not a map load, so
     // the pet registry is polled here too.
     checkPetSteps();
@@ -2402,7 +3376,7 @@
         completeStep(q, i, T('Quests.deliveredTo') + s.dest + ".");
         toast(T('Quests.deliveryComplete') + s.dest);
       } else if (s.kind === "supply_items") {
-        const it = $dataItems[s.itemId];
+        const it = supplyObject(s);
         if (it && $gameParty.numItems(it) >= s.qty) {
           completeStep(q, i, T('Quests.goodsReadyToHandOver'));
         }
@@ -3054,5 +4028,15 @@
     // social side
     npcQuestHistory, placeMatchesHere, currentWorldCoords, destinationHere,
     knownBoards, partyArtifacts,
+    // player-posted contracts
+    postedForBoard, postedById, isOwnPost, postQuest, previewPost, withdrawPost,
+    acceptPostedQuest, collectPostedDelivery, postedTerms, postedStatusLine,
+    postableTypes, hyperpowerStyles, priceDifficulty, goodsValue, goingRate,
+    askingRate, generosity, offeredValue, takerLabel, tickPostedQuests,
+    syncPostedToKanban, POST_LIMITS: {
+      minDays: MIN_POST_DAYS, maxDays: MAX_POST_DAYS,
+      maxCrew: MAX_PARTY_REQUIRED, maxPosts: MAX_POSTED_PER_PARTY,
+      requestType: REQUEST_TYPE,
+    },
   };
 })();

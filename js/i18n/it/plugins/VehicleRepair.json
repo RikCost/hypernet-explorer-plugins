@@ -29,6 +29,7 @@
   "lv": "Liv.",
   "maxed": "MASSIMO",
   "install": "Installa",
+  "upgradeAction": "Potenzia",
   "upgrade": {
     "accel": {
       "name": "Iniettori Turbo",

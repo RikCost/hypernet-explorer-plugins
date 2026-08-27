@@ -10,6 +10,32 @@
   "flipped": "Camper flipped",
   "destination": "Destination",
   "freeDrive": "Free Drive",
+  "freeWalk": "Free Walk",
+  "prompt": {
+    "key": "E",
+    "talk": "{key}  Talk to {name}",
+    "loot": "{key}  Search the {name}",
+    "board": "{key}  Climb into the camper"
+  },
+  "enemy": {
+    "level": "L. {n}"
+  },
+  "npc": {
+    "approach": "{name} stops to see what you want.",
+    "talk": "Talk",
+    "empathize": "Empathize",
+    "leave": "Leave them be",
+    "nothingToSay": "They have nothing to say to a stranger."
+  },
+  "place": {
+    "visit": "Go into {place}",
+    "keepGoing": "Keep going"
+  },
+  "shop": {
+    "greeting": "{name} is minding the {shop}.",
+    "browse": "See the stock",
+    "generic": "shop"
+  },
   "openRoad": "Open Road",
   "autopilot": "Autopilot",
   "hud": {
@@ -21,14 +47,27 @@
     "view": "VIEW:",
     "mode": "MODE:",
     "cmdDrive": "Drive / steer",
+    "cmdWalk": "Walk",
+    "cmdTalk": "Talk, loot a body",
+    "cmdRun": "Run",
+    "cmdJump": "Jump (again at a wall to run it)",
+    "cmdFly": "Take off / land (needs the Fly skill)",
+    "cmdCrouch": "Crouch",
+    "cmdSwim": "In water: kick up / dive down",
+    "cmdMenu": "Party menu",
+    "cmdExitWalk": "End walk",
     "cmdTurbo": "Turbo (on foot: sprint)",
     "cmdDoor": "Door: step out / sit",
     "cmdView": "Change view",
     "cmdExit": "Exit drive",
+    "cmdVehicle": "Vehicle options",
+    "cmdHelp": "H  Controls",
     "controllerHint": "Controller: L2/R2 zoom out/in &middot; Y switch view",
+    "controllerHintWalk": "Controller: right stick looks &middot; A jumps &middot; B ends the walk",
     "fly": "FLY",
     "float": "FLOAT",
     "dive": "DIVE",
+    "swim": "SWIM",
     "cond": "COND",
     "trip": "TRIP",
     "camperStuck": "Camper stuck",
@@ -43,9 +82,15 @@
   },
   "envMode": {
     "road": "ROAD",
+    "land": "ON LAND",
+    "cave": "UNDERGROUND",
     "air": "FLYING",
     "water": "AFLOAT",
     "underwater": "SUBMERGED"
   },
-  "weapon": "Now holding: {name}"
+  "weapon": "Now holding: {name}",
+  "driverSave": {
+    "avoided": "[Driver DEX save: {roll}{mod}={total}] Expertly countersteered, crash avoided!",
+    "failed": "[Driver DEX save: {roll}{mod}={total} vs DC {dc}] Reflex save failed, the vehicle hits!"
+  }
 }

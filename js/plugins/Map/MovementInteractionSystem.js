@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc v2.5 Adds swimming, fishing, climbing, and layered bridges (region 12)
+ * @plugindesc v2.6 Adds swimming, fishing, climbing, and layered bridges (region 12)
  * @author Omni-Lex
  * @help
  * This plugin adds swimming and fishing mechanics to RPG Maker MZ.
@@ -33,6 +33,11 @@
  *   and the party follows on the same layer.
  * - Region ID 5 is now always passable terrain (bridge-access step), entered
  *   or left from any direction.
+ * NEW in v2.6:
+ * - A bridge laid across water can be passed under. The deck tile masks the
+ *   water it is painted over, so the tile stops reading as region 99: a swimmer
+ *   now keeps swimming under the whole span instead of standing up mid river,
+ *   and the Boat navigates under it too (Vehicle/VehicleSystem.js).
  *
  * Features:
  * - Press Enter/Z button when facing water to get options menu
@@ -53,8 +58,8 @@
  * - Water reflections for events north of region 99 tiles
  * - An event named "Mirror" shows an upright reflection of whoever stands on
  *   the tile in front of it (the tile in the mirror event's facing direction)
- * - Layered bridges on region ID 12 (walk on top from region 11/5, pass under
- *   from anywhere else)
+ * - Layered bridges on region ID 12 (walk on top from region 11/5 in any
+ *   direction, pass under from anywhere else, on foot, swimming or by boat)
  *
  * Instructions:
  * 1. Configure the fishing rod item ID in plugin parameters
@@ -362,6 +367,15 @@
       return $gameMap.regionId(x, y) === 12;
     },
 
+    // True while the character is passing UNDER a bridge deck rather than
+    // walking on top of it. The tile beneath the deck is whatever the map paints
+    // there (water, a road, open ground), but its region reads as 12, so every
+    // rule that asks "what am I standing on" has to ask this first.
+    isUnderBridge(character) {
+      return !!character && !character._onBridge &&
+        this.isBridgeTile(character.x, character.y);
+    },
+
     // Access tiles that place the walker on top of the bridge deck: regions 11
     // (cliff upper level) and 5 (always-passable step).
     isBridgeAccessTile(x, y) {
@@ -649,11 +663,14 @@
       // step in any direction. Ordinary footstep entry (moveStraight) is
       // unaffected: it only ever sets _onBridge true by actually walking in
       // from a real access tile, so this guard only matters for spawns.
-      character._onBridge = region === 12 && [2, 4, 6, 8].some((d) => {
-        const nx = $gameMap.roundXWithDirection(character.x, d);
-        const ny = $gameMap.roundYWithDirection(character.y, d);
-        return Utils.isBridgeTile(nx, ny) || Utils.isBridgeAccessTile(nx, ny);
-      });
+      // A swimmer is in the water the deck crosses, so they are always
+      // underneath it however they arrived on the tile.
+      character._onBridge = region === 12 && !character._isSwimming &&
+        [2, 4, 6, 8].some((d) => {
+          const nx = $gameMap.roundXWithDirection(character.x, d);
+          const ny = $gameMap.roundYWithDirection(character.y, d);
+          return Utils.isBridgeTile(nx, ny) || Utils.isBridgeAccessTile(nx, ny);
+        });
       this.rememberBridgeState(character);
 
       // A wall region cannot be stood on, so a character that spawns on one is
@@ -1679,10 +1696,32 @@
     return _Game_Player_checkEventTriggerThere.call(this, triggers);
   };
 
+  // ---- What the leader can still walk on ---------------------------------
+  // A party walks at the pace of whoever is in front, and a character who has
+  // lost a leg does not walk at the same pace as one who has not. HealthCore
+  // answers in the anatomy's own terms, so a six-legged thing down one leg is
+  // barely slowed and a biped down one is halved, and a fitted prosthetic
+  // counts as a working leg.
+  //
+  // Floored well above zero: being maimed is meant to be a long limp home, not
+  // a character who can no longer leave the tile they are standing on.
+  const MIN_MOBILITY_SPEED = 0.55;
+
+  function leaderMobility() {
+    const HC = window.HealthCore;
+    if (!HC || typeof HC.mobility !== 'function') return 1;
+    try {
+      const leader = $gameParty && $gameParty.leader && $gameParty.leader();
+      if (!leader) return 1;
+      return MIN_MOBILITY_SPEED + (1 - MIN_MOBILITY_SPEED) * HC.mobility(leader);
+    } catch (e) { return 1; }
+  }
+
   const _Game_Player_realMoveSpeed = Game_Player.prototype.realMoveSpeed;
   Game_Player.prototype.realMoveSpeed = function () {
     let speed = _Game_Player_realMoveSpeed.call(this);
     if (this._isClimbing) speed *= Config.climbSpeed;
+    speed *= leaderMobility();
     return speed;
   };
 
@@ -1696,7 +1735,14 @@
     }
 
     if (this._isSwimming) {
-      if (!Utils.isWaterTile(this.x, this.y)) {
+      // The water a bridge is thrown across is painted with the deck's region
+      // (12), not with the water region, so a swimmer passing UNDER the span
+      // would otherwise stand up mid river and be unable to swim back out of it.
+      // The underside counts as the water it is painted over for as long as the
+      // crossing lasts; the far side of the span decides what happens next.
+      const underDeck = Utils.isUnderBridge(this);
+
+      if (!Utils.isWaterTile(this.x, this.y) && !underDeck) {
         if (this._isDiving) {
           MovementSystem.exitDiveMode(this);
         }
@@ -1704,7 +1750,7 @@
         return;
       }
 
-      if (this._isDiving && $gameMap.regionId(this.x, this.y) !== 99) {
+      if (this._isDiving && $gameMap.regionId(this.x, this.y) !== 99 && !underDeck) {
         MovementSystem.exitDiveMode(this);
       }
 
@@ -2710,6 +2756,14 @@
       return true;
     }
 
+    // Bridge deck (region 12) laid over water: the deck tile masks the water it
+    // was painted on, so the tile stops reading as region 99 and the water rule
+    // above never fires for it. A swimmer (or a water enemy) passing UNDER the
+    // span still gets that rule, which is what keeps a river from being dammed
+    // at every bridge it carries. On foot, on the deck or beneath it, the deck
+    // tile's own passability decides, exactly as the map author painted it.
+    if (regionId === 12 && (charIsSwimming || charIsWaterEnemy)) return true;
+
     if (regionId === 5 || regionId === 13) return true;
     if (regionId === 4 && (charIsClimbing || this.isLadder(x, y))) return true;
     if (regionId === 99) return charIsSwimming || charIsWaterEnemy;
@@ -2764,6 +2818,9 @@
     if (isDivingWater) {
       return 0;
     }
+
+    // Bridge deck over water, see Game_Map.isPassable above.
+    if (regionId === 12 && (charIsSwimming || charIsWaterEnemy)) return 0;
 
     if (regionId === 5) return 0;
     if (regionId === 4 || regionId === 10) {
@@ -2851,7 +2908,7 @@
     this._misScanSpecialPassability();
   };
 
-  // Special-passability tiles are regions 4,5,10,13,99, terrain tags 4,7, and
+  // Special-passability tiles are regions 4,5,10,12,13,99, terrain tags 4,7, and
   // (on map 636) terrain tag 3. If a map has none, the isPassable/checkPassage
   // overrides can defer straight to the originals.
   Game_Map.prototype._misScanSpecialPassability = function () {
@@ -2863,7 +2920,7 @@
       for (let y = 0; y < h && !special; y++) {
         for (let x = 0; x < w; x++) {
           const r = this.regionId(x, y);
-          if (r === 4 || r === 5 || r === 10 || r === 13 || r === 99) { special = true; break; }
+          if (r === 4 || r === 5 || r === 10 || r === 12 || r === 13 || r === 99) { special = true; break; }
           const t = this.terrainTag(x, y);
           if (t === 4 || t === 7 || (is636 && t === 3)) { special = true; break; }
         }
@@ -3039,7 +3096,13 @@
     // Is there anything left to run on? Asked of a member about to break into
     // a run of their own; the leader never asks.
     canSprint(actor) {
-      return !!actor && actor.tp > 0;
+      if (!actor || !(actor.tp > 0)) return false;
+      // Half a set of legs is a limp, and a limp is not a run.
+      const HC = window.HealthCore;
+      if (HC && typeof HC.mobility === 'function') {
+        try { if (HC.mobility(actor) < 0.5) return false; } catch (e) { /* run */ }
+      }
+      return true;
     },
 
     // One frame of running, charged to whoever is doing it.

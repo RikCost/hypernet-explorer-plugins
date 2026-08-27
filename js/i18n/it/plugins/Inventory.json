@@ -27,7 +27,24 @@
   "Magic": "Magia",
   "Misc": "Varie",
   "Usable": "Utilizzabili",
-  "Quest": "Missioni"
+  "Quest": "Missioni",
+  "Alchemistry": "Alchimia",
+  "Arctic": "Artico",
+  "Artisan": "Artigianato",
+  "BodyPart": "Parti del corpo",
+  "Collectibles": "Collezionabili",
+  "Counterfeits": "Contraffazioni",
+  "Crafting": "Fabbricazione",
+  "Diseases": "Malattie",
+  "Espionage": "Spionaggio",
+  "Farming": "Agricoltura",
+  "Homeopathy": "Omeopatia",
+  "Jungle": "Giungla",
+  "Monsters": "Mostri",
+  "Plants": "Piante",
+  "Survival": "Sopravvivenza",
+  "Trash": "Rifiuti",
+  "Vehicles": "Veicoli"
  },
  "itemType": {
   "standard": "Oggetto",
@@ -280,5 +297,10 @@
   "discardItem": "Getta oggetto",
   "discardBody": "Vuoi togliere {qty} di {item} dallo zaino? (ne hai {owned})"
  },
- "medicineDoses": "{days} dosi giornaliere"
+ "medicineDoses": "{days} dosi giornaliere",
+ "nature": {
+  "label": "Natura",
+  "mundane": "Mondano",
+  "magical": "Magico"
+ }
 }

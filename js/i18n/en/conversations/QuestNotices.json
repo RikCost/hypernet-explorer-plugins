@@ -1630,6 +1630,514 @@
       ]
     }
   },
+  "hyperpowerVoices": {
+    "Holy Vatican Empire": {
+      "family": "clerical",
+      "titlePrefix": [
+        "INDULGENCE",
+        "COMMISSION",
+        "PETITION"
+      ],
+      "openers": [
+        "By the office of the Apostolic Chancery, a work of mercy is put out to tender.",
+        "The Holy See does not command in this matter. It {asks|invites|hopes}, which is worse.",
+        "Entered in the register of good works, at {vespers|matins|the third hour}."
+      ],
+      "caveats": [
+        "Absolution is not part of the fee, but it is not withheld either.",
+        "What you find that is holy is not yours. What you find that is not, we do not want."
+      ],
+      "signoffs": [
+        "Sealed with the Fisherman's ring, in the {seventh|ninth|second} year of the pontificate.",
+        "Go, and let it be counted to you."
+      ]
+    },
+    "Britannia": {
+      "family": "britannic",
+      "titlePrefix": [
+        "MATTER",
+        "MINUTE",
+        "REQUEST"
+      ],
+      "openers": [
+        "His Majesty's Government has a small difficulty and would rather it were somebody else's.",
+        "Circulated by the Foreign Office. {Not|Never} to be discussed at dinner.",
+        "A matter has arisen. One does not wish to make {a fuss|too much of it}."
+      ],
+      "caveats": [
+        "You will find the whole thing rather more complicated than described. That is intentional.",
+        "Discretion is assumed. It is not, strictly, a term of the contract."
+      ],
+      "signoffs": [
+        "Yours &c., a Department that would prefer not to be named.",
+        "Do try to be back before the {end of the quarter|weather turns}."
+      ]
+    },
+    "Soviet Union": {
+      "family": "soviet",
+      "titlePrefix": [
+        "ALLOCATION",
+        "NORM",
+        "DIRECTIVE"
+      ],
+      "openers": [
+        "The Committee has reviewed the plan and found the plan correct. The plan requires this.",
+        "Labour is offered to the collective. The collective is understood to accept.",
+        "Item {14|22|9} of the {third|fifth} sitting: an unfulfilled quota."
+      ],
+      "caveats": [
+        "Overfulfilment will be recorded. Underfulfilment will also be recorded.",
+        "Enthusiasm is not required. Attendance is."
+      ],
+      "signoffs": [
+        "Signed for the Committee, whose members are not listed.",
+        "The work is the reward. The payment is a formality the Committee has permitted."
+      ]
+    },
+    "Ottoman Empire": {
+      "family": "imperial",
+      "titlePrefix": [
+        "FIRMAN",
+        "EDICT",
+        "COMMISSION"
+      ],
+      "openers": [
+        "From the Sublime Porte, to whoever reads and is capable: a firman.",
+        "The Sultan's shadow falls a long way, and there is a matter in the shade of it.",
+        "Registered by the {Divan|chancery} and stamped with the tughra."
+      ],
+      "caveats": [
+        "The Porte remembers a service for three generations. It remembers a failure for four.",
+        "You will be received. Whether you are received well depends on what you carry."
+      ],
+      "signoffs": [
+        "Written in the imperial hand, at the hour the {cannon|call} sounds.",
+        "Let it be so, and let no one obstruct the bearer."
+      ]
+    },
+    "Goblin Horde": {
+      "family": "feral",
+      "titlePrefix": [
+        "WANT",
+        "BIG WANT",
+        "JOB"
+      ],
+      "openers": [
+        "Horde want thing. Horde not go get thing. You go get thing.",
+        "Chief say job. Chief not write. Other goblin write. Other goblin bad at write.",
+        "Is job. Is good job. Is not trap. Probably."
+      ],
+      "caveats": [
+        "You break it, Horde still take it. Horde not fussy.",
+        "No eat the job. Last one eat the job."
+      ],
+      "signoffs": [
+        "Shiny waiting. Shiny real. Horde count shiny already.",
+        "Come back with thing. Come back without thing, do not come back."
+      ]
+    },
+    "Free States of Midwest": {
+      "family": "trucker",
+      "titlePrefix": [
+        "RUN",
+        "HAUL",
+        "POSTED"
+      ],
+      "openers": [
+        "Nailed up at the truck stop off the {interstate|county line}, and it means what it says.",
+        "Nobody here is going to make you do this. Somebody here would sure appreciate it.",
+        "Free States business. No permit, no paperwork, no federal anything."
+      ],
+      "caveats": [
+        "Weather does what it wants out there. Plan for it or don't, that's your business.",
+        "If it goes wrong, it went wrong on your own time."
+      ],
+      "signoffs": [
+        "Cash on the barrel head when you're back.",
+        "Ask for me at the {counter|second pump}. They'll know."
+      ]
+    },
+    "Cascadia Protectorate": {
+      "family": "naturalist",
+      "titlePrefix": [
+        "FIELD WORK",
+        "RECORD",
+        "SURVEY"
+      ],
+      "openers": [
+        "Posted by the Protectorate's standing survey, which never quite finishes.",
+        "The land is doing something it has not done before, and somebody ought to go and look.",
+        "Filed under {watershed|canopy|littoral} observation, season {two|four}."
+      ],
+      "caveats": [
+        "Take nothing that is still growing. Note where it was and leave it there.",
+        "The forest was here before the Protectorate and has been asked for permission."
+      ],
+      "signoffs": [
+        "Bring back the notes. The notes are the point.",
+        "Go quietly. It hears better than you do."
+      ]
+    },
+    "Eastern Seaboard": {
+      "family": "mercantile",
+      "titlePrefix": [
+        "CONTRACT",
+        "TENDER",
+        "POSITION"
+      ],
+      "openers": [
+        "Tendered on the Seaboard exchange floor and available to any qualified bearer.",
+        "This is a commercial instrument, not a favour. Read it as one.",
+        "The board opened at {nine|the bell} and this was on it by {ten|noon}."
+      ],
+      "caveats": [
+        "Counterparty risk is yours. It always was.",
+        "The price is the price. The Seaboard does not haggle on paper."
+      ],
+      "signoffs": [
+        "Settlement on delivery, no later than the close of business.",
+        "Countersigned by an office that would rather stay a signature."
+      ]
+    },
+    "Mages Guild": {
+      "family": "arcane",
+      "titlePrefix": [
+        "WORKING",
+        "COMMISSION",
+        "RITE"
+      ],
+      "openers": [
+        "The Guild has voted, badly, and the outcome is this notice.",
+        "A working has gone somewhat sideways and requires hands that are not ours.",
+        "Third circle business, put out to the street because the second circle refused."
+      ],
+      "caveats": [
+        "Do not read anything you find aloud. This has come up before.",
+        "The Guild will explain afterwards. The Guild always explains afterwards."
+      ],
+      "signoffs": [
+        "Sealed with the third circle, which is the one that pays.",
+        "If it speaks to you on the way back, that is not part of the contract."
+      ]
+    },
+    "Archive Foundation": {
+      "family": "clinical",
+      "titlePrefix": [
+        "FILE",
+        "TASKING",
+        "REQUISITION"
+      ],
+      "transform": "redacted",
+      "openers": [
+        "Tasking issued under Foundation standing authority. Retain no copy.",
+        "This document is the shortest accurate version of the request.",
+        "Cross-referenced against {three|eleven} prior incidents. Proceed."
+      ],
+      "caveats": [
+        "Anything anomalous encountered is Foundation property from the moment it is observed.",
+        "Do not form conclusions. Conclusions are assigned centrally."
+      ],
+      "signoffs": [
+        "Compensation on verification. Verification is not negotiable.",
+        "This notice is its own authorisation."
+      ]
+    },
+    "Hypercapitalist Collective": {
+      "family": "mercantile",
+      "titlePrefix": [
+        "OFFER",
+        "LOT",
+        "OPPORTUNITY"
+      ],
+      "openers": [
+        "An opportunity has been priced, packaged and put in front of you. You are welcome.",
+        "The Collective does not employ. The Collective contracts, which is better for everyone.",
+        "Yield on this instrument is above market, for reasons disclosed below and not above."
+      ],
+      "caveats": [
+        "Your upside is capped by the contract. Your downside is capped by your own judgement.",
+        "There is no clause protecting you. There was never a market for one."
+      ],
+      "signoffs": [
+        "Executed on completion, net, same day.",
+        "The Collective thanks you for your participation in the Collective."
+      ]
+    },
+    "The Gods": {
+      "family": "divine",
+      "titlePrefix": [
+        "WILL",
+        "DECREE",
+        "IT IS ASKED"
+      ],
+      "transform": "shout",
+      "openers": [
+        "It has been decided. You are being told, not consulted.",
+        "A small thing is wanted, and it is wanted by something very large.",
+        "This was written before you read it and will be true after."
+      ],
+      "caveats": [
+        "Do not pray about this. The answer is the notice.",
+        "Refusal is permitted. Refusal is also remembered."
+      ],
+      "signoffs": [
+        "Payment is arranged. Do not ask by whom.",
+        "It will be as it is written, with you or without you."
+      ]
+    },
+    "The Tourists": {
+      "family": "touristy",
+      "titlePrefix": [
+        "VISITOR NOTICE",
+        "HELP",
+        "FAVOUR"
+      ],
+      "openers": [
+        "Hello! We are visiting your lovely planet and we have a small problem.",
+        "So sorry to bother. The guidebook did not cover this at all.",
+        "Posted by the excursion party from Zeta Reticuli, currently on day {four|eleven} of {six|nine}."
+      ],
+      "caveats": [
+        "Please do not tell the local authorities. It gets so complicated.",
+        "We are told this is legal here. We were told a lot of things."
+      ],
+      "signoffs": [
+        "We pay in your money! We got it at the {desk|window}. It is real, we checked.",
+        "Thank you so much. We will say wonderful things about this planet."
+      ]
+    },
+    "The Dargos": {
+      "family": "spooky",
+      "titlePrefix": [
+        "ARRANGEMENT",
+        "DEBT",
+        "OFFERING"
+      ],
+      "openers": [
+        "From Titania, where the arrangement was made, and the arrangement stands.",
+        "You were not chosen. You simply read it, which amounts to the same thing.",
+        "This has been on a board somewhere for longer than the board has existed."
+      ],
+      "caveats": [
+        "Do not count what you are carrying on the way back. It is impolite and it is inaccurate.",
+        "What answers to the name is not always the thing that had it."
+      ],
+      "signoffs": [
+        "The debt settles itself. It always has.",
+        "We will know when it is done. We knew before."
+      ]
+    },
+    "Kukulkan Ascendancy": {
+      "family": "arcane",
+      "titlePrefix": [
+        "OBSERVANCE",
+        "COUNT",
+        "RITE"
+      ],
+      "openers": [
+        "The count requires it, and the count has not been wrong yet.",
+        "Posted on the {ninth|thirteenth} day of the reckoning, as the calendar demands.",
+        "The feathered thing is patient. Its clerks are not."
+      ],
+      "caveats": [
+        "Do the work on the day named. A day early is as useless as a day late.",
+        "Blood is not required. It is merely traditional, and traditions can be waived."
+      ],
+      "signoffs": [
+        "Marked in the long count against your name, favourably.",
+        "The sky will confirm it. Look up when you are done."
+      ]
+    },
+    "Democratic People's Republic of Korea": {
+      "family": "bureaucratic",
+      "titlePrefix": [
+        "NOTICE",
+        "ITEM",
+        "ASSIGNMENT"
+      ],
+      "openers": [
+        "The Republic has no such difficulty. The Republic nonetheless issues this assignment.",
+        "Approved at the highest level, which is the only level.",
+        "Circulated for immediate and enthusiastic compliance."
+      ],
+      "caveats": [
+        "The assignment is already reported as complete. Do not embarrass the report.",
+        "Questions may be submitted in writing, and will be filed."
+      ],
+      "signoffs": [
+        "Payment has been generously arranged and will be generously described.",
+        "Glory is included at no extra cost."
+      ]
+    },
+    "Dharma Directorate": {
+      "family": "bureaucratic",
+      "titlePrefix": [
+        "ALLOCATION",
+        "MEMORANDUM",
+        "TASK"
+      ],
+      "openers": [
+        "Allocated by the Directorate at the {fourth|eleventh} sitting, without discussion.",
+        "One item of a very long list. The list is the Directorate's business, not yours.",
+        "Filed, numbered, and released to the boards on schedule."
+      ],
+      "caveats": [
+        "Do it in the order written. The order is not arbitrary, whatever it looks like.",
+        "The Directorate is aware of the difficulty and has allocated for it."
+      ],
+      "signoffs": [
+        "Disbursement follows verification, which follows submission, which follows completion.",
+        "The Directorate thanks you in the appropriate section of the form."
+      ]
+    },
+    "Illuminated Khanate": {
+      "family": "military",
+      "titlePrefix": [
+        "ORDERS",
+        "RIDE",
+        "TASKING"
+      ],
+      "openers": [
+        "The Khan's riders cannot be everywhere at once. Today they are not here.",
+        "Sent out with the post riders and nailed up where the horses stop.",
+        "A tasking from the steppe, which does not write long notices."
+      ],
+      "caveats": [
+        "Ride out, do it, ride back. Nobody is interested in the middle part.",
+        "The Khanate does not send a second rider for the same errand."
+      ],
+      "signoffs": [
+        "Paid at the {ger|remount station}, in the open, in front of witnesses.",
+        "The Eternal Sky sees the work. So does the paymaster."
+      ]
+    },
+    "Solomonic Republic": {
+      "family": "clerical",
+      "titlePrefix": [
+        "JUDGEMENT",
+        "WRIT",
+        "COMMISSION"
+      ],
+      "openers": [
+        "Set down under the seal of the Republic, which is a seal older than the Republic.",
+        "The matter has been weighed. The weighing is finished; the doing is not.",
+        "Issued by the court of the {second|inner} chamber, in plain language for once."
+      ],
+      "caveats": [
+        "Wisdom is expected of the bearer. It is not, unfortunately, supplied.",
+        "Bring back the thing itself, not an account of it."
+      ],
+      "signoffs": [
+        "Sealed with the ring. The ring is not a metaphor.",
+        "Judgement is deferred until the work is seen."
+      ]
+    },
+    "Petro Kingdom of Arabia": {
+      "family": "petrolic",
+      "titlePrefix": [
+        "FIELD ORDER",
+        "LEASE WORK",
+        "EXTRACTION"
+      ],
+      "openers": [
+        "Issued against the standing lease, which covers more than anybody has read.",
+        "The Kingdom has money and no time. This notice is the exchange rate between them.",
+        "Posted from the {compound|field office}, where the air conditioning works."
+      ],
+      "caveats": [
+        "Do not negotiate with anything you meet out there. The Kingdom negotiates.",
+        "Whatever is under the ground stays the Kingdom's, including what walks on it."
+      ],
+      "signoffs": [
+        "Paid in full, in cash, without discussion. That is the whole point of the Kingdom.",
+        "The lease is renewed annually. So, potentially, is your arrangement."
+      ]
+    },
+    "Sanatana Rashtra": {
+      "family": "clerical",
+      "titlePrefix": [
+        "OBSERVANCE",
+        "DUTY",
+        "PETITION"
+      ],
+      "openers": [
+        "A duty has fallen to somebody, and the somebody has not yet been named.",
+        "Posted at the {temple gate|assembly hall}, where such things are properly posted.",
+        "The cycle turns and leaves work behind it. This is some of the work."
+      ],
+      "caveats": [
+        "Do it without resentment. Resentment does not affect the pay, only you.",
+        "What is owed is owed whether or not it is convenient."
+      ],
+      "signoffs": [
+        "The merit is yours to keep. The money is merely also yours.",
+        "Return when it is done, and be at ease."
+      ]
+    },
+    "Long Chile": {
+      "family": "streetwise",
+      "titlePrefix": [
+        "WORD",
+        "ARRANGEMENT",
+        "QUIET JOB"
+      ],
+      "openers": [
+        "Word went down the whole length of the country and came out here.",
+        "Somebody who does not sign notices has asked for this notice to be signed by nobody.",
+        "A quiet job, from a long thin place that is good at quiet jobs."
+      ],
+      "caveats": [
+        "Do not ask who wants it. Somebody wants it and somebody pays.",
+        "If it goes wrong, it goes wrong far from anyone we know."
+      ],
+      "signoffs": [
+        "Payment is already sitting somewhere. It is not sitting with us.",
+        "You never read this. Neither did we."
+      ]
+    },
+    "Imperial State of Persia": {
+      "family": "imperial",
+      "titlePrefix": [
+        "DECREE",
+        "COMMISSION",
+        "ORDER"
+      ],
+      "openers": [
+        "By the will of the Peacock Throne, an errand suited to a stranger.",
+        "The court has considered the matter at length and would now like it dealt with.",
+        "Copied fair by the {scribe|secretariat} and posted without amendment."
+      ],
+      "caveats": [
+        "The court's patience is a real thing and it is being spent on you.",
+        "Do not improve the instructions. Others have tried."
+      ],
+      "signoffs": [
+        "Paid from the treasury, which is not short.",
+        "May the road be short and the return be soon."
+      ]
+    },
+    "Northpoint Army": {
+      "family": "military",
+      "titlePrefix": [
+        "ORDERS",
+        "OPERATION",
+        "TASKING"
+      ],
+      "openers": [
+        "Northpoint has the ground and not the people. This is the shortfall.",
+        "Issued from the {ice station|northern line}, where notices are short because the ink freezes.",
+        "Operational tasking, released to civilian contractors under standing policy."
+      ],
+      "caveats": [
+        "Cold kills faster than anything on the objective list. Dress for the first problem.",
+        "Report what you saw, not what you think it meant."
+      ],
+      "signoffs": [
+        "Paid on return to the line. Nobody is paid in the field.",
+        "Northpoint holds. Northpoint always holds."
+      ]
+    }
+  },
   "eliteFamily": {
     "clinical": {
       "openers": [

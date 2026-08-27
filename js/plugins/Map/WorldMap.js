@@ -191,6 +191,63 @@
     let autoOpenedForTravel = false; // true if the minimap was auto-shown for travel
     let travelRefreshCounter = 0;    // throttles the per-frame minimap redraw
 
+    // ------------------------------------------------------------------------
+    // WHERE THE PARTY STANDS, IN WORLD UNITS WITH A FRACTION
+    // ------------------------------------------------------------------------
+    // Vars 43/44 name a whole world square, so a dot drawn from them alone can
+    // only ever sit in the middle of its cell and jump the whole cell at a
+    // crossing. On the procedural map a square is 64x64 tiles and the stitched
+    // window lays several of them side by side, so the party spends dozens of
+    // steps inside one: reading how far across the square they already are lets
+    // the dot creep across the cell exactly as they creep across the ground.
+    //
+    // Off the procedural map there is no sub-square position to read. An
+    // authored map stands on its square whole, so the party is reported at the
+    // centre of it, which is where the dot has always been drawn.
+    const PROC_MAP_ID = 636;
+
+    // How far into its own world square the party stands, 0..1 on each axis.
+    // Answers with the square itself too, because on a stitched window the
+    // square the party is in is the cell they are standing on, not necessarily
+    // the one vars 43/44 have caught up with.
+    function playerSquarePosition() {
+        const varX = $gameVariables.value(43) || 0;
+        const varY = $gameVariables.value(44) || 0;
+        const result = { squareX: varX, squareY: varY, fracX: 0.5, fracY: 0.5 };
+        const stitch = window.ProcStitch;
+        if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID || !stitch || !$gamePlayer) return result;
+
+        const size = stitch.cellSize ? stitch.cellSize() : null;
+        const cellW = (size && size.width) || 64;
+        const cellH = (size && size.height) || 64;
+        // The cell the party stands on, when a window is up: without one the
+        // whole map IS the square and its origin is 0,0.
+        const cell = (stitch.active && stitch.active() && stitch.cellAt)
+            ? stitch.cellAt($gamePlayer.x, $gamePlayer.y) : null;
+        const ox = cell ? cell.ox : 0;
+        const oy = cell ? cell.oy : 0;
+        if (cell) {
+            result.squareX = cell.worldX;
+            result.squareY = cell.worldY;
+        }
+        // _realX/_realY are the tween position, so the dot keeps moving between
+        // one tile and the next rather than only on whole steps.
+        result.fracX = clamp01(($gamePlayer._realX - ox) / cellW);
+        result.fracY = clamp01(($gamePlayer._realY - oy) / cellH);
+        return result;
+    }
+
+    // The same answer as one pair of fractional world coordinates.
+    function playerWorldPosition() {
+        const p = playerSquarePosition();
+        return { x: p.squareX + p.fracX, y: p.squareY + p.fracY };
+    }
+
+    function clamp01(v) {
+        if (!(v >= 0)) return 0;   // NaN included
+        return v > 1 ? 1 : v;
+    }
+
     // Bologna map constants (must match BolognaMapSystem.js)
     const BOLOGNA_MAP_ID = 353;
     const BOLOGNA_ROW_MIN = 3, BOLOGNA_ROW_MAX = 16;
@@ -810,6 +867,82 @@
         }
     }
 
+    // ------------------------------------------------------------------------
+    // Destination names on the zoomed minimap
+    // ------------------------------------------------------------------------
+    // The zoomed views marked a town with a bare green square, which said that
+    // something was there but never what. Destinations.json is the game's
+    // gazetteer: every named place and the world square it sits on, so the
+    // names are read straight off it (and off the teleport events on map 315,
+    // which are those same places placed as events).
+
+    const MINIMAP_NAME_FONT = 11;
+    const MINIMAP_NAME_COLOR = '#FFFFFF';
+
+    let destinationMarkersCache = null;
+
+    // [{ x, y, name }] in world-tile space (0-255), one per catalogued place.
+    function getDestinationMarkers() {
+        if (destinationMarkersCache) return destinationMarkersCache;
+        const dest = window.WorkSystem && window.WorkSystem.Destinations;
+        // DataService registers the gazetteer on boot; before that, answer
+        // empty without caching so the list is built once it exists.
+        if (!dest) return [];
+        const out = [];
+        for (const key of Object.keys(dest)) {
+            const data = dest[key];
+            const base = data && data.base;
+            if (!base || !Number.isFinite(base.x) || !Number.isFinite(base.y)) continue;
+            out.push({ x: base.x, y: base.y, name: destinationLabel(key, data) });
+        }
+        destinationMarkersCache = out;
+        return out;
+    }
+
+    // Readable name of a place, from its Destinations.json key.
+    function destinationLabel(key, data) {
+        if (window.WorkSystem && window.WorkSystem.destinationName) {
+            return window.WorkSystem.destinationName(key);
+        }
+        return (data && data.name) || key;
+    }
+
+    // "Teleport - Antwerpen" / "teleport Antwerpen" -> the readable place name.
+    function teleportEventLabel(eventName) {
+        const key = String(eventName || '')
+            .replace(/^teleport\s*/i, '').replace(/^-\s*/, '').trim();
+        return key ? destinationLabel(key, null) : '';
+    }
+
+    // Names are centred under their marker and kept inside the bitmap. A name
+    // that would land on one already drawn is dropped: the minimap is 200px
+    // wide and a pile of overlapping town names reads as noise.
+    function drawMinimapNames(ctx, entries, bitmapWidth, bitmapHeight) {
+        if (!entries.length) return;
+        ctx.save();
+        ctx.font = `bold ${MINIMAP_NAME_FONT}px GameFont, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        const taken = [];
+        for (const entry of entries) {
+            if (!entry.name) continue;
+            const halfW = ctx.measureText(entry.name).width / 2 + 1;
+            const cx = Math.max(halfW + 1, Math.min(bitmapWidth - halfW - 1, entry.x));
+            let ty = entry.y + 5;
+            if (ty + MINIMAP_NAME_FONT > bitmapHeight - 14) ty = entry.y - 6 - MINIMAP_NAME_FONT;
+            if (ty < 1) continue;
+            const box = { l: cx - halfW, r: cx + halfW, t: ty, b: ty + MINIMAP_NAME_FONT + 1 };
+            if (taken.some(o => box.l < o.r && box.r > o.l && box.t < o.b && box.b > o.t)) continue;
+            taken.push(box);
+            ctx.strokeText(entry.name, cx, ty);
+            ctx.fillStyle = entry.color || MINIMAP_NAME_COLOR;
+            ctx.fillText(entry.name, cx, ty);
+        }
+        ctx.restore();
+    }
+
     function drawLabel(ctx, x, y, text, color, sizePx) {
         const px = sizePx || labelFontSize;
         ctx.font = `bold ${px}px GameFont, sans-serif`;
@@ -902,6 +1035,16 @@
             gridW: grid.w, gridH: grid.h,
             playerCell: { gx: grid.gx, gy: grid.gy },
         });
+        // drawPlanetGrid outlines the whole landing cell; the dot inside it says
+        // where in that cell the party actually is, so walking a cell moves it
+        // gradually instead of only when the outline jumps to the next one.
+        const pos = playerSquarePosition();
+        const cellW = destW / Math.max(1, grid.w);
+        const cellH = destH / Math.max(1, grid.h);
+        drawDot(bitmap.context,
+            (grid.gx + pos.fracX) * cellW,
+            (grid.gy + pos.fracY) * cellH,
+            playerColor, 4);
         drawCoordinates(bitmap.context, destW, destH, grid.gx, grid.gy, $gamePlayer.x, $gamePlayer.y);
         bitmap.baseTexture.update();
         return bitmap;
@@ -1145,6 +1288,7 @@
                 // event list is precomputed per map (see getTeleportEvents) so we
                 // don't regex-test every event on the map each redraw.
                 const teleportEvents = getTeleportEvents();
+                const placeNames = [];
                 for (const ev of teleportEvents) {
                     if (!ev || ev._erased) continue;
                     if (ev.x >= srcXInTiles && ev.x < srcXInTiles + zoomTiles &&
@@ -1154,8 +1298,15 @@
                         const ey = Math.floor(((ev.y - srcYInTiles) / zoomTiles) * targetH) + gridCellHeight / 2;
 
                         drawSquare(context, ex, ey, '#00FF00', 6);
+                        placeNames.push({ x: ex, y: ey, name: teleportEventLabel(ev.event().name) });
                     }
                 }
+                // Names go on after every square so a marker never covers the
+                // name of the place next to it, nearest the party first: where
+                // two names collide the closer place is the one worth reading.
+                placeNames.sort((a, b) =>
+                    Math.hypot(a.x - ppx, a.y - ppy) - Math.hypot(b.x - ppx, b.y - ppy));
+                drawMinimapNames(context, placeNames, targetW, targetH);
 
                 // Active quest objectives inside the same cropped window.
                 for (const qt of getQuestMarkerTiles()) {
@@ -1225,9 +1376,13 @@
         }
 
         // 3. If NOT on Map 315, show the Detailed Block (with procedural zoom)
-        // Calculate which 8x8 block we are in
-        const varX = $gameVariables.value(43) || 0;
-        const varY = $gameVariables.value(44) || 0;
+        // Calculate which 8x8 block we are in. The world position carries the
+        // fraction of the square already walked (see playerSquarePosition), so
+        // the block view is addressed by the whole square and the dot by the
+        // exact spot inside it.
+        const worldPos = playerWorldPosition();
+        const varX = Math.floor(worldPos.x);
+        const varY = Math.floor(worldPos.y);
 
         // 256 units / 8 blocks = 32 units per block
         const col = Math.floor(varX / 32) + 1;
@@ -1245,14 +1400,17 @@
 
         const bitmap = new Bitmap(targetW, targetH);
 
-        // Calculate local coordinates within the 32x32 block
-        const localX = varX % 32;
-        const localY = varY % 32;
+        // Calculate local coordinates within the 32x32 block. These keep the
+        // fraction: 12.25 is a quarter of the way across the block's 13th square.
+        const localX = worldPos.x - (col - 1) * 32;
+        const localY = worldPos.y - (row - 1) * 32;
 
-        // Calculate the zoom-level view: center on player, show proceduralZoomLevel x proceduralZoomLevel area
+        // Calculate the zoom-level view: center on player, show proceduralZoomLevel x proceduralZoomLevel area.
+        // The window itself stays on whole squares, so the drawn grid keeps
+        // lining up with the world squares it is meant to mark.
         const halfZoom = proceduralZoomLevel / 2;
-        const srcX = Math.max(0, Math.min(32 - proceduralZoomLevel, localX - halfZoom));
-        const srcY = Math.max(0, Math.min(32 - proceduralZoomLevel, localY - halfZoom));
+        const srcX = Math.max(0, Math.min(32 - proceduralZoomLevel, Math.floor(localX) - halfZoom));
+        const srcY = Math.max(0, Math.min(32 - proceduralZoomLevel, Math.floor(localY) - halfZoom));
 
         // Draw the zoomed portion of the tile
         const tileScale = tileBitmap.width / 32; // pixels per unit
@@ -1267,12 +1425,36 @@
         // Draw grid for detailed block view
         drawDetailedBlockGrid(context, targetW, targetH, proceduralZoomLevel, tileScale);
 
-        // Scale player position to zoomed minimap
-        // (localX - srcX) / proceduralZoomLevel gives position within the zoomed area
+        // Scale player position to zoomed minimap.
+        // (localX - srcX) / proceduralZoomLevel gives position within the zoomed
+        // area. localX is fractional and is not rounded to the cell: half a
+        // square reads as 0.5 and lands the dot in the middle of its cell, which
+        // is where a party off the procedural map is always reported.
         const gridCellWidth = targetW / proceduralZoomLevel;
         const gridCellHeight = targetH / proceduralZoomLevel;
-        const px = Math.floor(((localX - srcX) / proceduralZoomLevel) * targetW) + gridCellWidth / 2;
-        const py = Math.floor(((localY - srcY) / proceduralZoomLevel) * targetH) + gridCellHeight / 2;
+        const px = ((localX - srcX) / proceduralZoomLevel) * targetW;
+        const py = ((localY - srcY) / proceduralZoomLevel) * targetH;
+
+        // Catalogued places inside the visible window. The block view is drawn
+        // in world units, one unit per world square, so a destination's base
+        // square is exactly the cell it is drawn in. Off the world map there
+        // are no teleport events to read, so the gazetteer is the only source.
+        const viewWorldX = (col - 1) * 32 + srcX;
+        const viewWorldY = (row - 1) * 32 + srcY;
+        const placeNames = [];
+        for (const dest of getDestinationMarkers()) {
+            if (dest.x < viewWorldX || dest.x >= viewWorldX + proceduralZoomLevel) continue;
+            if (dest.y < viewWorldY || dest.y >= viewWorldY + proceduralZoomLevel) continue;
+            const dx = Math.floor(((dest.x - viewWorldX) / proceduralZoomLevel) * targetW) + gridCellWidth / 2;
+            const dy = Math.floor(((dest.y - viewWorldY) / proceduralZoomLevel) * targetH) + gridCellHeight / 2;
+            drawSquare(context, dx, dy, '#00FF00', 6);
+            placeNames.push({ x: dx, y: dy, name: dest.name });
+        }
+        // Nearest the party first, so a crowded corner of the map keeps the
+        // name of the place actually being walked towards.
+        placeNames.sort((a, b) =>
+            Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py));
+        drawMinimapNames(context, placeNames, targetW, targetH);
 
         drawDot(context, px, py, playerColor, 5);
 
@@ -1550,11 +1732,12 @@
             px = Math.floor(($gamePlayer.x / mw) * targetW) + targetW / (mw * 2);
             py = Math.floor(($gamePlayer.y / mh) * targetH) + targetH / (mh * 2);
         } else {
-            // Not on map 315: use variables 43 and 44 (0-255 range)
-            const varX = $gameVariables.value(43) || 0;
-            const varY = $gameVariables.value(44) || 0;
-            px = Math.floor((varX / 255) * targetW) + targetW / 510;
-            py = Math.floor((varY / 255) * targetH) + targetH / 510;
+            // Not on map 315: use the world position (0-255 range), fraction of
+            // the square included, so crossing a procedural square walks the dot
+            // over instead of teleporting it.
+            const world = playerWorldPosition();
+            px = (world.x / 255) * targetW;
+            py = (world.y / 255) * targetH;
         }
         drawDot(context, px, py, playerColor, showLabels ? 8 : 4);
 

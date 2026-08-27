@@ -88,6 +88,57 @@
     return (GS && GS.bioTierLabel) ? GS.bioTierLabel(tier) : "";
   };
 
+  // How the sky moves over a world: how long one day lasts there, and whether
+  // the world turns at all. A body close enough in to its star is held with one
+  // face toward it for good, so half of it lies in permanent daylight and half
+  // in permanent night; a moon is held facing its own planet instead, which
+  // leaves it a day, just a very slow one.
+  const worldSpin = (body, system, opts) => {
+    const GS = window.GalaxySim;
+    if (!GS || !GS.worldRotation) return null;
+    // Probes, telescopes and the teapot are things in orbit, not worlds: how
+    // long a day lasts on one is not a question with an answer. They give
+    // themselves away by weighing nothing - a millionth of a millionth of the
+    // lightest real rock in the catalogue.
+    if (!body || !(body.mass > 1e-16)) return null;
+    return GS.worldRotation(body, system, {
+      isMoon: opts && opts.kind === "moon",
+      parentPlanet: opts && opts.parentPlanet,
+    });
+  };
+
+  // What a body weighs you at, in Earth gravities: its mass over the square of
+  // its radius, which the catalogue carries both of. It is what walking on the
+  // place will actually feel like, so it is worth saying before setting down.
+  const gravityLabel = (body) => {
+    const GS = window.GalaxySim;
+    if (!GS || !GS.surfaceGravity || !body || !(body.mass > 1e-16)) return null;
+    const g = GS.surfaceGravity(body);
+    if (!(g > 0) || !isFinite(g)) return null;
+    return T('Galaxy.row.gValue', { g: g < 10 ? g.toFixed(2) : g.toFixed(0) });
+  };
+
+  // Hours while a day is anything like a day, Earth days once it runs into the
+  // hundreds of hours. A world locked to its star has no day at all to give.
+  const dayLengthLabel = (spin) => {
+    if (!spin) return null;
+    if (spin.frozen) return T('Galaxy.row.noDayNight');
+    const h = spin.dayHours;
+    if (!(h > 0)) return null;
+    return h < 72
+      ? T('Galaxy.row.hoursValue', { hours: h.toFixed(1) })
+      : T('Galaxy.row.daysValue', { days: (h / 24).toFixed(1) });
+  };
+
+  // What the world is held facing, when it is held at all. Locked to its star
+  // means the sun never moves in its sky.
+  const tidalLockLabel = (spin) => {
+    if (!spin || !spin.locked) return null;
+    return spin.lockedTo === "star"
+      ? T('Galaxy.row.lockedToStar')
+      : T('Galaxy.row.lockedToPlanet');
+  };
+
   class GalaxyOverlay {
     constructor(parentEl) {
       this.parent = parentEl;
@@ -246,6 +297,11 @@
         `<div class="gx-title" data-role="lg-title">${T('Galaxy.hud.chooseLandingSite')}</div>` +
         `<canvas class="gx-lg-canvas" data-role="lg-canvas" width="640" height="360"></canvas>` +
         `<div class="gx-actions">` +
+        // Two ways down onto a world: set the ship on it, or walk it. The
+        // choice is made before a square is picked, and the square then does
+        // whichever is selected.
+        `<span class="gx-btn focusable gx-lg-mode is-on" tabindex="0" data-action="landing-mode" data-mode="land">${T('Galaxy.hud.landHere')}</span>` +
+        `<span class="gx-btn focusable gx-lg-mode" tabindex="0" data-action="landing-mode" data-mode="walk">${T('Galaxy.hud.liminalWalk')}</span>` +
         `<span class="gx-btn focusable" tabindex="0" data-action="landing-grid-cancel">${T('Galaxy.hud.cancel')}</span>` +
         `</div></div>`;
 
@@ -913,12 +969,16 @@
         planet: opts.parentPlanet, landingLocations: locs,
       };
       const periodYr = typeof body.period === "number" ? body.period / 365 : null;
+      const spin = worldSpin(body, system, opts);
       const rows = this._rows([
         [T('Galaxy.row.type'), bodyTypeLabel(String(body.type || "?").replace(/_/g, " "))],
         [T('Galaxy.row.radius'), num(body.radius, 2) != null ? num(body.radius, 2) + " R⊕" : null],
         [T('Galaxy.row.mass'), num(body.mass, 3) != null ? num(body.mass, 3) + " M⊕" : null],
         [T('Galaxy.row.orbit'), num(body.orbitRadius, 3) != null ? num(body.orbitRadius, 3) + " AU" : null],
         [T('Galaxy.row.period'), num(periodYr, 2) != null ? num(periodYr, 2) + " yr" : null],
+        [T('Galaxy.row.gravity'), gravityLabel(body)],
+        [T('Galaxy.row.dayLength'), dayLengthLabel(spin)],
+        [T('Galaxy.row.tidallyLocked'), tidalLockLabel(spin)],
         [T('Galaxy.row.atmosphere'), body.atmosphere ? T('Galaxy.row.yes') : T('Galaxy.row.no')],
         // Breathable atmosphere comes from the planet type definition (passed in
         // via opts); "Has Life" is only shown when the planet actually has life.
@@ -1051,13 +1111,33 @@
         planet, w, h,
         cursor: { gx: Math.floor(w / 2), gy: Math.floor(h / 2) },
         textureCanvas,
+        mode: 'land',      // 'land' | 'walk'
       };
+      this._syncLandingMode();
       this._landingGridCallbacks = { onPick: opts.onPick, onCancel: opts.onCancel };
       this.els.landingGridTitle.textContent = `${T('Galaxy.hud.chooseLandingSite')} · ${planet.name || "Planet"}`;
       this.els.landingGrid.style.display = "flex";
       this._focusEl = null;
       this._invalidateFocusables();
       this._redrawLandingGrid();
+    }
+
+    // Which of the two ways down is armed, shown on the buttons themselves.
+    setLandingMode(mode) {
+      const lg = this._landingGrid;
+      if (!lg || (mode !== 'land' && mode !== 'walk')) return;
+      lg.mode = mode;
+      this._syncLandingMode();
+      if (window.SoundManager) SoundManager.playCursor();
+    }
+
+    _syncLandingMode() {
+      const lg = this._landingGrid;
+      if (!lg || !this.els.landingGrid) return;
+      const btns = this.els.landingGrid.querySelectorAll('[data-action="landing-mode"]');
+      btns.forEach((b) => {
+        b.classList.toggle('is-on', b.getAttribute('data-mode') === lg.mode);
+      });
     }
 
     isLandingGridOpen() {
@@ -1092,11 +1172,12 @@
       const cb = this._landingGridCallbacks;
       if (!lg || !cb) return;
       const { gx, gy } = lg.cursor;
+      const mode = lg.mode || 'land';
       this.els.landingGrid.style.display = "none";
       this._landingGrid = null;
       this._landingGridCallbacks = null;
       this._invalidateFocusables();
-      if (cb.onPick) cb.onPick(gx, gy);
+      if (cb.onPick) cb.onPick(gx, gy, mode);
     }
 
     _redrawLandingGrid() {
@@ -1327,6 +1408,8 @@
         cb.onTravelPlanet(this._selection);
       } else if (action === "land" && cb.onLand) {
         cb.onLand(this._selection);
+      } else if (action === "landing-mode") {
+        this.setLandingMode(btn.getAttribute("data-mode"));
       } else if (action === "landing-grid-cancel") {
         this.hideLandingGrid();
       } else if (action === "strip-mine" && cb.onStripMine) {

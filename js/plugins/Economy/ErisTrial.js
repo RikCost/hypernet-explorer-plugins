@@ -367,6 +367,20 @@
       if (scene && typeof scene.openSleepMenu === 'function') scene.openSleepMenu('main');
     }
 
+    // The sleep button was a click and nothing else, which left a player on a
+    // pad serving a fixed sentence in real time with no way to skip it. Confirm
+    // opens the same menu from anywhere in the cell. There is nothing else in
+    // here to press it on - no bed, no door, no furniture, which is the whole
+    // reason the button had to exist - so the key is free, and it is still
+    // handed to a message or an event first if one is running.
+    updateSleepInput() {
+      if (this._sentenceReleaseTime === null) return;
+      if (typeof Input === 'undefined' || !Input.isTriggered('ok')) return;
+      if ($gameMessage && $gameMessage.isBusy()) return;
+      if ($gameMap && $gameMap.isEventRunning()) return;
+      this.openSleep();
+    }
+
     // Consumed once per real second, not per game-minute: a cell is too
     // small to pace out the ten steps a game-minute used to cost, which is
     // what left the old countdown looking dead while the party sat still.
@@ -460,6 +474,7 @@
           this.reduceBounty();
         }
         if (this._htmlEl) this._syncPos();
+        this.updateSleepInput();
       }
 
       // Check if player left prison map

@@ -857,16 +857,6 @@
           "My last partner was a hedge. We're still friends."
         ]
       },
-      "dwarf": {
-        "reasonLabel": "dwarves only",
-        "delta": -2,
-        "lines": [
-          "Too tall. Far too tall.",
-          "I have a type. And it comes with a beard and a mining claim.",
-          "Come back three feet shorter.",
-          "You're very kind. And much too long in the leg."
-        ]
-      },
       "bubba": {
         "reasonLabel": "loves Bubba Wilson",
         "delta": -2,

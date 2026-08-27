@@ -1143,7 +1143,10 @@
                 <div id="hypernet-system-tray">
                     <div class="tray-icon" title="${T('HypernetOS.networkEstablished')}"></div>
                     <div class="tray-icon" title="${T('HypernetOS.encryptionMax')}"></div>
-                    <div id="tray-clock">12:00 PM</div>
+                    <div id="tray-clock">
+                        <span id="tray-clock-time">12:00 PM</span>
+                        <span id="tray-clock-date"></span>
+                    </div>
                 </div>
             </div>
         `;
@@ -1283,20 +1286,41 @@
         }
     };
 
+    // The taskbar keeps the world's clock, not the player's: hour and day both come
+    // from TimeDateSystem, so the OS agrees with the game running outside it.
+    Scene_HypernetOS.prototype.gameClockParts = function() {
+        const TDS = window.TimeDateSystem;
+        const now = (TDS && typeof TDS.getCurrentDateObj === 'function')
+            ? TDS.getCurrentDateObj()
+            : new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? T('HypernetOS.clockPm') : T('HypernetOS.clockAm');
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        const dayNames = T.list('HypernetOS.dayAbbr');
+        const monthNames = T.list('HypernetOS.monthAbbr');
+        return {
+            time: `${hours}:${minutes} ${ampm}`,
+            date: T('HypernetOS.clockDate', {
+                day: dayNames[now.getDay()] || '',
+                date: now.getDate(),
+                month: monthNames[now.getMonth()] || ''
+            })
+        };
+    };
+
     Scene_HypernetOS.prototype.startClock = function() {
         const updateClock = () => {
-            const clockEl = document.getElementById('tray-clock');
-            if (!clockEl) return;
-            const now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // the hour '0' should be '12'
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            clockEl.textContent = `${hours}:${minutes} ${ampm}`;
+            const timeEl = document.getElementById('tray-clock-time');
+            const dateEl = document.getElementById('tray-clock-date');
+            if (!timeEl && !dateEl) return;
+            const parts = this.gameClockParts();
+            if (timeEl) timeEl.textContent = parts.time;
+            if (dateEl) dateEl.textContent = parts.date;
         };
-        
+
         updateClock();
         this._clockInterval = setInterval(updateClock, 1000);
     };

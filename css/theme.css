@@ -215,6 +215,21 @@
     box-shadow: 0 0 0 2px var(--shadow-gold-amber-50);
 }
 
+/* The focus ring the keyboard, WASD and the pad move around every control that
+   is not a card on a board (CharacterCreationNav.js). It started on the
+   creation spread and is now the shared ring: the maintenance bay, the trading
+   terminal and the ideology chart wear it too. Same amber the tab rail rests
+   on, drawn as an outline so it reads on a chip, a portrait and a bare button
+   alike without moving anything. */
+.cc-nav-focus {
+    outline: 2px solid var(--text-primary-hover);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--shadow-gold-amber-50);
+    border-radius: 4px;
+    position: relative;
+    z-index: 3;
+}
+
 .cc-folder-tab:hover {
     background: linear-gradient(180deg, var(--bg-primary-hover-translucent-35), var(--bg-panel));
     color: var(--text-primary-hover);
@@ -2351,16 +2366,6 @@
 }
 
 /* --- Right page: the open trait ------------------------------------------ */
-/* Given the room the old fixed-height box on the left page never had: it takes
-   what it needs and scrolls only when a trait really is that long. */
-.ts-detail {
-    flex: 0 1 auto;
-    min-height: 0;
-    max-height: 42%;
-    overflow-y: auto;
-    margin-bottom: 12px;
-}
-
 .ts-detail-card {
     margin-bottom: 0;
     padding: 10px 12px;
@@ -3582,7 +3587,8 @@
 /* Fullscreen Backdrop Overlay with Candle-Lit Vignette */
 #menu-container,
 #status-menu-container,
-#state-list-container {
+#state-list-container,
+#world-atlas-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -3732,19 +3738,6 @@
 }
 
 /* Typography styles */
-.title {
-    font-family: 'Lora', serif;
-    color: var(--text-primary-hover);
-    font-weight: bold;
-    text-align: center;
-    border-bottom: 2px dashed var(--border-success);
-    padding-bottom: 8px;
-    margin: 0 0 20px 0;
-    font-size: 2.14em;
-    letter-spacing: 2px;
-    text-shadow: 1px 1px 0px var(--bg-primary-hover-translucent-35);
-}
-
 .h3 {
     font-family: 'Lora', serif;
     color: var(--text-primary-hover);
@@ -4075,7 +4068,7 @@
 }
 
 .cc-bio-section-title {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     font-weight: bold;
     color: var(--text-primary-hover);
     margin-bottom: 6px;
@@ -4091,12 +4084,12 @@
 }
 
 .cc-bio-chip {
-    padding: 4px 9px;
+    padding: 5px 11px;
     border-radius: 4px;
     background: transparent;
     border: 1px solid var(--border-gold-amber-30);
     color: var(--text-card-dark);
-    font-size: 0.82rem;
+    font-size: 0.96rem;
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -4123,7 +4116,7 @@
     border-radius: 4px;
     color: var(--text-card-dark);
     font-family: 'Lora', serif;
-    font-size: 0.88rem;
+    font-size: 1.02rem;
     outline: none;
 }
 
@@ -4138,7 +4131,7 @@
 
 .cc-bio-slider-end {
     color: var(--text-card-medium);
-    font-size: 0.78rem;
+    font-size: 0.92rem;
     white-space: nowrap;
 }
 
@@ -4192,7 +4185,7 @@
 .cc-bio-slider-readout {
     margin-top: 4px;
     color: var(--text-card-dark);
-    font-size: 0.8rem;
+    font-size: 0.94rem;
 }
 
 .cc-bio-slider-readout b {
@@ -4371,8 +4364,9 @@
 }
 
 /* 8-Stat Matrix in Personal Dossier */
-/* HP and MP now lead the grid as plain boxes like every other stat, so the
-   sidebar spends one row's height on them instead of a separate bar block. */
+/* The vitals block the sidebar still opens with. The two-line bar gauges that
+   used to sit inside it are gone: HP and MP lead the stat grid as plain boxes
+   now, which is what freed the height the portrait above grew into. */
 .cc-vitals-block {
     padding: 2px 0;
 }
@@ -4594,10 +4588,19 @@
     cursor: not-allowed;
 }
 
+/* Given the room the old fixed-height box on the left page never had: it takes
+   what it needs and scrolls only when a trait really is that long. */
 .ts-detail {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 42%;
+    margin-bottom: 12px;
     box-sizing: border-box;
     width: 100%;
-    overflow: hidden;
+    /* Scrolls down the page only: a long trait is read, never clipped, and no
+       horizontal bar can appear under it. */
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .ts-detail .cc-dossier-row {
@@ -5310,18 +5313,6 @@
     grid-gap: 6px 15px;
 }
 
-.skill-row {
-    font-family: 'Lora', serif;
-    font-size: 0.928em;
-    color: var(--text-success-active);
-    display: flex;
-    justify-content: space-between;
-}
-
-.skill-name {
-    font-weight: 700;
-}
-
 .skill-val {
     font-weight: bold;
     color: var(--text-primary-hover);
@@ -5380,6 +5371,26 @@
     color: var(--text-pure-white);
 }
 
+/* The wanted level, printed inside the bounty value so the record and the
+   manhunt read as one fact. Amber while the party is only on the books, red
+   once the heat is past the point an officer gives chase. */
+.wanted-chip {
+    display: inline-block;
+    margin-left: 0.5em;
+    padding: 0 0.4em;
+    border-radius: 3px;
+    font-size: 0.85em;
+    font-weight: bold;
+    vertical-align: baseline;
+    background: var(--accent-badge-yellow);
+    color: var(--accent-badge-text);
+}
+
+.wanted-chip--chased {
+    background: var(--accent-red-2);
+    color: var(--text-pure-white);
+}
+
 /* Nested Tools Page styled as book nested category list */
 .tools-pockets {
     display: flex;
@@ -5403,25 +5414,6 @@
     margin: 0;
 }
 
-.back-button {
-    font-family: 'Lora', serif;
-    font-size: 0.928em;
-    font-weight: bold;
-    background: transparent;
-    border: 1px solid var(--text-primary-hover);
-    color: var(--text-primary-hover);
-    padding: 4px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.back-button:hover,
-.back-button.selected {
-    background: var(--text-primary-hover) !important;
-    color: var(--bg-secondary-hover) !important;
-    border-color: var(--text-primary-hover) !important;
-}
 
 /* The menu pockets pages (Tools, Vehicles, Pets & Followers, Party Dynamics,
    Roster, Roster History) use the shared .page-header-bar shape: Back pinned
@@ -5859,33 +5851,11 @@
     gap: 8px;
 }
 
-.inspect-btn {
-    font-family: 'Lora', serif;
-    font-size: 1.142em;
-    text-align: center;
-    background: var(--bg-secondary-hover);
-    border: 2px solid var(--text-primary-hover);
-    color: var(--text-primary-hover);
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: bold;
-    box-shadow: 0 2px 5px var(--shadow-primary-hover-translucent-5);
-    box-sizing: border-box;
-}
-
-.inspect-btn:hover,
-.inspect-btn.selected {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
-    box-shadow: 0 4px 10px var(--border-primary-hover-translucent-15);
-}
-
 /* window.SkillDetails (BattleSystem/CategorizedBattleSkills.js). The Use button
    is never taken away: a skill the character cannot pay for greys out where it
    stood and still takes the click, which answers with a buzzer — so the hover
-   is restated here to undo the inversion above. */
+   is restated here, at a higher specificity than the shared one below, to undo
+   its inversion. */
 .inspect-btn.unusable {
     opacity: 0.45;
     border-style: dashed;
@@ -5908,6 +5878,13 @@
     padding-bottom: 2px;
     font-weight: bold;
     letter-spacing: 0.5px;
+}
+
+/* A spec the item takes away rather than grants, printed in the caption ink so
+   it reads as an aside to the row above it. */
+.inspect-spec-value--muted {
+    color: var(--text-caption-brown);
+    font-weight: bold;
 }
 
 .inspect-spec-row {
@@ -6007,15 +5984,23 @@
 /* Tighter header spacing */
 .inspect-pockets .page-header-bar { margin-bottom: 12px; }
 
-/* Category filters as compact chips in a snug block */
-.inspect-pockets .backpack-tabs {
+/* Category filters as compact chips in a snug block. The equip scene's command
+   rail (Equip / Optimize / Random / Clear) rides the same chip: its page is a
+   book spread but not an .inspect-pockets one, and left to the plain rail it
+   read as a taller, squarer control than the identical row of tabs the Skills
+   and backpack pages wear. */
+.inspect-pockets .backpack-tabs,
+#equip-container .equip-commands {
     gap: 4px;
     margin-bottom: 10px;
     padding-bottom: 8px;
 }
-.inspect-pockets .backpack-tabs-row { gap: 4px; }
-.inspect-pockets .backpack-tabs-row:not(:last-child) { margin-bottom: 4px; }
-.inspect-pockets .backpack-tab {
+.inspect-pockets .backpack-tabs-row,
+#equip-container .equip-commands .backpack-tabs-row { gap: 4px; }
+.inspect-pockets .backpack-tabs-row:not(:last-child),
+#equip-container .equip-commands .backpack-tabs-row:not(:last-child) { margin-bottom: 4px; }
+.inspect-pockets .backpack-tab,
+#equip-container .equip-commands .backpack-tab {
     font-size: 0.856em;
     padding: 3px 10px;
     border-radius: 11px;
@@ -6163,6 +6148,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Full width belongs to the shape, not to each caller: six pages were
+       passing style="width:100%" back in because the class withheld it. */
+    width: 100%;
+    box-sizing: border-box;
     border-bottom: 2px dashed var(--border-success);
     padding-bottom: 8px;
     margin-bottom: 20px;
@@ -6173,6 +6162,14 @@
     border-bottom: none;
     margin: 0;
     padding: 0;
+}
+
+/* A shorter header for a page whose heading shares the room with something
+   tall under it (the animation picker's live preview). Same rule, less air. */
+.page-header-bar--compact {
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    min-height: 34px;
 }
 
 /* Empty item-grid message */
@@ -6321,6 +6318,20 @@
     transition: all 0.2s ease;
     font-weight: bold;
     box-shadow: 0 2px 4px var(--shadow-primary-hover-translucent-5);
+}
+
+/* A special command is not a party member: it is stamped rather than listed, so
+   it cannot be mistaken for someone to hand the item to. The backpack used to
+   paint this inline in fixed browns that ignored the active theme. */
+.target-option--special {
+    background: var(--bg-subtle-translucent-15);
+    /* --border-gold-amber is a decorative hairline and reads at 1.9:1 on the
+       parchment page; this border is what marks the row as a command rather
+       than a party member, so it takes an ink token that holds on both pages. */
+    border-color: var(--text-gold-dark);
+    color: var(--text-primary-hover);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .target-option:hover,
@@ -6517,7 +6528,11 @@
 }
 
 .skill-row {
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-success-active);
     display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 8px 12px;
     margin-bottom: 6px;
@@ -6540,10 +6555,10 @@
 }
 
 .skill-name {
+    font-weight: bold;
     font-family: 'Lora', serif;
     font-size: 1em;
     color: var(--text-text-alt-2);
-    font-weight: bold;
 }
 
 .skill-row.selected .skill-name {
@@ -7053,32 +7068,7 @@
 }
 
 /* Roster tabs */
-.roster-tabs {
-    display: flex;
-    border-bottom: 1px dashed var(--border-success);
-    margin-bottom: 10px;
-    gap: 4px;
-}
-
-.roster-tab {
-    flex: 1;
-    font-family: 'Lora', serif;
-    font-size: 0.914em;
-    font-weight: bold;
-    text-align: center;
-    padding: 5px 4px;
-    cursor: pointer;
-    color: var(--text-text-alt-4);
-    border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-}
-
 .roster-tab:hover { color: var(--text-primary-hover); }
-
-.roster-tab.active {
-    color: var(--text-primary-hover);
-    border-bottom-color: var(--border-focus-hover);
-}
 
 .roster-viewport {
     flex: 1;
@@ -7222,18 +7212,6 @@
        buttons are drawn under the shadow. Percentage padding resolves against the
        spread width, so this holds at any resolution. */
     padding-left: 14%;
-}
-
-#thinker-container .title,
-#blacksmith-container .title {
-    font-family: 'Lora', serif;
-    font-size: 2.14em;
-    color: var(--text-secondary-active);
-    border-bottom: 2px solid var(--border-muted-focus);
-    padding-bottom: 6px;
-    margin: 0 0 14px 0;
-    text-align: center;
-    letter-spacing: 1px;
 }
 
 /* Dynamic Craft Mode Tabs, styled like the backpack category bookmark tabs */
@@ -7556,32 +7534,8 @@
    aliased onto #blacksmith-container above; these are the parts only the anvil
    page has. */
 .forge-header {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 2px dashed var(--border-subtle);
-    padding-bottom: 8px;
     margin-bottom: 16px;
-    min-height: 40px;
-    width: 100%;
 }
-.forge-header .back-button {
-    position: absolute;
-    left: 0;
-    font-family: 'Lora', serif;
-    font-size: 0.96rem;
-    background: transparent;
-    color: var(--text-primary-hover);
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    border: 1.5px solid var(--text-primary-hover);
-    text-transform: uppercase;
-    user-select: none;
-}
-.forge-header .title { border: none; margin: 0; padding: 0; text-align: center; }
 /* The tier a locked piece is waiting for, and whether a smithable one is stocked. */
 .forge-tier-need { font-size: 0.892em; color: var(--text-amber-hint); white-space: nowrap; }
 .forge-quality-mark { font-size: 0.892em; color: var(--text-secondary-active); white-space: nowrap; }
@@ -7986,17 +7940,6 @@
     }
 }
 
-.title {
-    font-family: 'Lora', serif;
-    font-size: 26px;
-    color: var(--text-secondary-active);
-    border-bottom: 2px solid var(--border-muted-focus);
-    padding-bottom: 6px;
-    margin: 0 0 10px 0;
-    text-align: center;
-    letter-spacing: 1px;
-}
-
 .pantry-list {
     flex: 1;
     overflow-y: auto;
@@ -8053,26 +7996,6 @@
 .pantry-item.disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-.item-icon {
-    width: 32px;
-    height: 32px;
-    margin-right: 12px;
-    flex-shrink: 0;
-    image-rendering: pixelated;
-}
-
-.item-details {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.item-name {
-    font-weight: bold;
-    color: var(--text-pure-white);
-    font-size: 1.238em;
 }
 
 .item-stats {
@@ -8400,29 +8323,6 @@
     box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
 }
 
-.action-btn {
-    font-family: 'Lora', serif;
-    font-size: 1.142em;
-    background: var(--bg-secondary-hover);
-    border: 1.5px solid var(--text-primary-hover);
-    color: var(--text-primary-hover);
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.action-btn:hover,
-.action-btn.selected {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
-}
-
-.action-btn.disabled {
-    opacity: 0.5 !important;
-    pointer-events: none !important;
-}
-
 .clinic-notification {
     position: absolute;
     top: 20px;
@@ -8471,19 +8371,23 @@
     }
 }
 
+/* Back, as the backpack draws it (ItemSystemInventoryUI.js): pinned to the left
+   of the .page-header-bar it sits in, with the title centred beside it. It was
+   two rules disagreeing about padding, border weight and casing; this is the
+   pair merged. */
 .back-button {
-    position: absolute;
-    left: 0;
     font-family: 'Lora', serif;
     font-size: 0.96rem;
+    font-weight: bold;
     background: transparent;
+    border: 1.5px solid var(--text-primary-hover);
     color: var(--text-primary-hover);
     padding: 6px 14px;
     border-radius: 4px;
-    font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 1.5px solid var(--text-primary-hover);
+    position: absolute;
+    left: 0;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
@@ -8495,7 +8399,12 @@
     z-index: 20;
 }
 
-.back-button:hover {
+/* Selected is hover. These pages are driven by the keyboard and the pad as much
+   as by the mouse, so a Back reached with the stick reads exactly as strongly
+   as one under the pointer: same fill, same lift, same shadow. */
+.back-button:hover,
+.back-button.selected,
+.back-button:focus-visible {
     background: var(--text-primary-hover) !important;
     color: var(--bg-secondary-hover) !important;
     border-color: var(--text-primary-hover) !important;
@@ -8503,22 +8412,29 @@
     box-shadow: 0 4px 8px var(--shadow-gold-amber-50);
 }
 
+/* A Back that its own row lays out. The stamp is absolutely positioned so it
+   can be pinned to the left of the .page-header-bar it usually sits in; in a
+   footer strip or a button row that lift takes it out of the flow the row is
+   arranging, so it ignores the row's own justify-content and drifts to
+   whichever ancestor happens to be positioned. These rows put it back. The
+   register's founding row (.facrep-28) was already patched this way one menu
+   at a time; this is that patch generalised. */
+.facrep-28 .back-button,
+.bank-19 .back-button,
+.news-footer .back-button,
+.work-11 .back-button,
+.work-33 .back-button,
+.joboffer-12 .back-button,
+.joboffer-19 .back-button,
+#kb-board-header .back-button {
+    position: static;
+}
+
 .back-button:active {
     background: var(--text-text-alt-1-active) !important;
     color: var(--bg-secondary-hover) !important;
     transform: translateY(1px);
     box-shadow: 0 1px 2px var(--shadow-primary-hover-translucent-5);
-}
-
-.title {
-    font-family: 'Lora', serif;
-    font-size: 2.14em;
-    color: var(--text-secondary-active);
-    border-bottom: 2px solid var(--border-muted-focus);
-    padding-bottom: 6px;
-    margin: 0 0 16px 0;
-    text-align: center;
-    letter-spacing: 1px;
 }
 
 /* Monster Pockets Cards */
@@ -8593,13 +8509,6 @@
     overflow: hidden;
 }
 
-.portfolio-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
 .portfolio-name {
     font-family: 'Lora', serif;
     font-size: 1.238em;
@@ -8610,16 +8519,6 @@
 .portfolio-badges {
     display: flex;
     gap: 8px;
-}
-
-.badge {
-    font-family: 'Lora', serif;
-    font-size: 0.842em;
-    font-weight: bold;
-    border: 1px solid var(--border-muted-focus);
-    padding: 2px 8px;
-    background: var(--border-secondary-hover-translucent-15);
-    color: var(--border-muted-focus);
 }
 
 .portfolio-tabs {
@@ -8710,13 +8609,6 @@
 }
 
 /* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 18px;
-}
-
 .stat-card {
     background: var(--bg-primary-hover-translucent-35);
     border: 1px solid var(--border-secondary-hover-translucent-15);
@@ -8725,19 +8617,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.stat-label {
-    font-family: 'Lora', serif;
-    font-size: 0.892em;
-    color: var(--text-inverse);
-    font-weight: bold;
-}
-
-.stat-val {
-    font-size: 0.964em;
-    font-weight: bold;
-    color: var(--text-muted-hover);
 }
 
 /* Affinities list */
@@ -9449,8 +9328,9 @@
 .portfolio-header {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    align-items: center;
     margin-bottom: 12px;
+    gap: 16px;
 }
 
 .portfolio-card {
@@ -9588,23 +9468,27 @@
 .roster-tabs {
     display: flex;
     border-bottom: 1px solid var(--border-secondary-hover-translucent-15);
-    padding-bottom: 2px;
     margin-bottom: 12px;
+    gap: 4px;
+    padding-bottom: 2px;
 }
 
 .roster-tab {
     flex: 1;
     font-family: 'Lora', serif;
     font-size: 0.964em;
+    font-weight: bold;
     text-align: center;
     padding: 6px 4px;
     cursor: pointer;
     color: var(--text-inverse);
+    border-bottom: 2px solid transparent;
     transition: all 0.2s ease;
 }
 
 .roster-tab.active {
     color: var(--text-secondary-active);
+    border-bottom-color: var(--border-focus-hover);
     font-weight: bold;
     border-bottom: 2px solid var(--text-secondary-active);
 }
@@ -9682,6 +9566,7 @@
 #character-creation-container > *,
 #status-menu-container > *,
 #state-list-container > *,
+#world-atlas-container > *,
 #apiary-container > *,
 #arena-ui-container > *,
 #bestiary-container > *,
@@ -9716,62 +9601,11 @@
     zoom: var(--ui-zoom, 1);
 }
 
-/* The two menus that are a bare .book-spread appended to the body with no
-   backdrop of their own, so the zoom goes on the spread itself. */
-#music-sel-container {
-    zoom: var(--ui-zoom, 1);
-}
-
-.companion-tabs-row {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 4px;
-    border-bottom: 2px solid var(--text-primary-hover);
-    padding-bottom: 6px;
-}
-
-.companion-tab {
-    font-family: 'Lora', serif;
-    font-size: 1.048em;
-    padding: 4px 12px;
-    margin: 0 6px;
-    color: var(--text-text-alt-4);
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    user-select: none;
-}
-
-.companion-tab.selected {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
-    font-weight: bold;
-    box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
-}
-
-.companion-tab:hover {
-    background: var(--border-primary-hover-translucent-15);
-}
-
-.title {
-    font-family: 'Lora', serif;
-    font-size: 1.333em;
-    color: var(--text-primary-hover);
-    text-align: center;
-    margin: 2px 0;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 1px var(--bg-primary-hover-translucent-35);
-}
-
-.right-title {
-    font-family: 'Lora', serif;
-    font-size: 1.333em;
-    color: var(--text-primary-hover);
-    margin: 0 0 12px 0;
-    text-align: center;
-    border-bottom: 2px solid var(--border-primary-hover-translucent-15);
-    padding-bottom: 4px;
+/* ...with one exception inside one of them: the adventure's stage is not a
+   panel but the screen itself, sized in vw/vh, so scaling it would only crop
+   the view and walk the busts off the edge. The card next to it still scales. */
+#pas-adventure-overlay > .pas-adv-scene {
+    zoom: 1;
 }
 
 /* Right page heading: the party switcher shares the line with the page title
@@ -9800,22 +9634,6 @@
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;
-}
-
-.status-bust-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 440px;
-    /* Flex basis rather than a fixed height: the portrait is the one block on
-       the page that may give way, so a short screen shrinks it instead of
-       letting it run over the gauges below. */
-    flex: 0 1 500px;
-    min-height: 90px;
-    margin: 0 auto 12px auto;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    overflow: hidden;
 }
 
 /* Both portraits (the drawn bust and the live 3D model) fill the box exactly,
@@ -10574,27 +10392,6 @@
     color: var(--text-text-alt-25);
 }
 
-.inspect-btn {
-    font-family: 'Lora', serif;
-    font-size: 1.048em;
-    padding: 6px 20px;
-    border-radius: 4px;
-    border: 2px solid var(--text-primary-hover);
-    background: var(--bg-secondary-hover);
-    color: var(--text-primary-hover);
-    cursor: pointer;
-    box-shadow: 0 3px 6px var(--shadow-primary-hover-translucent-5);
-    transition: all 0.2s ease;
-    user-select: none;
-}
-
-.inspect-btn:hover,
-.inspect-btn.selected {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
-    box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
-}
-
 /* Extracted from TunableRadio.js */
 #skeuo-radio-frame {
     width: 720px;
@@ -10926,17 +10723,6 @@
     to {
         opacity: 1;
     }
-}
-
-.title {
-    font-family: 'Lora', serif;
-    font-size: 2.14em;
-    color: var(--text-secondary-active);
-    border-bottom: 2px solid var(--border-muted-focus);
-    padding-bottom: 6px;
-    margin: 0 0 10px 0;
-    text-align: center;
-    letter-spacing: 1px;
 }
 
 .tabs-bar {
@@ -11294,20 +11080,6 @@
     color: var(--text-highlight-active);
 }
 
-/* Extracted from FurnitureSystem.js */
-.tab-row {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding-bottom: 5px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid var(--border-primary-hover-translucent-15);
-    scrollbar-width: none;
-}
-
-.tab-row::-webkit-scrollbar {
-    display: none;
-}
 
 .tab-item {
     font-family: 'Lora', serif;
@@ -11326,33 +11098,6 @@
     background: var(--text-primary-hover);
     color: var(--bg-secondary-hover);
     border-color: var(--text-primary-hover);
-}
-
-.action-btn {
-    flex: 1;
-    font-family: 'Lora', serif;
-    font-size: 0.892em;
-    padding: 8px 4px;
-    background: var(--bg-secondary-hover);
-    border: 2px solid var(--text-primary-hover);
-    color: var(--text-primary-hover);
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s ease;
-}
-
-.action-btn.disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-    border-color: var(--text-inverse);
-    color: var(--text-inverse);
-}
-
-.action-btn.selected:not(.disabled) {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
-    box-shadow: 0 0 6px var(--shadow-shadow-alt-4-hover-translucent-60);
 }
 
 .recipe-thumb-container {
@@ -11514,23 +11259,16 @@
     background: var(--border-primary-hover-translucent-15);
 }
 
-.title {
-    font-family: 'Lora', serif;
-    font-size: 1.333em;
-    color: var(--text-primary-hover);
-    text-align: center;
-    margin: 2px 0;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 1px var(--bg-primary-hover-translucent-35);
-}
-
+/* The right page's smaller heading: the same ink and the same dashed rule as
+   .title, one step down in size, so both pages of a spread are plainly the
+   same hand. */
 .right-title {
     font-family: 'Lora', serif;
     font-size: 1.333em;
     color: var(--text-primary-hover);
     margin: 0 0 12px 0;
     text-align: center;
-    border-bottom: 2px solid var(--border-primary-hover-translucent-15);
+    border-bottom: 2px dashed var(--border-success);
     padding-bottom: 4px;
 }
 
@@ -11538,16 +11276,13 @@
     position: relative;
     width: 100%;
     max-width: 440px;
+       wrapper instead of spilling over the gauges. */
+    flex: 0 1 500px;
+    min-height: 90px;
     margin: 0 auto 12px auto;
     background: transparent;
     border: none;
     box-shadow: none;
-    /* The portrait yields height first, so the gauges below it are never
-       clipped by the page's overflow:hidden at small resolutions. The canvas
-       inside is sized in percentages (never in pixels) so it shrinks with the
-       wrapper instead of spilling over the gauges. */
-    flex: 0 1 500px;
-    min-height: 90px;
     overflow: hidden;
 }
 
@@ -11684,10 +11419,13 @@
 }
 
 .badge {
-    padding: 2px 8px;
+    font-family: 'Lora', serif;
     font-size: 0.856em;
     font-weight: bold;
-    font-family: 'Lora', serif;
+    border: 1px solid var(--border-muted-focus);
+    padding: 2px 8px;
+    background: var(--border-secondary-hover-translucent-15);
+    color: var(--border-muted-focus);
 }
 
 .badge.success {
@@ -11861,20 +11599,26 @@
 .inspect-btn {
     font-family: 'Lora', serif;
     font-size: 1.048em;
+    text-align: center;
+    background: var(--bg-secondary-hover);
+    border: 2px solid var(--text-primary-hover);
+    color: var(--text-primary-hover);
     padding: 8px 20px;
     border-radius: 4px;
-    border: 2px solid var(--text-primary-hover);
-    background: var(--bg-secondary-hover);
-    color: var(--text-primary-hover);
     cursor: pointer;
-    box-shadow: 0 3px 6px var(--shadow-primary-hover-translucent-5);
     transition: all 0.2s ease;
+    font-weight: bold;
+    box-shadow: 0 3px 6px var(--shadow-primary-hover-translucent-5);
+    box-sizing: border-box;
     user-select: none;
-    text-align: center;
     margin-top: 10px;
 }
 
-.inspect-btn:hover {
+/* Selected is hover, here as everywhere: a card's buttons are reached with the
+   pad as often as with the mouse, so the two states are the one rule. */
+.inspect-btn:hover,
+.inspect-btn.selected,
+.inspect-btn:focus-visible {
     background: var(--text-primary-hover);
     color: var(--bg-secondary-hover);
     box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
@@ -11911,15 +11655,24 @@
     }
 }
 
+/* The one page heading of the whole book. It used to be written seven times
+   over, each menu quietly redefining it until only the last copy in the file
+   had any effect; this is those seven merged, inked and ruled exactly as the
+   backpack's own heading is (ItemSystemInventoryUI.js). The rule under it is
+   the dashed one .page-header-bar draws, in the same token, so a title that
+   carries its own rule and one that sits in a header bar cannot read as two
+   different books. */
 .title {
     font-family: 'Lora', serif;
-    font-size: 2.14em;
-    color: var(--text-secondary-active);
-    border-bottom: 2px solid var(--border-muted-focus);
-    padding-bottom: 6px;
-    margin: 0 0 10px 0;
+    color: var(--text-primary-hover);
+    font-weight: bold;
     text-align: center;
+    border-bottom: 2px dashed var(--border-success);
+    padding-bottom: 8px;
+    margin: 0 0 10px 0;
+    font-size: 2.14em;
     letter-spacing: 1px;
+    text-shadow: 1px 1px 1px var(--bg-primary-hover-translucent-35);
 }
 
 .actor-header {
@@ -12061,8 +11814,9 @@
 
 .stat-label {
     font-family: 'Lora', serif;
-    font-weight: bold;
+    font-size: 0.892em;
     color: var(--border-muted-focus);
+    font-weight: bold;
 }
 
 /* The base stat a currently equipped weapon scales its damage on, picked out
@@ -12093,6 +11847,8 @@
 }
 
 .stat-val {
+    font-size: 0.964em;
+    font-weight: bold;
     color: var(--text-muted-hover);
 }
 
@@ -12261,9 +12017,11 @@
 .item-icon {
     width: 32px;
     height: 32px;
-    background-size: 512px auto;
+    margin-right: 12px;
     /* 16 columns of 32px */
     flex-shrink: 0;
+    image-rendering: pixelated;
+    background-size: 512px auto;
 }
 
 .item-icon-empty {
@@ -12287,13 +12045,13 @@
 }
 
 .item-name {
-    font-family: 'Lora', serif;
     font-weight: 700;
+    color: var(--text-pure-white);
     font-size: 1.238em;
+    font-family: 'Lora', serif;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: var(--text-pure-white);
 }
 
 .item-name-empty {
@@ -12406,9 +12164,9 @@
 }
 
 .item-details {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    flex: 1;
     min-width: 0;
 }
 
@@ -12453,14 +12211,16 @@
     padding-bottom: 8px;
 }
 
+/* The rail sits inside the command bar, which already draws the dashed rule and
+   the spacing under it, so the block itself keeps none of its own. The chip
+   shape is the shared one above. */
 #equip-container .equip-commands {
     margin-bottom: 0;
-    padding: 0;
+    padding-bottom: 0;
     border: none;
 }
 
 #equip-container .equip-commands .backpack-tab {
-    padding: 4px 10px;
     min-width: 0;
 }
 
@@ -12503,10 +12263,6 @@
     width: 42%;
 }
 
-#equip-container .right-page {
-    width: 58%;
-}
-
 #equip-container .book-spread::before {
     left: 42.5%;
 }
@@ -12524,6 +12280,7 @@
 }
 
 #equip-container .right-page {
+    width: 58%;
     justify-content: flex-start;
 }
 
@@ -12636,6 +12393,11 @@
     align-items: center;
     justify-content: center;
     background: var(--text-highlight-active);
+    /* The ring is the item's rarity. The element carries the .rarity--* class,
+       which inks color from the --rarity-* tokens, and the border takes that
+       same ink through currentColor, so ring and name can never disagree. */
+    border: 2.5px solid currentColor;
+    box-sizing: border-box;
     border-radius: 50%;
     box-shadow: 0 6px 12px var(--shadow-black-translucent-15);
     overflow: hidden;
@@ -13304,17 +13066,6 @@
 /* The head of either page: Back pinned left, title centred, ruled off from the
    list under it. It used to carry its colours inline, so the rule and the Back
    button stayed parchment-brown on every theme. */
-.shop-page-head {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 2px dashed var(--border-muted-focus);
-    padding-bottom: 8px;
-    margin-bottom: 20px;
-    min-height: 40px;
-}
-
 .shop-funds {
     font-family: 'Lora', serif;
     font-size: 20px;
@@ -13956,18 +13707,6 @@
     margin-top: 20px;
 }
 
-.action-btn {
-    flex: 1;
-    font-family: 'Lora', serif;
-    font-size: 0.892em;
-    padding: 10px 4px;
-    border-radius: 4px;
-    text-align: center;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-}
-
 .action-btn.confirm {
     background: var(--text-secondary-active);
     color: var(--bg-secondary-hover);
@@ -14195,35 +13934,8 @@
     }
 }
 
-/* Extracted from GameOptions.js */
-.tab-row {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 12px 18px;
-    background: var(--bg-card-translucent-5);
-    border: 1px dashed var(--border-border-alt-14-translucent-40);
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Lora', serif;
-    font-size: 1.38rem;
-    color: var(--text-disabled);
-    transition: all 0.15s ease;
-}
 
-.tab-row:hover {
-    background: var(--border-primary-hover-translucent-15);
-    border-color: var(--border-primary-hover-translucent-15);
-}
 
-.tab-row.active {
-    background: var(--bg-secondary-hover);
-    border: 2px solid var(--text-primary-hover);
-    box-shadow: 0 4px 10px var(--border-primary-hover-translucent-15);
-    color: var(--text-primary-hover);
-    font-weight: bold;
-    transform: translateX(4px);
-}
 
 .tab-icon {
     font-size: 1.552rem;
@@ -14884,40 +14596,6 @@
     text-align: center;
 }
 
-.save-left-header {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 2px dashed var(--border-success);
-    padding-bottom: 8px;
-    margin-bottom: 20px;
-    min-height: 40px;
-    width: 100%;
-}
-
-.save-book-spread .back-button {
-    position: absolute;
-    left: 0;
-    font-family: 'Lora', serif;
-    font-size: 0.96rem;
-    background: transparent;
-    color: var(--text-primary-hover);
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1.5px solid var(--text-primary-hover);
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: fit-content;
-    line-height: normal;
-    user-select: none;
-}
-
 .save-title-left {
     border: none;
     margin: 0;
@@ -14940,13 +14618,15 @@
     font-family: 'Lora', serif;
     font-size: 1.08rem;
     background: var(--border-focus-hover);
+    border: 1.5px solid var(--border-subtle);
     color: var(--text-danger-hover);
     padding: 8px 16px;
     border-radius: 4px;
-    font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 1.5px solid var(--border-subtle);
+    flex: 1;
+    font-weight: bold;
+    text-align: center;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
@@ -14954,18 +14634,25 @@
     user-select: none;
 }
 
-.action-btn:hover {
+/* Hovered, focused and selected are the same stamp. They were three rules in
+   three places, two of which the cascade never reached, so a stamp picked out
+   with the pad read weaker than the same stamp under the mouse. */
+.action-btn:hover,
+.action-btn.selected:not(.disabled),
+.action-btn:focus-visible {
     background: var(--text-primary-hover);
     color: var(--text-danger-hover);
     border-color: var(--text-muted-hover);
+    box-shadow: 0 0 6px var(--shadow-shadow-alt-4-hover-translucent-60);
 }
 
 .action-btn.disabled {
-    background: var(--bg-bg-alt-3);
-    color: var(--text-text-alt-8);
-    border-color: var(--text-text-alt-8);
-    cursor: not-allowed;
+    opacity: 0.35;
     pointer-events: none;
+    cursor: not-allowed;
+    border-color: var(--text-text-alt-8);
+    color: var(--text-text-alt-8);
+    background: var(--bg-bg-alt-3);
 }
 
 /* Controller / keyboard focus ring for the save-load screen's Save / Load /
@@ -15136,9 +14823,15 @@
    ========================================================================== */
 
 /* Thinker Menu Font Scaling Overrides */
-#thinker-container .title,
-#blacksmith-container .title {
+#thinker-container .title, #blacksmith-container .title {
+    font-family: 'Lora', serif;
     font-size: 2.14em !important;
+    color: var(--text-secondary-active);
+    border-bottom: 2px solid var(--border-muted-focus);
+    padding-bottom: 6px;
+    margin: 0 0 14px 0;
+    text-align: center;
+    letter-spacing: 1px;
 }
 
 #thinker-container .tab-btn,
@@ -18515,7 +18208,11 @@ padding: 2px 10px;
    Music Selection System UI  (MusicSelectionSystemUI.js)
    ========================================================================== */
 
-#music-sel-container { /* inherits .book-spread */ }
+/* A bare .book-spread appended to the body with no backdrop of its own, so the
+   zoom goes on the spread itself. */
+#music-sel-container {
+    zoom: var(--ui-zoom, 1);
+}
 
 /* Track list (left page) */
 .ms-track-list {
@@ -19878,36 +19575,23 @@ body, canvas {
     box-sizing: border-box;
     border-radius: 4px;
     background: linear-gradient(90deg, rgba(8, 12, 22, calc(var(--battlelog-bar-alpha, 0) * 0.95)) 0%, rgba(15, 23, 42, calc(var(--battlelog-bar-alpha, 0) * 0.85)) 75%, rgba(15, 23, 42, calc(var(--battlelog-bar-alpha, 0) * 0.4)) 100%);
-    border-left: 3px solid rgba(255, 255, 255, 0.4);
+    border-left: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, calc(var(--battlelog-bar-alpha, 0) * 0.5)), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     transition: opacity 0.15s ease-out;
     animation: battlelog-entry-slide 0.2s ease-out;
 }
 
-.battlelog-bar.accent-actor {
-    border-left: 3px solid #ffcc00;
-}
-
-.battlelog-bar.accent-enemy {
-    border-left: 3px solid #ff4444;
-}
-
-.battlelog-bar.accent-skill {
-    border-left: 3px solid #60a5fa;
-}
-
 .battlelog-bar.accent-crit {
-    border-left: 3px solid #ff2a2a;
     background: linear-gradient(90deg, rgba(38, 8, 12, calc(var(--battlelog-bar-alpha, 0) * 0.92)) 0%, rgba(30, 10, 18, calc(var(--battlelog-bar-alpha, 0) * 0.78)) 75%, rgba(20, 10, 15, calc(var(--battlelog-bar-alpha, 0) * 0.35)) 100%);
     box-shadow: 0 2px 10px rgba(255, 30, 30, calc(var(--battlelog-bar-alpha, 0) * 0.3)), inset 0 1px 0 rgba(255, 100, 100, 0.2);
 }
 
+/* Indent comes from an inline margin-left set by the plugin, so every line an
+   action produces sits at the same step whatever its nesting used to be. */
 .battlelog-bar.accent-sub,
 .battlelog-bar.accent-reaction {
-    margin-left: 28px;
     padding: 2px 10px 2px 8px;
     background: linear-gradient(90deg, rgba(8, 12, 22, calc(var(--battlelog-bar-alpha, 0) * 0.82)) 0%, rgba(15, 23, 42, calc(var(--battlelog-bar-alpha, 0) * 0.6)) 75%, rgba(15, 23, 42, calc(var(--battlelog-bar-alpha, 0) * 0.15)) 100%);
-    border-left: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .battlelog-line {
@@ -19915,9 +19599,11 @@ body, canvas {
     font-weight: bold;
     font-size: inherit;
     line-height: 1.35;
-    white-space: nowrap !important;
+    /* fit-content on the bar keeps short lines on one row anyway, so wrapping
+       only ever kicks in for a line long enough to be cut off otherwise. */
+    white-space: normal !important;
     word-break: keep-all !important;
-    overflow-wrap: normal !important;
+    overflow-wrap: break-word !important;
     color: var(--text-pure-white);
     text-shadow: -2px -2px 0 var(--text-pure-black), 2px -2px 0 var(--text-pure-black), -2px 2px 0 var(--text-pure-black), 2px 2px 0 var(--text-pure-black), 0 0 6px rgba(0, 0, 0, 0.9);
     text-align: left;
@@ -20603,6 +20289,37 @@ body, canvas {
 /* ==========================================================================
    Bestiary, creature lexicon grid (left-page viewport)
    ========================================================================== */
+
+/* Earth / Petrodemons / Aliens ride the shared category rail (.backpack-tab).
+   They used to be inked inline in fixed parchment browns, which left them
+   brown-on-black under any dark theme. Only the centring is this page's own. */
+#bestiary-page-tabs {
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+/* The two stamps that sit over the creature portrait (flip to 3D, reroll the
+   seed). Same plate as the page's other buttons, sized for a corner. */
+.bestiary-portrait-btn {
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 4px 10px;
+    cursor: pointer;
+    color: var(--text-primary-hover);
+    background: var(--bg-secondary-hover);
+    border: 1.5px solid var(--text-primary-hover);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.bestiary-portrait-btn:hover,
+.bestiary-portrait-btn.selected,
+.bestiary-portrait-btn:focus-visible {
+    background: var(--text-primary-hover);
+    color: var(--bg-secondary-hover);
+}
+
 .bestiary-list-empty {
     grid-column: 1 / -1;
     display: flex;
@@ -20623,6 +20340,15 @@ body, canvas {
     align-content: start;
     flex: 1;
 }
+#bestiary-list-viewport .monster-card:hover {
+    background: var(--bg-parchment-medium-50);
+}
+#bestiary-list-viewport .monster-card.selected {
+    border-color: var(--text-secondary-active);
+    background: var(--bg-parchment-dark-40);
+}
+/* The lexicon reads as one page: cards and detail rows carry no panel of
+   their own, only their rule lines. */
 #bestiary-list-viewport .monster-card {
     display: flex;
     flex-direction: column;
@@ -20634,21 +20360,9 @@ body, canvas {
     padding: 10px 5px;
     border: 1px solid var(--border-dark-warm-25);
     border-radius: 8px;
-    background: var(--bg-parchment-warm-60);
+    background: transparent;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
-}
-#bestiary-list-viewport .monster-card:hover {
-    background: var(--bg-parchment-medium-50);
-}
-#bestiary-list-viewport .monster-card.selected {
-    border-color: var(--text-secondary-active);
-    background: var(--bg-parchment-dark-40);
-}
-/* The lexicon reads as one page: cards and detail rows carry no panel of
-   their own, only their rule lines. */
-#bestiary-list-viewport .monster-card {
-    background: transparent;
 }
 #bestiary-container .ecology-row,
 #bestiary-container .stat-card,
@@ -20845,10 +20559,6 @@ body, canvas {
 .fbuild-tab.active .fbuild-tab-count { opacity: 0.9; }
 .fbuild-grid { flex: 1; overflow-y: auto; padding: 10px 12px;
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-content: start; }
-.fbuild-card { background: var(--shadow-primary-hover-translucent-5); border: 1.5px solid var(--border-panel-tab); border-radius: 8px;
-    padding: 8px; cursor: grab; display: flex; flex-direction: column; gap: 4px;
-    transition: border-color 0.12s, background 0.12s; }
-.fbuild-card:hover { border-color: var(--accent-tab-hover); background: var(--shadow-blue-hover-10); }
 .fbuild-card:active { cursor: grabbing; }
 .fbuild-card.armed { border-color: var(--accent-badge-yellow); background: var(--accent-amber-badge); box-shadow: 0 0 0 1px var(--accent-badge-yellow) inset; }
 /* Pad / keyboard selection ring (distinct from the yellow "armed" state). */
@@ -20871,6 +20581,28 @@ body, canvas {
 .fbuild-card-armed-badge { position: absolute; top: 4px; left: 4px; font-size: 0.755em; font-weight: 700;
     color: var(--accent-badge-text); background: var(--accent-badge-yellow); padding: 1px 6px;    letter-spacing: 0.3px; pointer-events: none; }
 .fbuild-card-lock { position: absolute; top: 4px; right: 4px; display: flex; opacity: 0.85; pointer-events: none; }
+/* The colourway counter on a card that stands for a recolour family. It sits
+   opposite the armed badge so the two never overlap on the same card. */
+.fbuild-card-variants { position: absolute; bottom: 4px; right: 4px; font-size: 0.72em; font-weight: 700;
+    color: var(--text-pure-white); background: var(--shadow-black-translucent-55); border-radius: 8px;
+    padding: 0 6px; letter-spacing: 0.3px; pointer-events: none; }
+/* Subcategory list: the step between picking a category and seeing its pieces. */
+.fbuild-grid.subcats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.fbuild-subcat { display: flex; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 6px;
+    background: var(--shadow-black-translucent-25); border: 1px solid var(--accent-slate);
+    color: var(--accent-blue-gray-light); cursor: pointer; }
+.fbuild-subcat:hover { background: var(--shadow-primary-hover-translucent-5); color: var(--text-pure-white); }
+.fbuild-subcat-name { flex: 1; min-width: 0; font-size: 0.93em; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fbuild-subcat-count { flex-shrink: 0; font-size: 0.85em; font-weight: 700; opacity: 0.6;
+    background: var(--shadow-black-translucent-25); border-radius: 8px; padding: 0 6px;
+    min-width: 20px; text-align: center; }
+.fbuild-subback { flex-shrink: 0; background: var(--shadow-black-translucent-25);
+    border: 1px solid var(--accent-slate); border-radius: 5px; color: var(--accent-blue-gray-light);
+    font-size: 0.86em; padding: 3px 9px; cursor: pointer; }
+.fbuild-subback:hover { background: var(--shadow-primary-hover-translucent-5); color: var(--text-pure-white); }
+.fbuild-crumb { font-size: 0.9em; font-weight: 600; color: var(--text-pure-white);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fbuild-card-name { font-size: 0.914em; font-weight: 600; line-height: 1.15;
     overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .fbuild-card-folder { font-size: 0.77em; color: var(--accent-muted-blue); letter-spacing: 0.3px;
@@ -20905,8 +20637,15 @@ body, canvas {
 .fbuild-armed-sub.bad { color: var(--text-cost-bad); }
 
 /* Card hover lift + smoother scrollbars */
-.fbuild-card { transition: border-color 0.12s, background 0.12s, transform 0.1s, box-shadow 0.12s; }
-.fbuild-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px var(--shadow-black-translucent-45); }
+.fbuild-card {
+ background: var(--shadow-primary-hover-translucent-5); border: 1.5px solid var(--border-panel-tab); border-radius: 8px;
+    padding: 8px; cursor: grab; display: flex; flex-direction: column; gap: 4px;
+ transition: border-color 0.12s, background 0.12s, transform 0.1s, box-shadow 0.12s;
+}
+.fbuild-card:hover {
+ border-color: var(--accent-tab-hover); background: var(--shadow-blue-hover-10);
+ transform: translateY(-2px); box-shadow: 0 4px 12px var(--shadow-black-translucent-45);
+}
 .fbuild-grid::-webkit-scrollbar, .fbuild-materials::-webkit-scrollbar, .fbuild-cats::-webkit-scrollbar { width: 9px; }
 .fbuild-grid::-webkit-scrollbar-thumb, .fbuild-materials::-webkit-scrollbar-thumb, .fbuild-cats::-webkit-scrollbar-thumb {
     background: var(--accent-dark-blue); border-radius: 6px; }
@@ -22657,7 +22396,7 @@ cursor:pointer; font-size:16px; line-height:1.4;
 @keyframes cc-shine{to{background-position:-150% 0}}
 /* Dealt in, not simply drawn: a filter change riffles the shelf. */
 .cc-grid.cc-dealing .cc-cell{animation:cc-in .34s cubic-bezier(.2,1.35,.4,1) backwards;
-  animation-delay:calc(var(--d) * 18ms);}
+  animation-delay:calc(var(--d, 0) * 18ms);}
 @keyframes cc-in{0%{transform:translateY(26px) rotate(-7deg) scale(.72);opacity:0}
   100%{transform:none;opacity:1}}
 .cc-cell canvas,.cc-cell img{image-rendering:pixelated;max-width:100%;max-height:56px;object-fit:contain;}
@@ -22789,11 +22528,9 @@ cursor:pointer; font-size:16px; line-height:1.4;
 .kb-board-title { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   pointer-events: none; white-space: nowrap;
   font-size: 2.31rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
-/* Shared .back-button look, but kept in the header's flex flow: the global rule
-   pins it position:absolute;left:0, which here would resolve against the whole
-   board overlay and land on top of the To Do column. */
-#kb-board-header .back-button { position: relative; left: auto; flex: 0 0 auto;
-  align-self: center; text-shadow: none; }
+/* The board's back stamp is returned to the header's flex flow by the shared
+   rule above; only the room it takes in that row is the board's own. */
+#kb-board-header .back-button { flex: 0 0 auto; align-self: center; text-shadow: none; }
 .kb-board-hint { margin-left: auto; font-size: 1.08rem; opacity: 0.72; text-align: right; }
 #kb-columns { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0;
   display: flex; gap: 0; padding: 22px 26px 30px;
@@ -22818,12 +22555,6 @@ cursor:pointer; font-size:16px; line-height:1.4;
 .kb-cards-wrap::-webkit-scrollbar-thumb { background: #5d3a1c; border: 2px solid #2b1008; border-radius: 6px; }
 .kb-empty-col { color: #f5ebd0; font-size: 1.208rem; font-style: normal; opacity: 0.8;
   text-align: center; padding: 26px 12px; text-shadow: 1px 1px 3px #2b1008; }
-.kb-card { position: relative; width: 100%; max-width: 300px; min-height: 132px; flex: 0 0 auto;
-  padding: 32px 18px 18px; box-sizing: border-box; cursor: pointer; color: #2b251d;
-  background: var(--note-bg, #faf2d3);
-  box-shadow: 4px 6px 12px rgba(0,0,0,0.5);
-  transform: rotate(var(--rot, 0deg));
-  transition: transform 0.12s ease, box-shadow 0.12s ease; }
 .kb-card.focused, .kb-card:hover { transform: rotate(0deg) scale(1.04); z-index: 5;
   box-shadow: 7px 10px 20px rgba(0,0,0,0.6); outline: 3px solid #ffd76a; }
 .kb-card.kb-done { filter: sepia(0.35) brightness(0.92); }
@@ -22918,7 +22649,15 @@ cursor:pointer; font-size:16px; line-height:1.4;
 /* Carrying a note between columns: by the mouse (kb-ghost follows the pointer,
    the note left behind fades, the column under it lights up) or by holding OK
    on the pad (kb-grabbed lifts the focused note off the board). */
-.kb-card { user-select: none; -webkit-user-select: none; }
+.kb-card {
+ position: relative; width: 100%; max-width: 300px; min-height: 132px; flex: 0 0 auto;
+  padding: 32px 18px 18px; box-sizing: border-box; cursor: pointer; color: #2b251d;
+  background: var(--note-bg, #faf2d3);
+  box-shadow: 4px 6px 12px rgba(0,0,0,0.5);
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+ user-select: none; -webkit-user-select: none;
+}
 .kb-card.kb-dragging { opacity: 0.32; filter: grayscale(0.4); }
 .kb-card.kb-grabbed { transform: rotate(-2deg) scale(1.09); z-index: 6;
   outline: 3px dashed #ffd76a; box-shadow: 10px 14px 24px rgba(0,0,0,0.65); }
@@ -23049,6 +22788,89 @@ cursor:pointer; font-size:16px; line-height:1.4;
 #qb-detail::-webkit-scrollbar-track { background: rgba(88,24,13,0.12); }
 #qb-detail::-webkit-scrollbar-thumb { background: #a8814f; border-radius: 7px; }
 
+/* --------------------------------------------------------------------------
+   POSTED NOTICES (the Posted tab and the sheet the party writes on)
+   --------------------------------------------------------------------------
+   The blank sheet is pinned on the board like everything else, so the way to
+   write a notice is the first thing on the tab rather than a button somewhere.
+   ------------------------------------------------------------------------ */
+.qb-post-new { display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; background: repeating-linear-gradient(45deg,
+    #f7f0da 0 12px, #efe6c9 12px 24px); border: 2px dashed #8b6a3f; }
+.qb-post-plus { font-size: 3.2rem; font-weight: bold; line-height: 1; color: #7a4d24; margin-bottom: 6px; }
+.qb-posted { flex: 0 0 320px; width: 320px; }
+.qb-urgent.qb-mine { background: #2f6b3a; transform: rotate(-7deg); left: -10px; right: auto; }
+.qb-note-crew { font-size: 0.984rem; color: #5d3a1c; font-weight: bold; margin-top: 4px; }
+
+#qb-compose-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh;
+  z-index: 30; background: rgba(20,10,4,0.7); display: flex; }
+#qb-compose { flex: 1 1 auto; width: 100%; height: 100%; overflow-y: auto; box-sizing: border-box;
+  background: linear-gradient(160deg, #faf2d3 0%, #f0e4c0 60%, #e6d4aa 100%);
+  border: 14px solid #58180d;
+  box-shadow: inset 0 0 0 3px #a8814f, inset 0 0 120px rgba(139,90,40,0.3);
+  color: #2b251d; }
+#qb-compose .qb-c-page { max-width: 1180px; margin: 0 auto; padding: 40px 60px 60px; }
+#qb-compose h2 { margin: 0 0 8px; font-size: 2.3rem; line-height: 1.15; color: #58180d;
+  border-bottom: 3px double #805d3f; padding-bottom: 10px; }
+.qb-c-intro { font-size: 1.24rem; line-height: 1.5; margin: 12px 0 22px; opacity: 0.88; }
+.qb-c-rows { display: flex; flex-direction: column; gap: 4px; }
+.qb-c-row { display: flex; align-items: center; gap: 16px; padding: 8px 12px;
+  border: 2px solid transparent; border-radius: 4px; cursor: pointer; min-height: 40px; }
+.qb-c-row:hover { background: rgba(139,90,40,0.10); }
+.qb-c-row.focused { background: rgba(255,215,106,0.28); border-color: #a8814f; }
+.qb-c-label { flex: 0 0 250px; font-size: 1.19rem; font-weight: bold; color: #58180d;
+  text-transform: uppercase; letter-spacing: 1px; }
+.qb-c-field { flex: 1 1 auto; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  font-size: 1.26rem; }
+.qb-c-arrow { flex: 0 0 auto; width: 30px; text-align: center; font-size: 1.6rem; line-height: 1;
+  color: #7a4d24; background: rgba(139,90,40,0.16); border-radius: 3px; user-select: none; }
+.qb-c-arrow:hover { background: #7a4d24; color: #f5ebd0; }
+.qb-c-val { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 180px; }
+.qb-c-empty { font-style: italic; opacity: 0.6; }
+.qb-c-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px;
+  background: rgba(139,90,40,0.18); border: 1px solid #a8814f; border-radius: 12px;
+  font-size: 1.06rem; }
+.qb-c-chip:hover { background: #7a2430; color: #f5ebd0; }
+.qb-c-x { font-weight: bold; opacity: 0.7; }
+.qb-c-rate { font-size: 1.3rem; font-weight: bold; margin: 6px 0; }
+.qb-c-rate.good { color: #1f6b2f; }
+.qb-c-rate.warn { color: #8a6a1f; }
+.qb-c-rate.bad { color: #8b263e; }
+.qb-c-note { font-size: 1.12rem; line-height: 1.5; opacity: 0.85; margin: 4px 0; }
+.qb-c-preview { margin-top: 10px; padding: 20px 26px; background: rgba(255,255,255,0.42);
+  border-left: 5px solid #805d3f; box-shadow: 2px 3px 8px rgba(0,0,0,0.18); }
+.qb-c-prev-title { font-size: 1.5rem; font-weight: bold; color: #58180d; }
+.qb-c-prev-giver { font-size: 1.1rem; opacity: 0.8; margin-bottom: 10px; }
+.qb-c-prev-body { font-size: 1.28rem; line-height: 1.6; text-align: justify; }
+.qb-c-prev-steps { font-size: 1.2rem; line-height: 1.55; margin-top: 12px; white-space: pre-line;
+  border-top: 1px solid #a8814f; padding-top: 10px; }
+
+/* The shelf a notice picks things off. A plain list, filtered by typing. */
+#qb-pick-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh;
+  z-index: 40; background: rgba(20,10,4,0.78); display: flex;
+  align-items: center; justify-content: center; }
+#qb-pick { width: min(880px, 92vw); max-height: 86vh; display: flex; flex-direction: column;
+  box-sizing: border-box; padding: 22px 26px 18px; color: #2b251d;
+  background: linear-gradient(160deg, #faf2d3 0%, #efe3bf 100%);
+  border: 10px solid #58180d; box-shadow: inset 0 0 0 3px #a8814f, 0 10px 40px rgba(0,0,0,0.6); }
+.qb-p-head { display: flex; align-items: baseline; gap: 20px; font-size: 1.24rem; font-weight: bold;
+  color: #58180d; border-bottom: 2px solid #805d3f; padding-bottom: 10px; margin-bottom: 8px; }
+.qb-p-search { margin-left: auto; font-weight: normal; opacity: 0.85; }
+.qb-p-page { font-weight: normal; opacity: 0.7; }
+.qb-p-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.qb-p-row { display: flex; align-items: center; gap: 10px; padding: 5px 8px; cursor: pointer;
+  font-size: 1.14rem; border-bottom: 1px solid rgba(139,90,40,0.2); }
+.qb-p-row:hover { background: rgba(255,215,106,0.35); }
+.qb-p-name { flex: 1 1 auto; }
+.qb-p-price { flex: 0 0 140px; text-align: right; font-weight: bold; color: #5d3a00; }
+.qb-p-held { flex: 0 0 120px; text-align: right; opacity: 0.7; }
+#qb-pick::-webkit-scrollbar, .qb-p-list::-webkit-scrollbar { width: 12px; }
+.qb-p-list::-webkit-scrollbar-track { background: rgba(88,24,13,0.12); }
+.qb-p-list::-webkit-scrollbar-thumb { background: #a8814f; border-radius: 6px; }
+#qb-compose::-webkit-scrollbar { width: 14px; }
+#qb-compose::-webkit-scrollbar-track { background: rgba(88,24,13,0.12); }
+#qb-compose::-webkit-scrollbar-thumb { background: #a8814f; border-radius: 7px; }
+
 
 /* ==========================================================================
    DIARY (Core/DiaryUI.js)
@@ -23133,15 +22955,6 @@ cursor:pointer; font-size:16px; line-height:1.4;
         var(--diary-grain, none),
         radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%);
 }
-#diary-container .diary-page-left {
-    border-radius: 3px 0 0 3px;
-    box-shadow: inset -26px 0 34px -26px rgba(60,40,18,0.75);
-}
-#diary-container .diary-page-right {
-    border-radius: 0 3px 3px 0;
-    box-shadow: inset 26px 0 34px -26px rgba(60,40,18,0.75);
-}
-
 /* Feint ruling, and the red margin rule down the gutter side.
    The ruling starts where the written lines start (the page's 44px head plus
    the 68px the date block stands, both fixed so this can be) and is offset by
@@ -23322,8 +23135,16 @@ cursor:pointer; font-size:16px; line-height:1.4;
 /* Turning a leaf: both halves of the spread swing about the binding, the ink
    arriving as the paper settles. The book itself is never re-animated (see the
    note on .diary-book), only the two pages whose contents just changed. */
-#diary-container .diary-page-left  { transform-origin: right center; }
-#diary-container .diary-page-right { transform-origin: left center; }
+#diary-container .diary-page-left {
+    border-radius: 3px 0 0 3px;
+    box-shadow: inset -26px 0 34px -26px rgba(60,40,18,0.75);
+ transform-origin: right center;
+}
+#diary-container .diary-page-right {
+    border-radius: 0 3px 3px 0;
+    box-shadow: inset 26px 0 34px -26px rgba(60,40,18,0.75);
+ transform-origin: left center;
+}
 #diary-container .diary-page.turn-forward { animation: diaryLeafForward 0.26s cubic-bezier(0.22, 1, 0.36, 1); }
 #diary-container .diary-page.turn-back    { animation: diaryLeafBack 0.26s cubic-bezier(0.22, 1, 0.36, 1); }
 @keyframes diaryLeafForward {
@@ -24762,9 +24583,11 @@ cursor:pointer; font-size:16px; line-height:1.4;
 /* ==========================================================================
    Earth adventures (Procedural/ProceduralAdventureSystem.js)
    --------------------------------------------------------------------------
-   The parchment modal a "???" world-map square is answered in: the node's
-   prose whole, its branches as rows under it. Same card idiom as
-   .army-dialog, sized for a page of text rather than a yes/no question.
+   The square is answered on a stage, not in a window: the biome's own
+   battleback fills the screen, the away team and whoever they are talking to
+   stand on it at full height, and the card carries nothing but the node's
+   prose and its branches, laid over their feet the way a visual novel lays
+   its text box. The card is the only thing that scrolls.
    ========================================================================== */
 #pas-adventure-overlay {
     position: fixed;
@@ -24774,27 +24597,44 @@ cursor:pointer; font-size:16px; line-height:1.4;
     height: 100vh;
     background: var(--bg-bg-alt-1-translucent-70);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     z-index: 1000;
     box-sizing: border-box;
     animation: fadeIn 0.2s ease;
 }
 
+/* The stage layer the busts stand on: built by the plugin, sized there, and
+   never in the way of a click. */
+.pas-adv-scene {
+    pointer-events: none;
+}
+
 .pas-adv-panel {
+    position: relative;
+    z-index: 2;
     background: var(--bg-secondary-hover);
     border: 3px double var(--text-primary-hover);
     border-radius: 6px;
     box-shadow: 0 10px 25px var(--shadow-primary-hover-translucent-5),
         inset 0 0 40px var(--shadow-shadow-alt-2-hover-translucent-8);
-    padding: 20px 26px 16px;
-    width: 640px;
-    max-width: 88vw;
-    max-height: 78vh;
+    padding: 16px 26px 14px;
+    width: 1100px;
+    max-width: 92vw;
+    max-height: 46vh;
+    margin-bottom: 2.5vh;
     display: flex;
     flex-direction: column;
     font-family: 'Lora', serif;
     box-sizing: border-box;
+}
+
+/* Held back until the node has finished writing itself out: the rows, the
+   payout and the key hint all arrive at the full stop. */
+.pas-adv-veiled {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
 }
 
 .pas-adv-title {
@@ -24924,4 +24764,6007 @@ cursor:pointer; font-size:16px; line-height:1.4;
     font-family: monospace;
     font-weight: bold;
     color: var(--text-muted-hover);
+}
+
+/* ==========================================================================
+   The Hypernet Chronicle (js/plugins/Quest/NewsSystem.js)
+
+   The newspaper renders the same markup in both shells: fullscreen off the
+   main menu, and inside a Hypernet OS window. This block is the parchment
+   look; hypernet.css restyles the same classes to XP chrome under
+   #news-history-content. Nothing here is set inline by the plugin, so the
+   two themes (and any future preset) reach all of it.
+   ========================================================================== */
+
+.news-root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    color: var(--text-success-active);
+}
+
+.news-root--fullscreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, var(--bg-dark-warm-translucent-96) 0%, var(--bg-black-translucent-96) 100%);
+}
+
+.news-spread {
+    flex-direction: column;
+}
+
+/* Masthead. Hidden inside the OS window, which has its own titlebar. */
+.newspaper-header {
+    padding: 24px 48px 12px 48px;
+    border-bottom: 6px double var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg-panel);
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.news-masthead-title {
+    font-family: 'Lora', serif;
+    font-size: 3.52rem;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+}
+
+.news-masthead-rule {
+    font-family: 'Lora', serif;
+    font-size: 1.322rem;
+    font-weight: bold;
+    color: var(--text-card-medium);
+    width: 100%;
+    border-top: 2px solid var(--border-subtle);
+    border-bottom: 2px solid var(--border-subtle);
+    padding: 6px 0;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.news-masthead-strap {
+    letter-spacing: 1px;
+}
+
+.news-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.news-page {
+    padding: 24px 32px;
+    display: flex;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.news-body .cc-page-left {
+    border-right: 1px solid var(--border-subtle-translucent-25);
+}
+
+.news-subheader {
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-size: 1.552rem;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+/* Month navigator */
+.news-month-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-family: 'Lora', serif;
+    font-size: 1.208rem;
+    background: var(--bg-subtle-translucent-5);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    width: 100%;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.news-month-label {
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    letter-spacing: 1px;
+}
+
+.newspaper-nav-btn {
+    cursor: pointer;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    user-select: none;
+}
+
+/* Headline list */
+.news-headline-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 8px;
+}
+
+/* Every category is a colour role, not a hex: the modifier sets --news-cat
+   and the label and the selected rule both read it. */
+.news-cat--global   { --news-cat: var(--border-danger-active); }
+.news-cat--bearish  { --news-cat: var(--border-danger-active); }
+.news-cat--bullish  { --news-cat: var(--text-forest-green); }
+.news-cat--surreal  { --news-cat: var(--text-text-alt-19); }
+.news-cat--chronicle { --news-cat: var(--text-card-medium); }
+
+.newspaper-headline-item {
+ --news-cat: var(--text-card-medium);
+    cursor: pointer;
+    padding: 12px 16px;
+    border-bottom: 1px dotted var(--border-subtle-translucent-25);
+    border-left: 3px solid transparent;
+    background: transparent;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.newspaper-headline-item:hover {
+    background: var(--bg-focus-hover-translucent-10);
+}
+
+.newspaper-headline-item.selected {
+    background: var(--border-primary-hover-translucent-15);
+    border-left-color: var(--news-cat);
+}
+
+.news-headline-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-family: 'Lora', serif;
+    font-size: 0.842em;
+    font-weight: bold;
+    color: var(--text-text-alt-4);
+}
+
+.news-headline-cat {
+    color: var(--news-cat);
+    letter-spacing: 0.5px;
+}
+
+.news-headline-text {
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+    line-height: 1.3;
+    color: var(--text-success-active);
+}
+
+.newspaper-headline-item.selected .news-headline-text {
+    font-weight: bold;
+}
+
+.news-headline-loc {
+    font-size: 0.842em;
+    color: var(--text-text-alt-4);
+    margin-top: 2px;
+}
+
+/* The article */
+.news-article {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 12px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.news-article-title {
+    font-family: 'Lora', serif;
+    font-size: 1.815rem;
+    font-weight: bold;
+    line-height: 1.2;
+    color: var(--text-primary-hover);
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border-primary-hover-translucent-15);
+    padding-bottom: 8px;
+}
+
+.news-article-meta {
+    font-family: 'Lora', serif;
+    font-size: 0.96rem;
+    color: var(--text-text-alt-4);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.news-article-body {
+    font-family: 'Lora', serif;
+    font-size: 1.14rem;
+    line-height: 1.6;
+    color: var(--text-success-active);
+    text-align: justify;
+    column-count: 2;
+    column-gap: 24px;
+    column-rule: 1px dotted var(--border-subtle-translucent-25);
+}
+
+.news-article-place {
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    font-size: 1.265rem;
+    color: var(--text-primary-hover);
+    margin-right: 4px;
+}
+
+/* Market & soul influence box */
+.news-effects {
+    margin-top: 14px;
+    padding: 10px;
+    border: 1px dashed var(--border-primary-hover-translucent-15);
+    background: var(--bg-subtle-translucent-5);
+    border-radius: 3px;
+    font-family: 'Lora', serif;
+    font-size: 0.984rem;
+    color: var(--text-success-active);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.news-effects-title {
+    margin: 0 0 6px 0;
+    font-family: 'Lora', serif;
+    font-size: 0.984rem;
+    font-weight: bold;
+    color: var(--border-focus-hover);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1.5px dotted var(--border-success);
+    padding-bottom: 3px;
+}
+
+.news-effects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.news-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+    font-family: 'Lora', serif;
+    font-size: 1.265rem;
+    color: var(--text-text-alt-4);
+}
+
+.news-footer {
+    margin-top: auto;
+    border-top: 1px dashed var(--border-subtle-translucent-40);
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Lora', serif;
+    font-size: 0.984rem;
+    color: var(--text-disabled);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   The work board (js/plugins/Work/WorkSystem.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.work-01 {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 100%;
+    background: linear-gradient(90deg, var(--shadow-black-translucent-15) 0%, rgba(0, 0, 0, 0.35) 50%, var(--shadow-black-translucent-15) 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.work-02 {
+    padding: 28px 36px;
+    display: flex;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.work-03 {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-text-alt-4);
+    font-family: 'Lora', serif;
+}
+
+.work-04 {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.work-05 {
+    font-family: 'Lora', serif;
+    font-size: 1.14rem;
+    color: var(--text-text-alt-7);
+}
+
+.work-06 {
+    font-size: 0.915rem;
+    color: var(--text-text-alt-4);
+    font-family: 'Lora', serif;
+}
+
+.work-07 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.work-08 {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: var(--text-text-alt-1-active);
+}
+
+.work-09 {
+    font-size: 2.035rem;
+    margin-bottom: 16px;
+}
+
+.work-10 {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 4px;
+}
+
+.work-11 {
+    margin-top: auto;
+    border-top: 1px dashed rgba(139, 90, 43, 0.4);
+    padding-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 0.984rem;
+    color: var(--text-disabled);
+    font-family: 'Lora', serif;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.work-12 {
+    background: var(--bg-bg-alt-18);
+    color: var(--text-highlight-active);
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-subtle);
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+}
+
+.work-13 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    text-align: center;
+    color: var(--text-disabled);
+    font-family: 'Lora', serif;
+    font-size: 1.265rem;
+    border: 2px dashed var(--border-border-alt-5);
+    border-radius: 6px;
+    padding: 40px;
+}
+
+.work-14 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--bg-focus-hover-translucent-15);
+    padding-bottom: 4px;
+}
+
+.work-15 {
+    margin-top: 10px;
+}
+
+.work-16 {
+    color: var(--text-text-alt-9);
+    font-size: 1.02rem;
+    text-transform: uppercase;
+}
+
+.work-17 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.work-18 {
+    background: rgba(139,90,43,0.1);
+    border: 1px solid rgba(139,90,43,0.2);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.915rem;
+    color: var(--text-text-alt-1-active);
+}
+
+.work-19 {
+    color: var(--text-text-alt-9);
+}
+
+.work-20 {
+    color: var(--text-settings-arrow-active);
+    font-weight: bold;
+}
+
+.work-21 {
+    font-size: 2.035rem;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.work-22 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.work-23 {
+    border: 4px double var(--border-subtle);
+    background: var(--bg-panel);
+    padding: 22px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 40px rgba(78,38,12,0.15);
+    font-family: 'Lora', serif;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.work-24 {
+    font-family: 'Lora', serif;
+    font-size: 1.725rem;
+    color: var(--text-text-alt-1-active);
+    font-weight: bold;
+    border-bottom: 2px double rgba(74,29,15,0.3);
+    padding-bottom: 6px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.work-25 {
+    font-size: 1.08rem;
+    line-height: 1.45;
+    color: var(--text-muted-hover);
+    border-bottom: 1px dashed rgba(139,90,43,0.25);
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+    text-align: justify;
+}
+
+.work-26 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 1.08rem;
+}
+
+.work-27 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--bg-focus-hover-translucent-15);
+    padding-bottom: 4px;
+    font-weight: bold;
+    color: var(--text-text-alt-18);
+}
+
+.work-28 {
+    margin-top: 10px;
+    border-top: 1px dashed rgba(139,90,43,0.25);
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.work-29 {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.work-30 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    border-top: 1px dashed rgba(139,90,43,0.25);
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: 1.15rem;
+}
+
+.work-31 {
+    font-family: 'Lora', serif;
+    font-size: 1.322rem;
+}
+
+.work-32 {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(130,45,45,0.06);
+    border-left: 3px solid var(--border-danger-active);
+    border-radius: 3px;
+    font-size: 0.952rem;
+    color: var(--text-settings-active);
+    line-height: 1.35;
+}
+
+.work-33 {
+    margin-top: auto;
+    border-top: 1px dashed rgba(139, 90, 43, 0.4);
+    padding-top: 12px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 0.984rem;
+    color: var(--text-disabled);
+    font-family: 'Lora', serif;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.work-34 {
+    border-radius: 50%;
+    background: var(--bg-bg-alt-18);
+    color: var(--text-highlight-active);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: 1.38rem;
+    font-weight: bold;
+}
+
+.work-35 {
+    border-radius: 50%;
+    border: 2px solid var(--border-focus-hover);
+    box-sizing: border-box;
+    background-position: 50% 12%;
+    background-size: 220%;
+    background-repeat: no-repeat;
+    box-shadow: 0 2px 4px var(--shadow-black-translucent-15);
+    flex-shrink: 0;
+}
+
+.work-36 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.915rem;
+    border-bottom: 1px dotted var(--shadow-primary-hover-translucent-5);
+    padding: 1px 0;
+}
+
+.work-37 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.work-38 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.work-39 {
+    font-family: 'Lora', serif;
+    font-size: 0.915rem;
+    font-weight: bold;
+}
+
+.work-40 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+    margin-top: 2px;
+}
+
+.work-41 {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding-right: 4px;
+}
+
+.work-42 {
+    margin-top: 12px;
+    border-top: 1px dashed rgba(139, 90, 43, 0.4);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.work-43 {
+    background: var(--bg-accent-deep);
+    color: var(--text-highlight-active);
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid var(--border-accent-deepest);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.208rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.work-44 {
+    background: var(--bg-bg-alt-18);
+    color: var(--text-highlight-active);
+    padding: 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid var(--border-subtle);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+    transition: all 0.2s ease;
+}
+
+/* ==========================================================================
+   Job offers (js/plugins/Work/WorkSystemJobOffers.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.joboffer-01 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary-hover);
+}
+
+.joboffer-02 {
+    width: 100%;
+    height: 100%;
+}
+
+.joboffer-03 {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 100%;
+    background: linear-gradient(90deg, var(--shadow-black-translucent-15) 0%, rgba(0, 0, 0, 0.35) 50%, var(--shadow-black-translucent-15) 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.joboffer-04 {
+    padding: 28px 36px;
+    display: flex;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.joboffer-05 {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-text-alt-8);
+}
+
+.joboffer-06 {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.joboffer-07 {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--text-muted-hover);
+}
+
+.joboffer-08 {
+    font-size: 13px;
+    color: var(--text-disabled);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.joboffer-09 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.joboffer-10 {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--text-info-blue);
+}
+
+.joboffer-11 {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 4px;
+}
+
+.joboffer-12 {
+    margin-top: auto;
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    padding-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-disabled);
+    width: 100%;
+}
+
+.joboffer-13 {
+    padding: 4px 12px;
+}
+
+.joboffer-14 {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-text-alt-4);
+    font-family: 'Lora', serif;
+}
+
+.joboffer-15 {
+    font-family: 'Lora', serif;
+    font-size: 1.14rem;
+    color: var(--text-text-alt-7);
+}
+
+.joboffer-16 {
+    font-size: 0.915rem;
+    color: var(--text-text-alt-4);
+    font-family: 'Lora', serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.joboffer-17 {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: var(--text-text-alt-1-active);
+}
+
+.joboffer-18 {
+    font-size: 2.035rem;
+    margin-bottom: 16px;
+}
+
+.joboffer-19 {
+    margin-top: auto;
+    border-top: 1px dashed rgba(139, 90, 43, 0.4);
+    padding-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 0.984rem;
+    color: var(--text-disabled);
+    font-family: 'Lora', serif;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.joboffer-20 {
+    background: var(--bg-bg-alt-18);
+    color: var(--text-highlight-active);
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-subtle);
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+}
+
+.joboffer-21 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    text-align: center;
+    color: var(--text-disabled);
+    border: 1px dashed var(--border-primary-hover-translucent-15);
+    border-radius: 3px;
+    padding: 20px;
+    font-size: 14px;
+    background: var(--bg-secondary-hover);
+}
+
+.joboffer-22 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    text-align: center;
+    color: var(--text-disabled);
+    font-family: 'Lora', serif;
+    font-size: 1.265rem;
+    border: 2px dashed var(--border-border-alt-5);
+    border-radius: 6px;
+    padding: 40px;
+}
+
+.joboffer-23 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--border-border-alt-3-hover);
+    padding-bottom: 2px;
+    font-size: 14px;
+}
+
+.joboffer-24 {
+    margin-top: 8px;
+}
+
+.joboffer-25 {
+    color: var(--text-text-alt-16);
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.joboffer-26 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.joboffer-27 {
+    background: var(--bg-secondary-hover);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 13px;
+    color: var(--text-text-alt-16);
+}
+
+.joboffer-28 {
+    color: var(--text-text-alt-6-active);
+}
+
+.joboffer-29 {
+    color: var(--text-info-blue);
+    font-weight: bold;
+}
+
+.joboffer-30 {
+    text-align: center;
+}
+
+.joboffer-31 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.joboffer-32 {
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    background: var(--bg-secondary-hover);
+    padding: 12px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.joboffer-33 {
+    font-size: 16px;
+    color: var(--text-text-alt-16);
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-primary-hover-translucent-15);
+    padding-bottom: 4px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.joboffer-34 {
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--text-disabled);
+    border-bottom: 1px dashed var(--border-border-alt-3-hover);
+    padding-bottom: 6px;
+    margin-bottom: 4px;
+    text-align: justify;
+}
+
+.joboffer-35 {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.joboffer-36 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--border-border-alt-3-hover);
+    padding-bottom: 2px;
+}
+
+.joboffer-37 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--border-border-alt-3-hover);
+    padding-bottom: 2px;
+    font-weight: bold;
+    color: var(--text-text-alt-3);
+}
+
+.joboffer-38 {
+    font-weight: bold;
+}
+
+.joboffer-39 {
+    margin-top: 6px;
+    border-top: 1px dashed var(--border-border-alt-3-hover);
+    padding-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.joboffer-40 {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.joboffer-41 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    border-top: 1px dashed var(--border-border-alt-3-hover);
+    padding-top: 6px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.joboffer-42 {
+    font-size: 16px;
+}
+
+.joboffer-43 {
+    margin-top: 6px;
+    padding: 6px;
+    background: var(--bg-secondary-hover);
+    border-left: 3px solid var(--border-gold-amber);
+    border-radius: 2px;
+    font-size: 13px;
+    color: var(--text-text-alt-23);
+    line-height: 1.3;
+}
+
+.joboffer-44 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--bg-focus-hover-translucent-15);
+    padding-bottom: 4px;
+}
+
+.joboffer-45 {
+    margin-top: 10px;
+}
+
+.joboffer-46 {
+    color: var(--text-text-alt-9);
+    font-size: 1.02rem;
+    text-transform: uppercase;
+}
+
+.joboffer-47 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.joboffer-48 {
+    background: rgba(139,90,43,0.1);
+    border: 1px solid rgba(139,90,43,0.2);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.915rem;
+    color: var(--text-text-alt-1-active);
+}
+
+.joboffer-49 {
+    color: var(--text-text-alt-9);
+}
+
+.joboffer-50 {
+    color: var(--text-settings-arrow-active);
+    font-weight: bold;
+}
+
+.joboffer-51 {
+    font-size: 2.035rem;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.joboffer-52 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.joboffer-53 {
+    border: 4px double var(--border-subtle);
+    background: var(--bg-panel);
+    padding: 22px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 40px rgba(78,38,12,0.15);
+    font-family: 'Lora', serif;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.joboffer-54 {
+    font-family: 'Lora', serif;
+    font-size: 1.725rem;
+    color: var(--text-text-alt-1-active);
+    font-weight: bold;
+    border-bottom: 2px double rgba(74,29,15,0.3);
+    padding-bottom: 6px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.joboffer-55 {
+    font-size: 1.08rem;
+    line-height: 1.45;
+    color: var(--text-muted-hover);
+    border-bottom: 1px dashed rgba(139,90,43,0.25);
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+    text-align: justify;
+}
+
+.joboffer-56 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 1.08rem;
+}
+
+.joboffer-57 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--bg-focus-hover-translucent-15);
+    padding-bottom: 4px;
+    font-weight: bold;
+    color: var(--text-text-alt-18);
+}
+
+.joboffer-58 {
+    margin-top: 10px;
+    border-top: 1px dashed rgba(139,90,43,0.25);
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.joboffer-59 {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.joboffer-60 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    border-top: 1px dashed rgba(139,90,43,0.25);
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: 1.15rem;
+}
+
+.joboffer-61 {
+    font-family: 'Lora', serif;
+    font-size: 1.322rem;
+}
+
+.joboffer-62 {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(130,45,45,0.06);
+    border-left: 3px solid var(--border-danger-active);
+    border-radius: 3px;
+    font-size: 0.952rem;
+    color: var(--text-settings-active);
+    line-height: 1.35;
+}
+
+.joboffer-63 {
+    width: 100%;
+}
+
+.joboffer-64 {
+    background: var(--bg-accent-deep);
+    color: var(--text-highlight-active);
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid var(--border-accent-deepest);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.208rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.joboffer-65 {
+    background: var(--bg-npc-forest) !important;
+    border-color: var(--border-forest-green) !important;
+    color: var(--text-warning-hover) !important;
+    width: 100%;
+}
+
+.joboffer-66 {
+    background: var(--bg-bg-alt-13);
+    color: var(--text-highlight-active);
+    padding: 9px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid var(--border-forest-green);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.joboffer-67 {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.38rem;
+    font-weight: bold;
+}
+
+.joboffer-68 {
+    border-radius: 50%;
+    box-sizing: border-box;
+    background-position: 50% 12%;
+    background-size: 220%;
+    background-repeat: no-repeat;
+    box-shadow: 0 1px 3px var(--shadow-black-translucent-15);
+    flex-shrink: 0;
+}
+
+.joboffer-69 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    border-bottom: 1px dotted var(--shadow-primary-hover-translucent-5);
+    padding: 1px 0;
+}
+
+.joboffer-70 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.joboffer-71 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.joboffer-72 {
+    font-size: 14px;
+    color: var(--text-muted-hover);
+}
+
+.joboffer-73 {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.joboffer-74 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 10px;
+    margin-top: 2px;
+}
+
+.joboffer-75 {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding-right: 4px;
+}
+
+.joboffer-76 {
+    margin-top: 8px;
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.joboffer-77 {
+    background: var(--bg-well) !important;
+    color: var(--text-muted-hover) !important;
+    border-color: var(--border-primary-hover-translucent-15) !important;
+    width: 100%;
+}
+
+.joboffer-78 {
+    font-family: 'Lora', serif;
+    font-size: 0.915rem;
+    font-weight: bold;
+}
+
+.joboffer-79 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+    margin-top: 2px;
+}
+
+.joboffer-80 {
+    margin-top: 12px;
+    border-top: 1px dashed rgba(139, 90, 43, 0.4);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.joboffer-81 {
+    background: var(--bg-bg-alt-18);
+    color: var(--text-highlight-active);
+    padding: 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid var(--border-subtle);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+    transition: all 0.2s ease;
+}
+
+/* ==========================================================================
+   The bank counter (js/plugins/Economy/BankLoanSystem.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.bank-01 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary-hover);
+}
+
+.bank-02 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.bank-03 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--border-border-alt-3-hover);
+    padding-bottom: 3px;
+}
+
+.bank-04 {
+    color: var(--text-disabled);
+}
+
+.bank-05 {
+    font-weight: bold;
+    color: var(--text-muted-hover);
+}
+
+.bank-06 {
+    font-weight: bold;
+    color: var(--text-text-alt-3);
+}
+
+.bank-07 {
+    color: var(--text-muted-hover);
+}
+
+.bank-08 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.bank-09 {
+    line-height: 1.5;
+    color: var(--text-text-alt-6-active);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bank-10 {
+    margin: 0;
+}
+
+.bank-11 {
+    background: var(--bg-secondary-hover);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    padding: 6px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: var(--text-text-alt-16);
+}
+
+.bank-12 {
+    display: flex;
+    gap: 16px;
+    height: 100%;
+    width: 100%;
+}
+
+.bank-13 {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+}
+
+.bank-14 {
+    width: 1px;
+    background: var(--bg-subtle-translucent-5);
+    margin: 0 4px;
+    height: 100%;
+}
+
+.bank-15 {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+}
+
+.bank-16 {
+    color: var(--text-blood-red);
+    font-weight: bold;
+}
+
+.bank-17 {
+    background: var(--bg-secondary-hover);
+    border: 1px solid var(--border-gold-amber);
+    padding: 6px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: var(--text-text-alt-23);
+}
+
+.bank-18 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.bank-19 {
+    margin-top: 4px;
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    padding-top: 6px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: var(--text-disabled);
+    width: 100%;
+}
+
+.bank-20 {
+    padding: 2px 12px;
+}
+
+.bank-21 {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 100%;
+    background: linear-gradient(90deg, var(--shadow-black-translucent-15) 0%, rgba(0, 0, 0, 0.35) 50%, var(--shadow-black-translucent-15) 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.bank-22 {
+    padding: 28px 36px;
+    display: flex;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.bank-23 {
+    font-size: 2.035rem;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.bank-24 {
+    border: 2px solid rgba(139,90,43,0.3);
+    background: var(--bg-secondary-hover);
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 12px;
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bank-25 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted rgba(139,90,43,0.2);
+    padding-bottom: 2px;
+}
+
+.bank-26 {
+    color: var(--text-text-alt-9);
+    font-weight: bold;
+}
+
+.bank-27 {
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    color: var(--text-text-alt-1-active);
+}
+
+.bank-28 {
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    color: var(--text-text-alt-18);
+}
+
+.bank-29 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted rgba(139,90,43,0.2);
+    padding-bottom: 2px;
+    font-size: 0.96rem;
+    color: var(--text-text-alt-4);
+}
+
+.bank-30 {
+    margin-top: 4px;
+    border-top: 1px dashed rgba(139,90,43,0.3);
+    padding-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bank-31 {
+    font-family: 'Lora', serif;
+}
+
+.bank-32 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted rgba(139,90,43,0.2);
+    padding-bottom: 2px;
+    font-size: 0.96rem;
+    color: var(--text-settings-active);
+}
+
+.bank-33 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.bank-34 {
+    text-align: center;
+}
+
+.bank-35 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.bank-36 {
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    background: var(--bg-secondary-hover);
+    padding: 12px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.bank-37 {
+    line-height: 1.4;
+    color: var(--text-disabled);
+    border-bottom: 1px dashed var(--border-border-alt-3-hover);
+    padding-bottom: 6px;
+    text-align: center;
+}
+
+.bank-38 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin: 4px 0;
+}
+
+.bank-39 {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--text-text-alt-16);
+    font-weight: bold;
+}
+
+.bank-40 {
+    font-size: 29px;
+    font-weight: bold;
+    color: var(--text-info-blue);
+    line-height: 1.1;
+}
+
+.bank-41 {
+    font-size: 15px;
+    color: var(--text-text-alt-8);
+}
+
+.bank-42 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.bank-43 {
+    grid-column: span 2;
+}
+
+.bank-44 {
+    margin-top: auto;
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.bank-45 {
+    background: var(--bg-well) !important;
+    color: var(--text-muted-hover) !important;
+    border-color: var(--border-primary-hover-translucent-15) !important;
+}
+
+.bank-46 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-family: 'Lora', serif;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.bank-47 {
+    border: 4px double var(--border-subtle);
+    background: var(--bg-panel);
+    padding: 18px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 40px rgba(78,38,12,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.bank-48 {
+    font-size: 1.02rem;
+    line-height: 1.4;
+    color: var(--text-muted-hover);
+    border-bottom: 1px dashed rgba(139,90,43,0.25);
+    padding-bottom: 8px;
+    text-align: center;
+}
+
+.bank-49 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin: 6px 0;
+}
+
+.bank-50 {
+    font-size: 0.915rem;
+    text-transform: uppercase;
+    color: var(--text-text-alt-9);
+    letter-spacing: 1px;
+}
+
+.bank-51 {
+    font-family: 'Lora', serif;
+    font-size: 2.64rem;
+    font-weight: bold;
+    color: var(--text-text-alt-1-active);
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
+    line-height: 1.1;
+}
+
+.bank-52 {
+    font-size: 0.854rem;
+    color: var(--text-text-alt-4);
+}
+
+.bank-53 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.bank-54 {
+    grid-column: span 2;
+    background: var(--bg-accent-deep);
+    color: var(--text-highlight-active);
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1.02rem;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid var(--border-accent-deepest);
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    transition: all 0.2s ease;
+}
+
+.bank-55 {
+    margin-top: auto;
+    border-top: 1px dashed rgba(139, 90, 43, 0.4);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.bank-56 {
+    background: var(--bg-accent-deep);
+    color: var(--text-highlight-active);
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid var(--border-accent-deepest);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.208rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.bank-57 {
+    background: var(--bg-bg-alt-18);
+    color: var(--text-highlight-active);
+    padding: 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid var(--border-subtle);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+    transition: all 0.2s ease;
+}
+
+.bank-58 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    line-height: 1.5;
+    text-align: justify;
+    color: var(--text-text-alt-6-active);
+}
+
+.bank-59 {
+    border-top: 1px dashed var(--border-border-alt-3-hover);
+    border-bottom: 1px dashed var(--border-border-alt-3-hover);
+    padding: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-weight: bold;
+    color: var(--text-text-alt-16);
+}
+
+.bank-60 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    font-family: 'Lora', serif;
+    line-height: 1.55;
+    text-align: justify;
+    color: var(--text-text-alt-2);
+    padding: 0 10px;
+}
+
+.bank-61 {
+    margin: 0;
+    font-size: 1.08rem;
+}
+
+.bank-62 {
+    border-top: 1px dashed rgba(139,90,43,0.3);
+    border-bottom: 1px dashed rgba(139,90,43,0.3);
+    padding: 8px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.96rem;
+    color: var(--text-text-alt-1-active);
+}
+
+/* ==========================================================================
+   The prosthetics shop (js/plugins/Health/Health_ProstheticShop.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.pros-01 {
+    margin: 0 0 10px 0;
+}
+
+.pros-02 {
+    font-family: 'Lora', serif;
+    font-size: 0.914em;
+    line-height: 1.45;
+    color: var(--text-disabled);
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-style: normal;
+}
+
+.pros-03 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.pros-04 {
+    position: relative;
+}
+
+.pros-05 {
+    width: 48px;
+    height: 48px;
+}
+
+.pros-06 {
+    image-rendering: pixelated;
+    display: block;
+}
+
+.pros-07 {
+    flex-grow: 1;
+}
+
+.pros-08 {
+    margin: 0;
+    font-family: 'Lora', serif;
+    font-size: 1.238em;
+    color: var(--text-primary-hover);
+}
+
+.pros-09 {
+    margin: 2px 0 0 0;
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    color: var(--text-disabled);
+}
+
+.pros-10 {
+    margin: 0;
+    font-family: 'Lora', serif;
+    font-size: 1.142em;
+    color: var(--text-primary-hover);
+}
+
+.pros-11 {
+    margin: 2px 0 0 0;
+    font-family: 'Lora', serif;
+    font-size: 0.856em;
+    color: var(--text-disabled);
+}
+
+.pros-12 {
+    font-family: 'Lora', serif;
+    font-size: 0.964em;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+}
+
+.pros-13 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pros-14 {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    transform: scale(0.85);
+    margin-right: 10px;
+}
+
+.pros-15 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-content: start;
+}
+
+.pros-16 {
+    grid-column: 1/-1;
+    font-size: 1.095em;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 6px;
+    border: 2px solid rgba(88,24,13,0.4);
+    background: rgba(88,24,13,0.06);
+}
+
+.pros-17 {
+    font-size: 1.142em;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 12px 6px;
+}
+
+.pros-18 {
+    font-family: 'Lora',serif;
+    color: var(--text-disabled);
+    font-style: normal;
+    text-align: center;
+    padding: 20px;
+}
+
+.pros-19 {
+    font-family: 'Lora', serif;
+    font-size: 0.964em;
+    font-weight: bold;
+    color: var(--text-settings-active);
+}
+
+.pros-20 {
+    margin: 2px 0 0 0;
+    font-family: 'Lora', serif;
+    font-size: 0.856em;
+}
+
+.pros-21 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-family: 'Lora', serif;
+    color: var(--text-disabled);
+    text-align: center;
+    padding: 20px;
+}
+
+.pros-22 {
+    font-size: 2.9em;
+    margin-bottom: 15px;
+    filter: opacity(0.65);
+}
+
+.pros-23 {
+    font-family: 'Lora', serif;
+    color: var(--text-primary-hover);
+    font-size: 1.57em;
+    margin: 0 0 10px 0;
+}
+
+.pros-24 {
+    font-size: 0.964em;
+    line-height: 1.5;
+    font-style: normal;
+}
+
+.pros-25 {
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.pros-26 {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.pros-27 {
+    margin-top: 10px;
+    max-height: 160px;
+    overflow-y: auto;
+    padding-right: 5px;
+    border-top: 1px dashed var(--border-primary-hover-translucent-15);
+    padding-top: 8px;
+    flex-grow: 1;
+}
+
+.pros-28 {
+    font-family: 'Lora', serif;
+    font-size: 1em;
+    color: var(--text-primary-hover);
+    margin: 0 0 6px 0;
+}
+
+.pros-29 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.856em;
+    margin-bottom: 4px;
+    font-family: 'Lora', serif;
+    border-bottom: 1px dotted var(--shadow-black-translucent-6);
+    padding-bottom: 2px;
+}
+
+.pros-30 {
+    margin-bottom: 10px;
+}
+
+.pros-31 {
+    font-size: 0.82em;
+    margin: 2px 0 0 0;
+    color: var(--text-text-alt-4);
+    font-family: 'Lora', serif;
+}
+
+.pros-32 {
+    margin-bottom: 10px;
+    grid-gap: 5px;
+}
+
+.pros-33 {
+    padding: 2px;
+}
+
+.pros-34 {
+    font-size: 0.748em;
+}
+
+.pros-35 {
+    font-size: 1.095em;
+    margin: 1px 0;
+}
+
+.pros-36 {
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+
+.pros-37 {
+    margin-bottom: 4px;
+}
+
+.pros-38 {
+    width: 20px;
+    font-size: 0.892em;
+}
+
+.pros-39 {
+    height: 10px;
+}
+
+.pros-40 {
+    font-size: 0.892em;
+    width: 65px;
+}
+
+.pros-41 {
+    font-family: 'Lora', serif;
+}
+
+.pros-42 {
+    font-family: 'Lora', serif;
+    color: var(--text-primary-hover);
+    font-size: 1.095em;
+    margin: 0 0 4px 0;
+    border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+    padding-bottom: 4px;
+}
+
+.pros-43 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.892em;
+    color: var(--text-disabled);
+    padding: 2px 0;
+}
+
+.pros-44 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.964em;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    border-top: 1px dotted rgba(88,24,13,0.12);
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+.pros-45 {
+    margin: 6px 0 0;
+    font-size: 0.842em;
+    line-height: 1.4;
+    color: var(--text-disabled);
+}
+
+.pros-46 {
+    font-family: 'Lora', serif;
+    color: var(--text-primary-hover);
+    font-size: 1.095em;
+    margin: 0 0 4px 0;
+}
+
+.pros-47 {
+    margin: 0;
+    font-size: 0.892em;
+    line-height: 1.4;
+    color: var(--text-disabled);
+}
+
+.pros-48 {
+    margin: 6px 0 0;
+    font-size: 0.892em;
+    line-height: 1.4;
+    color: var(--text-disabled);
+}
+
+.pros-49 {
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    margin-top: 6px;
+    border-top: 1px dotted rgba(88,24,13,0.12);
+    padding-top: 4px;
+}
+
+.pros-50 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pros-51 {
+    color: var(--text-primary-hover);
+}
+
+.pros-52 {
+    font-size: 0.87em;
+    color: var(--text-disabled);
+    margin-top: 2px;
+}
+
+.pros-53 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    margin-top: 6px;
+    border-top: 1px dotted rgba(88,24,13,0.12);
+    padding-top: 4px;
+}
+
+.pros-54 {
+    color: var(--text-text-alt-11);
+}
+
+.pros-55 {
+    font-family: 'Lora', serif;
+    color: var(--text-primary-hover);
+    font-size: 1.095em;
+    margin: 0 0 4px 0;
+    border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+    padding-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.pros-56 {
+    margin: 4px 0;
+    font-size: 0.856em;
+    line-height: 1.4;
+    color: var(--text-disabled);
+}
+
+.pros-57 {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.pros-58 {
+    flex: 1;
+    padding: 4px 8px;
+    font-size: 0.928em;
+}
+
+/* ==========================================================================
+   Vehicle repairs (js/plugins/Vehicle/VehicleSystemRepair.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.vrep-01 {
+    border: 1px solid var(--border-gold-amber-30);
+    background: var(--bg-dark-warm-translucent-96);
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+}
+
+.vrep-02 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+}
+
+.vrep-03 {
+    font-weight: bold;
+}
+
+.vrep-04 {
+    font-size: 0.854rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-red-3);
+    border: 1px solid var(--accent-red-3);
+    border-radius: 3px;
+    padding: 0px 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-family: 'Lora', serif;
+}
+
+.vrep-05 {
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    font-size: 1.265rem;
+}
+
+.vrep-06 {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-well);
+    border: 1px solid var(--border-subtle-translucent-25);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.vrep-07 {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.vrep-08 {
+    font-family: 'Lora', serif;
+    font-size: 1.02rem;
+    color: var(--accent-amber-light);
+    letter-spacing: 1px;
+}
+
+.vrep-09 {
+    background: var(--bg-tertiary-focus-translucent-45);
+    color: var(--accent-amber-glow);
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid var(--border-focus-hover);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.14rem;
+    box-shadow: 0 2px 4px var(--shadow-black-translucent-45);
+}
+
+.vrep-10 {
+    font-size: 2.035rem;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.vrep-11 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    font-family: 'Lora', serif;
+}
+
+.vrep-12 {
+    width: 180px;
+    height: 180px;
+    border: 4px double var(--border-gold-amber);
+    background: var(--bg-dark-warm-translucent-96);
+    border-radius: 50%;
+    box-shadow: inset 0 0 24px var(--shadow-black-translucent-55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.vrep-13 {
+    font-size: 1.104rem;
+    line-height: 1.55;
+    color: var(--text-card-medium);
+    padding: 0 12px;
+}
+
+.vrep-14 {
+    margin: 6px 0;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Lora', serif;
+    font-size: 1.495rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 8px var(--shadow-black-translucent-45);
+    text-transform: uppercase;
+}
+
+.vrep-15 {
+    margin-top: auto;
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-size: 0.96rem;
+    color: var(--text-caption-brown);
+    border-top: 1px dashed var(--border-gold-amber-30);
+    padding-top: 12px;
+}
+
+.vrep-16 {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.vrep-17 {
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.vrep-18 {
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    font-size: 1.14rem;
+    margin-bottom: 8px;
+}
+
+.vrep-19 {
+    background: var(--bg-dark-warm-translucent-96);
+    color: var(--accent-amber-glow);
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid var(--border-gold-amber);
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px var(--shadow-black-translucent-45);
+    margin-top: auto;
+}
+
+.vrep-20 {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 100%;
+    background: linear-gradient(90deg, var(--shadow-black-translucent-15) 0%, rgba(0, 0, 0, 0.35) 50%, var(--shadow-black-translucent-15) 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.vrep-21 {
+    padding: 28px 36px;
+    display: flex;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.vrep-22 {
+    flex: 1;
+    background: var(--bg-dark-warm-translucent-96);
+    border-radius: 6px;
+    padding: 8px 10px;
+    text-align: center;
+    font-family: 'Lora', serif;
+    box-shadow: 0 2px 4px var(--shadow-black-translucent-45);
+}
+
+.vrep-23 {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-amber-glow);
+    font-size: 1.14rem;
+    letter-spacing: 0.5px;
+}
+
+.vrep-24 {
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+.vrep-25 {
+    font-size: 1.705rem;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.vrep-26 {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 12px;
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    align-content: start;
+    max-height: 480px;
+    box-sizing: border-box;
+}
+
+.vrep-27 {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.vrep-28 {
+    font-size: 0.96rem;
+    font-weight: bold;
+}
+
+.vrep-29 {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-left: 3px;
+    border: 1px solid var(--border-gold-amber);
+}
+
+.vrep-30 {
+    font-size: 0.915rem;
+    color: var(--text-card-medium);
+    vertical-align: middle;
+}
+
+.vrep-31 {
+    font-size: 0.952rem;
+    color: var(--accent-amber-light);
+    margin-top: 4px;
+}
+
+.vrep-32 {
+    text-align: center;
+    font-weight: bold;
+    color: var(--text-cost-ok);
+    font-size: 1.02rem;
+}
+
+.vrep-33 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin: 6px 0;
+}
+
+.vrep-34 {
+    background: var(--bg-dark-warm-translucent-96);
+    box-shadow: 0 2px 4px var(--shadow-black-translucent-45);
+    border-radius: 5px;
+    padding: 6px;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-amber-glow);
+    font-family: 'Lora', serif;
+    font-size: 1.02rem;
+    letter-spacing: 0.5px;
+}
+
+.vrep-35 {
+    border: 1px solid var(--border-gold-amber-30);
+    background: var(--bg-dark-warm-translucent-96);
+    border-radius: 8px;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.vrep-36 {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.vrep-37 {
+    flex: 1;
+}
+
+.vrep-38 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.vrep-39 {
+    font-weight: bold;
+    color: var(--accent-cream-light);
+    font-size: 1.15rem;
+}
+
+.vrep-40 {
+    white-space: nowrap;
+}
+
+.vrep-41 {
+    font-size: 0.96rem;
+    color: var(--text-card-medium);
+    line-height: 1.4;
+    margin-top: 3px;
+}
+
+.vrep-42 {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 540px;
+    box-sizing: border-box;
+}
+
+.vrep-43 {
+    text-align: center;
+    color: var(--text-card-medium);
+    padding: 24px;
+}
+
+.vrep-44 {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.96rem;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   The faction register (js/plugins/NPC/FactionDataManager.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.facrep-01 {
+    width: 24px;
+    height: 24px;
+}
+
+.facrep-04 {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.facrep-05 {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.facrep-06 {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    min-height: 26px;
+    margin-bottom: 8px;
+}
+
+.facrep-07 {
+    justify-content: center;
+    text-align: center;
+    padding: 40px 10px;
+}
+
+.facrep-08 {
+    font-size: 3.85em;
+    margin-bottom: 20px;
+}
+
+.facrep-09 {
+    border: none;
+    margin-bottom: 10px;
+}
+
+.facrep-10 {
+    font-family: 'Lora', serif;
+    line-height: 1.6;
+    color: var(--text-text-alt-4);
+}
+
+.facrep-11 {
+    margin-top: 15px;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    border-top: 1px solid var(--border-border-alt-1);
+    padding-top: 10px;
+}
+
+.facrep-12 {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+}
+
+.facrep-13 {
+    margin-top: 12px;
+    border-top: 1px solid var(--border-border-alt-1);
+    padding-top: 10px;
+}
+
+.facrep-14 {
+    margin-top: 12px;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+}
+
+.facrep-15 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    border-top: 1px solid var(--border-border-alt-1);
+    padding-top: 10px;
+}
+
+.facrep-16 {
+    font-weight: bold;
+}
+
+.facrep-17 {
+    margin-top: 8px;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-text-alt-11);
+}
+
+.facrep-18 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    border-bottom: 1px dashed var(--border-border-alt-1);
+    padding-bottom: 2px;
+}
+
+.facrep-19 {
+    width: 36px;
+    height: 36px;
+    image-rendering: pixelated;
+}
+
+.facrep-20 {
+    flex-grow: 1;
+    max-height: 180px;
+    padding-right: 5px;
+    margin-bottom: 15px;
+}
+
+.facrep-21 {
+    font-family: 'Lora', serif;
+    font-size: 1.095em;
+    color: var(--text-primary-hover);
+    margin: 0 0 8px 0;
+    border-bottom: 1px solid var(--border-border-alt-1);
+    padding-bottom: 4px;
+}
+
+.facrep-22 {
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-info);
+}
+
+/* The party's own banner: the register's second header button, the founding
+   and rename panels, and the roll on the management spread
+   (Scene_PlayerFaction). */
+
+.facrep-23 {
+    left: auto;
+    right: 0;
+}
+
+.facrep-24 {
+    margin-right: 8px;
+}
+
+.facrep-25 {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--shadow-black-translucent-55);
+    font-family: 'Lora', serif;
+}
+
+.facrep-26 {
+    width: min(480px, 80vw);
+    box-sizing: border-box;
+    padding: 22px 26px 18px 26px;
+    text-align: center;
+    background: var(--bg-panel);
+    border: 2px solid var(--text-primary-hover);
+    border-radius: 6px;
+    box-shadow: 0 6px 20px var(--shadow-black-translucent-55);
+}
+
+.facrep-27 {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 14px 0 6px 0;
+    padding: 8px 10px;
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    text-align: center;
+    color: var(--text-primary-hover);
+    background: var(--bg-backdrop);
+    border: 1.5px solid var(--text-primary-hover);
+    border-radius: 4px;
+    outline: none;
+}
+
+.facrep-28 {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.facrep-29 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.facrep-30 {
+    font-family: 'Lora', serif;
+    font-size: 0.9em;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: var(--text-text-alt-4);
+    border: 1px solid var(--border-border-alt-1);
+}
+
+/* ==========================================================================
+   The ONU assembly (js/plugins/NPC/ONUAssembly.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.onu-01 {
+    display: inline-block;
+    vertical-align: middle;
+    ` +
+      `background-image: url('img/system/IconSet.png');
+    image-rendering: pixelated;
+}
+
+.onu-02 {
+    justify-content: flex-start;
+}
+
+.onu-03 {
+    font-family: 'Lora',serif;
+    text-align: center;
+    margin-bottom: 8px;
+    color: var(--text-text-alt-4);
+}
+
+.onu-04 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+    font-family: 'Lora',serif;
+    font-size: 0.856em;
+}
+
+.onu-05 {
+    flex: 0 0 84px;
+}
+
+.onu-06 {
+    flex: 1 1 auto;
+    height: 8px;
+    background: rgba(90,70,50,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.onu-07 {
+    display: block;
+    height: 100%;
+}
+
+.onu-08 {
+    flex: 0 0 34px;
+    text-align: right;
+}
+
+.onu-09 {
+    width: 36px;
+    height: 36px;
+    image-rendering: pixelated;
+}
+
+.onu-10 {
+    font-family: 'Lora',serif;
+    font-size: 0.928em;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--text-text-alt-4);
+}
+
+.onu-11 {
+    max-height: 130px;
+    padding-right: 5px;
+    margin-bottom: 12px;
+}
+
+.onu-12 {
+    margin-top: 10px;
+    font-family: 'Lora',serif;
+    font-size: 0.892em;
+}
+
+.onu-13 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-family: 'Lora',serif;
+    font-size: 0.928em;
+    border-top: 1px solid var(--border-border-alt-1);
+    padding-top: 8px;
+}
+
+.onu-14 {
+    font-weight: bold;
+}
+
+.onu-15 {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lora',serif;
+    font-size: 0.928em;
+}
+
+.onu-16 {
+    flex: 0 0 auto;
+    min-width: 86px;
+    max-width: 120px;
+    padding: 5px 6px;
+    border-radius: 5px;
+    border: 1.5px solid rgba(90,70,50,0.35);
+    background: rgba(120,100,75,0.12);
+    font-family: 'Lora',serif;
+    font-size: 0.83rem;
+    line-height: 1.15;
+    text-align: center;
+    color: var(--text-text-alt-2);
+    transition: background 0.28s ease, border-color 0.28s ease, color 0.28s ease;
+}
+
+.onu-17 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    align-content: flex-start;
+}
+
+.onu-18 {
+    margin-top: 14px;
+    font-family: 'Lora',serif;
+    text-align: center;
+    font-size: 0.964em;
+}
+
+.onu-19 {
+    color: var(--text-text-alt-11);
+    font-weight: bold;
+}
+
+.onu-20 {
+    color: var(--text-text-alt-5-hover);
+    font-weight: bold;
+}
+
+.onu-21 {
+    color: var(--text-settings-arrow-active);
+    font-weight: bold;
+}
+
+.onu-22 {
+    justify-content: center;
+    text-align: center;
+    padding: 40px 10px;
+}
+
+.onu-23 {
+    border: none;
+    margin-bottom: 10px;
+}
+
+.onu-24 {
+    font-family: 'Lora',serif;
+    line-height: 1.6;
+    color: var(--text-text-alt-4);
+}
+
+.onu-25 {
+    margin-bottom: 12px;
+}
+
+.onu-26 {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lora',serif;
+    font-size: 0.928em;
+    margin-top: 6px;
+}
+
+/* Faction reputation badges and accord stances. The band is a class, the
+   colour a token, so both presets ink the same ladder their own way. See
+   Game_Factions.reputationClassOf in js/plugins/NPC/FactionDataManager.js. */
+.faction-rep--exalted    { color: var(--faction-rep-exalted); }
+.faction-rep--revered    { color: var(--faction-rep-revered); }
+.faction-rep--honored    { color: var(--faction-rep-honored); }
+.faction-rep--friendly   { color: var(--faction-rep-friendly); }
+.faction-rep--neutral    { color: var(--faction-rep-neutral); }
+.faction-rep--unfriendly { color: var(--faction-rep-unfriendly); }
+.faction-rep--hostile    { color: var(--faction-rep-hostile); }
+.faction-rep--hated      { color: var(--faction-rep-hated); }
+.faction-rep--nemesis    { color: var(--faction-rep-nemesis); }
+
+.faction-accord--allied  { color: var(--faction-accord-allied); }
+.faction-accord--neutral { color: var(--faction-accord-neutral); }
+.faction-accord--hostile { color: var(--faction-accord-hostile); }
+
+/* ONU assembly: the sidebar stat axes, the agenda marks and the division
+   board. All three used to be painted from hexes in the plugin; they are
+   modifier classes now so both presets ink them (js/plugins/NPC/ONUAssembly.js). */
+.onu-stat--military    { background: var(--faction-rep-nemesis); }
+.onu-stat--economy     { background: var(--accent-amber-gold); }
+.onu-stat--population  { background: var(--text-navy); }
+.onu-stat--information { background: var(--text-text-alt-8); }
+.onu-stat--arcane      { background: var(--text-text-alt-19); }
+
+.onu-mark--carried { color: var(--faction-accord-allied); }
+.onu-mark--failed  { color: var(--faction-accord-hostile); }
+.onu-mark--current { color: var(--text-primary-hover); }
+.onu-mark--pending { color: var(--text-card-medium); }
+
+.onu-row--pending { opacity: 0.55; }
+
+.onu-seat--for {
+    background: var(--bg-success-green-15);
+    border-color: var(--faction-accord-allied);
+    color: var(--faction-accord-allied);
+}
+
+.onu-seat--against {
+    background: var(--bg-danger-medium-10);
+    border-color: var(--faction-accord-hostile);
+    color: var(--faction-accord-hostile);
+}
+
+.onu-seat--abstain {
+    background: var(--accent-gold-translucent-16);
+    border-color: var(--border-gold-amber);
+    color: var(--border-gold-amber);
+}
+
+/* ==========================================================================
+   Shared menu states lifted out of the plugins
+
+   The work board, the job offers terminal, the bank counter and the
+   prosthetics shop all used to build these as inline style strings, one copy
+   each, in the parchment palette. They are one set of state classes now, so
+   a selection, a success band or an unmet requirement looks the same
+   everywhere and answers to whichever preset is loaded.
+   ========================================================================== */
+
+/* Success bands: how likely a job is to go well. */
+.chance--good { color: var(--faction-rep-revered); }
+.chance--fair { color: var(--border-focus-hover); }
+.chance--poor { color: var(--faction-accord-hostile); }
+
+/* Requirement rows: met reads calm, unmet reads loud. */
+.req--met {
+    display: flex;
+    justify-content: space-between;
+    color: var(--faction-rep-revered);
+}
+
+.req--unmet {
+    display: flex;
+    justify-content: space-between;
+    color: var(--faction-accord-hostile);
+    font-weight: bold;
+}
+
+/* Affordability of a surgery, a repair or a purchase. */
+.cost--ok    { color: var(--text-cost-ok); }
+.cost--short { color: var(--text-cost-bad); }
+
+/* A row in a scrolling list (jobs, offers, commands). */
+.job-item {
+    cursor: pointer;
+    padding: 10px 14px;
+    border-bottom: 1px dotted var(--border-subtle-translucent-25);
+    border-left: 3px solid transparent;
+    background: transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.job-item:hover {
+    background: var(--bg-focus-hover-translucent-10);
+}
+
+.job-item.selected {
+    background: var(--border-primary-hover-translucent-15);
+    border-left-color: var(--border-focus-hover);
+}
+
+/* A party member card in a roster column. */
+.roster-item {
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 2px solid var(--border-primary-hover-translucent-15);
+    background: var(--bg-secondary-hover);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px var(--shadow-black-translucent-15);
+}
+
+.roster-item.selected {
+    border-color: var(--border-focus-hover);
+    background: var(--bg-parchment-warm-60);
+}
+
+.roster-item.focused {
+    border-color: var(--text-primary-hover);
+    box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-25);
+}
+
+/* The "remote" chip on an offer that needs no travelling. */
+.job-remote-tag {
+    background: var(--bg-success-green-15);
+    border: 1px solid var(--border-forest-green);
+    color: var(--faction-rep-revered);
+    padding: 1px 6px;
+    font-family: 'Lora', serif;
+    font-size: 0.793rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* The bust, or the initial standing in for one, on a roster card. */
+.job-face {
+    border: 2px solid var(--border-focus-hover);
+    background-color: var(--border-focus-hover);
+    color: var(--text-danger-hover);
+}
+
+/* Bank counter */
+.bank-root--fullscreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    font-family: 'Lora', serif;
+    color: var(--text-muted-hover);
+    background: radial-gradient(circle, var(--bg-dark-warm-translucent-96) 0%, var(--bg-black-translucent-96) 100%);
+}
+
+.bank-command {
+    cursor: pointer;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    border: 2px solid var(--border-primary-hover-translucent-15);
+    background: var(--bg-secondary-hover);
+    border-radius: 6px;
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: var(--text-disabled);
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.bank-command.selected {
+    border-color: var(--border-focus-hover);
+    background: var(--border-primary-hover-translucent-15);
+    color: var(--text-primary-hover);
+    box-shadow: 0 3px 6px var(--shadow-primary-hover-translucent-25);
+}
+
+.bank-tier-btn {
+    background: var(--border-focus-hover);
+    color: var(--text-danger-hover);
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 0.96rem;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* The job offers terminal root, which the OS window restyles in hypernet.css. */
+.joboffers-root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: 'Lora', serif;
+    color: var(--text-success-active);
+}
+
+/* ==========================================================================
+   The biologic simulation (js/plugins/Health/Health_BiologicSimulation.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.bio-01 {
+    justify-content: flex-start;
+}
+
+.bio-04 {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.bio-05 {
+    padding: 10px 14px;
+    margin-bottom: 10px;
+}
+
+.bio-06 {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.bio-07 {
+    color: var(--text-text-alt-17);
+}
+
+.bio-08 {
+    position: static;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.bio-09 {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    background: var(--gradient-34), var(--gradient-26);
+    padding-top: 2px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid var(--border-primary-hover-translucent-15);
+}
+
+.bio-10 {
+    justify-content: flex-end;
+    min-height: 26px;
+    margin: 0 0 6px 0;
+}
+
+.bio-11 {
+    margin-right: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bio-12 {
+    gap: 4px 14px;
+    margin-top: 10px;
+}
+
+.bio-13 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 5px;
+}
+
+.bio-14 {
+    border-bottom: 1px dashed rgba(43,18,7,0.15);
+    padding: 6px 0;
+}
+
+.bio-15 {
+    color: var(--text-settings-active);
+}
+
+.bio-16 {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.bio-17 {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--text-text-alt-18);
+}
+
+.bio-18 {
+    margin-top: 5px;
+}
+
+.bio-19 {
+    border-bottom: 1px dashed rgba(43,18,7,0.1);
+}
+
+.bio-20 {
+    padding: 6px 4px;
+    font-weight: bold;
+    font-family: 'Lora', serif;
+    color: var(--text-text-alt-16);
+}
+
+.bio-21 {
+    padding: 6px 4px;
+}
+
+.bio-22 {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+.bio-23 {
+    margin: 2px 0 0 0;
+}
+
+.bio-24 {
+    height: 4px;
+}
+
+.bio-25 {
+    padding: 6px 4px;
+    text-align: right;
+}
+
+.bio-26 {
+    padding: 10px 14px;
+}
+
+.bio-27 {
+    color: var(--text-text-alt-16);
+}
+
+.bio-28 {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+.bio-29 {
+    border-bottom: 2px solid var(--border-accent-deepest);
+    font-family: 'Lora', serif;
+    opacity: 0.85;
+}
+
+.bio-30 {
+    text-align: left;
+    padding: 4px;
+}
+
+.bio-31 {
+    text-align: right;
+    padding: 4px;
+}
+
+.bio-32 {
+    color: var(--text-muted-hover);
+}
+
+.bio-33 {
+    font-size: 13px;
+    padding: 2px 6px;
+}
+
+.bio-34 {
+    margin-bottom: 8px;
+}
+
+.bio-35 {
+    border: 0;
+    border-top: 1px dashed rgba(43,18,7,0.25);
+    margin: 8px 0;
+}
+
+.bio-36 {
+    margin: 4px 0 2px 0;
+    font-size: 15px;
+}
+
+.bio-37 {
+    height: 6px;
+    display: flex;
+}
+
+.bio-38 {
+    height: 100%;
+    border-radius: 4px 0 0 4px;
+}
+
+.bio-39 {
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    opacity: 0.85;
+}
+
+.bio-40 {
+    margin-top: 6px;
+}
+
+.bio-41 {
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.bio-42 {
+    height: 10px;
+}
+
+.bio-43 {
+    display: flex;
+    height: 10px;
+}
+
+.bio-44 {
+    height: 100%;
+}
+
+.bio-45 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.bio-46 {
+    text-align: center;
+    padding: 40px 10px;
+    color: var(--text-settings-active);
+}
+
+.bio-47 {
+    font-size: 44px;
+    margin-bottom: 10px;
+}
+
+.bio-48 {
+    font-size: 16px;
+    opacity: 0.85;
+    margin-top: 8px;
+}
+
+.bio-49 {
+    border-color: var(--border-npc-red);
+}
+
+.bio-50 {
+    font-weight: bold;
+    color: var(--text-settings-active);
+}
+
+.bio-51 {
+    margin-top: 8px;
+}
+
+.bio-52 {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.bio-53 {
+    font-size: 15px;
+    margin: 0;
+    padding: 0 4px;
+    line-height: 1.35;
+    color: var(--text-muted-hover);
+    opacity: 0.85;
+}
+
+.bio-54 {
+    text-align: center;
+    padding: 20px 10px;
+    opacity: 0.85;
+}
+
+.bio-55 {
+    font-size: 16px;
+    color: var(--text-muted-hover);
+}
+
+.bio-56 {
+    text-align: center;
+    padding: 40px 10px;
+}
+
+/* ==========================================================================
+   Plant growth (js/plugins/Farming/PlantGrowthSystem.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.plant-01 {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    transform: scale(0.75);
+    image-rendering: pixelated;
+    flex-shrink: 0;
+}
+
+.plant-02 {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.plant-03 {
+    margin-bottom: 8px;
+}
+
+.plant-04 {
+    margin-bottom: 18px;
+}
+
+.plant-05 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.plant-06 {
+    width: 110px;
+    height: 110px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    display: flex;
+}
+
+.plant-07 {
+    font-family: 'Lora', serif;
+    font-size: 1.57em;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    text-align: center;
+}
+
+.plant-08 {
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-disabled);
+}
+
+.plant-09 {
+    padding: 12px 18px;
+}
+
+.plant-10 {
+    margin-bottom: 6px;
+}
+
+.plant-11 {
+    width: 90px;
+}
+
+.plant-12 {
+    height: 14px;
+    border-radius: 7px;
+}
+
+.plant-13 {
+    background: linear-gradient(to right, var(--bg-npc-forest) 0%, var(--bg-npc-forest) 40%, var(--border-forest-green) 100%);
+}
+
+.plant-14 {
+    width: 50px;
+    font-weight: bold;
+}
+
+.plant-15 {
+    text-align: right;
+    font-family: monospace;
+    font-size: 0.856em;
+    color: var(--text-disabled);
+    margin-top: 2px;
+}
+
+.plant-16 {
+    margin-bottom: 0;
+    padding: 12px 16px;
+}
+
+.plant-17 {
+    font-weight: bold;
+}
+
+.plant-18 {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.plant-19 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.plant-20 {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    transform: scale(0.75);
+}
+
+.plant-21 {
+    margin-bottom: 20px;
+    padding: 14px 18px;
+}
+
+.plant-22 {
+    margin-bottom: 10px;
+}
+
+.plant-23 {
+    font-weight: bold;
+    color: var(--text-primary-hover);
+}
+
+.plant-24 {
+    border-color: var(--shadow-shadow-alt-5-translucent-40);
+    color: var(--text-settings-active);
+    margin-bottom: 8px;
+}
+
+.plant-25 {
+    font-size: 1.02rem;
+    margin-bottom: 4px;
+}
+
+.plant-26 {
+    font-size: 1.02rem;
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.plant-27 {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+}
+
+.plant-28 {
+    text-align: center;
+    margin: 0;
+    color: var(--text-disabled);
+    font-size: 0.928em;
+}
+
+.plant-29 {
+    background: rgba(88, 24, 13, 0.03);
+    border-style: solid;
+    border-color: var(--border-primary-hover-translucent-15);
+    padding: 10px 14px;
+}
+
+.plant-30 {
+    font-family: 'Lora', serif;
+    font-size: 0.87em;
+    color: var(--text-disabled);
+    text-align: center;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.plant-31 {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.plant-32 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.plant-33 {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.plant-34 {
+    font-size: 0.784em;
+    color: var(--text-disabled);
+}
+
+.plant-35 {
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 0.928em;
+}
+
+.plant-36 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.plant-37 {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lora', serif;
+    font-size: 0.842em;
+    color: var(--text-disabled);
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(88,24,13,0.1);
+    padding-bottom: 4px;
+}
+
+.plant-38 {
+    flex-grow: 1;
+    max-height: 410px;
+    margin-bottom: 12px;
+    padding-right: 4px;
+}
+
+.plant-39 {
+    margin-top: auto;
+}
+
+/* ==========================================================================
+   The thinker menu (js/plugins/Quest/ThinkerMenu.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.think-03 {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.think-04 {
+    font-weight: bold;
+}
+
+.think-05 {
+    font-size: 88px;
+}
+
+.think-06 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.think-07 {
+    margin-top: 24px;
+}
+
+.think-08 {
+    font-weight: bold;
+    color: var(--text-text-alt-9);
+}
+
+.think-09 {
+    color: var(--text-text-alt-8);
+}
+
+.think-10 {
+    background: rgba(160,40,40,0.18);
+    border-color: var(--border-npc-red);
+    color: var(--text-cost-bad);
+}
+
+/* ==========================================================================
+   The status sheet (js/plugins/UI/CustomSceneStatus.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.status-01 {
+    margin-right: 4px;
+}
+
+.status-02 {
+    font-weight: bold;
+}
+
+.status-03 {
+    font-weight: bold;
+    color: var(--text-primary-hover);
+}
+
+.status-04 {
+    font-size: 0.92em;
+    margin-bottom: 6px;
+}
+
+.status-05 {
+    justify-content: flex-start;
+    gap: 6px;
+}
+
+.status-06 {
+    font-size: 0.86em;
+    color: var(--text-card-medium);
+    font-style: italic;
+}
+
+.status-07 {
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+.status-08 {
+    font-weight: 600;
+    color: var(--text-primary-hover);
+}
+
+.status-09 {
+    font-size: 0.84em;
+    color: var(--text-card-medium);
+    font-style: italic;
+    padding: 4px 2px;
+}
+
+.status-10 {
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    min-height: 36px;
+    margin-top: 4px;
+}
+
+.status-12 {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.status-13 {
+    position: relative;
+}
+
+.status-14 {
+    padding: 4px 2px;
+    font-family: 'Lora',serif;
+}
+
+.status-15 {
+    display: contents;
+}
+
+.status-16 {
+    padding-top: 0;
+}
+
+.status-17 {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.status-18 {
+    text-decoration: line-through;
+    color: var(--text-blood-red);
+    font-size: 0.892em;
+    margin-right: 4px;
+}
+
+.status-19 {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    transform: scale(0.7);
+    vertical-align: middle;
+    margin-right: -4px;
+}
+
+.status-20 {
+    vertical-align: middle;
+}
+
+.status-21 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.status-22 {
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    font-size: 0.942em;
+}
+
+.status-23 {
+    color: var(--text-card-medium);
+    font-size: 0.856em;
+    white-space: nowrap;
+}
+
+.status-24 {
+    color: var(--text-card-medium);
+    font-size: 0.856em;
+}
+
+.status-25 {
+    font-family: 'Lora', serif;
+    text-align: center;
+    color: var(--text-card-medium);
+    padding: 12px;
+    font-size: 0.892em;
+}
+
+/* ==========================================================================
+   Save and gravestone panels (js/plugins/Core/SaveSystem.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.save-01 {
+    width: 57.5%;
+    padding: 35px 50px 35px 45px;
+}
+
+.save-04 {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.save-05 {
+    width: 42.5%;
+    padding: 35px 45px 35px 50px;
+}
+
+.save-06 {
+    display: none;
+}
+
+.save-07 {
+    border: 1px dashed rgba(255,204,102,0.35);
+    background: rgba(60,42,0,0.25);
+    padding: 10px 14px;
+    margin-bottom: 15px;
+    font-family: 'Lora', serif;
+}
+
+.save-08 {
+    margin: 0 0 6px 0;
+    color: var(--accent-orange);
+    border-bottom: 1px dashed rgba(255,204,102,0.25);
+    padding-bottom: 3px;
+}
+
+.save-09 {
+    width: 100%;
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    color: var(--text-text-alt-13);
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+.save-10 {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.save-11 {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.save-12 {
+    margin: 15px 0 5px 0;
+    font-family: 'Lora', serif;
+    color: var(--accent-orange);
+    border-bottom: 1px dashed rgba(255,204,102,0.25);
+    padding-bottom: 3px;
+}
+
+.save-13 {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+}
+
+.save-14 {
+    min-width: 90px;
+    cursor: pointer;
+}
+
+.save-15 {
+    min-width: 90px;
+    cursor: pointer;
+    background: var(--bg-npc-forest);
+    border-color: rgba(46, 125, 50, 0.4);
+    color: var(--text-warning-hover);
+}
+
+.save-16 {
+    min-width: 90px;
+    cursor: pointer;
+    background: rgba(130, 45, 45, 0.85);
+    color: var(--text-warning-hover);
+    border-color: var(--shadow-shadow-alt-5-translucent-40);
+}
+
+.save-17 {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.save-18 {
+    min-width: 140px;
+    cursor: pointer;
+}
+
+.save-19 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.save-20 {
+    width: 100%;
+}
+
+.save-21 {
+    font-family: 'Lora', serif;
+    font-size: 0.964em;
+    color: var(--text-text-alt-13);
+    background: rgba(40,28,8,0.5);
+    border: 1px dashed rgba(255,204,102,0.35);
+    padding: 25px;
+    border-radius: 4px;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 80%;
+}
+
+/* ==========================================================================
+   The estate agent (js/plugins/Economy/RealEstateMarket.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.estate-01 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.estate-02 {
+    font-family: 'Lora', serif;
+    font-size: 0.952rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.estate-03 {
+    font-size: 1.08rem;
+    color: var(--text-primary-hover);
+}
+
+.estate-04 {
+    justify-content: center;
+    padding: 40px 10px;
+    flex: 1;
+}
+
+.estate-05 {
+    font-size: 0.952rem;
+}
+
+.estate-06 {
+    font-size: 1.57em;
+}
+
+.estate-07 {
+    margin-top: 10px;
+}
+
+.estate-08 {
+    margin-top: 16px;
+}
+
+.estate-09 {
+    align-items: center;
+}
+
+.estate-10 {
+    color: var(--text-success-active);
+}
+
+.estate-11 {
+    align-items: flex-end;
+}
+
+.estate-12 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.estate-13 {
+    font-size: 0.878rem;
+    color: var(--text-text-alt-4);
+}
+
+/* ==========================================================================
+   Fast travel (js/plugins/Vehicle/FastTravelSystem.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.travel-01 {
+    font-weight: bold;
+    color: var(--accent-orange);
+}
+
+.travel-02 {
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1.5px dashed var(--bg-focus-hover-translucent-15);
+}
+
+.travel-03 {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.travel-04 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.travel-05 {
+    font-weight: bold;
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+}
+
+.travel-06 {
+    font-size: 0.96rem;
+    opacity: 0.85;
+}
+
+.travel-07 {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    animation: fade-in 0.25s ease-out;
+}
+
+.travel-08 {
+    font-family: 'Lora', serif;
+    font-size: 1.61rem;
+    color: var(--accent-orange);
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border-bottom: 1.5px dashed rgba(255, 204, 102, 0.15);
+    padding-bottom: 8px;
+}
+
+.travel-09 {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 5px;
+}
+
+.travel-10 {
+    font-size: 1.15rem;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--bg-focus-hover-translucent-15);
+    display: flex;
+}
+
+.travel-11 {
+    font-weight: bold;
+    color: var(--text-settings-arrow-active);
+}
+
+.travel-12 {
+    color: var(--text-success-active);
+}
+
+.travel-13 {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1.5px dashed var(--bg-focus-hover-translucent-15);
+}
+
+/* ==========================================================================
+   The main menu and its Dynamics hub (js/plugins/UI/CustomMainMenuLayout.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.mainmenu-01 {
+    width: 100%;
+}
+
+.mainmenu-02 {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    transform: scale(0.85);
+}
+
+.mainmenu-03 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.mainmenu-04 {
+    font-size: 0.798em;
+}
+
+.mainmenu-05 {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.mainmenu-06 {
+    flex: 1;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.mainmenu-07 {
+    flex: 1;
+}
+
+.mainmenu-08 {
+    flex: 1;
+    color: var(--text-settings-active);
+}
+
+.mainmenu-09 {
+    flex: 1;
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.mainmenu-10 {
+    margin-bottom: 16px;
+    border-bottom: 1px dashed var(--border-subtle-translucent-25);
+    padding-bottom: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.mainmenu-11 {
+    font-family: 'Lora',serif;
+    font-size: 1.048em;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.mainmenu-12 {
+    font-size: 0.842em;
+    font-weight: normal;
+    color: var(--text-text-alt-4);
+    margin-left: 6px;
+}
+
+.mainmenu-13 {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.mainmenu-14 {
+    opacity: 0.6;
+    margin-top: 24px;
+    font-family: 'Lora',serif;
+}
+
+.mainmenu-15 {
+    font-size: 0.842em;
+    color: var(--text-text-alt-4);
+    margin-top: 4px;
+}
+
+.mainmenu-16 {
+    font-size: 0.842em;
+    color: var(--text-text-alt-4);
+    margin-bottom: 6px;
+}
+
+.mainmenu-17 {
+    opacity: 0.6;
+    font-family: 'Lora',serif;
+}
+
+.mainmenu-18 {
+    margin-top: 18px;
+}
+
+.mainmenu-19 {
+    flex: 0 0 auto;
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.mainmenu-20 {
+    flex: 0 0 auto;
+}
+
+.mainmenu-21 {
+    flex: 0 0 auto;
+    font-family: 'Lora',serif;
+    font-size: 1.285em;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    width: 24px;
+    text-align: center;
+}
+
+.mainmenu-22 {
+    font-size: 0.842em;
+    color: var(--text-text-alt-4);
+    margin-top: 8px;
+}
+
+.mainmenu-23 {
+    margin-bottom: 12px;
+    border-bottom: 1px dashed var(--border-subtle-translucent-25);
+    padding-bottom: 10px;
+}
+
+.mainmenu-24 {
+    font-family: 'Lora',serif;
+    font-size: 1.019em;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+}
+
+.mainmenu-25 {
+    color: var(--text-settings-active);
+}
+
+.mainmenu-26 {
+    font-size: 0.842em;
+    font-weight: normal;
+    margin-left: 6px;
+}
+
+.mainmenu-27 {
+    font-size: 0.856em;
+    color: var(--text-text-alt-4);
+}
+
+.mainmenu-28 {
+    font-size: 0.842em;
+    color: var(--text-text-alt-4);
+}
+
+.mainmenu-29 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.mainmenu-30 {
+    margin-bottom: 20px;
+}
+
+.mainmenu-31 {
+    font-family: 'Lora', serif;
+    font-size: 2.14em;
+    color: var(--text-primary-hover);
+    border-bottom: 2px dashed var(--border-success);
+    padding-bottom: 8px;
+    margin: 0;
+}
+
+.mainmenu-32 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mainmenu-33 {
+    flex: 2;
+    min-width: 0;
+}
+
+.mainmenu-34 {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.mainmenu-35 {
+    font-size: 0.842em;
+    color: var(--text-text-alt-4);
+    margin-bottom: 4px;
+}
+
+.mainmenu-36 {
+    font-size: 0.856em;
+    color: var(--text-secondary-active);
+    margin-bottom: 4px;
+}
+
+.mainmenu-37 {
+    font-size: 0.856em;
+    color: var(--text-text-alt-18);
+    margin-bottom: 4px;
+}
+
+.mainmenu-38 {
+    font-family: 'Lora',serif;
+    font-size: 1.048em;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.mainmenu-39 {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.mainmenu-40 {
+    font-family: 'Lora',serif;
+    font-size: 1.142em;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    margin: 10px 0 8px;
+    border-bottom: 2px solid rgba(74,39,17,0.35);
+}
+
+.mainmenu-41 {
+    font-family: 'Lora',serif;
+    font-size: 0.856em;
+    color: var(--text-text-alt-4);
+    margin-bottom: 6px;
+}
+
+.mainmenu-42 {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mainmenu-43 {
+    margin-bottom: 12px;
+    font-family: 'Lora',serif;
+}
+
+.mainmenu-44 {
+    font-family: 'Lora', serif;
+    color: var(--text-text-alt-7);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.mainmenu-45 {
+    background: rgba(88, 24, 13, 0.04);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: inset 0 0 10px var(--shadow-primary-hover-translucent-5);
+}
+
+.mainmenu-46 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+    padding-bottom: 4px;
+    font-size: 0.928em;
+}
+
+.mainmenu-47 {
+    font-weight: bold;
+    color: var(--text-primary-hover);
+}
+
+.mainmenu-48 {
+    position: relative;
+    width: 100%;
+    border: 3px double var(--border-danger-dark);
+    border-radius: 6px;
+    box-shadow: 0 4px 15px var(--shadow-black-translucent-15);
+    overflow: hidden;
+    background: var(--bg-panel);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 4 / 3;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.mainmenu-49 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.12) contrast(1.02);
+}
+
+.mainmenu-50 {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--bg-overlay-hover);
+    border: 2px solid var(--border-white-strong);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    transform: translate(-50%, -50%);
+    animation: dndPulse 1.8s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   Sandbox mode (js/plugins/Debug/SandboxMode.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.sandbox-01 {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.sandbox-02 {
+    margin-bottom: 15px;
+}
+
+.sandbox-04 {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sandbox-05 {
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-text-alt-2);
+    background: var(--bg-subtle-translucent-10);
+    border: 1px dashed var(--border-focus-hover);
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.sandbox-06 {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.sandbox-07 {
+    font-family: 'Lora', serif;
+    font-size: 2.9em;
+    color: var(--text-gold-dark);
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.sandbox-08 {
+    padding: 12px 14px;
+    background: rgba(184, 134, 11, 0.05);
+    border: 1px solid rgba(184,134,11,0.15);
+    border-radius: 4px;
+    margin-top: auto;
+}
+
+.sandbox-09 {
+    margin: 0 0 8px 0;
+    font-family: 'Lora', serif;
+    font-size: 1.048em;
+    color: var(--text-gold-dark);
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+    padding-bottom: 4px;
+}
+
+.sandbox-10 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    color: var(--text-text-alt-2);
+}
+
+.sandbox-11 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sandbox-12 {
+    font-weight: bold;
+}
+
+.sandbox-13 {
+    font-weight: bold;
+    color: var(--text-gold-dark);
+}
+
+.sandbox-14 {
+    padding: 10px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    min-height: 62px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    border: 1px solid var(--border-primary-hover-translucent-10);
+}
+
+.sandbox-15 {
+    display: block;
+    image-rendering: pixelated;
+    flex: 0 0 auto;
+}
+
+.sandbox-16 {
+    font-family: 'Lora', serif;
+    font-size: 0.856em;
+    line-height: 1.25;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    overflow-wrap: anywhere;
+}
+
+.sandbox-17 {
+    margin-bottom: 12px;
+}
+
+.sandbox-18 {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 4px;
+    border-bottom: 1px solid rgba(88,24,13,0.08);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.sandbox-19 {
+    padding: 10px 12px;
+    background: rgba(88, 24, 13, 0.04);
+    border: 1px solid rgba(88,24,13,0.08);
+    border-radius: 4px;
+    margin-top: auto;
+}
+
+.sandbox-20 {
+    margin: 0 0 6px 0;
+    font-family: 'Lora', serif;
+    font-size: 0.964em;
+    color: var(--text-primary-hover);
+    border-bottom: 1px solid rgba(88,24,13,0.12);
+    padding-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sandbox-21 {
+    font-size: 0.82em;
+    cursor: pointer;
+    font-weight: bold;
+    border: 1px solid currentColor;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.sandbox-22 {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: 'Lora', serif;
+    font-size: 0.856em;
+    color: var(--text-text-alt-2);
+}
+
+.sandbox-23 {
+    display: flex;
+    height: 100%;
+}
+
+.sandbox-24 {
+    margin-bottom: 12px;
+}
+
+.sandbox-25 {
+    padding: 0 4px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.sandbox-26 {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.sandbox-27 {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Lora', serif;
+    font-size: 0.964em;
+    color: var(--text-card-medium);
+}
+
+.sandbox-28 {
+    padding: 8px 12px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.sandbox-29 {
+    font-family: 'Lora', serif;
+    font-size: 0.914em;
+    color: var(--text-text-alt-2);
+    font-weight: 500;
+}
+
+.sandbox-30 {
+    font-family: 'Lora', serif;
+    font-size: 0.82em;
+    color: var(--text-gold-dark);
+}
+
+.sandbox-31 {
+    text-align: center;
+    padding: 12px 20px;
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    color: var(--text-card-medium);
+}
+
+.sandbox-32 {
+    width: 14px;
+    flex: 0 0 14px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.856em;
+    color: var(--text-gold-dark);
+    user-select: none;
+}
+
+.sandbox-33 {
+    width: 14px;
+    flex: 0 0 14px;
+    text-align: center;
+    font-size: 0.784em;
+    color: var(--text-card-medium);
+}
+
+.sandbox-34 {
+    font-family: 'Lora', serif;
+    font-size: 0.798em;
+    color: var(--text-card-medium);
+    margin-left: 6px;
+}
+
+.sandbox-35 {
+    font-family: 'Lora', serif;
+    font-size: 0.798em;
+    color: var(--text-gold-dark);
+}
+
+.sandbox-36 {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.sandbox-37 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.sandbox-38 {
+    font-family: 'Lora', serif;
+    font-size: 0.914em;
+    color: var(--text-text-alt-2);
+}
+
+.sandbox-39 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 18px;
+}
+
+.sandbox-40 {
+    font-family: 'Lora', serif;
+    font-size: 2.9em;
+    color: var(--text-gold-dark);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.sandbox-41 {
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-card-medium);
+}
+
+.sandbox-42 {
+    font-family: 'Lora', serif;
+    font-size: 1.475em;
+    line-height: 1.4;
+    color: var(--text-text-alt-2);
+    max-width: 70%;
+    background: var(--bg-subtle-translucent-10);
+    border: 1px dashed var(--border-focus-hover);
+    border-radius: 4px;
+    padding: 18px 24px;
+}
+
+.sandbox-43 {
+    font-family: 'Lora', serif;
+    font-size: 1.048em;
+    font-weight: bold;
+    color: var(--text-gold-dark);
+}
+
+.sandbox-44 {
+    font-family: 'Lora', serif;
+    font-size: 0.856em;
+    color: var(--text-card-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.sandbox-45 {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    background: var(--bg-white-translucent-25);
+    border: 1px solid var(--border-focus-hover);
+    border-radius: 4px;
+    font-family: 'Lora', serif;
+    font-size: 0.914em;
+    color: var(--text-text-alt-2);
+    outline: none;
+}
+
+/* ==========================================================================
+   The augments register (js/plugins/Health/PartyAugmentsMenu.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.augment-01 {
+    position: relative;
+}
+
+.augment-02 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 6px 0 10px;
+}
+
+.augment-03 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    color: var(--text-card-medium);
+}
+
+.augment-04 {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    color: var(--text-card-medium);
+}
+
+.augment-05 {
+    font-family: 'Lora',serif;
+    font-size: 0.952rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.augment-06 {
+    opacity: 0.6;
+    padding: 14px 10px;
+    font-family: 'Lora',serif;
+}
+
+.augment-07 {
+    font-size: 0.83rem;
+    color: var(--text-text-alt-17);
+}
+
+.augment-08 {
+    font-size: 0.878rem;
+    opacity: 0.7;
+}
+
+.augment-09 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.augment-10 {
+    display: flex;
+    flex-direction: column;
+}
+
+.augment-11 {
+    font-family: 'Lora',serif;
+}
+
+.augment-12 {
+    opacity: 0.6;
+    margin: 20px;
+}
+
+.augment-13 {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+}
+
+.augment-14 {
+    color: var(--text-secondary-active);
+    font-weight: bold;
+}
+
+.augment-15 {
+    opacity: 0.7;
+}
+
+.augment-16 {
+    margin-top: 4px;
+    color: var(--text-secondary-active);
+}
+
+.augment-17 {
+    margin-top: 6px;
+}
+
+.augment-18 {
+    font-weight: bold;
+    color: var(--text-secondary-active);
+}
+
+.augment-19 {
+    opacity: 0.85;
+    font-size: 0.984rem;
+    line-height: 1.4;
+}
+
+.augment-20 {
+    opacity: 0.7;
+    font-size: 0.878rem;
+    margin-top: 2px;
+}
+
+.augment-21 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.augment-22 {
+    padding: 1px 6px;
+    border-radius: 9px;
+    font-size: 0.878rem;
+    color: var(--text-card-medium);
+    border: 1px solid var(--border-secondary-hover-translucent-15);
+}
+
+.augment-23 {
+    margin-top: 18px;
+}
+
+.augment-24 {
+    font-weight: bold;
+    color: var(--text-secondary-active);
+    border-bottom: 1px dashed var(--border-secondary-hover-translucent-15);
+    margin-bottom: 4px;
+}
+
+.augment-25 {
+    font-size: 0.952rem;
+    color: var(--text-text-alt-17);
+    margin-top: 4px;
+}
+
+.augment-26 {
+    font-size: 0.915rem;
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+.augment-27 {
+    padding: 24px;
+    font-family: 'Lora',serif;
+}
+
+.augment-28 {
+    color: var(--text-secondary-active);
+    margin: 0 0 4px;
+}
+
+/* ==========================================================================
+   The specialization menu (js/plugins/UI/SpecializationMenu.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.spec-01 {
+    position: relative;
+}
+
+.spec-02 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 0 10px;
+}
+
+.spec-03 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.spec-04 {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    min-height: 26px;
+    margin-bottom: 8px;
+}
+
+.spec-05 {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.spec-06 {
+    display: flex;
+    gap: 3px;
+}
+
+.spec-07 {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1.5px solid var(--text-secondary-active);
+}
+
+.spec-08 {
+    font-family: 'Lora',serif;
+    font-size: 0.952rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.spec-09 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.spec-10 {
+    font-family: 'Lora',serif;
+}
+
+.spec-11 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.spec-12 {
+    font-size: 0.854rem;
+    opacity: 0.7;
+}
+
+.spec-13 {
+    font-family: 'Lora',serif;
+    font-weight: bold;
+    padding: 8px 10px 4px;
+    border-bottom: 1px dashed var(--border-secondary-hover-translucent-15);
+}
+
+.spec-14 {
+    opacity: 0.6;
+    padding: 8px 10px;
+    font-family: 'Lora',serif;
+}
+
+.spec-15 {
+    opacity: 0.6;
+    margin: 20px;
+}
+
+.spec-16 {
+    margin-top: 10px;
+}
+
+.spec-17 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.915rem;
+    opacity: 0.8;
+}
+
+.spec-18 {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-card-translucent-5);
+    border: 1px solid var(--border-secondary-hover-translucent-15);
+    overflow: hidden;
+}
+
+.spec-19 {
+    height: 100%;
+    background: var(--text-secondary-active);
+}
+
+.spec-20 {
+    font-size: 0.878rem;
+    opacity: 0.7;
+    margin-top: 3px;
+}
+
+.spec-21 {
+    margin-top: 10px;
+    font-size: 0.915rem;
+    opacity: 0.7;
+}
+
+.spec-22 {
+    margin-top: 14px;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background: var(--bg-card-translucent-5);
+    border: 1px solid var(--border-secondary-hover-translucent-15);
+}
+
+.spec-23 {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.spec-24 {
+    opacity: 0.85;
+}
+
+.spec-25 {
+    opacity: 0.7;
+    font-size: 0.915rem;
+    margin-top: 4px;
+}
+
+.spec-26 {
+    padding: 24px;
+    font-family: 'Lora',serif;
+}
+
+.spec-27 {
+    color: var(--text-secondary-active);
+    margin: 0 0 4px;
+}
+
+.spec-28 {
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+.spec-29 {
+    margin: 8px 0 0;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.spec-30 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0 0;
+}
+
+.spec-31 {
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   Army recruitment (js/plugins/Army/ArmyManager.js)
+
+   Lifted out of the plugin, which used to paint these inline in one
+   preset's palette. Every colour is a theme token now, so both presets
+   (and any future one) reach the whole menu.
+   ========================================================================== */
+
+.army-01 {
+    display: inline-block;
+    vertical-align: middle;
+    ` +
+    `background-image: url('img/system/IconSet.png');
+    image-rendering: pixelated;
+    flex-shrink: 0;
+}
+
+.army-02 {
+    text-align: right;
+    font-weight: bold;
+}
+
+.army-03 {
+    text-align: center;
+    color: var(--text-card-medium);
+}
+
+.army-04 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+}
+
+.army-05 {
+    font-size: 0.892em;
+    font-family: 'Lora', serif;
+    color: var(--text-card-medium);
+}
+
+.army-06 {
+    text-align: center;
+    color: var(--text-card-medium);
+    font-size: 0.928em;
+    padding-top: 40px;
+}
+
+.army-07 {
+    margin-bottom: 6px;
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    color: var(--text-text-alt-17);
+    font-weight: bold;
+    text-align: center;
+}
+
+.army-08 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+    padding: 4px 0;
+}
+
+.army-09 {
+    font-weight: bold;
+    font-family: 'Lora', serif;
+    color: var(--text-primary-hover);
+    font-size: 0.964em;
+}
+
+.army-10 {
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    font-weight: bold;
+    color: var(--text-muted-hover);
+}
+
+.army-11 {
+    margin-top: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+.army-12 {
+    margin: 0 0 4px 0;
+    font-family: 'Lora', serif;
+    color: var(--text-primary-hover);
+    font-size: 1.142em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.army-13 {
+    font-size: 0.87em;
+    color: var(--text-card-medium);
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.army-14 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 16px;
+}
+
+.army-15 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    font-family: 'Lora', serif;
+    font-size: 0.87em;
+}
+
+.army-16 {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.856em;
+    color: var(--accent-red-2);
+    font-weight: bold;
+}
+
+.army-17 {
+    text-align: center;
+    color: var(--text-card-medium);
+    font-size: 0.914em;
+    min-height: 140px;
+}
+
+.army-18 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.army-19 {
+    background: var(--bg-primary-hover-translucent-35);
+    margin-bottom: 12px;
+}
+
+.army-20 {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    color: var(--text-muted-hover);
+    margin-bottom: 4px;
+}
+
+.army-21 {
+    font-weight: bold;
+}
+
+.army-22 {
+    font-weight: bold;
+    color: var(--text-cost-bad);
+}
+
+.army-23 {
+    font-family: 'Lora', serif;
+    font-size: 0.87em;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+}
+
+.army-24 {
+    margin-bottom: 12px;
+}
+
+.army-25 {
+    padding: 8px 12px;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.army-26 {
+    margin: 0 0 4px 0;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-primary-hover);
+    border-bottom: 1px solid var(--border-primary-hover-translucent-15);
+    padding-bottom: 3px;
+    font-weight: bold;
+}
+
+.army-27 {
+    text-align: right;
+}
+
+.army-28 {
+    font-family: 'Lora', serif;
+    font-size: 0.856em;
+    color: var(--text-card-medium);
+    text-align: center;
+    border-top: 1px dashed var(--border-primary-hover-translucent-15);
+    padding-top: 6px;
+    margin-top: auto;
+    margin-bottom: 0;
+}
+
+.army-29 {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.army-30 {
+    max-height: 210px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.army-31 {
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    color: var(--text-primary-hover);
+    background: var(--bg-primary-hover-translucent-35);
+    border: 1px dashed var(--text-primary-hover);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    text-align: justify;
+}
+
+.army-32 {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-muted-hover);
+    margin-bottom: 4px;
+}
+
+.army-33 {
+    font-weight: bold;
+    color: var(--text-cost-ok);
+}
+
+.army-34 {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lora', serif;
+    font-size: 0.928em;
+    color: var(--text-muted-hover);
+}
+
+.army-35 {
+    display: flex;
+    height: 100%;
+}
+
+.army-36 {
+    margin-bottom: 6px;
+}
+
+.army-37 {
+    font-family: 'Lora', serif;
+    font-size: 0.842em;
+    color: var(--text-card-medium);
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.army-38 {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-top: 0;
+}
+
+.army-39 {
+    text-align: center;
+    color: var(--text-card-medium);
+    padding-top: 40px;
+}
+
+.army-40 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.army-41 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.army-42 {
+    min-width: 0;
+}
+
+.army-43 {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.army-44 {
+    font-size: 0.82em;
+    color: var(--text-card-medium);
+}
+
+.army-45 {
+    font-size: 1em;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.army-46 {
+    text-align: center;
+    color: var(--text-card-medium);
+    font-size: 0.928em;
+    min-height: 140px;
+}
+
+.army-47 {
+    margin-top: 15px;
+    animation: fadeIn 0.25s ease;
+}
+
+.army-48 {
+    margin: 0 0 2px 0;
+    font-family: 'Lora', serif;
+    color: var(--text-primary-hover);
+    font-size: 1.142em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.army-49 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+}
+
+.army-50 {
+    color: var(--text-primary-hover);
+}
+
+.army-51 {
+    color: var(--text-text-alt-17);
+}
+
+.army-52 {
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    padding: 8px;
+    border: 1px dashed var(--accent-gold-2);
+    background: var(--bg-primary-hover-translucent-35);
+    border-radius: 4px;
+    margin-top: 10px;
+    color: var(--text-primary-hover);
+    animation: fadeIn 0.2s ease;
+}
+
+.army-53 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+}
+
+.army-54 {
+    font-size: 0.87em;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    color: var(--text-text-alt-17);
+}
+
+.army-55 {
+    font-size: 0.856em;
+    color: var(--text-disabled);
+}
+
+.army-56 {
+    font-family: 'Lora', serif;
+    font-weight: bold;
+}
+
+.army-57 {
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.army-58 {
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Needs gauges. window.NeedGauge (js/plugins/Core/TimeDateSystem.js) hands
+   back one of the three band classes; put it on the number and on the bar
+   fill, next to .gauge-ink and .gauge-fill, and the colour comes from here.
+   Three plugins used to carry the same thresholds and the same three hexes
+   between them: the status sheet, the menu's survival cards and the biologic
+   panel. */
+.gauge-band--bad  { --gauge-ink: var(--gauge-bad); }
+.gauge-band--warn { --gauge-ink: var(--gauge-warn); }
+.gauge-band--ok   { --gauge-ink: var(--gauge-ok); }
+
+/* Paired with the band class on purpose: the per-need gradients above
+   (.status-gauge-bar-inner.hunger and friends) are two classes deep, and the
+   band has to beat them the way the inline colour used to. */
+.gauge-ink.gauge-band--bad,
+.gauge-ink.gauge-band--warn,
+.gauge-ink.gauge-band--ok { color: var(--gauge-ink); }
+
+.gauge-fill.gauge-band--bad,
+.gauge-fill.gauge-band--warn,
+.gauge-fill.gauge-band--ok { background: var(--gauge-ink); }
+
+/* EEG bands on the biologic panel. The band names the class; the colour is
+   the theme's (js/plugins/Health/Health_BiologicSimulation.js). */
+.eeg-band--gamma { background-color: var(--faction-rep-nemesis); }
+.eeg-band--beta  { background-color: var(--accent-amber-gold); }
+.eeg-band--alpha { background-color: var(--text-text-alt-18); }
+.eeg-band--theta { background-color: var(--text-info-blue); }
+.eeg-band--delta { background-color: var(--text-text-alt-8); }
+
+/* The morality ladder on the status sheet (js/plugins/UI/CustomSceneStatus.js). */
+.morality--wicked  { color: var(--faction-accord-hostile); }
+.morality--neutral { color: var(--border-focus-hover); }
+.morality--upright { color: var(--faction-accord-allied); }
+
+/* Companion roster states in the menu's history page
+   (js/plugins/UI/CustomMainMenuLayout.js). */
+.roster--active  { color: var(--faction-rep-revered); }
+.roster--retired { color: var(--text-card-medium); }
+.roster--left    { color: var(--text-card-medium); }
+.roster--died    { color: var(--text-npc-red); }
+
+/* The sprite the character picker is currently on. */
+.sprite-frame--picked { border-color: var(--border-subtle); }
+
+/* Item rarity. window.ItemSystemUtils.rarityClass hands back one of these;
+   put it on the name and the tier colour comes from the theme's --rarity-*
+   ladder. This replaces the inline colorCode the crafting menus used to
+   stamp, which the two presets had to undo with [style*="#FF8000"] attribute
+   selectors. !important because both presets force those name classes to a
+   flat colour for readability, and the tier has to win. */
+.rarity--common    { color: var(--rarity-common) !important; }
+.rarity--uncommon  { color: var(--rarity-uncommon) !important; }
+.rarity--rare      { color: var(--rarity-rare) !important; }
+.rarity--epic      { color: var(--rarity-epic) !important; }
+.rarity--legendary { color: var(--rarity-legendary) !important; }
+
+/* The forge's preview medallion takes the tier on its ring, not its ink. */
+.rarity-ring {
+    border: 2.5px solid currentColor;
+}
+
+.rarity-name {
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   Hardcore game over (js/plugins/Core/SaveSystem.js)
+
+   The gravestone screen the permadeath run ends on. It used to inject this
+   whole sheet as a <style> tag next to its own markup, in one palette; here
+   it reads the theme like everything else. The plugin still pins the
+   container's geometry inline, on purpose, so no other stylesheet can
+   collapse the overlay into the top-left corner.
+   ========================================================================== */
+
+#hardcore-gameover-container {
+    background: radial-gradient(ellipse at center, var(--bg-danger-translucent-55) 0%, var(--bg-black-translucent-92) 70%, var(--bg-backdrop-black) 100%);
+    font-family: 'Lora', 'Times New Roman', serif;
+    color: var(--hgo-ink);
+    opacity: 0;
+    animation: hgo-fade 1.6s ease forwards;
+    user-select: none;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+@keyframes hgo-fade { to { opacity: 1; } }
+
+#hardcore-gameover-container .hgo-panel {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(16px, 4vh, 48px) clamp(16px, 6vw, 80px);
+    box-sizing: border-box;
+}
+
+#hardcore-gameover-container .hgo-title {
+    font-size: clamp(48px, 11vmin, 128px);
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    color: var(--text-danger-dark);
+    margin: 0 0 clamp(4px, 1vh, 12px) 0;
+    text-shadow: 0 0 18px var(--shadow-danger-dark-65), 0 2px 4px var(--bg-backdrop-black);
+}
+
+#hardcore-gameover-container .hgo-epitaph {
+    font-size: clamp(16px, 3vmin, 28px);
+    color: var(--hgo-ink-muted);
+    margin-bottom: clamp(16px, 4vh, 40px);
+}
+
+#hardcore-gameover-container .hgo-em {
+    font-size: clamp(15px, 2.6vmin, 24px);
+    color: var(--hgo-ink-eldritch);
+    letter-spacing: 0.03em;
+    margin: calc(-1 * clamp(8px, 2vh, 20px)) 0 clamp(16px, 4vh, 40px) 0;
+    text-shadow: 0 0 12px var(--shadow-eldritch-55), 0 2px 4px var(--bg-backdrop-black);
+    animation: hgo-em-pulse 3.4s ease-in-out infinite;
+}
+
+@keyframes hgo-em-pulse {
+    0%, 100% { opacity: 0.72; }
+    50%      { opacity: 1; }
+}
+
+#hardcore-gameover-container .hgo-stats {
+    border-top: 1px solid var(--hgo-rule);
+    border-bottom: 1px solid var(--hgo-rule);
+    padding: clamp(12px, 2.5vh, 26px) 8px;
+    margin: 0 auto clamp(20px, 5vh, 46px) auto;
+    width: 100%;
+    max-width: min(620px, 70vw);
+}
+
+#hardcore-gameover-container .hgo-stat-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    font-size: clamp(14px, 2.2vmin, 22px);
+    margin: 6px 0;
+}
+
+#hardcore-gameover-container .hgo-stat-label { white-space: nowrap; color: var(--hgo-ink); }
+#hardcore-gameover-container .hgo-stat-value { white-space: nowrap; color: var(--hgo-ink-strong); font-weight: bold; }
+#hardcore-gameover-container .hgo-stat-dots { display: none; }
+
+#hardcore-gameover-container .hgo-button {
+    display: inline-block;
+    font-family: 'Lora', serif;
+    font-size: clamp(14px, 2.2vmin, 22px);
+    background: var(--hgo-button-bg);
+    color: var(--text-danger-hover);
+    padding: 0.6em 1.6em;
+    border: 1.5px solid var(--border-danger-dark);
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#hardcore-gameover-container .hgo-button:hover {
+    background: var(--hgo-button-bg-hover);
+    box-shadow: 0 0 14px var(--shadow-danger-dark-60);
+}
+
+/* Crop plot and seed rack (js/plugins/Farming/PlantGrowthSystem.js). */
+.crop--ready   { color: var(--faction-rep-revered); }
+.crop--growing { color: var(--text-primary-hover); }
+.crop--dormant { color: var(--faction-accord-hostile); }
+
+.seed-dot--in-season     { background: var(--faction-rep-revered); }
+.seed-dot--out-of-season { background: var(--text-text-alt-12); }
+
+/* The bank counter's shell. hypernet.css restyles the same element to XP
+   chrome under #bank-system-content when the OS window is hosting it. */
+.bank-root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: 'Lora', serif;
+    color: var(--text-success-active);
+}
+
+
+/* ---------------------------------------------------------------------------
+   The garage (main menu, Vehicles page)
+   The selected vehicle stands on the right page as a live 3D model. The stand
+   is a plinth in the same parchment the rest of the spread is drawn on; the
+   canvas fills it and keeps a wide, shallow frame, which is the shape every
+   vehicle in the game reads best in.
+   --------------------------------------------------------------------------- */
+.garage-stand {
+    background: rgba(88, 24, 13, 0.04);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 12px;
+    box-shadow: inset 0 0 10px var(--shadow-primary-hover-translucent-5);
+}
+
+.garage-canvas {
+    display: block;
+    width: 100%;
+    height: 220px;
+    border-radius: 4px;
+}
+
+/* The row on the left page whose vehicle is the one on the stand. */
+.npc-dynamics-member.garage-shown {
+    border-color: var(--border-gold-amber);
+    box-shadow: inset 0 0 12px var(--shadow-primary-hover-translucent-5);
+}
+
+
+/* ---------------------------------------------------------------------------
+   The landing-site picker's two ways down
+   "Land here" sets the ship on the world; "Liminal walk" opens the 3D world on
+   it. Whichever is armed is what clicking a square does, so the buttons have to
+   read as a choice already made rather than as two things to press.
+   --------------------------------------------------------------------------- */
+#gx-landing-grid .gx-lg-mode {
+    opacity: 0.55;
+}
+
+#gx-landing-grid .gx-lg-mode.is-on {
+    opacity: 1;
+    border-color: var(--border-gold-amber);
+    box-shadow: inset 0 0 10px var(--shadow-primary-hover-translucent-5);
 }

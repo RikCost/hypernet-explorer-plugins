@@ -226,5 +226,15 @@
   "ideology.nationalist": "Nationalist",
   "ideology.petrocratic_absolutism": "Petrocratic Absolutism",
   "ideology.continental_expansionism": "Continental Expansionism",
-  "ideology.steppe_illuminism": "Steppe Illuminism"
+  "ideology.steppe_illuminism": "Steppe Illuminism",
+  "ideology.militant_pacifism": "Militant Pacifism",
+  "ideology.free_software": "Free Software",
+  "ideology.commons_reformer": "Commons Reformer",
+  "ideology.cypherpunk": "Cypherpunk",
+  "ideology.monetarist": "Monetarist",
+  "ideology.austrian_liberal": "Austrian Liberal",
+  "ideology.keynesian": "Keynesian",
+  "ideology.industrial_capitalist": "Industrial Capitalist",
+  "ideology.hermetic_immortal": "Hermetic Immortal",
+  "ideology.divine_sovereign": "Divine Sovereign"
 }

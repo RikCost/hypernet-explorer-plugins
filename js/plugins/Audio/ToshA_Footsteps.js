@@ -874,4 +874,57 @@
         }
     };
 
+
+    // =========================================================================
+    // window.Footsteps
+    // =========================================================================
+    // The step-sound table, for anything that is NOT walking a 2D map. The 3D
+    // world (VoxelWorld/*) has no tiles, no region ids and no terrain tags: it
+    // has a voxel under the walker's foot and a material name for it. It should
+    // still SOUND like this game, so it asks here rather than inventing a
+    // second set of footsteps, and every material added to
+    // js/db/WorldGen/FootstepMaterials.json is heard out there too.
+    //
+    //   Footsteps.materials()             the material names that carry a sound
+    //   Footsteps.play(material, opts)    one step on it; opts: { volume, pan }
+    //
+    // Volume goes through the same footsteps slider the 2D steps do, so turning
+    // them down turns them down everywhere.
+    window.Footsteps = {
+        // True once the table is loaded; false where it is absent, in which
+        // case a caller simply gets silence rather than an error.
+        ready() { return !!getMaterialData(); },
+
+        materials() {
+            const data = getMaterialData();
+            return data ? Object.keys(data.materials) : [];
+        },
+
+        // Is there a sound for this material name?
+        has(material) {
+            const data = getMaterialData();
+            return !!(data && material && data.materials[material]);
+        },
+
+        play(material, opts) {
+            const data = getMaterialData();
+            if (!data || !material) return false;
+            const def = data.materials[material];
+            if (!def || !def.sounds || !def.sounds.length) return false;
+            const o = opts || {};
+            const mul = (ConfigManager.footstepsVolume == null ? 30 : ConfigManager.footstepsVolume) / 100;
+            const base = (o.volume == null ? (def.volume || 85) : o.volume);
+            const volume = Math.max(0, Math.min(100, base * mul));
+            if (volume <= 0) return false;
+            const lo = def.pitchMin || 95, hi = def.pitchMax || 105;
+            AudioManager.playSe({
+                name: def.sounds[Math.floor(Math.random() * def.sounds.length)],
+                volume,
+                pitch: Math.floor(lo + Math.random() * (hi - lo + 1)),
+                pan: o.pan || 0
+            });
+            return true;
+        }
+    };
+
 })();

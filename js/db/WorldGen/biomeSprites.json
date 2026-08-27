@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "note": "Which billboard sprites each biome scatters in the 3D voxel world. Written by the Biome Sprites picker (tools -> Biome Sprites), read by VoxelWorldDecor.js as window.WorldGen.biomeSprites. Every sprite is named folder first, 'Trees/apple_tree.png', so any folder under img/furniture may serve any category. A biome listed here REPLACES the built-in name tables for the categories it names: an empty list means the biome shows none of that kind, and a category left out keeps the built-in behaviour. Categories: tree, plant, rock, prop.",
+  "biomes": {}
+}

@@ -2711,5 +2711,27 @@
       "ideologyId": "chaos_renegade",
       "founded": 1984
     }
+  ],
+  "Greenland": [
+    {
+      "name": "Siumuut Forward Union",
+      "ideologyId": "social_democrat",
+      "founded": 1977
+    },
+    {
+      "name": "Ataqatigiit Circle",
+      "ideologyId": "democratic_socialist",
+      "founded": 1978
+    },
+    {
+      "name": "Atassuk League",
+      "ideologyId": "liberal_conservative",
+      "founded": 1981
+    },
+    {
+      "name": "Northpoint Communion",
+      "ideologyId": "militant_pacifism",
+      "founded": 2001
+    }
   ]
 }

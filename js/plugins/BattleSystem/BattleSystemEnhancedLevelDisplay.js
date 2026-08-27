@@ -41,8 +41,15 @@
     // 1. Helper: Get enemy level from event
     // ========================================================================
 
+    // A troop's level never changes, and this is now asked once per enemy
+    // sprite per frame (the plate watches the level band, not just the troop
+    // id), so the note regex behind it is run once per troop and remembered.
+    const troopLevelCache = new Map();
+
     function getEnemyLevelFromEvent(event) {
         if (!event._fixedTroopId || event._fixedTroopId === 0) return 0;
+        const cached = troopLevelCache.get(event._fixedTroopId);
+        if (cached !== undefined) return cached;
         const troop = $dataTroops[event._fixedTroopId];
         if (!troop || !troop.members.length) return 0;
         let maxLevel = 0;
@@ -53,6 +60,7 @@
                 if (level > maxLevel) maxLevel = level;
             }
         }
+        troopLevelCache.set(event._fixedTroopId, maxLevel);
         return maxLevel;
     }
 
@@ -62,6 +70,14 @@
     // ========================================================================
     // 2. Sprite_Character - Override update for enemy level labels
     // ========================================================================
+
+    // The plate is NOT a child of the character sprite. A child of the sprite
+    // shares its z (3 for a normal character), and the engine's balloon sprites
+    // sit at z 7 in the very same tilemap, so a "!" popping over a monster that
+    // has just noticed the party used to swallow the level. The plate is a
+    // sibling instead, parked one step above the balloons, and follows its
+    // owner sprite by hand every frame.
+    const LEVEL_PLATE_Z = 8;
 
     const _Sprite_Character_update_EnemyLevel = Sprite_Character.prototype.update;
     Sprite_Character.prototype.update = function() {
@@ -85,39 +101,91 @@
         // cleared (e.g. the enemy was defeated), remove any stale label instead
         // of leaving it floating on the map.
         if (!event._fixedTroopId || event._fixedTroopId === 0) {
-            if (this._enemyLevelLabel) {
-                this.removeChild(this._enemyLevelLabel);
-                this._enemyLevelLabel = null;
-            }
+            this.removeEnemyLevelLabel();
             this._lastEnemyTroopId = 0;
+            this._lastEnemyLevelBand = -1;
             return;
         }
 
-        // Check if troop changed or label doesn't exist yet
-        if (this._lastEnemyTroopId !== event._fixedTroopId) {
+        // Rebuild when the troop changes, and also when the party has crossed
+        // into a different level band against it: the plate is colour-coded on
+        // the gap, so a party that levels up past a monster has to see it go
+        // back to white without waiting for the troop to change.
+        const enemyLevel = getEnemyLevelFromEvent(event);
+        const band = enemyLevel > 0 ? levelGapTierFor(enemyLevel) : -1;
+        if (this._lastEnemyTroopId !== event._fixedTroopId || this._lastEnemyLevelBand !== band) {
             this._lastEnemyTroopId = event._fixedTroopId;
+            this._lastEnemyLevelBand = band;
 
             // Remove old label if exists
-            if (this._enemyLevelLabel) {
-                this.removeChild(this._enemyLevelLabel);
-                this._enemyLevelLabel = null;
-            }
+            this.removeEnemyLevelLabel();
 
-            const enemyLevel = getEnemyLevelFromEvent(event);
             if (enemyLevel > 0) {
-                this.createEnemyLevelLabel(enemyLevel);
+                this.createEnemyLevelLabel(enemyLevel, band);
             }
         }
+
+        this.syncEnemyLevelLabel();
     };
 
-    Sprite_Character.prototype.createEnemyLevelLabel = function(level) {
-        const party = $gameParty.members();
-        const medianLevel = party.length > 0 ? BSE.Helpers.getMedianLevel(party) : 1;
-        const levelDiff = level - medianLevel;
+    // The plate rides in the sprite's own container, so it has to be told where
+    // its owner ended up this frame, and has to inherit the states it used to
+    // get for free as a child: a hidden or transparent character carries a
+    // hidden plate with it.
+    Sprite_Character.prototype.syncEnemyLevelLabel = function() {
+        const label = this._enemyLevelLabel;
+        if (!label) return;
+        const container = this.parent;
+        if (!container) {
+            this.removeEnemyLevelLabel();
+            return;
+        }
+        if (label.parent !== container) {
+            if (label.parent) label.parent.removeChild(label);
+            container.addChild(label);
+        }
+        label.x = this.x;
+        label.y = this.y - 50;
+        label.visible = this.visible && this.opacity > 0;
+    };
 
-        let color = '#FFFFFF';
-        if (levelDiff > 30) color = '#FF0000';
-        else if (levelDiff > 15) color = '#FFFF00';
+    Sprite_Character.prototype.removeEnemyLevelLabel = function() {
+        const label = this._enemyLevelLabel;
+        if (!label) return;
+        if (label.parent) label.parent.removeChild(label);
+        this._enemyLevelLabel = null;
+    };
+
+    // Which of the core's three level bands a monster falls in against the
+    // party median. The plate reads the same rule the damage layer runs on
+    // (BSE.Helpers.levelGapTier), so what the colour promises is what the
+    // fight delivers.
+    let medianCacheFrame = -1;
+    let medianCacheValue = 1;
+
+    function partyMedianLevel() {
+        const frame = typeof Graphics !== 'undefined' ? Graphics.frameCount : -1;
+        if (frame === medianCacheFrame) return medianCacheValue;
+        const party = $gameParty ? $gameParty.members() : [];
+        medianCacheValue = party.length > 0 ? BSE.Helpers.getMedianLevel(party) : 1;
+        medianCacheFrame = frame;
+        return medianCacheValue;
+    }
+
+    function levelGapTierFor(level) {
+        return BSE.Helpers.levelGapTier(level, partyMedianLevel()).tier;
+    }
+
+    // White inside the band the party can fell, amber through the band they
+    // can still take at a cost, red once the fight is out of reach.
+    const LEVEL_PLATE_COLORS = {};
+    LEVEL_PLATE_COLORS[BSE.Data.LEVEL_GAP_EVEN]     = '#FFFFFF';
+    LEVEL_PLATE_COLORS[BSE.Data.LEVEL_GAP_HARD]     = '#FFD11A';
+    LEVEL_PLATE_COLORS[BSE.Data.LEVEL_GAP_HOPELESS] = '#FF3B30';
+
+    Sprite_Character.prototype.createEnemyLevelLabel = function(level, band) {
+        const tier = band != null && band >= 0 ? band : levelGapTierFor(level);
+        const color = LEVEL_PLATE_COLORS[tier] || '#FFFFFF';
 
         this._enemyLevelLabel = new Sprite();
         this._enemyLevelLabel.bitmap = new Bitmap(80, 30);
@@ -132,8 +200,22 @@
         bitmap.outlineWidth = 4;
 
         bitmap.drawText(`L. ${level}`, 0, 0, 80, 30, 'center');
-        this._enemyLevelLabel.y = -50;
-        this.addChild(this._enemyLevelLabel);
+
+        // Above the balloons rather than inside the character sprite. The
+        // tilemap sorts its children on z first, so this reads over anything
+        // the engine pops on a monster that has spotted the party.
+        this._enemyLevelLabel.z = LEVEL_PLATE_Z;
+        // A tilemap runs update() on every child it holds; the plate uses that
+        // to clean itself up if its owner sprite is ever pulled off the map
+        // without going through removeEnemyLevelLabel.
+        const owner = this;
+        this._enemyLevelLabel.update = function() {
+            if (!owner.parent || owner._enemyLevelLabel !== this) {
+                if (this.parent) this.parent.removeChild(this);
+                if (owner._enemyLevelLabel === this) owner._enemyLevelLabel = null;
+            }
+        };
+        this.syncEnemyLevelLabel();
     };
 
 })();

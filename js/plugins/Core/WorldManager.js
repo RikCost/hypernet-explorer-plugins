@@ -585,7 +585,7 @@
         }
     };
 
-    const DATA_FILE_KEYS = ["world", "history", "artifacts", "npcs", "dungeon", "state", "variables", "market", "conversations", "terrain", "plants", "containers", "chests", "mail", "rentals", "techtree", "bestiary", "shops", "animals", "furniture", "galaxy", "production", "apiary", "party"];
+    const DATA_FILE_KEYS = ["world", "history", "artifacts", "npcs", "dungeon", "state", "variables", "market", "conversations", "terrain", "plants", "containers", "chests", "mail", "rentals", "techtree", "bestiary", "shops", "animals", "furniture", "galaxy", "production", "apiary", "party", "playerquests"];
 
     //=========================================================================
     // Storage backend (NW.js filesystem, localStorage fallback for browser)

@@ -167,5 +167,8 @@
   "tools": {
     "hexphone": "",
     "alchemistryKit": ""
+  },
+  "value": {
+    "wantedLevel": ""
   }
 }

@@ -89,5 +89,10 @@
     "calories": "Cal",
     "protein": "Prot",
     "fat": "Fat"
+  },
+  "roll": {
+    "masterpiece": "[NAT 20 Culinary Roll] Gourmet masterpiece! {dish} gained +50% nutrition!",
+    "scorched": "[NAT 1 Culinary Roll] Scorched dish! {dish} lost nutrition!",
+    "delicious": "[Culinary Roll: {roll}{mod}={total}] Deliciously prepared {dish}!"
   }
 }

@@ -3243,9 +3243,14 @@
       const ship = dm.playerShip;
       const buzz = () => { if (window.SoundManager) SoundManager.playBuzzer(); };
       let planet = null;
+      // A moon turns to face its own planet, not the star, so its day is its
+      // orbit: this has to travel with it or the sky over it is worked out as
+      // though it were a planet skimming its star.
+      let moonOf = null;
       if (sel && sel.kind === "moon" && sel.data && sel.planet &&
           ship && !ship.isMoving && ship.currentPlanet === sel.planet.name) {
         planet = sel.data;
+        moonOf = sel.planet;
       } else {
         const planetName = ship && ship.currentPlanet;
         if (!planetName) return buzz();
@@ -3257,12 +3262,24 @@
       if (!this._overlayUI || !this._overlayUI.showLandingGrid) return buzz();
 
       this._overlayUI.showLandingGrid(planet, {
-        onPick: (gx, gy) => {
+        onPick: (gx, gy, mode) => {
+          // Two ways down. A LIMINAL WALK opens the 3D world on the planet
+          // itself - one biome from pole to pole, in its own colours, with
+          // whatever lives there roaming it - instead of generating a surface
+          // map to walk about on.
+          if (mode === 'walk') {
+            if (!this._liminalWalkOn(planet, gx, gy, moonOf)) return buzz();
+            this._awardSpec("Spacecraft Piloting", 2);   // i18n-ignore: specialization id
+            if (window.SoundManager) SoundManager.playOk();
+            SceneManager.pop();
+            return;
+          }
           // Shared surface entry: builds the landed-planet descriptor
           // (atmosphere, life, satellites, palette), applies the EVA suit
           // when needed, generates the surface at the chosen grid square and
           // reserves the transfer to map 636.
-          if (!(GS.enterPlanetSurface && GS.enterPlanetSurface(planet, { gridCell: { gx, gy } }))) {
+          if (!(GS.enterPlanetSurface && GS.enterPlanetSurface(planet,
+                { gridCell: { gx, gy }, isMoon: !!moonOf, parentPlanet: moonOf }))) {
             return buzz();
           }
           // Setting down is piloting; setting down somewhere alive is fieldwork.
@@ -3280,6 +3297,19 @@
         },
         onCancel: () => { if (window.SoundManager) SoundManager.playCancel(); },
       });
+    }
+
+    // Open the 3D world on a planet. Everything it needs is already written
+    // down elsewhere: the Alien<Type> biome carries the world's colours and its
+    // furniture list, and the galaxy simulation's own species roster says what
+    // lives there. A world with no life has an empty roster and nothing roams
+    // it, which is the honest answer for a comet.
+    // The shared entry, so the star map and the on-foot landing-site picker
+    // (Scene_AlienLandingGrid) open the same walk.
+    _liminalWalkOn(planet, gx, gy, moonOf) {
+      if (!GS.startLiminalWalk) return false;
+      return GS.startLiminalWalk(planet, gx, gy,
+        { isMoon: !!moonOf, parentPlanet: moonOf || null });
     }
 
     // Teleport the PARTY (not the ship) to a hand-authored landing site

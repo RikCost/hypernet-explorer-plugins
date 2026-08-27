@@ -94,5 +94,32 @@
     "toastEat": "{name} ate {item}",
     "toastOpinion": "{npc} thinks of {name}: {delta}",
     "toastPartyTalk": "{name} and {other} talked ({other}: {delta}, {name}: {back})"
+  },
+  "corpse": {
+    "prompt": "Fallen comrade: {name}. What will you do?",
+    "choiceLoot": "Loot",
+    "choiceCommemorate": "Commemorate",
+    "choicePray": "Pray",
+    "choiceDissect": "Dissect",
+    "choiceBury": "Bury",
+    "choiceCancel": "Cancel",
+    "looted": "Recovered equipment from {name}.",
+    "nothingToLoot": "There is nothing left to loot on {name}.",
+    "examined": "You examine the anatomy and body condition of the fallen comrade.",
+    "buried": "Buried {name} with dignity."
+  },
+  "grave": {
+    "prompt": "Grave of {name}. What will you do?",
+    "choiceRead": "Read",
+    "choiceDesecrate": "Desecrate",
+    "choiceDismantle": "Dismantle",
+    "choiceCancel": "Cancel",
+    "epitaph": "\"Here lies {name}. Born: {born}\"",
+    "bornUnknown": "Unknown",
+    "desecrated": "You desecrated the grave of {name}. Recovered bones and remaining personal belongings.",
+    "dismantled": "Dismantled the grave of {name}."
+  },
+  "succession": {
+    "takesCommand": "{name} takes command of the party."
   }
 }

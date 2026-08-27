@@ -1167,6 +1167,9 @@
    * returns the interior spawn tile (mapData.spawnX/spawnY/spawnDir) plus the room
    * rectangles (mapData.rooms) so prefabs can be fitted inside rooms.
    */
+  // See RESUMABLE GENERATION in ProceduralMapUtils.js.
+  const { runSteps } = window.ProcGenUtils;
+
   function generateDungeonBiome(biome, seed, allFeatures, adjacentBiomes, allOtherData = {}) {
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
@@ -2525,6 +2528,10 @@
    * Includes Lot proximity checks to prevent overlapping hints.
    */
 function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOtherData = {}) {
+    return runSteps(generateVillageBiomeSteps(biome, seed, allFeatures, adjacentBiomes, allOtherData));
+  }
+
+  function* generateVillageBiomeSteps(biome, seed, allFeatures, adjacentBiomes, allOtherData = {}) {
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
     const rng = createSeededRandom(seed);
@@ -2591,6 +2598,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       if (borderDirs.west) { for (let x = 0; x <= centerX; x++) { for (let y = centerY - borderHalfRoad; y < centerY - borderHalfRoad + borderRoadWidth; y++) { if (y>=0 && y<height) borderRoadOccupied[y * width + x] = true; } } }
     }
 
+    yield;
+
+
     // --- STEP 1: Scatter path seeds ---
     const pathSeeds = [];
     const roadSet = new Set();
@@ -2610,6 +2620,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       mapData[idx] = streetTile;
       pathSeeds.push({ x, y });
     }
+
+    yield;
+
 
     // --- STEP 2: Identify prefab placement locations ---
     // Lots have to be separated on BOTH axes, not in sum: the old Manhattan
@@ -2656,6 +2669,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       return true;
     });
 
+    yield;
+
+
     // --- STEP 3: Apply prefabs ---
     // Prefabs are placed NOW. Any code after this must respect the tiles they placed.
     allOtherData.placementHints = validPrefabLots;
@@ -2672,6 +2688,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
         } catch (e) { console.warn(e); }
       }
     }
+
+    yield;
+
 
     // --- STEP 4: Draw connecting roads ---
     // Add existing paths to roadSet
@@ -3993,7 +4012,15 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
   //   4. one prefab per built block (the existing prefab pass)
   //   5. pavement, and sidewalks around every carriageway
   //   6. the street itself (dressCityStreets above)
+  // Straight through, on the frame that asks for it.
   function generateCityBiome(biome, seed, allFeatures, adjacentBiomes, allOtherData = {}) {
+    return runSteps(generateCityBiomeSteps(biome, seed, allFeatures, adjacentBiomes, allOtherData));
+  }
+
+  // The same seven steps, allowed to stop between them. See RESUMABLE
+  // GENERATION in ProceduralMapUtils.js: the same code in the same order, so a
+  // city built over four frames is the city built in one.
+  function* generateCityBiomeSteps(biome, seed, allFeatures, adjacentBiomes, allOtherData = {}) {
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
     const rng = createSeededRandom(seed);
@@ -4055,6 +4082,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     if (borderDirs.south) markBorderRun(centerX - borderHalfRoad, centerY, centerX + borderHalfRoad, height - 1);
     if (borderDirs.west) markBorderRun(0, centerY - borderHalfRoad, centerX, centerY + borderHalfRoad);
     if (borderDirs.east) markBorderRun(centerX, centerY - borderHalfRoad, width - 1, centerY + borderHalfRoad);
+
+    yield;
+
 
     // --- STEP 1: the street grid --------------------------------------------
     // Cuts are dealt outward from the centre so the main avenues always meet
@@ -4173,6 +4203,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       }
     }
 
+    yield;
+
+
     // --- STEP 2: the blocks between the streets, and what each one is for ----
     const spans = (cuts, size) => {
       const out = [];
@@ -4233,6 +4266,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       }
     }
 
+    yield;
+
+
     // --- STEP 3: prefabs, one per built lot ---------------------------------
     if (biome && biome.prefabs && biome.prefabs.length > 0 && buildingLots.length) {
       const worldCoords = allOtherData?.worldCoords || { x: 0, y: 0 };
@@ -4267,6 +4303,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       }
     }
 
+    yield;
+
+
     // --- STEP 4: pavement, laid after the prefabs so nothing is overwritten --
     const sidewalkTiles = getFeatureTiles("Sidewalk", allFeatures);
     if (sidewalkTiles) {
@@ -4288,6 +4327,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       for (const i of painted) mapData[i] = sidewalkTile;
       dlog(`[CityGenerator] ${painted.length} pavement tiles laid.`);
     }
+
+    yield;
+
 
     // --- STEP 5: the streets themselves -------------------------------------
     const ctx = {
@@ -4326,6 +4368,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       greenery: 0.05,
       litter: 5 + Math.floor(rng() * 6),
     });
+
+    yield;
+
 
     // --- STEP 6: beach, road poles, water regions ---------------------------
     addDirectionalBeach(mapData, width, height, adjacentBiomes, allFeatures, rng);
@@ -4840,6 +4885,11 @@ function generateBurgBiome(biome, seed, allFeatures, adjacentBiomes, allOtherDat
     generateDungeonBiome,
     generateVillageBiome,
     generateCityBiome,
-    generateBurgBiome
+    generateBurgBiome,
+    // The resumable forms of the two heaviest settlement passes: the stitched
+    // window steps these so a town built ahead of the party costs a few
+    // milliseconds a frame instead of a whole dropped one.
+    generateVillageBiomeSteps,
+    generateCityBiomeSteps
   };
 })();

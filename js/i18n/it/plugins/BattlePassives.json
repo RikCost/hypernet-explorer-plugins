@@ -49,8 +49,8 @@
       "desc": "Fame e sonno calano del 30% più lentamente e il riposo ristora più energia."
     },
     "16": {
-      "name": "Lottatore di Strada",
-      "desc": "Disarmato infliggi +25% danni e contrattacchi una parte dei colpi in mischia."
+      "name": "Incantacolpo",
+      "desc": "Con un'arma da fuoco in mano infliggi +25% danni e ogni azione ti restituisce un po' di mana."
     },
     "17": {
       "name": "Gioco di Gambe",
@@ -323,6 +323,7 @@
     "9": "Maledetto"
   },
   "log": {
+    "chamberedMana": "{actor} riprende mana dalla camera di scoppio.",
     "pinStunned": "{target} e immobilizzato e stordito!",
     "chiFlows": "Il chi di {actor} scorre!",
     "mirrorShatters": "Un'immagine speculare di {actor} si frantuma!",

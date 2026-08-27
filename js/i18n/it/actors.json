@@ -1,6 +1,6 @@
 {
   "1": {
-    "name": "Test",
+    "name": "Nuven",
     "nickname": "",
     "profile": ""
   },
@@ -16,6 +16,26 @@
   },
   "4": {
     "name": "Evocazione",
+    "nickname": "",
+    "profile": ""
+  },
+  "5": {
+    "name": "Eris",
+    "nickname": "",
+    "profile": ""
+  },
+  "6": {
+    "name": "Alleato",
+    "nickname": "",
+    "profile": ""
+  },
+  "7": {
+    "name": "Alleato",
+    "nickname": "",
+    "profile": ""
+  },
+  "8": {
+    "name": "Alleato",
     "nickname": "",
     "profile": ""
   }

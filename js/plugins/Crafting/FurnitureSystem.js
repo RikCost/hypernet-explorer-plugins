@@ -120,7 +120,28 @@
     const GRID_OPACITY = Number(parameters['gridOpacity'] || 128);
     const DISMANTLE_RETURN = Number(parameters['dismantleReturn'] || 0.75);
     const MATERIAL_PER_TILE = Number(parameters['materialPerTile'] || 1.5);
-    const { Furniture } = window.Items || {};
+    // The catalogue is three and a half megabytes of it, and nobody needs a
+    // single line until somebody actually places a piece: reading it here, at
+    // load, put the whole thing on the boot path of every session. Registered
+    // lazily by DataService and taken through this, it is read the first time a
+    // piece is looked up and cached from then on.
+    let _catalogue = null;
+    function catalogue() {
+        if (!_catalogue) _catalogue = (window.Items && window.Items.Furniture) || {};
+        return _catalogue;
+    }
+    // Everything below reads the catalogue through this proxy, so `Furniture[id]`
+    // and `Object.entries(Furniture)` still read exactly as they did.
+    const Furniture = new Proxy({}, {
+        get(_, k) { return catalogue()[k]; },
+        has(_, k) { return k in catalogue(); },
+        ownKeys() { return Reflect.ownKeys(catalogue()); },
+        getOwnPropertyDescriptor(_, k) {
+            const d = Object.getOwnPropertyDescriptor(catalogue(), k);
+            if (d) d.configurable = true;
+            return d;
+        }
+    });
 
     //=============================================================================
     // Material Definitions
@@ -461,7 +482,8 @@
         'Wells':        { collision: 'all',   layer: 'same' },
         'Windows':      { wall: true,  collision: 'none',   layer: 'same' },
         'Wood':         { collision: 'all',   layer: 'same' },
-        'WorldMap':     { collision: 'none',  layer: 'below' },
+        // Full-canvas blue ground tiles split out of Terrain by the asset rework.
+        'Water':        { collision: 'none',  layer: 'below' },
 
         // --- Additional asset-set folders (added to cover every img/furniture/* dir) ---
         'Alchemistry':      { collision: 'all',   layer: 'same' },
@@ -512,10 +534,15 @@
     const DEFAULT_FOLDER_RULE = { collision: 'all', layer: 'same' };
 
     // Resolve the folder-based rules for a furniture piece by its id.
+    // The index now stores "<Category>/<Subcategory>"; collision, layer and
+    // wall-mounting are a property of the category, so only the first segment
+    // is looked up. A one-segment value (older index, or a modded folder) still
+    // resolves unchanged.
     function getFolderRules(furnitureId) {
         const index = (window.Items && window.Items.FurnitureImageFolders) || null;
         if (furnitureId && index && index[furnitureId]) {
-            return FOLDER_RULES[index[furnitureId]] || DEFAULT_FOLDER_RULE;
+            const category = String(index[furnitureId]).split('/')[0];
+            return FOLDER_RULES[category] || DEFAULT_FOLDER_RULE;
         }
         return DEFAULT_FOLDER_RULE;
     }
@@ -572,6 +599,81 @@
     function furnitureImageSrc(id) {
         const folder = furnitureImageFolder(id);
         return folder ? `${folder}${id}.png` : null;
+    }
+
+
+    //=============================================================================
+    // Recolour families (tileGroupId)
+    //=============================================================================
+    // A lot of the art is one object drawn in several colourways - seven beanies,
+    // five mattresses, six sarcophagi. Furniture.json gives every member of such a
+    // family the same `tileGroupId`, and the build menu shows the family as ONE
+    // card whose art the player flicks through with the wheel or L1/R1 rather than
+    // as seven near-identical cards. Which variant a family last showed is
+    // remembered per save, so the menu reopens on the colour last used.
+
+    let _groupIndex = null;
+
+    // { tileGroupId: [id, ...] }, built once, ordered so the wheel is predictable.
+    function furnitureGroups() {
+        if (_groupIndex) return _groupIndex;
+        _groupIndex = {};
+        for (const [id, f] of Object.entries(Furniture)) {
+            const gid = f && f.tileGroupId;
+            if (!gid) continue;
+            (_groupIndex[gid] = _groupIndex[gid] || []).push(id);
+        }
+        for (const gid of Object.keys(_groupIndex)) _groupIndex[gid].sort();
+        return _groupIndex;
+    }
+
+    function furnitureGroupMembers(gid) {
+        return (gid && furnitureGroups()[gid]) || [];
+    }
+
+    // The id a family currently shows. Falls back to the first member when the
+    // remembered one has gone (art removed, save from an older catalogue).
+    function groupChosenId(gid) {
+        const members = furnitureGroupMembers(gid);
+        if (!members.length) return null;
+        const store = ($gameSystem && $gameSystem.furnitureVariants) ? $gameSystem.furnitureVariants() : null;
+        const want = store && store[gid];
+        return (want && members.includes(want)) ? want : members[0];
+    }
+
+    // Move a family's shown variant by `dir` and remember it.
+    function cycleGroupVariant(gid, dir) {
+        const members = furnitureGroupMembers(gid);
+        if (members.length < 2) return null;
+        const cur = members.indexOf(groupChosenId(gid));
+        const next = members[((cur < 0 ? 0 : cur) + dir + members.length) % members.length];
+        if ($gameSystem && $gameSystem.setFurnitureVariant) $gameSystem.setFurnitureVariant(gid, next);
+        return next;
+    }
+
+    // Collapse a list of pieces so each recolour family contributes one entry:
+    // the variant the player last chose. The entry carries __groupId and
+    // __variantCount so the card can show the family size and the wheel knows
+    // there is something to flick through.
+    function collapseVariants(items) {
+        const out = [];
+        const seen = new Set();
+        for (const item of items) {
+            const gid = item.tileGroupId;
+            if (!gid) { out.push(item); continue; }
+            if (seen.has(gid)) continue;
+            seen.add(gid);
+            const members = furnitureGroupMembers(gid);
+            const chosenId = groupChosenId(gid) || item.id;
+            const chosen = Furniture[chosenId];
+            out.push(Object.assign({}, chosen || item, {
+                id: chosenId,
+                __groupId: gid,
+                __variantCount: members.length,
+                __variantIndex: Math.max(0, members.indexOf(chosenId)) + 1
+            }));
+        }
+        return out;
     }
 
     //=============================================================================
@@ -941,6 +1043,19 @@
             // builtFurniture() / builtTiles() below. A savegame that still
             // carries them in this blob hands them over in getFurnitureData().
         };
+    };
+
+    // Which colourway each recolour family last showed in the build menu.
+    // Lives on the save rather than in the world folder: it is a menu preference
+    // of this playthrough, not something standing on the map.
+    Game_System.prototype.furnitureVariants = function () {
+        if (!this._furnitureVariants) this._furnitureVariants = {};
+        return this._furnitureVariants;
+    };
+
+    Game_System.prototype.setFurnitureVariant = function (groupId, furnitureId) {
+        if (!groupId || !furnitureId) return;
+        this.furnitureVariants()[groupId] = furnitureId;
     };
 
     Game_System.prototype.getFurnitureData = function () {
@@ -2604,6 +2719,17 @@
             .join(' ');
     }
 
+    // The label for a subcategory folder, read the same way as a category's and
+    // with the same fallback, so a folder no bank lists still reads.
+    function titleCaseSubcategory(symbol) {
+        const key = 'Furniture.subcategory.' + symbol;
+        if (T.has(key)) return T(key);
+        return String(symbol)
+            .split(/[_\s]+/)
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ');
+    }
+
     // A piece's own name and blurb. Every entry in Furniture.json already
     // carries `name_int`, the i18n path holding its copy ("furniture.<id>.name"),
     // but nothing was reading it, so the build menu drew the English `name`
@@ -2884,6 +3010,9 @@
             this.scene = scene;
             const _cats = getBuildCategories();
             this.category = (_cats[0] || { symbol: '' }).symbol;
+            // null = the category's subcategory list is showing; a string = that
+            // subcategory's item grid is showing.
+            this.subcategory = null;
             this.topTab = 'buildables';
             this.search = '';
             // The field lives behind a handle, like every other search in the
@@ -2910,6 +3039,16 @@
             // scroll the nearest overflow region ourselves, and stop the event from
             // ever reaching the game so the map does not zoom/scroll underneath.
             this.container.addEventListener('wheel', e => {
+                // Over a card that stands for a recolour family, the wheel walks
+                // that family's colourways instead of scrolling the grid; the
+                // grid still scrolls everywhere else.
+                const card = e.target.closest('.fbuild-card[data-group]');
+                if (card) {
+                    this.cycleVariant(card.dataset.group, e.deltaY > 0 ? 1 : -1);
+                    e.stopPropagation();
+                    e.preventDefault();
+                    return;
+                }
                 const scrollable = e.target.closest('.fbuild-grid, .fbuild-materials, .fbuild-dd-list');
                 if (scrollable) scrollable.scrollTop += e.deltaY;
                 e.stopPropagation();
@@ -2957,7 +3096,7 @@
             };
 
             const query = (this.search || '').trim().toLowerCase();
-            const items = [];
+            let items = [];
             if (topTab === 'buildables') {
                 // A non-empty search filters by name across EVERY category; an
                 // empty search falls back to the category selected in the
@@ -2969,9 +3108,17 @@
                     } else if (this.category === BUILDABLE_SYMBOL) {
                         if (affordFn(f)) items.push({ id, ...f });
                     } else if (f.category === this.category) {
-                        items.push({ id, ...f });
+                        // Inside a real category the grid only fills once a
+                        // subcategory has been picked; until then the panel shows
+                        // the subcategory list instead (see subcatsHTML below).
+                        if (this.subcategory && f.subcategory === this.subcategory) {
+                            items.push({ id, ...f });
+                        }
                     }
                 }
+                // One card per recolour family, everywhere the grid is a real list
+                // of pieces.
+                items = collapseVariants(items);
                 // In purchase mode the Buildable list is ordered by gold price
                 // (cheapest first); everything else stays alphabetical.
                 if (purchasing && this.category === BUILDABLE_SYMBOL && !query) {
@@ -3056,6 +3203,9 @@
                         </button>
                         <div class="fbuild-dd-list">${ddOptionsHTML}</div>
                     </div>
+                    ${this.subcategory ? `<button class="fbuild-subback" type="button" title="${T('Furniture.tip.backToSubcategories')}">
+                        ${T('Furniture.backToSubcategories')}</button>
+                        <span class="fbuild-crumb">${titleCaseSubcategory(this.subcategory)}</span>` : ''}
                     ${searchOpen ? `<input class="fbuild-search" type="search" placeholder="${T('Furniture.searchPlaceholder')}"
                         value="${searchValue}">` : ''}
                     ${window.MenuSearchBar ? window.MenuSearchBar.toggleHTML('', searchOpen) : ''}
@@ -3076,6 +3226,29 @@
                         <canvas class="fbuild-mat-icon" data-icon="${mat.icon}" width="22" height="22"></canvas>
                         <span>${q}</span></div>`;
                 }).join('');
+            }
+
+            // Inside a real category, the first thing shown is its subcategory
+            // list; the item grid comes after one is picked. A live search skips
+            // the drilldown entirely and searches every category at once.
+            const inRealCategory = topTab === 'buildables' && this.category !== BUILDABLE_SYMBOL && !query;
+            const showingSubcats = inRealCategory && !this.subcategory;
+            let subcatsHTML = '';
+            if (showingSubcats) {
+                const counts = {};
+                for (const f of Object.values(Furniture)) {
+                    if (f.category !== this.category || !f.subcategory) continue;
+                    counts[f.subcategory] = (counts[f.subcategory] || 0) + 1;
+                }
+                const subs = Object.keys(counts)
+                    .map(sym => ({ sym, name: titleCaseSubcategory(sym), n: counts[sym] }))
+                    .sort((a, b) => a.name.localeCompare(b.name));
+                subcatsHTML = subs.length
+                    ? subs.map(sc => `<div class="fbuild-subcat" data-sub="${sc.sym}">
+                        <span class="fbuild-subcat-name">${sc.name}</span>
+                        <span class="fbuild-subcat-count">${sc.n}</span>
+                    </div>`).join('')
+                    : `<div class="fbuild-empty">${T('Furniture.empty.category')}</div>`;
             }
 
             // Cards
@@ -3147,11 +3320,15 @@
                         imgCellClass += ' noimg';
                         imgCellHTML = placeholderIconHTML(32);
                     }
-                    return `<div class="fbuild-card ${affordable ? '' : 'unaffordable'} ${isArmed ? 'armed' : ''}" data-id="${item.id}" draggable="false" title="${T('Furniture.tip.dragToPlace')}">
+                    const variants = item.__variantCount || 0;
+                    return `<div class="fbuild-card ${affordable ? '' : 'unaffordable'} ${isArmed ? 'armed' : ''}" data-id="${item.id}"
+                        ${item.__groupId ? `data-group="${item.__groupId}"` : ''} draggable="false"
+                        title="${variants > 1 ? T('Furniture.tip.cycleVariants') : T('Furniture.tip.dragToPlace')}">
                         <div class="${imgCellClass}">
                             ${imgCellHTML}
                             ${isArmed ? `<span class="fbuild-card-armed-badge">${T('Furniture.placing')}</span>` : ''}
                             ${(!affordable && !free) ? `<span class="fbuild-card-lock" title="${T('Furniture.tip.cannotAfford')}">${iconHTML(UI_ICONS.blocked, 16)}</span>` : ''}
+                            ${variants > 1 ? `<span class="fbuild-card-variants" title="${T('Furniture.tip.cycleVariants')}">${T('Furniture.variantCount', { i: item.__variantIndex || 1, n: variants })}</span>` : ''}
                         </div>
                         <div class="fbuild-card-name">${furnitureName(item.id, item)}</div>
                         <div class="fbuild-card-folder">${folderName}</div>
@@ -3230,7 +3407,7 @@
                 ${catBarHTML}
                 <div class="fbuild-body">
                     <div class="fbuild-right">
-                        <div class="fbuild-grid">${cardsHTML}</div>
+                        <div class="fbuild-grid${showingSubcats ? ' subcats' : ''}">${showingSubcats ? subcatsHTML : cardsHTML}</div>
                         ${footerHTML}
                     </div>
                 </div>
@@ -3320,6 +3497,7 @@
                     const tab = btn.dataset.tab;
                     if ((this.topTab || 'buildables') === tab) return;
                     this.topTab = tab;
+                    this.subcategory = null;
                     this.search = ''; // switching tabs clears an active search
                     this.searchOpen = false;
                     SoundManager.playCursor();
@@ -3348,6 +3526,7 @@
                     opt.addEventListener('pointerdown', e => {
                         e.stopPropagation();
                         this.category = opt.dataset.cat;
+                        this.subcategory = null;  // a new category opens on its subcategory list
                         this.search = '';   // picking a category clears an active search
                         this.searchOpen = false;
                         SoundManager.playCursor();
@@ -3387,6 +3566,26 @@
                 searchInput.addEventListener('input', () => {
                     this.search = searchInput.value;
                     this._restoreSearchCaret = searchInput.selectionStart;
+                    this.render();
+                });
+            }
+            this.container.querySelectorAll('.fbuild-subcat').forEach(el => {
+                el.addEventListener('pointerdown', e => {
+                    e.stopPropagation();
+                    this.subcategory = el.dataset.sub;
+                    SoundManager.playCursor();
+                    this.render();
+                    const first = this.container.querySelector('.fbuild-card');
+                    if (first) this.selectCardById(first.dataset.id, true);
+                });
+            });
+            const subBack = this.container.querySelector('.fbuild-subback');
+            if (subBack) {
+                subBack.addEventListener('pointerdown', e => {
+                    e.stopPropagation();
+                    this.subcategory = null;
+                    this._selId = null;
+                    SoundManager.playCancel();
                     this.render();
                 });
             }
@@ -3475,6 +3674,30 @@
                 if (score < bestScore) { bestScore = score; best = c; }
             }
             if (best) { this.selectCardById(best.dataset.id, true); SoundManager.playCursor(); }
+        }
+
+        // Walk one recolour family's colourways. The card keeps its place in the
+        // grid and stays selected, and a piece already armed from this family is
+        // re-armed as the new colour so the ghost on the map follows the wheel.
+        cycleVariant(groupId, dir) {
+            const next = cycleGroupVariant(groupId, dir);
+            if (!next) return false;
+            const wasArmed = this._selId && this.scene._fbArmedId === this._selId;
+            this._selId = next;
+            SoundManager.playCursor();
+            this.render();
+            this.selectCardById(next, false);
+            if (wasArmed) this.scene.armFurniture(next);
+            return true;
+        }
+
+        // The family shown on the currently selected card, if it is one.
+        selectedGroupId() {
+            if (!this._selId) return null;
+            const card = this.container.querySelector('.fbuild-card.fbcursor[data-group]')
+                || this.container.querySelector(`.fbuild-card[data-id="${this._selId}"][data-group]`);
+            const gid = card && card.dataset.group;
+            return (gid && furnitureGroupMembers(gid).length > 1) ? gid : null;
         }
 
         // L1/R1 (or the Tab key) now cycles the top-level tabs (Buildables/
@@ -4114,6 +4337,14 @@
     // the placement code re-reads the same OK press and instantly drops it.
     Scene_Map.prototype.updateFurniturePanelNav = function () {
         if (!this._fbUI) return false;
+        // L1/R1 walk the top-level tabs, EXCEPT while the highlighted card stands
+        // for a recolour family: there the same buttons flick through that
+        // family's colourways, which is what the player expects the shoulder
+        // buttons to do when a card is visibly showing "1/7". Tab always switches
+        // tabs, so the tab row is never unreachable.
+        const variantGroup = this._fbUI.selectedGroupId();
+        if (variantGroup && Input.isTriggered('pagedown')) { this._fbUI.cycleVariant(variantGroup, 1); return false; }
+        if (variantGroup && Input.isTriggered('pageup'))   { this._fbUI.cycleVariant(variantGroup, -1); return false; }
         if (Input.isTriggered('pagedown')) { this._fbUI.cycleCategory(1); return false; }
         if (Input.isTriggered('pageup'))   { this._fbUI.cycleCategory(-1); return false; }
         if (Input.isTriggered('tab'))      { this._fbUI.cycleCategory(1); return false; }
@@ -4178,6 +4409,15 @@
             this._fbPointerMode = 'mouse';
             if (this._fbArmedId) { this.disarmFurniture(); SoundManager.playCancel(); }
             else this.closeFurnitureBuildMode();
+            return;
+        }
+        // Cancel steps back out of a subcategory first, so the pad can leave the
+        // drilldown without having to reach the Back button with the mouse.
+        if (Input.isTriggered('cancel') && this._fbUI && this._fbUI.subcategory && this._fbFocus === 'panel') {
+            this._fbUI.subcategory = null;
+            this._fbUI._selId = null;
+            SoundManager.playCancel();
+            this._fbUI.render();
             return;
         }
         if (Input.isTriggered('cancel')) {

@@ -40,6 +40,61 @@
         console.log("DataService: Forced StorageManager to web mode.");
     }
 
+    // ── Registering a file, without reading it ───────────────────────────────
+    //
+    // There are a hundred and eighty odd JSON files under js/db and twelve and a
+    // half megabytes of them, and a good many are never looked at in a whole
+    // session: the biome snapshot and the ASCII tileset are read off disk by the
+    // plugins that own them, the furniture catalogue is only wanted by somebody
+    // buying furniture. Reading and parsing all of it before the title screen can
+    // be drawn is time spent on data most players never touch.
+    //
+    // So a file is REGISTERED rather than loaded: the name goes on the window
+    // object as an accessor, and the first thing to actually ask for it reads and
+    // parses it, once. The read then replaces the accessor with the value it
+    // produced, so every later use is a plain property again and costs nothing.
+    //
+    // Nothing that uses this needs to know. `window.WorldGen.Biomes` is still
+    // `window.WorldGen.Biomes`, still enumerable, still assignable (NPCSystem
+    // writes its own rosters over NPCPools, and the setter below lets it).
+    let _registered = 0, _loaded = 0;
+
+    function registerLazy(bucket, name, read) {
+        const define = (value) => {
+            Object.defineProperty(bucket, name, {
+                configurable: true, enumerable: true, writable: true, value
+            });
+            return value;
+        };
+        Object.defineProperty(bucket, name, {
+            configurable: true,
+            enumerable: true,
+            get() {
+                _loaded++;
+                let value = null;
+                try {
+                    value = read();
+                } catch (e) {
+                    console.error(`DataService: Failed to load ${name}: ${e.message}`);
+                }
+                return define(value);
+            },
+            set(v) { define(v); }
+        });
+        _registered++;
+    }
+
+    // How many files have actually been wanted so far. Useful from the console
+    // when working out what a screen really needs.
+    window.DataServiceStats = function () {
+        return { registered: _registered, loaded: _loaded };
+    };
+
+    function parseJson(text, label) {
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+        return JSON.parse(text);
+    }
+
     function loadDatabase() {
         const fs = require('fs');
         const path = require('path');
@@ -62,26 +117,13 @@
             const files = fs.readdirSync(folderPath);
             files.forEach(file => {
                 if (path.extname(file).toLowerCase() !== '.json') return;
-
                 const filePath = path.join(folderPath, file);
                 const fileName = path.basename(file, '.json');
-
-                try {
-                    let content = fs.readFileSync(filePath, 'utf8');
-                    if (content.charCodeAt(0) === 0xFEFF) {
-                        content = content.slice(1);
-                    }
-                    const data = JSON.parse(content);
-
-                    // Register using the exact filename
-                    window[windowName][fileName] = data;
-
-                    console.log(`DataService: Registered window.${windowName}.${fileName}`);
-                } catch (e) {
-                    console.error(`DataService: Failed to load ${filePath}: ${e.message}`);
-                }
+                registerLazy(window[windowName], fileName,
+                    () => parseJson(fs.readFileSync(filePath, 'utf8'), filePath));
             });
         });
+        console.log(`DataService: registered ${_registered} files under js/db (read on first use).`);
     }
 
     function loadDatabaseBrowser() {
@@ -99,33 +141,24 @@
             }
             const manifest = JSON.parse(manifestText);
             
+            // Registered, not fetched. A synchronous request blocks the page
+            // outright, and there were a hundred and eighty of them here before
+            // anything could be drawn; now each one is made only if its file is
+            // ever actually asked for.
             for (const folder in manifest) {
                 window[folder] = window[folder] || {};
-                const files = manifest[folder];
-                files.forEach(file => {
-                    // Guard each file individually so one bad/malformed entry
-                    // cannot abort the whole manifest load.
-                    try {
-                        const xhr2 = new XMLHttpRequest();
-                        xhr2.open('GET', `js/db/${folder}/${file}`, false);
-                        xhr2.send();
-                        if (xhr2.status === 200) {
-                            let text = xhr2.responseText;
-                            if (text.charCodeAt(0) === 0xFEFF) {
-                                text = text.slice(1);
-                            }
-                            const data = JSON.parse(text);
-                            const fileName = file.replace('.json', '');
-                            window[folder][fileName] = data;
-                            console.log(`DataService: Registered window.${folder}.${fileName} (Browser)`);
-                        } else {
-                            console.error(`DataService: Failed to load js/db/${folder}/${file}`);
-                        }
-                    } catch (e) {
-                        console.error(`DataService: Failed to load js/db/${folder}/${file}: ${e.message}`);
-                    }
+                manifest[folder].forEach(file => {
+                    const url = `js/db/${folder}/${file}`;
+                    registerLazy(window[folder], file.replace('.json', ''), () => {
+                        const req = new XMLHttpRequest();
+                        req.open('GET', url, false);
+                        req.send();
+                        if (req.status !== 200) throw new Error(`HTTP ${req.status} for ${url}`);
+                        return parseJson(req.responseText, url);
+                    });
                 });
             }
+            console.log(`DataService: registered ${_registered} files under js/db (fetched on first use).`);
         } catch (e) {
             console.error("DataService: Browser loading failed", e);
         }
@@ -279,6 +312,30 @@
         // sheets stay in the ordinary pool of every OTHER world, where they are
         // simply one more face somebody can be wearing.
         const ZOMBIE_SHARE = 0.9;
+
+        // The share of a crowd that is a goblin on ground the Goblin Horde
+        // holds. A world does not have to be a goblin world for this: a
+        // PROCEDURAL square standing in a nation the Horde rules is goblin
+        // country of its own, and nine faces in ten dealt in its towns, its
+        // villages, its farms and the houses opened out of them come off the
+        // goblin half of the wardrobe (see goblinKeys / isGoblinHordeGround).
+        // The tenth is anybody else who lives there, dealt off the ordinary
+        // pool with the goblins taken out of it, so the share is exact.
+        // An authored town is deliberately not part of it: a written place
+        // keeps the cast it was written with, whoever rules the region it
+        // stands in.
+        const GOBLIN_SHARE = 0.9;
+
+        // The hyperpower whose ground it is: keyed this way in Hyperpowers.json
+        // and in the "controller" / "faction" fields of Countries.json.
+        const GOBLIN_POWER = "Goblin Horde";   // i18n-ignore: Hyperpowers.json key
+
+        // The square the horde answer was last worked out for, so the world is
+        // asked once per square rather than once per face dealt. A conquest
+        // while the party stands still is not seen until they move, which is
+        // the granularity the crowd is dealt at anyway: the population pass
+        // runs on arrival, not tile by tile.
+        const hordeGround = { key: null, answer: false };
 
         // Varlenia, and the people who are from there. A sheet flagged
         // `varlenian` in NPCs.json is a Varlenian face, and a Varlenian face is
@@ -608,10 +665,7 @@
                 if (m !== "goblin" && m !== "monster") return true;
                 const e = entry || this.entry(key);
                 const archetype = (e && e.Archetype) || "";
-                if (m === "goblin") {
-                    return String(key).toLowerCase().includes("goblin") ||
-                           archetype === "Goblin";
-                }
+                if (m === "goblin") return this.isGoblinSheet(key, e);
                 return !this.PEOPLE_ARCHETYPES.includes(archetype);
             },
 
@@ -685,7 +739,12 @@
                 const varlenia = (options && options.varlenia !== undefined)
                     ? !!options.varlenia
                     : this.isVarlenianPlace(options && options.mapId);
-                const slot = mode + ":" + magic + (varlenia ? ":varlenia" : "");
+                // Ground the Goblin Horde holds is a pool of its own the same
+                // way a world is: the goblins come off goblinKeys on a share of
+                // the draw, so the people pool there is everybody else.
+                const horde = !!(options && options.goblinLand);
+                const slot = mode + ":" + magic + (varlenia ? ":varlenia" : "") +
+                             (horde ? ":horde" : "");
                 if (!poolCache[slot]) {
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
@@ -698,6 +757,7 @@
                         // share of the same draw, so the people pool there is
                         // the survivors alone.
                         if (mode === "zombie" && e.zombie === true) return false;
+                        if (horde && this.isGoblinSheet(k, e)) return false;
                         if (!this.allowedInMagic(k, e)) return false;
                         return this.allowedInPopulation(k, e, mode);
                     });
@@ -734,6 +794,92 @@
                     });
                 }
                 return poolCache[slot];
+            },
+
+            // Is this sheet a goblin? The wardrobe spells it two ways and both
+            // count: the Goblin archetype outright, and a sheet whose name says
+            // so. It is the same rule a goblin world narrows its whole pool by
+            // (allowedInPopulation), named here so the world and the Horde's
+            // own ground cannot drift apart.
+            isGoblinSheet(key, entry) {
+                if (String(key).toLowerCase().includes("goblin")) return true;
+                const e = entry || this.entry(key);
+                return !!(e && e.Archetype === "Goblin"); // i18n-ignore: Archetypes.json id
+            },
+
+            // The goblin half of the wardrobe: the sheets the crowd of a
+            // Horde-held square is dealt from (see GOBLIN_SHARE). Filtered
+            // exactly like the ordinary pool, magic level included, and with
+            // the risen ones left out: a dead goblin belongs to a zombie
+            // world's own pool, not to a living town. When that leaves nothing
+            // at all the pick simply falls back to the ordinary pool rather
+            // than emptying the streets.
+            goblinKeys() {
+                const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
+                const slot = "goblinAll:" + magic;
+                if (!poolCache[slot]) {
+                    const data = db();
+                    poolCache[slot] = Object.keys(data).filter(k => {
+                        const e = data[k];
+                        if (!e || e.npc !== true) return false;
+                        if (e.creature === true || e.animal === true) return false;
+                        if (e.beta === true || e.vip === true) return false;
+                        if (e.aliens === true || e.zombie === true) return false;
+                        if (!this.isGoblinSheet(k, e)) return false;
+                        return this.allowedInMagic(k, e);
+                    });
+                }
+                return poolCache[slot];
+            },
+
+            // Does the Goblin Horde hold the nation standing on this world
+            // square? Read the way the encyclopedia reads it
+            // (NPCEmpathize.getNation): the live timeline first, the shipped
+            // Countries.json entry behind it, and a nation nobody controls that
+            // sits in the Horde's own faction counts as theirs.
+            goblinHordeHoldsSquare(x, y) {
+                const gs = window.$gameSystem;
+                if (!gs || typeof gs.getCountryFromWorldCoordinates !== "function") return false;
+                const nation = gs.getCountryFromWorldCoordinates(x, y);
+                if (!nation) return false;
+                const hm = window.HistoryManager;
+                const state = (hm && typeof hm.getNationState === "function" && nation.country)
+                    ? hm.getNationState(nation.country) : null;
+                const controller = (state && state.controller) || nation.controller || "Neutral"; // i18n-ignore: Countries.json controller id
+                if (controller === GOBLIN_POWER) return true;
+                const faction = (state && state.faction) || nation.faction || "Neutral"; // i18n-ignore: Countries.json faction id
+                return controller === "Neutral" && faction === GOBLIN_POWER; // i18n-ignore: Countries.json controller id
+            },
+
+            // Is this map goblin country, i.e. is the crowd dealt here nine
+            // tenths goblins? Two things have to be true, and both of them are
+            // asked of the place rather than of the world:
+            //   - the ground is PROCEDURAL: the reused square (its towns, its
+            //     villages, its caves, its roofed interiors) or a house
+            //     interior opened out of one. An authored map is never it.
+            //   - the world square it stands on is held by the Horde.
+            // An alien surface is never it either, whatever the world map
+            // paints on the square its landing grid is addressed by: another
+            // world is nobody's nation.
+            isGoblinHordeGround(mapId) {
+                const WMT = window.WorldMapTransfer;
+                if (!WMT) return false;
+                const here = (window.$gameMap && $gameMap.mapId) ? $gameMap.mapId() : NaN;
+                const id = (mapId !== undefined && mapId !== null) ? Number(mapId) : here;
+                if (!Number.isFinite(id)) return false;
+                const houses = window.NPCSystem && window.NPCSystem.isHouseMap;
+                if (id !== PROC_MAP_ID && !(houses && houses(id))) return false;
+                if (id === here && WMT.isAlienSurface && WMT.isAlienSurface()) return false;
+                const wc = (id === here)
+                    ? (WMT.currentWorldCoords && WMT.currentWorldCoords())
+                    : (WMT.worldCoordsForMap && WMT.worldCoordsForMap(id));
+                if (!wc) return false;
+                const key = id + ":" + wc.x + "," + wc.y;
+                if (hordeGround.key !== key) {
+                    hordeGround.key = key;
+                    hordeGround.answer = this.goblinHordeHoldsSquare(wc.x, wc.y);
+                }
+                return hordeGround.answer;
             },
 
             // The alien half of the same wardrobe. The beta answer does NOT
@@ -871,7 +1017,24 @@
             pickNpcKey(r, options) {
                 const opts = options || {};
                 const mode = opts.populationMode || this.populationMode();
-                let pool = this.npcKeys(opts);
+                // Goblin country (see GOBLIN_SHARE). A world that already
+                // answers for who its people are settles it instead: everybody
+                // is a goblin in a goblin world, there are no people at all in
+                // a monster one, and a zombie world's dead come first.
+                const goblinLand = (mode === "goblin" || mode === "monster" || mode === "zombie")
+                    ? false
+                    : ((opts.goblinLand !== undefined)
+                        ? !!opts.goblinLand
+                        : this.isGoblinHordeGround(opts.mapId));
+                let goblins = goblinLand ? this.goblinKeys() : [];
+                // The goblins are taken out of the people pool only where
+                // there are goblins to deal: every goblin sheet is magical, so
+                // a severed world has none of them, and taking them out of a
+                // pool nothing replaces them from would leave the Horde's own
+                // towns with fewer goblins in them than anywhere else.
+                let pool = this.npcKeys(goblins.length
+                    ? Object.assign({}, opts, { goblinLand: true })
+                    : opts);
                 let aliens = this.alienKeys();
                 let zombies = mode === "zombie" ? this.zombieKeys() : [];
                 // A monster world's crowd is the two creature halves and
@@ -890,13 +1053,14 @@
                     pool = pool.filter(opts.filter);
                     aliens = aliens.filter(opts.filter);
                     zombies = zombies.filter(opts.filter);
+                    goblins = goblins.filter(opts.filter);
                     if (beasts) {
                         beasts.creature = beasts.creature.filter(opts.filter);
                         beasts.animal = beasts.animal.filter(opts.filter);
                     }
                 }
                 if (beasts) pool = beasts.creature.concat(beasts.animal);
-                if (!pool.length && !aliens.length && !zombies.length) return null;
+                if (!pool.length && !aliens.length && !zombies.length && !goblins.length) return null;
                 let draw = (typeof r === "number" && r >= 0 && r < 1) ? r : Math.random();
                 // The dead come off the head of the draw in a zombie world, the
                 // aliens and the survivors sharing what is left of it, so one
@@ -909,6 +1073,18 @@
                             Math.floor((draw / zShare) * zombies.length))];
                     }
                     draw = (draw - zShare) / (1 - zShare);
+                }
+                // And the Horde's own off the head of it on ground the Horde
+                // holds, read the same way: the goblins are not in the people
+                // pool there (npcKeys), so the two never overlap and the tenth
+                // face is somebody else for certain.
+                if (goblins.length) {
+                    const gShare = (pool.length || aliens.length) ? GOBLIN_SHARE : 1;
+                    if (draw < gShare) {
+                        return goblins[Math.min(goblins.length - 1,
+                            Math.floor((draw / gShare) * goblins.length))];
+                    }
+                    draw = (draw - gShare) / (1 - gShare);
                 }
                 const share = aliens.length ? (pool.length ? this.alienShare(opts) : 1) : 0;
                 if (draw < share) {
@@ -1060,24 +1236,33 @@
     let _i18nManifest = null;
     const _i18nMissing = new Set();
 
+    // A language folder is two hundred and sixty odd files and seven megabytes,
+    // one per namespace, and a session never opens most of the screens they
+    // belong to. Every lookup goes through the namespace first - T('Bestiary.x')
+    // reads _i18nBase.Bestiary - so a namespace can be registered and read the
+    // moment something asks for it, exactly as the js/db files are. Reading a
+    // bank at load remains perfectly possible; it just is not done for the two
+    // hundred nobody touches.
     function i18nReadFolderNw(lang) {
         const fs = require('fs');
         const path = require('path');
         const out = {};
+        const seen = new Set();
         I18N_SUBS.forEach(function (sub) {
             const dir = path.join(process.cwd(), 'js', 'i18n', lang, sub);
             if (!fs.existsSync(dir)) return;
             fs.readdirSync(dir).forEach(function (file) {
                 if (path.extname(file).toLowerCase() !== '.json') return;
                 const ns = path.basename(file, '.json');
-                try {
-                    let text = fs.readFileSync(path.join(dir, file), 'utf8');
-                    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-                    if (out[ns]) console.warn('DataService i18n: namespace "' + ns + '" declared in more than one folder.');
-                    out[ns] = JSON.parse(text);
-                } catch (e) {
-                    console.error('DataService i18n: failed to load ' + lang + '/' + sub + '/' + file + ': ' + e.message);
+                if (seen.has(ns)) {
+                    console.warn('DataService i18n: namespace "' + ns + '" declared in more than one folder.');
+                    return;
                 }
+                seen.add(ns);
+                const filePath = path.join(dir, file);
+                registerLazy(out, ns, function () {
+                    return parseJson(fs.readFileSync(filePath, 'utf8'), filePath);
+                });
             });
         });
         return out;
@@ -1104,19 +1289,19 @@
     function i18nReadFolderBrowser(lang) {
         const out = {};
         // Manifest entries carry their folder ("plugins/Titlescreen.json").
+        // Registered, not fetched: a synchronous request blocks the page, and
+        // there were two hundred and sixty of them here before anything could
+        // be drawn.
         (i18nManifest()[lang] || []).forEach(function (file) {
-            try {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'js/i18n/' + lang + '/' + file, false);
-                xhr.send();
-                if (xhr.status === 200) {
-                    let text = xhr.responseText;
-                    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-                    out[file.replace(/^.*\//, '').replace(/\.json$/i, '')] = JSON.parse(text);
-                }
-            } catch (e) {
-                console.error('DataService i18n: failed to load ' + lang + '/' + file + ': ' + e.message);
-            }
+            const ns = file.replace(/^.*\//, '').replace(/\.json$/i, '');
+            const url = 'js/i18n/' + lang + '/' + file;
+            registerLazy(out, ns, function () {
+                const req = new XMLHttpRequest();
+                req.open('GET', url, false);
+                req.send();
+                if (req.status !== 200) throw new Error('HTTP ' + req.status + ' for ' + url);
+                return parseJson(req.responseText, url);
+            });
         });
         return out;
     }
@@ -1285,7 +1470,9 @@
         return _i18nCode;
     };
 
-    // Namespaces currently loaded, for the debug console and the key checker.
+    // Every namespace there is, for the debug console and the key checker.
+    // Listing them does not read them: a bank is read when a key in it is asked
+    // for (see i18nReadFolderNw).
     T.namespaces = function () {
         i18nSync();
         return Object.keys(_i18nBase).sort();
@@ -1293,6 +1480,11 @@
 
     window.T = T;
     window.I18N = T;
+    // Callers that translate a data-driven name (an ideology, a trait entry) reach for
+    // DataService.t and treat "the key came back unchanged" as untranslated, which is exactly
+    // what T does. Only window.T was ever published, so those lookups always fell through.
+    window.DataService = window.DataService || {};
+    window.DataService.t = T;
     i18nSync();
     console.log('DataService: i18n resolver ready (' + T.namespaces().length + ' namespaces).');
 

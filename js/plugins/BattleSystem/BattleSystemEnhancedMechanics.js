@@ -64,6 +64,14 @@
     // 2. BATTLE START DANGER WARNING
     // ========================================================================
 
+    // The party speaks up the moment a fight leaves the band they can win,
+    // which is the same threshold the damage layer is built around
+    // (BSE.Helpers.levelGapTier, section 4b-ter of the core): a monster more
+    // than levelGapFair levels above the party median earns a word of caution,
+    // and one more than levelGapHard above it earns the old retreat warning.
+    // Waiting until +13, as this used to, meant the party walked into the
+    // whole hard band and the whole bottom of the hopeless one with nothing
+    // said at all - and by then the numbers had already decided the fight.
     function checkAndShowDangerousEnemyWarning() {
         if (!$gameTroop || !$gameTroop.members().length) return;
         const party = $gameParty.members();
@@ -77,24 +85,20 @@
             const enemyData = $dataEnemies[enemy.enemyId()];
             return enemyData ? BSE.Helpers.getEnemyLevel(enemyData.note) : 0;
         }));
-        if (highestEnemyLevel > partyMedian + 13) {
-            showDangerWarning(party);
-        }
+        if (highestEnemyLevel <= 0) return;
+        const tier = BSE.Helpers.levelGapTier(highestEnemyLevel, partyMedian).tier;
+        if (tier === BSE.Data.LEVEL_GAP_HOPELESS) showDangerWarning(party, 'dangerWarning');
+        else if (tier === BSE.Data.LEVEL_GAP_HARD) showDangerWarning(party, 'cautionWarning');
     }
 
-    function showDangerWarning(party) {
-        let message;
-        if (party.length === 1) {
-            const pool = BSE.Helpers.bi18nList('dangerWarning.single') || [];
-            message = party[0].name() + ": " + (pool[Math.floor(Math.random() * pool.length)] || '');
-        } else {
-            const randomMember = party[Math.floor(Math.random() * party.length)];
-            const pool = BSE.Helpers.bi18nList('dangerWarning.party') || [];
-            message = randomMember.name() + ": " + (pool[Math.floor(Math.random() * pool.length)] || '');
-        }
+    function showDangerWarning(party, poolKey) {
+        const single = party.length === 1;
+        const speaker = single ? party[0] : party[Math.floor(Math.random() * party.length)];
+        const pool = BSE.Helpers.bi18nList(poolKey + (single ? '.single' : '.party')) || [];
+        const message = speaker.name() + ": " + (pool[Math.floor(Math.random() * pool.length)] || '');
         const cardMode = window.isCardCombatMode ? window.isCardCombatMode() : $gameSwitches.value(45);
         if (cardMode && (!window.AsciiMode || !window.AsciiMode.active)) {
-            showTopScreenMessage(message);
+            showTopScreenMessage(message, poolKey === 'dangerWarning' ? 'danger' : 'warning');
         } else {
             window.skipLocalization = true;
             $gameMessage.add(message);
@@ -106,10 +110,10 @@
     // 3. Top-screen warning (shared ParchmentToast HTML popup)
     // ========================================================================
 
-    function showTopScreenMessage(message) {
+    function showTopScreenMessage(message, severity) {
         if (SceneManager._scene && SceneManager._scene.constructor === Scene_Battle) {
             if (window.ParchmentToast) {
-                window.ParchmentToast.show(message, { severity: "danger", duration: 180 });
+                window.ParchmentToast.show(message, { severity: severity || "danger", duration: 180 });
             } else {
                 $gameMessage.add(message);
             }
@@ -201,7 +205,12 @@
 
     const MERCY_CHANCE = 0.05;
     const MERCY_DISPOSITION_THRESHOLD = 70;
-    const MERCY_LEVEL_GAP = 13; // matches checkAndShowDangerousEnemyWarning above
+    // Its own threshold, deliberately far wider than the battle-start warning:
+    // that one fires as soon as a fight leaves the winnable band, while this
+    // one asks whether the monster is so far past the party that killing them
+    // is beneath it. Sparing the party every time they are six levels down
+    // would hand them most of the hard band for free.
+    const MERCY_LEVEL_GAP = 13;
 
     function enemyMercyEligible(enemy) {
         if (!enemy || !enemy.isAlive || !enemy.isAlive()) return false;

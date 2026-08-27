@@ -389,6 +389,28 @@
     }
     return "";
   }
+
+  // The level on an enemy nameplate is colour-coded on the same three bands
+  // the damage layer runs on (BSE.Helpers.levelGapTier): white while the party
+  // can fell it, amber through the band they can still take at a cost, red
+  // once the fight is out of reach. The map nameplates in
+  // BattleSystemEnhancedLevelDisplay.js use the same three colours, so a
+  // monster does not change colour on the way into the fight.
+  const LEVEL_TIER_COLORS = ["#ffffff", "#ffd11a", "#ff3b30"];
+
+  function enemyLevelColor(battler) {
+    const BSE = window.BattleSystemEnhanced;
+    if (!BSE || !BSE.Helpers || !BSE.Helpers.levelGapTier) return LEVEL_TIER_COLORS[0];
+    if (!battler || !battler.isEnemy || !battler.isEnemy()) return LEVEL_TIER_COLORS[0];
+    const notes = battler.enemy().note || "";
+    const levelMatch = notes.match(/<Level:\s*(\d+)>/i);
+    if (!levelMatch) return LEVEL_TIER_COLORS[0];
+    const party = $gameParty ? $gameParty.members() : [];
+    if (!party.length) return LEVEL_TIER_COLORS[0];
+    const median = BSE.Helpers.getMedianLevel(party);
+    const tier = BSE.Helpers.levelGapTier(Number(levelMatch[1]), median).tier;
+    return LEVEL_TIER_COLORS[tier] || LEVEL_TIER_COLORS[0];
+  }
   // Read a state's <Hex: #RRGGBB> color from its note, for tinting status tags
   function getStateHexColor(state) {
     if (!state || !state.note) return null;
@@ -1497,7 +1519,9 @@
     if (this._htmlOverlay) {
       const nameBoxW = Math.max(40, geo.w + MINI.ang);
       const nameEl = this._htmlOverlay.addText(
-        level ? `<span>${rawName}</span><span>${level}</span>` : rawName,
+        level
+          ? `<span>${rawName}</span><span style="color:${enemyLevelColor(b)}">${level}</span>`
+          : rawName,
         geo.x - MINI.ang,
         -2,
         nameBoxW,
@@ -1619,6 +1643,10 @@
       }
     }
   };
+
+  // Frames between two attempts to line the monster column up with the party
+  // cards, while the cards are still being laid out by the browser.
+  const MINI_BAR_ALIGN_RETRY = 6;
 
   // Where the compact bars stand: one column in the top-right corner, the same
   // corner the large single-enemy bar occupies, in troop order.
@@ -1791,8 +1819,18 @@
     return Math.max(slot.w, Math.min(cap, Math.ceil(widest) + ENEMY_TARGET_CHROME));
   }
 
+  // Cached because updateEnemyTargetButtons asks for it on every frame of the
+  // battle, whether a target is being chosen or not. Re-looked-up if the node
+  // ever leaves the document (a scene teardown that clears document.body).
+  let _enemyTargetEl = null;
+  function _enemyTargetFind() {
+    if (_enemyTargetEl && _enemyTargetEl.isConnected) return _enemyTargetEl;
+    _enemyTargetEl = document.getElementById('html-enemytarget-overlay');
+    return _enemyTargetEl;
+  }
+
   function _enemyTargetRoot() {
-    let root = document.getElementById('html-enemytarget-overlay');
+    let root = _enemyTargetFind();
     if (!root) {
       root = document.createElement('div');
       root.id = 'html-enemytarget-overlay';
@@ -1800,6 +1838,7 @@
         'position:fixed;display:none;z-index:351;pointer-events:auto;' +
         'flex-direction:column;transform-origin:top left;';
       document.body.appendChild(root);
+      _enemyTargetEl = root;
     }
     return root;
   }
@@ -1925,13 +1964,13 @@
       cmdWin.show();
     }
     this._enemyTargetSavedCmdVisible = null;
-    const root = document.getElementById('html-enemytarget-overlay');
+    const root = _enemyTargetFind();
     if (root) root.style.display = 'none';
   };
 
   Scene_Battle.prototype.updateEnemyTargetButtons = function () {
     const win = this._enemyWindow;
-    const root = document.getElementById('html-enemytarget-overlay');
+    const root = _enemyTargetFind();
     const active = win && win.visible && win.isOpen && win.isOpen();
     if (!active) {
       if (root) root.style.display = 'none';
@@ -2149,22 +2188,43 @@
     this.updateEnemyTargetButtons();
   };
   Scene_Battle.prototype.updateBattleHealthBars = function () {
-    for (const sprite of this._battleHealthBarSprites) {
-      if (sprite && sprite._battler) sprite.visible = sprite._battler.isAlive();
+    const sprites = this._battleHealthBarSprites;
+    if (!sprites) return;
+    let living = 0;
+    for (let i = 0; i < sprites.length; i++) {
+      const sprite = sprites[i];
+      if (!sprite) continue;
+      if (sprite._battler) sprite.visible = sprite._battler.isAlive();
+      if (sprite.visible) living++;
     }
 
-    const miniBars = this._battleHealthBarSprites.filter((s) => s && s.visible);
-    if (miniBars.length !== this._miniBarColumnCount || this._miniBarNeedsAlign) {
-      // Every monster's bar stacks in one column in the top-right corner,
-      // never above its own sprite, standing level with the party's own cards
-      // over on the left (UI/PartyHud.js). Those cards are HTML and cannot be
-      // measured until the browser has laid them out, which is a frame or two
-      // after the battle opens, so an unaligned column simply asks again next
-      // frame rather than settling for a height of its own.
-      this._miniBarColumnCount = miniBars.length;
-      this._miniBarNeedsAlign =
-        !layoutMinimalEnemyBars(miniBars) && !!ConfigManager.partyHud;
+    // Every monster's bar stacks in one column in the top-right corner,
+    // never above its own sprite, standing level with the party's own cards
+    // over on the left (UI/PartyHud.js). Those cards are HTML and cannot be
+    // measured until the browser has laid them out, which is a frame or two
+    // after the battle opens, so an unaligned column simply asks again next
+    // frame rather than settling for a height of its own.
+    //
+    // The column only moves when a monster dies, so the list of bars is built
+    // here rather than allocated every frame of every fight to compare one
+    // integer against the last one.
+    if (living === this._miniBarColumnCount && !this._miniBarNeedsAlign) return;
+    // Measuring the party's cards forces the browser to lay the whole document
+    // out (UI/PartyHud.js barRowMetrics is four getBoundingClientRect calls),
+    // and the retry runs precisely while the fight is opening and the DOM is at
+    // its most expensive to measure. Asking every frame bought nothing: the
+    // cards need a frame or two either way, so the retry is put on its own
+    // slower clock. A real change (a monster died) still lands the same frame,
+    // since that comes in through the count above.
+    if (this._miniBarNeedsAlign && living === this._miniBarColumnCount) {
+      this._miniBarAlignWait = (this._miniBarAlignWait || 0) + 1;
+      if (this._miniBarAlignWait < MINI_BAR_ALIGN_RETRY) return;
     }
+    this._miniBarAlignWait = 0;
+    const miniBars = sprites.filter((s) => s && s.visible);
+    this._miniBarColumnCount = miniBars.length;
+    this._miniBarNeedsAlign =
+      !layoutMinimalEnemyBars(miniBars) && !!ConfigManager.partyHud;
   };
   const _Window_ActorCommand_initialize =
     Window_ActorCommand.prototype.initialize;

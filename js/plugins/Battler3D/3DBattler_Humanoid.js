@@ -46,6 +46,24 @@
     // Weapon types animated with the fast/short swing arc (dagger, claw, ...).
     const LIGHT_WEAPONS = [1, 8, 10, 11];
 
+    // ── MOUTH SHAPE BANK (see _buildMouth) ──────────────────────────────────
+    // Every humanoid used to wear the same flat dark circle. Goblinoids now draw
+    // a shape from this bank, hashed off their species identity, so no two
+    // goblin ids share a face. Anything else keeps 'round' (the old look).
+    const MOUTH_STYLES = [
+        'round', 'wide', 'slit', 'grin', 'snaggle', 'underbite', 'sneer',
+        'frown', 'gape', 'toothy', 'pucker', 'lopsided', 'gaptooth', 'drool',
+        'stitched', 'tusker'
+    ];
+
+    // ── STANDING HEIGHT (see _normalizeHeight) ──────────────────────────────
+    // World units of standing height per unit of profile scale. The humanoid
+    // family never ran the core's fit clamp, so the per-id size multiplier left
+    // goblins of one species nearly twice as tall as each other and the tallest
+    // ones overflowed the battle view. Goblinoid profiles are given a target
+    // height off this factor instead and the model is rescaled onto it.
+    const GOBLIN_HEIGHT_PER_SCALE = 1.20;
+
     // Hair (see _applyHair): surfaces that never grow it, and the gear pieces
     // that already cover the scalp.
     const BALD_POOLS = ['bone', 'metal', 'stone'];
@@ -301,6 +319,18 @@
         hob_firestarter:   _hob({ scale: 2.5, bodyBulk: 1.00, weapon: 1, gear: ['torch', 'firemotes', 'spikes'] }),
         hob_shaman:        _hob({ scale: 2.5, bodyBulk: 1.00, weapon: 6, gear: ['spikes', 'bonenecklace'] })
     });
+
+    // Mark every goblinoid profile (the two base rigs plus each species) and give
+    // it a standing height in world units. `goblinoid` opens the mouth bank;
+    // `standHeight` is the height _normalizeHeight rescales the model onto, so a
+    // species reads at one size however its per-id size multiplier rolled.
+    for (const k in CREATURE_PROFILES) {
+        if (k !== 'goblin' && k !== 'hobgoblin' &&
+            k.indexOf('gob_') !== 0 && k.indexOf('gobm_') !== 0 && k.indexOf('hob_') !== 0) continue;
+        const p = CREATURE_PROFILES[k];
+        p.goblinoid = 1;
+        p.standHeight = (p.scale || 2.5) * GOBLIN_HEIGHT_PER_SCALE;
+    }
     Object.assign(window.Battler3D.CREATURE_PROFILES, CREATURE_PROFILES);
 
     // Exact-name pins (also parsed by scripts/gen_3d_models_doc.js).
@@ -356,6 +386,13 @@
                 ? (creatureType.key || 'humanoid')
                 : (creatureType || 'goblin');
             super(scale, offsetY, battler, profile, weaponType, typeKey);
+
+            // Everything the caller multiplied onto the archetype's own scale:
+            // the <3d_scale:> note tag and the crowd factor that shrinks a big
+            // troop so it fits side by side. Height normalisation replaces the
+            // model's scale outright, so it has to re-apply this on top or a
+            // crowded fight would lay its goblins out at the wrong size.
+            this._extScaleMul = (scale && profile.scale) ? (scale / profile.scale) : 1;
 
             // Meshes
             this.head = null; this.torso = null;
@@ -423,7 +460,26 @@
                 const rightEye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), eyeMat); rightEye.position.set(0.15, 0.1, 0.3);
                 const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 8), pupilMat); rightPupil.position.set(0, 0, 0.04); rightEye.add(rightPupil); this.head.add(rightEye);
                 this.rightEyeMesh = rightEye;
-                const mouth = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.025, 8), new THREE.MeshStandardMaterial({ color: 0x111111 })); mouth.position.set(0, -0.15, 0.33); mouth.rotation.x = Math.PI / 2; this.head.add(mouth);
+                // Mouth: a wrapper holding the species' own shape from the bank
+                // plus the plain round mouth, which is swapped in for the length
+                // of a hit (a goblin taking a blow drops its face and shouts, see
+                // the mouth block in animatePose). The wrapper is left unrotated
+                // so the jaw animation (scale.x / scale.y) stretches it across and
+                // OPENS it, rather than driving its depth into the head.
+                const mouth = new THREE.Group();
+                const mouthStyle = this._mouthStyle();
+                this._mouthShape = this._buildMouth(mouthStyle);
+                mouth.add(this._mouthShape);
+                if (mouthStyle === 'round') {
+                    this._mouthOpen = this._mouthShape;   // already the circle
+                } else {
+                    this._mouthOpen = this._buildMouth('round');
+                    this._mouthOpen.visible = false;
+                    mouth.add(this._mouthOpen);
+                }
+                mouth.name = 'mouth_' + mouthStyle;
+                mouth.position.set(0, -0.15, 0.33);
+                this.head.add(mouth);
                 this.mouthMesh = mouth;
 
                 // Tusks / fangs: small upward tusks for orcs, big jutting fangs for ogres.
@@ -580,9 +636,202 @@
                 // ── HAIR (after gear, so a helmeted/hooded head stays bald)
                 this._applyHair();
 
+                // ── STANDING HEIGHT (last: it measures the finished head+gear)
+                this._normalizeHeight();
+
                 this.loaded = true;
                 resolve(this);
             });
+        }
+
+        // ── MOUTH ────────────────────────────────────────────────────────────
+        // Which shape off the bank this battler wears. Hashed off the species
+        // seed rather than idRand: idRand is a shared stream and drawing from it
+        // here would shift every draw made after it (bulk, head, hair, gear).
+        _mouthStyle() {
+            if (this.profile.mouthStyle) return this.profile.mouthStyle;
+            if (!this.profile.goblinoid) return 'round';
+            const s = ((this._speciesSeed >>> 0) || 1) % 1000003;
+            const x = Math.sin(s * 0.000431 + 2.17) * 20219.7;
+            const f = x - Math.floor(x);
+            return MOUTH_STYLES[Math.min(MOUTH_STYLES.length - 1, Math.floor(f * MOUTH_STYLES.length))];
+        }
+
+        // Build one mouth as a group in head-local space: +Z points out of the
+        // face, +X is across it and +Y up, with the group's own origin on the
+        // mouth line so the jaw animation scales it about its centre.
+        _buildMouth(style) {
+            const g = new THREE.Group();
+            g.name = 'mouth_' + style;
+            const dark = new THREE.MeshStandardMaterial({ color: 0x140f12, roughness: 0.95 });
+            const tooth = new THREE.MeshStandardMaterial({ color: 0xefe6cf, roughness: 0.5 });
+            const flesh = new THREE.MeshStandardMaterial({ color: 0x8f3a48, roughness: 0.7 });
+
+            // A flat opening lying against the face. The cylinder is laid on its
+            // side, so after the rotation its scale reads (width, depth, height).
+            const maw = (w, h, y) => {
+                const m = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.03, 10), dark);
+                m.rotation.x = Math.PI / 2;
+                m.scale.set(w, 1, h);
+                m.position.y = y || 0;
+                g.add(m);
+                return m;
+            };
+            // A straight lip line.
+            const slit = (w, h, y, rz) => {
+                const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.03), dark);
+                m.position.y = y || 0;
+                m.rotation.z = rz || 0;
+                g.add(m);
+                return m;
+            };
+            // A curved lip line: `up` bulges the arc upward (a scowl), otherwise
+            // it dips downward (a grin).
+            const curve = (r, tube, up) => {
+                const m = new THREE.Mesh(new THREE.TorusGeometry(r, tube, 5, 14, Math.PI), dark);
+                m.rotation.z = up ? 0 : Math.PI;
+                m.position.y = up ? -r * 0.45 : r * 0.45;
+                g.add(m);
+                return m;
+            };
+            // A row of `n` teeth. `dir` +1 points them up (from the lower lip),
+            // -1 points them down (from the upper lip).
+            const teeth = (n, dir, len, rad, y, span) => {
+                const sp = span === undefined ? 0.15 : span;
+                for (let i = 0; i < n; i++) {
+                    const t = new THREE.Mesh(new THREE.ConeGeometry(rad, len, 4), tooth);
+                    const u = n > 1 ? (i / (n - 1)) - 0.5 : 0;
+                    t.position.set(u * sp, (y || 0) + dir * len * 0.5, 0.018);
+                    if (dir < 0) t.rotation.z = Math.PI;
+                    g.add(t);
+                }
+            };
+            // One oversized tusk.
+            const tusk = (x, dir, len, tilt) => {
+                const t = new THREE.Mesh(new THREE.ConeGeometry(0.022, len, 5), tooth);
+                t.position.set(x, dir * len * 0.45, 0.022);
+                t.rotation.z = (dir < 0 ? Math.PI : 0) + (tilt || 0);
+                g.add(t);
+                return t;
+            };
+
+            switch (style) {
+                case 'wide':      // a broad letterbox slot
+                    maw(1.75, 0.45);
+                    break;
+                case 'slit':      // a thin closed line
+                    slit(0.24, 0.035, 0);
+                    break;
+                case 'grin':      // curved up at the corners, upper teeth showing
+                    curve(0.12, 0.022, false);
+                    teeth(5, -1, 0.05, 0.017, 0.03);
+                    break;
+                case 'snaggle':   // crooked line with one tusk out of it
+                    slit(0.22, 0.04, 0, 0.16);
+                    tusk(-0.07, 1, 0.11, -0.2);
+                    tusk(0.06, -1, 0.05, 0.1);
+                    break;
+                case 'underbite': // jaw pushed forward, lower teeth over the lip
+                    maw(1.3, 0.5, -0.01);
+                    teeth(4, 1, 0.07, 0.02, -0.03);
+                    break;
+                case 'sneer':     // one corner hauled up, a single tooth bared
+                    slit(0.23, 0.038, 0, 0.38);
+                    tusk(0.075, -1, 0.055, 0.25);
+                    break;
+                case 'frown':     // corners dragged down
+                    curve(0.12, 0.024, true);
+                    break;
+                case 'gape':      // hanging open, throat and tongue behind it
+                    maw(0.95, 1.55);
+                    {
+                        const throat = new THREE.Mesh(new THREE.SphereGeometry(0.075, 8, 8), dark);
+                        throat.position.z = -0.03; throat.scale.set(1, 1.4, 0.6); g.add(throat);
+                        const tg = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), flesh);
+                        tg.position.set(0, -0.05, 0.012); tg.scale.set(1, 1.1, 0.35); g.add(tg);
+                    }
+                    break;
+                case 'toothy':    // a full ring of interlocking teeth
+                    maw(1.35, 1.05);
+                    teeth(5, -1, 0.055, 0.016, 0.05, 0.19);
+                    teeth(4, 1, 0.05, 0.016, -0.05, 0.16);
+                    break;
+                case 'pucker':    // pursed lips pushed out from the face
+                    {
+                        const lips = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.028, 6, 12), flesh);
+                        lips.position.z = 0.012; g.add(lips);
+                        maw(0.45, 0.45, 0);
+                    }
+                    break;
+                case 'lopsided':  // the whole mouth set on a slant
+                    // Rolled about the disc's OWN axis (local Y, applied before
+                    // the lay-down about X), so the oval tilts in the face plane.
+                    maw(1.45, 0.6).rotation.y = -0.55;
+                    break;
+                case 'gaptooth':  // wide, with two teeth and a hole between them
+                    maw(1.6, 0.55);
+                    tusk(-0.045, -1, 0.06, 0);
+                    tusk(0.045, -1, 0.06, 0);
+                    break;
+                case 'drool':     // slack, with a tongue lolling out of it
+                    maw(1.2, 0.75);
+                    {
+                        const tg = new THREE.Mesh(new THREE.CapsuleGeometry(0.028, 0.09, 3, 6), flesh);
+                        tg.position.set(0.03, -0.075, 0.022); tg.rotation.z = 0.35; g.add(tg);
+                    }
+                    break;
+                case 'stitched':  // a sewn-shut line
+                    slit(0.24, 0.03, 0);
+                    for (let i = 0; i < 4; i++) {
+                        const th = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.055, 0.02), tooth);
+                        th.position.set(-0.09 + i * 0.06, 0, 0.02);
+                        th.rotation.z = (i % 2 ? 1 : -1) * 0.5;
+                        g.add(th);
+                    }
+                    break;
+                case 'tusker':    // two boar tusks curling up past the lip
+                    slit(0.2, 0.045, 0);
+                    tusk(-0.08, 1, 0.13, 0.28);
+                    tusk(0.08, 1, 0.13, -0.28);
+                    break;
+                case 'round':
+                default:          // the original flat disc
+                    maw(0.95, 0.95);
+                    break;
+            }
+            return g;
+        }
+
+        // ── STANDING HEIGHT ──────────────────────────────────────────────────
+        // Rescale the model so the top of its head lands on the profile's
+        // declared standing height. Only profiles that declare one (the
+        // goblinoids) are touched; every other humanoid keeps its rolled size.
+        //
+        // The rig is measured, not assumed: animatePose stands the torso at
+        // y = 1.1 and rides the head 0.65 above that, and the head carries its
+        // own gear (helm, horns, crown, hair), so the head's built extent is
+        // read straight off it. The feet sit on the ground plane the model is
+        // placed at, so head-top local Y * scale IS the standing height.
+        _normalizeHeight() {
+            const target = this.profile.standHeight;
+            if (!target || !this.model || !this.scale || typeof THREE.Box3 === 'undefined') return;
+            const HEAD_Y = 1.75;              // torso 1.1 + head ride 0.65
+            let top = HEAD_Y + 0.35 * ((this.profile.headScale || 1) * (this.headMul || 1));
+            if (this.head) {
+                this.model.updateMatrixWorld(true);
+                const box = new THREE.Box3().setFromObject(this.head);
+                if (!box.isEmpty()) {
+                    const localMax = (box.max.y - this.model.position.y) / this.scale;
+                    if (localMax > 0) top = HEAD_Y + localMax;
+                }
+            }
+            if (top < 0.5) return;            // nonsense measurement, leave it alone
+            // Keep a hint of the per-id size roll (+/-5%) so a line of the same
+            // species is not a row of clones, and re-apply whatever the caller
+            // multiplied on (note tag, crowd factor).
+            const roll = Math.max(0, Math.min(1, ((this.sizeMul || 1) - 0.86) / 0.30));
+            this.scale = (target / top) * (0.95 + roll * 0.10) * (this._extScaleMul || 1);
+            this.model.scale.set(this.scale, this.scale, this.scale);
         }
 
         // ── GEAR: per-species clothing, accessories and hand props ───────────
@@ -1283,10 +1532,24 @@
                 }
                 if (this.mouthMesh) {
                     const anim = this.currentAnimation;
+                    // A blow knocks the face out of its own shape: whatever the
+                    // species wears from the bank is swapped for the plain round
+                    // mouth and blown open into a circular shout, then handed back
+                    // the moment the hit reaction is over.
+                    if (this._mouthOpen && this._mouthOpen !== this._mouthShape) {
+                        const shout = anim === 'hit';
+                        if (this._mouthOpen.visible !== shout) {
+                            this._mouthOpen.visible = shout;
+                            this._mouthShape.visible = !shout;
+                        }
+                    }
                     let msx = 1.0, msy = 1.0;
                     if (anim === 'hit') {
-                        msx = 1.3 + Math.sin(t * 22) * 0.25;
-                        msy = 0.4 + Math.abs(Math.sin(t * 18)) * 1.1;
+                        // Kept square (x and y together) so the round mouth reads
+                        // as a circle rather than a stretched slot.
+                        const gasp = Math.sin(t * 20) * 0.09;
+                        msx = 1.5 + gasp;
+                        msy = 1.5 + gasp;
                     } else if (anim === 'specialattack') {
                         msx = 1.4;
                         msy = 0.6 + Math.abs(Math.sin(t * 14)) * 0.9;

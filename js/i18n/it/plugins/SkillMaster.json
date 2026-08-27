@@ -93,16 +93,46 @@
     "knownFraction": "{known} / {total} conosciuti ({pct}%)",
     "yourSystem": "Il sistema della tua classe",
     "systems": {
-      "Arcane": { "name": "Arcano", "desc": "Magia antica, appresa da libri e formule." },
-      "Sacred": { "name": "Sacro", "desc": "Potere disceso da ordini superiori." },
-      "Sympathetic": { "name": "Simpatica", "desc": "Il simile richiama il simile: un oggetto legato a un altro." },
-      "Dimensional": { "name": "Dimensionale", "desc": "Magia che piega spazio, tempo e probabilità." },
-      "Psionics": { "name": "Psionica", "desc": "Potere proiettato dalla sola mente." },
-      "Technomagic": { "name": "Tecnomagia", "desc": "L'occulto fuso con la macchina." },
-      "Pataphysic": { "name": "Patafisica", "desc": "Magia che non risponde a nessuna legge coerente." },
-      "Natural": { "name": "Naturale", "desc": "Potere tratto da piante, bestie e terra." },
-      "Thermodynamics": { "name": "Termodinamica", "desc": "Magia che vive nel calore, nel gelo e nella corrente." },
-      "Ritual": { "name": "Rituale", "desc": "Potere pagato con rito, sangue o patto." }
+      "Arcane": {
+        "name": "Arcano",
+        "desc": "Magia antica, appresa da libri e formule."
+      },
+      "Sacred": {
+        "name": "Sacro",
+        "desc": "Potere disceso da ordini superiori."
+      },
+      "Sympathetic": {
+        "name": "Simpatica",
+        "desc": "Il simile richiama il simile: un oggetto legato a un altro."
+      },
+      "Dimensional": {
+        "name": "Dimensionale",
+        "desc": "Magia che piega spazio, tempo e probabilità."
+      },
+      "Psionics": {
+        "name": "Psionica",
+        "desc": "Potere proiettato dalla sola mente."
+      },
+      "Technomagic": {
+        "name": "Tecnomagia",
+        "desc": "L'occulto fuso con la macchina."
+      },
+      "Pataphysic": {
+        "name": "Patafisica",
+        "desc": "Magia che non risponde a nessuna legge coerente."
+      },
+      "Natural": {
+        "name": "Naturale",
+        "desc": "Potere tratto da piante, bestie e terra."
+      },
+      "Thermodynamics": {
+        "name": "Termodinamica",
+        "desc": "Magia che vive nel calore, nel gelo e nella corrente."
+      },
+      "Ritual": {
+        "name": "Rituale",
+        "desc": "Potere pagato con rito, sangue o patto."
+      }
     }
   },
   "graph": {
@@ -143,5 +173,7 @@
     "confirm": "Salva",
     "confirmDelete": "Disfare {skill}? I suoi componenti sono già stati consumati. Premi di nuovo per confermare.",
     "deleted": "{skill} è stata disfatta."
-  }
+  },
+  "fusionCritical": "★ SUCCESSO CRITICO NAT 20! ★\n{result}\nPotenziata con -20% di costo in MP e +25% di efficacia!",
+  "fusionFailed": "☠ FUSIONE ARCANA FALLITA (CD {dc}) ☠\nLa fusione degli incantesimi si è destabilizzata in un violento contraccolpo magico!\nGli incantesimi componenti ({components}) sono stati distrutti!"
 }

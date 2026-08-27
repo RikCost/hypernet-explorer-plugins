@@ -601,18 +601,82 @@
   "veryRare": "Molto raro"
  },
  "bloodTypes": {
-  "o_pos": { "name": "0 Positivo", "desc": "Il tipo più comune in assoluto, è un donatore sicuro per qualsiasi altro paziente Rh positivo." },
-  "a_pos": { "name": "A Positivo", "desc": "Comune; compatibile con pazienti A e AB anch'essi Rh positivi." },
-  "b_pos": { "name": "B Positivo", "desc": "Meno comune; compatibile con pazienti B e AB anch'essi Rh positivi." },
-  "ab_pos": { "name": "AB Positivo", "desc": "Il ricevente universale, può ricevere sangue di qualsiasi combinazione ABO e Rh." },
-  "o_neg": { "name": "0 Negativo", "desc": "Il donatore universale, sicuro per qualsiasi ricevente indipendentemente dal proprio gruppo." },
-  "a_neg": { "name": "A Negativo", "desc": "Compatibile con qualsiasi paziente A o AB, Rh positivo o negativo." },
-  "b_neg": { "name": "B Negativo", "desc": "Compatibile con qualsiasi paziente B o AB, Rh positivo o negativo." },
-  "ab_neg": { "name": "AB Negativo", "desc": "Il più raro degli otto tipi comuni, è un donatore solo per altri pazienti AB." },
-  "rh_null": { "name": "Rh-null (Sangue Dorato)", "desc": "Non porta alcun antigene Rh, quindi può essere trasfuso quasi a chiunque abbia un fenotipo Rh, ma può essere rifornito solo da un altro donatore Rh-null." },
-  "duffy_neg": { "name": "Duffy Negativo", "desc": "Privo dell'antigene Duffy; resiste naturalmente ad alcuni parassiti trasmessi per via ematica, ma trasfusioni ripetute richiedono un donatore Duffy-compatibile per evitare una reazione immunitaria." },
-  "diego_b_neg": { "name": "Diego(b-)", "desc": "Un profilo antigenico estremamente raro; una trasfusione sicura richiede un donatore privo dello stesso antigene." },
-  "kidd_b_neg": { "name": "Kidd(b-)", "desc": "Una linea Kidd-negativa; l'esposizione ripetuta ad antigeni Kidd non compatibili provoca una forte risposta immunitaria, quindi i donatori devono corrispondere per antigene." }
+  "o_pos": {
+   "name": "0 Positivo",
+   "desc": "Il tipo più comune in assoluto, è un donatore sicuro per qualsiasi altro paziente Rh positivo."
+  },
+  "a_pos": {
+   "name": "A Positivo",
+   "desc": "Comune; compatibile con pazienti A e AB anch'essi Rh positivi."
+  },
+  "b_pos": {
+   "name": "B Positivo",
+   "desc": "Meno comune; compatibile con pazienti B e AB anch'essi Rh positivi."
+  },
+  "ab_pos": {
+   "name": "AB Positivo",
+   "desc": "Il ricevente universale, può ricevere sangue di qualsiasi combinazione ABO e Rh."
+  },
+  "o_neg": {
+   "name": "0 Negativo",
+   "desc": "Il donatore universale, sicuro per qualsiasi ricevente indipendentemente dal proprio gruppo."
+  },
+  "a_neg": {
+   "name": "A Negativo",
+   "desc": "Compatibile con qualsiasi paziente A o AB, Rh positivo o negativo."
+  },
+  "b_neg": {
+   "name": "B Negativo",
+   "desc": "Compatibile con qualsiasi paziente B o AB, Rh positivo o negativo."
+  },
+  "ab_neg": {
+   "name": "AB Negativo",
+   "desc": "Il più raro degli otto tipi comuni, è un donatore solo per altri pazienti AB."
+  },
+  "rh_null": {
+   "name": "Rh-null (Sangue Dorato)",
+   "desc": "Non porta alcun antigene Rh, quindi può essere trasfuso quasi a chiunque abbia un fenotipo Rh, ma può essere rifornito solo da un altro donatore Rh-null."
+  },
+  "duffy_neg": {
+   "name": "Duffy Negativo",
+   "desc": "Privo dell'antigene Duffy; resiste naturalmente ad alcuni parassiti trasmessi per via ematica, ma trasfusioni ripetute richiedono un donatore Duffy-compatibile per evitare una reazione immunitaria."
+  },
+  "diego_b_neg": {
+   "name": "Diego(b-)",
+   "desc": "Un profilo antigenico estremamente raro; una trasfusione sicura richiede un donatore privo dello stesso antigene."
+  },
+  "kidd_b_neg": {
+   "name": "Kidd(b-)",
+   "desc": "Una linea Kidd-negativa; l'esposizione ripetuta ad antigeni Kidd non compatibili provoca una forte risposta immunitaria, quindi i donatori devono corrispondere per antigene."
+  },
+  "synth_delta": {
+   "name": "Sintetico-Δ",
+   "desc": "Emulsione di polimero fluorocarburico sintetico che imita l'emoglobina. Funziona da donatore universale artificiale per tutti i sistemi umani e sintetici standard."
+  },
+  "synth_psi": {
+   "name": "Sintetico-Ψ",
+   "desc": "Fluido sintetico psionico-conduttivo, arricchito di micro-naniti neurali per una conduttività bioelettrica potenziata."
+  },
+  "azure_hemocyanin": {
+   "name": "Azzurro (emocianina)",
+   "desc": "Sangue blu a base di rame, ereditato da antiche stirpi di limulo. Gli amebociti coagulano rapidamente attorno alle endotossine batteriche, conferendo immunità completa alla sepsi batterica."
+  },
+  "chlorocruorin": {
+   "name": "Clorocruorina (verde)",
+   "desc": "Pigmento respiratorio ferro-porfirinico che produce un sangue verde acceso, adatto agli abissi acquatici ipossici e ad alta pressione."
+  },
+  "bombay_hh": {
+   "name": "Fenotipo Bombay (hh)",
+   "desc": "Privo dell'antigene H fondamentale richiesto per l'espressione ABO. In emergenza può donare senza rischi ai riceventi ABO standard, ma riceve solo da Bombay (hh)."
+  },
+  "colton_neg": {
+   "name": "Colton(a-)",
+   "desc": "Un fenotipo raro privo degli antigeni Colton dei canali dell'acqua sulle membrane eritrocitarie."
+  },
+  "lutheran_neg": {
+   "name": "Lutheran(a-b-)",
+   "desc": "Un raro fenotipo nullo recessivo in cui i globuli rossi mancano di entrambe le glicoproteine di adesione Lu(a) e Lu(b)."
+  }
  },
  "bacterial": "Batterica",
  "viral": "Virale",

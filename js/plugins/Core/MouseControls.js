@@ -260,4 +260,317 @@
         return null;
     };
     
+    //=============================================================================
+    // UIScroll, mouse wheel scrolling for every DOM overlay in the game
+    //=============================================================================
+    // RMMZ swallows the wheel at the document level: rmmz_core.js binds
+    // TouchInput._onWheel with { passive: false } and calls preventDefault on
+    // every event, so no DOM overlay a plugin builds ever scrolls by itself.
+    // Historically each menu worked around that by binding its own wheel
+    // handler, which meant the menus that forgot could not be scrolled with
+    // the wheel at all, and the ones that remembered all reimplemented the
+    // same walk, usually hardwired to a single pane so their other overflow
+    // regions stayed stuck anyway.
+    //
+    // This is that walk, done once for the whole game. It listens on the
+    // document in the CAPTURE phase, so it runs before both TouchInput and any
+    // handler a plugin bound on its own container:
+    //
+    //   * from the event target, walk up looking for a pane that really
+    //     overflows on Y and is set to auto/scroll
+    //   * scroll it, then preventDefault + stopPropagation so neither the game
+    //     nor the plugin's own container handler acts on the same notch
+    //   * find nothing, and do nothing at all, so wheel-as-zoom overlays (the
+    //     world atlas map, the driving camera, the 3D previews) are untouched
+    //
+    // Deferring to what is already there: the walk stops at any element that
+    // registered a wheel listener of its own (see the addEventListener hook
+    // below, which tags them). So a 3D preview canvas keeps zooming, a scene
+    // that steps a selection per notch keeps stepping, and only the panes
+    // nobody wired reach this. An element can also opt out by hand with the
+    // `data-wheel-own` attribute.
+    const UIScroll = {
+        // How far above the target we look for a pane. Overlays nest deeply
+        // (page > column > list > row > cell > label); the bound only keeps a
+        // stray event cheap, it is not meant to exclude anything real.
+        MAX_DEPTH: 24,
+        // Below this a pane is not really overflowing, it is the rounding
+        // artefact of a fractional layout.
+        MIN_OVERFLOW: 2,
+        // Bounds on the fallback search below. Panes sit within a few levels
+        // of the overlay root, and the node cap keeps a notch on a very large
+        // menu from costing a layout pass over the whole tree.
+        FALLBACK_DEPTH: 5,
+        FALLBACK_NODES: 400,
+
+        // Wheel deltas arrive in pixels, lines or pages depending on the
+        // device; normalise them all to pixels.
+        deltaOf(event) {
+            const dy = event.deltaY;
+            if (event.deltaMode === 1) return dy * 40;
+            if (event.deltaMode === 2) return dy * 400;
+            return dy;
+        },
+
+        isScrollable(el) {
+            if (!el || el.nodeType !== 1) return false;
+            if (el.scrollHeight - el.clientHeight < this.MIN_OVERFLOW) return false;
+            const overflow = getComputedStyle(el).overflowY;
+            return overflow === 'auto' || overflow === 'scroll' || overflow === 'overlay';
+        },
+
+        // True while the pane can still move the way the notch is asking for.
+        canScroll(el, delta) {
+            if (delta < 0) return el.scrollTop > 0;
+            return el.scrollTop < el.scrollHeight - el.clientHeight - 1;
+        },
+
+        // Something else already owns the wheel here.
+        ownsWheel(el) {
+            return !!(el.__uiScrollOwnWheel || (el.hasAttribute && el.hasAttribute('data-wheel-own')));
+        },
+
+        // The pane a notch at `node` should move: the nearest scrollable
+        // ancestor with room left in that direction, else the nearest
+        // scrollable ancestor at all, so a pane pinned at its end still
+        // swallows the notch instead of letting the map zoom behind it.
+        // Bails out the moment the walk meets an owner of the wheel, without
+        // trying the fallback below: a pane that owner is keeping to itself is
+        // not ours to move.
+        paneFor(node, delta) {
+            let el = node;
+            let depth = 0;
+            let pinned = null;
+            let overlay = null;
+            while (el && el.nodeType === 1 && depth++ < this.MAX_DEPTH) {
+                if (this.ownsWheel(el)) return null;
+                if (this.isScrollable(el)) {
+                    if (this.canScroll(el, delta)) return el;
+                    if (!pinned) pinned = el;
+                }
+                if (el.parentElement === document.body) overlay = el;
+                el = el.parentElement;
+            }
+            if (pinned) return pinned;
+            // Nothing under the pointer scrolls: the notch landed on a header,
+            // a footer or the padding around the content. Fall back to the one
+            // pane of this overlay that can still move, which is what the
+            // player means when a menu has a single list on it.
+            return overlay ? this.onlyPaneOf(overlay, delta) : null;
+        },
+
+        // The single scrollable pane of `root` that has room in this
+        // direction. Deliberately gives up when the overlay has more than one,
+        // since guessing which of two lists the player meant is worse than
+        // doing nothing. The search is a bounded breadth first walk (a pane is
+        // never searched for nested panes) so it stays cheap on the big
+        // overlays even though it runs per notch.
+        onlyPaneOf(root, delta) {
+            let found = null;
+            let seen = 0;
+            const walk = (el, depth) => {
+                if (depth > this.FALLBACK_DEPTH) return true;
+                for (const child of el.children) {
+                    if (++seen > this.FALLBACK_NODES) return false;
+                    if (this.ownsWheel(child)) return false;
+                    if (this.isScrollable(child)) {
+                        if (found) return false;
+                        found = child;
+                    } else if (!walk(child, depth + 1)) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+            if (!walk(root, 0)) return null;
+            return found && this.canScroll(found, delta) ? found : null;
+        },
+
+        // ---- L2 / R2, the controller's wheel ------------------------------
+        // The walk above answers a notch of the wheel. A pad has no notch: MZ's
+        // gamepad map has no name for the analog triggers at all (they are
+        // buttons 6 and 7, read raw through Core/AnalogStickInput), so nothing
+        // in the engine ever turns a pulled trigger into anything. Without this
+        // a player on a pad cannot read a page of text that does not fit: the
+        // cursor walks the cards, and the prose beside them stays where it is.
+        //
+        // Same pane, same rules, polled once a frame instead of once a notch.
+        TRIGGER_SPEED: 26,      // pixels a frame at a fully pulled trigger
+        TRIGGER_DEADZONE: 0.15, // some pads rest a little above zero
+        STEP_WAIT: 20,          // frames before a held trigger starts repeating
+        STEP_INTERVAL: 5,       // and how often it repeats after that
+        _hold: 0,
+        _px: -1,
+        _py: -1,
+
+        // Where the mouse last was, so a pulled trigger scrolls the pane the
+        // player is pointing at, exactly as their wheel would.
+        trackPointer(event) {
+            this._px = event.clientX;
+            this._py = event.clientY;
+        },
+
+        // The pane a trigger should move, in the order a player means it:
+        //   the pane the open scene names, for a screen that knows which of its
+        //   panes is the one being read;
+        //   the pane under the pointer, if the mouse is over the overlay;
+        //   the pane holding whatever the cursor is lit on, so the text beside
+        //   a focused control scrolls with it;
+        //   else the one pane of the overlay that can still move, and failing
+        //   that the right page of a book spread, which is the page a menu in
+        //   this game puts its prose on.
+        triggerPane(delta) {
+            const scene = SceneManager._scene;
+            const named = scene && (scene.onUIScrollTarget || scene.ccScrollTarget);
+            if (named) {
+                const pane = named.call(scene);
+                if (this.isScrollable(pane)) return pane;
+            }
+            if (this._px >= 0 && document.elementFromPoint) {
+                const at = document.elementFromPoint(this._px, this._py);
+                if (at && at.id !== 'gameCanvas') {
+                    const pane = this.paneFor(at, delta);
+                    if (pane) return pane;
+                }
+            }
+            const lit = document.querySelector('.cc-nav-focus, .focused, .kb-focus');
+            if (lit) {
+                const pane = this.paneFor(lit, delta);
+                if (pane) return pane;
+            }
+            const overlay = this.topOverlay();
+            if (!overlay) return null;
+            return this.onlyPaneOf(overlay, delta) ||
+                this.rightPageOf(overlay, delta);
+        },
+
+        // The overlay a plugin has put over the game: the last child of the
+        // body that is on screen and is not the canvas itself.
+        topOverlay() {
+            const kids = document.body ? document.body.children : [];
+            for (let i = kids.length - 1; i >= 0; i--) {
+                const el = kids[i];
+                if (!el || el.nodeType !== 1) continue;
+                if (el.id === 'gameCanvas' || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
+                if (el.style && el.style.display === 'none') continue;
+                if (!el.clientHeight) continue;
+                return el;
+            }
+            return null;
+        },
+
+        // A book spread reads left to right: the left page carries the list the
+        // cursor walks and the right page carries what it says about the thing
+        // under the cursor. When an overlay has more than one pane and the walk
+        // above gave up, the right page is the one being read.
+        rightPageOf(root, delta) {
+            const pages = root.querySelectorAll('.cc-page-right, .right-page');
+            for (const page of pages) {
+                if (this.isScrollable(page) && this.canScroll(page, delta)) return page;
+                const inner = page.querySelectorAll('*');
+                for (const el of inner) {
+                    if (this.isScrollable(el) && this.canScroll(el, delta)) return el;
+                }
+            }
+            return null;
+        },
+
+        // Read once a frame while any overlay is up, AFTER the open scene has
+        // had its turn: a screen that wants the triggers for something of its
+        // own - the conversation panel's social web zooms with them, the shop
+        // counts a quantity with them, the hyperdeck turns its case - has read
+        // them by now, and reading is the claim (see AnalogStickInput). This
+        // poll stands down whenever somebody else has already asked, so one
+        // pull never does two things at once.
+        updateTriggers() {
+            const pads = window.AnalogStickInput;
+            if (!pads || typeof pads.leftTrigger !== 'function') return;
+            if (typeof pads.triggerReadsThisFrame === 'function' &&
+                pads.triggerReadsThisFrame() > 0) return;
+            const dz = this.TRIGGER_DEADZONE;
+            const pull = (v) => (v > dz ? (v - dz) / (1 - dz) : 0);
+            const amount = (pull(pads.rightTrigger()) - pull(pads.leftTrigger())) * this.TRIGGER_SPEED;
+            if (!amount) {
+                this._hold = 0;
+                return;
+            }
+            this._hold++;
+            // A scene that takes a notch to move a selection takes a pulled
+            // trigger the same way, on the cadence of a held direction rather
+            // than sixty times a second.
+            const scene = SceneManager._scene;
+            const step = scene && (scene.onUIWheelStep || scene.ccScrollStep);
+            if (step) {
+                const t = this._hold;
+                const fires = t === 1 || (t >= this.STEP_WAIT && (t - this.STEP_WAIT) % this.STEP_INTERVAL === 0);
+                if (fires && step.call(scene, amount > 0 ? 1 : -1)) return;
+                if (!fires) return;
+            }
+            const pane = this.triggerPane(amount);
+            if (pane) pane.scrollTop += amount;
+        },
+
+        onWheel(event) {
+            if (event.defaultPrevented) return;
+            const target = event.target;
+            if (!target || target.nodeType !== 1) return;
+            // The game canvas is not an overlay; leave it to TouchInput.
+            if (target.id === 'gameCanvas') return;
+            const delta = this.deltaOf(event);
+            if (!delta) return;
+            // A scene can take the notch itself and move a selection instead
+            // (CharacterCreation's hometown dropdown does; see CCScroll).
+            const scene = SceneManager._scene;
+            const step = scene && (scene.onUIWheelStep || scene.ccScrollStep);
+            if (step && step.call(scene, delta > 0 ? 1 : -1)) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            const pane = this.paneFor(target, delta);
+            if (!pane) return;
+            pane.scrollTop += delta;
+            event.preventDefault();
+            event.stopPropagation();
+        },
+
+        // Tags every element that binds a wheel listener of its own, which is
+        // how paneFor knows to keep its hands off. Elements only: a listener
+        // on document or window is a global fallback (camera zoom behind an
+        // overlay) and is meant to be superseded by a pane under the pointer.
+        hookListeners() {
+            const proto = EventTarget.prototype;
+            const original = proto.addEventListener;
+            if (original.__uiScrollHooked) return;
+            const patched = function (type, listener, options) {
+                if (type === 'wheel' && this && this.nodeType === 1) {
+                    this.__uiScrollOwnWheel = true;
+                }
+                return original.call(this, type, listener, options);
+            };
+            patched.__uiScrollHooked = true;
+            proto.addEventListener = patched;
+        },
+
+        install() {
+            if (this._installed) return;
+            this._installed = true;
+            this.hookListeners();
+            document.addEventListener('wheel', (e) => this.onWheel(e), { capture: true, passive: false });
+            document.addEventListener('pointermove', (e) => this.trackPointer(e), { passive: true });
+            // Once a frame, for the whole game, after the scene has updated:
+            // the triggers are polled rather than delivered, so there is
+            // nothing to listen for, and going last is what lets a scene that
+            // wants them for itself have them (see updateTriggers).
+            const _updateScene = SceneManager.updateScene;
+            SceneManager.updateScene = function () {
+                _updateScene.apply(this, arguments);
+                if (this.isCurrentSceneStarted && this.isCurrentSceneStarted()) UIScroll.updateTriggers();
+            };
+        }
+    };
+
+    window.UIScroll = UIScroll;
+    UIScroll.install();
+
 })();

@@ -500,6 +500,58 @@
         updateBiomeAudio();
     }
 
+    // ============================================================================
+    // AMBIENCE CROSSFADE
+    // ----------------------------------------------------------------------------
+    // Every ambience change used to be a cut: AudioManager.playBgs stops what is
+    // playing and starts the next one at full volume on the same frame, so
+    // walking from a forest into a field, or in through a door, snapped from one
+    // bed to the other. With the stitched window that happens mid-step, with no
+    // fade to hide behind, which makes it far more noticeable than it used to be.
+    //
+    // Two things stand in the way of the engine's own fadeOutBgs. It leaves the
+    // buffer in place with only its gain ramped down, so the very next playBgs
+    // destroys it and the fade is cut anyway; and WebAudio.fadeOut never stops
+    // the source, so a buffer nobody destroys plays on silently forever. The
+    // outgoing bed is therefore DETACHED from AudioManager first - it belongs to
+    // nobody after that, so nothing can cut it short - ramped down, and destroyed
+    // once it is inaudible.
+    // ============================================================================
+
+    const BGS_FADE_SECONDS = 1.5;
+
+    // Hand the playing ambience over to a fade and give it back to nobody: it is
+    // off AudioManager from here on, so the playBgs that starts the next bed
+    // cannot destroy it half way down. Freed once it is inaudible, since
+    // WebAudio.fadeOut only ramps the gain and never stops the source. Answers
+    // false when there was nothing playing to fade.
+    function fadeOutBiomeBgs(seconds) {
+        const buffer = AudioManager._bgsBuffer;
+        if (!buffer) return false;
+        const fade = seconds === undefined ? BGS_FADE_SECONDS : seconds;
+        AudioManager._bgsBuffer = null;
+        AudioManager._currentBgs = null;
+        const free = () => { try { buffer.destroy(); } catch (e) { /* already gone */ } };
+        if (fade <= 0 || !buffer.fadeOut) { free(); return true; }
+        buffer.fadeOut(fade);
+        setTimeout(free, fade * 1000 + 250);
+        return true;
+    }
+
+    // Start a bed under a fade, over whatever is playing. The same bed already
+    // playing is left exactly as it is: crossing a seam between two squares that
+    // sound alike must not restart their ambience from the top.
+    function crossfadeBiomeBgs(bgs, play) {
+        if (AudioManager.isCurrentBgs(bgs)) {
+            play();   // same track: this only re-scales its volume
+            return false;
+        }
+        fadeOutBiomeBgs();
+        play();
+        AudioManager.fadeInBgs(BGS_FADE_SECONDS);
+        return true;
+    }
+
     function updateBiomeAudio() {
         const procGenData  = $gameSystem._procGenData;
         // _procGenData keeps the surrounding town's biome alive while the player
@@ -527,7 +579,7 @@
         // No biome, or one that is not in the database: kill the ambience but
         // leave the BGM alone. Silence is never an improvement over whatever was
         // already playing, so an absent track list always means "carry on".
-        if (!biomeName) { AudioManager.stopBgs(); return; }
+        if (!biomeName) { fadeOutBiomeBgs(); return; }
 
         let biome = getBiomeByName(biomeName);
         // 'Island' is a display substitution, not a database biome, so fall back
@@ -536,7 +588,7 @@
             biomeName = procGenData.currentBiome;
             biome     = getBiomeByName(biomeName);
         }
-        if (!biome) { AudioManager.stopBgs(); return; }
+        if (!biome) { fadeOutBiomeBgs(); return; }
 
         const isNightTime = isNightTimeNow();
         // Must be built exactly as watchNationMusicChange builds it, or the
@@ -605,7 +657,7 @@
         const dayList   = clean(biome.bgs);
         const bgsList   = (isNightTime && nightList.length > 0) ? nightList : dayList;
 
-        if (bgsList.length === 0) { AudioManager.stopBgs(); return; }
+        if (bgsList.length === 0) { fadeOutBiomeBgs(); return; }
 
         // Seed the pick so a given place always sounds the same: world origin on
         // procedural maps, map id everywhere else.
@@ -618,11 +670,14 @@
         // picks up the Weather Volume slider; indoors it is room tone and plays
         // at its authored level on the plain BGS volume.
         const bgs = { name: bgsName, volume: 80, pitch: 100, pan: 0 };
-        if (window.WeatherAudio && window.WeatherAudio.playAmbience) {
-            window.WeatherAudio.playAmbience(bgs);
-        } else {
-            AudioManager.playBgs(bgs);
-        }
+        const play = () => {
+            if (window.WeatherAudio && window.WeatherAudio.playAmbience) {
+                window.WeatherAudio.playAmbience(bgs);
+            } else {
+                AudioManager.playBgs(bgs);
+            }
+        };
+        if (!crossfadeBiomeBgs(bgs, play)) return;   // already this bed: nothing changed
         console.log(`[updateBiomeAudio] Playing BGS: ${bgsName} for biome: ${biomeName}`);
     }
 
@@ -634,7 +689,10 @@
     const WEATHER_BGS_CHANNEL = 4;
 
     function stopAllBgsExceptWeather() {
-        AudioManager.stopBgs();
+        // Faded rather than cut, like every other ambience change: the party
+        // walking back out onto the world map hears the place they were standing
+        // in recede instead of vanishing between two frames.
+        fadeOutBiomeBgs();
         const buffers = AudioManager._bgsBuffers;
         if (!buffers || !AudioManager.stopMushBgs) return;
         // Collect first: stopMushBgs splices the buffer list as it goes.
@@ -762,9 +820,13 @@
     // Which map border (if any) the tile sits on, as an axis + fixed coordinate.
     // Edge crossings land one tile inside the map (getEdgeCoordinateForDirection
     // clamps to 1 .. size-2), so the outermost two rings both count as "border".
+    // Measured against the LOADED map, not against a square: a stitched window is
+    // several squares wide and only its own outer ring is a border, while the
+    // seams inside it are ordinary tiles the party walks straight over.
     function borderLineOf(x, y) {
-        if (x <= 1 || x >= PROC_MAP_WIDTH  - 2) return { axis: 'x', fixed: x };
-        if (y <= 1 || y >= PROC_MAP_HEIGHT - 2) return { axis: 'y', fixed: y };
+        const w = $gameMap.width(), h = $gameMap.height();
+        if (x <= 1 || x >= w - 2) return { axis: 'x', fixed: x };
+        if (y <= 1 || y >= h - 2) return { axis: 'y', fixed: y };
         return null;
     }
 
@@ -790,7 +852,7 @@
         const border = borderLineOf(x, y);
         if (border) {
             const along     = border.axis === 'x' ? y : x;
-            const alongMax  = (border.axis === 'x' ? PROC_MAP_HEIGHT : PROC_MAP_WIDTH) - 1;
+            const alongMax  = (border.axis === 'x' ? $gameMap.height() : $gameMap.width()) - 1;
             for (let d = 1; d <= alongMax; d++) {
                 for (const step of [along - d, along + d]) {
                     // Keep off the outermost ring so the party is not parked on a
@@ -806,7 +868,7 @@
         }
 
         // Pass 2: nearest standable tile anywhere on the map.
-        const maxRadius = Math.max(PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
+        const maxRadius = Math.max($gameMap.width(), $gameMap.height());
         for (let r = 1; r <= maxRadius; r++) {
             let best = null, bestDist = Infinity;
             for (let dx = -r; dx <= r; dx++) {
@@ -1516,6 +1578,9 @@
 
     Game_System.prototype.clearProcGenData = function() {
         if (!this._procGenData) return;
+        // The stitched window goes with it: it is a view onto squares that no
+        // longer mean anything once the party has left the procedural map.
+        if (window.ProcStitch) window.ProcStitch.close();
         this._procGenData.generatedMapData     = null;
         this._procGenData.currentBiome         = null;
         this._procGenData.currentRoadDirection = null;
@@ -1806,6 +1871,41 @@
     function applyProcGenDataToDataMap() {
         const pg = $gameSystem && $gameSystem._procGenData;
         if (!$dataMap || !pg || !pg.generatedMapData) return false;
+
+        // Lay the neighbouring squares alongside this one where their tileset
+        // allows it (see THE STITCHED WINDOW below). The square the caller built
+        // is handed over as the centre, so this only ever ADDS to what would have
+        // been shown; when nothing may be joined on, the window is the single
+        // square and what follows is the behaviour that was always here.
+        // A transfer lands on a named square, so the window is built around that
+        // one. A save loaded on the procedural map has no transfer in it at all:
+        // there the window has to come back with the geometry it was saved with,
+        // or the party's recorded map position would land in the wrong cell.
+        const reanchor = !!pg._stitchReanchor;
+        pg._stitchReanchor = false;
+        const partySquare = {
+            x: $gameVariables.value(VAR_WORLD_X),
+            y: $gameVariables.value(VAR_WORLD_Y),
+        };
+        const anchor = (!reanchor && pg.stitchCentre) ? pg.stitchCentre : partySquare;
+        const win = openWindow(anchor.x, anchor.y, anchor.depth, {
+            centreData: pg.generatedMapData,
+            adoptAt: partySquare,
+        });
+        if (win) {
+            // Restoring a save: the party is already standing where they were, so
+            // the cell they are in (not the window's centre) is the one every
+            // "which square is this" answer has to point at.
+            if (!reanchor) {
+                const standing = cellAt($gamePlayer.x, $gamePlayer.y);
+                if (standing) adoptCell(win, standing);
+            }
+            if (applyWindowToDataMap(win)) {
+                resetStitchTracking();
+                return true;
+            }
+        }
+
         $dataMap.data   = pg.generatedMapData;
         $dataMap.width  = PROC_MAP_WIDTH;
         $dataMap.height = PROC_MAP_HEIGHT;
@@ -1851,8 +1951,14 @@
             // still holds the array the game actually wants to show, a descent
             // left the previous floor's tiles on screen while every other system
             // had already moved on to the new one.
+            // A stitched window puts its composed array on $dataMap, not the
+            // party's own square, so "is the map still the one we want" has to
+            // ask about that array when there is one.
+            const shown = window.ProcStitch && window.ProcStitch.window()
+                ? window.ProcStitch.window().data
+                : $gameSystem._procGenData.generatedMapData;
             if (!$dataMap || !$dataMap.data ||
-                $dataMap.data !== $gameSystem._procGenData.generatedMapData ||
+                $dataMap.data !== shown ||
                 $gameSystem._procGenData.lastLoadedProcMapX !== currentWorldX ||
                 $gameSystem._procGenData.lastLoadedProcMapY !== currentWorldY) {
                 _DataManager_loadMapData.call(this, mapId);
@@ -1891,6 +1997,16 @@
             $gameSystem._procGenData._edgeTransitionScheduled   = false;
             $gameSystem._procGenData._edgeTransitionDispatching = false;
             $gameSystem._procGenData._edgeTransitionCallback    = null;
+            // The window is module state, not save state: it is rebuilt from
+            // stitchCentre when map 636 loads. Anything left over from the
+            // session that loaded the save would be a window onto another world.
+            $gameSystem._procGenData._stitchReanchor            = false;
+            if (window.ProcStitch) {
+                const keep = $gameSystem._procGenData.stitchCentre;
+                window.ProcStitch.close();
+                $gameSystem._procGenData.stitchCentre = keep;
+            }
+            if (window.ProcGenSquare) window.ProcGenSquare.forget();
         }
     };
 
@@ -2671,16 +2787,59 @@
         });
     };
 
-    // Leave the map through its declared border. <Coords x y> lands on the world
-    // map, <Borders mapId x y> anywhere it names.
-    Game_Player.prototype.performBorderReturn = function() {
+    // The world square an authored map's border leads out onto. Its <Coords> pair
+    // names it, except for the editor template's default one, which names nothing
+    // (see TEMPLATE_COORDS): there the party's own last known square is the only
+    // thing that knows where they are standing. Answers null when neither is
+    // usable, so the caller can fall back to the world map rather than build
+    // square (0, 0) somewhere in the sea.
+    function proceduralBorderSquare(dest) {
+        const template = dest.x === TEMPLATE_COORDS.x && dest.y === TEMPLATE_COORDS.y;
+        const square = template ? playerWorldCoords() : { x: dest.x | 0, y: dest.y | 0 };
+        if (!(square.x > 0) || !(square.y > 0)) return null;
+        return square;
+    }
+
+    // Leave the map through its declared border, walking in whatever direction
+    // the crossing was made in (the party's own facing, unless a caller names
+    // another - Player 2 crosses on their own key).
+    //
+    // <Coords x y> used to land the party on map 315, standing on the very square
+    // they had just walked out of. The world map is a travel screen and not a
+    // place, so walking out of a town's gate took the ground around it away with
+    // it. That square's terrain is generated and entered from the side crossed
+    // instead, exactly as "Visit X" does from the world map, so the step out of
+    // the gate carries straight on into the country outside it.
+    //
+    // <Borders mapId x y> still transfers outright wherever it names: that tag
+    // exists to say where it wants to go, and the world map named that way is
+    // still meant literally.
+    Game_Player.prototype.performBorderReturn = function(direction) {
         let dest = null;
+        let generated = false;
         if ($gameMap._coordsDest) {
             dest = { mapId: worldMapId, x: $gameMap._coordsDest.x, y: $gameMap._coordsDest.y };
+            generated = true;
         } else if ($gameMap._borderDestination) {
             dest = $gameMap._borderDestination;
         }
         if (!dest) return false;
+        // An alien planet's landing grid is planet-local, and a <Coords> pair is
+        // an Earth world-map square: generating one against the other would build
+        // an alien biome at an Earth coordinate. Off-world the old transfer stands.
+        if (generated && !isAlienSurfaceNow()) {
+            const square = proceduralBorderSquare(dest);
+            if (square) {
+                // Out of a building and into the open air. Map 315 used to drop a
+                // stale underground layer stack on arrival (syncPlayerWorldCoords)
+                // and is no longer passed through, so without this the square
+                // outside the door could come out as a cave.
+                surfaceProcGenLayers($gameSystem && $gameSystem._procGenData);
+                $gameVariables.setValue(VAR_DEST_MAP, procMapId);
+                const d = direction || this.direction();
+                if (enterProceduralSquare(square.x, square.y, d)) return true;
+            }
+        }
         $gameVariables.setValue(VAR_DEST_MAP, dest.mapId);
         // The world position has to move with the party: the travel menu and the
         // procedural generator both read it, and without this they keep working
@@ -2741,6 +2900,1118 @@
         return 0;
     };
 
+    // ============================================================================
+    // THE STITCHED WINDOW
+    // ----------------------------------------------------------------------------
+    // The procedural map used to be exactly one world square: walk into the edge,
+    // fade to black, build the neighbour, transfer. Every crossing cost a fade and
+    // a full generation, and the world read as a corridor of 64x64 rooms.
+    //
+    // Now map 636 holds a WINDOW of up to 3x3 neighbouring squares laid side by
+    // side in one array, so walking from one into the next is an ordinary step: no
+    // fade, no transfer, no regeneration. Nothing about the seams had to be
+    // invented for this. Each square was always generated alone and always had to
+    // agree with neighbours it could not see, so rivers and roads already snap to
+    // a fixed centred width wherever they run to a border, and an underground
+    // passage is already derived from the BORDER (named by the square north or
+    // west of it) so both sides cut it over the same tiles. Laid together they
+    // simply line up, above ground and below it alike.
+    //
+    // What the window cannot do is span two TILESETS. One RMMZ map has one
+    // tileset, and the five the biomes use share no tile-id space at all: 2048 is
+    // grass in Fields (300) and asphalt in Road (301). So a neighbour is joined on
+    // only when its tileset matches, and the window shrinks to the largest
+    // rectangle around the party where that holds. At any edge of THAT rectangle
+    // the old fade-and-transfer crossing runs exactly as it always did, which is
+    // also what keeps the hand-authored towns out of it: a square named by
+    // WorkSystem/Destinations.json is never stitched, so its border still hands
+    // the party to the authored map through getNonProceduralDestination.
+    //
+    // Two coordinates are in play once a window is up and they must not be
+    // confused. A MAP coordinate is where a tile is on the loaded 128x192 (or
+    // whatever) map. A SQUARE-LOCAL coordinate is where it is inside its own
+    // 64x64 world square, which is what every system written before the window
+    // means by x and y - generatedMapData is indexed with it, and so is every
+    // spawn point anyone has ever recorded. ProcStitch.local and ProcStitch.toMap
+    // convert between them; the transfer hook at the bottom of this file does it
+    // for arrivals, so no caller had to be taught the difference.
+    // ============================================================================
+
+    const CELL_W = PROC_MAP_WIDTH;
+    const CELL_H = PROC_MAP_HEIGHT;
+    const WORLD_W = 256;   // map 315 is 256x256
+    const WORLD_H = 256;
+    // RMMZ map data is six layers deep (four tile layers, shadows, regions), but
+    // the generators only ever fill the five they use and the engine reads a
+    // missing region layer as 0. The composed window keeps whatever depth the
+    // squares came with rather than inventing a layer they never had.
+    const DEFAULT_MAP_LAYERS = 6;
+
+    function layerCount(mapData) {
+        const n = Math.floor(mapData.length / (CELL_W * CELL_H));
+        return n > 0 ? n : DEFAULT_MAP_LAYERS;
+    }
+
+    // How far inside a new square the party has to be before the window slides
+    // over to centre on it. Without a margin, walking along a seam would rebuild
+    // on every other step; with one, a crossing costs one rebuild and standing on
+    // the line costs none.
+    const RECENTRE_MARGIN = 8;
+
+    // Non-index properties the generators hang on a square's tile array (the cave
+    // floor tile, the room rectangles, the structure's spawn tile). The composed
+    // window carries the CENTRE square's, because everything that reads them is
+    // asking about the square the party is standing in.
+    function copyArrayTags(from, to) {
+        for (const key of Object.keys(from)) {
+            if (!/^\d+$/.test(key)) to[key] = from[key];
+        }
+        return to;
+    }
+
+    let stitchWindow = null;          // the window standing on map 636, or null
+    let stitchDisabled = false;       // hard off switch, for debugging
+    const squareChangedHooks = [];
+
+    function procGen() {
+        return $gameSystem && $gameSystem._procGenData;
+    }
+
+    function ProcGenSquareApi() {
+        return window.ProcGenSquare || null;
+    }
+
+    // Stitching is off entirely for a square the old system owns end to end.
+    function stitchingAllowed() {
+        if (stitchDisabled) return false;
+        const pg = procGen();
+        if (!pg) return false;
+        // A door / sandbox / tower dungeon is a single sealed square whose border
+        // IS the way out (exitDungeonSession). Joining a neighbour onto it would
+        // both wall up the exit and stitch a cave onto a crypt.
+        if (pg._dungeonSession) return false;
+        return !!ProcGenSquareApi();
+    }
+
+    // The alien landing grid is a small toroid, so its neighbours wrap. Earth's
+    // squares simply run out at the edges of map 315.
+    function neighbourCoord(wx, wy, dx, dy, alienGrid) {
+        let nx = wx + dx, ny = wy + dy;
+        if (alienGrid) {
+            if (alienGrid.w < 3 && dx !== 0) return null;
+            if (alienGrid.h < 3 && dy !== 0) return null;
+            nx = ((nx % alienGrid.w) + alienGrid.w) % alienGrid.w;
+            ny = ((ny % alienGrid.h) + alienGrid.h) % alienGrid.h;
+            return { x: nx, y: ny };
+        }
+        if (nx < 0 || ny < 0 || nx >= WORLD_W || ny >= WORLD_H) return null;
+        return { x: nx, y: ny };
+    }
+
+    // May this square be laid alongside the one the party is on?
+    function canStitch(centre, wx, wy, depth) {
+        // A square WorkSystem/Destinations.json names is a door onto a
+        // hand-authored map. Its border keeps the old crossing, so it is never
+        // part of a window, neither as a neighbour nor as a centre.
+        //
+        // A planet's landing grid is planet-local and small, so its (gx, gy) can
+        // coincidentally match a real Earth coordinate: none of Earth's markers
+        // may be consulted for it (the same rule ProcGenSquare.resolve follows).
+        const alien = procGen() && procGen().alienGrid;
+        if (!alien && getNonProceduralDestination(wx, wy, 0).exists) return false;
+        const api = ProcGenSquareApi();
+        if (!api) return false;
+        const resolved = api.resolve(wx, wy, { depth });
+        if (!resolved || !resolved.biome) return false;
+        // The whole constraint, in one line: one map, one tileset.
+        return resolved.tilesetId === centre.tilesetId;
+    }
+
+    // The largest rectangle of stitchable squares containing the party's own. Both
+    // ranges are contiguous and both contain 0, so the result is always a rectangle
+    // RMMZ can hold, and it degenerates to the single centre square (the old
+    // behaviour) when nothing around it matches.
+    const RANGES = [[0, 0], [-1, 0], [0, 1], [-1, 1]];
+
+    // The offset of each neighbour, by the direction walked into it.
+    const EXIT_DELTA = { 2: { dx: 0, dy: 1 }, 4: { dx: -1, dy: 0 }, 6: { dx: 1, dy: 0 }, 8: { dx: 0, dy: -1 } };
+
+    /**
+     * @param {?{x:number,y:number}} guardSquare the square the PARTY is standing
+     *        on, which is not always the one the window is centred on.
+     * @param {?{dx:number,dy:number}} requireDelta a neighbour that MUST be in
+     *        the window, or nothing is returned at all. The plain plan picks the
+     *        largest rectangle it can lay, and the largest is not always the one
+     *        that reaches the way the party is walking: with west, north-west and
+     *        south-west all joinable the two-by-three to the west beats the
+     *        two-by-one to the east, so a perfectly stitchable EASTERN neighbour
+     *        was left out of the map and walking into it cost a fade. Asked for a
+     *        direction, the same search is made over the rectangles that contain
+     *        it (see growTowards).
+     */
+    function planWindow(cx, cy, depth, guardSquare, requireDelta) {
+        const api = ProcGenSquareApi();
+        if (!api) return null;
+        const pg = procGen();
+        const alienGrid = pg && pg.alienGrid;
+        const centre = api.resolve(cx, cy, { depth });
+        if (!centre || !centre.biome) return null;
+
+        // The square under the party is not always one the resolver can account
+        // for: startForcedBiome, a structure entered off a terrain feature and a
+        // tower floor all stamp a biome onto _procGenData that no world-map tile
+        // implies. Those are one-square places by nature, and laying a resolved
+        // neighbour beside one would join a cave onto a crypt, so the moment the
+        // two disagree the window collapses and the old crossing takes over.
+        //
+        // The square that has to agree is the one the PARTY is standing on, which
+        // is not always the one the window is centred on: a save loaded on the
+        // procedural map rebuilds the geometry it was saved with, and the party
+        // may have walked a square off its centre before saving.
+        const guard = guardSquare || { x: cx, y: cy };
+        if (pg && pg.currentBiome) {
+            const standing = (guard.x === cx && guard.y === cy)
+                ? centre
+                : api.resolve(guard.x, guard.y, { depth });
+            if (!standing || standing.biomeName !== pg.currentBiome) return null;
+        }
+
+        // A centre the old system owns takes no neighbours at all.
+        const centreIsAuthored = getNonProceduralDestination(cx, cy, 0).exists;
+
+        const ok = {};
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                if (dx === 0 && dy === 0) { ok["0,0"] = { x: cx, y: cy }; continue; }
+                if (centreIsAuthored) continue;
+                const coord = neighbourCoord(cx, cy, dx, dy, alienGrid);
+                if (!coord) continue;
+                // A toroid narrow enough to wrap onto itself would otherwise place
+                // the same square twice in one window.
+                if (coord.x === cx && coord.y === cy) continue;
+                if (!canStitch(centre, coord.x, coord.y, depth)) continue;
+                ok[dx + "," + dy] = coord;
+            }
+        }
+
+        let best = null;
+        for (const [c0, c1] of RANGES) {
+            for (const [r0, r1] of RANGES) {
+                if (requireDelta &&
+                    (requireDelta.dx < c0 || requireDelta.dx > c1 ||
+                     requireDelta.dy < r0 || requireDelta.dy > r1)) continue;
+                let all = true;
+                for (let dy = r0; dy <= r1 && all; dy++) {
+                    for (let dx = c0; dx <= c1 && all; dx++) {
+                        if (!ok[dx + "," + dy]) all = false;
+                    }
+                }
+                if (!all) continue;
+                const area = (c1 - c0 + 1) * (r1 - r0 + 1);
+                if (!best || area > best.area) best = { c0, c1, r0, r1, area };
+            }
+        }
+        // Asked for a direction and unable to reach it, the answer is nothing at
+        // all: the caller wanted that neighbour, not the biggest window.
+        if (!best && requireDelta) return null;
+        if (!best) best = { c0: 0, c1: 0, r0: 0, r1: 0, area: 1 };
+
+        const cols = best.c1 - best.c0 + 1;
+        const rows = best.r1 - best.r0 + 1;
+        const cells = [];
+        for (let dy = best.r0; dy <= best.r1; dy++) {
+            for (let dx = best.c0; dx <= best.c1; dx++) {
+                const coord = ok[dx + "," + dy];
+                cells.push({
+                    dx, dy,
+                    worldX: coord.x, worldY: coord.y,
+                    ox: (dx - best.c0) * CELL_W,
+                    oy: (dy - best.r0) * CELL_H,
+                    built: null,
+                });
+            }
+        }
+
+        return {
+            depth, cols, rows,
+            // The square the window's GEOMETRY is built around. It does not move
+            // when the party walks into a neighbour: only a rebuild moves it, and
+            // it is what a save has to record so the same window comes back.
+            centreX: cx, centreY: cy,
+            centreOx: (0 - best.c0) * CELL_W,
+            centreOy: (0 - best.r0) * CELL_H,
+            // The world square of the window's top-left cell: the offset that
+            // turns a map coordinate into a world one.
+            originX: cx + best.c0,
+            originY: cy + best.r0,
+            width: cols * CELL_W,
+            height: rows * CELL_H,
+            tilesetId: centre.tilesetId,
+            centre,
+            cells,
+            centreCell: null,
+            partyCell: null,
+            data: null,
+        };
+    }
+
+    // Build every square the plan names (cached ones cost nothing) and lay them
+    // into one array.
+    function composeWindow(win) {
+        const api = ProcGenSquareApi();
+        if (!api) return null;
+
+        // Build first, so the layer depth is known before the array is sized.
+        for (const cell of win.cells) {
+            const built = api.build(cell.worldX, cell.worldY, { depth: win.depth });
+            if (!built) return null;
+            cell.built = built;
+        }
+
+        const W = win.width, H = win.height;
+        let layers = DEFAULT_MAP_LAYERS;
+        for (const cell of win.cells) layers = Math.min(layers, layerCount(cell.built.mapData));
+        const data = new Array(W * H * layers).fill(0);
+        win.layers = layers;
+
+        for (const cell of win.cells) {
+            const src = cell.built.mapData;
+            for (let z = 0; z < layers; z++) {
+                const dstLayer = z * W * H;
+                const srcLayer = z * CELL_W * CELL_H;
+                for (let y = 0; y < CELL_H; y++) {
+                    const dstRow = dstLayer + (cell.oy + y) * W + cell.ox;
+                    const srcRow = srcLayer + y * CELL_W;
+                    for (let x = 0; x < CELL_W; x++) data[dstRow + x] = src[srcRow + x];
+                }
+            }
+        }
+
+        const centreCell = win.cells.find(c => c.dx === 0 && c.dy === 0);
+        if (centreCell && centreCell.built) copyArrayTags(centreCell.built.mapData, data);
+        win.data = data;
+        win.centreCell = centreCell;
+        win.partyCell = centreCell;
+        return data;
+    }
+
+    // Everything on _procGenData that speaks for "the square the party is in".
+    // Kept pointing at the cell the party actually stands in, so that every
+    // consumer written against the old one-square-per-map world (the encounter
+    // tables, the weather, the battle backgrounds, the quest sites, the map name)
+    // keeps reading the right answer without knowing the window exists.
+    function adoptCell(win, cell) {
+        const pg = procGen();
+        if (!pg || !cell || !cell.built) return;
+        const r = cell.built.resolved;
+        win.partyCell = cell;
+        pg.currentBiome = r.biomeName;
+        pg.currentBiomeTileset = r.tilesetId;
+        pg.currentRoadDirection = r.roadDirection;
+        pg.currentUnderBiome = r.underBiome;
+        pg.currentBridgeDirection = r.bridgeDirection;
+        pg.displayAsBeach = r.displayAsBeach;
+        pg.displayAsIsland = r.displayAsIsland;
+        pg.structureHints = r.structureHints || null;
+        pg.biomeDayTemperature = r.dayTemperature;
+        pg.biomeNightTemperature = r.nightTemperature;
+        pg.originX = cell.worldX;
+        pg.originY = cell.worldY;
+        // The party's OWN square, still a plain 64x64 array indexed from its own
+        // corner: everything that reads generatedMapData is asking about this
+        // square, not about the window (see ProcStitch.local for map coordinates).
+        pg.generatedMapData = cell.built.mapData;
+        // The composed array itself is NOT parked on _procGenData: $gameSystem is
+        // serialized whole, and a 3x3 window is nearly 200k numbers of tiles that
+        // are all derivable from the world seed anyway. What the save carries is
+        // the square the geometry was centred on, which is all it takes to build
+        // the very same window again on load.
+        pg.stitchCentre = { x: win.centreX, y: win.centreY, depth: win.depth };
+        $gameVariables.setValue(VAR_WORLD_X, cell.worldX);
+        $gameVariables.setValue(VAR_WORLD_Y, cell.worldY);
+        // On a planet the square IS the landing-grid cell, and half of GalaxySim
+        // reads it back off the grid rather than off the world-coordinate
+        // variables: which hour a tidally locked world is frozen at, what the sky
+        // is doing, where the on-foot overview marks the party. Walking over a
+        // seam moves the party between grid cells without a transfer, so the
+        // grid has to be told the same way everything else is.
+        if (pg.alienGrid) adoptAlienGridCell(cell.worldX, cell.worldY);
+    }
+
+    // The landing-grid cell the party now stands in. Kept off adoptCell so the
+    // fading crossing (_resolveAdjacentBiomeAndTransfer) can say the same thing.
+    function adoptAlienGridCell(gx, gy) {
+        const pg = procGen();
+        const grid = pg && pg.alienGrid;
+        if (!grid) return;
+        grid.gx = gx;
+        grid.gy = gy;
+        const landed = $gameSystem._landedPlanet;
+        if (!landed) return;
+        if (landed.terrain && landed.terrain.cell) {
+            landed.terrain.cell.gx = gx;
+            landed.terrain.cell.gy = gy;
+        }
+        // The columns of the grid are lines of longitude, so on a tidally locked
+        // world walking east is walking around the terminator: the hour it is
+        // frozen at belongs to the column, not to the landing.
+        const GS = window.GalaxySim;
+        if (landed.day && landed.day.frozen && GS && GS.frozenHourForCell) {
+            landed.day.fixedHour = GS.frozenHourForCell(gx, grid.w);
+        }
+    }
+
+    // Put a freshly composed window on $dataMap. Called from the map-data hook, so
+    // $dataMap is the base Map636.json and the engine has not looked at it yet.
+    function applyWindowToDataMap(win) {
+        if (!$dataMap || !win || !win.data) return false;
+        $dataMap.data = win.data;
+        $dataMap.width = win.width;
+        $dataMap.height = win.height;
+        if (win.tilesetId) $dataMap.tilesetId = win.tilesetId;
+        $dataMap.displayName = procMapDisplayName();
+        return true;
+    }
+
+    /**
+     * Build the window around a world square and make it the current one. Returns
+     * the window, or null when stitching does not apply (in which case the caller
+     * carries on with the single-square path, unchanged).
+     */
+    function openWindow(cx, cy, depth, opts) {
+        if (!stitchingAllowed()) { closeWindow(); return null; }
+        const pg = procGen();
+        const d = depth != null ? depth : (pg.biomeLayerStack || []).length;
+        // Keep whatever the caller already built for this square: it is the array
+        // the party is about to stand on, prefabs, hatches and all.
+        const centreData = (opts && opts.centreData) || null;
+        if (centreData) {
+            const api = ProcGenSquareApi();
+            const at = (opts && opts.adoptAt) || { x: cx, y: cy };
+            if (api && api.adopt) api.adopt(at.x, at.y, d, centreData);
+        }
+        const win = planWindow(cx, cy, d, (opts && opts.adoptAt) || null);
+        if (!win) { closeWindow(); return null; }
+        if (!composeWindow(win)) { closeWindow(); return null; }
+        stitchWindow = win;
+        adoptCell(win, win.centreCell);
+        return win;
+    }
+
+    function closeWindow() {
+        stitchWindow = null;
+        prefetchQueue.length = 0;
+        prefetchUrgent = false;
+        lastApproachKey = null;
+        const pg = procGen();
+        if (pg) pg.stitchCentre = null;
+    }
+
+    /**
+     * Blit one square's own array back into the composed window. Anything that
+     * edits a square AFTER it has been laid down has to say so: the window holds
+     * a copy of the tiles, so a late stamp on the square alone (the patron's
+     * hatch, PatreonRewards) would never appear on the map.
+     */
+    function syncCell(worldX, worldY) {
+        if (!stitchWindow) return false;
+        const cell = stitchWindow.cells.find(c => c.worldX === worldX && c.worldY === worldY);
+        if (!cell || !cell.built) return false;
+        const W = stitchWindow.width, H = stitchWindow.height;
+        const layers = stitchWindow.layers || DEFAULT_MAP_LAYERS;
+        const src = cell.built.mapData;
+        const data = stitchWindow.data;
+        for (let z = 0; z < layers; z++) {
+            const dstLayer = z * W * H;
+            const srcLayer = z * CELL_W * CELL_H;
+            for (let y = 0; y < CELL_H; y++) {
+                const dstRow = dstLayer + (cell.oy + y) * W + cell.ox;
+                const srcRow = srcLayer + y * CELL_W;
+                for (let x = 0; x < CELL_W; x++) data[dstRow + x] = src[srcRow + x];
+            }
+        }
+        refreshTilemap();
+        return true;
+    }
+
+    // ---- coordinates -------------------------------------------------------
+
+    // The cell a map coordinate falls in, or null when there is no window (in
+    // which case the map coordinate already IS the square-local one).
+    function cellAt(mapX, mapY) {
+        if (!stitchWindow) return null;
+        const cx = Math.floor(mapX / CELL_W), cy = Math.floor(mapY / CELL_H);
+        return stitchWindow.cells.find(
+            c => c.ox === cx * CELL_W && c.oy === cy * CELL_H
+        ) || null;
+    }
+
+    // A map coordinate expressed inside its own square, which is what every
+    // consumer of generatedMapData wants. Without a window this is the identity.
+    function localCoord(mapX, mapY) {
+        if (!stitchWindow) return { x: mapX, y: mapY };
+        return { x: ((mapX % CELL_W) + CELL_W) % CELL_W, y: ((mapY % CELL_H) + CELL_H) % CELL_H };
+    }
+
+    // The world square a map coordinate stands on.
+    function worldSquareAt(mapX, mapY) {
+        const cell = cellAt(mapX, mapY);
+        if (cell) return { x: cell.worldX, y: cell.worldY };
+        return { x: $gameVariables.value(VAR_WORLD_X), y: $gameVariables.value(VAR_WORLD_Y) };
+    }
+
+    // Where a square-local tile sits on the loaded map. Falls back to the centre
+    // cell for a square that is not in the window at all, which is what an arrival
+    // wants: the transfer is landing on the square the window was just built for.
+    function mapCoord(worldX, worldY, localX, localY) {
+        if (!stitchWindow) return { x: localX, y: localY };
+        const cell = stitchWindow.cells.find(c => c.worldX === worldX && c.worldY === worldY) ||
+            stitchWindow.centreCell;
+        if (!cell) return { x: localX, y: localY };
+        return { x: cell.ox + localX, y: cell.oy + localY };
+    }
+
+    // ---- crossing a seam ---------------------------------------------------
+
+    function notifySquareChanged(to, from) {
+        for (const hook of squareChangedHooks) {
+            try { hook(to, from); } catch (e) { console.error('[ProcStitch] square hook failed', e); }
+        }
+    }
+
+    // Shift every character and the camera by the same whole number of tiles the
+    // tiles themselves moved, so nothing appears to jump: the window slid under a
+    // world that did not. Deliberately arithmetic on the fields rather than
+    // locate(), which would straighten and snap anyone caught mid-step.
+    function shiftEverything(shiftX, shiftY, newWidth, newHeight) {
+        if (!shiftX && !shiftY) return;
+        const move = (ch) => {
+            if (!ch) return;
+            ch._x += shiftX; ch._y += shiftY;
+            ch._realX += shiftX; ch._realY += shiftY;
+            if (ch._homeX != null) { ch._homeX += shiftX; ch._homeY += shiftY; }
+        };
+        move($gamePlayer);
+        const followers = $gamePlayer.followers && $gamePlayer.followers();
+        if (followers && followers.data) followers.data().forEach(move);
+        for (const ev of $gameMap.events()) {
+            // An event a populating pass did not use is parked at map (0, 0), and
+            // everything downstream reads that spot as "not placed". Sliding it
+            // with the tiles would carry it off the map and turn it into a placed
+            // event standing nowhere.
+            if (ev._x === 0 && ev._y === 0) continue;
+            move(ev);
+            const data = $dataMap.events && $dataMap.events[ev.eventId()];
+            if (data) { data.x += shiftX; data.y += shiftY; }
+            // A square can drop out of the window when it slides, and anything
+            // still standing in it has just walked off the edge of the map. The
+            // party's own square is always the new centre, so nothing that
+            // matters is ever in this position; whatever is, is stale, and the
+            // parking spot is where everything downstream reads "not placed".
+            if (newWidth != null &&
+                (ev._x < 0 || ev._y < 0 || ev._x >= newWidth || ev._y >= newHeight)) {
+                ev.setPosition ? ev.setPosition(0, 0) : (ev._x = ev._y = 0);
+                ev._realX = 0; ev._realY = 0;
+                if (data) { data.x = 0; data.y = 0; }
+            }
+        }
+        for (const veh of ($gameMap._vehicles || [])) move(veh);
+        $gameMap._displayX += shiftX;
+        $gameMap._displayY += shiftY;
+    }
+
+    // Hand the engine the new array. The tilemap was built around the old size, so
+    // it has to be told the new one and redrawn; Game_Map itself reads width,
+    // height and tiles straight off $dataMap every time, so it needs nothing.
+    function refreshTilemap() {
+        const scene = SceneManager._scene;
+        const spriteset = scene && scene._spriteset;
+        if (!spriteset || !spriteset._tilemap) return;
+        spriteset._tilemap.setData($gameMap.width(), $gameMap.height(), $gameMap.data());
+        spriteset._tilemap.refresh();
+    }
+
+    // ---- building the ground ahead of the party ----------------------------
+    //
+    // Sliding the window costs three new squares (a window shares the other six
+    // with the one it replaces), and building a square is not cheap: doing all
+    // three at the moment the party walks deep enough would stop the game dead
+    // for as long as it takes, which is exactly the pause the window was built
+    // to get rid of.
+    //
+    // So the squares are built BEFORE they are wanted, and a square is not built
+    // in one go either: ProcGenSquare.buildJob hands back a build that can be
+    // stopped between its passes and picked up on the next frame (see RESUMABLE
+    // GENERATION in ProceduralMapUtils.js). This runs every frame and spends a
+    // few milliseconds of it, so the ground ahead costs a slice of a frame
+    // rather than a whole dropped one.
+    //
+    // It used to build a whole square on one frame every fifteenth, which is 15
+    // to 20 ms of work landing on a frame the player is looking at: eight of
+    // them in a row after an arrival, and one every quarter second while walking
+    // towards a seam. That was the flicker.
+    //
+    // The party has to walk twelve tiles to reach a seam and eight more past it
+    // before the window slides, which is seconds on foot and still a good while
+    // in a car, and by then composing the new window is only a copy of tiles
+    // that already exist. Nothing here is asynchronous in the real sense (there
+    // is one thread and building a square costs what it costs); what changed is
+    // that the cost is now paid in instalments.
+    //
+    // If the party outruns it anyway, the slide simply does not happen yet: the
+    // window is still perfectly valid off-centre, they have most of a square to
+    // cross before its outer edge, and the budget goes up until it catches up.
+
+    const PREFETCH_MARGIN = 12;      // tiles from a seam that start the build
+
+    // Milliseconds of generation a frame may be asked for. A pass never stops in
+    // the middle of a tile, so a slice overruns its budget by up to about a
+    // millisecond and a half; both figures are chosen against that. The urgent
+    // one is what the party outrunning the ground is worth: still under a frame,
+    // and it clears a square in two or three of them.
+    const PREFETCH_BUDGET_MS = 3;
+    const PREFETCH_URGENT_BUDGET_MS = 8;
+
+    const prefetchQueue = [];
+    let prefetchUrgent = false;
+    let lastApproachKey = null;
+    // The square being built right now, a slice at a time.
+    let prefetchJob = null;
+
+    function enqueueSquare(worldX, worldY, depth) {
+        const api = ProcGenSquareApi();
+        if (!api || !api.has || api.has(worldX, worldY, depth)) return;
+        const key = depth + ':' + worldX + ',' + worldY;
+        for (const job of prefetchQueue) if (job.key === key) return;
+        prefetchQueue.push({ key, worldX, worldY, depth });
+    }
+
+    // Everything a window centred on this square would need that is not built.
+    // Planned against the square the PARTY is on, not against the one being
+    // planned around: the "is this a square the resolver can account for" gate
+    // asks about where the party is standing, and here that is deliberately
+    // somewhere else - a square they have not reached yet.
+    function prefetchWindowAt(cx, cy, depth) {
+        const here = stitchWindow && stitchWindow.partyCell;
+        const guard = here ? { x: here.worldX, y: here.worldY } : null;
+        const plan = planWindow(cx, cy, depth, guard);
+        if (!plan) return;
+        for (const cell of plan.cells) enqueueSquare(cell.worldX, cell.worldY, depth);
+    }
+
+    // Spend this frame's share on the square at the head of the queue. One
+    // square is in flight at a time: the generator keeps module state (the
+    // influence field, the coastline, the borrowed square scope) for the length
+    // of a build, and anything that needs a square outright cancels this one
+    // rather than running alongside it.
+    function drainPrefetch() {
+        const api = ProcGenSquareApi();
+        if (!api || !api.buildJob) {
+            // An older ProceduralMapBiomeGenerator without resumable builds:
+            // fall back to the whole square at once rather than to nothing.
+            if (!prefetchQueue.length || !api) { prefetchUrgent = false; return; }
+            const one = prefetchQueue.shift();
+            try {
+                api.build(one.worldX, one.worldY, { depth: one.depth });
+            } catch (e) {
+                console.error(`[ProcStitch] could not build (${one.worldX},${one.worldY})`, e);
+            }
+            return;
+        }
+
+        if (prefetchJob && prefetchJob.done) prefetchJob = null;
+        if (!prefetchJob) {
+            if (!prefetchQueue.length) { prefetchUrgent = false; return; }
+            const next = prefetchQueue.shift();
+            // Somebody else may have built it in the meantime (the party walked
+            // onto it, a transfer landed on it): then there is nothing to do.
+            if (api.has && api.has(next.worldX, next.worldY, next.depth)) return;
+            prefetchJob = api.buildJob(next.worldX, next.worldY, { depth: next.depth });
+            prefetchJob.square = next;
+        }
+
+        const budget = prefetchUrgent ? PREFETCH_URGENT_BUDGET_MS : PREFETCH_BUDGET_MS;
+        const r = prefetchJob.step(budget);
+        if (r.done) prefetchJob = null;
+    }
+
+    // Nothing queued is worth building any more (the party left, the window
+    // closed, a save was loaded). Whatever is half-built goes with it: it is
+    // derived from the world seed and costs the same to start again.
+    function dropPrefetch() {
+        if (prefetchJob && prefetchJob.cancel) prefetchJob.cancel();
+        prefetchJob = null;
+        prefetchQueue.length = 0;
+        prefetchUrgent = false;
+    }
+
+    // The party is walking towards a seam: start on the squares the window they
+    // are about to need will be made of, well before they get there. Only the
+    // side they are actually near, and only once per tile they stand on.
+    function prefetchAhead(cell) {
+        if (!stitchWindow) return;
+        const lx = $gamePlayer.x - cell.ox, ly = $gamePlayer.y - cell.oy;
+        const depth = stitchWindow.depth;
+        let dx = 0, dy = 0;
+        if (lx < PREFETCH_MARGIN) dx = -1;
+        else if (lx >= CELL_W - PREFETCH_MARGIN) dx = 1;
+        if (ly < PREFETCH_MARGIN) dy = -1;
+        else if (ly >= CELL_H - PREFETCH_MARGIN) dy = 1;
+        if (!dx && !dy) return;
+
+        const alienGrid = procGen() && procGen().alienGrid;
+        for (const [sx, sy] of [[dx, 0], [0, dy], [dx, dy]]) {
+            if (!sx && !sy) continue;
+            const coord = neighbourCoord(cell.worldX, cell.worldY, sx, sy, alienGrid);
+            if (!coord) continue;
+            prefetchWindowAt(coord.x, coord.y, depth);
+        }
+    }
+
+    // Every square a window centred here would need, already built?
+    function readyWindowAt(cx, cy, depth) {
+        const plan = planWindow(cx, cy, depth);
+        if (!plan) return null;
+        const api = ProcGenSquareApi();
+        if (!api || !api.has) return plan;
+        for (const cell of plan.cells) {
+            if (!api.has(cell.worldX, cell.worldY, depth)) return null;
+        }
+        return plan;
+    }
+
+    /**
+     * The party is standing in a square that is not the window's centre. Slide the
+     * window over so it is, generating whatever squares that brings into view
+     * (three of the nine, at most: a window shares the other six with the one it
+     * replaces, and ProcGenSquare keeps them).
+     */
+    function recentre(cell) {
+        const old = stitchWindow;
+        if (!old) return false;
+        // Only slide onto ground that is already built. When it is not, the queue
+        // is told to hurry and the party carries on in a window that is merely
+        // off-centre, which it is perfectly entitled to be.
+        const win = readyWindowAt(cell.worldX, cell.worldY, old.depth);
+        if (!win) {
+            prefetchWindowAt(cell.worldX, cell.worldY, old.depth);
+            prefetchUrgent = true;
+            return false;
+        }
+        return installWindow(win, cell);
+    }
+
+    /**
+     * Swap the window standing on the map for a freshly planned one and slide
+     * everything on it by the distance the two disagree about. Composition is
+     * only a copy of squares that already exist by the time this runs, so the
+     * swap costs no fade and no reload: the tiles move under a world that did
+     * not, and the party keeps walking.
+     *
+     * @param {object} oldCell the cell, in the window being replaced, of the
+     *        square the new one is centred on. The two windows are read off it
+     *        rather than off their top-left corners: a planet's landing grid
+     *        wraps, so "how far apart are the two origins" can name a distance
+     *        right round the world, while one square's own two map positions are
+     *        the rigid translation between the windows however the grid folds.
+     */
+    function installWindow(win, oldCell) {
+        if (!composeWindow(win)) return false;
+
+        // The map coordinate of one and the same world tile, before and after.
+        const shiftX = win.centreOx - oldCell.ox;
+        const shiftY = win.centreOy - oldCell.oy;
+
+        stitchWindow = win;
+        $dataMap.data = win.data;
+        $dataMap.width = win.width;
+        $dataMap.height = win.height;
+        adoptCell(win, win.centreCell);
+        $dataMap.displayName = procMapDisplayName();
+
+        // The map just changed size and every tile moved: any cache keyed on the
+        // map id alone (NPCSystem's passable-tile scan) is now describing a map
+        // that no longer exists.
+        $gameMap._passableTerrainCache = null;
+        shiftEverything(shiftX, shiftY, win.width, win.height);
+        $gameMap.setDisplayPos($gameMap._displayX, $gameMap._displayY);
+        refreshTilemap();
+        return true;
+    }
+
+    /**
+     * The party is about to walk off the OUTER edge of the map and the square on
+     * the far side of it shares this one's tileset: that is not a destination,
+     * it is more ground. Re-plan the window around the square they are standing
+     * in, insisting the neighbour they are walking into comes with it, and lay
+     * the result down under them. The step that follows is an ordinary step.
+     *
+     * Two things used to send a perfectly stitchable crossing through the fade:
+     *   - the plan takes the LARGEST rectangle it can, and the largest is not
+     *     always the one that reaches the way the party is walking. Three
+     *     joinable squares to the west beat one to the east, so the east
+     *     neighbour was left off the map even though nothing was wrong with it.
+     *   - the ground ahead is built in instalments, and a party in a vehicle can
+     *     outrun it. The window then never slides and its outer edge arrives.
+     * Both are answered here: the direction is asked for by name, and whatever
+     * the queue has not got to yet is built on the spot, because this is the
+     * step that walks onto it.
+     *
+     * @param {number} exitDirection RMMZ direction being walked out of the map.
+     * @param {number} [atX] map tile the crossing is made from (the party's own).
+     * @returns {boolean} true when the map now reaches past the edge, so the
+     *          caller should simply let the move happen.
+     */
+    function growTowards(exitDirection, atX, atY) {
+        if (!stitchWindow || !stitchingAllowed()) return false;
+        const delta = EXIT_DELTA[exitDirection];
+        if (!delta) return false;
+        const px = atX != null ? atX : $gamePlayer.x;
+        const py = atY != null ? atY : $gamePlayer.y;
+        const cell = cellAt(px, py) || stitchWindow.partyCell;
+        if (!cell) return false;
+
+        const old = stitchWindow;
+        const depth = old.depth;
+        const guard = { x: cell.worldX, y: cell.worldY };
+        const win = planWindow(cell.worldX, cell.worldY, depth, guard, delta);
+        if (!win) return false;
+        // The neighbour is already on the map and the party still reached an
+        // edge: this is the window's own outer boundary and there is nothing
+        // beyond it to lay down. The old crossing takes over.
+        if (win.originX === old.originX && win.originY === old.originY &&
+            win.cols === old.cols && win.rows === old.rows) return false;
+
+        // The queue is building for a window that is about to be replaced, and
+        // its half-finished square would be paid for twice.
+        dropPrefetch();
+        const api = ProcGenSquareApi();
+        for (const c of win.cells) {
+            if (!api.has || api.has(c.worldX, c.worldY, depth)) continue;
+            try {
+                if (!api.build(c.worldX, c.worldY, { depth })) return false;
+            } catch (e) {
+                console.error(`[ProcStitch] could not build (${c.worldX},${c.worldY})`, e);
+                return false;
+            }
+        }
+        if (!installWindow(win, cell)) return false;
+        // Player 2 can be the one at the edge, and the window is then planned
+        // around THEIR square: everything that answers "which square is this"
+        // still has to point at the one the party is standing in.
+        const standing = cellAt($gamePlayer.x, $gamePlayer.y);
+        if (standing) adoptCell(win, standing);
+        resetStitchTracking();
+        return true;
+    }
+
+    // Watch the party for a seam crossing. Two separate things happen, and they
+    // happen at different moments on purpose:
+    //   - the instant the party sets foot in another square, everything that
+    //     answers "which square is this" is re-pointed at it. That is cheap and
+    //     must not lag, because the encounter table, the weather and the map name
+    //     all read it.
+    //   - the window itself only slides once the party is properly inside, so
+    //     walking along a seam does not rebuild on every other step.
+    let lastSquareKey = null;
+
+    // A window that has just been laid down is already centred on the party, so
+    // the tracker starts holding that square: without this the first frame after
+    // every transfer would report a crossing that never happened.
+    function resetStitchTracking() {
+        const cell = stitchWindow && stitchWindow.partyCell;
+        lastSquareKey = cell ? cell.worldX + ',' + cell.worldY : null;
+        lastApproachKey = null;
+        dropPrefetch();
+        // Start on the ring around the arrival straight away, so the first seam
+        // the party reaches is already paid for.
+        if (stitchWindow && cell) {
+            prefetchWindowAt(cell.worldX, cell.worldY, stitchWindow.depth);
+        }
+    }
+
+    function updateStitchTracking() {
+        if (!stitchWindow || $gameMap.mapId() !== procMapId) return;
+        // One queued square is built per call at most, and only when its turn has
+        // come round: see drainPrefetch. This runs even mid-transfer, because the
+        // work it does is exactly what stops the next slide from stalling.
+        drainPrefetch();
+        if ($gamePlayer.isTransferring()) return;
+        const cell = cellAt($gamePlayer.x, $gamePlayer.y);
+        if (!cell) return;
+
+        const key = cell.worldX + ',' + cell.worldY;
+        if (key !== lastSquareKey) {
+            const from = lastSquareKey;
+            lastSquareKey = key;
+            adoptCell(stitchWindow, cell);
+            updateBiomeAudio();
+            $dataMap.displayName = procMapDisplayName();
+            const scene = SceneManager._scene;
+            if (scene && scene._mapNameWindow && scene._mapNameWindow.open) {
+                scene._mapNameWindow.refresh();
+                scene._mapNameWindow.open();
+            }
+            $gameMap.requestRefresh();
+            // The square was already built and already on screen; what arrives
+            // with the party is its population.
+            populatePartySquare();
+            notifySquareChanged(key, from);
+            // The window this square will want is three squares' work away, and
+            // the party is eight tiles from asking for it.
+            prefetchWindowAt(cell.worldX, cell.worldY, stitchWindow.depth);
+        }
+
+        // Walking towards a seam starts the ground on the far side of it, once
+        // per tile stood on rather than once per frame: planning a window is nine
+        // resolutions and there is no sense repeating them while standing still.
+        const tileKey = $gamePlayer.x + ',' + $gamePlayer.y;
+        if (tileKey !== lastApproachKey) {
+            lastApproachKey = tileKey;
+            prefetchAhead(cell);
+        }
+
+        // Far enough in to be worth sliding the window?
+        if (cell === stitchWindow.centreCell) return;
+        const lx = $gamePlayer.x - cell.ox, ly = $gamePlayer.y - cell.oy;
+        const deepEnough =
+            lx >= RECENTRE_MARGIN && lx < CELL_W - RECENTRE_MARGIN &&
+            ly >= RECENTRE_MARGIN && ly < CELL_H - RECENTRE_MARGIN;
+        if (!deepEnough) return;
+        if ($gamePlayer.isMoving() || $gameMap.isEventRunning() || $gameMessage.isBusy()) return;
+        recentre(cell);
+    }
+
+    // ---- putting events in the right square --------------------------------
+    //
+    // Every pass that populates the procedural map - the chests, the traps, the
+    // dungeon doors, the key chests, the police, the enemies - was written when
+    // the map WAS the square, so it scans the square's own 64x64 tile array, asks
+    // $gameMap whether a tile it found is passable, and calls setPosition with the
+    // answer. All three of those are square-local numbers, and inside a window
+    // they are no longer map numbers: run unchanged, a pass would validate tiles
+    // in the window's top-left square and drop every chest in the world there.
+    //
+    // Rather than teach six passes (in three plugins) about the window, the
+    // window pretends to be the square for the length of a pass: $gameMap answers
+    // coordinate questions about the party's own cell, $gamePlayer reports its
+    // position inside it, and setPosition converts the result back. Nothing that
+    // populates a square had to change, and anything added later gets the same
+    // treatment for free.
+    //
+    // The one number that stays as it was is the parking spot. A pass puts the
+    // events it did not use at (0, 0) and everything downstream reads that as
+    // "not placed", so it is passed through untouched.
+
+    // Game_Map methods that take a map coordinate. While a pass runs, each is
+    // handed square-local ones and shifts them into the party's cell.
+    const LOCAL_VIEW_METHODS = [
+        'isPassable', 'isBoatPassable', 'isShipPassable', 'isAirshipLandOk',
+        'checkPassage', 'tileId', 'layeredTiles', 'allTiles', 'autotileType',
+        'isLadder', 'isBush', 'isCounter', 'isDamageFloor', 'terrainTag',
+        'regionId', 'eventsXy', 'eventsXyNt', 'tileEventsXy', 'eventIdXy',
+        'checkLayeredTilesFlags',
+    ];
+
+    let localView = null;   // {x, y} offset of the cell a pass is running for
+
+    // setPosition is the one door every placement pass leaves by.
+    const _Stitch_setPosition = Game_CharacterBase.prototype.setPosition;
+    Game_CharacterBase.prototype.setPosition = function(x, y) {
+        if (localView && !(x === 0 && y === 0)) {
+            x += localView.x;
+            y += localView.y;
+        }
+        _Stitch_setPosition.call(this, x, y);
+    };
+
+    /**
+     * Run fn with the world looking like the one 64x64 square `cell` holds.
+     * Without a window (or without a cell) it is a plain call, which is what
+     * every one of these passes has always been.
+     */
+    function withSquareLocalView(cell, fn) {
+        if (!cell || (cell.ox === 0 && cell.oy === 0)) return fn();
+
+        const ox = cell.ox, oy = cell.oy;
+        const savedMap = {};
+        for (const name of LOCAL_VIEW_METHODS) {
+            const original = $gameMap[name];
+            if (typeof original !== 'function') continue;
+            savedMap[name] = original;
+            $gameMap[name] = function(x, y, ...rest) {
+                return original.call(this, x + ox, y + oy, ...rest);
+            };
+        }
+        // isValid, width and height have to answer for the square, not the map,
+        // or a scan written as "for x < $gameMap.width()" would walk the window.
+        const savedIsValid = $gameMap.isValid;
+        const savedWidth = $gameMap.width;
+        const savedHeight = $gameMap.height;
+        $gameMap.isValid = (x, y) => x >= 0 && x < CELL_W && y >= 0 && y < CELL_H;
+        $gameMap.width = () => CELL_W;
+        $gameMap.height = () => CELL_H;
+
+        // x and y are prototype getters on Game_CharacterBase; an own getter
+        // shadows them for as long as it is there. A getter and not a fixed
+        // value, because setPosition writes _x while the pass is still running
+        // and a pass that reads a position back has to see what it just set.
+        // The player AND the events, so that nothing inside a pass can end up
+        // comparing a local tile against a map position.
+        const shadowed = [];
+        const shadow = (ch) => {
+            if (!ch || Object.prototype.hasOwnProperty.call(ch, 'x')) return;
+            Object.defineProperty(ch, 'x', { get() { return this._x - ox; }, configurable: true });
+            Object.defineProperty(ch, 'y', { get() { return this._y - oy; }, configurable: true });
+            shadowed.push(ch);
+        };
+        shadow($gamePlayer);
+        for (const ev of $gameMap.events()) shadow(ev);
+
+        // NPCSystem caches its passable-tile scan on $gameMap keyed by map id
+        // alone. That key cannot tell the window from a square inside it, so a
+        // scan made in one space would be handed straight back in the other.
+        // Dropped on the way in and on the way out; it is one pass to rebuild.
+        const savedTileCache = $gameMap._passableTerrainCache;
+        $gameMap._passableTerrainCache = null;
+
+        const savedView = localView;
+        localView = { x: ox, y: oy };
+        try {
+            return fn();
+        } finally {
+            $gameMap._passableTerrainCache = savedTileCache;
+            localView = savedView;
+            for (const name of Object.keys(savedMap)) $gameMap[name] = savedMap[name];
+            $gameMap.isValid = savedIsValid;
+            $gameMap.width = savedWidth;
+            $gameMap.height = savedHeight;
+            for (const ch of shadowed) { delete ch.x; delete ch.y; }
+        }
+    }
+
+    // The square the party is standing in, as a cell, or null when there is no
+    // window and the map already is the square.
+    function partyCell() {
+        if (!stitchWindow) return null;
+        return cellAt($gamePlayer.x, $gamePlayer.y) || stitchWindow.partyCell;
+    }
+
+    /**
+     * Run every pass that populates a square, for the square the party is in.
+     * Called on arrival and again whenever the party walks into a new one, which
+     * is what keeps a crossing feeling like a crossing: the world was already
+     * there, its inhabitants arrive with the party.
+     */
+    function populatePartySquare() {
+        withSquareLocalView(partyCell(), () => {
+            if (placeChestEvents) placeChestEvents();
+            if (placeSpikeTrapEvents) placeSpikeTrapEvents();
+            if (placeDungeonDoorEvents) placeDungeonDoorEvents();
+            if (placeKeyChestEvents) placeKeyChestEvents();
+            if (placePolicemanEvents) placePolicemanEvents();
+        });
+        updateEventVisibility();
+        withSquareLocalView(partyCell(), () => refreshEnemiesForBiome());
+    }
+
+    window.ProcStitch = {
+        // Is a window standing right now?
+        active() { return !!stitchWindow; },
+        window() { return stitchWindow; },
+        cellSize() { return { width: CELL_W, height: CELL_H }; },
+        open: openWindow,
+        close: closeWindow,
+        plan: planWindow,
+        compose: composeWindow,
+        apply: applyWindowToDataMap,
+        recentre,
+        // Lay the neighbour the party is walking into onto the map instead of
+        // crossing to it. Answers false when it may not be joined on, which is
+        // when the fading crossing is the right answer.
+        growTowards,
+        // The landing-grid cell the party now stands in, on an alien surface.
+        adoptAlienCell: adoptAlienGridCell,
+        cellAt,
+        // Say so after editing a square's own array once it is already laid down.
+        syncCell,
+        // A map coordinate expressed inside its own world square. THE call for
+        // anything that indexes _procGenData.generatedMapData by map position.
+        local: localCoord,
+        // The world square a map coordinate stands on.
+        squareAt: worldSquareAt,
+        // Where a square-local tile sits on the loaded map.
+        toMap: mapCoord,
+        // Called whenever the party sets foot in a different world square without
+        // a transfer having happened. hook(toKey, fromKey).
+        onSquareChanged(hook) { if (typeof hook === 'function') squareChangedHooks.push(hook); },
+        setDisabled(off) { stitchDisabled = !!off; if (off) closeWindow(); },
+        isDisabled() { return stitchDisabled; },
+        // Run fn with the world looking like the single 64x64 square the party
+        // stands in: THE call for anything that populates a square.
+        inPartySquare(fn) { return withSquareLocalView(partyCell(), fn); },
+        partyCell,
+        populate: populatePartySquare,
+        // How much ground is still being built ahead of the party, the square
+        // half-built right now included.
+        pending() { return prefetchQueue.length + (prefetchJob && !prefetchJob.done ? 1 : 0); },
+        _prefetchAt: prefetchWindowAt,
+        _drain: drainPrefetch,
+        _update: updateStitchTracking,
+        _resetTracking: resetStitchTracking,
+    };
+
+    // ---- the two hooks that make the window invisible to everyone else ------
+
+    // Every reserveTransfer onto map 636 is an arrival on a NAMED square, so the
+    // window that is about to be built has to be built around that square rather
+    // than around whichever one the last window happened to be centred on.
+    const _Stitch_reserveTransfer = Game_Player.prototype.reserveTransfer;
+    Game_Player.prototype.reserveTransfer = function(mapId, x, y, d, fadeType) {
+        if (mapId === procMapId) {
+            const pg = procGen();
+            if (pg) pg._stitchReanchor = true;
+        }
+        _Stitch_reserveTransfer.call(this, mapId, x, y, d, fadeType);
+    };
+
+    // ...and the coordinates it carries are SQUARE-LOCAL, because every caller
+    // that ever computed a spawn tile on the procedural map computed it inside a
+    // 64x64 square: the border crossing, startProcGen, a structure's own entrance,
+    // the bunker hatch, a landing on an alien surface. The window is already on
+    // $dataMap by the time this runs (Scene_Map loads the map data first and calls
+    // performTransfer from onMapLoaded), so this is the one place that has to know
+    // the difference, and it is why nothing else did.
+    const _Stitch_performTransfer = Game_Player.prototype.performTransfer;
+    Game_Player.prototype.performTransfer = function() {
+        if (this.isTransferring() && this._newMapId === procMapId && stitchWindow) {
+            const square = {
+                x: $gameVariables.value(VAR_WORLD_X),
+                y: $gameVariables.value(VAR_WORLD_Y),
+            };
+            const onMap = mapCoord(square.x, square.y, this._newX, this._newY);
+            this._newX = onMap.x;
+            this._newY = onMap.y;
+        }
+        _Stitch_performTransfer.call(this);
+        // Off the procedural map the window means nothing, and leaving it up
+        // would have cellAt() answering for tiles of a map that is not loaded.
+        if ($gameMap.mapId() !== procMapId && stitchWindow) closeWindow();
+        if ($gameMap.mapId() === procMapId && stitchWindow) {
+            const standing = cellAt(this.x, this.y);
+            if (standing) adoptCell(stitchWindow, standing);
+            resetStitchTracking();
+        }
+    };
+
+    // The seam watch. Runs off the player's own update so it sees every step,
+    // including the ones a vehicle, the autopilot or the idle explorer take.
+    const _Stitch_Game_Player_update = Game_Player.prototype.update;
+    Game_Player.prototype.update = function(sceneActive) {
+        _Stitch_Game_Player_update.call(this, sceneActive);
+        if (stitchWindow) updateStitchTracking();
+    };
+
     // Proc map edge: regenerate adjacent biome and transfer seamlessly
     const _orig_Player_moveStraight = Game_Player.prototype.moveStraight;
     Game_Player.prototype.moveStraight = function(d) {
@@ -2766,6 +4037,18 @@
 
         if (!wouldLeave) { _orig_Player_moveStraight.call(this, d); return; }
 
+        // Leaving the MAP is not the same thing as leaving the SQUARE any more.
+        // Inside a stitched window the seams between squares are ordinary tiles
+        // and were walked over without ever reaching here; what is left is the
+        // window's own outer edge, and the square being left by it is whichever
+        // one the party is actually standing in, not the one the window is
+        // centred on. Everything below wants that square, so say so.
+        if (window.ProcStitch && window.ProcStitch.active()) {
+            const here = window.ProcStitch.squareAt(x, y);
+            $gameVariables.setValue(VAR_WORLD_X, here.x);
+            $gameVariables.setValue(VAR_WORLD_Y, here.y);
+        }
+
         // Already mid-transition (or a transfer is pending): swallow further edge
         // input so we do not restart the fade or overwrite the callback every
         // frame. Without this, holding a direction at high vehicle speed (e.g. the
@@ -2780,6 +4063,13 @@
         // player came from instead of travelling to an adjacent biome.
         if ($gameSystem._procGenData && $gameSystem._procGenData._dungeonSession) {
             exitDungeonSession(d);
+            return;
+        }
+
+        // A neighbour on this square's own tileset is not somewhere else, it is
+        // more of here. Lay it down and take the step: no fade, no reload.
+        if (window.ProcStitch && window.ProcStitch.growTowards(exitDirection, x, y)) {
+            _orig_Player_moveStraight.call(this, d);
             return;
         }
 
@@ -2948,6 +4238,12 @@
                 if (!wouldLeave) return false;
                 // Already mid-transition: swallow further input so we don't reschedule.
                 if ($gameSystem._procGenData && $gameSystem._procGenData._edgeTransitionScheduled) return true;
+                // Same-tileset neighbour: grow the map under both players rather
+                // than moving the party (see Game_Player.moveStraight above).
+                // P2 then simply takes the step it was going to take.
+                if (window.ProcStitch && window.ProcStitch.growTowards(exitDirection, ev.x, ev.y)) {
+                    return false;
+                }
                 console.log(`[WorldMapReturn-Edge] P2 touched proc edge, starting fade out`);
                 scheduleProcEdgeTransition(exitDirection, ev.x, ev.y, dir);
                 return true;
@@ -2984,20 +4280,14 @@
                 const directions    = $gameMap.getBorderDirection(nx, ny);
                 const hasBorderDest = $gameMap._borderDestination || $gameMap._coordsDest;
                 if (hasBorderDest && $gameMap.isBorderDirectionAllowed(directions)) {
-                    let borderDest = null;
-                    if ($gameMap._coordsDest) {
-                        borderDest = { mapId: worldMapId, x: $gameMap._coordsDest.x, y: $gameMap._coordsDest.y };
-                    } else if ($gameMap._borderDestination) {
-                        borderDest = $gameMap._borderDestination;
+                    if (window.SplitScreenManager && window.SplitScreenManager.active) {
+                        window.SplitScreenManager.forceP2Teleport = true;
                     }
-                    if (borderDest) {
-                        if (window.SplitScreenManager && window.SplitScreenManager.active) {
-                            window.SplitScreenManager.forceP2Teleport = true;
-                        }
-                        $gameVariables.setValue(VAR_DEST_MAP, borderDest.mapId);
-                        $gamePlayer.reserveTransfer(borderDest.mapId, borderDest.x, borderDest.y, 0, 0);
-                        return true;
-                    }
+                    // The same crossing Player 1 makes, resolved in the one place
+                    // that knows what a border means: P2's own step direction is
+                    // handed over because $gamePlayer is facing wherever P1 left
+                    // them, which is not the side being crossed.
+                    if ($gamePlayer.performBorderReturn(dir)) return true;
                 }
             }
 
@@ -3005,206 +4295,97 @@
         }
     };
 
-    // Resolve adjacent biome, generate terrain, and transfer to it
+    // Resolve the adjacent square, build it, and transfer onto it. This is the OLD
+    // crossing, and it is still exactly what happens at any edge a stitched window
+    // could not extend past: the far side of a tileset change (a road, a city, the
+    // sea floor), a square WorkSystem/Destinations.json names, the wall of a
+    // structure. Inside a window the seams never reach here at all.
+    //
+    // What used to live in this function was a second, slightly different copy of
+    // the resolution generateProceduralMap does. The two disagreed - this one
+    // never renamed Ice to Tundra, never made the special-biome roll, and forced a
+    // road through the intersection detector before the generator could refine it
+    // - so a square could come out one way when walked into and another when
+    // travelled to. Both now ask ProcGenSquare, which is also what a stitched
+    // neighbour is built from, so all three agree by construction.
     function _resolveAdjacentBiomeAndTransfer(system, storedExitDir, storedPlayerX, storedPlayerY, _d, adjacentCoords) {
-        let roadDirection = null;
-        let biomeName     = 'Fields';
+        const api = window.ProcGenSquare;
+        const pg  = system._procGenData;
 
-        // An alien planet surface is a single biome edge-to-edge: the whole world
-        // is the biome tied to that planet, so every border crossing keeps it
-        // instead of resolving to the world-map default (which was giving Fields).
-        const alienBiome = (system._procGenData &&
-            /^Alien/.test(String(system._procGenData.currentBiome || "")))
-            ? system._procGenData.currentBiome : null;
         // The planet's bounded landing grid (see GalaxySim_Core.js
-        // enterPlanetSurface): wraps both axes toroidally ("pacman") instead
-        // of walking an unbounded plane of the same biome forever.
-        const alienGrid = alienBiome ? system._procGenData.alienGrid : null;
-
-        const hardcodedOverride = (!alienBiome && window.getHardcodedBiomeOverride)
-            ? window.getHardcodedBiomeOverride(adjacentCoords.x, adjacentCoords.y)
-            : null;
-
-        // A river crossing outranks everything else, exactly as it does when the
-        // square is entered from the world map (generateProceduralMap). Without
-        // this the coordinate cache reported the tile's underlying biome and
-        // walking onto a bridge square built a different map than travelling to
-        // it did.
-        const bridgeDirection = (!alienBiome && system.getBridgeDirectionAt)
-            ? system.getBridgeDirectionAt(adjacentCoords.x, adjacentCoords.y)
-            : null;
-
-        if (alienBiome) {
-            biomeName = alienBiome;
-            if (alienGrid) {
-                adjacentCoords.x = ((adjacentCoords.x % alienGrid.w) + alienGrid.w) % alienGrid.w;
-                adjacentCoords.y = ((adjacentCoords.y % alienGrid.h) + alienGrid.h) % alienGrid.h;
-                alienGrid.gx = adjacentCoords.x;
-                alienGrid.gy = adjacentCoords.y;
-            }
-            console.log(`[WorldMapReturn-Edge] Alien planet surface: keeping biome "${biomeName}" at grid (${adjacentCoords.x},${adjacentCoords.y})`);
-        } else if (bridgeDirection) {
-            biomeName     = 'Bridge';  // i18n-ignore  biome id
-            roadDirection = bridgeDirection;
-            console.log(`[WorldMapReturn-Edge] Bridge (${bridgeDirection}) at (${adjacentCoords.x},${adjacentCoords.y})`);
-        } else if (hardcodedOverride) {
-            biomeName     = hardcodedOverride.biome;
-            roadDirection = hardcodedOverride.roadDirection || null;
-            console.log(`[WorldMapReturn-Edge] Hardcoded override: biome="${biomeName}", roadDir="${roadDirection}"`);
-        } else {
-            let worldTileBiome = null;
-            if (system._procGenData.biomeCoordinateCache &&
-                Object.keys(system._procGenData.biomeCoordinateCache).length > 0) {
-                for (const [bname, coordinates] of Object.entries(system._procGenData.biomeCoordinateCache)) {
-                    if (coordinates.some(coord => coord.x === adjacentCoords.x && coord.y === adjacentCoords.y)) {
-                        worldTileBiome = bname;
-                        console.log(`[WorldMapReturn-Edge] Found in cache: "${bname}"`);
-                        break;
-                    }
-                }
-                if (!worldTileBiome) {
-                    console.log(`[WorldMapReturn-Edge] WARNING: (${adjacentCoords.x},${adjacentCoords.y}) not in cache`);
-                }
-            } else {
-                console.log(`[WorldMapReturn-Edge] ERROR: Cache is empty`);
-            }
-            if (!worldTileBiome) worldTileBiome = 'Fields';
-
-            if (worldTileBiome.startsWith('Road ')) {
-                roadDirection = worldTileBiome.substring(5).toLowerCase();
-                biomeName     = 'Road';
-                console.log(`[WorldMapReturn-Edge] Road detected: dir="${roadDirection}"`);
-            } else {
-                biomeName = worldTileBiome;
-            }
+        // enterPlanetSurface) wraps both axes toroidally instead of walking an
+        // unbounded plane of the same biome forever.
+        const alienGrid = pg.alienGrid;
+        if (alienGrid) {
+            adjacentCoords.x = ((adjacentCoords.x % alienGrid.w) + alienGrid.w) % alienGrid.w;
+            adjacentCoords.y = ((adjacentCoords.y % alienGrid.h) + alienGrid.h) % alienGrid.h;
+            window.ProcStitch.adoptAlienCell(adjacentCoords.x, adjacentCoords.y);
         }
 
-        if (!biomeName) biomeName = 'Fields';
-        console.log(`[WorldMapReturn-Edge] Resolved biome: "${biomeName}"`);
-
-        let biome = getBiomeByName(biomeName);
-        if (!biome) {
-            console.error(`[WorldMapReturn-Edge] Biome "${biomeName}" not found, returning to world map`);
+        const bail = () => {
             const returnCoords = system.getReturnCoordinates(storedExitDir);
             $gamePlayer.clearProcGenBorderArrows();
             system.clearProcGenData();
             $gamePlayer.reserveTransfer(worldMapId, returnCoords.x, returnCoords.y, storedExitDir, 0);
+        };
+
+        if (!api) { bail(); return; }
+
+        // The square the party is leaving may be a forced or structure biome the
+        // resolver knows nothing about (startForcedBiome, a tower floor). Its
+        // NEIGHBOUR is an ordinary world square either way, so the stale name has
+        // to be out of the way before the window is planned around it.
+        pg.currentBiome = null;
+
+        const depth = (pg.biomeLayerStack || []).length;
+        const built = api.build(adjacentCoords.x, adjacentCoords.y, { depth });
+        if (!built) {
+            console.error(`[WorldMapReturn-Edge] Could not build (${adjacentCoords.x},${adjacentCoords.y})`);
+            bail();
             return;
         }
 
-        // If underground, use adjacent biome's lower layer
-        if (system._procGenData.biomeLayerStack && system._procGenData.biomeLayerStack.length > 0) {
-            if (biome.lowerLayer) {
-                biomeName = biome.lowerLayer;
-                biome     = getBiomeByName(biomeName);
-                if (!biome) {
-                    const returnCoords = system.getReturnCoordinates(storedExitDir);
-                    $gamePlayer.clearProcGenBorderArrows();
-                    system.clearProcGenData();
-                    $gamePlayer.reserveTransfer(worldMapId, returnCoords.x, returnCoords.y, storedExitDir, 0);
-                    return;
-                }
-            }
-        }
+        const r = built.resolved;
+        console.log(`[WorldMapReturn-Edge] Resolved biome: "${r.biomeName}" at (${adjacentCoords.x},${adjacentCoords.y})`);
 
-        system._procGenData.currentBiome          = biomeName;
-        // Must be re-stamped every crossing, bridge or not: generateProceduralTerrain
-        // reads it off procGenData, so a stale marker turned the square after a
-        // river crossing into a second bridge.
-        system._procGenData.currentBridgeDirection = bridgeDirection;
+        pg.currentBiome            = r.biomeName;
+        pg.currentBiomeTileset     = r.tilesetId;
+        pg.currentRoadDirection    = r.roadDirection;
+        pg.currentUnderBiome       = r.underBiome;
+        // Must be re-stamped every crossing, bridge or not: the generators read it
+        // off _procGenData, so a stale marker turned the square after a river
+        // crossing into a second bridge.
+        pg.currentBridgeDirection  = r.bridgeDirection;
+        pg.displayAsBeach          = r.displayAsBeach;
+        pg.displayAsIsland         = r.displayAsIsland;
+        pg.structureHints          = r.structureHints || null;
+        pg.biomeDayTemperature     = r.dayTemperature;
+        pg.biomeNightTemperature   = r.nightTemperature;
+        pg.originX                 = adjacentCoords.x;
+        pg.originY                 = adjacentCoords.y;
+        pg.generatedMapData        = built.mapData;
         $gameVariables.setValue(VAR_WORLD_X, adjacentCoords.x);
         $gameVariables.setValue(VAR_WORLD_Y, adjacentCoords.y);
-        system._procGenData.originX               = adjacentCoords.x;
-        system._procGenData.originY               = adjacentCoords.y;
-        system._procGenData.currentBiomeTileset   = biome.tilesetId;
-        system._procGenData.biomeDayTemperature    = biome.dayTemperature   || 20;
-        system._procGenData.biomeNightTemperature  = biome.nightTemperature || 10;
-
-        // Same formula as entering this square from the world map: walking in
-        // over the border and travelling there directly must build one and the
-        // same map (see ProcGenUtils.procMapSeed).
-        const layerDepth = (system._procGenData.biomeLayerStack || []).length;
-        const seed = procMapSeed(adjacentCoords.x, adjacentCoords.y, layerDepth);
-
-        // On an alien planet the grid coordinate is planet-local (small,
-        // toroidal), so it must never be used to query Earth's world-map
-        // tiles/cache -- those numbers can coincidentally land inside Earth's
-        // real 0-255 coordinate range now that landing no longer uses a huge
-        // offset. Every neighbor is simply the same planet-wide biome.
-        let adjacentBiomesForNewTile;
-        if (alienBiome) {
-            const alienNeighbor = normalizeBiomeForEdge(alienBiome);
-            adjacentBiomesForNewTile = {
-                north: alienNeighbor, south: alienNeighbor, east: alienNeighbor, west: alienNeighbor,
-            };
-        } else {
-            adjacentBiomesForNewTile = getAdjacentBiomesOnWorldMap(adjacentCoords.x, adjacentCoords.y);
-            if (system._procGenData.biomeCoordinateCache &&
-                Object.keys(system._procGenData.biomeCoordinateCache).length > 0) {
-                const cacheBiomes = getAdjacentBiomesFromCache(adjacentCoords.x, adjacentCoords.y, system._procGenData.biomeCoordinateCache);
-                adjacentBiomesForNewTile.north = cacheBiomes.north || adjacentBiomesForNewTile.north;
-                adjacentBiomesForNewTile.south = cacheBiomes.south || adjacentBiomesForNewTile.south;
-                adjacentBiomesForNewTile.east  = cacheBiomes.east  || adjacentBiomesForNewTile.east;
-                adjacentBiomesForNewTile.west  = cacheBiomes.west  || adjacentBiomesForNewTile.west;
-            }
-            adjacentBiomesForNewTile = {
-                north: normalizeBiomeForEdge(adjacentBiomesForNewTile.north),
-                south: normalizeBiomeForEdge(adjacentBiomesForNewTile.south),
-                east:  normalizeBiomeForEdge(adjacentBiomesForNewTile.east),
-                west:  normalizeBiomeForEdge(adjacentBiomesForNewTile.west),
-            };
-        }
-
-        if (isRoadBiome && isRoadBiome(biomeName)) {
-            roadDirection = determineRoadIntersectionType
-                ? determineRoadIntersectionType(adjacentBiomesForNewTile, isRoadBiome)
-                : null;
-            console.log(`[WorldMapReturn-Edge] Auto-detected road dir: ${roadDirection}`);
-        }
-        if (isRoadBiome && isRoadBiome(biomeName) && !roadDirection) roadDirection = 'horizontal';
-        system._procGenData.currentRoadDirection = roadDirection;
-
-        let cacheInfoForCheck = null, diagonalBiomesForCheck = null;
-        if (!alienBiome && system._procGenData.biomeCoordinateCache &&
-            Object.keys(system._procGenData.biomeCoordinateCache).length > 0) {
-            cacheInfoForCheck      = checkAdjacentMapBiomesFromCache(adjacentCoords.x, adjacentCoords.y, system._procGenData.biomeCoordinateCache);
-            diagonalBiomesForCheck = checkDiagonalMapBiomesFromCache(adjacentCoords.x, adjacentCoords.y, system._procGenData.biomeCoordinateCache);
-        }
-
-        // A homogeneous planet has no biome transitions, so beach/island tile
-        // substitution (which only makes sense at a coastline) never applies.
-        system._procGenData.displayAsBeach  = alienBiome ? false : shouldDisplayAsBeach(biomeName, adjacentBiomesForNewTile, diagonalBiomesForCheck);
-        system._procGenData.displayAsIsland = alienBiome ? false : (shouldDisplayAsIsland ? shouldDisplayAsIsland(biomeName, adjacentBiomesForNewTile) : false);
-
-        const worldCoords = { x: adjacentCoords.x, y: adjacentCoords.y };
-        // Same Earth-cache-into-alien-coordinates hazard as generateProceduralMap
-        // (ProceduralMapBiomeGenerator.js): the alien grid's small (gx,gy) can
-        // coincidentally match a real Earth world-map coordinate, so the water-
-        // corner lookups inside drawWaterEdges must never see Earth's cache here.
-        system._procGenData.generatedMapData = generateProceduralTerrain(
-            biome, seed, roadDirection, adjacentBiomesForNewTile,
-            cacheInfoForCheck, worldCoords, alienBiome ? null : system._procGenData.biomeCoordinateCache
-        );
-        console.log(`[WorldMapReturn-Edge] Terrain generation complete`);
 
         updateBiomeAudio();
 
+        // Square-local, as every spawn point on map 636 is: if the arrival lands
+        // inside a stitched window, the transfer hook puts it on the map.
         const edgePos = system.getEdgeCoordinateForDirection(storedExitDir, storedPlayerX, storedPlayerY);
-        // The alien elevation-banded terrestrial fill and crater fields are
-        // continuous, so nothing guarantees the exact edge tile a crossing
-        // lands on is walkable (open water, a crater rim...) the way Earth's
-        // own generators each promise their borders are. Search outward from
-        // the intended edge tile for the nearest one that actually is.
         let spawnX = edgePos.x, spawnY = edgePos.y;
+        // The alien elevation-banded terrestrial fill and crater fields are
+        // continuous, so nothing guarantees the exact edge tile a crossing lands on
+        // is walkable (open water, a crater rim) the way Earth's own generators
+        // each promise their borders are. Search outward for the nearest one that
+        // actually is.
         const AT = window.ProcGenAlienTerrain;
-        if (alienBiome && AT && AT.findPassableLandingTile && system._procGenData.generatedMapData) {
+        if (r.alien && AT && AT.findPassableLandingTile) {
             const spot = AT.findPassableLandingTile(
-                system._procGenData.generatedMapData, system._procGenData.currentBiomeTileset,
-                PROC_MAP_WIDTH, PROC_MAP_HEIGHT, edgePos.x, edgePos.y
+                built.mapData, r.tilesetId, PROC_MAP_WIDTH, PROC_MAP_HEIGHT, edgePos.x, edgePos.y
             );
             spawnX = spot.x; spawnY = spot.y;
         }
-        console.log(`[WorldMapReturn-Edge] Transferring to (${spawnX},${spawnY})`);
+        console.log(`[WorldMapReturn-Edge] Transferring to square-local (${spawnX},${spawnY})`);
         $gamePlayer.reserveTransfer(procMapId, spawnX, spawnY, storedExitDir, 0);
     }
 
@@ -3540,7 +4721,15 @@
 
         // Remember where the player was so a dungeon generated from Sandbox Mode can
         // return them there when they step on the dungeon border.
-        const returnFrom = { mapId: $gameMap.mapId(), x: $gamePlayer.x, y: $gamePlayer.y, dir: $gamePlayer.direction() };
+        // Square-local, not map-local: on the procedural map the party may be
+        // standing in any cell of a stitched window, and the window it comes back
+        // to is not guaranteed to have the same shape. Every reserveTransfer onto
+        // map 636 speaks square-local coordinates and the transfer hook at the
+        // bottom of this file puts them back on the map (see THE STITCHED WINDOW).
+        const returnLocal = (window.ProcStitch && $gameMap.mapId() === procMapId)
+            ? window.ProcStitch.local($gamePlayer.x, $gamePlayer.y)
+            : { x: $gamePlayer.x, y: $gamePlayer.y };
+        const returnFrom = { mapId: $gameMap.mapId(), x: returnLocal.x, y: returnLocal.y, dir: $gamePlayer.direction() };
 
         // Entered off the procedural map (a Grate, a flight of stairs, a cave
         // mouth, a patron's hatch): snapshot the square itself, tiles included,
@@ -3808,10 +4997,10 @@
     // ============================================================================
 
     function performStopTravel() {
-        // When CamperDrivingSystem is active, vars 43/44 are kept current by the
+        // When VoxelWorldSystem is active, vars 43/44 are kept current by the
         // waypoint system. $gamePlayer.x/y is stuck at the ship's parked tile,
         // so do NOT overwrite the correct coords with the stale tile position.
-        const camperDriving = window.CamperDrivingSystem && window.CamperDrivingSystem.isActive();
+        const camperDriving = window.VoxelWorldSystem && window.VoxelWorldSystem.isActive();
 
         if ($gameMap.mapId() === worldMapId && !camperDriving) {
             $gameVariables.setValue(VAR_WORLD_X, $gamePlayer.x);
@@ -3831,7 +5020,7 @@
             ? window.WorldGen.HardcodedBiomeNames[`${currentX},${currentY}`]
             : null;
         if (hardcodedName === 'Bologna' && window.BolognaMapSystem) {  // i18n-ignore  HardcodedBiomeNames entry
-            if (camperDriving) window.CamperDrivingSystem.stop();
+            if (camperDriving) window.VoxelWorldSystem.stop();
             window.BolognaMapSystem.teleportToCell(7, 6);
             return;
         }
@@ -3879,30 +5068,42 @@
             if (!destination) break;  // hand-made map has no way in: generate one
 
             console.log('[WMR] Transferring to map', destination.id, 'at', destination.x, destination.y);
-            if (camperDriving) window.CamperDrivingSystem.stop();
+            if (camperDriving) window.VoxelWorldSystem.stop();
             $gamePlayer.reserveTransfer(destination.id, destination.x, destination.y, 0, 0);
             return;
         }
 
         console.log('[WMR] No non-proc match, generating procedural map');
 
-        if ($gameSystem.generateProceduralMap) {
-            if ($gameSystem.generateProceduralMap()) {
-                if (camperDriving) window.CamperDrivingSystem.stop();
-                const playerDirection = $gamePlayer.direction();
-                let startX = Math.floor(PROC_MAP_WIDTH  / 2);
-                let startY = Math.floor(PROC_MAP_HEIGHT / 2);
-                switch (playerDirection) {
-                    case 2: startY = 1;                   break;
-                    case 4: startX = PROC_MAP_WIDTH  - 2; break;
-                    case 6: startX = 1;                   break;
-                    case 8: startY = PROC_MAP_HEIGHT - 2; break;
-                }
-                $gameVariables.setValue(110, 1);
-                $gameVariables.setValue(111, 1);
-                $gamePlayer.reserveTransfer(procMapId, startX, startY, playerDirection, 0);
-            }
-        }
+        enterProceduralSquare(currentX, currentY, $gamePlayer.direction(), () => {
+            if (camperDriving) window.VoxelWorldSystem.stop();
+        });
+    }
+
+    // Build a world square's terrain and walk the party into it from the side
+    // they crossed, so the step they just took carries on rather than restarting
+    // in the middle of a new map. This is what "Visit X" on the world map does,
+    // and now also what an authored map's chevron border does, so the two agree
+    // on the entry edge, the variables written and the order they happen in.
+    //
+    // The coordinates are the SQUARE, not a tile: the tile is derived from the
+    // direction, and is square-local (the stitched window remaps it in
+    // performTransfer). `beforeTransfer` runs only once the square really built,
+    // between the generation and the transfer, which is where the callers that
+    // have to tear something down (the 3D drive) belong.
+    function enterProceduralSquare(worldX, worldY, direction, beforeTransfer) {
+        if (!$gameSystem.generateProceduralMap) return false;
+        const wx = Number(worldX), wy = Number(worldY);
+        // setValue refreshes every event page on the map, so the square is only
+        // written when it really moved (setPlayerWorldCoords says the same).
+        if (isFinite(wx) && isFinite(wy) && wx >= 0 && wy >= 0) setPlayerWorldCoords(wx, wy);
+        if (!$gameSystem.generateProceduralMap()) return false;
+        if (beforeTransfer) beforeTransfer();
+        const start = $gameSystem.getEdgeCoordinateForDirection(direction);
+        $gameVariables.setValue(110, 1);
+        $gameVariables.setValue(111, 1);
+        $gamePlayer.reserveTransfer(procMapId, start.x, start.y, direction, 0);
+        return true;
     }
 
     // ============================================================================
@@ -4072,14 +5273,11 @@
             }
             if (this._spriteset) this._spriteset.update();
 
-            if (placeChestEvents) placeChestEvents();
-            if (placeSpikeTrapEvents) placeSpikeTrapEvents();
-            if (placeDungeonDoorEvents) placeDungeonDoorEvents();
-            if (placeKeyChestEvents) placeKeyChestEvents();
-            if (placePolicemanEvents) placePolicemanEvents();
-            updateEventVisibility();
-            console.log(`[Scene_Map.onMapLoaded] Procedural map loaded, refreshing enemies`);
-            refreshEnemiesForBiome();
+            // Chests, traps, doors, police and enemies, all placed inside the
+            // square the party is actually standing in rather than wherever the
+            // window happens to put tile (0,0).
+            console.log(`[Scene_Map.onMapLoaded] Procedural map loaded, populating square`);
+            populatePartySquare();
             // Entering a square from the world map (or from a house / dungeon /
             // vehicle) is a fresh arrival, so re-resolve the biome track here as
             // well as on border crossings. The pick is deterministic, so this is
@@ -4629,6 +5827,16 @@
                 run: () => { $gamePlayer.locate(faced.x, faced.y); performStopTravel(); },
             });
         }
+        // Walking the square in 3D instead of stepping across it on the map.
+        // Only on foot: the drive scene hands the party back by transferring them,
+        // and a transfer takes whatever they are riding along with it, which would
+        // teleport the camper to wherever they wandered off to.
+        if (window.VoxelWorldSystem && !($gamePlayer.isInVehicle && $gamePlayer.isInVehicle())) {
+            rows.push({
+                label: T('WorldMapReturn.freeWalk'),
+                run: () => { $gameTemp._pendingWorldMapCommand = 'freeWalk'; },
+            });
+        }
         rows.push({
             label: T('WorldMapReturn.makeCamp'),
             run: () => { $gameTemp._pendingWorldMapCommand = 'makeCamp'; },
@@ -4650,6 +5858,9 @@
     function updateWorldMapToggleHotkey() {
         if (!Input.isTriggered(WMR_TOGGLE_KEY)) return;
         if ($gameMessage.isBusy() || $gameMap.isEventRunning() || $gamePlayer.isTransferring()) return;
+        // The 3D drive / free walk runs over a live map scene and owns the
+        // keyboard while it is up; it hands the party back itself.
+        if (window.VoxelWorldSystem && VoxelWorldSystem.isActive()) return;
         if ($gameMap.mapId() === worldMapId) {
             performStopTravel();
             return;
@@ -4692,6 +5903,8 @@
                 PluginManager.callCommand($gameMap._interpreter, PLUGIN_PMT, 'goUp', {});
             } else if (cmd === 'makeCamp') {
                 PluginManager.callCommand($gameMap._interpreter, 'TimeDateSystem', 'SleepMenu', {});
+            } else if (cmd === 'freeWalk') {
+                PluginManager.callCommand($gameMap._interpreter, 'VoxelWorldSystem', 'StartFreeWalk', {});
             }
         }
     };
@@ -4782,9 +5995,20 @@
     };
 
     Scene_Menu.prototype.commandWorldMap = function() {
+        // The 3D voxel world is up behind this menu (VoxelWorld/*). Out there
+        // "return to the world map" means leave that world, not walk about
+        // inside it: it ends the drive and the walk alike, putting the party
+        // down on the square they actually reached.
+        if (window.VoxelWorldSystem && window.VoxelWorldSystem.isActive() &&
+            window.VoxelWorldSystem.exitToWorldMap()) {
+            SceneManager.pop();
+            return;
+        }
         // Block return from Icebush (map 1414) during tutorial
         if ($gameMap.mapId() === 1414 && $gameSwitches.value(100)) {
-            this.playBuzzerSound(); return;
+            // playBuzzerSound is a Window_Base method; a Scene has to go through SoundManager,
+            // and calling it on `this` threw instead of refusing the press.
+            SoundManager.playBuzzer(); return;
         }
         // Planetside this entry is the landing-site picker, not a way home, and
         // inside the tower it is the lift: both answer inside the call below,
@@ -4815,6 +6039,16 @@
     };
 
     Scene_Menu.prototype.commandStop = function() {
+        // The 3D voxel world is up behind this menu. Out here "stop" means
+        // leave that world and stand on the world map at the square actually
+        // reached - NOT visit the square, which would generate a procedural map
+        // under a party that never asked to walk into one. Same answer as the
+        // travel page's "return to the world map" row above.
+        if (window.VoxelWorldSystem && window.VoxelWorldSystem.isActive() &&
+            window.VoxelWorldSystem.exitToWorldMap()) {
+            SceneManager.pop();
+            return;
+        }
         performStopTravel();
         SceneManager.pop();
     };
@@ -4874,12 +6108,75 @@
     }
 
     // ============================================================================
+    // NAMED PLACES ON THE WORLD MAP
+    // ============================================================================
+    // Every named place declares the world squares it stands on
+    // (Destinations.json `reservedTiles`, or the single `base` square where it
+    // declares no footprint). The pair below is that footprint, asked as a
+    // question rather than walked over: which place owns this square, and how
+    // is it entered from the side you came at it from.
+    //
+    // Written for the 3D world (VoxelWorld/*), which builds terrain over the
+    // whole map and would otherwise drive straight across a hand-made town as
+    // if it were open country. Everything here reads Destinations.json and
+    // nothing else, so it answers the same on any map, in any scene.
+
+    // The place that owns a world square, or null. `hand` is true for a place
+    // with a hand-made map behind it (`procedural: false`): those are the ones
+    // that cannot be generated and have to be walked into through their own
+    // door.
+    function placeAtWorldSquare(x, y) {
+        const all = getWorldMapCoordinates();
+        const coord = parseInt(x, 10) + ',' + parseInt(y, 10);
+        for (const key in all) {
+            const entry = all[key];
+            if (!entry) continue;
+            const reserved = Array.isArray(entry.reservedTiles) ? entry.reservedTiles : null;
+            let on = false;
+            if (reserved) on = reserved.includes(coord);
+            else if (entry.base) {
+                on = (parseInt(entry.base.x, 10) + ',' + parseInt(entry.base.y, 10)) === coord;
+            }
+            if (!on) continue;
+            return { key, entry, name: entry.name || key, hand: entry.procedural === false };
+        }
+        return null;
+    }
+
+    // Where a place is entered, coming at it heading `dir` ('north' | 'south' |
+    // 'east' | 'west'). The door authored for that side wins - a town with a
+    // `coords` list has one per side, and each lands the party at the matching
+    // EDGE of its own map, so walking south into it puts them at the top of it.
+    // A place with one fixed `entrance` uses that from every side. Null where
+    // there is no hand-made map to walk into at all.
+    function placeEntranceFor(entry, dir) {
+        if (!entry) return null;
+        const coords = Array.isArray(entry.coords) ? entry.coords : null;
+        let door = null;
+        if (coords && dir) door = coords.find(c => c && c.direction === dir && c.id);
+        if (!door && entry.entrance && entry.entrance.id) door = entry.entrance;
+        if (!door && coords) door = coords.find(c => c && c.id);
+        return door || null;
+    }
+
+    // ============================================================================
     // PUBLIC API
     // ============================================================================
 
     window.WorldMapReturn = {
         performVisitMap: performStopTravel,
         returnToWorldMap: performReturnToWorldMap,
+        // The named places and their footprints (see the section above).
+        placeAtWorldSquare,
+        placeEntranceFor,
+        // Is this world square the footprint of a place with a hand-made map
+        // behind it? Those squares hold a town nothing can generate, so the 3D
+        // world refuses to build over them and walks the party in through the
+        // place's own door instead (VoxelWorld/VoxelWorldScene.js).
+        isHandPlaceSquare(x, y) {
+            const at = placeAtWorldSquare(x, y);
+            return !!(at && at.hand && placeEntranceFor(at.entry, null));
+        },
         worldMapId,
         procMapId,
         // The name to file a place under (Assets menu, delivery targets, ...).

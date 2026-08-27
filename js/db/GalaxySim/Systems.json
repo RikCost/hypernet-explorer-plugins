@@ -78,6 +78,7 @@
             "name": "Moon",
             "type": "sub_mercurian",
             "mass": 0.0123,
+            "orbitRadius": 0.00257,
             "landingLocations": [
               {
                 "name": "Moon base",
@@ -86,6 +87,24 @@
                 "y": 1
               }
             ]
+          },
+          {
+            "name": "Moon 2",
+            "type": "sub_mercurian",
+            "mass": 0.0074,
+            "radius": 0.21,
+            "orbitRadius": 0.0019,
+            "friday": true,
+            "note": "The second moon keeps a five day week and is simply not there for the other four. Every ephemeris in print calls this a printing error."
+          },
+          {
+            "name": "Moon 3",
+            "type": "sub_mercurian",
+            "mass": 0.0041,
+            "radius": 0.17,
+            "orbitRadius": 0.0034,
+            "friday": true,
+            "note": "The third rises with the second, further out and smaller, and sets with it. Nobody has ever photographed either one on a Thursday."
           }
         ],
         "orbitRadius": 1,

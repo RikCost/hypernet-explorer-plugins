@@ -82,9 +82,18 @@
     // Copy lives in js/i18n/<lang>/plugins/Cooking.json and is read through the
     // shared resolver, so there is no second loader and no boot race.
     // Resolve a dot-path under the Cooking namespace (e.g. 'ui.cookButton').
+    // The shared resolver may not be up yet: a partial plugin load, a mod that
+    // breaks DataService, the K hotkey pressed on the very first frame of a
+    // loaded game. A kitchen that cannot read its own labels still has to open
+    // rather than throw a ReferenceError over a black screen, so every lookup
+    // in this file goes through _T instead of the bare global.
+    const _T = (key, vars) => (typeof T === 'function' ? T(key, vars) : String(key));
+    _T.has = (key) => (typeof T === 'function' && typeof T.has === 'function') ? T.has(key) : false;
+    _T.pool = (key) => (typeof T === 'function' && typeof T.pool === 'function') ? T.pool(key) : [];
+
     const _ci18n = (path, vars) => {
         const key = 'Cooking.' + path;
-        return T.has(key) ? T(key, vars) : path;
+        return _T.has(key) ? _T(key, vars) : path;
     };
 
 
@@ -97,17 +106,20 @@
     });
 
     PluginManager.registerCommand(pluginName, "cookItems", args => {
-        const item1Id = Number(args.item1Id);
-        const item2Id = Number(args.item2Id);
+        const item1Id = Number(args && args.item1Id);
+        const item2Id = Number(args && args.item2Id);
 
-        const item1 = $dataItems[item1Id];
-        const item2 = $dataItems[item2Id];
+        const item1 = (typeof $dataItems !== 'undefined' && $dataItems) ? $dataItems[item1Id] : null;
+        const item2 = (typeof $dataItems !== 'undefined' && $dataItems) ? $dataItems[item2Id] : null;
 
-        if (item1 && item2 && $gameParty.hasItem(item1) && $gameParty.hasItem(item2)) {
-            CookingSystem.cookItems(item1, item2);
-        } else {
+        // cookItems does its own stock check now (the same one the menu makes),
+        // so a command naming one unit of the same item twice can no longer
+        // spend one loaf and eat two.
+        if (!CookingSystem.canCook(item1, item2)) {
             console.error("CookingSystem: Invalid items or not enough items in inventory");
+            return;
         }
+        CookingSystem.cookItems(item1, item2);
     });
 
     //=============================================================================
@@ -134,13 +146,29 @@
         // The fixed-recipe item raw meat/plant matter becomes when cooked
         // with a second unit of itself, or null for any other pairing.
         fixedRecipeFor: function (item1, item2) {
+            if (!item1 || !item2) return null;
+            const db = (typeof $dataItems !== 'undefined' && $dataItems) ? $dataItems : [];
             if (item1.id === RAW_MEAT_ID && item2.id === RAW_MEAT_ID) {
-                return $dataItems[COOKED_MEAT_ID];
+                return db[COOKED_MEAT_ID] || null;
             }
             if (item1.id === RAW_VEG_ID && item2.id === RAW_VEG_ID) {
-                return $dataItems[ROASTED_VEG_ID];
+                return db[ROASTED_VEG_ID] || null;
             }
             return null;
+        },
+
+        // The one stock check the whole kitchen makes: two real food items, both
+        // carried, and two units on hand when the same item is used twice. Every
+        // way into cookItems (menu, ASCII, mouse, plugin command) asks this first
+        // so none of them can spend an ingredient the party does not have.
+        canCook: function (item1, item2) {
+            if (!item1 || !item2) return false;
+            if (typeof $gameParty === 'undefined' || !$gameParty) return false;
+            if (!this.canPairItems(item1, item2)) return false;
+            const needed = item1 === item2 ? 2 : 1;
+            if ($gameParty.numItems(item1) < needed) return false;
+            if (item1 !== item2 && $gameParty.numItems(item2) < 1) return false;
+            return true;
         },
 
         getRecoveryValues: function (item) {
@@ -150,10 +178,16 @@
 
             if (!item || !item.meta) return { hunger, tp, mp };
 
-            // Extract food stats from meta tags
-            const calories = item.meta.calories ? parseInt(item.meta.calories) : 0;
-            const protein = item.meta.protein ? parseInt(item.meta.protein) : 0;
-            const fat = item.meta.fat ? parseInt(item.meta.fat) : 0;
+            // Extract food stats from meta tags. A tag that is present but not a
+            // number (a hand-edited note, a mod's entry) reads 0 rather than
+            // poisoning every total downstream with NaN.
+            const num = (v) => {
+                const n = parseInt(v, 10);
+                return Number.isFinite(n) ? n : 0;
+            };
+            const calories = num(item.meta.calories);
+            const protein = num(item.meta.protein);
+            const fat = num(item.meta.fat);
 
             hunger = calories;
             tp = protein;
@@ -163,7 +197,8 @@
         },
 
         createCookedItemName: function (item1, item2) {
-            const tr = (name) => (window.translateText ? window.translateText(name) : name);
+            const tr = (name) => (window.translateText ? window.translateText(name || '') : (name || ''));
+            if (!item1 || !item2) return tr((item1 || item2 || {}).name);
 
             // Raw meat/plant matter cooked in bulk with itself becomes its
             // finished form outright, never the random-adjective roll.
@@ -220,7 +255,7 @@
 
             // Pull the adjective bank from the namespace. T.pool takes the
             // translated array whole, so a shorter one never mixes in English.
-            const list = T.pool('Cooking.adjectives.' + adjectiveKey);
+            const list = _T.pool('Cooking.adjectives.' + adjectiveKey);
 
             if (list && list.length > 0) {
                 return list[Math.floor(this._seededRandom(seed * 2 + 2) * list.length)];
@@ -245,17 +280,39 @@
         // Called from a plugin command instead (no scene, no switcher), it is
         // the leader, which is what every award defaulted to before.
         activeCook: function () {
-            const scene = SceneManager._scene;
+            const scene = (typeof SceneManager !== 'undefined' && SceneManager) ? SceneManager._scene : null;
             if (scene && typeof scene.cookActor === 'function') {
                 const actor = scene.cookActor();
                 if (actor) return actor;
             }
-            return ($gameParty && $gameParty.leader) ? $gameParty.leader() : null;
+            if (typeof $gameParty === 'undefined' || !$gameParty || !$gameParty.leader) return null;
+            return $gameParty.leader() || null;
+        },
+
+        // What the cook's Wisdom is worth on a d20, read the way every other
+        // check in the game reads it: the D&D modifier of a bounded score, not
+        // the raw MDF param (which is in the hundreds late on and would have
+        // made every dish an automatic masterpiece).
+        cookAbilityMod: function (cook) {
+            if (!cook) return 0;
+            if (window.Dice3D && typeof window.Dice3D.statModifier === 'function') {
+                const mod = window.Dice3D.statModifier(cook, 'WIS');
+                if (Number.isFinite(mod)) return mod;
+            }
+            if (typeof cook.abilityMod === 'function') {
+                const mod = cook.abilityMod(5); // WIS is param 5 (MDF)
+                if (Number.isFinite(mod)) return mod;
+            }
+            const value = typeof cook.param === 'function' ? cook.param(5) : cook.mdf;
+            return Math.floor(((Number(value) || 10) - 10) / 2);
         },
 
         cookItems: async function (item1, item2) {
 
-            if (!this.canPairItems(item1, item2)) {
+            // Every entry point checks this first, but cookItems is public and
+            // is reached from plugin commands and mods too: it never spends an
+            // ingredient it has not confirmed the party is carrying.
+            if (!this.canCook(item1, item2)) {
                 SoundManager.playBuzzer();
                 if (window.ParchmentToast) {
                     window.ParchmentToast.show(_ci18n('messages.cannotCombine'), {
@@ -311,48 +368,62 @@
 
             // Roll 3D d20 culinary check based on cook's WIS (Wisdom)
             const cook = this.activeCook();
-            const wisMod = cook ? (cook.wisMod ?? Math.floor(((cook.mdf || 10) - 10) / 2)) : 0;
-            let rollRes = null;
+            const wisMod = this.cookAbilityMod(cook);
+            // The flat roll is worked out first and stands as the answer, so a
+            // Dice3D that is missing, that throws (no WebGL, a scene torn down
+            // under it) or that resolves to nothing never leaves the meal
+            // half-cooked with a TypeError.
+            const cookRoll = Math.floor(Math.random() * 20) + 1;
+            let rollRes = {
+                roll: cookRoll,
+                modifier: wisMod,
+                total: cookRoll + wisMod,
+                nat1: cookRoll === 1,
+                nat20: cookRoll === 20,
+                success: cookRoll === 20 || (cookRoll !== 1 && cookRoll + wisMod >= 12)
+            };
 
-            if (window.Dice3D) {
-                rollRes = await window.Dice3D.rollD20({
-                    actionName: `Cooking: ${cookedName}`,
-                    statName: 'WIS',
-                    modifier: wisMod,
-                    dc: 12,
-                    force3D: true
-                });
-            } else {
-                const cookRoll = Math.floor(Math.random() * 20) + 1;
-                rollRes = {
-                    roll: cookRoll,
-                    modifier: wisMod,
-                    total: cookRoll + wisMod,
-                    nat1: cookRoll === 1,
-                    nat20: cookRoll === 20,
-                    success: cookRoll === 20 || (cookRoll !== 1 && cookRoll + wisMod >= 12)
-                };
+            if (window.Dice3D && typeof window.Dice3D.rollD20 === 'function') {
+                try {
+                    const shown = await window.Dice3D.rollD20({
+                        actionName: `Cooking: ${cookedName}`,
+                        statName: 'WIS',
+                        modifier: wisMod,
+                        dc: 12,
+                        forcedRoll: cookRoll,
+                        force3D: true
+                    });
+                    if (shown && typeof shown === 'object') rollRes = shown;
+                } catch (e) {
+                    console.warn('CookingSystem: culinary check fell back to a flat roll', e);
+                }
             }
 
             const isNat20 = rollRes.nat20;
             const isNat1 = rollRes.nat1;
             const cookTotal = rollRes.total;
+            const cookMod = rollRes.modifier ?? wisMod;
 
             let culinaryMult = 1.0;
             if (isNat20) {
                 culinaryMult = 1.5; // Gourmet Masterpiece!
                 if (window.ParchmentToast) {
-                    window.ParchmentToast.show(`👨‍🍳 [NAT 20 Culinary Roll] Gourmet Masterpiece! ${cookedName} gained +50% nutrition!`, { severity: 'good', duration: 220 });
+                    window.ParchmentToast.show(_T('Cooking.roll.masterpiece', { dish: cookedName }), { severity: 'good', duration: 220 });
                 }
             } else if (isNat1) {
                 culinaryMult = 0.6; // Burnt / Scorched
                 if (window.ParchmentToast) {
-                    window.ParchmentToast.show(`🍳 [NAT 1 Culinary Roll] Scorched dish! ${cookedName} lost nutrition!`, { severity: 'danger', duration: 220 });
+                    window.ParchmentToast.show(_T('Cooking.roll.scorched', { dish: cookedName }), { severity: 'danger', duration: 220 });
                 }
             } else if (rollRes.success) {
                 culinaryMult = 1.15; // Well prepared
                 if (window.ParchmentToast) {
-                    window.ParchmentToast.show(`🍲 [Culinary Roll: ${rollRes.roll}${cookMod >= 0 ? '+' : ''}${cookMod}=${cookTotal}] Deliciously prepared ${cookedName}!`, { severity: 'good', duration: 180 });
+                    window.ParchmentToast.show(_T('Cooking.roll.delicious', {
+                        roll: rollRes.roll,
+                        mod: (cookMod >= 0 ? '+' : '') + cookMod,
+                        total: cookTotal,
+                        dish: cookedName,
+                    }), { severity: 'good', duration: 180 });
                 }
             }
 
@@ -467,7 +538,10 @@
         // Distribute a total hunger recovery amount proportionally across the
         // party's hunger deficits. Returns { partySize, hungerPerMember }.
         distributeHungerToParty: function (totalHungerRecovery, maxHunger) {
-            const members = $gameParty.members().filter(a => a);
+            if (typeof $gameParty === 'undefined' || !$gameParty || !$gameParty.members) {
+                return { partySize: 0, hungerPerMember: 0 };
+            }
+            const members = ($gameParty.members() || []).filter(a => a);
             const partySize = members.length;
             members.forEach(a => { if (a._hunger === undefined) a._hunger = maxHunger; });
 
@@ -490,7 +564,7 @@
 
         // Eat a single raw ingredient, splitting its nutrition across the party.
         eatSingleItem: function (item) {
-            if (!item || !$gameParty.hasItem(item)) {
+            if (!item || typeof $gameParty === 'undefined' || !$gameParty || !$gameParty.hasItem(item)) {
                 SoundManager.playBuzzer();
                 return false;
             }
@@ -560,7 +634,8 @@
         },
 
         getAvailableRecoveryItems: function () {
-            return $gameParty.items().filter(item => this.isFoodItem(item));
+            if (typeof $gameParty === 'undefined' || !$gameParty || !$gameParty.items) return [];
+            return ($gameParty.items() || []).filter(item => this.isFoodItem(item));
         },
 
         setFirstItem: function (item) {
@@ -611,7 +686,8 @@
     // Who is at the stove. The party switcher in the header picks them, and it
     // is their Cooking that decides how much of the meal survives the pan.
     Scene_Cooking.prototype.cookMembers = function () {
-        return ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+        if (typeof $gameParty === 'undefined' || !$gameParty || !$gameParty.members) return [];
+        return ($gameParty.members() || []).filter(m => m && typeof m.name === 'function');
     };
 
     Scene_Cooking.prototype.cookActor = function () {
@@ -638,13 +714,21 @@
     Scene_Cooking.prototype.create = function () {
         Scene_MenuBase.prototype.create.call(this);
         this._cookActorIndex = 0;
-        // Name the skill this menu runs on, and whose hands are on it.
-        if (window.SpecBadge) {
-            window.SpecBadge.show('Cooking', { actor: this.cookActor() });  // i18n-ignore  Specialization.json id
-        }
-        if (window.CharSwitcher) {
-            window.CharSwitcher.installTabKey(this, (dir) => this.cycleCookActor(dir));
-        }
+        this._cookingRenderMode = null;
+        this._cookingLeaving = false;
+        // Name the skill this menu runs on, and whose hands are on it. The badge
+        // and the switcher are decorations owned by other plugins: neither is
+        // allowed to stop the kitchen from being built.
+        try {
+            if (window.SpecBadge && window.SpecBadge.show) {
+                window.SpecBadge.show('Cooking', { actor: this.cookActor() });  // i18n-ignore  Specialization.json id
+            }
+        } catch (e) { console.warn('CookingSystem: badge', e); }
+        try {
+            if (window.CharSwitcher && window.CharSwitcher.installTabKey) {
+                window.CharSwitcher.installTabKey(this, (dir) => this.cycleCookActor(dir));
+            }
+        } catch (e) { console.warn('CookingSystem: switcher', e); }
         this.createHelpWindow();
         this.createItemListWindow();
         this.createConfirmWindow();
@@ -657,7 +741,7 @@
     };
 
     Scene_Cooking.prototype.createItemListWindow = function () {
-        const y = this._helpWindow.height;
+        const y = this._helpWindow ? this._helpWindow.height : 0;
         const height = Graphics.boxHeight - y - this.calcWindowHeight(2, false);
 
         this._itemListWindow = new Window_CookingItemList(new Rectangle(0, y, Graphics.boxWidth, height));
@@ -679,7 +763,12 @@
     };
 
     Scene_Cooking.prototype.onItemOk = function () {
-        const selectedItem = this._itemListWindow.item();
+        const selectedItem = this._itemListWindow ? this._itemListWindow.item() : null;
+        if (!selectedItem) {
+            SoundManager.playBuzzer();
+            if (this._itemListWindow) this._itemListWindow.activate();
+            return;
+        }
 
         if (!CookingSystem.getFirstItem()) {
             // First item selection
@@ -691,9 +780,10 @@
             // Second item selection
             CookingSystem.setSecondItem(selectedItem);
 
-            // Check if we have enough of the same item if selecting it twice
-            if (CookingSystem.getFirstItem() === selectedItem && $gameParty.numItems(selectedItem) < 2) {
+            // Check we hold enough of it (the same item picked twice needs two)
+            if (!CookingSystem.canCook(CookingSystem.getFirstItem(), selectedItem)) {
                 SoundManager.playBuzzer();
+                CookingSystem.setSecondItem(null);
                 this._itemListWindow.activate();
                 return;
             }
@@ -721,6 +811,7 @@
     };
 
     Scene_Cooking.prototype.updateHelpMessage = function () {
+        if (!this._helpWindow) return;
         if (!CookingSystem.getFirstItem()) {
             this._helpWindow.setText(_ci18n('ui.selectFirstIngredient'));
         } else if (!CookingSystem.getSecondItem()) {
@@ -737,33 +828,9 @@
         if (this._itemListWindow) this._itemListWindow.refresh();
     };
 
-    Scene_Cooking.prototype.onCookOk = function () {
-        const item1 = CookingSystem.getFirstItem();
-        const item2 = CookingSystem.getSecondItem();
-
-        if (item1 && item2 &&
-            $gameParty.hasItem(item1) &&
-            $gameParty.hasItem(item2)) {
-
-            // Check if both items are the same and we have at least 2
-            if (item1 === item2 && $gameParty.numItems(item1) < 2) {
-                SoundManager.playBuzzer();
-                this._confirmWindow.activate();
-                return;
-            }
-
-            // Cook the items
-            CookingSystem.cookItems(item1, item2);
-
-            // Clear selections and close all menus to return to map
-            CookingSystem.clearSelectedItems();
-            SceneManager.pop();
-            SceneManager.pop();
-        } else {
-            SoundManager.playBuzzer();
-            this._confirmWindow.activate();
-        }
-    };
+    // onCookOk is defined once, further down, alongside the rest of the parchment UI. The
+    // window-era version that used to sit here was overwritten by it at load and popped the
+    // scene stack twice, which would have dropped the player past the map.
 
     Scene_Cooking.prototype.onCookCancel = function () {
         this._confirmWindow.deactivate();
@@ -798,14 +865,7 @@
         const firstItem = CookingSystem.getFirstItem();
         if (!firstItem) return true;
 
-        // If selecting the same item, check if we have enough
-        if (item === firstItem) {
-            return $gameParty.numItems(item) >= 2;
-        }
-
-        if (!CookingSystem.canPairItems(firstItem, item)) return false;
-
-        return true;
+        return CookingSystem.canCook(firstItem, item);
     };
 
     Window_CookingItemList.prototype.drawItem = function (index) {
@@ -870,12 +930,80 @@
     // pops the scene, so caching for the scene's lifetime is safe.
     Scene_Cooking.prototype.getCachedFoodList = function () {
         if (!this._cachedFoodList) {
-            this._cachedFoodList = CookingSystem.getAvailableRecoveryItems();
+            this._cachedFoodList = CookingSystem.getAvailableRecoveryItems() || [];
         }
         return this._cachedFoodList;
     };
     Scene_Cooking.prototype.invalidateFoodList = function () {
         this._cachedFoodList = null;
+    };
+
+    // The pantry can shrink under an open kitchen: a follower eats, a timed
+    // event fires, an autosave restores. Both cursors are pulled back into the
+    // list before anything reads through them, so a stale index buzzes at worst
+    // instead of indexing past the end.
+    Scene_Cooking.prototype.clampCookingCursors = function () {
+        const len = this.getCachedFoodList().length;
+        const clamp = (v) => (len > 0 ? Math.max(0, Math.min(len - 1, v || 0)) : 0);
+        this._pantryIndex = clamp(this._pantryIndex);
+        this._selectedIndex = clamp(this._selectedIndex);
+        this._confirmIndex = (this._confirmIndex || 0) % 2;
+        this._selectedConfirmIndex = (this._selectedConfirmIndex || 0) % 2;
+        // An ingredient that is no longer carried cannot stay in a pot.
+        const item1 = CookingSystem.getFirstItem();
+        const item2 = CookingSystem.getSecondItem();
+        const gone = (it) => it && (typeof $gameParty === 'undefined' || !$gameParty || !$gameParty.hasItem(it));
+        if (gone(item1)) CookingSystem.clearSelectedItems();
+        else if (gone(item2)) CookingSystem.setSecondItem(null);
+    };
+
+    // Whether the kitchen is being drawn as ASCII this frame.
+    Scene_Cooking.prototype.isAsciiCooking = function () {
+        return !!(window.AsciiMode && window.AsciiMode.active !== 0);
+    };
+
+    Scene_Cooking.prototype.enterAsciiCooking = function () {
+        this._cookingRenderMode = 'ascii';
+        this._asciiCookingSig = null;
+        if (window.AsciiMode.createCanvas) window.AsciiMode.createCanvas();
+        if (window.AsciiMode.canvas && window.AsciiMode.canvas.style) {
+            window.AsciiMode.canvas.style.display = 'block';
+        }
+
+        // Deactivate and hide normal windows
+        if (this._helpWindow) { this._helpWindow.deactivate(); this._helpWindow.hide(); }
+        if (this._itemListWindow) { this._itemListWindow.deactivate(); this._itemListWindow.hide(); }
+        if (this._confirmWindow) { this._confirmWindow.deactivate(); this._confirmWindow.hide(); }
+
+        // The parchment overlay must go with it, or it stays on screen over the
+        // ASCII canvas with nothing driving it.
+        this.destroyUICooking();
+
+        this._selectedIndex = this._pantryIndex || 0;
+        this._activeWindow = 'list'; // 'list', 'confirm'
+        this._selectedConfirmIndex = this._confirmIndex || 0; // 0: Cook, 1: Cancel
+        this.clampCookingCursors();
+    };
+
+    Scene_Cooking.prototype.enterParchmentCooking = function () {
+        this._cookingRenderMode = 'parchment';
+        if (window.AsciiMode && window.AsciiMode.canvas && window.AsciiMode.canvas.style) {
+            window.AsciiMode.canvas.style.display = 'none';
+        }
+
+        // Hide standard windows for custom HTML overlay
+        if (this._helpWindow) { this._helpWindow.deactivate(); this._helpWindow.hide(); }
+        if (this._itemListWindow) { this._itemListWindow.deactivate(); this._itemListWindow.hide(); }
+        if (this._confirmWindow) { this._confirmWindow.deactivate(); this._confirmWindow.hide(); }
+
+        // Initialize D&D Cooking view
+        this._activeArea = this._activeWindow === 'confirm' ? "confirm" : "pantry";
+        this._pantryIndex = this._selectedIndex || 0;
+        this._confirmIndex = this._selectedConfirmIndex || 0;
+        this.clampCookingCursors();
+
+        this.initUICooking();
+        this.refreshUICooking();
     };
 
     const _Scene_Cooking_start = Scene_Cooking.prototype.start;
@@ -885,39 +1013,30 @@
 
         this._cachedFoodList = null;
         this._asciiCookingSig = null;
-
-        if (window.AsciiMode && window.AsciiMode.active !== 0) {
-            window.AsciiMode.createCanvas();
-            if (window.AsciiMode.canvas) window.AsciiMode.canvas.style.display = 'block';
-
-            // Deactivate and hide normal windows
-            if (this._helpWindow) { this._helpWindow.deactivate(); this._helpWindow.hide(); }
-            if (this._itemListWindow) { this._itemListWindow.deactivate(); this._itemListWindow.hide(); }
-            if (this._confirmWindow) { this._confirmWindow.deactivate(); this._confirmWindow.hide(); }
-
-            this._selectedIndex = 0;
-            this._activeWindow = 'list'; // 'list', 'confirm'
-            this._selectedConfirmIndex = 0; // 0: Cook, 1: Cancel
-            return;
-        }
-
-        // Hide standard windows for custom HTML overlay
-        if (this._helpWindow) { this._helpWindow.deactivate(); this._helpWindow.hide(); }
-        if (this._itemListWindow) { this._itemListWindow.deactivate(); this._itemListWindow.hide(); }
-        if (this._confirmWindow) { this._confirmWindow.deactivate(); this._confirmWindow.hide(); }
-
-        // Initialize D&D Cooking view
-        this._activeArea = "pantry";
         this._pantryIndex = 0;
         this._confirmIndex = 0;
+        this._selectedIndex = 0;
+        this._selectedConfirmIndex = 0;
+        this._activeArea = "pantry";
+        this._activeWindow = 'list';
 
-        this.initUICooking();
-        this.refreshUICooking();
+        if (this.isAsciiCooking()) this.enterAsciiCooking();
+        else this.enterParchmentCooking();
     };
 
     const _Scene_Cooking_update = Scene_Cooking.prototype.update;
     Scene_Cooking.prototype.update = function () {
-        if (window.AsciiMode && window.AsciiMode.active !== 0) {
+        const wantAscii = this.isAsciiCooking();
+        // ASCII mode has its own hotkey and can be toggled with the kitchen
+        // open. Whichever half takes over is handed a live cursor and a drawn
+        // screen, instead of running on the other half's undefined state (which
+        // left the player in a menu that answered to nothing).
+        if (wantAscii && this._cookingRenderMode !== 'ascii') this.enterAsciiCooking();
+        else if (!wantAscii && this._cookingRenderMode !== 'parchment') this.enterParchmentCooking();
+
+        this.clampCookingCursors();
+
+        if (wantAscii) {
             this.updateAsciiCookingInput();
             this.renderAsciiCooking();
             Scene_Base.prototype.update.call(this);
@@ -928,25 +1047,39 @@
         Scene_MenuBase.prototype.update.call(this);
     };
 
-    const _Scene_Cooking_terminate = Scene_Cooking.prototype.terminate;
-    Scene_Cooking.prototype.terminate = function () {
-        if (window.AsciiMode && window.AsciiMode.canvas) {
-            window.AsciiMode.canvas.style.display = 'none';
-        }
-        if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
-        if (window.SpecBadge) window.SpecBadge.hide();
-
-        // Cleanup D&D container
+    // Take the parchment overlay off the page. Called on the way out and when
+    // ASCII mode takes over mid-scene, so a dead overlay never keeps its click
+    // handlers (which close over a scene that is no longer on the stack).
+    Scene_Cooking.prototype.destroyUICooking = function () {
+        if (typeof document === 'undefined' || !document) return;
         const container = document.getElementById("cooking-container");
-        if (container) {
-            container.remove();
-        }
-
+        if (container && container.remove) container.remove();
         // Cleanup style block to prevent main menu shrinking/leakage
         const style = document.getElementById("cooking-style");
-        if (style) {
-            style.remove();
-        }
+        if (style && style.remove) style.remove();
+    };
+
+    const _Scene_Cooking_terminate = Scene_Cooking.prototype.terminate;
+    Scene_Cooking.prototype.terminate = function () {
+        // Teardown runs to the end whatever any one step does: a throw here
+        // would leave the Tab listener bound to a dead scene and the overlay
+        // on top of the map.
+        try {
+            if (window.AsciiMode && window.AsciiMode.canvas && window.AsciiMode.canvas.style) {
+                window.AsciiMode.canvas.style.display = 'none';
+            }
+        } catch (e) { console.warn('CookingSystem: ASCII teardown', e); }
+        try {
+            if (window.CharSwitcher && window.CharSwitcher.removeTabKey) {
+                window.CharSwitcher.removeTabKey(this);
+            }
+        } catch (e) { console.warn('CookingSystem: switcher teardown', e); }
+        try {
+            if (window.SpecBadge && window.SpecBadge.hide) window.SpecBadge.hide();
+        } catch (e) { console.warn('CookingSystem: badge teardown', e); }
+        try {
+            this.destroyUICooking();
+        } catch (e) { console.warn('CookingSystem: overlay teardown', e); }
 
         if (_Scene_Cooking_terminate) _Scene_Cooking_terminate.call(this);
         else Scene_MenuBase.prototype.terminate.call(this);
@@ -958,8 +1091,8 @@
         if (this._activeWindow === 'list') {
             if (list.length === 0) {
                 if (Input.isTriggered('cancel')) {
-                    SceneManager.pop();
                     SoundManager.playCancel();
+                    this.popScene();
                 }
                 return;
             }
@@ -974,22 +1107,21 @@
             if (Input.isTriggered('ok')) {
                 const selectedItem = list[this._selectedIndex];
 
-                if (!CookingSystem.getFirstItem()) {
+                if (!selectedItem) {
+                    SoundManager.playBuzzer();
+                } else if (!CookingSystem.getFirstItem()) {
                     CookingSystem.setFirstItem(selectedItem);
                     SoundManager.playOk();
                 } else if (!CookingSystem.canPairItems(CookingSystem.getFirstItem(), selectedItem)) {
                     SoundManager.playBuzzer();
+                } else if (!CookingSystem.canCook(CookingSystem.getFirstItem(), selectedItem)) {
+                    // Not enough of it (the same item picked twice with one unit).
+                    SoundManager.playBuzzer();
                 } else {
                     CookingSystem.setSecondItem(selectedItem);
-
-                    if (CookingSystem.getFirstItem() === selectedItem && $gameParty.numItems(selectedItem) < 2) {
-                        SoundManager.playBuzzer();
-                        CookingSystem.setSecondItem(null);
-                    } else {
-                        this._activeWindow = 'confirm';
-                        this._selectedConfirmIndex = 0;
-                        SoundManager.playOk();
-                    }
+                    this._activeWindow = 'confirm';
+                    this._selectedConfirmIndex = 0;
+                    SoundManager.playOk();
                 }
             }
             if (Input.isTriggered('shift')) {
@@ -997,7 +1129,7 @@
                 const eatItem = list[this._selectedIndex];
                 if (CookingSystem.eatSingleItem(eatItem)) {
                     CookingSystem.clearSelectedItems();
-                    SceneManager.pop();
+                    this.popScene();
                 }
                 return;
             }
@@ -1006,8 +1138,8 @@
                     CookingSystem.clearSelectedItems();
                     SoundManager.playCancel();
                 } else {
-                    SceneManager.pop();
                     SoundManager.playCancel();
+                    this.popScene();
                 }
             }
         } else if (this._activeWindow === 'confirm') {
@@ -1017,20 +1149,10 @@
             }
             if (Input.isTriggered('ok')) {
                 if (this._selectedConfirmIndex === 0) { // Cook
-                    const item1 = CookingSystem.getFirstItem();
-                    const item2 = CookingSystem.getSecondItem();
-                    if (item1 && item2 && $gameParty.hasItem(item1) && $gameParty.hasItem(item2)) {
-                        if (item1 === item2 && $gameParty.numItems(item1) < 2) {
-                            SoundManager.playBuzzer();
-                        } else {
-                            CookingSystem.cookItems(item1, item2);
-                            CookingSystem.clearSelectedItems();
-                            SceneManager.pop();
-                            SceneManager.pop();
-                        }
-                    } else {
-                        SoundManager.playBuzzer();
-                    }
+                    // The one shared route out of the kitchen: it pops the scene
+                    // ONCE. Popping twice here used to drop the player past the
+                    // map and onto whatever scene was under it.
+                    this.onCookOk();
                 } else { // Cancel
                     this._activeWindow = 'list';
                     CookingSystem.setSecondItem(null);
@@ -1046,6 +1168,7 @@
     };
 
     Scene_Cooking.prototype.renderAsciiCooking = function () {
+        if (!window.AsciiMode) return;
         const ctx = window.AsciiMode.context;
         const canvas = window.AsciiMode.canvas;
         if (!ctx || !canvas) return;
@@ -1076,7 +1199,7 @@
 
         // Help Text
         ctx.fillStyle = '#FFFFFF';
-        let helpText = T('Cooking.ui.selectIngredients');
+        let helpText = _T('Cooking.ui.selectIngredients');
         const item1 = CookingSystem.getFirstItem();
         const item2 = CookingSystem.getSecondItem();
 
@@ -1144,7 +1267,7 @@
 
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
-            ctx.fillText(T('Cooking.ui.cookTheseItems'), canvas.width / 2, bY + 30);
+            ctx.fillText(_T('Cooking.ui.cookTheseItems'), canvas.width / 2, bY + 30);
 
             const options = [
                 `[ ${_ci18n('ui.cookButton')} ]`,
@@ -1163,8 +1286,9 @@
     };
 
     Scene_Cooking.prototype.renderCookingItemDetails = function (item, x, y) {
+        if (!item || !window.AsciiMode || !window.AsciiMode.context) return;
         const ctx = window.AsciiMode.context;
-        const fontSize = window.AsciiMode.fontSize;
+        const fontSize = Number(window.AsciiMode.fontSize) || 16;
         const lineHeight = fontSize + 6;
         let currentY = y;
 
@@ -1182,19 +1306,21 @@
 
         ctx.fillStyle = '#FFFFFF';
 
-        const calories = item.meta.calories ? item.meta.calories : "0";
-        const protein = item.meta.protein ? item.meta.protein : "0";
-        const fat = item.meta.fat ? item.meta.fat : "0";
+        const nut = CookingSystem.getRecoveryValues(item);
+        const calories = String(nut.hunger);
+        const protein = String(nut.tp);
+        const fat = String(nut.mp);
 
-        this.drawCookingKeyValue(T('Cooking.nutrition.calories'), calories, x, currentY);
+        this.drawCookingKeyValue(_T('Cooking.nutrition.calories'), calories, x, currentY);
         currentY += lineHeight;
-        this.drawCookingKeyValue(T('Cooking.nutrition.protein'), protein, x, currentY);
+        this.drawCookingKeyValue(_T('Cooking.nutrition.protein'), protein, x, currentY);
         currentY += lineHeight;
-        this.drawCookingKeyValue(T('Cooking.nutrition.fat'), fat, x, currentY);
+        this.drawCookingKeyValue(_T('Cooking.nutrition.fat'), fat, x, currentY);
         currentY += lineHeight;
     };
 
     Scene_Cooking.prototype.drawCookingKeyValue = function (key, value, x, y) {
+        if (!window.AsciiMode || !window.AsciiMode.context) return;
         const ctx = window.AsciiMode.context;
         ctx.fillStyle = '#00FFFF';
         ctx.fillText(key + ":", x, y);
@@ -1207,81 +1333,90 @@
     // =============================================================================
 
     Scene_Cooking.prototype.popScene = function () {
+        // Guarded against a second call: the eat-raw chip and a key press on the
+        // same frame would otherwise pop the map out from under the player too.
+        if (this._cookingLeaving) return;
+        this._cookingLeaving = true;
         Input.clear();
         TouchInput.clear();
         Scene_MenuBase.prototype.popScene.call(this);
     };
 
     Scene_Cooking.prototype.initUICooking = function () {
-        let container = document.getElementById("cooking-container");
-        if (!container) {
-            container = document.createElement("div");
-            container.id = "cooking-container";
-            document.body.appendChild(container);
-        }
+        if (typeof document === 'undefined' || !document || !document.body) return;
 
-        const backBtnText = T('Cooking.back');
-        const pantryTitle = T('Cooking.ingredients');
+        // A container left behind by an earlier visit (a terminate that threw,
+        // a scene torn down out of order) still carries that visit's click
+        // handlers, and those close over a scene that is no longer on the stack:
+        // clicking Back would pop the wrong one. The overlay is always built
+        // fresh, so every handler belongs to the kitchen the player is in.
+        const stale = document.getElementById("cooking-container");
+        if (stale && stale.remove) stale.remove();
 
-        // Set static structure once if it's empty or not initialized
-        if (!container.querySelector(".book-spread")) {
-            container.innerHTML = `
-                <div class="book-spread">
-                    <div class="left-page">
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
-                          <div class="back-button focusable" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
-                            ${backBtnText}
-                          </div>
-                          <h2 class="title" style="border: none; margin: 0; padding: 0">${pantryTitle}</h2>
-                        </div>
-                        <div class="pantry-list-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden"></div>
+        const container = document.createElement("div");
+        container.id = "cooking-container";
+        document.body.appendChild(container);
+
+        const backBtnText = _T('Cooking.back');
+        const pantryTitle = _T('Cooking.ingredients');
+
+        container.innerHTML = `
+            <div class="book-spread">
+                <div class="left-page">
+                    <div class="page-header-bar">
+                      <div class="back-button focusable">
+                        ${backBtnText}
+                      </div>
+                      <h2 class="title">${pantryTitle}</h2>
                     </div>
-                    <div class="right-page">
-                        <div id="cooking-companion-row" class="companion-switcher companion-switcher--header"></div>
+                    <div class="pantry-list-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden"></div>
+                </div>
+                <div class="right-page">
+                    <div id="cooking-companion-row" class="companion-switcher companion-switcher--header"></div>
 
-                        <div class="pot-label">${T('Cooking.nutritionalBase')}</div>
-                        <div class="slot-container-1"></div>
-                        
-                        <div class="hearth-area">
-                            <div class="cauldron"></div>
-                            <div class="hearth-fire"></div>
-                        </div>
-                        
-                        <div class="pot-label">${T('Cooking.aromaticBinder')}</div>
-                        <div class="slot-container-2"></div>
-                        
-                        <div class="result-card-container"></div>
-                        
-                        <div class="cooking-actions">
-                            <div class="btn primary" id="cook-btn"></div>
-                            <div class="btn" id="cancel-btn"></div>
-                        </div>
+                    <div class="pot-label">${_T('Cooking.nutritionalBase')}</div>
+                    <div class="slot-container-1"></div>
+                    
+                    <div class="hearth-area">
+                        <div class="cauldron"></div>
+                        <div class="hearth-fire"></div>
+                    </div>
+                    
+                    <div class="pot-label">${_T('Cooking.aromaticBinder')}</div>
+                    <div class="slot-container-2"></div>
+                    
+                    <div class="result-card-container"></div>
+                    
+                    <div class="cooking-actions">
+                        <div class="btn primary" id="cook-btn"></div>
+                        <div class="btn" id="cancel-btn"></div>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
 
-            // Make back button functional
-            const backBtn = container.querySelector(".back-button");
-            if (backBtn) {
-                backBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    SoundManager.playCancel();
-                    this.popScene();
-                });
-            }
-
-            // Scrollwheel should work in left column for moving up and down the scrollbox
-            container.addEventListener("wheel", (e) => {
-                const list = container.querySelector(".pantry-list");
-                if (list) {
-                    list.scrollTop += e.deltaY;
-                }
+        // Make back button functional
+        const backBtn = container.querySelector(".back-button");
+        if (backBtn) {
+            backBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                SoundManager.playCancel();
+                this.popScene();
             });
         }
+
+        // Scrollwheel should work in left column for moving up and down the scrollbox
+        container.addEventListener("wheel", (e) => {
+            const list = container.querySelector(".pantry-list");
+            if (list) {
+                list.scrollTop += e.deltaY;
+            }
+        });
     };
 
     Scene_Cooking.prototype.refreshUICooking = function () {
+        if (typeof document === 'undefined' || !document) return;
         const container = document.getElementById("cooking-container");
         if (!container) return;
 
@@ -1296,14 +1431,18 @@
             let tabs = "";
             members.forEach((m, idx) => {
                 const sel = idx === (this._cookActorIndex || 0) ? "selected" : "";
-                tabs += `<div class="companion-tab ${sel}" onclick="SceneManager._scene.selectCookActor(${idx})">${m.name()}</div>`;
+                // Optional-chained: a tab clicked on the frame the scene is torn
+                // down would otherwise call into whatever scene took its place.
+                tabs += `<div class="companion-tab ${sel}" onclick="SceneManager._scene?.selectCookActor?.(${idx})">${m.name()}</div>`;
             });
             compRow.innerHTML = window.CharSwitcher.inner(
                 `<div class="companion-tabs-row">${tabs}</div>`, members.length);
         }
-        if (window.SpecBadge) {
-            window.SpecBadge.show('Cooking', { actor: this.cookActor() });  // i18n-ignore  Specialization.json id
-        }
+        try {
+            if (window.SpecBadge && window.SpecBadge.show) {
+                window.SpecBadge.show('Cooking', { actor: this.cookActor() });  // i18n-ignore  Specialization.json id
+            }
+        } catch (e) { console.warn('CookingSystem: badge', e); }
 
         const itemsList = this.getCachedFoodList();
         const item1 = CookingSystem.getFirstItem();
@@ -1316,7 +1455,7 @@
             if (itemsList.length === 0) {
                 pantryHTML = `
                     <div class="empty-pantry-msg">
-                        ${T('Cooking.yourBackpackContainsNoEdible')}
+                        ${_T('Cooking.yourBackpackContainsNoEdible')}
                     </div>
                 `;
             } else {
@@ -1357,10 +1496,11 @@
                 const itemNodes = pantryListContainer.querySelectorAll(".pantry-item");
                 itemNodes.forEach(node => {
                     node.addEventListener("click", () => {
-                        const idx = parseInt(node.getAttribute("data-idx"));
+                        const idx = parseInt(node.getAttribute("data-idx"), 10);
                         const clickedItem = itemsList[idx];
 
-                        if (this._itemListWindow && !this._itemListWindow.isEnabled(clickedItem)) {
+                        if (!clickedItem ||
+                            (this._itemListWindow && !this._itemListWindow.isEnabled(clickedItem))) {
                             SoundManager.playBuzzer();
                             return;
                         }
@@ -1372,11 +1512,10 @@
                             CookingSystem.setFirstItem(clickedItem);
                             SoundManager.playOk();
                         } else if (!CookingSystem.getSecondItem()) {
-                            CookingSystem.setSecondItem(clickedItem);
-                            if (CookingSystem.getFirstItem() === clickedItem && $gameParty.numItems(clickedItem) < 2) {
+                            if (!CookingSystem.canCook(CookingSystem.getFirstItem(), clickedItem)) {
                                 SoundManager.playBuzzer();
-                                CookingSystem.setSecondItem(null);
                             } else {
+                                CookingSystem.setSecondItem(clickedItem);
                                 SoundManager.playOk();
                                 this._activeArea = "confirm";
                                 this._confirmIndex = 0;
@@ -1393,7 +1532,7 @@
                 eatNodes.forEach(node => {
                     node.addEventListener("click", (e) => {
                         e.stopPropagation();
-                        const idx = parseInt(node.getAttribute("data-eat-idx"));
+                        const idx = parseInt(node.getAttribute("data-eat-idx"), 10);
                         const eatItem = itemsList[idx];
                         if (CookingSystem.eatSingleItem(eatItem)) {
                             CookingSystem.clearSelectedItems();
@@ -1409,7 +1548,7 @@
         if (slotContainer1) {
             let slot1HTML = `
                 <div class="ingredient-slot">
-                    <span class="empty-slot-text">${T('Cooking.selectBase')}</span>
+                    <span class="empty-slot-text">${_T('Cooking.selectBase')}</span>
                 </div>
             `;
             if (item1) {
@@ -1432,7 +1571,7 @@
         if (slotContainer2) {
             let slot2HTML = `
                 <div class="ingredient-slot">
-                    <span class="empty-slot-text">${T('Cooking.selectBinder')}</span>
+                    <span class="empty-slot-text">${_T('Cooking.selectBinder')}</span>
                 </div>
             `;
             if (item2) {
@@ -1512,11 +1651,11 @@
                 let adjectiveMsg = "";
                 if (isSameItem) {
                     if (CookingSystem._lastAdjectiveEffect === 'positive') {
-                        adjectiveMsg = `<div style="font-size:13px; color:#27ae60; font-weight:bold; margin-top:2px">${T('Cooking.extraordinaryEffect50')}</div>`;
+                        adjectiveMsg = `<div style="font-size:13px; color:var(--text-cost-ok); font-weight:bold; margin-top:2px">${_T('Cooking.extraordinaryEffect50')}</div>`;
                     } else if (CookingSystem._lastAdjectiveEffect === 'neutral') {
-                        adjectiveMsg = `<div style="font-size:13px; color:#f39c12; font-weight:bold; margin-top:2px">${T('Cooking.minorEffect25')}</div>`;
+                        adjectiveMsg = `<div style="font-size:13px; color:var(--text-amber-hint); font-weight:bold; margin-top:2px">${_T('Cooking.minorEffect25')}</div>`;
                     } else {
-                        adjectiveMsg = `<div style="font-size:13px; color:#c0392b; font-weight:bold; margin-top:2px">${T('Cooking.disastrousEffect75')}</div>`;
+                        adjectiveMsg = `<div style="font-size:13px; color:var(--text-cost-bad); font-weight:bold; margin-top:2px">${_T('Cooking.disastrousEffect75')}</div>`;
                     }
                 }
 
@@ -1528,20 +1667,20 @@
                         ${adjectiveMsg}
                         <div class="result-nutrition">
                             <div class="nut-box">
-                                ${T('Cooking.calories')}
+                                ${_T('Cooking.calories')}
                                 <span class="nut-val">${Math.floor(totalCalories)}</span>
                             </div>
                             <div class="nut-box">
-                                ${T('Cooking.protein')}
+                                ${_T('Cooking.protein')}
                                 <span class="nut-val">${Math.floor(totalProtein)}g</span>
                             </div>
                             <div class="nut-box">
-                                ${T('Cooking.fat')}
+                                ${_T('Cooking.fat')}
                                 <span class="nut-val">${Math.floor(totalFat)}g</span>
                             </div>
                         </div>
                         <div class="recovery-preview">
-                            +${hungerPercent}% ${T('Cooking.satietyPerMember')} (${T('Cooking.split')} ${partySize})
+                            +${hungerPercent}% ${_T('Cooking.satietyPerMember')} (${_T('Cooking.split')} ${partySize})
                         </div>
                     </div>
                 `;
@@ -1549,7 +1688,7 @@
                 resultCardHTML = `
                     <div class="cooking-empty-hint">
                         <p>
-                            ${T('Cooking.combineANutritionalBaseAnd')}
+                            ${_T('Cooking.combineANutritionalBaseAnd')}
                         </p>
                     </div>
                 `;
@@ -1581,7 +1720,7 @@
         const cancelBtn = container.querySelector("#cancel-btn");
         if (cancelBtn) {
             cancelBtn.className = isCancelFocused ? "btn focused" : "btn";
-            cancelBtn.textContent = item1 ? (T('Cooking.clearSelection')) : _ci18n('ui.cancelButton');
+            cancelBtn.textContent = item1 ? (_T('Cooking.clearSelection')) : _ci18n('ui.cancelButton');
             const newCancelBtn = cancelBtn.cloneNode(true);
             cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
             newCancelBtn.addEventListener("click", () => {
@@ -1654,7 +1793,8 @@
                 }
             } else if (Input.isTriggered('ok')) {
                 const selectedItem = itemsList[this._pantryIndex];
-                const isEnabled = this._itemListWindow ? this._itemListWindow.isEnabled(selectedItem) : true;
+                const isEnabled = selectedItem &&
+                    (this._itemListWindow ? this._itemListWindow.isEnabled(selectedItem) : true);
 
                 if (!isEnabled) {
                     SoundManager.playBuzzer();
@@ -1665,11 +1805,10 @@
                     CookingSystem.setFirstItem(selectedItem);
                     SoundManager.playOk();
                 } else if (!CookingSystem.getSecondItem()) {
-                    CookingSystem.setSecondItem(selectedItem);
-                    if (CookingSystem.getFirstItem() === selectedItem && $gameParty.numItems(selectedItem) < 2) {
+                    if (!CookingSystem.canCook(CookingSystem.getFirstItem(), selectedItem)) {
                         SoundManager.playBuzzer();
-                        CookingSystem.setSecondItem(null);
                     } else {
+                        CookingSystem.setSecondItem(selectedItem);
                         SoundManager.playOk();
                         this._activeArea = "confirm";
                         this._confirmIndex = 0;
@@ -1716,21 +1855,24 @@
         }
     };
 
+    // The only way the kitchen cooks, whichever front end asked (parchment,
+    // ASCII, mouse). It pops the scene exactly once.
     Scene_Cooking.prototype.onCookOk = function () {
         const item1 = CookingSystem.getFirstItem();
         const item2 = CookingSystem.getSecondItem();
-        if (item1 && item2 && $gameParty.hasItem(item1) && $gameParty.hasItem(item2)) {
-            if (item1 === item2 && $gameParty.numItems(item1) < 2) {
-                SoundManager.playBuzzer();
-            } else {
-                CookingSystem.cookItems(item1, item2);
-                CookingSystem.clearSelectedItems();
-                SoundManager.playOk();
-                this.popScene();
-            }
-        } else {
+        if (!CookingSystem.canCook(item1, item2)) {
             SoundManager.playBuzzer();
+            return;
         }
+        SoundManager.playOk();
+        // cookItems is a promise (it waits on the culinary d20), so the scene is
+        // taken down first and the dish finishes over the map. A throw inside it
+        // must not leave the player standing in a kitchen that has already spent
+        // the ingredients.
+        Promise.resolve(CookingSystem.cookItems(item1, item2))
+            .catch(e => console.error('CookingSystem: cooking failed', e));
+        CookingSystem.clearSelectedItems();
+        this.popScene();
     };
 
     //=============================================================================
@@ -1739,7 +1881,9 @@
     const _Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
     Scene_Menu.prototype.createCommandWindow = function () {
         _Scene_Menu_createCommandWindow.call(this);
-        this._commandWindow.setHandler("cooking", this.commandCooking.bind(this));
+        if (this._commandWindow && this._commandWindow.setHandler) {
+            this._commandWindow.setHandler("cooking", this.commandCooking.bind(this));
+        }
     };
 
     Scene_Menu.prototype.commandCooking = function () {
@@ -1754,8 +1898,10 @@
         _Window_MenuCommand_addOriginalCommands.call(this);
 
         // Check if player has any of the required items
-        const hasRequiredItem = requiredItemIds.some(itemId => {
-            const item = $dataItems[itemId];
+        const hasParty = typeof $gameParty !== 'undefined' && !!$gameParty;
+        const db = (typeof $dataItems !== 'undefined' && $dataItems) ? $dataItems : [];
+        const hasRequiredItem = hasParty && requiredItemIds.some(itemId => {
+            const item = db[itemId];
             return item && $gameParty.hasItem(item);
         });
 

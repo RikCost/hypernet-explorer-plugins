@@ -68,6 +68,10 @@
   const baseVolatility = Number(parameters["Volatility"]) || 0.2;
   const updateInterval = Number(parameters["Update Interval"]) || 2000;
   const historyLength = Number(parameters["History Length"]) || 60;
+  // How hard a continental outbreak leans on the market: infected people per
+  // full point of negative sentiment, and the most it may ever be worth.
+  const EPIDEMIC_DRAG_SCALE = 400000;
+  const EPIDEMIC_DRAG_MAX = 0.6;
   const minimumPrice = Number(parameters["Minimum Price"]) || 1000;
   const oilSharesVariableId = Number(parameters["Oil Shares Variable"]) || 51;
   const soulSharesVariableId = Number(parameters["Soul Shares Variable"]) || 52;
@@ -720,7 +724,10 @@
 
     generateNewPrice(currentPrice, stockType, def) {
       let newPrice;
-      const sentiment = window.NPCWorldWeb?.marketSentiment?.() ?? 0;
+      // Town mood plus whatever the continent is dying of, clamped to the same
+      // -1..1 range the sentiment term has always been on.
+      const mood = window.NPCWorldWeb?.marketSentiment?.() ?? 0;
+      const sentiment = Math.max(-1, Math.min(1, mood + this._epidemicDrag()));
 
       if (stockType === "souls") {
         const targetPrice = getSoulMedianFromVariable();
@@ -1237,19 +1244,67 @@
       });
     }
 
+    // The wire used to pick a listing uniformly at random and print a line
+    // about it every fifteen ticks, unrelated to what any price had done: a
+    // tape that moves for reasons and a wire that reports at random, on the
+    // same screen. It reports the tape now - the biggest mover of the last
+    // tick, with the move itself stated - so a player can read the news and
+    // learn something about the prices instead of only about the flavour.
     generateRandomHeadline() {
       const stocks = Object.keys(STOCKS_CONFIG);
       if (!stocks.length) return;
-      const chosen = stocks[Math.floor(Math.random() * stocks.length)];
+      const chosen = this._biggestMover(stocks);
       const text = this._headlineFor(chosen);
       if (!text) return;
+
+      const move = (this._lastPctMove && this._lastPctMove[chosen]) || 0;
+      const note = Math.abs(move) >= 0.005
+        ? _smi18n('news.moveNote', {
+            sign: move > 0 ? '+' : '-',
+            pct: Math.abs(move * 100).toFixed(1),
+          })
+        : '';
 
       this._news.unshift({
         time: _smi18n('news.justNow') || '',
         tag: STOCKS_CONFIG[chosen].symbol,
-        text
+        text: note ? note + ' ' + text : text
       });
       if (this._news.length > 20) this._news.pop();
+    }
+
+    // Whichever listing moved furthest last tick, with a random pick among the
+    // top few so a single volatile line does not own the wire, and a plain
+    // random pick on a tick where nothing moved at all.
+    _biggestMover(stocks) {
+      const moved = stocks
+        .map(id => ({ id, size: Math.abs((this._lastPctMove && this._lastPctMove[id]) || 0) }))
+        .filter(x => x.size > 0)
+        .sort((a, b) => b.size - a.size)
+        .slice(0, 3);
+      if (!moved.length) return stocks[Math.floor(Math.random() * stocks.length)];
+      return moved[Math.floor(Math.random() * moved.length)].id;
+    }
+
+    // What the world outside the terminal is doing to it. NPCWorldWeb's town
+    // mood was already priced in; a continental outbreak was not, even though
+    // the same outbreak moves NPC mood, hiring and shop traffic. Every active
+    // epidemic weighs on the market by how much of the continent it is running
+    // through, floored so the worst plague in the book is a bad year and not a
+    // permanent zero.
+    _epidemicDrag() {
+      const epi = window.EpidemicSystem;
+      if (!epi || typeof epi.active !== 'function') return 0;
+      try {
+        let infected = 0;
+        for (const outbreak of epi.active() || []) {
+          for (const key of Object.keys(outbreak.sites || {})) {
+            infected += (outbreak.sites[key] || {}).infected || 0;
+          }
+        }
+        if (infected <= 0) return 0;
+        return -Math.min(EPIDEMIC_DRAG_MAX, infected / EPIDEMIC_DRAG_SCALE);
+      } catch (e) { return 0; }
     }
 
     // Debug / Sandbox hooks
@@ -1420,6 +1475,7 @@
       if (!this._isAppMode) {
         super.update();
         this.updateKeyboardShortcuts();
+        this.updateStockFocusRing();
       }
       if (this._toastTimer > 0) {
         this._toastTimer--;
@@ -1431,6 +1487,7 @@
     }
 
     terminate() {
+      if (window.CCNav) window.CCNav.detach(this);
       const container = document.getElementById("stock-container");
       if (container) container.remove();
       if (!this._isAppMode) super.terminate();
@@ -2435,6 +2492,27 @@
           SoundManager.playCancel();
         }
       }
+    }
+
+    // Opened as a window inside the hyperdeck's desktop, the terminal is walked
+    // by the OS focus ring, which is what every '.focusable' in this markup was
+    // written for. Opened as a scene of its own - the terminal a broker's
+    // office puts in front of you - nothing collected them, so a stock could
+    // only be picked, an order only be placed, with a mouse. The shared DOM
+    // ring (window.CCNav) walks the same controls here.
+    updateStockFocusRing() {
+      const container = document.getElementById("stock-container");
+      if (!window.CCNav || !container) return;
+      if (window.CCNav._root !== container) window.CCNav.attach(this, container, { boards: false });
+      if (!window.CCNav.active()) window.CCNav.enter("right");
+      if (window.CCNav.update()) return;
+      window.CCNav.paint();
+    }
+
+    // No card board behind the ring here: the whole terminal IS the ring, so
+    // stepping off its first control lands on the last rather than on nothing.
+    onNavLeave() {
+      if (window.CCNav) window.CCNav.enter("up");
     }
 
     createHelpWindow() {

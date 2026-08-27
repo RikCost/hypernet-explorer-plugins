@@ -1,7 +1,7 @@
 {
   "1": {
     "name": "Spada corta",
-    "description": "Una spada a lama corta, leggera e facile da\r\nmaneggiare."
+    "description": "Una spada a lama corta, leggera e facile da maneggiare."
   },
   "2": {
     "name": "Spada lunga",
@@ -924,7 +924,7 @@
     "description": "Un fucile di precisione semiautomatico progettato per ingaggi a medio e lungo raggio."
   },
   "232": {
-    "name": "Fucile anti-materiale",
+    "name": "Fucile antimateriale",
     "description": "Un fucile di grosso calibro progettato per penetrare corazze pesanti e bersagli corazzati."
   },
   "233": {

@@ -1001,6 +1001,32 @@
         return Math.floor(distance * baseDistancePrice * multiplier);
     }
 
+    // ---- Who is allowed on board -------------------------------------------
+    // A ticket is a written record with the party's name on it, checked at a
+    // counter by somebody whose job includes noticing. A wanted party walks,
+    // rides, drives or flies itself; it does not queue for a boarding pass.
+    // Everything not listed here is private transport and never asks.
+    const TICKETED_TRANSPORT = new Set([
+        'bus', 'train', 'ferry', 'cruise', 'zeppelin',
+        'airplane_economy', 'airplane_business',
+        'hypermetro', 'maglev', 'hyperloop',
+    ]);
+
+    function isTicketedTransport(transportType) {
+        return TICKETED_TRANSPORT.has(String(transportType || ''));
+    }
+
+    // Null when the party may board, otherwise the reason they may not.
+    function boardingRefusal(transportType) {
+        if ($gameTemp && $gameTemp._characterCreationTravelMode) return null;
+        if (!isTicketedTransport(transportType)) return null;
+        const c = window.CrimeSystem;
+        if (c && typeof c.refusesRegisteredService === 'function' && c.refusesRegisteredService()) {
+            return 'wanted';
+        }
+        return null;
+    }
+
     function canAffordTravel(destination, transportType) {
         if ($gameTemp && $gameTemp._characterCreationTravelMode) {
             return true;
@@ -1746,6 +1772,10 @@
 
     Scene_Map.prototype.openFastTravelUIOverlay = function () {
         const isCCTravel = $gameTemp && $gameTemp._characterCreationTravelMode;
+        // Lent out as a CHOOSER (see FastTravelPicker below): the map is
+        // opened only to point at a place. Nothing is boarded, nothing is
+        // charged and no journey is started, so every stop is affordable.
+        const isPick = !!this._travelPickHandler;
         const isSandbox = ($gameSystem && $gameSystem._isSandboxMode) || 
                           ($gameParty && $gameParty.allMembers().some(actor => actor && actor.name() && actor.name().toLowerCase() === "test")) ||
                           ($gameActors && $gameActors.actor(1) && $gameActors.actor(1).name() && $gameActors.actor(1).name().toLowerCase() === "test");
@@ -1833,7 +1863,10 @@
             let costText = "";
             let enabled = true;
 
-            if (isCCTravel) {
+            if (isPick) {
+                enabled = true;
+                costText = "";
+            } else if (isCCTravel) {
                 enabled = true;
                 costText = "0€";
             } else if (transportType === 'carsharing' || transportType === 'camper') {
@@ -1859,7 +1892,7 @@
                     <span class="travel-dest-name">${destLabel(dest.name)}${hubBadge}</span>
                     <span class="travel-dest-meta">
                         <span>Distance: ${distanceInKm} km</span>
-                        <span style="font-weight: bold; color: #ffcc66">${costText}</span>
+                        <span class="travel-01">${costText}</span>
                     </span>
                 </div>
             `;
@@ -1878,7 +1911,7 @@
             const label = isSandbox ? `${baseLabel} (X: ${Math.round(x)}, Y: ${Math.round(y)})` : baseLabel;
 
             return `
-                <div class="travel-marker${hubClass}${kindClass(dest)}" id="marker-${dest.name}" style="left: ${x}px; top: ${y}px" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
+                <div class="travel-marker${hubClass}${kindClass(dest)}" id="marker-${dest.name}" style="left:${x}px; top:${y}px" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
                     <div class="travel-marker-tooltip">${label}</div>
                 </div>
             `;
@@ -1908,8 +1941,8 @@
         const backButtonHTML = (isCCTravel && !ccCanReopenOrigin)
             ? ""
             : `
-            <div style="margin-top: auto; padding-top: 15px; border-top: 1.5px dashed rgba(139, 90, 43, 0.15)">
-                <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box" onclick="${backButtonAction}">${backButtonLabel}</div>
+            <div class="travel-02">
+                <div class="travel-btn travel-btn-cancel travel-03" onclick="${backButtonAction}">${backButtonLabel}</div>
             </div>
             `;
 
@@ -1924,13 +1957,13 @@
             <div class="travel-book">
                 <div class="travel-left-page">
                     <!-- LIST PANEL -->
-                    <div id="panel-list" style="display: flex; flex-direction: column; height: 100%; width: 100%">
+                    <div class="travel-04" id="panel-list">
                         <h2 class="travel-title">${T('FastTravel.ui.stations')}</h2>
                         <div class="travel-transport-info">
-                            <div style="font-weight: bold; font-family: 'Lora', serif; font-size: 1.15rem; margin-bottom: 4px">
+                            <div class="travel-05">
                                 ${transportDisplayName}
                             </div>
-                            <div style="font-size: 0.96rem; opacity: 0.85">
+                            <div class="travel-06">
                                 ${multiplierText}
                             </div>
                         </div>
@@ -1941,32 +1974,32 @@
                     </div>
                     
                     <!-- CONFIRM PANEL (initially hidden) -->
-                    <div id="panel-confirm" style="display: none; flex-direction: column; height: 100%; width: 100%; animation: fade-in 0.25s ease-out">
+                    <div class="travel-07" id="panel-confirm">
                         <h2 class="travel-title">${T('FastTravel.ui.confirmJourney')}</h2>
-                        <div id="sidebar-dest-title" style="font-family: 'Lora', serif; font-size: 1.61rem; color: #ffcc66; text-align: center; margin-bottom: 20px; font-weight: bold; border-bottom: 1.5px dashed rgba(255, 204, 102, 0.15); padding-bottom: 8px">${T('FastTravel.ui.travelToPlaceholder')}</div>
+                        <div class="travel-08" id="sidebar-dest-title">${T('FastTravel.ui.travelToPlaceholder')}</div>
                         
-                        <div class="travel-confirm-details" style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; padding: 5px">
-                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.transport')}</span>
-                                <span class="travel-modal-value" id="sidebar-transport-val" style="color: #2b251d">${T('FastTravel.ui.transportPlaceholder')}</span>
+                        <div class="travel-confirm-details travel-09">
+                            <div class="travel-modal-detail travel-10">
+                                <span class="travel-modal-label travel-11">${T('FastTravel.ui.transport')}</span>
+                                <span class="travel-modal-value travel-12" id="sidebar-transport-val">${T('FastTravel.ui.transportPlaceholder')}</span>
                             </div>
-                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.distance')}</span>
-                                <span class="travel-modal-value" id="sidebar-distance-val" style="color: #2b251d">12 km</span>
+                            <div class="travel-modal-detail travel-10">
+                                <span class="travel-modal-label travel-11">${T('FastTravel.ui.distance')}</span>
+                                <span class="travel-modal-value travel-12" id="sidebar-distance-val">12 km</span>
                             </div>
-                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.cost')}</span>
-                                <span class="travel-modal-value" id="sidebar-cost-val" style="font-weight: bold; color: #ffcc66">1.20€</span>
+                            <div class="travel-modal-detail travel-10">
+                                <span class="travel-modal-label travel-11">${T('FastTravel.ui.cost')}</span>
+                                <span class="travel-modal-value travel-01" id="sidebar-cost-val">1.20€</span>
                             </div>
-                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.travelTime')}</span>
-                                <span class="travel-modal-value" id="sidebar-time-val" style="color: #2b251d">4s</span>
+                            <div class="travel-modal-detail travel-10">
+                                <span class="travel-modal-label travel-11">${T('FastTravel.ui.travelTime')}</span>
+                                <span class="travel-modal-value travel-12" id="sidebar-time-val">4s</span>
                             </div>
                         </div>
                         
-                        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 15px; border-top: 1.5px dashed rgba(139, 90, 43, 0.15)">
-                            <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box" onclick="SceneManager._scene.closeTravelConfirmModal()">${T('FastTravel.ui.cancel')}</div>
-                            <div class="travel-btn travel-btn-confirm" id="sidebar-confirm-action-btn" style="width: 100%; box-sizing: border-box">${T('FastTravel.ui.travel')}</div>
+                        <div class="travel-13">
+                            <div class="travel-btn travel-btn-cancel travel-03" onclick="SceneManager._scene.closeTravelConfirmModal()">${T('FastTravel.ui.cancel')}</div>
+                            <div class="travel-btn travel-btn-confirm travel-03" id="sidebar-confirm-action-btn">${T('FastTravel.ui.travel')}</div>
                         </div>
                     </div>
                 </div>
@@ -1986,7 +2019,7 @@
                             
                             ${markersHTML}
                             
-                            <div class="travel-player-marker" style="left: ${playerPixelX}px; top: ${playerPixelY}px">
+                            <div class="travel-player-marker" style="left:${playerPixelX}px; top:${playerPixelY}px">
                                 <div class="travel-player-pulse"></div>
                                 <div class="travel-player-dot"></div>
                             </div>
@@ -2402,7 +2435,9 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         const distanceInKm = Math.round(distance * 1);
 
         let costValueText = "";
-        if ($gameTemp && $gameTemp._characterCreationTravelMode) {
+        if (this._travelPickHandler) {
+            costValueText = T('FastTravel.ui.free');
+        } else if ($gameTemp && $gameTemp._characterCreationTravelMode) {
             costValueText = "0 €";
         } else if (transportType === 'carsharing' || transportType === 'camper') {
             costValueText = T('FastTravel.litersOfFuel', { liters: cost.toFixed(1) });
@@ -2423,12 +2458,36 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         document.getElementById('sidebar-transport-val').innerText = transportDisplayName;
         document.getElementById('sidebar-distance-val').innerText = `${distanceInKm} km`;
         document.getElementById('sidebar-cost-val').innerText = costValueText;
-        document.getElementById('sidebar-time-val').innerText = timeText;
+        document.getElementById('sidebar-time-val').innerText =
+            this._travelPickHandler ? '-' : timeText;
 
         const confirmBtn = document.getElementById('sidebar-confirm-action-btn');
+        if (this._travelPickHandler) confirmBtn.textContent = T('FastTravel.ui.startHere');
         confirmBtn.onclick = () => {
+            // Lent out as a chooser: the answer is the place itself. The overlay
+            // comes down and whoever borrowed it is handed the entry and the
+            // world square it stands on; no fare, no fuel, no journey.
+            if (this._travelPickHandler) {
+                const pick = this._travelPickHandler;
+                this._travelPickHandler = null;
+                this._travelPickCancel = null;
+                SoundManager.playOk();
+                this.closeTravelUIOverlay(true);
+                pick(dest, getWorldPosition(dest));
+                return;
+            }
             // Character-creation travel is always free, regardless of fuel/gold.
             const ccFree = $gameTemp && $gameTemp._characterCreationTravelMode;
+            const refusal = boardingRefusal(transportType);
+            if (refusal) {
+                SoundManager.playBuzzer();
+                if (window.ParchmentToast) {
+                    window.ParchmentToast.show(T('FastTravel.refused.' + refusal), {
+                        title: T('FastTravel.refused.title'), duration: 240,
+                    });
+                }
+                return;
+            }
             if (ccFree || canAffordTravel(dest, transportType)) {
                 SoundManager.playOk();
                 executeTravel(dest, cost);
@@ -2436,11 +2495,9 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             } else {
                 SoundManager.playBuzzer();
                 const costVal = document.getElementById('sidebar-cost-val');
-                costVal.style.color = '#c0392b';
-                costVal.style.fontWeight = 'bold';
-                costVal.style.transition = 'color 0.2s';
+                costVal.classList.add('cost--short');
                 setTimeout(() => {
-                    costVal.style.color = '';
+                    costVal.classList.remove('cost--short');
                 }, 1000);
             }
         };
@@ -2528,6 +2585,14 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         $gamePlayer.setMovementLock(false);
         const data = getFastTravelData();
         data.isActive = false;
+
+        // Lent out as a chooser and closed without a choice: whoever borrowed
+        // the map is told so, once. A confirmed pick clears both handlers before
+        // it closes, so this only ever fires on a real cancel.
+        this._travelPickHandler = null;
+        const back = this._travelPickCancel;
+        this._travelPickCancel = null;
+        if (back) back();
     };
 
     Scene_Map.prototype.closeFastTravelWindow = function () {
@@ -2535,6 +2600,88 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         this._fastTravelDestWindow.hide();
         this._fastTravelDestWindow.deactivate();
     };
+
+    // The picker's own keyboard / pad / stick handling, pulled out of the map's
+    // update so any scene that borrows the map can drive it too (see
+    // FastTravelPicker below). Returns true when it has taken the frame.
+    function updateTravelPickerInput(scene) {
+        if (!_travelOverlayEl) return false;
+        const self = scene;
+        if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+            const confirmPanel = document.getElementById('panel-confirm');
+            if (confirmPanel && confirmPanel.style.display !== 'none') {
+                self.closeTravelConfirmModal();
+            } else if (!($gameTemp && $gameTemp._characterCreationTravelMode)) {
+                self.closeTravelUIOverlay();
+            } else {
+                // Creation's own picker: cancel is not "close", it is the
+                // Back button drawn beside the list - the origin list again,
+                // with the origin undone. Where there is no origin to go
+                // back to it does nothing, as before.
+                self.reopenCreationOriginStep();
+            }
+            Input.clear();
+            TouchInput.clear();
+            return true;
+        }
+
+        const listPanel = document.getElementById('panel-list');
+        const confirmPanel2 = document.getElementById('panel-confirm');
+        const isListVisible = listPanel && listPanel.style.display !== 'none';
+        const isConfirmVisible = confirmPanel2 && confirmPanel2.style.display !== 'none';
+
+        if (isListVisible) {
+            const items = Array.from(document.querySelectorAll('.travel-dest-item'));
+            if (items.length > 0) {
+                // Only handle direction/ok via RMMZ Input for arrow keys and controller (not WASD)
+                // WASD is handled by _travelKeyHandler which clears Input to prevent double-consumption
+                // Don't call Input.clear() here: it resets the repeat timer
+                // (_pressedTime) and gamepad state, so a held d-pad/stick reads
+                // as a fresh press every frame and skips items. Let RMMZ's
+                // built-in keyRepeatWait/keyRepeatInterval pace navigation.
+                if (Input.isRepeated('down')) {
+                    _travelSelectedIndex = (_travelSelectedIndex + 1) % items.length;
+                    self.highlightTravelDestination(items[_travelSelectedIndex].getAttribute('data-name'));
+                    return true;
+                }
+                if (Input.isRepeated('up')) {
+                    _travelSelectedIndex = (_travelSelectedIndex - 1 + items.length) % items.length;
+                    self.highlightTravelDestination(items[_travelSelectedIndex].getAttribute('data-name'));
+                    return true;
+                }
+                if (Input.isTriggered('ok')) {
+                    const destName = items[_travelSelectedIndex].getAttribute('data-name');
+                    self.selectTravelDestination(destName);
+                    Input.clear();
+                    return true;
+                }
+            }
+        }
+
+        if (isConfirmVisible) {
+            if (Input.isTriggered('ok')) {
+                const confirmBtn = document.getElementById('sidebar-confirm-action-btn');
+                if (confirmBtn) confirmBtn.click();
+                Input.clear();
+                return true;
+            }
+        }
+
+        // Left analog stick pans the travel map when no panel has keyboard focus
+        // (list up/down already drives selection via Input). Uses the shared
+        // AnalogStickInput helper for raw, deadzoned axis values.
+        if (!isListVisible && !isConfirmVisible && self._updateTravelTransform && window.AnalogStickInput) {
+            const ax = AnalogStickInput.leftX();
+            const ay = AnalogStickInput.leftY();
+            if (ax !== 0 || ay !== 0) {
+                const panSpeed = 14; // px/frame at full deflection
+                self._travelPanX -= ax * panSpeed;
+                self._travelPanY -= ay * panSpeed;
+                self._updateTravelTransform();
+            }
+        }
+        return false;
+    }
 
     const _Scene_Map_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function () {
@@ -2546,81 +2693,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             $gameTemp._characterCreationTravelType = null;
             this.startFastTravel(ccType);
         }
-        if (_travelOverlayEl) {
-            if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
-                const confirmPanel = document.getElementById('panel-confirm');
-                if (confirmPanel && confirmPanel.style.display !== 'none') {
-                    this.closeTravelConfirmModal();
-                } else if (!($gameTemp && $gameTemp._characterCreationTravelMode)) {
-                    this.closeTravelUIOverlay();
-                } else {
-                    // Creation's own picker: cancel is not "close", it is the
-                    // Back button drawn beside the list - the origin list again,
-                    // with the origin undone. Where there is no origin to go
-                    // back to it does nothing, as before.
-                    this.reopenCreationOriginStep();
-                }
-                Input.clear();
-                TouchInput.clear();
-                return;
-            }
-
-            const listPanel = document.getElementById('panel-list');
-            const confirmPanel2 = document.getElementById('panel-confirm');
-            const isListVisible = listPanel && listPanel.style.display !== 'none';
-            const isConfirmVisible = confirmPanel2 && confirmPanel2.style.display !== 'none';
-
-            if (isListVisible) {
-                const items = Array.from(document.querySelectorAll('.travel-dest-item'));
-                if (items.length > 0) {
-                    // Only handle direction/ok via RMMZ Input for arrow keys and controller (not WASD)
-                    // WASD is handled by _travelKeyHandler which clears Input to prevent double-consumption
-                    // Don't call Input.clear() here: it resets the repeat timer
-                    // (_pressedTime) and gamepad state, so a held d-pad/stick reads
-                    // as a fresh press every frame and skips items. Let RMMZ's
-                    // built-in keyRepeatWait/keyRepeatInterval pace navigation.
-                    if (Input.isRepeated('down')) {
-                        _travelSelectedIndex = (_travelSelectedIndex + 1) % items.length;
-                        this.highlightTravelDestination(items[_travelSelectedIndex].getAttribute('data-name'));
-                        return;
-                    }
-                    if (Input.isRepeated('up')) {
-                        _travelSelectedIndex = (_travelSelectedIndex - 1 + items.length) % items.length;
-                        this.highlightTravelDestination(items[_travelSelectedIndex].getAttribute('data-name'));
-                        return;
-                    }
-                    if (Input.isTriggered('ok')) {
-                        const destName = items[_travelSelectedIndex].getAttribute('data-name');
-                        this.selectTravelDestination(destName);
-                        Input.clear();
-                        return;
-                    }
-                }
-            }
-
-            if (isConfirmVisible) {
-                if (Input.isTriggered('ok')) {
-                    const confirmBtn = document.getElementById('sidebar-confirm-action-btn');
-                    if (confirmBtn) confirmBtn.click();
-                    Input.clear();
-                    return;
-                }
-            }
-
-            // Left analog stick pans the travel map when no panel has keyboard focus
-            // (list up/down already drives selection via Input). Uses the shared
-            // AnalogStickInput helper for raw, deadzoned axis values.
-            if (!isListVisible && !isConfirmVisible && this._updateTravelTransform && window.AnalogStickInput) {
-                const ax = AnalogStickInput.leftX();
-                const ay = AnalogStickInput.leftY();
-                if (ax !== 0 || ay !== 0) {
-                    const panSpeed = 14; // px/frame at full deflection
-                    this._travelPanX -= ax * panSpeed;
-                    this._travelPanY -= ay * panSpeed;
-                    this._updateTravelTransform();
-                }
-            }
-        }
+        if (updateTravelPickerInput(this)) return;
         _Scene_Map_update.call(this);
     };
 
@@ -3000,6 +3073,77 @@ Scene_Map.prototype.printTravelCoordinates = function () {
     Scene_Map.prototype.createAllWindows = function () {
         _Scene_Map_createAllWindows.call(this);
         this.createDestinationPictureWindow();
+    };
+
+
+    //=============================================================================
+    // window.FastTravelPicker - the map, lent out
+    //
+    // The travel map is the game's one picture of where the places are, and it
+    // is worth more than one use. Anything that needs the player to POINT AT A
+    // PLACE - the Liminal World free play, which asks where in the world to be
+    // dropped - borrows it here instead of drawing a second map of its own.
+    //
+    // It is the same overlay: the same pins, the same list, the same drag and
+    // zoom. What is taken out of it is the journey. Nothing is boarded, no fare
+    // or fuel is charged and no travel timer starts; the chosen entry and the
+    // world square it stands on are handed straight back to the caller.
+    //
+    // The overlay's own markup calls SceneManager._scene.<method>(), so every
+    // method it needs is copied onto whatever scene borrows it.
+    //=============================================================================
+    const TRAVEL_PICKER_METHODS = [
+        'openFastTravelUIOverlay', 'initTravelMapInteractions', 'adjustTravelZoom',
+        'toggleTravelEditMode', 'printTravelCoordinates', 'highlightTravelDestination',
+        'selectTravelDestination', 'closeTravelConfirmModal', 'reopenCreationOriginStep',
+        'closeTravelUIOverlay'
+    ];
+
+    window.FastTravelPicker = {
+        // Teach a scene the map. Idempotent: a scene class is only ever taught
+        // once, however many times it is pushed.
+        install(sceneClass) {
+            const proto = sceneClass && sceneClass.prototype;
+            if (!proto || proto._travelPickerInstalled) return;
+            for (const key of TRAVEL_PICKER_METHODS) proto[key] = Scene_Map.prototype[key];
+            proto.updateTravelPickerInput = function () {
+                return updateTravelPickerInput(this);
+            };
+            proto._travelPickerInstalled = true;
+        },
+
+        // True while the overlay is up, whoever it is up over.
+        isOpen() { return !!_travelOverlayEl; },
+
+        /**
+         * Open the map as a chooser.
+         *
+         *   scene          the scene to draw it over (must have been install()ed)
+         *   transportType  which network's labels to show ('walking', 'camper'...)
+         *   onPick         (destination, {x, y}) - the entry and its world square
+         *   onCancel       backed out of without choosing
+         */
+        open(scene, transportType, onPick, onCancel) {
+            if (!scene || !scene.openFastTravelUIOverlay) return false;
+            const data = getFastTravelData();
+            data.selectedTransport = transportType || 'walking';
+            data.destinations = getTeleportDestinations();
+            data.allowedDestinations = null;
+            data.isActive = true;
+            scene._travelPickHandler = onPick || null;
+            scene._travelPickCancel = onCancel || null;
+            scene.openFastTravelUIOverlay();
+            return true;
+        },
+
+        // Shut it, without telling the caller anything was cancelled: for a
+        // scene being torn down under an open map.
+        close(scene) {
+            if (!scene || !scene.closeTravelUIOverlay) return;
+            scene._travelPickHandler = null;
+            scene._travelPickCancel = null;
+            scene.closeTravelUIOverlay(true);
+        }
     };
 
 })();

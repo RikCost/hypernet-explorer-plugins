@@ -74,9 +74,9 @@
     "Camper Drive"
   ],
   "enemySpawn": [
-    "Distance from spawn",
-    "Party Level",
     "Biome",
+    "Party Level",
+    "Realistic",
     "Chaos"
   ],
   "dialogueMode": [
@@ -107,9 +107,9 @@
   },
   "descState": {
     "enemySpawnMode": [
-      "Distance from spawn: difficulty comes from the place, not from you. Levels rise the further a tile lies from where you started. Each nation and biome has its own roster, and every tile hides a boss.",
-      "Party Level: enemies match your party. Roamers stay at or below your level; each tile hides one boss above it. The safest option.",
-      "Biome: anything living here can appear, any level up to 100, all equally likely. The place decides what you meet, never how hard it is.",
+      "Biome: anything living here can appear. Seven spawns in ten are any level up to 110, all equally likely, so the place decides what you meet; the other three are pitched within five levels of your party, climbing with the year.",
+      "Party Level: enemies keep pace with your party. Roamers run from your own level up to ten above it; each tile hides one boss above that. The safest option.",
+      "Realistic: difficulty comes from the place, not from you. Levels rise the further a tile lies from where you started. Each nation and biome has its own roster, and every tile hides a boss.",
       "Chaos: levels 1-110 roam anywhere, any biome. Procedural maps redeal their monsters on every entry."
     ],
     "musicArtistDisplay": [

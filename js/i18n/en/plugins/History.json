@@ -337,7 +337,8 @@
   "1999-07": "FIRST CONTACT: The Tourists make official contact with Earth, twenty-four years after Earth's own radio and television broadcasts first reached Zeta Reticuli.",
   "1999-12": "THE Y2K EVENT: Two billion people die in a single night as the ENVISAT satellite collides in orbit, triggering the Kessler Syndrome. The Omega Tower's sealed door, shut since it was driven into the Earth, opens on its own for the first time.",
   "2001-09": "SEPTEMBER 11: New York is struck by teonuclear weapons. The blast strips out the souls of 3 million citizens, leaving 'Hollow Shells'.",
-  "2001-12": "THE SOLOMON RITUAL: The Mages Guild's Three Pillars perform the Solomon Ritual on the witch-wannabe Em, forging the Spear of Memory. The Father aspect of YHWH is struck down, and Eris ascends the empty celestial throne."
+  "2001-12": "THE SOLOMON RITUAL: The Mages Guild's Three Pillars perform the Solomon Ritual on the witch-wannabe Em, forging the Spear of Memory. The Father aspect of YHWH is struck down, and Eris ascends the empty celestial throne.",
+  "2000-12": "THE ASCENSION OF MARIO DRAGHI: on the last day of the year the President of the European Central Bank leaves his physical form behind in the Frankfurt Eurotower and ascends as the god of commerce. The Gods seat him before midnight."
  },
  "artifactDescription": "A unique artifact of immense power.",
  "artifactName": {
@@ -399,7 +400,9 @@
   "dawn": "status at the dawn of the century",
   "independence": "independence from {power}",
   "annexation": "annexation",
-  "conquest": "conquest (formerly {power})"
+  "conquest": "conquest (formerly {power})",
+  "declaredIndependence": "independence declared from {power}",
+  "declaredPower": "the {power} declares itself"
  },
  "conquest": {
   "independence": "{nation} breaks free of {power}; the {prevGov} is dismantled and a {gov} restored.",
@@ -509,5 +512,20 @@
   "scientific": "scientific",
   "social": "social",
   "war": "war"
+ },
+ "founding": {
+  "independence": "{leader} declares {nation} independent of {from}; from today the {power} answers to nobody else.",
+  "declared": "{leader} raises the {power} over {nation}, a power where there was none.",
+  "byPower": {
+   "Northpoint Army": {
+    "independence": "THE NORTHPOINT DECLARATION: the self-proclaimed daughter of God, {leader}, has declared independence from {from} in {nation}. The {power} takes the ice, and says it has taken it in order to end war.",
+    "declared": "THE NORTHPOINT DECLARATION: the self-proclaimed daughter of God, {leader}, raises the {power} over {nation}. It has no enemies, it says, only a standing army."
+   }
+  }
+ },
+ "leaderLore": {
+  "mario_draghi": "On 31 December 2000 he stepped out of his own body in the Frankfurt Eurotower and did not step back into it. The Gods seated him that night as the god of commerce, and every price set anywhere on Earth has been an offering to him since.",
+  "aaron_swartz": "He took the library back off the people who had been selling it. The Archive Foundation has counted him one of its own ever since, and keeps a terminal open in his name in every reading room it holds.",
+  "friedrich_hayek": "The Collective does not vote on him. His book is what it votes with."
  }
 }

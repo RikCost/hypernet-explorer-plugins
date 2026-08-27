@@ -78,5 +78,6 @@
   "gold": "Oro",
   "drawing": "Disegno...",
   "exp": "ESP",
-  "harvestChance": "{chance}% di probabilità"
+  "harvestChance": "{chance}% di probabilità",
+  "searchPlaceholder": "Cerca creature…"
 }

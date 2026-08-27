@@ -49,6 +49,15 @@
         }
 
         updateUIInput() {
+            // The canon filter, which was a click and nothing else: the archive
+            // walks its entries with the stick and leaves with Confirm, so the
+            // one plate that narrows the list had no key of its own. SHIFT is
+            // the second verb on a book spread everywhere else in this game.
+            if (Input.isTriggered('shift')) {
+                SoundManager.playCursor();
+                this.toggleFixedOnly();
+                return;
+            }
             if (Input.isTriggered('ok')) {
                 SoundManager.playOk();
                 this.popScene();
@@ -335,7 +344,7 @@
                     'scientific': { color: 'var(--text-text-alt-16, #3d5e75)',           bg: 'var(--bg-bg-alt-6-translucent-12, rgba(61,94,117,0.05))' },
                     'disaster':   { color: 'var(--text-secondary-active, #822d2d)',      bg: 'var(--shadow-soft-active-translucent-25, rgba(130,45,45,0.05))' },
                     'criminal':   { color: 'var(--text-text-alt-5-hover, #b05c3c)',      bg: 'var(--border-primary-hover-translucent-15, rgba(176,92,60,0.05))' },
-                    'artifact':   { color: '#a07820',                                    bg: 'rgba(160,120,32,0.07)' },
+                    'artifact':   { color: 'var(--text-gold-dark)',                      bg: 'var(--accent-gold-translucent-16)' },
                     'diplomatic': { color: 'var(--text-text-alt-16, #3d5e75)',           bg: 'var(--bg-bg-alt-6-translucent-12, rgba(61,94,117,0.05))' }
                 };
                 return map[category] || { color: 'var(--border-muted-focus, #8b5a2b)', bg: 'var(--border-secondary-hover-translucent-15, rgba(139,90,43,0.05))' };
@@ -345,7 +354,7 @@
                 return evt.category === 'artifact' || /artifact/i.test(evt.description || '');
             }
 
-            const artifactBadgeHTML = `<span class="card-badge" style="color:#a07820; background:rgba(160,120,32,0.1); border:1px solid #a0782050">${T('History.ui.artifactBadge')}</span>`;
+            const artifactBadgeHTML = `<span class="card-badge" style="color:var(--text-gold-dark); background:var(--accent-gold-translucent-16); border:1px solid var(--border-gold-amber-30)">${T('History.ui.artifactBadge')}</span>`;
 
             let dossierHTML = "";
             const selectedEvent = allEvents[currentIndex];

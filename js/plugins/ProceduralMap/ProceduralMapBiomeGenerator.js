@@ -34,21 +34,10 @@
  * - If a tile has no biome association, defaults to "Fields" biome
  * - Procedural maps use the biome's tileset for terrain generation
  *
- * @command startProcGen
- * @text Start Procedural Generation
- * @desc Initiate procedural map 636 generation from current map 315 location
- *
- * @command stopProcGen
- * @text Stop Procedural Generation
- * @desc Return player from map 636 to origin point on map 315
- *
- * @command goDown
- * @text Go Down (Underground Layer)
- * @desc Descend into the underground layer of the current biome
- *
- * @command goUp
- * @text Go Up (Return to Surface)
- * @desc Ascend back to the previous surface biome
+ * startProcGen, stopProcGen, goDown and goUp are NOT declared here. They are declared and
+ * handled by WorldMapReturn.js, which owns every transfer between the world map and a
+ * procedural map. This file used to declare them as well, which offered the editor four
+ * commands that nothing on this plugin's name ever answered.
  */
 
 (() => {
@@ -106,6 +95,8 @@
     placeMultiTileFeature,
     generateFeatureNoise,
     generateFeatureScattered,
+    generateFeatureNoiseSteps,
+    generateFeatureScatteredSteps,
     generateCaveWithDrunkenWalk,
     generateCaveWithCellularAutomata,
     generateCaveWithVoronoi,
@@ -130,6 +121,13 @@
     PROC_MAP_HEIGHT,
     BORDER_DETECTION_RANGE,
   } = Utils2;
+
+  // Resumable generation: STEP_ROWS, runSteps and the reasoning behind them all
+  // live in ProceduralMapUtils.js under RESUMABLE GENERATION. Every heavy pass
+  // in this file exists once, as a *Steps generator that yields where it may
+  // safely be paused, with the plain function of the same name as the driver
+  // that runs it straight through.
+  const { STEP_ROWS, runSteps } = Utils2;
 
   // Import beach/water generation functions from ProceduralBeachGenerator
   const BeachGen = window.ProcGenBeach;
@@ -198,8 +196,10 @@
     generateDungeonBiome: generateDungeonBiomeUtil,
     isVillageBiome,
     generateVillageBiome: generateVillageBiomeUtil,
+    generateVillageBiomeSteps: generateVillageBiomeStepsUtil,
     isCityBiome,
     generateCityBiome: generateCityBiomeUtil,
+    generateCityBiomeSteps: generateCityBiomeStepsUtil,
     isBurgBiome,
     generateBurgBiome: generateBurgBiomeUtil,
     isTilePassableInTileset,
@@ -866,6 +866,10 @@
    * Otherwise, features are distributed according to their density ratios
    */
   function fillTerrainLayer(mapData, biome, allFeatures, width, height, rng, adjacentBiomes) {
+    return runSteps(fillTerrainLayerSteps(mapData, biome, allFeatures, width, height, rng, adjacentBiomes));
+  }
+
+  function* fillTerrainLayerSteps(mapData, biome, allFeatures, width, height, rng, adjacentBiomes) {
     const terrainFeatures = getTerrainFeatures(biome);
 
     if (terrainFeatures.length === 0) {
@@ -943,6 +947,7 @@
             const idx = calculateIndex(x, y, 0, width, height);
             mapData[idx] = selectedTile;
           }
+          if (y % STEP_ROWS === STEP_ROWS - 1) yield;
         }
         return;
       }
@@ -962,6 +967,7 @@
           const idx = calculateIndex(x, y, 0, width, height);
           mapData[idx] = randomChoice(fallbackTiles, rng);
         }
+        if (y % STEP_ROWS === STEP_ROWS - 1) yield;
       }
       return;
     }
@@ -986,6 +992,7 @@
           const idx = calculateIndex(x, y, 0, width, height);
           mapData[idx] = randomChoice(tiles, rng);
         }
+        if (y % STEP_ROWS === STEP_ROWS - 1) yield;
       }
       return;
     }
@@ -1026,6 +1033,7 @@
         const idx = calculateIndex(x, y, 0, width, height);
         mapData[idx] = selectedTile;
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
   }
 
@@ -1044,7 +1052,11 @@
   // all four calls instead of recomputing 4 fBm lookups per tile per call.
   const _influenceFieldCache = { key: null, field: null };
 
-  function getInfluenceField(width, height, seed, blendScale, worldX, worldY) {
+  // The single most expensive pass in a square: four fBm lookups on every one of
+  // the 4096 tiles. Sliced by rows, and only published to the cache once the
+  // whole field is filled, so a cancelled job can never leave a half-computed
+  // field behind for the next build to find under the same key.
+  function* getInfluenceFieldSteps(width, height, seed, blendScale, worldX, worldY) {
     const key = seed + "|" + width + "|" + height + "|" + worldX + "|" + worldY + "|" + blendScale;
     if (_influenceFieldCache.key === key) return _influenceFieldCache.field;
     const n = width * height;
@@ -1062,10 +1074,15 @@
         field.east[idx] = calculateDirectionalInfluence(x, y, "east", width, height, seed, blendScale, worldX, worldY);
         field.west[idx] = calculateDirectionalInfluence(x, y, "west", width, height, seed, blendScale, worldX, worldY);
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
     _influenceFieldCache.key = key;
     _influenceFieldCache.field = field;
     return field;
+  }
+
+  function getInfluenceField(width, height, seed, blendScale, worldX, worldY) {
+    return runSteps(getInfluenceFieldSteps(width, height, seed, blendScale, worldX, worldY));
   }
 
   /**
@@ -1113,6 +1130,12 @@
   }
 
   function blendBiomesTerrainOnly(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords = { x: 0, y: 0 }, waterTiles = []) {
+    return runSteps(blendBiomesTerrainOnlySteps(
+      mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, waterTiles
+    ));
+  }
+
+  function* blendBiomesTerrainOnlySteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords = { x: 0, y: 0 }, waterTiles = []) {
     if (!adjacentBiomes) return;
 
     // Don't blend Ocean biomes at all
@@ -1146,7 +1169,7 @@
     const blendScale = 0.02; // Perlin noise scale for smooth gradients
     const worldX = worldCoords.x || 0;
     const worldY = worldCoords.y || 0;
-    const influenceField = getInfluenceField(width, height, seed, blendScale, worldX, worldY);
+    const influenceField = yield* getInfluenceFieldSteps(width, height, seed, blendScale, worldX, worldY);
 
     // Never overwrite drawn road surfaces or dashed lines with blended terrain
     const roadProtect = getRoadProtectTiles(biome, allFeatures);
@@ -1184,6 +1207,7 @@
           blendTerrainTileFromAdjacentBiome(mapData, x, y, influences[0].biome, expandedAllFeatures, width, height, rng, waterTiles);
         }
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
   }
 
@@ -1237,6 +1261,12 @@
    * Skips blending on water and beach tiles to preserve coastlines
    */
   function blendBiomeBorders(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords = { x: 0, y: 0 }, waterTiles = [], keepOutMask = null) {
+    return runSteps(blendBiomeBordersSteps(
+      mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, waterTiles, keepOutMask
+    ));
+  }
+
+  function* blendBiomeBordersSteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords = { x: 0, y: 0 }, waterTiles = [], keepOutMask = null) {
     if (!adjacentBiomes) return;
 
     const blendScale = 0.02; // Perlin noise scale for smooth gradients
@@ -1254,7 +1284,7 @@
       excludedBiomes.push("Fields");
     }
 
-    const influenceField = getInfluenceField(width, height, seed, blendScale, worldX, worldY);
+    const influenceField = yield* getInfluenceFieldSteps(width, height, seed, blendScale, worldX, worldY);
 
     // Iterate through entire map
     for (let y = 0; y < height; y++) {
@@ -1297,6 +1327,7 @@
           }
         }
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
   }
 
@@ -1479,6 +1510,12 @@
    * Handles water edge drawing and biome blending
    */
   function generateRoadBiome(biome, seed, allFeatures, roadDirection, adjacentBiomes, cacheInfo, worldCoords, cache) {
+    return runSteps(generateRoadBiomeSteps(
+      biome, seed, allFeatures, roadDirection, adjacentBiomes, cacheInfo, worldCoords, cache
+    ));
+  }
+
+  function* generateRoadBiomeSteps(biome, seed, allFeatures, roadDirection, adjacentBiomes, cacheInfo, worldCoords, cache) {
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
     const mapData = new Array(width * height * 4).fill(0);
@@ -1636,6 +1673,7 @@
           }
         }
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
 
     // Draw water edges if adjacent to water biomes
@@ -1695,6 +1733,8 @@
     }
     const actualWaterTilesArray = Array.from(actualWaterAndBeachTiles);
 
+    yield;
+
     // Use road drawing utilities from ProceduralMapRoadGenerator
     generateRoadBiomeUtil(mapData, biome, roadTileId, roadDirection, dashedLines, width, height, adjacentBiomes);
 
@@ -1706,11 +1746,11 @@
 
     // Blend terrain from adjacent biomes into road borders
     // Use the actual water tiles to avoid overwriting beaches
-    blendBiomesTerrainOnly(mapData, biome, adjacentBiomes, expandedAllFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+    yield* blendBiomesTerrainOnlySteps(mapData, biome, adjacentBiomes, expandedAllFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
 
     // Blend non-terrain features from adjacent biomes (only B sheet tiles)
     // Use the actual water tiles collected from the map after drawWaterEdges
-    blendBiomeBorders(mapData, biome, adjacentBiomes, expandedAllFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray, roadKeepOut);
+    yield* blendBiomeBordersSteps(mapData, biome, adjacentBiomes, expandedAllFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray, roadKeepOut);
 
     // Dress the verges with the underlying biome's own features (trees, rocks,
     // weeds...). Prefabs are deliberately NOT taken from that biome: a road map
@@ -1725,14 +1765,14 @@
       }
 
       for (const feature of getFeaturesByLayer(underBiome, allFeatures, 1, FEATURE_LAYERS)) {
-        generateFeatureNoise(
+        yield* generateFeatureNoiseSteps(
           mapData, allFeatures[feature.name], 1, width, height, seed,
           0.15 * feature.density, rng, actualWaterTilesArray, roadPathTiles, roadKeepOut
         );
       }
 
       for (const feature of getFeaturesByLayer(underBiome, allFeatures, 2, FEATURE_LAYERS)) {
-        generateFeatureScattered(
+        yield* generateFeatureScatteredSteps(
           mapData, allFeatures[feature.name], 2, width, height, seed,
           0.05 * feature.density, rng, actualWaterTilesArray, roadPathTiles, roadKeepOut
         );
@@ -1743,6 +1783,8 @@
     // camper-recall sign from its own generator; out on the open road this is
     // also what RoadCarAI reads to decide where a car may pull over and let its
     // driver out, so a highway has somewhere to stop rather than nowhere.
+    yield;
+
     placeCivicSigns(mapData, biome, allFeatures, seed, { park: [1, 2] });
 
     // Create region data for water tile detection in MovementInteractionSystem
@@ -1779,6 +1821,8 @@
     // kept ROAD_FEATURE_MARGIN tiles clear: the difference is that only
     // walk-through plants are used on a carriageway, so a lane is never blocked
     // and RoadCarAI still has a road to drive on.
+    yield;
+
     if (window.ProcGenDungeon && window.ProcGenDungeon.overgrowMapData) {
       window.ProcGenDungeon.overgrowMapData(
         mapData, width, height, expandedAllFeatures || allFeatures,
@@ -1903,6 +1947,12 @@
    * Handles water edge drawing and biome blending
    */
   function generateRiverBiome(biome, seed, allFeatures, riverDirection, adjacentBiomes, cacheInfo, worldCoords, cache) {
+    return runSteps(generateRiverBiomeSteps(
+      biome, seed, allFeatures, riverDirection, adjacentBiomes, cacheInfo, worldCoords, cache
+    ));
+  }
+
+  function* generateRiverBiomeSteps(biome, seed, allFeatures, riverDirection, adjacentBiomes, cacheInfo, worldCoords, cache) {
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
     const mapData = new Array(width * height * 4).fill(0);
@@ -2005,6 +2055,7 @@
           }
         }
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
 
     // Use river drawing utilities from ProceduralMapRiverGenerator.
@@ -2047,11 +2098,13 @@
 
     // Blend terrain from adjacent biomes into river borders
     // Use the actual water tiles to avoid overwriting beaches
-    blendBiomesTerrainOnly(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+    yield* blendBiomesTerrainOnlySteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
 
     // Blend non-terrain features from adjacent biomes (excluding road features)
     // Use the actual water tiles collected from the map after river generation
-    blendBiomeBorders(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+    yield* blendBiomeBordersSteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+
+    yield;
 
     // Create region data for water tile detection in MovementInteractionSystem
     const regiondata = new Array(width * height).fill(0);
@@ -3337,10 +3390,26 @@
     worldCoords,
     cache
   ) {
-    const mapData = generateBiomeBody(
+    return runSteps(generateProceduralTerrainSteps(
+      biome, seed, roadDirection, adjacentBiomes, cacheInfo, worldCoords, cache
+    ));
+  }
+
+  function* generateProceduralTerrainSteps(
+    biome,
+    seed,
+    roadDirection,
+    adjacentBiomes,
+    cacheInfo,
+    worldCoords,
+    cache
+  ) {
+    const mapData = yield* generateBiomeBodySteps(
       biome, seed, roadDirection, adjacentBiomes, cacheInfo, worldCoords, cache
     );
+    yield;
     maybeApplyRiverOverlay(mapData, biome, adjacentBiomes, seed, worldCoords);
+    yield;
     applyBunkerFeatures(mapData, biome, worldCoords);
     // A patron's hatch is NOT stamped here: prefabs are applied to this array
     // later still (DataManager.loadMapData, ProceduralMapPrefabs), and a house
@@ -3350,6 +3419,20 @@
   }
 
   function generateBiomeBody(
+    biome,
+    seed,
+    roadDirection,
+    adjacentBiomes,
+    cacheInfo,
+    worldCoords,
+    cache
+  ) {
+    return runSteps(generateBiomeBodySteps(
+      biome, seed, roadDirection, adjacentBiomes, cacheInfo, worldCoords, cache
+    ));
+  }
+
+  function* generateBiomeBodySteps(
     biome,
     seed,
     roadDirection,
@@ -3418,7 +3501,7 @@
       // The carriageway always crosses its own tile (see spanningRoadAdjacency).
       const roadAdjacent = spanningRoadAdjacency(adjacentBiomes, finalRoadDirection);
 
-      return generateRoadBiome(biome, seed, allFeatures, finalRoadDirection, roadAdjacent, cacheInfo, worldCoords, cache);
+      return yield* generateRoadBiomeSteps(biome, seed, allFeatures, finalRoadDirection, roadAdjacent, cacheInfo, worldCoords, cache);
     }
 
     // Don't generate rivers in cave biomes (rivers are surface-only)
@@ -3451,7 +3534,7 @@
         log(`[ProceduralMapBiomeGenerator] Using fallback river direction: horizontal`);
       }
 
-      return generateRiverBiome(biome, seed, allFeatures, finalRiverDirection, adjacentBiomes, cacheInfo, worldCoords, cache);
+      return yield* generateRiverBiomeSteps(biome, seed, allFeatures, finalRiverDirection, adjacentBiomes, cacheInfo, worldCoords, cache);
     }
 
     const tilesetIds = biome.tilesetIds || [biome.tilesetId];
@@ -3517,14 +3600,16 @@
       const allOtherData = { worldCoords };
       const mapData = generateDungeonBiomeUtil(biome, seed, allFeatures, adjacentBiomes, allOtherData);
       _persistStructureHints(allOtherData);
+      yield;
       return mapData;
     }
 
     // For village biomes, use village path and house generation
     if (isVillageBiome(biome.name)) {
       const villageData = { worldCoords };
-      const mapData = generateVillageBiomeUtil(biome, seed, allFeatures, adjacentBiomes, villageData);
+      const mapData = yield* generateVillageBiomeStepsUtil(biome, seed, allFeatures, adjacentBiomes, villageData);
       _persistStructureHints(villageData);
+      yield;
 
       // After village generation, scatter terrain features on layers 1 and 2
       const rng = createSeededRandom(seed);
@@ -3555,7 +3640,7 @@
 
       // Scatter features on layer 1 (noise-based)
       for (const feature of getFeaturesByLayer(biome, allFeatures, 1, FEATURE_LAYERS)) {
-        generateFeatureNoise(
+        yield* generateFeatureNoiseSteps(
           mapData,
           allFeatures[feature.name],
           1,
@@ -3571,7 +3656,7 @@
 
       // Scatter features on layer 2 (scattered)
       for (const feature of getFeaturesByLayer(biome, allFeatures, 2, FEATURE_LAYERS)) {
-        generateFeatureScattered(
+        yield* generateFeatureScatteredSteps(
           mapData,
           allFeatures[feature.name],
           2,
@@ -3588,6 +3673,8 @@
       // Crop plots for a biome that farms (see placeTilledFields).
       placeTilledFields(mapData, biome, allFeatures, seed, PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
 
+      yield;
+
       // Civic signs: readable signposts (1-3), one bus stop, one camper park.
       placeCivicSigns(mapData, biome, allFeatures, seed, {
         post: [1, 3], bus: [1, 1], park: [1, 1],
@@ -3599,8 +3686,9 @@
     // For city biomes, use grid-based city generation with roads and building lots
     if (isCityBiome(biome.name)) {
       const cityData = { worldCoords };
-      const mapData = generateCityBiomeUtil(biome, seed, allFeatures, adjacentBiomes, cityData);
+      const mapData = yield* generateCityBiomeStepsUtil(biome, seed, allFeatures, adjacentBiomes, cityData);
       _persistStructureHints(cityData);
+      yield;
       // Civic signs: one roadside bus stop + one camper park (no readable signposts).
       placeCivicSigns(mapData, biome, allFeatures, seed, {
         bus: [1, 1], park: [1, 1],
@@ -3613,6 +3701,7 @@
       const burgData = { worldCoords };
       const mapData = generateBurgBiomeUtil(biome, seed, allFeatures, adjacentBiomes, burgData);
       _persistStructureHints(burgData);
+      yield;
       // Civic signs: one roadside bus stop + one camper park (no readable signposts).
       placeCivicSigns(mapData, biome, allFeatures, seed, {
         bus: [1, 1], park: [1, 1],
@@ -3629,7 +3718,7 @@
     // Normal biome terrain generation (non-cave)
     // Fill layer 0 with terrain features (those with terrain: true)
     // Uses weighted distribution based on density values
-    fillTerrainLayer(mapData, biome, allFeatures, width, height, rng, adjacentBiomes);
+    yield* fillTerrainLayerSteps(mapData, biome, allFeatures, width, height, rng, adjacentBiomes);
 
     // Collect all water tiles (single-tile variants only) for feature placement checks
     let waterTiles = [];
@@ -3691,6 +3780,8 @@
       }
     }
 
+    yield;
+
     // Only draw the coastline on non-cave biomes (road biome path)
     if (!isCaveBiome(biome.name) && waterTiles.length > 0) {
       drawWaterEdges(
@@ -3733,8 +3824,10 @@
     }
     const actualWaterTilesArray = Array.from(actualWaterAndBeachTiles);
 
+    yield;
+
     for (const feature of getFeaturesByLayer(biome, allFeatures, 1, FEATURE_LAYERS)) {
-      generateFeatureNoise(
+      yield* generateFeatureNoiseSteps(
         mapData,
         allFeatures[feature.name],
         1,
@@ -3749,7 +3842,7 @@
     }
 
     for (const feature of getFeaturesByLayer(biome, allFeatures, 2, FEATURE_LAYERS)) {
-      generateFeatureScattered(
+      yield* generateFeatureScatteredSteps(
         mapData,
         allFeatures[feature.name],
         2,
@@ -3765,6 +3858,8 @@
 
     // Crop plots for a biome that farms (see placeTilledFields).
     placeTilledFields(mapData, biome, allFeatures, seed, width, height);
+
+    yield;
 
     // For cave biomes, remove any features that overlap with Ceiling or CaveWall
     if (isCaveBiome(biome.name)) {
@@ -3819,7 +3914,9 @@
     // Blend terrain from adjacent biomes at map borders for seamless transitions
     // Uses global Perlin noise for organic, non-triangular blending
     // Use the actual water tiles to avoid overwriting beaches
-    blendBiomesTerrainOnly(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+    yield* blendBiomesTerrainOnlySteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+
+    yield;
 
     // ...and then wall the sea floor back in, over the blend, wherever the
     // square next to it is not sea floor as well.
@@ -4212,11 +4309,11 @@
     // stale location after the player walked on the world map without a transfer
     // committing the vars. The cache is only rebuilt if missing (full-map scan).
     //
-    // Exception: when the 3D CamperDrivingSystem is active, vars 43/44 are updated
+    // Exception: when the 3D VoxelWorldSystem is active, vars 43/44 are updated
     // per waypoint and reflect the van's actual world position. $gamePlayer.x/y is
     // stuck at the ship vehicle's parked tile, so trust the existing vars instead.
     if ($gameMap.mapId() === WORLD_MAP_ID) {
-      if (!window.CamperDrivingSystem || !window.CamperDrivingSystem.isActive()) {
+      if (!window.VoxelWorldSystem || !window.VoxelWorldSystem.isActive()) {
         originX = $gamePlayer.x;
         originY = $gamePlayer.y;
 
@@ -5709,6 +5806,470 @@
         this._procGenMapRefreshScheduled = true;
       }
     }
+  };
+
+  // ==========================================================================
+  // ONE WORLD SQUARE, RESOLVED AND BUILT ON ITS OWN
+  // --------------------------------------------------------------------------
+  // Everything above builds THE square the party is standing on, reading what it
+  // needs off $gameSystem._procGenData as it goes. Stitching (ProcStitch, in
+  // WorldMapReturn.js) needs the same square built for a coordinate nobody is
+  // standing on, and needs it to come out identical to what walking there would
+  // give: a neighbour generated one way as scenery and another way once it is
+  // entered would visibly redraw itself under the party's feet.
+  //
+  // So the resolution the entry points used to each repeat (the bridge marker,
+  // the hardcoded override, the world tile / cache lookup, the latitude rename,
+  // the special-biome roll, a road's under-biome, the step down to a lower
+  // layer) is written once here and every caller defers to it. The edge crossing
+  // in WorldMapReturn used to skip the latitude rename and the special roll
+  // outright, so an Ice square walked into stayed "Ice" while the same square
+  // travelled to from the world map came out "Tundra"; and it forced a road's
+  // direction through the intersection detector before the generator had a
+  // chance to refine it. Both go away by construction with one resolver.
+  // ==========================================================================
+
+  // What a generator reads off _procGenData while it runs. Building a square the
+  // party is NOT standing on has to borrow these and give them back, or the
+  // neighbour's road direction and structure hints are left behind on the square
+  // under the party's feet.
+  const SQUARE_SCOPED_KEYS = [
+    "currentBiome", "currentBiomeTileset", "currentRoadDirection",
+    "currentUnderBiome", "currentBridgeDirection", "structureHints",
+    "displayAsBeach", "displayAsIsland", "originX", "originY",
+    "generatedMapData", "_prefabbedSig",
+  ];
+
+  function borrowSquareScope() {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    if (!pg) return null;
+    const saved = {};
+    for (const key of SQUARE_SCOPED_KEYS) saved[key] = pg[key];
+    return saved;
+  }
+
+  function returnSquareScope(saved) {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    if (!pg || !saved) return;
+    for (const key of SQUARE_SCOPED_KEYS) pg[key] = saved[key];
+  }
+
+  // The raw name the world map holds for a square, before any roll or rename:
+  // the live tile column when the world map is the loaded map, the coordinate
+  // cache otherwise. Deliberately the same rule generateProceduralMap follows,
+  // so "travelled to from the world map" and "stitched in as a neighbour" agree.
+  function rawWorldBiomeAt(worldX, worldY, cache, onWorldMap) {
+    if (onWorldMap && $gameSystem.getBiomeFromWorldCoordinates) {
+      const live = $gameSystem.getBiomeFromWorldCoordinates(worldX, worldY);
+      if (live) return live;
+    }
+    if (cache && Object.keys(cache).length > 0) {
+      const cached = Utils2.getBiomeFromCacheWithFallback(
+        cache, worldX, worldY, $gameMap, WORLD_MAP_ID
+      );
+      if (cached) return cached;
+    }
+    return "Fields"; // i18n-ignore  biome id
+  }
+
+  /**
+   * Everything that decides what a world square looks like, without building it.
+   * Cheap enough to call for a whole neighbourhood every time the party steps
+   * over a seam, which is what the stitching window does to know whether a
+   * neighbour may be joined on at all (its tileset has to match).
+   */
+  function resolveSquare(worldX, worldY, opts) {
+    opts = opts || {};
+    const pg = ($gameSystem && $gameSystem._procGenData) || {};
+    const depth = opts.depth != null ? opts.depth : (pg.biomeLayerStack || []).length;
+    const cache = opts.cache !== undefined ? opts.cache : pg.biomeCoordinateCache;
+    const alienGrid = opts.alienGrid !== undefined ? opts.alienGrid : pg.alienGrid;
+    const onWorldMap = opts.onWorldMap != null
+      ? opts.onWorldMap
+      : !!($gameMap && $gameMap.mapId() === WORLD_MAP_ID);
+    const hasCache = !!(cache && Object.keys(cache).length > 0);
+
+    let surfaceName = "Fields"; // i18n-ignore  biome id
+    let roadDirection = null;
+    let bridgeDirection = null;
+
+    if (alienGrid) {
+      // A planet's landing grid is planet-local and small, so its (gx, gy) can
+      // coincidentally match a real Earth coordinate: none of Earth's caches,
+      // markers or overrides may be consulted for it. The whole planet is one
+      // biome anyway.
+      surfaceName = alienGrid.biome;
+    } else {
+      bridgeDirection = $gameSystem.getBridgeDirectionAt
+        ? $gameSystem.getBridgeDirectionAt(worldX, worldY)
+        : null;
+      const override = getHardcodedBiomeOverride(worldX, worldY);
+      if (bridgeDirection) {
+        surfaceName = "Bridge"; // i18n-ignore  biome id
+        roadDirection = bridgeDirection;
+      } else if (override) {
+        surfaceName = override.biome;
+        roadDirection = override.roadDirection || null;
+      } else {
+        let raw = rawWorldBiomeAt(worldX, worldY, cache, onWorldMap);
+        if (raw.startsWith("Road ")) { // i18n-ignore  biome id
+          roadDirection = raw.substring(5).toLowerCase();
+          raw = "Road"; // i18n-ignore  biome id
+        }
+        // A cached name can be a special rolled for a DIFFERENT world (the cache
+        // may be preloaded from a BiomesMap.json snapshot). Unwrap to the parent
+        // so the roll below is made again for the world in hand.
+        surfaceName = unwrapSpecialBiome(raw);
+      }
+      surfaceName = normalizeLatitudeBiome(surfaceName, worldY);
+      // A bridge is never rerolled: swapping the biome would drop the crossing.
+      if (!bridgeDirection) surfaceName = resolveSpecialBiome(surfaceName, worldX, worldY);
+    }
+
+    let biome = getBiomeByName(surfaceName);
+    if (!biome) {
+      biome = getBiomeByName("Fields"); // i18n-ignore  biome id
+      surfaceName = biome ? biome.name : surfaceName;
+    }
+
+    // A road painted over a terrain biome dresses its verges with that biome's
+    // own features. Settlements are excluded: a road through a city keeps the
+    // plain civic look.
+    let underBiome = null;
+    if (!alienGrid && biome && isRoadBiome(surfaceName) &&
+        $gameSystem.getUnderBiomeFromWorldCoordinates) {
+      const under = $gameSystem.getUnderBiomeFromWorldCoordinates(worldX, worldY);
+      if (under && under !== surfaceName && !isRoadBiome(under) &&
+          !isCityBiome(under) && !isVillageBiome(under) && !isBurgBiome(under)) {
+        underBiome = under;
+      }
+    }
+
+    // Underground: the square is built from the surface biome's lower layer, and
+    // the neighbours it is blended against stay SURFACE names (that is what the
+    // cave generator's sealed-side test reads, see undergroundNeighbourNames).
+    let biomeName = surfaceName;
+    if (depth > 0 && biome && biome.lowerLayer) {
+      const lower = getBiomeByName(biome.lowerLayer);
+      if (lower) { biomeName = biome.lowerLayer; biome = lower; }
+    }
+
+    // Adjacency. On an alien planet every neighbour is the same biome; on Earth
+    // it is the live tile column where that is readable and the cache otherwise.
+    let adjacentBiomes = null, cacheInfo = null, diagonalBiomes = null;
+    if (alienGrid) {
+      const n = normalizeBiomeForEdge(surfaceName);
+      adjacentBiomes = { north: n, south: n, east: n, west: n };
+    } else {
+      if (onWorldMap) adjacentBiomes = getAdjacentBiomesOnWorldMap(worldX, worldY);
+      if (hasCache) {
+        const cached = getAdjacentBiomesFromCache(worldX, worldY, cache);
+        adjacentBiomes = adjacentBiomes || { north: null, south: null, east: null, west: null };
+        for (const side of ["north", "south", "east", "west"]) {
+          adjacentBiomes[side] = cached[side] || adjacentBiomes[side];
+        }
+        cacheInfo = checkAdjacentMapBiomesFromCache(worldX, worldY, cache);
+        diagonalBiomes = checkDiagonalMapBiomesFromCache(worldX, worldY, cache);
+      }
+      if (adjacentBiomes) {
+        adjacentBiomes = {
+          north: normalizeBiomeForEdge(adjacentBiomes.north),
+          south: normalizeBiomeForEdge(adjacentBiomes.south),
+          east: normalizeBiomeForEdge(adjacentBiomes.east),
+          west: normalizeBiomeForEdge(adjacentBiomes.west),
+        };
+      }
+    }
+
+    return {
+      worldX, worldY, depth,
+      surfaceBiome: surfaceName,
+      biomeName,
+      biome,
+      tilesetId: biome ? biome.tilesetId : null,
+      roadDirection,
+      bridgeDirection,
+      underBiome,
+      adjacentBiomes,
+      cacheInfo,
+      diagonalBiomes,
+      alien: !!alienGrid,
+      // A homogeneous planet has no coastline, so beach/island substitution
+      // (which only means anything at a biome transition) never applies.
+      displayAsBeach: alienGrid ? false : shouldDisplayAsBeach(biomeName, adjacentBiomes, diagonalBiomes),
+      displayAsIsland: alienGrid ? false : (shouldDisplayAsIsland ? shouldDisplayAsIsland(biomeName, adjacentBiomes) : false),
+      seed: procMapSeed(worldX, worldY, depth),
+      dayTemperature: (biome && biome.dayTemperature) || 20,
+      nightTemperature: (biome && biome.nightTemperature) || 10,
+    };
+  }
+
+  // Built squares, keyed by coordinate, depth and world seed. A stitching window
+  // of nine shares six of its squares with the window it is about to become, so
+  // re-centring costs three squares rather than nine. Bounded, because one
+  // square is a ~150k-entry array and the party can walk a long way.
+  const SQUARE_CACHE_LIMIT = 24;
+  const squareCache = new Map();
+
+  function squareCacheKey(worldX, worldY, depth) {
+    return getWorldSeed() + ":" + depth + ":" + worldX + "," + worldY;
+  }
+
+  function rememberSquare(key, built) {
+    squareCache.set(key, built);
+    while (squareCache.size > SQUARE_CACHE_LIMIT) {
+      squareCache.delete(squareCache.keys().next().value);
+    }
+  }
+
+  /**
+   * Resolve AND build one world square: terrain, then the prefab pass the
+   * DataManager.loadMapData hook would otherwise run once the square became the
+   * loaded map. A stitched neighbour never becomes the loaded map on its own, so
+   * it has to be finished here, or its houses would only appear at the moment
+   * the party crossed onto it.
+   */
+  // A square built straight through, on the frame that asks for it. Everything
+  // that needs the ground under the party NOW comes here: entering off the world
+  // map, a crossing the window could not stitch, a staircase, a landing.
+  function buildSquare(worldX, worldY, opts) {
+    opts = opts || {};
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const depth = opts.depth != null ? opts.depth : ((pg && pg.biomeLayerStack) || []).length;
+    const key = squareCacheKey(worldX, worldY, depth);
+    if (!opts.fresh) {
+      const hit = squareCache.get(key);
+      if (hit) return hit;
+    }
+    // A job left half-done on this very square is finished off rather than
+    // thrown away; one on any other square is abandoned, because the passes
+    // below share module state (the influence field, the beach coordinates, the
+    // borrowed square scope) and two builds may never be in flight at once.
+    if (liveJob) {
+      if (liveJob.key === key && !opts.fresh) {
+        const built = liveJob.finish();
+        if (built) return built;
+      } else {
+        liveJob.cancel();
+      }
+    }
+    return new SquareJob(worldX, worldY, opts, key, depth).finish();
+  }
+
+  // ---- one square, built a slice at a time --------------------------------
+  //
+  // The same passes in the same order as buildSquare above; the only difference
+  // is that the generator is allowed to stop between them and be picked up on a
+  // later frame. The square scope is borrowed for the length of each SLICE
+  // rather than of the whole build, so between slices _procGenData still
+  // describes the square the party is actually standing on and every other
+  // system reads the right answer.
+
+  let liveJob = null;
+
+  function nowMs() {
+    if (typeof performance !== "undefined" && performance.now) return performance.now();
+    return Date.now();
+  }
+
+  function SquareJob(worldX, worldY, opts, key, depth) {
+    this.worldX = worldX;
+    this.worldY = worldY;
+    this.opts = opts;
+    this.key = key;
+    this.depth = depth;
+    this.built = null;
+    this.done = false;
+    this.cancelled = false;
+    // This square's own copy of the scoped fields, held between slices.
+    this.mine = null;
+    this.it = buildSquareSteps(this);
+    liveJob = this;
+  }
+
+  // Install this job's square scope over whatever is there and hand back what
+  // was, so it can be put straight again the moment the slice ends.
+  SquareJob.prototype._scopeIn = function() {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    if (!pg) return null;
+    const outer = {};
+    for (const key of SQUARE_SCOPED_KEYS) {
+      outer[key] = pg[key];
+      if (this.mine) pg[key] = this.mine[key];
+    }
+    return outer;
+  };
+
+  SquareJob.prototype._scopeOut = function(outer) {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    if (!pg || !outer) return;
+    const mine = {};
+    for (const key of SQUARE_SCOPED_KEYS) {
+      mine[key] = pg[key];
+      pg[key] = outer[key];
+    }
+    this.mine = mine;
+  };
+
+  // Advance the build for about budgetMs milliseconds, then stop at the next
+  // safe point. A pass never stops in the middle of a tile, so the budget is a
+  // target rather than a promise: one slice of the heaviest pass there is runs
+  // around half a millisecond over.
+  SquareJob.prototype.step = function(budgetMs) {
+    if (this.done || this.cancelled) return { done: true, built: this.built };
+    const until = nowMs() + (budgetMs > 0 ? budgetMs : 0);
+    const outer = this._scopeIn();
+    try {
+      do {
+        const r = this.it.next();
+        if (r.done) {
+          this.built = r.value || null;
+          this.done = true;
+          break;
+        }
+      } while (nowMs() < until);
+    } catch (e) {
+      console.error(`[ProcGenSquare] could not build (${this.worldX},${this.worldY})`, e);
+      this.done = true;
+      this.built = null;
+    } finally {
+      this._scopeOut(outer);
+      if (this.done && liveJob === this) liveJob = null;
+    }
+    return { done: this.done, built: this.built };
+  };
+
+  // Run whatever is left of the build out on this frame.
+  SquareJob.prototype.finish = function() {
+    while (!this.done && !this.cancelled) this.step(Infinity);
+    return this.built;
+  };
+
+  SquareJob.prototype.cancel = function() {
+    this.cancelled = true;
+    this.done = true;
+    this.built = null;
+    if (liveJob === this) liveJob = null;
+  };
+
+  function* buildSquareSteps(job) {
+    const worldX = job.worldX, worldY = job.worldY, opts = job.opts;
+    const pg = $gameSystem && $gameSystem._procGenData;
+
+    const resolved = resolveSquare(worldX, worldY, opts);
+    if (!resolved.biome) return null;
+    yield;
+
+    if (pg) {
+      // The generators read these off _procGenData rather than taking them as
+      // arguments, so the square being built has to own them for the length of
+      // the call.
+      pg.currentBiome = resolved.biomeName;
+      pg.currentBiomeTileset = resolved.tilesetId;
+      pg.currentRoadDirection = resolved.roadDirection;
+      pg.currentUnderBiome = resolved.underBiome;
+      pg.currentBridgeDirection = resolved.bridgeDirection;
+      pg.displayAsBeach = resolved.displayAsBeach;
+      pg.displayAsIsland = resolved.displayAsIsland;
+      pg.structureHints = null;
+      pg.originX = worldX;
+      pg.originY = worldY;
+    }
+    const mapData = yield* generateProceduralTerrainSteps(
+      resolved.biome, resolved.seed, resolved.roadDirection,
+      resolved.adjacentBiomes, resolved.cacheInfo,
+      { x: worldX, y: worldY },
+      resolved.alien ? null : (pg && pg.biomeCoordinateCache)
+    );
+    if (mapData && window.ProceduralMapPrefabs) {
+      yield;
+      let hints = (pg && pg.structureHints) || undefined;
+      if (mapData.rooms && mapData.rooms.length) {
+        hints = Object.assign({}, hints, { roomHints: mapData.rooms });
+      }
+      yield* window.ProceduralMapPrefabs.applyPrefabsToMapSteps(
+        mapData, resolved.biomeName, { x: worldX, y: worldY }, hints
+      );
+      yield;
+      window.ProceduralMapPrefabs.markPrefabbed(mapData);
+    }
+    // The hints the structure generator leaves behind describe THIS square and
+    // travel with it, so a stitched cell can still be asked where its stairs
+    // and its rooms are once it is only part of a bigger map.
+    resolved.structureHints = (pg && pg.structureHints) || null;
+
+    if (!mapData) return null;
+    const built = { key: job.key, resolved, mapData };
+    rememberSquare(job.key, built);
+    return built;
+  }
+
+  // Open a resumable build of one square. The caller keeps calling step() with a
+  // per-frame budget until it answers done. A square already built comes back as
+  // a job that is finished before it starts, so the caller never special-cases
+  // the cache.
+  function buildJob(worldX, worldY, opts) {
+    opts = opts || {};
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const depth = opts.depth != null ? opts.depth : ((pg && pg.biomeLayerStack) || []).length;
+    const key = squareCacheKey(worldX, worldY, depth);
+    const hit = opts.fresh ? null : squareCache.get(key);
+    if (hit) {
+      return { key, done: true, built: hit, step: () => ({ done: true, built: hit }), cancel() {} };
+    }
+    if (liveJob) {
+      if (liveJob.key === key) return liveJob;
+      liveJob.cancel();
+    }
+    return new SquareJob(worldX, worldY, opts, key, depth);
+  }
+
+  function forgetSquares() {
+    squareCache.clear();
+  }
+
+  // Is this square already built? The answer is what lets the stitching window
+  // build the ground ahead of the party a little at a time instead of stopping
+  // the game to build three squares at the moment they are needed.
+  function hasSquare(worldX, worldY, depth) {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const d = depth != null ? depth : ((pg && pg.biomeLayerStack) || []).length;
+    return squareCache.has(squareCacheKey(worldX, worldY, d));
+  }
+
+  /**
+   * Register a square somebody else already built, so a window laid around it
+   * keeps the very array the party is standing on instead of generating a second
+   * one. Everything that entered map 636 the old way (from the world map, down a
+   * staircase, out of a house) has already done the work by the time the window
+   * opens; regenerating over the top of it would be both wasted and, for a forced
+   * or structure biome the resolver cannot reproduce, wrong.
+   */
+  function adoptSquare(worldX, worldY, depth, mapData, resolvedOverride) {
+    if (!mapData) return null;
+    const key = squareCacheKey(worldX, worldY, depth);
+    const hit = squareCache.get(key);
+    if (hit && hit.mapData === mapData) return hit;
+    const resolved = resolvedOverride || resolveSquare(worldX, worldY, { depth });
+    if (!resolved) return null;
+    const built = { key, resolved, mapData };
+    rememberSquare(key, built);
+    return built;
+  }
+
+  window.ProcGenSquare = {
+    resolve: resolveSquare,
+    build: buildSquare,
+    // A build spread over frames (see SquareJob). The stitched window uses this
+    // so the ground ahead of a walking party costs a few milliseconds a frame
+    // instead of a whole dropped one every quarter second.
+    buildJob,
+    adopt: adoptSquare,
+    has: hasSquare,
+    forget: forgetSquares,
+    borrowScope: borrowSquareScope,
+    returnScope: returnSquareScope,
+    SCOPED_KEYS: SQUARE_SCOPED_KEYS,
   };
 
   // ===== EXPORTS FOR OTHER PLUGINS =====

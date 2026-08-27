@@ -58,6 +58,10 @@
  *   isNonSentientProfile(profile)
  *   isNonSentientActor(actor)
  *   isNonSentientByName(name)    party actor first, society profile second
+ *   sheetHalf(spriteKey)         "creature" | "animal" | "" off the NPCs.json
+ *                                 flags, the one authority on what a sheet is
+ *   isCreatureSheet(spriteKey)
+ *   sentientClassFor(key, seed)   a civilised class off that sheet's roster
  *   creatureWardrobe()            [{ spriteKey, archetype, busts, half }] to
  *                                 deal from, `half` being "creature"/"animal"
  *   spritesForArchetypes(keys)    walking sprites both archetypes support
@@ -355,6 +359,60 @@
   }
 
   // ---------------------------------------------------------------------------
+  // What a SHEET is
+  // ---------------------------------------------------------------------------
+  // The one authority on whether something is a creature at all: the `creature`
+  // and `animal` flags on its NPCs.json entry. Not the folder the sheet sits
+  // in, not the classes it lists, not what a roll decided about it before its
+  // face was dealt. A creature entry always carries `creature: true` and an
+  // animal one always carries `animal: true`, so anything that carries neither
+  // is a person however it is filed.
+  //
+  //   sheetHalf(key) -> "creature" | "animal" | ""   ("" = a person's sheet)
+  //
+  // A sheet with no entry at all (an authored character's own graphic, a
+  // Monsters/ bestiary sheet) is not in the wardrobe and answers "", so nothing
+  // built on this ever repaints a written character as a beast.
+  function sheetHalf(spriteKey) {
+    const entry = spriteKey ? npcData()[spriteKey] : null;
+    if (!entry) return "";
+    if (entry.creature === true) return "creature";
+    if (entry.animal === true) return "animal";
+    return "";
+  }
+
+  function isCreatureSheet(spriteKey) {
+    return !!sheetHalf(spriteKey);
+  }
+
+  // A civilised class for somebody wearing a PERSON's sheet, off that sheet's
+  // own `classes` roster (never the archetype's, the sheet is the authority the
+  // same way it is in rollClassId) and dealt off `seed` so the answer is the
+  // same one every time it is asked. Used to repair a profile that was minted
+  // as a beast and then bound to a person's face; Freelancer answers for a
+  // sheet whose roster has no civilised class in it at all.
+  const SENTIENT_FALLBACK_CLASS_ID = 1;
+
+  function seedOf(source) {
+    if (typeof source === "number") return source >>> 0;
+    const text = String(source == null ? "" : source);
+    let h = 2166136261;
+    for (let i = 0; i < text.length; i++) {
+      h ^= text.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function sentientClassFor(spriteKey, seed) {
+    const entry = spriteKey ? npcData()[spriteKey] : null;
+    const own = Array.isArray(entry && entry.classes) ? entry.classes : [];
+    const pool = own.filter((id) => !isNonSentientClassId(id));
+    if (!pool.length) return SENTIENT_FALLBACK_CLASS_ID;
+    return pool[seedOf(seed) % pool.length];
+  }
+
+  // ---------------------------------------------------------------------------
   // Minting
   // ---------------------------------------------------------------------------
   function creatureChance() {
@@ -570,6 +628,7 @@
     rollIdentity, rollClassId,
     isCreatureProfile, isNonSentientClassId, isNonSentientProfile, isNonSentientActor,
     isNonSentientByName,
+    sheetHalf, isCreatureSheet, sentientClassFor,
     archetypeKeysOf, archetypeLabel,
     creatureWardrobe, spritesForArchetypes, spritePathFor, archetypePool,
     enemyForArchetypes, modelForArchetypes,

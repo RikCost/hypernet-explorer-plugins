@@ -1406,6 +1406,14 @@
         this.activateRow();
         return;
       }
+      // Burning a letter was the one thing in here that needed a mouse: the
+      // envelope is opened and emptied with Confirm, but the fire under it had
+      // only its button. SHIFT is the second verb everywhere else on a book
+      // spread, and a letter that still holds anything refuses anyway.
+      if (Input.isTriggered("shift") && this._mode === "inbox" && this._area === "list" && count) {
+        this.discardCurrent();
+        return;
+      }
       if (cancel) {
         if (this._area === "recipients" || this._area === "items") {
           this._area = "form";

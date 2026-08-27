@@ -118,5 +118,32 @@
     "toastEat": "{name} ha mangiato: {item}",
     "toastOpinion": "{npc} pensa di {name}: {delta}",
     "toastPartyTalk": "{name} e {other} hanno parlato ({other}: {delta}, {name}: {back})"
+  },
+  "corpse": {
+    "prompt": "Compagno caduto: {name}. Cosa vuoi fare?",
+    "choiceLoot": "Saccheggia",
+    "choiceCommemorate": "Commemora",
+    "choicePray": "Prega",
+    "choiceDissect": "Seziona",
+    "choiceBury": "Seppellisci",
+    "choiceCancel": "Annulla",
+    "looted": "Recuperato l'equipaggiamento di {name}.",
+    "nothingToLoot": "Non è rimasto nulla da prendere su {name}.",
+    "examined": "Esamini l'anatomia e le condizioni del corpo del compagno caduto.",
+    "buried": "{name} è stato sepolto con dignità."
+  },
+  "grave": {
+    "prompt": "Tomba di {name}. Cosa vuoi fare?",
+    "choiceRead": "Leggi",
+    "choiceDesecrate": "Profana",
+    "choiceDismantle": "Smantella",
+    "choiceCancel": "Annulla",
+    "epitaph": "\"Qui giace {name}. Nato il: {born}\"",
+    "bornUnknown": "Ignota",
+    "desecrated": "Hai profanato la tomba di {name}. Recuperate le ossa e gli effetti personali rimasti.",
+    "dismantled": "Smantellata la tomba di {name}."
+  },
+  "succession": {
+    "takesCommand": "{name} prende il comando del gruppo."
   }
 }

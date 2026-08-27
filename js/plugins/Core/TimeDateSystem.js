@@ -1254,29 +1254,83 @@
     }
   };
 
-  // Placeholder debuff methods - in a real plugin these would apply actual states/effects
-  Game_Actor.prototype.applyHungerDebuffs = function (state) {
-    debug(`Applied hunger debuffs for state: ${state}`);
+  //=============================================================================
+  // What an empty meter costs
+  //=============================================================================
+  // ATK..LUK are on the 1-20 ability scale in this game (a class curve puts
+  // them at 8-16 on level 1 and 10-20 at level 99), so these are single digits,
+  // read the same way Health_DiseaseSystem reads its own table.
+  //
+  // Hunger takes the body: the swing goes out of an arm and the legs go slow.
+  // Sleep takes the head: aim and concentration first, then the reflexes and
+  // whatever luck is. The two stack, because being starved and unslept at once
+  // is meant to be the state you dig yourself out of rather than travel in.
+  //
+  // Read off the live meter rather than accumulated onto the actor, so a save
+  // loaded mid-famine is as weak as the meter says and a meal lifts it at once.
+  const NEED_DEBUFFS = {
+    hunger: {
+      hungry:   { atk: -1, agi: -1 },
+      starving: { atk: -3, agi: -3, def: -2, mat: -1, mdf: -1 },
+    },
+    sleep: {
+      sleepy:    { mat: -1, agi: -1 },
+      exhausted: { mat: -3, agi: -3, luk: -2, atk: -1 },
+    },
+  };
+  // A body that has gone without runs on less of itself, and a starved one on
+  // much less. This is the one place a need reaches the pools.
+  const NEED_HP_SHARE = { hungry: 0, starving: 0.25, sleepy: 0, exhausted: 0.1 };
+  // The same discipline the disease clamp uses: no need may take more than this
+  // share of the ability a character was born with. An illness carries its own
+  // ceiling, and paramMin (see Health_DiseaseSystem) is the floor under both.
+  const MAX_NEED_DRAIN = 0.35;
 
-    if (state === "hungry") {
-      // Apply mild hunger debuffs
-    } else if (state === "starving") {
-      // Apply severe hunger debuffs
-    } else {
-      // Remove hunger debuffs
+  const NEED_PARAM_KEYS = ['mhp', 'mmp', 'atk', 'def', 'mat', 'mdf', 'agi', 'luk'];
+
+  // The whole cost of both meters on one param, clamped. Public so the status
+  // screen and the tests can ask the same question the battle does.
+  Game_Actor.prototype.needParamDelta = function (paramId) {
+    const key = NEED_PARAM_KEYS[paramId];
+    if (!key) return 0;
+    const base = typeof this.paramBase === 'function' ? this.paramBase(paramId) : 0;
+    let sum = 0;
+    const states = { hunger: this.hungerState(), sleep: this.sleepState() };
+    for (const meter of ['hunger', 'sleep']) {
+      const state = states[meter];
+      if (!state || state === 'normal') continue;
+      if (key === 'mhp') {
+        sum -= Math.floor(base * (NEED_HP_SHARE[state] || 0));
+        continue;
+      }
+      const table = NEED_DEBUFFS[meter][state];
+      if (table && table[key]) sum += table[key];
     }
+    if (!(sum < 0) || !(base > 0)) return sum;
+    return Math.max(sum, -Math.floor(base * MAX_NEED_DRAIN));
+  };
+
+  const _Game_Actor_paramPlus_TDS = Game_Actor.prototype.paramPlus;
+  Game_Actor.prototype.paramPlus = function (paramId) {
+    let v = _Game_Actor_paramPlus_TDS.call(this, paramId);
+    // Before the meters exist (character creation, a bare actor in a tool) there
+    // is nothing to be hungry with.
+    if (this._hunger !== undefined || this._sleep !== undefined) {
+      try { v += this.needParamDelta(paramId); } catch (e) { /* a stat is not worth a crash */ }
+    }
+    return v;
+  };
+
+  // The transition itself: the meter is what carries the penalty, so all these
+  // have to do is make the sheet redraw with the new numbers on it.
+  Game_Actor.prototype.applyHungerDebuffs = function (state) {
+    debug(`Hunger debuffs now at: ${state}`);
+    this.refresh();
   };
 
   Game_Actor.prototype.applySleepDebuffs = function (state) {
-    debug(`Applied sleep debuffs for state: ${state}`);
-
-    if (state === "sleepy") {
-      // Apply mild sleep debuffs
-    } else if (state === "exhausted") {
-      // Apply severe sleep debuffs
-    } else {
-      // Remove sleep debuffs
-    }
+    debug(`Sleep debuffs now at: ${state}`);
+    this.refresh();
   };
 
   //=============================================================================
@@ -2329,6 +2383,28 @@
   // median for each". The player (Actor 1) reads its own actor meters; every
   // other member reads its NPC society profile. Consumed by both the travel
   // HUD below and the parchment menu (CustomMainMenuLayout.js).
+  // How a needs meter is inked. Three plugins draw the same bars (the status
+  // sheet, the menu's survival cards and the biologic panel) and each used to
+  // carry its own copy of the thresholds and its own three hexes, which meant
+  // the scale drifted between them and none of it answered to the theme.
+  //
+  // band() is for a meter that empties as things get worse (hunger, sleep),
+  // cravingBand() for one that fills (withdrawal). Both return the modifier
+  // class: put it on the number and on the bar fill, alongside .gauge-ink and
+  // .gauge-fill, and theme.css does the rest.
+  window.NeedGauge = {
+    band(pct) {
+      if (pct <= 20) return "gauge-band--bad";
+      if (pct <= 50) return "gauge-band--warn";
+      return "gauge-band--ok";
+    },
+    cravingBand(pct) {
+      if (pct >= 80) return "gauge-band--bad";
+      if (pct >= 50) return "gauge-band--warn";
+      return "gauge-band--ok";
+    },
+  };
+
   window.PartyNeeds = {
     KEYS:   ['hunger', 'sleep', 'hygiene', 'social', 'leisure'],
     get LABELS() { return T.obj("TimeDate.needLabel"); },

@@ -714,28 +714,89 @@
   // POLITICIAN / PARTY FACTORIES
   // ==========================================================================
 
+  // How often a polity reaches into the book of leaders rather than inventing
+  // somebody: most of the time, but not always. A century of politics that only
+  // ever seated the names history wrote down would have no room left for
+  // anybody else, and a world where a real person is merely LIKELY is a world
+  // where the elections still mean something.
+  const REAL_CANDIDATE_CHANCE = 0.72;
+
+  // Everyone the book of leaders (Leaders.json, through HistorySimulator) has
+  // standing for this polity right now: somebody of one of its nations, whose
+  // years cover the date, who is not already seated here, and who does not hold
+  // the moral office — a guide governs nothing.
+  function historicalCandidates(power, nowMinute) {
+    const HM = window.HistoryManager;
+    if (!HM || typeof HM.listLeaderRecords !== "function") return [];
+    const year = yearOf(nowMinute);
+    const nations = new Set();
+    if (power.kind === "nation") nations.add(power.name);
+    else {
+      (power.memberCountries || []).forEach(n => nations.add(n));
+      if (power.homeNation) nations.add(power.homeNation);
+    }
+    const seated = new Set(Object.values(power.politicians || {}).map(p => p.name));
+    return HM.listLeaderRecords().filter(rec =>
+      rec && rec.name && rec.country && nations.has(rec.country) && !rec.moralGuide &&
+      Array.isArray(rec.years) && year >= rec.years[0] && year <= rec.years[1] &&
+      !seated.has(rec.name));
+  }
+
+  // A politician. Written down or made up: a name out of the book comes with
+  // the record behind it and with better numbers than anybody invented, which
+  // is what being the person history picked looks like from inside the game.
   function makePolitician(power, rng, nowMinute, opts = {}) {
-    const bank = NAME_BANKS[power.nameFlavor] || NAME_BANKS.generic;
-    const title = rng.pick(bank.title);
-    const name = `${title ? title + " " : ""}${rng.pick(bank.first)} ${rng.pick(bank.last)}`;
     const id = `pol_${power.name.replace(/[^A-Za-z0-9]/g, "")}_${++power.politicianCounter}`; // i18n-ignore: record id
     const age = opts.age ?? rng.int(34, 72);
+
+    let record = null;
+    if (opts.historical !== false && rng.next() < REAL_CANDIDATE_CHANCE) {
+      const pool = historicalCandidates(power, nowMinute);
+      if (pool.length) record = pool[rng.int(0, pool.length - 1)];
+    }
+
+    let name;
+    if (record) {
+      name = record.name;
+    } else {
+      const bank = NAME_BANKS[power.nameFlavor] || NAME_BANKS.generic;
+      const title = rng.pick(bank.title);
+      name = `${title ? title + " " : ""}${rng.pick(bank.first)} ${rng.pick(bank.last)}`;
+    }
+
+    // The two stat bands. A real leader is not merely likelier to be seated,
+    // they are harder to beat once they are: charisma and cunning decide
+    // elections, and history's own people start well above the invented ones.
+    const stat = record
+      ? (lo, hi) => rng.int(Math.round(lo + (hi - lo) * 0.45), hi)
+      : (lo, hi) => rng.int(lo, hi);
+
+    const creed = record && record.ideologyKey
+      ? ideologyById(String(record.ideologyKey).replace(/^ideology\./, ""))
+      : null;
+    const baseIdeology = (creed && creed.axes) || opts.ideology || power.baseline;
+
     power.politicians[id] = {
       id, name,
       birthYearFloat: yearFloatOf(nowMinute) - age - rng.next(),
-      charisma:  rng.int(15, 95),
-      integrity: rng.int(5, 95),
-      cunning:   rng.int(10, 95),
-      ambition:  rng.int(20, 100),
-      strength:  rng.int(10, 95),   // moots
-      intellect: rng.int(10, 95),   // examinations
-      divinity:  rng.int(10, 95),   // ascension tournaments
-      ideology:  jitterIdeology(opts.ideology || power.baseline, rng, opts.spread ?? 35),
+      charisma:  stat(15, 95),
+      integrity: stat(5, 95),
+      cunning:   stat(10, 95),
+      ambition:  stat(20, 100),
+      strength:  stat(10, 95),   // moots
+      intellect: stat(10, 95),   // examinations
+      divinity:  stat(10, 95),   // ascension tournaments
+      ideology:  jitterIdeology(baseIdeology, rng, record ? 8 : (opts.spread ?? 35)),
       partyId:   opts.partyId ?? null,
-      approval:  rng.int(35, 65),
+      approval:  record ? rng.int(45, 75) : rng.int(35, 65),
       scandals:  0,
       alive:     true,
       office:    null,
+      // Which of the two this is, and the book entry behind them when there is
+      // one: the wiki files a written-down leader under Leaders and an invented
+      // one under Politicians (NPCEmpathize).
+      real:      !!record,
+      leaderId:  record ? record.id : null,
     };
     return power.politicians[id];
   }
@@ -887,9 +948,12 @@
   // the same machinery. What it does not have is a foreign policy — the bloc
   // above it has that. A nation under an authoritarian power inherits its
   // rigging and something of its politics, which is what being held by it means.
-  // How much more a party of the power's own seat counts for in its assembly
-  // than a provincial list from a nation it merely holds.
-  const HOME_BENCH_WEIGHT = 2.4;
+  // A bloc's assembly is mostly its capital's own politics: seven seats in ten
+  // belong to the parties of the nation the power is seated in, and the other
+  // three are shared out between the lists of every nation it holds. A power
+  // that holds nothing but its seat (or that has no seat at all) fills the
+  // whole chamber from the one bench it has.
+  const HOME_SEAT_SHARE = 0.70;
 
   const NATION_ARCHETYPE = {
     govType: "national government", system: "parliamentary", headTitle: "Head of Government",
@@ -1032,6 +1096,11 @@
       head.name = seated;
       head.protected = true;
       head.approval = 68;
+      // Whoever the world is written around IS the person history wrote down,
+      // however this office was filled: the wiki files them under Leaders with
+      // the rest of the book rather than among the invented politicians.
+      head.real = true;
+      head.leaderId = window.HistoryManager?.getLeaderRecord?.(seated)?.id || null;
       if (rulingParty) rulingParty.leaderId = head.id;
       const previous = power.politicians[power.headId];
       if (previous && previous.office === power.headTitle) previous.office = null;
@@ -1125,18 +1194,35 @@
     return { ballots, voters };
   }
 
-  // Largest-remainder seat allocation (share is in percent).
+  // Largest-remainder seat allocation. The shares are weights within whatever
+  // list is passed, so a chamber can be filled pool by pool (see below): the
+  // list's own shares are normalised against each other, not against 100.
   function allocateSeats(results, totalSeats) {
     let assigned = 0;
     const remainders = [];
+    const total = results.reduce((a, r) => a + (r.share || 0), 0);
     for (const r of results) {
-      const exact = (r.share / 100) * totalSeats;
+      const exact = total > 0 ? ((r.share || 0) / total) * totalSeats : totalSeats / results.length;
       r.seats = Math.floor(exact);
       assigned += r.seats;
       remainders.push([exact - r.seats, r]);
     }
     remainders.sort((a, b) => b[0] - a[0]);
     for (let i = 0; assigned < totalSeats && i < remainders.length; i++, assigned++) remainders[i][1].seats++;
+  }
+
+  // The chamber, filled the way a bloc's chamber is filled: the capital's
+  // benches first at their fixed share, the held nations sharing the rest.
+  function allocateChamber(power, results) {
+    const home = results.filter(r => (partyById(power, r.partyId) || {}).homeBench);
+    const rest = results.filter(r => !(partyById(power, r.partyId) || {}).homeBench);
+    if (!home.length || !rest.length || power.kind !== "power") {
+      allocateSeats(results, power.seats);
+      return;
+    }
+    const homeSeats = Math.round(power.seats * HOME_SEAT_SHARE);
+    allocateSeats(home, homeSeats);
+    allocateSeats(rest, power.seats - homeSeats);
   }
 
   const ElectionEngines = {
@@ -1153,9 +1239,8 @@
           s *= power.state.legitimacy > 55 ? 1.18 : power.state.legitimacy < 40 ? 0.78 : 1;
         }
         s *= 0.8 + rng.next() * 0.4;
-        // The capital's own lists carry an assembly: they are the parties of
-        // the nation the power is seated in, and they sit at the centre of it.
-        if (party.homeBench) s *= HOME_BENCH_WEIGHT;
+        // Nothing weights the capital here any more: its share of the chamber
+        // is fixed, and allocateChamber hands it out (HOME_SEAT_SHARE).
         return { party, s };
       });
 
@@ -1170,11 +1255,15 @@
       record.results = power.parties
         .map(p => ({ partyId: p.id, name: p.name, share: +(100 * (tally[p.id] || 0) / total).toFixed(1), seats: 0 }))
         .sort((a, b) => b.share - a.share);
-      allocateSeats(record.results, power.seats);
+      allocateChamber(power, record.results);
 
       record.turnout = clamp(Math.round(45 + power.state.unrest * 0.25 + rng.int(-5, 10)), 30, 95);
       record.npcVoters = voters;
 
+      // The chamber decides, so the winner is whoever came out of it with the
+      // most seats rather than the most votes: a provincial landslide inside a
+      // three-tenths pool does not take a capital's assembly.
+      record.results.sort((a, b) => (b.seats - a.seats) || (b.share - a.share));
       const winner = record.results[0];
       const winnerParty = partyById(power, winner.partyId);
       power.coalition = [winner.partyId];

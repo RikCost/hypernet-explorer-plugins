@@ -65,7 +65,8 @@
   },
   "news": {
     "justNow": "Adesso",
-    "minutesAgo": "{n}m fa"
+    "minutesAgo": "{n}m fa",
+    "moveNote": "[{sign}{pct}%]"
   },
   "errors": {
     "noFloat": "Non restano azioni da emettere"

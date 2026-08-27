@@ -1792,6 +1792,27 @@
     this._openGroup(this._groups()[0]);
   };
 
+  // What a slot's placement actually moves: the graft it wears, or -- on a bare
+  // slot -- the creature's OWN limb. Every part of the body can be dragged,
+  // turned and resized, not only the ones that were dropped onto it; that is
+  // what a body picked whole from an archetype is sculpted with.
+  Scene_CC3DModel.prototype._movable = function (slot) {
+    if (!slot) return null;
+    return this._grafts[slot] || this._anchors[slot] || null;
+  };
+
+  // How far this slot's part may be pushed and still count as attached. A bare
+  // limb is moved in its PARENT's frame, so its own radius is read through its
+  // own scale to stay comparable with the offset.
+  Scene_CC3DModel.prototype._reachFor = function (slot) {
+    if (!slot) return XF_LIMIT;
+    const xf = this._config.partXf[slot] || defaultXf();
+    const anchor = this._anchors[slot];
+    const bare = !this._grafts[slot];
+    const frame = (bare && anchor && anchor.scale) ? (anchor.scale.x || 1) : 1;
+    return Math.min(XF_LIMIT, slotReach(anchor, slot, xf) * frame);
+  };
+
   Scene_CC3DModel.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
     this._buildDom();
@@ -2636,26 +2657,6 @@
     });
   };
 
-  // How far this slot's part may be pushed and still count as attached. A bare
-  // limb is moved in its PARENT's frame, so its own radius is read through its
-  // own scale to stay comparable with the offset.
-  Scene_CC3DModel.prototype._reachFor = function (slot) {
-    if (!slot) return XF_LIMIT;
-    const xf = this._config.partXf[slot] || defaultXf();
-    const anchor = this._anchors[slot];
-    const bare = !this._grafts[slot];
-    const frame = (bare && anchor && anchor.scale) ? (anchor.scale.x || 1) : 1;
-    return Math.min(XF_LIMIT, slotReach(anchor, slot, xf) * frame);
-  };
-
-  // What a slot's placement actually moves: the graft it wears, or -- on a bare
-  // slot -- the creature's OWN limb. Every part can be sculpted, not only the
-  // ones that were chosen off a shelf.
-  Scene_CC3DModel.prototype._movable = function (slot) {
-    if (!slot) return null;
-    return this._grafts[slot] || this._anchors[slot] || null;
-  };
-
   //---------------------------------------------------------------------------
   // What is on the creature
   //---------------------------------------------------------------------------
@@ -2950,7 +2951,8 @@
                   background:var(--gradient-1); border:2px solid var(--border-primary-hover-translucent-15);
                   border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.5); padding:14px 16px;
                   box-sizing:border-box">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:12px">
+        <div data-nav-skip data-nav-owner="_updateModalInput"
+             style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:12px">
           <h2 class="cc-header-gothic" style="margin:0; border:none; padding:0; font-size:1.9rem"
             >${this._modalTitle()}</h2>
           ${modal.kind === "structure" ? `<input id="cc3d-modal-search" type="text"

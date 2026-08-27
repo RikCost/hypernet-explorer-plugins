@@ -66,12 +66,16 @@
     guard:        { accent: "#ffdd44", rgb: [140, 120, 25 ] },
     switchspirit: { accent: "#cc66ff", rgb: [120, 50,  170] },
     escape:       { accent: "#aaaaaa", rgb: [90,  90,  90 ] },
+    aim:          { accent: "#ff8855", rgb: [175, 70,  40 ] },
     wrestle:      { accent: "#c8863c", rgb: [130, 80,  30 ] },
     talk:         { accent: "#dfc06a", rgb: [140, 110, 40 ] },
     // Wrestling (Health_Monsters.js) and the talk menu (EnemyTalkSystem.js)
     // borrow the whole menu for their own rows.
     wrestleRow:   { accent: "#c8863c", rgb: [130, 80,  30 ] },
     talkRow:      { accent: "#dfc06a", rgb: [140, 110, 40 ] },
+    // Aim (Health_Monsters.js) does the same with the body it is naming a
+    // part of: one row per limb, each carrying its own odds.
+    aimRow:       { accent: "#ff8855", rgb: [175, 70,  40 ] },
     // The battle skill list (CategorizedBattleSkills.js) does the same, and
     // paints each of its rows itself: a skill row carries the colour of what
     // the skill is FOR, a party row the colour of the ally being pointed at.
@@ -99,12 +103,14 @@
     basic:        248,
     item:         209,
     talk:         246,
+    aim:          151,
     wrestle:      106,
     guard:        125,
     switchspirit: 73,
     escape:       140,
     wrestleRow:   106,
     talkRow:      246,
+    aimRow:       96,
     skillRow:     76,
     allyRow:      73,
     enemyRow:     97,
@@ -192,6 +198,14 @@
       return;
     }
 
+    // Aim (Health_Monsters.js) takes it over the same way while a limb is being
+    // named: the monster's body IS the list, one part per row with the odds of
+    // reaching it, and nothing else the actor could do belongs beside that.
+    if (window.Aiming && window.Aiming.isMenuOpen(this)) {
+      window.Aiming.makeCommandList(this);
+      return;
+    }
+
     // The talk menu (EnemyTalkSystem.js) takes the list over the same way while
     // a conversation is being steered: its choices are the rows, and there is
     // nothing else to do until one of them is said.
@@ -275,12 +289,21 @@
     this.addCommandWithIcon("", "basic", basicKit.length > 0, null, 248,
       !this.hasCastableSkill(basicKit));
 
-    // Wrestle and Talk are commands, not skills: grappling and talking are
-    // things a body does, so they are offered here rather than hidden in a skill
-    // list. Both sit directly above the backpack, Wrestle first. Each is only
-    // shown when the plugin that owns it is loaded, and greyed out when that
-    // plugin says this body cannot do it (no limb free to take hold with; a
-    // class from 63 on, which has no language).
+    // Aim, Wrestle and Talk are commands, not skills: naming a limb, grappling
+    // and talking are things a body does, so they are offered here rather than
+    // hidden in a skill list. All three sit directly above the backpack, Aim
+    // first, then Wrestle. Each is only shown when the plugin that owns it is
+    // loaded, and greyed out when that plugin says this body cannot do it (no
+    // monster standing with an anatomy to name a part of; no limb free to take
+    // hold with; a class from 63 on, which has no language).
+    //
+    // Aim sits beside Attack rather than replacing it: Attack alone throws the
+    // swing wherever it falls, and Aim names the place it has to reach. Naming
+    // costs no turn, so the row is stepped through and the swing thrown in the
+    // same round.
+    if (window.Aiming && window.Aiming.canCommand) {
+      this.addCommandWithIcon("", "aim", window.Aiming.canCommand(this._actor), null, 151);
+    }
     if (window.Wrestling && window.Wrestling.canCommand) {
       this.addCommandWithIcon("", "wrestle", window.Wrestling.canCommand(this._actor), null, 106);
     }
@@ -348,6 +371,12 @@
       case "guard":   return TextManager.guard;
       case "item":    return TextManager.item;
       case "talk":    return T('Battle.cmd.talk');
+      // An aim already taken is worn on the row, so what this actor has named
+      // is legible without opening anything.
+      case "aim": {
+        const part = window.Aiming ? window.Aiming.partName(this._actor) : null;
+        return part ? T('Battle.cmd.aimAt', { part: part }) : T('Battle.cmd.aim');
+      }
       case "wrestle": return T('Battle.cmd.wrestle');
       case "reload":  return T('Battle.cmd.reload');
       case "escape":  return T('Battle.cmd.run');
@@ -810,6 +839,7 @@
     this._actorCommandWindow.setHandler("basic",   this.commandBasic.bind(this));
     this._actorCommandWindow.setHandler("escape",  this.commandEscape.bind(this));
     this._actorCommandWindow.setHandler("talk",    this.commandTalk.bind(this));
+    this._actorCommandWindow.setHandler("aim",     this.commandAim.bind(this));
     this._actorCommandWindow.setHandler("wrestle", this.commandWrestle.bind(this));
   };
 
@@ -846,7 +876,23 @@
     const action = BattleManager.inputtingAction();
     if (!action) { SoundManager.playBuzzer(); return; }
     action.setAttack();
+    // An aimed swing is not thrown at a random monster: it goes to the body the
+    // limb was named on (Health_Monsters.js, the Aim section, which also puts
+    // the target back after BattleManager has randomised it).
+    const plan = window.Aiming ? window.Aiming.planFor(BattleManager.actor()) : null;
+    if (plan) action.setTarget(plan.enemyIndex);
     this.selectNextCommand();
+  };
+
+  // Aim: hand over to Health_Monsters, which picks the monster with the ordinary
+  // target window and then draws its body in this same menu. Naming a limb ends
+  // no turn, so this comes straight back to the command list.
+  Scene_Battle.prototype.commandAim = function () {
+    if (!this._bseCurrentCommandEnabled() || !window.Aiming ||
+        !window.Aiming.startFromCommand(this)) {
+      SoundManager.playBuzzer();
+      this._actorCommandWindow.activate();
+    }
   };
 
   Scene_Battle.prototype.commandBasic = function () {

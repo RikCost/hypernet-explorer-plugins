@@ -4315,11 +4315,30 @@
       this._answerAsk(phrase, speaker);
     }
 
+    // What the model is told about the person it is playing: the register they
+    // talk in and the banner they stand under, which is as much as the panel
+    // knows for certain about anybody.
+    _llmBio() {
+      const profile = _getProfile(this._targetName());
+      if (!profile) return '';
+      const dl = window._NPCSocietyDataLoader;
+      const parts = [];
+      const persona = _personalityName(profile);
+      if (persona) parts.push(persona);
+      const faction = (profile.factionIndex >= 0 && dl?.factions) ? dl.factions[profile.factionIndex] : null;
+      const factionName = faction
+        ? (dl.getFactionName?.(faction) || (String(faction.name || '').split('.')[1] || faction.name || ''))
+        : '';
+      if (factionName) parts.push(factionName);
+      return parts.join(', ');
+    }
+
     // Write the answer to a typed line and speak it. With a model picked in
-    // Options > Experimental the reply is the model's, seeded with what was
-    // just typed and told who is being spoken to, and the Markov chain covers
-    // whatever the model cannot answer. With the model off nothing changes:
-    // the chain answers on its own, at the same pace as before.
+    // Options > Experimental the reply is the model's: this is the one line in
+    // the panel the player wrote themselves, so it is worth waiting for, cold
+    // start and all. The Markov chain is what covers a model that fails or
+    // times out, and with the model off nothing changes: the chain answers on
+    // its own, at the same pace as before.
     async _answerAsk(phrase, speaker) {
       // Draw from ALL text databases combined, seeded with the player's own
       // words so the reply riffs on what was just said. The generator opens
@@ -4328,19 +4347,28 @@
       const seedLen = phrase.split(/\s+/).filter(Boolean).length;
       const opts = { chainOrder: 2, minLength: 8 + seedLen, maxLength: 30 + seedLen, startText: phrase, npcName: speaker };
       const llm = window.MarkovLLM;
-      let useModel = !!llm?.isEnabled?.() && typeof window.generateMarkovStringAsync === 'function';
-      // Nobody is left staring at a typing indicator while the weights are read
-      // off the disk: the first line of the session is the chain's, the model
-      // loads behind it, and it answers everything from the next line on.
-      if (useModel && llm.isReady && !llm.isReady()) { llm.warmUp?.(); useModel = false; }
+      const useModel = !!llm?.isEnabled?.() && typeof llm.reply === 'function';
 
       let response = '';
+      let fromModel = false;
       if (useModel) {
-        // The model takes seconds of its own, so no pause is put on top of it:
-        // the typing indicator stands until the line comes back.
-        try { response = await window.generateMarkovStringAsync('all', opts); }
-        catch (e) {}
-      } else {
+        // The model takes seconds of its own and the weights are read off the
+        // disk on the first line of the session, so no pause is put on top of
+        // it: the typing indicator stands until the line comes back. An
+        // instruction tuned model is handed the conversation so far, which is
+        // everything but the line just pushed on, since that is the line it is
+        // being asked to answer.
+        try {
+          response = await llm.reply({
+            npcName: speaker,
+            npcBio: this._llmBio(),
+            startText: phrase,
+            history: this._chatHistory.slice(0, -1)
+          });
+        } catch (e) {}
+        fromModel = !!response;
+      }
+      if (!response) {
         // The chain answers on the spot, so it is held back to talking pace.
         await new Promise(resolve => setTimeout(resolve, 350));
         if (window.generateMarkovString) {
@@ -4351,7 +4379,11 @@
       // The panel can be closed while a line is still being written.
       if (SceneManager._scene !== this) return;
 
-      if (response && !/^ERROR:/i.test(response)) response = _stripSeedEcho(response, phrase);
+      // A chain seeded with the player's words opens by repeating them; a chat
+      // model answers in its own words and has nothing to prune.
+      if (response && !/^ERROR:/i.test(response) && !(fromModel && llm?.isChatModel?.())) {
+        response = _stripSeedEcho(response, phrase);
+      }
       if (!response || /^ERROR:/i.test(response)) {
         if (window.generateMarkovString) {
           try { response = window.generateMarkovString('all', { chainOrder: 2, minLength: 8, maxLength: 30 }); }
@@ -4377,6 +4409,9 @@
     // keystroke from all other plugins' global handlers, so typing is reliable.
     _openChatModal() {
       if (!this._overlay || this._chatModalOpen) return;
+      // The player is about to type a line the model will answer, so the
+      // weights start being read now rather than once the line is sent.
+      window.MarkovLLM?.warmUp?.();
       const T     = _getT();
       const ev    = $gameMap?.event(this._eventId);
       const shift = window.NPCSim?.isShopShiftCovered?.(ev)
@@ -4853,6 +4888,24 @@
     },
 
     getFaction(name) {
+      // The party's own banner is not in Factions.json (see the player faction
+      // section of NPC/FactionDataManager.js): it is asked for by name and
+      // answers with a page built out of the roll it is carrying.
+      const own = window.$gameFactions?.playerFaction?.();
+      if (own && own.name === name) {
+        const roster = window.$gameFactions.playerFactionRoster();
+        const stats = window.$gameFactions.playerFactionStats();
+        return {
+          type: 'faction', name, hist: null,
+          dlFaction: Object.assign({}, own, stats), dlIndex: -1,
+          members: roster.party.concat(roster.army),
+          // These are companions and hired soldiers, not catalogued NPCs, so
+          // the members tab prints them without a wiki link that leads nowhere.
+          plainMembers: true,
+          parentPower: own.parentHyperpower || null,
+          events: [],
+        };
+      }
       const hm = this._hm();
       const hist = (hm?.getHistoricalFactions?.() || {})[name] || null;
       const dl = window._NPCSocietyDataLoader;
@@ -4980,16 +5033,38 @@
         out.set(rec.name, { name: rec.name, of: rec.country || null, ofType: 'nation',
                             dead: deadList.has(rec.name) || !!deaths[rec.name] });
       }
-      const powers = (typeof $gameSystem !== 'undefined' && $gameSystem?._npcPolitics?.powers) || {};
-      for (const p of Object.values(powers)) {
-        for (const pol of Object.values(p?.politicians || {})) {
-          if (pol?.name && !out.has(pol.name)) {
-            out.set(pol.name, { name: pol.name, of: p.name, ofType: 'power', dead: !pol.alive });
-          }
-        }
-      }
+      // Nobody NPCPolitics invented is listed here. A politician the world
+      // made up has an article of their own and a category of their own
+      // (listPoliticians): Leaders is the book, and the book is written down.
       // Sorted by the label the listing prints, not by the id behind it, so the
       // A-Z of the page is the A-Z the reader sees.
+      const label = n => (window.WorldNames ? window.WorldNames.leader(n) : n);
+      return [...out.values()].sort((a, b) => label(a.name).localeCompare(label(b.name)));
+    },
+
+    // The other half of the political class: everybody NPCPolitics elected,
+    // deposed and buried without a historian ever writing them down. A
+    // politician who IS in the book (a real leader the world seated, see
+    // NPCPolitics.makePolitician) is listed under Leaders instead, so nobody
+    // appears twice.
+    listPoliticians() {
+      const state = (typeof $gameSystem !== 'undefined' && $gameSystem?._npcPolitics) || {};
+      const book = this._hm();
+      const out = new Map();
+      const collect = (polities, ofType) => {
+        for (const polity of Object.values(polities || {})) {
+          for (const pol of Object.values(polity?.politicians || {})) {
+            if (!pol?.name || out.has(pol.name)) continue;
+            if (pol.real || (book?.getLeaderRecord && book.getLeaderRecord(pol.name))) continue;
+            out.set(pol.name, {
+              name: pol.name, of: polity.name, ofType,
+              office: pol.office || null, dead: !pol.alive,
+            });
+          }
+        }
+      };
+      collect(state.powers, 'power');
+      collect(state.nations, 'nation');
       const label = n => (window.WorldNames ? window.WorldNames.leader(n) : n);
       return [...out.values()].sort((a, b) => label(a.name).localeCompare(label(b.name)));
     },
@@ -5021,6 +5096,10 @@
       // an entry for each power (its own household, e.g. "Britannia" under the
       // power Britannia), and that entry belongs to the Hyperpowers index. Each
       // power's page lists the orders that answer to it instead.
+      // ...and the party's own banner, which is world state rather than a
+      // shipped entry (NPC/FactionDataManager.js, the player faction section).
+      const own = window.$gameFactions?.playerFaction?.();
+      if (own && own.name) set.add(own.name);
       const powers = new Set(this.listPowerNames());
       const label = n => (window.WorldNames ? window.WorldNames.faction(n) : n);
       return [...set].filter(n => !powers.has(n))
@@ -5105,6 +5184,7 @@
       for (const n of Object.keys(hm?.getHyperpowers?.() || {})) add(n, 'power', n);
       for (const n of (window.NPCPolitics?.listPowers?.() || [])) add(n, 'power', n);
       for (const n of Object.keys(hm?.getHistoricalFactions?.() || {})) add(n, 'faction', n);
+      add(window.$gameFactions?.playerFaction?.()?.name, 'faction', window.$gameFactions?.playerFaction?.()?.name);
       for (const n of this.listNationNames()) add(n, 'nation', n);
       for (const data of Object.values(hm?.getHyperpowers?.() || {}))
         for (const l of (data?.leaders || [])) add(l?.name, 'leader', l?.name);

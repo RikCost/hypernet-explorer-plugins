@@ -172,7 +172,7 @@
           icon: 244,
           width: 950,
           height: 600,
-          contentHTML: '<div id="job-offers-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8"></div>'
+          contentHTML: '<div class="joboffer-01" id="job-offers-content"></div>'
         });
 
         this.appInstance = new Scene_JobOffers();
@@ -294,13 +294,7 @@
     createUIJobOffersDOM() {
       this._dndContainer = document.createElement('div');
       this._dndContainer.id = 'menu-container';
-      this._dndContainer.style.width = '100%';
-      this._dndContainer.style.height = '100%';
-      this._dndContainer.style.display = 'flex';
-      this._dndContainer.style.flexDirection = 'column';
-      this._dndContainer.style.fontFamily = "'Tahoma', sans-serif";
-      this._dndContainer.style.color = '#000';
-      this._dndContainer.style.boxSizing = 'border-box';
+      this._dndContainer.classList.add('joboffers-root');
 
       if (this._isAppMode) {
         const parent = document.getElementById('job-offers-content');
@@ -352,7 +346,7 @@
 
       if (this._isAppMode) {
         this._dndContainer.innerHTML = `
-          <div class="cc-pockets-spread" style="width: 100%; height: 100%">
+          <div class="cc-pockets-spread joboffer-02">
             <!-- Left Page -->
             <div class="cc-page cc-page-left">
               ${leftPageHTML}
@@ -368,15 +362,15 @@
         this._dndContainer.innerHTML = `
           <div class="cc-pockets-spread" style="${spreadSize}">
             <!-- Spine Shading -->
-            <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10"></div>
+            <div class="joboffer-03"></div>
 
             <!-- Left Page -->
-            <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
+            <div class="cc-page cc-page-left joboffer-04">
               ${leftPageHTML}
             </div>
 
             <!-- Right Page -->
-            <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
+            <div class="cc-page cc-page-right joboffer-04">
               ${rightPageHTML}
             </div>
           </div>
@@ -396,7 +390,7 @@
 
           const rosterEl = this._dndContainer.querySelector('#roster-list');
           if (rosterEl) {
-            const selectedEl = rosterEl.querySelector(this._isAppMode ? '.selected' : '[style*="border: 2px solid #4a1d0f"]');
+            const selectedEl = rosterEl.querySelector('.selected');
             if (selectedEl) {
               selectedEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
@@ -415,7 +409,7 @@
         let listHTML = "";
         if (jobs.length === 0) {
           listHTML = `
-              <div style="text-align:center; padding: 40px; color:#666">
+              <div class="joboffer-05">
                 ${T('WorkSystem.noJobOffersCurrentlyAvailable')}
               </div>
             `;
@@ -427,16 +421,16 @@
 
             listHTML += `
                 <div class="job-item focusable" tabindex="0" data-focus-key="job-${idx}" onclick="${sref}.selectJobItem(${idx})">  <!-- i18n-ignore  inline handler -->
-                  <div style="display:flex; flex-direction:column; gap:2px">
-                    <span style="font-size:15px; font-weight:bold; color:#000">
+                  <div class="joboffer-06">
+                    <span class="joboffer-07">
                       ${jobName}
                     </span>
-                    <span style="font-size:13px; color:#555; display:flex; align-items:center; gap:5px">
+                    <span class="joboffer-08">
                       ${window.WorkSystem.jobCategoryLabel(job)} • ${job.duration}h ${this.getRemoteTagHTML(job)}
                     </span>
                   </div>
-                  <div style="display:flex; flex-direction:column; align-items:flex-end">
-                    <span style="font-size:15px; font-weight:bold; color:#0054e3">
+                  <div class="joboffer-09">
+                    <span class="joboffer-10">
                       ${(hourlyPay / 100).toFixed(2)}€/hr
                     </span>
                   </div>
@@ -449,11 +443,11 @@
             <h2 class="cc-header-gothic">
               ${title}
             </h2>
-            <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px">
+            <div class="joboffer-11" id="jobs-list">
               ${listHTML}
             </div>
-            <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; justify-content:flex-end; align-items:center; font-size:14px; color:#555; width:100%">
-              <div class="back-button focusable" tabindex="0" data-focus-key="back-btn" onclick="${sref}.popScene()" style="padding:4px 12px">
+            <div class="joboffer-12">
+              <div class="back-button focusable joboffer-13" tabindex="0" data-focus-key="back-btn" onclick="${sref}.popScene()">
                 ${T('WorkSystem.dismiss')}
               </div>
             </div>
@@ -463,7 +457,7 @@
       let listHTML = "";
       if (jobs.length === 0) {
         listHTML = `
-            <div style="text-align:center; padding: 40px; color:#6b5242; font-family:'Lora', serif">
+            <div class="joboffer-14">
               ${T('WorkSystem.noJobOffersCurrentlyAvailable')}
             </div>
           `;
@@ -473,32 +467,18 @@
           const jobName = window.WorkSystem.jobName(job);
           const hourlyPay = Math.round(job.basePay / job.duration);
 
-          const itemStyle = `
-              cursor: pointer;
-              padding: 10px 14px;
-              border-bottom: 1px dotted rgba(139, 90, 43, 0.25);
-              background: ${isSelected ? 'rgba(74, 29, 15, 0.08)' : 'transparent'};
-              border-left: 3px solid ${isSelected ? '#8b5a2b' : 'transparent'};
-              transition: all 0.2s ease;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              box-sizing: border-box;
-              width: 100%;
-            `;
-
           listHTML += `
-              <div class="job-item" style="${itemStyle}" onclick="${sref}.selectJobItem(${idx})">
-                <div style="display:flex; flex-direction:column; gap:2px">
-                  <span style="font-family:'Lora', serif; font-size:1.14rem; font-weight:${isSelected ? 'bold' : 'normal'}; color:#1a1a1a">
+              <div class="job-item ${isSelected ? 'selected' : ''}" onclick="${sref}.selectJobItem(${idx})">
+                <div class="joboffer-06">
+                  <span class="joboffer-15" style="font-weight:${isSelected ? 'bold' : 'normal'}">
                     ${jobName}
                   </span>
-                  <span style="font-size:0.915rem; color:#6b5242; font-family:'Lora', serif; display:flex; align-items:center; gap:6px">
+                  <span class="joboffer-16">
                     ${window.WorkSystem.jobCategoryLabel(job)} • ${job.duration}h ${this.getRemoteTagHTML(job)}
                   </span>
                 </div>
-                <div style="display:flex; flex-direction:column; align-items:flex-end">
-                  <span style="font-family:'Lora', serif; font-size:1.15rem; font-weight:bold; color:#4a1d0f">
+                <div class="joboffer-09">
+                  <span class="joboffer-17">
                     ${(hourlyPay / 100).toFixed(2)}€/hr
                   </span>
                 </div>
@@ -508,14 +488,14 @@
       }
 
       return `
-          <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
+          <h2 class="cc-header-gothic joboffer-18">
             ${title}
           </h2>
-          <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px">
+          <div class="joboffer-11" id="jobs-list">
             ${listHTML}
           </div>
-          <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.984rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%">
-            <div class="back-button focusable" onclick="${sref}.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; transition:all 0.2s ease; border:1px solid #4a2711; font-family:'Lora', serif; font-size:1.08rem">
+          <div class="joboffer-19">
+            <div class="back-button focusable joboffer-20" onclick="${sref}.popScene()">
               ${T('WorkSystem.dismiss')}
             </div>
           </div>
@@ -530,13 +510,13 @@
       if (!job) {
         if (this._isAppMode) {
           return `
-              <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#555; border:1px dashed #7f9db9; border-radius:3px; padding:20px; font-size:14px; background:#fcfcfc">
+              <div class="joboffer-21">
                 ${T('WorkSystem.selectAJobOfferTo')}
               </div>
             `;
         }
         return `
-            <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#5c4b3d; font-family:'Lora', serif; font-size:1.265rem; border:2px dashed #bda881; border-radius:6px; padding:40px">
+            <div class="joboffer-22">
               ${T('WorkSystem.selectAJobOfferTo')}
             </div>
           `;
@@ -549,24 +529,13 @@
       const successChance = window.WorkSystem.calculateSuccessChance(actor, job);
       const chancePercent = Math.floor(successChance * 100);
 
-      let chanceColor = "#822d2d";
-      if (chancePercent >= 70) {
-        chanceColor = "#3d5e4b";
-      } else if (chancePercent >= 40) {
-        chanceColor = "#8b5a2b";
-      }
+      const chanceClass = chancePercent >= 70 ? "chance--good"
+        : chancePercent >= 40 ? "chance--fair" : "chance--poor";
 
       const statKeyMapping = window.WorkSystem && window.WorkSystem.statKeyMapping ? window.WorkSystem.statKeyMapping : {};
       const _si18n = window.WorkSystem && window.WorkSystem.si18n ? window.WorkSystem.si18n : (k) => k;
 
       if (this._isAppMode) {
-        let chanceColorXP = "#a00";
-        if (chancePercent >= 70) {
-          chanceColorXP = "#008000";
-        } else if (chancePercent >= 40) {
-          chanceColorXP = "#b85c00";
-        }
-
         let requirementsHTML = "";
         for (const [stat, required] of Object.entries(job.requirements)) {
           const actorValue = window.WorkSystem.getActorStat(actor, stat);
@@ -575,7 +544,7 @@
           const statLabel = _si18n(mappedName);
 
           requirementsHTML += `
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; color:${meetsReq ? '#008000' : '#a00'}; font-weight:${meetsReq ? 'normal' : 'bold'}; font-size:14px">
+              <div class="joboffer-23" style="color:${meetsReq ? 'var(--text-text-alt-3)' : 'var(--text-blood-red)'}; font-weight:${meetsReq ? 'normal' : 'bold'}">
                 <span>${statLabel}</span>
                 <span>${actorValue} / ${required}</span>
               </div>
@@ -585,10 +554,10 @@
         let locationsHTML = "";
         if (job.locations && job.locations.length > 0) {
           locationsHTML += `
-              <div style="margin-top: 8px">
-                <strong style="color:#0b2f70; font-size:13px; text-transform:uppercase">${T('WorkSystem.availableLocations')}:</strong>
-                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:2px">
-                  ${job.locations.map(loc => `<span style="background:#e5effa; border:1px solid #7f9db9; padding:1px 6px; border-radius:2px; font-size:13px; color:#0b2f70">${this.getLocationName(loc)}</span>`).join('')}
+              <div class="joboffer-24">
+                <strong class="joboffer-25">${T('WorkSystem.availableLocations')}:</strong>
+                <div class="joboffer-26">
+                  ${job.locations.map(loc => `<span class="joboffer-27">${this.getLocationName(loc)}</span>`).join('')}
                 </div>
               </div>
             `;
@@ -598,48 +567,48 @@
         if (job.factionId !== undefined && job.factionId !== null) {
           const factionName = this._detailWindow.getFactionName(job.factionId);
           factionHTML = `
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; font-size:14px">
-                <strong style="color:#333">${T('WorkSystem.faction')}:</strong>
-                <span style="color:#0054e3; font-weight:bold">${factionName}</span>
+              <div class="joboffer-23">
+                <strong class="joboffer-28">${T('WorkSystem.faction')}:</strong>
+                <span class="joboffer-29">${factionName}</span>
               </div>
             `;
         }
 
         return `
-            <h2 class="cc-header-gothic" style="text-align:center">
+            <h2 class="cc-header-gothic joboffer-30">
               ${T('WorkSystem.proposalContract')}
             </h2>
 
-            <div style="flex:1; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%; min-height:0; overflow-y:auto; padding-right:2px">
-              <div style="border: 1px solid #7f9db9; background: #fcfcfc; padding: 12px; border-radius: 3px; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%">
-                <div style="font-size:16px; color:#0b2f70; font-weight:bold; border-bottom:1px solid #7f9db9; padding-bottom:4px; text-align:center; text-transform:uppercase">
+            <div class="joboffer-31">
+              <div class="joboffer-32">
+                <div class="joboffer-33">
                   ${jobName}
                 </div>
 
-                <div style="font-size:14px; line-height:1.35; color:#444; border-bottom:1px dashed #ccc; padding-bottom:6px; margin-bottom:4px; text-align:justify">
+                <div class="joboffer-34">
                   "${description}"
                 </div>
 
-                <div style="display:flex; flex-direction:column; gap:4px; font-size:14px">
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
-                    <strong style="color:#333">${T('WorkSystem.categoryLabel')}:</strong>
+                <div class="joboffer-35">
+                  <div class="joboffer-36">
+                    <strong class="joboffer-28">${T('WorkSystem.categoryLabel')}:</strong>
                     <span>${window.WorkSystem.jobCategoryLabel(job)}</span>
                   </div>
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
-                    <strong style="color:#333">${T('WorkSystem.duration')}:</strong>
+                  <div class="joboffer-36">
+                    <strong class="joboffer-28">${T('WorkSystem.duration')}:</strong>
                     <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
                   </div>
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
-                    <strong style="color:#333">${T('WorkSystem.hourlyRate')}:</strong>
+                  <div class="joboffer-36">
+                    <strong class="joboffer-28">${T('WorkSystem.hourlyRate')}:</strong>
                     <span>€${(job.basePay / job.duration / 100).toFixed(2)}</span>
                   </div>
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; font-weight:bold; color:#008000">
+                  <div class="joboffer-37">
                     <span>${T('WorkSystem.totalReward')}:</span>
                     <span>€${(job.basePay / 100).toFixed(2)}</span>
                   </div>
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
-                    <strong style="color:#333">${T('WorkSystem.remoteWorkLabel')}:</strong>
-                    <span style="color:${this.isRemoteJob(job) ? '#008000' : '#a00'}; font-weight:bold">
+                  <div class="joboffer-36">
+                    <strong class="joboffer-28">${T('WorkSystem.remoteWorkLabel')}:</strong>
+                    <span class="joboffer-38" style="color:${this.isRemoteJob(job) ? 'var(--text-text-alt-3)' : 'var(--text-blood-red)'}">
                       ${this.isRemoteJob(job) ? T('WorkSystem.remoteAvailable') : T('WorkSystem.remoteOnSiteOnly')}
                     </span>
                   </div>
@@ -648,20 +617,20 @@
 
                 ${locationsHTML}
 
-                <div style="margin-top: 6px; border-top: 1px dashed #ccc; padding-top: 6px; display:flex; flex-direction:column; gap:4px">
-                  <strong style="color:#0b2f70; font-size:13px; text-transform:uppercase">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
-                  <div style="display:flex; flex-direction:column; gap:2px; margin-top:2px">
+                <div class="joboffer-39">
+                  <strong class="joboffer-25">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
+                  <div class="joboffer-40">
                     ${requirementsHTML}
                   </div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; border-top:1px dashed #ccc; padding-top:6px; font-weight:bold; font-size:14px">
-                  <span style="color:#333">${T('WorkSystem.estimatedSuccessRate')}:</span>
-                  <span style="color:${chanceColorXP}; font-size:16px">${chancePercent}%</span>
+                <div class="joboffer-41">
+                  <span class="joboffer-28">${T('WorkSystem.estimatedSuccessRate')}:</span>
+                  <span class="joboffer-42 ${chanceClass}">${chancePercent}%</span>
                 </div>
 
                 ${!reqCheck.meets ? `
-                <div style="margin-top:6px; padding:6px; background:#fff8e8; border-left:3px solid #ff9900; border-radius:2px; font-size:13px; color:#b85c00; line-height:1.3">
+                <div class="joboffer-43">
                   Deficits detected! Undertaking this contract will carry higher hazards of failure and injury.
                 </div>
                 ` : ''}
@@ -680,7 +649,7 @@
         const statLabel = _si18n(mappedName);
 
         requirementsHTML += `
-            <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; color:${meetsReq ? '#3d5e4b' : '#822d2d'}; font-weight:${meetsReq ? 'normal' : 'bold'}">
+            <div class="joboffer-44" style="color:${meetsReq ? 'var(--text-text-alt-18)' : 'var(--text-settings-active)'}; font-weight:${meetsReq ? 'normal' : 'bold'}">
               <span>${statLabel}</span>
               <span>${actorValue} / ${required}</span>
             </div>
@@ -690,10 +659,10 @@
       let locationsHTML = "";
       if (job.locations && job.locations.length > 0) {
         locationsHTML += `
-            <div style="margin-top: 10px">
-              <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.availableLocations')}:</strong>
-              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px">
-                ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.915rem; color:#4a1d0f">${this.getLocationName(loc)}</span>`).join('')}
+            <div class="joboffer-45">
+              <strong class="joboffer-46">${T('WorkSystem.availableLocations')}:</strong>
+              <div class="joboffer-47">
+                ${job.locations.map(loc => `<span class="joboffer-48">${this.getLocationName(loc)}</span>`).join('')}
               </div>
             </div>
           `;
@@ -703,48 +672,48 @@
       if (job.factionId !== undefined && job.factionId !== null) {
         const factionName = this._detailWindow.getFactionName(job.factionId);
         factionHTML = `
-            <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-              <strong style="color:#5c3516">${T('WorkSystem.faction')}:</strong>
-              <span style="color:#8b5a2b; font-weight:bold">${factionName}</span>
+            <div class="joboffer-44">
+              <strong class="joboffer-49">${T('WorkSystem.faction')}:</strong>
+              <span class="joboffer-50">${factionName}</span>
             </div>
           `;
       }
 
       return `
-          <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px; text-align:center">
+          <h2 class="cc-header-gothic joboffer-51">
             ${T('WorkSystem.proposalContract')}
           </h2>
 
-          <div style="flex:1; display:flex; flex-direction:column; gap:12px; box-sizing: border-box; width:100%">
-            <div style="border: 4px double #4a2711; background: #ecdcb9; padding: 22px; border-radius: 6px; box-shadow: inset 0 0 40px rgba(78,38,12,0.15); font-family:'Lora', serif; display:flex; flex-direction:column; gap:10px; box-sizing: border-box; width:100%">
-              <div style="font-family:'Lora', serif; font-size:1.725rem; color:#4a1d0f; font-weight:bold; border-bottom:2px double rgba(74,29,15,0.3); padding-bottom:6px; text-align:center; text-transform:uppercase">
+          <div class="joboffer-52">
+            <div class="joboffer-53">
+              <div class="joboffer-54">
                 ${jobName}
               </div>
 
-              <div style="font-size:1.08rem; line-height:1.45; color:#2b1c11; border-bottom:1px dashed rgba(139,90,43,0.25); padding-bottom:10px; margin-bottom:6px; text-align:justify">
+              <div class="joboffer-55">
                 "${description}"
               </div>
 
-              <div style="display:flex; flex-direction:column; gap:6px; font-size:1.08rem">
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-                  <strong style="color:#5c3516">${T('WorkSystem.categoryLabel')}:</strong>
+              <div class="joboffer-56">
+                <div class="joboffer-44">
+                  <strong class="joboffer-49">${T('WorkSystem.categoryLabel')}:</strong>
                   <span>${window.WorkSystem.jobCategoryLabel(job)}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-                  <strong style="color:#5c3516">${T('WorkSystem.duration')}:</strong>
+                <div class="joboffer-44">
+                  <strong class="joboffer-49">${T('WorkSystem.duration')}:</strong>
                   <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-                  <strong style="color:#5c3516">${T('WorkSystem.hourlyRate')}:</strong>
+                <div class="joboffer-44">
+                  <strong class="joboffer-49">${T('WorkSystem.hourlyRate')}:</strong>
                   <span>€${(job.basePay / job.duration / 100).toFixed(2)}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b">
+                <div class="joboffer-57">
                   <span>${T('WorkSystem.totalReward')}:</span>
                   <span>€${(job.basePay / 100).toFixed(2)}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
-                  <strong style="color:#5c3516">${T('WorkSystem.remoteWorkLabel')}:</strong>
-                  <span style="color:${this.isRemoteJob(job) ? '#3d5e4b' : '#822d2d'}; font-weight:bold">
+                <div class="joboffer-44">
+                  <strong class="joboffer-49">${T('WorkSystem.remoteWorkLabel')}:</strong>
+                  <span class="joboffer-38" style="color:${this.isRemoteJob(job) ? 'var(--text-text-alt-18)' : 'var(--text-settings-active)'}">
                     ${this.isRemoteJob(job) ? T('WorkSystem.remoteAvailable') : T('WorkSystem.remoteOnSiteOnly')}
                   </span>
                 </div>
@@ -753,20 +722,20 @@
 
               ${locationsHTML}
 
-              <div style="margin-top: 10px; border-top: 1px dashed rgba(139,90,43,0.25); padding-top: 10px; display:flex; flex-direction:column; gap:6px">
-                <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
-                <div style="display:flex; flex-direction:column; gap:4px; margin-top:2px">
+              <div class="joboffer-58">
+                <strong class="joboffer-46">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
+                <div class="joboffer-59">
                   ${requirementsHTML}
                 </div>
               </div>
 
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed rgba(139,90,43,0.25); padding-top:10px; font-weight:bold; font-size:1.15rem">
-                <span style="color:#5c3516">${T('WorkSystem.estimatedSuccessRate')}:</span>
-                <span style="color:${chanceColor}; font-family:'Lora', serif; font-size:1.322rem">${chancePercent}%</span>
+              <div class="joboffer-60">
+                <span class="joboffer-49">${T('WorkSystem.estimatedSuccessRate')}:</span>
+                <span class="joboffer-61 ${chanceClass}">${chancePercent}%</span>
               </div>
 
               ${!reqCheck.meets ? `
-              <div style="margin-top:8px; padding:8px 12px; background:rgba(130,45,45,0.06); border-left:3px solid #822d2d; border-radius:3px; font-size:0.952rem; color:#822d2d; line-height:1.35">
+              <div class="joboffer-62">
                 Deficits detected! Undertaking this contract will carry higher hazards of failure and injury.
               </div>
               ` : ''}
@@ -786,14 +755,14 @@
 
       if (this._isAppMode) {
         return `
-            <div class="action-button focusable" onclick="window.HypernetJobsApp.appInstance.openCandidateRoster()" style="width:100%">
+            <div class="action-button focusable joboffer-63" onclick="window.HypernetJobsApp.appInstance.openCandidateRoster()">
               ${T('WorkSystem.chooseCandidate')}
             </div>
           `;
       }
 
       return `
-          <div class="action-button focusable" onclick="SceneManager._scene.openCandidateRoster()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.208rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
+          <div class="action-button focusable joboffer-64" onclick="SceneManager._scene.openCandidateRoster()">
             ${T('WorkSystem.chooseCandidate')}
           </div>
         `;
@@ -811,14 +780,14 @@
 
       if (this._isAppMode) {
         return `
-            <div class="action-button focusable" onclick="${sref}.confirmRemoteWork()" style="background:#1f7a1f !important; border-color:#0b4d0b !important; color:#fff !important; width:100%">
+            <div class="action-button focusable joboffer-65" onclick="${sref}.confirmRemoteWork()">
               ${T('WorkSystem.remoteWork')}
             </div>
           `;
       }
 
       return `
-          <div class="action-button focusable" onclick="${sref}.confirmRemoteWork()" style="background:#3d5e4b; color:#ecdcb9; padding:9px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #24382c; text-transform:uppercase; font-family:'Lora', serif; font-size:1.15rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
+          <div class="action-button focusable joboffer-66" onclick="${sref}.confirmRemoteWork()">
             ${T('WorkSystem.remoteWork')}
           </div>
         `;
@@ -829,25 +798,17 @@
     getRemoteTagHTML(job) {
       if (!this.isRemoteJob(job)) return '';
 
-      const style = this._isAppMode
-        ? 'background:#dff3df; border:1px solid #1f7a1f; color:#0b4d0b; padding:0 4px; font-size:12px; font-weight:bold; text-transform:uppercase;'
-        : "background:rgba(61,94,75,0.12); border:1px solid rgba(61,94,75,0.35); color:#3d5e4b; padding:1px 6px; font-size:0.793rem; font-weight:bold; font-family:'Lora', serif; text-transform:uppercase;";
-
-      return `<span style="${style}">${T('WorkSystem.remoteTag')}</span>`;
+      return `<span class="job-remote-tag">${T('WorkSystem.remoteTag')}</span>`;
     }
 
     getActorFaceHTML(actor, size = 64) {
       const faceName = actor.faceName();
-      const borderCSS = this._isAppMode ? "2px solid #7f9db9" : "2px solid #8b5a2b";
-      const bgCSS = this._isAppMode ? "#0054e3" : "#8b5a2b";
-      const textCSS = this._isAppMode ? "#fff" : "#ecdcb9";
-
       if (!faceName) {
-        return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:${bgCSS}; color:${textCSS}; display:flex; align-items:center; justify-content:center; font-size:1.38rem; font-weight:bold">${actor.name().charAt(0)}</div>`;
+        return `<div class="joboffer-67 job-face" style="width:${size}px; height:${size}px">${actor.name().charAt(0)}</div>`;
       }
 
       return `
-          <div style="width: ${size}px; height: ${size}px; border-radius: 50%; border: ${borderCSS}; box-sizing: border-box; background-image: url('img/busts/${faceName}.png'); background-position: 50% 12%; background-size: 220%; background-repeat: no-repeat; box-shadow: 0 1px 3px rgba(0,0,0,0.15); flex-shrink: 0"></div>
+          <div class="joboffer-68 job-face" style="width:${size}px; height:${size}px; background-image:url('img/busts/${faceName}.png')"></div>
         `;
     }
 
@@ -862,12 +823,8 @@
         const mappedName = statKeyMapping[stat] || stat;
         const statLabel = _si18n(mappedName);
 
-        const color = this._isAppMode 
-          ? (isMet ? '#008000' : '#a00') 
-          : (isMet ? '#3d5e4b' : '#822d2d');
-
         html += `
-            <div style="display:flex; justify-content:space-between; font-size:13px; color:${color}; font-weight:${isMet ? 'normal' : 'bold'}; border-bottom:1px dotted rgba(0,0,0,0.05); padding:1px 0">
+            <div class="joboffer-69 ${isMet ? 'req--met' : 'req--unmet'}">
               <span>${statLabel}</span>
               <span>${actorValue} / ${required}</span>
             </div>
@@ -887,26 +844,22 @@
 
           const successChance = window.WorkSystem.calculateSuccessChance(actor, selectedJob);
           const chancePercent = Math.floor(successChance * 100);
-          let chanceColor = "#a00";
-          if (chancePercent >= 70) {
-            chanceColor = "#008000";
-          } else if (chancePercent >= 40) {
-            chanceColor = "#b85c00";
-          }
+          const chanceClass = chancePercent >= 70 ? "chance--good"
+            : chancePercent >= 40 ? "chance--fair" : "chance--poor";
 
           listHTML += `
               <div class="roster-item focusable ${isSelected ? 'selected' : ''}" tabindex="0" data-focus-key="actor-${idx}" onclick="${sref}.selectActorItem(${idx})">  <!-- i18n-ignore  inline handler -->
                 ${this.getActorFaceHTML(actor, 44)}
-                <div style="flex:1; display:flex; flex-direction:column; gap:2px">
-                  <div style="display:flex; justify-content:space-between; align-items:center">
-                    <strong style="font-size:14px; color:#000">
+                <div class="joboffer-70">
+                  <div class="joboffer-71">
+                    <strong class="joboffer-72">
                       ${actor.name()}
                     </strong>
-                    <span style="font-size:13px; font-weight:bold; color:${chanceColor}">
+                    <span class="joboffer-73 ${chanceClass}">
                       ${chancePercent}% SUCCESS
                     </span>
                   </div>
-                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; margin-top:2px">
+                  <div class="joboffer-74">
                     ${this.getActorRequirementDetailHTML(actor, selectedJob)}
                   </div>
                 </div>
@@ -919,18 +872,18 @@
               ${T('WorkSystem.candidateRoster')}
             </h2>
 
-            <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px">
+            <div class="joboffer-75" id="roster-list">
               ${listHTML}
             </div>
 
-            <div style="margin-top:8px; border-top:1px solid #7f9db9; padding-top:8px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; width:100%">
-              <div class="action-button focusable" tabindex="0" data-focus-key="accept-btn" onclick="${sref}.confirmActorSelection()" style="width:100%">
+            <div class="joboffer-76">
+              <div class="action-button focusable joboffer-63" tabindex="0" data-focus-key="accept-btn" onclick="${sref}.confirmActorSelection()">
                 ${T('WorkSystem.acceptJobOffer')}
               </div>
 
               ${this.getRemoteWorkButtonHTML(selectedJob, sref)}
 
-              <div class="action-button focusable" onclick="${sref}.retractActorSelection()" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important; width:100%">
+              <div class="action-button focusable joboffer-77" onclick="${sref}.retractActorSelection()">
                 ${T('WorkSystem.retractCandidate')}
               </div>
             </div>
@@ -944,42 +897,22 @@
 
         const successChance = window.WorkSystem.calculateSuccessChance(actor, selectedJob);
         const chancePercent = Math.floor(successChance * 100);
-        let chanceColor = "#822d2d";
-        if (chancePercent >= 70) {
-          chanceColor = "#3d5e4b";
-        } else if (chancePercent >= 40) {
-          chanceColor = "#8b5a2b";
-        }
-
-        const cardStyle = `
-            cursor: pointer;
-            padding: 10px 14px;
-            border: 2px solid ${isFocused ? '#4a1d0f' : (isSelected ? '#8b5a2b' : 'rgba(139,90,43,0.15)')};
-            background: ${isSelected ? '#fff8e8' : '#fcf8f0'};
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            box-sizing: border-box;
-            width: 100%;
-            margin-bottom: 8px;
-            box-shadow: ${isFocused ? '0 4px 8px rgba(74,29,15,0.15)' : '0 1px 3px rgba(0,0,0,0.05)'};
-          `;
+        const chanceClass = chancePercent >= 70 ? "chance--good"
+          : chancePercent >= 40 ? "chance--fair" : "chance--poor";
 
         listHTML += `
-            <div class="roster-item focusable" style="${cardStyle}" onclick="${sref}.selectActorItem(${idx})">
+            <div class="roster-item focusable ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}" onclick="${sref}.selectActorItem(${idx})">
               ${this.getActorFaceHTML(actor, 54)}
-              <div style="flex:1; display:flex; flex-direction:column; gap:2px">
-                <div style="display:flex; justify-content:space-between; align-items:center">
-                  <strong style="font-family:'Lora', serif; font-size:1.14rem; color:#1a1a1a">
+              <div class="joboffer-70">
+                <div class="joboffer-71">
+                  <strong class="joboffer-15">
                     ${actor.name()}
                   </strong>
-                  <span style="font-family:'Lora', serif; font-size:0.915rem; font-weight:bold; color:${chanceColor}">
+                  <span class="joboffer-78 ${chanceClass}">
                     ${chancePercent}% SUCCESS
                   </span>
                 </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-top:2px">
+                <div class="joboffer-79">
                   ${this.getActorRequirementDetailHTML(actor, selectedJob)}
                 </div>
               </div>
@@ -988,22 +921,22 @@
       });
 
       return `
-          <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
+          <h2 class="cc-header-gothic joboffer-18">
             ${T('WorkSystem.candidateRoster')}
           </h2>
 
-          <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px">
+          <div class="joboffer-75" id="roster-list">
             ${listHTML}
           </div>
 
-          <div style="margin-top:12px; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%">
-            <div class="action-button focusable" onclick="${sref}.confirmActorSelection()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.208rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
+          <div class="joboffer-80">
+            <div class="action-button focusable joboffer-64" onclick="${sref}.confirmActorSelection()">
               ${T('WorkSystem.acceptJobOffer')}
             </div>
 
             ${this.getRemoteWorkButtonHTML(selectedJob, sref)}
 
-            <div class="action-button focusable" onclick="${sref}.retractActorSelection()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:1.08rem; transition: all 0.2s ease">
+            <div class="action-button focusable joboffer-81" onclick="${sref}.retractActorSelection()">
               ${T('WorkSystem.retractCandidate')}
             </div>
           </div>
@@ -1156,6 +1089,41 @@
   }
 
   //=============================================================================
+  // Who the board will hire
+  //=============================================================================
+  // A job offer is somebody putting a name on a payroll. Two things stop them:
+  // a manhunt (nobody wants the police asking why that name is on their books)
+  // and, where the offer comes from a faction, that faction's opinion of the
+  // party. Both are asked through the plugin that owns them, so a missing
+  // plugin simply hires everybody the way it always did.
+  //
+  // The offer is withheld rather than shown and refused: a board that lists
+  // work it will not give reads as a bug, and the party has the pause menu and
+  // the wiki to find out why the column is thinner than usual.
+  function isJobOpenToParty(job) {
+    try {
+      const crime = window.CrimeSystem;
+      if (crime && typeof crime.refusesRegisteredService === "function" &&
+          crime.refusesRegisteredService()) {
+        return false;
+      }
+      const factions = window.$gameFactions;
+      const id = job && job.factionId;
+      if (factions && typeof factions.getReputationFor === "function" &&
+          Number.isFinite(id) && id >= 0) {
+        const who = window.$gameParty && $gameParty.leader ? $gameParty.leader() : null;
+        const threshold = typeof factions.standingRefusalThreshold === "function"
+          ? factions.standingRefusalThreshold() : -40;
+        if (factions.getReputationFor(who, id) <= threshold) return false;
+      }
+      return true;
+    } catch (e) {
+      // A board that cannot answer the question offers the work.
+      return true;
+    }
+  }
+
+  //=============================================================================
   // Window_JobOffersList - Job list window
   //=============================================================================
 
@@ -1197,7 +1165,7 @@
 
       const allJobs = window.WorkSystem.Jobs;
       const shuffled = [...allJobs].sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, numberOfJobs);
+      return shuffled.filter(isJobOpenToParty).slice(0, numberOfJobs);
     }
 
     refresh() {
@@ -1381,9 +1349,14 @@
     }
 
     getFactionName(factionId) {
-      // Try to get faction name from FactionDataManager if it exists
-      if (typeof $dataFactions !== 'undefined' && $dataFactions && $dataFactions[factionId]) {
-        return $dataFactions[factionId].name || T('WorkSystem.factionNumbered', { id: factionId });
+      // FactionDataManager owns the faction table and reaches it through $gameFactions;
+      // there has never been a $dataFactions, so this used to fall through every time.
+      if (typeof $gameFactions !== 'undefined' && $gameFactions && $gameFactions.getFaction) {
+        const faction = $gameFactions.getFaction(factionId);
+        if (faction && faction.name) {
+          const FDM = typeof FactionDataManager !== 'undefined' ? FactionDataManager : null;
+          return (FDM && FDM.instance) ? FDM.instance.t(faction.name) : faction.name;
+        }
       }
 
       // Fallback names, used only while FactionDataManager has not loaded.

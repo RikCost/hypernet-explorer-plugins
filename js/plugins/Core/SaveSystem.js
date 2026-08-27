@@ -708,20 +708,20 @@
 
         this._dndContainer.innerHTML = `
             <div class="save-book-spread">
-                <div class="save-left-page" style="width: 57.5%; padding: 35px 50px 35px 45px">
-                    <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
-                      <div class="back-button focusable" onclick="SoundManager.playCancel(); SceneManager.pop();" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
+                <div class="save-left-page save-01">
+                    <div class="page-header-bar save-02">
+                      <div class="back-button focusable save-03" onclick="SoundManager.playCancel(); SceneManager.pop();">
                         ${backBtnText}
                       </div>
-                      <h2 class="save-title" style="border: none; margin: 0; padding: 0">${leftPageTitle}</h2>
+                      <h2 class="save-title save-04">${leftPageTitle}</h2>
                     </div>
                     <div class="save-list"></div>
                 </div>
 
-                <div class="save-right-page" style="width: 42.5%; padding: 35px 45px 35px 50px">
+                <div class="save-right-page save-05">
                     <h2 class="save-title">${rightPageTitle}</h2>
                     <div class="save-details-container"></div>
-                    <div class="actions-bar" style="display: none"></div>
+                    <div class="actions-bar save-06"></div>
                 </div>
             </div>
         `;
@@ -856,7 +856,7 @@
 
     function gaugeHTML(kind, value, max) {
         const rate = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
-        return `<div class="save-member-gauge"><div class="save-member-gauge-fill ${kind}" style="width: ${(rate * 100).toFixed(1)}%"></div></div>`;
+        return `<div class="save-member-gauge"><div class="save-member-gauge-fill ${kind}" style="width:${(rate * 100).toFixed(1)}%"></div></div>`;
     }
 
     function memberStatHTML(kind, label, value, max) {
@@ -914,8 +914,8 @@
             dateStr = window.TimeDateSystem.getDateTimeFromMinutes(WM.worldClockMinutes()).fullDate;
         }
         return `
-            <div style="border: 1px dashed rgba(255,204,102,0.35); background: rgba(60,42,0,0.25); padding: 10px 14px; margin-bottom: 15px; font-family: 'Lora', serif">
-                <h4 style="margin: 0 0 6px 0; color: #ffcc66; border-bottom: 1px dashed rgba(255,204,102,0.25); padding-bottom: 3px">
+            <div class="save-07">
+                <h4 class="save-08">
                     ${T('SaveSystem.world')}: ${escapeHtml(WM.activeWorldName)}
                 </h4>
                 <div class="detail-row">
@@ -961,16 +961,16 @@
             const showLoad = true; // any existing savefile can be loaded
             // Another party of this world: visible and loadable, never writable.
             const lockedNote = (this.mode() === "save" && !showSave)
-                ? `<div style="width: 100%; text-align: center; font-family: 'Lora', serif; font-size: 0.892em; color: #c8b088; margin-top: auto; padding-top: 10px">
+                ? `<div class="save-09">
                         ${T('SaveSystem.anotherPartyOfThisWorld')}
                    </div>`
                 : "";
             rightPageHTML = `
-                <div class="save-details-card" style="display: flex; justify-content: space-between; height: 100%">
+                <div class="save-details-card save-10">
                     <div>
                         ${worldHTML}
                         <h3 class="detail-title">${info.title || T('SaveSystem.adventureLog')}</h3>
-                        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px">
+                        <div class="save-11">
                             <div class="detail-row">
                                 <span class="detail-label">${T('SaveSystem.playTime')}</span>
                                 <span>${info.playtime}</span>
@@ -981,7 +981,7 @@
                             </div>
                         </div>
                         
-                        <h4 style="margin: 15px 0 5px 0; font-family: 'Lora', serif; color: #ffcc66; border-bottom: 1px dashed rgba(255,204,102,0.25); padding-bottom: 3px">
+                        <h4 class="save-12">
                             ${T('SaveSystem.partyMembers')}
                         </h4>
                         ${charsHTML}
@@ -989,16 +989,16 @@
 
                     ${lockedNote}
 
-                    <div style="display: flex; gap: 10px; justify-content: center; width: 100%; margin-top: ${lockedNote ?"6px" : "auto"}; padding-top: 10px; flex-wrap: wrap;">
+                    <div class="save-13" style="margin-top:${lockedNote ?"6px" : "auto"}; padding-top: 10px; flex-wrap: wrap;">
                         ${showSave ? `
-                        <button class="action-btn focusable" onclick="SceneManager._scene.executeSaveGame(${this._selectedIndex})" style="min-width: 90px; cursor: pointer">
+                        <button class="action-btn focusable save-14" onclick="SceneManager._scene.executeSaveGame(${this._selectedIndex})">
                             ${T('SaveSystem.save')}
                         </button>` : ""}
                         ${showLoad ? `
-                        <button class="action-btn focusable" onclick="SceneManager._scene.loadSavefile(${this._selectedIndex})" style="min-width: 90px; cursor: pointer; background: #2e7d32; border-color: rgba(46, 125, 50, 0.4); color: #fff">
+                        <button class="action-btn focusable save-15" onclick="SceneManager._scene.loadSavefile(${this._selectedIndex})">
                             ${T('SaveSystem.load')}
                         </button>` : ""}
-                        <button class="action-btn focusable" onclick="SceneManager._scene.deleteSavefile(${this._selectedIndex})" style="min-width: 90px; cursor: pointer; background: rgba(130, 45, 45, 0.85); color: #fff; border-color: rgba(130, 45, 45, 0.4)">
+                        <button class="action-btn focusable save-16" onclick="SceneManager._scene.deleteSavefile(${this._selectedIndex})">
                             ${T('SaveSystem.delete')}
                         </button>
                     </div>
@@ -1013,8 +1013,8 @@
             let saveBtnHTML = "";
             if (isSave && canSaveTo(this._selectedIndex)) {
                 saveBtnHTML = `
-                    <div style="display: flex; gap: 15px; justify-content: center; width: 100%; margin-top: 20px">
-                        <button class="action-btn focusable" onclick="SceneManager._scene.executePrimaryAction(${this._selectedIndex})" style="min-width: 140px; cursor: pointer">
+                    <div class="save-17">
+                        <button class="action-btn focusable save-18" onclick="SceneManager._scene.executePrimaryAction(${this._selectedIndex})">
                             ${T('SaveSystem.save')}
                         </button>
                     </div>
@@ -1022,9 +1022,9 @@
             }
 
             rightPageHTML = `
-                <div class="save-details-card" style="display:flex; align-items:center; justify-content:center; height: 100%">
-                    <div style="width: 100%">${worldHTML}</div>
-                    <div style="font-family: 'Lora', serif; font-size: 0.964em; color: #c8b088; background: rgba(40,28,8,0.5); border: 1px dashed rgba(255,204,102,0.35); padding: 25px; border-radius: 4px; line-height: 1.6; text-align: center; max-width: 80%">
+                <div class="save-details-card save-19">
+                    <div class="save-20">${worldHTML}</div>
+                    <div class="save-21">
                         "${emptyText}"
                     </div>
                     ${saveBtnHTML}
@@ -1479,67 +1479,9 @@
                 'justify-content: center !important',
                 'z-index: 10000 !important'
             ].join(';');
+            // The gravestone screen's whole look lives in theme.css under
+            // "Hardcore game over"; only its content is built here.
             c.innerHTML = `
-                <style>
-                    #hardcore-gameover-container {
-                        background: radial-gradient(ellipse at center, rgba(40,0,0,0.55) 0%, rgba(0,0,0,0.92) 70%, #000 100%);
-                        font-family: 'Lora', 'Times New Roman', serif; color: #c9b48a;
-                        opacity: 0; animation: hgo-fade 1.6s ease forwards;
-                        user-select: none; cursor: pointer;
-                        overflow: hidden;
-                    }
-                    @keyframes hgo-fade { to { opacity: 1; } }
-                    #hardcore-gameover-container .hgo-panel {
-                        flex: 1 1 auto;
-                        width: 100%; height: 100%;
-                        display: flex; flex-direction: column;
-                        align-items: center; justify-content: center;
-                        text-align: center;
-                        padding: clamp(16px, 4vh, 48px) clamp(16px, 6vw, 80px);
-                        box-sizing: border-box;
-                    }
-                    #hardcore-gameover-container .hgo-title {
-                        font-size: clamp(48px, 11vmin, 128px); font-weight: bold; letter-spacing: 0.12em;
-                        color: #8b1a1a; margin: 0 0 clamp(4px, 1vh, 12px) 0;
-                        text-shadow: 0 0 18px rgba(139,26,26,0.65), 0 2px 4px #000;
-                    }
-                    #hardcore-gameover-container .hgo-epitaph {
-                        font-style: normal; font-size: clamp(16px, 3vmin, 28px); color: #b8a079;
-                        margin-bottom: clamp(16px, 4vh, 40px);
-                    }
-                    #hardcore-gameover-container .hgo-em {
-                        font-style: normal; font-size: clamp(15px, 2.6vmin, 24px);
-                        color: #b48ad0; letter-spacing: 0.03em;
-                        margin: calc(-1 * clamp(8px, 2vh, 20px)) 0 clamp(16px, 4vh, 40px) 0;
-                        text-shadow: 0 0 12px rgba(150,90,200,0.55), 0 2px 4px #000;
-                        animation: hgo-em-pulse 3.4s ease-in-out infinite;
-                    }
-                    @keyframes hgo-em-pulse {
-                        0%, 100% { opacity: 0.72; }
-                        50%      { opacity: 1; }
-                    }
-                    #hardcore-gameover-container .hgo-stats {
-                        border-top: 1px solid rgba(201,180,138,0.25);
-                        border-bottom: 1px solid rgba(201,180,138,0.25);
-                        padding: clamp(12px, 2.5vh, 26px) 8px;
-                        margin: 0 auto clamp(20px, 5vh, 46px) auto;
-                        width: 100%; max-width: min(620px, 70vw);
-                    }
-                    #hardcore-gameover-container .hgo-stat-row {
-                        display: flex; align-items: baseline; justify-content: center; gap: 10px;
-                        font-size: clamp(14px, 2.2vmin, 22px); margin: 6px 0;
-                    }
-                    #hardcore-gameover-container .hgo-stat-label { white-space: nowrap; color: #c9b48a; }
-                    #hardcore-gameover-container .hgo-stat-value { white-space: nowrap; color: #f0e3c0; font-weight: bold; }
-                    #hardcore-gameover-container .hgo-stat-dots { display: none; }
-                    #hardcore-gameover-container .hgo-button {
-                        display: inline-block; font-family: 'Lora', serif; font-size: clamp(14px, 2.2vmin, 22px);
-                        background: #5a1414; color: #ecdcb9; padding: 0.6em 1.6em; border: 1.5px solid #2a0a0a;
-                        border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;
-                        transition: all 0.2s ease; cursor: pointer;
-                    }
-                    #hardcore-gameover-container .hgo-button:hover { background: #7a1c1c; box-shadow: 0 0 14px rgba(139,26,26,0.6); }
-                </style>
                 <div class="hgo-panel">
                     <h1 class="hgo-title">${titleText}</h1>
                     <div class="hgo-epitaph">${epitaph}</div>

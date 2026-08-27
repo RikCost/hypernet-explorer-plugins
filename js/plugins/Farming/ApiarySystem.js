@@ -31,6 +31,21 @@
     
     const HONEY_ITEM_ID = 149;
 
+    // ---- Where the yield goes ----------------------------------------------
+    // Straight to the party, unless they own a shop that deals in this sort of
+    // thing, in which case the crate goes to that shop's warehouse - which is
+    // what its production recipes eat - and the party is told. ShopManagement
+    // owns the rule; with that plugin off this is a plain gainItem.
+    function deliverFarmProduce(item, amount) {
+        const SM = window.ShopManagement;
+        if (SM && typeof SM.deliverProduce === 'function') {
+            return SM.deliverProduce(item, amount);
+        }
+        if (window.$gameParty && item) $gameParty.gainItem(item, amount);
+        return { toShop: 0, toParty: amount, shopId: null };
+    }
+
+
     // Colony sim runs on in-game minutes (Variable 114), not wall-clock time, so it
     // stays in sync with the other farming systems and never injects a huge step on load.
     const APIARY_TIME_VAR = 114;
@@ -38,6 +53,52 @@
     const APIARY_MAX_CATCHUP_HOURS = 168;
     // Hard ceiling on the serialized bee population so saves don't bloat.
     const MAX_COLONY_BEES = 2000;
+
+    // ---- The weather the hive is actually standing in -----------------------
+    // WeatherSystem owns the season, the sky and the temperature, and writes the
+    // temperature to variable 61. Its weather ids are the engine's (none, rain,
+    // storm, snow, ...) and the hive's own vocabulary is a plainer one, so the
+    // few that matter to a foraging bee are mapped across and anything else
+    // reads as an ordinary overcast day. Every field answers null when the
+    // weather plugin is not running, and the colony falls back to simulating it.
+    const APIARY_TEMPERATURE_VAR = 61;
+    const WORLD_WEATHER_TO_HIVE = {
+        none: 'sunny', clear: 'sunny', sunny: 'sunny',
+        rain: 'rainy', storm: 'stormy', snow: 'stormy',
+        wind: 'windy', fog: 'cloudy', cloudy: 'cloudy',
+    };
+    const HIVE_SEASONS = ['spring', 'summer', 'autumn', 'winter'];
+
+    const ApiaryClimate = {
+        read() {
+            const w = (typeof $gameWeather !== 'undefined') ? $gameWeather : null;
+            return {
+                season: this.season(w),
+                weather: this.weather(w),
+                temperature: this.temperature(w),
+            };
+        },
+        season(w) {
+            if (!w || typeof w.getSeason !== 'function') return null;
+            try {
+                const s = String(w.getSeason() || '').toLowerCase();
+                return HIVE_SEASONS.includes(s) ? s : null;
+            } catch (e) { return null; }
+        },
+        weather(w) {
+            if (!w || !w.currentWeatherType) return null;
+            const key = String(w.currentWeatherType).toLowerCase();
+            return WORLD_WEATHER_TO_HIVE[key] || 'cloudy';
+        },
+        // Zero is a real temperature, so what says "nobody is keeping one" is
+        // the absence of the weather manager, not the value in the variable.
+        temperature(w) {
+            if (!w) return null;
+            if (typeof $gameVariables === 'undefined' || !$gameVariables) return null;
+            const t = Number($gameVariables.value(APIARY_TEMPERATURE_VAR));
+            return Number.isFinite(t) ? t : null;
+        },
+    };
 
     // What the party's Beekeeping is worth at the hive: more brought in by the
     // foragers and more taken off at the harvest, and fewer frames lost to moth
@@ -282,32 +343,45 @@
             return this.generateReport(hours);
         }
         
+        // The hive lives outdoors, in the same year as everything else. This
+        // used to roll its own season on a 90-day counter of its own and pick
+        // its weather at random every tick, so a colony could be wintering
+        // through the game's July and the plant beds twenty tiles away could be
+        // in a different season again. The world answers all three questions
+        // now (WeatherSystem owns the season, the weather and the temperature,
+        // the same source PlantGrowthSystem reads), and the private simulation
+        // survives only for a hive kept somewhere the weather plugin is not
+        // running.
         updateEnvironment() {
-            // Simulate day/night cycle
-            const hour = this.colony.stats.age % 24;
-            const isDay = hour >= 6 && hour <= 18;
-            
-            // Temperature fluctuation
-            if (isDay) {
-                this.colony.environment.temperature = 20 + Math.random() * 10;
+            const env = this.colony.environment;
+            const world = ApiaryClimate.read();
+
+            if (world.temperature !== null) {
+                env.temperature = world.temperature;
             } else {
-                this.colony.environment.temperature = 10 + Math.random() * 5;
+                const hour = this.colony.stats.age % 24;
+                const isDay = hour >= 6 && hour <= 18;
+                env.temperature = isDay ? 20 + Math.random() * 10 : 10 + Math.random() * 5;
             }
-            
-            // Seasonal changes
-            const day = Math.floor(this.colony.stats.age / 24);
-            if (day % 90 === 0) {
-                const seasons = ['spring', 'summer', 'autumn', 'winter'];
-                const currentIndex = seasons.indexOf(this.colony.environment.season);
-                this.colony.environment.season = seasons[(currentIndex + 1) % 4];
+
+            if (world.season) {
+                env.season = world.season;
+            } else {
+                const day = Math.floor(this.colony.stats.age / 24);
+                if (day % 90 === 0) {
+                    const seasons = ['spring', 'summer', 'autumn', 'winter'];
+                    const currentIndex = seasons.indexOf(env.season);
+                    env.season = seasons[(currentIndex + 1) % 4];
+                }
             }
-            
-            // Weather changes
-            if (Math.random() < 0.1) {
+
+            if (world.weather) {
+                env.weather = world.weather;
+            } else if (Math.random() < 0.1) {
                 const weatherTypes = ['sunny', 'cloudy', 'rainy', 'stormy', 'windy'];
-                this.colony.environment.weather = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+                env.weather = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
             }
-            
+
             // Flower availability
             const seasonModifier = {
                 spring: 1.2,
@@ -878,7 +952,7 @@
                 // The colony only ever loses the 70%; the keeper's skill shows
                 // in how much of it survives extraction into actual jars.
                 const jars = Math.floor(harvestable * beekeepingBonus() / 10);
-                $gameParty.gainItem($dataItems[HONEY_ITEM_ID], jars);
+                deliverFarmProduce($dataItems[HONEY_ITEM_ID], jars);
                 // What came off the hives, in the party's diary (Diary.js).
                 if (window.Diary) {
                     window.Diary.onHiveHarvest($dataItems[HONEY_ITEM_ID].name, jars);
@@ -947,11 +1021,14 @@
                 return `<span style="display:inline-block; width:${sz}px; height:${sz}px; background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat; background-size:${bw}px ${bh}px; vertical-align:middle; margin-right:3px; image-rendering:pixelated; flex-shrink:0"></span>`;
             };
 
+            // The colony's mood, in the palette's ink rather than in fixed
+            // hexes picked for one page: the same word is printed as a label,
+            // so it has to stay readable under either theme.
             const stateColors = {
-                thriving: '#27ae60', stable: '#2980b9', struggling: '#e67e22',
-                swarming: '#8e44ad', supersedure: '#c0392b', dormant: '#7f8c8d'
+                thriving: 'var(--text-cost-ok)', stable: 'var(--text-navy)', struggling: 'var(--text-amber-hint)',
+                swarming: 'var(--text-text-alt-19)', supersedure: 'var(--text-cost-bad)', dormant: 'var(--text-disabled)'
             };
-            const stateColor = stateColors[report.colony.state] || '#8b5a2b';
+            const stateColor = stateColors[report.colony.state] || 'var(--text-brown-medium)';
 
             // Simulate Day visibility: only for Test player or Sandbox mode
             const leaderName = ($gameParty.leader && $gameParty.leader()) ? $gameParty.leader().name() : '';
@@ -1034,9 +1111,9 @@
             this._container.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        <div style="position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px dashed #bba16d; padding-bottom:8px; margin-bottom:18px; min-height:40px; width:100%">
-                            <div class="back-button" onclick="SceneManager._scene.popScene()" style="position:absolute; background:#8b5a2b; color:#ecdcb9; padding:4px 14px; border-radius:4px; font-weight:bold; border:1.5px solid #4a2711; font-size:0.96rem; font-family:'Lora',serif">${T('Apiary.ui.back')}</div>
-                            <h2 class="title" style="border:none; margin:0; padding:0">${T('Apiary.ui.apiary')}</h2>
+                        <div class="page-header-bar">
+                            <div class="back-button" onclick="SceneManager._scene.popScene()">${T('Apiary.ui.back')}</div>
+                            <h2 class="title">${T('Apiary.ui.apiary')}</h2>
                         </div>
 
                         <div class="apiary-content-grid">

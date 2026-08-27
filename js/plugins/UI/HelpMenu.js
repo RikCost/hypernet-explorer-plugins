@@ -256,16 +256,20 @@
         let parsed = ControlTagParser.parseControlText(text);
         parsed = paragraphsToHtml(parsed);
 
+        // The codex is written with the engine's \C[n] colour codes. They used
+        // to resolve to fixed inks picked for the cream page, which left the
+        // default one (a dark mahogany) all but unreadable on a dark theme;
+        // each code now names the theme token that carries the same meaning.
         const colorMap = {
-            0: "#2b1207",  // Default dark mahogany
-            1: "#007acc",  // Blue
-            2: "#c0392b",  // Red
-            3: "#27ae60",  // Green
-            4: "#2980b9",  // Light Blue
-            5: "#8e44ad",  // Purple
-            6: "#d35400",  // Orange/Yellow
-            17: "#8b1e10", // Accent Red/Gold
-            18: "#b78727"  // Gold
+            0: "var(--text-success-active)",  // Body ink
+            1: "var(--text-navy)",            // Blue
+            2: "var(--text-cost-bad)",        // Red
+            3: "var(--text-cost-ok)",         // Green
+            4: "var(--text-info-blue)",       // Light blue
+            5: "var(--text-text-alt-19)",     // Purple
+            6: "var(--text-amber-hint)",      // Orange
+            17: "var(--text-cost-bad)",       // Accent red
+            18: "var(--text-gold-dark)"       // Gold
         };
 
         let html = "";
@@ -281,7 +285,7 @@
                 openSpan = false;
             }
             const colorId = parseInt(match[1]);
-            const hexColor = colorMap[colorId] || "#2b1207";
+            const hexColor = colorMap[colorId] || "var(--text-success-active)";
             html += `<span style="color: ${hexColor}; font-weight: ${colorId === 0 ? 'normal' : 'bold'}">`;
             openSpan = true;
             lastIndex = regex.lastIndex;
@@ -363,6 +367,10 @@
 
     Scene_Help.prototype = Object.create(Scene_MenuBase.prototype);
     Scene_Help.prototype.constructor = Scene_Help;
+
+    // Published so the parchment main menu can open it. Without this the scene stayed inside
+    // this file's IIFE and the menu's Help tile pushed a name that did not exist.
+    window.Scene_Help = Scene_Help;
 
     Scene_Help.prototype.initialize = function () {
         Scene_MenuBase.prototype.initialize.call(this);
@@ -806,11 +814,11 @@
             </div>`;
 
         leftPage.innerHTML = `
-            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
-              <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
+            <div class="page-header-bar">
+              <div class="back-button focusable" onclick="SceneManager._scene.popScene()">
                 ${backBtnText}
               </div>
-              <h2 class="title" style="border: none; margin: 0; padding: 0">${tCodex}</h2>
+              <h2 class="title">${tCodex}</h2>
             </div>
             ${rightHTML}
         `;
@@ -874,7 +882,7 @@
             }
 
             rightPage.innerHTML = `
-                <div id="help-search-slot" style="display: flex; align-items: center; justify-content: flex-end; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%"></div>
+                <div id="help-search-slot" style="display: flex; align-items: center; justify-content: flex-end; border-bottom: 2px dashed var(--border-success); padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%"></div>
                 <div class="tabs-bar">
                     ${tabsHTML}
                 </div>

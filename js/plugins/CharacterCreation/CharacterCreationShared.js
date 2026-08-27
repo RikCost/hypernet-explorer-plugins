@@ -100,6 +100,23 @@
       : name;
   }
 
+  /**
+   * The same service for the prose under the name: a database record's
+   * description (js/i18n/<lang>/skills.json, items.json and friends carry one
+   * per id, keyed by the English line). A DOM panel that pasted the record's
+   * own description showed a translated spell name over an English sentence,
+   * so every inspect card routes its description through here.
+   * @param {object|string} entry - Database record, or a raw description
+   * @returns {string} Translated description (the original when none loaded)
+   */
+  function dbDescription(entry) {
+    const desc = typeof entry === "string" ? entry : (entry && entry.description) || "";
+    if (!desc) return "";
+    return typeof window.Hendrix_Localization === "function"
+      ? window.Hendrix_Localization(desc)
+      : desc;
+  }
+
   //=============================================================================
   // Gender & Reproduction System
   //=============================================================================
@@ -682,7 +699,15 @@
 
     // Per-frame trigger poll. Call from the scene's update() while the overlay
     // is visible: L2 scrolls up, R2 scrolls down.
+    //
+    // The triggers are now read for the WHOLE game, once a frame, by UIScroll
+    // in Core/MouseControls.js - the same walk that answers the wheel there.
+    // It asks a scene for ccScrollTarget() and ccScrollStep() exactly as this
+    // did, so the creation screens keep the panes they name; this stands down
+    // when it is present rather than scrolling the same pane a second time.
+    // The body below is what a build without that plugin falls back on.
     update(container) {
+      if (window.UIScroll && typeof window.UIScroll.updateTriggers === "function") return;
       if (!container || container.style.display === "none") return;
       const pads = window.AnalogStickInput;
       if (!pads) return;
@@ -943,6 +968,7 @@
   // Global alias: the creation panels are template-literal heavy, and every
   // database name they print goes through this.
   window.CCDbName = dbName;
+  window.CCDbDesc = dbDescription;
 
   window.CharacterCreationUtils = {
     // Constants
@@ -958,6 +984,7 @@
     // Localization
     getLocalizedChoice,
     dbName,
+    dbDescription,
     statLabels,
     statLabel,
 

@@ -2042,9 +2042,15 @@
                 if (ceId > 0) $gameTemp.reserveCommonEvent(ceId);
                 this._monsterBattleTimer = setTimeout(() => {
                     this._monsterBattleTimer = null;
-                    SceneManager.pop();
+                    // Going straight to the battle hands it the scene this one
+                    // was opened from, so the end of the fight pops back to the
+                    // map. Popping first and pushing after would put THIS scene
+                    // back on the stack (the pop only queues the next scene, so
+                    // the push still sees the fishing scene as the current one),
+                    // which dropped the player back into fishing after the fight
+                    // with nothing under it left to escape to.
                     BattleManager.setup(troopId, true, false);
-                    SceneManager.push(Scene_Battle);
+                    SceneManager.goto(Scene_Battle);
                 }, 1400);
             }
         }
@@ -2617,6 +2623,15 @@
                 ctx.fillStyle = color;
                 ctx.fillText(ch, startX + (i + 0.5) * cellW, y);
             }
+        }
+
+        // Leaving is always a return to the game, never an exit. If nothing is
+        // left underneath (a battle or a reload emptied the stack) the map is
+        // the answer, because an empty stack makes SceneManager.pop close the
+        // whole game.
+        popScene() {
+            if (SceneManager._stack.length > 0) super.popScene();
+            else SceneManager.goto(Scene_Map);
         }
 
         //---------------------------------------------------------------------

@@ -19,7 +19,8 @@
  *
  * Requires: ProceduralMapUtils.js
  *
- * @command none
+ * This plugin offers no plugin commands. It used to carry a placeholder `@command none`,
+ * which put a command called "none" in the editor's list that did nothing when called.
  */
 
 (() => {
@@ -62,7 +63,7 @@
    * Format: "01 JAN 2001 12:00"
    */
   function getGameDateFromVariable() {
-    const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
+    const dateStr = (typeof $gameVariables !== 'undefined' && $gameVariables ? $gameVariables.value(113) : null) || '01 JAN 2001 12:00';
     // Format: "01 JAN 2001 12:00"
     const parts = dateStr.split(' ').filter(Boolean);
     if (parts.length < 4) {

@@ -268,7 +268,7 @@
         if (loreText)  detailedInfoHTML += `<div class="inspect-flavour">${loreText}</div>`;
 
         if (generalSpecs.length)    { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.specifications')}</div>`         + buildSpecRows(generalSpecs); }
-        if (paramSpecs.length)      { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.attributeModifiers')}</div>`   + paramSpecs.map(s => `<div class="inspect-spec-row"><span class="inspect-spec-label">${s.label}:</span><span class="inspect-spec-value" style="color:${s.val.startsWith('+')?'#2e7d32':'#c62828'};">${s.val}</span></div>`).join(''); }
+        if (paramSpecs.length)      { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.attributeModifiers')}</div>`   + paramSpecs.map(s => `<div class="inspect-spec-row"><span class="inspect-spec-label">${s.label}:</span><span class="inspect-spec-value" style="color:${s.val.startsWith('+')?'var(--text-cost-ok)':'var(--text-cost-bad)'};">${s.val}</span></div>`).join(''); }
         if (invocationSpecs.length) { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.invocationStats')}</div>`      + buildSpecRows(invocationSpecs); }
         if (damageSpecs.length)     { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.combatApplication')}</div>`    + buildSpecRows(damageSpecs); }
         if (effectsOrdered.length) {
@@ -319,7 +319,7 @@
           detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.cravingsFed')}</div>` + cravingsFed.map(r => `
             <div class="inspect-spec-row">
               <span class="inspect-spec-label">${r.label}:</span>
-              <span class="inspect-spec-value" style="color:#7B6A55;font-weight:bold;">-${r.amount}%</span>
+              <span class="inspect-spec-value inspect-spec-value--muted">-${r.amount}%</span>
             </div>`).join('');
         }
         if (noteTags.length)        { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.blueprints')}</div>` + noteTags.map(tag => `<div class="inspect-spec-row"><span class="inspect-spec-label">${tag.name}:</span><span class="inspect-spec-value" style="font-style: normal;max-width:60%;text-align:right;word-wrap:break-word;">${tag.value}</span></div>`).join(''); }
@@ -693,14 +693,14 @@
       specialCommands.forEach((specCmd, sIdx) => {
         const globalIdx = $gameParty.members().length + (item.scope === 8 || item.scope === 10 ? 1 : 0) + sIdx;
         const isFocused = (this._dndActiveSection === 'targets' && this._selectedTargetIndex === globalIdx) ? 'selected' : '';
-        targetsHTML += `<div class="target-option ${isFocused}" onclick="SceneManager._scene.triggerUISpecialAction('${specCmd}')" style="background:#4a2711;border-color:#bba16d;color:#ecdcb9;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;">${T('Inventory.ui.special', { command: specCmd })}</div>`;
+        targetsHTML += `<div class="target-option target-option--special ${isFocused}" onclick="SceneManager._scene.triggerUISpecialAction('${specCmd}')">${T('Inventory.ui.special', { command: specCmd })}</div>`;
       });
       rightPageInnerHTML = `
         <div class="target-overlay">
           <h3 class="target-title">${targetTitle}</h3>
           <div class="inspect-actions">
             ${targetsHTML}
-            <div class="inspect-btn" onclick="SceneManager._scene.cancelUITargeting()" style="margin-top:15px;border-color:#555;color:#555;">${T('Inventory.ui.cancel')}</div>
+            <div class="inspect-btn inspect-btn--secondary" onclick="SceneManager._scene.cancelUITargeting()">${T('Inventory.ui.cancel')}</div>
           </div>
         </div>`;
     } else if (!selectedItem) {
@@ -1104,6 +1104,19 @@
     this.refreshUIbackpack();
   };
 
+  // The three sort chips - name, weight, price - as one key. SHIFT steps to the
+  // next of them and then turns it round, which is the same two things clicking
+  // a chip does: pick it, or flip the direction of the one already picked. The
+  // chips had no key at all before, so a pad could not reorder the pockets.
+  Scene_EnhancedItem.prototype.cycleUISort = function () {
+    const keys = ['name', 'weight', 'price'];  // i18n-ignore: sort field ids
+    const at = keys.indexOf(this._dndSortKey);
+    // Descending is the second half of a chip's own cycle, so a step forward
+    // only moves on once this key has been seen both ways round.
+    if (at >= 0 && this._dndSortDirection === 'asc') this.toggleUISort(this._dndSortKey);
+    else this.toggleUISort(keys[(at + 1 + keys.length) % keys.length]);
+  };
+
   Scene_EnhancedItem.prototype.toggleUISort = function (key) {
     SoundManager.playOk();
     if (this._dndSortKey === key) {
@@ -1299,6 +1312,7 @@
       else if (isUp)    this.handleMove('up');
       else if (isLeft)  this.handleMove('left');
       else if (isRight) this.handleMove('right');
+      else if (Input.isTriggered('shift'))                                                   this._scene.cycleUISort();
       else if (Input.isTriggered('ok'))                                                      this.handleOk();
       else if (Input.isTriggered('escape') || Input.isTriggered('cancel') || TouchInput.isCancelled()) this.handleCancel();
     },

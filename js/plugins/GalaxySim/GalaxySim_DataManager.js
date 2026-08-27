@@ -896,6 +896,12 @@
       return Math.max(0, Math.ceil(Math.max(flux, map)));
     }
 
+    // The body the pumps are drawing from, for the countdown's caption.
+    refuelSourceName() {
+      const ship = this.playerShip;
+      return (ship && ship.parkedBody && ship.parkedBody.name) || "";
+    }
+
     // ------------------------------------------------------------------------
     // Auto-refuel routing: find the nearest star the ship can actually drink
     // from and plot the course there (see planRefuel / beginAutoRefuel). Used by
@@ -1415,6 +1421,10 @@
                   atmosphere: moon.atmosphere === true,
                   landingLocations: moon.landingLocations || null,
                   note: moon.note || null,
+                  // A moon that only exists on a Friday (Earth's second and
+                  // third): the calendar takes it out of this array and puts
+                  // it back, see GalaxySim.FridayMoons in GalaxySim_Core.
+                  friday: moon.friday === true ? true : undefined,
                 });
               });
             }
@@ -1436,6 +1446,10 @@
       // The table has just been rebuilt from the file, so whatever the
       // calendar had written over it is gone with it (see _syncTimeline).
       this._nibiruKey = null;
+      // The Friday moons come back with the freshly loaded data, so the state
+      // the calendar last applied has to be re-decided from scratch too.
+      this._fridayKey = null;
+      this._fridayMoonStash = null;
 
       console.log(`Loaded ${this.systems.size} hardcoded star systems from GalaxyData`);
     }
@@ -2210,6 +2224,11 @@
     _syncTimeline() {
       const N = window.GalaxySim && window.GalaxySim.Nibiru;
       if (N && N.sync) N.sync(this);
+      // After Nibiru: on the day Earth is replaced by the Omega Tower the
+      // tower inherits Earth's moon array, so the Friday pass must run on
+      // whatever body is standing in Earth's orbit by then.
+      const F = window.GalaxySim && window.GalaxySim.FridayMoons;
+      if (F && F.sync) F.sync(this);
     }
 
     getSystem(name) {

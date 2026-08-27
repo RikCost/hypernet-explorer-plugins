@@ -6,7 +6,7 @@
     "minigames": "Minigiochi",
     "sandbox": "Sandbox",
     "worlds": "Mondi",
-    "wiki": "Wiki",
+    "wiki": "Storia del Mondo",
     "preferences": "Preferenze",
     "mods": "Mods",
     "exit": "Esci",
@@ -20,7 +20,7 @@
     "minigames": "MINIGIOCHI",
     "sandbox": "SANDBOX",
     "worlds": "MONDI",
-    "wiki": "WIKI",
+    "wiki": "STORIA DEL MONDO",
     "preferences": "PREFERENZE",
     "mods": "MODS",
     "exit": "ESCI",
@@ -29,7 +29,7 @@
   },
   "minigame": {
     "arena": "Arena",
-    "camperDriving": "Guida Camper",
+    "liminalWorld": "Mondo Liminale",
     "galaxyMap": "Mappa Galattica",
     "dream": "Sogno",
     "surfing": "Surf",
@@ -71,6 +71,14 @@
     "afternoon": "Pomeriggio",
     "evening": "Sera",
     "night": "Notte",
+    "vehicleTitle": "Come",
+    "destinationTitle": "Da Dove",
+    "onFoot": "A Piedi",
+    "camper": "Camper",
+    "car": "Auto",
+    "bike": "Bicicletta",
+    "boat": "Barca",
+    "broom": "Scopa Volante",
     "back": "Indietro"
   },
   "disclaimer": {
@@ -78,7 +86,10 @@
     "noclip": "Se resti bloccato in un muro, tieni premuto CTRL per usare la modalità noclip."
   },
   "news": {
-    "header": "NOTIZIE // BUILD INIZIALE"
+    "header": "NOTIZIE // BUILD INIZIALE",
+    "older": "‹ INDIETRO",
+    "newer": "AVANTI ›",
+    "empty": "Questa build non include un changelog."
   },
   "support": {
     "header": "SOSTIENI LO SVILUPPO",
@@ -123,7 +134,7 @@
     "curvature": "CURVATURA SPAZIALE RILEVATA"
   },
   "version": {
-    "text": "0.3.6a"
+    "text": "0.4.0a"
   },
   "language": {
     "label": "✦ LINGUA"

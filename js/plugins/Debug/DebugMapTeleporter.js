@@ -293,6 +293,13 @@
                     text-align: center;
                     padding: 20px;
                 }
+                /* The card the arrow keys are resting on. The list is walked
+                   as well as clicked: the search field keeps the caret, and the
+                   arrows move this ring through whatever the filter left. */
+                .map-item.kb-focus {
+                    outline: 3px solid #f1c40f;
+                    outline-offset: 2px;
+                }
                 .map-item.hidden {
                     display: none;
                 }
@@ -653,12 +660,69 @@
         if (backButton) {
             backButton.addEventListener('click', closeDebug);
         }
+        // Walking the list. The window opens with the caret in the search
+        // field, so the letters keep going into the filter and only the arrows,
+        // Enter and Escape are taken. The ring is kept by INDEX into whatever
+        // the filter has left visible, so narrowing the list never strands it.
+        let focusIndex = -1;
+        const visibleItems = () =>
+            Array.from(debugWindow?.document?.querySelectorAll('.map-item:not(.hidden)') || []);
+
+        const paintFocus = (items) => {
+            items.forEach((el, i) => el.classList.toggle('kb-focus', i === focusIndex));
+            const el = items[focusIndex];
+            if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+        };
+
+        // How many cards sit on one row of the grid, measured off the cards
+        // themselves so the walk follows whatever width the window has.
+        const columnsOf = (items) => {
+            if (items.length < 2) return 1;
+            const top = items[0].getBoundingClientRect().top;
+            let cols = 1;
+            while (cols < items.length &&
+                   Math.abs(items[cols].getBoundingClientRect().top - top) < 4) cols++;
+            return cols;
+        };
+
+        const moveFocus = (delta) => {
+            const items = visibleItems();
+            if (!items.length) return;
+            focusIndex = focusIndex < 0
+                ? (delta > 0 ? 0 : items.length - 1)
+                : Math.max(0, Math.min(items.length - 1, focusIndex + delta));
+            paintFocus(items);
+        };
+
         debugWindow?.document?.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' || e.keyCode === 27) {
                 e.preventDefault();
                 closeDebug();
+                return;
+            }
+            const items = visibleItems();
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                moveFocus(e.key === 'ArrowDown' ? columnsOf(items) : -columnsOf(items));
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                moveFocus(e.key === 'ArrowRight' ? 1 : -1);
+            } else if (e.key === 'Enter') {
+                const el = items[focusIndex];
+                if (!el) return;
+                e.preventDefault();
+                el.click();
             }
         });
+
+        // A filtered list is a different list: the ring starts again at its top
+        // rather than pointing at a card that is no longer on the page.
+        if (filterInput) {
+            filterInput.addEventListener('input', () => {
+                focusIndex = -1;
+                visibleItems().forEach((el) => el.classList.remove('kb-focus'));
+            });
+        }
     };
 
     // Clean up when leaving map scene

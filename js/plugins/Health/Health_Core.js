@@ -839,6 +839,54 @@
     return out;
   }
 
+  //---------------------------------------------------------------------------
+  // Mobility and grip: what the anatomy is worth outside a fight
+  //---------------------------------------------------------------------------
+  // Body parts drove stat penalties, part skills, prosthetic sockets and the 3D
+  // model's dismemberment, and nothing else in the game ever asked. A character
+  // could lose both legs and still walk the map, sprint, drive and take a manual
+  // job at full speed, because movement, work and the vehicles never read
+  // `_bodyParts` at all.
+  //
+  // These two answer the question in the anatomy's own terms, so a quadruped
+  // that has lost one of six legs is barely slowed and a biped that has lost one
+  // of two is halved, without either caller having to know what shape the
+  // character is. A fitted prosthetic counts as a working part, because
+  // Health_ProstheticShop puts it into `_bodyParts` like any other.
+  //
+  // Both answer 1 for a character with no anatomy recorded, so nothing changes
+  // for an actor the health system has never touched.
+  function _familyShare(actor, family) {
+    const parts = (actor && actor._bodyParts) || {};
+    const severed = (actor && actor._severedParts) || {};
+    let total = 0, working = 0;
+    const seen = {};
+    const count = (key, part) => {
+      if (seen[key]) return;
+      if (!partFamilies(key).includes(family)) return;
+      seen[key] = true;
+      total++;
+      if (part && !isPartBroken(part)) working++;
+    };
+    for (const key in parts) count(key, parts[key]);
+    for (const key in severed) count(key, null);
+    if (total === 0) return 1;
+    return working / total;
+  }
+
+  // How much of their legs a character still stands on, 0..1.
+  function mobility(actor) {
+    return _familyShare(actor, "LEG");
+  }
+
+  // How much of their arms and hands they still have, 0..1. What a two-handed
+  // job, a steering wheel and a weapon all ask about.
+  function grip(actor) {
+    const arms = _familyShare(actor, "ARM");
+    const hands = _familyShare(actor, "HAND");
+    return Math.min(arms, hands);
+  }
+
   // Every augment key this socket accepts: its own entry plus its families'.
   function implantsForPart(partKey) {
     const table = window.Health ? window.Health.ProstheticCompatibility : null;
@@ -2317,6 +2365,10 @@
   Scene_HealthStatus.prototype = Object.create(Scene_MenuBase.prototype);
   Scene_HealthStatus.prototype.constructor = Scene_HealthStatus;
 
+  // Published alongside the HealthCore helpers below. AutoIdleExplorer gates its "look at the
+  // party's wounds" entry on this name, and never found it while the scene sat in the IIFE.
+  window.Scene_HealthStatus = Scene_HealthStatus;
+
   Scene_HealthStatus.prototype.initialize = function () {
     Scene_MenuBase.prototype.initialize.call(this);
     // Set switch 127 when health status menu is opened
@@ -2515,6 +2567,11 @@
   // Every skill the anatomy owes: read by CategorizedBattleSkills, which never
   // benches one (a body does not put its own claws in storage).
   window.HealthCore.anatomySkillIds = anatomySkillIds;
+  // What the anatomy is worth outside a fight: read by the movement system
+  // (walking speed, sprinting) and by anything that wants to know whether a
+  // character can still hold or steer something.
+  window.HealthCore.mobility = mobility;
+  window.HealthCore.grip = grip;
   // Socket matching by part name, read by the prosthetic shop.
   window.HealthCore.partFamilies = partFamilies;
   window.HealthCore.implantsForPart = implantsForPart;

@@ -999,7 +999,7 @@
     // VITAL badge or removal price
     if (item.vital) {
       this.changeTextColor(getTextColor.call(this, 18));
-      this.drawText(T('Prosthetics.vital'), x + width - 160, rect.y, 160, "right");
+      this.drawText(T('Prosthetics.vitalBadge'), x + width - 160, rect.y, 160, "right");
     } else {
       this.resetTextColor();
       this.drawText(formatPriceInEuros(item.cost), x + width - 160, rect.y, 160, "right");
@@ -1177,7 +1177,7 @@
     // Second line: vital badge or stat loss
     if (item.vital) {
       this.changeTextColor(getTextColor.call(this, 18));
-      this.drawText(T('Prosthetics.vital'), x, rect.y + this.lineHeight(), width);
+      this.drawText(T('Prosthetics.vitalBadge'), x, rect.y + this.lineHeight(), width);
     } else if (item.statEffect && item.statBonus > 0) {
       const paramName = getParamName(item.statEffect.param);
       this.changeTextColor(getTextColor.call(this, 7));
@@ -2069,9 +2069,9 @@
         <div id="clinic-notification-container"></div>
         <div class="book-spread">
             <div class="left-page">
-                <h2 id="left-title" class="title" style="margin:0 0 10px 0;"></h2>
-                <p id="left-desc" style="font-family:'Lora', serif; font-size:0.914em; line-height:1.45; color:#5d483b; margin:0 0 15px 0; text-align:center; font-style: normal;"></p>
-                <div id="left-page-content" style="display:flex; flex-direction:column; height:100%; overflow:hidden;"></div>
+                <h2 id="left-title" class="title pros-01"></h2>
+                <p class="pros-02" id="left-desc"></p>
+                <div class="pros-03" id="left-page-content"></div>
             </div>
             <div class="right-page" id="right-page-content">
             </div>
@@ -2098,13 +2098,13 @@
       leftPageHTML += '<div class="shop-scroll">';
       activeMembers.forEach((actor, idx) => {
         leftPageHTML += `
-          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectActor(${idx})">
-              <div class="portrait-frame" style="width:48px; height:48px;">
-                  <canvas id="actor-canvas-left-${idx}" width="48" height="48" style="image-rendering:pixelated; display:block;"></canvas>
+          <div class="patient-card focusable pros-04" onclick="SceneManager._scene.selectActor(${idx})">
+              <div class="portrait-frame pros-05">
+                  <canvas class="pros-06" id="actor-canvas-left-${idx}" width="48" height="48"></canvas>
               </div>
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.238em; color:#58180D;">${actor.name()}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.892em; color:#5d483b;">
+              <div class="pros-07">
+                  <h4 class="pros-08">${actor.name()}</h4>
+                  <p class="pros-09">
                       ${actor.currentClass() ? actor.currentClass().name : T('Prosthetics.classless')} (${T('Prosthetics.levelShort', { level: actor.level })})
                   </p>
               </div>
@@ -2125,14 +2125,14 @@
           ? window.Specializations.levelName(odds.level) : String(odds.level);
         this._activeListItems.push({ isSurgeon: true, actor, odds });
         leftPageHTML += `
-          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectSurgeon(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${actor.name()}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
+          <div class="patient-card focusable pros-04" onclick="SceneManager._scene.selectSurgeon(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${actor.name()}</h4>
+                  <p class="pros-11">
                       ${T('Prosthetics.surgerySpec', { level: levelName })}${odds.self ? ` | ${T('Prosthetics.operatingOnSelf')}` : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
+              <div class="pros-12">
                   ${odds.chance}%
               </div>
           </div>
@@ -2169,10 +2169,10 @@
           ];
 
       leftPageHTML += `
-        <div class="shop-scroll" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="shop-scroll pros-13">
             ${commands.map(c => `
             <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('${c.cmd}')">
-                <span class="icon" style="background: url('img/system/IconSet.png') -${(c.icon % 16) * 32}px -${Math.floor(c.icon / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
+                <span class="icon pros-14" style="background:url('img/system/IconSet.png') -${(c.icon % 16) * 32}px -${Math.floor(c.icon / 16) * 32}px no-repeat"></span>
                 <span>${c.label}</span>
             </div>`).join("")}
         </div>
@@ -2188,17 +2188,17 @@
       const _archetypeKeys = (this._dailyArchetypes && Archetypes)
         ? this._dailyArchetypes.filter(k => Archetypes[k])
         : (Archetypes ? Object.keys(Archetypes) : []);
-      leftPageHTML += '<div class="shop-scroll" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start;">';
+      leftPageHTML += '<div class="shop-scroll pros-15">';
       cols = 2;
       leftPageHTML += `
-        <div class="command-item focusable" style="grid-column:1/-1; font-size:1.095em; display:flex; justify-content:center; text-align:center; padding:10px 6px; border:2px solid rgba(88,24,13,0.4); background:rgba(88,24,13,0.06);" onclick="SceneManager._scene.chooseArchetype('__INVENTORY__')">
+        <div class="command-item focusable pros-16" onclick="SceneManager._scene.chooseArchetype('__INVENTORY__')">
             <span>${T('Prosthetics.inventoryOwnedParts')}</span>
         </div>
       `;
       for (const key of _archetypeKeys) {
         const label = key.replace(/([A-Z])/g, " $1").trim();
         leftPageHTML += `
-          <div class="command-item focusable" style="font-size: 1.142em; display:flex; justify-content:center; text-align:center; padding:12px 6px;" onclick="SceneManager._scene.chooseArchetype('${key}')">
+          <div class="command-item focusable pros-17" onclick="SceneManager._scene.chooseArchetype('${key}')">
               <span>${label}</span>
           </div>
         `;
@@ -2261,15 +2261,15 @@
       this._activeListItems.forEach((item, idx) => {
         const opacity = (item.alreadyOwned || item.blockedReason) ? "opacity: 0.55;" : "";
         leftPageHTML += `
-          <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
+          <div class="patient-card focusable" style="${opacity} position:relative" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${item.name}</h4>
+                  <p class="pros-11">
                       ${item.statEffect ? `${getParamName(item.statEffect.param)} +${item.statBonus}` : ""}
                       ${skillNames(item.skillId) ? ` | ★ ${skillNames(item.skillId)}` : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
+              <div class="pros-12">
                   ${item.alreadyOwned ? T('Prosthetics.owned')
                     : item.blockedReason ? item.blockedReason
                     : formatPriceInEuros(item.cost)}
@@ -2292,21 +2292,21 @@
 
       leftPageHTML += '<div class="shop-scroll">';
       if (this._activeListItems.length === 0) {
-        leftPageHTML += `<p style="font-family:'Lora',serif; color:#5d483b; font-style: normal; text-align:center; padding:20px;">${T('Prosthetics.noBodyPartItemsInInventory')}</p>`;
+        leftPageHTML += `<p class="pros-18">${T('Prosthetics.noBodyPartItemsInInventory')}</p>`;
       } else {
         this._activeListItems.forEach((entry, idx) => {
           const opacity = entry.alreadyOwned ? "opacity:0.55;" : "";
           const archLabel = entry.archetypeKey.replace(/([A-Z])/g, " $1").trim();
           leftPageHTML += `
-            <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-                <div style="flex-grow:1;">
-                    <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${entry.name}</h4>
-                    <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
+            <div class="patient-card focusable" style="${opacity} position:relative" onclick="SceneManager._scene.selectListItem(${idx})">
+                <div class="pros-07">
+                    <h4 class="pros-10">${entry.name}</h4>
+                    <p class="pros-11">
                         [${archLabel}]${entry.statEffect ? ` | ${getParamName(entry.statEffect.param)} +${entry.statBonus}` : ""}
                         ${skillNames(entry.skillId) ? ` | ★ ${skillNames(entry.skillId)}` : ""}
                     </p>
                 </div>
-                <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
+                <div class="pros-12">
                     ${entry.alreadyOwned ? T('Prosthetics.installed2') : formatPriceInEuros(entry.cost)}
                 </div>
             </div>
@@ -2348,15 +2348,15 @@
       this._activeListItems.forEach((item, idx) => {
         const opacity = item.vital ? "opacity: 0.55;" : "";
         leftPageHTML += `
-          <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name} ${item.hasImplant ? " *" : ""}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
+          <div class="patient-card focusable" style="${opacity} position:relative" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${item.name} ${item.hasImplant ? " *" : ""}</h4>
+                  <p class="pros-11">
                       ${item.statEffect && item.statBonus > 0 ? T('Prosthetics.loses', { p1: getParamName(item.statEffect.param), p2: item.statBonus }) : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#822d2d;">
-                  ${item.vital ? T('Prosthetics.vital') : formatPriceInEuros(item.cost)}
+              <div class="pros-19">
+                  ${item.vital ? T('Prosthetics.vitalBadge') : formatPriceInEuros(item.cost)}
               </div>
           </div>
         `;
@@ -2402,11 +2402,11 @@
       leftPageHTML += '<div class="shop-scroll">';
       this._activeListItems.forEach((item, idx) => {
         leftPageHTML += `
-          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
-                      ${item.vital ? T('Prosthetics.vital') : `${T('Prosthetics.removalFee2')} ${formatPriceInEuros(item.removalFee)}`}
+          <div class="patient-card focusable pros-04" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${item.name}</h4>
+                  <p class="pros-11">
+                      ${item.vital ? T('Prosthetics.vitalBadge') : `${T('Prosthetics.removalFee2')} ${formatPriceInEuros(item.removalFee)}`}
                   </p>
               </div>
           </div>
@@ -2458,14 +2458,14 @@
       leftPageHTML += '<div class="shop-scroll">';
       this._activeListItems.forEach((item, idx) => {
         leftPageHTML += `
-          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
+          <div class="patient-card focusable pros-04" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${item.name}</h4>
+                  <p class="pros-11">
                       [${item.archetypeLabel}] ${item.statEffect ? ` | ${getParamName(item.statEffect.param)} +${item.statBonus}` : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
+              <div class="pros-12">
                   ${formatPriceInEuros(item.cost)}
               </div>
           </div>
@@ -2492,11 +2492,11 @@
       leftPageHTML += '<div class="shop-scroll">';
       this._activeListItems.forEach((entry, idx) => {
         leftPageHTML += `
-          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${entry.name}</h4>
+          <div class="patient-card focusable pros-04" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${entry.name}</h4>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
+              <div class="pros-12">
                   ${T('Prosthetics.attachTo')}
               </div>
           </div>
@@ -2529,10 +2529,10 @@
           statusText = ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en;
         }
         leftPageHTML += `
-          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:${item.currentProstheticKey ? '#2e7d32' : '#5d483b'};">
+          <div class="patient-card focusable pros-04" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${item.name}</h4>
+                  <p class="pros-20" style="color:${item.currentProstheticKey ? 'var(--text-text-alt-11)' : 'var(--text-disabled)'}">
                       ${statusText}
                   </p>
               </div>
@@ -2582,15 +2582,15 @@
       this._activeListItems.forEach((item, idx) => {
         const opacity = item.isCurrentlyInstalled ? "opacity: 0.55;" : "";
         leftPageHTML += `
-          <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
-              <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
+          <div class="patient-card focusable" style="${opacity} position:relative" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div class="pros-07">
+                  <h4 class="pros-10">${item.name}</h4>
+                  <p class="pros-11">
                       ${item.isRemoveOption ? (item.currentProsthetic ? T('Prosthetics.uninstallActiveDevice') : T('Prosthetics.limbHasOriginalPart')) : ""}
                       ${item.isProsthetic ? implantEffectText(item.prosthetic).join(" | ") : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
+              <div class="pros-12">
                   ${item.isRemoveOption ? "" : (item.isCurrentlyInstalled ? T('Prosthetics.installed') : formatPriceInEuros(item.cost))}
               </div>
           </div>
@@ -2631,10 +2631,10 @@
   Scene_ProstheticShop.prototype.generateRightPageCharacterSheet = function (actor) {
     if (!actor) {
       return `
-        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; font-family:'Lora', serif; color:#5d483b; text-align:center; padding: 20px;">
-            <span style="font-size:2.9em; margin-bottom:15px; filter: opacity(0.65);"></span>
-            <h3 style="font-family:'Lora', serif; color:#58180D; font-size:1.57em; margin:0 0 10px 0;">${T('Prosthetics.dossierTitle')}</h3>
-            <p style="font-size:0.964em; line-height:1.5; font-style: normal;">${T('Prosthetics.dossierPrompt')}</p>
+        <div class="pros-21">
+            <span class="pros-22"></span>
+            <h3 class="pros-23">${T('Prosthetics.dossierTitle')}</h3>
+            <p class="pros-24">${T('Prosthetics.dossierPrompt')}</p>
         </div>
       `;
     }
@@ -2645,8 +2645,8 @@
       const isSelected = mem === actor ? "selected" : "";
       companionTabsHTML += `<div class="companion-tab ${isSelected}" onclick="SceneManager._scene.switchSelectedActor(${idx})">${mem.name()}</div>`;
     });
-    const companionsHTML = `<div class="companion-switcher" style="justify-content:flex-end; margin-bottom:12px;">${window.CharSwitcher.inner(
-      `<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">${companionTabsHTML}</div>`, members.length
+    const companionsHTML = `<div class="companion-switcher pros-25">${window.CharSwitcher.inner(
+      `<div class="companion-tabs-row pros-26">${companionTabsHTML}</div>`, members.length
     )}</div>`;
 
     const str = actor.param(2);
@@ -2666,8 +2666,8 @@
 
     let partsHTML = "";
     if (actor._bodyParts) {
-      partsHTML += '<div id="clinic-parts-scroll" style="margin-top:10px; max-height:160px; overflow-y:auto; padding-right:5px; border-top:1px dashed rgba(88,24,13,0.15); padding-top:8px; flex-grow: 1;">';
-      partsHTML += `<h4 style="font-family:'Lora', serif; font-size:1em; color:#58180D; margin:0 0 6px 0;">${T('Prosthetics.biologicalSystemsStatus')}</h4>`;
+      partsHTML += '<div class="pros-27" id="clinic-parts-scroll">';
+      partsHTML += `<h4 class="pros-28">${T('Prosthetics.biologicalSystemsStatus')}</h4>`;
       for (const partKey of Object.keys(actor._bodyParts)) {
         const part = actor._bodyParts[partKey];
         const hasImplant = actor._prosthetics && actor._prosthetics[partKey];
@@ -2680,9 +2680,9 @@
           }
         }
         partsHTML += `
-          <div style="display:flex; justify-content:space-between; font-size:0.856em; margin-bottom:4px; font-family:'Lora', serif; border-bottom:1px dotted rgba(0,0,0,0.06); padding-bottom:2px;">
+          <div class="pros-29">
             <span>${part.name || partKey}</span>
-            <span style="color:${hasImplant ? '#2e7d32' : '#5d483b'}; font-weight:${hasImplant ? 'bold' : 'normal'};">${hasImplant ? `Implant:${implantName}` : T('Prosthetics.original')}</span>
+            <span style="color:${hasImplant ? 'var(--text-text-alt-11)' : 'var(--text-disabled)'}; font-weight:${hasImplant ? 'bold' : 'normal'}">${hasImplant ? `Implant:${implantName}` : T('Prosthetics.original')}</span>
           </div>
         `;
       }
@@ -2691,64 +2691,64 @@
 
     return `
       ${companionsHTML}
-      <div class="bio-row" style="margin-bottom:10px;">
+      <div class="bio-row pros-30">
           <div class="portrait-frame">
               <canvas id="actor-canvas" width="48" height="48"></canvas>
           </div>
           <div class="bio-text">
               <h3 class="char-name">${actor.name()}</h3>
               <p class="char-class">${actor.currentClass() ? actor.currentClass().name : T('Prosthetics.classless')} (${T('Prosthetics.levelShort', { level: actor.level })})</p>
-              <p style="font-size:0.82em; margin:2px 0 0 0; color:#6b5242; font-family:'Lora', serif;">${T('Prosthetics.genderReprLine', { gender: genderName, repr: repName })}</p>
+              <p class="pros-31">${T('Prosthetics.genderReprLine', { gender: genderName, repr: repName })}</p>
           </div>
       </div>
 
-      <div class="ability-container" style="margin-bottom:10px; grid-gap:5px;">
-          <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.str')}</span>
-              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${str}</span>
-              <span class="ability-mod" style="font-size:0.748em;">${getModText(str)}</span>
+      <div class="ability-container pros-32">
+          <div class="ability-card pros-33">
+              <span class="ability-label pros-34">${T('Prosthetics.ability.str')}</span>
+              <span class="ability-value pros-35">${str}</span>
+              <span class="ability-mod pros-34">${getModText(str)}</span>
           </div>
-          <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.con')}</span>
-              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${con}</span>
-              <span class="ability-mod" style="font-size:0.748em;">${getModText(con)}</span>
+          <div class="ability-card pros-33">
+              <span class="ability-label pros-34">${T('Prosthetics.ability.con')}</span>
+              <span class="ability-value pros-35">${con}</span>
+              <span class="ability-mod pros-34">${getModText(con)}</span>
           </div>
-          <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.dex')}</span>
-              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${dex}</span>
-              <span class="ability-mod" style="font-size:0.748em;">${getModText(dex)}</span>
+          <div class="ability-card pros-33">
+              <span class="ability-label pros-34">${T('Prosthetics.ability.dex')}</span>
+              <span class="ability-value pros-35">${dex}</span>
+              <span class="ability-mod pros-34">${getModText(dex)}</span>
           </div>
-          <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.int')}</span>
-              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${intVal}</span>
-              <span class="ability-mod" style="font-size:0.748em;">${getModText(intVal)}</span>
+          <div class="ability-card pros-33">
+              <span class="ability-label pros-34">${T('Prosthetics.ability.int')}</span>
+              <span class="ability-value pros-35">${intVal}</span>
+              <span class="ability-mod pros-34">${getModText(intVal)}</span>
           </div>
-          <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.wis')}</span>
-              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${wis}</span>
-              <span class="ability-mod" style="font-size:0.748em;">${getModText(wis)}</span>
+          <div class="ability-card pros-33">
+              <span class="ability-label pros-34">${T('Prosthetics.ability.wis')}</span>
+              <span class="ability-value pros-35">${wis}</span>
+              <span class="ability-mod pros-34">${getModText(wis)}</span>
           </div>
-          <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.psi')}</span>
-              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${psi}</span>
-              <span class="ability-mod" style="font-size:0.748em;">${getModText(psi)}</span>
+          <div class="ability-card pros-33">
+              <span class="ability-label pros-34">${T('Prosthetics.ability.psi')}</span>
+              <span class="ability-value pros-35">${psi}</span>
+              <span class="ability-mod pros-34">${getModText(psi)}</span>
           </div>
       </div>
 
-      <div class="vitals-box" style="padding:8px 12px; margin-bottom:10px;">
-          <div class="vital-row" style="margin-bottom:4px;">
-              <span class="vital-lbl" style="width:20px; font-size:0.892em;">${T('Prosthetics.vital.hp')}</span>
-              <div class="flask-container" style="height:10px;">
-                  <div class="flask-fill hp-fill" style="width: ${Math.floor(actor.hpRate() * 100)}%;"></div>
+      <div class="vitals-box pros-36">
+          <div class="vital-row pros-37">
+              <span class="vital-lbl pros-38">${T('Prosthetics.vital.hp')}</span>
+              <div class="flask-container pros-39">
+                  <div class="flask-fill hp-fill" style="width:${Math.floor(actor.hpRate() * 100)}%"></div>
               </div>
-              <span class="vital-vals" style="font-size:0.892em; width:65px;">${actor.hp}/${actor.mhp}</span>
+              <span class="vital-vals pros-40">${actor.hp}/${actor.mhp}</span>
           </div>
           <div class="vital-row">
-              <span class="vital-lbl" style="width:20px; font-size:0.892em;">${T('Prosthetics.vital.mp')}</span>
-              <div class="flask-container" style="height:10px;">
-                  <div class="flask-fill mp-fill" style="width: ${Math.floor(actor.mpRate() * 100)}%;"></div>
+              <span class="vital-lbl pros-38">${T('Prosthetics.vital.mp')}</span>
+              <div class="flask-container pros-39">
+                  <div class="flask-fill mp-fill" style="width:${Math.floor(actor.mpRate() * 100)}%"></div>
               </div>
-              <span class="vital-vals" style="font-size:0.892em; width:65px;">${actor.mp}/${actor.mmp}</span>
+              <span class="vital-vals pros-40">${actor.mp}/${actor.mmp}</span>
           </div>
       </div>
 
@@ -2777,16 +2777,16 @@
     ];
     if (odds.self) rows.push([T('Prosthetics.operatingOnSelf'), signed(odds.selfMod)]);
     return `
-      <div class="surgery-blueprint" style="font-family:'Lora', serif;">
-          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.095em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px;">${item.actor.name()}</h4>
+      <div class="surgery-blueprint pros-41">
+          <h4 class="pros-42">${item.actor.name()}</h4>
           ${rows.map(([label, value]) => `
-          <div style="display:flex; justify-content:space-between; font-size:0.892em; color:#5d483b; padding:2px 0;">
+          <div class="pros-43">
               <span>${label}</span><span>${value}</span>
           </div>`).join("")}
-          <div style="display:flex; justify-content:space-between; font-size:0.964em; font-weight:bold; color:#58180D; border-top:1px dotted rgba(88,24,13,0.12); margin-top:4px; padding-top:4px;">
+          <div class="pros-44">
               <span>${T('Prosthetics.successChance')}</span><span>${odds.chance}%</span>
           </div>
-          <p style="margin:6px 0 0; font-size:0.842em; line-height:1.4; color:#5d483b;">${T('Prosthetics.failureWarning')}</p>
+          <p class="pros-45">${T('Prosthetics.failureWarning')}</p>
       </div>
     `;
   };
@@ -2814,10 +2814,10 @@
     if (this._viewState === 'socket_select') {
       const fitting = this._pendingGraft ? this._pendingGraft.item.name : "";
       previewContainer.innerHTML = `
-        <div class="surgery-blueprint" style="font-family:'Lora', serif;">
-            <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.095em; margin:0 0 4px 0;">${T('Prosthetics.attachmentPoint')}</h4>
-            <p style="margin:0; font-size:0.892em; line-height:1.4; color:#5d483b;">${T('Prosthetics.attachedTo', { p1: item.name })}</p>
-            <p style="margin:6px 0 0; font-size:0.892em; line-height:1.4; color:#5d483b;">${fitting}</p>
+        <div class="surgery-blueprint pros-41">
+            <h4 class="pros-46">${T('Prosthetics.attachmentPoint')}</h4>
+            <p class="pros-47">${T('Prosthetics.attachedTo', { p1: item.name })}</p>
+            <p class="pros-48">${fitting}</p>
         </div>
       `;
       UIShopInputManager.actionElements = [];
@@ -2826,7 +2826,7 @@
 
     const actor = this._selectedActor;
     const isAffordable = $gameParty.gold() >= this.priceOf(item.cost);
-    const costColor = isAffordable ? "#2e7d32" : "#c62828";
+    const costClass = isAffordable ? "cost--ok" : "cost--short";
 
     let title = "";
     let costText = "";
@@ -2883,27 +2883,27 @@
     if (!isAffordable && actionSymbol !== "remove_implant" && !(this._viewState === 'implant_select_prosthetic' && item.isRemoveOption)) isOkEnabled = false;
 
     const ledgerHTML = this._fieldMode
-      ? `<div style="font-family:'Lora', serif; font-size:0.928em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
-              <div style="display:flex; justify-content:space-between;">
+      ? `<div class="pros-49">
+              <div class="pros-50">
                   <span>${T('Prosthetics.successChance')}</span>
-                  <strong style="color:#58180D;">${this.currentOdds().chance}%</strong>
+                  <strong class="pros-51">${this.currentOdds().chance}%</strong>
               </div>
-              <div style="font-size:0.87em; color:#5d483b; margin-top:2px;">${this.oddsBreakdownText()}</div>
+              <div class="pros-52">${this.oddsBreakdownText()}</div>
           </div>`
-      : `<div style="display:flex; justify-content:space-between; align-items:center; font-family:'Lora', serif; font-size:0.928em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
-              <span>${T('Prosthetics.surgeryFee')} <strong style="color:${costColor};">${costText}</strong></span>
-              <span>${T('Prosthetics.availableFunds')} <strong style="color:#2e7d32;">${formatPriceInEuros($gameParty.gold())}</strong></span>
+      : `<div class="pros-53">
+              <span>${T('Prosthetics.surgeryFee')} <strong class="${costClass}">${costText}</strong></span>
+              <span>${T('Prosthetics.availableFunds')} <strong class="pros-54">${formatPriceInEuros($gameParty.gold())}</strong></span>
           </div>`;
 
     previewContainer.innerHTML = `
-      <div class="surgery-blueprint" style="font-family:'Lora', serif;">
-          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.095em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px; letter-spacing:0.5px;">${title}</h4>
-          <p style="margin:4px 0; font-size:0.856em; line-height:1.4; color:#5d483b;">${descText}</p>
+      <div class="surgery-blueprint pros-41">
+          <h4 class="pros-55">${title}</h4>
+          <p class="pros-56">${descText}</p>
           ${ledgerHTML}
           
-          <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="action-btn action-focusable ${!isOkEnabled ? 'disabled' : ''}" style="flex:1; padding:4px 8px; font-size:0.928em;" onclick="SceneManager._scene.executeSurgeryAction('${actionSymbol}')">${actionBtnLabel}</button>
-              <button class="action-btn action-focusable" style="flex:1; padding:4px 8px; font-size:0.928em;" onclick="SceneManager._scene.cancelSurgeryAction()">${T('Prosthetics.cancel')}</button>
+          <div class="pros-57">
+              <button class="action-btn action-focusable ${!isOkEnabled ? 'disabled' : ''} pros-58" onclick="SceneManager._scene.executeSurgeryAction('${actionSymbol}')">${actionBtnLabel}</button>
+              <button class="action-btn action-focusable pros-58" onclick="SceneManager._scene.cancelSurgeryAction()">${T('Prosthetics.cancel')}</button>
           </div>
       </div>
     `;

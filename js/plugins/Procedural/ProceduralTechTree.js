@@ -539,6 +539,58 @@
         return TREE_SPECS[treeId] || null;
     }
 
+    // ---------------------------------------------------- what research unlocks
+    // A completed node used to pay a permanent stat buff and, now and then, one
+    // item, and that was the whole of it: nothing in the game was gated on
+    // having discovered anything. Researching click chemistry changed nothing
+    // you could make, which is a thin return on a hundred and forty units of
+    // reagent.
+    //
+    // The workbenches already gate their entries on the party's TRADE LEVEL
+    // (`<CraftLevel:>` in BlacksmithingMenu, the skill checks in the alchemy
+    // menu), so what research buys is exactly that: knowing the theory raises
+    // the trade. Every NODES_PER_TIER discoveries in a tree that feeds a bench
+    // is worth one tier at it, up to MAX_RESEARCH_TIERS, which is deliberately
+    // short of what practice can reach - the reading gets you started, the
+    // hammering makes you good.
+    //
+    // i18n-ignore-start  trade + tree ids
+    const CRAFT_RESEARCH_TREES = {
+        'Blacksmithing': ['Physics', 'Technomagica'],
+        'Alchemy': ['Alchemistry'],
+        'Magic Theory': ['Arcane'],
+        'Technomancy': ['Technomagica'],
+        'Theology': ['Theotecnical'],
+    };
+    // i18n-ignore-end
+    const NODES_PER_TIER = 4;
+    const MAX_RESEARCH_TIERS = 3;
+
+    // How many nodes of a tree the world has discovered.
+    function discoveredCount(treeId) {
+        const tree = buildAllTrees().find(t => t.id === treeId);
+        if (!tree) return 0;
+        let n = 0;
+        for (const node of tree.nodes || []) if (isCompleted(treeId, node.id)) n++;
+        return n;
+    }
+
+    // The tiers of a trade the party's research is worth. Zero for a trade no
+    // tree feeds, which is most of them.
+    function craftLevelBonus(spec) {
+        const trees = CRAFT_RESEARCH_TREES[spec];
+        if (!trees) return 0;
+        let discovered = 0;
+        try { for (const id of trees) discovered += discoveredCount(id); }
+        catch (e) { return 0; }
+        return Math.min(MAX_RESEARCH_TIERS, Math.floor(discovered / NODES_PER_TIER));
+    }
+
+    // Which trades research can reach at all, for a menu that wants to say so.
+    function researchBackedTrades() {
+        return Object.keys(CRAFT_RESEARCH_TREES);
+    }
+
     function materialPayout(node, treeId) {
         let mult = node.fringe ? 0.5 : 0.85;
         if (node.nobelWorthy) mult += 0.15;
@@ -921,6 +973,9 @@
         nodeRewards,
         materialPayout,
         treeSpec,
+        craftLevelBonus,
+        researchBackedTrades,
+        discoveredCount,
         rewardDbEntry,
         research,
         reconcileBuffs,

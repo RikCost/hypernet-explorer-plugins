@@ -15,17 +15,17 @@
   },
   "3": {
     "name": "Immortale",
-    "message1": "",
-    "message2": "",
+    "message1": "%1 è immortale!",
+    "message2": "%1 è immortale!",
     "message3": "",
-    "message4": ""
+    "message4": "%1 non è più immortale!"
   },
   "4": {
     "name": "Veleno",
     "message1": "%1 è avvelenato!",
     "message2": "%1 è avvelenato!",
     "message3": "",
-    "message4": "%1 non è più avvelenato!"
+    "message4": "%1 non è più bruciato!"
   },
   "5": {
     "name": "Acceca",
@@ -385,7 +385,7 @@
     "message4": "%1 perde l'apertura."
   },
   "56": {
-    "name": "Esposto",
+    "name": "Punto Vitale Esposto",
     "message1": "I punti vitali di %1 sono esposti!",
     "message2": "I punti vitali di %1 sono esposti!",
     "message3": "%1 non riesce a coprire l'apertura...",

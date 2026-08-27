@@ -3837,6 +3837,17 @@
         // been RELEASED, and only if it was let go inside the tap window.
         // Anything longer is a zoom and is left to MousePan.
         padStep() {
+            // Asked before anything is read: reading a trigger claims it for
+            // the frame (AnalogStickInput), and the game-wide scroll poll in
+            // MouseControls stands down when somebody else has. Claiming it on
+            // a map where the party cannot cycle anyway - mid-message, in a
+            // vehicle, while an event runs - would cost every overlay open over
+            // that map its L2/R2 scrolling for nothing.
+            if (!this.available() || this.typing()) {
+                this._padDir = 0;
+                this._padHold = 0;
+                return 0;
+            }
             const pads = window.AnalogStickInput;
             if (!pads || !pads.leftTrigger || !pads.rightTrigger) {
                 this._padDir = 0;
@@ -4247,8 +4258,12 @@
         const actorData = actor.actor ? actor.actor() : (actor._actorId ? $dataActors[actor._actorId] : null);
         const m = actorData && actorData.note && actorData.note.match(/<Preset:\s*([^>]+)>/i);
         const presetName = actor._presetKey || (m ? m[1].trim() : null);
-        if (presetName && window.CharacterCreationPresets && window.CharacterCreationPresets.presets) {
-            preset = window.CharacterCreationPresets.presets[presetName];
+        // The dossier board publishes itself as CharacterPresets, and offers functions rather
+        // than a map: this used to look up CharacterCreationPresets.presets, which is neither
+        // the right global nor the right shape, so no birthdate was ever found.
+        if (presetName && window.CharacterPresets && window.CharacterPresets.getCharacterPresets) {
+            const presets = window.CharacterPresets.getCharacterPresets() || [];
+            preset = presets.find(p => p && (p.name === presetName || String(p.id) === presetName)) || null;
         }
         if (preset && preset.birthDate) {
             const parts = String(preset.birthDate).split("-");
@@ -4538,7 +4553,11 @@
 
     function showCorpseMenu(corpse) {
         if (!corpse) return;
-        const choices = ["Loot", "Commemorate", "Pray", "Dissect", "Bury", "Cancel"];
+        const choices = [
+            T('AutoIdle.corpse.choiceLoot'), T('AutoIdle.corpse.choiceCommemorate'),
+            T('AutoIdle.corpse.choicePray'), T('AutoIdle.corpse.choiceDissect'),
+            T('AutoIdle.corpse.choiceBury'), T('AutoIdle.corpse.choiceCancel'),
+        ];
         $gameMessage.setChoices(choices, 0, 5);
         $gameMessage.onChoice(function (n) {
             if (n === 0) {
@@ -4558,7 +4577,7 @@
                 handleCorpseBury(corpse);
             }
         });
-        $gameMessage.add(`Fallen comrade: ${corpse.name}. What will you do?`);
+        $gameMessage.add(T('AutoIdle.corpse.prompt', { name: corpse.name }));
     }
 
     function handleCorpseLoot(corpse) {
@@ -4582,10 +4601,10 @@
                 for (const item of corpse.equipped) {
                     if (item) $gameParty.gainItem(item, 1, false);
                 }
-                $gameMessage.add(`Recovered equipment from ${corpse.name}.`);
+                $gameMessage.add(T('AutoIdle.corpse.looted', { name: corpse.name }));
                 corpse.equipped = [];
             } else {
-                $gameMessage.add(`There is nothing left to loot on ${corpse.name}.`);
+                $gameMessage.add(T('AutoIdle.corpse.nothingToLoot', { name: corpse.name }));
             }
         }
     }
@@ -4632,7 +4651,7 @@
         } else if (typeof Scene_HealthStatus !== "undefined") {
             SceneManager.push(Scene_HealthStatus);
         } else {
-            $gameMessage.add("You examine the anatomy and body condition of the fallen comrade.");
+            $gameMessage.add(T('AutoIdle.corpse.examined'));
         }
     }
 
@@ -4698,18 +4717,21 @@
             }
 
             $gameScreen.startFadeIn(24);
-            $gameMessage.add(`Buried ${corpse.name} with dignity.`);
+            $gameMessage.add(T('AutoIdle.corpse.buried', { name: corpse.name }));
         }, 500);
     }
 
     function showSpecialGraveMenu(grave, onDismantle) {
         if (!grave) return;
-        const choices = ["Read", "Desecrate", "Dismantle", "Cancel"];
+        const choices = [T('AutoIdle.grave.choiceRead'), T('AutoIdle.grave.choiceDesecrate'), T('AutoIdle.grave.choiceDismantle'), T('AutoIdle.grave.choiceCancel')];
         $gameMessage.setChoices(choices, 0, 3);
         $gameMessage.onChoice(function (n) {
             if (n === 0) {
                 // Read
-                $gameMessage.add(`\"Here lies ${grave.name}. Born: ${grave.birthDate || "Unknown"}\"`);
+                $gameMessage.add(T('AutoIdle.grave.epitaph', {
+                    name: grave.name,
+                    born: grave.birthDate || T('AutoIdle.grave.bornUnknown'),
+                }));
             } else if (n === 1) {
                 // Desecrate
                 handleGraveDesecrate(grave);
@@ -4718,7 +4740,7 @@
                 handleGraveDismantle(grave, onDismantle);
             }
         });
-        $gameMessage.add(`Grave of ${grave.name}. What will you do?`);
+        $gameMessage.add(T('AutoIdle.grave.prompt', { name: grave.name }));
     }
 
     function handleGraveDesecrate(grave) {
@@ -4745,7 +4767,7 @@
         }
 
         grave.desecrated = true;
-        $gameMessage.add(`You desecrated the grave of ${grave.name}. Recovered bones and remaining personal belongings.`);
+        $gameMessage.add(T('AutoIdle.grave.desecrated', { name: grave.name }));
     }
 
     function handleGraveDismantle(grave, onDismantle) {
@@ -4766,7 +4788,7 @@
         if (typeof onDismantle === "function") {
             onDismantle();
         }
-        $gameMessage.add(`Dismantled the grave of ${grave.name}.`);
+        $gameMessage.add(T('AutoIdle.grave.dismantled', { name: grave.name }));
     }
 
     // Intercept button trigger for party corpses and gravestones
@@ -4825,7 +4847,7 @@
                     $gamePlayer.followers().refresh();
                     Loose.gatherNear();
                     $gameMessage.add(T ? T('Battle.actorDied', { actor: deceasedName }) : `${deceasedName} has fallen.`);
-                    $gameMessage.add(`${livingMembers[0].name()} takes command of the party.`);
+                    $gameMessage.add(T('AutoIdle.succession.takesCommand', { name: livingMembers[0].name() }));
                     return;
                 }
             }

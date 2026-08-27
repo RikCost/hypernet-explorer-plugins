@@ -21,6 +21,13 @@
     --xp-tooltip: #ffffe1;
     --xp-disabled: #dcdcdc;
     --xp-input: #fcfcfc;
+    /* The grey the XP apps set secondary label text in. */
+    --xp-text-muted: #555555;
+    --xp-ok: #008000;
+    --xp-ok-dark: #0b4d0b;
+    --xp-warn: #b85c00;
+    --xp-bad: #aa0000;
+    --xp-remote-bg: #dff3df;
     --xp-gray-light: #f0f0f0;
     --xp-near-white: #fafafa;
     --xp-border-light: #e1e1e1;
@@ -725,8 +732,20 @@
                 }
 
                 #tray-clock {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    line-height: 1.1;
                     font-weight: bold;
                     letter-spacing: 0.5px;
+                }
+
+                #tray-clock-date {
+                    font-size: 10px;
+                    font-weight: normal;
+                    letter-spacing: 0.5px;
+                    color: #cfe0fb;
                 }
 
                 /* --- START MENU POPUP --- */
@@ -1820,6 +1839,61 @@
     border-color: var(--xp-blue) !important;
 }
 
+/* The state classes the offers board shares with the parchment work board
+   (theme.css, "Shared menu states"). The plugin used to carry a second set of
+   hexes just for this window; these are that second set, in the one place the
+   XP look belongs. */
+#job-offers-content .chance--good { color: var(--xp-ok) !important; }
+#job-offers-content .chance--fair { color: var(--xp-warn) !important; }
+#job-offers-content .chance--poor { color: var(--xp-bad) !important; }
+#job-offers-content .req--met     { color: var(--xp-ok) !important; }
+#job-offers-content .req--unmet   { color: var(--xp-bad) !important; }
+#job-offers-content .job-remote-tag {
+    background: var(--xp-remote-bg) !important;
+    border: 1px solid var(--xp-ok) !important;
+    color: var(--xp-ok-dark) !important;
+    padding: 0 4px !important;
+    font-size: 12px !important;
+}
+#job-offers-content .job-face {
+    border: 2px solid var(--xp-border) !important;
+    background-color: var(--xp-blue) !important;
+    color: var(--text-pure-white) !important;
+}
+
+/* ==========================================================================
+   Parchment shells hosted in an OS window
+
+   Three menus (the bank, the offers board, the newspaper) build one markup
+   for both places they can be opened from, and carry their parchment shell
+   class on the element these windows host. That class sets a colour of its
+   own, which beats the window's inherited ink, so each is put back to XP
+   black here. The command rows the bank shares with its fullscreen self get
+   the same treatment.
+   ========================================================================== */
+#bank-system-content .bank-root,
+#job-offers-content .joboffers-root,
+#news-history-content .news-root {
+    color: var(--text-pure-black) !important;
+}
+
+#bank-system-content .bank-command {
+    background: var(--xp-input) !important;
+    border: 1px solid var(--xp-disabled) !important;
+    border-radius: 3px !important;
+    color: var(--text-pure-black) !important;
+    font-size: 16px !important;
+    padding: 6px 10px !important;
+    margin-bottom: 4px !important;
+    box-shadow: none !important;
+}
+
+#bank-system-content .bank-command.selected {
+    background: var(--xp-tooltip) !important;
+    border-color: var(--xp-blue) !important;
+    color: var(--xp-blue-dark) !important;
+}
+
 /* ==========================================================================
    NewsSystem, Archways XP-style news history UI
    ========================================================================== */
@@ -1967,21 +2041,112 @@
     font-size: 17px !important;
     padding: 5px 12px !important;
 }
-/* Headline list: the date/category meta row (first child) and the headline text. */
-#news-history-content .newspaper-headline-item > div:first-child,
-#news-history-content .newspaper-headline-item > div:first-child span {
+/* Headline list: the date/category meta row and the headline text. */
+#news-history-content .news-headline-meta,
+#news-history-content .news-headline-meta span {
     font-size: 16px !important;
 }
-#news-history-content .newspaper-headline-item > div:nth-child(2) {
+#news-history-content .news-headline-text {
     font-size: 21px !important;
     line-height: 1.3 !important;
+    font-weight: normal !important;
 }
-#news-history-content .newspaper-headline-item > div:nth-child(3) {
+#news-history-content .newspaper-headline-item.selected .news-headline-text {
+    font-weight: bold !important;
+}
+#news-history-content .news-headline-loc {
     font-size: 16px !important;
 }
 #news-history-content .back-button {
     font-size: 17px !important;
     padding: 6px 16px !important;
+}
+
+/* The parchment layout (theme.css, "The Hypernet Chronicle") is written for a
+   full screen two page spread. Inside the OS window the same markup has to
+   collapse to a plain XP two pane view, so the masthead, the column rule and
+   the newspaper's own paddings and typography are all neutralised here. */
+#news-history-content .news-body {
+    flex: 1;
+    min-height: 0;
+    gap: 8px;
+}
+#news-history-content .news-page {
+    padding: 10px !important;
+    width: auto !important;
+    border-right: none !important;
+}
+#news-history-content .news-subheader {
+    text-align: left !important;
+    letter-spacing: 0 !important;
+}
+#news-history-content .news-month-nav {
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 4px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--xp-border);
+    margin-bottom: 8px;
+}
+#news-history-content .news-month-label,
+#news-history-content .newspaper-nav-btn {
+    color: var(--xp-blue-dark) !important;
+}
+#news-history-content .news-headline-list {
+    padding-right: 4px;
+}
+#news-history-content .newspaper-headline-item .news-headline-meta,
+#news-history-content .news-headline-loc,
+#news-history-content .news-article-meta,
+#news-history-content .news-footer {
+    color: var(--xp-text-muted) !important;
+}
+#news-history-content .news-headline-text,
+#news-history-content .news-article-body,
+#news-history-content .news-effects {
+    color: var(--text-pure-black) !important;
+}
+#news-history-content .news-article {
+    padding-right: 6px;
+    margin-bottom: 6px;
+}
+#news-history-content .news-article-title {
+    font-size: 24px !important;
+    color: var(--xp-blue-dark) !important;
+    border-bottom: 1px solid var(--xp-border) !important;
+}
+#news-history-content .news-article-meta {
+    font-size: 17px !important;
+    font-weight: bold;
+}
+#news-history-content .news-article-body {
+    font-size: 20px !important;
+    column-count: 1 !important;
+    text-align: left !important;
+}
+#news-history-content .news-article-place {
+    font-size: 20px !important;
+    color: var(--xp-blue-dark) !important;
+}
+#news-history-content .news-effects {
+    border: 1px dashed var(--xp-border) !important;
+    background: rgba(0, 0, 0, 0.03) !important;
+    font-size: 14px !important;
+}
+#news-history-content .news-effects-title {
+    font-size: 14px !important;
+    color: var(--xp-blue-dark) !important;
+    border-bottom: 1px solid var(--xp-border) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+#news-history-content .news-empty {
+    font-size: 14px !important;
+}
+#news-history-content .news-footer {
+    font-size: 13px !important;
+    border-top: 1px dashed var(--xp-border) !important;
+    padding-top: 6px !important;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

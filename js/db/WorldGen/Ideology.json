@@ -4796,5 +4796,205 @@
       "myst": 95,
       "esoteric": 95
     }
+  },
+  {
+    "id": "militant_pacifism",
+    "name": "ideology.militant_pacifism",
+    "religions": [],
+    "description": "",
+    "traits": [
+      116,
+      132,
+      171,
+      173
+    ],
+    "axes": {
+      "econ": -15,
+      "auth": 35,
+      "trad": 20,
+      "mil": 45,
+      "myst": 80,
+      "esoteric": 75
+    }
+  },
+  {
+    "id": "free_software",
+    "name": "ideology.free_software",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": -35,
+      "auth": -55,
+      "trad": -30,
+      "mil": -25,
+      "myst": -40,
+      "esoteric": -35
+    }
+  },
+  {
+    "id": "commons_reformer",
+    "name": "ideology.commons_reformer",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": -25,
+      "auth": -35,
+      "trad": -25,
+      "mil": -20,
+      "myst": -30,
+      "esoteric": -25
+    }
+  },
+  {
+    "id": "cypherpunk",
+    "name": "ideology.cypherpunk",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": 5,
+      "auth": -75,
+      "trad": -30,
+      "mil": -10,
+      "myst": -20,
+      "esoteric": 10
+    }
+  },
+  {
+    "id": "monetarist",
+    "name": "ideology.monetarist",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": 70,
+      "auth": -10,
+      "trad": 15,
+      "mil": 0,
+      "myst": -55,
+      "esoteric": -50
+    }
+  },
+  {
+    "id": "austrian_liberal",
+    "name": "ideology.austrian_liberal",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": 80,
+      "auth": -30,
+      "trad": 25,
+      "mil": -5,
+      "myst": -45,
+      "esoteric": -40
+    }
+  },
+  {
+    "id": "keynesian",
+    "name": "ideology.keynesian",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": -20,
+      "auth": 20,
+      "trad": 0,
+      "mil": 0,
+      "myst": -50,
+      "esoteric": -45
+    }
+  },
+  {
+    "id": "industrial_capitalist",
+    "name": "ideology.industrial_capitalist",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": 65,
+      "auth": 25,
+      "trad": 35,
+      "mil": 10,
+      "myst": -30,
+      "esoteric": -25
+    }
+  },
+  {
+    "id": "hermetic_immortal",
+    "name": "ideology.hermetic_immortal",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 30,
+      "trad": 70,
+      "mil": -10,
+      "myst": 100,
+      "esoteric": 100
+    }
+  },
+  {
+    "id": "divine_sovereign",
+    "name": "ideology.divine_sovereign",
+    "religions": [],
+    "description": "",
+    "traits": [
+      164,
+      35,
+      7,
+      132
+    ],
+    "axes": {
+      "econ": 0,
+      "auth": 90,
+      "trad": 85,
+      "mil": 45,
+      "myst": 100,
+      "esoteric": 100
+    }
   }
 ]

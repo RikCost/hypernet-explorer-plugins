@@ -66,10 +66,10 @@
       const stocks = [
         { key: 'oil', name: 'OIL',
           shares: sm.getOilShares(), price: sm.getOilPrice(),
-          bought: sm.getOilCostBasis ? sm.getOilCostBasis() : 0, color: '#2e7d32' },
+          bought: sm.getOilCostBasis ? sm.getOilCostBasis() : 0, color: 'var(--text-cost-ok)' },
         { key: 'souls', name: 'SOUL',
           shares: sm.getSoulsShares(), price: sm.getSoulsPrice(),
-          bought: sm.getSoulsCostBasis ? sm.getSoulsCostBasis() : 0, color: '#7b3f9e' },
+          bought: sm.getSoulsCostBasis ? sm.getSoulsCostBasis() : 0, color: 'var(--text-text-alt-19)' },
       ];
       stocks.forEach(s => {
         if (s.shares <= 0) return;
@@ -116,7 +116,7 @@
           sub: `${prop.location} • ${'★'.repeat(prop.stars)}`,
           value,
           bought,
-          color: '#8b5a2b',
+          color: 'var(--text-brown-medium)',
           details: [
             { label: T('Assets.ui.type'), val: prop.type },
             { label: T('Assets.ui.location'), val: prop.location },
@@ -145,7 +145,7 @@
           sub: `${prop.location} • ${'★'.repeat(prop.stars)} • ${T('Assets.ui.monthlyRent')}`,
           value: monthlyCost,
           bought: null,
-          color: '#a0764a',
+          color: 'var(--text-caption-brown)',
           liability: true,
           details: [
             { label: T('Assets.ui.type'), val: prop.type },
@@ -169,7 +169,7 @@
           sub: `${T('Assets.ui.entrance')} X:${h.x} Y:${h.y}`,
           value: h.value,
           bought: h.value,
-          color: '#5c7a3d',
+          color: 'var(--text-forest-green)',
           details: [
             { label: T('Assets.ui.entranceMap'), val: h.mapName },
             { label: T('Assets.ui.coordinates'), val: `X: ${h.x}, Y: ${h.y}` },
@@ -192,7 +192,7 @@
           sub: T('Assets.ui.npcHome', { name: hh.npcName }),
           value: hh.value || 0,
           bought: 0,
-          color: '#5c7a3d',
+          color: 'var(--text-forest-green)',
           details: [
             { label: T('Assets.ui.resident'), val: hh.npcName || '—' },
             { label: T('Assets.ui.map'), val: hh.mapName || '—' },
@@ -215,7 +215,7 @@
           sub: `${c.sharesOwned.toLocaleString()} ${T('Assets.ui.shares')} @ ${euro(c.price * 100)}`,
           value: c.value,
           bought: c.costBasis > 0 ? c.costBasis : null,
-          color: c.color || '#7b3f9e',
+          color: c.color || 'var(--text-text-alt-19)',
           details: [
             { label: T('Assets.ui.sector'), val: c.sector || '—' },
             { label: T('Assets.ui.shares2'), val: c.sharesOwned.toLocaleString() },
@@ -244,7 +244,7 @@
           sub: coords,
           value: p.value || 0,
           bought: null,
-          color: '#4a7a8c',
+          color: 'var(--text-teal)',
           details: [
             { label: T('Assets.ui.location'), val: placeName },
             { label: T('Assets.ui.baseCoordinates'), val: coords },
@@ -270,7 +270,7 @@
           sub: `${a.mapName} • X:${a.x} Y:${a.y}`,
           value: a.value,
           bought: a.paid > 0 ? a.paid : null,
-          color: '#7a6a3d',
+          color: 'var(--text-gold-dark)',
           animal: a,
           details: [
             { label: T('Assets.ui.species'), val: a.animalId },
@@ -300,7 +300,7 @@
           sub: `${p.actorName} • ${p.standingLabel}`,
           value: p.weeklyPay * 52,
           bought: null,
-          color: '#4f6b8a',
+          color: 'var(--text-navy)',
           diplomat: p,
           details: [
             { label: T('Assets.ui.delegate'), val: p.actorName },
@@ -325,7 +325,7 @@
           sub: T('Assets.ui.savingsAccount'),
           value: bal,
           bought: bal,
-          color: '#b8860b',
+          color: 'var(--text-amber-hint)',
           details: [
             { label: T('Assets.ui.balance'), val: euro(bal) },
           ],
@@ -346,7 +346,7 @@
           sub: daysLeft != null ? `${T('Assets.ui.dueIn')} ${daysLeft} ${T('Assets.ui.days')}` : (T('Assets.ui.outstanding')),
           value: loan,
           bought: null,
-          color: '#b3322b',
+          color: 'var(--text-cost-bad)',
           liability: true,
           details: [
             { label: T('Assets.ui.balanceOwed'), val: euro(loan) },
@@ -438,10 +438,10 @@
 
       const summaryHTML = `
         <div class="assets-summary">
-          ${summaryCard(T('Assets.ui.cash'), euro(cash), '#4a2711')}
-          ${summaryCard(T('Assets.ui.assets'), euro(totalAssets), '#2e7d32')}
-          ${summaryCard(T('Assets.ui.debt'), euro(totalLiabilities), '#b3322b')}
-          ${summaryCard(T('Assets.ui.netWorth'), euro(netWorth), netWorth >= 0 ? '#1f6f3f' : '#b3322b')}
+          ${summaryCard(T('Assets.ui.cash'), euro(cash), 'var(--text-brown-medium)')}
+          ${summaryCard(T('Assets.ui.assets'), euro(totalAssets), 'var(--text-cost-ok)')}
+          ${summaryCard(T('Assets.ui.debt'), euro(totalLiabilities), 'var(--text-cost-bad)')}
+          ${summaryCard(T('Assets.ui.netWorth'), euro(netWorth), netWorth >= 0 ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)')}
         </div>`;
 
       let listHTML = '';
@@ -455,7 +455,7 @@
             listHTML += `<div class="assets-cat-header">${a.cat}</div>`;
           }
           const sel = idx === this._selIndex ? 'selected' : '';
-          const valColor = a.liability ? '#b3322b' : '#1f6f3f';
+          const valColor = a.liability ? 'var(--text-cost-bad)' : 'var(--text-cost-ok)';
           const sign = a.liability ? '-' : '';
           listHTML += `
             <div class="item-slot assets-row ${sel}" onclick="SceneManager._scene.selectAsset(${idx})">
@@ -489,8 +489,8 @@
             <div class="assets-graph-title">${T('Assets.ui.stockMarket')}</div>
             <canvas id="assets-graph" width="560" height="200"></canvas>
             <div class="assets-graph-legend">
-              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:#2ecc71"></span>OIL</div>
-              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:#9b59b6"></span>SOUL</div>
+              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:var(--text-cost-ok)"></span>OIL</div>
+              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:var(--border-purple-medium)"></span>SOUL</div>
             </div>
           </div>
           <div class="assets-detail" id="assets-detail">${this.buildDetailHTML()}</div>
@@ -511,7 +511,7 @@
       }
       const rows = a.details.map(d => {
         let style = '';
-        if (d.pnl !== undefined) style = `color:${d.pnl >= 0 ? '#1f6f3f' : '#b3322b'};font-weight:bold;`;
+        if (d.pnl !== undefined) style = `color:${d.pnl >= 0 ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'};font-weight:bold;`;
         return `<div class="inspect-spec-row">
           <span class="inspect-spec-label">${d.label}:</span>
           <span class="inspect-spec-value" style="${style}">${d.val}</span>
@@ -842,7 +842,7 @@
         sumVals[1].textContent = euro(totalAssets);
         sumVals[2].textContent = euro(totalLiabilities);
         sumVals[3].textContent = euro(netWorth);
-        sumVals[3].style.color = netWorth >= 0 ? '#1f6f3f' : '#b3322b';
+        sumVals[3].style.color = netWorth >= 0 ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)';
       }
 
       // Pockets value columns.

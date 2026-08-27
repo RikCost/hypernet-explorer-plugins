@@ -1,0 +1,35 @@
+{
+  "material": {
+    "air": "Aria",
+    "grass": "Zolla",
+    "dirt": "Terra",
+    "rock": "Roccia",
+    "sand": "Sabbia",
+    "snow": "Neve",
+    "asphalt": "Asfalto",
+    "mark": "Vernice stradale",
+    "gravel": "Ghiaia",
+    "ore": "Filone di minerale",
+    "clay": "Argilla",
+    "ice": "Ghiaccio",
+    "ash": "Cenere",
+    "bedrock": "Roccia madre",
+    "mud": "Fango",
+    "salt": "Crosta di sale"
+  },
+  "tool": {
+    "target": "{name}",
+    "holding": "In mano: {name}",
+    "bedrock": "La roccia madre non cede.",
+    "noRoom": "Non c'è niente contro cui costruire qui.",
+    "struck": "Hai colpito un filone di {name}.",
+    "pouchFull": "Non c'è più posto per quello che esce dalla roccia.",
+    "barFull": "La barra rapida è piena. Costruisci prima qualcosa con ciò che c'è sopra.",
+    "noBlock": "Non hai niente in mano con cui costruire."
+  },
+  "hud": {
+    "cmdDig": "Scava / estrai",
+    "cmdPlace": "Posa un blocco",
+    "cmdBlock": "Cambia blocco"
+  }
+}

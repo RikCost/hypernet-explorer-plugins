@@ -191,6 +191,14 @@
                          // by. A fictional leader carries none of these and is
                          // derived exactly as before.
                          real: raw.real === true,
+                         // Canon: a figure this world wrote rather than
+                         // history (a legend, a god, an ascended banker).
+                         canon: raw.canon === true,
+                         immortal: raw.immortal === true,
+                         // An i18n key holding the one thing about them that
+                         // is not an office or a date, printed on their
+                         // article (NPCEmpathizeUI, leader overview).
+                         loreKey: raw.loreKey || null,
                          birthDate: raw.birthDate || null,
                          birthYear: Number.isFinite(raw.birthYear) ? raw.birthYear : null,
                          hometown: raw.hometown || null,
@@ -236,6 +244,10 @@
                         region:      data.region      || null,
                         homeNation:  data.homeNation  || null,
                         secluded:    data.secluded === true,
+                        // A power that is not there when the century starts.
+                        // "YYYY-MM": the month it declares itself, takes its
+                        // seat and begins to act (see handleFoundings).
+                        founded:     data.founded     || null,
                         population:  data.population  || 10000000,
                         economy:     data.economy     || 100,
                         military:    data.military    || 100,
@@ -429,11 +441,7 @@
     const DAILY_EVENT_CHANCE = 0.07;
     const EXTRA_EVENT_CHANCES = [0.55, 0.30, 0.12, 0.04];
 
-    // Powers whose moral office passes by descent rather than by election.
     // i18n-ignore-start  hyperpower ids
-    const MORAL_DYNASTIES = ['Britannia', 'Imperial State of Persia', 'Kukulkan Ascendancy',
-        'Illuminated Khanate', 'Petro Kingdom of Arabia', 'Democratic People\'s Republic of Korea',
-        'Solomonic Republic', 'Sanatana Rashtra', 'Dharma Directorate', 'Long Chile'];
 
     // How the century is required to end, whatever year it is asked to end in.
     // These four are the world's own furniture: the Archive, the wiki and every
@@ -784,6 +792,9 @@
             this._events = [];
             this._deadLeaders = new Set();
             this._currentLeaders = {};
+            // power -> the day it declared itself, for the ones that are not
+            // there when the century starts.
+            this._foundedPowers = {};
             this._currentHolyLeaders = {};  // for powers with holy_leaders dual-track (e.g. Holy Vatican Empire)
             this._currentMoralGuides = {};  // power → the leader holding its moral office
             this._currentFactionLeaders = {};
@@ -967,6 +978,7 @@
                 // dated in years, and re-reading it every day would cost 30x
                 // for an answer that cannot have changed.
                 if (firstOfMonth) {
+                    this.handleFoundings(date);
                     this.updateActiveLeaders(date);
                     // A fixed event is keyed by its month (History.fixed.<yyyy-mm>),
                     // so it is still read once, on the first.
@@ -1045,6 +1057,31 @@
             return this._histField("moralGuides", this._currentMoralGuides) || {};
         }
 
+        getCurrentLeaders() {
+            return this._histField("leaders", this._currentLeaders) || {};
+        }
+
+        // Who governs a power right now. The book of leaders answers first;
+        // a power with nobody on file is governed by the head of government
+        // NPCPolitics has elected for it, which is a real person in this world
+        // even though no historian wrote them down. `procedural` says which of
+        // the two answered, so a reader can label them.
+        politicalLeaderOf(power) {
+            const seated = this.getCurrentLeaders()[power];
+            if (seated) return seated;
+            const live = window.NPCPolitics && window.NPCPolitics.getPower
+                ? window.NPCPolitics.getPower(power) : null;
+            const head = live && live.politicians ? live.politicians[live.headId] : null;
+            if (!head) return null;
+            return {
+                name: head.name,
+                ideology: head.ideologyLabel || null,
+                country: (this._currentHyperpowers[power] || {}).homeNation || null,
+                office: head.office || null,
+                procedural: true,
+            };
+        }
+
         // Stable, name-seeded government label for a nation under a controller.
         governmentFor(controller, country) {
             return governmentLabel(this.governmentIdFor(controller, country));
@@ -1094,6 +1131,7 @@
             // A power holds its own seat from the first day of the century,
             // whatever the country table happens to say about it.
             for (const [power, hp] of Object.entries(this._currentHyperpowers || {})) {
+                if (hp && hp.founded) continue;   // not declared yet: see handleFoundings
                 const seat = hp && hp.homeNation && (this._currentCountries || {})[hp.homeNation];
                 if (seat) seat.controller = power;
             }
@@ -1180,6 +1218,62 @@
             return ((this._currentHyperpowers || {})[power] || {}).secluded === true;
         }
 
+        // --- Powers that are not there yet -------------------------------------
+        // Almost every hyperpower is on the board from the first day of the
+        // century. One is not: the Northpoint Army declares itself on
+        // 1 December 2001 (Hyperpowers.json "founded"), and until that month it
+        // holds nothing, seats nobody and takes no part in anything.
+        foundingOf(power) {
+            const hp = (this._currentHyperpowers || {})[power];
+            return (hp && hp.founded) || null;
+        }
+
+        powerExists(power, date) {
+            const founded = this.foundingOf(power);
+            if (!founded) return true;
+            return monthStr(date) >= founded;
+        }
+
+        // The month a power declares itself: it takes its own seat, and if
+        // somebody else was holding that seat, it takes it off them.
+        handleFoundings(date) {
+            const month = monthStr(date);
+            const dateStr = dayStr(date);
+            for (const [power, hp] of Object.entries(this._currentHyperpowers || {})) {
+                if (!hp || hp.founded !== month || this._foundedPowers[power]) continue;
+                const seat = hp.homeNation;
+                const info = seat && (this._currentCountries || {})[seat];
+                // A world that has already lived through the declaration (a
+                // save reloaded inside the founding month) does not hold it a
+                // second time.
+                if (info && info.controller === power) { this._foundedPowers[power] = dateStr; continue; }
+                this._foundedPowers[power] = dateStr;
+                const held = info ? (info.controller || 'Neutral') : 'Neutral';  // i18n-ignore  controller id
+                // Whoever speaks for the new power in the month it is founded:
+                // its own book of leaders answers first (Leaders.json), which
+                // for the Northpoint Army is the one name in it.
+                const founder = (hp.leaders || []).find(l => l && l.years && l.years[0] <= date.getFullYear());
+                const speaker = founder ? founder.name : power;
+                const independence = held !== 'Neutral';  // i18n-ignore  controller id
+                if (info) {
+                    info.controller = power;
+                    this.recordNationChange(seat, dateStr, power, independence
+                        ? LK('History.reason.declaredIndependence', { power: held })
+                        : LK('History.reason.declaredPower', { power }));
+                }
+                // A power that has its own declaration written down uses it;
+                // anything founded later reads the general line.
+                const branch = independence ? '.independence' : '.declared';
+                const own = 'History.founding.byPower.' + power + branch;
+                const key = (window.T && T.has && T.has(own)) ? own : 'History.founding' + branch;
+                this._events.push({
+                    date: dateStr, category: 'political', type: 'founding',
+                    ...descOf(key, { leader: speaker, power, nation: seat, from: held }),
+                    iconIndex: ICONS.political
+                });
+            }
+        }
+
         // Whether two powers may appear in the same event at all.
         powersMayInteract(a, b) {
             if (this.isSecludedPower(a) || this.isSecludedPower(b)) return false;
@@ -1246,7 +1340,8 @@
             // powers that take nations at all (the Gods do not).
             const region = this.regionOfNation(nation);
             const candidates = powers.filter(p => p !== current
-                && !this.isSecludedPower(p) && this.powerReaches(p, region));
+                && !this.isSecludedPower(p) && this.powerExists(p, date)
+                && this.powerReaches(p, region));
             if (!candidates.length) return;
             let total = 0;
             const weights = candidates.map(p => {
@@ -1480,29 +1575,24 @@
 
         // --- The two offices ---------------------------------------------------
         // Every hyperpower has a POLITICAL leader and a MORAL guide, and they
-        // are never the same person. The political one governs and is replaced
-        // by whatever the century does to them; the moral one is drawn from a
-        // fixed, limited set (`moralGuide: true` in Leaders.json) and is
-        // replaced by that power's own rule of succession:
+        // are never the same person.
         //
-        //   dynastic     the crown or the throne, in order of reign. Britannia's
-        //                kings and queens, the Shah of the Imperial State of
-        //                Persia. Whoever's years cover the date wears it.
-        //   conclave     elected from whoever is eligible and alive, and held
-        //                until death. The Holy Vatican Empire's popes, chosen
-        //                out of the cardinals on file.
-        //   seniority    the oldest eligible elder, and when they die the next
-        //                oldest. The Archive Foundation, which has never
-        //                elected anything in its life.
+        // The moral guide is ONE person, named in Leaders.json (`moralGuide:
+        // true`) and never anybody else: a power answers to a face that is
+        // written down, not to whoever an election threw up. It is chosen once,
+        // from the power's own book — its holy track first, its own roster
+        // second — and it holds the office for the whole century. Nothing
+        // deposes it and no succession replaces it: a power whose guide dies is
+        // still a power that answers to them.
         //
-        // A power with no eligible set simply has no moral guide, which is its
+        // The political leader is the opposite: it may be a name out of the
+        // book (whoever's years cover the date) or, for a power with nobody on
+        // file, the head of government NPCPolitics has actually elected. A
+        // power with an empty roster is governed, it is just governed by
+        // somebody the world made up rather than somebody history did.
+        //
+        // A power with nobody eligible simply has no moral guide, which is its
         // own kind of answer.
-        moralSuccessionOf(power) {
-            if (power === 'Archive Foundation') return 'seniority';                       // i18n-ignore  power id
-            if (power === 'Holy Vatican Empire') return 'conclave';                       // i18n-ignore  power id
-            if (MORAL_DYNASTIES.includes(power)) return 'dynastic';                       // i18n-ignore  power id
-            return 'dynastic';
-        }
 
         // Everyone this power may raise to its moral office: its own roster and
         // its second track, never a leader borrowed from a conquered nation —
@@ -1512,49 +1602,34 @@
             return [].concat(hp.holy_leaders || [], hp.leaders || []).filter(l => l && l.moralGuide);
         }
 
-        updateMoralGuide(power, date) {
-            const year = date.getFullYear();
+        // The one guide, seated the first time anybody asks and kept for good.
+        // The choice is drawn from the simulation's own seeded stream, so a
+        // world with a given seed always answers to the same person.
+        ensureMoralGuide(power) {
+            if (Object.prototype.hasOwnProperty.call(this._currentMoralGuides, power)) {
+                return this._currentMoralGuides[power];
+            }
             const pool = this.moralPoolFor(power);
-            if (!pool.length) { this._currentMoralGuides[power] = null; return; }
-            // A power with exactly one eligible guide has no succession at all.
-            // The Solomonic Republic answers to Solomon, who does not die and is
-            // not replaced; that is the whole of its constitution.
-            if (pool.length === 1) {
-                this._deadLeaders.delete(pool[0].name);
-                this._currentMoralGuides[power] = pool[0];
-                return;
+            // The holy track outranks the ordinary roster: a power that keeps
+            // one is telling you where its authority comes from. Within the
+            // field it is the earliest of them — the figure the power was
+            // built around, not whoever a die happened to land on. Britannia
+            // answers to the crown it started the century under, the Guild to
+            // the magus who founded it.
+            const hp = this._currentHyperpowers[power] || {};
+            const holy = (hp.holy_leaders || []).filter(l => l && l.moralGuide);
+            const field = holy.length ? holy : pool;
+            const chosen = field.slice().sort((a, b) =>
+                (a.years[0] - b.years[0]) || String(a.name).localeCompare(String(b.name)))[0] || null;
+            if (chosen) {
+                // The office outlives the person: whoever holds it is never
+                // buried by the century that runs around them.
+                chosen.protected = true;
+                this._deadLeaders.delete(chosen.name);
+                delete this._leaderDeaths[chosen.name];
             }
-            const living = pool.filter(l => !this._deadLeaders.has(l.name));
-            const current = this._currentMoralGuides[power];
-            if (current && living.includes(current)) {
-                // A dynasty still hands over when the reign ends; a conclave and
-                // an archive hold their office until death.
-                if (this.moralSuccessionOf(power) !== 'dynastic') return;
-                if (year >= current.years[0] && year <= current.years[1]) return;
-            }
-            const succession = this.moralSuccessionOf(power);
-            if (succession === 'seniority') {
-                // The oldest elder on file: the earliest-born of those still
-                // living. When they die the next oldest takes the office.
-                this._currentMoralGuides[power] = living.slice()
-                    .sort((a, b) => a.years[0] - b.years[0])[0] || null;
-                return;
-            }
-            const inReign = living.filter(l => year >= l.years[0] && year <= l.years[1]);
-            if (succession === 'conclave') {
-                // Elected out of whoever is eligible now, and kept until death.
-                const field = inReign.length ? inReign : living;
-                this._currentMoralGuides[power] = field[Math.floor(this._rand() * field.length)] || null;
-                return;
-            }
-            // Dynastic: whoever's reign covers the date; failing that the next
-            // in line to come; failing that the last of the line still living,
-            // who holds it as a regent. Only a line that has died out entirely
-            // leaves the office empty.
-            this._currentMoralGuides[power] = inReign[0]
-                || living.filter(l => l.years[0] > year).sort((a, b) => a.years[0] - b.years[0])[0]
-                || living.slice().sort((a, b) => b.years[0] - a.years[0])[0]
-                || null;
+            this._currentMoralGuides[power] = chosen;
+            return chosen;
         }
 
         updateActiveLeaders(date) {
@@ -1562,6 +1637,9 @@
             const month = date.getMonth();
             for (let power in this._currentHyperpowers) {
                 const hp = this._currentHyperpowers[power];
+                // A power that has not declared itself yet seats nobody: the
+                // Northpoint Army has no offices until December 2001.
+                if (!this.powerExists(power, date)) continue;
                 // Political leaders. A moral guide never governs: the crown does
                 // not stand for election, and the Shah is not his own minister.
                 const available = this.leaderPoolFor(power).filter(l => {
@@ -1574,7 +1652,7 @@
                 if (!this._currentLeaders[power] || !available.includes(this._currentLeaders[power])) {
                     this._currentLeaders[power] = available[0] || null;
                 }
-                this.updateMoralGuide(power, date);
+                this.ensureMoralGuide(power);
                 // Holy leaders (dual-track system, e.g. Holy Vatican Empire)
                 if (hp.holy_leaders) {
                     const holyAvail = hp.holy_leaders.filter(l =>
@@ -1649,6 +1727,16 @@
             const events = {
                 '1900-04': {
                     type: 'occult'
+                },
+                // 31 December 2000: the President of the European Central Bank
+                // steps out of his own body and into the pantheon. The Gods
+                // seat him the same night (Leaders.json, mario_draghi).
+                '2000-12': {
+                    type: 'paranormal',
+                    callback: (mgr) => {
+                        const gods = mgr._currentHyperpowers['The Gods'];      // i18n-ignore  hyperpower id
+                        if (gods) gods.arcane = (gods.arcane || 100) + 25;
+                    }
                 },
                 '1918-03': {
                     type: 'paranormal'
@@ -2538,6 +2626,10 @@
         this._events = store;
         try {
             if (date.getDate() === 1) {
+                // A power can be founded in the middle of a playthrough: the
+                // Northpoint Army declares itself on 1 December 2001, which is
+                // eleven months after the game starts.
+                this.handleFoundings(date);
                 this.handleEpidemics(date);
                 this.handleInternalPolitics(date, false);
                 this.handleInternalPolitics(date, true);

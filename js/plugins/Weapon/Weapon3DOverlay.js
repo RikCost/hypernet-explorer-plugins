@@ -87,6 +87,10 @@
     _refCount: 0,
     _bufW: 0,
     _bufH: 0,
+    // The size the camera works in (game pixels). The drawing buffer above is
+    // that times the retro downsample, so the two move independently.
+    _viewW: 0,
+    _viewH: 0,
     _rectKey: '',
     _alignCountdown: 0,
     // Alive but not presenting: no weapon is held, the context is kept anyway.
@@ -103,6 +107,23 @@
       return { w, h };
     },
 
+    // The retro downsample, folded into the size of the drawing buffer rather
+    // than run as a pass of its own. PSXShader.render reaches the same picture
+    // by drawing the scene into a low-res render target and blitting it back up
+    // over a full-size canvas, which costs a whole extra full-screen pass and a
+    // render target per context. The vertex snap and the colour banding live in
+    // the patched materials (applyToObject), not in that pass, so rendering
+    // straight into a smaller canvas and letting the browser scale it back up
+    // with nearest sampling is the same picture, one pass cheaper. This is what
+    // the battle scene already does (3DBattlerSystem.js, battleRenderScale).
+    _renderScale() {
+      const psx = window.PSXShader;
+      if (psx && psx.enabled && psx.downscale > 0 && psx.downscale < 0.999) {
+        return Math.max(0.1, Math.min(1, psx.downscale));
+      }
+      return 1;
+    },
+
     init() {
       if (this.renderer) return;
       this._idle = false;
@@ -117,10 +138,15 @@
       this.canvas.style.zIndex        = '10';
       this.canvas.style.left          = '0px';
       this.canvas.style.top           = '0px';
+      // The buffer is rendered at the retro downsample and the element is
+      // stretched back over the game canvas, so the upscale has to be nearest
+      // or the browser sands the pixels the PSX pass just quantised.
+      this.canvas.style.imageRendering = 'pixelated';
       document.body.appendChild(this.canvas);
 
-      // No MSAA: the models are rendered through the PSX nearest-filter pass
-      // anyway, so antialiasing only paid for samples that get quantised away.
+      // No MSAA: the buffer is rendered at the retro downsample and scaled
+      // back up with nearest sampling anyway, so antialiasing only paid for
+      // samples that get quantised away.
       this.renderer = new THREE.WebGLRenderer({
         canvas: this.canvas,
         alpha: true,
@@ -129,10 +155,14 @@
         powerPreference: 'high-performance'
       });
       this.renderer.setPixelRatio(1);
-      this.renderer.setSize(w, h, false);
       this.renderer.setClearColor(0x000000, 0);
-      this._bufW = w;
-      this._bufH = h;
+      // Left at zero on purpose: _alignCanvas() below sizes the buffer for the
+      // current downsample and the camera for the game resolution, so the two
+      // are only stated in one place.
+      this._bufW = 0;
+      this._bufH = 0;
+      this._viewW = 0;
+      this._viewH = 0;
 
       this.camera = new THREE.OrthographicCamera(-w / 2, w / 2, h / 2, -h / 2, 1, 4000);
       this.camera.position.set(0, 0, 2000);
@@ -180,19 +210,20 @@
       this.scene.add(dirLight2);
     },
 
-    // Keeps the drawing buffer at game resolution and the element parked on top
-    // of the game canvas. Both halves are no-ops when nothing changed, so this
-    // is safe to call from the resize observer and periodically from render().
+    // Keeps the camera at game resolution, the drawing buffer at that times the
+    // retro downsample, and the element parked on top of the game canvas. All
+    // three halves are no-ops when nothing changed, so this is safe to call
+    // from the resize observer and periodically from render().
     _alignCanvas() {
       if (!this.canvas) return;
       const { w, h } = this._gameSize();
 
-      if (w !== this._bufW || h !== this._bufH) {
-        this._bufW = w;
-        this._bufH = h;
-        this.canvas.width  = w;
-        this.canvas.height = h;
-        if (this.renderer) this.renderer.setSize(w, h, false);
+      // The camera keeps working in game pixels whatever the buffer is doing:
+      // one world unit is one game pixel, and every weapon offset, _worldX and
+      // _worldY are written in that space.
+      if (w !== this._viewW || h !== this._viewH) {
+        this._viewW = w;
+        this._viewH = h;
         if (this.camera) {
           this.camera.left   = -w / 2;
           this.camera.right  = w / 2;
@@ -200,6 +231,18 @@
           this.camera.bottom = -h / 2;
           this.camera.updateProjectionMatrix();
         }
+      }
+
+      // The drawing buffer follows the retro downsample, which is a live
+      // Options slider, so this is re-asked rather than fixed at init.
+      const scale = this._renderScale();
+      const bw = Math.max(1, Math.round(w * scale));
+      const bh = Math.max(1, Math.round(h * scale));
+      if (bw !== this._bufW || bh !== this._bufH) {
+        this._bufW = bw;
+        this._bufH = bh;
+        if (this.renderer) this.renderer.setSize(bw, bh, false);
+        else { this.canvas.width = bw; this.canvas.height = bh; }
       }
 
       const game = document.getElementById('gameCanvas');
@@ -274,11 +317,11 @@
         this._alignCanvas();
       }
       if (this.lighting) this.lighting.update();
-      if (window.PSXShader) {
-        window.PSXShader.render(this.renderer, this.scene, this.camera);
-      } else {
-        this.renderer.render(this.scene, this.camera);
-      }
+      // Straight to the canvas: the downsample is already in the buffer size
+      // (see _renderScale), so PSXShader.render's render target would only
+      // repeat the same reduction and blit it back at the cost of a second
+      // full-screen pass.
+      this.renderer.render(this.scene, this.camera);
     },
 
     // A true teardown, kept for a caller that really wants the context gone
@@ -311,6 +354,8 @@
       this._refCount = 0;
       this._bufW = 0;
       this._bufH = 0;
+      this._viewW = 0;
+      this._viewH = 0;
       this._rectKey = '';
       this._idle = false;
     }

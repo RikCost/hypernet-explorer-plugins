@@ -302,16 +302,38 @@
     }
   }
 
-  // Calculate hit chance for a specific body part
-  // Calculate hit chance for a specific body part - simplified to always use actor1
-  function calculateHitChance(enemy, partKey) {
+  // How much of the body a part actually is, read off the archetype's own
+  // hit-location weights: those already say, for every archetype in the game,
+  // that a torso is a wide thing to put a blade into and an eye is not. A part
+  // carrying about a tenth of the weight is worth nothing either way.
+  function partExposure(enemy, partKey) {
+    var archetype = getArchetype(enemy && enemy._archetypeName);
+    var locations = archetype && archetype.hitLocations;
+    if (!locations || !locations[partKey]) return 0;
+    var total = 0;
+    for (var key in locations) total += locations[key].weight || 0;
+    if (total <= 0) return 0;
+    var share = (locations[partKey].weight || 0) / total;
+    return Math.round(Math.max(-12, Math.min(12, (share - 0.1) * 90)));
+  }
+
+  // Naming a vital part is the whole reason to aim, and it is the hardest thing
+  // on a body to reach: small, moving, and behind everything else the monster
+  // has. Priced so that aiming for one is a gamble rather than a shortcut past
+  // the health bar.
+  var VITAL_HIT_PENALTY = 35;
+
+  // Calculate hit chance for a specific body part. `user` is whoever is
+  // swinging; the callers that have no battler to hand (the Check panel reads
+  // the same numbers off the card) fall back to the first actor.
+  function calculateHitChance(enemy, partKey, user) {
     var part = enemy._bodyParts[partKey];
 
     // Guard against missing part or destroyed parts
     if (!part || part.destroyed) return 0;
 
-    // Always use actor1 as the user
-    var user = $gameActors.actor(1);
+    user = user || $gameActors.actor(1);
+    if (!user) return 0;
 
     // Base chance is 80%
     var baseChance = 80;
@@ -319,10 +341,19 @@
     // Adjust for part difficulty
     baseChance -= (part.hitDifficulty - 1) * 25;
 
-    // Adjust for vital parts (harder to hit)
+    // Adjust for vital parts (much harder to hit)
     if (part.vital) {
-      baseChance -= 10;
+      baseChance -= VITAL_HIT_PENALTY;
     }
+
+    // A big part is a big target, a sliver of one is not.
+    baseChance += partExposure(enemy, partKey);
+
+    // A part already cut about is an opening: torn, hanging, no longer covered
+    // by whatever was covering it. The worse its condition, the easier it is to
+    // put the next blow through the same place.
+    var condition = part.maxHp > 0 ? part.currentHp / part.maxHp : 1;
+    baseChance += Math.round((1 - Math.max(0, Math.min(1, condition))) * 15);
 
     // Get weapon type and adjust based on appropriate user stat
     var weaponType = getWeaponType(user);
@@ -2800,6 +2831,578 @@
     target.removeState(52);
     if (Math.random() < wrestleStateRate(session.actor) * 0.6) target.addState(54);
     if (entry && subject.gainSpecializationExp) subject.gainSpecializationExp(entry.spec.id, 1);
+  };
+
+
+  // ===========================================================================
+  // Aim: naming the limb a weapon goes through
+  // ===========================================================================
+  // Aim is Wrestle's opposite number, and Attack's. A plain swing lands wherever
+  // the blow happens to land (getRandomHitLocation, above), spread across the
+  // body by the archetype's own weights. Aiming names the part beforehand and
+  // stakes the whole swing on reaching it: the hit-location roll is replaced by
+  // one roll against that one part, and a swing that fails it hits NOTHING - not
+  // the arm it went past, not the body behind it. What that buys is the organ a
+  // random blow almost never finds; what it costs is every blow that misses.
+  //
+  // The choice is free and is not a turn of its own: the part is named and the
+  // swing is thrown in the same round. The aim then belongs to the party MEMBER
+  // rather than to the party - each one carries their own monster and their own
+  // limb, and keeps it from round to round until the part comes off (the aim
+  // slides to the weakest part still attached) or the monster goes down (the aim
+  // is dropped).
+  //
+  // The menu is drawn the way the grapple plan is: as the actor's command list,
+  // by BattleSystemEnhanchedCommands, which calls in through window.Aiming.
+
+  const AIM_PAGE_ROWS = 8;
+
+  // Every part still worth putting a weapon through. Organs are IN, unlike the
+  // wrestling list: reaching one is exactly what aiming is for.
+  function aimTargetParts(enemy) {
+    const out = [];
+    if (!enemy || !enemy._bodyParts) return out;
+    for (const key in enemy._bodyParts) {
+      const part = enemy._bodyParts[key];
+      if (!part || part.destroyed) continue;
+      out.push({ key: key, part: part });
+    }
+    return out;
+  }
+
+  // Where an aim goes when the part it was on comes off: the weakest thing still
+  // attached, since that is the next one to give.
+  function aimWeakestPart(enemy) {
+    let best = null;
+    for (const entry of aimTargetParts(enemy)) {
+      if (!best || entry.part.currentHp < best.part.currentHp) best = entry;
+    }
+    return best ? best.key : null;
+  }
+
+  // The aim rides on the actor and points at a TROOP SLOT rather than at a
+  // battler object, so it survives everything that rebuilds the troop.
+  function aimPlanOf(actor) {
+    return (actor && actor._aimPlan) || null;
+  }
+
+  function aimIndexOf(enemy) {
+    if (!enemy || !$gameTroop || !$gameTroop.members) return -1;
+    return $gameTroop.members().indexOf(enemy);
+  }
+
+  function aimLivingEnemy(plan) {
+    if (!plan || !$gameTroop) return null;
+    const enemy = $gameTroop.members()[plan.enemyIndex];
+    return enemy && enemy.isAlive && enemy.isAlive() ? enemy : null;
+  }
+
+  function aimLog(text) {
+    const log = BattleManager._logWindow;
+    if (log && typeof log.push === "function") {
+      log.push("addText", text);
+      log.push("wait");
+    }
+  }
+
+  // Which limb is lit on which monster. The 3D battler reads this off the
+  // battler itself (3DBattlerSystem.js, updateAimHighlight) and paints that part
+  // yellow, so a plan is read off the monster rather than off the menu. Only one
+  // limb is ever lit: the one the actor now inputting is looking at.
+  function aimSetHighlight(enemy, partKey) {
+    if (!$gameTroop) return;
+    for (const member of $gameTroop.members()) {
+      if (!member) continue;
+      const key = (member === enemy && partKey) ? partKey : null;
+      if (member._aimHighlightPart !== key) member._aimHighlightPart = key;
+    }
+  }
+
+  // What the menu shows and the only thing its rows read, rebuilt each time it
+  // opens so a limb lost in between is simply gone from the list.
+  function aimSession(actor, enemy) {
+    const plan = aimPlanOf(actor);
+    const session = {
+      actor: actor,
+      enemy: enemy,
+      offset: 0,
+      parts: aimTargetParts(enemy),
+      key: null,
+    };
+    if (plan && $gameTroop.members()[plan.enemyIndex] === enemy &&
+        session.parts.some(entry => entry.key === plan.partKey)) {
+      session.key = plan.partKey;
+    }
+    return session;
+  }
+
+  function aimCondition(part) {
+    return Math.round(100 * (part && part.maxHp > 0 ? part.currentHp / part.maxHp : 1));
+  }
+
+  const Aiming = {
+    isMenuOpen(win) {
+      return !!(win && win._aimSession);
+    },
+
+    // Whether the Aim row in the battle command menu is live for this body.
+    // Nothing about the actor gates it - a blind swing can be aimed as well as a
+    // careful one - only whether there is a monster standing with a body the
+    // health system knows how to read. The menu is drawn in Scene_Battle's own
+    // command window, so a tactical map fight has no room for it.
+    canCommand(actor) {
+      if (!actor || !actor.isActor || !actor.isActor()) return false;
+      if (!$gameParty.inBattle()) return false;
+      if (window.MapBattleMode && window.MapBattleMode.isActive && window.MapBattleMode.isActive()) return false;
+      return this.candidates().length > 0;
+    },
+
+    // The monsters an aim can be taken on: standing, and with an anatomy.
+    candidates() {
+      if (!$gameTroop) return [];
+      return $gameTroop.aliveMembers().filter(enemy => {
+        if (!enemy) return false;
+        if (!enemy._bodyParts) initializeEnemyBodyParts(enemy);
+        return aimTargetParts(enemy).length > 0;
+      });
+    },
+
+    // This actor's aim as something usable RIGHT NOW: the monster resolved and
+    // still standing, the part resolved and still attached. A plan that has run
+    // out of either is repaired here (or dropped), so every caller sees one
+    // answer and nobody has to re-check.
+    planFor(actor) {
+      const plan = aimPlanOf(actor);
+      if (!plan) return null;
+      const enemy = aimLivingEnemy(plan);
+      if (!enemy) { this.clear(actor); return null; }
+      if (!enemy._bodyParts) initializeEnemyBodyParts(enemy);
+      let part = enemy._bodyParts[plan.partKey];
+      if (!part || part.destroyed) {
+        const key = aimWeakestPart(enemy);
+        if (!key) { this.clear(actor); return null; }
+        plan.partKey = key;
+        part = enemy._bodyParts[key];
+      }
+      return { enemy: enemy, enemyIndex: plan.enemyIndex, partKey: plan.partKey, part: part };
+    },
+
+    // The name the Aim command wears once a limb is under it, so the row reads
+    // "Aim: Left Arm" and the plan is legible without opening anything.
+    partName(actor) {
+      const plan = this.planFor(actor);
+      return plan ? plan.part.name : null;
+    },
+
+    // The odds of the named blow reaching the named place, which is what the
+    // rows show and what the swing is rolled against. One function, so the
+    // number on the row is the number that is rolled.
+    chance(actor, enemy, partKey) {
+      if (!enemy || !enemy._bodyParts) return 0;
+      return calculateHitChance(enemy, partKey, actor);
+    },
+
+    set(actor, enemy, partKey) {
+      const index = aimIndexOf(enemy);
+      if (!actor || index < 0) return;
+      actor._aimPlan = { enemyIndex: index, partKey: partKey };
+    },
+
+    clear(actor) {
+      if (actor) actor._aimPlan = null;
+    },
+
+    // A monster that goes down takes every aim on it with it: there is nothing
+    // left to name a part of.
+    clearForEnemy(enemy) {
+      if (!enemy || !$gameParty || !$gameTroop) return;
+      const index = aimIndexOf(enemy);
+      if (index < 0) return;
+      for (const actor of $gameParty.battleMembers()) {
+        const plan = aimPlanOf(actor);
+        if (plan && plan.enemyIndex === index) this.clear(actor);
+      }
+      enemy._aimHighlightPart = null;
+    },
+
+    clearAll() {
+      if ($gameParty && $gameParty.members) {
+        for (const actor of $gameParty.members()) this.clear(actor);
+      }
+      if ($gameTroop && $gameTroop.members) {
+        for (const enemy of $gameTroop.members()) { if (enemy) enemy._aimHighlightPart = null; }
+      }
+    },
+
+    // A limb that comes off does not end an aim: it slides to the weakest part
+    // still on the body, so the next swing is already pointed somewhere and the
+    // player is not sent back into the menu every time a limb gives.
+    reanchor(enemy) {
+      if (!enemy || !enemy._bodyParts || !$gameParty || !$gameTroop) return;
+      const index = aimIndexOf(enemy);
+      if (index < 0) return;
+      for (const actor of $gameParty.battleMembers()) {
+        const plan = aimPlanOf(actor);
+        if (!plan || plan.enemyIndex !== index) continue;
+        const part = enemy._bodyParts[plan.partKey];
+        if (part && !part.destroyed) continue;
+        const key = (enemy.isAlive && enemy.isAlive()) ? aimWeakestPart(enemy) : null;
+        if (!key) { this.clear(actor); continue; }
+        plan.partKey = key;
+        aimLog(T('HealthMonsters.aim.log.moved', {
+          actor: actor.name(), enemy: enemy.name(), part: enemy._bodyParts[key].name,
+        }));
+      }
+    },
+
+    // Light the part the actor now inputting has named, on the monster they
+    // named it on, and nothing anywhere else.
+    refreshHighlight(actor) {
+      const plan = actor ? this.planFor(actor) : null;
+      aimSetHighlight(plan ? plan.enemy : null, plan ? plan.partKey : null);
+    },
+
+    // The Aim command was chosen. Unlike Wrestle this rides on no skill and
+    // touches no action: naming a limb is not the turn, so the monster is picked
+    // here and the command window is handed straight back afterwards. Returns
+    // false when there is nothing standing to aim at.
+    startFromCommand(scene) {
+      const actor = BattleManager.actor();
+      if (!scene || !actor || !this.canCommand(actor)) return false;
+      // One monster standing is no choice at all: open straight on its body.
+      // Counted off the whole troop rather than off the candidates, so a field
+      // holding something with no anatomy still asks which one is meant.
+      const alive = $gameTroop.aliveMembers();
+      if (alive.length === 1) return scene.openAimMenu(alive[0]);
+      scene._aimSelecting = true;
+      scene.startEnemySelection();
+      return true;
+    },
+
+    // Stands in for Window_ActorCommand.makeCommandList while a limb is being
+    // named. Rows carry their label in `name`, which that window falls back to
+    // for symbols it does not know.
+    makeCommandList(win) {
+      const session = win._aimSession;
+      const push = (name, ext, enabled, icon) =>
+        win.addCommandWithIcon(name, "aimRow", enabled !== false, ext, icon, enabled === false);
+
+      if (session.parts.length === 0) {
+        push(T('HealthMonsters.aim.menu.noParts'), { kind: "blocked" }, false, 96);
+        push(T('HealthMonsters.aim.menu.back'), { kind: "back" }, true, 140);
+        return;
+      }
+
+      // A body can run past what the command window has room for (it is
+      // bottom-pinned and grows upward), so a long one turns a page at a time
+      // rather than off the top of the screen - the same shelf the grapple plan
+      // pages its limbs with.
+      const shown = session.parts.slice(session.offset, session.offset + AIM_PAGE_ROWS);
+      for (const entry of shown) {
+        const key = entry.key === session.key ? "partRowCurrent" : "partRow";
+        push(T('HealthMonsters.aim.menu.' + key, {
+               part: entry.part.name,
+               percent: aimCondition(entry.part),
+               chance: this.chance(session.actor, session.enemy, entry.key),
+             }), { kind: "part", key: entry.key }, true,
+             // A vital part wears the heart: it is the one worth naming and the
+             // one the odds on the row are punishing.
+             entry.part.vital ? 84 : 96);
+      }
+      if (session.parts.length > AIM_PAGE_ROWS) {
+        push(T('HealthMonsters.aim.menu.more', { count: session.parts.length }),
+             { kind: "more", total: session.parts.length }, true, 4);
+      }
+      push(T('HealthMonsters.aim.menu.clear'), { kind: "clear" }, !!session.key, 140);
+      push(T('HealthMonsters.aim.menu.back'), { kind: "back" }, true, 140);
+    },
+  };
+  window.Aiming = Aiming;
+
+  // ---------------------------------------------------------------------------
+  // Scene wiring
+  // ---------------------------------------------------------------------------
+
+  Scene_Battle.prototype.openAimMenu = function (enemy) {
+    const actor = BattleManager.actor();
+    const win = this._actorCommandWindow;
+    if (!actor || !enemy || !win) return false;
+    if (!enemy._bodyParts) initializeEnemyBodyParts(enemy);
+    const session = aimSession(actor, enemy);
+    if (session.parts.length === 0) {
+      SoundManager.playBuzzer();
+      return false;
+    }
+    if (this._skillWindow) { this._skillWindow.deactivate(); this._skillWindow.hide(); }
+    if (this._itemWindow) { this._itemWindow.deactivate(); this._itemWindow.hide(); }
+    if (this._actorWindow) { this._actorWindow.deactivate(); this._actorWindow.hide(); }
+    if (this._enemyWindow) { this._enemyWindow.deactivate(); this._enemyWindow.hide(); }
+
+    // The command window's own handlers are put aside whole and given back on
+    // the way out, exactly as the grapple plan does it.
+    win._aimSession = session;
+    win._aimSavedHandlers = win._handlers;
+    win._handlers = {};
+    win.setHandler("aimRow", this.onAimRow.bind(this));
+    win.setHandler("cancel", this.onAimCancel.bind(this));
+    win.show();
+    win.refresh();
+    // Open on the limb already named, so stepping back in reads as one plan.
+    const list = win._list || [];
+    const at = session.key
+      ? list.findIndex(row => row.ext && row.ext.kind === "part" && row.ext.key === session.key)
+      : -1;
+    win.select(at >= 0 ? at : 0);
+    win.activate();
+    return true;
+  };
+
+  Scene_Battle.prototype.closeAimMenu = function () {
+    const win = this._actorCommandWindow;
+    if (!win || !win._aimSession) return;
+    win._aimSession = null;
+    if (win._aimSavedHandlers) win._handlers = win._aimSavedHandlers;
+    win._aimSavedHandlers = null;
+    // Back to whatever the actor's own plan says should be lit.
+    Aiming.refreshHighlight(BattleManager.actor());
+  };
+
+  // Hand the command window back with the cursor on a row of the actor's own
+  // list rather than wherever the part list left it.
+  Scene_Battle.prototype._leaveAimMenu = function (symbol) {
+    const win = this._actorCommandWindow;
+    this.closeAimMenu();
+    win.show();
+    win.refresh();
+    win.selectSymbol(symbol);
+    win.activate();
+  };
+
+  Scene_Battle.prototype.onAimRow = function () {
+    const win = this._actorCommandWindow;
+    const session = win && win._aimSession;
+    const ext = win ? win.currentExt() : null;
+    if (!session || !ext) return;
+
+    switch (ext.kind) {
+      case "part":
+        Aiming.set(session.actor, session.enemy, ext.key);
+        // Naming a limb costs nothing and ends no turn: the swing it was named
+        // for is thrown in this same round, so the cursor lands on Attack.
+        this._leaveAimMenu("attack");
+        return;
+      case "clear":
+        Aiming.clear(session.actor);
+        this._leaveAimMenu("aim");
+        return;
+      case "more":
+        session.offset += AIM_PAGE_ROWS;
+        if (session.offset >= ext.total) session.offset = 0;
+        win.refresh();
+        win.select(0);
+        win.activate();
+        return;
+      case "back":
+        this._leaveAimMenu("aim");
+        return;
+      default:
+        SoundManager.playBuzzer();
+        win.activate();
+    }
+  };
+
+  Scene_Battle.prototype.onAimCancel = function () {
+    if (!this._actorCommandWindow || !this._actorCommandWindow._aimSession) return;
+    // Aim is only ever opened from the Aim row, so backing out lands on it.
+    this._leaveAimMenu("aim");
+  };
+
+  // Picking the monster is picking the body. Aim borrows the ordinary target
+  // window for that, and takes it back off the scene the moment the choice is
+  // made: `_aimSelecting` is the only thing that says whose choice it was.
+  const _SB_onEnemyOk_AIM = Scene_Battle.prototype.onEnemyOk;
+  Scene_Battle.prototype.onEnemyOk = function () {
+    if (this._aimSelecting) {
+      this._aimSelecting = false;
+      const enemy = this._enemyWindow ? this._enemyWindow.enemy() : null;
+      if (this._enemyWindow) { this._enemyWindow.hide(); this._enemyWindow.deactivate(); }
+      if (enemy && this.openAimMenu(enemy)) return;
+      SoundManager.playBuzzer();
+      this._actorCommandWindow.show();
+      this._actorCommandWindow.refresh();
+      this._actorCommandWindow.activate();
+      return;
+    }
+    _SB_onEnemyOk_AIM.call(this);
+  };
+
+  const _SB_onEnemyCancel_AIM = Scene_Battle.prototype.onEnemyCancel;
+  Scene_Battle.prototype.onEnemyCancel = function () {
+    if (this._aimSelecting) {
+      // The caller (BattleSystemEnhanchedCommands) hides the target window and
+      // gives the command list back; there is nothing of ours left to undo.
+      this._aimSelecting = false;
+      return;
+    }
+    _SB_onEnemyCancel_AIM.call(this);
+  };
+
+  // A part list left standing when input moves on would leave the command window
+  // holding rows that are no longer about anything.
+  const _SB_startActorCommandSelection_AIM = Scene_Battle.prototype.startActorCommandSelection;
+  Scene_Battle.prototype.startActorCommandSelection = function () {
+    this.closeAimMenu();
+    this._aimSelecting = false;
+    _SB_startActorCommandSelection_AIM.call(this);
+    // Whoever is inputting now, their aim is the one lit on the field.
+    Aiming.refreshHighlight(BattleManager.actor());
+  };
+
+  const _SB_endCommandSelection_AIM = Scene_Battle.prototype.endCommandSelection;
+  Scene_Battle.prototype.endCommandSelection = function () {
+    this.closeAimMenu();
+    this._aimSelecting = false;
+    _SB_endCommandSelection_AIM.call(this);
+    // The highlight is an input-time affordance: while the round plays out the
+    // model belongs to the hit flashes.
+    aimSetHighlight(null, null);
+  };
+
+  // Every cursor move in the command window can move the light on the monster:
+  // while a limb is being named (Aim) or a hold planned (Wrestle), the part
+  // under the cursor is the one lit, and the moment the cursor leaves the limb
+  // rows it falls back to the part the plan has settled on.
+  const _WAC_select_AIM = Window_ActorCommand.prototype.select;
+  Window_ActorCommand.prototype.select = function (index) {
+    _WAC_select_AIM.call(this, index);
+    const aim = this._aimSession;
+    const grapple = this._wrestleSession;
+    if (!aim && !grapple) return;
+    const ext = this.currentExt();
+    if (aim) {
+      aimSetHighlight(aim.enemy, (ext && ext.kind === "part") ? ext.key : aim.key);
+    } else {
+      const hovered = (ext && ext.kind === "limb" && ext.side === "theirs") ? ext.key : null;
+      aimSetHighlight(grapple.enemy, hovered || grapple.theirKey);
+    }
+  };
+
+  // The grapple plan lights the limb it is being taken on for as long as it is
+  // open, and gives the field back to the actor's own aim when it closes.
+  const _SB_closeWrestleMenu_AIM = Scene_Battle.prototype.closeWrestleMenu;
+  Scene_Battle.prototype.closeWrestleMenu = function () {
+    const had = !!(this._actorCommandWindow && this._actorCommandWindow._wrestleSession);
+    _SB_closeWrestleMenu_AIM.call(this);
+    if (had) Aiming.refreshHighlight(BattleManager.actor());
+  };
+
+  // ---------------------------------------------------------------------------
+  // Resolving an aimed swing
+  // ---------------------------------------------------------------------------
+
+  // The limb an aimed blow is forced onto once its roll has been made, so the
+  // hit-location table does not roll a second time for the same swing.
+  let _aimForcedPart = null;
+  let _aimForcedEnemy = null;
+
+  const _getRandomHitLocation_AIM = getRandomHitLocation;
+  getRandomHitLocation = function (enemy) {
+    if (_aimForcedPart && _aimForcedEnemy === enemy && enemy._bodyParts &&
+        enemy._bodyParts[_aimForcedPart] && !enemy._bodyParts[_aimForcedPart].destroyed) {
+      return { key: _aimForcedPart, targeted: true };
+    }
+    return _getRandomHitLocation_AIM.call(this, enemy);
+  };
+
+  const _GA_itemHit_AIM = Game_Action.prototype.itemHit;
+  Game_Action.prototype.itemHit = function (target) {
+    if (this._aimForceMiss) return 0;
+    return _GA_itemHit_AIM.call(this, target);
+  };
+
+  // Only the weapon swing is aimed. A spell, a thrown bottle or a planned hold
+  // goes where its own rules send it, and would be a second aim on top of the
+  // one it already has.
+  function isAimedAttack(action) {
+    return !!(action && action.isAttack && action.isAttack());
+  }
+
+  const _GA_apply_AIM = Game_Action.prototype.apply;
+  Game_Action.prototype.apply = function (target) {
+    const subject = this.subject();
+    const plan = (isAimedAttack(this) && subject && subject.isActor && subject.isActor() &&
+                  target && target.isEnemy && target.isEnemy())
+      ? Aiming.planFor(subject) : null;
+    // An aim is about ONE monster: a swing that landed on any other one is an
+    // ordinary swing, spread over that body by the usual weights.
+    if (!plan || plan.enemy !== target) {
+      _GA_apply_AIM.call(this, target);
+      return;
+    }
+
+    if (Math.random() * 100 >= Aiming.chance(subject, target, plan.partKey)) {
+      // The whole swing was spent on reaching one place and did not reach it.
+      // Nothing is struck on the way past: that is the price of naming a part.
+      this._aimForceMiss = true;
+      try {
+        _GA_apply_AIM.call(this, target);
+      } finally {
+        this._aimForceMiss = false;
+      }
+      aimLog(T('HealthMonsters.aim.log.missed', {
+        actor: subject.name(), enemy: target.name(), part: plan.part.name,
+      }));
+      return;
+    }
+
+    _aimForcedPart = plan.partKey;
+    _aimForcedEnemy = target;
+    try {
+      _GA_apply_AIM.call(this, target);
+    } finally {
+      _aimForcedPart = null;
+      _aimForcedEnemy = null;
+    }
+  };
+
+  // The engine picks a random monster for every plain attack (see
+  // BattleManager.selectNextCommand in rmmz_managers.js). An aimed swing goes to
+  // the body it was named on instead, whichever way the command was reached.
+  const _BM_selectNextCommand_AIM = BattleManager.selectNextCommand;
+  BattleManager.selectNextCommand = function () {
+    const actor = this._currentActor;
+    const action = (actor && actor.inputtingAction) ? actor.inputtingAction() : null;
+    const plan = (action && isAimedAttack(action)) ? Aiming.planFor(actor) : null;
+    _BM_selectNextCommand_AIM.call(this);
+    if (plan && action) action.setTarget(plan.enemyIndex);
+  };
+
+  // A limb coming off is where an aim moves; this is the one road every kind of
+  // limb damage takes, so it is the only place that has to know.
+  const _applyDamageToBodyPart_AIM = applyDamageToBodyPart;
+  applyDamageToBodyPart = function (enemy, partKey, damage, isTargeted) {
+    const result = _applyDamageToBodyPart_AIM.apply(this, arguments);
+    Aiming.reanchor(enemy);
+    return result;
+  };
+
+  const _GE_die_AIM = Game_Enemy.prototype.die;
+  Game_Enemy.prototype.die = function () {
+    _GE_die_AIM.call(this);
+    Aiming.clearForEnemy(this);
+  };
+
+  // An aim belongs to one fight: the monster it names is a slot in THIS troop.
+  const _BM_setup_AIM = BattleManager.setup;
+  BattleManager.setup = function (troopId, canEscape, canLose) {
+    _BM_setup_AIM.call(this, troopId, canEscape, canLose);
+    Aiming.clearAll();
+  };
+
+  const _BM_endBattle_AIM = BattleManager.endBattle;
+  BattleManager.endBattle = function (result) {
+    Aiming.clearAll();
+    _BM_endBattle_AIM.call(this, result);
   };
 
 })();

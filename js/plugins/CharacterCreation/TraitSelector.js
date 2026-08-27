@@ -398,6 +398,7 @@
 
     terminate() {
       super.terminate();
+      if (window.CCNav) window.CCNav.detach(this);
       if (this._traitBar) { this._traitBar.dispose(); this._traitBar = null; }
       if (this._dndContainer) {
         this._dndContainer.style.display = "none";
@@ -434,6 +435,10 @@
       this._gridCount = 0;
       // Wheel + L2/R2 scrolling for the pages. See CCScroll.
       if (window.CCScroll) window.CCScroll.bindWheel(this._dndContainer);
+      // Reset, Random and Continue sit under the board, and the picked chips
+      // beside it: none of them is a card, so the grid cursor cannot reach
+      // them. The focus ring can. See CharacterCreationNav.js.
+      if (window.CCNav) window.CCNav.attach(this, this._dndContainer);
       this.buildOverlayDOM();
     }
 
@@ -874,7 +879,7 @@
       // description is not repeated here , the same trait's card on the left is
       // one keypress away and prints it in full above.
       this._el.picked.innerHTML = picked.map((trait, index) => `
-        <div class="cc-trait-picked" data-picked="${index}">
+        <div class="cc-trait-picked" data-nav data-picked="${index}">
           <span style="${this.getIconStyle(trait.icon, 20)}"></span>
           <span class="cc-trait-picked-name">${getTraitText(trait, "name")}</span>
           ${costBadgeHTML(traitCost(trait))}
@@ -895,7 +900,7 @@
       const cards = this._selectedDiseases;
       this._el.diseasesCard.style.display = cards.length ? "" : "none";
       this._el.diseases.innerHTML = cards.map((card, idx) => `
-        <span class="cc-element-badge focusable" data-disease-slot="${idx}" style="cursor: pointer">
+        <span class="cc-element-badge focusable" data-nav data-disease-slot="${idx}" style="cursor: pointer">
           <span style="${this.getIconStyle(card.icon, 16)} margin-right: 6px"></span>${card.name} ✕
         </span>
       `).join("");
@@ -961,8 +966,12 @@
                  goes back is on the left and the one that goes on is on the
                  right, exactly where Back and Continue are. -->
             ${window.CCButtons.panel({
-              back: window.CCButtons.button(t('no'), { attrs: 'data-yes="0"' }),
-              next: window.CCButtons.button(t('yes'), { confirm: true, attrs: 'data-yes="1"' }),
+              // The prompt owns the keyboard while it is up: left and right
+              // swap the answer, Confirm takes it, Cancel says no. See
+              // updateInput, which is named here so the reachability suite can
+              // see who walks these two.
+              back: window.CCButtons.button(t('no'), { attrs: 'data-yes="0" data-nav-owner="updateInput"' }),
+              next: window.CCButtons.button(t('yes'), { confirm: true, attrs: 'data-yes="1" data-nav-owner="updateInput"' }),
               style: "margin-top: 0; padding-top: 0; min-width: 380px; background: transparent; box-shadow: none;",
             })}
           </div>
@@ -1169,7 +1178,21 @@
       this.popScene();
     }
 
+    // The ring hands the board back when it walks off its own top or left edge.
+    onNavLeave() {
+      this._sig = { category: null, selection: null, cursor: -1, hover: -1, specsReady: null, confirm: null };
+      this.syncOverlay(true);
+    }
+
+    // Step off the board and onto the page's own controls.
+    _ccEnterNav(dir) {
+      return !!window.CCNav && window.CCNav.tryEnterFromBoard(dir);
+    }
+
     updateInput() {
+      // The ring owns the buttons and the picked chips whenever it is up, and
+      // is read first so one press never moves two cursors.
+      if (window.CCNav && window.CCNav.update()) return;
       if (this._confirmYes !== null) {
         if (Input.isTriggered("left") || Input.isTriggered("right")) {
           SoundManager.playCursor();
@@ -1182,9 +1205,10 @@
         return;
       }
 
-      // L1 / R1 on a pad, Q / PageUp-PageDown on the keyboard, cycle the tabs.
-      if (Input.isTriggered("pageup")) { this.cycleCategory(-1); return; }
-      if (Input.isTriggered("pagedown")) { this.cycleCategory(1); return; }
+      // L1 / R1 on a pad, Q / PageUp-PageDown or Tab / Shift+Tab on the
+      // keyboard, cycle the tabs. See CCNav.railDir().
+      const railDir = window.CCNav ? window.CCNav.railDir() : 0;
+      if (railDir) { this.cycleCategory(railDir); return; }
 
       const maxItems = this.currentTraits().length;
       if (maxItems <= 0) return;
@@ -1207,6 +1231,10 @@
         moved = true;
       } else if (Input.isRepeated("right") && index % cols < cols - 1 && index + 1 < maxItems) {
         index++; moved = true;
+      } else if (Input.isRepeated("right") && this._ccEnterNav("right")) {
+        // The right edge of the board is the doorway onto the picked chips
+        // and the buttons under them.
+        return;
       } else if (Input.isRepeated("left") && index % cols > 0) {
         index--; moved = true;
       } else if (Input.isTriggered("ok")) {
@@ -1243,6 +1271,9 @@
         // syncOverlay is signature-driven: it touches the DOM only when
         // something really changed, so polling it every frame is free.
         this.syncOverlay(false);
+        // The page rebuilds its markup underneath the ring, so the ring is
+        // stamped back on afterwards rather than before.
+        if (window.CCNav) window.CCNav.paint();
       }
     }
 

@@ -56,7 +56,7 @@
   "extra": "Extra: ",
   "special2": "Special: ",
   "elem": "Elem: ",
-  "debuff": "Debuff: ",
+  "debuffRate": "Debuff: ",
   "equip": "Equip: ",
   "dualWielding": "Dual Wielding",
   "weaponType": "Weapon Type ",
@@ -188,5 +188,10 @@
   "medicineMore": "and {count} more",
   "nature": "Nature",
   "natureMagical": "Magical",
-  "natureMundane": "Mundane"
+  "natureMundane": "Mundane",
+  "refused": {
+    "title": "Not served",
+    "notorious": "The shopkeeper looks at your face, then at the door. Whatever your name is worth, it is not worth the trouble of being seen selling to it.",
+    "standing": "The shopkeeper folds their arms. Word has gone around about you here, and the counter stays shut."
+  }
 }

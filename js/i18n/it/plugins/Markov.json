@@ -21,6 +21,12 @@
     "gotRuntime": "Motore del modello linguistico installato.",
     "noRuntime": "Nessun motore per modelli linguistici per {platform}. Le battute generate restano alle catene di Markov.",
     "thinking": "Sta pensando…",
-    "thinkingNpc": "{npc} sta pensando…"
+    "thinkingNpc": "{npc} sta pensando…",
+    "chatSystem": "Sei {npc}, una persona incontrata per strada, e stai parlando con un viaggiatore che ti si è appena avvicinato.",
+    "chatAbout": "Di te si sa questo: {bio}.",
+    "chatPlace": "Vi trovate entrambi in {place}.",
+    "chatFlavour": "Da queste parti si parla così: {text}",
+    "chatStyle": "Rispondi restando nel personaggio, in italiano, in una o due frasi brevi. Non descrivere mai le tue azioni, non usare elenchi né markdown, non dire mai di essere un modello.",
+    "chatOpen": "Dimmi qualcosa."
   }
 }

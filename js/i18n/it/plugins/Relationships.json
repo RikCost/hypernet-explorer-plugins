@@ -60,5 +60,95 @@
       "name": "Aromantico solitario",
       "desc": "Vivere per scelta senza alcun legame romantico."
     }
+  },
+  "bond": {
+    "none": {
+      "name": "Nessun legame",
+      "desc": "Non hanno alcun rapporto oltre al viaggiare insieme."
+    },
+    "acquaintances": {
+      "name": "Conoscenti",
+      "desc": "Si conoscono di nome e poco altro."
+    },
+    "friends": {
+      "name": "Amici",
+      "desc": "Un'amicizia solida, messa alla prova e mantenuta."
+    },
+    "best_friends": {
+      "name": "Migliori amici",
+      "desc": "La prima persona che ognuno dei due chiamerebbe."
+    },
+    "childhood_friends": {
+      "name": "Amici d'infanzia",
+      "desc": "Sono cresciuti nelle stesse strade e non si sono mai persi di vista."
+    },
+    "comrades": {
+      "name": "Compagni d'armi",
+      "desc": "Hanno combattuto dalla stessa parte e ognuno deve la vita all'altro."
+    },
+    "partners": {
+      "name": "Compagni",
+      "desc": "Una storia d'amore che entrambi riconoscono."
+    },
+    "spouses": {
+      "name": "Sposati",
+      "desc": "Legati apertamente e per legge."
+    },
+    "engaged": {
+      "name": "Fidanzati",
+      "desc": "Promessi l'uno all'altra, con la data ancora da fissare."
+    },
+    "lovers": {
+      "name": "Amanti",
+      "desc": "Una storia fisica a cui nessuno dei due ha dato un nome."
+    },
+    "situationship": {
+      "name": "Storia non definita",
+      "desc": "Qualcosa c'e, ma nessuno dei due vuole definirlo."
+    },
+    "exes": {
+      "name": "Ex",
+      "desc": "Una storia finita, con tutto quello che ha lasciato."
+    },
+    "unrequited": {
+      "name": "Amore non corrisposto",
+      "desc": "Un amore portato da soli e mai detto ad alta voce."
+    },
+    "unaware": {
+      "name": "Ignaro dei suoi sentimenti",
+      "desc": "L'altro e innamorato; questo non se ne e mai accorto."
+    },
+    "siblings": {
+      "name": "Fratelli",
+      "desc": "Nati nella stessa famiglia."
+    },
+    "twins": {
+      "name": "Gemelli",
+      "desc": "Nati lo stesso giorno, dallo stesso grembo."
+    },
+    "parent": {
+      "name": "Suo genitore",
+      "desc": "Questo ha cresciuto l'altro."
+    },
+    "child": {
+      "name": "Suo figlio",
+      "desc": "Questo e stato cresciuto dall'altro."
+    },
+    "cousins": {
+      "name": "Cugini",
+      "desc": "Famiglia, a un ramo di distanza."
+    },
+    "mentor": {
+      "name": "Suo maestro",
+      "desc": "Questo ha insegnato il mestiere all'altro."
+    },
+    "student": {
+      "name": "Suo allievo",
+      "desc": "Questo ha imparato il mestiere dall'altro."
+    },
+    "rivals": {
+      "name": "Rivali",
+      "desc": "Una gara continua che nessuno dei due vuole concedere."
+    }
   }
 }

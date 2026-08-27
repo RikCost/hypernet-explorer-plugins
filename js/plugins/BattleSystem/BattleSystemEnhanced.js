@@ -33,17 +33,23 @@
  * @type variable
  * @default 112
  *
- * @param levelDampGrace
- * @text Level Gap Grace
- * @desc Levels an enemy may outrank the attacker before damage damping starts.
+ * @param levelGapFair
+ * @text Level Gap: Fair Fight
+ * @desc Levels a monster may outrank the party and still be a fight they can win. Damping and warnings start past this.
  * @type number
- * @default 4
+ * @default 6
+ *
+ * @param levelGapHard
+ * @text Level Gap: Hard Fight
+ * @desc Levels a monster may outrank the party and still be beatable at a cost. Past this the fight is out of reach.
+ * @type number
+ * @default 8
  *
  * @param levelDampScale
  * @text Level Gap Scale
- * @desc Higher = gentler damping. Gap above grace is divided by this.
+ * @desc Higher = gentler damping. Gap above the fair gap is divided by this.
  * @type number
- * @default 9
+ * @default 5
  *
  * @param levelDampCurve
  * @text Level Gap Curve
@@ -54,17 +60,44 @@
  *
  * @param levelDampFloor
  * @text Level Gap Floor
- * @desc Lowest damage multiplier the gap alone can impose (0.10 = 10% damage).
+ * @desc Lowest damage multiplier the gap alone can impose (0.06 = 6% damage).
  * @type number
  * @decimals 2
- * @default 0.10
+ * @default 0.06
  *
  * @param levelDampLeverageCap
  * @text Tactical Leverage Cap
- * @desc How much of the damping tactics (crits, weakness, debuffs) can undo.
+ * @desc How much of the damping tactics (crits, weakness, debuffs) can undo at the edge of the fair gap.
  * @type number
  * @decimals 2
  * @default 0.80
+ *
+ * @param levelDampLeverageFalloff
+ * @text Tactical Leverage Falloff
+ * @desc Levels past the fair gap over which tactics lose half their worth. Lower = tactics stop rescuing a hopeless gap sooner.
+ * @type number
+ * @default 6
+ *
+ * @param levelPressurePerLevel
+ * @text Level Pressure Per Level
+ * @desc Extra damage a monster deals to the party per level it outranks them past the fair gap (0.10 = +10%).
+ * @type number
+ * @decimals 3
+ * @default 0.100
+ *
+ * @param levelPressureCap
+ * @text Level Pressure Cap
+ * @desc Ceiling on that multiplier, so an absurd gap cannot scale without end.
+ * @type number
+ * @decimals 2
+ * @default 2.60
+ *
+ * @param levelPressureOutnumber
+ * @text Level Pressure: Outnumbered Monster
+ * @desc How much of the outnumbered ratio an over-level monster converts into extra damage, so 3v1 does not trivialise it.
+ * @type number
+ * @decimals 2
+ * @default 0.45
  *
  * @param invisibleHandChipFloorPercent
  * @text Invisible Hand: Chip Floor Percent
@@ -444,11 +477,16 @@
     BSE.Params.respawnXVar          = Number(parameters['respawnXVar'] || 26);
     BSE.Params.respawnYVar          = Number(parameters['respawnYVar'] || 27);
     BSE.Params.respawnCountryIDVar  = Number(parameters['respawnCountryIDVar'] || 112);
-    BSE.Params.levelDampGrace       = Number(parameters['levelDampGrace'] || 4);
-    BSE.Params.levelDampScale       = Number(parameters['levelDampScale'] || 9);
+    BSE.Params.levelGapFair         = Number(parameters['levelGapFair'] || 6);
+    BSE.Params.levelGapHard         = Number(parameters['levelGapHard'] || 8);
+    BSE.Params.levelDampScale       = Number(parameters['levelDampScale'] || 5);
     BSE.Params.levelDampCurve       = Number(parameters['levelDampCurve'] || 1.6);
-    BSE.Params.levelDampFloor       = Number(parameters['levelDampFloor'] || 0.10);
+    BSE.Params.levelDampFloor       = Number(parameters['levelDampFloor'] || 0.06);
     BSE.Params.levelDampLeverageCap = Number(parameters['levelDampLeverageCap'] || 0.80);
+    BSE.Params.levelDampLeverageFalloff = Number(parameters['levelDampLeverageFalloff'] || 6);
+    BSE.Params.levelPressurePerLevel    = Number(parameters['levelPressurePerLevel'] || 0.100);
+    BSE.Params.levelPressureCap         = Number(parameters['levelPressureCap'] || 2.60);
+    BSE.Params.levelPressureOutnumber   = Number(parameters['levelPressureOutnumber'] || 0.45);
     BSE.Params.invisibleHandChipFloorPercent      = Number(parameters['invisibleHandChipFloorPercent'] || 0.0050);
     BSE.Params.invisibleHandEnabled               = (parameters['invisibleHandEnabled'] !== 'false');
     BSE.Params.invisibleHandLevelGapEnabled         = (parameters['invisibleHandLevelGapEnabled'] !== 'false');
@@ -673,32 +711,48 @@
     };
 
     // ------------------------------------------------------------------
-    // 4b. LEVEL-GAP DAMAGE DAMPING (party -> enemy only)
+    // 4b. LEVEL-GAP DAMAGE DAMPING (party -> enemy)
     //
     //   A low-level party may always kill a much higher-level enemy, but not
     //   by trading raw hits: the wider the gap between the attacker's level
     //   and the enemy's <Level:X>, the more of the attack's damage is damped.
-    //   The curve is flat inside a grace band, then accelerates (curve > 1)
-    //   and bottoms out at the floor, so the gap alone never zeroes a hit.
+    //   The curve is flat inside the fair gap (levelGapFair, the levels a
+    //   party is expected to be able to fight above their own), then
+    //   accelerates (curve > 1) and bottoms out at the floor, so the gap
+    //   alone never zeroes a hit: the party can always land on anything, they
+    //   just cannot land for enough.
     //
     //   Tactics buy the damage back. Critical hits, elemental weakness, the
     //   debuffs and crippling states the party has landed and its own buffs
-    //   all count as leverage, which undoes up to leverageCap of the damping.
-    //   Slip damage (poison and the like) never passes through here at all,
-    //   so damage-over-time is another way through a big gap.
+    //   all count as leverage, which undoes up to leverageCap of the damping
+    //   - but leverageCap itself decays with the gap (levelDampLeverageFalloff),
+    //   so a stacked turn rescues a fight a few levels over the party's head
+    //   and does very little for one twenty levels over it. Slip damage
+    //   (poison and the like) never passes through here at all, so
+    //   damage-over-time remains another way through a big gap.
     //
-    //   Damage the party TAKES is untouched: this only ever scales an actor's
-    //   outgoing HP damage against an enemy.
+    //   This half only ever scales an actor's outgoing HP damage. The other
+    //   half of the same gap, what the party TAKES from a monster above them,
+    //   is levelPressureFactor in section 4b-ter.
     // ------------------------------------------------------------------
 
     /**
      * Level of any battler, 0 when an enemy carries no <Level:X> tag.
-     * Cached on the shared $dataEnemies entry, this runs per damage roll.
+     *
+     * An explicit per-instance level (Game_Enemy#level, set by the summon and
+     * arena systems and by anything that reads a monster at a level other than
+     * the one it was authored at) outranks the tag: the gap rules and the
+     * damage formulas have to be looking at the same number, or a monster
+     * fights at one level and is priced at another.
+     *
+     * The tag itself is cached on the shared $dataEnemies entry: this runs per
+     * damage roll.
      */
     BSE.Helpers.getBattlerLevel = function(battler) {
         if (!battler) return 0;
         if (battler.isActor && battler.isActor()) return battler.level || 0;
         if (!battler.isEnemy || !battler.isEnemy()) return 0;
+        if (battler._bseLevelOverride != null) return battler._bseLevelOverride;
         const enemyData = battler.enemy();
         if (!enemyData) return 0;
         if (enemyData._bseLevel === undefined) {
@@ -793,30 +847,181 @@
         return Math.min(1, leverage);
     };
 
+    // ------------------------------------------------------------------
+    // 4b-ter. THE LEVEL GAP, READ THE SAME WAY EVERYWHERE
+    //
+    //   One rule decides what a level number on a monster means, and the
+    //   damage layer, the battle-start warning and the map nameplate all
+    //   read it from here instead of each carrying its own threshold:
+    //
+    //     up to levelGapFair (+6)   an even fight. The party can fell it.
+    //     up to levelGapHard (+8)   a hard fight, winnable at a cost.
+    //     past levelGapHard         out of reach. Chip damage going out,
+    //                               real damage coming back.
+    //
+    //   Past the fair gap two things happen at once, and it matters that
+    //   they are two and not one. The party's own hits are damped, so a
+    //   monster far above them cannot simply be worn down; and the monster
+    //   presses harder in return (levelPressureFactor), so the fight is
+    //   lost on the clock rather than merely being slow. Damping alone only
+    //   ever made an over-level monster tedious: the party ground it out
+    //   over fifty turns because nothing was punishing them for taking
+    //   fifty turns. It still lands - a level 1 party can always hit a
+    //   level 27 monster - it just never lands for enough.
+    //
+    //   Outnumbering it does not settle the matter either. Three party
+    //   members swinging at one monster is three times the actions per
+    //   round, which used to be enough to bring down anything given the
+    //   patience, so the pressure a monster puts out scales with how badly
+    //   it is outnumbered (levelPressureOutnumber): the same 3v1 that
+    //   triples the party's output also triples what each of them is
+    //   standing in front of. The other direction is already covered, by
+    //   the defensive credit dndOutnumberedBonus hands a lone party member.
+    //
+    //   Nothing here can delete anyone outright. The per-hit ceiling on a
+    //   party member (dndActorHitMaxPercent, tightened under permadeath)
+    //   sits over the whole thing, so an over-level monster takes a huge
+    //   bite out of a health bar and still leaves turns to run.
+    // ------------------------------------------------------------------
+
+    /** Tier names, shared by the damage layer, the warning and the nameplate. */
+    BSE.Data.LEVEL_GAP_EVEN     = 0;
+    BSE.Data.LEVEL_GAP_HARD     = 1;
+    BSE.Data.LEVEL_GAP_HOPELESS = 2;
+
+    /**
+     * How far a monster outranks a reference level, and which of the three
+     * bands that lands in. `refLevel` defaults to the party's median.
+     */
+    BSE.Helpers.levelGapTier = function(enemyLevel, refLevel) {
+        const ref = refLevel != null ? refLevel : BSE.Helpers.dndReferenceLevel();
+        const gap = (enemyLevel || 0) - (ref || 0);
+        let tier = BSE.Data.LEVEL_GAP_EVEN;
+        if (gap > BSE.Params.levelGapHard) tier = BSE.Data.LEVEL_GAP_HOPELESS;
+        else if (gap > BSE.Params.levelGapFair) tier = BSE.Data.LEVEL_GAP_HARD;
+        return { gap: gap, tier: tier };
+    };
+
+    /**
+     * Whether the level gap rules apply at all. They are a difficulty curve,
+     * and the sandbox and the playtest character stand outside it.
+     */
+    function levelGapRulesApply() {
+        if ($gameSystem && $gameSystem._isSandboxMode) return false;
+        const leader = $gameParty && $gameParty.leader ? $gameParty.leader() : null;
+        if (leader && leader.name() === "Test") return false; // i18n-ignore: playtest character name
+        return true;
+    }
+
+    /**
+     * How badly a battler is outnumbered, as a ratio: 0 when the headcount is
+     * even or in its favour, 1 when it faces twice its own number, and so on.
+     * A <Boss> reads 0, the same exemption it is given everywhere else.
+     */
+    BSE.Helpers.outnumberedRatio = function(battler) {
+        if (!battler || !$gameParty || !$gameParty.inBattle() || !$gameTroop) return 0;
+        const isActor = !!(battler.isActor && battler.isActor());
+        if (!isActor && battler.enemy && ihIsBossEnemy(battler.enemy())) return 0;
+        const partyCount = BSE.Helpers.realPartyMembers(true).length;
+        const troopCount = $gameTroop.aliveMembers().length;
+        const own   = isActor ? partyCount : troopCount;
+        const other = isActor ? troopCount : partyCount;
+        if (own <= 0 || other <= own) return 0;
+        return other / own - 1;
+    };
+
+    /**
+     * The two halves of the same curve, both measured in levels PAST the fair
+     * gap, and both used in both directions. Whoever is behind has their hits
+     * damped; whoever is ahead has them lifted. A gap of 0 or less is an even
+     * fight and returns 1 from either.
+     */
+    function gapDamp(gap) {
+        if (gap <= 0) return 1;
+        const scale = Math.max(1, BSE.Params.levelDampScale);
+        return Math.max(
+            BSE.Params.levelDampFloor,
+            1 / (1 + Math.pow(gap / scale, BSE.Params.levelDampCurve))
+        );
+    }
+
+    function gapLift(gap, widen) {
+        if (gap <= 0) return 1;
+        return Math.min(BSE.Params.levelPressureCap,
+            1 + gap * BSE.Params.levelPressurePerLevel * (1 + (widen || 0)));
+    }
+
     /**
      * Multiplier applied to an actor's outgoing damage against an enemy.
-     * Always 1 when the attacker is the enemy's equal or better, when the
-     * enemy has no declared level, or in the sandbox / playtest character.
+     * Always 1 inside the fair gap in either direction, when the enemy has no
+     * declared level, or in the sandbox / playtest character.
+     *
+     * Past the fair gap the party's hits are damped, and tactics (a crit, a
+     * weakness, a crippled target) buy back part of that damping, but only
+     * part, and less of it the wider the gap: at the edge of the fair gap a
+     * well-set-up hit is worth nearly a whole one, and every
+     * levelDampLeverageFalloff levels beyond that halves what the same setup
+     * is worth. A stacked turn is how a party fells a monster six levels above
+     * them. It is not how they fell one twenty levels above them.
+     *
+     * The gap runs the other way too: a party that outranks a monster by more
+     * than the fair gap hits it harder for every level of it, which is what
+     * lets them cut through the fauna they have outgrown instead of trading
+     * blows with it. The one-shot ceiling
+     * (invisibleHandOneShotMaxPercent, applied in makeDamageValue) still
+     * stands over the result, so even a crushing gap leaves a turn in the
+     * fight rather than deleting a monster from full HP.
      */
     BSE.Helpers.levelDampingFactor = function(subject, target, action, critical) {
         if (!subject || !target) return 1;
         if (!subject.isActor || !subject.isActor()) return 1;
         if (!target.isEnemy || !target.isEnemy()) return 1;
-        if ($gameSystem && $gameSystem._isSandboxMode) return 1;
-        const leader = $gameParty.leader();
-        if (leader && leader.name() === "Test") return 1; // i18n-ignore: playtest character name
+        if (!levelGapRulesApply()) return 1;
         const enemyLevel = BSE.Helpers.getBattlerLevel(target);
         if (enemyLevel <= 0) return 1;
-        const gap = enemyLevel - BSE.Helpers.getBattlerLevel(subject) - BSE.Params.levelDampGrace;
-        if (gap <= 0) return 1;
-        const scale = Math.max(1, BSE.Params.levelDampScale);
-        const damp = Math.max(
-            BSE.Params.levelDampFloor,
-            1 / (1 + Math.pow(gap / scale, BSE.Params.levelDampCurve))
-        );
-        const leverage = BSE.Helpers.tacticalLeverage(subject, target, action, critical) *
-            BSE.Params.levelDampLeverageCap;
+        const fair = BSE.Params.levelGapFair;
+        const behind = enemyLevel - BSE.Helpers.getBattlerLevel(subject) - fair;
+        if (behind <= 0) {
+            return gapLift(BSE.Helpers.getBattlerLevel(subject) - enemyLevel - fair, 0);
+        }
+        const damp = gapDamp(behind);
+        const falloff = Math.max(1, BSE.Params.levelDampLeverageFalloff);
+        const cap = BSE.Params.levelDampLeverageCap * Math.pow(0.5, behind / falloff);
+        const leverage = BSE.Helpers.tacticalLeverage(subject, target, action, critical) * cap;
         return damp + (1 - damp) * leverage;
+    };
+
+    /**
+     * Multiplier applied to a monster's outgoing damage against a party
+     * member: the other half of the level gap, and the half that decides
+     * whether an over-level fight is dangerous or merely long.
+     *
+     * A monster inside the fair gap presses at 1x, exactly as before. Past it
+     * every level is worth levelPressurePerLevel more, and being outnumbered
+     * is worth levelPressureOutnumber of the ratio on top, so a level gap
+     * cannot be answered by bringing more bodies and taking more turns.
+     *
+     * Below the fair gap the same curve runs backwards: a monster the party
+     * has outgrown by more than six levels is damped exactly as the party is
+     * damped against something six levels above them, so the fauna of a place
+     * a party has left behind scratches rather than wounds.
+     */
+    BSE.Helpers.levelPressureFactor = function(subject, target) {
+        if (!subject || !target) return 1;
+        if (!subject.isEnemy || !subject.isEnemy()) return 1;
+        if (!target.isActor || !target.isActor()) return 1;
+        if (!levelGapRulesApply()) return 1;
+        const enemyLevel = BSE.Helpers.getBattlerLevel(subject);
+        if (enemyLevel <= 0) return 1;
+        const fair = BSE.Params.levelGapFair;
+        const ahead = enemyLevel - BSE.Helpers.getBattlerLevel(target) - fair;
+        if (ahead <= 0) {
+            return gapDamp(BSE.Helpers.getBattlerLevel(target) - enemyLevel - fair);
+        }
+        // The headcount widens the gap rather than multiplying on top of it,
+        // so an even fight is never changed by it and the extra weight comes
+        // in gradually as the gap opens instead of arriving as a step.
+        return gapLift(ahead, BSE.Helpers.outnumberedRatio(subject) * BSE.Params.levelPressureOutnumber);
     };
 
     // ------------------------------------------------------------------
@@ -893,7 +1098,7 @@
      */
     Object.defineProperty(Game_Enemy.prototype, "level", {
         get: function() {
-            if (this._bseLevelOverride != null) return this._bseLevelOverride;
+            // getBattlerLevel already prefers the per-instance override.
             const tagged = BSE.Helpers.getBattlerLevel(this);
             if (tagged > 0) return tagged;
             return Math.max(1, Math.round(BSE.Helpers.dndReferenceLevel()));
@@ -1025,6 +1230,25 @@
     }
 
     /**
+     * The per-hit ceiling on a party member: no single hit may take more than
+     * dndActorHitMaxPercent of them, tightened to dndActorHitMaxPercentLethal
+     * under Hardcore and Blood and Oil, where death is terminal and there is
+     * no once-per-battle 1 HP save to fall back on. A saturating cap rather
+     * than a clamp, so a heavier hit is always still a heavier hit.
+     *
+     * This is what keeps an over-level monster from instakilling: it removes a
+     * huge part of a health bar and leaves turns to answer.
+     */
+    BSE.Helpers.capActorHit = function(target, value) {
+        if (!target || !(target.mhp > 0) || !(value > 0)) return value;
+        if (!(target.isActor && target.isActor())) return value;
+        const cap = BSE.Helpers.isForgivingDeathMode()
+            ? BSE.Params.dndActorHitMaxPercent
+            : BSE.Params.dndActorHitMaxPercentLethal;
+        return dndSoftCap(value / target.mhp, cap) * target.mhp;
+    };
+
+    /**
      * The whole layer, applied to one already rolled HP damage value.
      * Returns the value untouched whenever it has nothing to say: the master
      * switch is off, the sandbox is open, the target has no HP pool, or
@@ -1063,12 +1287,7 @@
         let resolved = paced * weight * BSE.Helpers.dndContestMultiplier(subject, target, action);
 
         // Nobody is deleted from full HP without turns to answer for it.
-        if (isActorTarget) {
-            const cap = BSE.Helpers.isForgivingDeathMode()
-                ? BSE.Params.dndActorHitMaxPercent
-                : BSE.Params.dndActorHitMaxPercentLethal;
-            resolved = dndSoftCap(resolved / target.mhp, cap) * target.mhp;
-        }
+        if (isActorTarget) resolved = BSE.Helpers.capActorHit(target, resolved);
         return Math.max(1, resolved);
     };
 
@@ -1097,10 +1316,24 @@
             // The bounded ability scores are read as ability scores here,
             // before anything that scales the result further (section 4b-bis).
             finalValue = BSE.Helpers.dndResolveDamage(this.subject(), target, this, finalValue);
+            // The level gap, from the party's side (section 4b-ter): damped
+            // against a monster above them, lifted against one they have
+            // outgrown. A damped hit still lands - chip damage is the point,
+            // zero is not.
             const factor = BSE.Helpers.levelDampingFactor(this.subject(), target, this, critical);
-            if (factor < 1) {
-                // A damped hit still lands: chip damage is the point, zero is not.
-                finalValue = Math.max(1, finalValue * factor);
+            if (factor !== 1) finalValue = Math.max(1, finalValue * factor);
+            // And from the monster's side: one that outranks the party takes a
+            // far bigger bite out of them, scaled again by how badly it is
+            // outnumbered, so three party members taking three times the turns
+            // is not an answer to a level gap; one they have outgrown scratches
+            // instead. The per-hit ceiling inside dndResolveDamage has already
+            // bounded the hit, so a lifted one is re-bounded here - otherwise
+            // the ceiling would simply swallow the whole pressure term.
+            const pressure = BSE.Helpers.levelPressureFactor(this.subject(), target);
+            if (pressure > 1) {
+                finalValue = BSE.Helpers.capActorHit(target, finalValue * pressure);
+            } else if (pressure < 1) {
+                finalValue = Math.max(1, finalValue * pressure);
             }
         }
         // One-shot protection: no single hit may deal more than a configurable
@@ -1561,13 +1794,9 @@
         _Scene_Map_updateEncounter_BSE.call(this);
     };
 
-    const _Game_Player_executeEncounter_BSE = Game_Player.prototype.executeEncounter;
-    Game_Player.prototype.executeEncounter = function() {
-        if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) {
-            return false;
-        }
-        return _Game_Player_executeEncounter_BSE.call(this);
-    };
+    // Nothing wraps Game_Player.executeEncounter here: section 18 below replaces it with a
+    // no-op outright, so any override placed at this point would only be discarded. The
+    // block check that matters is the one on updateEncounter just above.
 
     // ------------------------------------------------------------------
     // 5. i18n
@@ -2083,8 +2312,8 @@
     //   A critical hit is the moment the blow found something soft, so it is
     //   also the only moment a fight is allowed to end early. When one lands
     //   on a monster - a swing, an arrow or a spell, it makes no difference -
-    //   a d20 is thrown across the screen (Core/Dice3D.js) and read against
-    //   the monster's own guard:
+    //   a d20 is rolled and read out in the battle log against the monster's
+    //   own guard:
     //
     //     roll + STR modifier   vs   10 + the monster's CON modifier   (physical)
     //     roll + INT modifier   vs   10 + the monster's WIS modifier   (magical)
@@ -2109,14 +2338,12 @@
     //   is simply too much to fall to it.
     //
     //   One die per action, not per hit: a spell that strikes four monsters or
-    //   a flurry that lands six times throws once. The die is a cinematic and
-    //   the fight stands still while it is in the air (see isRolling below), so
-    //   six of them in a row would be six interruptions of the same turn.
+    //   a flurry that lands six times rolls once, so a single turn never fills
+    //   the log with six checks of its own.
     // ------------------------------------------------------------------
     const CRIT_SEVER_DC_BASE = 10;    // an even chance against something unarmoured
     const CRIT_SEVER_DC_MIN = 8;
     const CRIT_SEVER_DC_MAX = 30;     // above 20 only the natural 20 gets through
-    const CRIT_SEVER_HOLD_MS = 6000;  // no die may hold a battle hostage
 
     // Where the killing blow looks for something vital, in order. Whatever the
     // monster is built from, the head is the first thing reached for; a body
@@ -2239,68 +2466,55 @@
         return verdict;
     };
 
-    // -- the die on screen ---------------------------------------------
-    //   The fight stands still while the die is in the air: the log has the
-    //   damage and the severing queued up behind it, and reading those out
-    //   under a tumbling d20 would give the answer away before it landed.
-    let critSeverRollingSince = 0;
-
-    CritSever.isRolling = function() {
-        if (!critSeverRollingSince) return false;
-        if (Date.now() - critSeverRollingSince > CRIT_SEVER_HOLD_MS) {
-            critSeverRollingSince = 0;
-            return false;
-        }
-        return true;
+    // -- the die in the log --------------------------------------------
+    //   The check is read out rather than thrown across the screen: a
+    //   critical hit is already a beat of its own, and a d20 tumbling over it
+    //   stopped the fight dead every time one landed. The line waits for the
+    //   damage to be written and then follows it, so the log reads as the
+    //   blow, the roll, and what the roll took.
+    CritSever.logRoll = function(verdict, target) {
+        if (!verdict || typeof $gameTemp === "undefined" || !$gameTemp) return;
+        const stat = window.CCStatLabel
+            ? window.CCStatLabel(verdict.magical ? "INT" : "STR")
+            : (verdict.magical ? "INT" : "STR");
+        const mod = (verdict.modifier >= 0 ? "+" : "") + verdict.modifier;
+        const outcome = verdict.killed
+            ? T('Battle.critSever.outcomeBehead')
+            : verdict.partKey
+                ? T('Battle.critSever.outcomeMaim')
+                : T('Battle.critSever.outcomeNone');
+        $gameTemp.critSeverRollNote = T('Battle.critSever.roll', {
+            enemy: target && target.name ? target.name() : "",
+            roll: verdict.roll,
+            mod: mod + " " + stat,
+            total: verdict.total,
+            dc: verdict.dc
+        });
+        // What the roll took reads as its own beat: kept off the roll line so a
+        // long enemy name cannot push it past the edge of the log.
+        $gameTemp.critSeverOutcomeNote = outcome;
     };
 
-    CritSever.throwDie = function(verdict, target, magical) {
-        const dice = window.Dice3D;
-        if (!dice || typeof dice.rollD20 !== "function") return;
-        const label = window.CCStatLabel
-            ? window.CCStatLabel(magical ? "INT" : "STR")
-            : (magical ? "INT" : "STR");
-        critSeverRollingSince = Date.now();
-        const release = () => { critSeverRollingSince = 0; };
-        try {
-            const thrown = dice.rollD20({
-                actionName: T('Battle.critSever.check', { enemy: target.name() }),
-                statName: label,
-                modifier: verdict.modifier,
-                dc: verdict.dc,
-                forcedRoll: verdict.roll,
-                force3D: true,
-                quick: true
-            });
-            if (thrown && typeof thrown.then === "function") thrown.then(release, release);
-            else release();
-        } catch (e) {
-            release();
-        }
-    };
-
-    const _BattleManager_update_CritSever = BattleManager.update;
-    BattleManager.update = function(timeActive) {
-        if (CritSever.isRolling()) return;
-        _BattleManager_update_CritSever.call(this, timeActive);
-    };
-
-    const _Window_BattleLog_update_CritSever = Window_BattleLog.prototype.update;
-    Window_BattleLog.prototype.update = function() {
-        if (CritSever.isRolling()) return;
-        _Window_BattleLog_update_CritSever.call(this);
-    };
-
-    // The one line the anatomy cannot write for us: why the blow that should
-    // have finished a boss only cost it a limb.
+    // The lines the anatomy cannot write for us: what the die said, and why the
+    // blow that should have finished a boss only cost it a limb.
     const _Window_BattleLog_displayHpDamage_CritSever = Window_BattleLog.prototype.displayHpDamage;
     Window_BattleLog.prototype.displayHpDamage = function(target) {
         _Window_BattleLog_displayHpDamage_CritSever.call(this, target);
-        if (typeof $gameTemp === "undefined" || !$gameTemp || !$gameTemp.critSeverNote) return;
+        if (typeof $gameTemp === "undefined" || !$gameTemp) return;
         if (!target || !target.isEnemy || !target.isEnemy()) return;
         const push = typeof this.appendToActionLine === "function" ? "appendToActionLine" : "addText";
-        this.push(push, $gameTemp.critSeverNote);
-        $gameTemp.critSeverNote = null;
+        if ($gameTemp.critSeverRollNote) {
+            this.push(push, $gameTemp.critSeverRollNote);
+            $gameTemp.critSeverRollNote = null;
+        }
+        if ($gameTemp.critSeverOutcomeNote) {
+            this.push(push, $gameTemp.critSeverOutcomeNote);
+            $gameTemp.critSeverOutcomeNote = null;
+        }
+        if ($gameTemp.critSeverNote) {
+            this.push(push, $gameTemp.critSeverNote);
+            $gameTemp.critSeverNote = null;
+        }
     };
 
     // -- the hit that starts it all ------------------------------------
@@ -2327,7 +2541,7 @@
         const magical = CritSever.isMagicalStrike(action);
         const verdict = CritSever.roll(action.subject(), target, magical);
         CritSever.applyVerdict(verdict, target);
-        CritSever.throwDie(verdict, target, magical);
+        CritSever.logRoll(verdict, target);
         return verdict;
     };
 

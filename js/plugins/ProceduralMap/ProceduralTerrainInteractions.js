@@ -891,12 +891,17 @@
   // ==========================================================================
   // Interaction flow
   // ==========================================================================
-  function performDismantle(name, cfg, tiles) {
-    // Remove every tile of the feature (whole footprint for multi-tile pieces),
-    // then refresh the tilemap once.
-    for (const t of tiles) clearFeatureTileData(t.x, t.y);
-    if ($gameMap) $gameMap.requestRefresh();
-    recordDismantled(tiles, name);
+  function performDismantle(name, cfg, tiles, onRemove) {
+    if (onRemove) {
+      // Not a tile on any map: the caller owns the thing and takes it away.
+      onRemove();
+    } else {
+      // Remove every tile of the feature (whole footprint for multi-tile pieces),
+      // then refresh the tilemap once.
+      for (const t of tiles) clearFeatureTileData(t.x, t.y);
+      if ($gameMap) $gameMap.requestRefresh();
+      recordDismantled(tiles, name);
+    }
     const gained = rollRewards(cfg, name);
     grantRewards(gained);
     playActionSe(cfg.verb);
@@ -994,7 +999,11 @@
     });
   }
 
-  function showDismantleMenu(name, cfg, tiles) {
+  // `onRemove`, when given, is what actually takes the thing away - which for
+  // anything that is not a tile on this map (the 3D world's billboard trees and
+  // boulders) is the only part that differs. Everything else about it is the
+  // same work for the same pay.
+  function showDismantleMenu(name, cfg, tiles, onRemove) {
     const label = verbLabel(cfg.verb);
     const choices = [label, T('Terrain.cancel')];
     $gameMessage._eventActivator = "p1";
@@ -1014,7 +1023,7 @@
           window.skipLocalization = false;
           return;
         }
-        performDismantle(name, cfg, tiles);
+        performDismantle(name, cfg, tiles, onRemove);
       }, 0);
     });
   }
@@ -2158,8 +2167,24 @@
     }
   };
 
+  // Take apart something that is NOT a tile on the procedural map: the 3D
+  // world's billboard trees, boulders, barrels and gravestones. Same table, same
+  // tool it asks for, same rewards, same lesson learned - the only difference is
+  // that `onRemove` takes the thing out of the world instead of the tilemap
+  // being edited. `name` is a feature name off the same list the map uses
+  // ("Tree", "Rock", "Flower", ...); anything unlisted salvages generically.
+  // Returns false when the thing is not worth taking apart at all.
+  function interactWithFeature(name, onRemove) {
+    if (!name) return false;
+    if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
+    const cfg = classify(name);
+    if (!cfg) return false;
+    showDismantleMenu(name, cfg, [], onRemove);
+    return true;
+  }
+
   window.TerrainInteractions = {
-    tryInteract, applyDismantledToMap,
+    tryInteract, interactWithFeature, applyDismantledToMap,
     // Every removal recorded for one proc-map square (biome + world coordinate),
     // read by ProceduralMapPrefabs so a prefab never re-stamps scenery the party
     // already took apart on that square. Other squares running the same prefab

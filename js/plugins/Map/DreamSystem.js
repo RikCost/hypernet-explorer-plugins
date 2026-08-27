@@ -1607,13 +1607,13 @@
     // standing in a field of tombstones: it is all just art off the disk.
     // =========================================================================
     const BILLBOARDS = {
-        Trees:        ['artdecob_023.png', 'tileset_fruit_trees_2_012.png', 'tileset_trees_4_003.png', 'large_palm_tree.png'],
+        Trees:        ['round_canopy_tree.png', 'orange_laden_fruit_tree.png', 'slim_green_birch.png', 'large_palm_tree.png'],
         Plants:       ['tall_flowering_hedge.png', 'desert_palm_tree_01.png', 'blue_centered_flower.png', 'orange_marigold_bush.png'],
-        Rocks:        ['b_openrpg_007.png', 'tf_jungle_b_030.png', 'twin_round_boulders.png', 'farm_b(snow)_019.png'],
+        Rocks:        ['snow_dusted_boulder.png', 'red_rock_pair.png', 'twin_round_boulders.png', 'snowy_rock_pair.png'],
         Statues:      ['ornate_nutcracker_statue.png', 'robed_statue_with_pendulum.png', 'maroon_demon_statue.png', 'golden_turtle_figurine.png'],
-        Mannequins:   ['tall_bust_mannequin_stand.png', 'white_head_mannequin_figure.png', 'orange_head_mannequin_figure.png', 'golden_bust_mannequin_counter.png'],
-        Signs:        ['museum_placard_icon_row.png', 'frozen_branch_arrow_sign.png', 'blue_directional_arrow_sign.png', 'hazard_barrier_stack.png'],
-        TrafficCones: ['tileset_112_mv_035.png', 'tileset_112_mv_033.png', 'tileset_112_mv_027.png', 'tileset_112_mv_030.png'],
+        Mannequins:   ['tall_bust_mannequin_stand.png', 'white_head_mannequin_figure.png', 'orange_head_mannequin_figure.png', 'double_mannequin_bust_stand.png'],
+        Signs:        ['museum_placard_sign.png', 'frozen_branch_arrow_sign.png', 'blue_directional_arrow_sign.png', 'hazard_barrier_stack.png'],
+        TrafficCones: ['toppled_red_cone.png', 'red_striped_cone.png', 'fallen_orange_cone.png', 'red_white_traffic_cone.png'],
         Graves:       ['gray_rock_tombstone.png', 'grey_stone_cross_monument_01.png', 'blue_arched_tombstone.png', 'teal_stone_cross_monument.png'],
         Mushrooms:    ['grass_tufted_mushroom_01.png', 'grass_tufted_mushroom_02.png', 'standing_ember_toadstool.png', 'red_spotted_toadstool.png'],
         Tentacles:    ['twin_flesh_mounds.png', 'horned_flesh_mound.png', 'horned_ash_mound.png', 'clustered_tentacle_fan_02.png'],
@@ -1654,12 +1654,26 @@
     // i18n-ignore-end
 
     const _bbTex = new Map();
+
+    // The furniture art now lives at img/furniture/<Category>/<Subcategory>/, so
+    // the folder a sprite pool names ("Trees") is only half the path, and stage 6b
+    // moved some pieces to another category outright (speckled_stone_arch is filed
+    // under Buildings/Arches now). window.Items.FurnitureImageFolders maps a sprite
+    // id to its real relative folder, which survives both changes; the pool's own
+    // folder stays the fallback for art the index has not been rebuilt for.
+    function furnitureSpritePath(folder, name) {
+        const id = String(name).replace(/\.png$/i, ''); // i18n-ignore: asset path
+        const index = (window.Items && window.Items.FurnitureImageFolders) || null;
+        const real = (index && index[id]) || folder;
+        return 'img/furniture/' + real + '/' + id + '.png'; // i18n-ignore: asset path
+    }
+
     function billboardTexture(folder, name) {
         const key = folder + '/' + name;
         let t = _bbTex.get(key);
         if (t) return t;
         if (!THREE.TextureLoader) return null;
-        t = new THREE.TextureLoader().load('img/furniture/' + folder + '/' + name);
+        t = new THREE.TextureLoader().load(furnitureSpritePath(folder, name));
         if (THREE.SRGBColorSpace !== undefined) t.colorSpace = THREE.SRGBColorSpace;
         else if (THREE.sRGBEncoding !== undefined) t.encoding = THREE.sRGBEncoding;
         t.magFilter = THREE.NearestFilter;

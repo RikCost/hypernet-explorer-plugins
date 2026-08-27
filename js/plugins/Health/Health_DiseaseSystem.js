@@ -88,6 +88,17 @@
   // "social" is how a hysteria travels: it is caught by witnessing it.
   const CONTACT_VECTORS = ['airborne', 'saliva', 'contact', 'social'];
 
+  // ATK..LUK are on the 1-20 ability scale (a class curve gives 8-16 at level 1
+  // and 10-20 at level 99), so the deltas in Diseases.json are single digits.
+  // Several illnesses carried at once, each weighted by how far it has run,
+  // still add up, and a body that has been ill for a season should be a wreck
+  // without being a stone: no illness load may take more than this share of the
+  // ability a character was born with. MHP/MMP live on their own much larger
+  // scale and keep the shallower ceiling.
+  const ABILITY_PARAM_IDS = [2, 3, 4, 5, 6, 7];
+  const MAX_ABILITY_DRAIN = 0.6;
+  const MAX_POOL_DRAIN = 0.5;
+
   // ── Database (lazy) ───────────────────────────────────────────────────────
   const DB = { loaded: false, diseases: [], conditions: [], byId: {}, condById: {} };
 
@@ -786,6 +797,13 @@
       const place = Places.forGroup(group);
       const worst = place ? _worstAt(state, place.key) : null;
       const current = pulse.episodes.epidemic;
+      // A settlement that is already under an episode this system did not start
+      // is left alone until that one runs out. NPCWorldWeb only invents an
+      // epidemic when this plugin is switched off or has no record of the town,
+      // so in a normal world this branch never fires; when it does, the invented
+      // one gets to end properly rather than being overwritten mid-run and
+      // never announcing that it passed.
+      if (current && current.source !== 'eurodemics') continue;
       if (worst) {
         const site = worst.sites[place.key];
         const severity = Math.max(10, Math.min(100, Math.round((site.infected / Math.max(1, place.population)) * 900)));
@@ -907,7 +925,19 @@
         const c = DB.condById[e.id != null ? e.id : e];
         if (c && c.params && c.params[key]) sum += c.params[key];
       }
-      return sum;
+      return this.clampParamDelta(actor, paramId, sum);
+    },
+
+    // The floor under a stacked illness load. Read off paramBase (the class
+    // curve), which is what the character would have if nothing were wrong with
+    // them, and never off param() itself: param() is what asked for this in the
+    // first place.
+    clampParamDelta(actor, paramId, delta) {
+      if (!(delta < 0)) return delta;
+      const share = ABILITY_PARAM_IDS.includes(paramId) ? MAX_ABILITY_DRAIN : MAX_POOL_DRAIN;
+      const base = actor && typeof actor.paramBase === 'function' ? actor.paramBase(paramId) : 0;
+      if (!(base > 0)) return delta;
+      return Math.max(delta, -Math.floor(base * share));
     },
 
     // Diseases the party LEADER carries that can spread through a given vector.
@@ -2278,6 +2308,21 @@
     }
     return v;
   };
+
+  // ── The floor under every penalty in the game ─────────────────────────────
+  // Illness clamps its own contribution, and so does hunger (TimeDateSystem),
+  // but a character can be ill and starved and missing an arm at once, and
+  // three ceilings that each look reasonable alone still add up to a zero.
+  // RPG Maker's own floor for ATK..LUK is 0, which is a stat that cannot act;
+  // on the 1-20 ability scale the floor that means "as bad as a body gets" is
+  // 1. MHP keeps the engine's floor of 1 and MMP keeps 0.
+  if (typeof Game_BattlerBase !== 'undefined') {
+    const _Game_BattlerBase_paramMin = Game_BattlerBase.prototype.paramMin;
+    Game_BattlerBase.prototype.paramMin = function (paramId) {
+      if (paramId >= 2) return 1;
+      return _Game_BattlerBase_paramMin.call(this, paramId);
+    };
+  }
 
   // ── Per-step onset ─────────────────────────────────────────────────────────
   const _Game_Party_increaseSteps = Game_Party.prototype.increaseSteps;

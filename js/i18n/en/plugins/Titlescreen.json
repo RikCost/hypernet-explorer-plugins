@@ -6,7 +6,7 @@
     "minigames": "Minigames",
     "sandbox": "Sandbox",
     "worlds": "Worlds",
-    "wiki": "Wiki",
+    "wiki": "World History",
     "preferences": "Preferences",
     "mods": "Mods",
     "exit": "Exit",
@@ -20,7 +20,7 @@
     "minigames": "MINIGAMES",
     "sandbox": "SANDBOX",
     "worlds": "WORLDS",
-    "wiki": "WIKI",
+    "wiki": "WORLD HISTORY",
     "preferences": "PREFERENCES",
     "mods": "MODS",
     "exit": "EXIT",
@@ -29,7 +29,7 @@
   },
   "minigame": {
     "arena": "Arena",
-    "camperDriving": "Camper Driving",
+    "liminalWorld": "Liminal World",
     "galaxyMap": "Galaxy Map",
     "dream": "Dream",
     "surfing": "Surfing",
@@ -71,6 +71,14 @@
     "afternoon": "Afternoon",
     "evening": "Evening",
     "night": "Night",
+    "vehicleTitle": "How",
+    "destinationTitle": "Where From",
+    "onFoot": "On Foot",
+    "camper": "Camper",
+    "car": "Car",
+    "bike": "Bike",
+    "boat": "Boat",
+    "broom": "Broomstick",
     "back": "Back"
   },
   "disclaimer": {
@@ -78,7 +86,10 @@
     "noclip": "If you get stuck in a wall, hold CTRL to use noclip mode."
   },
   "news": {
-    "header": "NEWS // EARLY BUILD"
+    "header": "NEWS // EARLY BUILD",
+    "older": "‹ BACK",
+    "newer": "NEXT ›",
+    "empty": "This build shipped without a changelog."
   },
   "support": {
     "header": "SUPPORT THE DEVELOPMENT",
@@ -123,7 +134,7 @@
     "curvature": "SPATIAL CURVATURE DETECTED"
   },
   "version": {
-    "text": "0.3.6a"
+    "text": "0.4.0a"
   },
   "language": {
     "label": "✦ LANG"

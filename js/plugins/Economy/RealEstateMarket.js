@@ -109,7 +109,7 @@
 
     // --- Helper Function to Parse Game Date from Variable 113 ---
     function getGameDateFromVariable() {
-        const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
+        const dateStr = (typeof $gameVariables !== 'undefined' && $gameVariables ? $gameVariables.value(113) : null) || '01 JAN 2001 12:00';
         // Format: "01 JAN 2001 12:00"
         const parts = dateStr.split(' ').filter(Boolean);
         if (parts.length < 4) {
@@ -764,7 +764,7 @@
                     key,
                     name: def.name || key,
                     sector: def.sector || '',
-                    color: def.color || '#8b5a2b',
+                    color: def.color || 'var(--border-focus-hover)',
                     description: this.companyText(def.description),
                     sectorLabel: this.sectorLabel(def.sector),
                     basePrice: Number(def.sharePrice) || price,
@@ -894,7 +894,7 @@
                 sector: opts.sector || 'Misc',  // i18n-ignore  sector id
                 sharePrice: Number(opts.sharePrice) || 50,
                 totalShares: Number(opts.totalShares) || 100000,
-                color: opts.color || '#8b5a2b',
+                color: opts.color || 'var(--border-focus-hover)',
                 description: opts.description || ''
             };
             // Seed the live price so it appears immediately.
@@ -1199,9 +1199,9 @@
                                 <span>${prop.location} • ${t('propertyTypes')[prop.type]}</span>
                             </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; margin-left:10px">
-                            <span style="color:${statusColor}; font-family:'Lora', serif; font-size:0.952rem; font-weight:bold; letter-spacing:0.5px">${statusLabel}</span>
-                            <span style="font-size:1.08rem; color:var(--text-primary-hover)">${stars}</span>
+                        <div class="estate-01">
+                            <span class="estate-02" style="color:${statusColor}">${statusLabel}</span>
+                            <span class="estate-03">${stars}</span>
                         </div>
                     </div>`;
             }).join('');
@@ -1210,7 +1210,7 @@
         buildDeedHTML(selectedProperty) {
             if (!selectedProperty) {
                 return `
-                    <div class="item-inspect item-inspect--empty" style="justify-content:center; padding:40px 10px; flex:1">
+                    <div class="item-inspect item-inspect--empty estate-04">
                         <h3 class="title">${T('RealEstate.ui.titleDeed')}</h3>
                         <p class="inspect-placeholder-text">
                             ${T('RealEstate.ui.selectAnAssetFromThe')}
@@ -1257,7 +1257,7 @@
 
             let priceVal = `€${effectivePrice.toLocaleString()}`;
             if (priceDiff !== 0) {
-                priceVal += ` <span style="font-size:0.952rem;color:${priceDiff > 0 ? 'var(--text-success-active)' : 'var(--border-danger-active)'};">(${percentChange > 0 ? '+' : ''}${percentChange}%)</span>`;
+                priceVal += ` <span class="estate-05" style="color:${priceDiff > 0 ? 'var(--text-success-active)' : 'var(--border-danger-active)'}">(${percentChange > 0 ? '+' : ''}${percentChange}%)</span>`;
             }
 
             const monthlyRent = $realEstateManager.getMonthlyRent(selectedProperty);
@@ -1275,7 +1275,7 @@
 
             return `
                 <div class="item-inspect">
-                    <h3 class="title" style="font-size:1.57em">${selectedProperty.name}</h3>
+                    <h3 class="title estate-06">${selectedProperty.name}</h3>
                     <div class="inspect-section-title">${T('RealEstate.ui.titleDeed')}</div>
                     ${row(t('type'), t('propertyTypes')[selectedProperty.type])}
                     ${row(t('location'), selectedProperty.location)}
@@ -1283,8 +1283,8 @@
                     ${row(t('price'), priceVal, 'color:var(--text-primary-hover);')}
                     ${row(T('RealEstate.ui.marketSentiment'), marketSentiment.toUpperCase(), `color:${sentimentColor};letter-spacing:0.5px;`)}
                     ${ownedRows}
-                    ${effects.length > 0 ? `<div class="inspect-bullet-item" style="margin-top:10px">${effects.length} ${T('RealEstate.ui.activeEventsAreAlteringPrices')}</div>` : ''}
-                    <div class="inspect-actions" style="margin-top:16px">${commandsHTML}</div>
+                    ${effects.length > 0 ? `<div class="inspect-bullet-item estate-07">${effects.length} ${T('RealEstate.ui.activeEventsAreAlteringPrices')}</div>` : ''}
+                    <div class="inspect-actions estate-08">${commandsHTML}</div>
                 </div>`;
         }
 
@@ -1353,11 +1353,11 @@
                         <span class="re-stat-lbl">${T('RealEstate.ui.liquidFunds')}</span>
                         <span class="re-stat-val" id="re-cash">€${cash.toLocaleString()}</span>
                     </div>
-                    <div class="re-stat" style="align-items:center">
+                    <div class="re-stat estate-09">
                         <span class="re-stat-lbl">${T('RealEstate.ui.holdings')}</span>
-                        <span class="re-stat-val" id="re-held" style="color:var(--text-success-active)">${heldCount}</span>
+                        <span class="re-stat-val estate-10" id="re-held">${heldCount}</span>
                     </div>
-                    <div class="re-stat" style="align-items:flex-end">
+                    <div class="re-stat estate-11">
                         <span class="re-stat-lbl">${T('RealEstate.ui.equityValue')}</span>
                         <span class="re-stat-val" id="re-equity">€${Math.round(holdingsValue / 100).toLocaleString()}</span>
                     </div>`;
@@ -1371,11 +1371,11 @@
                         <span class="re-stat-lbl">${T('RealEstate.ui.liquidFunds')}</span>
                         <span class="re-stat-val" id="re-cash">€${cash.toLocaleString()}</span>
                     </div>
-                    <div class="re-stat" style="align-items:center">
+                    <div class="re-stat estate-09">
                         <span class="re-stat-lbl">${T('RealEstate.ui.deedsHeld')}</span>
-                        <span class="re-stat-val" id="re-owned" style="color:var(--text-success-active)">${ownedCount} / 30</span>
+                        <span class="re-stat-val estate-10" id="re-owned">${ownedCount} / 30</span>
                     </div>
-                    <div class="re-stat" style="align-items:flex-end">
+                    <div class="re-stat estate-11">
                         <span class="re-stat-lbl">${T('RealEstate.ui.dailyYield')}</span>
                         <span class="re-stat-val" id="re-yield">€${dailyYield.toLocaleString()}</span>
                     </div>`;
@@ -1402,7 +1402,7 @@
                 return `
                     <div class="right-page">
                         <h2 class="title">${title}</h2>
-                        <div id="re-deed-wrap" style="flex:1; display:flex; flex-direction:column; overflow-y:auto">${this.buildProspectusHTML(company)}</div>
+                        <div class="estate-12" id="re-deed-wrap">${this.buildProspectusHTML(company)}</div>
                     </div>`;
             }
             const properties = $realEstateManager.properties;
@@ -1411,7 +1411,7 @@
             return `
                 <div class="right-page">
                     <h2 class="title">${deedTitle}</h2>
-                    <div id="re-deed-wrap" style="flex:1; display:flex; flex-direction:column; overflow-y:auto">${this.buildDeedHTML(selectedProperty)}</div>
+                    <div class="estate-12" id="re-deed-wrap">${this.buildDeedHTML(selectedProperty)}</div>
                 </div>`;
         }
 
@@ -1480,9 +1480,9 @@
                             <div class="item-slot-name">${c.name}</div>
                             <div class="item-slot-meta"><span>${c.sectorLabel || c.sector} • €${c.price.toLocaleString()}/${T('RealEstate.ui.sh')}</span></div>
                         </div>
-                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; margin-left:10px">
-                            <span style="color:${statusColor}; font-family:'Lora', serif; font-size:0.952rem; font-weight:bold; letter-spacing:0.5px">${statusLabel}</span>
-                            ${owned ? `<span style="font-size:0.878rem; color:var(--text-text-alt-4)">${c.sharesOwned.toLocaleString()} ${T('RealEstate.ui.sh')}</span>` : ''}
+                        <div class="estate-01">
+                            <span class="estate-02" style="color:${statusColor}">${statusLabel}</span>
+                            ${owned ? `<span class="estate-13">${c.sharesOwned.toLocaleString()} ${T('RealEstate.ui.sh')}</span>` : ''}
                         </div>
                     </div>`;
             }).join('');
@@ -1491,7 +1491,7 @@
         buildProspectusHTML(company) {
             if (!company) {
                 return `
-                    <div class="item-inspect item-inspect--empty" style="justify-content:center; padding:40px 10px; flex:1">
+                    <div class="item-inspect item-inspect--empty estate-04">
                         <h3 class="title">${T('RealEstate.ui.prospectus')}</h3>
                         <p class="inspect-placeholder-text">
                             ${T('RealEstate.ui.selectACompanyToTrade')}
@@ -1536,15 +1536,15 @@
 
             return `
                 <div class="item-inspect">
-                    <h3 class="title" style="font-size:1.57em">${company.name}</h3>
+                    <h3 class="title estate-06">${company.name}</h3>
                     <div class="inspect-section-title">${T('RealEstate.ui.shareProspectus2')}</div>
                     ${row(T('RealEstate.ui.sector'), company.sectorLabel || company.sector)}
                     ${row(T('RealEstate.ui.sharePrice'), `€${company.price.toLocaleString()}`, 'color:var(--text-primary-hover);')}
                     ${row(T('RealEstate.ui.totalShares'), company.totalShares.toLocaleString())}
                     ${row(T('RealEstate.ui.available2'), company.available.toLocaleString())}
                     ${ownedRows}
-                    ${desc ? `<div class="inspect-bullet-item" style="margin-top:10px">${desc}</div>` : ''}
-                    <div class="inspect-actions" style="margin-top:16px">${commandsHTML}</div>
+                    ${desc ? `<div class="inspect-bullet-item estate-07">${desc}</div>` : ''}
+                    <div class="inspect-actions estate-08">${commandsHTML}</div>
                 </div>`;
         }
 
@@ -1704,31 +1704,31 @@
             const property = this._propertyListWindow.property();
 
             if (this._dndFocusSection === 'list') {
-                if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
+                if (Input.isTriggered('down') || Input.isRepeated('down')) {
                     const currentIndex = this._propertyListWindow.index();
                     const maxItems = this._propertyListWindow.maxItems();
                     if (maxItems > 0) {
                         this._propertyListWindow.select(currentIndex < maxItems - 1 ? currentIndex + 1 : 0);
                         moved = true;
                     }
-                } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
+                } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                     const currentIndex = this._propertyListWindow.index();
                     const maxItems = this._propertyListWindow.maxItems();
                     if (maxItems > 0) {
                         this._propertyListWindow.select(currentIndex > 0 ? currentIndex - 1 : maxItems - 1);
                         moved = true;
                     }
-                } else if (Input.isTriggered('right') || this.isKeyPressed('KeyD') || Input.isTriggered('ok')) {
+                } else if (Input.isTriggered('right') || Input.isTriggered('ok')) {
                     if (property) { this._dndFocusSection = 'commands'; this._dndCommandIndex = 0; moved = true; }
                 }
             } else if (this._dndFocusSection === 'commands') {
                 const cmds = property ? this.getActiveCommands(property) : [];
                 const maxCmds = cmds.length;
-                if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
+                if (Input.isTriggered('down') || Input.isRepeated('down')) {
                     if (maxCmds > 0) { this._dndCommandIndex = (this._dndCommandIndex + 1) % maxCmds; moved = true; }
-                } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
+                } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                     if (maxCmds > 0) { this._dndCommandIndex = (this._dndCommandIndex - 1 + maxCmds) % maxCmds; moved = true; }
-                } else if (Input.isTriggered('left') || this.isKeyPressed('KeyA')) {
+                } else if (Input.isTriggered('left')) {
                     this._dndFocusSection = 'list'; moved = true;
                 } else if (Input.isTriggered('ok')) {
                     this.executeFocusedCommand();
@@ -1744,11 +1744,11 @@
 
             if (this._dndFocusSection === 'list') {
                 const maxItems = companies.length;
-                if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
+                if (Input.isTriggered('down') || Input.isRepeated('down')) {
                     if (maxItems > 0) { this._companyIndex = (this._companyIndex + 1) % maxItems; moved = true; }
-                } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
+                } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                     if (maxItems > 0) { this._companyIndex = (this._companyIndex - 1 + maxItems) % maxItems; moved = true; }
-                } else if (Input.isTriggered('right') || this.isKeyPressed('KeyD') || Input.isTriggered('ok')) {
+                } else if (Input.isTriggered('right') || Input.isTriggered('ok')) {
                     if (company && this.getActiveCompanyCommands(company).length > 0) {
                         this._dndFocusSection = 'commands'; this._companyCommandIndex = 0; moved = true;
                     }
@@ -1756,11 +1756,11 @@
             } else if (this._dndFocusSection === 'commands') {
                 const cmds = this.getActiveCompanyCommands(company);
                 const maxCmds = cmds.length;
-                if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
+                if (Input.isTriggered('down') || Input.isRepeated('down')) {
                     if (maxCmds > 0) { this._companyCommandIndex = (this._companyCommandIndex + 1) % maxCmds; moved = true; }
-                } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
+                } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                     if (maxCmds > 0) { this._companyCommandIndex = (this._companyCommandIndex - 1 + maxCmds) % maxCmds; moved = true; }
-                } else if (Input.isTriggered('left') || this.isKeyPressed('KeyA')) {
+                } else if (Input.isTriggered('left')) {
                     this._dndFocusSection = 'list'; moved = true;
                 } else if (Input.isTriggered('ok')) {
                     this.executeFocusedCompanyCommand();
@@ -1769,9 +1769,6 @@
             return moved;
         }
 
-        isKeyPressed(key) {
-            return Input._currentState[key] && !Input._previousState[key];
-        }
     }
 
     // Window_PropertyList
@@ -2009,7 +2006,7 @@
     let _realEstateRawDate = null;
     let _realEstateDayKeyCache = '01 JAN 2001';
     function realEstateDayKey() {
-        const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
+        const dateStr = (typeof $gameVariables !== 'undefined' && $gameVariables ? $gameVariables.value(113) : null) || '01 JAN 2001 12:00';
         if (dateStr === _realEstateRawDate) return _realEstateDayKeyCache;
         _realEstateRawDate = dateStr;
         const parts = String(dateStr).split(' ').filter(Boolean);

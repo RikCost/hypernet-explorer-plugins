@@ -5,6 +5,7 @@
   "installImplant": "Install implant",
   "cancel": "Cancel",
   "owned": "OWNED",
+  "vitalBadge": "VITAL",
   "vital": {
     "hp": "HP",
     "mp": "MP"

@@ -1481,8 +1481,8 @@ Scene_Name.prototype.createHtmlNameInput = function() {
         <div class="book-spread">
             <!-- Left Page: Virtual onscreen keyboard layout -->
             <div class="name-left-page">
-                <div style="border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 16px">
-                    <h2 class="title" style="border: none; margin: 0; padding: 0">${T('AltNameInput.ui.yourNameIs')}</h2>
+                <div class="page-header-bar" style="margin-bottom:16px">
+                    <h2 class="title">${T('AltNameInput.ui.yourNameIs')}</h2>
                 </div>
                 <div class="kbd-grid" id="virtual-keyboard-grid">
                     <!-- Loaded dynamically via refresh -->
@@ -1509,7 +1509,7 @@ Scene_Name.prototype.createHtmlNameInput = function() {
 
                 <!-- Current Input field -->
                 <div style="margin-top: 10px">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.878rem; font-weight: bold; text-transform: uppercase; color: #8b5a2b; letter-spacing: 0.5px">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.878rem; font-weight: bold; text-transform: uppercase; color: var(--text-brown-medium); letter-spacing: 0.5px">
                         <span>${T('AltNameInput.ui.synchronizeName')}</span>
                         <span id="name-character-counter">0 / ${maxLength}</span>
                     </div>

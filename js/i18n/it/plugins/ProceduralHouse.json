@@ -9,5 +9,6 @@
   "groundFloor": "Piano terra",
   "floorNumbered": "Piano {n}",
   "noElevator": "Qui non c'è nessun ascensore.",
-  "selectFloor": "Scegli un piano:"
+  "selectFloor": "Scegli un piano:",
+  "doorHeld": "La porta rinforzata ha retto alla tua spallata."
 }

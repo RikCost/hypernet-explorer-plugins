@@ -430,7 +430,7 @@
 
     // Helper function to get game date from variable 113
     function getGameDateFromVariable() {
-        const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
+        const dateStr = (typeof $gameVariables !== 'undefined' && $gameVariables ? $gameVariables.value(113) : null) || '01 JAN 2001 12:00';
         // Format: "01 JAN 2001 12:00"
         const parts = dateStr.split(' ').filter(Boolean);
         if (parts.length < 4) {
@@ -736,6 +736,72 @@
 
         static heatChaseThreshold() {
             return HEAT_CHASE;
+        }
+
+        // ==================================================================
+        // Notoriety: what the rest of the world makes of the party's record
+        // ==================================================================
+        // The wanted level used to be read by three things, all of them
+        // screens: the custody desk, the trial and the pause menu. Everybody
+        // else - shops, couriers, bus stations, employers - sold to a fugitive
+        // at the same price as to a stranger. This is the one question they all
+        // ask now, so the answer is defined once instead of five times.
+        //
+        // Two axes, deliberately, because they say different things. The BOUNTY
+        // is the record: what the party has done, permanent until it is paid or
+        // pardoned, and it is what an honest trader has heard about. The HEAT is
+        // the manhunt: whether anyone is actively looking right now, and it is
+        // what makes a public counter dangerous to stand at. A retired highway
+        // robber with a large unpaid bounty and no heat is served, dearly. A
+        // party at full heat over a stolen apple is not served at all.
+        static NOTORIETY_TIERS = ['clean', 'known', 'wanted', 'notorious'];
+        // Bounty in gold at which a trader has heard the name at all, and at
+        // which they have heard enough to want nothing to do with it.
+        static NOTORIETY_KNOWN_BOUNTY = 500;
+        static NOTORIETY_NOTORIOUS_BOUNTY = 5000;
+
+        static notoriety() {
+            const bounty = this.getTotalBounty();
+            const heat = this.getHeat();
+            const wanted = this.isWanted();
+            let tier = 'clean';
+            if (bounty >= this.NOTORIETY_NOTORIOUS_BOUNTY) tier = 'notorious';
+            else if (wanted || bounty >= this.NOTORIETY_KNOWN_BOUNTY) tier = 'wanted';
+            else if (bounty > 0) tier = 'known';
+            // A live manhunt is never less than "wanted", whatever the record.
+            if (wanted && tier === 'known') tier = 'wanted';
+            return {
+                bounty, heat, wanted, tier,
+                percent: this.heatPercent(),
+                index: this.NOTORIETY_TIERS.indexOf(tier),
+            };
+        }
+
+        // What a counter charges the party, as a multiplier on the marked
+        // price. A face that is trouble to be seen serving costs extra to
+        // serve; nobody gives a discount for a criminal record.
+        static priceMultiplier() {
+            switch (this.notoriety().tier) {
+                case 'known': return 1.05;
+                case 'wanted': return 1.2;
+                case 'notorious': return 1.45;
+                default: return 1;
+            }
+        }
+
+        // Whether a business open to the public will deal with the party at
+        // all. Only the top tier, so this closes a door rather than the town:
+        // the black market, a fence and anything already illegal never asks.
+        static refusesService() {
+            return this.notoriety().tier === 'notorious';
+        }
+
+        // Whether a service that puts the party on a passenger list, a payroll
+        // or a delivery manifest will take them: that is a written record with
+        // their name on it, so it is refused a whole tier earlier than a
+        // counter sale is.
+        static refusesRegisteredService() {
+            return this.notoriety().index >= this.NOTORIETY_TIERS.indexOf('wanted');
         }
 
         // Called on the map tick. Three rules, in order: a manhunt with nothing

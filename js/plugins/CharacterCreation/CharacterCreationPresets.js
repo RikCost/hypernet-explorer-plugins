@@ -655,22 +655,95 @@
   ];
   // i18n-ignore-end
 
-  // Every walk sheet the sprite catalogue carries for the Goblin archetype
-  // (both the extracted NPCs/ cells and the hand-drawn Skab/ ones). A beta
-  // sheet is always left out, the same rule SpriteCatalog.npcKeys() applies
-  // everywhere else.
-  function tutorialGoblinSpritePool() {
+  // The looks each tutorial dossier may be worn as. They are written out rather
+  // than filtered off the sprite catalogue's own class affinity: that affinity
+  // is sparse and noisy (nothing at all answers to Paladin or Pro Wrestler, and
+  // what answers to Witch includes joggers), so it cannot stand in for "sheets
+  // that read as this class". The slimes are a list for the same reason.
+  // i18n-ignore-start: sprite sheet keys, not prose
+  const TUTORIAL_SPRITE_LISTS = {
+    // The ring, and the people who make a living being watched in it.
+    wrestler: [
+      "Varlenian/!$Wrestler1", "NPCs/!$Pro1", "NPCs/!$Pro2",
+      "NPCs/!$Announcer1", "NPCs/!$Announcer2", "NPCs/!$Jogger1",
+    ],
+    // Armour with an oath inside it.
+    paladin: [
+      "NPCs/!$ValiantKnight1", "NPCs/!$WanderingKnight1", "NPCs/!$WastelandKnight1",
+      "NPCs/!$RoyalGuard1", "NPCs/!$DesertGuard1", "NPCs/!$NobleGuard3",
+      "Varlenian/!$NobleGuard1", "Skab/!$LazyKnight",
+    ],
+    // Readers of things nobody said out loud.
+    psyker: [
+      "NPCs/!$TarotWitch1", "Skab/!$TarotWitch", "Zombies/!$OrcSeer1",
+      "NPCs/!$Strangelove1", "NPCs/!$CyberWitch1", "Skab/!$CyberWitch",
+    ],
+    // Anyone who earns a room by playing to it.
+    bard: [
+      "NPCs/!$ExoticBard1", "Varlenian/!$ExoticBard2", "Skab/!$ExoticBard",
+      "Skab/!$OperaSinger", "NPCs/!$HippieMusician1", "NPCs/!$HippieMusician2",
+      "NPCs/!$DJ1", "NPCs/!$DJ2",
+    ],
+    // Robes with something worked into the hem.
+    enchanter: [
+      "NPCs/!$Mage1", "Varlenian/!$Mage2", "Varlenian/!$Enchantress1",
+      "Varlenian/!$Enchantress2", "Skab/!$Enchantress", "Skab/!$ElvenArchmage",
+      "Skab/!$ArcaneWizard", "Skab/!$RabbitWizard", "NPCs/!$CharmingPrince1",
+    ],
+    // People who call things, and the marks that leaves.
+    convoker: [
+      "NPCs/!$SunCultist1", "Skab/!$DarkPriestess", "Skab/!$DarkWitch",
+      "Zombies/!$Lich3", "Skab/!$Lich", "Skab/!$ArcaneWizard",
+    ],
+    // Habits, vestments and the orders that issue them.
+    nun: [
+      "Skab/!$Nun", "NPCs/!$Nun2", "Zombies/!$OrcNun1", "Zombies/!$OrcVestal1",
+      "NPCs/!$Priest2", "NPCs/!$Priest3", "Skab/!$DarkPriestess",
+      "Skab/!$AndroidArchpriest", "NPCs/!$SpacerMonk1", "Zombies/!$OrcMonk1",
+    ],
+  };
+  // i18n-ignore-end
+
+  // Every walk sheet the sprite catalogue carries for one archetype (both the
+  // extracted NPCs/ cells and the hand-drawn Skab/ ones), narrowed by an extra
+  // test where the dossier wants one. A beta sheet is always left out, the same
+  // rule SpriteCatalog.npcKeys() applies everywhere else.
+  function tutorialCatalogPool(archetype, extra) {
     const catalog = (window.WorldGen && window.WorldGen.NPCs) || {};
     return Object.keys(catalog).filter((key) => {
       const entry = catalog[key];
-      return !!entry && entry.npc === true && entry.Archetype === "Goblin" && entry.beta !== true;
+      if (!entry || entry.npc !== true || entry.beta === true) return false;
+      if (entry.Archetype !== archetype) return false;
+      return extra ? extra(entry) : true;
     });
+  }
+
+  // The tutorial's Witch is a person, and one the catalogue already calls a
+  // caster: magical, and listed as suiting the Witch class. Arcane-themed ones
+  // are preferred (the rest are cyberpunk and street looks that read as
+  // anything but a witch), and the whole caster set stands in if the theme ever
+  // stops being written.
+  function tutorialWitchSpritePool() {
+    const casters = tutorialCatalogPool("Humanoid", (entry) =>
+      entry.magical === true && Array.isArray(entry.classes) && entry.classes.includes(2));
+    const arcane = casters.filter((key) => {
+      const entry = (window.WorldGen && window.WorldGen.NPCs || {})[key];
+      return entry && entry.theme === "Arcane";
+    });
+    return arcane.length > 0 ? arcane : casters;
+  }
+
+  // The sheets one tutorial dossier may be worn as, by pool key. Exported so
+  // the sprite board can be opened on that dossier's own looks and no others.
+  function getTutorialSpritePool(poolKey) {
+    return tutorialSpritePool(poolKey) || [];
   }
 
   function tutorialSpritePool(poolKey) {
     if (poolKey === "slime") return TUTORIAL_SLIME_SPRITES;
-    if (poolKey === "goblin") return tutorialGoblinSpritePool();
-    return null;
+    if (poolKey === "goblin") return tutorialCatalogPool("Goblin");
+    if (poolKey === "witch") return tutorialWitchSpritePool();
+    return TUTORIAL_SPRITE_LISTS[poolKey] || null;
   }
 
   const TUTORIAL_PRESETS = [
@@ -679,13 +752,12 @@
       tutorialOnly: true,
       endless: true,
       characterType: "humanoid",
-      classId: 66, // Mana Cyborg
-      sprite: "Skab/!$CyborgActivist",
+      classId: 2, // Witch
+      spritePoolKey: "witch",
       spriteIndex: 0,
-      busts: "presets/CyborgActivist",
       mapId: 1414,
-      x: 8,
-      y: 8,
+      x: 87,
+      y: 30,
       switches: [],
       sexualOrientation: "heterosexual",
       romanticOrientation: "heteroromantic",
@@ -695,11 +767,77 @@
       armors: [],
       equips: [null, null, null, null, null],
       skills: [],
-      traits: [],
-      specializations: [],
+      // Fixed, and the same in every tutorial: what a witch is, spelled out.
+      traits: [193, 190], // Witch-Marked, Magically Gifted
+      specializations: [
+        { id: 255, level: 4 }, // Spellcraft
+        { id: 165, level: 3 }, // Magic Theory
+        { id: 134, level: 2 }, // Herbalism
+        { id: 271, level: 2 }, // Tarot Reading
+      ],
     },
     {
       id: 9002,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 18, // Pro Wrestler
+      spritePoolKey: "wrestler",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 87,
+      y: 30,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      // Fixed, and the same in every tutorial: the ring, and the show it puts on.
+      traits: [153, 6], // Brawler, Athletic
+      specializations: [
+        { id: 301, level: 4 }, // Wrestling
+        { id: 124, level: 3 }, // Grappling
+        { id: 24, level: 2 },  // Athletics
+        { id: 3, level: 2 },   // Acting
+      ],
+    },
+    {
+      id: 9003,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "creature",
+      archetypes: ["Goblin"],
+      classId: 16, // Gunmancer
+      spritePoolKey: "goblin",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 87,
+      y: 30,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      // Fixed, and the same in every tutorial: a gun in one hand, a spell in the
+      // other, which is the whole of what a gunmancer is.
+      traits: [202, 190, 12], // Gun-Fu, Magically Gifted, Marksman
+      specializations: [
+        { id: 896, level: 4 }, // Gun
+        { id: 255, level: 3 }, // Spellcraft
+        { id: 222, level: 2 }, // Weapon Reloading
+        { id: 28, level: 2 },  // Ballistics
+      ],
+    },
+    {
+      id: 9004,
       tutorialOnly: true,
       endless: true,
       characterType: "creature",
@@ -708,8 +846,8 @@
       spritePoolKey: "slime",
       spriteIndex: 0,
       mapId: 1414,
-      x: 8,
-      y: 8,
+      x: 87,
+      y: 30,
       switches: [],
       money: 0,
       items: [],
@@ -717,20 +855,27 @@
       armors: [],
       equips: [null, null, null, null, null],
       skills: [],
-      traits: [],
-      specializations: [],
+      // Fixed, and the same in every tutorial: something that is never quite
+      // whatever it is currently pretending to be.
+      traits: [201, 179, 97], // Prosopometamorphopsia, Cold-Blooded, Survivalist
+      specializations: [
+        { id: 84, level: 4 },  // Deception
+        { id: 3, level: 3 },   // Acting
+        { id: 803, level: 2 }, // Voice Acting
+        { id: 174, level: 2 }, // Meditation
+      ],
     },
     {
-      id: 9003,
+      id: 9005,
       tutorialOnly: true,
       endless: true,
       characterType: "humanoid",
-      classId: 42, // Scientist
-      spritePoolKey: "goblin",
+      classId: 22, // Paladin
+      spritePoolKey: "paladin",
       spriteIndex: 0,
       mapId: 1414,
-      x: 8,
-      y: 8,
+      x: 87,
+      y: 30,
       switches: [],
       sexualOrientation: "heterosexual",
       romanticOrientation: "heteroromantic",
@@ -740,8 +885,159 @@
       armors: [],
       equips: [null, null, null, null, null],
       skills: [],
-      traits: [],
-      specializations: [],
+      // Fixed, and the same in every tutorial: what a paladin already is.
+      traits: [116, 155, 11], // Devout, Shield Master, Defensive
+      specializations: [
+        { id: 889, level: 4 }, // Sword
+        { id: 620, level: 3 }, // Heavy Armor Training
+        { id: 277, level: 2 }, // Theology
+        { id: 645, level: 2 }, // Jousting
+      ],
+    },
+    {
+      id: 9006,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 49, // Psyker
+      spritePoolKey: "psyker",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 87,
+      y: 30,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      // Fixed, and the same in every tutorial: what a psyker already is.
+      traits: [196, 122, 52], // Clairvoyant, Prophetic, Synesthete
+      specializations: [
+        { id: 275, level: 4 }, // Telepathy
+        { id: 274, level: 3 }, // Telekinesis
+        { id: 66, level: 2 }, // Clairvoyance
+        { id: 174, level: 2 }, // Meditation
+      ],
+    },
+    {
+      id: 9007,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 35, // Bard
+      spritePoolKey: "bard",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 87,
+      y: 30,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      // Fixed, and the same in every tutorial: what a bard already is.
+      traits: [144, 197, 8], // Beautiful, Booming Voice, Lucky
+      specializations: [
+        { id: 208, level: 4 }, // Playing Guitar
+        { id: 183, level: 3 }, // Music Composition
+        { id: 218, level: 2 }, // Public Speaking
+        { id: 3, level: 2 }, // Acting
+      ],
+    },
+    {
+      id: 9008,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 12, // Enchanter
+      spritePoolKey: "enchanter",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 87,
+      y: 30,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      // Fixed, and the same in every tutorial: what a enchanter already is.
+      traits: [190, 139, 41], // Magically Gifted, Alchemist, Photographic Memory
+      specializations: [
+        { id: 731, level: 4 }, // Runecrafting
+        { id: 255, level: 3 }, // Spellcraft
+        { id: 805, level: 2 }, // Wand Making
+        { id: 309, level: 2 }, // Alchemy
+      ],
+    },
+    {
+      id: 9009,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 5, // Convoker
+      spritePoolKey: "convoker",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 87,
+      y: 30,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      // Fixed, and the same in every tutorial: what a convoker already is.
+      traits: [99, 118, 186], // Cursed, Heretic, Beast Whisperer
+      specializations: [
+        { id: 510, level: 4 }, // Binding
+        { id: 571, level: 3 }, // Divination
+        { id: 515, level: 2 }, // Blood Magic
+        { id: 277, level: 2 }, // Theology
+      ],
+    },
+    {
+      id: 9010,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 3, // Nun
+      spritePoolKey: "nun",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 87,
+      y: 30,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      // Fixed, and the same in every tutorial: what a nun already is.
+      traits: [100, 119, 121], // Blessed, Pilgrim, Monk-Trained
+      specializations: [
+        { id: 277, level: 4 }, // Theology
+        { id: 663, level: 3 }, // Mantra Chanting
+        { id: 535, level: 2 }, // Choir Singing
+        { id: 174, level: 2 }, // Meditation
+      ],
     },
   ];
 
@@ -2489,6 +2785,7 @@
     hasCompletedFirstCreation,
     markFirstCreationComplete,
     getTutorialCharacterPresets,
+    getTutorialSpritePool,
     resetTutorialPresetRolls,
 
     // Windows

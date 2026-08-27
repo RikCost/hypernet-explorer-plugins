@@ -629,12 +629,12 @@
 
             return `
                 <tr>
-                    <td><span style="${iconStyle(p.icon, 16)} vertical-align:middle; margin-right:4px"></span>${escapeAttr(p.name)}</td>
-                    <td style="font-weight:bold">${baseVal}</td>
+                    <td><span class="status-01" style="${iconStyle(p.icon, 16)} vertical-align:middle"></span>${escapeAttr(p.name)}</td>
+                    <td class="status-02">${baseVal}</td>
                     <td class="${equipClass}">${equipStr}</td>
                     <td class="${traitClass}">${traitStr}</td>
                     <td class="${limbClass}">${limbStr}</td>
-                    <td style="font-weight:bold; color:var(--text-primary-hover)">${totalVal}</td>
+                    <td class="status-03">${totalVal}</td>
                     <td><span class="status-stat-mod-badge">${dndModText}</span></td>
                 </tr>
             `;
@@ -642,7 +642,7 @@
 
         return `
             <div class="status-stat-breakdown-card">
-                <div class="card-label" style="font-size:0.92em; margin-bottom:6px">${T('SceneStatus.ui.statBreakdown') || "Stat Bonuses & Modifiers"}</div>
+                <div class="card-label status-04">${T('SceneStatus.ui.statBreakdown') || "Stat Bonuses & Modifiers"}</div>
                 <table class="status-stat-table">
                     <thead>
                         <tr>
@@ -806,11 +806,11 @@
 
         const morality = profile?.moralityScore ?? 0;
         const moralMap = [
-            { threshold: -60, label: T("Empathize.evil") || "Evil", color: '#c02020' },
-            { threshold: -20, label: T("Empathize.dishonest") || "Dishonest", color: '#c02020' },
-            { threshold: 20, label: T("Empathize.neutral") || "Neutral", color: '#8a6a30' },
-            { threshold: 60, label: T("Empathize.honest") || "Honest", color: '#2a6e4a' },
-            { threshold: Infinity, label: T("Empathize.virtuous") || "Virtuous", color: '#2a6e4a' }
+            { threshold: -60, label: T("Empathize.evil") || "Evil", band: "wicked" },
+            { threshold: -20, label: T("Empathize.dishonest") || "Dishonest", band: "wicked" },
+            { threshold: 20, label: T("Empathize.neutral") || "Neutral", band: "neutral" },
+            { threshold: 60, label: T("Empathize.honest") || "Honest", band: "upright" },
+            { threshold: Infinity, label: T("Empathize.virtuous") || "Virtuous", band: "upright" }
         ];
         const moralEntry = moralMap.find(e => morality < e.threshold) || moralMap[2];
 
@@ -832,11 +832,11 @@
 
         let specsHTML = "";
         if (specs.length) {
-            specsHTML = `<div class="status-trait-badges" style="justify-content:flex-start; gap:6px">` +
+            specsHTML = `<div class="status-trait-badges status-05">` +
                 specs.map(s => `<span class="status-trait-badge"><span style="${iconStyle(s.icon, 16)}"></span>${escapeAttr(s.name)} <b>(${escapeAttr(s.levelName)})</b></span>`).join("") +
                 `</div>`;
         } else {
-            specsHTML = `<div style="font-size:0.86em; color:var(--text-card-medium); font-style:italic">${T('SceneStatus.ui.noSpecializations') || "No trained specializations..."}</div>`;
+            specsHTML = `<div class="status-06">${T('SceneStatus.ui.noSpecializations') || "No trained specializations..."}</div>`;
         }
 
         // 4. Backstory Narrative & Formative Events
@@ -884,19 +884,19 @@
                     </div>
                     <div class="status-bio-item">
                         <span class="status-bio-item-lbl">${T('SceneStatus.ui.reproduction') || "Reproduction"}:</span>
-                        <span class="status-bio-item-val">${escapeAttr(repName)} <span style="opacity:0.8; font-size:0.9em">(${gestationDays}d)</span></span>
+                        <span class="status-bio-item-val">${escapeAttr(repName)} <span class="status-07">(${gestationDays}d)</span></span>
                     </div>
                     <div class="status-bio-item">
                         <span class="status-bio-item-lbl">${T('SceneStatus.ui.archetype') || "Archetype"}:</span>
-                        <span class="status-bio-item-val" style="font-weight:600; color:var(--text-primary-hover)">${escapeAttr(archetypeText)}</span>
+                        <span class="status-bio-item-val status-08">${escapeAttr(archetypeText)}</span>
                     </div>
                     <div class="status-bio-item">
                         <span class="status-bio-item-lbl">${T('SceneStatus.ui.age') || "Age"}:</span>
-                        <span class="status-bio-item-val">${escapeAttr(ageVal)} <span style="opacity:0.8; font-size:0.9em">(${birthYearVal})</span></span>
+                        <span class="status-bio-item-val">${escapeAttr(ageVal)} <span class="status-07">(${birthYearVal})</span></span>
                     </div>
                     <div class="status-bio-item">
                         <span class="status-bio-item-lbl">${T('SceneStatus.ui.bloodType') || "Blood Type"}:</span>
-                        <span class="status-bio-item-val" style="font-weight:bold">${escapeAttr(bloodType)}</span>
+                        <span class="status-bio-item-val status-02">${escapeAttr(bloodType)}</span>
                     </div>
                     <div class="status-bio-item">
                         <span class="status-bio-item-lbl">${T('SceneStatus.ui.hometown') || "Hometown"}:</span>
@@ -938,10 +938,10 @@
                     </div>
                     <div class="status-bio-item">
                         <span class="status-bio-item-lbl">${T('SceneStatus.ui.morality') || "Morality"}:</span>
-                        <span class="status-bio-item-val badge" style="color:${moralEntry.color}">${escapeAttr(moralEntry.label)} (${morality >= 0 ? '+' : ''}${morality})</span>
+                        <span class="status-bio-item-val badge morality--${moralEntry.band}">${escapeAttr(moralEntry.label)} (${morality >= 0 ? '+' : ''}${morality})</span>
                     </div>
                 </div>
-                ${persDesc ? `<div style="font-size:0.84em; color:var(--text-card-medium); font-style:italic; padding:4px 2px">${escapeAttr(persDesc)}</div>` : ''}
+                ${persDesc ? `<div class="status-09">${escapeAttr(persDesc)}</div>` : ''}
             </div>
 
             <div class="status-bio-section">
@@ -951,7 +951,7 @@
 
             <div class="status-bio-section">
                 <div class="card-label">${T('SceneStatus.ui.backstoryTitle') || "Backstory & Formative Events"}</div>
-                ${narrative ? `<div class="status-bio-narrative">${escapeAttr(narrative)}</div>` : `<div style="font-size:0.86em; color:var(--text-card-medium); font-style:italic">${T('SceneStatus.ui.noBackstory') || "No backstory recorded..."}</div>`}
+                ${narrative ? `<div class="status-bio-narrative">${escapeAttr(narrative)}</div>` : `<div class="status-06">${T('SceneStatus.ui.noBackstory') || "No backstory recorded..."}</div>`}
                 ${eventsHTML}
             </div>
         `;
@@ -1257,11 +1257,11 @@
             this._dndContainer.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 6px; margin-bottom: 10px; min-height: 36px; margin-top: 4px">
-                            <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
+                        <div class="page-header-bar status-10">
+                            <div class="back-button focusable status-11" onclick="SceneManager._scene.popScene()">
                                 ${backBtnText}
                             </div>
-                            <h2 class="title" id="status-actor-name" style="border: none; margin: 0; padding: 0"></h2>
+                            <h2 class="title status-12" id="status-actor-name"></h2>
                         </div>
                         
                         <div class="status-bust-wrapper">
@@ -1315,7 +1315,7 @@
                             <div class="status-needs-rows" id="status-needs"></div>
                         </div>
                     </div>
-                    <div class="right-page" style="position:relative">
+                    <div class="right-page status-13">
                         <div class="status-right-header">
                             <div class="companion-switcher" id="status-companion-switcher"></div>
                         </div>
@@ -1333,7 +1333,7 @@
                             <div class="status-tab-panel" data-status-tab="anatomy">
                                 <div class="bodyparts-card status-card-fixed">
                                     <div class="card-label" id="status-archetype-label">${T('SceneStatus.ui.archetype')}</div>
-                                    <div id="status-archetype" style="padding:4px 2px; font-family:'Lora',serif"></div>
+                                    <div class="status-14" id="status-archetype"></div>
                                 </div>
 
                                 <div class="bodyparts-card">
@@ -1349,13 +1349,13 @@
                                 </div>
 
                                 <div class="status-alignment-row">
-                                    <div id="status-alignment-container" style="display:contents"></div>
-                                    <div id="status-magicsystem-container" style="display:contents"></div>
+                                    <div class="status-15" id="status-alignment-container"></div>
+                                    <div class="status-15" id="status-magicsystem-container"></div>
                                 </div>
                             </div>
 
                             <div class="status-tab-panel" data-status-tab="bio">
-                                <div class="bodyparts-card" style="padding-top:0">
+                                <div class="bodyparts-card status-16">
                                     <div class="status-bio-scroll" id="status-bio-scroll"></div>
                                 </div>
                             </div>
@@ -1396,7 +1396,7 @@
         const tabsRow = spread.querySelector("#status-companion-switcher");
         if (tabsRow) {
             tabsRow.innerHTML = window.CharSwitcher.inner(
-                `<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0">${companionTabsHTML}</div>`,
+                `<div class="companion-tabs-row status-17">${companionTabsHTML}</div>`,
                 allMembers.length
             );
         }
@@ -1502,21 +1502,20 @@
             // Uniform needs palette: gold when healthy, orange when low, red
             // when critical. Inline color overrides the per-class gradient so
             // every needs bar reads on the same scale.
-            const needColor = (p) => p <= 20 ? '#d9433a' : (p <= 50 ? '#e2933a' : '#d4a64e');
 
             let needsHTML = "";
             needDefs.forEach(need => {
                 if (typeof actor[need.fn] !== "function") return;
                 const pct = Math.max(0, Math.min(100, Math.round(actor[need.fn]())));
-                const c = needColor(pct);
+                const band = window.NeedGauge.band(pct);
                 needsHTML += `
                     <div class="status-gauge-row">
                         <div class="status-gauge-meta">
                             <span class="gauge-label">${need.label}</span>
-                            <span class="gauge-value" style="color:${c}">${pct}%</span>
+                            <span class="gauge-value gauge-ink ${band}">${pct}%</span>
                         </div>
                         <div class="status-gauge-bar-outer">
-                            <div class="status-gauge-bar-inner ${need.cls}" style="width: ${pct}%; background:${c}"></div>
+                            <div class="status-gauge-bar-inner gauge-fill ${need.cls} ${band}" style="width:${pct}%"></div>
                         </div>
                     </div>
                 `;
@@ -1528,18 +1527,17 @@
             // no meter and adds no row.
             const addictions = window.AddictionSystem;
             if (addictions) {
-                const cravingColor = (p) => p >= 80 ? '#d9433a' : (p >= 50 ? '#e2933a' : '#d4a64e');
                 addictions.cravingsFor(actor).forEach(craving => {
                     const pct = Math.max(0, Math.min(100, Math.round(craving.value)));
-                    const c = cravingColor(pct);
+                    const band = window.NeedGauge.cravingBand(pct);
                     needsHTML += `
                     <div class="status-gauge-row">
                         <div class="status-gauge-meta">
                             <span class="gauge-label">${craving.label}</span>
-                            <span class="gauge-value" style="color:${c}">${pct}%</span>
+                            <span class="gauge-value gauge-ink ${band}">${pct}%</span>
                         </div>
                         <div class="status-gauge-bar-outer">
-                            <div class="status-gauge-bar-inner" style="width: ${pct}%; background:${c}"></div>
+                            <div class="status-gauge-bar-inner gauge-fill ${band}" style="width:${pct}%"></div>
                         </div>
                     </div>
                 `;
@@ -1572,7 +1570,7 @@
             if (modifier !== 0) {
                 const origVal = p.val - modifier;
                 displayValHTML = `
-                    <span class="stat-number debuffed" style="text-decoration: line-through; color: var(--text-blood-red); font-size: 0.892em; margin-right: 4px">${origVal}</span>
+                    <span class="stat-number debuffed status-18">${origVal}</span>
                     <span class="stat-number">${p.val}</span>
                 `;
             }
@@ -1612,8 +1610,8 @@
                         <div class="status-element-box">
                             <span class="element-title">${T('SceneStatus.ui.alignment')}</span>
                             <span class="element-badge">
-                                <span class="icon" style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.7); vertical-align: middle; margin-right: -4px"></span>
-                                <span style="vertical-align: middle">${elementName}</span>
+                                <span class="icon status-19" style="background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat"></span>
+                                <span class="status-20">${elementName}</span>
                             </span>
                         </div>
                     `;
@@ -1636,7 +1634,7 @@
                     <div class="status-element-box">
                         <span class="element-title">${T('SceneStatus.ui.magicSystem')}</span>
                         <span class="element-badge">
-                            <span style="vertical-align: middle">${systemName}</span>
+                            <span class="status-20">${systemName}</span>
                         </span>
                     </div>
                 `;
@@ -1686,13 +1684,13 @@
                 const repType = $gameVariables.value(repVar);
                 const term = health.getPregnancyDuration(actor, repType);
                 archetypeEl.innerHTML = `
-                    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:8px">
-                        <span style="font-weight:bold; color:var(--text-primary-hover); font-size:0.942em">${names.join(" / ")}</span>
-                        <span style="color:var(--text-card-medium); font-size:0.856em; white-space:nowrap">${T('SceneStatus.ui.gestationTerm', { days: term })}</span>
+                    <div class="status-21">
+                        <span class="status-22">${names.join(" / ")}</span>
+                        <span class="status-23">${T('SceneStatus.ui.gestationTerm', { days: term })}</span>
                     </div>
                 `;
             } else {
-                archetypeEl.innerHTML = `<div style="color:var(--text-card-medium); font-size:0.856em">${T('SceneStatus.ui.noArchetype')}</div>`;
+                archetypeEl.innerHTML = `<div class="status-24">${T('SceneStatus.ui.noArchetype')}</div>`;
             }
         }
 
@@ -1721,7 +1719,7 @@
 
         let bodyPartsHTML = "";
         if (bodyParts.length === 0) {
-            bodyPartsHTML = `<div style="font-family: 'Lora', serif; text-align: center; color: var(--text-card-medium); padding: 12px; font-size:0.892em">${T('SceneStatus.ui.noVitals')}</div>`;
+            bodyPartsHTML = `<div class="status-25">${T('SceneStatus.ui.noVitals')}</div>`;
         } else {
             bodyParts.forEach((part, idx) => {
                 // Broken, cut off or destroyed: one word, and which one is
@@ -1747,7 +1745,7 @@
                     <div class="bodypart-row ${isSelected} ${strikeClass}" onclick="SceneManager._scene.selectUIBodyPart(${idx})">
                         <span class="bodypart-name">${partName}</span>
                         <div class="bodypart-hp-container">
-                            <div class="bodypart-bar" style="width: ${barWidth}%"></div>
+                            <div class="bodypart-bar" style="width:${barWidth}%"></div>
                             <span class="bodypart-hp-val">${hpText}</span>
                         </div>
                     </div>
@@ -2370,6 +2368,14 @@
 
         if (Input.isTriggered('left')) {
             this.cycleStatusTab(-1);
+            return;
+        }
+
+        // The one thing this page DOES rather than shows: opening the member's
+        // own sheet. It used to be the single button here a cursor could not
+        // reach, since the spread has no board and nothing read Confirm.
+        if (Input.isTriggered('ok')) {
+            this.openStatusEmpathize();
             return;
         }
 

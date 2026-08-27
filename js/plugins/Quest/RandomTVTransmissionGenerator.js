@@ -1981,7 +1981,10 @@
             if (isViewer) {
                 const bust = tvEmBustName();
                 if (bust && scene && scene._bustManager && scene._bustManager.showCustomBust) {
-                    scene._bustManager.showCustomBust(bust, name);
+                    // She is watching, not broadcasting: her portrait takes the
+                    // left-hand slot the party speaks from, and the studio keeps
+                    // the right.
+                    scene._bustManager.showCustomBust(bust, name, "left");
                 } else if (scene && scene._bustManager && scene._bustManager.hideBusts) {
                     scene._bustManager.hideBusts();
                 }

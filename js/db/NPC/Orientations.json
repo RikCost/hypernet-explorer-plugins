@@ -14,7 +14,7 @@
     {
       "key": "heterosexual",
       "name": "Orientations.sexual.heterosexual.name",
-      "pct": 89.0,
+      "pct": 89.1,
       "kinsey": 0,
       "esoteric": false,
       "correspondsTo": "heteroromantic",
@@ -91,15 +91,6 @@
       "esoteric": true,
       "correspondsTo": "dendroromantic",
       "desc": "Orientations.sexual.dendrosexual.desc"
-    },
-    {
-      "key": "nanosexual",
-      "name": "Orientations.sexual.nanosexual.name",
-      "pct": 0.1,
-      "kinsey": null,
-      "esoteric": true,
-      "correspondsTo": null,
-      "desc": "Orientations.sexual.nanosexual.desc"
     }
   ],
   "romantic": [

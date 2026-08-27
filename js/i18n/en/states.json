@@ -15,10 +15,10 @@
   },
   "3": {
     "name": "Immortal",
-    "message1": "",
-    "message2": "",
+    "message1": "%1 is immortal!",
+    "message2": "%1 is immortal!",
     "message3": "",
-    "message4": ""
+    "message4": "%1 is no longer immortal!"
   },
   "4": {
     "name": "Poison",
@@ -298,7 +298,7 @@
     "message1": "%1 is burned!",
     "message2": "%1 is burned!",
     "message3": "",
-    "message4": "%1 is no longer poisoned!"
+    "message4": "%1 is no longer burned!"
   },
   "44": {
     "name": "Infected",
@@ -385,7 +385,7 @@
     "message4": "%1 loses the opening."
   },
   "56": {
-    "name": "Exposed",
+    "name": "Vital Exposed",
     "message1": "%1's vitals are exposed!",
     "message2": "%1's vitals are exposed!",
     "message3": "%1 cannot cover the opening...",

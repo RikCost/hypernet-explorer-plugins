@@ -230,7 +230,15 @@
     // decides which presentation to use (BattleSystemEnhanced.js). Once a
     // fight has begun, everything else here checks MBM.isActive() instead so
     // a mid-battle option flip can never corrupt an in-progress fight.
-    window.isMapBattleMode = () => ConfigManager.mapBattleMode === true;
+    // The 3D voxel world (VoxelWorld/*) is never a tactical grid: a fight met
+    // out there is fought over the world itself, with the troop and the battle
+    // HUD laid on the frame the world is drawing (see VoxelWorldSystem.js). So
+    // the tactical layer is off for as long as that world is up, whatever the
+    // Experimental option says.
+    window.isMapBattleMode = () => {
+        if (window.VoxelWorldSystem && window.VoxelWorldSystem.isActive()) return false;
+        return ConfigManager.mapBattleMode === true;
+    };
 
     //=========================================================================
     // Helpers

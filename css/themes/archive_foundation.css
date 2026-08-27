@@ -138,6 +138,10 @@
     --border-focus-hover: #8b5a2b;
     --border-muted-focus: #5c2c16;
     --border-primary-hover-translucent-15: rgba(88, 24, 13, 0.15);
+    /* Fainter siblings of the rule above. theme.css already asked for both;
+       until now nothing answered, so those hairlines drew as nothing. */
+    --border-primary-hover-translucent-5: rgba(88, 24, 13, 0.05);
+    --border-primary-hover-translucent-10: rgba(88, 24, 13, 0.10);
     --border-secondary-hover-translucent-15: rgba(92, 44, 22, 0.15);
     --border-subtle: #4a2711;
     --border-success: #bba16d;
@@ -268,6 +272,9 @@
     --accent-amber-bronze: #5a4a1e;
     --accent-amber-dark: #6b521d;
     --accent-amber-glow: #ffe9a8;
+    /* The cold counterpart of --accent-amber-glow, for the second line of
+       a label drawn onto a canvas bitmap. */
+    --accent-frost-glow: #cfe6ff;
     --accent-amber-gold: #caa44a;
     --accent-amber-light: #e9c46a;
     --accent-amber-very-dark: #3a2a06;
@@ -340,9 +347,13 @@
     --bg-hp-bar: #8bc34a;
     --bg-info-blue-5: rgba(41, 128, 185, 0.05);
     --bg-mp-bar: #5b9bd5;
-    --bg-mp-bar-alt: #4070d0;
-    --bg-npc-bark: #8c6d58;
+    --bg-mp-bar-alt: #3366cd;
+    --bg-npc-bark: #826552;
     --bg-npc-forest: #2a6e4a;
+    /* The deepest rust the parchment menus stamp a primary button in, and the
+       rule that outlines it. Added when the work board, the bank and the
+       prosthetics shop stopped painting them inline. */
+    --bg-accent-deep: #4a1d0f;
     --bg-parchment-dark-40: rgba(230, 180, 130, 0.40);
     --bg-parchment-medium-50: rgba(230, 200, 160, 0.50);
     --bg-parchment-warm-60: rgba(255, 248, 230, 0.60);
@@ -371,6 +382,51 @@
     --border-dark-panel: #3a4a63;
     --border-dark-warm-25: rgba(94, 47, 23, 0.25);
     --border-forest-green: #2a6e4a;
+    /* Solid white, for the marker rings and pips that must read on any
+       ground at all. Both presets keep it white on purpose. */
+    --border-white-strong: #ffffff;
+    /* === Needs gauges (window.NeedGauge, Core/TimeDateSystem.js) ===
+       One three step scale for every meter in the game: the status
+       sheet's needs, the menu's survival cards, the biologic panel's
+       body parts and the addiction cravings all read it. */
+    --gauge-bad: #d9433a;
+    --gauge-warn: #e2933a;
+    --gauge-ok: #d4a64e;
+    /* === Hardcore game over (js/plugins/Core/SaveSystem.js) ===
+       The gravestone screen is its own dark plate under either preset,
+       so the two carry the same values; a future preset can retune the
+       whole screen from here. */
+    --hgo-ink: #c9b48a;
+    --hgo-ink-muted: #b8a079;
+    --hgo-ink-strong: #f0e3c0;
+    --hgo-ink-eldritch: #b48ad0;
+    --hgo-rule: rgba(201, 180, 138, 0.25);
+    --hgo-button-bg: #5a1414;
+    --hgo-button-bg-hover: #7a1c1c;
+    --bg-backdrop-black: #000000;
+    --bg-black-translucent-92: rgba(0, 0, 0, 0.92);
+    --bg-danger-translucent-55: rgba(40, 0, 0, 0.55);
+    --shadow-danger-dark-65: rgba(139, 26, 26, 0.65);
+    --shadow-danger-dark-60: rgba(139, 26, 26, 0.60);
+    --shadow-eldritch-55: rgba(150, 90, 200, 0.55);
+    /* === Faction reputation ramp (js/plugins/NPC/FactionDataManager.js) ===
+       Nine bands, nemesis to exalted. Read as a class by the HTML badges and
+       resolved by name for the canvas windows, so a preset retunes the whole
+       ladder here rather than in the plugin. */
+    --faction-rep-exalted: #1a7a1a;
+    --faction-rep-revered: #2e7d32;
+    --faction-rep-honored: #4a8f3a;
+    --faction-rep-friendly: #5c9a4a;
+    --faction-rep-neutral: #6b5242;
+    --faction-rep-unfriendly: #b06a30;
+    --faction-rep-hostile: #c0501e;
+    --faction-rep-hated: #b03018;
+    --faction-rep-nemesis: #9a1010;
+    /* Accord stances between two factions, same idea. */
+    --faction-accord-allied: #2e7d32;
+    --faction-accord-neutral: #6b5242;
+    --faction-accord-hostile: #c62828;
+    --border-accent-deepest: #301107;
     --border-gold-amber: #b8895a;
     --border-gold-amber-30: rgba(160, 120, 60, 0.35);
     --border-info-blue-35: rgba(41, 128, 185, 0.35);
@@ -415,20 +471,20 @@
     --shadow-settings-glow-28: rgba(160, 120, 50, 0.28);
 
     /* --- Text inks (flipped dark for legibility on cream) --- */
-    --text-amber-hint: #8b620b;
+    --text-amber-hint: #6b4c08;
     --text-blood-red: #a01818;
     --text-brown-dark: #3a1f0f;
     --text-brown-deep: #3d2517;
-    --text-brown-medium: #6b5242;
-    --text-caption-brown: #7a6b50;
+    --text-brown-medium: #644d3e;
+    --text-caption-brown: #5b503c;
     --text-card-dark: #4a2f20;
     --text-card-medium: #6b5242;
-    --text-cost-bad: #b03020;
-    --text-cost-ok: #1e7a3a;
+    --text-cost-bad: #97291b;
+    --text-cost-ok: #175d2c;
     --text-danger-dark: #8b1a1a;
     --text-forest-complete: #2e7d32;
     --text-forest-green: #1e601e;
-    --text-gold-dark: #8b620b;
+    --text-gold-dark: #6b4c08;
     --text-info-blue: #16487e;
     --text-navy: #2a4a6a;
     --text-npc-red: #8b1010;
@@ -440,25 +496,20 @@
     --text-settings-label: #6b5242;
     --text-settings-value-active: #58180D;
     --text-subtle-translucent-65: rgba(74, 39, 17, 0.65);
-    --text-teal: #1d7068;
+    --text-teal: #175b54;
 
     /* === Toast notifications (Core/ParchmentToast.js) ===
        The popup sits on a light parchment plate here, so its body text is ink
        and the rarity ladder is darkened to hold against it. */
     --toast-text: #2c2418;
     --toast-text-muted: #5d4c33;
-    --rarity-common: #2c2418;
-    --rarity-uncommon: #1a6b32;
-    --rarity-rare: #12508f;
-    --rarity-epic: #6a2a9c;
-    --rarity-legendary: #9a4e08;
 
     /* --- Item rarity palette (parchment-tuned: dark, saturated inks) --- */
-    --rarity-common: #6b5242;
-    --rarity-uncommon: #2e6da4;
-    --rarity-rare: #b8601f;
+    --rarity-common: #644d3e;
+    --rarity-uncommon: #23547e;
+    --rarity-rare: #6d3812;
     --rarity-epic: #7b2fa0;
-    --rarity-legendary: #9a7400;
+    --rarity-legendary: #6b5000;
 }
 
 /* ==========================================================================
@@ -487,14 +538,6 @@
    live vars.css resolves to a near-white #dddddd that washes out on parchment. */
 .cc-option-desc {
     color: #5c4128 !important;
-}
-
-/* Settings-preview body text (e.g. the "Enemy Battlers" explanation). The markup
-   hardcodes an inline color:#d8cba8 (near-white, tuned for the dark Omega Tower
-   page) which is invisible on the cream page. Re-ink to dark sepia; !important is
-   required to override the inline style. */
-.cc-page-left .cc-dossier-card p[style*="d8cba8"] {
-    color: #4a2f20 !important;
 }
 
 /* Left-page party dossier: class line (e.g. "Freelancer (Male)") */
@@ -837,24 +880,13 @@
 
 /* ==========================================================================
    Thinker (Crafting) + Blacksmithing (Anvil) menus, parchment-theme readability
-   Item names are inked inline with the rarity.colorCode palette baked into
-   ThinkerMenu.js / BlacksmithingMenu.js, a set of bright neon hues (white /
-   lime / cyan / violet / orange) tuned for the dark Omega Tower page. On this
-   light parchment the white common names vanish outright and the neon
-   uncommon/rare/epic/legendary names glare against the cream. Re-ink each
-   tier to this theme's parchment-tuned rarity palette so the Assemble
-   blueprint rows, Disassemble salvage rows and both menus' success overlay
-   all read cleanly. Scoped to this file only; omega_tower.css keeps its own
-   (correct) light-on-dark forcing of these names.
+   The rarity of a name is a class now (.rarity--legendary and the rest, from
+   window.ItemSystemUtils.rarityClass), inked off the --rarity-* tokens this
+   file already tunes for parchment, so the tier colours need nothing here.
+   What is left is the success overlay's own plate: its cream comes from
+   --text-highlight-active, but the rows inside inherit the base theme's white
+   and wash out against it.
    ========================================================================== */
-#thinker-container .blueprint-name[style*="#FFFFFF"],
-#thinker-container .workbench-item-name[style*="#FFFFFF"],
-#blacksmith-container .blueprint-name[style*="#FFFFFF"],
-#blacksmith-container .workbench-item-name[style*="#FFFFFF"],
-/* success-overlay background uses var(--text-highlight-active) which
-   is already cream (#f4edd4) in this theme, but its child .success-item-row
-   inherits the base theme's white background. Override so the rows sit
-   visibly on the cream page and don't wash out the common-rarity items. */
 #thinker-container .success-overlay,
 #blacksmith-container .success-overlay {
     background: rgba(244, 237, 212, 0.92) !important;
@@ -862,42 +894,6 @@
 #thinker-container .success-item-row,
 #blacksmith-container .success-item-row {
     background: rgba(200, 180, 150, 0.35) !important;
-}
-#thinker-container .success-item-row span[style*="#FFFFFF"],
-#blacksmith-container .success-item-row span[style*="#FFFFFF"] {
-    color: var(--rarity-common) !important;
-}
-#thinker-container .blueprint-name[style*="#1AFF1A"],
-#thinker-container .workbench-item-name[style*="#1AFF1A"],
-#thinker-container .success-item-row span[style*="#1AFF1A"],
-#blacksmith-container .blueprint-name[style*="#1AFF1A"],
-#blacksmith-container .workbench-item-name[style*="#1AFF1A"],
-#blacksmith-container .success-item-row span[style*="#1AFF1A"] {
-    color: var(--rarity-uncommon) !important;
-}
-#thinker-container .blueprint-name[style*="#0080FF"],
-#thinker-container .workbench-item-name[style*="#0080FF"],
-#thinker-container .success-item-row span[style*="#0080FF"],
-#blacksmith-container .blueprint-name[style*="#0080FF"],
-#blacksmith-container .workbench-item-name[style*="#0080FF"],
-#blacksmith-container .success-item-row span[style*="#0080FF"] {
-    color: var(--rarity-rare) !important;
-}
-#thinker-container .blueprint-name[style*="#8000FF"],
-#thinker-container .workbench-item-name[style*="#8000FF"],
-#thinker-container .success-item-row span[style*="#8000FF"],
-#blacksmith-container .blueprint-name[style*="#8000FF"],
-#blacksmith-container .workbench-item-name[style*="#8000FF"],
-#blacksmith-container .success-item-row span[style*="#8000FF"] {
-    color: var(--rarity-epic) !important;
-}
-#thinker-container .blueprint-name[style*="#FF8000"],
-#thinker-container .workbench-item-name[style*="#FF8000"],
-#thinker-container .success-item-row span[style*="#FF8000"],
-#blacksmith-container .blueprint-name[style*="#FF8000"],
-#blacksmith-container .workbench-item-name[style*="#FF8000"],
-#blacksmith-container .success-item-row span[style*="#FF8000"] {
-    color: var(--rarity-legendary) !important;
 }
 
 /* ==========================================================================
@@ -1635,10 +1631,17 @@ body .name-edit-bracket-box .name-display-text {
 
 /* ==========================================================================
    Inline colour literals, parchment-theme readability
-   ~136 low-contrast colour literals are written straight into style="" in the
-   plugins' HTML templates, so no class-based rule can reach them; the only
-   handle is an attribute selector on the literal itself. They were all picked
-   against the dark Omega Tower page and land at 1.0-4.4 on the cream one.
+   A dwindling set of low-contrast colour literals is still written straight
+   into style="" in the plugins' HTML templates, so no class-based rule can
+   reach them; the only handle is an attribute selector on the literal itself.
+   They were all picked against the dark Omega Tower page and land at 1.0-4.4
+   on the cream one.
+
+   This block is meant to shrink to nothing. Every menu moved onto the
+   --text-* tokens takes its literals out of reach of these selectors and lets
+   the matching ones be deleted; what is left below is what no menu has been
+   pulled onto tokens for yet, plus the Hypernet OS apps and the minigames,
+   which keep their own look by design.
 
    Every rule is guarded with :not([style*="background"]): when an element
    declares its own background inline it is a self-contained chip or button
@@ -1654,10 +1657,8 @@ body .name-edit-bracket-box .name-display-text {
 [style*="color: #27ae60"]:not([style*="background"]),
 [style*="color:#008000"]:not([style*="background"]),
 [style*="color: #008000"]:not([style*="background"]),
-[style*="color:#4a7c59"]:not([style*="background"]),
 [style*="color:#2e7d32"]:not([style*="background"]),
 [style*="color: #2e7d32"]:not([style*="background"]),
-[style*="color: #4a7c59"]:not([style*="background"]),
 [style*="color:#2a6e4a"]:not([style*="background"]),
 [style*="color: #2a6e4a"]:not([style*="background"]) {
     color: #155c15 !important;
@@ -1667,9 +1668,7 @@ body .name-edit-bracket-box .name-display-text {
 [style*="color:#c0392b"]:not([style*="background"]),
 [style*="color:#d9534f"]:not([style*="background"]),
 [style*="color: #d9534f"]:not([style*="background"]),
-[style*="color: #c0392b"]:not([style*="background"]),
-[style*="color:#c02020"]:not([style*="background"]),
-[style*="color: #c02020"]:not([style*="background"]) {
+[style*="color: #c0392b"]:not([style*="background"]) {
     color: #7a1010 !important;
 }
 
@@ -1678,39 +1677,20 @@ body .name-edit-bracket-box .name-display-text {
    a border-color on a dark brown fill (ItemSystemInventoryUI's Special row). */
 [style*="color:#ffcc66"]:not([style*="background"]),
 [style*="color: #ffcc66"]:not([style*="background"]),
-[style*="color:#e9c46a"]:not([style*="background"]),
-[style*="color: #e9c46a"]:not([style*="background"]),
 [style*="color:#f39c12"]:not([style*="background"]),
 [style*="color: #f39c12"]:not([style*="background"]),
-[style*="color:#b85c00"]:not([style*="background"]),
-[style*="color: #b85c00"]:not([style*="background"]),
-[style*="color:#a07820"]:not([style*="background"]),
-[style*="color: #a07820"]:not([style*="background"]),
 [style*="color:#e67e22"]:not([style*="background"]),
 [style*="color: #e67e22"]:not([style*="background"]),
 [style*="color:#d35400"]:not([style*="background"]),
 [style*="color: #d35400"]:not([style*="background"]),
-[style*="color:#c07020"]:not([style*="background"]),
-[style*="color: #c07020"]:not([style*="background"]),
 [style*="color:#8a6d3b"]:not([style*="background"]),
 [style*="color: #8a6d3b"]:not([style*="background"]) {
     color: #5a3c00 !important;
 }
 
-/* Deep magenta accent (NPCEmpathizeUI relationship badges). */
-[style*="color:#b0448b"]:not([style*="background"]),
-[style*="color: #b0448b"]:not([style*="background"]) {
-    color: #6b1f5a !important;
-}
 [style*="color:#bba16d"]:not([style*="background"]):not([style*="border-color:#bba16d"]),
 [style*="color: #bba16d"]:not([style*="background"]):not([style*="border-color:#bba16d"]) {
     color: #5a3c00 !important;
-}
-
-/* Copper section labels in the creature dossier (CharacterCreationCreature). */
-[style*="color:#b87333"]:not([style*="background"]),
-[style*="color: #b87333"]:not([style*="background"]) {
-    color: #6b3a10 !important;
 }
 
 /* Muted greys and washed browns used for descriptions, values and empty
@@ -1722,31 +1702,15 @@ body .name-edit-bracket-box .name-display-text {
 [style*="color: #8c7667"]:not([style*="background"]),
 [style*="color:#8b7355"]:not([style*="background"]),
 [style*="color: #8b7355"]:not([style*="background"]),
-[style*="color:#5c6c8c"]:not([style*="background"]),
-[style*="color:#7f7360"]:not([style*="background"]),
-[style*="color: #7f7360"]:not([style*="background"]),
-[style*="color: #5c6c8c"]:not([style*="background"]),
 [style*="color:#dddddd"]:not([style*="background"]),
-[style*="color: #dddddd"]:not([style*="background"]),
-[style*="color:#d8cba8"]:not([style*="background"]),
-[style*="color: #d8cba8"]:not([style*="background"]) {
+[style*="color: #dddddd"]:not([style*="background"]) {
     color: #3a2414 !important;
 }
 
 /* Brown labels that only need a nudge over the AA line (4.19-4.41). Kept
    brown so the label/value hierarchy the screens rely on survives. */
 [style*="color:#8b5a2b"]:not([style*="background"]),
-[style*="color: #8b5a2b"]:not([style*="background"]),
-[style*="color:#7a5c3a"]:not([style*="background"]),
-[style*="color: #7a5c3a"]:not([style*="background"]) {
-    color: #5c4128 !important;
-}
-
-/* Factions, the "Independent." fallback under a faction with no diplomacy on
-   record: italic 0.9em in #8c715c, 3.68 on the cream page. The omega preset
-   already lifts this exact literal for its own page; this is the light twin. */
-[style*="color:#8c715c"]:not([style*="background"]),
-[style*="color: #8c715c"]:not([style*="background"]) {
+[style*="color: #8b5a2b"]:not([style*="background"]) {
     color: #5c4128 !important;
 }
 
@@ -1837,7 +1801,6 @@ body .name-edit-bracket-box .name-display-text {
 #shop-container .detail-effect-chip {
     color: #3a2414 !important;
 }
-
 
 /* ==========================================================================
    LEGIBILITY SWEEP - no white ink, no bright ink, no ink the colour of its own
@@ -1931,7 +1894,6 @@ body .name-edit-bracket-box .name-display-text {
 #html-cardhand-overlay .rcs-cost { color: #06323a; }
 .cd-chip.cd-win { color: #06280f; }
 
-
 /* --- Measured and deliberately NOT changed, so the next sweep does not
        re-open them:
 
@@ -1955,6 +1917,143 @@ body .name-edit-bracket-box .name-display-text {
          --text-secondary-active (#8c1d0f) at the same time, which is the
          inversion the cream ink was chosen for. */
 
+/* ==========================================================================
+   FurnitureSystem build panel (.fbuild-*), Archive Foundation paper white
+   --------------------------------------------------------------------------
+   The shared block in css/theme.css paints the panel out of the dark-tech blue
+   family (--accent-dark-blue, --accent-tab-active, --accent-blue-gray-light),
+   which is the same in every preset, so the build menu stayed a slab of night
+   blue in the middle of the cream book. Re-ink it as a paper page: warm white
+   plates, sepia rules, brown wax for the active states.
+
+   Scoped by the panel id (#fbuild-panel, and body #fbuild-panel for the panel
+   itself) so it outranks theme.css's plain class rules whichever way the preset
+   reaches the page: @import'ed over css/vars.css at boot, or injected live as
+   <style id="active-theme-override"> by GameOptions.applyTheme.
+   ========================================================================== */
+body #fbuild-panel {
+    background: linear-gradient(180deg, #fdf8ec 0%, #efe4cd 100%);
+    border-right: 2px solid var(--border-focus-hover);
+    box-shadow: 8px 0 28px rgba(44, 29, 20, 0.35);
+    color: var(--text-card-dark);
+}
+
+/* Bars: header, mode switch, top tabs, category bar, hint footer. */
+#fbuild-panel .fbuild-header,
+#fbuild-panel .fbuild-modebar,
+#fbuild-panel .fbuild-toptabs,
+#fbuild-panel .fbuild-catbar,
+#fbuild-panel .fbuild-materials,
+#fbuild-panel .fbuild-hint {
+    background: rgba(139, 90, 43, 0.08);
+    border-color: rgba(139, 90, 43, 0.35);
+}
+#fbuild-panel .fbuild-title { color: #3e2a1a; }
+#fbuild-panel .fbuild-hint b { color: var(--text-primary-hover); }
+
+/* Chips and controls that took --accent-dark-blue as their plate. */
+#fbuild-panel .fbuild-count,
+#fbuild-panel .fbuild-close,
+#fbuild-panel .fbuild-clear-all,
+#fbuild-panel .fbuild-modeswitch,
+#fbuild-panel .fbuild-toptab-opt,
+#fbuild-panel .fbuild-dd-trigger,
+#fbuild-panel .fbuild-search,
+#fbuild-panel .fbuild-gold {
+    background: var(--bg-parchment-warm-60);
+    border-color: rgba(139, 90, 43, 0.45);
+    color: var(--text-card-dark);
+}
+#fbuild-panel .fbuild-gold { color: #5a3c00; }
+
+/* Idle / hover / active states of every pickable control. The active plate is
+   the brown wax the rest of the preset stamps with, so its ink turns cream. */
+#fbuild-panel .fbuild-mode-opt,
+#fbuild-panel .fbuild-tab { color: var(--text-card-medium); }
+#fbuild-panel .fbuild-mode-opt:hover,
+#fbuild-panel .fbuild-toptab-opt:hover,
+#fbuild-panel .fbuild-dd-opt:hover { color: var(--text-secondary-active); }
+#fbuild-panel .fbuild-toptab-opt:hover,
+#fbuild-panel .fbuild-dd-trigger:hover,
+#fbuild-panel .fbuild-search:hover,
+#fbuild-panel .fbuild-search:focus,
+#fbuild-panel .fbuild-dropdown.open .fbuild-dd-trigger {
+    border-color: var(--border-focus-hover);
+}
+#fbuild-panel .fbuild-mode-opt.active,
+#fbuild-panel .fbuild-toptab-opt.active,
+#fbuild-panel .fbuild-dd-opt.active,
+#fbuild-panel .fbuild-tab.active {
+    background: #8b5a2b;
+    border-color: #5c3a1a;
+    color: #fff8eb;
+}
+#fbuild-panel .fbuild-tab:hover { background: var(--bg-focus-hover-translucent-15); }
+#fbuild-panel .fbuild-mat,
+#fbuild-panel .fbuild-card-size {
+    background: var(--bg-parchment-warm-60);
+    border-color: rgba(139, 90, 43, 0.35);
+}
+
+/* Quiet captions: section labels, folder line, empty state, size pill. */
+#fbuild-panel .fbuild-section-label,
+#fbuild-panel .fbuild-cat-label,
+#fbuild-panel .fbuild-card-folder,
+#fbuild-panel .fbuild-card-size,
+#fbuild-panel .fbuild-mat-empty,
+#fbuild-panel .fbuild-empty,
+#fbuild-panel .fbuild-search::placeholder { color: var(--text-card-medium); }
+
+/* Counters ride a translucent black pill in theme.css, which reads as a smudge
+   on paper: give them the same warm plate the other chips use. */
+#fbuild-panel .fbuild-tab-count,
+#fbuild-panel .fbuild-dd-opt-count { background: rgba(139, 90, 43, 0.18); }
+
+/* Category dropdown popup and the material tooltip. */
+#fbuild-panel .fbuild-dd-list,
+#fbuild-panel .fbuild-mat-tip {
+    background: #fdf8ec;
+    border-color: var(--border-focus-hover);
+}
+#fbuild-panel .fbuild-dd-opt,
+#fbuild-panel .fbuild-mat-tip { color: var(--text-card-dark); }
+
+/* Furniture cards. */
+#fbuild-panel .fbuild-card {
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(139, 90, 43, 0.35);
+}
+#fbuild-panel .fbuild-card:hover,
+#fbuild-panel .fbuild-card.fbcursor {
+    background: var(--bg-focus-hover-translucent-15);
+    border-color: var(--border-focus-hover);
+}
+#fbuild-panel .fbuild-card.fbcursor {
+    box-shadow: 0 0 0 2px var(--border-focus-hover), 0 4px 14px rgba(44, 29, 20, 0.35);
+}
+#fbuild-panel .fbuild-card:hover { box-shadow: 0 4px 12px rgba(44, 29, 20, 0.25); }
+#fbuild-panel .fbuild-card.armed { border-color: #a6791f; }
+#fbuild-panel .fbuild-card-img { background: rgba(139, 90, 43, 0.10); }
+#fbuild-panel .fbuild-card-armed-badge,
+#fbuild-panel .fbuild-free { background: #d9a441; color: #2b1d14; }
+
+/* Armed footer: the amber wash and its cream name both need dark ink here. */
+#fbuild-panel .fbuild-armed-bar { border-top-color: #a6791f; }
+#fbuild-panel .fbuild-armed-thumb { background: rgba(139, 90, 43, 0.14); }
+#fbuild-panel .fbuild-armed-name { color: #3e2a1a; }
+
+/* Scrollbars. */
+#fbuild-panel .fbuild-grid::-webkit-scrollbar-thumb,
+#fbuild-panel .fbuild-materials::-webkit-scrollbar-thumb,
+#fbuild-panel .fbuild-cats::-webkit-scrollbar-thumb,
+#fbuild-panel .fbuild-dd-list::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb-hover-translucent-60);
+}
+#fbuild-panel .fbuild-grid::-webkit-scrollbar-thumb:hover,
+#fbuild-panel .fbuild-cats::-webkit-scrollbar-thumb:hover,
+#fbuild-panel .fbuild-dd-list::-webkit-scrollbar-thumb:hover {
+    background: #5c3a1a;
+}
 
 /* ==========================================================================
    HANDHELD / STEAM DECK PRIORITY OVERRIDE (theme preset half)

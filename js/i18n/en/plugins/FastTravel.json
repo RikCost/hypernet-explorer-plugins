@@ -61,6 +61,12 @@
     "travelTime": "Travel Time:",
     "transportPlaceholder": "Train",
     "cancel": "Cancel",
-    "travel": "Travel"
+    "travel": "Travel",
+    "free": "Free",
+    "startHere": "Start Here"
+  },
+  "refused": {
+    "title": "Turned away at the counter",
+    "wanted": "The clerk looks up your name, looks at the queue behind you, and does not print the ticket. Find your own way there."
   }
 }

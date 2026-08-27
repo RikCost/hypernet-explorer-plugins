@@ -49,8 +49,8 @@
       "desc": "Hunger and sleep drain 30% slower and resting restores more energy."
     },
     "16": {
-      "name": "Street Fighter",
-      "desc": "While unarmed you deal +25% damage and counter a share of melee hits."
+      "name": "Spellshot",
+      "desc": "With a firearm in hand you deal +25% damage, and every action you take returns a little mana."
     },
     "17": {
       "name": "Footwork",
@@ -323,6 +323,7 @@
     "9": "Cursed"
   },
   "log": {
+    "chamberedMana": "{actor} draws mana back out of the chamber.",
     "pinStunned": "{target} is pinned and stunned!",
     "chiFlows": "{actor}'s chi flows!",
     "mirrorShatters": "A mirror image of {actor} shatters!",

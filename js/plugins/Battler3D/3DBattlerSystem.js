@@ -747,6 +747,16 @@
     // A destroyed body part flashes red then fades away over this long; a slain
     // enemy freezes its pose and fades the whole model off over this long.
     const PART_DESTROY_TIME = 0.5;
+    // How long a hit-flash takes to ease back to the body's own colour.
+    const HIT_FLASH_TIME = 0.45;
+    // The body part a party member has NAMED - the limb an aim is on, or the one
+    // a grapple is being planned against - breathes yellow while the choice is
+    // being made, so the plan is read off the monster and not off the menu. How
+    // far toward yellow the part goes at the bottom and the top of that breath,
+    // and how fast it breathes (radians a second).
+    const AIM_HIGHLIGHT_MIN = 0.30;
+    const AIM_HIGHLIGHT_MAX = 0.85;
+    const AIM_HIGHLIGHT_PULSE = 4.5;
     const DEATH_FADE_TIME = 1.1;
     // A biped that has lost BOTH legs cannot stand: its model topples to the
     // ground over this long, and is lifted by this much (in local units, i.e.
@@ -782,6 +792,11 @@
             this._partMeshMap = {};   // body-part KEY -> mesh (for hit-flash)
             this._cascadeRules = [];  // [{ gone:[KEYS], hide:[meshes] }]
             this._flashMeshes = [];
+            // The named-part highlight: which key is lit, and the mesh and its
+            // untouched colours while it is (see updateAimHighlight).
+            this._aimHl = null;
+            this._aimHlKey = null;
+            this._aimHlTime = 0;
             // Dismembered parts flash red then fade out (instead of vanishing).
             this._destroyFades = [];   // [{ obj, mats, t }]
             this._destroyStarted = new Set();
@@ -841,6 +856,10 @@
             if (gseed) sm = mix(sm, gseed);
             this._idRngState = seed01(sm);                  // texture / colour / baseline shape
             this._rngState   = seed01(mix(sm, 0x55555555)); // fine grain (also species-stable)
+            // The raw species identity, kept so a family can hash its OWN stable
+            // per-species choice (the humanoid picks a mouth shape off it) without
+            // drawing from idRand and shifting every draw made after it.
+            this._speciesSeed = sm >>> 0;
 
             // Separate per-INSTANCE stream (event origin + troop index) used ONLY
             // to jitter body proportions very slightly between instances of the
@@ -1391,12 +1410,18 @@
             // If the mesh uses multiple materials, store them all.
             // Save the original colors so we can restore them when the flash ends.
             const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-            const origColors = mats.map(m => m.color ? m.color.clone() : null);
+            // A highlighted part is currently painted yellow, and that yellow is
+            // not the body's colour: take the real one off the highlight, or the
+            // flash would restore the part lit even after the aim moved on.
+            const lit = (this._aimHl && this._aimHl.mesh === mesh) ? this._aimHl : null;
+            const origColors = mats.map((m, i) => lit
+                ? (lit.origColors[i] ? lit.origColors[i].clone() : null)
+                : (m.color ? m.color.clone() : null));
             const existing = this._flashMeshes.find(f => f.mesh === mesh);
             if (existing) {
-                existing.timer = 0.45; // restart if hit again before fade finishes
+                existing.timer = HIT_FLASH_TIME; // restart if hit again before fade finishes
             } else {
-                this._flashMeshes.push({ mesh, mats, origColors, timer: 0.45 });
+                this._flashMeshes.push({ mesh, mats, origColors, timer: HIT_FLASH_TIME });
             }
         }
 
@@ -1414,16 +1439,109 @@
                     }
                     this._flashMeshes.splice(i, 1);
                 } else {
-                    const intensity = f.timer / 0.45; // 1 -> 0 over flash duration
-                    // Tint the material color toward red (works on ALL material types
-                    // including MeshBasicMaterial which has no emissive property).
-                    for (const m of f.mats) {
+                    const k = Math.min(1, f.timer / HIT_FLASH_TIME); // 1 -> 0 over the flash
+                    // Blend the material's OWN colour toward red by however much
+                    // of the flash is left. Driving it to (k,0,0) instead, as this
+                    // used to, meant the flash did not ease back to the body: it
+                    // faded through to black and then snapped back on the frame
+                    // the timer expired. Works on every material type, including
+                    // MeshBasicMaterial, which has no emissive to use instead.
+                    for (let j = 0; j < f.mats.length; j++) {
+                        const m = f.mats[j];
                         if (!m || !m.color) continue;
-                        const r = Math.min(1, intensity);
-                        m.color.setRGB(r, 0, 0);
+                        const o = f.origColors[j];
+                        if (o) m.color.setRGB(o.r + (1 - o.r) * k, o.g * (1 - k), o.b * (1 - k));
+                        else m.color.setRGB(k, 0, 0);
                     }
                 }
             }
+        }
+
+        // ── Named-part highlight ─────────────────────────────────
+        // Driven entirely off the battler (`_aimHighlightPart`, set by the Aim
+        // and Wrestle menus in Health_Monsters.js), so nothing has to reach into
+        // the scene to move the light: the menu writes a part key onto the
+        // monster and the model picks it up on its next frame. Only a part the
+        // model actually maps is lit - lighting a fallback limb would say the
+        // aim is somewhere it is not.
+        updateAimHighlight(deltaTime) {
+            const key = (this.battler && this.battler._aimHighlightPart) || null;
+            if (key !== this._aimHlKey) {
+                this._settleAimHighlight();
+                this._aimHlKey = key;
+                if (key) this._captureAimHighlight(key);
+            }
+            const lit = this._aimHl;
+            if (!lit) return;
+            this._aimHlTime += deltaTime;
+            // A hit owns the mesh for as long as it flashes: a blow landing has
+            // to read as a blow landing. The highlight waits it out and takes the
+            // colour back on the frame after the flash restores it.
+            if (this._flashMeshes.some(f => f.mesh === lit.mesh)) return;
+            const k = AIM_HIGHLIGHT_MIN + (AIM_HIGHLIGHT_MAX - AIM_HIGHLIGHT_MIN) *
+                (0.5 + 0.5 * Math.sin(this._aimHlTime * AIM_HIGHLIGHT_PULSE));
+            for (let i = 0; i < lit.mats.length; i++) {
+                const m = lit.mats[i], o = lit.origColors[i];
+                if (!m || !m.color || !o) continue;
+                // Toward (1,1,0): red and green up to full, blue driven out.
+                m.color.setRGB(o.r + (1 - o.r) * k, o.g + (1 - o.g) * k, o.b * (1 - k));
+            }
+        }
+
+        // The mesh a health-system part key names on THIS model. Exact key first;
+        // failing that, the mapped key that shares the most words with it, so a
+        // family calling its limb ARM_LEFT still lights up for a LEFT_ARM aim.
+        // Nothing shared means nothing lit: a fallback limb (which is what the
+        // hit-flash does) would say the blow is going somewhere it is not.
+        _resolveAimMesh(key) {
+            const map = this._partMeshMap || {};
+            if (map[key]) return map[key];
+            const upper = String(key).toUpperCase();
+            const words = upper.split(/[^A-Z0-9]+/).filter(Boolean);
+            let best = null, bestScore = 0;
+            for (const k in map) {
+                if (!map[k]) continue;
+                const other = String(k).toUpperCase();
+                if (other === upper) return map[k];
+                const otherWords = other.split(/[^A-Z0-9]+/).filter(Boolean);
+                let score = 0;
+                for (const w of words) if (otherWords.indexOf(w) >= 0) score++;
+                if (score > bestScore) { bestScore = score; best = map[k]; }
+            }
+            return bestScore > 0 ? best : null;
+        }
+
+        _captureAimHighlight(key) {
+            const mesh = this._resolveAimMesh(key);
+            if (!mesh || !mesh.visible || !mesh.material) return;
+            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            // A live flash is already holding this mesh's real colours; take them
+            // from it rather than from the red it is painted at this instant.
+            const flash = this._flashMeshes.find(f => f.mesh === mesh);
+            const origColors = mats.map((m, i) => (flash && flash.origColors[i])
+                ? flash.origColors[i].clone()
+                : (m.color ? m.color.clone() : null));
+            this._aimHl = { mesh, mats, origColors };
+            this._aimHlTime = 0;
+        }
+
+        // Put the lit part back to its own colour and drop the highlight. With a
+        // `root`, only when the lit mesh is inside it (a part about to be severed
+        // out from under the light).
+        _settleAimHighlight(root) {
+            const lit = this._aimHl;
+            if (!lit) return;
+            if (root) {
+                let inside = false;
+                root.traverse(o => { if (o === lit.mesh) inside = true; });
+                if (!inside) return;
+            }
+            for (let i = 0; i < lit.mats.length; i++) {
+                const m = lit.mats[i], o = lit.origColors[i];
+                if (m && m.color && o) m.color.copy(o);
+            }
+            this._aimHl = null;
+            this._aimHlKey = null;
         }
 
         // ── Dismemberment cascade ────────────────────────────────────────────
@@ -1434,6 +1552,18 @@
         applyCascade(parts) {
             if (!parts) return;
             this._ensureCascadeMeta();
+            // Part loss only moves when something is severed (or grown back), but
+            // this used to walk every rule of every model on every frame of every
+            // fight, re-deciding the same answer. Hash which parts are gone (the
+            // map is a couple of dozen entries and the loop is one property read
+            // each) and step over the whole rule set while that has not changed.
+            let sig = 0, i = 0;
+            for (const k in parts) {
+                i++;
+                if (parts[k] && parts[k].destroyed) sig = (sig * 31 + i) | 0;
+            }
+            if (sig === this._cascadeSig) return;
+            this._cascadeSig = sig;
             const gone = (k) => parts[k] && parts[k].destroyed;
             for (const rule of this._cascadeRules) {
                 if (rule._wholeBody) continue; // root parts must never blank the whole model
@@ -1486,12 +1616,39 @@
             }
         }
 
+        // Put back the original colours of any live hit-flash on `root` or
+        // anything under it, and drop those entries. Called before a part's
+        // materials are swapped out from under the flash.
+        _settleFlash(root) {
+            if (!this._flashMeshes.length || !root) return;
+            const inside = new Set();
+            root.traverse(o => inside.add(o));
+            for (let i = this._flashMeshes.length - 1; i >= 0; i--) {
+                const f = this._flashMeshes[i];
+                if (!inside.has(f.mesh)) continue;
+                for (let j = 0; j < f.mats.length; j++) {
+                    const m = f.mats[j];
+                    if (m && m.color && f.origColors[j]) m.color.copy(f.origColors[j]);
+                }
+                this._flashMeshes.splice(i, 1);
+            }
+        }
+
         // Begin the red-flash-then-fade for a freshly destroyed part. The part's
         // materials are CLONED so the fade/flash is isolated even when families
         // share one material across several parts (e.g. a single fur material).
         _startPartDestroy(obj) {
             if (!obj || this._destroyStarted.has(obj)) return;
             this._destroyStarted.add(obj);
+            // A part can be severed mid-flash. The clones below replace the
+            // materials the flash is holding, so the flash would go on writing
+            // red into detached materials and the severed limb would fade out
+            // stuck at whatever red it was cloned at. Settle the flash onto the
+            // source materials first, so the clone is born the body's colour.
+            this._settleFlash(obj);
+            // Same for the named-part light: the clones below would go on being
+            // painted yellow while the severed limb fades.
+            this._settleAimHighlight(obj);
             const mats = [];
             obj.traverse(o => {
                 if (!o.material) return;
@@ -1564,6 +1721,7 @@
                 this._hitStop -= deltaTime;
                 this._applyHitStopSquash();
                 this.updateFlash(deltaTime);
+                this.updateAimHighlight(deltaTime);
                 this.updateDestroyFade(deltaTime);
                 return;
             }
@@ -1582,6 +1740,7 @@
                 const parts = (this.battler && this.battler._bodyParts) ? this.battler._bodyParts : null;
                 if (parts) { this.applyCascade(parts); if (this.onCascade) this.onCascade(parts); }
                 this.updateFlash(deltaTime);
+                this.updateAimHighlight(deltaTime);
                 this.updateDestroyFade(deltaTime);
                 this._closeEyesIfAsleep();
                 return;
@@ -1607,6 +1766,7 @@
                 if (this.onCascade) this.onCascade(parts);
             }
             this.updateFlash(deltaTime);
+            this.updateAimHighlight(deltaTime);
             this.updateDestroyFade(deltaTime);
 
             if (this.currentAnimation === 'death') {
@@ -1678,8 +1838,27 @@
             this._lastGestPZ = pz; this._lastGestRX = rx;
             // Pulse any glowing core/orb brighter during a cast so magic reads.
             if (anim === 'cast' || anim === 'beam' || anim === 'summon' || anim === 'specialattack') {
-                const glow = 1.2 + Math.sin(t * 12) * 0.6;
-                for (const m of [this.coreGlow, this.staffOrb]) if (m && m.material) m.material.emissiveIntensity = glow;
+                this._setGlow(1.2 + Math.sin(t * 12) * 0.6);
+                this._glowPulsed = true;
+            } else if (this._glowPulsed) {
+                // A family that drives its orb every frame overwrites this
+                // anyway; the many that set it once at build time did not, and
+                // were left permanently over-bright by whatever the last frame
+                // of the cast happened to be.
+                this._glowPulsed = false;
+                this._setGlow(null);
+            }
+        }
+
+        // Drive the emissive intensity of whichever glowing core/orb the family
+        // registered. `null` restores the value the material was built with.
+        _setGlow(v) {
+            for (let i = 0; i < 2; i++) {
+                const mesh = i === 0 ? this.coreGlow : this.staffOrb;
+                const mat = mesh && mesh.material;
+                if (!mat) continue;
+                if (mat._b3dGlowBase === undefined) mat._b3dGlowBase = mat.emissiveIntensity;
+                mat.emissiveIntensity = (v === null) ? mat._b3dGlowBase : v;
             }
         }
         // True once per model: is this battler tagged <Boss> in its enemy note?
@@ -1850,8 +2029,64 @@
     // geometry and materials are disposed; skin textures live in the shared
     // _SKIN_TEX_CACHE and are reused across battlers, so their .map references
     // are deliberately left intact (never dispose a shared/cached singleton).
+    // ── Shader programs, across battles ──────────────────────────────────────
+    // three hands a compiled program back the moment the last material using it
+    // is disposed, and tearing the field down at the end of a fight disposes
+    // every material on it. So the programs the battlers had just been drawn
+    // with were thrown away between fights and compiled again on the opening
+    // frame of the next one, which is a good part of the hitch a battle used to
+    // start with: a shader compile blocks the driver, and it lands on exactly
+    // the frame the fight appears.
+    //
+    // The renderer is already the session's one battle context and outlives
+    // every fight (acquireBattleRenderer), so the programs may as well outlive
+    // them too. One material per distinct program is held back from disposal;
+    // that keeps the program's use count off zero, and the next battle's
+    // structurally identical materials find it already compiled in three's own
+    // cache. Bounded, and a material with no geometry behind it is a few dozen
+    // bytes.
+    const PROGRAM_KEEPALIVE_MAX = 64;
+    const _programKeepAlive = new Map();   // program cacheKey -> the material held back
+
+    // The cache keys of the programs a material has actually been compiled into.
+    // Null for one that was never drawn, which has no program to keep.
+    function materialProgramKeys(mat) {
+        const renderer = _sharedRenderer;
+        if (!renderer || !renderer.properties || !renderer.properties.get) return null;
+        let props;
+        try { props = renderer.properties.get(mat); } catch (e) { return null; }
+        const programs = props && props.programs;
+        if (!programs || typeof programs.forEach !== 'function') return null;
+        const keys = [];
+        programs.forEach(prog => { if (prog && prog.cacheKey) keys.push(prog.cacheKey); });
+        return keys.length ? keys : null;
+    }
+
+    // Held back rather than disposed? Only for a program nothing is holding yet.
+    function keepMaterialAlive(mat) {
+        if (_programKeepAlive.size >= PROGRAM_KEEPALIVE_MAX) return false;
+        const keys = materialProgramKeys(mat);
+        if (!keys) return false;
+        let novel = false;
+        for (const k of keys) { if (!_programKeepAlive.has(k)) { novel = true; break; } }
+        if (!novel) return false;
+        for (const k of keys) { if (!_programKeepAlive.has(k)) _programKeepAlive.set(k, mat); }
+        return true;
+    }
+
+    // A rebuilt context (see acquireBattleRenderer) compiles from scratch, so
+    // what the old one was holding is only dead weight.
+    function resetProgramKeepAlive() {
+        _programKeepAlive.clear();
+    }
+
     function disposeObject3DResources(root) {
         if (!root || typeof root.traverse !== 'function') return;
+        const releaseMaterial = m => {
+            if (!m || typeof m.dispose !== 'function') return;
+            if (keepMaterialAlive(m)) return;
+            m.dispose();
+        };
         root.traverse(obj => {
             if (obj.geometry && typeof obj.geometry.dispose === 'function') {
                 obj.geometry.dispose();
@@ -1859,9 +2094,9 @@
             const mat = obj.material;
             if (!mat) return;
             if (Array.isArray(mat)) {
-                mat.forEach(m => { if (m && typeof m.dispose === 'function') m.dispose(); });
-            } else if (typeof mat.dispose === 'function') {
-                mat.dispose();
+                mat.forEach(releaseMaterial);
+            } else {
+                releaseMaterial(mat);
             }
         });
     }
@@ -1936,6 +2171,7 @@
             if (!lost) return _sharedRenderer;
             try { _sharedRenderer.dispose(); } catch (e) { /* already gone */ }
             _sharedRenderer = null;
+            resetProgramKeepAlive();
         }
         // Antialias defaults OFF: MSAA is one of the most expensive things a
         // software rasterizer does, and the game already targets a low-fi
@@ -2007,6 +2243,14 @@
     // size is two or three texels across.
     const SUN_DISC_COS = 0.9;
 
+    // Is the battle being fought over the live 3D world rather than a painted
+    // battleback? Then the ground behind the battlers is real ground, with its
+    // own sun on it, and nothing here should be drawing a second one.
+    function onLiveGround() {
+        const VWS = window.VoxelWorldSystem;
+        return !!(VWS && VWS.isBattleView && VWS.isBattleView());
+    }
+
     // Where the shadow catcher sits until the field has been measured. Matches
     // the y a procedural battler is first placed at, so the very first frame of
     // a fight already has the shadows roughly under the feet rather than
@@ -2068,6 +2312,9 @@
         tex.needsUpdate = true;
         return tex;
     }
+
+    // How many baked sky probes the renderer keeps (see DayNightRig._refreshEnv).
+    const ENV_PROBE_CACHE_MAX = 6;
 
     class DayNightRig {
         // opts.shadows      cast shadows onto a ground catcher (battle only)
@@ -2179,8 +2426,13 @@
             try { light = tds.getDayNightLight(); } catch (e) { return; }
             if (!light) return;
 
-            if (force || light.key !== this._lightKey) {
+            // The live-ground answer is part of what _apply decides, and it can
+            // change without the light changing at all (a fight opened in the
+            // 3D world, or one left), so it is watched alongside the key.
+            const live = onLiveGround();
+            if (force || light.key !== this._lightKey || live !== this._onLiveGround) {
                 this._lightKey = light.key;
+                this._onLiveGround = live;
                 this._apply(light);
             }
 
@@ -2222,7 +2474,14 @@
                 // Under heavy cloud there is no shadow left to draw, so the
                 // whole extra pass is switched off rather than spent rendering
                 // something that composites to nothing.
-                const worth = light.shadowOpacity > 0.05;
+                //
+                // And a fight in the 3D world has no use for it at all: the
+                // catcher is one flat plane at the height of the lowest pair of
+                // feet, which is the right answer over a painted backdrop and
+                // the wrong one over real ground seen in perspective - it puts
+                // a grey ellipse under the monster that lies across the hill it
+                // is standing on. That world lights and shadows itself.
+                const worth = light.shadowOpacity > 0.05 && !onLiveGround();
                 this.key.castShadow = worth;
                 this._ground.visible = worth;
                 // A shadow is a hole in the sky's light, so it takes the sky's
@@ -2237,21 +2496,47 @@
         // The reflection probe. Rebuilding runs a PMREM pass, so it is held to
         // the coarser of the two clocks: a handful of times an in-game hour,
         // never per frame.
+        //
+        // The baked probe belongs to the RENDERER rather than to this rig. The
+        // renderer is the session's one battle context and outlives every
+        // fight (see acquireBattleRenderer), while the rig is built and thrown
+        // away with each one: keeping the probe on the rig meant every battle
+        // opened by running the same sky through PMREM again, which is a
+        // shader pass plus a mip chain, on the very frame the fight appears.
+        // A handful of hours' skies are kept so walking into a second fight in
+        // the same weather at the same hour costs a map lookup.
         _refreshEnv(light) {
             if (this._envFailed) return;
             const envKey = Math.round(light.hour * 4) * 8 + Math.round(light.night * 3);
             if (envKey === this._envKey) return;
             this._envKey = envKey;
             try {
-                let pmrem = this.renderer._b3dPmrem;
-                if (!pmrem) {
-                    pmrem = this.renderer._b3dPmrem = new THREE.PMREMGenerator(this.renderer);
-                    pmrem.compileEquirectangularShader();
+                let store = this.renderer._b3dEnvCache;
+                if (!store) store = this.renderer._b3dEnvCache = new Map();
+                let rt = store.get(envKey);
+                if (!rt) {
+                    let pmrem = this.renderer._b3dPmrem;
+                    if (!pmrem) {
+                        pmrem = this.renderer._b3dPmrem = new THREE.PMREMGenerator(this.renderer);
+                        pmrem.compileEquirectangularShader();
+                    }
+                    const src = buildSkyEquirect(light);
+                    rt = pmrem.fromEquirectangular(src);
+                    src.dispose();
+                    store.set(envKey, rt);
+                    // Bounded, so a long session cannot accumulate a probe per
+                    // quarter hour of game time. The sky in use is never the one
+                    // handed back.
+                    if (store.size > ENV_PROBE_CACHE_MAX) {
+                        for (const oldKey of store.keys()) {
+                            if (oldKey === envKey) continue;
+                            const old = store.get(oldKey);
+                            store.delete(oldKey);
+                            if (old) old.dispose();
+                            break;
+                        }
+                    }
                 }
-                const src = buildSkyEquirect(light);
-                const rt = pmrem.fromEquirectangular(src);
-                src.dispose();
-                if (this._envRT) this._envRT.dispose();
                 this._envRT = rt;
                 // Read back by _apply to stand the hemisphere light down. Set
                 // here rather than at construction because the probe can fail.
@@ -2280,7 +2565,9 @@
                 this._ground.geometry.dispose();
                 this._groundMat.dispose();
             }
-            if (this._envRT) { this._envRT.dispose(); this._envRT = null; }
+            // NOT disposed: the baked probe lives in the renderer's cache and
+            // the next fight at this hour is about to want it back.
+            this._envRT = null;
             s.environment = null;
             // The PMREM generator stays on the renderer: it belongs to the
             // context, which outlives the battle, and its compiled shader is
@@ -3596,7 +3883,7 @@
     Sprite_Battler.prototype.updateDamagePopup = function() {
         _Sprite_Battler_updateDamagePopup.call(this);
 
-        if (this._damages.length > 0 && SceneManager._scene._spriteset) {
+        if (this._damages.length > 0 && SceneManager._scene && SceneManager._scene._spriteset) {
             const model = SceneManager._scene._spriteset.get3DModel(this._battler);
             if (model) {
                 const result = this._battler.result && this._battler.result();
@@ -3642,7 +3929,7 @@
     Sprite_Actor.prototype.startMotion = function(motionType) {
         _Sprite_Actor_startMotion.call(this, motionType);
 
-        if (SceneManager._scene._spriteset) {
+        if (SceneManager._scene && SceneManager._scene._spriteset) {
             const model = SceneManager._scene._spriteset.get3DModel(this._battler);
             if (model) {
                 switch (motionType) {

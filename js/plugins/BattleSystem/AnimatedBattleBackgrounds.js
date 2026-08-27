@@ -664,47 +664,75 @@
         return colors;
     }
 
-    function drawDitheredGradient(context, width, height, timeMode) {
-        const colors = getSkyColors(timeMode);
-        const ditherSize = 1; // Fine 1-pixel dithering for subtle effect
+    // The dither is a half-megapixel loop (816x624) that used to run in full on
+    // every single battle start, plus a 2MB ImageData allocated and uploaded with
+    // it. What it paints depends on nothing but the sky colours and the canvas
+    // size, so it is painted once into an offscreen canvas and every later ask
+    // for the same sky is a blit. Opening a second fight in the same weather at
+    // the same hour now costs a drawImage instead of ~500k iterations.
+    let _gradientCanvas = null;
+    let _gradientKey = '';
 
-        // Create image data for faster pixel manipulation
-        const imageData = context.createImageData(width, height);
+    function ditheredGradientSource(width, height, timeMode) {
+        const colors = getSkyColors(timeMode);
+        const key = width + 'x' + height + '|' + colors.map(c => c.join(',')).join(';');
+        if (_gradientCanvas && _gradientKey === key) return _gradientCanvas;
+
+        const canvas = _gradientCanvas && _gradientCanvas.width === width &&
+            _gradientCanvas.height === height
+            ? _gradientCanvas
+            : document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+
+        const imageData = ctx.createImageData(width, height);
         const data = imageData.data;
+        const stops = colors.length - 1;
 
         for (let y = 0; y < height; y++) {
             // Calculate gradient position (0 to 1)
             const gradPos = y / height;
 
             // Find which color stops to interpolate between
-            let colorIndex = Math.floor(gradPos * (colors.length - 1));
-            let nextColorIndex = Math.min(colorIndex + 1, colors.length - 1);
+            const colorIndex = Math.floor(gradPos * stops);
+            const nextColorIndex = Math.min(colorIndex + 1, stops);
 
             // Calculate local interpolation factor
-            const localFactor = (gradPos * (colors.length - 1)) - colorIndex;
+            const localFactor = (gradPos * stops) - colorIndex;
 
             const color1 = colors[colorIndex];
             const color2 = colors[nextColorIndex];
+            // The dither threshold only ever varies over an 8x8 tile, so the
+            // row's eight verdicts are settled once and then read off.
+            const bayerRow = BAYER_MATRIX[y & 7];
+            const pick = [];
+            for (let b = 0; b < 8; b++) {
+                pick[b] = localFactor > (bayerRow[b] / 64) ? color2 : color1;
+            }
 
+            let index = y * width * 4;
             for (let x = 0; x < width; x++) {
-                // Get dither threshold from 8x8 Bayer matrix
-                const bayerX = Math.floor(x / ditherSize) % 8;
-                const bayerY = Math.floor(y / ditherSize) % 8;
-                const threshold = BAYER_MATRIX[bayerY][bayerX] / 64;
-
-                // Choose color based on dithering
-                const useColor2 = localFactor > threshold;
-                const finalColor = useColor2 ? color2 : color1;
-
-                const index = (y * width + x) * 4;
+                const finalColor = pick[x & 7];
                 data[index] = finalColor[0];
                 data[index + 1] = finalColor[1];
                 data[index + 2] = finalColor[2];
                 data[index + 3] = 255;
+                index += 4;
             }
         }
 
-        context.putImageData(imageData, 0, 0);
+        ctx.putImageData(imageData, 0, 0);
+        _gradientCanvas = canvas;
+        _gradientKey = key;
+        return canvas;
+    }
+
+    function drawDitheredGradient(context, width, height, timeMode) {
+        const source = ditheredGradientSource(width, height, timeMode);
+        // The source canvas is the exact size asked for, so this is a straight
+        // copy rather than a resample.
+        context.drawImage(source, 0, 0);
     }
 
     // =============================================================================
@@ -912,38 +940,88 @@
         context.restore();
     }
 
-    function drawStars(context, width, height, animatedTime) {
+    // The star field is seeded off a constant, so where the three hundred stars
+    // stand and how big they are never changes for a given canvas: rolled once
+    // and then read off, instead of running the generator fifteen hundred times
+    // on every redraw. The animated and static forms draw from the stream
+    // differently (the twinkle speed is only rolled when there is a time to
+    // twinkle against), so each keeps its own table and its own look.
+    const _STAR_FIELD_CACHE = new Map();
+
+    function starField(width, height, isAnimated) {
+        const key = width + 'x' + height + (isAnimated ? '|a' : '|s');
+        let field = _STAR_FIELD_CACHE.get(key);
+        if (field) return field;
         const random = createSeededRandom(12345);
+        field = [];
+        for (let i = 0; i < 300; i++) {
+            const star = {
+                x: random() * width,
+                y: random() * height,
+                size: random() * 2.5 + 0.5,
+                base: random() * 0.4 + 0.6,
+                speed: 0
+            };
+            if (isAnimated) star.speed = 2 + random() * 3;
+            field.push(star);
+        }
+        _STAR_FIELD_CACHE.set(key, field);
+        return field;
+    }
+
+    // One white radial falloff, painted once and stamped per star. A gradient
+    // built per star meant three hundred allocations and three hundred shader
+    // setups a redraw for the same picture at a different size; the alpha the
+    // gradient used to carry is folded into globalAlpha instead, which is what
+    // the blit multiplies by.
+    const STAR_GLOW_PX = 64;
+    let _starGlowCanvas = null;
+
+    function starGlowSprite() {
+        if (_starGlowCanvas) return _starGlowCanvas;
+        const c = document.createElement('canvas');
+        c.width = c.height = STAR_GLOW_PX;
+        const g = c.getContext('2d');
+        const r = STAR_GLOW_PX / 2;
+        const grad = g.createRadialGradient(r, r, 0, r, r, r);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        g.fillStyle = grad;
+        g.fillRect(0, 0, STAR_GLOW_PX, STAR_GLOW_PX);
+        _starGlowCanvas = c;
+        return c;
+    }
+
+    function drawStars(context, width, height, animatedTime) {
         const time = animatedTime !== undefined ? animatedTime : 0;
         const isAnimated = animatedTime !== undefined;
+        const field = starField(width, height, isAnimated);
+        const glow = starGlowSprite();
 
-        for (let i = 0; i < 300; i++) {
-            const x = random() * width;
-            const y = random() * height;
-            const size = random() * 2.5 + 0.5;
-            const baseBrightness = random() * 0.4 + 0.6;
+        context.fillStyle = '#FFFFFF';
+        for (let i = 0; i < field.length; i++) {
+            const star = field[i];
+            const size = star.size;
 
             // Twinkling effect
-            let brightness = baseBrightness;
+            let brightness = star.base;
             if (isAnimated) {
-                const twinkleSpeed = 2 + random() * 3;
-                const twinkle = Math.sin(time * twinkleSpeed + i) * 0.3;
-                brightness = Math.max(0.3, Math.min(1, baseBrightness + twinkle));
+                const twinkle = Math.sin(time * star.speed + i) * 0.3;
+                brightness = Math.max(0.3, Math.min(1, star.base + twinkle));
             }
 
             // Draw square star
             context.globalAlpha = brightness;
-            context.fillStyle = '#FFFFFF';
-            context.fillRect(x - size / 2, y - size / 2, size, size);
+            context.fillRect(star.x - size / 2, star.y - size / 2, size, size);
 
-            // Star glow for brighter stars (square glow)
+            // Star glow for brighter stars
             if (size > 1.5 && brightness > 0.7) {
                 const glowSize = size * 3;
-                const glowGradient = context.createRadialGradient(x, y, 0, x, y, glowSize);
-                glowGradient.addColorStop(0, `rgba(255, 255, 255, ${brightness * 0.4})`);
-                glowGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                context.fillStyle = glowGradient;
-                context.fillRect(x - glowSize, y - glowSize, glowSize * 2, glowSize * 2);
+                // The old gradient's own alpha rode on top of the star's, so the
+                // two are multiplied together here to keep the same result.
+                context.globalAlpha = brightness * brightness * 0.4;
+                context.drawImage(glow, star.x - glowSize, star.y - glowSize,
+                    glowSize * 2, glowSize * 2);
             }
         }
 
@@ -1068,8 +1146,10 @@
     };
 
     Spriteset_Battle.prototype._createBattleWeatherSprite = function () {
-        if (typeof Sprite_Weather === 'undefined') return;
-        this._battleWeatherSprite = new Sprite_Weather();
+        // MZ's weather layer is `Weather` (`Sprite_Weather` was the MV name), so the
+        // old guard was always taken and battle weather never drew at all.
+        if (typeof Weather === 'undefined') return;
+        this._battleWeatherSprite = new Weather();
         this.addChild(this._battleWeatherSprite);
     };
 
@@ -1553,6 +1633,10 @@
         }
 
         if (this._battleWeatherSprite) {
+            // Weather draws nothing unless it is told what to draw; the battle field does
+            // not scroll, so the origin stays at zero.
+            this._battleWeatherSprite.type = $gameScreen.weatherType();
+            this._battleWeatherSprite.power = $gameScreen.weatherPower();
             this._battleWeatherSprite.update();
         }
     };

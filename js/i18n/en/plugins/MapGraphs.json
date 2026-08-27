@@ -15,5 +15,6 @@
   "status": "Status",
   "visited": "Visited",
   "notVisited": "Not Visited",
-  "connections": "Connections"
+  "connections": "Connections",
+  "mapStats": "Map Stats: {maps} maps, {links} connections"
 }

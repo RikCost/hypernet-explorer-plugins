@@ -61,6 +61,12 @@
     "travelTime": "Durata:",
     "transportPlaceholder": "Treno",
     "cancel": "Annulla",
-    "travel": "Viaggia"
+    "travel": "Viaggia",
+    "free": "Gratis",
+    "startHere": "Parti da Qui"
+  },
+  "refused": {
+    "title": "Respinti allo sportello",
+    "wanted": "L'impiegato cerca il vostro nome, guarda la fila dietro di voi e non stampa il biglietto. Arrivateci con i vostri mezzi."
   }
 }

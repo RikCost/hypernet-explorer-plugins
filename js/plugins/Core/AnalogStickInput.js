@@ -119,6 +119,9 @@
 
         _lx: 0, _ly: 0, _rx: 0, _ry: 0,
         _lt: 0, _rt: 0,
+        // Which frame the triggers were last read on, and how often (see
+        // leftTrigger below).
+        _triggerFrame: -1, _triggerReads: 0,
         _padOn: false,
         // Raw button state this frame and last, for edge detection.
         _btn: [], _btnPrev: [],
@@ -131,8 +134,30 @@
         leftY() { return this._ly; },
         rightX() { return this._rx; },
         rightY() { return this._ry; },
-        leftTrigger() { return this._lt; },
-        rightTrigger() { return this._rt; },
+        // Reading a trigger CLAIMS it for this frame. MZ has no name for the
+        // analog triggers, so every screen that wants them reads them raw from
+        // here - and the game-wide scroll poll (UIScroll in MouseControls.js)
+        // has to know whether some scene is already using them for a zoom, a
+        // quantity or a game of its own, or the same pull would do two things
+        // at once. Nobody has to declare anything: asking is the claim.
+        leftTrigger() { this._claimTriggers(); return this._lt; },
+        rightTrigger() { this._claimTriggers(); return this._rt; },
+
+        _claimTriggers() {
+            const frame = (typeof Graphics !== "undefined" && Graphics.frameCount) || 0;
+            if (frame !== this._triggerFrame) {
+                this._triggerFrame = frame;
+                this._triggerReads = 0;
+            }
+            this._triggerReads++;
+        },
+
+        // How many times the triggers have been read this frame, not counting
+        // the caller's own read.
+        triggerReadsThisFrame() {
+            const frame = (typeof Graphics !== "undefined" && Graphics.frameCount) || 0;
+            return frame === this._triggerFrame ? this._triggerReads : 0;
+        },
 
         // Standard gamepad mapping (Xbox layout labels). The four d-pad
         // buttons are here as themselves: core folds the LEFT STICK into the

@@ -1,2962 +1,3326 @@
 {
   "1": {
-    "name": "Occhiali Detox",
-    "description": "Tessuto urbano intrecciato con microfibre antitossina."
+    "name": "<-- Clothes -->",
+    "description": ""
   },
   "2": {
-    "name": "Scudo ClearBlood",
-    "description": "Scudo sottocutaneo che purifica il flusso sanguigno."
+    "name": "Asse di Porta Scheggiata",
+    "description": "Un'assicella di parete legata a un braccio."
   },
   "3": {
-    "name": "Chip Rimescola-Destino",
-    "description": "Impianto che piega le probabilità per riscrivere la sfortuna."
+    "name": "Gilet dei Coni Stradali",
+    "description": "Un gilet catarifrangente cucito con coni stradali."
   },
   "4": {
-    "name": "Jack della Chiarezza",
-    "description": "Connettore neurale che filtra la nebbia e il rumore mentale."
+    "name": "Cuffia dei Riflessi Nervosi",
+    "description": "Un berretto che sussulta prima di te."
   },
   "5": {
-    "name": "Nullificatore Spezza-Volontà",
-    "description": "Hardware organico per operazioni segrete che rende la mente una fortezza."
+    "name": "Elmo di Botola in Cemento",
+    "description": "Una botola da bunker portata come elmo."
   },
   "6": {
-    "name": "Profeta di Cemento",
-    "description": "Aumento del sesto senso che legge il ritmo della città."
+    "name": "Diadema di Schermi Crepati",
+    "description": "Un cerchietto di display di telefono morti."
   },
   "7": {
-    "name": "Sussurro della Fortuna",
-    "description": "Intuizione potenziata che guida verso le opportunità."
+    "name": "Zaino di Sopravvivenza Ammaccato",
+    "description": "Un kit malconcio di attrezzi storti."
   },
   "8": {
-    "name": "Trama di Minaccia",
-    "description": "Giacca dotata di sensori di prossimità integrati."
+    "name": "Pronto Soccorso Spaiato",
+    "description": "Una borsa di bende scadute."
   },
   "9": {
-    "name": "Batteria Echo",
-    "description": "Unità di stoccaggio cinetico indossata lungo la colonna vertebrale."
+    "name": "Coroncina di Stagnola",
+    "description": "Una corona piegata con la carta stagnola."
   },
   "10": {
-    "name": "Catalizzatore Rush",
-    "description": "Modificatore ghiandolare che sovraccarica il sistema adrenergico."
+    "name": "Amuleto di Guardia Intermittente",
+    "description": "Un ciondolo che ronza quando c'è pericolo."
   },
   "11": {
-    "name": "Nucleo Sifone Magico",
-    "description": "Riciclatore arcano che cattura l'energia magica dispersa."
+    "name": "Ciondoli di Glifi Sciolti",
+    "description": "Un sacchetto di rune mezze cariche."
   },
   "12": {
-    "name": "Guscio Camaleonte",
-    "description": "Tessuto intelligente che rileva le minacce ambientali."
+    "name": "Bracciale a Circuito Innestato",
+    "description": "Un guanto d'arme di fili e ossa."
   },
   "13": {
-    "name": "Monocolo Colpo Letale",
-    "description": "Computer di puntamento all'avanguardia per un occhio solo."
+    "name": "Sciarpa di Spazio Piegato",
+    "description": "Una sciarpa più lunga dentro che fuori."
   },
   "14": {
-    "name": "Sudario Simbionte",
-    "description": "Indumento vivente che si nutre dei danni subiti."
+    "name": "Involucro di Rifiuti Dorati",
+    "description": "Un sacco della spazzatura dipinto d'oro."
   },
   "15": {
-    "name": "Giacca Telaio della Tempesta",
-    "description": "Cappotto a trama quantistica che vibra di potenziale."
+    "name": "Recupero da Compattatore",
+    "description": "Un mattone pressato di stoffa consunta."
   },
   "16": {
-    "name": "Drappeggio Spettrale",
-    "description": "Tuta tattica a deviazione fotonica che distorce la luce."
+    "name": "Camicia di Lana Bucata",
+    "description": "Una camicia rosicchiata dalle tarme."
   },
   "17": {
-    "name": "Telaio Titano di Strada",
-    "description": "Armatura potenziata camuffata da abbigliamento firmato."
+    "name": "Berretto di Maglia Sfilacciato",
+    "description": "Un berretto che si disfa sulla cucitura."
   },
   "18": {
-    "name": "Corona Acceleratrice di Pensieri",
-    "description": "Processore quantistico intrecciato in un copricapo."
+    "name": "Camicia di Carta Fradicia",
+    "description": "Una camicia molliccia che beve la pioggia."
   },
   "19": {
-    "name": "Elmo del Tiranno Atmosferico",
-    "description": "Elmo che comanda la pressione atmosferica locale."
+    "name": "Gilet col Distintivo di Plastica",
+    "description": "Un gilet con un distintivo giocattolo."
   },
   "20": {
-    "name": "Rider del Tronco Encefalico",
-    "description": "Interfaccia neurale diretta integrata in un copricapo rinforzato."
+    "name": "Elmo Teatrale di Gommapiuma",
+    "description": "Un elmo di scena in gommapiuma."
   },
   "21": {
-    "name": "Cintura Tasca del Vuoto",
-    "description": "Stoccaggio dimensionale avvolto intorno alla vita."
+    "name": "Cappellino da Festa Afflosciato",
+    "description": "Un cono di cartone inzuppato."
   },
   "22": {
-    "name": "Campo Invertitore di Fortuna",
-    "description": "Manipolatore di probabilità montato sul polso."
+    "name": "Cappellino col Logo Taroccato",
+    "description": "Un berretto con un marchio scritto male."
   },
   "23": {
-    "name": "Egida a Spostamento Fantasma",
-    "description": "Scudo che esiste parzialmente in un'altra dimensione."
+    "name": "Bracciale di Coperchio",
+    "description": "Un coperchio della pattumiera per braccio."
   },
   "24": {
-    "name": "Avvoltoio Statico",
-    "description": "Recuperatore di energia da spalla."
+    "name": "Spallaccio Premio Giocattolo",
+    "description": "Una spalla di plastica da set per bambini."
   },
   "25": {
-    "name": "Tessuto Sciame",
-    "description": "Felpa con cappuccio infusa con droni microscopici da riparazione."
+    "name": "Ciondolo Placebo",
+    "description": "Un ciondolo che non fa nulla."
   },
   "26": {
-    "name": "Cappotto a Guscio Reattivo",
-    "description": "Armatura a cristalli liquidi che si cristallizza all'impatto."
+    "name": "Onesta Spazzatura",
+    "description": "Un fagotto di vera immondizia."
   },
   "27": {
-    "name": "Tuta Contraccapo Psichico",
-    "description": "Tessuto bio-reattivo che rispecchia gli attacchi mentali."
+    "name": "Camicia da Tavola Calda Macchiata",
+    "description": "Una camicia incrostata di unto vecchio."
   },
   "28": {
-    "name": "Tee Grigia Consumata",
-    "description": "Semplice maglietta di cotone, a tre lavaggi dal cadere a pezzi."
+    "name": "Corona del Trono di Rigagnolo",
+    "description": "Una corona di avanzi da cassonetto."
   },
   "29": {
-    "name": "Guscio in Denim Sbiadito",
-    "description": "Giacca classica che ha visto decenni migliori."
+    "name": "Fagotto del Vagabondo Urbano",
+    "description": "Un rotolo di stracci da sopravvivenza urbana."
   },
   "30": {
-    "name": "Kit da Parkour",
-    "description": "Attrezzatura flessibile per l'esplorazione urbana con ginocchia rinforzate."
+    "name": "Calotta di Cartone",
+    "description": "Un elmetto fragile di cartone pressato."
   },
   "31": {
-    "name": "Cuoio del Guerriero della Strada",
-    "description": "Giacca da motociclista imbottita con carattere."
+    "name": "Corredo da Sentiero",
+    "description": "Un semplice set da trekking."
   },
   "32": {
-    "name": "Imbracatura da Pattuglia",
-    "description": "Gilet tattico rinforzato in kevlar nero sicurezza."
+    "name": "Bretelle da Zaino Cascanti",
+    "description": "Un'imbracatura di cinghie consumate."
   },
   "33": {
-    "name": "Armatura Hypebeast",
-    "description": "Abbigliamento streetwear firmato con pannelli balistici nascosti."
+    "name": "Scarponi da Sentiero Crepati",
+    "description": "Un paio di scarponi da cammino spaccati."
   },
   "34": {
-    "name": "Tuta Flex Performance",
-    "description": "Abbigliamento sportivo traspirante con filamenti in fibra di carbonio."
+    "name": "Cintura del Kit di Panico",
+    "description": "Una cintura di cianfrusaglie d'emergenza."
   },
   "35": {
-    "name": "Seconda Pelle del Ribelle",
-    "description": "Giacca in pelle invecchiata con cuciture di grado militare."
+    "name": "Imbrago da Scalata Sfilacciato",
+    "description": "Un'attrezzatura logora di corde e moschettoni."
   },
   "36": {
-    "name": "Blazer dell'Ingannatore",
-    "description": "Giacca dall'aspetto aziendale con fodera integrale in kevlar."
+    "name": "Ciondolo Tutto Scintille",
+    "description": "Un ciondolo lucente e inutile."
   },
   "37": {
-    "name": "Guscio Adrenalinico",
-    "description": "Attrezzatura per sport estremi progettata per impatti sul cemento."
+    "name": "Cappello di Vanità",
+    "description": "Un cappello elegante senza imbottitura."
   },
   "38": {
-    "name": "Bomber in Fibra di Carbonio",
-    "description": "Giacca in fibra di grado aerospaziale che non pesa nulla."
+    "name": "Fascia Multitasca",
+    "description": "Una fascia di piccole tasche piene."
   },
   "39": {
-    "name": "Equipaggiamento Guardiano dell'Asfalto",
-    "description": "Tuta da combattimento urbano di alto livello con piastre balistiche."
+    "name": "Cappotto Fuori Moda",
+    "description": "Un cappotto di un decennio perduto."
   },
   "40": {
-    "name": "Armatura Spezza-Assedio",
-    "description": "Attrezzatura tattica pesante rinforzata per zone ostili."
+    "name": "Scialle a Motivo Locale",
+    "description": "Uno scialle in tessitura regionale."
   },
   "41": {
-    "name": "Speciale Vigilante Privato",
-    "description": "Uniforme di sicurezza standard con imbottitura di base."
+    "name": "Stola di Seta da Salotto",
+    "description": "Una stola vistosa fatta per stupire."
   },
   "42": {
-    "name": "Gilet Schiaccia-Folla",
-    "description": "Attrezzatura antisommossa multistrato costruita per il controllo del caos."
+    "name": "Cappellino col Logo a Fumetti",
+    "description": "Un berretto con una mascotte sbiadita."
   },
   "43": {
-    "name": "Guscio da Guerra Composito",
-    "description": "Armatura avanzata con miscela di ceramica e titanio."
+    "name": "Set di Mollette di Plastica",
+    "description": "Una manciata di mollette colorate."
   },
   "44": {
-    "name": "Tuta Protocollo Fortezza",
-    "description": "Armatura da combattimento a spettro completo con piastre anti-trauma."
+    "name": "Maglietta del Tour Sbiadita",
+    "description": "Una maglietta consunta con la grafica di un gruppo."
   },
   "45": {
-    "name": "Equipaggiamento Netrunner",
-    "description": "Imbracatura multitasche per specialisti tecnologici."
+    "name": "Tunica dal Motivo Corrotto",
+    "description": "Una tunica con la stampa corrotta."
   },
   "46": {
-    "name": "Felpa Comoda del Coder",
-    "description": "Morbida felpa con cappuccio e gestione cavi integrata."
+    "name": "Fascia Consapevole",
+    "description": "Una fascia che sembra osservarti."
   },
   "47": {
-    "name": "Giacca Fantasma del Segnale",
-    "description": "Cappotto schermato EMF con scomparti nascosti per dispositivi."
+    "name": "Corredo del Cavaliere Arrugginito",
+    "description": "Un fagotto di guarnizioni corrose."
   },
   "48": {
-    "name": "Cappotto del Sussurratore di Dati",
-    "description": "Trench da analista con filamenti per interfaccia AR."
+    "name": "Elmo di Ferro Butterato",
+    "description": "Un vecchio elmo semplice e ammaccato."
   },
   "49": {
-    "name": "Tuta Integrazione Chrome",
-    "description": "Abbigliamento compatibile con il cyberware dotato di raffreddamento attivo."
+    "name": "Scudo Rotondo Malconcio",
+    "description": "Un brocchiere di legno consunto."
   },
   "50": {
-    "name": "Vestiario del Tecnomante",
-    "description": "Tuta predisposta per ologrammi con nuclei informatici integrati."
+    "name": "Faretra Crepata",
+    "description": "Un supporto per frecce in cuoio spaccato."
   },
   "51": {
-    "name": "Piastre di Rottami Metallici",
-    "description": "Armatura grezza in acciaio fissata su qualunque cosa tu stia indossando."
+    "name": "Corazza Nobiliare Sbiadita",
+    "description": "Un pettorale decorativo annerito."
   },
   "52": {
-    "name": "Kit Barricata di Strada",
-    "description": "Attrezzatura difensiva assortita recuperata da conflitti urbani."
+    "name": "Maglia dell'Eroe Replica",
+    "description": "Una copia scadente di un'armatura famosa."
   },
   "53": {
-    "name": "Barriera per Spazi Stretti",
-    "description": "Scudo compatto e pieghevole per spazi angusti."
+    "name": "Tunica di Panno Casalingo",
+    "description": "Una semplice tunica da contadino."
   },
   "54": {
-    "name": "Baluardo Peso Piuma",
-    "description": "Scudo antisommossa in fibra di carbonio che non pesa quasi nulla."
+    "name": "Elmo con Visiera Allacciata",
+    "description": "Un elmo con la visiera ribaltabile."
   },
   "55": {
-    "name": "Deterrente a Voltaggio",
-    "description": "Scudo con funzionalità taser integrata."
+    "name": "Imbottitura Antisommossa",
+    "description": "Un'imbottitura da ordine pubblico consumata."
   },
   "56": {
-    "name": "Diffusore Cinetico",
-    "description": "Scudo in materiale intelligente che dissipa la forza dell'impatto."
+    "name": "Borsa da Triage",
+    "description": "La borsa esaurita di un medico."
   },
   "57": {
-    "name": "Guardiano del Contraccolpo",
-    "description": "Sistema di difesa attiva che predirre gli attacchi."
+    "name": "Tuta Climatica Sottile",
+    "description": "Una tuta per ogni clima, e fragile."
   },
   "58": {
-    "name": "Standard da Guardia Giurata",
-    "description": "Semplice scudo in policarbonato per ambienti a bassa minaccia."
+    "name": "Gilet da Sub che Perde",
+    "description": "Un gilet da immersione rattoppato."
   },
   "59": {
-    "name": "Difensore del Parcheggio",
-    "description": "Scudo di sicurezza base con imbottitura in schiuma."
+    "name": "Tuta Galleggiante Sgonfia",
+    "description": "Una tuta a gravità zero afflosciata."
   },
   "60": {
-    "name": "Barriera Controllo di Massa",
-    "description": "Scudo per la gestione delle folle di resistenza industriale."
+    "name": "Piccone Scheggiato",
+    "description": "Il piccone consumato di un minatore."
   },
   "61": {
-    "name": "Porta di Visione Balistica",
-    "description": "Scudo resistente ai proiettili con finestra di osservazione rinforzata."
+    "name": "Corredo con Elmetto Impolverato",
+    "description": "Un set di sicurezza da cantiere graffiato."
   },
   "62": {
-    "name": "Scudo Cerebrale Tattico",
-    "description": "Barriera potenziata da computer con valutazione delle minacce."
+    "name": "Giacca da Pompiere Bruciacchiata",
+    "description": "La giacca bruciata di un vigile del fuoco."
   },
   "63": {
-    "name": "Bastione Adattivo",
-    "description": "Piastre di armatura reattiva che si induriscono sotto il fuoco nemico."
+    "name": "Cinturone di Pattuglia Dismesso",
+    "description": "Il cinturone consumato di un agente."
   },
   "64": {
-    "name": "Accessori Firewall",
-    "description": "Suite di protezione digitale per l'abitante urbano paranoico."
+    "name": "Protezioni Sportive Graffiate",
+    "description": "Un set di protezioni da asfalto."
   },
   "65": {
-    "name": "Blocco per Script Kiddie",
-    "description": "Dispositivo indossabile di base che devia i malware più semplici."
+    "name": "Corazza di Bronzo Sgretolata",
+    "description": "Una corazza antica che si sfoglia."
   },
   "66": {
-    "name": "Braccialetto della Privacy",
-    "description": "Dispositivo di crittografia montato sul polso."
+    "name": "Frac Preso in Prestito",
+    "description": "Un cappotto da cerimonia a nolo."
   },
   "67": {
-    "name": "Unità ICE Personale",
-    "description": "Firewall attivo indossato come un orologio."
+    "name": "Abito Gessato da Combattimento",
+    "description": "Un abito tagliato per le guerre di consiglio."
   },
   "68": {
-    "name": "Generatore di Bolla Digitale",
-    "description": "Crea una zona di protezione elettromagnetica."
+    "name": "Imbracatura di Tecnologia Morta",
+    "description": "Un'attrezzatura di vecchi apparecchi inerti."
   },
   "69": {
-    "name": "Protocollo Fantasma Quantistico",
-    "description": "Crittografia di grado militare che utilizza l'entanglement quantistico."
+    "name": "Cintura dell'Archivista",
+    "description": "Una cintura di strumenti da catalogazione."
   },
   "70": {
-    "name": "Collezione Corona di Strada",
-    "description": "Protezione moderna per la testa che non sembra amatoriale."
+    "name": "Gilet Tappezzato di Loghi",
+    "description": "Un gilet ricoperto di marchi."
   },
   "71": {
-    "name": "Cupola del Dirigente",
-    "description": "Classica bombetta per chi trae profitto dal caos."
+    "name": "Veste Semplice di Gilda",
+    "description": "Una veste da apprendista non tinta."
   },
   "72": {
-    "name": "Trappola per Sudore",
-    "description": "Semplice fascia di tessuto che assorbe tutto."
+    "name": "Brocchiere dell'Idolo di Latta",
+    "description": "Un piccolo scudo con l'effigie di un dio."
   },
   "73": {
-    "name": "Fascia Filtro Polvere",
-    "description": "Bandana che ti dà un tocco di stile anche nell'inquinamento."
+    "name": "Fascia Oleosa",
+    "description": "Una fascia macchiata di nero lucido."
   },
   "74": {
-    "name": "Tesa Protettiva",
-    "description": "Cappellino alla moda con imbottitura anti-impatto nascosta."
+    "name": "Fascia Consumata dalla Strada",
+    "description": "Una fascia sbiancata dalla Strada."
   },
   "75": {
-    "name": "Cappello Comfort in Kevlar",
-    "description": "Berretto di lana con filamenti corazzati."
+    "name": "Mantello dalle Cuciture Storte",
+    "description": "Un mantello dai bordi sfocati."
   },
   "76": {
-    "name": "Hardhat da Passerella",
-    "description": "Copricapo di design che nasconde caratteristiche di sicurezza."
+    "name": "Guanto Incrostato di Scoria",
+    "description": "Un guanto ricoperto di metallo secco."
   },
   "77": {
-    "name": "Cappello Difesa in Movimento",
-    "description": "Attrezzatura protettiva leggera per stili di vita attivi."
+    "name": "Fascia del Contrabbandiere",
+    "description": "Una fascia con cuciture nascoste."
   },
   "78": {
-    "name": "Guscio del Pendolare",
-    "description": "Casco da bicicletta standard in giallo alta visibilità."
+    "name": "Amuleto dell'Orologio Fermo",
+    "description": "Un ciondolo bloccato a metà scatto."
   },
   "79": {
-    "name": "Bacia-Cemento",
-    "description": "Casco omologato per impatti, amato dagli atleti di rampa."
+    "name": "Stivalone di Riflusso",
+    "description": "Uno stivale incrostato di limo di fiume."
   },
   "80": {
-    "name": "Pod di Protezione Estrema",
-    "description": "Casco sportivo multi-impatto per hobby pericolosi."
+    "name": "Bracciale di Macerie",
+    "description": "Un bracciale di muratura caduta."
   },
   "81": {
-    "name": "Comandante della Strada",
-    "description": "Casco da moto premium con comunicazioni integrate."
+    "name": "Zaino del Girovago",
+    "description": "Il fagotto ben consumato di un viaggiatore."
   },
   "82": {
-    "name": "Calotta Cranica Aerospaziale",
-    "description": "Guscio in fibra di carbonio più leggero del tuo telefono."
+    "name": "Cintura di Rottami Goblin",
+    "description": "Una cintura di trofei rozzi."
   },
   "83": {
-    "name": "Elmo Fortezza Urbana",
-    "description": "Massima protezione con strati di dispersione degli urti."
+    "name": "Top da Festa Y2K",
+    "description": "Una camicia lucida di fine millennio."
   },
   "84": {
-    "name": "Copricapo Grado Bunker",
-    "description": "Protezione industriale per ambienti a minaccia estrema."
+    "name": "Imbracatura da Strada",
+    "description": "Un'imbracatura di cinghie e anelli."
   },
   "85": {
-    "name": "Standard da Cantiere",
-    "description": "Elmetto protettivo base conforme alle norme di sicurezza in arancione."
+    "name": "Abito di Pizzo da Lutto",
+    "description": "Un abito scuro di pizzo pesante."
   },
   "86": {
-    "name": "Cupola della Guardia",
-    "description": "Casco tattico rinforzato in nero autorità."
+    "name": "Gilet del Camionista",
+    "description": "Un gilet sbiadito da lunga percorrenza."
   },
   "87": {
-    "name": "Corona Controllo Folla",
-    "description": "Casco con visiera integrata costruito per i disordini civili."
+    "name": "Fascia di Carne Pulsante",
+    "description": "Una fascia calda e umida al tatto."
   },
   "88": {
-    "name": "Guscio di Comando Operativo",
-    "description": "Copricapo tattico con sistema di comunicazione integrato."
+    "name": "Mantello Alieno Souvenir",
+    "description": "Un mantello pacchiano di finta xenotecnologia."
   },
   "89": {
-    "name": "Sentinella Zona di Guerra",
-    "description": "Casco balistico militare con imbottitura anti-trauma."
+    "name": "Corredo di Portafortuna",
+    "description": "Un sacchetto di gettoni inutili."
   },
   "90": {
-    "name": "Serie Corona Digitale",
-    "description": "Copricapo potenziato tecnologicamente per i guerrieri dell'informazione."
+    "name": "Ciondolo d'Allarme Spento",
+    "description": "Un ciondolo medico ormai muto."
   },
   "91": {
-    "name": "Visore di Sovrapposizione Realtà",
-    "description": "Visore a realtà aumentata con interfacce tattiche."
+    "name": "Corredo Leggero del Corriere",
+    "description": "Un set snello di attrezzatura da parkour."
   },
   "92": {
-    "name": "Fascia Sinaptica",
-    "description": "Fascia potenziata da computer che pensa insieme a te."
+    "name": "Cappello a Tesa Larga",
+    "description": "Un cappello largo che ripara gli occhi."
   },
   "93": {
-    "name": "Corona dell'Informazione",
-    "description": "Visore per l'elaborazione dati per analisti e strateghi."
+    "name": "Fascia da Corona Prestata",
+    "description": "Una fascia scadente che imita la nobiltà."
   },
   "94": {
-    "name": "Interfaccia AR Elite",
-    "description": "Realtà aumentata premium con IA predittiva."
+    "name": "Bende Sfilacciate",
+    "description": "Bende da mani consumate che si sfaldano."
   },
   "95": {
-    "name": "Hub di Comando Olografico",
-    "description": "Sistema di interfaccia olografica assistito da IA."
+    "name": "Orologio da Taschino Fermo",
+    "description": "Un orologino che forse ticchetta ancora."
   },
   "96": {
-    "name": "Cerchietto della Trascendenza",
-    "description": "Corona con interfaccia neurale che fonde mente e macchina."
+    "name": "Tonico per la Pelle",
+    "description": "Un unguento in boccetta che tinge di verde."
   },
   "97": {
-    "name": "Tirapugni Smart",
-    "description": "Custodia rinforzata che funge anche da tirapugni."
+    "name": "Montatura Storta",
+    "description": "Occhiali piegati con le lenti deformate."
   },
   "98": {
-    "name": "Kit di Sopravvivenza",
-    "description": "Accessori essenziali per navigare nel caos urbano."
+    "name": "Cappotto di Pezze Recuperate",
+    "description": "Un cappotto cucito con stoffa da cassonetto."
   },
   "99": {
-    "name": "Scudo Dispositivo d'Impatto",
-    "description": "Protezione per il telefono che protegge anche te."
+    "name": "Maglietta Grigia Sbiadita",
+    "description": "Una semplice maglietta di cotone consunta."
   },
   "100": {
-    "name": "Anello di Consapevolezza",
-    "description": "Anello intelligente che pulsa quando si avvicinano minacce."
+    "name": "Sciarpa Filtrapolvere",
+    "description": "Una fascia che filtra la polvere della strada."
   },
   "101": {
-    "name": "Fascia Presa del Titano",
-    "description": "Fascia da polso servo-assistita che moltiplica la tua forza."
+    "name": "Giacca Finta che si Sfoglia",
+    "description": "Una giacca di finta pelle, screpolata."
   },
   "102": {
-    "name": "Anello Memoria Muscolare",
-    "description": "Potenziatore biometrico che ottimizza le prestazioni delle fibre muscolari."
+    "name": "Gilet Imbottito col Logo",
+    "description": "Un gilet da strada gonfio e marchiato."
   },
   "103": {
-    "name": "Ottimizzatore di Riflessi",
-    "description": "Acceleratore neurale indossato al polso."
+    "name": "Scarponi da Lavoro Rinforzati",
+    "description": "Solidi scarponi con punta d'acciaio."
   },
   "104": {
-    "name": "Kicks della Velocità",
-    "description": "Calzature a assistenza cinetica con micro-propulsione."
+    "name": "Giacca di Jeans Slavata",
+    "description": "Un guscio di denim blu sbiadito."
   },
   "105": {
-    "name": "Zampa di Coniglio 2.0",
-    "description": "Amuleto digitale della probabilità che inclina leggermente le sorti a tuo favore."
+    "name": "Cerchietto di Latta",
+    "description": "Un fragile cerchietto ornamentale."
   },
   "106": {
-    "name": "Algoritmo della Fortuna",
-    "description": "Predittore quantistico che calcola i risultati favorevoli."
+    "name": "Scarpe con Suola Luminosa",
+    "description": "Scarpe scadenti con le lucine."
   },
   "107": {
-    "name": "Acceleratore Sinaptico",
-    "description": "Ciondolo che overclocka i tuoi processi cognitivi."
+    "name": "Cuffia da Dirigente",
+    "description": "Una cuffia aziendale aderente."
   },
   "108": {
-    "name": "Overclock Mentale",
-    "description": "Potenziatore corticale che espande la larghezza di banda mentale."
+    "name": "Berretto Imbottito",
+    "description": "Un berretto morbido con fodera sottile."
   },
   "109": {
-    "name": "Montature di Precisione Urbana",
-    "description": "Occhiali tattici con sovrapposizioni di micro-puntamento."
+    "name": "Giacca da Strada Screpolata",
+    "description": "Una giacca da moto in pelle segnata dal tempo."
   },
   "110": {
-    "name": "Occhiali Colpo Letale",
-    "description": "Occhiali di design che nascondono un'IA di puntamento militare."
+    "name": "Telo ad Asciugatura Rapida",
+    "description": "Un indumento di stoffa che asciuga in fretta."
   },
   "111": {
-    "name": "Nodo di Risparmio",
-    "description": "Chip di efficienza che riduce il consumo di energia del 20%."
+    "name": "Elmetto da Cantiere Dipinto",
+    "description": "Un elmetto ridipinto a colori vivaci."
   },
   "112": {
-    "name": "Nucleo di Efficienza Perfetta",
-    "description": "Regolatore avanzato che dimezza lo spreco di energia."
+    "name": "Cintura della Speranza Consunta",
+    "description": "Una cintura multiuso in cuoio graffiato."
   },
   "113": {
-    "name": "Kit Benessere",
-    "description": "Accessori medici per restare in vita più a lungo."
+    "name": "Imbracatura da Pattuglia",
+    "description": "Un'imbracatura pettorale a cinghie."
   },
   "114": {
-    "name": "Felpa Impulso di Ley",
-    "description": "Indumento intrecciato con le correnti magiche della terra."
+    "name": "Cappello dell'Ampio Orizzonte",
+    "description": "Un cappello da viaggio a tesa larga."
   },
   "115": {
-    "name": "Bomber Ricamato con Rune",
-    "description": "Giacca urbana con antichi simboli nella fodera."
+    "name": "Cintura da Riparazioni",
+    "description": "Una cintura carica di piccoli attrezzi."
   },
   "116": {
-    "name": "Fili di Zefiro",
-    "description": "Abbigliamento streetwear fluido che incanala il vento stesso."
+    "name": "Berretto con Fascia",
+    "description": "Un berretto che assorbe il sudore."
   },
   "117": {
-    "name": "Cappuccio Bevitore del Vuoto",
-    "description": "Felpa nero ombra che assorbe luce e maledizioni."
+    "name": "Tuta da Lavoro Semplice",
+    "description": "Una tuta da lavoro intera."
   },
   "118": {
-    "name": "Completo Anti-Incantesimo",
-    "description": "Abbigliamento moderno incantato che devia magia e metallo."
+    "name": "Collare Imbottito",
+    "description": "Un collare rinforzato per il collo."
   },
   "119": {
-    "name": "Abbigliamento Coscienza Collettiva",
-    "description": "Completo urbano che trae potere dalle anime della città."
+    "name": "Portafortuna Conciato",
+    "description": "Un ciondolo di zampa di coniglio essiccata."
   },
   "120": {
-    "name": "Gilet Spirito del Drago",
-    "description": "Armatura contemporanea infusa con essenza di drago."
+    "name": "Scarpe da Passo Svelto",
+    "description": "Scarpe da corsa leggere."
   },
   "121": {
-    "name": "Collezione Corona Mistica",
-    "description": "Copricapo incantato per stregoni urbani."
+    "name": "Velo Antinsetti",
+    "description": "Un velo a rete per il capo."
   },
   "122": {
-    "name": "Berretto della Vista Psichica",
-    "description": "Berretto di maglia che spalanca il tuo terzo occhio."
+    "name": "Gi da Allenamento Consunto",
+    "description": "Una veste da pratica in cotone sbiadito."
   },
   "123": {
-    "name": "Cappello Sigillo di Chiarezza",
-    "description": "Cappello inciso con simboli che potenziano la concentrazione."
+    "name": "Clave da Pratica Fasciate",
+    "description": "Clave da sparring legate con filo."
   },
   "124": {
-    "name": "Cerchietto di Luce Stellare",
-    "description": "Fascia ornata che incanala il potere celestiale."
+    "name": "Maglia di Linguette",
+    "description": "Cotta intrecciata con linguette di lattina."
   },
   "125": {
-    "name": "Cappello Piega-Probabilità",
-    "description": "Copricapo alla moda che distorce sottilmente la realtà."
+    "name": "Stola Semplice da Accolito",
+    "description": "Una semplice stola rituale di stoffa."
   },
   "126": {
-    "name": "Arsenale Barriera Magica",
-    "description": "Scudi mistici per deviare minacce soprannaturali."
+    "name": "Gilet della Furia Stradale",
+    "description": "Un gilet imbottito da guida."
   },
   "127": {
-    "name": "Bracciale del Custode di Forza",
-    "description": "Bracciale ornato che proietta muri di pura magia."
+    "name": "Guanto dei Riflessi",
+    "description": "Un guanto aderente per allenare la reazione."
   },
   "128": {
-    "name": "Guardia del Grimorio Vivente",
-    "description": "Antico libro rilegato con incantesimi protettivi."
+    "name": "Stivali da Strada Consunti",
+    "description": "Stivali da viaggio dalla suola pesante."
   },
   "129": {
-    "name": "Ciondolo di Cristallo Nullo",
-    "description": "Amuleto cristallino che assorbe le energie ostili."
+    "name": "Pantaloni da Sentiero",
+    "description": "Robusti pantaloni da escursione."
   },
   "130": {
-    "name": "Egida dello Spirito Sentinella",
-    "description": "Scudo che ospita un'entità protettiva vincolata."
+    "name": "Scarponi Ramponati",
+    "description": "Scarponi da montagna dalla suola aggressiva."
   },
   "131": {
-    "name": "Potenziamenti Arcani",
-    "description": "Gioielli mistici per maghi urbani praticanti."
+    "name": "Suole ad Alta Aderenza",
+    "description": "Scarpe con suole ad attrito elevato."
   },
   "132": {
-    "name": "Sigillo dell'Inferno",
-    "description": "Anello con un nucleo di gemma incantata dal fuoco."
+    "name": "Ginocchiere Ammortizzanti",
+    "description": "Ginocchiere che assorbono gli urti."
   },
   "133": {
-    "name": "Conduttore di Corrente",
-    "description": "Collana che si collega alle reti delle leyline."
+    "name": "Guscio Antitempesta",
+    "description": "Un guscio esterno impermeabilizzato."
   },
   "134": {
-    "name": "Inchiostro Circuito Elementale",
-    "description": "Tatuaggio magico che potenzia l'affinità elementale."
+    "name": "Scarponi da Ogni Terreno",
+    "description": "Robusti scarponi per qualsiasi suolo."
   },
   "135": {
-    "name": "Bracciale Reliquia",
-    "description": "Antico manufatto camuffato da gioiello alla moda."
+    "name": "Fascia Ricetrasmittente",
+    "description": "Un guanto con il telefono incorporato."
   },
   "136": {
-    "name": "Equipaggiamento Ibrido Magitech",
-    "description": "Attrezzatura che fonde perfettamente circuiti e incantesimi."
+    "name": "Corredo di Sicurezza Stradale",
+    "description": "Una cintura di attrezzi da strada."
   },
   "137": {
-    "name": "Piastra Spell-Circuit",
-    "description": "Armatura alimentata equamente da magia ed elettricità."
+    "name": "Tunica Grezza da Contadino",
+    "description": "Una ruvida tunica di panno casalingo."
   },
   "138": {
-    "name": "Cappotto a Trama Matrix",
-    "description": "Giacca che integra formule magiche in un tessuto tecnologico."
+    "name": "Cinghie da Combattimento Dismesse",
+    "description": "Un gilet tattico pieno di tasche."
   },
   "139": {
-    "name": "Barriera Mana-Tech",
-    "description": "Proiettore cybernetico alimentato da pura magia."
+    "name": "Bastone di Segnaletica",
+    "description": "Un bastone fatto di cartelli stradali."
   },
   "140": {
-    "name": "Potenziatore Magico Cortex",
-    "description": "Visore neurale che amplifica l'output magico."
+    "name": "Cappotto di Jeans Prelavato",
+    "description": "Un guscio di denim sbiadito in fabbrica."
   },
   "141": {
-    "name": "Orologio a Flusso Temporale",
-    "description": "Smartwatch che incanala manipolazioni cronologiche."
+    "name": "Acciarino Sigillato",
+    "description": "Un accendifuoco a prova di intemperie."
   },
   "142": {
-    "name": "Moda Tra i Mondi",
-    "description": "Abbigliamento che esiste in più dimensioni."
+    "name": "Gilet dei Trofei di Denti",
+    "description": "Un gilet infilato di denti vecchi."
   },
   "143": {
-    "name": "Cappotto a Spostamento di Fase",
-    "description": "Giacca che sfarfalla tra universi paralleli."
+    "name": "Fascia di Filo da Carrello",
+    "description": "Un gilet legato con filo di recupero."
   },
   "144": {
-    "name": "Occhiali Vista Dimensionale",
-    "description": "Occhiali che squarciano il velo tra le realtà."
+    "name": "Gilet da Esploratore",
+    "description": "Un gilet leggero da ricognizione."
   },
   "145": {
-    "name": "Ancora del Multiverso",
-    "description": "Scudo radicato in dimensioni alternative."
+    "name": "Imbracatura da Traino",
+    "description": "Un'imbracatura da scalata e traino."
   },
   "146": {
-    "name": "Anello Frammento d'Altromondo",
-    "description": "Anello contenente una realtà aliena cristallizzata."
+    "name": "Fascia da Finta Cerimonia",
+    "description": "Una fascia cerimoniale pacchiana."
   },
   "147": {
-    "name": "Equipaggiamento Fusione Elementale",
-    "description": "Attrezzatura infusa con forze primordiali."
+    "name": "Scarponi Testardi",
+    "description": "Scarponi duri a morire e dispettosi."
   },
   "148": {
-    "name": "Piastra di Fiamma Viva",
-    "description": "Armatura che ospita un'essenza di fuoco catturata."
+    "name": "Piastre di Rottame Imbullonate",
+    "description": "Piastre di metallo di scarto da allacciare."
   },
   "149": {
-    "name": "Manto dell'Evocatore di Tempeste",
-    "description": "Mantello fluente che incanala la furia della tempesta."
+    "name": "Tuta Multitasca",
+    "description": "Una tuta coperta di tasche."
   },
   "150": {
-    "name": "Egida Legata alla Terra",
-    "description": "Scudo forgiato con magia di pietra solidificata."
+    "name": "Cappuccio Antiradiazioni",
+    "description": "Un cappuccio protettivo foderato di stagnola."
   },
   "151": {
-    "name": "Elmo della Marea Spiritica",
-    "description": "Elmo contenente un elementale dell'acqua vincolato."
+    "name": "Multiuso da Bosco",
+    "description": "Un attrezzo pieghevole da natura selvatica."
   },
   "152": {
-    "name": "Deluxe da Cassonetto",
-    "description": "Spazzatura di infimo ordine che finge di essere equipaggiamento."
+    "name": "Kit di Riparazione da Strada",
+    "description": "Un'accozzaglia di pezzi di ricambio."
   },
   "153": {
-    "name": "Speciale Discarica",
-    "description": "Protezione dubbia da fonti altrettanto dubbie."
+    "name": "Tuta Tenuta col Nastro",
+    "description": "Una tuta tenuta insieme dal nastro adesivo."
   },
   "154": {
-    "name": "Tee Buffet per Tarme",
-    "description": "Maglietta bianca che si sta già preparando a diventare un gruviera."
+    "name": "Bracciale Calcolaquote",
+    "description": "Un aiuto da polso per il gioco d'azzardo."
   },
   "155": {
-    "name": "Sogno che si Sfilaccia",
-    "description": "Felpa tenuta insieme dalla speranza e da fili sciolti."
+    "name": "Fischietto di Soccorso",
+    "description": "Un fischietto d'emergenza assordante."
   },
   "156": {
-    "name": "Invito alla Pioggia",
-    "description": "Poncho che accoglie l'acqua da ogni singola cucitura."
+    "name": "Scarpe Eleganti Leggere",
+    "description": "Scarpe da cerimonia leggere."
   },
   "157": {
-    "name": "Finta Pelle Screpolata",
-    "description": "Giacca in finta pelle che invecchia a vista d'occhio."
+    "name": "Fascia da Presa Salda",
+    "description": "Un polsino per rinforzare la presa."
   },
   "158": {
-    "name": "Gilet da Poliziotto Cosplay",
-    "description": "Gilet di cotone con un distintivo a cui non crede nessuno."
+    "name": "Pacco a Ricarica Solare",
+    "description": "Una batteria solare da indossare."
   },
   "159": {
-    "name": "Sopravvissuto alla Fabbrica",
-    "description": "Abbigliamento sportivo frutto di tristezza e sfruttamento."
+    "name": "Calotta di Fodera",
+    "description": "Una cuffia sottile da mettere sotto l'elmo."
   },
   "160": {
-    "name": "Spirito di Squadra Contraffatto",
-    "description": "Maglia sportiva che sta sbiadendo in arte astratta."
+    "name": "Jeans Cargo Pesanti",
+    "description": "Denim cargo rinforzato."
   },
   "161": {
-    "name": "Speciale Macchia Misteriosa",
-    "description": "Giacca di seconda mano con preoccupanti macchie marroni."
+    "name": "Faro di Segnalazione a Clip",
+    "description": "Una luce localizzatrice a mani libere."
   },
   "162": {
-    "name": "Armatura di Giornale",
-    "description": "Gilet imbottito con i titoli di testa di ieri."
+    "name": "Kit da Trauma sul Campo",
+    "description": "Un kit medico da retroterra."
   },
   "163": {
-    "name": "Autorità di Halloween",
-    "description": "Costume da poliziotto in poliestere da quattro soldi."
+    "name": "Maschera Filtrante Universale",
+    "description": "Un filtro per l'aria a uso generale."
   },
   "164": {
-    "name": "Delusione in Nastro Adesivo",
-    "description": "Paracolpi da football tenuti insieme da speranza argentata."
+    "name": "Fascia della Concentrazione",
+    "description": "Uno stimolatore di attenzione da polso."
   },
   "165": {
-    "name": "Cosplay di Cartone",
-    "description": "Gilet tattico che si dissolve sotto una pioggia leggera."
+    "name": "Maglia da Squadra Larga",
+    "description": "Una maglia sportiva sformata."
   },
   "166": {
-    "name": "Disastro di Comfort",
-    "description": "Accappatoio che mappa ogni colazione che tu abbia mai mangiato."
+    "name": "Bussola da Taschino",
+    "description": "Un piccolo navigatore pieghevole."
   },
   "167": {
-    "name": "Mago del Banco delle Occasioni",
-    "description": "Veste in poliestere viola proveniente dal cesto della vergogna di un negozio di feste."
+    "name": "Bracciale dell'Arciere",
+    "description": "Una protezione in cuoio per l'avambraccio."
   },
   "168": {
-    "name": "Disastro del Giorno del Diploma",
-    "description": "Sottile toga da laurea che si strappa solo a guardarla."
+    "name": "Gilet dalla Logica Inversa",
+    "description": "Uno strano gilet con le cuciture al contrario."
   },
   "169": {
-    "name": "Teatro della Protezione Cranica",
-    "description": "Copricapi che offrono solo un conforto psicologico."
+    "name": "Pantaloni a Zampa a Fiori",
+    "description": "Pantaloni larghi e svasati a fantasia."
   },
   "170": {
-    "name": "Celebrazione Inzuppata",
-    "description": "Cappellino da festa che diventa poltiglia appena sente l'umidità."
+    "name": "Sandali Antiscivolo",
+    "description": "Sandali che fanno presa su ogni superficie."
   },
   "171": {
-    "name": "Berretto di Marca Contraffatta",
-    "description": "Cappellino da baseball con il logo che si scrosta come pelle al sole."
+    "name": "Anello da Esercizio",
+    "description": "Un anello da dito per esercitare i muscoli."
   },
   "172": {
-    "name": "Speciale Spacca-Cranio",
-    "description": "Casco da bici progettato per fallire al primo impatto."
+    "name": "Anello del Vigile",
+    "description": "Un bracciale per allenare l'attenzione."
   },
   "173": {
-    "name": "Finzione da Parco Giochi",
-    "description": "Casco da cantiere in plastica dal reparto giocattoli."
+    "name": "Gilet di Cuoio Borchiato",
+    "description": "Un gilet di cuoio ribattuto."
   },
   "174": {
-    "name": "Memoria di una Commozione",
-    "description": "Casco ammaccato con sospette macchie rosse all'interno."
+    "name": "Corazza di Cuoio Bollito",
+    "description": "Un pettorale di cuoio indurito."
   },
   "175": {
-    "name": "Corona del Complottista",
-    "description": "Cappello di carta stagnola per bloccare segnali immaginari."
+    "name": "Tuta dell'Agente Silenzioso",
+    "description": "Una tuta scura e poco appariscente."
   },
   "176": {
-    "name": "Principessa di Plastica",
-    "description": "Cerchietto da discount con gemma finta già traballante."
+    "name": "Assetto da Combattimento",
+    "description": "Un'imbracatura tattica da campo."
   },
   "177": {
-    "name": "Kit di Difesa della Spazzatura",
-    "description": "Scudi raschiati letteralmente dai rifiuti."
+    "name": "Farsetto della Leva",
+    "description": "Un giaccone da guerra di stoffa trapuntata."
   },
   "178": {
-    "name": "Difensore del Vicolo",
-    "description": "Coperchio del bidone con cinghie in nastro adesivo."
+    "name": "Tuta da Bonifica",
+    "description": "Una tuta sigillata anticontaminazione."
   },
   "179": {
-    "name": "Scudo di Unto",
-    "description": "Scatola della pizza piegata con maniglia improvvisata."
+    "name": "Gilet di Stracci Tribale",
+    "description": "Un gilet di stracci annodati."
   },
   "180": {
-    "name": "Speciale Corsia Giocattoli",
-    "description": "Scudo di plastica che si piega sotto la pressione delle dita."
+    "name": "Pantaloni Cargo con Catene",
+    "description": "Pantaloni cargo carichi di catene."
   },
   "181": {
-    "name": "Oggetto di Scena da Fiera",
-    "description": "Scudo di cartone avvolto in carta stagnola."
+    "name": "Gilet da Sparring Imbottito",
+    "description": "Una leggera protezione da allenamento."
   },
   "182": {
-    "name": "Sicurezza a Schermo Incrinato",
-    "description": "Tablet rotto che si dice abbia app di firewall potentissime."
+    "name": "Elmo dai Sensori Morti",
+    "description": "Un elmo con i sensori fuori uso."
   },
   "183": {
-    "name": "Kit dell'Ottimista",
-    "description": "Accessori che forniscono speranza invece di aiuto."
+    "name": "Tunica di Servizio da Cerimonia",
+    "description": "Una rigida tunica da uniforme di gala."
   },
   "184": {
-    "name": "Nobiltà da Venticinque Centesimi",
-    "description": "Anello da distributore automatico con gemma in plastica."
+    "name": "Tunica Foderata di Spore",
+    "description": "Una tuta umidiccia cresciuta dal fungo."
   },
   "185": {
-    "name": "Amicizia che si Sfilaccia",
-    "description": "Braccialetto di spago che cade a pezzi da entrambe le estremità."
+    "name": "Benda dall'Occhio Iniettato",
+    "description": "Una benda adesiva portata su un occhio."
   },
   "186": {
-    "name": "Eroe dell'Happy Meal",
-    "description": "Braccialetto di plastica da un giocattolo di fast food per bambini."
+    "name": "Nodo Raccogli-Corrente",
+    "description": "Una clip che accumula la corrente dispersa."
   },
   "187": {
-    "name": "Orologio di Schrödinger",
-    "description": "Orologio che funziona solo quando non viene guardato."
+    "name": "Borchie Amplificatrici",
+    "description": "Tappi cartilaginei che amplificano il suono."
   },
   "188": {
-    "name": "Garanzia Pelle Verde",
-    "description": "Catena economica che si ossida a contatto con la pelle."
+    "name": "Bracciale del Capocordata",
+    "description": "Un bracciale consunto da capo squadra."
   },
   "189": {
-    "name": "Life Alert Scaduto",
-    "description": "Braccialetto medico obsoleto comprato a un mercatino dell'usato."
+    "name": "Guanti di Fase Stabile",
+    "description": "Guanti che tengono solide le mani."
   },
   "190": {
-    "name": "Montature dalla Vista Traballante",
-    "description": "Occhiali con viti allentate e senza gradazione."
+    "name": "Gilet del Portuale",
+    "description": "Un gilet impermeabilizzato da scaricatore."
   },
   "191": {
-    "name": "Oggetti dal Potere Placebo",
-    "description": "Finta magia per persone disperate che vogliono crederci."
+    "name": "Maschera Filtrante Pesante",
+    "description": "Un respiratore industriale ingombrante."
   },
   "192": {
-    "name": "Truffa del Centro Commerciale",
-    "description": "Quarzo su uno spago venduto con promesse mistiche."
+    "name": "Capi in Serie Limitata",
+    "description": "Un indumento scialbo con l'etichetta vistosa."
   },
   "193": {
-    "name": "Bastone Mistico di Plastica",
-    "description": "Bacchetta giocattolo con la punta a stella LED quasi scarica."
+    "name": "Occhiali da Città",
+    "description": "Occhiali semplici per le strade affollate."
   },
   "194": {
-    "name": "Braccialetto Olio di Serpente",
-    "description": "Fascia di rame che sostiene di bilanciare la tua energia."
+    "name": "Camicia Tinta d'Umore",
+    "description": "Una camicia che cambia colore con l'umore."
   },
   "195": {
-    "name": "Bussola Paranormale",
-    "description": "Bussola rotta che rileva solo la creduloneria."
+    "name": "Tuta della Sorte Avversa",
+    "description": "Una tuta da lavoro che piega la fortuna."
   },
   "196": {
-    "name": "Grimorio Senza Senso",
-    "description": "Vecchio libro pieno di scarabocchi casuali."
+    "name": "Filo di Perline Fragili",
+    "description": "Una collana di perline vitree e fragili."
   },
   "197": {
-    "name": "Spazzatura Letterale",
-    "description": "Oggetti salvati dai cassonetti e dal rimpianto."
+    "name": "Fasce di Contenzione Foderate",
+    "description": "Cinghie imbottite per gli avambracci."
   },
   "198": {
-    "name": "Stilista del Cassonetto",
-    "description": "Giacca sporca trovata dietro un ristorante."
+    "name": "Guanti Antiscivolo",
+    "description": "Guanti da lavoro puntinati di gomma."
   },
   "199": {
-    "name": "Maglietta Macchiata di Salsa",
-    "description": "Tee macchiata con crimini alimentari non identificabili."
+    "name": "Biancheria con Serbatoio",
+    "description": "Biancheria con una sacca nascosta."
   },
   "200": {
-    "name": "Scarto di Cantiere",
-    "description": "Gilet da lavoro strappato preso dal cassonetto delle demolizioni."
+    "name": "Amuleto Mormorante",
+    "description": "Un ciondolo che ronza piano."
   },
   "201": {
-    "name": "Corona del Cassonetto Pubblico",
-    "description": "Un cappello scartato da qualcuno, ripescato tra i rifiuti."
+    "name": "Cuscinetto da Riposo",
+    "description": "Un cuscino da sedile da allacciare."
   },
   "202": {
-    "name": "Ombrello Scheletrico",
-    "description": "Un ombrello rotto che funge da patetico scudo."
+    "name": "Tuta a Lenti Depuranti",
+    "description": "Una tuta intessuta di lenti filtranti."
   },
   "203": {
-    "name": "Kit Natura Urbana",
-    "description": "Attrezzatura per esploratori che confondono il confine tra città e natura."
+    "name": "Vernice all'Olio Motore",
+    "description": "Pittura per il corpo mescolata a olio motore."
   },
   "204": {
-    "name": "Guscio Anti-Tempesta",
-    "description": "Giacca multitasche per intemperie con aperture di ventilazione."
+    "name": "Cintura di Budella",
+    "description": "Una cintura di intestino conservato."
   },
   "205": {
-    "name": "Pantaloni Guerriero dei Sentieri",
-    "description": "Pantaloni da trekking rinforzati, costruiti per resistere a tutto."
+    "name": "Fascia dalla Trama Minacciosa",
+    "description": "Una fascia ruvida dal bordo frastagliato."
   },
   "206": {
-    "name": "Gilet da Esploratore",
-    "description": "Gilet traspirante multitasche per un'organizzazione ottimale."
+    "name": "Zaino a Celle d'Eco",
+    "description": "Uno zaino che immagazzina i suoni deboli."
   },
   "207": {
-    "name": "Giacca BioClimatica",
-    "description": "Giacca autoregolante con sistema di riscaldamento e raffreddamento."
+    "name": "Camicia di Seta da Poeta",
+    "description": "Una morbida camicia di seta da poeta."
   },
   "208": {
-    "name": "Banditore di Umidità",
-    "description": "Strato base tecnico che gestisce sudore e temperatura."
+    "name": "Pantaloni a Trama Venosa",
+    "description": "Pantaloni venati come tessuto circolatorio."
   },
   "209": {
-    "name": "Equipaggiamento Cacciatore Verticale",
-    "description": "Capo tecnico rinforzato per l'arrampicata su pareti rocciose."
+    "name": "Berretto dell'Occhio Acuto",
+    "description": "Un berretto aderente per la messa a fuoco."
   },
   "210": {
-    "name": "Guscio Spedizione Polare",
-    "description": "Tuta impermeabile con isolamento termico per inferni ghiacciati."
+    "name": "Fiala d'Innesco Adrenalinico",
+    "description": "Una fiala consunta di innesco surrenale."
   },
   "211": {
-    "name": "Kit Trail Veloce",
-    "description": "Attrezzatura da corsa leggera con mobilità potenziata."
+    "name": "Bracciale della Parlantina",
+    "description": "Un bracciale sottile che scioglie la lingua."
   },
   "212": {
-    "name": "Armatura per Condizioni Estreme",
-    "description": "Equipaggiamento pesante omologato per ambienti ostili."
+    "name": "Fascia Ammorta-Volontà",
+    "description": "Una fascia che ottunde i nervi."
   },
   "213": {
-    "name": "Tuta Risposta Inferno",
-    "description": "Protezione antincendio boschiva contro le fiamme."
+    "name": "Cintura della Postura",
+    "description": "Una cintura stringente che raddrizza la schiena."
   },
   "214": {
-    "name": "Imbracatura Soccorso Alpino",
-    "description": "Attrezzatura professionale per il soccorso in montagna."
+    "name": "Anello Nervoso Smaltato",
+    "description": "Un anello smaltato che formicola."
   },
   "215": {
-    "name": "Abbigliamento Sfida Impatto",
-    "description": "Indumenti corazzati per sport estremi."
+    "name": "Occhiali da Riverbero",
+    "description": "Occhiali scuri per i lunghi viaggi."
   },
   "216": {
-    "name": "Tuta Natura Connessa",
-    "description": "Abbigliamento intelligente dotato di GPS e integrazione tecnologica."
+    "name": "Fasce del Passo Svelto",
+    "description": "Elastici per le caviglie."
   },
   "217": {
-    "name": "Protezione Cranica di Sopravvivenza",
-    "description": "Copricapo outdoor specializzato per condizioni avverse."
+    "name": "Corredo Base da Sub",
+    "description": "Un set essenziale da immersione."
   },
   "218": {
-    "name": "Tesa dell'Orizzonte",
-    "description": "Cappello a tesa larga che blocca sole e pioggia in egual misura."
+    "name": "Tuta da Camera Bianca",
+    "description": "Una tuta integrale sterile e sigillata."
   },
   "219": {
-    "name": "Fascia Cranica Artica",
-    "description": "Berretto isolato che copre completamente le orecchie."
+    "name": "Calze Aderenti a Dita",
+    "description": "Calze antiscivolo con le dita separate."
   },
   "220": {
-    "name": "Scudo Collo Adattivo",
-    "description": "Scaldacollo multiconfigurazione che diventa vari tipi di copertura."
+    "name": "Imbracatura del Tessifili",
+    "description": "Un'attrezzatura di cavi e prese di segnale."
   },
   "221": {
-    "name": "Guscio di Sicurezza Beacon",
-    "description": "Casco da sentiero con luce e comunicazioni integrate."
+    "name": "Fascia Spingi-Pensiero",
+    "description": "Una fascia che sprona la mente a forza."
   },
   "222": {
-    "name": "Pod Ascesa Verticale",
-    "description": "Casco da arrampicata leggero per alpinisti."
+    "name": "Lenti da Tiratore Scelto",
+    "description": "Occhiali di precisione per il tiro."
   },
   "223": {
-    "name": "Elmo Fortezza del Tempo",
-    "description": "Copricapo con visiera integrale per condizioni estreme."
+    "name": "Organizer da Turno",
+    "description": "Uno strumento a clip per contare le ore."
   },
   "224": {
-    "name": "Sopravvissuto alle Rapide",
-    "description": "Casco protettivo professionale per acque bianche."
+    "name": "Nucleo di Resa Ordinata",
+    "description": "Un piccolo regolatore di efficienza."
   },
   "225": {
-    "name": "Sfidante della Gravità",
-    "description": "Protezione integrale per MTB downhill."
+    "name": "Cuffie Annerite",
+    "description": "Cuffie pesanti dal nero opaco."
   },
   "226": {
-    "name": "Corona del Navigatore",
-    "description": "Casco GPS con sovrapposizioni heads-up display."
+    "name": "Paradenti di Cuoio",
+    "description": "Un paradenti di cuoio bollito."
   },
   "227": {
-    "name": "Essenziali per la Natura",
-    "description": "Accessori critici per la sopravvivenza all'aperto."
+    "name": "Borraccia Senza Fondo",
+    "description": "Un thermos che resta caldo troppo a lungo."
   },
   "228": {
-    "name": "Dominatori del Terreno",
-    "description": "Guanti con grip compatibili con touch-screen per ogni superficie."
+    "name": "Abito di Brina",
+    "description": "Un abito chiaro dal disegno di brina."
   },
   "229": {
-    "name": "Respingitori di Fango",
-    "description": "Ghette impermeabili che proteggono gli stivali."
+    "name": "Top Corto Cromato",
+    "description": "Una maglia corta dal riflesso metallico."
   },
   "230": {
-    "name": "Panno ad Asciugatura Istantanea",
-    "description": "Asciugamano in microfibra tascabile e ad asciugatura rapida."
+    "name": "Visiera da Campo",
+    "description": "Una visiera tattica che nasconde gli occhi."
   },
   "231": {
-    "name": "Coltellino Svizzero Selvaggio",
-    "description": "Strumento di sopravvivenza multifunzione per emergenze."
+    "name": "Nucleo Drenamana",
+    "description": "Un congegno che sorseggia la magia dell'aria."
   },
   "232": {
-    "name": "Batteria Raccolto Solare",
-    "description": "Caricabatterie solare per prolungare la tua vita connessa."
+    "name": "Guanti da Rissa Ribattuti",
+    "description": "Guanti da combattimento in cuoio borchiato."
   },
   "233": {
-    "name": "Segnale Mani Libere",
-    "description": "Lampada frontale per illuminare l'oscurità senza fatica."
+    "name": "Auricolare da Convoglio",
+    "description": "Una cuffia radio a corto raggio."
   },
   "234": {
-    "name": "Comando Spedizione",
-    "description": "Orologio sensoriale multiplo con altimetro e GPS."
+    "name": "Stivali dagli Speroni d'Osso",
+    "description": "Stivali rinforzati con osso cresciuto."
   },
   "235": {
-    "name": "Trasportatori di Viaggi",
-    "description": "Sistemi di zaini per esplorazioni prolungate."
+    "name": "Monocolo del Tiratore",
+    "description": "Una singola lente di puntamento di precisione."
   },
   "236": {
-    "name": "Zaino Missione Giornaliera",
-    "description": "Zaino con sistema di idratazione integrato e schienale ventilato."
+    "name": "Schermo Oculare Fluttuante",
+    "description": "Una lente sospesa che protegge gli occhi."
   },
   "237": {
-    "name": "Zaino Nomade Urbano",
-    "description": "Borsa urbana impermeabile con protezione antifurto."
+    "name": "Veste della Tregua",
+    "description": "Una veste smorzata che placa gli animi."
   },
   "238": {
-    "name": "Fortezza Lungo Raggio",
-    "description": "Zaino da spedizione modulare per viaggi prolungati."
+    "name": "Talismano Scacciaunto",
+    "description": "Un amuleto contro gli spiriti d'olio."
   },
   "239": {
-    "name": "Trasportatore Verticale",
-    "description": "Zaino tecnico da arrampicata con anelli porta-attrezzatura."
+    "name": "Cresta Ribattuta",
+    "description": "Una cresta industriale rigida."
   },
   "240": {
-    "name": "Equipaggiamento Tattico Natura",
-    "description": "Zaino tattico MOLLE per ambienti ostili."
+    "name": "Lucidatura Speculare",
+    "description": "Uno strato ornamentale laccato."
   },
   "241": {
-    "name": "Calzature da Terreno",
-    "description": "Stivali e scarpe specializzati per vari tipi di suolo."
+    "name": "Insegna di Carica",
+    "description": "Un distintivo che indica il grado."
   },
   "242": {
-    "name": "Schiaccia-Montagne",
-    "description": "Stivali da trekking impermeabili con supporto per la caviglia."
+    "name": "Polsino d'Avvertimento",
+    "description": "Un bracciale di metallo irto di punte."
   },
   "243": {
-    "name": "Scarpe Trail Veloci",
-    "description": "Scarpe da corsa leggere con piastra protettiva contro le rocce."
+    "name": "Cappuccio Polare",
+    "description": "Una fascia isolante per il capo."
   },
   "244": {
-    "name": "Ibridi da Approccio",
-    "description": "Scarpe tecniche con zone per arrampicata sulla punta."
+    "name": "Giaccone del Trasportatore",
+    "description": "Una giacca foderata da grande freddo."
   },
   "245": {
-    "name": "Stivali Deserto Ghiacciato",
-    "description": "Stivali impermeabili isolati per freddo estremo."
+    "name": "Berretto da Camionista",
+    "description": "Un cappellino col logo dell'azienda."
   },
   "246": {
-    "name": "Stivali Assalto Alpino",
-    "description": "Stivali da alpinismo tecnici per ramponi."
+    "name": "Abito d'Alta Moda Tremenda",
+    "description": "Un abito d'alta moda che incute soggezione."
   },
   "247": {
-    "name": "Arsenale di Emergenza",
-    "description": "Attrezzatura di sopravvivenza e navigazione per disastri."
+    "name": "Eleganza Ostinata",
+    "description": "Un cappotto da cerimonia rigido e inflessibile."
   },
   "248": {
-    "name": "Bozzolo di Emergenza",
-    "description": "Rifugio compatto per pernottamenti imprevisti."
+    "name": "Catena Spinale",
+    "description": "Una catena portata lungo la schiena."
   },
   "249": {
-    "name": "Foglio Riflettore di Calore",
-    "description": "Coperta di emergenza leggera che trattiene il calore corporeo."
+    "name": "Cerchietti Incantati",
+    "description": "Un paio di orecchini incantati."
   },
   "250": {
-    "name": "Kit Trauma Fuori Pista",
-    "description": "Forniture complete di pronto soccorso per la natura selvaggia."
+    "name": "Stivali Scaccia-Fango",
+    "description": "Stivali da cui il fango scivola via."
   },
   "251": {
-    "name": "Purificatore Universale",
-    "description": "Filtro per l'acqua portatile che rende potabile qualsiasi cosa."
+    "name": "Cappotto di Famiglia Glaciale",
+    "description": "Un vecchio cappotto dal disegno di gelo."
   },
   "252": {
-    "name": "Urlatore di Soccorso",
-    "description": "Fischietto di emergenza con emissione sonora estrema."
+    "name": "Girocollo di Pizzo col Cammeo",
+    "description": "Una collana di pizzo con un ritratto."
   },
   "253": {
-    "name": "Strumento del Navigatore",
-    "description": "Bussola professionale con specchio e regolazione."
+    "name": "Bandana del Viandante",
+    "description": "Un fazzoletto da capo macchiato di polvere."
   },
   "254": {
-    "name": "Accenditore a Prova di Intemperie",
-    "description": "Accendi-fuoco affidabile per condizioni di bagnato."
+    "name": "Occhiali Fumé",
+    "description": "Occhiali rettangolari dalle lenti scure."
   },
   "255": {
-    "name": "Attrezzatura Ascesa Verticale",
-    "description": "Equipaggiamento per arrampicata su roccia e ghiaccio."
+    "name": "Occhiali da Divo",
+    "description": "Occhiali da sole vistosi e sovradimensionati."
   },
   "256": {
-    "name": "Imbracatura di Sicurezza",
-    "description": "Imbracatura da arrampicata per percorsi alpinistici."
+    "name": "Tuta Confondi-Odori",
+    "description": "Una tuta integrale che maschera i feromoni."
   },
   "257": {
-    "name": "Controllore d'Attrito",
-    "description": "Dispositivo di assicurazione per la sicurezza in arrampicata."
+    "name": "Cravatta di Comando",
+    "description": "Una cravatta formale da alto ufficio."
   },
   "258": {
-    "name": "Kit Sicurezza Percorso",
-    "description": "Set di dispositivi di protezione per tracciare percorsi."
+    "name": "Cosciali di Ferro",
+    "description": "Protezioni piastrate per le gambe."
   },
   "259": {
-    "name": "Zanne del Muro di Ghiaccio",
-    "description": "Piccozze tecniche per arrampicata verticale."
+    "name": "Corona a Denti di Sega",
+    "description": "Un copricapo di metallo frastagliato."
   },
   "260": {
-    "name": "Artigli da Ghiaccio",
-    "description": "Ramponi a punte da agganciare agli stivali."
+    "name": "Gilet Catarifrangente",
+    "description": "Un gilet da lavoro riflettente."
   },
   "261": {
-    "name": "Kit Avventura Acquatica",
-    "description": "Attrezzatura per esplorazioni a base d'acqua."
+    "name": "Blazer del Contegno",
+    "description": "Una giacca affilata che presta sicurezza."
   },
   "262": {
-    "name": "Gilet Galleggiante Professionale",
-    "description": "Gilet salvagente multiregolazione per acque impegnative."
+    "name": "Bretelle del Manovale",
+    "description": "Bretelle da lavoro per carichi pesanti."
   },
   "263": {
-    "name": "Fortezza Acque Fredde",
-    "description": "Muta stagna impermeabile per immersioni gelide."
+    "name": "Gilet a Placche Calcificate",
+    "description": "Un gilet incrostato di escrescenze ossee."
   },
   "264": {
-    "name": "Pelle del Cavaliere delle Onde",
-    "description": "Muta in neoprene per surf e sport acquatici."
+    "name": "Paramenti del Rinnovo",
+    "description": "Vesti indossate alle seconde occasioni."
   },
   "265": {
-    "name": "Trasportatore Impermeabile",
-    "description": "Zaino sigillato per kayak e rafting."
+    "name": "Scarpe da Sentiero Sgargianti",
+    "description": "Scarpe pacchiane e multicolori."
   },
   "266": {
-    "name": "Salva-Occhi Galleggiante",
-    "description": "Laccetto galleggiante per occhiali per sport acquatici."
+    "name": "Camicia di Alto Rango",
+    "description": "Una camicia tagliata per mostrare il rango."
   },
   "267": {
-    "name": "Attrezzatura Guerra Invernale",
-    "description": "Equipaggiamento per sport sulla neve e avventure ghiacciate."
+    "name": "Top a Spalline Luccicante",
+    "description": "Un top scintillante dalle spalline sottili."
   },
   "268": {
-    "name": "Pod Protezione Pista",
-    "description": "Casco specifico per sci e snowboard."
+    "name": "Polsini Riforgiati",
+    "description": "Polsini ricavati da vecchi ceppi."
   },
   "269": {
-    "name": "Scudo Visione Neve",
-    "description": "Maschera da sci anti-appannamento."
+    "name": "Gilet di Fibra Muscolare",
+    "description": "Un gilet tessuto di fibra muscolare."
   },
   "270": {
-    "name": "Pantaloni Termici da Pista",
-    "description": "Pantaloni da neve impermeabili e isolati con rinforzi."
+    "name": "Cappotto a Buccia d'Arancia",
+    "description": "Un cappotto dalla finitura ruvida e granulosa."
   },
   "271": {
-    "name": "Guscio Sicurezza Scivolata",
-    "description": "Giacca da sci con tasche per attrezzatura da valanga."
+    "name": "Veste della Quiete",
+    "description": "Una veste meditativa di taglio orientale."
   },
   "272": {
-    "name": "Localizzatore da Sepoltura",
-    "description": "Beacon di rilevamento per vittime di valanghe."
+    "name": "Guanti dell'Estrazione Pulita",
+    "description": "Guanti aderenti per le mani veloci."
   },
   "273": {
-    "name": "Sonda Profondità Neve",
-    "description": "Asta telescopica per sondaggio valanghe."
+    "name": "Guanti Raffinati",
+    "description": "Eleganti guanti da cerimonia."
   },
   "274": {
-    "name": "Escavatore di Emergenza",
-    "description": "Pala da soccorso valanghe portatile."
+    "name": "Girocollo di Resina Borchiato",
+    "description": "Un collare di plastica irto di punte."
   },
   "275": {
-    "name": "Effetto Oltre la Difesa",
-    "description": "Abiti alla moda che scambiano la difesa per bonus."
+    "name": "Borchie Risonanti",
+    "description": "Piccole borchie che affinano i suoni vicini."
   },
   "276": {
-    "name": "Camicia di Dominio Sociale",
-    "description": "Abbigliamento firmato che amplifica la tua presenza."
+    "name": "Abbigliamento da Villeggiatura",
+    "description": "Una camicia tropicale leggera e chiassosa."
   },
   "277": {
-    "name": "Couture d'Intimidazione",
-    "description": "Giacca di alta classe che proietta autorità."
+    "name": "Ciocche Decolorate",
+    "description": "Un set di ciocche chiare da agganciare."
   },
   "278": {
-    "name": "Abbigliamento Evita-Conflitti",
-    "description": "Elegante abito da sera che devia l'aggressività."
+    "name": "Giacca da Frontiera",
+    "description": "Una robusta giacca da campo dalle tasche profonde."
   },
   "279": {
-    "name": "Confusione di Feromoni",
-    "description": "Completo di lusso che rilascia un sottile disorientamento."
+    "name": "Giacca con gli Slogan",
+    "description": "Una giacca urlante di slogan sbiaditi."
   },
   "280": {
-    "name": "Eleganza Testarda",
-    "description": "Insieme vintage che resiste ai tentativi di persuasione."
+    "name": "Sciarpa Scaldagola",
+    "description": "Una morbida sciarpa avvolta attorno alla gola."
   },
   "281": {
-    "name": "Risparmio di Resistenza",
-    "description": "Abbigliamento sportivo alla moda che riduce il costo della fatica."
+    "name": "Camiciotto del Raccolto",
+    "description": "Un camiciotto da contadino tinto coi colori dei campi."
   },
   "282": {
-    "name": "Moda Tempo di Risposta",
-    "description": "Streetwear in edizione limitata che accelera i riflessi."
+    "name": "Scarpe dal Passo Autorevole",
+    "description": "Scarpe rigide che annunciano il tuo arrivo."
   },
   "283": {
-    "name": "Completo di Depistaggio",
-    "description": "Abito appariscente che ti rende più difficile da colpire."
+    "name": "Pendente a Croce in Velluto",
+    "description": "Un ciondolo su velluto di fede antica."
   },
   "284": {
-    "name": "Abbigliamento Scudo Afflizioni",
-    "description": "Vestiti dai motivi audaci che resistono agli effetti di stato."
+    "name": "Abito Cattura-Sguardi",
+    "description": "Un abito fluente fatto per attirare gli sguardi."
   },
   "285": {
-    "name": "Indumenti del Genio",
-    "description": "Abbigliamento d'avanguardia che potenzia la capacità mentale."
+    "name": "Flanella della Vecchia Strada",
+    "description": "Una camicia di flanella consunta, morbida per gli anni."
   },
   "286": {
-    "name": "Tuta Serendipità",
-    "description": "Completo eccentrico che attira scoperte rare."
+    "name": "Stivali di Fase Muta",
+    "description": "Stivali che attutiscono ogni passo."
   },
   "287": {
-    "name": "Vesti da Recupero Arcano",
-    "description": "Abbigliamento all'avanguardia che accelera la rigenerazione del mana."
+    "name": "Papillon Protetto",
+    "description": "Un papillon ordinato con una debole protezione."
   },
   "288": {
-    "name": "Copricapo Bonus Stile",
-    "description": "Cappelli alla moda che forniscono effetti speciali invece di difesa."
+    "name": "Tuta Antichimica Macchiata",
+    "description": "Una tuta antichimica rattoppata."
   },
   "289": {
-    "name": "Berretto Trendy Percezione",
-    "description": "Cappello hip che potenzia le capacità di osservazione."
+    "name": "Spille della Presenza",
+    "description": "Spille da bavero che piegano l'attenzione della stanza."
   },
   "290": {
-    "name": "Occhiali Autorità Celebrity",
-    "description": "Occhiali da sole da influencer che potenziano il potere sociale."
+    "name": "Gilet di Pericolo Stradale",
+    "description": "Un gilet da lavoro riflettente e vivace."
   },
   "291": {
-    "name": "Corona dell'Ispirazione",
-    "description": "Copricapo artistico che sblocca il genio creativo."
+    "name": "Velo Vedovile",
+    "description": "Un lungo velo scuro da lutto."
   },
   "292": {
-    "name": "Cerchietto del Focus Mentale",
-    "description": "Tiara di design che affina la chiarezza cognitiva."
+    "name": "Set in Ciniglia con Strass",
+    "description": "Un completo a due pezzi di velluto pacchiano."
   },
   "293": {
-    "name": "Pod Protezione Estetica",
-    "description": "Casco aerodinamico che privilegia l'aspetto alla sicurezza."
+    "name": "Gilet Borchiato Minaccioso",
+    "description": "Un gilet chiodato fatto per intimidire."
   },
   "294": {
-    "name": "Oggetti di Moda Utilità",
-    "description": "Accessori eleganti che forniscono effetti speciali anziché armatura."
+    "name": "Sandali con Zeppa in Lucite",
+    "description": "Sandali trasparenti con la zeppa, tutta scena."
   },
   "295": {
-    "name": "Orologio Momento Perfetto",
-    "description": "Orologio di design che ottimizza il tempismo in combattimento."
+    "name": "Cappellino a Rete Ironico",
+    "description": "Un cappellino da camionista con la rete dietro."
   },
   "296": {
-    "name": "Bracciale Lingua d'Argento",
-    "description": "Fascia di lusso che potenzia la capacità persuasiva."
+    "name": "Ombretto Glitterato di Brina",
+    "description": "Un vasetto di ombretto gelido e scintillante."
   },
   "297": {
-    "name": "Simbolo di Autorità",
-    "description": "Collana di prestigio che intimorisce gli avversari più deboli."
+    "name": "Calze Idrorepellenti",
+    "description": "Calze da cui acqua e sporco scivolano via."
   },
   "298": {
-    "name": "Orecchini Chiarezza Sonora",
-    "description": "Orecchini alla moda che affinano la percezione dell'udito."
+    "name": "Completo di Jeans con Strass",
+    "description": "Un completo di denim incrostato di gemme."
   },
   "299": {
-    "name": "Fasce dell'Agilità",
-    "description": "Anelli trendy che migliorano il controllo motorio fine."
+    "name": "Uniforme da Transito Marcata",
+    "description": "Un'uniforme marchiata per il transito a teletrasporto."
   },
   "300": {
-    "name": "Cintura Forma Perfetta",
-    "description": "Cintura di design che ottimizza postura e movimento."
+    "name": "Anello Termico dell'Umore",
+    "description": "Un anello che cambia con la temperatura."
   },
   "301": {
-    "name": "Amuleto della Concentrazione",
-    "description": "Ciondolo mistico che affina la concentrazione mentale."
+    "name": "Orologio Momento Perfetto",
+    "description": "Un orologio che segna sempre l'ora giusta."
   },
   "302": {
-    "name": "Amuleto del Riposo Mentale",
-    "description": "Elegante accessorio che riduce l'affaticamento cognitivo."
+    "name": "Stivali del Rialzo Sociale",
+    "description": "Stivali alti che danno statura e lucentezza."
   },
   "303": {
-    "name": "Calzature a Effetto",
-    "description": "Scarpe di design che scambiano la protezione con abilità speciali."
+    "name": "Giacca di Toppe Souvenir",
+    "description": "Una giacca stratificata di toppe di viaggio."
   },
   "304": {
-    "name": "Scarpe Eleganti della Velocità",
-    "description": "Calzature di lusso poco pratiche che aumentano la velocità."
+    "name": "Clip a Farfalla Brillanti",
+    "description": "Un set di allegre mollette a farfalla."
   },
   "305": {
-    "name": "Stivali di Elevazione Sociale",
-    "description": "Stivali di design che aumentano visibilmente il tuo status."
+    "name": "Corsetto in Pizzo Steccato",
+    "description": "Un corsetto allacciato con stecche rigide."
   },
   "306": {
-    "name": "Sneakers da Freerun",
-    "description": "Scarpe sportive di tendenza che migliorano salti e atterraggi."
+    "name": "Berretto Ricamato di Glifi",
+    "description": "Un berretto stampato con una scrittura illeggibile."
   },
   "307": {
-    "name": "Moda del Cammina-Muri",
-    "description": "Scarpe da arrampicata all'avanguardia per scalate urbane."
+    "name": "Maglia Sottoveste",
+    "description": "Una sottile maglia da sovrapporre."
   },
   "308": {
-    "name": "Collaborazioni Esclusive",
-    "description": "Pezzi in edizione limitata con proprietà uniche."
+    "name": "Amuleto del Profeta di Cemento",
+    "description": "Un amuleto grigio di un oracolo di strada."
   },
   "309": {
-    "name": "Intimidatore Collab d'Artista",
-    "description": "Esclusiva giacca d'artista che proietta una sensazione di minaccia."
+    "name": "Cintura Dimensione Tasca",
+    "description": "Una cintura con un piccolo spazio ripiegato."
   },
   "310": {
-    "name": "Set Fiducia da Star",
-    "description": "Completo approvato dalle celebrità che aumenta la sicurezza in se stessi."
+    "name": "Completo da Canicola",
+    "description": "Un abito arioso per i giorni roventi."
   },
   "311": {
-    "name": "Collezione Zen di Design",
-    "description": "Abbigliamento da meditazione in edizione limitata per la chiarezza mentale."
+    "name": "Abito Chiudi-Affari",
+    "description": "Un abito affilato tagliato per le trattative."
   },
   "312": {
-    "name": "Collab Performance Elite",
-    "description": "Marchio sportivo esclusivo con capacità potenziate."
+    "name": "Cappotto del Caos Cromatico",
+    "description": "Un cappotto di colori discordi e mutevoli."
   },
   "313": {
-    "name": "Moda Temporale",
-    "description": "Oggetti stagionali con effetti sensibili al tempo."
+    "name": "Stivali della Strada Errante",
+    "description": "Stivali graffiati da un cammino senza fine."
   },
   "314": {
-    "name": "Collezione Ondata di Calore",
-    "description": "Abbigliamento estivo che mantiene la freschezza nel caldo torrido."
+    "name": "Choker Utility con Anello",
+    "description": "Un girocollo carico di piccoli attrezzi."
   },
   "315": {
-    "name": "Eleganza del Gelo",
-    "description": "Moda invernale che protegge dal freddo con stile."
+    "name": "Cipria Iridescente",
+    "description": "Una polvere fine che cattura la luce."
   },
   "316": {
-    "name": "Abito della Rinascita",
-    "description": "Abbigliamento primaverile che potenzia il recupero e l'energia."
+    "name": "Camicetta da Contadina Elastica",
+    "description": "Una blusa di stoffa larga e arricciata."
   },
   "317": {
-    "name": "Consapevolezza del Raccolto",
-    "description": "Moda autunnale che affina la percezione."
+    "name": "Kit di Razzi da Strada",
+    "description": "Una borsa di razzi di segnalazione d'emergenza."
   },
   "318": {
-    "name": "Moda Regionale",
-    "description": "Abbigliamento culturale con benefici legati al luogo."
+    "name": "Stivali Controcorrente del Tempo",
+    "description": "Stivali che si dice remino contro il tempo."
   },
   "319": {
-    "name": "Abbigliamento Focus Orientale",
-    "description": "Moda ispirata all'Asia che potenzia la meditazione."
+    "name": "Uniforme di Gala Decorata",
+    "description": "Un'uniforme da cerimonia carica di medaglie."
   },
   "320": {
-    "name": "Equipaggiamento Reazione di Frontiera",
-    "description": "Moda ispirata al West che migliora i riflessi."
+    "name": "Misuratore di Flusso Temporale",
+    "description": "Un quadrante che segue la deriva del tempo."
   },
   "321": {
-    "name": "Eredità del Gelo",
-    "description": "Moda ispirata al Nord con resistenza al freddo."
+    "name": "Tuxedo del Potere",
+    "description": "Uno smoking nero su misura che incute rispetto."
   },
   "322": {
-    "name": "Stile Calore dell'Isola",
-    "description": "Moda d'ispirazione tropicale che resiste al calore."
+    "name": "Maschera di Cuoio Minacciosa",
+    "description": "Una rigida maschera di cuoio, senza volto."
   },
   "323": {
-    "name": "Abbigliamento da Guerra Sociale",
-    "description": "Abiti formali che forniscono vantaggi sociali."
+    "name": "Abito del Mercante di Tempo",
+    "description": "Un abito foderato di minuscoli ingranaggi."
   },
   "324": {
-    "name": "Tuxedo del Potere",
-    "description": "Elegante abito formale che aumenta la persuasione."
+    "name": "Blazer in Velluto Ornato",
+    "description": "Un ricco blazer di velluto con la profilatura."
   },
   "325": {
-    "name": "Abito Magnete dell'Attenzione",
-    "description": "Abito da sera firmato che catalizza l'attenzione."
+    "name": "Tuta a Poligoni Corrotti",
+    "description": "Una tuta che sembra sfarfallare e saltare."
   },
   "326": {
-    "name": "Completo per Chiudere Affari",
-    "description": "Abbigliamento formale che potenzia le abilità di negoziazione."
+    "name": "Misuratore Anomalie Gravitazionali",
+    "description": "Un misuratore a clip per gli spostamenti di peso."
   },
   "327": {
-    "name": "Proiettori di Autorità",
-    "description": "Accessori formali che trasmettono dominio."
+    "name": "Abito Bloccato in Stasi",
+    "description": "Vestiti che non sembrano invecchiare mai."
   },
   "328": {
-    "name": "Cappotto del Caos Cromatico",
-    "description": "Giacca con colori dell'arcobaleno cangianti."
+    "name": "Pantaloni Rinforzati Minacciosi",
+    "description": "Pantaloni pesanti con piastre nascoste."
   },
   "329": {
-    "name": "Tee del Sfarfallio di Realtà",
-    "description": "Maglietta che alterna fasi tra visibile e invisibile."
+    "name": "Calze di Pizzo Stracciate",
+    "description": "Calze di pizzo rovinate ad arte."
   },
   "330": {
-    "name": "Bomber Caleidoscopio",
-    "description": "Giacca dai colori cangianti che confonde gli osservatori."
+    "name": "Cappuccio dell'Anonimato",
+    "description": "Un cappuccio profondo che nasconde il volto."
   },
   "331": {
-    "name": "Pantaloni Nega-Fisica",
-    "description": "Pantaloni che permettono alle gambe di attraversare la materia solida."
+    "name": "Bussola dei Varchi",
+    "description": "Una bussola che punta ai luoghi sottili."
   },
   "332": {
-    "name": "Abbigliamento Sportivo Lag Spike",
-    "description": "Indumenti atletici che rendono casuale la velocità di movimento."
+    "name": "Unghie Artiglio Gotiche",
+    "description": "Lunghe unghie laccate ornamentali."
   },
   "333": {
-    "name": "Tuta Distorsione Poligonale",
-    "description": "Completo che deforma bizzarramente le texture del tuo corpo."
+    "name": "Guscio a Muta Mimetica",
+    "description": "Un guscio esterno che muta a comando."
   },
   "334": {
-    "name": "Veste Nostalgia Neon",
-    "description": "Capo d'abbigliamento coperto di graffiti e braccialetti a scatto."
+    "name": "Abito Presenza Esecutiva",
+    "description": "Un abito da ufficio su misura, autorevole."
   },
   "335": {
-    "name": "Scarpe da Disco Floor",
-    "description": "Stivali con luci intermittenti dall'era delle piste di pattinaggio."
+    "name": "Palette da Dramma d'Ombra",
+    "description": "Un kit di trucco teatrale scuro."
   },
   "336": {
-    "name": "Cappellino Sabato Mattina",
-    "description": "Snapback coloratissimo che irradia 'toon force'."
+    "name": "Stivali dal Passo Sussurrato",
+    "description": "Stivali morbidi che inghiottono i passi."
   },
   "337": {
-    "name": "Gomma da Tifoso",
-    "description": "Elmo a forma di mano gigante in schiuma."
+    "name": "Bibita Misteriosa Senza Marca",
+    "description": "Una lattina ammaccata portata come strano amuleto."
   },
   "338": {
-    "name": "Cappello Cultura da Centro Commerciale",
-    "description": "Cappello coperto di toppe dalla nostalgia del commercio al dettaglio."
+    "name": "Borsone Senza Peso",
+    "description": "Uno zaino che contiene più di quanto dovrebbe."
   },
   "339": {
-    "name": "Cappello Assalto Sonoro",
-    "description": "Cappello dotato di altoparlanti che spara hit pop a tutto volume."
+    "name": "Denim Reversibile",
+    "description": "Denim a doppio uso con la fodera nascosta."
   },
   "340": {
-    "name": "Visore a Visione Termica",
-    "description": "Visore che cambia colore come le magliette Hypercolor."
+    "name": "Bralette in Mesh a Strati",
+    "description": "Un top a rete trasparente da indossare sotto."
   },
   "341": {
-    "name": "Kit Mollette a Farfalla",
-    "description": "Collezione di braccialetti in gel e mollette per capelli."
+    "name": "Cornetta Infrangibile",
+    "description": "Un telefono morto troppo duro per rompersi."
   },
   "342": {
-    "name": "Orologio Distorsione Temporale",
-    "description": "Quadrante caleidoscopico che altera il flusso del tempo."
+    "name": "Micro Borsetta Inutile",
+    "description": "Una borsetta minuscola che non tiene quasi nulla."
   },
   "343": {
-    "name": "Anello Display Emozioni",
-    "description": "Anello dell'umore cangiante che rivela i sentimenti."
+    "name": "Completo Firmato Intimidatorio",
+    "description": "Un completo griffato deciso e tagliente."
   },
   "344": {
-    "name": "Fascia Estensione di Realtà",
-    "description": "Braccialetto che si deforma e si duplica."
+    "name": "Gemme da Discoteca",
+    "description": "Gemme adesive per il viso."
   },
   "345": {
-    "name": "Collana Pausa Sitcom",
-    "description": "Gioiello che scatena mosse di danza spontanee."
+    "name": "Anfibi con Zeppa e Catene",
+    "description": "Stivali pesanti drappeggiati di catene."
   },
   "346": {
-    "name": "Caos del Cesto dei Giocattoli",
-    "description": "Completo che combina esteticamente snack e giocattoli."
+    "name": "Guanti Sensonervo",
+    "description": "Guanti sottili che acuiscono il tatto."
   },
   "347": {
-    "name": "Uniforme Tag Teletrasporto",
-    "description": "Completo in stile laser tag che permette il teletrasporto."
+    "name": "Orologio dell'Efficienza",
+    "description": "Un orologio che ti assilla perché ti sbrighi."
   },
   "348": {
-    "name": "Piastra Pixel Sprite",
-    "description": "Armatura decorata con grafiche arcade."
+    "name": "Blazer Catalizzatore di Network",
+    "description": "Un blazer tagliato per aprire le porte."
   },
   "349": {
-    "name": "Veste Trama Moquette",
-    "description": "Motivo da pavimento di sala giochi che causa scambi casuali."
+    "name": "Tee Formula del Danno",
+    "description": "Una camicia stampata di matematica criptica."
   },
   "350": {
-    "name": "Scudo Attraversa-Fase",
-    "description": "Scudo decorato che occasionalmente lascia passare gli attacchi."
+    "name": "Orologio dell'Eterna Mezzanotte",
+    "description": "Un orologio fermo a mezzogiorno."
   },
   "351": {
-    "name": "Poteri del Merch delle Band",
-    "description": "Accessori di band da garage con strane abilità."
+    "name": "Orologio Molteplice",
+    "description": "Un orologio con troppe lancette."
   },
   "352": {
-    "name": "Denim Inverti-Effetti",
-    "description": "Giacca con toppe che inverte gli effetti di stato."
+    "name": "Top Annodato a Bandana",
+    "description": "Un semplice top annodato di stoffa."
   },
   "353": {
-    "name": "Rimescolatore di Effetti",
-    "description": "Tuta dai colori vivaci che scambia i bonus in modo casuale."
+    "name": "Cappotto d'Ombra Vittoriano",
+    "description": "Un lungo cappotto scuro dal colletto alto."
   },
   "354": {
-    "name": "Veste Batteria della Natura",
-    "description": "Capo che scambia i costi di mana con l'energia vitale."
+    "name": "Cappello Assalto Sonoro",
+    "description": "Un berretto attrezzato con altoparlanti minuscoli."
   },
   "355": {
-    "name": "Occhiali Realtà Cartoon",
-    "description": "Occhiali che fanno sembrare i nemici dei cartoni animati."
+    "name": "Anelli dei Sigilli Occulti",
+    "description": "Un set di anelli incisi di simboli."
   },
   "356": {
-    "name": "Completo Corruzione Pixel",
-    "description": "Abbigliamento con grafiche arcade che glitchano visivamente."
+    "name": "Visiera Falsacifra",
+    "description": "Una visiera che mostra numeri sbagliati."
   },
   "357": {
-    "name": "Tee Arcobaleno Infinito",
-    "description": "Motivi in stile Lisa Frank che si estendono all'infinito."
+    "name": "Corredo da Guerra Invernale",
+    "description": "Un set da campo isolato per il grande freddo."
   },
   "358": {
-    "name": "Gilet Distorsione Low-Poly",
-    "description": "Gilet che deforma il corpo in sagome poligonali spigolose."
+    "name": "Tuxedo Antiproiettile",
+    "description": "Un abito da cerimonia con la trama nascosta."
   },
   "359": {
-    "name": "Cappello Adesivi Facciali",
-    "description": "Cappellino che occasionalmente copre la visuale con adesivi."
+    "name": "Camicia della Produttività",
+    "description": "Una camicia inamidata per i turni lunghi."
   },
   "360": {
-    "name": "Guanti di Fase Gak",
-    "description": "Guanti che sembrano fatti di Gak, scivolando attraverso la materia."
+    "name": "Ventiquattrore del Focus",
+    "description": "Una custodia sottile che rasserena la mente."
   },
   "361": {
-    "name": "Scudo Rollerblade",
-    "description": "Scudo ricavato da pezzi di pattini."
+    "name": "Guscio di Pelle Coltivata",
+    "description": "Uno strato esterno di pelle cresciuta."
   },
   "362": {
-    "name": "Display Statistiche Errate",
-    "description": "Cuffia walkie-talkie giocattolo che mostra dati falsi."
+    "name": "Cappello Piumato col Nastro",
+    "description": "Un cappello largo guarnito di piume."
   },
   "363": {
-    "name": "Fascia Scambio dell'Intervallo",
-    "description": "Braccialetto che rimescola le abilità casualmente."
+    "name": "Fascia Estensione di Realtà",
+    "description": "Un polsino che si deforma appena."
   },
   "364": {
-    "name": "Distintivo del Caos",
-    "description": "Distintivo Pog che cambia le opzioni dell'interfaccia."
+    "name": "Pantaloni di Pizzo con Anelli",
+    "description": "Pantaloni di pizzo infilati di anelli."
   },
   "365": {
-    "name": "Auricolare Pet Virtuale",
-    "description": "Dispositivo con suoni da Tamagotchi che impartisce ordini confusi."
+    "name": "Tuta del Secondo Battito",
+    "description": "Una tuta che pulsa appena quando la indossi."
   },
   "366": {
-    "name": "Scatola Misteriosa a Premi",
-    "description": "Oggetti casuali presi da macchine a gancio e scatole di cereali."
+    "name": "Cappellino del Girovago",
+    "description": "Un cappellino da baseball dal logo sbiadito."
   },
   "367": {
-    "name": "Giacca Slogan",
-    "description": "Giacca con decalcomanie termoadesive che riportano frasi casuali."
+    "name": "Anello di Vetro Sentimentale",
+    "description": "Un anello che palpita col colore dell'umore."
   },
   "368": {
-    "name": "Patchwork Promozionale",
-    "description": "Completo ricavato da scatole di cereali e promozioni di giocattoli."
+    "name": "Giacca da Campo Termotessuta",
+    "description": "Una giacca climatica che si regola da sola."
   },
   "369": {
-    "name": "Berretto Commerciale",
-    "description": "Cappello ricamato con slogan di pubblicità televisive."
+    "name": "Manto del Rango",
+    "description": "Una cappa drappeggiata che segna il grado."
   },
   "370": {
-    "name": "Scudo Tavola Boombox",
-    "description": "Scudo ricavato da skateboard e altoparlanti."
+    "name": "Gi da Dojo",
+    "description": "Una semplice divisa marziale bianca."
   },
   "371": {
-    "name": "Stivali Teletrasporto Debug",
-    "description": "Stivali contrassegnati per la rimozione, che teletrasportano a caso."
+    "name": "Guanti di Pizzo da Lutto",
+    "description": "Delicati guanti di pizzo senza dita."
   },
   "372": {
-    "name": "Equipaggiamento Meta-Consapevolezza",
-    "description": "Attrezzatura che rompe deliberatamente la quarta parete."
+    "name": "Gilet Tonico per i Follicoli",
+    "description": "Un gilet tessuto di fibre che curano il capello."
   },
   "373": {
-    "name": "Tee Formula del Danno",
-    "description": "Maglietta che mostra i calcoli di combattimento cangianti."
+    "name": "Top a Rete",
+    "description": "Una maglia aperta a rete da portare sopra."
   },
   "374": {
-    "name": "Cappello Commento dello Sviluppatore",
-    "description": "Copricapo che mostra note del creatore su di te."
+    "name": "Reliquiario del Deicida",
+    "description": "Una lancia carica di reliquie di deicidio."
   },
   "375": {
-    "name": "Occhiali Visione Variabili",
-    "description": "Occhiali che rivelano i flag di gioco nascosti."
+    "name": "Cintura dei Vuoti",
+    "description": "Una cintura con vuoti grandi come tasche."
   },
   "376": {
-    "name": "Fascia Codice Sorgente",
-    "description": "Braccialetto che mostra frammenti casuali di codice della realtà."
+    "name": "Calotta di Schegge d'Osso",
+    "description": "Una calotta incastonata di frammenti di cranio."
   },
   "377": {
-    "name": "Choker Scudo PSI",
-    "description": "Elegante girocollo che blocca gli attacchi psichici."
+    "name": "Orologio dell'Ora in Ritardo",
+    "description": "Un orologio da polso che va un po' storto."
   },
   "378": {
-    "name": "Arsenale del Cavaliere",
-    "description": "Tradizionale armatura medievale per guerrieri."
+    "name": "Cappotto dell'Inviato",
+    "description": "Un cappotto diplomatico da cerimonia."
   },
   "379": {
-    "name": "Piastra Completa del Crociato",
-    "description": "Armatura a piastre completa per cavalieri d'élite."
+    "name": "Bomber di Luce Fratta",
+    "description": "Un giubbotto bomber dalle tinte cangianti."
   },
   "380": {
-    "name": "Piastra Bordata d'Oro",
-    "description": "Armatura capolavoro con finiture reali."
+    "name": "Sigillo del Disordine",
+    "description": "Un piccolo distintivo smaltato e caotico."
   },
   "381": {
-    "name": "Mezza-Piastra Gotica",
-    "description": "Mezza piastra flessibile che bilancia difesa e movimento."
+    "name": "Maschera Alveolare",
+    "description": "Una maschera filtrante per il respiro."
   },
   "382": {
-    "name": "Giacco di Maglia ad Anelli",
-    "description": "Anelli di metallo intrecciati che formano un'armatura flessibile."
+    "name": "Completo da Ribalta",
+    "description": "Un completo vistoso pronto per il palco."
   },
   "383": {
-    "name": "Ussaro di Maglia Rinforzato",
-    "description": "Maglia di ferro rinforzata con piastre nelle aree vitali."
+    "name": "Giacca a Toppe dello Scalatore",
+    "description": "Una giacca di toppe guadagnate una a una."
   },
   "384": {
-    "name": "Maglia Rapida",
-    "description": "Maglia di ferro leggera per combattenti mobili."
+    "name": "Lenti del Revisore",
+    "description": "Occhiali che affinano i dettagli."
   },
   "385": {
-    "name": "Cuoio Rinforzato Borchiato",
-    "description": "Cuoio indurito con rinforzi in borchie di metallo."
+    "name": "Abito da Cocktail Altolocato",
+    "description": "Un elegante abito da sera."
   },
   "386": {
-    "name": "Corazza in Cuoio Indurito",
-    "description": "Cuoio bollito che offre una protezione efficiente in termini di peso."
+    "name": "Corredo del Patrizio",
+    "description": "Un raffinato abbigliamento aristocratico."
   },
   "387": {
-    "name": "Farsetto del Soldato Comune",
-    "description": "Semplice armatura imbottita per la fanteria."
+    "name": "Catena di Ciondoli a Intervallo",
+    "description": "Una collana infilata di ciondoli inerti."
   },
   "388": {
-    "name": "Elmi Medievali",
-    "description": "Varianti di copricapi protettivi medievali."
+    "name": "Bracciale del Pozzo Sorgente",
+    "description": "Un bracciale inciso di vecchio codice."
   },
   "389": {
-    "name": "Elmo Fortezza",
-    "description": "Elmo completamente chiuso che massimizza la protezione."
+    "name": "Maglia dalla Pelle Corrotta",
+    "description": "Una maglietta che sembra balbettare."
   },
   "390": {
-    "name": "Bacinella del Nobile",
-    "description": "Elmo elegante con visiera sollevabile."
+    "name": "Cappello dell'Annotatore",
+    "description": "Un cappello largo scarabocchiato di appunti."
   },
   "391": {
-    "name": "Celata a Viso Aperto",
-    "description": "Elmo che privilegia la visione alla copertura."
+    "name": "Gonna a Pieghe Regolamentare",
+    "description": "Una gonna da uniforme a pieghe nette."
   },
   "392": {
-    "name": "Cappello a Caldaia da Fanteria",
-    "description": "Semplice calotta di metallo per protezione di base."
+    "name": "Bracciale dello Scambio",
+    "description": "Un braccialetto consumato dagli scambi."
   },
   "393": {
-    "name": "Sotto-Casco Imbottito",
-    "description": "Cuffia imbottita indossata sotto gli elmi."
+    "name": "Corredo da Esploratore dei Boschi",
+    "description": "Un robusto completo da campo per il bosco."
   },
   "394": {
-    "name": "Barriere Medievali",
-    "description": "Scudi protettivi della guerra medievale."
+    "name": "Abito di Pizzo Funebre",
+    "description": "Un cupo abito gotico di pizzo."
   },
   "395": {
-    "name": "Scudo a Torre Fortezza",
-    "description": "Scudo massiccio che scambia mobilità per protezione."
+    "name": "Auricolare del Compagno",
+    "description": "Un auricolare da cui esce una vocina."
   },
   "396": {
-    "name": "Scudo da Battaglia a Riscaldamento",
-    "description": "Classica forma di scudo da cavaliere."
+    "name": "Marsina di Broccato",
+    "description": "Una marsina da cerimonia ricamata."
   },
   "397": {
-    "name": "Scudo Rotondo Bilanciato",
-    "description": "Scudo circolare che offre una difesa versatile."
+    "name": "Maglia dello Spettro Infinito",
+    "description": "Una maglietta di colori arcobaleno inquieti."
   },
   "398": {
-    "name": "Brocchiero del Duellante",
-    "description": "Piccolo scudo da avambraccio che permette l'uso dell'arma."
+    "name": "Guanti Sfasati",
+    "description": "Guanti dai bordi sfocati."
   },
   "399": {
-    "name": "Vesti Arcane",
-    "description": "Armatura specializzata per praticanti di magia."
+    "name": "Ciondolo degli Sguardi Trattenuti",
+    "description": "Un ciondolo che attira l'occhio."
   },
   "400": {
-    "name": "Regalia dell'Arcimagister",
-    "description": "Vesti sfarzose infuse di potere magico."
+    "name": "Cappello a Decalcomanie",
+    "description": "Un cappello tappezzato di adesivi con facce."
   },
   "401": {
-    "name": "Vesti della Tessitrice di Incantesimi",
-    "description": "Vesti incantate che amplificano la potenza magica."
+    "name": "Pantaloni Antigravità",
+    "description": "Pantaloni che pendono stranamente senza peso."
   },
   "402": {
-    "name": "Vesti del Mago Novizio",
-    "description": "Vesti di base per studenti di magia."
+    "name": "Collare di Comando Borchiato",
+    "description": "Un collare borchiato di alta carica."
   },
   "403": {
-    "name": "Corona del Focus",
-    "description": "Copricapo ornato che affina la concentrazione magica."
+    "name": "Stivali a Rotelle",
+    "description": "Stivali muniti di piccole ruote."
   },
   "404": {
-    "name": "Tocco dell'Accademico",
-    "description": "Copricapo erudito per maghi e ricercatori."
+    "name": "Occhiali a Vista Variabile",
+    "description": "Occhiali dalla visione regolabile."
   },
   "405": {
-    "name": "Armatura del Guerriero Sacro",
-    "description": "Armatura religiosa per combattenti devoti."
+    "name": "Strato del Comfort Eterno",
+    "description": "Biancheria che si climatizza da sola."
   },
   "406": {
-    "name": "Piastra Santificata",
-    "description": "Armatura splendente benedetta da alti chierici."
+    "name": "Occhiali a Contorno d'Inchiostro",
+    "description": "Occhiali che appiattiscono il mondo."
   },
   "407": {
-    "name": "Maglia di Ferro Sacra",
-    "description": "Maglia di ferro benedetta contro le forze impure."
+    "name": "Anello del Principiante",
+    "description": "Un anellino che si dice spinga la sorte."
   },
   "408": {
-    "name": "Paramenti del Grande Chierico",
-    "description": "Vesti cerimoniali per i vertici della chiesa."
+    "name": "Abito da Trono Dirigenziale",
+    "description": "Un abito su misura che incute potere."
   },
   "409": {
-    "name": "Scudo del Simbolo Sacro",
-    "description": "Scudo decorato con simboli sacri."
+    "name": "Valigetta Ripiegata",
+    "description": "Una valigetta più grande dentro."
   },
   "410": {
-    "name": "Arsenale dell'Arciere",
-    "description": "Attrezzatura specializzata per tiratori scelti."
+    "name": "Abito del Dominio",
+    "description": "Un abito affilato di taglio aziendale."
   },
   "411": {
-    "name": "Cuoio dell'Arciere Elite",
-    "description": "Armatura flessibile per maestri d'arco."
+    "name": "Lenti Trafiggivelo",
+    "description": "Occhiali che rivelano le cose nascoste."
   },
   "412": {
-    "name": "Abito da Esploratore Boschivo",
-    "description": "Armatura leggera da foresta per furtività e velocità."
+    "name": "Amuleto del Cercatombe",
+    "description": "Un amuleto che punta a ciò che è sepolto."
   },
   "413": {
-    "name": "Guanti da Tiro di Precisione",
-    "description": "Guanti speciali che migliorano la precisione con l'arco."
+    "name": "Braccialetto Guardareliquie",
+    "description": "Un vecchio braccialetto che ronza appena."
   },
   "414": {
-    "name": "Parabraccio da Arciere",
-    "description": "Bracciale protettivo per il braccio che tende l'arco."
+    "name": "Gettone Intrigafato",
+    "description": "Un gettoncino che scombina le probabilità."
   },
   "415": {
-    "name": "Mantello dell'Occultamento",
-    "description": "Mantello con cappuccio che nasconde efficacemente chi lo indossa."
+    "name": "Conduttore in Tensione",
+    "description": "Un attrezzo che incanala la corrente."
   },
   "416": {
-    "name": "Equipaggiamento Operativo Ombra",
-    "description": "Armatura per assassini e ladri."
+    "name": "Giacca Spezzaricorsione",
+    "description": "Una giacca che si dice chiuda i cicli."
   },
   "417": {
-    "name": "Pelli d'Ombra della Gilda",
-    "description": "Cuoio oscurato per operazioni furtive."
+    "name": "Cappa Foderata di Seta",
+    "description": "Una raffinata cappa foderata di seta."
   },
   "418": {
-    "name": "Vesti del Cacciatore Silenzioso",
-    "description": "Indumenti attillati che riducono al minimo il rumore."
+    "name": "Veste di Catene",
+    "description": "Un indumento minimo infilato di catene."
   },
   "419": {
-    "name": "Cappuccio Cancella-Identità",
-    "description": "Maschera che nasconde l'identità e il rumore del respiro."
+    "name": "Abito Protetto da Sigilli",
+    "description": "Un abito da sera cucito di protezioni."
   },
   "420": {
-    "name": "Stivali del Passo di Sussurro",
-    "description": "Calzature progettate specificamente per essere silenziose."
+    "name": "Tenuta Formale del Mediatore",
+    "description": "Un abbigliamento raffinato da trattativa."
   },
   "421": {
-    "name": "Armatura Aristocratica",
-    "description": "Indumenti reali che bilanciano protezione e prestigio."
+    "name": "Carapace Camaleontico",
+    "description": "Un guscio che imita ciò che lo circonda."
   },
   "422": {
-    "name": "Regalia di Guerra del Re",
-    "description": "Armatura cerimoniale per combattenti reali."
+    "name": "Amuleto di Riserva",
+    "description": "Un amuleto che trattiene una carica."
   },
   "423": {
-    "name": "Sfarzo della Nobiltà",
-    "description": "Abiti lussuosi che mostrano un elevato status sociale."
+    "name": "Guanti Canalizzamana",
+    "description": "Guanti che concentrano il flusso arcano."
   },
   "424": {
-    "name": "Corona del Sovrano",
-    "description": "Elegante corona che simboleggia l'autorità assoluta."
+    "name": "Mantello della Lucidità",
+    "description": "Una giacca leggera che affina la mente."
   },
   "425": {
-    "name": "Mantello di Rango",
-    "description": "Mantello cerimoniale che denota un titolo nobiliare."
+    "name": "Assetto di Confluenza Elementale",
+    "description": "Un indumento che fonde nuclei elementali."
   },
   "426": {
-    "name": "Armamenti Mitici",
-    "description": "Armatura realizzata con materiali rari e leggendari."
+    "name": "Insegne di Guerra del Re",
+    "description": "Una grande tenuta marziale di stato."
   },
   "427": {
-    "name": "Armatura in Scaglie di Viverna",
-    "description": "Leggendaria armatura forgiata con pelli di drago."
+    "name": "Diadema Sovrano",
+    "description": "Una corona regale riccamente ornata."
   },
   "428": {
-    "name": "Trama di Luna Elfica",
-    "description": "Armatura incantata che si muove come una seconda pelle."
+    "name": "Completo Scaccimalefici",
+    "description": "Un abito protetto dalle maledizioni."
   },
   "429": {
-    "name": "Vesti dell'Arcimago Cosmico",
-    "description": "Vesti mistiche intrecciate con energie stellari."
+    "name": "Scarpe da Discoteca",
+    "description": "Scarpe da ballo vistose e luminose."
   },
   "430": {
-    "name": "Egida Antica",
-    "description": "Scudo leggendario capace di deviare colpi impossibili."
+    "name": "Inchiostro dei Sigilli a Circuito",
+    "description": "Inchiostro conduttivo da tatuaggio, portato addosso."
   },
   "431": {
-    "name": "Elmo della Divinità della Guerra",
-    "description": "Elmo presumibilmente indossato da un dio della guerra."
+    "name": "Tuta dell'Osservatore sul Campo",
+    "description": "Un abito discreto da studio."
   },
   "432": {
-    "name": "Abbigliamento del Popolino",
-    "description": "Semplici indumenti da contadino medievale."
+    "name": "Scheggia del Dio Morto",
+    "description": "Un frammento freddo di spoglie divine."
   },
   "433": {
-    "name": "Tunica del contadino",
-    "description": "Semplice tunica per la gente comune."
+    "name": "Cronometro Tempoflusso",
+    "description": "Un orologio che piega l'ora."
   },
   "434": {
-    "name": "Cappello da Strega della Gilda",
-    "description": "Cappello a punta ufficiale per le streghe della Gilda."
+    "name": "Giacca Fredda del Paria",
+    "description": "Una giacca che allontana la compagnia."
   },
   "435": {
-    "name": "Vesti da Mago della Gilda",
-    "description": "Vesti ufficiali della Gilda dei Maghi."
+    "name": "Paramento dell'Alveare",
+    "description": "Un indumento di pensiero condiviso."
   },
   "436": {
-    "name": "",
-    "description": ""
+    "name": "Cappello Piegaquote",
+    "description": "Un cappello che gioca con la probabilità."
   },
   "437": {
-    "name": "",
-    "description": ""
+    "name": "Egida del Firewall",
+    "description": "Accessori protetti di pura difesa."
   },
   "438": {
-    "name": "",
-    "description": ""
+    "name": "Sigillo dell'Inferno",
+    "description": "Un anello con sigillo avvolto di calore."
   },
   "439": {
-    "name": "",
-    "description": ""
+    "name": "Elmo della Marea degli Spiriti",
+    "description": "Un elmo coronato di luce spettrale."
   },
   "440": {
-    "name": "",
-    "description": ""
+    "name": "Occhialoni Vedivarchi",
+    "description": "Occhialoni che trapassano le dimensioni."
   },
   "441": {
-    "name": "",
-    "description": ""
+    "name": "Corona della Regina della Discordia",
+    "description": "Una corona frastagliata di conflitto."
   },
   "442": {
-    "name": "",
-    "description": ""
+    "name": "Zuccotto della Trasmissione",
+    "description": "Un umile berretto di maglia leggendario."
   },
   "443": {
-    "name": "",
-    "description": ""
+    "name": "Anello Frammento d'Altromondo",
+    "description": "Un anello incastonato di cristallo alieno."
   },
   "444": {
-    "name": "",
-    "description": ""
-  },
-  "445": {
-    "name": "",
-    "description": ""
-  },
-  "446": {
-    "name": "",
-    "description": ""
-  },
-  "447": {
-    "name": "",
-    "description": ""
-  },
-  "448": {
-    "name": "",
-    "description": ""
-  },
-  "449": {
-    "name": "",
-    "description": ""
-  },
-  "450": {
-    "name": "",
-    "description": ""
-  },
-  "451": {
-    "name": "Arsenale da Combattimento Moderno",
-    "description": "Attrezzatura tattica avanzata per la guerra urbana."
-  },
-  "452": {
-    "name": "Porta-Trauma in Ceramica",
-    "description": "Armatura di grado militare con piastre in ceramica."
-  },
-  "453": {
-    "name": "Tuta da Combattimento con Supporto Vitale",
-    "description": "Equipaggiamento da combattimento completo con sistemi di sopravvivenza integrati."
-  },
-  "454": {
-    "name": "Armatura in Polimero Spec Ops",
-    "description": "Polimero leggero preferito dalle forze speciali."
+    "name": "Stivali del Debugger",
+    "description": "Stivali che saltano attraverso lo spazio."
   },
   "455": {
-    "name": "Tuta Hazmat Nucleare",
-    "description": "Attrezzatura hazmat con schermatura avanzata contro le radiazioni."
+    "name": "<-- Robe -->",
+    "description": ""
   },
   "456": {
-    "name": "Sistemi Tattici per la Testa",
-    "description": "Copricapo da combattimento specializzato con integrazione tecnologica."
+    "name": "Tomo Farfugliante",
+    "description": "Un grimorio di incantesimi confusi."
   },
   "457": {
-    "name": "Casco da Battaglia HUD",
-    "description": "Casco da combattimento con interfaccia display integrata."
+    "name": "Kit Arcano da Tasca",
+    "description": "Una borsa da incantesimi moderna e scadente."
   },
   "458": {
-    "name": "Casco per Operazioni Notturne",
-    "description": "Copricapo tattico con attacco per visore notturno."
+    "name": "Vestaglia Cascante",
+    "description": "Una veste informe e troppo grande."
   },
   "459": {
-    "name": "Casco per Zone a Rischio",
-    "description": "Copricapo protettivo per ambienti tossici."
+    "name": "Tiara di Plastica",
+    "description": "Una fragile corona giocattolo."
   },
   "460": {
-    "name": "Arsenale Controllo Folla",
-    "description": "Scudi protettivi per la gestione delle sommosse."
+    "name": "Braccialetto da Ciarlatano",
+    "description": "Un braccialetto di ciondoli senza valore."
   },
   "461": {
-    "name": "Scudo Barriera Trasparente",
-    "description": "Policarbonato trasparente per il controllo della folla."
+    "name": "Tavoletta Protettiva Crepata",
+    "description": "Una piastra protettiva dallo schermo rotto."
   },
   "462": {
-    "name": "Scudo Deterrente a Shock",
-    "description": "Barriera elettrificata che emette scariche non letali."
+    "name": "Cristallo Portafortuna d'Occasione",
+    "description": "Un finto cristallo curativo."
   },
   "463": {
-    "name": "Equipaggiamento per Crisi Mediche",
-    "description": "Protezione specializzata per il personale medico."
+    "name": "Bacchetta Mistica Giocattolo",
+    "description": "Una bacchetta finta di plastica."
   },
   "464": {
-    "name": "Tuta Sterile per Emergenze",
-    "description": "Abbigliamento protettivo sigillato per emergenze mediche."
+    "name": "Toga di Laurea Sgualcita",
+    "description": "Una veste cerimoniale spiegazzata."
   },
   "465": {
-    "name": "Respiratore Avanzato",
-    "description": "Maschera medica con filtrazione superiore."
+    "name": "Cuffia del Teorico di Stagnola",
+    "description": "Un rozzo cappuccio foderato di stagnola."
   },
   "466": {
-    "name": "Armatura per Cerimonie di Stato",
-    "description": "Armatura cerimoniale per funzioni ufficiali."
+    "name": "Visiera Sporca a Sovrapposizione",
+    "description": "Una visiera aumentata appannata."
   },
   "467": {
-    "name": "Regalia Diplomatica",
-    "description": "Uniforme ornata per funzionari di alto rango."
+    "name": "Veste da Mago Scontata",
+    "description": "Una veste scadente da svendita."
   },
   "468": {
-    "name": "Uniforme Militare di Gala",
-    "description": "Abito militare cerimoniale con onorificenze."
+    "name": "Cappuccio del Compilatore",
+    "description": "Un cappuccio morbido con la fodera di feltro consunta."
   },
   "469": {
-    "name": "Tute per Climi Estremi",
-    "description": "Protezione ambientale per condizioni meteorologiche ostili."
+    "name": "Veste da Apprendista di Gilda",
+    "description": "Semplici vesti grigie da mago, un po' rattoppate."
   },
   "470": {
-    "name": "Armatura da Ricerca Artica",
-    "description": "Tuta isolante per l'esplorazione polare."
+    "name": "Involucro Sigillato di Sicurezza",
+    "description": "Una pesante tuta di contenimento gommata."
   },
   "471": {
-    "name": "Tuta di Prossimità Vulcanica",
-    "description": "Attrezzatura resistente al calore per la ricerca vulcanica."
+    "name": "Fascia Sinaptica",
+    "description": "Una fascia tesa di filo conduttivo."
   },
   "472": {
-    "name": "Equipaggiamento Oceanico Profondo",
-    "description": "Attrezzatura specializzata per l'esplorazione subacquea."
+    "name": "Diadema del Flusso di Dati",
+    "description": "Un cerchietto sottile di fibra ottica morta."
   },
   "473": {
-    "name": "Tuta a Resistenza di Pressione",
-    "description": "Attrezzatura da immersione pressurizzata per profondità estreme."
+    "name": "Cappuccio da Quarantena",
+    "description": "Un elmo di stoffa sigillato con la visiera appannata."
   },
   "474": {
-    "name": "Tuta Subacquea Robotica",
-    "description": "Armatura da immersione atmosferica con supporti meccanici."
+    "name": "Girocollo PSI",
+    "description": "Un girocollo aderente intessuto di sigilli grigi."
   },
   "475": {
-    "name": "Attrezzatura Gravità Zero",
-    "description": "Equipaggiamento di grado spaziale per condizioni di vuoto."
+    "name": "Amuleto della Mente Quieta",
+    "description": "Un piccolo amuleto su un laccio sfilacciato."
   },
   "476": {
-    "name": "Tuta di Supporto Vitale EVA",
-    "description": "Protezione spaziale ambientale completa."
+    "name": "Fascia Antintrusione",
+    "description": "Una fascia avvolta di filo isolato."
   },
   "477": {
-    "name": "Casco Comm per il Vuoto",
-    "description": "Casco pressurizzato con comunicazioni integrate."
+    "name": "Scudo di Ghiaccio Personale",
+    "description": "Un emettitore di barriera grande come un palmo."
   },
   "478": {
-    "name": "Piccone",
-    "description": "Attrezzatura specializzata per sistemi di grotte."
+    "name": "Braccialetto del Velo",
+    "description": "Un semplice braccialetto di perline spente."
   },
   "479": {
-    "name": "Tuta per Sistemi Ipogei",
-    "description": "Tuta rinforzata per l'esplorazione sotterranea."
+    "name": "Calamita Spettrale",
+    "description": "Una piccola bussola dall'ago inquieto."
   },
   "480": {
-    "name": "Casco da Minatore LED",
-    "description": "Potente illuminazione integrata nel copricapo."
+    "name": "Abito della Botta di Fortuna",
+    "description": "Un abito largo di stoffe spaiate."
   },
   "481": {
-    "name": "Arsenale Sicurezza sul Lavoro",
-    "description": "Attrezzatura protettiva per ambienti industriali."
+    "name": "Veste del Mago Guaritore",
+    "description": "Vesti morbide che sanno di erbe vecchie."
   },
   "482": {
-    "name": "Giubbotto di sicurezza riflettente",
-    "description": "Gilet ad alta visibilità con strisce riflettenti."
+    "name": "Emettitore di Campo a Bolla",
+    "description": "Un generatore di scudo portatile."
   },
   "483": {
-    "name": "Stivali da Lavoro Rinforzati",
-    "description": "Calzature da cantiere con punta in acciaio."
+    "name": "Cerchietto della Concentrazione",
+    "description": "Un cerchietto sottile di stagno lucidato."
   },
   "484": {
-    "name": "Equipaggiamento Risposta Incendi",
-    "description": "Attrezzatura specializzata per operazioni antincendio."
+    "name": "Amuleto della Fermezza",
+    "description": "Un amuleto appesantito su un laccio di cuoio."
   },
   "485": {
-    "name": "Armatura per Incendi Strutturali",
-    "description": "Tuta resistente al calore per incendi in edifici."
+    "name": "Coroncina della Musa",
+    "description": "Una delicata coroncina di ottone piegato."
   },
   "486": {
-    "name": "Tuta per Calore Estremo",
-    "description": "Armatura riflettente per la prossimità al fuoco."
+    "name": "Veste della Piuma",
+    "description": "Una veste tessuta di leggerezza impossibile."
   },
   "487": {
-    "name": "Casco Sopravvivenza al Fumo",
-    "description": "Casco con autorespiratore integrato."
+    "name": "Cappello della Preveggenza",
+    "description": "Un largo cappello di stoffa dalla tesa cadente."
   },
   "488": {
-    "name": "Arsenale Forze dell'Ordine",
-    "description": "Attrezzatura protettiva per operazioni di polizia."
+    "name": "Abito dell'Erudito",
+    "description": "Un ordinato completo da studioso, macchiato d'inchiostro."
   },
   "489": {
-    "name": "Gilet con Piastre Balistiche",
-    "description": "Gilet antiproiettile con inserti in piastra."
+    "name": "Giacca del Segnale Fantasma",
+    "description": "Una giacca consunta foderata di rete di stagnola."
   },
   "490": {
-    "name": "Protezione Antisommossa Completa",
-    "description": "Equipaggiamento antisommossa completo con visiera."
+    "name": "Cappotto del Custode di Dati",
+    "description": "Un lungo cappotto dalle molte piccole tasche."
   },
   "491": {
-    "name": "Attrezzatura Sport Adrenalinici",
-    "description": "Abbigliamento specializzato per appassionati di sport estremi."
+    "name": "Corona del Trovavia",
+    "description": "Un semplice cerchietto inciso di frecce."
   },
   "492": {
-    "name": "Armatura da Salto Wingsuit",
-    "description": "Tuta imbottita per operazioni di base jumping."
+    "name": "Modulo del Velo di Fase",
+    "description": "Un piccolo congegno che ronza appena."
   },
   "493": {
-    "name": "Pelli da Corsa su Pista",
-    "description": "Stivali da moto rinforzati."
+    "name": "Gilet del Guerriero dei Dati",
+    "description": "Un gilet imbottito dalle piastre crepate."
   },
   "494": {
-    "name": "Gi da Pratica",
-    "description": "Attrezzatura classica per la pratica delle arti marziali."
+    "name": "Visiera AR da Veterano",
+    "description": "Una visiera graffiata di vetro scuro."
   },
   "495": {
-    "name": "Uniforme da Karate",
-    "description": "Gi classico per allenamento e competizione."
+    "name": "Tuta Antiritorno",
+    "description": "Una tuta messa a terra di stoffa isolante."
   },
   "496": {
-    "name": "Armatura da Sparring",
-    "description": "Attrezzatura protettiva per lo sparring e l'addestramento marziale."
+    "name": "Tocco del Docente",
+    "description": "Un rigido tocco accademico, un po' sbiadito."
   },
   "497": {
-    "name": "Armatura di Civiltà Antiche",
-    "description": "Protezione cerimoniale da imperi perduti."
+    "name": "Aureola di Comando",
+    "description": "Un copricapo cerchiato di proiettori morti."
   },
   "498": {
-    "name": "Bronzo del Guerriero Greco",
-    "description": "Corazza di bronzo dell'antica Grecia."
+    "name": "Completo Sereno d'Alta Moda",
+    "description": "Un elegante abito minimalista."
   },
   "499": {
-    "name": "Segmentata della Legione Romana",
-    "description": "Armatura a segmenti dei legionari romani."
+    "name": "Cappello della Strega di Gilda",
+    "description": "Un alto cappello a punta di feltro scuro."
   },
   "500": {
-    "name": "Scudo a Torre della Legione",
-    "description": "Grande scudo rettangolare della legione romana."
+    "name": "Tuta a Trama Cromata",
+    "description": "Una tuta aderente intessuta di metallo."
   },
   "501": {
-    "name": "Arsenale Arcano Moderno",
-    "description": "Attrezzatura magica avanzata per incantatori contemporanei."
+    "name": "Visiera del Veggente",
+    "description": "Una visiera trasparente che non si appanna mai."
   },
   "502": {
-    "name": "Vesti con Circuiti Intrecciati",
-    "description": "Vesti fluenti con schemi di circuiti integrati."
+    "name": "Tuta del Vincolo Selvatico",
+    "description": "Una tuta robusta cresciuta di muschio."
   },
   "503": {
-    "name": "Vesti Olo-Matrix",
-    "description": "Vesti eleganti che proiettano matrici di incantesimi olografiche."
+    "name": "Guanti del Tocco Cifrato",
+    "description": "Guanti sottili dai polpastrelli che formicolano."
   },
   "504": {
-    "name": "Camice da Laboratorio Protettivo",
-    "description": "Camice da ricerca incantato con sigilli protettivi."
+    "name": "Veste da Pratica dell'Adepto",
+    "description": "Vesti solide consumate ai gomiti."
   },
   "505": {
-    "name": "Cappello Cache di Incantesimi",
-    "description": "Cappello da mago moderno che memorizza incantesimi preparati."
+    "name": "Cerchietto dell'Ascensione",
+    "description": "Un cerchietto luminoso che pare senza peso."
   },
   "506": {
-    "name": "Cerchietto del Focus Energetico",
-    "description": "Copricapo cristallino che incanala l'energia magica."
+    "name": "Veste del Telaio",
+    "description": "Una veste dalla trama fitta e ornamentale."
   },
   "507": {
-    "name": "Visore Display Formule",
-    "description": "Visore high-tech che mostra i calcoli degli incantesimi."
+    "name": "Paramenti della Concordia",
+    "description": "Morbide vesti bianche dal bordo verde."
   },
   "508": {
-    "name": "Guanti Canale Mana",
-    "description": "Guanti intrecciati con fibre magiche conduttive."
+    "name": "Veste a Cellule Verdeggianti",
+    "description": "Una veste viva venata di verde."
   },
   "509": {
-    "name": "Amuleto Energetico di Riserva",
-    "description": "Serbatoio di energia magica per le emergenze."
+    "name": "Veste della Memoria al Neon",
+    "description": "Una veste cucita di vecchie strisce luminose."
   },
   "510": {
-    "name": "Grimorio Tablet",
-    "description": "Bastone incantato camuffato da tablet moderno."
+    "name": "Talismano dell'Avvoltoio Statico",
+    "description": "Un amuleto frastagliato che crepita piano."
   },
   "511": {
-    "name": "Armatura Sociale d'Elite",
-    "description": "Elegante abbigliamento formale per eventi dell'alta società."
+    "name": "Vesti della Ferrea Convinzione",
+    "description": "Vesti rigide di un grigio severo."
   },
   "512": {
-    "name": "Tuxedo Antiproiettile",
-    "description": "Abito formale perfettamente su misura con armatura nascosta."
+    "name": "Cappello Formaincanto",
+    "description": "Un cappello strutturato foderato di sigilli."
   },
   "513": {
-    "name": "Abito da Sera Protetto",
-    "description": "Elegante abito da sera con magia protettiva celata."
+    "name": "Corona della Convergenza",
+    "description": "Una pesante corona di lenti focalizzanti."
   },
   "514": {
-    "name": "Completo Autorità",
-    "description": "Abito a tre pezzi che esalta la presenza di comando."
+    "name": "Bomber Runico",
+    "description": "Un giubbotto da volo consunto, inciso a mano."
   },
   "515": {
-    "name": "Uniforme di Gala Decorata",
-    "description": "Abito militare formale con onorificenze cerimoniali."
+    "name": "Paramento del Tecnomante",
+    "description": "Una veste cablata di fili ronzanti."
   },
   "516": {
-    "name": "Abbigliamento Formale del Negoziatore",
-    "description": "Abito diplomatico che potenzia le abilità di negoziazione."
+    "name": "Manto del Caos Grezzo",
+    "description": "Una veste mutevole di stoffa inquieta."
   },
   "517": {
-    "name": "Abito da Cocktail Elite",
-    "description": "Abito sofisticato per la guerra sociale."
+    "name": "Manto del Telaio di Tempesta",
+    "description": "Un cappotto che sa di fulmine."
   },
   "518": {
-    "name": "Papillon Micro-Protetto",
-    "description": "Classico papillon formale con sottili incantesimi."
+    "name": "Insegne del Tessitore d'Incanti",
+    "description": "Vesti ornate di seta a strati."
   },
   "519": {
-    "name": "Guanti dell'Eleganza",
-    "description": "Guanti formali che esaltano la grazia sociale."
+    "name": "Paramenti dell'Alto Chierico",
+    "description": "Vesti bianche cerimoniali dorate."
   },
   "520": {
-    "name": "Abbigliamento Guerra Aziendale",
-    "description": "Abito professionale per il combattimento in ufficio."
+    "name": "Abbraccio di Zefiro",
+    "description": "Una veste così leggera da sembrare alla deriva."
   },
   "521": {
-    "name": "Dominatore della Sala Riunioni",
-    "description": "Abito da lavoro affilato che impone rispetto."
+    "name": "Zuccotto dell'Occhio Interiore",
+    "description": "Un morbido berretto di maglia, stranamente caldo."
   },
   "522": {
-    "name": "Blazer della Sicurezza",
-    "description": "Giacca professionale che amplifica la fiducia in se stessi."
+    "name": "Ciondolo di Pietra Nulla",
+    "description": "Un ciondolo scuro che inghiotte la luce."
   },
   "523": {
-    "name": "Abito Presenza Esecutiva",
-    "description": "Abito da lavoro che esalta l'autorità professionale."
+    "name": "Sigillo della Pura Lucidità",
+    "description": "Una cuffia chiara segnata da una sola runa."
   },
   "524": {
-    "name": "Camicia della Produttività",
-    "description": "Camicia stirata con fibre che aumentano l'efficienza."
+    "name": "Corona della Mente in Corsa",
+    "description": "Una corona che vibra contro il cranio."
   },
   "525": {
-    "name": "Cravatta della Leadership",
-    "description": "Cravatta professionale che amplifica le qualità di comando."
+    "name": "Cerchietto della Sorgente",
+    "description": "Un cerchietto caldo di potere accumulato."
   },
   "526": {
-    "name": "Ventiquattrore del Focus",
-    "description": "Valigetta aziendale che organizza mentalmente i pensieri."
+    "name": "Cappotto a Trama Matriciale",
+    "description": "Un cappotto di reticolo impossibilmente fine."
   },
   "527": {
-    "name": "Orologio dell'Efficienza",
-    "description": "Orologio professionale che migliora la gestione del tempo."
+    "name": "Camice della Luce Protettiva",
+    "description": "Un lungo camice inciso di glifi."
   },
   "528": {
-    "name": "Scarpe del Passo d'Autorità",
-    "description": "Calzature aziendali che proiettano dominio."
+    "name": "Cappuccio Bevivuoto",
+    "description": "Un cappuccio nero che beve il buio."
   },
   "529": {
-    "name": "Occhiali d'Analisi",
-    "description": "Occhiali professionali che potenziano il pensiero analitico."
+    "name": "Cappello Reliquiario d'Incanti",
+    "description": "Un cappello profondo che contiene più del dovuto."
   },
   "530": {
-    "name": "Blazer Catalizzatore di Network",
-    "description": "Giacca aziendale che favorisce le connessioni."
+    "name": "Cappuccio della Piena Ley",
+    "description": "Un cappuccio che ronza sulle linee ley."
   },
   "531": {
-    "name": "Tecnologia Pre-Squishing",
-    "description": "Equipaggiamento dell'era Y2K che resiste ai loop temporali."
+    "name": "Vesti della Grande Bestia",
+    "description": "Vesti cremisi cariche di simboli antichi."
   },
   "532": {
-    "name": "Telefono Indistruttibile",
-    "description": "Leggendario Anoki 3310 che respinge le fenditure dimensionali."
+    "name": "Regalia dell'Arcimagister",
+    "description": "Vesti torreggianti di viola profondo."
   },
   "533": {
-    "name": "Cappello Blocca-TTD",
-    "description": "Copricapo foderato di alluminio che blocca le malattie del pensiero."
+    "name": "Cerchietto Tessuto di Stelle",
+    "description": "Un cerchietto che brilla come il cielo notturno."
   },
   "534": {
-    "name": "Tuta Anti-Loop",
-    "description": "Indumenti industriali EHI che sopravvivono ai reset temporali."
+    "name": "Grimorio della Fine del Mondo",
+    "description": "Un libro di incantesimi malconcio, rilegato a mano."
   },
   "535": {
-    "name": "Kit dell'Archive Foundation",
-    "description": "Attrezzatura per la guerra dell'informazione."
+    "name": "Visiera delle Equazioni",
+    "description": "Una visiera che scorre di glifi deboli."
   },
   "536": {
-    "name": "Gilet del Guerriero dei Dati",
-    "description": "Gilet tattico con archiviazione dati integrata."
+    "name": "Manto dell'Evocatempeste",
+    "description": "Un manto pesante che sa di pioggia."
   },
   "537": {
-    "name": "Visore di Trasparenza",
-    "description": "Occhiali che mostrano tutti i dati come di pubblico dominio."
+    "name": "Cappotto del Camminafasi",
+    "description": "Un cappotto che si sfoca ai bordi."
   },
   "538": {
-    "name": "Guanti da Tocco Decrittazione",
-    "description": "Guanti che rompono la crittografia attraverso il contatto."
+    "name": "Corona Amplificatrice Corticale",
+    "description": "Una corona cablata alle tempie."
   },
   "539": {
-    "name": "Equipaggiamento Ipercapitalista",
-    "description": "Attrezzatura ad alte prestazioni del Collettivo."
+    "name": "Vesti Olomatrice",
+    "description": "Vesti cangianti di luce proiettata."
   },
   "540": {
-    "name": "Stivali Bio-Ruota",
-    "description": "Stivali con ruote integrate per il moto perpetuo."
+    "name": "Vesti dell'Arcimago Cosmico",
+    "description": "Vesti immense cosparse di stelle."
   },
   "541": {
-    "name": "Completo Scambio Temporale",
-    "description": "Abito da lavoro che genera profitti da arbitraggio temporale."
-  },
-  "542": {
-    "name": "Portafoglio Dimensionale",
-    "description": "Valigetta per scambiare valute tra diverse realtà."
-  },
-  "543": {
-    "name": "Vesti Tradizionali della Gilda",
-    "description": "Classico abbigliamento cerimoniale della Gilda dei Maghi."
-  },
-  "544": {
-    "name": "Vesti del Fedele di Thatcher",
-    "description": "Vesti cerimoniali della fazione di Thatcher."
-  },
-  "545": {
-    "name": "Vesti del Caos di Crowley",
-    "description": "Vesti caotiche per i discepoli di Crowley."
-  },
-  "546": {
-    "name": "Grimorio Post-Apocalittico",
-    "description": "Libro degli incantesimi rilegato in materiali resistenti allo Squishing."
-  },
-  "547": {
-    "name": "Cappello Formattatore",
-    "description": "Cappello che auto-formatta gli incantesimi in CamelCase."
-  },
-  "548": {
-    "name": "Scudo del Nuovo Pantheon",
-    "description": "Reliquie divine degli dei ritornati."
-  },
-  "549": {
-    "name": "Corona della Regina del Discordia",
-    "description": "Corona di Eris, simbolo della discordia divina."
-  },
-  "550": {
-    "name": "Frammento di Dio Morto",
-    "description": "Amuleto contenente l'essenza di YHWH ucciso."
-  },
-  "551": {
-    "name": "Lancia Memoria del Deicidio",
-    "description": "Lancia forgiata da ricordi di uccisioni di divinità."
+    "name": "Vesti Tessute di Circuiti",
+    "description": "Vesti intrecciate di filo vivo."
   },
   "552": {
-    "name": "Equipaggiamento Olio Senziente",
-    "description": "Attrezzatura contaminata da petrolio pensante."
+    "name": "<-- Light Armor -->",
+    "description": ""
   },
   "553": {
-    "name": "Hazmat Petrodemone",
-    "description": "Tuta protettiva contro l'esposizione all'olio senziente."
+    "name": "Scarto da Sfruttamento",
+    "description": "Un fragile giubbetto di produzione in massa."
   },
   "554": {
-    "name": "Sigillo Anti-Possessione Oleosa",
-    "description": "Amuleto che resiste alla possessione basata sul petrolio."
+    "name": "Maglia da Squadra Taroccata",
+    "description": "Una maglia sbiadita dalla stampa che si stacca."
   },
   "555": {
-    "name": "Attrezzatura Strada Perpetua",
-    "description": "Equipaggiamento robusto per la vita sulle autostrade infinite."
+    "name": "Calotta Ammaccata",
+    "description": "Una calotta d'acciaio scadente, piegata male."
   },
   "556": {
-    "name": "Giacca Fuga dal Loop",
-    "description": "Leggendario cappotto da camionista della strada eterna."
+    "name": "Elmo del Soldatino",
+    "description": "Un elmo di plastica di dubbio valore."
   },
   "557": {
-    "name": "Parti Miracolose di Bubba",
-    "description": "Impossibili componenti meccanici di recupero."
+    "name": "Gilet di Recupero da Cantiere",
+    "description": "Un gilet catarifrangente lercio con piastre."
   },
   "558": {
-    "name": "Tachimetro del Flusso Temporale",
-    "description": "Strumento che traccia la velocità rispetto al tempo stesso."
+    "name": "Giubbotto di Pelle del Ribelle",
+    "description": "Un giubbotto di pelle graffiato."
   },
   "559": {
-    "name": "Equipaggiamento Corruzione Dimensionale",
-    "description": "Oggetti alterati da anomalie delle linee temporali."
+    "name": "Armatura di Carta Pressata",
+    "description": "Carta di giornale a strati, sorprendentemente rigida."
   },
   "560": {
-    "name": "Veste del Caos Puro",
-    "description": "Indumento che incanala l'imprevedibile potere delle linee temporali."
+    "name": "Tuta Sportiva Elastica",
+    "description": "Una tuta atletica imbottita ed elastica."
   },
   "561": {
-    "name": "Bussola Punti Deboli della Realtà",
-    "description": "Strumento di navigazione che trova gli strappi dimensionali."
+    "name": "Casco del Pendolare",
+    "description": "Un casco da bici graffiato."
   },
   "562": {
-    "name": "Resti Incidente di Fabbrica",
-    "description": "Attrezzatura dal noto disastro della Loca-Cola."
+    "name": "Smesso Macchiato",
+    "description": "Un gilet di origine incerta."
   },
   "563": {
-    "name": "Hazmat Sostanza Cola",
-    "description": "Abbigliamento protettivo per l'esposizione alla misteriosa bevanda."
+    "name": "Blazer del Truffatore",
+    "description": "Un blazer consunto dalle tasche profonde."
   },
   "564": {
-    "name": "Mistero Not-Cola",
-    "description": "Bottiglia di sostanza prodotta da macchinari impazziti."
+    "name": "Manopole di Latta",
+    "description": "Rozze manopole di lattine martellate."
   },
   "565": {
-    "name": "Equipaggiamento Fazione Sotterranea",
-    "description": "Attrezzatura cerimoniale delle tribù goblin."
+    "name": "Gilet di Battistrada",
+    "description": "Un gilet di gomma di pneumatico tagliata."
   },
   "566": {
-    "name": "Armatura da Guerra Naguka",
-    "description": "Equipaggiamento bellico per violenti guerrieri goblin."
+    "name": "Elmo Colapasta Chiodato",
+    "description": "Uno scolapasta diventato elmo."
   },
   "567": {
-    "name": "Vesti della Pace di Verden",
-    "description": "Semplici vesti mistiche dei goblin pacifici."
+    "name": "Elmo Baciasfalto",
+    "description": "Un paracapo pesante e ottuso."
   },
   "568": {
-    "name": "Cuffie Black Metal",
-    "description": "Arma sonora che trasmette metal norvegese a tutto volume."
+    "name": "Elmo di Fusto",
+    "description": "Un elmo ritagliato da un fusto d'acciaio."
   },
   "569": {
-    "name": "Artefatti Congelati nel Tempo",
-    "description": "Oggetti dal villaggio gallese dove il tempo si è fermato."
+    "name": "Stivali dal Battistrada",
+    "description": "Stivali suolati di grossa gomma di pneumatico."
   },
   "570": {
-    "name": "Orologio dell'Eterna Mezzanotte",
-    "description": "Segnatempo congelato all'ultimo istante del 1999."
+    "name": "Cuffia da Impatto Imbottita",
+    "description": "Un casco d'urto foderato di gommapiuma."
   },
   "571": {
-    "name": "Abbigliamento Stasi Senza Età",
-    "description": "Indumenti immuni all'invecchiamento e al decadimento."
+    "name": "Celata Aperta",
+    "description": "Una celata d'acciaio a viso scoperto."
   },
   "572": {
-    "name": "Equipaggiamento Tamigi Inverso",
-    "description": "Attrezzatura dalla zona del fiume che scorre al contrario."
+    "name": "Spallacci Consunti",
+    "description": "Un set di spalle di piastra arrugginite."
   },
   "573": {
-    "name": "Gilet Inversione Causalità",
-    "description": "Gilet salvagente che galleggia contro la corrente della realtà."
+    "name": "Calotta del Pilota",
+    "description": "Una calotta leggera in lega."
   },
   "574": {
-    "name": "Stivali Contro-Tempo",
-    "description": "Calzature che camminano all'indietro nel tempo."
+    "name": "Elmo del Pattugliatore",
+    "description": "Un elmo da pattuglia urbana ammaccato."
   },
   "575": {
-    "name": "Detriti Crollo della Torre",
-    "description": "Misteriosa attrezzatura dal sito della Torre Omega."
+    "name": "Bracciali di Latta Appiattita",
+    "description": "Bracciali battuti da lattine di scarto."
   },
   "576": {
-    "name": "Elmo Frammento di Stratosfera",
-    "description": "Elmo forgiato con materiali della torre caduta."
+    "name": "Giubbotto di Volo in Carbonio",
+    "description": "Un bomber tessuto in carbonio."
   },
   "577": {
-    "name": "Tuta Pulizia Cosmica",
-    "description": "Protezione per i lavoratori addetti ai detriti della Sindrome di Kessler."
+    "name": "Berretto del Capitano d'Asfalto",
+    "description": "Un berretto rinforzato da capo della strada."
   },
   "578": {
-    "name": "Misuratore Anomalie Gravitazionali",
-    "description": "Dispositivo che misura le distorsioni gravitazionali."
+    "name": "Imbracatura dello Scalatore",
+    "description": "Un'attrezzatura per l'arrampicata su parete."
   },
   "579": {
-    "name": "Equipaggiamento Viaggio Mitico",
-    "description": "Attrezzatura per la pericolosa spedizione Beagle."
+    "name": "Gilet degli Stimolanti",
+    "description": "Un gilet imbottito di stimolanti da combattimento."
   },
   "580": {
-    "name": "Stivali della Strada Mutante",
-    "description": "Calzature per sentieri che cambiano destinazione."
+    "name": "Assetto Stradale del Guardiano",
+    "description": "Un gilet tattico da strada a strati."
   },
   "581": {
-    "name": "Arsenale della Furia Goblin",
-    "description": "Attrezzatura grezza fatta di scarti e pura rabbia."
+    "name": "Corazza da Strada",
+    "description": "Un pettorale ribattuto e graffiato."
   },
   "582": {
-    "name": "Spallacci di Piastra Arrugginiti",
-    "description": "Metallo frastagliato legato con filo metallico."
+    "name": "Cappello di Ferro del Fante",
+    "description": "Un cappello di ferro da fanteria a tesa larga."
   },
   "583": {
-    "name": "Elmo Bidone Teschio",
-    "description": "Bidone dell'olio ammaccato con fori rudimentali per la vista."
+    "name": "Casco da Scalata",
+    "description": "Un casco da arrampicata traforato."
   },
   "584": {
-    "name": "Gilet Furia Automobilistica",
-    "description": "Pezzi d'auto tenuti insieme dalla rabbia."
+    "name": "Gilet da Lavoro Galleggiante",
+    "description": "Un gilet da lavoro imbottito e galleggiante."
   },
   "585": {
-    "name": "Stivali Rinforzati dal Rancore",
-    "description": "Stivali di cuoio con armatura di tappi di bottiglia."
+    "name": "Elmetto di Sicurezza Segnalatore",
+    "description": "Un elmetto di sicurezza ad alta visibilità."
   },
   "586": {
-    "name": "Scudo Coperchio Chiodato",
-    "description": "Coperchio della spazzatura con bordi arrugginiti affilati."
+    "name": "Scarpe da Parkour",
+    "description": "Scarpe da corsa leggere e antiscivolo."
   },
   "587": {
-    "name": "Maglia di Linguette di Lattina",
-    "description": "Armatura intrecciata con linguette di lattine scartate."
+    "name": "Cappello a Secchiello Bicolore",
+    "description": "Un cappello a secchiello di stoffa rinforzata."
   },
   "588": {
-    "name": "Guanti Lattina di Malizia",
-    "description": "Lattine di latta saldate in guanti violenti."
+    "name": "Cappotto Scacciapioggia",
+    "description": "Un cappotto a strati idrorepellente."
   },
   "589": {
-    "name": "Veste Trofeo di Denti",
-    "description": "Indumento lacerato che mostra i denti dei nemici."
+    "name": "Scarpe da Avvicinamento",
+    "description": "Scarpe irrigidite da sentiero e arrampicata."
   },
   "590": {
-    "name": "Armatura Determinazione Pneumatico",
-    "description": "Toppe di gomma tenute insieme dalla testardaggine."
+    "name": "Cotta di Maglia Piastrata",
+    "description": "Cotta di maglia rinforzata con piastre d'acciaio."
   },
   "591": {
-    "name": "Lancia Segnale Stradale",
-    "description": "Segnale di stop affilato dall'odio puro."
+    "name": "Elmetto da Minatore con Lampada",
+    "description": "Un elmetto con la lampada montata."
   },
   "592": {
-    "name": "Scudo Furia Coprimozzo",
-    "description": "Pezzo d'auto battuto in forma difensiva."
+    "name": "Scarpe da Sprint su Sentiero",
+    "description": "Scarpe da sentiero leggere e ammortizzate."
   },
   "593": {
-    "name": "Pittura Olio Motore",
-    "description": "Decorazione di guerra fatta di olio e scarafaggi."
+    "name": "Corazza Oplitica di Bronzo",
+    "description": "Una corazza anatomica di bronzo."
   },
   "594": {
-    "name": "Disperazione di Filo del Carrello",
-    "description": "Armatura da carrello della spesa nata dalla necessità."
+    "name": "Lorica Segmentata",
+    "description": "Un'armatura del busto a fasce segmentate."
   },
   "595": {
-    "name": "Scolapasta Aggressivo",
-    "description": "Utensile da cucina modificato con violenza."
+    "name": "Guscio da Rilevamento Polare",
+    "description": "Un guscio isolato da spedizione."
   },
   "596": {
-    "name": "Collana di Ossa di Vetro",
-    "description": "Frammenti rotti e piccoli scheletri."
+    "name": "Gilet di Maglia Leggero",
+    "description": "Un gilet di maglia leggero e flessibile."
   },
   "597": {
-    "name": "Difesa Teglia da Pizza",
-    "description": "Superficie di cottura arrugginita usata come brocchiere."
+    "name": "Cappotto Reattivo da Tempesta",
+    "description": "Un cappotto reattivo irrigidito."
   },
   "598": {
-    "name": "Mazze Avvolte dal Filo",
-    "description": "Armi grezze avvolte in una spinosa malizia."
+    "name": "Gilet Polimerico da Operatore",
+    "description": "Un gilet da combattimento in polimero stampato."
   },
   "599": {
-    "name": "Gilet di Stracci Tribale",
-    "description": "Tessuto strappato segnato con simboli del clan."
+    "name": "Corredo da Scalata del Cacciatore",
+    "description": "Una tuta con imbracatura da caccia verticale."
   },
   "600": {
-    "name": "Stivali della Testardaggine di Pneumatico",
-    "description": "Calzature giganti fatte di gomma automobilistica."
+    "name": "Maschera del Terrore da Bidone",
+    "description": "Una pesante maschera facciale intimidatoria."
   },
   "601": {
-    "name": "Corona della Motosega",
-    "description": "Lama arrugginita indossata come una fascia minacciosa."
+    "name": "Tuta da Campo di Resistenza",
+    "description": "Una tuta da campo traspirante per la tenacia."
   },
   "602": {
-    "name": "Mazza delle Promesse Infrante",
-    "description": "Mazza di legno costellata di chiodi e tradimento."
+    "name": "Tuta da Speleologo",
+    "description": "Una tuta da grotta rinforzata."
   },
   "603": {
-    "name": "Tuta del Nastro del Rancore",
-    "description": "Tuta strappata tenuta insieme da nastro adesivo e rabbia."
+    "name": "Assetto del Soccorritore",
+    "description": "Un assetto tattico da pronto intervento."
   },
   "604": {
-    "name": "Bracciali di Lattine Schiacciate",
-    "description": "Protezioni rudimentali per le braccia ricavate da lattine di soda appiattite."
+    "name": "Casco d'Urto Scolpito",
+    "description": "Un casco d'impatto dal design curato."
   },
   "605": {
-    "name": "Maschera del Terrore da Bidone",
-    "description": "Contenitore di latte in plastica intagliato per incutere timore."
+    "name": "Imbracatura del Dominatore",
+    "description": "Un'imbracatura di cuoio borchiato."
   },
   "606": {
-    "name": "Piastra della Furia Stradale",
-    "description": "Armatura ricavata da segnali stradali e furia."
+    "name": "Manto dell'Occultamento",
+    "description": "Un mantello scuro che nasconde."
   },
   "607": {
-    "name": "Mazza di Vetro a Cono",
-    "description": "Cono stradale improvvisato come stella del mattino."
+    "name": "Completo di Depistaggio",
+    "description": "Un abito a strati che inganna."
   },
   "608": {
-    "name": "Cresta Industriale",
-    "description": "Parrucca di lana d'acciaio fissata con adesivo."
+    "name": "Tuta di Prossimità al Magma",
+    "description": "Una tuta d'avvicinamento schermata dal calore."
   },
   "609": {
-    "name": "Cintura dei Sogni Infranti",
-    "description": "Catene di bicicletta intrecciate con delusione."
+    "name": "Pelle del Cavaliere delle Onde",
+    "description": "Una tuta integrale idrodinamica e affusolata."
   },
   "610": {
-    "name": "Asce di Tondino da Cucina",
-    "description": "Armi da lancio ricavate da coltelli e barre di metallo."
+    "name": "Armatura da Rilevamento Artico",
+    "description": "Un'armatura da ricerca isolata."
   },
   "611": {
-    "name": "Moda del Millennio",
-    "description": "Abbigliamento dell'era Y2K ora considerato vintage."
+    "name": "Cappuccio di Cuoio del Bruto",
+    "description": "Un pesante cappuccio di cuoio intimidatorio."
   },
   "612": {
-    "name": "Denim con Strass",
-    "description": "Jeans bootcut a vita bassa con dettagli scintillanti."
+    "name": "Corsetto Rinforzato",
+    "description": "Un corsetto di cuoio rinforzato con stecche."
   },
   "613": {
-    "name": "Tee Corta Metallica",
-    "description": "Maglietta baby con stampa argento e taglio corto."
+    "name": "Tuta da Pista in Pelle",
+    "description": "Una tuta da corsa in pelle imbottita."
   },
   "614": {
-    "name": "Guscio Denim Pre-Scolorito",
-    "description": "Giacca invecchiata artificialmente con finta usura."
+    "name": "Pelli del Tiratore",
+    "description": "Una morbida armatura di cuoio da arciere."
   },
   "615": {
-    "name": "Sandali con Zeppa in Lucite",
-    "description": "Calzature ingombranti in plastica trasparente con zeppa."
+    "name": "Corredo da Corsa",
+    "description": "Un corredo di armatura leggera da corsa."
   },
   "616": {
-    "name": "Set in Ciniglia con Strass",
-    "description": "Tuta rosa brillante con finiture scintillanti."
+    "name": "Gilet a Distorsione Corrotta",
+    "description": "Un gilet distorcente e cangiante."
   },
   "617": {
-    "name": "Top a Spalline di Paillettes",
-    "description": "Top corto con spalline sottili e paillettes."
+    "name": "Hazmat Petrodemone",
+    "description": "Una tuta antichimica sigillata antitossine."
   },
   "618": {
-    "name": "Pantaloni Cargo con Catene",
-    "description": "Pantaloni larghi con tasche e catene decorative."
+    "name": "Visiera Antiriverbero",
+    "description": "Un casco con visiera scura da neve."
   },
   "619": {
-    "name": "Orecchini a Cerchio con Charm",
-    "description": "Grandi cerchi con decorazioni pendenti."
+    "name": "Elmo Ruggente di Gommapiuma",
+    "description": "Un casco imbottito da tifoso."
   },
   "620": {
-    "name": "Choker in Plastica Borchiato",
-    "description": "Collana in plastica nera con borchie argento."
+    "name": "Elmo da Combattimento Notturno",
+    "description": "Un elmo opaco per le operazioni di notte."
   },
   "621": {
-    "name": "Micro-Borsa Inutile",
-    "description": "Borsa minuscola adatta solo a contenere un lucidalabbra."
+    "name": "Cuoio da Combattimento Completo",
+    "description": "Una tuta da combattimento in cuoio completa."
   },
   "622": {
-    "name": "Cappello da Pescatore a Contrasto",
-    "description": "Copricapo in denim con cuciture a vista."
+    "name": "Pelle di Guerra Naguka",
+    "description": "Un'armatura tribale da guerra decorata."
   },
   "623": {
-    "name": "Bralette in Mesh a Strati",
-    "description": "Mesh trasparente indossata sopra l'intimo colorato."
+    "name": "Drappo dello Spettro",
+    "description": "Un indumento drappeggiato, pallido e spettrale."
   },
   "624": {
-    "name": "Zampa d'Elefante con Fiori",
-    "description": "Jeans a zampa con dettagli ricamati."
+    "name": "Elmo del Guardiano di Tempesta",
+    "description": "Un elmo antitempesta impermeabile."
   },
   "625": {
-    "name": "Top Halter con Bandana",
-    "description": "Bandana riutilizzata come top allacciato."
+    "name": "Abbigliamento dal Passo Spezzato",
+    "description": "Una tuta da prestazione reattiva."
   },
   "626": {
-    "name": "Sneakers Dad Multicolore",
-    "description": "Scarpe atletiche massicce dalla suola spessa."
+    "name": "Cotta di Maglia Consacrata",
+    "description": "Cotta di maglia argentata e benedetta."
   },
   "627": {
-    "name": "Anello dell'Umore Termico",
-    "description": "Anello che cambia colore leggendo il calore corporeo."
+    "name": "Casco da Pista",
+    "description": "Un casco da pendio ad alto impatto."
   },
   "628": {
-    "name": "Clip a Farfalla Brillanti",
-    "description": "Accessori colorati per capelli con design a ala."
+    "name": "Cuoio dell'Ombra di Gilda",
+    "description": "Cuoio scuro e morbido da ombra."
   },
   "629": {
-    "name": "Applicazione Luccicante",
-    "description": "Brillantini per il corpo per braccia e petto."
+    "name": "Visiera a Vista Termica",
+    "description": "Una visiera da combattimento sensibile al calore."
   },
   "630": {
-    "name": "Montature Rettangolari Colorate",
-    "description": "Occhiali con montatura sottile e lenti colorate."
+    "name": "Tuta Confondincanti",
+    "description": "Una tuta integrale che scombina gli incantesimi."
   },
   "631": {
-    "name": "Camicetta da Contadina Elastica",
-    "description": "Top con maniche a sbuffo e scollatura arricciata."
+    "name": "Gilet Protetto dalle Afflizioni",
+    "description": "Un gilet protetto resistente alle tossine."
   },
   "632": {
-    "name": "Gonna a Pieghe da Uniforme",
-    "description": "Minigonna a pieghe in stile scolastico."
+    "name": "Gilet dello Spirito Wyrm",
+    "description": "Un gilet squamato legato a uno spirito."
   },
   "633": {
-    "name": "Cappellino da Camionista Ironico",
-    "description": "Cappellino con retro in rete e logo vintage."
+    "name": "Bastione d'Acque Profonde",
+    "description": "Un'armatura sigillata per le acque fredde."
   },
   "634": {
-    "name": "Tessuto Popcorn Aderente",
-    "description": "Camicia in tessuto testurizzato dal taglio aderente."
+    "name": "Tuta Firmata del Campione",
+    "description": "Un'armatura da prestazione di pregio."
   },
   "635": {
-    "name": "Sottoveste sopra Tee",
-    "description": "Combinazione di abito sottoveste sopra una maglietta aderente."
+    "name": "Elmo del Tiranno della Tempesta",
+    "description": "Un elmo di tempesta coronato."
   },
   "636": {
-    "name": "Ombretto Glitter Ghiaccio",
-    "description": "Trucco per occhi scintillante con applicazione audace."
+    "name": "Tuta da Guerra Aliplanante",
+    "description": "Una tuta da combattimento alata per planare."
   },
   "637": {
-    "name": "Ciocche Bionde a Contrasto",
-    "description": "Riflessi grossolani in strisce drammatiche."
+    "name": "Abito del Cacciatore Silente",
+    "description": "L'abito ovattato di un assassino."
   },
   "638": {
-    "name": "Gemme per il Viso da Club",
-    "description": "Strass adesivi intorno agli occhi."
+    "name": "Piastra di Fiamma Viva",
+    "description": "Piastra ardente forgiata nella brace."
   },
   "639": {
-    "name": "Lucidalabbra Estremo",
-    "description": "Prodotto labbra trasparente o nude dal finish accecante."
+    "name": "Piastra a Circuito d'Incanti",
+    "description": "Piastra conduttiva incisa di rune."
   },
   "640": {
-    "name": "Jersey Oversize Casual",
-    "description": "Maglia sportiva indossata larga come abbigliamento di strada."
-  },
-  "641": {
-    "name": "Armatura Urbana Bondage",
-    "description": "Pelle fetish riutilizzata per la protezione stradale."
-  },
-  "642": {
-    "name": "Imbracatura del Dominio",
-    "description": "Cinghie di pelle nera indossate sopra i vestiti."
-  },
-  "643": {
-    "name": "Collare Borchiato d'Autorità",
-    "description": "Collare di pelle borchiato che proietta potere."
-  },
-  "644": {
-    "name": "Corsetto in Pelle Rinforzata",
-    "description": "Pezzo corazzato per il busto dalla forma imponente."
-  },
-  "645": {
-    "name": "Dominio d'Acciaio sulle Cosce",
-    "description": "Stivali sopra il ginocchio con punte rinforzate."
-  },
-  "646": {
-    "name": "Guanti da Combattimento Borchiati",
-    "description": "Pelle senza dita con borchie di metallo."
-  },
-  "647": {
-    "name": "Maschera Minacciosa in Pelle",
-    "description": "Copertura per la parte superiore del viso dal design aggressivo."
-  },
-  "648": {
-    "name": "Bikini Minimal a Catene",
-    "description": "Rete metallica che offre una protezione psicologica."
-  },
-  "649": {
-    "name": "Frusta Difensiva",
-    "description": "Frusta di pelle usata come strumento e deterrente."
-  },
-  "650": {
-    "name": "Manette di Contenzione Riutilizzate",
-    "description": "Protezione per polsi e caviglie proveniente dalla subcultura."
+    "name": "Lunaria, la Trama di Luna",
+    "description": "Cangiante armatura elfica tessuta di luna."
   },
   "651": {
-    "name": "Bracciale Chiodato d'Intimidazione",
-    "description": "Bracciale di pelle chiodato per intimidire."
+    "name": "<-- Heavy Armor -->",
+    "description": ""
   },
   "652": {
-    "name": "Tuta da Combattimento in Pelle Integrale",
-    "description": "Copertura totale del corpo in pelle tattica."
+    "name": "Corazza da Costume",
+    "description": "Un fragile pettorale da travestimento."
   },
   "653": {
-    "name": "Choker Utility con Anello",
-    "description": "Girocollo in pelle con anello a D funzionale."
+    "name": "Piastra del Pellegrino",
+    "description": "Una semplice armatura devozionale."
   },
   "654": {
-    "name": "Protezioni Imbottite da Contenzione",
-    "description": "Protezione per le braccia ricavata da attrezzatura riutilizzata."
+    "name": "Armatura di Nastro e Speranza",
+    "description": "Piastre di scarto tenute col nastro adesivo."
   },
   "655": {
-    "name": "Paradenti da Combattimento in Pelle",
-    "description": "Gag riutilizzato come attrezzatura protettiva."
+    "name": "Corazza di Cartone",
+    "description": "Un pettorale di cartone dipinto."
   },
   "656": {
-    "name": "Cappuccio d'Intimidazione in Pelle",
-    "description": "Copricapo che fornisce paura e protezione."
+    "name": "Elmetto da Cantiere Standard",
+    "description": "Un normale elmetto da lavoro."
   },
   "657": {
-    "name": "Gilet con Borchie Aggressive",
-    "description": "Protezione per il busto in pelle borchiata."
+    "name": "Pentola da Commozione",
+    "description": "Un vecchio elmo da combattimento ammaccato."
   },
   "658": {
-    "name": "Pantaloni Minacciosi Rinforzati",
-    "description": "Armatura per le gambe in pelle con stile aggressivo."
+    "name": "Elmo a Cupola della Guardia",
+    "description": "Un elmo d'acciaio arrotondato da guardia."
   },
   "659": {
-    "name": "Frustino Disciplinare Riutilizzato",
-    "description": "Frustino da equitazione usato come strumento disciplinare."
+    "name": "Elmo Antisommossa",
+    "description": "Un casco antisommossa con visiera."
   },
   "660": {
-    "name": "Copertura Occhi Tattica",
-    "description": "Benda per gli occhi riutilizzata come protezione oculare."
+    "name": "Corazza della Guardia a Contratto",
+    "description": "Un pettorale base da sicurezza."
   },
   "661": {
-    "name": "Collezione Dark Romance",
-    "description": "Abbigliamento gotico per estetiche drammatiche."
+    "name": "Gilet Antisommossa Pesante",
+    "description": "Un pesante gilet antisommossa imbottito."
   },
   "662": {
-    "name": "Cappotto d'Ombra Vittoriano",
-    "description": "Lungo cappotto nero con collo drammatico."
+    "name": "Carapace Antisommossa Completo",
+    "description": "Un set completo di armatura antisommossa."
   },
   "663": {
-    "name": "Abito Gotico in Pizzo",
-    "description": "Abito nero fluente con corpetto a corsetto."
+    "name": "Guscio da Guerra Composito",
+    "description": "Una corazza composita a strati."
   },
   "664": {
-    "name": "Blazer in Velluto Ornato",
-    "description": "Velluto nero con elaborati dettagli in argento."
+    "name": "Elmo della Sentinella",
+    "description": "Un pesante elmo da prima linea."
   },
   "665": {
-    "name": "Calzetteria in Pizzo Distrutta",
-    "description": "Calze nere strappate con fantasie."
+    "name": "Elmo di Comando dell'Operatore",
+    "description": "Un elmo di comando rinforzato."
   },
   "666": {
-    "name": "Stivali Platform con Catene",
-    "description": "Stivali con fibbie e rinforzi in acciaio."
+    "name": "Assetto Ceramico da Trauma",
+    "description": "Un portapiastre in ceramica."
   },
   "667": {
-    "name": "Guanti Lunghi in Pizzo Vittoriano",
-    "description": "Guanti senza dita che si estendono oltre il polso."
+    "name": "Bacinetto del Cavaliere",
+    "description": "Un bacinetto d'acciaio a punta."
   },
   "668": {
-    "name": "Cappello Piumato con Nastri",
-    "description": "Copricapo nero a tesa larga con strascichi."
+    "name": "Portapiastre da Trauma",
+    "description": "Un gilet piastrato antitrauma."
   },
   "669": {
-    "name": "Pendente a Croce in Velluto",
-    "description": "Ornata croce d'argento su nastro nero."
+    "name": "Ramponi da Ghiaccio",
+    "description": "Pesanti ramponi da ghiaccio a punte."
   },
   "670": {
-    "name": "Collana Cammeo in Pizzo",
-    "description": "Pizzo nero con cammeo centrale in argento."
+    "name": "Stivali della Landa Gelata",
+    "description": "Pesanti stivali da guerra isolati."
   },
   "671": {
-    "name": "Mantello Foderato di Seta",
-    "description": "Drammatico mantello nero con interno rosso."
+    "name": "Tuta Protocollo Fortezza",
+    "description": "Una pesante tuta da difesa di bunker."
   },
   "672": {
-    "name": "Corsetto in Pizzo Steccato",
-    "description": "Struttura in acciaio con allacciatura elaborata."
+    "name": "Scarpe d'Arme del Rupestre",
+    "description": "Pesanti stivali di ferro per i sentieri di montagna."
   },
   "673": {
-    "name": "Top in Rete Sovrapposto",
-    "description": "Rete nera indossata come strato esterno."
+    "name": "Grande Elmo del Bastione",
+    "description": "Un grosso elmo da guerra d'acciaio."
   },
   "674": {
-    "name": "Pantaloni con Anelli e Pizzo",
-    "description": "Pantaloni neri aderenti con dettagli in pizzo laterali."
+    "name": "Cotta ad Anelli Ribattuti",
+    "description": "Una cotta di anelli d'acciaio concatenati."
   },
   "675": {
-    "name": "Trucco Drammatico d'Ombra",
-    "description": "Cosmetici per occhi neri e viola profondi."
+    "name": "Stivali Denti di Ghiacciaio",
+    "description": "Stivali ramponati con punte di ferro."
   },
   "676": {
-    "name": "Frac Ricamato",
-    "description": "Lungo cappotto nero in stile aristocratico."
+    "name": "Corazza da Clima Duro",
+    "description": "Un'armatura sigillata per i climi ostili."
   },
   "677": {
-    "name": "Design per Unghie Gotico",
-    "description": "Smalto nero con accenti argento."
+    "name": "Mezza Armatura a Punte",
+    "description": "Mezza armatura d'acciaio di foggia gotica."
   },
   "678": {
-    "name": "Anelli con Simboli Occulti",
-    "description": "Gioielli in argento con simboli mistici."
+    "name": "Elmo a Contrappeso",
+    "description": "Un elmo bilanciato con il paracollo."
   },
   "679": {
-    "name": "Velo da Lutto",
-    "description": "Pizzo nero attaccato a un pettine ornato."
+    "name": "Imbracatura da Soccorso in Pendio",
+    "description": "Un'imbracatura da soccorso rinforzata con ganci."
   },
   "680": {
-    "name": "Abito da Poeta in Seta Romantica",
-    "description": "Camicia nera con maniche a sbuffo e pizzo."
+    "name": "Tuta Ignifuga",
+    "description": "Una piastra antincendio a tenuta termica."
   },
   "681": {
-    "name": "Kit Camionista a Lungo Raggio",
-    "description": "Attrezzatura pratica per i guerrieri dell'autostrada."
+    "name": "Armatura Completa del Pellegrino",
+    "description": "Un'armatura completa da crociato."
   },
   "682": {
-    "name": "Giacca Collezione di Toppe",
-    "description": "Denim coperto di ricordi delle stazioni di servizio."
+    "name": "Carapace Controfiamma",
+    "description": "Un guscio per il corpo resistente alle fiamme."
   },
   "683": {
-    "name": "Flanella Classica da Strada",
-    "description": "Camicia da lavoro a scacchi rossi e neri."
+    "name": "Armatura Tessellata",
+    "description": "Armatura di piccole piastre quadrate d'acciaio."
   },
   "684": {
-    "name": "Stivali Guerriero della Strada",
-    "description": "Calzature da lavoro antiscivolo con punta in acciaio."
+    "name": "Elmo Sfiatacenere",
+    "description": "Un elmo sigillato con i filtri per il fumo."
   },
   "685": {
-    "name": "Cappellino Logo Aziendale",
-    "description": "Cappellino con retro in rete e marchio del datore di lavoro."
+    "name": "Tuta del Camminafornace",
+    "description": "Un'armatura a strati schermata dal calore."
   },
   "686": {
-    "name": "Denim Cargo Rinforzato",
-    "description": "Jeans da lavoro con tasche porta-attrezzi e armatura."
+    "name": "Elmo delle Rapide",
+    "description": "Un elmo da combattimento sigillato e galleggiante."
   },
   "687": {
-    "name": "Guanti da Lavoro con Grip",
-    "description": "Pelle rinforzata con trazione sul palmo."
+    "name": "Armatura di Sostegno Vitale",
+    "description": "Un'armatura con il supporto vitale."
   },
   "688": {
-    "name": "Thermos da Caffè Infinito",
-    "description": "Contenitore isolato per carburante liquido caldo."
+    "name": "Guscio da Alta Pressione",
+    "description": "Una corazza da immersione a tenuta di pressione."
   },
   "689": {
-    "name": "Gilet Riflettente da Bordo Strada",
-    "description": "Protezione ad alta visibilità per il lavoro."
+    "name": "Telaio Antiurto",
+    "description": "Un'armatura a piastre che assorbe gli urti."
   },
   "690": {
-    "name": "Cuffie di Comunicazione CB",
-    "description": "Attrezzatura radio per la comunicazione tra conducenti."
+    "name": "Assetto del Colosso Urbano",
+    "description": "Un ingombrante telaio da combattimento urbano."
   },
   "691": {
-    "name": "Salopette Multitasche",
-    "description": "Resistente abito da lavoro con tasche ovunque."
+    "name": "Assetto da Sonda Valanghe",
+    "description": "Un'imbracatura da soccorso con una sonda d'acciaio."
   },
   "692": {
-    "name": "Guscio da Camionista per Climi Freddi",
-    "description": "Giacca isolante per la guida invernale."
+    "name": "Gambali Termici da Pendio",
+    "description": "Gambali corazzati e isolati."
   },
   "693": {
-    "name": "Occhiali Anti-Abbagliamento",
-    "description": "Occhiali da sole avvolgenti per la guida."
+    "name": "Assetto Spaccamacerie",
+    "description": "Un'imbracatura da scavo per i crolli."
   },
   "694": {
-    "name": "Cintura degli Attrezzi d'Emergenza",
-    "description": "Cintura con tasche per riparazioni d'emergenza."
+    "name": "Elmo a Sella Corticale",
+    "description": "Un elmo da combattimento collegato ai nervi."
   },
   "695": {
-    "name": "Cuscino da Sedile Comfort",
-    "description": "Copertura imbottita per maratone di guida."
+    "name": "Armatura dalla Vena d'Oro",
+    "description": "Piastra d'acciaio profilata d'oro."
   },
   "696": {
-    "name": "Equipaggiamento Carico Tempesta",
-    "description": "Tuta resistente alle intemperie per lavori sotto la pioggia."
+    "name": "Elmo Radio da Vuoto",
+    "description": "Un elmo sigillato con il ripetitore vocale."
   },
   "697": {
-    "name": "Bandana Anti-Polvere",
-    "description": "Tessuto per la gestione di polvere e sudore."
+    "name": "Elmo della Scheggia Caduta",
+    "description": "Un elmo incastonato di un frammento di stella caduta."
   },
   "698": {
-    "name": "Bretelle da Lavoro",
-    "description": "Cinghie ultra-resistenti per tenere i pantaloni al sicuro."
+    "name": "Elmo da Battaglia Sovrapposto",
+    "description": "Un elmo con la visiera che si illumina."
   },
   "699": {
-    "name": "Organizzatore Tracciamento Ore",
-    "description": "Supporto per il registro conforme alle norme di trasporto."
+    "name": "Guscio della Frana",
+    "description": "Un guscio per il corpo rinforzato contro gli urti."
   },
   "700": {
-    "name": "Kit Razzi di Emergenza",
-    "description": "Segnalazione d'emergenza per le soste a bordo strada."
+    "name": "Elmo del Dio della Guerra",
+    "description": "Un cupo elmo cerimoniale di divinità guerriera."
   },
   "701": {
-    "name": "Collezione Horror Organico",
-    "description": "Inquietanti indumenti di tessuto vivente e biomateria."
+    "name": "Tuta Vitale da Vuoto",
+    "description": "Una tuta pressurizzata a pieno supporto vitale."
   },
   "702": {
-    "name": "Guscio in Pelle Coltivata",
-    "description": "Giacca fatta di cellule di pelle viva che respira."
+    "name": "Scafandro di Ferro",
+    "description": "Un'armatura meccanizzata da immersione profonda."
   },
   "703": {
-    "name": "Gilet di Fibre Muscolari",
-    "description": "Tessuto muscolare vivo che si contrae per fornire supporto."
+    "name": "Armatura Consacrata",
+    "description": "Sacra armatura da battaglia benedetta."
   },
   "704": {
-    "name": "Stivali a Crescita Scheletrica",
-    "description": "Cartilagine indurita con rinforzi ossei."
-  },
-  "705": {
-    "name": "Guanti del Senso Nervoso",
-    "description": "Tessuto nervoso vivo che potenzia il tatto."
-  },
-  "706": {
-    "name": "Copricapo Frammento di Cranio",
-    "description": "Cappello ricavato da osso cranico che fornisce uno scudo mentale."
-  },
-  "707": {
-    "name": "Cintura Intestino Vivente",
-    "description": "Cintura in tessuto digestivo che elabora le tossine."
-  },
-  "708": {
-    "name": "Regolatore a Follicoli Pelosi",
-    "description": "Camicia che fa crescere peli per il controllo della temperatura."
-  },
-  "709": {
-    "name": "Pantaloni Sistema Circolatorio",
-    "description": "Pantaloni con vasi sanguigni vivi integrati."
-  },
-  "710": {
-    "name": "Filtro in Tessuto Polmonare",
-    "description": "Maschera ricavata da tessuto respiratorio che filtra l'aria."
-  },
-  "711": {
-    "name": "Catena di Riflessi Vertebrali",
-    "description": "Collana di ossa spinali che potenzia i riflessi."
-  },
-  "712": {
-    "name": "Armatura di Depositi di Calcio",
-    "description": "Piastre ricavate da matrice ossea e minerali."
-  },
-  "713": {
-    "name": "Calze con Grip Ungueale",
-    "description": "Coperture per i piedi che fanno crescere artigli per la trazione."
-  },
-  "714": {
-    "name": "Benda a Visione Retinica",
-    "description": "Benda per l'occhio ricavata da tessuto oculare vivo."
+    "name": "Egida di Pelle di Wyrm",
+    "description": "Armatura forgiata da scaglie di drago."
   },
   "715": {
-    "name": "Intimo Vescicale",
-    "description": "Indumenti intimi ricavati dal rivestimento degli organi."
+    "name": "<-- Equipment -->",
+    "description": ""
   },
   "716": {
-    "name": "Guscio a Muta Mimetica",
-    "description": "Cappotto che muta continuamente cellule epiteliali."
+    "name": "Coperchio Unto",
+    "description": "Un coperchio da cucina ammaccato usato come scudo."
   },
   "717": {
-    "name": "Potenziatori Audio in Cartilagine",
-    "description": "Orecchini fatti di tessuto auricolare che potenziano l'udito."
+    "name": "Ombrello dalle Stecche d'Osso",
+    "description": "Un ombrello scheletrico, stranamente solido."
   },
   "718": {
-    "name": "Sciarpa di Tessuto Golare",
-    "description": "Sciarpa di corde vocali vive che parla autonomamente."
+    "name": "Coperchio del Baule dei Giochi",
+    "description": "Il coperchio graffiato di una cassa di giocattoli."
   },
   "719": {
-    "name": "Anello Nervoso Smaltato",
-    "description": "Anello di dente con terminazioni nervose incorporate."
+    "name": "Cassa del Premio Misterioso",
+    "description": "Una scatola sigillata tenuta come riparo."
   },
   "720": {
-    "name": "Tuta del Battito Secondario",
-    "description": "Tuta integrale che pulsa grazie a un cuore extra."
+    "name": "Asse da Spazi Stretti",
+    "description": "Una corta asse da barricata per i vicoli."
   },
   "721": {
-    "name": "Xenotecnologia Turistica",
-    "description": "Strana attrezzatura della enigmatica specie dei Turisti."
+    "name": "Guardia da Vicolo",
+    "description": "Uno scudo da vicolo di metallo di scarto."
   },
   "722": {
-    "name": "Tuta Distorsione di Probabilità",
-    "description": "Equipaggiamento cangiante che piega i campi di probabilità."
+    "name": "Baluardo di Assi Leggere",
+    "description": "Un'asse di legno leggera per ripararsi."
   },
   "723": {
-    "name": "Casco Sensore PSI",
-    "description": "Copricapo traslucido con capacità di rilevamento sconosciute."
+    "name": "Scudo Rotondo Bilanciato",
+    "description": "Un semplice scudo rotondo ben bilanciato."
   },
   "724": {
-    "name": "Filtro Radiazioni Cosmiche",
-    "description": "Apparato respiratorio che filtra le radiazioni di fondo."
+    "name": "Telo Termoresistente",
+    "description": "Un foglio termico riflettente."
   },
   "725": {
-    "name": "Stivali di Fase Silenziosa",
-    "description": "Calzature che non lasciano traccia su alcuna superficie."
+    "name": "Diffusore Cinetico",
+    "description": "Un'imbottitura che disperde la forza d'impatto."
   },
   "726": {
-    "name": "Guanti di Fase Solida",
-    "description": "Mani che passano attraverso la materia a piacimento."
+    "name": "Piastra Antistatica",
+    "description": "Uno scudo antiscarica messo a terra."
   },
   "727": {
-    "name": "Veste che Sfida la Fisica",
-    "description": "Abbigliamento casual che ignora la moda e la realtà."
+    "name": "Coperchio Chiodato",
+    "description": "Un coperchio della pattumiera irto di chiodi."
   },
   "728": {
-    "name": "Cintura Dimensione Tasca",
-    "description": "Contenitore da vita che racchiude uno spazio impossibile."
+    "name": "Brocchiere di Coppa Ruota",
+    "description": "Un copriruota lucidato con la cinghia."
   },
   "729": {
-    "name": "Sandali per Superfici Universali",
-    "description": "Calzature per camminare su tutto, fisica opzionale."
+    "name": "Guardia di Risposta",
+    "description": "Uno scudo costruito per il contrattacco."
   },
   "730": {
-    "name": "Tocco delle Lingue Impossibili",
-    "description": "Cappello che traduce lingue che non esistono."
+    "name": "Zaino da Gita",
+    "description": "Uno zaino leggero per le uscite brevi."
   },
   "731": {
-    "name": "Camicia della Cultura dell'Umore",
-    "description": "Indumento che si adatta alle emozioni e ai costumi locali."
+    "name": "Bozzolo d'Emergenza",
+    "description": "Un guscio di sopravvivenza in cui avvolgersi."
   },
   "732": {
-    "name": "Intimo a Clima Perfetto",
-    "description": "Indumenti intimi che regolano perfettamente la temperatura."
+    "name": "Randello di Cono Stradale",
+    "description": "Un pesante randello ricavato da un cono stradale."
   },
   "733": {
-    "name": "Orologio Multi-Realtà",
-    "description": "Orologio che mostra l'ora attraverso le dimensioni."
+    "name": "Clava Spergiura",
+    "description": "Una clava ottusa e molto usata."
   },
   "734": {
-    "name": "Pendente del Fascino Universale",
-    "description": "Collana che rende chi la indossa interessante per tutte le specie."
+    "name": "Teglia da Pizza Difensiva",
+    "description": "Una teglia rotonda d'acciaio usata come riparo."
   },
   "735": {
-    "name": "Lenti che Rivelano la Verità",
-    "description": "Occhiali da sole che mostrano la vera natura dei fenomeni."
+    "name": "Zaino del Vagabondo",
+    "description": "Uno zaino capiente da viaggio urbano."
   },
   "736": {
-    "name": "Zaino Senza Massa",
-    "description": "Zaino che non pesa nulla indipendentemente dal contenuto."
+    "name": "Assetto di Sicurezza da Scalata",
+    "description": "Un'imbracatura anticaduta rinforzata."
   },
   "737": {
-    "name": "Giacca di Repulsione Sociale",
-    "description": "Cappotto che devia automaticamente l'attenzione indesiderata."
+    "name": "Accette di Tondino",
+    "description": "Due accette forgiate da ferri d'armatura."
   },
   "738": {
-    "name": "Calze Anti-Superficie",
-    "description": "Calzature che prevengono il contatto con sgradevolezze."
+    "name": "Brocchiere dello Schermidore",
+    "description": "Un piccolo brocchiere agile da maneggiare."
   },
   "739": {
-    "name": "Anello della Fortuna del Novizio",
-    "description": "Gioiello che garantisce una straordinaria fortuna ai principianti."
+    "name": "Bracciale di Forza Protettiva",
+    "description": "Un bracciale intessuto di deboli protezioni."
   },
   "740": {
-    "name": "Tuta da Osservatore Antropologico",
-    "description": "Attrezzatura ambientale per lo studio di culture primitive."
+    "name": "Egida Paravolt",
+    "description": "Uno scudo isolato antiscarica."
+  },
+  "741": {
+    "name": "Difensore Sferzante",
+    "description": "Uno scudo-frusta flessibile."
+  },
+  "742": {
+    "name": "Ancora Dimensionale",
+    "description": "Un pesante amuleto che fissa chi lo porta."
+  },
+  "743": {
+    "name": "Egida Radicante",
+    "description": "Uno scudo che radica chi lo impugna."
+  },
+  "744": {
+    "name": "Manganello Trebbiatore",
+    "description": "Un correggiato da fattoria riadattato alla guerra."
+  },
+  "745": {
+    "name": "Specchio della Sfortuna",
+    "description": "Un campo che devia la mala sorte."
+  },
+  "746": {
+    "name": "Egida dello Spirito Sentinella",
+    "description": "Uno scudo legato a uno spirito guardiano."
+  },
+  "747": {
+    "name": "Egida della Vena Pura",
+    "description": "Un limpido scudo protettivo di cristallo."
+  },
+  "748": {
+    "name": "Il Codice Vivente",
+    "description": "Un grimorio fluttuante che si difende da solo."
+  },
+  "759": {
+    "name": "<-- Shield -->",
+    "description": ""
+  },
+  "760": {
+    "name": "Scudo Giocattolo di Plastica",
+    "description": "Uno scudo giocattolo di plastica sgargiante."
+  },
+  "761": {
+    "name": "Scudo di Scena",
+    "description": "Un fragile scudo decorativo di scena."
+  },
+  "762": {
+    "name": "Scudo Standard da Pattuglia",
+    "description": "Un semplice scudo d'ordinanza da guardia."
+  },
+  "763": {
+    "name": "Scudo del Guardiano del Piazzale",
+    "description": "Uno scudo graffiato di lamiera."
+  },
+  "764": {
+    "name": "Barriera Trasparente",
+    "description": "Uno scudo antisommossa trasparente."
+  },
+  "765": {
+    "name": "Scudo con Feritoia",
+    "description": "Uno scudo balistico con la feritoia di mira."
+  },
+  "766": {
+    "name": "Barriera Contieni-Folla",
+    "description": "Un largo scudo per trattenere la folla."
+  },
+  "767": {
+    "name": "Bastione Mutevole",
+    "description": "Uno scudo adattivo regolabile."
+  },
+  "768": {
+    "name": "Scudo da Guerra a Mandorla",
+    "description": "Un classico scudo da guerra a mandorla."
+  },
+  "769": {
+    "name": "Egida del Passo Fantasma",
+    "description": "Uno scudo che sfarfalla quando è colpito."
+  },
+  "770": {
+    "name": "Scudo Torre della Roccaforte",
+    "description": "Un alto e pesante scudo torre."
+  },
+  "771": {
+    "name": "Scudo Torre Legionario",
+    "description": "Un largo scudo da guerra a incastro."
+  },
+  "772": {
+    "name": "Baluardo del Convoglio",
+    "description": "Un robusto scudo torre da lunga percorrenza."
+  },
+  "773": {
+    "name": "Scudo del Sacro Sigillo",
+    "description": "Uno scudo segnato da un simbolo sacro."
+  },
+  "774": {
+    "name": "Scudo Sfasato",
+    "description": "Uno scudo che si dissolve a metà all'impatto."
+  },
+  "775": {
+    "name": "Scudo-Zaino Stagno",
+    "description": "Un ibrido scudo-zaino a tenuta d'acqua."
+  },
+  "776": {
+    "name": "Scudo Protettivo Corticale",
+    "description": "Uno scudo legato alla mente di chi lo porta."
+  },
+  "777": {
+    "name": "Barriera della Fucina di Mana",
+    "description": "Uno scudo che ronza di mana vincolato."
+  },
+  "778": {
+    "name": "Scudo Impianto Audio",
+    "description": "Uno scudo attrezzato con vecchi altoparlanti."
+  },
+  "779": {
+    "name": "Scudo su Rotelle",
+    "description": "Uno scudo montato su ruote scorrevoli."
+  },
+  "780": {
+    "name": "Egida Antica",
+    "description": "Un grande scudo antico e leggendario."
+  },
+  "781": {
+    "name": "Il Codice del Guardiano",
+    "description": "Un grimorio vivente che protegge il suo custode."
+  },
+  "782": {
+    "name": "Talismano di Vetro di Brace",
+    "description": "Una lente bruciacchiata su un anello d'ottone."
+  },
+  "783": {
+    "name": "Talismano del Congelamento",
+    "description": "Un amuleto brinato di gelo perenne."
+  },
+  "784": {
+    "name": "Ciondolo d'Ancora di Marea",
+    "description": "Un peso di piombo consunto su un laccio bagnato."
+  },
+  "785": {
+    "name": "Spilla del Muro di Vento",
+    "description": "Una spilla a forma di ventaglio ripiegato."
+  },
+  "786": {
+    "name": "Distintivo Protettivo di Benzina",
+    "description": "Una spilla smaltata e unta."
+  },
+  "787": {
+    "name": "Sigillo Santificato",
+    "description": "Un piccolo disco di osso lucidato."
+  },
+  "788": {
+    "name": "Medaglione Spezzamalefici",
+    "description": "Un medaglione che non resta chiuso."
+  },
+  "789": {
+    "name": "Camiciotto dei Trucchetti",
+    "description": "Una veste rattoppata da apprendista."
+  },
+  "790": {
+    "name": "Scialle delle Linee Ley",
+    "description": "Uno scialle che ronza vicino ai tralicci."
+  },
+  "791": {
+    "name": "Cappuccio Conduttore",
+    "description": "Un cappuccio intessuto di capelli di rame."
+  },
+  "792": {
+    "name": "Gilet Serba-Incanti",
+    "description": "Un gilet dalle molte tasche ricucite."
+  },
+  "793": {
+    "name": "Manto dell'Augure",
+    "description": "Un manto ricamato di occhi chiusi."
+  },
+  "794": {
+    "name": "Stola Necrotica",
+    "description": "Una stola fredda che sa di terra."
+  },
+  "795": {
+    "name": "Cappuccio Filato di Sogno",
+    "description": "Un cappuccio che si sfoca ai bordi."
+  },
+  "796": {
+    "name": "Cintura del Geomante",
+    "description": "Una cintura pesante infilata di sassi di fiume."
+  },
+  "797": {
+    "name": "Insegne del Convocatore",
+    "description": "Vesti ornate coperte di segni d'evocazione."
+  },
+  "798": {
+    "name": "Cappotto della Trama del Tempo",
+    "description": "Un cappotto in cui i fili non si posano mai."
+  },
+  "799": {
+    "name": "Grembiule da Triage",
+    "description": "Un grembiule macchiato dai molti lacci."
+  },
+  "800": {
+    "name": "Fascia Risanante",
+    "description": "Un rotolo di benda che si annoda da solo."
+  },
+  "801": {
+    "name": "Ciondolo del Seme di Vita",
+    "description": "Un baccello che non si secca mai del tutto."
+  },
+  "802": {
+    "name": "Borsa del Cerusico",
+    "description": "Una borsa di strumenti che tintinnano."
+  },
+  "803": {
+    "name": "Reliquiario della Panacea",
+    "description": "Un portafiale che ne tiene sempre una in più."
+  },
+  "804": {
+    "name": "Pantofole Felpate",
+    "description": "Scarpe morbide che non fanno rumore."
+  },
+  "805": {
+    "name": "Cintura del Tagliaborse",
+    "description": "Una cintura foderata di ganci nascosti."
+  },
+  "806": {
+    "name": "Gilet del Contrabbandiere",
+    "description": "Un gilet che nasconde più di quanto mostri."
+  },
+  "807": {
+    "name": "Guanti del Fabbro di Serrature",
+    "description": "Guanti sottili dai polpastrelli consumati."
+  },
+  "808": {
+    "name": "Mantello del Piede Fantasma",
+    "description": "Un mantello da cui l'occhio continua a scivolare."
+  },
+  "809": {
+    "name": "Fodera della Fortuna",
+    "description": "Un cappotto scialbo con la fodera rossa portafortuna."
+  },
+  "810": {
+    "name": "Assetto del Cacciatore di Taglie",
+    "description": "Un'imbracatura pratica di cinghie e borse."
+  },
+  "811": {
+    "name": "Sudario dello Svanire",
+    "description": "Un velo di garza che sfarfalla nella luce."
+  },
+  "812": {
+    "name": "Gilet a Piastre di Baluardo",
+    "description": "Un gilet di piastre di scarto sovrapposte."
+  },
+  "813": {
+    "name": "Carapace Antisommossa",
+    "description": "Imbottitura pesante sotto un guscio duro."
+  },
+  "814": {
+    "name": "Bracciale di Contrapposizione",
+    "description": "Una protezione rinforzata per l'avambraccio."
+  },
+  "815": {
+    "name": "Cintura del Campo Egida",
+    "description": "Una cintura dal bordo che luccica appena."
+  },
+  "816": {
+    "name": "Corazza Guardapietra",
+    "description": "Una corazza grigia fredda come una cantina."
+  },
+  "817": {
+    "name": "Imbracatura dell'Ultima Difesa",
+    "description": "Un'imbracatura malconcia retta da una vecchia fede."
+  },
+  "818": {
+    "name": "Monocolo di Puntamento",
+    "description": "Una singola lente brulicante di indicatori."
+  },
+  "819": {
+    "name": "Visiera Scansiona-Minacce",
+    "description": "Una visiera che dipinge la stanza di rosso."
+  },
+  "820": {
+    "name": "Collare Potenziariflessi",
+    "description": "Un collare che sussulta contro la pelle."
+  },
+  "821": {
+    "name": "Tuta Smorzastatica",
+    "description": "Una tuta grigia che beve le scintille."
+  },
+  "822": {
+    "name": "Giacca a Trama Refrigerante",
+    "description": "Una giacca venata di tubi gelidi."
+  },
+  "823": {
+    "name": "Cappuccio a Rete di Faraday",
+    "description": "Un cappuccio di metallo fine, un po' annerito."
+  },
+  "824": {
+    "name": "Corona Sovraccaricata",
+    "description": "Una corona calda al tatto."
+  },
+  "825": {
+    "name": "Cintura Stabilizzatrice di Fase",
+    "description": "Una cintura che ronza quando ti muovi in fretta."
+  },
+  "826": {
+    "name": "Tunica di Muschio Intrecciato",
+    "description": "Una tunica che torna lentamente alla terra."
+  },
+  "827": {
+    "name": "Velo di Polline",
+    "description": "Un velo di garza spolverato d'oro."
+  },
+  "828": {
+    "name": "Manto di Rovi",
+    "description": "Un manto di liane spinose essiccate."
+  },
+  "829": {
+    "name": "Fascia della Pozza di Marea",
+    "description": "Una fascia umida che sa di sale."
+  },
+  "830": {
+    "name": "Pelliccia dell'Evocabestie",
+    "description": "Una pelliccia ruvida ancora tiepida."
+  },
+  "831": {
+    "name": "Velo Palinsesto",
+    "description": "Un velo stampato di testo che sbiadisce."
+  },
+  "832": {
+    "name": "Berretto del Lettore di Presagi",
+    "description": "Un berretto cucito di campanellini."
+  },
+  "833": {
+    "name": "Fascia del Filo del Fato",
+    "description": "Una fascia rossa che tira da sola."
+  },
+  "834": {
+    "name": "Medaglione dalle Tasche d'Anime",
+    "description": "Un medaglione greve di un peso invisibile."
+  },
+  "835": {
+    "name": "Visiera dell'Occhio Aggiornato",
+    "description": "Una visiera che scorre di vecchie notizie."
+  },
+  "836": {
+    "name": "Manto della Piccola Apocalisse",
+    "description": "Un manto carbonizzato che non si raffredda mai."
+  },
+  "837": {
+    "name": "Paramenti del Marciume Quieto",
+    "description": "Vesti morbide di una decomposizione paziente."
+  },
+  "838": {
+    "name": "Insegne della Mano Aperta",
+    "description": "Vesti semplici che paiono stranamente generose."
+  },
+  "839": {
+    "name": "Corona degli Anni in Prestito",
+    "description": "Una corona che invecchia chi la porta."
+  },
+  "840": {
+    "name": "Sudario del Coro Invisibile",
+    "description": "Un sudario che sembra mormorare."
+  },
+  "841": {
+    "name": "Cappotto dalle Mille Tasche",
+    "description": "Un cappotto che nasconde sempre qualcosa."
+  },
+  "842": {
+    "name": "Aureola del Decreto Finale",
+    "description": "Un anello di luce fredda e certa."
+  },
+  "843": {
+    "name": "Egida del Re Annegato",
+    "description": "Armatura incrostata di cirripedi, fredda come l'abisso."
+  },
+  "844": {
+    "name": "Bracciale delle Mani Ferme",
+    "description": "Un bracciale aderente di cuoio cucito."
+  },
+  "845": {
+    "name": "Cappotto Trapuntato di Frontiera",
+    "description": "Un cappotto spesso contro il freddo."
+  },
+  "846": {
+    "name": "Gorgiera del Cantore",
+    "description": "Una protezione per la gola di feltro morbido."
+  },
+  "847": {
+    "name": "Veste Semplice del Pellegrino",
+    "description": "Una semplice veste assottigliata dalle strade."
+  },
+  "848": {
+    "name": "Cappotto dell'Acchiappatopi",
+    "description": "Un cappotto lercio che sa di catrame."
+  },
+  "849": {
+    "name": "Grembiule del Vetraio",
+    "description": "Un grembiule di cuoio bruciacchiato."
+  },
+  "850": {
+    "name": "Imbracatura del Palombaro",
+    "description": "Un'imbracatura di cinghie e valvole d'ottone."
+  },
+  "851": {
+    "name": "Gilet del Geometra",
+    "description": "Un gilet carico di piccoli strumenti."
+  },
+  "852": {
+    "name": "Mantello della Ronda Notturna",
+    "description": "Un mantello scuro che sa di olio di lampada."
+  },
+  "853": {
+    "name": "Fasce del Monaco di Brace",
+    "description": "Fasciature grigio cenere, calde al tatto."
+  },
+  "854": {
+    "name": "Maschera Specchio",
+    "description": "Una maschera lucidata che non mostra volto."
+  },
+  "855": {
+    "name": "Cavigliera del Cerchio di Sale",
+    "description": "Una cavigliera infilata di grani bianchi."
+  },
+  "856": {
+    "name": "Guanti di Limatura di Ferro",
+    "description": "Guanti spolverati di metallo che si attacca."
+  },
+  "857": {
+    "name": "Velo Intriso di Sole",
+    "description": "Un velo luminoso che trattiene il calore del giorno."
+  },
+  "858": {
+    "name": "Bandana Intrisa di Salamoia",
+    "description": "Una bandana rigida incrostata di sale."
+  },
+  "859": {
+    "name": "Sacchetto di Polvere di Tomba",
+    "description": "Un sacchetto di polvere grigio pallido."
+  },
+  "860": {
+    "name": "Ciondolo di Vetro di Tempesta",
+    "description": "Una fiala di liquido in cui infuria una tempesta."
+  },
+  "861": {
+    "name": "Scialle Antibrace",
+    "description": "Un pesante scialle che non prende fuoco."
+  },
+  "862": {
+    "name": "Abito del Giullare",
+    "description": "Un chiassoso patchwork di colori discordi."
+  },
+  "863": {
+    "name": "Tuta a Palloncino",
+    "description": "Una tuta imbottita assurdamente gonfia."
+  },
+  "864": {
+    "name": "Occhiali da Discoteca",
+    "description": "Occhiali a specchio che spargono la luce."
+  },
+  "865": {
+    "name": "Occhialoni Brilli",
+    "description": "Occhialoni che deformano tutta la stanza."
+  },
+  "866": {
+    "name": "Fascia del Principe Mercante",
+    "description": "Una ricca fascia carica di monete."
+  },
+  "867": {
+    "name": "Cappotto dell'Esattore",
+    "description": "Un cappotto severo dai bottoni d'ottone."
+  },
+  "868": {
+    "name": "Anello con Sigillo di Gilda",
+    "description": "Un anello con sigillo d'oro consumato."
+  },
+  "869": {
+    "name": "Distintivo Semplice del Cittadino",
+    "description": "Una modesta spilla di stagno pressato."
+  },
+  "870": {
+    "name": "Sudario della Crisalide",
+    "description": "Un sudario ceroso che pulsa appena."
+  },
+  "871": {
+    "name": "Fascia della Seconda Pelle",
+    "description": "Una fascia che calza un po' troppo bene."
+  },
+  "872": {
+    "name": "Manto del Mutagenere",
+    "description": "Un manto cangiante dalla tinta mutevole."
+  },
+  "873": {
+    "name": "Imbracatura del Protesista",
+    "description": "Un'imbracatura costellata di innesti."
+  },
+  "874": {
+    "name": "Corazza di Carbone d'Ossa",
+    "description": "Armatura di osso annerito e fuso."
+  },
+  "875": {
+    "name": "Cappuccio di Seta Spettrale",
+    "description": "Un cappuccio tessuto di filo grigio e freddo."
+  },
+  "876": {
+    "name": "Manopola Mieti-Anime",
+    "description": "Una manopola artigliata che beve il calore."
+  },
+  "877": {
+    "name": "Amuleto della Spoglia Immortale",
+    "description": "Un amuleto avvolto, caldo come un battito."
+  },
+  "878": {
+    "name": "Diadema della Porta del Lich",
+    "description": "Un diadema tanto freddo da bruciare."
+  },
+  "879": {
+    "name": "Manto della Gran Carovana",
+    "description": "Un manto consumato dai viaggi in molte terre."
+  },
+  "880": {
+    "name": "Cintura del Sisma del Mondo",
+    "description": "Una cintura pesante che trema appena."
+  },
+  "881": {
+    "name": "Velo dell'Apoteosi",
+    "description": "Un velo di luce che non nasconde nulla."
   }
 }

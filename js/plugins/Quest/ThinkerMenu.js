@@ -464,13 +464,13 @@
             return window.ItemSystemUtils.getItemRarity(item);
         }
         // i18n-ignore-start: rarity tier ids, mirroring ItemSystemUtils
-        if (!item) return { name: "Common", colorCode: "#FFFFFF" };
+        if (!item) return { name: "Common" };
         const price = item.price || 0;
-        if (price >= 1000000) return { name: "Legendary", colorCode: "#FF8000" };
-        if (price >= 100000) return { name: "Epic", colorCode: "#8000FF" };
-        if (price >= 10000) return { name: "Rare", colorCode: "#0080FF" };
-        if (price >= 1000) return { name: "Uncommon", colorCode: "#1AFF1A" };
-        return { name: "Common", colorCode: "#FFFFFF" };
+        if (price >= 1000000) return { name: "Legendary" };
+        if (price >= 100000) return { name: "Epic" };
+        if (price >= 10000) return { name: "Rare" };
+        if (price >= 1000) return { name: "Uncommon" };
+        return { name: "Common" };
         // i18n-ignore-end
     }
 
@@ -712,11 +712,11 @@
                         <div id="success-overlay-container"></div>
                         
                         <div class="left-page">
-                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
-                                <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
+                            <div class="page-header-bar think-01">
+                                <div class="back-button focusable think-02" onclick="SceneManager._scene.popScene()">
                                     ${backBtnText}
                                 </div>
-                                <h2 class="title" style="border: none; margin: 0; padding: 0">${t.title}</h2>
+                                <h2 class="title think-03">${t.title}</h2>
                             </div>
                             
                             <!-- Tab buttons container -->
@@ -883,19 +883,19 @@
                         itemsHTML += `
                             <div class="success-item-row">
                                 <span class="icon" style="${iconStyle}"></span>
-                                <span style="font-weight:bold; color: ${rarity.colorCode}">${obj.name}</span>
+                                <span class="think-04 ${window.ItemSystemUtils.rarityClass(rarity)}">${obj.name}</span>
                             </div>
                         `;
                     });
 
                     successOverlayContainer.innerHTML = `
                         <div class="success-overlay">
-                            <div class="cauldron-animation" style="font-size: 88px"></div>
+                            <div class="cauldron-animation think-05"></div>
                             <h2 class="success-title">${successTitle}</h2>
                             ${isBotch
                             ? `<span class="success-obtained-label">${T('Thinker.botchNote')}</span>`
                             : `<span class="success-obtained-label">${t.obtained}</span>
-                            <div style="display:flex; flex-direction:column; gap:8px">
+                            <div class="think-06">
                                 ${itemsHTML}
                             </div>`}
                         </div>
@@ -1006,7 +1006,7 @@
 
                                         itemMetaHTML = `
                                             <div class="blueprint-icon" style="${iconStyle}"></div>
-                                            <span class="blueprint-name" style="color: ${rarity.colorCode}">${item.name}</span>
+                                            <span class="blueprint-name ${window.ItemSystemUtils.rarityClass(rarity)}">${item.name}</span>
                                         `;
                                     } else {
                                         itemMetaHTML = `
@@ -1016,7 +1016,7 @@
                                     }
 
                                     const canAssemble = canCraft(parseRecipe(item));
-                                    const craftColor = canAssemble ? "#27ae60" : "#c0392b";
+                                    const craftClass = canAssemble ? "cost--ok" : "cost--short";
                                     const ownedCount = $gameParty.numItems(item);
 
                                     return `
@@ -1024,7 +1024,7 @@
                                         <div class="blueprint-meta">
                                             ${itemMetaHTML}
                                         </div>
-                                        <span class="blueprint-count" style="color: ${craftColor}; font-weight: bold">(x${ownedCount})</span>
+                                        <span class="blueprint-count think-04 ${craftClass}">(x${ownedCount})</span>
                                     </div>
                                 `;
                                 });
@@ -1042,7 +1042,7 @@
                     const salvageItems = this.thinkerItemsList();
 
                     if (salvageItems.length === 0) {
-                        lines.push(() => `<div class="workbench-empty" style="margin-top: 24px">${t.noOwned}</div>`);
+                        lines.push(() => `<div class="workbench-empty think-07">${t.noOwned}</div>`);
                     } else {
                         this._itemIndex = Math.max(0, Math.min(salvageItems.length - 1, this._itemIndex));
 
@@ -1067,9 +1067,9 @@
                                 <div class="${rowClasses}" data-item-id="${item.id}" data-db="${dbKindOf(item)}" data-idx="${idx}">
                                     <div class="blueprint-meta">
                                         <div class="blueprint-icon" style="${iconStyle}"></div>
-                                        <span class="blueprint-name" style="color: ${rarity.colorCode}">${item.name}</span>
+                                        <span class="blueprint-name ${window.ItemSystemUtils.rarityClass(rarity)}">${item.name}</span>
                                     </div>
-                                    <span class="blueprint-count" style="font-weight: bold; color: #5c2c16">x${ownedCount}</span>
+                                    <span class="blueprint-count think-08">x${ownedCount}</span>
                                 </div>
                             `;
                             });
@@ -1109,7 +1109,7 @@
                     let descHTML = "";
 
                     if (this._mode === 'assemble' && !known) {
-                        nameHTML = `<span class="workbench-item-name" style="color: #7f7360">??? (${t.blueprintLocked})</span>`;
+                        nameHTML = `<span class="workbench-item-name think-09">??? (${t.blueprintLocked})</span>`;
                         // Say what would read it: the trade it is written in and
                         // how far along that trade these hands would have to be.
                         const lockedDesc = T('Thinker.lockedRecipeHint');
@@ -1129,7 +1129,7 @@
 
                         nameHTML = `
                             <span class="icon" style="${iconStyle}"></span>
-                            <span class="workbench-item-name" style="color: ${rarity.colorCode}">${item.name}</span>
+                            <span class="workbench-item-name ${window.ItemSystemUtils.rarityClass(rarity)}">${item.name}</span>
                         `;
                         descHTML = `<p class="workbench-desc">${item.description || "Nessuna descrizione."}</p>`;
                     }
@@ -1193,7 +1193,7 @@
                                 : `<span class="reagent-status-indicator deficient">✖</span>`;
 
                             reagentsHTML += `
-                                <div class="reagent-row" style="opacity: ${satisfied ? 1 : 0.6}">
+                                <div class="reagent-row" style="opacity:${satisfied ? 1 : 0.6}">
                                     <div class="reagent-meta">
                                         <span class="icon" style="${iconStyle}"></span>
                                         <span class="reagent-name">${(typeof window.translateText === 'function') ? window.translateText(reagent.name) : reagent.name}</span>
@@ -1237,7 +1237,7 @@
                             skillNotice += `<div class="workbench-skill"><span>${T('Thinker.knownBySkill', { spec: specLabel(trade.name), level: levelLabel(trade.level) })}</span></div>`;
                         }
                         if (!trained) {
-                            skillNotice += `<div class="sandbox-badge" style="background:rgba(160,40,40,0.18); border-color:#a02828; color:#a02828">${T('Thinker.needFabrication', { level: tierLevelName(item) })}</div>`;
+                            skillNotice += `<div class="sandbox-badge think-10">${T('Thinker.needFabrication', { level: tierLevelName(item) })}</div>`;
                         }
                     } else if (recipe) {
                         skillNotice = `<div class="workbench-skill">

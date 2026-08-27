@@ -457,6 +457,12 @@
     if (!biome) return;
     try {
       applyMapFeatures(pg.generatedMapData, biome, worldCoords);
+      // The procedural map may be a stitched window of several squares, which
+      // holds a COPY of this square's tiles: the hatch has to be blitted back
+      // into it or it would be stamped on an array nobody is looking at.
+      if (window.ProcStitch && window.ProcStitch.active()) {
+        window.ProcStitch.syncCell(worldCoords.x, worldCoords.y);
+      }
     } catch (e) {
       warn("hatch stamping failed: " + e.message);
     }

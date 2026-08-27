@@ -251,9 +251,8 @@
   function iconHTML(iconIndex, size = 20) {
     const x = (iconIndex % 16) * size;
     const y = Math.floor(iconIndex / 16) * size;
-    return `<span class="onu-icon" style="display:inline-block; vertical-align:middle; width:${size}px; height:${size}px; ` +
-      `background-image:url('img/system/IconSet.png'); background-size:${size * 16}px auto; ` +
-      `background-position:-${x}px -${y}px; image-rendering:pixelated"></span>`;
+    return `<span class="onu-icon onu-01" style="width:${size}px; height:${size}px; background-size:${size * 16}px auto; ` +
+      `background-position:-${x}px -${y}px"></span>`;
   }
 
   const escapeHTML = (s) => String(s == null ? "" : s)
@@ -1106,13 +1105,13 @@
       if (!this._container) return;
       this._container.innerHTML = `
         <div class="book-spread">
-          <div class="left-page" style="justify-content:flex-start">
+          <div class="left-page onu-02">
             <h2 class="title">${T(this._titleKey)}</h2>
-            <div class="onu-headline" id="onu-headline" style="font-family:'Lora',serif; text-align:center; margin-bottom:8px; color:#6b5242">${escapeHTML(this._headline)}</div>
+            <div class="onu-headline onu-03" id="onu-headline">${escapeHTML(this._headline)}</div>
             <div class="eris-dialogue-log" id="onu-log">${this.logHTML()}</div>
             <div class="eris-choices-panel" id="onu-choices"></div>
           </div>
-          <div class="right-page" style="justify-content:flex-start" id="onu-side">${this._sidebar}</div>
+          <div class="right-page onu-02" id="onu-side">${this._sidebar}</div>
         </div>`;
       const log = this._container.querySelector("#onu-log");
       if (log) log.scrollTop = log.scrollHeight;
@@ -1323,14 +1322,17 @@
   // Sidebar panels
   //===========================================================================
 
-  function statBar(label, value, max, color) {
+  // `axis` is the stat the bar measures, and also the modifier that inks it:
+  // .onu-stat--military and friends live in theme.css so a preset can retune
+  // the whole sidebar without the plugin naming a single colour.
+  function statBar(label, value, max, axis) {
     const pct = Math.max(0, Math.min(100, (value / max) * 100));
-    return `<div style="display:flex; align-items:center; gap:6px; margin-bottom:3px; font-family:'Lora',serif; font-size:0.856em">
-      <span style="flex:0 0 84px">${label}</span>
-      <span style="flex:1 1 auto; height:8px; background:rgba(90,70,50,0.18); border-radius:4px; overflow:hidden">
-        <span style="display:block; height:100%; width:${pct}%; background:${color}"></span>
+    return `<div class="onu-04">
+      <span class="onu-05">${label}</span>
+      <span class="onu-06">
+        <span class="onu-07 onu-stat--${axis}" style="width:${pct}%"></span>
       </span>
-      <span style="flex:0 0 34px; text-align:right">${value}</span>
+      <span class="onu-08">${value}</span>
     </div>`;
   }
 
@@ -1345,14 +1347,14 @@
       .filter(Boolean);
     const s = delegation.stats;
     const bars = delegation.kind === "hyperpower" ? [
-      statBar(T("ONUMenu.stat.military"), s.military, 200, "#a33"),
-      statBar(T("ONUMenu.stat.economy"), s.economy, 200, "#b8860b"),
-      statBar(T("ONUMenu.stat.population"), s.population, 300, "#4a7a8c"),
-      statBar(T("ONUMenu.stat.information"), s.information, 100, "#5a6f8c"),
-      statBar(T("ONUMenu.stat.arcane"), s.arcane, 100, "#7a4a8c"),
+      statBar(T("ONUMenu.stat.military"), s.military, 200, "military"),
+      statBar(T("ONUMenu.stat.economy"), s.economy, 200, "economy"),
+      statBar(T("ONUMenu.stat.population"), s.population, 300, "population"),
+      statBar(T("ONUMenu.stat.information"), s.information, 100, "information"),
+      statBar(T("ONUMenu.stat.arcane"), s.arcane, 100, "arcane"),
     ].join("") : [
-      statBar(T("ONUMenu.stat.information"), s.information, 100, "#5a6f8c"),
-      statBar(T("ONUMenu.stat.arcane"), s.arcane, 100, "#7a4a8c"),
+      statBar(T("ONUMenu.stat.information"), s.information, 100, "information"),
+      statBar(T("ONUMenu.stat.arcane"), s.arcane, 100, "arcane"),
     ].join("");
 
     const projected = STIPEND_BASE + STIPEND_PER_POINT * Math.max(0, rep + JOIN_HEAD);
@@ -1360,26 +1362,26 @@
     return `
       <div class="faction-heraldry-card">
         <div class="heraldry-emblem-box">
-          <canvas id="onu-emblem" width="32" height="32" style="width:36px; height:36px; image-rendering:pixelated"></canvas>
+          <canvas class="onu-09" id="onu-emblem" width="32" height="32"></canvas>
         </div>
         <div class="heraldry-header"><h3 class="heraldry-title">${escapeHTML(delegation.name)}</h3></div>
-        <div style="font-family:'Lora',serif; font-size:0.928em; text-align:center; margin-bottom:10px; color:#6b5242">
+        <div class="onu-10">
           ${T("ONUMenu.ui.ledBy", { leader: escapeHTML(leaderOf(delegation)) })}
         </div>
-        <div class="inspect-lore" style="max-height:130px; padding-right:5px; margin-bottom:12px">
+        <div class="inspect-lore onu-11">
           ${delegation.description || T("Factions.noDossier")}
         </div>
         ${bars}
-        ${branches.length ? `<div style="margin-top:10px; font-family:'Lora',serif; font-size:0.892em">
+        ${branches.length ? `<div class="onu-12">
           <strong>${T("Factions.branches")}</strong> <span>${escapeHTML(branches.join(", "))}</span>
         </div>` : ""}
-        <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Lora',serif; font-size:0.928em; border-top:1px solid #c9b4a1; padding-top:8px">
+        <div class="onu-13">
           <span>${T("ONUMenu.ui.yourStanding")}</span>
-          <span style="color:${$gameFactions.reputationColorOf(rep)}; font-weight:bold">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
+          <span class="onu-14" style="color:${$gameFactions.reputationColorOf(rep)}">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
         </div>
-        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
+        <div class="onu-15">
           <span>${T("ONUMenu.ui.projectedStipend")}</span>
-          <span style="font-weight:bold">${euros(projected)}</span>
+          <span class="onu-14">${euros(projected)}</span>
         </div>
       </div>`;
   }
@@ -1405,12 +1407,12 @@
       const mark = state === "done"
         ? (session.results[i] && session.results[i].passed ? T("ONUMenu.ui.carried") : T("ONUMenu.ui.failed"))
         : (state === "current" ? T("ONUMenu.ui.onTheFloor") : T("ONUMenu.ui.toCome"));
-      const color = state === "done"
-        ? (session.results[i] && session.results[i].passed ? "#2e7d32" : "#c62828")
-        : (state === "current" ? "#58180D" : "#8c715c");
-      return `<div class="eris-crime-row" style="opacity:${state ==="pending" ? 0.55 : 1};">
+      const markClass = state === "done"
+        ? (session.results[i] && session.results[i].passed ? "onu-mark--carried" : "onu-mark--failed")
+        : (state === "current" ? "onu-mark--current" : "onu-mark--pending");
+      return `<div class="eris-crime-row ${state === "pending" ? "onu-row--pending" : ""}">
         <span class="crime-name">${escapeHTML(m.title)}</span>
-        <span style="color:${color}; font-weight:bold">${mark}</span>
+        <span class="onu-14 ${markClass}">${mark}</span>
       </div>`;
     }).join("");
 
@@ -1436,40 +1438,37 @@
   function boardHTML(entries, opts) {
     const secret = !!(opts && opts.secret);
     const tiles = entries.map((e, i) => `
-      <div class="onu-seat" id="onu-seat-${i}" style="flex:0 0 auto; min-width:86px; max-width:120px; padding:5px 6px; border-radius:5px; border:1.5px solid rgba(90,70,50,0.35); background:rgba(120,100,75,0.12); font-family:'Lora',serif; font-size:0.83rem; line-height:1.15; text-align:center; color:#4a3a2a; transition:background 0.28s ease, border-color 0.28s ease, color 0.28s ease">
+      <div class="onu-seat onu-16" id="onu-seat-${i}">
         ${secret ? T("ONUMenu.ui.sealedSeat") : escapeHTML(e.delegation.name)}
       </div>`).join("");
     return `
       <h2 class="title">${T("ONUMenu.ui.division")}</h2>
-      <div style="font-family:'Lora',serif; text-align:center; margin-bottom:8px; color:#6b5242">
+      <div class="onu-03">
         ${secret ? T("ONUMenu.ui.secretBallotNote") : T("ONUMenu.ui.publicBallotNote")}
       </div>
-      <div id="onu-board" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; align-content:flex-start">${tiles}</div>
-      <div id="onu-tally" style="margin-top:14px; font-family:'Lora',serif; text-align:center; font-size:0.964em"></div>`;
+      <div class="onu-17" id="onu-board">${tiles}</div>
+      <div class="onu-18" id="onu-tally"></div>`;
   }
 
-  const VOTE_STYLE = {
-    for: { bg: "rgba(46,125,50,0.75)", border: "#2e7d32", color: "#f4efe2" },
-    against: { bg: "rgba(198,40,40,0.75)", border: "#c62828", color: "#f4efe2" },
-    abstain: { bg: "rgba(190,150,60,0.55)", border: "#a5852f", color: "#3a2e1e" },
-  };
+  // How a seat is painted once it has voted: .onu-seat--for / --against /
+  // --abstain in theme.css. Kept as classes so the board reads on either
+  // preset instead of the one it was drawn against.
+  const VOTE_CLASSES = ["onu-seat--for", "onu-seat--against", "onu-seat--abstain"];
 
   function paintSeat(index, vote) {
     const el = document.getElementById("onu-seat-" + index);
     if (!el) return;
-    const s = VOTE_STYLE[vote] || VOTE_STYLE.abstain;
-    el.style.background = s.bg;
-    el.style.borderColor = s.border;
-    el.style.color = s.color;
+    el.classList.remove(...VOTE_CLASSES);
+    el.classList.add(VOTE_CLASSES.includes("onu-seat--" + vote) ? "onu-seat--" + vote : "onu-seat--abstain");
   }
 
   function paintTally(counts) {
     const el = document.getElementById("onu-tally");
     if (!el) return;
     el.innerHTML =
-      `<span style="color:#2e7d32; font-weight:bold">${T("ONUMenu.ui.votesFor")} ${counts.for}</span> &nbsp;·&nbsp; ` +
-      `<span style="color:#c62828; font-weight:bold">${T("ONUMenu.ui.votesAgainst")} ${counts.against}</span> &nbsp;·&nbsp; ` +
-      `<span style="color:#8c6b2f; font-weight:bold">${T("ONUMenu.ui.votesAbstain")} ${counts.abstain}</span>`;
+      `<span class="onu-19">${T("ONUMenu.ui.votesFor")} ${counts.for}</span> &nbsp;·&nbsp; ` +
+      `<span class="onu-20">${T("ONUMenu.ui.votesAgainst")} ${counts.against}</span> &nbsp;·&nbsp; ` +
+      `<span class="onu-21">${T("ONUMenu.ui.votesAbstain")} ${counts.abstain}</span>`;
   }
 
   //===========================================================================
@@ -1509,7 +1508,7 @@
     chamber.add(say("ONUAssembly.ambience"), "narrator");
     await chamber.advance();
 
-    const persuade = persuasion(actor, delegation, sg);
+    let persuade = persuasion(actor, delegation, sg);
     const secretaryPresent = sg || isSecretaryCandidate();
 
     let carried = 0;
@@ -1560,6 +1559,9 @@
       const chosen = await chamber.choose(labels, {
         speaker: sg ? T("ONUMenu.role.secretaryGeneral") : delegation.name,
       });
+      // choose() resolves to the index of the label that was picked, so the answer
+      // has to be read back out of the key list the labels were built from.
+      const option = optionKeys[chosen] || optionKeys[0];
       chamber.add(say("ONUAssembly.reactions." + (option === "wild" ? "wild" : "normal"), {
         power: sg ? T("ONUMenu.role.secretaryGeneral") : delegation.name,
       }), "narrator");
@@ -1777,9 +1779,9 @@
     board.open();
 
     if (!offered.length) {
-      board.setSidebar(`<div class="faction-heraldry-card" style="justify-content:center; text-align:center; padding:40px 10px">
-        <h3 class="title" style="border:none; margin-bottom:10px">${T("ONUMenu.ui.noSeatsTitle")}</h3>
-        <p style="font-family:'Lora',serif; line-height:1.6; color:#6b5242">${T("ONUMenu.ui.noSeatsHint")}</p>
+      board.setSidebar(`<div class="faction-heraldry-card onu-22">
+        <h3 class="title onu-23">${T("ONUMenu.ui.noSeatsTitle")}</h3>
+        <p class="onu-24">${T("ONUMenu.ui.noSeatsHint")}</p>
       </div>`);
       board.add(say("ONUAssembly.joining.refused", { name: actor.name() }), "narrator");
       await board.advance();
@@ -1842,33 +1844,33 @@
   function lobbySidebar(actor) {
     const post = postOf(actor);
     if (!post) {
-      return `<div class="faction-heraldry-card" style="justify-content:center; text-align:center; padding:40px 10px">
-        <h3 class="title" style="border:none; margin-bottom:10px">${T("ONUMenu.ui.unaccredited")}</h3>
-        <p style="font-family:'Lora',serif; line-height:1.6; color:#6b5242">${T("ONUMenu.ui.unaccreditedHint")}</p>
+      return `<div class="faction-heraldry-card onu-22">
+        <h3 class="title onu-23">${T("ONUMenu.ui.unaccredited")}</h3>
+        <p class="onu-24">${T("ONUMenu.ui.unaccreditedHint")}</p>
       </div>`;
     }
     if (post.sg) {
       const state = assemblyState();
       return `<div class="faction-heraldry-card">
         <div class="heraldry-header"><h3 class="heraldry-title">${T("ONUMenu.role.secretaryGeneral")}</h3></div>
-        <div class="inspect-lore" style="margin-bottom:12px">${T("ONUMenu.ui.sgBlurb")}</div>
-        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
+        <div class="inspect-lore onu-25">${T("ONUMenu.ui.sgBlurb")}</div>
+        <div class="onu-15">
           <span>${T("ONUMenu.ui.weeksServed")}</span><span>${post.weeksServed || 0}</span>
         </div>
-        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
+        <div class="onu-15">
           <span>${T("ONUMenu.ui.weeklyStipend")}</span><span>${euros(weeklyPay(actor))}</span>
         </div>
-        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
+        <div class="onu-15">
           <span>${T("ONUMenu.ui.sessionsHeld")}</span><span>${(state && state.sessionsHeld) || 0}</span>
         </div>
       </div>`;
     }
     const delegation = delegationByKey(post.key);
     let html = dossierHTML(delegation, actor);
-    html += `<div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em; margin-top:6px">
+    html += `<div class="onu-26">
       <span>${T("ONUMenu.ui.weeksServed")}</span><span>${post.weeksServed || 0}</span>
     </div>
-    <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
+    <div class="onu-15">
       <span>${T("ONUMenu.ui.weeklyStipend")}</span><span>${euros(weeklyPay(actor))}</span>
     </div>`;
     return html;

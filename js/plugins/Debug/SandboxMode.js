@@ -15,6 +15,13 @@
  */
 
 (() => {
+    // A canvas bitmap can only be handed a colour string, so the few labels
+    // drawn onto one read the theme's token instead of naming a hex here.
+    function cssColor(token, fallback) {
+        const value = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+        return value || fallback;
+    }
+
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;')
@@ -183,6 +190,9 @@
         { name: "Start Common Event", symbol: "event", icon: 191 },
         { name: "Teleport Map", symbol: "map", icon: 310 },
         { name: "Teleport to Planet", symbol: "planet", icon: 84 },
+        // The 3D world, opened on any of the alien biomes without flying there:
+        // one biome from pole to pole, walked on foot (see voxelPlanetBiomes).
+        { name: "3D Planet Walk", symbol: "voxelplanet", icon: 245 },
         { name: "Variables", symbol: "variables", icon: 236 },
         { name: "Switches", symbol: "switches", icon: 84 },
         { name: "Player Attributes", symbol: "player", icon: 263 },
@@ -206,6 +216,60 @@
         // Full Wishing Sanctum (same flow as the openWishingSystem command).
         { name: "Wishing System", symbol: "wish", icon: 87 }
     ];
+
+    // =========================================================================
+    //  The 3D world, opened on any alien biome
+    // =========================================================================
+    // The star map only offers the walk on a world the ship is actually in
+    // orbit of. Here every alien biome in the game is a row, so a world of any
+    // type can be stood on without flying to one first.
+    function voxelPlanetBiomes() {
+        const list = (window.WorldGen && window.WorldGen.Biomes) || [];
+        return list.filter(b => b && typeof b.name === "string" && /^Alien/.test(b.name))
+                   .sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    // What the row reads as: the biome's own display name where it has one,
+    // and the raw name (minus the "Alien" it all shares) where it has not.
+    function voxelPlanetLabel(biome) {
+        if (window.BiomeNames) {
+            const shown = window.BiomeNames.display(biome.name);
+            if (shown && shown !== biome.name) return shown;
+        }
+        return biome.name.replace(/^Alien/, "").replace(/([a-z])([A-Z])/g, "$1 $2");
+    }
+
+    // Open the 3D world on one. The planet a biome belongs to is looked up the
+    // other way round - PlanetTypes says which biome each type wears - so the
+    // sky, the gravity and the day length are that world's own rather than
+    // Earth's. A type with no roster has nothing roaming it, which is the
+    // honest answer for a rock.
+    function startVoxelPlanetWalk(biomeName) {
+        const VW = window.VoxelWorldSystem;
+        if (!VW || !VW.startAlienWalk) return false;
+        const biome = voxelPlanetBiomes().find(b => b.name === biomeName);
+        if (!biome) return false;
+
+        const GS = window.GalaxySim || null;
+        const PT = (GS && GS.PlanetTypes) || {};
+        const type = Object.keys(PT).find(k => PT[k] && PT[k].biome === biomeName) || null;
+
+        let planet = { name: voxelPlanetLabel(biome), type: type || "rocky", moons: [] };
+        let species = null;
+        if (GS && type) {
+            try {
+                if (GS.planetHasLife && GS.planetHasLife(planet) && GS.alienSpeciesRoster) {
+                    species = (GS.alienSpeciesRoster(planet) || [])
+                        .map(sp => sp.enemyId).filter(id => id > 0);
+                    if (!species.length) species = null;
+                }
+            } catch (e) { species = null; }
+            try {
+                if (GS.makeLandedDescriptor) planet = GS.makeLandedDescriptor(planet, {}) || planet;
+            } catch (e) { /* the plain descriptor still names the place */ }
+        }
+        return !!VW.startAlienWalk(biome, planet, species);
+    }
 
     // The readable name of a biome, through the one service that prints them,
     // falling back to the name the date itself puts on its own badge.
@@ -674,35 +738,35 @@
         let leftPageHTML = "";
         if (isWish) {
             leftPageHTML = `
-                <div class="left-page" style="display: flex; justify-content: space-between; height: 100%">
+                <div class="left-page sandbox-01">
                     <div>
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-focus-hover); padding-bottom: 8px; margin-bottom: 15px; min-height: 40px; width: 100%">
-                          <div class="back-button focusable" onclick="SoundManager.playCancel(); SceneManager._scene.exitWish()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
+                        <div class="page-header-bar sandbox-02">
+                          <div class="back-button focusable sandbox-03" onclick="SoundManager.playCancel(); SceneManager._scene.exitWish()">
                             ${backBtnText}
                           </div>
-                          <h2 class="title" style="border: none; margin: 0; padding: 0">${wishTitle}</h2>
+                          <h2 class="title sandbox-04">${wishTitle}</h2>
                         </div>
                         
-                        <div style="font-family: 'Lora', serif; font-size: 0.928em; color: var(--text-text-alt-2); background: var(--bg-subtle-translucent-10); border: 1px dashed var(--border-focus-hover); padding: 15px; border-radius: 4px; margin-bottom: 20px; line-height: 1.5; text-align: justify">
+                        <div class="sandbox-05">
                             "Deep in the recesses of your consciousness, your psychic power (PSI) manifests as a desire to bend reality. Close your eyes, concentrate, and whisper your soul's true wish..."
                         </div>
 
-                        <div style="text-align: center; margin: 30px 0">
-                            <span style="font-family: 'Lora', serif; font-size: 2.9em; color: var(--text-gold-dark); display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1))">✦ ✦ ✦</span>
+                        <div class="sandbox-06">
+                            <span class="sandbox-07">✦ ✦ ✦</span>
                         </div>
                     </div>
 
-                    <div class="vitals-box" style="padding: 12px 14px; background: rgba(184, 134, 11, 0.05); border: 1px solid rgba(184,134,11,0.15); border-radius: 4px; margin-top: auto">
-                        <h4 style="margin: 0 0 8px 0; font-family: 'Lora', serif; font-size: 1.048em; color: var(--text-gold-dark); border-bottom: 1px solid rgba(184,134,11,0.2); padding-bottom: 4px">
+                    <div class="vitals-box sandbox-08">
+                        <h4 class="sandbox-09">
                             Psychic Diagnostics
                         </h4>
-                        <div style="display: flex; flex-direction: column; gap: 6px; font-family: 'Lora', serif; font-size: 0.892em; color: var(--text-text-alt-2)">
-                            <div style="display: flex; justify-content: space-between">
-                                <span style="font-weight: bold">Party PSI (Luck):</span>
-                                <span style="font-weight: bold; color: var(--text-gold-dark)">${this.getMedianPartyPSI()}</span>
+                        <div class="sandbox-10">
+                            <div class="sandbox-11">
+                                <span class="sandbox-12">Party PSI (Luck):</span>
+                                <span class="sandbox-13">${this.getMedianPartyPSI()}</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between">
-                                <span style="font-weight: bold">Manifestation Rate:</span>
+                            <div class="sandbox-11">
+                                <span class="sandbox-12">Manifestation Rate:</span>
                                 <span>${this.getMedianPartyPSI() >= 50 ? "Clear Mind (100%)" : (this.getMedianPartyPSI() >= 25 ? "Cryptic Whispers (50%)" : "Chaotic Murmurs (25%)")}</span>
                             </div>
                         </div>
@@ -716,54 +780,54 @@
             let categoriesHTML = "";
             sortedCategories().forEach((cat, idx) => {
                 categoriesHTML += `
-                    <div class="category-item focusable" data-symbol="${cat.symbol}" data-index="${idx}" onclick="SceneManager._scene.selectCategoryByClick('${cat.symbol}', ${idx})" style="padding: 10px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; min-height: 62px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px; border: 1px solid rgba(88,24,13,0.10)">
-                        <canvas class="cat-icon" width="20" height="20" data-icon="${cat.icon}" style="display:block; image-rendering:pixelated; flex: 0 0 auto"></canvas>
-                        <span style="font-family: 'Lora', serif; font-size: 0.856em; line-height: 1.25; color: var(--text-primary-hover); font-weight: bold; letter-spacing: 0.3px; overflow-wrap: anywhere">${escapeHtml(categoryName(cat))}</span>
+                    <div class="category-item focusable sandbox-14" data-symbol="${cat.symbol}" data-index="${idx}" onclick="SceneManager._scene.selectCategoryByClick('${cat.symbol}', ${idx})">
+                        <canvas class="cat-icon sandbox-15" width="20" height="20" data-icon="${cat.icon}"></canvas>
+                        <span class="sandbox-16">${escapeHtml(categoryName(cat))}</span>
                     </div>
                 `;
             });
 
             leftPageHTML = `
-                <div class="left-page" style="display: flex; justify-content: space-between; height: 100%">
+                <div class="left-page sandbox-01">
                     <div>
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-focus-hover); padding-bottom: 8px; margin-bottom: 12px; min-height: 40px; width: 100%">
-                          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
+                        <div class="page-header-bar sandbox-17">
+                          <div class="back-button focusable sandbox-03" onclick="SceneManager._scene.popScene()">
                             ${backBtnText}
                           </div>
-                          <h2 class="title" style="border: none; margin: 0; padding: 0">${sandboxTitle}</h2>
+                          <h2 class="title sandbox-04">${sandboxTitle}</h2>
                         </div>
-                        <div class="categories-list" style="display: grid; grid-template-columns: repeat(${CATEGORY_COLUMNS}, minmax(0, 1fr)); gap: 6px; align-content: start; max-height: 60vh; overflow-y: auto; padding-right: 4px; border-bottom: 1px solid rgba(88,24,13,0.08); padding-bottom: 10px; margin-bottom: 10px">
+                        <div class="categories-list sandbox-18" style="grid-template-columns:repeat(${CATEGORY_COLUMNS}, minmax(0, 1fr))">
                             ${categoriesHTML}
                         </div>
                     </div>
 
-                    <div class="vitals-box" style="padding: 10px 12px; background: rgba(88, 24, 13, 0.04); border: 1px solid rgba(88,24,13,0.08); border-radius: 4px; margin-top: auto">
-                        <h4 style="margin: 0 0 6px 0; font-family: 'Lora', serif; font-size: 0.964em; color: var(--text-primary-hover); border-bottom: 1px solid rgba(88,24,13,0.12); padding-bottom: 3px; display: flex; justify-content: space-between; align-items: center">
+                    <div class="vitals-box sandbox-19">
+                        <h4 class="sandbox-20">
                             <span>Sandbox Status</span>
-                            <span style="font-size: 0.82em; cursor: pointer; color: ${$gamePlayer.isThrough() ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'}; font-weight: bold; border: 1px solid currentColor; padding: 1px 4px; border-radius: 3px" onclick="SceneManager._scene.toggleCollisionUI()">
+                            <span class="sandbox-21" style="color:${$gamePlayer.isThrough() ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'}" onclick="SceneManager._scene.toggleCollisionUI()">
                                 Collision: ${$gamePlayer.isThrough() ? 'OFF' : 'ON'}
                             </span>
                         </h4>
-                        <div style="display: flex; flex-direction: column; gap: 4px; font-family: 'Lora', serif; font-size: 0.856em; color: var(--text-text-alt-2)">
-                            <div style="display: flex; justify-content: space-between">
-                                <span style="font-weight: bold">Party Leader:</span>
+                        <div class="sandbox-22">
+                            <div class="sandbox-11">
+                                <span class="sandbox-12">Party Leader:</span>
                                 <span>${$gameParty.leader() ? $gameParty.leader().name() : "None"} (Lv. ${$gameParty.leader() ? $gameParty.leader().level : 1})</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between">
-                                <span style="font-weight: bold">Current Map:</span>
+                            <div class="sandbox-11">
+                                <span class="sandbox-12">Current Map:</span>
                                 <span>ID ${$gameMap.mapId()} (${$gamePlayer.x}, ${$gamePlayer.y})</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between">
-                                <span style="font-weight: bold">PSI (Luck):</span>
+                            <div class="sandbox-11">
+                                <span class="sandbox-12">PSI (Luck):</span>
                                 <span>${$gameParty.leader() ? $gameParty.leader().luk : 10}</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between">
-                                <span style="font-weight: bold">Spawn:</span>
+                            <div class="sandbox-11">
+                                <span class="sandbox-12">Spawn:</span>
                                 <span>${spawnModeLabel}, ${eraLabel}</span>
                             </div>
                             ${placeLabel ? `
-                            <div style="display: flex; justify-content: space-between">
-                                <span style="font-weight: bold">Place:</span>
+                            <div class="sandbox-11">
+                                <span class="sandbox-12">Place:</span>
                                 <span>${placeLabel}</span>
                             </div>` : ""}
                         </div>
@@ -780,13 +844,13 @@
             <div class="book-spread">
                 ${leftPageHTML}
 
-                <div class="right-page" style="display: flex; height: 100%">
-                    <h2 class="title" style="margin-bottom: 12px">${rightPageTitle}</h2>
+                <div class="right-page sandbox-23">
+                    <h2 class="title sandbox-24">${rightPageTitle}</h2>
                     
-                    <div style="padding: 0 4px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden">
+                    <div class="sandbox-25">
                         ${this.searchFieldHTML()}
                         
-                        <div class="actions-list-container" style="flex-grow: 1; overflow-y: auto; padding-right: 4px">
+                        <div class="actions-list-container sandbox-26">
                             ${actionsHTML}
                         </div>
                     </div>
@@ -816,7 +880,7 @@
     Scene_SandboxMenu.prototype.buildActionsListHTML = function () {
         const filtered = this.getFilteredActions();
         if (filtered.length === 0) {
-            return `<div style="text-align:center; padding: 40px 20px; font-family:'Lora', serif; font-size: 0.964em; color: var(--text-card-medium)">No matching outcomes.</div>`;
+            return `<div class="sandbox-27">No matching outcomes.</div>`;
         }
         if (this._listWindow._mode === "map") return this.buildMapTreeHTML(filtered);
         const cap = Scene_SandboxMenu.MAX_ACTION_ROWS;
@@ -825,15 +889,15 @@
         for (let idx = 0; idx < shown; idx++) {
             const label = this.getActionLabel(filtered[idx]);
             actionsHTML += `
-                    <div class="action-item focusable" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})" style="padding: 8px 12px; text-align: left; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px">
-                        <span style="font-family: 'Lora', serif; font-size: 0.914em; color: var(--text-text-alt-2); font-weight: 500">${label}</span>
-                        <span style="font-family: 'Lora', serif; font-size: 0.82em; color: var(--text-gold-dark)">✦</span>
+                    <div class="action-item focusable sandbox-28" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})">
+                        <span class="sandbox-29">${label}</span>
+                        <span class="sandbox-30">✦</span>
                     </div>
                 `;
         }
         if (filtered.length > cap) {
             const more = filtered.length - cap;
-            actionsHTML += `<div style="text-align:center; padding: 12px 20px; font-family:'Lora', serif; font-size: 0.892em; color: var(--text-card-medium)">...${more} more (refine your search)</div>`;
+            actionsHTML += `<div class="sandbox-31">...${more} more (refine your search)</div>`;
         }
         return actionsHTML;
     };
@@ -854,20 +918,20 @@
             // past 8 levels (the tree is only ~9 deep at its worst).
             const indent = searching ? 0 : Math.min(row.depth, 8) * 13;
             const handle = isFolder
-                ? `<span class="map-toggle" onclick="event.stopPropagation(); SceneManager._scene.toggleMapFolder(${row.id})" style="width: 14px; flex: 0 0 14px; text-align: center; cursor: pointer; font-size: 0.856em; color: var(--text-gold-dark); user-select: none">${open ? "▾" : "▸"}</span>`
-                : `<span style="width: 14px; flex: 0 0 14px; text-align: center; font-size: 0.784em; color: var(--text-card-medium)">·</span>`;
+                ? `<span class="map-toggle sandbox-32" onclick="event.stopPropagation(); SceneManager._scene.toggleMapFolder(${row.id})">${open ? "▾" : "▸"}</span>`
+                : `<span class="sandbox-33">·</span>`;
             const label = String(row.id).padStart(3, '0') + ": " + row.name;
             const pathHTML = (searching && row.path)
-                ? `<span style="font-family: 'Lora', serif; font-size: 0.798em; color: var(--text-card-medium); margin-left: 6px">${escapeHtml(row.path)}</span>`
+                ? `<span class="sandbox-34">${escapeHtml(row.path)}</span>`
                 : "";
             const rightHTML = isFolder
-                ? `<span style="font-family: 'Lora', serif; font-size: 0.798em; color: var(--text-gold-dark)">${row.childCount}</span>`
-                : `<span style="font-family: 'Lora', serif; font-size: 0.82em; color: var(--text-gold-dark)">✦</span>`;
+                ? `<span class="sandbox-35">${row.childCount}</span>`
+                : `<span class="sandbox-30">✦</span>`;
             html += `
-                    <div class="action-item focusable" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})" style="padding: 6px 12px 6px ${12 + indent}px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 3px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px">
-                        <span style="display: flex; align-items: center; gap: 6px; min-width: 0">
+                    <div class="action-item focusable sandbox-36" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})" style="padding:6px 12px 6px ${12 + indent}px">
+                        <span class="sandbox-37">
                             ${handle}
-                            <span style="font-family: 'Lora', serif; font-size: 0.914em; color: var(--text-text-alt-2); font-weight: ${isFolder ?"bold" : "500"}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(label)}</span>
+                            <span class="sandbox-38" style="font-weight:${isFolder ?"bold" : "500"}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(label)}</span>
                             ${pathHTML}
                         </span>
                         ${rightHTML}
@@ -876,7 +940,7 @@
         }
         if (rows.length > cap) {
             const more = rows.length - cap;
-            html += `<div style="text-align:center; padding: 12px 20px; font-family:'Lora', serif; font-size: 0.892em; color: var(--text-card-medium)">...${more} more (refine your search)</div>`;
+            html += `<div class="sandbox-31">...${more} more (refine your search)</div>`;
         }
         return html;
     };
@@ -1120,22 +1184,22 @@
         const phrase = item.wishingPhrase || item.name || "";
         this._dndContainer.innerHTML = `
             <div class="book-spread skill-fullpage">
-                <div class="left-page" style="width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; gap: 18px">
-                    <span style="font-family: 'Lora', serif; font-size: 2.9em; color: var(--text-gold-dark); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1))">&#10022;</span>
-                    <h2 class="title" style="border: none; margin: 0; padding: 0">${escapeHtml(T("Wish.granted.title"))}</h2>
-                    <div style="font-family: 'Lora', serif; font-size: 0.928em; color: var(--text-card-medium)">
+                <div class="left-page sandbox-39">
+                    <span class="sandbox-40">&#10022;</span>
+                    <h2 class="title sandbox-04">${escapeHtml(T("Wish.granted.title"))}</h2>
+                    <div class="sandbox-41">
                         ${escapeHtml(T("Wish.granted.whispered"))}
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 1.475em; line-height: 1.4; color: var(--text-text-alt-2); max-width: 70%; background: var(--bg-subtle-translucent-10); border: 1px dashed var(--border-focus-hover); border-radius: 4px; padding: 18px 24px">
+                    <div class="sandbox-42">
                         &ldquo;${escapeHtml(phrase)}&rdquo;
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 1.048em; font-weight: bold; color: var(--text-gold-dark)">
+                    <div class="sandbox-43">
                         ${escapeHtml(T("Wish.granted.manifested", { outcome: item.name || "" }))}
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 0.928em; color: var(--text-card-medium)">
+                    <div class="sandbox-41">
                         ${escapeHtml(T("Wish.granted.spent"))}
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 0.856em; color: var(--text-card-medium); text-transform: uppercase; letter-spacing: 0.08em">
+                    <div class="sandbox-44">
                         ${escapeHtml(T("Wish.granted.close"))}
                     </div>
                 </div>
@@ -1231,7 +1295,7 @@
             ? window.MenuSearchBar.toggleHTML('SceneManager._scene.toggleSearchField()', open)
             : '';
         const field = open
-            ? `<div class="msb-field"><input type="text" id="sandbox-search" placeholder="Search outcomes..." value="${escapeHtml(this._searchQuery)}" oninput="SceneManager._scene.handleSearchInput(this.value)" style="width: 100%; box-sizing: border-box; padding: 8px 12px; background: var(--bg-white-translucent-25); border: 1px solid var(--border-focus-hover); border-radius: 4px; font-family: 'Lora', serif; font-size: 0.914em; color: var(--text-text-alt-2); outline: none"></div>`
+            ? `<div class="msb-field"><input class="sandbox-45" type="text" id="sandbox-search" placeholder="Search outcomes..." value="${escapeHtml(this._searchQuery)}" oninput="SceneManager._scene.handleSearchInput(this.value)"></div>`
             : '';
         return `<div class="msb msb-field-only${open ? '' : ' msb-collapsed'}" id="sandbox-search-field">${field}${handle}</div>`;
     };
@@ -1323,6 +1387,18 @@
                 $gamePlayer.reserveTransfer(item.id, 0, 0, 0, 0);
                 this.popScene();
             } else {
+                this.refreshUIDOM();
+            }
+        } else if (mode === "voxelplanet") {
+            // Straight into the 3D world on that biome, on foot, with whatever
+            // lives on a world of that type roaming it. The same door the star
+            // map's own "walk it" offer goes through.
+            if (item.id && startVoxelPlanetWalk(item.id)) {
+                this.removeUIContainer();
+                SoundManager.playOk();
+                this.popScene();
+            } else {
+                SoundManager.playBuzzer();
                 this.refreshUIDOM();
             }
         } else if (mode === "planet") {
@@ -2371,6 +2447,15 @@
             } else {
                 this._data.push({ id: -1, name: "MapInfos not loaded!", depth: 0, parentId: 0, childCount: 0, ancestors: [], path: "" });
             }
+        } else if (this._mode === "voxelplanet") {
+            // Every alien biome the world generator knows about
+            // (js/db/WorldGen/AlienBiomes.json, merged into WorldGen.Biomes by
+            // DataService). Each one is a whole world in the 3D walk: its own
+            // colours, its own furniture, its own sky.
+            for (const b of voxelPlanetBiomes()) {
+                this._data.push({ id: b.name, name: voxelPlanetLabel(b) });
+            }
+            if (!this._data.length) this._data.push({ id: null, name: "No alien biomes loaded!" });
         } else if (this._mode === "planet") {
             const PT = (window.GalaxySim && window.GalaxySim.PlanetTypes) || {};
             Object.keys(PT).forEach((key) => {
@@ -3123,10 +3208,10 @@
         b.outlineColor = "rgba(0, 0, 0, 0.9)";
         b.outlineWidth = 5;
         b.fontSize = 22;
-        b.textColor = "#ffe9a8";
+        b.textColor = cssColor('--accent-amber-glow', '#ffe9a8');
         b.drawText(line1, 0, 0, b.width, 32, "center");
         b.fontSize = 18;
-        b.textColor = "#cfe6ff";
+        b.textColor = cssColor('--accent-frost-glow', '#cfe6ff');
         b.drawText(line2, 0, 34, b.width, 28, "center");
     };
 

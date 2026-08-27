@@ -1,0 +1,71 @@
+{
+  "title": "Atlante del Mondo",
+  "back": "Chiudi",
+  "noData": "Le tavole dell'atlante non ci sono.",
+  "selectPrompt": "Scegli una nazione sulla mappa.",
+  "countLabel": "{n} nazioni cartografate",
+  "unaligned": "Non allineata",
+  "here": "Sei qui",
+  "fragment": "Un frammento di un'altra dimensione, cartografato dove è caduto.",
+  "noClimate": "Nessun registro meteorologico per questa nazione.",
+  "mode": {
+    "power": "Potenze",
+    "region": "Regioni",
+    "climate": "Clima"
+  },
+  "region": {
+    "europe": "Europa",
+    "asia": "Asia",
+    "middleEast": "Medio Oriente",
+    "northAmerica": "Canadafrica Settentrionale",
+    "southAmerica": "Canadafrica Meridionale",
+    "africa": "Africa",
+    "oceania": "Oceania"
+  },
+  "continent": {
+    "canadafrica": "Canadafrica"
+  },
+  "season": {
+    "winter": "Inverno",
+    "spring": "Primavera",
+    "summer": "Estate",
+    "autumn": "Autunno"
+  },
+  "field": {
+    "region": "Regione",
+    "faction": "Fedeltà",
+    "controller": "Controllata da",
+    "climate": "Clima durante l'anno",
+    "heldIn": "Controllata nel {year}",
+    "changedHands": "Passaggi di mano"
+  },
+  "climate": {
+    "dayTemp": "Giorno",
+    "nightTemp": "Notte",
+    "precipitation": "Pioggia",
+    "wind": "Vento",
+    "cloud": "Nuvole",
+    "humidity": "Umidità",
+    "daylight": "Luce diurna"
+  },
+  "units": {
+    "temp": "{value} °C",
+    "mm": "{value} mm",
+    "speed": "{value} km/h",
+    "percent": "{value}%"
+  },
+  "climateScale": [
+    "Gelido",
+    "Freddo",
+    "Mite",
+    "Caldo",
+    "Torrido"
+  ],
+  "today": "Oggi",
+  "openArticle": "Apri la voce della nazione",
+  "era": {
+    "before": "Prima dello Schiacciamento",
+    "during": "Lo Schiacciamento, {pct}%",
+    "after": "Dopo lo Schiacciamento"
+  }
+}

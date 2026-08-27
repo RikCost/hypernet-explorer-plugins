@@ -81,6 +81,18 @@
             .replace(/'/g, '&#39;');
     }
 
+    // A database record's own name and description are the English ones the
+    // editor wrote: the engine swaps them at draw time through its Bitmap /
+    // drawTextEx hooks, which a DOM page never reaches. Every skill name and
+    // description this page prints goes through here, so the menu reads in the
+    // language the rest of the game is in (js/i18n/<lang>/skills.json).
+    function dbText(text) {
+        if (!text) return '';
+        return typeof window.Hendrix_Localization === 'function'
+            ? window.Hendrix_Localization(String(text))
+            : String(text);
+    }
+
     // ── Shared skill inspect service (idempotent across plugins) ──────────────
     // Builds the full "Combat Application / Damage / Skill Effects /
     // Classifications" block shown on the right page of the Skills scene, so any
@@ -508,13 +520,13 @@
                                 <canvas id="${canvasId}" width="32" height="32" style="width:36px; height:36px; image-rendering: pixelated;"></canvas>
                             </div>
                             <div class="inspect-title-box">
-                                <h3 class="inspect-name">${esc(skill.name)}</h3>
+                                <h3 class="inspect-name">${esc(dbText(skill.name))}</h3>
                                 <div class="inspect-rarity" style="color: var(--text-gold-dark);">${esc(subtitle)}</div>
                             </div>
                         </div>
                         <div class="inspect-meta-grid">${resourceHTML}</div>
                         <div class="inspect-lore">
-                            ${skill.description ? `<div class="inspect-desc">${esc(skill.description)}</div>` : ""}
+                            ${skill.description ? `<div class="inspect-desc">${esc(dbText(skill.description))}</div>` : ""}
                             ${build(skill, actor)}
                         </div>
                         <div class="inspect-actions">${o.actionsHTML || ""}</div>
@@ -1513,7 +1525,7 @@
             leftDiv.appendChild(iconSpan);
 
             const nameSpan = document.createElement('span');
-            nameSpan.textContent = skill.name;
+            nameSpan.textContent = dbText(skill.name);
             leftDiv.appendChild(nameSpan);
             el.appendChild(leftDiv);
 
@@ -2371,9 +2383,9 @@
             const skill = this.uiSkillOf(entry);
             if (!skill) return null;
             return {
-                name: skill.name,
+                name: dbText(skill.name),
                 category: window.SkillDetails.categoryOf(skill) || '',
-                subtitle: skill.description || '',
+                subtitle: dbText(skill.description),
                 cost: skill.mpCost || skill.tpCost || 0,
                 // On the Level Up ledger the level is the level it is learned at.
                 level: entry && entry.level ? entry.level : 0
@@ -2574,7 +2586,7 @@
             entries.push({
                 iconIndex: skill.iconIndex,
                 enabled: actor.canUse(skill),
-                tooltip: skill.name
+                tooltip: dbText(skill.name)
             });
         }
         this._loadoutBar.mount(mount);
@@ -2853,11 +2865,11 @@
                 <div class="target-overlay">
                     <h3 class="target-title">${T('SkillsMenu.target.title')}</h3>
                     <div style="font-family: 'Lora', serif; margin-bottom: 15px; color:var(--text-primary-hover);">
-                        ${T('SkillsMenu.target.prompt', { skill: `<strong>${escapeHtml(skill.name)}</strong>` })}
+                        ${T('SkillsMenu.target.prompt', { skill: `<strong>${escapeHtml(dbText(skill.name))}</strong>` })}
                     </div>
                     <div class="inspect-actions">
                         ${targetsHTML}
-                        <div class="inspect-btn" onclick="SceneManager._scene.cancelUISkillTargeting()" style="margin-top: 15px; border-color: #555; color: #555;">${T('SkillsMenu.cmd.cancel')}</div>
+                        <div class="inspect-btn inspect-btn--secondary" onclick="SceneManager._scene.cancelUISkillTargeting()">${T('SkillsMenu.cmd.cancel')}</div>
                     </div>
                 </div>
             `;

@@ -397,7 +397,22 @@
     }
 
     // ---- epidemic ----------------------------------------------------------
-    if (ep.epidemic && ep.epidemic.untilMinute <= now) {
+    // There are two things that can be writing this slot. Health_DiseaseSystem
+    // runs the real continental outbreak - the one the Eurodemics portal draws,
+    // with a named disease out of Diseases.json, an SIR curve and a death toll -
+    // and pushes the worst one burning in this town into `episodes.epidemic`,
+    // stamped `source: 'eurodemics'`. This block used to invent its own
+    // alongside it, from its own name list, with neither aware of the other: a
+    // real outbreak silently overwrote an invented one mid-run (so its "the
+    // sickness has passed" line never came), and an invented one could put a
+    // town under a plague the disease engine said was not happening.
+    //
+    // The disease system owns the slot now. What is left here is the local
+    // trigger - misery and crowding are what start an outbreak in a poor,
+    // packed town - which now ASKS for a real one rather than making one up.
+    // The invented kind survives only as the fallback for a world with the
+    // disease plugin switched off.
+    if (ep.epidemic && ep.epidemic.source !== 'eurodemics' && ep.epidemic.untilMinute <= now) {
       endEpisode(state, pulse, "epidemic", ep.epidemic.untilMinute,
         "WorldWeb.episode.epidemicEnd", { disease: epidemicName(ep.epidemic.name), place: pulse.group },
         { text: T('WorldWeb.news.epidemicEnd', { disease: epidemicName(ep.epidemic.name) }),
@@ -409,16 +424,41 @@
       const crowding = clamp(census.population / 40, 0.3, 2);
       if (sampleCount(rng, RATES.epidemic * (0.5 + misery) * crowding * days) > 0) {
         const m = minute();
-        const name = rng.pick(EPIDEMIC_NAMES);
-        startEpisode(state, pulse, "epidemic", m,
-          { name, severity: rng.int(30, 90), untilMinute: m + rng.int(14, 60) * MINUTES_PER_DAY },
-          "WorldWeb.episode.epidemicStart", { disease: epidemicName(name), place: pulse.group },
-          { text: T('WorldWeb.news.epidemicStart', { disease: epidemicName(name) }),
-            location: pulse.group, category: "negative",
-            priceEffect: 0.9, occupancyEffect: 0.7, minute: m });
+        // Ask the disease engine for a real outbreak here. It fills the slot
+        // itself on its next sync, with a disease that exists and a curve that
+        // can be looked up, so nothing is written from this side.
+        const ignited = igniteRealOutbreak(pulse.group);
+        if (!ignited) {
+          const name = rng.pick(EPIDEMIC_NAMES);
+          startEpisode(state, pulse, "epidemic", m,
+            { name, severity: rng.int(30, 90), untilMinute: m + rng.int(14, 60) * MINUTES_PER_DAY },
+            "WorldWeb.episode.epidemicStart", { disease: epidemicName(name), place: pulse.group },
+            { text: T('WorldWeb.news.epidemicStart', { disease: epidemicName(name) }),
+              location: pulse.group, category: "negative",
+              priceEffect: 0.9, occupancyEffect: 0.7, minute: m });
+        }
         if (ep.festival) endEpisode(state, pulse, "festival", m,
           "WorldWeb.episode.festivalCancelled", { festival: festivalName(ep.festival.name) });
       }
+    }
+  }
+
+  // A real outbreak in the town this settlement group stands for, or null when
+  // the disease plugin is off, has no record of the place, or declines. The
+  // disease it picks is its own weighted choice out of Diseases.json, which is
+  // the point: what goes round a town should be something that can be caught,
+  // diagnosed, treated and reported on the Eurodemics portal.
+  function igniteRealOutbreak(group) {
+    const epi = window.EpidemicSystem;
+    if (!epi || typeof epi.ignite !== "function" || typeof epi.placeForGroup !== "function") return null;
+    try {
+      if (typeof epi.ready === "function" && !epi.ready()) return null;
+      const place = epi.placeForGroup(group);
+      if (!place || !place.key) return null;
+      return epi.ignite(null, place.key);
+    } catch (e) {
+      console.warn("[NPCWorldWeb] could not ignite a real outbreak in " + group, e);
+      return null;
     }
   }
 

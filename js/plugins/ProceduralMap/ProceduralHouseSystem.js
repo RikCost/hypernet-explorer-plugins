@@ -1528,7 +1528,7 @@
     if (!success) {
       SoundManager.playBuzzer();
       if (window.ParchmentToast) {
-        window.ParchmentToast.show("🚪 The reinforced door held firm against your shoulder!", { severity: "warn" });
+        window.ParchmentToast.show(T('ProceduralHouse.doorHeld'), { severity: "warn" });
       }
       return;
     }

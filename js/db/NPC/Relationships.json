@@ -1,5 +1,5 @@
 {
-  "_comment": "Every possible relationship structure an NPC can lean toward. 'weight' biases the deterministic per-NPC roll (higher is more common). 'mode' gates which styles are eligible given the NPC's current marital status: 'partnered' needs an active partner, 'solo' fits an unpartnered NPC, 'any' fits either. Consumed by NPCEmpathizeUI.js Romance tab.",
+  "_comment": "Every possible relationship structure an NPC can lean toward. 'weight' biases the deterministic per-NPC roll (higher is more common). 'mode' gates which styles are eligible given the NPC's current marital status: 'partnered' needs an active partner, 'solo' fits an unpartnered NPC, 'any' fits either. Consumed by NPCEmpathizeUI.js Romance tab. 'bonds' is the list of standing ties one character can hold to another (used by the character creation Romance tab): 'inverse' is the tie the other side holds back, so a directed bond (parent/child, mentor/student) writes the matching half on the other character, and 'romantic' marks the ties that are read as a romance rather than as kin or company.",
   "styles": [
     {
       "key": "monogamous",
@@ -105,6 +105,162 @@
       "mode": "solo",
       "weight": 6,
       "desc": "Relationships.style.aromantic_solo.desc"
+    }
+  ],
+  "bonds": [
+    {
+      "key": "none",
+      "name": "Relationships.bond.none.name",
+      "desc": "Relationships.bond.none.desc",
+      "inverse": "none",
+      "romantic": false
+    },
+    {
+      "key": "acquaintances",
+      "name": "Relationships.bond.acquaintances.name",
+      "desc": "Relationships.bond.acquaintances.desc",
+      "inverse": "acquaintances",
+      "romantic": false
+    },
+    {
+      "key": "friends",
+      "name": "Relationships.bond.friends.name",
+      "desc": "Relationships.bond.friends.desc",
+      "inverse": "friends",
+      "romantic": false
+    },
+    {
+      "key": "best_friends",
+      "name": "Relationships.bond.best_friends.name",
+      "desc": "Relationships.bond.best_friends.desc",
+      "inverse": "best_friends",
+      "romantic": false
+    },
+    {
+      "key": "childhood_friends",
+      "name": "Relationships.bond.childhood_friends.name",
+      "desc": "Relationships.bond.childhood_friends.desc",
+      "inverse": "childhood_friends",
+      "romantic": false
+    },
+    {
+      "key": "comrades",
+      "name": "Relationships.bond.comrades.name",
+      "desc": "Relationships.bond.comrades.desc",
+      "inverse": "comrades",
+      "romantic": false
+    },
+    {
+      "key": "partners",
+      "name": "Relationships.bond.partners.name",
+      "desc": "Relationships.bond.partners.desc",
+      "inverse": "partners",
+      "romantic": true
+    },
+    {
+      "key": "spouses",
+      "name": "Relationships.bond.spouses.name",
+      "desc": "Relationships.bond.spouses.desc",
+      "inverse": "spouses",
+      "romantic": true
+    },
+    {
+      "key": "engaged",
+      "name": "Relationships.bond.engaged.name",
+      "desc": "Relationships.bond.engaged.desc",
+      "inverse": "engaged",
+      "romantic": true
+    },
+    {
+      "key": "lovers",
+      "name": "Relationships.bond.lovers.name",
+      "desc": "Relationships.bond.lovers.desc",
+      "inverse": "lovers",
+      "romantic": true
+    },
+    {
+      "key": "situationship",
+      "name": "Relationships.bond.situationship.name",
+      "desc": "Relationships.bond.situationship.desc",
+      "inverse": "situationship",
+      "romantic": true
+    },
+    {
+      "key": "exes",
+      "name": "Relationships.bond.exes.name",
+      "desc": "Relationships.bond.exes.desc",
+      "inverse": "exes",
+      "romantic": true
+    },
+    {
+      "key": "unrequited",
+      "name": "Relationships.bond.unrequited.name",
+      "desc": "Relationships.bond.unrequited.desc",
+      "inverse": "unaware",
+      "romantic": true
+    },
+    {
+      "key": "unaware",
+      "name": "Relationships.bond.unaware.name",
+      "desc": "Relationships.bond.unaware.desc",
+      "inverse": "unrequited",
+      "romantic": true
+    },
+    {
+      "key": "siblings",
+      "name": "Relationships.bond.siblings.name",
+      "desc": "Relationships.bond.siblings.desc",
+      "inverse": "siblings",
+      "romantic": false
+    },
+    {
+      "key": "twins",
+      "name": "Relationships.bond.twins.name",
+      "desc": "Relationships.bond.twins.desc",
+      "inverse": "twins",
+      "romantic": false
+    },
+    {
+      "key": "parent",
+      "name": "Relationships.bond.parent.name",
+      "desc": "Relationships.bond.parent.desc",
+      "inverse": "child",
+      "romantic": false
+    },
+    {
+      "key": "child",
+      "name": "Relationships.bond.child.name",
+      "desc": "Relationships.bond.child.desc",
+      "inverse": "parent",
+      "romantic": false
+    },
+    {
+      "key": "cousins",
+      "name": "Relationships.bond.cousins.name",
+      "desc": "Relationships.bond.cousins.desc",
+      "inverse": "cousins",
+      "romantic": false
+    },
+    {
+      "key": "mentor",
+      "name": "Relationships.bond.mentor.name",
+      "desc": "Relationships.bond.mentor.desc",
+      "inverse": "student",
+      "romantic": false
+    },
+    {
+      "key": "student",
+      "name": "Relationships.bond.student.name",
+      "desc": "Relationships.bond.student.desc",
+      "inverse": "mentor",
+      "romantic": false
+    },
+    {
+      "key": "rivals",
+      "name": "Relationships.bond.rivals.name",
+      "desc": "Relationships.bond.rivals.desc",
+      "inverse": "rivals",
+      "romantic": false
     }
   ]
 }

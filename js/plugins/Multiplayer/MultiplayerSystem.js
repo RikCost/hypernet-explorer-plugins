@@ -1803,7 +1803,7 @@
                 configRowsHTML += `
                     <div class="console-row ${rowFollowFocused ? 'focused' : ''}" id="row-follow">
                         <span class="row-lbl">${T('Multiplayer.followLeader')}</span>
-                        <span class="row-val" style="color:${this._followLeader ? '#27ae60' : '#e74c3c'};">${this._followLeader ? 'ON' : 'OFF'}</span>
+                        <span class="row-val" style="color:${this._followLeader ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'};">${this._followLeader ? 'ON' : 'OFF'}</span>
                     </div>
                 `;
 
@@ -2104,7 +2104,7 @@
         }
 
         drawNodeAvatarHTML(faceName, faceIndex) {
-            if (!faceName) return '<div class="node-avatar" style="background:#5e2f17;"></div>';
+            if (!faceName) return '<div class="node-avatar" style="background:var(--border-subtle);"></div>';
             const path = `img/busts/${faceName}.png`;
             return `
                 <div class="node-avatar" style="

@@ -16,5 +16,6 @@
     "other": "Un giovane \\c[14]{animal}\\c[0]. Sarà adulto tra circa {count} giorni."
   },
   "pleased": "Il \\c[14]{animal}\\c[0] è contento di vederti.",
-  "nothingReady": "Il \\c[14]{animal}\\c[0] non ha ancora niente di pronto."
+  "nothingReady": "Il \\c[14]{animal}\\c[0] non ha ancora niente di pronto.",
+  "company": "Passi un po' di tempo con \\c[14]{animal}\\c[0]. La compagnia fa bene a tutti."
 }

@@ -131,6 +131,15 @@
  *   $gameFactions.setReputation(factionId, value) - Set reputation
  *   $gameFactions.getReputationLevel(factionId) - Get level text
  *   SceneManager.push(Scene_FactionStatus) - Open faction screen
+ *
+ * The party's own faction:
+ *   $gameFactions.hasPlayerFaction() - Has this world a banner of its own?
+ *   $gameFactions.foundPlayerFaction(name) - Raise it, once per world. An
+ *     empty name takes a procedurally rolled one.
+ *   $gameFactions.swearPlayerFactionTo(hyperpowerId) - Swear it to a power, or
+ *     null to renounce and stand alone again.
+ *   $gameFactions.playerFactionRoster() - {party, army, total}
+ *   SceneManager.push(Scene_PlayerFaction) - Open its management screen
  */
 
 //=============================================================================
@@ -153,6 +162,16 @@ FRS.Params.startingValues = String(
 )
   .split(",")
   .map(Number);
+
+// The register is built as markup, and since the party names its own faction
+// and its own characters, anything read back out of those is written through
+// here rather than straight into innerHTML.
+FRS.escapeText = (text) => String(text == null ? "" : text)
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#39;");
 
 //=============================================================================
 // Faction Data Manager
@@ -610,17 +629,7 @@ Game_Factions.prototype.getReputationLevel = function (factionId) {
 };
 
 Game_Factions.prototype.getReputationColor = function (factionId) {
-  const reputation = this.getReputation(factionId);
-
-  if (reputation >= 80) return "#00FF00"; // Bright green
-  if (reputation >= 60) return "#32CD32"; // Lime green
-  if (reputation >= 40) return "#90EE90"; // Light green
-  if (reputation >= 20) return "#98FB98"; // Pale green
-  if (reputation >= -20) return "#FFFFFF"; // White
-  if (reputation >= -40) return "#FFA07A"; // Light salmon
-  if (reputation >= -60) return "#FF6347"; // Tomato
-  if (reputation >= -80) return "#FF4500"; // Orange red
-  return "#FF0000"; // Red
+  return this.reputationColorOf(this.getReputation(factionId));
 };
 
 Game_Factions.prototype.getReputationPerks = function (factionId) {
@@ -665,6 +674,83 @@ Game_Factions.prototype.getReputationPerks = function (factionId) {
   }
 
   return perks;
+};
+
+//=============================================================================
+// Standing, made good on
+//=============================================================================
+//
+// getReputationPerks above has always promised the player a 10, 25 and 40 per
+// cent discount, services withdrawn at -20 and a hall that will not deal with
+// them at all at -40. Nothing implemented any of it: reputation was moved from
+// 44 places and asked from six, four of which only drew it. These are the
+// numbers that list is describing, defined once so a counter, a courier and an
+// employer all quote the same standing.
+//
+// Which faction is owed the courtesy is a question of WHERE the party is: the
+// power that holds the country they are standing in, and the first faction that
+// answers to it. A place no power holds (the sea, a procedural nowhere, a world
+// whose history was never run) has nobody to be in favour with, and everything
+// below falls back to neutral.
+const STANDING_DISCOUNTS = [[80, 0.40], [60, 0.25], [40, 0.10]];
+// Being disliked is not a discount in reverse: a hall that would rather not
+// serve you charges for the trouble before it stops serving you.
+const STANDING_SURCHARGES = [[-60, 0.35], [-40, 0.20], [-20, 0.08]];
+// At and below this, "refuse to interact" in the perk list is literal.
+const STANDING_REFUSAL = -40;
+
+Game_Factions.prototype.hyperpowerHoldingCountry = function (country) {
+  if (!country) return null;
+  const name = String(country);
+  for (const hp of this.getHyperpowers()) {
+    if (hp.data && hp.data.homeNation === name) return hp;
+    if (this.countriesOfHyperpower(hp.name).includes(name)) return hp;
+  }
+  return null;
+};
+
+// Where the party is standing, as the weather system knows it: it is the one
+// place in the tree that resolves a map to a real country.
+Game_Factions.prototype.currentCountryName = function () {
+  const cc = (typeof $gameWeather !== "undefined" && $gameWeather)
+    ? $gameWeather.currentCountry : null;
+  if (!cc) return null;
+  return cc.country || cc.name || null;
+};
+
+// The faction whose good opinion is worth something here, or null.
+Game_Factions.prototype.localFactionId = function () {
+  const hp = this.hyperpowerHoldingCountry(this.currentCountryName());
+  if (!hp) return null;
+  const factions = this.getHyperpowerFactions(hp.id);
+  return factions.length ? factions[0].id : null;
+};
+
+// The standing that governs a counter here, for this character. Falls back to
+// the party leader, since a shop is served by whoever is in front.
+Game_Factions.prototype.localStanding = function (actor) {
+  const id = this.localFactionId();
+  if (id === null) return 0;
+  const who = actor || (window.$gameParty && $gameParty.leader ? $gameParty.leader() : null);
+  return this.getReputationFor(who, id);
+};
+
+// The multiplier a marked price is quoted at. One number, so a discount and a
+// surcharge can never both apply and the bands stay where the perk list says.
+Game_Factions.prototype.standingPriceMultiplier = function (actor) {
+  const rep = this.localStanding(actor);
+  for (const [floor, off] of STANDING_DISCOUNTS) if (rep >= floor) return 1 - off;
+  for (const [ceil, on] of STANDING_SURCHARGES) if (rep <= ceil) return 1 + on;
+  return 1;
+};
+
+// Whether the hall will deal with the party at all.
+Game_Factions.prototype.standingRefusesService = function (actor) {
+  return this.localFactionId() !== null && this.localStanding(actor) <= STANDING_REFUSAL;
+};
+
+Game_Factions.prototype.standingRefusalThreshold = function () {
+  return STANDING_REFUSAL;
 };
 
 //=============================================================================
@@ -762,16 +848,36 @@ Game_Factions.prototype.reputationLevelOf = function (reputation) {
   return T("Factions.repLevel.nemesis");
 };
 
+// The nine reputation bands, low to high, as the suffix of the class and of
+// the --faction-rep-* token that inks it. The ramp itself lives in the themes
+// (css/themes/*.css), so the terminal preset can pitch it against black
+// instead of being stuck with the parchment preset's greens.
+Game_Factions.REP_BANDS = [
+  [80, "exalted"], [60, "revered"], [40, "honored"], [20, "friendly"],
+  [-20, "neutral"], [-40, "unfriendly"], [-60, "hostile"], [-80, "hated"],
+];
+
+Game_Factions.prototype.reputationBandOf = function (reputation) {
+  for (const [floor, band] of Game_Factions.REP_BANDS) {
+    if (reputation >= floor) return band;
+  }
+  return "nemesis";
+};
+
+// The class a DOM element carries to be inked by the band. Prefer this over
+// reputationColorOf everywhere the badge is HTML: it keeps the colour in the
+// stylesheet where a preset can reach it.
+Game_Factions.prototype.reputationClassOf = function (reputation) {
+  return "faction-rep--" + this.reputationBandOf(reputation);
+};
+
+// The literal colour of a band, resolved from the theme at call time. Only for
+// the canvas windows, which cannot carry a class: Window_Base.changeTextColor
+// wants a string.
 Game_Factions.prototype.reputationColorOf = function (reputation) {
-  if (reputation >= 80) return "#00FF00";
-  if (reputation >= 60) return "#32CD32";
-  if (reputation >= 40) return "#90EE90";
-  if (reputation >= 20) return "#98FB98";
-  if (reputation >= -20) return "#FFFFFF";
-  if (reputation >= -40) return "#FFA07A";
-  if (reputation >= -60) return "#FF6347";
-  if (reputation >= -80) return "#FF4500";
-  return "#FF0000";
+  const token = "--faction-rep-" + this.reputationBandOf(reputation);
+  const value = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  return value || "#ffffff";
 };
 
 Game_Factions.prototype.getReputationLevelFor = function (actor, factionId) {
@@ -908,6 +1014,199 @@ Game_Factions.prototype.hyperpowerLabel = function (hp) {
   const key = "Factions.power." + slug;
   if (typeof T.has === "function" && T.has(key)) return T(key);
   return hp.name;
+};
+
+//=============================================================================
+// The party's own faction
+//=============================================================================
+//
+// A party may raise one banner of its own, and only one: founding is a thing
+// the world remembers, not the savegame. The record lives on $gameFactions,
+// which WorldManager already keeps in the world folder (npcs.json, field
+// "factions"), so every savegame of that world walks into the same faction
+// with the same roll and the same allegiance.
+//
+// It is NOT written into the Factions.json array. That array's indices are
+// what NPCSociety rolls an NPC's `factionIndex` against, and appending to it
+// would both move every existing index and start handing the player's banner
+// out to strangers. The screens that list factions ask for this record
+// separately instead.
+
+// Well clear of the shipped ids (Factions.json stops at 66), so a standing key
+// of its own can never collide with one of theirs.
+Game_Factions.PLAYER_FACTION_ID = 900;
+
+// The emblem it flies until there is a way to choose one.
+Game_Factions.PLAYER_FACTION_ICON = 84;
+
+Game_Factions.prototype.playerFaction = function () {
+  return this._playerFaction || null;
+};
+
+Game_Factions.prototype.hasPlayerFaction = function () {
+  return !!this._playerFaction;
+};
+
+// A name rolled out of the word banks in the language book, so an impatient
+// founder never has to type one. Rolled with Math.random rather than the world
+// seed: the founder can ask for another until one of them fits.
+Game_Factions.prototype.rollPlayerFactionName = function () {
+  const pool = (key) => (typeof T.pool === "function" ? T.pool(key) : []);
+  const pick = (key) => {
+    const bank = pool(key);
+    return bank.length ? bank[Math.floor(Math.random() * bank.length)] : "";
+  };
+  const forms = pool("Factions.player.nameForm");
+  const form = forms.length ? forms[Math.floor(Math.random() * forms.length)] : "{adj} {noun}";
+  const parts = {
+    adj: pick("Factions.player.nameAdj"),
+    noun: pick("Factions.player.nameNoun"),
+    ward: pick("Factions.player.nameWard"),
+  };
+  const name = String(form)
+    .replace(/\{(\w+)\}/g, (m, k) => parts[k] || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return name || T("Factions.player.fallbackName");
+};
+
+// The one founding. Answers null when this world already has a banner: the
+// screens ask hasPlayerFaction() first, and this is the last word on it.
+Game_Factions.prototype.foundPlayerFaction = function (name) {
+  if (this._playerFaction) return null;
+  const typed = String(name == null ? "" : name).trim().slice(0, 48);
+  this._playerFaction = {
+    id: Game_Factions.PLAYER_FACTION_ID,
+    name: typed || this.rollPlayerFactionName(),
+    isPlayer: true,
+    iconIndex: Game_Factions.PLAYER_FACTION_ICON,
+    // The power it has sworn to, by name, so it reads exactly like the
+    // `parentHyperpower` every other faction carries. Null is "sworn to
+    // nobody", which is where a new banner starts.
+    parentHyperpower: null,
+    founded: this._todayStamp(),
+  };
+  return this._playerFaction;
+};
+
+Game_Factions.prototype.renamePlayerFaction = function (name) {
+  const record = this.playerFaction();
+  if (!record) return false;
+  const typed = String(name == null ? "" : name).trim().slice(0, 48);
+  if (!typed) return false;
+  record.name = typed;
+  return true;
+};
+
+// The day it was raised, in whatever the clock plugin prints. A build without
+// the clock simply has no date to show.
+Game_Factions.prototype._todayStamp = function () {
+  const TDS = window.TimeDateSystem;
+  if (TDS && typeof TDS.getDateString === "function") {
+    try { return TDS.getDateString(); } catch (e) { /* no clock, no date */ }
+  }
+  return null;
+};
+
+// Swearing to a power. `hyperpowerId` null renounces and stands the banner up
+// on its own again.
+Game_Factions.prototype.swearPlayerFactionTo = function (hyperpowerId) {
+  const record = this.playerFaction();
+  if (!record) return false;
+  if (hyperpowerId === null || hyperpowerId === undefined) {
+    record.parentHyperpower = null;
+    return true;
+  }
+  const hp = this.getHyperpower(Number(hyperpowerId));
+  if (!hp) return false;
+  record.parentHyperpower = hp.name;
+  return true;
+};
+
+// The power it answers to, resolved, or null while it stands alone.
+Game_Factions.prototype.playerFactionOverlord = function () {
+  const record = this.playerFaction();
+  if (!record || !record.parentHyperpower) return null;
+  return this.getHyperpowers().find((hp) => hp.name === record.parentHyperpower) || null;
+};
+
+// Who has joined. Nobody is recruited into it from the outside yet: it is the
+// people already sworn to the party, which is the party itself plus every
+// soldier the army has hired (Army/ArmyManager.js).
+Game_Factions.prototype.playerFactionRoster = function () {
+  const party = [];
+  const members = (window.$gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
+  (members || []).forEach((m) => { if (m) party.push(m.name()); });
+
+  const army = [];
+  const troops = (window.$gameArmy && $gameArmy.getTroops) ? $gameArmy.getTroops() : [];
+  (troops || []).forEach((t) => {
+    if (!t) return;
+    const named = FactionDataManager.instance ? FactionDataManager.instance.t(t.name) : String(t.name);
+    army.push(named);
+  });
+
+  return { party: party, army: army, total: party.length + army.length };
+};
+
+// What the banner is worth as a body, for the wiki's stat line. It has no
+// centuries behind it, so the numbers are the roll's own: what the party can
+// do, and how many of them there are.
+Game_Factions.prototype.playerFactionStats = function () {
+  const members = (window.$gameParty && $gameParty.members) ? ($gameParty.members() || []) : [];
+  const live = members.filter(Boolean);
+  const mean = (read) => live.length
+    ? Math.round(live.reduce((sum, m) => sum + (Number(read(m)) || 0), 0) / live.length)
+    : 0;
+  const roster = this.playerFactionRoster();
+  return {
+    arcane: mean((m) => m.mat || 0),
+    velocity: mean((m) => m.agi || 0),
+    information: Math.min(400, roster.total * 8),
+  };
+};
+
+// The accord scale a median standing lands on. Standings run -100..100 and the
+// accords run -2..2, so the bands are the reputation bands folded in pairs.
+Game_Factions.PLAYER_ACCORD_BANDS = [[60, 2], [20, 1], [-20, 0], [-60, -1]];
+
+// A banner raised this year has signed nothing with anybody, so what it holds
+// towards a power is what the people under it hold: the MEDIAN of every party
+// member's standing with that power, read on the accord scale. The median and
+// not the mean, so one loathed companion cannot drag the whole faction into a
+// war and one adored one cannot buy it an alliance.
+Game_Factions.prototype.playerAccordValue = function (standingKey) {
+  const members = (window.$gameParty && $gameParty.members)
+    ? ($gameParty.members() || []).filter(Boolean) : [];
+  if (!members.length) return 0;
+  const values = members.map((m) => this.getReputationFor(m, standingKey)).sort((a, b) => a - b);
+  const mid = Math.floor(values.length / 2);
+  const median = values.length % 2 ? values[mid] : (values[mid - 1] + values[mid]) / 2;
+  for (const band of Game_Factions.PLAYER_ACCORD_BANDS) {
+    if (median >= band[0]) return band[1];
+  }
+  return -2;
+};
+
+// The list row the faction screen prints it as, shaped exactly like the rows
+// getFactionList builds for the shipped factions so every reader downstream
+// (the badge, the dossier, the accords) needs no special case beyond the
+// `isPlayer` flag itself.
+Game_Factions.prototype.playerFactionRecord = function () {
+  const record = this.playerFaction();
+  if (!record) return null;
+  const overlord = this.playerFactionOverlord();
+  return {
+    kind: "faction",
+    isSub: !!overlord,
+    isPlayer: true,
+    faction: record,
+    hyperpower: overlord,
+    standingKey: String(record.id),
+    name: record.name,
+    iconIndex: record.iconIndex,
+    children: [],
+  };
 };
 
 //=============================================================================
@@ -1068,13 +1367,18 @@ Game_Factions.prototype.getAccordsFor = function (record) {
   if (!record) return [];
   const isPower = record.kind === "hyperpower";
   if (!isPower && !record.faction) return [];
+  // The party's own banner is not in the rolled table at all: its line with
+  // each power is the party's own median standing (playerAccordValue).
+  const isPlayer = !isPower && !!record.faction.isPlayer;
 
   return this.getHyperpowers()
     .filter((hp) => !isPower || hp.id !== record.hyperpower.id)
     .map((hp) => {
       const value = isPower
         ? this.getPowerAccord(record.hyperpower.id, hp.id)
-        : this.getFactionAccord(record.faction.id, hp.id);
+        : isPlayer
+          ? this.playerAccordValue(this.hyperpowerStandingKey(hp.id))
+          : this.getFactionAccord(record.faction.id, hp.id);
       return {
         hyperpower: hp,
         name: this.hyperpowerLabel(hp),
@@ -1397,11 +1701,38 @@ Scene_FactionStatus.prototype.hyperpowerLabel = function (hp) {
 // own "hp:<id>" standing key, wearing the emblem of the first branch under it.
 // A faction with no `parentHyperpower` is an orphan: still listed, still with a
 // standing of its own, but sworn to nobody and seated nowhere.
+// The Archive article for the hyperpower the cursor is standing on, the same
+// one the page's own button opens. A row that is a faction rather than a power,
+// or a build without the Archive, simply has nothing to open.
+Scene_FactionStatus.prototype.openHighlightedWiki = function () {
+  const list = this.getFactionList();
+  const entry = list[this._dndSelectedIndex];
+  // The party's own banner answers Confirm with its management screen: that is
+  // the useful page, and the Archive article for it says less than this one.
+  if (entry && entry.isPlayer) {
+    this.openPlayerFaction();
+    return;
+  }
+  const power = entry && entry.kind === "hyperpower" ? entry.hyperpower : null;
+  if (!power || !window.NPCEmpathize || typeof window.NPCEmpathize.openEntity !== "function") {
+    SoundManager.playBuzzer();
+    return;
+  }
+  SoundManager.playOk();
+  window.NPCEmpathize.openEntity("power", power.name);
+};
+
 Scene_FactionStatus.prototype.getFactionList = function () {
   // The tree, built branch by branch. A top-level row carries its own children
   // rather than the whole thing being flattened up front, so the ordering
   // below can never move a sub-faction out from under its power.
   const groups = [];
+
+  // The party's own banner, when it has raised one: a branch of the power it
+  // swore to, or a group of its own standing among the independents. A
+  // register opened to pick a faction for somebody else never lists it, since
+  // it has no entry in Factions.json for that caller to look up afterwards.
+  const playerRow = this._selectMode ? null : $gameFactions.playerFactionRecord();
 
   $gameFactions.getHyperpowers().forEach((hp) => {
     const power = {
@@ -1424,6 +1755,10 @@ Scene_FactionStatus.prototype.getFactionList = function () {
         name: FactionDataManager.instance.t(child.name),
         iconIndex: child.iconIndex,
       }));
+    // A banner sworn to this power is listed under it like any other branch.
+    if (playerRow && playerRow.hyperpower && playerRow.hyperpower.id === hp.id) {
+      power.children.push(playerRow);
+    }
     groups.push(power);
   });
 
@@ -1438,6 +1773,8 @@ Scene_FactionStatus.prototype.getFactionList = function () {
       children: [],
     });
   });
+
+  if (playerRow && !playerRow.hyperpower) groups.push(playerRow);
 
   const flatten = (rows) => rows.reduce((out, row) => out.concat([row], row.children || []), []);
   if (!this._factionBar) return flatten(groups);
@@ -1535,43 +1872,55 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
 
     const reputation = $gameFactions.getReputationFor(viewed, item.standingKey);
     const reputationLevel = $gameFactions.reputationLevelOf(reputation);
-    const reputationColor = $gameFactions.reputationColorOf(reputation);
+    const reputationClass = $gameFactions.reputationClassOf(reputation);
 
     return `
       <div class="faction-row ${isFocused} ${isSub}" onclick="SceneManager._scene.selectUIFaction(${idx})">
         ${subMarker}
         ${!item.isSub && item.iconIndex ? `
           <div class="faction-icon-frame">
-            <canvas id="fac-canvas-${idx}" width="32" height="32" style="width:24px; height:24px"></canvas>
+            <canvas class="facrep-01" id="fac-canvas-${idx}" width="32" height="32"></canvas>
           </div>
         ` : ""}
         <div class="faction-info">
-          <span class="faction-name">${item.name}</span>
+          <span class="faction-name">${FRS.escapeText(item.name)}</span>
         </div>
-        <span class="faction-rep-badge" style="color: ${reputationColor}">${reputationLevel} (${reputation})</span>
+        <span class="faction-rep-badge ${reputationClass}">${reputationLevel} (${reputation})</span>
       </div>
     `;
   };
 
   const backBtnText = T("Factions.back");
   const factionsTitle = T("Factions.title");
+  // One banner per world: before it is raised the button founds it, after it
+  // is raised the same button opens the room where it is run. A register
+  // opened to pick a faction for somebody else does not offer it at all.
+  const ownBtnText = $gameFactions.hasPlayerFaction()
+    ? T("Factions.player.manageButton")
+    : T("Factions.player.formButton");
+  const ownBtnHTML = this._selectMode ? "" : `
+        <div class="back-button focusable facrep-23" onclick="SceneManager._scene.openPlayerFaction()">
+          ${ownBtnText}
+        </div>`;
 
   const leftPageHTML = `
     <div class="left-page">
-      <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
-        <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
+      <div class="page-header-bar facrep-02">
+        <div class="back-button focusable facrep-03" onclick="SceneManager._scene.popScene()">
           ${backBtnText}
         </div>
-        <h2 class="title" style="border: none; margin: 0; padding: 0">${factionsTitle}</h2>
+        <h2 class="title facrep-04">${factionsTitle}</h2>${ownBtnHTML}
       </div>
       ${this._factionBar ? this._factionBar.html() : ""}
-      <div class="backpack-grid" style="display:flex; flex-direction:column; flex: 1 1 auto; min-height: 0" id="factions-grid"></div>
+      <div class="backpack-grid facrep-05" id="factions-grid"></div>
     </div>
   `;
 
   // Determine left page key to see if left page needs full render.
   // The badges are per character, so a change of character is a full redraw.
+  const ownFaction = $gameFactions.playerFaction();
   const leftPageKey = `${factionList.length}:${viewed ? viewed.actorId() : 0}:` +
+    `${ownFaction ? ownFaction.name + "/" + (ownFaction.parentHyperpower || "") : ""}:` +
     (this._factionBar ? this._factionBar.query + this._factionBar.sortDir : '');
   const leftPageContainer = this._dndContainer.querySelector(".left-page");
 
@@ -1584,7 +1933,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       const sel = (this._repActorIndex || 0) === i ? "selected" : "";
       return `<div class="companion-tab ${sel}" onclick="SceneManager._scene.switchRepActor(${i})">${m.name()}</div>`;
     }).join("");
-    switcherHTML = `<div class="companion-switcher" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px">` +
+    switcherHTML = `<div class="companion-switcher facrep-06">` +
       window.CharSwitcher.inner(`<div class="companion-tabs-row">${tabs}</div>`, members.length) +
       `</div>`;
   }
@@ -1596,10 +1945,10 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     rightPageHTML = `
       <div class="right-page">
         ${switcherHTML}
-        <div class="faction-heraldry-card" style="justify-content: center; text-align: center; padding: 40px 10px">
-          <div style="font-size: 3.85em; margin-bottom: 20px"></div>
-          <h3 class="title" style="border:none; margin-bottom: 10px">${T("Factions.selectTitle")}</h3>
-          <p style="font-family: 'Lora', serif; line-height: 1.6; color: #6b5242">
+        <div class="faction-heraldry-card facrep-07">
+          <div class="facrep-08"></div>
+          <h3 class="title facrep-09">${T("Factions.selectTitle")}</h3>
+          <p class="facrep-10">
             ${T("Factions.selectHint")}
           </p>
         </div>
@@ -1612,9 +1961,15 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     const isPower = selectedRecord.kind === "hyperpower";
     const hp = selectedRecord.hyperpower;
     const factionName = selectedRecord.name;
-    const description = faction
-      ? FactionDataManager.instance.t(faction.description)
-      : T("Factions.noDossier");
+    const factionNameHTML = FRS.escapeText(factionName);
+    const isPlayerFaction = !!selectedRecord.isPlayer;
+    // The party's banner has no dossier written for it: its own page is the
+    // roll it is carrying and the day it was raised.
+    const description = isPlayerFaction
+      ? T("Factions.player.dossier", { name: factionNameHTML })
+      : faction
+        ? FactionDataManager.instance.t(faction.description)
+        : T("Factions.noDossier");
 
     // Who speaks for it. A hyperpower answers with its own roster, including
     // the second track (holy_leaders) where the power keeps one.
@@ -1628,7 +1983,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         return FactionDataManager.instance.t(l);
       }).join(", ");
       leadersHTML = `
-        <div style="margin-top: 15px; font-family: 'Lora', serif; font-size: 0.928em; border-top: 1px solid #c9b4a1; padding-top: 10px">
+        <div class="facrep-11">
           <strong>${T("Factions.councilLeaders")}</strong> <span>${leaderNames}</span>
         </div>
       `;
@@ -1642,15 +1997,19 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     if (isPower && window.HistoryManager) {
       const HM = window.HistoryManager;
       const moral = HM.getMoralGuide ? HM.getMoralGuide(hp.name) : null;
-      const political = (HM.getCurrentLeaders ? HM.getCurrentLeaders() : HM._currentLeaders || {})[hp.name] || null;
+      // The political office answers with whoever holds it, written down or
+      // elected (HistorySimulator.politicalLeaderOf).
+      const political = HM.politicalLeaderOf
+        ? HM.politicalLeaderOf(hp.name)
+        : ((HM.getCurrentLeaders ? HM.getCurrentLeaders() : HM._currentLeaders || {})[hp.name] || null);
       const row = (labelKey, leader) => leader ? `
-        <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.928em">
+        <div class="facrep-12">
           <span><strong>${T(labelKey)}</strong></span>
           <span>${FactionDataManager.instance.t(leader.name)}</span>
         </div>` : "";
       const both = row("Factions.moralGuide", moral) + row("Factions.politicalLeader", political);
       if (both) {
-        officesHTML = `<div style="margin-top:12px; border-top:1px solid #c9b4a1; padding-top:10px">${both}</div>`;
+        officesHTML = `<div class="facrep-13">${both}</div>`;
       }
     }
 
@@ -1668,7 +2027,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         const rulingParty = live.parties?.find(p => p.id === live.rulingPartyId);
         const partyLine = rulingParty ? FactionDataManager.instance.t(rulingParty.name) : T("Factions.independentParty");
         currentGovHTML = `
-          <div style="margin-top: 15px; font-family: 'Lora', serif; font-size: 0.928em; border-top: 1px solid #c9b4a1; padding-top: 10px">
+          <div class="facrep-11">
             <strong>${T("Factions.currentGovernment")}</strong>
             ${head ? `<span>${FactionDataManager.instance.t(head.name)}</span> (${window.NPCPolitics.powerLabel(live, "headTitle")}), ` : ""}${T("Factions.rulingPartyLine", { party: partyLine })}
           </div>
@@ -1683,7 +2042,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       const branches = $gameFactions.getHyperpowerFactions(hp.id);
       if (branches.length) {
         branchesHTML = `
-          <div style="margin-top: 12px; font-family: 'Lora', serif; font-size: 0.928em">
+          <div class="facrep-14">
             <strong>${T("Factions.branches")}</strong> <span>${branches.map(b => FactionDataManager.instance.t(b.name)).join(", ")}</span>
           </div>
         `;
@@ -1697,7 +2056,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     if (isPower) {
       const held = $gameFactions.countriesOfHyperpower(hp.name);
       countriesHTML = `
-        <div style="margin-top: 12px; font-family: 'Lora', serif; font-size: 0.928em">
+        <div class="facrep-14">
           <strong>${T("Factions.controlledCountries", { count: held.length })}</strong>
           <span>${held.length
             ? held.map(n => (window.WorldNames ? window.WorldNames.any(n) : n)).join(", ")
@@ -1706,13 +2065,40 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       `;
     }
 
+    // What the party's own banner holds: who has joined it, who it answers to,
+    // and the way back into the screen where both are changed.
+    let ownFactionHTML = "";
+    if (isPlayerFaction) {
+      const roster = $gameFactions.playerFactionRoster();
+      const overlord = $gameFactions.playerFactionOverlord();
+      const rows = [
+        `<div class="facrep-12"><span><strong>${T("Factions.player.membersLbl")}</strong></span>` +
+        `<span>${T("Factions.player.membersLine", {
+          total: roster.total, party: roster.party.length, army: roster.army.length,
+        })}</span></div>`,
+        `<div class="facrep-12"><span><strong>${T("Factions.player.allegianceLbl")}</strong></span>` +
+        `<span>${overlord ? this.hyperpowerLabel(overlord) : T("Factions.player.noOverlord")}</span></div>`,
+      ];
+      if (faction.founded) {
+        rows.push(`<div class="facrep-12"><span><strong>${T("Factions.player.foundedLbl")}</strong></span>` +
+          `<span>${FRS.escapeText(faction.founded)}</span></div>`);
+      }
+      ownFactionHTML = `<div class="facrep-13">${rows.join("")}</div>
+        <div class="faction-wiki-button focusable facrep-24"
+             onclick="SceneManager._scene.openPlayerFaction()">
+          ${T("Factions.player.manageButton")}
+        </div>`;
+    }
+
     // ...and the long version of the same dossier, in the Archive's own wiki.
     let wikiHTML = "";
-    if (isPower && window.NPCEmpathize && typeof window.NPCEmpathize.openEntity === "function") {
-      const target = encodeURIComponent(hp.name).replace(/'/g, "%27");
+    if ((isPower || isPlayerFaction) && window.NPCEmpathize
+      && typeof window.NPCEmpathize.openEntity === "function") {
+      const kind = isPower ? "power" : "faction";
+      const target = encodeURIComponent(isPower ? hp.name : factionName).replace(/'/g, "%27");
       wikiHTML = `
         <div class="faction-wiki-button focusable"
-             onclick="window.NPCEmpathize.openEntity('power', '${target}')">
+             onclick="window.NPCEmpathize.openEntity('${kind}', '${target}')">
           ${T("Factions.openWiki")}
         </div>
       `;
@@ -1721,9 +2107,9 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     // This character's standing, named as well as numbered.
     const rep = $gameFactions.getReputationFor(viewed, selectedRecord.standingKey);
     const standingHTML = viewed ? `
-      <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Lora', serif; font-size:0.928em; border-top:1px solid #c9b4a1; padding-top:10px">
+      <div class="facrep-15">
         <span>${T("Factions.standingOf", { name: viewed.name() })}</span>
-        <span style="color:${$gameFactions.reputationColorOf(rep)}; font-weight:bold">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
+        <span class="facrep-16 ${$gameFactions.reputationClassOf(rep)}">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
       </div>
     ` : "";
 
@@ -1732,7 +2118,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     if (viewed && window.ONUAssembly && typeof window.ONUAssembly.postLabelFor === "function") {
       const label = window.ONUAssembly.postLabelFor(viewed, selectedRecord.standingKey);
       if (label) {
-        postHTML = `<div style="margin-top:8px; font-family:'Lora', serif; font-size:0.928em; color:#2e7d32">${label}</div>`;
+        postHTML = `<div class="facrep-17">${label}</div>`;
       }
     }
 
@@ -1741,13 +2127,13 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     // own accords, so it can be reading them off a different line from its
     // parent's (Game_Factions.getAccordsFor).
     const relationsHTML = $gameFactions.getAccordsFor(selectedRecord).map(accord => {
-      let relColor = "#6b5242"; // Neutral
-      if (accord.value > 0) relColor = "#2e7d32"; // Allied/Friendly
-      if (accord.value < 0) relColor = "#c62828"; // Hostile
+      const relClass = accord.value > 0 ? "faction-accord--allied"
+        : accord.value < 0 ? "faction-accord--hostile"
+        : "faction-accord--neutral";
       return `
-        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-family: 'Lora', serif; font-size: 0.928em; border-bottom: 1px dashed #d1c2b4; padding-bottom: 2px">
+        <div class="facrep-18">
           <span>${T(accord.isOwnPower ? "Factions.versusOwn" : "Factions.versus", { name: accord.name })}</span>
-          <span style="color: ${relColor}; font-weight: bold">${$gameFactions.relationshipNameOf(accord.value)}</span>
+          <span class="facrep-16 ${relClass}">${$gameFactions.relationshipNameOf(accord.value)}</span>
         </div>
       `;
     }).join("");
@@ -1757,14 +2143,14 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         ${switcherHTML}
         <div class="faction-heraldry-card">
           <div class="heraldry-emblem-box">
-            <canvas id="heraldry-canvas" width="32" height="32" style="width:36px; height:36px; image-rendering: pixelated"></canvas>
+            <canvas class="facrep-19" id="heraldry-canvas" width="32" height="32"></canvas>
           </div>
 
           <div class="heraldry-header">
-            <h3 class="heraldry-title">${factionName}</h3>
+            <h3 class="heraldry-title">${factionNameHTML}</h3>
           </div>
 
-          <div class="inspect-lore" style="flex-grow: 1; max-height: 180px; padding-right:5px; margin-bottom: 15px">
+          <div class="inspect-lore facrep-20">
             ${description}
           </div>
 
@@ -1773,14 +2159,15 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
           ${leadersHTML}
           ${branchesHTML}
           ${countriesHTML}
+          ${ownFactionHTML}
           ${wikiHTML}
           ${standingHTML}
           ${postHTML}
 
           <div class="politics-grid">
-            <h4 style="font-family: 'Lora', serif; font-size: 1.095em; color: #58180D; margin: 0 0 8px 0; border-bottom: 1px solid #d1c2b4; padding-bottom: 4px">${T("Factions.diplomaticAgreements")}</h4>
+            <h4 class="facrep-21">${T("Factions.diplomaticAgreements")}</h4>
             <div class="faction-accords" id="faction-accords">
-              ${relationsHTML || `<div style="font-family:'Lora', serif; font-size:0.928em; color:#8c715c">${T("Factions.independent")}</div>`}
+              ${relationsHTML || `<div class="facrep-22">${T("Factions.independent")}</div>`}
             </div>
           </div>
 
@@ -1870,6 +2257,9 @@ Scene_FactionStatus.prototype.selectUIFaction = function (idx) {
 const _Scene_FactionStatus_update = Scene_FactionStatus.prototype.update;
 Scene_FactionStatus.prototype.update = function () {
   _Scene_FactionStatus_update.call(this);
+  // The founding panel is modal: while it is up the register neither moves its
+  // cursor nor answers Cancel by leaving.
+  if (this._foundPanel) return;
   // A focused search field owns the keyboard (UI/MenuSearchBar.js).
   if (window.MenuSearchBar && window.MenuSearchBar.isTyping()) return;
   UIFactionsInputManager.update();
@@ -1878,6 +2268,10 @@ Scene_FactionStatus.prototype.update = function () {
 const _Scene_FactionStatus_terminate = Scene_FactionStatus.prototype.terminate;
 Scene_FactionStatus.prototype.terminate = function () {
   _Scene_FactionStatus_terminate.call(this);
+  if (this._foundPanel) {
+    if (this._foundPanel.parentNode) this._foundPanel.parentNode.removeChild(this._foundPanel);
+    this._foundPanel = null;
+  }
   if (this._factionBar) { this._factionBar.dispose(); this._factionBar = null; }
   UIFactionsInputManager.deactivate();
   if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
@@ -1917,6 +2311,10 @@ const UIFactionsInputManager = {
       this._scene.cycleRepActor(1);
     } else if (Input.isTriggered('pageup')) {
       this._scene.cycleRepActor(-1);
+    } else if (Input.isTriggered('shift')) {
+      // The page's own banner button, for a hand that never touches the mouse:
+      // before a faction is founded there is no row to press Confirm on.
+      if (!this._scene._selectMode) this._scene.openPlayerFaction();
     } else if (Input.isTriggered('down')) {
       this.handleMove("down");
     } else if (Input.isTriggered('up')) {
@@ -1955,7 +2353,9 @@ const UIFactionsInputManager = {
       const entry = list[scene._dndSelectedIndex];
       // Five hyperpowers have no faction of their own, so there is no id to
       // hand back: a caller asking for a faction cannot be given one of those.
-      if (!entry || !entry.faction) {
+      // Nor can it be given the party's own banner, which is world state and
+      // has no entry in Factions.json for the caller to look up afterwards.
+      if (!entry || !entry.faction || entry.isPlayer) {
         SoundManager.playBuzzer();
         return;
       }
@@ -1968,12 +2368,399 @@ const UIFactionsInputManager = {
       scene.popScene();
       return;
     }
-    SoundManager.playOk();
+    // Not picking a faction for somebody else: Confirm opens the long dossier
+    // in the Archive, which is what the button on the page does. It was the one
+    // control on this screen a cursor could not reach - the list walks with the
+    // stick, but the wiki was a click and nothing else.
+    scene.openHighlightedWiki();
   },
 
   handleCancel: function () {
     SoundManager.playCancel();
     this._scene.popScene();
+  }
+};
+
+//=============================================================================
+// Founding a faction of your own
+//=============================================================================
+//
+// The register's own button. One banner per world: before it is raised this
+// opens the founding panel, after it is raised it opens the room where the
+// faction is run (Scene_PlayerFaction).
+
+Scene_FactionStatus.prototype.openPlayerFaction = function () {
+  if ($gameFactions.hasPlayerFaction()) {
+    SoundManager.playOk();
+    SceneManager.push(Scene_PlayerFaction);
+    return;
+  }
+  this.openFoundingPanel();
+};
+
+// The panel is a sibling of the book rather than a child of it: the spread is
+// re-rendered whole on every cursor move, and a field being typed into cannot
+// survive that.
+Scene_FactionStatus.prototype.openFoundingPanel = function () {
+  if (this._foundPanel) return;
+  SoundManager.playOk();
+
+  const panel = document.createElement("div");
+  panel.className = "facrep-25";
+  panel.innerHTML = `
+    <div class="facrep-26">
+      <h3 class="title facrep-09">${T("Factions.player.foundTitle")}</h3>
+      <p class="facrep-10">${T("Factions.player.foundHint")}</p>
+      <input class="facrep-27" type="text" maxlength="48"
+             aria-label="${T("Factions.player.nameLbl")}">
+      <div class="facrep-28">
+        <div class="back-button focusable facrep-03"
+             onclick="SceneManager._scene.rerollFactionName()">${T("Factions.player.reroll")}</div>
+        <div class="back-button focusable facrep-03"
+             onclick="SceneManager._scene.confirmFounding()">${T("Factions.player.confirm")}</div>
+        <div class="back-button focusable facrep-03"
+             onclick="SceneManager._scene.closeFoundingPanel()">${T("Factions.player.cancel")}</div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(panel);
+  this._foundPanel = panel;
+
+  const field = panel.querySelector("input");
+  // Set through the property, never through the markup: a rolled name is
+  // prose and has no business being pasted into an attribute.
+  field.value = $gameFactions.rollPlayerFactionName();
+  // A focused field owns the keyboard. RPG Maker listens on the document, so
+  // every key has to be stopped at the element or the game reads it too.
+  field.addEventListener("keydown", (e) => {
+    e.stopPropagation();
+    if (e.key === "Enter") this.confirmFounding();
+    else if (e.key === "Escape") this.closeFoundingPanel();
+  });
+  field.addEventListener("keyup", (e) => e.stopPropagation());
+  field.addEventListener("keypress", (e) => e.stopPropagation());
+  field.focus();
+  field.select();
+};
+
+Scene_FactionStatus.prototype.rerollFactionName = function () {
+  if (!this._foundPanel) return;
+  SoundManager.playCursor();
+  const field = this._foundPanel.querySelector("input");
+  if (!field) return;
+  field.value = $gameFactions.rollPlayerFactionName();
+  field.focus();
+  field.select();
+};
+
+Scene_FactionStatus.prototype.closeFoundingPanel = function () {
+  if (!this._foundPanel) return;
+  SoundManager.playCancel();
+  if (this._foundPanel.parentNode) this._foundPanel.parentNode.removeChild(this._foundPanel);
+  this._foundPanel = null;
+};
+
+Scene_FactionStatus.prototype.confirmFounding = function () {
+  if (!this._foundPanel) return;
+  const field = this._foundPanel.querySelector("input");
+  const typed = field ? field.value : "";
+  // Founding is once and for all, and the button should never have offered it
+  // a second time: refuse rather than overwrite a banner that already flies.
+  if ($gameFactions.hasPlayerFaction()) {
+    SoundManager.playBuzzer();
+    this.closeFoundingPanel();
+    return;
+  }
+  const record = $gameFactions.foundPlayerFaction(typed);
+  SoundManager.playOk();
+  if (this._foundPanel.parentNode) this._foundPanel.parentNode.removeChild(this._foundPanel);
+  this._foundPanel = null;
+
+  if (window.ParchmentToast) {
+    window.ParchmentToast.show(
+      T("Factions.player.foundedToast", { name: FRS.escapeText(record.name) }),
+      { severity: "info", key: "player-faction" });
+  }
+
+  // Land the cursor on the row that was just added, wherever the tree put it.
+  this._dndLastLeftPageKey = null;
+  const list = this.getFactionList();
+  const idx = list.findIndex((row) => row && row.isPlayer);
+  if (idx >= 0) this._dndSelectedIndex = idx;
+  this.refreshUIFactions();
+};
+
+//=============================================================================
+// Scene_PlayerFaction - running the banner you raised
+//=============================================================================
+//
+// The left page is the roll: who has joined, counted and named. The right page
+// is the allegiance: the powers this faction may swear itself to, and the way
+// back out of a vow already taken.
+
+function Scene_PlayerFaction() {
+  this.initialize(...arguments);
+}
+
+Scene_PlayerFaction.prototype = Object.create(Scene_MenuBase.prototype);
+Scene_PlayerFaction.prototype.constructor = Scene_PlayerFaction;
+window.Scene_PlayerFaction = Scene_PlayerFaction;
+
+Scene_PlayerFaction.prototype.initialize = function () {
+  Scene_MenuBase.prototype.initialize.call(this);
+  this._pfIndex = 0;
+};
+
+Scene_PlayerFaction.prototype.create = function () {
+  Scene_MenuBase.prototype.create.call(this);
+  this._pfIndex = 0;
+
+  this._pfContainer = document.createElement("div");
+  this._pfContainer.id = "menu-container";
+  this._pfContainer.style.opacity = "0";
+  this._pfContainer.style.transition = "opacity 0.22s ease-out";
+  document.body.appendChild(this._pfContainer);
+
+  // Same reason as the register: RPG Maker preventDefaults wheel on the
+  // document, so a DOM overlay has to scroll itself.
+  this._pfContainer.addEventListener("wheel", (e) => {
+    const box = e.target.closest("#pf-roster, #pf-allegiance, .left-page, .right-page");
+    if (box) box.scrollTop += e.deltaY;
+    e.stopPropagation();
+    e.preventDefault();
+  }, { passive: false });
+
+  this.refreshPlayerFaction();
+
+  setTimeout(() => {
+    if (this._pfContainer) this._pfContainer.style.opacity = "1";
+  }, 16);
+};
+
+// The rows the right page walks: standing alone first, then every power that
+// could be sworn to. The vow already taken is not offered again.
+Scene_PlayerFaction.prototype.allegianceOptions = function () {
+  const overlord = $gameFactions.playerFactionOverlord();
+  const rows = [];
+  if (overlord) rows.push({ id: null, name: T("Factions.player.renounce"), current: false });
+  else rows.push({ id: null, name: T("Factions.player.noOverlord"), current: true });
+  $gameFactions.getHyperpowers().forEach((hp) => {
+    rows.push({
+      id: hp.id,
+      name: $gameFactions.hyperpowerLabel(hp),
+      current: !!overlord && overlord.id === hp.id,
+    });
+  });
+  return rows;
+};
+
+Scene_PlayerFaction.prototype.refreshPlayerFaction = function () {
+  if (!this._pfContainer) return;
+  const record = $gameFactions.playerFaction();
+  if (!record) { this.popScene(); return; }
+
+  const roster = $gameFactions.playerFactionRoster();
+  const overlord = $gameFactions.playerFactionOverlord();
+  const options = this.allegianceOptions();
+  if (this._pfIndex >= options.length) this._pfIndex = options.length - 1;
+
+  const nameRow = (label, value) =>
+    `<div class="facrep-12"><span><strong>${label}</strong></span><span>${value}</span></div>`;
+
+  const memberTags = (names) => names.length
+    ? `<div class="facrep-29">${names.map((n) =>
+        `<span class="facrep-30">${FRS.escapeText(n)}</span>`).join("")}</div>`
+    : `<div class="facrep-22">${T("Factions.player.emptyRoll")}</div>`;
+
+  const leftPageHTML = `
+    <div class="left-page">
+      <div class="page-header-bar facrep-02">
+        <div class="back-button focusable facrep-03" onclick="SceneManager._scene.popScene()">
+          ${T("Factions.back")}
+        </div>
+        <h2 class="title facrep-04">${FRS.escapeText(record.name)}</h2>
+        <div class="back-button focusable facrep-23"
+             onclick="SceneManager._scene.openRenamePanel()">${T("Factions.player.rename")}</div>
+      </div>
+      <div class="facrep-13">
+        ${nameRow(T("Factions.player.membersLbl"), T("Factions.player.membersLine", {
+          total: roster.total, party: roster.party.length, army: roster.army.length,
+        }))}
+        ${nameRow(T("Factions.player.allegianceLbl"),
+          overlord ? $gameFactions.hyperpowerLabel(overlord) : T("Factions.player.noOverlord"))}
+        ${record.founded ? nameRow(T("Factions.player.foundedLbl"), FRS.escapeText(record.founded)) : ""}
+      </div>
+      <div class="backpack-grid facrep-05" id="pf-roster">
+        <h4 class="facrep-21">${T("Factions.player.companionsLbl", { count: roster.party.length })}</h4>
+        ${memberTags(roster.party)}
+        <h4 class="facrep-21">${T("Factions.player.soldiersLbl", { count: roster.army.length })}</h4>
+        ${memberTags(roster.army)}
+      </div>
+    </div>
+  `;
+
+  const optionHTML = options.map((option, idx) => {
+    const selected = this._pfIndex === idx ? "selected" : "";
+    const badge = option.current
+      ? `<span class="faction-rep-badge faction-rep--exalted">${T("Factions.player.currentVow")}</span>`
+      : "";
+    return `
+      <div class="faction-row ${selected}" onclick="SceneManager._scene.chooseAllegiance(${idx})">
+        <div class="faction-info"><span class="faction-name">${FRS.escapeText(option.name)}</span></div>
+        ${badge}
+      </div>
+    `;
+  }).join("");
+
+  const rightPageHTML = `
+    <div class="right-page">
+      <div class="faction-heraldry-card">
+        <div class="heraldry-header">
+          <h3 class="heraldry-title">${T("Factions.player.allegianceTitle")}</h3>
+        </div>
+        <div class="inspect-lore facrep-20">${T("Factions.player.allegianceHint")}</div>
+        <div class="faction-accords" id="pf-allegiance">${optionHTML}</div>
+      </div>
+    </div>
+  `;
+
+  this._pfContainer.innerHTML = `<div class="book-spread">${leftPageHTML}${rightPageHTML}</div>`;
+
+  const list = this._pfContainer.querySelector("#pf-allegiance");
+  const row = list ? list.children[this._pfIndex] : null;
+  if (row && row.scrollIntoView) row.scrollIntoView({ block: "nearest" });
+};
+
+Scene_PlayerFaction.prototype.movePlayerFactionCursor = function (delta) {
+  const options = this.allegianceOptions();
+  const next = this._pfIndex + delta;
+  if (next < 0 || next >= options.length) return;
+  SoundManager.playCursor();
+  this._pfIndex = next;
+  this.refreshPlayerFaction();
+};
+
+Scene_PlayerFaction.prototype.chooseAllegiance = function (idx) {
+  const options = this.allegianceOptions();
+  const option = options[idx];
+  if (!option) return;
+  this._pfIndex = idx;
+  if (option.current) {
+    SoundManager.playBuzzer();
+    this.refreshPlayerFaction();
+    return;
+  }
+  SoundManager.playOk();
+  $gameFactions.swearPlayerFactionTo(option.id);
+  const record = $gameFactions.playerFaction();
+  if (window.ParchmentToast) {
+    window.ParchmentToast.show(
+      option.id === null
+        ? T("Factions.player.renouncedToast", { faction: FRS.escapeText(record.name) })
+        : T("Factions.player.swornToast", {
+          faction: FRS.escapeText(record.name), power: FRS.escapeText(option.name),
+        }),
+      { severity: "info", key: "player-faction" });
+  }
+  this._pfIndex = 0;
+  this.refreshPlayerFaction();
+};
+
+Scene_PlayerFaction.prototype.openRenamePanel = function () {
+  if (this._pfRenamePanel) return;
+  SoundManager.playOk();
+  const record = $gameFactions.playerFaction();
+
+  const panel = document.createElement("div");
+  panel.className = "facrep-25";
+  panel.innerHTML = `
+    <div class="facrep-26">
+      <h3 class="title facrep-09">${T("Factions.player.rename")}</h3>
+      <p class="facrep-10">${T("Factions.player.renameHint")}</p>
+      <input class="facrep-27" type="text" maxlength="48"
+             aria-label="${T("Factions.player.nameLbl")}">
+      <div class="facrep-28">
+        <div class="back-button focusable facrep-03"
+             onclick="SceneManager._scene.rerollRename()">${T("Factions.player.reroll")}</div>
+        <div class="back-button focusable facrep-03"
+             onclick="SceneManager._scene.confirmRename()">${T("Factions.player.confirm")}</div>
+        <div class="back-button focusable facrep-03"
+             onclick="SceneManager._scene.closeRenamePanel()">${T("Factions.player.cancel")}</div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(panel);
+  this._pfRenamePanel = panel;
+
+  const field = panel.querySelector("input");
+  field.value = record ? record.name : "";
+  field.addEventListener("keydown", (e) => {
+    e.stopPropagation();
+    if (e.key === "Enter") this.confirmRename();
+    else if (e.key === "Escape") this.closeRenamePanel();
+  });
+  field.addEventListener("keyup", (e) => e.stopPropagation());
+  field.addEventListener("keypress", (e) => e.stopPropagation());
+  field.focus();
+  field.select();
+};
+
+Scene_PlayerFaction.prototype.rerollRename = function () {
+  if (!this._pfRenamePanel) return;
+  SoundManager.playCursor();
+  const field = this._pfRenamePanel.querySelector("input");
+  if (!field) return;
+  field.value = $gameFactions.rollPlayerFactionName();
+  field.focus();
+  field.select();
+};
+
+Scene_PlayerFaction.prototype.closeRenamePanel = function () {
+  if (!this._pfRenamePanel) return;
+  SoundManager.playCancel();
+  if (this._pfRenamePanel.parentNode) this._pfRenamePanel.parentNode.removeChild(this._pfRenamePanel);
+  this._pfRenamePanel = null;
+};
+
+Scene_PlayerFaction.prototype.confirmRename = function () {
+  if (!this._pfRenamePanel) return;
+  const field = this._pfRenamePanel.querySelector("input");
+  const renamed = $gameFactions.renamePlayerFaction(field ? field.value : "");
+  if (renamed) SoundManager.playOk(); else SoundManager.playBuzzer();
+  if (this._pfRenamePanel.parentNode) this._pfRenamePanel.parentNode.removeChild(this._pfRenamePanel);
+  this._pfRenamePanel = null;
+  this.refreshPlayerFaction();
+};
+
+Scene_PlayerFaction.prototype.update = function () {
+  Scene_MenuBase.prototype.update.call(this);
+  // A focused field owns the keyboard, here as everywhere else.
+  if (this._pfRenamePanel) return;
+  if (window.MenuSearchBar && window.MenuSearchBar.isTyping()) return;
+
+  if (Input.isTriggered("down")) this.movePlayerFactionCursor(1);
+  else if (Input.isTriggered("up")) this.movePlayerFactionCursor(-1);
+  // The rename button, for a hand that never touches the mouse.
+  else if (Input.isTriggered("shift")) this.openRenamePanel();
+  else if (Input.isTriggered("ok")) this.chooseAllegiance(this._pfIndex);
+  else if (Input.isTriggered("cancel") || TouchInput.isCancelled()) {
+    SoundManager.playCancel();
+    this.popScene();
+  }
+};
+
+Scene_PlayerFaction.prototype.terminate = function () {
+  Scene_MenuBase.prototype.terminate.call(this);
+  this.closeRenamePanel();
+  if (this._pfContainer) {
+    const container = this._pfContainer;
+    container.style.transition = "opacity 0.2s ease-out";
+    container.style.opacity = "0";
+    container.style.pointerEvents = "none";
+    setTimeout(() => {
+      if (container && container.parentNode) container.parentNode.removeChild(container);
+    }, 200);
+    this._pfContainer = null;
   }
 };
 

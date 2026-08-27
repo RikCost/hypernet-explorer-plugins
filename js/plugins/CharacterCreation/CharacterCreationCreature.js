@@ -800,6 +800,7 @@
   Scene_CreateCreature.prototype.terminate = function () {
     Scene_MenuBase.prototype.terminate.call(this);
     this.cleanupCreature3D();
+    if (window.CCNav) window.CCNav.detach(this);
     if (this._wasdListener) {
       window.removeEventListener("keydown", this._wasdListener);
       this._wasdListener = null;
@@ -871,6 +872,10 @@
 
     // Wheel + L2/R2 scrolling for the card boards. See CCScroll.
     if (window.CCScroll) window.CCScroll.bindWheel(this._dndContainer);
+    // Everything on the page that is not a card on a board - the buttons under
+    // the boards above all - is walked with the focus ring. See
+    // CharacterCreationNav.js.
+    if (window.CCNav) window.CCNav.attach(this, this._dndContainer);
 
     this.refreshUIOverlayDOM();
   };
@@ -1771,7 +1776,25 @@
     }
   };
 
+  // The focus ring hands the board back when it walks off its own top or left
+  // edge; the board redraws so its cursor is visible again.
+  Scene_CreateCreature.prototype.onNavLeave = function () {
+    this._lastStep = -1;
+    this._lastIndex = -1;
+    this.refreshUIOverlayDOM();
+  };
+
+  // Step off the board and onto the page's own controls, if there is anything
+  // over there to land on.
+  Scene_CreateCreature.prototype._ccEnterNav = function (dir) {
+    if (!window.CCNav) return false;
+    return window.CCNav.tryEnterFromBoard(dir);
+  };
+
   Scene_CreateCreature.prototype.updateUIInput = function () {
+    // The ring owns the page's own controls whenever it is up, and is read
+    // first so one press never moves two cursors.
+    if (window.CCNav && window.CCNav.update()) return;
     const windowObj = this._getActiveWindow();
     if (!windowObj || !windowObj.active) return;
 
@@ -1846,6 +1869,9 @@
       }
     }
 
+    // The right edge of the board is the doorway onto the page's own buttons.
+    if (newIndex === index && isRight && this._ccEnterNav("right")) return;
+
     if (newIndex !== index) {
       SoundManager.playCursor();
       windowObj.select(newIndex);
@@ -1874,6 +1900,9 @@
     if (this._dndContainer && this._dndContainer.style.display !== "none") {
       this.updateUIInput();
       if (window.CCScroll) window.CCScroll.update(this._dndContainer);
+      // The page rebuilds its markup underneath the ring, so the ring is
+      // stamped back on afterwards rather than before.
+      if (window.CCNav) window.CCNav.paint();
 
       const isMode = this._step === 0;
       const isArch1 = this._step === 1;

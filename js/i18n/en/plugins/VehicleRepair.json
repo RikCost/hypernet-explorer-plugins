@@ -29,6 +29,7 @@
   "lv": "Lv.",
   "maxed": "MAXED",
   "install": "Install",
+  "upgradeAction": "Upgrade",
   "upgrade": {
     "accel": {
       "name": "Turbo Injectors",

@@ -63,5 +63,7 @@
     "Weapons": "Armi",
     "Armor": "Armature",
     "Misc": "Varie"
-  }
+  },
+  "starterRecipe": "Conoscenza comune - chiunque può farlo, addestrato o no",
+  "searchPlaceholder": "Cerca ricette…"
 }

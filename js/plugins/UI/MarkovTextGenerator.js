@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Generates text using Markov chains, or a local GGUF language model when one is picked, with proper text wrapping.
+ * @plugindesc Generates text using Markov chains, or a local GGUF language model when one is picked (completion or chat tuned), with proper text wrapping.
  * @author Omni-Lex
  * @url https://nocoldiz.itch.io/hypernet-explorer
  * 
@@ -90,7 +90,7 @@
  * @type number
  * @min 256
  * @max 8192
- * @desc Context size the language model server is started with.
+ * @desc Context size the language model server is started with. A chat model is never given less than 4096.
  * @default 1024
  * 
  * @param llmMaxTokens
@@ -370,33 +370,46 @@
  * Apple Silicon) and Linux x64. It is started with the picked model the first
  * time a line is asked of it and killed when the game closes.
  * 
- * This was written against lukasstraub2/gpt2-aidungeon2-gguf, a GPT-2 finetune
- * of AI Dungeon 2. Any GGUF model llama.cpp can load will run, but a chat model
- * will answer this prompt format less well than a story completion one.
- * 
+ * Two kinds of model are understood, and which one a file is is read off the
+ * file itself (tokenizer.chat_template in its GGUF metadata):
+ *
+ * - A plain completion model. This was written against
+ *   lukasstraub2/gpt2-aidungeon2-gguf, a GPT-2 finetune of AI Dungeon 2. It
+ *   gets a scenario (where the party is, who is speaking, and a few sentences
+ *   out of the same text database the chain would have used) followed by an
+ *   action line opening with "> ", and it writes the story that follows. ">"
+ *   is the stop token, so it stops before inventing the player's next move. It
+ *   runs at temperature 0.4, top_p 0.9, top_k 40 for 100 tokens, the values
+ *   the model card recommends, and only whole sentences are ever spoken.
+ *
+ * - An instruction tuned model: Qwen, Llama 3 Instruct, Mistral Instruct and
+ *   anything else carrying a chat template. It is asked on the chat route
+ *   instead, with a system prompt saying who it is playing, where it is
+ *   standing and how the people here talk, then the last turns of the
+ *   conversation and the line just typed. Its server is run with --jinja, so
+ *   the turns are wrapped in the model's own template; a template llama.cpp
+ *   cannot render is not fatal, the server is simply run again on its built in
+ *   one. Reasoning is asked off and any <think> block that arrives anyway is
+ *   dropped before the line is spoken.
+ *
  * On a platform with no shipped runtime (an ARM desktop, say) the matching
  * llama.cpp release is fetched once on first use and unpacked into the same
  * folder. A llama-server the player started themselves on the same port is
  * used as it stands and is left running, and an own build can be named with
  * the llama.cpp Server Path parameter or the HYPERNET_LLAMA_SERVER variable.
- * 
- * How the model is prompted: it is a text completion model, not a chat model.
- * It gets a scenario (where the party is, who is speaking, and a few sentences
- * out of the same text database the chain would have used) followed by an
- * action line opening with "> ", and it writes the story that follows. ">" is
- * the stop token, so it stops before inventing the player's next move. It runs
- * at temperature 0.4, top_p 0.9, top_k 40 for 100 tokens, the values the model
- * card recommends, and only whole sentences are ever spoken.
- * 
+ *
  * Events wait for the model, and so does the free chat of the Empathize panel,
- * where the player writes the prompt themselves. Code that cannot wait
- * (generateMarkovString) is served lines the model wrote ahead of time for that
- * database, and hears the chain until the first one lands;
- * generateMarkovStringAsync() is there for callers that can wait, and
- * window.MarkovLLM exposes the backend itself, including isReady() and
- * warmUp() for callers that want the chain rather than a cold start.
- * 
- * The model writes English. In another language the chain is the better voice.
+ * where the player writes the line themselves: that one waits out a cold start
+ * too, so a picked model is who answers from the very first line rather than
+ * from the second. Code that cannot wait (generateMarkovString) is served lines
+ * the model wrote ahead of time for that database, and hears the chain until
+ * the first one lands; generateMarkovStringAsync() is there for callers that
+ * can wait, and window.MarkovLLM exposes the backend itself, including
+ * isReady() and warmUp() for callers that want the chain rather than a cold
+ * start, isChatModel(), and reply() for a typed line.
+ *
+ * A completion model writes English. An instruction tuned one is asked to
+ * answer in the language the game is running in.
  * 
  * == Text Wrapping Parameters ==
  * 
@@ -889,7 +902,116 @@
 
     function rescanGgufModels() {
         ggufCache = null;
+        chatModelCache.clear();
         return listGgufModels();
+    }
+
+    //-------------------------------------------------------------------------
+    // Chat tuned models
+    //-------------------------------------------------------------------------
+    // Everything the section above does is written for a plain completion
+    // model: a scenario, an action line, and a story written on from there. An
+    // instruction tuned model (Qwen, Llama 3 Instruct, Mistral Instruct and
+    // the rest of that shape) does not continue a story. It answers turns
+    // wrapped in the chat template it was trained on, and handed an AI Dungeon
+    // scenario it writes about the scenario instead of speaking in it.
+    //
+    // So the two are told apart and each is asked in its own way. Which one a
+    // file is is read off the file itself: an instruction tuned GGUF carries
+    // its template in its metadata, under tokenizer.chat_template.
+
+    // How much of the front of a GGUF is read looking for its template. The
+    // metadata of a big vocabulary runs to a few megabytes, so the small window
+    // answers for nearly every file and the large one is only ever paid for the
+    // rare one whose key block is longer than that.
+    const LLM_GGUF_SCAN_STEPS = [8 * 1024 * 1024, 48 * 1024 * 1024];
+    // Only for a file whose metadata could not be read: what the publishers of
+    // instruction tuned GGUFs put in the file name.
+    const LLM_CHAT_NAME_HINT =
+        /(instruct|[-_.]it[-_.]|chat|qwen|hermes|vicuna|zephyr|openchat|gemma|phi-?[34]|smollm|minicpm|granite|olmo|tulu|deepseek|llama-?3)/i;
+    // The last turns handed to a chat model, and the room its server is given:
+    // a system prompt plus a conversation needs more than the 1024 tokens an
+    // action line was answered in.
+    const LLM_CHAT_HISTORY = 6;
+    const LLM_CHAT_CONTEXT = 4096;
+    // A person talking is allowed to be less predictable than a narrator.
+    const LLM_CHAT_SAMPLER = { temperature: 0.8, top_p: 0.9 };
+
+    // The value of one metadata key, without loading the weights: a GGUF opens
+    // with its header and its key/value block, so only the front of the file is
+    // read. Returns the template, '' when the file carries none, or null when
+    // it could not be parsed at all (a truncated download, a format newer than
+    // this reader, metadata past the window that is read).
+    function ggufChatTemplate(filePath) {
+        if (!NodeIO) return null;
+        let size = 0;
+        try { size = NodeIO.fs.statSync(filePath).size; } catch (e) { return null; }
+        for (const limit of LLM_GGUF_SCAN_STEPS) {
+            const template = ggufChatTemplateWithin(filePath, Math.min(size, limit));
+            if (template !== null) return template;
+            if (size <= limit) return null;      // the whole file was read already
+        }
+        return null;
+    }
+
+    function ggufChatTemplateWithin(filePath, length) {
+        const fs = NodeIO.fs;
+        let fd = null;
+        try {
+            if (length < 24) return null;
+            const buf = Buffer.alloc(length);
+            fd = fs.openSync(filePath, 'r');
+            fs.readSync(fd, buf, 0, length, 0);
+            if (buf.toString('latin1', 0, 4) !== 'GGUF') return null;
+
+            let off = 4;
+            const u32 = () => { const v = buf.readUInt32LE(off); off += 4; return v; };
+            const u64 = () => { const v = Number(buf.readBigUInt64LE(off)); off += 8; return v; };
+            const str = () => { const n = u64(); const v = buf.toString('utf8', off, off + n); off += n; return v; };
+            const version = u32();
+            if (version < 2 || version > 3) return null;
+            u64();                                   // tensor count, not read here
+            const kvCount = u64();
+            // Byte width of every fixed size metadata type, by its type id.
+            const WIDTH = { 0: 1, 1: 1, 2: 2, 3: 2, 4: 4, 5: 4, 6: 4, 7: 1, 10: 8, 11: 8, 12: 8 };
+            const skip = (type) => {
+                if (type === 8) { off += u64(); return; }          // string
+                if (type === 9) {                                   // array
+                    const elem = u32();
+                    const n = u64();
+                    for (let i = 0; i < n; i++) skip(elem);
+                    return;
+                }
+                const width = WIDTH[type];
+                if (width === undefined) throw new Error('unknown metadata type ' + type);
+                off += width;
+            };
+            for (let i = 0; i < kvCount; i++) {
+                if (off >= buf.length) return null;
+                const key = str();
+                const type = u32();
+                if (key === 'tokenizer.chat_template' && type === 8) return str();
+                skip(type);
+            }
+            return '';
+        } catch (e) {
+            return null;
+        } finally {
+            if (fd !== null) { try { fs.closeSync(fd); } catch (e) { /* already closed */ } }
+        }
+    }
+
+    // Cached per file: reading it walks the whole vocabulary of a big model.
+    const chatModelCache = new Map();
+    function modelIsChat(modelName) {
+        if (!modelName || !NodeIO) return false;
+        if (chatModelCache.has(modelName)) return chatModelCache.get(modelName);
+        const template = ggufChatTemplate(NodeIO.path.join(modelsDir(), modelName));
+        const isChat = template === null
+            ? LLM_CHAT_NAME_HINT.test(modelName)
+            : template.length > 0;
+        chatModelCache.set(modelName, isChat);
+        return isChat;
     }
 
     // A model dropped into the folder while the game is running shows up the
@@ -1273,6 +1395,12 @@
         _ready: false,
         _external: false,
         _warned: false,
+        // Up only while _start is running, so the exit of a server that failed
+        // to boot does not throw away the boot promise a retry is still using.
+        _starting: false,
+        // Why the last run of the server did not answer: 'exit' (it quit) or
+        // 'timeout' (it never finished loading).
+        _bootFailure: '',
 
         // Whether a line asked for now would be answered rather than waited on.
         isReadyFor(modelName) {
@@ -1302,6 +1430,15 @@
         },
 
         async _start(modelName) {
+            this._starting = true;
+            try {
+                return await this._startAttempts(modelName);
+            } finally {
+                this._starting = false;
+            }
+        },
+
+        async _startAttempts(modelName) {
             // A server the player started themselves owns the port: it is used
             // as it stands and is never spawned over or killed on the way out.
             if (await this.isUp()) {
@@ -1331,22 +1468,58 @@
             if (process.platform === 'win32') prepend('PATH', binDir);
             else if (process.platform === 'darwin') prepend('DYLD_LIBRARY_PATH', binDir);
             else prepend('LD_LIBRARY_PATH', binDir);
-            this._proc = NodeIO.cp.spawn(binary, [
+            const chat = modelIsChat(modelName);
+            const args = [
                 '-m', modelPath,
                 '--host', '127.0.0.1',
                 '--port', String(llmPort),
-                '-c', String(llmContextSize),
+                // An instruction tuned model is handed a system prompt, the
+                // last turns of the conversation and the line just typed, so it
+                // is given the room a lone action line never needed.
+                '-c', String(chat ? Math.max(llmContextSize, LLM_CHAT_CONTEXT) : llmContextSize),
                 '-t', String(Math.max(1, Math.min(8, (require('os').cpus() || []).length - 1 || 4)))
-            ], { stdio: 'ignore', windowsHide: true, cwd: binDir, env: env });
+            ];
+            // With --jinja the turns are wrapped in the model's own chat
+            // template, out of the GGUF, which is the only way a Qwen or a
+            // Llama 3 hears them the way it was trained to. A template
+            // llama.cpp cannot render takes the server down with it, so that
+            // run is not the only one: the server's built in template is tried
+            // after it rather than the model being written off.
+            if (chat) {
+                if (await this._spawnAndWait(binary, args.concat(['--jinja']), binDir, env, modelName)) {
+                    return true;
+                }
+                // Only a server that quit outright is worth a second run
+                // without the model's own template. One that simply never
+                // finished loading would only be made to load twice.
+                if (this._bootFailure !== 'exit') return false;
+            }
+            return await this._spawnAndWait(binary, args, binDir, env, modelName);
+        },
+
+        // One run of the server, up to the moment it answers or gives up on
+        // booting. Called twice at most per start, so it leaves nothing behind
+        // that a second call would trip over.
+        async _spawnAndWait(binary, args, binDir, env, modelName) {
+            this._model = modelName;
+            this._proc = NodeIO.cp.spawn(binary, args, {
+                stdio: 'ignore', windowsHide: true, cwd: binDir, env: env
+            });
             this._proc.on('error', e => {
                 console.warn(`[${pluginName}] Could not run ${binary}:`, e);
                 this._proc = null;
             });
-            this._proc.on('exit', () => { this._proc = null; this._ready = false; this._boot = null; });
+            // A server that dies later must be started again rather than the
+            // settled boot promise being handed out as if it were still up.
+            this._proc.on('exit', () => {
+                this._proc = null;
+                this._ready = false;
+                if (!this._starting) this._boot = null;
+            });
 
             const deadline = Date.now() + LLM_BOOT_TIMEOUT_MS;
             while (Date.now() < deadline) {
-                if (!this._proc) return false;
+                if (!this._proc) { this._bootFailure = 'exit'; return false; }
                 if (await this.isUp()) {
                     this._ready = true;
                     llmToast('Markov.llm.ready', { model: modelName.replace(/\.gguf$/i, '') });
@@ -1354,7 +1527,10 @@
                 }
                 await new Promise(r => setTimeout(r, 750));
             }
-            this.stop();
+            if (this._proc) { try { this._proc.kill(); } catch (e) { /* already gone */ } }
+            this._proc = null;
+            this._ready = false;
+            this._bootFailure = 'timeout';
             return false;
         },
 
@@ -1476,6 +1652,128 @@
     }
 
     //-------------------------------------------------------------------------
+    // Asking a chat tuned model
+    //-------------------------------------------------------------------------
+    // A chat model is told who it is playing, where it is standing and how the
+    // people here talk, then handed the last turns of the conversation and the
+    // line the player just typed. That is the whole of the prompt: the template
+    // the model was trained on is applied by the server, out of the GGUF.
+    function llmChatMessages(spec) {
+        const npc = spec.npcName || T('Markov.unknownName');
+        const place = $gameMap && $gameMap.displayName ? $gameMap.displayName() : '';
+        const sample = llmSampleSentences(spec.dbText, 3);
+        const system = [
+            T('Markov.llm.chatSystem', { npc: npc }),
+            spec.npcBio ? T('Markov.llm.chatAbout', { bio: spec.npcBio }) : '',
+            place ? T('Markov.llm.chatPlace', { place: place }) : '',
+            sample ? T('Markov.llm.chatFlavour', { text: sample }) : '',
+            T('Markov.llm.chatStyle')
+        ].filter(Boolean).join(' ');
+        const messages = [{ role: 'system', content: system }];
+        for (const turn of (spec.history || []).slice(-LLM_CHAT_HISTORY)) {
+            const text = String((turn && turn.text) || '').trim();
+            if (!text) continue;
+            messages.push({ role: turn.role === 'npc' ? 'assistant' : 'user', content: text });
+        }
+        const said = String(spec.startText || '').trim();
+        messages.push({ role: 'user', content: said || T('Markov.llm.chatOpen') });
+        return messages;
+    }
+
+    // A chat model answers in its own voice and sometimes about its own voice:
+    // a reasoning model thinks out loud in <think> blocks, a talkative one
+    // opens with the name it was given or wraps the line in quotes, and one cut
+    // off at the token limit stops mid sentence. None of that is spoken.
+    function llmCleanChat(raw, npcName, truncated) {
+        let text = String(raw || '').replace(/\r/g, '');
+        text = text.replace(/<think>[\s\S]*?<\/think>/gi, ' ');
+        const stray = text.lastIndexOf('</think>');
+        if (stray >= 0) text = text.slice(stray + 8);
+        text = text.replace(/<think>[\s\S]*$/i, ' ')
+                   .replace(/<\|[^|]*\|>/g, ' ')
+                   .replace(/\s+/g, ' ')
+                   .trim();
+        if (npcName) {
+            const escaped = String(npcName).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            text = text.replace(new RegExp('^' + escaped + '\\s*[:\u2013-]\\s*', 'i'), '');
+        }
+        text = text.replace(/^["'\u201c\u201d\u00ab\u00bb]+/, '')
+                   .replace(/["'\u201c\u201d\u00ab\u00bb]+$/, '')
+                   .trim();
+        if (truncated) {
+            const lastStop = Math.max(text.lastIndexOf('.'), text.lastIndexOf('!'), text.lastIndexOf('?'));
+            if (lastStop >= 0) text = text.slice(0, lastStop + 1);
+        }
+        return text.trim();
+    }
+
+    // One chat completion, on the OpenAI shaped route llama.cpp serves for it.
+    // Empty on any failure, which is the caller's signal to fall back.
+    async function llmChatComplete(spec) {
+        const model = selectedGgufModel();
+        if (!model) return '';
+        const running = await LlamaServer.ensure(model);
+        if (!running) return '';
+        const payload = Object.assign({
+            model: model,
+            messages: llmChatMessages(spec),
+            max_tokens: llmMaxTokens,
+            stream: false,
+            // A reasoning model left to think first spends the whole reply
+            // budget on the thinking and says nothing with what is left.
+            chat_template_kwargs: { enable_thinking: false }
+        }, LLM_CHAT_SAMPLER);
+        try {
+            let res = await llmRequest('/v1/chat/completions', payload, llmTimeoutMs);
+            if (res.status === 404) res = await llmRequest('/chat/completions', payload, llmTimeoutMs);
+            if (res.status === 400) {
+                // A server not rendering the model's own template refuses the
+                // arguments meant for it.
+                const plain = Object.assign({}, payload);
+                delete plain.chat_template_kwargs;
+                res = await llmRequest('/v1/chat/completions', plain, llmTimeoutMs);
+            }
+            if (res.status !== 200 || !res.body) return '';
+            const choice = (res.body.choices && res.body.choices[0]) || null;
+            if (!choice) return '';
+            const content = choice.message ? choice.message.content : choice.text;
+            return llmCleanChat(content, spec.npcName, choice.finish_reason === 'length');
+        } catch (e) {
+            console.warn(`[${pluginName}] Chat model request failed:`, e);
+            return '';
+        }
+    }
+
+    // The one way in: whichever of the two shapes the picked model is.
+    function llmAnswer(spec) {
+        if (!llmEnabled()) return Promise.resolve('');
+        const opts = spec || {};
+        return modelIsChat(selectedGgufModel())
+            ? llmChatComplete(opts)
+            : llmComplete(llmBuildPrompt(opts));
+    }
+
+    // The free chat panel's reply. The player wrote that line themselves and is
+    // sitting in front of the answer, so this is the one caller that waits out
+    // a cold start instead of letting the chain speak over it: with a model
+    // picked, the model is who answers. Empty means it could not, and the
+    // caller falls back to the chain.
+    async function llmReply(spec) {
+        if (!llmEnabled()) return '';
+        const opts = spec || {};
+        let dbText = opts.dbText || '';
+        if (!dbText) {
+            try {
+                const database = getTextDB(opts.databaseId || 'all');
+                dbText = ConfigManager.language === 'it' ? database.it : database.en;
+            } catch (e) {
+                dbText = '';
+            }
+        }
+        return llmAnswer(Object.assign({}, opts, { dbText: dbText }));
+    }
+
+    //-------------------------------------------------------------------------
     // Serving the synchronous callers
     //-------------------------------------------------------------------------
     // generateMarkovString() has to answer on the spot, and a model does not.
@@ -1490,7 +1788,7 @@
     function llmPrefetch(key, spec) {
         if (!llmEnabled() || llmInFlight.has(key)) return;
         llmInFlight.add(key);
-        llmComplete(llmBuildPrompt(spec)).then(text => {
+        llmAnswer(spec).then(text => {
             if (!text) return;
             const queue = llmLineCache.get(key) || [];
             queue.push(text);
@@ -1560,7 +1858,7 @@
             return;
         }
         const state = { done: false, text: '' };
-        llmComplete(llmBuildPrompt(spec))
+        llmAnswer(spec)
             .then(text => { state.text = text; })
             .catch(() => { /* the chain answers instead */ })
             .then(() => { state.done = true; });
@@ -1611,8 +1909,16 @@
             path: findServerBinary,
             assetPatterns: llamaAssetPatterns
         },
+        // Whether the picked model is an instruction tuned one, answered
+        // through the chat route and able to hold a conversation, rather than
+        // a plain completion model continuing a scenario.
+        isChatModel: () => modelIsChat(selectedGgufModel()),
         // generate({ dbText, npcName, startText }) -> Promise<string>
-        generate: (spec) => llmComplete(llmBuildPrompt(spec || {}))
+        generate: (spec) => llmAnswer(spec || {}),
+        // reply({ npcName, npcBio, startText, history, databaseId }) -> Promise<string>
+        // What the free chat panel asks for: the model answers a typed line,
+        // waiting out the cold start, and an empty string says the chain has to.
+        reply: llmReply
     };
 
     // Log when the plugin command is registered
@@ -2048,11 +2354,13 @@
                 try { database = getTextDB(databaseId); } catch (error) { database = null; }
                 if (database) {
                     const dbText = ConfigManager.language === 'it' ? database.it : database.en;
-                    const line = await llmComplete(llmBuildPrompt({
+                    const line = await llmAnswer({
                         dbText: dbText,
                         npcName: options.npcName,
+                        npcBio: options.npcBio,
+                        history: options.history,
                         startText: options.startText
-                    }));
+                    });
                     if (line) return line;
                 }
             }

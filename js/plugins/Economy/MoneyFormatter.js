@@ -39,22 +39,34 @@
         this.drawText(unit, x + width - unitWidth, y, unitWidth, "right");
     };
 
-    // Format money value with dot before last two digits
-    Window_Base.prototype.formatMoneyValue = function(value) {
-        const valueStr = value.toString();
-    
+    // Format money value with dot before last two digits.
+    //
+    // The rule lives in a plain function rather than only on Window_Base, because most of the
+    // game's money is printed by DOM and parchment panels that have no window to call it on.
+    // Those had no way to reach this and each wrote the conversion out again.
+    function formatMoneyValue(value) {
+        const valueStr = String(value);
+
         // If value has 2 or fewer digits, pad with zeros and add 0.
         if (valueStr.length <= 2) {
             const result = "0." + valueStr.padStart(2, '0');
             return result.endsWith(".00") ? "0" : result;
         }
-    
+
         // Insert dot before last two digits
         const mainPart = valueStr.slice(0, -2);
         const decimalPart = valueStr.slice(-2);
         const result = mainPart + "." + decimalPart;
         return result.endsWith(".00") ? mainPart : result;
+    }
+
+    Window_Base.prototype.formatMoneyValue = function(value) {
+        return formatMoneyValue(value);
     };
+
+    // The one place anything outside a window can ask for the same wording. Diary.js already
+    // looks for exactly this shape.
+    window.MoneyFormatter = { format: formatMoneyValue };
 
     // Truncate item names longer than 18 characters
     Window_Base.prototype.truncateItemName = function(name) {

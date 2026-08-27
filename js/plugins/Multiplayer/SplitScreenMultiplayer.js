@@ -921,6 +921,30 @@
             if (!this.p2Input.action) this._p2InteractLatch = false;
         },
 
+        // Where Player 2 is LOOKING, as the right stick's own deflection. The
+        // 2D game has no use for it - the map is drawn from overhead and a
+        // character faces the way it walks - but a first-person world does:
+        // there is one mouse in the room and Player 1 has it, so the second
+        // player turns with the stick. Answers {x: 0, y: 0} on a keyboard.
+        p2Look() {
+            const idx = GamepadManager.getP2GamepadIndex();
+            if (idx < 0) return { x: 0, y: 0 };
+            return {
+                x: GamepadManager.getAxisValue(idx, 2),
+                y: GamepadManager.getAxisValue(idx, 3),
+            };
+        },
+
+        // Which pad the second player is holding, or -1 for a shared keyboard.
+        p2GamepadIndex() { return GamepadManager.getP2GamepadIndex(); },
+
+        // Which way the screen is cut, as the player set it. Read by anything
+        // that has to lay out its own split rather than use the map's masks -
+        // the 3D world draws itself twice into two scissored halves and has to
+        // cut them the same way, or a pair who chose left/right on the map
+        // would get top/bottom the moment they walked into it.
+        splitOrientation() { return SPLIT_DIR === "horizontal" ? "horizontal" : "vertical"; },
+
         isTriggered(key) {
             return this.p2Input[key] && !this._prevP2Input[key];
         },

@@ -1076,7 +1076,19 @@
   /**
    * Process a generated map to add prefabs
    */
+  // Straight through, on the frame that asks for it.
   function applyPrefabsToMap(mapData, biomeName, worldCoords, allOtherData) {
+    const it = applyPrefabsToMapSteps(mapData, biomeName, worldCoords, allOtherData);
+    let r = it.next();
+    while (!r.done) r = it.next();
+    return r.value;
+  }
+
+  // The same pass, allowed to stop between the two summed-area tables and
+  // between one prefab and the next, so the stitched window can build the ground
+  // ahead of a walking party without dropping a frame. See RESUMABLE GENERATION
+  // in ProceduralMapUtils.js.
+  function* applyPrefabsToMapSteps(mapData, biomeName, worldCoords, allOtherData) {
     // An alien surface takes no prefabs for the moment: the prefab pool is
     // authored terrestrial architecture, and a GalaxySim landing has nothing
     // for it to stand in. Every alien biome is named "Alien<Type>"
@@ -1240,6 +1252,8 @@
       satData = buildSummedAreaTable(occupiedMapData, PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
     }
 
+    yield;
+
     // --- CONDITIONAL WATER DETECTION ---
     // We scan for water tiles UNLESS the biome is "Ocean" (where prefabs can overlap water)
     const isOceanBiome = isWaterBiome(biomeName) && lowerBiome.includes("ocean");
@@ -1296,6 +1310,8 @@
       waterSatData = buildSummedAreaTable(waterOccupiedMapData, PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
     }
 
+    yield;
+
     const blockHints = allOtherData?.blockHints;
     const placementHints = allOtherData?.placementHints;
     const roomHints = allOtherData?.roomHints;
@@ -1309,6 +1325,8 @@
 
     // Generate positions (satData is null if not in City/Road biome, waterSatData is null if in Ocean biome)
     const positions = generatePrefabPositions(prefabCount, rng, prefabsWithSizes, biomeName, blockHints, satData, waterSatData, placementHints, roomHints, roadsidePair);
+
+    yield;
 
     // Build feature lookup for current biome (to find non-terrain features to clear)
     const allFeatures = {};
@@ -1370,6 +1388,7 @@
         }
         placedFootprints.push({ x: position.x, y: position.y, width: position.width, height: position.height });
       }
+      yield;
     }
 
     recordPrefabFootprints(biomeName, worldCoords, placedFootprints);
@@ -1424,7 +1443,13 @@
             // this map goes through, so it reflects the truly finished square.
             prefabbedMapData.add(mapData);
             pg._prefabbedSig = mapDataFingerprint(mapData, biomeName, worldCoords);
-            if ($dataMap) {
+            // A stitched window (WorldMapReturn's ProcStitch) composes this
+            // square together with its neighbours and lays THAT on $dataMap, so
+            // putting the single square back here would wipe the other eight.
+            // Each cell of a window is prefabbed as it is built, so the pass has
+            // already run for every square in it either way.
+            const stitched = window.ProcStitch && window.ProcStitch.active();
+            if ($dataMap && !stitched) {
               $dataMap.data = mapData;
             }
           }
@@ -1436,6 +1461,7 @@
   // Expose functions for debugging
   window.ProceduralMapPrefabs = {
     applyPrefabsToMap,
+    applyPrefabsToMapSteps,
     markPrefabbed,
     loadPrefabSync,
     canPlacePrefabAt,

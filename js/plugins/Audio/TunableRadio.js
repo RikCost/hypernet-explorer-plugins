@@ -1138,6 +1138,23 @@
             this.updateStation();
         }
 
+        // AM, FM, EM: the three plates on the set, which up and down step
+        // through. The step used to be written out twice inside the input
+        // handler instead of going through setBand, so the plates and the keys
+        // were two ways of doing the same thing that did not share a line.
+        cycleBand(direction) {
+            const bands = (radioData.bandNames || []).length || 3;
+            const next = (radioData.currentBand + direction + bands) % bands;
+            this.setBand(next);
+        }
+
+        // The power switch on the panel, which is also what Cancel does. It had
+        // no method behind it at all, so pressing it did nothing for anybody.
+        goBack() {
+            SoundManager.playCancel();
+            this.popScene();
+        }
+
         toggleFavorite() {
             const currentFav = radioData.favorites.findIndex(fav =>
                 fav.band === radioData.currentBand &&
@@ -1159,6 +1176,8 @@
             saveRadioData();
         }
 
+        // The SCAN plate. PageUp and PageDown scan too (both ways, from the
+        // shoulder buttons on a pad), through the same startAutoScan.
         triggerScan() {
             if (enableAutoScan) {
                 this.startAutoScan(1);
@@ -1208,21 +1227,11 @@
                     this.updateStation();
                 }
             } else if (Input.isTriggered('up')) {
-                if (Input.isPressed('shift')) {
-                    this.adjustVolume(5);
-                } else {
-                    radioData.currentBand = (radioData.currentBand - 1 + 3) % 3;
-                    radioData.currentFrequency = 0;
-                    this.updateStation();
-                }
+                if (Input.isPressed('shift')) this.adjustVolume(5);
+                else this.cycleBand(-1);
             } else if (Input.isTriggered('down')) {
-                if (Input.isPressed('shift')) {
-                    this.adjustVolume(-5);
-                } else {
-                    radioData.currentBand = (radioData.currentBand + 1) % 3;
-                    radioData.currentFrequency = 0;
-                    this.updateStation();
-                }
+                if (Input.isPressed('shift')) this.adjustVolume(-5);
+                else this.cycleBand(1);
             } else if (Input.isTriggered('pageup') && enableAutoScan) {
                 this.startAutoScan(-1);
             } else if (Input.isTriggered('pagedown') && enableAutoScan) {
@@ -1230,8 +1239,7 @@
             } else if (Input.isTriggered('ok') && enableFavorites) {
                 this.toggleFavorite();
             } else if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
-                this.popScene();
-                SoundManager.playCancel();
+                this.goBack();
             }
         }
 

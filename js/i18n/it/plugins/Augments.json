@@ -30,6 +30,7 @@
       "slowed": "{need} cala del {pct}% più lentamente.",
       "hastened": "{need} cala del {pct}% più in fretta.",
       "restores": "{need} si ricarica invece di calare, al {pct}% del ritmo abituale."
-    }
+    },
+    "searchPlaceholder": "Cerca innesti…"
   }
 }

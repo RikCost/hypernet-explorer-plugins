@@ -397,8 +397,20 @@
       this._overlay.appendChild(sidebar);
 
       document.body.appendChild(this._overlay);
+      // Everything on this chart - the camera presets, the quadrant filters,
+      // the ideology rows, the confirm and close buttons - was a click and
+      // nothing else: the scene read Cancel and no other key. The shared DOM
+      // focus ring walks them (window.CCNav, CharacterCreationNav.js), the same
+      // ring the creation screens and the maintenance bay wear.
+      if (window.CCNav) window.CCNav.attach(this, this._overlay, { boards: false });
       this.updateIdeologyList();
       this.updateDetailPanel();
+    }
+
+    // No card board behind the ring: the chart IS the page, so stepping off its
+    // first control lands on the last rather than on nothing at all.
+    onNavLeave() {
+      if (window.CCNav) window.CCNav.enter("up");
     }
 
     updateIdeologyList() {
@@ -412,6 +424,9 @@
       this._filteredIdeologies.forEach(item => {
         const name = this.getLocalizedName(item);
         const row = document.createElement('div');
+        // The project-wide tag for a click-driven div, so the focus ring
+        // collects the rows the same way it collects the toolbar's buttons.
+        row.className = 'focusable';
         const isSelected = this._selectedIdeology && this._selectedIdeology.id === item.id;
 
         const myst = item.axes.myst !== undefined ? item.axes.myst : (item.axes.esoteric || 0);
@@ -582,6 +597,13 @@
       if (Input.isTriggered('escape') || Input.isTriggered('cancel')) {
         SceneManager.pop();
         return;
+      }
+      // The ring is read before the camera: a direction moves the cursor over
+      // the panel, and Confirm presses whatever it rests on.
+      if (window.CCNav && this._overlay) {
+        if (window.CCNav._root !== this._overlay) window.CCNav.attach(this, this._overlay, { boards: false });
+        if (!window.CCNav.active()) window.CCNav.enter("right");
+        if (!window.CCNav.update()) window.CCNav.paint();
       }
       if (this._autoRotate) {
         this._rotY += 0.005;
@@ -849,6 +871,7 @@
     }
 
     destroy() {
+      if (window.CCNav) window.CCNav.detach(this);
       if (this._overlay && this._overlay.parentNode) {
         this._overlay.parentNode.removeChild(this._overlay);
       }

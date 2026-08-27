@@ -323,7 +323,7 @@
                     icon: 84,
                     width: 950,
                     height: 600,
-                    contentHTML: '<div id="bank-system-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8"></div>'
+                    contentHTML: '<div class="bank-01" id="bank-system-content"></div>'
                 });
 
                 this.appInstance = new Scene_BankSystem();
@@ -793,13 +793,9 @@
             }
             this.runBankAction(el.dataset.bankAction);
         });
-        this._dndContainer.style.width = '100%';
-        this._dndContainer.style.height = '100%';
-        this._dndContainer.style.display = 'flex';
-        this._dndContainer.style.flexDirection = 'column';
-        this._dndContainer.style.fontFamily = "'Tahoma', sans-serif";
-        this._dndContainer.style.color = '#000';
-        this._dndContainer.style.boxSizing = 'border-box';
+        // The shell: .bank-root in theme.css, restyled to XP chrome under
+        // #bank-system-content in hypernet.css when the OS window hosts it.
+        this._dndContainer.classList.add('bank-root');
 
         if (this._isAppMode) {
             const parent = document.getElementById('bank-system-content');
@@ -814,17 +810,7 @@
         // fullscreen scene only: it means position:fixed, 100vw/100vh and a dark
         // backdrop, which inside an OS window paints over the whole desktop.
         this._dndContainer.id = 'menu-container';
-        this._dndContainer.style.position = 'absolute';
-        this._dndContainer.style.top = '0';
-        this._dndContainer.style.left = '0';
-        this._dndContainer.style.zIndex = '1000';
-        this._dndContainer.style.background = 'radial-gradient(circle, rgba(18, 10, 5, 0.93) 0%, rgba(5, 3, 1, 0.98) 100%)';
-        this._dndContainer.style.display = 'flex';
-        this._dndContainer.style.justifyContent = 'center';
-        this._dndContainer.style.alignItems = 'center';
-        this._dndContainer.style.fontFamily = "'Lora', serif";
-        this._dndContainer.style.color = '#2b1c11';
-        this._dndContainer.style.boxSizing = 'border-box';
+        this._dndContainer.classList.add('bank-root--fullscreen');
         document.body.appendChild(this._dndContainer);
 
         this.refreshUIBankDOM();
@@ -907,21 +893,21 @@
                 // TAB 1: Deposits & Withdrawals
                 let leftHTML = `
                     <h2 class="cc-header-gothic">${T('BankLoan.ui.accountsDeposits')}</h2>
-                    <div class="stat-card" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px">
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px">
-                            <span style="color:#555">${T('BankLoan.ui.personalWallet')}:</span>
-                            <span style="font-weight:bold; color:#000">€${(gold / 100).toFixed(2)}</span>
+                    <div class="stat-card bank-02">
+                        <div class="bank-03">
+                            <span class="bank-04">${T('BankLoan.ui.personalWallet')}:</span>
+                            <span class="bank-05">€${(gold / 100).toFixed(2)}</span>
                         </div>
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px">
-                            <span style="color:#555">${T('BankLoan.ui.bankBalance')}:</span>
-                            <span style="font-weight:bold; color:#008000">€${(bankBalance / 100).toFixed(2)}</span>
+                        <div class="bank-03">
+                            <span class="bank-04">${T('BankLoan.ui.bankBalance')}:</span>
+                            <span class="bank-06">€${(bankBalance / 100).toFixed(2)}</span>
                         </div>
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px">
-                            <span style="color:#555">${T('BankLoan.ui.interestRate')}:</span>
-                            <span style="color:#000">${T('BankLoan.ui.ratePerDays', { rate: (interestRate * 100).toFixed(1), days: interestInterval })}</span>
+                        <div class="bank-03">
+                            <span class="bank-04">${T('BankLoan.ui.interestRate')}:</span>
+                            <span class="bank-07">${T('BankLoan.ui.ratePerDays', { rate: (interestRate * 100).toFixed(1), days: interestInterval })}</span>
                         </div>
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px">
+                    <div class="bank-08">
                         ${this.actionButtonHTML('bank-act-deposit', 'cmd:0',
                             T('BankLoan.ui.depositFunds'), gold > 0,
                             T('BankLoan.ui.noMoneyToDeposit'))}
@@ -937,9 +923,9 @@
                 } else {
                     rightHTML = `
                         <h2 class="cc-header-gothic">${T('BankLoan.ui.depositGuidelines')}</h2>
-                        <div style="line-height:1.5; color:#333; display:flex; flex-direction:column; gap:8px">
-                            <p style="margin:0">${T('BankLoan.ui.secureYourHardEarnedFunds')}</p>
-                            <div style="background:#e5effa; border:1px solid #7f9db9; padding:6px; border-radius:3px; font-weight:bold; color:#0b2f70">
+                        <div class="bank-09">
+                            <p class="bank-10">${T('BankLoan.ui.secureYourHardEarnedFunds')}</p>
+                            <div class="bank-11">
                                 ${T('BankLoan.ui.currentYield')}: ${(interestRate * 100).toFixed(1)}% ${T('BankLoan.ui.every')} ${interestInterval} ${T('BankLoan.ui.days')}.
                             </div>
                         </div>
@@ -947,10 +933,10 @@
                 }
 
                 contentHTML = `
-                    <div style="display:flex; gap:16px; height:100%; width:100%">
-                        <div style="width:40%; display:flex; flex-direction:column">${leftHTML}</div>
-                        <div style="width:1px; background:#7f9db9; margin: 0 4px; height:100%"></div>
-                        <div style="width:55%; display:flex; flex-direction:column">${rightHTML}</div>
+                    <div class="bank-12">
+                        <div class="bank-13">${leftHTML}</div>
+                        <div class="bank-14"></div>
+                        <div class="bank-15">${rightHTML}</div>
                     </div>
                 `;
 
@@ -958,32 +944,32 @@
                 // TAB 2: Loans & Liabilities
                 let leftHTML = `
                     <h2 class="cc-header-gothic">${T('BankLoan.ui.debtLiabilities')}</h2>
-                    <div class="stat-card" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px">
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px; color:${loanBalance > 0 ? '#a00' : 'inherit'}; font-weight:${loanBalance > 0 ? 'bold' : 'normal'};">
+                    <div class="stat-card bank-02">
+                        <div class="bank-03" style="color:${loanBalance > 0 ? 'var(--text-blood-red)' : 'inherit'}; font-weight:${loanBalance > 0 ? 'bold' : 'normal'}">
                             <span>${T('BankLoan.ui.outstandingDebt')}:</span>
                             <span>€${(loanBalance / 100).toFixed(2)}</span>
                         </div>
                         ${loanBalance > 0 ? `
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px">
-                            <span style="color:#555">${T('BankLoan.ui.daysUntilDue')}:</span>
-                            <span style="color:#a00; font-weight:bold">${maturityText()}</span>
+                        <div class="bank-03">
+                            <span class="bank-04">${T('BankLoan.ui.daysUntilDue')}:</span>
+                            <span class="bank-16">${maturityText()}</span>
                         </div>
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px">
-                            <span style="color:#555">${T('BankLoan.ui.premiumInterest')}:</span>
+                        <div class="bank-03">
+                            <span class="bank-04">${T('BankLoan.ui.premiumInterest')}:</span>
                             <span>${(loanInterestRate * 100).toFixed(1)}%</span>
                         </div>
                         ` : `
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px">
-                            <span style="color:#555">${T('BankLoan.ui.maxDebtLimit')}:</span>
+                        <div class="bank-03">
+                            <span class="bank-04">${T('BankLoan.ui.maxDebtLimit')}:</span>
                             <span>€${(loanCeiling / 100).toFixed(2)}</span>
                         </div>
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px">
-                            <span style="color:#555">${T('BankLoan.ui.durationStandard')}:</span>
+                        <div class="bank-03">
+                            <span class="bank-04">${T('BankLoan.ui.durationStandard')}:</span>
                             <span>${T('BankLoan.ui.daysCount', { days: loanDuration })}</span>
                         </div>
                         `}
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px">
+                    <div class="bank-08">
                         ${this.actionButtonHTML('bank-act-loan', 'cmd:2',
                             T('BankLoan.ui.requestLoan'), loanBalance === 0,
                             T('BankLoan.ui.alreadyBorrowed'))}
@@ -999,9 +985,9 @@
                 } else {
                     rightHTML = `
                         <h2 class="cc-header-gothic">${T('BankLoan.ui.loanPolicies')}</h2>
-                        <div style="line-height:1.5; color:#333; display:flex; flex-direction:column; gap:8px">
-                            <p style="margin:0">${T('BankLoan.ui.guildApprovedLoansProvideEmergency')}</p>
-                            <div style="background:#fff8e8; border:1px solid #ff9900; padding:6px; border-radius:3px; font-weight:bold; color:#b85c00">
+                        <div class="bank-09">
+                            <p class="bank-10">${T('BankLoan.ui.guildApprovedLoansProvideEmergency')}</p>
+                            <div class="bank-17">
                                 ${T('BankLoan.ui.notice')}: ${T('BankLoan.ui.unresolvedDebtsDirectlyImpactCredit')}
                             </div>
                         </div>
@@ -1009,17 +995,17 @@
                 }
 
                 contentHTML = `
-                    <div style="display:flex; gap:16px; height:100%; width:100%">
-                        <div style="width:40%; display:flex; flex-direction:column">${leftHTML}</div>
-                        <div style="width:1px; background:#7f9db9; margin: 0 4px; height:100%"></div>
-                        <div style="width:55%; display:flex; flex-direction:column">${rightHTML}</div>
+                    <div class="bank-12">
+                        <div class="bank-13">${leftHTML}</div>
+                        <div class="bank-14"></div>
+                        <div class="bank-15">${rightHTML}</div>
                     </div>
                 `;
 
             } else {
                 // TAB 3: Guild Terms
                 contentHTML = `
-                    <div style="flex:1; display:flex; flex-direction:column; overflow-y:auto; padding-right:4px">
+                    <div class="bank-18">
                         ${this.getBankGuidelinesHTML()}
                     </div>
                 `;
@@ -1046,8 +1032,8 @@
                     </div>
 
                     <!-- Footer Bar -->
-                    <div style="margin-top:4px; border-top:1px solid #7f9db9; padding-top:6px; display:flex; justify-content:flex-end; align-items:center; color:#555; width:100%">
-                        <div class="back-button btn-stamp focusable" tabindex="0" id="bank-dismiss" data-bank-action="close" style="padding:2px 12px">
+                    <div class="bank-19">
+                        <div class="back-button btn-stamp focusable bank-20" tabindex="0" id="bank-dismiss" data-bank-action="close">
                             ${T('BankLoan.ui.dismiss')}
                         </div>
                     </div>
@@ -1079,15 +1065,15 @@
         this._dndContainer.innerHTML = `
             <div class="cc-pockets-spread">
                 <!-- Spine Shading -->
-                <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10"></div>
+                <div class="bank-21"></div>
 
                 <!-- Left Page -->
-                <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
+                <div class="cc-page cc-page-left bank-22">
                     ${leftPageHTML}
                 </div>
 
                 <!-- Right Page -->
-                <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
+                <div class="cc-page cc-page-right bank-22">
                     ${rightPageHTML}
                 </div>
             </div>
@@ -1108,68 +1094,52 @@
         commands.forEach((cmd, idx) => {
             const isSelected = idx === selectedIndex && (!this._amountWindow || !this._amountWindow.active);
 
-            const itemStyle = `
-                cursor: pointer;
-                padding: 10px 14px;
-                margin-bottom: 6px;
-                border: 2px solid ${isSelected ? '#8b5a2b' : 'rgba(139, 90, 43, 0.15)'};
-                background: ${isSelected ? 'rgba(74, 29, 15, 0.08)' : '#fcf8f0'};
-                border-radius: 6px;
-                font-family: 'Lora', serif;
-                font-size: 1.15rem;
-                font-weight: bold;
-                color: ${isSelected ? '#4a1d0f' : '#5c4b3d'};
-                transition: all 0.2s ease;
-                text-align: center;
-                box-shadow: ${isSelected ? '0 3px 6px rgba(74,29,15,0.15)' : 'none'};
-            `;
-
             commandListHTML += `
-                <div class="bank-command focusable" tabindex="0" id="bank-cmd-${cmd.symbol}" style="${itemStyle}" data-bank-action="cmd:${idx}">
+                <div class="bank-command focusable ${isSelected ? 'selected' : ''}" tabindex="0" id="bank-cmd-${cmd.symbol}" data-bank-action="cmd:${idx}">
                     ${cmd.label}
                 </div>
             `;
         });
 
         return `
-            <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:12px; text-align:center">
+            <h2 class="cc-header-gothic bank-23">
                 ${T('BankLoan.ui.monetaryAccountPockets')}
             </h2>
 
-            <div style="border: 2px solid rgba(139,90,43,0.3); background: #faf4e8; border-radius: 6px; padding: 14px; margin-bottom: 12px; font-family:'Lora', serif; font-size:1.08rem; display:flex; flex-direction:column; gap:6px">
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px">
-                    <span style="color:#5c3516; font-weight:bold">${T('BankLoan.ui.personalHoldings')}:</span>
-                    <span style="font-family:'Lora', serif; font-weight:bold; color:#4a1d0f">€${(gold / 100).toFixed(2)}</span>
+            <div class="bank-24">
+                <div class="bank-25">
+                    <span class="bank-26">${T('BankLoan.ui.personalHoldings')}:</span>
+                    <span class="bank-27">€${(gold / 100).toFixed(2)}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px">
-                    <span style="color:#5c3516; font-weight:bold">${T('BankLoan.ui.bankBalance')}:</span>
-                    <span style="font-family:'Lora', serif; font-weight:bold; color:#3d5e4b">€${(bankBalance / 100).toFixed(2)}</span>
+                <div class="bank-25">
+                    <span class="bank-26">${T('BankLoan.ui.bankBalance')}:</span>
+                    <span class="bank-28">€${(bankBalance / 100).toFixed(2)}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.96rem; color:#6b5242">
+                <div class="bank-29">
                     <span>${T('BankLoan.ui.depositYieldRate')}:</span>
                     <span>${T('BankLoan.ui.ratePerDays', { rate: (interestRate * 100).toFixed(1), days: interestInterval })}</span>
                 </div>
 
-                <div style="margin-top: 4px; border-top: 1px dashed rgba(139,90,43,0.3); padding-top: 6px; display:flex; flex-direction:column; gap:4px">
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; color:${loanBalance > 0 ? '#822d2d' : 'inherit'}; font-weight:${loanBalance > 0 ? 'bold' : 'normal'};">
+                <div class="bank-30">
+                    <div class="bank-25" style="color:${loanBalance > 0 ? 'var(--text-settings-active)' : 'inherit'}; font-weight:${loanBalance > 0 ? 'bold' : 'normal'}">
                         <span>${T('BankLoan.ui.outstandingGuildDebt')}:</span>
-                        <span style="font-family:'Lora', serif">€${(loanBalance / 100).toFixed(2)}</span>
+                        <span class="bank-31">€${(loanBalance / 100).toFixed(2)}</span>
                     </div>
                     ${loanBalance > 0 ? `
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.96rem; color:#822d2d">
+                    <div class="bank-32">
                         <span>${T('BankLoan.ui.debtMaturityTerm')}:</span>
                         <span>${maturityText()}</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.96rem; color:#6b5242">
+                    <div class="bank-29">
                         <span>${T('BankLoan.ui.interestPremiumRate')}:</span>
                         <span>${(loanInterestRate * 100).toFixed(1)}%</span>
                     </div>
                     ` : `
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.96rem; color:#6b5242">
+                    <div class="bank-29">
                         <span>${T('BankLoan.ui.maxDebtLimit')}:</span>
                         <span>€${(loanCeiling / 100).toFixed(2)}</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.96rem; color:#6b5242">
+                    <div class="bank-29">
                         <span>${T('BankLoan.ui.maturityStandard')}:</span>
                         <span>${T('BankLoan.ui.daysCount', { days: loanDuration })}</span>
                     </div>
@@ -1177,7 +1147,7 @@
                 </div>
             </div>
 
-            <div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+            <div class="bank-33">
                 ${commandListHTML}
             </div>
         `;
@@ -1199,22 +1169,19 @@
         return tiers;
     }
 
-    // The parchment book dresses its own buttons; the XP window takes them from
-    // the stylesheet.
-    const TIER_STYLE_PARCHMENT = "background:#8b5a2b; color:#ecdcb9; padding:6px; border-radius:4px; " +
-        "font-size:0.96rem; font-weight:bold; text-align:center; border:1px solid #4a2711; " +
-        "cursor:pointer; transition: all 0.2s ease;";
+    // The parchment book dresses its own buttons through .bank-tier-btn; the
+    // XP window leaves them to the OS stylesheet.
 
     // One row of the ladder per step, subtract on the left and add on the right.
     Scene_BankSystem.prototype.amountTiersHTML = function (maxAmount) {
-        const style = this._isAppMode ? '' : ` style="${TIER_STYLE_PARCHMENT}"`;
+        const tierClass = this._isAppMode ? '' : ' bank-tier-btn';
         return amountTiers(maxAmount).map(step => {
             const label = "€" + (step / 100).toFixed(2);
             return `
-                            <div class="btn-stamp focusable" tabindex="0" id="bank-amt-m${step}" data-bank-action="amt:-${step}"${style}>
+                            <div class="btn-stamp focusable${tierClass}" tabindex="0" id="bank-amt-m${step}" data-bank-action="amt:-${step}">
                                 - ${label}
                             </div>
-                            <div class="btn-stamp focusable" tabindex="0" id="bank-amt-p${step}" data-bank-action="amt:${step}"${style}>
+                            <div class="btn-stamp focusable${tierClass}" tabindex="0" id="bank-amt-p${step}" data-bank-action="amt:${step}">
                                 + ${label}
                             </div>`;
         }).join('');
@@ -1245,42 +1212,42 @@
 
         if (this._isAppMode) {
             return `
-                <h2 class="cc-header-gothic" style="text-align:center">
+                <h2 class="cc-header-gothic bank-34">
                     ${title}
                 </h2>
 
-                <div style="flex:1; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%">
-                    <div style="border: 1px solid #7f9db9; background: #fcfcfc; padding: 12px; border-radius: 3px; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%">
-                        <div style="line-height:1.4; color:#555; border-bottom:1px dashed #ccc; padding-bottom:6px; text-align:center">
+                <div class="bank-35">
+                    <div class="bank-36">
+                        <div class="bank-37">
                             "${description}"
                         </div>
 
-                        <div style="display:flex; flex-direction:column; align-items:center; gap:2px; margin: 4px 0">
-                            <span style="font-size:14px; text-transform:uppercase; color:#0b2f70; font-weight:bold">
+                        <div class="bank-38">
+                            <span class="bank-39">
                                 ${T('BankLoan.ui.proposedTransactionBalance')}
                             </span>
-                            <div style="font-size:29px; font-weight:bold; color:#0054e3; line-height:1.1">
+                            <div class="bank-40">
                                 €${(currentAmount / 100).toFixed(2)}
                             </div>
-                            <span style="font-size:15px; color:#666">
+                            <span class="bank-41">
                                 ${T('BankLoan.ui.permittedThreshold')}: €${(maxAmount / 100).toFixed(2)}
                             </span>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px">
+                        <div class="bank-42">
                             ${this.amountTiersHTML(maxAmount)}
-                            <div class="btn-stamp focusable btn-max" tabindex="0" id="bank-amt-max" data-bank-action="amtmax:${maxAmount}" style="grid-column: span 2">
+                            <div class="btn-stamp focusable btn-max bank-43" tabindex="0" id="bank-amt-max" data-bank-action="amtmax:${maxAmount}">
                                 ${T('BankLoan.ui.proposeMaximumThreshold')}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; width:100%">
+                <div class="bank-44">
                     <div class="action-button focusable" tabindex="0" id="bank-confirm" data-bank-action="confirm">
                         ${T('BankLoan.ui.confirmTransaction')}
                     </div>
-                    <div class="action-button focusable" tabindex="0" id="bank-void" data-bank-action="void" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important">
+                    <div class="action-button focusable bank-45" tabindex="0" id="bank-void" data-bank-action="void">
                         ${T('BankLoan.ui.voidApplication')}
                     </div>
                 </div>
@@ -1288,42 +1255,42 @@
         }
 
         return `
-            <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:12px; text-align:center">
+            <h2 class="cc-header-gothic bank-23">
                 ${title}
             </h2>
 
-            <div style="flex:1; display:flex; flex-direction:column; gap:12px; font-family:'Lora', serif; box-sizing: border-box; width:100%">
-                <div style="border: 4px double #4a2711; background: #ecdcb9; padding: 18px; border-radius: 6px; box-shadow: inset 0 0 40px rgba(78,38,12,0.15); display:flex; flex-direction:column; gap:10px; box-sizing: border-box; width:100%">
-                    <div style="font-size:1.02rem; line-height:1.4; color:#2b1c11; border-bottom:1px dashed rgba(139,90,43,0.25); padding-bottom:8px; text-align:center">
+            <div class="bank-46">
+                <div class="bank-47">
+                    <div class="bank-48">
                         "${description}"
                     </div>
 
-                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px; margin: 6px 0">
-                        <span style="font-size:0.915rem; text-transform:uppercase; color:#5c3516; letter-spacing:1px">
+                    <div class="bank-49">
+                        <span class="bank-50">
                             ${T('BankLoan.ui.proposedTransactionBalance')}
                         </span>
-                        <div style="font-family:'Lora', serif; font-size:2.64rem; font-weight:bold; color:#4a1d0f; text-shadow:1px 1px 1px rgba(255,255,255,0.8); line-height:1.1">
+                        <div class="bank-51">
                             €${(currentAmount / 100).toFixed(2)}
                         </div>
-                        <span style="font-size:0.854rem; color:#6b5242">
+                        <span class="bank-52">
                             ${T('BankLoan.ui.permittedThreshold')}: €${(maxAmount / 100).toFixed(2)}
                         </span>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px">
+                    <div class="bank-53">
                         ${this.amountTiersHTML(maxAmount)}
-                        <div class="btn-stamp focusable" tabindex="0" id="bank-amt-max" data-bank-action="amtmax:${maxAmount}" style="grid-column: span 2; background:#5c3516; color:#ecdcb9; padding:8px; border-radius:4px; font-size:1.02rem; font-weight:bold; text-align:center; border:1px solid #301107; cursor:pointer; text-transform:uppercase; font-family:'Lora', serif; transition: all 0.2s ease">
+                        <div class="btn-stamp focusable bank-54" tabindex="0" id="bank-amt-max" data-bank-action="amtmax:${maxAmount}">
                             ${T('BankLoan.ui.proposeMaximumThreshold')}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%">
-                <div class="action-button focusable" tabindex="0" id="bank-confirm" data-bank-action="confirm" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.208rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
+            <div class="bank-55">
+                <div class="action-button focusable bank-56" tabindex="0" id="bank-confirm" data-bank-action="confirm">
                     ${T('BankLoan.ui.sealTransactionVoucher')}
                 </div>
-                <div class="action-button focusable" tabindex="0" id="bank-void" data-bank-action="void" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:1.08rem; transition: all 0.2s ease">
+                <div class="action-button focusable bank-57" tabindex="0" id="bank-void" data-bank-action="void">
                     ${T('BankLoan.ui.voidApplication')}
                 </div>
             </div>
@@ -1333,21 +1300,21 @@
     Scene_BankSystem.prototype.getBankGuidelinesHTML = function () {
         if (this._isAppMode) {
             return `
-                <h2 class="cc-header-gothic" style="text-align:center">
+                <h2 class="cc-header-gothic bank-34">
                     ${T('BankLoan.ui.imperialDepositStatutes')}
                 </h2>
 
-                <div style="flex:1; display:flex; flex-direction:column; gap:8px; line-height:1.5; text-align:justify; color:#333">
-                    <p style="margin:0">
+                <div class="bank-58">
+                    <p class="bank-10">
                         ${T('BankLoan.ui.welcomeToTheImperialVault')}
                     </p>
 
-                    <div style="border-top:1px dashed #ccc; border-bottom:1px dashed #ccc; padding:6px 0; display:flex; flex-direction:column; gap:2px; font-weight:bold; color:#0b2f70">
+                    <div class="bank-59">
                         <div>• ${T('BankLoan.ui.allDebtsNotRetiredWithin')}</div>
                         <div>• ${T('BankLoan.ui.standardDepositYieldsDynamicallyRespond')}</div>
                     </div>
 
-                    <p style="margin:0">
+                    <p class="bank-10">
                         ${T('BankLoan.ui.selectTheDesiredTabAbove')}
                     </p>
                 </div>
@@ -1355,21 +1322,21 @@
         }
 
         return `
-            <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:12px; text-align:center">
+            <h2 class="cc-header-gothic bank-23">
                 ${T('BankLoan.ui.imperialDepositStatutes')}
             </h2>
 
-            <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px; font-family:'Lora', serif; line-height:1.55; text-align:justify; color:#3d2f24; padding:0 10px">
-                <p style="margin:0; font-size:1.08rem">
+            <div class="bank-60">
+                <p class="bank-61">
                     ${T('BankLoan.ui.welcomeToTheImperialVault')}
                 </p>
 
-                <div style="border-top:1px dashed rgba(139,90,43,0.3); border-bottom:1px dashed rgba(139,90,43,0.3); padding:8px 0; width:100%; display:flex; flex-direction:column; gap:4px; font-size:0.96rem; color:#4a1d0f">
+                <div class="bank-62">
                     <div>• ${T('BankLoan.ui.allDebtsNotRetiredWithin')}</div>
                     <div>• ${T('BankLoan.ui.standardDepositYieldsDynamicallyRespond')}</div>
                 </div>
 
-                <p style="margin:0; font-size:1.08rem">
+                <p class="bank-61">
                     ${T('BankLoan.ui.selectTheDesiredFinancialAction')}
                 </p>
             </div>

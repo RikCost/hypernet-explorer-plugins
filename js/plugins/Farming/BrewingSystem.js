@@ -11,6 +11,21 @@
 (() => {
     'use strict';
 
+    // ---- Where the yield goes ----------------------------------------------
+    // Straight to the party, unless they own a shop that deals in this sort of
+    // thing, in which case the crate goes to that shop's warehouse - which is
+    // what its production recipes eat - and the party is told. ShopManagement
+    // owns the rule; with that plugin off this is a plain gainItem.
+    function deliverFarmProduce(item, amount) {
+        const SM = window.ShopManagement;
+        if (SM && typeof SM.deliverProduce === 'function') {
+            return SM.deliverProduce(item, amount);
+        }
+        if (window.$gameParty && item) $gameParty.gainItem(item, amount);
+        return { toShop: 0, toParty: amount, shopId: null };
+    }
+
+
     const GAME_TIME_VAR = 114;
 
     const STAGES = {
@@ -245,7 +260,7 @@
             const timeEl = this._container.querySelector('#brewery-time-remaining');
             if (timeEl) {
                 timeEl.innerHTML = state.stage === STAGES.READY
-                    ? `<span style="color:#27ae60; font-weight:bold">${T('Brewing.ui.ready')}</span>`
+                    ? `<span style="color:var(--text-cost-ok); font-weight:bold">${T('Brewing.ui.ready')}</span>`
                     : formatTimeRemaining(state.remainingMinutes);
             }
         }
@@ -347,7 +362,7 @@
                 if (!item) continue;
                 const rolled = out.min + Math.floor(rng() * (out.max - out.min + 1));
                 const amount = Math.max(1, Math.round(rolled * skill));
-                $gameParty.gainItem(item, amount);
+                deliverFarmProduce(item, amount);
                 // What came out of the barrel, in the party's diary (Diary.js).
                 if (window.Diary) window.Diary.onCrafted('brew', item.name, amount);
                 gains.push(`${item.name} ×${amount}`);
@@ -383,7 +398,7 @@
             // ── Left page: recipe list ─────────────────────────────────────────
             let recipeListHTML = '';
             if (recipes.length === 0) {
-                recipeListHTML = `<div style="font-size:0.984rem; color:#8b7355; padding:8px 0">${T('Brewing.ui.loadingRecipes')}</div>`;
+                recipeListHTML = `<div style="font-size:0.984rem; color:var(--text-brown-medium); padding:8px 0">${T('Brewing.ui.loadingRecipes')}</div>`;
             } else {
                 for (let i = 0; i < recipes.length; i++) {
                     const r       = recipes[i];
@@ -433,9 +448,9 @@
                     <h2 class="title" style="border:none; margin:0 0 14px 0; padding:0">${T('Brewing.ui.barrel')}</h2>
                     <div class="apiary-section">
                         <div class="apiary-section-title">${ic(210, 14)} ${T('Brewing.ui.status')}</div>
-                        <div class="apiary-stat-row"><span>${T('Brewing.ui.state')}</span><span style="color:#8b7355">${T('Brewing.ui.empty')}</span></div>
+                        <div class="apiary-stat-row"><span>${T('Brewing.ui.state')}</span><span style="color:var(--text-brown-medium)">${T('Brewing.ui.empty')}</span></div>
                     </div>
-                    <p style="font-size:0.96rem; color:#8b7355; margin:10px 0 0 0">
+                    <p style="font-size:0.96rem; color:var(--text-brown-medium); margin:10px 0 0 0">
                         ${T('Brewing.ui.selectRecipeHint')}
                     </p>
                     ${feedbackHTML}
@@ -455,7 +470,7 @@
                 }[stage];
 
                 const timeLabel = stage === STAGES.READY
-                    ? `<span style="color:#27ae60; font-weight:bold">${T('Brewing.ui.ready')}</span>`
+                    ? `<span style="color:var(--text-cost-ok); font-weight:bold">${T('Brewing.ui.ready')}</span>`
                     : formatTimeRemaining(remainingMinutes);
 
                 const startedLabel = savedData ? dateTimeFromMinutes(savedData.startMinutes).fullDate : ', ';
@@ -482,7 +497,7 @@
                             <div class="brewery-stage-bar">
                                 <div class="brewery-stage-fill" style="width:${pct}%"></div>
                             </div>
-                            <div class="brewery-stage-pct" style="font-size:0.854rem; color:#8b7355; text-align:right; margin-top:2px">${pct}%</div>
+                            <div class="brewery-stage-pct" style="font-size:0.854rem; color:var(--text-brown-medium); text-align:right; margin-top:2px">${pct}%</div>
                         </div>
                         <div class="apiary-stat-row"><span>${T('Brewing.ui.timeRemaining')}</span><span id="brewery-time-remaining">${timeLabel}</span></div>
                         <div class="apiary-stat-row"><span>${T('Brewing.ui.started')}</span><span style="font-size:0.903rem">${startedLabel}</span></div>
@@ -499,9 +514,9 @@
             this._container.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        <div style="position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px dashed #bba16d; padding-bottom:8px; margin-bottom:18px; min-height:40px; width:100%">
-                            <div class="back-button" onclick="SceneManager._scene.popScene()" style="position:absolute; background:#8b5a2b; color:#ecdcb9; padding:4px 14px; border-radius:4px; font-weight:bold; border:1.5px solid #4a2711; font-size:0.96rem; font-family:'Lora',serif">${T('Brewing.ui.back')}</div>
-                            <h2 class="title" style="border:none; margin:0; padding:0">${T('Brewing.ui.brewery')}</h2>
+                        <div class="page-header-bar">
+                            <div class="back-button" onclick="SceneManager._scene.popScene()">${T('Brewing.ui.back')}</div>
+                            <h2 class="title">${T('Brewing.ui.brewery')}</h2>
                         </div>
                         <div class="apiary-section">
                             <div class="apiary-section-title">${ic(105, 14)} ${T('Brewing.ui.recipes')}</div>

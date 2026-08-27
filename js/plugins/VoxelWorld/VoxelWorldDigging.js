@@ -1,0 +1,666 @@
+//=============================================================================
+// VoxelWorldDigging.js
+// VoxelWorld: the pick - aiming at a cube, breaking it, putting one back
+//
+// The tool that makes the field destructible from inside the game rather than
+// from the console. It owns the cube the eye is pointed at, the outline drawn
+// round it, how long a given material takes to break, the shower of chips that
+// comes off it, and what a seam of ore is worth when it does.
+//
+// It is deliberately input-agnostic: the scene reads the keyboard, the mouse
+// and the pad, and hands this a plain intent every frame.
+//=============================================================================
+
+/*:
+ * @target MZ
+ * @plugindesc VoxelWorld - the digging tool: aim, break, place, chips and drops
+ * @author Omni-Lex
+ *
+ * @help
+ * Breaking and placing cubes in the voxel world.
+ *
+ * Rock is slower to break than turf, bedrock never gives, and a seam of ore
+ * found deep enough goes into the party's bags. Blocks taken out can be put
+ * back, which is how a bridge over a ravine or a step up a cliff gets built.
+ *
+ * One module of the VoxelWorld suite (VoxelWorldCore.js loads first). It
+ * declares no plugin commands of its own; those live in VoxelWorldSystem.js.
+ */
+
+(() => {
+    'use strict';
+
+    const VW = window.VoxelWorld;
+    if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldDigging.js'); return; }
+
+    const { MAT, MATERIALS, ORE_ITEMS, PLACEABLE, VOX, VOXEL_STEP_MATERIAL,
+            VoxelWorldState, voxelHash3 } = VW;
+
+    // The voice of a cube. Everything that happens to one - a blow landing on
+    // it, it coming apart, one being set down - is heard as the material it is
+    // made of, through the game's own step-sound library (window.Footsteps, the
+    // door onto js/db/WorldGen/FootstepMaterials.json). Rock rings, turf thuds,
+    // gravel rattles and mud squelches, and none of it is a separate bank of
+    // sounds that has to be kept in step with the 2D game's.
+    function matVoice(mat, volume, pitch) {
+        const def = MATERIALS[mat];
+        const key = def && VOXEL_STEP_MATERIAL[def.key];
+        const F = window.Footsteps;
+        if (key && F && F.play) return F.play(key, { volume });
+        return false;
+    }
+
+    // Seconds to break one cube of hardness 1. Everything else is a multiple.
+    const DIG_UNIT   = 0.34;
+
+    // -------------------------------------------------------------------------
+    // Digging with a weapon
+    // -------------------------------------------------------------------------
+    // There is no pick in this game. The thing in the leader's hands is the
+    // thing they dig with, and it digs the way it fights: a cube has HITS to it
+    // and every blow takes a bite out of that, so a mattock of a two-hander
+    // opens a tunnel in three swings and a dagger takes a dozen. The number that
+    // decides it is the weapon's own attack (params[2]), which is the same
+    // number that decides what it does to anything else.
+    //
+    //   hits = ceil(BLOCK_HP * hardness / attack)
+    //
+    // ...clamped, so nothing is one-shot and nothing takes all afternoon.
+    const BLOCK_HP     = 46;    // what a hardness-1 cube is worth in damage
+    const HITS_MIN     = 1;
+    const HITS_MAX     = 14;
+    const ATK_FLOOR    = 4;     // bare hands still get through turf
+    // How fast the swings come while the button is held: a blow, then the time
+    // it takes to draw back for the next one.
+    const SWING_TIME   = 0.42;
+    // A gun does not swing, it fires - faster, and from wherever it can reach.
+    const SHOT_TIME    = 0.30;
+    // How far a weapon reaches into the world, in world units. A hand weapon
+    // reaches an arm's length (VOX.REACH); anything with <Range: n> on it
+    // reaches n world squares, which is what lets a rifle take the top off a
+    // ridge from the other side of a field.
+    const RANGE_STEP   = 120;   // world units per step of <Range:>
+    const RANGE_MAX    = 900;
+    // How many chips a broken cube throws, and how long they live.
+    const CHIP_MAX   = 160;
+    const CHIP_LIFE  = 0.75;
+    const CHIP_COUNT = 7;
+
+    const matName = m => {
+        const def = MATERIALS[m];
+        return def ? T('VoxelWorld.material.' + def.key) : '';
+    };
+
+    // =========================================================================
+    // BlockBar, the quick bar of what has been dug up
+    // =========================================================================
+    // A cube broken out of the world does not vanish and does not go into the
+    // party's bags: it goes on the bar along the bottom of the screen, and it is
+    // put back into the world from there. The bar is the whole inventory of
+    // blocks - there is nowhere else for one to be - which is what makes it a
+    // real limit: BAR_SLOTS kinds of block at a time, SLOT_MAX of each, and when
+    // every slot is taken nothing more can be picked up until one is emptied by
+    // building with it.
+    //
+    // Slot 0 is not a block. It is the weapon in the leader's hands, which is
+    // what the bar cycles back to and what digging is done with, so one wheel
+    // (or L1/R1) runs the whole thing: weapon, then every block collected.
+    //
+    // It lives in the WORLD, not in the savegame: walk out of the 3D world and
+    // back in, load another save of the same world, and the stack of dirt is
+    // still on the bar (VoxelWorldState, save/worlds/<name>/voxelworld.json).
+    // =========================================================================
+    const BAR_SLOTS = 8;      // kinds of block that can be carried at once
+    const SLOT_MAX  = 99;     // cubes of one kind in one slot
+
+    class BlockBar {
+        constructor() {
+            this._slots = null;
+            this._sel   = 0;          // 0 = the weapon, 1..BAR_SLOTS = a block
+        }
+
+        // Read out of the world the first time anybody asks, so a bar is never
+        // built before there is a world to build it from.
+        get slots() {
+            if (!this._slots) {
+                const saved = VoxelWorldState.blocks ? VoxelWorldState.blocks() : null;
+                this._slots = new Array(BAR_SLOTS);
+                for (let i = 0; i < BAR_SLOTS; i++) {
+                    const s = saved && saved[i];
+                    this._slots[i] = (s && s.mat && s.count > 0)
+                        ? { mat: s.mat | 0, count: Math.min(SLOT_MAX, s.count | 0) }
+                        : null;
+                }
+            }
+            return this._slots;
+        }
+
+        _save() {
+            if (VoxelWorldState.setBlocks) VoxelWorldState.setBlocks(this._slots);
+        }
+
+        // --- what is in hand ---------------------------------------------
+        get selected()      { return this._sel; }
+        get holdingWeapon() { return this._sel === 0; }
+        // The slot record in hand, or null while the weapon is.
+        get held() {
+            if (this._sel === 0) return null;
+            return this.slots[this._sel - 1];
+        }
+        get heldMaterial() {
+            const s = this.held;
+            return (s && s.count > 0) ? s.mat : 0;
+        }
+
+        // The wheel, and L1/R1. Steps through the weapon and every slot that has
+        // anything in it; empty slots are skipped, so the bar never leaves the
+        // player holding nothing.
+        cycle(dir) {
+            const step = dir < 0 ? -1 : 1;
+            const n = BAR_SLOTS + 1;
+            for (let k = 0; k < n; k++) {
+                this._sel = ((this._sel + step) % n + n) % n;
+                if (this._sel === 0) return this._sel;
+                const s = this.slots[this._sel - 1];
+                if (s && s.count > 0) return this._sel;
+            }
+            this._sel = 0;
+            return 0;
+        }
+        // Straight to a slot (the number keys).
+        select(i) {
+            if (i === 0) { this._sel = 0; return true; }
+            const s = this.slots[i - 1];
+            if (!s || s.count <= 0) return false;
+            this._sel = i;
+            return true;
+        }
+
+        // --- picking one up ------------------------------------------------
+        // True when it went on the bar. False when every slot is taken by some
+        // other kind of block and this one has nowhere to go: the cube stays in
+        // the world, which is the whole point of a bar with a bottom to it.
+        add(mat) {
+            if (!mat) return false;
+            const slots = this.slots;
+            for (const s of slots) {
+                if (s && s.mat === mat && s.count < SLOT_MAX) { s.count++; this._save(); return true; }
+            }
+            // Already carrying a full stack of it and nowhere to start another.
+            for (let i = 0; i < BAR_SLOTS; i++) {
+                if (!slots[i]) { slots[i] = { mat, count: 1 }; this._save(); return true; }
+            }
+            return false;
+        }
+        // Is there room for one more of this kind? Asked before a cube is broken
+        // so the player is told why nothing happened rather than losing it.
+        canTake(mat) {
+            if (!mat) return false;
+            const slots = this.slots;
+            for (const s of slots) {
+                if (s && s.mat === mat) return s.count < SLOT_MAX;
+            }
+            return slots.some(s => !s);
+        }
+
+        // --- putting one back ----------------------------------------------
+        // Spends one of whatever is in hand. Returns the material spent, or 0.
+        spendHeld() {
+            const s = this.held;
+            if (!s || s.count <= 0) return 0;
+            const mat = s.mat;
+            s.count--;
+            if (s.count <= 0) {
+                this.slots[this._sel - 1] = null;
+                // The last of a kind: back to the weapon rather than an empty hand.
+                this.cycle(1);
+            }
+            this._save();
+            return mat;
+        }
+
+        // What the HUD draws: every slot, in order, with the weapon at the head.
+        readout() {
+            const out = [{ weapon: true, on: this._sel === 0 }];
+            const slots = this.slots;
+            for (let i = 0; i < BAR_SLOTS; i++) {
+                const s = slots[i];
+                out.push({
+                    weapon: false,
+                    on: this._sel === i + 1,
+                    mat: s ? s.mat : 0,
+                    count: s ? s.count : 0,
+                    name: s ? matName(s.mat) : '',
+                    colour: s ? matColour(s.mat) : null,
+                });
+            }
+            return out;
+        }
+    }
+
+    // The colour a block reads as on the bar. A biome-coloured cube (turf, and
+    // whatever the world map paints a square) has no fixed colour of its own, so
+    // it is given the one it wears in most of the world rather than left black.
+    const BAR_BIOME_RGB = { r: 0.42, g: 0.58, b: 0.30 };
+    function matColour(mat) {
+        const def = MATERIALS[mat];
+        if (!def) return null;
+        const c = def.biome ? BAR_BIOME_RGB : def.rgb;
+        if (!c) return null;
+        const hex = (v) => Math.max(0, Math.min(255, Math.round(Math.pow(v, 1 / 2.2) * 255)));
+        return `rgb(${hex(c.r)},${hex(c.g)},${hex(c.b)})`;
+    }
+
+    // =========================================================================
+    // ChipFx, the debris a broken cube throws
+    // =========================================================================
+    class ChipFx {
+        constructor(scene) {
+            this._scene = scene;
+            this._geo   = new THREE.BoxGeometry(VOX.SIZE * 0.22, VOX.SIZE * 0.22, VOX.SIZE * 0.22);
+            // Per-instance colour, not vertex colour: a BoxGeometry carries no
+            // colour attribute, and asking the material for one it has not got
+            // draws the whole shower black.
+            this._mat   = new THREE.MeshLambertMaterial({ color: 0xffffff });
+            this._mesh  = new THREE.InstancedMesh(this._geo, this._mat, CHIP_MAX);
+            this._mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+            this._mesh.frustumCulled = false;
+            this._mesh.count = CHIP_MAX;
+            // setColorAt allocates instanceColor the way the renderer expects.
+            this._white = new THREE.Color(1, 1, 1);
+            for (let i = 0; i < CHIP_MAX; i++) this._mesh.setColorAt(i, this._white);
+            scene.add(this._mesh);
+
+            this._p = new Array(CHIP_MAX);
+            for (let i = 0; i < CHIP_MAX; i++) this._p[i] = { life: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 };
+            this._next = 0;
+            this._m = new THREE.Matrix4();
+            this._q = new THREE.Quaternion();
+            this._v = new THREE.Vector3();
+            this._scale = new THREE.Vector3(1, 1, 1);
+            this._one = new THREE.Vector3(1, 1, 1);
+            this._hidden = new THREE.Vector3(0, -1e6, 0);
+        }
+
+        burst(x, y, z, r, g, b, n) {
+            const count = n || CHIP_COUNT;
+            for (let i = 0; i < count; i++) {
+                const p = this._p[this._next];
+                const idx = this._next;
+                this._next = (this._next + 1) % CHIP_MAX;
+                p.life = CHIP_LIFE;
+                p.x = x + (Math.random() - 0.5) * VOX.SIZE;
+                p.y = y + (Math.random() - 0.5) * VOX.SIZE;
+                p.z = z + (Math.random() - 0.5) * VOX.SIZE;
+                p.vx = (Math.random() - 0.5) * 55;
+                p.vy = 24 + Math.random() * 46;
+                p.vz = (Math.random() - 0.5) * 55;
+                if (this._mesh.instanceColor) this._mesh.instanceColor.setXYZ(idx, r, g, b);
+            }
+            if (this._mesh.instanceColor) this._mesh.instanceColor.needsUpdate = true;
+        }
+
+        update(dt) {
+            let live = false;
+            for (let i = 0; i < CHIP_MAX; i++) {
+                const p = this._p[i];
+                if (p.life <= 0) {
+                    this._m.compose(this._hidden, this._q, this._one);
+                    this._mesh.setMatrixAt(i, this._m);
+                    continue;
+                }
+                live = true;
+                p.life -= dt;
+                p.vy -= 260 * dt;
+                p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
+                const k = Math.max(0.05, p.life / CHIP_LIFE);
+                this._v.set(p.x, p.y, p.z);
+                this._scale.set(k, k, k);
+                this._m.compose(this._v, this._q, this._scale);
+                this._mesh.setMatrixAt(i, this._m);
+            }
+            this._mesh.instanceMatrix.needsUpdate = true;
+            this._mesh.visible = live;
+        }
+
+        dispose() {
+            this._scene.remove(this._mesh);
+            this._geo.dispose();
+            this._mat.dispose();
+        }
+    }
+
+    // =========================================================================
+    // VoxelTool
+    // =========================================================================
+    class VoxelTool {
+        constructor(scene, terrain) {
+            this._scene   = scene;
+            this._terrain = terrain;
+            this._active  = false;
+            this._progress = 0;
+            this._bar     = new BlockBar();
+            this.target   = null;        // last raycast hit, or null
+            this._lastKey = '';
+            this._swingT  = 0;           // time until the next blow lands
+            this._hits    = 0;           // blows already landed on this cube
+            this._chips   = new ChipFx(scene);
+
+            // The outline round the cube being looked at, and the ghost that
+            // fills in as it is broken.
+            const g = new THREE.BoxGeometry(VOX.SIZE * 1.02, VOX.SIZE * 1.02, VOX.SIZE * 1.02);
+            this._outline = new THREE.LineSegments(
+                new THREE.EdgesGeometry(g),
+                new THREE.LineBasicMaterial({ color: 0xfff0c0, transparent: true, opacity: 0.8, depthTest: true })
+            );
+            this._outline.visible = false;
+            this._outline.frustumCulled = false;
+            scene.add(this._outline);
+
+            this._ghostMat = new THREE.MeshBasicMaterial({
+                color: 0xffffff, transparent: true, opacity: 0, depthWrite: false
+            });
+            this._ghost = new THREE.Mesh(g, this._ghostMat);
+            this._ghost.visible = false;
+            this._ghost.frustumCulled = false;
+            scene.add(this._ghost);
+            this._boxGeo = g;
+        }
+
+        setActive(on) {
+            this._active = !!on;
+            if (!on) {
+                this.target = null;
+                this._progress = 0;
+                this._outline.visible = false;
+                this._ghost.visible = false;
+            }
+        }
+
+        // What is in hand comes off the bar now, not off a fixed list of
+        // placeable materials: you build with what you dug up.
+        get bar()              { return this._bar; }
+        get selectedMaterial() { return this._bar.heldMaterial || PLACEABLE[0]; }
+        get selectedName()     { return this._bar.holdingWeapon ? '' : matName(this.selectedMaterial); }
+        get targetName()       { return this.target ? matName(this.target.mat) : ''; }
+        get progress()         { return this._progress; }
+
+        cycle(dir) { this._bar.cycle(dir); }
+
+        // ---------------------------------------------------------------------
+        // What the thing in the leader's hands is worth against rock
+        // ---------------------------------------------------------------------
+        // The weapon's attack, and whether it is something you swing or
+        // something you fire. Read off the party every time it is asked, so
+        // changing weapon in the menu changes how fast the wall comes down.
+        _weaponNow() {
+            const actor = (typeof $gameParty !== 'undefined' && $gameParty)
+                ? $gameParty.leader() : null;
+            if (!actor) return null;
+            const w = (actor.weapons && actor.weapons()[0]) || null;
+            if (w) return w;
+            // An empty hand is not empty: it is the fist of the character's
+            // archetype, the same one the battle scene arms them with.
+            if (window.WeaponSystemProcedural && WeaponSystemProcedural.unarmedWeaponFor) {
+                try { return WeaponSystemProcedural.unarmedWeaponFor(actor); } catch (e) { /* fists it is */ }
+            }
+            return null;
+        }
+        _weaponAttack(w) {
+            const atk = (w && w.params) ? (w.params[2] | 0) : 0;
+            return Math.max(ATK_FLOOR, atk);
+        }
+        // Steps of <Range:> on the weapon; 0 for anything you have to be next to.
+        _weaponRange(w) {
+            const m = w && w.note && w.note.match(/<Range:\s*(\d+)\s*>/i);
+            return m ? Math.max(0, parseInt(m[1], 10)) : 0;
+        }
+        // How far it can break something from.
+        reach() {
+            const steps = this._weaponRange(this._weaponNow());
+            if (steps <= 1) return VOX.REACH;
+            return Math.min(RANGE_MAX, steps * RANGE_STEP);
+        }
+        // How many blows this cube takes, with what is in hand.
+        hitsFor(mat) {
+            const def = MATERIALS[mat];
+            if (!def || !def.diggable) return Infinity;
+            const atk = this._weaponAttack(this._weaponNow());
+            const n = Math.ceil(BLOCK_HP * (def.hard || 1) / atk);
+            return Math.max(HITS_MIN, Math.min(HITS_MAX, n));
+        }
+
+        // ---------------------------------------------------------------------
+        // One frame.
+        //   input.origin / input.dir  the eye ray, as THREE.Vector3
+        //   input.dig                 the attack button, held
+        //   input.place               the build button, this frame only
+        //   input.cycle               -1 / 0 / +1 along the quick bar
+        //
+        // The attack button does BOTH jobs, and which one it does is whatever is
+        // in hand: the weapon digs, a block builds. That is the whole of the
+        // control scheme out here - one button, and a wheel that says what it
+        // means. `place` (the G key) still forces a build, for anybody who
+        // learned it that way.
+        // ---------------------------------------------------------------------
+        update(dt, input) {
+            this._chips.update(dt);
+            if (this._swingT > 0) this._swingT -= dt;
+            if (!this._active || !input || !input.origin || !input.dir) {
+                this._outline.visible = false;
+                this._ghost.visible = false;
+                return;
+            }
+            if (input.cycle) this.cycle(input.cycle);
+
+            const holdingBlock = !this._bar.holdingWeapon;
+            const o = input.origin, d = input.dir;
+            // A weapon reaches as far as it reaches: an arm's length for
+            // anything you swing, most of a field for anything you fire. A
+            // block is placed at arm's length whatever you are carrying.
+            const reach = input.reach || (holdingBlock ? VOX.REACH : this.reach());
+            const hit = this._terrain.field.raycast(o.x, o.y, o.z, d.x, d.y, d.z, reach);
+            this.target = hit;
+
+            if (!hit) {
+                this._progress = 0;
+                this._hits = 0;
+                this._lastKey = '';
+                this._outline.visible = false;
+                this._ghost.visible = false;
+                return;
+            }
+
+            const S = VOX.SIZE;
+            const cx = (hit.vx + 0.5) * S, cy = (hit.vy + 0.5) * S, cz = (hit.vz + 0.5) * S;
+            this._outline.position.set(cx, cy, cz);
+            this._outline.visible = true;
+            this._ghost.position.set(cx, cy, cz);
+
+            const key = hit.vx + ':' + hit.vy + ':' + hit.vz;
+            if (key !== this._lastKey) {
+                this._lastKey = key;
+                this._progress = 0;
+                this._hits = 0;
+            }
+
+            // --- building ---------------------------------------------------
+            if (input.place || (input.dig && holdingBlock)) {
+                if (this._swingT <= 0) {
+                    this._swingT = SWING_TIME * 0.6;
+                    this._place(hit);
+                }
+                this._progress = 0;
+                this._ghost.visible = false;
+                return;
+            }
+
+            // --- digging ----------------------------------------------------
+            const def = MATERIALS[hit.mat];
+            if (input.dig && def && def.diggable) {
+                // The bar has a bottom to it: a cube with nowhere to go is left
+                // where it is rather than destroyed for nothing.
+                if (!this._bar.canTake(hit.mat)) {
+                    this._notifyOnce('barFull', T('VoxelWorld.tool.barFull'));
+                    this._progress = 0;
+                    this._ghost.visible = false;
+                    return;
+                }
+                const need = this.hitsFor(hit.mat);
+                if (this._swingT <= 0) {
+                    // The blow itself: the weapon in the leader's hands swings
+                    // or fires, with its own sound, and a bite comes out of the
+                    // cube. Nothing about digging is silent or still any more.
+                    this._strike();
+                    this._hits++;
+                    this._swingT = this._isRanged() ? SHOT_TIME : SWING_TIME;
+                    this._spray(hit.vx, hit.vy, hit.vz, hit.mat, 3);
+                    // The bite the blow takes out of it, quieter than the cube
+                    // finally giving: the weapon's own sound is over the top.
+                    matVoice(hit.mat, 55);
+                    if (this._hits >= need) {
+                        this._hits = 0;
+                        this._progress = 0;
+                        this._break(hit);
+                        return;
+                    }
+                }
+                this._progress = Math.min(1, this._hits / need);
+                this._ghost.visible = true;
+                this._ghostMat.opacity = Math.min(0.45, this._progress * 0.45);
+            } else {
+                if (input.dig && def && !def.diggable) {
+                    this._notifyOnce('bedrock', T('VoxelWorld.tool.bedrock'));
+                }
+                this._progress = 0;
+                this._hits = 0;
+                this._ghost.visible = false;
+            }
+        }
+
+        // Is what is in hand fired rather than swung? Anything that reaches
+        // past its own arm is.
+        _isRanged() { return this._weaponRange(this._weaponNow()) > 1; }
+
+        // Swing it, or fire it. The overlay owns the animation and the sound,
+        // and it is the same blow that would have hit a creature standing where
+        // the rock is, so it is played through the same door.
+        _strike() {
+            const W = VW.CamperWeapon;
+            if (W && W.swing) { try { W.swing(); } catch (e) { /* no overlay */ } }
+        }
+
+        // ---------------------------------------------------------------------
+        _break(hit) {
+            const mat = this._terrain.field.breakAt(hit.vx, hit.vy, hit.vz);
+            if (!mat) return;
+            this._spray(hit.vx, hit.vy, hit.vz, mat);
+            // Onto the bar it goes. Ore is the exception: a seam is worth
+            // something in the bags rather than a cube to build a wall out of.
+            if (mat === MAT.ORE) this._reward(mat);
+            else if (!this._bar.add(mat)) this._notifyOnce('barFull', T('VoxelWorld.tool.barFull'));
+            // It comes apart in its own voice, over the crack of it giving.
+            this._playSe('Break', 60, 92 + Math.floor(Math.random() * 20));
+            matVoice(mat, 100);
+            this._lastKey = '';
+        }
+
+        _place(hit) {
+            // Nothing in hand but the weapon: a weapon does not build.
+            if (this._bar.holdingWeapon) {
+                this._notifyOnce('noBlock', T('VoxelWorld.tool.noBlock'));
+                return;
+            }
+            const p = hit.place;
+            const mat = this._bar.heldMaterial;
+            if (!mat) return;
+            const ok = this._terrain.field.placeAt(p.vx, p.vy, p.vz, mat);
+            if (!ok) {
+                this._notifyOnce('noRoom', T('VoxelWorld.tool.noRoom'));
+                return;
+            }
+            this._bar.spendHeld();
+            // Set down, in the voice of the thing being set down.
+            if (!matVoice(mat, 92)) this._playSe('Equip1', 80, 110);
+        }
+
+        // Chips in the colour of the cube that just went - a handful off every
+        // blow, a shower when it finally gives.
+        _spray(vx, vy, vz, mat, n) {
+            const S = VOX.SIZE;
+            const def = MATERIALS[mat] || MATERIALS[MAT.ROCK];
+            let r, g, b;
+            if (def.biome) {
+                const c = this._terrain.field.genColumn(vx, vz, {});
+                r = c.r; g = c.g; b = c.b;
+            } else {
+                r = def.rgb.r; g = def.rgb.g; b = def.rgb.b;
+            }
+            this._chips.burst((vx + 0.5) * S, (vy + 0.5) * S, (vz + 0.5) * S, r, g, b, n);
+        }
+
+        // A seam of ore is the reason to dig deep in the first place.
+        _reward(mat) {
+            if (mat !== MAT.ORE) return;
+            if (typeof $gameParty === 'undefined' || !$gameParty || typeof $dataItems === 'undefined') return;
+            const id = ORE_ITEMS[Math.floor(Math.random() * ORE_ITEMS.length)];
+            const item = $dataItems[id];
+            if (!item) return;
+            if ($gameParty.numItems(item) >= $gameParty.maxItems(item)) {
+                this._notifyOnce('full', T('VoxelWorld.tool.pouchFull'));
+                return;
+            }
+            $gameParty.gainItem(item, 1);
+            if (window.ParchmentToast) {
+                window.ParchmentToast.show(T('VoxelWorld.tool.struck', { name: item.name }),
+                    { icon: item.iconIndex, duration: 150 });
+            }
+        }
+
+        // The bumper as a plough: a camper shoving into a bank at speed takes
+        // cubes out of it instead of stopping dead against a wall of ground.
+        // Returns how many went, so the caller can bleed the speed that cost.
+        plough(x, y, z, radius) {
+            const res = this._terrain.carve(x, y, z, radius);
+            if (res.count) {
+                const def = MATERIALS[res.mat] || MATERIALS[MAT.ROCK];
+                const c = def.biome
+                    ? this._terrain.field.genColumn(Math.floor(x / VOX.SIZE), Math.floor(z / VOX.SIZE), {})
+                    : def.rgb;
+                this._chips.burst(x, y, z, c.r, c.g, c.b, Math.min(24, res.count * 2));
+                this._playSe('Earth1', 70, 60);
+                matVoice(res.mat, 100);
+            }
+            return res.count;
+        }
+
+        _notifyOnce(tag, text) {
+            if (this._lastNote === tag && (this._noteAt || 0) > Date.now() - 2500) return;
+            this._lastNote = tag;
+            this._noteAt = Date.now();
+            if (window.ParchmentToast) window.ParchmentToast.show(text, { duration: 100 });
+        }
+
+        _playSe(name, volume, pitch) {
+            try { AudioManager.playSe({ name, volume, pitch, pan: 0 }); } catch (e) { /* no such SE */ }
+        }
+
+        dispose() {
+            this._chips.dispose();
+            this._scene.remove(this._outline);
+            this._scene.remove(this._ghost);
+            this._outline.geometry.dispose();
+            this._outline.material.dispose();
+            this._boxGeo.dispose();
+            this._ghostMat.dispose();
+            this.target = null;
+        }
+    }
+
+    // Kept off the hot path but useful to anything that wants the same jitter
+    // the mesher uses (a preview, a test harness).
+    VoxelTool.hash = voxelHash3;
+
+    // Handed to the rest of the suite.
+    Object.assign(VW, { VoxelTool, ChipFx, BlockBar, matName, matColour, BAR_SLOTS, SLOT_MAX });
+})();

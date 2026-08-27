@@ -16,5 +16,8 @@
   "swim": "Nuota",
   "drinkSaltWater": "Bevi dell'acqua salata e ti senti subito nauseato!",
   "drinkWater": "Bevi un po' d'acqua, placando leggermente la fame.",
-  "cannotSwimHere": "Qui non puoi nuotare."
+  "cannotSwimHere": "Qui non puoi nuotare.",
+  "drinkSaltWaterChoice": "Bevi acqua salata",
+  "drankSaltWater": "Hai bevuto acqua salata",
+  "drankWater": "Hai bevuto acqua"
 }

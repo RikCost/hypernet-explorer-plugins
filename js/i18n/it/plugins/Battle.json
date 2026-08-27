@@ -17,6 +17,24 @@
       "Questa creatura è troppo forte!\nDovrei scappare!"
     ]
   },
+  "cautionWarning": {
+    "party": [
+      "Questo è di un livello superiore al nostro.\nOcchi aperti e copriamoci a vicenda.",
+      "Qui stiamo giocando al di sopra delle nostre forze.\nNiente errori.",
+      "Quella cosa ha anni di vantaggio su di noi.\nPossiamo vincere, ma non con leggerezza.",
+      "È più forte di qualsiasi cosa abbiamo affrontato.\nAndiamoci con calma.",
+      "Possiamo farcela, ma ci costerà caro.\nOcchio ai feriti.",
+      "Questo è un gradino sopra il nostro livello.\nAffrontiamolo come si deve."
+    ],
+    "single": [
+      "Questo è di un livello superiore al mio.\nDovrò fare attenzione.",
+      "Qui sto giocando al di sopra delle mie forze.\nNiente errori.",
+      "Quella cosa ha anni di vantaggio su di me.\nPosso vincere, ma non con leggerezza.",
+      "È più forte di qualsiasi cosa abbia affrontato.\nDevo andarci con calma.",
+      "Posso farcela, ma mi costerà caro.\nOcchio alla salute.",
+      "Questo è un gradino sopra il mio livello.\nAffrontiamolo come si deve."
+    ]
+  },
   "mercy": {
     "tooStrong": [
       "Non sei nemmeno una sfida. Tornatene a casa prima che mi annoi.",
@@ -95,6 +113,8 @@
     "skill": "Abilità",
     "skills": "Abilità",
     "basic": "Base",
+    "aim": "Mira",
+    "aimAt": "Mira: {part}",
     "wrestle": "Lotta",
     "talk": "Parla",
     "reload": "Ricarica",
@@ -182,7 +202,14 @@
     "mirrored": "{actor} ha rispecchiato le abilità del nemico!",
     "hasLearned": "{actor} ha imparato {skill}!",
     "learnedFromEnemy": "{actor} ha imparato {skill} dal nemico!",
-    "learnableSkills": "Abilità apprendibili:"
+    "learnableSkills": "Abilità apprendibili:",
+    "nothingToCopy": "{actor} non trova nulla da copiare.",
+    "tookLook": "{actor} assume la forma di {enemy}!",
+    "becameEnemy": "{actor} diventa {enemy}, corpo compreso!",
+    "becameAlly": "{actor} diventa {ally}!",
+    "mirrorMove": "{actor} rilancia {skill} al mittente!",
+    "nothingToMirror": "{actor} non ha ancora nessuna mossa da rilanciare.",
+    "mutated": "Il corpo di {actor} cresce in {body}!"
   },
   "summon": {
     "alreadyActive": "C'è già un'evocazione attiva!",
@@ -320,7 +347,9 @@
         "mirror": "Rovina Riflessa",
         "revenant": "Vecchio Debito Saldato"
       }
-    }
+    },
+    "perfectRitual": "[NAT 20] Rituale perfetto! {name} ottiene HYPER pieno e i potenziamenti da maestro!",
+    "empowered": "[INT +{mod}] Il rituale di evocazione ha potenziato {name} con bonus da combattimento!"
   },
   "actorDied": "{actor} è morto.",
   "bulletHellDamage": "Danno totale del bullet hell: {amount}",
@@ -428,7 +457,12 @@
     "fumble": "{actor} perde il filo di {skill}: {stat} insufficiente!"
   },
   "critSever": {
-    "check": "Colpo Mortale: {enemy}",
+    "roll": "Colpo mortale su {enemy}: d20 {roll} {mod} = {total}/{dc}",
+    "outcomeBehead": "Passa da parte a parte.",
+    "outcomeMaim": "Un arto se ne va.",
+    "outcomeNone": "La guardia regge.",
     "bossEndures": "{enemy} è troppo grande per cadere con un solo colpo."
-  }
+  },
+  "vehicleHitMonster": "Travolgi qualcosa. Il {part} ne esce peggio di tutti.",
+  "vehicleHitMonsterPlain": "Travolgi qualcosa e la carrozzeria ne esce peggio di tutte."
 }

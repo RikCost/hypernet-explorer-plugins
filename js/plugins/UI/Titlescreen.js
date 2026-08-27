@@ -1,10 +1,10 @@
 ﻿//=============================================================================
-// WitcherStyleTitle.js
+// Titlescreen.js
 //=============================================================================
 
 /*:
 * @target MZ
-* @plugindesc Replaces the title screen command window with a vertical, Witcher-style menu and adds a floating-network of connected data cards with fade-in mesh lines.
+* @plugindesc Replaces the title screen command window with a vertical, terminal-style menu and adds a floating-network of connected data cards with fade-in mesh lines.
 * @author Omni-Lex
 * @version 1.5.0
 *
@@ -55,7 +55,7 @@
 * Introduction
 * -----------------------------------------------------------------------------
 * This plugin replaces the default title screen command window with a full-height,
-* Witcher-style column menu on the left side and spawns floating cards below
+* terminal-style column menu on the left side and spawns floating cards below
 * that rise up, showing random enemies, skills, items, weapons, or armor from the
 * game's database. Each card is connected to every other with gold lines that
 * smoothly fade in and out, forming a dynamic mesh.
@@ -72,7 +72,7 @@
 */
 
 (() => {
-    const pluginName = "WitcherStyleTitle";
+    const pluginName = "Titlescreen";
     const params = PluginManager.parameters(pluginName);
     const toPct = v => Number(v) / 100;
     const windowWidthPct = Number(params.windowWidth) || 35;
@@ -87,12 +87,35 @@
 
     const DISCLAIMER_TEXT = () => T('Titlescreen.disclaimer.text');
 
+    // The news panel is the shipped CHANGELOG.txt read out loud: the newest
+    // section is what it opens on and its two buttons walk the older ones. The
+    // updater owns the read, since it is the plugin that already opens that file
+    // to learn which version this copy is. A build running with the updater
+    // turned off, or one shipped without a changelog, gets an empty list and the
+    // panel falls back to the notice written in its own i18n entry.
+    const NEWS_SECTIONS = () => {
+        try {
+            const updater = window.GameUpdater;
+            if (updater && typeof updater.changelogSections === 'function') {
+                const list = updater.changelogSections();
+                if (Array.isArray(list)) return list;
+            }
+        } catch (e) {
+            console.warn('Titlescreen: the changelog could not be read', e);
+        }
+        return [];
+    };
+
+    // The dash every changelog entry is written under, kept as punctuation
+    // rather than as a translated string.
+    const NEWS_BULLET = '- ';
+
     // plugins.js registers this file under its path ("UI/Titlescreen") while the
-    // header above still calls itself WitcherStyleTitle, and PluginManager keys
-    // parameters by the REGISTERED name. The older parameters are read through
-    // `params` above and have always fallen back to their in-code defaults
-    // because of that mismatch; changing them now would move the menu, so only
-    // the parameters added since are read through this resolver.
+    // name above is the bare file name, and PluginManager keys parameters by the
+    // REGISTERED name. The older parameters are read through `params` above and
+    // have always fallen back to their in-code defaults because of that mismatch;
+    // changing them now would move the menu, so only the parameters added since
+    // are read through this resolver.
     const pathParams = (() => {
         for (const key of ['UI/Titlescreen', pluginName]) {
             const p = PluginManager.parameters(key);
@@ -698,7 +721,35 @@
         _setup: null,
         setSetup(cfg) { this._setup = cfg || null; },
         clearSetup() { this._setup = null; },
-        setup() { return this._setup; }
+        setup() { return this._setup; },
+
+        // How the Liminal World was answered for on the way in: which vehicle
+        // (or none), and the world square of the place it was opened on. Read
+        // once, by Scene_CamperFreeplay, and thrown away with the session.
+        _liminal: null,
+        setLiminal(cfg) { this._liminal = cfg || null; },
+        liminal() { return this._liminal; },
+
+        // The Liminal World hands the leader a weapon nobody picked: whatever
+        // the item table happens to offer, held for the length of the session.
+        // Only ever in the arcade's own throwaway context - a real party keeps
+        // what it is carrying.
+        equipRandomWeapon() {
+            if (!this.isFreePlay()) return null;
+            const actor = ($gameParty && $gameParty.leader) ? $gameParty.leader() : null;
+            if (!actor || !window.$dataWeapons) return null;
+            const pool = $dataWeapons.filter(w => w && w.name && actor.canEquip(w));
+            if (!pool.length) return null;
+            const weapon = pool[Math.randomInt(pool.length)];
+            try {
+                $gameParty.gainItem(weapon, 1);
+                actor.changeEquip(0, weapon);
+            } catch (e) {
+                console.warn('[Minigames] Could not hand out a weapon:', e);
+                return null;
+            }
+            return weapon;
+        }
     };
     window.MinigameArcade = MinigameArcade;
 
@@ -817,6 +868,36 @@
         { mode: 'NIGHT', fallback: 1, label: 'Titlescreen.minigameSetup.night' }
     ];
 
+    // How the party arrives in the Liminal World. On foot is a walk with
+    // nothing in the scene to climb into; every other answer is the garage's own
+    // model of the thing, ridden. `transport` only names which network's labels
+    // the map is drawn with - nothing is boarded and no fare is paid. The
+    // starship is not offered: fly it high enough and it leaves the world.
+    const LIMINAL_VEHICLES = [
+        { key: null,     label: 'Titlescreen.minigameSetup.onFoot', transport: 'walking' },
+        { key: 'camper', label: 'Titlescreen.minigameSetup.camper', transport: 'camper' },
+        { key: 'car',    label: 'Titlescreen.minigameSetup.car',    transport: 'carsharing' },
+        { key: 'bike',   label: 'Titlescreen.minigameSetup.bike',   transport: 'bicycle' },
+        { key: 'boat',   label: 'Titlescreen.minigameSetup.boat',   transport: 'boat' },
+        { key: 'broom',  label: 'Titlescreen.minigameSetup.broom',  transport: 'magic_carpet' }
+    ];
+
+    // Where the borrowed travel map opens when there is no party to open it on:
+    // the square the Omega Tower stands beside, the one fixed point of this
+    // world (Destinations.json, "Omega Tower").
+    const LIMINAL_MAP_ORIGIN = { x: 79, y: 125 };
+
+    // What the readout calls the place the world was opened beside.
+    const liminalPlaceLabel = (key) =>
+        (window.WorkSystem && window.WorkSystem.destinationName)
+            ? window.WorkSystem.destinationName(key) : key;
+
+    // Only the ones there is actually a body to show for; walking always is.
+    function liminalVehicles() {
+        const VM = window.VehicleModels;
+        return LIMINAL_VEHICLES.filter(v => !v.key || (VM && VM.has(v.key)));
+    }
+
     function timeModeId(name, fallback) {
         const modes = window.SkyRenderer && window.SkyRenderer.TIME_MODES;
         return (modes && typeof modes[name] === 'number') ? modes[name] : fallback;
@@ -828,7 +909,11 @@
     function buildMinigameList() {
         const all = [
             { name: T('Titlescreen.minigame.arena'),                   avail: () => hasScene('Scene_ArenaPartySelect'),  run: s => SceneManager.push(window.Scene_ArenaPartySelect) },
-            { name: T('Titlescreen.minigame.camperDriving'),          avail: () => !!(window.CamperDrivingSystem && window.CamperDrivingSystem.startStandalone), run: s => SceneManager.push(Scene_CamperFreeplay) },
+            // The whole 3D world, free of any game: the player says how they are
+            // getting about and where in Europe to be put down, and is dropped
+            // beside that place with a weapon they did not choose. Nothing out
+            // there fights them, and what they dig stays dug (VoxelWorldState).
+            { name: T('Titlescreen.minigame.liminalWorld'),           avail: () => !!(window.VoxelWorldSystem && window.VoxelWorldSystem.startStandalone), run: s => SceneManager.push(Scene_CamperFreeplay), vehicleSetup: true },
             // A read-only tour of the star map: no ship, no bridges, no
             // refuelling or landing, just the catalog and Grand Tour (see
             // GalaxySim.openStarMapMinigame).
@@ -871,7 +956,15 @@
             { name: T('Titlescreen.minigame.arcadeCentipede'),       avail: () => hasCmd('ArcadeCabinetManager', 'playGame'), run: s => launchArcade(s, 'AsciiCentipede') },
             { name: T('Titlescreen.minigame.piano'),                   avail: () => !!(window.VisualPiano && window.VisualPiano.open), run: s => launchPiano(s) }
         ];
-        return all.filter(e => { try { return e.avail(); } catch (_) { return false; } });
+        // A catalogue this long is only findable in one order, and it is not the
+        // order it was written in: the list is dealt alphabetically in whatever
+        // language it is being read in.
+        const collator = (typeof Intl !== 'undefined' && Intl.Collator)
+            ? new Intl.Collator(ConfigManager.language || 'en') : null;
+        return all
+            .filter(e => { try { return e.avail(); } catch (_) { return false; } })
+            .sort((a, b) => collator ? collator.compare(a.name, b.name)
+                                     : String(a.name).localeCompare(String(b.name)));
     }
 
     // Grid metrics of the picker, matching the `gap` .mg-menu-list declares in
@@ -894,10 +987,17 @@
             // Returning from a game recreates this scene, so a setup answered
             // for the last launch is spent here and never leaks into the next.
             MinigameArcade.clearSetup();
-            // 'list', then 'venue' and 'time' for the games that ask.
+            MinigameArcade.setLiminal(null);
+            // The travel map is borrowed for the Liminal World's "where from"
+            // step, and the overlay it draws calls back into whatever scene is
+            // on top: this one, once it has been taught the methods.
+            if (window.FastTravelPicker) window.FastTravelPicker.install(Scene_MinigameList);
+            // 'list', then 'venue' and 'time' for the games that ask, and
+            // 'vehicle' for the one that asks how you are getting there.
             this._mode = 'list';
             this._pendingEntry = -1;
             this._pendingVenue = null;
+            this._pendingVehicle = null;
             const last = Scene_MinigameList._lastIndex || 0;
             this._selectedIndex = Math.min(last, this._entries.length);
             this._lastRenderKey = '';
@@ -919,6 +1019,12 @@
                 return {
                     title: T('Titlescreen.minigameSetup.timeTitle'),
                     rows: WATER_TIMES.map(t => T(t.label))
+                };
+            }
+            if (this._mode === 'vehicle') {
+                return {
+                    title: T('Titlescreen.minigameSetup.vehicleTitle'),
+                    rows: liminalVehicles().map(v => T(v.label))
                 };
             }
             return {
@@ -1086,6 +1192,11 @@
                 this.goBack();
                 return;
             }
+            if (this._mode === 'vehicle') {
+                this._pendingVehicle = liminalVehicles()[this._selectedIndex];
+                this.openLiminalDestinationPicker();
+                return;
+            }
             if (this._mode === 'venue') {
                 this._pendingVenue = WATER_VENUES[this._selectedIndex].venue;
                 this.gotoPage('time');
@@ -1117,6 +1228,14 @@
                 this.gotoPage('venue');
                 return;
             }
+            // The Liminal World asks how you are travelling, then where in the
+            // world to be put down, before it opens anything.
+            if (entry && entry.vehicleSetup) {
+                this._pendingEntry = index;
+                this._pendingVehicle = null;
+                this.gotoPage('vehicle');
+                return;
+            }
             this.launchEntry(entry);
         }
 
@@ -1141,13 +1260,60 @@
                 this.gotoPage('venue');
                 return;
             }
-            if (this._mode === 'venue') {
+            if (this._mode === 'vehicle' || this._mode === 'venue') {
                 this._mode = 'list';
                 this._selectedIndex = this._pendingEntry >= 0 ? this._pendingEntry : 0;
                 this.refreshOverlay();
                 return;
             }
             this.popScene();
+        }
+
+        // "Where from": the travel map, borrowed as a chooser. The party is not
+        // going anywhere on it - no fare, no fuel, no journey - it is only the
+        // one picture the game has of where the places are, and the Liminal
+        // World is opened beside whichever of them is pointed at.
+        //
+        // Without the map (a build with the plugin stripped) the world still
+        // opens: it falls back to the random stretch of road it always used.
+        openLiminalDestinationPicker() {
+            const P = window.FastTravelPicker;
+            const veh = this._pendingVehicle || liminalVehicles()[0];
+            if (!P || !P.open || !this.openFastTravelUIOverlay) {
+                this.startLiminalWorld(null, null);
+                return;
+            }
+            // The map centres and measures from the party's world square, and
+            // the arcade's throwaway context has none. The Omega Tower is the one
+            // place on this world that is always there, so the map opens on it.
+            if (typeof $gameVariables !== 'undefined' &&
+                !$gameVariables.value(43) && !$gameVariables.value(44)) {
+                $gameVariables.setValue(43, LIMINAL_MAP_ORIGIN.x);
+                $gameVariables.setValue(44, LIMINAL_MAP_ORIGIN.y);
+            }
+            this.suspendForOverlay(() => P.isOpen());
+            P.open(this, veh.transport,
+                (dest, square) => this.startLiminalWorld(dest, square),
+                () => { this._mode = 'vehicle'; this._lastRenderKey = ''; this.refreshOverlay(); });
+        }
+
+        // Open the world itself: the vehicle that was chosen (or a pair of legs),
+        // put down beside the square that was pointed at, with a weapon the
+        // player did not pick.
+        startLiminalWorld(dest, square) {
+            this._overlayWatch = null;
+            MinigameArcade.equipRandomWeapon();
+            const veh = this._pendingVehicle || liminalVehicles()[0];
+            MinigameArcade.setLiminal({
+                vehicle: veh.key,
+                footOnly: !veh.key,
+                startTile: square || null,
+                label: dest ? liminalPlaceLabel(dest.name) : null
+            });
+            this._mode = 'list';
+            if (this._pendingEntry >= 0) this._selectedIndex = this._pendingEntry;
+            const entry = this._entries[this._pendingEntry];
+            if (entry) this.launchEntry(entry);
         }
 
         // Park the overlay while a DOM-overlay minigame (piano) is on screen;
@@ -1164,6 +1330,10 @@
                 if (!this._overlayWatch()) {
                     this._overlayWatch = null;
                     if (this._menuContainer) this._menuContainer.style.display = 'flex';
+                } else if (this.updateTravelPickerInput) {
+                    // The borrowed travel map is driven with the same keys and
+                    // pad it is driven with on the world map.
+                    this.updateTravelPickerInput();
                 }
                 return; // an overlay minigame owns input while it is up
             }
@@ -1199,6 +1369,9 @@
 
         terminate() {
             super.terminate();
+            if (window.FastTravelPicker && window.FastTravelPicker.isOpen()) {
+                window.FastTravelPicker.close(this);
+            }
             if (this._menuContainer) {
                 this._menuContainer.innerHTML = '';
                 this._menuContainer.style.display = 'none';
@@ -1209,8 +1382,8 @@
     Scene_MinigameList._lastIndex = 0;
     window.Scene_MinigameList = Scene_MinigameList;
 
-    // Wrapper scene for the camper driving overlay so it fits the push/pop model
-    // of the picker: it starts the free-play drive on entry and pops back to the
+    // Wrapper scene for the Liminal World overlay so it fits the push/pop model
+    // of the picker: it opens the free-play world on entry and pops back to the
     // list when the player quits with Esc / Cancel.
     class Scene_CamperFreeplay extends Scene_MenuBase {
         create() {
@@ -1218,24 +1391,28 @@
             this._camperStarted = false;
             this._exiting = false;
         }
+        // MinigameArcade.liminal() is how the picker was answered on the way in:
+        // what is being ridden, and the square to be put down beside. Nothing
+        // there is an error when it is missing - the world falls back to the
+        // camper on a random stretch of road, as it always did.
         start() {
             super.start();
             if (this._camperStarted) return;
             this._camperStarted = true;
-            const sys = window.CamperDrivingSystem;
+            const sys = window.VoxelWorldSystem;
             if (sys && sys.startStandalone) {
                 sys.startStandalone(() => {
                     if (this._exiting) return;
                     this._exiting = true;
                     this.popScene();
-                });
+                }, MinigameArcade.liminal() || {});
             } else {
                 this.popScene();
             }
         }
         terminate() {
             super.terminate();
-            const sys = window.CamperDrivingSystem;
+            const sys = window.VoxelWorldSystem;
             if (sys && sys.isActive && sys.isActive()) sys.stop();
         }
     }
@@ -5332,7 +5509,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
     // -------------------------------------------------------------------------
     // Auto Drive: the camper driving the REAL world map behind the title, on
-    // autopilot. This is a thin wrapper around CamperDrivingSystem: the drive
+    // autopilot. This is a thin wrapper around VoxelWorldSystem: the drive
     // scene renders the actual 3D world (terrain, biomes, roads, traffic,
     // weather and time of day) and its autopilot follows the tagged road
     // network, choosing a random way on at every crossroad and T-junction.
@@ -5341,7 +5518,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // -------------------------------------------------------------------------
     class AutoDriveBackground {
         constructor() {
-            const sys = window.CamperDrivingSystem;
+            const sys = window.VoxelWorldSystem;
             this._enabled = !!(window.THREE && sys && sys.startTitleDrive);
             this._drive = null;
             this._startTries = 0;
@@ -5355,7 +5532,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         // The world's road tags are fetched asynchronously at boot, so the drive
         // may have to wait a beat for a route to plan; update() keeps trying.
         _start() {
-            const sys = window.CamperDrivingSystem;
+            const sys = window.VoxelWorldSystem;
             if (!sys || this._drive) return;
             try {
                 if (window.MinigameArcade) {
@@ -5440,7 +5617,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         }
 
         dispose() {
-            const sys = window.CamperDrivingSystem;
+            const sys = window.VoxelWorldSystem;
             // Only ever stop OUR drive: a free-play drive opened from the
             // minigames menu owns the system by then.
             if (this._drive && sys && sys.isActive() && sys.isTitleDrive()) sys.stop();
@@ -5577,7 +5754,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             if (window.THREE && window.GalaxySim) {
                 choices.push('hyperverse');
             }
-            if (window.THREE && window.CamperDrivingSystem && window.CamperDrivingSystem.startTitleDrive) {
+            if (window.THREE && window.VoxelWorldSystem && window.VoxelWorldSystem.startTitleDrive) {
                 choices.push('autodrive');
             }
             return choices[Math.floor(Math.random() * choices.length)];
@@ -5596,7 +5773,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     Scene_Title.prototype.getAvailableBackgroundModes = function () {
         const modes = [];
         if (window.THREE && window.GalaxySim) modes.push('hyperverse');
-        if (window.THREE && window.CamperDrivingSystem && window.CamperDrivingSystem.startTitleDrive) {
+        if (window.THREE && window.VoxelWorldSystem && window.VoxelWorldSystem.startTitleDrive) {
             modes.push('autodrive');
         }
         modes.push('cards', 'space', 'bestiary');
@@ -6613,8 +6790,76 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             marginBottom: '0.6em', borderBottom: '1px solid rgba(255, 215, 0, 0.35)'
         });
 
+        // What the panel actually says: one version section of the changelog,
+        // walked with the two buttons over it. The list is capped and scrolls on
+        // its own, so a section as long as a release note cannot stretch the
+        // panel down over the readouts in the corner.
+        const navRow = document.createElement('div');
+        Object.assign(navRow.style, {
+            display: 'flex', alignItems: 'center', gap: '0.4em', marginBottom: '0.5em'
+        });
+
+        const navButton = (label, step) => {
+            const btn = document.createElement('div');
+            btn.textContent = label;
+            Object.assign(btn.style, {
+                fontFamily: "'Square', monospace", fontSize: '0.72em', letterSpacing: '1px',
+                padding: '0.2em 0.55em', cursor: 'pointer', pointerEvents: 'auto',
+                whiteSpace: 'nowrap', color: '#FFD700',
+                border: '1px solid rgba(255, 215, 0, 0.45)', background: 'rgba(0, 0, 0, 0.6)'
+            });
+            btn.addEventListener('mouseenter', () => {
+                if (!btn.dataset.off) btn.style.color = '#FFFFFF';
+            });
+            btn.addEventListener('mouseleave', () => { btn.style.color = '#FFD700'; });
+            btn.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); });
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (btn.dataset.off) return;
+                SoundManager.playCursor();
+                this.showNewsSection(this._newsIndex + step);
+            });
+            return btn;
+        };
+
+        // The file is written newest first, so going back walks DOWN it.
+        const olderBtn = navButton(T('Titlescreen.news.older'), 1);
+        const newerBtn = navButton(T('Titlescreen.news.newer'), -1);
+
+        const versionLabel = document.createElement('div');
+        Object.assign(versionLabel.style, {
+            flex: '1 1 auto', textAlign: 'center', minWidth: '0',
+            fontFamily: "'Square', monospace", fontSize: '0.8em', letterSpacing: '1.5px',
+            color: '#8fb4c8'
+        });
+
+        navRow.appendChild(olderBtn);
+        navRow.appendChild(versionLabel);
+        navRow.appendChild(newerBtn);
+
         const text = document.createElement('div');
-        text.textContent = DISCLAIMER_TEXT();
+        Object.assign(text.style, {
+            overflowY: 'auto', overflowX: 'hidden', pointerEvents: 'auto'
+        });
+        // RMMZ preventDefaults every wheel event at the document level, so a DOM
+        // pane never scrolls on its own: this one scrolls itself and swallows the
+        // event so it cannot also reach the background behind the panel.
+        text.addEventListener('wheel', (e) => {
+            const step = e.deltaMode === 1 ? e.deltaY * 40
+                : (e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY);
+            text.scrollTop += step;
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        this._newsNav = navRow;
+        this._newsOlder = olderBtn;
+        this._newsNewer = newerBtn;
+        this._newsVersion = versionLabel;
+        this._newsBody = text;
+        this._newsSections = NEWS_SECTIONS();
+        this._newsIndex = 0;
 
         // Escape hatch for the collision bugs the notice above asks players to
         // report: ForceConsole ungates the engine's own debug-through in
@@ -6721,6 +6966,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
         box.appendChild(close);
         box.appendChild(header);
+        box.appendChild(navRow);
         box.appendChild(text);
         box.appendChild(noclipTip);
         box.appendChild(linkRow('DISCORD', DISCLAIMER_LINK));
@@ -6728,7 +6974,71 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         box.appendChild(donateLabel);
         box.appendChild(patronPerk);
         box.appendChild(donateRow);
+        // Filled before it is measured: the layout pass trims the list to the
+        // room left under it, which it can only read once there is a list.
+        this.showNewsSection(0);
         this.layoutDisclaimerBox();
+    };
+
+    // Draws one version section of the changelog into the news panel and
+    // re-labels the buttons around it. An index past either end of the file is
+    // clamped rather than wrapped, and the button that would walk off the end is
+    // dimmed and stops answering. A build with no changelog to read shows the
+    // notice written in the i18n entry instead and hides the buttons entirely.
+    Scene_Title.prototype.showNewsSection = function (index) {
+        const body = this._newsBody;
+        if (!body) return;
+        const sections = this._newsSections || [];
+        const last = sections.length - 1;
+        const i = Math.max(0, Math.min(Number(index) || 0, last));
+        this._newsIndex = i;
+        const section = sections[i] || null;
+
+        while (body.firstChild) body.removeChild(body.firstChild);
+        if (this._newsVersion) this._newsVersion.textContent = section ? section.version : '';
+        if (this._newsNav) this._newsNav.style.display = sections.length ? 'flex' : 'none';
+
+        if (!section) {
+            const fallback = document.createElement('div');
+            fallback.textContent = DISCLAIMER_TEXT() || T('Titlescreen.news.empty');
+            body.appendChild(fallback);
+            return;
+        }
+        // The list is read in the order the file writes it, entries under the
+        // dash and the group headings the long sections are written in, which
+        // are drawn as headings rather than as another line of news.
+        for (const entry of section.entries) {
+            const row = document.createElement('div');
+            const heading = entry && typeof entry === 'object' ? entry.heading : null;
+            row.textContent = heading ? String(heading) : NEWS_BULLET + entry;
+            Object.assign(row.style, {
+                marginBottom: '0.4em', fontSize: '0.95em', lineHeight: '1.4'
+            });
+            if (heading) {
+                Object.assign(row.style, {
+                    color: '#FFD700', letterSpacing: '1px', fontSize: '0.85em',
+                    marginTop: body.firstChild ? '0.9em' : '0',
+                    fontFamily: "'Square', monospace"
+                });
+            }
+            body.appendChild(row);
+        }
+        body.scrollTop = 0;
+
+        const dim = (btn, off) => {
+            if (!btn) return;
+            if (off) {
+                btn.dataset.off = '1';
+                btn.style.opacity = '0.3';
+                btn.style.cursor = 'default';
+            } else {
+                delete btn.dataset.off;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            }
+        };
+        dim(this._newsOlder, i >= last);
+        dim(this._newsNewer, i <= 0);
     };
 
     // Docked under the background switcher, sharing its right edge. The gap is
@@ -6750,6 +7060,23 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         box.style.width = Math.round(Math.min(320 * s, rect.width * 0.3)) + 'px';
         box.style.padding = TitleLayout.px(12, s) + ' ' + TitleLayout.px(14, s);
         box.style.fontSize = TitleLayout.px(13, s);
+        // The one part of the panel that grows with its content is the one part
+        // that is capped: everything under it keeps its place whichever section
+        // is being read. The cap is then trimmed to whatever room is actually
+        // left over the bottom of the canvas, so the links and the donation
+        // buttons under the list are on screen at any resolution rather than
+        // pushed off the edge by a long release note.
+        const body = this._newsBody;
+        if (body) {
+            body.style.maxHeight = TitleLayout.px(150, s);
+            const boxRect = box.getBoundingClientRect();
+            const bodyRect = body.getBoundingClientRect();
+            const canvasBottom = rect.top + rect.height;
+            const spill = boxRect.bottom - (canvasBottom - 18 * s);
+            if (spill > 0 && bodyRect.height > 0) {
+                body.style.maxHeight = Math.round(Math.max(60 * s, bodyRect.height - spill)) + 'px';
+            }
+        }
     };
 
     Scene_Title.prototype.removeDisclaimerBox = function () {
@@ -6757,6 +7084,11 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             this._disclaimerBox.parentNode.removeChild(this._disclaimerBox);
         }
         this._disclaimerBox = null;
+        this._newsBody = null;
+        this._newsNav = null;
+        this._newsOlder = null;
+        this._newsNewer = null;
+        this._newsVersion = null;
     };
 
     // Backgrounds that render into their own DOM canvas, which sits ON TOP of

@@ -519,6 +519,7 @@
 
     terminate() {
       super.terminate();
+      if (window.CCNav) window.CCNav.detach(this);
       if (this._dndContainer) {
         this._dndContainer.style.display = "none";
       }
@@ -564,6 +565,9 @@
       this._lastShowSub = false;
       // Wheel + L2/R2 scrolling for the detail panes. See CCScroll.
       if (window.CCScroll) window.CCScroll.bindWheel(this._dndContainer);
+      // The dossier facing the list has buttons and chips of its own, walked
+      // with the focus ring. See CharacterCreationNav.js.
+      if (window.CCNav) window.CCNav.attach(this, this._dndContainer);
       this.refreshUIOverlayDOM();
     }
 
@@ -810,7 +814,7 @@
               if (!sk) return "";
               const mp = sk.mpCost || 0;
               const ap = sk.tpCost || 0;
-              const desc = (sk.description || "").replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+              const desc = window.CCDbDesc(sk).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
               const isStart = l.level === 1;
               return `<div style="display:flex;align-items:center;gap:6px;padding:3px 2px;border-bottom:1px solid rgba(218,165,32,0.08);cursor:default;"
                            title="${desc}">
@@ -859,9 +863,9 @@
               <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px 12px;">
                 <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.STR}:</span><span class="cc-dossier-value">${str}</span></div>
                 <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.CON}:</span><span class="cc-dossier-value">${con}</span></div>
+                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.DEX}:</span><span class="cc-dossier-value">${agi}</span></div>
                 <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.INT}:</span><span class="cc-dossier-value">${mat}</span></div>
                 <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.WIS}:</span><span class="cc-dossier-value">${mdf}</span></div>
-                <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.DEX}:</span><span class="cc-dossier-value">${agi}</span></div>
                 <div class="cc-dossier-row"><span class="cc-dossier-label">${_SL.PSI}:</span><span class="cc-dossier-value">${luk}</span></div>
               </div>
             </div>
@@ -976,7 +980,27 @@
       }
     }
 
+    // The focus ring hands the list back when it walks off its own top or left
+    // edge; the list redraws so its cursor is visible again.
+    onNavLeave() {
+      this._lastIndex = -1;
+      this.refreshUIOverlayDOM();
+    }
+
+    // Step off the list and onto the facing page's controls, if the press was
+    // a direction and there is anything over there to land on.
+    _ccEnterNav(dir) {
+      if (!window.CCNav) return false;
+      const pressed = ["up", "down", "left", "right"].some(
+        (d) => Input.isTriggered(d) || Input.isRepeated(d));
+      if (!pressed) return false;
+      return window.CCNav.tryEnterFromBoard(dir);
+    }
+
     updateUIInput() {
+      // The ring owns the page's own controls whenever it is up, and is read
+      // first so one press never moves two cursors.
+      if (window.CCNav && window.CCNav.update()) return;
       if (this._classWindow) {
         const windowObj = this._classWindow;
         if (!windowObj || !windowObj.active) return;
@@ -1007,6 +1031,10 @@
           if (index % 2 === 0 && index + 1 < maxItems) {
             index += 1;
             moved = true;
+          } else if (this._ccEnterNav("right")) {
+            // The right edge of the list is the doorway onto the dossier
+            // facing it and the buttons underneath it.
+            return;
           }
         } else if (Input.isTriggered('left') || Input.isRepeated('left')) {
           if (index % 2 === 1 && index - 1 >= 0) {
@@ -1045,6 +1073,9 @@
 
         this.updateUIInput();
         if (window.CCScroll) window.CCScroll.update(this._dndContainer);
+        // The page rebuilds its markup underneath the ring, so the ring is
+        // stamped back on afterwards rather than before.
+        if (window.CCNav) window.CCNav.paint();
       }
     }
 

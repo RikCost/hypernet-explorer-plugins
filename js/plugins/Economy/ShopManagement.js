@@ -1269,6 +1269,60 @@
   }
 
   // Expose data API for ShopManagementUI.js
+  //===========================================================================
+  // Deliveries from the party's own land
+  //===========================================================================
+  // A player could keep a field, a herd, a hive and a barrel and own a shop,
+  // and the two halves never met: the farming plugins handed every crop, egg,
+  // jar and cask to the party's backpack, and this plugin's warehouse - the
+  // thing its production recipes actually eat - could only be filled by hand.
+  //
+  // What passes between them now is the PASSIVE yield: what ripened, laid,
+  // capped or finished fermenting while the party was elsewhere. Anything the
+  // player picks with their own hands still goes to them. A delivery only
+  // happens where there is a shop that deals in that sort of thing, so a
+  // blacksmith's warehouse never fills up with turnips, and whatever a shop
+  // cannot take is handed back for the party to carry.
+  //
+  // Returns how many units the warehouse took, so the caller can give the rest
+  // to the party.
+  function deliverToWarehouse(item, amount) {
+    const qty = Math.max(0, Math.floor(Number(amount) || 0));
+    if (!item || qty <= 0 || !shopData || !shopData.shops) return null;
+    for (const shopId of Object.keys(shopData.shops)) {
+      const shop = shopData.shops[shopId];
+      if (!shop || !shop.warehouseInventory) continue;
+      if (!isItemInCategory(item, shop.category)) continue;
+      shop.warehouseInventory[item.id] = (shop.warehouseInventory[item.id] || 0) + qty;
+      debugLog(`Delivered ${qty}x ${item.name} to shop ${shopId}'s warehouse`);
+      return { shopId, qty };
+    }
+    return null;
+  }
+
+  // The one call the farming plugins make in place of a bare gainItem. Where
+  // the party owns a shop that deals in the thing, the crate goes to that
+  // shop's warehouse and the party is told which one; otherwise it goes into
+  // the backpack exactly as it always did, so a player with no shop sees no
+  // change at all.
+  function deliverProduce(item, amount) {
+    const qty = Math.max(0, Math.floor(Number(amount) || 0));
+    if (!item || qty <= 0) return { toShop: 0, toParty: 0, shopId: null };
+    let delivery = null;
+    try { delivery = deliverToWarehouse(item, qty); }
+    catch (e) { console.warn('[ShopManagement] delivery failed', e); delivery = null; }
+    if (!delivery) {
+      if (window.$gameParty) $gameParty.gainItem(item, qty);
+      return { toShop: 0, toParty: qty, shopId: null };
+    }
+    if (window.ParchmentToast) {
+      window.ParchmentToast.show(T('ShopManagement.delivery.line', {
+        amount: qty, item: item.name, shop: getMapDisplayName(delivery.shopId) || delivery.shopId,
+      }), { title: T('ShopManagement.delivery.title'), icon: item.iconIndex, duration: 200 });
+    }
+    return { toShop: qty, toParty: 0, shopId: delivery.shopId };
+  }
+
   window.ShopManagement = {
     getData:               () => shopData,
     getCurrentShop,
@@ -1282,6 +1336,8 @@
     removeFromStock,
     getMapDisplayName,
     defaultPriceMultiplier,
+    deliverToWarehouse,
+    deliverProduce,
   };
 
   // Debug globals
@@ -1321,5 +1377,45 @@
         $gameMessage.add(T('ShopManagement.msg.notEnoughMats'));
       }
     }
+  });
+
+  // setMenuPrice and produceItem were declared in the header above but never registered, so
+  // an event using either of them did nothing at all. Both are wired to the shop model the
+  // rest of the plugin already uses.
+
+  PluginManager.registerCommand(pluginName, 'setMenuPrice', (args) => {
+    refreshEconomy();
+    const shop = getCurrentShop();
+    if (!shop) { $gameMessage.add(T('ShopManagement.msg.noShop')); return; }
+    const itemId = Number(args.itemId);
+    const price = Number(args.price);
+    const item = $dataItems[itemId];
+    if (!item || !Number.isFinite(price) || price < 1) {
+      $gameMessage.add(T('ShopManagement.msg.badMenuPrice'));
+      return;
+    }
+    shop.menuPrices[itemId] = Math.floor(price);
+    $gameMessage.add(T('ShopManagement.msg.menuPriceSet', {
+      item: item.name, price: formatEuroPrice(shop.menuPrices[itemId]),
+    }));
+  });
+
+  PluginManager.registerCommand(pluginName, 'produceItem', (args) => {
+    refreshEconomy();
+    // This one names its shop, rather than acting on whichever is current.
+    const shopId = args.shopId;
+    const shop = shopData.shops[shopId];
+    if (!shop) { $gameMessage.add(T('ShopManagement.msg.notFound', { shop: shopId })); return; }
+    const item = $dataItems[Number(args.itemId)];
+    if (!item) { $gameMessage.add(T('ShopManagement.msg.notEnoughMats')); return; }
+    const recipe = getRecipe(item);
+    // An item with no recipe costs nothing to make, the same rule simulateProduction follows.
+    if (recipe && !hasIngredients(recipe, shop)) {
+      $gameMessage.add(T('ShopManagement.msg.notEnoughMats'));
+      return;
+    }
+    if (recipe) consumeIngredients(recipe, shop);
+    addToStock(item.id, 1, shop);
+    $gameMessage.add(T('ShopManagement.msg.produced', { item: item.name }));
   });
 })();

@@ -13,7 +13,10 @@
   "offDuty": "Fuori Servizio",
   "balance": "Saldo",
   "category": "Categoria",
-  "delivery": "Consegna Attiva",
+  "delivery": {
+    "title": "Consegnato al vostro negozio",
+    "line": "{amount}x {item} è finito nel magazzino di {shop} invece che nello zaino."
+  },
   "timeLeft": "Tempo Rimasto",
   "noShop": "Nessun negozio selezionato.",
   "emptySlot": "Slot Vuoto",
@@ -55,7 +58,9 @@
     "mustBeOpen": "\\C[2]Il negozio deve prima essere aperto!",
     "produced": "\\C[3]Hai prodotto {item}!",
     "notEnoughMats": "\\C[2]Materiali insufficienti per la produzione!",
-    "timeLimit": "\\C[2]Tempo limite: {time}"
+    "timeLimit": "\\C[2]Tempo limite: {time}",
+    "menuPriceSet": "\\C[3]{item} ora costa {price}.",
+    "badMenuPrice": "\\C[2]Quell'oggetto o quel prezzo non sono utilizzabili dal negozio!"
   },
   "ui": {
     "okAssign": "OK → assegna",

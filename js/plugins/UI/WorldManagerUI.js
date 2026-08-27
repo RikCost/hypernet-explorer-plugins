@@ -237,7 +237,7 @@
             'social':     { color: 'var(--text-text-alt-16, #3d5e75)',       bg: 'var(--bg-bg-alt-6-translucent-12, rgba(61,94,117,0.05))' },
             'paranormal': { color: 'var(--bg-bg-alt-14, #5a3d75)',           bg: 'var(--bg-bg-alt-15-translucent-12, rgba(90,61,117,0.05))' },
             'royal':      { color: 'var(--text-text-alt-19, #8c4375)',       bg: 'var(--border-primary-hover-translucent-15, rgba(140,67,117,0.05))' },
-            'artifact':   { color: '#a07820',                                bg: 'rgba(160,120,32,0.07)' }
+            'artifact':   { color: 'var(--text-gold-dark)',                  bg: 'var(--accent-gold-translucent-16)' }
         };
         return map[category] || { color: 'var(--border-muted-focus, #8b5a2b)', bg: 'var(--border-secondary-hover-translucent-15, rgba(139,90,43,0.05))' };
     }
@@ -247,7 +247,7 @@
         return evt.category === 'artifact' || /artifact/i.test(evt.description || '');
     }
 
-    const ARTIFACT_BADGE = `<span class="wm-card-badge" style="color:#a07820; background:rgba(160,120,32,0.1); border:1px solid #a0782050">${T('WorldManager.ui.artifactBadge')}</span>`;
+    const ARTIFACT_BADGE = `<span class="wm-card-badge" style="color:var(--text-gold-dark); background:var(--accent-gold-translucent-16); border:1px solid var(--border-gold-amber-30)">${T('WorldManager.ui.artifactBadge')}</span>`;
 
     function renderHistoryEvents(events) {
         if (!events || events.length === 0) {

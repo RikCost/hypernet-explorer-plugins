@@ -13,8 +13,8 @@
   },
   "3": {
     "name": "Mimic",
-    "description": "Copies a random skill from the enemy or the\nparty.",
-    "message1": "%1 mimics a stolen technique!",
+    "description": "Learns every skill the enemies know, for as long\nas the fight lasts.",
+    "message1": "%1 takes the enemy's tricks!",
     "message2": ""
   },
   "4": {
@@ -120,8 +120,8 @@
     "message2": ""
   },
   "21": {
-    "name": "",
-    "description": "",
+    "name": "Wrestle",
+    "description": "Closes with the enemy to take a hold on\ntheir limbs.",
     "message1": "%1 closes in to grapple!",
     "message2": ""
   },
@@ -1891,8 +1891,8 @@
   },
   "344": {
     "name": "Copycat",
-    "description": "Raises all allies' INT. Grants Perfect Focus.",
-    "message1": "%1 uses Copycat!",
+    "description": "Wears the enemy's face and shape. Raises the\nuser's INT and grants Perfect Focus.",
+    "message1": "%1 puts on the enemy's face!",
     "message2": ""
   },
   "345": {
@@ -2005,8 +2005,8 @@
   },
   "363": {
     "name": "Shapeshift",
-    "description": "Raises all enemies' CON and DEX. Inflicts Hide\nand restores 20 AP.",
-    "message1": "%1 uses Shapeshift!",
+    "description": "Becomes the enemy: its stats, health, skills and\nbody, until the fight ends.",
+    "message1": "%1 becomes the enemy!",
     "message2": ""
   },
   "364": {
@@ -2031,6 +2031,18 @@
     "name": "Doppelganger's Revenge",
     "description": "Deals Physical damage to all enemies. Lands 85%\nof the time.",
     "message1": "%1 uses Doppelganger's Revenge!",
+    "message2": ""
+  },
+  "368": {
+    "name": "Shell Guard",
+    "description": "Hardens the body's defenses. Raises CON and WIS.\nLowers STR. Strikes last.",
+    "message1": "%1 hunkers down defensively!",
+    "message2": ""
+  },
+  "369": {
+    "name": "Bristled Retaliation",
+    "description": "Bristles defensively, ready to strike back.\nGrants Counter Attack. Raises CON.",
+    "message1": "%1 bristles, ready to retaliate!",
     "message2": ""
   },
   "378": {
@@ -4291,7 +4303,7 @@
   },
   "824": {
     "name": "MetamorphicAbsurdity",
-    "description": "Lowers one enemy's STR and DEX. May inflict\nRage. Strikes last. Lands 75% of the time.",
+    "description": "Deals Magical damage to one enemy and turns the\nuser into a creature picked at random.",
     "message1": "%1 causes surreal transformation!",
     "message2": ""
   },
@@ -8910,7 +8922,7 @@
     "message2": ""
   },
   "1771": {
-    "name": "MindBlast",
+    "name": "PSI Mind Blast",
     "description": "Deals heavy Physical damage to one enemy and may\ninflict Unbalanced.",
     "message1": "%1 unleashes MindBlast!",
     "message2": ""
@@ -8922,7 +8934,7 @@
     "message2": ""
   },
   "1773": {
-    "name": "Hypnoshock",
+    "name": "PSI Hypnoshock",
     "description": "Deals Thunder damage to one enemy and may\ninflict Static.",
     "message1": "%1 unleashes Hypnoshock!",
     "message2": ""
@@ -9048,7 +9060,7 @@
     "message2": ""
   },
   "1794": {
-    "name": "ThrowingKnife",
+    "name": "Throwing Knife",
     "description": "Deals heavy Physical damage to one enemy and may\ninflict Unbalanced.",
     "message1": "%1 uses ThrowingKnife!",
     "message2": ""
@@ -9867,6 +9879,24 @@
     "name": "DismissSummon",
     "description": "Sends away whatever the party holds on the\nfield.",
     "message1": "%1 dismisses what they were holding!",
+    "message2": ""
+  },
+  "1931": {
+    "name": "Borrowed Face",
+    "description": "Wears a companion's name, class, skills and body\nuntil the fight ends.",
+    "message1": "%1 borrows a friend's face!",
+    "message2": ""
+  },
+  "1932": {
+    "name": "CrookedGrowth",
+    "description": "Merges two creature bodies at random into the\nuser's own. The new body is permanent.",
+    "message1": "%1 grows into something new!",
+    "message2": ""
+  },
+  "1933": {
+    "name": "Answer in Kind",
+    "description": "Throws the last move an enemy used straight back\nat the enemy that used it.",
+    "message1": "%1 answers in kind!",
     "message2": ""
   }
 }

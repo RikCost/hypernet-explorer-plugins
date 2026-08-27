@@ -262,8 +262,41 @@
       ? listed
       : (item && Number.isFinite(item.price) ? item.price : 0);
     if (!(base > 0)) return 0;
-    return Math.max(1, Math.floor(base * marketFactor(shopData, item) * haggleFactor()));
+    return Math.max(1, Math.floor(base * marketFactor(shopData, item) * haggleFactor()
+      * standingFactor() * notorietyFactor()));
   };
+
+  // What the counter thinks of the party, as two more multipliers on the same
+  // sticker. Both are read through the plugin that owns them so the rule lives
+  // in one place and a missing plugin is simply a factor of 1.
+  //
+  // Standing is the local faction's opinion, and it is the promise
+  // getReputationPerks has always printed (10/25/40 per cent off at 40/60/80)
+  // finally charged at the till. Notoriety is the party's criminal record: a
+  // face that is trouble to be seen serving costs more to serve.
+  const standingFactor = () =>
+    sanePositive(safe("standingFactor", () => {
+      const f = window.$gameFactions;
+      return (f && typeof f.standingPriceMultiplier === "function")
+        ? f.standingPriceMultiplier() : 1;
+    }, 1), 1);
+
+  const notorietyFactor = () =>
+    sanePositive(safe("notorietyFactor", () => {
+      const c = window.CrimeSystem;
+      return (c && typeof c.priceMultiplier === "function") ? c.priceMultiplier() : 1;
+    }, 1), 1);
+
+  // Whether this counter will serve the party at all, and why not. Null when it
+  // will. The record is asked first: being hunted closes a door that being
+  // merely disliked does not.
+  const serviceRefusal = () => safe("serviceRefusal", () => {
+    const c = window.CrimeSystem;
+    if (c && typeof c.refusesService === "function" && c.refusesService()) return "notorious";
+    const f = window.$gameFactions;
+    if (f && typeof f.standingRefusesService === "function" && f.standingRefusesService()) return "standing";
+    return null;
+  }, null);
 
   // Who the item suits: any class can equip any weapon now, so a member with no
   // proficiency in it does not count as compatible (see WeaponProficiency).
@@ -875,7 +908,9 @@
       }
       case Game_BattlerBase.TRAIT_DEBUFF_RATE:
         if (value === 1) return null;
-        return (T('Shop.debuff')) + this.getParameterName(dataId) + " x" + Math.floor(value * 100) + "%";
+        // Shop.debuff is the "+Debuff: " that pairs with "+Buff: " on an effect chip; a
+        // trait RATE reads plainly, like the elem and state rates around it.
+        return (T('Shop.debuffRate')) + this.getParameterName(dataId) + " x" + Math.floor(value * 100) + "%";
       case Game_BattlerBase.TRAIT_STATE_RATE:
         if (value === 1) return null;
         return (T('Shop.state')) + this.getStateName(dataId) + " x" + Math.floor(value * 100) + "%";
@@ -1459,11 +1494,11 @@
     container.innerHTML = `
         <div class="shop-spread" style="display: flex; width: 100%; height: 100%; box-sizing: border-box;">
             <div class="shop-left" style="flex: 3; padding: 10px 20px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                <div class="shop-page-head">
+                <div class="page-header-bar">
                     <div class="back-button focusable" id="shop-close-btn">
                         ${T('Shop.back')}
                     </div>
-                    <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${T('Shop.shop')}</h2>
+                    <h2 class="title">${T('Shop.shop')}</h2>
                 </div>
                 <div id="shop-funds" class="shop-funds">
                     ${T('Shop.availableFunds')} <span class="shop-funds-value">0.00 €</span>
@@ -1479,8 +1514,8 @@
             </div>
             
             <div class="shop-right" style="flex: 2; padding: 10px 20px 10px 30px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                <div class="shop-page-head">
-                    <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${T('Shop.description')}</h2>
+                <div class="page-header-bar">
+                    <h2 class="title">${T('Shop.description')}</h2>
                 </div>
                 <div id="detail-viewport" style="flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden;"></div>
             </div>
@@ -1710,7 +1745,7 @@
       const data = isBuyMode ? this.buyData() : this.sellData();
       let itemsHTML = "";
       if (data.length === 0) {
-        itemsHTML = `<div style="text-align:center; color:#8c7667; margin-top:40px; font-style: normal;">${esc(isBuyMode ? T('Shop.noProductsOnSale') : T('Shop.inventoryEmpty'))}</div>`;
+        itemsHTML = `<div style="text-align:center; color:var(--text-brown-medium); margin-top:40px; font-style: normal;">${esc(isBuyMode ? T('Shop.noProductsOnSale') : T('Shop.inventoryEmpty'))}</div>`;
       } else {
         const cart = this.shopCart(isBuyMode);
         const listFocused = isBuyMode || this._sellWindow.active;
@@ -1984,9 +2019,9 @@
               <div class="gauge-row">
                   <span style="font-weight:500; width:70px;">${T('Shop.calories')}</span>
                   <div class="gauge-bar-outer">
-                      <div class="gauge-bar-inner" style="width:${calPct}%; background:#d35400;"></div>
+                      <div class="gauge-bar-inner" style="width:${calPct}%; background:var(--accent-coral);"></div>
                   </div>
-                  <span style="font-weight:bold; width:60px; text-align:right; color:#d35400;">${calories} kcal</span>
+                  <span style="font-weight:bold; width:60px; text-align:right; color:var(--text-amber-hint);">${calories} kcal</span>
               </div>
             `;
           }
@@ -1996,9 +2031,9 @@
               <div class="gauge-row">
                   <span style="font-weight:500; width:70px;">${T('Shop.protein')}</span>
                   <div class="gauge-bar-outer">
-                      <div class="gauge-bar-inner" style="width:${protPct}%; background:#27ae60;"></div>
+                      <div class="gauge-bar-inner" style="width:${protPct}%; background:var(--text-cost-ok);"></div>
                   </div>
-                  <span style="font-weight:bold; width:60px; text-align:right; color:#27ae60;">${protein}g</span>
+                  <span style="font-weight:bold; width:60px; text-align:right; color:var(--text-cost-ok);">${protein}g</span>
               </div>
             `;
           }
@@ -2008,9 +2043,9 @@
               <div class="gauge-row">
                   <span style="font-weight:500; width:70px;">${T('Shop.fat')}</span>
                   <div class="gauge-bar-outer">
-                      <div class="gauge-bar-inner" style="width:${fatPct}%; background:#e67e22;"></div>
+                      <div class="gauge-bar-inner" style="width:${fatPct}%; background:var(--gauge-warn);"></div>
                   </div>
-                  <span style="font-weight:bold; width:60px; text-align:right; color:#e67e22;">${fat}g</span>
+                  <span style="font-weight:bold; width:60px; text-align:right; color:var(--text-gold-dark);">${fat}g</span>
               </div>
             `;
           }
@@ -2076,9 +2111,9 @@
               <div class="gauge-row">
                   <span style="font-weight:500; width:70px;">${esc(r.label)}</span>
                   <div class="gauge-bar-outer">
-                      <div class="gauge-bar-inner" style="width:${r.amount}%; background:#7B6A55;"></div>
+                      <div class="gauge-bar-inner" style="width:${r.amount}%; background:var(--text-caption-brown);"></div>
                   </div>
-                  <span style="font-weight:bold; width:60px; text-align:right; color:#7B6A55;">-${r.amount}%</span>
+                  <span style="font-weight:bold; width:60px; text-align:right; color:var(--text-caption-brown);">-${r.amount}%</span>
               </div>`).join("");
           needsSectionHTML += `
               <div class="gauges-section">
@@ -2227,7 +2262,7 @@
         }
       } else {
         detailViewport.innerHTML = `
-          <div class="detail-scroll" style="flex: 1; min-height: 0; justify-content:center; align-items:center; text-align:center; color:#8c7667; font-style: normal; display: flex; flex-direction: column;">
+          <div class="detail-scroll" style="flex: 1; min-height: 0; justify-content:center; align-items:center; text-align:center; color:var(--text-brown-medium); font-style: normal; display: flex; flex-direction: column;">
               <div style="font-size:40px; margin-bottom:12px; opacity:0.35;"></div>
               <span>${esc(T('Shop.hoverOrSelectAnItem'))}</span>
           </div>
@@ -2606,6 +2641,20 @@
   Scene_Shop.prototype.start = function () {
     _Scene_Shop_start.call(this);
     if (!this.isShopReady()) return;
+    // A counter open to the public can decline the public. Checked on the way
+    // in rather than at the till, so the party is turned away at the door the
+    // way they would be in life, and told which of the two reasons it is.
+    const refusal = serviceRefusal();
+    if (refusal) {
+      if (window.ParchmentToast) {
+        window.ParchmentToast.show(T('Shop.refused.' + refusal), {
+          title: T('Shop.refused.title'), duration: 240,
+        });
+      }
+      SoundManager.playBuzzer();
+      this.closeShop();
+      return;
+    }
     // The command window is the tab bar the overlay draws for itself, so it is
     // never given focus: the shop opens straight onto the buy list.
     this._commandWindow.deactivate();

@@ -410,9 +410,17 @@
         // Get high scores for a game
         getHighScores(gameId) {
             const key = `arcade_highscores_${gameId}`;
-            const saved = localStorage.getItem(key);
+            // A corrupt or half-written entry must not take the cabinet down with
+            // it: an unreadable table is simply no table, and the defaults stand.
+            let saved = null;
+            try { saved = localStorage.getItem(key); } catch (e) { saved = null; }
             if (saved) {
-                return JSON.parse(saved);
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {
+                    console.warn('[Arcade] unreadable high score table for ' + gameId);
+                }
             }
             if (defaultHighScores[gameId]) {
                 // Return a deep copy to prevent mutation of the default object

@@ -405,8 +405,11 @@
                 // Stop Strudel patterns
                 this.engine.patterns = {};
                 this._patternStrings = {};
-                this.buildCurrentGenre();
-                this.exportToStrudel();
+                // buildCurrentGenre and exportToStrudel are the names this had before the
+                // move from Strudel patterns to the classic sequencer, and neither exists any
+                // more. buildClassicSong does both jobs: it picks the generator for the genre
+                // and calls exportClassicSongToMidi itself.
+                this.buildClassicSong();
                 if (this.engine._initialized) {
                     this.engine.start();
                     this._isStarted = true;
@@ -467,7 +470,8 @@
             this.engine.stopAllNotes();
 
             console.log(`ProceduralMusicGenerator: Generating live patterns for "${this.currentGenre}"...`);
-            this.buildCurrentGenre();
+            // Same rename as above: buildClassicSong replaced buildCurrentGenre.
+            this.buildClassicSong();
         }
 
 

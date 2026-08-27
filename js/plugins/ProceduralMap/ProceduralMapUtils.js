@@ -131,6 +131,40 @@
     },
   };
 
+  // ===== RESUMABLE GENERATION =====
+  // --------------------------------------------------------------------------
+  // Building one 64x64 square costs 15 to 20 ms of solid work, which is a whole
+  // frame at 60 fps and then some. That was fine while a square was only ever
+  // built at a moment the screen was black anyway; the stitched window
+  // (WorldMapReturn's ProcStitch) builds the ground ahead of a walking party
+  // instead, and one 17 ms lump dropped on a frame the player is looking at is a
+  // visible hitch. Eight of them land in a row after every arrival, which is the
+  // flicker this exists to get rid of.
+  //
+  // So every heavy pass in the generator exists ONCE, as a generator function
+  // that yields at the points it can safely be paused at, and the plain function
+  // of the same name is a driver that runs it straight through. The synchronous
+  // path is therefore the very same code in the very same order, drawing on the
+  // same RNG stream in the same sequence: a square built across ten frames is
+  // tile for tile the square built in one, and test/test_procgen_slicing.js
+  // holds both to that.
+  //
+  // Nothing ever yields in the middle of a tile, so a budget is a target rather
+  // than a promise: a slice overruns by at most one chunk of one pass.
+  // --------------------------------------------------------------------------
+
+  // Map rows a sliced loop covers between yields. Eight rows of a 64-wide map is
+  // around half a millisecond in the heaviest pass there is: fine grained enough
+  // that a budget is never overshot by much, coarse enough that the generator
+  // machinery itself costs nothing measurable.
+  const STEP_ROWS = 8;
+
+  function runSteps(it) {
+    let r = it.next();
+    while (!r.done) r = it.next();
+    return r.value;
+  }
+
   // ===== LOGGING UTILITY =====
   function log(message) {
     if (DEBUG_MODE) {
@@ -1264,6 +1298,25 @@
     pathTiles,
     blockedMask
   ) {
+    return runSteps(generateFeatureNoiseSteps(
+      mapData, featureVariants, layer, width, height, seed, threshold, rng,
+      waterTiles, pathTiles, blockedMask
+    ));
+  }
+
+  function* generateFeatureNoiseSteps(
+    mapData,
+    featureVariants,
+    layer,
+    width,
+    height,
+    seed,
+    threshold,
+    rng,
+    waterTiles,
+    pathTiles,
+    blockedMask
+  ) {
     const scale = 0.05;
     const waterTileSet = waterTiles ? new Set(waterTiles) : null;
     const pathTileSet = pathTiles ? new Set(pathTiles) : null;
@@ -1308,6 +1361,7 @@
           }
         }
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
   }
 
@@ -1317,6 +1371,25 @@
    * IMPORTANT: Never overwrites Path, PathDesert, or PathIce tiles
    */
   function generateFeatureScattered(
+    mapData,
+    featureVariants,
+    layer,
+    width,
+    height,
+    seed,
+    density,
+    rng,
+    waterTiles,
+    pathTiles,
+    blockedMask
+  ) {
+    return runSteps(generateFeatureScatteredSteps(
+      mapData, featureVariants, layer, width, height, seed, density, rng,
+      waterTiles, pathTiles, blockedMask
+    ));
+  }
+
+  function* generateFeatureScatteredSteps(
     mapData,
     featureVariants,
     layer,
@@ -1371,6 +1444,7 @@
           }
         }
       }
+      if (y % STEP_ROWS === STEP_ROWS - 1) yield;
     }
   }
 
@@ -4208,6 +4282,12 @@
     getRandomFeatureVariant,
     placeMultiTileFeature,
     generateFeatureNoise,
+    // The sliced forms of the two feature passes, and the driver every plain
+    // pass in the generator is written over: see RESUMABLE GENERATION above.
+    generateFeatureNoiseSteps,
+    generateFeatureScatteredSteps,
+    STEP_ROWS,
+    runSteps,
     generateFeatureScattered,
     checkDiagonalMapBiomesFromCache,
     generateCaveWithDrunkenWalk,

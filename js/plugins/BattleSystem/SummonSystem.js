@@ -1654,9 +1654,9 @@ window.Game_SummonFollower = Game_SummonFollower;
 
         toast(T('Battle.summon.summoned', { name: active.name }), 'info');
         if (rollRes.nat20) {
-            toast(`🌟 [NAT 20] Perfect Ritual! ${active.name} gains 100% HYPER & Master Buffs!`, 'good');
+            toast(T('Battle.summon.perfectRitual', { name: active.name }), 'good');
         } else if (rollRes.success && intMod > 0) {
-            toast(`✨ [INT +${intMod}] Summon ritual empowered ${active.name} with combat buffs!`, 'info');
+            toast(T('Battle.summon.empowered', { mod: intMod, name: active.name }), 'info');
         }
         if (spec.kind && spec.kind.announce) {
             toast(T('Battle.summon.' + spec.kind.announce, { name: active.name }), 'warning');

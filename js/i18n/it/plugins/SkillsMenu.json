@@ -89,7 +89,15 @@
     "label": {
       "statReq": "Richiede",
       "statHeld": "Statistica base",
-      "damage": "Danno"
+      "damage": "Danno",
+      "range": "Gittata"
+    },
+    "range": {
+      "tiles": {
+        "one": "{count} casella",
+        "other": "{count} caselle"
+      },
+      "unlimited": "Ovunque"
     }
   },
   "loadout": {
@@ -121,5 +129,6 @@
     "Natural": "Naturale",
     "Thermodynamics": "Termodinamico",
     "Ritual": "Rituale"
-  }
+  },
+  "searchPlaceholder": "Cerca abilità…"
 }

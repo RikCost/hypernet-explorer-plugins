@@ -127,10 +127,12 @@
  * school must be known before any of them opens, and then any one of them may
  * be taken first.
  *
- * NO TWO SCHOOLS ARE THE SAME FIGURE. Each one is authored a shape of its own
- * in SKY_SCHOOLS: Pyromancy is a solar flare, Cryomancy a snowflake, Astral
- * Magic a barred spiral, Necromancy a stair winding down, Chronomancy a great
- * dial, Economy a pair of scales. A sphere burns the colour of its element
+ * NOTHING ABOUT A SCHOOL'S FIGURE IS AUTHORED. Every school is laid out by the
+ * same rule: each grove is packed as a tidy little tree, and the groves are set
+ * side by side with clear sky between them, so what a school looks like follows
+ * from what it teaches rather than from a shape written down for it. What IS
+ * authored is its colour: SKY_SCHOOLS gives each school a hue, a school with no
+ * entry takes one off its own name, and a sphere burns the colour of its element
  * where it has one and of its school where it does not, so one school reads as
  * one family of colours. A skill the pupil knows burns bright, one they could
  * buy glows cooler and breathes, one they cannot reach yet is a cinder that
@@ -2808,6 +2810,7 @@
 
     Scene_SkillEncyclopedia.prototype.terminate = function () {
         Scene_MenuBase.prototype.terminate.call(this);
+        if (window.CCNav) window.CCNav.detach(this);
         window.CharSwitcher.removeTabKey(this);
         AnimPreview.dispose();
         // The sky owns a WebGL context of its own; it has to go back before the
@@ -2882,6 +2885,13 @@
         `;
 
         document.body.appendChild(this._dndContainer);
+
+        // Each view of the encyclopedia walks its own cards, but the controls
+        // around them - the atlas pager and its zoom, the Magic Systems shelf
+        // and its nodes, the rename/delete buttons a fused spell carries - are
+        // not cards, and the view cursors never reach them. The shared focus
+        // ring does. See CharacterCreationNav.js.
+        if (window.CCNav) window.CCNav.attach(this, this._dndContainer);
 
         // Wheel scroll on category/skills list regardless of focus. On the sky
         // the wheel brings the camera in and out instead.
@@ -4315,9 +4325,9 @@
                 const skillsTitle = T('SkillMaster.skills');
 
                 leftPageHTML = `
-                    <div class="page-header-bar" style="width: 100%">
+                    <div class="page-header-bar">
                       <div class="back-button focusable" onclick="SceneManager._scene.categoryBack()">${backBtnText}</div>
-                      <h2 class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 2.542rem">${skillsTitle}</h2>
+                      <h2 class="cc-header-gothic" style="text-align:center; font-size:2.542rem">${skillsTitle}</h2>
                     </div>
                     <div id="category-scroll-box-left" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${CATEGORY_PAGE_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
                         ${categoriesListHTML}
@@ -4333,7 +4343,7 @@
                 // is rewritten in place when the pager turns to another.
                 const heading = onAtlas ? this.focusedCategory() : this._selectedCategory;
                 leftPageHTML = `
-                    <div class="page-header-bar" style="width: 100%">
+                    <div class="page-header-bar">
                       <div class="back-button focusable" onclick="SceneManager._scene.goBack()">${returnBtnText}</div>
                       <h2 id="atlas-school-name" class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 2.134rem">${getCategoryDisplayName(heading)}</h2>
                     </div>
@@ -4450,8 +4460,8 @@
                 const magicSystemsBtn = `
                     <div class="magic-systems-btn focusable" onclick="SceneManager._scene.openMagicSystems()" style="position:relative; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px; padding:10px 14px; font-family:'Lora',serif; font-size:1.292rem; background:var(--bg-card-translucent-5); color:var(--text-secondary-active); border-radius:6px; font-weight:bold; cursor:pointer; border:1.5px solid var(--text-secondary-active); text-transform:uppercase; letter-spacing:0.5px; user-select:none">${T('SkillMaster.magicSystem.tabLabel')}</div>`;
                 rightPageHTML = `
-                    <div style="position: relative; display:flex; align-items:center; justify-content:center; border-bottom: 2px dashed var(--border-success); padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
-                      <h2 class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 2.542rem">${magicTitle}</h2>
+                    <div class="page-header-bar">
+                      <h2 class="cc-header-gothic" style="text-align:center; font-size:2.542rem">${magicTitle}</h2>
                     </div>
                     <div id="category-scroll-box-right" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${CATEGORY_PAGE_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
                         ${magicListHTML}
@@ -4530,7 +4540,7 @@
         if (!leftPageBox || !rightPageBox) return;
 
         leftPageBox.innerHTML = `
-            <div class="page-header-bar" style="width:100%">
+            <div class="page-header-bar">
               <div class="back-button focusable" onclick="SceneManager._scene.closeMagicSystems()">${T('SkillMaster.back')}</div>
               <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; text-align:center; font-size:2.542rem">${T('SkillMaster.magicSystem.title')}</h2>
             </div>
@@ -5019,8 +5029,19 @@
     Scene_SkillEncyclopedia.prototype.updateSpellPreviewInput = function () {
         if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
             this.closeSpellPreview();
-        } else if (Input.isTriggered('ok')) {
+            return;
+        }
+        if (Input.isTriggered('ok')) {
             this.replaySpellPreview();
+            return;
+        }
+        // Replay and Close are the whole page: there are no cards here to walk,
+        // so any direction opens the ring on them.
+        for (const dir of ['down', 'right', 'up', 'left']) {
+            if (Input.isTriggered(dir) || Input.isRepeated(dir)) {
+                this._ccEnterNav(dir);
+                break;
+            }
         }
     };
 
@@ -5331,9 +5352,11 @@
 
             window.skipLocalization = true;
             if (rollRes.nat20) {
-                $gameMessage.add(`★ NAT 20 CRITICAL SUCCESS! ★\n${T('SkillMaster.fusedResult', {
-                    name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
-                })}\nEmpowered with -20% MP cost and +25% potency!`);
+                $gameMessage.add(T('SkillMaster.fusionCritical', {
+                    result: T('SkillMaster.fusedResult', {
+                        name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
+                    }),
+                }));
             } else {
                 $gameMessage.add(T('SkillMaster.fusedResult', {
                     name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
@@ -5347,7 +5370,9 @@
             SoundManager.playBuzzer();
 
             window.skipLocalization = true;
-            $gameMessage.add(`☠ ARCANE FUSION FAILED (DC ${dc}) ☠\nThe spell fusion destabilized in a violent magical backlash!\nThe component spells (${components.map(c => c.name).join(' & ')}) were destroyed!`);
+            $gameMessage.add(T('SkillMaster.fusionFailed', {
+                dc: dc, components: components.map(c => c.name).join(' & '),
+            }));
             window.skipLocalization = false;
         }
 
@@ -5473,7 +5498,7 @@
         const backBtn = T('SkillMaster.back');
         const title = T('SkillMaster.fuseSpells3');
         leftBox.innerHTML = `
-            <div class="page-header-bar" style="margin-bottom: 14px; width: 100%">
+            <div class="page-header-bar" style="margin-bottom:14px">
               <div class="back-button focusable" onclick="SceneManager._scene.closeSpellEditor()">${backBtn}</div>
               <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; text-align:center; font-size:2.344rem">${title}</h2>
             </div>
@@ -5507,8 +5532,8 @@
                 ? (T('SkillMaster.chooseDominantSpell'))
                 : (T('SkillMaster.chooseRecessive'));
             rightHTML = `
-                <div style="display:flex; align-items:center; justify-content:center; border-bottom:2px dashed var(--border-success); padding-bottom:8px; margin-bottom:16px; min-height:40px">
-                  <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; text-align:center; font-size:2.064rem">${pickTitle}</h2>
+                <div class="page-header-bar">
+                  <h2 class="cc-header-gothic" style="text-align:center; font-size:2.064rem">${pickTitle}</h2>
                 </div>
                 <div id="candidates-scroll-box" class="skill-scroll-box" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-right:6px">
                     ${candHTML}
@@ -5532,8 +5557,8 @@
             const backLbl = T('SkillMaster.cancel');
             rightHTML = `
                 <div style="display:flex; flex-direction:column; height:100%; box-sizing:border-box">
-                    <div style="display:flex; align-items:center; justify-content:center; border-bottom:2px dashed var(--border-success); padding-bottom:6px; margin-bottom:10px; min-height:34px">
-                      <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; text-align:center; font-size:1.854rem">${pickTitle}</h2>
+                    <div class="page-header-bar page-header-bar--compact">
+                      <h2 class="cc-header-gothic" style="text-align:center; font-size:1.854rem">${pickTitle}</h2>
                     </div>
                     <div style="position:relative; width:100%; height:210px; border-radius:8px; overflow:hidden; border:1.5px solid var(--border-secondary-hover-translucent-15); background:radial-gradient(circle at 50% 40%, var(--bg-tertiary-focus-translucent-45) 0%, var(--shadow-heavy) 100%); perspective:600px">
                         <div style="position:absolute; left:50%; bottom:6px; transform:translateX(-50%) rotateX(8deg); width:150px; height:150px; background:url('img/faces/${actor.faceName()}.png') -${faceX}px -${faceY}px no-repeat; image-rendering:pixelated; filter:drop-shadow(0 6px 10px var(--shadow-primary-hover-translucent-5))"></div>
@@ -5657,6 +5682,10 @@
             this._editorFocus = (this._editorFocus + 1) % maxFocus;
         } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
             this._editorFocus = (this._editorFocus - 1 + maxFocus) % maxFocus;
+        } else if (Input.isTriggered('right') || Input.isRepeated('right')) {
+            // The slots run down the left page; sideways is the way onto the
+            // page facing them and the buttons on it.
+            if (this._ccEnterNav('right')) return;
         }
 
         if (this._editorFocus !== prev) {
@@ -5680,8 +5709,39 @@
         }
     };
 
+    // The ring hands the page back when it walks off its own top or left edge;
+    // the page redraws so its own cursor is visible again.
+    Scene_SkillEncyclopedia.prototype.onNavLeave = function () {
+        this.refreshUISkillDOM();
+    };
+
+    // Step off this view's cards and onto the controls around them. Returns
+    // true when the ring took over.
+    Scene_SkillEncyclopedia.prototype._ccEnterNav = function (dir) {
+        return !!window.CCNav && window.CCNav.tryEnterFromBoard(dir);
+    };
+
+    // CCScroll hook: the pane L2/R2 scroll is the one the wheel scrolls, so a
+    // pad reads the long text of the encyclopedia exactly as a mouse does -
+    // the skill list or the detail page the cursor is on, else whichever of
+    // the two category columns is open.
+    Scene_SkillEncyclopedia.prototype.ccScrollTarget = function () {
+        return document.getElementById('skills-scroll-box') ||
+            document.getElementById('category-scroll-box-right') ||
+            document.getElementById('category-scroll-box-left') ||
+            (this._dndContainer && this._dndContainer.querySelector('.skill-scroll-box'));
+    };
+
     Scene_SkillEncyclopedia.prototype.update = function () {
         Scene_MenuBase.prototype.update.call(this);
+
+        // The ring owns the controls around the cards whenever it is up, and is
+        // read before any view's own cursor so one press never moves two.
+        if (window.CCNav && window.CCNav.update()) return;
+
+        // L2/R2 scroll the page the wheel would, so nothing on a pad has to be
+        // read a card at a time. See CCScroll in CharacterCreationShared.js.
+        if (window.CCScroll) window.CCScroll.update(this._dndContainer);
 
         const useItalian = ConfigManager.language === 'it';
 
@@ -5765,6 +5825,10 @@
             } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                 if (idx - cols >= 0) {
                     idx -= cols;
+                } else if (this._ccEnterNav('up')) {
+                    // Off the top row and onto what sits above the grids: the
+                    // pupil tabs, the Magic Systems shelf, the way back.
+                    return;
                 }
             }
 
@@ -5809,8 +5873,15 @@
                 } else if (Input.isTriggered('left') || Input.isRepeated('left')) {
                     moved = this.moveGraphFocus(-1, 0);
                     if (!moved && this.pageAtlasSchool(-1)) return;
-                } else if (Input.isTriggered('down') || Input.isRepeated('down')) moved = this.moveGraphFocus(0, 1);
-                else if (Input.isTriggered('up') || Input.isRepeated('up')) moved = this.moveGraphFocus(0, -1);
+                } else if (Input.isTriggered('down') || Input.isRepeated('down')) {
+                    moved = this.moveGraphFocus(0, 1);
+                    // Off the bottom of the circle and onto the pager and the
+                    // zoom chips around it.
+                    if (!moved && this._ccEnterNav('down')) return;
+                } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
+                    moved = this.moveGraphFocus(0, -1);
+                    if (!moved && this._ccEnterNav('up')) return;
+                }
                 if (moved) {
                     SoundManager.playCursor();
                     this.refreshUISkillDOM();
@@ -5845,12 +5916,18 @@
             } else if (Input.isTriggered('down') || Input.isRepeated('down')) {
                 if (this._selectedSkillIndex + cols < max) {
                     this._selectedSkillIndex += cols;
+                } else if (this._selectedSkillIndex === max - 1 && this._ccEnterNav('down')) {
+                    // Already on the last card: down steps onto the controls
+                    // around the board rather than doing nothing.
+                    return;
                 } else {
                     this._selectedSkillIndex = max - 1;
                 }
             } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                 if (this._selectedSkillIndex - cols >= 0) {
                     this._selectedSkillIndex -= cols;
+                } else if (this._ccEnterNav('up')) {
+                    return;
                 }
             }
 
@@ -5868,6 +5945,10 @@
 
             if (Input.isTriggered('down') || Input.isRepeated('down') ||
                 Input.isTriggered('right') || Input.isRepeated('right')) {
+                // Past the last action is where a fused spell keeps its rename
+                // and delete buttons, which are not actions and never were in
+                // this cycle. The ring picks them up from there.
+                if (this._selectedActionIndex === maxActions - 1 && this._ccEnterNav('down')) return;
                 this._selectedActionIndex = (this._selectedActionIndex + 1) % maxActions;
                 SoundManager.playCursor();
                 this.refreshUISkillDOM();
@@ -5896,8 +5977,22 @@
         } else if (this._viewMode === 'magicSystems') {
             if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
                 this.closeMagicSystems();
+                return;
+            }
+            // The shelf of systems has no card cursor of its own: every node on
+            // it, and the Back button under it, belong to the ring, so any
+            // direction opens it.
+            for (const dir of ['down', 'right', 'up', 'left']) {
+                if (Input.isTriggered(dir) || Input.isRepeated(dir)) {
+                    this._ccEnterNav(dir);
+                    break;
+                }
             }
         }
+
+        // The page rebuilds its markup underneath the ring, so the ring is
+        // stamped back on afterwards rather than before.
+        if (window.CCNav) window.CCNav.paint();
     };
 
     //=============================================================================

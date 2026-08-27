@@ -2467,7 +2467,7 @@
     "varlenian": false,
     "npc": true,
     "animal": false,
-    "creature": false,
+    "creature": true,
     "zombie": false,
     "aliens": false,
     "magical": true,
@@ -2484,7 +2484,9 @@
     "color": "purple",
     "classes": [
       1,
-      62
+      62,
+      64,
+      65
     ],
     "markovDB": "zombie_alien",
     "source": "Dungeon_Slimes1#2"

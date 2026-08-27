@@ -5981,6 +5981,13 @@ var WeaponSystemProcedural = {
         }
       }
 
+      // The elemental tint a <weaponShimmer> state puts on what the actor is
+      // holding. This override replaces Sprite_3DWeapon#update outright, and
+      // every weapon in the game that has no <3DModel:> GLB tag comes through
+      // here, so leaving it out of the override is what had the shimmer never
+      // appear on any of them.
+      if (this._updateShimmer) this._updateShimmer();
+
       // Scene render is batched once per frame by the Spriteset_Battle
       // iterator (WeaponSystem.js) rather than once per weapon instance.
     };

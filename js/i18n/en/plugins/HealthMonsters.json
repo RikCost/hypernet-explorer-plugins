@@ -45,6 +45,20 @@
     "regenerates": "Regenerates",
     "destroyed": "Destroyed"
   },
+  "aim": {
+    "menu": {
+      "partRow": "{part}  {percent}%  hit {chance}%",
+      "partRowCurrent": "{part}  {percent}%  hit {chance}%  (aimed)",
+      "more": "More... ({count})",
+      "clear": "Aim nowhere",
+      "back": "Back",
+      "noParts": "Nothing left to aim at"
+    },
+    "log": {
+      "missed": "{actor} aims for {enemy}'s {part} and finds nothing but air.",
+      "moved": "{actor} shifts aim to {enemy}'s {part}."
+    }
+  },
   "wrestle": {
     "menu": {
       "myLimb": "With: {part} ({percent}%)",

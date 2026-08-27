@@ -82,6 +82,21 @@
 (() => {
   "use strict";
 
+  // ---- Where the yield goes ------------------------------------------------
+  // Straight to the party, unless they own a shop that deals in this sort of
+  // thing, in which case the crate goes to that shop's warehouse - which is
+  // what its production recipes eat - and the party is told. ShopManagement
+  // owns the rule; with that plugin off this is a plain gainItem.
+  function deliverFarmProduce(item, amount) {
+    const SM = window.ShopManagement;
+    if (SM && typeof SM.deliverProduce === 'function') {
+      return SM.deliverProduce(item, amount);
+    }
+    if (window.$gameParty && item) $gameParty.gainItem(item, amount);
+    return { toShop: 0, toParty: amount, shopId: null };
+  }
+
+
   const pluginName = "AnimalGrowthSystem";
 
   // ============================================================
@@ -620,7 +635,7 @@
       const item = $dataItems[r.itemId];
       if (item) {
         r.qty = Math.max(1, Math.round(r.qty * skill));
-        $gameParty.gainItem(item, r.qty);
+        deliverFarmProduce(item, r.qty);
       }
     }
     if (items.length && window.SpecializationXP) {

@@ -1180,12 +1180,28 @@
             }
         }
 
+        // saveBgs RETURNS the ambience the party walked in with rather than
+        // storing it, so it is held here and handed back on the way out.
         _startAmbience() {
             try {
-                AudioManager.saveBgs();
+                this._savedBgs = AudioManager.saveBgs();
                 this._bgsSaved = true;
                 AudioManager.playBgs({ name: 'grass-wind', volume: 45, pitch: 100, pan: 0 });
             } catch (e) { this._bgsSaved = false; }
+        }
+
+        // The ambience the party walked in with, or silence if they walked in
+        // with none. replayBgs takes that saved object: called bare it throws,
+        // and the loop keeps rolling under whatever menu comes next.
+        _stopAmbience() {
+            if (!this._bgsSaved) return;
+            this._bgsSaved = false;
+            try {
+                const saved = this._savedBgs;
+                if (saved && saved.name) AudioManager.replayBgs(saved);
+                else AudioManager.stopBgs();
+            } catch (e) { /* nothing to go back to */ }
+            this._savedBgs = null;
         }
 
         //--- flow -------------------------------------------------------------
@@ -1633,10 +1649,7 @@
             this._restoreKeys();
             this._unbindMouse();
             RangeWeapon.end();
-            if (this._bgsSaved) {
-                try { AudioManager.replayBgs(); } catch (e) { /* nothing to go back to */ }
-                this._bgsSaved = false;
-            }
+            this._stopAmbience();
             if (this._hudDom) {
                 try { this._hudDom.destroy(); } catch (e) { /* already gone */ }
                 this._hudDom = null;

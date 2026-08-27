@@ -269,10 +269,10 @@ const GameOptions = {
             // Language leads the page: it is the setting that decides how every
             // other one reads, so it must stay first.
             symbols: [
-                // enemySpawnModeV2/V3 are migration markers on the config, not
-                // options, so they are not listed here.
+                // enemySpawnModeV2/V3/V4 are migration markers on the config,
+                // not options, so they are not listed here.
                 'language', 'fowEnabled', 'enemySpawnMode', 'enemyDifficulty',
-                'mapBattleMode', 'cpuPartyMembers', 'fogOfWar', 'commandRemember',
+                'cpuPartyMembers', 'fogOfWar', 'commandRemember',
                 'smoothBattleLog'
             ]
         },
@@ -304,7 +304,7 @@ const GameOptions = {
             nameKey: 'experimental',
             categories: ['experimental'],
             symbols: [
-                'cardCombat', 'asciiModeEnabled', 'asciiHudEnabled'
+                'cardCombat', 'mapBattleMode', 'asciiModeEnabled', 'asciiHudEnabled'
             ]
         }
     ]
@@ -518,13 +518,13 @@ window.GameOptions = GameOptions;
     const ENEMY_DIFFICULTY_SCALE = 2;
 
     // Enemy spawn modes, in the order the option cycles them and the order
-    // GameOptions.enemySpawn names them: 0 Distance from spawn, 1 Party Level,
-    // 2 Biome, 3 Chaos. Distance from spawn leads the list and is the default -
-    // it is the mode the world is written for, where how far a place lies from
-    // where the party started decides what lives there
+    // GameOptions.enemySpawn names them: 0 Biome, 1 Party Level, 2 Realistic
+    // (distance from spawn), 3 Chaos. Biome leads the list and is the default:
+    // the world as it stands, where the place decides what lives there and
+    // nothing is arranged around the party
     // (BattleSystemEnhancedEncounters.js, section 4b).
     const ENEMY_SPAWN_MODE_COUNT = 4;
-    const ENEMY_SPAWN_MODE_DEFAULT = 1; // Party Level
+    const ENEMY_SPAWN_MODE_DEFAULT = 0; // Biome
 
     // Slider value -> signed stat percentage shown to the player.
     const enemyDifficultyPercent = function (value) {
@@ -645,6 +645,9 @@ window.GameOptions = GameOptions;
         //   default leads the list, and Biome was inserted ahead of Chaos. So a
         //   config from before the swap has its 0 and 1 exchanged and its
         //   Chaos moved up from 2 to 3.
+        // V4 - Biome became the default and moved to the head of the list,
+        //   trading places with Distance from spawn (now named Realistic),
+        //   which fell to 2. Party Level and Chaos did not move.
         const spawnModes = ENEMY_SPAWN_MODE_COUNT;
         const OLD_DISTANCE_INDEX = 1; // index Distance from spawn held pre-V3
         let spawnMode = config.enemySpawnMode !== undefined
@@ -658,8 +661,13 @@ window.GameOptions = GameOptions;
             else if (spawnMode === 1) spawnMode = 0; // Distance from spawn
             else if (spawnMode === 2) spawnMode = 3; // Chaos, now behind Biome
         }
+        if (!config.enemySpawnModeV4 && config.enemySpawnMode !== undefined) {
+            if (spawnMode === 0) spawnMode = 2;      // Distance from spawn -> Realistic
+            else if (spawnMode === 2) spawnMode = 0; // Biome, now the default
+        }
         this.enemySpawnModeV2 = true;
         this.enemySpawnModeV3 = true;
+        this.enemySpawnModeV4 = true;
         this.enemySpawnMode = (spawnMode >= 0 && spawnMode < spawnModes)
             ? spawnMode : ENEMY_SPAWN_MODE_DEFAULT;
         // Enemy difficulty slider: 0..100 with 50 = untouched stats. Anything
@@ -725,6 +733,7 @@ window.GameOptions = GameOptions;
         config.enemySpawnMode = this.enemySpawnMode;
         config.enemySpawnModeV2 = true;
         config.enemySpawnModeV3 = true;
+        config.enemySpawnModeV4 = true;
         config.enemyDifficulty = this.enemyDifficulty;
         config.retroTune = RETRO_TUNE;
         config.retroEnabled = this.retroEnabled;
@@ -1119,19 +1128,17 @@ window.GameOptions = GameOptions;
         autoIdle:        { on: 'AutoIdleON',        off: 'AutoIdleOFF' },
         commandRemember: { on: 'CommandRememberON', off: 'CommandRememberOFF' },
         autosaveEnabled: { on: 'AutoSaveON',        off: 'AutoSaveOFF' },
-        // One plate per spawn mode, indexed by the stored value (0 Distance,
-        // 1 Party Level, 2 Biome, 3 Chaos). Any of these that is still a stub
-        // simply shows nothing and leaves the written blurb to explain the
+        // One plate per spawn mode, indexed by the stored value (0 Biome,
+        // 1 Party Level, 2 Realistic, 3 Chaos). Any of these that is still a
+        // stub simply shows nothing and leaves the written blurb to explain the
         // mode, which is how the option worked before it had art at all.
-        enemySpawnMode:  { states: ['EnemySpawnDistance', 'EnemySpawnPartyLevel',
-                                    'EnemySpawnBiome', 'EnemySpawnChaos'] },
+        enemySpawnMode:  { states: ['EnemySpawnBiome', 'EnemySpawnPartyLevel',
+                                    'EnemySpawnDistance', 'EnemySpawnChaos'] },
         enemyDifficulty: { img: 'EnemyDifficulty' },
         combatMode:      { on: 'CombatModeON',      off: 'CombatModeOFF' },
         autosaveInterval: { img: 'SaveInterval' },
         battleLogBgOpacity: { img: 'BattleLogOpacity' },
         language:        { img: 'Language' }, // i18n-ignore: icon filename
-        // Tactical map battle (BattleSystem/MapBattleMode.js).
-        mapBattleMode:   { on: 'MapBattleON',       off: 'MapBattleOFF' },
         cpuPartyMembers: { on: 'CpuPartyON',        off: 'CpuPartyOFF' },
         // Video
         // Indexed by the mode value itself, and mode 0 (the dead value that
@@ -1161,6 +1168,8 @@ window.GameOptions = GameOptions;
         asciiModeEnabled: { states: ['AsciiModeOFF', 'AsciiModeON', 'AsciiHUDON'] },
         asciiHudEnabled: { on: 'AsciiHUDON',        off: 'AsciiHUDOFF' },
         cardCombat:      { on: 'CardCombatON',      off: 'CardCombatOFF' },
+        // Tactical map battle (BattleSystem/MapBattleMode.js).
+        mapBattleMode:   { on: 'MapBattleON',       off: 'MapBattleOFF' },
         // 3D
         battler3d:       { on: 'Battler3DON',       off: 'Battler3DOFF' },
         enemyBattlerMode: { on: 'EnemyBattlerON',   off: 'EnemyBattlerOFF' },
@@ -1898,17 +1907,16 @@ window.GameOptions = GameOptions;
         },
         'experimental', 'boolean');
 
-    // Map Battle replaces the standard battle scene, so it belongs with the rest
-    // of the combat settings on the Gameplay page (card combat, which is still
-    // experimental, stays where it is). Off by default; it is also offered up
-    // front as a combat mode during character creation.
+    // Map Battle replaces the standard battle scene the same way card combat
+    // does, so it sits next to it on the Experimental page. Off by default; it
+    // is also offered up front as a combat mode during character creation.
     GameOptions.registerOption('mapBattleMode', T('GameOptions.label.mapBattle'),
         () => ConfigManager.mapBattleMode === true,
         (value) => {
             ConfigManager.mapBattleMode = !!value;
             if (value) ConfigManager.cardCombat = false;
         },
-        'gameplay', 'boolean');
+        'experimental', 'boolean');
 
     //=========================================================================
     // Retro shader options (the low-poly/low-res 3D shader, PSXShader.js)
@@ -2019,7 +2027,7 @@ window.GameOptions = GameOptions;
         }
     );
 
-    // Enemy Spawn Mode select (0 Balanced, 1 Distance from spawn default, 2 Chaos).
+    // Enemy Spawn Mode select (0 Biome default, 1 Party Level, 2 Realistic, 3 Chaos).
     // Consumed by BattleSystemEnhancedEncounters.js via BSE.Helpers.getSpawnMode().
     const enemySpawnNames = () => T.list('GameOptions.enemySpawn');
     GameOptions.registerOption('enemySpawnMode', T('GameOptions.label.enemySpawn'),

@@ -525,6 +525,51 @@
         return _ownVersion;
     }
 
+    // The whole changelog, section by section, newest first. The title screen's
+    // news panel is the file read out loud: every section is a version header
+    // followed by its entries, so it is parsed here rather than there, where the
+    // file is already opened and its version header already recognised.
+    //
+    // An entry stands on one line ("- something happened"); a line under it that
+    // is neither blank, nor another entry, nor a version header is a wrapped
+    // continuation of the entry above and is joined back onto it. Anything
+    // written above the first version header belongs to no section and is
+    // dropped. A build shipped without a changelog answers with an empty list.
+    //
+    // A section long enough to be read in one sitting is written in groups, and
+    // a group is headed by a line under a hash ("# the 3d world"). A heading is
+    // handed back in the entry list where it stands, as { heading }, so a reader
+    // walking the list keeps the order the file writes and can tell the two
+    // apart; a reader that only wants the text can drop them.
+    let _sections; // undefined until read
+    function changelogSections() {
+        if (_sections !== undefined) return _sections;
+        _sections = [];
+        const text = readChangelogText();
+        if (!text) return _sections;
+        let current = null;
+        for (const raw of text.split(/\r?\n/)) {
+            const line = String(raw).trim();
+            if (!line) continue;
+            const header = line.match(VERSION_LINE);
+            if (header) {
+                current = { version: header[1], entries: [] };
+                _sections.push(current);
+                continue;
+            }
+            if (!current) continue; // prose written above the first header
+            const group = line.match(/^#+\s+(.*)$/);
+            if (group) { current.entries.push({ heading: group[1].trim() }); continue; }
+            const entry = line.match(/^[-*]\s+(.*)$/);
+            if (entry) current.entries.push(entry[1].trim());
+            else if (typeof current.entries[current.entries.length - 1] === 'string') {
+                const last = current.entries.length - 1;
+                current.entries[last] += ' ' + line;
+            }
+        }
+        return _sections;
+    }
+
     // A repository path is only accepted when it stays inside the game folder.
     function isSafePath(p) {
         if (!p || typeof p !== 'string') return false;
@@ -911,6 +956,10 @@
         // The version this copy calls itself, read off the newest section of
         // CHANGELOG.txt, or null when the build ships no changelog.
         gameVersion: changelogVersion,
+
+        // Every version section of the shipped changelog, newest first, as
+        // { version, entries }. What the title screen's news panel reads.
+        changelogSections: changelogSections,
 
         // Both passes at once, which is all the title screen wants.
         //

@@ -300,7 +300,15 @@
                 id: 'bestiary',
                 placeholder: T('Bestiary.searchPlaceholder'),
                 sorts: ['name'],
-                onChange: () => this.onBestiaryFilterChanged()
+                // Typing in the strip re-applies the filter and redraws, the same way every
+                // other MenuSearchBar page does. This used to call a method that was never
+                // written, so the first keystroke threw.
+                onChange: () => {
+                    this._selectedIndex = 0;
+                    this.buildUIBestiaryData();
+                    this.refreshUIBestiary();
+                    if (this._bestiaryBar) this._bestiaryBar.restoreFocus();
+                }
             }) : null;
 
             this.buildUIBestiaryData();
@@ -598,24 +606,24 @@
                 container.innerHTML = `
                     <div class="book-spread" id="bestiary-layout">
                         <div class="left-page">
-                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
+                            <div class="page-header-bar">
                               <div class="back-button focusable">
                                 ${T('Bestiary.back')}
                               </div>
 
-                              <h2 class="title" style="border: none; margin: 0; padding: 0">${T('Bestiary.bestiary')}</h2>
+                              <h2 class="title">${T('Bestiary.bestiary')}</h2>
                             </div>
                             <div id="bestiary-search-slot"></div>
-                            <div id="bestiary-page-tabs" style="display:flex; gap:8px; justify-content:center; margin-bottom:12px">
-                              <div class="bestiary-page-tab focusable" data-page="0" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold">${T('Bestiary.earth')}</div>
-                              <div class="bestiary-page-tab focusable" data-page="1" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold">${T('Bestiary.petrodemons')}</div>
-                              <div class="bestiary-page-tab focusable" data-page="2" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold">${T('Bestiary.aliens')}</div>
+                            <div id="bestiary-page-tabs" class="backpack-tabs-row">
+                              <div class="bestiary-page-tab backpack-tab focusable" data-page="0">${T('Bestiary.earth')}</div>
+                              <div class="bestiary-page-tab backpack-tab focusable" data-page="1">${T('Bestiary.petrodemons')}</div>
+                              <div class="bestiary-page-tab backpack-tab focusable" data-page="2">${T('Bestiary.aliens')}</div>
                             </div>
                             <div class="list-viewport" id="bestiary-list-viewport"></div>
                         </div>
 
                         <div class="right-page">
-                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%"></div>
+                            <div class="page-header-bar"></div>
                             <div id="bestiary-portfolio-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden"></div>
                         </div>
                     </div>
@@ -661,8 +669,7 @@
             // Reflect the active page tab styling every refresh.
             document.querySelectorAll("#bestiary-page-tabs .bestiary-page-tab").forEach(tabEl => {
                 const active = parseInt(tabEl.getAttribute("data-page"), 10) === this._pageTab;
-                tabEl.style.background = active ? "#5e2f17" : "transparent";
-                tabEl.style.color = active ? "#f0e0c0" : "#5e2f17";
+                tabEl.classList.toggle("active", active);
             });
 
             // 2. The left pockets, windowed: a codex with every creature ever
@@ -783,7 +790,7 @@
                             const formattedRate = obj.rate + "x";
                             affinitiesGridHTML += `
                                 <div class="affinity-row">
-                                    <span style="font-weight:bold; color:#8c7667">${obj.name}</span>
+                                    <span style="font-weight:bold; color:var(--text-brown-medium)">${obj.name}</span>
                                     <span class="affinity-val ${valClass}">${formattedRate}</span>
                                 </div>
                             `;
@@ -817,7 +824,7 @@
                             const label = can3D
                                 ? (T('Bestiary.3dModel'))
                                 : (T('Bestiary.spritePortrait'));
-                            toggleHTML = `<button id="bestiary-3d-toggle" style="position:absolute; top:8px; right:8px; z-index:5; cursor:pointer; padding:4px 10px; font-family:inherit; font-size:15px; font-weight:bold; color:#5e2f17; background:rgba(244,232,208,0.92); border:1.5px solid #5e2f17; border-radius:4px"><span style="margin-right:4px">&#x21c4;</span>${label}</button>`;
+                            toggleHTML = `<button id="bestiary-3d-toggle" class="bestiary-portrait-btn" style="position:absolute; top:8px; right:8px; z-index:5"><span style="margin-right:4px">&#x21c4;</span>${label}</button>`;
                         }
 
                         const portraitInner = can3D
@@ -832,7 +839,7 @@
                         // (the world seed until the player rolls a new one).
                         const seedHTML = can3D
                             ? `<div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:6px">
-                                   <button id="bestiary-seed-reroll" style="cursor:pointer; padding:4px 10px; font-family:inherit; font-size:15px; font-weight:bold; color:#5e2f17; background:rgba(244,232,208,0.92); border:1.5px solid #5e2f17; border-radius:4px"><span style="margin-right:4px">&#x2684;</span>${T('Bestiary.randomizeSeed')}</button>
+                                   <button id="bestiary-seed-reroll" class="bestiary-portrait-btn"><span style="margin-right:4px">&#x2684;</span>${T('Bestiary.randomizeSeed')}</button>
                                    <span style="font-size:14px; color:rgba(94,47,23,0.6)">${T('Bestiary.seed')}: ${this.bestiaryGenSeed(this.bestiarySeedKey(mon))}</span>
                                </div>`
                             : "";
@@ -874,10 +881,10 @@
                         // Keys are the <Predator>/<Hunter>/... note tags; the word
                         // comes from Bestiary.behavior.<id>.
                         const behaviorMap = {
-                            Predator: { key: "Bestiary.behavior.predator", color: "#8c1d0f" },
-                            Hunter:   { key: "Bestiary.behavior.hunter",   color: "#b5651d" },
-                            Prey:     { key: "Bestiary.behavior.prey",     color: "#27ae60" },
-                            Neutral:  { key: "Bestiary.behavior.neutral",  color: "#5e6b7a" }
+                            Predator: { key: "Bestiary.behavior.predator", color: "var(--text-secondary-active)" },
+                            Hunter:   { key: "Bestiary.behavior.hunter",   color: "var(--text-amber-hint)" },
+                            Prey:     { key: "Bestiary.behavior.prey",     color: "var(--text-cost-ok)" },
+                            Neutral:  { key: "Bestiary.behavior.neutral",  color: "var(--text-navy)" }
                         };
                         const behaviorInfo = noteData.behavior ? behaviorMap[noteData.behavior] : null;
                         const behaviorText = behaviorInfo
@@ -939,8 +946,8 @@
                             <div class="drops-section">
                                 <h4 class="affinities-header">${T('Bestiary.rewards')}</h4>
                                 <div style="display:flex; justify-content:space-between; padding:4px 8px; font-size:16px; font-weight:bold">
-                                    <span>${T('Bestiary.exp')}: <span style="color:#8c1d0f">${enemy.exp}</span></span>
-                                    <span>${T('Bestiary.gold')}: <span style="color:#27ae60">${enemy.gold / 100} €</span></span>
+                                    <span>${T('Bestiary.exp')}: <span style="color:var(--text-secondary-active)">${enemy.exp}</span></span>
+                                    <span>${T('Bestiary.gold')}: <span style="color:var(--text-cost-ok)">${enemy.gold / 100} €</span></span>
                                 </div>
                             </div>
                         `;

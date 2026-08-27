@@ -3441,7 +3441,9 @@
       };
 
       const lineWidth = 1.5 - depth * 0.3 + Math.max(0, (this.camera?.zoom || 0.001) / 0.0005) * 0.2;
-      const zoomFactor = Math.min(Math.max(this.camera?.zoom || 0.001 / 0.001, 0.1), 2);
+      // `/` binds tighter than `||`, so without the parentheses the fallback was the whole
+      // `0.001 / 0.001` and a real camera zoom was never divided by the reference scale.
+      const zoomFactor = Math.min(Math.max((this.camera?.zoom || 0.001) / 0.001, 0.1), 2);
 
       ctx.strokeStyle = color;
       ctx.lineWidth = Math.max(0.5, lineWidth);

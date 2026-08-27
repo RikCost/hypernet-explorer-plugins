@@ -62,6 +62,19 @@
     },
     ZOMBIE_SHEET_CHANCE: 0.9,
 
+    // Ground the Goblin Horde holds. Not a population mode: a PROCEDURAL
+    // square standing in one of the Horde's nations is goblin country whatever
+    // world this is, and nine of the ten people in its towns, its villages and
+    // the houses opened out of them are goblins. The catalogue owns both the
+    // question and the wardrobe (SpriteCatalog.isGoblinHordeGround /
+    // goblinKeys), so a face dealt by the population pass and a slot re-skinned
+    // here are goblins by exactly the same rule.
+    isGoblinHordeGround(mapId) {
+      const SC = window.SpriteCatalog;
+      return !!(SC && typeof SC.isGoblinHordeGround === "function" && SC.isGoblinHordeGround(mapId));
+    },
+    GOBLIN_SHEET_CHANCE: 0.9,
+
     treasureRoomParentIds: [133],
     get housePoolParentIds() {
       return window.ProceduralHouseSystem ? window.ProceduralHouseSystem.housePoolParentIds : [1132, 1133, 1134, 1135, 1136, 1137, 1394, 1156, 1157];
@@ -2078,7 +2091,13 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       const charIdx = isBigSprite ? 0 : Math.floor(Utils.seededRandom((seed * 2) >>> 0) * 8);
 
       const classId = ProceduralManager.seededClassId((seed ^ 0x51ed270b) >>> 0);
-      const profile = window.NPCSocietyRegistry?.ensureProfile?.(name, classId, undefined, $gameMap?.mapId?.())
+      // The face is already rolled, so it is pinned before the profile is
+      // minted rather than painted over it afterwards: the society generator's
+      // creature roll must not deal a beast's identity to somebody wearing a
+      // person's sheet (see ProfileGenerator.generate).
+      const profile = window.NPCSocietyRegistry?.ensureProfile?.(
+        name, classId, undefined, $gameMap?.mapId?.(),
+        { spriteKey: charName, bustIndex: charIdx })
         || $gameSystem._npcSociety?.[name];
       if (profile) {
         profile._homeGroupName = groupName;
@@ -2091,6 +2110,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         const spriteBust = npcEntry?.busts?.[charIdx] ?? npcEntry?.busts?.[0] ?? null;
         profile.spriteKey = charName;
         profile.bustIndex = charIdx;
+        // A profile that already existed (an NPC met before this sprite was
+        // bound, or one saved by an older build) is repaired to agree with the
+        // sheet it is now wearing.
+        window.NPCSocietyRegistry?.reconcileToSprite?.(name, profile);
         if (spriteBust && spriteBust !== "7") profile._bustName = spriteBust;
         if (npcEntry?.markovDB && profile.markovDb == null) profile.markovDb = npcEntry.markovDB;
         if (npcEntry && npcEntry.Gender != null) profile.gender = npcEntry.Gender;
@@ -2263,6 +2286,45 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // Scans the current map's feature layers (2-3, matching
   // ProceduralHouseSystem.facedInteractFeatureName) for any tile belonging to
   // SETTLEMENT_DOOR_FEATURES and returns their {x,y} coordinates.
+  // ==========================================================================
+  // THE STITCHED PROCEDURAL WINDOW
+  // --------------------------------------------------------------------------
+  // Map 636 no longer holds one world square: WorldMapReturn's ProcStitch lays
+  // up to 3x3 neighbouring squares side by side on it, and the party walks from
+  // one into the next without a transfer. Two things follow for the people.
+  //
+  // First, a citizen belongs to ONE square. The settlement they are registered
+  // in (ensureProcSettlement) is per world coordinate, so the whole population
+  // has to go in the party's own square and nowhere else. Everything in
+  // setupProceduralMapNPCs is written in square coordinates already, having been
+  // written when the map WAS the square, so it is run inside the square-local
+  // view ProcStitch provides: $gameMap answers for the party's cell, and the
+  // positions the pass hands to locate() come back out in map space.
+  //
+  // Second, a crossing no longer reloads the map, so the square-changed hook is
+  // the only notice that the people have to be replaced. Registered on the first
+  // procedural map load rather than at plugin load time, because WorldMapReturn
+  // loads after this file and window.ProcStitch does not exist yet when it does.
+  let procStitchHooked = false;
+
+  function populateProceduralSquare() {
+    // Walking from one square into the next is not a map load, so the Horde's
+    // ground has to be re-read here: the party may have just crossed into it.
+    if (Config.isGoblinHordeGround()) goblinizeMapNPCs();
+    const S = window.ProcStitch;
+    return (S && S.active())
+      ? S.inPartySquare(() => ProceduralManager.setupProceduralMapNPCs())
+      : ProceduralManager.setupProceduralMapNPCs();
+  }
+
+  function registerProcStitchHook() {
+    if (procStitchHooked) return;
+    const S = window.ProcStitch;
+    if (!S || typeof S.onSquareChanged !== "function") return;
+    procStitchHooked = true;
+    S.onSquareChanged(() => populateProceduralSquare());
+  }
+
   function getSettlementDoorTiles() {
     const U = window.ProcGenUtils;
     if (!U || !U.Cache || !U.createTileToFeatureMap || !U.getFeatureNameFromTileId) return [];
@@ -2602,7 +2664,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         // seed (19002001), where the society generator's npcData-driven class
         // assignment is otherwise skipped.
         const procClassId = ProceduralManager.seededClassId(graphicSeed ^ 0x51ed270b);
-        const profile = ProceduralManager.registerProcCitizen(genName, ev, settlementGroup, procClassId);
+        // The sprite is pinned into the profile as it is minted, so the
+        // creature roll can never deal a beast inside this citizen's clothes.
+        const profile = ProceduralManager.registerProcCitizen(
+          genName, ev, settlementGroup, procClassId,
+          { spriteKey: charName, bustIndex: charIdx });
         if (profile) {
           // Bind the chosen world sprite to the society profile so:
           //  - getBustForNPC (NPCEmpathize portrait) resolves the bust that
@@ -2614,6 +2680,8 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
           //  - conversations use the sprite's own Markov voice (markovDB).
           profile.spriteKey = charName;
           profile.bustIndex = charIdx;
+          // And an already-minted profile is repaired to agree with it.
+          window.NPCSocietyRegistry?.reconcileToSprite?.(genName, profile);
           if (spriteBust && spriteBust !== "7") profile._bustName = spriteBust;
           if (spriteDb && profile.markovDb == null) profile.markovDb = spriteDb;
 
@@ -2804,9 +2872,13 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // society identity anchored to the settlement, a residence at its tile, and
     // a life record (birth, career, relationships, crime) that the background
     // simulators evolve over time.
-    registerProcCitizen: (name, ev, groupName, classId = null) => {
+    registerProcCitizen: (name, ev, groupName, classId = null, options = null) => {
       if (!name || !groupName) return null;
-      const profile = window.NPCSocietyRegistry?.ensureProfile?.(name, classId, undefined, $gameMap?.mapId?.())
+      // `options` carries the sprite this citizen is already known to wear, so
+      // the profile is minted around that face instead of rolling one of its
+      // own (NPCSocietyRegistry.ensureProfile).
+      const profile = window.NPCSocietyRegistry?.ensureProfile?.(
+        name, classId, undefined, $gameMap?.mapId?.(), options)
         || $gameSystem._npcSociety?.[name];
       if (profile) {
         profile._homeGroupName = groupName;
@@ -5239,6 +5311,92 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     startZombieBattle(request);
   };
 
+  // ---- the Horde's own ground --------------------------------------------
+  // A procedural square standing in a nation the Goblin Horde rules is goblin
+  // country: nine of the ten people found in its towns, its villages and the
+  // houses opened out of them are goblins, the tenth is whoever else lives
+  // there. Nothing else changes about them. A goblin here is a citizen with a
+  // name, a job and a household like anybody else, not an enemy: this is not
+  // the zombie apocalypse, only who the neighbours are.
+  //
+  // Almost every face on procedural ground is dealt through the catalogue,
+  // which already deals the same nine tenths (SpriteCatalog.pickNpcKey), so
+  // this pass exists for the slots that arrive wearing a face of their own: a
+  // prefab dropped on the square, an authored resident of a house interior.
+  // It runs BEFORE the crowd is staffed, exactly as the zombie pass does, so a
+  // slot the population pass goes on to dress is dealt its face by the
+  // catalogue and not by this: whichever writes last, the odds are the same
+  // nine in ten, and the two never stack.
+  function goblinSheetPool() {
+    const SC = window.SpriteCatalog;
+    const list = (SC && SC.goblinKeys) ? SC.goblinKeys() : [];
+    return list.filter(k => !isBetaSprite(k) && !isVipSprite(k));
+  }
+
+  // Is this sheet a goblin's? Asked of whatever graphic an event is wearing,
+  // so a citizen dealt a goblin face by the population pass counts exactly as
+  // one re-skinned here does.
+  function isGoblinSheet(name) {
+    const SC = window.SpriteCatalog;
+    return !!(name && SC && SC.isGoblinSheet && SC.isGoblinSheet(name));
+  }
+
+  // The sheet this slot is a goblin in, or null for the neighbour who is not.
+  // Pure in (map, event, world seed), so the same street holds the same people
+  // every time it is walked into and two savegames of one world agree about
+  // them. Salted apart from the zombie roll so the two never pick together.
+  function goblinSheetFor(ev) {
+    const pool = goblinSheetPool();
+    if (!pool.length || !ev || !ev.event) return null;
+    const seedBase = (window.HistoryManager && window.HistoryManager.getSeed)
+      ? window.HistoryManager.getSeed() : 19002001;
+    let h = ($gameMap.mapId() * 73856093) ^ (ev.eventId() * 19349663) ^ (seedBase + 0x6f0b1e5d);
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+    if ((h % 1000) / 1000 >= Config.GOBLIN_SHEET_CHANCE) return null;   // the neighbour
+    return pool[(h >>> 10) % pool.length];
+  }
+
+  // Written onto the page data as well as the sprite, for the same reason the
+  // zombie pass does it: a page refresh re-derives the graphic from
+  // page().image, and $dataMap is re-read from disk on every Scene_Map
+  // rebuild. Every goblin sheet is a single-character !$ sheet, hence cell 0.
+  function applyGoblinSheet(ev, sheet) {
+    const data = ev && ev.event ? ev.event() : null;
+    if (!data || !sheet) return;
+    for (const page of (data.pages || [])) {
+      if (page?.image) {
+        page.image.characterName = sheet;
+        page.image.characterIndex = 0;
+      }
+    }
+    ev._npcGoblinSheet = sheet;
+    ev.setImage(sheet, 0);
+    SpawnManager.snapshotSpawn(ev);
+  }
+
+  // Every slot the crowd is dealt into, walked once. The same slots the zombie
+  // pass takes: a till is not a person and a written one keeps the face they
+  // were written with.
+  function goblinizeMapNPCs() {
+    if (!$gameMap || !$dataMap) return;
+    for (const ev of $gameMap.events()) {
+      const data = ev && ev.event ? ev.event() : null;
+      if (!data) continue;
+      if (String(data.name || "").startsWith("Player")) continue; // i18n-ignore: event name matched at runtime
+      const note = data.note || "";
+      if (Utils.hasShopTag(note)) continue;
+      if (Utils.hasStoryTag(note)) continue;
+      const isRosterSlot = String(data.name || "").startsWith("NPC"); // i18n-ignore: event name matched at runtime
+      if (!isRosterSlot && !Utils.hasAITag(note) && !Utils.hasLocalTag(note)) continue;
+      if (ev._npcGoblinDecided) continue;
+      ev._npcGoblinDecided = true;
+      // Already a goblin (the catalogue dealt them one): nothing to re-skin.
+      if (isGoblinSheet(ev.characterName && ev.characterName())) continue;
+      const sheet = goblinSheetFor(ev);
+      if (sheet) applyGoblinSheet(ev, sheet);
+    }
+  }
+
   // <Story> NPCs: written characters who belong to the map they stand on. The
   // <AI> and <Local> passes in setupNPCControllers have already covered any
   // that carry those tags too (the by-name guard below means nobody is given a
@@ -5456,6 +5614,12 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // after it (see reassertZombies) since staffing paints its own faces on.
     if (Config.isZombieWorld()) zombifyMapNPCs();
 
+    // And on ground the Goblin Horde holds, nine of the ten people in a
+    // procedural town are goblins. Decided before the roster is staffed for
+    // the same reason, and NOT re-asserted after it: the catalogue deals the
+    // very same nine tenths to the faces staffing paints on.
+    if (Config.isGoblinHordeGround()) goblinizeMapNPCs();
+
     $gameSystem._npcMapSizes = $gameSystem._npcMapSizes || {};
     $gameSystem._npcMapSizes[currentMapId] = $dataMap.width * $dataMap.height;
 
@@ -5492,7 +5656,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // still being built asynchronously on the very first run of a world.
     stageShopPersonas();
 
-    if (currentMapId === 636) return ProceduralManager.setupProceduralMapNPCs();
+    if (currentMapId === 636) {
+      registerProcStitchHook();
+      return populateProceduralSquare();
+    }
 
     // Bologna: one map id for every cell of the OSM grid, no authored events on
     // any of them. BolognaMapSystem injects the empty slots before the map is

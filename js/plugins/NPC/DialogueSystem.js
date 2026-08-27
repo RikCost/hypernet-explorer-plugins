@@ -170,9 +170,16 @@ Imported.DialogueSystem = true;
         constructor() {
             this._characterName = '';
             this._visible       = false;
+            // Which end of the message box the tag sits on. It is always the
+            // end opposite the portrait, so the two never overlap: an NPC
+            // stands on the right and is named on the left, a party member
+            // stands on the left and is named on the right.
+            this._side          = 'left';
         }
 
         setCharacterName(name) { this._characterName = name || ''; }
+
+        setSide(side) { this._side = side === 'right' ? 'right' : 'left'; }
 
         showName() { if (this._characterName) this._visible = true; }
 
@@ -201,6 +208,10 @@ Imported.DialogueSystem = true;
             this.activeEventId       = null;
             this.lastKnownEventId    = null;
             this.hideScheduled       = false;
+            // Who is speaking decides which side of the screen the portrait
+            // stands on: the party talks from the left, everybody else from
+            // the right, the way a visual novel stages a conversation.
+            this.bustSide            = 'right';
             // While true, this manager is being driven line by line by an
             // external exchange (see startNPCExchange below) instead of by the
             // interpreter's own event: startMessage must not re-derive the bust
@@ -226,12 +237,46 @@ Imported.DialogueSystem = true;
 
         updateBustHiddenPosition() {
             const width = getBustWidth();
-            this.characterBust._hiddenX = Graphics.width + width;
+            const left  = this.bustSide === 'left';
+            // A portrait slides off the edge it stands on, so a party member
+            // enters from the left and an NPC from the right.
+            this.characterBust._hiddenX = left ? -width : Graphics.width + width;
             if (window.$gameSplitScreen && window.$gameSplitScreen.active) {
                 this.characterBust._targetX = (Graphics.width - width) / 2;
             } else {
-                this.characterBust._targetX = Graphics.width - width - bustXOffset_16_9;
+                this.characterBust._targetX = left
+                    ? bustXOffset_16_9
+                    : Graphics.width - width - bustXOffset_16_9;
             }
+        }
+
+        // The portrait side, and with it the name tag's opposite side. Called
+        // before any target is computed, since both hidden and target x depend
+        // on it.
+        setBustSide(side) {
+            const wanted  = side === 'left' ? 'left' : 'right';
+            const changed = wanted !== this.bustSide;
+            this.bustSide = wanted;
+            if (this.nameWindow) this.nameWindow.setSide(wanted === 'left' ? 'right' : 'left');
+            this.updateBustHiddenPosition();
+            // Changing ends is not a walk across the screen: the portrait is
+            // parked off the new edge and slides in from there, under the same
+            // fade the first line of a conversation gets.
+            if (changed) this.characterBust.x = this.characterBust._hiddenX;
+            return changed;
+        }
+
+        // A speaker who is one of the party talks from the left. The name is
+        // the only thing every front end (exchanges, the TV studio, the VN
+        // plugin commands) reliably passes, so that is what is matched.
+        sideForSpeaker(displayName) {
+            const name = String(displayName || '').split(',')[0].trim();
+            if (!name) return 'right';
+            try {
+                const members = ($gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
+                if (members.some(a => a && a.name && a.name().trim() === name)) return 'left';
+            } catch (err) { /* no party yet */ }
+            return 'right';
         }
 
         getBustY() { return Graphics.height - bustYOffset_16_9; }
@@ -439,13 +484,14 @@ Imported.DialogueSystem = true;
             return true;
         }
 
-        showCustomBust(imageName, characterName) {
+        showCustomBust(imageName, characterName, side) {
             if (!imageName) return;
             const resolvedName = window.BustPath.resolve(imageName);
             let path = resolvedName ? `busts/${resolvedName}` : `busts/7`;
             if (!this.checkImageExists(path)) path = `busts/7`;
             const key          = `custom_${imageName}`;
             const fallback     = this._loadFallback();
+            const sideChanged  = this.setBustSide(side || this.sideForSpeaker(characterName));
 
             if (this.nameWindow) {
                 let displayName = characterName || this.convertCamelCaseToReadable(imageName);
@@ -465,7 +511,12 @@ Imported.DialogueSystem = true;
                 this.nameIsVisible = true;
             }
 
-            if (this.currentCharacterKey === key && this.characterBust.parent) return;
+            // Same portrait as last line, but now speaking from the other end
+            // of the screen: it has to cross over instead of standing still.
+            if (this.currentCharacterKey === key && this.characterBust.parent) {
+                if (sideChanged) this.slideIn();
+                return;
+            }
 
             try {
                 const bitmap = ImageManager.loadBitmap('img/', path);
@@ -497,6 +548,10 @@ Imported.DialogueSystem = true;
             this.lastKnownEventId = eventId;
             this.hideScheduled    = false;
 
+            // An event on the map is somebody the party is facing: it keeps the
+            // right-hand slot, whatever the party leader does next.
+            const sideChanged = this.setBustSide(this.sideForSpeaker(this.getCharacterDisplayName(eventId)));
+
             let targetX;
             if (window.$gameSplitScreen && window.$gameSplitScreen.active) {
                 const activator = $gameMessage._eventActivator;
@@ -505,14 +560,14 @@ Imported.DialogueSystem = true;
                 else if (activator === "p2") targetX = Graphics.width - w;
                 else                          targetX = (Graphics.width - w) / 2;
             } else {
-                targetX = Graphics.width - getBustWidth() - bustXOffset_16_9;
+                targetX = this.characterBust._targetX; // set by setBustSide above
             }
 
             const targetChanged = targetX !== this.characterBust._targetX;
             this.characterBust._targetX = targetX;
 
             if (this.currentCharacterKey === key && this.characterBust.parent) {
-                if (targetChanged) this.slideIn();
+                if (targetChanged || sideChanged) this.slideIn();
                 if (this.nameWindow && !this.nameIsVisible) { this.nameWindow.showName(); this.nameIsVisible = true; }
                 this.bustIsVisible = true;
                 return;
@@ -834,10 +889,19 @@ Imported.DialogueSystem = true;
         const baseFontSize = (typeof this.standardFontSize === 'function') ? this.standardFontSize() : 29;
         const centeredLeft = sc.ox + (sc.sx * gw / 2) - (this.width * sc.sx) / 2;
 
+        // Which end of the box the name tag hangs from: the end opposite the
+        // portrait, so the speaker's face and their name are never stacked on
+        // top of each other.
+        const nameAdapter = SceneManager._scene && SceneManager._scene._bustManager
+                          ? SceneManager._scene._bustManager.nameWindow : null;
+        const nameSide    = (nameAdapter && nameAdapter._side === 'right') ? 'right' : 'left';
+
         // All the box/name geometry depends only on the scale + this.y/width/
-        // height/padding/fontSize; skip the ~12 style writes when none changed.
+        // height/padding/fontSize + the name side; skip the ~12 style writes
+        // when none changed.
         const geomSig = sc.sx + ',' + sc.sy + ',' + sc.ox + ',' + sc.oy + ',' +
-                        this.width + ',' + this.height + ',' + this.y + ',' + pad + ',' + baseFontSize;
+                        this.width + ',' + this.height + ',' + this.y + ',' + pad + ',' +
+                        baseFontSize + ',' + nameSide + ',' + winW;
         if (geomSig !== this._htmlMsgGeomSig) {
             this._htmlMsgGeomSig = geomSig;
             const s       = this._htmlMsgRoot.style;
@@ -853,10 +917,19 @@ Imported.DialogueSystem = true;
             this._htmlMsgText.style.fontSize = Math.round(baseFontSize * sc.sy * 0.85) + 'px';
             this._htmlMsgName.style.fontSize = Math.round(20 * sc.sy) + 'px';
 
-            // Name anchored flush above the left edge of the textbox, no animation
-            const nameH = Math.round(28 * sc.sy);
-            this._htmlMsgName.style.top  = (sc.oy + this.y * sc.sy - nameH - Math.round(6 * sc.sy)) + 'px';
-            this._htmlMsgName.style.left = (centeredLeft + Math.round(16 * sc.sx)) + 'px';
+            // Name anchored flush above one edge of the textbox, no animation.
+            // The right-hand anchor uses the `right` longhand so the tag does
+            // not need to be measured before it can be placed.
+            const nameH   = Math.round(28 * sc.sy);
+            const nameIns = Math.round(16 * sc.sx);
+            this._htmlMsgName.style.top = (sc.oy + this.y * sc.sy - nameH - Math.round(6 * sc.sy)) + 'px';
+            if (nameSide === 'right') {
+                this._htmlMsgName.style.left  = 'auto';
+                this._htmlMsgName.style.right = (winW - (centeredLeft + scaledW - nameIns)) + 'px';
+            } else {
+                this._htmlMsgName.style.right = 'auto';
+                this._htmlMsgName.style.left  = (centeredLeft + nameIns) + 'px';
+            }
         }
 
         // Text reveal
@@ -1207,7 +1280,7 @@ Imported.DialogueSystem = true;
             return;
         }
         const step = _npcExchangeQueue.shift();
-        bm.showCustomBust(step.imageName, step.displayName);
+        bm.showCustomBust(step.imageName, step.displayName, step.side);
         $gameMessage.setBackground(0);
         $gameMessage.setPositionType(2);
         window.skipLocalization = true;
@@ -1322,9 +1395,11 @@ Imported.DialogueSystem = true;
         const playerImageName = String(playerBustFull).replace(/^img\/busts\//, '').replace(/\.png$/, '');
         const npcDisplayName  = bm ? bm.getCharacterDisplayName(ev.eventId()) : npcName;
 
+        // The party speaks from the left of the screen, the NPC answers from
+        // the right, so a two-line beat reads as two people facing each other.
         return [
-            { imageName: playerImageName,        displayName: actor ? actor.name() : '', text: playerLine },
-            { imageName: _npcExchangeBust(ev),    displayName: npcDisplayName,            text: npcLine },
+            { imageName: playerImageName,      displayName: actor ? actor.name() : '', text: playerLine, side: 'left'  },
+            { imageName: _npcExchangeBust(ev), displayName: npcDisplayName,            text: npcLine,    side: 'right' },
         ];
     }
 

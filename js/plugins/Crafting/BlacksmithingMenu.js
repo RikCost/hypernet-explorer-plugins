@@ -222,11 +222,25 @@
         return (db && db.levelName) ? db.levelName(level) : String(level);
     }
 
-    // The trade level a given pair of hands has in what an entry asks for.
+    // What the world's research is worth at this bench. A discovered theory
+    // raises the trade it belongs to, so a party that has been reading can
+    // start pieces their hands alone have not earned yet
+    // (ProceduralTechTree.craftLevelBonus). Zero without that plugin, and zero
+    // for a trade no tree feeds.
+    function researchTiersIn(spec) {
+        const tt = window.ProceduralTechTree;
+        if (!spec || !tt || typeof tt.craftLevelBonus !== 'function') return 0;
+        try { return tt.craftLevelBonus(spec) || 0; } catch (e) { return 0; }
+    }
+
+    // The trade level a given pair of hands has in what an entry asks for:
+    // what they have practised, plus what the world has worked out.
     function levelInFor(actor, item) {
         const spec = craftSpec(item);
-        if (!spec || !window.SpecializationXP) return 1;
-        return window.SpecializationXP.levelOf(actor, spec);
+        if (!spec) return 1;
+        const practised = window.SpecializationXP
+            ? window.SpecializationXP.levelOf(actor, spec) : 1;
+        return practised + researchTiersIn(spec);
     }
 
     // ── Shared forge service ─────────────────────────────────────────────────
@@ -560,7 +574,7 @@
         if (window.ItemSystemUtils && window.ItemSystemUtils.getItemRarity) {
             return window.ItemSystemUtils.getItemRarity(item);
         }
-        return { name: '', colorCode: '#bba16d' };  // i18n-ignore  fallback tint
+        return { name: 'Common' };  // i18n-ignore  rarity id
     }
 
     // Money is always euros, the same split MoneyFormatter draws.
@@ -683,9 +697,7 @@
 
         // The selected member's level in the trade an entry needs.
         levelIn(item) {
-            const spec = craftSpec(item);
-            if (!spec || !window.SpecializationXP) return 1;
-            return window.SpecializationXP.levelOf(this.smith(), spec);
+            return levelInFor(this.smith(), item);
         }
 
         canMake(item) {
@@ -778,7 +790,7 @@
                     <div class="book-spread">
                         <div id="forge-overlay-container"></div>
                         <div class="left-page">
-                            <div class="forge-header">
+                            <div class="page-header-bar forge-header">
                                 <div class="back-button focusable" id="forge-back">${escapeHtml(T('Blacksmith.back'))}</div>
                                 <h2 class="title">${escapeHtml(t.title)}</h2>
                             </div>
@@ -933,7 +945,7 @@
                             <div class="category-row forge-row ${focused}" data-item="${item.id}" data-kind="${DataManager.isWeapon(item) ? 'w' : 'a'}" data-idx="${idx}">
                                 <div class="category-meta-left">
                                     <span class="icon" style="${iconStyle(item.iconIndex, 24)}"></span>
-                                    <span class="blueprint-name" style="color:${rarity.colorCode}">${escapeHtml(displayName(item))}</span>
+                                    <span class="blueprint-name ${window.ItemSystemUtils.rarityClass(rarity)}">${escapeHtml(displayName(item))}</span>
                                 </div>
                                 ${mark}
                             </div>`;
@@ -979,7 +991,7 @@
             let head = `
                 <div class="workbench-item-header">
                     <span class="icon" style="${iconStyle(item.iconIndex, 32)}"></span>
-                    <span class="workbench-item-name" style="color:${rarity.colorCode}">${escapeHtml(displayName(item))}</span>
+                    <span class="workbench-item-name ${window.ItemSystemUtils.rarityClass(rarity)}">${escapeHtml(displayName(item))}</span>
                 </div>`;
             if (item.description && String(item.description).trim()) {
                 const desc = (forged ? String(item.description) : tr(String(item.description)))
@@ -1280,7 +1292,7 @@
                 const skin = finish
                     ? ` style="background-image:url('${escapeHtml(finishSrc(finish))}'); background-size:cover; background-position:center"`
                     : '';
-                const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode}"><div class="item-icon" style="${iconStyle(item.iconIndex, 32)}"></div></div></div>`;
+                const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle rarity-ring ${window.ItemSystemUtils.rarityClass(rarity)}"><div class="item-icon" style="${iconStyle(item.iconIndex, 32)}"></div></div></div>`;
                 html += `<div class="weapon-preview-card weapon-preview-card--single"${skin}>${inner}</div>`;
             }
             return html + '</div>';
@@ -1417,7 +1429,7 @@
                 let rows = `
                         <div class="success-item-row">
                             <span class="icon" style="${iconStyle(item.iconIndex, 32)}"></span>
-                            <span style="font-weight:bold; color:${rarity.colorCode}">${escapeHtml(displayName(item))}</span>
+                            <span class="rarity-name ${window.ItemSystemUtils.rarityClass(rarity)}">${escapeHtml(displayName(item))}</span>
                         </div>`;
                 if (smelted) {
                     for (const got of smelted) {
@@ -1432,7 +1444,7 @@
                 }
                 el.innerHTML = `
                     <div class="success-overlay">
-                        <div class="cauldron-animation" style="font-size:88px"></div>
+                        <div class="cauldron-animation"></div>
                         <h2 class="success-title">${escapeHtml(smelted ? bsText().smelted : bsText().forged)}</h2>
                         ${rows}
                     </div>`;

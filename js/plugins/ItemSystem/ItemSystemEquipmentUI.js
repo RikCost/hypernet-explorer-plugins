@@ -610,8 +610,8 @@
                 const modBeforeStr = modBefore >= 0 ? '+' + modBefore : String(modBefore);
                 const modAfter = Math.floor((stat.valAfter - 10) / 2);
                 const modAfterStr = modAfter >= 0 ? '+' + modAfter : String(modAfter);
-                valBeforeFormatted = `${stat.valBefore} <span style="font-size:0.78em; opacity:0.88; color:#a5d6a7;">(${modBeforeStr})</span>`;
-                valAfterFormatted = `${stat.valAfter} <span style="font-size:0.78em; opacity:0.88; color:#a5d6a7;">(${modAfterStr})</span>`;
+                valBeforeFormatted = `${stat.valBefore} <span style="font-size:0.78em; opacity:0.88; color:var(--text-cost-ok);">(${modBeforeStr})</span>`;
+                valAfterFormatted = `${stat.valAfter} <span style="font-size:0.78em; opacity:0.88; color:var(--text-cost-ok);">(${modAfterStr})</span>`;
                 const modDiff = modAfter - modBefore;
                 if (tempActor && modDiff !== 0) {
                     modBonusHtml = `<span class="stat-diff ${modDiff > 0 ? 'positive' : 'negative'}" style="font-size:0.72rem; margin-left:3px;">[${modDiff > 0 ? '+' + modDiff : modDiff} Mod]</span>`;
@@ -657,8 +657,8 @@
             }
             const iconIdx    = weapon.iconIndex;
             const iconStyle  = `background:url('img/system/IconSet.png') -${(iconIdx%16)*32}px -${Math.floor(iconIdx/16)*32}px no-repeat;`;
-            const rarity     = window.ItemSystemUtils ? window.ItemSystemUtils.getItemRarity(weapon) : { colorCode: '#bba16d' };
-            const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode};"><div class="item-icon" style="${iconStyle}"></div></div></div>`;
+            const rarityCls  = window.ItemSystemUtils ? window.ItemSystemUtils.itemRarityClass(weapon) : 'rarity--common';
+            const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle ${rarityCls}"><div class="item-icon" style="${iconStyle}"></div></div></div>`;
             return `<div class="weapon-preview-card ${cardClass}"${groundStyle}>${inner}</div>`;
         };
 

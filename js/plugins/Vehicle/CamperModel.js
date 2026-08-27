@@ -23,6 +23,15 @@
  *   m.group / m.applyMotion(spd,steer,dt,roll,pitch,bounce) / m.setEnv(env)
  *   m.update(dt) / m.seats (empty) / m.getInteractables() (the rear door, once
  *   rigged) / m.setDoorOpen(bool) / m.isDoorOpen() / m.toggleDoor() / m.dispose()
+ *
+ * THE REST OF THE GARAGE (window.VehicleModels) also lives in this file: the
+ * car, the bike, the inflatable boat and the flying broom are generated out of
+ * the same parts the camper's upgrade hardware is, and the starship is the
+ * party's own ship out of the galaxy simulation. One contract for all of them:
+ *   VehicleModels.KEYS                     every vehicle with a body
+ *   VehicleModels.has(key)                 is there one to show?
+ *   VehicleModels.build(key)               { group, length, update(t), dispose() }
+ *   VehicleModels.createPreview(cv, key)   a live turning portrait on a canvas
  */
 
 (() => {
@@ -680,4 +689,338 @@
         }
         return window.HypernetCamper.paint;
     };
+
+    // =========================================================================
+    // The rest of the garage
+    //
+    // The camper above is a loaded GLB with hardware bolted onto it. Every OTHER
+    // vehicle the party can own (VehicleSystem.js: the car, the bike, the
+    // inflatable boat, the flying broom) had no model at all - only a walking
+    // sprite - so they are generated here, out of the same boxes, cylinders and
+    // lathes the camper's own upgrade hardware is made of. The starship is not
+    // generated here at all: the galaxy simulation already builds the party's
+    // own ship, trait by trait, and that IS the ship (GalaxySim.ShipModel).
+    //
+    // Every model is built to the same contract, so anything that shows one -
+    // the repair bay, the party menu's garage, the 3D world itself - can show
+    // any of them without knowing which it has:
+    //
+    //   { group, length, update(t), dispose() }
+    //
+    // Forward is +Z, up is +Y, the wheels (or the keel, or the bristles) rest on
+    // y = 0, and `length` is how long the thing is in its own units, so a viewer
+    // can frame a bike and a starship with the same camera.
+    // =========================================================================
+    const VEHICLE_PALETTE = {
+        car:   { body: 0xb2402f, trim: 0x2a2a2e, glass: 0x9fd4e8, metal: 0xb9bec6 },
+        bike:  { body: 0x2f6fb2, trim: 0x1c1c20, glass: 0xdedede, metal: 0xc8ccd2 },
+        boat:  { body: 0xd8862a, trim: 0x40352a, glass: 0xdedede, metal: 0x8d8d93 },
+        broom: { body: 0x7a5230, trim: 0xd2a24c, glass: 0xdedede, metal: 0x6b5a44 }
+    };
+
+    // A builder's scratchpad: it collects everything it makes so dispose() can
+    // give all of it back in one go.
+    class VehicleBuild {
+        constructor() {
+            this.group = new THREE.Group();
+            this._geos = [];
+            this._mats = [];
+            this._spin = [];    // { obj, axis, rate } - wheels, rotors, bristles
+            this.length = 10;
+        }
+        mat(hex, opts) {
+            const m = new THREE.MeshLambertMaterial(Object.assign({ color: hex }, opts || {}));
+            this._mats.push(m);
+            return m;
+        }
+        add(geo, material, x, y, z, parent) {
+            this._geos.push(geo);
+            const mesh = new THREE.Mesh(geo, material);
+            mesh.position.set(x || 0, y || 0, z || 0);
+            (parent || this.group).add(mesh);
+            return mesh;
+        }
+        box(w, h, d, material, x, y, z, parent) {
+            return this.add(new THREE.BoxGeometry(w, h, d), material, x, y, z, parent);
+        }
+        cyl(rt, rb, h, seg, material, x, y, z, parent) {
+            return this.add(new THREE.CylinderGeometry(rt, rb, h, seg), material, x, y, z, parent);
+        }
+        // A wheel lies on its side and turns about its own axle (world X).
+        wheel(radius, width, material, x, y, z) {
+            const w = this.cyl(radius, radius, width, 14, material, x, y, z);
+            w.rotation.z = Math.PI / 2;
+            this._spin.push({ obj: w, axis: 'y', rate: 3.2 });
+            return w;
+        }
+        finish(length) {
+            this.length = length;
+            const self = this;
+            return {
+                group: this.group,
+                length,
+                update(t) {
+                    for (const s of self._spin) s.obj.rotation[s.axis] = t * s.rate;
+                },
+                dispose() {
+                    for (const g of self._geos) g.dispose();
+                    for (const m of self._mats) m.dispose();
+                    self._geos.length = 0;
+                    self._mats.length = 0;
+                    if (self.group.parent) self.group.parent.remove(self.group);
+                }
+            };
+        }
+    }
+
+    // --- the car: a small three-box hatchback ---------------------------------
+    function buildCar() {
+        const b = new VehicleBuild();
+        const P = VEHICLE_PALETTE.car;
+        const body = b.mat(P.body), trim = b.mat(P.trim);
+        const glass = b.mat(P.glass, { transparent: true, opacity: 0.55 });
+        const metal = b.mat(P.metal);
+        // Chassis, then the cabin set back on it, then the bonnet sloping away.
+        b.box(3.4, 1.3, 8.2, body, 0, 1.7, 0);
+        b.box(3.1, 1.2, 3.6, body, 0, 2.9, -0.4);
+        b.box(3.0, 1.0, 3.4, glass, 0, 2.95, -0.4);
+        b.box(3.2, 0.6, 2.2, body, 0, 1.9, 2.6);          // bonnet
+        b.box(3.2, 0.7, 1.6, body, 0, 2.0, -3.4);         // boot
+        b.box(3.5, 0.35, 0.5, trim, 0, 1.35, 4.15);       // front bumper
+        b.box(3.5, 0.35, 0.5, trim, 0, 1.35, -4.15);      // rear bumper
+        // Lamps: two white in front, two red behind.
+        const lamp = b.mat(0xfff2c0), tail = b.mat(0xc03028);
+        b.box(0.7, 0.4, 0.2, lamp, 1.2, 2.0, 4.1);
+        b.box(0.7, 0.4, 0.2, lamp, -1.2, 2.0, 4.1);
+        b.box(0.7, 0.35, 0.2, tail, 1.2, 2.1, -4.1);
+        b.box(0.7, 0.35, 0.2, tail, -1.2, 2.1, -4.1);
+        for (const [x, z] of [[1.75, 2.6], [-1.75, 2.6], [1.75, -2.6], [-1.75, -2.6]]) {
+            b.wheel(1.1, 0.6, trim, x, 1.1, z);
+            b.wheel(0.5, 0.66, metal, x, 1.1, z);          // hub cap
+        }
+        return b.finish(9);
+    }
+
+    // --- the bike: a frame, two big wheels and a set of bars ------------------
+    function buildBike() {
+        const b = new VehicleBuild();
+        const P = VEHICLE_PALETTE.bike;
+        const frame = b.mat(P.body), trim = b.mat(P.trim), metal = b.mat(P.metal);
+        const tube = (len, x, y, z, rx, ry) => {
+            const t = b.cyl(0.14, 0.14, len, 8, frame, x, y, z);
+            t.rotation.x = rx || 0;
+            t.rotation.y = ry || 0;
+            return t;
+        };
+        // Down tube, top tube, seat tube, forks: a diamond frame on its side.
+        tube(3.4, 0, 2.1, 0.2, Math.PI / 2 - 0.5);
+        tube(3.0, 0, 2.9, -0.1, Math.PI / 2);
+        tube(1.7, -0.02, 2.1, -1.4, 0.25);
+        tube(2.4, 0, 2.2, 1.7, 0.22);
+        b.box(0.9, 0.22, 0.5, trim, 0, 3.1, -1.6);        // saddle
+        const bars = b.cyl(0.1, 0.1, 1.5, 8, metal, 0, 3.3, 1.9);
+        bars.rotation.z = Math.PI / 2;                     // handlebars, across
+        b.cyl(0.28, 0.28, 0.32, 10, metal, 0, 1.55, 0.35); // chainring
+        for (const z of [1.85, -1.75]) {
+            const w = b.cyl(1.55, 1.55, 0.16, 20, trim, 0, 1.55, z);
+            w.rotation.z = Math.PI / 2;
+            b._spin.push({ obj: w, axis: 'y', rate: 3.6 });
+            // Four spokes, enough to read as a wheel once it is turning.
+            for (let i = 0; i < 4; i++) {
+                const sp = b.cyl(0.05, 0.05, 3.0, 5, metal, 0, 0, 0, w);
+                sp.rotation.x = Math.PI / 2;
+                sp.rotation.z = (i / 4) * Math.PI;
+            }
+        }
+        return b.finish(5);
+    }
+
+    // --- the boat: an inflatable dinghy, a tube round a floor -----------------
+    function buildBoat() {
+        const b = new VehicleBuild();
+        const P = VEHICLE_PALETTE.boat;
+        const hull = b.mat(P.body), trim = b.mat(P.trim), metal = b.mat(P.metal);
+        // The tube: a torus flattened into an oval, with a pointed bow cone.
+        const ring = b.add(new THREE.TorusGeometry(2.4, 0.62, 10, 26), hull, 0, 0.7, 0);
+        ring.rotation.x = Math.PI / 2;
+        ring.scale.set(0.78, 1.5, 1);
+        const bow = b.cyl(0.05, 0.62, 2.4, 12, hull, 0, 0.7, 4.0);
+        bow.rotation.x = -Math.PI / 2;
+        b.box(2.6, 0.22, 5.4, trim, 0, 0.5, 0.2);          // the floor
+        for (const z of [1.2, -0.4, -1.9]) b.box(2.5, 0.18, 0.5, trim, 0, 0.95, z);  // benches
+        b.box(0.7, 0.9, 0.7, metal, 0, 1.2, -3.2);         // outboard
+        const shaft = b.cyl(0.12, 0.12, 1.4, 8, metal, 0, 0.5, -3.5);
+        shaft.rotation.x = 0.35;
+        const prop = b.cyl(0.5, 0.5, 0.08, 3, metal, 0, -0.05, -3.75);
+        prop.rotation.x = Math.PI / 2;
+        b._spin.push({ obj: prop, axis: 'y', rate: 9 });
+        return b.finish(8);
+    }
+
+    // --- the broom: a stave, a binding and a fan of bristles ------------------
+    function buildBroom() {
+        const b = new VehicleBuild();
+        const P = VEHICLE_PALETTE.broom;
+        const wood = b.mat(P.body), cord = b.mat(P.trim), straw = b.mat(0xc9a15a);
+        const stave = b.cyl(0.16, 0.2, 7.0, 10, wood, 0, 1.4, 0.4);
+        stave.rotation.x = Math.PI / 2;
+        b.cyl(0.3, 0.3, 0.5, 10, cord, 0, 1.4, -2.1);      // the binding
+        // The head: a fan of straws splaying back off the binding.
+        for (let i = 0; i < 18; i++) {
+            const a = (i / 18) * Math.PI * 2;
+            const r = 0.12 + (i % 3) * 0.06;
+            const st = b.cyl(0.03, 0.06, 2.2, 4, straw, Math.cos(a) * r, 1.4 + Math.sin(a) * r, -3.2);
+            st.rotation.x = Math.PI / 2;
+            st.rotation.z = Math.cos(a) * 0.12;
+            st.rotation.y = Math.sin(a) * 0.12;
+        }
+        // A footrest, and the stirrup the rider's boot goes through.
+        const rest = b.cyl(0.07, 0.07, 1.1, 6, cord, 0, 1.2, 1.4);
+        rest.rotation.z = Math.PI / 2;
+        return b.finish(7);
+    }
+
+    const VEHICLE_BUILDERS = { car: buildCar, bike: buildBike, boat: buildBoat, broom: buildBroom };
+
+    // The camper, for anything that only wants to LOOK at one: a stand-in built
+    // out of the same parts as the rest of the garage rather than the real GLB,
+    // which loads asynchronously and registers itself as the live camper. The
+    // one the party actually drives is still CamperModel above.
+    function buildCamperStandIn() {
+        const b = new VehicleBuild();
+        const shell = b.mat(0xe8e2d4), trim = b.mat(0x3a3a40);
+        const glass = b.mat(0x9fd4e8, { transparent: true, opacity: 0.55 });
+        const stripe = b.mat(0xc4622f);
+        b.box(4.6, 4.0, 12.0, shell, 0, 3.6, -1.2);        // the box body
+        b.box(4.4, 2.4, 3.6, shell, 0, 2.8, 5.4);          // the cab
+        b.box(4.2, 1.5, 0.3, glass, 0, 3.4, 7.15);         // windscreen
+        b.box(0.3, 1.6, 3.0, glass, 2.31, 3.4, 5.2);
+        b.box(0.3, 1.6, 3.0, glass, -2.31, 3.4, 5.2);
+        b.box(4.62, 0.5, 12.0, stripe, 0, 2.2, -1.2);      // the stripe down the side
+        b.box(4.0, 0.35, 0.4, trim, 0, 1.5, 7.2);          // bumper
+        for (const [x, z] of [[2.3, 4.6], [-2.3, 4.6], [2.3, -4.4], [-2.3, -4.4]]) {
+            b.wheel(1.5, 0.85, trim, x, 1.5, z);
+        }
+        return b.finish(15);
+    }
+
+    // =========================================================================
+    // window.VehicleModels
+    // =========================================================================
+    const VehicleModels = {
+        // Every vehicle that has a body to show, in the order a garage lists
+        // them. Keys match VehicleSystem's own (window.VehicleFuel /
+        // window.VehiclePosition are keyed the same way).
+        KEYS: ['camper', 'car', 'bike', 'boat', 'broom', 'starship'],
+
+        // How long each vehicle really is, in the 3D world's own units (four to
+        // the metre). A model is built at whatever size read best on a page; out
+        // in the world it has to stand beside a person, so anything that puts
+        // one on the ground scales it by this over its own `length`.
+        REAL_LENGTH: {
+            camper: 26, car: 18, bike: 7, boat: 14, broom: 6, starship: 120, airship: 120
+        },
+
+        // The factor a built model has to be multiplied by to stand at true size.
+        worldScale(key, model) {
+            const real = this.REAL_LENGTH[key];
+            if (!real || !model || !(model.length > 0)) return 1;
+            return real / model.length;
+        },
+
+        has(key) {
+            if (key === 'starship' || key === 'airship') {
+                return !!(window.GalaxySim && window.GalaxySim.ShipModel);
+            }
+            return key === 'camper' || !!VEHICLE_BUILDERS[key];
+        },
+
+        // A model, built to the shared contract. The starship is the party's
+        // own ship out of the galaxy simulation, traits and all; everything else
+        // is generated here.
+        build(key) {
+            if (typeof THREE === 'undefined') return null;
+            if (key === 'starship' || key === 'airship') {
+                const SM = window.GalaxySim && window.GalaxySim.ShipModel;
+                if (!SM) return null;
+                const m = SM.build(SM.getConfig());
+                if (!m) return null;
+                return {
+                    group: m.group, length: 14,
+                    update(t) { if (m.update) m.update(t); },
+                    dispose() { if (m.dispose) m.dispose(); }
+                };
+            }
+            if (key === 'camper') return buildCamperStandIn();
+            const fn = VEHICLE_BUILDERS[key];
+            return fn ? fn() : null;
+        },
+
+        // A live, slowly turning portrait of a vehicle, bound to a canvas the
+        // caller owns. Used by the repair bay and by the party menu's garage;
+        // returns null where there is no WebGL, no THREE, or no such vehicle,
+        // and the caller is expected to fall back on its own sprite.
+        createPreview(canvas, key) {
+            if (!canvas || typeof THREE === 'undefined') return null;
+            const model = this.build(key);
+            if (!model) return null;
+
+            let renderer;
+            try {
+                renderer = new THREE.WebGLRenderer({
+                    canvas, alpha: true, antialias: true, powerPreference: 'low-power'
+                });
+            } catch (e) { model.dispose(); return null; }
+            const w = Math.max(1, canvas.clientWidth || canvas.width || 200);
+            const h = Math.max(1, canvas.clientHeight || canvas.height || 150);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+            renderer.setSize(w, h, false);
+            if ('outputColorSpace' in renderer && THREE.SRGBColorSpace !== undefined) {
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+            }
+
+            const scene = new THREE.Scene();
+            scene.add(new THREE.HemisphereLight(0xdfe9ff, 0x4a3b2a, 1.0));
+            const key1 = new THREE.DirectionalLight(0xfff4e0, 1.1);
+            key1.position.set(6, 10, 8);
+            scene.add(key1);
+
+            // Framed off the model's own length, so a bike fills the frame as
+            // well as a starship does.
+            const turn = new THREE.Group();
+            turn.add(model.group);
+            scene.add(turn);
+            const camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 400);
+            const d = model.length * 1.35;
+            camera.position.set(d * 0.62, d * 0.44, d * 0.9);
+            camera.lookAt(0, model.length * 0.16, 0);
+
+            let raf = null, t0 = null, dead = false;
+            const frame = (now) => {
+                if (dead) return;
+                raf = requestAnimationFrame(frame);
+                if (t0 == null) t0 = now;
+                const t = (now - t0) / 1000;
+                turn.rotation.y = t * 0.5;
+                if (model.update) model.update(t);
+                renderer.render(scene, camera);
+            };
+            raf = requestAnimationFrame(frame);
+
+            return {
+                dispose() {
+                    if (dead) return;
+                    dead = true;
+                    if (raf) cancelAnimationFrame(raf);
+                    model.dispose();
+                    try { renderer.dispose(); } catch (e) { /* already gone */ }
+                    try {
+                        if (renderer.forceContextLoss) renderer.forceContextLoss();
+                    } catch (e) { /* already gone */ }
+                }
+            };
+        }
+    };
+
+    window.VehicleModels = VehicleModels;
 })();

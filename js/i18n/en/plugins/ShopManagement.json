@@ -13,7 +13,10 @@
   "offDuty": "Off Duty",
   "balance": "Balance",
   "category": "Category",
-  "delivery": "Active Delivery",
+  "delivery": {
+    "title": "Delivered to your shop",
+    "line": "{amount}x {item} went to the warehouse at {shop} instead of into your pack."
+  },
   "timeLeft": "Time Left",
   "noShop": "No shop selected.",
   "emptySlot": "Empty Slot",
@@ -55,7 +58,9 @@
     "mustBeOpen": "\\C[2]Shop must be open for business first!",
     "produced": "\\C[3]Successfully produced {item}!",
     "notEnoughMats": "\\C[2]Not enough materials for production!",
-    "timeLimit": "\\C[2]Time Limit: {time}"
+    "timeLimit": "\\C[2]Time Limit: {time}",
+    "menuPriceSet": "\\C[3]{item} is now priced at {price}.",
+    "badMenuPrice": "\\C[2]That item or price is not one the shop can use!"
   },
   "ui": {
     "okAssign": "OK → assign",

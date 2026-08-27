@@ -55,6 +55,10 @@
     --bg-mp-bar-alt: #4070d0;
     --bg-npc-bark: #8c6d58;
     --bg-npc-forest: #2a6e4a;
+    /* The deepest rust the parchment menus stamp a primary button in, and the
+       rule that outlines it. Added when the work board, the bank and the
+       prosthetics shop stopped painting them inline. */
+    --bg-accent-deep: #1a0d00;
     --bg-primary-hover-translucent-10: rgba(88, 24, 13, 0.10);
     --bg-focus-hover-translucent-10: rgba(139, 90, 43, 0.10);
     --bg-focus-hover-translucent-15: rgba(139, 90, 43, 0.15);
@@ -172,7 +176,7 @@
     --text-settings-inactive: #8a6a30;
     --text-settings-arrow-active: #d4a028;
     --text-settings-value-active: #f8e878;
-    --text-caption-brown: #7a6b50;
+    --text-caption-brown: #877659;
     --text-subtle-translucent-65: rgba(74, 39, 17, 0.65);
     --text-pure-white: #ffffff;
     --text-pure-black: #000000;
@@ -185,11 +189,6 @@
        and the rarity ladder is tuned to read against it. */
     --toast-text: #f0e3c4;
     --toast-text-muted: #cbb894;
-    --rarity-common: #f0e3c4;
-    --rarity-uncommon: #5fdc7c;
-    --rarity-rare: #62b0ff;
-    --rarity-epic: #c48cff;
-    --rarity-legendary: #ffab45;
 
     /* === Border Colors === */
     --border-accent-hover-translucent-5: rgba(139, 90, 43, 0.05);
@@ -211,12 +210,61 @@
     --border-focus-hover: #ffcc66;
     --border-muted-focus: #5a4a2a;
     --border-primary-hover-translucent-15: rgba(255, 204, 102, 0.3);
+    /* Fainter siblings of the rule above. theme.css already asked for both;
+       until now nothing answered, so those hairlines drew as nothing. */
+    --border-primary-hover-translucent-5: rgba(255, 204, 102, 0.10);
+    --border-primary-hover-translucent-10: rgba(255, 204, 102, 0.20);
     --border-secondary-hover-translucent-15: rgba(255, 204, 102, 0.2);
     --border-subtle: #5a4a2a;
     --border-success: #5a4a2a;
     --border-danger-dark: #5a0a0a;
     --border-gold-amber: #d4a050;
     --border-forest-green: #2a6e4a;
+    /* Solid white, for the marker rings and pips that must read on any
+       ground at all. Both presets keep it white on purpose. */
+    --border-white-strong: #ffffff;
+    /* === Needs gauges (window.NeedGauge, Core/TimeDateSystem.js) ===
+       One three step scale for every meter in the game: the status
+       sheet's needs, the menu's survival cards, the biologic panel's
+       body parts and the addiction cravings all read it. */
+    --gauge-bad: #ff5555;
+    --gauge-warn: #ffaa44;
+    --gauge-ok: #ffcc66;
+    /* === Hardcore game over (js/plugins/Core/SaveSystem.js) ===
+       The gravestone screen is its own dark plate under either preset,
+       so the two carry the same values; a future preset can retune the
+       whole screen from here. */
+    --hgo-ink: #c9b48a;
+    --hgo-ink-muted: #b8a079;
+    --hgo-ink-strong: #f0e3c0;
+    --hgo-ink-eldritch: #b48ad0;
+    --hgo-rule: rgba(201, 180, 138, 0.25);
+    --hgo-button-bg: #5a1414;
+    --hgo-button-bg-hover: #7a1c1c;
+    --bg-backdrop-black: #000000;
+    --bg-black-translucent-92: rgba(0, 0, 0, 0.92);
+    --bg-danger-translucent-55: rgba(40, 0, 0, 0.55);
+    --shadow-danger-dark-65: rgba(139, 26, 26, 0.65);
+    --shadow-danger-dark-60: rgba(139, 26, 26, 0.60);
+    --shadow-eldritch-55: rgba(150, 90, 200, 0.55);
+    /* === Faction reputation ramp (js/plugins/NPC/FactionDataManager.js) ===
+       Nine bands, nemesis to exalted. Read as a class by the HTML badges and
+       resolved by name for the canvas windows, so a preset retunes the whole
+       ladder here rather than in the plugin. */
+    --faction-rep-exalted: #66ff66;
+    --faction-rep-revered: #5fdc7c;
+    --faction-rep-honored: #8fd98a;
+    --faction-rep-friendly: #b6e6a0;
+    --faction-rep-neutral: #b0a080;
+    --faction-rep-unfriendly: #ffaa44;
+    --faction-rep-hostile: #ff8844;
+    --faction-rep-hated: #ff6644;
+    --faction-rep-nemesis: #ff5555;
+    /* Accord stances between two factions, same idea. */
+    --faction-accord-allied: #66ff66;
+    --faction-accord-neutral: #b0a080;
+    --faction-accord-hostile: #ff5555;
+    --border-accent-deepest: #3d2800;
     --border-purple-medium: #6a3aa0;
     --border-blue-medium: #4070d0;
     --border-blood-red: #c02020;
@@ -336,6 +384,9 @@
     --accent-amber-very-dark: #3a2a06;
     --accent-amber-bronze: #5a4a1e;
     --accent-amber-glow: #ffe9a8;
+    /* The cold counterpart of --accent-amber-glow, for the second line of
+       a label drawn onto a canvas bitmap. */
+    --accent-frost-glow: #cfe6ff;
     --accent-cream-warm: #f6e6b8;
     --accent-cream-light: #f4e9c9;
     --accent-cream-very-light: #fff3c9;
@@ -1083,11 +1134,11 @@ select option:hover {
     background: var(--bg-tertiary-focus-translucent-45);
 }
 
+/* The pieces' own names carry their rarity class and are inked by it; only
+   the trade headings, their counts and a locked row are forced white. */
 #thinker-container .category-name,
 #thinker-container .category-count,
-#thinker-container .blueprint-name,
-#thinker-container .blueprint-name-locked,
-#thinker-container .workbench-item-name {
+#thinker-container .blueprint-name-locked {
     color: var(--text-pure-white) !important;
 }
 
@@ -1110,11 +1161,11 @@ select option:hover {
     background: var(--bg-tertiary-focus-translucent-45);
 }
 
+/* The pieces' own names carry their rarity class and are inked by it; only
+   the trade headings, their counts and a locked row are forced white. */
 #blacksmith-container .category-name,
 #blacksmith-container .category-count,
-#blacksmith-container .blueprint-name,
-#blacksmith-container .blueprint-name-locked,
-#blacksmith-container .workbench-item-name {
+#blacksmith-container .blueprint-name-locked {
     color: var(--text-pure-white) !important;
 }
 
@@ -1885,6 +1936,129 @@ select option:hover {
     border-color: var(--border-gold-amber-30) !important;
 }
 
+
+/* ==========================================================================
+   FurnitureSystem build panel (.fbuild-*), Omega Tower gold on black
+   --------------------------------------------------------------------------
+   The shared block in css/theme.css paints the panel out of the dark-tech blue
+   family (--accent-dark-blue, --accent-tab-active, --accent-blue-gray-light),
+   which is the same in every preset, so the build menu was the one surface in
+   the tower that never took the gold. Re-ink every plate, rule and active
+   state here.
+
+   Scoped by the panel id (#fbuild-panel, and body #fbuild-panel for the panel
+   itself) so it outranks theme.css's plain class rules whichever way the preset
+   reaches the page: @import'ed over css/vars.css at boot, or injected live as
+   <style id="active-theme-override"> by GameOptions.applyTheme.
+   ========================================================================== */
+body #fbuild-panel {
+    background: linear-gradient(180deg, #0d0a05 0%, #000000 100%);
+    border-right: 2px solid var(--border-focus-hover);
+    box-shadow: 8px 0 28px var(--shadow-black-translucent-75);
+    color: #e8d5a8;
+}
+
+/* Bars: header, mode switch, top tabs, category bar, hint footer. */
+#fbuild-panel .fbuild-header,
+#fbuild-panel .fbuild-modebar,
+#fbuild-panel .fbuild-toptabs,
+#fbuild-panel .fbuild-catbar,
+#fbuild-panel .fbuild-materials,
+#fbuild-panel .fbuild-hint {
+    background: rgba(255, 204, 102, 0.05);
+    border-color: var(--border-gold-amber-30);
+}
+#fbuild-panel .fbuild-title { color: var(--accent-amber-glow); }
+#fbuild-panel .fbuild-hint b { color: var(--border-focus-hover); }
+
+/* Chips and controls that took --accent-dark-blue as their plate. */
+#fbuild-panel .fbuild-count,
+#fbuild-panel .fbuild-close,
+#fbuild-panel .fbuild-clear-all,
+#fbuild-panel .fbuild-modeswitch,
+#fbuild-panel .fbuild-toptab-opt,
+#fbuild-panel .fbuild-dd-trigger,
+#fbuild-panel .fbuild-search,
+#fbuild-panel .fbuild-gold {
+    background: rgba(255, 204, 102, 0.08);
+    border-color: var(--border-gold-amber-30);
+    color: #e8d5a8;
+}
+#fbuild-panel .fbuild-gold,
+#fbuild-panel .fbuild-dd-trigger { color: var(--border-focus-hover); }
+
+/* Idle / hover / active states of every pickable control. */
+#fbuild-panel .fbuild-mode-opt,
+#fbuild-panel .fbuild-tab { color: var(--text-card-dark); }
+#fbuild-panel .fbuild-mode-opt:hover,
+#fbuild-panel .fbuild-toptab-opt:hover,
+#fbuild-panel .fbuild-dd-opt:hover { color: var(--accent-amber-glow); }
+#fbuild-panel .fbuild-toptab-opt:hover,
+#fbuild-panel .fbuild-dd-trigger:hover,
+#fbuild-panel .fbuild-search:hover,
+#fbuild-panel .fbuild-search:focus,
+#fbuild-panel .fbuild-dropdown.open .fbuild-dd-trigger {
+    border-color: var(--border-focus-hover);
+}
+#fbuild-panel .fbuild-mode-opt.active,
+#fbuild-panel .fbuild-toptab-opt.active,
+#fbuild-panel .fbuild-dd-opt.active,
+#fbuild-panel .fbuild-tab.active {
+    background: rgba(255, 204, 102, 0.22);
+    border-color: var(--border-focus-hover);
+    color: var(--accent-amber-glow);
+}
+#fbuild-panel .fbuild-tab:hover,
+#fbuild-panel .fbuild-mat,
+#fbuild-panel .fbuild-card-size { background: rgba(255, 204, 102, 0.06); }
+#fbuild-panel .fbuild-mat { border-color: var(--border-gold-amber-30); }
+
+/* Quiet captions: section labels, folder line, empty state, size pill. */
+#fbuild-panel .fbuild-section-label,
+#fbuild-panel .fbuild-cat-label,
+#fbuild-panel .fbuild-card-folder,
+#fbuild-panel .fbuild-card-size,
+#fbuild-panel .fbuild-mat-empty,
+#fbuild-panel .fbuild-empty,
+#fbuild-panel .fbuild-search::placeholder { color: var(--text-card-medium); }
+
+/* Category dropdown popup and the material tooltip. */
+#fbuild-panel .fbuild-dd-list,
+#fbuild-panel .fbuild-mat-tip {
+    background: #0d0a05;
+    border-color: var(--border-focus-hover);
+}
+#fbuild-panel .fbuild-dd-opt { color: #e8d5a8; }
+#fbuild-panel .fbuild-mat-tip { color: var(--accent-amber-glow); }
+
+/* Furniture cards. */
+#fbuild-panel .fbuild-card {
+    background: rgba(255, 204, 102, 0.04);
+    border-color: var(--border-gold-amber-30);
+}
+#fbuild-panel .fbuild-card:hover,
+#fbuild-panel .fbuild-card.fbcursor {
+    background: rgba(255, 204, 102, 0.12);
+    border-color: var(--border-focus-hover);
+}
+#fbuild-panel .fbuild-card.fbcursor {
+    box-shadow: 0 0 0 2px var(--border-focus-hover), 0 4px 14px var(--shadow-black-translucent-75);
+}
+#fbuild-panel .fbuild-card-img { background: rgba(0, 0, 0, 0.55); }
+#fbuild-panel .fbuild-armed-name { color: var(--accent-amber-glow); }
+
+/* Scrollbars. */
+#fbuild-panel .fbuild-grid::-webkit-scrollbar-thumb,
+#fbuild-panel .fbuild-materials::-webkit-scrollbar-thumb,
+#fbuild-panel .fbuild-cats::-webkit-scrollbar-thumb,
+#fbuild-panel .fbuild-dd-list::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb-hover-translucent-60);
+}
+#fbuild-panel .fbuild-grid::-webkit-scrollbar-thumb:hover,
+#fbuild-panel .fbuild-cats::-webkit-scrollbar-thumb:hover,
+#fbuild-panel .fbuild-dd-list::-webkit-scrollbar-thumb:hover {
+    background: var(--border-focus-hover);
+}
 
 /* ==========================================================================
    HANDHELD / STEAM DECK PRIORITY OVERRIDE (theme preset half)

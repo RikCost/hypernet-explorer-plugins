@@ -557,7 +557,16 @@ function resetArmorSlots() {
 }
 
 // Plugin command processing
-const pluginName = "ProceduralItemGenerator";
+// Commands are looked up under Utils.extractFileName of the plugins.js entry, i.e. this
+// file's own bare name. The old ProceduralItemGenerator name is kept alongside it so events
+// authored before the rename still reach the same handlers.
+const pluginName = "ArctifactGenerator";
+const LEGACY_PLUGIN_NAME = "ProceduralItemGenerator";
+function registerArtifactCommand(commandName, handler) {
+    for (const key of [pluginName, LEGACY_PLUGIN_NAME]) {
+        PluginManager.registerCommand(key, commandName, handler);
+    }
+}
 
 // Generate all procedural items with random levels
 function generateAllRandom() {
@@ -719,19 +728,19 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 
 // MZ plugin command handling (if MZ is detected)
 if (Utils.RPGMAKER_NAME === "MZ") {
-    PluginManager.registerCommand(pluginName, "GenerateAllRandom", args => {
+    registerArtifactCommand("GenerateAllRandom", args => {
         generateAllRandom();
     });
 
-    PluginManager.registerCommand(pluginName, "RandomArtifactByLevel", args => {
+    registerArtifactCommand("RandomArtifactByLevel", args => {
         addLevelAppropriateArtifact();
     });
 
-    PluginManager.registerCommand(pluginName, "RandomArtifact", args => {
+    registerArtifactCommand("RandomArtifact", args => {
         addRandomArtifact();
     });
 
-    PluginManager.registerCommand(pluginName, "SacrificeMemberForWeapon", args => {
+    registerArtifactCommand("SacrificeMemberForWeapon", args => {
         askSacrificeMember();
     });
 }
@@ -762,13 +771,13 @@ Window_ItemList.prototype.drawItem = function(index) {
         
         // Choose color based on category
         if (item.meta.Category === "Artifact") {
-            this.changeTextColor(this.textColor(3)); // Color 3 (blue) for artifacts
+            this.changeTextColor(ColorManager.textColor(3)); // Color 3 (blue) for artifacts
         } else if (item.meta.Category === "Procedural") {
             // Check if it's a weapon or armor and use different colors
             if (DataManager.isWeapon(item)) {
-                this.changeTextColor(this.textColor(2)); // Color 2 (green) for weapons
+                this.changeTextColor(ColorManager.textColor(2)); // Color 2 (green) for weapons
             } else if (DataManager.isArmor(item)) {
-                this.changeTextColor(this.textColor(6)); // Color 6 (cyan) for armor
+                this.changeTextColor(ColorManager.textColor(6)); // Color 6 (cyan) for armor
             }
         }
         

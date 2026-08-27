@@ -60,5 +60,95 @@
       "name": "Aromantic solo",
       "desc": "Living by choice without any romantic partnership."
     }
+  },
+  "bond": {
+    "none": {
+      "name": "No tie",
+      "desc": "They have no standing with each other beyond travelling together."
+    },
+    "acquaintances": {
+      "name": "Acquaintances",
+      "desc": "They know each other by name and little else."
+    },
+    "friends": {
+      "name": "Friends",
+      "desc": "A settled friendship, tested and kept."
+    },
+    "best_friends": {
+      "name": "Best friends",
+      "desc": "The first person each of them would call."
+    },
+    "childhood_friends": {
+      "name": "Childhood friends",
+      "desc": "They grew up in the same streets and never lost touch."
+    },
+    "comrades": {
+      "name": "Comrades in arms",
+      "desc": "They fought on the same side and each owes the other a life."
+    },
+    "partners": {
+      "name": "Partners",
+      "desc": "A romance both of them acknowledge."
+    },
+    "spouses": {
+      "name": "Married",
+      "desc": "Legally and openly bound to each other."
+    },
+    "engaged": {
+      "name": "Engaged",
+      "desc": "Promised to each other, with the date still to come."
+    },
+    "lovers": {
+      "name": "Lovers",
+      "desc": "A physical romance neither has put a name to."
+    },
+    "situationship": {
+      "name": "Situationship",
+      "desc": "Something is going on and neither will define it."
+    },
+    "exes": {
+      "name": "Exes",
+      "desc": "A romance that ended, with whatever it left behind."
+    },
+    "unrequited": {
+      "name": "Pines for them",
+      "desc": "A love carried alone and never spoken out loud."
+    },
+    "unaware": {
+      "name": "Unaware of their feelings",
+      "desc": "The other one is in love; this one has never noticed."
+    },
+    "siblings": {
+      "name": "Siblings",
+      "desc": "Born of the same family."
+    },
+    "twins": {
+      "name": "Twins",
+      "desc": "Born the same day, of the same womb."
+    },
+    "parent": {
+      "name": "Their parent",
+      "desc": "This one raised the other."
+    },
+    "child": {
+      "name": "Their child",
+      "desc": "This one was raised by the other."
+    },
+    "cousins": {
+      "name": "Cousins",
+      "desc": "Family, one branch removed."
+    },
+    "mentor": {
+      "name": "Their mentor",
+      "desc": "This one taught the other the trade."
+    },
+    "student": {
+      "name": "Their student",
+      "desc": "This one learned the trade from the other."
+    },
+    "rivals": {
+      "name": "Rivals",
+      "desc": "A running contest neither of them will concede."
+    }
   }
 }

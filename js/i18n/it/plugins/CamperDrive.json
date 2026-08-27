@@ -10,6 +10,32 @@
   "flipped": "Camper ribaltato",
   "destination": "Destinazione",
   "freeDrive": "Guida libera",
+  "freeWalk": "Passeggiata libera",
+  "prompt": {
+    "key": "E",
+    "talk": "{key}  Parla con {name}",
+    "loot": "{key}  Fruga il corpo di {name}",
+    "board": "{key}  Sali sul camper"
+  },
+  "enemy": {
+    "level": "Liv. {n}"
+  },
+  "npc": {
+    "approach": "{name} si ferma per capire cosa vuoi.",
+    "talk": "Parla",
+    "empathize": "Entra in empatia",
+    "leave": "Lascia perdere",
+    "nothingToSay": "Non ha nulla da dire a uno sconosciuto."
+  },
+  "place": {
+    "visit": "Entra a {place}",
+    "keepGoing": "Tira dritto"
+  },
+  "shop": {
+    "greeting": "{name} bada al negozio: {shop}.",
+    "browse": "Guarda la merce",
+    "generic": "negozio"
+  },
   "openRoad": "Strada Aperta",
   "autopilot": "Pilota automatico",
   "hud": {
@@ -21,14 +47,27 @@
     "view": "VISTA:",
     "mode": "MODO:",
     "cmdDrive": "Guida / sterza",
+    "cmdWalk": "Cammina",
+    "cmdTalk": "Parla, saccheggia un corpo",
+    "cmdRun": "Corri",
+    "cmdJump": "Salta (di nuovo contro un muro per corrervi)",
+    "cmdFly": "Decolla / atterra (serve l'abilità Volo)",
+    "cmdCrouch": "Accovacciati",
+    "cmdSwim": "In acqua: risali / immergiti",
+    "cmdMenu": "Menu del gruppo",
+    "cmdExitWalk": "Termina la passeggiata",
     "cmdTurbo": "Turbo (a piedi: corri)",
     "cmdDoor": "Portiera: scendi / sali",
     "cmdView": "Cambia vista",
     "cmdExit": "Esci dalla guida",
+    "cmdVehicle": "Opzioni del veicolo",
+    "cmdHelp": "H  Comandi",
     "controllerHint": "Controller: L2/R2 zoom indietro/avanti &middot; Y cambia vista",
+    "controllerHintWalk": "Controller: stick destro guarda &middot; A salta &middot; B termina la passeggiata",
     "fly": "VOLO",
     "float": "GALLEGGIA",
     "dive": "IMMERSIONE",
+    "swim": "NUOTO",
     "cond": "COND",
     "trip": "VIAGGIO",
     "camperStuck": "Camper bloccato",
@@ -43,9 +82,15 @@
   },
   "envMode": {
     "road": "STRADA",
+    "land": "A TERRA",
+    "cave": "SOTTOTERRA",
     "air": "IN VOLO",
     "water": "A GALLA",
     "underwater": "IN IMMERSIONE"
   },
-  "weapon": "Ora impugni: {name}"
+  "weapon": "Ora impugni: {name}",
+  "driverSave": {
+    "avoided": "[Tiro su DES del guidatore: {roll}{mod}={total}] Controsterzata magistrale, incidente evitato!",
+    "failed": "[Tiro su DES del guidatore: {roll}{mod}={total} contro CD {dc}] Riflessi insufficienti, il veicolo va a sbattere!"
+  }
 }

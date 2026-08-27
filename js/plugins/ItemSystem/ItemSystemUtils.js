@@ -666,6 +666,27 @@
     },
 
     /**
+     * The class that inks a name at this rarity: rarity--common and so on,
+     * defined in theme.css off the --rarity-* tokens. Prefer this to
+     * colorCode in HTML. colorCode stays for the canvas windows, which can
+     * only be handed a colour string, and for the loot roller, which reads it
+     * as data rather than paint.
+     *
+     * The presets used to reach the same effect with attribute selectors on
+     * the inline colour ([style*="#FF8000"]), which is why the hexes above are
+     * not free to change: they are now, and those hacks are gone.
+     */
+    rarityClass: function (rarity) {
+      const id = rarity && rarity.name ? rarity.name : rarity;
+      return 'rarity--' + String(id || 'common').toLowerCase();
+    },
+
+    /** The class for an item, straight from the item. */
+    itemRarityClass: function (item) {
+      return this.rarityClass(this.getItemRarity(item));
+    },
+
+    /**
      * Get item rarity based on price
      */
     getItemRarity: function (item) {

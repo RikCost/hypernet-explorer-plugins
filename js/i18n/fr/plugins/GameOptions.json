@@ -70,9 +70,9 @@
     "Camper"
   ],
   "enemySpawn": [
-    "Distance du départ",
-    "Niveau du Groupe",
     "Biome",
+    "Niveau du Groupe",
+    "Distance du départ",
     "Chaos"
   ],
   "enemyBattler": [
@@ -90,9 +90,9 @@
   },
   "descState": {
     "enemySpawnMode": [
-      "Distance du départ : la difficulté vient du lieu, pas de vous. Les niveaux montent à mesure qu'une case s'éloigne de votre point de départ. Chaque nation et chaque biome a sa propre liste, et chaque case cache un boss.",
-      "Niveau du Groupe : les ennemis s'adaptent à votre groupe. Les rôdeurs restent à votre niveau ou en dessous ; chaque case cache un boss plus fort. L'option la plus sûre.",
       "Biome : toute créature qui vit ici peut apparaître, à n'importe quel niveau jusqu'à 100, toutes également probables. Le lieu décide ce que vous rencontrez, jamais la difficulté.",
+      "Niveau du Groupe : les ennemis s'adaptent à votre groupe. Les rôdeurs restent à votre niveau ou en dessous ; chaque case cache un boss plus fort. L'option la plus sûre.",
+      "Distance du départ : la difficulté vient du lieu, pas de vous. Les niveaux montent à mesure qu'une case s'éloigne de votre point de départ. Chaque nation et chaque biome a sa propre liste, et chaque case cache un boss.",
       "Chaos : du niveau 1 à 110, partout, quel que soit le biome. Les cartes procédurales redistribuent leurs monstres à chaque entrée."
     ]
   }

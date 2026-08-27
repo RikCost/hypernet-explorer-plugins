@@ -122,8 +122,19 @@
 (() => {
   "use strict";
 
-  const pluginName = "MZ_WorldMapVisualizer";
+  // The engine keys both parameters and commands by Utils.extractFileName of the plugins.js
+  // entry, i.e. this file's own bare name. While that read the old MZ_WorldMapVisualizer name
+  // the parameter block came back empty, so ignoredMaps, teleportHubId and displayDepth all
+  // silently ran on their code defaults, and none of the four commands could ever fire.
+  const pluginName = "MapGraphs";
+  const LEGACY_PLUGIN_NAME = "MZ_WorldMapVisualizer";
+  const COMMAND_KEYS = [pluginName, LEGACY_PLUGIN_NAME];
   const parameters = PluginManager.parameters(pluginName);
+
+  // Registered under both names so events authored before the rename still reach it.
+  function registerMapGraphCommand(commandName, handler) {
+    for (const key of COMMAND_KEYS) PluginManager.registerCommand(key, commandName, handler);
+  }
 
   // Diagnostic logging for the graph-build and compass paths is off by default;
   // flip to true when debugging connection/compass issues.
@@ -817,10 +828,10 @@
   }
 
   // Plugin command registration
-  PluginManager.registerCommand(pluginName, "openWorldMap", () => {
+  registerMapGraphCommand("openWorldMap", () => {
     SceneManager.push(Scene_WorldMap);
   });
-  PluginManager.registerCommand(pluginName, "generateConnectionsJSON", () => {
+  registerMapGraphCommand("generateConnectionsJSON", () => {
     dlog("=== GENERATING MAP CONNECTIONS JSON ===");
     dlog("Analyzing all maps in the game...");
 
@@ -833,14 +844,14 @@
     $gameMessage.add(T('MapGraphs.jsonGenerated'));
     $gameMessage.add(T('MapGraphs.checkConsole'));
   });
-  PluginManager.registerCommand(pluginName, "clearConnectionCache", () => {
+  registerMapGraphCommand("clearConnectionCache", () => {
     $gameSystem._mapConnectionGraph = null;
     dlog(
       "Connection cache cleared. Next map analysis will rebuild from source."
     );
     $gameMessage.add(T('MapGraphs.cacheCleared'));
   });
-  PluginManager.registerCommand(pluginName, "showConnectionStats", () => {
+  registerMapGraphCommand("showConnectionStats", () => {
     const graph = buildCompleteConnectionGraph();
 
     let totalMaps = 0;
@@ -874,11 +885,9 @@
       `Using ${useHardcodedConnections ? "hardcoded" : "runtime"} analysis`
     );
 
-    $gameMessage.add(
-      `Map Stats: ${totalMaps} maps, ${Math.floor(
-        totalConnections / 2
-      )} connections`
-    );
+    $gameMessage.add(T('MapGraphs.mapStats', {
+      maps: totalMaps, links: Math.floor(totalConnections / 2),
+    }));
     $gameMessage.add(T('MapGraphs.mostConnected', { map: maxConnectionsMap, links: maxConnections }));
     $gameMessage.add(T('MapGraphs.mode', { mode: useHardcodedConnections
       ? T('MapGraphs.modeHardcoded') : T('MapGraphs.modeRuntime') }));
@@ -1718,7 +1727,9 @@ if (enableMenuCommand) {
       }
 
       if (depthChanged) {
-        this.updateHelpText();
+        // No updateHelpText call here: the help line is the static controls string set in
+        // createHelpWindow and never varies with depth. The method never existed, so changing
+        // depth threw instead of redrawing.
         this.analyzeMapConnections();
         if ($gameSystem._worldMapDestinationId) {
           this.updateAndHighlightPath();

@@ -57,12 +57,14 @@
  * list through that plugin rather than assigning innerHTML itself.
  *
  * Every field starts COLLAPSED: all the page shows is the IconSet magnifier
- * (247) at its top right, and the field itself only exists once that handle is clicked (it
- * autofocuses then, and empties itself again when collapsed). The handle is a
- * plain DOM element without the '.focusable' class every menu's navigator
- * collects, so a controller can never land on it: opening a search is a click.
- * A host that patches its page in place instead of redrawing the strip needs to
- * do nothing, toggleField() repaints its own markup.
+ * (247) at its top right, and the field itself only exists once that handle is
+ * opened (it autofocuses then, and empties itself again when collapsed). The
+ * handle carries '.focusable' and a real tabindex, so every menu navigator that
+ * collects the focus ring lands on it like any other control, and F opens and
+ * closes it from anywhere a strip is mounted (see the shortcut below) so a
+ * menu whose cursor walks only its own cards still has a way in. A host that
+ * patches its page in place instead of redrawing the strip needs to do nothing,
+ * toggleField() repaints its own markup.
  *
  * A focused field owns the keyboard: every key event is stopped at the element,
  * so neither Input.keyMapper nor a scene's own window-level WASD listener ever
@@ -99,7 +101,7 @@
     // this strip.
     function toggleHTML(onclick, expanded) {
         const title = expanded ? T('MenuSearch.close') : T('MenuSearch.open');
-        return `<div class="msb-toggle${expanded ? ' open' : ''}" tabindex="-1"
+        return `<div class="msb-toggle focusable${expanded ? ' open' : ''}" tabindex="0"
                     title="${escapeHtml(title)}"
                     onmousedown="event.preventDefault()"
                     onclick="event.stopPropagation(); ${onclick}"><span class="msb-glass" style="${iconStyle(SEARCH_GLASS_ICON, 20)}"></span></div>`;
@@ -242,7 +244,7 @@
                             const label = typeof c === 'string' ? c : c.label;
                             return `<option value="${escapeHtml(value)}"${value === state.category ? ' selected' : ''}>${escapeHtml(label)}</option>`;
                         })).join('');
-                    bits.push(`<select class="msb-select" onchange="${call('setCategory', 'this.value')}" ${STOP}>${options}</select>`);
+                    bits.push(`<select class="msb-select focusable" onchange="${call('setCategory', 'this.value')}" ${STOP}>${options}</select>`);
                 } else if (state.count !== null) {
                     bits.push(`<span class="msb-count">${T('MenuSearch.showing', { count: state.count })}</span>`);
                 }
@@ -442,7 +444,40 @@
         };
 
         bars.set(id, bar);
+        lastId = id;
+        installSearchKey();
         return bar;
+    }
+
+    // ---- the keyboard route to the handle ----------------------------------
+    // Every strip is mounted inside a menu that walks its own cards, and most
+    // of those cursors collect nothing but cards: the handle would be the one
+    // control on the page that needed a mouse. F opens and closes the newest
+    // strip on screen from wherever the cursor is, which is also how a player
+    // on a pad reaches it, since a pad cannot type into the field anyway and
+    // the menu's own cursor keeps the list.
+    //
+    // Bound once, on the document, and it stands down while anything has the
+    // caret so the letter goes into the field rather than closing it.
+    const SEARCH_KEY = "f";
+    let lastId = null;
+    let keyInstalled = false;
+
+    function installSearchKey() {
+        if (keyInstalled || typeof document === "undefined") return;
+        keyInstalled = true;
+        document.addEventListener("keydown", (e) => {
+            if (String(e.key).toLowerCase() !== SEARCH_KEY) return;
+            if (e.altKey || e.metaKey) return;
+            if (isTyping()) return;
+            const bar = lastId ? bars.get(lastId) : null;
+            // Only while a strip is actually on screen: the same key means
+            // nothing on a map or in a battle.
+            if (!bar || !document.querySelector(".msb-toggle")) return;
+            e.preventDefault();
+            e.stopPropagation();
+            bar.toggleField();
+        });
     }
 
     window.MenuSearchBar = {

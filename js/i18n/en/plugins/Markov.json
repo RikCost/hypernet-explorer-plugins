@@ -21,6 +21,12 @@
     "gotRuntime": "Language model runtime installed.",
     "noRuntime": "No language model runtime for {platform}. Generated lines stay with the Markov chains.",
     "thinking": "Thinking…",
-    "thinkingNpc": "{npc} is thinking…"
+    "thinkingNpc": "{npc} is thinking…",
+    "chatSystem": "You are {npc}, a person met in the street, and you are speaking with a traveller who has just walked up to you.",
+    "chatAbout": "What is known of you: {bio}.",
+    "chatPlace": "You are both in {place}.",
+    "chatFlavour": "The talk around here goes like this: {text}",
+    "chatStyle": "Answer in character, in English, in one or two short sentences. Never describe your actions, never use lists or markdown, never mention being a model.",
+    "chatOpen": "Say something to me."
   }
 }

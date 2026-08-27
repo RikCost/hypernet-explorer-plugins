@@ -2966,6 +2966,59 @@
     }
   },
   {
+    "id": 421,
+    "country": "Greenland",
+    "region": "North America",
+    "faction": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "11:12",
+        "sunset": "14:03",
+        "dayTemp": -12.5,
+        "nightTemp": -21.4,
+        "precipitation": 0.9,
+        "windSpeed": 26,
+        "cloudCover": 75,
+        "dayHumidity": 78,
+        "nightHumidity": 85
+      },
+      "spring": {
+        "sunrise": "05:38",
+        "sunset": "20:41",
+        "dayTemp": -2.1,
+        "nightTemp": -9.8,
+        "precipitation": 0.7,
+        "windSpeed": 22,
+        "cloudCover": 68,
+        "dayHumidity": 74,
+        "nightHumidity": 82
+      },
+      "summer": {
+        "sunrise": "02:31",
+        "sunset": "23:52",
+        "dayTemp": 9.4,
+        "nightTemp": 2.6,
+        "precipitation": 1.2,
+        "windSpeed": 17,
+        "cloudCover": 62,
+        "dayHumidity": 72,
+        "nightHumidity": 84
+      },
+      "autumn": {
+        "sunrise": "07:22",
+        "sunset": "17:44",
+        "dayTemp": -4.8,
+        "nightTemp": -12.1,
+        "precipitation": 1.4,
+        "windSpeed": 24,
+        "cloudCover": 80,
+        "dayHumidity": 80,
+        "nightHumidity": 88
+      }
+    },
+    "controller": "Neutral"
+  },
+  {
     "id": 402,
     "country": "Japan",
     "region": "Asia",

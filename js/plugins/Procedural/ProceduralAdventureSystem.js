@@ -2248,25 +2248,59 @@
     return el;
   }
 
+  // How big the scene is drawn. The star map keeps it as a strip at the top of
+  // its own panel; the map presenter plays it as the whole screen, with the
+  // busts standing at full height and the card of prose laid over their feet.
+  const STAGE_METRICS = {
+    strip: {
+      shade: "70px",
+      bottomActive: "-16px", bottomIdle: "-24px",
+      heightActive: "158px", heightIdle: "150px",
+      left: (i) => (6 + i * 62) + "px",
+      foeBottom: "-24px", foeSide: "8px", foeHeight: "150px",
+    },
+    full: {
+      shade: "46vh",
+      bottomActive: "0", bottomIdle: "-2vh",
+      heightActive: "74vh", heightIdle: "66vh",
+      left: (i) => (1 + i * 13) + "vw",
+      foeBottom: "0", foeSide: "2vw", foeHeight: "70vh",
+    },
+  };
+
   const Stage = {
     // The scene, as one element, or null when there is nothing to draw it out
     // of. `view` decides who stands on the right: a fight about to start shows
-    // the enemy, anything else shows the stranger.
-    build(session, view) {
+    // the enemy, anything else shows the stranger. `opts.full` draws it as the
+    // whole screen instead of a strip inside a card.
+    build(session, view, opts) {
       if (!session || typeof document === "undefined") return null;
       const bg = stageBackground(session);
       if (!bg) return null;
-      const box = stageEl("div", {
+      const full = !!(opts && opts.full);
+      const m = full ? STAGE_METRICS.full : STAGE_METRICS.strip;
+      const box = stageEl("div", full ? {
+        // The four longhands, never the `inset` shorthand: the runtime's CSS
+        // does not know it, and a full-screen layer written with it collapses.
+        position: "fixed", left: "0", top: "0", right: "0", bottom: "0",
+        width: "100vw", height: "100vh",
+        overflow: "hidden", pointerEvents: "none", zIndex: "0",
+        backgroundImage: "url('" + bg.replace(/'/g, "%27") + "')",
+        backgroundSize: "cover", backgroundPosition: "center 45%",
+      } : {
         position: "relative", width: "100%", height: "170px",
         overflow: "hidden", borderRadius: "4px", marginBottom: "10px",
         flexShrink: "0",
         backgroundImage: "url('" + bg.replace(/'/g, "%27") + "')",
         backgroundSize: "cover", backgroundPosition: "center 35%",
       });
-      // A floor of shadow, so the busts read against any sky.
+      // A floor of shadow, so the busts read against any sky - and, played as
+      // the whole screen, so the prose has something to sit on.
       box.appendChild(stageEl("div", {
-        position: "absolute", left: "0", right: "0", bottom: "0", height: "70px",
-        background: "linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0))",
+        position: "absolute", left: "0", right: "0", bottom: "0", height: m.shade,
+        background: full
+          ? "linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.35) 55%, rgba(0,0,0,0))"
+          : "linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0))",
         pointerEvents: "none",
       }));
       // The away team, shoulder to shoulder on the left.
@@ -2277,9 +2311,10 @@
         if (!src) return;
         const active = i === questerIdx;
         const img = stageEl("img", {
-          position: "absolute", bottom: active ? "-16px" : "-24px",
-          left: (6 + i * 62) + "px",
-          height: active ? "158px" : "150px", width: "auto",
+          position: "absolute",
+          bottom: active ? m.bottomActive : m.bottomIdle,
+          left: m.left(i),
+          height: active ? m.heightActive : m.heightIdle, width: "auto",
           filter: active
             ? "drop-shadow(0 0 6px rgba(255,215,0,0.85)) drop-shadow(0 3px 5px rgba(0,0,0,0.6))"
             : "drop-shadow(0 3px 5px rgba(0,0,0,0.6)) brightness(0.82)",
@@ -2295,8 +2330,8 @@
         : stageStrangerBust(session);
       if (foe) {
         const img = stageEl("img", {
-          position: "absolute", bottom: "-24px", right: "8px",
-          height: "150px", width: "auto",
+          position: "absolute", bottom: m.foeBottom, right: m.foeSide,
+          height: m.foeHeight, width: "auto",
           transform: "scaleX(-1)",
           filter: "drop-shadow(0 3px 5px rgba(0,0,0,0.6))",
         });
@@ -2401,6 +2436,7 @@
 
   const MODAL_ID = "pas-adventure-overlay";   // i18n-ignore: DOM id
   const MODAL_ARM_FRAMES = 4;   // frames a fresh row list ignores the OK button
+  const TYPE_CHARS_PER_FRAME = 2;   // how fast the prose writes itself out
 
   // Message-window escape codes (\c[14] and the like) mean nothing to the DOM.
   function stripCodes(text) {
@@ -2415,6 +2451,7 @@
     _index: 0,
     _arm: 0,
     _running: false,
+    _typing: null,
 
     // ---- lifecycle ---------------------------------------------------------
 
@@ -2442,6 +2479,14 @@
       ["mousedown", "mouseup", "click", "wheel", "touchstart", "touchend"].forEach((ev) => {
         root.addEventListener(ev, (e) => { e.stopPropagation(); }, { passive: true });
       });
+      // The engine never sees a click that lands on the overlay, so the skip
+      // has to be read here too: clicking anywhere off the rows while the node
+      // is still writing itself puts the rest of it up.
+      ["mousedown", "touchstart"].forEach((ev) => {
+        root.addEventListener(ev, () => {
+          if (this._typing) this.finishTyping();
+        }, { passive: true });
+      });
       // Right-click is the mouse's cancel, the same as it is everywhere else:
       // it takes the last row, which is "leave it" on a branch and "close" on
       // an ending. The engine never sees the event, so it cannot also read it.
@@ -2461,6 +2506,7 @@
     },
 
     destroy() {
+      this.stopTyping();
       const stale = (typeof document !== "undefined") ? document.getElementById(MODAL_ID) : null;
       if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
       this._root = null;
@@ -2476,16 +2522,17 @@
       if (!this._panel) { this.build(); }
       const panel = this._panel;
       if (!panel) { this.finish(); return; }
+      this.stopTyping();
       panel.innerHTML = "";
       // The scene itself: the ground this is happening on, and who is standing
-      // on it, with the companion tabs above so the die can change hands.
-      // Purely presentation; a build without it keeps the parchment.
+      // on it, drawn across the whole screen behind the card, with the
+      // companion tabs above the prose so the die can change hands. Purely
+      // presentation; a build without it keeps the parchment.
       try {
         const session = Anomaly.session();
+        this.drawScene(session, view);
         const tabs = Stage.buildSwitcher(session, () => this.rerender());
         if (tabs) panel.appendChild(tabs);
-        const stage = Stage.build(session, view);
-        if (stage) panel.appendChild(stage);
       } catch (e) { /* presentation only: never let it stop the story */ }
       if (view.title) {
         const title = document.createElement("div");
@@ -2495,10 +2542,13 @@
       }
       const body = document.createElement("div");
       body.className = "pas-adv-text";   // i18n-ignore: DOM class
+      const typed = [];
+      const veiled = [];
       String(view.text || "").split("\n").forEach((para) => {
         const p = document.createElement("p");
         p.textContent = stripCodes(para);
         body.appendChild(p);
+        typed.push({ el: p, text: p.textContent });
       });
       panel.appendChild(body);
       if (view.done) {
@@ -2512,6 +2562,7 @@
             box.appendChild(p);
           });
           panel.appendChild(box);
+          veiled.push(box);
         }
         this.setRows([{ label: anomText("ui.mapClose"), run: () => this.finish() }]);
       } else {
@@ -2529,7 +2580,79 @@
       hint.textContent = anomText("ui.mapHint");
       panel.appendChild(hint);
       body.scrollTop = 0;
+      // What the node pays, and what it asks, are kept out of sight until the
+      // node has finished saying itself.
+      if (this._rowsEl) veiled.push(this._rowsEl);
+      veiled.push(hint);
+      this.typeOut(typed, veiled, body);
     },
+
+    // The scene is the size of the screen, so it hangs off the overlay rather
+    // than off the card: one layer per node, replacing the one before it.
+    drawScene(session, view) {
+      const root = this._root;
+      if (!root || !root.querySelector) return;
+      const old = root.querySelector(".pas-adv-scene");   // i18n-ignore: DOM class
+      if (old && old.remove) old.remove();
+      const scene = Stage.build(session, view, { full: true });
+      if (!scene) return;
+      scene.className = "pas-adv-scene";   // i18n-ignore: DOM class
+      root.insertBefore(scene, root.firstChild || null);
+    },
+
+    // ---- the prose, written out --------------------------------------------
+    // The node arrives empty and fills in a character at a time, and the rows
+    // only open once it has finished speaking. Any key or click puts the rest
+    // of it up at once. Driven from update(), so it runs on the engine's own
+    // frame clock and dies the moment the modal does.
+
+    typeOut(parts, veiled, scroller) {
+      const alive = (parts || []).filter((p) => p && p.text);
+      (veiled || []).forEach((el) => {
+        if (el && el.classList) el.classList.add("pas-adv-veiled");   // i18n-ignore: DOM class
+      });
+      if (!alive.length) { this.reveal(veiled); return; }
+      alive.forEach((p) => { p.el.textContent = ""; });
+      this._typing = { parts: alive, at: 0, cut: 0, veiled: veiled || [], scroller: scroller };
+    },
+
+    advanceTyping() {
+      const t = this._typing;
+      if (!t) return;
+      let budget = TYPE_CHARS_PER_FRAME;
+      while (budget > 0 && t.at < t.parts.length) {
+        const part = t.parts[t.at];
+        const take = Math.min(budget, part.text.length - t.cut);
+        t.cut += take;
+        budget -= take;
+        part.el.textContent = part.text.slice(0, t.cut);
+        if (t.cut >= part.text.length) { t.at++; t.cut = 0; }
+      }
+      // A node longer than the card keeps its last written line in view.
+      if (t.scroller) t.scroller.scrollTop = t.scroller.scrollHeight || 0;
+      if (t.at >= t.parts.length) this.finishTyping();
+    },
+
+    // Everything said at once: what the skip does, and what the last frame of
+    // the writing does too.
+    finishTyping() {
+      const t = this._typing;
+      if (!t) return;
+      this._typing = null;
+      t.parts.forEach((p) => { p.el.textContent = p.text; });
+      this.reveal(t.veiled);
+    },
+
+    // Dropped mid-sentence: the node is being replaced, so nothing is owed.
+    stopTyping() { this._typing = null; },
+
+    reveal(veiled) {
+      (veiled || []).forEach((el) => {
+        if (el && el.classList) el.classList.remove("pas-adv-veiled");   // i18n-ignore: DOM class
+      });
+    },
+
+    isTyping() { return !!this._typing; },
 
     setRows(rows) {
       this._rows = rows;
@@ -2649,7 +2772,21 @@
     // ---- input -------------------------------------------------------------
 
     update() {
-      if (!this._running || !this._rows.length) return;
+      if (!this._running) return;
+      // While the node is still writing itself every button is the same
+      // button: it says the rest of it now.
+      if (this._typing) {
+        this.advanceTyping();
+        const skipped = Input.isTriggered("ok") || Input.isTriggered("cancel") ||
+          (TouchInput.isTriggered && TouchInput.isTriggered()) || TouchInput.isCancelled();
+        if (this._typing && skipped) {
+          Input.clear();
+          this.finishTyping();
+          this._arm = MODAL_ARM_FRAMES;
+        }
+        return;
+      }
+      if (!this._rows.length) return;
       if (this._arm > 0) { this._arm--; Input.clear(); return; }
       // The die changes hands on the shoulder buttons (or Tab), the same
       // companion-cycling gesture the book-spread menus use.

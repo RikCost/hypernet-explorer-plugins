@@ -369,7 +369,7 @@
                 <span class="inspect-spec-value">${weaponTypeLabel(wd)}</span>
               </div>
               <div class="inspect-spec-row">
-                <span class="inspect-spec-label">${T('BladeSeed.element')}</span>
+                <span class="inspect-spec-label">${T('BladeSeed.elementLabel')}</span>
                 <span class="inspect-spec-value" style="color:${elClr}">${BD.elementNames[sp.element]}</span>
               </div>
               <div class="inspect-spec-row">
@@ -608,7 +608,7 @@
               <span class="inspect-spec-value">${spirit.name}</span>
             </div>
             <div class="inspect-spec-row">
-              <span class="inspect-spec-label">${T('BladeSeed.element')}</span>
+              <span class="inspect-spec-label">${T('BladeSeed.elementLabel')}</span>
               <span class="inspect-spec-value" style="color:${elClr}">${BD.elementNames[spirit.element]}</span>
             </div>
             <div class="inspect-spec-row">

@@ -13,8 +13,8 @@
       "durationDays": 8,
       "desc": "Seasonal flu virus. Fever, aches, and a week of misery.",
       "params": {
-        "atk": -3,
-        "agi": -5
+        "atk": -2,
+        "agi": -3
       },
       "onset": {
         "steps": 300,
@@ -60,7 +60,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -69,7 +69,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -84,8 +84,8 @@
       "durationDays": 6,
       "desc": "Rhinovirus. Runny nose, mild but relentlessly contagious.",
       "params": {
-        "mat": -2,
-        "agi": -2
+        "mat": -1,
+        "agi": -1
       },
       "onset": {
         "steps": 600,
@@ -130,13 +130,13 @@
         "hunger": 1.075,
         "sleep": 1.15,
         "hygiene": 1.1,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -152,8 +152,8 @@
       "desc": "A pandemic respiratory virus with a stubborn viral load.",
       "params": {
         "mhp": -40,
-        "agi": -6,
-        "atk": -4
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 250,
@@ -193,13 +193,13 @@
         "peakStart": 3,
         "peakEnd": 8,
         "latent": 0.4,
-        "peak": 2
+        "peak": 2.0
       },
       "needs": {
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -229,7 +229,7 @@
       "desc": "Extraordinarily contagious. Koplik spots and a blanketing rash.",
       "params": {
         "mhp": -30,
-        "def": -4
+        "def": -2
       },
       "onset": {
         "steps": 200,
@@ -245,7 +245,7 @@
       ],
       "kind": "medical",
       "cfr": 0.02,
-      "r0": 14,
+      "r0": 14.0,
       "rarity": "uncommon",
       "epidemic": true,
       "stageOnly": false,
@@ -273,7 +273,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -299,7 +299,7 @@
       "desc": "Paramyxovirus swelling the parotid glands.",
       "params": {
         "mmp": -20,
-        "mat": -3
+        "mat": -2
       },
       "onset": {
         "steps": 280,
@@ -316,7 +316,7 @@
       ],
       "kind": "medical",
       "cfr": 0.004,
-      "r0": 5,
+      "r0": 5.0,
       "rarity": "common",
       "epidemic": true,
       "stageOnly": false,
@@ -344,7 +344,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -353,7 +353,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -368,7 +368,7 @@
       "durationDays": 9,
       "desc": "German measles. Mild in adults, dangerous in pregnancy.",
       "params": {
-        "def": -3
+        "def": -2
       },
       "onset": {
         "steps": 320,
@@ -383,7 +383,7 @@
       ],
       "kind": "medical",
       "cfr": 0.004,
-      "r0": 6,
+      "r0": 6.0,
       "rarity": "common",
       "epidemic": true,
       "stageOnly": false,
@@ -411,7 +411,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -419,7 +419,7 @@
           38
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -434,8 +434,8 @@
       "durationDays": 11,
       "desc": "Varicella-zoster. Itching crops of blisters everywhere.",
       "params": {
-        "agi": -4,
-        "def": -3
+        "agi": -2,
+        "def": -2
       },
       "onset": {
         "steps": 260,
@@ -452,7 +452,7 @@
       ],
       "kind": "medical",
       "cfr": 0.004,
-      "r0": 9,
+      "r0": 9.0,
       "rarity": "common",
       "epidemic": true,
       "stageOnly": false,
@@ -480,7 +480,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -489,7 +489,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -504,8 +504,8 @@
       "durationDays": 21,
       "desc": "Reactivated varicella tracing a nerve in searing pain.",
       "params": {
-        "atk": -4,
-        "agi": -6
+        "atk": -2,
+        "agi": -3
       },
       "onset": {
         "steps": 180,
@@ -548,7 +548,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -557,7 +557,7 @@
           38
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -572,8 +572,8 @@
       "durationDays": 30,
       "desc": "The kissing disease. Epstein-Barr leaves you flattened for weeks.",
       "params": {
-        "agi": -8,
-        "atk": -5
+        "agi": -4,
+        "atk": -3
       },
       "onset": {
         "steps": 400,
@@ -617,7 +617,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -625,7 +625,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "post-viral-syndrome",
@@ -646,7 +646,7 @@
       "desc": "Fecal-oral liver virus. Jaundice and exhaustion.",
       "params": {
         "mmp": -25,
-        "mat": -4
+        "mat": -2
       },
       "onset": {
         "steps": 350,
@@ -691,7 +691,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -700,7 +700,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -761,7 +761,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -836,7 +836,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -865,8 +865,8 @@
       "durationDays": 3,
       "desc": "Winter vomiting bug. Explosive and absurdly contagious.",
       "params": {
-        "agi": -6,
-        "atk": -3
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 120,
@@ -911,7 +911,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -919,7 +919,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -934,7 +934,7 @@
       "durationDays": 5,
       "desc": "Severe gastroenteritis, dehydrating and swift.",
       "params": {
-        "agi": -5
+        "agi": -3
       },
       "onset": {
         "steps": 150,
@@ -977,7 +977,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -985,7 +985,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -1001,8 +1001,8 @@
       "desc": "Once symptomatic, near-universally fatal. Hydrophobia and fury.",
       "params": {
         "mhp": -60,
-        "atk": 6,
-        "luk": -10
+        "atk": 3,
+        "luk": -4
       },
       "onset": {
         "steps": 220,
@@ -1041,13 +1041,13 @@
         "peakStart": 45,
         "peakEnd": 9999,
         "latent": 0.05,
-        "peak": 3
+        "peak": 3.0
       },
       "needs": {
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -1071,8 +1071,8 @@
       "durationDays": -1,
       "desc": "Attacks motor neurons; can leave permanent paralysis.",
       "params": {
-        "agi": -15,
-        "atk": -8
+        "agi": -5,
+        "atk": -4
       },
       "onset": {
         "steps": 300,
@@ -1117,7 +1117,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -1141,7 +1141,7 @@
       "desc": "Eradicated in life, resurgent in nightmares. Pustular and deadly.",
       "params": {
         "mhp": -50,
-        "def": -8
+        "def": -4
       },
       "onset": {
         "steps": 200,
@@ -1158,7 +1158,7 @@
       ],
       "kind": "medical",
       "cfr": 0.3,
-      "r0": 6,
+      "r0": 6.0,
       "rarity": "rare",
       "epidemic": true,
       "stageOnly": false,
@@ -1180,13 +1180,13 @@
         "peakStart": 12,
         "peakEnd": 20,
         "latent": 0.2,
-        "peak": 2
+        "peak": 2.0
       },
       "needs": {
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -1211,7 +1211,7 @@
       "desc": "Hemorrhagic fever. The body unmakes itself from within.",
       "params": {
         "mhp": -70,
-        "atk": -10
+        "atk": -4
       },
       "onset": {
         "steps": 160,
@@ -1257,7 +1257,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -1275,15 +1275,15 @@
       "category": "viral",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 10,
       "desc": "Breakbone fever carried by mosquitoes.",
       "params": {
-        "atk": -6,
-        "agi": -6,
-        "def": -4
+        "atk": -3,
+        "agi": -3,
+        "def": -2
       },
       "onset": {
         "steps": 280,
@@ -1327,7 +1327,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -1345,7 +1345,7 @@
       "category": "viral",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 12,
@@ -1396,7 +1396,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -1415,13 +1415,13 @@
       "category": "viral",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": true,
       "severity": "mild",
       "durationDays": 7,
       "desc": "Usually mild, dangerous in pregnancy. Also sexually transmissible.",
       "params": {
-        "agi": -3
+        "agi": -2
       },
       "onset": {
         "steps": 400,
@@ -1465,7 +1465,7 @@
         "hunger": 1.075,
         "sleep": 1.15,
         "hygiene": 1.1,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -1474,7 +1474,7 @@
           12
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -1483,14 +1483,14 @@
       "category": "viral",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 14,
       "desc": "Mosquito-borne; occasionally neuroinvasive.",
       "params": {
-        "mat": -5,
-        "agi": -4
+        "mat": -3,
+        "agi": -2
       },
       "onset": {
         "steps": 320,
@@ -1533,7 +1533,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -1542,7 +1542,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -1551,14 +1551,14 @@
       "category": "viral",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": 10,
       "desc": "Rodent-borne pulmonary syndrome. Drowning on dry land.",
       "params": {
         "mhp": -55,
-        "def": -6
+        "def": -3
       },
       "onset": {
         "steps": 180,
@@ -1601,7 +1601,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -1625,8 +1625,8 @@
       "desc": "Retrovirus dismantling the immune system over years.",
       "params": {
         "mhp": -30,
-        "def": -10,
-        "mdf": -8
+        "def": -4,
+        "mdf": -4
       },
       "onset": {
         "steps": 700,
@@ -1673,7 +1673,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -1701,7 +1701,7 @@
       "durationDays": -1,
       "desc": "Lifelong latent virus; periodic cold-sore or genital flares.",
       "params": {
-        "mat": -2
+        "mat": -1
       },
       "onset": {
         "steps": 500,
@@ -1748,7 +1748,7 @@
         "hunger": 1.075,
         "sleep": 1.15,
         "hygiene": 1.1,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -1756,7 +1756,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -1771,7 +1771,7 @@
       "durationDays": -1,
       "desc": "Common venereal virus; some strains oncogenic.",
       "params": {
-        "def": -2
+        "def": -1
       },
       "onset": {
         "steps": 600,
@@ -1816,13 +1816,13 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -1883,7 +1883,7 @@
         "hunger": 1.075,
         "sleep": 1.15,
         "hygiene": 1.1,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -1891,7 +1891,7 @@
           10
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -1906,8 +1906,8 @@
       "durationDays": 7,
       "desc": "Streptococcus pyogenes inflaming the throat.",
       "params": {
-        "mat": -3,
-        "atk": -2
+        "mat": -2,
+        "atk": -1
       },
       "onset": {
         "steps": 350,
@@ -1952,7 +1952,7 @@
         "hunger": 1.1,
         "sleep": 1.15,
         "hygiene": 1.125,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -1961,7 +1961,7 @@
           25
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "rheumatic-fever",
@@ -1982,8 +1982,8 @@
       "desc": "Consumption. A slow, coughing wasting of the lungs.",
       "params": {
         "mhp": -35,
-        "agi": -6,
-        "atk": -4
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 450,
@@ -2028,7 +2028,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -2057,7 +2057,7 @@
       "desc": "Lungs filling with inflammatory fluid.",
       "params": {
         "mhp": -30,
-        "agi": -5
+        "agi": -3
       },
       "onset": {
         "steps": 300,
@@ -2103,7 +2103,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -2127,7 +2127,7 @@
       "desc": "Rice-water diarrhea that can kill by dehydration in a day.",
       "params": {
         "mhp": -45,
-        "agi": -8
+        "agi": -4
       },
       "onset": {
         "steps": 130,
@@ -2142,7 +2142,7 @@
       ],
       "kind": "medical",
       "cfr": 0.25,
-      "r0": 2,
+      "r0": 2.0,
       "rarity": "uncommon",
       "epidemic": true,
       "stageOnly": false,
@@ -2171,7 +2171,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -2195,7 +2195,7 @@
       "desc": "Salmonella typhi. Sustained fever and rose spots.",
       "params": {
         "mhp": -30,
-        "mat": -5
+        "mat": -3
       },
       "onset": {
         "steps": 360,
@@ -2240,7 +2240,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -2266,8 +2266,8 @@
       "desc": "The Black Death. Buboes, fever, and blackened extremities.",
       "params": {
         "mhp": -60,
-        "def": -6,
-        "atk": -6
+        "def": -3,
+        "atk": -3
       },
       "onset": {
         "steps": 170,
@@ -2314,7 +2314,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -2332,14 +2332,14 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "Lockjaw. Neurotoxin locking every muscle rigid.",
       "params": {
-        "agi": -12,
-        "atk": -6
+        "agi": -5,
+        "atk": -3
       },
       "onset": {
         "steps": 200,
@@ -2385,7 +2385,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -2408,9 +2408,9 @@
       "durationDays": -1,
       "desc": "Hansen's disease numbing nerves and disfiguring slowly.",
       "params": {
-        "def": -6,
-        "agi": -5,
-        "luk": -4
+        "def": -3,
+        "agi": -3,
+        "luk": -2
       },
       "onset": {
         "steps": 800,
@@ -2457,7 +2457,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -2474,14 +2474,14 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
       "desc": "Tick-borne; a bullseye rash then joint and nerve grief.",
       "params": {
-        "agi": -5,
-        "mat": -4
+        "agi": -3,
+        "mat": -2
       },
       "onset": {
         "steps": 400,
@@ -2526,7 +2526,7 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -2534,7 +2534,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "chronic-lyme",
@@ -2555,7 +2555,7 @@
       "desc": "Inflamed meninges. Stiff neck, photophobia, and speed kills.",
       "params": {
         "mhp": -40,
-        "mat": -8
+        "mat": -4
       },
       "onset": {
         "steps": 160,
@@ -2600,7 +2600,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -2623,8 +2623,8 @@
       "durationDays": -1,
       "desc": "The clap. Purulent venereal infection.",
       "params": {
-        "def": -3,
-        "agi": -2
+        "def": -2,
+        "agi": -1
       },
       "onset": {
         "steps": 500,
@@ -2662,19 +2662,19 @@
         "peakStart": 3,
         "peakEnd": 90,
         "latent": 0.5,
-        "peak": 2
+        "peak": 2.0
       },
       "needs": {
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "pelvic-inflammatory",
@@ -2694,7 +2694,7 @@
       "durationDays": -1,
       "desc": "Often silent venereal infection; a leading cause of infertility.",
       "params": {
-        "def": -2
+        "def": -1
       },
       "onset": {
         "steps": 550,
@@ -2738,13 +2738,13 @@
         "hunger": 1.1,
         "sleep": 1.15,
         "hygiene": 1.125,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "pelvic-inflammatory",
@@ -2764,8 +2764,8 @@
       "durationDays": -1,
       "desc": "The great imitator; untreated it climbs to the brain.",
       "params": {
-        "mat": -6,
-        "luk": -5,
+        "mat": -3,
+        "luk": -3,
         "mmp": -15
       },
       "onset": {
@@ -2812,7 +2812,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -2835,14 +2835,14 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": 10,
       "desc": "The most potent toxin known; descending paralysis.",
       "params": {
-        "agi": -14,
-        "atk": -8
+        "agi": -5,
+        "atk": -4
       },
       "onset": {
         "steps": 150,
@@ -2885,7 +2885,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -2909,7 +2909,7 @@
       "desc": "Methicillin-resistant staph. Antibiotics fail.",
       "params": {
         "mhp": -25,
-        "def": -5
+        "def": -3
       },
       "onset": {
         "steps": 300,
@@ -2953,7 +2953,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -2976,8 +2976,8 @@
       "durationDays": 9,
       "desc": "Strep with a sandpaper rash and strawberry tongue.",
       "params": {
-        "atk": -3,
-        "def": -3
+        "atk": -2,
+        "def": -2
       },
       "onset": {
         "steps": 330,
@@ -3023,7 +3023,7 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -3032,7 +3032,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3047,7 +3047,7 @@
       "durationDays": 28,
       "desc": "Pertussis. Paroxysmal coughing fits ending in a whoop.",
       "params": {
-        "agi": -4,
+        "agi": -2,
         "mmp": -10
       },
       "onset": {
@@ -3063,7 +3063,7 @@
       ],
       "kind": "medical",
       "cfr": 0.004,
-      "r0": 12,
+      "r0": 12.0,
       "rarity": "common",
       "epidemic": true,
       "stageOnly": false,
@@ -3092,13 +3092,13 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3107,15 +3107,15 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "Tissue death spreading from a wound; smells of rot.",
       "params": {
         "mhp": -30,
-        "atk": -8,
-        "def": -6
+        "atk": -4,
+        "def": -3
       },
       "onset": {
         "steps": 220,
@@ -3159,7 +3159,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -3181,15 +3181,15 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": 6,
       "desc": "The body's response to infection turning on itself.",
       "params": {
         "mhp": -50,
-        "agi": -8,
-        "def": -8
+        "agi": -4,
+        "def": -4
       },
       "onset": {
         "steps": 140,
@@ -3233,7 +3233,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -3258,7 +3258,7 @@
       "durationDays": 21,
       "desc": "Dermatophyte fungus in expanding itchy rings.",
       "params": {
-        "luk": -2
+        "luk": -1
       },
       "onset": {
         "steps": 500,
@@ -3298,7 +3298,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.05,
         "hygiene": 1.225,
         "social": 1.05,
@@ -3309,7 +3309,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3324,7 +3324,7 @@
       "durationDays": 30,
       "desc": "Tinea pedis. Itching, peeling, contagious feet.",
       "params": {
-        "agi": -2
+        "agi": -1
       },
       "onset": {
         "steps": 600,
@@ -3338,7 +3338,7 @@
         "contact"
       ],
       "kind": "medical",
-      "cfr": 0,
+      "cfr": 0.0,
       "r0": 1.95,
       "rarity": "common",
       "epidemic": true,
@@ -3364,7 +3364,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.025,
         "hygiene": 1.113,
         "social": 1.025,
@@ -3375,7 +3375,7 @@
           38
         ],
         "chance": 0.1,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3431,7 +3431,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.05,
         "hygiene": 1.225,
         "social": 1.05,
@@ -3442,7 +3442,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3451,7 +3451,7 @@
       "category": "fungal",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 30,
@@ -3498,7 +3498,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.15,
         "hygiene": 1.675,
         "social": 1.15,
@@ -3516,14 +3516,14 @@
       "category": "fungal",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 21,
       "desc": "Coccidioidomycosis from inhaled desert spores.",
       "params": {
-        "agi": -4,
-        "mat": -3
+        "agi": -2,
+        "mat": -2
       },
       "onset": {
         "steps": 400,
@@ -3564,7 +3564,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.1,
         "hygiene": 1.45,
         "social": 1.1,
@@ -3576,7 +3576,7 @@
           38
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3585,13 +3585,13 @@
       "category": "fungal",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 30,
       "desc": "Fungal meningitis, chiefly in the immunocompromised.",
       "params": {
-        "mat": -8,
+        "mat": -4,
         "mmp": -20
       },
       "onset": {
@@ -3632,7 +3632,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.15,
         "hygiene": 1.675,
         "social": 1.15,
@@ -3652,15 +3652,15 @@
       "category": "fungal",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Chronic mycotoxin exposure fogging body and mind.",
       "params": {
-        "mat": -5,
-        "agi": -3,
-        "luk": -3
+        "mat": -3,
+        "agi": -2,
+        "luk": -2
       },
       "onset": {
         "steps": 700,
@@ -3701,7 +3701,7 @@
         "peak": 1.5
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.1,
         "hygiene": 1.45,
         "social": 1.1,
@@ -3712,7 +3712,7 @@
           8
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "aspergillosis",
@@ -3726,15 +3726,15 @@
       "category": "protozoan",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Plasmodium cycling through the blood in fevered waves.",
       "params": {
         "mhp": -30,
-        "agi": -6,
-        "atk": -4
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 350,
@@ -3778,7 +3778,7 @@
         "hunger": 1.525,
         "sleep": 1.375,
         "hygiene": 1.45,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -3807,8 +3807,8 @@
       "durationDays": -1,
       "desc": "Cat-borne protozoan; may nudge behavior and risk-taking.",
       "params": {
-        "luk": 3,
-        "mdf": -3
+        "luk": 2,
+        "mdf": -2
       },
       "onset": {
         "steps": 600,
@@ -3851,13 +3851,13 @@
         "hunger": 1.175,
         "sleep": 1.125,
         "hygiene": 1.15,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.025
       },
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3872,8 +3872,8 @@
       "durationDays": 14,
       "desc": "Beaver fever. Greasy diarrhea from contaminated water.",
       "params": {
-        "agi": -3,
-        "atk": -2
+        "agi": -2,
+        "atk": -1
       },
       "onset": {
         "steps": 420,
@@ -3916,7 +3916,7 @@
         "hunger": 1.175,
         "sleep": 1.125,
         "hygiene": 1.15,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.025
       },
       "daily": {
@@ -3924,7 +3924,7 @@
           41
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -3940,7 +3940,7 @@
       "desc": "Entamoeba eating through the gut wall.",
       "params": {
         "mhp": -25,
-        "agi": -5
+        "agi": -3
       },
       "onset": {
         "steps": 300,
@@ -3983,7 +3983,7 @@
         "hunger": 1.525,
         "sleep": 1.375,
         "hygiene": 1.45,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -4005,14 +4005,14 @@
       "category": "protozoan",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Kissing-bug trypanosome that decades later wrecks the heart.",
       "params": {
         "mhp": -30,
-        "def": -5
+        "def": -3
       },
       "onset": {
         "steps": 800,
@@ -4055,7 +4055,7 @@
         "hunger": 1.525,
         "sleep": 1.375,
         "hygiene": 1.45,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -4072,14 +4072,14 @@
       "category": "protozoan",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "Tsetse trypanosome invading the brain; sleep inverts and fails.",
       "params": {
-        "mat": -8,
-        "agi": -7
+        "mat": -4,
+        "agi": -3
       },
       "onset": {
         "steps": 400,
@@ -4122,7 +4122,7 @@
         "hunger": 1.77,
         "sleep": 1.55,
         "hygiene": 1.66,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.11
       },
       "daily": {
@@ -4140,14 +4140,14 @@
       "category": "protozoan",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Sandfly protozoan; disfiguring sores or organ disease.",
       "params": {
-        "def": -6,
-        "luk": -4
+        "def": -3,
+        "luk": -2
       },
       "onset": {
         "steps": 500,
@@ -4190,7 +4190,7 @@
         "hunger": 1.525,
         "sleep": 1.375,
         "hygiene": 1.45,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -4214,7 +4214,7 @@
       "desc": "A segmented guest in the gut, quietly taking your meals.",
       "params": {
         "mhp": -15,
-        "atk": -3
+        "atk": -2
       },
       "onset": {
         "steps": 700,
@@ -4264,7 +4264,7 @@
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -4280,7 +4280,7 @@
       "desc": "Soil-borne worm draining blood from the gut wall.",
       "params": {
         "mhp": -20,
-        "agi": -4
+        "agi": -2
       },
       "onset": {
         "steps": 550,
@@ -4333,7 +4333,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "anemia",
@@ -4347,14 +4347,14 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Freshwater flukes lodging in blood vessels for years.",
       "params": {
         "mhp": -25,
-        "def": -4
+        "def": -2
       },
       "onset": {
         "steps": 600,
@@ -4421,8 +4421,8 @@
       "durationDays": 21,
       "desc": "Mites burrowing under the skin; maddening night itch.",
       "params": {
-        "agi": -3,
-        "luk": -2
+        "agi": -2,
+        "luk": -1
       },
       "onset": {
         "steps": 400,
@@ -4473,7 +4473,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -4488,7 +4488,7 @@
       "durationDays": 21,
       "desc": "Insects nesting in the hair; itchy and socially dire.",
       "params": {
-        "luk": -2
+        "luk": -1
       },
       "onset": {
         "steps": 500,
@@ -4502,7 +4502,7 @@
         "contact"
       ],
       "kind": "medical",
-      "cfr": 0,
+      "cfr": 0.0,
       "r0": 2.7,
       "rarity": "common",
       "epidemic": true,
@@ -4539,7 +4539,7 @@
           38
         ],
         "chance": 0.1,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -4548,14 +4548,14 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Filarial worms blocking lymph until limbs swell grotesquely.",
       "params": {
-        "agi": -10,
-        "def": -4
+        "agi": -4,
+        "def": -2
       },
       "onset": {
         "steps": 800,
@@ -4615,13 +4615,13 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Onchocerca microfilariae migrating to the eyes.",
       "params": {
-        "mat": -4
+        "mat": -2
       },
       "onset": {
         "steps": 600,
@@ -4685,15 +4685,15 @@
       "category": "prion",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "Prions spongifying the brain; rapid, unstoppable dementia.",
       "params": {
-        "mat": -15,
-        "agi": -10,
-        "luk": -8
+        "mat": -5,
+        "agi": -4,
+        "luk": -4
       },
       "onset": {
         "steps": 250,
@@ -4730,7 +4730,7 @@
         "peakStart": 0,
         "peakEnd": 0,
         "latent": 0.1,
-        "peak": 1
+        "peak": 1.0
       },
       "needs": {
         "hunger": 1.22,
@@ -4759,8 +4759,8 @@
       "durationDays": -1,
       "desc": "The laughing death; a prion once spread by ritual cannibalism.",
       "params": {
-        "agi": -12,
-        "mat": -8
+        "agi": -5,
+        "mat": -4
       },
       "onset": {
         "steps": 300,
@@ -4798,7 +4798,7 @@
         "peakStart": 0,
         "peakEnd": 0,
         "latent": 0.1,
-        "peak": 1
+        "peak": 1.0
       },
       "needs": {
         "hunger": 1.22,
@@ -4822,15 +4822,15 @@
       "category": "prion",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "A prion stealing sleep until the body simply stops.",
       "params": {
         "mmp": -30,
-        "mat": -10,
-        "luk": -6
+        "mat": -4,
+        "luk": -3
       },
       "onset": {
         "steps": 280,
@@ -4868,7 +4868,7 @@
         "peakStart": 0,
         "peakEnd": 0,
         "latent": 0.1,
-        "peak": 1
+        "peak": 1.0
       },
       "needs": {
         "hunger": 1.22,
@@ -4891,14 +4891,14 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Autoimmune loss of insulin; blood sugar unmoored.",
       "params": {
         "mhp": -20,
-        "agi": -3
+        "agi": -2
       },
       "onset": {
         "steps": 9999,
@@ -4960,15 +4960,15 @@
       "category": "chronic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Insulin resistance from a lifetime of strain.",
       "params": {
         "mhp": -15,
-        "agi": -4,
-        "def": -2
+        "agi": -2,
+        "def": -1
       },
       "onset": {
         "steps": 9999,
@@ -5019,7 +5019,7 @@
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "diabetic-neuropathy",
@@ -5033,15 +5033,15 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "The wolf. Immunity turned on the body's own tissues.",
       "params": {
         "mhp": -20,
-        "agi": -5,
-        "def": -4
+        "agi": -3,
+        "def": -2
       },
       "onset": {
         "steps": 9999,
@@ -5106,14 +5106,14 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "chronic",
       "durationDays": -1,
       "desc": "Immune-driven joint destruction, symmetric and stiff.",
       "params": {
-        "atk": -5,
-        "agi": -6
+        "atk": -3,
+        "agi": -3
       },
       "onset": {
         "steps": 9999,
@@ -5173,15 +5173,15 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "The immune system stripping nerve insulation.",
       "params": {
-        "agi": -8,
-        "mat": -5,
-        "atk": -4
+        "agi": -4,
+        "mat": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 9999,
@@ -5246,14 +5246,14 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "chronic",
       "durationDays": -1,
       "desc": "Inflammation anywhere along the gut, flaring and remitting.",
       "params": {
         "mhp": -15,
-        "agi": -4
+        "agi": -2
       },
       "onset": {
         "steps": 9999,
@@ -5315,14 +5315,14 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Gluten triggering an immune assault on the small bowel.",
       "params": {
         "mhp": -10,
-        "atk": -3
+        "atk": -2
       },
       "onset": {
         "steps": 9999,
@@ -5373,7 +5373,7 @@
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -5382,14 +5382,14 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
       "desc": "Skin cells racing to the surface in silvery plaques.",
       "params": {
-        "luk": -3,
-        "def": -2
+        "luk": -2,
+        "def": -1
       },
       "onset": {
         "steps": 9999,
@@ -5442,7 +5442,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -5451,15 +5451,15 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Overdriven thyroid; racing heart and bulging eyes.",
       "params": {
-        "agi": 4,
+        "agi": 2,
         "mhp": -12,
-        "mdf": -3
+        "mdf": -2
       },
       "onset": {
         "steps": 9999,
@@ -5510,7 +5510,7 @@
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -5519,14 +5519,14 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "The thyroid slowly extinguished; cold and heavy.",
       "params": {
-        "agi": -5,
-        "atk": -3
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 9999,
@@ -5580,7 +5580,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -5589,13 +5589,13 @@
       "category": "respiratory",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "chronic",
       "durationDays": -1,
       "desc": "Airways that tighten and wheeze under trigger and strain.",
       "params": {
-        "agi": -4,
+        "agi": -2,
         "mmp": -8
       },
       "onset": {
@@ -5640,7 +5640,7 @@
       "needs": {
         "hunger": 1.05,
         "sleep": 1.25,
-        "hygiene": 1,
+        "hygiene": 1.0,
         "social": 1.05,
         "leisure": 1.15
       },
@@ -5656,14 +5656,14 @@
       "category": "respiratory",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Emphysema and bronchitis stealing lung capacity for good.",
       "params": {
         "mhp": -20,
-        "agi": -6
+        "agi": -3
       },
       "onset": {
         "steps": 9999,
@@ -5707,7 +5707,7 @@
       "needs": {
         "hunger": 1.075,
         "sleep": 1.375,
-        "hygiene": 1,
+        "hygiene": 1.0,
         "social": 1.075,
         "leisure": 1.225
       },
@@ -5723,14 +5723,14 @@
       "category": "cardiovascular",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "The silent pressure quietly straining heart and vessels.",
       "params": {
         "mhp": -10,
-        "mdf": -3
+        "mdf": -2
       },
       "onset": {
         "steps": 9999,
@@ -5773,14 +5773,14 @@
       "needs": {
         "hunger": 1.1,
         "sleep": 1.2,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -5789,14 +5789,14 @@
       "category": "cardiovascular",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "A heart that skips, races, or stutters out of time.",
       "params": {
         "mhp": -15,
-        "agi": -4
+        "agi": -2
       },
       "onset": {
         "steps": 9999,
@@ -5840,8 +5840,8 @@
       "needs": {
         "hunger": 1.15,
         "sleep": 1.3,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -5858,15 +5858,15 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "mild",
       "durationDays": 60,
       "desc": "Too little iron; the blood carries too little air.",
       "params": {
         "mhp": -12,
-        "atk": -3,
-        "agi": -3
+        "atk": -2,
+        "agi": -2
       },
       "onset": {
         "steps": 9999,
@@ -5909,8 +5909,8 @@
       "needs": {
         "hunger": 1.275,
         "sleep": 1.1,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.025
       },
       "daily": {
@@ -5918,7 +5918,7 @@
           10
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -5927,14 +5927,14 @@
       "category": "neurological",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Storms of headache with aura, light, and nausea.",
       "params": {
-        "mat": -6,
-        "agi": -3
+        "mat": -3,
+        "agi": -2
       },
       "onset": {
         "steps": 9999,
@@ -5988,7 +5988,7 @@
           5
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -5997,14 +5997,14 @@
       "category": "neurological",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Electrical storms that seize the brain without warning.",
       "params": {
-        "agi": -5,
-        "mat": -4
+        "agi": -3,
+        "mat": -2
       },
       "onset": {
         "steps": 9999,
@@ -6066,14 +6066,14 @@
       "category": "neurological",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Dopamine fading; tremor, rigidity, and a slowing gait.",
       "params": {
-        "agi": -9,
-        "atk": -5
+        "agi": -4,
+        "atk": -3
       },
       "onset": {
         "steps": 9999,
@@ -6137,14 +6137,14 @@
       "category": "neurological",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "Memory unspooling as plaques choke the mind.",
       "params": {
-        "mat": -12,
-        "luk": -4
+        "mat": -5,
+        "luk": -2
       },
       "onset": {
         "steps": 9999,
@@ -6206,14 +6206,14 @@
       "category": "neurological",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Sleep intruding on waking life without permission.",
       "params": {
-        "agi": -4,
-        "mat": -3
+        "agi": -2,
+        "mat": -2
       },
       "onset": {
         "steps": 9999,
@@ -6266,7 +6266,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "skills": [
         38
@@ -6278,7 +6278,7 @@
       "category": "digestive",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
@@ -6337,7 +6337,7 @@
           41
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -6346,13 +6346,13 @@
       "category": "digestive",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
       "desc": "A gut at war with itself, cramping to its own rhythm.",
       "params": {
-        "agi": -2,
+        "agi": -1,
         "atk": -1
       },
       "onset": {
@@ -6406,7 +6406,7 @@
           41
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -6422,7 +6422,7 @@
       "desc": "H. pylori and acid burning a hole in the stomach lining.",
       "params": {
         "mhp": -12,
-        "atk": -2
+        "atk": -1
       },
       "onset": {
         "steps": 9999,
@@ -6474,7 +6474,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "sepsis",
@@ -6488,15 +6488,15 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
       "desc": "Vitamin C gone; collagen fails and old wounds reopen.",
       "params": {
         "mhp": -18,
-        "def": -5,
-        "atk": -3
+        "def": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 9999,
@@ -6538,8 +6538,8 @@
       "needs": {
         "hunger": 1.55,
         "sleep": 1.2,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -6547,7 +6547,7 @@
           48
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "anemia",
@@ -6561,15 +6561,15 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Vitamin D starvation softening and bowing the bones.",
       "params": {
-        "def": -4,
-        "atk": -3,
-        "agi": -2
+        "def": -2,
+        "atk": -2,
+        "agi": -1
       },
       "onset": {
         "steps": 9999,
@@ -6611,14 +6611,14 @@
       "needs": {
         "hunger": 1.55,
         "sleep": 1.2,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -6627,13 +6627,13 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Thiamine deficiency drowning nerves and heart.",
       "params": {
-        "agi": -6,
+        "agi": -3,
         "mhp": -15
       },
       "onset": {
@@ -6676,8 +6676,8 @@
       "needs": {
         "hunger": 1.825,
         "sleep": 1.3,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -6692,15 +6692,15 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Niacin lack: the four D's, dermatitis to dementia to death.",
       "params": {
-        "mat": -7,
-        "luk": -4,
-        "def": -3
+        "mat": -3,
+        "luk": -2,
+        "def": -2
       },
       "onset": {
         "steps": 9999,
@@ -6743,8 +6743,8 @@
       "needs": {
         "hunger": 1.825,
         "sleep": 1.3,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -6762,14 +6762,14 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Protein starvation swelling a hollow body.",
       "params": {
         "mhp": -25,
-        "atk": -6
+        "atk": -3
       },
       "onset": {
         "steps": 9999,
@@ -6812,8 +6812,8 @@
       "needs": {
         "hunger": 1.825,
         "sleep": 1.3,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -6828,14 +6828,14 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
       "desc": "The thyroid swelling in a hunt for missing iodine.",
       "params": {
-        "mat": -4,
-        "agi": -2
+        "mat": -2,
+        "agi": -1
       },
       "onset": {
         "steps": 9999,
@@ -6877,14 +6877,14 @@
       "needs": {
         "hunger": 1.275,
         "sleep": 1.1,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.025
       },
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -6893,15 +6893,15 @@
       "category": "mental",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "A grey weight on will, energy, and joy.",
       "params": {
-        "atk": -4,
-        "agi": -4,
-        "luk": -3
+        "atk": -2,
+        "agi": -2,
+        "luk": -2
       },
       "onset": {
         "steps": 9999,
@@ -6954,7 +6954,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -6963,15 +6963,15 @@
       "category": "mental",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
       "desc": "Alarm that never fully switches off.",
       "params": {
-        "mdf": -3,
-        "agi": 2,
-        "luk": -2
+        "mdf": -2,
+        "agi": 1,
+        "luk": -1
       },
       "onset": {
         "steps": 9999,
@@ -7022,7 +7022,7 @@
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -7031,15 +7031,15 @@
       "category": "mental",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "The past ambushing the present in flashes.",
       "params": {
-        "mdf": -5,
-        "luk": -4,
-        "agi": 3
+        "mdf": -3,
+        "luk": -2,
+        "agi": 2
       },
       "onset": {
         "steps": 9999,
@@ -7101,15 +7101,15 @@
       "category": "mental",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Tides of mania and depression on their own calendar.",
       "params": {
-        "atk": 4,
-        "mdf": -6,
-        "luk": -3
+        "atk": 2,
+        "mdf": -3,
+        "luk": -2
       },
       "onset": {
         "steps": 9999,
@@ -7169,15 +7169,15 @@
       "category": "mental",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Perception and reality slipping their moorings.",
       "params": {
-        "mat": -6,
-        "mdf": -6,
-        "luk": -5
+        "mat": -3,
+        "mdf": -3,
+        "luk": -3
       },
       "onset": {
         "steps": 9999,
@@ -7239,14 +7239,14 @@
       "category": "mental",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Sleep withheld night after grinding night.",
       "params": {
-        "agi": -4,
-        "mat": -4
+        "agi": -2,
+        "mat": -2
       },
       "onset": {
         "steps": 9999,
@@ -7299,7 +7299,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -7308,15 +7308,15 @@
       "category": "mental",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
       "desc": "Intrusive thoughts answered by rituals that never satisfy.",
       "params": {
-        "mdf": 3,
-        "agi": -2,
-        "luk": -2
+        "mdf": 2,
+        "agi": -1,
+        "luk": -1
       },
       "onset": {
         "steps": 9999,
@@ -7367,7 +7367,7 @@
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "skills": [
         57
@@ -7386,7 +7386,7 @@
       "desc": "Mana channels blackening and leaking; magic sours in the veins.",
       "params": {
         "mmp": -40,
-        "mat": -8
+        "mat": -4
       },
       "onset": {
         "steps": 300,
@@ -7459,7 +7459,7 @@
       "desc": "A wildfire of corrupted mana leaping between casters.",
       "params": {
         "mmp": -60,
-        "mat": -12,
+        "mat": -5,
         "mhp": -20
       },
       "onset": {
@@ -7527,7 +7527,7 @@
       "durationDays": 21,
       "desc": "Breathing raw aether crystallizes the alveoli faintly aglow.",
       "params": {
-        "agi": -5,
+        "agi": -3,
         "mmp": -15
       },
       "onset": {
@@ -7581,7 +7581,7 @@
           37
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -7597,8 +7597,8 @@
       "desc": "A slow undeath: warmth, name, and self leaching away.",
       "params": {
         "mhp": -30,
-        "luk": -8,
-        "mdf": -6
+        "luk": -4,
+        "mdf": -3
       },
       "onset": {
         "steps": 400,
@@ -7638,7 +7638,7 @@
         "peakStart": 21,
         "peakEnd": 150,
         "latent": 0.3,
-        "peak": 2
+        "peak": 2.0
       },
       "needs": {
         "hunger": 1.77,
@@ -7673,9 +7673,9 @@
       "durationDays": -1,
       "desc": "A gnawing that ordinary food cannot touch, and craves worse.",
       "params": {
-        "atk": 6,
-        "luk": -10,
-        "mdf": -8
+        "atk": 3,
+        "luk": -4,
+        "mdf": -4
       },
       "onset": {
         "steps": 250,
@@ -7738,15 +7738,15 @@
       "category": "cursed",
       "nature": "Magical",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Skin hardening toward statue; slow, heavy, and irreversible.",
       "params": {
-        "def": 8,
-        "agi": -14,
-        "atk": -4
+        "def": 3,
+        "agi": -5,
+        "atk": -2
       },
       "onset": {
         "steps": 9999,
@@ -7815,8 +7815,8 @@
       "durationDays": 12,
       "desc": "A fever whose delirium speaks in others' voices.",
       "params": {
-        "mat": -6,
-        "mdf": -4
+        "mat": -3,
+        "mdf": -2
       },
       "onset": {
         "steps": 280,
@@ -7870,7 +7870,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -7885,8 +7885,8 @@
       "durationDays": -1,
       "desc": "Reflections lag, then disagree; the self doubles and frays.",
       "params": {
-        "mdf": -6,
-        "luk": -4
+        "mdf": -3,
+        "luk": -2
       },
       "onset": {
         "steps": 500,
@@ -7938,7 +7938,7 @@
           8
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -7947,14 +7947,14 @@
       "category": "cosmic",
       "nature": "Magical",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 14,
       "desc": "Time stutters in the body; wounds age and heal out of order.",
       "params": {
-        "agi": -6,
-        "luk": -5,
+        "agi": -3,
+        "luk": -3,
         "mhp": -15
       },
       "onset": {
@@ -8015,15 +8015,15 @@
       "category": "cosmic",
       "nature": "Magical",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "Contact with the outer dark; a cold that eats from inside.",
       "params": {
         "mhp": -40,
-        "mdf": -10,
-        "luk": -8
+        "mdf": -4,
+        "luk": -4
       },
       "onset": {
         "steps": 220,
@@ -8092,9 +8092,9 @@
       "durationDays": -1,
       "desc": "Gazing too long into deep sky invites a geometry that maddens.",
       "params": {
-        "mat": -10,
-        "mdf": -8,
-        "luk": -6
+        "mat": -4,
+        "mdf": -4,
+        "luk": -3
       },
       "onset": {
         "steps": 400,
@@ -8109,7 +8109,7 @@
       ],
       "kind": "medical",
       "cfr": 0.03,
-      "r0": 1,
+      "r0": 1.0,
       "rarity": "rare",
       "epidemic": false,
       "stageOnly": false,
@@ -8163,8 +8163,8 @@
       "durationDays": -1,
       "desc": "A signal-borne affliction fuzzing thought and vision to snow.",
       "params": {
-        "mat": -5,
-        "agi": -4
+        "mat": -3,
+        "agi": -2
       },
       "onset": {
         "steps": 450,
@@ -8215,7 +8215,7 @@
           5
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "static-communion",
@@ -8235,9 +8235,9 @@
       "durationDays": -1,
       "desc": "The self overwritten with blanks; identity checksum fails.",
       "params": {
-        "mat": -8,
-        "luk": -6,
-        "mdf": -5
+        "mat": -4,
+        "luk": -3,
+        "mdf": -3
       },
       "onset": {
         "steps": 380,
@@ -8306,7 +8306,7 @@
       "desc": "Corruption spreading through implanted memory and nerve-lace.",
       "params": {
         "mmp": -20,
-        "agi": -3
+        "agi": -2
       },
       "onset": {
         "steps": 420,
@@ -8358,7 +8358,7 @@
           27
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -8374,8 +8374,8 @@
       "desc": "An infection carried between sleepers, harvesting rest.",
       "params": {
         "mmp": -25,
-        "agi": -4,
-        "mat": -4
+        "agi": -2,
+        "mat": -2
       },
       "onset": {
         "steps": 360,
@@ -8390,7 +8390,7 @@
       ],
       "kind": "medical",
       "cfr": 0.12,
-      "r0": 2,
+      "r0": 2.0,
       "rarity": "rare",
       "epidemic": true,
       "stageOnly": false,
@@ -8443,8 +8443,8 @@
       "desc": "A fungus that gardens the living toward a flowering death.",
       "params": {
         "mhp": -25,
-        "def": -4,
-        "agi": -5
+        "def": -2,
+        "agi": -3
       },
       "onset": {
         "steps": 300,
@@ -8487,7 +8487,7 @@
         "peak": 1.5
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.22,
         "hygiene": 1.99,
         "social": 1.22,
@@ -8507,15 +8507,15 @@
       "category": "cursed",
       "nature": "Magical",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Each breath rusts; the chest slowly seizes to metal.",
       "params": {
-        "agi": -8,
+        "agi": -4,
         "mhp": -18,
-        "def": 4
+        "def": 2
       },
       "onset": {
         "steps": 9999,
@@ -8580,9 +8580,9 @@
       "durationDays": 10,
       "desc": "Pustules that itch into helpless, exhausting laughter.",
       "params": {
-        "atk": -3,
-        "mdf": -4,
-        "agi": -3
+        "atk": -2,
+        "mdf": -2,
+        "agi": -2
       },
       "onset": {
         "steps": 280,
@@ -8637,7 +8637,7 @@
           44
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -8652,9 +8652,9 @@
       "durationDays": -1,
       "desc": "Ergotism reborn: burning limbs, gangrene, and holy visions.",
       "params": {
-        "atk": -6,
-        "agi": -8,
-        "mat": -4
+        "atk": -3,
+        "agi": -4,
+        "mat": -2
       },
       "onset": {
         "steps": 9999,
@@ -8723,8 +8723,8 @@
       "durationDays": -1,
       "desc": "A metamorphic infection that half-seals the host in chrysalis.",
       "params": {
-        "agi": -10,
-        "def": 6,
+        "agi": -4,
+        "def": 3,
         "mmp": -15
       },
       "onset": {
@@ -8794,8 +8794,8 @@
       "desc": "The flu that killed the young and healthy first. Drowning from the inside.",
       "params": {
         "mhp": -60,
-        "atk": -6,
-        "agi": -8
+        "atk": -3,
+        "agi": -4
       },
       "onset": {
         "steps": 180,
@@ -8840,7 +8840,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -8864,8 +8864,8 @@
       "desc": "Louse-borne camp fever: rash, stupor, and the smell of crowded rooms.",
       "params": {
         "mhp": -45,
-        "mat": -8,
-        "agi": -6
+        "mat": -4,
+        "agi": -3
       },
       "onset": {
         "steps": 200,
@@ -8911,7 +8911,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -8936,8 +8936,8 @@
       "desc": "A grey membrane grows across the throat until breath will not pass.",
       "params": {
         "mhp": -35,
-        "atk": -4,
-        "agi": -5
+        "atk": -2,
+        "agi": -3
       },
       "onset": {
         "steps": 220,
@@ -8954,7 +8954,7 @@
       ],
       "kind": "medical",
       "cfr": 0.1,
-      "r0": 3,
+      "r0": 3.0,
       "rarity": "uncommon",
       "epidemic": true,
       "stageOnly": false,
@@ -8983,7 +8983,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -9008,7 +9008,7 @@
       "desc": "Spores from the soil or the mail; black eschars and a fast collapse.",
       "params": {
         "mhp": -50,
-        "def": -6
+        "def": -3
       },
       "onset": {
         "steps": 150,
@@ -9054,7 +9054,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -9080,8 +9080,8 @@
       "desc": "A filovirus out of a mine shaft. Bleeding from every soft tissue.",
       "params": {
         "mhp": -70,
-        "def": -8,
-        "agi": -8
+        "def": -4,
+        "agi": -4
       },
       "onset": {
         "steps": 140,
@@ -9127,7 +9127,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -9152,8 +9152,8 @@
       "desc": "Bat-borne and brain-hungry; survivors rarely come back whole.",
       "params": {
         "mhp": -55,
-        "mat": -10,
-        "mdf": -6
+        "mat": -4,
+        "mdf": -3
       },
       "onset": {
         "steps": 170,
@@ -9199,7 +9199,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -9224,7 +9224,7 @@
       "desc": "A new pneumonia that jumps wards faster than the paperwork.",
       "params": {
         "mhp": -40,
-        "agi": -6
+        "agi": -3
       },
       "onset": {
         "steps": 210,
@@ -9269,7 +9269,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -9293,8 +9293,8 @@
       "desc": "Bred in cooling towers, breathed in by everyone downwind of one.",
       "params": {
         "mhp": -35,
-        "agi": -5,
-        "atk": -3
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 230,
@@ -9340,7 +9340,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -9364,8 +9364,8 @@
       "durationDays": -1,
       "desc": "Sleep that deepens into statue stillness; some never surface again.",
       "params": {
-        "agi": -12,
-        "mat": -8,
+        "agi": -5,
+        "mat": -4,
         "mmp": -15
       },
       "onset": {
@@ -9411,7 +9411,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -9436,8 +9436,8 @@
       "desc": "They dance until the feet split, and cannot say why they started.",
       "params": {
         "mhp": -25,
-        "agi": -6,
-        "mat": -5
+        "agi": -3,
+        "mat": -3
       },
       "onset": {
         "steps": 160,
@@ -9505,9 +9505,9 @@
       "durationDays": 14,
       "desc": "Word spreads that a handshake can steal what a man was born with. The mob believes it first and checks later.",
       "params": {
-        "luk": -6,
-        "mdf": -5,
-        "mat": -3
+        "luk": -3,
+        "mdf": -3,
+        "mat": -2
       },
       "onset": {
         "steps": 140,
@@ -9559,7 +9559,7 @@
           8
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -9574,9 +9574,9 @@
       "durationDays": 12,
       "desc": "It starts in a schoolroom and closes the school; nobody finds it funny by the third week.",
       "params": {
-        "mat": -5,
-        "atk": -3,
-        "agi": -3
+        "mat": -3,
+        "atk": -2,
+        "agi": -2
       },
       "onset": {
         "steps": 150,
@@ -9592,7 +9592,7 @@
       ],
       "kind": "hysteria",
       "cfr": 0.004,
-      "r0": 4,
+      "r0": 4.0,
       "rarity": "uncommon",
       "epidemic": true,
       "stageOnly": false,
@@ -9628,7 +9628,7 @@
           8
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -9643,8 +9643,8 @@
       "durationDays": 9,
       "desc": "A spider nobody saw; only music and dancing are said to draw the venom out.",
       "params": {
-        "agi": -4,
-        "mdf": -4
+        "agi": -2,
+        "mdf": -2
       },
       "onset": {
         "steps": 170,
@@ -9660,7 +9660,7 @@
       ],
       "kind": "hysteria",
       "cfr": 0.004,
-      "r0": 2,
+      "r0": 2.0,
       "rarity": "rare",
       "epidemic": true,
       "stageOnly": false,
@@ -9696,7 +9696,7 @@
           8
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -9711,8 +9711,8 @@
       "durationDays": 16,
       "desc": "One sister meows, then the cloister does, and no prayer stops it.",
       "params": {
-        "mat": -4,
-        "mdf": -4
+        "mat": -2,
+        "mdf": -2
       },
       "onset": {
         "steps": 180,
@@ -9764,7 +9764,7 @@
           8
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -9779,8 +9779,8 @@
       "durationDays": 10,
       "desc": "A prowler with a sweet-smelling spray that the police never once find.",
       "params": {
-        "mdf": -6,
-        "agi": -3
+        "mdf": -3,
+        "agi": -2
       },
       "onset": {
         "steps": 150,
@@ -9832,7 +9832,7 @@
           12
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -9848,7 +9848,7 @@
       "desc": "One faints in assembly and forty follow within the hour.",
       "params": {
         "mhp": -15,
-        "agi": -5
+        "agi": -3
       },
       "onset": {
         "steps": 140,
@@ -9902,7 +9902,7 @@
           38
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -9917,8 +9917,8 @@
       "durationDays": 7,
       "desc": "The whole city inspects its windscreens and finds damage that was always there.",
       "params": {
-        "luk": -3,
-        "mat": -2
+        "luk": -2,
+        "mat": -1
       },
       "onset": {
         "steps": 200,
@@ -9967,7 +9967,7 @@
       "daily": {
         "states": [],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -9982,9 +9982,9 @@
       "durationDays": 11,
       "desc": "Everyone in the plant feels the bug bite. No entomologist ever finds it.",
       "params": {
-        "def": -3,
-        "mdf": -4,
-        "agi": -3
+        "def": -2,
+        "mdf": -2,
+        "agi": -2
       },
       "onset": {
         "steps": 160,
@@ -10037,7 +10037,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -10052,9 +10052,9 @@
       "durationDays": 40,
       "desc": "The rumour arrives fully formed with names attached, and the names get burned.",
       "params": {
-        "mdf": -5,
-        "luk": -5,
-        "mat": -3
+        "mdf": -3,
+        "luk": -3,
+        "mat": -2
       },
       "onset": {
         "steps": 220,
@@ -10121,8 +10121,8 @@
       "durationDays": 18,
       "desc": "Half the district swears a neighbour has been replaced by a very good copy.",
       "params": {
-        "mdf": -6,
-        "luk": -4
+        "mdf": -3,
+        "luk": -2
       },
       "onset": {
         "steps": 190,
@@ -10190,8 +10190,8 @@
       "durationDays": 15,
       "desc": "People stop saying their own names aloud; something is collecting them.",
       "params": {
-        "luk": -6,
-        "mat": -3
+        "luk": -3,
+        "mat": -2
       },
       "onset": {
         "steps": 200,
@@ -10243,7 +10243,7 @@
           6
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -10258,8 +10258,8 @@
       "durationDays": 13,
       "desc": "A grammar nobody was taught runs through a congregation in one evening.",
       "params": {
-        "mat": -4,
-        "mdf": -3
+        "mat": -2,
+        "mdf": -2
       },
       "onset": {
         "steps": 170,
@@ -10311,7 +10311,7 @@
           6
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -10326,7 +10326,7 @@
       "durationDays": 20,
       "desc": "The town wakes on the road out of town, all facing the same way.",
       "params": {
-        "agi": -3,
+        "agi": -2,
         "mmp": -10
       },
       "onset": {
@@ -10379,7 +10379,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -10394,8 +10394,8 @@
       "durationDays": 6,
       "desc": "Four hundred witnesses, one identical impossible thing, no photograph.",
       "params": {
-        "mdf": -4,
-        "mat": -2
+        "mdf": -2,
+        "mat": -1
       },
       "onset": {
         "steps": 130,
@@ -10411,7 +10411,7 @@
       ],
       "kind": "hysteria",
       "cfr": 0.0005,
-      "r0": 5,
+      "r0": 5.0,
       "rarity": "uncommon",
       "epidemic": true,
       "stageOnly": false,
@@ -10448,7 +10448,7 @@
           10
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -10463,9 +10463,9 @@
       "durationDays": 25,
       "desc": "Listeners start copying the broadcast down, then reading it out to each other.",
       "params": {
-        "mat": -5,
+        "mat": -3,
         "mmp": -15,
-        "luk": -3
+        "luk": -2
       },
       "onset": {
         "steps": 230,
@@ -10534,10 +10534,10 @@
       "desc": "The immune system has been dismantled. Every other pathogen walks straight in.",
       "params": {
         "mhp": -140,
-        "def": -14,
-        "mdf": -12,
-        "atk": -10,
-        "agi": -8
+        "def": -5,
+        "mdf": -5,
+        "atk": -4,
+        "agi": -4
       },
       "onset": {
         "steps": 120,
@@ -10579,14 +10579,14 @@
         "window": 0,
         "peakStart": 0,
         "peakEnd": 9999,
-        "latent": 1,
-        "peak": 1
+        "latent": 1.0,
+        "peak": 1.0
       },
       "needs": {
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -10612,9 +10612,9 @@
       "desc": "Decades late, the spirochete comes back for the aorta and the mind.",
       "params": {
         "mhp": -70,
-        "mat": -14,
-        "mdf": -8,
-        "luk": -8
+        "mat": -5,
+        "mdf": -4,
+        "luk": -4
       },
       "onset": {
         "steps": 150,
@@ -10661,7 +10661,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -10678,7 +10678,7 @@
       "category": "chronic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
@@ -10686,8 +10686,8 @@
       "params": {
         "mhp": -90,
         "mmp": -45,
-        "atk": -8,
-        "agi": -6
+        "atk": -4,
+        "agi": -3
       },
       "onset": {
         "steps": 180,
@@ -10754,15 +10754,15 @@
       "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "An untreated throat infection taught the body to attack its own heart valves.",
       "params": {
         "mhp": -55,
-        "agi": -9,
-        "atk": -6
+        "agi": -4,
+        "atk": -3
       },
       "onset": {
         "steps": 200,
@@ -10829,15 +10829,15 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "The spirochete settled into joints and nerves and stopped answering to anything.",
       "params": {
-        "agi": -12,
-        "mat": -7,
-        "atk": -5
+        "agi": -5,
+        "mat": -3,
+        "atk": -3
       },
       "onset": {
         "steps": 220,
@@ -10884,7 +10884,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -10902,15 +10902,15 @@
       "category": "chronic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "The virus is long gone. Whatever it did to you stayed.",
       "params": {
-        "atk": -8,
-        "agi": -10,
-        "mat": -6,
+        "atk": -4,
+        "agi": -4,
+        "mat": -3,
         "mmp": -25
       },
       "onset": {
@@ -10984,8 +10984,8 @@
       "desc": "An untreated infection climbed, scarred what it found and settled in to stay.",
       "params": {
         "mhp": -45,
-        "agi": -8,
-        "atk": -4
+        "agi": -4,
+        "atk": -2
       },
       "onset": {
         "steps": 170,
@@ -11030,7 +11030,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -11055,9 +11055,9 @@
       "desc": "The bacillus is out of the lungs and seeded through every organ in millet-sized colonies.",
       "params": {
         "mhp": -110,
-        "atk": -12,
-        "agi": -12,
-        "def": -8
+        "atk": -5,
+        "agi": -5,
+        "def": -4
       },
       "onset": {
         "steps": 130,
@@ -11102,7 +11102,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -11119,15 +11119,15 @@
       "category": "chronic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "Years of unmanaged sugar have taken the nerves in the feet and the eyes with them.",
       "params": {
-        "agi": -13,
-        "atk": -6,
-        "luk": -5
+        "agi": -5,
+        "atk": -3,
+        "luk": -3
       },
       "onset": {
         "steps": 240,
@@ -11194,15 +11194,15 @@
       "category": "protozoan",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "The dysentery went through the gut wall and built itself a cavity in the liver.",
       "params": {
         "mhp": -80,
-        "atk": -8,
-        "agi": -7
+        "atk": -4,
+        "agi": -3
       },
       "onset": {
         "steps": 140,
@@ -11248,7 +11248,7 @@
         "hunger": 1.77,
         "sleep": 1.55,
         "hygiene": 1.66,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.11
       },
       "daily": {
@@ -11273,9 +11273,9 @@
       "desc": "The rot reached the channels themselves. Magic drains out of you faster than it comes in.",
       "params": {
         "mmp": -90,
-        "mat": -16,
+        "mat": -6,
         "mhp": -60,
-        "mdf": -10
+        "mdf": -4
       },
       "onset": {
         "steps": 130,
@@ -11346,10 +11346,10 @@
       "desc": "The hollowing finished. Something else is answering to your name now.",
       "params": {
         "mhp": -100,
-        "mat": -18,
-        "mdf": -14,
-        "luk": -14,
-        "atk": 8
+        "mat": -6,
+        "mdf": -5,
+        "luk": -5,
+        "atk": 3
       },
       "onset": {
         "steps": 110,
@@ -11419,10 +11419,10 @@
       "durationDays": -1,
       "desc": "The gray static resolved into a signal, and the signal is using you as an aerial.",
       "params": {
-        "mat": -14,
+        "mat": -5,
         "mmp": -60,
-        "mdf": -10,
-        "luk": -8
+        "mdf": -4,
+        "luk": -4
       },
       "onset": {
         "steps": 120,
@@ -11493,7 +11493,7 @@
       "desc": "Waded through the wrong water. They are painless, patient and full.",
       "params": {
         "mhp": -18,
-        "agi": -3
+        "agi": -2
       },
       "onset": {
         "steps": 140,
@@ -11548,7 +11548,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "anemia",
@@ -11568,7 +11568,7 @@
       "durationDays": 25,
       "desc": "The inn's mattress had tenants. They travel in the seams of your pack.",
       "params": {
-        "agi": -2,
+        "agi": -1,
         "mmp": -8
       },
       "onset": {
@@ -11622,7 +11622,7 @@
           10
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -11637,8 +11637,8 @@
       "durationDays": 18,
       "desc": "Picked up from a dog, a bed or a corpse. They bite in lines of three.",
       "params": {
-        "agi": -3,
-        "luk": -2
+        "agi": -2,
+        "luk": -1
       },
       "onset": {
         "steps": 220,
@@ -11690,7 +11690,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -11706,7 +11706,7 @@
       "desc": "Buried head-first and swelling. What they carry is worse than what they take.",
       "params": {
         "mhp": -12,
-        "agi": -2
+        "agi": -1
       },
       "onset": {
         "steps": 180,
@@ -11759,7 +11759,7 @@
           10
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -11775,7 +11775,7 @@
       "desc": "A childhood parasite with no dignity and enormous persistence.",
       "params": {
         "mmp": -10,
-        "agi": -2
+        "agi": -1
       },
       "onset": {
         "steps": 300,
@@ -11791,7 +11791,7 @@
         "foodwater"
       ],
       "kind": "medical",
-      "cfr": 0,
+      "cfr": 0.0,
       "r0": 3.2,
       "rarity": "common",
       "epidemic": true,
@@ -11829,7 +11829,7 @@
           10
         ],
         "chance": 0.1,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -11845,8 +11845,8 @@
       "desc": "Giant roundworms in the gut, eating first and leaving you the remainder.",
       "params": {
         "mhp": -25,
-        "atk": -4,
-        "agi": -3
+        "atk": -2,
+        "agi": -2
       },
       "onset": {
         "steps": 260,
@@ -11899,7 +11899,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -11915,7 +11915,7 @@
       "desc": "Threaded into the colon wall, bleeding you a little at a time for years.",
       "params": {
         "mhp": -20,
-        "atk": -3
+        "atk": -2
       },
       "onset": {
         "steps": 280,
@@ -11968,7 +11968,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "anemia",
@@ -11982,14 +11982,14 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "A metre of worm emerging from the shin, one agonising centimetre a day.",
       "params": {
-        "agi": -11,
-        "atk": -5,
+        "agi": -4,
+        "atk": -3,
         "mhp": -20
       },
       "onset": {
@@ -12053,14 +12053,14 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
       "desc": "Raw river fish, and now something is living in your bile ducts.",
       "params": {
         "mmp": -25,
-        "mat": -4,
+        "mat": -2,
         "mhp": -18
       },
       "onset": {
@@ -12114,7 +12114,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -12123,15 +12123,15 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
       "desc": "Something laid eggs under your skin and the lump moves when you press it.",
       "params": {
-        "def": -5,
+        "def": -3,
         "mhp": -15,
-        "luk": -3
+        "luk": -2
       },
       "onset": {
         "steps": 160,
@@ -12184,7 +12184,7 @@
           44
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "sepsis",
@@ -12204,7 +12204,7 @@
       "durationDays": 21,
       "desc": "Burrowed into the toe and swelling to a pea. Walking is a negotiation.",
       "params": {
-        "agi": -6
+        "agi": -3
       },
       "onset": {
         "steps": 190,
@@ -12257,7 +12257,7 @@
           38
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -12272,7 +12272,7 @@
       "durationDays": 21,
       "desc": "The other kind of lice, and the more embarrassing conversation.",
       "params": {
-        "luk": -3,
+        "luk": -2,
         "mmp": -6
       },
       "onset": {
@@ -12289,7 +12289,7 @@
         "contact"
       ],
       "kind": "medical",
-      "cfr": 0,
+      "cfr": 0.0,
       "r0": 2.45,
       "rarity": "common",
       "epidemic": false,
@@ -12326,7 +12326,7 @@
           38
         ],
         "chance": 0.1,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -12341,9 +12341,9 @@
       "durationDays": 28,
       "desc": "Caught off a beast; the mites go deeper and the crusts go thicker than scabies.",
       "params": {
-        "def": -6,
-        "agi": -4,
-        "luk": -3
+        "def": -3,
+        "agi": -2,
+        "luk": -2
       },
       "onset": {
         "steps": 200,
@@ -12395,7 +12395,7 @@
           44
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "mrsa",
@@ -12409,16 +12409,16 @@
       "category": "protozoan",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": 7,
       "desc": "A single amoeba went up the nose from warm fresh water and began eating the frontal lobe. Almost nobody has ever survived it.",
       "params": {
         "mhp": -120,
-        "mat": -22,
-        "mdf": -16,
-        "luk": -12
+        "mat": -6,
+        "mdf": -6,
+        "luk": -5
       },
       "onset": {
         "steps": 40,
@@ -12457,14 +12457,14 @@
         "window": 3,
         "peakStart": 0,
         "peakEnd": 0,
-        "latent": 0,
-        "peak": 0
+        "latent": 0.0,
+        "peak": 0.0
       },
       "needs": {
         "hunger": 1.77,
         "sleep": 1.55,
         "hygiene": 1.66,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.11
       },
       "daily": {
@@ -12489,9 +12489,9 @@
       "desc": "A misfolded protein out of the food chain, patient for a decade, then all at once.",
       "params": {
         "mhp": -90,
-        "mat": -18,
-        "agi": -14,
-        "mdf": -10
+        "mat": -6,
+        "agi": -5,
+        "mdf": -4
       },
       "onset": {
         "steps": 200,
@@ -12531,7 +12531,7 @@
         "peakStart": 0,
         "peakEnd": 0,
         "latent": 0.1,
-        "peak": 1
+        "peak": 1.0
       },
       "needs": {
         "hunger": 1.22,
@@ -12563,8 +12563,8 @@
       "desc": "The shepherd's disease. Ewes rub themselves raw on the fence, and then so do you.",
       "params": {
         "mhp": -70,
-        "agi": -12,
-        "mat": -10
+        "agi": -5,
+        "mat": -4
       },
       "onset": {
         "steps": 240,
@@ -12603,7 +12603,7 @@
         "peakStart": 0,
         "peakEnd": 0,
         "latent": 0.1,
-        "peak": 1
+        "peak": 1.0
       },
       "needs": {
         "hunger": 1.22,
@@ -12633,8 +12633,8 @@
       "durationDays": 9,
       "desc": "Sore throat, red eyes and a fever that outstays its welcome.",
       "params": {
-        "agi": -3,
-        "mat": -2
+        "agi": -2,
+        "mat": -1
       },
       "onset": {
         "steps": 280,
@@ -12679,7 +12679,7 @@
         "hunger": 1.075,
         "sleep": 1.15,
         "hygiene": 1.1,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -12688,7 +12688,7 @@
           25
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -12703,8 +12703,8 @@
       "durationDays": 8,
       "desc": "Coxsackievirus. Blisters exactly where the name says and nowhere pleasant.",
       "params": {
-        "agi": -4,
-        "atk": -2
+        "agi": -2,
+        "atk": -1
       },
       "onset": {
         "steps": 240,
@@ -12749,7 +12749,7 @@
         "hunger": 1.075,
         "sleep": 1.15,
         "hygiene": 1.1,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -12757,7 +12757,7 @@
           25
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -12772,7 +12772,7 @@
       "durationDays": 10,
       "desc": "Parvovirus B19. A bright red face and a week of aching joints.",
       "params": {
-        "agi": -3
+        "agi": -2
       },
       "onset": {
         "steps": 300,
@@ -12787,7 +12787,7 @@
         "saliva"
       ],
       "kind": "medical",
-      "cfr": 0,
+      "cfr": 0.0,
       "r0": 2.95,
       "rarity": "common",
       "epidemic": true,
@@ -12816,13 +12816,13 @@
         "hunger": 1.038,
         "sleep": 1.075,
         "hygiene": 1.05,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.025
       },
       "daily": {
         "states": [],
         "chance": 0.1,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -12831,14 +12831,14 @@
       "category": "viral",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 14,
       "desc": "Mosquito-borne. The name means the illness that bends you up, and it does.",
       "params": {
-        "agi": -12,
-        "atk": -8
+        "agi": -5,
+        "atk": -4
       },
       "onset": {
         "steps": 170,
@@ -12882,7 +12882,7 @@
         "hunger": 1.225,
         "sleep": 1.45,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -12908,8 +12908,8 @@
       "desc": "Carried by rats, hemorrhagic in the unlucky fifth, deafening in the survivors.",
       "params": {
         "mhp": -60,
-        "mdf": -8,
-        "atk": -8
+        "mdf": -4,
+        "atk": -4
       },
       "onset": {
         "steps": 150,
@@ -12954,7 +12954,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -12979,8 +12979,8 @@
       "desc": "A tick bite, then bruising under skin that has not been struck.",
       "params": {
         "mhp": -75,
-        "def": -8,
-        "atk": -9
+        "def": -4,
+        "atk": -4
       },
       "onset": {
         "steps": 140,
@@ -13025,7 +13025,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -13050,8 +13050,8 @@
       "desc": "Smallpox's smaller cousin, out of the forest and into the towns.",
       "params": {
         "mhp": -25,
-        "def": -5,
-        "luk": -3
+        "def": -3,
+        "luk": -2
       },
       "onset": {
         "steps": 220,
@@ -13096,7 +13096,7 @@
         "hunger": 1.15,
         "sleep": 1.3,
         "hygiene": 1.2,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -13105,7 +13105,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -13114,15 +13114,15 @@
       "category": "viral",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": 21,
       "desc": "A mosquito, a paddy field, and inflammation where thought is kept.",
       "params": {
-        "mat": -16,
+        "mat": -6,
         "mhp": -50,
-        "agi": -8
+        "agi": -4
       },
       "onset": {
         "steps": 160,
@@ -13166,7 +13166,7 @@
         "hunger": 1.33,
         "sleep": 1.66,
         "hygiene": 1.44,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -13191,8 +13191,8 @@
       "durationDays": 45,
       "desc": "Unpasteurised milk. A fever that comes and goes on its own tide for months.",
       "params": {
-        "atk": -5,
-        "agi": -5,
+        "atk": -3,
+        "agi": -3,
         "mhp": -20
       },
       "onset": {
@@ -13239,7 +13239,7 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -13248,7 +13248,7 @@
           12
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "endocarditis",
@@ -13268,7 +13268,7 @@
       "durationDays": 21,
       "desc": "Breathed in off a barn floor. Half of those who catch it never notice.",
       "params": {
-        "agi": -4,
+        "agi": -2,
         "mhp": -15
       },
       "onset": {
@@ -13315,7 +13315,7 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -13323,7 +13323,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -13332,14 +13332,14 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
       "desc": "Soft cheese kept badly. It crosses barriers other bacteria respect.",
       "params": {
         "mhp": -40,
-        "mat": -6
+        "mat": -3
       },
       "onset": {
         "steps": 200,
@@ -13384,7 +13384,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -13408,8 +13408,8 @@
       "durationDays": 7,
       "desc": "Undercooked egg. Two days of regret and a week of caution.",
       "params": {
-        "agi": -6,
-        "atk": -3
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 140,
@@ -13454,7 +13454,7 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -13463,7 +13463,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -13478,7 +13478,7 @@
       "durationDays": 8,
       "desc": "Ten organisms are enough. Dysentery with blood in it.",
       "params": {
-        "agi": -7,
+        "agi": -3,
         "mhp": -20
       },
       "onset": {
@@ -13525,7 +13525,7 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -13534,7 +13534,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -13549,8 +13549,8 @@
       "durationDays": 9,
       "desc": "Chicken, unwashed hands, and the worst stomach cramps of your life.",
       "params": {
-        "agi": -6,
-        "atk": -3
+        "agi": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 150,
@@ -13595,7 +13595,7 @@
         "hunger": 1.2,
         "sleep": 1.3,
         "hygiene": 1.25,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.1
       },
       "daily": {
@@ -13604,7 +13604,7 @@
           25
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -13619,9 +13619,9 @@
       "durationDays": -1,
       "desc": "Repeated infection scars the lid until the lashes turn inward on the eye.",
       "params": {
-        "mat": -6,
-        "luk": -4,
-        "agi": -3
+        "mat": -3,
+        "luk": -2,
+        "agi": -2
       },
       "onset": {
         "steps": 280,
@@ -13667,7 +13667,7 @@
         "hunger": 1.3,
         "sleep": 1.45,
         "hygiene": 1.375,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.15
       },
       "daily": {
@@ -13696,8 +13696,8 @@
       "desc": "Out of wet soil after rain, abscessing anywhere it likes and relapsing for years.",
       "params": {
         "mhp": -55,
-        "def": -7,
-        "atk": -6
+        "def": -3,
+        "atk": -3
       },
       "onset": {
         "steps": 190,
@@ -13742,7 +13742,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -13760,15 +13760,15 @@
       "category": "bacterial",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
       "desc": "Bacteria colonised a heart valve and are shedding into the blood with every beat.",
       "params": {
         "mhp": -70,
-        "agi": -10,
-        "atk": -7
+        "agi": -4,
+        "atk": -3
       },
       "onset": {
         "steps": 170,
@@ -13813,7 +13813,7 @@
         "hunger": 1.44,
         "sleep": 1.66,
         "hygiene": 1.55,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.22
       },
       "daily": {
@@ -13836,14 +13836,14 @@
       "category": "fungal",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 28,
       "desc": "Breathed in off cave floors and bird lofts. The lungs answer in nodules.",
       "params": {
         "mhp": -25,
-        "agi": -5
+        "agi": -3
       },
       "onset": {
         "steps": 240,
@@ -13884,7 +13884,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.1,
         "hygiene": 1.45,
         "social": 1.1,
@@ -13896,7 +13896,7 @@
           10
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -13911,8 +13911,8 @@
       "durationDays": 40,
       "desc": "The rose gardener's disease, climbing the arm one nodule per lymph node.",
       "params": {
-        "def": -5,
-        "atk": -4
+        "def": -3,
+        "atk": -2
       },
       "onset": {
         "steps": 230,
@@ -13953,7 +13953,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.1,
         "hygiene": 1.45,
         "social": 1.1,
@@ -13964,7 +13964,7 @@
           44
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -13973,15 +13973,15 @@
       "category": "fungal",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "lethal",
       "durationDays": 14,
       "desc": "A black mould with an appetite for the face of anyone whose defences have slipped.",
       "params": {
         "mhp": -85,
-        "mat": -10,
-        "def": -8
+        "mat": -4,
+        "def": -4
       },
       "onset": {
         "steps": 120,
@@ -14023,7 +14023,7 @@
         "peak": 1.7
       },
       "needs": {
-        "hunger": 1,
+        "hunger": 1.0,
         "sleep": 1.22,
         "hygiene": 1.99,
         "social": 1.22,
@@ -14044,14 +14044,14 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 45,
       "desc": "Undercooked pork. The larvae encyst in muscle, including the ones you breathe with.",
       "params": {
-        "atk": -9,
-        "agi": -8,
+        "atk": -4,
+        "agi": -4,
         "mhp": -25
       },
       "onset": {
@@ -14115,14 +14115,14 @@
       "category": "parasitic",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
       "desc": "A dog tapeworm's cyst, growing quietly in the liver for a decade. Never puncture it.",
       "params": {
         "mhp": -40,
-        "agi": -5
+        "agi": -3
       },
       "onset": {
         "steps": 280,
@@ -14183,15 +14183,15 @@
       "category": "protozoan",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
       "desc": "A tick-borne malaria of sorts, chewing red cells in the same lazy way.",
       "params": {
         "mhp": -35,
-        "atk": -6,
-        "agi": -5
+        "atk": -3,
+        "agi": -3
       },
       "onset": {
         "steps": 210,
@@ -14236,7 +14236,7 @@
         "hunger": 1.525,
         "sleep": 1.375,
         "hygiene": 1.45,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.075
       },
       "daily": {
@@ -14260,7 +14260,7 @@
       "durationDays": 14,
       "desc": "Chlorine does not touch it. One swimming pool, one whole town.",
       "params": {
-        "agi": -6,
+        "agi": -3,
         "mhp": -18
       },
       "onset": {
@@ -14306,7 +14306,7 @@
         "hunger": 1.35,
         "sleep": 1.25,
         "hygiene": 1.3,
-        "social": 1,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -14314,7 +14314,7 @@
           41
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -14323,15 +14323,15 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 45,
       "desc": "The world goes out at dusk, then the cornea starts to soften.",
       "params": {
-        "mat": -5,
-        "luk": -4,
-        "agi": -3
+        "mat": -3,
+        "luk": -2,
+        "agi": -2
       },
       "onset": {
         "steps": 220,
@@ -14374,8 +14374,8 @@
       "needs": {
         "hunger": 1.55,
         "sleep": 1.2,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
@@ -14383,7 +14383,7 @@
           5
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -14392,14 +14392,14 @@
       "category": "deficiency",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 60,
       "desc": "Pins and needles climbing from the feet, and a memory going the other way.",
       "params": {
-        "mat": -6,
-        "agi": -6,
+        "mat": -3,
+        "agi": -3,
         "mhp": -15
       },
       "onset": {
@@ -14443,14 +14443,14 @@
       "needs": {
         "hunger": 1.55,
         "sleep": 1.2,
-        "hygiene": 1,
-        "social": 1,
+        "hygiene": 1.0,
+        "social": 1.0,
         "leisure": 1.05
       },
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -14459,14 +14459,14 @@
       "category": "neurological",
       "nature": "Mundane",
       "infective": false,
-      "transmission": 0,
+      "transmission": 0.0,
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
       "desc": "One side of the face stopped answering overnight. Usually it comes back.",
       "params": {
-        "luk": -5,
-        "mat": -3
+        "luk": -3,
+        "mat": -2
       },
       "onset": {
         "steps": 200,
@@ -14519,7 +14519,7 @@
           12
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -14535,9 +14535,9 @@
       "desc": "Nothing is wrong with the body. Something is wrong at the level the body is an expression of, and it is spreading by sympathy.",
       "params": {
         "mmp": -70,
-        "mat": -12,
-        "mdf": -14,
-        "luk": -12,
+        "mat": -5,
+        "mdf": -5,
+        "luk": -5,
         "mhp": -40
       },
       "onset": {
@@ -14614,7 +14614,7 @@
       "desc": "Crude in the alveoli that will not come up and will not stop being warm.",
       "params": {
         "mhp": -45,
-        "agi": -8,
+        "agi": -4,
         "mmp": -20
       },
       "onset": {
@@ -14689,9 +14689,9 @@
       "durationDays": 21,
       "desc": "The long-haul sickness. Every cough comes up tasting of a road you have not driven yet.",
       "params": {
-        "atk": -4,
-        "agi": -6,
-        "mat": -3
+        "atk": -2,
+        "agi": -3,
+        "mat": -2
       },
       "onset": {
         "steps": 210,
@@ -14743,7 +14743,7 @@
       "daily": {
         "states": [],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -14758,9 +14758,9 @@
       "durationDays": -1,
       "desc": "Up has stopped being a direction and started being a place, and it is pulling.",
       "params": {
-        "agi": -10,
-        "mdf": -8,
-        "luk": -6
+        "agi": -4,
+        "mdf": -4,
+        "luk": -3
       },
       "onset": {
         "steps": 170,
@@ -14829,9 +14829,9 @@
       "durationDays": -1,
       "desc": "You have had this disease before. You will have it again. The middle keeps going missing.",
       "params": {
-        "mat": -10,
+        "mat": -4,
         "mmp": -30,
-        "luk": -6
+        "luk": -3
       },
       "onset": {
         "steps": 180,
@@ -14900,7 +14900,7 @@
       "durationDays": 24,
       "desc": "Written wards go soft near you and every seal you touch reads slightly wrong afterwards.",
       "params": {
-        "mat": -8,
+        "mat": -4,
         "mmp": -25
       },
       "onset": {
@@ -14954,7 +14954,7 @@
           6
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "ley-rot",
@@ -14974,9 +14974,9 @@
       "durationDays": 16,
       "desc": "Caught off somebody else's familiar. You dream its dreams and wake with its appetite.",
       "params": {
-        "mat": -5,
-        "agi": 4,
-        "mdf": -6
+        "mat": -3,
+        "agi": 2,
+        "mdf": -3
       },
       "onset": {
         "steps": 190,
@@ -15031,7 +15031,7 @@
           31
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -15046,8 +15046,8 @@
       "durationDays": 30,
       "desc": "Read something aloud that was meant to be read silently. It is still finishing the sentence.",
       "params": {
-        "mat": -4,
-        "mdf": -3
+        "mat": -2,
+        "mdf": -2
       },
       "onset": {
         "steps": 260,
@@ -15101,7 +15101,7 @@
           10
         ],
         "chance": 0.2,
-        "hpLoss": 0
+        "hpLoss": 0.0
       }
     },
     {
@@ -15116,8 +15116,8 @@
       "durationDays": 12,
       "desc": "Caught off a terminal. Your sense of sequence arrives out of order and retries.",
       "params": {
-        "agi": -7,
-        "mat": -5
+        "agi": -3,
+        "mat": -3
       },
       "onset": {
         "steps": 160,
@@ -15169,7 +15169,7 @@
           8
         ],
         "chance": 0.35,
-        "hpLoss": 0
+        "hpLoss": 0.0
       },
       "progression": {
         "to": "recursion-sickness",
@@ -15189,9 +15189,9 @@
       "durationDays": -1,
       "desc": "Every thought calls itself once more before finishing. The stack does not unwind.",
       "params": {
-        "mat": -12,
+        "mat": -5,
         "mmp": -40,
-        "agi": -5
+        "agi": -3
       },
       "onset": {
         "steps": 170,
@@ -15260,9 +15260,9 @@
       "durationDays": -1,
       "desc": "Sound keeps arriving. Meaning has stopped. It spreads to whoever you try to explain it to.",
       "params": {
-        "mat": -14,
-        "mdf": -12,
-        "luk": -10,
+        "mat": -5,
+        "mdf": -5,
+        "luk": -4,
         "mmp": -35
       },
       "onset": {
@@ -15334,10 +15334,10 @@
       "durationDays": -1,
       "desc": "There are two of you in there and only one of you is keeping track of the days.",
       "params": {
-        "mdf": -12,
-        "luk": -8,
-        "atk": 6,
-        "mat": -6
+        "mdf": -5,
+        "luk": -4,
+        "atk": 3,
+        "mat": -3
       },
       "onset": {
         "steps": 150,
@@ -15413,11 +15413,11 @@
       "durationDays": -1,
       "desc": "A bite that took. The body keeps a calendar of its own and it is lunar.",
       "params": {
-        "atk": 10,
-        "agi": 8,
-        "mdf": -10,
-        "luk": -8,
-        "mat": -8
+        "atk": 3,
+        "agi": 3,
+        "mdf": -4,
+        "luk": -4,
+        "mat": -4
       },
       "onset": {
         "steps": 160,
@@ -15487,8 +15487,8 @@
       "nature": "Mundane",
       "desc": "A fractured arm splinted and slung; strength halved on that side.",
       "params": {
-        "atk": -6,
-        "agi": -2
+        "atk": -3,
+        "agi": -1
       },
       "durationDays": 45,
       "onset": {
@@ -15506,8 +15506,8 @@
       "nature": "Mundane",
       "desc": "A fractured leg in a cast; every step is negotiated.",
       "params": {
-        "agi": -10,
-        "atk": -2
+        "agi": -4,
+        "atk": -1
       },
       "durationDays": 60,
       "onset": {
@@ -15525,9 +15525,9 @@
       "nature": "Mundane",
       "desc": "Cracked ribs make breath and swing a wince.",
       "params": {
-        "atk": -4,
-        "def": -3,
-        "agi": -3
+        "atk": -2,
+        "def": -2,
+        "agi": -2
       },
       "durationDays": 40,
       "onset": {
@@ -15545,8 +15545,8 @@
       "nature": "Mundane",
       "desc": "A rung skull; thought comes slow and light stings.",
       "params": {
-        "mat": -6,
-        "agi": -4
+        "mat": -3,
+        "agi": -2
       },
       "durationDays": 14,
       "onset": {
@@ -15564,7 +15564,7 @@
       "nature": "Mundane",
       "desc": "Torn ligaments; the ankle protests weight.",
       "params": {
-        "agi": -6
+        "agi": -3
       },
       "durationDays": 21,
       "onset": {
@@ -15582,8 +15582,8 @@
       "nature": "Mundane",
       "desc": "Reset but tender; the arm holds nothing heavy yet.",
       "params": {
-        "atk": -5,
-        "def": -2
+        "atk": -3,
+        "def": -1
       },
       "durationDays": 30,
       "onset": {
@@ -15602,7 +15602,7 @@
       "desc": "A stitched wound that reopens if pushed too hard.",
       "params": {
         "mhp": -15,
-        "def": -3
+        "def": -2
       },
       "durationDays": 18,
       "onset": {
@@ -15620,9 +15620,9 @@
       "nature": "Mundane",
       "desc": "Healing burns tighten skin and blunt every nerve.",
       "params": {
-        "def": -6,
-        "agi": -4,
-        "luk": -3
+        "def": -3,
+        "agi": -2,
+        "luk": -2
       },
       "durationDays": 50,
       "onset": {
@@ -15640,8 +15640,8 @@
       "nature": "Mundane",
       "desc": "Frozen tissue, blackened at the tips, aching in the cold.",
       "params": {
-        "agi": -5,
-        "atk": -3
+        "agi": -3,
+        "atk": -2
       },
       "durationDays": 35,
       "onset": {
@@ -15659,8 +15659,8 @@
       "nature": "Mundane",
       "desc": "A wrenched neck locking the head in careful poses.",
       "params": {
-        "agi": -4,
-        "mat": -2
+        "agi": -2,
+        "mat": -1
       },
       "durationDays": 21,
       "onset": {
@@ -15678,9 +15678,9 @@
       "nature": "Mundane",
       "desc": "Damage along the spine dulling strength and speed.",
       "params": {
-        "agi": -12,
-        "atk": -6,
-        "def": -4
+        "agi": -5,
+        "atk": -3,
+        "def": -2
       },
       "durationDays": 120,
       "onset": {
@@ -15698,9 +15698,9 @@
       "nature": "Mundane",
       "desc": "A limb lost; balance and reach permanently changed.",
       "params": {
-        "atk": -8,
-        "agi": -6,
-        "def": -3
+        "atk": -4,
+        "agi": -3,
+        "def": -2
       },
       "durationDays": 9999,
       "onset": {
@@ -15718,8 +15718,8 @@
       "nature": "Mundane",
       "desc": "A clouding lens dimming the world to fog.",
       "params": {
-        "mat": -4,
-        "luk": -2
+        "mat": -2,
+        "luk": -1
       },
       "durationDays": 9999,
       "onset": {
@@ -15737,8 +15737,8 @@
       "nature": "Mundane",
       "desc": "A silence closing in; the world loses its warnings.",
       "params": {
-        "agi": -3,
-        "luk": -2
+        "agi": -2,
+        "luk": -1
       },
       "durationDays": 9999,
       "onset": {
@@ -15756,8 +15756,8 @@
       "nature": "Mundane",
       "desc": "An old ache that colors every lift and stride.",
       "params": {
-        "atk": -3,
-        "agi": -3
+        "atk": -2,
+        "agi": -2
       },
       "durationDays": 9999,
       "onset": {
@@ -15775,8 +15775,8 @@
       "nature": "Mundane",
       "desc": "Worn joints grinding stiff, worse in the cold.",
       "params": {
-        "atk": -4,
-        "agi": -5
+        "atk": -2,
+        "agi": -3
       },
       "durationDays": 9999,
       "onset": {
@@ -15794,7 +15794,7 @@
       "nature": "Mundane",
       "desc": "Brittle bones a hard fall could shatter.",
       "params": {
-        "def": -5,
+        "def": -3,
         "mhp": -10
       },
       "durationDays": 9999,
@@ -15813,8 +15813,8 @@
       "nature": "Mundane",
       "desc": "A grain of agony passing on its own cruel schedule.",
       "params": {
-        "agi": -4,
-        "atk": -3
+        "agi": -2,
+        "atk": -2
       },
       "durationDays": 10,
       "onset": {
@@ -15833,7 +15833,7 @@
       "desc": "An inflamed appendix; a surgical clock ticking.",
       "params": {
         "mhp": -20,
-        "agi": -5
+        "agi": -3
       },
       "durationDays": 7,
       "onset": {
@@ -15851,8 +15851,8 @@
       "nature": "Mundane",
       "desc": "A bulge that turns lifting into a gamble.",
       "params": {
-        "atk": -5,
-        "def": -2
+        "atk": -3,
+        "def": -1
       },
       "durationDays": 9999,
       "onset": {
@@ -15870,8 +15870,8 @@
       "nature": "Mundane",
       "desc": "Crystals flaring a joint into red, untouchable pain.",
       "params": {
-        "agi": -6,
-        "atk": -2
+        "agi": -3,
+        "atk": -1
       },
       "durationDays": 14,
       "onset": {
@@ -15889,9 +15889,9 @@
       "nature": "Mundane",
       "desc": "A tiredness sleep never repays.",
       "params": {
-        "atk": -4,
-        "agi": -5,
-        "mat": -3
+        "atk": -2,
+        "agi": -3,
+        "mat": -2
       },
       "durationDays": 9999,
       "onset": {
@@ -15909,8 +15909,8 @@
       "nature": "Mundane",
       "desc": "Pain in a limb no longer there.",
       "params": {
-        "mdf": -3,
-        "luk": -2
+        "mdf": -2,
+        "luk": -1
       },
       "durationDays": 9999,
       "onset": {
@@ -15928,8 +15928,8 @@
       "nature": "Mundane",
       "desc": "Knotted scars that tug and ache before a storm.",
       "params": {
-        "def": 2,
-        "agi": -2
+        "def": 1,
+        "agi": -1
       },
       "durationDays": 9999,
       "onset": {
@@ -15948,7 +15948,7 @@
       "desc": "Implants the flesh refuses; inflammation at every seam.",
       "params": {
         "mhp": -15,
-        "def": -4,
+        "def": -2,
         "mmp": -10
       },
       "durationDays": 60,
@@ -15968,7 +15968,7 @@
       "desc": "Channels seared by overcasting; magic flows rough.",
       "params": {
         "mmp": -20,
-        "mat": -4
+        "mat": -2
       },
       "durationDays": 9999,
       "onset": {
@@ -15986,8 +15986,8 @@
       "nature": "Mundane",
       "desc": "A mark burned by dark magic that never fully cools.",
       "params": {
-        "mdf": -5,
-        "luk": -4
+        "mdf": -3,
+        "luk": -2
       },
       "durationDays": 9999,
       "onset": {
@@ -16007,9 +16007,9 @@
       "desc": "You are a ticking bomb, Em. Ninety-two percent of your memories were forged into the Lance of Memory, and what grew back in the hole they left has not stopped growing.",
       "params": {
         "mmp": 45,
-        "mat": 14,
-        "mdf": -8,
-        "luk": -9
+        "mat": 3,
+        "mdf": -4,
+        "luk": -4
       },
       "durationDays": 9999,
       "onset": {

@@ -544,6 +544,26 @@
     // The board this character is allowed to see, cut once on the way in: a
     // humanoid never gets the animal sheets, tab counts included.
     scopeBoardToActor() {
+      // A board opened for one character in particular - the tutorial's
+      // dossiers, which are a class and a set of looks that belong to it -
+      // offers that character's own sheets and nothing else. The audience cut
+      // is skipped there on purpose: the list was chosen for this character
+      // already, and a slime's own sheets would not survive a humanoid's
+      // filter. If not one of them is available (a world that hides them), the
+      // whole board stands rather than an empty one.
+      const only = Scene_SpriteGridSelector._restrictToSheets;
+      if (Array.isArray(only) && only.length > 0) {
+        const allowed = new Set(only);
+        const narrowed = spriteOptions.filter((o) => allowed.has(o.name));
+        if (narrowed.length > 0) {
+          this._allOptions = narrowed;
+          this._tabOptions = {};
+          for (const tab of SPRITE_TABS) {
+            this._tabOptions[tab.id] = tab.id === "all" ? narrowed : [];
+          }
+          return;
+        }
+      }
       const allowAnimals = audienceIsCreature(this._actorId);
       this._allOptions = optionsForAudience(spriteOptions, allowAnimals);
       this._tabOptions = {};
@@ -588,6 +608,9 @@
     terminate() {
       super.terminate();
       this._alive = false;
+      // A narrowed board is narrowed for the one character it was opened for.
+      Scene_SpriteGridSelector._restrictToSheets = null;
+      if (window.CCNav) window.CCNav.detach(this);
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
       window.removeEventListener("keydown", this._wasdListener);
       window.removeEventListener("resize", this._resizeListener);
@@ -667,7 +690,22 @@
         this._gridDirty = true;
       });
 
+      // The buttons under the board are not cards, so the grid cursor cannot
+      // reach them. The focus ring can. See CharacterCreationNav.js.
+      if (window.CCNav) window.CCNav.attach(this, this._overlay);
+
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
+    }
+
+    // The ring hands the board back when it walks off its own top or left edge.
+    onNavLeave() {
+      this.refreshSelection();
+    }
+
+    // Step off the board and onto the page's own buttons, if there is anything
+    // over there to land on.
+    _ccEnterNav(dir) {
+      return !!window.CCNav && window.CCNav.tryEnterFromBoard(dir);
     }
 
     switchTab(tabId) {
@@ -911,8 +949,13 @@
     }
 
     updateInput() {
-      if (Input.isTriggered("pageup")) { this.cycleTab(-1); return; }
-      if (Input.isTriggered("pagedown") || Input.isTriggered("tab")) { this.cycleTab(1); return; }
+      // The ring owns the buttons under the board whenever it is up, and is
+      // read first so one press never moves two cursors.
+      if (window.CCNav && window.CCNav.update()) return;
+      // L1/PageUp back, R1/PageDown and Tab forward, Shift+Tab back. See
+      // CCNav.railDir(), which every rail in creation turns on.
+      const railDir = window.CCNav ? window.CCNav.railDir() : 0;
+      if (railDir) { this.cycleTab(railDir); return; }
       const held = (name) => Input.isTriggered(name) || Input.isRepeated(name);
       const down = held("down") || this._wasd.down;
       const up = held("up") || this._wasd.up;
@@ -940,6 +983,10 @@
         if (row && index < row.to) {
           index += 1;
           moved = true;
+        } else if (this._ccEnterNav("right")) {
+          // The right edge of the board is the doorway onto the buttons under
+          // it, the only things on this page a card cursor cannot reach.
+          return;
         }
       } else if (left) {
         if (row && index > row.from) {
@@ -967,6 +1014,9 @@
       if (!this._overlay || this._overlay.style.display === "none") return;
       this.updateInput();
       if (window.CCScroll) window.CCScroll.update(this._overlay);
+      // The board rebuilds its cells underneath the ring, so the ring is
+      // stamped back on afterwards rather than before.
+      if (window.CCNav) window.CCNav.paint();
       if (this._gridDirty) {
         this._gridDirty = false;
         this.renderGrid();
@@ -1276,6 +1326,7 @@
     terminate() {
       super.terminate();
       this._alive = false;
+      if (window.CCNav) window.CCNav.detach(this);
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
       window.removeEventListener("keydown", this._wasdListener);
       window.removeEventListener("resize", this._resizeListener);
@@ -1328,6 +1379,10 @@
       this._searchEl.placeholder = T("CharCreate.searchSpecies");
 
       this.buildButtons();
+
+      // Random and Continue sit under the board, where a card cursor cannot
+      // reach them. The focus ring can. See CharacterCreationNav.js.
+      if (window.CCNav) window.CCNav.attach(this, this._overlay);
 
       // One listener a board rather than an inline handler a card: the grid
       // rebuilds its cells constantly and must not re-bind on every pass.
@@ -1647,10 +1702,25 @@
       if (active && active.scrollIntoView) active.scrollIntoView({ block: "nearest" });
     }
 
+    // The ring hands the board back when it walks off its own top or left edge.
+    onNavLeave() {
+      this.refreshSelection();
+    }
+
+    // Step off the board and onto Random / Continue underneath it.
+    _ccEnterNav(dir) {
+      return !!window.CCNav && window.CCNav.tryEnterFromBoard(dir);
+    }
+
     updateInput() {
       if (document.activeElement === this._searchEl) return;
-      if (Input.isTriggered("pageup")) { this.cycleTab(-1); return; }
-      if (Input.isTriggered("pagedown") || Input.isTriggered("tab")) { this.cycleTab(1); return; }
+      // The ring owns the buttons under the board whenever it is up, and is
+      // read first so one press never moves two cursors.
+      if (window.CCNav && window.CCNav.update()) return;
+      // L1/PageUp back, R1/PageDown and Tab forward, Shift+Tab back. See
+      // CCNav.railDir(), which every rail in creation turns on.
+      const railDir = window.CCNav ? window.CCNav.railDir() : 0;
+      if (railDir) { this.cycleTab(railDir); return; }
       const direction = this.readDirection();
       const count = this._busts.length;
       // Leaving must work before the catalogue has finished loading.
@@ -1678,6 +1748,10 @@
         if (index % cols < cols - 1 && index + 1 < count) {
           index += 1;
           moved = true;
+        } else if (this._ccEnterNav("right")) {
+          // The right edge of the board is the doorway onto Random and
+          // Continue, the only things here a card cursor cannot reach.
+          return;
         }
       } else if (direction.left) {
         if (index % cols > 0) {
@@ -1704,6 +1778,9 @@
       if (!this._overlay || this._overlay.style.display === "none") return;
       this.updateInput();
       if (window.CCScroll) window.CCScroll.update(this._overlay);
+      // The board rebuilds its cells underneath the ring, so the ring is
+      // stamped back on afterwards rather than before.
+      if (window.CCNav) window.CCNav.paint();
       if (this._gridDirty) {
         this._gridDirty = false;
         this.renderGrid();

@@ -71,6 +71,21 @@
 
     const groundLevel = 560;
 
+    // Blood particles and ground stains live behind the battlers on the battle
+    // field. The layer only exists on Spriteset_Battle, so this answers "is
+    // there one" rather than reaching through _spriteset and assuming: in map
+    // battle mode (MapBattleMode.js) the scene on screen is Scene_Map and its
+    // spriteset has no _battleField at all. Returns true when the sprite was
+    // placed.
+    function _addToBattleField(sprite) {
+        const scene = SceneManager._scene;
+        const set = scene && scene._spriteset;
+        const field = set && set._battleField;
+        if (!field || typeof field.addChildAt !== 'function') return false;
+        field.addChildAt(sprite, 0);
+        return true;
+    }
+
     // HP-based particle configurations
     const hpScaledSprayConfig = {
         minimal: {     // 0-5% HP
@@ -773,9 +788,7 @@
 
         this._bloodParticles.push(particle);
 
-        if (SceneManager._scene && SceneManager._scene._spriteset) {
-            SceneManager._scene._spriteset._battleField.addChildAt(particle, 0);
-        }
+        _addToBattleField(particle);
     };
 
     // NEW: Create mist particles for atmospheric blood spray
@@ -818,9 +831,7 @@
 
         this._bloodParticles.push(particle);
 
-        if (SceneManager._scene && SceneManager._scene._spriteset) {
-            SceneManager._scene._spriteset._battleField.addChildAt(particle, 0);
-        }
+        _addToBattleField(particle);
     };
 
     Sprite_Enemy.prototype.darkenColor = function (color, factor) {
@@ -939,7 +950,13 @@
             const particle = this._bloodParticles[i];
             const data = particle._particleData;
 
-            if (!data) continue;
+            // A sprite with no particle data can never age out through the
+            // paths below, so it would tick for the rest of the fight. Drop it.
+            if (!data) {
+                if (particle.parent) particle.parent.removeChild(particle);
+                this._bloodParticles.splice(i, 1);
+                continue;
+            }
 
             if (!data.isGrounded && data.accumulates && particle.y >= groundLevel) {
                 data.isGrounded = true;
@@ -992,7 +1009,17 @@
                     particle.scale.y = scale;
                 }
 
-                if (!data.accumulates && (data.life <= 0 || particle.y > groundLevel + 100)) {
+                // A spray particle simply expires. One that accumulates is
+                // meant to outlive its own life counter and keep falling until
+                // it lands and turns into a ground stain, but one that never
+                // gets there (spawned below the field, blown out of frame, or
+                // added to no layer at all) used to tick and be submitted to
+                // the renderer for the rest of the battle: it gets a backstop
+                // three seconds past its life instead.
+                const gone = data.accumulates
+                    ? (data.life < -180 || particle.y > groundLevel + 100)
+                    : (data.life <= 0 || particle.y > groundLevel + 100);
+                if (gone) {
                     if (particle.parent) {
                         particle.parent.removeChild(particle);
                     }
@@ -1102,8 +1129,9 @@
             stain.opacity = 160 + Math.random() * 95;
             stain.blendMode = 0;
 
-            SceneManager._scene._spriteset._battleField.addChildAt(stain, 0);
+            _addToBattleField(stain);
 
+            if (!SceneManager._scene) continue;
             if (!SceneManager._scene._bloodStains) {
                 SceneManager._scene._bloodStains = [];
             }

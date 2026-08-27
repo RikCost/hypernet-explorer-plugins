@@ -404,6 +404,10 @@
   window.GalaxySim.planetTypeInfo = planetTypeInfo;
   window.GalaxySim.planetBreathable = planetBreathable;
   window.GalaxySim.planetHasLife = planetHasLife;
+  // The descriptor a landed world is named and coloured by. Exposed so the
+  // 3D world can open a planet without going through the surface generator
+  // (see VoxelWorldSystem.startAlienWalk).
+  window.GalaxySim.makeLandedDescriptor = (planet, opts) => makeLandedDescriptor(planet, opts);
 
   // ============================================================================
   // Life signs: what a scan actually reads off a world
@@ -613,25 +617,273 @@
     if (typeof n !== "number" || !isFinite(n)) return null;
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   }
-  function makeLandedDescriptor(planet) {
+  // ============================================================================
+  // How long a day is out there, and what colour the daylight is
+  // ----------------------------------------------------------------------------
+  // Every world the party can stand on turns at its own rate under its own star,
+  // and both of those things are readable off data the galaxy already has: the
+  // star's spectral type gives the colour of its light, and the body's orbit
+  // gives the length of its day.
+  //
+  // NONE OF THIS TOUCHES THE CLOCK. TimeDateSystem keeps Earth time everywhere,
+  // always: hunger, sleep, shop hours, the calendar and every schedule in the
+  // game are Earth hours and stay Earth hours no matter which planet the party
+  // is standing on. What changes is only what the SKY is doing over their heads,
+  // which is read off the Earth clock rather than replacing it - see
+  // localHourFor() below, which turns elapsed Earth minutes into a local hour
+  // for the tint systems and nothing else.
+  // ============================================================================
+
+  // Relative Rayleigh scattering of red, green and blue. Short wavelengths
+  // scatter far more (the reason Earth's sky is blue and its sunsets are red),
+  // so a star's light, filtered through this, is the colour of the sky it makes.
+  // A blue-white giant gives a deep violet-blue sky; a red dwarf, which puts out
+  // almost no blue for the air to scatter, gives a dim rust-coloured one.
+  const RAYLEIGH = [0.35, 0.75, 1.0];
+  // Everything is expressed RELATIVE to a sun-like G star, so Earth's own sky
+  // and daylight come out exactly as they always were and only genuinely
+  // different stars shift anything.
+  let _sunRef = null;
+  function _starRgb(type) {
+    const ST = window.GalaxySim.StarTypes || {};
+    const c = ST[type] && ST[type].color;
+    if (typeof c !== "number" || !isFinite(c)) return null;
+    return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+  }
+  function _sunReference() {
+    if (_sunRef) return _sunRef;
+    const g = _starRgb("G") || [255, 244, 234];
+    _sunRef = { light: g, sky: g.map((c, i) => c * RAYLEIGH[i]) };
+    return _sunRef;
+  }
+  const _clampRel = (v) => Math.max(0.12, Math.min(1.8, v));
+
+  // What the sky and the daylight look like under a given star, as multipliers
+  // on the colours Earth's own sky already uses: [1, 1, 1] under a sun-like
+  // star, warm and dim under a red dwarf, cold and blue under a hot giant.
+  function starLight(system) {
+    const type = (system && system.type) || "G";
+    const rgb = _starRgb(type) || _starRgb("G") || [255, 244, 234];
+    const ref = _sunReference();
+    return {
+      type,
+      rgb,
+      temp: (system && typeof system.temperature === "number") ? Math.round(system.temperature) : null,
+      // Multiplier on the sun's own colour: what the light landing on the ground
+      // is tinted like.
+      lightRel: rgb.map((c, i) => _clampRel(c / (ref.light[i] || 1))),
+      // ...and on the sky above it, once the air has scattered that light.
+      skyRel: rgb.map((c, i) => _clampRel((c * RAYLEIGH[i]) / (ref.sky[i] || 1))),
+    };
+  }
+  window.GalaxySim.starLight = starLight;
+
+  // What you weigh standing on a world, in Earth gravities. Surface gravity is
+  // the mass over the square of the radius and nothing else, and the catalogue
+  // carries both in Earth units already, so this is the whole of the physics:
+  // a moon the size of ours pulls at a sixth of a gee and a super-earth twice
+  // Earth's mass at half again its radius pulls at nearly one.
+  function surfaceGravity(body) {
+    const m = (body && typeof body.mass === "number" && body.mass > 0) ? body.mass : 1;
+    const r = (body && typeof body.radius === "number" && body.radius > 0) ? body.radius : 1;
+    return m / (r * r);
+  }
+  window.GalaxySim.surfaceGravity = surfaceGravity;
+
+  // How close a world has to orbit before its star's tide stops it turning.
+  // Locking time runs roughly as the sixth power of the orbit and falls with
+  // the star's mass, so for a fixed system age the locking radius goes as the
+  // cube root of that mass. Around a sun this reaches just past Mercury; around
+  // a red dwarf it swallows the whole habitable zone, which is the real reason
+  // most temperate worlds in this galaxy have one face in permanent daylight
+  // and the other in permanent night.
+  function tidalLockRadius(system) {
+    const m = (system && typeof system.mass === "number" && system.mass > 0) ? system.mass : 1;
+    return 0.30 * Math.cbrt(m);
+  }
+
+  function _spinSeed(body) {
+    const s = String((body && (body.name || body.type)) || "world");
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return ((h >>> 0) % 100000) / 100000;
+  }
+
+  // How the sky moves over a body: the length of its solar day in Earth hours,
+  // whether it is tidally locked, and - when it is locked to its own star - the
+  // one hour it is stuck at forever.
+  //
+  //   dayHours   Earth hours from one local noon to the next.
+  //   locked     the same face is always turned toward what it is locked to.
+  //   lockedTo   'star' (nothing overhead ever moves) or 'planet' (a moon,
+  //              which still gets day and night, just very slowly: our own
+  //              moon is locked to us and its day is a fortnight long).
+  //   frozen     the sun never rises or sets here. Only locked-to-star worlds,
+  //              and moons of one.
+  //   fixedHour  what o'clock it is, forever, on a frozen world - which side of
+  //              the terminator you landed on decides it.
+  function worldRotation(body, system, opts) {
+    opts = opts || {};
+    const out = { dayHours: 24, locked: false, lockedTo: null, frozen: false, fixedHour: 12 };
+    if (!body) return out;
+    const lockAt = tidalLockRadius(system);
+
+    if (opts.isMoon || body.isMoon) {
+      // A moon settles into showing its planet one face, so its day is however
+      // long it takes to go round: a fortnight of light and a fortnight of dark.
+      const per = (typeof body.period === "number" && isFinite(body.period) && body.period > 0)
+        ? body.period : 27.3;
+      out.locked = true;
+      out.lockedTo = "planet";   // i18n-ignore: internal key
+      out.dayHours = Math.max(2, Math.min(20000, per * 24));
+      // ...unless the planet it belongs to is itself frozen against its star,
+      // in which case the whole arrangement is stopped and so is the moon.
+      const host = opts.parentPlanet;
+      if (host && worldRotation(host, system).frozen) {
+        out.frozen = true;
+        out.lockedTo = "star";   // i18n-ignore: internal key
+        out.dayHours = null;
+      }
+      return out;
+    }
+
+    const a = (typeof body.orbitRadius === "number" && isFinite(body.orbitRadius))
+      ? body.orbitRadius : 1;
+    if (a > 0 && a <= lockAt) {
+      out.locked = true;
+      out.lockedTo = "star";   // i18n-ignore: internal key
+      out.frozen = true;
+      out.dayHours = null;
+      return out;
+    }
+
+    // Free to turn. Gas giants spin fast because they never stopped collapsing;
+    // rock spins slower. Then the tide brakes it - and the tidal torque falls off
+    // as the sixth power of the orbit, so the braking is brutal just outside the
+    // locking radius and effectively nothing further out. That is what leaves
+    // Mercury with a day of months and Earth with one of hours, off the same
+    // two lines.
+    const r = _spinSeed(body);
+    const gas = (typeof body.mass === "number" && body.mass > 20);
+    const base = gas ? 8 + r * 12 : 14 + r * 20;
+    const brake = (a > 0 && lockAt > 0) ? Math.pow(lockAt / a, 6) : 0;
+    out.dayHours = Math.min(6000, base * (1 + 500 * brake));
+    return out;
+  }
+  window.GalaxySim.worldRotation = worldRotation;
+  window.GalaxySim.tidalLockRadius = tidalLockRadius;
+
+  // What o'clock it is on the world in a landed descriptor, given the Earth
+  // clock's own elapsed minutes. This is the ONLY place the two clocks meet,
+  // and it is one-way: Earth time is read, never written. A world with a six
+  // hour day runs through four dawns while an Earth day passes; a world with a
+  // thousand hour day sits in the same afternoon for a month and a half; a
+  // frozen world never moves off its one hour at all.
+  function localHourFor(desc, totalEarthMinutes) {
+    const day = desc && desc.day;
+    if (!day) return null;
+    if (day.frozen) return day.fixedHour;
+    const dh = day.dayHours;
+    if (!(dh > 0)) return null;
+    if (Math.abs(dh - 24) < 1e-6) return null;   // an Earth-length day: no remapping at all
+    const h = (Number(totalEarthMinutes) || 0) / 60;
+    return (((h % dh) + dh) % dh) / dh * 24;
+  }
+  window.GalaxySim.localHourFor = localHourFor;
+
+  // Where on a frozen world the party set down. The landing grid's columns are
+  // lines of longitude, so the column decides which side of the terminator this
+  // is: the sub-stellar point is eternal noon, the far side eternal midnight,
+  // and the ring between them an eternal sunrise or sunset that never finishes.
+  function frozenHourForCell(gx, w) {
+    if (!(w > 0)) return 12;
+    const f = (((Number(gx) || 0) % w) + w) % w / w;
+    return (12 + f * 24) % 24;
+  }
+  window.GalaxySim.frozenHourForCell = frozenHourForCell;
+
+  // Which of the texture painter's families a world belongs to: "terrestrial"
+  // (elevation-banded ocean, coast and mountain), "rocky" (crater fields), or
+  // null for the ones nothing has been written for yet.
+  function terrainFamilyOf(planet) {
+    const R3D = window.GalaxySim.Renderer3D;
+    if (!planet || !R3D) return null;
+    const type = planet.type;
+    if (R3D.isGasGiant(type) || R3D.isVolcanic(type) || R3D.isIcy(type)) return null;
+    return R3D.isTerrestrial(type) ? "terrestrial" : "rocky";
+  }
+
+  function makeLandedDescriptor(planet, opts) {
+    opts = opts || {};
     const PT = window.GalaxySim.PlanetTypes || {};
     const info = PT[planet.type] || {};
     const rgb = intToRgbArr(info.color) || [140, 150, 170];
+    // The star this world is under, and how the world turns beneath it. The
+    // system is whichever one the ship is in, since that is the only one a
+    // landing can be made from.
+    let system = opts.system || null;
+    if (!system) {
+      try { system = window.GalaxySim.getCurrentSystem(); } catch (e) { system = null; }
+    }
+    const star = starLight(system);
+    // How big the star looks from here. Angular diameter is twice the star's
+    // radius over the distance to it, and the sun's own radius is 0.00465 AU,
+    // so the whole of it against the sun-from-Earth reference cancels down to
+    // the star's radius in solar radii over the orbit in AU. A red dwarf world
+    // has to huddle close to stay warm and gets a star three times the size of
+    // ours; a world of a red giant gets one that fills a quarter of the sky.
+    const orbitAU = (opts.isMoon && opts.parentPlanet)
+      ? opts.parentPlanet.orbitRadius : planet.orbitRadius;
+    star.apparent = (system && system.radius > 0 && orbitAU > 0)
+      ? Math.max(0.25, Math.min(14, system.radius / orbitAU))
+      : 1;
+    const day = worldRotation(planet, system, opts);
+    if (day.frozen) {
+      const g = opts.gridCell || {};
+      const gw = (opts.grid && opts.grid.w) || planetGridSize(planet).w;
+      day.fixedHour = frozenHourForCell(
+        (typeof g.gx === "number") ? g.gx : Math.floor(gw / 2), gw);
+    }
     const moons = (planet.moons || []).map((m) => ({
       radius: (typeof m.radius === "number" && isFinite(m.radius)) ? m.radius : 0.3,
       color: m.color || "#cfd8e6",
       type: m.type || "rocky",
     }));
     // Screen-tint offset that biases the world's daylight toward its palette
-    // (kept gentle so day never goes fully monochrome).
-    const tintOffset = rgb.map((c) => Math.max(-90, Math.min(70, (c - 165) * 0.45)));
+    // (kept gentle so day never goes fully monochrome), plus the colour of the
+    // star's own light on top of it: an ochre world under a red dwarf is not
+    // the same daylight as the same ochre world under a blue giant.
+    const tintOffset = rgb.map((c, i) => {
+      const ground = Math.max(-90, Math.min(70, (c - 165) * 0.45));
+      const lit = Math.max(-80, Math.min(60, (star.lightRel[i] - 1) * 110));
+      return Math.round(Math.max(-140, Math.min(110, ground + lit)));
+    });
+    // What the sky over it is: the planet's own haze, pushed toward the colour
+    // its star's light scatters to. Written so a sun-like star multiplies by
+    // exactly one and leaves the old palette untouched.
+    const skyBlend = rgb.map((c, i) => Math.round(
+      Math.max(0, Math.min(255, c * (0.55 + 0.45 * star.skyRel[i])))));
     return {
       name: planet.name || "",
       type: planet.type || "",
       radius: (typeof planet.radius === "number" && isFinite(planet.radius)) ? planet.radius : 1.0,
       rgb,
-      skyBlend: rgb,     // sky gradient blends toward this
+      skyBlend,          // sky gradient blends toward this
       tintOffset,        // [dr, dg, db] added to the weather day-tint
+      star,              // { type, rgb, temp, lightRel, skyRel }
+      day,               // { dayHours, locked, lockedTo, frozen, fixedHour }
+      gravity: surfaceGravity(planet),   // Earth gravities at the surface
+      // The planet's own elevation field and the landing grid it was picked
+      // from: enough for the 3D world to raise exactly the coastlines and
+      // mountains the landing picture showed.
+      terrain: {
+        seed: (window.GalaxySim.Renderer3D && window.GalaxySim.Renderer3D._seedFor)
+          ? window.GalaxySim.Renderer3D._seedFor(planet) : 0,
+        family: terrainFamilyOf(planet),
+        isOcean: planet.type === "ocean",   // i18n-ignore: planet type id
+        grid: opts.grid || planetGridSize(planet),
+        cell: opts.gridCell || null,
+      },
       moons,
     };
   }
@@ -702,7 +954,6 @@
     $gameSystem._alienLifeSigns = ($gameSystem._alienPlanetHasLife || opts.forceLife)
       ? LIFE.STRONG : planetLifeSigns(planet);
     $gameSystem._awayFromShip = true;
-    $gameSystem._landedPlanet = makeLandedDescriptor(planet);
     if (breathable) { removeEVASuits(); } else { applyEVASuits(); }
 
     // Fresh, totally-random enemy roster per planet (all landings share the
@@ -720,6 +971,12 @@
     const gx = (typeof cell.gx === "number" && isFinite(cell.gx)) ? ((Math.floor(cell.gx) % w) + w) % w : Math.floor(w / 2);
     const gy = (typeof cell.gy === "number" && isFinite(cell.gy)) ? ((Math.floor(cell.gy) % h) + h) % h : Math.floor(h / 2);
     $gameSystem._procGenData.alienGrid = { w, h, gx, gy, biome: biomeName };
+    // Built here rather than above, because which column of the landing grid
+    // this is decides what o'clock it is forever on a tidally locked world.
+    $gameSystem._landedPlanet = makeLandedDescriptor(planet, {
+      gridCell: { gx, gy }, grid: { w, h },
+      isMoon: !!opts.isMoon, parentPlanet: opts.parentPlanet || null,
+    });
     $gameVariables.setValue(43, gx);
     $gameVariables.setValue(44, gy);
 
@@ -793,12 +1050,7 @@
   // gets macro crater fields), or null (icy/volcanic/gas-giant: not reworked
   // yet, ProceduralMapBiomeGenerator.js keeps the plain terrain fill for those).
   function getLandedTerrainFamily() {
-    const planet = getSurfacePlanet();
-    const R3D = window.GalaxySim.Renderer3D;
-    if (!planet || !R3D) return null;
-    const type = planet.type;
-    if (R3D.isGasGiant(type) || R3D.isVolcanic(type) || R3D.isIcy(type)) return null;
-    return R3D.isTerrestrial(type) ? "terrestrial" : "rocky";
+    return terrainFamilyOf(getSurfacePlanet());
   }
   window.GalaxySim.getLandedTerrainFamily = getLandedTerrainFamily;
 
@@ -853,6 +1105,64 @@
   window.GalaxySim.relandOnPlanet = relandOnPlanet;
 
   // ============================================================================
+  // The other way down: a liminal walk
+  // ----------------------------------------------------------------------------
+  // Instead of generating a 64x64 surface square to walk about on, open the 3D
+  // world on the planet itself: one biome from pole to pole, in the world's own
+  // colours and under its own sky, with whatever lives there roaming it.
+  //
+  // Offered wherever a landing site is confirmed - from orbit (the star map's
+  // landing grid) and on the ground (Scene_AlienLandingGrid) - so both routes
+  // resolve it here rather than each keeping a copy.
+  //
+  // `planet` is either a raw planet (from orbit) or the landed descriptor of the
+  // world the party is already standing on; the descriptor is reused as-is with
+  // its grid cell moved, because everything else about it was settled on the way
+  // down and must not be rolled again.
+  // ============================================================================
+  function startLiminalWalk(planet, gx, gy, opts) {
+    opts = opts || {};
+    const VW = window.VoxelWorldSystem;
+    if (!VW || !VW.startAlienWalk || !planet || !planet.type) return false;
+    const PT = window.GalaxySim.PlanetTypes || {};
+    const biomeName = (PT[planet.type] && PT[planet.type].biome) || null;
+    const list = (window.WorldGen && window.WorldGen.Biomes) || [];
+    const biome = biomeName ? list.find((b) => b && b.name === biomeName) : null;
+    if (!biome) return false;
+
+    const grid = opts.grid || planetGridSize(planet);
+    const cell = {
+      gx: ((Math.floor(gx) % grid.w) + grid.w) % grid.w,
+      gy: ((Math.floor(gy) % grid.h) + grid.h) % grid.h,
+    };
+
+    // Its own creatures, where it has any.
+    let species = null;
+    const hasLife = (opts.hasLife != null) ? !!opts.hasLife : planetHasLife(planet);
+    if (hasLife) {
+      species = (alienSpeciesRoster(planet) || [])
+        .map((sp) => sp.enemyId).filter((id) => id > 0);
+      if (!species.length) species = null;
+    }
+
+    // The square that was picked comes along: on a tidally locked world it is
+    // the whole difference between landing in eternal noon and eternal night.
+    const desc = planet.terrain
+      ? planet
+      : makeLandedDescriptor(planet, {
+          gridCell: cell, grid,
+          isMoon: !!opts.isMoon, parentPlanet: opts.parentPlanet || null,
+        });
+    if (desc.terrain) {
+      desc.terrain.grid = grid;
+      desc.terrain.cell = { gx: cell.gx, gy: cell.gy };
+    }
+    if (desc.day && desc.day.frozen) desc.day.fixedHour = frozenHourForCell(cell.gx, grid.w);
+    return !!VW.startAlienWalk(biome, desc, species);
+  }
+  window.GalaxySim.startLiminalWalk = startLiminalWalk;
+
+  // ============================================================================
   // Landing-site picker on foot (Scene_AlienLandingGrid)
   // ----------------------------------------------------------------------------
   // In orbit the landing square is chosen from the star map's own overlay
@@ -881,6 +1191,18 @@
     return { w: Math.max(1, w), h: Math.max(1, h) };
   }
 
+  // The two ways down, asked once a square has been chosen. The same pair the
+  // star map's landing grid offers from orbit (GalaxySim_Overlay's mode
+  // buttons): set the ship down and walk the generated surface square, or open
+  // the 3D world on the planet itself.
+  class Window_LandingMode extends Window_Command {
+    makeCommandList() {
+      this.addCommand(T('Galaxy.hud.landHere'), "land");
+      this.addCommand(T('Galaxy.hud.liminalWalk'), "walk");
+    }
+  }
+  window.Window_LandingMode = Window_LandingMode;
+
   class Scene_AlienLandingGrid extends Scene_MenuBase {
     create() {
       super.create();
@@ -890,7 +1212,26 @@
       this._leaving = false;
       this.createGridSprite();
       this.createTextSprite();
+      this.createModeWindow();
       this.redrawAll();
+    }
+
+    createModeWindow() {
+      const w = 320;
+      const h = this.calcWindowHeight(2, true);
+      const rect = new Rectangle(
+        Math.floor((Graphics.boxWidth - w) / 2),
+        Math.floor((Graphics.boxHeight - h) / 2),
+        w, h
+      );
+      const win = new Window_LandingMode(rect);
+      win.setHandler("land", this.commandLand.bind(this));
+      win.setHandler("walk", this.commandLiminalWalk.bind(this));
+      win.setHandler("cancel", this.commandModeCancel.bind(this));
+      win.hide();
+      win.deactivate();
+      this._modeWindow = win;
+      this.addWindow(win);
     }
 
     createGridSprite() {
@@ -965,21 +1306,55 @@
       };
     }
 
+    // A square has been chosen; now which of the two ways down.
     confirm() {
       SoundManager.playOk();
+      this._modeWindow.select(0);
+      this._modeWindow.show();
+      this._modeWindow.activate();
+    }
+
+    commandModeCancel() {
+      this._modeWindow.hide();
+      this._modeWindow.deactivate();
+    }
+
+    // Set the ship down: a fresh surface square at the chosen grid cell.
+    commandLand() {
       this._leaving = true;
       if (relandOnPlanet(this._cursor.gx, this._cursor.gy)) {
         SceneManager.goto(Scene_Map);
       } else {
         SoundManager.playBuzzer();
         this._leaving = false;
+        this.commandModeCancel();
+        this._modeWindow.activate();
       }
+    }
+
+    // Walk the whole world instead: the 3D planet, at the chosen longitude.
+    commandLiminalWalk() {
+      const planet = this._planet;
+      const started = planet && startLiminalWalk(planet, this._cursor.gx, this._cursor.gy, {
+        grid: { w: this._grid.w, h: this._grid.h },
+        hasLife: !!($gameSystem && $gameSystem._alienPlanetHasLife),
+      });
+      if (!started) {
+        SoundManager.playBuzzer();
+        this.commandModeCancel();
+        this._modeWindow.activate();
+        return;
+      }
+      this._leaving = true;
+      this.popScene();
     }
 
     update() {
       super.update();
-      // Never read the press that opened the scene, nor one made on the way out.
+      // Never read the press that opened the scene, nor one made on the way out,
+      // and leave the grid alone while the way down is being chosen.
       if (this._leaving || !this.isActive()) return;
+      if (this._modeWindow && this._modeWindow.active) return;
       let dx = 0, dy = 0;
       if (Input.isRepeated("left")) dx = -1;
       else if (Input.isRepeated("right")) dx = 1;
@@ -2073,8 +2448,124 @@
   };
   window.GalaxySim.Nibiru = Nibiru;
 
-  // Once a second is far more often than a calendar needs, and cheap enough
-  // that it never has to be thought about again.
+  // ============================================================================
+  // The Friday moons
+  // ----------------------------------------------------------------------------
+  // Earth has three moons on a Friday. The Moon is always up there; Moon 2 and
+  // Moon 3 (authored in js/db/GalaxySim/Systems.json, each flagged `friday`)
+  // are taken back out of Earth's moon list on every other day of the week, so
+  // the star map, the catalog and travel all agree that they are not there.
+  //
+  // Which day it is comes from the battle sky's own calendar (SkyRenderer, in
+  // AnimatedBattleBackgrounds.js), so the sky over the party and the sky the
+  // star map draws are never out of step about it; the world clock is only the
+  // fallback for a sky that has not loaded.
+  //
+  // A ship left in one of those orbits when the week turns cannot stay there:
+  // it is put back into Earth's orbit - or the Omega Tower's, if that is what
+  // is standing in Earth's place by then - and the party is told.
+  // ============================================================================
+  const FRIDAY_MOON_NAMES = ["Moon 2", "Moon 3"];   // i18n-ignore: body ids
+  const EARTH_NAME = "Earth";                        // i18n-ignore: body id
+  const isFridayMoon = (name) => FRIDAY_MOON_NAMES.indexOf(name) >= 0;
+
+  function isFridayNow() {
+    const SR = window.SkyRenderer;
+    if (SR && SR.isFriday) {
+      try { return !!SR.isFriday(); } catch (e) { /* fall through to the clock */ }
+    }
+    const d = new Date(CLOCK_EPOCH.getTime() + nibiruNow() * 60000);
+    return d.getDay() === 5;
+  }
+
+  // Whichever body is standing in Earth's orbit: the Earth itself, or the tower
+  // that replaced it (omegaTowerPlanet carries Earth's moons over with it, the
+  // same array, which is why this pass can be blind to which one it has).
+  function fridayMoonHost(dm) {
+    const sol = dm && dm.systems && dm.systems.get("Sol");   // i18n-ignore: system id
+    if (!sol || !Array.isArray(sol.planets)) return null;
+    return sol.planets.find((p) => p.name === EARTH_NAME) ||
+      sol.planets.find((p) => p.name === OMEGA_TOWER_NAME) || null;
+  }
+
+  // The ship cannot be left orbiting a moon that is not out today.
+  function fridayReseatShip(dm, host) {
+    const ship = dm && dm.playerShip;
+    if (!ship || !host) return;
+    let moved = false;
+    if (isFridayMoon(ship.targetPlanet)) {
+      ship.targetPlanet = host.name;
+      moved = true;
+    }
+    if (isFridayMoon(ship.currentPlanet)) {
+      ship.currentPlanet = host.name;
+      ship.parkedBody = null;
+      moved = true;
+    }
+    if (moved) notify(T('Galaxy.fridayMoons.reseated', { body: host.name }), "warning");
+  }
+
+  // Take the Friday moons out of the host's moon list, or put them back where
+  // they were. The ones taken out are held on the data manager itself: the
+  // registry is rebuilt from the data files on every load, so none of this is
+  // ever saved (see StarMapDataManager.toJSON).
+  function fridayMoonsApply(dm, friday) {
+    const host = fridayMoonHost(dm);
+    if (!host) return false;
+    if (!Array.isArray(host.moons)) host.moons = [];
+    if (!Array.isArray(dm._fridayMoonStash)) dm._fridayMoonStash = [];
+    const stash = dm._fridayMoonStash;
+    if (friday) {
+      while (stash.length) {
+        const moon = stash.shift();
+        if (!host.moons.some((m) => m && m.name === moon.name)) host.moons.push(moon);
+      }
+    } else {
+      for (let i = host.moons.length - 1; i >= 0; i--) {
+        const moon = host.moons[i];
+        if (!moon || !(moon.friday || isFridayMoon(moon.name))) continue;
+        host.moons.splice(i, 1);
+        stash.unshift(moon);
+      }
+      fridayReseatShip(dm, host);
+    }
+    return true;
+  }
+
+  const FridayMoons = {
+    NAMES: FRIDAY_MOON_NAMES.slice(),
+    isFriday: isFridayNow,
+    isFridayMoon,
+
+    // Reconcile a data manager's Sol with the day of the week. Called from
+    // getSystem/getAllSystems (see _syncTimeline), so it has to be cheap when
+    // nothing has changed: the whole state is one boolean.
+    sync(dm) {
+      if (!dm || !dm.systems) return;
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+      const friday = isFridayNow();
+      const key = friday ? "1" : "0";
+      if (key === dm._fridayKey) return;
+      try {
+        if (fridayMoonsApply(dm, friday)) dm._fridayKey = key;
+      } catch (e) {
+        console.error("[GalaxySim] Friday moons: could not apply the calendar", e);
+        dm._fridayKey = key; // never loop on a broken state
+      }
+    },
+
+    // For a party that never opens the star map: the orbit still has to be
+    // vacated on the stroke of Saturday, whether or not anyone is looking.
+    tick() {
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+      const dm = $gameSystem.starMapData;
+      if (dm && dm.systems && dm.systems.size > 0) this.sync(dm);
+    },
+  };
+  window.GalaxySim.FridayMoons = FridayMoons;
+
+  // Once a second is far more often than either calendar needs, and cheap
+  // enough that it never has to be thought about again.
   const NIBIRU_TICK_FRAMES = 60;
   let _nibiruTickCount = 0;
   const _GS_Game_Map_update_nibiru = Game_Map.prototype.update;
@@ -2083,6 +2574,7 @@
     if (++_nibiruTickCount < NIBIRU_TICK_FRAMES) return;
     _nibiruTickCount = 0;
     try { Nibiru.tick(); } catch (e) { console.error(e); }
+    try { FridayMoons.tick(); } catch (e) { console.error(e); }
   };
 
   console.log("GalaxySim_Core: Plugin initialized successfully");

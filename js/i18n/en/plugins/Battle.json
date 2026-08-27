@@ -17,6 +17,24 @@
       "This creature is too strong!\nI should run away!"
     ]
   },
+  "cautionWarning": {
+    "party": [
+      "This one outranks us.\nStay sharp and cover each other.",
+      "We're punching above our weight here.\nNo mistakes.",
+      "That thing has years on us.\nWe can win, but not carelessly.",
+      "It's stronger than anything we've fought.\nLet's pace ourselves.",
+      "We can take it, but it will cost us.\nKeep an eye on the wounded.",
+      "This is a step above our level.\nFight it properly."
+    ],
+    "single": [
+      "This one outranks me.\nI will have to be careful.",
+      "I'm punching above my weight here.\nNo mistakes.",
+      "That thing has years on me.\nI can win, but not carelessly.",
+      "It's stronger than anything I've fought.\nLet me pace myself.",
+      "I can take it, but it will cost me.\nWatch my health.",
+      "This is a step above my level.\nFight it properly."
+    ]
+  },
   "mercy": {
     "tooStrong": [
       "You're not even a challenge. Go home before I get bored.",
@@ -95,6 +113,8 @@
     "skill": "Skill",
     "skills": "Skills",
     "basic": "Basic",
+    "aim": "Aim",
+    "aimAt": "Aim: {part}",
     "wrestle": "Wrestle",
     "talk": "Talk",
     "reload": "Reload",
@@ -182,7 +202,14 @@
     "mirrored": "{actor} mirrored the enemy's abilities!",
     "hasLearned": "{actor} has learned {skill}!",
     "learnedFromEnemy": "{actor} learned {skill} from the enemy!",
-    "learnableSkills": "Learnable Skills:"
+    "learnableSkills": "Learnable Skills:",
+    "nothingToCopy": "{actor} finds nothing worth copying.",
+    "tookLook": "{actor} takes the shape of {enemy}!",
+    "becameEnemy": "{actor} becomes {enemy}, body and all!",
+    "becameAlly": "{actor} becomes {ally}!",
+    "mirrorMove": "{actor} throws {skill} straight back!",
+    "nothingToMirror": "{actor} has no move to throw back yet.",
+    "mutated": "{actor}'s body grows into {body}!"
   },
   "summon": {
     "alreadyActive": "A summon is already active!",
@@ -225,12 +252,54 @@
     "familiar": {
       "bound": "{name} is bound to {summoner} and joins the followers.",
       "names": [
-        "Pip", "Vesper", "Cinder", "Moth", "Quill", "Bramble", "Tally", "Nix",
-        "Solace", "Wick", "Fennel", "Odd", "Mirth", "Grist", "Halo", "Juniper",
-        "Kettle", "Loam", "Marrow", "Nettle", "Ochre", "Pewter", "Rook", "Sable",
-        "Thistle", "Umber", "Verdigris", "Whisker", "Yarrow", "Zephyr", "Amber", "Bellows",
-        "Cricket", "Dowsing", "Ember", "Fathom", "Gossamer", "Hazel", "Inkling", "Jot",
-        "Kindling", "Lantern", "Mite", "Notch", "Onyx", "Plinth", "Quarrel", "Ramble"
+        "Pip",
+        "Vesper",
+        "Cinder",
+        "Moth",
+        "Quill",
+        "Bramble",
+        "Tally",
+        "Nix",
+        "Solace",
+        "Wick",
+        "Fennel",
+        "Odd",
+        "Mirth",
+        "Grist",
+        "Halo",
+        "Juniper",
+        "Kettle",
+        "Loam",
+        "Marrow",
+        "Nettle",
+        "Ochre",
+        "Pewter",
+        "Rook",
+        "Sable",
+        "Thistle",
+        "Umber",
+        "Verdigris",
+        "Whisker",
+        "Yarrow",
+        "Zephyr",
+        "Amber",
+        "Bellows",
+        "Cricket",
+        "Dowsing",
+        "Ember",
+        "Fathom",
+        "Gossamer",
+        "Hazel",
+        "Inkling",
+        "Jot",
+        "Kindling",
+        "Lantern",
+        "Mite",
+        "Notch",
+        "Onyx",
+        "Plinth",
+        "Quarrel",
+        "Ramble"
       ]
     },
     "ultimate": {
@@ -278,7 +347,9 @@
         "mirror": "Reflected Ruin",
         "revenant": "Old Debt Repaid"
       }
-    }
+    },
+    "perfectRitual": "[NAT 20] Perfect ritual! {name} gains full HYPER and the master buffs!",
+    "empowered": "[INT +{mod}] The summoning ritual empowered {name} with combat buffs!"
   },
   "actorDied": "{actor} has died.",
   "bulletHellDamage": "Total bullet hell damage: {amount}",
@@ -386,7 +457,12 @@
     "fumble": "{actor} loses the thread of {skill}: not enough {stat}!"
   },
   "critSever": {
-    "check": "Killing Blow: {enemy}",
+    "roll": "Killing blow on {enemy}: d20 {roll} {mod} = {total}/{dc}",
+    "outcomeBehead": "It goes clean through.",
+    "outcomeMaim": "A limb comes away.",
+    "outcomeNone": "The guard holds.",
     "bossEndures": "{enemy} is too great to fall to a single blow."
-  }
+  },
+  "vehicleHitMonster": "You run something down. The {part} takes the worst of it.",
+  "vehicleHitMonsterPlain": "You run something down, and the bodywork takes the worst of it."
 }

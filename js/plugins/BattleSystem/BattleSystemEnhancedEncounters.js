@@ -21,16 +21,24 @@
  * ----------------------------------------------------------------------------
  * Enemy spawn modes (Options -> Enemy Spawn, ConfigManager.enemySpawnMode)
  * ----------------------------------------------------------------------------
- *   Balanced (0)
- *     Roaming enemies come out of a band that opens upward from the party's
- *     own median level: a party of median level L meets levels L to
- *     L + 7 + floor(L / 10). A level 1 party meets levels 1-8, a level 10
- *     party 10-18, a level 50 party 50-62, so the spread widens as the party
- *     grows instead of staying a flat eight levels forever. Exactly one
- *     high-level encounter is placed per world map tile: a boss above the top
- *     of that band and never over level 100.
+ *   Biome (0, default)
+ *     The place decides what you meet and never how hard it is: every creature
+ *     whose <Biome:> tag names this place is equally likely, at any level up to
+ *     100, and neither the party nor the ground has any say in it. The calendar
+ *     is the only limit that still bites. This is the world as it is, rather
+ *     than the world arranged around the party, which is why it leads the list.
  *
- *   Distance from spawn (1, default)
+ *   Balanced (1)
+ *     Roaming enemies come out of a band that opens upward from the party's
+ *     own median level: a party of median level L meets levels L to L + 10.
+ *     That ceiling is the one the damage layer is built around - the party
+ *     fells anything within six levels of themselves, can still take something
+ *     eight levels up at a cost, and the last of the band is what they are
+ *     meant to walk away from. Exactly one high-level encounter is placed per
+ *     world map tile: a boss above the top of that band and never over level
+ *     100.
+ *
+ *   Realistic (2)
  *     What decides how hard a place is is the PLACE: the level everything is
  *     pitched around comes from how far the world square under the party lies
  *     from the square they started the game on. The gradient is radial and it
@@ -1092,8 +1100,8 @@
     // ========================================================================
     // 4b. SPAWN MODE (level selection on top of the nation-weighted pool)
     // ========================================================================
-    // Spawn mode (ConfigManager.enemySpawnMode): 0 = Distance from spawn
-    // (default), 1 = Party Level, 2 = Biome, 3 = Chaos.
+    // Spawn mode (ConfigManager.enemySpawnMode): 0 = Biome (default),
+    // 1 = Party Level, 2 = Realistic (distance from spawn), 3 = Chaos.
     //
     //   PartyLevel- the biome's own fauna, out of a band opening upward from
     //               the party's own median level (see getBalancedLevelBand),
@@ -1105,7 +1113,7 @@
     //               level up to 100, and neither the party nor the ground has
     //               any say in it. The calendar is the only limit that still
     //               bites (nothing under level 80 from 2012).
-    //   Distance  - "distance from spawn", and the name is the whole rule: what
+    //   Realistic - "distance from spawn", and the name is the whole rule: what
     //               a place fields is decided by the PLACE, which is to say by
     //               how far the world square underfoot lies from the square the
     //               party started the game on (see getPlaceLevel). The gradient
@@ -1135,12 +1143,14 @@
     // ------------------------------------------------------------------
     // The stored setting is the INDEX, not the name, so renaming a mode here
     // costs no migration - REORDERING one does (see GameOptions.js,
-    // enemySpawnMode, and its enemySpawnModeV3 marker).
-    const SPAWN_MODES = ['distance', 'balanced', 'biome', 'chaos'];
-    // Party Level is the default: it keeps the world matched to whoever is
-    // playing, distance mode remains index 0 for those who choose it in
-    // Options. GameOptions defaults the stored setting to the same index.
-    const DEFAULT_SPAWN_MODE = 1;
+    // enemySpawnMode, and its enemySpawnModeV4 marker).
+    const SPAWN_MODES = ['biome', 'balanced', 'distance', 'chaos'];
+    // Biome is the default: the world as it stands, with the place deciding
+    // what lives there and nothing arranging it around the party. Balanced
+    // follows for anyone who would rather the world kept pace with them, then
+    // Realistic (distance from spawn), then Chaos. GameOptions defaults the
+    // stored setting to the same index.
+    const DEFAULT_SPAWN_MODE = 0;
 
     // The modes that hide one encounter far above the band on each world tile.
     // Biome and Chaos need no help: neither holds anything back to begin with.
@@ -1184,7 +1194,16 @@
         if (mode === 'distance') {
             return BSE.Helpers.filterTroopsInDistanceBracket(encList, band);
         }
-        if (mode === 'chaos' || mode === 'biome') {
+        if (mode === 'biome') {
+            // Three spawns in ten are pitched at the party, the rest are
+            // whatever the place holds (see getBiomeTetherBand). Both halves
+            // end in the same nearest-level fallback, so neither can empty a
+            // roster.
+            const useTether = BSE.Helpers.rollBiomeTether();
+            return BSE.Helpers.filterTroopsInLevelBand(
+                encList, useTether ? BSE.Helpers.getBiomeTetherBand() : band);
+        }
+        if (mode === 'chaos') {
             return BSE.Helpers.filterTroopsInLevelBand(encList, band);
         }
         return BSE.Helpers.filterTroopsInBalancedBand(encList, band);
@@ -1209,20 +1228,24 @@
 
     // Balanced mode: the level window a party of median level L meets.
     //
-    //   L =  1  ->   1 -  8      L = 10  ->  10 - 18
-    //   L = 25  ->  25 - 34      L = 50  ->  50 - 62
+    //   L =  1  ->   1 - 11      L = 10  ->  10 - 20
+    //   L = 25  ->  25 - 35      L = 50  ->  50 - 60
     //
     // The floor is the party's own level - a level 40 party has no business
-    // being sent rats - and the ceiling opens by one more level for every ten
-    // the party has, so the spread grows with them instead of staying a flat
-    // eight levels forever. The era cap still applies on top.
-    const BALANCED_SPREAD = 7;      // levels above the party at level 1
-    const BALANCED_WIDEN  = 10;     // +1 level of spread per this many levels
+    // being sent rats - and the ceiling is a flat ten levels above it at every
+    // level, which is the same number the damage layer is built around: the
+    // party can fell anything within levelGapFair (+6), can still take
+    // something within levelGapHard (+8) at a cost, and the last couple of
+    // levels of the band are the ones they are meant to walk away from. A
+    // ceiling that widened with the party (it used to open by another level
+    // per ten they had) drifted past that reading and started fielding fights
+    // that were not losable so much as unplayable. The era cap still applies
+    // on top.
+    const BALANCED_SPREAD = 10;     // levels above the party, at every level
 
     BSE.Helpers.getBalancedLevelBand = function(refLevel) {
         const lvl = Math.max(1, Math.round(refLevel || 1));
-        const max = lvl + BALANCED_SPREAD + Math.floor(lvl / BALANCED_WIDEN);
-        return BSE.Helpers.applyEraToBand({ min: lvl, max: Math.max(lvl, max) });
+        return BSE.Helpers.applyEraToBand({ min: lvl, max: lvl + BALANCED_SPREAD });
     };
 
     // Distance mode's band is the BRACKET the place level falls in. Ten levels
@@ -1298,21 +1321,35 @@
         return encList;
     };
 
-    // Biome mode: the place's whole roster, with no level window at all.
+    // Biome mode: the place's whole roster, drawn three parts in ten around the
+    // party and seven parts in ten from anywhere on the ladder.
     //
-    // The band is deliberately the widest one any mode produces - level 1 to
+    // The wide band is the widest one any mode produces - level 1 to
     // BIOME_MODE_CEILING - because the mode's whole idea is that a biome fields
     // everything that lives in it and nothing above decides which of it you are
     // "ready" for. The pool it is applied to is still the biome's own fauna
     // (see the candidate list in spawnEnemiesFromEncounters), so what widens is
     // the level range, never the roster.
     //
-    // The calendar is the one rule it does not escape: from 2012 nothing under
-    // level 80 is left standing anywhere, so the collapse band is handed back
-    // unchanged. Before that the floor stays at 1 - a biome mode that pushed
-    // its own floor up with the year would be Party Level wearing a different
-    // name.
-    const BIOME_MODE_CEILING = 100;
+    // Seven spawns in ten come out of that band, so most of what walks a square
+    // is still whatever the place happens to hold. The other three are tethered
+    // to the party: five levels either side of the median, walked up by the
+    // same yearly climb every other mode answers to, so a biome that stood at
+    // the party's shoulder in 2001 stands well over their head by 2007 without
+    // the mode ever turning into Party Level. Which of the two a given enemy
+    // draws from is rolled per enemy event, not per map, so one square mixes
+    // both.
+    //
+    // The ceiling is 110 - the same one the calendar opens the world to in
+    // 2010 - and it holds for both halves of the split until 2012, when the
+    // collapse takes every ceiling off and leaves nothing under level 80
+    // standing anywhere. Before that the wide band's floor stays at 1: a biome
+    // mode that pushed its own floor up with the year would be Party Level
+    // wearing a different name, which is what the tethered three tenths are
+    // for.
+    const BIOME_MODE_CEILING = ERA_OPEN_CEILING;
+    const BIOME_TETHERED_SHARE = 0.30;  // spawns pitched at the party
+    const BIOME_TETHER_SPREAD  = 5;     // levels either side of the median
 
     BSE.Helpers.getBiomeLevelBand = function() {
         const era = BSE.Helpers.getSpawnEra();
@@ -1320,6 +1357,31 @@
             return { min: ERA_COLLAPSE_FLOOR, max: Infinity, center: ERA_COLLAPSE_FLOOR * 1.6 };
         }
         return { min: 1, max: BIOME_MODE_CEILING, center: BIOME_MODE_CEILING / 2 };
+    };
+
+    // The tethered three tenths: the window around the party's median level.
+    //
+    // The centre is the median plus the calendar's own shift (+10 a year to
+    // 2010, the same term Balanced and Distance are moved by), never below the
+    // floor the year has left standing and never above the mode's ceiling. The
+    // window is BIOME_TETHER_SPREAD either side of it, which is inside the fair
+    // gap the damage layer is built around, so a tethered spawn is a fight the
+    // party can actually take.
+    BSE.Helpers.getBiomeTetherBand = function() {
+        const era = BSE.Helpers.getSpawnEra();
+        const ceiling = era.key === 'collapse' ? Infinity : BIOME_MODE_CEILING;
+        const floor = Math.max(1, BSE.Helpers.getYearLevelFloor());
+        const median = BSE.Helpers.getPartyReferenceLevel();
+        const raw = median + BSE.Helpers.getYearLevelShift();
+        const center = Math.max(floor, Math.min(ceiling, raw));
+        const min = Math.max(1, floor, center - BIOME_TETHER_SPREAD);
+        const max = Math.max(min, Math.min(ceiling, center + BIOME_TETHER_SPREAD));
+        return { min: min, max: max, center: center };
+    };
+
+    // Which of the two halves this spawn is drawn from. Rolled per enemy event.
+    BSE.Helpers.rollBiomeTether = function() {
+        return Math.random() < BIOME_TETHERED_SHARE;
     };
 
     // Chaos mode: the whole ladder, every time. The era cap does not apply
@@ -1438,8 +1500,9 @@
         const yearFloor = BSE.Helpers.getYearLevelFloor();
         const HARD_CAP = band.max === Infinity ? Infinity : Math.max(100, band.max);
         // Above everything else roaming this map, and well above the party:
-        // the band already reaches party+8, so a flat party+10 boss would read
-        // as one more ordinary encounter. Never below what the year has left.
+        // the band already reaches party+10, so a boss pitched at the same
+        // ceiling would read as one more ordinary encounter. band.max + 3 puts
+        // it clear of it. Never below what the year has left.
         const minBoss = Math.min(HARD_CAP, Math.max(
             yearFloor, band.max + 3, partyLevel + 10, Math.ceil(partyLevel * 1.5)));
 
@@ -2458,7 +2521,15 @@
                 // (canTroopSpawnInRegion, and the wet/dry split below).
                 const isWaterTile = BSE.Helpers.isWaterSpawnTile(x, y);
                 if (!isWaterTile && !$gameMap.isPassable(x, y, 2)) continue;
-                if (terrainTag === 0 || terrainTag === 4 || terrainTag === 7) continue;
+                // Terrain tags describe the GROUND, and water has none to
+                // describe: a river cut through a field carries its biome's tag
+                // (often 0) under water the river generator paints region 99, so
+                // reading the tag there would throw away every river tile on the
+                // map and leave the fish nowhere but the open sea. Tags 4 and 7
+                // are hand-placed "nothing spawns here" marks and are obeyed
+                // wet or dry.
+                if (terrainTag === 4 || terrainTag === 7) continue;
+                if (!isWaterTile && terrainTag === 0) continue;
                 if ($gameMap.events().some(ev => ev.x === x && ev.y === y && !enemyEvents.includes(ev))) continue;
                 spawnTiles.push({ x, y, regionId, isWater: isWaterTile });
             }
@@ -4113,10 +4184,25 @@
             if (BSE.Functions.isBattleInitiationBlocked && BSE.Functions.isBattleInitiationBlocked()) {
                 return;
             }
+            // A monster that walks into a moving vehicle is knocked clear of it,
+            // not fought. The other half of this - the vehicle driving into the
+            // monster - is handled in checkEventTriggerTouch above; this is the
+            // same collision from the other side, and it has to answer the same
+            // way or which of the two happened to move that frame decides
+            // whether the party ends up in a battle.
+            if (this._fixedTroopId > 0 && !this._erased && !this.isJumping() &&
+                $gamePlayer.isInVehicle() && $gamePlayer.pos(x, y)) {
+                this.performVehicleHit();
+                return;
+            }
         }
         _Game_Event_checkTriggerTouch.call(this, x, y);
     };
 
+    // Something ran into something. The creature is thrown clear and goes on
+    // living, and the bodywork pays for it: a monster is not a hedge, and a
+    // party that can drive through the wildlife for nothing would never get out
+    // of the camper again.
     Game_Event.prototype.performVehicleHit = function() {
         const playerDir = $gamePlayer.direction();
         let jx = 0, jy = 0;
@@ -4129,7 +4215,39 @@
             case 8: jy = -jumpPower; jx = sway; break;
         }
         this.jump(jx, jy);
+        this.lockMovement(90);
+        damageVehicleOnImpact(this);
     };
+
+    // What the knock costs. The front of the vehicle takes it - the bodywork,
+    // the lights, whatever is behind the bumper - scaled by how big the thing
+    // that was hit is, so brushing something small is a scratch and putting the
+    // camper into something at the top of the food chain is a repair bill.
+    // Nothing at all for a broom or a bicycle, which have no bodywork to dent.
+    const VEHICLE_HIT_PARTS = ["Body", "Suspension", "Radiator", "Tires", "Steering"];
+    function damageVehicleOnImpact(event) {
+        const MVS = window.MergedVehicleSystem;
+        const VSR = window.VehicleSystemRepair;
+        if (!MVS || !MVS.riddenVehicleKey || !VSR || !VSR.applyDamage) return;
+        const key = MVS.riddenVehicleKey();
+        if (!key || key === 'broom') return;
+        const lvl = Math.max(1, (BSE.Helpers.getTroopMaxLevel &&
+                                 BSE.Helpers.getTroopMaxLevel(event._fixedTroopId)) || 1);
+        const hurt = 2 + Math.min(10, lvl / 8) + Math.random() * 3;
+        let hit = [];
+        try {
+            hit = VSR.applyDamage(key, hurt, { parts: VEHICLE_HIT_PARTS, count: 1 }) || [];
+        } catch (e) { /* no maintenance record for this one */ }
+        if (window.ParchmentToast && window.ParchmentToast.show) {
+            const part = hit.length && window.VehicleParts
+                ? window.VehicleParts.label(hit[0]) : '';
+            window.ParchmentToast.show(
+                part ? T('Battle.vehicleHitMonster', { part })
+                     : T('Battle.vehicleHitMonsterPlain'),
+                { severity: 'warning' });
+        }
+        if (window.VehicleCrew && window.VehicleCrew.wake) window.VehicleCrew.wake('crash');
+    }
 
     // ========================================================================
     // 12. Game_Map - setupEvents

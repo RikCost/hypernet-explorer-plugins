@@ -93,16 +93,46 @@
     "knownFraction": "{known} / {total} known ({pct}%)",
     "yourSystem": "Your class's system",
     "systems": {
-      "Arcane": { "name": "Arcane", "desc": "Old magic, learned from books and formulae." },
-      "Sacred": { "name": "Sacred", "desc": "Power drawn down from higher orders." },
-      "Sympathetic": { "name": "Sympathetic", "desc": "Like calls to like: object bound to object." },
-      "Dimensional": { "name": "Dimensional", "desc": "Magic that bends space, time and probability." },
-      "Psionics": { "name": "Psionics", "desc": "Power projected from the mind alone." },
-      "Technomagic": { "name": "Technomagic", "desc": "The occult fused with the machine." },
-      "Pataphysic": { "name": "Pataphysic", "desc": "Magic that answers to no consistent law." },
-      "Natural": { "name": "Natural", "desc": "Power drawn from plant, beast and earth." },
-      "Thermodynamics": { "name": "Thermodynamics", "desc": "Magic that lives in heat, cold and current." },
-      "Ritual": { "name": "Ritual", "desc": "Power bought with rite, blood or bargain." }
+      "Arcane": {
+        "name": "Arcane",
+        "desc": "Old magic, learned from books and formulae."
+      },
+      "Sacred": {
+        "name": "Sacred",
+        "desc": "Power drawn down from higher orders."
+      },
+      "Sympathetic": {
+        "name": "Sympathetic",
+        "desc": "Like calls to like: object bound to object."
+      },
+      "Dimensional": {
+        "name": "Dimensional",
+        "desc": "Magic that bends space, time and probability."
+      },
+      "Psionics": {
+        "name": "Psionics",
+        "desc": "Power projected from the mind alone."
+      },
+      "Technomagic": {
+        "name": "Technomagic",
+        "desc": "The occult fused with the machine."
+      },
+      "Pataphysic": {
+        "name": "Pataphysic",
+        "desc": "Magic that answers to no consistent law."
+      },
+      "Natural": {
+        "name": "Natural",
+        "desc": "Power drawn from plant, beast and earth."
+      },
+      "Thermodynamics": {
+        "name": "Thermodynamics",
+        "desc": "Magic that lives in heat, cold and current."
+      },
+      "Ritual": {
+        "name": "Ritual",
+        "desc": "Power bought with rite, blood or bargain."
+      }
     }
   },
   "graph": {
@@ -143,5 +173,7 @@
     "confirm": "Save",
     "confirmDelete": "Unmake {skill}? Its components are already spent. Press again to confirm.",
     "deleted": "{skill} is unmade."
-  }
+  },
+  "fusionCritical": "★ NAT 20 CRITICAL SUCCESS! ★\n{result}\nEmpowered with -20% MP cost and +25% potency!",
+  "fusionFailed": "☠ ARCANE FUSION FAILED (DC {dc}) ☠\nThe spell fusion destabilised in a violent magical backlash!\nThe component spells ({components}) were destroyed!"
 }

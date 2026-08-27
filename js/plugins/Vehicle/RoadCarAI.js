@@ -1784,7 +1784,9 @@
         AudioManager.playSe({ name: "Evasion1", volume: 80, pitch: 110, pan: 0 });
         if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
           const modStr = dexMod >= 0 ? `+${dexMod}` : `${dexMod}`;
-          window.ParchmentToast.show(`🚗 [Driver DEX Save: ${d20}${modStr}=${d20 + dexMod}] Near miss! Swerved in time!`, { severity: 'good', duration: 200 });
+          window.ParchmentToast.show(T('RoadCar.driverSave.nearMiss', {
+            roll: d20, mod: modStr, total: d20 + dexMod,
+          }), { severity: 'good', duration: 200 });
         }
         if (car._carMode === "driving") car._carStuck = STUCK_LIMIT + 1;
         return;
@@ -1792,7 +1794,9 @@
 
       if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
         const modStr = dexMod >= 0 ? `+${dexMod}` : `${dexMod}`;
-        window.ParchmentToast.show(`💥 [Driver DEX Save: ${d20}${modStr}=${d20 + dexMod} vs DC 14] Failed reflex save! Vehicle collision!`, { severity: 'danger', duration: 200 });
+        window.ParchmentToast.show(T('RoadCar.driverSave.failed', {
+          roll: d20, mod: modStr, total: d20 + dexMod, dc: 14,
+        }), { severity: 'danger', duration: 200 });
       }
 
       AudioManager.playSe({ name: "Crash", volume: 90, pitch: 80, pan: 0 });  // i18n-ignore  SE file
@@ -2065,8 +2069,49 @@
     parkingSpots = [];
     if ($gameMap.mapId() === PROC_MAP_ID) {
       this.initializeRoadCars();
+      registerProcStitchHook();
     }
   };
+
+  // ==========================================================================
+  // THE STITCHED PROCEDURAL WINDOW
+  // --------------------------------------------------------------------------
+  // Map 636 can now hold several neighbouring world squares at once
+  // (WorldMapReturn's ProcStitch), and the party walks between them without a
+  // transfer. Nothing here needs a coordinate shim for that: buildRoadGrid reads
+  // $dataMap directly and every car is placed and driven in map coordinates, so
+  // a stitched strip of road squares is simply a longer road, which is what it
+  // ought to be. Traffic runs the whole length of it instead of stopping dead at
+  // a seam.
+  //
+  // What DOES have to be redone on a crossing is the decision about whether this
+  // place has traffic at all. biomeCategory is read off the square the party is
+  // standing in, and a window may hold more than one kind: a village square can
+  // sit beside a field, both on the same tileset. Walking from one to the other
+  // used to be a map load, which is where that decision was made; now it is an
+  // ordinary step, and the square-changed hook is the only notice of it.
+  //
+  // Registered on the first procedural map load, not at plugin load time:
+  // WorldMapReturn loads after this file, so window.ProcStitch does not exist yet
+  // when it does.
+  let procStitchHooked = false;
+
+  function registerProcStitchHook() {
+    if (procStitchHooked) return;
+    const S = window.ProcStitch;
+    if (!S || typeof S.onSquareChanged !== "function") return;
+    procStitchHooked = true;
+    S.onSquareChanged(() => {
+      const scene = SceneManager._scene;
+      if (!scene || !scene.initializeRoadCars) return;
+      if ($gameMap.mapId() !== PROC_MAP_ID) return;
+      carEvents = [];
+      pedestrianCache = [];
+      pedestrianFrame = -1;
+      parkingSpots = [];
+      scene.initializeRoadCars();
+    });
+  }
 
   Scene_Map.prototype.initializeRoadCars = function () {
     const biomeName = $gameSystem._procGenData?.currentBiome || "";

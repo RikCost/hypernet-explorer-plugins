@@ -45,7 +45,7 @@
     "name": "Monk"
   },
   "16": {
-    "name": "Brawler"
+    "name": "Gunmancer"
   },
   "17": {
     "name": "Boxer"
@@ -144,7 +144,7 @@
     "name": "Academic"
   },
   "49": {
-    "name": "Psychologist"
+    "name": "Psyker"
   },
   "50": {
     "name": "Archaeologist"
@@ -186,7 +186,7 @@
     "name": "Wretch"
   },
   "63": {
-    "name": "Beast"
+    "name": "Feral"
   },
   "64": {
     "name": "Mimic"
@@ -196,5 +196,17 @@
   },
   "66": {
     "name": "Mana Cyborg"
+  },
+  "67": {
+    "name": "Ghost"
+  },
+  "68": {
+    "name": "Zombie"
+  },
+  "69": {
+    "name": "Mutant"
+  },
+  "70": {
+    "name": "Drone"
   }
 }

@@ -45,7 +45,7 @@
     "name": "Monaco"
   },
   "16": {
-    "name": "Combattente di strada"
+    "name": "Pistolomante"
   },
   "17": {
     "name": "Pugile"
@@ -144,7 +144,7 @@
     "name": "Accademico"
   },
   "49": {
-    "name": "Psicologo"
+    "name": "Psionico"
   },
   "50": {
     "name": "Archeologo"
@@ -186,7 +186,7 @@
     "name": "Miserabile"
   },
   "63": {
-    "name": "Bestia"
+    "name": "Ferino"
   },
   "64": {
     "name": "Mimic"
@@ -196,5 +196,17 @@
   },
   "66": {
     "name": "Cyborg di Mana"
+  },
+  "67": {
+    "name": "Fantasma"
+  },
+  "68": {
+    "name": "Zombie"
+  },
+  "69": {
+    "name": "Mutante"
+  },
+  "70": {
+    "name": "Drone"
   }
 }

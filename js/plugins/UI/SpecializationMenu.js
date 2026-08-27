@@ -1156,18 +1156,18 @@
 
             this._dndContainer.innerHTML = `
                 <div class="book-spread">
-                    <div class="left-page" style="position:relative">
+                    <div class="left-page spec-01">
                         <div class="page-header-bar">
                             <div class="back-button focusable">${T('SpecMenu.ui.back')}</div>
                             <h2 class="title">${T('SpecMenu.ui.specializations')}</h2>
                         </div>
                         <div id="spec-search-slot"></div>
-                        <div id="spec-category-row" style="display:flex; flex-wrap:wrap; align-items:center; gap:5px; padding:6px 0 10px"></div>
-                        <div id="spec-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto"></div>
+                        <div class="spec-02" id="spec-category-row"></div>
+                        <div class="spec-03" id="spec-list-content"></div>
                     </div>
-                    <div class="right-page" style="position:relative">
-                        <div class="companion-switcher" id="spec-companion-row" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px"></div>
-                        <div id="spec-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto"></div>
+                    <div class="right-page spec-01">
+                        <div class="companion-switcher spec-04" id="spec-companion-row"></div>
+                        <div class="spec-05" id="spec-detail-content"></div>
                     </div>
                 </div>
             `;
@@ -1251,10 +1251,10 @@
         }
 
         levelPipsHTML(level) {
-            let html = '<div class="spec-pips" style="display:flex; gap:3px">';
+            let html = '<div class="spec-pips spec-06">';
             for (let i = 1; i <= 5; i++) {
                 const filled = i <= level;
-                html += `<span style="width:9px; height:9px; border-radius:50%; display:inline-block; background:${filled ? 'var(--text-secondary-active)' : 'transparent'}; border:1.5px solid var(--text-secondary-active)"></span>`;
+                html += `<span class="spec-07" style="background:${filled ? 'var(--text-secondary-active)' : 'transparent'}"></span>`;
             }
             html += '</div>';
             return html;
@@ -1289,7 +1289,7 @@
                     const isSel = idx === this._categoryIndex;
                     const isFocused = isSel && this._activeArea === 'categories';
                     tabsHTML += `
-                        <div class="spec-category-tab" data-cat-idx="${idx}" style="font-family:'Lora',serif; font-size:0.952rem; padding:4px 10px; border-radius:12px; cursor:pointer; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(categoryTabLabel(cat))}</div>`;
+                        <div class="spec-category-tab spec-08" data-cat-idx="${idx}" style="background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(categoryTabLabel(cat))}</div>`;
                 });
                 // The shoulder buttons and TAB are what actually move this row,
                 // so the row says so: L1 on the near side, R1 and TAB on the
@@ -1354,10 +1354,10 @@
                 const isSel = idx === this._selectedIndex;
                 const isFocused = isSel && this._activeArea === 'list';
                 return `
-                    <div class="spec-row ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'}">
-                        <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(window.Specializations.displayName(spec))}</span>
-                        <span style="display:flex; align-items:center; gap:8px; flex-shrink:0">
-                            <span style="font-size:0.854rem; opacity:0.7">${spec.stat}</span>
+                    <div class="spec-row ${isFocused ? 'focused' : ''} spec-09" data-idx="${idx}" style="background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'}">
+                        <span class="spec-10" style="color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(window.Specializations.displayName(spec))}</span>
+                        <span class="spec-11">
+                            <span class="spec-12">${spec.stat}</span>
                             ${this.levelPipsHTML(level)}
                         </span>
                     </div>`;
@@ -1370,9 +1370,9 @@
             // own order back to its line, for scrolling onto a row that is not
             // currently built.
             const header = (label, colour) =>
-                `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:${colour}; padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${label}</div>`;
+                `<div class="spec-section-header spec-13" style="color:${colour}">${label}</div>`;
             const note = (label) =>
-                `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${label}</div>`;
+                `<div class="spec-14">${label}</div>`;
 
             // A search answers with what it found, so it never prints "nothing
             // trained yet" under a heading the query itself emptied.
@@ -1421,7 +1421,7 @@
         }
 
         buildDetailHTML(actor, spec) {
-            if (!spec) return `<div style="opacity:0.6; margin:20px">${T('SpecMenu.ui.noneSelected')}</div>`;
+            if (!spec) return `<div class="spec-15">${T('SpecMenu.ui.noneSelected')}</div>`;
 
             const level = actor.specializationLevel(spec.id);
             const levelName = window.Specializations.levelName(level);
@@ -1441,18 +1441,18 @@
                 const remaining = Math.max(0, Math.ceil((needed - have) * 10) / 10);
                 const nextName = window.Specializations.levelName(level + 1);
                 progressHTML = `
-                    <div style="margin-top:10px">
-                        <div style="display:flex; justify-content:space-between; font-size:0.915rem; opacity:0.8">
+                    <div class="spec-16">
+                        <div class="spec-17">
                             <span>${T('SpecMenu.ui.towards', { level: escapeHtml(nextName) })}</span>
                             <span>${have} / ${needed}</span>
                         </div>
-                        <div style="height:6px; border-radius:3px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); overflow:hidden">
-                            <div style="height:100%; width:${pct}%; background:var(--text-secondary-active)"></div>
+                        <div class="spec-18">
+                            <div class="spec-19" style="width:${pct}%"></div>
                         </div>
-                        <div style="font-size:0.878rem; opacity:0.7; margin-top:3px">${T('SpecMenu.ui.pointsToNext', { points: remaining, level: escapeHtml(nextName) })}</div>
+                        <div class="spec-20">${T('SpecMenu.ui.pointsToNext', { points: remaining, level: escapeHtml(nextName) })}</div>
                     </div>`;
             } else {
-                progressHTML = `<div style="margin-top:10px; font-size:0.915rem; opacity:0.7">${T('SpecMenu.ui.mastered')}</div>`;
+                progressHTML = `<div class="spec-21">${T('SpecMenu.ui.mastered')}</div>`;
             }
 
             // Weapon proficiencies drive the equip-screen stat scaling, so spell
@@ -1468,20 +1468,20 @@
                         ? T('SpecializationMenu.weapon.raised', { weapon: escapeHtml(window.Specializations.displayName(spec)), pct: pct })
                         : T('SpecializationMenu.weapon.full', { weapon: escapeHtml(window.Specializations.displayName(spec)) }));
                 weaponHTML = `
-                    <div style="margin-top:14px; padding:8px 10px; border-radius:5px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15)">
-                        <div style="font-weight:bold; margin-bottom:2px">${T('SpecializationMenu.weapon.title')}</div>
-                        <div style="opacity:0.85">${note}</div>
-                        <div style="opacity:0.7; font-size:0.915rem; margin-top:4px">${T('SpecializationMenu.weapon.trains')}</div>
+                    <div class="spec-22">
+                        <div class="spec-23">${T('SpecializationMenu.weapon.title')}</div>
+                        <div class="spec-24">${note}</div>
+                        <div class="spec-25">${T('SpecializationMenu.weapon.trains')}</div>
                     </div>`;
             }
 
             return `
-                <div style="padding:24px; font-family:'Lora',serif">
-                    <h2 style="color:var(--text-secondary-active); margin:0 0 4px">${escapeHtml(window.Specializations.displayName(spec))}</h2>
-                    <div style="opacity:0.7; margin-bottom:2px">${T('SpecMenu.ui.governingStat', { stat: spec.stat })}${spec.category ? ` &middot; ${escapeHtml(spec.category)}` : ''}</div>
-                    ${spec.description ? `<div style="margin:8px 0 0; line-height:1.5; opacity:0.9">${escapeHtml(spec.description)}</div>` : ''}
-                    <div style="display:flex; align-items:center; gap:10px; margin:16px 0 0">
-                        <span style="font-weight:bold">${escapeHtml(levelName)}</span>
+                <div class="spec-26">
+                    <h2 class="spec-27">${escapeHtml(window.Specializations.displayName(spec))}</h2>
+                    <div class="spec-28">${T('SpecMenu.ui.governingStat', { stat: spec.stat })}${spec.category ? ` &middot; ${escapeHtml(spec.category)}` : ''}</div>
+                    ${spec.description ? `<div class="spec-29">${escapeHtml(spec.description)}</div>` : ''}
+                    <div class="spec-30">
+                        <span class="spec-31">${escapeHtml(levelName)}</span>
                         ${this.levelPipsHTML(level)}
                     </div>
                     ${progressHTML}

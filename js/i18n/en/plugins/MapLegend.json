@@ -1,0 +1,194 @@
+{
+  "controlsHeading": "Controls",
+  "foldHint": "fold this away",
+  "unfoldHint": "read this",
+  "controls": {
+    "up": "Move Up",
+    "down": "Move Down",
+    "left": "Move Left",
+    "right": "Move Right",
+    "action": "Action",
+    "back": "Back",
+    "run": "Run",
+    "menu": "Menu",
+    "leftClick": "Left Click",
+    "rightClick": "Right Click",
+    "holdShift": "Hold Shift",
+    "openMap": "Open the map",
+    "hotbarCycle": "Change hotbar item",
+    "visitPlace": "Visit this place",
+    "zoom": "Zoom in and out"
+  },
+  "areas": {
+    "tutorialVillage": {
+      "title": "Village",
+      "text": "Village sample text"
+    },
+    "tutorialWaterfall": {
+      "title": "Secret Waterfall",
+      "text": "You should check behind every waterfall"
+    },
+    "m1006_zone": {
+      "title": "Horse betting",
+      "text": "Use this screen to bet on horses"
+    },
+    "m1006_zone2": {
+      "title": "Monster tournament",
+      "text": "Use this terminal to watch and bet monster fights"
+    },
+    "m1006_zone3": {
+      "title": "Coin conversion",
+      "text": "Use this machine to convert euros to tokens used for minigames and slot machines"
+    },
+    "m1006_zone4": {
+      "title": "Slot machine",
+      "text": "Use tokens to plays"
+    },
+    "m1023_zone": {
+      "title": "Ghent Hospital",
+      "text": "Visit hospitals to get your diseases diagnosed, install augments, change bodyparts and access to the [Fertility database]"
+    },
+    "m1414_zone": {
+      "title": "Inn",
+      "text": "Visit inns around the world to recruit new companions and rest"
+    },
+    "m1414_zone2": {
+      "title": "Hypermetro trains",
+      "text": "Move between hub cities using the hypermetro! Your final destination is the Omega Tower, but you should stop at Ghent for stocking up on items."
+    },
+    "m1414_zone3": {
+      "title": "Crafting",
+      "text": "In this shack  you can find some materials, use the [Thinker] option in pause menu to assembly items and [Blacksmithing] to smelt and forge new ones"
+    },
+    "m1414_zone4": {
+      "title": "Farming plots",
+      "text": "Use farming plots to grow your own plants"
+    },
+    "m1414_zone5": {
+      "title": "High level enemis",
+      "text": "Some enemies are too powerful for your current party. when you are outside dungeons you can freely escape only in the first tur."
+    },
+    "m1414_zone6": {
+      "title": "Shop",
+      "text": ""
+    },
+    "m1414_zone7": {
+      "title": "Dungeon",
+      "text": "Explore dungeons to recover rare loot"
+    },
+    "m1414_zone8": {
+      "title": "Trash",
+      "text": "Dive in the trash to recover hidden pre Y2K gems, but be wary of nausea."
+    },
+    "m1414_zone10": {
+      "title": "Apiary",
+      "text": "Use apiaries to manage a bee colony and collect honey"
+    },
+    "m1414_zone11": {
+      "title": "Farm",
+      "text": "You can take over this abandoned farm: it's owner was recently killed by getting hit via a satellite debris and nobody has claimed it yet.\nUse the [Build] option in pause menu to buy animals and personalize this farm."
+    },
+    "m1414_zone9": {
+      "title": "Library",
+      "text": "Visit libraries to buy book and grimories"
+    },
+    "m1414_zone12": {
+      "title": "Clinic",
+      "text": "Visit clinics to diagnose diseases, install augments, install or remove bodyparts or get medical training."
+    },
+    "m1416_zone": {
+      "title": "PC",
+      "text": "Use this PC to access Hypernet"
+    },
+    "m1416_zone2": {
+      "title": "Quest board",
+      "text": "Uset the quest board to accept quests"
+    },
+    "m1416_zone3": {
+      "title": "Bowling alley",
+      "text": "Interact with the bowling alley to play bowling"
+    },
+    "m1416_zone4": {
+      "title": "Bathroom",
+      "text": "Use bathrooms to clean yourself and increase your higiene. Higiene is important when talking to someone, unless he don't care about it."
+    },
+    "m1416_zone5": {
+      "title": "Innkeeper",
+      "text": "Talk to the innkeeper to rent a room, buy food or recruit troops"
+    },
+    "m1416_zone6": {
+      "title": "Sleep",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone7": {
+      "title": "Sleep",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone8": {
+      "title": "Sleep",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone9": {
+      "title": "Sleep",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone11": {
+      "title": "Sleeè",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone12": {
+      "title": "Sleep",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone13": {
+      "title": "Sleep",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone14": {
+      "title": "Sleep",
+      "text": "If your party sleep is low you will start losing MP,\nmake sure to rest everyday!\nYou can also drink coffee to keep you awake."
+    },
+    "m1416_zone15": {
+      "title": "Bathroom",
+      "text": "Use bathrooms to clean yourself and increase your higiene. Higiene is important when talking to someone, unless he don't care about it."
+    },
+    "m1416_zone16": {
+      "title": "Bathroom",
+      "text": "Use bathrooms to clean yourself and increase your higiene. Higiene is important when talking to someone, unless he don't care about it."
+    },
+    "m1416_zone17": {
+      "title": "Bathroom",
+      "text": ""
+    },
+    "m1416_zone19": {
+      "title": "Minigames",
+      "text": "Minigames use arcade coins to play but some are free. Use the arcade converter to get coins."
+    },
+    "m1416_zone10": {
+      "title": "Renting",
+      "text": "Interact with the door or talk to innkeeper to  rent a room"
+    }
+  },
+  "tips": {
+    "findTheInn": {
+      "title": "Somewhere to sleep",
+      "text": "The inn stands at the middle of the station. Follow the lit windows and ask the landlord for a bed."
+    },
+    "seeTheDoctor": {
+      "title": "See the doctor",
+      "text": "The clinic is the low building with the white door. Whatever is broken gets set in there."
+    },
+    "searchTheWagons": {
+      "title": "Search the wagons",
+      "text": "The siding has not been picked clean. Open every crate before the light goes."
+    },
+    "intoTheCaves": {
+      "title": "Into the caves",
+      "text": "The mouth in the hill runs deeper than it looks. Take a light, and something to swing."
+    },
+    "headOutside": {
+      "title": "Head outside",
+      "text": "There is nothing more for you indoors. Step out and take the road."
+    }
+  }
+}
